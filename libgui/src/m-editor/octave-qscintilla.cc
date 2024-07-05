@@ -1053,8 +1053,8 @@ octave_qscintilla::contextmenu_run (bool)
 
            // Clean up before throwing the modified error.
            Q_EMIT ctx_menu_run_finished_signal (err_line,
-                                              tmp_file, tmp_hist,
-                                              dbg, auto_repeat);
+                                                tmp_file, tmp_hist,
+                                                dbg, auto_repeat);
 
            // New exception with updated message and stack
            execution_exception nee (ee.err_type (), ee.identifier (),
@@ -1067,8 +1067,8 @@ octave_qscintilla::contextmenu_run (bool)
        // Clean up
 
        Q_EMIT ctx_menu_run_finished_signal (err_line,
-                                          tmp_file, tmp_hist,
-                                          dbg, auto_repeat);
+                                            tmp_file, tmp_hist,
+                                            dbg, auto_repeat);
 
        command_editor::erase_empty_line (true);
        command_editor::replace_line ("");

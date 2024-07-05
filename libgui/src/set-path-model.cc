@@ -349,7 +349,7 @@ set_path_model::update_data (const QStringList& dirs)
   int numel = m_dirs.size ();
 
   Q_EMIT dataChanged (QAbstractListModel::index (0, 0),
-                    QAbstractListModel::index (numel-1, 0));
+                      QAbstractListModel::index (numel-1, 0));
 }
 
 OCTAVE_END_NAMESPACE(octave)

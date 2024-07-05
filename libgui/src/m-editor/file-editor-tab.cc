@@ -539,7 +539,7 @@ file_editor_tab::set_file_name (const QString& fileName)
 
   // update the file editor with current editing directory
   Q_EMIT editor_state_changed (m_copy_available, m_is_octave_file,
-                             m_edit_area->isModified ());
+                               m_edit_area->isModified ());
 
   // add the new file to the most-recently-used list
   Q_EMIT mru_add_file (m_file_name, m_encoding);
@@ -1031,7 +1031,7 @@ file_editor_tab::set_focus (const QWidget *ID)
   if (ID != this)
     return;
   m_edit_area->setFocus ();
-  Q_EMIT edit_area_changed (m_edit_area); // update the edit area in find dlg
+  Q_EMIT edit_area_changed (m_edit_area);  // update the edit area in find dlg
 }
 
 void
@@ -1797,7 +1797,7 @@ file_editor_tab::handle_copy_available (bool enableCopy)
 {
   m_copy_available = enableCopy;
   Q_EMIT editor_state_changed (m_copy_available, m_is_octave_file,
-                             m_edit_area->isModified ());
+                               m_edit_area->isModified ());
 }
 
 // show_dialog: shows a modal or non modal dialog depending on input arg
@@ -2285,7 +2285,7 @@ file_editor_tab::confirm_dbquit_and_save (const QString& file_to_save,
              return;
 
            Q_EMIT do_save_file_signal (file_to_save, remove_on_success,
-                                     restore_breakpoints);
+                                       restore_breakpoints);
          });
     }
 }
@@ -2372,7 +2372,7 @@ file_editor_tab::save_file (const QString& saveFileName,
                if (! sym.is_defined () || ! sym.is_user_code ())
                  {
                    Q_EMIT do_save_file_signal (file_to_save, remove_on_success,
-                                             restore_breakpoints);
+                                               restore_breakpoints);
                    return;
                  }
 
@@ -2384,7 +2384,7 @@ file_editor_tab::save_file (const QString& saveFileName,
                    != sys::canonicalize_file_name (fcn->fcn_file_name ()))
                  {
                    Q_EMIT do_save_file_signal (file_to_save, remove_on_success,
-                                             restore_breakpoints);
+                                               restore_breakpoints);
                    return;
                  }
 
@@ -2413,12 +2413,12 @@ file_editor_tab::save_file (const QString& saveFileName,
            symtab.clear_user_function (std_base_name);
 
            Q_EMIT do_save_file_signal (file_to_save, remove_on_success,
-                                     restore_breakpoints);
+                                       restore_breakpoints);
          });
     }
   else
     Q_EMIT do_save_file_signal (saveFileName, remove_on_success,
-                              restore_breakpoints);
+                                restore_breakpoints);
 }
 
 void
@@ -3077,7 +3077,7 @@ file_editor_tab::change_editor_state (const QWidget *ID)
     return;
 
   Q_EMIT editor_state_changed (m_copy_available, m_is_octave_file,
-                             m_edit_area->isModified ());
+                               m_edit_area->isModified ());
 }
 
 void

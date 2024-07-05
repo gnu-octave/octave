@@ -120,7 +120,7 @@ QUIWidgetCreator::list_dialog (const QStringList& list, const QString& mode,
   QMutexLocker autolock (&m_mutex);
 
   Q_EMIT create_listview (list, mode, wd, ht, initial, name,
-                        prompt, ok_string, cancel_string);
+                          prompt, ok_string, cancel_string);
 
   // Wait while the user is responding to message box.
   wait ();

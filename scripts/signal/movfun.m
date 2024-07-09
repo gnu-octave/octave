@@ -31,25 +31,49 @@
 ## Apply function @var{fcn} to a moving window of length @var{wlen} on data
 ## @var{x}.
 ##
-## If @var{wlen} is a scalar, the function @var{fcn} is applied to a moving
-## window of length @var{wlen}.  When @var{wlen} is an odd number the window is
-## symmetric and includes @w{@code{(@var{wlen} - 1) / 2}} elements on either
-## side of the central element.  For example, when calculating the output at
-## index 5 with a window length of 3, @code{movfun} uses data elements
-## @w{@code{[4, 5, 6]}}.  If @var{wlen} is an even number, the window is
-## asymmetric and has @w{@code{@var{wlen}/2}} elements to the left of the
-## central element and @w{@code{@var{wlen}/2 - 1}} elements to the right of the
-## central element.  For example, when calculating the output at index 5 with a
+## The moving window length input @var{wlen} can either be a numeric scalar
+## not equal to 1 or a 2-element numeric array. The elements included in the
+## moving window depend on both the size and value of @var{wlen} as follows:
+##
+## For integer-valued @var{wlen}:
+## @itemize
+## @item
+## For odd, integer-valued, scalar @var{wlen} the window is symmetric and includes
+## @w{@code{(@var{wlen} - 1) / 2}} elements on either side of the central
+## element.  For example, when calculating the output at index 5 with a
+## window length of 3, @code{movfun} uses data elements @w{@code{[4, 5, 6]}}.
+## @item
+## For even, integer-valued, scalar @var{wlen} the window is asymmetric and has
+## @w{@code{@var{wlen}/2}} elements to the left of the central element and
+## @w{@code{@var{wlen}/2 - 1}} elements to the right of the central
+## element.  For example, when calculating the output at index 5 with a
 ## window length of 4, @code{movfun} uses data elements
 ## @w{@code{[3, 4, 5, 6]}}.
+## @item
+## For integer-valued vector @var{wlen} of the form
+## @w{@qcode{[@var{nb}, @var{na}]}} where @var{nb} and @var{na} are integer
+## valued the window includes @var{nb} elements to the left of the central
+## element and @var{na} elements to the right of the central element.  For
+## example, given @w{@code{@var{wlen} = [3, 0]}}, the data used to calculate
+## index 5 is @w{@code{[2, 3, 4, 5]}}.
+## @end itemize
 ##
-## If @var{wlen} is an array with two elements @w{@code{[@var{nb}, @var{na}]}},
-## the function is applied to a moving window @code{-@var{nb}:@var{na}}.  This
-## window includes @var{nb} number of elements @emph{before} the current
-## element and @var{na} number of elements @emph{after} the current element.
-## The current element is always included.  For example, given
-## @w{@code{@var{wlen} = [3, 0]}}, the data used to calculate index 5 is
-## @w{@code{[2, 3, 4, 5]}}.
+## For non-integer-valued scalar @var{wlen}:
+## @itemize
+## @item
+## Non-integer-valued scalar @var{wlen} will be converted to
+## two-element vector form with
+## @w{@code{@var{nb} = @var{na} = fix (@var{wlen} / 2)}}, and then processed
+## as stated above for integer-valued vectors.  For example, when
+## calculating the output at index 5 with @w{@code{@var{wlen} = 2.5}},
+## @code{movfun} uses data elements @w{@code{[3, 4, 5, 6, 7]}}.
+## @item
+## Non-integer-valued vector @var{wlen} will be  truncated to interger values
+## with @w{@code{@var{wlen} = fix (@var{wlen}}}, and then processed as
+## stated above for integer-valued vectors. For example, when
+## calculating the output at index 5 with @w{@code{@var{wlen} = [1.2, 2.3]}},
+## @code{movfun} uses data elements @w{@code{[4, 5, 6, 7]}}.
+## @end itemize
 ##
 ## During calculations the data input @var{x} is reshaped into a 2-dimensional
 ## @var{wlen}-by-@var{N} matrix and @var{fcn} is called on this new matrix.
@@ -184,6 +208,7 @@ function y = movfun (fcn, x, wlen, varargin)
     parser = [];
     ndims_x = ndims (x);
   endif
+
   if isempty (parser)
     parser = inputParser ();
     parser.FunctionName = "movfun";
@@ -220,12 +245,8 @@ function y = movfun (fcn, x, wlen, varargin)
   N = szx(dim);
 
   ## Calculate slicing indices.  This call also validates WLEN input.
-  [slc, C, Cpre, Cpos, win] = movslice (N, wlen);
-
-  ## Use [nb, na] format which makes replaceval_bc() simpler.
-  if (isscalar (wlen))
-    wlen = [wlen, wlen];
-  endif
+  ## wlen returned in [nb, na] form for subfunction processing.
+  [slc, C, Cpre, Cpos, win, wlen] = movslice (N, wlen);
 
   omitnan = strcmpi (nancond, "omitnan");
   if (omitnan)
@@ -672,18 +693,7 @@ endfunction
 ## Test input validation
 %!error <Invalid call> movfun ()
 %!error <Invalid call> movfun (@min)
-%!error <Invalid call> movfun (@min, 1)
-%!error <WLEN must be .* array of integers> movfun (@min, 1, {1})
-%!error <WLEN must be .* array of integers .= 0> movfun (@min, 1, -1)
-%!error <WLEN must be .* array of integers> movfun (@min, 1, 1.5)
-%!error <WLEN must be . 1> movfun (@min, 1, 1)
-%!error <WLEN must be a scalar or 2-element array> movfun (@min, 1, [1, 2, 3])
-%!error <WLEN \(3\) must be shorter than length along DIM \(1\)>
-%! movfun (@min, 1, 3)
-%!error <WLEN \(4\) must be shorter than length along DIM \(1\)>
-%! movfun (@min, 1, [4, 1]);
-%!error <WLEN \(5\) must be shorter than length along DIM \(1\)>
-%! movfun (@min, 1, [1, 5]);
+%!error <Invalid call> movfun (@min, 1:5)
 %!warning <"omitnan" is not yet implemented>
 %! movfun (@min, 1:3, 3, "nancond", "omitnan");
 ## FIXME: This test is commented out until OUTDIM validation is clarified.

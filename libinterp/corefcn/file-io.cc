@@ -477,13 +477,20 @@ do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
                   ::tolower);
 
   if (encoding == "system")
-    encoding = octave_locale_charset_wrapper ();
+    {
+      encoding = octave_locale_charset_wrapper ();
+      std::transform (encoding.begin (), encoding.end (), encoding.begin (),
+                      ::tolower);
+    }
 
 #if defined (OCTAVE_HAVE_STRICT_ENCODING_FACET)
   if (encoding != "utf-8")
     {
       warning_with_id ("Octave:fopen:encoding-unsupported",
-                       "fopen: encoding must be 'UTF-8' for this version");
+                       "fopen: encoding must be 'UTF-8' for this configuration "
+                       "of Octave. Opening file '%s' as 'UTF-8' even though "
+                       "encoding was specified as '%s'.",
+                       name.c_str (), encoding.c_str ());
       encoding = "utf-8";
     }
 #endif

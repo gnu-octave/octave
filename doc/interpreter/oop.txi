@@ -291,6 +291,24 @@ whole index chain, while they usually handle only the first element.  It is the
 responsibility of these methods to handle the rest of the chain (if needed),
 usually by forwarding it again to @code{subsref} or @code{subsasgn}.
 
+@deftypefn {} {@var{n} =} numArgumentsFromSubscript (@var{obj}, @var{idx}, @var{unused})
+Override @var{nargout} for overloaded @code{subsref} method.
+
+@var{obj} is the object for which the overloaded @code{subsref} method is
+called.
+
+@var{idx} is a structure array with fields @samp{type} and @samp{subs}.
+See @ref{XREFsubsref,,subsref} for a description of that structure.
+
+The third input argument @var{unused} is currently unused. It is always the
+empty matrix @code{[]}.
+
+The function must return a scalar integer which will be passed as @var{nargout}
+to the overloaded @code{subsref} method
+
+@seealso{@ref{XREFsubsref,,subsref}, @ref{XREFsubstruct,,substruct}}
+@end deftypefn
+
 If you wish to use the @code{end} keyword in subscripted expressions of an
 object, then there must be an @code{end} method defined.  For example, the
 @code{end} method for the polynomial class might look like

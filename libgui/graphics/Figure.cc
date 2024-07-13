@@ -677,7 +677,7 @@ Figure::updateBoundingBox (bool internal, int flags)
   figure::properties& fp = properties<figure> ();
 
   Q_EMIT gh_set_event (m_handle, prop, fp.bbox2position (bb), false,
-                     prop == "position");
+                       prop == "position");
 }
 
 bool

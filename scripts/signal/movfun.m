@@ -178,14 +178,19 @@ function y = movfun (fcn, x, wlen, varargin)
   valid_bc = {"shrink", "discard", "fill", "same", "periodic"};
 
   ## Parse input arguments
-  persistent parser;
+  persistent parser ndims_x;
+  if (isempty (ndims_x) || (ndims_x != ndims (x)))
+    ## reset inputParser if number of dimensions of X changes
+    parser = [];
+    ndims_x = ndims (x);
+  endif
   if isempty (parser)
     parser = inputParser ();
     parser.FunctionName = "movfun";
     parser.addParamValue ("Endpoints", "shrink", ...
       @(x) any (strcmpi (x, valid_bc)) || (isnumeric (x) && isscalar (x)));
     parser.addParamValue ("dim", [], ...
-      @(d) isempty (d) || (isscalar (d) && isindex (d, ndims (x))));
+      @(d) isempty (d) || (isscalar (d) && isindex (d, ndims_x)));
     parser.addParamValue ("nancond", "includenan", ...
       @(x) any (strcmpi (x, {"includenan", "omitnan"})));
     parser.addParamValue ("outdim", [], ...
@@ -649,17 +654,17 @@ endfunction
 ## Test for correct output shape for dim > 2 and ndims > 2
 %!test <*65927>
 %! a = reshape (1:30, 5, 3, 2);
-%! b1 = cat (3, [1, 6, 11], [16, 21, 26]) + [0, 0.5, 1.5, 2.5, 3.5]';
-%! b2 = cat (3, [1:5]', [16:20]') + [0, 2.5, 7.5];
-%! b3 = cat (3, [1:5]', [8.5:1:12.5]') + [0, 5, 10];
+%! b1 = cat (3, [1, 6, 11], [16, 21, 26]) + [0, 0.5, 1.5, 2.5, 3.5].';
+%! b2 = cat (3, [1:5].', [16:20].') + [0, 2.5, 7.5];
+%! b3 = cat (3, [1:5].', [8.5:1:12.5].') + [0, 5, 10];
 %! assert (movfun (@mean, a, 2), b1, eps);
 %! assert (movfun (@mean, a, 2, 'dim', 1), b1, eps);
 %! assert (movfun (@mean, a, 2, 'dim', 2), b2, eps);
 %! assert (movfun (@mean, a, 2, 'dim', 3), b3, eps);
 %!
-%! a2 = cat (4, a, a, a, a);
+%! a2 = repmat (a, 1, 1, 1, 4);
 %! assert (size (movfun (@mean, a2, 2)), [5, 3, 2, 4]);
-%! assert (size (movfun (@mean, a2, 2, 'dim', 1)), [5, 3, 2, 4])
+%! assert (size (movfun (@mean, a2, 2, 'dim', 1)), [5, 3, 2, 4]);
 %! assert (size (movfun (@mean, a2, 2, 'dim', 2)), [5, 3, 2, 4]);
 %! assert (size (movfun (@mean, a2, 2, 'dim', 3)), [5, 3, 2, 4]);
 %! assert (size (movfun (@mean, a2, 2, 'dim', 4)), [5, 3, 2, 4]);

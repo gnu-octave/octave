@@ -493,7 +493,7 @@ ButtonGroup::buttonToggled (bool toggled)
 
       if (oldValue != newValue)
         Q_EMIT gh_set_event (m_handle, "selectedobject",
-                           newValue.as_octave_value (), false);
+                             newValue.as_octave_value (), false);
     }
 }
 
@@ -523,7 +523,7 @@ ButtonGroup::buttonClicked (QAbstractButton *btn)
       eventData.setfield ("EventName", "SelectionChanged");
       octave_value selectionChangedEventObject (eventData);
       Q_EMIT gh_callback_event (m_handle, "selectionchangedfcn",
-                              selectionChangedEventObject);
+                                selectionChangedEventObject);
     }
 }
 

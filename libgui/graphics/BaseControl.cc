@@ -259,17 +259,17 @@ BaseControl::eventFilter (QObject *watched, QEvent *xevent)
         if (fig)
           {
             Q_EMIT gh_set_event (fig.get_handle (), "currentobject",
-                               m_handle.value (), false);
+                                 m_handle.value (), false);
 
             if (m->button () != Qt::LeftButton || ! up.enable_is ("on"))
               {
                 Q_EMIT gh_set_event (fig.get_handle (), "selectiontype",
-                                   Utils::figureSelectionType (m), false);
+                                     Utils::figureSelectionType (m), false);
                 Q_EMIT gh_set_event (fig.get_handle (), "currentpoint",
-                                   Utils::figureCurrentPoint (fig, m),
-                                   false);
+                                     Utils::figureCurrentPoint (fig, m),
+                                     false);
                 Q_EMIT gh_callback_event (fig.get_handle (),
-                                        "windowbuttondownfcn");
+                                          "windowbuttondownfcn");
                 Q_EMIT gh_callback_event (m_handle, "buttondownfcn");
 
                 if (m->button () == Qt::RightButton)
@@ -284,11 +284,11 @@ BaseControl::eventFilter (QObject *watched, QEvent *xevent)
               {
                 if (up.style_is ("listbox"))
                   Q_EMIT gh_set_event (fig.get_handle (), "selectiontype",
-                                     Utils::figureSelectionType (m),
-                                     false);
+                                       Utils::figureSelectionType (m),
+                                       false);
                 else
                   Q_EMIT gh_set_event (fig.get_handle (), "selectiontype",
-                                     octave_value ("normal"), false);
+                                       octave_value ("normal"), false);
               }
           }
       }
@@ -306,9 +306,9 @@ BaseControl::eventFilter (QObject *watched, QEvent *xevent)
           if (fig)
             {
               Q_EMIT gh_set_event (fig.get_handle (), "currentpoint",
-                                 Utils::figureCurrentPoint (fig, m), false);
+                                   Utils::figureCurrentPoint (fig, m), false);
               Q_EMIT gh_callback_event (fig.get_handle (),
-                                      "windowbuttonmotionfcn");
+                                        "windowbuttonmotionfcn");
             }
         }
       break;
@@ -323,7 +323,7 @@ BaseControl::eventFilter (QObject *watched, QEvent *xevent)
           graphics_object fig = object ().get_ancestor ("figure");
 
           Q_EMIT gh_set_event (fig.get_handle (), "currentcharacter",
-                             keyData.getfield ("Character"), false);
+                               keyData.getfield ("Character"), false);
           Q_EMIT gh_callback_event (m_handle, "keypressfcn", keyData);
         }
       break;

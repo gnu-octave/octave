@@ -185,7 +185,7 @@ Canvas::updateCurrentPoint (const graphics_object& fig,
   octave::autolock guard (gh_mgr.graphics_lock ());
 
   Q_EMIT gh_set_event (fig.get_handle (), "currentpoint",
-                     Utils::figureCurrentPoint (fig, event), false);
+                       Utils::figureCurrentPoint (fig, event), false);
 
   Matrix children = obj.get_properties ().get_children ();
   octave_idx_type num_children = children.numel ();
@@ -228,7 +228,7 @@ Canvas::updateCurrentPoint (const graphics_object& fig,
   octave::autolock guard (gh_mgr.graphics_lock ());
 
   Q_EMIT gh_set_event (fig.get_handle (), "currentpoint",
-                     Utils::figureCurrentPoint (fig), false);
+                       Utils::figureCurrentPoint (fig), false);
 
   Matrix children = obj.get_properties ().get_children ();
   octave_idx_type num_children = children.numel ();
@@ -256,7 +256,7 @@ Canvas::updateCurrentPoint (const graphics_object& fig,
           cp(1, 0) = p2(0); cp(1, 1) = p2(1); cp(1, 2) = p2(2);
 
           Q_EMIT gh_set_event (childObj.get_handle (), "currentpoint", cp,
-                             false);
+                               false);
         }
     }
 }
@@ -523,7 +523,7 @@ Canvas::canvasMouseMoveEvent (QMouseEvent *event)
             {
               updateCurrentPoint (figObj, obj, event);
               Q_EMIT gh_callback_event (figObj.get_handle (),
-                                      "windowbuttonmotionfcn");
+                                        "windowbuttonmotionfcn");
             }
         }
     }
@@ -671,8 +671,8 @@ Canvas::canvasMousePressEvent (QMouseEvent *event)
 
             // Update figure "selectiontype" and "currentpoint"
             Q_EMIT gh_set_event (figObj.get_handle (), "selectiontype",
-                               Utils::figureSelectionType (event, isdblclick),
-                               false);
+                                 Utils::figureSelectionType (event, isdblclick),
+                                 false);
 
             updateCurrentPoint (figObj, obj, event);
 
@@ -684,10 +684,10 @@ Canvas::canvasMousePressEvent (QMouseEvent *event)
             // latter is empty then execute the figure "buttondownfcn"
             if (currentObj && ! currentObj.get ("buttondownfcn").isempty ())
               Q_EMIT gh_callback_event (currentObj.get_handle (),
-                                      "buttondownfcn", button_number (event));
+                                        "buttondownfcn", button_number (event));
             else if (figObj && ! figObj.get ("buttondownfcn").isempty ())
               Q_EMIT gh_callback_event (figObj.get_handle (),
-                                      "buttondownfcn", button_number (event));
+                                        "buttondownfcn", button_number (event));
 
             // Show context menu of the selected object
             if (currentObj && event->button () == Qt::RightButton)
@@ -1042,7 +1042,7 @@ Canvas::canvasWheelEvent (QWheelEvent *event)
         {
           octave_scalar_map eventData = Utils::makeScrollEventStruct (event);
           Q_EMIT gh_callback_event (m_handle, "windowscrollwheelfcn",
-                                  eventData);
+                                    eventData);
         }
     }
 }
@@ -1067,9 +1067,9 @@ Canvas::canvasKeyPressEvent (QKeyEvent *event)
           octave_scalar_map eventData = Utils::makeKeyEventStruct (event);
 
           Q_EMIT gh_set_event (figObj.get_handle (), "currentcharacter",
-                             eventData.getfield ("Character"), false);
+                               eventData.getfield ("Character"), false);
           Q_EMIT gh_callback_event (figObj.get_handle (), "keypressfcn",
-                                  eventData);
+                                    eventData);
         }
 
       return true;
@@ -1093,7 +1093,7 @@ Canvas::canvasKeyReleaseEvent (QKeyEvent *event)
         {
           graphics_object figObj (obj.get_ancestor ("figure"));
           Q_EMIT gh_callback_event (figObj.get_handle (), "keyreleasefcn",
-                                  Utils::makeKeyEventStruct (event));
+                                    Utils::makeKeyEventStruct (event));
         }
 
       return true;

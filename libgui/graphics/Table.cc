@@ -506,7 +506,7 @@ Table::itemSelectionChanged ()
       eventData.setfield ("Indices", indices);
       octave_value cellSelectionCallbackEventObject (eventData);
       Q_EMIT gh_callback_event (m_handle, "cellselectioncallback",
-                              cellSelectionCallbackEventObject);
+                                cellSelectionCallbackEventObject);
     }
 }
 
@@ -553,7 +553,7 @@ Table::sendCellEditCallback (int row,
       octave_value cellEditCallbackEventObject (eventData);
 
       Q_EMIT gh_callback_event (m_handle, "celleditcallback",
-                              cellEditCallbackEventObject);
+                                cellEditCallbackEventObject);
     }
 }
 
@@ -591,7 +591,7 @@ Table::comboBoxCurrentIndexChanged (const QString& value)
                 {
                   m_curData = octave_value (cell);
                   Q_EMIT gh_set_event (m_handle, "data", octave_value (cell),
-                                     false);
+                                       false);
                 }
 
               octave_value error = octave_value ("");
@@ -612,7 +612,7 @@ Table::comboBoxCurrentIndexChanged (const QString& value)
 
               m_curData = octave_value (cell);
               Q_EMIT gh_set_event (m_handle, "data", octave_value (cell),
-                                 false);
+                                   false);
 
               octave_value error = octave_value ("");
               sendCellEditCallback (row,
@@ -705,7 +705,7 @@ Table::checkBoxClicked (int row, int col, QCheckBox *checkBox)
             {
               m_curData = octave_value (matrix);
               Q_EMIT gh_set_event (m_handle, "data", octave_value (matrix),
-                                 false);
+                                   false);
             }
 
           sendCellEditCallback (row, col,
@@ -739,7 +739,7 @@ Table::checkBoxClicked (int row, int col, QCheckBox *checkBox)
                 {
                   m_curData = octave_value (cell);
                   Q_EMIT gh_set_event (m_handle, "data", octave_value (cell),
-                                     false);
+                                       false);
                 }
 
               sendCellEditCallback (row,
@@ -1538,12 +1538,12 @@ Table::eventFilter (QObject *watched, QEvent *xevent)
             if (m->button () != Qt::LeftButton || ! tp.is_enable ())
               {
                 Q_EMIT gh_set_event (fig.get_handle (), "selectiontype",
-                                   Utils::figureSelectionType (m), false);
+                                     Utils::figureSelectionType (m), false);
                 Q_EMIT gh_set_event (fig.get_handle (), "currentpoint",
-                                   Utils::figureCurrentPoint (fig, m),
-                                   false);
+                                     Utils::figureCurrentPoint (fig, m),
+                                     false);
                 Q_EMIT gh_callback_event (fig.get_handle (),
-                                        "windowbuttondownfcn");
+                                          "windowbuttondownfcn");
                 Q_EMIT gh_callback_event (m_handle, "buttondownfcn");
 
                 if (m->button () == Qt::RightButton)
@@ -1557,7 +1557,7 @@ Table::eventFilter (QObject *watched, QEvent *xevent)
             else
               {
                 Q_EMIT gh_set_event (fig.get_handle (), "selectiontype",
-                                   octave_value ("normal"), false);
+                                     octave_value ("normal"), false);
               }
           }
           break;
@@ -1573,7 +1573,7 @@ Table::eventFilter (QObject *watched, QEvent *xevent)
                 graphics_object fig = object ().get_ancestor ("figure");
 
                 Q_EMIT gh_set_event (fig.get_handle (), "currentcharacter",
-                                   keyData.getfield ("Character"), false);
+                                     keyData.getfield ("Character"), false);
                 Q_EMIT gh_callback_event (m_handle, "keypressfcn", keyData);
               }
             int row = m_tableWidget->currentRow ();
@@ -1659,7 +1659,7 @@ Table::eventFilter (QObject *watched, QEvent *xevent)
                 graphics_object fig = object ().get_ancestor ("figure");
 
                 Q_EMIT gh_set_event (fig.get_handle (), "currentcharacter",
-                                   keyData.getfield ("Character"), false);
+                                     keyData.getfield ("Character"), false);
                 Q_EMIT gh_callback_event (m_handle, "keyreleasefcn", keyData);
               }
           }
@@ -1685,12 +1685,12 @@ Table::eventFilter (QObject *watched, QEvent *xevent)
             if (m->button () != Qt::LeftButton || ! tp.is_enable ())
               {
                 Q_EMIT gh_set_event (fig.get_handle (), "selectiontype",
-                                   Utils::figureSelectionType (m), false);
+                                     Utils::figureSelectionType (m), false);
                 Q_EMIT gh_set_event (fig.get_handle (), "currentpoint",
-                                   Utils::figureCurrentPoint (fig, m),
-                                   false);
+                                     Utils::figureCurrentPoint (fig, m),
+                                     false);
                 Q_EMIT gh_callback_event (fig.get_handle (),
-                                        "windowbuttondownfcn");
+                                          "windowbuttondownfcn");
                 Q_EMIT gh_callback_event (m_handle, "buttondownfcn");
 
                 if (m->button () == Qt::RightButton)

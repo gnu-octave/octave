@@ -673,14 +673,14 @@ void
 file_editor::request_redo (bool)
 {
   Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
-                                QsciScintillaBase::SCI_REDO);
+                                  QsciScintillaBase::SCI_REDO);
 }
 
 void
 file_editor::request_cut (bool)
 {
   Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
-                                QsciScintillaBase::SCI_CUT);
+                                  QsciScintillaBase::SCI_CUT);
 }
 
 void
@@ -845,63 +845,63 @@ void
 file_editor::request_delete_start_word (bool)
 {
   Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
-                                QsciScintillaBase::SCI_DELWORDLEFT);
+                                  QsciScintillaBase::SCI_DELWORDLEFT);
 }
 
 void
 file_editor::request_delete_end_word (bool)
 {
   Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
-                                QsciScintillaBase::SCI_DELWORDRIGHT);
+                                  QsciScintillaBase::SCI_DELWORDRIGHT);
 }
 
 void
 file_editor::request_delete_start_line (bool)
 {
   Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
-                                QsciScintillaBase::SCI_DELLINELEFT);
+                                  QsciScintillaBase::SCI_DELLINELEFT);
 }
 
 void
 file_editor::request_delete_end_line (bool)
 {
   Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
-                                QsciScintillaBase::SCI_DELLINERIGHT);
+                                  QsciScintillaBase::SCI_DELLINERIGHT);
 }
 
 void
 file_editor::request_delete_line (bool)
 {
   Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
-                                QsciScintillaBase::SCI_LINEDELETE);
+                                  QsciScintillaBase::SCI_LINEDELETE);
 }
 
 void
 file_editor::request_copy_line (bool)
 {
   Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
-                                QsciScintillaBase::SCI_LINECOPY);
+                                  QsciScintillaBase::SCI_LINECOPY);
 }
 
 void
 file_editor::request_cut_line (bool)
 {
   Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
-                                QsciScintillaBase::SCI_LINECUT);
+                                  QsciScintillaBase::SCI_LINECUT);
 }
 
 void
 file_editor::request_duplicate_selection (bool)
 {
   Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
-                                QsciScintillaBase::SCI_SELECTIONDUPLICATE);
+                                  QsciScintillaBase::SCI_SELECTIONDUPLICATE);
 }
 
 void
 file_editor::request_transpose_line (bool)
 {
   Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
-                                QsciScintillaBase::SCI_LINETRANSPOSE);
+                                  QsciScintillaBase::SCI_LINETRANSPOSE);
 }
 
 void
@@ -934,7 +934,7 @@ void
 file_editor::request_lower_case (bool)
 {
   Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
-                                QsciScintillaBase::SCI_LOWERCASE);
+                                  QsciScintillaBase::SCI_LOWERCASE);
 }
 
 void
@@ -959,20 +959,20 @@ void
 file_editor::request_conv_eol_windows (bool)
 {
   Q_EMIT fetab_convert_eol (m_tab_widget->currentWidget (),
-                          QsciScintilla::EolWindows);
+                            QsciScintilla::EolWindows);
 }
 void
 file_editor::request_conv_eol_unix (bool)
 {
   Q_EMIT fetab_convert_eol (m_tab_widget->currentWidget (),
-                          QsciScintilla::EolUnix);
+                            QsciScintilla::EolUnix);
 }
 
 void
 file_editor::request_conv_eol_mac (bool)
 {
   Q_EMIT fetab_convert_eol (m_tab_widget->currentWidget (),
-                          QsciScintilla::EolMac);
+                            QsciScintilla::EolMac);
 }
 
 // Slot for initially creating and showing the find dialog
@@ -1642,7 +1642,7 @@ file_editor::copyClipboard ()
 {
   if (editor_tab_has_focus ())
     Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
-                                  QsciScintillaBase::SCI_COPY);
+                                    QsciScintillaBase::SCI_COPY);
 }
 
 void
@@ -1650,7 +1650,7 @@ file_editor::pasteClipboard ()
 {
   if (editor_tab_has_focus ())
     Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
-                                  QsciScintillaBase::SCI_PASTE);
+                                    QsciScintillaBase::SCI_PASTE);
 }
 
 void
@@ -1658,7 +1658,7 @@ file_editor::selectAll ()
 {
   if (editor_tab_has_focus ())
     Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
-                                  QsciScintillaBase::SCI_SELECTALL);
+                                    QsciScintillaBase::SCI_SELECTALL);
 }
 
 void
@@ -1666,7 +1666,7 @@ file_editor::do_undo ()
 {
   if (editor_tab_has_focus ())
     Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
-                                  QsciScintillaBase::SCI_UNDO);
+                                    QsciScintillaBase::SCI_UNDO);
 }
 
 // Open a file, if not already open, and mark the current execution location
@@ -1777,10 +1777,10 @@ file_editor::request_open_file (const QString& openFileName,
 
                   if (debug_pointer)
                     Q_EMIT fetab_insert_debugger_pointer (fileEditorTab,
-                                                        line);
+                                                          line);
                   if (breakpoint_marker)
                     Q_EMIT fetab_do_breakpoint_marker (insert, fileEditorTab,
-                                                     line, cond);
+                                                       line, cond);
                 }
             }
           else

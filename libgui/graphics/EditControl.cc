@@ -273,10 +273,10 @@ EditControl::returnPressed ()
     {
       if (m_multiLine)
         Q_EMIT gh_set_event (m_handle, "string",
-                           Utils::toCellString (txt.split ("\n")), false);
+                             Utils::toCellString (txt.split ("\n")), false);
       else
         Q_EMIT gh_set_event (m_handle, "string",
-                           Utils::toStdString (txt), false);
+                             Utils::toStdString (txt), false);
 
       m_textChanged = false;
     }
@@ -295,10 +295,10 @@ EditControl::editingFinished ()
                      : qWidget<QLineEdit> ()->text ());
       if (m_multiLine)
         Q_EMIT gh_set_event (m_handle, "string",
-                           Utils::toCellString (txt.split ("\n")), false);
+                             Utils::toCellString (txt.split ("\n")), false);
       else
         Q_EMIT gh_set_event (m_handle, "string", Utils::toStdString (txt),
-                           false);
+                             false);
       Q_EMIT gh_callback_event (m_handle, "callback");
 
       m_textChanged = false;

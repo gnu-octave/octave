@@ -1221,8 +1221,8 @@ void
 variable_editor_model::evaluation_error (const std::string& expr) const
 {
   Q_EMIT user_error_signal ("Evaluation failed",
-                          QString ("failed to evaluate expression: '%1' or result can't be edited")
-                          .arg (QString::fromStdString (expr)));
+                            QString ("failed to evaluate expression: '%1' or result can't be edited")
+                            .arg (QString::fromStdString (expr)));
 }
 
 void
@@ -1275,7 +1275,7 @@ variable_editor_model::update_data (const octave_value& val)
 
   if (new_rows > 0 && new_cols > 0)
     Q_EMIT dataChanged (QAbstractTableModel::index (0, 0),
-                      QAbstractTableModel::index (new_rows-1, new_cols-1));
+                        QAbstractTableModel::index (new_rows-1, new_cols-1));
 
   clear_update_pending ();
 }
@@ -1373,7 +1373,7 @@ void
 variable_editor_model::update_description (const QString& description)
 {
   Q_EMIT description_changed (description.isEmpty ()
-                            ? make_description_text () : description);
+                              ? make_description_text () : description);
 }
 
 void
@@ -1383,7 +1383,7 @@ variable_editor_model::double_click (const QModelIndex& idx)
     {
       QString name = QString::fromStdString (m_rep->name ());
       Q_EMIT edit_variable_signal (name + subscript_expression (idx),
-                                 value_at (idx));
+                                   value_at (idx));
     }
 }
 

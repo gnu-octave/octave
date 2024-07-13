@@ -844,21 +844,20 @@ private:
           // Not the most efficient, but reuses code:
           const std::map<std::string, cdef_method>& map
             = m_cls.get_method_map (false, true);
-          for (auto iter = map.cbegin (); iter != map.cend (); ++iter)
+          for (const auto& meth : map)
             {
               octave_user_code *fcn
-                = m_cls.get_method (iter->first).user_code_value (true);
+                = m_cls.get_method (meth.first).user_code_value (true);
               if (fcn != nullptr)
                 m_methods_cache.push_back (fcn);
             }
 
-
           // Check get and set methods of properties
           const std::map<std::string, cdef_property>& prop_map
             = m_cls.get_property_map (cdef_class::property_all);
-          for (auto iter = prop_map.cbegin (); iter != prop_map.cend (); ++iter)
+          for (const auto& prop : prop_map)
             {
-              octave_value get_meth = iter->second.get ("GetMethod");
+              octave_value get_meth = prop.second.get ("GetMethod");
               if (get_meth.is_function_handle ())
                 {
                   octave_user_code *fcn
@@ -867,7 +866,7 @@ private:
                     m_methods_cache.push_back (fcn);
                 }
 
-              octave_value set_meth = iter->second.get ("SetMethod");
+              octave_value set_meth = prop.second.get ("SetMethod");
               if (set_meth.is_function_handle ())
                 {
                   octave_user_code *fcn

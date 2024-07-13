@@ -565,7 +565,7 @@ qt_interpreter_events::gui_status_update (const std::string& feature,
     const std::string& status)
 {
   Q_EMIT gui_status_update_signal (QString::fromStdString (feature),
-                                 QString::fromStdString (status));
+                                   QString::fromStdString (status));
 }
 
 void
@@ -588,7 +588,7 @@ qt_interpreter_events::file_remove (const std::string& old_name,
 
   // Emit the signal for the editor for closing the file if it is open
   Q_EMIT file_remove_signal (QString::fromStdString (old_name),
-                           QString::fromStdString (new_name));
+                             QString::fromStdString (new_name));
 
   // Wait for file removal to complete before continuing.
   wait ();
@@ -693,7 +693,7 @@ qt_interpreter_events::update_breakpoint (bool insert,
                                           const std::string& cond)
 {
   Q_EMIT update_breakpoint_marker_signal (insert, QString::fromStdString (file),
-                                        line, QString::fromStdString (cond));
+                                          line, QString::fromStdString (cond));
 }
 
 void

@@ -363,7 +363,7 @@ octave_classdef::print_raw (std::ostream& os, bool) const
 
       increment_indent_level ();
 
-      std::map<std::string, octave::cdef_property> property_map
+      std::map<octave::property_key, octave::cdef_property> property_map
         = cls.get_property_map ();
 
       std::size_t max_len = 0;
@@ -750,7 +750,7 @@ is public and if the @code{Hidden} attribute is false.
   if (! cls.ok ())
     error ("invalid class: %s", class_name.c_str ());
 
-  std::map<std::string, cdef_property> property_map =
+  std::map<octave::property_key, cdef_property> property_map =
     cls.get_property_map ();
 
   std::list<std::string> property_names;
@@ -771,7 +771,7 @@ is public and if the @code{Hidden} attribute is false.
       if (hid.bool_value ())
         continue;
 
-      property_names.push_back (pname_prop.first);
+      property_names.push_back (pname_prop.second.get_name ());
     }
 
   if (nargout > 0)
@@ -789,9 +789,9 @@ is public and if the @code{Hidden} attribute is false.
 
 /*
 %!assert (properties ("inputParser"),
-%!        {"CaseSensitive"; "FunctionName"; "KeepUnmatched";
-%!         "Parameters"; "PartialMatching"; "Results";
-%!         "StructExpand"; "Unmatched"; "UsingDefaults"});
+%!        {"CaseSensitive"; "FunctionName"; "KeepUnmatched"; "PartialMatching";
+%!         "StructExpand"; "Parameters"; "Results"; "Unmatched";
+%!         "UsingDefaults"});
 */
 
 // FIXME: Need to implement the -full option.

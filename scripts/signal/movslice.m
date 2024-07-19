@@ -38,13 +38,13 @@
 ## For integer-valued @var{wlen}:
 ## @itemize
 ## @item
-## For odd, integer-valued, scalar @var{wlen} the window is symmetric and includes
-## @w{@code{(@var{wlen} - 1) / 2}} elements on either side of the central
-## element.
+## For odd, integer-valued, scalar @var{wlen} the window is symmetric and
+## includes @w{@code{(@var{wlen} - 1) / 2}} elements on either side of the
+## central element.
 ## @item
-## For even, integer-valued, scalar @var{wlen} the window is asymmetric and has
-## @w{@code{@var{wlen}/2}} elements to the left of the central element and
-## @w{@code{@var{wlen}/2 - 1}} elements to the right of the central
+## For even, integer-valued, scalar @var{wlen} the window is asymmetric and
+## has @w{@code{@var{wlen}/2}} elements to the left of the central element
+## and @w{@code{@var{wlen}/2 - 1}} elements to the right of the central
 ## element.
 ## @item
 ## For integer-valued vector @var{wlen} of the form
@@ -72,7 +72,7 @@
 ## @var{wlen}, or @w{@code{@var{nb} + @var{na} + 1}} elements for array valued
 ## @var{wlen}.
 ##
-## Optional output @var{C} is an row vector of window center positions where
+## Optional output @var{C} is a row vector of window center positions where
 ## the window stays fully within the vector.
 ##
 ## Optional outputs @var{Cpre} and @var{Cpost} contain the vector elements at
@@ -118,11 +118,6 @@ function [slcidx, C, Cpre, Cpost, win, wlen] = movslice (N, wlen)
     error ("Octave:invalid-input-arg",
            "movslice: WLEN must be a positive scalar or 2-element array");
   endif
-  if (max (wlen) > N)
-    error ("Octave:invalid-input-arg", ...
-           "movslice: window length WLEN (%d) must be shorter than length along DIM (%d)", ...
-           max (wlen), N);
-  endif
 
   ## Process multiple forms of wlen.
   intvalued_wlen = all (fix (wlen) == wlen);
@@ -146,9 +141,9 @@ function [slcidx, C, Cpre, Cpost, win, wlen] = movslice (N, wlen)
     endif
   endif
 
-  Cpre  = 1:wlen(1);              # centers that can't fit the pre-window
-  Cnf   = N - wlen(2) + 1;        # first center that can't fit the post-window
-  Cpost = Cnf:N;                  # centers that can't fit centered post-window
+  Cpre  = 1 : min (wlen(1), N);     # centers that can't fit the pre-window
+  Cnf   = max (1, N - wlen(2) + 1); # first center that can't fit the post-window
+  Cpost = Cnf:N;                     # centers that can't fit centered post-window
   C     = (wlen(1) + 1):(Cnf - 1);
   ## Convert C to minimum unsigned integer array large enough to hold indices.
   ## This can save significant memory in resulting slcidx array over using a
@@ -175,20 +170,32 @@ endfunction
 %!assert (double (movslice (10, [3, 2])), [1:5] + [0:5].')
 
 %!test
-%! [sl, c, cpre, cpost, win] = movslice (10, 4);
+%! [sl, c, cpre, cpost, win, wlen] = movslice (10, 4);
 %! assert (double (sl), [1:7; 2:8; 3:9; 4:10]);
 %! assert (double (c), 3:9);
 %! assert (cpre, 1:2);
 %! assert (cpost, 10);
 %! assert (win, [-2:1:1].');
+%! assert (wlen, [2, 1]);
 
 %!test
-%! [sl, c, cpre, cpost, win] = movslice (10, 10);
+%! [sl, c, cpre, cpost, win, wlen] = movslice (10, 3);
+%! assert (double (sl), [1:8; 2:9; 3:10]);
+%! assert (double (c), 2:9);
+%! assert (cpre, 1);
+%! assert (cpost, 10);
+%! assert (win, [-1, 0, 1].');
+%! assert (wlen, [1, 1]);
+
+%!test
+%! [sl, c, cpre, cpost, win, wlen] = movslice (10, 10);
 %! assert (double (sl), [1:10].');
 %! assert (double (c), 6);
 %! assert (cpre, 1:5);
 %! assert (cpost, 7:10);
 %! assert (win, [-5:1:4].');
+%! assert (wlen, [5, 4]);
+
 
 ## Verify uint output.  Don't test uint64 due to excessive memory usage.
 %!test
@@ -206,8 +213,45 @@ endfunction
 %!assert <*65928> (double (movslice (10, 2.2)), [1:8; 2:9; 3:10])
 %!assert <*65928> (double (movslice (10, 9.1)), [1:9; 2:10].')
 %!assert <*65928> (double (movslice (10, 9.999)), [1:9; 2:10].')
-%!assert <*65928> (double (movslice (10, [3.2 0])), [1:7] + [0:3].')
-%!assert <*65928> (double (movslice (10, [3.2 2.1])), [1:5] + [0:5].')
+%!assert <*65928> (double (movslice (10, [3.2, 0])), [1:7] + [0:3].')
+%!assert <*65928> (double (movslice (10, [3.2, 2.1])), [1:5] + [0:5].')
+
+## Test wlen extending beyond N
+%!test <*65928>
+%! [sl, c, cpre, cpost, win, wlen] = movslice (10, 11);
+%! assert (double (sl), zeros (11, 0));
+%! assert (double (c), zeros (1, 0));
+%! assert (cpre, 1:5);
+%! assert (cpost, 6:10);
+%! assert (win, [-5:1:5].');
+%! assert (wlen, [5, 5]);
+
+%!test <*65928>
+%! [sl, c, cpre, cpost, win, wlen] = movslice (10, 99);
+%! assert (double (sl), zeros (99, 0));
+%! assert (double (c), zeros (1, 0));
+%! assert (cpre, 1:10);
+%! assert (cpost, 1:10);
+%! assert (win, [-49:1:49].');
+%! assert (wlen, [49, 49]);
+
+%!test <*65928>
+%! [sl, c, cpre, cpost, win, wlen] = movslice (10, [0, 20]);
+%! assert (double (sl), zeros (21, 0));
+%! assert (double (c), zeros (1, 0));
+%! assert (cpre, zeros (1, 0));
+%! assert (cpost, 1:10);
+%! assert (win, [0:20].');
+%! assert (wlen, [0, 20]);
+
+%!test <*65928>
+%! [sl, c, cpre, cpost, win, wlen] = movslice (10, [5, 6]);
+%! assert (double (sl), zeros (12, 0));
+%! assert (double (c), zeros (1, 0));
+%! assert (cpre, 1:5);
+%! assert (cpost, 5:10);
+%! assert (win, [-5:1:6].');
+%! assert (wlen, [5, 6]);
 
 
 ## Test input validation
@@ -225,9 +269,3 @@ endfunction
 %!error <WLEN must be a positive scalar or 2-element array> movslice (5, {1, 2})
 %!error <WLEN must be a positive scalar or 2-element array> movslice (5, "ab")
 %!error <WLEN must be . 1> movslice (5, 1)
-%!error <WLEN \(3\) must be shorter than length along DIM \(2\)>
-%! movslice (2, 3);
-%!error <WLEN \(4\) must be shorter than length along DIM \(2\)>
-%! movslice (2, [4, 1]);
-%!error <WLEN \(5\) must be shorter than length along DIM \(2\)>
-%! movslice (2, [1, 5]);

@@ -212,6 +212,11 @@ function y = movfun (fcn, x, wlen, varargin)
   if isempty (parser)
     parser = inputParser ();
     parser.FunctionName = "movfun";
+    parser.addRequired ("fcn", ...
+      @(fcn) is_function_handle (fcn) || ischar (fcn));
+    parser.addRequired ("x"); # Any X validation will be done by fcn.
+    parser.addRequired ("wlen"); # WLEN validated later by movslice.
+    parser.CaseSensitive = false;
     parser.addParamValue ("Endpoints", "shrink", ...
       @(x) any (strcmpi (x, valid_bc)) || (isnumeric (x) && isscalar (x)));
     parser.addParamValue ("dim", [], ...
@@ -222,7 +227,7 @@ function y = movfun (fcn, x, wlen, varargin)
       @(d) isempty (d) || (isvector (d) && isindex (d)));
   endif
 
-  parser.parse (varargin{:});
+  parser.parse (fcn, x, wlen, varargin{:});
   bc      = parser.Results.Endpoints;   # boundary condition
   dim     = parser.Results.dim;         # dimension to be used as input
   nancond = parser.Results.nancond;     # whether NaN are ignored or not
@@ -289,8 +294,9 @@ function y = movfun (fcn, x, wlen, varargin)
     endswitch
   endif
 
-  ## Validate that outdim makes sense
-  fout = fcn (x(1:length (win))(:));  # output for window (see bug #55984)
+  ## Validate that outdim makes sense.
+  ## Check fcn ouptut for data sampled from x.  Ssee bug #55984.
+  fout = fcn (x(1 : min (length (win), N))(:));  # output for window
   yclass = class (fout);              # record class of fcn output
   noutdim = length (fout);            # number of output dimensions
   if (! isempty (outdim))
@@ -315,7 +321,7 @@ function y = movfun (fcn, x, wlen, varargin)
   ## Apply processing to each column
   ## FIXME: Is it faster with cellfun?  Don't think so, but needs testing.
   parfor i = 1:ncols
-    y(:,i,:) = movfun_oncol (fcn_, yclass, x(:,i), wlen, bcfcn,
+    y(:,i,:) = movfun_oncol (fcn_, yclass, x(:,i), wlen, bcfcn, ...
                              slc, C, Cpre, Cpos, win, soutdim);
   endparfor
 
@@ -328,32 +334,35 @@ endfunction
 
 function y = movfun_oncol (fcn, yclass, x, wlen, bcfcn, slcidx, C, Cpre, Cpos, win, odim)
 
-  N = length (Cpre) + length (C) + length (Cpos);
+  N = length (unique ([Cpre, C, Cpos]));
   y = zeros (N, odim, yclass);
 
   ## Process center of data
-  try
-    y(C,:) = fcn (x(slcidx));
-  catch err
-    ## Operation failed, likely because of out-of-memory error for "x(slcidx)".
-    if (! strcmp (err.identifier, "Octave:bad-alloc"))
-      rethrow (err);
-    endif
+  if (! isempty (C))
+    try
+      y(C,:) = fcn (x(slcidx));
+    catch err
+      ## Operation failed, likely because of out-of-memory error for "x(slcidx)".
+      if (! strcmp (err.identifier, "Octave:bad-alloc"))
+        rethrow (err);
+      endif
 
-    ## Try divide and conquer approach with smaller slices of data.
-    ## For loops are slow, so don't try too hard with this approach.
-    N_SLICES = 8;  # configurable
-    idx1 = fix (linspace (1, numel (C), N_SLICES));
-    idx2 = fix (linspace (1, columns (slcidx), N_SLICES));
-    for i = 1 : N_SLICES-1
-      y(C(idx1(i):idx1(i+1)),:) = fcn (x(slcidx(:, idx2(i):idx2(i+1))));
-    endfor
-  end_try_catch
+      ## Try divide and conquer approach with smaller slices of data.
+      ## For loops are slow, so don't try too hard with this approach.
+      N_SLICES = 8;  # configurable
+      idx1 = fix (linspace (1, numel (C), N_SLICES));
+      idx2 = fix (linspace (1, columns (slcidx), N_SLICES));
+      for i = 1 : N_SLICES-1
+        y(C(idx1(i):idx1(i+1)),:) = fcn (x(slcidx(:, idx2(i):idx2(i+1))));
+      endfor
+    end_try_catch
+  endif
 
   ## Process boundaries
   if (! isempty (Cpre))
     y(Cpre,:) = bcfcn (fcn, x, Cpre, win, wlen, odim);
   endif
+
   if (! isempty (Cpos))
     y(Cpos,:) = bcfcn (fcn, x, Cpos, win, wlen, odim);
   endif
@@ -694,8 +703,16 @@ endfunction
 %!error <Invalid call> movfun ()
 %!error <Invalid call> movfun (@min)
 %!error <Invalid call> movfun (@min, 1:5)
+%!error <failed validation of 'fcn'> movfun (1, 1:10, 3)
+%!error <failed validation of 'fcn'> movfun (true, 1:10, 3)
+%!error <failed validation of 'fcn'> movfun ({'foo'}, 1:10, 3)
+%!error <failed validation of 'fcn'> movfun (struct ("a", "b"), 1:10, 3)
 %!warning <"omitnan" is not yet implemented>
 %! movfun (@min, 1:3, 3, "nancond", "omitnan");
+%!error movfun (@min, 1:3, "nancond", "omitnan");
 ## FIXME: This test is commented out until OUTDIM validation is clarified.
 %!#error <OUTDIM \(5\) is larger than largest available dimension \(3\)>
 %! movfun (@min, ones (6,3,4), 3, "outdim", 5);
+%!error <argument 'foo' is not a declared parameter or switch> movfun (@min, 1:5, 3, "foo", "bar")
+%!error <failed validation of 'nancond'> movfun (@min, 1:5, 3, "nancond", "bar")
+

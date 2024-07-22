@@ -32,8 +32,8 @@
 ## The input @var{N} must be a positive integer.
 ##
 ## The moving window length input @var{wlen} can either be a numeric scalar
-## not equal to 1 or a 2-element numeric array. The elements included in the
-## moving window depend on both the size and value of @var{wlen} as follows:
+## or a 2-element numeric array. The elements included in the moving window
+## depend on both the size and value of @var{wlen} as follows:
 ##
 ## For integer-valued @var{wlen}:
 ## @itemize
@@ -107,14 +107,7 @@ function [slcidx, C, Cpre, Cpost, win, wlen] = movslice (N, wlen)
   endif
 
   scalar_wlen = isscalar (wlen);
-  if (scalar_wlen)
-    ## Check for proper window length
-    if (wlen == 1)
-      error ("Octave:invalid-input-arg", "movslice: WLEN must be > 1");
-    endif
-  elseif (numel (wlen) == 2)
-    ## wlen = [nb, na].  No further validation here.
-  else
+  if (all (numel (wlen) != [1, 2]))
     error ("Octave:invalid-input-arg",
            "movslice: WLEN must be a positive scalar or 2-element array");
   endif
@@ -253,6 +246,25 @@ endfunction
 %! assert (win, [-5:1:6].');
 %! assert (wlen, [5, 6]);
 
+## Test wlen = 1 or [0, 0]
+%!test <*65928>
+%! [sl, c, cpre, cpost, win, wlen] = movslice (10, 1);
+%! assert (double (sl), 1:10);
+%! assert (double (c), 1:10);
+%! assert (cpre, zeros (1,0));
+%! assert (cpost, zeros (1,0));
+%! assert (win, 0);
+%! assert (wlen, [0, 0]);
+
+%!test <*65928>
+%! [sl, c, cpre, cpost, win, wlen] = movslice (10, [0, 0]);
+%! assert (double (sl), 1:10);
+%! assert (double (c), 1:10);
+%! assert (cpre, zeros (1,0));
+%! assert (cpost, zeros (1,0));
+%! assert (win, 0);
+%! assert (wlen, [0, 0]);
+
 
 ## Test input validation
 %!error <Invalid call> movslice ()
@@ -268,4 +280,3 @@ endfunction
 %!error <WLEN must be a positive scalar or 2-element array> movslice (5, [-1, 2])
 %!error <WLEN must be a positive scalar or 2-element array> movslice (5, {1, 2})
 %!error <WLEN must be a positive scalar or 2-element array> movslice (5, "ab")
-%!error <WLEN must be . 1> movslice (5, 1)

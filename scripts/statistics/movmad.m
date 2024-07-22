@@ -33,8 +33,8 @@
 ## @var{wlen} on data @var{x}.
 ##
 ## The moving window length input @var{wlen} can either be a numeric scalar
-## not equal to 1 or a 2-element numeric array. The elements included in the
-## moving window depend on both the size and value of @var{wlen} as follows:
+## or a 2-element numeric array. The elements included in the moving window
+## depend on both the size and value of @var{wlen} as follows:
 ##
 ## For integer-valued @var{wlen}:
 ## @itemize

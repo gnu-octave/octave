@@ -25,22 +25,46 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{slcidx} =} movslice (@var{N}, @var{wlen})
-## @deftypefnx {} {[@var{slcidx}, @var{C}, @var{Cpre}, @var{Cpost}, @var{win}] =} movslice (@dots{})
+## @deftypefnx {} {[@var{slcidx}, @var{C}, @var{Cpre}, @var{Cpost}, @var{win}, @var{wlen}] =} movslice (@dots{})
 ## Generate indices to slice a vector of length @var{N} into windows
 ## of length @var{wlen}.
 ##
 ## The input @var{N} must be a positive integer.
 ##
-## The moving window length input @var{wlen} can either be a scalar not equal
-## to 1 or a 2-element array of integers.  For scalar values, if odd the window
-## is symmetric and includes @w{@code{(@var{wlen} - 1) / 2}} elements on either
-## side of the central element.  If @var{wlen} is even the window is asymmetric
-## and has @w{@code{@var{wlen}/2}} elements to the left of the central element
+## The moving window length input @var{wlen} can either be a numeric scalar
+## not equal to 1 or a 2-element numeric array. The elements included in the
+## moving window depend on both the size and value of @var{wlen} as follows:
+##
+## For integer-valued @var{wlen}:
+## @itemize
+## @item
+## For odd, integer-valued, scalar @var{wlen} the window is symmetric and
+## includes @w{@code{(@var{wlen} - 1) / 2}} elements on either side of the
+## central element.
+## @item
+## For even, integer-valued, scalar @var{wlen} the window is asymmetric and
+## has @w{@code{@var{wlen}/2}} elements to the left of the central element
 ## and @w{@code{@var{wlen}/2 - 1}} elements to the right of the central
-## element.  When @var{wlen} is a 2-element array,
-## @w{@code{[@var{nb}, @var{na}]}}, the window includes @var{nb} elements to
-## the left of the current element and @var{na} elements to the right of the
-## current element.
+## element.
+## @item
+## For integer-valued vector @var{wlen} of the form
+## @w{@qcode{[@var{nb}, @var{na}]}} where @var{nb} and @var{na} are integer
+## valued the window includes @var{nb} elements to the left of the central
+## element and @var{na} elements to the right of the central element.
+## @end itemize
+##
+## For non-integer-valued scalar @var{wlen}:
+## @itemize
+## @item
+## Non-integer-valued scalar @var{wlen} will be converted to
+## two-element vector form with
+## @w{@code{@var{nb} = @var{na} = fix (@var{wlen} / 2)}}, and then processed
+## as stated above for integer-valued vectors.
+## @item
+## Non-integer-valued vector @var{wlen} will be truncated to integer values
+## with @w{@code{@var{wlen} = fix (@var{wlen}}} and then processed as
+## stated above for integer-valued vectors.
+## @end itemize
 ##
 ## The output @var{slcidx} is an array of indices of the slices that fit fully
 ## within the vector, where each column is an individual slice as the window
@@ -48,7 +72,7 @@
 ## @var{wlen}, or @w{@code{@var{nb} + @var{na} + 1}} elements for array valued
 ## @var{wlen}.
 ##
-## Optional output @var{C} is an row vector of window center positions where
+## Optional output @var{C} is a row vector of window center positions where
 ## the window stays fully within the vector.
 ##
 ## Optional outputs @var{Cpre} and @var{Cpost} contain the vector elements at
@@ -59,26 +83,31 @@
 ## as @var{slcidx} that contains the moving window defined as a center
 ## relative position stencil.
 ##
+## Optional output @var{wlen} returns the window length used by
+## @code{movslice} in two-element @w{@qcode{[@var{nb}, @var{na}]}} form.
+##
 ## @seealso{movfun}
 ## @end deftypefn
 
-function [slcidx, C, Cpre, Cpost, win] = movslice (N, wlen)
+function [slcidx, C, Cpre, Cpost, win, wlen] = movslice (N, wlen)
 
   if (nargin != 2)
     print_usage ();
   endif
 
   ## Validate N
-  if (! (isscalar (N) && isindex (N)))
+  if (! (isnumeric (N) && isscalar (N) && isindex (N)))
     error ("movslice: N must be a positive integer");
   endif
 
   ## Validate window length
-  if (! (isnumeric (wlen) && all (wlen >= 0) && fix (wlen) == wlen))
+  if (! (isnumeric (wlen) && all (wlen >= 0)))
     error ("Octave:invalid-input-arg",
-           "movslice: WLEN must be a scalar or 2-element array of integers >= 0");
+           "movslice: WLEN must be a positive scalar or 2-element array");
   endif
-  if (isscalar (wlen))
+
+  scalar_wlen = isscalar (wlen);
+  if (scalar_wlen)
     ## Check for proper window length
     if (wlen == 1)
       error ("Octave:invalid-input-arg", "movslice: WLEN must be > 1");
@@ -87,15 +116,19 @@ function [slcidx, C, Cpre, Cpost, win] = movslice (N, wlen)
     ## wlen = [nb, na].  No further validation here.
   else
     error ("Octave:invalid-input-arg",
-           "movslice: WLEN must be a scalar or 2-element array of integers >= 0");
-  endif
-  if (max (wlen) > N)
-    error ("Octave:invalid-input-arg", ...
-           "movslice: window length WLEN (%d) must be shorter than length along DIM (%d)", ...
-           max (wlen), N);
+           "movslice: WLEN must be a positive scalar or 2-element array");
   endif
 
-  if (isscalar (wlen))
+  ## Process multiple forms of wlen.
+  intvalued_wlen = all (fix (wlen) == wlen);
+  if (! intvalued_wlen)
+    if (scalar_wlen)
+      wlen = wlen * [0.5, 0.5];
+    endif
+
+    wlen = fix (wlen);
+
+  elseif (scalar_wlen)
     if (mod (wlen, 2) == 1)
       ## Symmetric window
       nb = na = (wlen - 1) / 2;
@@ -108,9 +141,9 @@ function [slcidx, C, Cpre, Cpost, win] = movslice (N, wlen)
     endif
   endif
 
-  Cpre  = 1:wlen(1);              # centers that can't fit the pre-window
-  Cnf   = N - wlen(2) + 1;        # first center that can't fit the post-window
-  Cpost = Cnf:N;                  # centers that can't fit centered post-window
+  Cpre  = 1 : min (wlen(1), N);     # centers that can't fit the pre-window
+  Cnf   = max (1, N - wlen(2) + 1); # first center that can't fit the post-window
+  Cpost = Cnf:N;                     # centers that can't fit centered post-window
   C     = (wlen(1) + 1):(Cnf - 1);
   ## Convert C to minimum unsigned integer array large enough to hold indices.
   ## This can save significant memory in resulting slcidx array over using a
@@ -131,22 +164,38 @@ endfunction
 
 %!assert (double (movslice (10, 2)), [1:9; 2:10])
 %!assert (double (movslice (10, 9)), [1:9; 2:10].')
+%!assert (double (movslice (10, [1, 0])), [1:9; 2:10])
+%!assert (double (movslice (10, [1, 1])), [1:8; 2:9; 3:10])
+%!assert (double (movslice (10, [1, 1])), [1:8; 2:9; 3:10])
+%!assert (double (movslice (10, [3, 2])), [1:5] + [0:5].')
 
 %!test
-%! [sl, c, cpre, cpost, win] = movslice (10, 4);
+%! [sl, c, cpre, cpost, win, wlen] = movslice (10, 4);
 %! assert (double (sl), [1:7; 2:8; 3:9; 4:10]);
 %! assert (double (c), 3:9);
 %! assert (cpre, 1:2);
 %! assert (cpost, 10);
 %! assert (win, [-2:1:1].');
+%! assert (wlen, [2, 1]);
 
 %!test
-%! [sl, c, cpre, cpost, win] = movslice (10, 10);
+%! [sl, c, cpre, cpost, win, wlen] = movslice (10, 3);
+%! assert (double (sl), [1:8; 2:9; 3:10]);
+%! assert (double (c), 2:9);
+%! assert (cpre, 1);
+%! assert (cpost, 10);
+%! assert (win, [-1, 0, 1].');
+%! assert (wlen, [1, 1]);
+
+%!test
+%! [sl, c, cpre, cpost, win, wlen] = movslice (10, 10);
 %! assert (double (sl), [1:10].');
 %! assert (double (c), 6);
 %! assert (cpre, 1:5);
 %! assert (cpost, 7:10);
 %! assert (win, [-5:1:4].');
+%! assert (wlen, [5, 4]);
+
 
 ## Verify uint output.  Don't test uint64 due to excessive memory usage.
 %!test
@@ -160,19 +209,63 @@ endfunction
 %! assert (class (sl), "uint32");
 %! assert (class (c), "uint32");
 
+## Test non-integer wlen
+%!assert <*65928> (double (movslice (10, 2.2)), [1:8; 2:9; 3:10])
+%!assert <*65928> (double (movslice (10, 9.1)), [1:9; 2:10].')
+%!assert <*65928> (double (movslice (10, 9.999)), [1:9; 2:10].')
+%!assert <*65928> (double (movslice (10, [3.2, 0])), [1:7] + [0:3].')
+%!assert <*65928> (double (movslice (10, [3.2, 2.1])), [1:5] + [0:5].')
+
+## Test wlen extending beyond N
+%!test <*65928>
+%! [sl, c, cpre, cpost, win, wlen] = movslice (10, 11);
+%! assert (double (sl), zeros (11, 0));
+%! assert (double (c), zeros (1, 0));
+%! assert (cpre, 1:5);
+%! assert (cpost, 6:10);
+%! assert (win, [-5:1:5].');
+%! assert (wlen, [5, 5]);
+
+%!test <*65928>
+%! [sl, c, cpre, cpost, win, wlen] = movslice (10, 99);
+%! assert (double (sl), zeros (99, 0));
+%! assert (double (c), zeros (1, 0));
+%! assert (cpre, 1:10);
+%! assert (cpost, 1:10);
+%! assert (win, [-49:1:49].');
+%! assert (wlen, [49, 49]);
+
+%!test <*65928>
+%! [sl, c, cpre, cpost, win, wlen] = movslice (10, [0, 20]);
+%! assert (double (sl), zeros (21, 0));
+%! assert (double (c), zeros (1, 0));
+%! assert (cpre, zeros (1, 0));
+%! assert (cpost, 1:10);
+%! assert (win, [0:20].');
+%! assert (wlen, [0, 20]);
+
+%!test <*65928>
+%! [sl, c, cpre, cpost, win, wlen] = movslice (10, [5, 6]);
+%! assert (double (sl), zeros (12, 0));
+%! assert (double (c), zeros (1, 0));
+%! assert (cpre, 1:5);
+%! assert (cpost, 5:10);
+%! assert (win, [-5:1:6].');
+%! assert (wlen, [5, 6]);
+
+
 ## Test input validation
 %!error <Invalid call> movslice ()
 %!error <Invalid call> movslice (1)
-%!error <N must be a positive integer> movslice ([1 2], 1)
-%!error <N must be a positive integer> movslice (0, 1)
-%!error <WLEN must be .* array of integers> movslice (1, {1})
-%!error <WLEN must be .* array of integers .= 0> movslice (1, -1)
-%!error <WLEN must be .* array of integers> movslice (1, 1.5)
-%!error <WLEN must be . 1> movslice (1, 1)
-%!error <WLEN must be a scalar or 2-element array> movslice (1, [1, 2, 3])
-%!error <WLEN \(3\) must be shorter than length along DIM \(1\)>
-%! movslice (1, 3);
-%!error <WLEN \(4\) must be shorter than length along DIM \(1\)>
-%! movslice (1, [4, 1]);
-%!error <WLEN \(5\) must be shorter than length along DIM \(1\)>
-%! movslice (1, [1, 5]);
+%!error <N must be a positive integer> movslice ([1 2], 2)
+%!error <N must be a positive integer> movslice (0, 2)
+%!error <N must be a positive integer> movslice ("N", 2)
+%!error <N must be a positive integer> movslice ({1}, 2)
+%!error <WLEN must be a positive scalar or 2-element array> movslice (5, {1})
+%!error <WLEN must be a positive scalar or 2-element array> movslice (5, -1)
+%!error <WLEN must be a positive scalar or 2-element array> movslice (5, "a")
+%!error <WLEN must be a positive scalar or 2-element array> movslice (5, [1, 2, 3])
+%!error <WLEN must be a positive scalar or 2-element array> movslice (5, [-1, 2])
+%!error <WLEN must be a positive scalar or 2-element array> movslice (5, {1, 2})
+%!error <WLEN must be a positive scalar or 2-element array> movslice (5, "ab")
+%!error <WLEN must be . 1> movslice (5, 1)

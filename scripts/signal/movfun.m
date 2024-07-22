@@ -32,8 +32,8 @@
 ## @var{x}.
 ##
 ## The moving window length input @var{wlen} can either be a numeric scalar
-## not equal to 1 or a 2-element numeric array. The elements included in the
-## moving window depend on both the size and value of @var{wlen} as follows:
+## or a 2-element numeric array. The elements included in the moving window
+## depend on both the size and value of @var{wlen} as follows:
 ##
 ## For integer-valued @var{wlen}:
 ## @itemize
@@ -340,7 +340,23 @@ function y = movfun_oncol (fcn, yclass, x, wlen, bcfcn, slcidx, C, Cpre, Cpos, w
   ## Process center of data
   if (! isempty (C))
     try
+    if (isrow (slcidx))
+      ## For wlen = 1 or [0, 0] slcidx will be a row vector.  Some fcn will
+      ## process this as a single vector (one infinitely long window) rather
+      ## than in a columnwise fashion.  Force elementwise processing with
+      ## arrayfun.  This will be slower, but most functions should handle as
+      ## trivial case or be low-computation overhead for N = 1.
+      ## FIXME:  This could be sidestepped for most internal functions by
+      ##         specifying the operating dimension.  eg., sum (x(slcidx), 2)
+      ##         That would require establishing separate code paths for
+      ##         internal and general movfun calls, which may have performance
+      ##         benefits anyway, especially when more complex options like
+      ##         omitnan and samplepoints are implemented.
+      y(C,:) = arrayfun (fcn, x(slcidx));
+    else
       y(C,:) = fcn (x(slcidx));
+    endif
+
     catch err
       ## Operation failed, likely because of out-of-memory error for "x(slcidx)".
       if (! strcmp (err.identifier, "Octave:bad-alloc"))
@@ -699,7 +715,9 @@ endfunction
 %! assert (size (movfun (@mean, a2, 2, 'dim', 3)), [5, 3, 2, 4]);
 %! assert (size (movfun (@mean, a2, 2, 'dim', 4)), [5, 3, 2, 4]);
 
-## Test for window length > size (x, dim)
+## Test for wlen = 1 or window length > size (x, dim)
+%!assert <*65928> (movfun (@sum, 1:10, 1), 1:10)
+%!assert <*65928> (movfun (@sum, 1:10, [0, 0]), 1:10)
 %!assert <*65928> (movfun (@sum, 1:10, 10), ...
 %!                 [15, 21, 28, 36, 45, 55, 54, 52, 49, 45])
 %!assert <*65928> (movfun (@sum, 1:10, 11),

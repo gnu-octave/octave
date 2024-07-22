@@ -82,11 +82,11 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
 - `issorted` now accepts the MODE option "monotonic", which has the same
   behavior as the option "either".
   
-- `movfun` and `movslice`:  Functions can now accept non-integer `wlen` as
-  well as values for `wlen` that create windows exceeding the size of the
-  target array.  This will affect all moving window functions (`movmad`,
-  `movmax`, `movmean`, `movmedian`, `movmin`, `movprod`, `movstd`, `movsum`,
-  and `movvar`) (bug #65928)
+- `movfun` and `movslice`:  Functions now accept `wlen` equal to 1 or [0,0],
+  non-integer values of `wlen`, and values of `wlen` that create window
+  lengths exceeding the size of the target array.  This will affect all moving
+  window functions (`movmad`, `movmax`, `movmean`, `movmedian`, `movmin`,
+  `movprod`, `movstd`, `movsum`, and `movvar`) (bug #65928).
 
 ### Alphabetical list of new functions added in Octave 10
 

@@ -699,6 +699,17 @@ endfunction
 %! assert (size (movfun (@mean, a2, 2, 'dim', 3)), [5, 3, 2, 4]);
 %! assert (size (movfun (@mean, a2, 2, 'dim', 4)), [5, 3, 2, 4]);
 
+## Test for window length > size (x, dim)
+%!assert <*65928> (movfun (@sum, 1:10, 10), ...
+%!                 [15, 21, 28, 36, 45, 55, 54, 52, 49, 45])
+%!assert <*65928> (movfun (@sum, 1:10, 11),
+%!                 [21, 28, 36, 45, 55, 55, 54, 52, 49, 45])
+%!assert <*65928> (movfun (@sum, 1:10, 12),
+%!                 [21, 28, 36, 45, 55, 55, 55, 54, 52, 49])
+%!assert <*65928> (movfun (@sum, 1:10, 99), 55(ones (1, 10)))
+%!assert <*65928> (movfun (@sum, 1:10, [9, 8]), [45, 55(ones (1, 9))])
+%!assert <*65928> (movfun (@sum, 1:10, 99), 55(ones (1, 10)))
+
 ## Test input validation
 %!error <Invalid call> movfun ()
 %!error <Invalid call> movfun (@min)

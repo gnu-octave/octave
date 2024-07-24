@@ -332,7 +332,7 @@ public:
 
   void enter_debugger (const std::string& prompt = "debug> ");
 
-  void keyboard (const std::string& prompt = "keyboard> ");
+  void keyboard (const std::string& prompt = "debug> ");
 
   void dbupdown (int n, bool verbose = false);
 

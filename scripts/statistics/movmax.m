@@ -165,9 +165,18 @@ function y = movmax (x, wlen, varargin)
 endfunction
 
 
-## FIXME: Need functional BIST tests
-## test for bug #55241
-%!assert ([(2:10).'; 10], movmax ((1:10).', 3))
+%!assert (movmax (1:5, 3), [2:5, 5])
+%!assert (movmax (1:5, [1, 1]), [2:5, 5])
+%!assert (movmax (1:5, 3, 2), [2:5, 5])
+
+%!assert (movmax (magic (4), 3), [16, 11, 10, 13; 16, 11, 10, 13; ...
+%!                                9, 14, 15, 12; 9, 14, 15, 12])
+%!assert (movmax (magic (4), 3, 1), [16, 11, 10, 13; 16, 11, 10, 13; ...
+%!                                   9, 14, 15, 12; 9, 14, 15, 12])
+%!assert (movmax (magic (4), 3, 2), [16, 16, 13, 13; 11, 11, 11, 10; ...
+%!                                   9, 9, 12, 12; 14, 15, 15, 15])
+
+%!assert <*55241> (movmax ((1:10).', 3), [(2:10).'; 10])
 
 ## Test input validation
 %!error <Invalid call> movmax ()

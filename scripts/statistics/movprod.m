@@ -165,9 +165,19 @@ function y = movprod (x, wlen, varargin)
 endfunction
 
 
-## FIXME: Need functional BIST tests
-## test for bug #55241
-%!assert ([2; 6; 24; 60; 120; 210; 336; 504; 720; 90], movprod ((1:10).', 3))
+%!assert (movprod (1:5, 3), [2, 6, 24, 60, 20])
+%!assert (movprod (1:5, [1, 1]), [2, 6, 24, 60, 20])
+%!assert (movprod (1:5, 3, 2), [2, 6, 24, 60, 20])
+
+%!assert (movprod (magic (4), 3), [80, 22, 30, 104; 720, 154, 180, 1248; ...
+%!                                180, 1078, 900, 96; 36, 98, 90, 12])
+%!assert (movprod (magic (4), 3, 1), [80, 22, 30, 104; 720, 154, 180, 1248; ...
+%!                                180, 1078, 900, 96; 36, 98, 90, 12])
+%!assert (movprod (magic (4), 3, 2), [32, 96, 78, 39; 55, 550, 880, 80; ...
+%!                                   63, 378, 504, 72; 56, 840, 210, 15])
+
+%!assert <*55241> (movprod ((1:10).', 3), ...
+%!                 [2; 6; 24; 60; 120; 210; 336; 504; 720; 90])
 
 ## Test input validation
 %!error <Invalid call> movprod ()

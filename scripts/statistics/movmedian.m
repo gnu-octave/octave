@@ -163,10 +163,19 @@ function y = movmedian (x, wlen, varargin)
 
 endfunction
 
+%!assert (movmedian (1:5, 3), [1.5, 2, 3, 4, 4.5], eps)
+%!assert (movmedian (1:5, [1, 1]), [1.5, 2, 3, 4, 4.5], eps)
+%!assert (movmedian (1:5, 3, 2), [1.5, 2, 3, 4, 4.5], eps)
 
-## FIXME: Need functional BIST tests
-## test for bug #55241
-%!assert ([1.5; (2:9).'; 9.5], movmedian ((1:10).', 3))
+%!assert (movmedian (magic (4), 3), [10.5, 6.5, 6.5, 10.5; 9, 7, 6, 12; ...
+%!                                5, 11, 10, 8; 6.5, 10.5, 10.5, 6.5], eps)
+%!assert (movmedian (magic (4), 3, 1), [10.5, 6.5, 6.5, 10.5; 9, 7, 6, 12; ...
+%!                                5, 11, 10, 8; 6.5, 10.5, 10.5, 6.5], eps)
+%!assert (movmedian (magic (4), 3, 2), [9, 3, 3, 8; 8, 10, 10, 9; ...
+%!                                    8, 7, 7, 9; 9, 14, 14, 8])
+
+%!assert <*55241> (movmedian ((1:10).', 3), [1.5; (2:9).'; 9.5], eps)
+
 
 ## Test input validation
 %!error <Invalid call> movmedian ()

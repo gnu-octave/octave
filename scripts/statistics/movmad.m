@@ -140,9 +140,21 @@ function y = movmad (x, wlen, varargin)
 endfunction
 
 
-## FIXME: Need functional BIST tests
-## test for bug #55241
-%!assert ([0.5; repmat(2/3,8,1); 0.5], movmad ((1:10).', 3))
+%!assert (movmad (1:5, 3), [1/2, 2/3, 2/3, 2/3, 1/2], eps)
+%!assert (movmad (1:5, [1, 1]), [1/2, 2/3, 2/3, 2/3, 1/2], eps)
+%!assert (movmad (1:5, 3, 2), [1/2, 2/3, 2/3, 2/3, 1/2], eps)
+
+%!assert (movmad (magic (4), 3), ...
+%!       [5.5, 4.5, 3.5, 2.5; 4, 28/9, 22/9, 2; ...
+%!        2, 22/9, 28/9, 4; 2.5, 3.5, 4.5, 5.5], 3*eps)
+%!assert (movmad (magic (4), 3, 1), ...
+%!       [5.5, 4.5, 3.5, 2.5; 4, 28/9, 22/9, 2; ...
+%!        2, 22/9, 28/9, 4; 2.5, 3.5, 4.5, 5.5], 3*eps)
+%!assert (movmad (magic (4), 3, 2), ...
+%!       [7, 6, 14/3, 5; 3, 22/9, 10/9, 1; ...
+%!        1, 10/9, 22/9, 3; 5, 14/3, 6, 7], 3*eps)
+
+%!assert <*55241> (movmad ((1:10).', 3), [0.5; repmat(2/3, 8, 1); 0.5], eps)
 
 ## Test input validation
 %!error <Invalid call> movmad ()

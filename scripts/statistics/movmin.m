@@ -141,9 +141,18 @@ function y = movmin (x, wlen, varargin)
 endfunction
 
 
-## FIXME: Need functional BIST tests
-## test for bug #55241
-%!assert ([1; (1:9).'], movmin ((1:10).', 3))
+%!assert (movmin (1:5, 3), [1, 1:4])
+%!assert (movmin (1:5, [1, 1]), [1, 1:4])
+%!assert (movmin (1:5, 3, 2), [1, 1:4])
+
+%!assert (movmin (magic (4), 3), [5, 2, 3, 8; 5, 2, 3, 8; ...
+%!                                4, 7, 6, 1; 4, 7, 6, 1])
+%!assert (movmin (magic (4), 3, 1), [5, 2, 3, 8; 5, 2, 3, 8; ...
+%!                                4, 7, 6, 1; 4, 7, 6, 1])
+%!assert (movmin (magic (4), 3, 2), [2, 2, 2, 3; 5, 5, 8, 8; ...
+%!                                   7, 6, 6, 6; 4, 4, 1, 1])
+
+%!assert <*55241> (movmin ((1:10).', 3), [1; (1:9).'])
 
 ## Test input validation
 %!error <Invalid call> movmin ()

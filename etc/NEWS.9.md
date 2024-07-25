@@ -12,6 +12,9 @@ Summary of bugs fixed for version 9.3.0 (tbd):
   higher than 2.  This will affect all moving window functions (`movmad`,
   `movmax`, `movmean`, `movmedian`, `movmin`, `movprod`, `movstd`, `movsum`,
   and `movvar`) (bug #65927).
+- `movvar` and `movstd`: Use correct default value of 0 if an empty array is
+  specified for `opt` to maintain consistent behavior with `var` and `std`.
+  Improve input validation to ensure `opt` is one of 0, 1, or []. (bug #66021).
 
 ### GUI
 
@@ -19,6 +22,9 @@ Summary of bugs fixed for version 9.3.0 (tbd):
 
 - `jupyter-notebook` test no longer fails if a figure window is open
   (bug #65644).
+
+- `movmad`, `movmax`, `movmean`, `movmedian`, `movmin`, `movprod`, `movstd`,
+  `movsum`, `movvar`: Add BISTs for general function operation.
 
 ### Documentation
 

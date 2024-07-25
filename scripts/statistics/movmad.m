@@ -167,6 +167,8 @@ endfunction
 %!assert (movmad (1:5, 3), [1/2, 2/3, 2/3, 2/3, 1/2], eps)
 %!assert (movmad (1:5, [1, 1]), [1/2, 2/3, 2/3, 2/3, 1/2], eps)
 %!assert (movmad (1:5, 3, 2), [1/2, 2/3, 2/3, 2/3, 1/2], eps)
+%!assert <*65928> (movmad (1:5, 3, 1), zeros (1, 5))
+%!assert <*65928> (movmad (1:5, 3, 3), zeros (1, 5))
 
 %!assert (movmad (magic (4), 3), ...
 %!       [5.5, 4.5, 3.5, 2.5; 4, 28/9, 22/9, 2; ...
@@ -177,6 +179,7 @@ endfunction
 %!assert (movmad (magic (4), 3, 2), ...
 %!       [7, 6, 14/3, 5; 3, 22/9, 10/9, 1; ...
 %!        1, 10/9, 22/9, 3; 5, 14/3, 6, 7], 3*eps)
+%!assert <*65928> (movmad (magic (4), 3, 3), zeros (4, 4))
 
 %!assert <*55241> (movmad ((1:10).', 3), [0.5; repmat(2/3, 8, 1); 0.5], eps)
 

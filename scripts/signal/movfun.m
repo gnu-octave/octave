@@ -202,12 +202,7 @@ function y = movfun (fcn, x, wlen, varargin)
   valid_bc = {"shrink", "discard", "fill", "same", "periodic"};
 
   ## Parse input arguments
-  persistent parser ndims_x;
-  if (isempty (ndims_x) || (ndims_x != ndims (x)))
-    ## reset inputParser if number of dimensions of X changes
-    parser = [];
-    ndims_x = ndims (x);
-  endif
+  persistent parser;
 
   if isempty (parser)
     parser = inputParser ();
@@ -220,7 +215,7 @@ function y = movfun (fcn, x, wlen, varargin)
     parser.addParamValue ("Endpoints", "shrink", ...
       @(x) any (strcmpi (x, valid_bc)) || (isnumeric (x) && isscalar (x)));
     parser.addParamValue ("dim", [], ...
-      @(d) isempty (d) || (isscalar (d) && isindex (d, ndims_x)));
+      @(d) isempty (d) || (isnumeric (d) && isscalar (d) && isindex (d)));
     parser.addParamValue ("nancond", "includenan", ...
       @(x) any (strcmpi (x, {"includenan", "omitnan"})));
     parser.addParamValue ("outdim", [], ...
@@ -244,8 +239,12 @@ function y = movfun (fcn, x, wlen, varargin)
 
   ## If dim was not provided find the first non-singleton dimension.
   szx = size (x);
+  nd = length (szx);
   if (isempty (dim))
     (dim = find (szx > 1, 1)) || (dim = 1);
+  elseif (dim > nd)
+    szx = [szx, ones(1, dim - nd)];
+    nd = dim;
   endif
   N = szx(dim);
 
@@ -328,7 +327,9 @@ function y = movfun (fcn, x, wlen, varargin)
   ## Restore shape
   y = reshape (y, [szx(dperm), soutdim]);
   y = ipermute (y, [dperm, nd+1]);
-  y = squeeze (y);
+  if (! isempty (y))
+    y = squeeze (y);
+  endif
 
 endfunction
 
@@ -375,6 +376,12 @@ function y = movfun_oncol (fcn, yclass, x, wlen, bcfcn, slcidx, C, Cpre, Cpos, w
   endif
 
   ## Process boundaries
+  ## FIXME:  For large windows there may be duplicate entities in Cpre and
+  ##         Cpos.  For large enough window sizes, Cpre and Cpos will be
+  ##         identical and running both boundary checks below will be entirely
+  ##         reduntant.  Checking for and avoiding reduntance calcualtions
+  ##         would improve efficiency.
+
   if (! isempty (Cpre))
     y(Cpre,:) = bcfcn (fcn, x, Cpre, win, wlen, odim);
   endif
@@ -417,18 +424,33 @@ function y = replaceval_bc (fcn, x, idxp, win, wlen, ~)
     return;
   endif
 
+  pad_both = numel (win) > numel (x);
+
   if (min (idxp) == 1)
     ## pre-pad window
     sz = size (x);
     sz(1) = wlen(1);
     x = [substitute(ones (sz)); x];
     idx = idxp + win + wlen(1);
+
+    if (pad_both)
+      sz = size (x);
+      sz(1) = idx(end) - sz(1);
+      x = [x; substitute(ones (sz))];
+    endif
   else
     ## post-pad window
     sz = size (x);
     sz(1) = wlen(2);
     x = [x; substitute(ones (sz))];
     idx = idxp + win;
+
+    if (pad_both)
+      sz = size (x);
+      sz(1) = 1 - idx(1);
+      x = [substitute(ones (sz)); x];
+      idx = idx + sz(1);
+    endif
   endif
 
   y = fcn (x(idx));
@@ -453,13 +475,16 @@ endfunction
 ## data from the other end of the array.
 function y = periodic_bc (fcn, x, idxp, win, ~, ~)
 
-  N       = length (x);
-  idx     = idxp + win;
-  tf      = idx < 1;
-  idx(tf) = N + idx(tf);
-  tf      = idx > N;
-  idx(tf) = idx(tf) - N;
-  y       = fcn (x(idx));
+  N   = length (x);
+  idx = idxp + win;
+
+  while (any (idx(:) < 1) || any (idx(:) > N))
+    tf      = idx < 1;
+    idx(tf) = N + idx(tf);
+    tf      = idx > N;
+    idx(tf) = idx(tf) - N;
+  endwhile
+  y = fcn (x(idx));
 
 endfunction
 
@@ -727,6 +752,38 @@ endfunction
 %!assert <*65928> (movfun (@sum, 1:10, 99), 55(ones (1, 10)))
 %!assert <*65928> (movfun (@sum, 1:10, [9, 8]), [45, 55(ones (1, 9))])
 %!assert <*65928> (movfun (@sum, 1:10, 99), 55(ones (1, 10)))
+
+## Test different values of dim
+%!assert (movfun (@sum, 1:5, 3), [3, 6, 9, 12, 9])
+%!assert (movfun (@sum, 1:5, 3, "dim", 2), [3, 6, 9, 12, 9])
+%!assert <*65928> (movfun (@sum, 1:5, 3, "dim", 1), 1:5)
+%!assert <*65928> (movfun (@sum, 1:5, 3, "dim", 3), 1:5)
+
+%!assert (movfun (@sum, magic (3), 3), [11, 6, 13; 15, 15, 15; 7, 14, 9])
+%!assert (movfun (@sum, magic (3), 3, "dim", 1), [11, 6, 13; 15, 15, 15; 7, 14, 9])
+%!assert (movfun (@sum, magic (3), 3, "dim", 2), [9, 15, 7; 8, 15, 12; 13, 15, 11])
+%!assert <*65928> (movfun (@sum, magic (3), 3, "dim", 3), magic (3))
+
+## Test endpoint options with window lengths exceeding size (x, dim)
+%!assert <*65928> (movfun (@sum, 1:5, 20, "endpoints", "shrink"), 15(ones (1, 5)))
+%!assert <*65928> (movfun (@sum, 1:5, 3, "endpoints", "shrink", "dim", 1), 1:5)
+%!assert <*65928> (movfun (@sum, 1:5, 3, "endpoints", "shrink", "dim", 3), 1:5)
+%!assert <*65928> (movfun (@sum, 1:5, 20, "endpoints", "same"), 50:4:66)
+%!assert <*65928> (movfun (@sum, 1:5, 3, "endpoints", "same", "dim", 1), 3:3:15)
+%!assert <*65928> (movfun (@sum, 1:5, 3, "endpoints", "same", "dim", 3), 3:3:15)
+%!assert <*65928> (movfun (@sum, 1:5, 20, "endpoints", "periodic"), 60(ones (1, 5)))
+%!assert <*65928> (movfun (@sum, 1:5, 3, "endpoints", "periodic", "dim", 1), 3:3:15)
+%!assert <*65928> (movfun (@sum, 1:5, 3, "endpoints", "periodic", "dim", 3), 3:3:15)
+%!assert <*65928> (movfun (@sum, 1:5, 20, "endpoints", 1), 30(ones (1, 5)))
+%!assert <*65928> (movfun (@sum, 1:5, 3, "endpoints", 1, "dim", 1), 3:7)
+%!assert <*65928> (movfun (@sum, 1:5, 3, "endpoints", 1, "dim", 3), 3:7)
+%!assert <*65928> (movfun (@sum, 1:5, 20, "endpoints", "discard"), NaN (1, 0))
+%!assert <*65928> (movfun (@sum, 1:5, 3, "endpoints", "discard", "dim", 1), NaN (0, 5))
+%!assert <*65928> (movfun (@sum, 1:5, 3, "endpoints", "discard", "dim", 3), NaN (1, 5, 0))
+%!assert <*65928> (movfun (@sum, 1:5, 20, "endpoints", "fill"), NaN (1, 5))
+%!assert <*65928> (movfun (@sum, 1:5, 3, "endpoints", "fill", "dim", 1), NaN (1, 5))
+%!assert <*65928> (movfun (@sum, 1:5, 3, "endpoints", "fill", "dim", 3), NaN (1, 5))
+
 
 ## Test input validation
 %!error <Invalid call> movfun ()

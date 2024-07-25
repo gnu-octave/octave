@@ -204,9 +204,11 @@ endfunction
 %!assert (movstd (1:5, 3, 0), [1/sqrt(2), 1, 1, 1, 1/sqrt(2)], eps)
 %!assert <*66021> (movstd (1:5, 3, []), [1/sqrt(2), 1, 1, 1, 1/sqrt(2)], eps)
 %!assert (movstd (1:5, 3, 1), sqrt ([0.25, 2/3, 2/3, 2/3, 0.25]), eps)
+%!assert <*65928> (movstd (1:5, 3, 0, 1), zeros (1, 5))
 %!assert (movstd (1:5, 3, 0, 2), [1/sqrt(2), 1, 1, 1, 1/sqrt(2)], eps)
 %!assert (movstd (1:5, 3, 1, 2), sqrt ([0.25, 2/3, 2/3, 2/3, 0.25]), eps)
 %!assert <*66021> (movstd (1:5, 3, [], 2), [1/sqrt(2), 1, 1, 1, 1/sqrt(2)], eps)
+%!assert <*65928> (movstd (1:5, 3, 0, 3), zeros (1, 5))
 
 %!assert (movstd (magic (4), 3, 0), sqrt ([60.5, 40.5, 24.5, 12.5; 31, 61/3, 37/3, 7;...
 %!                                   7, 37/3, 61/3, 31; 12.5, 24.5, 40.5, 60.5]), 2*eps)
@@ -214,6 +216,7 @@ endfunction
 %!                                   7, 37/3, 61/3, 31; 12.5, 24.5, 40.5, 60.5]), 2*eps)
 %!assert (movstd (magic (4), 3, 0, 2), sqrt ([98, 61, 37, 50; 18, 31/3, 7/3, 2; ...
 %!                                   2, 7/3, 31/3, 18; 50, 37, 61, 98]), 2*eps)
+%!assert <*65928> (movstd (magic (4), 3, 0, 3), zeros (4, 4))
 
 %!assert <*55241> (movstd ((1:10).', 3), [1/sqrt(2); ones(8,1); 1/sqrt(2)], eps)
 

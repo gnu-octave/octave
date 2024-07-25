@@ -167,6 +167,8 @@ endfunction
 %!assert (movmean (1:5, 3), [1.5, 2, 3, 4, 4.5], eps)
 %!assert (movmean (1:5, [1, 1]), [1.5, 2, 3, 4, 4.5], eps)
 %!assert (movmean (1:5, 3, 2), [1.5, 2, 3, 4, 4.5], eps)
+%!assert <*65928> (movmean (1:5, 3, 1), 1:5)
+%!assert <*65928> (movmean (1:5, 3, 3), 1:5)
 
 %!assert (movmean (magic (4), 3), ...
 %!                 [10.5, 6.5, 6.5, 10.5; 10, 20/3, 19/3, 11; ...
@@ -177,6 +179,7 @@ endfunction
 %!assert (movmean (magic (4), 3, 2), ...
 %!                 [9, 7, 6, 8; 8, 26/3, 29/3, 9; ...
 %!                  8, 22/3, 25/3, 9; 9, 11, 10, 8], eps)
+%!assert <*65928> (movmean (magic (4), 3, 3), magic (4))
 
 %!assert <*55241> (movmean ((1:10).', 3), [1.5; (2:9).'; 9.5])
 

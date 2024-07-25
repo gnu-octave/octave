@@ -83,10 +83,12 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
   behavior as the option "either".
   
 - `movfun` and `movslice`:  Functions now accept `wlen` equal to 1 or [0,0],
-  non-integer values of `wlen`, and values of `wlen` that create window
-  lengths exceeding the size of the target array.  This will affect all moving
-  window functions (`movmad`, `movmax`, `movmean`, `movmedian`, `movmin`,
-  `movprod`, `movstd`, `movsum`, and `movvar`) (bug #65928).
+  non-integer values of `wlen`, values of `wlen` that create window lengths
+  exceeding the size of the target array. `movfun` also accepts values of `dim`
+  larger than the number of non-singleton dimensions in the target array.  This
+  will affect all moving window functions (`movmad`, `movmax`, `movmean`,
+  `movmedian`, `movmin`, `movprod`, `movstd`, `movsum`, and `movvar`)
+  (bug #65928).
 
 ### Alphabetical list of new functions added in Octave 10
 

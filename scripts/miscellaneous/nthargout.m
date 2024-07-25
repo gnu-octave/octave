@@ -68,6 +68,21 @@
 ## @var{USV} = nthargout ([1:3], @@svd, hilb (5));
 ## @end example
 ##
+## Programming Note: Equivalent functionality to the @code{nthargout} function
+## is frequently possible by using the character @samp{~} in code to ignore
+## outputs.  This functionality is implemented by the Octave interpreter and
+## is even more efficient than using this function.
+##
+## Equivalent Code:
+##
+## @example
+## @group
+## idx = nthargout (2, @@max, rand (100, 1));
+## @equiv{}
+## [~, idx] = max (rand (100, 1));
+## @end group
+## @end example
+##
 ## @seealso{nargin, nargout, varargin, varargout, isargout}
 ## @end deftypefn
 
@@ -91,7 +106,7 @@ function arg = nthargout (n, varargin)
   endif
 
   if (any (n != fix (n))  || ntot != fix (ntot) || any (n <= 0) || ntot <= 0)
-    error ("nthargout: N and NTOT must consist of positive integers");
+    error ("nthargout: N and NTOT must be positive integers");
   endif
 
   outargs = cell (1, ntot);
@@ -104,11 +119,11 @@ function arg = nthargout (n, varargin)
       arg = outargs{n};
     endif
   catch
-    err = lasterr ();
-    if (strfind ("some elements undefined in return list", err))
-      error ("nthargout: Too many output arguments: %d", ntot);
+    err = lasterror ();
+    if (strfind (err.message, "some elements undefined in return list"))
+      error ("nthargout: too many output arguments: %d", ntot);
     else
-      error (err);
+      rethrow (err);
     endif
   end_try_catch
 
@@ -117,6 +132,15 @@ endfunction
 
 %!shared m
 %! m = magic (5);
-%!assert (nthargout ([1,2], @ind2sub, size (m), nthargout (2, @max, m(:))),
-%!        {5,3})
+%!
+%!assert (nthargout ([1,2], @ind2sub, size (m), nthargout (2, @max, m(:))), {5,3})
 %!assert (nthargout (3, @find, m(m>20)), [23, 24, 25, 21, 22]')
+
+## Test input validation
+%!error <Invalid call> nthargout ()
+%!error <Invalid call> nthargout (1)
+%!error <N .* must be positive integers> nthargout (1.5, @sin)
+%!error <N .* must be positive integers> nthargout (1, 1.5, @sin)
+%!error <N .* must be positive integers> nthargout (0, @sin)
+%!error <N .* must be positive integers> nthargout (0, 1, @sin)
+%!error <too many output arguments: 2> nthargout (2, @sin, pi)

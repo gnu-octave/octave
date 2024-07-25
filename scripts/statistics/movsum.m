@@ -165,9 +165,21 @@ function y = movsum (x, wlen, varargin)
 endfunction
 
 
-## FIXME: Need functional BIST tests
-## test for bug #55241
-%!assert ([(3:3:27).'; 19], movsum ((1:10).', 3))
+%!assert (movsum (1:5, 3), [3, 6, 9, 12, 9])
+%!assert (movsum (1:5, [1, 1]), [3, 6, 9, 12, 9])
+%!assert (movsum (1:5, 3, 2), [3, 6, 9, 12, 9])
+%!assert <*65928> (movsum (1:5, 3, 1), 1:5)
+%!assert <*65928> (movsum (1:5, 3, 3), 1:5)
+
+%!assert (movsum (magic (4), 3), [21, 13, 13, 21; 30, 20, 19, 33; ...
+%!                                18, 32, 31, 21; 13, 21, 21, 13])
+%!assert (movsum (magic (4), 3, 1), [21, 13, 13, 21; 30, 20, 19, 33; ...
+%!                                18, 32, 31, 21; 13, 21, 21, 13])
+%!assert (movsum (magic (4), 3, 2), [18, 21, 18, 16; 16, 26, 29, 18; ...
+%!                                   16, 22, 25, 18; 18, 33, 30, 16])
+%!assert <*65928> (movsum (magic (4), 3, 3), magic (4))
+
+%!assert <*55241> (movsum ((1:10).', 3), [(3:3:27).'; 19])
 
 ## Test input validation
 %!error <Invalid call> movsum ()

@@ -50,7 +50,7 @@ class octave_value_list;
 
 // Data structures.
 
-class octave_class : public octave_base_value
+class OCTINTERP_API octave_class : public octave_base_value
 {
 public:
 
@@ -70,6 +70,7 @@ public:
       m_parent_list (plist), m_obsolete_copies (0)
   { }
 
+  OCTINTERP_API
   octave_class (const octave_map& m, const std::string& id,
                 const octave_value_list& parents);
 
@@ -88,7 +89,8 @@ public:
     return new octave_class (octave_map (m_map.keys ()), m_c_name, m_parent_list);
   }
 
-  void break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame);
+  OCTINTERP_API void
+  break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame);
 
   OCTINTERP_API Cell dotref (const octave_value_list& idx);
 
@@ -116,7 +118,7 @@ public:
   numeric_conv (const Cell& val, const std::string& type);
 
   void assign(const std::string& k, const octave_value& rhs)
-  { m_map.assign (k, rhs); };
+  { m_map.assign (k, rhs); }
 
   OCTINTERP_API octave_value
   subsasgn (const std::string& type, const std::list<octave_value_list>& idx,

@@ -236,6 +236,8 @@ jobs:
           # wget
           # libpng
           # sudo
+          # ARPACK as distributed for Alpine latest-stable seems to be broken:
+          # arpack-dev
           packages: >
             build-base
             autoconf
@@ -253,7 +255,6 @@ jobs:
             libltdl
             rsvg-convert
             texlive-dvi
-            arpack-dev
             bison
             curl-dev
             fftw-dev

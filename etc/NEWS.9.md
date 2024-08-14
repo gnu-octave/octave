@@ -15,6 +15,8 @@ Summary of bugs fixed for version 9.3.0 (tbd):
 - `movvar` and `movstd`: Use correct default value of 0 if an empty array is
   specified for `opt` to maintain consistent behavior with `var` and `std`.
   Improve input validation to ensure `opt` is one of 0, 1, or []. (bug #66021).
+- `interp2`: Provide a meaningful error message in the input reference array
+  is a vector (bug #66086).
 
 ### GUI
 
@@ -25,10 +27,14 @@ Summary of bugs fixed for version 9.3.0 (tbd):
 
 - `movmad`, `movmax`, `movmean`, `movmedian`, `movmin`, `movprod`, `movstd`,
   `movsum`, `movvar`: Add BISTs for general function operation.
+- `interp2`, `interp3`, `interpn`: Increase checks for non-numeric inputs
+  (bug #66086).
 
 ### Documentation
 
 - `load`: Correct documentation of `-v7.3` and `-hdf5` options (bug #42530).
+- `interp2`, `interp3`, `interpn`: Specify that inputs need to be numeric
+  (bug #66086).
 
 
 Summary of bugs fixed for version 9.2.0 (2024-06-01):

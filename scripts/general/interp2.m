@@ -33,12 +33,13 @@
 ##
 ## Two-dimensional interpolation.
 ##
-## Interpolate reference data @var{x}, @var{y}, @var{z} to determine @var{zi}
-## at the coordinates @var{xi}, @var{yi}.  The reference data @var{x}, @var{y}
-## can be matrices, as returned by @code{meshgrid}, in which case the sizes of
-## @var{x}, @var{y}, and @var{z} must be equal.  If @var{x}, @var{y} are
-## vectors describing a grid then @code{length (@var{x}) == columns (@var{z})}
-## and @code{length (@var{y}) == rows (@var{z})}.  In either case the input
+## Interpolate numeric reference data @var{x}, @var{y}, @var{z} to determine
+## @var{zi} at the coordinates @var{xi}, @var{yi}.  The reference data
+## @var{x}, @var{y} can be matrices, as returned by @code{meshgrid}, in which
+## case the sizes of @var{x}, @var{y}, and @var{z} must be equal.  If @var{x},
+## @var{y} are vectors describing a grid then
+## @w{@code{length (@var{x}) == columns (@var{z})}} and
+## @w{@code{length (@var{y}) == rows (@var{z})}}.  In either case the input
 ## data must be strictly monotonic.
 ##
 ## If called without @var{x}, @var{y}, and just a single reference data matrix
@@ -130,8 +131,8 @@ function ZI = interp2 (varargin)
   endswitch
 
   ## Type checking
-  if (! isnumeric (Z) || isscalar (Z) || ! ismatrix (Z))
-    error ("interp2: Z must be a 2-D matrix");
+  if (! isnumeric (Z) || isvector (Z) || ! ismatrix (Z))
+    error ("interp2: Z must be a numeric 2-D matrix");
   endif
   if (! isempty (n) && ! (isscalar (n) && n >= 0 && n == fix (n)))
     error ("interp2: N must be an integer >= 0");
@@ -765,9 +766,12 @@ endfunction
 ## Test input validation
 %!error interp2 (1, 1, 1, 1, 1, 2)    # only 5 numeric inputs
 %!error interp2 (1, 1, 1, 1, 1, 2, 2) # only 5 numeric inputs
-%!error <Z must be a 2-D matrix> interp2 ({1})
-%!error <Z must be a 2-D matrix> interp2 (1,1,1)
-%!error <Z must be a 2-D matrix> interp2 (ones (2,2,2))
+%!error <Z must be a numeric 2-D matrix> interp2 ({1})
+%!error <Z must be a numeric 2-D matrix> interp2 (true)
+%!error <Z must be a numeric 2-D matrix> interp2 (1:10)
+%!error <Z must be a numeric 2-D matrix> interp2 ([1:10].')
+%!error <Z must be a numeric 2-D matrix> interp2 (1,1,1)
+%!error <Z must be a numeric 2-D matrix> interp2 (ones (2,2,2))
 %!error <N must be an integer .= 0> interp2 (ones (2), ones (2))
 %!error <N must be an integer .= 0> interp2 (ones (2), -1)
 %!error <N must be an integer .= 0> interp2 (ones (2), 1.5)

@@ -33,9 +33,9 @@
 ##
 ## Three-dimensional interpolation.
 ##
-## Interpolate reference data @var{x}, @var{y}, @var{z}, @var{v} to determine
-## @var{vi} at the coordinates @var{xi}, @var{yi}, @var{zi}.  The reference
-## data @var{x}, @var{y}, @var{z} can be matrices, as returned by
+## Interpolate numeric reference data @var{x}, @var{y}, @var{z}, @var{v} to
+## determine @var{vi} at the coordinates @var{xi}, @var{yi}, @var{zi}.  The
+## reference data @var{x}, @var{y}, @var{z} can be matrices, as returned by
 ## @code{meshgrid}, in which case the sizes of @var{x}, @var{y}, @var{z}, and
 ## @var{v} must be equal.  If @var{x}, @var{y}, @var{z} are vectors describing
 ## a cubic grid then @code{length (@var{x}) == columns (@var{v})},
@@ -96,7 +96,7 @@ function vi = interp3 (varargin)
   nargs = nargin;
 
   if (! isnumeric (varargin{1}))
-    print_usage ();
+    error ("interp3: input reference arrays must be numeric");
   endif
 
   if (nargs > 1 && ischar (varargin{end-1}))
@@ -295,7 +295,9 @@ endfunction
 
 ## Test input validation
 %!error <not enough input arguments> interp3 ()
-%!error <Invalid call> interp3 ({1})
+%!error <input reference arrays must be numeric> interp3 ({1})
+%!error <input reference arrays must be numeric> interp3 (true)
+%!error <input reference arrays must be numeric> interp3 (struct())
 %!error <EXTRAPVAL must be a numeric scalar> interp3 (1,2,3,4,1,2,3,"linear", {1})
 %!error <EXTRAPVAL must be a numeric scalar> interp3 (1,2,3,4,1,2,3,"linear", ones (2,2))
 %!warning <ignoring unsupported '\*' flag> interp3 (rand (3,3,3), 1, "*linear");

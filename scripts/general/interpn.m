@@ -33,9 +33,9 @@
 ##
 ## Perform @var{n}-dimensional interpolation, where @var{n} is at least two.
 ##
-## Each element of the @var{n}-dimensional array @var{v} represents a value
-## at a location given by the parameters @var{x1}, @var{x2}, @dots{}, @var{xn}.
-## The parameters @var{x1}, @var{x2}, @dots{}, @var{xn} are either
+## Each element of the @var{n}-dimensional numeric array @var{v} represents a
+## value at a location given by the parameters @var{x1}, @var{x2}, @dots{},
+## @var{xn}.  The parameters @var{x1}, @var{x2}, @dots{}, @var{xn} are either
 ## @var{n}-dimensional arrays of the same size as the array @var{v} in
 ## the @qcode{"ndgrid"} format or vectors.
 ##
@@ -86,8 +86,12 @@
 
 function vi = interpn (varargin)
 
-  if (nargin < 1 || ! isnumeric (varargin{1}))
+  if (nargin < 1)
     print_usage ();
+  endif
+
+  if  (! isnumeric (varargin{1}))
+    error ("interpn: input reference arrays must be numeric");
   endif
 
   method = "linear";
@@ -373,7 +377,9 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> interpn ()
-%!error <Invalid call> interpn ("foobar")
+%!error <input reference arrays must be numeric> interpn ("foobar")
+%!error <input reference arrays must be numeric> interpn ({1})
+%!error <input reference arrays must be numeric> interpn (true)
 %!error <EXTRAPVAL must be a numeric scalar> interpn (1, "linear", {1})
 %!error <EXTRAPVAL must be a numeric scalar> interpn (1, "linear", [1, 2])
 %!warning <ignoring unsupported '\*' flag> interpn (rand (3,3), 1, "*linear");

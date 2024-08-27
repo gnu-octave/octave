@@ -93,7 +93,7 @@ get more priority.
   - Possible dependency on HDF5 if graph classes are written as classdefs,
     so graph objects will not be saved until then, but the rest of the
     development can start and proceed.
-  - Target: Octave 10-11, potential GSoC project for 2024.
+  - Target: Octave 11.
 
 - Argument blocks implementation. (LEAD?)
   - Some work has already been done, but needs to be completed.

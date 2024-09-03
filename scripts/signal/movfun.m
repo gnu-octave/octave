@@ -215,7 +215,7 @@ function y = movfun (fcn, x, wlen, varargin)
       switch (lower (prop))
         case "dim"
           dim = varargin{++vargidx};
-          if (! (isnumeric (dim) && isscalar (dim) && isindex (dim)))
+          if ! (isempty (dim) || ((isnumeric (dim) && isscalar (dim) && isindex (dim))))
             error ("movfun: DIM must be a positive integer-valued scalar");
           endif
 
@@ -1205,6 +1205,9 @@ endfunction
 ## verify includenan and includemissing function
 %!assert <*66025> (movfun (@sum, 1:10, 5, "nancond", "includenan"), movfun (@sum, 1:10, 5))
 %!assert <*66025> (movfun (@sum, 1:10, 5, "nancond", "includemissing"), movfun (@sum, 1:10, 5))
+
+## Verify proper function with empty dim input
+%!assert <*66025> (movfun (@sum, 1:10, 5, "dim", []), movfun (@sum, 1:10, 5))
 
 
 ## Test input validation

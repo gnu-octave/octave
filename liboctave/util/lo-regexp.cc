@@ -174,7 +174,7 @@ regexp::compile_internal ()
               m_names++;
             }
 
-          if (new_pos - pos > 0)
+          if (new_pos > pos)
             buf << m_pattern.substr (pos, new_pos-pos);
           if (inames < 10)
             buf << "(?P<n00" << inames++;

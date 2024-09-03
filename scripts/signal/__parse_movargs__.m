@@ -39,31 +39,32 @@ function args = __parse_movargs__ (caller, varargin)
 
   have_dim = have_nancond = false;
   imax = numel (varargin);
-  i = 1;
-  while (i <= imax)
-    arg = varargin{i};
+  idx = 1;
+  while (idx <= imax)
+    arg = varargin{idx};
     if (ischar (arg))
-      if (any (strcmpi (arg, {"omitnan", "includenan"})))
+      if (any (strcmpi (arg, {"omitnan", "includenan", ...
+                               "omitmissing", "includemissing"})))
         args(end+(1:2)) = {"nancond", arg};
         have_nancond = true;
       else
-        i += 1;  # Prop/Val pair
-        if (i > imax)
+        idx += 1;  # Prop/Val pair
+        if (idx > imax)
           error ([caller ": property '%s' missing value argument"], arg);
         endif
-        args(end+(1:2)) = {arg, varargin{i}};
+        args(end+(1:2)) = {arg, varargin{idx}};
       endif
     elseif (isnumeric (arg))
       args(end+(1:2)) = {"dim", arg};
       have_dim = true;
     else
       error ("Octave:invalid-input-arg",
-             [caller ": invalid input at position %d"], i);
+             [caller ": invalid input at position %d"], idx);
     endif
 
-    i += 1;  # Advance to next element
+    idx += 1;  # Advance to next element
     if (have_nancond && have_dim)
-      args = [args, varargin(i:end)];
+      args = [args, varargin(idx:end)];
       break;
     endif
   endwhile
@@ -102,3 +103,12 @@ endfunction
 %! vararg = {5, "omitnan", "Endpoints", "fill"};
 %! assert (__parse_movargs__ (caller, vararg{:}),
 %!         {"dim", 5, "nancond", "omitnan", "Endpoints", "fill"});
+
+%!test <*66156>
+%! caller = "tstblock";
+%! vararg = {"omitmissing"};
+%! assert (__parse_movargs__ (caller, vararg{:}), {"nancond", "omitmissing"});
+%! vararg = {"includemissing"};
+%! assert (__parse_movargs__ (caller, vararg{:}), {"nancond", "includemissing"});
+
+

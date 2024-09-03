@@ -181,36 +181,82 @@ function y = movfun (fcn, x, wlen, varargin)
   valid_bc = {"shrink", "discard", "fill", "same", "periodic"};
   valid_nancond = {"includenan", "includemissing", "omitnan", "omitmissing"};
 
-  ## FIXME: inputParser processing takes ~20% of runtime.  Consider
-  ##        reworking code to directly parse inputs.  Bonus, this would
-  ##        produce improved input validation error messages vs standard
-  ##        addParamValue failure messages.
+  ## Parse required input arguments.
+  ## Allow fcn to perform any x validation.
+  ## Most wlen validation will be done by movslice.
 
-  ## Parse input arguments
-  persistent parser;
-
-  if isempty (parser)
-    parser = inputParser ();
-    parser.FunctionName = "movfun";
-    parser.addRequired ("fcn", ...
-      @(fcn) is_function_handle (fcn) || ischar (fcn));
-    parser.addRequired ("x"); # Any X validation will be done by fcn.
-    parser.addRequired ("wlen", @isnumeric); # Full WLEN validation by movslice.
-    parser.CaseSensitive = false;
-    parser.addParamValue ("Endpoints", "shrink", ...
-      @(x) any (strcmpi (x, valid_bc)) || (isnumeric (x) && isscalar (x)));
-    parser.addParamValue ("dim", [], ...
-      @(d) isempty (d) || (isnumeric (d) && isscalar (d) && isindex (d)));
-    parser.addParamValue ("nancond", "includenan", ...
-      @(x) any (strcmpi (x, valid_nancond)));
-    parser.addParamValue ("outdim", [], ...
-      @(d) isempty (d) || (isvector (d) && isindex (d)));
-    parser.addParamValue ("SamplePoints", [], ...
-      @(d) isvector (d) && isnumeric (d) && issorted (d) && ...
-           all (diff (d) != 0));
+  if (! is_function_handle (fcn))
+    error ("movfun: FCN must be a valid function handle");
   endif
 
-  parser.parse (fcn, x, wlen, varargin{:});
+  if (! isnumeric (wlen))
+    error ("movfun: WLEN must be numeric");
+  endif
+
+  ## Parse optional arguments
+  dim = [];
+  nancond = "includenan";
+  outdim = [];
+  sp.samplepoints = [];
+  bc = "shrink";
+
+  if nargin > 3
+    if (mod (numel (varargin), 2))
+      error ("movfun: Each PROPERTY must have a VALUE");
+    endif
+
+    vargidx = 1;
+    while (vargidx < nargin - 3)
+      prop = varargin{vargidx};
+      if (! (ischar (prop) && isrow (prop)))
+        error ("movfun: PROPERTY name must be a valid string");
+      endif
+
+      switch (lower (prop))
+        case "dim"
+          dim = varargin{++vargidx};
+          if ! (isempty (dim) || ((isnumeric (dim) && isscalar (dim) && isindex (dim))))
+            error ("movfun: DIM must be a positive integer-valued scalar");
+          endif
+
+        case "endpoints"
+          bc = varargin{++vargidx};
+          if (! ((isnumeric (bc) && isscalar (bc)) ||
+                  (ischar (bc) && isrow (bc) &&
+                   any (strcmpi (bc, valid_bc)))))
+            error ("movfun: ENDPOINTS must be a numeric scalar or a valid Endpoint method");
+          endif
+
+        case "nancond"
+          nancond = varargin{++vargidx};
+          if (! (ischar (nancond) && isrow (nancond)
+              && (any (strcmpi (nancond, valid_nancond)))))
+            error ("movfun: NANCOND must be includenan, includemissing, omitnan, or omitmissing");
+          endif
+
+        case "outdim"
+          outdim = varargin{++vargidx};
+          if (! (isnumeric (outdim) && isvector (outdim)
+                  && isindex (outdim)))
+            error ("movfun: OUTDIM must be a numeric, positive, integer-valued scalar or vector");
+          endif
+
+        case "samplepoints"
+          sp.samplepoints = varargin{++vargidx};
+          if (! (isnumeric (sp.samplepoints) && isvector (sp.samplepoints)
+                 && issorted (sp.samplepoints)
+                 && all (diff (sp.samplepoints) != 0)))
+            error ("movfun: SAMPLEPOINTS must be a sorted, non-repeating, numeric vector");
+          endif
+          sp.samplepoints = sp.samplepoints(:);
+        otherwise
+          error ("movfun: unknown PROPERTY '%s'", prop);
+      endswitch
+
+      vargidx++;
+
+   endwhile
+  endif
 
   if (isempty (x))
     ## Nothing to do.  Return immediately with empty output same shape and
@@ -232,12 +278,6 @@ function y = movfun (fcn, x, wlen, varargin)
     endif
     return
   endif
-
-  bc      = parser.Results.Endpoints;   # boundary condition
-  dim     = parser.Results.dim;         # dimension to be used as input
-  nancond = parser.Results.nancond;     # whether NaN are ignored or not
-  outdim  = parser.Results.outdim;      # selected output dimension of fcn
-  sp.samplepoints = parser.Results.SamplePoints(:); # grid points for x elements
 
   ## Finish optional parameter processing.
 
@@ -261,7 +301,7 @@ function y = movfun (fcn, x, wlen, varargin)
 
   if (sp.apply)
     if (numel (sp.samplepoints) != N)
-      error("movfun: SamplePoints must be same size as x in operating dimension");
+      error("movfun: SamplePoints must be the same size as x in operating dimension");
     endif
 
     sp.spacing = diff (sp.samplepoints, 1, 1);
@@ -1166,20 +1206,61 @@ endfunction
 %!assert <*66025> (movfun (@sum, 1:10, 5, "nancond", "includenan"), movfun (@sum, 1:10, 5))
 %!assert <*66025> (movfun (@sum, 1:10, 5, "nancond", "includemissing"), movfun (@sum, 1:10, 5))
 
+## Verify proper function with empty dim input
+%!assert <*66025> (movfun (@sum, 1:10, 5, "dim", []), movfun (@sum, 1:10, 5))
+
 
 ## Test input validation
 %!error <Invalid call> movfun ()
 %!error <Invalid call> movfun (@min)
 %!error <Invalid call> movfun (@min, 1:5)
-%!error <failed validation of 'fcn'> movfun (1, 1:10, 3)
-%!error <failed validation of 'fcn'> movfun (true, 1:10, 3)
-%!error <failed validation of 'fcn'> movfun ({'foo'}, 1:10, 3)
-%!error <failed validation of 'fcn'> movfun (struct ("a", "b"), 1:10, 3)
-%!error <failed validation of 'wlen'> movfun (@sum, 1:10, 'f')
+
+%!error <FCN must be a valid function handle> movfun (1, 1:10, 3)
+%!error <FCN must be a valid function handle> movfun (true, 1:10, 3)
+%!error <FCN must be a valid function handle> movfun ({"foo"}, 1:10, 3)
+%!error <FCN must be a valid function handle> movfun (struct("a", "b"), 1:10, 3)
+%!error <WLEN must be numeric> movfun (@sum, 1:10, 'f')
+%!error <WLEN must be numeric> movfun (@sum, 1:10, {1, 2})
+%!error <Each PROPERTY must have a VALUE> movfun (@sum, 1:10, 3, "EndPoints")
+%!error <Each PROPERTY must have a VALUE> movfun (@sum, 1:10, 3, "EndPoints", 3, "dim")
+%!error <Each PROPERTY must have a VALUE> movfun (@sum, 1:10, 3, "EndPoints", "dim", 2)
+%!error <PROPERTY name must be> movfun (@sum, 1:10, 3, 123, 3)
+%!error <PROPERTY name must be> movfun (@sum, 1:10, 3, true, 3)
+%!error <PROPERTY name must be> movfun (@sum, 1:10, 3, {"foo"}, 3)
+%!error <PROPERTY name must be> movfun (@sum, 1:10, 3, struct (), 3)
+%!error <PROPERTY name must be> movfun (@sum, 1:10, 3, ["foo"; "bar"], 3)
+%!error <unknown PROPERTY 'foo'> movfun (@sum, 1:10, 3, "foo", 3)
+%!error <DIM must be a > movfun (@sum, 1:10, 3, "dim", -1)
+%!error <DIM must be a > movfun (@sum, 1:10, 3, "dim", 0)
+%!error <DIM must be a > movfun (@sum, 1:10, 3, "dim", 1.5)
+%!error <DIM must be a > movfun (@sum, 1:10, 3, "dim", {1})
+%!error <DIM must be a > movfun (@sum, 1:10, 3, "dim", true)
+%!error <DIM must be a > movfun (@sum, 1:10, 3, "dim", "c")
+%!error <DIM must be a > movfun (@sum, 1:10, 3, "dim", [1, 2])
+%!error <ENDPOINTS must be a > movfun (@sum, 1:10, 3, "endpoints", [1 2])
+%!error <ENDPOINTS must be a > movfun (@sum, 1:10, 3, "endpoints", {1})
+%!error <ENDPOINTS must be a > movfun (@sum, 1:10, 3, "endpoints", true)
+%!error <ENDPOINTS must be a > movfun (@sum, 1:10, 3, "endpoints", "foo")
+%!error <ENDPOINTS must be a > movfun (@sum, 1:10, 3, "endpoints", {"shrink"})
+%!error <NANCOND must be> movfun (@sum, 1:10, 3, "nancond", 3)
+%!error <NANCOND must be> movfun (@sum, 1:10, 3, "nancond", "foo")
+%!error <NANCOND must be> movfun (@sum, 1:10, 3, "nancond", {"includenan"})
+%!error <OUTDIM must be a> movfun (@sum, 1:10, 3, "outdim", -1)
+%!error <OUTDIM must be a> movfun (@sum, 1:10, 3, "outdim", 0)
+%!error <OUTDIM must be a> movfun (@sum, 1:10, 3, "outdim", [1 -1])
+%!error <OUTDIM must be a> movfun (@sum, 1:10, 3, "outdim", 1.5)
+%!error <OUTDIM must be a> movfun (@sum, 1:10, 3, "outdim", "a")
+%!error <OUTDIM must be a> movfun (@sum, 1:10, 3, "outdim", {1})
+%!error <OUTDIM must be a> movfun (@sum, 1:10, 3, "outdim", true)
+%!error <SAMPLEPOINTS must be a> movfun (@sum, [1, 2, 3], 3, "samplepoints", "foo")
+%!error <SAMPLEPOINTS must be a> movfun (@sum, [1, 2, 3], 3, "samplepoints", [1, 1, 3])
+%!error <SAMPLEPOINTS must be a> movfun (@sum, [1, 2, 3], 3, "samplepoints", [1, 3, 2])
+%!error <SAMPLEPOINTS must be a> movfun (@sum, [1, 2, 3], 3, "samplepoints", {1, 2, 3})
+%!error <SAMPLEPOINTS must be a> movfun (@sum, [1, 2, 3, 4], 3, "samplepoints", [1 3; 2 4])
 %!error <when SamplePoints are not uniformly spaced> movfun (@sum, 1:5, 3, "SamplePoints", [1:4, 4.5], "EndPoints", "fill")
 %!error <when SamplePoints are not uniformly spaced> movfun (@sum, 1:5, 3, "SamplePoints", [1:4, 4.5], "EndPoints", 2)
-%!error <SamplePoints must be same size as x> movfun (@sum, 1:5, 3, "SamplePoints", 1:4)
-%!error <SamplePoints must be same size as x> movfun (@sum, magic (4), 3, "dim", 2, "SamplePoints", [1, 2])
+%!error <SamplePoints must be the same size as x> movfun (@sum, 1:5, 3, "SamplePoints", 1:4)
+%!error <SamplePoints must be the same size as x> movfun (@sum, magic (4), 3, "dim", 2, "SamplePoints", [1, 2])
 %!warning <"omitnan" is not yet implemented>
 %! movfun (@min, 1:3, 3, "nancond", "omitnan");
 %!warning <"omitnan" is not yet implemented>
@@ -1188,6 +1269,4 @@ endfunction
 ## FIXME: This test is commented out until OUTDIM validation is clarified.
 %!#error <OUTDIM \(5\) is larger than largest available dimension \(3\)>
 %! movfun (@min, ones (6,3,4), 3, "outdim", 5);
-%!error <argument 'foo' is not a declared parameter or switch> movfun (@min, 1:5, 3, "foo", "bar")
-%!error <failed validation of 'nancond'> movfun (@min, 1:5, 3, "nancond", "bar")
 

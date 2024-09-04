@@ -88,9 +88,10 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
   larger than the number of non-singleton dimensions in the target array.  The
   `SamplePoints` option has also been implemented for both functions.
   `omitmissing` and `includemissing` are now accepted as aliases for `omitnan`
-  and `includenan`.  This  affects all moving window functions (`movmad`,
-  `movmax`, `movmean`, `movmedian`, `movmin`, `movprod`, `movstd`, `movsum`,
-  and `movvar`) (bug #65928 and bug #66025).
+  and `includenan`.  Non-numeric input array handling has been improved. This
+  affects all moving window functions (`movmad`, `movmax`, `movmean`,
+  `movmedian`, `movmin`, `movprod`, `movstd`, `movsum`, and `movvar`)
+  (bug #65928 and bug #66025).
 
 ### Alphabetical list of new functions added in Octave 10
 

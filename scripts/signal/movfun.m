@@ -221,10 +221,14 @@ function y = movfun (fcn, x, wlen, varargin)
 
         case "endpoints"
           bc = varargin{++vargidx};
+
           if (! ((isnumeric (bc) && isscalar (bc)) ||
                   (ischar (bc) && isrow (bc) &&
-                   any (strcmpi (bc, valid_bc)))))
-            error ("movfun: ENDPOINTS must be a numeric scalar or a valid Endpoint method");
+                    any (strcmpi (bc, valid_bc))) ||
+                  (isscalar (bc) && strcmp (class (x), class (bc)))))
+            error (["movfun: ENDPOINTS must be a numeric scalar, ", ...
+                    "a scalar the same class as X, ", ...
+                    "or a valid Endpoint method"]);
           endif
 
         case "nancond"
@@ -352,9 +356,10 @@ function y = movfun (fcn, x, wlen, varargin)
   x     = reshape (x, N, ncols);         # reshape input
 
   ## Obtain function for boundary conditions
-  if (isnumeric (bc))
+  if (isnumeric (bc) || (isscalar (bc) && strcmp (class (bc), class (x))))
     bcfcn = @replaceval_bc;
     bcfcn (true, bc);  # initialize replaceval function with value
+
   else
     switch (lower (bc))
       case "shrink"
@@ -425,7 +430,15 @@ function y = movfun (fcn, x, wlen, varargin)
   endif
 
   ## Initialize output array of appropriate size and class.
-  y = zeros (N, ncols, soutdim, yclass);
+##  y = zeros (N, ncols, soutdim, yclass);
+  try
+    y = zeros (N, ncols, soutdim, yclass);
+  catch err
+    if (! strcmp (err.message, "zeros: invalid class name"))
+      rethrow (err);
+    endif
+    y = cast (zeros (N, ncols, soutdim), yclass);
+  end_try_catch
   ## Apply processing to each column
   ## FIXME: Is it faster with cellfun?  Don't think so, but needs testing.
   parfor i = 1:ncols
@@ -449,7 +462,15 @@ function y = movfun_oncol (fcn, yclass, x, wlen, bcfcn, slcidx, C, Cpre,
   ## Process center of data
   if (! isempty (C))
     N = length ([Cpre, C, Cpos]);
-    y = zeros (N, odim, yclass);
+
+    try
+      y = zeros (N, odim, yclass);
+    catch err
+      if (! strcmp (err.message, "zeros: invalid class name"))
+        rethrow (err);
+      endif
+      y = cast (zeros (N, odim), yclass);
+    end_try_catch
 
     if (! sp.apply)
       if (isrow (slcidx))
@@ -560,7 +581,14 @@ function y = movfun_oncol (fcn, yclass, x, wlen, bcfcn, slcidx, C, Cpre,
   else # empty C
     ## Large windows may create Cpre/Cpos overlap and empty C.
     N = length (unique_endpoints (Cpre, Cpos));
-    y = zeros (N, odim, yclass);
+    try
+      y = zeros (N, odim, yclass);
+    catch err
+      if (! strcmp (err.message, "zeros: invalid class name"))
+        rethrow (err);
+      endif
+      y = cast (zeros (N, odim), "yclass");
+    end_try_catch
   endif
 
   ## Process boundaries
@@ -1210,11 +1238,32 @@ endfunction
 %!assert <*66025> (movfun (@sum, 1:10, 5, "dim", []), movfun (@sum, 1:10, 5))
 
 
+## Test valid nonnumeric inputs
+%!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5), "cdefghijjj")
+%!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "endpoints", 121), "cdefghijyy")
+%!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "endpoints", "y"), "cdefghijyy")
+%!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "endpoints", "discard"), "efghij")
+%!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "endpoints", "same"), "cdefghijjj")
+%!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "endpoints", "periodic"), "cdefghijab")
+%!assert <*66025> (double (movfun (@(x) x(end,:), "abcdefghij", 5, "endpoints", "fill")), [99:106, 0, 0])
+
+%!assert <*66025> (movfun (@(x) [x(1,:) x(end,:)], "abcdefghij", 5), ["aaabcdefgh";"cdefghijjj"].')
+
+%!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "samplepoints", 2:2:20), "bcdefghijj")
+%!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "samplepoints", 2:2:20, "endpoints", 121), "bcdefghijy")
+%!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "samplepoints", 2:2:20, "endpoints", "y"), "bcdefghijy")
+%!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "samplepoints", 2:2:20, "endpoints", "discard"), "cdefghij")
+%!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "samplepoints", 2:2:20, "endpoints", "same"), "bcdefghijj")
+%!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "samplepoints", 2:2:20, "endpoints", "periodic"), "bcdefghija")
+%!assert <*66025> (double (movfun (@(x) x(end,:), "abcdefghij", 5, "samplepoints", 2:2:20, "endpoints", "fill")), [98:106, 0])
+
+%!assert <*66025> (movfun (@all, logical([1,1,1,0,0,0,0,1,1,1]), 5), logical ([1, zeros(1,8), 1]))
+%!assert <*66025> (movfun (@all, logical([1,1,1,0,0,0,0,1,1,1]), 5, "samplepoints", 2:2:20), logical ([1, 1, zeros(1,6), 1, 1]))
+
 ## Test input validation
 %!error <Invalid call> movfun ()
 %!error <Invalid call> movfun (@min)
 %!error <Invalid call> movfun (@min, 1:5)
-
 %!error <FCN must be a valid function handle> movfun (1, 1:10, 3)
 %!error <FCN must be a valid function handle> movfun (true, 1:10, 3)
 %!error <FCN must be a valid function handle> movfun ({"foo"}, 1:10, 3)
@@ -1241,7 +1290,10 @@ endfunction
 %!error <ENDPOINTS must be a > movfun (@sum, 1:10, 3, "endpoints", {1})
 %!error <ENDPOINTS must be a > movfun (@sum, 1:10, 3, "endpoints", true)
 %!error <ENDPOINTS must be a > movfun (@sum, 1:10, 3, "endpoints", "foo")
+%!error <ENDPOINTS must be a > movfun (@sum, 1:10, 3, "endpoints", "b")
 %!error <ENDPOINTS must be a > movfun (@sum, 1:10, 3, "endpoints", {"shrink"})
+%!error <ENDPOINTS must be a > movfun (@sum, "abcde", 3, "endpoints", true)
+%!error <ENDPOINTS must be a > movfun (@sum, "abcde", 3, "endpoints", "ab")
 %!error <NANCOND must be> movfun (@sum, 1:10, 3, "nancond", 3)
 %!error <NANCOND must be> movfun (@sum, 1:10, 3, "nancond", "foo")
 %!error <NANCOND must be> movfun (@sum, 1:10, 3, "nancond", {"includenan"})

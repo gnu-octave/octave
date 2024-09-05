@@ -1237,28 +1237,39 @@ endfunction
 ## Verify proper function with empty dim input
 %!assert <*66025> (movfun (@sum, 1:10, 5, "dim", []), movfun (@sum, 1:10, 5))
 
-
 ## Test valid nonnumeric inputs
 %!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5), "cdefghijjj")
-%!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "endpoints", 121), "cdefghijyy")
 %!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "endpoints", "y"), "cdefghijyy")
 %!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "endpoints", "discard"), "efghij")
 %!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "endpoints", "same"), "cdefghijjj")
 %!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "endpoints", "periodic"), "cdefghijab")
-%!assert <*66025> (double (movfun (@(x) x(end,:), "abcdefghij", 5, "endpoints", "fill")), [99:106, 0, 0])
-
 %!assert <*66025> (movfun (@(x) [x(1,:) x(end,:)], "abcdefghij", 5), ["aaabcdefgh";"cdefghijjj"].')
-
 %!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "samplepoints", 2:2:20), "bcdefghijj")
-%!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "samplepoints", 2:2:20, "endpoints", 121), "bcdefghijy")
 %!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "samplepoints", 2:2:20, "endpoints", "y"), "bcdefghijy")
 %!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "samplepoints", 2:2:20, "endpoints", "discard"), "cdefghij")
 %!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "samplepoints", 2:2:20, "endpoints", "same"), "bcdefghijj")
 %!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "samplepoints", 2:2:20, "endpoints", "periodic"), "bcdefghija")
-%!assert <*66025> (double (movfun (@(x) x(end,:), "abcdefghij", 5, "samplepoints", 2:2:20, "endpoints", "fill")), [98:106, 0])
+
+## Suppress implicit type conversion warnings for char tests.
+%!test <*66025>
+%! fcn = @(x) x(end,:);
+%! x = "abcdefghij";
+%! w = 5;
+%! sp = 2:2:20;
+%! warnstate = warning ("query", "Octave:num-to-str");
+%! unwind_protect
+%!   warning ("off", "Octave:num-to-str");
+%!   assert (movfun (fcn, x, w, "endpoints", 121), "cdefghijyy");
+%!   assert (double (movfun (fcn, x, w, "endpoints", "fill")), [99:106, 0, 0])
+%!   assert (movfun (fcn, x, w, "samplepoints", sp, "endpoints", 121), "bcdefghijy")
+%!   assert (double (movfun (fcn, x, w, "samplepoints", sp, "endpoints", "fill")), [98:106, 0])
+%! unwind_protect_cleanup
+%!   warning (warnstate);
+%! end_unwind_protect
 
 %!assert <*66025> (movfun (@all, logical([1,1,1,0,0,0,0,1,1,1]), 5), logical ([1, zeros(1,8), 1]))
 %!assert <*66025> (movfun (@all, logical([1,1,1,0,0,0,0,1,1,1]), 5, "samplepoints", 2:2:20), logical ([1, 1, zeros(1,6), 1, 1]))
+
 
 ## Test input validation
 %!error <Invalid call> movfun ()

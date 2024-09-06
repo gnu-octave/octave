@@ -1175,6 +1175,22 @@ template string is used literally (i.e., without interpreting any escape
 sequences in single-quoted character vectors).  The message is prefixed
 by @samp{error: }.
 
+The optional @var{id} argument allows programmers to tag an error
+with a specific identifier so that users can later retrieve it (using
+@code{lasterr} or @var{lasterror}) and know the origin of the error.
+The identifier must contain at least one colon character (@qcode{":"})
+and must not contain any whitespace characters.  It should be a string of
+the form @qcode{"NAMESPACE:WARNING-NAME"}.  Octave's own errors use the
+@qcode{"Octave"} namespace (@pxref{XREFerror_ids,,@code{error_ids}}).
+For example:
+
+@example
+@group
+error ("MyNameSpace:wrong-type-argument",
+         "foo: argument should be numeric");
+@end group
+@end example
+
 Calling @code{error} also sets Octave's internal error state such that
 control will return to the top level without evaluating any further
 commands.  This is useful for aborting from functions or scripts.

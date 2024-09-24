@@ -269,7 +269,8 @@ function [h, sout] = createaxes (s, p, par)
         propval = [propval, prop, val];
       endif
     endfor
-    h = axes (propval{:}, "parent", par);
+    # set hold "on" until all axes children have been added
+    h = axes (propval{:}, "parent", par, "nextplot", "add");
 
     if (isfield (s.properties, "__plotyy_axes__"))
       plty = s.properties.__plotyy_axes__;
@@ -396,13 +397,12 @@ function [h, sout] = createscatter (s, par)
 
   if (isempty (s.properties.zdata))
     ## 2-D scatter
-    h = scatter (s.properties.xdata, s.properties.ydata);
+    h = scatter (s.properties.xdata, s.properties.ydata, "parent", par);
   else
     ## 3-D scatter
-    h = scatter3 (s.properties.xdata, s.properties.ydata, s.properties.zdata);
+    h = scatter3 (s.properties.xdata, s.properties.ydata, s.properties.zdata, "parent", par);
   endif
 
-  set (h, "parent", par);
   s.properties = rmfield (s.properties,
                           {"xdata", "ydata", "zdata"});
   addmissingprops (h, s.properties);
@@ -789,4 +789,25 @@ function addmissingprops (h, props)
 endfunction
 
 
-## FIXME: Need validation tests
+## Check that all axes children are restored
+%!test <*66221>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes (hf);
+%!   hold (hax, "on");
+%!   imagesc (hax, randn (5, 3));
+%!   scatter (hax, 1:3, rand (3, 1));
+%!   hold (hax, "off");
+%!   n_children = numel (get (hax, "children"));
+%!   tmp_ofig = [tempname(), ".ofig"];
+%!   s = hdl2struct (hf);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+%! hf_new = struct2hdl (s);
+%! unwind_protect
+%!   hax_new = findobj (hf_new, "type", "axes");
+%!   assert (numel (get (hax_new, "children")), n_children);
+%! unwind_protect_cleanup
+%!   close (hf_new);
+%! end_unwind_protect

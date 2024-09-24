@@ -1012,7 +1012,7 @@ octave_qscintilla::contextmenu_run (bool)
              max_stack_size = 2;
            if (stack.size () <= max_stack_size)
              {
-               QRegularExpression rx {"source: error sourcing file [^\n]*$"};
+               QRegularExpression rx {"source: error sourcing file [^\\n\\:]*"};
                if (new_msg.contains (rx))
                  {
                    // Selected code has syntax errors

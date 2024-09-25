@@ -58,11 +58,18 @@
 ## To use the default value for @var{opt} you may pass an empty input
 ## argument [].
 ##
-## The optional string argument @qcode{"@var{nancond}"} controls whether
-## @code{NaN} and @code{NA} values should be included (@qcode{"includenan"}),
-## or excluded (@qcode{"omitnan"}), from the data passed to @code{mad}.  The
-## default is @qcode{"includenan"}.  Caution: the @qcode{"omitnan"} option is
-## not yet implemented.
+## The optional string argument @qcode{"@var{nancond}"} controls how @code{NaN}
+## and @code{NA} values affect the output of @qcode{"movstd"}. The value
+## @qcode{"includenan"} (default) causes @code{NaN} and @code{NA} values to be
+## included in the moving window, and any window slice containing @code{NaN} or
+## @code{NA} values will return @code{NaN} for that element.  The value
+## @qcode{"omitnan"} causes @qcode{"movstd"} to ignore any @code{NaN}
+## or @code{NA} values resulting in fewer elements being used to calculate the
+## standard deviation for that window slice.  If @qcode{"omitnan"} is specified
+## and a window slice contains all @code{NaN} or @code{NA} values,
+## @qcode{"movstd"} returns @code{NaN} for that element.  The values
+## @qcode{"includemissing"} and @qcode{"omitmissing"} may be used synonymously
+## with @qcode{"includenan"} and @qcode{"omitnan"}, respectively.
 ##
 ## The calculation can be controlled by specifying @var{property}/@var{value}
 ## pairs.  Valid properties are @qcode{"Endpoints"} and
@@ -126,6 +133,10 @@ endfunction
 %!assert <*65928> (movstd (magic (4), 3, 0, 3), zeros (4, 4))
 
 %!assert <*55241> (movstd ((1:10).', 3), [1/sqrt(2); ones(8,1); 1/sqrt(2)], eps)
+
+%!assert <66156> (movstd ([1:4, NaN(1,3), 8:10], 3), movstd ([1:4, NaN(1,3), 8:10], 3, "includenan"))
+%!assert <66156> (movstd ([1:4, NaN(1,3), 8:10], 3, "includenan"), [sqrt(2)/2, 1, 1, NaN(1,5), 1, sqrt(2)/2], eps)
+%!assert <66156> (movstd ([1:4, NaN(1,3), 8:10], 3, "omitnan"), [sqrt(2)/2, 1, 1, sqrt(2)/2, 0, NaN,0, sqrt(2)/2, 1, sqrt(2)/2], eps)
 
 %!test <*56765>
 %! x = 1:10;

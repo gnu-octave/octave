@@ -41,11 +41,18 @@
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ##
-## The optional string argument @qcode{"@var{nancond}"} controls whether
-## @code{NaN} and @code{NA} values should be included (@qcode{"includenan"}),
-## or excluded (@qcode{"omitnan"}), from the data passed to @code{mad}.  The
-## default is @qcode{"includenan"}.  Caution: the @qcode{"omitnan"} option is
-## not yet implemented.
+## The optional string argument @qcode{"@var{nancond}"} controls how @code{NaN}
+## and @code{NA} values affect the output of @qcode{"movmedian"}. The value
+## @qcode{"includenan"} (default) causes @code{NaN} and @code{NA} values to be
+## included in the moving window, and any window slice containing @code{NaN} or
+## @code{NA} values will return @code{NaN} for that element.  The value
+## @qcode{"omitnan"} causes @qcode{"movmedian"} to ignore any @code{NaN}
+## or @code{NA} values resulting in fewer elements being used to calculate the
+## median for that window slice.  If @qcode{"omitnan"} is specified and a window
+## slice contains all @code{NaN} or @code{NA} values, @qcode{"movmedian"} returns
+## @code{NaN} for that element.  The values @qcode{"includemissing"} and
+## @qcode{"omitmissing"} may be used synonymously with @qcode{"includenan"} and
+## @qcode{"omitnan"}, respectively.
 ##
 ## The calculation can be controlled by specifying @var{property}/@var{value}
 ## pairs.  Valid properties are @qcode{"Endpoints"} and
@@ -85,6 +92,10 @@ endfunction
 %!assert <*65928> (movmedian (magic (4), 3, 3), magic (4))
 
 %!assert <*55241> (movmedian ((1:10).', 3), [1.5; (2:9).'; 9.5], eps)
+
+%!assert <66156> (movmedian ([1:4, NaN(1,3), 8:10], 3), movmedian ([1:4, NaN(1,3), 8:10], 3, "includenan"))
+%!assert <66156> (movmedian ([1:4, NaN(1,3), 8:10], 3, "includenan"), [1.5, 2, 3, NaN(1,5), 9, 9.5], eps)
+%!assert <66156> (movmedian ([1:4, NaN(1,3), 8:10], 3, "omitnan"), [1.5, 2, 3, 3.5, 4, NaN, 8, 8.5, 9, 9.5], eps)
 
 
 ## Test input validation

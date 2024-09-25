@@ -41,11 +41,18 @@
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ##
-## The optional string argument @qcode{"@var{nancond}"} controls whether
-## @code{NaN} and @code{NA} values should be included (@qcode{"includenan"}),
-## or excluded (@qcode{"omitnan"}), from the data passed to @code{mad}.  The
-## default is @qcode{"includenan"}.  Caution: the @qcode{"omitnan"} option is
-## not yet implemented.
+## The optional string argument @qcode{"@var{nancond}"} controls how @code{NaN}
+## and @code{NA} values affect the output of @qcode{"movprod"}. The value
+## @qcode{"includenan"} (default) causes @code{NaN} and @code{NA} values to be
+## included in the moving window, and any window slice containing @code{NaN} or
+## @code{NA} values will return @code{NaN} for that element.  The value
+## @qcode{"omitnan"} causes @qcode{"movprod"} to ignore any @code{NaN}
+## or @code{NA} values resulting in fewer elements being used to calculate the
+## product for that window slice.  If @qcode{"omitnan"} is specified and a
+## window slice contains all @code{NaN} or @code{NA} values, @qcode{"movprod"}
+## returns 1 for that element.  The values @qcode{"includemissing"} and
+## @qcode{"omitmissing"} may be used synonymously with @qcode{"includenan"} and
+## @qcode{"omitnan"}, respectively.
 ##
 ## The calculation can be controlled by specifying @var{property}/@var{value}
 ## pairs.  Valid properties are @qcode{"Endpoints"} and
@@ -66,7 +73,7 @@ function y = movprod (x, wlen, varargin)
     print_usage ();
   endif
 
-  y = movfun (@prod, x, wlen, "Endpoints", 1,
+  y = movfun (@prod, x, wlen, "nanval", 1, "Endpoints", 1,
               __parse_movargs__ ("movprod", varargin{:}){:});
 
 endfunction
@@ -88,6 +95,10 @@ endfunction
 
 %!assert <*55241> (movprod ((1:10).', 3), ...
 %!                 [2; 6; 24; 60; 120; 210; 336; 504; 720; 90])
+
+%!assert <66156> (movprod ([1:4, NaN(1,3), 8:10], 3), movprod ([1:4, NaN(1,3), 8:10], 3, "includenan"))
+%!assert <66156> (movprod ([1:4, NaN(1,3), 8:10], 3, "includenan"), [2, 6, 24, NaN(1,5), 720, 90])
+%!assert <66156> (movprod ([1:4, NaN(1,3), 8:10], 3, "omitnan"), [2, 6, 24, 12, 4, 1, 8, 72, 720, 90])
 
 ## Test input validation
 %!error <Invalid call> movprod ()

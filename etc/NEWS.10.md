@@ -83,15 +83,36 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
   behavior as the option "either".
   
 - `movfun` and `movslice`:  Functions now accept `wlen` equal to 1 or [0,0],
-  non-integer values of `wlen`, values of `wlen` that create window lengths
+  non-integer values of `wlen`, and values of `wlen` that create window lengths
   exceeding the size of the target array. `movfun` also accepts values of `dim`
   larger than the number of non-singleton dimensions in the target array.  The
-  `SamplePoints` option has also been implemented for both functions.
+  `SamplePoints` option has been implemented for both functions.  Non-numeric
+  input array handling has been improved.  These changes affect all moving
+  window functions (`movmad`, `movmax`, `movmean`, `movmedian`, `movmin`,
+  `movprod`, `movstd`, `movsum`, and `movvar`) (bug #65928 and bug #66025).
+
+- `movfun`: The `nancond` property has been fully implemented and made MATLAB
+  compatible.  The `omitnan` option will ignore NaN and NA values when
+  calculating the function return, and, if all elements in a window slice are
+  NaN or NA, it will return the value contained in a new property `nanval`
+  (default NaN) for that element.  The `includenan` property (the default) has
+  been updated for compatibility such that any window containing NaN or NA will
+  return NaN rather than passing those values to the calculating function.
   `omitmissing` and `includemissing` are now accepted as aliases for `omitnan`
-  and `includenan`.  Non-numeric input array handling has been improved. This
-  affects all moving window functions (`movmad`, `movmax`, `movmean`,
-  `movmedian`, `movmin`, `movprod`, `movstd`, `movsum`, and `movvar`)
-  (bug #65928 and bug #66025).
+  and `includenan`.  These changes affect all moving window functions (`movmad`,
+  `movmax`, `movmean`, `movmedian`, `movmin`, `movprod`, `movstd`, `movsum`, and
+  `movvar`) (bug #66156).
+  
+- `movmin` and `movmax`: These functions now have their default behavior set to
+  `omitnan`.  NaN and NA values will be ignored unless a moving window contains
+  only NaN or NA values, in which case the function will return NaN for that
+  element (bug #66156).
+
+- `movsum`: When called with option `omitnan`, any windows containing only NaN
+  and NA values will return 0 (bug #66156).
+
+- `movprod`: When called with option `omitnan`, any windows containing only NaN
+  and NA values will return 1 (bug #66156).
 
 ### Alphabetical list of new functions added in Octave 10
 

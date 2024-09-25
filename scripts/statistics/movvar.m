@@ -58,11 +58,18 @@
 ## To use the default value for @var{opt} you may pass an empty input
 ## argument [].
 ##
-## The optional string argument @qcode{"@var{nancond}"} controls whether
-## @code{NaN} and @code{NA} values should be included (@qcode{"includenan"}),
-## or excluded (@qcode{"omitnan"}), from the data passed to @code{mad}.  The
-## default is @qcode{"includenan"}.  Caution: the @qcode{"omitnan"} option is
-## not yet implemented.
+## The optional string argument @qcode{"@var{nancond}"} controls how @code{NaN}
+## and @code{NA} values affect the output of @qcode{"movvar"}. The value
+## @qcode{"includenan"} (default) causes @code{NaN} and @code{NA} values to be
+## included in the moving window, and any window slice containing @code{NaN} or
+## @code{NA} values will return @code{NaN} for that element.  The value
+## @qcode{"omitnan"} causes @qcode{"movvar"} to ignore any @code{NaN}
+## or @code{NA} values resulting in fewer elements being used to calculate the
+## variance for that window slice.  If @qcode{"omitnan"} is specified and a
+## window slice contains all @code{NaN} or @code{NA} values, @qcode{"movvar"}
+## returns @code{NaN} for that element.  The values @qcode{"includemissing"} and
+## @qcode{"omitmissing"} may be used synonymously with @qcode{"includenan"} and
+## @qcode{"omitnan"}, respectively.
 ##
 ## The calculation can be controlled by specifying @var{property}/@var{value}
 ## pairs.  Valid properties are @qcode{"Endpoints"} and
@@ -134,6 +141,11 @@ endfunction
 %! assert (y, y0);
 %! y1 = movvar (x, 4, 1);
 %! assert (y1(1:3), [1/4, 2/3, 5/4]);
+
+%!assert <66156> (movvar ([1:4, NaN(1,3), 8:10], 3), movvar ([1:4, NaN(1,3), 8:10], 3, "includenan"))
+%!assert <66156> (movvar ([1:4, NaN(1,3), 8:10], 3, "includenan"), [0.5, 1, 1, NaN(1,5), 1, 0.5], eps)
+%!assert <66156> (movvar ([1:4, NaN(1,3), 8:10], 3, "omitnan"), [0.5, 1, 1, 0.5, 0, NaN,0, 0.5, 1, 0.5], eps)
+
 
 ## Test input validation
 %!error <Invalid call> movvar ()

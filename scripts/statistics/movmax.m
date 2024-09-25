@@ -41,11 +41,18 @@
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ##
-## The optional string argument @qcode{"@var{nancond}"} controls whether
-## @code{NaN} and @code{NA} values should be included (@qcode{"includenan"}),
-## or excluded (@qcode{"omitnan"}), from the data passed to @code{mad}.  The
-## default is @qcode{"includenan"}.  Caution: the @qcode{"omitnan"} option is
-## not yet implemented.
+## The optional string argument @qcode{"@var{nancond}"} controls how @code{NaN}
+## and @code{NA} values affect the output of @qcode{"movmax"}. The value
+## @qcode{"includenan"} causes @code{NaN} and @code{NA} values to be
+## included in the moving window, and any window slice containing @code{NaN} or
+## @code{NA} values will return @code{NaN} for that element.  The value
+## @qcode{"omitnan"} (default) causes @qcode{"movmax"} to ignore any @code{NaN}
+## or @code{NA} values resulting in fewer elements being used to calculate the
+## maximum for that window slice.  If @qcode{"omitnan"} is specified and a
+## window slice contains all @code{NaN} or @code{NA} values, @qcode{"movmax"}
+## returns @code{NaN} for that element.  The values @qcode{"includemissing"} and
+## @qcode{"omitmissing"} may be used synonymously with @qcode{"includenan"} and
+## @qcode{"omitnan"}, respectively.
 ##
 ## The calculation can be controlled by specifying @var{property}/@var{value}
 ## pairs.  Valid properties are @qcode{"Endpoints"} and
@@ -66,7 +73,7 @@ function y = movmax (x, wlen, varargin)
     print_usage ();
   endif
 
-  y = movfun (@max, x, wlen, "Endpoints", -Inf,
+  y = movfun (@max, x, wlen, "nancond", "omitnan", "Endpoints", -Inf,
               __parse_movargs__ ("movmax", varargin{:}){:});
 
 endfunction
@@ -87,6 +94,10 @@ endfunction
 %!assert <*65928> (movmax (magic (4), 3, 3), magic (4))
 
 %!assert <*55241> (movmax ((1:10).', 3), [(2:10).'; 10])
+
+%!assert <66156> (movmax ([1:4, NaN(1,3), 8:10], 3), movmax ([1:4, NaN(1,3), 8:10], 3, "omitnan"))
+%!assert <66156> (movmax ([1:4, NaN(1,3), 8:10], 3, "includenan"), [2:4, NaN(1,5), 10, 10])
+%!assert <66156> (movmax ([1:4, NaN(1,3), 8:10], 3, "omitnan"), [2:4, 4, 4, NaN, 8, 9, 10, 10])
 
 ## Test input validation
 %!error <Invalid call> movmax ()

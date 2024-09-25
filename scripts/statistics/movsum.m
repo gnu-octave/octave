@@ -41,11 +41,18 @@
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ##
-## The optional string argument @qcode{"@var{nancond}"} controls whether
-## @code{NaN} and @code{NA} values should be included (@qcode{"includenan"}),
-## or excluded (@qcode{"omitnan"}), from the data passed to @code{mad}.  The
-## default is @qcode{"includenan"}.  Caution: the @qcode{"omitnan"} option is
-## not yet implemented.
+## The optional string argument @qcode{"@var{nancond}"} controls how @code{NaN}
+## and @code{NA} values affect the output of @qcode{"movsum"}. The value
+## @qcode{"includenan"} (default) causes @code{NaN} and @code{NA} values to be
+## included in the moving window, and any window slice containing @code{NaN} or
+## @code{NA} values will return @code{NaN} for that element.  The value
+## @qcode{"omitnan"} causes @qcode{"movsum"} to ignore any @code{NaN}
+## or @code{NA} values resulting in fewer elements being used to calculate the
+## sum for that window slice.  If @qcode{"omitnan"} is specified and a window
+## slice contains all @code{NaN} or @code{NA} values, @qcode{"movsum"} returns
+## 0 for that element.  The values @qcode{"includemissing"} and
+## @qcode{"omitmissing"} may be used synonymously with @qcode{"includenan"} and
+## @qcode{"omitnan"}, respectively.
 ##
 ## The calculation can be controlled by specifying @var{property}/@var{value}
 ## pairs.  Valid properties are @qcode{"Endpoints"} and
@@ -66,7 +73,7 @@ function y = movsum (x, wlen, varargin)
     print_usage ();
   endif
 
-  y = movfun (@sum, x, wlen, "Endpoints", 0,
+  y = movfun (@sum, x, wlen, "nanval", 0, "Endpoints", 0,
               __parse_movargs__ ("movsum", varargin{:}){:});
 
 endfunction
@@ -87,6 +94,10 @@ endfunction
 %!assert <*65928> (movsum (magic (4), 3, 3), magic (4))
 
 %!assert <*55241> (movsum ((1:10).', 3), [(3:3:27).'; 19])
+
+%!assert <66156> (movsum ([1:4, NaN(1,3), 8:10], 3), movsum ([1:4, NaN(1,3), 8:10], 3, "includenan"))
+%!assert <66156> (movsum ([1:4, NaN(1,3), 8:10], 3, "includenan"), [3:3:9, NaN(1,5), 27, 19])
+%!assert <66156> (movsum ([1:4, NaN(1,3), 8:10], 3, "omitnan"), [3:3:9, 7, 4, 0, 8, 17, 27, 19])
 
 ## Test input validation
 %!error <Invalid call> movsum ()

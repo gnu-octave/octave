@@ -73,9 +73,14 @@ function y = movprod (x, wlen, varargin)
     print_usage ();
   endif
 
-  y = movfun (@prod, x, wlen, "nanval", 1, "Endpoints", 1,
-              __parse_movargs__ ("movprod", varargin{:}){:});
-
+  if (any (strcmpi (varargin, "samplepoints")))
+    ## Avoid error mixing certain Endpoints & SamplePoints combinations.
+    y = movfun (@prod, x, wlen, "nanval", 1,
+                __parse_movargs__ ("movprod", varargin{:}){:});
+  else
+    y = movfun (@prod, x, wlen, "nanval", 1, "Endpoints", 1,
+                __parse_movargs__ ("movprod", varargin{:}){:});
+  endif
 endfunction
 
 
@@ -99,6 +104,8 @@ endfunction
 %!assert <66156> (movprod ([1:4, NaN(1,3), 8:10], 3), movprod ([1:4, NaN(1,3), 8:10], 3, "includenan"))
 %!assert <66156> (movprod ([1:4, NaN(1,3), 8:10], 3, "includenan"), [2, 6, 24, NaN(1,5), 720, 90])
 %!assert <66156> (movprod ([1:4, NaN(1,3), 8:10], 3, "omitnan"), [2, 6, 24, 12, 4, 1, 8, 72, 720, 90])
+
+%!assert <*66025> (movprod (1:5, 3, "samplepoints", [1:4, 6]), [2, 6, 24, 12, 5])
 
 ## Test input validation
 %!error <Invalid call> movprod ()

@@ -73,9 +73,14 @@ function y = movmax (x, wlen, varargin)
     print_usage ();
   endif
 
-  y = movfun (@max, x, wlen, "nancond", "omitnan", "Endpoints", -Inf,
-              __parse_movargs__ ("movmax", varargin{:}){:});
-
+  if (any (strcmpi (varargin, "samplepoints")))
+    ## Avoid error mixing certain Endpoints & SamplePoints combinations.
+    y = movfun (@max, x, wlen, "nancond", "omitnan",
+                __parse_movargs__ ("movmax", varargin{:}){:});
+  else
+    y = movfun (@max, x, wlen, "nancond", "omitnan", "Endpoints", -Inf,
+                __parse_movargs__ ("movmax", varargin{:}){:});
+  endif
 endfunction
 
 
@@ -98,6 +103,8 @@ endfunction
 %!assert <66156> (movmax ([1:4, NaN(1,3), 8:10], 3), movmax ([1:4, NaN(1,3), 8:10], 3, "omitnan"))
 %!assert <66156> (movmax ([1:4, NaN(1,3), 8:10], 3, "includenan"), [2:4, NaN(1,5), 10, 10])
 %!assert <66156> (movmax ([1:4, NaN(1,3), 8:10], 3, "omitnan"), [2:4, 4, 4, NaN, 8, 9, 10, 10])
+
+%!assert <*66025> (movmax (1:5, 3, "samplepoints", [1:4, 6]), [2, 3, 4, 4, 5])
 
 ## Test input validation
 %!error <Invalid call> movmax ()

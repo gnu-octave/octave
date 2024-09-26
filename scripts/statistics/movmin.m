@@ -73,9 +73,14 @@ function y = movmin (x, wlen, varargin)
     print_usage ();
   endif
 
-  y = movfun (@min, x, wlen, "nancond", "omitnan", "Endpoints", Inf,
-              __parse_movargs__ ("movmin", varargin{:}){:});
-
+  if (any (strcmpi (varargin, "samplepoints")))
+    ## Avoid error mixing certain Endpoints & SamplePoints combinations.
+    y = movfun (@min, x, wlen, "nancond", "omitnan",
+                __parse_movargs__ ("movmin", varargin{:}){:});
+  else
+    y = movfun (@min, x, wlen, "nancond", "omitnan", "Endpoints", Inf,
+                __parse_movargs__ ("movmin", varargin{:}){:});
+  endif
 endfunction
 
 
@@ -98,6 +103,8 @@ endfunction
 %!assert <66156> (movmin ([1:4, NaN(1,3), 8:10], 3), movmin ([1:4, NaN(1,3), 8:10], 3, "omitnan"))
 %!assert <66156> (movmin ([1:4, NaN(1,3), 8:10], 3, "includenan"), [1, 1:2, NaN(1,5), 8, 9])
 %!assert <66156> (movmin ([1:4, NaN(1,3), 8:10], 3, "omitnan"), [1, 1:4, NaN, 8, 8, 8:9])
+
+%!assert <*66025> (movmin (1:5, 3, "samplepoints", [1:4, 6]), [1, 1, 2, 3, 5])
 
 ## Test input validation
 %!error <Invalid call> movmin ()

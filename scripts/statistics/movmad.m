@@ -27,7 +27,7 @@
 ## @deftypefn  {} {@var{y} =} movmad (@var{x}, @var{wlen})
 ## @deftypefnx {} {@var{y} =} movmad (@var{x}, [@var{nb}, @var{na}])
 ## @deftypefnx {} {@var{y} =} movmad (@dots{}, @var{dim})
-## @deftypefnx {} {@var{y} =} movmad (@dots{}, "@var{nancond}")
+## @deftypefnx {} {@var{y} =} movmad (@dots{}, @var{nancond})
 ## @deftypefnx {} {@var{y} =} movmad (@dots{}, @var{property}, @var{value})
 ## Calculate the moving mean absolute deviation over a sliding window of length
 ## @var{wlen} on data @var{x}.
@@ -41,11 +41,18 @@
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ##
-## The optional string argument @qcode{"@var{nancond}"} controls whether
-## @code{NaN} and @code{NA} values should be included (@qcode{"includenan"}),
-## or excluded (@qcode{"omitnan"}), from the data passed to @code{mad}.  The
-## default is @qcode{"includenan"}.  Caution: the @qcode{"omitnan"} option is
-## not yet implemented.
+## The optional argument @var{nancond} is a string that controls how @code{NaN}
+## and @code{NA} values affect the output of @qcode{"movmax"}. The value
+## @qcode{"includenan"} causes @code{NaN} and @code{NA} values to be
+## included in the moving window, and any window slice containing @code{NaN} or
+## @code{NA} values will return @code{NaN} for that element.  The value
+## @qcode{"omitnan"} (default) causes @qcode{"movmax"} to ignore any @code{NaN}
+## or @code{NA} values resulting in fewer elements being used to calculate the
+## maximum for that window slice.  If @qcode{"omitnan"} is specified and a
+## window slice contains all @code{NaN} or @code{NA} values, @qcode{"movmax"}
+## returns @code{NaN} for that element.  The values @qcode{"includemissing"} and
+## @qcode{"omitmissing"} may be used synonymously with @qcode{"includenan"} and
+## @qcode{"omitnan"}, respectively.
 ##
 ## The calculation can be controlled by specifying @var{property}/@var{value}
 ## pairs.  Valid properties are @qcode{"Endpoints"} and
@@ -89,6 +96,11 @@ endfunction
 %!assert <*65928> (movmad (magic (4), 3, 3), zeros (4, 4))
 
 %!assert <*55241> (movmad ((1:10).', 3), [0.5; repmat(2/3, 8, 1); 0.5], eps)
+
+%!assert <66156> (movmad ([1:4, NaN(1,3), 8:10], 3), movmad ([1:4, NaN(1,3), 8:10], 3, "includenan"))
+%!assert <66156> (movmad ([1:4, NaN(1,3), 8:10], 3, "includenan"), [1/2, 2/3, 2/3, NaN(1,5), 2/3, 1/2], eps)
+%!assert <66156> (movmad ([1:4, NaN(1,3), 8:10], 3, "omitnan"), [1/2, 2/3, 2/3, 1/2, 0, NaN, 0, 1/2, 2/3 1/2], eps)
+
 
 ## Test input validation
 %!error <Invalid call> movmad ()

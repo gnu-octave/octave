@@ -28,7 +28,7 @@
 ## @deftypefnx {} {@var{y} =} movvar (@var{x}, [@var{nb}, @var{na}])
 ## @deftypefnx {} {@var{y} =} movvar (@dots{}, @var{opt})
 ## @deftypefnx {} {@var{y} =} movvar (@dots{}, @var{opt}, @var{dim})
-## @deftypefnx {} {@var{y} =} movvar (@dots{}, "@var{nancond}")
+## @deftypefnx {} {@var{y} =} movvar (@dots{}, @var{nancond})
 ## @deftypefnx {} {@var{y} =} movvar (@dots{}, @var{property}, @var{value})
 ## Calculate the moving variance over a sliding window of length @var{wlen} on
 ## data @var{x}.
@@ -58,7 +58,7 @@
 ## To use the default value for @var{opt} you may pass an empty input
 ## argument [].
 ##
-## The optional string argument @qcode{"@var{nancond}"} controls how @code{NaN}
+## The optional argument @var{nancond} is a string that controls how @code{NaN}
 ## and @code{NA} values affect the output of @qcode{"movvar"}. The value
 ## @qcode{"includenan"} (default) causes @code{NaN} and @code{NA} values to be
 ## included in the moving window, and any window slice containing @code{NaN} or

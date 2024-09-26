@@ -27,7 +27,7 @@
 ## @deftypefn  {} {@var{y} =} movprod (@var{x}, @var{wlen})
 ## @deftypefnx {} {@var{y} =} movprod (@var{x}, [@var{nb}, @var{na}])
 ## @deftypefnx {} {@var{y} =} movprod (@dots{}, @var{dim})
-## @deftypefnx {} {@var{y} =} movprod (@dots{}, "@var{nancond}")
+## @deftypefnx {} {@var{y} =} movprod (@dots{}, @var{nancond})
 ## @deftypefnx {} {@var{y} =} movprod (@dots{}, @var{property}, @var{value})
 ## Calculate the moving product over a sliding window of length @var{wlen} on
 ## data @var{x}.
@@ -41,7 +41,7 @@
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ##
-## The optional string argument @qcode{"@var{nancond}"} controls how @code{NaN}
+## The optional argument @var{nancond} is a string that controls how @code{NaN}
 ## and @code{NA} values affect the output of @qcode{"movprod"}. The value
 ## @qcode{"includenan"} (default) causes @code{NaN} and @code{NA} values to be
 ## included in the moving window, and any window slice containing @code{NaN} or

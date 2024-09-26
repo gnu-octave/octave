@@ -27,7 +27,7 @@
 ## @deftypefn  {} {@var{y} =} movmean (@var{x}, @var{wlen})
 ## @deftypefnx {} {@var{y} =} movmean (@var{x}, [@var{nb}, @var{na}])
 ## @deftypefnx {} {@var{y} =} movmean (@dots{}, @var{dim})
-## @deftypefnx {} {@var{y} =} movmean (@dots{}, "@var{nancond}")
+## @deftypefnx {} {@var{y} =} movmean (@dots{}, @var{nancond})
 ## @deftypefnx {} {@var{y} =} movmean (@dots{}, @var{property}, @var{value})
 ## Calculate the moving average over a sliding window of length @var{wlen} on
 ## data @var{x}.
@@ -41,7 +41,7 @@
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ##
-## The optional string argument @qcode{"@var{nancond}"} controls how @code{NaN}
+## The optional argument @var{nancond} is a string that controls how @code{NaN}
 ## and @code{NA} values affect the output of @qcode{"movmean"}. The value
 ## @qcode{"includenan"} (default) causes @code{NaN} and @code{NA} values to be
 ## included in the moving window, and any window slice containing @code{NaN} or
@@ -96,6 +96,10 @@ endfunction
 %!assert <*65928> (movmean (magic (4), 3, 3), magic (4))
 
 %!assert <*55241> (movmean ((1:10).', 3), [1.5; (2:9).'; 9.5])
+
+%!assert <66156> (movmean ([1:4, NaN(1,3), 8:10], 3), movmean ([1:4, NaN(1,3), 8:10], 3, "includenan"))
+%!assert <66156> (movmean ([1:4, NaN(1,3), 8:10], 3, "includenan"), [1.5, 2, 3, NaN(1,5), 9, 9.5], eps)
+%!assert <66156> (movmean ([1:4, NaN(1,3), 8:10], 3, "omitnan"), [1.5, 2, 3, 3.5, 4, NaN, 8, 8.5, 9, 9.5], eps)
 
 ## Test input validation
 %!error <Invalid call> movmean ()

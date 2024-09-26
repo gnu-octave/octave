@@ -27,7 +27,7 @@
 ## @deftypefn  {} {@var{y} =} movmax (@var{x}, @var{wlen})
 ## @deftypefnx {} {@var{y} =} movmax (@var{x}, [@var{nb}, @var{na}])
 ## @deftypefnx {} {@var{y} =} movmax (@dots{}, @var{dim})
-## @deftypefnx {} {@var{y} =} movmax (@dots{}, "@var{nancond}")
+## @deftypefnx {} {@var{y} =} movmax (@dots{}, @var{nancond})
 ## @deftypefnx {} {@var{y} =} movmax (@dots{}, @var{property}, @var{value})
 ## Calculate the moving maximum over a sliding window of length @var{wlen} on
 ## data @var{x}.
@@ -41,7 +41,7 @@
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ##
-## The optional string argument @qcode{"@var{nancond}"} controls how @code{NaN}
+## The optional argument @var{nancond} is a string that controls how @code{NaN}
 ## and @code{NA} values affect the output of @qcode{"movmax"}. The value
 ## @qcode{"includenan"} causes @code{NaN} and @code{NA} values to be
 ## included in the moving window, and any window slice containing @code{NaN} or

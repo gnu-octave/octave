@@ -73,8 +73,16 @@ function y = movsum (x, wlen, varargin)
     print_usage ();
   endif
 
-  y = movfun (@sum, x, wlen, "nanval", 0, "Endpoints", 0,
-              __parse_movargs__ ("movsum", varargin{:}){:});
+  if (any (strcmpi (varargin, "samplepoints")))
+    ## Avoid error mixing certain Endpoints & SamplePoints combinations.
+    y = movfun (@sum, x, wlen, "nanval", 0,
+                __parse_movargs__ ("movsum", varargin{:}){:});
+  else
+    y = movfun (@sum, x, wlen, "nanval", 0, "Endpoints", 0,
+                __parse_movargs__ ("movsum", varargin{:}){:});
+  endif
+
+
 
 endfunction
 
@@ -98,6 +106,8 @@ endfunction
 %!assert <66156> (movsum ([1:4, NaN(1,3), 8:10], 3), movsum ([1:4, NaN(1,3), 8:10], 3, "includenan"))
 %!assert <66156> (movsum ([1:4, NaN(1,3), 8:10], 3, "includenan"), [3:3:9, NaN(1,5), 27, 19])
 %!assert <66156> (movsum ([1:4, NaN(1,3), 8:10], 3, "omitnan"), [3:3:9, 7, 4, 0, 8, 17, 27, 19])
+
+%!assert <*66025> (movsum (1:5, 3, "samplepoints", [1:4, 6]), [3, 6, 9, 7, 5])
 
 ## Test input validation
 %!error <Invalid call> movsum ()

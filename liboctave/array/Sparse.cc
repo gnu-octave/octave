@@ -318,7 +318,7 @@ Sparse<T, Alloc>::Sparse (const Array<T>& a,
   else if (c.extent (nc) > nc)
     (*current_liboctave_error_handler)
       ("sparse: column index %" OCTAVE_IDX_TYPE_FORMAT " out of bound "
-       "%" OCTAVE_IDX_TYPE_FORMAT, r.extent (nc), nc);
+       "%" OCTAVE_IDX_TYPE_FORMAT, c.extent (nc), nc);
 
   m_dimensions = dim_vector (nr, nc);
 

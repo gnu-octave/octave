@@ -81,16 +81,14 @@ self_listener::self_listener (const std::vector<int>& fds,
                       .arg (rs.fd));
           return;
         }
-      else
+
+      // No buffering.
+      if (::setvbuf (rs.stream, nullptr, _IONBF, 0))
         {
-          // No buffering.
-          if (::setvbuf (rs.stream, nullptr, _IONBF, 0))
-            {
-              error_msg (
-                  QString (tr ("Can not disable buffering of stream with fd = %1."))
-                          .arg (rs.fd));
-              return;
-            }
+          error_msg (
+              QString (tr ("Can not disable buffering of stream with fd = %1."))
+                      .arg (rs.fd));
+          return;
         }
 
       // m_old_fds should be used to restore the original output stream
@@ -224,7 +222,7 @@ self_listener::error_msg (const QString& msg, const std::string& err_str)
   std::string err_msg = err_str;
   if (err_msg.empty ())
     err_msg = std::strerror (errno);
-      
+
   QString error_message = msg + info +
                           QString (tr ("\nError: ")) +
                           QString::fromStdString (err_msg);

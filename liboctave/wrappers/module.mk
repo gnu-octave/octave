@@ -22,6 +22,7 @@ NOINSTALL_WRAPPERS_INC = \
   %reldir%/octave-popen2.h \
   %reldir%/putenv-wrapper.h \
   %reldir%/pwd-wrappers.h \
+  %reldir%/select-wrappers.h \
   %reldir%/set-program-name-wrapper.h \
   %reldir%/signal-wrappers.h \
   %reldir%/stat-wrappers.h \
@@ -67,6 +68,7 @@ WRAPPERS_SRC = \
   %reldir%/octave-popen2.c \
   %reldir%/putenv-wrapper.c \
   %reldir%/pwd-wrappers.c \
+  %reldir%/select-wrappers.c \
   %reldir%/set-program-name-wrapper.c \
   %reldir%/signal-wrappers.c \
   %reldir%/stat-wrappers.c \

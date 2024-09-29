@@ -43,6 +43,7 @@
 
 #include <cstring>
 
+// include headers for 'fd_set' type
 #if defined (OCTAVE_USE_WINDOWS_API)
 #  include <winsock2.h>
 #else
@@ -54,6 +55,7 @@
 #include "self-listener.h"
 
 #include "oct-syscalls.h"
+#include "select-wrappers.h"
 
 self_listener::self_listener (const std::vector<int>& fds,
                               const QString& caller,
@@ -141,7 +143,7 @@ void self_listener::run ()
 {
   // Initialize structure required by select
   fd_set redir_fds;
-  FD_ZERO (&redir_fds);
+  octave_fd_zero (&redir_fds);
 
   // Required variables
   char buf[4096 + 1];
@@ -160,11 +162,11 @@ void self_listener::run ()
     {
       // Set the fds that should be scanned by select
       for (auto& rs : m_redir_streams)
-        FD_SET (rs.pipe_fd, &redir_fds);
+        octave_fd_set (rs.pipe_fd, &redir_fds);
 
       // Pipes with data ready for being read. No timeout, wait
       // until a file descriptor is ready.
-      pipes_with_data = select (fdmax, &redir_fds, nullptr, nullptr, nullptr);
+      pipes_with_data = octave_select (fdmax, &redir_fds, nullptr, nullptr, nullptr);
 
       if (pipes_with_data == 0)
         continue;  // timeout reached (not used here)
@@ -178,7 +180,7 @@ void self_listener::run ()
 
         for (auto& rs : m_redir_streams)
           {
-            if (FD_ISSET (rs.pipe_fd, &redir_fds))
+            if (octave_fd_isset (rs.pipe_fd, &redir_fds))
               {
                 if ((len = ::read (rs.pipe_fd, buf, 4096)) > 0)
                   {

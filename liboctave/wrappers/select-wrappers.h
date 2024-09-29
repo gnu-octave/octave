@@ -30,8 +30,8 @@
 extern "C" {
 #endif
 
-// We'd need to include gnulib headers for the 'fd_set', 'struct timeval',
-// and 'SOCKET' types. Use 'void *' or 'int' in the wrapper interfaces instead.
+// We'd need to include gnulib headers for the 'fd_set', 'struct timeval'
+// types. Use 'void *' or 'int' in the wrapper interfaces instead.
 
 extern OCTAVE_API int
 octave_select (int nfds, /* fd_set *restrict */ void *restrict readfds,
@@ -40,13 +40,13 @@ octave_select (int nfds, /* fd_set *restrict */ void *restrict readfds,
                /* struct timeval * */ void *timeout);
 
 extern OCTAVE_API void
-octave_fd_set (/* SOCKET */ int fd, /* fd_set * */ void *set);
+octave_fd_set (int fd, /* fd_set * */ void *set);
 
 extern OCTAVE_API void
-octave_fd_clr (/* SOCKET */ int fd, /* fd_set * */ void *set);
+octave_fd_clr (int fd, /* fd_set * */ void *set);
 
 extern OCTAVE_API int
-octave_fd_isset (/* SOCKET */ int fd, /* fd_set * */ void *set);
+octave_fd_isset (int fd, /* fd_set * */ void *set);
 
 extern OCTAVE_API void
 octave_fd_zero (/* fd_set * */ void *set);

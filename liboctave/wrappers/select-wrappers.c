@@ -42,21 +42,21 @@ octave_select (int nfds, /* fd_set *restrict */ void *restrict readfds,
 }
 
 void
-octave_fd_set (/* SOCKET */ int fd, /* fd_set * */ void *set)
+octave_fd_set (int fd, /* fd_set * */ void *set)
 {
-  FD_SET ((SOCKET) fd, (fd_set *) set);
+  FD_SET (fd, (fd_set *) set);
 }
 
 void
-octave_fd_clr (/* SOCKET */ int fd, /* fd_set * */ void *set)
+octave_fd_clr (int fd, /* fd_set * */ void *set)
 {
-  FD_CLR ((SOCKET) fd, (fd_set *) set);
+  FD_CLR (fd, (fd_set *) set);
 }
 
 int
-octave_fd_isset (/* SOCKET */ int fd, /* fd_set * */ void *set)
+octave_fd_isset (int fd, /* fd_set * */ void *set)
 {
-  return FD_ISSET ((SOCKET) fd, (fd_set *) set);
+  return FD_ISSET (fd, (fd_set *) set);
 }
 
 void

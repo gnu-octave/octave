@@ -219,6 +219,7 @@ COREFCN_SRC = \
   %reldir%/max.cc \
   %reldir%/mex.cc \
   %reldir%/mgorth.cc \
+  %reldir%/mxarray.cc \
   %reldir%/nproc.cc \
   %reldir%/oct-fstrm.cc \
   %reldir%/oct-hdf5-types.cc \

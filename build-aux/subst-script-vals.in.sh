@@ -34,6 +34,7 @@ ADDRESS_SANITIZER_ENABLED="@ADDRESS_SANITIZER_ENABLED@"
 ADDRESS_SANITIZER_OPTIONS="@ADDRESS_SANITIZER_OPTIONS@"
 abs_top_srcdir="@abs_top_srcdir@"
 abs_top_builddir="@abs_top_builddir@"
+host_os="@host_os@"
 
 $SED \
   -e "s|%AWK%|${AWK}|g" \
@@ -42,4 +43,5 @@ $SED \
   -e "s|%ADDRESS_SANITIZER_ENABLED%|${ADDRESS_SANITIZER_ENABLED}|g" \
   -e "s|%ADDRESS_SANITIZER_OPTIONS%|${ADDRESS_SANITIZER_OPTIONS}|g" \
   -e "s|%abs_top_srcdir%|${abs_top_srcdir}|" \
-  -e "s|%builddir%|${abs_top_builddir}|"
+  -e "s|%builddir%|${abs_top_builddir}|" \
+  -e "s|%host_os%|${host_os}|"

@@ -44,6 +44,8 @@
 #include "Qsci/qscistyledtext.h"
 #include <Qsci/qscilexeroctave.h>
 
+#include "unistd-wrappers.h"
+
 #include "command-widget.h"
 #include "self-listener.h"
 
@@ -60,6 +62,9 @@
 
 
 OCTAVE_BEGIN_NAMESPACE(octave)
+
+static const int stdout_fileno = octave_stdout_fileno ();
+static const int stderr_fileno = octave_stderr_fileno ();
 
 command_widget::command_widget (QWidget *p)
   : QWidget (p), m_incomplete_parse (false),
@@ -126,7 +131,7 @@ command_widget::command_widget (QWidget *p)
   // The self_listener object executes in a separate thread.  It
   // captures output and emits a Qt signal to provide access to the
   // captured output. See TODO comment in self-listener.cc
-  m_listener = new self_listener (std::vector<int> {STDOUT_FILENO, STDERR_FILENO},
+  m_listener = new self_listener (std::vector<int> {stdout_fileno, stderr_fileno},
                                   QString (tr ("Command Widget")));
 
   // Connect the listener thread to the command widget function that
@@ -154,16 +159,10 @@ command_widget::process_redirected_streams (const char *buf, int len, int fd)
 {
   int style;
 
-  switch (fd)
-    {
-      case STDERR_FILENO:
-        style = console_lexer::Error;
-        break;
-
-      case STDOUT_FILENO:
-      default:
-        style = console_lexer::Default;
-    }
+  if (fd == stderr_fileno)
+    style = console_lexer::Error;
+  else
+    style = console_lexer::Default;
 
   m_console->append_string (
         QString::fromStdString (std::string (buf, len)), style);

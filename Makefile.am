@@ -236,6 +236,7 @@ libgnu/libgnu.la: oct-conf-post-private.h oct-conf-post-public.h
 
 include liboctave/module.mk
 include libinterp/module.mk
+include libmex/module.mk
 include libgui/module.mk
 include src/module.mk
 include scripts/module.mk

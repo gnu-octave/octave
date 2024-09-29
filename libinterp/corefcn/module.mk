@@ -59,8 +59,6 @@ COREFCN_INC = \
   %reldir%/ls-oct-text.h \
   %reldir%/ls-oct-binary.h \
   %reldir%/ls-utils.h \
-  %reldir%/mex.h \
-  %reldir%/mexproto.h \
   %reldir%/mx-type-traits.h \
   %reldir%/mxarray.h \
   %reldir%/oct-errno.h \
@@ -217,7 +215,6 @@ COREFCN_SRC = \
   %reldir%/mappers.cc \
   %reldir%/matrix_type.cc \
   %reldir%/max.cc \
-  %reldir%/mex.cc \
   %reldir%/mgorth.cc \
   %reldir%/mxarray.cc \
   %reldir%/nproc.cc \

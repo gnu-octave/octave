@@ -276,6 +276,39 @@ octave_unused_parameter (const T&)
 #  define OCTGRAPHICS_OVERRIDABLE_FUNC_API
 #endif
 
+/* API macros for liboctmex */
+#if defined (OCTMEX_DLL)
+#  define OCTMEX_API OCTAVE_EXPORT
+#  define OCTMEX_EXCEPTION_API OCTAVE_EXPORT
+#  if defined (_WIN32) || defined (__CYGWIN__)
+#    define OCTMEX_TEMPLATE_API
+#    if defined (__MINGW32__)
+#      define OCTMEX_EXTERN_TEMPLATE_API OCTAVE_EXPORT
+#      define OCTMEX_CLASS_TEMPLATE_INSTANTIATION_API
+#    else
+#      define OCTMEX_EXTERN_TEMPLATE_API
+#      define OCTMEX_CLASS_TEMPLATE_INSTANTIATION_API OCTAVE_EXPORT
+#    endif
+#    define OCTMEX_OVERRIDABLE_FUNC_API OCTAVE_EXPORT
+#  else
+#    define OCTMEX_TEMPLATE_API OCTAVE_EXPORT
+#    define OCTMEX_EXTERN_TEMPLATE_API OCTAVE_EXPORT
+#    define OCTMEX_CLASS_TEMPLATE_INSTANTIATION_API
+#    define OCTMEX_OVERRIDABLE_FUNC_API
+#  endif
+#else
+#  define OCTMEX_API OCTAVE_IMPORT
+#  if defined (_WIN32) || defined (__CYGWIN__)
+#    define OCTMEX_EXCEPTION_API OCTAVE_IMPORT
+#  else
+#    define OCTMEX_EXCEPTION_API OCTAVE_EXPORT
+#  endif
+#  define OCTMEX_TEMPLATE_API
+#  define OCTMEX_EXTERN_TEMPLATE_API OCTAVE_IMPORT
+#  define OCTMEX_CLASS_TEMPLATE_INSTANTIATION_API
+#  define OCTMEX_OVERRIDABLE_FUNC_API
+#endif
+
 /* API macros for libgui */
 #if defined (OCTGUI_DLL)
 #  define OCTGUI_API OCTAVE_EXPORT

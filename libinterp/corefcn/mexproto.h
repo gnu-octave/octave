@@ -66,9 +66,7 @@ extern "C" {
 #  define MX_HAS_INTERLEAVED_COMPLEX 0
 #endif
 
-#define MXARRAY_TYPEDEFS_ONLY
-#include "mxarray.h"
-#undef MXARRAY_TYPEDEFS_ONLY
+#include "mxtypes.h"
 
 /* Prototype for the gateway function.  */
 

@@ -53,6 +53,11 @@ SUCH DAMAGE.
 
 #include "mxtypes.h"
 
+#if defined (MXARRAY_TYPEDEFS_ONLY)
+#  warning "MXARRAY_TYPEDEFS_ONLY has been deprecated and will be removed in \
+Octave 12.  Include "mxtypes.h" instead of "mxarray.h"."
+#endif
+
 #if ! defined (MXARRAY_TYPEDEFS_ONLY)
 
 #include <cstring>

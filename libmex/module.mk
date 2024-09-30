@@ -28,6 +28,9 @@ LIBMEX_INC = \
   %reldir%/mex.h \
   %reldir%/mexproto.h
 
+octinclude_HEADERS += \
+  $(LIBMEX_INC)
+
 %canon_reldir%_liboctmex_la_SOURCES = \
   %reldir%/mex.cc
 

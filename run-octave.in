@@ -136,11 +136,11 @@ fi
 
 case "%host_os%" in
   msdosmsvc | mingw* | cygwin*)
-    PATH="$builddir/libmex/.libs:${PATH}" ;;
+    PATH="$builddir/libmex/.libs:${PATH}"; export PATH ;;
   darwin*)
-    DYLD_INSERT_LIBRARIES="$builddir/libmex/.libs/liboctmex.dylib" ;;
+    DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH:$builddir/libmex/.libs"; export DYLD_LIBRARY_PATH ;;
   *)
-    LD_PRELOAD="$builddir/libmex/.libs/liboctmex.so" ;;
+    LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$builddir/libmex/.libs"; export LD_LIBRARY_PATH ;;
 esac
 
 exec $builddir/libtool --mode=execute $driver \

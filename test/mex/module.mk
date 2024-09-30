@@ -38,6 +38,7 @@ MKOCTFILELDFLAGS = \
   -L$(top_builddir)/liboctave/.libs
 
 MKOCTFILE = \
+  OCT_LINK_DEPS="$(OCT_LINK_DEPS)" \
   DL_LDFLAGS="$(DL_LDFLAGS)" \
   $(top_builddir)/src/mkoctfile $(MKOCTFILECPPFLAGS) $(MKOCTFILELDFLAGS)
 
@@ -50,6 +51,7 @@ MKMEXFILELDFLAGS = \
   -L$(top_builddir)/libmex/.libs
 
 MKMEXFILE = \
+  OCT_LINK_DEPS="" \
   DL_LDFLAGS="$(DL_LDFLAGS)" \
   $(top_builddir)/src/mkoctfile --mex $(MKMEXFILECPPFLAGS) $(MKMEXFILELDFLAGS)
 

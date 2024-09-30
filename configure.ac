@@ -210,6 +210,7 @@ PKG_PROG_PKG_CONFIG
 PKG_INSTALLDIR
 AC_SUBST([liboctave_pkgconfigdir], [$pkgconfigdir])
 AC_SUBST([libinterp_pkgconfigdir], [$pkgconfigdir])
+AC_SUBST([libmex_pkgconfigdir], [$pkgconfigdir])
 
 ## Programs used in Makefiles.
 AC_PROG_AWK
@@ -894,14 +895,17 @@ DL_LIBS="$lt_cv_dlopen_libs"
 if test $SHARED_LIBS = yes; then
   LIBOCTINTERP="-loctinterp"
   LIBOCTAVE="-loctave"
+  LIBOCTMEX="-loctmex"
 else
   LIBOCTINTERP="${top_builddir}/libinterp/liboctinterp.a"
   LIBOCTAVE="${top_builddir}/liboctave/liboctave.a"
+  LIBOCTMEX="${top_builddir}/liboctave/liboctmex.a"
 fi
 
 AC_SUBST(RDYNAMIC_FLAG)
 AC_SUBST(LIBOCTINTERP)
 AC_SUBST(LIBOCTAVE)
+AC_SUBST(LIBOCTMEX)
 
 if test "$cross_compiling" = yes && test -n "$ac_tool_prefix"; then
   CROSS_TOOL_PREFIX="$ac_tool_prefix"
@@ -2827,24 +2831,28 @@ if test $ENABLE_LIB_VISIBILITY_FLAGS = yes; then
   EXTERNAL_DLL_DEFS="-DEXTERNAL_DLL"
   OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
   OCTINTERP_DLL_DEFS="-DOCTINTERP_DLL"
+  OCTMEX_DLL_DEFS="-DOCTMEX_DLL"
   OCTGUI_DLL_DEFS="-DOCTGUI_DLL"
   OCTGRAPHICS_DLL_DEFS="-DOCTGRAPHICS_DLL"
 else
   EXTERNAL_DLL_DEFS=
   OCTAVE_DLL_DEFS=
   OCTINTERP_DLL_DEFS=
+  OCTMEX_DLL_DEFS=
   OCTGUI_DLL_DEFS=
   OCTGRAPHICS_DLL_DEFS=
 fi
 AC_MSG_NOTICE([defining EXTERNAL_DLL_DEFS to be $EXTERNAL_DLL_DEFS])
 AC_MSG_NOTICE([defining OCTAVE_DLL_DEFS to be $OCTAVE_DLL_DEFS])
 AC_MSG_NOTICE([defining OCTINTERP_DLL_DEFS to be $OCTINTERP_DLL_DEFS])
+AC_MSG_NOTICE([defining OCTMEX_DLL_DEFS to be $OCTMEX_DLL_DEFS])
 AC_MSG_NOTICE([defining OCTGUI_DLL_DEFS to be $OCTGUI_DLL_DEFS])
 AC_MSG_NOTICE([defining OCTGRAPHICS_DLL_DEFS to be $OCTGRAPHICS_DLL_DEFS])
 
 AC_SUBST(EXTERNAL_DLL_DEFS)
 AC_SUBST(OCTAVE_DLL_DEFS)
 AC_SUBST(OCTINTERP_DLL_DEFS)
+AC_SUBST(OCTMEX_DLL_DEFS)
 AC_SUBST(OCTGUI_DLL_DEFS)
 AC_SUBST(OCTGRAPHICS_DLL_DEFS)
 
@@ -3222,7 +3230,8 @@ AC_CONFIG_FILES([
   libgnu/Makefile
   test/Makefile
   liboctave/octave.pc:liboctave/octave.in.pc
-  libinterp/octinterp.pc:libinterp/octinterp.in.pc])
+  libinterp/octinterp.pc:libinterp/octinterp.in.pc
+  libmex/octmex.pc:libmex/octmex.in.pc])
 
 dnl We use a .in.h file for oct-conf-post-private.h and
 dnl oct-conf-post-public.h simply to copy it to the build tree

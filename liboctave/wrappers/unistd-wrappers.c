@@ -360,6 +360,12 @@ octave_stdout_fileno (void)
 }
 
 int
+octave_stderr_fileno (void)
+{
+  return STDERR_FILENO;
+}
+
+int
 octave_symlink_wrapper (const char *nm1, const char *nm2)
 {
   return symlink (nm1, nm2);

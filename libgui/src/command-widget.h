@@ -43,6 +43,7 @@
 #include "event-manager.h"
 
 class QsciScintilla;
+class self_listener;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -113,8 +114,6 @@ public:
 
   QString prompt ();
 
-  void print_stream (const QString&);
-
 Q_SIGNALS:
 
   void clear_line_edit ();
@@ -131,6 +130,8 @@ Q_SIGNALS:
 
 public Q_SLOTS:
 
+  void process_redirected_streams (const char *buf, int len, int fd);
+
   void process_input_line (const QString& input_line);
 
   void update_prompt (const QString& prompt);
@@ -144,11 +145,9 @@ private:
   bool m_incomplete_parse;
   QString m_prompt;
   console *m_console;
+  QPointer<self_listener> m_listener;
   find_widget *m_find_widget;
   QShortcut *m_find_shortcut;
-  QTemporaryFile *m_stdout_file;
-  QTemporaryFile *m_stderr_file;
-  QFileSystemWatcher m_file_watcher;
 };
 
 OCTAVE_END_NAMESPACE(octave)

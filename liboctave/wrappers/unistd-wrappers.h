@@ -94,6 +94,8 @@ extern OCTAVE_API int octave_stdin_fileno (void);
 
 extern OCTAVE_API int octave_stdout_fileno (void);
 
+extern OCTAVE_API int octave_stderr_fileno (void);
+
 extern OCTAVE_API int octave_symlink_wrapper (const char *nm1, const char *nm2);
 
 extern OCTAVE_API int octave_unlink_wrapper (const char *nm);

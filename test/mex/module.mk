@@ -43,11 +43,12 @@ MKOCTFILE = \
 
 MKMEXFILECPPFLAGS = \
   -I$(top_builddir) \
+  -I$(top_srcdir)/libmex \
   -I$(top_srcdir)/libinterp/corefcn \
   -I$(top_builddir)/libinterp/corefcn
 MKMEXFILELDFLAGS = \
-  -L$(top_builddir)/libinterp/.libs \
-  -L$(top_builddir)/liboctave/.libs
+  -L$(top_builddir)/libmex/.libs \
+  -Wl,-rpath=$(abs_top_builddir)/libmex/.libs
 
 MKMEXFILE = \
   DL_LDFLAGS="$(DL_LDFLAGS)" \

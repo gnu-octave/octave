@@ -34,6 +34,11 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
 - Support setting breakpoints in `set` or `get` methods of `classdef`
   properties (bug #65610).
 
+- `.mex` files now link to the new library `liboctmex` (instead of to
+  `liboctinterp` and `liboctave`).  The SOVERSION of this new library is
+  expected to be stable across multiple major versions of Octave.  So, `.mex`
+  files might not need to be rebuilt for future major versions of Octave.
+
 ### Graphical User Interface
 
 ### Graphics backend

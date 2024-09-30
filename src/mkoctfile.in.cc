@@ -319,6 +319,8 @@ make_vars_map (bool link_stand_alone, bool verbose, bool debug)
 
   vars["LIBOCTINTERP"] = "-loctinterp";
 
+  vars["LIBOCTMEX"] = "-loctmex";
+
   vars["READLINE_LIBS"] = %OCTAVE_CONF_READLINE_LIBS%;
 
   vars["LAPACK_LIBS"] = get_variable ("LAPACK_LIBS", %OCTAVE_CONF_LAPACK_LIBS%);
@@ -444,18 +446,18 @@ static std::string help_msg =
   "                            BLAS_LIBS                   LIBDIR\n"
   "                            CC                          LIBOCTAVE\n"
   "                            CFLAGS                      LIBOCTINTERP\n"
-  "                            CPICFLAG                    OCTAVE_LINK_OPTS\n"
-  "                            CPPFLAGS                    OCTINCLUDEDIR\n"
-  "                            CXX                         OCTAVE_LIBS\n"
-  "                            CXXFLAGS                    OCTAVE_LINK_DEPS\n"
-  "                            CXXLD                       OCTLIBDIR\n"
-  "                            CXXPICFLAG                  OCT_LINK_DEPS\n"
-  "                            DL_LDFLAGS                  OCT_LINK_OPTS\n"
-  "                            F77                         RDYNAMIC_FLAG\n"
-  "                            F77_INTEGER8_FLAG           SPECIAL_MATH_LIB\n"
-  "                            FFLAGS                      XTRA_CFLAGS\n"
-  "                            FPICFLAG                    XTRA_CXXFLAGS\n"
-  "                            INCFLAGS\n"
+  "                            CPICFLAG                    LIBOCTMEX\n"
+  "                            CPPFLAGS                    OCTAVE_LINK_OPTS\n"
+  "                            CXX                         OCTINCLUDEDIR\n"
+  "                            CXXFLAGS                    OCTAVE_LIBS\n"
+  "                            CXXLD                       OCTAVE_LINK_DEPS\n"
+  "                            CXXPICFLAG                  OCTLIBDIR\n"
+  "                            DL_LDFLAGS                  OCT_LINK_DEPS\n"
+  "                            F77                         OCT_LINK_OPTS\n"
+  "                            F77_INTEGER8_FLAG           RDYNAMIC_FLAG\n"
+  "                            FFLAGS                      SPECIAL_MATH_LIB\n"
+  "                            FPICFLAG                    XTRA_CFLAGS\n"
+  "                            INCFLAGS                    XTRA_CXXFLAGS\n"
   "\n"
   "                          Octave configuration variables as above, but\n"
   "                          currently unused by mkoctfile.\n"
@@ -507,7 +509,8 @@ static std::string help_msg =
   "  --link-stand-alone      Link a stand-alone executable file.\n"
   "\n"
   "  --mex                   Assume we are creating a MEX file.  Set the\n"
-  "                          default output extension to \".mex\".\n"
+  "                          default output extension to \".mex\".  Link to\n"
+  "                          liboctmex instead of liboctinterp and liboctave.\n"
   "\n"
   "  -s, --strip             Strip output file.\n"
   "\n"
@@ -1347,9 +1350,13 @@ main (int argc, char **sys_argv)
     }
   else
     {
+      if (creating_mex_file)
+        octave_libs = (" -L" + quote_path (vars["OCTLIBDIR"]) + ' '
+                       + vars["LIBOCTMEX"]);
 #if defined (OCTAVE_USE_WINDOWS_API) || defined (CROSS)
-      octave_libs = "-L" + quote_path (vars["OCTLIBDIR"])
-                    + ' ' + vars["OCTAVE_LIBS"];
+      else
+        octave_libs = (" -L" + quote_path (vars["OCTLIBDIR"]) + ' '
+                       + vars["OCTAVE_LIBS"]);
 #endif
 
       std::string cmd

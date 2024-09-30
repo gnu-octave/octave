@@ -96,10 +96,10 @@
 ##    ALL_CXXFLAGS                LAPACK_LIBS
 ##    ALL_FFLAGS                  LDFLAGS
 ##    ALL_LDFLAGS                 LD_STATIC_FLAG
-##    BLAS_LIBS                   LFLAGS
-##    CC                          LIBDIR
-##    CFLAGS                      LIBOCTAVE
-##    CPICFLAG                    LIBOCTINTERP
+##    BLAS_LIBS                   LIBDIR
+##    CC                          LIBOCTAVE
+##    CFLAGS                      LIBOCTINTERP
+##    CPICFLAG                    LIBOCTMEX
 ##    CPPFLAGS                    OCTAVE_LINK_OPTS
 ##    CXX                         OCTINCLUDEDIR
 ##    CXXFLAGS                    OCTAVE_LIBS
@@ -171,7 +171,7 @@
 ##
 ## @item --mex
 ## Assume creation of a MEX file.  Set the default output extension to
-## @file{.mex}.
+## @file{.mex}.  Link to liboctmex instead of liboctinterp and liboctave.
 ##
 ## @item  -s
 ## @itemx --strip

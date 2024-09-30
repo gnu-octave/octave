@@ -53,10 +53,19 @@ SUCH DAMAGE.
 
 #include "mxtypes.h"
 
+#if defined (MXARRAY_TYPEDEFS_ONLY)
+#  warning "MXARRAY_TYPEDEFS_ONLY has been deprecated and will be removed in \
+Octave 12.  Include "mxtypes.h" instead of "mxarray.h"."
+#endif
+
 #if ! defined (MXARRAY_TYPEDEFS_ONLY)
 
 #include <cstring>
+#include <set>
+
 #include "error.h"
+
+#include "ov-mex-fcn.h"
 
 class octave_value;
 class dim_vector;
@@ -672,8 +681,226 @@ private:
 
 };
 
+// A class to manage calls to MEX functions.  Mostly deals with memory
+// management.
+
+class OCTINTERP_API mex
+{
+public:
+
+  mex (octave_mex_function& f)
+    : m_curr_mex_fcn (f), m_memlist (), m_arraylist (), m_fname (nullptr) { }
+
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (mex)
+
+  ~mex ();
+
+  const char *function_name () const;
+
+  // Allocate memory.
+  void *malloc_unmarked (std::size_t n);
+
+  // Allocate memory to be freed on exit.
+  void *malloc (std::size_t n)
+  {
+    void *ptr = malloc_unmarked (n);
+
+    mark (ptr);
+
+    return ptr;
+  }
+
+  // Allocate memory and initialize to 0.
+  void *calloc_unmarked (std::size_t n, std::size_t t)
+  {
+    void *ptr = malloc_unmarked (n*t);
+
+    memset (ptr, 0, n*t);
+
+    return ptr;
+  }
+
+  // Allocate memory to be freed on exit and initialize to 0.
+  void *calloc (std::size_t n, std::size_t t)
+  {
+    void *ptr = calloc_unmarked (n, t);
+
+    mark (ptr);
+
+    return ptr;
+  }
+
+  // Reallocate a pointer obtained from malloc or calloc.
+  // If the pointer is NULL, allocate using malloc.
+  // We don't need an "unmarked" version of this.
+  void *realloc (void *ptr, std::size_t n);
+
+  // Free a pointer obtained from malloc or calloc.
+  void free (void *ptr);
+
+  // Mark a pointer to be freed on exit.
+  void mark (void *ptr)
+  {
+#if defined (DEBUG)
+    if (m_memlist.find (ptr) != m_memlist.end ())
+      warning ("%s: double registration ignored", function_name ());
+#endif
+
+    m_memlist.insert (ptr);
+  }
+
+  // Unmark a pointer to be freed on exit, either because it was
+  // made persistent, or because it was already freed.
+  void unmark (void *ptr)
+  {
+    auto p = m_memlist.find (ptr);
+
+    if (p != m_memlist.end ())
+      m_memlist.erase (p);
+#if defined (DEBUG)
+    else
+      warning ("%s: value not marked", function_name ());
+#endif
+  }
+
+  mxArray * mark_array (mxArray *ptr)
+  {
+    m_arraylist.insert (ptr);
+    return ptr;
+  }
+
+  void unmark_array (mxArray *ptr)
+  {
+    auto p = m_arraylist.find (ptr);
+
+    if (p != m_arraylist.end ())
+      m_arraylist.erase (p);
+  }
+
+  // Mark a pointer as one we allocated.
+  void mark_foreign (void *ptr)
+  {
+#if defined (DEBUG)
+    if (m_foreign_memlist.find (ptr) != m_foreign_memlist.end ())
+      warning ("%s: double registration ignored", function_name ());
+#endif
+
+    m_foreign_memlist.insert (ptr);
+  }
+
+  // Unmark a pointer as one we allocated.
+  void unmark_foreign (void *ptr)
+  {
+    auto p = m_foreign_memlist.find (ptr);
+
+    if (p != m_foreign_memlist.end ())
+      m_foreign_memlist.erase (p);
+#if defined (DEBUG)
+    else
+      warning ("%s: value not marked", function_name ());
+#endif
+
+  }
+
+  // Make a new array value and initialize from an octave value; it will be
+  // freed on exit unless marked as persistent.
+  mxArray * make_value (const octave_value& ov)
+  {
+    bool interleaved = m_curr_mex_fcn.use_interleaved_complex ();
+
+    return mark_array (new mxArray (interleaved, ov));
+  }
+
+  // Free an array and its contents.
+  bool free_value (mxArray *ptr)
+  {
+    bool inlist = false;
+
+    auto p = m_arraylist.find (ptr);
+
+    if (p != m_arraylist.end ())
+      {
+        inlist = true;
+        m_arraylist.erase (p);
+        delete ptr;
+      }
+#if defined (DEBUG)
+    else
+      warning ("mex::free_value: skipping memory not allocated by mex::make_value");
+#endif
+
+    return inlist;
+  }
+
+  octave_mex_function& current_mex_function () const
+  {
+    return m_curr_mex_fcn;
+  }
+
+  // 1 if error should be returned to MEX file, 0 if abort.
+  int trap_feval_error = 0;
+
+  // Mark a pointer as one we allocated.
+  void global_mark (void *ptr)
+  {
+#if defined (DEBUG)
+    if (s_global_memlist.find (ptr) != s_global_memlist.end ())
+      warning ("%s: double registration ignored", function_name ());
+#endif
+
+    s_global_memlist.insert (ptr);
+  }
+
+  // Unmark a pointer as one we allocated.
+  void global_unmark (void *ptr)
+  {
+    auto p = s_global_memlist.find (ptr);
+
+    if (p != s_global_memlist.end ())
+      s_global_memlist.erase (p);
+#if defined (DEBUG)
+    else
+      warning ("%s: value not marked", function_name ());
+#endif
+  }
+
+private:
+
+  // Pointer to the mex function that corresponds to this mex context.
+  octave_mex_function& m_curr_mex_fcn;
+
+  // List of memory resources that need to be freed upon exit.
+  std::set<void *> m_memlist;
+
+  // List of mxArray objects that need to be freed upon exit.
+  std::set<mxArray *> m_arraylist;
+
+  // List of memory resources we know about, but that were allocated
+  // elsewhere.
+  std::set<void *> m_foreign_memlist;
+
+  // The name of the currently executing function.
+  mutable char *m_fname;
+
+  // List of memory resources we allocated.
+  static std::set<void *> s_global_memlist;
+
+};
+
 #undef DO_MUTABLE_METHOD
 #undef DO_VOID_MUTABLE_METHOD
+
+OCTINTERP_API octave_value_list
+mx_to_ov_args (int nargin, mxArray *argin[]);
+
+OCTINTERP_API void
+mexErrMsgTxt_impl (const char *who, const char *s);
+
+OCTINTERP_API int
+mexPutVariable_impl (const char *space, const char *name, const mxArray *ptr);
+
+OCTINTERP_API int
+mexSet_impl (double handle, const char *property, mxArray *val);
 
 #endif
 #endif

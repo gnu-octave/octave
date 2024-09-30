@@ -345,13 +345,13 @@ make_vars_map (bool link_stand_alone, bool verbose, bool debug)
                                 replace_prefix (%OCTAVE_CONF_FLIBS%));
 
   vars["OCTAVE_LINK_DEPS"] = get_variable ("OCTAVE_LINK_DEPS",
-                                           %OCTAVE_CONF_MKOCTFILE_OCTAVE_LINK_DEPS%);
+                                           replace_prefix (%OCTAVE_CONF_MKOCTFILE_OCTAVE_LINK_DEPS%));
 
   vars["OCTAVE_LINK_OPTS"] = get_variable ("OCTAVE_LINK_OPTS",
                                            %OCTAVE_CONF_OCTAVE_LINK_OPTS%);
 
   vars["OCT_LINK_DEPS"] = get_variable ("OCT_LINK_DEPS",
-                                        %OCTAVE_CONF_MKOCTFILE_OCT_LINK_DEPS%);
+                                        replace_prefix (%OCTAVE_CONF_MKOCTFILE_OCT_LINK_DEPS%));
 
   vars["OCT_LINK_OPTS"]
     = get_variable ("OCT_LINK_OPTS",

@@ -1364,7 +1364,10 @@ main (int argc, char **sys_argv)
            + pass_on_options + " -o " + octfile + ' ' + objfiles + ' '
            + libfiles + ' ' + ldflags + ' ' + vars["DL_LDFLAGS"] + ' '
            + vars["LDFLAGS"] + ' ' + octave_libs + ' '
-           + vars["OCT_LINK_OPTS"] + ' ' + vars["OCT_LINK_DEPS"]);
+           + vars["OCT_LINK_OPTS"]);
+
+      if (! creating_mex_file)
+        cmd += ' ' + vars["OCT_LINK_DEPS"];
 
 #if defined (OCTAVE_USE_WINDOWS_API) || defined (CROSS)
       if (! f77files.empty () && ! vars["FLIBS"].empty ())

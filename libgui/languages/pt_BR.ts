@@ -1321,7 +1321,7 @@ Do you want to overwrite it?</source>
     <message>
         <location line="+85"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
-        <translation type="unfinished">O arquivo &apos;%1&apos; paree ter sido modificado por outra aplicação. Deseja recarregá-lo?</translation>
+        <translation type="unfinished">O arquivo &apos;%1&apos; parece ter sido modificado por outra aplicação. Deseja recarregá-lo?</translation>
     </message>
     <message>
         <location line="+29"/>

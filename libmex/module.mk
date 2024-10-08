@@ -1,7 +1,5 @@
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
-%canon_reldir%_EXTRA_DIST =
-
 %canon_reldir%_CLEANFILES =
 %canon_reldir%_DISTCLEANFILES =
 %canon_reldir%_MAINTAINERCLEANFILES =
@@ -24,15 +22,25 @@ octlib_LTLIBRARIES += %reldir%/liboctmex.la
 
 %canon_reldir%_pkgconfig_DATA = %reldir%/octmex.pc
 
+LIBOCTMEX_BUILT_NODISTFILES = \
+  %reldir%/liboctmex-build-info.cc
+
+%canon_reldir%_EXTRA_DIST = \
+  %reldir%/liboctmex-build-info.in.cc
+
 LIBMEX_INC = \
   %reldir%/mex.h \
   %reldir%/mexproto.h
 
 octinclude_HEADERS += \
+  %reldir%/liboctmex-build-info.h \
   $(LIBMEX_INC)
 
 %canon_reldir%_liboctmex_la_SOURCES = \
   %reldir%/mex.cc
+
+nodist_%canon_reldir%_liboctmex_la_SOURCES = \
+  %reldir%/liboctmex-build-info.cc
 
 %canon_reldir%_liboctmex_la_LIBADD = \
   libinterp/liboctinterp.la \
@@ -53,7 +61,13 @@ octinclude_HEADERS += \
   -bindir $(bindir) \
   $(WARN_LDFLAGS)
 
+%reldir%/liboctmex-build-info.cc: %reldir%/liboctmex-build-info.in.cc HG-ID | %reldir%/$(octave_dirstamp)
+	$(AM_V_GEN)$(build-info-commands)
+
 EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
+
+%canon_reldir%_CLEANFILES += \
+  $(LIBOCTMEX_BUILT_NODISTFILES)
 
 %canon_reldir%_DISTCLEANFILES += \
   $(%canon_reldir%_pkgconfig_DATA)

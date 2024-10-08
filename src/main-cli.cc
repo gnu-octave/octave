@@ -44,6 +44,8 @@
 
 #include "liboctinterp-build-info.h"
 
+#include "liboctmex-build-info.h"
+
 #include "oct-env.h"
 #include "signal-wrappers.h"
 
@@ -64,6 +66,7 @@ check_hg_versions ()
   std::string octave_id = octave_hg_id ();
   std::string liboctave_id = liboctave_hg_id ();
   std::string liboctinterp_id = liboctinterp_hg_id ();
+  std::string liboctmex_id = liboctmex_hg_id ();
 
   if (octave_id != liboctave_id)
     {
@@ -81,6 +84,16 @@ check_hg_versions ()
                 << octave_id
                 << ") does not match liboctinterp hg id ("
                 << liboctinterp_id
+                << ')' << std::endl;
+      ok = false;
+    }
+
+  if (octave_id != liboctmex_id)
+    {
+      std::cerr << "octave hg id ("
+                << octave_id
+                << ") does not match liboctmex hg id ("
+                << liboctmex_id
                 << ')' << std::endl;
       ok = false;
     }

@@ -3054,6 +3054,7 @@ OCTAVE_LINK_DEPS=""
 OCTAVE_LINK_OPTS=""
 
 OCT_LINK_DEPS=""
+OCT_LTLINK_DEPS=""
 OCT_GUI_LINK_DEPS=""
 
 OCT_LINK_OPTS="$LDFLAGS"
@@ -3063,7 +3064,8 @@ if test $link_all_deps = yes; then
   AC_DEFINE(OCTAVE_LINK_ALL_DEPS, 1, [Link with all dependencies.])
 
   OCT_LINK_DEPS="libinterp/liboctinterp.la liboctave/liboctave.la"
-  OCT_GUI_LINK_DEPS="libgui/liboctgui.la libinterp/liboctinterp.la liboctave/liboctave.la"
+  OCT_LTLINK_DEPS="$OCT_LINK_DEPS"
+  OCT_GUI_LINK_DEPS="libgui/liboctgui.la $OCT_LINK_DEPS"
 
   MKOCTFILE_OCTAVE_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS $MKOCTFILE_LIBOCTAVE_LINK_DEPS"
   MKOCTFILE_OCT_LINK_DEPS="$LIBOCTINTERP $LIBOCTAVE"
@@ -3077,7 +3079,15 @@ else
   case $host_os in
     mingw* | msdosmsvc)
       OCT_LINK_DEPS="libinterp/liboctinterp.la liboctave/liboctave.la"
-      OCT_GUI_LINK_DEPS="libgui/liboctgui.la libinterp/liboctinterp.la liboctave/liboctave.la"
+      OCT_LTLINK_DEPS="$OCT_LINK_DEPS"
+      OCT_GUI_LINK_DEPS="libgui/liboctgui.la $OCT_LINK_DEPS"
+    ;;
+    darwin*)
+      dnl Contains variables that are defined and undefined at this point,
+      dnl so use appropriate quoting to defer expansion of
+      dnl ${abs_top_builddir}, ${bindir}, and ${version}.
+      OCT_LINK_DEPS='-bundle_loader ${abs_top_builddir}/src/octave'"${EXEEXT}"
+      MKOCTFILE_OCT_LINK_DEPS='-bundle_loader ${bindir}/octave-${version}'"${EXEEXT}"
     ;;
   esac
 fi
@@ -3089,6 +3099,7 @@ AC_SUBST(OCTAVE_LINK_DEPS)
 AC_SUBST(OCTAVE_LINK_OPTS)
 
 AC_SUBST(OCT_LINK_DEPS)
+AC_SUBST(OCT_LTLINK_DEPS)
 AC_SUBST(OCT_LINK_OPTS)
 
 AC_SUBST(OCT_GUI_LINK_DEPS)

@@ -120,7 +120,7 @@ include %reldir%/template-inst/module.mk
 include %reldir%/corefcn/module.mk
 include %reldir%/dldfcn/module.mk
 
-DLD_LIBOCTINTERP_LIBADD = $(OCT_LINK_DEPS)
+DLD_LIBOCTINTERP_LIBADD = $(OCT_LTLINK_DEPS)
 LIBINTERP_DLDFCN_LIBADD =
 
 %canon_reldir%_liboctinterp_la_SOURCES = \

@@ -20,6 +20,9 @@ Summary of bugs fixed for version 9.3.0 (tbd):
 
 ### GUI
 
+- `legend` icons now inherit the "facelalpha" property from to match 
+  appearance of patch and surface graphics objects.
+
 ### Build system / Tests
 
 - `jupyter-notebook` test no longer fails if a figure window is open

@@ -1353,11 +1353,6 @@ main (int argc, char **sys_argv)
       if (creating_mex_file)
         octave_libs = (" -L" + quote_path (vars["OCTLIBDIR"]) + ' '
                        + vars["LIBOCTMEX"]);
-#if defined (OCTAVE_USE_WINDOWS_API) || defined (CROSS)
-      else
-        octave_libs = (" -L" + quote_path (vars["OCTLIBDIR"]) + ' '
-                       + vars["OCTAVE_LIBS"]);
-#endif
 
       std::string cmd
         = (vars["CXXLD"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
@@ -1369,7 +1364,7 @@ main (int argc, char **sys_argv)
       if (! creating_mex_file)
         cmd += ' ' + vars["OCT_LINK_DEPS"];
 
-#if defined (OCTAVE_USE_WINDOWS_API) || defined (CROSS)
+#if defined (OCTAVE_USE_WINDOWS_API) || defined (CROSS) || defined (OCTAVE_LINK_ALL_DEPS)
       if (! f77files.empty () && ! vars["FLIBS"].empty ())
         cmd += ' ' + vars["FLIBS"];
 #endif

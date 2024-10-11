@@ -373,8 +373,7 @@ draw (QDomElement& parent_elt, pdfpainter& painter)
           if (! str.isEmpty ())
             {
               // Font
-              font = QFont ();
-              font.setFamily (elt.attribute ("font-family"));
+              font = QFont (str);
 
               str = elt.attribute ("font-weight");
               if (! str.isEmpty () && str != "normal")
@@ -535,7 +534,14 @@ draw (QDomElement& parent_elt, pdfpainter& painter)
 
           QString str = elt.attribute ("font-family");
           if (! str.isEmpty ())
-            font.setFamily (elt.attribute ("font-family"));
+            {
+              // QFont::setFamily() doesn't seem to work properly in Qt6
+              // (see bug #66306). Use the QFont constructor to update
+              // the current font.
+              font = QFont (str, -1, font.weight (),
+                            font.style () ==  QFont::StyleItalic);
+              font.setPixelSize (saved_font.pixelSize ());
+            }
 
           str = elt.attribute ("font-weight");
           if (! str.isEmpty ())

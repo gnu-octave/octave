@@ -3081,6 +3081,8 @@ else
       OCT_LINK_DEPS="libinterp/liboctinterp.la liboctave/liboctave.la"
       OCT_LTLINK_DEPS="$OCT_LINK_DEPS"
       OCT_GUI_LINK_DEPS="libgui/liboctgui.la $OCT_LINK_DEPS"
+
+      MKOCTFILE_OCT_LINK_DEPS="$LIBOCTINTERP $LIBOCTAVE"
     ;;
     darwin*)
       dnl Contains variables that are defined and undefined at this point,

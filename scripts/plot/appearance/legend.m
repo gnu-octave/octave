@@ -2279,16 +2279,14 @@ endfunction
 
 ## Verify alpha parameter inherited by legend patch objects.
 ## Only facealpha currently implemented.
-%!test <*66314>
+%!testif ; any (strcmp (graphics_toolkit (), {"fltk", "qt"})) <*66314>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ("parent", hf);
 %!   hp = patch (hax);
 %!   set (hp, "facealpha", 0.5);
-%!   hleg = legend (hax);
-%!   legprops = get(hleg);
-%!   legpatchidx = find (strcmp (get (legprops.children, "type"), "patch"));
-%!   assert (get (legprops.children(legpatchidx), "facealpha"), 0.5);
+%!   hl = legend (hax);
+%!   assert (get (findobj (hl, "type", "patch"), "facealpha"), 0.5);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

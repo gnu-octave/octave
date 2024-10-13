@@ -17,11 +17,10 @@ Summary of bugs fixed for version 9.3.0 (tbd):
   Improve input validation to ensure `opt` is one of 0, 1, or []. (bug #66021).
 - `interp2`: Provide a meaningful error message if the input reference array
   is a vector (bug #66086).
+- `legend` icons now inherit the "facelalpha" property to match appearance of
+  patch and surface graphics objects.
 
 ### GUI
-
-- `legend` icons now inherit the "facelalpha" property from to match 
-  appearance of patch and surface graphics objects.
 
 ### Build system / Tests
 

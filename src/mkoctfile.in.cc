@@ -250,12 +250,6 @@ make_vars_map (bool link_stand_alone, bool verbose, bool debug)
 
   std::string DEFAULT_LDFLAGS;
 
-#if (defined (OCTAVE_USE_WINDOWS_API) || defined (CROSS) || defined (OCTAVE_LINK_ALL_DEPS))
-  // We'll be linking the files we compile with -loctinterp and -loctave,
-  // so we need to know where to find them.
-  DEFAULT_LDFLAGS += "-L" + quote_path (vars["OCTLIBDIR"]);
-#endif
-
   if (vars["LIBDIR"] != "/usr/lib")
     DEFAULT_LDFLAGS += " -L" + quote_path (vars["LIBDIR"]);
 

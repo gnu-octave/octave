@@ -3068,7 +3068,7 @@ if test $link_all_deps = yes; then
   OCT_GUI_LINK_DEPS="libgui/liboctgui.la $OCT_LINK_DEPS"
 
   MKOCTFILE_OCTAVE_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS $MKOCTFILE_LIBOCTAVE_LINK_DEPS"
-  MKOCTFILE_OCT_LINK_DEPS="$LIBOCTINTERP $LIBOCTAVE"
+  MKOCTFILE_OCT_LINK_DEPS="-L${octlibdir} $LIBOCTINTERP $LIBOCTAVE"
 
   LIBOCTINTERP_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS $LIBOCTAVE_LINK_DEPS"
   LIBOCTINTERP_LINK_OPTS="$LIBOCTINTERP_LINK_OPTS $LIBOCTAVE_LINK_OPTS"
@@ -3082,7 +3082,7 @@ else
       OCT_LTLINK_DEPS="$OCT_LINK_DEPS"
       OCT_GUI_LINK_DEPS="libgui/liboctgui.la $OCT_LINK_DEPS"
 
-      MKOCTFILE_OCT_LINK_DEPS="$LIBOCTINTERP $LIBOCTAVE"
+      MKOCTFILE_OCT_LINK_DEPS="-L${octlibdir} $LIBOCTINTERP $LIBOCTAVE"
     ;;
     darwin*)
       dnl Contains variables that are defined and undefined at this point,
@@ -3220,10 +3220,11 @@ AC_CONFIG_COMMANDS_PRE([
   eval man1ext="\"$man1ext\""
   eval infofile="\"$infofile\""
 
-  ## Also expand MKOCTFILE_DL_LDFLAGS, because it may depend on the values
+  ## Also expand the following variables because they may depend on the values
   ## of variables expanded above.
 
   eval MKOCTFILE_DL_LDFLAGS="\"$MKOCTFILE_DL_LDFLAGS\""
+  eval MKOCTFILE_OCT_LINK_DEPS="\"$MKOCTFILE_OCT_LINK_DEPS\""
 ])
 
 ### Do substitutions in Makefiles and other files that hold configuration info.

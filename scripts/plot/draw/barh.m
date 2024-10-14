@@ -221,9 +221,9 @@ endfunction
 %!   assert (bardata.ydata, [2; 3; 4]);
 %!
 %!   assert (patchdata.type, "patch");
-%!   assert (patchdata.ydata, [0.6, 1.6, 2.6; ...
-%!                             0.6, 1.6, 2.6; ...
-%!                             1.4, 2.4, 3.4; ...
+%!   assert (patchdata.ydata, [0.6, 1.6, 2.6;
+%!                             0.6, 1.6, 2.6;
+%!                             1.4, 2.4, 3.4;
 %!                             1.4, 2.4, 3.4], eps);
 %!   assert (patchdata.xdata, [0, 0, 0; 2:4; 2:4; 0, 0, 0]);
 %!   assert (size (patchdata.faces), [3, 4]);
@@ -235,7 +235,7 @@ endfunction
 %! end_unwind_protect
 
 ## Baseline must be vertical for barh.
-%!test <65671>
+%!test <*65671>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ("parent", hf);
@@ -258,6 +258,7 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ("parent", hf);
+%!   hb = barh (hax, 2:4);
 %!   axesdata = get (hax);
 %!   assert (axesdata.ylim, [0.5, 3.5]);
 %!   assert (axesdata.ytick, 1:3);
@@ -271,7 +272,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-## Style stacked (no difference for single group).
+## Style "stacked" (no difference for single group).
 %!test
 %! hf1 = figure ("visible", "off");
 %! hf2 = figure ("visible", "off");
@@ -321,7 +322,7 @@ endfunction
 %!   close (hf2);
 %! end_unwind_protect
 
-## Style hist.
+## Style "hist"
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
@@ -333,9 +334,9 @@ endfunction
 %!   assert (! isfield (bardata, "barlayout"));
 %!   assert (! isfield (bardata, "barwidth"));
 %!   assert (bardata.type, "patch");
-%!   assert (bardata.ydata,  [0.5, 1.5, 2.5; ...
-%!                            0.5, 1.5, 2.5; ...
-%!                            1.5, 2.5, 3.5; ...
+%!   assert (bardata.ydata,  [0.5, 1.5, 2.5;
+%!                            0.5, 1.5, 2.5;
+%!                            1.5, 2.5, 3.5;
 %!                            1.5, 2.5, 3.5], eps);
 %!   assert (bardata.xdata, [0, 0, 0; 2:4; 2:4; 0, 0, 0]);
 %!   assert (size (bardata.faces), [3, 4]);
@@ -345,7 +346,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-## Style histc.
+## Style "histc"
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
@@ -378,21 +379,21 @@ endfunction
 %!
 %!   assert (numel (hb), 3);
 %!   assert (numel (hp), 3);
-%!   assert (all (strcmp ({bardata.type}, 'hggroup')));
-%!   assert (bardata(1).baseline, bardata(2).baseline); # Common baseline
-%!   assert (bardata(1).baseline, bardata(3).baseline); # Common baseline
-%!   assert (bardata(1).bargroup, bardata(2).bargroup); # Common hggroup
-%!   assert (bardata(1).bargroup, bardata(3).bargroup); # Common hggroup
-%!   assert (all (strcmp ({bardata.barlayout}, 'grouped')));
-%!   assert (all (strcmp ({bardata.horizontal}, 'on')));
+%!   assert (all (strcmp ({bardata.type}, "hggroup")));
+%!   assert (bardata(1).baseline, bardata(2).baseline);  # Common baseline
+%!   assert (bardata(1).baseline, bardata(3).baseline);  # Common baseline
+%!   assert (bardata(1).bargroup, bardata(2).bargroup);  # Common hggroup
+%!   assert (bardata(1).bargroup, bardata(3).bargroup);  # Common hggroup
+%!   assert (all (strcmp ({bardata.barlayout}, "grouped")));
+%!   assert (all (strcmp ({bardata.horizontal}, "on")));
 %!   assert ([bardata.basevalue], [0, 0, 0]);
 %!   assert ([bardata.xdata], [1, 1, 1; 2, 2, 2]);
 %!   assert ([bardata.ydata], [1, 2, 3; 4, 5, 6]);
 %!
-%!   assert (all (strcmp ({patchdata.type}, 'patch')));
-%!   assert (patchdata(1).ydata, [2, 5; ...
-%!                                2, 5; ...
-%!                                64/25, 139/25; ...
+%!   assert (all (strcmp ({patchdata.type}, "patch")));
+%!   assert (patchdata(1).ydata, [2, 5;
+%!                                2, 5;
+%!                                64/25, 139/25;
 %!                                64/25, 139/25]/3, eps);
 %!   assert (patchdata(1).xdata, [0, 0; 1, 4; 1, 4; 0, 0]);
 %!   assert (size (patchdata(1).faces), [2, 4]);
@@ -413,19 +414,19 @@ endfunction
 %!
 %!   assert (numel (hb), 3);
 %!   assert (numel (hp), 3);
-%!   assert (all (strcmp ({bardata.type}, 'hggroup')));
-%!   assert (bardata(1).baseline, bardata(2).baseline); # Common baseline
-%!   assert (bardata(1).baseline, bardata(3).baseline); # Common baseline
-%!   assert (bardata(1).bargroup, bardata(2).bargroup); # Common hggroup
-%!   assert (bardata(1).bargroup, bardata(3).bargroup); # Common hggroup
-%!   assert (all (strcmp ({bardata.barlayout}, 'stacked')));
-%!   assert (all (strcmp ({bardata.horizontal}, 'on')));
+%!   assert (all (strcmp ({bardata.type}, "hggroup")));
+%!   assert (bardata(1).baseline, bardata(2).baseline);  # Common baseline
+%!   assert (bardata(1).baseline, bardata(3).baseline);  # Common baseline
+%!   assert (bardata(1).bargroup, bardata(2).bargroup);  # Common hggroup
+%!   assert (bardata(1).bargroup, bardata(3).bargroup);  # Common hggroup
+%!   assert (all (strcmp ({bardata.barlayout}, "stacked")));
+%!   assert (all (strcmp ({bardata.horizontal}, "on")));
 %!
 %!   assert ([bardata.basevalue], [0, 0, 0]);
 %!   assert ([bardata.xdata], [1, 1, 1; 2, 2, 2]);
 %!   assert ([bardata.ydata], [1, 2, 3; 4, 5, 6]);
 %!
-%!   assert (all (strcmp ({patchdata.type}, 'patch')));
+%!   assert (all (strcmp ({patchdata.type}, "patch")));
 %!   assert (all (cellfun (@isequal, {patchdata.ydata}, ...
 %!                        {[0.6, 1.6; 0.6, 1.6; 1.4, 2.4; 1.4, 2.4]})));
 %!   assert (patchdata(1).xdata, [0, 0; 1, 4; 1, 4; 0, 0]);
@@ -450,19 +451,19 @@ endfunction
 %!
 %!   assert (numel (hb), 3);
 %!   assert (numel (hp), 3);
-%!   assert (all (strcmp ({bardata.type}, 'hggroup')));
-%!   assert (bardata(1).baseline, bardata(2).baseline); # Common baseline
-%!   assert (bardata(1).baseline, bardata(3).baseline); # Common baseline
-%!   assert (bardata(1).bargroup, bardata(2).bargroup); # Common hggroup
-%!   assert (bardata(1).bargroup, bardata(3).bargroup); # Common hggroup
-%!   assert (all (strcmp ({bardata.barlayout}, 'stacked')));
-%!   assert (all (strcmp ({bardata.horizontal}, 'on')));
+%!   assert (all (strcmp ({bardata.type}, "hggroup")));
+%!   assert (bardata(1).baseline, bardata(2).baseline);  # Common baseline
+%!   assert (bardata(1).baseline, bardata(3).baseline);  # Common baseline
+%!   assert (bardata(1).bargroup, bardata(2).bargroup);  # Common hggroup
+%!   assert (bardata(1).bargroup, bardata(3).bargroup);  # Common hggroup
+%!   assert (all (strcmp ({bardata.barlayout}, "stacked")));
+%!   assert (all (strcmp ({bardata.horizontal}, "on")));
 %!
 %!   assert ([bardata.basevalue], [0, 0, 0]);
 %!   assert ([bardata.xdata], [1, 1, 1; 2, 2, 2]);
 %!   assert ([bardata.ydata], [-2, 1, 3; 4, -5, 6]);
 %!
-%!   assert (all (strcmp ({patchdata.type}, 'patch')));
+%!   assert (all (strcmp ({patchdata.type}, "patch")));
 %!   assert (all (cellfun (@isequal, {patchdata.ydata}, ...
 %!                        {[0.6, 1.6; 0.6, 1.6; 1.4, 2.4; 1.4, 2.4]})));
 %!   assert (patchdata(1).xdata, [0, 0; -2, 4; -2, 4; 0, 0]);
@@ -476,8 +477,8 @@ endfunction
 %! end_unwind_protect
 
 ## Test plot property settings/updates
-## Note - Not testing plot and children visibility settings to avoid creating
-##        test suite artifacts.
+## Note: Not testing plot and children visibility settings to avoid creating
+##       test suite artifacts.
 
 ## Switch from grouped to stacked.
 %!test
@@ -490,12 +491,12 @@ endfunction
 %!   patchdata = get (hp);
 %!
 %!   ## Verify base behavior.
-%!   assert (all (strcmp ({bardata.barlayout}, 'grouped')));
+%!   assert (all (strcmp ({bardata.barlayout}, "grouped")));
 %!   assert ([bardata.xdata], [1, 1, 1; 2, 2, 2]);
 %!   assert ([bardata.ydata], [1, 2, 3; 4, 5, 6]);
-%!   assert (patchdata(1).ydata, [2, 5; ...
-%!                                2, 5; ...
-%!                                64/25, 139/25; ...
+%!   assert (patchdata(1).ydata, [2, 5;
+%!                                2, 5;
+%!                                64/25, 139/25;
 %!                                64/25, 139/25]/3, eps);
 %!   assert (patchdata(1).xdata, [0, 0; 1, 4; 1, 4; 0, 0]);
 %!
@@ -505,7 +506,7 @@ endfunction
 %!   hp = [bardata.children](:);
 %!   patchdata = get (hp);
 %!
-%!   assert (all (strcmp ({bardata.barlayout}, 'stacked')));
+%!   assert (all (strcmp ({bardata.barlayout}, "stacked")));
 %!   assert ([bardata.xdata], [1, 1, 1; 2, 2, 2]);
 %!   assert ([bardata.ydata], [1, 2, 3; 4, 5, 6]);
 %!   assert (all (cellfun (@isequal, {patchdata.ydata}, ...
@@ -518,7 +519,7 @@ endfunction
 %! end_unwind_protect
 
 ## Non-zero baseline
-%!test <65671>
+%!test <*65671>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ("parent", hf);
@@ -536,9 +537,9 @@ endfunction
 %!   assert (baselinedata.xdata, [3, 3]);
 %!   assert (diff (baselinedata.ydata) > 0);
 %!
-%!   assert (patchdata.ydata, [0.6, 1.6, 2.6; ...
-%!                             0.6, 1.6, 2.6; ...
-%!                             1.4, 2.4, 3.4; ...
+%!   assert (patchdata.ydata, [0.6, 1.6, 2.6;
+%!                             0.6, 1.6, 2.6;
+%!                             1.4, 2.4, 3.4;
 %!                             1.4, 2.4, 3.4], eps);
 %!   assert (patchdata.xdata, [3, 3, 3; 2:4; 2:4; 3, 3, 3]);
 %!   assert (size (patchdata.faces), [3, 4]);
@@ -613,7 +614,7 @@ endfunction
 %! end_unwind_protect
 
 ## Change from horizontal:
-%!test <65671>  # Baseline should change to/from horizontal with bars.
+%!test <*65671>  # Baseline should change to/from horizontal with bars.
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ("parent", hf);
@@ -635,9 +636,9 @@ endfunction
 %!   assert (baselinedata.ydata, [0, 0]);
 %!   assert (diff (baselinedata.xdata) > 0);
 %!
-%!   assert (patchdata.xdata, [0.6, 1.6, 2.6; ...
-%!                             0.6, 1.6, 2.6; ...
-%!                             1.4, 2.4, 3.4; ...
+%!   assert (patchdata.xdata, [0.6, 1.6, 2.6;
+%!                             0.6, 1.6, 2.6;
+%!                             1.4, 2.4, 3.4;
 %!                             1.4, 2.4, 3.4], eps);
 %!   assert (patchdata.ydata, [0, 0, 0; 2:4; 2:4; 0, 0, 0]);
 %!   assert (size (patchdata.faces), [3, 4]);
@@ -647,7 +648,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!test <65734> # Axis ticks after change from horizontal should match bar.
+%!test <*65734>  # Axis ticks after change from horizontal should match bar.
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ("parent", hf);
@@ -677,7 +678,7 @@ endfunction
 %! end_unwind_protect
 
 ## Change linear/log scale and move baseline/patch values if needed.
-%!test <65671>
+%!test <*65671>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ("parent", hf);
@@ -713,7 +714,7 @@ endfunction
 %! end_unwind_protect
 
 ## Check baseline updating subfunctions
-%!test <65671>  # Baseline move or basevalue change: update line, bar, patch.
+%!test <*65671>  # Baseline move or basevalue change: update line, bar, patch.
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ("parent", hf);
@@ -730,9 +731,9 @@ endfunction
 %!   assert (baselinedata.xdata, [0, 0]);
 %!   assert (baselinedata.ydata, [0.5, 3.5], eps);
 %!   assert (patchdata.xdata, [0, 0, 0; 2:4; 2:4; 0, 0, 0]);
-%!   assert (patchdata.ydata, [0.6, 1.6, 2.6; ...
-%!                             0.6, 1.6, 2.6; ...
-%!                             1.4, 2.4, 3.4; ...
+%!   assert (patchdata.ydata, [0.6, 1.6, 2.6;
+%!                             0.6, 1.6, 2.6;
+%!                             1.4, 2.4, 3.4;
 %!                             1.4, 2.4, 3.4], eps);
 %!
 %!   set (hax, "ylim", [0, 5]); # Change axes limits, verify baseline match.
@@ -761,7 +762,7 @@ endfunction
 %! end_unwind_protect
 
 ## Updating base plot ydata.
-%!test <65734> # changing xdata should update xlim/ticks for new locations.
+%!test <*65734>  # Changing xdata should update xlim/ticks for new locations.
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   yd = [0.6, 1.6, 2.6; 0.6, 1.6, 2.6; 1.4, 2.4, 3.4; 1.4, 2.4, 3.4];
@@ -825,17 +826,17 @@ endfunction
 %!   ## Verify base behavior.
 %!   assert (get (hb, "barwidth"), 0.8, eps);
 %!   assert (get (hb, "xdata"), [1:3]');
-%!   assert (get (hp, "ydata"), [0.6, 1.6, 2.6; ...
-%!                             0.6, 1.6, 2.6; ...
-%!                             1.4, 2.4, 3.4; ...
+%!   assert (get (hp, "ydata"), [0.6, 1.6, 2.6;
+%!                             0.6, 1.6, 2.6;
+%!                             1.4, 2.4, 3.4;
 %!                             1.4, 2.4, 3.4], eps);
 %!
 %!   ## Verify changed behavior.
 %!   set (hb, "barwidth", 0.5);
 %!   assert (get (hb, "xdata"), [1:3]');
-%!   assert (get (hp, "ydata"), [0.75, 1.75, 2.75; ...
-%!                               0.75, 1.75, 2.75; ...
-%!                               1.25, 2.25, 3.25; ...
+%!   assert (get (hp, "ydata"), [0.75, 1.75, 2.75;
+%!                               0.75, 1.75, 2.75;
+%!                               1.25, 2.25, 3.25;
 %!                               1.25, 2.25, 3.25], eps);
 %! unwind_protect_cleanup
 %!   close (hf);

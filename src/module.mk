@@ -149,7 +149,8 @@ nodist_%canon_reldir%_mkoctfile_SOURCES = %reldir%/mkoctfile.cc
 
 %canon_reldir%_mkoctfile_CPPFLAGS = \
   $(SRC_DIR_CPPFLAGS) \
-  $(OCTAVE_CPPFLAGS)
+  $(OCTAVE_CPPFLAGS) \
+  -DOCTAVE_MEX_SOVERSION="$(OCTAVE_LIBOCTMEX_SOVERSION_MAJOR)"
 
 %canon_reldir%_octave_config_SOURCES =
 

@@ -38,6 +38,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <cstdio>
 #include <cstdlib>
 
 #if defined (OCTAVE_USE_WINDOWS_API)
@@ -670,6 +671,33 @@ create_interleaved_complex_file ()
 }
 
 static std::string
+create_mex_soversion_file ()
+{
+  std::string tmpl = get_temp_directory () + "/oct-XXXXXX.c";
+
+  char *ctmpl = new char [tmpl.length () + 1];
+
+  ctmpl = strcpy (ctmpl, tmpl.c_str ());
+
+  // mkostemps will open the file and return a file descriptor.  We
+  // won't worry about closing it because we will need the file until we
+  // are done and then the file will be closed when mkoctfile exits.
+  int fd = octave_mkostemps_wrapper (ctmpl, 2);
+
+  // Make C++ string from filled-in template.
+  std::string retval (ctmpl);
+  delete [] ctmpl;
+
+  // Write symbol definition to file.
+  FILE *fid = fdopen (fd, "w");
+  fprintf (fid, "const int __octave_mex_soversion__ = %d;\n",
+           OCTAVE_MEX_SOVERSION);
+  fclose (fid);
+
+  return retval;
+}
+
+static std::string
 tmp_objfile_name ()
 {
   std::string tmpl = get_temp_directory () + "/oct-XXXXXX.o";
@@ -989,6 +1017,14 @@ main (int argc, char **sys_argv)
       if (vars["ALL_CFLAGS"].find ("-g") != std::string::npos)
         defs += " -DMEX_DEBUG";
 
+      // Create tmp C source file that defines an extern symbol that can
+      // be checked when loading the mex file to make sure the SOVERSION
+      // of liboctmex matches between the .mex file and the Octave version
+      // attempting to load it.
+      std::string tmp_file = create_mex_soversion_file ();
+
+      cfiles.push_back (tmp_file);
+
       if (mx_has_interleaved_complex)
         {
           defs += " -DMX_HAS_INTERLEAVED_COMPLEX=1";
@@ -1000,7 +1036,7 @@ main (int argc, char **sys_argv)
               // determine that the file was compiled expecting
               // interleaved complex values.
 
-              std::string tmp_file = create_interleaved_complex_file ();
+              tmp_file = create_interleaved_complex_file ();
 
               cfiles.push_back (tmp_file);
             }

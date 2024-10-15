@@ -1,4 +1,4 @@
-name: make
+name: make-macos
 on: [push]
 concurrency: ci-macos-${{ github.ref }}
 

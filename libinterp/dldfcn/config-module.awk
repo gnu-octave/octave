@@ -79,7 +79,7 @@ BEGIN {
             basename, ldflags[i]);
     printf ("%%canon_reldir%%_%s_la_LIBADD = $(DLD_LIBOCTINTERP_LIBADD) %s\n",
             basename, libraries[i]);
-    printf ("%%canon_reldir%%_%s_la_DEPENDENCIES = $(OCT_LINK_DEPS)\n",
+    printf ("%%canon_reldir%%_%s_la_DEPENDENCIES = $(OCT_LTLINK_DEPS)\n",
             basename);
   }
 

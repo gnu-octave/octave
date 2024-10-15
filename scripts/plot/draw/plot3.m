@@ -212,7 +212,13 @@ function h = plot3 (varargin)
           linestyle = options.linestyle;
           marker = options.marker;
           if (isempty (marker) && isempty (linestyle))
-             [linestyle, marker] = __next_line_style__ ();
+            if (isscalar (x))
+              ## If unspecified, marker for a point is always "."
+              linestyle = "-";
+              marker = ".";
+            else
+              [linestyle, marker] = __next_line_style__ ();
+            endif
           endif
           color = options.color;
           if (isempty (color))
@@ -268,7 +274,13 @@ function h = plot3 (varargin)
           linestyle = options.linestyle;
           marker = options.marker;
           if (isempty (marker) && isempty (linestyle))
-            [linestyle, marker] = __next_line_style__ ();
+            if (isscalar (x))
+              ## If unspecified, marker for a point is always "."
+              linestyle = "-";
+              marker = ".";
+            else
+              [linestyle, marker] = __next_line_style__ ();
+            endif
           endif
           color = options.color;
           if (isempty (color))
@@ -344,7 +356,13 @@ function h = plot3 (varargin)
         linestyle = options.linestyle;
         marker = options.marker;
         if (isempty (marker) && isempty (linestyle))
-          [linestyle, marker] = __next_line_style__ ();
+          if (isscalar (x))
+            ## If unspecified, marker for a point is always "."
+            linestyle = "-";
+            marker = ".";
+          else
+            [linestyle, marker] = __next_line_style__ ();
+          endif
         endif
         color = options.color;
         if (isempty (color))

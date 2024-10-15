@@ -48,7 +48,10 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
   `'rtick'` by the function `rticks` will only include the center tick mark
   value if it is specified.
 
-- `view` correctly interprets cartesian viewpoints on main axes (bug #65641).
+- `view` correctly interprets Cartesian viewpoints on main axes (bug #65641).
+
+- `plot3` now draws a single marker if only one data point is given.
+  Previously the plot was blank (`marker` = "none") which was confusing.
 
 ### Matlab compatibility
 

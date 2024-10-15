@@ -1,4 +1,4 @@
-name: make
+name: make-cygwin
 on: [push]
 concurrency: ci-cygwin-${{ github.ref }}
 

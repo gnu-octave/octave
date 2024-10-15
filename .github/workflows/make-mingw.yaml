@@ -1,0 +1,246 @@
+name: make
+on: [push]
+concurrency: ci-mingw-${{ github.ref }}
+
+jobs:
+
+  mingw:
+    runs-on: ${{ matrix.os }}
+
+    name: mingw-w64 ${{ matrix.msystem }}
+
+    defaults:
+      run:
+        # Use MSYS2 as default shell
+        shell: msys2 {0}
+
+    strategy:
+      # Allow other runners in the matrix to continue if some fail
+      fail-fast: false
+
+      matrix:
+        # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+        os: [windows-latest]
+        msystem: [MINGW64, UCRT64]
+        include:
+          - msystem: MINGW64
+            mingw-prefix: mingw64
+            target-prefix: mingw-w64-x86_64
+            cc: gcc
+            cxx: g++
+            f77: gfortran
+            extra-config-flags: ""
+            ccache-max: 0.9G
+          - msystem: UCRT64
+            mingw-prefix: ucrt64
+            target-prefix: mingw-w64-ucrt-x86_64
+            cc: gcc
+            cxx: g++
+            f77: gfortran
+            extra-config-flags: ""
+            ccache-max: 0.9G
+
+    env:
+      CHERE_INVOKING: 1
+      CC:  ${{ matrix.cc }}
+      CXX:  ${{ matrix.cxx }}
+      F77:  ${{ matrix.f77 }}
+      # perl uses cmd shell by default
+      PERL5SHELL: bash -l -c
+
+    steps:
+      - name: get CPU name
+        # The runners for the 32-bit target sometimes get stuck in configure
+        # when using the Fortran compiler.
+        # Does that error depend on the processor of the selected runner?
+        shell: pwsh
+        run : |
+          Get-CIMInstance -Class Win32_Processor | Select-Object -Property Name
+
+      - name: install MSYS2 build environment
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+
+          # Use pre-installed version to save disc space on partition with source.
+          # We need that space for building.
+          release: false
+
+          # The packages are listed in (alphabetically sorted) blocks:
+          # The first block is for mandatory dependencies.
+          # The second block is for optional dependencies needed when building from a release tarball.
+          # The third block is for additional dependencies needed when building from a repository checkout.
+          # The fourth block is for additional run-time dependencies (to run test suite) that aren't needed to build.
+          install: >-
+            base-devel
+            ${{ matrix.target-prefix }}-autotools
+            ${{ matrix.target-prefix }}-cc
+            ${{ matrix.target-prefix }}-fc
+            ${{ matrix.target-prefix }}-gperf
+            ${{ matrix.target-prefix }}-openblas
+            ${{ matrix.target-prefix }}-pcre2
+
+            ${{ matrix.target-prefix }}-arpack
+            ${{ matrix.target-prefix }}-curl
+            ${{ matrix.target-prefix }}-fftw
+            ${{ matrix.target-prefix }}-fltk
+            ${{ matrix.target-prefix }}-gl2ps
+            ${{ matrix.target-prefix }}-glpk
+            ${{ matrix.target-prefix }}-ghostscript
+            ${{ matrix.target-prefix }}-gnuplot
+            ${{ matrix.target-prefix }}-graphicsmagick
+            ${{ matrix.target-prefix }}-hdf5
+            ${{ matrix.target-prefix }}-libsndfile
+            ${{ matrix.target-prefix }}-portaudio
+            ${{ matrix.target-prefix }}-qhull
+            ${{ matrix.target-prefix }}-qrupdate
+            ${{ matrix.target-prefix }}-qscintilla
+            ${{ matrix.target-prefix }}-qt5-base
+            ${{ matrix.target-prefix }}-qt5-imageformats
+            ${{ matrix.target-prefix }}-qt5-svg
+            ${{ matrix.target-prefix }}-qt5-tools
+            ${{ matrix.target-prefix }}-rapidjson
+            ${{ matrix.target-prefix }}-suitesparse
+            ${{ matrix.target-prefix }}-sundials
+
+            git
+            ${{ matrix.target-prefix }}-ccache
+            ${{ matrix.target-prefix }}-icoutils
+            ${{ matrix.target-prefix }}-librsvg
+            ${{ matrix.target-prefix }}-texinfo
+
+            unzip
+            zip
+
+          msystem: ${{ matrix.msystem }}
+
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: prepare ccache
+        # create key with human readable timestamp
+        # used in action/cache/restore and action/cache/save steps
+        id: ccache-prepare
+        run: |
+          echo "ccachedir=$(cygpath -m $(ccache -k cache_dir))" >> $GITHUB_OUTPUT
+          echo "key=ccache:${{ matrix.os }}:${{ matrix.msystem }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "timestamp=$(date +"%Y-%m-%d_%H-%M-%S")" >> $GITHUB_OUTPUT
+
+      - name: restore ccache
+        # Setup the github cache used to maintain the ccache from one job to the next
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
+          restore-keys: |
+            ccache:${{ matrix.os }}:${{ matrix.msystem }}:${{ github.ref }}
+            ccache:${{ matrix.os }}:${{ matrix.msystem }}:refs/heads/default
+
+      - name: configure ccache
+        # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
+        run: |
+          which ccache
+          test -d ${{ steps.ccache-prepare.outputs.ccachedir }} || mkdir -p ${{ steps.ccache-prepare.outputs.ccachedir }}
+          echo "max_size = ${{ matrix.ccache-max }}" > ${{ steps.ccache-prepare.outputs.ccachedir }}/ccache.conf
+          echo "compression = true" >> ${{ steps.ccache-prepare.outputs.ccachedir }}/ccache.conf
+          ccache -p
+          ccache -s
+          # create ccache helper script for Fortran compiler
+          echo -e '#!/bin/bash\nccache '$MINGW_PREFIX'/bin/'$F77' "$@"' > $MINGW_PREFIX/lib/ccache/bin/$F77
+          # prepend path to ccache helper scripts to PATH
+          echo 'export PATH="$MINGW_PREFIX/lib/ccache/bin:$PATH"' >> ~/.bash_profile
+
+      - name: bootstrap
+        run: GNULIB_URL=https://github.com/coreutils/gnulib.git ./bootstrap
+
+      - name: configure
+        # configure sometimes hangs while compiling 32bit Fortran.
+        # It should take much less than 30 minutes. Cancel the step if it takes longer.
+        timeout-minutes: 30
+        # FIXME: Fix building with Java support. Override JAVA_HOME for now.
+        # FIXME: How do we get a working TeX environment in MSYS2? Disable building the documentation for now.
+        run: |
+          echo $PATH
+          which $CC
+          echo $CC --version
+          $CC --version
+          which ${CXX% *}
+          echo ${CXX% *} --version
+          ${CXX% *} --version
+          which $F77
+          echo $F77 --version
+          $F77 --version
+          mkdir .build
+          cd .build && ../configure \
+            JAVA_HOME="" \
+            --disable-docs \
+            ${{ matrix.extra-config-flags }}
+
+      - name: build
+        # Spawning processes seems to have a big overhead on this platform. Use a somewhat larger number of parallel processes to compensate for that.
+        run: |
+          make -C ./.build all -j8 V=1
+
+      - name: ccache status
+        continue-on-error: true
+        run: ccache -s
+
+      - name: save ccache
+        # Save the cache after we are done (successfully) building
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
+
+      - name: check
+        # Continuing on error in this step means that jobs will be "green" even
+        # if the test suite crashes.  But if we don't continue, we'll loose the
+        # ccache and other jobs will be cancelled, too.
+        # It would be nice if we could mark the job as "yellow" (and continue)
+        # in that case.  The second best thing is to display a warning in the
+        # job summary (see below).
+        continue-on-error: true
+        timeout-minutes: 60
+
+        # mkoctfile seems to have trouble when gcc is called via ccache. So,
+        # remove the directory with the ccache wrappers from PATH.
+
+        run: |
+          export PATH=$(echo "$PATH" | sed -e "s|$MINGW_PREFIX/lib/ccache/bin:||g")
+          make -C ./.build check RUN_OCTAVE_OPTIONS="--no-gui-libs" | tee ./test-suite.log
+
+      - name: display test suite log
+        continue-on-error: true
+        # Displaying the log shouldn't take long. Cancel the step if it does.
+        timeout-minutes: 5
+        run: cat ./.build/test/fntests.log
+
+      - name: test history file creation
+        # see bug #62365
+        # Pipe to an interactive session to trigger appending the command to
+        # the history.  This will trigger the creation of a history file.
+        run:  |
+          echo "history_file (make_absolute_filename ('./a/b/c/history')); disp ('test')" | ./.build/run-octave -i
+          [ -f ./a/b/c/history ] || echo "::warning::Creating history file failed"
+
+      - name: install
+        run: |
+          mkdir -p /c/octave/pkg
+          make -C ./.build DESTDIR=/c/octave/pkg install
+
+      - name: test stand-alone executable
+        run: |
+          unset CC
+          unset CXX
+          export PATH=$(echo "$PATH" | sed -e "s|$MINGW_PREFIX/lib/ccache/bin:||g")
+          export PATH="/c/octave/pkg/${{ matrix.mingw-prefix }}/bin:$PATH"
+          cd examples/code
+          mkoctfile --link-stand-alone embedded.cc -o embedded
+          ./embedded.exe
+
+      - name: analyze test suite results
+        # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
+        run: |
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || (echo "::warning::At least one test failed" && exit 1)
+          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || (echo "::warning::At least one regression in test suite" && exit 1)
+          echo Finished analyzing test suite results.

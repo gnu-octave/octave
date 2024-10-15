@@ -1,0 +1,176 @@
+name: make
+on: [push]
+concurrency: ci-ubuntu-${{ github.ref }}
+
+jobs:
+
+  ubuntu:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      # Allow other runners in the matrix to continue if some fail
+      fail-fast: false
+
+      matrix:
+        # For available GitHub-hosted runners, see:
+        # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+        os: [ubuntu-22.04, ubuntu-24.04]
+        compiler: [gcc, clang]
+        include:
+          - compiler: gcc
+            compiler-pkgs: "g++ gcc"
+            cc: "gcc"
+            cxx: "g++"
+            extra-config-flags: ""
+          - compiler: clang
+            compiler-pkgs: "clang libc++-dev libc++abi-dev"
+            cc: "clang"
+            cxx: "clang++ -stdlib=libc++"
+            extra-config-flags: "--without-spqr --without-magick"
+          # Clang seems to generally require less cache size (smaller object files?).
+          - ccache-max: 1.2G
+          - os: ubuntu-24.04
+            compiler: gcc
+            ccache-max: 1.2G
+          - os: ubuntu-22.04
+            compiler: gcc
+            ccache-max: 1.2G
+          - os: ubuntu-24.04
+            compiler: clang
+            ccache-max: 400M
+          - os: ubuntu-22.04
+            compiler: clang
+            ccache-max: 400M
+
+    name: ${{ matrix.os }} ${{ matrix.compiler }}
+
+    env:
+      CC: ${{ matrix.cc }}
+      CXX: ${{ matrix.cxx }}
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: install dependencies
+        env:
+          COMPILER_PKGS: ${{ matrix.compiler-pkgs }}
+        run: |
+          sudo apt -qq update
+          sudo apt install -y $COMPILER_PKGS autoconf automake bison ccache \
+            dvipng epstool fig2dev flex gfortran gnuplot-x11 gperf gzip \
+            icoutils libarpack2-dev libblas-dev libcurl4-gnutls-dev \
+            libfftw3-dev libfltk1.3-dev libfontconfig1-dev libfreetype6-dev \
+            libgl1-mesa-dev libgl2ps-dev libglpk-dev libgraphicsmagick++1-dev \
+            libhdf5-dev liblapack-dev libosmesa6-dev libpcre2-dev \
+            libqhull-dev libqscintilla2-qt5-dev libqrupdate-dev \
+            libreadline-dev librsvg2-bin libsndfile1-dev libsuitesparse-dev \
+            libsundials-dev libtool libxft-dev make openjdk-8-jdk \
+            perl portaudio19-dev pstoedit qtbase5-dev qttools5-dev \
+            qttools5-dev-tools rapidjson-dev rsync tar texinfo \
+            texlive-latex-extra xvfb zlib1g-dev
+
+      - name: prepare ccache
+        # create key with human readable timestamp
+        # used in action/cache/restore and action/cache/save steps
+        id: ccache-prepare
+        run: |
+          echo "key=ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
+
+      - name: restore ccache
+        # setup the github cache used to maintain the ccache from one job to the next
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.ccache
+          key: ${{ steps.ccache-prepare.outputs.key }}
+          restore-keys: |
+            ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}
+            ccache:${{ matrix.os }}:${{ matrix.compiler }}:refs/heads/default
+
+      - name: configure ccache
+        env:
+          CCACHE_MAX: ${{ matrix.ccache-max }}
+        run: |
+          test -d ~/.ccache || mkdir ~/.ccache
+          echo "max_size = $CCACHE_MAX" >> ~/.ccache/ccache.conf
+          ccache -s
+          echo "/usr/lib/ccache" >> $GITHUB_PATH
+
+      - name: bootstrap
+        run: GNULIB_URL=https://github.com/coreutils/gnulib.git ./bootstrap
+
+      - name: configure
+        timeout-minutes: 30
+        run: |
+          echo $PATH
+          echo which ccache
+          which ccache
+          which $CC
+          echo $CC --version
+          $CC --version
+          which ${CXX% *}
+          echo ${CXX% *} --version
+          ${CXX% *} --version
+          which gfortran
+          echo gfortran --version
+          gfortran --version
+          mkdir .build
+          cd .build && ../configure \
+            CPPFLAGS="-I/usr/include/hdf5/serial -I/usr/include/suitesparse" \
+            LDFLAGS="-L/usr/lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH)/hdf5/serial" \
+            ${{ matrix.extra-config-flags }}
+
+      - name: build
+        # Parallel make seems to fail intermittently when creating the figures
+        # for the manual. The error message says it fails to connect to a
+        # display. Maybe an xvfb issue?
+        # Use single job make for now which seems to work more reliably.
+        run: XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a make -C ./.build all V=1
+
+      - name: ccache status
+        run: ccache -s
+
+      - name: save ccache
+        # Save the cache after we are done (successfully) building
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.ccache
+          key: ${{ steps.ccache-prepare.outputs.key }}
+
+      - name: check
+        timeout-minutes: 60
+        run: XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a make -C ./.build check | tee ./test-suite.log
+
+      - name: display test suite log
+        continue-on-error: true
+        # Displaying the log shouldn't take long. Cancel the step if it does.
+        timeout-minutes: 5
+        run: cat ./.build/test/fntests.log
+
+      - name: test history file creation
+        # see bug #62365
+        # Pipe to an interactive session to trigger appending the command to
+        # the history.  This will trigger the creation of a history file.
+        run:  |
+          echo "history_file (make_absolute_filename ('./a/b/c/history')); disp ('test')" | ./.build/run-octave -i
+          [ -f ./a/b/c/history ] || echo "::warning::Creating history file failed"
+
+      - name: install
+        run: |
+          sudo make -C ./.build install
+
+      - name: test stand-alone executable
+        run: |
+          unset CC
+          unset CXX
+          cd examples/code
+          mkoctfile --link-stand-alone embedded.cc -o embedded
+          LD_LIBRARY_PATH="/usr/local/lib/octave/$(octave --eval "disp(version())")" \
+            ./embedded
+
+      - name: analyze test suite results
+        # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
+        run:  |
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || exit 1
+          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || exit 1
+          echo No unknown failing tests.

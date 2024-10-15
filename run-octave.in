@@ -134,15 +134,6 @@ if [ "$ADDRESS_SANITIZER_ENABLED" = yes ]; then
   export ASAN_OPTIONS
 fi
 
-case "%host_os%" in
-  msdosmsvc | mingw* | cygwin*)
-    PATH="$builddir/libmex/.libs:${PATH}"; export PATH ;;
-  darwin*)
-    DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH:$builddir/libmex/.libs"; export DYLD_LIBRARY_PATH ;;
-  *)
-    LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$builddir/libmex/.libs"; export LD_LIBRARY_PATH ;;
-esac
-
 exec $builddir/libtool --mode=execute $driver \
   "$octave_executable" --no-init-path --path="$LOADPATH" \
   --image-path="$IMAGEPATH" --doc-cache-file="$DOCFILE" \

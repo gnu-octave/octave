@@ -1,0 +1,222 @@
+name: make
+on: [push]
+concurrency: ci-macos-${{ github.ref }}
+
+jobs:
+
+  macos:
+    runs-on: ${{ matrix.os }}
+
+    name: ${{ matrix.os }} Qt${{ matrix.qt }}
+
+    strategy:
+      # Allow other runners in the matrix to continue if some fail
+      fail-fast: false
+
+      matrix:
+        # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+        os: [macos-14, macos-13]
+        # Most (or all) homebrew packages are compiled with clang and link
+        # against libc++.  So we also use clang to avoid issues with symbols
+        # that don't match.
+        # compiler: [real-gcc, clang]
+        compiler: [clang]
+        qt: [6]
+        include:
+          # - compiler: real-gcc
+          #   cc: "/usr/local/bin/gcc-10"
+          #   cxx: "/usr/local/bin/g++-10"
+          #   cppflags: "-I/usr/local/opt/hdf5/include -I/usr/local/opt/gl2ps/include -I/usr/local/opt/glpk/include -I/usr/local/opt/pcre/include -I/usr/local/opt/qscintilla2/include -I/usr/local/opt/suite-sparse/include -I/usr/local/opt/sundials/include"
+          #   ldflags: "-L/usr/local/opt/hdf5/lib -L/usr/local/opt/gl2ps/lib -L/usr/local/opt/glpk/lib -L/usr/local/opt/pcre/lib -L/usr/local/opt/qscintilla2/lib -L/usr/local/opt/suite-sparse/lib -L/usr/local/opt/sundials/lib"
+          - compiler: clang
+            cc: "clang"
+            cxx: "clang++"
+            # Qt6 doesn't install pkg-config files on macOS by default. See: https://bugreports.qt.io/browse/QTBUG-86080
+            # Homebrew installs "unofficial" .pc files for it in a non-default location.
+            qt-pkg-config-path: opt/qt@6/libexec/lib/pkgconfig
+          - os: macos-13
+            qt: "5"
+            cc: "clang"
+            cxx: "clang++"
+            # SUNDIALS >= 6.5.0 doesn't compile with the default flags determined
+            # by the configure script. Set CXX manually to enable building with it.
+            cxx-compiler-flags: "-std=gnu++14"
+            qt-pkg-config-path: opt/qt@5/lib/pkgconfig
+
+    env:
+      CC: ${{ matrix.cc }}
+      CXX: ${{ matrix.cxx }}
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: install dependencies
+        # This step sometimes takes long and still recovers. But sometimes it
+        # seems to hang indefinitely.
+        # Use a pretty long timeout (but still less than the default 6 hours).
+        timeout-minutes: 75
+
+        # Homebrew's Python conflicts with the Python that comes pre-installed
+        # on the GitHub runners. Some of Octave's dependencies depend on
+        # different versions of Homebrew's Python. Enforce using the ones from
+        # Homebrew to avoid errors on updates.
+        # See: https://github.com/orgs/Homebrew/discussions/3928
+
+        # It looks like "gfortran" isn't working correctly unless "gcc" is
+        # re-installed.
+
+        # See also: https://formulae.brew.sh/formula/octave#default
+        # The packages are listed in (alphabetically sorted) blocks:
+        # The first block is for "direct" dependencies.
+        # The second block is for additional dependencies needed when building from a release tarball.
+        # The third block is for additional dependencies needed when building from a repository checkout.
+        run: |
+          brew update
+          brew install --overwrite python@3.11 python@3.12
+          brew reinstall gcc
+          brew install arpack epstool fftw fig2dev fltk fontconfig freetype \
+            ghostscript gl2ps glpk gnuplot graphicsmagick hdf5 libsndfile \
+            libtool openblas pcre2 portaudio pstoedit qhull qrupdate \
+            qscintilla2 qt@${{ matrix.qt }} rapidjson readline suite-sparse sundials texinfo \
+            ccache gnu-sed openjdk pkg-config \
+            automake autoconf bison gettext icoutils librsvg mactex-no-gui
+          eval "$(/usr/libexec/path_helper)"
+          HOMEBREW_PREFIX=$(brew --prefix)
+          echo "HOMEBREW_PREFIX=$(brew --prefix)" >> $GITHUB_ENV
+          echo "/Library/TeX/texbin" >> $GITHUB_PATH
+          echo "${HOMEBREW_PREFIX}/opt/qt@${{ matrix.qt }}/bin" >> $GITHUB_PATH
+          echo "${HOMEBREW_PREFIX}/opt/texinfo/bin" >> $GITHUB_PATH
+          echo "${HOMEBREW_PREFIX}/opt/bison/bin" >> $GITHUB_PATH
+          echo "${HOMEBREW_PREFIX}/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
+
+      - name: prepare ccache
+        # create key with human readable timestamp
+        # used in action/cache/restore and action/cache/save steps
+        id: ccache-prepare
+        run: |
+          echo "key=ccache:${{ matrix.os }}:${{ matrix.compiler }}:qt${{ matrix.qt }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
+
+      - name: restore ccache
+        # setup the github cache used to maintain the ccache from one job to the next
+        uses: actions/cache/restore@v4
+        id: restore-ccache
+        with:
+          path: /Users/runner/Library/Caches/ccache
+          key: ${{ steps.ccache-prepare.outputs.key }}
+          restore-keys: |
+            ccache:${{ matrix.os }}:${{ matrix.compiler }}:qt${{ matrix.qt }}:${{ github.ref }}
+            ccache:${{ matrix.os }}:${{ matrix.compiler }}:qt${{ matrix.qt }}:refs/heads/default
+
+      - name: configure ccache
+        # The cache doesn't seem to compress well on macOS. Is it already compressed?
+        # Limit the maximum size to avoid exceeding the total cache limits.
+        run: |
+          test -d /Users/runner/Library/Preferences/ccache || mkdir /Users/runner/Library/Preferences/ccache
+          echo "max_size = 0.9G" >> /Users/runner/Library/Preferences/ccache/ccache.conf
+          ccache -s
+          echo "${HOMEBREW_PREFIX}/opt/ccache/libexec" >> $GITHUB_PATH
+
+      - name: bootstrap
+        run: GNULIB_URL=https://github.com/coreutils/gnulib.git ./bootstrap
+
+      - name: configure
+        timeout-minutes: 30
+        env:
+          MY_CPPFLAGS: ${{ matrix.cppflags }}
+          MY_LDFLAGS: ${{ matrix.ldflags }}
+        # This is a hodgepodge of configure flags put together from the
+        # buildbot rules:
+        # https://hg.octave.org/octave-buildbot/file/tip/master.cfg#l543
+        # And the homebrew formula:
+        # https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/octave.rb
+        # Amended with additional flags that seem to be needed.
+        # Not all of those might be needed or be correct.
+        run: |
+          echo $PATH
+          echo which ccache
+          which ccache
+          which $CC
+          echo $CC --version
+          $CC --version
+          which $CXX
+          echo $CXX --version
+          $CXX --version
+          which gfortran
+          echo gfortran --version
+          gfortran --version
+          mkdir .build
+          cd .build && ../configure \
+            CXX="${CXX} ${{ matrix.cxx-compiler-flags }}" \
+            F77="ccache gfortran" \
+            CPPFLAGS="-I${HOMEBREW_PREFIX}/opt/gettext/include -I${HOMEBREW_PREFIX}/opt/icu4c/include -I${HOMEBREW_PREFIX}/opt/qt@${{ matrix.qt }}/include -I${HOMEBREW_PREFIX}/opt/readline/include -I${HOMEBREW_PREFIX}/opt/sqlite/include $MY_CPPFLAGS -I${HOMEBREW_PREFIX}/include" \
+            CXXFLAGS="-O2 -g" \
+            LDFLAGS="-L${HOMEBREW_PREFIX}/opt/bison/lib -L${HOMEBREW_PREFIX}/opt/gettext/lib -L${HOMEBREW_PREFIX}/opt/icu4c/lib -L${HOMEBREW_PREFIX}/opt/readline/lib -L${HOMEBREW_PREFIX}/opt/sqlite/lib $MY_LDFLAGS -L${HOMEBREW_PREFIX}/lib" \
+            PKG_CONFIG_PATH="${HOMEBREW_PREFIX}/opt/openblas/lib/pkgconfig:${HOMEBREW_PREFIX}/opt/icu4c/lib/pkgconfig:${HOMEBREW_PREFIX}/${{ matrix.qt-pkg-config-path }}" \
+            --with-qt=${{ matrix.qt }} \
+            QCOLLECTIONGENERATOR="qhelpgenerator" \
+            --with-x=no \
+            --with-blas="-L${HOMEBREW_PREFIX}/opt/openblas/lib -lopenblas" \
+            --with-java-homedir="${HOMEBREW_PREFIX}/opt/openjdk" \
+            --prefix="${HOME}/usr"
+
+      - name: build
+        run: make -C ./.build all -j3 V=1
+
+      - name: ccache status
+        run: ccache -s
+
+      - name: save ccache
+        # Save the cache after we are done (successfully) building
+        uses: actions/cache/save@v4
+        with:
+          path: /Users/runner/Library/Caches/ccache
+          key: ${{ steps.ccache-prepare.outputs.key }}
+
+      - name: check
+        # Continuing on error in this step means that jobs will be "green" even
+        # if the test suite crashes.  But if we don't continue, we'll loose the
+        # ccache and other jobs will be cancelled, too.
+        # It would be nice if we could mark the job as "yellow" (and continue)
+        # in that case.  The second best thing is to display a warning in the
+        # job summary (see below).
+        continue-on-error: true
+        timeout-minutes: 60
+        run: |
+          echo 'makeinfo_program ("${HOMEBREW_PREFIX}/opt/texinfo/bin/makeinfo");' >> ./scripts/startup/site-rcfile
+          make -C ./.build check | tee ./test-suite.log
+
+      - name: display test suite log
+        continue-on-error: true
+        # Displaying the log shouldn't take long. Cancel the step if it does.
+        timeout-minutes: 5
+        run: cat ./.build/test/fntests.log
+
+      - name: test history file creation
+        # see bug #62365
+        # Pipe to an interactive session to trigger appending the command to
+        # the history.  This will trigger the creation of a history file.
+        run:  |
+          echo "history_file (make_absolute_filename ('./a/b/c/history')); disp ('test')" | ./.build/run-octave -i
+          [ -f ./a/b/c/history ] || echo "::warning::Creating history file failed"
+
+      - name: install
+        run: |
+          mkdir -p /Users/runner/usr
+          make -C ./.build install
+
+      - name: test stand-alone executable
+        run: |
+          unset CC
+          unset CXX
+          cd examples/code
+          PATH="/Users/runner/usr/bin:$PATH" \
+            mkoctfile --link-stand-alone embedded.cc -o embedded
+          ./embedded
+
+      - name: analyze test suite results
+        # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
+        run: |
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || exit 1
+          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || exit 1
+          echo No unknown failing tests.

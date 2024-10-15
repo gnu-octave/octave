@@ -1,0 +1,255 @@
+name: make
+on: [push]
+concurrency: ci-cygwin-${{ github.ref }}
+
+jobs:
+
+  cygwin:
+    runs-on: ${{ matrix.os }}
+
+    defaults:
+      run:
+        # Use Cygwin bash as default shell
+        shell: C:\cygwin\bin\bash.exe --login -eo pipefail -o igncr '{0}'
+
+    strategy:
+      # Allow other runners in the matrix to continue if some fail
+      fail-fast: false
+
+      matrix:
+        # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+        os: [windows-latest]
+
+    env:
+      CHERE_INVOKING: "1"
+      CC:  gcc
+      CXX:  g++
+      F77:  gfortran
+      # ccache 3.1 doesn't read configuration files
+      CCACHE_COMPRESS: "1"
+
+    steps:
+      - name: get CPU name
+        shell: pwsh
+        run : |
+          Get-CIMInstance -Class Win32_Processor | Select-Object -Property Name
+
+      - name: checkout repository
+        # This must be done before installing Cygwin because their git is
+        # incompatible with this action.
+        uses: actions/checkout@v4
+
+      - name: install Cygwin build environment
+        uses: cygwin/cygwin-install-action@v4
+        with:
+          # The packages are listed in (alphabetically sorted) blocks:
+          # The first block is for mandatory dependencies.
+          # The second block is for optional dependencies needed when building from a release tarball.
+          # The third block is for additional dependencies needed when building from a repository checkout.
+          # The fourth block is for additional run-time dependencies (to run test suite) that aren't needed to build.
+
+          # FIXME: libklu-devel should depend on libbtf-devel.  Install it manually even if Octave doesn't explicitly use it.
+          packages: >-
+            autoconf
+            automake
+            make
+            gcc-g++
+            gcc-fortran
+            bison
+            dash
+            flex
+            gperf
+            libtool
+            liblapack-devel
+            libpcre2-devel
+            libreadline-devel
+
+            ghostscript
+            gnuplot-base
+            libamd-devel
+            libarpack-devel
+            libbtf-devel
+            libbz2-devel
+            libcamd-devel
+            libccolamd-devel
+            libcholmod-devel
+            libcolamd-devel
+            libcurl-devel
+            libcxsparse-devel
+            libfftw3-devel
+            libfltk-devel
+            libfontconfig-devel
+            libfreetype-devel
+            libGL-devel
+            libgl2ps-devel
+            libglpk-devel
+            libGLU-devel
+            libgomp1
+            libGraphicsMagick-devel
+            libhdf5-devel
+            libiconv-devel
+            libklu-devel
+            libportaudio-devel
+            libqhull-devel
+            libqrupdate-devel
+            libqscintilla2_qt5-devel
+            libQt5Core-devel
+            libQt5Gui-devel
+            libQt5Help-devel
+            libsndfile-devel
+            libsuitesparseconfig-devel
+            libsundials-devel
+            libspqr-devel
+            libumfpack-devel
+            qt5-doc-tools
+            rapidjson-devel
+
+            ccache
+            git
+            icoutils
+            python
+            rsvg
+            texinfo
+
+            unzip
+            zip
+
+      - name: prepare ccache
+        # create key with human readable timestamp
+        # used in action/cache/restore and action/cache/save steps
+        id: ccache-prepare
+        run: |
+          echo "ccachedir=$(cygpath -m ~/.ccache)" >> $GITHUB_OUTPUT
+          echo "key=ccache:${{ matrix.os }}:cygwin:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
+
+      - name: restore ccache
+        # Setup a github cache used to maintain the ccache from one run to the next
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
+          restore-keys: |
+            ccache:${{ matrix.os }}:cygwin:${{ github.ref }}
+            ccache:${{ matrix.os }}:cygwin:refs/heads/default
+
+      - name: configure ccache
+        run: |
+          # work around issue with ccache calling itself recursively
+          [ -f /usr/bin/ccache.exe ] && mv /usr/bin/ccache.exe /usr/bin/ccache
+          which ccache
+          ccache -V
+          # ccache 3.1 doesn't read configuration files
+          # test -d ${{ steps.ccache-prepare.outputs.ccachedir }} || mkdir -p ${{ steps.ccache-prepare.outputs.ccachedir }}
+          # echo "max_size = 0.9G" > ${{ steps.ccache-prepare.outputs.ccachedir }}/ccache.conf
+          # echo "compression = true" >> ${{ steps.ccache-prepare.outputs.ccachedir }}/ccache.conf
+          # limit maximum cache size to avoid exceeding the total disk or cache quota
+          ccache -M 0.9G
+          ccache -s
+          # create ccache symlinks for all compilers
+          test -d /usr/lib/ccache/bin || mkdir -p /usr/lib/ccache/bin
+          ln -s /usr/bin/ccache /usr/lib/ccache/bin/${CC}.exe
+          ln -s /usr/bin/ccache /usr/lib/ccache/bin/${CXX}.exe
+          ln -s /usr/bin/ccache /usr/lib/ccache/bin/${F77}.exe
+          # prepend path to ccache symlinks to PATH
+          echo 'export PATH="/usr/lib/ccache/bin:$PATH"' >> ~/.bash_profile
+
+      - name: bootstrap
+        run: GNULIB_URL=https://github.com/coreutils/gnulib.git ./bootstrap
+
+      - name: configure
+        # FIXME: Fix building with Java support.  Override JAVA_HOME for now.
+        # FIXME: How do we get a working TeX environment in Cygwin?  Disable building the documentation for now.
+        # FIXME: Exporting symbols for instantiated template classes doesn't work currently. Maybe, test again when Cygwin updated to a newer compiler than GCC 11.4.0?
+        run: |
+          echo $PATH
+          which $CC
+          echo $CC --version
+          $CC --version
+          which $CXX
+          echo $CXX --version
+          $CXX --version
+          which $F77
+          echo $F77 --version
+          $F77 --version
+          mkdir .build
+          cd .build && ../configure \
+            --libexecdir=/usr/lib \
+            --enable-shared \
+            --disable-java \
+            --disable-docs \
+            --disable-lib-visibility-flags \
+            JAVA_HOME="" \
+            EGREP="grep -E" \
+            FLIBS="-lgfortran -lquadmath"
+
+      - name: build
+        # Spawning processes seems to have a big overhead on this platform.  Use a somewhat larger number of parallel processes to compensate for that.
+        run: |
+          EGREP="grep -E" make -C ./.build all -j8 V=1
+
+      - name: ccache status
+        continue-on-error: true
+        run: ccache -s
+
+      - name: save ccache
+        # Save the cache after we are done (successfully) building
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
+
+      - name: rebase binaries
+        run: |
+          find ${GITHUB_WORKSPACE}/.build -name "*.oct" -or -name "*.dll" | tee binaries.list
+          rebase -O -T binaries.list
+
+      - name: check
+        # Continuing on error in this step means that jobs will be "green" even
+        # if the test suite crashes.  But if we don't continue, we'll loose the
+        # ccache.
+        # It would be nice if we could mark the job as "yellow" (and continue)
+        # in that case.  The second best thing is to display a warning in the
+        # job summary (see below).
+        continue-on-error: true
+        timeout-minutes: 60
+
+        # mkoctfile seems to have trouble when gcc is called via ccache.  So,
+        # remove the directory with the ccache wrappers from PATH.
+
+        run: |
+          export PATH=$(echo "$PATH" | sed -e "s|/usr/lib/ccache/bin:||g")
+          EGREP="grep -E" make -C ./.build check | tee ./test-suite.log
+
+      - name: display test suite log
+        continue-on-error: true
+        # Displaying the log shouldn't take long.  Cancel the step if it does.
+        timeout-minutes: 5
+        run: cat ./.build/test/fntests.log
+
+      - name: test history file creation
+        # see bug #62365
+        # Pipe to an interactive session to trigger appending the command to
+        # the history.  This will trigger the creation of a history file.
+        run: |
+          echo "history_file (make_absolute_filename ('./a/b/c/history')); disp ('test')" | ./.build/run-octave -i
+          [ -f ./a/b/c/history ] || echo "::warning::Creating history file failed"
+
+      - name: install
+        run: |
+          make -C ./.build install
+
+      - name: test stand-alone executable
+        run: |
+          unset CC
+          unset CXX
+          export PATH=$(echo "$PATH" | sed -e "s|/usr/lib/ccache/bin:||g")
+          cd examples/code
+          mkoctfile --link-stand-alone embedded.cc -o embedded
+          ./embedded.exe
+
+      - name: analyze test suite results
+        # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
+        run: |
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || echo "::warning::At least one test failed"
+          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || echo "::warning::At least one regression in test suite"
+          echo Finished analyzing test suite results.

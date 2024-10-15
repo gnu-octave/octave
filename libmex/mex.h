@@ -169,10 +169,6 @@ void mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]);
 #  define int8_T int8_t
 #endif
 
-#if defined (OCTAVE_MEX_SOVERSION)
-const int __octave_mex_soversion__ = OCTAVE_MEX_SOVERSION;
-#endif
-
 #if defined (__cplusplus)
 }
 #endif

@@ -1,4 +1,4 @@
-name: make
+name: make-alpine
 on: [push]
 concurrency: ci-alpine-${{ github.ref }}
 

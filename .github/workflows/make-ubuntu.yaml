@@ -1,4 +1,4 @@
-name: make
+name: make-ubuntu
 on: [push]
 concurrency: ci-ubuntu-${{ github.ref }}
 

@@ -1,4 +1,4 @@
-name: make
+name: make-mingw
 on: [push]
 concurrency: ci-mingw-${{ github.ref }}
 

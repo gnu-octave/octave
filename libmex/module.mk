@@ -47,9 +47,10 @@ nodist_%canon_reldir%_liboctmex_la_SOURCES = \
   liboctave/liboctave.la
 
 ## Increment the following version numbers as needed and according
-## to the rules in the etc/HACKING.md file:
+## to the rules in the etc/HACKING.md file.
+## Note that OCTAVE_LIBOCTMEX_SOVERSION_MAJOR is set in Makefile.am:
 
-%canon_reldir%_liboctmex_current = 1
+%canon_reldir%_liboctmex_current = $(OCTAVE_LIBOCTMEX_SOVERSION_MAJOR)
 %canon_reldir%_liboctmex_revision = 0
 %canon_reldir%_liboctmex_age = 0
 

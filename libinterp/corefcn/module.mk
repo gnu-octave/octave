@@ -337,6 +337,7 @@ noinst_LTLIBRARIES += \
 
 %canon_reldir%_libcorefcn_la_CPPFLAGS = \
   $(libinterp_liboctinterp_la_CPPFLAGS) \
+  -DOCTAVE_MEX_SOVERSION="$(OCTAVE_LIBOCTMEX_SOVERSION_MAJOR)" \
   $(FFTW_XCPPFLAGS) \
   $(FONTCONFIG_CPPFLAGS) \
   $(FT2_CPPFLAGS) \

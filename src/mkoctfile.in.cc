@@ -89,6 +89,9 @@
 
 #include "shared-fcns.h"
 
+#define STRINGIFY(s) STRINGIFY1(s)
+#define STRINGIFY1(s) #s
+
 #if defined (CROSS)
 
 static int
@@ -1005,6 +1008,8 @@ main (int argc, char **sys_argv)
               cfiles.push_back (tmp_file);
             }
         }
+
+      defs += " -DOCTAVE_MEX_SOVERSION=" STRINGIFY (OCTAVE_MEX_SOVERSION);
     }
   else
     {

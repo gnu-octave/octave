@@ -15,6 +15,7 @@ SRC_DIR_CPPFLAGS = \
   -Iliboctave/wrappers -I$(srcdir)/liboctave/wrappers \
   -Ilibinterp -I$(srcdir)/libinterp \
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
+  -Ilibmex -I$(srcdir)/libmex \
   -I$(srcdir)/src
 
 EXTRA_DIST += \
@@ -56,6 +57,7 @@ if AMCOND_BUILD_QT_GUI
 endif
 
 OCTAVE_CORE_LIBS = \
+  libmex/liboctmex.la \
   libinterp/liboctinterp.la \
   liboctave/liboctave.la \
   libgnu/libgnu.la

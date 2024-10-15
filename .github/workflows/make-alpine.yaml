@@ -1,0 +1,257 @@
+name: make
+on: [push]
+concurrency: ci-alpine-${{ github.ref }}
+
+jobs:
+
+  alpine:
+    runs-on: ubuntu-latest
+
+    name: Alpine (x86, musl)
+
+    defaults:
+      run:
+        # Use emulated shell as default
+        shell: alpine.sh {0}
+
+    env:
+      LIBGL_ALWAYS_SOFTWARE: "1"
+
+    steps:
+      - name: get CPU information
+        shell: bash
+        run: |
+          cat /proc/cpuinfo
+
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: install dependencies
+        uses: jirutka/setup-alpine@v1
+        with:
+          # For available CPU architectures, see:
+          # https://github.com/marketplace/actions/setup-alpine-linux-environment
+          arch: x86
+          # QScintilla-Qt6 is currently not distributed by Alpine Linux. When
+          # it is, consider switching to Qt6 packages:
+          # qt6-qt5compat-dev
+          # qt6-qttools-dev
+          # The following packages are only needed to buid and install gl2ps:
+          # cmake
+          # wget
+          # libpng
+          # sudo
+          packages: >
+            build-base
+            autoconf
+            automake
+            m4
+            git
+            ccache
+            coreutils
+            gfortran
+            flex
+            gperf
+            icoutils
+            mesa-dri-gallium
+            libtool
+            libltdl
+            rsvg-convert
+            texlive-dvi
+            arpack-dev
+            bison
+            curl-dev
+            fftw-dev
+            fltk-dev
+            fontconfig-dev
+            freetype-dev
+            ghostscript-dev
+            glpk-dev
+            glu-dev
+            gnuplot
+            graphicsmagick-dev
+            hdf5-dev
+            lcms2-dev
+            libsm-dev
+            libsndfile-dev
+            openblas-dev
+            pcre2-dev
+            perl
+            portaudio-dev
+            qhull-dev
+            qrupdate-dev
+            qscintilla-dev
+            qt5-qttools-dev
+            qscintilla-dev
+            rapidjson-dev
+            readline-dev
+            suitesparse-dev
+            texinfo
+            xvfb-run
+            xz-dev
+            zlib-dev
+            bzip2
+            gzip
+            tar
+            zip
+            cmake
+            wget
+            libpng
+            sudo
+
+      - name: prepare ccache
+        # create key with human readable timestamp
+        # used in action/cache/restore and action/cache/save steps
+        id: ccache-prepare
+        run: |
+          echo "key=ccache:alpine:x86:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
+
+      - name: restore ccache
+        # setup the github cache used to maintain the ccache from one job to the next
+        uses: actions/cache/restore@v4
+        with:
+          # location of the ccache of the chroot in the root file system
+          path: /home/runner/rootfs/alpine-latest-x86/home/runner/.ccache
+          key: ${{ steps.ccache-prepare.outputs.key }}
+          restore-keys: |
+            ccache:alpine:x86:${{ github.ref }}
+            ccache:alpine:x86:refs/heads/default
+
+      - name: configure ccache
+        run: |
+          test -d ~/.ccache || mkdir ~/.ccache
+          echo "max_size = 1G" >> ~/.ccache/ccache.conf
+          echo "compression = true" >> ~/.ccache/ccache.conf
+          ccache --version
+          ccache -p
+          ccache -s
+          echo "/usr/lib/ccache/bin" >> $GITHUB_PATH
+
+      - name: build gl2ps
+        # gl2ps is currently not distributed by Alpine Linux.
+        # We need it for printing.
+        run: |
+          mkdir -p gl2ps && cd gl2ps
+          printf "::group::\033[0;32m==>\033[0m Download tarball\n"
+          wget -O gl2ps-1.4.2.tgz https://geuz.org/gl2ps/src/gl2ps-1.4.2.tgz
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Unpack tarball\n"
+          tar zxvf gl2ps-1.4.2.tgz
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Configure\n"
+          mkdir -p build && cd build
+          cmake -DCMAKE_BUILD_TYPE=Release ../gl2ps-1.4.2
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Build\n"
+          cmake --build .
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Install\n"
+          sudo cmake --install .
+          echo "::endgroup::"
+
+      - name: bootstrap
+        run: GNULIB_URL=https://github.com/coreutils/gnulib.git ./bootstrap
+
+      - name: configure
+        timeout-minutes: 30
+        run: |
+          echo $PATH
+          echo which ccache
+          which ccache
+          which gcc
+          echo gcc --version
+          gcc --version
+          which g++
+          echo g++ --version
+          g++ --version
+          which gfortran
+          echo gfortran --version
+          gfortran --version
+          mkdir .build
+          cd .build && ../configure
+
+      - name: build
+        # Parallel make seems to fail intermittently when creating the figures
+        # for the manual. The error message says it fails to connect to a
+        # display. Maybe an xvfb issue?
+        # Use single job make for now which seems to work more reliably.
+        run: |
+          XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a make -C ./.build all V=1
+
+      - name: ccache status
+        run: ccache -s
+
+      - name: save ccache
+        # Save the cache after we are done (successfully) building
+        uses: actions/cache/save@v4
+        with:
+          path: /home/runner/rootfs/alpine-latest-x86/home/runner/.ccache
+          key: ${{ steps.ccache-prepare.outputs.key }}
+
+      - name: check
+        timeout-minutes: 60
+        run: |
+          XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a \
+            make -C ./.build check-tree-evaluator | tee ./test-suite.log
+
+      - name: display test suite log
+        continue-on-error: true
+        # Displaying the log shouldn't take long. Cancel the step if it does.
+        timeout-minutes: 5
+        run: cat ./.build/test/fntests.log
+
+      - name: check with bytecode interpreter
+        timeout-minutes: 60
+        run: |
+          mv ./.build/test/fntests.log ./.build/test/fntests-no-bci.log
+          XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a \
+            make -C ./.build check-bytecode-evaluator | tee ./test-suite-bci.log
+
+      - name: display test suite log with bytecode interpreter
+        continue-on-error: true
+        # Displaying the log shouldn't take long. Cancel the step if it does.
+        timeout-minutes: 5
+        run: cat ./.build/test/fntests.log
+
+      - name: difference between logs with and without bytecode interpreter
+        continue-on-error: true
+        run: |
+          echo "::group::diff test-suite.log"
+          echo "diff -urN ./test-suite.log ./test-suite-bci.log"
+          diff -urN ./test-suite.log ./test-suite-bci.log || true
+          echo "::endgroup::"
+          echo "::group::diff fntests.log"
+          echo "diff -urN ./.build/test/fntests-no-bci.log ./.build/test/fntests.log"
+          diff -urN ./.build/test/fntests-no-bci.log ./.build/test/fntests.log || true
+          echo "::endgroup::"
+
+      - name: test history file creation
+        # see bug #62365
+        # Pipe to an interactive session to trigger appending the command to
+        # the history.  This will trigger the creation of a history file.
+        run:  |
+          echo "history_file (make_absolute_filename ('./a/b/c/history')); disp ('test')" | ./.build/run-octave -i
+          [ -f ./a/b/c/history ] || echo "::warning::Creating history file failed"
+
+      - name: install
+        run: |
+          sudo make -C ./.build install
+
+      - name: test stand-alone executable
+        run: |
+          cd examples/code
+          mkoctfile --link-stand-alone embedded.cc -o embedded
+          LD_LIBRARY_PATH="/usr/local/lib/octave/$(octave --eval "disp(version())")" ./embedded
+
+      - name: analyze test suite results
+        # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
+        run:  |
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] \
+            || echo "::warning::At least one test failed"
+          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] \
+            || echo "::warning::At least one regression in test suite"
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite-bci.log)" ] \
+            || echo "::warning::At least one test failed with bytecode interpreter"
+          [ -z "$(grep -e "REGRESSION" ./test-suite-bci.log)" ] \
+            || echo "::warning::At least one regression in test suite with bytecode interpreter"
+          echo Finished analyzing test suite results.

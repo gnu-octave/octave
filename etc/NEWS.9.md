@@ -8,6 +8,7 @@ Summary of bugs fixed for version 9.3.0 (tbd):
 - `jupyter-notebook`: Avoid error if evaluated code closes an existing figure
   window.  Use `unwind_protect` block to ensure figure and tempfile cleanup
   actions occur (bug #65644).
+- `uitable`: Fix updating value with combo box selection (bug #65873).
 - `movfun`:  Correct output shape of n-D arrays when operating on dimensions
   higher than 2.  This will affect all moving window functions (`movmad`,
   `movmax`, `movmean`, `movmedian`, `movmin`, `movprod`, `movstd`, `movsum`,
@@ -15,22 +16,29 @@ Summary of bugs fixed for version 9.3.0 (tbd):
 - `movvar` and `movstd`: Use correct default value of 0 if an empty array is
   specified for `opt` to maintain consistent behavior with `var` and `std`.
   Improve input validation to ensure `opt` is one of 0, 1, or []. (bug #66021).
+- `fopen`: Convert identifier for locale charset to lower-case characters
+  (bug #65963).
+- `regexp`: Avoid integer underflow with unsigned integers.
 - `interp2`: Provide a meaningful error message if the input reference array
   is a vector (bug #66086).
+- `struct2hdl.m`: Do not delete previously added axes children (bug #66221).
+- `print`: Fix regression in pdf fonts (bug #66306).
 - `legend` icons now inherit the "facelalpha" property to match appearance of
-  patch and surface graphics objects.
+  patch and surface graphics objects (bug #66314).
 - `barh` properties now better match equivalent `bar` plot.  Changing
   `horizontal` property for a bar or barh plot now consistently updates
-  properties to match redrawn plot.
+  properties to match redrawn plot (bug #65671).
 
 ### GUI
+
+- Update Brazilian Portugese translation file (bug #66337).
 
 ### Build system / Tests
 
 - `jupyter-notebook` test no longer fails if a figure window is open
   (bug #65644).
-- `movmad`, `movmax`, `movmean`, `movmedian`, `movmin`, `movprod`, `movstd`,
-  `movsum`, `movvar`: Add BISTs for general function operation.
+- `movmad`, `movmax`, `movmean`, `movmedian`, `movmin`, `movprod`, `movslice`,
+  `movstd`, `movsum`, `movvar`: Add BISTs for general function operation.
 - `interp2`, `interp3`, `interpn`: Add more tests for non-numeric inputs
   (bug #66086).
 
@@ -39,6 +47,7 @@ Summary of bugs fixed for version 9.3.0 (tbd):
 - `load`: Correct documentation of `-v7.3` and `-hdf5` options (bug #42530).
 - `interp2`, `interp3`, `interpn`: Specify that inputs need to be numeric
   (bug #66086).
+- `error`: Document the `ID` argument (bug #66015).
 
 
 Summary of bugs fixed for version 9.2.0 (2024-06-01):

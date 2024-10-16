@@ -842,6 +842,66 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
+## Ensure x tick labels are updated with xdata changes.
+%!test <*65734>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ("parent", hf);
+%!   hb = barh (hax, 2:4);
+%!   hp = get (hb, "children");
+%!
+%!   assert (get (hb, "xdata"), [1:3]');
+%!   assert (get (hax, {"xlim", "xtick","xticklabel"}), ...
+%!           {[0, 4], [0:4], {"0"; "1"; "2"; "3"; "4"}});
+%!   assert (get (hax, {"ylim", "ytick", "yticklabel"}), ...
+%!           {[0.5, 3.5], 1:3, {"1"; "2"; "3"}});
+%!
+%!   set (hb, "xdata", [3:5]');  # column vector input.
+%!   assert (get (hax, {"xlim", "xtick","xticklabel"}), ...
+%!           {[0, 4], [0:4], {"0"; "1"; "2"; "3"; "4"}});
+%!   assert (get (hax, {"ylim", "ytick", "yticklabel"}), ...
+%!           {[2.5, 5.5], 3:5, {"3"; "4"; "5"}});
+%!
+%!   set (hb, "xdata", [9:11]);  # row vector input.
+%!   assert (get (hax, {"xlim", "xtick","xticklabel"}), ...
+%!           {[0, 4], [0:4], {"0"; "1"; "2"; "3"; "4"}});
+%!   assert (get (hax, {"ylim", "ytick", "yticklabel"}), ...
+%!           {[8.5, 11.5], 9:11, {"9"; "10"; "11"}});
+%!
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+#### Ensure y tick labels are updated with ydata changes.
+%!test <*65734>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ("parent", hf);
+%!   hb = barh (hax, 2:4);
+%!   hp = get (hb, "children");
+%!
+%!   assert (get (hb, "xdata"), [1:3]');
+%!   assert (get (hax, {"xlim", "xtick","xticklabel"}), ...
+%!           {[0, 4], [0:4], {"0"; "1"; "2"; "3"; "4"}});
+%!   assert (get (hax, {"ylim", "ytick", "yticklabel"}), ...
+%!           {[0.5, 3.5], 1:3, {"1"; "2"; "3"}});
+%!
+%!   set (hb, "ydata", [5:7]');  # column vector input.
+%!   assert (get (hax, {"xlim", "xtick","xticklabel"}), ...
+%!           {[0, 7], [0:7], {"0"; "1"; "2"; "3"; "4"; "5"; "6"; "7"}});
+%!   assert (get (hax, {"ylim", "ytick", "yticklabel"}), ...
+%!           {[0.5, 3.5], 1:3, {"1"; "2"; "3"}});%!
+%!
+%!   set (hb, "ydata", [-4:-2]);  # row vector input.
+%!   assert (get (hax, {"xlim", "xtick","xticklabel"}), ...
+%!           {[-4, 0], [-4:0], {"-4"; "-3"; "-2"; "-1"; "0"}});
+%!   assert (get (hax, {"ylim", "ytick", "yticklabel"}), ...
+%!           {[0.5, 3.5], 1:3, {"1"; "2"; "3"}});
+%!
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
 
 %% Test input validation
 %!error <Invalid call> bar ()

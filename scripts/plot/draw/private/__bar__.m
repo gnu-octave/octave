@@ -623,6 +623,14 @@ function update_axes_limits (hax, x, vertical, ishistc)
     ## a small number of integers.
     ## Then temporarily set to auto to reset limits around patch elements and
     ## baseline component parallel to bars.
+
+    ## Vector x inputs to bar are forced to be column vectors.  x inputs from
+    ## set command may be forced to row vectors.  Ensure column vector for
+    ## bar tick processing.  See bug #65734.
+    if (isrow (x))
+      x = x(:);
+    endif
+
     if (vertical)
       set (hax, "xtick", x(:,1));
       set (hax, "xlimmode", "auto");

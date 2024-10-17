@@ -114,37 +114,26 @@ function tf = isprime (x)
   pr = [2 3 5 7 11 13 17 19 23 29 31 37];
   tf = lookup (pr, x, "b");  # quick search for table matches.
 
-  THRESHOLD = 195e8;
+  THRESHOLD = 17e9;
   ## FIXME: THRESHOLD is the input value at which Miller-Rabin
   ## becomes more efficient than direct division. For smaller numbers,
   ## use direct division. For larger numbers, use Miller-Rabin.
   ##
-  ## From numerical experiments in Jun 2022, this was observed:
-  ##    THRESHOLD       Division       Miller-Rabin
-  ##         29e9       29.8196s       26.2484s       (previous value)
-  ##         20e9       26.7445s       26.0161s
-  ##         10e9       20.9330s       25.3247s
-  ##         19e9       26.5397s       26.8987s
-  ##        195e8       26.5735s       26.4749s
-  ## which is close enough, so new threshold = 195e8.
-  ##
-  ## The test code was this:
+  ## Last updated in Oct 2024, using this test code:
   ##   n = THRESHOLD - (1:1e7); tic; isprime(n); toc
   ##   n = THRESHOLD + (1:1e7); tic; isprime(n); toc
   ##
   ## Two notes for future programmers:
   ##
-  ## 1. Test and tune THRESHOLD periodically. Miller-Rabin is only CPU-limited,
-  ##    while factorization by division is very memory-intensive. This is
-  ##    plainly noticeable from the loudness of the computer fans when running
-  ##    the division technique! CPU speed and RAM speed scale differently over
+  ## 1. Test and tune THRESHOLD periodically so that the two times are equal.
+  ##    Miller-Rabin is only CPU-limited, while factorization by division is
+  ##    very memory-intensive. CPU speed and RAM speed scale differently over
   ##    time, so test and tune THRESHOLD periodically.
   ##
   ## 2. If you make improvements elsewhere in the code that favor one over
   ##    the other (not symmetric), you should also retune THRESHOLD afterwards.
   ##    If the Miller-Rabin part is sped up, the optimum THRESHOLD will
   ##    decrease, and if factorization is sped up, it will increase.
-  ##
 
   ## Process large entries that are still suitable for direct division
   m = x (x > maxp & x <= THRESHOLD);

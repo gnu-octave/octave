@@ -27,7 +27,7 @@ Summary of bugs fixed for version 9.3.0 (tbd):
   patch and surface graphics objects (bug #66314).
 - `barh` properties now better match equivalent `bar` plot.  Changing
   `horizontal` property for a bar or barh plot now consistently updates
-  properties to match redrawn plot (bug #65671).  
+  properties to match redrawn plot (bug #65671).
 - Tick mark labels are now correctly updated after changing x or y data for
   `bar` and `barh` plots (bug #65734).
 

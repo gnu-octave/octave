@@ -124,9 +124,9 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
   
 - `movmad`: The function now defaults to calculating median absolute deviation.
   Before Octave 10, the function calculated mean absolute deviation.  A new
-  `mode` option has been provided that takes a string of either "mean" or
-  "median" to allow the user to select which option to use.  This option should
-  not be expected to function in code used outside of Octave.
+  `mode` property has been provided that takes values of either "mean" or
+  "median" to allow the user to select which option to use.  This property
+  should not be expected to function in code used outside of Octave.
 
 ### Alphabetical list of new functions added in Octave 10
 

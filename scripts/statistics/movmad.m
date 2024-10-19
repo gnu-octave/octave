@@ -27,7 +27,6 @@
 ## @deftypefn  {} {@var{y} =} movmad (@var{x}, @var{wlen})
 ## @deftypefnx {} {@var{y} =} movmad (@var{x}, [@var{nb}, @var{na}])
 ## @deftypefnx {} {@var{y} =} movmad (@dots{}, @var{dim})
-## @deftypefnx {} {@var{y} =} movmad (@dots{}, @var{mode})
 ## @deftypefnx {} {@var{y} =} movmad (@dots{}, @var{nancond})
 ## @deftypefnx {} {@var{y} =} movmad (@dots{}, @var{property}, @var{value})
 ## Calculate the moving mean absolute deviation over a sliding window of length
@@ -55,15 +54,19 @@
 ## @qcode{"includemissing"} and @qcode{"omitmissing"} may be used synonymously
 ## with @qcode{"includenan"} and @qcode{"omitnan"}, respectively.
 ##
-## The optional argument @var{mode} is a string that can take the value
-## @qcode{"median"} (default) or @qcode{"mean"} and will control whether
-## @qcode{"movmad"} performs median or mean absolute deviation
-## calculations on the data.
-##
 ## The calculation can be controlled by specifying @var{property}/@var{value}
-## pairs.  Valid properties are @qcode{"Endpoints"} and
+## pairs:
+## @itemize
+## @item
+## The @qcode{"mode"} property can take the value @qcode{"median"} (default)
+## or @qcode{"mean"} to control whether @qcode{"movmad"} performs median or
+## mean absolute deviation calculations on the data.
+##
+## @item
+## Additional valid properties are @qcode{"Endpoints"} and
 ## @qcode{"SamplePoints"}.  For full descriptions of these properties and
 ## valid options, @pxref{XREFmovfun,,@code{movfun}}.
+## @end itemize
 ##
 ## Programming Note: This function is a wrapper which calls @code{movfun}.
 ## For full documentation of inputs and options,
@@ -71,9 +74,9 @@
 ##
 ## Compatibility Note: Prior to Octave 10 this function only calculated mean
 ## absolute deviation.  To achieve code compatibility, the default has been
-## changed to median absolute deviation.  The @var{mode} option is now
+## changed to median absolute deviation.  The @qcode{"mode"} proprety is now
 ## provided to enable access to both @qcode{"mad"} calculation methods.  This
-## option should not be expected to be functional outside of Octave code.
+## property should not be expected to be functional outside of Octave code.
 ##
 ## @seealso{mad, movfun, movslice, movmax, movmean, movmedian, movmin,
 ## movprod, movstd, movsum, movvar}
@@ -85,65 +88,70 @@ function y = movmad (x, wlen, varargin)
     print_usage ();
   endif
 
-  ## Check for user specified mean or median absolute deviation.
-  ## If multiple, last "mean" or "median" input takes precedence.
-  ## Use to send Opt = 1 via anonymous function for median case, use default
-  ## opt = 0 for mean case and avoid overhead of anonymous fn call.
-  ## strip all "mean" / "median" inputs before sending to movfun.
+  fcn = @(x) mad (x, 1);  # Default to median if unspecified.
 
-  mean_check = strcmpi (varargin, "mean");
-  med_check = strcmpi (varargin, "median");
-  mode_check = mean_check | med_check;
-  mode_loc = find (mode_check, 1, "last");
+  varargin = __parse_movargs__ ("movmad", varargin{:});
+
+  ## Check for mode property for user specified mean or median absolute
+  ## deviation.  If multiple, last "mode" input takes precedence.
+  ## __parse_movargs__ should have already checked for prop/value pairing.
+  ## Use output to send Opt = 1 via anonymous function for median case, or
+  ## use default opt = 0 for mean case.  strip mode property arguments before
+  ## sending to movfun.
+
+
+  mode_check = strcmpi (varargin, "mode");
 
   if (any (mode_check))
 
-    switch varargin{mode_loc}
+    mode_loc = find (mode_check);
+    mode_type = varargin{mode_loc(end) + 1};
+
+    switch lower (mode_type)
       case "mean"
-        varargin(mode_check) = [];
-        y = movfun (@mad , x, wlen,
-                     __parse_movargs__ ("movmad", varargin{:}){:});
+        fcn = @mad;
 
       case "median"
-        varargin(mode_check) = [];
-        y = movfun (@(x) mad (x, 1), x, wlen,
-                     __parse_movargs__ ("movmad", varargin{:}){:});
+        ## fcn already set for median.
+
+      otherwise
+        error ("movmad: MODE must be either MEAN or MEDIAN");
     endswitch
 
-  else
-    ## Default to median if unspecified.
-    y = movfun (@(x) mad (x, 1), x, wlen,
-                   __parse_movargs__ ("movmad", varargin{:}){:});
+    varargin([mode_loc, mode_loc+1]) = [];
+
   endif
+
+  y = movfun (fcn, x, wlen, varargin{:});
 
 endfunction
 
 ## mean absolute deviation tests
-%!assert (movmad (1:5, 3, "mean"), [1/2, 2/3, 2/3, 2/3, 1/2], eps)
-%!assert (movmad (1:5, [1, 1], "mean"), [1/2, 2/3, 2/3, 2/3, 1/2], eps)
-%!assert (movmad (1:5, 3, 2, "mean"), [1/2, 2/3, 2/3, 2/3, 1/2], eps)
-%!assert <*65928> (movmad (1:5, 3, 1, "mean"), zeros (1, 5))
-%!assert <*65928> (movmad (1:5, 3, 3, "mean"), zeros (1, 5))
+%!assert (movmad (1:5, 3, "mode", "mean"), [1/2, 2/3, 2/3, 2/3, 1/2], eps)
+%!assert (movmad (1:5, [1, 1], "mode", "mean"), [1/2, 2/3, 2/3, 2/3, 1/2], eps)
+%!assert (movmad (1:5, 3, 2, "mode", "mean"), [1/2, 2/3, 2/3, 2/3, 1/2], eps)
+%!assert <*65928> (movmad (1:5, 3, 1, "mode", "mean"), zeros (1, 5))
+%!assert <*65928> (movmad (1:5, 3, 3, "mode", "mean"), zeros (1, 5))
 
-%!assert (movmad (magic (4), 3, "mean"), ...
+%!assert (movmad (magic (4), 3, "mode", "mean"), ...
 %!       [5.5, 4.5, 3.5, 2.5; 4, 28/9, 22/9, 2; ...
 %!        2, 22/9, 28/9, 4; 2.5, 3.5, 4.5, 5.5], 3*eps)
-%!assert (movmad (magic (4), 3, 1, "mean"), ...
+%!assert (movmad (magic (4), 3, 1, "mode", "mean"), ...
 %!       [5.5, 4.5, 3.5, 2.5; 4, 28/9, 22/9, 2; ...
 %!        2, 22/9, 28/9, 4; 2.5, 3.5, 4.5, 5.5], 3*eps)
-%!assert (movmad (magic (4), 3, 2, "mean"), ...
+%!assert (movmad (magic (4), 3, 2, "mode", "mean"), ...
 %!       [7, 6, 14/3, 5; 3, 22/9, 10/9, 1; ...
 %!        1, 10/9, 22/9, 3; 5, 14/3, 6, 7], 3*eps)
-%!assert <*65928> (movmad (magic (4), 3, 3, "mean"), zeros (4, 4))
+%!assert <*65928> (movmad (magic (4), 3, 3, "mode", "mean"), zeros (4, 4))
 
-%!assert <*55241> (movmad ((1:10).', 3, "mean"), [0.5; repmat(2/3, 8, 1); 0.5], eps)
+%!assert <*55241> (movmad ((1:10).', 3, "mode", "mean"), [0.5; repmat(2/3, 8, 1); 0.5], eps)
 
-%!assert <*66156> (movmad ([1:4, NaN(1,3), 8:10], 3, "mean"), movmad ([1:4, NaN(1,3), 8:10], 3, "mean", "includenan"))
-%!assert <*66156> (movmad ([1:4, NaN(1,3), 8:10], 3, "includenan", "mean"), [1/2, 2/3, 2/3, NaN(1,5), 2/3, 1/2], eps)
-%!assert <*66156> (movmad ([1:4, NaN(1,3), 8:10], 3, "omitnan", "mean"), [1/2, 2/3, 2/3, 1/2, 0, NaN, 0, 1/2, 2/3 1/2], eps)
+%!assert <*66156> (movmad ([1:4, NaN(1,3), 8:10], 3, "mode", "mean"), movmad ([1:4, NaN(1,3), 8:10], 3, "mode", "mean", "includenan"))
+%!assert <*66156> (movmad ([1:4, NaN(1,3), 8:10], 3, "includenan", "mode", "mean"), [1/2, 2/3, 2/3, NaN(1,5), 2/3, 1/2], eps)
+%!assert <*66156> (movmad ([1:4, NaN(1,3), 8:10], 3, "omitnan", "mode", "mean"), [1/2, 2/3, 2/3, 1/2, 0, NaN, 0, 1/2, 2/3 1/2], eps)
 
 ## median absolute deviation tests
-%!assert (movmad (1:5, 3, "median"), [1/2, 1, 1, 1, 1/2], eps)
+%!assert (movmad (1:5, 3, "mode", "median"), [1/2, 1, 1, 1, 1/2], eps)
 %!assert (movmad (1:5, 3), [1/2, 1, 1, 1, 1/2], eps)
 %!assert (movmad (1:5, [1, 1]), [1/2, 1, 1, 1, 1/2], eps)
 %!assert (movmad (1:5, 3, 2), [1/2, 1, 1, 1, 1/2], eps)
@@ -167,9 +175,10 @@ endfunction
 %!assert <*66156> (movmad ([1:4, NaN(1,3), 8:10], 3, "includenan"), [1/2, 1, 1, NaN(1,5), 1, 1/2], eps)
 %!assert <*66156> (movmad ([1:4, NaN(1,3), 8:10], 3, "omitnan"), [1/2, 1, 1, 1/2, 0, NaN, 0, 1/2, 1 1/2], eps)
 
-%!assert <*66256> (movmad (1:5, 3, "median", "mean"), (movmad (1:5, 3, "mean")))
-%!assert <*66256> (movmad (1:5, 3, "median", 1, "mean", "includenan"), movmad (1:5, 3, 1, "mean", "includenan"))
+%!assert <*66256> (movmad (1:5, 3, "mode", "median", "mode", "mean"), (movmad (1:5, 3, "mode", "mean")))
+%!assert <*66256> (movmad (1:5, 3, "mode", "median", 1, "mode", "mean", "includenan"), movmad (1:5, 3, 1, "mode", "mean", "includenan"))
 
 ## Test input validation
 %!error <Invalid call> movmad ()
 %!error <Invalid call> movmad (1)
+%!error <MODE must be either> movmad (1:4, 3, "mode", "foo")

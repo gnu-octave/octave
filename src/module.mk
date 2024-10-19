@@ -184,7 +184,7 @@ if AMCOND_RELOCATE_ALL
 endif
 
 %reldir%/$(host_triplet)-mkoctfile$(BUILD_EXEEXT): %reldir%/$(host_triplet)-mkoctfile.cc
-	$(BUILD_CXX) -o %reldir%/$(host_triplet)-mkoctfile$(BUILD_EXEEXT) $(OCTAVE_REPLACE_PREFIX_CPPFLAGS) -DCROSS=1 $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) -I$(srcdir)/src %reldir%/$(host_triplet)-mkoctfile.cc
+	$(BUILD_CXX) -o %reldir%/$(host_triplet)-mkoctfile$(BUILD_EXEEXT) $(OCTAVE_REPLACE_PREFIX_CPPFLAGS) -DOCTAVE_MEX_SOVERSION="$(OCTAVE_LIBOCTMEX_SOVERSION_MAJOR)" -DCROSS=1 $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) -I$(srcdir)/src %reldir%/$(host_triplet)-mkoctfile.cc
 
 %reldir%/$(host_triplet)-mkoctfile.cc: %reldir%/mkoctfile.in.cc build-aux/subst-cross-config-vals.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-cross-config-vals.sh)

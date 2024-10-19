@@ -2109,12 +2109,6 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
           if test -z "$QT_LIBS"; then
             QT_LDFLAGS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -e '-F' | uniq | tr '\n' ' '`"
             QT_LIBS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -v -e '-F' | uniq | tr '\n' ' '`"
-            ## Enabling link_all_deps works around libtool's imperfect handling
-            ## of the -F flag
-            if test -n "$QT_LDFLAGS"; then
-              link_all_deps=yes
-            fi
-            AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = yes])
           fi
         ;;
       esac

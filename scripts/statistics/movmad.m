@@ -33,7 +33,7 @@
 ## @var{wlen} on data @var{x}.
 ##
 ## The moving window length input @var{wlen} can either be a numeric scalar
-## or a 2-element numeric array @w{@qcode{[@var{nb}, @var{na}]}}. The elements
+## or a 2-element numeric array @w{@code{[@var{nb}, @var{na}]}}.  The elements
 ## included in the moving window depend on the size and value of @var{wlen}
 ## as well as whether the @qcode{"SamplePoints"} option has been specified.
 ## For full details of element inclusion,
@@ -41,40 +41,40 @@
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ##
-## The optional argument @var{nancond} is a string that controls how
-## @code{NaN} and @code{NA} values affect the output of @qcode{"movmad"}. The
-## value @qcode{"includenan"} causes @code{NaN} and @code{NA} values to be
-## included in the moving window, and any window slice containing @code{NaN}
-## or @code{NA} values will return @code{NaN} for that element.  The value
-## @qcode{"omitnan"} (default) causes @qcode{"movmad"} to ignore any
-## @code{NaN} or @code{NA} values resulting in fewer elements being used to
-## calculate the mad for that window slice.  If @qcode{"omitnan"} is specified
-## and a window slice contains all @code{NaN} or @code{NA} values,
-## @qcode{"movmad"} returns @code{NaN} for that element.  The values
-## @qcode{"includemissing"} and @qcode{"omitmissing"} may be used synonymously
-## with @qcode{"includenan"} and @qcode{"omitnan"}, respectively.
+## The optional argument @var{nancond} is a string that controls how @code{NaN}
+## and @code{NA} values affect the output of @qcode{"movmad"}.  The value
+## @qcode{"includenan"} causes @code{NaN} and @code{NA} values to be included
+## in the moving window, and any window slice containing @code{NaN} or
+## @code{NA} values will return @code{NaN} for that element.  The value
+## @qcode{"omitnan"} (default) causes @qcode{"movmad"} to ignore any @code{NaN}
+## or @code{NA} values resulting in fewer elements being used to calculate the
+## mad for that window slice.  If @qcode{"omitnan"} is specified and a window
+## slice contains all @code{NaN} or @code{NA} values, @qcode{"movmad"} returns
+## @code{NaN} for that element.  The values @qcode{"includemissing"} and
+## @qcode{"omitmissing"} may be used synonymously with @qcode{"includenan"} and
+## @qcode{"omitnan"}, respectively.
 ##
 ## The calculation can be controlled by specifying @var{property}/@var{value}
 ## pairs:
+##
 ## @itemize
 ## @item
-## The @qcode{"mode"} property can take the value @qcode{"median"} (default)
-## or @qcode{"mean"} to control whether @qcode{"movmad"} performs median or
-## mean absolute deviation calculations on the data.
+## The @qcode{"mode"} property can take the value @qcode{"median"} (default) or
+## @qcode{"mean"} to control whether @qcode{"movmad"} performs median or mean
+## absolute deviation calculations on the data.
 ##
 ## @item
 ## Additional valid properties are @qcode{"Endpoints"} and
-## @qcode{"SamplePoints"}.  For full descriptions of these properties and
-## valid options, @pxref{XREFmovfun,,@code{movfun}}.
+## @qcode{"SamplePoints"}.  For full descriptions of these properties and valid
+## options, @pxref{XREFmovfun,,@code{movfun}}.
 ## @end itemize
 ##
-## Programming Note: This function is a wrapper which calls @code{movfun}.
-## For full documentation of inputs and options,
-## @pxref{XREFmovfun,,@code{movfun}}.
+## Programming Note: This function is a wrapper which calls @code{movfun}.  For
+## full documentation of inputs and options, @pxref{XREFmovfun,,@code{movfun}}.
 ##
 ## Compatibility Note: Prior to Octave 10 this function only calculated mean
-## absolute deviation.  To achieve code compatibility, the default has been
-## changed to median absolute deviation.  The @qcode{"mode"} proprety is now
+## absolute deviation.  For @sc{matlab} compatibility, the default has been
+## changed to median absolute deviation.  The @qcode{"mode"} property is now
 ## provided to enable access to both @qcode{"mad"} calculation methods.  This
 ## property should not be expected to be functional outside of Octave code.
 ##
@@ -96,7 +96,7 @@ function y = movmad (x, wlen, varargin)
   ## deviation.  If multiple, last "mode" input takes precedence.
   ## __parse_movargs__ should have already checked for prop/value pairing.
   ## Use output to send Opt = 1 via anonymous function for median case, or
-  ## use default opt = 0 for mean case.  strip mode property arguments before
+  ## use default opt = 0 for mean case.  Strip mode property arguments before
   ## sending to movfun.
 
 
@@ -107,7 +107,7 @@ function y = movmad (x, wlen, varargin)
     mode_loc = find (mode_check);
     mode_type = varargin{mode_loc(end) + 1};
 
-    switch lower (mode_type)
+    switch (lower (mode_type))
       case "mean"
         fcn = @mad;
 
@@ -125,6 +125,7 @@ function y = movmad (x, wlen, varargin)
   y = movfun (fcn, x, wlen, varargin{:});
 
 endfunction
+
 
 ## mean absolute deviation tests
 %!assert (movmad (1:5, 3, "mode", "mean"), [1/2, 2/3, 2/3, 2/3, 1/2], eps)

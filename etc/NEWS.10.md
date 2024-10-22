@@ -90,7 +90,7 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
 - `issorted` now accepts the MODE option "monotonic", which has the same
   behavior as the option "either".
   
-- `movfun` and `movslice`:  Functions now accept `wlen` equal to 1 or [0,0],
+- `movfun` and `movslice`: Functions now accept `wlen` equal to 1 or [0,0],
   non-integer values of `wlen`, and values of `wlen` that create window lengths
   exceeding the size of the target array. `movfun` also accepts values of `dim`
   larger than the number of non-singleton dimensions in the target array.  The
@@ -107,9 +107,9 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
   been updated for compatibility such that any window containing NaN or NA will
   return NaN rather than passing those values to the calculating function.
   `omitmissing` and `includemissing` are now accepted as aliases for `omitnan`
-  and `includenan`.  These changes affect all moving window functions (`movmad`,
-  `movmax`, `movmean`, `movmedian`, `movmin`, `movprod`, `movstd`, `movsum`, and
-  `movvar`) (bug #66156).
+  and `includenan`.  These changes affect all moving window functions
+  (`movmad`, `movmax`, `movmean`, `movmedian`, `movmin`, `movprod`, `movstd`,
+  `movsum`, and `movvar`) (bug #66156).
   
 - `movmin` and `movmax`: These functions now have their default behavior set to
   `omitnan`.  NaN and NA values will be ignored unless a moving window contains

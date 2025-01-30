@@ -79,14 +79,14 @@ $$A x = \lambda B x$$
 There are two calling forms of the function:
 
 @enumerate
-@item @code{[@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{V}, @var{W}, @var{lambda}] = qz (@var{A}, @var{B})}
+@item @code{[@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{V}, @var{W}] = qz (@var{A}, @var{B})}
 
 Compute the complex QZ@tie{}decomposition, generalized eigenvectors, and
 generalized eigenvalues.
 @tex
-$$ AA = Q^T AZ, BB = Q^T BZ $$
-$$ { \rm diag }(BB)AV = BV{ \rm diag }(AA) $$
-$$ { \rm diag }(BB) W^T A = { \rm diag }(AA) W^T B $$
+$$ AA = Q \cdot A \cdot Z, BB = Q \cdot B \cdot Z $$
+$$ A \cdot V \cdot {\rm diag}(BB) = B \cdot V \cdot {\rm diag}(AA) $$
+$$ {\rm diag}(BB) \cdot W^T \cdot A = {\rm diag}(AA) \cdot W^T \cdot B $$
 @end tex
 @ifnottex
 
@@ -105,7 +105,7 @@ with @var{AA} and @var{BB} upper triangular, and @var{Q} and @var{Z}
 unitary.  The matrices @var{V} and @var{W} respectively contain the right
 and left generalized eigenvectors.
 
-@item @code{[@var{AA}, @var{BB}, @var{Z} @{, @var{lambda}@}] = qz (@var{A}, @var{B}, @var{opt})}
+@item @code{[@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{V}, @var{W}] = qz (@var{A}, @var{B}, @var{opt})}
 
 The @var{opt} argument must be equal to either @qcode{"real"} or
 @qcode{"complex"}.  If it is equal to @qcode{"complex"}, then this
@@ -123,10 +123,14 @@ are real, in which case the real and complex QZ coincide).
 @end enumerate
 
 Note: @code{qz} performs permutation balancing, but not scaling
-(@pxref{XREFbalance,,@code{balance}}), which may be lead to less accurate
+(@pxref{XREFbalance,,@code{balance}}), which may lead to less accurate
 results than @code{eig}.  The order of output arguments was selected for
 compatibility with @sc{matlab}.
-@seealso{eig, gsvd, balance, chol, hess, lu, qr, qzhess, schur}
+
+For eigenvalues, use the @code{ordeig} function to compute them based on
+the resulting @var{AA} and @var{BB} matrices.
+
+@seealso{eig, gsvd, balance, chol, hess, lu, qr, qzhess, schur, ordeig}
 @end deftypefn */)
 {
   int nargin = args.length ();

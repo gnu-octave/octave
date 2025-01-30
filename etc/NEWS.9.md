@@ -4,10 +4,16 @@ Summary of bugs fixed for version 9.4.0 (tbd):
 -----------------------------------------------------
 
 ### Improvements and fixes
+- Fix error in calculation of file timestamp on Windows (bug #31080).
 
 ### GUI
+- Update Spanish translation file (bug #66616).
 
 ### Build system / Tests
+- `cellfun`: Add test for function failing to return requested output
+  (bug #66642).
+- `arrayfun`:  Add test for function failing to return requested output
+  (bug #66642).
 
 ### Documentation
 

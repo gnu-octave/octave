@@ -3522,7 +3522,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
                        msg.c_str ());
     else
       warning_with_id ("Octave:language-extension",
-                       "Octave language extension used: %s near line %d offile %s",
+                       "Octave language extension used: %s near line %d of file %s",
                        msg.c_str (), m_filepos.line (), nm.c_str ());
   }
 

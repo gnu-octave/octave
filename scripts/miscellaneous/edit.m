@@ -31,7 +31,9 @@
 ## Edit the named function, or change editor settings.
 ##
 ## If @code{edit} is called with the name of a file or function as its
-## argument it will be opened in the text editor defined by @env{EDITOR}.
+## argument it will be opened in the default text editor.  The default editor
+## for the Octave GUI is specified in the Editor tab of Preferences.  The
+## default editor for the CLI is specified by the @code{EDITOR} function.
 ##
 ## @itemize @bullet
 ## @item

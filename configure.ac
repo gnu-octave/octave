@@ -1521,7 +1521,7 @@ fi
 
 OCTAVE_CHECK_LIB(bz2, BZIP2,
   [BZIP2 library not found.  Octave will not be able to compress or decompress bzip2 files.],
-  [bzlib.h], [BZ2_bzCompressInit])
+  [bzlib.h], [BZ2_bzCompressInit],[],[],[],[bzip2])
 
 ### Check for HDF5 library.
 

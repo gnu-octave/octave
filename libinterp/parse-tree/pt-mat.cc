@@ -135,7 +135,7 @@ maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p)
 {
   if (! (all_dq_strings_p || all_sq_strings_p))
     warning_with_id ("Octave:mixed-string-concat",
-                     "concatenation of different character string types may have unintended consequences");
+                     "concatenation of single and double quoted string objects creates a single quoted string object");
 }
 
 tree_expression *

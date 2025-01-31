@@ -70,16 +70,16 @@ function rval = strjoin (cstr, delimiter = " ")
   num = numel (cstr);
   if (numel (delimiter) == 1 && num > 1)
     delimiter = repmat (delimiter, 1, num);
-    delimiter(end) = {""};
+    delimiter(end) = {''};
   elseif (num > 0 && numel (delimiter) != num - 1)
     error ("Octave:strjoin:cellstring_delimiter_mismatch",
       "strjoin: the number of delimiters does not match the number of strings");
   else
-    delimiter(end+1) = {""};
+    delimiter(end+1) = {''};
   endif
 
   if (num == 0)
-    rval = "";
+    rval = '';
   else
     rval = [[cstr(:).'; delimiter(:).']{:}];
   endif

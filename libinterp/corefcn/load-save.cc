@@ -1233,11 +1233,13 @@ load_save_system::load (const octave_value_list& args, int nargout)
         {
           format = MAT_BINARY;
         }
+      // FIXME: Unsupported and silently ignored.  Can we just delete this?
       else if (argv[i] == "-force" || argv[i] == "-f")
         {
           // Silently ignore this
           // warning ("load: -force ignored");
         }
+      // FIXME: Unsupported and ignored.  Can we just delete this?
       else if (argv[i] == "-import" || argv[i] == "-i")
         {
           warning ("load: -import ignored");
@@ -1586,51 +1588,26 @@ DEFMETHOD (load, interp, args, nargout,
 @deftypefnx {} {} load file options
 @deftypefnx {} {} load file options v1 v2 @dots{}
 @deftypefnx {} {S =} load ("file", "options", "v1", "v2", @dots{})
-Load the named variables @var{v1}, @var{v2}, @dots{}, from the file
-@var{file}.
+Load the named variables @var{v1}, @var{v2}, @dots{}, from the file @var{file}.
 
-If no variables are specified then all variables found in the
-file will be loaded.  As with @code{save}, the list of variables to extract
-can be full names or use a pattern syntax.  The format of the file is
-automatically detected but may be overridden by supplying the appropriate
-option.
+If no variables are specified then all variables found in the file will be
+loaded.  Otherwise, full variable names or pattern syntax can be used to
+specify the variables to save.  The format of the file is automatically
+detected but may be overridden by supplying the appropriate option.
 
-If load is invoked using the functional form
+The @code{load} command may also be invoked using the functional form
 
 @example
 load ("-option1", @dots{}, "file", "v1", @dots{})
 @end example
 
 @noindent
-then the @var{options}, @var{file}, and variable name arguments
-(@var{v1}, @dots{}) must be specified as character strings.
-
-If a variable that is not marked as global is loaded from a file when a
-global symbol with the same name already exists, it is loaded in the
-global symbol table.  Also, if a variable is marked as global in a file
-and a local symbol exists, the local symbol is moved to the global
-symbol table and given the value from the file.
-
-If invoked with a single output argument, Octave returns data instead
-of inserting variables in the symbol table.  If the data file contains
-only numbers (TAB- or space-delimited columns), a matrix of values is
-returned.  Otherwise, @code{load} returns a structure with members
- corresponding to the names of the variables in the file.
-
-The @code{load} command can read data stored in Octave's text and
-binary formats, and @sc{matlab}'s binary format.  If compiled with zlib
-support, it can also load gzip-compressed files.  It will automatically
-detect the type of file and do conversion from different floating point
-formats (currently only IEEE big and little endian, though other formats
-may be added in the future).
+where the @var{options}, @var{file}, and variable name arguments (@var{v1},
+@dots{}) must be specified as character strings.
 
 Valid options for @code{load} are listed in the following table.
 
 @table @code
-@item -force
-This option is accepted for backward compatibility but is ignored.
-Octave now overwrites variables currently in memory with
-those of the same name found in the file.
 
 @item -ascii
 Force Octave to assume the file contains columns of numbers in text format
@@ -1645,17 +1622,12 @@ Force Octave to assume the file is in Octave's binary format.
 Force Octave to assume the file is in @sc{hdf5} format.  (@sc{hdf5} is a free,
 portable binary format developed by the National Center for Supercomputing
 Applications at the University of Illinois.)  Note that @code{load} is only
-designed to read @sc{hdf5} files that were created by itself with @code{save},
+designed to read @sc{hdf5} files that were created by Octave with @code{save},
 and attempts to read other @sc{hdf5} files may fail or produce unpredictable
-results. The @code{-hdf5} option also provides a limited ability to read
-files created using @sc{matlab}'s @code{-v7.3} option (which saves in @sc{hdf5}
-format) although many data types are not yet supported. This format is only
+results. The @code{-hdf5} option provides a limited ability to read files
+created using @sc{matlab}'s @code{-v7.3} option (which saves in @sc{hdf5}
+format) although many data types are not yet supported.  This format is only
 available if Octave was built with a link to the @sc{hdf5} libraries.
-
-@item -import
-This option is accepted for backward compatibility but is ignored.
-Octave can now support multi-dimensional HDF data and automatically
-modifies variable names if they are invalid Octave identifiers.
 
 @item -text
 Force Octave to assume the file is in Octave's text format.
@@ -1689,7 +1661,45 @@ Force Octave to assume the file is in @sc{matlab}'s version 6 binary format.
 Force Octave to assume the file is in @sc{matlab}'s version 4 binary format.
 
 @end table
-@seealso{save, dlmwrite, csvwrite, fwrite}
+
+The list of variables to load may use wildcard patterns (glob patterns)
+containing the following special characters:
+
+@table @code
+@item ?
+Match any single character.
+
+@item *
+Match zero or more characters.
+
+@item [ @var{list} ]
+Match the list of characters specified by @var{list}.  If the first character
+is @code{!} or @code{^}, match all characters except those specified by
+@var{list}.  For example, the pattern @code{[a-zA-Z]} will match all lower and
+uppercase alphabetic characters.
+
+@end table
+
+If invoked with a single output argument, Octave assigns loaded data to the
+output instead of inserting variables in the symbol table.  If the data file
+contains only numbers (TAB- or space-delimited columns), a matrix of values is
+returned.  Otherwise, @code{load} returns a structure with members
+corresponding to the names of the variables in the file.
+
+The @code{load} command can read data stored in Octave's text and binary
+formats, @sc{matlab}'s binary format, and many simple formats such as
+comma-separated-values (CSV).  If compiled with zlib support, it can also load
+gzip-compressed files.  It will automatically detect the type of file and do
+conversion from different floating point formats (currently only IEEE big and
+little endian, though other formats may be added in the future).
+
+Programming Note: If a variable that is not marked as global is loaded from a
+file when a global symbol with the same name already exists, it is loaded in
+the global symbol table.  Also, if a variable is marked as global in a file and
+a local symbol exists, the local symbol is moved to the global symbol table and
+given the value from the file.
+
+@seealso{save, csvread, dlmread, fread, textscan}
 @end deftypefn */)
 {
   load_save_system& load_save_sys = interp.get_load_save_system ();
@@ -1708,35 +1718,31 @@ DEFMETHOD (save, interp, args, nargout,
 @deftypefnx {} {@var{str} =} save ("-", @qcode{"@var{v1}"}, @qcode{"@var{v2}"}, @dots{})
 Save the named variables @var{v1}, @var{v2}, @dots{}, in the file @var{file}.
 
-The special filename @samp{-} may be used to return the content of the
-variables as a string.  If no variable names are listed, Octave saves all the
-variables in the current scope.  Otherwise, full variable names or pattern
-syntax can be used to specify the variables to save.  If the @option{-struct}
-modifier is used then the fields of the @strong{scalar} struct are saved as if
-they were variables with the corresponding field names.  The @option{-struct}
-option can be combined with specific field names @var{f1}, @var{f2}, @dots{} to
-write only certain fields to the file.
+If no variable names are listed, Octave saves all the variables in the current
+scope.  Otherwise, full variable names or pattern syntax can be used to specify
+the variables to save.  If the @option{-struct} modifier is used then the
+fields of the @strong{scalar} struct are saved as if they were variables with
+the corresponding field names.  The @option{-struct} option can be combined
+with specific field names @var{f1}, @var{f2}, @dots{} to write only certain
+fields to the file.
 
-Valid options for the @code{save} command are listed in the following table.
-Options that modify the output format override the format specified by
-@code{save_default_options}.
-
-If save is invoked using the functional form
+The @code{save} command may also be invoked using the functional form
 
 @example
 save ("-option1", @dots{}, "file", "v1", @dots{})
 @end example
 
 @noindent
-then the @var{options}, @var{file}, and variable name arguments (@var{v1},
+where the @var{options}, @var{file}, and variable name arguments (@var{v1},
 @dots{}) must be specified as character strings.
 
-If called with a filename of @qcode{"-"}, write the output to stdout if nargout
-is 0, otherwise return the output in a character string.
+Valid options for the @code{save} command are listed in the following table.
+Options that modify the output format override the format specified by
+@code{save_default_options}.
 
 @table @code
 @item -append
-Append to the destination instead of overwriting.
+Append to the file instead of overwriting.
 
 @item -ascii
 Save a matrix in a text file without a header or any other information.  The
@@ -1756,23 +1762,27 @@ Separate numbers with tabs.
 Save the data in Octave's binary data format.
 
 @item -float-binary
-Save the data in Octave's binary data format but using only single precision.
+Save the data in Octave's binary data format using just single precision.
 Use this format @strong{only} if you know that all the values to be saved can
 be represented in single precision.
 
 @item -hdf5
-Save the data in @sc{hdf5} format.  (HDF5 is a free, portable, binary format
-developed by the National Center for Supercomputing Applications at the
-University of Illinois.) This format is only available if Octave was built
+Save the data in @sc{hdf5} format.  (@sc{hdf5} is a free, portable, binary
+format developed by the National Center for Supercomputing Applications at the
+University of Illinois.)  This format is only available if Octave was built
 with a link to the @sc{hdf5} libraries.
 
 @item -float-hdf5
-Save the data in @sc{hdf5} format but using only single precision.  Use this
+Save the data in @sc{hdf5} format using just single precision.  Use this
 format @strong{only} if you know that all the values to be saved can be
 represented in single precision.
 
-@item -text
-Save the data in Octave's text data format.  (default)
+@item -text (default)
+Save the data in Octave's text data format.  The
+@ref{XREFsave_precision,,@code{save_precision}} function specifies the number
+of significant figures to use when saving data (default: 17).  The header of
+the text data file can be configure with
+@ref{XREFsave_header_format_string,,@code{save_header_format_string}}.
 
 @item  -v7.3
 @itemx -V7.3
@@ -1828,10 +1838,13 @@ Wildcards may also be used in the field name specifications when using the
 
 @end table
 
-Except when using the @sc{matlab} binary data file format or the @samp{-ascii}
-format, saving global variables also saves the global status of the variable.
-If the variable is restored at a later time using @samp{load}, it will be
-restored as a global variable.
+Programming Notes: If called with the special filename @qcode{"-"} the data to
+be saved is returned as a string rather than writing it to an actual file.
+
+When saving global variables the global status of the variable is also stored.
+If the variable is restored at a later time using @code{load}, it will be
+restored as a global variable.  Global status is @emph{not} preserved if 
+using a @sc{matlab} binary data file format or the @option{-ascii} format. 
 
 Example:
 
@@ -1844,8 +1857,9 @@ save -binary data a b*
 @noindent
 saves the variable @samp{a} and all variables beginning with @samp{b} to the
 file @file{data} in Octave's binary format.
+
 @seealso{load, save_default_options, save_header_format_string, save_precision,
-dlmread, csvread, fread}
+csvwrite, dlmwrite, fwrite}
 @end deftypefn */)
 {
   load_save_system& load_save_sys = interp.get_load_save_system ();

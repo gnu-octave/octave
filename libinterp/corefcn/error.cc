@@ -506,7 +506,13 @@ void
 error_system::vwarning (const char *name, const char *id,
                         const char *fmt, va_list args)
 {
-  flush_stdout ();
+  int warn_opt = warning_enabled (id);
+
+  if (warn_opt == 2)
+    {
+      // Handle this warning as an error.  ERROR_1 won't return.
+      error_1 (id, fmt, args);
+    }
 
   std::string base_msg = format_message (fmt, args);
   std::string msg_string;
@@ -526,12 +532,16 @@ error_system::vwarning (const char *name, const char *id,
   last_warning_id (id);
   last_warning_message (base_msg);
 
-  if (discard_warning_messages ())
+  // If WARN_OPT is 0, then the warning is disabled.  But we sill
+  // still set LAST_WARNING_MESSAGE above.
+  if (discard_warning_messages () || warn_opt == 0)
     return;
 
   tree_evaluator& tw = m_interpreter.get_evaluator ();
 
   bool in_user_code = tw.in_user_code ();
+
+  flush_stdout ();
 
   if (! quiet_warning ())
     {
@@ -588,16 +598,12 @@ error_system::error_1 (const char *id, const char *fmt,
 void
 error_system::vwarning (const char *id, const char *fmt, va_list args)
 {
-  int warn_opt = warning_enabled (id);
-
-  if (warn_opt == 2)
-    {
-      // Handle this warning as an error.
-
-      error_1 (id, fmt, args);
-    }
-  else if (warn_opt == 1)
-    vwarning ("warning", id, fmt, args);
+  // OK, this probably seems strange now, but there is a version of
+  // vwarning that takes the "name" of the warning as an argument,
+  // possibly because "usage" was previously handled as a warning?
+  // For consistent behavior, that function will deal with all the
+  // ON/OFF/ERROR warning state options.
+  vwarning ("warning", id, fmt, args);
 }
 
 void

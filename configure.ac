@@ -1536,7 +1536,7 @@ fi
 
 OCTAVE_CHECK_LIB(bz2, BZIP2,
   [BZIP2 library not found.  Octave will not be able to compress or decompress bzip2 files.],
-  [bzlib.h], [BZ2_bzCompressInit])
+  [bzlib.h], [BZ2_bzCompressInit], [], [], [], [bzip2])
 
 ### Check for HDF5 library.
 
@@ -1654,7 +1654,7 @@ CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
 LIBS="$Z_LDFLAGS $Z_LIBS $LIBS"
 OCTAVE_CHECK_LIB(curl, cURL,
   [cURL library not found.  The ftp objects, urlread, and urlwrite functions will be disabled.],
-  [curl/curl.h], [curl_easy_escape])
+  [curl/curl.h], [curl_easy_escape], [], [], [], [libcurl])
 if test -n "$CURL_LIBS"; then
   ## Additional check on cURL library that was found
   AC_CACHE_CHECK([for CURLOPT_DIRLISTONLY in curl/curl.h],

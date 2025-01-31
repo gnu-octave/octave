@@ -305,7 +305,7 @@
 ##
 ## @item Octave:mixed-string-concat
 ## If the @code{Octave:mixed-string-concat} warning is enabled, print a
-## warning when concatenating a mixture of double and single quoted strings.
+## warning when concatenating a mixture of single and double quoted strings.
 ## By default, the @code{Octave:mixed-string-concat} warning is disabled.
 ##
 ## @item  Octave:nearly-singular-matrix

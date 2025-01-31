@@ -104,7 +104,7 @@ function newstr = erase (str, ptn)
   else
     ptn = regexptranslate ("escape", ptn(:).');
     ptn = strjoin (ptn, '|');
-    newstr = regexprep (str, ptn, "");
+    newstr = regexprep (str, ptn, '');
   endif
 
   if (ischarmatrix)
@@ -149,4 +149,4 @@ endfunction
 %!error <STR must be a string> erase ([1], "foo")
 %!error <PTN must be a string> erase ("foo", [1])
 %!warning <using character array for PTN is not recommended>
-%! erase ("a", ["a";"b"]);
+%! erase ('a', ['a';'b']);

@@ -134,6 +134,8 @@ function str = num2str (x, arg)
         fmt = "%3d";
       endif
     endif
+    ## FIXME: Remove when Matlab strings are implemented in Octave.
+    warning ('off', 'Octave:mixed-string-concat', 'local');
     fmt = do_string_escapes (fmt);  # required now that '\n' is interpreted.
     nd = ndims (x);
     nc = columns (x) * (nd - 1);    # ND-arrays are expanded in columns

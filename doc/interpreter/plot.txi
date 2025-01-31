@@ -747,7 +747,7 @@ figure window, call the @code{close} function.
 @subsection Use of the "interpreter" Property
 
 @code{text} (such as titles, labels, legend item) and @code{axes} objects
-feature an @ref{XREFtextinterpreter,,@qcode{"interpreter}} and a
+feature an @ref{XREFtextinterpreter,,@qcode{"interpreter"}} and a
 @ref{XREFaxesticklabelinterpreter,,@qcode{"ticklabelinterpreter"}} property
 respectively.  It determines the manner in which special control sequences in
 the text are rendered.

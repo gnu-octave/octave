@@ -8,6 +8,7 @@ Summary of bugs fixed for version 9.4.0 (tbd):
 
 ### GUI
 - Update Spanish translation file (bug #66616).
+- Update Brazilian Portuguese translation file (bug #66554).
 
 ### Build system / Tests
 - `cellfun`: Add test for function failing to return requested output
@@ -16,6 +17,7 @@ Summary of bugs fixed for version 9.4.0 (tbd):
   (bug #66642).
 
 ### Documentation
+- Clarify default editor difference between CLI and GUI (bug #66703).
 
 
 Summary of bugs fixed for version 9.3.0 (2024-12-12):

@@ -876,7 +876,7 @@ or automatically set by Octave to include all visible objects.";
 
       case "clim"
         s.doc = "Define limits for the color axis of __objname__ \
-children that have the @qcode{cdata} property.  \
+children that have the @code{cdata} property.  \
 __modemsg__";
         s.valid = valid_2elvec;
         s.category = "Color and Transparency";
@@ -885,7 +885,7 @@ __modemsg__";
         s.doc = "Current state of the color limit mode, either \
 manually set by the \
 @ref{XREFaxesclim, , @w{@qcode{\"clim\"} property}} or automatically set by \
-Octave to the minimum and maximum @qcode{cdata} values of __objname__'s \
+Octave to the minimum and maximum @code{cdata} values of __objname__'s \
 children.";
         s.category = "Color and Transparency";
 

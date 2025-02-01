@@ -1712,6 +1712,7 @@ if test $check_magick = yes; then
     MAGICK_CPPFLAGS="$($PKG_CONFIG --cflags $magick | $SED -e 's/^ *$//')"
     MAGICK_LDFLAGS="$($PKG_CONFIG --libs-only-L $magick | $SED -e 's/^ *$//')"
     MAGICK_LIBS="$($PKG_CONFIG --libs-only-l $magick | $SED -e 's/^ *$//')"
+    AC_MSG_NOTICE([found $magick pc file in location "$($PKG_CONFIG --variable=pcfiledir $magick)" version: $($PKG_CONFIG --modversion $magick)])
 
     warn_magick="$magick library fails tests.  The imread, imwrite, and imfinfo functions for reading and writing image files will not be fully functional."
 
@@ -1841,6 +1842,7 @@ if test $check_freetype = yes; then
       LIBS="$FT2_LIBS $LIBS"
       AC_CHECK_FUNCS([FT_Reference_Face])
       LIBS="$save_LIBS"
+      AC_MSG_NOTICE([found freetype2 pc file in location "$($PKG_CONFIG --variable=pcfiledir freetype2)" version: $($PKG_CONFIG --modversion freetype2)])
     else
       AC_MSG_RESULT(no)
       warn_freetype="FreeType library >= 9.03 not found.  OpenGL graphics will not be fully functional."

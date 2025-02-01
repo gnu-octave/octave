@@ -964,6 +964,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
         m4_toupper([$1])_LDFLAGS="$($PKG_CONFIG --libs-only-L m4_default([$9], [$1]) | $SED -e 's/^ *$//')"
       fi
       m4_toupper([$1])_LIBS="$($PKG_CONFIG --libs-only-l m4_default([$9], [$1]) | $SED -e 's/^ *$//')"
+      AC_MSG_NOTICE([found $(echo m4_default([$9], [$1])) pc file in location "$($PKG_CONFIG --variable=pcfiledir m4_default([$9], [$1]))" version: $($PKG_CONFIG --modversion m4_default([$9], [$1]))])
     ])
   fi
 
@@ -2195,6 +2196,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       QT_CPPFLAGS="$($PKG_CONFIG --cflags-only-I $QT_MODULES | $SED -e 's/^ *$//')"
       QT_LDFLAGS="$($PKG_CONFIG --libs-only-L $QT_MODULES | $SED -e 's/^ *$//')"
       QT_LIBS="$($PKG_CONFIG --libs-only-l $QT_MODULES | $SED -e 's/^ *$//')"
+      AC_MSG_NOTICE([found $QT_MODULES pc files in location "$($PKG_CONFIG --variable=pcfiledir $QT_MODULES | tr ' ' '\n' | uniq)" version: $($PKG_CONFIG --modversion $QT_MODULES | uniq)])
 
       case $host_os in
         *darwin*)

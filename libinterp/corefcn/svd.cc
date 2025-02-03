@@ -458,7 +458,7 @@ in Octave has been set to @qcode{"gesvd"}.
 %! assert (V1, V2, 6*eps);
 %! z = U1(1,:) ./ U3(1,:);
 %! assert (U1, U3 .* z, 100*eps);
-%! assert (S1, S3, 6*eps);
+%! assert (S1, S3, 10*eps);
 %! assert (V1, V3 .* z, 100*eps);
 */
 

@@ -191,6 +191,10 @@ from Octave 10.
   functions.  Specific examples of this can be found in the "Minimizers"
   section of the Octave manual.
 
+- The unsupported and unnecessary `load` options of `-force` and `-import` have
+  been removed.  If legacy m-files are still invoking `load` with these options
+  update the code and remove them. 
+
 ### Build system
 
 - Octave now requires a C++ compiler that is compliant with C++17 (preferably

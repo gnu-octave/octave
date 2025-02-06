@@ -1233,17 +1233,6 @@ load_save_system::load (const octave_value_list& args, int nargout)
         {
           format = MAT_BINARY;
         }
-      // FIXME: Unsupported and silently ignored.  Can we just delete this?
-      else if (argv[i] == "-force" || argv[i] == "-f")
-        {
-          // Silently ignore this
-          // warning ("load: -force ignored");
-        }
-      // FIXME: Unsupported and ignored.  Can we just delete this?
-      else if (argv[i] == "-import" || argv[i] == "-i")
-        {
-          warning ("load: -import ignored");
-        }
       else if (argv[i] == "-list" || argv[i] == "-l")
         {
           list_only = true;

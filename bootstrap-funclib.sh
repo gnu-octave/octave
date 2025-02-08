@@ -1,8 +1,8 @@
 # A library of shell functions for autopull.sh, autogen.sh, and bootstrap.
 
-scriptlibversion=2024-11-12.21; # UTC
+scriptlibversion=2024-11-25.15; # UTC
 
-# Copyright (C) 2003-2024 Free Software Foundation, Inc.
+# Copyright (C) 2003-2025 Free Software Foundation, Inc.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -556,7 +556,7 @@ prepare_GNULIB_SRCDIR ()
             # commit hash to minimize the amount of data downloaded and changes
             # needed to be processed, which can drastically reduce download and
             # processing time for checkout. If the fetch by commit fails, a
-            # shallow fetch can not be performed because we do not know what the
+            # shallow fetch cannot be performed because we do not know what the
             # depth of the commit is without fetching all commits. So fall back
             # to fetching all commits.
             git -C "$gnulib_path" init

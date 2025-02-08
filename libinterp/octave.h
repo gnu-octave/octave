@@ -280,12 +280,6 @@ public:
 
   bool interpreter_is_initialized () const;
 
-  OCTAVE_DEPRECATED (9, "use octave::interpreter_is_initialized instead")
-  bool interpreter_initialized ()
-  {
-    return interpreter_is_initialized ();
-  }
-
   virtual interpreter& create_interpreter ();
 
   virtual void initialize_interpreter ();

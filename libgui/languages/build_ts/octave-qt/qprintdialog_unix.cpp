@@ -991,13 +991,16 @@ void QPrintDialog::accept()
 {
     Q_D(QPrintDialog);
 #if QT_CONFIG(cups) && QT_CONFIG(messagebox)
-    if (d->options.pagesRadioButton->isChecked() && printer()->pageRanges().isEmpty()) {
-        QMessageBox::critical(this, tr("Invalid Pages Definition"),
-                              tr("%1 does not follow the correct syntax. Please use ',' to separate "
-                              "ranges and pages, '-' to define ranges and make sure ranges do "
-                              "not intersect with each other.").arg(d->options.pagesLineEdit->text()),
-                              QMessageBox::Ok, QMessageBox::Ok);
-        return;
+    if (d->options.pagesRadioButton->isChecked()) {
+        const QString rangesText = d->options.pagesLineEdit->text();
+        if (rangesText.isEmpty() || QPageRanges::fromString(rangesText).isEmpty()) {
+            QMessageBox::critical(this, tr("Invalid Pages Definition"),
+                                  tr("%1 does not follow the correct syntax. Please use ',' to separate "
+                                     "ranges and pages, '-' to define ranges and make sure ranges do "
+                                     "not intersect with each other.").arg(rangesText),
+                                  QMessageBox::Ok, QMessageBox::Ok);
+            return;
+        }
     }
     if (d->top->d->m_duplexPpdOption && d->top->d->m_duplexPpdOption->conflicted) {
         const QMessageBox::StandardButton answer = QMessageBox::warning(this, tr("Duplex Settings Conflicts"),
@@ -1328,9 +1331,9 @@ QUnixPrintWidget::QUnixPrintWidget(QPrinter *printer, QWidget *parent)
             cur = home;
         else if (!cur.endsWith(u'/'))
             cur += u'/';
-        if (QGuiApplication::platformName() == QStringLiteral("xcb")) {
+        if (QGuiApplication::platformName() == "xcb"_L1) {
             if (printer->docName().isEmpty()) {
-                cur += QStringLiteral("print.pdf");
+                cur += "print.pdf"_L1;
             } else {
 #if QT_CONFIG(regularexpression)
                 const QRegularExpression re(QStringLiteral("(.*)\\.\\S+"));
@@ -1340,7 +1343,7 @@ QUnixPrintWidget::QUnixPrintWidget(QPrinter *printer, QWidget *parent)
                 else
 #endif
                     cur += printer->docName();
-                cur += QStringLiteral(".pdf");
+                cur += ".pdf"_L1;
             }
         } // xcb
 

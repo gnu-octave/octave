@@ -230,22 +230,30 @@ QVariant QDialogPrivate::styleHint(QPlatformDialogHelper::StyleHint hint) const
     the user to continue to use other windows in an application.
 
     The most common way to display a modal dialog is to call its
-    exec() function. When the user closes the dialog, exec() will
-    provide a useful \l{#return}{return value}. To close the dialog
-    and return the appropriate value, you must connect a default button,
-    e.g. an \uicontrol OK button to the accept() slot and a
-    \uicontrol Cancel button to the reject() slot. Alternatively, you
-    can call the done() slot with \c Accepted or \c Rejected.
+    \l open() function. Alternatively, you can call \l setModal(true) or
+    \l setWindowModality(), and then \l show(). In both cases, once the dialog is
+    displayed, the control is immediately returned to the caller. You must connect
+    to the \l finished() signal to know when the dialog is closed and what its
+    \l {#return} {return value} is. Alternatively, you can connect to the
+    \l accepted() and \l rejected() signals.
 
-    An alternative is to call setModal(true) or setWindowModality(),
-    then show(). Unlike exec(), show() returns control to the caller
-    immediately. Calling setModal(true) is especially useful for
-    progress dialogs, where the user must have the ability to interact
-    with the dialog, e.g.  to cancel a long running operation. If you
-    use show() and setModal(true) together to perform a long operation,
-    you must call QCoreApplication::processEvents() periodically during
-    processing to enable the user to interact with the dialog. (See
-    QProgressDialog.)
+    When implementing a custom dialog, to close the dialog and return an
+    appropriate value, connect a default button, for example, an OK button, to the
+    \l accept() slot, and a Cancel button to the \l reject() slot. Alternatively,
+    you can call the \l done() slot with \c Accepted or \c Rejected.
+
+    If you show the modal dialog to perform a long-running operation, it is
+    recommended to perform the operation in a background worker thread, so that
+    it does not interfere with the GUI thread.
+
+    \warning When using \l open() or \l show(), the modal dialog should not be
+    created on the stack, so that it does not get destroyed as soon as the control
+    returns to the caller.
+
+    \note There is a way to show a modal dialog in a blocking mode by calling
+    \l exec(). In this case, the control returns to the GUI thread only when the
+    dialog is closed. However, such approach is discouraged, because it creates a
+    nested event loop, which is not fully supported by some platforms.
 
     \section1 Modeless Dialogs
 
@@ -323,6 +331,10 @@ QVariant QDialogPrivate::styleHint(QPlatformDialogHelper::StyleHint hint) const
     A dialog with an extension:
 
     \snippet dialogs/dialogs.cpp extension
+
+    By setting the \l{QLayout::}{sizeConstraint} property of the dialog's
+    layout to \l{QLayout::}{SetFixedSize}, the dialog will not be resizable
+    by the user, and will automatically shrink when the extension gets hidden.
 
     \sa QDialogButtonBox, QTabWidget, QWidget, QProgressDialog,
         {Standard Dialogs Example}
@@ -489,8 +501,6 @@ void QDialog::setResult(int r)
 }
 
 /*!
-    \since 4.5
-
     Shows the dialog as a \l{QDialog#Modal Dialogs}{window modal dialog},
     returning immediately.
 
@@ -740,6 +750,10 @@ void QDialog::closeEvent(QCloseEvent *e)
 void QDialog::setVisible(bool visible)
 {
     Q_D(QDialog);
+
+    if (testAttribute(Qt::WA_WState_ExplicitShowHide) && testAttribute(Qt::WA_WState_Hidden) != visible)
+        return;
+
     d->setVisible(visible);
 }
 
@@ -764,10 +778,7 @@ void QDialogPrivate::setVisible(bool visible)
     }
 
     if (visible) {
-        if (q->testAttribute(Qt::WA_WState_ExplicitShowHide) && !q->testAttribute(Qt::WA_WState_Hidden))
-            return;
-
-        q->QWidget::setVisible(visible);
+        QWidgetPrivate::setVisible(visible);
 
         // Window activation might be prevented. We can't test isActiveWindow here,
         // as the window will be activated asynchronously by the window manager.
@@ -817,8 +828,6 @@ void QDialogPrivate::setVisible(bool visible)
 #endif
 
     } else {
-        if (q->testAttribute(Qt::WA_WState_ExplicitShowHide) && q->testAttribute(Qt::WA_WState_Hidden))
-            return;
 
 #if QT_CONFIG(accessibility)
         if (q->isVisible()) {
@@ -828,7 +837,7 @@ void QDialogPrivate::setVisible(bool visible)
 #endif
 
         // Reimplemented to exit a modal event loop when the dialog is hidden.
-        q->QWidget::setVisible(visible);
+        QWidgetPrivate::setVisible(visible);
         if (eventLoop)
             eventLoop->exit();
     }
@@ -1063,7 +1072,6 @@ void QDialog::resizeEvent(QResizeEvent *)
 }
 
 /*! \fn void QDialog::finished(int result)
-    \since 4.1
 
     This signal is emitted when the dialog's \a result code has been
     set, either by the user or by calling done(), accept(), or
@@ -1077,7 +1085,6 @@ void QDialog::resizeEvent(QResizeEvent *)
 */
 
 /*! \fn void QDialog::accepted()
-    \since 4.1
 
     This signal is emitted when the dialog has been accepted either by
     the user or by calling accept() or done() with the
@@ -1091,7 +1098,6 @@ void QDialog::resizeEvent(QResizeEvent *)
 */
 
 /*! \fn void QDialog::rejected()
-    \since 4.1
 
     This signal is emitted when the dialog has been rejected either by
     the user or by calling reject() or done() with the

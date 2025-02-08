@@ -108,8 +108,6 @@ QFontDialogPrivate::~QFontDialogPrivate()
 */
 
 /*!
-    \since 4.5
-
     Constructs a standard font dialog.
 
     Use setCurrentFont() to set the initial font attributes.
@@ -126,8 +124,6 @@ QFontDialog::QFontDialog(QWidget *parent)
 }
 
 /*!
-    \since 4.5
-
     Constructs a standard font dialog with the given \a parent and specified
     \a initial font.
 */
@@ -208,14 +204,21 @@ void QFontDialogPrivate::init()
     size = 0;
     smoothScalable = false;
 
-    QObject::connect(writingSystemCombo, SIGNAL(activated(int)), q, SLOT(_q_writingSystemHighlighted(int)));
-    QObject::connect(familyList, SIGNAL(highlighted(int)), q, SLOT(_q_familyHighlighted(int)));
-    QObject::connect(styleList, SIGNAL(highlighted(int)), q, SLOT(_q_styleHighlighted(int)));
-    QObject::connect(sizeList, SIGNAL(highlighted(int)), q, SLOT(_q_sizeHighlighted(int)));
-    QObject::connect(sizeEdit, SIGNAL(textChanged(QString)), q, SLOT(_q_sizeChanged(QString)));
+    QObjectPrivate::connect(writingSystemCombo, &QComboBox::activated,
+                            this, &QFontDialogPrivate::writingSystemHighlighted);
+    QObjectPrivate::connect(familyList, &QFontListView::highlighted,
+                            this, &QFontDialogPrivate::familyHighlighted);
+    QObjectPrivate::connect(styleList, &QFontListView::highlighted,
+                            this, &QFontDialogPrivate::styleHighlighted);
+    QObjectPrivate::connect(sizeList, &QFontListView::highlighted,
+                            this, &QFontDialogPrivate::sizeHighlighted);
+    QObjectPrivate::connect(sizeEdit, &QLineEdit::textChanged,
+                            this, &QFontDialogPrivate::sizeChanged);
 
-    QObject::connect(strikeout, SIGNAL(clicked()), q, SLOT(_q_updateSample()));
-    QObject::connect(underline, SIGNAL(clicked()), q, SLOT(_q_updateSample()));
+    QObjectPrivate::connect(strikeout, &QCheckBox::clicked,
+                            this, &QFontDialogPrivate::updateSample);
+    QObjectPrivate::connect(underline, &QCheckBox::clicked, this,
+                            &QFontDialogPrivate::updateSample);
 
     for (int i = 0; i < QFontDatabase::WritingSystemsCount; ++i) {
         QFontDatabase::WritingSystem ws = QFontDatabase::WritingSystem(i);
@@ -277,11 +280,11 @@ void QFontDialogPrivate::init()
 
     QPushButton *button
             = static_cast<QPushButton *>(buttonBox->addButton(QDialogButtonBox::Ok));
-    QObject::connect(buttonBox, SIGNAL(accepted()), q, SLOT(accept()));
+    QObject::connect(buttonBox, &QDialogButtonBox::accepted, q, &QDialog::accept);
     button->setDefault(true);
 
     buttonBox->addButton(QDialogButtonBox::Cancel);
-    QObject::connect(buttonBox, SIGNAL(rejected()), q, SLOT(reject()));
+    QObject::connect(buttonBox, &QDialogButtonBox::rejected, q, &QDialog::reject);
 
     q->resize(500, 360);
 
@@ -323,10 +326,6 @@ QFontDialog::~QFontDialog()
   \snippet code/src_gui_dialogs_qfontdialog.cpp 3
   In this example, if the user clicks OK the font they chose will be
   used, and if they click Cancel the original font is used.
-
-  \warning Do not delete \a parent during the execution of the dialog.
-           If you want to do this, you should create the dialog
-           yourself using one of the QFontDialog constructors.
 */
 QFont QFontDialog::getFont(bool *ok, const QFont &initial, QWidget *parent, const QString &title,
                            FontDialogOptions options)
@@ -349,10 +348,6 @@ QFont QFontDialog::getFont(bool *ok, const QFont &initial, QWidget *parent, cons
 
   Example:
   \snippet code/src_gui_dialogs_qfontdialog.cpp 4
-
-  \warning Do not delete \a parent during the execution of the dialog.
-           If you want to do this, you should create the dialog
-           yourself using one of the QFontDialog constructors.
 */
 QFont QFontDialog::getFont(bool *ok, QWidget *parent)
 {
@@ -363,17 +358,17 @@ QFont QFontDialog::getFont(bool *ok, QWidget *parent)
 QFont QFontDialogPrivate::getFont(bool *ok, const QFont &initial, QWidget *parent,
                                   const QString &title, QFontDialog::FontDialogOptions options)
 {
-    QFontDialog dlg(parent);
-    dlg.setOptions(options);
-    dlg.setCurrentFont(initial);
+    QAutoPointer<QFontDialog> dlg(new QFontDialog(parent));
+    dlg->setOptions(options);
+    dlg->setCurrentFont(initial);
     if (!title.isEmpty())
-        dlg.setWindowTitle(title);
+        dlg->setWindowTitle(title);
 
-    int ret = (dlg.exec() || (options & QFontDialog::NoButtons));
+    int ret = (dlg->exec() || (options & QFontDialog::NoButtons));
     if (ok)
         *ok = !!ret;
-    if (ret) {
-        return dlg.selectedFont();
+    if (ret && bool(dlg)) {
+        return dlg->selectedFont();
     } else {
         return initial;
     }
@@ -430,8 +425,10 @@ void QFontDialogPrivate::initHelper(QPlatformDialogHelper *h)
     auto *fontDialogHelper = static_cast<QPlatformFontDialogHelper *>(h);
     fontDialogHelper->setOptions(options);
     fontDialogHelper->setCurrentFont(q->currentFont());
-    QObject::connect(h, SIGNAL(currentFontChanged(QFont)), q, SIGNAL(currentFontChanged(QFont)));
-    QObject::connect(h, SIGNAL(fontSelected(QFont)), q, SIGNAL(fontSelected(QFont)));
+    QObject::connect(fontDialogHelper, &QPlatformFontDialogHelper::currentFontChanged,
+                     q, &QFontDialog::currentFontChanged);
+    QObject::connect(fontDialogHelper, &QPlatformFontDialogHelper::fontSelected,
+                     q, &QFontDialog::fontSelected);
 }
 
 void QFontDialogPrivate::helperPrepareShow(QPlatformDialogHelper *)
@@ -500,9 +497,9 @@ void QFontDialogPrivate::updateFamilies()
 
         //and try some fall backs
         match_t type = MATCH_NONE;
-        if (bestFamilyType <= MATCH_NONE && familyName2 == QStringLiteral("helvetica"))
+        if (bestFamilyType <= MATCH_NONE && familyName2 == "helvetica"_L1)
             type = MATCH_LAST_RESORT;
-        if (bestFamilyType <= MATCH_LAST_RESORT && familyName2 == f.families().first())
+        if (bestFamilyType <= MATCH_LAST_RESORT && familyName2 == f.families().constFirst())
             type = MATCH_APP;
         // ### add fallback for writingSystem
         if (type != MATCH_NONE) {
@@ -622,10 +619,10 @@ void QFontDialogPrivate::updateSizes()
         sizeEdit->clear();
     }
 
-    _q_updateSample();
+    updateSample();
 }
 
-void QFontDialogPrivate::_q_updateSample()
+void QFontDialogPrivate::updateSample()
 {
     // compute new font
     int pSize = sizeEdit->text().toInt();
@@ -651,7 +648,7 @@ void QFontDialogPrivate::updateSampleFont(const QFont &newFont)
 /*!
     \internal
 */
-void QFontDialogPrivate::_q_writingSystemHighlighted(int index)
+void QFontDialogPrivate::writingSystemHighlighted(int index)
 {
     writingSystem = QFontDatabase::WritingSystem(index);
     sampleEdit->setText(QFontDatabase::writingSystemSample(writingSystem));
@@ -661,7 +658,7 @@ void QFontDialogPrivate::_q_writingSystemHighlighted(int index)
 /*!
     \internal
 */
-void QFontDialogPrivate::_q_familyHighlighted(int i)
+void QFontDialogPrivate::familyHighlighted(int i)
 {
     Q_Q(QFontDialog);
     family = familyList->text(i);
@@ -678,7 +675,7 @@ void QFontDialogPrivate::_q_familyHighlighted(int i)
     \internal
 */
 
-void QFontDialogPrivate::_q_styleHighlighted(int index)
+void QFontDialogPrivate::styleHighlighted(int index)
 {
     Q_Q(QFontDialog);
     QString s = styleList->text(index);
@@ -697,7 +694,7 @@ void QFontDialogPrivate::_q_styleHighlighted(int index)
     \internal
 */
 
-void QFontDialogPrivate::_q_sizeHighlighted(int index)
+void QFontDialogPrivate::sizeHighlighted(int index)
 {
     Q_Q(QFontDialog);
     QString s = sizeList->text(index);
@@ -707,7 +704,7 @@ void QFontDialogPrivate::_q_sizeHighlighted(int index)
         sizeEdit->selectAll();
 
     size = s.toInt();
-    _q_updateSample();
+    updateSample();
 }
 
 /*!
@@ -716,7 +713,7 @@ void QFontDialogPrivate::_q_sizeHighlighted(int index)
     The size is passed in the \a s argument as a \e string.
 */
 
-void QFontDialogPrivate::_q_sizeChanged(const QString &s)
+void QFontDialogPrivate::sizeChanged(const QString &s)
 {
     // no need to check if the conversion is valid, since we have an QIntValidator in the size edit
     int size = s.toInt();
@@ -736,7 +733,7 @@ void QFontDialogPrivate::_q_sizeChanged(const QString &s)
         else
             sizeList->clearSelection();
     }
-    _q_updateSample();
+    updateSample();
 }
 
 void QFontDialogPrivate::retranslateStrings()
@@ -764,15 +761,11 @@ void QFontDialog::changeEvent(QEvent *e)
 }
 
 /*!
-    \since 4.5
-
     \property QFontDialog::currentFont
     \brief the current font of the dialog.
 */
 
 /*!
-    \since 4.5
-
     Sets the font highlighted in the QFontDialog to the given \a font.
 
     \sa selectedFont()
@@ -798,8 +791,6 @@ void QFontDialog::setCurrentFont(const QFont &font)
 }
 
 /*!
-    \since 4.5
-
     Returns the current font.
 
     \sa selectedFont()
@@ -831,7 +822,6 @@ QFont QFontDialog::selectedFont() const
 
 /*!
     \enum QFontDialog::FontDialogOption
-    \since 4.5
 
     This enum specifies various options that affect the look and feel
     of a font dialog.
@@ -882,7 +872,6 @@ bool QFontDialog::testOption(FontDialogOption option) const
 /*!
     \property QFontDialog::options
     \brief the various options that affect the look and feel of the dialog
-    \since 4.5
 
     By default, all options are disabled.
 
@@ -910,8 +899,6 @@ QFontDialog::FontDialogOptions QFontDialog::options() const
 }
 
 /*!
-    \since 4.5
-
     Opens the dialog and connects its fontSelected() signal to the slot specified
     by \a receiver and \a member.
 
@@ -927,8 +914,6 @@ void QFontDialog::open(QObject *receiver, const char *member)
 }
 
 /*!
-    \since 4.5
-
     \fn void QFontDialog::currentFontChanged(const QFont &font)
 
     This signal is emitted when the current font is changed. The new font is
@@ -941,8 +926,6 @@ void QFontDialog::open(QObject *receiver, const char *member)
 */
 
 /*!
-    \since 4.5
-
     \fn void QFontDialog::fontSelected(const QFont &font)
 
     This signal is emitted when a font has been selected. The selected font is
@@ -974,8 +957,7 @@ void QFontDialog::setVisible(bool visible)
 void QFontDialogPrivate::setVisible(bool visible)
 {
     Q_Q(QFontDialog);
-    if (q->testAttribute(Qt::WA_WState_ExplicitShowHide) && q->testAttribute(Qt::WA_WState_Hidden) != visible)
-        return;
+
     if (canBeNativeDialog())
         setNativeDialogVisible(visible);
     if (nativeDialogInUse) {

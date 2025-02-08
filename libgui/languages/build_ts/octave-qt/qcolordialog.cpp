@@ -43,6 +43,8 @@
 #include <qpa/qplatformservices.h>
 #include <private/qguiapplication_p.h>
 
+#include <QtCore/qpointer.h>
+
 #include <algorithm>
 
 QT_BEGIN_NAMESPACE
@@ -102,16 +104,16 @@ public:
     void retranslateStrings();
     bool supportsColorPicking() const;
 
-    void _q_addCustom();
+    void addCustom();
     void _q_setCustom(int index, QRgb color);
 
-    void _q_newHsv(int h, int s, int v);
-    void _q_newColorTypedIn(QRgb rgb);
-    void _q_nextCustom(int, int);
-    void _q_newCustom(int, int);
-    void _q_newStandard(int, int);
-    void _q_pickScreenColor();
-    void _q_updateColorPicking();
+    void newHsv(int h, int s, int v);
+    void newColorTypedIn(QRgb rgb);
+    void nextCustom(int, int);
+    void newCustom(int, int);
+    void newStandard(int, int);
+    void pickScreenColor();
+    void updateColorPicking();
     void updateColorLabelText(const QPoint &);
     void updateColorPicking(const QPoint &pos);
     void releaseColorPicking();
@@ -136,7 +138,7 @@ public:
     QPushButton *ok;
     QPushButton *cancel;
     QPushButton *addCusBt;
-    QPushButton *screenColorPickerButton;
+    QPushButton *eyeDropperButton = nullptr;
     QColor selectedQColor;
     int nextCust;
     bool smallDisplay;
@@ -323,7 +325,7 @@ void QWellArray::paintCell(QPainter* p, int row, int col, const QRect &rect)
     const QPalette & g = palette();
     QStyleOptionFrame opt;
     opt.initFrom(this);
-    int dfw = style()->pixelMetric(QStyle::PM_DefaultFrameWidth, &opt);
+    int dfw = style()->pixelMetric(QStyle::PM_DefaultFrameWidth, &opt, this);
     opt.lineWidth = dfw;
     opt.midLineWidth = 1;
     opt.rect = rect.adjusted(b, b, -b, -b);
@@ -514,8 +516,6 @@ int QColorDialog::customCount()
 }
 
 /*!
-    \since 4.5
-
     Returns the custom color at the given \a index as a QColor value.
 */
 QColor QColorDialog::customColor(int index)
@@ -834,11 +834,10 @@ void QColorLuminancePicker::paintEvent(QPaintEvent *)
     qDrawShadePanel(&p, r, g, true);
     p.setPen(g.windowText().color());
     p.setBrush(g.windowText());
-    QPolygon a;
-    int y = val2y(val);
-    a.setPoints(3, w, y, w+5, y+5, w+5, y-5);
     p.eraseRect(w, 0, 5, height());
-    p.drawPolygon(a);
+    const int y = val2y(val);
+    const std::array<QPoint, 3> points = {QPoint(w, y), QPoint(w + 5, y + 5), QPoint(w + 5, y - 5)};
+    p.drawPolygon(points.data(), static_cast<int>(points.size()));
 }
 
 void QColorLuminancePicker::setCol(int h, int s , int v)
@@ -1397,8 +1396,8 @@ void QColorShower::htmlEd()
     if (t.isEmpty())
         return;
 
-    if (!t.startsWith(QStringLiteral("#"))) {
-        t = QStringLiteral("#") + t;
+    if (!t.startsWith(u"#")) {
+        t.prepend(u"#");
         QSignalBlocker blocker(htEd);
         htEd->setText(t);
     }
@@ -1490,7 +1489,7 @@ void QColorShower::updateQColor()
 }
 
 //sets all widgets to display h,s,v
-void QColorDialogPrivate::_q_newHsv(int h, int s, int v)
+void QColorDialogPrivate::newHsv(int h, int s, int v)
 {
     if (!nativeDialogInUse) {
         cs->setHsv(h, s, v);
@@ -1504,7 +1503,7 @@ void QColorDialogPrivate::setCurrentRgbColor(QRgb rgb)
 {
     if (!nativeDialogInUse) {
         cs->setRgb(rgb);
-        _q_newColorTypedIn(rgb);
+        newColorTypedIn(rgb);
     }
 }
 
@@ -1537,7 +1536,7 @@ bool QColorDialogPrivate::selectColor(const QColor &col)
             const int index = int(match - standardColors);
             const int column = index / standardColorRows;
             const int row = index % standardColorRows;
-            _q_newStandard(row, column);
+            newStandard(row, column);
             standard->setCurrent(row, column);
             standard->setSelected(row, column);
             standard->setFocus();
@@ -1553,7 +1552,7 @@ bool QColorDialogPrivate::selectColor(const QColor &col)
             const int index = int(match - customColors);
             const int column = index / customColorRows;
             const int row = index % customColorRows;
-            _q_newCustom(row, column);
+            newCustom(row, column);
             custom->setCurrent(row, column);
             custom->setSelected(row, column);
             custom->setFocus();
@@ -1576,7 +1575,7 @@ QColor QColorDialogPrivate::grabScreenColor(const QPoint &p)
 }
 
 //sets all widgets except cs to display rgb
-void QColorDialogPrivate::_q_newColorTypedIn(QRgb rgb)
+void QColorDialogPrivate::newColorTypedIn(QRgb rgb)
 {
     if (!nativeDialogInUse) {
         int h, s, v;
@@ -1586,12 +1585,12 @@ void QColorDialogPrivate::_q_newColorTypedIn(QRgb rgb)
     }
 }
 
-void QColorDialogPrivate::_q_nextCustom(int r, int c)
+void QColorDialogPrivate::nextCustom(int r, int c)
 {
     nextCust = r + customColorRows * c;
 }
 
-void QColorDialogPrivate::_q_newCustom(int r, int c)
+void QColorDialogPrivate::newCustom(int r, int c)
 {
     const int i = r + customColorRows * c;
     setCurrentRgbColor(QColorDialogOptions::customColor(i));
@@ -1599,19 +1598,19 @@ void QColorDialogPrivate::_q_newCustom(int r, int c)
         standard->setSelected(-1,-1);
 }
 
-void QColorDialogPrivate::_q_newStandard(int r, int c)
+void QColorDialogPrivate::newStandard(int r, int c)
 {
     setCurrentRgbColor(QColorDialogOptions::standardColor(r + c * 6));
     if (custom)
         custom->setSelected(-1,-1);
 }
 
-void QColorDialogPrivate::_q_pickScreenColor()
+void QColorDialogPrivate::pickScreenColor()
 {
     Q_Q(QColorDialog);
 
     auto *platformServices = QGuiApplicationPrivate::platformIntegration()->services();
-    if (platformServices->hasCapability(QPlatformServices::Capability::ColorPicking)) {
+    if (platformServices && platformServices->hasCapability(QPlatformServices::Capability::ColorPicking)) {
         if (auto *colorPicker = platformServices->colorPicker(q->windowHandle())) {
             q->connect(colorPicker, &QPlatformServiceColorPicker::colorPicked, q,
                        [q, colorPicker](const QColor &color) {
@@ -1651,8 +1650,8 @@ void QColorDialogPrivate::_q_pickScreenColor()
 
     addCusBt->setDisabled(true);
     buttons->setDisabled(true);
-    if (screenColorPickerButton) {
-        screenColorPickerButton->setDisabled(true);
+    if (eyeDropperButton) {
+        eyeDropperButton->setDisabled(true);
         const QPoint globalPos = QCursor::pos();
         q->setCurrentColor(grabScreenColor(globalPos));
         updateColorLabelText(globalPos);
@@ -1682,7 +1681,7 @@ void QColorDialogPrivate::releaseColorPicking()
     lblScreenColorInfo->setText("\n"_L1);
     addCusBt->setDisabled(false);
     buttons->setDisabled(false);
-    screenColorPickerButton->setDisabled(false);
+    eyeDropperButton->setDisabled(false);
 }
 
 void QColorDialogPrivate::init(const QColor &initial)
@@ -1739,19 +1738,21 @@ void QColorDialogPrivate::initWidgets()
 #ifndef QT_NO_SHORTCUT
         lblBasicColors->setBuddy(standard);
 #endif
-        q->connect(standard, SIGNAL(selected(int,int)), SLOT(_q_newStandard(int,int)));
+        QObjectPrivate::connect(standard, &QColorWell::selected,
+                                this, &QColorDialogPrivate::newStandard);
         leftLay->addWidget(lblBasicColors);
         leftLay->addWidget(standard);
 
 #if !defined(QT_SMALL_COLORDIALOG)
         if (supportsColorPicking()) {
-            screenColorPickerButton = new QPushButton();
-            leftLay->addWidget(screenColorPickerButton);
+            eyeDropperButton = new QPushButton();
+            leftLay->addWidget(eyeDropperButton);
             lblScreenColorInfo = new QLabel("\n"_L1);
             leftLay->addWidget(lblScreenColorInfo);
-            q->connect(screenColorPickerButton, SIGNAL(clicked()), SLOT(_q_pickScreenColor()));
+            QObjectPrivate::connect(eyeDropperButton, &QPushButton::clicked,
+                                    this, &QColorDialogPrivate::pickScreenColor);
         } else {
-            screenColorPickerButton = nullptr;
+            eyeDropperButton = nullptr;
             lblScreenColorInfo = nullptr;
         }
 #endif
@@ -1761,10 +1762,10 @@ void QColorDialogPrivate::initWidgets()
         custom = new QColorWell(q, customColorRows, colorColumns, QColorDialogOptions::customColors());
         custom->setAcceptDrops(true);
 
-        q->connect(custom, SIGNAL(selected(int,int)), SLOT(_q_newCustom(int,int)));
-        q->connect(custom, SIGNAL(currentChanged(int,int)), SLOT(_q_nextCustom(int,int)));
+        QObjectPrivate::connect(custom, &QColorWell::selected, this, &QColorDialogPrivate::newCustom);
+        QObjectPrivate::connect(custom, &QColorWell::currentChanged, this, &QColorDialogPrivate::nextCustom);
 
-        q->connect(custom, &QWellArray::colorChanged, [this] (int index, QRgb color) {
+        QObject::connect(custom, &QWellArray::colorChanged, q, [this] (int index, QRgb color) {
             QColorDialogOptions::setCustomColor(index, color);
             if (custom)
                 custom->update();
@@ -1778,7 +1779,7 @@ void QColorDialogPrivate::initWidgets()
         leftLay->addWidget(custom);
 
         addCusBt = new QPushButton(q);
-        QObject::connect(addCusBt, SIGNAL(clicked()), q, SLOT(_q_addCustom()));
+        QObjectPrivate::connect(addCusBt, &QPushButton::clicked, this, &QColorDialogPrivate::addCustom);
         leftLay->addWidget(addCusBt);
     } else {
         // better color picker size for small displays
@@ -1826,16 +1827,17 @@ void QColorDialogPrivate::initWidgets()
     pickLay->addStretch();
 #endif
 
-    QObject::connect(cp, SIGNAL(newCol(int,int)), lp, SLOT(setCol(int,int)));
-    QObject::connect(lp, SIGNAL(newHsv(int,int,int)), q, SLOT(_q_newHsv(int,int,int)));
+    QObject::connect(cp, &QColorPicker::newCol, lp, qOverload<int, int>(&QColorLuminancePicker::setCol));
+    QObjectPrivate::connect(lp, &QColorLuminancePicker::newHsv, this, &QColorDialogPrivate::newHsv);
 
     rightLay->addStretch();
 
     cs = new QColorShower(q);
     pickLay->setContentsMargins(cs->gl->contentsMargins());
-    QObject::connect(cs, SIGNAL(newCol(QRgb)), q, SLOT(_q_newColorTypedIn(QRgb)));
-    QObject::connect(cs, SIGNAL(currentColorChanged(QColor)),
-                     q, SIGNAL(currentColorChanged(QColor)));
+    QObjectPrivate::connect(cs, &QColorShower::newCol,
+                            this, &QColorDialogPrivate::newColorTypedIn);
+    QObject::connect(cs, &QColorShower::currentColorChanged,
+                     q, &QColorDialog::currentColorChanged);
 #if defined(QT_SMALL_COLORDIALOG)
     topLay->addWidget(cs);
 #else
@@ -1848,14 +1850,15 @@ void QColorDialogPrivate::initWidgets()
     mainLay->addWidget(buttons);
 
     ok = buttons->addButton(QDialogButtonBox::Ok);
-    QObject::connect(ok, SIGNAL(clicked()), q, SLOT(accept()));
+    QObject::connect(ok, &QPushButton::clicked, q, &QColorDialog::accept);
     ok->setDefault(true);
     cancel = buttons->addButton(QDialogButtonBox::Cancel);
-    QObject::connect(cancel, SIGNAL(clicked()), q, SLOT(reject()));
+    QObject::connect(cancel, &QPushButton::clicked, q, &QColorDialog::reject);
 
 #ifdef Q_OS_WIN32
     updateTimer = new QTimer(q);
-    QObject::connect(updateTimer, SIGNAL(timeout()), q, SLOT(_q_updateColorPicking()));
+    QObjectPrivate::connect(updateTimer, &QTimer::timeout,
+                            this, qOverload<>(&QColorDialogPrivate::updateColorPicking));
 #endif
     retranslateStrings();
 }
@@ -1863,9 +1866,12 @@ void QColorDialogPrivate::initWidgets()
 void QColorDialogPrivate::initHelper(QPlatformDialogHelper *h)
 {
     QColorDialog *d = q_func();
-    QObject::connect(h, SIGNAL(currentColorChanged(QColor)), d, SIGNAL(currentColorChanged(QColor)));
-    QObject::connect(h, SIGNAL(colorSelected(QColor)), d, SIGNAL(colorSelected(QColor)));
-    static_cast<QPlatformColorDialogHelper *>(h)->setOptions(options);
+    auto *colorDialogHelper = static_cast<QPlatformColorDialogHelper*>(h);
+    QObject::connect(colorDialogHelper, &QPlatformColorDialogHelper::currentColorChanged,
+                     d, &QColorDialog::currentColorChanged);
+    QObject::connect(colorDialogHelper, &QPlatformColorDialogHelper::colorSelected,
+                     d, &QColorDialog::colorSelected);
+    colorDialogHelper->setOptions(options);
 }
 
 void QColorDialogPrivate::helperPrepareShow(QPlatformDialogHelper *)
@@ -1873,7 +1879,7 @@ void QColorDialogPrivate::helperPrepareShow(QPlatformDialogHelper *)
     options->setWindowTitle(q_func()->windowTitle());
 }
 
-void QColorDialogPrivate::_q_addCustom()
+void QColorDialogPrivate::addCustom()
 {
     QColorDialogOptions::setCustomColor(nextCust, cs->currentColor());
     if (custom)
@@ -1891,8 +1897,8 @@ void QColorDialogPrivate::retranslateStrings()
         lblCustomColors->setText(QColorDialog::tr("&Custom colors"));
         addCusBt->setText(QColorDialog::tr("&Add to Custom Colors"));
 #if !defined(QT_SMALL_COLORDIALOG)
-        if (screenColorPickerButton)
-            screenColorPickerButton->setText(QColorDialog::tr("&Pick Screen Color"));
+        if (eyeDropperButton)
+            eyeDropperButton->setText(QColorDialog::tr("&Pick Screen Color"));
 #endif
     }
 
@@ -1966,8 +1972,6 @@ static const Qt::WindowFlags qcd_DefaultWindowFlags =
 */
 
 /*!
-    \since 4.5
-
     Constructs a color dialog with the given \a parent.
 */
 QColorDialog::QColorDialog(QWidget *parent)
@@ -1976,8 +1980,6 @@ QColorDialog::QColorDialog(QWidget *parent)
 }
 
 /*!
-    \since 4.5
-
     Constructs a color dialog with the given \a parent and specified
     \a initial color.
 */
@@ -2048,8 +2050,6 @@ void QColorDialog::setOption(ColorDialogOption option, bool on)
 }
 
 /*!
-    \since 4.5
-
     Returns \c true if the given \a option is enabled; otherwise, returns
     false.
 
@@ -2088,6 +2088,8 @@ void QColorDialog::setOptions(ColorDialogOptions options)
     if (!d->nativeDialogInUse) {
         d->buttons->setVisible(!(options & NoButtons));
         d->showAlpha(options & ShowAlphaChannel);
+        if (d->eyeDropperButton)
+            d->eyeDropperButton->setVisible(!(options & NoEyeDropperButton));
     }
 }
 
@@ -2100,13 +2102,12 @@ QColorDialog::ColorDialogOptions QColorDialog::options() const
 /*!
     \enum QColorDialog::ColorDialogOption
 
-    \since 4.5
-
     This enum specifies various options that affect the look and feel
     of a color dialog.
 
     \value ShowAlphaChannel Allow the user to select the alpha component of a color.
     \value NoButtons Don't display \uicontrol{OK} and \uicontrol{Cancel} buttons. (Useful for "live dialogs".)
+    \value NoEyeDropperButton Hide the \uicontrol{Eye Dropper} button. This value was added in Qt 6.6.
     \value DontUseNativeDialog  Use Qt's standard color dialog instead of the operating system
                                 native color dialog.
 
@@ -2151,11 +2152,6 @@ void QColorDialog::setVisible(bool visible)
 void QColorDialogPrivate::setVisible(bool visible)
 {
     Q_Q(QColorDialog);
-    if (visible){
-        if (q->testAttribute(Qt::WA_WState_ExplicitShowHide) && !q->testAttribute(Qt::WA_WState_Hidden))
-            return;
-    } else if (q->testAttribute(Qt::WA_WState_ExplicitShowHide) && q->testAttribute(Qt::WA_WState_Hidden))
-        return;
 
     if (visible)
         selectedQColor = QColor();
@@ -2176,8 +2172,6 @@ void QColorDialogPrivate::setVisible(bool visible)
 }
 
 /*!
-    \since 4.5
-
     Opens the dialog and connects its colorSelected() signal to the slot specified
     by \a receiver and \a member.
 
@@ -2193,8 +2187,6 @@ void QColorDialog::open(QObject *receiver, const char *member)
 }
 
 /*!
-    \since 4.5
-
     Pops up a modal color dialog with the given window \a title (or "Select Color" if none is
     specified), lets the user choose a color, and returns that color. The color is initially set
     to \a initial. The dialog is a child of \a parent. It returns an invalid (see
@@ -2205,13 +2197,19 @@ void QColorDialog::open(QObject *receiver, const char *member)
 QColor QColorDialog::getColor(const QColor &initial, QWidget *parent, const QString &title,
                               ColorDialogOptions options)
 {
-    QColorDialog dlg(parent);
+    QAutoPointer<QColorDialog> dlg(new QColorDialog(parent));
     if (!title.isEmpty())
-        dlg.setWindowTitle(title);
-    dlg.setOptions(options);
-    dlg.setCurrentColor(initial);
-    dlg.exec();
-    return dlg.selectedColor();
+        dlg->setWindowTitle(title);
+    dlg->setOptions(options);
+    dlg->setCurrentColor(initial);
+
+    // If the dlg was deleted with a parent window,
+    // dlg == nullptr after leaving the exec().
+    dlg->exec();
+    if (bool(dlg))
+        return dlg->selectedColor();
+    else
+        return QColor();
 }
 
 /*!
@@ -2233,7 +2231,7 @@ void QColorDialog::changeEvent(QEvent *e)
     QDialog::changeEvent(e);
 }
 
-void QColorDialogPrivate::_q_updateColorPicking()
+void QColorDialogPrivate::updateColorPicking()
 {
 #ifndef QT_NO_CURSOR
     Q_Q(QColorDialog);

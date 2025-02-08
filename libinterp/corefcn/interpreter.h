@@ -224,12 +224,6 @@ public:
     return m_initialized;
   }
 
-  OCTAVE_DEPRECATED (9, "use octave::is_initialized instead")
-  bool initialized () const
-  {
-    return is_initialized ();
-  }
-
   void interrupt_all_in_process_group (bool b)
   {
     m_interrupt_all_in_process_group = b;

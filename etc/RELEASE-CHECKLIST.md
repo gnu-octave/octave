@@ -70,7 +70,7 @@ Completion Date:
 
     Command to update copyright notifications
 
-    `hg locate | xargs sed -i 's/Copyright (C) \([0-9][0-9][0-9][0-9]\)-2023 The Octave Project Developers/Copyright (C) \1-2024 The Octave Project Developers/; s/Copyright (C) 2023 The Octave Project Developers/Copyright (C) 2023-2024 The Octave Project Developers/'`
+    `hg locate | xargs sed -i 's/Copyright (C) \([0-9][0-9][0-9][0-9]\)-2023 The Octave Project Developers/Copyright (C) \1-2024 The Octave Project Developers/; s/Copyright (C) 2023 The Octave Project Developers/Copyright (C) 2023-2025 The Octave Project Developers/'`
 
     Command to check results before checking in
 

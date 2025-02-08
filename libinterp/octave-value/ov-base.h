@@ -1016,11 +1016,6 @@ protected:
   // (think of an empty cell array with >2G elements).
   octave::refcount<octave_idx_type> m_count;
 
-  // FIXME: Create an alias "count" to the real member variable m_count.
-  // This name is deprecated in Octave 9 and will be removed in Octave 11.
-  OCTAVE_DEPRECATED (9, "use octave_base_value::m_count instead")
-  octave::refcount<octave_idx_type>& count;
-
   OCTINTERP_API static const char * get_umap_name (unary_mapper_t);
 
   OCTINTERP_API void warn_load (const char *type) const;

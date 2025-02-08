@@ -183,7 +183,7 @@ from Octave 10.
         Function               | Replacement
         -----------------------|------------------
         shift                  | circshift
-        sparse_auto_mutate     | none (see below)
+        sparse_auto_mutate     | none (see NEWS.8.md)
 
 - `fminsearch` parameter passing: A legacy, undocumented, and only partially
   supported syntax for passing parameters to the minimized function `fcn`

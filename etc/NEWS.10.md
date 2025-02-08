@@ -207,7 +207,6 @@ Summary of bugs fixed for version 10.1.0 (yyyy-mm-dd):
 - bug #66753: hist.m: Test for equal bin spacing using a numeric tolerance
 - bug #66753: hist.m: Fix regression in determining equal bin spacing
 - bug #66753: Fix thinko in cset be1d0c816788
-- bug #66703: doc: Clarify default editor difference between CLI and GUI
 - bug #66647: Silence unexpected Octave:mixed-string-concat warning in num2str.m
 - bug #66642: Code beautification for cset 2c2301104caf
 - bug #66642: Check for undefined outputs in cellfun and arrayfun
@@ -215,10 +214,7 @@ Summary of bugs fixed for version 10.1.0 (yyyy-mm-dd):
 - bug #66642: add arrayfun BIST for function failing to return requested output
 - bug #66617: Avoid error for struct2cell with function without output arguments
 - bug #66617: Add self-tests for structfun with function without output arguments
-- bug #66616: es ES.ts: Update Spanish translation file
-- bug #66595: qz: Fix errors in documentation
 - bug #66558: translate shortcuts and descriptions in settings dialog
-- bug #66554: pt BR.ts: Update Brazilian Portuguese translation file
 - bug #66521: symbfact: return row vectors for Matlab compatibility
 - bug #66511: sparseqr: Support permutation output with CXSparse
 - bug #66511: Emit error when qr() called with permutation output and CXSparse library is used
@@ -270,11 +266,8 @@ Summary of bugs fixed for version 10.1.0 (yyyy-mm-dd):
 - bug #56690: allow editing of lazy index objects
 - bug #55961: properties function does not preserve order
 - bug #55198: rat() should support complex numbers
-- bug #46848: Improve documentation for load/save
 - bug #41028: Save warning info for disabled warnings
 - bug #41028: Modify BIST tests to pass with Matlab-compatible lastwarn() behavior
-- bug #31080: Rehash load path after saving file to disc
-- bug #31080: Fix error in calculation of file timestamp on Windows
 
 ### Old release news
 

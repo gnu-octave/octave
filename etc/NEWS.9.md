@@ -377,8 +377,11 @@ after 9):
 
 - Functions
 
-        Function               | Replacement
-        -----------------------|------------------
+        Function                         | Replacement
+        ---------------------------------|-----------------------------------
+        interpreter::initialized         | octave::is_initialized
+        octave::same_file                | octave::sys::same_file
+        octave::interpreter_initialized  | octave::interpreter_is_initialized
 
 - Properties
 

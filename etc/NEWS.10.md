@@ -158,6 +158,8 @@ major release after 10):
         symbol_record::unmark_as_variable     | symbol_record::unmark_variable
         interpreter::verbose                  | interpreter::init_trace
         cmdline_options::verbose              | cmdline_options::init_trace
+        interpreter::read_init_files          | interpreter::read_user_files
+        cmdline_options::read_init_files      | cmdline_options::read_user_files
 
   - A new method `rwdata ()` provides direct read/write access (a pointer) to
     the data in a liboctave `Array` object (or its derived classes such as

@@ -150,15 +150,15 @@ classdef inputParser < handle
   ##
   ## @emph{Note 1}: A function can have any mixture of the four API types but
   ## they must appear in a specific order.  @code{Required} arguments must be
-  ## first and can be followed by any @code{Optional} arguments.  Only
-  ## the @code{Parameter} and @code{Switch} arguments may be mixed
-  ## together and they must appear following the first two types.
+  ## first and can be followed by any @code{Optional} arguments.  Only the
+  ## @code{Parameter} and @code{Switch} arguments may be mixed together and
+  ## they must appear following the first two types.
   ##
   ## @emph{Note 2}: If both @code{Optional} and @code{Parameter} arguments
   ## are mixed in a function API then once a string Optional argument fails to
-  ## validate it will be considered the end of the @code{Optional}
-  ## arguments.  The remaining arguments will be compared against any
-  ## @code{Parameter} or @code{Switch} arguments.
+  ## validate it will be considered the end of the @code{Optional} arguments.
+  ## The remaining arguments will be compared against any @code{Parameter} or
+  ## @code{Switch} arguments.
   ##
   ## @seealso{nargin, validateattributes, validatestring, varargin}
   ## @end deftypefn
@@ -212,12 +212,13 @@ classdef inputParser < handle
       ## @deftypefn  {} {} addRequired (@var{argname})
       ## @deftypefnx {} {} addRequired (@var{argname}, @var{validator})
       ## Add new mandatory argument to the object @var{parser} of inputParser
-      ## class.  This method belongs to the inputParser class and implements
-      ## an ordered-argument type of API.
+      ## class.
+      ##
+      ## This method implements an ordered-argument type of API.
       ##
       ## @var{argname} must be a string with the name of the new argument.  The
       ## order in which new arguments are added with @code{addRequired}
-      ## represents the expected order of arguments.
+      ## defines the expected order of arguments.
       ##
       ## The optional argument @var{validator} is a function (handle or name)
       ## that will return false or throw an error if the input @var{argname}
@@ -248,11 +249,13 @@ classdef inputParser < handle
       ## @deftypefn  {} {} addOptional (@var{argname}, @var{default})
       ## @deftypefnx {} {} addOptional (@var{argname}, @var{default}, @var{validator})
       ## Add new optional argument to the object @var{parser} of the class
-      ## inputParser to implement an ordered-argument type of API
+      ## inputParser.
+      ##
+      ## This method implements an ordered-argument type of API.
       ##
       ## @var{argname} must be a string with the name of the new argument.  The
       ## order in which new arguments are added with @code{addOptional}
-      ## represents the expected order of arguments.
+      ## defines the expected order of arguments.
       ##
       ## @var{default} will be the value used when the argument is not
       ## specified.
@@ -263,13 +266,12 @@ classdef inputParser < handle
       ##
       ## See @code{help inputParser} for examples.
       ##
-      ## @emph{Note1}: If an optional argument is not given a
-      ## validator then anything will be valid, and therefore a string in the
-      ## correct position (after Required arguments) will be assigned to the
-      ## value of the Optional argument @emph{even} if the string is the name
-      ## of a Parameter key.  @sc{matlab} adds a default validator
-      ## @code{@@(x) ~ischar (x)} if none is specified which emits an error
-      ## in this instance.
+      ## @emph{Note1}: If an optional argument is not given a validator then
+      ## anything will be valid, and therefore a string in the correct position
+      ## (after Required arguments) will be assigned to the value of the
+      ## Optional argument @emph{even} if the string is the name of a Parameter
+      ## key.  @sc{matlab} adds a default validator @code{@@(x) ~ischar (x)} if
+      ## none is specified which emits an error in this instance.
       ##
       ## @emph{Note2}: if a string argument fails validation, it will be
       ## considered as a possible Parameter.
@@ -296,8 +298,9 @@ classdef inputParser < handle
       ## @deftypefnx {} {} addParamValue (@var{argname}, @var{default}, @var{validator})
       ## This function is deprecated.  Use @code{addParameter} in all new code.
       ##
-      ## Add new parameter to the object @var{parser} of the class inputParser
-      ## to implement a name/value pair type of API.
+      ## Add new parameter to the object @var{parser} of the class inputParser.
+      ## 
+      ## This method implements a name/value pair type of API.
       ##
       ## This is an alias for @code{addParameter} method without the
       ## @qcode{"PartialMatchPriority"} option.  See @code{addParameter} for
@@ -318,7 +321,9 @@ classdef inputParser < handle
       ## @deftypefn  {} {} addParameter (@var{argname}, @var{default})
       ## @deftypefnx {} {} addParameter (@var{argname}, @var{default}, @var{validator})
       ## Add new parameter argument to the object @var{parser} of the class
-      ## inputParser to implement a name/value pair type of API.
+      ## inputParser.
+      ## 
+      ## This method implements a name/value pair type of API.
       ##
       ## @var{argname} must be a string with the name of the new parameter.
       ##
@@ -377,7 +382,9 @@ classdef inputParser < handle
       ## -*- texinfo -*-
       ## @deftypefn {} {} addSwitch (@var{argname})
       ## Add new switch argument to the object @var{parser} of the class
-      ## inputParser to implement a name/boolean type of API.
+      ## inputParser. 
+      ##
+      ## This method implements a name/boolean type of API.
       ##
       ## @var{argname} must be a string with the name of the new argument.
       ##
@@ -408,8 +415,8 @@ classdef inputParser < handle
 
       ## -*- texinfo -*-
       ## @deftypefn {} {} parse (@var{varargin})
-      ## Parse and validate list of arguments according to object @var{parser}
-      ## of the class inputParser.
+      ## Parse and validate a list of arguments according to object
+      ## @var{parser} of the class inputParser.
       ##
       ## After parsing, the results can be accessed with the @code{Results}
       ## accessor.  See @code{help inputParser} for a more complete

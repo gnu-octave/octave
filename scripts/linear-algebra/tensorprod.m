@@ -121,7 +121,7 @@ function C = tensorprod (A, B, varargin)
         error ("tensorprod: unknown option '%s'", varargin{1});
       endif
       ## Calling with "all" option
-      dimA = 1:ndims(A);
+      dimA = 1:ndims (A);
     else
       error ("tensorprod: third argument must be a numeric vector of integers, [], or 'all'");
     endif
@@ -256,7 +256,7 @@ endfunction
 %!assert (tensorprod (v1, M1), reshape ([1 2 3 6 2 4 4 8], [1,2,2,2]))
 %!assert (tensorprod (v1', M1), reshape ([1 2 3 6 2 4 4 8], [2,1,2,2]))
 %!assert (tensorprod (M1, v1', 2, 1), [5; 11])
-%!assert (tensorprod (M1, v1', 4, 4), cat(4, M1, 2*M1))
+%!assert (tensorprod (M1, v1', 4, 4), cat (4, M1, 2*M1))
 %!assert (tensorprod (M1, v1', [1, 3]), [7; 10])
 %!assert (tensorprod (M1, v1', [1, 3], [1, 3]), [7; 10])
 %!assert (tensorprod (M1, v1', [2, 3], [1, 3]), [5; 11])

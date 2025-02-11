@@ -29,6 +29,7 @@
 ## @end deftypefn
 
 function [hax, hg]= __quiver__ (varargin)
+
   hax = varargin{1};
   is3d = varargin{2};
 
@@ -67,7 +68,7 @@ function [hax, hg]= __quiver__ (varargin)
         if (isvector (z) && ! isvector (u))
           if (! size_equal (u, v, w))
             error ("quiver3: U, V, and W must be the same size");
-          elseif (numel(z) != size (u, 3))
+          elseif (numel (z) != size (u, 3))
             error (["quiver3: Z vector length must equal size of ", ...
                         "U, V, and W in dim 3"]);
           endif
@@ -84,13 +85,13 @@ function [hax, hg]= __quiver__ (varargin)
         if (isvector (x) && isvector (y) && isvector (z) && ! isvector (u))
           if (! size_equal (u, v, w))
             error ("quiver3: U, V, and W must be the same size");
-          elseif (numel(x) != columns (u))
+          elseif (numel (x) != columns (u))
             error (["quiver3: X vector length must equal number of ", ...
                         "columns in U, V, and W"]);
-          elseif (numel(y) != rows (u))
+          elseif (numel (y) != rows (u))
             error (["quiver3: Y vector length must equal number of ", ...
                         "rows in U, V, and W"]);
-          elseif (numel(z) != size (u, 3))
+          elseif (numel (z) != size (u, 3))
             error (["quiver3: Z vector length must equal size of ", ...
                         "U, V, and W in dim 3"]);
           endif

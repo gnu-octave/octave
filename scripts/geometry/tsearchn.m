@@ -36,7 +36,7 @@
 ## If requested, @code{tsearchn} also returns the barycentric coordinates
 ## @var{p} of the enclosing simplexes.
 ##
-## @seealso{delaunay, delaunayn, tsearch}
+## @seealso{tsearch, dsearchn, delaunayn}
 ## @end deftypefn
 
 function [idx, p] = tsearchn (x, t, xi)

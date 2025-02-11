@@ -194,7 +194,7 @@ objective function
 @DOCSTRING(fminsearch)
 
 Certain minimization operations require additional parameters be passed to
-the function, @code{F}, being minimized. E.g., @w{@code{F = F(x, C)}}.
+the function, @code{F}, being minimized.  E.g., @w{@code{F = F(x, C)}}.
 Octave's minimizer functions are designed to only pass one optimization
 variable to @code{F}, but parameter passing can be accomplished by defining
 an @ref{Anonymous Functions,,Anonymous Function} that contains the necessary

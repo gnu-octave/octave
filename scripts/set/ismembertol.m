@@ -163,8 +163,8 @@ function [tf, s_idx] = ismembertol (a, s, varargin)
       s_idx = reshape (s_idx, sa);
       tf = reshape (tf, sa);
     else  # all_indices
-      s_idx = cell (size(a));
-      tf = zeros (size(a));
+      s_idx = cell (size (a));
+      tf = zeros (size (a));
       C = unique (s_j);
       for ic = C.'
         ii = find (s_j == ic);
@@ -216,7 +216,7 @@ function [tf, s_idx] = ismembertol (a, s, varargin)
         if (! all_indices)
           tf = logical (s_idx);
         else
-          tf = cellfun(@(x) ! isempty (x) && all (x(:)!=0), s_idx);
+          tf = cellfun (@(x) ! isempty (x) && all (x(:)!=0), s_idx);
         endif
       endif
     endif

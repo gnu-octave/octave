@@ -227,12 +227,13 @@ function [retval, status] = __makeinfo_restricted__ (buffer)
     ## First remove extra spaces; otherwise they interfere.
     old = numel (buffer);
     buffer = strrep (buffer, "  ", " ");
-  until (numel (buffer) == old);
+  until (numel (buffer) == old)
   buffer = [" --", buffer];
   buffer = strrep (deblank (buffer), "\n", "\n --");
 
   retval = buffer;
   status = 0;  # == success
+
 endfunction
 
 function [retval, status] = get_usage_html (help_text, max_len)

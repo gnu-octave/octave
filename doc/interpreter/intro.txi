@@ -56,12 +56,12 @@ If you installed Octave from an installer program, it will likely have
 created some icons on your desktop for you to start Octave, either with
 the graphical user interface (GUI) or a command line interface (CLI).
 You can also typically find Octave in the "Start Menu" or equivalent
-of your computer. You can also type @code{octave} in a command shell;
+of your computer.  You can also type @code{octave} in a command shell;
 as long as you have Octave in your path, it will start.
 
 If you start Octave with the GUI, the central window is the Octave's
-own command-line interface (also called a REPL by other programming languages
-for Read-Evaluate-Print-Loop). In this window Octave displays an
+own command-line interface (also called a @nospell{REPL} by other programming
+languages for Read-Evaluate-Print-Loop).  In this window Octave displays an
 initial message and then a prompt like @code{>> } or @code{octave:1> }
 indicating it is ready to accept input.  If you have chosen the traditional
 command-line interface then the command prompt appears in the same window

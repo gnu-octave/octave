@@ -442,6 +442,7 @@ endfunction
 
 
 function update_baseline (hl, ~)
+
   visible = get (hl, "visible");
 
   ## Search axis for a bargroup that contains this baseline handle

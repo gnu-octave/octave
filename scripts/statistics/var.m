@@ -610,9 +610,9 @@ endfunction
 %!assert (var (3*reshape(1:18, [3 3 2]), [1 2 3], 1, 'omitnan'), ones(1,3,2)*5)
 %!assert (var (reshape(1:18, [3 3 2]), [1 2 3], 2, 'omitnan'), 5*ones(3,1,2))
 %!assert (var (3*reshape(1:18, [3 3 2]), ones (3,3,2), [1 2], 'omitnan'), ...
-%!         60 * ones(1,1,2))
+%!        60 * ones (1,1,2))
 %!assert (var (3*reshape(1:18, [3 3 2]), ones (3,3,2), [1 4], 'omitnan'), ...
-%!         6 * ones(1,3,2))
+%!        6 * ones (1,3,2))
 %!assert (var (6*reshape(1:18, [3 3 2]), ones (3,3,2), [1:3], 'omitnan'), 969)
 %!test
 %! x = reshape(1:18, [3 3 2]);
@@ -715,7 +715,7 @@ endfunction
 %! [~, m] = var (13);
 %! assert (m, 13);
 %! [~, m] = var (single(13));
-%! assert (m, single(13));
+%! assert (m, single (13));
 %! [~, m] = var ([1, 2, 3; 3 2 1], []);
 %! assert (m, [2 2 2]);
 %! [~, m] = var ([1, 2, 3; 3 2 1], [], 1);
@@ -916,7 +916,7 @@ endfunction
 %!error <normalization scalar must be either 0 or 1> var ([1 2],0.5, "all")
 %!error <weights must not contain any negative values> var (1, -1)
 %!error <weights must not contain any negative values> var (1, [1 -1])
-%!error <weights must not contain any negative values> ...
+%!error <weights must not contain any negative values>
 %! var ([1 2 3], [1 -1 0])
 %!error <X must be a numeric vector or matrix> var ({1:5})
 %!error <X must be a numeric vector or matrix> var ("char")
@@ -926,21 +926,21 @@ endfunction
 %!error <DIM must be a positive integer> var (1, [], 0)
 %!error <DIM must be a positive integer> var (1, [], 1.5)
 %!error <DIM must be a positive integer> var ([1 2 3], [], [-1 1])
-%!error <VECDIM must contain non-repeating positive integers> ...
+%!error <VECDIM must contain non-repeating positive integers>
 %! var (repmat ([1:20;6:25], [5 2 6 3]), 0, [1 2 2 2])
-%!error <weight matrix or array does not match X in size> ...
+%!error <weight matrix or array does not match X in size>
 %! var ([1 2], eye (2))
-%!error <weight matrix or array does not match X in size> ...
+%!error <weight matrix or array does not match X in size>
 %! var ([1 2 3 4], [1 2; 3 4])
-%!error <weight matrix or array does not match X in size> ...
+%!error <weight matrix or array does not match X in size>
 %! var ([1 2 3 4], [1 2; 3 4], 1)
-%!error <weight matrix or array does not match X in size> ...
+%!error <weight matrix or array does not match X in size>
 %! var ([1 2 3 4], [1 2; 3 4], [2 3])
-%!error <weight matrix or array does not match X in size> ...
+%!error <weight matrix or array does not match X in size>
 %! var (ones (2, 2), [1 2], [1 2])
-%!error <weight matrix or array does not match X in size> ...
+%!error <weight matrix or array does not match X in size>
 %! var ([1 2 3 4; 5 6 7 8], [1 2 1 2 1; 1 2 1 2 1], 1)
-%!error <weight matrix or array does not match X in size> ...
+%!error <weight matrix or array does not match X in size>
 %! var (repmat ([1:20;6:25], [5 2 6 3]), repmat ([1:20;6:25], [5 2 3]), [2 3])
 %!error <weight vector length does not match> var ([1 2 3; 2 3 4], [1 3 4])
 %!error <weight vector length does not match> var ([1 2], [1 2 3])
@@ -948,9 +948,9 @@ endfunction
 %!error <weight vector length does not match> var ([1 2 3; 2 3 4], [1 3 4], 1)
 %!error <weight vector length does not match> var ([1 2 3; 2 3 4], [1 3], 2)
 %!error <weight vector length does not match> var ([1 2], [1 2], 1)
-%!error <'all' flag cannot be used with DIM or VECDIM options> ...
+%!error <'all' flag cannot be used with DIM or VECDIM options>
 %! var (1, [], 1, "all")
-%!error <weight vector element count does not match X> ...
+%!error <weight vector element count does not match X>
 %! var ([1 2 3; 2 3 4], [1 3], "all")
-%!error <weight matrix or array does not match X in size> ...
+%!error <weight matrix or array does not match X in size>
 %! var (repmat ([1:20;6:25], [5 2 6 3]), repmat ([1:20;6:25], [5 2 3]), "all")

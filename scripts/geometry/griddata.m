@@ -196,7 +196,7 @@ function [rx, ry, rz] = griddata (x, y, z, varargin)
 
     elseif (strcmp (method, "nearest"))
       ## Search index of nearest point.
-      idx = dsearch (x, y, tri, xi, yi);
+      idx = dsearchn ([x(:), y(:)], tri, [xi(:), yi(:)]);
       valid = ! isnan (idx);
       zi(valid) = z(idx(valid));
 

@@ -124,24 +124,24 @@ endfunction
 %!demo
 %! ## Demonstrate simple multi-curve plot from t = 0 to 2 using initial,
 %! ## intermediate, and terminating odeplot calling syntaxes.
-%! t = linspace(0,2,10);
+%! t = linspace (0,2,10);
 %! y = [0.2*t; -0.1*t.^2-1; sin(t)];
 %!
-%! disp("Plot initial points\n");
+%! disp ("Plot initial points\n");
 %! odeplot ([0 2], y(:,1), "init");
-%! title("Plot first time step");
-%! pause(1.5);
+%! title ("Plot first time step");
+%! pause (1.5);
 %!
-%! disp("Append single time step\n");
+%! disp ("Append single time step\n");
 %! odeplot (t(2), y(:,2), []);
-%! title("Append second time step");
-%! pause(1.5);
+%! title ("Append second time step");
+%! pause (1.5);
 %!
-%! disp("Append remaining time steps\n");
+%! disp ("Append remaining time steps\n");
 %! odeplot (t(3:end), y(:, 3:end), []);
-%! title("Plot all time steps");
-%! pause(1.5);
+%! title ("Plot all time steps");
+%! pause (1.5);
 %!
-%! disp("Terminate odeplot\n");
+%! disp ("Terminate odeplot\n");
 %! odeplot ([], [], "done");
-%! title("Plot complete");
+%! title ("Plot complete");

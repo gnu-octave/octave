@@ -1,7 +1,8 @@
 FCN_FILE_DIRS += %reldir%
 
 %canon_reldir%_FCN_FILES = \
-  %reldir%/.oct-config
+  %reldir%/.oct-config \
+  %reldir%/dsearch.m
 
 %canon_reldir%dir = $(fcnfiledir)/deprecated
 

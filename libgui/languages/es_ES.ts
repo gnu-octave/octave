@@ -48,17 +48,17 @@
     <message>
         <location filename="__octave_temp_gui_sources__/qterminal/libqterminal/QTerminal.cc" line="+119"/>
         <source>Edit &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Help on &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ayuda de &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Documentation on &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Documentación de &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+165"/>
@@ -328,7 +328,7 @@
     <message>
         <location line="+57"/>
         <source>Command Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Widget de comandos</translation>
     </message>
 </context>
 <context>
@@ -344,17 +344,17 @@
     <message>
         <location filename="__octave_temp_gui_sources__/src/console-lexer.cc" line="+48"/>
         <source>Default</source>
-        <translation type="unfinished">Valor predeterminado/por defecto</translation>
+        <translation>Valor predeterminado/por defecto</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Prompt</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrada de órdenes</translation>
     </message>
 </context>
 <context>
@@ -1063,12 +1063,12 @@ para escribir: %2.</translation>
     <message>
         <location line="+6"/>
         <source>Save File and Run All &amp;Tests</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar y ejecutar todos los &amp;tests</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Save File and Run All &amp;Demos</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar y ejecutar todas las &amp;demos</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1822,12 +1822,12 @@ Puede hallar más información al respecto visitando &lt;a href=&quot;https://oc
     <message>
         <location line="+4"/>
         <source>Current Dir</source>
-        <translation type="unfinished"></translation>
+        <translation>Directorio actual</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Set start directory to current directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Asignar el directorio actual como directorio al inicio</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1879,7 +1879,7 @@ Puede hallar más información al respecto visitando &lt;a href=&quot;https://oc
     <message>
         <location line="+95"/>
         <source>Results: Double click opens the file or sets the directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultados: doble clic abre el fichero o asigna el directorio</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1896,7 +1896,9 @@ Puede hallar más información al respecto visitando &lt;a href=&quot;https://oc
         <source>Enter the filename search patterns.
 Several different patterns can be
 separated by &apos;;&apos;, e.g. &apos;*.cc ; *.h&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Introduzca los patrones de búsqueda para el nombre del fichero.
+Se pueden introducir varios separados por punto y coma &apos;;&apos;.
+Por ejemplo, &apos;*.cc; *.h&apos;</translation>
     </message>
     <message>
         <location line="+96"/>
@@ -1959,12 +1961,12 @@ separated by &apos;;&apos;, e.g. &apos;*.cc ; *.h&apos;</source>
     <message>
         <location line="+87"/>
         <source>Double click to open the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Doble clic para abrir el fichero</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Double click to set the directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Doble clic para asignar el directorio</translation>
     </message>
 </context>
 <context>
@@ -1972,29 +1974,29 @@ separated by &apos;;&apos;, e.g. &apos;*.cc ; *.h&apos;</source>
     <message>
         <location filename="__octave_temp_gui_sources__/src/find-widget.cc" line="+48"/>
         <source>Find:</source>
-        <translation type="unfinished">Buscar:</translation>
+        <translation>Buscar:</translation>
     </message>
     <message>
         <location line="+10"/>
         <location line="+1"/>
         <source>Search forward</source>
-        <translation type="unfinished">Buscar hacia delante</translation>
+        <translation>Buscar hacia delante</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+1"/>
         <source>Search backward</source>
-        <translation type="unfinished">Buscar hacia atrás</translation>
+        <translation>Buscar hacia atrás</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Cerrar</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Close find dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Cerrar el cuadro de búsqueda</translation>
     </message>
 </context>
 <context>
@@ -3107,7 +3109,7 @@ Acción: %1</translation>
     <message>
         <location line="+8"/>
         <source>Clear</source>
-        <translation type="unfinished">Limpiar</translation>
+        <translation>Limpiar</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3569,60 +3571,63 @@ esta actualmente en uso para la acción
     <message>
         <location filename="__octave_temp_gui_sources__/src/self-listener.cc" line="+82"/>
         <source>Can not open redirected stream with fd = %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede abrir el flujo redirigido fd = %1.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Can not disable buffering of stream with fd = %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede desactivar el almacenamiento en buffer del flujo fd = %1.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Can not dup redirected stream with fd = %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede aplicar la función dup() de la biblioteca estándar de C al flujo redirigido fd = %1.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Cannot create pipe for redirecting stream with fd = %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede crear la tubería para el flujo redirigido fd = %1:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Cannot dup2 redirected stream with fd = %1
 to pipe with fd = %2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede aplicar la función dup2() de la biblioteca estándar de C al flujo redirigido fd = %1
+para crear la tubería fd = %2: %3</translation>
     </message>
     <message>
         <location line="+57"/>
         <source>Error while listening to redirected streams</source>
-        <translation type="unfinished"></translation>
+        <translation>Error en la escucha de los flujos redirigidos</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Error reading from redirected strem fd = %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Error en la lectura del flujo redirigido fd = %1.</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>
 Output redirection in </source>
-        <translation type="unfinished"></translation>
+        <translation>
+La redirección de salida a </translation>
     </message>
     <message>
         <location line="+1"/>
         <source> won&apos;t work.</source>
-        <translation type="unfinished"></translation>
+        <translation> no funcionará.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>
 Error: </source>
-        <translation type="unfinished"></translation>
+        <translation>
+Error: </translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Octave</source>
-        <translation type="unfinished">Octave</translation>
+        <translation>Octave</translation>
     </message>
 </context>
 <context>
@@ -4980,12 +4985,12 @@ con las combinaciones de teclas de readline.</translation>
     <message>
         <location line="+1"/>
         <source>Run Tests</source>
-        <translation type="unfinished"></translation>
+        <translation>Ejecutar los tests</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Run Demos</source>
-        <translation type="unfinished"></translation>
+        <translation>Ejecutar las demos</translation>
     </message>
     <message>
         <location line="+3"/>

@@ -44,17 +44,17 @@ classdef Map < handle
   ## @var{vals} is an array of values for the map with the @emph{same} number
   ## of elements as @var{keys}.
   ##
-  ## When called with no input arguments a default map is created with strings
+  ## When called with no input arguments, a default map is created with strings
   ## as the key type and @qcode{"any"} as the value type.
   ##
-  ## The @qcode{"UniformValues"} option specifies whether the values of
-  ## the map must be strictly of the same type.  If @var{is_uniform} is true,
-  ## any values which would be added to the map are first validated to ensure
-  ## they are of the correct type.
+  ## The @qcode{"UniformValues"} option specifies whether the values of the map
+  ## must be strictly of the same type.  If @var{is_uniform} is true, any
+  ## values which would be added to the map are first validated to ensure they
+  ## are of the correct type.
   ##
   ## When called with @qcode{"KeyType"} and @qcode{"ValueType"} arguments,
   ## create an empty map with the specified types.  The inputs @var{kt} and
-  ## @var{vt} are the types for the keys and values of the map respectively.
+  ## @var{vt} are the types for the keys and values of the map, respectively.
   ## Allowed values for @var{kt} are @qcode{"char"}, @qcode{"double"},
   ## @qcode{"single"}, @qcode{"int32"}, @qcode{"uint32"}, @qcode{"int64"},
   ## @qcode{"uint64"}.  Allowed values for @var{vt} are @qcode{"any"},
@@ -71,8 +71,9 @@ classdef Map < handle
     ## @deftypefn {} {@var{type} =} Map.KeyType ()
     ## Return the key type.
     ##
-    ## Possible values are listed above when describing input variable
-    ## @var{kt}.
+    ## Possible values for @var{type} are @qcode{"char"}, @qcode{"double"},
+    ## @qcode{"single"}, @qcode{"int32"}, @qcode{"uint32"}, @qcode{"int64"},
+    ## @qcode{"uint64"}.
     ## @end deftypefn
 
     KeyType   = "char";
@@ -81,8 +82,9 @@ classdef Map < handle
     ## @deftypefn {} {@var{type} =} Map.ValueType ()
     ## Return the value type.
     ##
-    ## Possible values are listed above when describing input variable
-    ## @var{vt}.
+    ## Possible values for @var{type} are @qcode{"any"}, @qcode{"char"},
+    ## @qcode{"double"}, @qcode{"single"}, @qcode{"int32"}, @qcode{"uint32"},
+    ## @qcode{"int64"}, @qcode{"uint64"}, @qcode{"logical"}.
     ## @end deftypefn
 
     ValueType = "any";
@@ -237,7 +239,7 @@ classdef Map < handle
 
       ## -*- texinfo -*-
       ## @deftypefn {} {@var{keys} =} Map.keys ()
-      ## Return the sorted list of all keys of the map as a cell vector.
+      ## Return a sorted list of all keys of the map as a cell vector.
       ## @end deftypefn
 
       keySet = fieldnames (this.map).';  # compatibility requires row vector
@@ -250,7 +252,7 @@ classdef Map < handle
       ## -*- texinfo -*-
       ## @deftypefn  {} {@var{val} =} Map.values ()
       ## @deftypefnx {} {@var{val} =} Map.values (@var{keySet})
-      ## Return the list of all the values stored in the map as a cell vector.
+      ## Return the list of all values stored in the map as a cell vector.
       ##
       ## If @var{keySet}, a cell array of keys is provided, the corresponding
       ## values will be returned.

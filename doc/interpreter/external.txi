@@ -990,21 +990,21 @@ extern "C"
 @end group
 @end example
 
-When calling functions that are implemented in Fortran code, some pecularities
+When calling functions that are implemented in Fortran code, some peculiarities
 have to be taken into account.  Symbol names in Fortran are case-insensitive,
 and depending on the used Fortran compiler, function names are either exported
-with all lower-case or with all upper-case characters.  Additionally, some
+with all lowercase or with all uppercase characters.  Additionally, some
 compilers append none, one or two underscores "@code{_}" at the end of
 exported function names.  This is called "name-mangling".
 
 Octave supplies macros that allow writing code that automatically handles the
 name-mangling for a number of different Fortran compilers.  These macros are
-@code{F77_FUNC} and @code{F77_FUNC_}.  The former should be used for Fortran
-functions that do not contain any underscores in their name.  The latter should
-be used for Fortran functions with underscores in their names.  Both macros
-take two arguments: The first is the Fortran function name in all lower-case
-characters.  The second is the same Fortran function name in all upper-case
-characters.
+@w{@env{F77_FUNC}} and @w{@env{F77_FUNC_}}.  The former should be used for
+Fortran functions that do not contain any underscores in their name.  The
+latter should be used for Fortran functions with underscores in their names.
+Both macros take two arguments: The first is the Fortran function name in all
+lowercase characters.  The second is the same Fortran function name in all
+uppercase characters.
 
 Additionally to the name-mangling, different compilers are using different
 calling conventions for some types.  Octave defines the following preprocessor
@@ -1067,9 +1067,9 @@ Return type of a C++ function that acts like a Fortran subroutine.
 @end table
 
 Use the following macros to return from C-language functions that are supposed
-to act like Fortran subroutines.  @code{F77_NORETURN} is intended to be used as
-the last statement of such a function that has been tagged with a
-@qcode{"noreturn"} attribute.
+to act like Fortran subroutines.  @w{@env{F77_NORETURN}} is intended to be used
+as the last statement of such a function that has been tagged with a
+@nospell{@qcode{"noreturn"}} attribute.
 
 @example
 @group

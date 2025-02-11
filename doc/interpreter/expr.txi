@@ -243,7 +243,7 @@ A([1, 2, 2, 1]) # result includes repeated elements: ans = [1, 4, 4, 1]
 @cindex Logical Indexing
 Logical values can also be used to index matrices and cell arrays.
 When indexing with a logical array the result will be a vector containing
-the values corresponding to @code{true} parts of the logical array. The
+the values corresponding to @code{true} parts of the logical array.  The
 following examples illustrates this.
 
 @example
@@ -310,7 +310,7 @@ to select a nonexistent 9th element of the array.
 Octave permits the use of repeated (chained) index expressions to extract
 subsets of an array in a single command without the need to use intermediate
 variables.  This can make it easier to write code with either complicated
-indexing operations or using multiple indexing methods. The following example
+indexing operations or using multiple indexing methods.  The following example
 shows two equivalent index extraction operations:
 
 @example
@@ -328,7 +328,7 @@ D = A(2:4, 2:3)(3:5)([ true, false, true ])
 
 Chained indexing will necessarily be slower than a single index expression
 producing the same results, but is usually more computationally efficient
-than performing  multiple discrete indexing operations with intermediate
+than performing multiple discrete indexing operations with intermediate
 variable assignments.
 
 Note that chained indexing is only compatible with right-hand expressions and
@@ -375,12 +375,12 @@ the respective dimension of the array.
 However, if the number of indexing components exceeds the number of dimensions
 (@w{@code{M > nd}}) then the excess components must all be singletons
 (@code{1}).  Moreover, if @w{@code{M < nd}}, the behavior is equivalent to
-reshaping the input object so as to merge the trailing @w{@code{nd - M}}@ 
-dimensions into the last index dimension @code{M}.  Thus, the result will have
-the dimensionality of the index expression, and not the original object.  This
-is the case whenever dimensionality of the index is greater than one
-(@w{@code{M > 1}}), so that the special rules for linear indexing are not
-applied.  This is easiest to understand with an example:
+reshaping the input object so as to merge the trailing
+@w{@code{nd - M}}@ dimensions into the last index dimension @code{M}.  Thus,
+the result will have the dimensionality of the index expression, and not the
+original object.  This is the case whenever dimensionality of the index is
+greater than one (@w{@code{M > 1}}), so that the special rules for linear
+indexing are not applied.  This is easiest to understand with an example:
 
 @example
 A = reshape (1:8, 2, 2, 2)  # Create 3-D array
@@ -1431,6 +1431,7 @@ size expansion to accommodate the assignment.
 Assignments may be made with fewer specified elements than would be required to
 fill the newly expanded array as long as the assignment is unambiguous.  In
 these cases the array will be automatically padded with @emph{null} values:
+
 @example
 @group
 >> a = [1, 2]
@@ -1455,6 +1456,7 @@ For all built-in types, the @emph{null} value will be appropriate to that object
 type.
 
 Numeric arrays:
+
 @example
 @group
 >> a = int32 ([1, 2])
@@ -1465,6 +1467,7 @@ a = 1 2 0 5
 @end example
 
 Logical arrays:
+
 @example
 @group
 >> a = [true, false, true]
@@ -1475,6 +1478,7 @@ d = 1 0 1 0 1
 @end example
 
 Character arrays:
+
 @example
 @group
 >> a = "abc"
@@ -1487,6 +1491,7 @@ ans = 97 98 99 0 100
 @end example
 
 Cell arrays:
+
 @example
 @group
 >> e = @{1, "foo", [3, 4]@};
@@ -1506,6 +1511,7 @@ e =
 @end example
 
 Struct arrays:
+
 @example
 @group
 >> a = struct("foo",1,"bar",2);
@@ -1531,7 +1537,7 @@ ans = 9
 Note that Octave currently is unable to concatenate arbitrary object types
 into arrays.  Such behavior must be explicitly defined within the object class
 or attempts at concatenation will result in an error.
-@xref{Object Oriented Programming}
+@xref{Object Oriented Programming}.
 
 Assigning an empty matrix @samp{[]} works in most cases to allow you to
 delete rows or columns of matrices and vectors.  @xref{Empty Matrices}.

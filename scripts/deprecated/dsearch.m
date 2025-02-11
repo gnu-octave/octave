@@ -26,14 +26,32 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{idx} =} dsearch (@var{x}, @var{y}, @var{tri}, @var{xi}, @var{yi})
 ## @deftypefnx {} {@var{idx} =} dsearch (@var{x}, @var{y}, @var{tri}, @var{xi}, @var{yi}, @var{s})
+##
+## @code{dsearch} is deprecated and will be removed in Octave version 12.  Use
+## @code{dsearchn} instead.
+##
+## @code{dsearch (@dots{}) @equiv{} dsearchn ([@var{x}, @var{y}], @var{tri},
+## [@var{xi}, @var{yi}])}
+##
 ## Return the index @var{idx} of the closest point in @code{@var{x}, @var{y}}
 ## to the elements @code{[@var{xi}(:), @var{yi}(:)]}.
 ##
-## The variable @var{s} is accepted for compatibility but is ignored.
-## @seealso{dsearchn, tsearch}
+## The variables @var{s} and @var{tri} are accepted for compatibility, but they
+## are not used in the calculation or checked for validity.
+##
+## @seealso{dsearchn, tsearchn}
 ## @end deftypefn
 
+## FIXME: DEPRECATED: Remove in version 12.
+
 function idx = dsearch (x, y, tri, xi, yi, s)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "dsearch is deprecated and will be removed from a future version of Octave, please use dsearchn instead\n");
+  endif
 
   if (nargin < 5)
     print_usage ();

@@ -55,7 +55,7 @@
 % I chose to omit.  In general, not all synonyms for commands are
 % covered, nor all variations of a command.
 
-\def\octaveversion{8.0.0}
+\def\octaveversion{8}
 
 % ------------------
 % multicolumn format
@@ -377,8 +377,8 @@
 % The actual text of the reference card
 % -------------------------------------
 
-{\vbbf Octave Quick Reference}\hfil{\smrm Octave \octaveversion}\qquad
-{\smrm Copyright 1996-2025 The Octave Project Developers}
+{\vbbf Octave Quick Reference}\hfil{\smrm Octave \octaveversion \space or later}\qquad
+{\smrm Copyright\thinspace\copyright\thinspace 1996-2025 The Octave Project Developers}
 
 \altsec Starting and Stopping;
 octave \opt{-\hbox{}-gui}&start Octave CLI/GUI session\cr
@@ -391,7 +391,7 @@ Ctrl-C&terminate current command and return to top-level prompt\cr
 
 \sec Getting Help;
 help {\it command}&briefly describe {\it command}\cr
-doc&use Info to browse Octave manual\cr
+doc&browse Octave manual\cr
 doc {\it command}&search for {\it command} in Octave manual\cr
 lookfor {\it str}&search for {\it command} based on {\it str}\cr
 \endsec
@@ -409,7 +409,7 @@ ls \opt{{\it options}}&print directory listing\cr
 what&list .m/.mat files in the current directory\cr
 path&search path for Octave functions\cr
 pathdef&default search path\cr
-addpath ({\it dir})&add a directory to the path\cr
+addpath ({\it dir})&add directory to search path\cr
 getenv ({\it var})&value of environment variable\cr
 \endsec
 
@@ -421,7 +421,7 @@ pkg install -forge {\it pkg}&download and install {\it pkg}\cr
 pkg install {\it file.tar.gz}&install pre-downloaded package file\cr
 pkg list&show installed packages\cr
 pkg load / pkg unload&load/unload installed package\cr
-statistics optimization control signal image symbolic etc.&various common
+statistics optimization control signal image symbolic&various common
 packages\cr
 \endsec
 
@@ -549,8 +549,8 @@ in-place equivalents of the above operators\cr
 +{\it x}&unary plus (a no-op)\cr
 {\it x}$'$&complex conjugate transpose\cr
 {\it x}.$'$&transpose\cr
-++{\it x} --{\it x}&increment / decrement, return {\it new\/} value\cr
-{\it x}++ {\it x}--&increment / decrement, return {\it old\/} value\cr
+++{\it x} --{\it x}&increment/decrement, return {\it new\/} value\cr
+{\it x}++ {\it x}--&increment/decrement, return {\it old\/} value\cr
 \endsec
 
 \sec Comparison and Boolean Operators;
@@ -623,11 +623,11 @@ endif & if-then-else\cr
 
 switch (tf)
 
-case "true"
+\quad case "true"
 
-case "false"
+\quad case "false"
 
-otherwise
+\quad otherwise
 
 endswitch & switch-case\cr
 \cr
@@ -712,7 +712,7 @@ profshow profexplore&show the results of profiling\cr
 
 \sec File I/O, Loading, Saving;
 save load &save/load variables to/from file\cr
-save -binary &save in binary format (faster)\cr
+save -binary &save in binary format (faster, smaller)\cr
 dlmread dlmwrite&read/write delimited data\cr
 csvread csvwrite&read/write CSV files\cr
 xlsread xlswrite&read/write XLS spreadsheets\cr
@@ -724,15 +724,15 @@ fflush&flush pending output\cr
 
 \sec Math Functions;
 \omit \vbox{\rm\vskip0.5ex
-  Run {\tt doc <function>} to find related functions.
+  type {\tt doc <function>} to find related functions.
   \vskip0.75ex}\span\cr
 cov corrcoef&covariance, correlation coefficient\cr
 tan tanh atan2&trig and hyperbolic functions\cr
 cross curl del2&vector algebra functions\cr
 &\cr
-det inv& determinant matrix inverse\cr
+det inv& determinant, matrix inverse\cr
 eig &eigenvalues and eigenvectors\cr
-norm &vector norm, matrix norm\cr
+norm &vector or matrix norm\cr
 rank &matrix rank\cr
 qr &QR factorization\cr
 chol &Cholesky factorization\cr
@@ -749,15 +749,15 @@ setdiff&set difference\cr
 &\cr
 roots &polynomial roots\cr
 poly &matrix characteristic polynomial\cr
-polyder polyint&polynomial derivative or integral\cr
-polyfit polyval&polynomial fitting and evaluation\cr
+polyder polyint&polynomial derivative/integral\cr
+polyfit polyval&polynomial fitting/evaluation\cr
 residue &partial fraction expansion\cr
 legendre bessel&special functions\cr
 &\cr
 conv conv2& convolution, polynomial multiplication\cr
 deconv& deconvolution, polynomial division\cr
 &\cr
-fft fft2 ifft({\it a})&FFT / inverse FFT\cr
+fft fft2 ifft&FFT / inverse FFT\cr
 freqz &FIR filter frequency response\cr
 filter &filter by transfer function\cr
 \endsec
@@ -768,7 +768,7 @@ line &2D or 3D line\cr
 patch fill&2D patch, optionally colored\cr
 semilogx semilogy loglog&logarithmic axes\cr
 bar hist&bar chart, histogram\cr
-stairs stem&stairsteps and stem graphs\cr
+stairs stem&stairsteps and stem plots\cr
 contour &contour plot\cr
 mesh trimesh surf &plot 3D surfaces\cr
 &\cr
@@ -790,10 +790,11 @@ colormap &get or set colormap\cr
 \hrule width \hsize
 \par\vskip10pt
 {\smrm\parskip=6pt
-Quick reference for Octave \octaveversion.
-Copyright 1996-2025 The Octave Project Developers.  The authors assume
-no responsibility for any errors on this card.  This card may be freely
-distributed under the terms of the GNU General Public License.
+Quick reference for Octave \octaveversion \space or later.
+Copyright\thinspace\copyright\thinspace 1996-2025 The Octave Project
+Developers.  The authors assume no responsibility for any errors on this card.
+This card may be freely distributed under the terms of the GNU General Public
+License.
 
 Octave license and copyright: https://octave.org/copyright/
 

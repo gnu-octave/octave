@@ -71,7 +71,6 @@ endfunction
 %!  rgbplot (cmap);
 
 
-
 %!assert (size (flag ()), [256, 3])
 %!assert (size (flag (16)), [16, 3])
 

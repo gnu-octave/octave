@@ -103,7 +103,7 @@ function retval = unwrap (x, tol, dim)
       retval = x;
       xfin_idx = isfinite (x);
       xfin = x(xfin_idx);
-      d = cat (dim, 0, -diff(xfin, 1, dim));
+      d = cat (dim, 0, -diff (xfin, 1, dim));
       p = round (abs (d)./rng) .* rng .* ...
                       (((d > tol) > 0) - ((d < -tol) > 0));
       retval(xfin_idx) = xfin + cumsum (p, dim);
@@ -267,8 +267,8 @@ endfunction
 %!assert (unwrap (ones (1,0), [], 3), ones (1,0))
 
 ## Test handling of non-finite values
-%!assert <*64556> (unwrap (NaN(4,1)), NaN(4,1))
-%!assert <*64556> (unwrap (NaN(4)), NaN(4))
+%!assert <*64556> (unwrap (NaN (4,1)), NaN (4,1))
+%!assert <*64556> (unwrap (NaN (4)), NaN (4))
 
 %!test <*64556>
 %! x = pi * [-Inf, 0.5, -1, NaN, Inf, -0.5, 1];

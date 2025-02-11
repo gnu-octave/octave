@@ -90,7 +90,7 @@ function vi = interpn (varargin)
     print_usage ();
   endif
 
-  if  (! isnumeric (varargin{1}))
+  if (! isnumeric (varargin{1}))
     error ("interpn: input reference arrays must be numeric");
   endif
 

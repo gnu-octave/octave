@@ -149,7 +149,7 @@
 ## result, setting @qcode{"Vectorized"} to false forces @code{quad2d} to
 ## perform scalar internal operations to compute the integral, resulting in
 ## the correct numerical result at the cost of about a 20x increase in
-## computation time. In the third result, vectorizing the integrand @var{f}
+## computation time.  In the third result, vectorizing the integrand @var{f}
 ## using the elementwise multiplication operator gets the correct result
 ## without increasing computation time.
 ##

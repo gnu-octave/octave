@@ -792,11 +792,11 @@ function str = pprint (argin, err)
     leni = numel (err.index{i});
     leno = numel (err.observed{i});
     lene = numel (err.expected{i});
-    tmp = sprintf("%*s%*s %*s%*s %*s%*s   %s\n",
-            6+fix(leni/2), err.index{i}   , max (6-fix(leni/2), 0), "",
-            6+fix(leno/2), err.observed{i}, max (6-fix(leno/2), 0), "",
-            6+fix(lene/2), err.expected{i}, max (6-fix(lene/2), 0), "",
-            err.reason{i});
+    tmp = sprintf ("%*s%*s %*s%*s %*s%*s   %s\n",
+                   6+fix(leni/2), err.index{i}   , max (6-fix(leni/2), 0), "",
+                   6+fix(leno/2), err.observed{i}, max (6-fix(leno/2), 0), "",
+                   6+fix(lene/2), err.expected{i}, max (6-fix(lene/2), 0), "",
+                   err.reason{i});
     if (pos + numel (tmp) > numel (str))
       str(end + 1e6) = ' ';
     endif

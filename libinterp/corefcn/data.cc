@@ -3033,7 +3033,7 @@ for empty matrices @code{nnz} will report 0, but @code{nzmax} will report 1.
 
 DEFUN (rows, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {@var{nr} =} rows (@var{A})
+@deftypefn  {} {@var{nr} =} rows (@var{A})
 @deftypefnx () {@var{nr} =} height (@var{A})
 Return the number of rows of @var{A}.
 
@@ -3085,7 +3085,7 @@ DEFALIAS (height, rows);
 
 DEFUN (columns, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {@var{nc} =} columns (@var{A})
+@deftypefn  {} {@var{nc} =} columns (@var{A})
 @deftypefnx {} {@var{nc} =} width (@var{A})
 Return the number of columns of @var{A}.
 
@@ -8349,16 +8349,14 @@ differences along the first non-singleton dimension.
 
 The second argument is optional.  If supplied,
 @w{@code{diff (@var{x}, @var{k})}}, where @var{k} is a non-negative integer,
-returns the @var{k}-th differences.  It is possible that @var{k} is larger
-than the first non-singleton dimension of the matrix.  In this case,
-@code{diff} continues to take the differences along the next
-non-singleton dimension.
+returns the @var{k}-th differences.  It is possible that @var{k} is larger than
+the first non-singleton dimension of the matrix.  In this case, @code{diff}
+continues to take the differences along the next non-singleton dimension.
 
-The dimension along which to take the difference can be explicitly
-stated with the optional variable @var{dim}.  In this case the
-@var{k}-th order differences are calculated along this dimension.
-In the case where @var{k} exceeds @w{@code{size (@var{x}, @var{dim})}}@ 
-an empty matrix is returned.
+The dimension along which to take the difference can be explicitly stated with
+the optional variable @var{dim}.  In this case the @var{k}-th order differences
+are calculated along this dimension.  In the case where @var{k} exceeds
+@w{@code{size (@var{x}, @var{dim})}}@ an empty matrix is returned.
 @seealso{sort, merge}
 @end deftypefn */)
 {

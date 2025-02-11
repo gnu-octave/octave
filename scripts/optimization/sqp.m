@@ -118,7 +118,7 @@
 ## @end ifnottex
 ## The fifth and sixth arguments, @var{lb} and @var{ub}, contain lower and
 ## upper bounds on @var{x} and when provided must be vectors of the same size
-## as the the vector @var{x0}.  The bounds must be consistent with the
+## as the vector @var{x0}.  The bounds must be consistent with the
 ## equality and inequality constraints @var{g} and @var{h}.
 ##
 ## The seventh argument @var{maxiter} specifies the maximum number of

@@ -355,7 +355,7 @@ function m = int64_mean (x, dim, n, outtype)
         endif
 
       else
-        m = double(m) + rmdr;
+        m = double (m) + rmdr;
         switch (outtype)
           case "int64"
             m = int64 (m);
@@ -477,26 +477,26 @@ endfunction
 %!
 %! ## both negative
 %! assert (mean (in_neg, "default"), mean (in_neg));
-%! assert (mean (in_neg, "default"), double(out_neg));
-%! assert (mean (in_neg, "double"), double(out_neg));
-%! assert (mean (in_neg, "native"), int64(out_neg));
+%! assert (mean (in_neg, "default"), double (out_neg));
+%! assert (mean (in_neg, "double"), double (out_neg));
+%! assert (mean (in_neg, "native"), int64 (out_neg));
 %! assert (class (mean (in_neg, "native")), "int64");
 
 ## Additional tests int64 and double precision limits
 %!test <54567>
 %! in = [(intmin('int64')+5), (intmax('int64'))-5];
-%! assert (mean (in, "native"), int64(-1));
+%! assert (mean (in, "native"), int64 (-1));
 %! assert (class (mean (in, "native")), "int64");
-%! assert (mean (double(in)), double(0) );
-%! assert (mean (in), double(-0.5) );
-%! assert (mean (in, "default"), double(-0.5) );
-%! assert (mean (in, "double"), double(-0.5) );
-%! assert (mean (in, "all", "native"), int64(-1));
-%! assert (mean (in, 2, "native"), int64(-1));
-%! assert (mean (in, [1 2], "native"), int64(-1));
-%! assert (mean (in, [2 3], "native"), int64(-1));
-%! assert (mean ([intmin("int64"), in, intmax("int64")]), double(-0.5))
-%! assert (mean ([in; int64([1 3])], 2, "native"), int64([-1; 2]));
+%! assert (mean (double(in)), double (0) );
+%! assert (mean (in), double (-0.5) );
+%! assert (mean (in, "default"), double (-0.5) );
+%! assert (mean (in, "double"), double (-0.5) );
+%! assert (mean (in, "all", "native"), int64 (-1));
+%! assert (mean (in, 2, "native"), int64 (-1));
+%! assert (mean (in, [1 2], "native"), int64 (-1));
+%! assert (mean (in, [2 3], "native"), int64 (-1));
+%! assert (mean ([intmin("int64"), in, intmax("int64")]), double (-0.5))
+%! assert (mean ([in; int64([1 3])], 2, "native"), int64 ([-1; 2]));
 
 ## Test input and optional arguments "all", DIM, "omitnan".
 %!test
@@ -543,7 +543,7 @@ endfunction
 %! x([2, 9:12]) = NaN;
 %! assert (mean (x), [NaN 8.5, NaN, 8.5], eps);
 %! assert (mean (x,1), [NaN 8.5, NaN, 8.5], eps);
-%! assert (mean (x,2), NaN(4,1), eps);
+%! assert (mean (x,2), NaN (4,1), eps);
 %! assert (mean (x,3), x, eps);
 %! assert (mean (x, 'omitnan'), [29/3, 8.5, NaN, 8.5], eps);
 %! assert (mean (x, 1, 'omitnan'), [29/3, 8.5, NaN, 8.5], eps);
@@ -551,27 +551,27 @@ endfunction
 %! assert (mean (x, 3, 'omitnan'), x, eps);
 
 ## Test empty inputs
-%!assert (mean ([]), NaN(1,1))
+%!assert (mean ([]), NaN (1,1))
 %!assert (mean (single([])), NaN(1,1,"single"))
 %!assert (mean ([], 1), NaN(1,0))
 %!assert (mean ([], 2), NaN(0,1))
 %!assert (mean ([], 3), NaN(0,0))
-%!assert (mean (ones(1,0)), NaN(1,1))
-%!assert (mean (ones(1,0), 1), NaN(1,0))
-%!assert (mean (ones(1,0), 2), NaN(1,1))
-%!assert (mean (ones(1,0), 3), NaN(1,0))
-%!assert (mean (ones(0,1)), NaN(1,1))
-%!assert (mean (ones(0,1), 1), NaN(1,1))
-%!assert (mean (ones(0,1), 2), NaN(0,1))
-%!assert (mean (ones(0,1), 3), NaN(0,1))
-%!assert (mean (ones(0,1,0)), NaN(1,1,0))
-%!assert (mean (ones(0,1,0), 1), NaN(1,1,0))
-%!assert (mean (ones(0,1,0), 2), NaN(0,1,0))
-%!assert (mean (ones(0,1,0), 3), NaN(0,1,1))
-%!assert (mean (ones(0,0,1,0)), NaN(1,0,1,0))
-%!assert (mean (ones(0,0,1,0), 1), NaN(1,0,1,0))
-%!assert (mean (ones(0,0,1,0), 2), NaN(0,1,1,0))
-%!assert (mean (ones(0,0,1,0), 3), NaN(0,0,1,0))
+%!assert (mean (ones (1,0)), NaN (1,1))
+%!assert (mean (ones (1,0), 1), NaN (1,0))
+%!assert (mean (ones (1,0), 2), NaN (1,1))
+%!assert (mean (ones (1,0), 3), NaN (1,0))
+%!assert (mean (ones (0,1)), NaN (1,1))
+%!assert (mean (ones (0,1), 1), NaN (1,1))
+%!assert (mean (ones (0,1), 2), NaN (0,1))
+%!assert (mean (ones (0,1), 3), NaN (0,1))
+%!assert (mean (ones (0,1,0)), NaN (1,1,0))
+%!assert (mean (ones (0,1,0), 1), NaN (1,1,0))
+%!assert (mean (ones (0,1,0), 2), NaN (0,1,0))
+%!assert (mean (ones (0,1,0), 3), NaN (0,1,1))
+%!assert (mean (ones (0,0,1,0)), NaN (1,0,1,0))
+%!assert (mean (ones (0,0,1,0), 1), NaN (1,0,1,0))
+%!assert (mean (ones (0,0,1,0), 2), NaN (0,1,1,0))
+%!assert (mean (ones (0,0,1,0), 3), NaN (0,0,1,0))
 
 ## Test dimension indexing with vecdim in N-dimensional arrays
 %!test
@@ -614,7 +614,7 @@ endfunction
 
 ## Test limits of double precision summation
 %!assert <63848> (mean ([flintmax("double"), ones(1, 2^8-1, "double")]), ...
-%!                               35184372088833-1/(2^8), eps(35184372088833))
+%!                35184372088833-1/(2^8), eps (35184372088833))
 
 ## Test input validation
 %!error <Invalid call to mean.  Correct usage is> mean ()
@@ -635,5 +635,5 @@ endfunction
 %!error <DIM must be a positive integer> mean (1, Inf)
 %!error <DIM must be a positive integer> mean (repmat ([1:20;6:25], [5 2]), -1)
 %!error <DIM must be a positive integer> mean (repmat ([1:5;5:9], [5 2]), [1 -1])
-%!error <DIM must be a positive integer> mean (1, ones(1,0))
+%!error <DIM must be a positive integer> mean (1, ones (1,0))
 %!error <VECDIM must contain non-repeating> mean (1, [2 2])

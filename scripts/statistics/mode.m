@@ -238,7 +238,7 @@ endfunction
 %! [m, f, c] = mode ([], 2);
 %! assert (m, NaN (0, 1));
 %! assert (f, zeros (0, 1));
-%! assert (c, cell(0, 1));
+%! assert (c, cell (0, 1));
 %!test <*48690>
 %! [m, f, c] = mode ([], 3);
 %! assert (m, []);

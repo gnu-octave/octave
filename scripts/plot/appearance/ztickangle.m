@@ -44,6 +44,7 @@
 ## @item
 ## The @qcode{"ZTickLabelRotation"} property is currently unimplemented in
 ## Octave.  The property can be set and queried, but has no effect on the plot.
+##
 ## @item
 ## Requesting a return value while also setting a specified
 ## rotation will result in an error.

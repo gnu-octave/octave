@@ -81,6 +81,7 @@
 ## point to begin searching from then you will need to use an unconstrained
 ## minimization algorithm such as @code{fminunc} or @code{fminsearch}.
 ## @code{fminbnd} internally uses a Golden Section search strategy.
+##
 ## @item
 ## Use @ref{Anonymous Functions} to pass additional parameters to @var{fcn}.
 ## For specific examples of doing so for @code{fminbnd} and other

@@ -71,12 +71,12 @@ classdef jupyter_notebook < handle
   ## specifies the image resolution.
   ##
   ## @item
-  ## "@code{%plot -w <number>}" or "@code{%plot --width <number>}": specifies
-  ## the image width.
+  ## "@code{%plot -w <number>}" or "@code{%plot --width <number>}":
+  ## specifies the image width.
   ##
   ## @item
-  ## "@code{%plot -h <number>}" or "@code{%plot --height <number>}": specifies
-  ## the image height.
+  ## "@code{%plot -h <number>}" or "@code{%plot --height <number>}":
+  ## specifies the image height.
   ## @end itemize
   ##
   ## Examples:
@@ -266,8 +266,8 @@ classdef jupyter_notebook < handle
       ## -*- texinfo -*-
       ## @deftypefn {} {} generate_notebook (@var{notebook_filename})
       ##
-      ## Write the Jupyter Notebook stored in the @code{notebook}
-      ## attribute to @var{notebook_filename}.
+      ## Write the Jupyter Notebook stored in the @code{notebook} attribute to
+      ## @var{notebook_filename}.
       ##
       ## The @code{notebook} attribute is encoded to JSON text.
       ##
@@ -300,16 +300,15 @@ classdef jupyter_notebook < handle
       ## -*- texinfo -*-
       ## @deftypefn {} {} run (@var{cell_index})
       ##
-      ## Run the Jupyter Notebook cell with index @var{cell_index}
-      ## and eventually replace previous output cells in the object.
+      ## Run the Jupyter Notebook cell with index @var{cell_index} and
+      ## eventually replace previous output cells in the object.
       ##
       ## The first Jupyter Notebook cell has the index 1.
       ##
-      ## Note: The code evaluation of the Jupyter Notebook cells is done
-      ## in a separate Jupyter Notebook context.  Thus, currently open
-      ## figures and workspace variables won't be affected by executing
-      ## this function.  However, current workspace variables cannot be
-      ## accessed either.
+      ## Note: The code evaluation of the Jupyter Notebook cells is done in a
+      ## separate Jupyter Notebook context.  Thus, currently open figures and
+      ## workspace variables won't be affected by executing this function.
+      ## However, current workspace variables cannot be accessed either.
       ##
       ## See @code{help jupyter_notebook} for examples.
       ##
@@ -444,6 +443,7 @@ classdef jupyter_notebook < handle
           endif
         endif
       end_unwind_protect
+
     endfunction
 
 
@@ -452,14 +452,13 @@ classdef jupyter_notebook < handle
       ## -*- texinfo -*-
       ## @deftypefn {} {} run_all ()
       ##
-      ## Run all Jupyter Notebook cells and eventually replace previous
-      ## output cells in the object.
+      ## Run all Jupyter Notebook cells and eventually replace previous output
+      ## cells in the object.
       ##
-      ## Note: The code evaluation of the Jupyter Notebook cells is done
-      ## in a separate Jupyter Notebook context.  Thus, currently open
-      ## figures and workspace variables won't be affected by executing
-      ## this function.  However, current workspace variables cannot be
-      ## accessed either.
+      ## Note: The code evaluation of the Jupyter Notebook cells is done in a
+      ## separate Jupyter Notebook context.  Thus, currently open figures and
+      ## workspace variables won't be affected by executing this function.
+      ## However, current workspace variables cannot be accessed either.
       ##
       ## See @code{help jupyter_notebook} for examples.
       ##

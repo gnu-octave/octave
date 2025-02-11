@@ -5,7 +5,6 @@ FCN_FILE_DIRS += %reldir%
   %reldir%/convhull.m \
   %reldir%/delaunay.m \
   %reldir%/delaunayn.m \
-  %reldir%/dsearch.m \
   %reldir%/dsearchn.m \
   %reldir%/griddata.m \
   %reldir%/griddata3.m \

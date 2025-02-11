@@ -287,7 +287,7 @@ function c = cov (x, varargin)
         opt (n < 2) = 1;
 
         ## Mean for each column pairing.
-        ## Rotate x vectors into dim3, project into dim1 with non-nan array
+        ## Rotate x vectors into dim3, project into dim1 with non-NaN array
         x = permute(x, [3, 2, 1]) .* permute (nnx, [2, 3, 1]);
         mu = x;
         mu (isnan (x)) = 0; # Exclude input NaNs from summation.
@@ -300,6 +300,7 @@ function c = cov (x, varargin)
 
       endif
   endswitch
+
 endfunction
 
 
@@ -379,18 +380,18 @@ endfunction
 %! assert (c, 2);
 %! c = cov (double (x), single (1));
 %! assert (class (c), "double");
-%!assert (cov (2, 4), zeros(2))
-%!assert (cov (2, 4, 0), zeros(2))
-%!assert (cov (2, 4, 1), zeros(2))
+%!assert (cov (2, 4), zeros (2))
+%!assert (cov (2, 4, 0), zeros (2))
+%!assert (cov (2, 4, 1), zeros (2))
 %!assert (cov (NaN, 4), [NaN, NaN; NaN, 0])
 %!assert (cov (NaN, 4, 0), [NaN, NaN; NaN, 0])
 %!assert (cov (NaN, 4, 1), [NaN, NaN; NaN, 0])
 
 ## Test logical inputs
-%!assert (cov (logical(0), logical(0)), double(0))
-%!assert (cov (0, logical(0)), double(0))
-%!assert (cov (logical(0), 0), double(0))
-%!assert (cov (logical([0 1; 1 0]), logical([0 1; 1 0])), double ([1 1;1 1]./3))
+%!assert (cov (logical (0), logical (0)), double (0))
+%!assert (cov (0, logical (0)), double (0))
+%!assert (cov (logical (0), 0), double (0))
+%!assert (cov (logical ([0 1; 1 0]), logical ([0 1; 1 0])), double ([1 1;1 1]./3))
 %!assert (cov ([1 2 3], [3 4 5], 0), [1 1; 1 1])
 %!assert (cov ([1 2 3], [3 4 5], false), [1 1; 1 1])
 %!assert (cov ([1 2 3], [3 4 5], 1), [2/3 2/3; 2/3 2/3], eps)
@@ -404,13 +405,13 @@ endfunction
 %!assert <*50583> (cov (single ([]), single([])),  single (NaN (2, 2)))
 %!assert <*50583> (cov ([], single ([])), single (NaN (2, 2)))
 %!assert <*50583> (cov (single ([]), []), single (NaN (2, 2)))
-%!assert <*50583> (cov (ones(1, 0)), NaN)
-%!assert <*50583> (cov (ones(2, 0)), [])
-%!assert <*50583> (cov (ones(0, 1)), NaN)
-%!assert <*50583> (cov (ones(0, 2)), NaN (2, 2))
-%!assert <*50583> (cov (ones(0, 6)), NaN (6, 6))
-%!assert <*50583> (cov (ones(2, 0), []), NaN (2, 2))
-%!assert <*50583> (cov (ones(0,6), []), NaN (2, 2))
+%!assert <*50583> (cov (ones (1, 0)), NaN)
+%!assert <*50583> (cov (ones (2, 0)), [])
+%!assert <*50583> (cov (ones (0, 1)), NaN)
+%!assert <*50583> (cov (ones (0, 2)), NaN (2, 2))
+%!assert <*50583> (cov (ones (0, 6)), NaN (6, 6))
+%!assert <*50583> (cov (ones (2, 0), []), NaN (2, 2))
+%!assert <*50583> (cov (ones (0,6), []), NaN (2, 2))
 %!assert <*50583> (cov (NaN), NaN)
 %!assert <*50583> (cov (NaN, NaN), NaN (2, 2))
 %!assert <*50583> (cov (5, NaN), [0, NaN; NaN, NaN])
@@ -418,51 +419,51 @@ endfunction
 %!assert <*50583> (cov (single (NaN)), single (NaN))
 %!assert <*50583> (cov (NaN (2, 2)), NaN (2, 2))
 %!assert <*50583> (cov (single (NaN (2, 2))), single (NaN (2, 2)))
-%!assert <*50583> (cov (NaN(2, 9)), NaN(9, 9))
-%!assert <*50583> (cov (NaN(9, 2)), NaN(2, 2))
+%!assert <*50583> (cov (NaN (2, 9)), NaN (9, 9))
+%!assert <*50583> (cov (NaN (9, 2)), NaN (2, 2))
 %!assert <*50583> (cov ([NaN, 1, 2, NaN]), NaN)
 %!assert <*50583> (cov ([1, NaN, 2, NaN]), NaN)
 
 ## Test NaN and nanflag option (bug #50571)
 %!test <*50571>
-%! x = magic(3);
-%! y = magic(3);
+%! x = magic (3);
+%! y = magic (3);
 %! x(3) = NaN;
-%! assert (cov (y, "omitrows"), cov(y));
-%! assert (cov (y, "partialrows"), cov(y));
+%! assert (cov (y, "omitrows"), cov (y));
+%! assert (cov (y, "partialrows"), cov (y));
 %! assert (cov (x), [NaN, NaN, NaN; NaN, 16, -8; NaN, -8, 7]);
 %! assert (cov (x, "omitrows"), ...
 %!   [12.5, -10, -2.5; -10, 8, 2; -2.5, 2, 0.5], eps);
 %! assert (cov (x, "partialrows"),
 %!   [12.5, -10, -2.5; -10, 16, -8; -2.5, -8, 7], eps);
-%! assert (cov (x, x), NaN(2,2));
+%! assert (cov (x, x), NaN (2,2));
 %! assert (cov (x, y), [NaN, NaN; NaN, 7.5], eps);
 %! assert (cov (y, x), [7.5, NaN; NaN, NaN], eps);
-%! assert (cov (x, x, 'omitrows'), (471/56) * ones(2), eps);
-%! assert (cov (x, x, 'partialrows'), (471/56) * ones(2), eps);
-%! assert (cov (x, y, 'omitrows'), (471/56) * ones(2), eps);
+%! assert (cov (x, x, 'omitrows'), (471/56) * ones (2), eps);
+%! assert (cov (x, x, 'partialrows'), (471/56) * ones (2), eps);
+%! assert (cov (x, y, 'omitrows'), (471/56) * ones (2), eps);
 %! assert (cov (x, y, 'partialrows'), (471/56)*[1,1;1,0] + [0,0;0,7.5], eps);
-%! assert (cov (y, x, 'omitrows'), (471/56) * ones(2), eps);
+%! assert (cov (y, x, 'omitrows'), (471/56) * ones (2), eps);
 %! assert (cov (y, x, 'partialrows'), (471/56)*[0,1;1,1] + [7.5,0;0,0], eps);
-%! assert (cov (x, y, 0, 'omitrows'), (471/56) * ones(2), eps);
+%! assert (cov (x, y, 0, 'omitrows'), (471/56) * ones (2), eps);
 %! assert (cov (x, y, 0, 'partialrows'), (471/56)*[1,1;1,0] + [0,0;0,7.5], eps);
 %!assert (cov ([NaN NaN NaN]), NaN)
 %!assert <*50571> (cov ([NaN NaN NaN], "omitrows"), NaN)
 %!assert <*50571> (cov ([NaN NaN NaN], "partialrows"), NaN)
-%!assert (cov (NaN(3)), NaN(3))
-%!assert <*50571> (cov (NaN(3), "omitrows"), NaN(3))
-%!assert <*50571> (cov (NaN(3), "partialrows"), NaN(3))
+%!assert (cov (NaN (3)), NaN (3))
+%!assert <*50571> (cov (NaN (3), "omitrows"), NaN (3))
+%!assert <*50571> (cov (NaN (3), "partialrows"), NaN (3))
 %!assert (cov ([NaN NaN NaN],[1 2 3]), [NaN, NaN; NaN 1])
 %!assert <*50571> (cov ([NaN NaN NaN],[1 2 3], "omitrows"), [NaN, NaN; NaN NaN])
 %!assert <*50571> (cov ([NaN NaN NaN],[1 2 3], "partialrows"), [NaN, NaN; NaN 1])
 %!test <*50571>
-%! x = magic(3);
+%! x = magic (3);
 %! x(4:6) = NaN;
 %! assert (cov (x), [7 NaN 1; NaN NaN NaN; 1 NaN 7]);
-%! assert (cov (x, "omitrows"), NaN(3));
+%! assert (cov (x, "omitrows"), NaN (3));
 %! assert (cov (x, "partialrows"), [7 NaN 1; NaN NaN NaN; 1 NaN 7]);
-%!assert <*50571> (cov (5, NaN, "omitrows"), NaN(2, 2))
-%!assert <*50571> (cov (NaN, 5, "omitrows"), NaN(2, 2))
+%!assert <*50571> (cov (5, NaN, "omitrows"), NaN (2, 2))
+%!assert <*50571> (cov (NaN, 5, "omitrows"), NaN (2, 2))
 %!assert <*50571> (cov (5, NaN, "partialrows"), [0, NaN; NaN, NaN])
 %!assert <*50571> (cov (NaN, 5, "partialrows"), [NaN, NaN; NaN, 0])
 %!test <*50571>
@@ -470,12 +471,12 @@ endfunction
 %! y = x;
 %! x(2:2:10)=NaN;
 %! y(1:2:9)=NaN;
-%! assert (cov(x,y), NaN(2));
-%! assert (cov(x,y,'omitrows'), NaN(2));
+%! assert (cov(x,y), NaN (2));
+%! assert (cov(x,y,'omitrows'), NaN (2));
 %! assert (cov(x,y,'partialrows'), [10 NaN; NaN, 10]);
 %! x(10) = 5;
-%! assert (cov(x,y), NaN(2));
-%! assert (cov(x,y,'omitrows'), zeros(2));
+%! assert (cov(x,y), NaN (2));
+%! assert (cov(x,y,'omitrows'), zeros (2));
 %! assert (cov(x,y,'partialrows'), [8 0; 0, 10]);
 #!assert (cov ([NaN, NaN, 3]), NaN)
 #!assert <*50571>  (cov ([NaN, NaN, 3], 'omitrows'), 0)
@@ -486,20 +487,20 @@ endfunction
 %!assert <*50571> (cov ([NaN, NaN, NaN; NaN, 2, 3; NaN, NaN, 3], 0, 'partialrows'), [NaN, NaN, NaN; NaN(2,1), zeros(2)])
 %!assert <*50571> (cov ([NaN, NaN, NaN; NaN, 2, 3; NaN, NaN, 3], 1, 'partialrows'), [NaN, NaN, NaN; NaN(2,1), zeros(2)])
 %!test <*50571>
-%! x = magic(4);
+%! x = magic (4);
 %! x([4 5 7 10 14 16]) = NaN;
 %! x1 = x(:,2);
 %! x2 = x(:,3);
-%! assert (cov(x1,x2),nan(2));
-%! assert (cov(x1,x2,'omitrows'),zeros(2));
-%! assert (cov(x1,x2, 'partialrows'), [4.5,0;0,39],eps);
-%! assert (cov(x1,x2,0,'partialrows'), [4.5,0;0,39],eps);
-%! assert (cov(x1,x2,1,'partialrows'), [2.25,0;0,26],eps);
-%! assert (cov(x), nan(4));
-%! assert (cov(x,'omitrows'), nan(4));
-%! assert (cov(x,'partialrows'), [31 0 -10.5 3.5; 0 4.5 0 NaN; -10.5 0 39 -1.5; 3.5 NaN -1.5 0.5], eps);
+%! assert (cov(x1,x2), NaN (2));
+%! assert (cov(x1,x2, 'omitrows'), zeros (2));
+%! assert (cov(x1,x2, 'partialrows'), [4.5,0;0,39], eps);
+%! assert (cov(x1,x2,0, 'partialrows'), [4.5,0;0,39], eps);
+%! assert (cov(x1,x2,1, 'partialrows'), [2.25,0;0,26], eps);
+%! assert (cov(x), NaN (4));
+%! assert (cov(x,'omitrows'), NaN (4));
+%! assert (cov(x, 'partialrows'), [31 0 -10.5 3.5; 0 4.5 0 NaN; -10.5 0 39 -1.5; 3.5 NaN -1.5 0.5], eps);
 %! assert (cov(x, 0, 'partialrows'), [31 0 -10.5 3.5; 0 4.5 0 NaN; -10.5 0 39 -1.5; 3.5 NaN -1.5 0.5], eps);
-%! assert (cov(x, 1,'partialrows'), [62/3 0 -5.25 1.75; 0 2.25 0 NaN; -5.25 0 26 -0.75; 1.75 NaN -0.75 0.25], eps);
+%! assert (cov(x, 1, 'partialrows'), [62/3 0 -5.25 1.75; 0 2.25 0 NaN; -5.25 0 26 -0.75; 1.75 NaN -0.75 0.25], eps);
 
 ## Test input validation
 %!error <Invalid call> cov ()

@@ -35,7 +35,7 @@
 ## When called with the argument @var{tickval} being a vector of numbers or
 ## a cell array of strings and/or numbers, the labels will be changed to
 ## match these new values.  Values will be applied starting with the
-## zero-degree tick mark and will progress counter-clockwise.
+## zero-degree tick mark and will progress counterclockwise.
 ##
 ## If fewer labels are specified than the current number of theta tick marks,
 ## those labels will be applied starting at the zero-degree tick mark and
@@ -48,8 +48,8 @@
 ## Requesting a return value when calling @code{tticklabels} to set a property
 ## value will result in an error.
 ##
-## Compatability Note:  The 'mode' property for tticklabels has not yet been
-##                      implemented.
+## Compatability Note: The @qcode{'mode'} property for tticklabels has not
+## yet been implemented.
 ##
 ## @seealso{polar, thetaticks, rticklabels, xticklabels, yticklabels,
 ## zticklabels, get, set}
@@ -62,6 +62,7 @@
 ##         equivalent Cartesian functions.
 
 function labels = tticklabels (varargin)
+
   [hax, varargin, nargs] = __plt_get_axis_arg__ ("tticklabels", varargin{:});
 
   if (nargs > 1)
@@ -143,7 +144,7 @@ function labels = tticklabels (varargin)
   else
     ## Set new label values.
 
-    if isempty (arg)
+    if (isempty (arg))
       ## If an empty cell or array is set, set all labels to "".
       arg = cell (nt, 1);
       arg(:) = {""};
@@ -162,6 +163,7 @@ function labels = tticklabels (varargin)
   endif
 
 endfunction
+
 
 %!test
 %! t = [0:15:180] * pi / 180;

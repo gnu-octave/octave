@@ -196,7 +196,7 @@ endfunction
 %! hax = gca ();
 %! unwind_protect
 %!
-%!   a = reshape(1:12,2,3,2);
+%!   a = reshape (1:12,2,3,2);
 %!   x = 1:3; y = 1:2; z = 1:2;
 %!   [xx,yy,zz] = meshgrid (x,y,z);
 %!   numpts = 12;

@@ -190,7 +190,7 @@ void self_listener::run ()
                 else if  (len < 0)
                   {
                     error_msg (
-                      QString (tr ("Error reading from redirected strem fd = %1."))
+                      QString (tr ("Error reading from redirected stream fd = %1."))
                       .arg (rs.fd));
                     running = false;
                     break;

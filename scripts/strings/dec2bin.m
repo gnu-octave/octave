@@ -96,7 +96,7 @@ function bstr = dec2bin (d, len)
   endif
 
   tmp = repmat (' ', rows (bstr), len);
-  tmp(:, (end+1-columns(bstr)):end) = bstr;  # left-pad with spaces
+  tmp(:, (end+1-columns (bstr)):end) = bstr;  # left-pad with spaces
   bstr = tmp;
 
   ## Change spaces to "1" for negative inputs

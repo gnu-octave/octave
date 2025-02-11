@@ -34,7 +34,7 @@
 ##
 ## When called with the argument @var{tickval} being a vector of numbers or
 ## a cell array of strings and/or numbers, the labels will be changed to
-## match these new values. Note that the center point of the plots made by
+## match these new values.  Note that the center point of the plots made by
 ## @code{polar} are never labeled, so the first specified label will be
 ## applied to the second rtick location and subesquent labels will progress
 ## outward.
@@ -50,8 +50,8 @@
 ## Requesting a return value when calling @code{rticklabels} to set a property
 ## value will result in an error.
 ##
-## Compatability Note:  The 'mode' property for rticklabels has not yet been
-##                      implemented.
+## Compatability Note: The @qcode{'mode'} property for rticklabels has not yet
+## been implemented.
 ##
 ## @seealso{polar, rticks, tticklabels, xticklabels, yticklabels, zticklabels,
 ## get, set}
@@ -64,6 +64,7 @@
 ##         equivalent Cartesian functions.
 
 function labels = rticklabels (varargin)
+
   [hax, varargin, nargs] = __plt_get_axis_arg__ ("rticklabels", varargin{:});
 
   if (nargs > 1)
@@ -154,7 +155,7 @@ function labels = rticklabels (varargin)
   else
     ## Set new label values.
 
-    if isempty (arg)
+    if (isempty (arg))
       ## If an empty cell or array is set, set all labels to "".
       arg = cell (nr, 1);
       arg(:) = {""};
@@ -173,6 +174,7 @@ function labels = rticklabels (varargin)
   endif
 
 endfunction
+
 
 %!test
 %! t = [0:15:180] * pi / 180;

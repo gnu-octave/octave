@@ -137,9 +137,9 @@ It is often necessary to identify whether a particular point in the
 N-dimensional space is within the Delaunay tessellation of a set of
 points in this N-dimensional space, and if so which N-simplex contains
 the point and which point in the tessellation is closest to the desired
-point.  The functions @code{tsearch} and @code{dsearch} perform this
-function in a triangulation, and @code{tsearchn} and @code{dsearchn} in
-an N-dimensional tessellation.
+point.  The function @code{tsearch} performs this function in a triangulation,
+and the functions @code{tsearchn} and @code{dsearchn} in an N-dimensional
+tessellation.
 
 To identify whether a particular point represented by a vector @var{p}
 falls within one of the simplices of an N-simplex, we can write the
@@ -239,22 +239,20 @@ tsearch (@var{x}, @var{y}, @var{tri}, 2, 2)
 @end group
 @end example
 
-The @code{dsearch} and @code{dsearchn} find the closest point in a
-tessellation to the desired point.  The desired point does not
-necessarily have to be in the tessellation, and even if it the returned
-point of the tessellation does not have to be one of the vertices of the
-N-simplex within which the desired point is found.
-
-@DOCSTRING(dsearch)
+The @code{dsearchn} function finds the closest point in a tessellation to the
+desired point.  The desired point does not necessarily have to be in the
+tessellation, and even if it the returned point of the tessellation does not
+have to be one of the vertices of the N-simplex within which the desired point
+is found.
 
 @DOCSTRING(dsearchn)
 
-An example of the use of @code{dsearch}, using the above values of
-@var{x}, @var{y} and @var{tri} is
+An example of the use of @code{dsearchn}, using the above values of @var{x},
+@var{y} and @var{tri} is
 
 @example
 @group
-dsearch (@var{x}, @var{y}, @var{tri}, -2, -2)
+dsearchn ([@var{x}, @var{y}], @var{tri}, [-2, -2])
 @result{} 1
 @end group
 @end example

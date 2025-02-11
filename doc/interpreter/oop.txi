@@ -300,7 +300,7 @@ called.
 @var{idx} is a structure array with fields @samp{type} and @samp{subs}.
 See @ref{XREFsubsref,,subsref} for a description of that structure.
 
-The third input argument @var{unused} is currently unused. It is always the
+The third input argument @var{unused} is currently unused.  It is always the
 empty matrix @code{[]}.
 
 The function must return a scalar integer which will be passed as @var{nargout}

@@ -269,7 +269,7 @@ function [h, sout] = createaxes (s, p, par)
         propval = [propval, prop, val];
       endif
     endfor
-    # set hold "on" until all axes children have been added
+    ## set hold "on" until all axes children have been added
     h = axes (propval{:}, "parent", par, "nextplot", "add");
 
     if (isfield (s.properties, "__plotyy_axes__"))

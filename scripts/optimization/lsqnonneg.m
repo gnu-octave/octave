@@ -222,7 +222,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x0 
   endif
   if (nargout > 5)
     lambda = zeros (size (x));
-    lambda (setdiff (1:numel(x), p)) = w;
+    lambda (setdiff (1:numel (x), p)) = w;
   endif
 
 endfunction

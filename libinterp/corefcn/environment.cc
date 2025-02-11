@@ -169,7 +169,7 @@ The default value is taken from the environment variable
 @w{@env{EDITOR}}@ when Octave starts.  If the environment variable is not
 initialized, @w{@env{EDITOR}}@ will be set to @qcode{"emacs"}.
 
-@emph{Note:} This setting applies when running the CLI.  When using the
+@emph{Note:} This setting applies when running the CLI@.  When using the
 Octave GUI the default editor is specified in the Editor tab of Preferences.
 
 When called from inside a function with the @qcode{"local"} option, the

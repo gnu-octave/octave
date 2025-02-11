@@ -550,7 +550,7 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
 %!   dbstop quantile>__quantile__;
 %!   dbstop ls;
 %!   dbstop in inputParser at addOptional;
-%!   dbstop in inputParser at 285;
+%!   dbstop in inputParser at 286;
 %!   s = dbstatus ();
 %!   dbclear all;
 %!   ## For Matlab compatibility, the following name should be:
@@ -563,9 +563,9 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
 %!   ## For Matlab compatibility, the following two names should be:
 %!   ## inputParser.inputParser>inputParser.addOptional
 %!   assert (s(3).name, "@inputParser/addOptional");
-%!   assert (s(3).line, 278);
+%!   assert (s(3).line, 280);
 %!   assert (s(4).name, "@inputParser/addOptional");
-%!   assert (s(4).line, 285);
+%!   assert (s(4).line, 286);
 %!   assert (s(5).name, "ls");
 %!   assert (s(6).name, "quantile>__quantile__");
 %!   s = dbstatus ();

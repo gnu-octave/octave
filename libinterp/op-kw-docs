@@ -425,10 +425,9 @@ Object Oriented Programming for a detailed description.)
 @c libinterp/parse-tree/lex.ll
 -*- texinfo -*-
 @deftypefn {} {} __FILE__
-When the lexer recognizes the @qcode{"__FILE__"} keyword it returns a
-character array containing the full name and path of the file that is being
-executed. @qcode{"__FILE__"} will return @code{stdin} if called from the
-command line.
+When the lexer recognizes the @qcode{"__FILE__"} keyword it returns a character
+array containing the full name and path of the file that is being executed.
+@qcode{"__FILE__"} will return @qcode{"stdin"} if called from the command line.
 @seealso{__LINE__}
 @end deftypefn
 __LINE__

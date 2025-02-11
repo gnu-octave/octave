@@ -226,7 +226,7 @@ function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x0 = [],
   endif
   if (nargout > 4)
     lambda = zeros (size (x));
-    lambda (setdiff (1:numel(x), p)) = w;
+    lambda (setdiff (1:numel (x), p)) = w;
   endif
 
 endfunction

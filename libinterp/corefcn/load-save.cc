@@ -1613,8 +1613,8 @@ portable binary format developed by the National Center for Supercomputing
 Applications at the University of Illinois.)  Note that @code{load} is only
 designed to read @sc{hdf5} files that were created by Octave with @code{save},
 and attempts to read other @sc{hdf5} files may fail or produce unpredictable
-results. The @code{-hdf5} option provides a limited ability to read files
-created using @sc{matlab}'s @code{-v7.3} option (which saves in @sc{hdf5}
+results.  The @option{-hdf5} option provides a limited ability to read files
+created using @sc{matlab}'s @option{-v7.3} option (which saves in @sc{hdf5}
 format) although many data types are not yet supported.  This format is only
 available if Octave was built with a link to the @sc{hdf5} libraries.
 
@@ -1832,8 +1832,8 @@ be saved is returned as a string rather than writing it to an actual file.
 
 When saving global variables the global status of the variable is also stored.
 If the variable is restored at a later time using @code{load}, it will be
-restored as a global variable.  Global status is @emph{not} preserved if 
-using a @sc{matlab} binary data file format or the @option{-ascii} format. 
+restored as a global variable.  Global status is @emph{not} preserved if
+using a @sc{matlab} binary data file format or the @option{-ascii} format.
 
 Example:
 

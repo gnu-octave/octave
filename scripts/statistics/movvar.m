@@ -35,7 +35,7 @@
 ##
 ##
 ## The moving window length input @var{wlen} can either be a numeric scalar
-## or a 2-element numeric array @w{@qcode{[@var{nb}, @var{na}]}}. The elements
+## or a 2-element numeric array @w{@code{[@var{nb}, @var{na}]}}.  The elements
 ## included in the moving window depend on the size and value of @var{wlen}
 ## as well as whether the @qcode{"SamplePoints"} option has been specified.
 ## For full details of element inclusion,
@@ -59,7 +59,7 @@
 ## argument @code{[]}.
 ##
 ## The optional argument @var{nancond} is a string that controls how @code{NaN}
-## and @code{NA} values affect the output of @qcode{"movvar"}. The value
+## and @code{NA} values affect the output of @qcode{"movvar"}.  The value
 ## @qcode{"includenan"} (default) causes @code{NaN} and @code{NA} values to be
 ## included in the moving window, and any window slice containing @code{NaN} or
 ## @code{NA} values will return @code{NaN} for that element.  The value
@@ -67,9 +67,9 @@
 ## or @code{NA} values resulting in fewer elements being used to calculate the
 ## variance for that window slice.  If @qcode{"omitnan"} is specified and a
 ## window slice contains all @code{NaN} or @code{NA} values, @qcode{"movvar"}
-## returns @code{NaN} for that element.  The values @qcode{"includemissing"} and
-## @qcode{"omitmissing"} may be used synonymously with @qcode{"includenan"} and
-## @qcode{"omitnan"}, respectively.
+## returns @code{NaN} for that element.  The values @qcode{"includemissing"}
+## and @qcode{"omitmissing"} may be used synonymously with
+## @qcode{"includenan"} and @qcode{"omitnan"}, respectively.
 ##
 ## The calculation can be controlled by specifying @var{property}/@var{value}
 ## pairs.  Valid properties are @qcode{"Endpoints"} and

@@ -517,7 +517,7 @@ endfunction
 ## Method: norm [1, 2, inf]
 %!assert (normalize ([1,2,3],"norm",1), [1/6 1/3 1/2])
 %!assert (normalize ([2,0,-2;0,2,0;-2,-2,2],"norm",1), [1,0,-1;0,1,0;-1,-1,1]/2)
-%!assert (normalize (magic (3),"norm",1), magic(3)/15)
+%!assert (normalize (magic (3),"norm",1), magic (3) / 15)
 %!assert (normalize ([1,2,3],"norm",2), [1 2 3]./3.741657386773941, eps)
 %!assert (normalize ([2,0,-2;0,2,0;-2,-2,2],"norm",2), [1,0,-1;0,1,0;-1,-1,1]*(sqrt(2)/2), eps)
 %!assert (normalize ([1,2,3],"norm",Inf), [1/3 2/3 1])
@@ -532,7 +532,7 @@ endfunction
 ## Method: scale [mad first iqr number]
 %!assert (normalize ([1,2,3],"scale"), [1 2 3])
 %!assert (normalize ([2,0,-2;0,2,0;-2,-2,2],"scale","std"), [1 0 -1; 0 1 0; -1 -1 1])
-%!assert (normalize (magic (3),"scale",2), (magic(3)/2))
+%!assert (normalize (magic (3),"scale",2), (magic (3)/2))
 
 %!assert (normalize ([1,2,3],"scale", "mad"), [1 2 3])
 %!assert (normalize ([2,0,-2;0,2,0;-2,-2,2],"scale","mad"), [1 0 -1; 0 1 0; -1 -1 1])
@@ -583,8 +583,8 @@ endfunction
 %!assert (normalize ([1 2 NaN; NaN 3 4], 1), [NaN -1 NaN; NaN 1 NaN]*sqrt(2)/2, eps)
 
 ## Two input methods, must be scale and center
-%!assert (normalize (magic(3), "scale", "center"), normalize (magic(3), "zscore"), eps)
-%!assert (normalize (magic(3), "center", "scale"), normalize (magic(3), "zscore"), eps)
+%!assert (normalize (magic (3), "scale", "center"), normalize (magic (3), "zscore"), eps)
+%!assert (normalize (magic (3), "center", "scale"), normalize (magic (3), "zscore"), eps)
 
 ## Test additional outputs
 %!test

@@ -102,7 +102,8 @@ function [status, errmsg] = license (cmd, feature, toggle)
         switch (lower (toggle))
           case "enable"   # do nothing
           case "disable"  # do nothing
-          otherwise       error ("license: TOGGLE must be enable or disable");
+          otherwise
+            error ("license: TOGGLE must be enable or disable");
         endswitch
       endif
 

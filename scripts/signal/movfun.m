@@ -32,7 +32,7 @@
 ## @var{x}.
 ##
 ## The moving window length input @var{wlen} can either be a numeric scalar
-## or a 2-element numeric array @w{@qcode{[@var{nb}, @var{na}]}}.  The elements
+## or a 2-element numeric array @w{@code{[@var{nb}, @var{na}]}}.  The elements
 ## included in the moving window depend on the size and value of @var{wlen}
 ## as well as whether the @qcode{"SamplePoints"} option has been specified.
 ## For full details of element inclusion,
@@ -70,7 +70,7 @@
 ##
 ## This property specifies a sorted, numeric vector of unique coordinate
 ## positions of the data points in @var{x}.  The default value is the vector
-## @w{@qcode{[1 : @var{numel (x)}]}}.  When a non-default SamplePoints vector
+## @w{@code{[1 : @var{numel (x)}]}}.  When a non-default SamplePoints vector
 ## is specified, the moving window length @var{wlen} is measured
 ## against the SamplePoints positions to determine which points are
 ## included in each window slice.  SamplePoints need not be uniformly spaced.
@@ -128,10 +128,10 @@
 ##
 ## @end table
 ##
-## Note 1:  For non-uniform SamplePoint spacing, the only permitted value for
+## Note 1: For non-uniform SamplePoint spacing, the only permitted value for
 ## @qcode{"EndPoints"} is @qcode{"shrink"}.
 ##
-## Note 2:  For some @qcode{"Endpoints"} options, the window size at the
+## Note 2: For some @qcode{"Endpoints"} options, the window size at the
 ## boundaries may not be the same as for the central part, and @var{fcn} must
 ## work in these cases.
 ##
@@ -139,15 +139,16 @@
 ## Controls haw @code{NaN} and @code{NA} values affect the output of
 ## @qcode{"movfun"}.  The value @qcode{"includenan"} (default) causes
 ## @code{NaN} and @code{NA} values to be included in the moving window, and any
-## window slice containing @code{NaN} or @code{NA} values will return @code{NaN}
-## for that element.  The value @qcode{"omitnan"} causes @qcode{"movfun"} to
-## ignore any @code{NaN} or @code{NA} values resulting in fewer elements being
-## used to calculate the result for that window slice.  If @qcode{"omitnan"} is
-## specified and a window slice contains all @code{NaN} or @code{NA} values,
-## @qcode{"movfun"} returns the value specified by the @qcode{"nanval"} property
-## for that element.  The values @qcode{"includemissing"} and
-## @qcode{"omitmissing"} may be used synonymously with @qcode{"includenan"} and
-## @qcode{"omitnan"}, respectively.
+## window slice containing @code{NaN} or @code{NA} values will return
+## @code{NaN} for that element.  The value @qcode{"omitnan"} causes
+## @qcode{"movfun"} to ignore any @code{NaN} or @code{NA} values resulting
+## in fewer elements being used to calculate the result for that window
+## slice.  If @qcode{"omitnan"} is specified and a window slice contains all
+## @code{NaN} or @code{NA} values, @qcode{"movfun"} returns the value
+## specified by the @qcode{"nanval"} property for that element.  The values
+## @qcode{"includemissing"} and @qcode{"omitmissing"} may be used
+## synonymously with @qcode{"includenan"} and @qcode{"omitnan"},
+## respectively.
 ##
 ## @item @qcode{"nanval"}
 ## Specifies the value to return when @qcode{"nancond"} is set to
@@ -221,7 +222,7 @@ function y = movfun (fcn, x, wlen, varargin)
   sp.samplepoints = [];
   bc = "shrink";
 
-  if nargin > 3
+  if (nargin > 3)
     if (mod (numel (varargin), 2))
       error ("movfun: Each PROPERTY must have a VALUE");
     endif
@@ -749,7 +750,7 @@ function y = proc_uniform_block_omitnan (y, fcn, x, nan_x, nanval, slcidx)
 
     for ii = 1 : numel (unq_cnts)
       grp_cols = elem_cnt_grp_idx(ii,:);
-      y_idx = find(has_nan)(grp_cols);
+      y_idx = find (has_nan)(grp_cols);
       slc_grp = slcidx(:, grp_cols);
       slc_grp(nan_locs(:, grp_cols)) = [];
       slc_grp = reshape (slc_grp, unq_cnts(ii), []);
@@ -782,7 +783,7 @@ endfunction
 ## performs the slc expansion with "counts" elements inside try-catch block.
 ## Both paths check for the full slc to be a row vector and if so passes the
 ## eval through arrayfun to ensure columnwise processing.
-function y = yeval_safe (y, fcn, x, slc, counts);
+function y = yeval_safe (y, fcn, x, slc, counts)
 
   if (nargin < 5)
     try
@@ -854,7 +855,8 @@ endfunction
 ## Apply "shrink" boundary conditions
 ## Function is not applied to any window elements outside the original data.
 function y = shrink_bc (fcn, x, Cpre, Cpos, win, ~, odim, idx, sp,
-                        omitnan, nanval, nan_x);
+                        omitnan, nanval, nan_x)
+
   Cp_unique = unique_endpoints (Cpre, Cpos);
   N = length (x);
   n = length (Cp_unique);
@@ -1088,7 +1090,7 @@ function y = periodic_bc (fcn, x, Cpre, Cpos, win, wlen, odim, idx, sp,
     idx = double (idx(:, unique_endpoints (Cpre, Cpos)));
     idx(1, Cpre) -= sz_pre + 1 - Cpre;
 
-    elems = diff(idx(:, 1), 1, 1);
+    elems = diff (idx(:, 1), 1, 1);
     idx = idx(1,:) + (0:elems).';
   endif
 
@@ -1135,6 +1137,7 @@ endfunction
 ## empty.  a will have the form [1:M], b will have the form [N:P].  M must be
 ## no larger than P, and N must be no smaller than 1.
 function c = unique_endpoints (a, b)
+
   if (isempty (a))
     c = b;
   else
@@ -1145,6 +1148,7 @@ function c = unique_endpoints (a, b)
       c = [a, b];
     endif
   endif
+
 endfunction
 
 
@@ -1472,8 +1476,8 @@ endfunction
 %!assert <*66025> (movfun (@sum, 1:10, [2, 2], "samplepoints", 0.5:0.5:5), [15, 21, 28, 36, 45, 54, 52, 49, 45, 40])
 %!assert <*66025> (movfun (@sum, 1:10, 2.5, "samplepoints", 0.25:0.25:2.5), [15, 21, 28, 36, 45, 55, 54, 52, 49, 45])
 %!assert <*66025> (movfun (@sum, 1:10, [1.25, 1.25], "samplepoints", 0.25:0.25:2.5), [21, 28, 36, 45, 55, 55, 54, 52, 49, 45])
-%!assert <*66025> (movfun (@sum, 1:10, 60, "samplepoints", 0.5:0.5:5), 55(ones(1, 10)))
-%!assert <*66025> (movfun (@sum, 1:10, [30, 30], "samplepoints", 0.5:0.5:5), 55(ones(1, 10)))
+%!assert <*66025> (movfun (@sum, 1:10, 60, "samplepoints", 0.5:0.5:5), 55(ones (1, 10)))
+%!assert <*66025> (movfun (@sum, 1:10, [30, 30], "samplepoints", 0.5:0.5:5), 55(ones (1, 10)))
 
 %!assert <*66025> (movfun (@sum, 1:10, 3, "samplepoints", 2:2:20), 1:10)
 %!assert <*66025> (movfun (@sum, 1:10, 4, "samplepoints", 2:2:20), 1:2:19)
@@ -1503,15 +1507,15 @@ endfunction
 %!assert <*66025> (movfun (@sum, 1:10, 5, "samplepoints", 2:2:20, "endpoints", "fill"), [NaN, 6:3:27,NaN])
 %!assert <*66025> (movfun (@sum, 1:10, [2, 2], "samplepoints", 0.5:0.5:5, "endpoints", "fill"), [NaN(1, 4), 45, 54, NaN(1, 4)])
 %!assert <*66025> (movfun (@sum, 1:10, [0, 2.5], "samplepoints", 2:2:20, "endpoints", "fill"), [3:2:19, NaN])
-%!assert <*66025> (movfun (@sum, 1:10, 40, "samplepoints", 0.5:0.5:5, "endpoints", "fill"), NaN(1, 10))
-%!assert <*66025> (movfun (@sum, 1:10, [20, 20], "samplepoints", 0.5:0.5:5, "endpoints", "fill"), NaN(1, 10))
+%!assert <*66025> (movfun (@sum, 1:10, 40, "samplepoints", 0.5:0.5:5, "endpoints", "fill"), NaN (1, 10))
+%!assert <*66025> (movfun (@sum, 1:10, [20, 20], "samplepoints", 0.5:0.5:5, "endpoints", "fill"), NaN (1, 10))
 
 ## discard
 %!assert <*66025> (movfun (@sum, 1:10, 4,'samplepoints', 0.5:0.5:5, 'endpoints', 'discard'), [36, 44, 52])
 %!assert <*66025> (movfun (@sum, 1:10, 5,'samplepoints', 0.5:0.5:5, 'endpoints', 'discard'), 55)
 %!assert <*66025> (movfun (@sum, 1:10, [2, 2],'samplepoints', 0.5:0.5:5, 'endpoints', 'discard'), [45, 54])
-%!assert <*66025> (movfun (@sum, 1:10, 40,'samplepoints', 0.5:0.5:5, 'endpoints', 'discard'), NaN(1, 0))
-%!assert <*66025> (movfun (@sum, 1:10, [20, 20],'samplepoints', 0.5:0.5:5, 'endpoints', 'discard'), NaN(1, 0))
+%!assert <*66025> (movfun (@sum, 1:10, 40,'samplepoints', 0.5:0.5:5, 'endpoints', 'discard'), NaN (1, 0))
+%!assert <*66025> (movfun (@sum, 1:10, [20, 20],'samplepoints', 0.5:0.5:5, 'endpoints', 'discard'), NaN (1, 0))
 
 ## same
 %!assert <*66025> (movfun (@sum, 1:10, 4,'samplepoints', 0.5:0.5:5, 'endpoints', 'same'), [14, 18, 23, 29, 36, 44, 52, 59, 65, 70])
@@ -1577,7 +1581,7 @@ endfunction
 %!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "samplepoints", 2:2:20, "endpoints", "discard"), "cdefghij")
 %!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "samplepoints", 2:2:20, "endpoints", "same"), "bcdefghijj")
 %!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "samplepoints", 2:2:20, "endpoints", "periodic"), "bcdefghija")
-%!assert <*66025> (movfun (@(x) x(1,:), char(101:110), 100), "eeeeeeeeee")
+%!assert <*66025> (movfun (@(x) x(1,:), char (101:110), 100), "eeeeeeeeee")
 %!assert <*66025> (movfun (@(x) x(end,:), "abcdefghij", 5, "samplepoints", [2:2:18,21]), "bcdefghiij")
 
 
@@ -1610,11 +1614,11 @@ endfunction
 %!assert <66156> (movfun (@sum, 1:10, 5, "nancond", "includenan", "samplepoints", 1:10), movfun (@sum, 1:10, 5))
 
 ## Shortcut returns
-%!assert <66156> (movfun (@sum, NaN(1, 10), 5), NaN(1, 10))
-%!assert <66156> (movfun (@sum, NaN(1, 10), 5, "nancond", "includenan"), NaN(1, 10))
-%!assert <66156> (movfun (@sum, NaN(1, 10), 5, "nancond", "omitnan"), NaN(1, 10))
-%!assert <66156> (movfun (@sum, NaN(1, 10), 5, "nancond", "includenan", "nanval", 3), NaN(1, 10))
-%!assert <66156> (movfun (@sum, NaN(1, 10), 5, "nancond", "omitnan", "nanval", 3), 3(ones(1, 10)))
+%!assert <66156> (movfun (@sum, NaN (1, 10), 5), NaN (1, 10))
+%!assert <66156> (movfun (@sum, NaN (1, 10), 5, "nancond", "includenan"), NaN (1, 10))
+%!assert <66156> (movfun (@sum, NaN (1, 10), 5, "nancond", "omitnan"), NaN (1, 10))
+%!assert <66156> (movfun (@sum, NaN (1, 10), 5, "nancond", "includenan", "nanval", 3), NaN (1, 10))
+%!assert <66156> (movfun (@sum, NaN (1, 10), 5, "nancond", "omitnan", "nanval", 3), 3(ones (1, 10)))
 %!assert <66156> (movfun (@sum, [ones(4), NaN(4, 1)], 5, "nancond", "includenan"), [3;4;4;3].*[1, 1, 1, 1, NaN])
 %!assert <66156> (movfun (@sum, [ones(4), NaN(4, 1)], 5, "nancond", "omitnan"), [3;4;4;3].*[1, 1, 1, 1, NaN])
 
@@ -1714,7 +1718,7 @@ endfunction
 %!error <FCN must be a valid function handle> movfun (1, 1:10, 3)
 %!error <FCN must be a valid function handle> movfun (true, 1:10, 3)
 %!error <FCN must be a valid function handle> movfun ({"foo"}, 1:10, 3)
-%!error <FCN must be a valid function handle> movfun (struct("a", "b"), 1:10, 3)
+%!error <FCN must be a valid function handle> movfun (struct ("a", "b"), 1:10, 3)
 %!error <WLEN must be numeric> movfun (@sum, 1:10, 'f')
 %!error <WLEN must be numeric> movfun (@sum, 1:10, {1, 2})
 %!error <Each PROPERTY must have a VALUE> movfun (@sum, 1:10, 3, "EndPoints")
@@ -1747,7 +1751,7 @@ endfunction
 %!error <NANVAL must be a> movfun (@sum, 1:10, 3, "nancond", "omitnan", "nanval", "a")
 %!error <NANVAL must be a> movfun (@sum, 1:10, 3, "nancond", "omitnan", "nanval", true)
 %!error <NANVAL must be a> movfun (@sum, 1:10, 3, "nancond", "omitnan", "nanval", [1 2])
-%!error <NANVAL must be a> movfun (@sum, 1:10, 3, "nancond", "omitnan", "nanval", NaN(2))
+%!error <NANVAL must be a> movfun (@sum, 1:10, 3, "nancond", "omitnan", "nanval", NaN (2))
 %!error <OUTDIM must be a> movfun (@sum, 1:10, 3, "outdim", -1)
 %!error <OUTDIM must be a> movfun (@sum, 1:10, 3, "outdim", 0)
 %!error <OUTDIM must be a> movfun (@sum, 1:10, 3, "outdim", [1 -1])

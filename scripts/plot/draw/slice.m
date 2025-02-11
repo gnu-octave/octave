@@ -180,7 +180,7 @@ function h = slice (varargin)
           [xi, yi, zi] = meshgrid (sx(i), squeeze (y(:,1,1)), squeeze (z(1,1,:)));
           vx = squeeze (interp3 (x, y, z, v, xi, yi, zi, method));
           htmp(sidx++) = surface (squeeze (sx(i) * ones (size (zi))),
-                                  squeeze (yi), squeeze(zi), vx);
+                                  squeeze (yi), squeeze (zi), vx);
         endfor
       endif
     else

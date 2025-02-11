@@ -228,7 +228,7 @@ function str = dec2base (d, base, len, decimals = 0)
   ## not remove any leading zeros.
   if ((nargin == 2 || (nargin >= 3 && max_len > len))
       && columns (str) != 1 && ! any (str(:,1) != symbols(1))
-      && (~any(neg)))
+      && (! any (neg)))
     str = str(:,2:end);
   endif
 

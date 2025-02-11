@@ -360,7 +360,7 @@ endfunction
 %! A = [0.06, 0.21, 0.38; 0.38, 0.21, 0.39; 0.54, 0.56, 0.41; 0.46, 0.52, 0.95];
 %! B = log (exp (A));
 %! C = uniquetol ([A; B], "ByRows", true);
-%! assert (C, sortrows(A), 10*eps);
+%! assert (C, sortrows (A), 10*eps);
 
 ## Test "DataScale" Property
 %!test
@@ -380,7 +380,7 @@ endfunction
 %!assert (uniquetol (NaN), NaN)
 %!assert (uniquetol ([NaN NaN]), [NaN NaN])
 %!assert (uniquetol ([NaN NaN]'), [NaN NaN]')
-%!assert (uniquetol (NaN(2,2)), NaN(4,1))
+%!assert (uniquetol (NaN (2,2)), NaN (4,1))
 
 %!test
 %! a = [magic(3); 2 * magic(3)];

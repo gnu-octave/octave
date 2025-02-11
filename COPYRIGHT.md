@@ -538,7 +538,6 @@ Copyright:
 - 2023  paulo
 - 2023  Peter Konowski
 - 2024  David Miguel Susano Pinto
-- 2024  "dependabot[bot]"
 - 2024  Helmut Podhaisky
 - 2024  Jörg Sommrey
 

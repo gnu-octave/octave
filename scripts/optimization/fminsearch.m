@@ -120,6 +120,7 @@
 ## @item
 ## If you need to find the minimum of a single variable function it is
 ## probably better to use @code{fminbnd}.
+##
 ## @item
 ## The legacy, undocumented syntax for passing parameters to @var{fcn} by
 ## appending them to the input argument list after @var{options} has been

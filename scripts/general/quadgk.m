@@ -599,9 +599,9 @@ function [q, err] = __quadgk_eval_array__ (f, subs, trans, nel)
   t = (halfwidth * abscissa) + center;
   x = trans ([t(:,1), t(:,end)]);
 
-  y = zeros (nel, columns(t), rows(t));
+  y = zeros (nel, columns (t), rows (t));
   for i = 1:rows (t)
-    for j = 1:columns(t)
+    for j = 1:columns (t)
       y(:,j,i) = f (t(i,j))(:);
     endfor
   endfor

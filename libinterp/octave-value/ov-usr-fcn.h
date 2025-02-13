@@ -60,7 +60,7 @@ class tree_walker;
 
 OCTAVE_END_NAMESPACE(octave)
 
-class octave_user_code : public octave_function
+class OCTINTERP_API octave_user_code : public octave_function
 {
 protected:
 
@@ -81,20 +81,21 @@ public:
 
   OCTAVE_DISABLE_COPY_MOVE (octave_user_code)
 
-  ~octave_user_code ();
+  OCTINTERP_API ~octave_user_code ();
 
   bool is_user_code () const { return true; }
 
-  octave::filepos beg_pos () const;
-  octave::filepos end_pos () const;
+  OCTINTERP_API octave::filepos beg_pos () const;
+  OCTINTERP_API octave::filepos end_pos () const;
 
-  std::string get_code_line (std::size_t line);
+  OCTINTERP_API std::string get_code_line (std::size_t line);
 
-  std::deque<std::string> get_code_lines (std::size_t line,
-                                          std::size_t num_lines);
+  OCTINTERP_API std::deque<std::string>
+  get_code_lines (std::size_t line, std::size_t num_lines);
 
-  void cache_function_text (const std::string& text,
-                            const octave::sys::time& timestamp);
+  OCTINTERP_API void
+  cache_function_text (const std::string& text,
+                       const octave::sys::time& timestamp);
 
   octave::symbol_scope scope () { return m_scope; }
 
@@ -126,7 +127,7 @@ public:
 
   octave::tree_statement_list * body () { return m_cmd_list; }
 
-  octave_value dump () const;
+  OCTINTERP_API octave_value dump () const;
 
 #if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
   void set_bytecode (octave::bytecode &bytecode)
@@ -152,7 +153,7 @@ protected:
   octave::bytecode m_bytecode;
 #endif
 
-  void get_file_info ();
+  OCTINTERP_API void get_file_info ();
 
   // Our symbol table scope.
   octave::symbol_scope m_scope;
@@ -177,17 +178,19 @@ protected:
 
 // Scripts.
 
-class octave_user_script : public octave_user_code
+class OCTINTERP_API octave_user_script : public octave_user_code
 {
 public:
 
-  octave_user_script ();
+  OCTINTERP_API octave_user_script ();
 
+  OCTINTERP_API
   octave_user_script (const std::string& fnm, const std::string& nm,
                       const octave::symbol_scope& scope = octave::symbol_scope::anonymous (),
                       octave::tree_statement_list *cmds = nullptr,
                       const std::string& ds = "");
 
+  OCTINTERP_API
   octave_user_script (const std::string& fnm, const std::string& nm,
                       const octave::symbol_scope& scope = octave::symbol_scope::anonymous (),
                       const std::string& ds = "");
@@ -212,15 +215,15 @@ public:
   // octave_function, octave_user_function, and octave_user_script
   // objects.
 
-  octave_value_list
+  OCTINTERP_API octave_value_list
   call (octave::tree_evaluator& tw, int nargout = 0,
         const octave_value_list& args = octave_value_list ());
 
-  octave_value_list
+  OCTINTERP_API octave_value_list
   execute (octave::tree_evaluator& tw, int nargout = 0,
            const octave_value_list& args = octave_value_list ());
 
-  void accept (octave::tree_walker& tw);
+  OCTINTERP_API void accept (octave::tree_walker& tw);
 
 private:
 
@@ -229,19 +232,23 @@ private:
 
 // User-defined functions.
 
-class octave_user_function : public octave_user_code
+class OCTINTERP_API octave_user_function : public octave_user_code
 {
 public:
 
-  octave_user_function (const octave::symbol_scope& scope = octave::symbol_scope::anonymous (), octave::tree_identifier *id = nullptr,
-                        octave::tree_parameter_list *pl = nullptr, octave::tree_parameter_list *rl = nullptr, octave::tree_statement_list *cl = nullptr);
+  OCTINTERP_API
+  octave_user_function (const octave::symbol_scope& scope = octave::symbol_scope::anonymous (),
+                        octave::tree_identifier *id = nullptr,
+                        octave::tree_parameter_list *pl = nullptr,
+                        octave::tree_parameter_list *rl = nullptr,
+                        octave::tree_statement_list *cl = nullptr);
 
   OCTAVE_DISABLE_COPY_MOVE (octave_user_function)
 
-  ~octave_user_function ();
+  OCTINTERP_API ~octave_user_function ();
 
   // Declared calling form, generated from the parse tree.
-  std::string signature () const;
+  OCTINTERP_API std::string signature () const;
 
   octave_function * function_value (bool = false) { return this; }
 
@@ -249,23 +256,26 @@ public:
 
   octave_user_code * user_code_value (bool = false) { return this; }
 
-  octave_user_function * define_param_list (octave::tree_parameter_list *t);
+  OCTINTERP_API octave_user_function *
+  define_param_list (octave::tree_parameter_list *t);
 
-  octave_user_function * define_ret_list (octave::tree_parameter_list *t);
+  OCTINTERP_API octave_user_function *
+  define_ret_list (octave::tree_parameter_list *t);
 
   void set_fcn_tok (const octave::token& fcn_tok) { m_fcn_tok = fcn_tok; }
   void set_eq_tok (const octave::token& eq_tok) { m_eq_tok = eq_tok; }
 
-  void attach_trailing_comments (const octave::comment_list& lst);
+  OCTINTERP_API void
+  attach_trailing_comments (const octave::comment_list& lst);
 
   octave::filepos beg_pos () const { return m_fcn_tok.beg_pos(); }
   // The end_pos function is defined in the octave_user_code class.
 
-  void maybe_relocate_end ();
+  OCTINTERP_API void maybe_relocate_end ();
 
-  void stash_parent_fcn_scope (const octave::symbol_scope& ps);
+  OCTINTERP_API void stash_parent_fcn_scope (const octave::symbol_scope& ps);
 
-  std::string profiler_name () const;
+  OCTINTERP_API std::string profiler_name () const;
 
   std::string parent_fcn_name () const
   {
@@ -284,35 +294,37 @@ public:
     return m_scope.parent_fcn_names ();
   }
 
-  void mark_as_system_fcn_file ();
+  OCTINTERP_API void mark_as_system_fcn_file ();
 
   bool is_system_fcn_file () const { return m_system_fcn_file; }
 
   bool is_user_function () const { return true; }
 
-  void erase_subfunctions ();
+  OCTINTERP_API void erase_subfunctions ();
 
-  bool takes_varargs () const;
+  OCTINTERP_API bool takes_varargs () const;
 
-  bool takes_var_return () const;
+  OCTINTERP_API bool takes_var_return () const;
 
-  void mark_as_private_function (const std::string& cname = "");
+  OCTINTERP_API void mark_as_private_function (const std::string& cname = "");
 
-  void lock_subfunctions ();
+  OCTINTERP_API void lock_subfunctions ();
 
-  void unlock_subfunctions ();
+  OCTINTERP_API void unlock_subfunctions ();
 
-  std::map<std::string, octave_value> subfunctions () const;
+  OCTINTERP_API std::map<std::string, octave_value> subfunctions () const;
 
-  octave_value find_subfunction (const std::string& subfuns) const;
+  OCTINTERP_API octave_value
+  find_subfunction (const std::string& subfuns) const;
 
-  bool has_subfunctions () const;
+  OCTINTERP_API bool has_subfunctions () const;
 
-  void stash_subfunction_names (const std::list<std::string>& names);
+  OCTINTERP_API void
+  stash_subfunction_names (const std::list<std::string>& names);
 
-  std::list<std::string> subfunction_names () const;
+  OCTINTERP_API std::list<std::string> subfunction_names () const;
 
-  octave_value_list all_va_args (const octave_value_list& args);
+  OCTINTERP_API octave_value_list all_va_args (const octave_value_list& args);
 
   void stash_function_name (const std::string& s) { m_name = s; }
 
@@ -389,11 +401,11 @@ public:
   // octave_function, octave_user_function, and octave_user_script
   // objects.
 
-  octave_value_list
+  OCTINTERP_API octave_value_list
   call (octave::tree_evaluator& tw, int nargout = 0,
         const octave_value_list& args = octave_value_list ());
 
-  octave_value_list
+  OCTINTERP_API octave_value_list
   execute (octave::tree_evaluator& tw, int nargout = 0,
            const octave_value_list& args = octave_value_list ());
 
@@ -402,17 +414,17 @@ public:
   octave::tree_parameter_list * return_list () { return m_ret_list; }
 
   octave::comment_list leading_comments () const { return m_fcn_tok.leading_comments (); }
-  octave::comment_list trailing_comments () const;
+  OCTINTERP_API octave::comment_list trailing_comments () const;
 
   // If is_special_expr is true, retrieve the sigular expression that forms the
   // body.  May be null (even if is_special_expr is true).
-  octave::tree_expression * special_expr ();
+  OCTINTERP_API octave::tree_expression * special_expr ();
 
-  bool subsasgn_optimization_ok ();
+  OCTINTERP_API bool subsasgn_optimization_ok ();
 
-  void accept (octave::tree_walker& tw);
+  OCTINTERP_API void accept (octave::tree_walker& tw);
 
-  octave_value dump () const;
+  OCTINTERP_API octave_value dump () const;
 
 private:
 
@@ -423,8 +435,8 @@ private:
     classdef
   };
 
-  std::string ctor_type_str () const;
-  std::string method_type_str () const;
+  OCTINTERP_API std::string ctor_type_str () const;
+  OCTINTERP_API std::string method_type_str () const;
 
   // Name of this function.
   octave::tree_identifier *m_id;
@@ -469,16 +481,16 @@ private:
   // Enum describing whether this function is a method for a class.
   class_method_type m_class_method {none};
 
-  void maybe_relocate_end_internal ();
+  OCTINTERP_API void maybe_relocate_end_internal ();
 
-  void print_code_function_header (const std::string& prefix);
+  OCTINTERP_API void print_code_function_header (const std::string& prefix);
 
-  void print_code_function_trailer (const std::string& prefix);
+  OCTINTERP_API void print_code_function_trailer (const std::string& prefix);
 
   // XXX FIXME (public)
 public:
 
-  void restore_warning_states ();
+  OCTINTERP_API void restore_warning_states ();
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA_API (OCTINTERP_API)
 };

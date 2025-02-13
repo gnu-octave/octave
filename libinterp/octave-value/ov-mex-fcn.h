@@ -47,7 +47,7 @@ OCTAVE_END_NAMESPACE(octave)
 
 // Dynamically-linked functions.
 
-class octave_mex_function : public octave_function
+class OCTINTERP_API octave_mex_function : public octave_function
 {
 public:
 
@@ -57,13 +57,14 @@ public:
       m_is_system_fcn_file (false)
   { }
 
+  OCTINTERP_API
   octave_mex_function (void *fptr, bool interleaved, bool fmex,
                        const octave::dynamic_library& shl,
                        const std::string& nm = "");
 
   OCTAVE_DISABLE_COPY_MOVE (octave_mex_function)
 
-  ~octave_mex_function ();
+  OCTINTERP_API ~octave_mex_function ();
 
   octave_function * function_value (bool = false) { return this; }
 
@@ -74,9 +75,9 @@ public:
     m_time_checked = t;
   }
 
-  std::string fcn_file_name () const;
+  OCTINTERP_API std::string fcn_file_name () const;
 
-  octave::sys::time time_parsed () const;
+  OCTINTERP_API octave::sys::time time_parsed () const;
 
   octave::sys::time time_checked () const { return m_time_checked; }
 

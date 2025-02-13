@@ -395,7 +395,13 @@ given this is mandatory).
 Optional list of known problems.
 
 @item Url
-Optional list of homepages related to the package.
+Optional URL to the homepage or repository related to the package.
+
+@item Tracker
+Optional URL to the bug tracker related to the package.  It is highly
+encouraged that maintainers utilize a dedicated tracker for reporting issues
+related to the package's functionality in order to keep Octave's bug tracker at
+Savannah.org less bloated and solely for core Octave bug reports.
 
 @item Depends
 A list of other Octave packages that this package depends on.  This can include

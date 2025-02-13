@@ -133,7 +133,7 @@ function install (files, handle_deps, prefix, archprefix, verbose,
         ## Set default installation directory.
         desc.dir = fullfile (prefix, [desc.name "-" desc.version]);
 
-        ## Set default architectire dependent installation directory.
+        ## Set default architecture-dependent installation directory.
         desc.archprefix = fullfile (archprefix, [desc.name "-" desc.version]);
 
         ## Save desc.
@@ -314,14 +314,24 @@ function install (files, handle_deps, prefix, archprefix, verbose,
     endif
   endfor
 
-  ## If there is a NEWS file, mention it.
-  ## Check if desc exists too because it's possible to get to this point
-  ## without creating it such as giving an invalid filename for the package
-  if (exist ("desc", "var")
-      && exist (fullfile (desc.dir, "packinfo", "NEWS"), "file"))
+  ## Also check if desc exists because it is possible to get to this point
+  ## without creating it such as giving an invalid filename for the package.
+  if (exist ("desc", "var"))
+    ## If there is a NEWS file, mention it.
+    if (exist (fullfile (desc.dir, "packinfo", "NEWS"), "file"))
     printf (["For information about changes from previous versions " ...
              "of the %s package, run 'news %s'.\n"],
             desc.name, desc.name);
+    endif
+    ## If there is a tracker or repository url in the DESCRIPTION file, prompt
+    ## users to use it for reporting issues instead of savannah bug tracker.
+    if (isfield (desc, "tracker"))
+      printf ("Please report any issues with the %s package at ""%s""\n",
+              desc.name, desc.tracker);
+    elseif (isfield (desc, "url"))
+      printf ("Please report any issues with the %s package at ""%s""\n",
+              desc.name, desc.url);
+    endif
   endif
 
 endfunction

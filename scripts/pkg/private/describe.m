@@ -63,10 +63,30 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose, local_list, global
 
       pkg_desc_list{name_pos}.name = installed_pkgs_lst{i}.name;
       pkg_desc_list{name_pos}.version = installed_pkgs_lst{i}.version;
+      pkg_desc_list{name_pos}.date = installed_pkgs_lst{i}.date;
       pkg_desc_list{name_pos}.description = installed_pkgs_lst{i}.description;
+      ## Get URLs for package repository and bug tracker, otherwise use a
+      ## default URL pointing to Octave Packages index hosted on GitHub.
+      if (isfield (installed_pkgs_lst{i}, "url"))
+        pkg_desc_list{name_pos}.url = installed_pkgs_lst{i}.url;
+      else
+        url = "https://gnu-octave.github.io/packages/%s";
+        pkg_desc_list{name_pos}.url = sprintf (url, installed_pkgs_lst{i}.name);
+      endif
+      ## Check for bug tracker, otherwise use the repository's URL.
+      if (isfield (installed_pkgs_lst{i}, "tracker"))
+        pkg_desc_list{name_pos}.tracker = installed_pkgs_lst{i}.tracker;
+      else
+        pkg_desc_list{name_pos}.tracker = pkg_desc_list{name_pos}.url;
+      endif
       pkg_desc_list{name_pos}.depends = installed_pkgs_lst{i}.depends;
-      pkg_desc_list{name_pos}.provides = parse_pkg_idx (installed_pkgs_lst{i}.dir);
       pkg_desc_list{name_pos}.invdeps = unique (installed_pkgs_lst{i}.invdeps);
+      ## Only if requested (improve speed)
+      if (verbose || nargout > 0)
+        pkg_desc_list{name_pos}.provides = parse_pkg_idx (installed_pkgs_lst{i}.dir);
+      else
+        pkg_desc_list{name_pos}.provides = {};
+      endif
 
     endif
   endfor
@@ -86,11 +106,13 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose, local_list, global
     for i = 1:num_pkgnames
       print_package_description (pkg_desc_list{i}.name,
                                  pkg_desc_list{i}.version,
-                                 pkg_desc_list{i}.provides,
+                                 pkg_desc_list{i}.date,
                                  pkg_desc_list{i}.description,
+                                 pkg_desc_list{i}.url,
+                                 pkg_desc_list{i}.tracker,
                                  pkg_desc_list{i}.depends,
                                  pkg_desc_list{i}.invdeps,
-                                 flag{i}, verbose);
+                                 flag{i}, pkg_desc_list{i}.provides);
     endfor
   endif
 
@@ -151,13 +173,16 @@ function pkg_idx_struct = parse_pkg_idx (packdir)
 endfunction
 
 
-function print_package_description (pkg_name, pkg_ver, pkg_idx_struct,
-                                    pkg_desc, pkg_deps, pkg_invd, status,
-                                    verbose)
+function print_package_description (pkg_name, pkg_ver, pkg_date, pkg_desc,
+                                    pkg_url, pkg_tracker, pkg_deps, pkg_invd,
+                                    status, pkg_idx_struct)
 
   printf ("---\nPackage name:\n\t%s\n", pkg_name);
-  printf ("Version:\n\t%s\n", pkg_ver);
+  printf ("Version (date):\n\t%s (%s)\n", pkg_ver, pkg_date);
   printf ("Short description:\n\t%s\n", pkg_desc);
+  printf ("Package repository:\n\t%s\n", pkg_url);
+  printf ("Please report any issues with the %s package at:\n\t%s\n",
+          pkg_name, pkg_tracker);
   pkg_deps = cellfun (@(d) sprintf ("%s %s %s", struct2cell (d){:}), pkg_deps,
                       "UniformOutput", false);
   pkg_deps = strjoin (pkg_deps, "\n\t");
@@ -167,7 +192,7 @@ function print_package_description (pkg_name, pkg_ver, pkg_idx_struct,
   printf ("Depended on by:\n\t%s\n", pkg_invd);
 
   printf ("Status:\n\t%s\n", status);
-  if (verbose)
+  if (! isempty (pkg_idx_struct))
     printf ("---\nProvides:\n");
     for i = 1:length (pkg_idx_struct)
       if (! isempty (pkg_idx_struct{i}.functions))

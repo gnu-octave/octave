@@ -1,5 +1,7 @@
 name: make-mingw
-on: [push]
+on:
+  workflow_dispatch:
+#   push:
 concurrency: ci-mingw-${{ github.ref }}
 
 jobs:

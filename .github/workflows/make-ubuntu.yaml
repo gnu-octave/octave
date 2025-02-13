@@ -1,5 +1,7 @@
 name: make-ubuntu
-on: [push]
+on:
+  workflow_dispatch:
+#   push:
 concurrency: ci-ubuntu-${{ github.ref }}
 
 jobs:

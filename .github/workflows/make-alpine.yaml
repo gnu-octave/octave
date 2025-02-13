@@ -1,5 +1,7 @@
 name: make-alpine
-on: [push]
+on:
+  workflow_dispatch:
+#   push:
 concurrency: ci-alpine-${{ github.ref }}
 
 jobs:

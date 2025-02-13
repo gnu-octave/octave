@@ -1,9 +1,10 @@
 name: "CodeQL"
 
 on:
-  schedule:
-    # Run job every Monday and Thursday at 16:30 UTC
-    - cron: '30 16 * * 1,4'
+  workflow_dispatch:
+#   schedule:
+#     # Run job every Monday and Thursday at 16:30 UTC
+#     - cron: '30 16 * * 1,4'
 
 jobs:
   ubuntu:

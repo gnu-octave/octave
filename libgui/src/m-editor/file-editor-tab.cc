@@ -110,6 +110,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 file_editor_tab::file_editor_tab (const QString& directory_arg)
 {
   m_lexer_apis = nullptr;
+  m_copy_available = false;
   m_is_octave_file = true;
   m_lines_changed = false;
   m_autoc_active = false;

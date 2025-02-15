@@ -972,6 +972,10 @@ rational_approx (T val, int len)
           lastn = nextn;
           lastd = nextd;
 
+          if (std::abs (n) >= out_of_range_top
+              || std::abs (d) >= out_of_range_top)
+            break;
+
           std::ostringstream buf;
           buf.flags (std::ios::fixed);
           buf << std::setprecision (0) << static_cast<int> (n)
@@ -988,10 +992,6 @@ rational_approx (T val, int len)
               if (buf.str ().length () > static_cast<unsigned int> (len))
                 break;
             }
-
-          if (std::abs (n) >= out_of_range_top
-              || std::abs (d) >= out_of_range_top)
-            break;
 
           s = buf.str ();
         }

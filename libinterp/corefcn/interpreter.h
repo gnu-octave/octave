@@ -611,9 +611,9 @@ private:
 
   settings m_settings;
 
-  error_system m_error_system;
-
   tree_evaluator m_evaluator;
+
+  error_system m_error_system;
 
   help_system m_help_system;
 

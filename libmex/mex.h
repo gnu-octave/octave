@@ -55,7 +55,8 @@ SUCH DAMAGE.
 
 #define HAVE_OCTAVE
 
-typedef void mxArray;
+struct mxArray;
+#define mxArray struct mxArray
 
 /* -V4 stuff */
 #if defined (V4)

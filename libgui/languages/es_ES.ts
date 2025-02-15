@@ -1063,12 +1063,12 @@ para escribir: %2.</translation>
     <message>
         <location line="+6"/>
         <source>Save File and Run All &amp;Tests</source>
-        <translation>Guardar y ejecutar todos los &amp;tests</translation>
+        <translation>Guardar fichero y ejecutar todos los &amp;tests</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Save File and Run All &amp;Demos</source>
-        <translation>Guardar y ejecutar todas las &amp;demos</translation>
+        <translation>Guardar fichero y ejecutar todas las &amp;demos</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1153,7 +1153,7 @@ para escribir: %2.</translation>
         <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
         <translation>No se puede añadir un punto de interrupción a un archivo modificado o sin nombre.
-¿Guardar y añadir el punto de interrupción o cancelar?</translation>
+Puede guardar el fichero y añadir el punto de interrupción o cancelar</translation>
     </message>
     <message>
         <location line="+924"/>
@@ -1827,7 +1827,7 @@ Puede hallar más información al respecto visitando &lt;a href=&quot;https://oc
     <message>
         <location line="+1"/>
         <source>Set start directory to current directory</source>
-        <translation>Asignar el directorio actual como directorio al inicio</translation>
+        <translation>Asignar el directorio actual como directorio de inicio de búsqueda</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1897,7 +1897,7 @@ Puede hallar más información al respecto visitando &lt;a href=&quot;https://oc
 Several different patterns can be
 separated by &apos;;&apos;, e.g. &apos;*.cc ; *.h&apos;</source>
         <translation>Introduzca los patrones de búsqueda para el nombre del fichero.
-Se pueden introducir varios separados por punto y coma &apos;;&apos;.
+Se pueden asignar varios separados por punto y coma &apos;;&apos;.
 Por ejemplo, &apos;*.cc; *.h&apos;</translation>
     </message>
     <message>
@@ -1961,12 +1961,12 @@ Por ejemplo, &apos;*.cc; *.h&apos;</translation>
     <message>
         <location line="+87"/>
         <source>Double click to open the file</source>
-        <translation>Doble clic para abrir el fichero</translation>
+        <translation>Haga doble clic para abrir el archivo</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Double click to set the directory</source>
-        <translation>Doble clic para asignar el directorio</translation>
+        <translation>Haga doble clic para asignar el directorio</translation>
     </message>
 </context>
 <context>
@@ -4219,7 +4219,7 @@ Error: </translation>
     <message>
         <location line="+36"/>
         <source>Extensions of files to be opened in the default text editor (separated by &quot;;&quot;):</source>
-        <translation>Extensiones de archivo para abrir en el editor de texto predeterminado (separadas por &quot;;&quot;):</translation>
+        <translation>Extensiones de archivo para abrir en el editor de texto predeterminado (separadas por &apos;;&apos;):</translation>
     </message>
     <message>
         <location line="+39"/>

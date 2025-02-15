@@ -626,6 +626,9 @@ public:
   make_argument_list (tree_expression *expr);
 
   OCTINTERP_API tree_argument_list *
+  append_argument_list (tree_argument_list *list, tree_expression *expr);
+
+  OCTINTERP_API tree_argument_list *
   append_argument_list (tree_argument_list *list, token *sep_tok, tree_expression *expr);
 
   OCTINTERP_API tree_parameter_list *

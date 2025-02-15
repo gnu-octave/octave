@@ -546,7 +546,7 @@ word_list_cmd   : identifier word_list
 word_list       : string
                   { $$ = parser.make_argument_list ($1); }
                 | word_list string
-                  { $$ = parser.append_argument_list ($1, nullptr, $2); }
+                  { $$ = parser.append_argument_list ($1, $2); }
                 ;
 
 // ===========
@@ -5035,6 +5035,12 @@ tree_argument_list *
 base_parser::make_argument_list (tree_expression *expr)
 {
   return new tree_argument_list (expr);
+}
+
+tree_argument_list *
+base_parser::append_argument_list (tree_argument_list *list, tree_expression *expr)
+{
+  return list_append (list, expr);
 }
 
 tree_argument_list *

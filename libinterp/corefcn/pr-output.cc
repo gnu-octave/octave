@@ -697,9 +697,9 @@ make_matrix_format (const MT& m)
   ELT_T max_abs = pr_max_internal (m_abs);
   ELT_T min_abs = pr_min_internal (m_abs);
 
-  int x_max = (max_abs == 0 ? 0 : num_digits (max_abs));
+  int x_max = ((inf_or_nan || max_abs == 0) ? 0 : num_digits (max_abs));
 
-  int x_min = (min_abs == 0 ? 0 : num_digits (min_abs));
+  int x_min = ((inf_or_nan || min_abs == 0) ? 0 : num_digits (min_abs));
 
   return make_real_matrix_format<ELT_T> (x_max, x_min, inf_or_nan,
                                          int_or_inf_or_nan);
@@ -907,8 +907,8 @@ make_complex_scalar_format (const std::complex<T>& c)
   T r_abs = (rp < 0 ? -rp : rp);
   T i_abs = (ip < 0 ? -ip : ip);
 
-  int r_x = (r_abs == 0 ? 0 : num_digits (r_abs));
-  int i_x = (i_abs == 0 ? 0 : num_digits (i_abs));
+  int r_x = ((r_inf_or_nan || r_abs == 0) ? 0 : num_digits (r_abs));
+  int i_x = ((i_inf_or_nan || i_abs == 0) ? 0 : num_digits (i_abs));
 
   int x_max, x_min;
 
@@ -1150,13 +1150,21 @@ make_complex_matrix_format (const CMT& cm)
   ELT_T i_max_abs = pr_max_internal (i_m_abs);
   ELT_T i_min_abs = pr_min_internal (i_m_abs);
 
-  int r_x_max = (r_max_abs == 0 ? 0 : num_digits (r_max_abs));
+  int r_x_max = ((r_max_abs == 0 || octave::math::isinf (r_max_abs)
+                  || octave::math::isnan (r_max_abs))
+                 ? 0 : num_digits (r_max_abs));
 
-  int r_x_min = (r_min_abs == 0 ? 0 : num_digits (r_min_abs));
+  int r_x_min = ((r_min_abs == 0 || octave::math::isinf (r_min_abs)
+                  || octave::math::isnan (r_min_abs))
+                 ? 0 : num_digits (r_min_abs));
 
-  int i_x_max = (i_max_abs == 0 ? 0 : num_digits (i_max_abs));
+  int i_x_max = ((i_max_abs == 0 || octave::math::isinf (i_max_abs)
+                  || octave::math::isnan (i_max_abs))
+                 ? 0 : num_digits (i_max_abs));
 
-  int i_x_min = (i_min_abs == 0 ? 0 : num_digits (i_min_abs));
+  int i_x_min = ((i_min_abs == 0 || octave::math::isinf (i_min_abs)
+                  || octave::math::isnan (i_min_abs))
+                 ? 0 : num_digits (i_min_abs));
 
   int x_max = (r_x_max > i_x_max ? r_x_max : i_x_max);
   int x_min = (r_x_min > i_x_min ? r_x_min : i_x_min);
@@ -1339,9 +1347,13 @@ make_format (const octave::range<double>& r)
   double max_abs = (r_max < 0 ? -r_max : r_max);
   double min_abs = (r_min < 0 ? -r_min : r_min);
 
-  int x_max = (max_abs == 0 ? 0 : num_digits (max_abs));
+  int x_max = ((max_abs == 0 || octave::math::isinf (max_abs)
+                || octave::math::isnan (max_abs))
+               ? 0 : num_digits (max_abs));
 
-  int x_min = (min_abs == 0 ? 0 : num_digits (min_abs));
+  int x_min = ((min_abs == 0 || octave::math::isinf (min_abs)
+                || octave::math::isnan (min_abs))
+               ? 0 : num_digits (min_abs));
 
   return make_range_format<double> (x_max, x_min, all_ints);
 }

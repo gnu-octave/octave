@@ -184,7 +184,7 @@ jobs:
         timeout-minutes: 60
         run: |
           echo 'makeinfo_program ("${HOMEBREW_PREFIX}/opt/texinfo/bin/makeinfo");' >> ./scripts/startup/site-rcfile
-          make -C ./.build check-tree-evaluator | tee ./test-suite.log
+          make -C ./.build check-tree-evaluator V=1 | tee ./test-suite.log
 
       - name: display test suite log
         continue-on-error: true
@@ -196,7 +196,7 @@ jobs:
         timeout-minutes: 60
         run: |
           mv ./.build/test/fntests.log ./.build/test/fntests-no-bci.log
-          make -C ./.build check-bytecode-evaluator | tee ./test-suite-bci.log
+          make -C ./.build check-bytecode-evaluator V=1 | tee ./test-suite-bci.log
 
       - name: display test suite log with bytecode interpreter
         continue-on-error: true

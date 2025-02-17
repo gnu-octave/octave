@@ -256,7 +256,7 @@ public:
 
   error_system& get_error_system ()
   {
-    return m_error_system;
+    return m_evaluator.get_error_system ();
   }
 
   tree_evaluator& get_evaluator ();
@@ -612,8 +612,6 @@ private:
   settings m_settings;
 
   tree_evaluator m_evaluator;
-
-  error_system m_error_system;
 
   help_system m_help_system;
 

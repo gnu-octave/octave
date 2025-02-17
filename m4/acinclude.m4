@@ -914,14 +914,14 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
   AC_ARG_WITH([m4_tolower($1)-includedir],
     [AS_HELP_STRING([--with-m4_tolower($1)-includedir=DIR],
       [look for $2 include files in DIR])],
-    [m4_toupper([$1])_CPPFLAGS="-I$withval"])
-  AC_SUBST(m4_toupper([$1])_CPPFLAGS)
+    [m4_toupper(patsubst([$1], [-], [_]))_CPPFLAGS="-I$withval"])
+  AC_SUBST(m4_toupper(patsubst([$1], [-], [_]))_CPPFLAGS)
 
   AC_ARG_WITH([m4_tolower($1)-libdir],
     [AS_HELP_STRING([--with-m4_tolower($1)-libdir=DIR],
       [look for $2 libraries in DIR])],
-    [m4_toupper([$1])_LDFLAGS="-L$withval"])
-  AC_SUBST(m4_toupper([$1])_LDFLAGS)
+    [m4_toupper(patsubst([$1], [-], [_]))_LDFLAGS="-L$withval"])
+  AC_SUBST(m4_toupper(patsubst([$1], [-], [_]))_LDFLAGS)
 
   AC_ARG_WITH([m4_tolower($1)],
     [ifelse([$#], 10,
@@ -931,86 +931,86 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
        [m4_ifblank([$7],
          [AS_HELP_STRING([--without-m4_tolower($1)], [don't use $2 library])],
          [AS_HELP_STRING([--without-m4_tolower($1)], [$7])])])],
-    with_$1=$withval, with_$1=yes)
+    [with_]patsubst([$1], [-], [_])=$withval, [with_]patsubst([$1], [-], [_])=yes)
 
-  ac_octave_$1_pkg_check=no
-  m4_toupper([$1])_LIBS=
-  warn_$1="$3"
-  case $with_$1 in
+  [ac_octave_]patsubst([$1], [-], [_])_pkg_check=no
+  m4_toupper(patsubst([$1], [-], [_]))_LIBS=
+  [warn_]patsubst([$1], [-], [_])="$3"
+  case $[with_]patsubst([$1], [-], [_]) in
     no)
       ifelse([$#], 10,
         [AC_MSG_ERROR([--without-m4_tolower($1) specified but $2 is required.])],
-        [warn_$1=""
-         m4_toupper([$1])_LIBS=])
+        [[warn_]patsubst([$1], [-], [_])=""
+         m4_toupper(patsubst([$1], [-], [_]))_LIBS=])
     ;;
     yes | "")
-      ac_octave_$1_pkg_check=yes
-      m4_toupper([$1])_LIBS="-l$1"
+      [ac_octave_]patsubst([$1], [-], [_])_pkg_check=yes
+      m4_toupper(patsubst([$1], [-], [_]))_LIBS="-l$1"
     ;;
     -* | */* | *.a | *.so | *.so.* | *.o)
-      m4_toupper([$1])_LIBS="$with_$1"
+      m4_toupper(patsubst([$1], [-], [_]))_LIBS="$[with_]patsubst([$1], [-], [_])"
     ;;
     *)
-      m4_toupper([$1])_LIBS="-l$with_$1"
+      m4_toupper(patsubst([$1], [-], [_]))_LIBS="-l$[with_]patsubst([$1], [-], [_])"
     ;;
   esac
 
-  if test $ac_octave_$1_pkg_check = yes; then
+  if test $[ac_octave_]patsubst([$1], [-], [_])_pkg_check = yes; then
     PKG_CHECK_EXISTS(m4_default([$9], [$1]), [
-      if test -z "$m4_toupper([$1])_CPPFLAGS"; then
-        m4_toupper([$1])_CPPFLAGS="$($PKG_CONFIG --cflags-only-I m4_default([$9], [$1]) | $SED -e 's/^ *$//')"
+      if test -z "$m4_toupper(patsubst([$1], [-], [_]))_CPPFLAGS"; then
+        m4_toupper(patsubst([$1], [-], [_]))_CPPFLAGS="$($PKG_CONFIG --cflags-only-I m4_default([$9], [$1]) | $SED -e 's/^ *$//')"
       fi
-      if test -z "$m4_toupper([$1])_LDFLAGS"; then
-        m4_toupper([$1])_LDFLAGS="$($PKG_CONFIG --libs-only-L m4_default([$9], [$1]) | $SED -e 's/^ *$//')"
+      if test -z "$m4_toupper(patsubst([$1], [-], [_]))_LDFLAGS"; then
+        m4_toupper(patsubst([$1], [-], [_]))_LDFLAGS="$($PKG_CONFIG --libs-only-L m4_default([$9], [$1]) | $SED -e 's/^ *$//')"
       fi
-      m4_toupper([$1])_LIBS="$($PKG_CONFIG --libs-only-l m4_default([$9], [$1]) | $SED -e 's/^ *$//')"
+      m4_toupper(patsubst([$1], [-], [_]))_LIBS="$($PKG_CONFIG --libs-only-l m4_default([$9], [$1]) | $SED -e 's/^ *$//')"
     ])
   fi
 
-  if test -n "$m4_toupper([$1])_LIBS"; then
+  if test -n "$m4_toupper(patsubst([$1], [-], [_]))_LIBS"; then
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
     ac_octave_save_LDFLAGS="$LDFLAGS"
     ac_octave_save_LIBS="$LIBS"
-    CPPFLAGS="$m4_toupper([$1])_CPPFLAGS $CPPFLAGS"
-    LDFLAGS="$m4_toupper([$1])_LDFLAGS $LDFLAGS"
-    LIBS="$m4_toupper([$1])_LIBS $LIBS"
+    CPPFLAGS="$m4_toupper(patsubst([$1], [-], [_]))_CPPFLAGS $CPPFLAGS"
+    LDFLAGS="$m4_toupper(patsubst([$1], [-], [_]))_LDFLAGS $LDFLAGS"
+    LIBS="$m4_toupper(patsubst([$1], [-], [_]))_LIBS $LIBS"
     m4_ifnblank([$6], [AC_LANG_PUSH($6)])
-    ac_octave_$1_check_for_lib=no
-    m4_ifblank([$4], [ac_octave_$1_check_for_lib=yes],
-               [AC_CHECK_HEADERS([$4], [ac_octave_$1_check_for_lib=yes; break])])
-    if test $ac_octave_$1_check_for_lib = yes; then
-      AC_CACHE_CHECK([for $5 in $m4_toupper([$1])_LIBS],
-        [octave_cv_lib_$1],
+    [ac_octave_]patsubst([$1], [-], [_])_check_for_lib=no
+    m4_ifblank([$4], [[ac_octave_]patsubst([$1], [-], [_])_check_for_lib=yes],
+               [AC_CHECK_HEADERS([$4], [[ac_octave_]patsubst([$1], [-], [_])_check_for_lib=yes; break])])
+    if test $[ac_octave_]patsubst([$1], [-], [_])_check_for_lib = yes; then
+      AC_CACHE_CHECK([for $5 in $m4_toupper(patsubst([$1], [-], [_]))_LIBS],
+        [[octave_cv_lib_]patsubst([$1], [-], [_])],
         [AC_LINK_IFELSE([AC_LANG_CALL([], [$5])],
-          [octave_cv_lib_$1=yes], [octave_cv_lib_$1=no])
+          [[octave_cv_lib_]patsubst([$1], [-], [_])=yes], [[octave_cv_lib_]patsubst([$1], [-], [_])=no])
       ])
-      if test "$octave_cv_lib_$1" = yes; then
+      if test "$[octave_cv_lib_]patsubst([$1], [-], [_])" = yes; then
         m4_ifblank([$8], [
-          warn_$1=
-          AC_DEFINE([HAVE_]m4_toupper([$1]), 1,
+          [warn_]patsubst([$1], [-], [_])=
+          AC_DEFINE([HAVE_]m4_toupper(patsubst([$1], [-], [_])), 1,
             [Define to 1 if $2 is available.])], [$8])
       else
-        m4_toupper([$1])_LIBS=
+        m4_toupper(patsubst([$1], [-], [_]))_LIBS=
       fi
     else
-      octave_cv_lib_$1=no
-      m4_toupper([$1])_LIBS=
+      [octave_cv_lib_]patsubst([$1], [-], [_])=no
+      m4_toupper(patsubst([$1], [-], [_]))_LIBS=
     fi
     m4_ifnblank([$6], [AC_LANG_POP($6)])
     CPPFLAGS="$ac_octave_save_CPPFLAGS"
     LDFLAGS="$ac_octave_save_LDFLAGS"
     LIBS="$ac_octave_save_LIBS"
   else
-    octave_cv_lib_$1=no
+    [octave_cv_lib_]patsubst([$1], [-], [_])=no
   fi
 
   ifelse([$#], 10, [
-    if test $octave_cv_lib_$1 = no; then
+    if test $[octave_cv_lib_]patsubst([$1], [-], [_]) = no; then
       AC_MSG_ERROR([to build Octave, you must have the $2 library and header files installed])
     fi])
-  AC_SUBST(m4_toupper([$1])_LIBS)
-  if test -n "$warn_$1"; then
-    OCTAVE_CONFIGURE_WARNING([warn_$1])
+  AC_SUBST(m4_toupper(patsubst([$1], [-], [_]))_LIBS)
+  if test -n "$[warn_]patsubst([$1], [-], [_])"; then
+    OCTAVE_CONFIGURE_WARNING([[warn_]patsubst([$1], [-], [_])])
   fi
 ])
 dnl

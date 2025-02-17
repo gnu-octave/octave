@@ -33,8 +33,13 @@
 #  include <windows.h>
 #elif defined (HAVE_FRAMEWORK_CARBON)
 #  include <Carbon/Carbon.h>
-#elif defined (HAVE_X_WINDOWS)
-#  include <X11/Xlib.h>
+#else
+#  if defined (HAVE_X_WINDOWS)
+#    include <X11/Xlib.h>
+#  endif
+#  if defined (HAVE_WAYLAND_CLIENT)
+#    include <wayland-client.h>
+#  endif
 #endif
 
 #include "display-available.h"
@@ -64,8 +69,9 @@ display_available (int *dpy_avail)
   else
     err_msg = "no graphical display found";
 
-#elif defined (HAVE_X_WINDOWS)
+#elif defined (HAVE_X_WINDOWS) || defined (HAVE_WAYLAND_CLIENT)
 
+#if defined (HAVE_X_WINDOWS)
   const char *display_name = getenv ("DISPLAY");
 
   if (display_name && *display_name)
@@ -83,11 +89,35 @@ display_available (int *dpy_avail)
 
           *dpy_avail = 1;
         }
+#  if ! defined (HAVE_WAYLAND_CLIENT)
       else
         err_msg = "unable to open X11 DISPLAY";
+#  endif
     }
+#  if ! defined (HAVE_WAYLAND_CLIENT)
   else
     err_msg = "X11 DISPLAY environment variable not set";
+#  endif
+#endif
+
+#if defined (HAVE_WAYLAND_CLIENT)
+  if (*dpy_avail == 0)
+    {
+      struct wl_display *display = wl_display_connect (NULL);
+      if (display)
+        {
+          wl_display_disconnect (display);
+
+          *dpy_avail = 1;
+        }
+      else
+#  if defined (HAVE_X_WINDOWS)
+        err_msg = "No working Wayland or X11 display is connected or X11 DISPLAY environment variable not set";
+#  else
+        err_msg = "No working Wayland display is connected";
+#  endif
+    }
+#endif
 
 #else
 

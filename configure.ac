@@ -1795,6 +1795,12 @@ if test "$have_x" = yes; then
   AC_SUBST(X11_LIBS)
 fi
 
+### Check for Wayland client library
+
+OCTAVE_CHECK_LIB(wayland-client, Wayland client,
+  [Wayland client library not found.],
+  [wayland-client.h], [wl_display_connect])
+
 ### Check for the Carbon framework on macOS systems.
 
 OCTAVE_HAVE_FRAMEWORK([Carbon],

@@ -199,7 +199,7 @@ jobs:
         timeout-minutes: 60
         run: |
           XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a \
-            make -C ./.build check-tree-evaluator | tee ./test-suite.log
+            make -C ./.build check-tree-evaluator V=1 | tee ./test-suite.log
 
       - name: display test suite log
         continue-on-error: true
@@ -212,7 +212,7 @@ jobs:
         run: |
           mv ./.build/test/fntests.log ./.build/test/fntests-no-bci.log
           XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a \
-            make -C ./.build check-bytecode-evaluator | tee ./test-suite-bci.log
+            make -C ./.build check-bytecode-evaluator V=1 | tee ./test-suite-bci.log
 
       - name: display test suite log with bytecode interpreter
         continue-on-error: true

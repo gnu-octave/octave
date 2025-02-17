@@ -134,11 +134,12 @@ public:
   typedef void (*decl_elt_init_fcn) (tree_decl_elt&);
 
   tree_evaluator (interpreter& interp)
-    : m_interpreter (interp), m_parser (), m_statement_context (SC_OTHER),
-      m_lvalue_list (nullptr), m_autoload_map (), m_bp_table (*this),
-      m_call_stack (*this), m_profiler (), m_debug_frame (0),
-      m_debug_mode (false), m_quiet_breakpoint_flag (false),
-      m_debugger_stack (), m_exit_status (0), m_max_recursion_depth (256),
+    : m_interpreter (interp), m_parser (), m_error_system (interp),
+      m_statement_context (SC_OTHER), m_lvalue_list (nullptr),
+      m_autoload_map (), m_bp_table (*this), m_call_stack (*this),
+      m_profiler (), m_debug_frame (0), m_debug_mode (false),
+      m_quiet_breakpoint_flag (false), m_debugger_stack (), m_exit_status (0),
+      m_max_recursion_depth (256),
       m_whos_line_format ("  %la:5; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\n"),
       m_silent_functions (false), m_string_fill_char (' '), m_PS4 ("+ "),
       m_dbstep_flag (0), m_break_on_next_stmt (false), m_echo (ECHO_OFF),
@@ -166,6 +167,11 @@ public:
   void set_parser (const std::shared_ptr<push_parser>& parser)
   {
     m_parser = parser;
+  }
+
+  error_system& get_error_system ()
+  {
+    return m_error_system;
   }
 
   bool at_top_level () const;
@@ -939,6 +945,8 @@ private:
   interpreter& m_interpreter;
 
   std::shared_ptr<push_parser> m_parser;
+
+  error_system m_error_system;
 
   // The context for the current evaluation.
   stmt_list_type m_statement_context;

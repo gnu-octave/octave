@@ -436,7 +436,6 @@ interpreter::interpreter (application *app_context)
     m_environment (),
     m_settings (),
     m_evaluator (*this),
-    m_error_system (*this),
     m_help_system (*this),
     m_input_system (*this),
     m_output_system (*this),
@@ -926,16 +925,17 @@ interpreter::execute ()
     {                                                                   \
       try                                                               \
         {                                                               \
+          error_system& es = get_error_system ();                       \
           unwind_action restore_debug_on_error                          \
-            (&error_system::set_debug_on_error, &m_error_system,        \
-             m_error_system.debug_on_error ());                        \
+            (&error_system::set_debug_on_error, &es,                    \
+             es.debug_on_error ());                                     \
                                                                         \
           unwind_action restore_debug_on_warning                        \
-            (&error_system::set_debug_on_warning, &m_error_system,      \
-             m_error_system.debug_on_warning ());                       \
+            (&error_system::set_debug_on_warning, &es,                  \
+             es.debug_on_warning ());                                   \
                                                                         \
-          m_error_system.debug_on_error (false);                        \
-          m_error_system.debug_on_warning (false);                      \
+          es.debug_on_error (false);                                    \
+          es.debug_on_warning (false);                                  \
                                                                         \
           F ARGS;                                                       \
         }                                                               \
@@ -2074,12 +2074,14 @@ interpreter::debug_watch_expressions () const
 void
 interpreter::handle_exception (const execution_exception& ee)
 {
-  m_error_system.save_exception (ee);
+  error_system& es = get_error_system ();
+
+  es.save_exception (ee);
 
   // FIXME: use a separate stream instead of std::cerr directly so that
   // error messages can be redirected more easily?  Pass the message
   // to an event manager function?
-  m_error_system.display_exception (ee);
+  es.display_exception (ee);
 
   recover_from_exception ();
 }
@@ -2194,7 +2196,9 @@ interpreter::maximum_braindamage ()
 
   m_history_system.timestamp_format_string ("%%-- %D %I:%M %p --%%");
 
-  m_error_system.beep_on_error (true);
+  error_system& es = get_error_system ();
+
+  es.beep_on_error (true);
 
   Fconfirm_recursive_rmdir (ovl (false));
   Foptimize_diagonal_matrix (ovl (false));
@@ -2205,12 +2209,12 @@ interpreter::maximum_braindamage ()
   Fprint_struct_array_contents (ovl (true));
   Fstruct_levels_to_print (ovl (0));
 
-  m_error_system.disable_warning ("Octave:abbreviated-property-match");
-  m_error_system.disable_warning ("Octave:colon-nonscalar-argument");
-  m_error_system.disable_warning ("Octave:data-file-in-path");
-  m_error_system.disable_warning ("Octave:empty-index");
-  m_error_system.disable_warning ("Octave:function-name-clash");
-  m_error_system.disable_warning ("Octave:possible-matlab-short-circuit-operator");
+  es.disable_warning ("Octave:abbreviated-property-match");
+  es.disable_warning ("Octave:colon-nonscalar-argument");
+  es.disable_warning ("Octave:data-file-in-path");
+  es.disable_warning ("Octave:empty-index");
+  es.disable_warning ("Octave:function-name-clash");
+  es.disable_warning ("Octave:possible-matlab-short-circuit-operator");
 }
 
 void

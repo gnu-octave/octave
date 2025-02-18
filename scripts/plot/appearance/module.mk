@@ -43,7 +43,7 @@ FCN_FILE_DIRS += \
   %reldir%/specular.m \
   %reldir%/text.m \
   %reldir%/thetaticks.m \
-  %reldir%/tticklabels.m \
+  %reldir%/thetaticklabels.m \
   %reldir%/title.m \
   %reldir%/view.m \
   %reldir%/whitebg.m \

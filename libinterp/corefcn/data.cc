@@ -3034,7 +3034,7 @@ for empty matrices @code{nnz} will report 0, but @code{nzmax} will report 1.
 DEFUN (rows, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{nr} =} rows (@var{A})
-@deftypefnx () {@var{nr} =} height (@var{A})
+@deftypefnx {} {@var{nr} =} height (@var{A})
 Return the number of rows of @var{A}.
 
 This is equivalent to @code{size (@var{A}, 1)}.

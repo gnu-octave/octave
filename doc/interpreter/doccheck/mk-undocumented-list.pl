@@ -144,6 +144,7 @@ flipdim
 fmod
 gammaln
 gui_mainfcn
+height
 home
 i
 ifelse
@@ -176,6 +177,7 @@ slash
 thetaticks
 tolower
 toupper
+width
 ylabel
 ylim
 ytickangle

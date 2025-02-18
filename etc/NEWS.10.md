@@ -39,6 +39,14 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
   expected to be stable across multiple major versions of Octave.  So, `.mex`
   files might not need to be rebuilt for future major versions of Octave.
 
+- `pkg describe` command now supports a new `Tracker` tag in DESCRIPTION file
+  and returns package-provided repository and bug tracker URLs.  Package
+  maintainers are encouraged to utilize the new feature to redirect users to
+  package-specific bug trackers instead of Savannah.
+
+- `pkg install` now mentions package-provided URL and package-provided bug
+  tracker if they exist.
+
 ### Graphical User Interface
 
 ### Graphics backend
@@ -89,7 +97,7 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
 
 - `issorted` now accepts the MODE option "monotonic", which has the same
   behavior as the option "either".
-  
+
 - `movfun` and `movslice`: Functions now accept `wlen` equal to 1 or [0,0],
   non-integer values of `wlen`, and values of `wlen` that create window lengths
   exceeding the size of the target array.  `movfun` also accepts values of `dim`
@@ -110,7 +118,7 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
   and `includenan`.  These changes affect all moving window functions
   (`movmad`, `movmax`, `movmean`, `movmedian`, `movmin`, `movprod`, `movstd`,
   `movsum`, and `movvar`) (bug #66156).
-  
+
 - `movmin` and `movmax`: These functions now have their default behavior set to
   `omitnan`.  NaN and NA values will be ignored unless a moving window contains
   only NaN or NA values, in which case the function will return NaN for that
@@ -121,7 +129,7 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
 
 - `movprod`: When called with option `omitnan`, any windows containing only NaN
   and NA values will return 1 (bug #66156).
-  
+
 - `movmad`: The function now defaults to calculating median absolute deviation.
   Before Octave 10, the function calculated mean absolute deviation.  A new
   `mode` property has been provided that takes values of either "mean" or
@@ -135,7 +143,7 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
 
 * `clim`
 * `rticklabels`
-* `tticklabels`
+* `thetaticklabels`
 
 ### Deprecated functions, properties, and operators
 
@@ -200,7 +208,7 @@ from Octave 10.
 
 - The unsupported and unnecessary `load` options of `-force` and `-import` have
   been removed.  If legacy m-files are still invoking `load` with these options
-  update the code and remove them. 
+  update the code and remove them.
 
 ### Build system
 

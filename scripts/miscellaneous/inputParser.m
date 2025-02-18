@@ -299,7 +299,7 @@ classdef inputParser < handle
       ## This function is deprecated.  Use @code{addParameter} in all new code.
       ##
       ## Add new parameter to the object @var{parser} of the class inputParser.
-      ## 
+      ##
       ## This method implements a name/value pair type of API.
       ##
       ## This is an alias for @code{addParameter} method without the
@@ -322,7 +322,7 @@ classdef inputParser < handle
       ## @deftypefnx {} {} addParameter (@var{argname}, @var{default}, @var{validator})
       ## Add new parameter argument to the object @var{parser} of the class
       ## inputParser.
-      ## 
+      ##
       ## This method implements a name/value pair type of API.
       ##
       ## @var{argname} must be a string with the name of the new parameter.
@@ -382,7 +382,7 @@ classdef inputParser < handle
       ## -*- texinfo -*-
       ## @deftypefn {} {} addSwitch (@var{argname})
       ## Add new switch argument to the object @var{parser} of the class
-      ## inputParser. 
+      ## inputParser.
       ##
       ## This method implements a name/boolean type of API.
       ##

@@ -24,9 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{labels} =} tticklabels
-## @deftypefnx {} {} tticklabels (@var{tickval})
-## @deftypefnx {} {@dots{} =} tticklabels (@var{hax}, @dots{})
+## @deftypefn  {} {@var{labels} =} thetaticklabels
+## @deftypefnx {} {} thetaticklabels (@var{tickval})
+## @deftypefnx {} {@dots{} =} thetaticklabels (@var{hax}, @dots{})
 ## Query or set the tick labels on the theta-axis of a polar plot.
 ##
 ## When called without an argument, return a cell array of strings of the
@@ -45,10 +45,10 @@
 ## If the first argument @var{hax} is an axes handle, then operate on
 ## this axis rather than the current axes returned by @code{gca}.
 ##
-## Requesting a return value when calling @code{tticklabels} to set a property
-## value will result in an error.
+## Requesting a return value when calling @code{thetaticklabels} to set a
+## property value will result in an error.
 ##
-## Compatability Note: The @qcode{'mode'} property for tticklabels has not
+## Compatability Note: The @qcode{'mode'} property for thetaticklabels has not
 ## yet been implemented.
 ##
 ## @seealso{polar, thetaticks, rticklabels, xticklabels, yticklabels,
@@ -61,9 +61,9 @@
 ##         code below, which could then mimick much the behavior of the
 ##         equivalent Cartesian functions.
 
-function labels = tticklabels (varargin)
+function labels = thetaticklabels (varargin)
 
-  [hax, varargin, nargs] = __plt_get_axis_arg__ ("tticklabels", varargin{:});
+  [hax, varargin, nargs] = __plt_get_axis_arg__ ("thetaticklabels", varargin{:});
 
   if (nargs > 1)
     print_usage;
@@ -78,7 +78,7 @@ function labels = tticklabels (varargin)
 
     ## Error if trying to request and set values simultaneously.
     if (nargout > 0)
-      error ("tticklabels: cannot set and return labels simultaneously");
+      error ("thetaticklabels: cannot set and return labels simultaneously");
     endif
 
     returnlabels = false;
@@ -94,11 +94,11 @@ function labels = tticklabels (varargin)
 
       if (! all ((cellarg_num = cellfun ('isnumeric', arg))
                            | (cellarg_char = cellfun ('ischar', arg))))
-        error ("tticklabels: TICKVAL cell must contain numbers or strings");
+        error ("thetaticklabels: TICKVAL cell must contain numbers or strings");
       endif
 
     else
-      error (["tticklabels: TICKVAL must be numeric or a cell ", ...
+      error (["thetaticklabels: TICKVAL must be numeric or a cell ", ...
               "containing numbers and strings"]);
     endif
 
@@ -119,9 +119,9 @@ function labels = tticklabels (varargin)
 
   ## Error if hax does not point to a polar plot with theta elements.
   if (isempty (polarhandle))
-    error ("tticklabels: tticklabels can only be used on a polar plot");
+    error ("thetaticklabels: function can only be used on a polar plot");
   elseif (! isfield (get (hax), "ttick") )
-    error ("tticklabels: ttick property not defined for current axes");
+    error ("thetaticklabels: ttick property not defined for current axes");
   endif
 
   ## Get theta curves count.
@@ -173,31 +173,31 @@ endfunction
 %!   hp = polar (t, r);
 %!   hax = gca ();
 %!   thetaticks (hax, [0:60:300]);
-%!   assert (tticklabels (hax), {"0"; "60"; "120"; "180"; "240"; "300"});
-%!   tticklabels (hax, [0:20:100]);
-%!   assert (tticklabels (hax), {"0"; "20"; "40"; "60"; "80"; "100"});
-%!   tticklabels (hax, [0:-20:-100]');
-%!   assert (tticklabels (hax), {"0"; "-20"; "-40"; "-60"; "-80"; "-100"});
-%!   tticklabels (hax, {1, 2, 3, 4, 5 ,6});
-%!   assert (tticklabels (hax), {"1"; "2"; "3"; "4"; "5"; "6"});
-%!   tticklabels (hax, {"a", "bee", "c", "d", "eeee", "f"});
-%!   assert (tticklabels (hax), {"a"; "bee"; "c"; "d"; "eeee"; "f"});
-%!   tticklabels (hax, {1, "two", 3, "4", 5, "six"}');
-%!   assert (tticklabels (hax), {"1"; "two"; "3"; "4"; "5"; "six"});
-%!   tticklabels (hax, {1, 2, 3, 4, 5 ,6, 7});
-%!   assert (tticklabels (hax), {"1"; "2"; "3"; "4"; "5"; "6"});
-%!   tticklabels (hax, [5, 6, 7, 8, 9, 10, 11]);
-%!   assert (tticklabels (hax), {"5"; "6"; "7"; "8"; "9"; "10"});
-%!   tticklabels (hax, {1});
-%!   assert (tticklabels (hax), {"1"; ""; ""; ""; ""; ""});
-%!   tticklabels (hax, {1, 2, 3, 4, 5 ,6});
-%!   assert (tticklabels (hax), {"1"; "2"; "3"; "4"; "5"; "6"});
-%!   tticklabels (hax, []);
-%!   assert (tticklabels (hax), {""; ""; ""; ""; ""; ""});
-%!   tticklabels (hax, {1, 2, 3, 4, 5 ,6});
-%!   assert (tticklabels (hax), {"1"; "2"; "3"; "4"; "5"; "6"});
-%!   tticklabels (hax, {});
-%!   assert (tticklabels (hax), {""; ""; ""; ""; ""; ""});
+%!   assert (thetaticklabels (hax), {"0"; "60"; "120"; "180"; "240"; "300"});
+%!   thetaticklabels (hax, [0:20:100]);
+%!   assert (thetaticklabels (hax), {"0"; "20"; "40"; "60"; "80"; "100"});
+%!   thetaticklabels (hax, [0:-20:-100]');
+%!   assert (thetaticklabels (hax), {"0"; "-20"; "-40"; "-60"; "-80"; "-100"});
+%!   thetaticklabels (hax, {1, 2, 3, 4, 5 ,6});
+%!   assert (thetaticklabels (hax), {"1"; "2"; "3"; "4"; "5"; "6"});
+%!   thetaticklabels (hax, {"a", "bee", "c", "d", "eeee", "f"});
+%!   assert (thetaticklabels (hax), {"a"; "bee"; "c"; "d"; "eeee"; "f"});
+%!   thetaticklabels (hax, {1, "two", 3, "4", 5, "six"}');
+%!   assert (thetaticklabels (hax), {"1"; "two"; "3"; "4"; "5"; "six"});
+%!   thetaticklabels (hax, {1, 2, 3, 4, 5 ,6, 7});
+%!   assert (thetaticklabels (hax), {"1"; "2"; "3"; "4"; "5"; "6"});
+%!   thetaticklabels (hax, [5, 6, 7, 8, 9, 10, 11]);
+%!   assert (thetaticklabels (hax), {"5"; "6"; "7"; "8"; "9"; "10"});
+%!   thetaticklabels (hax, {1});
+%!   assert (thetaticklabels (hax), {"1"; ""; ""; ""; ""; ""});
+%!   thetaticklabels (hax, {1, 2, 3, 4, 5 ,6});
+%!   assert (thetaticklabels (hax), {"1"; "2"; "3"; "4"; "5"; "6"});
+%!   thetaticklabels (hax, []);
+%!   assert (thetaticklabels (hax), {""; ""; ""; ""; ""; ""});
+%!   thetaticklabels (hax, {1, 2, 3, 4, 5 ,6});
+%!   assert (thetaticklabels (hax), {"1"; "2"; "3"; "4"; "5"; "6"});
+%!   thetaticklabels (hax, {});
+%!   assert (thetaticklabels (hax), {""; ""; ""; ""; ""; ""});
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -208,10 +208,10 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = gca ();
-%!   fail ("tticklabels (1,2,3)", "Invalid call");
-%!   fail ("tticklabels (-1, 2)", "Invalid call");
-%!   fail ("tticklabels (hax, 2, 3)", "Invalid call");
-%!   fail ("tticklabels (hf, 2)", "Invalid call");
+%!   fail ("thetaticklabels (1,2,3)", "Invalid call");
+%!   fail ("thetaticklabels (-1, 2)", "Invalid call");
+%!   fail ("thetaticklabels (hax, 2, 3)", "Invalid call");
+%!   fail ("thetaticklabels (hf, 2)", "Invalid call");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -220,13 +220,13 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = gca ();
-%!   fail ("tmp = tticklabels ([1, 2, 3])", "cannot set and return labels simultaneously");
-%!   fail ("tmp = tticklabels (hax, [1, 2, 3])", "cannot set and return labels simultaneously");
-%!   fail ("tticklabels (hax, {{1}, 'two', 3})", "TICKVAL cell must contain numbers or strings");
-%!   fail ("tticklabels (hax, {1, 'two', false})", "TICKVAL cell must contain numbers or strings");
-%!   fail ("tticklabels (hax, {1, struct()})", "TICKVAL cell must contain numbers or strings");
-%!   fail ("tticklabels (hax, struct())", "TICKVAL must be numeric or a cell containing");
-%!   fail ("tticklabels (hax, [true false])", "TICKVAL must be numeric or a cell containing");
+%!   fail ("tmp = thetaticklabels ([1, 2, 3])", "cannot set and return labels simultaneously");
+%!   fail ("tmp = thetaticklabels (hax, [1, 2, 3])", "cannot set and return labels simultaneously");
+%!   fail ("thetaticklabels (hax, {{1}, 'two', 3})", "TICKVAL cell must contain numbers or strings");
+%!   fail ("thetaticklabels (hax, {1, 'two', false})", "TICKVAL cell must contain numbers or strings");
+%!   fail ("thetaticklabels (hax, {1, struct()})", "TICKVAL cell must contain numbers or strings");
+%!   fail ("thetaticklabels (hax, struct())", "TICKVAL must be numeric or a cell containing");
+%!   fail ("thetaticklabels (hax, [true false])", "TICKVAL must be numeric or a cell containing");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -238,12 +238,12 @@ endfunction
 %! unwind_protect
 %!   hp = plot (t, r);
 %!   hax = gca ();
-%!   fail ("tticklabels (hax, 1)", "tticklabels can only be used on a polar plot");
-%!   fail ("tticklabels ({1})", "tticklabels can only be used on a polar plot");
+%!   fail ("thetaticklabels (hax, 1)", "function can only be used on a polar plot");
+%!   fail ("thetaticklabels ({1})", "function can only be used on a polar plot");
 %!   hp = polar (t, r);
 %!   hax = gca ();
 %!   delete (findall (hax, "tag", "polar_grid"));
-%!   fail ("tticklabels (hax, 1)", "tticklabels can only be used on a polar plot");
+%!   fail ("thetaticklabels (hax, 1)", "function can only be used on a polar plot");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

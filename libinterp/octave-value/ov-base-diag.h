@@ -48,15 +48,15 @@ class OCTINTERP_TEMPLATE_API octave_base_diag : public octave_base_value
 
 public:
 
-  OCTINTERP_OVERRIDABLE_FUNC_API 
+  OCTINTERP_OVERRIDABLE_FUNC_API
   octave_base_diag ()
     : octave_base_value (), m_matrix (), m_dense_cache () { }
 
-  OCTINTERP_OVERRIDABLE_FUNC_API 
+  OCTINTERP_OVERRIDABLE_FUNC_API
   octave_base_diag (const DMT& m)
     : octave_base_value (), m_matrix (m), m_dense_cache () { }
 
-  OCTINTERP_OVERRIDABLE_FUNC_API 
+  OCTINTERP_OVERRIDABLE_FUNC_API
   octave_base_diag (const octave_base_diag& m)
     : octave_base_value (), m_matrix (m.m_matrix), m_dense_cache () { }
 

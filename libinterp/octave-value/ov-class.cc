@@ -478,7 +478,7 @@ octave_class::subsref (const std::string& type,
               args_nargout(2) = octave_value (Matrix ());
               retval = interp.feval (meth_nargout.function_value (),
                                      args_nargout, 1);
-              
+
               nargout = retval(0).strict_int_value
                 ("subsref: return value of 'numArgumentsFromSubscript' must be integer");
             }
@@ -500,7 +500,7 @@ octave_class::subsref (const std::string& type,
                     tmp = idx.front ();
 
                   nout = xnumel (tmp);
-                  // Take nout as nargout for subsref, unless the index expression 
+                  // Take nout as nargout for subsref, unless the index expression
                   // is a whole sentence starting with the form id.member and id is
                   // one element (in that case, nargout remains 0).
                   if (type[0] != '.' || nout != 1 || nargout < 0)

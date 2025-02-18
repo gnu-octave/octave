@@ -53,8 +53,8 @@
 ## Compatability Note: The @qcode{'mode'} property for rticklabels has not yet
 ## been implemented.
 ##
-## @seealso{polar, rticks, tticklabels, xticklabels, yticklabels, zticklabels,
-## get, set}
+## @seealso{polar, rticks, thetaticklabels, xticklabels, yticklabels,
+## zticklabels, get, set}
 ## @end deftypefn
 
 ## FIXME:  Octave's polar plot implementation does not currently create the

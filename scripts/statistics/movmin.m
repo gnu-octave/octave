@@ -91,7 +91,7 @@ endfunction
 %!assert <*65928> (movmin (1:5, 3, 1), 1:5)
 %!assert <*65928> (movmin (1:5, 3, 3), 1:5)
 
-%!assert (movmin (magic (4), 3), 
+%!assert (movmin (magic (4), 3),
 %!        [5, 2, 3, 8; 5, 2, 3, 8; 4, 7, 6, 1; 4, 7, 6, 1])
 %!assert (movmin (magic (4), 3, 1),
 %!        [5, 2, 3, 8; 5, 2, 3, 8; 4, 7, 6, 1; 4, 7, 6, 1])

@@ -1355,6 +1355,9 @@ gen_select_tests
 gen_section
 echo '%!shared alpha,beta,df,pdf,lf,plf,uf,puf,bf,cf,bcf,tf,tcf,xf,ds,pds,ls,pls,us,pus,bs,cs,bcs,ts,tcs,xs'
 echo '%!test alpha=1; beta=1;'
+echo '%! old_state = rand ("state");'
+echo '%! restore_state = onCleanup (@() rand ("state", old_state));'
+echo '%! rand ("state", 42);  # initialize generator to make tests reproducible'
 gen_solver_tests
 echo '%!test alpha=1; beta=1i;'
 gen_solver_tests

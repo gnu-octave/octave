@@ -48,17 +48,17 @@
     <message>
         <location filename="__octave_temp_gui_sources__/qterminal/libqterminal/QTerminal.cc" line="+119"/>
         <source>Edit &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifica &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Help on &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Aiuto su &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Documentation on &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Documentazione su &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+165"/>
@@ -1083,7 +1083,7 @@
     <message>
         <location line="+57"/>
         <source>Command Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Widget dei Comandi</translation>
     </message>
 </context>
 <context>
@@ -1099,17 +1099,17 @@
     <message>
         <location filename="__octave_temp_gui_sources__/src/console-lexer.cc" line="+48"/>
         <source>Default</source>
-        <translation type="unfinished">Default</translation>
+        <translation>Default</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Error</source>
-        <translation type="unfinished">Errore</translation>
+        <translation>Errore</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Prompt</source>
-        <translation type="unfinished"></translation>
+        <translation>Prompt</translation>
     </message>
 </context>
 <context>
@@ -1819,12 +1819,12 @@ in scrittura: %2.</translation>
     <message>
         <location line="+6"/>
         <source>Save File and Run All &amp;Tests</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva File ed Esegui Tutto</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Save File and Run All &amp;Demos</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva File ed Esegui Tutto</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2577,12 +2577,12 @@ Puoi trovare maggiori informazioni su ognuna di queste possibilità visitando &l
     <message>
         <location line="+4"/>
         <source>Current Dir</source>
-        <translation type="unfinished"></translation>
+        <translation>Cartella Corrente</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Set start directory to current directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Imposta la cartella corrente come cartella iniziale</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2634,7 +2634,7 @@ Puoi trovare maggiori informazioni su ognuna di queste possibilità visitando &l
     <message>
         <location line="+95"/>
         <source>Results: Double click opens the file or sets the directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Risultato: Doppio click apre il file o imposta la cartella</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2651,7 +2651,9 @@ Puoi trovare maggiori informazioni su ognuna di queste possibilità visitando &l
         <source>Enter the filename search patterns.
 Several different patterns can be
 separated by &apos;;&apos;, e.g. &apos;*.cc ; *.h&apos;</source>
-        <translation type="unfinished"></translation>
+<translation>Inserisci il pattern di ricerca dei nomi dei file.
+Pattern differenti possono essere
+separati da &apos;;&apos;, per esempio &apos;*.cc ; *.h&apos;</translation>
     </message>
     <message>
         <location line="+96"/>
@@ -2714,12 +2716,12 @@ separated by &apos;;&apos;, e.g. &apos;*.cc ; *.h&apos;</source>
     <message>
         <location line="+87"/>
         <source>Double click to open the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Doppio click per aprire il file</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Double click to set the directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Doppio click per impostare la cartella</translation>
     </message>
 </context>
 <context>
@@ -2727,29 +2729,29 @@ separated by &apos;;&apos;, e.g. &apos;*.cc ; *.h&apos;</source>
     <message>
         <location filename="__octave_temp_gui_sources__/src/find-widget.cc" line="+48"/>
         <source>Find:</source>
-        <translation type="unfinished">Trova:</translation>
+        <translation>Trova:</translation>
     </message>
     <message>
         <location line="+10"/>
         <location line="+1"/>
         <source>Search forward</source>
-        <translation type="unfinished">Cerca avanti</translation>
+        <translation>Cerca avanti</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+1"/>
         <source>Search backward</source>
-        <translation type="unfinished">Cerca indietro</translation>
+        <translation>Cerca indietro</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiudi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Close find dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiudi il dialogo di ricerca</translation>
     </message>
 </context>
 <context>
@@ -3864,7 +3866,7 @@ Azione: %1</translation>
     <message>
         <location line="+8"/>
         <source>Clear</source>
-        <translation type="unfinished">Pulisci</translation>
+        <translation>Pulisci</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4326,12 +4328,12 @@ Vuoi usare la scorciatoria e rimuoverla dall&apos;azione precedente?</translatio
     <message>
         <location filename="__octave_temp_gui_sources__/src/self-listener.cc" line="+82"/>
         <source>Can not open redirected stream with fd = %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Impossibile aprire il flusso reindirizzato con fd = %1</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Can not disable buffering of stream with fd = %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile disabilitare il caricamento del flusso con fd = %1</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -4357,29 +4359,29 @@ to pipe with fd = %2: %3</source>
     <message>
         <location line="+17"/>
         <source>Error reading from redirected strem fd = %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore di lettura dal flusso reindirizzato fd = %1</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>
 Output redirection in </source>
-        <translation type="unfinished"></translation>
+        <translation>Redirezione dell'output in</translation>
     </message>
     <message>
         <location line="+1"/>
         <source> won&apos;t work.</source>
-        <translation type="unfinished"></translation>
+        <translation>non funzionerà.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>
 Error: </source>
-        <translation type="unfinished"></translation>
+        <translation>Errore: </translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Octave</source>
-        <translation type="unfinished">Octave</translation>
+        <translation>Octave</translation>
     </message>
 </context>
 <context>
@@ -5736,12 +5738,12 @@ interferenze con le combinazioni di readline</translation>
     <message>
         <location line="+1"/>
         <source>Run Tests</source>
-        <translation type="unfinished"></translation>
+        <translation>Esegui i Test</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Run Demos</source>
-        <translation type="unfinished"></translation>
+        <translation>Esegui le Demo</translation>
     </message>
     <message>
         <location line="+3"/>

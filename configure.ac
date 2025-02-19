@@ -3423,6 +3423,9 @@ Octave is now configured for $canonical_host_type
   UMFPACK CPPFLAGS:              $UMFPACK_CPPFLAGS
   UMFPACK LDFLAGS:               $UMFPACK_LDFLAGS
   UMFPACK libraries:             $UMFPACK_LIBS
+  Wayland client CPPFLAGS:       $WAYLAND_CLIENT_CPPFLAGS
+  Wayland client LDFLAGS:        $WAYLAND_CLIENT_LDFLAGS
+  Wayland client libraries:      $WAYLAND_CLIENT_LIBS
   X11 include flags:             $X11_INCFLAGS
   X11 libraries:                 $X11_LIBS
   Z CPPFLAGS:                    $Z_CPPFLAGS

@@ -45,17 +45,17 @@
     <message>
         <location filename="__octave_temp_gui_sources__/qterminal/libqterminal/QTerminal.cc" line="+119"/>
         <source>Edit &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot; düzenle</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Help on &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot; hakkında yardım</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Documentation on &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot; ile ilgili belgeler</translation>
     </message>
     <message>
         <location line="+165"/>
@@ -70,7 +70,7 @@
     <message>
         <location line="+6"/>
         <source>Select All</source>
-        <translation>Tümünü Seçin</translation>
+        <translation>Tümünü Seç</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1085,7 +1085,7 @@
     <message>
         <location line="+57"/>
         <source>Command Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Komut Araç&apos;ı</translation>
     </message>
 </context>
 <context>
@@ -1101,17 +1101,17 @@
     <message>
         <location filename="__octave_temp_gui_sources__/src/console-lexer.cc" line="+48"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Varsayılan</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Error</source>
-        <translation type="unfinished">Hata</translation>
+        <translation>Hata</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Prompt</source>
-        <translation type="unfinished"></translation>
+        <translation>Çabuk</translation>
     </message>
 </context>
 <context>
@@ -1380,7 +1380,7 @@ geçerli bir XBEL dosyası sürüm 1.0 değil.</translation>
         <location filename="__octave_temp_gui_sources__/src/external-editor-interface.cc" line="+68"/>
         <location line="+50"/>
         <source>Octave Editor</source>
-        <translation>Oktave Düzenleyici</translation>
+        <translation>Octave Düzenleyici</translation>
     </message>
     <message>
         <location line="-49"/>
@@ -1416,7 +1416,7 @@ Tercihleri açmak istiyor musunuz?</translation>
         <location line="+18"/>
         <location line="+25"/>
         <source>Octave Editor</source>
-        <translation>Oktave Düzenleyici</translation>
+        <translation>Octave Düzenleyici</translation>
     </message>
     <message>
         <location line="-636"/>
@@ -1822,12 +1822,12 @@ yazmak için: %2.</translation>
     <message>
         <location line="+6"/>
         <source>Save File and Run All &amp;Tests</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosyayı Kaydedin ve Tüm &amp;Testleri Çalıştırın</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Save File and Run All &amp;Demos</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosyayı Kaydet ve Tüm &amp;Demoları Çalıştır</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1905,7 +1905,7 @@ yazmak için: %2.</translation>
         <location line="+57"/>
         <location line="+36"/>
         <source>Octave Editor</source>
-        <translation>Oktave Düzenleyici</translation>
+        <translation>Octave Düzenleyici</translation>
     </message>
     <message>
         <location line="-2283"/>
@@ -2169,7 +2169,7 @@ silindi veya yeniden adlandırıldı. Şimdi kaydetmek istiyor musunuz?%2</trans
     <message>
         <location line="+3"/>
         <source>Show Octave directory</source>
-        <translation>Oktave dizinini göster</translation>
+        <translation>Octave dizinini göster</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2179,7 +2179,7 @@ silindi veya yeniden adlandırıldı. Şimdi kaydetmek istiyor musunuz?%2</trans
     <message>
         <location line="+4"/>
         <source>Set Octave directory</source>
-        <translation>Oktave dizinini ayarla</translation>
+        <translation>Octave dizinini ayarla</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2581,12 +2581,12 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
     <message>
         <location line="+4"/>
         <source>Current Dir</source>
-        <translation type="unfinished"></translation>
+        <translation>Mevcut Dizin</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Set start directory to current directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Başlangıç ​​dizinini geçerli dizine ayarla</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2638,7 +2638,7 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
     <message>
         <location line="+95"/>
         <source>Results: Double click opens the file or sets the directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Sonuçlar: Çift tıklama dosyayı açar veya dizini ayarlar</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2655,7 +2655,9 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
         <source>Enter the filename search patterns.
 Several different patterns can be
 separated by &apos;;&apos;, e.g. &apos;*.cc ; *.h&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya adı arama desenlerini girin.
+Birkaç farklı desen olabilir
+&apos;;&apos; ile ayrılmış, örneğin &apos;*.cc ; *.h&apos;</translation>
     </message>
     <message>
         <location line="+96"/>
@@ -2718,12 +2720,12 @@ separated by &apos;;&apos;, e.g. &apos;*.cc ; *.h&apos;</source>
     <message>
         <location line="+87"/>
         <source>Double click to open the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosyayı açmak için çift tıklayın</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Double click to set the directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Dizin ayarlamak için çift tıklayın</translation>
     </message>
 </context>
 <context>
@@ -2731,29 +2733,29 @@ separated by &apos;;&apos;, e.g. &apos;*.cc ; *.h&apos;</source>
     <message>
         <location filename="__octave_temp_gui_sources__/src/find-widget.cc" line="+48"/>
         <source>Find:</source>
-        <translation type="unfinished">Bul:</translation>
+        <translation>Bul:</translation>
     </message>
     <message>
         <location line="+10"/>
         <location line="+1"/>
         <source>Search forward</source>
-        <translation type="unfinished">İleriye doğru ara</translation>
+        <translation>İleriye doğru ara</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+1"/>
         <source>Search backward</source>
-        <translation type="unfinished">Geriye doğru ara</translation>
+        <translation>Geriye doğru ara</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Kapat</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Close find dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Bulma iletişim kutusunu kapat</translation>
     </message>
 </context>
 <context>
@@ -2776,7 +2778,7 @@ Octave GUI&apos;nin şimdi kapatılması gerekiyor.</translation>
     <message>
         <location line="+5"/>
         <source>Octave Critical Error</source>
-        <translation>Oktave Kritik Hata</translation>
+        <translation>Octave Kritik Hata</translation>
     </message>
 </context>
 <context>
@@ -2947,7 +2949,7 @@ işlevdir ve düzenlenemez.</translation>
     <message>
         <location line="+22"/>
         <source>Octave Editor</source>
-        <translation>Oktave Düzenleyici</translation>
+        <translation>Octave Düzenleyici</translation>
     </message>
     <message>
         <location line="+736"/>
@@ -3022,7 +3024,7 @@ işlevdir ve düzenlenemez.</translation>
     <message>
         <location line="+5"/>
         <source>Select All</source>
-        <translation>Tümünü Seçin</translation>
+        <translation>Tümünü Seç</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3213,7 +3215,7 @@ işlevdir ve düzenlenemez.</translation>
     <message>
         <location line="+3"/>
         <source>Octave Packages</source>
-        <translation>Oktave Paketleri</translation>
+        <translation>Octave Paketleri</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3373,7 +3375,7 @@ veya Octave&apos;ın ağ ayarları sekmesinden haberler için web bağlantılar�
     <message>
         <location line="+544"/>
         <source>Octave Editor</source>
-        <translation>Oktave Düzenleyici</translation>
+        <translation>Octave Düzenleyici</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3429,7 +3431,7 @@ mevcut değil. Onu oluşturmak ister misin?</translation>
     <message>
         <location line="+2"/>
         <source>Octave Editor</source>
-        <translation>Oktave Düzenleyici</translation>
+        <translation>Octave Düzenleyici</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -3727,7 +3729,7 @@ depends on currently selected mode.</source>
         <location line="+22"/>
         <location line="+1120"/>
         <source>Failed to open %1 as Octave shortcut file</source>
-        <translation>%1 Oktave kısayol dosyası olarak açılamadı</translation>
+        <translation>%1 Octave kısayol dosyası olarak açılamadı</translation>
     </message>
     <message>
         <location line="-453"/>
@@ -3748,7 +3750,7 @@ depends on currently selected mode.</source>
         <location line="+1"/>
         <location line="+6"/>
         <source>Octave Shortcut Files (*.osc);;All Files (*)</source>
-        <translation>Oktave Kısayol Dosyaları (*.osc);;Tüm Dosyalar (*)</translation>
+        <translation>Octave Kısayol Dosyaları (*.osc);;Tüm Dosyalar (*)</translation>
     </message>
     <message>
         <location line="-1"/>
@@ -3866,7 +3868,7 @@ Eylem: %1</translation>
     <message>
         <location line="+8"/>
         <source>Clear</source>
-        <translation type="unfinished">Temizle</translation>
+        <translation>Temizle</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3941,7 +3943,7 @@ Kısayolu kullanmak ve onu önceki eylemden kaldırmak istiyor musunuz?</transla
     <message>
         <location line="+3"/>
         <source>Handling of Dock Widgets</source>
-        <translation>Panel Araçların kullanımı</translation>
+        <translation>Panel Araçlarının Kullanımı</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4328,60 +4330,63 @@ Kısayolu kullanmak ve onu önceki eylemden kaldırmak istiyor musunuz?</transla
     <message>
         <location filename="__octave_temp_gui_sources__/src/self-listener.cc" line="+82"/>
         <source>Can not open redirected stream with fd = %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Yönlendirilen akış fd = %1 ile açılamıyor.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Can not disable buffering of stream with fd = %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>fd = %1 ile akışın arabelleğe alınması devre dışı bırakılamaz.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Can not dup redirected stream with fd = %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>fd = %1 ile yönlendirilen akış kopyalanamıyor.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Cannot create pipe for redirecting stream with fd = %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>fd = %1 ile akışı yeniden yönlendirmek için boru oluşturulamıyor:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Cannot dup2 redirected stream with fd = %1
 to pipe with fd = %2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>fd = %1 ile yönlendirilen akışın kopyası alınamıyor
+fd = %2 ile borulamak için: %3</translation>
     </message>
     <message>
         <location line="+57"/>
         <source>Error while listening to redirected streams</source>
-        <translation type="unfinished"></translation>
+        <translation>Yönlendirilen akışları dinlerken hata oluştu</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Error reading from redirected strem fd = %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Yönlendirilen strem&apos;den okuma hatası fd = %1.</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>
 Output redirection in </source>
-        <translation type="unfinished"></translation>
+        <translation>
+Çıkış yönlendirmesi </translation>
     </message>
     <message>
         <location line="+1"/>
         <source> won&apos;t work.</source>
-        <translation type="unfinished"></translation>
+        <translation> işe yaramayacak.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>
 Error: </source>
-        <translation type="unfinished"></translation>
+        <translation>
+Hata: </translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Octave</source>
-        <translation type="unfinished">Octave</translation>
+        <translation>Octave</translation>
     </message>
 </context>
 <context>
@@ -4396,7 +4401,7 @@ Error: </source>
     <message>
         <location line="-2390"/>
         <source>Octave logo only</source>
-        <translation>Yalnızca Oktave logosu</translation>
+        <translation>Yalnızca Octave logosu</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -4406,7 +4411,7 @@ Error: </source>
     <message>
         <location line="-334"/>
         <source>Dock widget title bar</source>
-        <translation>Dock aracı başlık çubuğu</translation>
+        <translation>Panel aracı başlık çubuğu</translation>
     </message>
     <message>
         <location line="+72"/>
@@ -4577,7 +4582,7 @@ Error: </source>
     <message>
         <location line="+10"/>
         <source>With Octave functions</source>
-        <translation>Oktave fonksiyonları ile</translation>
+        <translation>Octave fonksiyonları ile</translation>
     </message>
     <message>
         <location line="+64"/>
@@ -4665,7 +4670,7 @@ Error: </source>
     <message>
         <location line="+218"/>
         <source>Octave Startup</source>
-        <translation>Oktave Başlatma</translation>
+        <translation>Octave Başlatma</translation>
     </message>
     <message>
         <location line="+46"/>
@@ -4842,7 +4847,7 @@ Error: </source>
     <message>
         <location line="+74"/>
         <source>Comments (Octave)</source>
-        <translation>Yorumlar (Oktave)</translation>
+        <translation>Yorumlar (Octave)</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -5194,7 +5199,7 @@ okuma satırı tuş vuruşlarına müdahale.</translation>
     <message>
         <location line="+1"/>
         <source>Exit Octave</source>
-        <translation>Oktave`dan Çık</translation>
+        <translation>Octave`dan Çık</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -5390,12 +5395,12 @@ okuma satırı tuş vuruşlarına müdahale.</translation>
     <message>
         <location line="+1"/>
         <source>Octave Packages</source>
-        <translation>Oktave Paketleri</translation>
+        <translation>Octave Paketleri</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Contribute to Octave</source>
-        <translation>Oktave`ya Katkıda Bulun</translation>
+        <translation>Octave`ya Katkıda Bulun</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5738,12 +5743,12 @@ okuma satırı tuş vuruşlarına müdahale.</translation>
     <message>
         <location line="+1"/>
         <source>Run Tests</source>
-        <translation type="unfinished"></translation>
+        <translation>Testleri Çalıştır</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Run Demos</source>
-        <translation type="unfinished"></translation>
+        <translation>Demoları Çalıştır</translation>
     </message>
     <message>
         <location line="+3"/>

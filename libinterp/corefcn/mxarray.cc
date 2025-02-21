@@ -3454,8 +3454,6 @@ mxArray_cell::set_cell (mwIndex idx, mxArray *val)
 extern "C" {
   typedef void (*cmex_fptr) (int nlhs, mxArray *plhs[],
                              int nrhs, const mxArray *prhs[]);
-  typedef F77_RET_T (*fmex_fptr) (F77_INT& nlhs, mxArray **plhs,
-                                  F77_INT& nrhs, mxArray **prhs);
 }
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -3491,23 +3489,9 @@ call_mex (octave_mex_function& mex_fcn, const octave_value_list& args,
 
   mex_context = &context;
 
-  void *mex_fcn_ptr = mex_fcn.mex_fcn_ptr ();
+  cmex_fptr fcn = reinterpret_cast<cmex_fptr> (mex_fcn.mex_fcn_ptr ());
 
-  if (mex_fcn.is_fmex ())
-    {
-      fmex_fptr fcn = reinterpret_cast<fmex_fptr> (mex_fcn_ptr);
-
-      F77_INT tmp_nargout = nargout;
-      F77_INT tmp_nargin = nargin;
-
-      fcn (tmp_nargout, argout, tmp_nargin, argin);
-    }
-  else
-    {
-      cmex_fptr fcn = reinterpret_cast<cmex_fptr> (mex_fcn_ptr);
-
-      fcn (nargout, argout, nargin, const_cast<const mxArray **> (argin));
-    }
+  fcn (nargout, argout, nargin, const_cast<const mxArray **> (argin));
 
   // Convert returned array entries back into octave values.
 

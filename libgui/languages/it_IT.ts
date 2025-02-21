@@ -240,7 +240,7 @@
     <message>
         <location line="+3"/>
         <source>Inactive default</source>
-        <translation>Default inattivo</translation>
+        <translation>Default non attivo</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -250,7 +250,7 @@
     <message>
         <location line="+3"/>
         <source>Inactive C comment</source>
-        <translation>Commento C inattivo</translation>
+        <translation>Commento C non attivo</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -260,7 +260,7 @@
     <message>
         <location line="+3"/>
         <source>Inactive C++ comment</source>
-        <translation>Commento C++ inattivo</translation>
+        <translation>Commento C++ non attivo</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -270,7 +270,7 @@
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc style C comment</source>
-        <translation>Commento C inattivo in stile JavaDoc</translation>
+        <translation>Commento C in stile JavaDoc non attivo</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -280,7 +280,7 @@
     <message>
         <location line="+3"/>
         <source>Inactive number</source>
-        <translation>Numero inattivo</translation>
+        <translation>Numero non attivo</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -290,7 +290,7 @@
     <message>
         <location line="+3"/>
         <source>Inactive keyword</source>
-        <translation>Parola chiave inattiva</translation>
+        <translation>Parola chiave non attiva</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -300,7 +300,7 @@
     <message>
         <location line="+3"/>
         <source>Inactive double-quoted string</source>
-        <translation>Stringa con apici doppi inattiva</translation>
+        <translation>Stringa con apici doppi non attiva</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -310,7 +310,7 @@
     <message>
         <location line="+3"/>
         <source>Inactive single-quoted string</source>
-        <translation>Stringa con apici singoli inattiva</translation>
+        <translation>Stringa con apici singoli non attiva</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -320,7 +320,7 @@
     <message>
         <location line="+3"/>
         <source>Inactive IDL UUID</source>
-        <translation>IDL UUID inattivo</translation>
+        <translation>IDL UUID non attivo</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -330,7 +330,7 @@
     <message>
         <location line="+3"/>
         <source>Inactive pre-processor block</source>
-        <translation>Blocco del preprocessore inattivo</translation>
+        <translation>Blocco del preprocessore non attivo</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -340,7 +340,7 @@
     <message>
         <location line="+3"/>
         <source>Inactive operator</source>
-        <translation>Operatore inattivo</translation>
+        <translation>Operatore non attivo</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -350,7 +350,7 @@
     <message>
         <location line="+3"/>
         <source>Inactive identifier</source>
-        <translation>Identificatore inattivo</translation>
+        <translation>Identificatore non attivo</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -360,7 +360,7 @@
     <message>
         <location line="+3"/>
         <source>Inactive unclosed string</source>
-        <translation>Stringa aperta inattiva</translation>
+        <translation>Stringa aperta non attiva</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -370,7 +370,7 @@
     <message>
         <location line="+3"/>
         <source>Inactive C# verbatim string</source>
-        <translation>Stringa verbatim C# inattiva</translation>
+        <translation>Stringa verbatim C# non attiva</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -380,7 +380,7 @@
     <message>
         <location line="+3"/>
         <source>Inactive JavaScript regular expression</source>
-        <translation>Espressione regolare JavaScript inattiva</translation>
+        <translation>Espressione regolare JavaScript non attiva</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -390,7 +390,7 @@
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc style C++ comment</source>
-        <translation>Commento C++ inattivo in stile JavaDoc</translation>
+        <translation>Commento C++ non attivo in stile JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -400,7 +400,7 @@
     <message>
         <location line="+3"/>
         <source>Inactive secondary keywords and identifiers</source>
-        <translation>Parole chiave e identificatori secondari inattivi</translation>
+        <translation>Parole chiave e identificatori secondari non attivi</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -410,7 +410,7 @@
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc keyword</source>
-        <translation>Parola chiave JavaDoc inattiva</translation>
+        <translation>Parola chiave JavaDoc non attiva</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -420,7 +420,7 @@
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc keyword error</source>
-        <translation>Errore parola chiave JavaDoc inattiva</translation>
+        <translation>Errore parola chiave JavaDoc non attiva</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -430,7 +430,7 @@
     <message>
         <location line="+3"/>
         <source>Inactive global classes and typedefs</source>
-        <translation>Classi e typedef globali inattivi</translation>
+        <translation>Classi e typedef globali non attivi</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -440,27 +440,27 @@
     <message>
         <location line="+3"/>
         <source>Inactive C++ raw string</source>
-        <translation>Stringa raw C++ inattiva</translation>
+        <translation>Stringa raw C++ non attiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Vala triple-quoted verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa verbatim a triple virgolette di Vala</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive Vala triple-quoted verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa verbatim a triple virgolette di Vala non attiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Pike hash-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa tra virgolette con hash di Pike</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive Pike hash-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa tra virgolette con hash di Pike non attiva</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -470,7 +470,7 @@
     <message>
         <location line="+3"/>
         <source>Inactive pre-processor C comment</source>
-        <translation>Commento preprocessore C inattivo</translation>
+        <translation>Commento preprocessore C non attivo</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -480,37 +480,37 @@
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc style pre-processor comment</source>
-        <translation>Commento preprocessore stile JavaDoc inattivo</translation>
+        <translation>Commento preprocessore stile JavaDoc non attivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>User-defined literal</source>
-        <translation type="unfinished"></translation>
+        <translation>Literal definito dall'utente</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive user-defined literal</source>
-        <translation type="unfinished"></translation>
+        <translation>Literal definito dall'utente non attivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Task marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Indicatore di task</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive task marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Indicatore di task non attivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Escape sequence</source>
-        <translation type="unfinished"></translation>
+        <translation>Sequenza di escape</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive escape sequence</source>
-        <translation type="unfinished"></translation>
+        <translation>Sequenza di escape non attiva</translation>
     </message>
 </context>
 <context>
@@ -829,7 +829,7 @@
     <message>
         <location line="+3"/>
         <source>Quoted string (qr, interpolated variable)</source>
-        <translation>Stringa con apici (qr,variabile interpolata)</translation>
+        <translation>Stringa con apici (qr, variabile interpolata)</translation>
     </message>
 </context>
 <context>
@@ -1182,7 +1182,7 @@ nella Finestra dei Comandi</translation>
     <message>
         <location line="+6"/>
         <source>Previous pages</source>
-        <translation>Pagine precedente</translation>
+        <translation>Pagine precedenti</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1192,7 +1192,7 @@ nella Finestra dei Comandi</translation>
     <message>
         <location line="+6"/>
         <source>Next pages</source>
-        <translation>Pagine successiva</translation>
+        <translation>Pagine successive</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -2644,7 +2644,7 @@ Puoi trovare maggiori informazioni su ognuna di queste possibilità visitando &l
     <message>
         <location line="-59"/>
         <source>Idle.</source>
-        <translation>Inattivo.</translation>
+        <translation>Non Attivo.</translation>
     </message>
     <message>
         <location line="-94"/>
@@ -4328,33 +4328,34 @@ Vuoi usare la scorciatoria e rimuoverla dall&apos;azione precedente?</translatio
     <message>
         <location filename="__octave_temp_gui_sources__/src/self-listener.cc" line="+82"/>
         <source>Can not open redirected stream with fd = %1.</source>
-        <translation type="unfinished">Impossibile aprire il flusso reindirizzato con fd = %1</translation>
+        <translation>Impossibile aprire lo stream reindirizzato con fd = %1</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Can not disable buffering of stream with fd = %1.</source>
-        <translation>Impossibile disabilitare il caricamento del flusso con fd = %1</translation>
+        <translation>Impossibile disabilitare il caricamento dello stream con fd = %1</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Can not dup redirected stream with fd = %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile duplicare lo stream reindirizzato con dup e fd = %1</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Cannot create pipe for redirecting stream with fd = %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile creare il pipe per reindirizzare lo stream con fd = %1:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Cannot dup2 redirected stream with fd = %1
 to pipe with fd = %2: %3</source>
-        <translation type="unfinished"></translation>
+<translation>Impossibile duplicare lo stream reindirizzato con fd = %1
+nel pipe con fd = %2: %3</translation>
     </message>
     <message>
         <location line="+57"/>
         <source>Error while listening to redirected streams</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore durante l'ascolto degli stream reindirizzati</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -4432,7 +4433,7 @@ Error: </source>
     <message>
         <location line="-677"/>
         <source>Text inactive</source>
-        <translation>Testo inattivo</translation>
+        <translation>Testo non attivo</translation>
     </message>
     <message>
         <location line="-32"/>
@@ -4448,7 +4449,7 @@ Error: </source>
     <message>
         <location line="+128"/>
         <source>Background inactive</source>
-        <translation>Sfondo inattivo</translation>
+        <translation>Sfondo non attivo</translation>
     </message>
     <message>
         <location line="+224"/>

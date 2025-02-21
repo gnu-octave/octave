@@ -53,12 +53,11 @@ public:
 
   octave_mex_function ()
     : m_mex_fcn_ptr (nullptr), m_exit_fcn_ptr (nullptr), m_sh_lib (),
-      m_time_checked (), m_interleaved (false), m_is_fmex (false),
-      m_is_system_fcn_file (false)
+      m_time_checked (), m_interleaved (false), m_is_system_fcn_file (false)
   { }
 
   OCTINTERP_API
-  octave_mex_function (void *fptr, bool interleaved, bool fmex,
+  octave_mex_function (void *fptr, bool interleaved,
                        const octave::dynamic_library& shl,
                        const std::string& nm = "");
 
@@ -99,8 +98,6 @@ public:
 
   void * mex_fcn_ptr () const { return m_mex_fcn_ptr; }
 
-  bool is_fmex () const { return m_is_fmex; }
-
 private:
 
   void *m_mex_fcn_ptr;
@@ -114,8 +111,6 @@ private:
   octave::sys::time m_time_checked;
 
   bool m_interleaved;
-
-  bool m_is_fmex;
 
   // True if this function came from a file that is considered to be a
   // system function.  This affects whether we check the time stamp

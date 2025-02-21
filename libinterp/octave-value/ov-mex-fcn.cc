@@ -47,11 +47,10 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_mex_function,
                                      "mex function", "mex function");
 
 octave_mex_function::octave_mex_function
-(void *fptr, bool interleaved, bool fmex, const octave::dynamic_library& shl,
+(void *fptr, bool interleaved, const octave::dynamic_library& shl,
  const std::string& nm)
   : octave_function (nm), m_mex_fcn_ptr (fptr), m_exit_fcn_ptr (nullptr),
-    m_sh_lib (shl), m_interleaved (interleaved), m_is_fmex (fmex),
-    m_is_system_fcn_file (false)
+    m_sh_lib (shl), m_interleaved (interleaved), m_is_system_fcn_file (false)
 {
   mark_fcn_file_up_to_date (time_parsed ());
 

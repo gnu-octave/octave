@@ -2186,8 +2186,8 @@ rc_lgamma (double x)
   int sgngam = signgam;
 #endif
 
-  if (sgngam < 0)
-    return result + Complex (0., M_PI);
+  if (sgngam < 0 && std::isfinite (result))
+    return Complex (result, M_PI);
   else
     return result;
 }
@@ -2205,8 +2205,8 @@ rc_lgamma (float x)
   int sgngam = signgam;
 #endif
 
-  if (sgngam < 0)
-    return result + FloatComplex (0., M_PI);
+  if (sgngam < 0 && std::isfinite (result))
+    return FloatComplex (result, M_PI);
   else
     return result;
 }

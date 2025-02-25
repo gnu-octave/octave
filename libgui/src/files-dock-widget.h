@@ -37,6 +37,7 @@
 #include <QMouseEvent>
 #include <QObject>
 #include <QSignalMapper>
+#include <QStandardItemModel>
 #include <QToolBar>
 #include <QToolButton>
 #include <QTreeView>
@@ -47,17 +48,19 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-//!  Dock widget to display files in the current directory.
 
-class files_dock_widget : public octave_dock_widget
+
+//!  Tab widget for file system browser
+
+class file_system_browser : public QWidget
 {
   Q_OBJECT
 
 public:
 
-  files_dock_widget (QWidget *parent);
+  file_system_browser (QWidget *parent);
 
-  ~files_dock_widget () = default;
+  ~file_system_browser () = default;
 
 Q_SIGNALS:
 
@@ -238,6 +241,99 @@ private:
   QList <QVariant> m_columns_shown_defs;
   QSignalMapper *m_sig_mapper;
 };
+
+
+
+//!  Tab widget to display edtior files
+
+class editor_files_browser : public QWidget
+{
+  Q_OBJECT
+
+public:
+
+  editor_files_browser (QWidget *parent);
+
+  ~editor_files_browser () = default;
+
+Q_SIGNALS:
+
+  void focus_editor_file_signal (const QString& file);
+
+  void close_editor_file_signal (const QStringList& files_to_remove);
+
+  void run_file_signal (const QFileInfo& info, int ops);
+
+  void displayed_directory_changed (const QString& dir);
+
+public Q_SLOTS:
+
+  void rename_editor_file (const QString& old_file,
+                           const QString& new_file = QString ());
+  void remove_editor_file (const QString& fname);
+
+  void contextmenu_requested (const QPoint& pos);
+
+  void clicked (const QModelIndex &index);
+
+  void notice_settings ();
+  void save_settings ();
+
+private Q_SLOTS:
+
+  void ctx_menu_close (bool);
+  void ctx_menu_close_all (bool);
+  void ctx_menu_run (bool);
+  void ctx_menu_setcurrentdir (bool);
+
+private:
+
+  QFileInfo get_file_info_from_item (QStandardItem *item);
+
+  QStringList get_dir_file_from_string (const QString& path);
+
+  void add_editor_file (const QString& fname);
+
+  QString m_home_dir;
+  QStandardItemModel *m_editor_files_model;
+  QTreeView *m_editor_tree_view;
+  QStandardItem *m_parent_item;
+  QFileIconProvider *m_file_icon_provider;
+};
+
+
+
+//!  Dock widget to display files in the current directory
+//!  and/or opened in the edtor
+
+class files_dock_widget : public octave_dock_widget
+{
+  Q_OBJECT
+
+public:
+
+  files_dock_widget (QWidget *parent);
+
+  ~files_dock_widget () = default;
+
+  file_system_browser *get_file_system_browser (void) {return m_file_browser;};
+  editor_files_browser *get_editor_files_browser (void) {return m_editor_files;};
+
+public Q_SLOTS:
+
+  //! Tells the widget to react on changed settings.
+
+  void notice_settings ();
+
+  void save_settings ();
+
+private:
+
+  file_system_browser *m_file_browser;
+  editor_files_browser *m_editor_files;
+};
+
+
 
 OCTAVE_END_NAMESPACE(octave)
 

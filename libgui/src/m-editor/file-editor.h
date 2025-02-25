@@ -194,6 +194,10 @@ Q_SIGNALS:
 
   void show_symbol_tooltip_signal (const QPoint&, const QString&);
 
+  void remove_editor_file_in_browser_signal (const QString& file);
+  void rename_editor_file_in_browser_signal (const QString& old_file,
+                                             const QString& new_file);
+
 public Q_SLOTS:
 
   void activate ();
@@ -272,7 +276,7 @@ public Q_SLOTS:
                                  const QString& toolTip,
                                  bool modified);
   void handle_tab_close_request (int index);
-  void handle_tab_remove_request ();
+  void handle_tab_remove_request (const QString& file_name);
   void active_tab_changed (int index);
   void handle_editor_state_changed (bool enableCopy, bool is_octave_file,
                                     bool is_modified);
@@ -289,6 +293,8 @@ public Q_SLOTS:
 
   void handle_file_remove (const QString&, const QString&);
   void handle_file_renamed (bool load_new = true);
+
+  void handle_close_file_request (const QStringList& files_to_close);
 
   // Tells the editor to react on changed settings.
   void notice_settings ();

@@ -32,6 +32,9 @@
 // Files dock widget
 
 gui_pref
+fb_active_tab ("filesdockwidget/active_tab", QVariant (0));
+
+gui_pref
 fb_column_state ("filesdockwidget/column_state", QVariant ());
 
 gui_pref

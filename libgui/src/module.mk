@@ -89,6 +89,7 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/128x128/widget-dock.png \
   %reldir%/icons/octave/128x128/widget-undock-light.png \
   %reldir%/icons/octave/128x128/widget-undock.png \
+  %reldir%/icons/octave/128x128/window-close.png \
   %reldir%/icons/octave/scalable/applications-system.svg \
   %reldir%/icons/octave/scalable/bookmark-new.svg \
   %reldir%/icons/octave/scalable/bp-next.svg \
@@ -164,6 +165,7 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/scalable/widget-dock.svg \
   %reldir%/icons/octave/scalable/widget-undock-light.svg \
   %reldir%/icons/octave/scalable/widget-undock.svg \
+  %reldir%/icons/octave/scalable/window-close.svg \
   %reldir%/icons/tango/index.theme \
   %reldir%/icons/tango/128x128/applications-system.png \
   %reldir%/icons/tango/128x128/bookmark-new.png \

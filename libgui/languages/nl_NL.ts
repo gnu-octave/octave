@@ -1136,8 +1136,7 @@ be available.</source>
 installeren, misschien ontbreekt de Qt SQlite
 module?
 Alleen de hulptekst in het commando venster
-is beschikbaar
-	</translation>
+is beschikbaar.</translation>
     </message>
     <message>
         <location line="+63"/>
@@ -1198,12 +1197,12 @@ is beschikbaar
     <message>
         <location line="+6"/>
         <source>Zoom In</source>
-        <translation>Inzoomen</translation>
+        <translation>Vergroten</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Zoom Out</source>
-        <translation>Uitzoomen</translation>
+        <translation>Verkleinen</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1417,11 +1416,9 @@ Wilt u de voorkeursinstellingen aanpassen?</translation>
         <source>File not saved! A file with the selected name
 %1
 is already open in the editor.</source>
-        <translation>
-		Bestand niet opgeslagen! Een bestand met de geselecteerde naam
+        <translation>Bestand niet opgeslagen! Een bestand met de geselecteerde naam
 %1
-is al geopend in the editor
-	</translation>
+is al geopend in the editor.</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -1461,8 +1458,7 @@ bestaat niet. Wilt u het aanmaken?</translation>
         <source>Could not open file
 %1
 for writing: %2.</source>
-        <translation>
-Kon bestand
+        <translation>Kon bestand
 %1
 niet openen voor schrijven: %2.</translation>
     </message>
@@ -1534,7 +1530,7 @@ niet openen voor schrijven: %2.</translation>
     <message>
         <location line="+3"/>
         <source>Find &amp;Next</source>
-        <translation>Zoek &amp; volgende</translation>
+        <translation>Zoek &amp;volgende</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1759,12 +1755,12 @@ niet openen voor schrijven: %2.</translation>
     <message>
         <location line="+7"/>
         <source>Zoom &amp;In</source>
-        <translation>&amp;Inzoomen</translation>
+        <translation>&amp;Vergroten</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Zoom &amp;Out</source>
-        <translation>&amp;Uitzoomen</translation>
+        <translation>&amp;Verkleinen</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1860,7 +1856,7 @@ niet openen voor schrijven: %2.</translation>
 <context>
     <name>octave::file_editor_tab</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/m-editor/file-editor-tab.cc" line="+161"/>
+        <location filename="__octave_temp_gui_sources__/src/m-editor/file-editor-tab.cc" line="+162"/>
         <source>line:</source>
         <translation>regel:</translation>
     </message>
@@ -1962,8 +1958,7 @@ dat zou worden gesloten is ondertussen gewijzigd.  %2</translation>
         <source>Unable to read file &apos;%1&apos;
 with selected encoding &apos;%2&apos;: %3</source>
         <translation>Kan bestand &apos;%1&apos;
-niet lezen met de geselecteerd karakter codering &apos;%2&apos;: %3
-	</translation>
+niet lezen met de geselecteerd karakter codering &apos;%2&apos;: %3</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2031,8 +2026,7 @@ Debuggen afsluiten en opslaan?</translation>
         <source>Could not open file %1 for writing:
 %2.</source>
         <translation>kon bestand %1 niet openen voor schrijven:
-%2.
-	</translation>
+%2.</translation>
     </message>
     <message>
         <location line="+111"/>
@@ -2302,7 +2296,8 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <location line="-27"/>
         <source>Are you sure you want to delete all %1 selected files?
 </source>
-        <translation>Weet je zeker dat je alle %1 bestanden wil wissen?</translation>
+        <translation>Weet je zeker dat je alle %1 bestanden wil wissen?
+</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -2342,14 +2337,13 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 </source>
         <comment>String ends with 
 !</comment>
-        <translation>Maak nieuw bestand in 
+        <translation>Maak nieuw bestand in
 </translation>
     </message>
     <message>
         <location line="+2"/>
         <source>New File.txt</source>
-        <comment>waar gaat dit over ?</comment>
-        <translation>New file.txt</translation>
+        <translation>Nieiw bestand.txt</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2404,8 +2398,7 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
 &lt;p&gt;We hopen dat u Octave nuttig vindt.&lt;/p&gt;
 &lt;p&gt;Als u problemen ondervindt zijn er meerdere manieren om hulp te krijgen, waaronder commerciele opties, een discussiesite, een wiki en andere door de gebruikers gemeenschap ondersteunde platforms.
 U kunt meer informatie over elk van deze mogelijkheden vinden op &lt;a href=&quot;https://octave.org/support.html&quot;&gt;https://octave.org/support.html&lt;/a&gt; (opent in externe browser).&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-	</translation>
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -2774,7 +2767,7 @@ Octave GUI must be closed now.</source>
 Controleer dat je lees en schrijfpermissie hebt in
 %3
 
-Octave GUI moet nu gesloten worden</translation>
+Octave GUI moet nu gesloten worden.</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2940,7 +2933,7 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
         <source>%1 is a built-in, compiled, or inline
 function and can not be edited.</source>
         <translation>%1 is een ingebouwde gecompileerde
-of inline functie en kan niet worden bewerkt</translation>
+of inline functie en kan niet worden bewerkt.</translation>
     </message>
     <message>
         <location line="+41"/>
@@ -3095,17 +3088,17 @@ of inline functie en kan niet worden bewerkt</translation>
     <message>
         <location line="+7"/>
         <source>&amp;Tools</source>
-        <translation>Gereedschappen</translation>
+        <translation>&amp;Gereedschappen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Start &amp;Profiler Session</source>
-        <translation>Profiler</translation>
+        <translation>Nieuwe &amp;Profilersessie</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Resume Profiler Session</source>
-        <translation>Profiler sessie he&amp;rvatten</translation>
+        <translation>Profilersessie he&amp;rvatten</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3115,7 +3108,7 @@ of inline functie en kan niet worden bewerkt</translation>
     <message>
         <location line="+4"/>
         <source>&amp;Show Profiler Data</source>
-        <translation>Toon profiler data</translation>
+        <translation>&amp;Toon profiler data</translation>
     </message>
     <message>
         <location line="+53"/>
@@ -3512,7 +3505,7 @@ bestaat niet. Wilt u het aanmaken?</translation>
     <message>
         <location line="+1"/>
         <source>Move to Bottom</source>
-        <translation>Verschuif naar onderaan&gt;</translation>
+        <translation>Verschuif naar onderaan</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3607,12 +3600,12 @@ bestaat niet. Wilt u het aanmaken?</translation>
     <message>
         <location filename="__octave_temp_gui_sources__/src/gui-preferences-ve.h" line="+1"/>
         <source>Selected Foreground</source>
-        <translation>Gekozen Voorgrond</translation>
+        <translation>Gekozen, Voorgrond</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Background</source>
-        <translation>Gekozen achtergrond</translation>
+        <translation>Gekozen, Achtergrond</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3658,14 +3651,14 @@ Niet opgeslagen veranderingen gaan verloren!</translation>
         <source>Reload the default colors,
 depends on currently selected mode.</source>
         <translation>Herlaadt de standaard kleuren,
-afhankelijk van de nu geselecteerde modus</translation>
+afhankelijk van de nu geselecteerde modus.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Reload the default style values,
 depends on currently selected mode.</source>
         <translation>Herlaad de standaard stijl waarden,
-afhankelijk van de nu geselecteerde modus</translation>
+afhankelijk van de nu geselecteerde modus.</translation>
     </message>
     <message>
         <location line="-13"/>
@@ -3680,7 +3673,7 @@ afhankelijk van de nu geselecteerde modus</translation>
     <message>
         <location filename="__octave_temp_gui_sources__/src/settings-dialog.cc" line="-972"/>
         <source>Loading current preferences ... </source>
-        <translation>Huidige instelling aan het laden ...</translation>
+        <translation>Huidige instelling aan het laden ... </translation>
     </message>
     <message>
         <location line="+44"/>
@@ -3722,7 +3715,7 @@ afhankelijk van de nu geselecteerde modus</translation>
     <message>
         <location line="+32"/>
         <source>Applying preferences ... </source>
-        <translation>Voorkeuren aan het toepassen ...</translation>
+        <translation>Voorkeuren aan het toepassen ... </translation>
     </message>
     <message>
         <location line="+89"/>
@@ -3968,7 +3961,7 @@ Wil je de sneltoets toch gebruiken en loskoppelen van de vorige actie?</translat
     <message>
         <location line="+10"/>
         <source>View Menu</source>
-        <translation>View menu</translation>
+        <translation>Weergave menu</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -4340,7 +4333,7 @@ Wil je de sneltoets toch gebruiken en loskoppelen van de vorige actie?</translat
     <message>
         <location line="+11"/>
         <source>Can not dup redirected stream with fd = %1.</source>
-        <translation>Kan &apos;dup&apos; niet op omgeleide stream met fd = %1 toepassen</translation>
+        <translation>Kan &apos;dup&apos; niet op omgeleide stream met fd = %1 toepassen.</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -4361,7 +4354,8 @@ naar pipe met fd = %2: %3</translation>
     </message>
     <message>
         <location line="+17"/>
-        <source>Error reading from redirected strem fd = %1.</source>
+        <source>Error reading from redirected stream fd = %1.</source>
+        <oldsource>Error reading from redirected strem fd = %1.</oldsource>
         <translation>Fout bij lezen van omgeleide stream met fd = %1.</translation>
     </message>
     <message>
@@ -4917,9 +4911,7 @@ Fout: </translation>
     <message>
         <location line="+848"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Ok&lt;/span&gt; - close dialog and apply settings&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Apply - &lt;/span&gt;apply settings but leave dialog open&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Cancel - &lt;/span&gt;close dialog and discard changes not yet applied&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Reset -&lt;/span&gt; reload settings discarding changes not yet applied&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>
-        &lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Ok&lt;/span&gt; - sluit dialoog and pas instellingen toe&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Apply - &lt;/span&gt;pas instellingen toe, maar laat dialoog open&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Cancel - &lt;/span&gt;sluit dialoog en vergeet niet opgeslagen wijzigingen&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Reset -&lt;/span&gt; herlaad de instellingen, niet opgeslagen wijzigingen gaan verloren&lt;/body&gt;&lt;/html&gt;
-	</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Ok&lt;/span&gt; - sluit dialoog and pas instellingen toe&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Apply - &lt;/span&gt;pas instellingen toe, maar laat dialoog open&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Cancel - &lt;/span&gt;sluit dialoog en vergeet niet opgeslagen wijzigingen&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Reset -&lt;/span&gt; herlaad de instellingen, niet opgeslagen wijzigingen gaan verloren&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="-2247"/>
@@ -5268,7 +5260,7 @@ interferentie met readline toetsaanslagen te voorkomen.</translation>
     <message>
         <location line="+1"/>
         <source>Step In</source>
-        <translation>Stap functie binnen In</translation>
+        <translation>Stap functie binnen</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5463,12 +5455,12 @@ interferentie met readline toetsaanslagen te voorkomen.</translation>
     <message>
         <location line="+3"/>
         <source>Zoom In</source>
-        <translation>Inzoomen</translation>
+        <translation>Vergroten</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Zoom Out</source>
-        <translation>Uitzoomen</translation>
+        <translation>Verkleinen</translation>
     </message>
     <message>
         <location line="+2"/>

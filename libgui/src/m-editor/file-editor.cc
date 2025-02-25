@@ -1100,6 +1100,17 @@ file_editor::handle_file_name_changed (const QString& fname,
 }
 
 void
+file_editor::handle_close_file_request (const QStringList& files_to_close)
+{
+  for (int i = 0; i < files_to_close.length (); i++)
+    {
+      file_editor_tab *tab = find_tab_widget (files_to_close.at (i));
+      if (tab)
+        tab->conditional_close ();
+    }
+}
+
+void
 file_editor::handle_tab_close_request (int index)
 {
   file_editor_tab *editor_tab
@@ -1108,7 +1119,7 @@ file_editor::handle_tab_close_request (int index)
 }
 
 void
-file_editor::handle_tab_remove_request ()
+file_editor::handle_tab_remove_request (const QString& file_name)
 {
   QObject *fileEditorTab = sender ();
   if (fileEditorTab)
@@ -1118,6 +1129,7 @@ file_editor::handle_tab_remove_request ()
           if (m_tab_widget->widget (i) == fileEditorTab)
             {
               m_tab_widget->removeTab (i);
+              Q_EMIT remove_editor_file_in_browser_signal (file_name);
 
               // Deleting the sender (even with deleteLater) seems a
               // bit strange.  Is there a better way?
@@ -2791,6 +2803,9 @@ file_editor::make_file_editor_tab (const QString& directory)
 
   connect (f, &file_editor_tab::debug_quit_signal,
            this, &file_editor::debug_quit_signal);
+
+  connect (f, &file_editor_tab::rename_editor_file_in_browser_signal,
+           this, &file_editor::rename_editor_file_in_browser_signal);
 
   // Any interpreter_event signal from a file_editor_tab_widget is
   // handled the same as for the parent main_window object.

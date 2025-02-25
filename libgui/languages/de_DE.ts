@@ -45,17 +45,17 @@
     <message>
         <location filename="__octave_temp_gui_sources__/qterminal/libqterminal/QTerminal.cc" line="+119"/>
         <source>Edit &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Editiere &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Help on &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilfe zu &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Documentation on &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokumentation zu &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+165"/>
@@ -326,7 +326,7 @@
     <message>
         <location line="+57"/>
         <source>Command Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Befehlsfenster</translation>
     </message>
 </context>
 <context>
@@ -342,17 +342,17 @@
     <message>
         <location filename="__octave_temp_gui_sources__/src/console-lexer.cc" line="+48"/>
         <source>Default</source>
-        <translation type="unfinished">Standard</translation>
+        <translation>Standard</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Prompt</source>
-        <translation type="unfinished"></translation>
+        <translation>Eingabeaufforderung</translation>
     </message>
 </context>
 <context>
@@ -684,7 +684,7 @@ for reading: %2.</source>
         <translation>Die Datei
 %1
 konnte nicht zum Lesen geöffnet werden:
-%2</translation>
+%2.</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -713,7 +713,7 @@ for writing: %2.</source>
         <translation>Die Datei
 %1
 konnte nicht zum Schreiben geöffnet werden:
-%2</translation>
+%2.</translation>
     </message>
     <message>
         <location line="+271"/>
@@ -1068,12 +1068,12 @@ konnte nicht zum Schreiben geöffnet werden:
     <message>
         <location line="+6"/>
         <source>Save File and Run All &amp;Tests</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei speichern und alle &amp;Tests ausführen</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Save File and Run All &amp;Demos</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei speichern und alle &amp;Demos ausführen</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1833,12 +1833,12 @@ Zu jeder dieser Möglichkeiten sind detaillierte Informationen unter &lt;a href=
     <message>
         <location line="+4"/>
         <source>Current Dir</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktuelles Verzeichnis</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Set start directory to current directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Setze aktuelles Verzeichnis als Startverzeichnis</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1890,7 +1890,7 @@ Zu jeder dieser Möglichkeiten sind detaillierte Informationen unter &lt;a href=
     <message>
         <location line="+95"/>
         <source>Results: Double click opens the file or sets the directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Suchergebnisse: Doppelklick öffnet die Datei oder setzt das Verzeichnis</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1907,7 +1907,9 @@ Zu jeder dieser Möglichkeiten sind detaillierte Informationen unter &lt;a href=
         <source>Enter the filename search patterns.
 Several different patterns can be
 separated by &apos;;&apos;, e.g. &apos;*.cc ; *.h&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Eingabe der Dateimuster für die Suche.
+Verschiedene Muster konnen mit &apos;;&apos;
+getrennt werden, z.B. &apos;*.cc ; *.h&apos;</translation>
     </message>
     <message>
         <location line="+96"/>
@@ -1970,12 +1972,12 @@ separated by &apos;;&apos;, e.g. &apos;*.cc ; *.h&apos;</source>
     <message>
         <location line="+87"/>
         <source>Double click to open the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Doppelklick öffnet die Datei</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Double click to set the directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Doppleklick setzt das Verzeichnis als aktuelles Verzeichnis</translation>
     </message>
 </context>
 <context>
@@ -1983,29 +1985,29 @@ separated by &apos;;&apos;, e.g. &apos;*.cc ; *.h&apos;</source>
     <message>
         <location filename="__octave_temp_gui_sources__/src/find-widget.cc" line="+48"/>
         <source>Find:</source>
-        <translation type="unfinished">Suchen nach:</translation>
+        <translation>Suchen nach:</translation>
     </message>
     <message>
         <location line="+10"/>
         <location line="+1"/>
         <source>Search forward</source>
-        <translation type="unfinished">Nächsten suchen</translation>
+        <translation>Nächsten suchen</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+1"/>
         <source>Search backward</source>
-        <translation type="unfinished">Vorherigen suchen</translation>
+        <translation>Vorherigen suchen</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Schließen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Close find dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Suchdialog schließen</translation>
     </message>
 </context>
 <context>
@@ -2973,7 +2975,7 @@ aktuellen Schemas laden.</translation>
     <message>
         <location line="+32"/>
         <source>Applying preferences ... </source>
-        <translation>Einstellungen werden angewendet...</translation>
+        <translation>Einstellungen werden angewendet... </translation>
     </message>
     <message>
         <location line="+89"/>
@@ -3119,7 +3121,7 @@ Aktion: %1</translation>
     <message>
         <location line="+8"/>
         <source>Clear</source>
-        <translation type="unfinished">Leeren</translation>
+        <translation>Leeren</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3582,60 +3584,62 @@ bisherige Aktion deaktiviert werden?</translation>
     <message>
         <location filename="__octave_temp_gui_sources__/src/self-listener.cc" line="+82"/>
         <source>Can not open redirected stream with fd = %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann umgeleiteten Datenstrom mit Deskriptor %1 nicht öffnen.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Can not disable buffering of stream with fd = %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann das Puffern des Datenstrom mit Deskriptor %1 nicht ausschalten.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Can not dup redirected stream with fd = %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann umgeleiteten Datenstrom mit Deskriptor %1 nicht duplizieren.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Cannot create pipe for redirecting stream with fd = %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann keinePipe für den Datenstrom mit Deskriptor %1 erstellen:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Cannot dup2 redirected stream with fd = %1
 to pipe with fd = %2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann umgeleiteten Datenstrom mit Deskriptor %1 nicht auf Pipe mit Deskriptor %2 duplizieren (dup2): %3</translation>
     </message>
     <message>
         <location line="+57"/>
         <source>Error while listening to redirected streams</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim lesen des umgeleiteten Datenstroms</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Error reading from redirected strem fd = %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Lesen vom umgeleiteten Datenstrom mit Deskriptor %1.</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>
 Output redirection in </source>
-        <translation type="unfinished"></translation>
+        <translation>
+Ausgabeumleitung nach </translation>
     </message>
     <message>
         <location line="+1"/>
         <source> won&apos;t work.</source>
-        <translation type="unfinished"></translation>
+        <translation> wird nicht funktionieren.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>
 Error: </source>
-        <translation type="unfinished"></translation>
+        <translation>
+Fehler: </translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Octave</source>
-        <translation type="unfinished">Octave</translation>
+        <translation>Octave</translation>
     </message>
 </context>
 <context>
@@ -4997,12 +5001,12 @@ Tastenkürzeln zu vermeiden.</translation>
     <message>
         <location line="+1"/>
         <source>Run Tests</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausführen der Tests</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Run Demos</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausführen der Demos</translation>
     </message>
     <message>
         <location line="+3"/>

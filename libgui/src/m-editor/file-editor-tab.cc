@@ -322,7 +322,7 @@ file_editor_tab::closeEvent (QCloseEvent *e)
   else
     {
       e->accept ();
-      Q_EMIT tab_remove_request ();
+      Q_EMIT tab_remove_request (m_file_name);
     }
 }
 
@@ -531,6 +531,7 @@ file_editor_tab::set_file_name (const QString& fileName)
   // update lexer and file name variable if file name changes
   if (m_file_name != fileName)
     {
+      Q_EMIT rename_editor_file_in_browser_signal (m_file_name, fileName);
       m_file_name = fileName;
       update_lexer ();
     }
@@ -2559,7 +2560,7 @@ file_editor_tab::do_save_file (const QString& file_to_save,
 
       if (remove_on_success)
         {
-          Q_EMIT tab_remove_request ();
+          Q_EMIT tab_remove_request (m_file_name);
           return;  // Don't touch member variables after removal
         }
 

@@ -287,28 +287,38 @@ main_window::adopt_file_browser_widget ()
 {
   m_file_browser_window = m_octave_qobj.file_browser_widget (this);
 
+  m_file_browser = m_file_browser_window->get_file_system_browser ();
+  m_editor_files = m_file_browser_window->get_editor_files_browser ();
+
   make_dock_widget_connections (m_file_browser_window);
 
-  connect (m_file_browser_window, &files_dock_widget::open_file,
+  connect (m_file_browser, &file_system_browser::open_file,
            this, qOverload<const QString&> (&main_window::open_file_signal));
-  connect (m_file_browser_window,
-           &files_dock_widget::displayed_directory_changed,
+  connect (m_file_browser,
+           &file_system_browser::displayed_directory_changed,
            this, &main_window::set_current_working_directory);
 
-  connect (m_file_browser_window, &files_dock_widget::modify_path_signal,
+  connect (m_file_browser, &file_system_browser::modify_path_signal,
            this, &main_window::modify_path);
 
-  connect (m_file_browser_window, &files_dock_widget::run_file_signal,
+  connect (m_file_browser, &file_system_browser::run_file_signal,
            this, &main_window::run_file_in_terminal);
 
-  connect (m_file_browser_window, &files_dock_widget::load_file_signal,
+  connect (m_file_browser, &file_system_browser::load_file_signal,
            this, &main_window::handle_load_workspace_request);
 
-  connect (m_file_browser_window, &files_dock_widget::open_any_signal,
+  connect (m_file_browser, &file_system_browser::open_any_signal,
            this, &main_window::handle_open_any_request);
 
-  connect (m_file_browser_window, &files_dock_widget::find_files_signal,
+  connect (m_file_browser, &file_system_browser::find_files_signal,
            this, &main_window::find_files);
+
+  connect (m_editor_files,
+           &editor_files_browser::displayed_directory_changed,
+           this, &main_window::set_current_working_directory);
+
+  connect (m_editor_files, &editor_files_browser::run_file_signal,
+           this, &main_window::run_file_in_terminal);
 }
 
 void
@@ -405,11 +415,11 @@ main_window::adopt_editor_widget ()
   connect (this, &main_window::update_breakpoint_marker_signal,
            editor, &file_editor::handle_update_breakpoint_marker_request);
 
-  // Signals for removing/renaming files/dirs in the file browser
-  connect (m_file_browser_window, &files_dock_widget::file_remove_signal,
+  // Signals for removing/renaming/open files/dirs in the file browser
+  connect (m_file_browser, &file_system_browser::file_remove_signal,
            editor, &file_editor::handle_file_remove);
 
-  connect (m_file_browser_window, &files_dock_widget::file_renamed_signal,
+  connect (m_file_browser, &file_system_browser::file_renamed_signal,
            editor, &file_editor::handle_file_renamed);
 
   // Signals for removing/renaming files/dirs in the terminal window
@@ -425,6 +435,21 @@ main_window::adopt_editor_widget ()
 
   connect (qt_link, &qt_interpreter_events::directory_changed_signal,
            editor, &file_editor::update_octave_directory);
+
+  // signal from/to the editor files browser
+  editor_files_browser *feb = m_file_browser_window->get_editor_files_browser ();
+
+  connect (editor, &file_editor::remove_editor_file_in_browser_signal,
+           feb, &editor_files_browser::remove_editor_file);
+
+  connect (editor, &file_editor::rename_editor_file_in_browser_signal,
+           feb, &editor_files_browser::rename_editor_file);
+
+  connect (feb, &editor_files_browser::focus_editor_file_signal,
+           editor, &file_editor::handle_edit_file_request);
+
+  connect (feb, &editor_files_browser::close_editor_file_signal,
+           editor, &file_editor::handle_close_file_request);
 
   m_editor_window = editor;
 
@@ -1948,7 +1973,7 @@ main_window::find_files (const QString& start_dir)
                this, &main_window::find_files_finished);
 
       connect (m_find_files_dlg, &find_files_dialog::dir_selected,
-               m_file_browser_window, &files_dock_widget::set_current_directory);
+               m_file_browser, &file_system_browser::set_current_directory);
 
       connect (m_find_files_dlg, &find_files_dialog::file_selected,
                this, qOverload<const QString&> (&main_window::open_file_signal));

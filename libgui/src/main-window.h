@@ -329,6 +329,9 @@ private:
   QPointer<variable_editor> m_variable_editor_window;
   //!@}
 
+  file_system_browser *m_file_browser;
+  editor_files_browser *m_editor_files;
+
   external_editor_interface *m_external_editor;
   QWidget *m_active_editor;
 

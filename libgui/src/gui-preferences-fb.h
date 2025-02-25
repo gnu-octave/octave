@@ -30,6 +30,8 @@
 
 // Files dock widget
 
+extern gui_pref fb_active_tab;
+
 extern gui_pref fb_column_state;
 
 extern gui_pref fb_mru_list;

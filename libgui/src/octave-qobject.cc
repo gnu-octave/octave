@@ -559,7 +559,8 @@ base_qobject::file_browser_widget (main_window *mw)
       = QPointer<files_dock_widget> (new files_dock_widget (mw));
 
   connect (qt_link (), &qt_interpreter_events::directory_changed_signal,
-           m_file_browser_widget, &files_dock_widget::update_octave_directory);
+           m_file_browser_widget->get_file_system_browser (),
+           &file_system_browser::update_octave_directory);
 
   return m_file_browser_widget;
 }

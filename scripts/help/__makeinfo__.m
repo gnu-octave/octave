@@ -103,7 +103,7 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
   text = regexprep (text, '^ +@end tex', '@end tex', 'lineanchors');
   ## Replace @seealso with Octave specific @xseealso macro.
   ## Also escape '@' to '@@' for Texinfo, unless '@\' pattern used.
-  [s, e] = regexp (text, '@seealso{(?:.|\\})*}');
+  [s, e] = regexp (text, '@seealso{(?:[^}]|@\\})+}');
   cum_rep = 0;
   for (i_match = 1:numel (s))
     esc_text = regexprep (text(((s(i_match)+8:e(i_match))+i_match-1)+cum_rep), '@(?!\\)', '@@');

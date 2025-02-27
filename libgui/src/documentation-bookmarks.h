@@ -83,9 +83,9 @@ private:
 
   void add_bookmark (const QString& title, const QString& url,
                      QTreeWidgetItem *item = nullptr);
-  QTreeWidgetItem* add_folder (const QString& folder,
-                               QTreeWidgetItem *item = nullptr,
-                               bool expanded = true);
+  QTreeWidgetItem * add_folder (const QString& folder,
+                                QTreeWidgetItem *item = nullptr,
+                                bool expanded = true);
 
   /*!
       Writing to and reading bookmarks from an xbel-file as

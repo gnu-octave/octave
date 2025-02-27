@@ -271,7 +271,7 @@ protected:
 
 private:
 
-  static OCTARRAY_API typename Array<T, Alloc>::ArrayRep *nil_rep ();
+  static OCTARRAY_API typename Array<T, Alloc>::ArrayRep * nil_rep ();
 
 public:
 

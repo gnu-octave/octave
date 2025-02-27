@@ -125,15 +125,15 @@ directory_path::init ()
                 env_debug_flags = val;
             }
           catch (const std::invalid_argument&)
-              {
-                (*current_liboctave_warning_with_id_handler)
-                  ("Octave:kpathsea-debug-value-ignored", "directory_path::init: ignoring invalid KPATHSEA_DEBUG value '%s'", env_val.c_str ());
-              }
-            catch (const std::out_of_range&)
-              {
-                (*current_liboctave_warning_with_id_handler)
-                  ("Octave:kpathsea-debug-value-ignored", "directory_path::init: ignoring out of range KPATHSEA_DEBUG value '%s'", env_val.c_str ());
-              }
+            {
+              (*current_liboctave_warning_with_id_handler)
+                ("Octave:kpathsea-debug-value-ignored", "directory_path::init: ignoring invalid KPATHSEA_DEBUG value '%s'", env_val.c_str ());
+            }
+          catch (const std::out_of_range&)
+            {
+              (*current_liboctave_warning_with_id_handler)
+                ("Octave:kpathsea-debug-value-ignored", "directory_path::init: ignoring out of range KPATHSEA_DEBUG value '%s'", env_val.c_str ());
+            }
 
           kpse_debug |= env_debug_flags;
         }

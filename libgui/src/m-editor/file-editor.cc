@@ -723,30 +723,30 @@ file_editor::run_file (bool, int opts)
   QPointer<file_editor> this_fe (this);
 
   Q_EMIT interpreter_event
-    ([this, this_fe, opts] (interpreter& interp)
-     {
-       // INTERPRETER THREAD
+  ([this, this_fe, opts] (interpreter& interp)
+  {
+    // INTERPRETER THREAD
 
-       // If THIS_FE is no longer valid, skip the entire callback
-       // function.  With the way things are implemented now, we can't
-       // run the contents of a file unless the file editor and the
-       // corresponding file editor tab are still valid.
+    // If THIS_FE is no longer valid, skip the entire callback
+    // function.  With the way things are implemented now, we can't
+    // run the contents of a file unless the file editor and the
+    // corresponding file editor tab are still valid.
 
-       if (this_fe.isNull ())
-         return;
+    if (this_fe.isNull ())
+      return;
 
-       // Act as though this action was entered at the command propmt
-       // so that the interpreter will check for updated file time
-       // stamps.
-       Vlast_prompt_time.stamp ();
+    // Act as though this action was entered at the command propmt
+    // so that the interpreter will check for updated file time
+    // stamps.
+    Vlast_prompt_time.stamp ();
 
-       tree_evaluator& tw = interp.get_evaluator ();
+    tree_evaluator& tw = interp.get_evaluator ();
 
-       if (tw.in_debug_repl ())
-         Q_EMIT request_dbcont_signal ();
-       else
-         Q_EMIT fetab_run_file (m_tab_widget->currentWidget (), opts);
-     });
+    if (tw.in_debug_repl ())
+      Q_EMIT request_dbcont_signal ();
+    else
+      Q_EMIT fetab_run_file (m_tab_widget->currentWidget (), opts);
+  });
 }
 
 void
@@ -927,7 +927,7 @@ void
 file_editor::request_upper_case (bool)
 {
   Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
-                                QsciScintillaBase::SCI_UPPERCASE);
+                                  QsciScintillaBase::SCI_UPPERCASE);
 }
 
 void
@@ -1422,7 +1422,7 @@ file_editor::notice_settings ()
 
   if (rotated)
     m_tab_widget->setTabsClosable (false);  // No close buttons
-    // FIXME: close buttons can not be correctly placed in rotated tabs
+                                            // FIXME: close buttons can not be correctly placed in rotated tabs
 
   // Get the tab bar and set the rotation
   int rotation = rotated;
@@ -1433,7 +1433,7 @@ file_editor::notice_settings ()
   bar->set_rotated (rotation);
 
   // Get suitable height of a tab related to font and icon size
-  int height = 1.5*QFontMetrics (m_tab_widget->font ()).height ();
+  int height = 1.5* QFontMetrics (m_tab_widget->font ()).height ();
   int is = 1.5*m_tab_widget->iconSize ().height ();
   if (is > height)
     height = is;
@@ -1454,9 +1454,9 @@ file_editor::notice_settings ()
     }
 
   QString style_sheet
-      = QString ("QTabBar::tab {max-" + height_str + ": %1px;\n"
-                               "max-" + width_str + ": %2px; }")
-                        .arg (height).arg (width);
+    = QString ("QTabBar::tab {max-" + height_str + ": %1px;\n"
+               "max-" + width_str + ": %2px; }")
+      .arg (height).arg (width);
 
 #if defined (Q_OS_MAC)
   // FIXME: This is a workaround for missing tab close buttons on MacOS
@@ -1466,12 +1466,12 @@ file_editor::notice_settings ()
       QString icon = global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-close.png";
 
       QString close_button_css_mac
-        ("QTabBar::close-button"
-         " { image: url(" + icon + ");"
-         " padding: 4px;"
-         "   subcontrol-position: bottom; }\n"
-         "QTabBar::close-button:hover"
-         "  { background-color: #cccccc; }");
+      ("QTabBar::close-button"
+       " { image: url(" + icon + ");"
+       " padding: 4px;"
+       "   subcontrol-position: bottom; }\n"
+       "QTabBar::close-button:hover"
+       "  { background-color: #cccccc; }");
 
       style_sheet = style_sheet + close_button_css_mac;
     }
@@ -2665,7 +2665,7 @@ file_editor::make_file_editor_tab (const QString& directory)
            this, &file_editor::handle_mru_add_file);
 
   connect (f, &file_editor_tab::request_open_file,
-           this, [this] (const QString& fname, const QString& encoding) { request_open_file (fname, encoding); });
+  this, [this] (const QString& fname, const QString& encoding) { request_open_file (fname, encoding); });
 
   connect (f, &file_editor_tab::edit_area_changed,
            this, &file_editor::edit_area_changed);
@@ -2675,7 +2675,7 @@ file_editor::make_file_editor_tab (const QString& directory)
 
   // Signals from the file_editor or main-win non-trivial operations
   connect (this, &file_editor::fetab_settings_changed,
-           f, [f] () { f->notice_settings (); });
+  f, [f] () { f->notice_settings (); });
 
   connect (this, &file_editor::fetab_change_request,
            f, &file_editor_tab::change_editor_state);
@@ -2842,7 +2842,7 @@ file_editor::mru_menu_update ()
   for (int i = 0; i < num_files; ++i)
     {
       QString text = QString ("&%1 %2").
-        arg ((i+1) % int (MaxMRUFiles)).arg (m_mru_files.at (i));
+                     arg ((i+1) % int (MaxMRUFiles)).arg (m_mru_files.at (i));
       m_mru_file_actions[i]->setText (text);
 
       QStringList action_data;
@@ -3050,7 +3050,7 @@ file_editor::add_menu (QMenuBar *p, QString name)
   QMenu *menu = p->addMenu (name);
 
   QString base_name = name;  // get a copy
-  // replace intended '&' ("&&") by a temp. string
+                             // replace intended '&' ("&&") by a temp. string
   base_name.replace ("&&", "___octave_amp_replacement___");
   // remove single '&' (shortcut)
   base_name.remove ("&");

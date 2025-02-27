@@ -276,7 +276,7 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
       get_global_textcursor_pos (&global_pos, &local_pos);
       QRect editor_rect = geometry ();      // editor rect mapped to global
       editor_rect.moveTopLeft
-        (parentWidget ()->mapToGlobal (editor_rect.topLeft ()));
+      (parentWidget ()->mapToGlobal (editor_rect.topLeft ()));
       if (! editor_rect.contains (global_pos))  // is cursor outside editor?
         global_pos = editor_rect.topLeft ();   // yes, take top left corner
     }
@@ -344,12 +344,12 @@ octave_qscintilla::contextmenu_help_doc (bool documentation)
       std::string name = m_word_at_cursor.toStdString ();
 
       Q_EMIT interpreter_event
-        ([name] (interpreter& interp)
-         {
-           // INTERPRETER THREAD
+      ([name] (interpreter& interp)
+      {
+        // INTERPRETER THREAD
 
-           F__event_manager_show_documentation__ (interp, ovl (name));
-         });
+        F__event_manager_show_documentation__ (interp, ovl (name));
+      });
     }
   else
     Q_EMIT execute_command_in_terminal_signal ("help " + m_word_at_cursor);
@@ -372,8 +372,8 @@ octave_qscintilla::context_run ()
       contextmenu_run (true);
 
       Q_EMIT interpreter_event
-        ([] (interpreter&)
-          { command_editor::erase_empty_line (false); });
+      ([] (interpreter&)
+      { command_editor::erase_empty_line (false); });
     }
 }
 
@@ -591,7 +591,7 @@ octave_qscintilla::smart_indent (bool do_smart_indent, int do_auto_close,
 
       // Check for existing end statement in the same line
       QRegularExpressionMatch ematch = ekey.match (prevline,
-                                                   bmatch.capturedStart ());
+                                       bmatch.capturedStart ());
       QString first_word = bmatch.captured (1);
       bool inline_end = ematch.hasMatch ()
                         && is_end (ematch.captured (1), first_word);
@@ -606,12 +606,12 @@ octave_qscintilla::smart_indent (bool do_smart_indent, int do_auto_close,
       if (do_auto_close
           && ! inline_end
           && ! first_word.contains
-                            (QRegularExpression
-                             {"(?:case|otherwise|unwind_protect_cleanup)"}))
-        {
-          // Do auto close
-          auto_close (do_auto_close, line, prevline, first_word);
-        }
+          (QRegularExpression
+      {"(?:case|otherwise|unwind_protect_cleanup)"}))
+      {
+        // Do auto close
+        auto_close (do_auto_close, line, prevline, first_word);
+      }
 
       return;
     }
@@ -658,8 +658,9 @@ octave_qscintilla::smart_indent (bool do_smart_indent, int do_auto_close,
     }
 
   ekey = QRegularExpression
-           {"^[\t ]*(?:end|endif|endfor|endwhile|until|endfunction"
-            "|endswitch|end_try_catch|end_unwind_protect)[\r]?[\t #%\n(;]"};
+  {
+    "^[\t ]*(?:end|endif|endfor|endwhile|until|endfunction"
+    "|endswitch|end_try_catch|end_unwind_protect)[\r]?[\t #%\n(;]"};
   if (prevline.contains (ekey))
     {
       if (indentation (line-1) <= indentation (line))
@@ -881,9 +882,9 @@ octave_qscintilla::contextmenu_run (bool)
   // Split contents into single lines and complete commands
   QStringList lines = selectedText ().split (QRegularExpression {"[\r\n]"},
 #if defined (HAVE_QT_SPLITBEHAVIOR_ENUM)
-                                             Qt::SkipEmptyParts);
+                      Qt::SkipEmptyParts);
 #else
-                                             QString::SkipEmptyParts);
+                      QString::SkipEmptyParts);
 #endif
   for (int i = 0; i < lines.count (); i++)
     {
@@ -944,18 +945,18 @@ octave_qscintilla::contextmenu_run (bool)
 
   // Add commands to the history
   Q_EMIT interpreter_event
-    ([tmp_hist] (interpreter& interp)
-      {
-        // INTERPRETER THREAD
+  ([tmp_hist] (interpreter& interp)
+  {
+    // INTERPRETER THREAD
 
-        if (tmp_hist.isNull ())
-          return;
+    if (tmp_hist.isNull ())
+      return;
 
-        std::string opt = "-r";
-        std::string  path = tmp_hist->fileName ().toStdString ();
+    std::string opt = "-r";
+    std::string  path = tmp_hist->fileName ().toStdString ();
 
-        Fhistory (interp, ovl (opt, path));
-      });
+    Fhistory (interp, ovl (opt, path));
+  });
 
   // The interpreter_event callback function below emits a signal.
   // Because we don't control when that happens, use a guarded pointer
@@ -965,125 +966,125 @@ octave_qscintilla::contextmenu_run (bool)
 
   // Let the interpreter execute the tmp file
   Q_EMIT interpreter_event
-    ([this, this_oq, tmp_file, tmp_hist] (interpreter& interp)
-     {
-       // INTERPRETER THREAD
+  ([this, this_oq, tmp_file, tmp_hist] (interpreter& interp)
+  {
+    // INTERPRETER THREAD
 
-       // FIXME: For now, just skip the entire callback if THIS_OQ is
-       // no longer valid.  Maybe there is a better way to do this
-       // job?
+    // FIXME: For now, just skip the entire callback if THIS_OQ is
+    // no longer valid.  Maybe there is a better way to do this
+    // job?
 
-       if (this_oq.isNull ())
-         return;
+    if (this_oq.isNull ())
+      return;
 
-       std::string file = tmp_file->fileName ().toStdString ();
+    std::string file = tmp_file->fileName ().toStdString ();
 
-       std::string pending_input = command_editor::get_current_line ();
+    std::string pending_input = command_editor::get_current_line ();
 
-       int err_line = -1;   // For storing the line of a poss. error
+    int err_line = -1;   // For storing the line of a poss. error
 
-       // Get current state of auto command repeat in debug mode
-       octave_value_list ovl_dbg = Fisdebugmode (interp);
-       bool dbg = ovl_dbg(0).bool_value ();
-       octave_value_list ovl_auto_repeat = ovl (true);
-       if (dbg)
-         ovl_auto_repeat = Fauto_repeat_debug_command (interp, ovl (false), 1);
-       bool auto_repeat = ovl_auto_repeat(0).bool_value ();
+    // Get current state of auto command repeat in debug mode
+    octave_value_list ovl_dbg = Fisdebugmode (interp);
+    bool dbg = ovl_dbg(0).bool_value ();
+    octave_value_list ovl_auto_repeat = ovl (true);
+    if (dbg)
+      ovl_auto_repeat = Fauto_repeat_debug_command (interp, ovl (false), 1);
+    bool auto_repeat = ovl_auto_repeat(0).bool_value ();
 
-       try
-         {
-           // Do the job
-           interp.source_file (file);
-         }
-       catch (const execution_exception& ee)
-         {
-           // Catch errors otherwise the rest of the interpreter
-           // will not be executed (cleaning up).
+    try
+      {
+        // Do the job
+        interp.source_file (file);
+      }
+    catch (const execution_exception& ee)
+      {
+        // Catch errors otherwise the rest of the interpreter
+        // will not be executed (cleaning up).
 
-           // New error message and error stack
-           QString new_msg = QString::fromStdString (ee.message ());
-           std::list<frame_info> stack = ee.stack_info ();
+        // New error message and error stack
+        QString new_msg = QString::fromStdString (ee.message ());
+        std::list<frame_info> stack = ee.stack_info ();
 
-           // Remove line and column from first line of error message only
-           // if it is related to the tmp itself, i.e. only if the
-           // the error stack size is 0, 1, or, if in debug mode, 2
-           size_t max_stack_size = 1;
-           if (dbg)
-             max_stack_size = 2;
-           if (stack.size () <= max_stack_size)
-             {
-               QRegularExpression rx {"source: error sourcing file [^\\n\\:]*"};
-               if (new_msg.contains (rx))
-                 {
-                   // Selected code has syntax errors
-                   new_msg.replace (rx, "error sourcing selected code");
-                   err_line = 0;  // Nothing into history?
-                 }
-               else
-                 {
-                   // Normal error, detect line and remove file
-                   // name from message
-                   QStringList rx_list;
-                   rx_list << "near line (\\d+),[^\n]*\n";
-                   rx_list << "near line (\\d+),[^\n]*$";
+        // Remove line and column from first line of error message only
+        // if it is related to the tmp itself, i.e. only if the
+        // the error stack size is 0, 1, or, if in debug mode, 2
+        size_t max_stack_size = 1;
+        if (dbg)
+          max_stack_size = 2;
+        if (stack.size () <= max_stack_size)
+          {
+            QRegularExpression rx {"source: error sourcing file [^\\n\\:]*"};
+            if (new_msg.contains (rx))
+              {
+                // Selected code has syntax errors
+                new_msg.replace (rx, "error sourcing selected code");
+                err_line = 0;  // Nothing into history?
+              }
+            else
+              {
+                // Normal error, detect line and remove file
+                // name from message
+                QStringList rx_list;
+                rx_list << "near line (\\d+),[^\n]*\n";
+                rx_list << "near line (\\d+),[^\n]*$";
 
-                   QStringList replace_list;
-                   replace_list << "\n";
-                   replace_list << "";
+                QStringList replace_list;
+                replace_list << "\n";
+                replace_list << "";
 
-                   for (int i = 0; i < rx_list.length (); i++)
-                     {
-                       rx = QRegularExpression {rx_list.at (i)};
-                       QRegularExpressionMatch match = rx.match (new_msg);
-                       if (match.hasMatch ())
-                         {
-                           err_line = match.captured (1).toInt ();
-                           new_msg = new_msg.replace (rx, replace_list.at (i));
-                         }
-                     }
-                 }
-             }
+                for (int i = 0; i < rx_list.length (); i++)
+                  {
+                    rx = QRegularExpression {rx_list.at (i)};
+                    QRegularExpressionMatch match = rx.match (new_msg);
+                    if (match.hasMatch ())
+                      {
+                        err_line = match.captured (1).toInt ();
+                        new_msg = new_msg.replace (rx, replace_list.at (i));
+                      }
+                  }
+              }
+          }
 
-           // Drop first stack level, which is the temporary function file,
-           // or, if in debug mode, drop first two stack levels
-           if (stack.size () > 0)
-             stack.pop_back ();
-           if (dbg && (stack.size () > 0))
-             stack.pop_back ();
+        // Drop first stack level, which is the temporary function file,
+        // or, if in debug mode, drop first two stack levels
+        if (stack.size () > 0)
+          stack.pop_back ();
+        if (dbg && (stack.size () > 0))
+          stack.pop_back ();
 
-           // Clean up before throwing the modified error.
-           Q_EMIT ctx_menu_run_finished_signal (err_line,
-                                                tmp_file, tmp_hist,
-                                                dbg, auto_repeat);
+        // Clean up before throwing the modified error.
+        Q_EMIT ctx_menu_run_finished_signal (err_line,
+                                             tmp_file, tmp_hist,
+                                             dbg, auto_repeat);
 
-           // New exception with updated message and stack
-           execution_exception nee (ee.err_type (), ee.identifier (),
-                                    new_msg.toStdString (), stack);
+        // New exception with updated message and stack
+        execution_exception nee (ee.err_type (), ee.identifier (),
+                                 new_msg.toStdString (), stack);
 
-           // Throw
-           throw (nee);
-         }
+        // Throw
+        throw (nee);
+      }
 
-       // Clean up
+    // Clean up
 
-       Q_EMIT ctx_menu_run_finished_signal (err_line,
-                                            tmp_file, tmp_hist,
-                                            dbg, auto_repeat);
+    Q_EMIT ctx_menu_run_finished_signal (err_line,
+                                         tmp_file, tmp_hist,
+                                         dbg, auto_repeat);
 
-       command_editor::erase_empty_line (true);
-       command_editor::replace_line ("");
-       command_editor::set_initial_input (pending_input);
-       command_editor::redisplay ();
-       command_editor::interrupt_event_loop ();
-       command_editor::accept_line ();
-       command_editor::erase_empty_line (true);
+    command_editor::erase_empty_line (true);
+    command_editor::replace_line ("");
+    command_editor::set_initial_input (pending_input);
+    command_editor::redisplay ();
+    command_editor::interrupt_event_loop ();
+    command_editor::accept_line ();
+    command_editor::erase_empty_line (true);
 
-     });
+  });
 }
 
 void octave_qscintilla::ctx_menu_run_finished
-  (int, QPointer<QTemporaryFile> tmp_file,
-   QPointer<QTemporaryFile> tmp_hist, bool dbg, bool auto_repeat)
+(int, QPointer<QTemporaryFile> tmp_file,
+ QPointer<QTemporaryFile> tmp_hist, bool dbg, bool auto_repeat)
 {
   Q_EMIT focus_console_after_command_signal ();
 
@@ -1103,12 +1104,12 @@ void octave_qscintilla::ctx_menu_run_finished
     tmp_hist->remove ();
 
   Q_EMIT interpreter_event
-    ([dbg, auto_repeat] (interpreter& interp)
-     {
-       // INTERPRETER THREAD
-       if (dbg)
-         Fauto_repeat_debug_command (interp, ovl (auto_repeat));
-     });
+  ([dbg, auto_repeat] (interpreter& interp)
+  {
+    // INTERPRETER THREAD
+    if (dbg)
+      Fauto_repeat_debug_command (interp, ovl (auto_repeat));
+  });
 }
 
 // wrappers for dbstop related context menu items

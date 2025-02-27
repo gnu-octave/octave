@@ -108,7 +108,7 @@ private:
 
   QString get_shortcuts_file_name (import_export_action action);
 
-  QMessageBox* wait_message_box (const QString& test, QWidget *p);
+  QMessageBox * wait_message_box (const QString& test, QWidget *p);
   void close_wait_message_box (QMessageBox *mbox);
 
   bool overwrite_all_shortcuts ();

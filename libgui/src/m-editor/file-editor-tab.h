@@ -95,7 +95,7 @@ Q_SIGNALS:
   void request_remove_breakpoint_via_editor_linenr (int editor_linenr);
   void remove_all_breakpoints_signal ();
   void find_translated_line_number (int original_linenr,
-                                    int& translated_linenr, marker*&);
+                                    int& translated_linenr, marker *&);
   void find_linenr_just_before (int linenr, int& original_linenr,
                                 int& editor_linenr);
   void report_marker_linenr (QIntList& lines, QStringList& conditions);

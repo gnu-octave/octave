@@ -194,8 +194,8 @@ public Q_SLOTS:
   void handle_insert_debugger_pointer_request (const QString& file, int line);
   void handle_delete_debugger_pointer_request (const QString& file, int line);
   void handle_update_breakpoint_marker_request (bool insert,
-                                                const QString& file, int line,
-                                                const QString& cond);
+      const QString& file, int line,
+      const QString& cond);
 
   void read_settings ();
   void init_terminal_size ();
@@ -273,8 +273,8 @@ private:
   void construct_octave_qt_link ();
 
   QAction * add_action (QMenu *menu, const QIcon& icon,
-                        const QString& text, const char *member,
-                        const QWidget *receiver = nullptr);
+                       const QString& text, const char *member,
+                       const QWidget *receiver = nullptr);
 
   QMenu * m_add_menu (QMenuBar *p, QString text);
   void construct_menu_bar ();
@@ -282,10 +282,10 @@ private:
   void construct_new_menu (QMenu *p);
   void construct_edit_menu (QMenuBar *p);
   QAction * construct_debug_menu_item (const char *icon, const QString& item,
-                                       const char *member);
+                                      const char *member);
   void construct_debug_menu (QMenuBar *p);
   QAction * construct_window_menu_item (QMenu *p, const QString& item,
-                                        bool checkable, QWidget *);
+                                       bool checkable, QWidget *);
   void construct_tools_menu (QMenuBar *p);
   void construct_window_menu (QMenuBar *p);
   void construct_help_menu (QMenuBar *p);

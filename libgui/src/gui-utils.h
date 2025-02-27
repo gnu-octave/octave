@@ -44,7 +44,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 */
 
 extern OCTGUI_API void
-combobox_insert_current_item  (QComboBox *cb, const QString &text);
+combobox_insert_current_item  (QComboBox *cb, const QString& text);
 
 /*!
   Update the most recemtly used list of a combo box.

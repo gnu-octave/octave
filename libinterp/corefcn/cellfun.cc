@@ -2120,7 +2120,7 @@ do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
   // Initialize to magic colon (':') so that dimensions that are not actually
   // specified will be collapsed.
   Array<idx_vector> ra_idx (dim_vector (1, std::max (nd, a.ndims ())),
-                                        idx_vector::colon);
+                            idx_vector::colon);
 
   const octave_idx_type retnumel = retval.numel ();
   for (octave_idx_type j = 0; j < retnumel; j++)

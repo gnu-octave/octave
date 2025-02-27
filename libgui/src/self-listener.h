@@ -38,7 +38,7 @@ class self_listener : public QThread
 public:
 
   explicit self_listener (const std::vector<int>& fds,
-                          const QString &caller = QString (),
+                          const QString& caller = QString (),
                           QObject *parent = nullptr);
 
   ~self_listener (void);

@@ -71,7 +71,7 @@ private Q_SLOTS:
   void look_for_files ();
   void item_double_clicked (const QModelIndex&);
   void handle_done (int);
-  void handle_rows_inserted (const QModelIndex &parent, int first, int last);
+  void handle_rows_inserted (const QModelIndex& parent, int first, int last);
 
 private:
 

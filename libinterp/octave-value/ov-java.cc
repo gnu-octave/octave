@@ -2166,7 +2166,7 @@ octave_java::register_type (octave::type_info& ti)
 #if defined (HAVE_JAVA)
 
   s_t_id = ti.register_type (octave_java::s_t_name, "<unknown>",
-                           octave_value (new octave_java ()));
+                             octave_value (new octave_java ()));
 
 #else
 

@@ -1,579 +1,473 @@
-Aaron A. King
-Abdallah K. Elshamy
-Abhinav Tripathi
-Adam Dodd
-Adam H. Aitkenhead
-Ahsan Ali Shahid
-Akira Noda
-Alan W. Irwin
-Albert Chin-A-Young
-Aleksej Saushev
-Alexander Barth
-Alexander Graf
-Alexander Hansen
-Alexander Klein
-Alexander Klimov
-Alexander Mamonov
-Alexander Wilms
-Alex Zvoleff
-Allan Jacobs
-Al Niessner
-Alois Schlögl
-Amod Mulay
-Amro
-Ander Aurrekoetxea
-Andreas Bertsatos
-Andreas Stahel
-Andreas Weber
-Andreas Weingessel
-Andre da Costa Barros
-Andrej Lojdl
-Andrew Janke
-Andrew Ross
-Andrew Thornton
-Andriy Shinkarchuck
-Andy Adler
-Andy Buckle
-Andy Register
-Ansgar Burchard
-Anthony Morast
-Anthony Richardson
-Antoine Moreau
-Antonius R. Burgers
-Aquil H. Abdullah
-Aravindh Krishnamoorthy
-Ariel Tankus
-Armin Müller
-Arno J. Klaassen
-Arno Onken
-Artem Krosheninnikov
-Arun Giridhar
-A. Scottedward Hodel
-Atri Bhattacharya
-Atsushi Kajita
-Auburn University
-Avinoam Kalma
-Avlas
-Axel Mathéi
-Balint Reczey
-Barbara Lócsi
-Baylis Shanks
 Ben Abbott
-Ben Barrowes
-Benjamin Hall
-Benjamin Lindner
-Ben Kurtz
-Ben Sapp
-Bernard Desgraups
-Bernardo Sulzbach
-Bertrand Roessli
-Bill Denney
-Bill Greene
-Bill Lash
-Bob Weigel
-Brad Froehle
-Brad Kennedy
-Branden Archer
-Brett Stewart
-Brian Gough
-Cai Jianming
-Carlo de Falco
-Carl Osterwisch
-Carmen Navarrete
-Carmine Paolino
-Carnë Draug
-Carsten Clark
-Castor Fu
-Catalin Codreanu
-cctsim
-Christian Cornelssen
-Christian Himpe
-Christof Kaufmann
-Christof Zeile
-Christopher Hulbert
-Christophe Tournery
-Christoph Mayer
-Christoph Spiel
-Christos Dimitrakakis
-Cillian O'Driscoll
-Claude Lacoursiere
-Claudio Belotti
-Claudius Zingerli
-Clemens Buchacher
-Clinton Chee
-Colin Foster
-Colin Macdonald
-Corbin Champion
-Corey Thomasson
-Craig Hudson
-Cristiano Dorigo
-Cyril Humbert
-Daisuke Takago
-Damjan Angelovski
-Daniel
-Daniel Calvelo
-Daniel Davis
-Daniel Gualberto
-Daniel Heiserer
-Daniel J. Sebald
-Daniel Kraft
-Daniel Wagenaar
-Danilo Piazzalunga
-Dave Goel
-Dave Hawthorne
-David Bateman
-David Billinghurst
-David Castelow
-David Clem
-David Finkel
-David Gesswein
-David Grundberg
-David Hoover
-David Livings
-David M. Doolin
-David Miguel Susano Pinto
-David Rörich
-David Spies
-David Turner
-David Wells
-Dildar Sk
-Dirk Eddelbuettel
-Dirk Laurie
-D. Martin
-Dmitri A. Sergatskov
-Dmitry Astankov
-Dmitry Roshchin
-Donald Parsons
-Don Bindner
-Doug Stewart
 Drew Abbot
-Driss Ghaddab
-Duncan Temple Lang
-Eddy Xiao
-Ederag
-Ed Meyer
-Edmund Grimley Evans
-Eduardo Gallestey
-Eduardo Ramos Fernández
-E. Joshua Rigler
-Elias Pipping
-Emil Lucretiu
-Endre Kozma
-Eric Chassande-Mottin
-Eric Norum
-Eric S. Raymond
-Erik de Castro Lopo
-Erik Kjellson
-Ernst Reissner
-Ethan Biery
-Etienne Grossmann
-Eugenio Gianniti
-Fabian Deutsch
-Fabio Rossi
-Falk Tannhäuser
-Farid Partonia
-Federico Zenith
-Felipe G. Nievinski
-Fernando Alvarruiz
-Fook Fah Yap
-Fotios Kasolis
-Francesco Faccio
-Francesco Potortì
-Frederick (Rick) A Niles
-Frederick Umminger
-Fredrik Lingvall
-Free Software Foundation
-Friedrich Leisch
-FZI Forschungszentrum Informatik Karlsruhe
-Gabriele Pannocchia
-Gaël Bonithon
-Garrett Euler
-Garrett G Euler
-G. D. McBain
-Gene Harvey
-Geoff Jacobsen
-Geoffrey Knauth
-Geordie McBain
-Georg Thimm
-Georg Wiora
-Gerhard Kircher
-G. (Gert) van Antwerpen
-Giles Anderson
-Glenn Golden
-Gregory Vanuxem
-Guillaume Flandin
-Gunnar Farnebäck
-Hannes Müller
-Hans Ekkehard Plesser
-Hartmut Gimpel
-Heikki Junes
-Heine Kolltveit
-Heinz Bauschke
-Helmut Podhaisky
-Hendrik Koerner
-Henry Mollet
-Hoxide Ma
-Hugo Raguet
-Iain Murray
-Ilya Kurdyukov
-Imad-Eddine Srairi
-Israel Herraiz
-Ivana Varekova
-Ivan Sutoris
-Jacapo Corno
-Jacob Dawid
-Jacopo Corno
-Jakub Bogusz
-James B. Rawlings
-James Macnicol
-James Packer
-James R. Van Zandt
-Janne Olavi Paanajärvi
-Jarkko Kaleva
-Jarno Rajahalme
-Jaroslav Hajek
-Jason Alan Palmer
-Jason Riedy
-J. D. Cole
-Jean-Francois Cardoso
-Jeff Bai
-Jeff Cunningham
-Jef Poskanzer
-Jens Restemeier
-Jen Stewart
-Jens-Uwe Mager
-Jim Langston
-Jim Peterson
-Joachim Wiesemann
-Joakim Andén
-Joao Cardoso
-Joel Andersson
-Joel Keay
-Joerg Specht
-Joe Rothweiler
-Joe Winegarden
-Johannes Leuschner
-Johannes Pfeifer
-Johannes Zarl
-John Bradshaw
-John C. Campbell
-John Donoghue
-John Hunt
-John P. Swensen
-John Smith
-John W. Eaton
-Jonathan Stickel
-Jordi Gutiérrez Hermoso
-Jorge Barros de Abreu
-Jörg Sommrey
-Jose Daniel Munoz Frias
-José Luis García Pallero
-Joseph P. Skudlarek
-José Vallet
-Joshua Redstone
-Juan Pablo Carbajal
-Judd Storrs
-Juhani Saastamoinen
-Juho Iipponen
-Julian Schnidder
-Julien Bect
-Julien Pommier
-Júlio Hoffimann
-Júlio Hoffimann Mendes
-Julius Smith
-Jun Wang
-Jyh-Miin Lin
-Kacper Kowalik
-Kai Habel
-Kai Labusch
-Kai Noda
-Kai P. Mueller
-Kai T. Ohlhus
-Karl Berry
-Karsten Trulsen
-Kasper H. Filtenborg
-Keith Goodman
-Ken Kouno
-Ken Marek
-Kevin Ruland
-Kim Hansen
-Klaus Gebhardt
-Konstantinos Poulios
-Kristan Onu
-Kris Thielemans
-Kristian Rumberg
-Krzesimir Nowak
-Kurt Hornik
-Kyle Guinn
-Lachlan Andrew
-Larrie Carr
-Lars Kindermann
-Lasse Kliemann
-Lasse Schuirmann
-Laurent Mazet
-Leonardo
-Leonardo Araujo
-Leonardo S. Borges
-Leopoldo Cerbaro
-Liam Groener
-Linton Miller
-Ludwig Schwardt
-Luis Eduardo Ribeiro Guerra
-Luis F. Ortiz
-Lukas Reichlin
-Lute Kamstra
-Luther Tychonievich
-LYH
-Maciek Gajewski
-Maged Rifaat
-Makoto Matsumoto
-Maor Shutman
-Marcel Jacobse
-Marco Atzeri
-Marco Caliari
-Marco Cecchetti
-Marco Vitetta
-Marcus Brinkmann
-Marcus W. Reble
-Marc Vinyals
-Mark Odegard
-Marko Seric
-Markus Appel
-Markus Bergholz
-Markus Meisinger
-Markus Mützel
-Mark van Rossum
-Martin Costabel
-Martin Dalecki
-Martin Helm
-Martin Hepperle
-Martin Köhler
-Martin Weiser
-Massimiliano Fasi
-Massimo Lorenzin
-Mats Jansson
-Matthew Tennyhg
-Matthew W. Roberts
-Matthias Drochner
-Matthias Jüschke
-Matt Tenny
-Maurice LeBrun
-Max Brister
-Melqart
-Melvin Robinson
-Michael Barnes
-Michael C. Grant
-Michael Creel
-Michael D. Godfrey
-Michael Goffioul
-Michael Leitner
-Michael O'Brien
-Michael Reifenberger
-Michael Weitzel
-Michael Witten
-Michael Zeising
-Michel D. Schmid
-Michele Ginesi
-Michele Zaffalon
-Miguel Bazdresch
-Mihas Varantsou
-Mike Miller
-Mike Sander
-Miroslaw Kwasniak
-Mohamed Kamoun
-Moritz Borgmann
-Muhali
-Mumit Khan
-Muthiah Annamalai
-Nathan Podlich
-Nguyễn Gia Phong
-Nicholas Musolino
-Nicholas Piper
-Nicholas R. Jankowski
-Nicol N. Schraudolph
-Nicolo Giorgetti
-Nir Krakauer
-Nix
-Nokia Corporation and/or its subsidiary(-ies).
 NVS Abhilash
-Olaf Till
-Olaf Weber
-Oliver Heimlich
-Olli Saarela
-Ondrej Popp
-Orestes Mas
-Orion Poplawski
-Óvári
-O. Weber
-Oyvind Kristiansen
-Pantxo Diribarne
-Pascal A. Dupuis
-Patrick Häcker
-Patrick Noffke
-Paul Boven
-Paul Eggert
-Paul Kienzle
-paulo
-Paulo Silva
-Paul Thomas
+Andy Adler
+Adam H. Aitkenhead
+Fernando Alvarruiz
+Joakim Andén
+Giles Anderson
+Joel Andersson
+Lachlan Andrew
 Pedro Angelo
-Pedro Gonnet
-Per Bothner
-Per Persson
-Peter A. Gustafson
-Peter Ekberg
-Peter Gustafson
-Peter Konowski
-Peter L. Søndergaard
-Peter O'Gorman
-Peter Rosin
-Peter van den Biggelaar
-Peter Van Wieren
-Petr Mikulik
-Petter Risholm
-Petter Tomner
-Philip Nienhuis
-Philippe Defert
-Philipp Kutin
-Pieter Eendebak
-Piotr Held
-Piotr Krzyzanowski
-Pooja Rao
-PrasannaKumar Muralidharan
-Primozz Peterlin
-Python Software Foundation
-Qianqian Fang
-Quentin H. Spencer
-Radek Salac
-Rafael Laboissiere
-Rafael Monteiro
-Ramon Garcia Fernandez
-R. Bruce Tenison
-Reinhard Resch
-Remi Thebault
-Remy Bruno
-Rex A. Dieter
-Ricardo Marranita
-Richard Allan Holcombe
-Richard Bovey
-Richard Campbell
-Richard Crozier
-Richard Stallman
-Richard Zweig
-Rick Niles
-Rik Wehbring
-Risto Vanhanen
-Robert Jenssen
-Robert Millan
-Robert Platt
-Robert T. Short
-Rob Mahurin
-Roger Banks
-Rolando Pereira
-Rolf Fabian
-Roman Belov
-Roman Hodek
-Romolo Manfredini
-Ronald van der Meer
-Ronny Standtke
-Ross Lippert
-Rüdiger Sonderfeld
-Russell Standish
-Ryan Hinton
-Ryan Rusaw
-Ryan Starret
-Sahil Badyal
-Sahil Yadav
-Sander van Rijn
-Scott Pakin
-Sean Young
-Sebastian Schöps
-Sebastian Schubert
-Sebastien Loisel
-Sébastien Villemot
-Sergey Dudoladov
-Sergey Plotnikov
-Serhiy Zahoriya
-Serkan Önder
-Serviscope Minor
-Shai Ayal
-Shan G. Smith
-Shreya Gupta
-Simon Hau
-Søren Hauberg
-Stefan Beller
-Stefan Brüns
-Stefan Hepp
-Stefan Husmann
-Stefan Mahr
-Stefan Miereis
-Stefan Monnier
-Stefano Guidoni
-Stefan Schlögl
-Stefan van der Walt
-Steffen Groot
-Stephen Eglen
-Stephen Fegan
-Stephen Montgomery-Smith
-Steve M. Robbins
-Steven G. Johnson
-Steven Mestdagh
-Steven Verstoep
-Steven Waldrip
-Stevie Schraudner
-Sunghyun Cho
-Sylvain Pelissier
-Takuji Nishimura
-Tarmigan Casebolt
-Tatsuro Matsuoka
-Teemu Ikonen
-Tejaswi D Prakash
-Tejaswi D. Prakash
-Teresa Twaroch
-Tetsuro Kurita
-Thomas Baier
-Thomas D. Dean
-Thomas Kasper
-Thomas L. Scofield
-Thomas Stuart
-Thomas Treichl
-Thomas Walter
-Thomas Weber
-Thorsten Liebig
-Thorsten Meyer
-Thorsten Ohl
-Timo Lindfors
-Todd Neal
-Tom Holroyd
-Tomi Pannila
-Tomislav Goles
-Tommi Höynälänmaa
-Tom Poage
-Toni Saarela
-Torsten Finke
-Torsten Lilge
-Ulrich Tipp
-Utkarsh Upadhyay
-Vaibhav Gupta
-Valdas
-Valentin Ortega
-Valentin Ortega-Clavero
-Vanya Sergeev
-Victor Munoz
-Victor Norton
-Vinayak Dutt
-Vincent Cautaerts
-Vittoria Rezzonico
-Vivek Dogra
-Volker Kuhlmann
-Vytautas Jančauskas
-VZLU Prague
-Walter Gautschi
-Walter Landry
+Damjan Angelovski
+Muthiah Annamalai
+Markus Appel
+Leonardo Araujo
+Branden Archer
 Willem Atsma
-William Greene
-William Poetra Yoga Hadisoeseno
-Yi-Hong Lyu
+Marco Atzeri
+Ander Aurrekoetxea
+Shai Ayal
+Sahil Badyal
+Jeff Bai
+Roger Banks
+Ben Barrowes
+Alexander Barth
+David Bateman
+Heinz Bauschke
+Miguel Bazdresch
+Julien Bect
+Stefan Beller
+Roman Belov
+Markus Bergholz
+Karl Berry
+Andreas Bertsatos
+Atri Bhattacharya
+Ethan Biery
+David Billinghurst
+Don Bindner
+Jakub Bogusz
+Gaël Bonithon
+Leonardo S. Borges
+Moritz Borgmann
+Paul Boven
+Richard Bovey
+John Bradshaw
+Marcus Brinkmann
+Max Brister
+Remy Bruno
+Stefan Brüns
+Clemens Buchacher
+Ansgar Burchard
+Antonius Burgers
+Marco Caliari
+Daniel Calvelo
+John C. Campbell
+Juan Pablo Carbajal
+Jean-Francois Cardoso
+Joao Cardoso
+Larrie Carr
+David Castelow
+Vincent Cautaerts
+Marco Cecchetti
+Corbin Champion
+Clinton Chee
+Albert Chin-A-Young
+Sunghyun Cho
+Carsten Clark
+Catalin Codreanu
+J. D. Cole
+Jacopo Corno
+Andre da Costa Barros
+Martin Costabel
+Michael Creel
+Richard Crozier
+Jeff Cunningham
+Martin Dalecki
+Jacob Dawid
+Jorge Barros de Abreu
+Carlo de Falco
+Thomas D. Dean
+Philippe Defert
+Bill Denney
+Fabian Deutsch
+Christos Dimitrakakis
+Pantxo Diribarne
+Vivek Dogra
+John Donoghue
+David M. Doolin
+Carnë Draug
+Sergey Dudoladov
+Pascal A. Dupuis
+John W. Eaton
+Dirk Eddelbuettel
+Pieter Eendebak
+Paul Eggert
+Stephen Eglen
+Peter Ekberg
+Abdallah K. Elshamy
+Garrett Euler
+Edmund Grimley Evans
+Rolf Fabian
+Francesco Faccio
+Gunnar Farnebäck
+Massimiliano Fasi
+Stephen Fegan
+Ramon Garcia Fernandez
+Kasper H. Filtenborg
+Torsten Finke
+David Finkel
+Guillaume Flandin
+Colin Foster
+Jose Daniel Munoz Frias
+Brad Froehle
+Castor Fu
+Eduardo Gallestey
+Walter Gautschi
+Klaus Gebhardt
+Driss Ghaddab
+Eugenio Gianniti
+Hartmut Gimpel
+Michele Ginesi
+Nicolo Giorgetti
+Arun Giridhar
+Michael D. Godfrey
+Dave Goel
+Michael Goffioul
+Glenn Golden
+Tomislav Goles
+Keith Goodman
+Brian Gough
+Alexander Graf
+Michael C. Grant
+Steffen Groot
+Etienne Grossmann
+David Grundberg
+Kyle Guinn
+Vaibhav Gupta
+Peter Gustafson
+Kai Habel
+Patrick Häcker
+William P. Y. Hadisoeseno
+Jaroslav Hajek
+Benjamin Hall
+Alexander Hansen
+Kim Hansen
+Gene Harvey
+Søren Hauberg
+Dave Hawthorne
+Oliver Heimlich
+Daniel Heiserer
+Piotr Held
+Martin Helm
+Stefan Hepp
+Martin Hepperle
+Jordi Gutiérrez Hermoso
+Israel Herraiz
 Yozo Hida
+Christian Himpe
+Ryan Hinton
+Roman Hodek
+A. Scottedward Hodel
+Júlio Hoffimann
+Richard Allan Holcombe
+Tom Holroyd
+David Hoover
+Kurt Hornik
+Craig Hudson
+Christopher Hulbert
+Cyril Humbert
+John Hunt
+Stefan Husmann
+Teemu Ikonen
+Alan W. Irwin
+Allan Jacobs
+Marcel Jacobse
+Geoff Jacobsen
+Vytautas Jančauskas
+Andrew Janke
+Nicholas R. Jankowski
+Mats Jansson
+Robert Jenssen
+Cai Jianming
+Steven G. Johnson
+Heikki Junes
+Matthias Jüschke
+Atsushi Kajita
+Jarkko Kaleva
+Avinoam Kalma
+Mohamed Kamoun
+Lute Kamstra
+Fotios Kasolis
+Thomas Kasper
+Christof Kaufmann
+Joel Keay
+Mumit Khan
+Paul Kienzle
+Lars Kindermann
+Aaron A. King
+Erik Kjellson
+Arno J. Klaassen
+Alexander Klein
+Lasse Kliemann
+Geoffrey Knauth
+Hendrik Koerner
+Martin Köhler
+Heine Kolltveit
+Peter Konowski
+Ken Kouno
+Kacper Kowalik
+Endre Kozma
+Daniel Kraft
+Nir Krakauer
+Aravindh Krishnamoorthy
+Oyvind Kristiansen
+Artem Krosheninnikov
+Piotr Krzyzanowski
+Volker Kuhlmann
+Ilya Kurdyukov
+Tetsuro Kurita
+Ben Kurtz
+Philipp Kutin
+Miroslaw Kwasniak
+Rafael Laboissiere
+Kai Labusch
+Claude Lacoursiere
+Walter Landry
+Bill Lash
+Dirk Laurie
+Maurice LeBrun
+Friedrich Leisch
+Michael Leitner
+Johannes Leuschner
+Thorsten Liebig
+Torsten Lilge
+Jyh-miin Lin
+Timo Lindfors
+Benjamin Lindner
+Ross Lippert
 Yu Liu
-Zhi Wang
+David Livings
+Barbara Locsi
+Sebastien Loisel
+Andrej Lojdl
+Erik de Castro Lopo
+Massimo Lorenzin
+Emil Lucretiu
+Yi-Hong Lyu
+Hoxide Ma
+Colin Macdonald
+James Macnicol
+Jens-Uwe Mager
+Stefan Mahr
+Rob Mahurin
+Alexander Mamonov
+Ricardo Marranita
+Orestes Mas
+Axel Mathéi
+Makoto Matsumoto
+Tatsuro Matsuoka
+Christoph Mayer
+Laurent Mazet
+G. D. McBain
+Ronald van der Meer
+Markus Meisinger
+Júlio Hoffimann Mendes
+Ed Meyer
+Thorsten Meyer
+Stefan Miereis
+Petr Mikulik
+Linton Miller
+Mike Miller
+Serviscope Minor
+Stefan Monnier
+Rafael Monteiro
+Stephen Montgomery-Smith
+Anthony Morast
+Antoine Moreau
+Kai P. Mueller
+Amod Mulay
+Armin Müller
+Hannes Müller
+Victor Munoz
+PrasannaKumar Muralidharan
+Iain Murray
+Nicholas Musolino
+Markus Mützel
+Carmen Navarrete
+Todd Neal
+Philip Nienhuis
+Al Niessner
+Felipe G. Nievinski
+Rick Niles
+Takuji Nishimura
+Akira Noda
+Kai Noda
+Patrick Noffke
+Victor Norton
+Eric Norum
+Krzesimir Nowak
+Michael O'Brien
+Cillian O'Driscoll
+Peter O'Gorman
+Thorsten Ohl
+Kai T. Ohlhus
+Serkan Önder
+Arno Onken
+Valentin Ortega-Clavero
+Luis F. Ortiz
+Carl Osterwisch
+Janne Olavi Paanajärvi
+Óvári
+Scott Pakin
+José Luis García Pallero
+Jason Alan Palmer
+Gabriele Pannocchia
+Sylvain Pelissier
+Rolando Pereira
+Per Persson
+Primozz Peterlin
+Jim Peterson
+Johannes Pfeifer
+Danilo Piazzalunga
+Nicholas Piper
+Elias Pipping
+Robert Platt
+Hans Ekkehard Plesser
+Sergey Plotnikov
+Tom Poage
+Nathan Podlich
+Orion Poplawski
+Ondrej Popp
+Jef Poskanzer
+Francesco Potortì
+Konstantinos Poulios
+Tejaswi D. Prakash
+Jarno Rajahalme
+Eduardo Ramos
+Pooja Rao
+James B. Rawlings
+Eric S. Raymond
+Balint Reczey
+Joshua Redstone
+Andy Register
+Lukas Reichlin
+Michael Reifenberger
+Ernst Reissner
+Reinhard Resch
+Jens Restemeier
+Anthony Richardson
+Jason Riedy
+E. Joshua Rigler
+Sander van Rijn
+Petter Risholm
+Matthew W. Roberts
+Melvin Robinson
+Dmitry Roshchin
+Peter Rosin
+Andrew Ross
+Fabio Rossi
+Mark van Rossum
+Joe Rothweiler
+David Rörich
+Kevin Ruland
+Kristian Rumberg
+Ryan Rusaw
+Olli Saarela
+Toni Saarela
+Juhani Saastamoinen
+Radek Salac
+Mike Sander
+Ben Sapp
+Aleksej Saushev
+Alois Schlögl
+Michel D. Schmid
+Julian Schnidder
+Sebastian Schöps
+Nicol N. Schraudolph
+Sebastian Schubert
+Lasse Schuirmann
+Ludwig Schwardt
+Thomas L. Scofield
+Daniel J. Sebald
+Dmitri A. Sergatskov
+Vanya Sergeev
+Marko Seric
+Ahsan Ali Shahid
+Baylis Shanks
+Andriy Shinkarchuck
+Robert T. Short
+Paulo Silva
+Joseph P. Skudlarek
+John Smith
+Julius Smith
+Shan G. Smith
+Peter L. Sondergaard
+Rüdiger Sonderfeld
+Joerg Specht
+Quentin H. Spencer
+Christoph Spiel
+David Spies
+Imad-Eddine Srairi
+Andreas Stahel
+Richard Stallman
+Russell Standish
+Ryan Starret
+Brett Stewart
+Doug Stewart
+Jen Stewart
+Jonathan Stickel
+Judd Storrs
+Thomas Stuart
+Bernardo Sulzbach
+Ivan Sutoris
+John Swensen
+Daisuke Takago
+Ariel Tankus
+Falk Tannhäuser
+Duncan Temple Lang
+Matthew Tennyhg
+Remi Thebault
+Kris Thielemans
+Georg Thimm
+Paul Thomas
+Corey Thomasson
+Andrew Thornton
+Olaf Till
+Petter Tomner
+Christophe Tournery
+Thomas Treichl
+Abhinav Tripathi
+Karsten Trulsen
+David Turner
+Frederick Umminger
+Utkarsh Upadhyay
+José Vallet
+Stefan van der Walt
+Peter Van Wieren
+James R. Van Zandt
+Risto Vanhanen
+Gregory Vanuxem
+Mihas Varantsou
+Ivana Varekova
+Sébastien Villemot
+Marco Vitetta
+Daniel Wagenaar
+Steven Waldrip
+Thomas Walter
+Jun Wang
+Andreas Weber
+Olaf Weber
+Thomas Weber
+Rik Wehbring
+Bob Weigel
+Andreas Weingessel
+Martin Weiser
+Michael Weitzel
+David Wells
+Joachim Wiesemann
+Alexander Wilms
+Joe Winegarden
+Georg Wiora
+Eddy Xiao
+Sahil Yadav
+Fook Fah Yap
+Sean Young
+Michele Zaffalon
+Serhiy Zahoriya
+Johannes Zarl
+Michael Zeising
+Federico Zenith
+Claudius Zingerli
+Alex Zvoleff
+Richard Zweig

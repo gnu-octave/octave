@@ -203,7 +203,7 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   connect (m_edit_area, SIGNAL (marginClicked (int, int,
                                 Qt::KeyboardModifiers)),
            this, SLOT (handle_margin_clicked (int, int,
-                                              Qt::KeyboardModifiers)));
+                       Qt::KeyboardModifiers)));
 
   connect (m_edit_area, &octave_qscintilla::context_menu_break_condition_signal,
            this, &file_editor_tab::handle_context_menu_break_condition);
@@ -248,7 +248,7 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
            this, SLOT (handle_copy_available (bool)));
 
   connect (&m_file_system_watcher, &QFileSystemWatcher::fileChanged,
-           this, [this] (const QString& path) { file_has_changed (path); });
+  this, [this] (const QString& path) { file_has_changed (path); });
 
   connect (this, &file_editor_tab::maybe_remove_next,
            this, &file_editor_tab::handle_remove_next);
@@ -450,68 +450,68 @@ file_editor_tab::handle_dbstop_if (const QString& prompt, int line,
       QPointer<file_editor_tab> this_fetab (this);
 
       Q_EMIT interpreter_event
-        ([this, this_fetab, line, new_cond] (interpreter& interp)
-         {
-           // INTERPRETER THREAD
+      ([this, this_fetab, line, new_cond] (interpreter& interp)
+      {
+        // INTERPRETER THREAD
 
-           // We are intentionally skipping any side effects that may
-           // occur in the evaluation of NEW_COND if THIS_FETAB is no
-           // longer valid.
+        // We are intentionally skipping any side effects that may
+        // occur in the evaluation of NEW_COND if THIS_FETAB is no
+        // longer valid.
 
-           if (this_fetab.isNull ())
-             return;
+        if (this_fetab.isNull ())
+          return;
 
-           error_system& es = interp.get_error_system ();
+        error_system& es = interp.get_error_system ();
 
-           unwind_protect frame;
+        unwind_protect frame;
 
-           // Prevent an error in the evaluation here from sending us
-           // into the debugger.
+        // Prevent an error in the evaluation here from sending us
+        // into the debugger.
 
-           es.interpreter_try (frame);
+        es.interpreter_try (frame);
 
-           bool eval_error = false;
-           std::string msg;
+        bool eval_error = false;
+        std::string msg;
 
-           try
-             {
-               tree_evaluator& tw = interp.get_evaluator ();
-               bp_table& bptab = tw.get_bp_table ();
+        try
+          {
+            tree_evaluator& tw = interp.get_evaluator ();
+            bp_table& bptab = tw.get_bp_table ();
 
-               bptab.condition_valid (new_cond.toStdString ());
+            bptab.condition_valid (new_cond.toStdString ());
 
-               // The condition seems OK, so set the conditional
-               // breakpoint.
+            // The condition seems OK, so set the conditional
+            // breakpoint.
 
-               Q_EMIT request_add_breakpoint (line, new_cond);
-             }
-           catch (const execution_exception& ee)
-             {
-               interp.recover_from_exception ();
+            Q_EMIT request_add_breakpoint (line, new_cond);
+          }
+        catch (const execution_exception& ee)
+          {
+            interp.recover_from_exception ();
 
-               msg = ee.message ();
-               eval_error = true;
-             }
-           catch (const interrupt_exception&)
-             {
-               interp.recover_from_exception ();
+            msg = ee.message ();
+            eval_error = true;
+          }
+        catch (const interrupt_exception&)
+          {
+            interp.recover_from_exception ();
 
-               msg = "evaluation interrupted";
-               eval_error = true;
-             }
+            msg = "evaluation interrupted";
+            eval_error = true;
+          }
 
-           if (eval_error)
-             {
-               // Try again with a prompt that indicates the last
-               // attempt was an error.
+        if (eval_error)
+          {
+            // Try again with a prompt that indicates the last
+            // attempt was an error.
 
-               QString new_prompt = (tr ("ERROR: ")
-                                     + QString::fromStdString (msg)
-                                     + "\n\ndbstop if");
+            QString new_prompt = (tr ("ERROR: ")
+                                  + QString::fromStdString (msg)
+                                  + "\n\ndbstop if");
 
-               Q_EMIT dbstop_if (new_prompt, line, "");
-             }
-         });
+            Q_EMIT dbstop_if (new_prompt, line, "");
+          }
+      });
     }
 }
 
@@ -856,53 +856,53 @@ file_editor_tab::update_lexer_settings (bool update_apis_only)
               QPointer<file_editor_tab> this_fetab (this);
 
               Q_EMIT interpreter_event
-                ([this, this_fetab, octave_builtins, octave_functions] (interpreter& interp)
-                 {
-                   // INTERPRETER THREAD
+              ([this, this_fetab, octave_builtins, octave_functions] (interpreter& interp)
+              {
+                // INTERPRETER THREAD
 
-                   // We can skip the entire callback function because
-                   // it does not make any changes to the interpreter
-                   // state.
+                // We can skip the entire callback function because
+                // it does not make any changes to the interpreter
+                // state.
 
-                   if (this_fetab.isNull ())
-                     return;
+                if (this_fetab.isNull ())
+                  return;
 
-                   QStringList api_entries;
+                QStringList api_entries;
 
-                   octave_value_list tmp = Fiskeyword ();
-                   const Cell ctmp = tmp(0).cell_value ();
-                   for (octave_idx_type i = 0; i < ctmp.numel (); i++)
-                     {
-                       std::string kw = ctmp(i).string_value ();
-                       api_entries.append (QString::fromStdString (kw));
-                     }
+                octave_value_list tmp = Fiskeyword ();
+                const Cell ctmp = tmp(0).cell_value ();
+                for (octave_idx_type i = 0; i < ctmp.numel (); i++)
+                  {
+                    std::string kw = ctmp(i).string_value ();
+                    api_entries.append (QString::fromStdString (kw));
+                  }
 
-                   if (octave_builtins)
-                     {
-                       symbol_table& symtab = interp.get_symbol_table ();
+                if (octave_builtins)
+                  {
+                    symbol_table& symtab = interp.get_symbol_table ();
 
-                       string_vector bfl = symtab.built_in_function_names ();
+                    string_vector bfl = symtab.built_in_function_names ();
 
-                       for (octave_idx_type i = 0; i < bfl.numel (); i++)
-                         api_entries.append (QString::fromStdString (bfl[i]));
-                     }
+                    for (octave_idx_type i = 0; i < bfl.numel (); i++)
+                      api_entries.append (QString::fromStdString (bfl[i]));
+                  }
 
-                   if (octave_functions)
-                     {
-                       load_path& lp = interp.get_load_path ();
+                if (octave_functions)
+                  {
+                    load_path& lp = interp.get_load_path ();
 
-                       string_vector ffl = lp.fcn_names ();
-                       string_vector afl = interp.autoloaded_functions ();
+                    string_vector ffl = lp.fcn_names ();
+                    string_vector afl = interp.autoloaded_functions ();
 
-                       for (octave_idx_type i = 0; i < ffl.numel (); i++)
-                         api_entries.append (QString::fromStdString (ffl[i]));
+                    for (octave_idx_type i = 0; i < ffl.numel (); i++)
+                      api_entries.append (QString::fromStdString (ffl[i]));
 
-                       for (octave_idx_type i = 0; i < afl.numel (); i++)
-                         api_entries.append (QString::fromStdString (afl[i]));
-                     }
+                    for (octave_idx_type i = 0; i < afl.numel (); i++)
+                      api_entries.append (QString::fromStdString (afl[i]));
+                  }
 
-                   Q_EMIT request_add_octave_apis (api_entries);
-                 });
+                Q_EMIT request_add_octave_apis (api_entries);
+              });
             }
           else
             {
@@ -1202,7 +1202,7 @@ file_editor_tab::previous_bookmark (const QWidget *ID)
   // Wrap.  Should use the last line of the file, not 1<<15
   if (prevline == -1)
     prevline = m_edit_area->markerFindPrevious (m_edit_area->lines (),
-                                               (1 << marker::bookmark));
+               (1 << marker::bookmark));
 
   m_edit_area->setCursorPosition (prevline, 0);
 }
@@ -1239,7 +1239,7 @@ file_editor_tab::remove_bookmark (const QWidget *ID)
 
 void
 file_editor_tab::handle_request_add_breakpoint (int line,
-                                                const QString& condition)
+    const QString& condition)
 {
   if (! m_is_octave_file)
     return;
@@ -1251,15 +1251,15 @@ void
 file_editor_tab::handle_request_remove_breakpoint (int line)
 {
   Q_EMIT interpreter_event
-    ([this, line] (interpreter& interp)
-     {
-       // INTERPRETER THREAD
+  ([this, line] (interpreter& interp)
+  {
+    // INTERPRETER THREAD
 
-       tree_evaluator& tw = interp.get_evaluator ();
-       bp_table& bptab = tw.get_bp_table ();
+    tree_evaluator& tw = interp.get_evaluator ();
+    bp_table& bptab = tw.get_bp_table ();
 
-       bptab.remove_breakpoint_from_file (m_file_name.toStdString (), line);
-     });
+    bptab.remove_breakpoint_from_file (m_file_name.toStdString (), line);
+  });
 }
 
 void
@@ -1333,16 +1333,16 @@ file_editor_tab::remove_all_breakpoints (const QWidget *ID)
     return;
 
   Q_EMIT interpreter_event
-    ([this] (interpreter& interp)
-     {
-       // INTERPRETER THREAD
+  ([this] (interpreter& interp)
+  {
+    // INTERPRETER THREAD
 
-       tree_evaluator& tw = interp.get_evaluator ();
-       bp_table& bptab = tw.get_bp_table ();
+    tree_evaluator& tw = interp.get_evaluator ();
+    bp_table& bptab = tw.get_bp_table ();
 
-       bptab.remove_all_breakpoints_from_file (m_file_name.toStdString (),
-                                               true);
-     });
+    bptab.remove_all_breakpoints_from_file (m_file_name.toStdString (),
+                                            true);
+  });
 }
 
 void
@@ -1453,29 +1453,29 @@ file_editor_tab::add_breakpoint_event (int line, const QString& cond)
   QPointer<file_editor_tab> this_fetab (this);
 
   Q_EMIT interpreter_event
-    ([this, this_fetab, line, cond] (interpreter& interp)
-     {
-       // INTERPRETER THREAD
+  ([this, this_fetab, line, cond] (interpreter& interp)
+  {
+    // INTERPRETER THREAD
 
-       // If THIS_FETAB is no longer valid, we still want to set the
-       // breakpoint in the interpreter but we can't emit the signal
-       // associated with THIS_FETAB.
+    // If THIS_FETAB is no longer valid, we still want to set the
+    // breakpoint in the interpreter but we can't emit the signal
+    // associated with THIS_FETAB.
 
-       // FIXME: note duplication with the code in
-       // handle_context_menu_break_condition.
+    // FIXME: note duplication with the code in
+    // handle_context_menu_break_condition.
 
-       tree_evaluator& tw = interp.get_evaluator ();
-       bp_table& bptab = tw.get_bp_table ();
+    tree_evaluator& tw = interp.get_evaluator ();
+    bp_table& bptab = tw.get_bp_table ();
 
-       int lineno = bptab.add_breakpoint_in_file (m_file_name.toStdString (),
-                                                  line, cond.toStdString ());
+    int lineno = bptab.add_breakpoint_in_file (m_file_name.toStdString (),
+                 line, cond.toStdString ());
 
-       if (this_fetab.isNull ())
-         return;
+    if (this_fetab.isNull ())
+      return;
 
-       if (lineno)
-         Q_EMIT maybe_remove_next (lineno);
-     });
+    if (lineno)
+      Q_EMIT maybe_remove_next (lineno);
+  });
 }
 
 void
@@ -1935,7 +1935,7 @@ file_editor_tab::load_file (const QString& fileName)
 
   QApplication::setOverrideCursor (Qt::WaitCursor);
   unwind_action reset_cursor ([] ()
-                              { QApplication::restoreOverrideCursor (); });
+  { QApplication::restoreOverrideCursor (); });
 
   // read the file binary, decoding later
   QByteArray text_data = file.readAll ();
@@ -1976,7 +1976,7 @@ file_editor_tab::load_file (const QString& fileName)
 
       // try to convert encoding in strict mode
       u16_str = octave_u16_conv_from_encoding_strict (encoding.c_str (),
-                                                      src, srclen, &length);
+                src, srclen, &length);
 
       // check for invalid characters in input file
       if (! u16_str)
@@ -1986,7 +1986,7 @@ file_editor_tab::load_file (const QString& fileName)
 
           // convert encoding allowing replacements
           u16_str = octave_u16_conv_from_encoding (encoding.c_str (),
-                                                   src, srclen, &length);
+                    src, srclen, &length);
 
           if (! u16_str)
             {
@@ -1998,8 +1998,8 @@ file_editor_tab::load_file (const QString& fileName)
                                    tr ("Octave Editor"),
                                    tr ("Unable to read file '%1'\n"
                                        "with selected encoding '%2': %3")
-                                      .arg (file_to_load).arg (m_encoding)
-                                      .arg (std::strerror (errno)),
+                                   .arg (file_to_load).arg (m_encoding)
+                                   .arg (std::strerror (errno)),
                                    QMessageBox::Ok, nullptr);
               show_dialog (msgBox, false);
               return QString ();
@@ -2011,7 +2011,7 @@ file_editor_tab::load_file (const QString& fileName)
                             "with the selected encoding %2.\n\n"
                             "Modifying and saving the file might "
                             "cause data loss!")
-                            .arg (file_to_load).arg (m_encoding);
+                        .arg (file_to_load).arg (m_encoding);
           QMessageBox *msg_box = new QMessageBox ();
           msg_box->setIcon (QMessageBox::Warning);
           msg_box->setText (msg);
@@ -2185,24 +2185,24 @@ file_editor_tab::update_breakpoints ()
   QPointer<file_editor_tab> this_fetab (this);
 
   Q_EMIT interpreter_event
-    ([this, this_fetab] (interpreter& interp)
-     {
-       // INTERPRETER THREAD
+  ([this, this_fetab] (interpreter& interp)
+  {
+    // INTERPRETER THREAD
 
-       // We can skip the entire callback function because it does not
-       // make any changes to the interpreter state.
+    // We can skip the entire callback function because it does not
+    // make any changes to the interpreter state.
 
-       if (this_fetab.isNull ())
-         return;
+    if (this_fetab.isNull ())
+      return;
 
-       octave_value_list argout = Fdbstatus (interp, ovl (), 1);
+    octave_value_list argout = Fdbstatus (interp, ovl (), 1);
 
-       connect (this, &file_editor_tab::update_breakpoints_signal,
-                this, &file_editor_tab::update_breakpoints_handler,
-                Qt::QueuedConnection);
+    connect (this, &file_editor_tab::update_breakpoints_signal,
+             this, &file_editor_tab::update_breakpoints_handler,
+             Qt::QueuedConnection);
 
-       Q_EMIT update_breakpoints_signal (argout);
-     });
+    Q_EMIT update_breakpoints_signal (argout);
+  });
 }
 
 void
@@ -2263,32 +2263,32 @@ file_editor_tab::confirm_dbquit_and_save (const QString& file_to_save,
       QPointer<file_editor_tab> this_fetab (this);
 
       Q_EMIT interpreter_event
-        ([this, this_fetab, base_name, file_to_save, remove_on_success, restore_breakpoints] (interpreter& interp)
-         {
-           // INTERPRETER THREAD
+      ([this, this_fetab, base_name, file_to_save, remove_on_success, restore_breakpoints] (interpreter& interp)
+      {
+        // INTERPRETER THREAD
 
-           // If THIS_FETAB is no longer valid, we still want to
-           // perform the actions in the interpreter but we can't emit
-           // the signal associated with THIS_FETAB.
+        // If THIS_FETAB is no longer valid, we still want to
+        // perform the actions in the interpreter but we can't emit
+        // the signal associated with THIS_FETAB.
 
-           tree_evaluator& tw = interp.get_evaluator ();
+        tree_evaluator& tw = interp.get_evaluator ();
 
-           tw.dbquit (true);
+        tw.dbquit (true);
 
-           command_editor::interrupt (true);
+        command_editor::interrupt (true);
 
-           std::string std_base_name = base_name.toStdString ();
+        std::string std_base_name = base_name.toStdString ();
 
-           symbol_table& symtab = interp.get_symbol_table ();
+        symbol_table& symtab = interp.get_symbol_table ();
 
-           symtab.clear_user_function (std_base_name);
+        symtab.clear_user_function (std_base_name);
 
-           if (this_fetab.isNull ())
-             return;
+        if (this_fetab.isNull ())
+          return;
 
-           Q_EMIT do_save_file_signal (file_to_save, remove_on_success,
-                                       restore_breakpoints);
-         });
+        Q_EMIT do_save_file_signal (file_to_save, remove_on_success,
+                                    restore_breakpoints);
+      });
     }
 }
 
@@ -2332,91 +2332,91 @@ file_editor_tab::save_file (const QString& saveFileName,
       QPointer<file_editor_tab> this_fetab (this);
 
       Q_EMIT interpreter_event
-        ([this, this_fetab, base_name, file_to_save, remove_on_success, restore_breakpoints] (interpreter& interp)
-         {
-           // INTERPRETER THREAD
+      ([this, this_fetab, base_name, file_to_save, remove_on_success, restore_breakpoints] (interpreter& interp)
+      {
+        // INTERPRETER THREAD
 
-           // We are intentionally skipping any side effects that may
-           // occur in the callback function if THIS_FETAB is no
-           // longer valid.  If the editor tab has disappeared, there
-           // is not much point in reloading the function to restore
-           // breakpoint info in the GUI.
+        // We are intentionally skipping any side effects that may
+        // occur in the callback function if THIS_FETAB is no
+        // longer valid.  If the editor tab has disappeared, there
+        // is not much point in reloading the function to restore
+        // breakpoint info in the GUI.
 
-           if (this_fetab.isNull ())
-             return;
+        if (this_fetab.isNull ())
+          return;
 
-           // Force reloading of a file after it is saved.
-           // This is needed to get the right line numbers for
-           // breakpoints (bug #46632).
+        // Force reloading of a file after it is saved.
+        // This is needed to get the right line numbers for
+        // breakpoints (bug #46632).
 
-           tree_evaluator& tw = interp.get_evaluator ();
+        tree_evaluator& tw = interp.get_evaluator ();
 
-           symbol_table& symtab = interp.get_symbol_table ();
+        symbol_table& symtab = interp.get_symbol_table ();
 
-           std::string std_base_name = base_name.toStdString ();
+        std::string std_base_name = base_name.toStdString ();
 
-           if (tw.in_debug_repl ())
-             {
-               octave_value sym;
-               try
-                 {
-                   sym = symtab.find_user_function (std_base_name);
-                 }
-               catch (const execution_exception&)
-                 {
-                   interp.recover_from_exception ();
+        if (tw.in_debug_repl ())
+          {
+            octave_value sym;
+            try
+              {
+                sym = symtab.find_user_function (std_base_name);
+              }
+            catch (const execution_exception&)
+              {
+                interp.recover_from_exception ();
 
-                   // Ignore syntax error.  It was in the old file on disk;
-                   // the user may have fixed it already.
-                 }
+                // Ignore syntax error.  It was in the old file on disk;
+                // the user may have fixed it already.
+              }
 
-               // Return early if this file is not loaded in the symbol table
-               if (! sym.is_defined () || ! sym.is_user_code ())
-                 {
-                   Q_EMIT do_save_file_signal (file_to_save, remove_on_success,
-                                               restore_breakpoints);
-                   return;
-                 }
+            // Return early if this file is not loaded in the symbol table
+            if (! sym.is_defined () || ! sym.is_user_code ())
+              {
+                Q_EMIT do_save_file_signal (file_to_save, remove_on_success,
+                                            restore_breakpoints);
+                return;
+              }
 
-               octave_user_code *fcn = sym.user_code_value ();
+            octave_user_code *fcn = sym.user_code_value ();
 
-               std::string full_name = file_to_save.toStdString ();
+            std::string full_name = file_to_save.toStdString ();
 
-               if (sys::canonicalize_file_name (full_name)
-                   != sys::canonicalize_file_name (fcn->fcn_file_name ()))
-                 {
-                   Q_EMIT do_save_file_signal (file_to_save, remove_on_success,
-                                               restore_breakpoints);
-                   return;
-                 }
+            if (sys::canonicalize_file_name (full_name)
+                != sys::canonicalize_file_name (fcn->fcn_file_name ()))
+              {
+                Q_EMIT do_save_file_signal (file_to_save, remove_on_success,
+                                            restore_breakpoints);
+                return;
+              }
 
-               // If this file is loaded, check that we aren't currently
-               // running it.
-               // FIXME: is there a better way to get this info?
+            // If this file is loaded, check that we aren't currently
+            // running it.
+            // FIXME: is there a better way to get this info?
 
-               octave_idx_type curr_frame = -1;
+            octave_idx_type curr_frame = -1;
 
-               octave_map stk = tw.backtrace (curr_frame, false);
+            octave_map stk = tw.backtrace (curr_frame, false);
 
-               Cell names = stk.contents ("name");
+            Cell names = stk.contents ("name");
 
-               for (octave_idx_type i = names.numel () - 1; i >= 0; i--)
-                 {
-                   if (names(i).string_value () == std_base_name)
-                     {
-                       Q_EMIT confirm_dbquit_and_save_signal
-                         (file_to_save, base_name, remove_on_success,
-                          restore_breakpoints);
-                       return;
-                     }
-                 }
-             }
+            for (octave_idx_type i = names.numel () - 1; i >= 0; i--)
+              {
+                if (names(i).string_value () == std_base_name)
+                  {
+                    Q_EMIT confirm_dbquit_and_save_signal
+                    (file_to_save, base_name, remove_on_success,
+                     restore_breakpoints);
+                    return;
+                  }
+              }
+          }
 
-           symtab.clear_user_function (std_base_name);
+        symtab.clear_user_function (std_base_name);
 
-           Q_EMIT do_save_file_signal (file_to_save, remove_on_success,
-                                       restore_breakpoints);
-         });
+        Q_EMIT do_save_file_signal (file_to_save, remove_on_success,
+                                    restore_breakpoints);
+      });
     }
   else
     Q_EMIT do_save_file_signal (saveFileName, remove_on_success,
@@ -2576,7 +2576,7 @@ file_editor_tab::do_save_file (const QString& file_to_save,
                              tr ("Octave Editor"),
                              tr ("The changes could not be saved to the file\n"
                                  "%1")
-                                 .arg (file.fileName ())
+                             .arg (file.fileName ())
                             );
     }
 }
@@ -2676,10 +2676,10 @@ file_editor_tab::save_file_as (bool remove_on_success)
               && file.exists ())
             {
               int ans = QMessageBox::question (this,
-                                    tr ("Octave Editor"),
-                                    tr ("%1\n already exists\n"
-                                        "Do you want to overwrite it?").arg (save_file_name),
-                                    QMessageBox::Yes | QMessageBox::No);
+                                               tr ("Octave Editor"),
+                                               tr ("%1\n already exists\n"
+                                                   "Do you want to overwrite it?").arg (save_file_name),
+                                               QMessageBox::Yes | QMessageBox::No);
               if (ans != QMessageBox::Yes)
                 {
                   // Try again, if edit area is read only, remove on success
@@ -2912,7 +2912,7 @@ file_editor_tab::notice_settings (bool init)
 
   //highlight current line color
   m_edit_area->setCaretLineVisible
-    (settings.bool_value (ed_highlight_current_line));
+  (settings.bool_value (ed_highlight_current_line));
 
   // auto completion
   bool match_keywords = settings.bool_value (ed_code_completion_keywords);
@@ -2929,13 +2929,13 @@ file_editor_tab::notice_settings (bool init)
   m_edit_area->setAutoCompletionSource (source);
 
   m_edit_area->setAutoCompletionReplaceWord
-    (settings.bool_value (ed_code_completion_replace));
+  (settings.bool_value (ed_code_completion_replace));
   m_edit_area->setAutoCompletionCaseSensitivity
-    (settings.bool_value (ed_code_completion_case));
+  (settings.bool_value (ed_code_completion_case));
 
   if (settings.bool_value (ed_code_completion))
     m_edit_area->setAutoCompletionThreshold
-      (settings.int_value (ed_code_completion_threshold));
+    (settings.int_value (ed_code_completion_threshold));
   else
     m_edit_area->setAutoCompletionThreshold (-1);
 
@@ -2950,7 +2950,7 @@ file_editor_tab::notice_settings (bool init)
   m_edit_area->setEolVisibility (settings.bool_value (ed_show_eol_chars));
 
   m_save_as_desired_eol = static_cast<QsciScintilla::EolMode>
-                            (settings.int_value (ed_default_eol_mode));
+                          (settings.int_value (ed_default_eol_mode));
 
   if (settings.bool_value (ed_show_line_numbers))
     {
@@ -2968,18 +2968,18 @@ file_editor_tab::notice_settings (bool init)
   m_smart_indent = settings.bool_value (ed_auto_indent);
   m_edit_area->setAutoIndent (m_smart_indent);
   m_edit_area->setTabIndents
-    (settings.bool_value (ed_tab_indents_line));
+  (settings.bool_value (ed_tab_indents_line));
   m_edit_area->setBackspaceUnindents
-    (settings.bool_value (ed_backspace_unindents_line));
+  (settings.bool_value (ed_backspace_unindents_line));
   m_edit_area->setIndentationGuides
-    (settings.bool_value (ed_show_indent_guides));
+  (settings.bool_value (ed_show_indent_guides));
   m_edit_area->setIndentationsUseTabs
-    (settings.bool_value (ed_indent_uses_tabs));
+  (settings.bool_value (ed_indent_uses_tabs));
   m_edit_area->setIndentationWidth
-    (settings.int_value (ed_indent_width));
+  (settings.int_value (ed_indent_width));
 
   m_edit_area->setTabWidth
-    (settings.int_value (ed_tab_width));
+  (settings.int_value (ed_tab_width));
 
   m_ind_char_width = 1;
   if (m_edit_area->indentationsUseTabs ())

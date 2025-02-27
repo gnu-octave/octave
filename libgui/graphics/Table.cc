@@ -1704,7 +1704,7 @@ Table::eventFilter (QObject *watched, QEvent *xevent)
             else
               {
                 Q_EMIT gh_set_event (fig.get_handle (), "selectiontype",
-                                   Utils::figureSelectionType (m), false);
+                                     Utils::figureSelectionType (m), false);
 
                 QComboBox *comboBox_0 = qobject_cast<QComboBox *> (watched);
                 for (int row = 0; row < m_tableWidget->rowCount (); row++)

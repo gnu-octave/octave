@@ -81,18 +81,18 @@ encode_numeric (T& writer, const octave_value& obj,
     }
   else if (obj.isinteger ())
     {
-       if (obj.is_uint64_type ())
-         {
-            uint64_t value = obj.uint64_value ();
-            writer.Uint64 (value);
-         }
-       else
-         {
-            // Write all other integers as 64-bit values and let RapidJSON
-            // determine number of digits to keep.
-            int64_t value = obj.int64_value ();
-            writer.Int64 (value);
-         }
+      if (obj.is_uint64_type ())
+        {
+          uint64_t value = obj.uint64_value ();
+          writer.Uint64 (value);
+        }
+      else
+        {
+          // Write all other integers as 64-bit values and let RapidJSON
+          // determine number of digits to keep.
+          int64_t value = obj.int64_value ();
+          writer.Int64 (value);
+        }
     }
   else if (obj.is_bool_scalar ())
     writer.Bool (obj.bool_value ());

@@ -631,9 +631,9 @@ variable_editor_view::selected_command_requested (const QString& cmd)
 
   // Variable with desired range as string
   QString variable = QString ("%1(%2:%3,%4:%5)")
-                              .arg (objectName ())
-                              .arg (range.at (0)).arg (s1)
-                              .arg (range.at (2)).arg (s2);
+                     .arg (objectName ())
+                     .arg (range.at (0)).arg (s1)
+                     .arg (range.at (2)).arg (s2);
 
   // Desired command as string
   QString command;
@@ -641,7 +641,7 @@ variable_editor_view::selected_command_requested (const QString& cmd)
     command = QString ("unnamed = %1;").arg (variable);
   else
     command = QString ("figure (); %1 (%2); title ('%2');")
-                        .arg (cmd).arg (variable);
+              .arg (cmd).arg (variable);
 
   Q_EMIT command_signal (command);
 }

@@ -89,7 +89,7 @@ private:
   bool columneditable (int column);
   void sendCellEditCallback (int row, int col, octave_value old_value,
                              octave_value new_value, octave_value edit_data, octave_value error);
-  void checkBoxClicked (int row, int col, QCheckBox* checkBox);
+  void checkBoxClicked (int row, int col, QCheckBox *checkBox);
 
 };
 

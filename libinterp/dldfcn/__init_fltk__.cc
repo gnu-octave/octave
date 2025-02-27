@@ -2024,7 +2024,7 @@ public:
   {
     if (instance_ok ())
       s_instance->do_toggle_menubar_visibility (str2idx (fig_idx_str),
-                                              menubar_is_figure);
+                                                menubar_is_figure);
   }
 
 private:
@@ -2564,7 +2564,7 @@ Undocumented internal function.
       octave_value fcn_handle (new octave_fcn_handle (fcn));
 
       octave_value_list id = Fadd_input_event_hook (interp,
-                                                    ovl (fcn_handle), 1);
+                             ovl (fcn_handle), 1);
 
       fltk->set_input_event_hook_id (id);
     }

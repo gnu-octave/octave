@@ -477,7 +477,7 @@ qt_interpreter_events::gui_preference (const std::string& key,
 
   // Emit the signal for changing or getting a preference
   Q_EMIT gui_preference_signal (QString::fromStdString (key),
-                              QString::fromStdString (value));
+                                QString::fromStdString (value));
 
   // Wait for response (pref_value).
   wait ();

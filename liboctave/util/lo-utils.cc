@@ -242,18 +242,14 @@ read_inf_nan_na (std::istream& is, char c0)
           {
             char c2 = is.get ();
             if (c2 == 'n' || c2 == 'N')
-              {
-                val = std::numeric_limits<T>::quiet_NaN ();
-                is.peek ();  // Potentially set EOF bit
-              }
+              val = std::numeric_limits<T>::quiet_NaN ();
             else
               {
                 val = numeric_limits<T>::NA ();
-                if (c2 != std::istream::traits_type::eof ())
-                  is.putback (c2);
-                else
-                  is.clear (is.rdstate () & ~std::ios::failbit);
+                is.putback (c2);
+                is.clear (is.rdstate () & ~std::ios::failbit);
               }
+            is.peek ();  // Potentially set EOF bit
           }
         else
           is.setstate (std::ios::failbit);
@@ -495,46 +491,46 @@ write_value (std::ostream& os, const FloatComplex& value)
 
 OCTAVE_BEGIN_NAMESPACE(math)
 
-  bool
-  int_multiply_overflow (int a, int b, int *r)
-  {
-    return octave_i_multiply_overflow_wrapper (a, b, r);
-  }
+bool
+int_multiply_overflow (int a, int b, int *r)
+{
+  return octave_i_multiply_overflow_wrapper (a, b, r);
+}
 
-  bool
-  int_multiply_overflow (long int a, long int b, long int *r)
-  {
-    return octave_li_multiply_overflow_wrapper (a, b, r);
-  }
+bool
+int_multiply_overflow (long int a, long int b, long int *r)
+{
+  return octave_li_multiply_overflow_wrapper (a, b, r);
+}
 
 #if defined (OCTAVE_HAVE_LONG_LONG_INT)
-  bool
-  int_multiply_overflow (long long int a, long long int b, long long int *r)
-  {
-    return octave_lli_multiply_overflow_wrapper (a, b, r);
-  }
+bool
+int_multiply_overflow (long long int a, long long int b, long long int *r)
+{
+  return octave_lli_multiply_overflow_wrapper (a, b, r);
+}
 #endif
 
-  bool
-  int_multiply_overflow (unsigned int a, unsigned int b, unsigned int *r)
-  {
-    return octave_ui_multiply_overflow_wrapper (a, b, r);
-  }
+bool
+int_multiply_overflow (unsigned int a, unsigned int b, unsigned int *r)
+{
+  return octave_ui_multiply_overflow_wrapper (a, b, r);
+}
 
-  bool
-  int_multiply_overflow (unsigned long int a, unsigned long int b,
-                         unsigned long int *r)
-  {
-    return octave_uli_multiply_overflow_wrapper (a, b, r);
-  }
+bool
+int_multiply_overflow (unsigned long int a, unsigned long int b,
+                       unsigned long int *r)
+{
+  return octave_uli_multiply_overflow_wrapper (a, b, r);
+}
 
 #if defined (OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT)
-  bool
-  int_multiply_overflow (unsigned long long int a, unsigned long long int b,
-                         unsigned long long int *r)
-  {
-    return octave_ulli_multiply_overflow_wrapper (a, b, r);
-  }
+bool
+int_multiply_overflow (unsigned long long int a, unsigned long long int b,
+                       unsigned long long int *r)
+{
+  return octave_ulli_multiply_overflow_wrapper (a, b, r);
+}
 #endif
 
 OCTAVE_END_NAMESPACE(math)

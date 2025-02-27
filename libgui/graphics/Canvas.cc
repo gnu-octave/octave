@@ -214,7 +214,7 @@ Canvas::updateCurrentPoint (const graphics_object& fig,
           cp(1, 0) = p2(0); cp(1, 1) = p2(1); cp(1, 2) = p2(2);
 
           Q_EMIT gh_set_event (childObj.get_handle (), "currentpoint", cp,
-                             false);
+                               false);
         }
     }
 }
@@ -609,7 +609,7 @@ Canvas::canvasMousePressEvent (QMouseEvent *event)
         {
           graphics_object root = gh_mgr.get_object (0);
           Utils::properties<root_figure> (root)
-            .set_currentfigure (figObj.get_handle ().as_octave_value ());
+          .set_currentfigure (figObj.get_handle ().as_octave_value ());
         }
 
       graphics_object currentObj, axesObj;
@@ -646,7 +646,7 @@ Canvas::canvasMousePressEvent (QMouseEvent *event)
 
       if (valid_axes)
         Utils::properties<figure> (figObj)
-          .set_currentaxes (axesObj.get_handle ().as_octave_value ());
+        .set_currentaxes (axesObj.get_handle ().as_octave_value ());
 
       Figure *fig = dynamic_cast<Figure *> (qt_graphics_toolkit::toolkitObject (figObj));
 
@@ -677,8 +677,8 @@ Canvas::canvasMousePressEvent (QMouseEvent *event)
             updateCurrentPoint (figObj, obj, event);
 
             Q_EMIT gh_callback_event (figObj.get_handle (),
-                                    "windowbuttondownfcn",
-                                    button_number (event));
+                                      "windowbuttondownfcn",
+                                      button_number (event));
 
             // Execute the "buttondownfcn" of the selected object.  If the
             // latter is empty then execute the figure "buttondownfcn"
@@ -902,14 +902,14 @@ Canvas::canvasMouseReleaseEvent (QMouseEvent *event)
                   props.prepend (figObj.get_handle ().as_octave_value ());
 
                   Q_EMIT interpreter_event
-                    ([this, props] (octave::interpreter& interp)
-                     {
-                       // INTERPRETER THREAD
+                  ([this, props] (octave::interpreter& interp)
+                  {
+                    // INTERPRETER THREAD
 
-                       interp.feval ("annotation", props);
+                    interp.feval ("annotation", props);
 
-                       redraw ();
-                     });
+                    redraw ();
+                  });
                 }
             }
         }

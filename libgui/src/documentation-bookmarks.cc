@@ -411,8 +411,8 @@ documentation_bookmarks::write_bookmarks ()
       QMessageBox::warning (this, tr("Octave: Saving Documentation Bookmarks"),
                             tr("Unable to write file %1:\n%2.\n\n"
                                "Documentation bookmarks are not saved!\n")
-                              .arg (m_xbel_file.fileName ())
-                              .arg (m_xbel_file.errorString ()));
+                            .arg (m_xbel_file.fileName ())
+                            .arg (m_xbel_file.errorString ()));
       return;
     }
 
@@ -467,8 +467,8 @@ documentation_bookmarks::read_bookmarks ()
   if (! m_xbel_file.open (QFile::ReadOnly | QFile::Text))
     {
       error_message = tr ("Unable to read file %1:\n%2.")
-                          .arg (m_xbel_file.fileName ())
-                          .arg (m_xbel_file.errorString ());
+                      .arg (m_xbel_file.fileName ())
+                      .arg (m_xbel_file.errorString ());
       return error_message;
     }
 
@@ -478,7 +478,7 @@ documentation_bookmarks::read_bookmarks ()
     {
       error_message = tr ("No start element found in %1.\n"
                           "Invalid bookmark file?")
-                          .arg (m_xbel_file.fileName ());
+                      .arg (m_xbel_file.fileName ());
       return error_message;
     }
 
@@ -488,7 +488,7 @@ documentation_bookmarks::read_bookmarks ()
       error_message = tr ("The file\n"
                           "%1\n"
                           "is not a valid XBEL file version 1.0.")
-                          .arg (m_xbel_file.fileName ());
+                      .arg (m_xbel_file.fileName ());
       return error_message;
     }
 

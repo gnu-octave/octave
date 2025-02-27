@@ -149,7 +149,7 @@ public:
   { return to_dense ().sort_rows_idx (mode); }
 
   OCTINTERP_OVERRIDABLE_FUNC_API sortmode
- is_sorted_rows (sortmode mode = UNSORTED) const
+  is_sorted_rows (sortmode mode = UNSORTED) const
   { return to_dense ().is_sorted_rows (mode); }
 
   OCTINTERP_OVERRIDABLE_FUNC_API bool is_matrix_type () const

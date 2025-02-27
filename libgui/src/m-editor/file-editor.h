@@ -286,8 +286,8 @@ public Q_SLOTS:
   void handle_insert_debugger_pointer_request (const QString& file, int line);
   void handle_delete_debugger_pointer_request (const QString& file, int line);
   void handle_update_breakpoint_marker_request (bool insert,
-                                                const QString& file, int line,
-                                                const QString& cond);
+      const QString& file, int line,
+      const QString& cond);
 
   void handle_edit_file_request (const QString& file);
 
@@ -374,9 +374,9 @@ private:
 
   file_editor_tab * find_tab_widget (const QString& openFileName);
   QAction * add_action (QMenu *menu, const QString& text,
-                        const char *member, QWidget *receiver = nullptr);
+                       const char *member, QWidget *receiver = nullptr);
   QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
-                        const char *member, QWidget *receiver = nullptr);
+                       const char *member, QWidget *receiver = nullptr);
 
   QMenu * add_menu (QMenuBar *p, QString text);
 

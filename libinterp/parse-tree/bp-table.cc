@@ -839,43 +839,43 @@ public:
 private:
   void populate_function_cache ()
   {
-      if (m_methods_cache.empty ())
-        {
-          // Not the most efficient, but reuses code:
-          const std::map<std::string, cdef_method>& map
-            = m_cls.get_method_map (false, true);
-          for (const auto& meth : map)
-            {
-              octave_user_code *fcn
-                = m_cls.get_method (meth.first).user_code_value (true);
-              if (fcn != nullptr)
-                m_methods_cache.push_back (fcn);
-            }
+    if (m_methods_cache.empty ())
+      {
+        // Not the most efficient, but reuses code:
+        const std::map<std::string, cdef_method>& map
+          = m_cls.get_method_map (false, true);
+        for (const auto& meth : map)
+          {
+            octave_user_code *fcn
+              = m_cls.get_method (meth.first).user_code_value (true);
+            if (fcn != nullptr)
+              m_methods_cache.push_back (fcn);
+          }
 
-          // Check get and set methods of properties
-          const std::map<property_key, cdef_property>& prop_map
-            = m_cls.get_property_map (cdef_class::property_all);
-          for (const auto& prop : prop_map)
-            {
-              octave_value get_meth = prop.second.get ("GetMethod");
-              if (get_meth.is_function_handle ())
-                {
-                  octave_user_code *fcn
-                    = get_meth.user_function_value ()->user_code_value (true);
-                  if (fcn != nullptr)
-                    m_methods_cache.push_back (fcn);
-                }
+        // Check get and set methods of properties
+        const std::map<property_key, cdef_property>& prop_map
+          = m_cls.get_property_map (cdef_class::property_all);
+        for (const auto& prop : prop_map)
+          {
+            octave_value get_meth = prop.second.get ("GetMethod");
+            if (get_meth.is_function_handle ())
+              {
+                octave_user_code *fcn
+                  = get_meth.user_function_value ()->user_code_value (true);
+                if (fcn != nullptr)
+                  m_methods_cache.push_back (fcn);
+              }
 
-              octave_value set_meth = prop.second.get ("SetMethod");
-              if (set_meth.is_function_handle ())
-                {
-                  octave_user_code *fcn
-                    = set_meth.user_function_value ()->user_code_value (true);
-                  if (fcn != nullptr)
-                    m_methods_cache.push_back (fcn);
-                }
-            }
-        }
+            octave_value set_meth = prop.second.get ("SetMethod");
+            if (set_meth.is_function_handle ())
+              {
+                octave_user_code *fcn
+                  = set_meth.user_function_value ()->user_code_value (true);
+                if (fcn != nullptr)
+                  m_methods_cache.push_back (fcn);
+              }
+          }
+      }
   }
 
 private:

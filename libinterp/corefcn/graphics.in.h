@@ -4771,9 +4771,11 @@ public:
     { return m_aliminclude.current_value (); }
 
     bool is_climinclude () const
-    { return (m_climinclude.is_on ()
+    {
+      return (m_climinclude.is_on ()
               && ! (m_cdatamapping.is ("direct")
-                    || m_cdata.get ().ndims () == 3)); }
+                    || m_cdata.get ().ndims () == 3));
+    }
     std::string get_climinclude () const
     { return m_climinclude.current_value (); }
 
@@ -5058,9 +5060,11 @@ public:
     { return m_aliminclude.current_value (); }
 
     bool is_climinclude () const
-    { return (m_climinclude.is_on ()
+    {
+      return (m_climinclude.is_on ()
               && ! (m_cdatamapping.is ("direct")
-                    || m_cdata.get ().ndims () == 3)); }
+                    || m_cdata.get ().ndims () == 3));
+    }
     std::string get_climinclude () const
     { return m_climinclude.current_value (); }
 
@@ -5563,9 +5567,11 @@ public:
     { return m_aliminclude.current_value (); }
 
     bool is_climinclude () const
-    { return (m_climinclude.is_on ()
+    {
+      return (m_climinclude.is_on ()
               && ! (m_cdatamapping.is ("direct")
-                    || m_cdata.get ().ndims () == 3)); }
+                    || m_cdata.get ().ndims () == 3));
+    }
     std::string get_climinclude () const
     { return m_climinclude.current_value (); }
 

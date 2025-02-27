@@ -92,12 +92,12 @@ class debugger
 public:
 
   enum execution_mode
-    {
-      EX_NORMAL = 0,
-      EX_CONTINUE = 1,
-      EX_QUIT = 2,
-      EX_QUIT_ALL = 3
-    };
+  {
+    EX_NORMAL = 0,
+    EX_CONTINUE = 1,
+    EX_QUIT = 2,
+    EX_QUIT_ALL = 3
+  };
 
   debugger (interpreter& interp, std::size_t level)
     : m_interpreter (interp), m_level (level),

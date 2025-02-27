@@ -196,25 +196,29 @@ jobs:
           key: ${{ steps.ccache-prepare.outputs.key }}
 
       - name: check
+        id: run-test-suite
         timeout-minutes: 60
         run: |
           XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a \
-            make -C ./.build check-tree-evaluator V=1 | tee ./test-suite.log
+            make -C ./.build check-tree-evaluator | tee ./test-suite.log
 
       - name: display test suite log
+        if: always() && (steps.run-test-suite.outcome != 'skipped')
         continue-on-error: true
         # Displaying the log shouldn't take long. Cancel the step if it does.
         timeout-minutes: 5
         run: cat ./.build/test/fntests.log
 
       - name: check with bytecode interpreter
+        id: run-test-suite-bytecode
         timeout-minutes: 60
         run: |
           mv ./.build/test/fntests.log ./.build/test/fntests-no-bci.log
           XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a \
-            make -C ./.build check-bytecode-evaluator V=1 | tee ./test-suite-bci.log
+            make -C ./.build check-bytecode-evaluator | tee ./test-suite-bci.log
 
       - name: display test suite log with bytecode interpreter
+        if: always() && (steps.run-test-suite-bytecode.outcome != 'skipped')
         continue-on-error: true
         # Displaying the log shouldn't take long. Cancel the step if it does.
         timeout-minutes: 5
@@ -258,7 +262,7 @@ jobs:
           unset CC
           unset CXX
           IFS=:
-          for package in "${PACKAGE_NAMES}"; do
+          for package in ${PACKAGE_NAMES}; do
             printf "   \033[0;32m==>\033[0m Octave package \033[0;32m${package}\033[0m\n"
             echo "::group::Install ${package}"
             octave --eval "pkg install -verbose -forge ${package}"

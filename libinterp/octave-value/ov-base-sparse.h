@@ -78,7 +78,7 @@ public:
   OCTINTERP_OVERRIDABLE_FUNC_API ~octave_base_sparse () = default;
 
   OCTINTERP_OVERRIDABLE_FUNC_API octave_idx_type numel () const
-   { return dims ().safe_numel (); }
+  { return dims ().safe_numel (); }
 
   OCTINTERP_OVERRIDABLE_FUNC_API octave_idx_type nnz () const
   { return matrix.nnz (); }

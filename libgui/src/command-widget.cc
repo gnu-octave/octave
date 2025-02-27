@@ -143,8 +143,8 @@ command_widget::command_widget (QWidget *p)
   m_listener->start ();
 
   insert_interpreter_output (
-                  QString::fromStdString (octave_startup_message () + "\n "),
-                  console_lexer::Default);
+    QString::fromStdString (octave_startup_message () + "\n "),
+    console_lexer::Default);
 }
 
 command_widget::~command_widget ()
@@ -165,7 +165,7 @@ command_widget::process_redirected_streams (const char *buf, int len, int fd)
     style = console_lexer::Default;
 
   m_console->append_string (
-        QString::fromStdString (std::string (buf, len)), style);
+    QString::fromStdString (std::string (buf, len)), style);
 }
 
 void
@@ -178,24 +178,24 @@ command_widget::init_command_prompt ()
   QPointer<command_widget> this_cw (this);
 
   Q_EMIT interpreter_event
-    ([this, this_cw] (interpreter& interp)
-     {
-       // INTERPRETER THREAD
+  ([this, this_cw] (interpreter& interp)
+  {
+    // INTERPRETER THREAD
 
-       // We can skip the entire callback function because it does not
-       // make any changes to the interpreter state.
+    // We can skip the entire callback function because it does not
+    // make any changes to the interpreter state.
 
-       if (this_cw.isNull ())
-         return;
+    if (this_cw.isNull ())
+      return;
 
-       std::string prompt = interp.PS1 ();
-       std::string decoded_prompt
-         = command_editor::decode_prompt_string (prompt);
+    std::string prompt = interp.PS1 ();
+    std::string decoded_prompt
+      = command_editor::decode_prompt_string (prompt);
 
-       Q_EMIT update_prompt_signal (QString::fromStdString (decoded_prompt));
+    Q_EMIT update_prompt_signal (QString::fromStdString (decoded_prompt));
 
-       Q_EMIT new_command_line_signal ();
-     });
+    Q_EMIT new_command_line_signal ();
+  });
 }
 
 void
@@ -226,30 +226,30 @@ command_widget::process_input_line (const QString& input_line)
   QPointer<command_widget> this_cw (this);
 
   Q_EMIT interpreter_event
-    ([this, this_cw, input_line] (interpreter& interp)
-     {
-       // INTERPRETER THREAD
+  ([this, this_cw, input_line] (interpreter& interp)
+  {
+    // INTERPRETER THREAD
 
-       // If THIS_CW is no longer valid, we still want to parse and
-       // execute INPUT_LINE but we can't emit the signals associated
-       // with THIS_CW.
+    // If THIS_CW is no longer valid, we still want to parse and
+    // execute INPUT_LINE but we can't emit the signals associated
+    // with THIS_CW.
 
-       interp.parse_and_execute (input_line.toStdString (),
-                                 m_incomplete_parse);
+    interp.parse_and_execute (input_line.toStdString (),
+                              m_incomplete_parse);
 
-       if (this_cw.isNull ())
-         return;
+    if (this_cw.isNull ())
+      return;
 
-       std::string prompt
-         = m_incomplete_parse ? interp.PS2 () : interp.PS1 ();
+    std::string prompt
+      = m_incomplete_parse ? interp.PS2 () : interp.PS1 ();
 
-       std::string decoded_prompt
-         = command_editor::decode_prompt_string (prompt);
+    std::string decoded_prompt
+      = command_editor::decode_prompt_string (prompt);
 
-       Q_EMIT update_prompt_signal (QString::fromStdString (decoded_prompt));
+    Q_EMIT update_prompt_signal (QString::fromStdString (decoded_prompt));
 
-       Q_EMIT new_command_line_signal ();
-     });
+    Q_EMIT new_command_line_signal ();
+  });
 
 }
 
@@ -498,7 +498,7 @@ console::find (const QString& text, bool backward)
     }
 
   m_find_result_available =
-      findFirst (text, false, false, false, true, ! backward, line, col);
+    findFirst (text, false, false, false, true, ! backward, line, col);
 }
 
 // Re-implement key event

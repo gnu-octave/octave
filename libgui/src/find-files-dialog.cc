@@ -159,7 +159,7 @@ find_files_dialog::find_files_dialog (QWidget *p)
   // FIXME: use value<Qt::SortOrder> instead of static cast after
   //        dropping support of Qt 5.4
 
-    connect (m_file_list, &QTableView::doubleClicked,
+  connect (m_file_list, &QTableView::doubleClicked,
            this, &find_files_dialog::item_double_clicked);
 
   m_status_bar = new QStatusBar;

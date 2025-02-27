@@ -259,7 +259,7 @@ extern OCTMEX_API size_t mxGetNumberOfElements (const mxArray *ptr);
 extern OCTMEX_API void mxSetM (mxArray *ptr, mwSize M);
 extern OCTMEX_API void mxSetN (mxArray *ptr, mwSize N);
 extern OCTMEX_API int mxSetDimensions (mxArray *ptr, const mwSize *dims,
-                                          mwSize ndims);
+                                       mwSize ndims);
 
 #if MX_HAS_INTERLEAVED_COMPLEX
 extern OCTMEX_API int mxMakeArrayReal (mxArray *ptr);

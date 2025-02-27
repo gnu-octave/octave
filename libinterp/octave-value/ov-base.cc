@@ -108,7 +108,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value,
 #  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
 
-  octave_base_value::octave_base_value () : m_count (1) { }
+octave_base_value::octave_base_value () : m_count (1) { }
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
 #  pragma GCC diagnostic pop
@@ -158,7 +158,7 @@ octave_base_value::as_double () const
 octave_value
 octave_base_value::as_double_or_copy ()
 {
-  const octave_base_value * cthis = this;
+  const octave_base_value *cthis = this;
   return cthis->as_double ();
 }
 

@@ -63,7 +63,7 @@ public:
 
   virtual void
   handle_update_breakpoint_marker_request (bool insert, const QString& file,
-                                           int line, const QString& cond) = 0;
+      int line, const QString& cond) = 0;
 
   virtual void handle_edit_file_request (const QString& file) = 0;
 

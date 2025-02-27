@@ -177,9 +177,9 @@ workspace_view::setModel (workspace_model *model)
 
   m_view->sortByColumn
     (settings.int_value (ws_sort_column),
+     // FIXME: use value<Qt::SortOrder> instead of static cast after
+     //        dropping support of Qt 5.4
      static_cast<Qt::SortOrder> (settings.uint_value (ws_sort_order)));
-    // FIXME: use value<Qt::SortOrder> instead of static cast after
-    //        dropping support of Qt 5.4
 
   m_model = model;
 }

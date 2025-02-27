@@ -144,7 +144,7 @@ private:
                    const QString& line, QString& first_word);
 
   QPointer<QTemporaryFile> create_tmp_file (const QString& extension,
-                                            const QString& contents);
+      const QString& contents);
 
   bool m_debug_mode;
 

@@ -44,14 +44,14 @@ console_lexer::description (int style) const
 {
   switch (style)
     {
-      case Default:
-        return tr ("Default");
-      case Error:
-        return tr ("Error");
-      case Prompt:
-        return tr ("Prompt");
-      default:
-        return QString ();
+    case Default:
+      return tr ("Default");
+    case Error:
+      return tr ("Error");
+    case Prompt:
+      return tr ("Prompt");
+    default:
+      return QString ();
     }
 };
 
@@ -79,20 +79,20 @@ console_lexer::defaultColor(int style) const
 
   switch (style)
     {
-      case Default:
-        return fgc;
+    case Default:
+      return fgc;
 
-      case Error:
-        return interpolate_color (cs_error_color, fgc,
-                                  cs_error_interp[0], cs_error_interp[1]);
+    case Error:
+      return interpolate_color (cs_error_color, fgc,
+                                cs_error_interp[0], cs_error_interp[1]);
 
-      case Prompt:
-        return interpolate_color (fgc, bgc,
-                                  cs_prompt_interp[0], cs_prompt_interp[1]);
+    case Prompt:
+      return interpolate_color (fgc, bgc,
+                                cs_prompt_interp[0], cs_prompt_interp[1]);
 
-      default:
-        return fgc;
-  }
+    default:
+      return fgc;
+    }
 }
 
 
@@ -105,12 +105,12 @@ console_lexer::defaultFont(int style) const
 
   switch (style)
     {
-      case Default:
-      case Error:
-      case Prompt:
+    case Default:
+    case Error:
+    case Prompt:
 
-      default:
-        return f;
+    default:
+      return f;
     }
 }
 

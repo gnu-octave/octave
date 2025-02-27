@@ -84,7 +84,7 @@ public Q_SLOTS:
   void handle_request_remove_via_editor_linenr (int editor_linenr);
   void handle_remove ();
   void handle_find_translation (int original_linenr, int& editor_linenr,
-                                marker*& bp);
+                                marker *&bp);
   void handle_find_just_before (int linenr, int& original_linenr,
                                 int& editor_linenr);
   void handle_find_just_after (int linenr, int& original_linenr,

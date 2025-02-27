@@ -79,8 +79,8 @@ self_listener::self_listener (const std::vector<int>& fds,
       if (! (rs.stream = fdopen (rs.fd, "wb")))
         {
           error_msg (
-              QString (tr ("Can not open redirected stream with fd = %1."))
-                      .arg (rs.fd));
+            QString (tr ("Can not open redirected stream with fd = %1."))
+            .arg (rs.fd));
           return;
         }
 
@@ -88,8 +88,8 @@ self_listener::self_listener (const std::vector<int>& fds,
       if (::setvbuf (rs.stream, nullptr, _IONBF, 0))
         {
           error_msg (
-              QString (tr ("Can not disable buffering of stream with fd = %1."))
-                      .arg (rs.fd));
+            QString (tr ("Can not disable buffering of stream with fd = %1."))
+            .arg (rs.fd));
           return;
         }
 
@@ -99,8 +99,8 @@ self_listener::self_listener (const std::vector<int>& fds,
       if (rs.old_fd == -1)
         {
           error_msg (
-              QString (tr ("Can not dup redirected stream with fd = %1."))
-                      .arg (rs.fd));
+            QString (tr ("Can not dup redirected stream with fd = %1."))
+            .arg (rs.fd));
           return;
         }
 
@@ -109,16 +109,16 @@ self_listener::self_listener (const std::vector<int>& fds,
       if (octave::sys::pipe (pipe_fd, error_str) < 0)
         {
           error_msg (
-              QString (tr ("Cannot create pipe for redirecting stream with fd = %1:"))
-                      .arg (rs.fd), error_str);
+            QString (tr ("Cannot create pipe for redirecting stream with fd = %1:"))
+            .arg (rs.fd), error_str);
           return;
         }
       if (octave::sys::dup2 (pipe_fd[1], rs.fd, error_str) < 0)
         {
           error_msg (
-              QString (tr ("Cannot dup2 redirected stream with fd = %1\n"
-                           "to pipe with fd = %2: %3"))
-                .arg (rs.fd).arg (pipe_fd[1]), error_str);
+            QString (tr ("Cannot dup2 redirected stream with fd = %1\n"
+                         "to pipe with fd = %2: %3"))
+            .arg (rs.fd).arg (pipe_fd[1]), error_str);
           return;
         }
 
@@ -178,25 +178,25 @@ void self_listener::run ()
           continue;
         }
 
-        for (auto& rs : m_redir_streams)
-          {
-            if (octave_fd_isset (rs.pipe_fd, &redir_fds))
-              {
-                if ((len = ::read (rs.pipe_fd, buf, 4096)) > 0)
-                  {
-                    buf[len] = 0;  // Just in case.
-                    Q_EMIT receive_data (buf, len, rs.fd);
-                  }
-                else if  (len < 0)
-                  {
-                    error_msg (
-                      QString (tr ("Error reading from redirected stream fd = %1."))
-                      .arg (rs.fd));
-                    running = false;
-                    break;
-                  }
-              }
-          }
+      for (auto& rs : m_redir_streams)
+        {
+          if (octave_fd_isset (rs.pipe_fd, &redir_fds))
+            {
+              if ((len = ::read (rs.pipe_fd, buf, 4096)) > 0)
+                {
+                  buf[len] = 0;  // Just in case.
+                  Q_EMIT receive_data (buf, len, rs.fd);
+                }
+              else if  (len < 0)
+                {
+                  error_msg (
+                    QString (tr ("Error reading from redirected stream fd = %1."))
+                    .arg (rs.fd));
+                  running = false;
+                  break;
+                }
+            }
+        }
 
     }
 }

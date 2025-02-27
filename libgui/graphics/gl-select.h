@@ -35,10 +35,10 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 enum select_flags
-  {
-    select_ignore_hittest = 0x01,
-    select_last           = 0x02
-  };
+{
+  select_ignore_hittest = 0x01,
+  select_last           = 0x02
+};
 
 class opengl_selector : public opengl_renderer
 {

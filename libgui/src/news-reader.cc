@@ -103,40 +103,40 @@ void news_reader::process ()
         }
       else
         html_text = QString
-          (tr ("<html>\n"
-               "<body>\n"
-               "<p>\n"
-               "Octave's community news source seems to be unavailable.\n"
-               "</p>\n"
-               "<p>\n"
-               "For the latest news, please check\n"
-               "<a href=\"https://octave.org/community-news.html\">https://octave.org/community-news.html</a>\n"
-               "when you have a connection to the web (link opens in an external browser).\n"
-               "</p>\n"
-               "<p>\n"
-               "<small><em>&mdash; The Octave Developers, ") + OCTAVE_RELEASE_DATE + "</em></small>\n"
-           "</p>\n"
-           "</body>\n"
-           "</html>\n");
+                    (tr ("<html>\n"
+                         "<body>\n"
+                         "<p>\n"
+                         "Octave's community news source seems to be unavailable.\n"
+                         "</p>\n"
+                         "<p>\n"
+                         "For the latest news, please check\n"
+                         "<a href=\"https://octave.org/community-news.html\">https://octave.org/community-news.html</a>\n"
+                         "when you have a connection to the web (link opens in an external browser).\n"
+                         "</p>\n"
+                         "<p>\n"
+                         "<small><em>&mdash; The Octave Developers, ") + OCTAVE_RELEASE_DATE + "</em></small>\n"
+                     "</p>\n"
+                     "</body>\n"
+                     "</html>\n");
     }
   else
     html_text = QString
-      (tr ("<html>\n"
-           "<body>\n"
-           "<p>\n"
-           "Connecting to the web to display the latest Octave Community news has been disabled.\n"
-           "</p>\n"
-           "<p>\n"
-           "For the latest news, please check\n"
-           "<a href=\"https://octave.org/community-news.html\">https://octave.org/community-news.html</a>\n"
-           "when you have a connection to the web (link opens in an external browser)\n"
-           "or enable web connections for news in Octave's network settings tab.\n"
-           "</p>\n"
-           "<p>\n"
-           "<small><em>&mdash; The Octave Developers, ") + OCTAVE_RELEASE_DATE + "</em></small>\n"
-       "</p>\n"
-       "</body>\n"
-       "</html>\n");
+                (tr ("<html>\n"
+                     "<body>\n"
+                     "<p>\n"
+                     "Connecting to the web to display the latest Octave Community news has been disabled.\n"
+                     "</p>\n"
+                     "<p>\n"
+                     "For the latest news, please check\n"
+                     "<a href=\"https://octave.org/community-news.html\">https://octave.org/community-news.html</a>\n"
+                     "when you have a connection to the web (link opens in an external browser)\n"
+                     "or enable web connections for news in Octave's network settings tab.\n"
+                     "</p>\n"
+                     "<p>\n"
+                     "<small><em>&mdash; The Octave Developers, ") + OCTAVE_RELEASE_DATE + "</em></small>\n"
+                 "</p>\n"
+                 "</body>\n"
+                 "</html>\n");
 
   Q_EMIT display_news_signal (html_text);
 

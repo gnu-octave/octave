@@ -104,8 +104,8 @@ opengl_selector::select (const graphics_object& ax, int x, int y, int flags)
 
       for (int i = 0, j = 0; i < hits && j < BUFFER_SIZE-3; i++)
         {
-          GLuint n = select_buffer[j++],
-            minZ = select_buffer[j++];
+          GLuint n = select_buffer[j++];
+          GLuint minZ = select_buffer[j++];
 
           j++; // skip maxZ
           if (((flags & select_last) == 0 && (minZ <= current_minZ))

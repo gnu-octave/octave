@@ -226,8 +226,8 @@ gui_settings::set_shortcut (QAction *action, const sc_pref& scpref, bool enable)
       return;
     }
 
-    QString shortcut = sc_value (scpref);
-    action->setShortcut (QKeySequence (shortcut));
+  QString shortcut = sc_value (scpref);
+  action->setShortcut (QKeySequence (shortcut));
 }
 
 void
@@ -828,8 +828,8 @@ gui_settings::check ()
       QMessageBox::critical (nullptr,
                              QString (QT_TR_NOOP ("Octave Critical Error")),
                              msg.arg (status ())
-                                .arg (file_name ())
-                                .arg (directory_name ()));
+                             .arg (file_name ())
+                             .arg (directory_name ()));
 
       exit (1);
     }

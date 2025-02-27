@@ -37,10 +37,11 @@ class console_lexer : public QsciLexer
 
 public:
 
-  enum {
-      Default = 0,
-      Error = 100,
-      Prompt = 101
+  enum
+  {
+    Default = 0,
+    Error = 100,
+    Prompt = 101
   };
 
   virtual const char * language () const;

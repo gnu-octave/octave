@@ -219,70 +219,95 @@ from Octave 10.
 Summary of bugs fixed for version 10.1.0 (yyyy-mm-dd):
 ----------------------------------------------------
 
-- bug #66753: hist.m: Test for equal bin spacing using a numeric tolerance
-- bug #66753: hist.m: Fix regression in determining equal bin spacing
+- bug #66753: `hist.m`: Test for equal bin spacing using a numeric tolerance.
+- bug #66753: `hist.m`: Fix regression in determining equal bin spacing.
 - bug #66753: Fix thinko in cset be1d0c816788
-- bug #66647: Silence unexpected Octave:mixed-string-concat warning in num2str.m
+- bug #66647: Silence unexpected `Octave:mixed-string-concat` warning in
+  `num2str.m`.
 - bug #66642: Code beautification for cset 2c2301104caf
-- bug #66642: Check for undefined outputs in cellfun and arrayfun
-- bug #66642: Add cellfun BIST for function failing to return requested output
-- bug #66642: add arrayfun BIST for function failing to return requested output
-- bug #66617: Avoid error for struct2cell with function without output arguments
-- bug #66617: Add self-tests for structfun with function without output arguments
-- bug #66558: translate shortcuts and descriptions in settings dialog
-- bug #66521: symbfact: return row vectors for Matlab compatibility
-- bug #66511: sparseqr: Support permutation output with CXSparse
-- bug #66511: Emit error when qr() called with permutation output and CXSparse library is used
-- bug #66488: qr (sparse, 0) isn't equal to qr (sparse, 'econ', 'vector')
-- bug #66477: ASAN error with path(_) manipulations
-- bug #66466: legend + bar causes ASAN to crash octave
-- bug #66451: Ctrl-C kills octave 10.0.0
-- bug #66448: File encoding conversion errors on macOS 14
-- bug #66399: fseek and ftell functions don't always work correctly on Win11 with filesizes >2GB
-- bug #66315: menu() throws an error when Qt dialogs are not available
-- bug #66256: movmad uses 'mean absolute deviation', matlab uses 'median absolute deviation'
-- bug #66156: Implement nanflag option for moving window functions
-- bug #66025: movfun: implement SamplePoints option
-- bug #66010: Function glpk produces incorrect output
-- bug #65964: nthargout does not propagate error ID
-- bug #65928: movfun dimension constraints: shouldn't error for dim > ndims(x), or wlen > size(x, dim), or wlen=1
-- bug #65876: error retrieving data from struct values in containers.Maps
-- bug #65768: segfault on default branch
-- bug #65753: Strip leading/trailing whitespace from Function Index search expression
-- bug #65753: Documentation window: Function Index: Search box respects trailing spaces
-- bug #65730: Some remaining cases of silent conversion of fractional inputs
-- bug #65683: issorted: enable 'monotonic' and 'strict...' sort modes.
-- bug #65674: axes 'colormap' property being set over figure 'colormap' property
-- bug #65665: Input validation for system()
-- bug #65645: Execute FIXME of perms.cc: Use constexpr instead of template specialisation
-- bug #65641: 'view' produces incorrect viewpoint when given a vector aligned with the primary axes
-- bug #65637: `short_disp` doesn't show ellipsis at end of long arrays
-- bug #65617: <F9> clears editor setting 'Always show debug breakpoints and pointers ...'
-- bug #65577: Feature request - editor right click to run test without needing to clear %! first
-- bug #65538: xint_value does not work the way it is intended
-- bug #65531: iqr handling of empty inputs is not compatible
-- bug #65499: Use separate GUI settings for Octave releases
-- bug #65495: nchoosek error 'gcd: all values must be integers'
-- bug #65459: uifigure ('visible','off') temporarily creates a visible figure window
-- bug #65447: jsonencode does not accept integer values larger than 999999
-- bug #65441: nextpow2 incorrect for some inputs slightly larger than powers of two
-- bug #65238: Improve nchoosek.m algorithm to prevent numerical issues
-- bug #65221: movfun: create inputParser only once.
-- bug #65176: unique.m - Enable third output with option 'stable'
-- bug #65134: griddata: output size inconsistent for vector input interpolation points
-- bug #65030: Column width in browser pane not retained between restarts of Octave
-- bug #65010: compatibility: colormaps now default to 256 colors in matlab
-- bug #64995: implement height and width as aliases for rows and columns for matlab compatibility
-- bug #64991: polar doesn't populate rtick with center tick value
-- bug #62928: Error sourcing file message when script with embedded '.' in filename has syntax error
-- bug #61295: cross() dimensions inconsistent with Matlab when using mismatched input vector dimensions
-- bug #60797: sqrtm: returns nan for matrix of ones with rows and columns >=4
-- bug #60726: Fix nargout for subsref when returned value may be a cs-list
-- bug #56690: allow editing of lazy index objects
-- bug #55961: properties function does not preserve order
-- bug #55198: rat() should support complex numbers
-- bug #41028: Save warning info for disabled warnings
-- bug #41028: Modify BIST tests to pass with Matlab-compatible lastwarn() behavior
+- bug #66642: Check for undefined outputs in `cellfun` and `arrayfun`.
+- bug #66642: Add `cellfun` BIST for function failing to return requested
+  output.
+- bug #66642: Add `arrayfun` BIST for function failing to return requested
+  output.
+- bug #66617: Avoid error for `struct2cell` with function without output
+  arguments.
+- bug #66617: Add self-tests for `structfun` with function without output
+  arguments.
+- bug #66558: Translate shortcuts and descriptions in settings dialog.
+- bug #66521: `symbfact`: Return row vectors for Matlab compatibility.
+- bug #66511: `sparseqr`: Support permutation output with CXSparse.
+- bug #66511: Emit error when `qr()` is called with permutation output and
+  CXSparse library is used.
+- bug #66488: `qr (sparse, 0)` isn't equal to `qr (sparse, 'econ', 'vector')`.
+- bug #66477: Avoid ASAN error with `path (_)` manipulations.
+- bug #66466: `legend` and `bar` cause ASAN to crash Octave.
+- bug #66451: Ctrl-C kills Octave 10.0.0.
+- bug #66448: File encoding conversion errors on macOS 14.
+- bug #66399: `fseek` and `ftell` functions don't always work correctly on
+  Windows with filesizes >2GB.
+- bug #66315: `menu()` throws an error when Qt dialogs are not available.
+- bug #66256: `movmad` uses 'mean absolute deviation' while Matlab uses 'median
+  absolute deviation'.
+- bug #66156: Implement `nanflag` option for moving window functions.
+- bug #66025: `movfun`: Implement `SamplePoints` option.
+- bug #66010: Function `glpk` produces incorrect output.
+- bug #65964: `nthargout` does not propagate error ID.
+- bug #65928: `movfun` dimension constraints: Shouldn't error for
+  `dim > ndims(x)`, or `wlen > size(x, dim)`, or `wlen=1`.
+- bug #65876: Error retrieving data from `struct` values in `containers.Map`.
+- bug #65768: Segmentation fault on default branch.
+- bug #65753: Strip leading/trailing whitespace from "Function Index" search
+  expression.
+- bug #65753: Documentation window: Function Index: Search box respects
+  trailing spaces.
+- bug #65730: Some remaining cases of silent conversion of fractional inputs.
+- bug #65683: `issorted`: enable `'monotonic'` and `'strict...'` sort modes.
+- bug #65674: `axes` `'colormap'` property being set over `figure` `'colormap'`
+  property.
+- bug #65665: Input validation for `system()`.
+- bug #65645: Execute FIXME of `perms.cc`: Use `constexpr` instead of template
+  specialisation.
+- bug #65641: `view` produces incorrect viewpoint when given a vector aligned
+  with the primary axes.
+- bug #65637: `short_disp` doesn't show ellipsis at end of long arrays.
+- bug #65617: <F9> clears editor setting 'Always show debug breakpoints and
+  pointers...'.
+- bug #65577: Feature request: Editor right-click to run test without needing
+  to clear `%!` first.
+- bug #65538: `xint_value` does not work the way it is intended.
+- bug #65531: `iqr` handling of empty inputs is not compatible.
+- bug #65499: Use separate GUI settings for Octave releases.
+- bug #65495: `nchoosek` error 'gcd: all values must be integers'
+- bug #65459: `uifigure ('visible', 'off')` temporarily creates a visible
+  figure window.
+- bug #65447: `jsonencode` does not accept integer values larger than 999999.
+- bug #65441: `nextpow2` incorrect for some inputs slightly larger than powers
+  of two.
+- bug #65238: Improve `nchoosek.m` algorithm to prevent numerical issues.
+- bug #65221: `movfun`: Create `inputParser` only once.
+- bug #65176: `unique.m`: Enable third output with option `'stable'`.
+- bug #65134: `griddata`: Output size inconsistent for vector input
+  interpolation points.
+- bug #65030: Column width in browser pane not retained between restarts of
+  Octave.
+- bug #65010: Compatibility: Colormaps now default to 256 colors in Matlab.
+- bug #64995: Implement `height` and `width` as aliases for `rows` and
+  `columns` for Matlab compatibility.
+- bug #64991: `polar` doesn't populate `'rtick'` with center tick value.
+- bug #62928: Error sourcing file message when script with embedded '.' in
+  filename has syntax error.
+- bug #61295: `cross()`: Dimensions inconsistent with Matlab when using
+  mismatched input vector dimensions.
+- bug #60797: `sqrtm`: Returns `NaN` for matrix of ones with rows and columns
+  >=4.
+- bug #60726: Fix `nargout` for `subsref` when returned value may be a cs-list.
+- bug #56690: Support displaying lazy index objects in variable editor.
+- bug #55961: `properties` function does not preserve order.
+- bug #55198: `rat()` should support complex numbers.
+- bug #41028: `lastwarn`: Save warning info for disabled warnings.
+- bug #41028: Modify built-in self-tests to pass with Matlab-compatible
+  `lastwarn()` behavior.
 
 ### Old release news
 

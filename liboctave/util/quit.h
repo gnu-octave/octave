@@ -207,56 +207,56 @@ extern "C" {
 // removed from Octave, but there seems to be no universally good way
 // to tag them with an attribute that will generate a warning.
 
-enum
-octave_exception
-{
-  octave_no_exception = 0,
-  octave_exec_exception = 1,
-  octave_alloc_exception = 3,
-  octave_quit_exception = 4
-};
+  enum
+  octave_exception
+  {
+    octave_no_exception = 0,
+    octave_exec_exception = 1,
+    octave_alloc_exception = 3,
+    octave_quit_exception = 4
+  };
 
-/*
-  > 0: interrupt pending
-    0: no interrupt pending
-  < 0: handling interrupt
-*/
+  /*
+    > 0: interrupt pending
+      0: no interrupt pending
+    < 0: handling interrupt
+  */
 
 #if defined (__cplusplus)
 
-extern OCTAVE_API std::atomic<int> octave_interrupt_state;
+  extern OCTAVE_API std::atomic<int> octave_interrupt_state;
 
-extern OCTAVE_API std::atomic<bool> octave_signal_caught;
+  extern OCTAVE_API std::atomic<bool> octave_signal_caught;
 
 #endif
 
-extern OCTAVE_API void octave_handle_signal (void);
+  extern OCTAVE_API void octave_handle_signal (void);
 
 #if defined (__cplusplus)
 
-inline void octave_quit ()
-{
-  bool expected = true;
+  inline void octave_quit ()
+  {
+    bool expected = true;
 
-  if (octave_signal_caught.compare_exchange_strong (expected, false))
-    octave_handle_signal ();
-}
+    if (octave_signal_caught.compare_exchange_strong (expected, false))
+      octave_handle_signal ();
+  }
 
 #define OCTAVE_QUIT octave_quit ()
 
 #else
 
-extern OCTAVE_API void octave_quit_c (void);
+  extern OCTAVE_API void octave_quit_c (void);
 #define OCTAVE_QUIT octave_quit_c ()
 
 #endif
 
-/* The following macros are obsolete.  Interrupting immediately by
-   calling siglongjmp or similar from a signal handler is asking for
-   trouble.  Rather than remove them, however, please leave them in
-   place so that old code that uses them will continue to compile.  They
-   are defined to create a dummy do-while block to match the previous
-   definitions.  */
+  /* The following macros are obsolete.  Interrupting immediately by
+     calling siglongjmp or similar from a signal handler is asking for
+     trouble.  Rather than remove them, however, please leave them in
+     place so that old code that uses them will continue to compile.  They
+     are defined to create a dummy do-while block to match the previous
+     definitions.  */
 
 #define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE     \
   do                                                    \
@@ -268,9 +268,9 @@ extern OCTAVE_API void octave_quit_c (void);
 
 #if defined (__cplusplus)
 
-/* Likewise, these are obsolete.  They are defined to create a
-   dummy scope to match the previous versions that created a try-catch
-   block.  */
+  /* Likewise, these are obsolete.  They are defined to create a
+     dummy scope to match the previous versions that created a try-catch
+     block.  */
 
 #define BEGIN_INTERRUPT_WITH_EXCEPTIONS         \
   {

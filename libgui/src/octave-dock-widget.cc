@@ -78,7 +78,7 @@ label_dock_widget::label_dock_widget (QWidget *p)
   m_title_widget = new QWidget ();
 
   m_dock_action = new QAction
-    (settings.icon ("widget-undock", true), "", this);
+  (settings.icon ("widget-undock", true), "", this);
   m_dock_action->setToolTip (tr ("Undock Widget"));
   m_dock_button = new QToolButton (m_title_widget);
   m_dock_button->setDefaultAction (m_dock_action);
@@ -86,7 +86,7 @@ label_dock_widget::label_dock_widget (QWidget *p)
   m_dock_button->setIconSize (QSize (m_icon_size, m_icon_size));
 
   m_close_action = new QAction
-    (settings.icon ("widget-close", true), "", this);
+  (settings.icon ("widget-close", true), "", this);
   m_close_action->setToolTip (tr ("Close Widget"));
   m_close_button = new QToolButton (m_title_widget);
   m_close_button->setDefaultAction (m_close_action);
@@ -182,10 +182,10 @@ qdockwidget_css (const QString& close_icon, const QString& close_tooltip,
                   "  right: %9px;\n"
                   "  top: 3px;\n"
                   "}\n"
-                  ).arg (close_icon).arg (float_icon).arg (icon_size)
-                   .arg (close_tooltip).arg (float_tooltip)
-                   .arg (titlebar_foreground).arg (titlebar_background)
-                   .arg ((icon_size*2)/3).arg ((icon_size*7)/3);
+                 ).arg (close_icon).arg (float_icon).arg (icon_size)
+         .arg (close_tooltip).arg (float_tooltip)
+         .arg (titlebar_foreground).arg (titlebar_background)
+         .arg ((icon_size*2)/3).arg ((icon_size*7)/3);
 }
 
 octave_dock_widget::octave_dock_widget (const QString& obj_name, QWidget *p)
@@ -215,7 +215,7 @@ octave_dock_widget::octave_dock_widget (const QString& obj_name, QWidget *p)
   connect (this, &octave_dock_widget::queue_make_window,
            this, &octave_dock_widget::make_window, Qt::QueuedConnection);
   connect (this, &octave_dock_widget::queue_make_widget,
-           this, [this] () { make_widget (); }, Qt::QueuedConnection);
+  this, [this] () { make_widget (); }, Qt::QueuedConnection);
 
   gui_settings settings;
 
@@ -297,8 +297,8 @@ octave_dock_widget::make_window (bool widget_was_dragged)
   // restore the last geometry when floating only if we have not dragged
   // the window outside the main window
   if (! widget_was_dragged)
-    geom = m_recent_float_geom.isNull () ? QRect (50,100,480,480)
-                                         : m_recent_float_geom;
+    geom = m_recent_float_geom.isNull () ? QRect (50, 100, 480, 480)
+           : m_recent_float_geom;
   setGeometry (geom);
 
   // adjust the (un)dock action
@@ -565,7 +565,7 @@ octave_dock_widget::handle_settings ()
 
 void
 octave_dock_widget::handle_active_dock_changed (octave_dock_widget *w_old,
-                                                octave_dock_widget *w_new)
+    octave_dock_widget *w_new)
 {
   if (m_custom_style && this == w_old)
     {

@@ -3682,8 +3682,7 @@ textscan::parse_options (const octave_value_list& args,
         }
       else if (param == "collectoutput")
         {
-          m_collect_output = args(i+1).strict_bool_value ("%s: CollectOutput must be logical or numeric",
-                             m_who.c_str ());
+          m_collect_output = args(i+1).strict_bool_value ("%s: CollectOutput must be logical or numeric", m_who.c_str ());
         }
       else if (param == "emptyvalue")
         {
@@ -3699,18 +3698,15 @@ textscan::parse_options (const octave_value_list& args,
         }
       else if (param == "multipledelimsasone")
         {
-          m_multiple_delims_as_one = args(i
-                                        +1).strict_bool_value ("%s: MultipleDelimsAsOne must be logical or numeric", m_who.c_str ());
+          m_multiple_delims_as_one = args(i+1).strict_bool_value ("%s: MultipleDelimsAsOne must be logical or numeric", m_who.c_str ());
         }
       else if (param == "returnonerror")
         {
-          m_return_on_error = args(i+1).strict_bool_value ("%s: ReturnOnError must be logical or numeric",
-                              m_who.c_str ());
+          m_return_on_error = args(i+1).strict_bool_value ("%s: ReturnOnError must be logical or numeric", m_who.c_str ());
         }
       else if (param == "whitespace")
         {
-          m_whitespace = args(i+1).xstring_value ("%s: Whitespace must be a character string",
-                                                  m_who.c_str ());
+          m_whitespace = args(i+1).xstring_value ("%s: Whitespace must be a character string", m_who.c_str ());
         }
       else if (param == "expchars")
         {

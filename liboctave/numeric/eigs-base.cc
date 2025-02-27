@@ -3969,7 +3969,7 @@ EigsRealSymmetricMatrixShift<Matrix>
 template
 OCTAVE_API octave_idx_type
 EigsRealSymmetricFunc<Matrix>
-(EigsFunc fcn, octave_idx_type n, const std::string& _typ, double sigma,
+  (EigsFunc fcn, octave_idx_type n, const std::string& _typ, double sigma,
    octave_idx_type k, octave_idx_type p, octave_idx_type& info,
    Matrix& eig_vec, ColumnVector& eig_val, const Matrix& _b,
    ColumnVector& permB, ColumnVector& resid, std::ostream& os, double tol,
@@ -3996,7 +3996,7 @@ EigsRealNonSymmetricMatrixShift<Matrix>
 template
 OCTAVE_API octave_idx_type
 EigsRealNonSymmetricFunc<Matrix>
-(EigsFunc fcn, octave_idx_type n, const std::string& _typ, double sigmar,
+  (EigsFunc fcn, octave_idx_type n, const std::string& _typ, double sigmar,
    octave_idx_type k, octave_idx_type p, octave_idx_type& info,
    ComplexMatrix& eig_vec, ComplexColumnVector& eig_val, const Matrix& _b,
    ColumnVector& permB, ColumnVector& resid, std::ostream& os, double tol,
@@ -4025,7 +4025,7 @@ EigsRealSymmetricMatrixShift<SparseMatrix>
 template
 OCTAVE_API octave_idx_type
 EigsRealSymmetricFunc<SparseMatrix>
-(EigsFunc fcn, octave_idx_type n, const std::string& _typ, double sigma,
+  (EigsFunc fcn, octave_idx_type n, const std::string& _typ, double sigma,
    octave_idx_type k, octave_idx_type p, octave_idx_type& info,
    Matrix& eig_vec, ColumnVector& eig_val, const SparseMatrix& _b,
    ColumnVector& permB, ColumnVector& resid, std::ostream& os, double tol,
@@ -4052,7 +4052,7 @@ EigsRealNonSymmetricMatrixShift<SparseMatrix>
 template
 OCTAVE_API octave_idx_type
 EigsRealNonSymmetricFunc<SparseMatrix>
-(EigsFunc fcn, octave_idx_type n, const std::string& _typ, double sigmar,
+  (EigsFunc fcn, octave_idx_type n, const std::string& _typ, double sigmar,
    octave_idx_type k, octave_idx_type p, octave_idx_type& info,
    ComplexMatrix& eig_vec, ComplexColumnVector& eig_val,
    const SparseMatrix& _b, ColumnVector& permB, ColumnVector& resid,
@@ -4081,7 +4081,7 @@ EigsComplexNonSymmetricMatrixShift<ComplexMatrix>
 template
 OCTAVE_API octave_idx_type
 EigsComplexNonSymmetricFunc<ComplexMatrix>
-(EigsComplexFunc fcn, octave_idx_type n, const std::string& _typ, Complex sigma,
+  (EigsComplexFunc fcn, octave_idx_type n, const std::string& _typ, Complex sigma,
    octave_idx_type k, octave_idx_type p, octave_idx_type& info,
    ComplexMatrix& eig_vec, ComplexColumnVector& eig_val,
    const ComplexMatrix& _b, ColumnVector& permB, ComplexColumnVector& cresid,
@@ -4110,7 +4110,7 @@ EigsComplexNonSymmetricMatrixShift<SparseComplexMatrix>
 template
 OCTAVE_API octave_idx_type
 EigsComplexNonSymmetricFunc<SparseComplexMatrix>
-(EigsComplexFunc fcn, octave_idx_type n, const std::string& _typ, Complex sigma,
+  (EigsComplexFunc fcn, octave_idx_type n, const std::string& _typ, Complex sigma,
    octave_idx_type k, octave_idx_type p, octave_idx_type& info,
    ComplexMatrix& eig_vec, ComplexColumnVector& eig_val,
    const SparseComplexMatrix& _b, ColumnVector& permB,

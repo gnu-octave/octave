@@ -362,7 +362,6 @@
 %! assert (x == 0);
 
 %!test <*56959>
-%! warning ('error', 'Octave:colon-complex-argument');
-%! fail ("i:5", "imaginary part of complex colon arguments is ignored");
-%! fail ("1:5*i", "imaginary part of complex colon arguments is ignored");
-%! fail ("1:i:5", "imaginary part of complex colon arguments is ignored");
+%! fail ("i:5", "warning", "imaginary part of complex colon arguments is ignored");
+%! fail ("1:5*i", "warning", "imaginary part of complex colon arguments is ignored");
+%! fail ("1:i:5", "warning", "imaginary part of complex colon arguments is ignored");

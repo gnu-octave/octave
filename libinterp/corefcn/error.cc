@@ -522,20 +522,26 @@ error_system::vwarning (const char *name, const char *id,
 
   msg_string += base_msg;
 
+  // Set LAST_WARNING_MESSAGE independent on whether the WARN_OPT is 0 unless
+  // warnings are quiet.  In that case, only set LAST_WARNING_MESSAGE if the
+  // warning is not disabled.  Quiet warnings are used, e.g., for the "warning"
+  // mode of the "test" function.
+  if (! quiet_warning () || warn_opt != 0)
+    {
+      last_warning_id (id);
+      last_warning_message (base_msg);
+    }
+
+  // If WARN_OPT is 0, then the warning is disabled.
+  if (discard_warning_messages () || warn_opt == 0)
+    return;
+
   bool fmt_suppresses_backtrace = false;
   std::size_t fmt_len = (fmt ? strlen (fmt) : 0);
   fmt_suppresses_backtrace = (fmt_len > 0 && fmt[fmt_len-1] == '\n');
 
   if (! fmt_suppresses_backtrace)
     msg_string += '\n';
-
-  last_warning_id (id);
-  last_warning_message (base_msg);
-
-  // If WARN_OPT is 0, then the warning is disabled.  But we sill
-  // still set LAST_WARNING_MESSAGE above.
-  if (discard_warning_messages () || warn_opt == 0)
-    return;
 
   tree_evaluator& tw = m_interpreter.get_evaluator ();
 

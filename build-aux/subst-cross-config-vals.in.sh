@@ -71,6 +71,7 @@ includedir=`echo "@includedir@" | $SED "s|^${prefix}/\\+||"`
 infodir=`echo "@infodir@" | $SED "s|^${prefix}/\\+||"`
 infofile=`echo "@infofile@" | $SED "s|^${prefix}/\\+||"`
 localapifcnfiledir=`echo "@localapifcnfiledir@" | $SED "s|^${prefix}/\\+||"`
+localapipkgdir=`echo "@localapipkgdir@" | $SED "s|^${prefix}/\\+||"`
 localfcnfiledir=`echo "@localfcnfiledir@" | $SED "s|^${prefix}/\\+||"`
 localstartupfiledir=`echo "@localstartupfiledir@" | $SED "s|^${prefix}/\\+||"`
 localapiarchlibdir=`echo "@localapiarchlibdir@" | $SED "s|^${prefix}/\\+||"`
@@ -439,6 +440,7 @@ $SED \
   -e "s|%OCTAVE_LOCALAPIARCHLIBDIR%|\"${localapiarchlibdir}\"|" \
   -e "s|%OCTAVE_LOCALAPIFCNFILEDIR%|\"${localapifcnfiledir}\"|" \
   -e "s|%OCTAVE_LOCALAPIOCTFILEDIR%|\"${localapioctfiledir}\"|" \
+  -e "s|%OCTAVE_LOCALAPIPKGDIR%|\"${localapipkgdir}\"|" \
   -e "s|%OCTAVE_LOCALARCHLIBDIR%|\"${localarchlibdir}\"|" \
   -e "s|%OCTAVE_LOCALFCNFILEDIR%|\"${localfcnfiledir}\"|" \
   -e "s|%OCTAVE_LOCALOCTFILEDIR%|\"${localoctfiledir}\"|" \

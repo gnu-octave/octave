@@ -476,6 +476,15 @@ startupfile_dir ()
 }
 
 std::string
+local_api_pkg_dir ()
+{
+  static const std::string s_local_api_pkg_dir
+    = prepend_octave_home (OCTAVE_LOCALAPIPKGDIR);
+
+  return s_local_api_pkg_dir;
+}
+
+std::string
 local_site_defaults_file ()
 {
   static const std::string s_local_site_defaults_file

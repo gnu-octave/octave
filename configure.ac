@@ -196,6 +196,10 @@ OCTAVE_SET_DEFAULT([octfontsdir], '${datadir}/octave/${version}/fonts')
 OCTAVE_SET_DEFAULT([startupfiledir], '${fcnfiledir}/startup')
 OCTAVE_SET_DEFAULT([localstartupfiledir], '${localfcnfiledir}/startup')
 
+## Directory where site-wide (global) list of installed packages is kept
+OCTAVE_SET_DEFAULT([localapipkgdir],
+  '${datadir}/octave/site/${api_version}')
+
 ## Where Octave will look for man and info files.
 OCTAVE_SET_DEFAULT([man1dir], '${mandir}/man1')
 OCTAVE_SET_DEFAULT([man1ext], '.1')
@@ -3243,6 +3247,7 @@ AC_CONFIG_COMMANDS_PRE([
   eval octfontsdir="\"$octfontsdir\""
   eval startupfiledir="\"$startupfiledir\""
   eval localstartupfiledir="\"$localstartupfiledir\""
+  eval localapipkgdir="\"$localapipkgdir\""
   eval man1dir="\"$man1dir\""
   eval man1ext="\"$man1ext\""
   eval infofile="\"$infofile\""

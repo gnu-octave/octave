@@ -10,8 +10,8 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
   * `-G` for `--no-gui`
 
 - Three long form options have been introduced for clarity.
-  * `--no-init-user` : Don't read user configuration files ~/.octaverc or
-    .octaverc files at startup.
+  * `--no-init-user` : Don't read user configuration files `~/.octaverc` or
+    `.octaverc` files at startup.
   * `--no-init-site` : Don't read site-wide configuration files at startup.
   * `--no-init-all` : Don't read any configuration files at startup.
 
@@ -19,28 +19,29 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
 
 - `nextpow2` algorithm is now more accurate for inputs very close to a power
   of 2.  The output class now matches the input class for Matlab compatibility.
-  The function no longer accepts complex inputs and will emit an error for
-  these inputs.
+  The function no longer accepts complex inputs and emits an error for these
+  inputs.
 
-- `jsonencode` now outputs integers and floating point integers without ".0"
-  suffix.
+- `jsonencode` now outputs integers and floating point integers without an
+  unnecessary ".0" suffix.
 
-- `hist` now accepts N-dimensional array inputs for input `Y` which is
+- `hist` now accepts N-dimensional array inputs for input `Y`, which is
   processed in columns as if the array was flattened to a 2-dimensional array.
 
-- The third output for `unique` is now correct when `stable` sort option is
+- The third output for `unique` is now correct when the `stable` sort option is
   used.
 
 - Support setting breakpoints in `set` or `get` methods of `classdef`
   properties (bug #65610).
 
 - `.mex` files now link to the new library `liboctmex` (instead of to
-  `liboctinterp` and `liboctave`).  The SOVERSION of this new library is
-  expected to be stable across multiple major versions of Octave.  So, `.mex`
-  files might not need to be rebuilt for future major versions of Octave.
+  `liboctinterp` and `liboctave`).  The `SOVERSION` of this new library is
+  expected to be stable across multiple major versions of Octave.  The benefit
+  is that `.mex` files will not necessarily require rebuilding for every
+  major version release of Octave.
 
-- `pkg describe` command now supports a new `Tracker` tag in DESCRIPTION file
-  and returns package-provided repository and bug tracker URLs.  Package
+- `pkg describe` command now supports a new `Tracker` tag in the `DESCRIPTION`
+  file and returns package-provided repository and bug tracker URLs.  Package
   maintainers are encouraged to utilize the new feature to redirect users to
   package-specific bug trackers instead of Savannah.
 
@@ -59,7 +60,7 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
 - `view` correctly interprets Cartesian viewpoints on main axes (bug #65641).
 
 - `plot3` now draws a single marker if only one data point is given.
-  Previously the plot was blank (`marker` = "none") which was confusing.
+  Previously the plot was blank (`marker` = `"none"`) which was confusing.
 
 ### Matlab compatibility
 
@@ -69,15 +70,15 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
   was 64.)
 
 - The first argument to `colormap` may now be a figure or axes object.  Calling
-  `colormap` on a figure object will clear any "colormap" properties set at the
-  axes level.
+  `colormap` on a figure object will clear any `"colormap"` properties set at
+  the axes level.
 
 - `griddata` output size more consistently matches the input interpolation
-  points when they are input as vectors.  When they are same-orientation
-  vectors, the outputs will be the same size as those vectors.  When either is
-  a row vector and the other is a column vector, the interpolating points are
-  processed through meshgrid and the output is a matrix the same size as the
-  meshgrid.
+  points when the inputs are vectors.  If the inputs are vectors with the
+  same-orientation, then the outputs will be the same size as those vectors.
+  When either input is a row vector and the other is a column vector, the
+  interpolating points are processed through `meshgrid` and the output is a
+  matrix the same size as the meshgrid.
 
 - `iqr` now provides compatible output for empty inputs.
 
@@ -95,45 +96,46 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
   the cell array, matching Matlab behavior.  Previously, Octave's conversion
   from non-integers to integers was more lenient.
 
-- `issorted` now accepts the MODE option "monotonic", which has the same
-  behavior as the option "either".
+- `issorted` now accepts the `MODE` option `"monotonic"`, which has the same
+  behavior as the option `"either"`.
 
 - `movfun` and `movslice`: Functions now accept `wlen` equal to 1 or [0,0],
   non-integer values of `wlen`, and values of `wlen` that create window lengths
-  exceeding the size of the target array.  `movfun` also accepts values of `dim`
-  larger than the number of non-singleton dimensions in the target array.  The
-  `SamplePoints` option has been implemented for both functions.  Non-numeric
-  input array handling has been improved.  These changes affect all moving
-  window functions (`movmad`, `movmax`, `movmean`, `movmedian`, `movmin`,
-  `movprod`, `movstd`, `movsum`, and `movvar`) (bug #65928 and bug #66025).
+  exceeding the size of the target array.  `movfun` also accepts values of
+  `dim` larger than the number of non-singleton dimensions in the target array.
+  The `SamplePoints` option has been implemented for both functions.
+  Non-numeric input array handling has been improved.  These changes affect all
+  moving window functions (`movmad`, `movmax`, `movmean`, `movmedian`,
+  `movmin`, `movprod`, `movstd`, `movsum`, and `movvar`) (bug #65928,
+  bug #66025).
 
-- `movfun`: The `nancond` property has been fully implemented and made MATLAB
-  compatible.  The `omitnan` option will ignore NaN and NA values when
-  calculating the function return, and, if all elements in a window slice are
-  NaN or NA, it will return the value contained in a new property `nanval`
-  (default NaN) for that element.  The `includenan` property (the default) has
-  been updated for compatibility such that any window containing NaN or NA will
-  return NaN rather than passing those values to the calculating function.
-  `omitmissing` and `includemissing` are now accepted as aliases for `omitnan`
-  and `includenan`.  These changes affect all moving window functions
-  (`movmad`, `movmax`, `movmean`, `movmedian`, `movmin`, `movprod`, `movstd`,
-  `movsum`, and `movvar`) (bug #66156).
+- `movfun`: The `nancond` property has been fully implemented and made
+  Matlab-compatible.  The `omitnan` option will ignore `NaN` and `NA` values
+  when calculating the function return, and, if all elements in a window slice
+  are `NaN` or `NA`, it will return the value contained in a new property
+  `nanval` (default `NaN`) for that element.  The `includenan` property (the
+  default) has been updated for compatibility such that any window containing
+  `NaN` or `NA` will return `NaN` rather than passing those values to the
+  calculating function.  `omitmissing` and `includemissing` are now accepted as
+  aliases for `omitnan` and `includenan`.  These changes affect all moving
+  window functions (`movmad`, `movmax`, `movmean`, `movmedian`, `movmin`,
+  `movprod`, `movstd`, `movsum`, and `movvar`) (bug #66156).
 
 - `movmin` and `movmax`: These functions now have their default behavior set to
-  `omitnan`.  NaN and NA values will be ignored unless a moving window contains
-  only NaN or NA values, in which case the function will return NaN for that
-  element (bug #66156).
+  `omitnan`.  `NaN` and `NA` values will be ignored unless a moving window
+  contains only `NaN` or `NA` values, in which case the function will return
+  `NaN` for that element (bug #66156).
 
-- `movsum`: When called with option `omitnan`, any windows containing only NaN
-  and NA values will return 0 (bug #66156).
+- `movsum`: When called with option `omitnan`, any windows containing only
+  `NaN` and `NA` values will return 0 (bug #66156).
 
-- `movprod`: When called with option `omitnan`, any windows containing only NaN
-  and NA values will return 1 (bug #66156).
+- `movprod`: When called with option `omitnan`, any windows containing only
+  `NaN` and `NA` values will return 1 (bug #66156).
 
 - `movmad`: The function now defaults to calculating median absolute deviation.
   Before Octave 10, the function calculated mean absolute deviation.  A new
-  `mode` property has been provided that takes values of either "mean" or
-  "median" to allow the user to select which option to use.  This property
+  `mode` property has been provided that takes values of either `"mean"` or
+  `"median"` to allow the user to select which option to use.  This property
   should not be expected to function in code used outside of Octave.
 
 - `symbfact`: outputs `count`, `parent`, and `post` are now row vectors rather
@@ -153,26 +155,26 @@ major release after 10):
 
 - Functions
 
-        Function               | Replacement
-        -----------------------|------------------
-        dsearch                | dsearchn
+        Function    | Replacement
+        ------------|------------
+        dsearch     | dsearchn
 
 - Core
 
-      Function                                     | Replacement
-      ---------------------------------------------|-----------------------------------
-      symbol_record_rep::mark_as_variable          | symbol_record_rep::mark_variable
-      symbol_record_rep::unmark_as_variable        | symbol_record_rep::unmark_variable
-      symbol_record::mark_as_variable              | symbol_record::mark_variable
-      symbol_record::unmark_as_variable            | symbol_record::unmark_variable
-      interpreter::verbose                         | interpreter::init_trace
-      cmdline_options::verbose                     | cmdline_options::init_trace
-      interpreter::read_init_files                 | interpreter::read_user_files
-      cmdline_options::read_init_files             | cmdline_options::read_user_files
-      __lo_ieee_isnan,    __lo_ieee_float_isnan    | std::isnan     or  isnan
-      __lo_ieee_isfinite, __lo_ieee_float_isfinite | std::isfinite  or  isfinite
-      __lo_ieee_isinf,    __lo_ieee_float_isinf    | std::isinf     or  isinf
-      __lo_ieee_signbit,  __lo_ieee_float_signbit  | std::signbit   or  signbit
+        Function                                     | Replacement
+        ---------------------------------------------|-----------------------------------
+        symbol_record_rep::mark_as_variable          | symbol_record_rep::mark_variable
+        symbol_record_rep::unmark_as_variable        | symbol_record_rep::unmark_variable
+        symbol_record::mark_as_variable              | symbol_record::mark_variable
+        symbol_record::unmark_as_variable            | symbol_record::unmark_variable
+        interpreter::verbose                         | interpreter::init_trace
+        cmdline_options::verbose                     | cmdline_options::init_trace
+        interpreter::read_init_files                 | interpreter::read_user_files
+        cmdline_options::read_init_files             | cmdline_options::read_user_files
+        __lo_ieee_isnan,    __lo_ieee_float_isnan    | std::isnan     or  isnan
+        __lo_ieee_isfinite, __lo_ieee_float_isfinite | std::isfinite  or  isfinite
+        __lo_ieee_isinf,    __lo_ieee_float_isinf    | std::isinf     or  isinf
+        __lo_ieee_signbit,  __lo_ieee_float_signbit  | std::signbit   or  signbit
 
   - A new method `rwdata ()` provides direct read/write access (a pointer) to
     the data in a liboctave `Array` object (or its derived classes such as
@@ -189,10 +191,10 @@ from Octave 10.
 
 - Functions
 
-        Function               | Replacement
-        -----------------------|------------------
-        shift                  | circshift
-        sparse_auto_mutate     | none (see NEWS.8.md)
+        Function             | Replacement
+        ---------------------|---------------------
+        shift                | circshift
+        sparse_auto_mutate   | none (see NEWS.8.md)
 
 - `fminsearch` parameter passing: A legacy, undocumented, and only partially
   supported syntax for passing parameters to the minimized function `fcn`
@@ -214,6 +216,19 @@ from Octave 10.
 
 - Octave now requires a C++ compiler that is compliant with C++17 (preferably
   with GNU extensions).
+
+- The location of the list of packages installed site-wide for all users
+  (`pkg global_list`) has changed (bug #66831).  The file `octave_packages` is
+  now installed at `octave-config -p LOCALAPIPKGDIR`.  There will be no
+  disruption if you are upgrading to version 10.1 of Octave and then installing
+  packages.  If you want to use previously installed packages that you *know*
+  will run without re-compilation (because the package uses m-files only and no
+  oct-files or mex-files), then you can execute the command
+  `pkg global_list CURRENT_GLOBAL_LIST_FILE` (e.g., from within one of your
+  startup files) to point Octave to the existing list.  Alternatively, run
+  `pkg rebuild -global` once (potentially requires superuser rights), or copy
+  `CURRENT_GLOBAL_LIST_FILE` to the path and filename returned by
+  `pkg global_list`.
 
 
 Summary of bugs fixed for version 10.1.0 (yyyy-mm-dd):

@@ -514,6 +514,9 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
 
         if (__success)
           __success = false;
+          ## Setting the "quiet" warning state means that no warnings are
+          ## emitted to the command prompt and the lastwarn message and id are
+          ## not set for warnings which are set to "off".
           __warnstate = warning ("query", "quiet");
           warning ("on", "quiet");
           ## Clear error and warning strings before starting

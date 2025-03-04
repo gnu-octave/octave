@@ -1,0 +1,5 @@
+## System-wide list of installed Octave packages.
+##
+## If the command "pkg global_list FILENAME" has been executed then FILENAME
+## will contain the list of system-wide installed packages, rather than this
+## file.

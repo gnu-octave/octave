@@ -171,7 +171,12 @@ jobs:
           gfortran --version
           mkdir .build
           echo "::group::Run configure script"
-          cd .build && ../configure
+          # The default stack size for "new threads" is a measly 128 kiB for
+          # musl.  Manually, set the stack size for "new threads" to 1.5 MiB
+          # which is still a lot smaller than the current default of 8 MiB that
+          # is used, e.g., by Ubuntu 24.10.  Without that, running Octave fails
+          # at "random" tests.
+          cd .build && ../configure LDFLAGS="-Wl,-z,stack-size=1572864"
           echo "::endgroup::"
           echo "::group::Show config.log"
           cat ./config.log

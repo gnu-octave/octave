@@ -105,6 +105,7 @@ do
   if [ "$ANS" = "y" ]; then
     echo
     lupdate -no-obsolete -locations relative $SEARCH_PATH -ts $file
+    sed -i -e "s/$OCTAVE_TEMP/../g" $file   # fix path to sources
   fi
 
 done

@@ -88,6 +88,8 @@ extern OCTINTERP_API std::string oct_lib_dir ();
 extern OCTINTERP_API std::string oct_locale_dir ();
 extern OCTINTERP_API std::string oct_tests_dir ();
 
+extern OCTINTERP_API std::string local_api_pkg_dir ();
+
 extern OCTINTERP_API std::string info_dir ();
 
 extern OCTINTERP_API std::string man_dir ();

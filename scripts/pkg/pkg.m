@@ -374,7 +374,7 @@
 ## available to all users.  For example:
 ##
 ## @example
-## pkg global_list /usr/share/octave/octave_packages
+## pkg global_list /usr/share/octave/site/api-v59/octave_packages
 ## @end example
 ##
 ## It is possible to get the current value of global_list with the following
@@ -423,7 +423,7 @@ function [local_packages, global_packages] = pkg (varargin)
   persistent local_list = fullfile (user_config_dir (), "octave", ...
                                     __octave_config_info__ ("api_version"), ...
                                     "octave_packages");
-  persistent global_list = fullfile (OCTAVE_HOME (), "share", "octave", ...
+  persistent global_list = fullfile (__octave_config_info__ ("localapipkgdir"),
                                      "octave_packages");
 
   ## If user is superuser (posix) or the process has elevated rights (Windows),

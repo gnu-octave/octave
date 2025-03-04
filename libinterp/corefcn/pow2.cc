@@ -316,10 +316,8 @@ to C/C++ standard function @code{ldexp()}.
 %!error <Invalid call> pow2 (1,2,3)
 %!error <wrong type argument> pow2 (int8 (1))
 %!error <wrong type argument> pow2 (2, int8 (1))
-%!test
-%! warning ('error', 'Octave:pow2:imaginary-ignored');
-%! fail ('pow2 (i, 2)', 'imaginary part is ignored');
-%! fail ('pow2 (2, i)', 'imaginary part is ignored');
+%!warning <imaginary part is ignored> pow2 (i, 2);
+%!warning <imaginary part is ignored> pow2 (2, i);
 %!error <pow2: nonconformant arguments> pow2 ([1,2], [3,4,5])
 %!error <pow2: nonconformant arguments> pow2 (sparse ([1,2]), sparse ([3,4,5]))
 */

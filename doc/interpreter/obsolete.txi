@@ -221,4 +221,12 @@ as the obsolete function, but should provide equivalent functionality.
 @item @code{usleep} @tab @code{pause} @tab 5.1.0
 @item @code{wavread} @tab @code{audioread} @tab 5.1.0
 @item @code{wavwrite} @tab @code{audiowrite} @tab 5.1.0
+@item @code{output_max_field_width} @tab @code{output_precision} @tab 7.1.0
+@item @code{is_keyword} @tab @code{iskeyword} @tab 7.1.0
+@item @code{runtests} @tab @code{oruntests} @tab 8.1.0
+@item @code{disable_diagonal_matrix} @tab @code{optimize_diagonal_matrix} @tab 9.1.0
+@item @code{disable_permutation_matrix} @tab @code{optimize_permutation_matrix} @tab 9.1.0
+@item @code{disable_range} @tab @code{optimize_range} @tab 9.1.0
+@item @code{shift} @tab @code{circshift} @tab 10.1.0
+@item @code{sparse_auto_mutate} @tab None @tab 10.1.0
 @end multitable

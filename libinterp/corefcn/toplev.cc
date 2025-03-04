@@ -407,6 +407,7 @@ specified option.
         { "localapiarchlibdir", config::local_api_arch_lib_dir () },
         { "localapifcnfiledir", config::local_api_fcn_file_dir () },
         { "localapioctfiledir", config::local_api_oct_file_dir () },
+        { "localapipkgdir", config::local_api_pkg_dir () },
         { "localarchlibdir", config::local_arch_lib_dir () },
         { "localfcnfiledir", config::local_fcn_file_dir () },
         { "localoctfiledir", config::local_oct_file_dir () },

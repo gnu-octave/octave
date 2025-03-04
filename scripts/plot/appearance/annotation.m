@@ -1589,8 +1589,7 @@ endfunction
 %!error <POS must be a 4-element vector> annotation ("textbox", ones (4,4))
 %!error <POS must be a 4-element vector> annotation ("textbox", 1:3)
 %!error <unknown annotation TYPE foo> annotation ("foo")
-## Not possible to test with current warning architecture
-%!#warning <couldn't parse PROP/VAL pairs, skipping>
+%!warning <couldn't parse PROP/VAL pairs, skipping>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   annotation ("line", 1:2, 1:2, "color");

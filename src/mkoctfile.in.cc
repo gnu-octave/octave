@@ -206,6 +206,7 @@ make_vars_map (bool link_stand_alone, bool verbose, bool debug)
   vars["LOCALAPIARCHLIBDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALAPIARCHLIBDIR%);
   vars["LOCALAPIFCNFILEDIR"] = prepend_octave_home (%OCTAVE_LOCALAPIFCNFILEDIR%);
   vars["LOCALAPIOCTFILEDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALAPIOCTFILEDIR%);
+  vars["LOCALAPIPKGDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALAPIPKGDIR%);
   vars["LOCALARCHLIBDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALARCHLIBDIR%);
   vars["LOCALFCNFILEDIR"] = prepend_octave_home (%OCTAVE_LOCALFCNFILEDIR%);
   vars["LOCALOCTFILEDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALOCTFILEDIR%);

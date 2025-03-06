@@ -48,11 +48,14 @@ nodist_%canon_reldir%_liboctmex_la_SOURCES = \
 
 ## Increment the following version numbers as needed and according
 ## to the rules in the etc/HACKING.md file.
-## Note that OCTAVE_LIBOCTMEX_SOVERSION_MAJOR is set in Makefile.am:
 
-%canon_reldir%_liboctmex_current = $(OCTAVE_LIBOCTMEX_SOVERSION_MAJOR)
+%canon_reldir%_liboctmex_current = 1
 %canon_reldir%_liboctmex_revision = 0
 %canon_reldir%_liboctmex_age = 0
+
+## Initialize variable used to verify that this version of Octave can run
+## a dynamically loaded MEX file (checked against SOVERSION embedded in file).
+OCTAVE_LIBOCTMEX_SOVERSION_MAJOR = $(%canon_reldir%_liboctmex_current)
 
 %canon_reldir%_liboctmex_version_info = $(%canon_reldir%_liboctmex_current):$(%canon_reldir%_liboctmex_revision):$(%canon_reldir%_liboctmex_age)
 

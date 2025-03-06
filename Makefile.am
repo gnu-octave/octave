@@ -234,8 +234,6 @@ BUILT_SOURCES += libgnu/libgnu.la
 libgnu/libgnu.la: oct-conf-post-private.h oct-conf-post-public.h
 	cd libgnu && $(MAKE) $(AM_MAKEFLAGS) all
 
-OCTAVE_LIBOCTMEX_SOVERSION_MAJOR = 1
-
 include liboctave/module.mk
 include libinterp/module.mk
 include libmex/module.mk

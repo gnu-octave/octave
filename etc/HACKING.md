@@ -317,6 +317,7 @@ Since version 5, Octave uses the following rules for release numbering:
     5.0.1   (pre-release)   stabilization period of Octave 5 on stable branch
     5.0.90  (pre-release)   first release candidate for 5.1.0
     5.0.91  (pre-release)   continued stabilization of Octave 5 on stable branch
+    5.0.92  (pre-release)   second release candidate for 5.1.0
     6.0.0   (experimental)  active development of Octave 6 on default branch
     5.1.0   (release)       first release of Octave 5 from stable branch
     5.1.1   (pre-release)   bug fixing on stable branch after 5.1.0 release
@@ -324,19 +325,18 @@ Since version 5, Octave uses the following rules for release numbering:
     5.2.1   (pre-release)   bug fixing on stable branch after 5.2.0 release
     ...     ...             ...
 
-To summarize, the first release of Octave 5 will be Octave 5.1.0 while
-development snapshots will be Octave 5.0.0 and snapshots from the
-release branch Octave 5.n.1.
+To summarize, the first release of Octave 5 is Octave 5.1.0 while development
+snapshots are Octave 5.0.0 and snapshots from the release branch are Octave
+5.n.1.
 
 With this numbering scheme:
 
-  * Any version X.0.0 means "this is an experimental development
-    version".
+  * Any version X.0.0 means "this is an experimental development version".
 
   * Any version X.Y.Z with Z > 0 means, "this is a pre-release version
     meant for bug fixing and testing".  In practice, Z will be either 1
-    (stabilization period after and before making release candidates) or
-    90, 92, etc. (release candidate snapshots leading up to release).
+    (stabilization period after and before making release candidates), or
+    90, 92, etc. (release candidate snapshots leading up to release), or
     91, 93, etc. (stabilization period on stable branch during the
     process of making release candidates).
 
@@ -345,9 +345,9 @@ With this numbering scheme:
 Shared Library Versioning
 -------------------------
 
-Version numbers for the liboctave, liboctinterp, and liboctgui shared
-libraries are set in the module.mk files in the top-level directory for
-each library using the variables
+Version numbers for the liboctave, liboctinterp, liboctgui, and libmex shared
+libraries are set in the `module.mk` files in the top-level directory for each
+library using the variables
 
     %canon_reldir%_%canon_reldir%_current
     %canon_reldir%_%canon_reldir%_revision
@@ -355,50 +355,52 @@ each library using the variables
 
 The rules for updating these version numbers are:
 
-  * Start with version information of `0:0:0` for each libtool library.
+  * Start with the existing version information for each libtool library in
+    the form `CURRENT:REVISION:AGE`.
 
-  * Update the version information only immediately before a public
-    release of your software.  More frequent updates are unnecessary,
-    and only guarantee that the current interface number gets larger
-    faster.
+  * Update the version information only immediately before a public release of
+    the software.  This should happen at the time the first release candidate
+    is made.  More frequent updates are unnecessary, and only guarantee that
+    the current interface number gets larger faster.
 
-  * If the library source code has changed at all since the last update,
-    then increment revision (`c:r:a` becomes `c:r+1:a`).
+  * If any interfaces have been added, removed, or changed since the last
+    update, then increment current and set revision to 0 (`c:r:a` becomes
+    `c+1:0:a`).
 
-  * If any interfaces have been added, removed, or changed since the
-    last update, increment current, and set revision to 0.
+  * If current was _not_ incremented in the previous step, but the library
+    source code has changed in any way since the last update, then increment
+    revision (`c:r:a` becomes `c:r+1:a`).
 
-  * If any interfaces have been added since the last public release,
-    then increment age.
+  * If any interfaces have been added since the last public release, then
+    increment age (`c:r:a` becomes `c:r:a+1`).
 
   * If any interfaces have been removed or changed since the last public
-    release, then set age to 0.
+    release, then set age to 0 (`c:r:a` becomes `c:r:0`).
 
-Never try to set the interface numbers so that they correspond to the
-Octave version number.  This is an abuse that only fosters
-misunderstanding of the purpose of library versions.
+Never try to set the interface numbers so that they correspond to the Octave
+version number.  This is an abuse that only fosters misunderstanding of the
+purpose of library versions.
 
-The following explanation may help to understand the above rules a bit
-better: consider that there are three possible kinds of reactions from
-users of your library to changes in a shared library:
+The following explanation may help to understand the above rules a bit better:
+consider that there are three possible kinds of reactions from users of your
+library to changes in a shared library:
 
-  * Programs using the previous version may use the new version as
-    drop-in replacement, and programs using the new version can also
-    work with the previous one.  In other words, no recompiling nor
-    relinking is needed.  In this case, bump revision only, don’t touch
-    current nor age.
+  * Programs using the previous version may use the new version as drop-in
+    replacement, and programs using the new version can also work with the
+    previous one.  In other words, no recompiling nor relinking is needed.
+    In this case, bump revision only, don’t touch current nor age.
 
-  * Programs using the previous version may use the new version as
-    drop-in replacement, but programs using the new version may use APIs
-    not present in the previous one.  In other words, a program linking
-    against the new version may fail with unresolved symbols if linking
-    against the old version at runtime: set revision to 0, bump current
-    and age.
+  * Programs using the previous version may use the new version as drop-in
+    replacement, but programs using the new version may use APIs not present
+    in the previous one.  In other words, a program linking against the new
+    version may fail with unresolved symbols if linking against the old
+    version at runtime: set revision to 0, bump current and age.
 
-  * Programs may need to be changed, recompiled, and relinked in order
-    to use the new version.  Bump current, set revision and age to 0.
+  * Programs may need to be changed, recompiled, and relinked in order to use
+    the new version.  Bump current, set revision and age to 0.
 
-These guidelines also appear in the GNU libtool manual, see
+These guidelines also appear in the GNU libtool manual where they are stated in
+a slightly different but equivalent way.  See
 <https://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html>.
 
 Merging the default branch to stable before a release
@@ -410,10 +412,9 @@ NOTE, I use two separate repos, one in `/path/to/octave-stable` that is
 updated to the stable branch and one in `/path/to/octave-default` that
 is updated to the default branch.
 
-1. Update the repo in `/path/to/octave-stable` to the most recent change
-   on the stable branch.  Ensure that there are no pending changes (be
-   careful to avoid wiping out any changes you are currently working
-   on!):
+1. Update the repo in `/path/to/octave-stable` to the most recent change on
+   the stable branch.  Ensure that there are no pending changes (be careful
+   to avoid wiping out any changes you are currently working on!):
 
         cd /path/to/octave-stable
         hg update -C stable
@@ -424,8 +425,8 @@ is updated to the default branch.
 
         hg merge default
 
-3. Commit the change (replace VERSION with the correct version; it
-   should be of the form MAJOR.1.0):
+3. Commit the change (in the commit message replace VERSION with the correct
+   version; it should be of the form "MAJOR.1"):
 
         hg commit -m "maint: Merge default to stable to begin VERSION release process."
 
@@ -436,20 +437,16 @@ is updated to the default branch.
   * Set `OCTAVE_MINOR_VERSION` to 0.
   * Set `OCTAVE_PATCH_VERSION` to 1.
   * Set `OCTAVE_RELEASE_DATE` to the current date.
-  * Set the year in `OCTAVE_COPYRIGHT` to the current year.  The
-    copyright dates in the source files should have already been
-    updated during the development cycle.  If not, that should be done
-    in a separate change before the merge.
-  * `OCTAVE_API_VERSION` and shared library version numbers may be
-    updated in a separate changeset just prior to creating the first
-    test release.
+  * Set the year in `OCTAVE_COPYRIGHT` to the current year.
+    The copyright dates in the source files should have already been updated
+    during the development cycle.  If not, that should be done in a separate
+    change before the merge.
 
         hg commit  # Use commit message similar to the one in 8f8fab4c93ae
 
-5. Update the repo in `/path/to/octave-default` to the most recent change
-   on the default branch.  Ensure that there are no pending changes (be
-   careful to avoid wiping out any changes you are currently working
-   on!):
+5. Update the repo in `/path/to/octave-default` to the most recent change on
+   the default branch.  Ensure that there are no pending changes (be careful
+   to avoid wiping out any changes you are currently working on!):
 
         cd /path/to/octave-default
         hg update -C default
@@ -475,6 +472,52 @@ is updated to the default branch.
 9. Create new `etc/NEWS.VERSION+1.md` file by copying `etc/NEWS.VERSION.md` and
    then removing text so that it is a template file with headings only (see
    0ec5eaabaf2c, for example).
+
+Creating first release candidate for new MAJOR version
+-----------------------------------------------------
+
+This requires updating the VERSION for Octave; the shared library `SOVERSION`
+for each each of `liboctave`, `liboctinterp`, `liboctgui`, and `libmex`; and
+the oct-file version `OCTAVE_API_VERSION`.
+
+1. Bump version numbers and release date in `configure.ac` for release
+   candidate:
+
+  * Set version in `AC_INIT` to MAJOR.0.90
+  * `OCTAVE_MAJOR_VERSION` should already be correct (MAJOR).
+  * `OCTAVE_MINOR_VERSION` should already be correct (0).
+  * Set `OCTAVE_PATCH_VERSION` to 90.
+  * Set `OCTAVE_RELEASE_DATE` to the current date.
+  * Set the final year in `OCTAVE_COPYRIGHT` to the current year.
+
+2. Update `SOVERSION` numbers for shared libraries.
+
+    The version numbers for the `liboctave`, `liboctinterp`, `liboctgui`, and
+    `libmex` shared libraries are set in the `module.mk` file in the top-level
+    directory for each library using the variables
+
+        %canon_reldir%_%canon_reldir%_current
+        %canon_reldir%_%canon_reldir%_revision
+        %canon_reldir%_%canon_reldir%_age
+
+    1. Determine whether any API interface has been added, removed, or changed
+       by reviewing differencs in header files.  Follow guidelines in Shared
+       Library Versioning to update `_current`, `_revision`, and `_age`
+       fields.
+
+        hg diff --from release-9-4-0 -I 'liboctave/**.h'
+
+    2. **Only** if current was _not_ incremented in the previous step, verify
+       whether any source code changes have been made (this would require
+       incrementing revision).
+
+        hg diff --from release-9-4-0 -I liboctave
+
+3. Bump Octave API version for oct-files in `configure.ac`
+
+  * Increment `OCTAVE_API_VERSION` if any shared library version numbers have
+    had their CURRENT version field changed.
+
 
 \################################################################################
 

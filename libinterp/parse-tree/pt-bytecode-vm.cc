@@ -6413,6 +6413,15 @@ load_2_cst:
 
 ret_anon:
   {
+    // Don't allow a comma-separated list to escape (see bug #64783).
+    octave_value &ret = TOP_OV ();
+    if (ret.is_cs_list ())
+      {
+        const octave_value_list lst = ret.list_value ();
+        if (! lst.empty ())
+          ret = lst(0);
+      }
+
     // We need to tell the bytecode frame we are unwinding so that it can save
     // variables on the VM stack if it is referenced from somewhere else.
     m_tw->get_current_stack_frame ()->vm_unwinds ();

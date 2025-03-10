@@ -316,7 +316,8 @@ function [x, exitflag, output] = nmsmax (fcn, x, options)
     ## Regular simplex - all edges have same length.
     ## Generated from construction given in reference [18, pp. 80-81] of [1].
     alpha = scale / (n*sqrt (2)) * [sqrt(n+1)-1+n, sqrt(n+1)-1];
-    V(:,2:n+1) = (x0 + alpha(2)*ones (n,1)) * ones (1,n);
+    #V(:,2:n+1) = (x0 + alpha(2)*ones (n,1)) * ones (1,n);
+    V(:,2:n+1) = repmat (x0 + alpha(2), 1, n);
     for j = 2:n+1
       V(j-1,j) = x0(j-1) + alpha(1);
       x(:) = V(:,j);
@@ -429,6 +430,7 @@ function [x, exitflag, output] = nmsmax (fcn, x, options)
     ##       and re-ordered function values after sort.
 
     vbar = (sum (V(:,1:n)')/n)';  # Mean value
+    #vbar = mean(V(:,1:n), 2);
     vr = (1 + alpha)*vbar - alpha*V(:,n+1);
     x(:) = vr;
     fr = dirn * fcn (x);
@@ -527,10 +529,15 @@ endfunction
 %!demo
 %! clf;
 %! hold on;
-%! draw_fcn = @(x) (plot (x(1), x(2)) && false);
+%! box on;
+%! axis square;
+%! draw_fcn = @(x, ~, ~) (plot (x(1), x(2), 'o', 'MarkerSize', 5) && false);
 %! fcn = @(x) (x(1)-5).^2 + (x(2)-8).^4;
 %! x0 = [0;0];
 %! [xmin, fval] = fminsearch (fcn, x0, optimset ("OutputFcn", draw_fcn))
+%! ## Mark the solution
+%! hf = plot (xmin(1), xmin(2), '+r', 'MarkerSize', 10, 'LineWidth', 2);
+%! legend (hf, 'Solution');
 %! hold off;
 
 %!assert (fminsearch (@sin, 3, optimset ("MaxIter", 30)), 3*pi/2, 1e-4)

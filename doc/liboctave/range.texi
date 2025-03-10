@@ -16,7 +16,7 @@
 @c along with Octave; see the file COPYING.  If not, see
 @c <https://www.gnu.org/licenses/>.
 
-@node Ranges, Nonlinear Functions, Matrix Factorizations, Top
+@node Ranges
 @chapter Ranges
 @cindex ranges
 

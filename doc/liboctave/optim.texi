@@ -16,7 +16,7 @@
 @c along with Octave; see the file COPYING.  If not, see
 @c <https://www.gnu.org/licenses/>.
 
-@node Optimization, Quadrature, Nonlinear Equations, Top
+@node Optimization
 @chapter Optimization
 @cindex optimization
 
@@ -29,7 +29,7 @@
 * Nonlinear Programming::
 @end menu
 
-@node Objective Functions, Bounds, Optimization, Optimization
+@node Objective Functions
 @section Objective Functions
 @cindex objective functions
 
@@ -56,7 +56,7 @@
 
 @c ------------------------------------------------------------------------
 
-@node Bounds, Linear Constraints, Objective Functions, Optimization
+@node Bounds
 @section Bounds
 @cindex bounds
 
@@ -107,7 +107,7 @@
 
 @c ------------------------------------------------------------------------
 
-@node Linear Constraints, Nonlinear Constraints, Bounds, Optimization
+@node Linear Constraints
 @section Linear Constraints
 @cindex linear Constraints
 
@@ -144,7 +144,7 @@
 
 @c ------------------------------------------------------------------------
 
-@node Nonlinear Constraints, Quadratic Programming, Linear Constraints, Optimization
+@node Nonlinear Constraints
 @section Nonlinear Constraints
 @cindex nonlinear Constraints
 
@@ -157,7 +157,7 @@
 @deftypefn {} NLConst& {operator =} (const NLConst &@var{a})
 @end deftypefn
 
-@node Quadratic Programming, Nonlinear Programming, Nonlinear Constraints, Optimization
+@node Quadratic Programming
 @section Quadratic Programming
 @cindex QP
 @cindex quadratic programming
@@ -190,7 +190,7 @@
 
 @c ------------------------------------------------------------------------
 
-@node Nonlinear Programming,  , Quadratic Programming, Optimization
+@node Nonlinear Programming
 @section Nonlinear Programming
 @cindex NLP
 @cindex nonlinear programming

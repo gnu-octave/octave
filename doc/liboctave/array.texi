@@ -16,7 +16,7 @@
 @c along with Octave; see the file COPYING.  If not, see
 @c <https://www.gnu.org/licenses/>.
 
-@node Arrays, Matrix and Vector Operations, Introduction, Top
+@node Arrays
 @chapter Arrays
 @cindex arrays
 
@@ -24,7 +24,7 @@
 * Constructors and Assignment::
 @end menu
 
-@node Constructors and Assignment,  , Arrays, Arrays
+@node Constructors and Assignment
 @section Constructors and Assignment
 
 @deftypefn Constructor {} Array<T> (void)

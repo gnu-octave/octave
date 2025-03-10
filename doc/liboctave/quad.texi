@@ -16,7 +16,7 @@
 @c along with Octave; see the file COPYING.  If not, see
 @c <https://www.gnu.org/licenses/>.
 
-@node Quadrature, Ordinary Differential Equations, Optimization, Top
+@node Quadrature
 @chapter Quadrature
 @cindex quadrature
 @cindex numerical integration
@@ -77,7 +77,7 @@
 * Collocation Weights::
 @end menu
 
-@node Collocation Weights,  , Quadrature, Quadrature
+@node Collocation Weights
 @section Collocation Weights
 @cindex orthogonal collocation
 @cindex collocation weights

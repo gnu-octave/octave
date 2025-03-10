@@ -16,7 +16,7 @@
 @c along with Octave; see the file COPYING.  If not, see
 @c <https://www.gnu.org/licenses/>.
 
-@node Ordinary Differential Equations, Differential Algebraic Equations, Nonlinear Equations, Top
+@node Ordinary Differential Equations
 @chapter Ordinary Differential Equations
 @cindex ODE
 

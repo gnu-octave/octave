@@ -16,7 +16,7 @@
 @c along with Octave; see the file COPYING.  If not, see
 @c <https://www.gnu.org/licenses/>.
 
-@node Introduction, Arrays, Copying, Top
+@node Introduction
 @chapter A Brief Introduction to Octave
 @cindex introduction
 

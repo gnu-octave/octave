@@ -16,7 +16,7 @@
 @c along with Octave; see the file COPYING.  If not, see
 @c <https://www.gnu.org/licenses/>.
 
-@node Function Index, , Concept Index, Top
+@node Function Index
 @unnumbered Function Index
 
 @printindex fn

@@ -103,7 +103,7 @@ into another language, under the same conditions as for modified versions.
 @contents
 
 @ifnottex
-@node Top, Acknowledgements, (dir), (dir)
+@node Top
 @top
 
 This manual documents how to use, install and port Octave's C++ class
@@ -133,11 +133,12 @@ library, and how to report bugs.  It corresponds to Octave version
 * Concept Index::
 * Function Index::
 
+@detailmenu
  --- The Detailed Node Listing ---
 
 Acknowledgements
 
-* Contributors::                People who contributed to developing of Octave.
+* Contributors::                People who contributed to developing Octave.
 
 Arrays
 
@@ -155,9 +156,11 @@ Optimization
 Quadrature
 
 * Collocation Weights::
+@end detailmenu
 @end menu
 
 @c ------------------------------------------------------------------------
+@c Chapters of manual.
 
 @include preface.texi
 @include gpl.texi
@@ -175,6 +178,10 @@ Quadrature
 @include error.texi
 @include install.texi
 @include bugs.texi
+
+@c ------------------------------------------------------------------------
+@c Indices start here.
+
 @include cp-idx.texi
 @include fn-idx.texi
 

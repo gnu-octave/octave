@@ -16,7 +16,7 @@
 @c along with Octave; see the file COPYING.  If not, see
 @c <https://www.gnu.org/licenses/>.
 
-@node Matrix Factorizations, Ranges, Matrix and Vector Operations, Top
+@node Matrix Factorizations
 @chapter Matrix Factorizations
 @cindex matrix factorizations
 @cindex factorizations

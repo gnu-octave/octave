@@ -16,5 +16,5 @@
 @c along with Octave; see the file COPYING.  If not, see
 @c <https://www.gnu.org/licenses/>.
 
-@node Error Handling, Installation, Differential Algebraic Equations, Top
+@node Error Handling
 @chapter Error Handling

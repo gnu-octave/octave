@@ -16,7 +16,7 @@
 @c along with Octave; see the file COPYING.  If not, see
 @c <https://www.gnu.org/licenses/>.
 
-@node Nonlinear Equations, Optimization, Nonlinear Functions, Top
+@node Nonlinear Equations
 @chapter Nonlinear Equations
 @cindex nonlinear equations
 

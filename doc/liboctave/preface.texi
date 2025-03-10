@@ -16,15 +16,15 @@
 @c along with Octave; see the file COPYING.  If not, see
 @c <https://www.gnu.org/licenses/>.
 
-@node Acknowledgements, Copying, Top, Top
+@node Acknowledgements
 @chapter Acknowledgements
 @cindex acknowledgements
 
 @menu
-* Contributors::                People who contributed to developing of Octave.
+* Contributors::                People who contributed to developing Octave.
 @end menu
 
-@node Contributors,  , Acknowledgements, Acknowledgements
+@node Contributors
 @unnumberedsec Contributors to Octave
 @cindex contributors
 

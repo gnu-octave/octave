@@ -125,7 +125,7 @@ Unary MDiagArray ops.
 
 @c ------------------------------------------------------------------------
 
-@node Matrix and Vector Operations, Matrix Factorizations, Arrays, Top
+@node Matrix and Vector Operations
 @chapter Matrix and Vector Operations
 @cindex matrix manipulations
 @cindex vector manipulations

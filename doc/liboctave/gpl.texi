@@ -18,7 +18,7 @@
 
 @cindex warranty
 @cindex copyright
-@node Copying, Introduction, Acknowledgements, Top
+@node Copying
 @unnumbered GNU GENERAL PUBLIC LICENSE
 @center Version 3, 29 June 2007
 

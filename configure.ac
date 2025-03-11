@@ -393,7 +393,7 @@ dnl Must take place immediately after a compiler is determined
 
 gl_EARLY
 
-### Check version number when using g++.
+### Record version number when using g++.
 
 GXX_VERSION=
 if test "$GXX" = yes; then
@@ -402,15 +402,11 @@ if test "$GXX" = yes; then
     [octave_cv_gxx_version=[`$CXX -v 2>&1 | $GREP "^.*g.. version" | $SED -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`]
   ])
 
-  AX_COMPARE_VERSION([$octave_cv_gxx_version], [lt], [4.1],
-    [warn_gxx_version="g++ version $octave_cv_gxx_version is likely to cause problems"
-     OCTAVE_CONFIGURE_WARNING([warn_gxx_version])])
-
   GXX_VERSION=$octave_cv_gxx_version
 fi
 AC_SUBST(GXX_VERSION)
 
-### Check version number when using gcc.
+### Record version number when using gcc.
 dnl It might be different from the g++ version number.
 
 GCC_VERSION=
@@ -419,10 +415,6 @@ if test "$GCC" = yes; then
     [octave_cv_gcc_version],
     [octave_cv_gcc_version=[`$CC -v 2>&1 | $GREP "^.*gcc version" | $SED -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`]
   ])
-
-  AX_COMPARE_VERSION([$octave_cv_gcc_version], [lt], [3],
-    [warn_gcc_version="gcc version $octave_cv_gcc_version is likely to cause problems"
-     OCTAVE_CONFIGURE_WARNING([warn_gcc_version])])
 
   GCC_VERSION=$octave_cv_gcc_version
 fi

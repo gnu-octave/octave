@@ -2891,14 +2891,8 @@ AC_SUBST(OCTGRAPHICS_DLL_DEFS)
 
 ## Add warning flags
 
-dnl Don't add -Wshadow for GCC 4.x.
-case "$GCC_VERSION" in
-  *4*) ;;
-  *)   GCC_WSHADOW_OPTION=-Wshadow ;;
-esac
-
-GCC_EXTRA_FLAGS="-Wall -W $GCC_WSHADOW_OPTION -Wformat -Wpointer-arith -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wcast-align -Wcast-qual"
-GXX_EXTRA_FLAGS="-Wall -W $GCC_WSHADOW_OPTION -Woverloaded-virtual -Wold-style-cast -Wformat -Wpointer-arith -Wwrite-strings -Wcast-align -Wcast-qual"
+GCC_EXTRA_FLAGS="-Wall -W -Wshadow -Wformat -Wpointer-arith -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wcast-align -Wcast-qual"
+GXX_EXTRA_FLAGS="-Wall -W -Wshadow -Woverloaded-virtual -Wold-style-cast -Wformat -Wpointer-arith -Wwrite-strings -Wcast-align -Wcast-qual"
 
 try_extra_warning_flags=yes
 AC_ARG_ENABLE([extra-warning-flags],

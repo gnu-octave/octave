@@ -134,9 +134,10 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
 
 - `movmad`: The function now defaults to calculating median absolute deviation.
   Before Octave 10, the function calculated mean absolute deviation.  A new
-  `mode` property has been provided that takes values of either `"mean"` or
+  `method` property has been provided that takes values of either `"mean"` or
   `"median"` to allow the user to select which option to use.  This property
   should not be expected to function in code used outside of Octave.
+  (bug #66256).
 
 - `symbfact`: outputs `count`, `parent`, and `post` are now row vectors rather
   than column vectors.

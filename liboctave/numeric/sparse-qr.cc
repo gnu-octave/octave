@@ -460,6 +460,7 @@ ors2ccs (const SparseMatrix& a, cholmod_common *cc)
   return A;
 }
 
+#ifdef HAVE_CXSPARSE
 static suitesparse_integer
 suitesparse_long_to_suitesparse_integer (SuiteSparse_long x)
 {
@@ -470,6 +471,7 @@ suitesparse_long_to_suitesparse_integer (SuiteSparse_long x)
 
   return static_cast<suitesparse_integer> (x);
 }
+#endif
 
 static void
 spqr_error_handler (const cholmod_common *cc)

@@ -126,4 +126,15 @@ octave_base_matrix<Cell>::fast_elem_insert (octave_idx_type n,
   return retval;
 }
 
+
+// FIXME: 2025-03-11: GCC emits the warning "type attributes ignored after type
+// is already defined/[-Wattributes]" for the following template class
+// instantiation.  The clang compiler does not issue a warning.  More
+// importantly Octave builds and runs correctly with "-fvisibility=hidden".
+// Therefore, this seems like a false positive that can be ignored.  Multiple
+// attempts have been made to try and locate the prior definition, but without
+// success. 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wattributes"
 template class OCTINTERP_API octave_base_matrix<Cell>;
+#pragma GCC diagnostic pop

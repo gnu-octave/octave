@@ -45,17 +45,17 @@
     <message>
         <location filename="__octave_temp_gui_sources__/qterminal/libqterminal/QTerminal.cc" line="+119"/>
         <source>Edit &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑 &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Help on &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>关于&quot;%1&quot;的帮助</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Documentation on &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>关于&quot;%1&quot;的文档</translation>
     </message>
     <message>
         <location line="+165"/>
@@ -1078,7 +1078,7 @@
     <message>
         <location line="+57"/>
         <source>Command Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>命令组件</translation>
     </message>
 </context>
 <context>
@@ -1094,17 +1094,17 @@
     <message>
         <location filename="__octave_temp_gui_sources__/src/console-lexer.cc" line="+48"/>
         <source>Default</source>
-        <translation type="unfinished">默认</translation>
+        <translation>默认</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Error</source>
-        <translation type="unfinished">错误</translation>
+        <translation>错误</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Prompt</source>
-        <translation type="unfinished"></translation>
+        <translation>提示</translation>
     </message>
 </context>
 <context>
@@ -1812,12 +1812,12 @@ for writing: %2.</source>
     <message>
         <location line="+6"/>
         <source>Save File and Run All &amp;Tests</source>
-        <translation type="unfinished"></translation>
+        <translation>保存文件并运行全部测试 (&amp;T)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Save File and Run All &amp;Demos</source>
-        <translation type="unfinished"></translation>
+        <translation>保存文件并运行全部演示 (&amp;D)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2570,12 +2570,12 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
     <message>
         <location line="+4"/>
         <source>Current Dir</source>
-        <translation type="unfinished"></translation>
+        <translation>当前目录</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Set start directory to current directory</source>
-        <translation type="unfinished"></translation>
+        <translation>设置当前目录为开始目录</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2627,7 +2627,7 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
     <message>
         <location line="+95"/>
         <source>Results: Double click opens the file or sets the directory</source>
-        <translation type="unfinished"></translation>
+        <translation>结果: 双击打开文件或设置目录</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2644,7 +2644,9 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
         <source>Enter the filename search patterns.
 Several different patterns can be
 separated by &apos;;&apos;, e.g. &apos;*.cc ; *.h&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>输入文件名搜索模式。
+多个不同的模式可以用 &apos;;&apos; 分隔
+例如：&apos;*.cc ; *.h&apos;</translation>
     </message>
     <message>
         <location line="+96"/>
@@ -2707,12 +2709,12 @@ separated by &apos;;&apos;, e.g. &apos;*.cc ; *.h&apos;</source>
     <message>
         <location line="+87"/>
         <source>Double click to open the file</source>
-        <translation type="unfinished"></translation>
+        <translation>双击打开文件</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Double click to set the directory</source>
-        <translation type="unfinished"></translation>
+        <translation>双击设置目录</translation>
     </message>
 </context>
 <context>
@@ -2720,29 +2722,29 @@ separated by &apos;;&apos;, e.g. &apos;*.cc ; *.h&apos;</source>
     <message>
         <location filename="__octave_temp_gui_sources__/src/find-widget.cc" line="+48"/>
         <source>Find:</source>
-        <translation type="unfinished">查找:</translation>
+        <translation>查找:</translation>
     </message>
     <message>
         <location line="+10"/>
         <location line="+1"/>
         <source>Search forward</source>
-        <translation type="unfinished">下一条搜索结果</translation>
+        <translation>下一条搜索结果</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+1"/>
         <source>Search backward</source>
-        <translation type="unfinished">上一条搜索结果</translation>
+        <translation>上一条搜索结果</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>关闭</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Close find dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>关闭搜索对话框</translation>
     </message>
 </context>
 <context>
@@ -3855,7 +3857,7 @@ Action: %1</source>
     <message>
         <location line="+8"/>
         <source>Clear</source>
-        <translation type="unfinished">清空</translation>
+        <translation>清空</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4317,60 +4319,63 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location filename="__octave_temp_gui_sources__/src/self-listener.cc" line="+82"/>
         <source>Can not open redirected stream with fd = %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法打开重定向的流，文件描述符为 %1。</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Can not disable buffering of stream with fd = %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法禁用流的缓冲，文件描述符为 %1。</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Can not dup redirected stream with fd = %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法复制重定向的流，文件描述符为 %1。</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Cannot create pipe for redirecting stream with fd = %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>无法为重定向的流创建管道，文件描述符为 %1：</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Cannot dup2 redirected stream with fd = %1
 to pipe with fd = %2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>无法将文件描述符为 %1 的重定向流
+复制到文件描述符为 %2 的管道：%3</translation>
     </message>
     <message>
         <location line="+57"/>
         <source>Error while listening to redirected streams</source>
-        <translation type="unfinished"></translation>
+        <translation>监听重定向流时出错</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Error reading from redirected strem fd = %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>从重定向流读取时出错，文件描述符为 %1。</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>
 Output redirection in </source>
-        <translation type="unfinished"></translation>
+        <translation>
+输出重定向到 </translation>
     </message>
     <message>
         <location line="+1"/>
         <source> won&apos;t work.</source>
-        <translation type="unfinished"></translation>
+        <translation> 无法正常工作。</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>
 Error: </source>
-        <translation type="unfinished"></translation>
+        <translation>
+错误: </translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Octave</source>
-        <translation type="unfinished">Octave</translation>
+        <translation>Octave</translation>
     </message>
 </context>
 <context>
@@ -5727,12 +5732,12 @@ interference with readline key strokes.</source>
     <message>
         <location line="+1"/>
         <source>Run Tests</source>
-        <translation type="unfinished"></translation>
+        <translation>运行测试</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Run Demos</source>
-        <translation type="unfinished"></translation>
+        <translation>运行演示</translation>
     </message>
     <message>
         <location line="+3"/>

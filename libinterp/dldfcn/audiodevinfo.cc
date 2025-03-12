@@ -183,8 +183,8 @@ recording using those parameters.
 
       const char *driver = (api_info ? api_info->name : "");
 
-      char name[128];
-      sprintf (name, "%s (%s)", device_info->name, driver);
+      char name[256];
+      snprintf (name, 256, "%s (%s)", device_info->name, driver);
 
       if (device_info->maxInputChannels != 0)
         {

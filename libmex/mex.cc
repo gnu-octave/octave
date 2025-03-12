@@ -1413,7 +1413,7 @@ mexErrMsgIdAndTxt (const char *id, const char *fmt, ...)
       const char *fname = mexFunctionName ();
       std::size_t len = strlen (fname) + 2 + strlen (fmt) + 1;
       OCTAVE_LOCAL_BUFFER (char, tmpfmt, len);
-      sprintf (tmpfmt, "%s: %s", fname, fmt);
+      snprintf (tmpfmt, len, "%s: %s", fname, fmt);
       va_list args;
       va_start (args, fmt);
       verror_with_id (id, tmpfmt, args);
@@ -1461,7 +1461,7 @@ mexWarnMsgIdAndTxt (const char *id, const char *fmt, ...)
       const char *fname = mexFunctionName ();
       std::size_t len = strlen (fname) + 2 + strlen (fmt) + 1;
       OCTAVE_LOCAL_BUFFER (char, tmpfmt, len);
-      sprintf (tmpfmt, "%s: %s", fname, fmt);
+      snprintf (tmpfmt, len, "%s: %s", fname, fmt);
       va_list args;
       va_start (args, fmt);
       vwarning_with_id (id, tmpfmt, args);

@@ -1846,7 +1846,7 @@ command_editor::do_decode_prompt_string (const std::string& s)
                 char number_buffer[32];
                 int num = command_history::current_number ();
                 if (num > 0)
-                  sprintf (number_buffer, "%d", num);
+                  snprintf (number_buffer, 32, "%d", num);
                 else
                   strcpy (number_buffer, "!");
                 tmpstr = number_buffer;
@@ -1857,7 +1857,7 @@ command_editor::do_decode_prompt_string (const std::string& s)
             case '#':
               {
                 char number_buffer[32];
-                sprintf (number_buffer, "%d", m_command_number);
+                snprintf (number_buffer, 32, "%d", m_command_number);
                 tmpstr = number_buffer;
 
                 break;

@@ -12,7 +12,7 @@ GEN_CONFIG_SHELL += \
 %canon_reldir%_MAINTAINERCLEANFILES =
 
 ## Search local directories before those specified by the user.
-%canon_reldir%_%canon_reldir%_la_CPPFLAGS = \
+%canon_reldir%_liboctave_la_CPPFLAGS = \
   @OCTAVE_DLL_DEFS@ \
   @EXTERNAL_DLL_DEFS@ \
   -Iliboctave -I$(srcdir)/liboctave \
@@ -63,7 +63,7 @@ LIBOCTAVE_TEMPLATE_SRC =
 
 ## A list of all files that could include tests
 
-%canon_reldir%_%canon_reldir%_la_LIBADD =
+%canon_reldir%_liboctave_la_LIBADD =
 
 include %reldir%/array/module.mk
 include %reldir%/external/module.mk
@@ -73,26 +73,26 @@ include %reldir%/system/module.mk
 include %reldir%/util/module.mk
 include %reldir%/wrappers/module.mk
 
-nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = \
+nodist_%canon_reldir%_liboctave_la_SOURCES = \
   %reldir%/liboctave-build-info.cc \
   %reldir%/version.cc \
   %reldir%/version.h
 
-%canon_reldir%_%canon_reldir%_la_LIBADD += \
+%canon_reldir%_liboctave_la_LIBADD += \
   libgnu/libgnu.la \
   $(LIBOCTAVE_LINK_DEPS)
 
 ## Increment the following version numbers as needed and according
 ## to the rules in the etc/HACKING.md file:
 
-%canon_reldir%_%canon_reldir%_current = 12
-%canon_reldir%_%canon_reldir%_revision = 0
-%canon_reldir%_%canon_reldir%_age = 2
+%canon_reldir%_liboctave_current = 12
+%canon_reldir%_liboctave_revision = 0
+%canon_reldir%_liboctave_age = 0
 
-%canon_reldir%_%canon_reldir%_version_info = $(%canon_reldir%_%canon_reldir%_current):$(%canon_reldir%_%canon_reldir%_revision):$(%canon_reldir%_%canon_reldir%_age)
+%canon_reldir%_liboctave_version_info = $(%canon_reldir%_liboctave_current):$(%canon_reldir%_liboctave_revision):$(%canon_reldir%_liboctave_age)
 
-%canon_reldir%_%canon_reldir%_la_LDFLAGS = \
-  -version-info $(%canon_reldir%_%canon_reldir%_version_info) \
+%canon_reldir%_liboctave_la_LDFLAGS = \
+  -version-info $(%canon_reldir%_liboctave_version_info) \
   $(NO_UNDEFINED_LDFLAG) \
   @XTRA_EXTERNAL_SH_LDFLAGS@ \
   -bindir $(bindir) \

@@ -139,4 +139,6 @@ octave_base_matrix<Cell>::fast_elem_insert (octave_idx_type n,
 #  pragma GCC diagnostic ignored "-Wattributes"
 template class OCTINTERP_API octave_base_matrix<Cell>;
 #  pragma GCC diagnostic pop
+#else
+template class OCTINTERP_API octave_base_matrix<Cell>;
 #endif

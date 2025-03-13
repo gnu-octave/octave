@@ -11,6 +11,8 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 
 ### Alphabetical list of new functions added in Octave 11
 
+* `corrcov`
+
 ### Deprecated functions, properties, and operators
 
 The following functions and properties have been deprecated in Octave 11

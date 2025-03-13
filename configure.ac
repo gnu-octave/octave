@@ -27,8 +27,8 @@ dnl
 
 ### Initialize Autoconf
 AC_PREREQ([2.65])
-AC_INIT([GNU Octave], [11.0.0], [https://octave.org/bugs.html], [octave],
-        [https://www.gnu.org/software/octave/])
+AC_INIT([GNU Octave], [11.0.0], [https://bugs.octave.org], [octave],
+        [https://www.octave.org])
 
 ### Declare version numbers
 
@@ -325,7 +325,7 @@ AX_CXX_COMPILE_STDCXX(17, [], mandatory)
 ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=yes
 AC_ARG_ENABLE(std-pmr-polymorphic-allocator,
   [AS_HELP_STRING([--disable-std-pmr-polymorphic-allocator],
-    [build libraries that do not require support for std::pmr::polymorphic_allocator.  This prevents more efficient transfer of arrays at the .mex file interface.])],
+                  [build libraries without support for std::pmr::polymorphic_allocator, less efficient transfer of arrays to external MEX files])],
   [case $enableval in
      yes) ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=yes ;;
      no) ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=no ;;
@@ -1461,7 +1461,7 @@ AC_SUBST(QHULL_LIBS)
 check_for_rapidjson=yes
 AC_ARG_ENABLE([rapidjson],
   [AS_HELP_STRING([--disable-rapidjson],
-    [disable rapidjson])],
+    [disable RapidJSON])],
   [if test "$enableval" = no; then check_for_rapidjson=no; fi], [])
 warn_rapidjson=
 if test $check_for_rapidjson = yes; then
@@ -1697,12 +1697,21 @@ check_magick=yes
 use_magick=no
 AC_ARG_WITH([magick],
   [AS_HELP_STRING([--with-magick=LIB],
-    [select library to use for image I/O (options: GraphicsMagick++(default) or ImageMagick++)])],
-  [if test x"$withval" = xno; then
-     check_magick=no
-   else
-     magick="$withval"
-   fi], [magick="GraphicsMagick++"])
+    [select library to use for image I/O (options: GraphicsMagick++ (default) or ImageMagick++)])
+dnl Second help string must not be indented for correct alignment
+AS_HELP_STRING([--without-magick], [don't use Magick library, disable imread, imwrite, imformats, imfinfo])],
+  [case $withval in
+     yes | "")
+       magick="GraphicsMagick++"
+     ;;
+     no)
+       check_magick=no
+     ;;
+     *)
+       magick="$withval"
+     ;;
+   esac],
+  [magick="GraphicsMagick++"])
 
 if test $check_magick = yes; then
 
@@ -1937,13 +1946,13 @@ FLTK_LIBS=
 if test $check_fltk = yes; then
   AC_ARG_WITH([fltk-prefix],
     [AS_HELP_STRING([--with-fltk-prefix=PFX],
-      [prefix where FLTK is installed (optional)])],
+      [prefix where FLTK is installed])],
     [fltk_prefix="$withval"],
     [fltk_prefix=""])
 
   AC_ARG_WITH([fltk-exec-prefix],
     [AS_HELP_STRING([--with-fltk-exec-prefix=PFX],
-      [exec prefix where FLTK is installed (optional)])],
+      [exec prefix where FLTK is installed])],
     [fltk_exec_prefix="$withval"],
     [fltk_exec_prefix=""])
 

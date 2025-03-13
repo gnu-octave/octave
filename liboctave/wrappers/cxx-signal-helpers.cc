@@ -63,7 +63,7 @@
 // a function call.  So we have to do this job in C++.  To avoid calling
 // new, initialize sigset_t rather than a pointer to allocated storage.
 
-static const sigset_t
+static sigset_t
 init_async_signals ()
 {
   sigset_t sigmask;

@@ -6,6 +6,7 @@ FCN_FILE_DIRS += %reldir%
   %reldir%/center.m \
   %reldir%/corr.m \
   %reldir%/corrcoef.m \
+  %reldir%/corrcov.m \
   %reldir%/cov.m \
   %reldir%/discrete_cdf.m \
   %reldir%/discrete_inv.m \

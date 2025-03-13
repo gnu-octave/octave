@@ -172,13 +172,16 @@ useful for statistics.
 @node Correlation and Regression Analysis
 @section Correlation and Regression Analysis
 
-@c FIXME: Need Intro Here
+Octave supports several functions for investigating the relationship between
+sets of quantitative variables.
 
 @DOCSTRING(cov)
 
 @DOCSTRING(corr)
 
 @DOCSTRING(corrcoef)
+
+@DOCSTRING(corrcov)
 
 @DOCSTRING(spearman)
 

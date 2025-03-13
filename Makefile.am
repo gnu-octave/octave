@@ -285,7 +285,7 @@ hg-id-dist-hook:
 	       echo ; exit 1; }
 else
 hg-id-dist-hook:
-	@echo "WARNING: Octave was configured with --disable-hg-id" 1>&2
+	@echo "Octave was configured with --disable-hg-id.  Cannot package distribution!" 1>&2 ; exit 1;
 endif
 .PHONY: hg-id-dist-hook
 

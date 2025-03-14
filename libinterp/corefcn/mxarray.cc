@@ -2595,8 +2595,6 @@ public:
 
     octave_value retval;
 
-    const dim_vector& dv = dims_to_dim_vector ();
-
     switch (get_class_id ())
       {
       case mxDOUBLE_CLASS:

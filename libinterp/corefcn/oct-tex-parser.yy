@@ -56,6 +56,7 @@ extern int octave_tex_lex (YYSTYPE *, void *);
 %define api.pure
 // No spaces inside the braces for the prefix definition!
 %define api.prefix {octave_tex_}
+%define api.push-pull both
 %parse-param { octave::text_parser_tex& parser }
 %lex-param { void *m_scanner }
 

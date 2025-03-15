@@ -2373,14 +2373,14 @@ Fill formats info with GraphicsMagick CoderInfo.
 @seealso{imfinfo, imformats, imread, imwrite}
 @end deftypefn */)
 {
-#if defined (HAVE_MAGICK)
-
   if (args.length () != 1 || ! args(0).isstruct ())
     print_usage ();
 
-  maybe_initialize_magick ();
-
   octave_map formats = args(0).map_value ();
+
+#if defined (HAVE_MAGICK)
+
+  maybe_initialize_magick ();
 
   for (octave_idx_type idx = 0; idx < formats.numel (); idx++)
     {
@@ -2408,15 +2408,13 @@ Fill formats info with GraphicsMagick CoderInfo.
         }
     }
 
-  return ovl (formats);
-
 #else
 
-  octave_unused_parameter (args);
-
-  err_disabled_feature ("imformats", "Image IO");
+  formats = octave_map (dim_vector (1, 0), formats.fieldnames ());
 
 #endif
+
+  return ovl (formats);
 }
 
 /*

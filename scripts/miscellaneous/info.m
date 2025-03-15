@@ -42,9 +42,8 @@ function info ()
   including installation and is available at\n\
   https://wiki.octave.org\n\
 \n\
-  Additional functionality can be enabled by using packages from\n\
-  the Octave Forge project, which may be found at\n\
-  https://octave.sourceforge.io\n\
+  Additional functionality is provided by add-on packages at\n\
+  https://packages.octave.org\n\
 \n\
   Report bugs to the bug tracker at\n\
   https://bugs.octave.org\n\

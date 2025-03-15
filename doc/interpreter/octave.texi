@@ -16,6 +16,10 @@
 % along with Octave; see the file COPYING.  If not, see
 % <https://www.gnu.org/licenses/>.
 
+% MUST precede definition of \input as Texinfo
+% Allow generated PDF output (Octave manual) at version level 1.7
+\pdfminorversion=7
+
 \input texinfo
 
 @documentencoding UTF-8

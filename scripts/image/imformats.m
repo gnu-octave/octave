@@ -303,7 +303,9 @@ function pretty_print_formats (formats)
   ## Adjust the maximal length of the extensions column
   extensions = cellfun (@strjoin, {formats.ext}, {", "},
                         "UniformOutput", false);
-  cols_length(1) = max (max (cellfun (@numel, extensions)), cols_length(1));
+  if (! isempty (extensions))
+    cols_length(1) = max (max (cellfun (@numel, extensions)), cols_length(1));
+  endif
   headers{1} = postpad (headers{1}, cols_length(1), " ");
 
   ## Print the headers

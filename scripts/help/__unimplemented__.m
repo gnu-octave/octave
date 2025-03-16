@@ -48,12 +48,12 @@ function txt = __unimplemented__ (fcn)
   switch (fcn)
     case {"avifile", "aviinfo", "aviread"}
       txt = ["Basic video file support is provided in the video package.  ", ...
-             "See @url{https://octave.sourceforge.io/video/}."];
+             "See @url{https://packages.octave.org/video/}."];
 
     case "funm"
       txt = ["@code{funm} is not currently part of core Octave.  ", ...
              "See the linear-algebra package at ", ...
-             "@url{https://octave.sourceforge.io/linear-algebra/}."];
+             "@url{https://packages.octave.org/linear-algebra/}."];
       print_contribute_msg = false;
 
     case "griddedInterpolant"
@@ -91,7 +91,7 @@ function txt = __unimplemented__ (fcn)
       txt = ["Functions for spreadsheet style I/O ", ...
              "(.xls .xlsx .sxc .ods .dbf .wk1 etc.) " , ...
              "are provided in the io package. ", ...
-             "See @url{https://octave.sourceforge.io/io/}."];
+             "See @url{https://packages.octave.org/io/}."];
       print_contribute_msg = false;
 
     ## control system

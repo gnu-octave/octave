@@ -945,10 +945,14 @@ read from stdin\n\
   // Create a DOM document and load the svg file
   QDomDocument document;
 #if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
-  if (! document.setContent (&file))
+  QDomDocument::ParseResult parseResult = document.setContent (&file);
+  if (! parseResult)
     {
-      std::cerr << "Failed to parse XML contents" << std::endl;
-      file.close();
+      std::cerr << "Failed to parse XML contents" << std::endl
+                << "in line " << parseResult.errorLine
+                << " column " << parseResult.errorColumn << ":" << std::endl
+                << parseResult.errorMessage.toStdString () <<  std::endl;
+      file.close ();
       return -1;
     }
 #else
@@ -957,7 +961,7 @@ read from stdin\n\
     {
       std::cerr << "Failed to parse XML contents" << std::endl
                 << msg.toStdString () << std::endl;
-      file.close();
+      file.close ();
       return -1;
     }
 #endif

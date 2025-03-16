@@ -66,11 +66,14 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose, local_list, global
       pkg_desc_list{name_pos}.date = installed_pkgs_lst{i}.date;
       pkg_desc_list{name_pos}.description = installed_pkgs_lst{i}.description;
       ## Get URLs for package repository and bug tracker, otherwise use a
-      ## default URL pointing to Octave Packages index hosted on GitHub.
+      ## default URL pointing to Octave Packages index.
       if (isfield (installed_pkgs_lst{i}, "url"))
         pkg_desc_list{name_pos}.url = installed_pkgs_lst{i}.url;
       else
-        url = "https://gnu-octave.github.io/packages/%s";
+        ## Note: This is currently (March 2025) hosted on GitHub,
+        ## but the service provider can always change in future, so we try to
+        ## future-proof it a bit by using `packages.octave.org` instead.
+        url = "https://packages.octave.org/packages/%s";
         pkg_desc_list{name_pos}.url = sprintf (url, installed_pkgs_lst{i}.name);
       endif
       ## Check for bug tracker, otherwise use the repository's URL.

@@ -331,7 +331,7 @@ Copyright:
 - 2011-2012  John Hunt
 - 2011-2012, 2014, 2016  Daniel Kraft
 - 2011-2013  Júlio Hoffimann Mendes
-- 2011-2018, 2020  Carnë Draug
+- 2011-2018, 2020, 2024  David Miguel Susano Pinto (carandraug)
 - 2011-2023  Philip Nienhuis
 - 2011-2025  Torsten Lilge
 - 2012  Alexander Graf
@@ -537,7 +537,6 @@ Copyright:
 - 2023  Linton Miller
 - 2023  paulo
 - 2023  Peter Konowski
-- 2024  David Miguel Susano Pinto
 - 2024  Helmut Podhaisky
 - 2024  Jörg Sommrey
 

@@ -186,10 +186,13 @@ function print_package_description (pkg_name, pkg_ver, pkg_date, pkg_desc,
   printf ("Package repository:\n\t%s\n", pkg_url);
   printf ("Please report any issues with the %s package at:\n\t%s\n",
           pkg_name, pkg_tracker);
-  pkg_deps = cellfun (@(d) sprintf ("%s %s %s", struct2cell (d){:}), pkg_deps,
-                      "UniformOutput", false);
-  pkg_deps = strjoin (pkg_deps, "\n\t");
-  printf ("Depends on:\n\t%s\n", pkg_deps);
+
+  if (! isempty (pkg_deps))
+    pkg_deps = cellfun (@(d) sprintf ("%s %s %s", struct2cell (d){:}), pkg_deps,
+                        "UniformOutput", false);
+    pkg_deps = strjoin (pkg_deps, "\n\t");
+    printf ("Depends on:\n\t%s\n", pkg_deps);
+  endif
 
   pkg_invd = strjoin (pkg_invd, "\n\t");
   printf ("Depended on by:\n\t%s\n", pkg_invd);

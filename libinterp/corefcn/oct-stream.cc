@@ -315,7 +315,7 @@ public:
   const scanf_format_elt * next (bool cycle = true)
   {
     static scanf_format_elt dummy
-    ("", 0, false, scanf_format_elt::null, '\0', "");
+      ("", 0, false, scanf_format_elt::null, '\0', "");
 
     m_curr_idx++;
 
@@ -649,7 +649,7 @@ scanf_format_list::finish_conversion (const std::string& s, std::size_t& i,
     {
       if (beg_idx != std::string::npos && end_idx != std::string::npos)
         char_class = expand_char_class (s.substr (beg_idx,
-                                        end_idx - beg_idx + 1));
+                                                  end_idx - beg_idx + 1));
 
       add_elt_to_list (width, discard, type, modifier, char_class);
     }
@@ -667,9 +667,9 @@ scanf_format_list::printme () const
       scanf_format_elt *elt = m_fmt_elts[i];
 
       std::cerr
-          << "width:      " << elt->width << "\n"
-          << "discard:    " << elt->discard << "\n"
-          << "type:       ";
+        << "width:      " << elt->width << "\n"
+        << "discard:    " << elt->discard << "\n"
+        << "type:       ";
 
       if (elt->type == scanf_format_elt::literal_conversion)
         std::cerr << "literal text\n";
@@ -679,9 +679,9 @@ scanf_format_list::printme () const
         std::cerr << elt->type << "\n";
 
       std::cerr
-          << "modifier:   " << elt->modifier << "\n"
-          << "char_class: '" << undo_string_escapes (elt->char_class) << "'\n"
-          << "text:       '" << undo_string_escapes (elt->text) << "'\n\n";
+        << "modifier:   " << elt->modifier << "\n"
+        << "char_class: '" << undo_string_escapes (elt->char_class) << "'\n"
+        << "text:       '" << undo_string_escapes (elt->text) << "'\n\n";
     }
 }
 
@@ -1156,13 +1156,13 @@ printf_format_list::printme () const
       printf_format_elt *elt = m_fmt_elts[i];
 
       std::cerr
-          << "args:     " << elt->args << "\n"
-          << "flags:    '" << elt->flags << "'\n"
-          << "width:    " << elt->fw << "\n"
-          << "prec:     " << elt->prec << "\n"
-          << "type:     '" << elt->type << "'\n"
-          << "modifier: '" << elt->modifier << "'\n"
-          << "text:     '" << undo_string_escapes (elt->text) << "'\n\n";
+        << "args:     " << elt->args << "\n"
+        << "flags:    '" << elt->flags << "'\n"
+        << "width:    " << elt->fw << "\n"
+        << "prec:     " << elt->prec << "\n"
+        << "type:     '" << elt->type << "'\n"
+        << "modifier: '" << elt->modifier << "'\n"
+        << "text:     '" << undo_string_escapes (elt->text) << "'\n\n";
     }
 }
 
@@ -1277,7 +1277,7 @@ public:
   bool eof ()
   {
     return (m_eob == m_buf + m_overlap && m_i_stream.eof ())
-           || (m_flags & std::ios_base::eofbit);
+            || (m_flags & std::ios_base::eofbit);
   }
 
   operator const void *()
@@ -1690,6 +1690,7 @@ public:
 
   textscan_format_list (const std::string& fmt = std::string (),
                         const std::string& who = "textscan");
+
   OCTAVE_DISABLE_COPY_MOVE (textscan_format_list)
 
   ~textscan_format_list ();
@@ -1940,7 +1941,7 @@ private:
 };
 
 textscan_format_list::textscan_format_list (const std::string& s,
-    const std::string& who_arg)
+                                            const std::string& who_arg)
   : who (who_arg), set_from_first (false), has_string (false),
     m_nconv (0), m_curr_idx (0), m_fmt_elts (), m_buf ()
 {
@@ -2076,7 +2077,7 @@ textscan_format_list::add_elt_to_list (unsigned int width, int prec,
 
 void
 textscan_format_list::process_conversion (const std::string& s,
-    std::size_t& i, std::size_t n)
+                                          std::size_t& i, std::size_t n)
 {
   unsigned width = 0;
   int prec = -1;
@@ -2335,9 +2336,9 @@ textscan_format_list::parse_char_class (const std::string& pattern) const
 
           if (prev == '-' && mask['-'] >= 2)
             warning_with_id
-            ("Octave:textscan-pattern",
-             "%s: [...] contains two '-'s outside range expressions",
-             who.c_str ());
+              ("Octave:textscan-pattern",
+               "%s: [...] contains two '-'s outside range expressions",
+               who.c_str ());
         }
       prev = ch;
       prev_prev_was_range = prev_was_range;
@@ -2359,10 +2360,10 @@ textscan_format_list::parse_char_class (const std::string& pattern) const
 
 int
 textscan_format_list::finish_conversion (const std::string& s, std::size_t& i,
-    std::size_t n, unsigned int width,
-    int prec, int bitwidth,
-    octave_value& val_type, bool discard,
-    char& type)
+                                         std::size_t n, unsigned int width,
+                                         int prec, int bitwidth,
+                                         octave_value& val_type, bool discard,
+                                         char& type)
 {
   int retval = 0;
 
@@ -2415,7 +2416,7 @@ textscan_format_list::finish_conversion (const std::string& s, std::size_t& i,
     {
       if (beg_idx != std::string::npos && end_idx != std::string::npos)
         char_class = parse_char_class (s.substr (beg_idx,
-                                       end_idx - beg_idx + 1));
+                                                 end_idx - beg_idx + 1));
 
       add_elt_to_list (width, prec, bitwidth, val_type, discard, type,
                        char_class);
@@ -2434,11 +2435,11 @@ textscan_format_list::printme () const
       textscan_format_elt *elt = m_fmt_elts[i];
 
       std::cerr
-          << "width:      " << elt->width << "\n"
-          << "digits      " << elt->prec << "\n"
-          << "bitwidth:   " << elt->bitwidth << "\n"
-          << "discard:    " << elt->discard << "\n"
-          << "type:       ";
+        << "width:      " << elt->width << "\n"
+        << "digits      " << elt->prec << "\n"
+        << "bitwidth:   " << elt->bitwidth << "\n"
+        << "discard:    " << elt->discard << "\n"
+        << "type:       ";
 
       if (elt->type == textscan_format_elt::literal_conversion)
         std::cerr << "literal text\n";
@@ -2448,8 +2449,8 @@ textscan_format_list::printme () const
         std::cerr << elt->type << "\n";
 
       std::cerr
-          << "char_class: '" << undo_string_escapes (elt->char_class) << "'\n"
-          << "text:       '" << undo_string_escapes (elt->text) << "'\n\n";
+        << "char_class: '" << undo_string_escapes (elt->char_class) << "'\n"
+        << "text:       '" << undo_string_escapes (elt->text) << "'\n\n";
     }
 }
 
@@ -2603,7 +2604,7 @@ textscan::do_scan (std::istream& isp, textscan_format_list& fmt_list,
   // Finally, create the stream.
   delimited_stream is (isp,
                        (m_delims.empty () ? m_whitespace + "\r\n"
-                        : m_delims),
+                                          : m_delims),
                        max_lookahead, buf_size);
 
   // Grow retval dynamically.  "size" is half the initial size
@@ -2667,8 +2668,8 @@ textscan::do_scan (std::istream& isp, textscan_format_list& fmt_list,
   if (! err)
     {
       for (/* row set ~30 m_lines above */;
-                                          row < ntimes || ntimes == -1;
-                                          row++)
+           row < ntimes || ntimes == -1;
+           row++)
         {
           if (row == 0 || row >= size)
             {
@@ -2956,7 +2957,7 @@ textscan::scan_complex (delimited_stream& is, const textscan_format_elt& fmt,
                 {
                   inf = true;
                   re = (ch == '+' ? numeric_limits<double>::Inf ()
-                        : -numeric_limits<double>::Inf ());
+                                  : -numeric_limits<double>::Inf ());
                   value = 0;
                 }
               else
@@ -3230,8 +3231,7 @@ textscan::scan_qstring (delimited_stream& is, const textscan_format_elt& fmt,
       is.get ();                        // swallow "
 
       while (is && is.peek_undelim () == '"')  // if double ",
-        {
-          // insert one in stream,
+        {                                      // insert one in stream,
           is.get ();                           // keep looking for single "
           std::string val1;
           scan_caret (is, R"(")", val1);
@@ -3581,9 +3581,9 @@ textscan::parse_options (const octave_value_list& args,
   for (int i = 0; i < last; i += 2)
     {
       std::string param = args(i).xstring_value ("%s: Invalid parameter type <%s> for parameter %d",
-                          m_who.c_str (),
-                          args(i).type_name ().c_str (),
-                          i/2 + 1);
+                                                 m_who.c_str (),
+                                                 args(i).type_name ().c_str (),
+                                                 i/2 + 1);
       std::transform (param.begin (), param.end (), param.begin (), ::tolower);
 
       if (param == "delimiter")
@@ -3717,7 +3717,7 @@ textscan::parse_options (const octave_value_list& args,
         {
           bool valid = true;
           std::string s = args(i+1).xstring_value (R"(%s: EndOfLine must be at most one character or '\r\n')",
-                          m_who.c_str ());
+                                                   m_who.c_str ());
           if (args(i+1).is_sq_string ())
             s = do_string_escapes (s);
           int l = s.length ();
@@ -4311,7 +4311,7 @@ octave_scan_1 (std::istream& is, const scanf_format_elt& fmt,
       if (value != T ())
         {
           // If conversion produces an integer that overflows, failbit is set
-          // but value is nonzero.  We want to treat this case as success,
+          // but value is non-zero.  We want to treat this case as success,
           // so clear  failbit from the stream state to keep going.
           // FIXME: Maybe set error state on octave stream?  Matlab does
           // *not* indicate an error message on overflow.
@@ -4382,8 +4382,7 @@ octave_scan (std::istream& is, const scanf_format_elt& fmt, T *valptr)
 
 template <>
 std::istream&
-octave_scan<>
-(std::istream& is, const scanf_format_elt& fmt, double *valptr)
+octave_scan<> (std::istream& is, const scanf_format_elt& fmt, double *valptr)
 {
   switch (fmt.type)
     {
@@ -6478,9 +6477,9 @@ convert_and_copy (std::list<void *>& input_buf_list,
 
 typedef octave_value (*conv_fptr)
   (std::list<void *>& input_buf_list, octave_idx_type input_buf_elts,
- octave_idx_type elts_read, octave_idx_type nr, octave_idx_type nc,
- bool swap, bool do_float_fmt_conv, bool do_NA_conv,
- mach_info::float_format from_flt_fmt);
+   octave_idx_type elts_read, octave_idx_type nr, octave_idx_type nc,
+   bool swap, bool do_float_fmt_conv, bool do_NA_conv,
+   mach_info::float_format from_flt_fmt);
 
 #define TABLE_ELT(T, U, V, W)                                           \
   conv_fptr_table[oct_data_conv::T][oct_data_conv::U] = convert_and_copy<V, W>
@@ -7424,8 +7423,7 @@ stream_list::insert (stream& os)
   return stream_number;
 }
 
-OCTAVE_NORETURN static
-void
+OCTAVE_NORETURN static void
 err_invalid_file_id (int fid, const std::string& who)
 {
   if (who.empty ())
@@ -7459,8 +7457,7 @@ stream_list::lookup (int fid, const std::string& who) const
 }
 
 stream
-stream_list::lookup (const octave_value& fid,
-                     const std::string& who) const
+stream_list::lookup (const octave_value& fid, const std::string& who) const
 {
   int i = get_file_number (fid);
 

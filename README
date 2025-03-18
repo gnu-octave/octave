@@ -65,15 +65,15 @@ other versions of make.  If you use `f2c`, you will need a script
 like `fort77` that works like a normal Fortran compiler by combining
 `f2c` with your C compiler in a single script.
 
-See https://wiki.octave.org/Building for more detailed
-installation instructions.
+See the file INSTALL.OCTAVE or the wiki at <https://wiki.octave.org/Building>
+for more detailed installation instructions.
 
 Bugs and Patches
 ----------------
 
-The file `doc/interpreter/bugs.txi` explains the recommended procedure
-for reporting bugs on the [bug tracker](https://bugs.octave.org)
-or contributing patches; online documentation is also available
+The files BUGS and `doc/interpreter/bugs.txi` explain the recommended
+procedure for reporting bugs on the [bug tracker](https://bugs.octave.org)
+or contributing patches; online resources are also available
 [here](https://octave.org/support).
 
 Documentation

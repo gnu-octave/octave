@@ -247,7 +247,7 @@ FloatComplex
 rc_acos (float x)
 {
   return fabsf (x) > 1.0f ? acos (FloatComplex (x))
-         : FloatComplex (std::acos (x));
+                          : FloatComplex (std::acos (x));
 }
 
 Complex
@@ -272,7 +272,7 @@ FloatComplex
 rc_asin (float x)
 {
   return fabsf (x) > 1.0f ? asin (FloatComplex (x))
-         : FloatComplex (::asinf (x));
+                          : FloatComplex (::asinf (x));
 }
 
 Complex
@@ -285,7 +285,7 @@ FloatComplex
 rc_atanh (float x)
 {
   return fabsf (x) > 1.0f ? atanh (FloatComplex (x))
-         : FloatComplex (atanh (x));
+                          : FloatComplex (atanh (x));
 }
 
 Complex
@@ -298,7 +298,7 @@ FloatComplex
 rc_log (float x)
 {
   return x < 0.0f ? FloatComplex (std::log (-x), static_cast<float> (M_PI))
-         : FloatComplex (std::log (x));
+                  : FloatComplex (std::log (x));
 }
 
 Complex
@@ -313,7 +313,7 @@ rc_log2 (float x)
 {
   constexpr float PI_LN2 = 4.53236014182719380962f;  // = pi / log(2)
   return x < 0.0f ? FloatComplex (log2 (-x), PI_LN2)
-         : FloatComplex (log2 (x));
+                  : FloatComplex (log2 (x));
 }
 
 Complex
@@ -328,7 +328,7 @@ rc_log10 (float x)
 {
   constexpr float PI_LN10 = 1.36437635384184134748f;  // = pi / log(10)
   return x < 0.0f ? FloatComplex (log10 (-x), PI_LN10)
-         : FloatComplex (log10f (x));
+                  : FloatComplex (log10f (x));
 }
 
 Complex
@@ -341,7 +341,7 @@ FloatComplex
 rc_sqrt (float x)
 {
   return x < 0.0f ? FloatComplex (0.0f, std::sqrt (-x))
-         : FloatComplex (std::sqrt (x));
+                  : FloatComplex (std::sqrt (x));
 }
 
 OCTAVE_END_NAMESPACE(math)

@@ -89,7 +89,7 @@ function desc = get_description (filename)
   if (isfield (desc, "depends"))
     desc.depends = fix_depends (desc.depends);
   else
-    desc.depends = "";
+    desc.depends = {};
   endif
   desc.name = lower (desc.name);
 

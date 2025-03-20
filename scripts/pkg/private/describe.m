@@ -73,7 +73,7 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose, local_list, global
         ## Note: This is currently (March 2025) hosted on GitHub,
         ## but the service provider can always change in future, so we try to
         ## future-proof it a bit by using `packages.octave.org` instead.
-        url = "https://packages.octave.org/packages/%s";
+        url = "https://packages.octave.org/%s";
         pkg_desc_list{name_pos}.url = sprintf (url, installed_pkgs_lst{i}.name);
       endif
       ## Check for bug tracker, otherwise use the repository's URL.

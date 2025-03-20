@@ -1394,7 +1394,6 @@ editor_files_browser::editor_files_browser (QWidget *p)
   vbox_layout->setContentsMargins (1, 1, 1, 1);
 
   setLayout (vbox_layout);
-  QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
 }
 
 

@@ -71,6 +71,7 @@ nodist_%canon_reldir%_liboctgui_la_SOURCES = \
 %canon_reldir%_liboctgui_version_info = $(%canon_reldir%_liboctgui_current):$(%canon_reldir%_liboctgui_revision):$(%canon_reldir%_liboctgui_age)
 
 %canon_reldir%_liboctgui_la_LDFLAGS = \
+  $(AM_LDFLAGS) \
   -version-info $(%canon_reldir%_liboctgui_version_info) \
   $(NO_UNDEFINED_LDFLAG) \
   -bindir $(bindir) \

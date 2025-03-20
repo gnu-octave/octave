@@ -39,8 +39,7 @@ available in the online version of the manual.  Use the command\n\
 'doc <topic>' to search the manual index.\n\
 \n\
 Help and information about Octave is also available on the WWW\n\
-at https://www.octave.org and via the help@octave.org\n\
-mailing list.\n";
+at https://www.octave.org and https://octave.discourse.group/c/help/\n";
   endif
 
 endfunction

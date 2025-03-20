@@ -75,6 +75,7 @@ nodist_%canon_reldir%_octave_SOURCES = %reldir%/main.cc
   $(GNULIB_LINK_DEPS)
 
 %canon_reldir%_octave_LDFLAGS = \
+  $(AM_LDFLAGS) \
   $(NO_UNDEFINED_LDFLAG) \
   $(OCTAVE_LINK_OPTS) \
   $(WARN_LDFLAGS) \

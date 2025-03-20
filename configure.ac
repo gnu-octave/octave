@@ -561,6 +561,10 @@ dnl They will be reset before output files are generated.
 CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
 CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
 
+dnl Clang compiler will produce bogus warning during linking only.
+AM_CONDITIONAL([AMCOND_CLANG_PTHREAD_WARNING],
+               [test $ax_cv_PTHREAD_CLANG = yes])
+
 dnl Check if glibc uses wrong stack size
 OCTAVE_CHECK_BROKEN_PTHREAD_STACKSIZE
 AM_CONDITIONAL([OCTAVE_CHECK_BROKEN_PTHREAD_STACKSIZE],

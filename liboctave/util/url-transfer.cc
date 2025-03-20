@@ -843,7 +843,7 @@ private:
     std::string user_agent
     ("GNU Octave/"
      + std::string (OCTAVE_VERSION)
-     + " (https://www.gnu.org/software/octave/ ; help@octave.org) libcurl/"
+     + " (https://www.octave.org/) libcurl/"
      + std::string (lib_ver));
 
     SETOPT (CURLOPT_USERAGENT, user_agent.c_str ());

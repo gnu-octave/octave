@@ -163,6 +163,7 @@ endif
 %canon_reldir%_liboctinterp_version_info = $(%canon_reldir%_liboctinterp_current):$(%canon_reldir%_liboctinterp_revision):$(%canon_reldir%_liboctinterp_age)
 
 %canon_reldir%_liboctinterp_la_LDFLAGS = \
+  $(AM_LDFLAGS) \
   -version-info $(%canon_reldir%_liboctinterp_version_info) \
   $(NO_UNDEFINED_LDFLAG) \
   -bindir $(bindir) \

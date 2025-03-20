@@ -92,6 +92,7 @@ nodist_%canon_reldir%_liboctave_la_SOURCES = \
 %canon_reldir%_liboctave_version_info = $(%canon_reldir%_liboctave_current):$(%canon_reldir%_liboctave_revision):$(%canon_reldir%_liboctave_age)
 
 %canon_reldir%_liboctave_la_LDFLAGS = \
+  $(AM_LDFLAGS) \
   -version-info $(%canon_reldir%_liboctave_version_info) \
   $(NO_UNDEFINED_LDFLAG) \
   @XTRA_EXTERNAL_SH_LDFLAGS@ \

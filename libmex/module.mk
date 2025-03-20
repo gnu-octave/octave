@@ -60,6 +60,7 @@ OCTAVE_LIBOCTMEX_SOVERSION_MAJOR = $(%canon_reldir%_liboctmex_current)
 %canon_reldir%_liboctmex_version_info = $(%canon_reldir%_liboctmex_current):$(%canon_reldir%_liboctmex_revision):$(%canon_reldir%_liboctmex_age)
 
 %canon_reldir%_liboctmex_la_LDFLAGS = \
+  $(AM_LDFLAGS) \
   -version-info $(%canon_reldir%_liboctmex_version_info) \
   $(NO_UNDEFINED_LDFLAG) \
   -bindir $(bindir) \

@@ -280,7 +280,7 @@ function hf = __msgbox__ (msg, tit, icon, windowstyle, interpreter)
       set (hax, "colormap", icon.colormap)
     endif
     image ("parent", hax, "cdata", icon.cdata, "cdatamapping", "direct", ...
-           "xdata", [1 im_sz(2)], "ydata", [-(im_sz(1))/2+1 im_sz(1)/2]);
+           "xdata", [1 im_sz(2)], "ydata", [-(im_sz(1))/2 im_sz(1)/2]);
     text_offset = im_sz(2) + txt_margin;
   endif
 

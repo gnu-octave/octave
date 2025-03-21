@@ -229,7 +229,19 @@ private:
 void
 cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
 {
-  m_method_map[meth.get_name ()] = meth;
+  std::string method_name = meth.get_name ();
+  auto it = m_method_map.find (method_name);
+  //  Check if a method with the same name already exists before
+  //  installing a new one.
+  if (it != m_method_map.end ())
+    {
+      std::string class_file = file_name();
+      error ("duplicate method '%s' in class '%s' in file '%s'",
+            method_name.c_str (), get_name ().c_str (), class_file.c_str ());
+    }
+
+  // Now safely install the new method
+  m_method_map[method_name] = meth;
 
   m_member_count++;
 
@@ -384,7 +396,19 @@ cdef_class::cdef_class_rep::find_property (const std::string& nm)
 void
 cdef_class::cdef_class_rep::install_property (const cdef_property& prop)
 {
-  m_property_map[prop.get_name ()] = prop;
+  std::string prop_name = prop.get_name ();
+  auto it = m_property_map.find (prop_name);
+  //  Check if a property with the same name already exists before
+  //  installing a new one.
+  if (it != m_property_map.end ())
+    {
+      std::string class_file = file_name ();
+      error ("duplicate property '%s' in class '%s' in file '%s'",
+            prop_name.c_str (), get_name ().c_str (), class_file.c_str ());
+    }
+
+  m_property_map[prop_name] = prop;
+
   // Register the insertion rank of this property
   m_property_rank_map[prop.get_name ()] = m_member_count;
 

@@ -213,3 +213,8 @@
 
 ## test class with methods in @folder and in classdef definition
 %!assert <*62802> (numel (methods ("class_bug62802")), 4)
+
+## Test class with duplicate definitions for methods (A) and properties (B)
+%!test <66930>
+%!error <duplicate method>   A = class_bug66930A ([1 2 3], 3);
+%!error <duplicate property> B = class_bug66930B ([1 2 3], 3);

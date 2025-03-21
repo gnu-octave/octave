@@ -37,8 +37,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 FigureWindow::FigureWindow (QWidget *xparent)
   : FigureWindowBase (xparent)
 {
-  // set icon from application resources
-  setWindowIcon (QIcon (global_icon_paths.at (ICON_THEME_OCTAVE)));
+  // Set icon from application resources. Since FigureWindow is also used by
+  // msgbox (in turn used be hekodlg, warndlg, ...), the logo should be the
+  // neutral octave icon:
+  setWindowIcon (QIcon (global_icon_paths.at (ICON_THEME_OCTAVE) + "logo.png"));
 }
 
 FigureWindow::~FigureWindow ()

@@ -193,7 +193,7 @@ classdef MemoizedFunction < handle
       error ("matlab.lang.MemoizedFunction: concatenation is not allowed");
     endfunction
 
-    function newobj = horzcat (varargin)
+    function newobj = vertcat (varargin)
       error ("matlab.lang.MemoizedFunction: concatenation is not allowed");
     endfunction
 

@@ -591,6 +591,7 @@ classdef inputParser < handle
       ## which is a performance win and may also be necessary if validation
       ## function maintains state.  See bug #49793.
       ans = true;
+      lasterr ("");  # clear error message
       try
         val (in);  # call function with no arguments in case nargout == 0
         ok = ans;  # use side effect of assignment to 'ans' when nargout == 1
@@ -602,8 +603,15 @@ classdef inputParser < handle
         r = ok;
       else
         if (! ok)
-          err = sprintf ('Checked with "%s"', func2str (val));
-          this.error (sprintf ("failed validation of '%s'.  %s", name, err));
+          err = lasterr ();
+          if (! isempty (err))
+            ## rethrow error message if one was generated
+            this.error (err);
+          else
+            ## emit general error message that validation function failed
+            err = sprintf ('Checked with "%s"', func2str (val));
+            this.error (sprintf ("failed validation of '%s'.  %s", name, err));
+          endif
         endif
         this.Results.(name) = in;
       endif
@@ -1071,3 +1079,16 @@ endclassdef
 %! p.addParameter ('p2', 'p2_default');
 %! p.parse ();
 %! assert (size (p.UsingDefaults), [1, 3]);
+
+%!test <*66873>
+%! function validate_type (x)
+%!   validatestring (x, {'good', 'bad', 'ugly'}, 'type_check', 'type');
+%! endfunction
+%!
+%! p = inputParser;
+%! p.CaseSensitive = false;
+%! p.FunctionName = 'foo';
+%! addParameter (p, 'type', 'good', @validate_type);
+%!
+%! fail ("parse(p, 'type', 'clint')",
+%!       "type_check: 'clint' \\(variable type\\) does not match any of");

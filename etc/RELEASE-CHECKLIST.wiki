@@ -25,6 +25,21 @@ Completion Date:
 
 '''Must occur first''' as it could resolve existing, or create new, bug reports. You should run <code>./bootstrap</code> in the source tree after updating to the new gnulib version.
 
+=== ⚙️ Update Autoconf macros to latest version ===
+
+Completion Date:
+
+The following Autoconf macros are under version control in the <code>m4</code> directory.  The contents should be verified against the repository at https://github.com/autoconf-archive/autoconf-archive/tree/master/m4.
+
+    ax_blas.m4
+    ax_compare_version.m4
+    ax_cxx_compile_stdcxx.m4
+    ax_lapack.m4
+    ax_openmp.m4
+    ax_pthread.m4
+
+The <code>pkg.m4</code> macro should be verified against the repository at https://github.com/pkgconf/pkgconf/blob/master/pkg.m4.
+
 === 📢 Call for bug reports ===
 
 Completion Date:

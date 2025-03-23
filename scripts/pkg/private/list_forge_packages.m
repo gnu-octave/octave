@@ -28,52 +28,129 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-function list = list_forge_packages ()
+function retval = list_forge_packages ()
 
-  [list, succ] = urlread ("https://packages.octave.org/list_packages.php");
+  [list, succ] = urlread ("https://packages.octave.org/packages/");
   if (! succ)
     error ("pkg: could not read URL, please verify internet connection");
   endif
 
-  list = ostrsplit (list, " \n\t", true);
+  ## `list` begins with the known HTML prefix "<pre>".
+  ## If this fails, the rest of the code is likely not valid, so fail early.
+  if (! (numel (list) >= 5 && all (list(1:5) == "<pre>")))
+    error ("pkg: server returned data of unknown format");
+  endif
+  list(1:5) = [];
 
-  if (nargout == 0)
-    ## FIXME: This is a convoluted way to get the latest version number
-    ##        for each package in less than 56 seconds (bug #39479).
+  ## Convert known HTML markup to text.
+  list = strrep (list, "&gt;",  ">");
+  list = strrep (list, "&lt;",  "<");
+  list = strrep (list, "&amp;", "&");
+  list = strrep (list, "&#39;", "'");
 
-    ## Get the list of all packages ever published
-    [html, succ] = urlread ('https://sourceforge.net/projects/octave/files/Octave%20Forge%20Packages/Individual%20Package%20Releases');
+  ## The rest of `list` is a sequence of Octave assignment commands,
+  ## meant for execution with `eval`.
+  ##
+  ## We *could* pass it straight to `eval`,
+  ## but if packages.octave.org were to be compromised by a third party,
+  ## then `list` might have malicious code like `system ("do_something_bad")`.
+  ## For some basic precautions against blindly executing that with `eval`,
+  ## we ensure that all the Octave code in `list` is only a set of
+  ## assignment commands of a known format.
+  ##
+  ## This check also helps if the server is safe but the internet connection
+  ## is unstable and causes `list` to be incomplete or malformed.
+  ##
+  ## FIXME Improve the following security checks.
 
-    if (! succ)
-      error ("pkg: failed to fetch list of packages from sourceforge.net");
+  ## `list` should end with `%</pre>` with zero or more line breaks.
+  ## First remove any trailing line breaks.
+  while (list(end) == "\n")
+    list(end) = [];
+  endwhile
+
+  ## Ensure known closing string.
+  if (! all (list(end-6:end) == "%</pre>"))
+    error ("pkg: server returned data of unknown format");
+  endif
+  list(end-6:end) = [];
+
+  ## Remove any trailing line breaks again.
+  while (list(end) == "\n")
+    list(end) = [];
+  endwhile
+
+  ## Remove consecutive line breaks to help with further checks.
+  do
+    len = numel (list);
+    list = strrep (list, "\n\n", "\n");
+  until (numel (list) == len);
+
+  ## Every statement must now be of the format
+  ##     __pkg__.FOO = BAR;
+  ## so we check for `__pkg__.` at the start and after all line breaks.
+  for f = [0, strfind(list, "\n")]  # all line breaks; 0 for the start
+    if (! all (list((f+1) : (f+8)) == "__pkg__."))
+      error ("pkg: server returned data of unknown format");
     endif
+  endfor
 
-    ## Scrape the HTML
-    ptn = '<tr\s+title="(.*?gz)"\s+class="file';
-    [succ, tok] = regexp (html, ptn, "start", "tokens");
-    if (isempty (succ))
-      error ("pkg: failed to parse list of packages from sourceforge.net");
-    endif
+  ## At this point, all lines start with the known string `__pkg__.`
+  ## so we deem it safe from `system` and other funny business.
+  eval (list);  # this creates a struct called `__pkg__`
 
-    ## Remove version numbers and produce unique list of packages
-    files = cellstr (tok);
-    pkg_names = cellstr (regexp (files, '^.*?(?=-\d)', "match"));
-    [~, idx] = unique (pkg_names, "first");
-    files = files(idx);
+  ## Verify that it exists and is a struct.
+  assert (exist ("__pkg__"));
+  assert (class (__pkg__), "struct");
 
-    page_screen_output (false, "local");
-    puts ("Octave Forge provides these packages:\n");
-    for i = 1:length (list)
-      pkg_nm = list{i};
-      idx = regexp (files, sprintf ('^%s(?=-\\d)', pkg_nm));
-      idx = ! cellfun (@isempty, idx);
-      if (any (idx))
-        ver = regexp (files{idx}, '\d+\.\d+\.\d+', "match"){1};
+  pkgnames = fieldnames (__pkg__);
+
+  formatmore = (nargout == 0);  # do further string formatting for display
+
+  ## Determine whether each package can be installed by `pkg install -forge`.
+  ## This is possible if `pkg` is listed as a prerequisite for that package.
+  lgl = false (1, numel (pkgnames));
+  for i = 1:numel (pkgnames)
+    this = char (pkgnames(i));
+
+    prereq = char (__pkg__.(this).versions(1).depends.name);
+    lgl(i) = any (cell2mat (strfind (cellstr (prereq), "pkg")));
+
+    if (formatmore)  # format output as a string
+
+      ## Get version.
+      ## In the case of multiple versions, versions(1) is the most recent.
+      v = __pkg__.(this).versions(1).id;
+
+      tmp = sprintf ("%s %s", this, v);
+
+      if (lgl(i))
+        ## FIXME Currently we do nothing for this case.
+        ## If we want to give a helpful command on how to install the package,
+        ## we could uncomment the following line:
+        # tmp = [tmp, sprintf(' (command: `pkg install -forge %s`)', this)];
       else
-        ver = "unknown";
+        tmp = [tmp, " (download and install manually)"];
       endif
-      printf ("  %s %s\n", pkg_nm, ver);
-    endfor
+
+      retval(i, 1:numel (tmp)) = tmp;
+
+    endif
+
+  endfor
+
+  if (! formatmore)  # we want only the package names not the versions.
+
+    ## Return only those packages that can be installed with `pkg`.
+    retval = char (pkgnames(lgl));
+
+  else
+
+    ## `retval` has already been built above for display.
+    page_screen_output (false, "local");
+    puts ("These are the current packages for Octave:\n");
+    disp (retval);
+
   endif
 
 endfunction

@@ -237,7 +237,7 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
     {
       std::string class_file = file_name ();
       error ("duplicate method '%s' in class '%s' in file '%s'",
-            method_name.c_str (), get_name ().c_str (), class_file.c_str ());
+             method_name.c_str (), get_name ().c_str (), class_file.c_str ());
     }
 
   // Now safely install the new method
@@ -404,7 +404,7 @@ cdef_class::cdef_class_rep::install_property (const cdef_property& prop)
     {
       std::string class_file = file_name ();
       error ("duplicate property '%s' in class '%s' in file '%s'",
-            prop_name.c_str (), get_name ().c_str (), class_file.c_str ());
+             prop_name.c_str (), get_name ().c_str (), class_file.c_str ());
     }
 
   m_property_map[prop_name] = prop;

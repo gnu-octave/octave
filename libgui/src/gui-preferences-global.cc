@@ -48,10 +48,10 @@ gui_pref
 global_icon_size ("toolbar_icon_size", QVariant (0));
 
 gui_pref
-global_icon_theme ("use_system_icon_theme", QVariant (true));
+global_icon_theme ("use_system_icon_theme", QVariant (false));
 
 gui_pref
-global_icon_theme_index ("icon_theme", QVariant (ICON_THEME_SYSTEM));
+global_icon_theme_index ("icon_theme", QVariant (ICON_THEME_OCTAVE));
 
 gui_pref
 global_icon_fallbacks ("icon_fallbacks", QVariant (QStringList ()));

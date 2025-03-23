@@ -359,7 +359,6 @@ fi
 
 AC_PROG_CC
 AC_PROG_CPP
-AC_PROG_GCC_TRADITIONAL
 
 ## Save and restore CFLAGS and CXXFLAGS globally.
 dnl These variables are for users, so we shouldn't be touching them.

@@ -235,7 +235,7 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
   //  installing a new one.
   if (it != m_method_map.end ())
     {
-      std::string class_file = file_name();
+      std::string class_file = file_name ();
       error ("duplicate method '%s' in class '%s' in file '%s'",
             method_name.c_str (), get_name ().c_str (), class_file.c_str ());
     }

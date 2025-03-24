@@ -111,30 +111,17 @@ function retval = list_forge_packages ()
   ## This is possible if `pkg` is listed as a prerequisite for that package.
   lgl = false (1, numel (pkgnames));
   for i = 1:numel (pkgnames)
+
     this = char (pkgnames(i));
 
+    ## In the case of multiple versions, versions(1) is the most recent.
     prereq = char (__pkg__.(this).versions(1).depends.name);
     lgl(i) = any (cell2mat (strfind (cellstr (prereq), "pkg")));
 
-    if (formatmore)  # format output as a string
-
-      ## Get version.
-      ## In the case of multiple versions, versions(1) is the most recent.
+    if (formatmore)  # add version number to output
       v = __pkg__.(this).versions(1).id;
-
       tmp = sprintf ("%s %s", this, v);
-
-      if (lgl(i))
-        ## FIXME Currently we do nothing for this case.
-        ## If we want to give a helpful command on how to install the package,
-        ## we could uncomment the following line:
-        # tmp = [tmp, sprintf(' (command: `pkg install -forge %s`)', this)];
-      else
-        tmp = [tmp, " (download and install manually)"];
-      endif
-
       retval(i, 1:numel (tmp)) = tmp;
-
     endif
 
   endfor
@@ -148,8 +135,13 @@ function retval = list_forge_packages ()
 
     ## `retval` has already been built above for display.
     page_screen_output (false, "local");
-    puts ("These are the current packages for Octave:\n");
-    disp (retval);
+    fprintf (1, "These %d packages were found on Octave Packages.\n", rows (retval));
+
+    fprintf (1, "The following %d packages should be installed following their individual instructions:\n", nnz (! lgl));
+    disp (retval(! lgl, :));
+
+    fprintf (1, "The following %d packages can be installed with `pkg install -forge <packagename>`:\n", nnz (lgl));
+    disp (retval(lgl, :));
 
   endif
 

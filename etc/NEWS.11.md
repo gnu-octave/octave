@@ -3,6 +3,8 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 
 ### General improvements
 
+- The internal interface to Java has been updated to be more memory-efficient (faster culling of unused objects).  Octave now requires Java 1.9 or newer.
+
 ### Graphical User Interface
 
 ### Graphics backend
@@ -44,7 +46,7 @@ from Octave 11.
 
 ### Old release news
 
-- [Octave 9.x](etc/NEWS.10.md)
+- [Octave 10.x](etc/NEWS.10.md)
 - [Octave 9.x](etc/NEWS.9.md)
 - [Octave 8.x](etc/NEWS.8.md)
 - [Octave 7.x](etc/NEWS.7.md)

@@ -25,10 +25,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{ver}, @var{url}] =} get_forge_pkg (@var{name})
-## Try to discover the current version of an Octave Forge package from the web,
-## using a working internet connection and the urlread function.
-## If two output arguments are requested, also return an address from which
-## to download the file.
+## Return the current version and URL of the Octave package @var{name}.
+##
 ## @end deftypefn
 
 function [ver, url] = get_forge_pkg (name)
@@ -42,58 +40,33 @@ function [ver, url] = get_forge_pkg (name)
 
   name = lower (name);
 
-  ## Try to download package's index page.
-  [html, succ] = urlread (sprintf ("https://packages.octave.org/%s/index.html", ...
-                                   name));
-  if (succ)
-    ## Remove blanks for simpler matching.
-    html(isspace (html)) = [];
-    ## Good.  Let's grep for the version.
-    pat = "<tdclass=""package_table"">PackageVersion:</td><td>([\\d.]*)</td>";
-    t = regexp (html, pat, "tokens");
-    if (isempty (t) || isempty (t{1}))
-      error ("get_forge_pkg: could not read version number from package's page");
-    else
-      ver = t{1}{1};
-      if (nargout > 1)
-        ## Build download string.
-        pkg_file = sprintf ("%s-%s.tar.gz", name, ver);
-        url = ["https://packages.octave.org/download/" pkg_file];
-        ## Verify that the package string exists on the page.
-        if (isempty (strfind (html, pkg_file)))
-          warning ("get_forge_pkg: download URL not verified");
-        endif
-      endif
-    endif
-  else
-    ## Try get the list of all packages.
-    [html, succ] = urlread ("https://packages.octave.org/list_packages.php");
-    if (! succ)
-      error ("get_forge_pkg: could not read URL, please verify internet connection");
-    endif
-    t = strsplit (html);
-    if (any (strcmp (t, name)))
-      error ("get_forge_pkg: package NAME exists, but index page not available");
-    endif
+  __pkg__ = get_validated_pkg_list ();  # fresh data from packages.octave.org
+  pkgnames = fieldnames (__pkg__);  # all the different packages
+
+  if (any (cell2mat (strfind (pkgnames, name))))  # named package does exist
+
+    ## If multiple versions, then versions(1) is the most recent version.
+    ver = __pkg__.(name).versions(1).id;
+    url = __pkg__.(name).versions(1).url;
+
+  else  # no such package in list; offer suggestions with error message.
+
     ## Try a simplistic method to determine similar names.
     function d = fdist (x)
 
-      len1 = length (name);
-      len2 = length (x);
-      if (len1 <= len2)
-        d = sum (abs (lower (name(1:len1)) - lower (x(1:len1)))) ...
-            + (len2 - len1)*23;
-      else
-        d = sum (abs (lower (name(1:len2)) - lower (x(1:len2)))) ...
-            + (len1 - len2)*23;
-      endif
+      len1 = numel (name);
+      len2 = numel (x);
+      lo = min (len1, len2);
+      excess = max (len1, len2) - lo;
+      d = sum (abs (lower (name(1:lo)) - lower (x(1:lo)))) + excess * 23;
 
     endfunction
 
-    dist = cellfun ("fdist", t);
+    dist = cellfun ("fdist", pkgnames);
     [~, i] = min (dist);
     error ("get_forge_pkg: package not found: ""%s"".  Did you mean ""%s""?", ...
-           name, t{i});
+           name, pkgnames{i});
+
   endif
 
 endfunction

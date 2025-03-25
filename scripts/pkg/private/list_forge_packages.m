@@ -25,83 +25,14 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{list} =} list_forge_packages ()
-## Undocumented internal function.
+## Gets the current list of Octave packages, then either displays the list
+## with version numbers and some brief installation instructions, or
+## returns the list of packages compatible with @code{pkg install -forge}.
 ## @end deftypefn
 
 function retval = list_forge_packages ()
 
-  [list, succ] = urlread ("https://packages.octave.org/packages/");
-  if (! succ)
-    error ("pkg: could not read URL, please verify internet connection");
-  endif
-
-  ## `list` begins with the known HTML prefix "<pre>".
-  ## If this fails, the rest of the code is likely not valid, so fail early.
-  if (! (numel (list) >= 5 && all (list(1:5) == "<pre>")))
-    error ("pkg: server returned data of unknown format");
-  endif
-  list(1:5) = [];
-
-  ## Convert known HTML markup to text.
-  list = strrep (list, "&gt;",  ">");
-  list = strrep (list, "&lt;",  "<");
-  list = strrep (list, "&amp;", "&");
-  list = strrep (list, "&#39;", "'");
-
-  ## The rest of `list` is a sequence of Octave assignment commands,
-  ## meant for execution with `eval`.
-  ##
-  ## We *could* pass it straight to `eval`,
-  ## but if packages.octave.org were to be compromised by a third party,
-  ## then `list` might have malicious code like `system ("do_something_bad")`.
-  ## For some basic precautions against blindly executing that with `eval`,
-  ## we ensure that all the Octave code in `list` is only a set of
-  ## assignment commands of a known format.
-  ##
-  ## This check also helps if the server is safe but the internet connection
-  ## is unstable and causes `list` to be incomplete or malformed.
-  ##
-  ## FIXME Improve the following security checks.
-
-  ## `list` should end with `%</pre>` with zero or more line breaks.
-  ## First remove any trailing line breaks.
-  while (list(end) == "\n")
-    list(end) = [];
-  endwhile
-
-  ## Ensure known closing string.
-  if (! all (list(end-6:end) == "%</pre>"))
-    error ("pkg: server returned data of unknown format");
-  endif
-  list(end-6:end) = [];
-
-  ## Remove any trailing line breaks again.
-  while (list(end) == "\n")
-    list(end) = [];
-  endwhile
-
-  ## Remove consecutive line breaks to help with further checks.
-  do
-    len = numel (list);
-    list = strrep (list, "\n\n", "\n");
-  until (numel (list) == len);
-
-  ## Every statement must now be of the format
-  ##     __pkg__.FOO = BAR;
-  ## so we check for `__pkg__.` at the start and after all line breaks.
-  for f = [0, strfind(list, "\n")]  # all line breaks; 0 for the start
-    if (! all (list((f+1) : (f+8)) == "__pkg__."))
-      error ("pkg: server returned data of unknown format");
-    endif
-  endfor
-
-  ## At this point, all lines start with the known string `__pkg__.`
-  ## so we deem it safe from `system` and other funny business.
-  eval (list);  # this creates a struct called `__pkg__`
-
-  ## Verify that it exists and is a struct.
-  assert (exist ("__pkg__"));
-  assert (class (__pkg__), "struct");
+  __pkg__ = get_validated_pkg_list ();  # fresh data from packages.octave.org
 
   pkgnames = fieldnames (__pkg__);
 
@@ -128,19 +59,19 @@ function retval = list_forge_packages ()
 
   if (! formatmore)  # we want only the package names not the versions.
 
-    ## Return only those packages that can be installed with `pkg`.
+    ## Return only those packages that can be installed with `pkg install -forge`
     retval = char (pkgnames(lgl));
 
   else
 
     ## `retval` has already been built above for display.
     page_screen_output (false, "local");
-    fprintf (1, "These %d packages were found on Octave Packages.\n", rows (retval));
+    fprintf (1, "The following %d packages were found on Octave Packages.\n", rows (retval));
 
-    fprintf (1, "The following %d packages should be installed following their individual instructions:\n", nnz (! lgl));
+    fprintf (1, "These %d packages should be installed following their individual instructions:\n", nnz (! lgl));
     disp (retval(! lgl, :));
 
-    fprintf (1, "The following %d packages can be installed with `pkg install -forge <packagename>`:\n", nnz (lgl));
+    fprintf (1, "These %d packages can be installed with `pkg install -forge <packagename>`:\n", nnz (lgl));
     disp (retval(lgl, :));
 
   endif

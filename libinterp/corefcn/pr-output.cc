@@ -3872,7 +3872,7 @@ Optionally, the trailing @samp{e} can be split into a second argument.
 @itemx longg
 Optimally choose between fixed point and exponential format based on the
 magnitude of the number.  For example, with the @samp{shortg} format,
-@code{pi .^ [2; 4; 8; 16; 32]} is displayed as
+@w{@code{pi .^ [2; 4; 8; 16; 32]}} is displayed as
 
 @example
 @group
@@ -3902,8 +3902,8 @@ the decimal point.  This is a raw format equivalent to the C++ code
 @code{std::cout << @var{variable}}.  In general, the result is a presentation
 with 6 significant digits where unnecessary precision (such as trailing zeros
 for integers) is suppressed.  Complex numbers are formatted as numeric pairs
-like this @samp{(0.60419, 0.60709)} instead of like this
-@samp{0.60419 + 0.60709i}.
+like this @code{(0.60419, 0.60709)} instead of like this
+@code{0.60419 + 0.60709i}.
 @end table
 
 The following formats affect all numeric output (floating point and integer
@@ -3933,7 +3933,9 @@ ans =
 -.+
 @end group
 @end example
+@end table
 
+@table @code
 @item bank
 Print variable in a format appropriate for a currency (fixed format with two
 digits to the right of the decimal point).  Only the real part of a variable is
@@ -3943,11 +3945,14 @@ displayed, as the imaginary part makes no sense for a currency.
 Print the bit representation of numbers in memory, always with the
 most significant bit first.  For example, @code{pi} is printed like this:
 
+@iftex
+@w{@code{0 10000000000 1001001000011111101101010100010001000010110100011000}}
+@end iftex
+@ifnottex
 @example
-@group
 0 10000000000 1001001000011111101101010100010001000010110100011000
-@end group
 @end example
+@end ifnottex
 
 @noindent
 where spaces have been added for clarity to show the sign bit, the 11-bit
@@ -3964,11 +3969,14 @@ bit on the left.
 
 For example, the value of @code{pi} in this format on x86-64 is:
 
+@iftex
+@w{@code{00011000 00101101 01000100 01010100 11111011 00100001 00001001 01000000}}
+@end iftex
+@ifnottex
 @example
-@group
 00011000 00101101 01000100 01010100 11111011 00100001 00001001 01000000
-@end group
 @end example
+@end ifnottex
 
 @noindent
 shown here with spaces added for clarity.  Compare with the previous bit string
@@ -3979,9 +3987,7 @@ The same as @code{format bit} above, except that bits are grouped four at a
 time into hexadecimal digits for brevity.  Thus @code{pi} is represented as:
 
 @example
-@group
 400921fb54442d18
-@end group
 @end example
 
 @item native-hex
@@ -3990,9 +3996,7 @@ at a time into hexadecimal digits for brevity.  Thus @code{pi} is represented
 on an x86-64 as:
 
 @example
-@group
 182d4454fb210940
-@end group
 @end example
 
 @item rat

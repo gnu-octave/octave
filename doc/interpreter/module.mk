@@ -320,7 +320,7 @@ $(OCTAVE_HTML_STAMP): %reldir%/octave.texi $(srcdir)/%reldir%/octave-doc-version
 	 --css-ref=octave.css \
 	 -o $(OCTAVE_HTML_TMP_DIR) `test -f '%reldir%/octave.texi' || echo '$(abs_top_srcdir)/'`%reldir%/octave.texi; \
 	then \
-	  $(PERL) $(srcdir)/build-aux/inplace-edit.pl 's|(?<=</a>): ||g' $(OCTAVE_HTML_TMP_DIR)/* && \
+	  $(PERL) $(srcdir)/build-aux/inplace-edit.pl 's|<span class="category">: </span>||g; s|<a href=..*. class=.copiable-anchor.> &para;</a>||g' $(OCTAVE_HTML_TMP_DIR)/* && \
 	  rm -rf $(OCTAVE_HTML_DIR) && \
 	  mv $(OCTAVE_HTML_TMP_DIR) $(OCTAVE_HTML_DIR) && \
 	  touch $@; \

@@ -198,6 +198,7 @@ along with Octave; see the file COPYING.  If not, see
   </developer>
   <content_rating type="oars-1.0"/>
   <releases>
+    <release date="2025-03-25" version="10.1.0"/>
     <release date="2025-02-05" version="9.4.0"/>
     <release date="2024-12-12" version="9.3.0"/>
     <release date="2024-06-01" version="9.2.0"/>

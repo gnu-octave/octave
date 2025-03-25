@@ -1,4 +1,4 @@
-Summary of important user-visible changes for version 10 (yyyy-mm-dd):
+Summary of important user-visible changes for version 10 (2025-03-25):
 ---------------------------------------------------------------------
 
 ### General improvements

@@ -299,7 +299,7 @@ typecast (@var{x}, "uint8")
 %!assert (typecast (0,    "double"), 0)
 %!assert (typecast (inf,  "double"), inf)
 %!assert (typecast (-inf, "double"), -inf)
-%!assert (typecast (nan,  "double"), nan)
+%!assert (typecast (NaN,  "double"), NaN)
 
 %!error typecast ()
 %!error typecast (1)

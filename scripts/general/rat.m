@@ -315,11 +315,11 @@ endfunction
 %! [n, d] = rat (complex (0, -inf));
 %! assert (n, complex (0, -inf));
 %! assert (d, 1);
-%! [n, d] = rat (complex (nan, 0));
-%! assert (n, complex (nan, 0));
+%! [n, d] = rat (complex (NaN, 0));
+%! assert (n, complex (NaN, 0));
 %! assert (d, 1);
-%! [n, d] = rat (complex (0, nan));
-%! assert (n, complex (0, nan));
+%! [n, d] = rat (complex (0, NaN));
+%! assert (n, complex (0, NaN));
 %! assert (d, 1);
 
 ## Test eval with complex inputs

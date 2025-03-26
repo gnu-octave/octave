@@ -83,7 +83,8 @@ function refreshdata (h, workspace)
     endif
   endif
 
-  h = findall (h);
+  #h = findall (h);
+  h = findobj (h);
   objs = [];
   props = {};
 

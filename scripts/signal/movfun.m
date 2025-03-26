@@ -560,7 +560,7 @@ function y = movfun_oncol (fcn, yclass, x, wlen, bcfcn, slcidx, C, Cpre,
       else
         ## samplepoints, not omitnan
 
-        ## Trim out nan-containing slices.
+        ## Trim out NaN-containing slices.
         if (any_nans)
           nan_cols = any ((slcidx(1,C) <= nan_x_idx) &
                           (slcidx(2,C) >= nan_x_idx), 1);
@@ -606,12 +606,12 @@ function y = movfun_oncol (fcn, yclass, x, wlen, bcfcn, slcidx, C, Cpre,
           all_nan = all (nan_x(slcidx));
           no_nan = ! has_nan;
 
-          ## First process all-nan columns.
+          ## First process all-NaN columns.
           if (any (all_nan))
             y(C(all_nan)) = nanval;
           endif
 
-          ## Then process no-nan columns as a block.
+          ## Then process no-NaN columns as a block.
           if (any (no_nan))
               y(C(no_nan),:) = yeval_safe (y(C(no_nan),:), fcn, x,
                                            slcidx(:, no_nan));
@@ -709,7 +709,7 @@ function y = movfun_oncol (fcn, yclass, x, wlen, bcfcn, slcidx, C, Cpre,
 endfunction
 
 
-## Process uniform index block removing nan elements, idx is in 2-row
+## Process uniform index block removing NaN elements, idx is in 2-row
 ## samplepoints form trimmed to C columns.
 function y = proc_uniform_block_omitnan (y, fcn, x, nan_x, nanval, slcidx)
 
@@ -727,12 +727,12 @@ function y = proc_uniform_block_omitnan (y, fcn, x, nan_x, nanval, slcidx)
   all_nan = all (nan_locs, 1);
   no_nan = ! has_nan;
 
-  ## First process all-nan columns.
+  ## First process all-NaN columns.
   if (any (all_nan))
     y(all_nan, :) = nanval;
   endif
 
-  ## Then process no-nan columns as a block.
+  ## Then process no-NaN columns as a block.
   if (any (no_nan))
     y(no_nan, :) = yeval_safe (y(no_nan,:), fcn, x, slcidx(:, no_nan));
   endif

@@ -7125,7 +7125,7 @@ ordered lists.
               || args(1).double_value () <= 0)
             error ("sort: DIM must be a positive scalar integer");
 
-          // Forbid fractional value input, also nan input.
+          // Forbid fractional value input, also NaN input.
           dim = args(1).strict_int_value ("sort: DIM must be a positive scalar integer") - 1;
         }
     }
@@ -7408,7 +7408,7 @@ ordered lists.
 %!error <DIM must be a positive scalar integer> sort ([1 2; 3 4], 0)
 %!error <DIM must be a positive scalar integer> sort ([1 2; 3 4], 1+i)
 %!error <DIM must be a positive scalar integer> sort ([1 2; 3 4], 1.234)
-%!error <DIM must be a positive scalar integer> sort ([1 2; 3 4], nan)
+%!error <DIM must be a positive scalar integer> sort ([1 2; 3 4], NaN)
 %!error <DIM argument must precede MODE argument> sort (1, "ascend", 1)
 %!error <MODE must be a string> sort (1, 1, 1)
 %!error <MODE must be either "ascend" or "descend"> sort (1, 1, "foobar")

@@ -274,7 +274,7 @@
 %! D = D * I () + D;
 %! assert (full (D + A), D + full (A));
 %! A = A * I () + A;
-%! A(6, 4) = nan ();
+%! A(6, 4) = NaN ();
 %! assert (full (D - A), D - full (A));
 
 ## inverse preserves diagonal structure even for singular matrices (bug #46103)

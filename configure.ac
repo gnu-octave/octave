@@ -2530,9 +2530,9 @@ do
 
   if test -z "$JAVA_HOME"; then
     ## Find JAVA_HOME for JRE by running java and querying properties.
-    JAVA_TMP_HOME=`"$JAVA" -classpath ${srcdir}/build-aux OctJavaQry JAVA_HOME`
+    java_tmp_home=`"$JAVA" -classpath ${srcdir}/build-aux OctJavaQry JAVA_HOME`
     ## Strip directory back to top-level installation dir (JAVA_HOME for JDK).
-    JAVA_HOME=`echo $JAVA_TMP_HOME | $SED -e 's|[[/\\]]bin[[/\\]]\?$||' | $SED -e 's|[[/\\]]jre[[/\\]]\?$||'`
+    JAVA_HOME=`echo $java_tmp_home | $SED -e 's|[[/\\]]bin[[/\\]]\?$||' | $SED -e 's|[[/\\]]jre[[/\\]]\?$||'`
   fi
 
   case $build_os in
@@ -2571,10 +2571,10 @@ do
   java_major=[`echo $octave_cv_java_version | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\1/'`]
   java_minor=[`echo $octave_cv_java_version | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\2/'`]
 
-  if test $java_major -gt 1 || (test $java_major -eq 1 && test $java_minor -ge 5); then
+  if test $java_major -gt 1 || (test $java_major -eq 1 && test $java_minor -ge 9); then
     :  # Version is OK.  Do nothing.
   else
-    warn_java="Java version is too old (< 1.5).  Octave will not be able to call Java methods."
+    warn_java="Java version is too old (< 1.9).  Octave will not be able to call Java methods."
     break
   fi
 

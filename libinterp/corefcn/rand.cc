@@ -796,7 +796,7 @@ classes.
 /*
 %!test
 %! randg ("state", 12);
-%! assert (randg ([-inf, -1, 0, inf, nan]), [nan, nan, nan, nan, nan]);
+%! assert (randg ([-inf, -1, 0, inf, NaN]), [NaN, NaN, NaN, NaN, NaN]);
 
 %!test
 %! ## Test a known fixed state
@@ -901,7 +901,7 @@ classes.
 %! endif
 %!test
 %! randg ("seed", 12);
-%! assert (randg ([-inf, -1, 0, inf, nan]), [nan, nan, nan, nan, nan]);
+%! assert (randg ([-inf, -1, 0, inf, NaN]), [NaN, NaN, NaN, NaN, NaN]);
 %!test
 %! if (__random_statistical_tests__)
 %!   ## statistical tests may fail occasionally.
@@ -1021,7 +1021,7 @@ classes.
 /*
 %!test
 %! randp ("state", 12);
-%! assert (randp ([-inf, -1, 0, inf, nan]), [nan, nan, 0, nan, nan]);
+%! assert (randp ([-inf, -1, 0, inf, NaN]), [NaN, NaN, 0, NaN, NaN]);
 %!test
 %! ## Test a known fixed state
 %! randp ("state", 1);
@@ -1079,7 +1079,7 @@ classes.
 %! endif
 %!test
 %! randp ("seed", 12);
-%! assert (randp ([-inf, -1, 0, inf, nan]), [nan, nan, 0, nan, nan]);
+%! assert (randp ([-inf, -1, 0, inf, NaN]), [NaN, NaN, 0, NaN, NaN]);
 %!test
 %! if (__random_statistical_tests__)
 %!   ## statistical tests may fail occasionally.

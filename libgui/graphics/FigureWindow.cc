@@ -38,8 +38,8 @@ FigureWindow::FigureWindow (QWidget *xparent)
   : FigureWindowBase (xparent)
 {
   // Set icon from application resources. Since FigureWindow is also used by
-  // msgbox (in turn used be hekodlg, warndlg, ...), the logo should be the
-  // neutral octave icon:
+  // msgbox (in turn used by helpdlg, warndlg, ...), the logo should be the
+  // neutral Octave icon:
   setWindowIcon (QIcon (global_icon_paths.at (ICON_THEME_OCTAVE) + "logo.png"));
 }
 

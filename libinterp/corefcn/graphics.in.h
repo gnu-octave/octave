@@ -1277,7 +1277,7 @@ protected:
     else if (m_finite_constraint == NOT_NAN)
       {
         if (octave::math::isnan (new_val))
-          error (R"(set: "%s" must not be nan)", get_name ().c_str ());
+          error (R"(set: "%s" must not be NaN)", get_name ().c_str ());
       }
     else if (m_finite_constraint == NOT_INF)
       {

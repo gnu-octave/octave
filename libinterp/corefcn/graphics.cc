@@ -1863,7 +1863,7 @@ array_property::validate (const octave_value& v)
         {
           for (octave_idx_type i = 0; i < v_mat.numel (); i++)
             if (octave::math::isnan (v_mat(i)))
-              error (R"(set: "%s" must not be nan)", get_name ().c_str ());
+              error (R"(set: "%s" must not be NaN)", get_name ().c_str ());
         }
       else if (m_finite_constraint == NOT_INF)
         {

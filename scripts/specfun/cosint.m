@@ -177,7 +177,7 @@ endfunction
 %!assert (cosint (inf), 0)
 %!assert (cosint (-inf), 1i * pi)
 %!assert (cosint (complex (-inf, -0)), -1i * pi)
-%!assert (isnan (cosint (nan)))
+%!assert (isnan (cosint (NaN)))
 
 %!assert (class (cosint (single (1))), "single")
 

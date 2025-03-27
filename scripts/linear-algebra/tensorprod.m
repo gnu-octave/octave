@@ -219,7 +219,13 @@ function C = tensorprod (A, B, varargin)
   if (! isscalar (C))
     ## Contribution to size of C from remaining A dims
     remainSizeA = sizeA(remainDimA);
+    if (isempty (remainSizeA))
+      remainSizeA = 1;
+    endif
     remainSizeB = sizeB(remainDimB);
+    if (isempty (remainSizeB))
+      remainSizeB = 1;
+    endif
     C = reshape (C, [remainSizeA, remainSizeB]);
   endif
 
@@ -379,6 +385,12 @@ endfunction
 %!assert (tensorprod ([], [], 5), zeros (0, 0, 1, 1, 0, 0))
 %!assert (tensorprod ([], [], 3, "NumDimensionsA", 4), zeros (0, 0, 1, 0, 0))
 %!assert (tensorprod ([], [], 3, 4, "NumDimensionsA", 5), zeros (0, 0, 1, 1, 0, 0))
+
+%!test <*66950>
+%! T = ones (3,3,3);
+%! A = eye (3);
+%! TA = tensorprod(T,A,[1 2]);
+%! assert (TA, 3 * ones (3, 1));
 
 ## Test input validation
 %!error <Invalid call> tensorprod ()

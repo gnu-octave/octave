@@ -205,7 +205,7 @@ function [retval, status] = __makeinfo_restricted__ (buffer)
   ## But a line like this:
   ##   A = cellfun (@@FCN, C)
   ## should become:
-  ##   A = cellfun (@FCN, C)
+  ##   A = cellfun ('FCN', C)
   ## and not this:
   ##   A = cellfun ({}FCN, C)
   ## Currently the code uses a guard string to protect the @@,

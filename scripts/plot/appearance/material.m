@@ -302,7 +302,7 @@ endfunction
 %! mtypes = material ();
 %! assert (iscell (mtypes));
 %! assert (columns (mtypes), 1);
-%! assert (all (cellfun (@ischar, mtypes)));
+%! assert (all (cellfun ('ischar', mtypes)));
 
 %!test
 %! refl_props = material ("metal");

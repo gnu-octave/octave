@@ -202,7 +202,7 @@ function [cstr, matches] = strsplit (str, del, varargin)
 
   if (is_simple)
     if (iscellstr (del))
-      del = cellfun (@do_string_escapes, del, "uniformoutput", false);
+      del = cellfun ('do_string_escapes', del, "uniformoutput", false);
     else
       del = do_string_escapes (del);
     endif

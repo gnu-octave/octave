@@ -223,7 +223,7 @@ function retval = repelem (x, varargin)
 
     ## Input Validation
     xsz = size (x);
-    vector_r = ! (cellfun (@numel, varargin) == 1);
+    vector_r = ! (cellfun ('numel', varargin) == 1);
 
     ## 1. Check that all varargin are either scalars or vectors, not arrays.
     ##    isvector returns true for scalars so one test captures both inputs.
@@ -231,7 +231,7 @@ function retval = repelem (x, varargin)
       error ("repelem: R1 and R2 must be scalars or vectors");
 
     ## 2. check that any repeat vectors have the right length.
-    elseif (any (cellfun (@numel, varargin(vector_r)) != xsz(vector_r)))
+    elseif (any (cellfun ('numel', varargin(vector_r)) != xsz(vector_r)))
       error (["repelem: R_j vectors must have the same number of elements " ...
               "as the size of dimension j of X"]);
     endif
@@ -254,11 +254,11 @@ function retval = repelem (x, varargin)
     ## Input Validation
     xsz = size (x);
     n_xdims = numel (xsz);
-    vector_r = ! (cellfun (@numel, varargin) == 1);
+    vector_r = ! (cellfun ('numel', varargin) == 1);
 
     ## 1. Check that all repeats are scalars or vectors
     ##    (isvector gives true for scalars);
-    if (! all (cellfun (@isvector, varargin(vector_r))))
+    if (! all (cellfun ('isvector', varargin(vector_r))))
       error ("repelem: R_j must all be scalars or vectors");
 
     ## 2. Catch any vectors thrown at trailing singletons,
@@ -267,7 +267,7 @@ function retval = repelem (x, varargin)
       error ("repelem: R_j for trailing singleton dimensions must be scalar");
 
     ## 3. Check that the ones that are vectors have the right length.
-    elseif (any (cellfun (@numel, varargin(vector_r)) != xsz(vector_r)))
+    elseif (any (cellfun ('numel', varargin(vector_r)) != xsz(vector_r)))
       error (["repelem: R_j vectors must have the same number of elements " ...
               "as the size of dimension j of X"]);
 

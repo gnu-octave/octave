@@ -138,7 +138,7 @@ function vi = interp3 (varargin)
       error ("interp3: V must be a 3-D array of values");
     endif
     xi = varargin(2:4);
-    if (any (! cellfun (@isvector, xi)))
+    if (any (! cellfun ('isvector', xi)))
       ## Meshgridded values rather than vectors
       if (! size_equal (xi{:}))
         error ("interp3: XI, YI, and ZI dimensions must be equal");
@@ -161,7 +161,7 @@ function vi = interp3 (varargin)
       error ("interp3: V must be a 3-D array of values");
     endif
     x = varargin(1:3);
-    if (any (! cellfun (@isvector, x)))
+    if (any (! cellfun ('isvector', x)))
       ## Meshgridded values rather than vectors
       if (! size_equal (x{:}, v))
         error ("interp3: X, Y, Z, and V dimensions must be equal");
@@ -171,7 +171,7 @@ function vi = interp3 (varargin)
       endfor
     endif
     xi = varargin(5:7);
-    if (any (! cellfun (@isvector, xi)))
+    if (any (! cellfun ('isvector', xi)))
       ## Meshgridded values rather than vectors
       if (! size_equal (xi{:}))
         error ("interp3: XI, YI, and ZI dimensions must be equal");

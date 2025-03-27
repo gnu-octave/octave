@@ -70,8 +70,8 @@ function filename = fullfile (varargin)
   endif
 
   ## check input type
-  is_cellstr = cellfun (@iscellstr, varargin);
-  if (! all (is_cellstr | cellfun (@ischar, varargin)))
+  is_cellstr = cellfun ('iscellstr', varargin);
+  if (! all (is_cellstr | cellfun ('ischar', varargin)))
     error ("fullfile: input must either be strings or cell strings");
   endif
 

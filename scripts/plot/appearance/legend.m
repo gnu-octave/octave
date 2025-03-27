@@ -802,7 +802,7 @@ function opts = parse_opts (varargin)
       obj_labels = cellstr (varargin{1});
       varargin(1) = [];
       nargs--;
-    elseif (all (cellfun (@ischar, varargin)))
+    elseif (all (cellfun ('ischar', varargin)))
       obj_labels = varargin;
       varargin = {};
       nargs = 0;
@@ -866,7 +866,7 @@ function [labels, next_idx] = displayname_or_default (hplots, hl = [])
   endif
 
   ## Fallback to automatic names for empty labels
-  empty_label_idx = cellfun (@isempty, labels);
+  empty_label_idx = cellfun ('isempty', labels);
 
   if (any (empty_label_idx) && ! isempty (hl))
     ## Empty strings must not be blindly replaced by data%d. If there exist

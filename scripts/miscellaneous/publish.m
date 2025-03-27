@@ -239,7 +239,7 @@ function output_file = publish (file, varargin)
     endif
   ## Call: publish (file, Name1, Value1, Name2, Value2, ...)
   elseif (rem (numel (varargin), 2) == 0
-          && all (cellfun (@ischar, varargin(1:2:end))))
+          && all (cellfun ('ischar', varargin(1:2:end))))
     options = cell2struct (varargin(2:2:end), varargin(1:2:end), 2);
   else
     error ("publish: invalid arguments");
@@ -639,7 +639,7 @@ function p_content = parse_paragraph_content (content)
   endfor
 
   ## Split into blocks separated by empty lines
-  idx = [0, find(cellfun (@isempty, content)), length(content) + 1];
+  idx = [0, find(cellfun ('isempty', content)), length(content) + 1];
 
   ## For each block
   for i = find (diff (idx) > 1)

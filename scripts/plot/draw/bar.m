@@ -447,7 +447,7 @@ endfunction
 %!   assert ([bardata.ydata], [1, 2, 3; 4, 5, 6]);
 %!
 %!   assert (all (strcmp ({patchdata.type}, "patch")));
-%!   assert (all (cellfun (@isequal, {patchdata.xdata}, ...
+%!   assert (all (cellfun ('isequal', {patchdata.xdata}, ...
 %!                        {[0.6, 1.6; 0.6, 1.6; 1.4, 2.4; 1.4, 2.4]})));
 %!   assert (patchdata(1).ydata, [0, 0; 1, 4; 1, 4; 0, 0]);
 %!   assert (patchdata(2).ydata, [1, 4; 3, 9; 3, 9; 1, 4]);
@@ -484,7 +484,7 @@ endfunction
 %!   assert ([bardata.ydata], [-2, 1, 3; 4, -5, 6]);
 %!
 %!   assert (all (strcmp ({patchdata.type}, "patch")));
-%!   assert (all (cellfun (@isequal, {patchdata.xdata}, ...
+%!   assert (all (cellfun ('isequal', {patchdata.xdata}, ...
 %!                        {[0.6, 1.6; 0.6, 1.6; 1.4, 2.4; 1.4, 2.4]})));
 %!   assert (patchdata(1).ydata, [0, 0; -2, 4; -2, 4; 0, 0]);
 %!   assert (patchdata(2).ydata, [0, 0; 1, -5; 1, -5; 0, 0]);
@@ -529,7 +529,7 @@ endfunction
 %!   assert (all (strcmp ({bardata.barlayout}, "stacked")));
 %!   assert ([bardata.xdata], [1, 1, 1; 2, 2, 2]);
 %!   assert ([bardata.ydata], [1, 2, 3; 4, 5, 6]);
-%!   assert (all (cellfun (@isequal, {patchdata.xdata}, ...
+%!   assert (all (cellfun ('isequal', {patchdata.xdata}, ...
 %!                        {[0.6, 1.6; 0.6, 1.6; 1.4, 2.4; 1.4, 2.4]})));
 %!   assert (patchdata(1).ydata, [0, 0; 1, 4; 1, 4; 0, 0]);
 %!   assert (patchdata(2).ydata, [1, 4; 3, 9; 3, 9; 1, 4]);

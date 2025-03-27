@@ -3099,7 +3099,7 @@ endfunction
 %!assert (size (gallery ("cycol", 4, 1)), [4 4])
 
 %!assert (size (gallery ("dorr", 4)), [4 4])
-%!assert (cellfun (@rows, nthargout (1:3, @gallery, "dorr", 4)), [3 4 3])
+%!assert (cellfun ('rows', nthargout (1:3, @gallery, "dorr", 4)), [3 4 3])
 
 %!assert (size (gallery ("dramadah", 5)), [5 5])
 %!assert (size (gallery ("dramadah", 5, 2)), [5 5])
@@ -3137,7 +3137,7 @@ endfunction
 %!assert (size (gallery ("hanowa", 6, 5)), [6 6])
 
 %!assert (size (gallery ("house", [1:5]')), [5 1])
-%!assert (cellfun (@rows, nthargout (1:2, @gallery, "house", [1:5]')), [5 1])
+%!assert (cellfun ('rows', nthargout (1:2, @gallery, "house", [1:5]')), [5 1])
 
 %!assert (size (gallery ("integerdata", 5, [3 2], 5)), [3 2])
 %!assert (size (gallery ("integerdata", 5, [3 2 6], 5)), [3 2 6])
@@ -3231,7 +3231,7 @@ endfunction
 
 %!assert (size (gallery ("wathen", 2, 3)), [29 29])
 
-%!assert (cellfun (@rows, nthargout (1:2, @gallery, "wilk", 3)), [3 3])
-%!assert (cellfun (@rows, nthargout (1:2, @gallery, "wilk", 4)), [4 4])
+%!assert (cellfun ('rows', nthargout (1:2, @gallery, "wilk", 3)), [3 3])
+%!assert (cellfun ('rows', nthargout (1:2, @gallery, "wilk", 4)), [4 4])
 %!assert (size (gallery ("wilk", 5)), [5 5])
 %!assert (size (gallery ("wilk", 21)), [21 21])

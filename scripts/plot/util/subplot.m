@@ -458,7 +458,7 @@ function subplot_align (h, ~, rmupdate = false)
       pos = getappdata (children, "__subplotposition__");
 
       if (iscell (pos))
-        do_align = ! cellfun (@isempty, pos);
+        do_align = ! cellfun ('isempty', pos);
         pos = cell2mat (pos(do_align));
       else
         return;

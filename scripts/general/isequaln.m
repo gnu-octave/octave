@@ -254,7 +254,7 @@ function tf = isequaln (x, varargin)
           endif
         endif
 
-      elseif (iscellstr (x) && all (cellfun (@iscellstr, varargin)))
+      elseif (iscellstr (x) && all (cellfun ('iscellstr', varargin)))
         ## cellstr type.  Optimization over cell type by using strcmp.
         ## FIXME: It would be faster to use strcmp on whole cellstr arrays,
         ## but bug #51412 needs to be fixed.  Instead, time/space trade-off.

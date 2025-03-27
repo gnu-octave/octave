@@ -107,8 +107,8 @@ function labels = rticklabels (varargin)
   ## Finish converting TICVAL into a cellstr.
 
   ## Convert numeric elements to characters and make it a 1-D cell array.
-  arg(cellarg_num) = cellfun (@num2str, arg(cellarg_num), ...
-                                "UniformOutput", false);
+  arg(cellarg_num) = cellfun ('num2str', arg(cellarg_num), ...
+                              "UniformOutput", false);
   arg = arg(:);
   endif
 

@@ -144,13 +144,13 @@ function A = accumarray (subs, vals, sz = [], fcn = [], fillval = [], issparse =
   lenvals = length (vals);
 
   if (iscell (subs))
-    subs = cellfun (@vec, subs, "uniformoutput", false);
+    subs = cellfun ('vec', subs, "uniformoutput", false);
     ndims = numel (subs);
     if (ndims == 1)
       subs = subs{1};
     endif
 
-    lensubs = cellfun (@length, subs);
+    lensubs = cellfun ('length', subs);
 
     if (any (lensubs != lensubs(1)) || (lenvals > 1 && lenvals != lensubs(1)))
       error ("accumarray: dimension mismatch");

@@ -184,7 +184,7 @@ endfunction
 
 function iargs = __find_patches__ (varargin)
   iargs = 1:4:nargin;
-  optidx = find (! cellfun (@isnumeric, varargin(iargs)), 1);
+  optidx = find (! cellfun ('isnumeric', varargin(iargs)), 1);
   iargs(optidx:end) = [];
 endfunction
 

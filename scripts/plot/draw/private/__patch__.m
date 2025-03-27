@@ -37,7 +37,7 @@ function h = __patch__ (p, varargin)
   h = NaN;
   nargin = nargin - 1;
 
-  is_numeric_arg = cellfun (@isnumeric, varargin);
+  is_numeric_arg = cellfun ('isnumeric', varargin);
 
   if (isempty (varargin))
     args = {};

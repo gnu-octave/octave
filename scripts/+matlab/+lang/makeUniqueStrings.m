@@ -107,7 +107,7 @@ function [uniqstr, ismodified] = makeUniqueStrings (str, ex = {}, maxlength = In
   ismodified = false (size (uniqstr));
   if (chk_length)
     ## Truncate output strings
-    ismodified = (cellfun (@length, uniqstr) > maxlength);
+    ismodified = (cellfun ('length', uniqstr) > maxlength);
     uniqstr(ismodified) = cellindexmat (uniqstr(ismodified), 1:maxlength);
   endif
 

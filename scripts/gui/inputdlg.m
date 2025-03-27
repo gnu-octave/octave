@@ -161,7 +161,7 @@ function cstr = inputdlg (prompt, varargin)
   rowscols = ceil (rowscols);
 
   ## convert numeric values in defaults cell array to strings
-  defs = cellfun (@num2str, defaults, "UniformOutput", false);
+  defs = cellfun ('num2str', defaults, "UniformOutput", false);
 
   if (__event_manager_have_dialogs__ ())
     cstr = __event_manager_input_dialog__ (prompt, title, rowscols, defs);

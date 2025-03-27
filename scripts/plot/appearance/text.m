@@ -234,7 +234,7 @@ endfunction
 ## Helper function converts any numeric entries to strings
 function cstr = cell2cellstr (c)
   cstr = c;
-  idx = cellfun (@isnumeric, c);
+  idx = cellfun ('isnumeric', c);
   cstr(idx) = cellfun (@(x) sprintf ("%g", x), c(idx), "uniformoutput", false);
 endfunction
 

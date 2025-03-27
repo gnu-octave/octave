@@ -30,8 +30,9 @@
 ## Evaluate any @samp{datasource} properties of the current figure and update
 ## the plot if the corresponding data has changed.
 ##
-## If the first argument @var{h} is a list of graphic handles, then operate
-## on these objects rather than the current figure returned by @code{gcf}.
+## If the first argument @var{h} is a list of graphics handles to figure, axes,
+## or graphic objects with a DataSource property, then operate on these objects
+## rather than the current figure returned by @code{gcf}.
 ##
 ## The optional second argument @var{workspace} can take the following values:
 ##
@@ -58,6 +59,11 @@
 ## endfor
 ## @end group
 ## @end example
+##
+## Programming Note: For performance, specify @var{h} as the actual object(s)
+## to be updated.  If no object is supplied then Octave must search through
+## all graphic objects of the current figure and determine which ones have
+## DataSource properties that are not empty.
 ## @end deftypefn
 
 function refreshdata (h, workspace)
@@ -66,11 +72,12 @@ function refreshdata (h, workspace)
     h = gcf ();
     workspace = "base";
   else
+    ## Matlab compatibility requires accepting cell array of handles
     if (iscell (h))
       h = [h{:}];
     endif
-    if (! all (isfigure (h)))
-      error ("refreshdata: H must be a list of figure handles");
+    if (! all (ishghandle (h)))
+      error ("refreshdata: H must be a list of graphic object handles");
     endif
     if (nargin == 1)
       workspace = "base";
@@ -83,28 +90,25 @@ function refreshdata (h, workspace)
     endif
   endif
 
-  #h = findall (h);
-  h = findobj (h);
-  objs = [];
-  props = {};
+  h = findall (h);
 
-  for i = 1 : numel (h)
-    obj = get (h(i));
+  for hg = h(:).'
+    obj = get (hg);
     flds = fieldnames (obj);
     ## regexp() is proper way to do searching, but is 3X slower.
-    ## Pretty unlikely that people are going to be adding datasource
-    ## properties that are not, in fact, datasources.
+    ## Pretty unlikely that people are going to be adding DataSource
+    ## properties that are not, in fact, DataSources.
     ## m = regexp (flds, '^.+datasource$');
-    m = strfind (flds, "datasource");
-    m = flds(! cellfun (@isempty, m));
-    for j = 1 : numel (m)
-      if (isempty (obj.(m{j})))
-        continue;  # datasource field doesn't point to anything
+    idx = strfind (flds, 'datasource');
+    dsources = flds(! cellfun ('isempty', idx));
+    for i = 1 : numel (dsources)
+      if (isempty (obj.(dsources{i})))
+        continue;  # DataSource field doesn't point to anything
       endif
-      expr = obj.(m{j});       # datasource field
+      expr = obj.(dsources{i});       # DataSource field
       val = evalin (workspace, expr);
-      pdname = m{j}(1:end-6);  # property data name without "source"
-      set (h(i), pdname, val);
+      pdname = dsources{i}(1:end-6);  # property data name without "Source"
+      set (hg, pdname, val);
     endfor
   endfor
 
@@ -115,11 +119,11 @@ endfunction
 %! clf;
 %! x = 0:0.1:10;
 %! y = sin (x);
-%! plot (x, y, "ydatasource", "y");
+%! h = plot (x, y, "ydatasource", "y");
 %! title ("refreshdata() showing moving sine curve");
 %! axis manual;
 %! for i = 1 : 100
-%!   pause (0);
+%!   pause (0.01);
 %!   y = sin (x + 0.1 * i);
-%!   refreshdata (gcf, "caller");
+%!   refreshdata (h, "caller");
 %! endfor

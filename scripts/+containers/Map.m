@@ -145,7 +145,7 @@ classdef Map < handle
         endif
 
         ## Determine KeyType
-        kt = unique (cellfun (@class, keys, "UniformOutput", false));
+        kt = unique (cellfun ('class', keys, "UniformOutput", false));
         if (numel (kt) == 1)
           ## Single key type--most common case
           if (strcmp (kt{1}, "char"))
@@ -174,11 +174,11 @@ classdef Map < handle
         endif
 
         ## Determine ValueType
-        vt = unique (cellfun (@class, vals, "UniformOutput", false));
+        vt = unique (cellfun ('class', vals, "UniformOutput", false));
         if (numel (vt) == 1
             && (ischar (vals{1})
                 || ((isnumeric (vals{1}) || islogical (vals{1}))
-                    && all (cellfun (@numel, vals) == 1))))
+                    && all (cellfun ('numel', vals) == 1))))
           this.ValueType = vt{1};
         else
           this.ValueType = "any";

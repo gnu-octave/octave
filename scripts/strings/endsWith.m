@@ -91,8 +91,8 @@ function retval = endsWith (str, pattern, IgnoreCase, ignore_case)
   endif
 
   ## reverse str and pattern
-  str = cellfun (@flip, cellstr (str), "UniformOutput", false);
-  pattern = cellfun (@flip, cellstr (pattern), "UniformOutput", false);
+  str = cellfun ('flip', cellstr (str), "UniformOutput", false);
+  pattern = cellfun ('flip', cellstr (pattern), "UniformOutput", false);
 
   if (nargin == 2)
     ignore_case = false;

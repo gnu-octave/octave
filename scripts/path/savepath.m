@@ -129,14 +129,14 @@ function status = savepath (file)
     ## If there are packages without binaries (or without .m files), their
     ## "archprefix" (or "dir") field might be empty.  Remove empty paths before
     ## trying to match the regular expression in the next step.
-    pkg_path(cellfun (@isempty, pkg_path)) = [];
+    pkg_path(cellfun ('isempty', pkg_path)) = [];
 
     ## Rely on Octave's initialization to include the pkg path elements.
     for i_pkg = 1:numel (pkg_path)
       ## Remove all paths that are (sub-)folders of a package folder.
       pkg_path_pattern = [regexptranslate("escape", pkg_path{i_pkg}), ".*"];
       not_pkg_path ...
-        = cellfun (@isempty, regexp (path_to_preserve, pkg_path_pattern));
+        = cellfun ('isempty', regexp (path_to_preserve, pkg_path_pattern));
       path_to_preserve = path_to_preserve(not_pkg_path);
     endfor
 

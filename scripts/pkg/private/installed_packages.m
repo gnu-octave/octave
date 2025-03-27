@@ -118,7 +118,7 @@ function [out1, out2] = installed_packages (local_list, global_list, pkgname = {
     h1 = "Package Name";
     h2 = "Version";
     h3 = "Installation directory";
-    max_name_length = max ([length(h1), cellfun(@length, installed_names)]);
+    max_name_length = max ([length(h1), cellfun('length', installed_names)]);
     version_lengths = cellfun (@(x) length (x.version), installed_pkgs_lst);
     max_version_length = max ([length(h2), version_lengths]);
     ncols = terminal_size ()(2);

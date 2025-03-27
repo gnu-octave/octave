@@ -142,9 +142,9 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
       endif
 
       ## Weed out deprecated, legacy, and private functions
-      weed_idx = cellfun (@isempty, regexp (files_with_tests, '\<deprecated\>|\<legacy\>|\<private\>', 'once'));
+      weed_idx = cellfun ('isempty', regexp (files_with_tests, '\<deprecated\>|\<legacy\>|\<private\>', 'once'));
       files_with_tests = files_with_tests(weed_idx);
-      weed_idx = cellfun (@isempty, regexp (files_with_no_tests, '\<deprecated\>|\<legacy\>|\<private\>', 'once'));
+      weed_idx = cellfun ('isempty', regexp (files_with_no_tests, '\<deprecated\>|\<legacy\>|\<private\>', 'once'));
       files_with_no_tests = files_with_no_tests(weed_idx);
 
       report_files_with_no_tests (files_with_tests, files_with_no_tests, ".m");

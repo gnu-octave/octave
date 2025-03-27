@@ -840,7 +840,7 @@ function generate_lookfor_cache (desc)
 
   dirs = strtrim (ostrsplit (genpath (desc.dir), pathsep ()));
   if (ispc)
-    dirs = cellfun (@canonicalize_file_name, dirs, "uniformoutput", false);
+    dirs = cellfun ('canonicalize_file_name', dirs, "uniformoutput", false);
   endif
   for i = 1 : length (dirs)
     doc_cache_create (fullfile (dirs{i}, "doc-cache"), dirs{i});

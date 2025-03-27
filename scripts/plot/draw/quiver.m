@@ -146,8 +146,8 @@ endfunction
 %! unwind_protect
 %!   h = quiver (hax, 1, 2);
 %!   childxdata = get (get (h, "children"), "xdata");
-%!   stemchild = find (cellfun (@numel, childxdata) == 3);
-%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   stemchild = find (cellfun ('numel', childxdata) == 3);
+%!   arrowheadchild = find (cellfun ('numel', childxdata) == 4);
 %!   assert (childxdata{stemchild}(1), 1, eps);
 %!   assert (childxdata{stemchild}(2), 1 + 1*0.9, eps);
 %!   assert (isnan (childxdata{stemchild}(3)));
@@ -156,8 +156,8 @@ endfunction
 %!
 %!   h = quiver (hax, 1, 2, 0.5);
 %!   childxdata = get (get (h, "children"), "xdata");
-%!   stemchild = find (cellfun (@numel, childxdata) == 3);
-%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   stemchild = find (cellfun ('numel', childxdata) == 3);
+%!   arrowheadchild = find (cellfun ('numel', childxdata) == 4);
 %!   assert (childxdata{stemchild}(1), 1, eps);
 %!   assert (childxdata{stemchild}(2), 1 + 1*0.5, eps);
 %!   assert (isnan (childxdata{stemchild}(3)));
@@ -166,8 +166,8 @@ endfunction
 %!
 %!   h = quiver (hax, 0, 1, 2, 3);
 %!   childxdata = get (get (h, "children"), "xdata");
-%!   stemchild = find (cellfun (@numel, childxdata) == 3);
-%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   stemchild = find (cellfun ('numel', childxdata) == 3);
+%!   arrowheadchild = find (cellfun ('numel', childxdata) == 4);
 %!   assert (childxdata{stemchild}(1), 0, eps);
 %!   assert (childxdata{stemchild}(2), 0 + 2*0.9, eps);
 %!   assert (isnan (childxdata{stemchild}(3)));
@@ -176,8 +176,8 @@ endfunction
 %!
 %!   h = quiver (hax, 0, 1, 2, 3, 0.5);
 %!   childxdata = get (get (h, "children"), "xdata");
-%!   stemchild = find (cellfun (@numel, childxdata) == 3);
-%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   stemchild = find (cellfun ('numel', childxdata) == 3);
+%!   arrowheadchild = find (cellfun ('numel', childxdata) == 4);
 %!   assert (childxdata{stemchild}(1), 0, eps);
 %!   assert (childxdata{stemchild}(2), 0 + 2*0.5, eps);
 %!   assert (isnan (childxdata{stemchild}(3)));
@@ -197,7 +197,7 @@ endfunction
 %!   children = get (h, "children");
 %!   childxdata = get (children, "xdata");
 %!   childydata = get (children, "ydata");
-%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   arrowheadchild = find (cellfun ('numel', childxdata) == 4);
 %!   assert (childxdata{arrowheadchild}, [1/9 0 -1/9 NaN], eps);
 %!   assert (childydata{arrowheadchild}, [2/3 1 2/3 NaN], eps);
 %!
@@ -205,7 +205,7 @@ endfunction
 %!   children = get (h, "children");
 %!   childxdata = get (children, "xdata");
 %!   childydata = get (children, "ydata");
-%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   arrowheadchild = find (cellfun ('numel', childxdata) == 4);
 %!   assert (childxdata{arrowheadchild}, [-1/9 0 1/9 NaN], eps);
 %!   assert (childydata{arrowheadchild}, [-2/3 -1 -2/3 NaN], eps);
 %!
@@ -213,7 +213,7 @@ endfunction
 %!   children = get (h, "children");
 %!   childxdata = get (children, "xdata");
 %!   childydata = get (children, "ydata");
-%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   arrowheadchild = find (cellfun ('numel', childxdata) == 4);
 %!   assert (childxdata{arrowheadchild}, [-2/3 -1 -2/3 NaN], eps);
 %!   assert (childydata{arrowheadchild}, [1/9 0 -1/9 NaN], eps);
 %!
@@ -221,7 +221,7 @@ endfunction
 %!   children = get (h, "children");
 %!   childxdata = get (children, "xdata");
 %!   childydata = get (children, "ydata");
-%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   arrowheadchild = find (cellfun ('numel', childxdata) == 4);
 %!   assert (childxdata{arrowheadchild}, [2/3 1 2/3 NaN], eps);
 %!   assert (childydata{arrowheadchild}, [-1/9 0 1/9 NaN], eps);
 %!
@@ -229,7 +229,7 @@ endfunction
 %!   children = get (h, "children");
 %!   childxdata = get (children, "xdata");
 %!   childydata = get (children, "ydata");
-%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   arrowheadchild = find (cellfun ('numel', childxdata) == 4);
 %!   assert (childxdata{arrowheadchild}, [7/9 1 5/9 NaN], eps);
 %!   assert (childydata{arrowheadchild}, [5/9 1 7/9 NaN], eps);
 %!
@@ -237,7 +237,7 @@ endfunction
 %!   children = get (h, "children");
 %!   childxdata = get (children, "xdata");
 %!   childydata = get (children, "ydata");
-%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   arrowheadchild = find (cellfun ('numel', childxdata) == 4);
 %!   assert (childxdata{arrowheadchild}, [(6*sqrt(3)+1)/9, sqrt(3), (6*sqrt(3)-1)/9, NaN], eps);
 %!   assert (childydata{arrowheadchild}, [(6-sqrt(3))/9, 1, (6+sqrt(3))/9, NaN], eps);
 %! unwind_protect_cleanup
@@ -255,9 +255,9 @@ endfunction
 %!   numpts = 4;
 %!   h = quiver (hax, u, v, 1);  # assumes [x,y] = meshgrid (1:2)
 %!   childxdata = get (get (h, "children"), "xdata");
-%!   basechild = find (cellfun (@numel, childxdata) == 1*numpts);
-%!   stemchild = find (cellfun (@numel, childxdata) == 3*numpts);
-%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4*numpts);
+%!   basechild = find (cellfun ('numel', childxdata) == 1*numpts);
+%!   stemchild = find (cellfun ('numel', childxdata) == 3*numpts);
+%!   arrowheadchild = find (cellfun ('numel', childxdata) == 4*numpts);
 %!   assert (childxdata{basechild}, [1 1 2 2]);
 %!   assert (childxdata{stemchild}, [1,1,NaN,1,1.25,NaN,2,2.25,NaN,2,1.5,NaN], eps);
 %!   assert (childxdata{arrowheadchild}([2, 6, 10, 14]), [1, 1.25, 2.25, 1.5], eps);
@@ -265,9 +265,9 @@ endfunction
 %!
 %!   h = quiver (hax, x, y, u, v, 1);
 %!   childxdata = get (get (h, "children"), "xdata");
-%!   basechild = find (cellfun (@numel, childxdata) == 1*numpts);
-%!   stemchild = find (cellfun (@numel, childxdata) == 3*numpts);
-%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4*numpts);
+%!   basechild = find (cellfun ('numel', childxdata) == 1*numpts);
+%!   stemchild = find (cellfun ('numel', childxdata) == 3*numpts);
+%!   arrowheadchild = find (cellfun ('numel', childxdata) == 4*numpts);
 %!   assert (childxdata{basechild}, [0 0 1 1]);
 %!   assert (childxdata{stemchild}, [0,0,NaN,0,0.25,NaN,1,1.25,NaN,1,0.5,NaN], eps);
 %!   assert (childxdata{arrowheadchild}([2, 6, 10, 14]), [0, 0.25, 1.25, 0.5], eps);
@@ -372,8 +372,8 @@ endfunction
 %!   assert (parent.marker, "o");
 %!   assert (parent.markerfacecolor, "none");
 %!   childdata = get (parent.children);
-%!   basechild = find (cellfun (@numel, {childdata.xdata}) == 1);
-%!   arrowheadchild = find (cellfun (@numel, {childdata.xdata}) == 4);
+%!   basechild = find (cellfun ('numel', {childdata.xdata}) == 1);
+%!   arrowheadchild = find (cellfun ('numel', {childdata.xdata}) == 4);
 %!   assert (childdata(basechild).marker, "o");
 %!   assert (childdata(basechild).markerfacecolor, "none");
 %!   assert (childdata(basechild).linestyle, "none");
@@ -386,8 +386,8 @@ endfunction
 %!   assert (parent.marker, "o");
 %!   assert (numel (parent.markerfacecolor), 3);
 %!   childdata = get (parent.children);
-%!   basechild = find (cellfun (@numel, {childdata.xdata}) == 1);
-%!   arrowheadchild = find (cellfun (@numel, {childdata.xdata}) == 4);
+%!   basechild = find (cellfun ('numel', {childdata.xdata}) == 1);
+%!   arrowheadchild = find (cellfun ('numel', {childdata.xdata}) == 4);
 %!   assert (childdata(basechild).marker, "o");
 %!   assert (numel (childdata(basechild).markerfacecolor), 3);
 %!   assert (childdata(basechild).linestyle, "none");
@@ -402,9 +402,9 @@ endfunction
 %!   assert (parent.linestyle, "-");
 %!   assert (parent.linewidth, 10);
 %!   childdata = get (parent.children);
-%!   basechild = find (cellfun (@numel, {childdata.xdata}) == 1);
-%!   stemchild = find (cellfun (@numel, {childdata.xdata}) == 3);
-%!   arrowheadchild = find (cellfun (@numel, {childdata.xdata}) == 4);
+%!   basechild = find (cellfun ('numel', {childdata.xdata}) == 1);
+%!   stemchild = find (cellfun ('numel', {childdata.xdata}) == 3);
+%!   arrowheadchild = find (cellfun ('numel', {childdata.xdata}) == 4);
 %!   assert (childdata(basechild).marker, "none");
 %!   assert (childdata(basechild).markerfacecolor, "none");
 %!   assert (childdata(basechild).linestyle, "none");
@@ -433,9 +433,9 @@ endfunction
 %!   assert (parent.linestyle, "-");
 %!   assert (parent.linewidth, 10);
 %!   childdata = get (parent.children);
-%!   basechild = find (cellfun (@numel, {childdata.xdata}) == 1);
-%!   stemchild = find (cellfun (@numel, {childdata.xdata}) == 3);
-%!   arrowheadchild = find (cellfun (@numel, {childdata.xdata}) == 4);
+%!   basechild = find (cellfun ('numel', {childdata.xdata}) == 1);
+%!   stemchild = find (cellfun ('numel', {childdata.xdata}) == 3);
+%!   arrowheadchild = find (cellfun ('numel', {childdata.xdata}) == 4);
 %!   assert (childdata(basechild).marker, "o");
 %!   assert (childdata(basechild).markerfacecolor, "none");
 %!   assert (childdata(basechild).linestyle, "none");
@@ -464,9 +464,9 @@ endfunction
 %!   assert (parent.linestyle, "--");
 %!   assert (parent.linewidth, 10);
 %!   childdata = get (parent.children);
-%!   basechild = find (cellfun (@numel, {childdata.xdata}) == 1);
-%!   stemchild = find (cellfun (@numel, {childdata.xdata}) == 3);
-%!   arrowheadchild = find (cellfun (@numel, {childdata.xdata}) == 4);
+%!   basechild = find (cellfun ('numel', {childdata.xdata}) == 1);
+%!   stemchild = find (cellfun ('numel', {childdata.xdata}) == 3);
+%!   arrowheadchild = find (cellfun ('numel', {childdata.xdata}) == 4);
 %!   assert (childdata(basechild).marker, "o");
 %!   assert (childdata(basechild).markerfacecolor, "none");
 %!   assert (childdata(basechild).linestyle, "none");
@@ -501,13 +501,13 @@ endfunction
 %!   ## Check single arrow.
 %!   h = quiver (hax, x(4), y(4), u(4), v(4), 1);
 %!   childxdata = get (get (h, "children"), "xdata");
-%!   stemchild = find (cellfun (@numel, childxdata) == 3);
+%!   stemchild = find (cellfun ('numel', childxdata) == 3);
 %!   xendpoint = childxdata{stemchild}(2);
 %!   assert (xendpoint, x(4) + u(4), eps);
 %!
 %!   h = quiver (hax, x(4), y(4), u(4), v(4), sf);
 %!   childxdata = get (get (h, "children"), "xdata");
-%!   stemchild = find (cellfun (@numel, childxdata) == 3);
+%!   stemchild = find (cellfun ('numel', childxdata) == 3);
 %!   xendpoint = childxdata{stemchild}(2);
 %!   assert (xendpoint, x(4) + sf*u(4), eps);
 %!
@@ -529,7 +529,7 @@ endfunction
 %!   ## Check multiple arrows.
 %!   h = quiver (hax, x, y, u, v, 1);
 %!   childxdata = get (get (h, "children"), "xdata");
-%!   stemchild = find (cellfun (@numel, childxdata) == 3*numpts);
+%!   stemchild = find (cellfun ('numel', childxdata) == 3*numpts);
 %!   xendpoint1 = childxdata{stemchild}(5);
 %!   xendpoint2 = childxdata{stemchild}(11);
 %!   assert (xendpoint1, x(2) + (sqrt (2)/10)*u(2), eps);
@@ -537,7 +537,7 @@ endfunction
 %!
 %!   h = quiver (hax, x, y, u, v, sf);
 %!   childxdata = get (get (h, "children"), "xdata");
-%!   stemchild = find (cellfun (@numel, childxdata) == 3*numpts);
+%!   stemchild = find (cellfun ('numel', childxdata) == 3*numpts);
 %!   xendpoint1 = childxdata{stemchild}(5);
 %!   xendpoint2 = childxdata{stemchild}(11);
 %!   assert (xendpoint1, x(2) + sf*(sqrt (2)/10)*u(2), eps);

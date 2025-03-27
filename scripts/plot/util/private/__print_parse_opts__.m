@@ -256,7 +256,7 @@ function arg_st = __print_parse_opts__ (varargin)
   ## By default, use the "opengl" renderer for all raster outputs
   ## supported by "imwrite".
   fmts = imformats ();
-  persistent gl_devlist = [fmts(! cellfun (@isempty, {fmts.write})).ext, ...
+  persistent gl_devlist = [fmts(! cellfun ('isempty', {fmts.write})).ext, ...
                            "tiffn"];
   opengl_ok = any (strcmp (gl_devlist, arg_st.devopt));
 

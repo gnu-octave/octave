@@ -3559,8 +3559,6 @@ function str = printdoc (objname, obj, is_prop_subset)
     str = sprintf ("%s\n\n@anchor{XREF%scategory%s}\n", str, ...
                    objname, strrep (categories{ii}, " ", ""));
     str = sprintf ("%s@subsubheading %s\n", str, categories{ii});
-    str = sprintf ("%s@prindex %s %s\n", str, ...
-                   objname, strrep (categories{ii}, " ", ""));
     str = sprintf ("%s\n@table @asis", str);
 
     for jj = 1:nf

@@ -33,6 +33,7 @@
 
 #include "community-news.h"
 #include "gui-utils.h"
+#include "gui-preferences-global.h"
 #include "gui-preferences-dw.h"
 #include "gui-preferences-nr.h"
 #include "gui-settings.h"
@@ -81,7 +82,7 @@ community_news::construct (const QString& base_url, const QString& page,
   QString icon_set = settings.string_value (dw_icon_set);
   if (icon_set != "NONE")
     // No extra icon for Community news, take the one of the release notes
-    icon = dw_icon_set_names[icon_set] + "ReleaseWidget.png";
+    icon = dw_icon_set_names[icon_set] + "ReleaseWidget" + global_icon_extension;
   else
     icon = dw_icon_set_names[icon_set];
 

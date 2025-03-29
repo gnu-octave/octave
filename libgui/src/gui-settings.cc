@@ -288,7 +288,8 @@ gui_settings::icon (const QString& icon_name, bool octave_only,
                     const QString& icon_alt_name)
 {
   if (octave_only)
-    return QIcon (global_icon_paths.at (ICON_THEME_OCTAVE) + icon_name + ".png");
+    return QIcon (global_icon_paths.at (ICON_THEME_OCTAVE)
+                  + icon_name + global_icon_extension);
 
   if (QIcon::hasThemeIcon (icon_name))
     return QIcon (QIcon::fromTheme (icon_name));
@@ -300,7 +301,8 @@ gui_settings::icon (const QString& icon_name, bool octave_only,
 
   for (int i = 0; i < icon_fallbacks.length (); i++ )
     {
-      QString icon_file (icon_fallbacks.at (i) + icon_name + ".png");
+      QString icon_file (icon_fallbacks.at (i)
+                         + icon_name + global_icon_extension);
       if (QFile (icon_file).exists ())
         return QIcon (icon_file);
     }

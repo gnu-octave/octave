@@ -38,6 +38,7 @@
 
 #include "release-notes.h"
 #include "gui-utils.h"
+#include "gui-preferences-global.h"
 #include "gui-preferences-dw.h"
 #include "gui-preferences-nr.h"
 #include "gui-settings.h"
@@ -58,7 +59,7 @@ release_notes::release_notes ()
 
   if (icon_set != "NONE")
     m_release_notes_icon = dw_icon_set_names[icon_set]
-                           + "ReleaseWidget.png";
+                             + "ReleaseWidget" + global_icon_extension;
   else
     m_release_notes_icon = dw_icon_set_names[icon_set];
 

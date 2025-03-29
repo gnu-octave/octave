@@ -72,7 +72,6 @@ global_menubar_style ("QMenuBar {"
                       "}");
 
 // Icon size (in preferences: values -1, 0, 1)
-
 const QStyle::PixelMetric global_icon_sizes[3] =
 {
   QStyle::PM_SmallIconSize,
@@ -83,6 +82,8 @@ const QStyle::PixelMetric global_icon_sizes[3] =
 extern gui_pref global_icon_size;
 
 extern gui_pref global_icon_theme;
+
+const QString global_icon_extension (".svg");
 
 enum
 {
@@ -96,8 +97,8 @@ const QStringList
 global_icon_paths =
 {
   "",
-  ":/icons/octave/128x128/",
-  ":/icons/tango/128x128/",
+  ":/icons/octave/scalable/",
+  ":/icons/tango/scalable/",
   ":/icons/cursors/"
 };
 

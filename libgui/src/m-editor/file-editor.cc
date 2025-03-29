@@ -1463,7 +1463,8 @@ file_editor::notice_settings ()
   // in several Qt versions (https://bugreports.qt.io/browse/QTBUG-61092)
   if (! rotated)
     {
-      QString icon = global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-close.png";
+      QString icon = global_icon_paths.at (ICON_THEME_OCTAVE)
+                     + "widget-close" + global_icon_extension;
 
       QString close_button_css_mac
       ("QTabBar::close-button"

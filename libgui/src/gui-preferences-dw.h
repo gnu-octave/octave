@@ -48,9 +48,9 @@ const QHash <QString, QString> dw_icon_set_names
   = {
       // array of possible icon sets (name, path (complete for NONE))
       // the first entry here is the default!
-      {"NONE",    ":/icons/octave/128x128/logo.png"},
-      {"GRAPHIC", ":/icons/octave/128x128/graphic_logo_"},
-      {"LETTER",  ":/icons/octave/128x128/letter_logo_"}
+      {"NONE",    ":/icons/octave/scalable/logo.svg"},
+      {"GRAPHIC", ":/icons/octave/scalable/graphic_logo_"},
+      {"LETTER",  ":/icons/octave/scalable/letter_logo_"}
     };
 
 // The following keys have to be used with .arg (objectName ())

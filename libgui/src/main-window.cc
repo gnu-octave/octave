@@ -986,7 +986,7 @@ main_window::notice_settings (bool update_by_worker)
           // if child has a name
           icon = dw_icon_set_names[icon_set];
           if (icon_set != "NONE")
-            icon += name + ".png"; // add widget name and ext.
+            icon += name + global_icon_extension; // add widget name and ext.
           widget->setWindowIcon (QIcon (icon));
         }
     }

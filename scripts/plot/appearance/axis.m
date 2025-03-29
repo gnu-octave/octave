@@ -118,8 +118,6 @@
 ## Turn tick labels off for all axes.
 ## @end table
 ##
-## Note: If there are no tick marks for an axes then there can be no labels.
-##
 ## @noindent
 ## The following options affect the direction of increasing values on the axes.
 ##

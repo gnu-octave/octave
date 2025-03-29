@@ -268,59 +268,77 @@ get_mapper_fun_options (symbol_table& symtab,
 
 DEFMETHOD (cellfun, interp, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{A} =} cellfun ("@var{fcn}", @var{C})
-@deftypefnx {} {@var{A} =} cellfun ("size", @var{C}, @var{k})
-@deftypefnx {} {@var{A} =} cellfun ("isclass", @var{C}, @var{class})
-@deftypefnx {} {@var{A} =} cellfun (@@@var{fcn}, @var{C})
+@deftypefn  {} {@var{A} =} cellfun (@@@var{fcn}, @var{C})
+@deftypefnx {} {@var{A} =} cellfun ("@var{fcn}", @var{C})
 @deftypefnx {} {@var{A} =} cellfun (@var{fcn}, @var{C})
 @deftypefnx {} {@var{A} =} cellfun (@var{fcn}, @var{C1}, @var{C2}, @dots{})
 @deftypefnx {} {[@var{A1}, @var{A2}, @dots{}] =} cellfun (@dots{})
-@deftypefnx {} {@var{A} =} cellfun (@dots{}, "ErrorHandler", @var{errfcn})
 @deftypefnx {} {@var{A} =} cellfun (@dots{}, "UniformOutput", @var{val})
+@deftypefnx {} {@var{A} =} cellfun (@dots{}, "ErrorHandler", @var{errfcn})
+@deftypefnx {} {@var{A} =} cellfun ('isempty', @var{C})
+@deftypefnx {} {@var{A} =} cellfun ('islogical', @var{C})
+@deftypefnx {} {@var{A} =} cellfun ('isnumeric', @var{C})
+@deftypefnx {} {@var{A} =} cellfun ('isreal', @var{C})
+@deftypefnx {} {@var{A} =} cellfun ('length', @var{C})
+@deftypefnx {} {@var{A} =} cellfun ('numel', @var{C})
+@deftypefnx {} {@var{A} =} cellfun ('prodofsize', @var{C})
+@deftypefnx {} {@var{A} =} cellfun ('size', @var{C}, @var{dim})
+@deftypefnx {} {@var{A} =} cellfun ('isclass', @var{C}, @var{class})
 
-Evaluate the function named "@var{fcn}" on the elements of the cell array
-@var{C}.
+Evaluate the function @var{fcn} on the elements of the cell array @var{C}.
 
-Elements in @var{C} are passed on to the named function individually.  The
-function @var{fcn} can be one of the functions
+@code{cellfun} accepts an arbitrary function @var{fcn} given as a name in a
+character string, as a function handle, or as an inline function.  Specifying
+@var{fcn} with a character string is preferred as the performance is ~3X better
+for builtin functions and equivalent for m-files.
+
+@code{cellfun} has a limited number of functions which have been
+specially-coded for high-performance (~8X faster than a function handle).
+These functions are only used if the function is specified by name as a string,
+and only the simplest calling form---@w{@code{cellfun ('@var{fcn}'),
+@var{C})}}---without options is supported.  If you need access to an
+overloaded version of a function, such as @code{numel} for a particular
+@code{classdef} file, then you cannot use the accelerated function name and
+must use a function handle instead, e.g., @code{@@numel}.
+
+The high-performance functions are
 
 @table @asis
-@item @qcode{"isempty"}
-Return 1 for empty elements.
+@item @qcode{'isempty'}
+Return true for empty elements.
 
-@item @qcode{"islogical"}
-Return 1 for logical elements.
+@item @qcode{'islogical'}
+Return true for logical elements.
 
-@item @qcode{"isnumeric"}
-Return 1 for numeric elements.
+@item @qcode{'isnumeric'}
+Return true for numeric elements.
 
-@item @qcode{"isreal"}
-Return 1 for real elements.
+@item @qcode{'isreal'}
+Return true for real elements.
 
-@item @qcode{"length"}
+@item @qcode{'length'}
 Return a vector of the lengths of cell elements.
 
-@item @qcode{"ndims"}
+@item @qcode{'ndims'}
 Return the number of dimensions of each element.
 
-@item  @qcode{"numel"}
-@itemx @qcode{"prodofsize"}
+@item  @qcode{'numel'}
+@itemx @qcode{'prodofsize'}
 Return the number of elements contained within each cell element.  The
-number is the product of the dimensions of the object at each cell element.
+number is the product of the dimensions of the object of each cell element.
 
-@item @qcode{"size"}
-Return the size along the @var{k}-th dimension.
+@item @qcode{'size'}
+Return the size along dimension @var{dim}.
 
-@item @qcode{"isclass"}
-Return 1 for elements of @var{class}.
+@item @qcode{'isclass'}
+Return true for elements which are of type @var{class}.
 @end table
 
-Additionally, @code{cellfun} accepts an arbitrary function @var{fcn} given
-as a name in a character string, as an inline function, or as a function
-handle.  Specifying @var{fcn} with a character string is preferred as the
-performance is ~3X better than using a function handle.  The function can take
-one or more arguments, with the inputs arguments given by @var{C1}, @var{C2},
-etc.  For example:
+Elements in @var{C} are passed to the function individually and the result of
+each function invocation is collected in the output.  The function can take
+more than one argument with the inputs arguments given by @var{C1}, @var{C2},
+etc.  Input arguments that are singleton (1x1) cells will be automatically
+expanded to the size of the other arguments.  For example:
 
 @example
 @group
@@ -349,9 +367,8 @@ endfunction
 @end group
 @end example
 
-Note that, per default, the output argument(s) are arrays of the same size as
-the input arguments.  Input arguments that are singleton (1x1) cells will be
-automatically expanded to the size of the other arguments.
+Note that, by default, the output argument(s) are arrays of the same size as
+the input arguments.
 
 If the parameter @qcode{"UniformOutput"} is set to true (the default), then the
 function must return scalars which will be concatenated into the return
@@ -366,9 +383,8 @@ cellfun ("lower", @{"Foo", "Bar", "FooBar"@},
 @end group
 @end example
 
-Given the parameter @qcode{"ErrorHandler"}, then @var{errfcn} defines a
-function to call in case @var{fcn} generates an error.  The form of the
-function is
+The parameter @qcode{"ErrorHandler"} specifies a function @var{errfcn} to call
+if @var{fcn} generates an error.  The form of the function is
 
 @example
 function [@dots{}] = errfcn (@var{s}, @dots{})
@@ -389,12 +405,12 @@ cellfun ("factorial", @{-1,2@}, "ErrorHandler", @@foo)
 @end group
 @end example
 
-Use @code{cellfun} intelligently.  The @code{cellfun} function is a useful tool
-for avoiding loops.  It is often used with anonymous function handles; however,
-calling an anonymous function involves an overhead quite comparable to the
-overhead of an m-file function.  Passing a handle to a built-in function is
-faster, because the interpreter is not involved in the internal loop.  For
-example:
+Programming Note: Use @code{cellfun} intelligently.  The @code{cellfun}
+function is a useful tool for avoiding loops.  It is often used with anonymous
+function handles; however, calling an anonymous function involves an overhead
+quite comparable to the overhead of an m-file function.  Passing a handle to a
+built-in function is faster, because the interpreter is not involved in the
+internal loop.  For example:
 
 @example
 @group

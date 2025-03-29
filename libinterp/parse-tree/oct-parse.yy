@@ -5826,11 +5826,13 @@ context of the function that called the present function
 
 DEFMETHOD (feval, interp, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn {} {@var{retval} =} feval (@var{name}, @dots{})
-Evaluate the function named @var{name}.
+@deftypefn  {} {[@var{y1}, @var{y2}, @dots{}] =} feval ('@var{fcn}', @var{x1}, @var{x2}, @dots{})
+@deftypefnx {} {[@var{y1}, @var{y2}, @dots{}] =} feval (@@@var{fcn}, @var{x1}, @var{x2}, @dots{})
+Evaluate the function @var{fcn} with inputs @var{x1}, @var{x2}, @dots{}
 
-Any arguments after the first are passed as inputs to the named function.
-For example,
+The function @var{fcn} may be specified by name in a string or given as a
+function handle.  Any arguments after the first are passed as inputs to the
+named function.  For example,
 
 @example
 @group
@@ -5844,8 +5846,8 @@ calls the function @code{acos} with the argument @samp{-1}.
 
 The function @code{feval} can also be used with function handles of any sort
 (@pxref{Function Handles}).  Historically, @code{feval} was the only way to
-call user-supplied functions in strings, but function handles are now
-preferred due to the cleaner syntax they offer.  For example,
+call user-supplied functions in strings, but function handles are now preferred
+due to the cleaner syntax they offer.  For example,
 
 @example
 @group
@@ -5858,10 +5860,10 @@ feval (@var{f}, 1)
 @end example
 
 @noindent
-are equivalent ways to call the function referred to by @var{f}.  If it
-cannot be predicted beforehand whether @var{f} is a function handle,
-function name in a string, or inline function then @code{feval} can be used
-instead.
+are equivalent ways to call the function referred to by @var{f}.  If it cannot
+be predicted beforehand whether @var{f} is a function handle, function name in
+a string, or inline function then @code{feval} can be used instead.
+@seealso{builtin, eval, evalin}
 @end deftypefn */)
 {
   if (args.length () == 0)
@@ -5919,19 +5921,19 @@ DEFMETHOD (eval, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} eval (@var{try})
 @deftypefnx {} {} eval (@var{try}, @var{catch})
-Parse the string @var{try} and evaluate it as if it were an Octave
-program.
+@deftypefnx {} {[@var{var1}, @dots{}] =} eval (@dots{})
+Parse the string @var{try} and evaluate it as if it were an Octave program.
 
 If execution fails, evaluate the optional string @var{catch}.
 
-The string @var{try} is evaluated in the current context, so any results
-remain available after @code{eval} returns.
+The string @var{try} is evaluated in the current context, so any results remain
+available after @code{eval} returns.
 
-The following example creates the variable @var{A} with the approximate
-value of 3.1416 in the current workspace.
+The following example creates the variable @var{A} with the approximate value
+of pi (3.1416) in the current workspace.
 
 @example
-eval ("A = acos(-1);");
+eval ('A = acos (-1);');
 @end example
 
 If an error occurs during the evaluation of @var{try} then the @var{catch}
@@ -5946,13 +5948,21 @@ eval ('error ("This is a bad example");',
 @end group
 @end example
 
+Rather than create variables as part of the code string @var{try}, it is
+clearer and slightly faster to assign the results of evaluation to an output
+variable(s).  The first example can be re-written as
+
+@example
+A = eval ('acos (-1);');
+@end example
+
 Programming Note: if you are only using @code{eval} as an error-capturing
-mechanism, rather than for the execution of arbitrary code strings,
-Consider using try/catch blocks or unwind_protect/unwind_protect_cleanup
-blocks instead.  These techniques have higher performance and don't
-introduce the security considerations that the evaluation of arbitrary code
-does.
-@seealso{evalin, evalc, assignin, feval}
+mechanism, rather than for the execution of arbitrary code strings, consider
+using @code{try}/@code{catch} blocks or
+@code{unwind_protect}/@code{unwind_protect_cleanup} blocks instead.  These
+techniques have higher performance and don't introduce the security
+considerations that the evaluation of arbitrary code does.
+@seealso{evalin, evalc, assignin, feval, try, unwind_protect}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -6060,6 +6070,7 @@ DEFMETHOD (evalin, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} evalin (@var{context}, @var{try})
 @deftypefnx {} {} evalin (@var{context}, @var{try}, @var{catch})
+@deftypefnx {} {[@var{var1}, @dots{}] =} evalin (@dots{})
 Like @code{eval}, except that the expressions are evaluated in the context
 @var{context}, which may be either @qcode{"caller"} or @qcode{"base"}.
 @seealso{eval, assignin}
@@ -6088,6 +6099,7 @@ DEFMETHOD (evalc, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{s} =} evalc (@var{try})
 @deftypefnx {} {@var{s} =} evalc (@var{try}, @var{catch})
+@deftypefnx {} {[~, @var{var1}, @dots{}] =} evalc (@dots{})
 Parse and evaluate the string @var{try} as if it were an Octave program,
 while capturing the output into the return variable @var{s}.
 
@@ -6097,10 +6109,11 @@ This function behaves like @code{eval}, but any output or warning messages
 which would normally be written to the console are captured and returned in
 the string @var{s}.
 
-The @code{diary} is disabled during the execution of this function.  When
-@code{system} is used, any output produced by external programs is
-@emph{not} captured, unless their output is captured by the @code{system}
-function itself.
+If the first output @var{s} is ignored with @code{~} then the actual results
+of the code evaluation (not the string capture) will be assigned to output
+variables @var{var1}, @var{var2}, etc.
+
+Example 1:
 
 @example
 @group
@@ -6110,6 +6123,21 @@ s = evalc ("t = 42"), t
   @result{} t =  42
 @end group
 @end example
+
+Example 2:
+
+@example
+@group
+[~, p] = evalc ("pi")
+  @result{} p = 3.1416
+@end group
+@end example
+
+Programming Note: The @code{diary} is disabled during the execution of this
+function.  When @code{system} is used, any output produced by external programs
+is @emph{not} captured, unless their output is captured by the @code{system}
+function itself.
+
 @seealso{eval, diary}
 @end deftypefn */)
 {

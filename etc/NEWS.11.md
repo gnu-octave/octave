@@ -7,6 +7,8 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 
 ### Graphical User Interface
 
+- The GUI now uses scalable SVG icons for beautiful display at any size.
+
 ### Graphics backend
 
 ### Matlab compatibility

@@ -234,9 +234,11 @@ octave_dock_widget::octave_dock_widget (const QString& obj_name, QWidget *p)
   m_close_action->setToolTip (tr ("Hide Widget"));
 
   setStyleSheet (qdockwidget_css
-                 (global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-close.png",
+                 (global_icon_paths.at (ICON_THEME_OCTAVE)
+                    + "widget-close" + global_icon_extension,
                   QString ("Close Widget"),
-                  global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-undock.png",
+                  global_icon_paths.at (ICON_THEME_OCTAVE)
+                    + "widget-undock" + global_icon_extension,
                   QString ("Undock Widget"), m_icon_size, "", ""));
 
   if (widget ())
@@ -816,9 +818,11 @@ octave_dock_widget::set_style (bool active)
     }
   else
     {
-      setStyleSheet (qdockwidget_css (global_icon_paths.at (ICON_THEME_OCTAVE) + full_close_icon + ".png",
+      setStyleSheet (qdockwidget_css (global_icon_paths.at (ICON_THEME_OCTAVE)
+                                        + full_close_icon + global_icon_extension,
                                       close_tooltip,
-                                      global_icon_paths.at (ICON_THEME_OCTAVE) + full_dock_icon + ".png",
+                                      global_icon_paths.at (ICON_THEME_OCTAVE)
+                                        + full_dock_icon + global_icon_extension,
                                       dock_tooltip,
                                       m_icon_size,
                                       css_foreground,

@@ -260,6 +260,10 @@ deal
 @cindex recycling
 @cindex SIMD
 
+@menu
+* Broadcasting and Legacy Code::
+@end menu
+
 Broadcasting refers to how Octave binary operators and functions behave
 when their matrix or array operands or arguments differ in size.  Since
 version 3.6.0, Octave now automatically broadcasts vectors, matrices,
@@ -479,6 +483,7 @@ origin of the name of the @code{bsxfun} function), @emph{recycling} (R
 programming language), @emph{single-instruction multiple data} (SIMD),
 or @emph{replication}.
 
+@node Broadcasting and Legacy Code
 @subsection Broadcasting and Legacy Code
 
 The new broadcasting semantics almost never affect code that worked

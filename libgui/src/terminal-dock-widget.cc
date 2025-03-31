@@ -30,8 +30,8 @@
 #include <QGuiApplication>
 #include <QScreen>
 
-// This header is only needed for the new terminal widget, and only
-// can be included if Qscintilla is availbale
+// This header is only needed for the new terminal widget, and
+// can only be included if Qscintilla is available.
 #if defined (HAVE_QSCINTILLA)
 #  include "command-widget.h"
 #endif

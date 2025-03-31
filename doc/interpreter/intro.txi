@@ -93,6 +93,18 @@ carriage return.  (Don't type the text @samp{octave:13>} itself!  That is only
 the Octave prompt, which also looks like @code{>> } in the GUI.
 Octave will respond to your commands with an answer, or by displaying a graph.
 
+@menu
+* Elementary Calculations::
+* Creating a Matrix::
+* Matrix Arithmetic::
+* Solving Systems of Linear Equations::
+* Integrating Differential Equations::
+* Producing Graphical Output::
+* Help and Documentation::
+* Editing What You Have Typed::
+@end menu
+
+@node Elementary Calculations
 @subsection Elementary Calculations
 
 Octave can easily be used for basic numerical calculations.  Octave
@@ -124,6 +136,7 @@ tolerance of the calculation.
 octave:1> exp (i*pi)
 @end example
 
+@node Creating a Matrix
 @subsection Creating a Matrix
 
 Vectors and matrices are the basic building blocks for numerical
@@ -157,6 +170,7 @@ matrix @code{B}, type the command
 octave:3> B
 @end example
 
+@node Matrix Arithmetic
 @subsection Matrix Arithmetic
 
 Octave uses standard mathematical notation with the advantage over
@@ -189,6 +203,7 @@ type the command
 octave:6> A' * A
 @end example
 
+@node Solving Systems of Linear Equations
 @subsection Solving Systems of Linear Equations
 
 Systems of linear equations are ubiquitous in numerical analysis.
@@ -259,6 +274,7 @@ octave:3> x = A \ b
 @end group
 @end example
 
+@node Integrating Differential Equations
 @subsection Integrating Differential Equations
 
 Octave has built-in functions for solving nonlinear differential
@@ -349,6 +365,7 @@ Differential Equations, described in @nospell{A. C. Hindmarsh},
 Computing, @nospell{R. S. Stepleman} et al. (Eds.), North-Holland, Amsterdam,
 1983, pages 55--64.
 
+@node Producing Graphical Output
 @subsection Producing Graphical Output
 
 To display the solution of the previous example graphically, use the
@@ -380,6 +397,7 @@ help print
 explains more options for the @code{print} command and provides a list
 of additional output file formats.
 
+@node Help and Documentation
 @subsection Help and Documentation
 
 Octave has an extensive help facility.  The same documentation that is
@@ -412,6 +430,7 @@ program called Info.  When you invoke Info you will be put into a menu
 driven program that contains the entire Octave manual.  Help for using
 Info is provided in this manual, @pxref{Getting Help}.
 
+@node Editing What You Have Typed
 @subsection Editing What You Have Typed
 
 At the Octave prompt, you can recall, edit, and reissue previous

@@ -1253,6 +1253,7 @@ at the Octave prompt should display a three-dimensional plot.
 @DOCSTRING(sombrero)
 
 @DOCSTRING(peaks)
+
 @node Graphics Data Structures
 @section Graphics Data Structures
 @cindex graphics data structures
@@ -1376,10 +1377,14 @@ The uses of @code{get} and @code{set} are further explained in
 @cindex graphics objects
 
 The hierarchy of graphics objects was explained above.
-@xref{Introduction to Graphics Structures}.  Here the
-specific objects are described, and the properties contained in
-these objects are discussed.  Keep in mind that
-graphics objects are always referenced by @dfn{handle}.
+@xref{Introduction to Graphics Structures}.  Here the specific objects are
+described, and the properties contained in these objects are discussed.  Keep
+in mind that graphics objects are always referenced by @dfn{handle}.
+
+@menu
+* Creating Graphics Objects::
+* Handle Functions::
+@end menu
 
 @table @asis
 @c @group
@@ -1433,6 +1438,7 @@ A light object used for lighting effects on patches and surfaces.
 @c @end group
 @end table
 
+@node Creating Graphics Objects
 @subsubsection Creating Graphics Objects
 @cindex creating graphics objects
 
@@ -1461,6 +1467,7 @@ Instead of calling @code{line}, use @code{plot}.  Or use @code{surf} instead of
 
 @DOCSTRING(light)
 
+@node Handle Functions
 @subsubsection Handle Functions
 @cindex handle functions
 

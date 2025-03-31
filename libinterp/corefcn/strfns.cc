@@ -56,6 +56,8 @@ DEFUN (char, args, ,
 @deftypefnx {} {@var{C} =} char (@var{A}, @dots{})
 @deftypefnx {} {@var{C} =} char (@var{str1}, @var{str2}, @dots{})
 @deftypefnx {} {@var{C} =} char (@var{cell_array})
+@deftypefnx {} {'' =} char ()
+
 Create a string array from one or more numeric matrices, character
 matrices, or cell arrays.
 
@@ -91,7 +93,7 @@ char ([97, 98, 99], "", @{"98", "99", 100@}, "str1", ["ha", "lf"])
   int nargin = args.length ();
 
   if (nargin == 0)
-    retval = "";
+    retval = "";  // required for Matlab compatibility
   else if (nargin == 1)
     retval = args(0).convert_to_str (true, true,
                                      args(0).is_dq_string () ? '"' : '\'');

@@ -1,0 +1,38 @@
+#! /bin/bash
+
+################################################################################
+# USAGE: make-gnu-dist-files DIRECTORY1 DIRECTORY2 ...
+################################################################################
+
+set -e
+
+# The GPG ID used to sign the distribution.  Currently, this is jwe's ID.
+gpg_id=0x5D36644B
+
+for arg
+do
+  subdir=$(dirname $arg)
+  if [ "$subdir" = "." ]; then
+    dir="octave"
+  else
+    dir="octave/$subdir"
+  fi
+
+  cat << EOF > $arg.directive
+version: 1.2
+directory: $dir
+filename: $(basename $arg)
+EOF
+
+  gpg --local-user $gpg_id -b $arg
+  gpg --local-user $gpg_id --clearsign $arg.directive
+  rm -f $arg.directive
+
+done
+
+cat << EOF
+***
+*** Upload the files to the incoming/ftp directory on ftp-upload.gnu.org.
+*** (or incoming/alpha, for snapshots).
+***
+EOF

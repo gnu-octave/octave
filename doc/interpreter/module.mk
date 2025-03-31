@@ -265,9 +265,13 @@ if AMCOND_BUILD_QT_DOCS
 
 %.qhc %.qch : $(OCTAVE_HTML_STAMP) $(HTMLDIR_CSS) %reldir%/mk-qthelp.pl
 	$(AM_V_GEN)rm -f $(OCTAVE_QTHELP_FILES) && \
-	$(PERL) $(srcdir)/%reldir%/mk-qthelp.pl octave.html %reldir%/octave_interpreter && \
+	rm -rf %reldir%/octave.qdoc.html && \
+	cp -r %reldir%/octave.html %reldir%/octave.qdoc.html && \
+	$(PERL) $(srcdir)/build-aux/inplace-edit.pl 's|<a[^>]+class=.copiable[^>]+> &para;</a>||g' %reldir%/octave.qdoc.html/* && \
+	$(PERL) $(srcdir)/%reldir%/mk-qthelp.pl octave.qdoc.html %reldir%/octave_interpreter && \
 	$(QCOLLECTIONGENERATOR) $(QCOLLECTIONGENERATORFLAGS) %reldir%/octave_interpreter.qhcp -o %reldir%/octave_interpreter.qhc >/dev/null && \
-	rm -f %reldir%/octave_interpreter.qhcp %reldir%/octave_interpreter.qhp
+	rm -f %reldir%/octave_interpreter.qhcp %reldir%/octave_interpreter.qhp && \
+	rm -rf %reldir%/octave.qdoc.html
 
 endif
 
@@ -320,7 +324,7 @@ $(OCTAVE_HTML_STAMP): %reldir%/octave.texi $(srcdir)/%reldir%/octave-doc-version
 	 --css-ref=octave.css \
 	 -o $(OCTAVE_HTML_TMP_DIR) `test -f '%reldir%/octave.texi' || echo '$(abs_top_srcdir)/'`%reldir%/octave.texi; \
 	then \
-	  $(PERL) $(srcdir)/build-aux/inplace-edit.pl 's|<span class="category">: </span>||g; s|<a href=..*. class=.copiable-anchor.> &para;</a>||g' $(OCTAVE_HTML_TMP_DIR)/* && \
+	  $(PERL) $(srcdir)/build-aux/inplace-edit.pl 's|<span class="category[^"]*">: </span>||g' $(OCTAVE_HTML_TMP_DIR)/* && \
 	  rm -rf $(OCTAVE_HTML_DIR) && \
 	  mv $(OCTAVE_HTML_TMP_DIR) $(OCTAVE_HTML_DIR) && \
 	  touch $@; \
@@ -509,3 +513,5 @@ spellcheck: $(SPELLCHECK_FILES)
 doc-interpreter-clean:
 	rm -rf %reldir%/octave.t2d
 	rm -rf %reldir%/octave.t2p
+	rm -rf %reldir%/octave.qdoc.html
+

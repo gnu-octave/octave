@@ -153,6 +153,7 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/scalable/letter_logo_TerminalDockWidget.svg \
   %reldir%/icons/octave/scalable/letter_logo_VariableEditor.svg \
   %reldir%/icons/octave/scalable/letter_logo_WorkspaceView.svg \
+  %reldir%/icons/octave/scalable/logo.svg \
   %reldir%/icons/octave/scalable/plot-xy-curve.svg \
   %reldir%/icons/octave/scalable/system-run.svg \
   %reldir%/icons/octave/scalable/user-home.svg \

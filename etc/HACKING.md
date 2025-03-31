@@ -474,7 +474,7 @@ is updated to the default branch.
    0ec5eaabaf2c, for example).
 
 Creating first release candidate for new MAJOR version
------------------------------------------------------
+------------------------------------------------------
 
 This requires updating the VERSION for Octave; the shared library `SOVERSION`
 for each each of `liboctave`, `liboctinterp`, `liboctgui`, and `libmex`; and
@@ -517,6 +517,12 @@ the oct-file version `OCTAVE_API_VERSION`.
 
   * Increment `OCTAVE_API_VERSION` if any shared library version numbers have
     had their CURRENT version field changed.
+
+
+Make Windows binaries
+------------------------------------------------------
+
+FIXME: Instructions needed by someone who can document the MXE build process.
 
 
 \################################################################################

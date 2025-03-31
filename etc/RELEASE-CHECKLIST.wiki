@@ -14,7 +14,7 @@ Please use <code>&lt;strike&gt; &lt;/strike&gt;</code> to mark items below as do
 
 Completion Date:
 
-* Merge default onto stable to become the current stable release (see instructions in <code>etc/HACKING.md</code>).
+* Merge default onto stable to become the current stable release (see instructions "Merging the default branch to stable before a release" in <code>etc/HACKING.md</code>).
 * Bump version numbers in <code>configure.ac</code> on stable branch (see <code>etc/HACKING.md</code>).
 * Bump version numbers in <code>configure.ac</code> on default branch (see <code>etc/HACKING.md</code>).
 * Create new <code>etc/NEWS.VERSION+1.md</code> file on default branch by copying <code>etc/NEWS.VERSION.md</code> and then removing text so that it is a template file with headings only.
@@ -23,7 +23,7 @@ Completion Date:
 
 Completion Date:
 
-'''Must occur first''' as it could resolve existing, or create new, bug reports. You should run <code>./bootstrap</code> in the source tree after updating to the new gnulib version.
+'''Must occur first''' as it could resolve existing, or create new, bug reports.  Run <code>./bootstrap</code> in the source tree after updating to the new gnulib version.
 
 === ⚙️ Update Autoconf macros to latest version ===
 
@@ -47,7 +47,7 @@ Completion Date:
 * Put out a general call for reports on [https://octave.discourse.group/ Octave Discourse] for all outstanding, but unreported, known bugs.
 * Create Savannah <code>Release</code> tag <code>VERSION.0.90</code> on bug tracker for 1st release candidate.
 * Mark items that should be fixed for the release with this tag.
-* Update Savannah <code>Planned Release</code> and <code>Fixed Release</code> tags by adding <code>VERSION.1.0 (current stable)</code> and <code>VERSION+1.1.0 (current default)</code>.
+* Update Savannah <code>Planned Release</code> and <code>Fixed Release</code> fields by adding <code>VERSION.1.0 (current stable)</code> and <code>VERSION+1.1.0 (current default)</code> tags to both.
 * Review bug overview at https://octave.space/savannah/.
 
 === 📢 Update GUI translation files ===
@@ -56,7 +56,7 @@ Completion Date:
 
 * Call for updates ([https://octave.discourse.group/ Octave Discourse]) that might change GUI strings.
 * String freeze date:
-* Update language translation files (<code>*.ts</code>). See instructions in <code>libgui/languages/build_ts/README.md</code>.
+* Update language translation files (<code>*.ts</code>).  See instructions in <code>libgui/languages/build_ts/README.md</code>.
 * Create bug report on Savannah as a centralized location for uploading files and tracking status of translations.
 * Call for translations of GUI strings on [https://octave.discourse.group/c/maintainers/7 Octave Discourse Maintainers], CC-ing the translators (see [https://hg.savannah.gnu.org/hgweb/octave/file/tip/libgui/languages/translators list of translators]).
 * Collect translation files on Savannah bug report and push to Mercurial.
@@ -92,10 +92,10 @@ This will produce lots of whitespace changes, but no behavior changes. '''Must o
 
 Completion Date:
 
-* Grammar check documentation (See <code>doc/interpreter/doccheck/README</code>).
+* Grammar check documentation (see <code>doc/interpreter/doccheck/README</code>).
 * Spell check documentation (<code>make spellcheck</code>).
 * Verify no functions missing from manual (<code>make doc/interpreter/undocumented_list</code>).
-* Verify deprecated functions removed from manual (<code>*.txi</code>) and from “see also” links.
+* Verify deprecated functions removed from manual (<code>*.txi</code>) and from <code>@seealso</code> links.
 * Verify all formats (Info, HTML, PDF) build correctly.
 * Review <code>etc/NEWS.VERSION.md</code> for any features which should be announced.
 * Review <code>__unimplemented__.m</code> for the latest changes to [https://wiki.octave.org/Octave_Forge Octave Forge] packages and new Matlab functions.
@@ -123,35 +123,58 @@ Bug overview at https://octave.space/savannah/.
 
 === 🛠️ Create new release candidate ===
 
-* Ensure correct version information (see “Release Numbering” in <code>/etc/HACKING.md</code>).
-* Create <code>hg tag</code> in repository with release candidate version number (<code>rc-MAJOR-MINOR-PATCH</code>).
+* Ensure correct version information (see "Creating first release candidate for new MAJOR version" and "Release Numbering" in <code>/etc/HACKING.md</code>).
 * Verify <code>make dist</code> works.
 * Verify <code>make distcheck</code> passes.
-* Create [https://wiki.octave.org/Windows_Installer Windows Installer].
+* Make Windows binaries (see instructions "Make Windows binaries" in <code>etc/HACKING.md</code>).
+* Verify building from a tarball on Linux.  Verify that Windows binaries install and run.
+* Create a tag in the Mercurial repository on the changeset where the version number was updated (<code>hg tag rc-MAJOR-MINOR-PATCH</code>).
+* Sign tarballs and binaries with GPG key.
+** Use script <code>build-aux/make-gnu-fist-files</code> to simplify the procedure.
 * Upload release candidates to https://alpha.gnu.org/gnu/octave/.
-* Check [https://wiki.octave.org/Windows_Installer Windows Installer] (executable and zip formats) against false positive detection at [https://virustotal.com/ virustotal.com].
-* Add release candidate version to Savannah bug tracker.
-* Announce release candidate to [https://octave.discourse.group/ Octave Discourse].
+* Announce release candidate on [https://octave.discourse.group/ Octave Discourse] in both Maintainers and Help categories.
 
 == 🏁 Final Release 🎉 ==
 
-=== 📃 Update version information ===
+=== ⚙️ Update version information ===
 
 Completion Date:
 
-* Ensure correct version information in <code>configure.ac</code> (see “Release Numbering” in <code>/etc/HACKING.md</code>)
+* Ensure correct version information in <code>configure.ac</code> (see “Release Numbering” in <code>etc/HACKING.md</code>)
+** Update <code>AC_INIT</code> macro with version <code>MAJOR.MINOR.PATCH</code>.
+** Set <code>OCTAVE_MINOR_VERSION</code> to version <code>MINOR</code>.
+** Set <code>OCTAVE_PATCH_VERSION</code> to version <code>PATCH</code>.
 ** Set <code>OCTAVE_RELEASE_DATE</code> to the current date.
 ** Set the year in <code>OCTAVE_COPYRIGHT</code> to the current year.
-* Create <code>hg tag</code> in repository with release candidate version number (<code>release-VERSION-1-0</code>).
 * Update <code>etc/NEWS.VERSION.md</code> (final release date in Summary header).
-* Update <code>CITATION</code> (version, year, URL) if not already done as part of &quot;GPL License activities.
-* Update <code>etc/icons/org.octave.Octave.appdata.xml</code> (version number and release date).
+* Update <code>CITATION</code> (version, year, URL) if not already done as part of &quot;GPL License activities&quot;.
+* Update <code>etc/icons/org.octave.Octave.appdata.xml</code> (Add <code><release></code> with release date and version number).
+
+=== 🛠️ Build, Verify, Sign, and Upload tarballs and Windows binaries ===
+
+* Make distribution tarballs and Windows binaries
+** Run <code>make dist</code> on Linux to produce distribution tarballs.
+** Make Windows binaries (see instructions "Make Windows binaries" in <code>etc/HACKING.md</code>).
+** Check [https://wiki.octave.org/Windows_Installer Windows Installer] (executable and zip formats) against false positive detection at [https://virustotal.com/ virustotal.com].
+* Verify building from a tarball on Linux.  Verify that Windows binaries install and run.
+* Create a tag in the Mercurial repository on the changeset where the version number was updated (<code>hg tag release-VERSION-1-0</code>).
+* Sign tarballs and binaries with GPG key.
+** Use script <code>build-aux/make-gnu-fist-files</code> to simplify the procedure.
 * Upload all tarballs to https://ftp.gnu.org/gnu/octave/.
+
+=== 🛠️ Update Octave web site, Octave wiki, and Savannah bug tracker ===
+
 * Update web site files: <code>NEWS-VERSION.html</code>, <code>index.in</code>, <code>news.in</code>, and <code>download.in</code>.
-* Update https://wiki.octave.org/Release_History page.
+:Steps documented in this [https://hg.octave.org/web-octave/rev/fe59d0118a2b changeset].
+* Upload documentation (manual HTML + PDF at <code>octave.org/doc</code>, version in <code>octave.org/.htaccess</code>, Doxygen at <code>octave.org/doxygen</code>)
 * Update Savannah bug tracker <code>Release</code> field to have new release number.
 * Update Savannah bug tracker: '''OPEN''' bugs marked as '''WON’T FIX''' should be marked as '''CONFIRMED''' (or more appropriate) for the final release.
 * Hide release candidate versions for <code>Release</code> field on Savannah.
+* Update Octave [[GNU_Octave_Wiki|wiki]]
+** Update https://wiki.octave.org/Release_History page.
+** Edit page [[Template:Release]] and update release version in code <pre><includeonly>MAJOR.MINOR.PATCH</includeonly></pre>
+** Edit page [[Template:Release Date]] and update month and day in code <pre><includeonly>MONTH DD, {{Release Year}}</includeonly></pre>
+** Edit page [[Template:Release Year]] and update year in code <pre><includeonly>YYYY</includeonly></pre>
 
 === 📢 Announce final release ===
 
@@ -159,17 +182,11 @@ Completion Date:
 
 * Octave mailing-lists (yes, still) [mailto:help@octave.org help@octave.org] and [mailto:info-gnu@gnu.org info-gnu@gnu.org].
 * Octave web site (https://hg.octave.org/web-octave)
-* Steps documented in this [https://hg.octave.org/web-octave/rev/fe59d0118a2b changeset].
-* Upload documentation (manual HTML + PDF <code>octave.org/doc</code> and version in <code>octave.org/.htaccess</code>, Doxygen <code>octave.org/doxygen</code>)
-* This wiki
-* Template:Release = 7.3.0
-* Template:Release Date = November 2, 2022
-* Template:Release Year = 2022
 
 === ☑️ Post-Release ===
 
 Completion Date:
 
-* Remove all deprecated functions scheduled for deletion on default branch. These functions are tagged with <code>OCTAVE_DEPRECATED</code> in C++ or are m-files located in the directory <code>scripts/deprecated</code>. Check file <code>etc/NEWS.VERSION-2.md</code> for list of features that have been deprecated.
+* Remove all deprecated functions scheduled for deletion on default branch.  These functions are tagged with <code>OCTAVE_DEPRECATED</code> in C++ or are m-files located in the directory <code>scripts/deprecated</code>.  Check file <code>etc/NEWS.VERSION-2.md</code> for list of features that have been deprecated.
 
 [[Category:Releases]]

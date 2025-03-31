@@ -38,8 +38,7 @@ jobs:
             mingw-prefix: clang64
             target-prefix: mingw-w64-clang-x86_64
             cc: clang
-            # It looks like we and graphicsmagick++ aren't ready for C++17 yet.
-            cxx: "clang++ -std=gnu++14"
+            cxx: clang++
             f77: flang
             # Clang seems to require a different set of dllexport attributes than GCC.
             extra-config-flags:

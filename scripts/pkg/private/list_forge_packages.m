@@ -26,8 +26,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{list} =} list_forge_packages ()
 ## Gets the current list of Octave packages, then either displays the list
-## with version numbers and some brief installation instructions, or
-## returns the list of packages compatible with @code{pkg install -forge}.
+## with version numbers and some brief descriptions, or returns the list of
+## packages compatible with @code{pkg install -forge}.
 ## @end deftypefn
 
 function retval = list_forge_packages ()
@@ -37,6 +37,8 @@ function retval = list_forge_packages ()
   pkgnames = fieldnames (__pkg__);
 
   formatmore = (nargout == 0);  # do further string formatting for display
+
+  retval = "";
 
   ## Determine whether each package can be installed by `pkg install -forge`.
   ## This is possible if `pkg` is listed as a prerequisite for that package.
@@ -49,10 +51,22 @@ function retval = list_forge_packages ()
     prereq = char (__pkg__.(this).versions(1).depends.name);
     lgl(i) = any (cell2mat (strfind (cellstr (prereq), "pkg")));
 
-    if (formatmore)  # add version number to output
+    if (formatmore)  # add more descriptive text to output
+
+      ## Add version number
       v = __pkg__.(this).versions(1).id;
-      tmp = sprintf ("%s %s", this, v);
-      retval(i, 1:numel (tmp)) = tmp;
+      vers(i, 1:numel(v)) = v;
+
+      ## Add description, truncating long text with "..." but not mid-word.
+      str = __pkg__.(this).description;
+      if (numel (str) > 80)
+        str(81:end) = [];
+        f = find (isspace (str), 1, "last");
+        str(f:end) = [];
+        str = [str, "..."];
+      endif
+      desc(i, 1:numel (str)) = str;
+
     endif
 
   endfor
@@ -62,17 +76,23 @@ function retval = list_forge_packages ()
     ## Return only those packages that can be installed with `pkg install -forge`
     retval = char (pkgnames(lgl));
 
-  else
+  else  # pretty print on screen.
 
-    ## `retval` has already been built above for display.
+    vers(vers == 0) = ' ';
+    desc(desc == 0) = ' ';
+
     page_screen_output (false, "local");
-    fprintf (1, "The following %d packages were found on Octave Packages.\n", rows (retval));
 
-    fprintf (1, "These %d packages should be installed following their individual instructions:\n", nnz (! lgl));
-    disp (retval(! lgl, :));
-
-    fprintf (1, "These %d packages can be installed with `pkg install -forge <packagename>`:\n", nnz (lgl));
-    disp (retval(lgl, :));
+    printf ("              Package Name | Version | Description\n");
+    printf ("---------------------------+---------+-----------------------------------------------------------------------------------\n");
+    for i = 1:nnz (lgl)
+      str = char (pkgnames(i));
+      if (! lgl(i))
+        str = [str, " (!)"];
+      endif
+      printf ("%26s | %7s | %s\n", str, vers(i, :), desc(i, :));
+    endfor
+    printf ("(!) These packages have special installation instructions.\n");
 
   endif
 

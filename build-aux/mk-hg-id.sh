@@ -68,8 +68,4 @@ else
   fi
 fi
 
-if [ "`cat ${hg_id}`" = "hg-id-disabled" ]; then
-  echo "WARNING: ${hg_id} is 'hg-id-disabled'" 1>&2
-fi
-
 cat ${hg_id}

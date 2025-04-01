@@ -157,7 +157,7 @@
 ## if (nargin == 1)
 ##   ## evaluation call
 ##   if (nargout == 1)
-##     sav0.x = x; # mark saved vector
+##     sav0.x = x;  # mark saved vector
 ##     ## calculate fval, save results to sav0.
 ##   elseif (nargout == 2)
 ##     ## calculate fjac using sav.

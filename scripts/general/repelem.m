@@ -26,8 +26,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{xxx} =} repelem (@var{x}, @var{R})
 ## @deftypefnx {} {@var{xxx} =} repelem (@var{x}, @var{R_1}, @dots{}, @var{R_n})
-## Construct an array of repeated elements from @var{x} and repeat
-## instructions @var{R_1}, @dots{}.
+## Construct an array of repeated elements from @var{x} and repeat instructions
+## @var{R_1}, @enddots{}
 ##
 ## @var{x} must be a scalar, vector, or N-dimensional array.
 ##

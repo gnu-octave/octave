@@ -71,7 +71,7 @@ are requested)
 
 @item @qcode{"vector"}
 Return the eigenvalues in a column vector.  (default if only 1 output is
-requested, e.g., @var{lambda} = eig (@var{A}))
+requested, e.g., @code{@var{lambda} = eig (@var{A})})
 @end table
 
 The flag @var{algorithm} can be one of:
@@ -85,8 +85,8 @@ Use the Cholesky factorization of B.  (default if @var{A} is symmetric
 Use the QZ algorithm.  (used whenever @var{A} or @var{B} are not symmetric)
 @end table
 
-@multitable @columnfractions .31 .23 .23 .23
-@headitem @tab no flag @tab chol @tab qz
+@multitable @columnfractions .44 .14 .14 .10
+@headitem A and B @tab no flag @tab chol @tab qz
 @item both are symmetric
 @tab @qcode{"chol"}
 @tab @qcode{"chol"}

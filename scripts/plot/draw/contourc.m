@@ -62,7 +62,7 @@
 ##
 ## Example:
 ##
-## @example
+## @smallexample
 ## @group
 ## x = 0:2;
 ## y = x;
@@ -72,7 +72,7 @@
 ##         2.0000   1.0000   1.0000   2.0000   2.0000   3.0000   1.5000   2.0000
 ##         4.0000   2.0000   2.0000   1.0000   1.0000   2.0000   2.0000   1.5000
 ## @end group
-## @end example
+## @end smallexample
 ## @seealso{contour, contourf, contour3, clabel}
 ## @end deftypefn
 

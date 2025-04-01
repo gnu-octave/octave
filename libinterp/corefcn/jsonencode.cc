@@ -543,7 +543,7 @@ when @qcode{"ConvertInfAndNaN" = false} @tab @qcode{"NaN"}, @qcode{"NaN"},
 
 Examples:
 
-@example
+@smallexample
 @group
 jsonencode ([1, NaN; 3, 4])
 @result{} [[1,null],[3,4]]
@@ -598,7 +598,7 @@ jsonencode (@{'foo'; 'bar'; @{'foo'; 'bar'@}@})
 jsonencode (containers.Map(@{'foo'; 'bar'; 'baz'@}, [1, 2, 3]))
 @result{} @{"bar":2,"baz":3,"foo":1@}
 @end group
-@end example
+@end smallexample
 
 @seealso{jsondecode}
 @end deftypefn */)

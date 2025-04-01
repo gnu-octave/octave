@@ -132,7 +132,7 @@
 ##
 ## Consider a trivial problem with a tridiagonal matrix
 ##
-## @example
+## @smallexample
 ## @group
 ## n = 20;
 ## A = toeplitz (sparse ([1, 1], [1, 2], [2, 1] * n ^ 2, 1, n)) + ...
@@ -151,7 +151,7 @@
 ## M2fcn = @@(x, string) strcmp (string, "notransp") * (M2 \ x) + ...
 ##                      strcmp (string, "transp") * (M2' \ x);
 ## @end group
-## @end example
+## @end smallexample
 ##
 ## @sc{Example 1:} simplest usage of @code{bicg}
 ##

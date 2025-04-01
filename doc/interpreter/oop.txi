@@ -718,9 +718,9 @@ the data stored in a class.  Since the fields in the underlying struct are
 private by default, it is necessary to provide a mechanism to access the
 fields.  The @code{subsref} method may be used for both tasks.
 
-@example
+@smallexample
 @EXAMPLEFILE(@FIRfilter/subsref.m)
-@end example
+@end smallexample
 
 The @qcode{"()"} case allows us to filter data using the polynomial provided
 to the constructor.

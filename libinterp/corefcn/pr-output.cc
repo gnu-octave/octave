@@ -3945,14 +3945,9 @@ displayed, as the imaginary part makes no sense for a currency.
 Print the bit representation of numbers in memory, always with the
 most significant bit first.  For example, @code{pi} is printed like this:
 
-@iftex
-@w{@code{0 10000000000 1001001000011111101101010100010001000010110100011000}}
-@end iftex
-@ifnottex
-@example
-0 10000000000 1001001000011111101101010100010001000010110100011000
-@end example
-@end ifnottex
+@smallformat
+@code{0 10000000000 1001001000011111101101010100010001000010110100011000}
+@end smallformat
 
 @noindent
 where spaces have been added for clarity to show the sign bit, the 11-bit
@@ -3969,14 +3964,9 @@ bit on the left.
 
 For example, the value of @code{pi} in this format on x86-64 is:
 
-@iftex
-@w{@code{00011000 00101101 01000100 01010100 11111011 00100001 00001001 01000000}}
-@end iftex
-@ifnottex
-@example
-00011000 00101101 01000100 01010100 11111011 00100001 00001001 01000000
-@end example
-@end ifnottex
+@smallformat
+@code{00011000 00101101 01000100 01010100 11111011 00100001 00001001 01000000}
+@end smallformat
 
 @noindent
 shown here with spaces added for clarity.  Compare with the previous bit string

@@ -442,7 +442,7 @@ DEFUN (gcd, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{g} =} gcd (@var{a1}, @var{a2}, @dots{})
 @deftypefnx {} {[@var{g}, @var{v1}, @dots{}] =} gcd (@var{a1}, @var{a2}, @dots{})
-Compute the greatest common divisor of @var{a1}, @var{a2}, @dots{}.
+Compute the greatest common divisor of @var{a1}, @var{a2}, @enddots{}
 
 All arguments must be the same size or scalar.  For arrays, the greatest common
 divisor is calculated for each element individually.  All elements must be

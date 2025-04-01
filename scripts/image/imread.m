@@ -78,13 +78,13 @@
 ## If the increment value is omitted it defaults to 1.  For example, the
 ## following are all equivalent:
 ##
-## @example
+## @format
 ## @group
-## imread (filename, "PixelRegion", @{[200 600], [300 700]@});
-## imread (filename, "PixelRegion", @{[200 1 600], [300 1 700]@});
-## imread (filename)(200:600, 300:700);
+## @code{imread (filename, "PixelRegion", @{[200 600], [300 700]@})}
+## @code{imread (filename, "PixelRegion", @{[200 1 600], [300 1 700]@})}
+## @code{imread (filename)(200:600, 300:700)}
 ## @end group
-## @end example
+## @end format
 ##
 ## @end table
 ##

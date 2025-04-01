@@ -105,7 +105,7 @@
 ##
 ## Let us consider a trivial problem with a tridiagonal matrix
 ##
-## @example
+## @smallexample
 ## @group
 ## n = 20;
 ## A = toeplitz (sparse ([1, 1], [1, 2], [2, 1] * n ^ 2, 1, n))  + ...
@@ -120,7 +120,7 @@
 ## M1fcn = @@(x) M1 \ x;
 ## M2fcn = @@(x) M2 \ x;
 ## @end group
-## @end example
+## @end smallexample
 ##
 ## @sc{Example 1:} simplest usage of @code{tfqmr}
 ##

@@ -89,7 +89,7 @@ DEFMETHOD (dbstop, interp, args, ,
 @deftypefnx {} {} dbstop if @var{event}
 @deftypefnx {} {} dbstop if @var{event} @var{ID}
 @deftypefnx {} {} dbstop (@var{bp_struct})
-@deftypefnx {} {@var{rline} =} dbstop @dots{}
+@deftypefnx {} {@var{rline} =} dbstop (@dots{})
 
 Set breakpoints for the built-in debugger.
 
@@ -345,7 +345,8 @@ DEFMETHOD (dbstatus, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} dbstatus
 @deftypefnx {} {} dbstatus @var{fcn}
-@deftypefnx {} {@var{bp_list} =} dbstatus @dots{}
+@deftypefnx {} {@var{bp_list} =} dbstatus ()
+@deftypefnx {} {@var{bp_list} =} dbstatus (@var{fcn})
 Report the location of active breakpoints.
 
 When called with no input or output arguments, print the list of all

@@ -35,7 +35,7 @@
 ##
 ## The truth table for the xor operation is
 ##
-## @multitable @columnfractions 0.44 .03 .05 .03 0.44
+## @multitable @columnfractions 0.41 .044 .06 .042 0.42
 ## @item @tab @var{x} @tab @var{y} @tab @var{z} @tab
 ## @item @tab - @tab - @tab - @tab
 ## @item @tab 0 @tab 0 @tab 0 @tab

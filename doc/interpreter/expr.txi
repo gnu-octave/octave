@@ -382,7 +382,7 @@ original object.  This is the case whenever dimensionality of the index is
 greater than one (@w{@code{M > 1}}), so that the special rules for linear
 indexing are not applied.  This is easiest to understand with an example:
 
-@example
+@smallexample
 A = reshape (1:8, 2, 2, 2)  # Create 3-D array
 A =
 
@@ -408,7 +408,7 @@ Atmp =
 A(2,1)   # Reshape to 2x4 matrix, second entry of first column: ans = 2
 A(2,4)   # Reshape to 2x4 matrix, second entry of fourth column: ans = 8
 A(:,:)   # Reshape to 2x4 matrix, select all rows & columns, ans = Atmp
-@end example
+@end smallexample
 
 @noindent
 Note here the elegant use of the double colon to replace the call to the

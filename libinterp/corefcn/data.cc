@@ -5894,7 +5894,7 @@ but is performed more efficiently.
 
 If only @var{m} is supplied, and it is a scalar, the dimension of the result is
 @var{m}-by-@var{m}.  If @var{m}, @var{n}, @dots{} are all scalars, then the
-dimensions of the result are @var{m}-by-@var{n}-by-@dots{}.  If given a vector
+dimensions of the result are @var{m}-by-@var{n}-by-@enddots{}  If given a vector
 as input, then the dimensions of the result are given by the elements of that
 vector.
 

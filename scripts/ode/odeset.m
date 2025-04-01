@@ -42,7 +42,7 @@
 ## ODE options structure with all the most common option fields
 ## initialized, @strong{and} set the values of the fields @var{"field1"},
 ## @var{"field2"}, @dots{} to the values @var{value1}, @var{value2},
-## @dots{}.
+## @enddots{}
 ##
 ## If called with an input structure @var{oldstruct} then overwrite the
 ## values of the options @var{"field1"}, @var{"field2"}, @dots{} with

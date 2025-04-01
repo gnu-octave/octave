@@ -3105,7 +3105,7 @@ DEFUN (javaObject, args, ,
 @deftypefn  {} {@var{jobj} =} javaObject (@var{classname})
 @deftypefnx {} {@var{jobj} =} javaObject (@var{classname}, @var{arg1}, @dots{})
 Create a Java object of class @var{classsname}, by calling the class
-constructor with the arguments @var{arg1}, @dots{}
+constructor with the arguments @var{arg1}, @enddots{}
 
 The first example below creates an uninitialized object, while the second
 example supplies an initial argument to the constructor.
@@ -3160,7 +3160,7 @@ DEFUN (javaMethod, args, ,
 @deftypefn  {} {@var{ret} =} javaMethod (@var{methodname}, @var{obj})
 @deftypefnx {} {@var{ret} =} javaMethod (@var{methodname}, @var{obj}, @var{arg1}, @dots{})
 Invoke the method @var{methodname} on the Java object @var{obj} with the
-arguments @var{arg1}, @dots{}.
+arguments @var{arg1}, @enddots{}
 
 For static methods, @var{obj} can be a string representing the fully
 qualified name of the corresponding class.

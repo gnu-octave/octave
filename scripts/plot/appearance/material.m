@@ -45,15 +45,15 @@
 ## When called with a string, the aforementioned properties are set
 ## according to the values in the following table:
 ##
-## @multitable @columnfractions .0 .2 .15 .15 .15 .15 .15 .0
-## @headitem @tab @var{mtype} @tab ambient- strength @tab diffuse-
+## @multitable @columnfractions .16 .16 .16 .16 .16 .16
+## @headitem @var{mtype} @tab ambient- strength @tab diffuse-
 ## strength @tab specular- strength @tab specular- exponent @tab specular-
-## color- reflectance @tab
-## @item @tab @qcode{"shiny"} @tab 0.3 @tab 0.6 @tab 0.9 @tab 20 @tab 1.0 @tab
-## @item @tab @qcode{"dull"} @tab 0.3 @tab 0.8 @tab 0.0 @tab 10 @tab 1.0 @tab
-## @item @tab @qcode{"metal"} @tab 0.3 @tab 0.3 @tab 1.0 @tab 25 @tab 0.5 @tab
-## @item @tab @qcode{"default"} @tab @qcode{"default"} @tab @qcode{"default"} @tab @qcode{"default"} @tab
-## @qcode{"default"} @tab @qcode{"default"} @tab
+## color- reflectance
+## @item @qcode{"shiny"} @tab 0.3 @tab 0.6 @tab 0.9 @tab 20 @tab 1.0
+## @item @qcode{"dull"} @tab 0.3 @tab 0.8 @tab 0.0 @tab 10 @tab 1.0
+## @item @qcode{"metal"} @tab 0.3 @tab 0.3 @tab 1.0 @tab 25 @tab 0.5
+## @item @qcode{"default"} @tab @qcode{"default"} @tab @qcode{"default"} @tab @qcode{"default"}
+## @tab @qcode{"default"} @tab @qcode{"default"}
 ## @end multitable
 ##
 ## When called with a vector of three elements, the ambient, diffuse, and

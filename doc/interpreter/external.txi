@@ -1213,7 +1213,7 @@ alternative code in this case is
 @example
 @group
 BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-@dots{}  some code that calls a "foreign" function @dots{}
+@dots{} some code that calls a "foreign" function @dots{}
 END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 @end group
 @end example
@@ -1531,9 +1531,9 @@ strings and character matrices.  An example of their use that parallels the
 demo in @file{stringdemo.cc} is given in the file @file{mystring.c}, as shown
 below.
 
-@example
+@smallexample
 @EXAMPLEFILE(mystring.c)
-@end example
+@end smallexample
 
 @noindent
 An example of its expected output is
@@ -1642,9 +1642,9 @@ of the structure.
 An example that demonstrates the use of structures in a mex-file can be found
 in the file @file{mystruct.c} shown below.
 
-@example
+@smallexample
 @EXAMPLEFILE(mystruct.c)
-@end example
+@end smallexample
 
 An example of the behavior of this function within Octave is then
 
@@ -1747,9 +1747,9 @@ It is possible to call other Octave functions from within a mex-file using
 @code{mexCallMATLAB}.  An example of the use of @code{mexCallMATLAB} can be see
 in the example below.
 
-@example
+@smallexample
 @EXAMPLEFILE(myfeval.c)
-@end example
+@end smallexample
 
 If this code is in the file @file{myfeval.c}, and is compiled to
 @file{myfeval.mex}, then an example of its use is

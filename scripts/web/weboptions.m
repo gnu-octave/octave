@@ -93,16 +93,21 @@ classdef weboptions < handle
   ##
   ## Names and values of header fields, specified as an m-by-2 array of strings
   ## or cell array of character vectors to add to the HTTP request header.
-  ## @nospell{HeaderFields}@{i,1@} is the name of a field and
-  ## @nospell{HeaderFields}@{i,2@} is its value.
+  ## @code{@nospell{HeaderFields}@{i,1@}} is the name of a field and
+  ## @code{@nospell{HeaderFields}@{i,2@}} is its value.
   ##
   ## @example
   ## @group
-  ## weboptions ("HeaderFields", @{"Content-Length" "78";"Content-Type" "application/json"@})
-  ## Creates a weboptions object that contains two header fields:
-  ## Content-Length with value 78 and Content-Type with value application/json.
+  ## weboptions ("HeaderFields",
+  ##             @{"Content-Length", "78" ;
+  ##              "Content-Type", "application/json"@})
   ## @end group
   ## @end example
+  ##
+  ## @noindent
+  ## creates a weboptions object that contains two header fields:
+  ## @code{Content-Length} with value @code{78} and @code{Content-Type} with
+  ## value @code{application/json}.
   ##
   ## @item
   ## @samp{ContentType} --- Specify the content type of the data.

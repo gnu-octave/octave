@@ -132,7 +132,7 @@ hex2num (["4005bf0a8b145769"; "4024000000000000"])
 The optional second argument @var{class} may be used to cause the input
 array to be interpreted as a different value type.  Possible values are
 
-@multitable {Option} {Characters}
+@multitable {@qcode{"uint64"}} {Characters}
 @headitem Option @tab Characters
 @item @qcode{"int8"} @tab 2
 @item @qcode{"uint8"} @tab 2

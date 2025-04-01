@@ -5828,7 +5828,7 @@ DEFMETHOD (feval, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{y1}, @var{y2}, @dots{}] =} feval ('@var{fcn}', @var{x1}, @var{x2}, @dots{})
 @deftypefnx {} {[@var{y1}, @var{y2}, @dots{}] =} feval (@@@var{fcn}, @var{x1}, @var{x2}, @dots{})
-Evaluate the function @var{fcn} with inputs @var{x1}, @var{x2}, @dots{}
+Evaluate the function @var{fcn} with inputs @var{x1}, @var{x2}, @enddots{}
 
 The function @var{fcn} may be specified by name in a string or given as a
 function handle.  Any arguments after the first are passed as inputs to the

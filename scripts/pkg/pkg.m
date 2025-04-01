@@ -373,9 +373,9 @@
 ## installed packages.  Globally installed packages are those that are
 ## available to all users.  For example:
 ##
-## @example
+## @smallexample
 ## pkg global_list /usr/share/octave/site/api-v59/octave_packages
-## @end example
+## @end smallexample
 ##
 ## It is possible to get the current value of global_list with the following
 ##

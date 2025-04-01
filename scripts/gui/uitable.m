@@ -43,7 +43,7 @@
 ##
 ## Examples:
 ##
-## @example
+## @smallexample
 ## @group
 ## ## Create figure and place a table on it
 ## f = figure ();
@@ -212,7 +212,7 @@
 ##   set (t_data_table, "Data", d);
 ## endfunction
 ## @end group
-## @end example
+## @end smallexample
 ##
 ## @seealso{figure, uicontrol}
 ## @end deftypefn

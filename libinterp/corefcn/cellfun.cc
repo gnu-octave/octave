@@ -1115,8 +1115,8 @@ endfor
 
 The named function can also take more than two input arguments, with the input
 arguments given as third input argument @var{A2}, fourth input argument
-@var{A2}, @dots{}  If given more than one array input argument then all input
-arguments must have the same sizes.  For example:
+@var{A2}, @enddots{}  If given more than one array input argument then all
+input arguments must have the same sizes.  For example:
 
 @example
 @group

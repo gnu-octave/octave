@@ -26,30 +26,40 @@
 
 @setfilename octave.info
 
-@include macros.texi
-
 @dircategory Math
 @direntry
 * Octave: (octave).             Interactive language for numerical computations.
 @end direntry
 
-@c Settings for appearance of example blocks
-@c --------------------------------------------------------
+@include macros.texi
 
-@exampleindent 2
+@c Settings which control appearance
+@c ------------------------------------------------------------------------
+
+@c Use smaller indent for example blocks (better feel, more code on page)
+@exampleindent 1
+
+@c Use smaller indent for paragraphs (better feel)
+@paragraphindent 1
+
+@c Make the apostrophe in @code blocks cut-and-paste friendly so programmers
+@c can take examples from the Octave manual and run them directly in Octave.
+@codequoteundirected on
+
+@c Don't print ugly black squares for overfull hboxes in PDF output.
+@c Comment out this line when debugging overfull hbox warnings.
+@finalout
 
 @c Settings for printing on 8-1/2 by 11 inch paper (default):
-@c --------------------------------------------------------
-
+@c ----------------------------------------------------------
 @setchapternewpage odd
-@c Fix TOC margins for printed manual
+@c Fix TOC margins in printed manual
 @tex
 {\globaldefs = 1 \contentsrightmargin = 0pt}
 @end tex
 
 @c Settings for small book format:
 @c ------------------------------
-
 @c @smallbook
 @c @setchapternewpage odd
 @c @finalout
@@ -57,15 +67,37 @@
 @c @cropmarks
 @c @end iftex
 
-@c ------------------------------
+@c Set color of links in PDF manual
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
+@c ------------------------------------------------------------------------
+
+@c Create additional op(erator) and graphics pr(operties) indices
 @defindex op
 @defindex pr
 
-@c The version.texi file doesn't include a chapter, so it must not be included
-@c if you want to run the Emacs function texinfo-multiple-files-update.
-@c MUST include "version-octave.texi" in order for Automake to create file
+@c MUST include "version-octave.texi" in order for Automake to create file.
 @include version-octave.texi
+@c MUST include "octave-doc-version.texi" LAST as it overwrites file above.
 @include octave-doc-version.texi
 
 @settitle GNU Octave (version @value{VERSION})
@@ -94,10 +126,6 @@ Permission is granted to copy and distribute translations of this
 manual into another language, under the above conditions for
 modified versions.
 @end ifnottex
-
-@c Don't print ugly black squares for overfull hboxes in PDF output.
-@c Comment out this line when debugging overfull hbox warnings.
-@finalout
 
 @titlepage
 @title GNU Octave

@@ -52,12 +52,13 @@
 ## @item set @tab Write audiorecorder property values
 ## @item stop @tab Stop recording
 ## @end multitable
-## @end deftypefn
+##
 ## @seealso{@audiorecorder/get, @audiorecorder/getaudiodata,
 ## @audiorecorder/getplayer, @audiorecorder/isrecording,
 ## @audiorecorder/pause, @audiorecorder/play, @audiorecorder/record,
 ## @audiorecorder/recordblocking, @audioplayer/resume, @audiorecorder/set,
 ## @audiorecorder/stop, audiodevinfo, @audioplayer/audioplayer, record}
+## @end deftypefn
 
 function recorder = audiorecorder (varargin)
 

@@ -217,16 +217,14 @@ function C = tensorprod (A, B, varargin)
 
   ## If not an inner product, reshape back to tensor
   if (! isscalar (C))
-    ## Contribution to size of C from remaining A dims
+    ## Contribution to size of C from remaining dims
     remainSizeA = sizeA(remainDimA);
-    if (isempty (remainSizeA))
-      remainSizeA = 1;
-    endif
     remainSizeB = sizeB(remainDimB);
-    if (isempty (remainSizeB))
-      remainSizeB = 1;
+    dims = [remainSizeA, remainSizeB];
+    if (numel (dims) < 2)
+      dims(2) = 1;  # Return a column vector for Matlab compatibility
     endif
-    C = reshape (C, [remainSizeA, remainSizeB]);
+    C = reshape (C, dims);
   endif
 
 endfunction
@@ -389,8 +387,20 @@ endfunction
 %!test <*66950>
 %! T = ones (3,3,3);
 %! A = eye (3);
-%! TA = tensorprod(T,A,[1 2]);
+%! TA = tensorprod (T,A, [1,2]);
 %! assert (TA, 3 * ones (3, 1));
+
+%!test <*66950>
+%! T = ones (3,3);
+%! A = ones (3,3,3,3);
+%! TA = tensorprod (T,A, [1,2], [3,4]);
+%! assert (TA, 9 * ones (3, 3));
+
+%!test <*66950>
+%! T = ones (3,3,3);
+%! A = ones (3,3,3,3);
+%! TA = tensorprod (T,A, [1,2,3], [2,3,4]);
+%! assert (TA, 27 * ones (3, 1));
 
 ## Test input validation
 %!error <Invalid call> tensorprod ()

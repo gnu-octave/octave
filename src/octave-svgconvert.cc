@@ -27,7 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cstdio>
 #include <iostream>
 
 #if defined (OCTAVE_USE_WINDOWS_API)
@@ -39,17 +38,32 @@
 #include <QtCore>
 #include <QtXml>
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QFontDatabase>
 #include <QImage>
 #include <QPainter>
-#include <QPrinter>
+#include <QPdfWriter>
 #include <QRegularExpression>
 
 // Include a set of path rendering functions extracted from Qt-5.12 source
 #include "octave-qsvghandler.h"
 
-// Render to pdf
+// Helper function to configure a minimal Qt application.
+// Use offscreen rendering and minimal threading.
+void
+configure_minimal_qtapp ()
+{
+  // Use "offscreen" platform instead of standard GUI.
+  // This makes the biggest impact on performance (object creation time).
+  qputenv ("QT_QPA_PLATFORM", "offscreen");
+
+  // Disable unnecessary threads in Qt
+  // Explicitly disable DBus which is responsible for most of the deadlocks
+  // Many of these may be unnecessary, but won't harm application.
+  qputenv ("QT_DBUS_DISABLED", "1");
+}
+
+// Render to PDF
 class pdfpainter : public QPainter
 {
 public:
@@ -57,19 +71,20 @@ public:
   pdfpainter () = delete;
 
   pdfpainter (QString fname, QRectF sz)
-    : m_printer ()
+    : m_pdfWriter (fname)
   {
-    // Printer settings
-    m_printer.setOutputFormat (QPrinter::PdfFormat);
-    m_printer.setFontEmbeddingEnabled (true);
-    m_printer.setOutputFileName (fname);
-    m_printer.setFullPage (true);
-    m_printer.setPageSize (QPageSize (sz.size (), QPageSize::Point,
-                                      QString ("custom"),
-                                      QPageSize::ExactMatch));
+    // PDF Writer settings
+    m_pdfWriter.setPageSize (QPageSize (sz.size (), QPageSize::Point,
+                                        QString ("custom"),
+                                        QPageSize::ExactMatch));
+    m_pdfWriter.setPageMargins (QMarginsF (0, 0, 0, 0));
+    m_pdfWriter.setResolution (600);
+
+    // Set document metadata
+    m_pdfWriter.setCreator ("Octave");
 
     // Painter settings
-    begin (&m_printer);
+    begin (&m_pdfWriter);
     setWindow (sz.toRect ());
   }
 
@@ -79,10 +94,10 @@ public:
 
 private:
 
-  QPrinter m_printer;
+  QPdfWriter m_pdfWriter;
 };
 
-// String conversion functions+QVector<double> qstr2vectorf (QString str)
+// String conversion functions
 QVector<double>
 qstr2vectorf (QString str)
 {
@@ -907,7 +922,7 @@ read from stdin\n\
   2: merge all triangles that share edges (might take a long time)\n\
 * outfile: output file name\n";
 
-  if (strcmp (argv[1], "-h") == 0)
+  if ((argc > 1) && (strcmp (argv[1], "-h") == 0))
     {
       std::cout << help;
       return 0;
@@ -987,8 +1002,9 @@ read from stdin\n\
   QTextStream (&s) >> x0 >> y0 >> dx >> dy;
   QRectF vp (x0, y0, dx, dy);
 
-  // Setup application and add default FreeSans font if needed
-  QApplication a (argc, argv);
+  // Configure a minimal Qt application (offscreen rendering, minimal threads)
+  configure_minimal_qtapp ();
+  QGuiApplication app (argc, argv);
 
   // When printing to PDF we may need the default FreeSans font
   if (! strcmp (argv[2], "pdf"))

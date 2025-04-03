@@ -38,9 +38,9 @@
 ## E. Hairer, S.P. Norsett and G. Wanner,
 ## @cite{Solving Ordinary Differential Equations I: Nonstiff Problems},
 ## Springer.
-## @end deftypefn
 ##
 ## @seealso{odepkg}
+## @end deftypefn
 
 function h = starting_stepsize (order, fcn, t0, x0,
                                 AbsTol, RelTol, normcontrol,

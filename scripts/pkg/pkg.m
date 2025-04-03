@@ -71,6 +71,7 @@
 ##
 ## Packages must be loaded before they can be used.  When loading a package,
 ## Octave performs the following tasks:
+##
 ## @enumerate
 ## @item
 ## If the package depends on other packages (and @code{pkg load} is called
@@ -98,23 +99,31 @@
 ## @table @samp
 ##
 ## @item install
-## Install named packages.  For example,
+## Install named packages.  For example, each of the following commands:
 ##
 ## @example
-## pkg install image-1.0.0.tar.gz
+## pkg install pkgname
+## pkg install 'pkgname-1.0.0.tar.gz'
+## pkg install 'https://somewebsite.org/pkgname-1.0.0.tar.gz'
 ## @end example
 ##
 ## @noindent
-## installs the package found in the file @file{image-1.0.0.tar.gz}.  The
-## file containing the package can be a URL, e.g.,
+## will install the package @code{pkgname}.  The sequence is:
 ##
-## @example
-## pkg install 'http://somewebsite.org/image-1.0.0.tar.gz'
-## @end example
+## @enumerate
+## @item
+## If @code{pkgname} is a local file, Octave installs it.
 ##
-## @noindent
-## installs the package found in the given URL@.  This
-## requires an internet connection and the cURL library.
+## @item
+## Otherwise, if @code{pkgname} resembles a URL, Octave downloads and
+## installs it.
+##
+## @item
+## Otherwise, Octave queries Octave Packages online for a package named
+## @code{pkgname}, and if found, downloads and installs its latest version.
+## @end enumerate
+##
+## Online access requires an internet connection and the cURL library.
 ##
 ## @noindent
 ## @emph{Security risk}: no verification of the package is performed
@@ -125,10 +134,10 @@
 ## @emph{No support}: the GNU Octave community is not responsible for
 ## packages installed from foreign sites.  For support or for
 ## reporting bugs you need to contact the maintainers of the installed
-## package directly (see the @file{DESCRIPTION} file of the package)
+## package directly (run @code{pkg describe} on the package to get information).
 ##
 ## The @var{option} variable can contain options that affect the manner
-## in which a package is installed.  These options can be one or more of
+## in which a package is installed.  These options can be one or more of:
 ##
 ## @table @code
 ## @item -nodeps
@@ -145,15 +154,11 @@
 ## Octave is not being run with administrative privileges.  The user must have
 ## write access to the global package store.
 ##
-## @item -forge
-## Install a package directly from the Octave Forge repository.  This
-## requires an internet connection and the cURL library.
-##
 ## @emph{Security risk}: no verification of the package is performed
 ## before the installation.  There are no signatures for packages, or
 ## checksums to confirm the correct file was downloaded.  It has the
 ## same security issues as manually downloading the package from the
-## Octave Forge repository and installing it.
+## Octave Packages repository and installing it.
 ##
 ## @item -verbose
 ## The package manager will print the output of all commands as
@@ -161,10 +166,10 @@
 ## @end table
 ##
 ## @item update
-## Check installed Octave Forge packages against repository and update any
+## Check installed Octave packages against their repositories and update any
 ## outdated items.  Updated packages are installed either globally or locally
-## depending on whether Octave is running with elevated privileges.  This
-## requires an internet connection and the cURL library.
+## depending on whether Octave is running with elevated privileges.
+## This requires an internet connection and the cURL library.
 ##
 ## Options for the install command and the names of individual packages to be
 ## checked for updates may be specified as a list following the update
@@ -194,7 +199,7 @@
 ## Updates for multiple packages are sorted alphabetically and not checked
 ## for dependencies affected by installation order.  If dependency order
 ## related @code{pkg update} failure occurs, use @code{pkg update -nodeps} to
-## ignore dependencies, or @code{pkg install -forge <package_name>} to update
+## ignore dependencies, or @code{pkg install <package_name>} to update
 ## individual packages manually.
 ##
 ## @item uninstall
@@ -279,13 +284,17 @@
 ## [user_packages, system_packages] = pkg ("list")
 ## @end example
 ##
-## The @qcode{"-forge"} option lists packages available at the Octave Forge
-## repository.  This requires an internet connection and the cURL library.
-## For example:
+## The @qcode{"-forge"} option lists packages available at the Octave Packages
+## repository with brief descriptions.  This requires an internet connection
+## and the cURL library.  Supplying an output argument, such as:
 ##
 ## @example
-## oct_forge_pkgs = pkg ("list", "-forge")
+## installable_oct_pkgs = pkg ("list", "-forge")
 ## @end example
+##
+## @noindent
+## returns only the names of those packages which can be installed by
+## @code{pkg install}.  Other packages may need manual installation.
 ##
 ## @item describe
 ## Show a short description of installed packages.  With the option
@@ -477,7 +486,7 @@ function [local_packages, global_packages] = pkg (varargin)
         page_output_immediately (true, "local");
       case "-forge"
         if (! __octave_config_info__ ("CURL_LIBS"))
-          error ("pkg: can't download from Octave Forge without the cURL library");
+          error ("pkg: can't download from Octave Packages without the cURL library");
         endif
         octave_forge = true;
       case "-local"
@@ -500,8 +509,12 @@ function [local_packages, global_packages] = pkg (varargin)
     endswitch
   endfor
 
-  if (octave_forge && ! any (strcmp (action, {"install", "list"})))
-    error ("pkg: '-forge' can only be used with install or list");
+  if (octave_forge)
+    if (strcmp (action, "install"))
+      warning ("Octave:pkg:install-forge", "pkg: the '-forge' option is no longer needed for 'pkg install'");
+    elseif (! strcmp (action, "list"))
+      error ("pkg: '-forge' can only be used with 'pkg list'");
+    endif
   endif
 
   ## Take action
@@ -534,79 +547,57 @@ function [local_packages, global_packages] = pkg (varargin)
       tmp_dir = tempname ();
       unwind_protect
 
-        if (octave_forge)
-          [urls, local_files] = cellfun ("get_forge_download", files,
-                                         "uniformoutput", false);
-          if (verbose)
-            fprintf ("downloading tarball(s) from:%s\n", ...
-                     sprintf ("\n- %s", urls{:}));
-          endif
-          [files, succ] = cellfun ("urlwrite", urls, local_files,
-                                   "uniformoutput", false);
-          succ = [succ{:}];
-          if (! all (succ))
-            i = find (! succ, 1);
-            error ("pkg: could not download file %s from URL %s",
-                   local_files{i}, urls{i});
-          endif
-        else
-          ## If files do not exist, maybe they are not local files.
-          ## Try to download them.
-          not_local_files = cellfun (@(x) isempty (glob (x)), files);
-          if (any (not_local_files))
-            [success, msg] = mkdir (tmp_dir);
-            if (success != 1)
-              error ("pkg: failed to create temporary directory: %s", msg);
+        [success, msg] = mkdir (tmp_dir);
+        if (! success)
+          error ("pkg: failed to create temporary directory: %s", msg);
+        endif
+
+        for file = files  # process each of the inputs one at a time
+
+          file = char (file);  # convert cell to char string
+
+          ## Sequence: local file, then URL, then package_name.
+          if (isfile (file))
+
+            ## Do nothing extra; "files" does not need to change.
+
+          elseif (regexp (file, '^\w+://'))  # looks like a URL
+
+            ## Make a temp file from the URL.
+            [~, fname, fext] = fileparts (file);
+            tmp_file = fullfile (tmp_dir, [fname fext]);
+            local_files{end+1} = tmp_file;  # so that it gets cleaned up
+
+            ## Download the URL into the temp file we just created.
+            [~, success, msg] = urlwrite (file, tmp_file);
+            if (! success)
+              error ("pkg: failed to download '%s': %s", file, msg);
             endif
 
-            for file = files(not_local_files)
-              file = file{1};
-              [~, fname, fext] = fileparts (file);
-              tmp_file = fullfile (tmp_dir, [fname fext]);
-              local_files{end+1} = tmp_file;
-              looks_like_url = regexp (file, '^\w+://');
-              if (looks_like_url)
-                [~, success, msg] = urlwrite (file, local_files{end});
-                if (success != 1)
-                  error ("pkg: failed downloading '%s': %s", file, msg);
-                endif
-                ## Verify that download is a tarball,
-                ## to protect against ISP DNS hijacking.
-                ## FIXME: Need a test which does not rely on external OS.
-                #{
-                if (isunix ())
-                  [ok, file_descr] = ...
-                    system (sprintf ('file "%s" | cut -d ":" -f 2', ...
-                                     local_files{end}));
-                  if (! ok)
-                    if (strfind (file_descr, "HTML"))
-                      error (["pkg: Invalid package file downloaded from " ...
-                              "%s\n" ...
-                              "File is HTML, not a tar archive."], ...
-                             file);
-                    endif
-                  else
-                    ## Ignore: maybe something went wrong with the "file" call.
-                  endif
-                endif
-                #}
-              else
-                looks_like_pkg_name = regexp (file, '^[\w-]+$');
-                if (looks_like_pkg_name)
-                  error (["pkg: file not found: %s.\n" ...
-                          "This looks like an Octave Forge package name." ...
-                          "  Did you mean:\n" ...
-                          "       pkg install -forge %s"], ...
-                         file, file);
-                else
-                  error ("pkg: file not found: %s", file);
-                endif
-              endif
-              files{strcmp (files, file)} = local_files{end};
+            ## Replace the URL provided with the file we just downloaded.
+            files{strcmp (files, file)} = tmp_file;
 
-            endfor
+          else  # not local file, not URL ==> try package name
+
+            ## Get corresponding URL and make a temp file.
+            [url, tmp_file] = get_forge_download (file);
+            local_files{end+1} = tmp_file;  # so that it gets cleaned up
+
+            if (verbose)
+              printf ("downloading tarball from:\n- %s\n", url);
+            endif
+
+            ## Download the URL into the temp file we just created.
+            [~, success, msg] = urlwrite (url, tmp_file);
+            if (! success)
+              error ("pkg: failed to download '%s': %s", url, msg);
+            endif
+
+            ## Replace the URL provided with the file we just downloaded.
+            files{strcmp (files, file)} = tmp_file;
+
           endif
-        endif
+        endfor
 
         ## make sure the PREFIX and the ARCHPREFIX directories are created
         if (! isfolder (prefix))

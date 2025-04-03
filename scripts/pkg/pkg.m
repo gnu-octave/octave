@@ -790,7 +790,6 @@ function [local_packages, global_packages] = pkg (varargin)
         end_try_catch
         if (compare_versions (forge_pkg_version, installed_pkg_version, ">"))
           options_to_pass = varargin (strncmp (varargin, "-", 1));
-          options_to_pass(end+1) = "-forge";
           feval (@pkg, "install", options_to_pass{:}, installed_pkg_name);
         endif
       endfor

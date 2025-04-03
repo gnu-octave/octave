@@ -43,7 +43,7 @@ function [ver, url] = get_forge_pkg (name)
   __pkg__ = get_validated_pkg_list ();  # fresh data from packages.octave.org
   pkgnames = fieldnames (__pkg__);  # all the different packages
 
-  if (any (cell2mat (strfind (pkgnames, name))))  # named package does exist
+  if (any (strcmp (pkgnames, name)))  # named package does exist
 
     ## If multiple versions, then versions(1) is the most recent version.
     ver = __pkg__.(name).versions(1).id;

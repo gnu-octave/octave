@@ -628,7 +628,13 @@ function [local_packages, global_packages] = pkg (varargin)
           else  # not local file, not URL ==> try package name
 
             ## Get corresponding URL and make a temp file.
-            [url, tmp_file] = get_forge_download (file);
+            ## FIXME: Automate filetype recognition instead of adding ".tar.gz"
+            ## manually, just in case the package author chooses zip
+            ## or any other archive format? Or will all packages always
+            ## be required to give .tar.gz?
+            [v, url] = get_forge_pkg (file);
+            tmp_file = tempname (tmp_dir, [file "-" v "-"]);
+            tmp_file = [tmp_file, ".tar.gz"];
             local_files{end+1} = tmp_file;  # so that it gets cleaned up
 
             if (verbose)

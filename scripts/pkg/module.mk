@@ -20,12 +20,12 @@ FCN_FILE_DIRS += \
   %reldir%/private/getarchdir.m \
   %reldir%/private/install.m \
   %reldir%/private/installed_packages.m \
-  %reldir%/private/list_forge_packages.m \
   %reldir%/private/load_packages.m \
   %reldir%/private/load_packages_and_dependencies.m \
   %reldir%/private/make_rel_paths.m \
   %reldir%/private/rebuild.m \
   %reldir%/private/save_order.m \
+  %reldir%/private/search_packages.m \
   %reldir%/private/uninstall.m \
   %reldir%/private/unload_packages.m
 

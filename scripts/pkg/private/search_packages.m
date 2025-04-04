@@ -24,18 +24,14 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{list} =} list_forge_packages (@var{searchterms})
+## @deftypefn {} {@var{retval} =} search_packages (@var{searchterms})
 ## Search for all packages on the Octave Packages repository whose
-## descriptions include @var{searchterms}, then either displays the search
-## results with brief descriptions, or returns the list of matching packages
+## descriptions include @var{searchterms}, then either display the search
+## results with brief descriptions, or return the list of matching packages
 ## that can also be installed with @code{pkg install}.
 ## @end deftypefn
 
-##
-## TODO Rename this function to avoid both "list" and "forge" in its name.
-## Maybe "search_packages"?
-##
-function retval = list_forge_packages (searchterms, allpackages)
+function retval = search_packages (searchterms, allpackages)
 
   __pkg__ = get_validated_pkg_list ();  # fresh data from packages.octave.org
 

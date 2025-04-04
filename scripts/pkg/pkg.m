@@ -581,9 +581,9 @@ function [local_packages, global_packages] = pkg (varargin)
       endif
 
       if (nargout)
-        local_packages = list_forge_packages (files, want_all_packages);
+        local_packages = search_packages (files, want_all_packages);
       else
-        list_forge_packages (files, want_all_packages);
+        search_packages (files, want_all_packages);
       endif
 
     case "install"

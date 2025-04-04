@@ -832,7 +832,7 @@ function [local_packages, global_packages] = pkg (varargin)
         try
           forge_pkg_version = get_forge_pkg (installed_pkg_name);
         catch
-          warning ("pkg: package %s not found on Octave Forge - skipping update\n",
+          warning ("pkg: package %s not found on Octave Packages - skipping update\n",
                    installed_pkg_name);
           forge_pkg_version = "0";
         end_try_catch

@@ -98,6 +98,45 @@
 ##
 ## @table @samp
 ##
+## @item search
+## Search for packages having the specified search terms in the Octave Packages
+## repository.  This requires an internet connection and the cURL library.
+##
+## @example
+## pkg search foo bar baz
+## @end example
+##
+## @noindent
+## will show packages whose descriptions contain @emph{all} the search terms.
+##
+## Search terms are case-insensitive and can be regular expressions as well.
+## For example,
+##
+## @example
+## pkg search "[aeiou]@{4,@}"
+## @end example
+##
+## @noindent
+## shows all packages whose descriptions have four or more consecutive vowels.
+##
+## The option @code{-all} as in:
+##
+## @example
+## pkg search -all
+## @end example
+##
+## @noindent
+## will show @emph{all} packages available on Octave Packages.
+##
+## If an output variable is provided, as in
+##
+## @example
+## mypackages = pkg ("search", "foo")
+## @end example
+##
+## then @code{pkg search} will return only those package names matching
+## the search term(s) @emph{and} which can be installed with @code{pkg install}.
+##
 ## @item install
 ## Install named packages.  For example, each of the following commands:
 ##
@@ -284,18 +323,6 @@
 ## [user_packages, system_packages] = pkg ("list")
 ## @end example
 ##
-## The @qcode{"-forge"} option lists packages available at the Octave Packages
-## repository with brief descriptions.  This requires an internet connection
-## and the cURL library.  Supplying an output argument, such as:
-##
-## @example
-## installable_oct_pkgs = pkg ("list", "-forge")
-## @end example
-##
-## @noindent
-## returns only the names of those packages which can be installed by
-## @code{pkg install}.  Other packages may need manual installation.
-##
 ## @item describe
 ## Show a short description of installed packages.  With the option
 ## @qcode{"-verbose"} also list functions provided by the package.  For
@@ -456,7 +483,7 @@ function [local_packages, global_packages] = pkg (varargin)
   ## valid actions in alphabetical order
   available_actions = {"build", "describe", "global_list",  "install", ...
                        "list", "load", "local_list", "prefix", "rebuild", ...
-                       "test", "uninstall", "unload", "update"};
+                       "search", "test", "uninstall", "unload", "update"};
 
   ## Parse input arguments
   if (isempty (varargin) || ! iscellstr (varargin))
@@ -467,6 +494,7 @@ function [local_packages, global_packages] = pkg (varargin)
   action = "none";
   verbose = false;
   octave_forge = false;
+  want_all_packages = false;
   for i = 1:numel (varargin)
     switch (varargin{i})
       case "-nodeps"
@@ -489,6 +517,11 @@ function [local_packages, global_packages] = pkg (varargin)
           error ("pkg: can't download from Octave Packages without the cURL library");
         endif
         octave_forge = true;
+      case "-all"
+        if (! __octave_config_info__ ("CURL_LIBS"))
+          error ("pkg: can't download from Octave Packages without the cURL library");
+        endif
+        want_all_packages = true;
       case "-local"
         global_install = false;
         if (! user_prefix)
@@ -512,30 +545,45 @@ function [local_packages, global_packages] = pkg (varargin)
   if (octave_forge)
     if (strcmp (action, "install"))
       warning ("Octave:pkg:install-forge", "pkg: the '-forge' option is no longer needed for 'pkg install'");
-    elseif (! strcmp (action, "list"))
-      error ("pkg: '-forge' can only be used with 'pkg list'");
+    elseif (strcmp (action, "list"))
+      warning ("Octave:pkg:list-forge", "pkg: changing 'pkg list -forge' to 'pkg search -all'");
+      action = "search";  # proceed as though user has invoked "pkg search -all"
+      want_all_packages = true;
+    else
+      error ("pkg: action '%s' does not accept option '-forge'", action);
+    endif
+  endif
+
+  if (want_all_packages)
+    if (! strcmp (action, "search"))
+      error ("pkg: option '-all' is only available for action 'search'");
+    elseif (! isempty (files))
+      error ("pkg: cannot specify extra search terms with option '-all'");
     endif
   endif
 
   ## Take action
   switch (action)
     case "list"
-      if (octave_forge)
-        if (nargout)
-          local_packages = list_forge_packages ();
-        else
-          list_forge_packages ();
-        endif
+      if (nargout == 1)
+        local_packages = installed_packages (local_list, global_list, files);
+      elseif (nargout > 1)
+        [local_packages, global_packages] = installed_packages (local_list,
+                                                                global_list,
+                                                                files);
       else
-        if (nargout == 1)
-          local_packages = installed_packages (local_list, global_list, files);
-        elseif (nargout > 1)
-          [local_packages, global_packages] = installed_packages (local_list,
-                                                                  global_list,
-                                                                  files);
-        else
-          installed_packages (local_list, global_list, files);
-        endif
+        installed_packages (local_list, global_list, files);
+      endif
+
+    case "search"
+      if (! want_all_packages && isempty (files))
+        error ("pkg: search action requires at least one filename or '-all'");
+      endif
+
+      if (nargout)
+        local_packages = list_forge_packages (files, want_all_packages);
+      else
+        list_forge_packages (files, want_all_packages);
       endif
 
     case "install"

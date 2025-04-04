@@ -24,13 +24,18 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{list} =} list_forge_packages ()
-## Gets the current list of Octave packages, then either displays the list
-## with version numbers and some brief descriptions, or returns the list of
-## packages compatible with @code{pkg install -forge}.
+## @deftypefn {} {@var{list} =} list_forge_packages (@var{searchterms})
+## Search for all packages on the Octave Packages repository whose
+## descriptions include @var{searchterms}, then either displays the search
+## results with brief descriptions, or returns the list of matching packages
+## that can also be installed with @code{pkg install}.
 ## @end deftypefn
 
-function retval = list_forge_packages ()
+##
+## TODO Rename this function to avoid both "list" and "forge" in its name.
+## Maybe "search_packages"?
+##
+function retval = list_forge_packages (searchterms, allpackages)
 
   __pkg__ = get_validated_pkg_list ();  # fresh data from packages.octave.org
 
@@ -40,24 +45,45 @@ function retval = list_forge_packages ()
 
   retval = "";
 
-  ## Determine whether each package can be installed by `pkg install -forge`.
-  ## This is possible if `pkg` is listed as a prerequisite for that package.
-  lgl = false (1, numel (pkgnames));
-  for i = 1:numel (pkgnames)
+  ## Examine each package in turn and check for search terms and installability
+  installable = false (1, numel (pkgnames));
+  has_search_terms = true (1, numel (pkgnames));
+  for i = numel (pkgnames) : -1 : 1
 
     this = char (pkgnames(i));
 
+    ## Filter based on search term(s) being present in the description.
+    ## If multiple search terms were given, we do a boolean AND over them,
+    ## which returns the set intersection of the search results for the
+    ## individual terms.
+    str = __pkg__.(this).description;
+    if (! allpackages)  # search terms are provided, so we need to filter
+      for j = 1:numel (searchterms)
+        has_search_terms(i) &= any (regexpi (str, char (searchterms{j}), "once"));
+      endfor
+    endif
+
+    if (! has_search_terms(i))  # no need to examine this package further
+      continue
+    end
+
+    ## If we are here, has_search_terms(i) = true.
+
+    ## Determine whether each package can be installed by "pkg install".
+    ## This is possible if "pkg" is listed as a prerequisite for that package.
     ## In the case of multiple versions, versions(1) is the most recent.
-    prereq = char (__pkg__.(this).versions(1).depends.name);
-    lgl(i) = any (cell2mat (strfind (cellstr (prereq), "pkg")));
+    prereq = cellstr (char (__pkg__.(this).versions(1).depends.name));
+    installable(i) = any (strcmp (prereq, "pkg"));
 
     if (formatmore)  # add more descriptive text to output
 
       ## Add version number
       v = __pkg__.(this).versions(1).id;
-      vers(i, 1:numel(v)) = v;
+      vers(i, 1:numel (v)) = v;
 
       ## Add description, truncating long text with "..." but not mid-word.
+      ## FIXME: Maybe show only the relevant part of description that includes
+      ## the search term(s).
       str = __pkg__.(this).description;
       if (numel (str) > 80)
         str(81:end) = [];
@@ -73,26 +99,39 @@ function retval = list_forge_packages ()
 
   if (! formatmore)  # we want only the package names not the versions.
 
-    ## Return only those packages that can be installed with `pkg install -forge`
-    retval = char (pkgnames(lgl));
+    ## Return only those packages that match the given search terms
+    ## and can also be installed with "pkg install".
+    retval = char (pkgnames(has_search_terms & installable));
 
-  else  # pretty print on screen.
+  else  # pretty print on screen
+
+    if (! any (has_search_terms))  # no search results
+      printf ("No packages were found with the given search term(s)\n");
+      return
+    endif
 
     vers(vers == 0) = ' ';
     desc(desc == 0) = ' ';
+    special = false;
 
     page_screen_output (false, "local");
 
+    printf ("Search found %d results\n", nnz (has_search_terms));
     printf ("              Package Name | Version | Description\n");
-    printf ("---------------------------+---------+-----------------------------------------------------------------------------------\n");
-    for i = 1:nnz (lgl)
+    printf ("---------------------------+---------+------------------------------------\n");
+
+    for i = find (has_search_terms)  # restrict attention to search results only
       str = char (pkgnames(i));
-      if (! lgl(i))
+      if (! installable(i))
         str = [str, " (!)"];
+        special = true;
       endif
       printf ("%26s | %7s | %s\n", str, vers(i, :), desc(i, :));
     endfor
-    printf ("(!) These packages have special installation instructions.\n");
+
+    if (special)
+      printf ("(!) These packages have special installation instructions.\n");
+    endif
 
   endif
 

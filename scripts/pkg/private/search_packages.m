@@ -54,9 +54,10 @@ function retval = search_packages (searchterms, allpackages)
     ## individual terms.
     str = __pkg__.(this).description;
     if (! allpackages)  # search terms are provided, so we need to filter
-      for j = 1:numel (searchterms)
-        has_search_terms(i) &= any (regexpi (str, char (searchterms{j}), "once"));
-      endfor
+      j = 0;
+      while (has_search_terms(i) && ++j <= numel (searchterms))
+        has_search_terms(i) &= any (regexpi (str, searchterms{j}, 'once'));
+      endwhile
     endif
 
     if (! has_search_terms(i))  # no need to examine this package further

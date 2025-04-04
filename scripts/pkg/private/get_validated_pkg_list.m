@@ -30,7 +30,17 @@
 ## construct the `__pkg__` struct used by other functions.
 ## @end deftypefn
 
-function __pkg__ = get_validated_pkg_list ()
+function retval = get_validated_pkg_list ()
+
+  persistent alreadycalled = false;
+  persistent __pkg__;
+
+  if (alreadycalled)
+    ## This function has been called already and __pkg__ exists.
+    ## No need to query the server again.
+    retval = __pkg__;
+    return
+  endif
 
   [list, succ] = urlread ("https://packages.octave.org/packages/");
   if (! succ)
@@ -108,5 +118,9 @@ function __pkg__ = get_validated_pkg_list ()
   assert (class (__pkg__), "struct");
 
   ## The __pkg__ struct is what we return with all the package information.
+  ## We make it persistent to avoid querying the server each time.
+
+  retval = __pkg__;
+  alreadycalled = true;
 
 endfunction

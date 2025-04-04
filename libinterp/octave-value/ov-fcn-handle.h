@@ -47,7 +47,7 @@ class tree_evaluator;
 
 // Function handles.
 
-class base_fcn_handle
+class OCTINTERP_API base_fcn_handle
 {
 public:
 
@@ -85,15 +85,15 @@ public:
 
   virtual bool is_weak_anonymous () const { return false; }
 
-  virtual octave_value make_weak_nested_handle () const;
+  virtual OCTINTERP_API octave_value make_weak_nested_handle () const;
 
-  virtual octave_value make_weak_anonymous_handle () const;
+  virtual OCTINTERP_API octave_value make_weak_anonymous_handle () const;
 
   std::string fcn_name () const { return m_name; }
 
   std::string file () const { return m_file; }
 
-  octave_value_list
+  OCTINTERP_API octave_value_list
   subsref (const std::string& type, const std::list<octave_value_list>& idx,
            int nargout);
 
@@ -123,23 +123,25 @@ public:
 
   virtual std::string get_dispatch_class () const { return ""; }
 
-  octave_value convert_to_str_internal (bool pad, bool force, char type) const;
+  OCTINTERP_API octave_value
+  convert_to_str_internal (bool pad, bool force, char type) const;
 
-  virtual bool save_ascii (std::ostream& os);
+  virtual OCTINTERP_API bool save_ascii (std::ostream& os);
 
-  virtual bool load_ascii (std::istream& is);
+  virtual OCTINTERP_API bool load_ascii (std::istream& is);
 
-  virtual bool save_binary (std::ostream& os, bool save_as_floats);
+  virtual OCTINTERP_API bool
+  save_binary (std::ostream& os, bool save_as_floats);
 
-  virtual bool load_binary (std::istream& is, bool swap,
-                            mach_info::float_format fmt);
+  virtual OCTINTERP_API bool
+  load_binary (std::istream& is, bool swap, mach_info::float_format fmt);
 
-  virtual bool save_hdf5 (octave_hdf5_id loc_id, const char *name,
-                          bool save_as_floats);
+  virtual OCTINTERP_API bool
+  save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
-  virtual bool load_hdf5 (octave_hdf5_id& group_hid,
-                          octave_hdf5_id& space_hid,
-                          octave_hdf5_id& type_hid);
+  virtual OCTINTERP_API bool
+  load_hdf5 (octave_hdf5_id& group_hid, octave_hdf5_id& space_hid,
+             octave_hdf5_id& type_hid);
 
   virtual void print_raw (std::ostream&, bool /*pr_as_read_syntax*/,
                           int /*current_print_indent_level*/) const
@@ -171,10 +173,10 @@ public:
 
 protected:
 
-  void warn_load (const char *file_type) const;
-  void warn_save (const char *file_type) const;
+  OCTINTERP_API void warn_load (const char *file_type) const;
+  OCTINTERP_API void warn_save (const char *file_type) const;
 
-  void unimplemented (const char *op, const char *fmt) const;
+  OCTINTERP_API void unimplemented (const char *op, const char *fmt) const;
 
   // The name of the handle, not including the "@", or the text of the
   // anonymous function.

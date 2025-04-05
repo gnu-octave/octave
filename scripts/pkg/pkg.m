@@ -632,7 +632,7 @@ function [local_packages, global_packages] = pkg (varargin)
             ## manually, just in case the package author chooses zip
             ## or any other archive format? Or will all packages always
             ## be required to give .tar.gz?
-            [v, url] = get_forge_pkg (file);
+            [v, url] = get_pkg_info (file);
             tmp_file = tempname (tmp_dir, [file "-" v "-"]);
             tmp_file = [tmp_file, ".tar.gz"];
             local_files{end+1} = tmp_file;  # so that it gets cleaned up
@@ -836,13 +836,13 @@ function [local_packages, global_packages] = pkg (varargin)
         installed_pkg_name = installed_pkgs_lst{i}.name;
         installed_pkg_version = installed_pkgs_lst{i}.version;
         try
-          forge_pkg_version = get_forge_pkg (installed_pkg_name);
+          online_pkg_version = get_pkg_info (installed_pkg_name);
         catch
           warning ("pkg: package %s not found on Octave Packages - skipping update\n",
                    installed_pkg_name);
-          forge_pkg_version = "0";
+          online_pkg_version = "0";
         end_try_catch
-        if (compare_versions (forge_pkg_version, installed_pkg_version, ">"))
+        if (compare_versions (online_pkg_version, installed_pkg_version, ">"))
           options_to_pass = varargin (strncmp (varargin, "-", 1));
           feval (@pkg, "install", options_to_pass{:}, installed_pkg_name);
         endif

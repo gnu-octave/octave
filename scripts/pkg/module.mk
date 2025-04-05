@@ -11,8 +11,8 @@ FCN_FILE_DIRS += \
   %reldir%/private/expand_rel_paths.m \
   %reldir%/private/standardize_paths.m \
   %reldir%/private/get_description.m \
-  %reldir%/private/get_forge_pkg.m \
   %reldir%/private/get_inverse_dependencies.m \
+  %reldir%/private/get_pkg_info.m \
   %reldir%/private/get_unsatisfied_deps.m \
   %reldir%/private/get_validated_pkg_list.m \
   %reldir%/private/getarch.m \

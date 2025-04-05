@@ -158,7 +158,6 @@ public Q_SLOTS:
                                         = QString ());
   void show_about_octave ();
   void notice_settings (bool update_by_worker = false);
-  QPalette getFusionDarkPalette ();
   void prepare_to_exit ();
   void go_to_previous_widget ();
   void reset_windows ();
@@ -309,9 +308,6 @@ private:
   QHash<QMenu *, QStringList> m_hash_menu_text;
 
   QString m_default_encoding;
-
-  QString m_default_style;
-  QPalette m_default_palette;
 
   //! Toolbar.
 

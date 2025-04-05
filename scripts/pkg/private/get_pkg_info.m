@@ -24,18 +24,18 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {[@var{ver}, @var{url}] =} get_forge_pkg (@var{name})
+## @deftypefn {} {[@var{ver}, @var{url}] =} get_pkg_info (@var{name})
 ## Return the current version and URL of the Octave package @var{name}.
 ##
 ## @end deftypefn
 
-function [ver, url] = get_forge_pkg (name)
+function [ver, url] = get_pkg_info (name)
 
   ## Verify that name is valid.
   if (! (ischar (name) && rows (name) == 1 && ndims (name) == 2))
-    error ("get_forge_pkg: package NAME must be a string");
+    error ("get_pkg_info: package NAME must be a string");
   elseif (! all (isalnum (name) | name == "-" | name == "." | name == "_"))
-    error ("get_forge_pkg: invalid package NAME: %s", name);
+    error ("get_pkg_info: invalid package NAME: %s", name);
   endif
 
   name = lower (name);
@@ -64,7 +64,7 @@ function [ver, url] = get_forge_pkg (name)
 
     dist = cellfun ("fdist", pkgnames);
     [~, i] = min (dist);
-    error ("get_forge_pkg: package not found: ""%s"".  Did you mean ""%s""?", ...
+    error ("get_pkg_info: package not found: ""%s"".  Did you mean ""%s""?", ...
            name, pkgnames{i});
 
   endif

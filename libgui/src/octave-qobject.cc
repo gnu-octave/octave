@@ -32,6 +32,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QFile>
+#include <QStyleFactory>
 #if ! defined (Q_OS_WIN32)
 #  include <QTextCodec>
 #endif
@@ -49,6 +50,7 @@
 #include "documentation-dock-widget.h"
 #include "files-dock-widget.h"
 #include "gui-settings.h"
+#include "gui-preferences-global.h"
 #include "gui-preferences-sc.h"
 #include "history-dock-widget.h"
 #include "interpreter-qobject.h"
@@ -194,7 +196,8 @@ base_qobject::base_qobject (qt_application& app_context, bool gui_app)
     m_workspace_widget (),
     m_editor_widget (),
     m_variable_editor_widget (),
-    m_main_window (nullptr)
+    m_main_window (nullptr),
+    m_style_set (false)
 {
   std::string show_gui_msgs = sys::env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
 
@@ -514,6 +517,8 @@ base_qobject::terminal_widget (main_window *mw)
 
           connect_interpreter_events (cmd_widget);
         }
+
+      set_gui_style ();
     }
 
   return m_terminal_widget;
@@ -541,6 +546,8 @@ base_qobject::documentation_widget (main_window *mw)
                &qt_interpreter_events::unregister_documentation_signal,
                m_documentation_widget,
                &documentation_dock_widget::unregisterDoc);
+
+      set_gui_style ();
     }
 
   return m_documentation_widget;
@@ -555,8 +562,11 @@ base_qobject::file_browser_widget (main_window *mw)
       m_file_browser_widget->set_adopted (true);
     }
   else if (! m_file_browser_widget)
-    m_file_browser_widget
-      = QPointer<files_dock_widget> (new files_dock_widget (mw));
+     {
+       m_file_browser_widget
+         = QPointer<files_dock_widget> (new files_dock_widget (mw));
+       set_gui_style ();
+     }
 
   connect (qt_link (), &qt_interpreter_events::directory_changed_signal,
            m_file_browser_widget->get_file_system_browser (),
@@ -595,6 +605,8 @@ base_qobject::history_widget (main_window *mw)
 
           xevmgr.set_history ();
         });
+
+       set_gui_style ();
     }
 
   return m_history_widget;
@@ -696,6 +708,8 @@ base_qobject::workspace_widget (main_window *mw)
 
           xevmgr.set_workspace ();
         });
+
+      set_gui_style ();
     }
 
   return m_workspace_widget;
@@ -731,6 +745,8 @@ base_qobject::variable_editor_widget (main_window *mw)
                m_variable_editor_widget, &variable_editor::refresh);
 
       connect_interpreter_events<variable_editor> (m_variable_editor_widget);
+
+      set_gui_style ();
     }
 
   return m_variable_editor_widget;
@@ -740,8 +756,11 @@ QPointer<community_news>
 base_qobject::community_news_widget (int serial)
 {
   if (! m_community_news)
-    m_community_news
-      = QPointer<community_news> (new community_news (serial));
+    {
+      m_community_news
+        = QPointer<community_news> (new community_news (serial));
+      set_gui_style ();
+    }
 
   return m_community_news;
 }
@@ -750,10 +769,86 @@ QPointer<release_notes>
 base_qobject::release_notes_widget ()
 {
   if (! m_release_notes)
-    m_release_notes = QPointer<release_notes> (new release_notes ());
+    {
+      m_release_notes = QPointer<release_notes> (new release_notes ());
+      set_gui_style ();
+    }
 
   return m_release_notes;
 }
+
+QPalette
+base_qobject::getFusionDarkPalette ()
+{
+  QPalette darkPalette;
+  darkPalette.setColor (QPalette::Window, QColor (53, 53, 53));
+  darkPalette.setColor (QPalette::WindowText, Qt::white);
+  darkPalette.setColor (QPalette::Disabled, QPalette::WindowText, QColor (127, 127, 127));
+  darkPalette.setColor (QPalette::Base, QColor (42, 42, 42));
+  darkPalette.setColor (QPalette::AlternateBase, QColor (66, 66, 66));
+  darkPalette.setColor (QPalette::ToolTipBase, Qt::white);
+  darkPalette.setColor (QPalette::ToolTipText, Qt::white);
+  darkPalette.setColor (QPalette::Text, Qt::white);
+  darkPalette.setColor (QPalette::Disabled, QPalette::Text, QColor (127, 127, 127));
+  darkPalette.setColor (QPalette::Dark, QColor (35, 35, 35));
+  darkPalette.setColor (QPalette::Shadow, QColor (20, 20, 20));
+  darkPalette.setColor (QPalette::Button, QColor (53, 53, 53));
+  darkPalette.setColor (QPalette::ButtonText, Qt::white);
+  darkPalette.setColor (QPalette::Disabled, QPalette::ButtonText, QColor (127, 127, 127));
+  darkPalette.setColor (QPalette::BrightText, Qt::red);
+  darkPalette.setColor (QPalette::Link, QColor (42, 130, 218));
+  darkPalette.setColor (QPalette::Highlight, QColor (42, 130, 218));
+  darkPalette.setColor (QPalette::Disabled, QPalette::Highlight, QColor (80, 80, 80));
+  darkPalette.setColor (QPalette::HighlightedText, Qt::white);
+  darkPalette.setColor (QPalette::Disabled, QPalette::HighlightedText, QColor (127, 127, 127));
+
+  return darkPalette;
+}
+
+void
+base_qobject::set_gui_style (bool called_from_main_window)
+{
+  if (! called_from_main_window)
+    {
+      // called internally, not from main window
+      if (m_style_set)
+        return;
+
+      m_style_set = false;
+    }
+
+  QApplication *qapp = qapplication ();
+
+  gui_settings settings;
+  QString default_style = qapp->style ()->objectName ();
+  QPalette default_palette = qapp->palette ();
+
+  // Get desired style from preferences or take the default one if
+  // the desired one is not found
+  QString preferred_style = settings.string_value (global_style);
+
+  if (preferred_style == global_style.def ().toString ())
+    preferred_style = default_style;
+
+  if (preferred_style == global_extra_styles.at (EXTRA_STYLE_FUSION_DARK))
+    {
+      QStyle *new_style = QStyleFactory::create (QStringLiteral ("Fusion"));
+      if (new_style)
+        qapp->setStyle (new_style);
+      qapp->setPalette (getFusionDarkPalette ());
+      qapp->setStyleSheet ("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
+    }
+  else
+    {
+      QStyle *new_style = QStyleFactory::create (preferred_style);
+      if (new_style)
+        {
+          qapp->setPalette (default_palette);
+          qapp->setStyle (new_style);
+        }
+    }
+}
+
 
 bool
 base_qobject::confirm_shutdown ()

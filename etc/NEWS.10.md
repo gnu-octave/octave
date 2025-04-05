@@ -1,4 +1,35 @@
-Summary of important user-visible changes for version 10 (2025-03-25):
+Summary of bugs fixed for version 10.2.0 (tbd):
+-----------------------------------------------------
+
+## Improvements and fixes
+- `tensorprod`: Fix error for certain tensor/vector combinations (bug #66950).
+- `mkoctfile`: Skip compiling object file with soversion for `--mex -c -o`
+  (bug #66972).
+- Fix segfault in `octave-svgconvert` when called with no inputs.
+- `mkoctfile`: Remove temporary C source files after compilation.
+
+### GUI
+- Fix build error without QScintilla installed (bug #66962).
+
+### Build system / Tests
+- Add visibility attributes for the `octave::base_fcn_handle` class.
+
+### Documentation
+- Recommend use of string function name as first argument to `cellfun()`.
+- `cellfun`: Call out special accelerated functions.
+- Update documentation for `feval`, `eval`, `evalin`, `evalc`.
+- `axis`: Remove incorrect statement from documentation.
+- Do not put graphics object categories into Graphic Properties Index.
+- Adjust Perl regexp used to remove leading ':' in HTML.
+- `char`: Document calling form with no inputs.
+- Fix missing hyperlinks in Table of Contents of Octave manual.
+- Fix overfull hbox warnings in Texinfo log files.
+- Replace Texinfo `@dots` macro with `@enddots` macro where appropriate.
+- Do not print ugly black boxes for overfull hboxes in PDF output.
+- Fix accidental doc text inclusions after `@deftypefn`.
+
+
+Summary of important user-visible changes for version 10 (2025-03-28):
 ---------------------------------------------------------------------
 
 ### General improvements
@@ -232,8 +263,8 @@ from Octave 10.
   `pkg global_list`.
 
 
-Summary of bugs fixed for version 10.1.0 (yyyy-mm-dd):
-----------------------------------------------------
+Summary of bugs fixed for version 10.1.0 (2025-03-28):
+-----------------------------------------------------
 
 - bug #66753: `hist.m`: Test for equal bin spacing using a numeric tolerance.
 - bug #66753: `hist.m`: Fix regression in determining equal bin spacing.

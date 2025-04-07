@@ -24,9 +24,11 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} pkg @var{command} @var{pkg_name}
-## @deftypefnx {} {} pkg @var{command} @var{option} @var{pkg_name}
-## @deftypefnx {} {[@var{out1}, @dots{}] =} pkg (@var{command}, @dots{} )
+## @deftypefn  {} {} pkg @var{command}
+## @deftypefnx {} {} pkg @var{command} @var{pkg_name}
+## @deftypefnx {} {} pkg @var{command} @var{pkg_name1} @var{pkg_name2} @dots{}
+## @deftypefnx {} {} pkg @var{command} @var{option1} @dots{} @var{pkg_name1} @dots{}
+## @deftypefnx {} {[@var{out1}, @dots{}] =} pkg (@var{command}, @dots{})
 ## Manage or query packages (groups of add-on functions) for Octave.
 ##
 ## Packages can be installed globally (i.e., for all users of the system) or
@@ -119,7 +121,7 @@
 ## @noindent
 ## shows all packages whose descriptions have four or more consecutive vowels.
 ##
-## The option @code{-all} as in:
+## The option @code{-all} as in
 ##
 ## @example
 ## pkg search -all
@@ -141,9 +143,11 @@
 ## Install named packages.  For example, each of the following commands:
 ##
 ## @example
+## @group
 ## pkg install pkgname
 ## pkg install 'pkgname-1.0.0.tar.gz'
 ## pkg install 'https://somewebsite.org/pkgname-1.0.0.tar.gz'
+## @end group
 ## @end example
 ##
 ## @noindent
@@ -173,7 +177,8 @@
 ## @emph{No support}: the GNU Octave community is not responsible for
 ## packages installed from foreign sites.  For support or for
 ## reporting bugs you need to contact the maintainers of the installed
-## package directly (run @code{pkg describe} on the package to get information).
+## package directly (run @code{pkg describe} on the package to get
+## information).
 ##
 ## The @var{option} variable can contain options that affect the manner
 ## in which a package is installed.  These options can be one or more of:
@@ -503,11 +508,11 @@ function [local_packages, global_packages] = pkg (varargin)
       case "-noauto"
         warning ("Octave:deprecated-option",
                  ["pkg: autoload is no longer supported.  The -noauto "...
-                  "option is no longer required."]);
+                  "option is no longer required.\n"]);
       case "-auto"
         warning ("Octave:deprecated-option",
                  ["pkg: autoload is no longer supported.  Add a "...
-                  "'pkg load ...' command to octaverc instead."]);
+                  "'pkg load ...' command to octaverc instead.\n"]);
       case "-verbose"
         verbose = true;
         ## Send verbose output to pager immediately.  Change setting locally.
@@ -544,9 +549,9 @@ function [local_packages, global_packages] = pkg (varargin)
 
   if (octave_forge)
     if (strcmp (action, "install"))
-      warning ("Octave:pkg:install-forge", "pkg: the '-forge' option is no longer needed for 'pkg install'");
+      warning ("Octave:pkg:install-forge", "pkg: the '-forge' option is no longer needed for 'pkg install'\n");
     elseif (strcmp (action, "list"))
-      warning ("Octave:pkg:list-forge", "pkg: changing 'pkg list -forge' to 'pkg search -all'");
+      warning ("Octave:pkg:list-forge", "pkg: changing 'pkg list -forge' to 'pkg search -all'\n");
       action = "search";  # proceed as though user has invoked "pkg search -all"
       want_all_packages = true;
     else
@@ -577,7 +582,7 @@ function [local_packages, global_packages] = pkg (varargin)
 
     case "search"
       if (! want_all_packages && isempty (files))
-        error ("pkg: search action requires at least one filename or '-all'");
+        error ("pkg: search action requires at least one search term or '-all'");
       endif
 
       if (nargout)
@@ -823,7 +828,7 @@ function [local_packages, global_packages] = pkg (varargin)
         for i = 1:numel (files)
           idx = find (strcmp (files{i}, installed_names), 1);
           if (isempty (idx))
-            warning ("pkg: package %s is not installed - skipping update",
+            warning ("pkg: package %s is not installed - skipping update\n",
                      files{i});
           else
             update_lst = [ update_lst, installed_pkgs_lst(idx) ];

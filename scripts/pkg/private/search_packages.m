@@ -37,13 +37,14 @@ function retval = search_packages (searchterms, allpackages)
 
   pkgnames = fieldnames (__pkg__);
 
-  formatmore = (nargout == 0);  # do further string formatting for display
+  prettyprint = (nargout == 0);  # do further string formatting for display
 
   retval = "";
 
   ## Examine each package in turn and check for search terms and installability
   installable = false (1, numel (pkgnames));
   has_search_terms = true (1, numel (pkgnames));
+
   for i = numel (pkgnames) : -1 : 1
 
     this = char (pkgnames(i));
@@ -61,8 +62,8 @@ function retval = search_packages (searchterms, allpackages)
     endif
 
     if (! has_search_terms(i))  # no need to examine this package further
-      continue
-    end
+      continue;
+    endif
 
     ## If we are here, has_search_terms(i) = true.
 
@@ -72,7 +73,7 @@ function retval = search_packages (searchterms, allpackages)
     prereq = cellstr (char (__pkg__.(this).versions(1).depends.name));
     installable(i) = any (strcmp (prereq, "pkg"));
 
-    if (formatmore)  # add more descriptive text to output
+    if (prettyprint)  # add more descriptive text to output
 
       ## Add version number
       v = __pkg__.(this).versions(1).id;
@@ -84,8 +85,8 @@ function retval = search_packages (searchterms, allpackages)
       str = __pkg__.(this).description;
       if (numel (str) > 80)
         str(81:end) = [];
-        f = find (isspace (str), 1, "last");
-        str(f:end) = [];
+        idx = find (isspace (str), 1, "last");
+        str(idx:end) = [];
         str = [str, "..."];
       endif
       desc(i, 1:numel (str)) = str;
@@ -94,7 +95,7 @@ function retval = search_packages (searchterms, allpackages)
 
   endfor
 
-  if (! formatmore)  # we want only the package names not the versions.
+  if (! prettyprint)  # we want only the package names not the versions.
 
     ## Return only those packages that match the given search terms
     ## and can also be installed with "pkg install".
@@ -104,14 +105,12 @@ function retval = search_packages (searchterms, allpackages)
 
     if (! any (has_search_terms))  # no search results
       printf ("No packages were found with the given search term(s)\n");
-      return
+      return;
     endif
 
     vers(vers == 0) = ' ';
     desc(desc == 0) = ' ';
     special = false;
-
-    page_screen_output (false, "local");
 
     printf ("Search found %d results\n", nnz (has_search_terms));
     printf ("              Package Name | Version | Description\n");

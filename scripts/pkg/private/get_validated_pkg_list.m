@@ -25,21 +25,23 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} @var{__pkg__} = get_validated_pkg_list ()
-## Internal function. Download list of current packages
-## and ensure that it fits expected patterns. Then use it to
-## construct the `__pkg__` struct used by other functions.
+## Download list of current packages and validate that it fits expected
+## patterns.
+##
+## Return @code{__pkg__} struct used by other functions.
 ## @end deftypefn
 
 function retval = get_validated_pkg_list ()
 
-  persistent alreadycalled = false;
+  ## The __pkg__ struct is what we return with all the package information.
+  ## We make it persistent to avoid querying the server each time.
   persistent __pkg__;
 
-  if (alreadycalled)
+  if (! isempty (__pkg__))
     ## This function has been called already and __pkg__ exists.
     ## No need to query the server again.
     retval = __pkg__;
-    return
+    return;
   endif
 
   [list, succ] = urlread ("https://packages.octave.org/packages/");
@@ -49,7 +51,7 @@ function retval = get_validated_pkg_list ()
 
   ## `list` begins with the known HTML prefix "<pre>".
   ## If this fails, the rest of the code is likely not valid, so fail early.
-  if (! (numel (list) >= 5 && all (list(1:5) == "<pre>")))
+  if (! strncmp (list, "<pre>", 5))
     error ("pkg: server returned data of unknown format");
   endif
   list(1:5) = [];
@@ -68,8 +70,8 @@ function retval = get_validated_pkg_list ()
   ## like `system ("do_something_bad")`.
   ##
   ## As a basic precaution against mindlessly executing that with `eval`,
-  ## we ensure that all the Octave code in `list` is only a set of
-  ## assignment commands of a known format, and nothing else.
+  ## we ensure that all the Octave code in `list` is only a set of assignment
+  ## commands of a known format, and nothing else.
   ##
   ## This check also helps if the server is safe but the internet connection
   ## is unstable and causes `list` to be incomplete or malformed, so that
@@ -84,7 +86,7 @@ function retval = get_validated_pkg_list ()
   endwhile
 
   ## Ensure known closing string.
-  if (! all (list(end-6:end) == "%</pre>"))
+  if (! strcmp (list(end-6:end), "%</pre>"))
     error ("pkg: server returned data of unknown format");
   endif
   list(end-6:end) = [];
@@ -98,7 +100,7 @@ function retval = get_validated_pkg_list ()
   do
     len = numel (list);
     list = strrep (list, "\n\n", "\n");
-  until (numel (list) == len);
+  until (numel (list) == len)
 
   ## Every statement must now be of the general format
   ##     __pkg__.FOO = BAR;
@@ -114,13 +116,10 @@ function retval = get_validated_pkg_list ()
   eval (list);  # this creates a struct called `__pkg__`
 
   ## Verify that it exists and is a struct.
+  ## FIXME: Do we really need these checks?  Won't eval above fail first?
   assert (exist ("__pkg__"));
   assert (class (__pkg__), "struct");
 
-  ## The __pkg__ struct is what we return with all the package information.
-  ## We make it persistent to avoid querying the server each time.
-
   retval = __pkg__;
-  alreadycalled = true;
 
 endfunction

@@ -3,7 +3,21 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 
 ### General improvements
 
-- The internal interface to Java has been updated to be more memory-efficient (faster culling of unused objects).  Octave now requires Java 1.9 to build from sources.  Distributed versions of Octave will run with any JVM.
+- The internal interface to Java has been updated to be more memory-efficient
+  (faster culling of unused objects).  Octave now requires Java 1.9 to build
+  from sources.  Distributed versions of Octave will run with any JVM.
+
+- The `pkg` command has these user-visible changes:
+  * The package installation command `pkg install foo` now automatically
+    determines whether `foo` is a local file, a URL, or an unqualified package
+    name in that order, and installs it as appropriate. The `-forge` option is
+    no longer required but is still accepted with a silenceable warning.
+  * There is a new `pkg search` functionality. Running `pkg search foo bar baz`
+    searches Octave Packages online for packages having all those keywords
+    in their descriptions. Search terms can also be regular expressions.
+  * The old command `pkg list -forge`, which returned a list of packages found
+    online, has been replaced by `pkg search -all`. Calling `pkg list -forge`
+    now gives a warning and then executes `pkg search -all`.
 
 ### Graphical User Interface
 

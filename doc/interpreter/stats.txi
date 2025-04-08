@@ -19,10 +19,10 @@
 @node Statistics
 @chapter Statistics
 
-Octave has support for various statistical methods.  The emphasis is on basic
-descriptive statistics, but the Octave Forge statistics package includes
-probability distributions, statistical tests, random number generation, and
-much more.
+Octave has support for various statistical methods, emphasizing basic
+descriptive statistics.  More advanced functions for probability distributions,
+statistical tests, random number generation, etc. are provided by the add-on
+Statistics package from Octave Packages.
 
 The functions that analyze data all assume that multi-dimensional data is
 arranged in a matrix where each row is an observation, and each column is a

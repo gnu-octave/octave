@@ -699,6 +699,12 @@ AC_ARG_ENABLE([link-all-dependencies],
   [link_all_deps="$DEFAULT_LINK_ALL_DEPS"])
 AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = yes])
 
+AC_ARG_VAR([OCTAVE_CLI_LTLDFLAGS],
+  [additional flags when linking octave-cli with libtool])
+
+AC_ARG_VAR([OCTAVE_GUI_LTLDFLAGS],
+  [additional flags when linking octave-gui with libtool])
+
 ### Check for BLAS and LAPACK libraries.
 
 ## Need to adjust FFLAGS to include correct integer size.

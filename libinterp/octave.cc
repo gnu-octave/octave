@@ -208,6 +208,10 @@ cmdline_options::cmdline_options (int argc, char **argv)
           m_read_site_files = false;
           break;
 
+        case NO_STARTUP_TESTS_OPTION:
+          m_inhibit_startup_tests = true;
+          break;
+
         case PERSIST_OPTION:
           m_persist = true;
           break;
@@ -253,6 +257,7 @@ cmdline_options::as_octave_value () const
   m.assign ("forced_line_editing", forced_line_editing ());
   m.assign ("gui", gui ());
   m.assign ("inhibit_startup_message", inhibit_startup_message ());
+  m.assign ("inhibit_startup_tests", inhibit_startup_tests ());
   m.assign ("line_editing", line_editing ());
   m.assign ("no_window_system", no_window_system ());
   m.assign ("persist", persist ());

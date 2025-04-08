@@ -102,6 +102,7 @@ nodist_%canon_reldir%_octave_cli_SOURCES = %reldir%/octave-build-info.cc
 %canon_reldir%_octave_cli_LDFLAGS = \
   $(NO_UNDEFINED_LDFLAG) \
   $(OCTAVE_LINK_OPTS) \
+  $(OCTAVE_CLI_LTLDFLAGS) \
   $(WARN_LDFLAGS) \
   $(OCTAVE_UNICODE_EXE_LDFLAGS)
 
@@ -128,6 +129,7 @@ endif
 %canon_reldir%_octave_gui_LDFLAGS = \
   $(NO_UNDEFINED_LDFLAG) \
   $(OCTAVE_GUI_LINK_OPTS) \
+  $(OCTAVE_GUI_LTLDFLAGS) \
   $(WARN_LDFLAGS) \
   $(OCTAVE_UNICODE_EXE_LDFLAGS)
 

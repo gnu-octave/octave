@@ -48,12 +48,13 @@ static const char *short_opts = "+GHWVde:fghip:qvx";
 #define NO_GUI_LIBS_OPTION 9
 #define NO_INIT_USER_OPTION 10
 #define NO_INIT_PATH_OPTION 11
-#define NO_LINE_EDITING_OPTION 12
-#define NO_INIT_SITE_OPTION 13
-#define PERSIST_OPTION 14
-#define SERVER_OPTION 15
-#define TEXI_MACROS_FILE_OPTION 16
-#define TRADITIONAL_OPTION 17
+#define NO_INIT_SITE_OPTION 12
+#define NO_LINE_EDITING_OPTION 13
+#define NO_STARTUP_TESTS_OPTION 14
+#define PERSIST_OPTION 15
+#define SERVER_OPTION 16
+#define TEXI_MACROS_FILE_OPTION 17
+#define TRADITIONAL_OPTION 18
 struct octave_getopt_options long_opts[] =
 {
   // Alias for --traditional, not displayed in help
@@ -98,6 +99,7 @@ struct octave_getopt_options long_opts[] =
   { "no-init-site",             octave_no_arg,       nullptr, NO_INIT_SITE_OPTION },
   // Alias for --no-init-site, not displayed in help
   { "no-site-file",             octave_no_arg,       nullptr, NO_INIT_SITE_OPTION },
+  { "no-startup-tests",         octave_no_arg,       nullptr, NO_STARTUP_TESTS_OPTION },
   { "no-window-system",         octave_no_arg,       nullptr, 'W' },
   { "norc",                     octave_no_arg,       nullptr, 'f' },
   { "path",                     octave_required_arg, nullptr, 'p' },

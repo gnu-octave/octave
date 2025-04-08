@@ -763,6 +763,8 @@ interpreter::initialize ()
   octave_initialized = true;
 
   m_initialized = true;
+
+  run_startup_tests ();
 }
 
 // Note: this function is currently only used with the new
@@ -1072,6 +1074,36 @@ interpreter::execute_atexit_fcns ()
       OCTAVE_SAFE_CALL (feval, (fcn, octave_value_list (), 0));
 
       OCTAVE_SAFE_CALL (flush_stdout, ());
+    }
+}
+
+void
+interpreter::run_startup_tests ()
+{
+  bool inhibit_startup_tests = false;
+
+  if (m_app_context)
+    {
+      const cmdline_options& options = m_app_context->options ();
+
+      inhibit_startup_tests = options.inhibit_startup_tests ();
+    }
+
+  if (! inhibit_startup_tests)
+    {
+      // Check if BLAS implementation returns single precision values
+      F77_REAL retval = 0.0;
+      F77_INT n = 2;
+      F77_REAL x[2] = {1.0, 2.0};
+      F77_REAL y[2] = {3.0, 4.0};
+      F77_FUNC (xsdot, XSDOT) (n, x, 1, y, 1, retval);
+
+      if (retval != 11.0f)
+        {
+          std::cerr << "BLAS implementation returns incorrect single "
+                       "precision floating-point type" << std::endl;
+          quit (1, true, false);
+        }
     }
 }
 

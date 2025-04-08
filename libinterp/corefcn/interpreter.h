@@ -571,6 +571,8 @@ private:
 
   int execute_command_line_file ();
 
+  void run_startup_tests ();
+
   int main_loop ();
 
   int server_loop ();

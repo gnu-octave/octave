@@ -25,6 +25,7 @@ installation of extra packages maintained by the Octave community at
 @url{https://packages.octave.org}.
 
 @menu
+* Background Information::
 * Installing and Removing Packages::
 * Using Packages::
 * Administrating Packages::
@@ -32,6 +33,66 @@ installation of extra packages maintained by the Octave community at
 @end menu
 
 @findex pkg
+@node Background Information
+@section Background Information
+
+Packages can be installed globally (i.e., for all users of the system) or
+locally (i.e., for the current user only).
+
+Global packages are installed by default in a system-wide location.  This is
+usually a subdirectory of the folder where Octave itself is installed.
+Therefore, Octave needs write access to this folder to install global packages,
+which is usually only available when Octave is run with administrative
+privileges, such as when run as root (or superuser) on Unix-like systems, or
+run with elevated privileges ("Run as administrator") on Windows.
+
+In contrast, local packages are installed by default in the user's home
+directory (or user profile on Windows) and are only available to that specific
+user.  Usually, they can be installed without administrative privileges.
+
+When Octave is running with administrative privileges, @code{pkg} will install
+packages to the global package location by default.  Otherwise, packages will
+be installed to the local location by default.  The user can override this
+default installation location with optional arguments (@option{-local} or
+@option{-global}) as described below.  The currently used default package
+installation location can be queried with @code{pkg prefix}.
+
+For global and local packages, there are separate databases holding the
+information about the installed packages.  If some package is installed
+globally as well as locally, the local installation takes precedence over
+("shadows") the global one.  Which (global or local) package installation is
+used can also be manipulated by using prefixes and/or using the
+@samp{local_list} input argument.  Using these mechanisms, several different
+releases of the same package can be installed side by side as well (but cannot
+be loaded simultaneously).
+
+Packages might depend on external software and/or other packages.  To be able
+to install such packages, these dependencies should be installed beforehand.
+A package that depends on other package(s) can still be installed using the
+@option{-nodeps} flag.  The effects of unsatisfied dependencies on external
+software---like libraries---depends on theindividual package.
+
+Packages must be loaded before they can be used.  When loading a package,
+Octave performs the following tasks:
+
+@enumerate
+@item
+If the package depends on other packages (and @code{pkg load} is called without
+the @option{-nodeps} option), the package is not loaded immediately.  Instead,
+those dependencies are loaded first (recursively if needed).
+
+@item
+When all dependencies are satisfied, the package's subdirectories are added to
+the search path.
+@end enumerate
+
+This load order leads to functions that are provided by dependencies being
+potentially shadowed by functions of the same name that are provided by
+top-level packages.
+
+Each time, a package is added to the search path, initialization script(s) for
+the package are automatically executed if they are provided by the package.
+
 @node Installing and Removing Packages
 @section Installing and Removing Packages
 

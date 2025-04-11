@@ -7,6 +7,7 @@ Summary of bugs fixed for version 10.2.0 (tbd):
   (bug #66972).
 - Fix segfault in `octave-svgconvert` when called with no inputs.
 - `mkoctfile`: Remove temporary C source files after compilation.
+- `bar`: Avoid listener error when replacing an existing bar plot (bug #67006).
 
 ### GUI
 - Fix build error without QScintilla installed (bug #66962).

@@ -381,16 +381,30 @@ function hglist = bars (hax, ishist, vertical, x, y, xb, yb, width, group,
 
   ## Add listeners outside of for loop to prevent constant updating during
   ## creation of plot when patch objects are added.
-  addlistener (hax, "xlim", @update_baseline_lim);
-  addlistener (hax, "yscale", {@update_basevalue_logscale, hg});
+  ubll = @update_baseline_lim;
+  ubvls = {@update_basevalue_logscale, hg};
+  ## Add delete function on baseline to remove all listeners from axes
+  ## properties when the bar plot is cleared.
+  set (baseline, "deletefcn", {@rm_axes_listeners, hax, ubll, ubvls});
+  addlistener (hax, "xlim", ubll);
+  addlistener (hax, "yscale", ubvls);
   addlistener (baseline, "ydata", @update_baseline);
 
-  addlistener (hax, "ylim", @update_baseline_lim);
-  addlistener (hax, "xscale", {@update_basevalue_logscale, hg});
+  addlistener (hax, "ylim", ubll);
+  addlistener (hax, "xscale", ubvls);
   addlistener (baseline, "xdata", @update_baseline);
 
   addlistener (baseline, "visible", @update_baseline);
 
+endfunction
+
+## Good practice to remove listeners when object is deleted.
+## In this case, required to avoid error in update_baseline_lim callback (bug #67004).
+function rm_axes_listeners (~, ~, hax, ubll, ubvls)
+  dellistener (hax, "xlim", ubll);
+  dellistener (hax, "yscale", ubvls);
+  dellistener (hax, "ylim", ubll);
+  dellistener (hax, "xscale", ubvls);
 endfunction
 
 function update_baseline_lim (hax, ~)

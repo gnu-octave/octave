@@ -154,6 +154,22 @@ BUILT_DISTFILES += \
   INSTALL.OCTAVE \
   NEWS
 
+if AMCOND_ENABLE_HG_ID
+DISABLE_HG_ID_OPTION :=
+else
+DISABLE_HG_ID_OPTION := --disable
+endif
+
+## The mk-hg-id.sh script will be executed each time Make runs to
+## update the HG-ID file in the build tree if it is out of date.
+
+HG-ID:
+	$(AM_V_GEN)$(SHELL) $(top_srcdir)/build-aux/mk-hg-id.sh "$(srcdir)" $(DISABLE_HG_ID_OPTION) > $@-t && \
+	$(simple_move_if_change_rule)
+.PHONY: HG-ID
+
+HG_ID_VAR = $(shell cat ${top_builddir}/HG-ID)
+
 EXTRA_DIST += \
   CITATION \
   COPYING \
@@ -410,18 +426,6 @@ endef
 ChangeLog:
 	$(AM_V_GEN)$(changelog-from-hg-log)
 .PHONY: ChangeLog
-
-## The mk-hg-id.sh script will be executed each time Make runs.  It will
-## update the HG-ID file in the build tree if it is out of date.  As a side
-## effect, HG_ID_VAR is assigned the contents of the file.
-
-if AMCOND_ENABLE_HG_ID
-HG_ID_VAR := \
-  $(shell $(SHELL) $(top_srcdir)/build-aux/mk-hg-id.sh "$(srcdir)")
-else
-HG_ID_VAR := \
-  $(shell $(SHELL) $(top_srcdir)/build-aux/mk-hg-id.sh "$(srcdir)" --disable)
-endif
 
 octetc_DATA += \
   CITATION \

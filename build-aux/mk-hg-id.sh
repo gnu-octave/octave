@@ -25,9 +25,12 @@
 ##
 ########################################################################
 
-# Generate a header file that provides the public symbols from Octave's
-# autoconf-generated config.h file.  See the notes at the top of the
-# generated octave-config.h file for more details.
+## Display the Mercurial ID of the current revision.  If the source tree
+## does not appear to be a Mercurial repo but does contain a file named
+## HG-ID, display the contents of that file.  If that file does not
+## exist, or the Mercurial fails to provide the ID, display
+## "unknown-hg-id".  If invoked with the --disable option, display
+## "hg-id-disabled".
 
 set -e
 
@@ -39,12 +42,12 @@ fi
 srcdir="$1"
 
 hg_id=HG-ID
-move_if_change="$srcdir/build-aux/move-if-change"
 
 ## A user's ~/.hgrc may redefine or add default options to any hg subcommand,
 ## potentially altering its behavior and possibly its standard output.  Always
 ## run hg subcommands with configuration variables set to ensure that the
 ## user's preferences do not influence the expected behavior.
+
 hg_safe ()
 {
   cmd=$1; shift
@@ -52,20 +55,12 @@ hg_safe ()
 }
 
 if [ $# -eq 2 ] && [ x"$2" = x--disable ]; then
-  echo "hg-id-disabled" > ${hg_id}-t
-  ${move_if_change} ${hg_id}-t ${hg_id}
-elif [ -d $srcdir/.hg ]; then
-  ( cd $srcdir && hg_safe identify --id || echo "unknown" ) > ${hg_id}-t
-  ${move_if_change} ${hg_id}-t ${hg_id}
-elif [ ! -f $srcdir/${hg_id} ]; then
-  echo "WARNING: $srcdir/${hg_id} is missing!" 1>&2
-  echo "unknown" > ${hg_id}-t && mv ${hg_id}-t ${hg_id}
+  echo "hg-id-disabled"
+elif [ -d "$srcdir/.hg" ]; then
+  ( cd "$srcdir" && hg_safe identify --id || echo "unknown-hg-id" )
+elif [ ! -f "$srcdir/$hg_id" ]; then
+  echo "WARNING: $srcdir/$hg_id is missing!" 1>&2
+  echo "unknown-hg-id"
 else
-  echo "preserving existing ${hg_id} file" 1>&2
-  if [ "x$srcdir" != "x." ] && [ -f $srcdir/${hg_id} ] && [ ! -f ${hg_id} ]; then
-    cp ${srcdir}/${hg_id} ${hg_id}
-    touch -r ${srcdir}/${hg_id} ${hg_id}
-  fi
+  cat "$srcdir/$hg_id"
 fi
-
-cat ${hg_id}

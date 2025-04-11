@@ -329,6 +329,8 @@ endfunction
 %!
 %!   baselinedata1.parent = [];
 %!   baselinedata2.parent = [];
+%!   baselinedata1.deletefcn = [];
+%!   baselinedata2.deletefcn = [];
 %!
 %!   patchdata1.parent = [];
 %!   patchdata2.parent = [];
@@ -919,6 +921,17 @@ endfunction
 %!   assert (get (hax, {"ylim", "ytick", "yticklabel"}), ...
 %!           {[-4, 0], [-4:0], {"-4"; "-3"; "-2"; "-1"; "0"}});
 %!
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Ensure no errors on plot replacement.
+%!test <*67006>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ("parent", hf);
+%!   hb = bar (hax, 2:4);
+%!   hb = bar (hax, 5:7);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

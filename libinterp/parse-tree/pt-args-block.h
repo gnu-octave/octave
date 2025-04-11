@@ -230,6 +230,9 @@ public:
   filepos beg_pos () const { return m_args_tok.beg_pos (); }
   filepos end_pos () const { return m_end_tok.end_pos (); }
 
+  comment_list leading_comments () const { return m_args_tok.leading_comments (); }
+  comment_list trailing_comments () const { return m_end_tok.trailing_comments (); }
+
   tree_args_block_attribute_list * attribute_list ()
   {
     return m_attr_list;

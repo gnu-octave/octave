@@ -63,11 +63,12 @@ public:
   filepos beg_pos () const { return m_tok.beg_pos (); }
   filepos end_pos () const { return m_list->end_pos (); }
 
+  comment_list leading_comments () const { return m_tok.leading_comments (); }
+  comment_list trailing_comments () const { return m_list->trailing_comments (); }
+
   tree_expression * condition () { return m_expr; }
 
   tree_statement_list * commands () { return m_list; }
-
-  comment_list leading_comments () const { return m_tok.leading_comments (); }
 
   void accept (tree_walker& tw)
   {
@@ -123,6 +124,24 @@ public:
     return elt->end_pos ();
   }
 
+  comment_list leading_comments () const
+  {
+    if (empty ())
+      return comment_list ();
+
+    tree_if_clause *elt = front ();
+    return elt->leading_comments ();
+  }
+
+  comment_list trailing_comments () const
+  {
+    if (empty ())
+      return comment_list ();
+
+    tree_if_clause *elt = back ();
+    return elt->trailing_comments ();
+  }
+
   token if_token () const
   {
     if (! empty ())
@@ -159,9 +178,10 @@ public:
   filepos beg_pos () const { return m_if_tok.beg_pos (); }
   filepos end_pos () const { return m_end_tok.end_pos (); }
 
-  tree_if_command_list * cmd_list () { return m_list; }
-
   comment_list leading_comments () const { return m_if_tok.leading_comments (); }
+  comment_list trailing_comments () const { return m_end_tok.trailing_comments (); }
+
+  tree_if_command_list * cmd_list () { return m_list; }
 
   void accept (tree_walker& tw)
   {
@@ -201,11 +221,12 @@ public:
   filepos beg_pos () const { return m_tok.beg_pos (); }
   filepos end_pos () const { return m_list->end_pos (); }
 
+  comment_list leading_comments () const { return m_tok.leading_comments (); }
+  comment_list trailing_comments () const { return m_list->trailing_comments (); }
+
   tree_expression * case_label () { return m_label; }
 
   tree_statement_list * commands () { return m_list; }
-
-  comment_list leading_comments () const { return m_tok.leading_comments (); }
 
   void accept (tree_walker& tw)
   {
@@ -261,6 +282,24 @@ public:
     return elt->end_pos ();
   }
 
+  comment_list leading_comments () const
+  {
+    if (empty ())
+      return comment_list ();
+
+    tree_switch_case *elt = front ();
+    return elt->leading_comments ();
+  }
+
+  comment_list trailing_comments () const
+  {
+    if (empty ())
+      return comment_list ();
+
+    tree_switch_case *elt = back ();
+    return elt->trailing_comments ();
+  }
+
   void accept (tree_walker& tw)
   {
     tw.visit_switch_case_list (*this);
@@ -282,11 +321,12 @@ public:
   filepos beg_pos () const { return m_switch_tok.beg_pos (); }
   filepos end_pos () const { return m_end_tok.end_pos (); }
 
+  comment_list leading_comments () const { return m_switch_tok.leading_comments (); }
+  comment_list trailing_comments () const { return m_end_tok.trailing_comments (); }
+
   tree_expression * switch_value () { return m_expr; }
 
   tree_switch_case_list * case_list () { return m_list; }
-
-  comment_list leading_comments () const { return m_switch_tok.leading_comments (); }
 
   void accept (tree_walker& tw)
   {

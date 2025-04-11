@@ -65,7 +65,7 @@ function native_bytes = unicode2native (utf8_str, codepage = "")
 
   native_bytes = __unicode2native__ (utf8_str, codepage);
 
-  if (iscolumn (utf8_str))
+  if (! isrow (utf8_str))
     native_bytes = native_bytes.';
   endif
 
@@ -97,12 +97,60 @@ endfunction
 %! assert (unicode2native (char ([230, 10]), 'windows-1252'),
 %!         uint8 ([63, 10]));
 
-## target encoding with surrogates larger than a byte
+## target encoding with surrogates larger than one byte
+%!testif HAVE_ICONV
+%! assert (size (unicode2native ('a',
+%!                               ['utf-16', nthargout(3, 'computer'), 'e'])),
+%!         [1, 2]);
+%!testif HAVE_ICONV
+%! assert (typecast (unicode2native ('a',
+%!                                   ['utf-16', nthargout(3, 'computer'), 'e']),
+%!                   'uint16'),
+%!         uint16 (97));
+%!testif HAVE_ICONV
+%! assert (typecast (unicode2native ('ab',
+%!                                   ['utf-16', nthargout(3, 'computer'), 'e']),
+%!                   'uint16'),
+%!         uint16 (97:98));
+%!testif HAVE_ICONV
+%! assert (typecast (unicode2native ('abc',
+%!                                   ['utf-16', nthargout(3, 'computer'), 'e']),
+%!                   'uint16'),
+%!         uint16 (97:99));
+%!testif HAVE_ICONV
+%! assert (typecast (unicode2native ('abcd',
+%!                                   ['utf-16', nthargout(3, 'computer'), 'e']),
+%!                   'uint16'),
+%!         uint16 (97:100));
 %!testif HAVE_ICONV <*64139>
 %! assert (typecast (unicode2native ('abcde',
 %!                                   ['utf-16', nthargout(3, 'computer'), 'e']),
 %!                   'uint16'),
 %!         uint16 (97:101));
+%!testif HAVE_ICONV
+%! assert (size (unicode2native ('a',
+%!                               ['utf-32', nthargout(3, 'computer'), 'e'])),
+%!         [1, 4]);
+%!testif HAVE_ICONV
+%! assert (typecast (unicode2native ('a',
+%!                                   ['utf-32', nthargout(3, 'computer'), 'e']),
+%!                   'uint32'),
+%!         uint32 (97));
+%!testif HAVE_ICONV
+%! assert (typecast (unicode2native ('ab',
+%!                                   ['utf-32', nthargout(3, 'computer'), 'e']),
+%!                   'uint32'),
+%!         uint32 (97:98));
+%!testif HAVE_ICONV
+%! assert (typecast (unicode2native ('abc',
+%!                                   ['utf-32', nthargout(3, 'computer'), 'e']),
+%!                   'uint32'),
+%!         uint32 (97:99));
+%!testif HAVE_ICONV
+%! assert (typecast (unicode2native ('abcd',
+%!                                   ['utf-32', nthargout(3, 'computer'), 'e']),
+%!                   'uint32'),
+%!         uint32 (97:100));
 
 %!error <Invalid call> unicode2native ()
 %!error <called with too many inputs> unicode2native ('a', 'ISO-8859-1', 'test')

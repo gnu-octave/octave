@@ -68,6 +68,9 @@ public:
   filepos beg_pos () const { return m_delims.empty () ? filepos () : m_delims.beg_pos (); }
   filepos end_pos () const { return m_delims.empty () ? filepos () : m_delims.end_pos (); }
 
+  comment_list leading_comments () const { return m_delims.empty () ? comment_list () : m_delims.leading_comments (); }
+  comment_list trailing_comments () const { return m_delims.empty () ? comment_list () : m_delims.trailing_comments (); }
+
   bool all_elements_are_constant () const;
 
   // FIXME: should we import the functions from the base class and

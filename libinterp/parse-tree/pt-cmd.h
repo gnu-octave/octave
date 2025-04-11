@@ -75,6 +75,9 @@ public:
   filepos beg_pos () const { return m_tok.beg_pos (); }
   filepos end_pos () const { return m_tok.end_pos (); }
 
+  comment_list leading_comments () const { return m_tok.leading_comments (); }
+  comment_list trailing_comments () const { return m_tok.trailing_comments (); }
+
   void update_end_pos (const filepos& pos)
   {
     if (is_end_of_fcn_or_script () || is_end_of_file ())
@@ -83,16 +86,9 @@ public:
       error ("unexpected call to tree_no_op_command::update_end_pos - please report this bug");
   }
 
-  comment_list leading_comments () const { return m_tok.leading_comments (); }
-
   void attach_trailing_comments (const comment_list& lst)
   {
     m_tok.trailing_comments (lst);
-  }
-
-  comment_list trailing_comments () const
-  {
-    return m_tok.trailing_comments ();
   }
 
   void accept (tree_walker& tw)
@@ -141,6 +137,18 @@ public:
   {
     octave_function *f = m_fcn.function_value ();
     return f->end_pos ();
+  }
+
+  comment_list leading_comments () const
+  {
+    octave_function *f = m_fcn.function_value ();
+    return f->leading_comments ();
+  }
+
+  comment_list trailing_comments () const
+  {
+    octave_function *f = m_fcn.function_value ();
+    return f->trailing_comments ();
   }
 
   void accept (tree_walker& tw)

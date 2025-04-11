@@ -68,6 +68,9 @@ public:
   filepos beg_pos () const { return m_base->beg_pos (); }
   filepos end_pos () const { return m_limit->end_pos (); }
 
+  comment_list leading_comments () const { return m_base->leading_comments (); }
+  comment_list trailing_comments () const { return m_limit->trailing_comments (); }
+
   void preserve_base () { m_save_base = true; }
 
   bool rvalue_ok () const { return true; }

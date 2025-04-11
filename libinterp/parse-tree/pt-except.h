@@ -54,6 +54,9 @@ public:
   filepos beg_pos () const { return m_try_tok.beg_pos (); }
   filepos end_pos () const { return m_end_tok.end_pos (); }
 
+  comment_list leading_comments () const { return m_try_tok.leading_comments (); }
+  comment_list trailing_comments () const { return m_end_tok.trailing_comments (); }
+
   tree_identifier * identifier () { return m_expr_id; }
 
   tree_statement_list * body () { return m_try_code; }
@@ -99,6 +102,9 @@ public:
 
   filepos beg_pos () const { return m_unwind_tok.beg_pos (); }
   filepos end_pos () const { return m_end_tok.end_pos (); }
+
+  comment_list leading_comments () const { return m_unwind_tok.leading_comments (); }
+  comment_list trailing_comments () const { return m_end_tok.trailing_comments (); }
 
   tree_statement_list * body () { return m_unwind_protect_code; }
 

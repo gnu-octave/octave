@@ -65,6 +65,9 @@ public:
   filepos beg_pos () const { return m_id->beg_pos (); }
   filepos end_pos () const { return m_expr ? m_expr->end_pos () : m_id->end_pos (); }
 
+  comment_list leading_comments () const { return m_id->leading_comments (); }
+  comment_list trailing_comments () const { return m_expr ? m_expr->trailing_comments () : m_id->trailing_comments (); }
+
   void mark_as_formal_parameter ()
   {
     m_id->mark_as_formal_parameter ();
@@ -145,6 +148,24 @@ public:
     return elt->end_pos ();
   }
 
+  comment_list leading_comments () const
+  {
+    if (empty ())
+      return comment_list ();
+
+    tree_decl_elt *elt = front ();
+    return elt->leading_comments ();
+  }
+
+  comment_list trailing_comments () const
+  {
+    if (empty ())
+      return comment_list ();
+
+    tree_decl_elt *elt = back ();
+    return elt->trailing_comments ();
+  }
+
   void mark_global ()
   {
     for (tree_decl_elt *elt : *this)
@@ -192,6 +213,9 @@ public:
 
   filepos beg_pos () const { return m_token.beg_pos (); }
   filepos end_pos () const { return m_init_list->end_pos (); }
+
+  comment_list leading_comments () const { return m_token.leading_comments (); }
+  comment_list trailing_comments () const { return m_init_list->trailing_comments (); }
 
   void mark_global ()
   {

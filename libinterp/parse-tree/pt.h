@@ -59,8 +59,8 @@ public:
   virtual filepos beg_pos () const = 0;
   virtual filepos end_pos () const = 0;
 
-  // FIXME: maybe make this a pure virtual function?
-  virtual comment_list leading_comments () const;
+  virtual comment_list leading_comments () const = 0;
+  virtual comment_list trailing_comments () const = 0;
 
   virtual void set_breakpoint (const std::string& condition)
   {

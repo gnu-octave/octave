@@ -65,6 +65,18 @@ octave_function::end_pos () const
   error ("unexpected call to octave_function::end_pos - please report this bug");
 }
 
+octave::comment_list
+octave_function::leading_comments () const
+{
+  error ("unexpected call to octave_function::leading_comments - please report this bug");
+}
+
+octave::comment_list
+octave_function::trailing_comments () const
+{
+  error ("unexpected call to octave_function::trailing_comments - please report this bug");
+}
+
 octave_value_list
 octave_function::call (octave::tree_evaluator& tw, int nargout,
                        const octave_value_list& args)

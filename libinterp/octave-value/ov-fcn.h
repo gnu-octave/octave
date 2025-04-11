@@ -33,6 +33,7 @@
 #include "oct-time.h"
 #include "str-vec.h"
 
+#include "comment-list.h"
 #include "ovl.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
@@ -164,6 +165,9 @@ public:
 
   virtual octave::filepos beg_pos () const;
   virtual octave::filepos end_pos () const;
+
+  virtual octave::comment_list leading_comments () const;
+  virtual octave::comment_list trailing_comments () const;
 
   // The name to show in the profiler (also used as map-key).
   virtual std::string profiler_name () const { return name (); }

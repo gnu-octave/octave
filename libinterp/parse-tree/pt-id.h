@@ -70,10 +70,11 @@ public:
 
   std::string name () const { return m_sym.name (); }
 
-  comment_list leading_comments () const { return m_token.leading_comments (); }
-
   filepos beg_pos () const { return m_token.beg_pos (); }
   filepos end_pos () const { return m_token.end_pos (); }
+
+  comment_list leading_comments () const { return m_token.leading_comments (); }
+  comment_list trailing_comments () const { return m_token.trailing_comments (); }
 
   virtual bool is_black_hole () const { return false; }
 

@@ -103,6 +103,28 @@ octave::filepos octave_user_code::end_pos () const
   return m_cmd_list->end_pos ();
 }
 
+octave::comment_list octave_user_code::leading_comments () const
+{
+  return m_cmd_list->leading_comments ();
+}
+
+octave::comment_list octave_user_code::trailing_comments () const
+{
+  if (m_cmd_list && ! m_cmd_list->empty ())
+    {
+      octave::tree_statement *last_stmt = m_cmd_list->back ();
+
+      octave::tree_command *cmd = last_stmt->command ();
+
+      octave::tree_no_op_command *no_op_cmd = dynamic_cast <octave::tree_no_op_command *> (cmd);
+
+      if (no_op_cmd && (no_op_cmd->is_end_of_fcn_or_script () || no_op_cmd->is_end_of_file ()))
+        return no_op_cmd->trailing_comments ();
+    }
+
+  return octave::comment_list ();
+}
+
 void
 octave_user_code::get_file_info ()
 {
@@ -332,23 +354,6 @@ octave_user_function::attach_trailing_comments (const octave::comment_list& lst)
       if (no_op_cmd && (no_op_cmd->is_end_of_fcn_or_script () || no_op_cmd->is_end_of_file ()))
         no_op_cmd->attach_trailing_comments (lst);
     }
-}
-
-octave::comment_list octave_user_function::trailing_comments () const
-{
-  if (m_cmd_list && ! m_cmd_list->empty ())
-    {
-      octave::tree_statement *last_stmt = m_cmd_list->back ();
-
-      octave::tree_command *cmd = last_stmt->command ();
-
-      octave::tree_no_op_command *no_op_cmd = dynamic_cast <octave::tree_no_op_command *> (cmd);
-
-      if (no_op_cmd && (no_op_cmd->is_end_of_fcn_or_script () || no_op_cmd->is_end_of_file ()))
-        return no_op_cmd->trailing_comments ();
-    }
-
-  return octave::comment_list ();
 }
 
 // If there is no explicit end statement at the end of the function,

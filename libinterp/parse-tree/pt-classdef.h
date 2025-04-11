@@ -60,6 +60,9 @@ public:
   filepos beg_pos () const { return m_token.beg_pos (); }
   filepos end_pos () const { return m_token.end_pos (); }
 
+  comment_list leading_comments () const { return m_token.leading_comments (); }
+  comment_list trailing_comments () const { return m_token.trailing_comments (); }
+
   std::string method_name () const
   {
     return m_method_name;
@@ -111,6 +114,9 @@ public:
   filepos beg_pos () const { return m_token.beg_pos (); }
   filepos end_pos () const { return m_token.end_pos (); }
 
+  comment_list leading_comments () const { return m_token.leading_comments (); }
+  comment_list trailing_comments () const { return m_token.trailing_comments (); }
+
   std::string class_name () const { return m_class_name; }
 
   tree_metaclass_query * dup (symbol_scope& scope) const;
@@ -160,6 +166,9 @@ public:
 
   filepos beg_pos () const { return m_not_tok ? m_not_tok.beg_pos () : m_id->beg_pos (); }
   filepos end_pos () const { return m_expr ? m_expr->end_pos () : m_id->end_pos (); }
+
+  comment_list leading_comments () const { return m_not_tok ? m_not_tok.leading_comments () : m_id->leading_comments (); }
+  comment_list trailing_comments () const { return m_expr ? m_expr->trailing_comments () : m_id->trailing_comments (); }
 
   tree_identifier * ident () { return m_id; }
 
@@ -320,6 +329,9 @@ public:
 
   filepos beg_pos () const { return m_block_tok.beg_pos (); }
   filepos end_pos () const { return m_end_tok.end_pos (); }
+
+  comment_list leading_comments () const { return m_block_tok.leading_comments (); }
+  comment_list trailing_comments () const { return m_end_tok.trailing_comments (); }
 
   T * element_list () { return m_elt_list; }
 
@@ -715,6 +727,9 @@ public:
   filepos beg_pos () const { return m_cdef_tok.beg_pos (); }
   filepos end_pos () const { return m_end_tok.end_pos (); }
 
+  comment_list leading_comments () const { return m_cdef_tok.leading_comments (); }
+  comment_list trailing_comments () const { return m_end_tok.trailing_comments (); }
+
   symbol_scope scope () { return m_scope; }
 
   tree_classdef_attribute_list *
@@ -726,8 +741,6 @@ public:
   superclass_list () { return m_supclass_list; }
 
   tree_classdef_body * body () { return m_body; }
-
-  comment_list leading_comments () const { return m_cdef_tok.leading_comments (); }
 
   std::string package_name () const { return m_pack_name; }
 
@@ -790,4 +803,3 @@ private:
 OCTAVE_END_NAMESPACE(octave)
 
 #endif
-

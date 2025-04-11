@@ -106,14 +106,6 @@ tree_statement::is_active_breakpoint (tree_evaluator& tw) const
             : false);
 }
 
-comment_list
-tree_statement::leading_comments () const
-{
-  return (m_command
-          ? m_command->leading_comments ()
-          : m_expression->leading_comments ());
-}
-
 filepos
 tree_statement::beg_pos () const
 {
@@ -124,6 +116,18 @@ filepos
 tree_statement::end_pos () const
 {
   return (m_command ? m_command->end_pos () : m_expression->end_pos ());
+}
+
+comment_list
+tree_statement::leading_comments () const
+{
+  return m_command ? m_command->leading_comments () : m_expression->leading_comments ();
+}
+
+comment_list
+tree_statement::trailing_comments () const
+{
+  return m_command ? m_command->trailing_comments () : m_expression->trailing_comments ();
 }
 
 void
@@ -199,20 +203,6 @@ tree_statement::is_end_of_file () const
     }
 
   return retval;
-}
-
-comment_list
-tree_statement_list::leading_comments () const
-{
-  if (! empty ())
-    {
-      tree_statement *elt = front ();
-
-      if (elt)
-        return elt->leading_comments ();
-    }
-
-  return comment_list ();
 }
 
 // Create a "breakpoint" tree-walker, and get it to "walk" this

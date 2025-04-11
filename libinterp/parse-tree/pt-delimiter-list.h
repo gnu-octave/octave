@@ -70,6 +70,24 @@ public:
     return elt.second.end_pos ();
   }
 
+  comment_list leading_comments () const
+  {
+    if (m_delimiters.empty ())
+      return comment_list ();
+
+    const element_type& elt = m_delimiters.top ();
+    return elt.first.leading_comments ();
+  }
+
+  comment_list trailing_comments () const
+  {
+    if (m_delimiters.empty ())
+      return comment_list ();
+
+    const element_type& elt = m_delimiters.top ();
+    return elt.second.trailing_comments ();
+  }
+
 private:
 
   std::stack<element_type> m_delimiters;

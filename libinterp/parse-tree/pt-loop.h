@@ -57,6 +57,9 @@ public:
   filepos beg_pos () const { return m_while_tok.beg_pos (); }
   filepos end_pos () const { return m_end_tok.end_pos (); }
 
+  comment_list leading_comments () const { return m_while_tok.leading_comments (); }
+  comment_list trailing_comments () const { return m_end_tok.trailing_comments (); }
+
   tree_expression * condition () { return m_expr; }
 
   tree_statement_list * body () { return m_body; }
@@ -95,6 +98,9 @@ public:
 
   filepos beg_pos () const { return m_do_tok.beg_pos (); }
   filepos end_pos () const { return m_expr->end_pos (); }
+
+  comment_list leading_comments () const { return m_do_tok.leading_comments (); }
+  comment_list trailing_comments () const { return m_expr->trailing_comments (); }
 
   tree_statement_list * body () { return m_body; }
 
@@ -140,6 +146,9 @@ public:
 
   filepos beg_pos () const { return m_for_tok.beg_pos (); }
   filepos end_pos () const { return m_end_tok.end_pos (); }
+
+  comment_list leading_comments () const { return m_for_tok.leading_comments (); }
+  comment_list trailing_comments () const { return m_end_tok.trailing_comments (); }
 
   tree_expression * left_hand_side () { return m_lhs; }
 
@@ -200,6 +209,9 @@ public:
 
   filepos beg_pos () const { return m_for_tok.beg_pos (); }
   filepos end_pos () const { return m_end_tok.end_pos (); }
+
+  comment_list leading_comments () const { return m_for_tok.leading_comments (); }
+  comment_list trailing_comments () const { return m_end_tok.trailing_comments (); }
 
   tree_argument_list * left_hand_side () { return m_lhs; }
 

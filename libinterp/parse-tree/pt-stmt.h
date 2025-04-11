@@ -85,10 +85,11 @@ public:
 
   bool is_active_breakpoint (tree_evaluator& tw) const;
 
-  comment_list leading_comments () const;
-
   filepos beg_pos () const;
   filepos end_pos () const;
+
+  comment_list leading_comments () const;
+  comment_list trailing_comments () const;
 
   virtual void update_end_pos (const filepos& pos);
 
@@ -180,6 +181,24 @@ public:
     return elt->end_pos ();
   }
 
+  comment_list leading_comments () const
+  {
+    if (empty ())
+      return comment_list ();
+
+    tree_statement *elt = front ();
+    return elt->leading_comments ();
+  }
+
+  comment_list trailing_comments () const
+  {
+    if (empty ())
+      return comment_list ();
+
+    tree_statement *elt = back ();
+    return elt->trailing_comments ();
+  }
+
   void mark_as_function_body () { m_function_body = true; }
 
   void mark_as_anon_function_body () { m_anon_function_body = true; }
@@ -191,8 +210,6 @@ public:
   bool is_anon_function_body () const { return m_anon_function_body; }
 
   bool is_script_body () const { return m_script_body; }
-
-  comment_list leading_comments () const;
 
   int set_breakpoint (int line, const std::string& condition);
 

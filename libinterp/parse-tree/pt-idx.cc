@@ -185,6 +185,54 @@ tree_index_expression::end_pos () const
     }
 }
 
+comment_list
+tree_index_expression::trailing_comments () const
+{
+  int n = m_args.size ();
+
+  if (n == 0)
+    return m_expr->trailing_comments ();
+
+  switch (m_type[n-1])
+    {
+    case '(':
+    case '{':
+      {
+        tree_argument_list *args = m_args.back ();
+        return args->trailing_comments ();
+      }
+      break;
+
+    case '.':
+      {
+        string_vector arg_names = m_arg_nm.back ();
+
+        if (arg_names.empty ())
+          {
+            tree_expression *dyn_field = m_dyn_field.back ();
+
+            if (dyn_field)
+              return dyn_field->trailing_comments ();
+            else
+              error ("unexpected: dynamic field is nullptr in call to tree_index_expression::trailing_comments - please report this bug");
+
+          }
+
+        token dot_tok = m_dot_tok.back ();
+        std::string arg_nm = arg_names(0);
+
+        // FIXME: is this correct?  Are trailing comments in this case
+        // stored correctly by the parser?  To which token are they
+        // attached?
+
+        return dot_tok.trailing_comments ();
+      }
+
+    default:
+      error ("unexpected: index not '(', '{', or '.' in tree_index_expression::trailing_comments - please report this bug");
+    }
+}
+
 std::string
 tree_index_expression::get_struct_index
 (tree_evaluator& tw,

@@ -84,6 +84,9 @@ public:
   filepos beg_pos () const { return m_open_delim.beg_pos (); }
   filepos end_pos () const { return m_close_delim.end_pos (); }
 
+  comment_list leading_comments () const { return m_open_delim.leading_comments (); }
+  comment_list trailing_comments () const { return m_close_delim.trailing_comments (); }
+
   void mark_as_formal_parameters ();
 
   void mark_varargs () { m_marked_for_varargs = 1; }

@@ -75,6 +75,9 @@ public:
   filepos beg_pos () const { return m_lhs->beg_pos (); }
   filepos end_pos () const { return m_rhs->end_pos (); }
 
+  comment_list leading_comments () const { return m_lhs->leading_comments (); }
+  comment_list trailing_comments () const { return m_rhs->trailing_comments (); }
+
   bool rvalue_ok () const { return true; }
 
   std::string oper () const;

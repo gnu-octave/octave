@@ -88,6 +88,9 @@ public:
   OCTINTERP_API octave::filepos beg_pos () const;
   OCTINTERP_API octave::filepos end_pos () const;
 
+  OCTINTERP_API octave::comment_list leading_comments () const;
+  OCTINTERP_API octave::comment_list trailing_comments () const;
+
   OCTINTERP_API std::string get_code_line (std::size_t line);
 
   OCTINTERP_API std::deque<std::string>
@@ -271,6 +274,10 @@ public:
   octave::filepos beg_pos () const { return m_fcn_tok.beg_pos(); }
   // The end_pos function is defined in the octave_user_code class.
 
+  octave::comment_list leading_comments () const
+  { return m_fcn_tok.leading_comments (); }
+  // The trailing_comments function is defined in the octave_user_code class.
+
   OCTINTERP_API void maybe_relocate_end ();
 
   OCTINTERP_API void stash_parent_fcn_scope (const octave::symbol_scope& ps);
@@ -412,9 +419,6 @@ public:
   octave::tree_parameter_list * parameter_list () { return m_param_list; }
 
   octave::tree_parameter_list * return_list () { return m_ret_list; }
-
-  octave::comment_list leading_comments () const { return m_fcn_tok.leading_comments (); }
-  OCTINTERP_API octave::comment_list trailing_comments () const;
 
   // If is_special_expr is true, retrieve the sigular expression that forms the
   // body.  May be null (even if is_special_expr is true).

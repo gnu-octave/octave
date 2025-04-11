@@ -53,12 +53,6 @@ tree::column () const
   return beg_pos().column ();
 }
 
-comment_list
-tree::leading_comments () const
-{
-  return comment_list ();
-}
-
 // Hide the details of the string buffer so that we are less likely to
 // create a memory leak.
 

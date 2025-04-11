@@ -1124,7 +1124,8 @@ void QConsolePrivate::syncConsoleParameters ()
   delete [] m_buffer;
   delete [] m_tmpBuffer;
 
-  std::size_t bufSize = m_consoleRect.width () * m_consoleRect.height ();
+  std::size_t bufSize = static_cast<std::size_t> (m_consoleRect.width ())
+                        * static_cast<std::size_t> (m_consoleRect.height ());
 
   m_buffer = new CHAR_INFO[bufSize];
   m_tmpBuffer = new CHAR_INFO[bufSize];

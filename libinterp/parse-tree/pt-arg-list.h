@@ -97,6 +97,34 @@ public:
     return m_delims.end_pos ();
   }
 
+  comment_list leading_comments () const
+  {
+    if (m_delims.empty ())
+      {
+        if (empty ())
+          return comment_list ();
+
+        tree_expression *elt = front ();
+        return elt->leading_comments ();
+      }
+
+    return m_delims.leading_comments ();
+  }
+
+  comment_list trailing_comments () const
+  {
+    if (m_delims.empty ())
+      {
+        if (empty ())
+          return comment_list ();
+
+        tree_expression *elt = back ();
+        return elt->trailing_comments ();
+      }
+
+    return m_delims.trailing_comments ();
+  }
+
   bool has_magic_tilde () const
   {
     return m_list_includes_magic_tilde;

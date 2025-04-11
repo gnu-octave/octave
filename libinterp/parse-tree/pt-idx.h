@@ -73,10 +73,11 @@ public:
 
   std::string name () const;
 
-  comment_list leading_comments () const { return m_expr->leading_comments (); }
-
   filepos beg_pos () const { return m_expr->beg_pos (); }
   filepos end_pos () const;
+
+  comment_list leading_comments () const { return m_expr->leading_comments (); }
+  comment_list trailing_comments () const;
 
   tree_expression * expression () { return m_expr; }
 

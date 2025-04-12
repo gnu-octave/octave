@@ -35,16 +35,7 @@
 
 #include "Array.h"
 #include "dim-vector.h"
-
-// The maximum allowed value for a dimension extent.  This will normally be a
-// tiny bit off the maximum value of octave_idx_type.
-// Currently 1 is subtracted to allow safe conversion of any 2D Array into
-// Sparse, but this offset may change in the future.
-octave_idx_type
-dim_vector::dim_max ()
-{
-  return std::numeric_limits<octave_idx_type>::max () - 1;
-}
+#include "lo-utils.h"
 
 void
 dim_vector::chop_all_singletons ()
@@ -97,17 +88,21 @@ dim_vector::num_ones () const
 octave_idx_type
 dim_vector::safe_numel () const
 {
-  octave_idx_type idx_max = dim_max ();
-  octave_idx_type n = 1;
-  int n_dims = ndims ();
+  octave_idx_type n = xelem(0);
 
-  for (int i = 0; i < n_dims; i++)
+  if (n > dim_max ())
+    throw std::bad_alloc ();
+
+  if (n == 0)
+    return 0;
+
+  for (int i = 1; i < ndims (); i++)
     {
-      n *= xelem(i);
-      if (xelem(i) != 0)
-        idx_max /= xelem(i);
-      if (idx_max <= 0)
+      if (octave::math::int_multiply_overflow (n, xelem(i), &n) || n > dim_max ())
         throw std::bad_alloc ();
+
+      if (n == 0)
+        return 0;
     }
 
   return n;

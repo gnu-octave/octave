@@ -326,3 +326,8 @@
 %! assert (issparse (lhs));
 %! assert (full (lhs), flhs);
 %! assert (iscomplex (lhs), iscomplex (lhs) || iscomplex (rhs));
+
+%!test <*66516>
+%! a = sparse (magic (3));
+%! a(6:-1:4, 6:-1:4) = magic (3);  # extend matrix and assign
+%! assert (a(4:6, 4:6), sparse (fliplr (flipud (magic (3)))));

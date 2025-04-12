@@ -1970,7 +1970,7 @@ Sparse<T, Alloc>::assign (const octave::idx_vector& idx,
           else if (idx.is_range () && idx.increment () == -1)
             {
               // It's s(u:-1:l) = r.  Reverse the assignment.
-              assign (idx.sorted (), rhs.index (octave::idx_vector (rhl - 1, 0, -1)));
+              assign (idx.sorted (), rhs.index (octave::idx_vector (rhl - 1, -1, -1)));
             }
           else if (idx.is_permutation (n))
             {
@@ -2176,7 +2176,7 @@ Sparse<T, Alloc>::assign (const octave::idx_vector& idx_i,
             {
               // It's s(:,u:-1:l) = r.  Reverse the assignment.
               assign (idx_i, idx_j.sorted (),
-                      rhs.index (idx_i, octave::idx_vector (m - 1, 0, -1)));
+                      rhs.index (idx_i, octave::idx_vector (m - 1, -1, -1)));
             }
           else if (idx_j.is_permutation (nc))
             {

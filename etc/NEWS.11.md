@@ -21,6 +21,13 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
     now gives a warning and then executes `pkg search -all`.  The warning can
     be silenced with the ID `"Octave:pkg:list-forge"`.
 
+- Convolution of short and wide arrays (especially row vectors) is now faster
+  by anywhere from 10% to 150X, depending on the array size and shape.
+  Previously, convolution of tall and skinny arrays (especially column vectors)
+  was much faster than convolving short and wide ones, requiring transposition
+  or permutation of the inputs for performance.  Now Octave automatically picks
+  the fastest calculation order irrespective of the input orientation.
+
 ### Graphical User Interface
 
 - The GUI now uses scalable SVG icons for beautiful display at any size.

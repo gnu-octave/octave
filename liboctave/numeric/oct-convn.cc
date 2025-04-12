@@ -150,13 +150,12 @@ void convolve_nd (const T *a, const dim_vector& ad, const dim_vector& acd,
 // The 2nd array is assumed to be the smaller one.
 template <typename T, typename R>
 static MArray<T>
-convolve (const MArray<T>& a, const MArray<R>& b,
-          convn_type ct)
+convolve (const MArray<T>& a, const MArray<R>& b, convn_type ct)
 {
   if (a.isempty () || b.isempty ())
     return MArray<T> ();
 
-  int nd = std::max (a.ndims (), b.ndims ());
+  const int nd = std::max (a.ndims (), b.ndims ());
   const dim_vector adims = a.dims ().redim (nd);
   const dim_vector bdims = b.dims ().redim (nd);
   dim_vector cdims = dim_vector::alloc (nd);
@@ -171,17 +170,57 @@ convolve (const MArray<T>& a, const MArray<R>& b,
                              static_cast<octave_idx_type> (0));
     }
 
-  MArray<T> c (cdims, T ());
-
   // "valid" shape can sometimes result in empty matrices which must avoid
   // calling Fortran code which does not expect this (bug #52067)
-  if (c.isempty ())
-    return c;
+  if (cdims.numel () == 0)
+    return MArray<T> (cdims);
 
-  convolve_nd<T, R> (a.data (), adims, adims.cumulative (),
-                     b.data (), bdims, bdims.cumulative (),
-                     c.rwdata (), cdims.cumulative (),
-                     nd, ct == convn_valid);
+  // Permute dimensions of a/b/c such that the dimensions of c are ordered
+  // by decreasing number of elements (for efficiency in Fortran loops).
+  Array<octave_idx_type> order (dim_vector (1, nd));
+  for (int i = 0; i < nd; i++)
+    order(i) = i;
+
+  // Since the number of dimensions is nearly always small, it is faster
+  // to sort them inline instead of calling octave_sort::sort ().
+  bool reordered = false;
+  for (int i = 0; i < nd; i++)
+    for (int j = (i+1); j < nd; j++)
+      if (cdims(i) < cdims(j))
+        {
+          std::swap (cdims(i), cdims(j));
+          std::swap (order(i), order(j));
+          reordered = true;
+        }
+
+  // Initialize output based on the current order of cdims.
+  MArray<T> c (cdims, T ());
+
+  if (reordered)  // cdims was reordered, so the inputs must be as well.
+    {
+      // Permute the inputs
+      const MArray<T> ap = a.permute (order);
+      const MArray<R> bp = b.permute (order);
+      const dim_vector apdims = ap.dims ().redim (nd);
+      const dim_vector bpdims = bp.dims ().redim (nd);
+
+      // Do convolution on the permuted arrays.
+      convolve_nd<T, R> (ap.data (), apdims, apdims.cumulative (),
+                         bp.data (), bpdims, bpdims.cumulative (),
+                         c.rwdata (), cdims.cumulative (),
+                         nd, ct == convn_valid);
+
+      // Permute back to original order.
+      c = c.ipermute (order);
+    }
+  else  // No reordering ==> no need to create permuted arrays.
+    {
+      // Do convolution on the original arrays.
+      convolve_nd<T, R> (a.data (), adims, adims.cumulative (),
+                         b.data (), bdims, bdims.cumulative (),
+                         c.rwdata (), cdims.cumulative (),
+                         nd, ct == convn_valid);
+    }
 
   if (ct == convn_same)
     {

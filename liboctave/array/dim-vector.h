@@ -32,6 +32,7 @@
 
 #include <algorithm>
 #include <initializer_list>
+#include <limits>
 #include <string>
 
 #include "Array-fwd.h"
@@ -175,7 +176,15 @@ private:
 
 public:
 
-  static OCTAVE_API octave_idx_type dim_max ();
+  // The maximum allowed value for a dimension extent.  This will
+  // normally be a tiny bit off the maximum value of octave_idx_type.
+  // Currently, 1 is subtracted to allow safe conversion of any 2D Array
+  // into Sparse but this offset may change in the future.
+
+  static OCTAVE_API constexpr octave_idx_type dim_max ()
+  {
+    return std::numeric_limits<octave_idx_type>::max () - 1;
+  }
 
   explicit dim_vector ()
     : m_num_dims (2), m_dims (new octave_idx_type [m_num_dims])

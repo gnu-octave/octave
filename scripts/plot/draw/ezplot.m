@@ -114,3 +114,13 @@ endfunction
 %! ## implicit function of 2 variables
 %! clf;
 %! ezplot (inline ("x^2 - y^2 - 1"));
+
+%!test <*66563>
+%! ## ezplot of a constant function should not fail
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   ezplot (@(x) 2*5 + 1);
+%!   assert (ylim (), [10 12], -1e-2);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

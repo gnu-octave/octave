@@ -147,7 +147,6 @@ void convolve_nd (const T *a, const dim_vector& ad, const dim_vector& acd,
 }
 
 // Arbitrary convolutor.
-// The 2nd array is assumed to be the smaller one.
 template <typename T, typename R>
 static MArray<T>
 convolve (const MArray<T>& a, const MArray<R>& b, convn_type ct)

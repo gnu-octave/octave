@@ -319,10 +319,17 @@ to join the current line with the following line.
 @c libinterp/parse-tree/oct-parse.yy
 -*- texinfo -*-
 @deftypefn {} {} :
-Select all elements in the specified dimension when indexing.
+When indexing, select all elements in the specified dimension.
 
 @example
 x(2, :)   # selects 2nd row, all columns
+@end example
+
+When constructing ranges, @samp{:} is the separator between @var{base}, @var{increment}, and @var{limit}.
+
+@example
+1:2:8
+@result{}  1  3  5  7
 @end example
 @end deftypefn
 ;

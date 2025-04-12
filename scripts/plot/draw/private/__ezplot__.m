@@ -388,9 +388,17 @@ function [h, needusage] = __ezplot__ (pltfcn, varargin)
       else
         if (ispolar)
           Z = feval (fcn, X);
+          if (isscalar (Z))
+            ## Handle exceptional case of constant function
+            Z *= ones (size (X));
+          endif
           ## FIXME: Why aren't singularities eliminated for polar plots?
         elseif (isplot)
           Z = feval (fcn, X);
+          if (isscalar (Z))
+            ## Handle exceptional case of constant function
+            Z *= ones (size (X));
+          endif
           ## Eliminate the singularities
           Z = __eliminate_sing__ (Z);
           domain = find_valid_domain (X, [], Z);

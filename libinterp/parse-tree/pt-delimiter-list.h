@@ -88,6 +88,8 @@ public:
     return elt.second.trailing_comments ();
   }
 
+  std::stack<element_type> delims () const { return m_delimiters; } 
+
 private:
 
   std::stack<element_type> m_delimiters;

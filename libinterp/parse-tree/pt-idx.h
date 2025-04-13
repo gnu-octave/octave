@@ -85,6 +85,8 @@ public:
 
   std::string type_tags () { return m_type; }
 
+  std::list<token> dot_tokens () const { return m_dot_tok; }
+
   std::list<string_vector> arg_names () { return m_arg_nm; }
 
   std::list<tree_expression *> dyn_fields () { return m_dyn_field; }

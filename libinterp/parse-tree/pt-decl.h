@@ -229,9 +229,11 @@ public:
       m_init_list->mark_persistent ();
   }
 
-  tree_decl_init_list * initializer_list () { return m_init_list; }
+  token decl_token () const { return m_token; }
 
   std::string name () const { return m_cmd_name; }
+
+  tree_decl_init_list * initializer_list () { return m_init_list; }
 
   void accept (tree_walker& tw)
   {

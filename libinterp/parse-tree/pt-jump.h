@@ -51,6 +51,8 @@ public:
   comment_list leading_comments () const { return m_token.leading_comments (); }
   comment_list trailing_comments () const { return m_token.trailing_comments (); }
 
+  token jump_token () const { return m_token; }
+
 protected:
 
   token m_token;
@@ -67,6 +69,8 @@ public:
   OCTAVE_DISABLE_COPY_MOVE (tree_break_command)
 
   ~tree_break_command () = default;
+
+  token break_token () const { return jump_token (); }
 
   void accept (tree_walker& tw)
   {
@@ -86,6 +90,8 @@ public:
 
   ~tree_continue_command () = default;
 
+  token continue_token () const { return jump_token (); }
+
   void accept (tree_walker& tw)
   {
     tw.visit_continue_command (*this);
@@ -103,6 +109,8 @@ public:
   OCTAVE_DISABLE_COPY_MOVE (tree_return_command)
 
   ~tree_return_command () = default;
+
+  token return_token () const { return jump_token (); }
 
   void accept (tree_walker& tw)
   {

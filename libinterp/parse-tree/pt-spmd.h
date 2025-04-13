@@ -56,7 +56,11 @@ public:
   comment_list leading_comments () const { return m_spmd_tok.leading_comments (); }
   comment_list trailing_comments () const { return m_end_tok.trailing_comments (); }
 
+  token spmd_token () { return m_spmd_tok; }
+
   tree_statement_list * body () { return m_body; }
+
+  token end_token () { return m_end_tok; }
 
   void accept (tree_walker& tw)
   {

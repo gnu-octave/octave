@@ -132,7 +132,7 @@ tree_print_code::visit_binary_expression (tree_binary_expression& expr)
   if (op1)
     op1->accept (*this);
 
-  m_os << ' ' << expr.oper () << ' ';
+  m_os << ' ' << expr.op_str () << ' ';
 
   tree_expression *op2 = expr.rhs ();
 
@@ -722,7 +722,7 @@ tree_print_code::visit_multi_assignment (tree_multi_assignment& expr)
         }
     }
 
-  m_os << ' ' << expr.oper () << ' ';
+  m_os << ' ' << expr.op_str () << ' ';
 
   tree_expression *rhs = expr.right_hand_side ();
 
@@ -839,7 +839,7 @@ tree_print_code::visit_postfix_expression (tree_postfix_expression& expr)
   if (e)
     e->accept (*this);
 
-  m_os << expr.oper ();
+  m_os << expr.op_str ();
 
   print_parens (expr, ")");
 }
@@ -851,7 +851,7 @@ tree_print_code::visit_prefix_expression (tree_prefix_expression& expr)
 
   print_parens (expr, "(");
 
-  m_os << expr.oper ();
+  m_os << expr.op_str ();
 
   tree_expression *e = expr.operand ();
 
@@ -881,7 +881,7 @@ tree_print_code::visit_simple_assignment (tree_simple_assignment& expr)
   if (lhs)
     lhs->accept (*this);
 
-  m_os << ' ' << expr.oper () << ' ';
+  m_os << ' ' << expr.op_str () << ' ';
 
   tree_expression *rhs = expr.right_hand_side ();
 

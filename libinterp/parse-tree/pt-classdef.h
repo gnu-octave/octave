@@ -70,6 +70,8 @@ public:
 
   std::string class_name () const { return m_class_name; }
 
+  token op_token () const { return m_token; }
+
   tree_superclass_ref * dup (symbol_scope& scope) const;
 
   octave_value evaluate (tree_evaluator& tw, int nargout = 1)
@@ -118,6 +120,8 @@ public:
   comment_list trailing_comments () const { return m_token.trailing_comments (); }
 
   std::string class_name () const { return m_class_name; }
+
+  token op_token () const { return m_token; }
 
   tree_metaclass_query * dup (symbol_scope& scope) const;
 
@@ -170,7 +174,11 @@ public:
   comment_list leading_comments () const { return m_not_tok ? m_not_tok.leading_comments () : m_id->leading_comments (); }
   comment_list trailing_comments () const { return m_expr ? m_expr->trailing_comments () : m_id->trailing_comments (); }
 
+  token not_token () { return m_not_tok; }
+
   tree_identifier * ident () { return m_id; }
+
+  token eq_token () { return m_eq_tok; }
 
   tree_expression * expression () { return m_expr; }
 
@@ -184,9 +192,13 @@ public:
 private:
 
   token m_not_tok;
+
   tree_identifier *m_id;
+
   token m_eq_tok;
+
   tree_expression *m_expr {nullptr};
+
   bool m_neg {false};
 };
 
@@ -211,6 +223,8 @@ public:
     m_delims.push (open_delim, close_delim);
     return this;
   }
+
+  tree_delimiter_list delims () const { return m_delims; }
 
   void accept (tree_walker& tw)
   {
@@ -237,6 +251,10 @@ public:
   void set_separator (const token& sep_tok) { m_sep_tok = sep_tok; }
 
   std::string class_name () { return m_fqident.text (); }
+
+  token separator_token () const { return m_sep_tok; }
+
+  token fqident_token () const { return m_fqident; }
 
   void accept (tree_walker& tw)
   {
@@ -297,7 +315,11 @@ public:
 
   comment_list leading_comments () const { return m_block_tok.leading_comments (); }
 
+  token block_token () const { return m_block_tok; }
+
   tree_classdef_attribute_list * attribute_list () { return m_attr_list; }
+
+  token end_token () const { return m_end_tok; }
 
   void accept (tree_walker&) { }
 
@@ -353,6 +375,8 @@ public:
   ~tree_classdef_property ();
 
   comment_list leading_comments ();
+
+  tree_arg_validation * arg_validation () { return m_av; }
 
   void doc_string (const std::string& s) { m_doc_string = s; }
 
@@ -555,8 +579,11 @@ public:
 private:
 
   tree_identifier *m_id;
+
   token m_open_paren;
+
   tree_expression *m_expr;
+
   token m_close_paren;
 };
 
@@ -732,6 +759,8 @@ public:
 
   symbol_scope scope () { return m_scope; }
 
+  token classdef_token () const { return m_cdef_tok; }
+
   tree_classdef_attribute_list *
   attribute_list () { return m_attr_list; }
 
@@ -741,6 +770,8 @@ public:
   superclass_list () { return m_supclass_list; }
 
   tree_classdef_body * body () { return m_body; }
+
+  token end_token () const { return m_end_tok; }
 
   std::string package_name () const { return m_pack_name; }
 
@@ -794,10 +825,10 @@ private:
 
   token m_end_tok;
 
-  std::string m_doc_string;
-
   std::string m_pack_name;
   std::string m_file_name;
+
+  std::string m_doc_string;
 };
 
 OCTAVE_END_NAMESPACE(octave)

@@ -60,9 +60,13 @@ public:
   comment_list leading_comments () const { return m_while_tok.leading_comments (); }
   comment_list trailing_comments () const { return m_end_tok.trailing_comments (); }
 
+  token while_token () const { return m_while_tok; }
+
   tree_expression * condition () { return m_expr; }
 
   tree_statement_list * body () { return m_body; }
+
+  token end_token () const { return m_end_tok; }
 
   void accept (tree_walker& tw)
   {
@@ -102,7 +106,11 @@ public:
   comment_list leading_comments () const { return m_do_tok.leading_comments (); }
   comment_list trailing_comments () const { return m_expr->trailing_comments (); }
 
+  token do_token () const { return m_do_tok; }
+
   tree_statement_list * body () { return m_body; }
+
+  token until_token () const { return m_until_tok; }
 
   tree_expression * condition () { return m_expr; }
 
@@ -150,13 +158,21 @@ public:
   comment_list leading_comments () const { return m_for_tok.leading_comments (); }
   comment_list trailing_comments () const { return m_end_tok.trailing_comments (); }
 
+  token for_token () const { return m_for_tok; }
+
+  token open_paren () const { return m_open_paren; }
+
   tree_expression * left_hand_side () { return m_lhs; }
 
   tree_expression * control_expr () { return m_expr; }
 
   tree_expression * maxproc_expr () { return m_maxproc; }
 
+  token close_paren () const { return m_close_paren; }
+
   tree_statement_list * body () { return m_body; }
+
+  token end_token () const { return m_end_tok; }
 
   void accept (tree_walker& tw)
   {
@@ -213,11 +229,15 @@ public:
   comment_list leading_comments () const { return m_for_tok.leading_comments (); }
   comment_list trailing_comments () const { return m_end_tok.trailing_comments (); }
 
+  token for_token () const { return m_for_tok; }
+
   tree_argument_list * left_hand_side () { return m_lhs; }
 
   tree_expression * control_expr () { return m_expr; }
 
   tree_statement_list * body () { return m_body; }
+
+  token end_token () { return m_end_tok; }
 
   void accept (tree_walker& tw)
   {

@@ -2931,7 +2931,7 @@ base_parser::maybe_convert_to_braindead_shortcircuit (tree_expression*& expr)
     {
       tree_binary_expression *binexp = dynamic_cast<tree_binary_expression *> (expr);
 
-      token op_tok = binexp->operator_token ();
+      token op_tok = binexp->op_token ();
 
       tree_expression *lhs = binexp->lhs ();
       tree_expression *rhs = binexp->rhs ();

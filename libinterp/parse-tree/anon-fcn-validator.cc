@@ -80,7 +80,7 @@ anon_fcn_validator::error (tree_expression& expr)
   m_ok = false;
   m_beg_pos = expr.beg_pos ();
   m_end_pos = expr.end_pos ();
-  m_message = "invalid use of operator " + expr.oper () + " in anonymous function";
+  m_message = "invalid use of operator " + expr.op_str () + " in anonymous function";
 }
 
 OCTAVE_END_NAMESPACE(octave)

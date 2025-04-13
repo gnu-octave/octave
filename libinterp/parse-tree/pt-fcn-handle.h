@@ -67,6 +67,8 @@ public:
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false,
                   bool pr_orig_txt = true);
 
+  token at_token () const { return m_token; }
+
   std::string name () const { return m_name; }
 
   bool rvalue_ok () const { return true; }
@@ -112,6 +114,8 @@ public:
   comment_list trailing_comments () const { return m_expression->trailing_comments (); }
 
   bool rvalue_ok () const { return true; }
+
+  token at_token () const { return m_at_tok; }
 
   tree_parameter_list * parameter_list () const
   {

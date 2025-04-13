@@ -37,7 +37,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 // Unary expressions.
 
 std::string
-tree_unary_expression::oper () const
+tree_unary_expression::op_str () const
 {
   return octave_value::unary_op_as_string (m_etype);
 }

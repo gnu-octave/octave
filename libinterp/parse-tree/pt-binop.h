@@ -66,8 +66,6 @@ public:
       }
   }
 
-  token operator_token () const { return m_op_tok; }
-
   void preserve_operands () { m_preserve_operands = true; }
 
   bool is_binary_expression () const { return true; }
@@ -80,11 +78,17 @@ public:
 
   bool rvalue_ok () const { return true; }
 
-  std::string oper () const;
+  OCTAVE_DEPRECATED (11, "use tree_binary_expression::op_str instead")
+  std::string oper () const { return op_str (); }
+
+  std::string op_str () const;
 
   octave_value::binary_op op_type () const { return m_etype; }
 
   tree_expression * lhs () { return m_lhs; }
+
+  token op_token () const { return m_op_tok; }
+
   tree_expression * rhs () { return m_rhs; }
 
   void lhs (tree_expression *expr) { m_lhs = expr; }
@@ -104,7 +108,7 @@ public:
     tw.visit_binary_expression (*this);
   }
 
-  std::string profiler_name () const { return "binary " + oper (); }
+  std::string profiler_name () const { return "binary " + op_str (); }
 
   void matlab_style_short_circuit_warning (const char *op);
 
@@ -177,7 +181,10 @@ public:
 
   bool rvalue_ok () const { return true; }
 
-  std::string oper () const;
+  OCTAVE_DEPRECATED (11, "use tree_binary_expression::op_str instead")
+  std::string oper () const { return op_str (); }
+
+  std::string op_str () const;
 
   type op_type () const { return m_etype; }
 

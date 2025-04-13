@@ -149,6 +149,8 @@ public:
 
   bool is_simple_assign_lhs () { return m_simple_assign_lhs; }
 
+  tree_delimiter_list delims () const { return m_delims; }
+
   bool all_elements_are_constant () const;
 
   bool is_valid_lvalue_list () const;

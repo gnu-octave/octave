@@ -56,8 +56,6 @@ public:
 
   ~tree_if_clause ();
 
-  token if_token () const { return m_tok; }
-
   bool is_else_clause () { return ! m_expr; }
 
   filepos beg_pos () const { return m_tok.beg_pos (); }
@@ -65,6 +63,8 @@ public:
 
   comment_list leading_comments () const { return m_tok.leading_comments (); }
   comment_list trailing_comments () const { return m_list->trailing_comments (); }
+
+  token if_token () const { return m_tok; }
 
   tree_expression * condition () { return m_expr; }
 
@@ -181,7 +181,11 @@ public:
   comment_list leading_comments () const { return m_if_tok.leading_comments (); }
   comment_list trailing_comments () const { return m_end_tok.trailing_comments (); }
 
+  token if_token () const { return m_if_tok; }
+
   tree_if_command_list * cmd_list () { return m_list; }
+
+  token end_token () const { return m_end_tok; }
 
   void accept (tree_walker& tw)
   {
@@ -223,6 +227,8 @@ public:
 
   comment_list leading_comments () const { return m_tok.leading_comments (); }
   comment_list trailing_comments () const { return m_list->trailing_comments (); }
+
+  token case_token () const { return m_tok; }
 
   tree_expression * case_label () { return m_label; }
 
@@ -324,9 +330,13 @@ public:
   comment_list leading_comments () const { return m_switch_tok.leading_comments (); }
   comment_list trailing_comments () const { return m_end_tok.trailing_comments (); }
 
+  token switch_token () const { return m_switch_tok; }
+
   tree_expression * switch_value () { return m_expr; }
 
   tree_switch_case_list * case_list () { return m_list; }
+
+  token end_token () const { return m_end_tok; }
 
   void accept (tree_walker& tw)
   {

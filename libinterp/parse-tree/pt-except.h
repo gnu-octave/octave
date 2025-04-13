@@ -57,11 +57,17 @@ public:
   comment_list leading_comments () const { return m_try_tok.leading_comments (); }
   comment_list trailing_comments () const { return m_end_tok.trailing_comments (); }
 
-  tree_identifier * identifier () { return m_expr_id; }
+  token try_token () const { return m_try_tok; }
 
   tree_statement_list * body () { return m_try_code; }
 
+  token catch_token () const { return m_catch_tok; }
+
+  tree_identifier * identifier () { return m_expr_id; }
+
   tree_statement_list * cleanup () { return m_catch_code; }
+
+  token end_token () const { return m_end_tok; }
 
   void accept (tree_walker& tw)
   {
@@ -106,9 +112,15 @@ public:
   comment_list leading_comments () const { return m_unwind_tok.leading_comments (); }
   comment_list trailing_comments () const { return m_end_tok.trailing_comments (); }
 
+  token unwind_token () const { return m_unwind_tok; }
+
   tree_statement_list * body () { return m_unwind_protect_code; }
 
+  token cleanup_token () { return m_cleanup_tok; }
+
   tree_statement_list * cleanup () { return m_cleanup_code; }
+
+  token end_token () { return m_end_tok; }
 
   void accept (tree_walker& tw)
   {

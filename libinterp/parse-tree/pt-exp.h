@@ -106,11 +106,16 @@ public:
   // tree_evaluator::statement_printing_enabled.
   bool print_result () const { return m_print_flag; }
 
+  OCTAVE_DEPRECATED (11, "use tree_expression::op_str instead")
   virtual std::string oper () const { return "<unknown>"; }
+
+  virtual std::string op_str () const { return "<unknown>"; }
 
   virtual std::string name () const { return "<unknown>"; }
 
   virtual std::string original_text () const;
+
+  tree_delimiter_list delims () const { return m_delims; }
 
   void mark_as_for_cmd_expr () { m_for_cmd_expr = true; }
 

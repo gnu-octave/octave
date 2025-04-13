@@ -83,6 +83,8 @@ public:
 
   octave_value value () { return m_value; }
 
+  token const_token () const { return m_token; }
+
   tree_expression * dup (symbol_scope& scope) const;
 
   void accept (tree_walker& tw)

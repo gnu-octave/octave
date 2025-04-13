@@ -136,6 +136,8 @@ public:
   tree_arg_validation_fcns *
   validation_fcns () { return m_validation_fcns; }
 
+  token eq_token () const { return m_eq_tok; }
+
   tree_expression *
   initializer_expression () { return m_default_value; }
 
@@ -233,6 +235,8 @@ public:
   comment_list leading_comments () const { return m_args_tok.leading_comments (); }
   comment_list trailing_comments () const { return m_end_tok.trailing_comments (); }
 
+  token args_token () const { return m_args_tok; }
+
   tree_args_block_attribute_list * attribute_list ()
   {
     return m_attr_list;
@@ -242,6 +246,8 @@ public:
   {
     return m_validation_list;
   }
+
+  token end_token () const { return m_end_tok; }
 
   void accept (tree_walker& tw)
   {

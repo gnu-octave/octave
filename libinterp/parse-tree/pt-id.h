@@ -113,6 +113,12 @@ public:
 
   symbol_record symbol () const { return m_sym; }
 
+  token get_set_token () const { return m_get_set_tok; }
+
+  token dot_token () const { return m_dot_tok; }
+
+  token identifier_token () const { return m_get_set_tok; }
+
   tree_identifier * mark_get_set (const token& get_set_tok, const token& dot_tok)
   {
     m_get_set_tok = get_set_tok;
@@ -153,6 +159,8 @@ public:
   std::string name () const { return "~"; }
 
   bool is_black_hole () const { return true; }
+
+  token tilde_token () const { return identifier_token (); }
 
   tree_black_hole * dup (symbol_scope&) const
   {

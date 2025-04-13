@@ -53,7 +53,7 @@ tree_simple_assignment::~tree_simple_assignment ()
 }
 
 std::string
-tree_simple_assignment::oper () const
+tree_simple_assignment::op_str () const
 {
   return octave_value::assign_op_as_string (m_etype);
 }
@@ -162,7 +162,7 @@ tree_multi_assignment::~tree_multi_assignment ()
 }
 
 std::string
-tree_multi_assignment::oper () const
+tree_multi_assignment::op_str () const
 {
   return octave_value::assign_op_as_string (op_type ());
 }

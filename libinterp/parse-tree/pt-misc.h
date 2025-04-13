@@ -108,6 +108,9 @@ public:
     return m_in_or_out == in ? "varargin" : "varargout";
   }
 
+  token open_delim () const { return m_open_delim; }
+  token close_delim () const { return m_close_delim; }
+
   tree_parameter_list * dup (symbol_scope& scope) const;
 
   void accept (tree_walker& tw)

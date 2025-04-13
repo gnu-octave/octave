@@ -49,7 +49,7 @@ function retval = get_validated_pkg_list ()
     error ("pkg: could not read URL, please verify internet connection");
   endif
 
-  __pkg__ = jsondecode (list);
+  __pkg__ = jsondecode (list, "makeValidName", false);
 
   ## A sanity check before the calling location uses this.
   if (! isstruct (__pkg__))

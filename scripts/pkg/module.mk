@@ -5,6 +5,7 @@ FCN_FILE_DIRS += \
 %canon_reldir%_PRIVATE_FCN_FILES = \
   %reldir%/private/build.m \
   %reldir%/private/configure_make.m \
+  %reldir%/private/convert_possible_cell_to_struct.m \
   %reldir%/private/default_prefix.m \
   %reldir%/private/describe.m \
   %reldir%/private/dirempty.m \

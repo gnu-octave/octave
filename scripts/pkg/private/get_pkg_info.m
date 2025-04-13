@@ -46,8 +46,9 @@ function [ver, url] = get_pkg_info (name)
   if (any (strcmp (pkgnames, name)))  # named package does exist
 
     ## If multiple versions, then versions(1) is the most recent version.
-    ver = __pkg__.(name).versions(1).id;
-    url = __pkg__.(name).versions(1).url;
+    tmp = convert_possible_cell_to_struct (__pkg__.(name).versions(1));
+    ver = tmp.id;
+    url = tmp.url;
 
   else  # no such package in list; offer suggestions with error message.
 

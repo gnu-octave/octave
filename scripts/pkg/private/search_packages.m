@@ -70,13 +70,13 @@ function retval = search_packages (searchterms, allpackages)
     ## Determine whether each package can be installed by "pkg install".
     ## This is possible if "pkg" is listed as a prerequisite for that package.
     ## In the case of multiple versions, versions(1) is the most recent.
-    prereq = cellstr (char (__pkg__.(this).versions(1).depends.name));
+    prereq = convert_possible_cell_to_struct (__pkg__.(this).versions(1)).depends;
     installable(i) = any (strcmp (prereq, "pkg"));
 
     if (prettyprint)  # add more descriptive text to output
 
       ## Add version number
-      v = __pkg__.(this).versions(1).id;
+      v = convert_possible_cell_to_struct (__pkg__.(this).versions(1)).id;
       vers(i, 1:numel (v)) = v;
 
       ## Add description, truncating long text with "..." but not mid-word.

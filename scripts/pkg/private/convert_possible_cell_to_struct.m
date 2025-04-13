@@ -24,38 +24,23 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} @var{__pkg__} = get_validated_pkg_list ()
-## Download list of current packages and validate that it fits expected
-## patterns.
-##
-## Return @code{__pkg__} struct used by other functions.
+## @deftypefn {} @var{retval} = convert_possible_cell_to_struct ()
+## Workaround for a complication that happens with some packages, where a part
+## of the package metadata returned by the server contains a cell array instead
+## of a struct for reasons internal to the server, so this private function
+## is used to work around that unavoidable inconsistency in the metadata format.
 ## @end deftypefn
 
-function retval = get_validated_pkg_list ()
-
-  ## The __pkg__ struct is what we return with all the package information.
-  ## We make it persistent to avoid querying the server each time.
-  persistent __pkg__;
-
-  if (! isempty (__pkg__))
-    ## This function has been called already and __pkg__ exists.
-    ## No need to query the server again.
-    retval = __pkg__;
-    return;
+function retval = convert_possible_cell_to_struct (obj)
+  if (isstruct (obj))
+    retval = obj;
+  elseif (iscell (obj))
+    retval = obj{1};
+  else
+    error ("pkg: internal error: obj is neither cell nor struct but type '%s'.", class (obj));
   endif
 
-  [list, succ] = urlread ("https://packages.octave.org/packages.json");
-  if (! succ)
-    error ("pkg: could not read URL, please verify internet connection");
+  if (! isstruct (retval))
+    error ("pkg: internal error: expected retval to be struct but got '%s'.", class (retval));
   endif
-
-  __pkg__ = jsondecode (list);
-
-  ## A sanity check before the calling location uses this.
-  if (! isstruct (__pkg__))
-    error ("pkg: server returned data of unknown format");
-  endif
-
-  retval = __pkg__;
-
 endfunction

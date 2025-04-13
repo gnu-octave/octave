@@ -46,7 +46,7 @@
 ## @end example
 ##
 ## @noindent
-## will show packages whose descriptions contain @emph{all} the search terms.
+## shows packages whose descriptions contain all the search terms.
 ##
 ## Search terms are case-insensitive and can be regular expressions as well.
 ## For example,
@@ -65,7 +65,7 @@
 ## @end example
 ##
 ## @noindent
-## will show @emph{all} packages available on Octave Packages.
+## shows @emph{all} packages available on Octave Packages.
 ##
 ## If an output variable is provided, as in
 ##
@@ -73,8 +73,8 @@
 ## mypackages = pkg ("search", "foo")
 ## @end example
 ##
-## then @code{pkg search} will return only those package names matching
-## the search term(s) @emph{and} which can be installed with @code{pkg install}.
+## then @code{pkg search} returns only those package names matching the search
+## term(s) @emph{and} which can be installed with @code{pkg install}.
 ##
 ## @item install
 ## Install named packages.  For example, each of the following commands:
@@ -88,7 +88,7 @@
 ## @end example
 ##
 ## @noindent
-## will install the package @code{pkgname}.  The sequence is:
+## installs the package @code{pkgname}.  The sequence is:
 ##
 ## @enumerate
 ## @item
@@ -117,44 +117,40 @@
 ## package directly (run @code{pkg describe} on the package to get
 ## information).
 ##
-## The @var{option} variable can contain options that affect the manner
-## in which a package is installed.  These options can be one or more of:
+## The following options are accepted for @code{pkg install}:
 ##
 ## @table @code
 ## @item -nodeps
-## The package manager will disable dependency checking.  With this option it
-## is possible to install a package even when it depends on another package
-## which is not installed on the system.  @strong{Use this option with care.}
+## Disable dependency checking.  With this option it is possible to install
+## a package even when it depends on another package which is not installed
+## on the system.  @strong{Use this option with care.}
 ##
 ## @item -local
 ## A local installation (package available only to current user) is forced,
 ## even if Octave is being run with administrative privileges.
 ##
 ## @item -global
-## A global installation (package available to all users) is forced, even if
+## Force a global installation (package available to all users), even if
 ## Octave is not being run with administrative privileges.  The user must have
 ## write access to the global package store.
 ##
-## @emph{Security risk}: no verification of the package is performed
-## before the installation.  There are no signatures for packages, or
-## checksums to confirm the correct file was downloaded.  It has the
-## same security issues as manually downloading the package from the
-## Octave Packages repository and installing it.
+## @emph{Security risk}: no verification of the package is performed before the
+## installation.  It has the same security issues as manually downloading the
+## package from the Octave Packages repository and installing it.
 ##
 ## @item -verbose
-## The package manager will print the output of all commands as
-## they are performed.
+## Print the output of all commands as they are performed.
 ## @end table
 ##
 ## @item update
 ## Check installed Octave packages against their repositories and update any
 ## outdated items.  Updated packages are installed either globally or locally
-## depending on whether Octave is running with elevated privileges.
-## This requires an internet connection and the cURL library.
+## depending on whether Octave is running with elevated privileges.  This
+## requires an internet connection and the cURL library.
 ##
 ## Options for the install command and the names of individual packages to be
-## checked for updates may be specified as a list following the update
-## command.  If the @option{-local} or @option{-global} option is specified,
+## checked for updates may be specified as a list following the update command.
+## If the @option{-local} or @option{-global} option is specified,
 ## @code{pkg update} limits the update check to the local or global installed
 ## packages, and installs updates in that same context.  For example,
 ##
@@ -192,8 +188,8 @@
 ##
 ## @noindent
 ## removes the @code{image} package from the system.  If another installed
-## package depends on the @code{image} package an error will be issued.
-## The package can be uninstalled anyway by using the @option{-nodeps} option.
+## package depends on the @code{image} package an error is issued.  The package
+## uninstallation can be forced by using the @option{-nodeps} option.
 ##
 ## @item load
 ## Add named packages to the path.  After loading a package it is
@@ -206,7 +202,7 @@
 ## @noindent
 ## adds the @code{image} package to the path.
 ##
-## Note: When loading a package, @code{pkg} will automatically try to load
+## Note: When loading a package, @code{pkg} automatically tries to load
 ## any unloaded dependencies as well, unless the @option{-nodeps} flag has
 ## been specified.  For example,
 ##
@@ -216,22 +212,16 @@
 ##
 ## @noindent
 ## adds the @code{signal} package and also tries to load its dependency: the
-## @code{control} package.  Be aware that the functionality of package(s)
-## loaded will probably be impacted by use of the @option{-nodeps} flag.  Even
-## if necessary dependencies are loaded later, the functionality of top-level
-## packages can still be affected because the optimal loading order may not
-## have been followed.
+## @code{control} package.  Be aware that use of the @option{-nodeps} can
+## adversely affect package functionality.
 ##
 ## @item unload
 ## Remove named packages from the path.  After unloading a package it is
 ## no longer possible to use the functions provided by the package.  Trying
-## to unload a package that other loaded packages still depend on will result
-## in an error; no packages will be unloaded in this case.  A package can
-## be forcibly removed with the @option{-nodeps} flag, but be aware that the
-## functionality of dependent packages will likely be affected.  As when
-## loading packages, reloading dependencies after having unloaded them with the
-## @option{-nodeps} flag may not restore all functionality of the dependent
-## packages as the required loading order may be incorrect.
+## to unload a package that other loaded packages still depend on causes an
+## error; no packages are unloaded in this case.  A package can be forcibly
+## unloaded with the @option{-nodeps} flag, at the risk of breaking dependent
+## packages that are still loaded.
 ##
 ## @item list
 ## Show the list of currently installed packages.  For example,
@@ -275,7 +265,7 @@
 ## @end example
 ##
 ## @noindent
-## will describe all installed packages and the functions they provide.
+## describes all installed packages and the functions they provide.
 ## Display can be limited to a set of packages:
 ##
 ## @example
@@ -302,7 +292,7 @@
 ## @end example
 ##
 ## @noindent
-## @var{flag} will take one of the values @qcode{"Not installed"},
+## @var{flag} takes one of the values @qcode{"Not installed"},
 ## @qcode{"Loaded"}, or
 ## @qcode{"Not loaded"} for each of the named packages.
 ##
@@ -315,17 +305,17 @@
 ##
 ## @noindent
 ## sets the installation prefix to @file{~/my_octave_packages}.
-## Packages will be installed in this directory.
+## Packages are installed in this directory.
 ##
-## It is possible to get the current installation prefix by requesting an
-## output argument.  For example:
+## Giving an output argument returns the current installation prefix.
+## For example:
 ##
 ## @example
 ## pfx = pkg ("prefix")
 ## @end example
 ##
 ## The location in which to install the architecture dependent files can be
-## independently specified with an addition argument.  For example:
+## independently specified with an additional argument.  For example:
 ##
 ## @example
 ## pkg prefix ~/my_octave_packages ~/my_arch_dep_pkgs
@@ -340,7 +330,7 @@
 ## pkg local_list ~/.octave_packages
 ## @end example
 ##
-## It is possible to get the current value of local_list with the following
+## Get the current value of local_list with
 ##
 ## @example
 ## pkg local_list
@@ -355,7 +345,7 @@
 ## pkg global_list /usr/share/octave/site/api-v59/octave_packages
 ## @end smallexample
 ##
-## It is possible to get the current value of global_list with the following
+## Get the current value of global_list with
 ##
 ## @example
 ## pkg global_list
@@ -363,16 +353,15 @@
 ##
 ## @item build
 ## Build a binary form of a package or packages.  The binary file produced
-## will itself be an Octave package that can be installed normally with
-## @code{pkg}.  The form of the command to build a binary package is
+## is itself an Octave package that can be installed normally with @code{pkg}.
+## For example:
 ##
 ## @example
 ## pkg build builddir image-1.0.0.tar.gz @dots{}
 ## @end example
 ##
 ## @noindent
-## where @code{builddir} is the name of a directory where the temporary
-## installation will be produced and the binary packages will be found.
+## where @code{builddir} is a directory where the binary packages are built.
 ## The options @option{-verbose} and @option{-nodeps} are respected, while
 ## all other options are ignored.
 ##

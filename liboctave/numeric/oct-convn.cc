@@ -156,6 +156,7 @@ convolve (const MArray<T>& a, const MArray<R>& b, convn_type ct)
 
   const int nd = std::max (a.ndims (), b.ndims ());
   const dim_vector adims = a.dims ().redim (nd);
+  dim_vector apdims = a.dims ().redim (nd);         // permuted adims
   const dim_vector bdims = b.dims ().redim (nd);
   dim_vector cdims = dim_vector::alloc (nd);
 
@@ -174,7 +175,7 @@ convolve (const MArray<T>& a, const MArray<R>& b, convn_type ct)
   if (cdims.numel () == 0)
     return MArray<T> (cdims);
 
-  // Permute dimensions of a/b/c such that the dimensions of c are ordered
+  // Permute dimensions of a/b/c such that the dimensions of a are ordered
   // by decreasing number of elements (for efficiency in Fortran loops).
   Array<octave_idx_type> order (dim_vector (1, nd));
   for (int i = 0; i < nd; i++)
@@ -185,8 +186,9 @@ convolve (const MArray<T>& a, const MArray<R>& b, convn_type ct)
   bool reordered = false;
   for (int i = 0; i < nd; i++)
     for (int j = (i+1); j < nd; j++)
-      if (cdims(i) < cdims(j))
+      if (apdims(i) < apdims(j))
         {
+          std::swap (apdims(i), apdims(j));
           std::swap (cdims(i), cdims(j));
           std::swap (order(i), order(j));
           reordered = true;
@@ -195,12 +197,11 @@ convolve (const MArray<T>& a, const MArray<R>& b, convn_type ct)
   // Initialize output based on the current order of cdims.
   MArray<T> c (cdims, T ());
 
-  if (reordered)  // cdims was reordered, so the inputs must be as well.
+  if (reordered)  // adims was reordered, so the inputs must be as well.
     {
       // Permute the inputs
       const MArray<T> ap = a.permute (order);
       const MArray<R> bp = b.permute (order);
-      const dim_vector apdims = ap.dims ().redim (nd);
       const dim_vector bpdims = bp.dims ().redim (nd);
 
       // Do convolution on the permuted arrays.

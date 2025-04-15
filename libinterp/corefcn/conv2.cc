@@ -242,8 +242,8 @@ When the third argument is a matrix, return the convolution of the matrix
 %! old_state = rand ("state");
 %! restore_state = onCleanup (@() rand ("state", old_state));
 %! rand ("state", 12345); # initialize generator to make behavior reproducible
-%! A = rand (3, 4);
-%! B = rand (4);
+%! A = randi (100, 3, 4);
+%! B = randi (100, 4);
 %! C = conv2 (A, B);
 %!assert (conv2 (A,B, "full"), C)
 %!assert (conv2 (A,B, "same"), C(3:5,3:6))
@@ -255,8 +255,8 @@ When the third argument is a matrix, return the convolution of the matrix
 %! old_state = rand ("state");
 %! restore_state = onCleanup (@() rand ("state", old_state));
 %! rand ("state", 12345); # initialize generator to make behavior reproducible
-%! A = rand (3, 4);
-%! B = rand (5);
+%! A = randi (100, 3, 4);
+%! B = randi (100, 5);
 %! C = conv2 (A, B);
 %!assert (conv2 (A,B, "full"), C)
 %!assert (conv2 (A,B, "same"), C(3:5,3:6))
@@ -276,29 +276,15 @@ When the third argument is a matrix, return the convolution of the matrix
 %!assert <*34893> (conv2 ([1:5;1:5]', [1:2]', "valid"),
 %!                [4 7 10 13; 4 7 10 13]')
 
-%% Restore the rand "seed" and "state" values in order, so that the
-%% new "state" algorithm remains active after these tests complete.
-%!function restore_rand_state (seed, state)
-%!  rand ("seed", seed);
-%!  rand ("state", state);
-%!endfunction
-
-%% FIXME: This test only passes when using the "old" random number
-%%        generator by setting the "seed" parameter to any value.  If
-%%        the "state" parameter is used, the test fails.  This probably
-%%        indicates that this test is particularly fragile.  This might
-%%        need further investigation or a rewrite, for example using
-%%        random integer values to avoid precision overflow.
 %!test
-%! old_seed = rand ("seed");
 %! old_state = rand ("state");
-%! restore_state = onCleanup (@() restore_rand_state (old_seed, old_state));
-%! rand ("seed", 42);
-%! x = rand (100);
+%! restore_state = onCleanup (@() rand ("state", old_state));
+%! rand ("state", 12345); # initialize generator to make behavior reproducible
+%! x = randi (100, 100);
 %! y = ones (5);
 %! A = conv2 (x, y)(5:end-4,5:end-4);
 %! B = conv2 (x, y, "valid");
-%! assert (B, A);   # Yes, this test is for *exact* equivalence.
+%! assert (B, A, eps);
 
 ## Test input validation
 %!error conv2 ()
@@ -409,7 +395,7 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 }
 
 /*
-%!test <39314>
+%!test <*39314>
 %! v = reshape ([1 2], [1 1 2]);
 %! assert (convn (v, v), reshape ([1 4 4], [1 1 3]));
 %! assert (convn (v, v, "same"), reshape ([4 4], [1 1 2]));
@@ -430,12 +416,12 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %! old_state = rand ("state");
 %! restore_state = onCleanup (@() rand ("state", old_state));
 %! rand ("state", 12345); # initialize generator to make behavior reproducible
-%! a = rand (10, 10, 10);
-%! b = rand (3, 3, 3);
+%! a = randi (100, 10, 10, 10);
+%! b = randi (100, 3, 3, 3);
 %! c = convn (a, b, "full");
-%!assert (convn (a, b, "same"), c(2:11,2:11,2:11))
-%!test <39314>
-%! assert (all ((convn (a, b, "valid") == c(3:10,3:10,3:10))(:)),
+%!assert (convn (a, b, "same"), c(2:11,2:11,2:11), eps)
+%!test <*39314>
+%! assert (all (abs((convn (a, b, "valid") - c(3:10,3:10,3:10))(:)) <= eps),
 %!         "central part of convn 'full' differs from convn 'valid'");
 %!
 %!test
@@ -443,12 +429,12 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %! restore_state = onCleanup (@() rand ("state", old_state));
 %! rand ("state", 12345); # initialize generator to make behavior reproducible
 %! ## test 3D by 2D
-%! a = rand (10, 10, 10);
-%! b = rand (3, 3);
+%! a = randi (100, 10, 10, 10);
+%! b = randi (100, 3, 3);
 %! c = convn (a, b, "full");
-%!assert (convn (a, b, "same"), c(2:11,2:11,:))
-%!test <39314>
-%! assert (all ((convn (a, b, "valid") == c(3:10,3:10,:))(:)),
+%!assert (convn (a, b, "same"), c(2:11,2:11,:), eps)
+%!test <*39314>
+%! assert (all (abs((convn (a, b, "valid") - c(3:10,3:10,:))(:)) <= eps),
 %!         "central part of convn 'full' differs from convn 'valid'");
 %!
 %!test
@@ -456,8 +442,8 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %! restore_state = onCleanup (@() rand ("state", old_state));
 %! rand ("state", 12345); # initialize generator to make behavior reproducible
 %! ## test 2D by 3D
-%! a = rand (10, 10);
-%! b = rand (3, 3, 3);
+%! a = randi (100, 10, 10);
+%! b = randi (100, 3, 3, 3);
 %! c = convn (a, b, "full");
 %!assert (convn (a, b, "same"), c(2:11,2:11,2))
 %!assert (convn (a, b, "valid"), c(3:10,3:10,3:2))  # a 7x7x0 matrix
@@ -467,12 +453,12 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %! restore_state = onCleanup (@() rand ("state", old_state));
 %! rand ("state", 12345); # initialize generator to make behavior reproducible
 %! ## test multiple different number of dimensions, with odd and even numbers
-%! a = rand (10, 15, 7, 8, 10);
-%! b = rand (4, 3, 2, 3);
+%! a = randi (100, 10, 15, 7, 8, 10);
+%! b = randi (100, 4, 3, 2, 3);
 %! c = convn (a, b, "full");
 %!assert (convn (a, b, "same"), c(3:12,2:16,2:8,2:9,:))
-%!test <39314>
-%! assert (all ((convn (a, b, "valid") == c(4:10,3:15,2:7,3:8,:))(:)),
+%!test <*39314>
+%! assert (all (abs((convn (a, b, "valid") - c(4:10,3:15,2:7,3:8,:))(:)) <= eps),
 %!         "central part of convn 'full' differs from convn 'valid'");
 
 %!test

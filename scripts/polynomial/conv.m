@@ -64,7 +64,8 @@ function y = conv (a, b, shape = "full")
     error ('conv: SHAPE argument must be "full", "same", or "valid"');
   endif
 
-  y = conv2 (a(:), b(:), shape);
+  ## Column vectors perform best in Fortran code.
+  y = convn (a(:), b(:), shape);
 
   if (strcmpi (shape, "full"))
     ## Adapt the shape to the longest input argument, if necessary.

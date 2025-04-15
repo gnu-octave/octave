@@ -30,6 +30,7 @@ ARRAY_INC = \
   %reldir%/dNDArray.h \
   %reldir%/dRowVector.h \
   %reldir%/dSparse.h \
+  %reldir%/dim-vector.h \
   %reldir%/fCColVector.h \
   %reldir%/fCDiagMatrix.h \
   %reldir%/fCMatrix.h \
@@ -98,6 +99,7 @@ ARRAY_SRC = \
   %reldir%/dNDArray.cc \
   %reldir%/dRowVector.cc \
   %reldir%/dSparse.cc \
+  %reldir%/dim-vector.cc \
   %reldir%/fCColVector.cc \
   %reldir%/fCDiagMatrix.cc \
   %reldir%/fCMatrix.cc \
@@ -128,32 +130,7 @@ LIBOCTAVE_TEMPLATE_SRC += \
   %reldir%/Sparse.cc \
   %reldir%/intNDArray.cc
 
-## We include stdckdint.h in dim-vector.cc for the ckd_mul macro and
-## that file may come from gnulib.  We don't normally allow gnulib
-## headers to be included directly in Octave source files (see the
-## liboctave/wrappers directory) but in this case there is no convenient
-## way around it.  Putting the dim-vector object file in a separate
-## libtool convenience library allows us to add -I directives for the
-## compilation command only for dim-vector.cc and not all other files in
-## this directory.
-##
-## See also the comments in dim-vector.cc about including stdckdint.h.
-
-DIM_VECTOR_INC = \
-  %reldir%/dim-vector.h
-
-DIM_VECTOR_SRC = \
-  %reldir%/dim-vector.cc
-
-noinst_LTLIBRARIES += \
-  %reldir%/libdim-vector.la \
-  %reldir%/libarray.la
-
-%canon_reldir%_libdim_vector_la_SOURCES = $(DIM_VECTOR_SRC)
-
-%canon_reldir%_libdim_vector_la_CPPFLAGS = \
-  $(liboctave_liboctave_la_CPPFLAGS) \
-  -Ilibgnu -I$(srcdir)/libgnu
+noinst_LTLIBRARIES += %reldir%/libarray.la
 
 %canon_reldir%_libarray_la_SOURCES = $(ARRAY_SRC)
 
@@ -162,6 +139,4 @@ noinst_LTLIBRARIES += \
   $(FFTW_XCPPFLAGS) \
   $(SPARSE_XCPPFLAGS)
 
-liboctave_liboctave_la_LIBADD += \
-  %reldir%/libdim-vector.la \
-  %reldir%/libarray.la
+liboctave_liboctave_la_LIBADD += %reldir%/libarray.la

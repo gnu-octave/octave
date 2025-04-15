@@ -33,28 +33,8 @@
 #include <new>
 #include <sstream>
 
-// The stdckdint.h header may come from gnulib.  We don't normally allow
-// gnulib headers to be included directly in Octave source files (see
-// the liboctave/wrappers directory) but in this case there is no
-// convenient way around it because ckd_add, ckd_sub, and ckd_mul
-// are type generic macros.  Trying to write generic functions to
-// hide the macros is more trouble than just including this file here.
-// Except for the ckd_* macros, all other macros defined inside the
-// gnulib version of this header appear to begin with a _GL prefix, so
-// they should not cause trouble for us.
-//
-// Also, because we want to avoid the possibility of including a gnulib
-// header in a public Octave header file, we define the safe_numel
-// function here instead of in dim-vector.h.
-//
-// Note that C++ 26 will have a stdckdint.h header file that provides
-// template functions for ckd_add, ckd_sub, and ckd_mul.
-#include <stdbool.h>
-#include <stdckdint.h>
-
 #include "Array.h"
 #include "dim-vector.h"
-#include "lo-utils.h"
 
 void
 dim_vector::chop_all_singletons ()
@@ -102,29 +82,6 @@ dim_vector::num_ones () const
       retval++;
 
   return retval;
-}
-
-octave_idx_type
-dim_vector::safe_numel () const
-{
-  octave_idx_type n = xelem(0);
-
-  if (n > dim_max ())
-    throw std::bad_alloc ();
-
-  if (n == 0)
-    return 0;
-
-  for (int i = 1; i < ndims (); i++)
-    {
-      if (ckd_mul (&n, n, xelem(i)) || n > dim_max ())
-        throw std::bad_alloc ();
-
-      if (n == 0)
-        return 0;
-    }
-
-  return n;
 }
 
 dim_vector

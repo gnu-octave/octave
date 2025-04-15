@@ -324,19 +324,3 @@ jobs:
           [ -n "$(grep -e "FAIL\s*0" ./test-suite-bci.log)" ] || echo "::warning::At least one test failed with bytecode interpreter"
           [ -z "$(grep -e "REGRESSION" ./test-suite-bci.log)" ] || echo "::warning::At least one regression in test suite with bytecode interpreter"
           echo Finished analyzing test suite results.
-(??)
-(??)      - name: compress build artifact
-(??)        if: matrix.msystem == 'MINGW64'
-(??)        continue-on-error: true
-(??)        run: |
-(??)          cd /c/octave/pkg
-(??)          tar -cvzf octave.tar.gz *
-(??)
-(??)      - name: upload build artifact
-(??)        if: matrix.msystem == 'MINGW64'
-(??)        continue-on-error: true
-(??)        uses: actions/upload-artifact@v4
-(??)        with:
-(??)          name: ${{ matrix.target-prefix }}-octave-${{ steps.ccache-prepare.outputs.timestamp }}
-(??)          path: C:\octave\pkg\octave.tar.gz
-(??)          retention-days: 7

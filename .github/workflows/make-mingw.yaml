@@ -22,12 +22,11 @@ jobs:
 
       matrix:
         # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
-        os: [windows-latest]
-        msystem: [MINGW64, CLANG64]
+        msystem: [MINGW64, CLANG64, CLANGARM64]
         include:
           - msystem: MINGW64
+            os: windows-latest
             mingw-prefix: mingw64
-            target-prefix: mingw-w64-x86_64
             cc: gcc
             cxx: g++
             f77: gfortran
@@ -35,8 +34,20 @@ jobs:
             ccache-max: 0.9G
             allow-error: false
           - msystem: CLANG64
+            os: windows-latest
             mingw-prefix: clang64
-            target-prefix: mingw-w64-clang-x86_64
+            cc: clang
+            cxx: clang++
+            f77: flang
+            # Clang seems to require a different set of dllexport attributes than GCC.
+            extra-config-flags:
+              --disable-lib-visibility-flags
+            ccache-max: 400M
+            # This configuration is not fully supported yet
+            allow-error: true
+          - msystem: CLANGARM64
+            os: windows-11-arm
+            mingw-prefix: clangarm64
             cc: clang
             cxx: clang++
             f77: flang
@@ -56,12 +67,10 @@ jobs:
       PERL5SHELL: bash -l -c
 
     steps:
-      - name: get CPU name
-        # The runners for the 32-bit target sometimes get stuck in configure
-        # when using the Fortran compiler.
-        # Does that error depend on the processor of the selected runner?
+      - name: get runner hardware information
         shell: pwsh
         run : |
+          Get-PSDrive -PSProvider FileSystem
           Get-CIMInstance -Class Win32_Processor | Select-Object -Property Name
 
       - name: install MSYS2 build environment
@@ -69,57 +78,60 @@ jobs:
         with:
           update: true
 
-          # Use pre-installed version to save disc space on partition with source.
-          # We need that space for building.
-          release: false
+          # Use pre-installed version if possible to save disc space on
+          # partition with source.  We need that space for building.
+          release: ${{ matrix.msystem == 'CLANGARM64' }}
+
+          msystem: ${{ matrix.msystem }}
 
           # The packages are listed in (alphabetically sorted) blocks:
           # The first block is for mandatory dependencies.
           # The second block is for optional dependencies needed when building from a release tarball.
           # The third block is for additional dependencies needed when building from a repository checkout.
           # The fourth block is for additional run-time dependencies (to run test suite) that aren't needed to build.
+          pacboy: >-
+            autotools:p
+            cc:p
+            fc:p
+            gperf:p
+            openblas:p
+            pcre2:p
+
+            arpack:p
+            curl:p
+            fftw:p
+            fltk:p
+            gl2ps:p
+            glpk:p
+            ghostscript:p
+            gnuplot:p
+            graphicsmagick:p
+            hdf5:p
+            libsndfile:p
+            portaudio:p
+            qhull:p
+            qrupdate:p
+            qscintilla:p
+            qt5-base:p
+            qt5-imageformats:p
+            qt5-svg:p
+            qt5-tools:p
+            rapidjson:p
+            suitesparse:p
+            sundials:p
+
+            ccache:p
+            icoutils:p
+            librsvg:p
+            texinfo:p
+
           install: >-
             base-devel
-            ${{ matrix.target-prefix }}-autotools
-            ${{ matrix.target-prefix }}-cc
-            ${{ matrix.target-prefix }}-fc
-            ${{ matrix.target-prefix }}-gperf
-            ${{ matrix.target-prefix }}-openblas
-            ${{ matrix.target-prefix }}-pcre2
-
-            ${{ matrix.target-prefix }}-arpack
-            ${{ matrix.target-prefix }}-curl
-            ${{ matrix.target-prefix }}-fftw
-            ${{ matrix.target-prefix }}-fltk
-            ${{ matrix.target-prefix }}-gl2ps
-            ${{ matrix.target-prefix }}-glpk
-            ${{ matrix.target-prefix }}-ghostscript
-            ${{ matrix.target-prefix }}-gnuplot
-            ${{ matrix.target-prefix }}-graphicsmagick
-            ${{ matrix.target-prefix }}-hdf5
-            ${{ matrix.target-prefix }}-libsndfile
-            ${{ matrix.target-prefix }}-portaudio
-            ${{ matrix.target-prefix }}-qhull
-            ${{ matrix.target-prefix }}-qrupdate
-            ${{ matrix.target-prefix }}-qscintilla
-            ${{ matrix.target-prefix }}-qt5-base
-            ${{ matrix.target-prefix }}-qt5-imageformats
-            ${{ matrix.target-prefix }}-qt5-svg
-            ${{ matrix.target-prefix }}-qt5-tools
-            ${{ matrix.target-prefix }}-rapidjson
-            ${{ matrix.target-prefix }}-suitesparse
-            ${{ matrix.target-prefix }}-sundials
 
             git
-            ${{ matrix.target-prefix }}-ccache
-            ${{ matrix.target-prefix }}-icoutils
-            ${{ matrix.target-prefix }}-librsvg
-            ${{ matrix.target-prefix }}-texinfo
 
             unzip
             zip
-
-          msystem: ${{ matrix.msystem }}
 
       - name: checkout repository
         uses: actions/checkout@v4
@@ -312,3 +324,19 @@ jobs:
           [ -n "$(grep -e "FAIL\s*0" ./test-suite-bci.log)" ] || echo "::warning::At least one test failed with bytecode interpreter"
           [ -z "$(grep -e "REGRESSION" ./test-suite-bci.log)" ] || echo "::warning::At least one regression in test suite with bytecode interpreter"
           echo Finished analyzing test suite results.
+(??)
+(??)      - name: compress build artifact
+(??)        if: matrix.msystem == 'MINGW64'
+(??)        continue-on-error: true
+(??)        run: |
+(??)          cd /c/octave/pkg
+(??)          tar -cvzf octave.tar.gz *
+(??)
+(??)      - name: upload build artifact
+(??)        if: matrix.msystem == 'MINGW64'
+(??)        continue-on-error: true
+(??)        uses: actions/upload-artifact@v4
+(??)        with:
+(??)          name: ${{ matrix.target-prefix }}-octave-${{ steps.ccache-prepare.outputs.timestamp }}
+(??)          path: C:\octave\pkg\octave.tar.gz
+(??)          retention-days: 7

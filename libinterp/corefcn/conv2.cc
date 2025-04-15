@@ -49,15 +49,15 @@ The size of the result is determined by the optional @var{shape} argument
 which takes the following values
 
 @table @asis
-@item @var{shape} = @qcode{"full"}
+@item @qcode{"full"}
 Return the full convolution.  (default)
 
-@item @var{shape} = @qcode{"same"}
+@item @qcode{"same"}
 Return the central part of the convolution with the same size as @var{A}.
 The central part of the convolution begins at the indices
 @code{floor ([size(@var{B})/2] + 1)}.
 
-@item @var{shape} = @qcode{"valid"}
+@item @qcode{"valid"}
 Return only the parts which do not include zero-padded edges.
 The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 @end table
@@ -73,6 +73,9 @@ When the third argument is a matrix, return the convolution of the matrix
   if (nargin < 2 || nargin > 4)
     print_usage ();
 
+  if (args(0).ndims () > 2 || args(1).ndims () > 2)
+    error ("conv2: A and B must be 1-D vectors or 2-D matrices");
+
   std::string shape = "full";   // default
   bool separable = false;
   convn_type ct = convn_full;
@@ -87,11 +90,8 @@ When the third argument is a matrix, return the convolution of the matrix
   else if (nargin == 4)
     {
       separable = true;
-      shape = args(3).string_value ();
+      shape = args(3).xstring_value ("conv2: SHAPE must be a string");
     }
-
-  if (args(0).ndims () > 2 || args(1).ndims () > 2)
-    error ("conv2: A and B must be 1-D vectors or 2-D matrices");
 
   if (shape == "full")
     ct = convn_full;
@@ -100,16 +100,16 @@ When the third argument is a matrix, return the convolution of the matrix
   else if (shape == "valid")
     ct = convn_valid;
   else
-    error ("conv2: SHAPE type not valid");
+    error ("conv2: invalid SHAPE type");
 
   octave_value retval;
 
   if (separable)
     {
       // If user requests separable, check first two params are vectors
-      if (! (1 == args(0).rows () || 1 == args(0).columns ())
-          || ! (1 == args(1).rows () || 1 == args(1).columns ()))
-        error ("conv2: arguments must be vectors for separable option");
+      if ((args(0).rows () != 1 && args(0).columns () != 1)
+          || (args(1).rows () != 1 &&  args(1).columns () != 1))
+        error ("conv2: V1 and V2 arguments must be vectors");
 
       if (args(0).is_single_type () || args(1).is_single_type ()
           || args(2).is_single_type ())
@@ -166,8 +166,8 @@ When the third argument is a matrix, return the convolution of the matrix
               retval = convn (a, v1, v2, ct);
             }
         }
-    } // if (separable)
-  else
+    }
+  else  // not separable
     {
       if (args(0).is_single_type () || args(1).is_single_type ())
         {
@@ -216,12 +216,13 @@ When the third argument is a matrix, return the convolution of the matrix
             }
         }
 
-    } // if (separable)
+    }
 
   return retval;
 }
 
 /*
+## Test input classes: double, single, and uint8 => double
 %!test
 %! c = [0,1,2,3;1,8,12,12;4,20,24,21;7,22,25,18];
 %! assert (conv2 ([0,1;1,2], [1,2,3;4,5,6;7,8,9]), c);
@@ -231,9 +232,14 @@ When the third argument is a matrix, return the convolution of the matrix
 %! assert (conv2 (single ([0,1;1,2]), single ([1,2,3;4,5,6;7,8,9])), c);
 
 %!test
+%! c = [0,1,2,3;1,8,12,12;4,20,24,21;7,22,25,18];
+%! assert (conv2 (uint8 ([0,1;1,2]), uint8 ([1,2,3;4,5,6;7,8,9])), c);
+
+%!test
 %! c = [1,4,4;5,18,16;14,48,40;19,62,48;15,48,36];
 %! assert (conv2 (1:3, 1:2, [1,2;3,4;5,6]), c);
 
+## Test that "full" is default shape
 %!assert (conv2 (1:3, 1:2, [1,2;3,4;5,6], "full"),
 %!        conv2 (1:3, 1:2, [1,2;3,4;5,6]));
 
@@ -243,7 +249,7 @@ When the third argument is a matrix, return the convolution of the matrix
 %! restore_state = onCleanup (@() rand ("state", old_state));
 %! rand ("state", 12345); # initialize generator to make behavior reproducible
 %! A = randi (100, 3, 4);
-%! B = randi (100, 4);
+%! B = randi (100, 4, 4);
 %! C = conv2 (A, B);
 %!assert (conv2 (A,B, "full"), C)
 %!assert (conv2 (A,B, "same"), C(3:5,3:6))
@@ -251,12 +257,8 @@ When the third argument is a matrix, return the convolution of the matrix
 %!assert (size (conv2 (B,A, "valid")), [2 1])
 
 %!test
-%!shared A, B, C
-%! old_state = rand ("state");
-%! restore_state = onCleanup (@() rand ("state", old_state));
-%! rand ("state", 12345); # initialize generator to make behavior reproducible
 %! A = randi (100, 3, 4);
-%! B = randi (100, 5);
+%! B = randi (100, 5, 5);
 %! C = conv2 (A, B);
 %!assert (conv2 (A,B, "full"), C)
 %!assert (conv2 (A,B, "same"), C(3:5,3:6))
@@ -280,41 +282,44 @@ When the third argument is a matrix, return the convolution of the matrix
 %! old_state = rand ("state");
 %! restore_state = onCleanup (@() rand ("state", old_state));
 %! rand ("state", 12345); # initialize generator to make behavior reproducible
-%! x = randi (100, 100);
+%! x = randi (100, 100, 100);
 %! y = ones (5);
 %! A = conv2 (x, y)(5:end-4,5:end-4);
 %! B = conv2 (x, y, "valid");
 %! assert (B, A, eps);
 
 ## Test input validation
-%!error conv2 ()
-%!error conv2 (1)
+%!error <Invalid call> conv2 ()
+%!error <Invalid call> conv2 (1)
+%!error <Invalid call> conv2 (1,2,3,4,5)
+%!error <must be 1-D vectors or 2-D matrices> conv2 (ones (2,2,2), ones (2))
 %!error <must be 1-D vectors or 2-D matrices> conv2 (ones (2), ones (2,2,2))
-%!error <SHAPE type not valid> conv2 (1,2, "NOT_A_SHAPE")
+%!error <invalid SHAPE type> conv2 (1,2, "NOT_A_SHAPE")
 ## Test alternate calling form which should be 2 vectors and a matrix
-%!error conv2 (ones (2), 1, 1)
-%!error conv2 (1, ones (2), 1)
+%!error <V1 and V2 arguments must be vectors> conv2 (ones (2), 1, 1)
+%!error <V1 and V2 arguments must be vectors> conv2 (1, ones (2), 1)
+%!error <SHAPE must be a string> conv2 (1, ones (2), 1, {1})
 */
 
 DEFUN (convn, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{C} =} convn (@var{A}, @var{B})
 @deftypefnx {} {@var{C} =} convn (@var{A}, @var{B}, @var{shape})
-Return the n-D convolution of @var{A} and @var{B}.
+Return the N-D convolution of @var{A} and @var{B}.
 
 The size of the result is determined by the optional @var{shape} argument
 which takes the following values
 
 @table @asis
-@item @var{shape} = @qcode{"full"}
+@item @qcode{"full"}
 Return the full convolution.  (default)
 
-@item @var{shape} = @qcode{"same"}
+@item @qcode{"same"}
 Return central part of the convolution with the same size as @var{A}.
 The central part of the convolution begins at the indices
 @code{floor ([size(@var{B})/2] + 1)}.
 
-@item @var{shape} = @qcode{"valid"}
+@item @qcode{"valid"}
 Return only the parts which do not include zero-padded edges.
 The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 @end table
@@ -327,20 +332,21 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
-  std::string shape = "full";   // default
   convn_type ct = convn_full;
 
   if (nargin == 3)
-    shape = args(2).xstring_value ("convn: SHAPE must be a string");
+    {
+      std::string shape = args(2).xstring_value ("convn: SHAPE must be a string");
 
-  if (shape == "full")
-    ct = convn_full;
-  else if (shape == "same")
-    ct = convn_same;
-  else if (shape == "valid")
-    ct = convn_valid;
-  else
-    error ("convn: SHAPE type not valid");
+      if (shape == "full")
+        ct = convn_full;
+      else if (shape == "same")
+        ct = convn_same;
+      else if (shape == "valid")
+        ct = convn_valid;
+      else
+        error ("convn: SHAPE type not valid");
+    }
 
   octave_value retval;
 
@@ -421,7 +427,7 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %! c = convn (a, b, "full");
 %!assert (convn (a, b, "same"), c(2:11,2:11,2:11), eps)
 %!test <*39314>
-%! assert (all (abs((convn (a, b, "valid") - c(3:10,3:10,3:10))(:)) <= eps),
+%! assert (all (abs ((convn (a, b, "valid") - c(3:10,3:10,3:10))(:)) <= eps),
 %!         "central part of convn 'full' differs from convn 'valid'");
 %!
 %!test
@@ -434,7 +440,7 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %! c = convn (a, b, "full");
 %!assert (convn (a, b, "same"), c(2:11,2:11,:), eps)
 %!test <*39314>
-%! assert (all (abs((convn (a, b, "valid") - c(3:10,3:10,:))(:)) <= eps),
+%! assert (all (abs ((convn (a, b, "valid") - c(3:10,3:10,:))(:)) <= eps),
 %!         "central part of convn 'full' differs from convn 'valid'");
 %!
 %!test
@@ -458,7 +464,7 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %! c = convn (a, b, "full");
 %!assert (convn (a, b, "same"), c(3:12,2:16,2:8,2:9,:))
 %!test <*39314>
-%! assert (all (abs((convn (a, b, "valid") - c(4:10,3:15,2:7,3:8,:))(:)) <= eps),
+%! assert (all (abs ((convn (a, b, "valid") - c(4:10,3:15,2:7,3:8,:))(:)) <= eps),
 %!         "central part of convn 'full' differs from convn 'valid'");
 
 %!test
@@ -582,10 +588,12 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %!assert (class (convn (ones (5, "uint8"), b)), "double")
 %!assert (class (convn (d, ones (5, "uint8"))), "single")
 
-%!error convn ()
-%!error convn (1)
+## Test input validation
+%!error <Invalid call> convn ()
+%!error <Invalid call> convn (1)
+%!error <Invalid call> convn (1,2,3,4)
+%!error <SHAPE must be a string> convn (1,2,{3})
 %!error <SHAPE type not valid> convn (1,2, "NOT_A_SHAPE")
-%!error convn (b, 1, 1)
 */
 
 OCTAVE_END_NAMESPACE(octave)

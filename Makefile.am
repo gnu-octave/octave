@@ -167,7 +167,6 @@ HG-ID:
 	$(AM_V_GEN)$(SHELL) $(top_srcdir)/build-aux/mk-hg-id.sh "$(srcdir)" $(DISABLE_HG_ID_OPTION) > $@-t && \
 	$(simple_move_if_change_rule)
 .PHONY: HG-ID
-.NOTPARALLEL: HG-ID
 
 HG_ID_VAR = $(shell cat ${top_builddir}/HG-ID)
 

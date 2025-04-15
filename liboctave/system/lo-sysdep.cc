@@ -353,7 +353,7 @@ file_exists (const std::string& filename, bool is_dir)
 #else
   file_stat fs (filename);
 
-  return (fs && (fs.is_reg () || (is_dir && fs.is_dir ())));
+  return (fs && (is_dir || ! fs.is_dir ()));
 
 #endif
 }
@@ -380,7 +380,7 @@ file_exists (const std::string& filename, bool is_dir, std::string& msg)
   if (! fs)
     msg = fs.error ();
 
-  return (fs && (fs.is_reg () || (is_dir && fs.is_dir ())));
+  return (fs && (is_dir || ! fs.is_dir ()));
 
 #endif
 }

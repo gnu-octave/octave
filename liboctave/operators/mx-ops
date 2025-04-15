@@ -35,11 +35,11 @@
 #   S:  scalar
 #   M:  matrix
 #   DM: diagonal matrix
-#   ND: N-d array
+#   ND: N-D array
 #   FS:  scalar
 #   FM:  matrix
 #   FDM: diagonal matrix
-#   FND: N-d array
+#   FND: N-D array
 #
 # core-type is only used for the octave_int types, and is the template
 # parameter: octave_int8 is octave_int<int8_t>

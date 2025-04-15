@@ -596,7 +596,7 @@ private:
   // multiple lines, the value y is usually negative.
   Matrix m_bbox;
 
-  // Used to stored the rendered text.  It's a 3D matrix with size MxNx4
+  // Used to stored the rendered text.  It's a 3-D matrix with size MxNx4
   // where M and N are the width and height of the bounding box.
   uint8NDArray m_pixels;
 

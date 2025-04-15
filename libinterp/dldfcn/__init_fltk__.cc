@@ -1800,7 +1800,7 @@ private:
                     pixel2pos (ax, Fl::event_x (), Fl::event_y () - menu_dy (),
                                x1, y1);
 
-                    // FIXME: should we only zoom about point for 2D plots?
+                    // FIXME: should we only zoom about point for 2-D plots?
 
                     ap.zoom_about_point ("both", x1, y1, factor, false);
                     mark_modified ();

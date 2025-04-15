@@ -418,7 +418,7 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 ##        of tens of eps.  This should be fixed, but in the meantime
 ##        the tests will be marked as known failures.
 %!shared a, b, c
-%! ## test 3D by 3D
+%! ## test 3-D by 3-D
 %! old_state = rand ("state");
 %! restore_state = onCleanup (@() rand ("state", old_state));
 %! rand ("state", 12345); # initialize generator to make behavior reproducible
@@ -434,7 +434,7 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %! old_state = rand ("state");
 %! restore_state = onCleanup (@() rand ("state", old_state));
 %! rand ("state", 12345); # initialize generator to make behavior reproducible
-%! ## test 3D by 2D
+%! ## test 3-D by 2-D
 %! a = randi (100, 10, 10, 10);
 %! b = randi (100, 3, 3);
 %! c = convn (a, b, "full");
@@ -447,7 +447,7 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %! old_state = rand ("state");
 %! restore_state = onCleanup (@() rand ("state", old_state));
 %! rand ("state", 12345); # initialize generator to make behavior reproducible
-%! ## test 2D by 3D
+%! ## test 2-D by 3-D
 %! a = randi (100, 10, 10);
 %! b = randi (100, 3, 3, 3);
 %! c = convn (a, b, "full");

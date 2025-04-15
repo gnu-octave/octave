@@ -921,7 +921,7 @@ $\Omega$
 @ifnottex
 Omega
 @end ifnottex
-into simplexes (triangles in 2D, pyramids in 3D).
+into simplexes (triangles in 2-D, pyramids in 3-D).
 @ifset htmltex
 We take as a 3-D example a cylindrical liquid filled tank with a small
 non-conductive ball from the EIDORS project@footnote{EIDORS - Electrical

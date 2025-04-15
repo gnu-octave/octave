@@ -52,7 +52,7 @@ function dists = rectint (a, b)
   elseif (columns (a) != columns (b))
     error ("rectint: A and B must have same number of columns");
   elseif (ndims (a) > 2)
-    error ("rectint: A and B must be 2-d arrays");
+    error ("rectint: A and B must be 2-D arrays");
   elseif (mod (columns (a), 2))
     error ("rectint: number of columns of A and B must be a multiple of two");
   endif

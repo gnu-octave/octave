@@ -238,7 +238,7 @@ fcn_info::fcn_info_rep::load_class_method (const std::string& dispatch_type)
   return retval;
 }
 
-// :-) JWE, can you parse this? Returns a 2D array with second dimension equal
+// :-) JWE, can you parse this? Returns a 2-D array with second dimension equal
 // to btyp_num_types (static constant).  Only the leftmost dimension can be
 // variable in C/C++.  Typedefs are boring.
 

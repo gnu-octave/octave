@@ -720,7 +720,7 @@ octave_struct::edit_display (const float_display_format&,
     }
   else
     {
-      // 2-d struct array.  Rows and columns index individual
+      // 2-D struct array.  Rows and columns index individual
       // scalar structs.
 
       val = m_map(r, c);

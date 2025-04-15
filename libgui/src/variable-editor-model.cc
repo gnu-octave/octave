@@ -799,7 +799,7 @@ public:
   }
 };
 
-// 2-d struct array.  Rows and columns index individual scalar structs.
+// 2-D struct array.  Rows and columns index individual scalar structs.
 
 class struct_model : public base_ve_model
 {

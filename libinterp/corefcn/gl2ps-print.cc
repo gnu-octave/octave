@@ -389,11 +389,11 @@ gl2ps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
       if (plot_title.empty ())
         plot_title = "Octave plot";
 
-      // Default sort order optimizes for 3D plots
+      // Default sort order optimizes for 3-D plots
       GLint gl2ps_sort = GL2PS_BSP_SORT;
 
       // FIXME: gl2ps does not provide a way to change the sorting algorithm
-      // on a viewport basis, we thus disable sorting only if all axes are 2D
+      // on a viewport basis, we thus disable sorting only if all axes are 2-D
       if (has_2D_axes (myhandle))
         gl2ps_sort = GL2PS_NO_SORT;
 

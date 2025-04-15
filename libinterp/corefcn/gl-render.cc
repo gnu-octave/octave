@@ -2353,7 +2353,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
 
   setup_opengl_transformation (props);
 
-  // For 2D axes with only 2D primitives, draw from back to front without
+  // For 2-D axes with only 2-D primitives, draw from back to front without
   // depth sorting
   bool is2D = props.get_is2D (true);
   if (is2D)

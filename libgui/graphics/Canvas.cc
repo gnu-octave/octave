@@ -1008,7 +1008,7 @@ Canvas::canvasWheelEvent (QWheelEvent *event)
                                  ? 1 / (1.0 - wheel_zoom_speed)
                                  : 1.0 - wheel_zoom_speed);
 
-                // FIXME: should we zoom about point for 2D plots?
+                // FIXME: should we zoom about point for 2-D plots?
 
                 ap.zoom (mode, factor);
               }

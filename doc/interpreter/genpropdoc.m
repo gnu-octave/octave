@@ -2618,7 +2618,7 @@ transferred into @qcode{\"ydata\"} using the \
         s.category = "Coordinate Data";
 
       case "zdata"
-        s.doc = "For 3D data, vector with the y coordinates of the scatter \
+        s.doc = "For 3-D data, vector with the y coordinates of the scatter \
 object.";
         s.valid = packopt ({"[]", "vector"});
         s.category = "Coordinate Data";

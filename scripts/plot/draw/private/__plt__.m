@@ -79,7 +79,7 @@ function retval = __plt__ (caller, hp, varargin)
         && any (size (next_arg) == 1))
       next_arg = squeeze (next_arg);
       if (! any (strcmp (caller, warned_callers)) && ndims (next_arg) < 3)
-        warning (["%s: N-d inputs have been squeezed to less than " ...
+        warning (["%s: N-D inputs have been squeezed to less than " ...
                   "three dimensions"], caller);
         warned_callers(end+1) = caller;
       endif

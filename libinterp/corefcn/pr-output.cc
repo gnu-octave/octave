@@ -299,7 +299,7 @@ template <typename T>
 static inline T
 pr_max_internal (const MArray<T>& m)
 {
-  // We expect a 2-d array.
+  // We expect a 2-D array.
   panic_unless (m.ndims () == 2);
 
   octave_idx_type nr = m.rows ();
@@ -680,7 +680,7 @@ template <typename MT>
 static inline float_display_format
 make_matrix_format (const MT& m)
 {
-  // We expect a 2-d array.
+  // We expect a 2-D array.
   panic_unless (m.ndims () == 2);
 
   if (free_format)

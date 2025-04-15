@@ -67,17 +67,17 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 static octave_value_list
-get_output_list (interpreter& interp, octave_idx_type count,
-                 octave_idx_type nargout, const octave_value_list& inputlist,
-                 octave_value& fcn, octave_value& error_handler)
+fcn_eval (interpreter& interp, const octave_idx_type count,
+          octave_idx_type nargout, const octave_value_list& inputlist,
+          const octave_value& fcn, const octave_value& error_handler)
 {
-  octave_value_list tmp;
+  octave_value_list retval;
 
   bool execution_error = false;
 
   try
     {
-      tmp = interp.feval (fcn, inputlist, nargout);
+      retval = interp.feval (fcn, inputlist, nargout);
     }
   catch (const execution_exception& ee)
     {
@@ -96,108 +96,124 @@ get_output_list (interpreter& interp, octave_idx_type count,
 
   if (execution_error)
     {
-      if (error_handler.is_defined ())
-        {
-          error_system& es = interp.get_error_system ();
+      // ErrorHandler exists or this code would not have been reached.
+      // Call ErrorHandler() to create substitute output.
+      error_system& es = interp.get_error_system ();
 
-          octave_scalar_map msg;
-          msg.assign ("identifier", es.last_error_id ());
-          msg.assign ("message", es.last_error_message ());
-          msg.assign ("index",
-                      static_cast<double> (count
-                                           + static_cast<octave_idx_type> (1)));
+      octave_scalar_map msg;
+      msg.assign ("identifier", es.last_error_id ());
+      msg.assign ("message", es.last_error_message ());
+      msg.assign ("index",
+                  static_cast<double> (count
+                                       + static_cast<octave_idx_type> (1)));
 
-          octave_value_list errlist = inputlist;
-          errlist.prepend (msg);
+      octave_value_list errlist = inputlist;
+      errlist.prepend (msg);
 
-          tmp = interp.feval (error_handler, errlist, nargout);
-        }
-      else
-        tmp.clear ();
+      retval = interp.feval (error_handler, errlist, nargout);
     }
 
-  return tmp;
+  return retval;
 }
 
-// Templated function because the user can be stubborn enough to request
-// a cell array as an output even in these cases where the output fits
-// in an ordinary array
-template <typename BNDA, typename NDA>
 static octave_value_list
-try_cellfun_internal_ops (const octave_value_list& args, int nargin)
+try_cellfun_accelfcns (const octave_value_list& args, const int nargin)
 {
   octave_value_list retval;
 
-  std::string name = args(0).string_value ();
+  std::string fcn_name = args(0).string_value ();
 
-  const Cell f_args = args(1).cell_value ();
+  const Cell f_arg = args(1).cell_value ();
 
-  octave_idx_type k = f_args.numel ();
+  octave_idx_type nel = f_arg.numel ();
 
-  if (name == "isempty")
+  if (fcn_name == "isempty")
     {
-      BNDA result (f_args.dims ());
-      for (octave_idx_type count = 0; count < k; count++)
-        result(count) = f_args.elem (count).isempty ();
+      if (nargin > 2)
+        error_with_id ("Octave:invalid-input-arg",
+                       "cellfun: accelerated function must be called with only one argument");
+      boolNDArray result (f_arg.dims ());
+      for (octave_idx_type count = 0; count < nel; count++)
+        result(count) = f_arg.xelem (count).isempty ();
       retval(0) = result;
     }
-  else if (name == "islogical")
+  else if (fcn_name == "islogical")
     {
-      BNDA result (f_args.dims ());
-      for (octave_idx_type count= 0; count < k; count++)
-        result(count) = f_args.elem (count).islogical ();
+      if (nargin > 2)
+        error_with_id ("Octave:invalid-input-arg",
+                       "cellfun: accelerated function must be called with only one argument");
+      boolNDArray result (f_arg.dims ());
+      for (octave_idx_type count= 0; count < nel; count++)
+        result(count) = f_arg.xelem (count).islogical ();
       retval(0) = result;
     }
-  else if (name == "isnumeric")
+  else if (fcn_name == "isnumeric")
     {
-      BNDA result (f_args.dims ());
-      for (octave_idx_type count= 0; count < k; count++)
-        result(count) = f_args.elem (count).isnumeric ();
+      if (nargin > 2)
+        error_with_id ("Octave:invalid-input-arg",
+                       "cellfun: accelerated function must be called with only one argument");
+      boolNDArray result (f_arg.dims ());
+      for (octave_idx_type count= 0; count < nel; count++)
+        result(count) = f_arg.xelem (count).isnumeric ();
       retval(0) = result;
     }
-  else if (name == "isreal")
+  else if (fcn_name == "isreal")
     {
-      BNDA result (f_args.dims ());
-      for (octave_idx_type count= 0; count < k; count++)
-        result(count) = f_args.elem (count).isreal ();
+      if (nargin > 2)
+        error_with_id ("Octave:invalid-input-arg",
+                       "cellfun: accelerated function must be called with only one argument");
+      boolNDArray result (f_arg.dims ());
+      for (octave_idx_type count= 0; count < nel; count++)
+        result(count) = f_arg.xelem (count).isreal ();
       retval(0) = result;
     }
-  else if (name == "length")
+  else if (fcn_name == "length")
     {
-      NDA result (f_args.dims ());
-      for (octave_idx_type count= 0; count < k; count++)
-        result(count) = static_cast<double> (f_args.elem (count).length ());
+      if (nargin > 2)
+        error_with_id ("Octave:invalid-input-arg",
+                       "cellfun: accelerated function must be called with only one argument");
+      NDArray result (f_arg.dims ());
+      for (octave_idx_type count= 0; count < nel; count++)
+        result(count) = static_cast<double> (f_arg.xelem (count).length ());
       retval(0) = result;
     }
-  else if (name == "ndims")
+  else if (fcn_name == "ndims")
     {
-      NDA result (f_args.dims ());
-      for (octave_idx_type count = 0; count < k; count++)
-        result(count) = static_cast<double> (f_args.elem (count).ndims ());
+      if (nargin > 2)
+        error_with_id ("Octave:invalid-input-arg",
+                       "cellfun: accelerated function must be called with only one argument");
+      NDArray result (f_arg.dims ());
+      for (octave_idx_type count = 0; count < nel; count++)
+        result(count) = static_cast<double> (f_arg.xelem (count).ndims ());
       retval(0) = result;
     }
-  else if (name == "numel" || name == "prodofsize")
+  else if (fcn_name == "numel" || fcn_name == "prodofsize")
     {
-      NDA result (f_args.dims ());
-      for (octave_idx_type count = 0; count < k; count++)
-        result(count) = static_cast<double> (f_args.elem (count).numel ());
+      if (nargin > 2)
+        error_with_id ("Octave:invalid-input-arg",
+                       "cellfun: accelerated function must be called with only one argument");
+      NDArray result (f_arg.dims ());
+      for (octave_idx_type count = 0; count < nel; count++)
+        result(count) = static_cast<double> (f_arg.xelem (count).numel ());
       retval(0) = result;
     }
-  else if (name == "size")
+  else if (fcn_name == "size")
     {
       if (nargin != 3)
-        error (R"(cellfun: not enough arguments for "size")");
+        error_with_id ("Octave:invalid-input-arg",
+                       "cellfun: accelerated function 'size' must be called with exactly two arguments");
 
       int d = args(2).strict_int_value () - 1;
 
       if (d < 0)
-        error ("cellfun: K must be a positive integer");
+        error_with_id ("Octave:invalid-input-arg",
+                       "cellfun: K must be a positive integer");
 
-      NDA result (f_args.dims ());
+      NDArray result (f_arg.dims ());
 
-      for (octave_idx_type count = 0; count < k; count++)
+      for (octave_idx_type count = 0; count < nel; count++)
         {
-          const dim_vector& dv = f_args.elem (count).dims ();
+          const dim_vector& dv = f_arg.xelem (count).dims ();
           if (d < dv.ndims ())
             result(count) = static_cast<double> (dv(d));
           else
@@ -206,15 +222,16 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
 
       retval(0) = result;
     }
-  else if (name == "isclass")
+  else if (fcn_name == "isclass")
     {
       if (nargin != 3)
-        error (R"(cellfun: not enough arguments for "isclass")");
+        error_with_id ("Octave:invalid-input-arg",
+                       "cellfun: accelerated function 'isclass' must be called with exactly two arguments");
 
-      std::string class_name = args(2).string_value ();
-      BNDA result (f_args.dims ());
-      for (octave_idx_type count = 0; count < k; count++)
-        result(count) = (f_args.elem (count).class_name () == class_name);
+      std::string class_name = args(2).xstring_value ("cellfun: CLASS argument to 'isclass' must be a string");
+      boolNDArray result (f_arg.dims ());
+      for (octave_idx_type count = 0; count < nel; count++)
+        result(count) = (f_arg.xelem (count).class_name () == class_name);
 
       retval(0) = result;
     }
@@ -223,20 +240,18 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
 }
 
 static void
-get_mapper_fun_options (symbol_table& symtab,
-                        const octave_value_list& args,
-                        int& nargin, bool& uniform_output,
-                        octave_value& error_handler)
+parse_options (symbol_table& symtab, const octave_value_list& args,
+               int& nargin, bool& uniform_output, octave_value& error_handler)
 {
   while (nargin > 3 && args(nargin-2).is_string ())
     {
       std::string arg = args(nargin-2).string_value ();
 
-      std::size_t compare_len
-        = std::max (arg.length (), static_cast<std::size_t> (2));
+      std::size_t compare_len = std::max (arg.length (),
+                                          static_cast<std::size_t> (2));
 
       if (string::strncmpi (arg, "uniformoutput", compare_len))
-        uniform_output = args(nargin-1).bool_value ();
+        uniform_output = args(nargin-1).xbool_value ("cellfun: UniformOutput value must be boolean");
       else if (string::strncmpi (arg, "errorhandler", compare_len))
         {
           if (args(nargin-1).is_function_handle ()
@@ -251,14 +266,17 @@ get_mapper_fun_options (symbol_table& symtab,
               error_handler = symtab.find_function (err_name);
 
               if (error_handler.is_undefined ())
-                error ("cellfun: invalid function NAME: %s",
-                       err_name.c_str ());
+                error_with_id ("Octave:invalid-input-arg",
+                               "cellfun: invalid function NAME: %s",
+                               err_name.c_str ());
             }
           else
-            error ("cellfun: invalid value for 'ErrorHandler' function");
+            error_with_id ("Octave:invalid-input-arg",
+                           "cellfun: invalid value for 'ErrorHandler' function");
         }
       else
-        error ("cellfun: unrecognized parameter %s", arg.c_str ());
+        error_with_id ("Octave:invalid-input-arg",
+                       "cellfun: unrecognized parameter %s", arg.c_str ());
 
       nargin -= 2;
     }
@@ -399,8 +417,8 @@ input arguments of the element that caused the error.  For example:
 
 @example
 @group
-function y = foo (s, x), y = NaN; endfunction
-cellfun ("factorial", @{-1,2@}, "ErrorHandler", @@foo)
+function y = errfcn (s, x), y = NaN; endfunction
+cellfun ("factorial", @{-1, 2@}, "ErrorHandler", @@errfcn)
 @result{} [NaN 2]
 @end group
 @end example
@@ -429,24 +447,29 @@ v = cellfun (@@det, C);         # 40% faster
     print_usage ();
 
   if (! args(1).iscell ())
-    error ("cellfun: C must be a cell array");
+    error_with_id ("Octave:invalid-input-arg",
+                   "cellfun: C must be a cell array");
 
   octave_value_list retval;
-  int nargout1 = (nargout < 1 ? 1 : nargout);
 
   octave_value fcn = args(0);
+
+  // Possibly try accelerated functions, and return immediately
+  if (fcn.is_string ())
+    {
+      retval = try_cellfun_accelfcns (args, nargin);
+
+      if (! retval.empty ())
+        return retval;
+    }
+
+  // Function is not accelerated.  Have to execute the full function.
 
   symbol_table& symtab = interp.get_symbol_table ();
 
   if (fcn.is_string ())
     {
-      retval = try_cellfun_internal_ops<boolNDArray, NDArray> (args, nargin);
-
-      if (! retval.empty ())
-        return retval;
-
       // See if we can convert the string into a function.
-
       std::string name = args(0).string_value ();
 
       if (! valid_identifier (name))
@@ -456,245 +479,215 @@ v = cellfun (@@det, C);         # 40% faster
           fcn = symtab.find_function (name);
 
           if (fcn.is_undefined ())
-            error ("cellfun: invalid function NAME: %s", name.c_str ());
+            error_with_id ("Octave:invalid-input-arg",
+                           "cellfun: invalid function NAME: %s",
+                           name.c_str ());
         }
     }
 
-  if (! fcn.is_function_handle () && ! fcn.is_inline_function ()
-      && ! fcn.is_function ())
-    error ("cellfun: argument NAME must be a string or function handle");
+  if (! fcn.is_function_handle () && ! fcn.is_function ()
+      && ! fcn.is_inline_function ())
+    error_with_id ("Octave:invalid-input-arg",
+                   "cellfun: argument NAME must be a string or function handle");
 
+  // Parse remaining inputs ("UniformOutput" or "ErrorHandler" options)
   bool uniform_output = true;
   octave_value error_handler;
+  int nargout1 = (nargout < 1 ? 1 : nargout);
 
-  get_mapper_fun_options (symtab, args, nargin, uniform_output, error_handler);
+  parse_options (symtab, args, nargin, uniform_output, error_handler);
 
-  // The following is an optimization because the symbol table can give a
-  // more specific function class, so this can result in fewer polymorphic
-  // function calls as the function gets called for each value of the array.
-  {
-    if (fcn.is_function_handle () || fcn.is_inline_function ())
-      {
-        // FIXME: instead of checking for overloaded functions as we did
-        // previously but is no longer possible, we could check whether
-        // the types of all the cell array elements are the same, then
-        // lookup the function for that type just once.
-
-        goto nevermind;
-      }
-
-    std::string name = fcn.function_value () -> name ();
-    octave_value f = symtab.find_function (name);
-
-    if (f.is_defined ())
-      {
-        // Except for these two which are special cases...
-        if (name != "size" && name != "class")
-          {
-            // Try first the optimized code path for built-in functions
-            octave_value_list tmp_args = args;
-            tmp_args(0) = name;
-
-            if (uniform_output)
-              retval = try_cellfun_internal_ops<boolNDArray, NDArray> (tmp_args, nargin);
-            else
-              retval = try_cellfun_internal_ops<Cell, Cell> (tmp_args, nargin);
-
-            if (! retval.empty ())
-              return retval;
-          }
-
-        // Okay, we tried, doesn't work, let's do the best we can instead
-        // and avoid polymorphic calls for each element of the array.
+  // Optimize which function will be called in loop
+  if (fcn.is_function ())
+    {
+      // The symbol table can give a more specific function class for a general
+      // function, and this will result in fewer polymorphic function calls.
+      std::string name = fcn.function_value () -> name ();
+      octave_value f = symtab.find_function (name);
+      if (f.is_defined ())
         fcn = f;
-      }
-  }
-
-nevermind:
+    }
+  else  // fcn is a function handle or inline function
+    {
+      // FIXME: Should check whether the types of all the cell array elements
+      // are all the same, then lookup the function for that type just once.
+    }
 
   // Extract cell arguments.
-
-  octave_value_list inputlist (nargin, octave_value ());
+  octave_value_list inputovl (nargin);
 
   OCTAVE_LOCAL_BUFFER (Cell, inputs, nargin);
-  OCTAVE_LOCAL_BUFFER (bool, mask, nargin);
+  OCTAVE_LOCAL_BUFFER (bool, isarray, nargin);
 
   // This is to prevent copy-on-write.
   const Cell *cinputs = inputs;
 
-  octave_idx_type k = 1;
+  octave_idx_type nel = 1;
+  dim_vector inputdims (1, 1);
 
-  dim_vector fdims (1, 1);
-
-  // Collect arguments.  Pre-fill scalar elements of inputlist array.
-
+  // Collect and validate arguments.
+  // Pre-fill scalar elements of inputovl array.
   for (int j = 0; j < nargin; j++)
     {
       if (! args(j+1).iscell ())
-        error ("cellfun: arguments must be cells");
+        error_with_id ("Octave:invalid-input-arg",
+                       "cellfun: arguments must be cells");
 
       inputs[j] = args(j+1).cell_value ();
-      mask[j] = inputs[j].numel () != 1;
-      if (! mask[j])
-        inputlist(j) = cinputs[j](0);
-    }
-
-  for (int j = 0; j < nargin; j++)
-    {
-      if (mask[j])
+      isarray[j] = (inputs[j].numel () != 1);
+      if (isarray[j])
         {
-          fdims = inputs[j].dims ();
-          k = inputs[j].numel ();
-          for (int i = j+1; i < nargin; i++)
-            {
-              if (mask[i] && inputs[i].dims () != fdims)
-                error ("cellfun: dimensions mismatch");
-            }
-          break;
+          nel = inputs[j].numel ();
+          if (inputdims.numel () == 1)    // first time an array encountered
+            inputdims = inputs[j].dims ();
+          else if (inputs[j].dims () != inputdims)
+            error ("cellfun: input cell dimensions mismatch");
         }
+      else
+        inputovl(j) = cinputs[j](0);  // scalar, pre-fill inputovl 
     }
 
-  // Apply functions.
-
+  // Apply function
   if (uniform_output)
     {
+      // FIXME: These 3 declarations are possibly unnecessary if the
+      // code below that uses them is unreachable.
       std::list<octave_value_list> idx_list (1);
       idx_list.front ().resize (1);
-      std::string idx_type = "(";
+      const std::string idx_type = "(";
 
-      OCTAVE_LOCAL_BUFFER (octave_value, retv, nargout1);
+      OCTAVE_LOCAL_BUFFER (octave_value, results, nargout1);
 
       int expected_nargout;
-      for (octave_idx_type count = 0; count < k; count++)
+      for (octave_idx_type count = 0; count < nel; count++)
         {
+          // Initialize inputovl with this loop count's input data
           for (int j = 0; j < nargin; j++)
             {
-              if (mask[j])
-                inputlist.xelem (j) = cinputs[j](count);
+              if (isarray[j])
+                inputovl.xelem (j) = cinputs[j](count);
             }
 
-          const octave_value_list tmp
-            = get_output_list (interp, count, nargout, inputlist, fcn,
-                               error_handler);
+          // Evaluate function
+          const octave_value_list y
+            = fcn_eval (interp, count, nargout, inputovl, fcn, error_handler);
 
-          int tmp_numel = tmp.length ();
+          // Validate number of generated results is correct
+          int y_nel = y.length ();
           if (count == 0)
-            expected_nargout = tmp_numel;
-          else if (tmp_numel != expected_nargout)
+            {
+              // First time through loop.  Initialize expected number of
+              // outputs based on output from first function evaluation.
+              expected_nargout = y_nel;
+
+              if (nargout > 0 && y_nel < nargout)
+                error ("cellfun: function returned fewer than nargout values");
+            }
+          else if (y_nel != expected_nargout)
             error ("cellfun: function returned unexpected number of values");
 
-          if (nargout > 0 && tmp_numel < nargout)
-            error ("cellfun: function returned fewer than nargout values");
-
+          // Copy loop results to output if necessary 
           if (nargout > 0
-              || (nargout == 0 && tmp_numel > 0 && tmp(0).is_defined ()))
+              || (nargout == 0 && y_nel > 0 && y(0).is_defined ()))
             {
-              int num_to_copy = tmp.length ();
-
-              if (num_to_copy > nargout1)
-                num_to_copy = nargout1;
+              int num_to_copy = std::min (y_nel, nargout1);
 
               if (count == 0)
                 {
+                  // First time through loop create output with class of
+                  // function output and size of input cell arrays.
+                  // Predeclaring output is more efficient than growing array.
                   for (int j = 0; j < num_to_copy; j++)
                     {
-                      if (tmp(j).is_defined ())
-                        {
-                          octave_value val = tmp(j);
-
-                          if (val.numel () != 1)
-                            error ("cellfun: all values must be scalars when UniformOutput = true");
-
-                          retv[j] = val.resize (fdims);
-                        }
-                      else
+                      if (y(j).is_undefined ())
                         error ("cellfun: function returned fewer than nargout values");
+                      octave_value val = y(j);
+
+                      if (val.numel () != 1)
+                        error ("cellfun: all values must be scalars when UniformOutput = true");
+
+                      results[j] = val.resize (inputdims);
                     }
                 }
               else
                 {
                   for (int j = 0; j < num_to_copy; j++)
                     {
-                      if (tmp(j).is_defined ())
-                        {
-                          octave_value val = tmp(j);
-
-                          if (! retv[j].fast_elem_insert (count, val))
-                            {
-                              if (val.numel () != 1)
-                                error ("cellfun: all values must be scalars when UniformOutput = true");
-
-                              idx_list.front ()(0) = count + 1.0;
-                              retv[j].assign (octave_value::op_asn_eq,
-                                              idx_type, idx_list, val);
-                            }
-                        }
-                      else
+                      if (y(j).is_undefined ())
                         error ("cellfun: function returned fewer than nargout values");
+                      octave_value val = y(j);
+
+                      if (! results[j].fast_elem_insert (count, val))
+                        {
+                          // FIXME: Isn't this a guaranteed error if this point
+                          // is reached?  Added warning 2025/04/13.
+                          warning ("cellfun: This code should be unreachable.  Please report to bugs.octave.org");
+
+                          if (val.numel () != 1)
+                            error ("cellfun: all values must be scalars when UniformOutput = true");
+                          idx_list.front ()(0) = count + 1.0;
+                          results[j].assign (octave_value::op_asn_eq,
+                                          idx_type, idx_list, val);
+                        }
                     }
                 }
             }
         }
 
+      // Resize return array and fill with collected results 
       retval.resize (nargout1);
-
       for (int j = 0; j < nargout1; j++)
         {
-          if (nargout > 0 && retv[j].is_undefined ())
-            retval(j) = NDArray (fdims);
+          if (nargout > 0 && results[j].is_undefined ())
+            retval(j) = NDArray (inputdims);
           else
-            retval(j) = retv[j];
+            retval(j) = results[j];
         }
     }
-  else
+  else  // UniformOutput = false (return Cells)
     {
       OCTAVE_LOCAL_BUFFER (Cell, results, nargout1);
 
       for (int j = 0; j < nargout1; j++)
-        results[j].resize (fdims, Matrix ());
+        results[j].resize (inputdims);
 
-      bool have_some_output = false;
+      bool have_output = false;
 
-      for (octave_idx_type count = 0; count < k; count++)
+      for (octave_idx_type count = 0; count < nel; count++)
         {
           for (int j = 0; j < nargin; j++)
             {
-              if (mask[j])
-                inputlist.xelem (j) = cinputs[j](count);
+              if (isarray[j])
+                inputovl.xelem (j) = cinputs[j](count);
             }
 
-          const octave_value_list tmp
-            = get_output_list (interp, count, nargout, inputlist, fcn,
-                               error_handler);
+          const octave_value_list y
+            = fcn_eval (interp, count, nargout, inputovl, fcn, error_handler);
 
-          if (nargout > 0 && tmp.length () < nargout)
+          int y_nel = y.length ();
+
+          if (nargout > 0 && y_nel < nargout)
             error ("cellfun: function returned fewer than nargout values");
 
           if (nargout > 0
-              || (nargout == 0
-                  && tmp.length () > 0 && tmp(0).is_defined ()))
+              || (nargout == 0 && y_nel > 0 && y(0).is_defined ()))
             {
-              int num_to_copy = tmp.length ();
+              have_output = true;
 
-              if (num_to_copy > nargout1)
-                num_to_copy = nargout1;
-
-              if (num_to_copy > 0)
-                have_some_output = true;
+              int num_to_copy = std::min (y_nel, nargout1);
 
               for (int j = 0; j < num_to_copy; j++)
                 {
-                  if (tmp(j).is_undefined ())
+                  if (y(j).is_undefined ())
                     error ("cellfun: function returned fewer than nargout values");
-                  results[j](count) = tmp(j);
+                  results[j](count) = y(j);
                 }
             }
         }
 
-      if (have_some_output || fdims.any_zero ())
+      if (have_output || inputdims.any_zero ())
         {
           retval.resize (nargout1);
-
           for (int j = 0; j < nargout1; j++)
             retval(j) = results[j];
         }
@@ -773,6 +766,7 @@ nevermind:
 %! A = cellfun ("islogical", {true, 0.1, false, i*2});
 %! assert (A, [true, false, true, false]);
 %!test
+%! warning ('off', 'Octave:legacy-function', 'local');
 %! A = cellfun (inline ("islogical (x)", "x"), {true, 0.1, false, i*2});
 %! assert (A, [true, false, true, false]);
 %!test
@@ -1017,7 +1011,9 @@ nevermind:
 
 ## A lot of other tests
 %!assert (cellfun (@sin, {0,1}), sin ([0,1]))
-%!assert (cellfun (inline ("sin (x)"), {0,1}), sin ([0,1]))
+%!test
+%! warning ('off', 'Octave:legacy-function', 'local');
+%! assert (cellfun (inline ("sin (x)"), {0,1}), sin ([0,1]));
 %!assert (cellfun ("sin", {0,1}), sin ([0,1]))
 %!assert (cellfun ("isempty", {1,[]}), [false,true])
 %!assert (cellfun ("islogical", {false,pi}), [true,false])
@@ -1052,13 +1048,6 @@ nevermind:
 %!assert <*40467> (cellfun ('iscomplex', {1 inf NaN []}, "UniformOutput", false),
 %!                 {false, false, false, false})
 
-%!error cellfun (1)
-%!error cellfun ("isclass", 1)
-%!error cellfun ("size", 1)
-%!error cellfun ('sin', {[]}, "BadParam", false)
-%!error cellfun ('sin', {[]}, "UniformOuput")
-%!error cellfun ('sin', {[]}, "ErrorHandler")
-
 %!function retval = __errfcn (S, varargin)
 %!  global __errmsg;
 %!  __errmsg = S.message;
@@ -1077,7 +1066,28 @@ nevermind:
 %!endfunction
 %!test <66642>
 %! fail ("[a, b] = cellfun (@__counterror, {1, 4})");
+
+## Test input validation
+%!error <Invalid call> cellfun (1)
+%!error <C must be a cell array> cellfun (@sin, [1 2 3])
+%!error <accelerated function must be called with only one argument>
+%! cellfun ('isempty', {1}, {2});
+%!error <'isclass' must be called with exactly two arg> cellfun ('isclass', {1})
+%!error <CLASS argument .* must be a string> cellfun ('isclass', {1}, 1)
+%!error <'size' must be called with exactly two arg> cellfun ('size', {1})
+%!error <K must be a positive integer> cellfun ('size', {1}, -1)
+%!error <UniformOutput value must be boolean>
+%! cellfun (@sin, {1}, 'UniformOutput', {'Cell'})
+%!error <invalid function NAME> cellfun ('foo123bar567', {1})
+%!error <NAME must be a string or function handle> cellfun ([1 2 3], {1})
+%!error <arguments must be cells> cellfun (@atan2, {1}, [1])
+%!error <dimensions mismatch> cellfun (@atan2, {1; 2}, {1, 2})
+%!error <unrecognized parameter> cellfun ('sin', {1}, "BadParam", false)
+%!error cellfun ('sin', {[]}, "UniformOuput")
+%!error cellfun ('sin', {[]}, "ErrorHandler")
+
 */
+
 
 // Arrayfun was originally a .m file written by Bill Denney and Jaroslav
 // Hajek.  It was converted to C++ by jwe so that it could properly
@@ -1267,8 +1277,7 @@ arrayfun (@@str2num, [1234],
       bool uniform_output = true;
       octave_value error_handler;
 
-      get_mapper_fun_options (symtab, args, nargin, uniform_output,
-                              error_handler);
+      parse_options (symtab, args, nargin, uniform_output, error_handler);
 
       octave_value_list inputlist (nargin, octave_value ());
 
@@ -1328,8 +1337,8 @@ arrayfun (@@str2num, [1234],
                 }
 
               const octave_value_list tmp
-                = get_output_list (interp, count, nargout, inputlist, fcn,
-                                   error_handler);
+                = fcn_eval (interp, count, nargout, inputlist, fcn,
+                            error_handler);
 
               if (nargout > 0 && tmp.length () < nargout)
                 error_with_id ("Octave:invalid-fun-call",
@@ -1424,8 +1433,8 @@ arrayfun (@@str2num, [1234],
                 }
 
               const octave_value_list tmp
-                = get_output_list (interp, count, nargout, inputlist, fcn,
-                                   error_handler);
+                = fcn_eval (interp, count, nargout, inputlist, fcn,
+                            error_handler);
 
               if (nargout > 0 && tmp.length () < nargout)
                 error_with_id ("Octave:invalid-fun-call",
@@ -1526,6 +1535,7 @@ arrayfun (@@str2num, [1234],
 %! A = arrayfun ("isequal", [false, true], [true, true]);
 %! assert (A, [false, true]);
 %!test
+%! warning ('off', 'Octave:legacy-function', 'local');
 %! A = arrayfun (inline ("(x == y)", "x", "y"), [false, true], [true, true]);
 %! assert (A, [false, true]);
 %!test
@@ -2030,8 +2040,8 @@ prepare_idx (container *idx, int idim, int nd,
     }
 }
 
-// 2D specialization, works for Array, Sparse and octave_map.
-// Uses 1D or 2D indexing.
+// 2-D specialization, works for Array, Sparse and octave_map.
+// Uses 1-D or 2-D indexing.
 
 template <typename Array2D>
 static Cell
@@ -2057,7 +2067,7 @@ do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
 
   if (ivec >= 0)
     {
-      // Vector split.  Use 1D indexing.
+      // Vector split.  Use 1-D indexing.
       octave_idx_type l = 0;
       octave_idx_type nidx = (ivec == 0 ? nridx : ncidx);
       for (octave_idx_type i = 0; i < nidx; i++)
@@ -2069,7 +2079,7 @@ do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
     }
   else
     {
-      // General 2D case.  Use 2D indexing.
+      // General 2-D case.  Use 2-D indexing.
       OCTAVE_LOCAL_BUFFER (idx_vector, ridx, nridx);
       prepare_idx (ridx, 0, nd, d);
 

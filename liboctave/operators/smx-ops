@@ -33,7 +33,7 @@
 #   S:  scalar
 #   M:  matrix
 #   DM: diagonal matrix
-#   ND: N-d array
+#   ND: N-D array
 #   SM: sparse matrix
 #
 sm SparseMatrix SM dSparse.h YES

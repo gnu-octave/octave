@@ -6166,7 +6166,7 @@ axes::properties::update_axes_layout ()
   m_ypTickN = (m_zSign ? m_yPlane : m_yPlaneN);
   m_zpTickN = (m_zSign ? m_zPlaneN : m_zPlane);
 
-  // 2D mode
+  // 2-D mode
   m_x2Dtop = false;
   m_y2Dright = false;
   m_layer2Dtop = false;
@@ -8518,7 +8518,7 @@ axes::update_axis_limits (const std::string& axis_type,
       else
         {
           // FIXME: get_children_limits is only needed here in order to know
-          // if there are 3D children.  Is there a way to avoid this call?
+          // if there are 3-D children.  Is there a way to avoid this call?
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'z');
 
           m_properties.set_has3Dkids ((max_val - min_val) >
@@ -8734,7 +8734,7 @@ axes::update_axis_limits (const std::string& axis_type)
       else
         {
           // FIXME: get_children_limits is only needed here in order to know
-          // if there are 3D children.  Is there a way to avoid this call?
+          // if there are 3-D children.  Is there a way to avoid this call?
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'z');
 
           m_properties.set_has3Dkids ((max_val - min_val) >
@@ -9414,7 +9414,7 @@ text::properties::get_extent_matrix (bool rotated) const
 octave_value
 text::properties::get_extent () const
 {
-  // FIXME: This doesn't work right for 3D plots.
+  // FIXME: This doesn't work right for 3-D plots.
   // (It doesn't in Matlab either, at least not in version 6.5.)
   Matrix m = get_extent_matrix (true);
   Matrix pos = get_position ().matrix_value ();
@@ -9557,7 +9557,7 @@ text::properties::update_units ()
 
   pos = convert_text_position (pos, *this, m_cached_units, get_units ());
 
-  // FIXME: if the current axes view is 2D, then one should probably drop
+  // FIXME: if the current axes view is 2-D, then one should probably drop
   // the z-component of "pos" and leave "zliminclude" to "off".
 
   bool autopos = positionmode_is ("auto");
@@ -9923,7 +9923,7 @@ patch::properties::update_data ()
         }
     }
 
-  // check coplanarity for 3D-faces with more than 3 corners
+  // check coplanarity for 3-D-faces with more than 3 corners
   int fcmax = idx.rows ();
   if (fcmax > 3 && vert.columns () > 2
       && ! (facecolor_is ("none") && edgecolor_is ("none")))
@@ -10040,7 +10040,7 @@ patch::properties::calc_face_normals (Matrix& fn)
   Matrix v = get_vertices ().matrix_value ();
   Matrix f = get_faces ().matrix_value ();
 
-  bool is_3D = (v.columns () == 3);   // 2D or 3D patches
+  bool is_3D = (v.columns () == 3);   // 2-D or 3-D patches
   octave_idx_type num_f = f.rows ();  // number of faces
   octave_idx_type max_nc = f.columns ();  // max. number of polygon corners
 
@@ -10087,7 +10087,7 @@ patch::properties::calc_face_normals (Matrix& fn)
             {
               nz = (v(i2, 0) - v(i1, 0)) * (v(i3, 1) - v(i1, 1)) -
                    (v(i2, 1) - v(i1, 1)) * (v(i3, 0) - v(i1, 0));
-              // 2-d vertices always point towards +z
+              // 2-D vertices always point towards +z
               nz = (nz < 0) ? -nz : nz;
             }
         }

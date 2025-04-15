@@ -181,7 +181,7 @@ public:
   // Currently, 1 is subtracted to allow safe conversion of any 2D Array
   // into Sparse but this offset may change in the future.
 
-  static OCTAVE_API constexpr octave_idx_type dim_max ()
+  static constexpr octave_idx_type dim_max ()
   {
     return std::numeric_limits<octave_idx_type>::max () - 1;
   }

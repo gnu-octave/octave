@@ -1611,7 +1611,7 @@ Use @code{imwrite} instead.
   // value used with the first image is the one that counts (that would
   // also be Matlab compatible).  Thus, the right way to do this would be
   // to have an else block on the condition above, and set this only
-  // when creating a new file.  Since Matlab does not interpret a 4D
+  // when creating a new file.  Since Matlab does not interpret a 4-D
   // matrix as sequence of images to write, its users need to use a for
   // loop and set LoopCount only on the first iteration (it actually
   // throws warnings otherwise)
@@ -1624,7 +1624,7 @@ Use @code{imwrite} instead.
   // LoopCount only on the first image) that value will go nowhere.
   // See https://sourceforge.net/p/graphicsmagick/bugs/248/
   // Because of this, we document to set LoopCount on every iteration
-  // (in Matlab will cause a lot of warnings), or pass a 4D matrix with
+  // (in Matlab will cause a lot of warnings), or pass a 4-D matrix with
   // all frames (won't work in Matlab at all).
   // Note that this only needs to be set on the first frame
   imvec[0].animationIterations (options.getfield ("loopcount").uint_value ());

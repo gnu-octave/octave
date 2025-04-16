@@ -8,6 +8,9 @@ Summary of bugs fixed for version 10.2.0 (tbd):
 - Fix segfault in `octave-svgconvert` when called with no inputs.
 - `mkoctfile`: Remove temporary C source files after compilation.
 - `bar`: Avoid listener error when replacing an existing bar plot (bug #67006).
+- `var`/`std`: Issue an error for non-floating point inputs. Previous versions
+  accepted integer type inputs but could produce erroneous outputs due to
+  integer arithmetic and under/overflow errors (bug #67016).
 
 ### GUI
 - Fix build error without QScintilla installed (bug #66962).

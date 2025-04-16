@@ -157,8 +157,8 @@ function [v, m] = var (x, varargin)
   ndx = ndims (x);
 
   ## Check numeric arguments
-  if (! (isnumeric (x)))
-    error ("var: X must be a numeric vector or matrix");
+  if (! (isfloat (x)))
+    error ("var: X must be a floating point numeric vector or matrix");
   endif
   if (isa (x, "single"))
     outtype = "single";
@@ -895,11 +895,11 @@ endfunction
 %! [v, m] = var (sparse (4 * eye (2)), [1, 3]);
 %! assert (full (v), [3, 3]);
 %! assert (full (m), [1, 3]);
-%!test<*63291>
+%!test <*63291>
 %! [v, m] = var (sparse (eye (2)));
 %! assert (issparse (v));
 %! assert (issparse (m));
-%!test<*63291>
+%!test <*63291>
 %! [v, m] = var (sparse (eye (2)), [1, 3]);
 %! assert (issparse (v));
 %! assert (issparse (m));
@@ -918,9 +918,10 @@ endfunction
 %!error <weights must not contain any negative values> var (1, [1 -1])
 %!error <weights must not contain any negative values>
 %! var ([1 2 3], [1 -1 0])
-%!error <X must be a numeric vector or matrix> var ({1:5})
-%!error <X must be a numeric vector or matrix> var ("char")
-%!error <X must be a numeric vector or matrix> var (['A'; 'B'])
+%!error <X must be a floating point numeric vector or matrix> var (int32 (1:5))
+%!error <X must be a floating point numeric vector or matrix> var ({1:5})
+%!error <X must be a floating point numeric vector or matrix> var ("char")
+%!error <X must be a floating point numeric vector or matrix> var (['A'; 'B'])
 %!error <DIM must be a positive integer> var (1, [], ones (2,2))
 %!error <DIM must be a positive integer> var (1, 0, 1.5)
 %!error <DIM must be a positive integer> var (1, [], 0)

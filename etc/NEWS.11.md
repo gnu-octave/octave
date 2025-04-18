@@ -36,6 +36,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 
 ### Matlab compatibility
 
+- The function `zscore` now accepts the optional arguments `"all"` or `vecdim`,
+  and `"omitnan"`.
+
 ### Alphabetical list of new functions added in Octave 11
 
 * `corrcov`

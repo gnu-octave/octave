@@ -414,7 +414,7 @@ x = 0 : 0.1 : 1;
 @end example
 
 @noindent
-defines @var{x} to be a variable of type @code{range} and occupies 24
+defines @var{x} to be a variable of type @code{double_range} and occupies 24
 bytes of memory, the expression
 
 @example
@@ -426,7 +426,7 @@ defines @var{y} to be of type @code{matrix} and occupies 88 bytes of
 memory.
 
 This space saving optimization may be disabled using the function
-@dfn{optimize_range}.
+@code{optimize_range}.
 
 @DOCSTRING(optimize_range)
 
@@ -443,7 +443,7 @@ x(2:2:end) -= 1;   # decrement all even-numbered elements
 @end example
 
 The above code works correctly whether @var{x} has an odd number of elements
-or not, so no need to treat the two cases differently.
+or not: there is no need to treat the two cases differently.
 
 Octave uses floating point arithmetic to compute the values in the
 range.  As a result, defining ranges with floating-point values can result
@@ -475,7 +475,7 @@ one element (1.85 but not 1.90).  Thus, when using floating points in ranges,
 changing the start of the range can easily affect the end of the range even
 though the ending value was not touched in the above example.
 
-To avoid such pitfalls with floating-points in ranges, you should use one of
+To avoid such pitfalls with floating-points in ranges, you can use one of
 the following patterns.  This change to the previous code:
 
 @example
@@ -486,14 +486,14 @@ y = (0:1) * 0.05 + 1.85
 @end example
 
 @noindent
-makes it much safer and much more repeatable across platforms, compilers,
-and compiler settings.  If you know the number of elements, you can also use
-the @code{linspace} function (@pxref{Special Utility Matrices}), which will
-include the endpoints of a range.  You can also make judicious use of
-@code{round}, @code{floor}, @code{ceil}, @code{fix}, etc.@: to set the
-limits and the increment without getting interference from floating-point
-rounding.  For example, the earlier example can be made safer and much more
-repeatable with one of the following:
+use integers to construct the range and then converts to floating point making
+the overall expression safe and repeatable across platforms, compilers, and
+compiler settings.  If you know the number of elements, you can use the
+@code{linspace} function (@pxref{Special Utility Matrices}), which will include
+the endpoints of a range.  You can also make judicious use of @code{round},
+@code{floor}, @code{ceil}, @code{fix}, etc.@: to set the limits and the
+increment without getting interference from floating-point rounding.  For
+example, the earlier example can be made safer with one of the following:
 
 @example
 @group
@@ -507,30 +507,10 @@ z = a : d
 @end group
 @end example
 
-When adding a scalar to a range, subtracting a scalar from it (or subtracting a
-range from a scalar) and multiplying by scalar, Octave will attempt to avoid
-unpacking the range and keep the result as a range, too, if it can determine
-that it is safe to do so.  For instance, doing
-
-@example
-a = 2*(1:1e7) - 1;
-@end example
-
-@noindent
-will produce the same result as @code{1:2:2e7-1}, but without ever forming a
-vector with ten million elements.
-
-Using zero as an increment in the colon notation, as @code{1:0:1} is not
-allowed, because a division by zero would occur in determining the number of
-range elements.  However, ranges with zero increment (i.e., all elements equal)
-are useful, especially in indexing, and Octave allows them to be constructed
-using the built-in function @code{ones}.  Note that because a range must be a
-row vector, @code{ones (1, 10)} produces a range, while @code{ones (10, 1)}
-does not.
-
-When Octave parses a range expression, it examines the elements of the
-expression to determine whether they are all constants.  If they are, it
-replaces the range expression with a single range constant.
+If the result of the range expression is empty then Octave returns an empty
+@code{matrix}, not an empty @code{double_range}.  Similarly, if there is just
+a single element in the range then Octave returns a @code{scalar}, not a
+@code{double_range} with one element.
 
 @node Single Precision Data Types
 @section Single Precision Data Types

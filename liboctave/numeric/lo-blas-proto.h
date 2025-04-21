@@ -209,6 +209,28 @@ extern "C"
   F77_RET_T
   F77_FUNC (xerbla, XERBLA) (F77_CONST_CHAR_ARG_DECL, const F77_INT&
                              F77_CHAR_ARG_LEN_DECL);
+
+  // Declarations for the *axpy BLAS functions
+  // The *axpy functions are used by convolution.
+
+  F77_RET_T
+  F77_FUNC (daxpy, DAXPY) (const F77_INT&, const F77_DBLE&, const F77_DBLE *,
+                           const F77_INT&, F77_DBLE *, const F77_INT&);
+
+  F77_RET_T
+  F77_FUNC (saxpy, SAXPY) (const F77_INT&, const F77_REAL&, const F77_REAL *,
+                           const F77_INT&, F77_REAL *, const F77_INT&);
+
+  F77_RET_T
+  F77_FUNC (zaxpy, ZAXPY) (const F77_INT&, const F77_DBLE_CMPLX&,
+                           const F77_DBLE_CMPLX *, const F77_INT&,
+                           F77_DBLE_CMPLX *, const F77_INT&);
+
+  F77_RET_T
+  F77_FUNC (caxpy, CAXPY) (const F77_INT&, const F77_CMPLX&,
+                           const F77_CMPLX *, const F77_INT&,
+                           F77_CMPLX *, const F77_INT&);
+
 }
 
 #endif

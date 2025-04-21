@@ -48,67 +48,135 @@
 #include "fMatrix.h"
 #include "fNDArray.h"
 #include "fRowVector.h"
+#include "lo-blas-proto.h"
 #include "oct-convn.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
+
+// Begin AXPY specialization wrappers
+// Function overloading approach for BLAS axpy operations
+
+// double * double
+inline void
+blas_axpy (const F77_INT& n, const double& alpha, const double *x,
+           const F77_INT& incx, double *y, const F77_INT& incy)
+{
+  F77_FUNC (daxpy, DAXPY) (n, alpha, x, incx, y, incy);
+}
+
+// float * float
+inline void
+blas_axpy (const F77_INT& n, const float& alpha, const float *x,
+           const F77_INT& incx, float *y, const F77_INT& incy)
+{
+  F77_FUNC (saxpy, SAXPY) (n, alpha, x, incx, y, incy);
+}
+
+// complex<double> * complex<double>
+inline void
+blas_axpy (const F77_INT& n, const F77_DBLE_CMPLX& alpha,
+           const F77_DBLE_CMPLX *x, const F77_INT& incx,
+           F77_DBLE_CMPLX *y, const F77_INT& incy)
+{
+  F77_FUNC (zaxpy, ZAXPY) (n, alpha, x, incx, y, incy);
+}
+
+// complex<float> * complex<float>
+inline void
+blas_axpy (const F77_INT& n, const F77_CMPLX& alpha,
+           const F77_CMPLX *x, const F77_INT& incx,
+           F77_CMPLX *y, const F77_INT& incy)
+{
+  F77_FUNC (caxpy, CAXPY) (n, alpha, x, incx, y, incy);
+}
+
+// Overloaded versions for complex*real combinations
+
+// complex<double> * double  - by promoting to complex
+inline void
+blas_axpy (const F77_INT& n, const F77_DBLE_CMPLX& alpha, const double *x,
+           const F77_INT& incx, F77_DBLE_CMPLX *y, const F77_INT& incy)
+{
+  // Create a temporary complex array from x
+  std::vector<F77_DBLE_CMPLX> cx(n);
+  for (F77_INT i = 0; i < n; i++)
+    cx[i] = F77_DBLE_CMPLX(x[i * incx]);
+
+  // Use zaxpy with the complex temporary
+  F77_FUNC (zaxpy, ZAXPY) (n, alpha, cx.data (), incx, y, incy);
+}
+
+// complex<float> * float  - by promoting to complex
+inline void
+blas_axpy (const F77_INT& n, const F77_CMPLX& alpha, const float *x,
+           const F77_INT& incx, F77_CMPLX *y, const F77_INT& incy)
+{
+  // Create a temporary complex array from x
+  std::vector<F77_CMPLX> cx(n);
+  for (F77_INT i = 0; i < n; i++)
+    cx[i] = F77_CMPLX(x[i * incx]);
+
+  // Use caxpy with the complex temporary
+  F77_FUNC (caxpy, CAXPY) (n, alpha, cx.data (), incx, y, incy);
+}
+
+// Generic fallback for types without BLAS support
+// Just use loops
+template <typename T>
+inline void
+blas_axpy (const F77_INT& n, const T& alpha, const T *x,
+           const F77_INT& incx, T *y, const F77_INT& incy)
+{
+  for (F77_INT i = 0; i < n; i++)
+    y[i * incy] += alpha * x[i * incx];
+}
+// End AXPY specialization wrappers
 
 // 2d convolution with a matrix kernel.
 template <typename T, typename R>
 static void
 convolve_2d (const T *a, F77_INT ma, F77_INT na,
              const R *b, F77_INT mb, F77_INT nb,
-             T *c, bool inner);
+             T *c, bool inner)
+{
+  if (inner)
+    {
+      // Inner convolution ("valid")
+      const F77_INT len = ma - mb + 1;  // Pre-calculate length
+      for (F77_INT k = 0; k < na - nb + 1; k++)
+        for (F77_INT j = 0; j < nb; j++)
+          for (F77_INT i = 0; i < mb; i++)
+            {
+              // Create a T value from R
+              T b_val = static_cast<T>(b[i + j*mb]);
 
-// Forward instances to our Fortran implementations.
-#define FORWARD_IMPL(T_CXX, R_CXX, T, R, T_CAST, T_CONST_CAST,          \
-                     R_CONST_CAST, f, F)                                \
-  extern "C"                                                            \
-  F77_RET_T                                                             \
-  F77_FUNC (f##conv2o, F##CONV2O) (const F77_INT&, const F77_INT&,      \
-                                   const T*, const F77_INT&,            \
-                                   const F77_INT&, const R*, T *);      \
-                                                                        \
-  extern "C"                                                            \
-  F77_RET_T                                                             \
-  F77_FUNC (f##conv2i, F##CONV2I) (const F77_INT&, const F77_INT&,      \
-                                   const T*, const F77_INT&,            \
-                                   const F77_INT&, const R*, T *);      \
-                                                                        \
-  template <> void                                                      \
-  convolve_2d<T_CXX, R_CXX> (const T_CXX *a, F77_INT ma, F77_INT na,    \
-                             const R_CXX *b, F77_INT mb, F77_INT nb,    \
-                             T_CXX *c, bool inner)                      \
-  {                                                                     \
-    if (inner)                                                          \
-      F77_XFCN (f##conv2i, F##CONV2I, (ma, na, T_CONST_CAST (a),        \
-                                       mb, nb, R_CONST_CAST (b),        \
-                                       T_CAST (c)));                    \
-    else                                                                \
-      F77_XFCN (f##conv2o, F##CONV2O, (ma, na, T_CONST_CAST (a),        \
-                                       mb, nb, R_CONST_CAST (b),        \
-                                       T_CAST (c)));                    \
-  }
+              // Call the appropriate blas_axpy function based on type T
+              blas_axpy (len, b_val, &a[mb-i-1 + (k+nb-j-1)*ma], 1,
+                         &c[k*len], 1);
+            }
+    }
+	else
+    {
+      // Outer convolution ("full")
+      const F77_INT len = ma + mb - 1;  // Pre-calculate length
+      for (F77_INT k = 0; k < na; k++)
+        for (F77_INT j = 0; j < nb; j++)
+          for (F77_INT i = 0; i < mb; i++)
+            {
+              // Create a T value from R
+              T b_val = static_cast<T>(b[i + j*mb]);
 
-FORWARD_IMPL (double, double, F77_DBLE, F77_DBLE,,,, d, D)
-FORWARD_IMPL (float, float, F77_REAL, F77_REAL,,,, s, S)
-
-FORWARD_IMPL (std::complex<double>, std::complex<double>,
-              F77_DBLE_CMPLX, F77_DBLE_CMPLX, F77_DBLE_CMPLX_ARG,
-              F77_CONST_DBLE_CMPLX_ARG, F77_CONST_DBLE_CMPLX_ARG, z, Z)
-FORWARD_IMPL (std::complex<float>, std::complex<float>,
-              F77_CMPLX, F77_CMPLX, F77_CMPLX_ARG,
-              F77_CONST_CMPLX_ARG, F77_CONST_CMPLX_ARG, c, C)
-
-FORWARD_IMPL (std::complex<double>, double,
-              F77_DBLE_CMPLX, F77_DBLE, F77_DBLE_CMPLX_ARG,
-              F77_CONST_DBLE_CMPLX_ARG,, zd, ZD)
-FORWARD_IMPL (std::complex<float>, float, F77_CMPLX, F77_REAL, F77_CMPLX_ARG,
-              F77_CONST_CMPLX_ARG,, cs, CS)
+              // Call the appropriate blas_axpy function based on type T
+              blas_axpy (ma, b_val, &a[k*ma], 1, &c[i + (j+k)*len], 1);
+            }
+    }
+}
 
 template <typename T, typename R>
-void convolve_nd (const T *a, const dim_vector& ad, const dim_vector& acd,
-                  const R *b, const dim_vector& bd, const dim_vector& bcd,
-                  T *c, const dim_vector& ccd, int nd, bool inner)
+void
+convolve_nd (const T *a, const dim_vector& ad, const dim_vector& acd,
+             const R *b, const dim_vector& bd, const dim_vector& bcd,
+             T *c, const dim_vector& ccd, int nd, bool inner)
 {
   if (nd == 2)
     {

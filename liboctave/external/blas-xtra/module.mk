@@ -16,13 +16,7 @@ EXTERNAL_SOURCES += \
   %reldir%/xsnrm2.f \
   %reldir%/xscnrm2.f \
   %reldir%/xcdotc.f \
-  %reldir%/xcdotu.f \
-  %reldir%/cconv2.f \
-  %reldir%/csconv2.f \
-  %reldir%/dconv2.f \
-  %reldir%/sconv2.f \
-  %reldir%/zconv2.f \
-  %reldir%/zdconv2.f
+  %reldir%/xcdotu.f
 
 XERBLA_SRC = \
   %reldir%/xerbla.cc

@@ -98,12 +98,12 @@ blas_axpy (const F77_INT& n, const F77_DBLE_CMPLX& alpha, const double *x,
            const F77_INT& incx, F77_DBLE_CMPLX *y, const F77_INT& incy)
 {
   // Create a temporary complex array from x
-  std::vector<F77_DBLE_CMPLX> cx(n);
+  OCTAVE_LOCAL_BUFFER (F77_DBLE_CMPLX, cx, n);
   for (F77_INT i = 0; i < n; i++)
-    cx[i] = F77_DBLE_CMPLX(x[i * incx]);
+    cx[i] = F77_DBLE_CMPLX (x[i * incx]);
 
   // Use zaxpy with the complex temporary
-  F77_FUNC (zaxpy, ZAXPY) (n, alpha, cx.data (), incx, y, incy);
+  F77_FUNC (zaxpy, ZAXPY) (n, alpha, cx, 1, y, incy);
 }
 
 // complex<float> * float  - by promoting to complex
@@ -112,12 +112,12 @@ blas_axpy (const F77_INT& n, const F77_CMPLX& alpha, const float *x,
            const F77_INT& incx, F77_CMPLX *y, const F77_INT& incy)
 {
   // Create a temporary complex array from x
-  std::vector<F77_CMPLX> cx(n);
+  OCTAVE_LOCAL_BUFFER (F77_CMPLX, cx, n);
   for (F77_INT i = 0; i < n; i++)
-    cx[i] = F77_CMPLX(x[i * incx]);
+    cx[i] = F77_CMPLX (x[i * incx]);
 
   // Use caxpy with the complex temporary
-  F77_FUNC (caxpy, CAXPY) (n, alpha, cx.data (), incx, y, incy);
+  F77_FUNC (caxpy, CAXPY) (n, alpha, cx, 1, y, incy);
 }
 
 // Generic fallback for types without BLAS support

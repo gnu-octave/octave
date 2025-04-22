@@ -40,7 +40,7 @@ jobs:
             qttools5-dev-tools rapidjson-dev rsync tar zlib1g-dev
 
       - name: bootstrap
-        run: ./bootstrap
+        run: GNULIB_URL=https://github.com/coreutils/gnulib.git ./bootstrap
 
       - name: configure
         run: |

@@ -57,7 +57,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 // Function overloading approach for BLAS axpy operations
 
 // double * double
-inline void
+static inline void
 blas_axpy (const F77_INT& n, const double& alpha, const double *x,
            const F77_INT& incx, double *y, const F77_INT& incy)
 {
@@ -65,7 +65,7 @@ blas_axpy (const F77_INT& n, const double& alpha, const double *x,
 }
 
 // float * float
-inline void
+static inline void
 blas_axpy (const F77_INT& n, const float& alpha, const float *x,
            const F77_INT& incx, float *y, const F77_INT& incy)
 {
@@ -73,7 +73,7 @@ blas_axpy (const F77_INT& n, const float& alpha, const float *x,
 }
 
 // complex<double> * complex<double>
-inline void
+static inline void
 blas_axpy (const F77_INT& n, const F77_DBLE_CMPLX& alpha,
            const F77_DBLE_CMPLX *x, const F77_INT& incx,
            F77_DBLE_CMPLX *y, const F77_INT& incy)
@@ -82,7 +82,7 @@ blas_axpy (const F77_INT& n, const F77_DBLE_CMPLX& alpha,
 }
 
 // complex<float> * complex<float>
-inline void
+static inline void
 blas_axpy (const F77_INT& n, const F77_CMPLX& alpha,
            const F77_CMPLX *x, const F77_INT& incx,
            F77_CMPLX *y, const F77_INT& incy)
@@ -93,7 +93,7 @@ blas_axpy (const F77_INT& n, const F77_CMPLX& alpha,
 // Overloaded versions for complex*real combinations
 
 // complex<double> * double  - by promoting to complex
-inline void
+static inline void
 blas_axpy (const F77_INT& n, const F77_DBLE_CMPLX& alpha, const double *x,
            const F77_INT& incx, F77_DBLE_CMPLX *y, const F77_INT& incy)
 {
@@ -107,7 +107,7 @@ blas_axpy (const F77_INT& n, const F77_DBLE_CMPLX& alpha, const double *x,
 }
 
 // complex<float> * float  - by promoting to complex
-inline void
+static inline void
 blas_axpy (const F77_INT& n, const F77_CMPLX& alpha, const float *x,
            const F77_INT& incx, F77_CMPLX *y, const F77_INT& incy)
 {
@@ -123,7 +123,7 @@ blas_axpy (const F77_INT& n, const F77_CMPLX& alpha, const float *x,
 // Generic fallback for types without BLAS support
 // Just use loops
 template <typename T>
-inline void
+static inline void
 blas_axpy (const F77_INT& n, const T& alpha, const T *x,
            const F77_INT& incx, T *y, const F77_INT& incy)
 {

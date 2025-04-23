@@ -47,35 +47,43 @@ function [b, r] = deconv (y, a)
     error ("deconv: Y and A must be vectors");
   endif
 
-  ## Ensure A is oriented as Y.
-  if ((isrow (y) && iscolumn (a)) || (iscolumn (y) && isrow (a)))
-    a = a.';
+  la = numel (a);
+  ly = numel (y);
+
+  if (ly < la)  # return early
+    b = 0;
+    r = y;
+    return;
   endif
 
-  la = length (a);
-  ly = length (y);
-
-  lb = ly - la + 1;
+  ## If here, then ly >= la.
+  ## Ensure A is oriented as Y.
+  if (isrow (y) != isrow (a))
+    a = a.';
+  endif
 
   if (ly > la)
     x = zeros (size (y) - size (a) + 1);
     x(1) = 1;
-    [b, r] = filter (y, a, x);
-    r *= a(1);
-  elseif (ly == la)
-    [b, r] = filter (y, a, 1);
-    r *= a(1);
-  else
-    b = 0;
-    r = y;
+  else  # ly == la ==> set x to 1 without calling size() and zeros();
+    x = 1;
   endif
 
-  if (nargout > 1)
-    if (ly >= la)
-      r = [zeros(ly - la + 1, 1); r(1:la - 1)];
-      ## Respect the orientation of Y
-      r = reshape (r, size (y));
+  if (nargout == 1)  # no need to calculate remainder
+
+    b = filter (y, a, x);
+
+  else  # nargout == 2 ==> calculate both quotient and remainder
+
+    [b, r] = filter (y, a, x);
+    r *= a(1);
+    r = [zeros(ly - la + 1, 1); r(1:la - 1)];
+
+    ## Respect the orientation of Y
+    if (isrow (y))
+      r = r.';
     endif
+
   endif
 
 endfunction

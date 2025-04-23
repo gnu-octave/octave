@@ -260,7 +260,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
   return filter (b, a, x, si, dim);
 }
 
-DEFUN (filter, args, ,
+DEFUN (filter, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{y} =} filter (@var{b}, @var{a}, @var{x})
 @deftypefnx {} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si})
@@ -365,7 +365,7 @@ H(z) = ---------------------
 {
   int nargin = args.length ();
 
-  if (nargin < 3 || nargin > 5)
+  if (nargin < 3 || nargin > 5 || nargout > 2)
     print_usage ();
 
   int dim;
@@ -380,7 +380,7 @@ H(z) = ---------------------
   else
     dim = x_dims.first_non_singleton ();
 
-  octave_value_list retval;
+  octave_value_list retval ((nargout <= 1) ? 1 : 2);
 
   const char *a_b_errmsg = "filter: A and B must be vectors";
   const char *x_si_errmsg = "filter: X and SI must be arrays";
@@ -427,7 +427,9 @@ H(z) = ---------------------
 
           FloatComplexNDArray y (filter (b, a, x, si, dim));
 
-          retval = ovl (y, si);
+          retval(0) = y;
+          if (nargout > 1)
+            retval(1) = si;
         }
       else
         {
@@ -462,7 +464,9 @@ H(z) = ---------------------
 
           ComplexNDArray y (filter (b, a, x, si, dim));
 
-          retval = ovl (y, si);
+          retval(0) = y;
+          if (nargout > 1)
+            retval(1) = si;
         }
     }
   else
@@ -500,7 +504,9 @@ H(z) = ---------------------
 
           FloatNDArray y (filter (b, a, x, si, dim));
 
-          retval = ovl (y, si);
+          retval(0) = y;
+          if (nargout > 1)
+            retval(1) = si;
         }
       else
         {
@@ -535,7 +541,9 @@ H(z) = ---------------------
 
           NDArray y (filter (b, a, x, si, dim));
 
-          retval = ovl (y, si);
+          retval(0) = y;
+          if (nargout > 1)
+            retval(1) = si;
         }
     }
 

@@ -74,63 +74,28 @@ blas_axpy (const F77_INT& n, const float& alpha, const float *x,
 
 // complex<double> * complex<double>
 static inline void
-blas_axpy (const F77_INT& n, const F77_DBLE_CMPLX& alpha,
-           const F77_DBLE_CMPLX *x, const F77_INT& incx,
-           F77_DBLE_CMPLX *y, const F77_INT& incy)
+blas_axpy (const F77_INT& n, const std::complex<double>& alpha,
+           const std::complex<double> *x, const F77_INT& incx,
+           std::complex<double> *y, const F77_INT& incy)
 {
-  F77_FUNC (zaxpy, ZAXPY) (n, alpha, x, incx, y, incy);
+  F77_FUNC (zaxpy, ZAXPY) (n,
+                           *reinterpret_cast<const F77_DBLE_CMPLX*>(&alpha),
+                           reinterpret_cast<const F77_DBLE_CMPLX*>(x), incx,
+                           reinterpret_cast<F77_DBLE_CMPLX*>(y), incy);
 }
 
 // complex<float> * complex<float>
 static inline void
-blas_axpy (const F77_INT& n, const F77_CMPLX& alpha,
-           const F77_CMPLX *x, const F77_INT& incx,
-           F77_CMPLX *y, const F77_INT& incy)
+blas_axpy (const F77_INT& n, const std::complex<float>& alpha,
+           const std::complex<float> *x, const F77_INT& incx,
+           std::complex<float> *y, const F77_INT& incy)
 {
-  F77_FUNC (caxpy, CAXPY) (n, alpha, x, incx, y, incy);
+  F77_FUNC (caxpy, CAXPY) (n,
+                           *reinterpret_cast<const F77_CMPLX*>(&alpha),
+                           reinterpret_cast<const F77_CMPLX*>(x), incx,
+                           reinterpret_cast<F77_CMPLX*>(y), incy);
+
 }
-
-// Overloaded versions for complex*real combinations
-
-// complex<double> * double  - by promoting to complex
-static inline void
-blas_axpy (const F77_INT& n, const F77_DBLE_CMPLX& alpha, const double *x,
-           const F77_INT& incx, F77_DBLE_CMPLX *y, const F77_INT& incy)
-{
-  // Create a temporary complex array from x
-  OCTAVE_LOCAL_BUFFER (F77_DBLE_CMPLX, cx, n);
-  for (F77_INT i = 0; i < n; i++)
-    cx[i] = F77_DBLE_CMPLX (x[i * incx]);
-
-  // Use zaxpy with the complex temporary
-  F77_FUNC (zaxpy, ZAXPY) (n, alpha, cx, 1, y, incy);
-}
-
-// complex<float> * float  - by promoting to complex
-static inline void
-blas_axpy (const F77_INT& n, const F77_CMPLX& alpha, const float *x,
-           const F77_INT& incx, F77_CMPLX *y, const F77_INT& incy)
-{
-  // Create a temporary complex array from x
-  OCTAVE_LOCAL_BUFFER (F77_CMPLX, cx, n);
-  for (F77_INT i = 0; i < n; i++)
-    cx[i] = F77_CMPLX (x[i * incx]);
-
-  // Use caxpy with the complex temporary
-  F77_FUNC (caxpy, CAXPY) (n, alpha, cx, 1, y, incy);
-}
-
-// Generic fallback for types without BLAS support
-// Just use loops
-template <typename T>
-static inline void
-blas_axpy (const F77_INT& n, const T& alpha, const T *x,
-           const F77_INT& incx, T *y, const F77_INT& incy)
-{
-  for (F77_INT i = 0; i < n; i++)
-    y[i * incy] += alpha * x[i * incx];
-}
-// End AXPY specialization wrappers
 
 // 2d convolution with a matrix kernel.
 template <typename T, typename R>

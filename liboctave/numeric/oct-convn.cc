@@ -53,10 +53,8 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-// Begin AXPY specialization wrappers
-// Function overloading approach for BLAS axpy operations
+// Overload function "blas_axpy" to wrap BLAS ?axpy
 
-// double * double
 static inline void
 blas_axpy (const F77_INT& n, const double& alpha, const double *x,
            const F77_INT& incx, double *y, const F77_INT& incy)
@@ -64,7 +62,6 @@ blas_axpy (const F77_INT& n, const double& alpha, const double *x,
   F77_FUNC (daxpy, DAXPY) (n, alpha, x, incx, y, incy);
 }
 
-// float * float
 static inline void
 blas_axpy (const F77_INT& n, const float& alpha, const float *x,
            const F77_INT& incx, float *y, const F77_INT& incy)
@@ -72,30 +69,26 @@ blas_axpy (const F77_INT& n, const float& alpha, const float *x,
   F77_FUNC (saxpy, SAXPY) (n, alpha, x, incx, y, incy);
 }
 
-// complex<double> * complex<double>
 static inline void
-blas_axpy (const F77_INT& n, const std::complex<double>& alpha,
-           const std::complex<double> *x, const F77_INT& incx,
-           std::complex<double> *y, const F77_INT& incy)
+blas_axpy (const F77_INT& n, const Complex& alpha,
+           const Complex *x, const F77_INT& incx,
+           Complex *y, const F77_INT& incy)
 {
-  F77_FUNC (zaxpy, ZAXPY) (n,
-                           *reinterpret_cast<const F77_DBLE_CMPLX*>(&alpha),
-                           reinterpret_cast<const F77_DBLE_CMPLX*>(x), incx,
-                           reinterpret_cast<F77_DBLE_CMPLX*>(y), incy);
+  F77_FUNC (zaxpy, ZAXPY) (n, *F77_CONST_DBLE_CMPLX_ARG (&alpha),
+                           F77_CONST_DBLE_CMPLX_ARG (x), incx,
+                           F77_DBLE_CMPLX_ARG (y), incy);
 }
 
-// complex<float> * complex<float>
 static inline void
-blas_axpy (const F77_INT& n, const std::complex<float>& alpha,
-           const std::complex<float> *x, const F77_INT& incx,
-           std::complex<float> *y, const F77_INT& incy)
+blas_axpy (const F77_INT& n, const FloatComplex& alpha,
+           const FloatComplex *x, const F77_INT& incx,
+           FloatComplex *y, const F77_INT& incy)
 {
-  F77_FUNC (caxpy, CAXPY) (n,
-                           *reinterpret_cast<const F77_CMPLX*>(&alpha),
-                           reinterpret_cast<const F77_CMPLX*>(x), incx,
-                           reinterpret_cast<F77_CMPLX*>(y), incy);
-
+  F77_FUNC (caxpy, CAXPY) (n, *F77_CONST_CMPLX_ARG (&alpha),
+                           F77_CONST_CMPLX_ARG (x), incx,
+                           F77_CMPLX_ARG (y), incy);
 }
+
 
 // 2d convolution with a matrix kernel.
 template <typename T, typename R>
@@ -120,7 +113,7 @@ convolve_2d (const T *a, F77_INT ma, F77_INT na,
                          &c[k*len], 1);
             }
     }
-	else
+  else
     {
       // Outer convolution ("full")
       const F77_INT len = ma + mb - 1;  // Pre-calculate length

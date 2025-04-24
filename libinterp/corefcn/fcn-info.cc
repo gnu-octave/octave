@@ -500,6 +500,9 @@ out_of_date_check (octave_value& function,
 
                   bool is_same_file = false;
 
+                  // check whether function is defined in a .m file
+                  bool is_user_code = fcn->is_user_code ();
+
                   std::string file;
                   std::string dir_name;
 
@@ -639,7 +642,7 @@ out_of_date_check (octave_value& function,
 
                   // If the function has been replaced then clear any
                   // breakpoints associated with it
-                  if (clear_breakpoints)
+                  if (clear_breakpoints && is_user_code)
                     {
                       bp_table& bptab = __get_bp_table__ ();
 

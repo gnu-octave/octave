@@ -105,7 +105,7 @@ sub get_info_text
 {
   my $texi_path = shift;
 
-  my $makeinfo_command = "makeinfo --no-headers --no-warn --force --no-validate --fill-column=1024 $texi_path";
+  my $makeinfo_command = "makeinfo --no-headers --no-warn --force --no-validate --fill-column=1024 '$texi_path'";
   my $info_text = `$makeinfo_command`;
 
   die "Unable to start makeinfo command '$makeinfo_command'"

@@ -2,23 +2,43 @@ Summary of bugs fixed for version 10.2.0 (tbd):
 -----------------------------------------------------
 
 ## Improvements and fixes
+
 - `tensorprod`: Fix error for certain tensor/vector combinations (bug #66950).
 - `mkoctfile`: Skip compiling object file with soversion for `--mex -c -o`
   (bug #66972).
-- Fix segfault in `octave-svgconvert` when called with no inputs.
+- Fix segmentation fault in `octave-svgconvert` when called with no inputs.
 - `mkoctfile`: Remove temporary C source files after compilation.
+- `unicode2native`: Fix conversion of short strings to UTF-16 or UTF-32.
+- Detect leading and trailing comments for all parse tree elements
+  (bug #67004).
 - `bar`: Avoid listener error when replacing an existing bar plot (bug #67006).
+- Fix sparse matrix assignment with reverse range indexing (bug #66516).
+- `ezplot`: Enable polar and 2-D plots of constant functions (bug #66563).
+- Check for any kind of file not just regular files (bug #67018).
 - `var`/`std`: Issue an error for non-floating point inputs. Previous versions
   accepted integer type inputs but could produce erroneous outputs due to
   integer arithmetic and under/overflow errors (bug #67016).
+- `annotation`: Change `"verticalalignment"` default value (bug #67033).
+- Previously, symbols that are not actually callable by a user might have been
+  added to the list of callable functions when loading .mex files.  Remove
+  these symbols from that list.  This fixes unloading .mex files with `clear`.
+- Remove break points only from user functions (defined in .m file).  This
+  fixes an infinite recursion issue when re-loading updated .oct or .mex files.
 
 ### GUI
+
 - Fix build error without QScintilla installed (bug #66962).
+- Avoid potential integer overflow on Windows.
 
 ### Build system / Tests
+
 - Add visibility attributes for the `octave::base_fcn_handle` class.
+- Support passing additional flags when linking `octave*` executables.
+- Single-quote path that might contain unescaped backslashes in the generation
+  of the doc cache.
 
 ### Documentation
+
 - Recommend use of string function name as first argument to `cellfun()`.
 - `cellfun`: Call out special accelerated functions.
 - Update documentation for `feval`, `eval`, `evalin`, `evalc`.
@@ -31,6 +51,10 @@ Summary of bugs fixed for version 10.2.0 (tbd):
 - Replace Texinfo `@dots` macro with `@enddots` macro where appropriate.
 - Do not print ugly black boxes for overfull hboxes in PDF output.
 - Fix accidental doc text inclusions after `@deftypefn`.
+- Remove reference to Octave Forge in `stats.txi`.
+- Document use of `:` keyword as a range operator.
+- Correct and expand documentation on ranges.
+- Remove outdated text on range arithmetic from manual.
 
 
 Summary of important user-visible changes for version 10 (2025-03-28):
@@ -350,8 +374,8 @@ Summary of bugs fixed for version 10.1.0 (2025-03-28):
   filename has syntax error.
 - bug #61295: `cross()`: Dimensions inconsistent with Matlab when using
   mismatched input vector dimensions.
-- bug #60797: `sqrtm`: Returns `NaN` for matrix of ones with rows and columns
-  >=4.
+- bug #60797: `sqrtm`: Returns `NaN` for matrix of ones with rows and
+  columns >=4.
 - bug #60726: Fix `nargout` for `subsref` when returned value may be a cs-list.
 - bug #56690: Support displaying lazy index objects in variable editor.
 - bug #55961: `properties` function does not preserve order.

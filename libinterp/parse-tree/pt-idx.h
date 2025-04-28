@@ -48,7 +48,7 @@ class tree_evaluator;
 
 // Index expressions.
 
-class tree_index_expression : public tree_expression
+class OCTINTERP_API tree_index_expression : public tree_expression
 {
 public:
 

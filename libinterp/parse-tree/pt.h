@@ -43,7 +43,7 @@ class tree_walker;
 
 // Base class for the parse tree.
 
-class tree
+class OCTINTERP_API tree
 {
 public:
 

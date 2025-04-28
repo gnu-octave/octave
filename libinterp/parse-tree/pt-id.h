@@ -49,7 +49,7 @@ class tree_evaluator;
 
 // Symbols from the symbol table.
 
-class tree_identifier : public tree_expression
+class OCTINTERP_API tree_identifier : public tree_expression
 {
   friend class tree_index_expression;
 
@@ -144,7 +144,7 @@ protected:
   token m_token;
 };
 
-class tree_black_hole : public tree_identifier
+class OCTINTERP_API tree_black_hole : public tree_identifier
 {
 public:
 

@@ -48,7 +48,7 @@ extern bool iskeyword (const std::string& s);
 
 // For communication between the lexer and parser.
 
-class lexical_feedback
+class OCTINTERP_API lexical_feedback
 {
 public:
 
@@ -526,7 +526,7 @@ public:
 // initialize if everything is grouped in a parent class rather than
 // listing all the members in the base_lexer class.
 
-class base_lexer : public lexical_feedback
+class OCTINTERP_API base_lexer : public lexical_feedback
 {
 public:
 
@@ -719,7 +719,7 @@ protected:
   std::stack<int> start_state_stack;
 };
 
-class lexer : public base_lexer
+class OCTINTERP_API lexer : public base_lexer
 {
 public:
 
@@ -784,11 +784,11 @@ public:
   bool m_initial_input;
 };
 
-template <> int base_lexer::handle_number<2> ();
-template <> int base_lexer::handle_number<10> ();
-template <> int base_lexer::handle_number<16> ();
+template <> OCTINTERP_API int base_lexer::handle_number<2> ();
+template <> OCTINTERP_API int base_lexer::handle_number<10> ();
+template <> OCTINTERP_API int base_lexer::handle_number<16> ();
 
-class push_lexer : public base_lexer
+class OCTINTERP_API push_lexer : public base_lexer
 {
 public:
 

@@ -40,7 +40,7 @@ class tree_walker;
 
 // Base class for cell arrays and matrices.
 
-class tree_array_list : public tree_expression,
+class OCTINTERP_API tree_array_list : public tree_expression,
   public std::list<tree_argument_list *>
 {
 public:

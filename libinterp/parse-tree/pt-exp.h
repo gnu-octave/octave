@@ -45,7 +45,7 @@ class octave_lvalue;
 
 // A base class for expressions.
 
-class tree_expression : public tree
+class OCTINTERP_API tree_expression : public tree
 {
 public:
 

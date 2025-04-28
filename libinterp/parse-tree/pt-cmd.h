@@ -42,7 +42,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 // A base class for commands.
 
-class tree_command : public tree
+class OCTINTERP_API tree_command : public tree
 {
 public:
 
@@ -60,7 +60,7 @@ public:
 
 // No-op.
 
-class tree_no_op_command : public tree_command
+class OCTINTERP_API tree_no_op_command : public tree_command
 {
 public:
 
@@ -117,7 +117,7 @@ private:
 
 // Function definition.
 
-class tree_function_def : public tree_command
+class OCTINTERP_API tree_function_def : public tree_command
 {
 public:
 

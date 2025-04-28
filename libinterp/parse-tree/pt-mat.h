@@ -45,7 +45,7 @@ class tree_argument_list;
 // General matrices.  This allows us to construct matrices from
 // other matrices, variables, and functions.
 
-class tree_matrix : public tree_array_list
+class OCTINTERP_API tree_matrix : public tree_array_list
 {
 public:
 
@@ -76,10 +76,10 @@ public:
   }
 };
 
-extern std::string
+extern OCTINTERP_API std::string
 get_concat_class (const std::string& c1, const std::string& c2);
 
-extern void
+extern OCTINTERP_API void
 maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p);
 
 OCTAVE_END_NAMESPACE(octave)

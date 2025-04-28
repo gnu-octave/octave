@@ -40,7 +40,7 @@ extern char * get_comment_text_c_str ();
 
 extern void save_comment_text (const std::string& text);
 
-class comment_elt
+class OCTINTERP_API comment_elt
 {
 public:
 
@@ -106,7 +106,7 @@ private:
   bool m_uses_hash_char;
 };
 
-class comment_list
+class OCTINTERP_API comment_list
 {
 public:
 

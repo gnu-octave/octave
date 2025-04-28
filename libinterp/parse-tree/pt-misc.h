@@ -43,7 +43,7 @@ class tree_index_expression;
 // parameters in a function definition.  Elements are identifiers
 // only.
 
-class tree_parameter_list : public std::list<tree_decl_elt *>
+class OCTINTERP_API tree_parameter_list : public std::list<tree_decl_elt *>
 {
 public:
 

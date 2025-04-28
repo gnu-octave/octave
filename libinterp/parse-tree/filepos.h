@@ -30,7 +30,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class filepos
+class OCTINTERP_API filepos
 {
 public:
 

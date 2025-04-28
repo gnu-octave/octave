@@ -45,7 +45,7 @@ class octave_value_list;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class tree_fcn_handle : public tree_expression
+class OCTINTERP_API tree_fcn_handle : public tree_expression
 {
 public:
 
@@ -95,7 +95,7 @@ private:
   std::string m_name;
 };
 
-class tree_anon_fcn_handle : public tree_expression
+class OCTINTERP_API tree_anon_fcn_handle : public tree_expression
 {
 public:
 

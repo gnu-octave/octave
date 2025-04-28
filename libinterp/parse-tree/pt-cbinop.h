@@ -41,7 +41,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Binary expressions that can be reduced to compound operations
 
-class tree_compound_binary_expression : public tree_binary_expression
+class OCTINTERP_API tree_compound_binary_expression : public tree_binary_expression
 {
 public:
 
@@ -84,7 +84,7 @@ private:
 
 // a "virtual constructor"
 
-tree_binary_expression *
+extern OCTINTERP_API tree_binary_expression *
 maybe_compound_binary_expression (tree_expression *a, const token& op_tok, tree_expression *b, octave_value::binary_op t = octave_value::unknown_binary_op);
 
 OCTAVE_END_NAMESPACE(octave)

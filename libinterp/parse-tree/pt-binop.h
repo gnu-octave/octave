@@ -43,7 +43,7 @@ class symbol_scope;
 
 // Binary expressions.
 
-class tree_binary_expression : public tree_expression
+class OCTINTERP_API tree_binary_expression : public tree_expression
 {
 public:
 
@@ -132,7 +132,7 @@ private:
   bool m_preserve_operands;
 };
 
-class tree_braindead_shortcircuit_binary_expression
+class OCTINTERP_API tree_braindead_shortcircuit_binary_expression
   : public tree_binary_expression
 {
 public:
@@ -156,7 +156,7 @@ public:
 
 // Boolean expressions.
 
-class tree_boolean_expression : public tree_binary_expression
+class OCTINTERP_API tree_boolean_expression : public tree_binary_expression
 {
 public:
 

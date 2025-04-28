@@ -45,7 +45,7 @@ class tree_identifier;
 
 // List of expressions that make up a declaration statement.
 
-class tree_decl_elt
+class OCTINTERP_API tree_decl_elt
 {
 public:
 
@@ -110,7 +110,7 @@ private:
   tree_expression *m_expr;
 };
 
-class tree_decl_init_list : public std::list<tree_decl_elt *>
+class OCTINTERP_API tree_decl_init_list : public std::list<tree_decl_elt *>
 {
 public:
 
@@ -201,7 +201,7 @@ public:
 
 // Base class for declaration commands -- global, static, etc.
 
-class tree_decl_command : public tree_command
+class OCTINTERP_API tree_decl_command : public tree_command
 {
 public:
 

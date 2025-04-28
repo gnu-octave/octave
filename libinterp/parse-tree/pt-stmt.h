@@ -49,7 +49,7 @@ class tree_expression;
 // A statement is either a command to execute or an expression to
 // evaluate.
 
-class tree_statement : public tree
+class OCTINTERP_API tree_statement : public tree
 {
 public:
 
@@ -139,7 +139,7 @@ private:
 
 // A list of statements to evaluate.
 
-class tree_statement_list : public std::list<tree_statement *>
+class OCTINTERP_API tree_statement_list : public std::list<tree_statement *>
 {
 public:
 

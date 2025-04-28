@@ -38,7 +38,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class token
+class OCTINTERP_API token
 {
 public:
 

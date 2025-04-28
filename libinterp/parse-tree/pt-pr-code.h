@@ -42,7 +42,7 @@ class tree_expression;
 
 // How to print the code that the parse trees represent.
 
-class tree_print_code : public tree_walker
+class OCTINTERP_API tree_print_code : public tree_walker
 {
 public:
 

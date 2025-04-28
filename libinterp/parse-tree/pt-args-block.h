@@ -43,7 +43,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 class comment_list;
 
-class tree_arg_size_spec
+class OCTINTERP_API tree_arg_size_spec
 {
 public:
 
@@ -70,7 +70,7 @@ private:
   tree_argument_list *m_size_args;
 };
 
-class tree_arg_validation_fcns
+class OCTINTERP_API tree_arg_validation_fcns
 {
 public:
 
@@ -97,7 +97,7 @@ private:
   tree_argument_list *m_fcn_args;
 };
 
-class tree_arg_validation
+class OCTINTERP_API tree_arg_validation
 {
 public:
 
@@ -158,7 +158,7 @@ private:
   tree_expression *m_default_value;
 };
 
-class tree_args_block_validation_list
+class OCTINTERP_API tree_args_block_validation_list
   : public std::list<tree_arg_validation *>
 {
 public:
@@ -184,7 +184,7 @@ public:
 // FIXME: Maybe make this object an actual list even though we don't
 // currently need it?
 
-class tree_args_block_attribute_list
+class OCTINTERP_API tree_args_block_attribute_list
 {
 public:
 
@@ -213,7 +213,7 @@ private:
 
 // Arguments block.
 
-class tree_arguments_block : public tree_command
+class OCTINTERP_API tree_arguments_block : public tree_command
 {
 public:
 

@@ -39,7 +39,7 @@ class tree_statement_list;
 
 // Simple exception handling.
 
-class tree_try_catch_command : public tree_command
+class OCTINTERP_API tree_try_catch_command : public tree_command
 {
 public:
 
@@ -94,7 +94,7 @@ private:
 
 // Simple exception handling.
 
-class tree_unwind_protect_command : public tree_command
+class OCTINTERP_API tree_unwind_protect_command : public tree_command
 {
 public:
 

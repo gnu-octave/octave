@@ -43,7 +43,7 @@ class tree_argument_list;
 
 // General cells.
 
-class tree_cell : public tree_array_list
+class OCTINTERP_API tree_cell : public tree_array_list
 {
 public:
 

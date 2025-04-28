@@ -44,7 +44,7 @@ class tree_statement_list;
 
 // If.
 
-class tree_if_clause : public tree
+class OCTINTERP_API tree_if_clause : public tree
 {
 public:
 
@@ -86,7 +86,7 @@ private:
   tree_statement_list *m_list;
 };
 
-class tree_if_command_list : public std::list<tree_if_clause *>
+class OCTINTERP_API tree_if_command_list : public std::list<tree_if_clause *>
 {
 public:
 
@@ -159,7 +159,7 @@ public:
   }
 };
 
-class tree_if_command : public tree_command
+class OCTINTERP_API tree_if_command : public tree_command
 {
 public:
 
@@ -204,7 +204,7 @@ private:
 
 // Switch.
 
-class tree_switch_case : public tree
+class OCTINTERP_API tree_switch_case : public tree
 {
 public:
 
@@ -250,7 +250,7 @@ private:
   tree_statement_list *m_list;
 };
 
-class tree_switch_case_list : public std::list<tree_switch_case *>
+class OCTINTERP_API tree_switch_case_list : public std::list<tree_switch_case *>
 {
 public:
 
@@ -312,7 +312,7 @@ public:
   }
 };
 
-class tree_switch_command : public tree_command
+class OCTINTERP_API tree_switch_command : public tree_command
 {
 public:
 

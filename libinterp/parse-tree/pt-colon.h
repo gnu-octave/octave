@@ -42,7 +42,7 @@ class symbol_scope;
 
 // Colon expressions.
 
-class tree_colon_expression : public tree_expression
+class OCTINTERP_API tree_colon_expression : public tree_expression
 {
 public:
 

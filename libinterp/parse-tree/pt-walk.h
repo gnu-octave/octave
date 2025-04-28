@@ -107,7 +107,7 @@ class tree_classdef_enum_block;
 class tree_classdef_body;
 class tree_classdef;
 
-class tree_walker
+class OCTINTERP_API tree_walker
 {
 protected:
 

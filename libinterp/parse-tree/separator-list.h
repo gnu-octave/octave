@@ -34,7 +34,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class separator_list : public std::list<token>
+class OCTINTERP_API separator_list : public std::list<token>
 {
 public:
 

@@ -45,7 +45,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 class symbol_scope;
 class tree_evaluator;
 
-class tree_constant : public tree_expression
+class OCTINTERP_API tree_constant : public tree_expression
 {
 public:
 

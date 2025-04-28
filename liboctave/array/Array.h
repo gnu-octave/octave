@@ -152,6 +152,7 @@ protected:
     }
 
     template <typename U>
+    OCTARRAY_OVERRIDABLE_FUNC_API
     ArrayRep (U *d, octave_idx_type len)
       : Alloc (), m_data (allocate (len)), m_len (len), m_count (1)
     {
@@ -161,32 +162,34 @@ protected:
     // Use new instead of setting data to 0 so that rwdata() and data()
     // always return valid addresses, even for zero-size arrays.
 
-    ArrayRep ()
+    OCTARRAY_OVERRIDABLE_FUNC_API ArrayRep ()
       : Alloc (), m_data (allocate (0)), m_len (0), m_count (1) { }
 
-    explicit ArrayRep (octave_idx_type len)
+    explicit OCTARRAY_OVERRIDABLE_FUNC_API ArrayRep (octave_idx_type len)
       : Alloc (), m_data (allocate (len)), m_len (len), m_count (1) { }
 
-    explicit ArrayRep (octave_idx_type len, const T& val)
+    explicit OCTARRAY_OVERRIDABLE_FUNC_API
+    ArrayRep (octave_idx_type len, const T& val)
       : Alloc (), m_data (allocate (len)), m_len (len), m_count (1)
     {
       std::fill_n (m_data, len, val);
     }
 
-    explicit ArrayRep (pointer ptr, const dim_vector& dv,
-                       const Alloc& xallocator = Alloc ())
+    explicit OCTARRAY_OVERRIDABLE_FUNC_API
+    ArrayRep (pointer ptr, const dim_vector& dv,
+              const Alloc& xallocator = Alloc ())
       : Alloc (xallocator), m_data (ptr), m_len (dv.safe_numel ()), m_count (1)
     { }
 
     // FIXME: Should the allocator be copied or created with the default?
-    ArrayRep (const ArrayRep& a)
+    OCTARRAY_OVERRIDABLE_FUNC_API ArrayRep (const ArrayRep& a)
       : Alloc (), m_data (allocate (a.m_len)), m_len (a.m_len),
         m_count (1)
     {
       std::copy_n (a.m_data, a.m_len, m_data);
     }
 
-    ~ArrayRep () { deallocate (m_data, m_len); }
+    OCTARRAY_OVERRIDABLE_FUNC_API ~ArrayRep () { deallocate (m_data, m_len); }
 
     OCTARRAY_OVERRIDABLE_FUNC_API octave_idx_type numel () const
     {
@@ -195,7 +198,8 @@ protected:
 
     // No assignment!
 
-    ArrayRep& operator = (const ArrayRep&) = delete;
+    OCTARRAY_OVERRIDABLE_FUNC_API ArrayRep&
+    operator = (const ArrayRep&) = delete;
 
     OCTARRAY_OVERRIDABLE_FUNC_API pointer allocate (size_t len)
     {
@@ -261,6 +265,7 @@ protected:
   octave_idx_type m_slice_len;
 
   //! slice constructor
+  OCTARRAY_OVERRIDABLE_FUNC_API
   Array (const Array<T, Alloc>& a, const dim_vector& dv,
          octave_idx_type l, octave_idx_type u)
     : m_dimensions (dv), m_rep(a.m_rep), m_slice_data (a.m_slice_data+l), m_slice_len (u-l)
@@ -276,7 +281,7 @@ private:
 public:
 
   //! Empty ctor (0 by 0).
-  Array ()
+  OCTARRAY_OVERRIDABLE_FUNC_API Array ()
     : m_dimensions (), m_rep (nil_rep ()), m_slice_data (m_rep->m_data),
       m_slice_len (m_rep->m_len)
   {
@@ -284,6 +289,7 @@ public:
   }
 
   //! nD uninitialized ctor.
+  OCTARRAY_OVERRIDABLE_FUNC_API
   explicit Array (const dim_vector& dv)
     : m_dimensions (dv),
       m_rep (new typename Array<T, Alloc>::ArrayRep (dv.safe_numel ())),
@@ -293,6 +299,7 @@ public:
   }
 
   //! nD initialized ctor.
+  OCTARRAY_OVERRIDABLE_FUNC_API
   explicit Array (const dim_vector& dv, const T& val)
     : m_dimensions (dv),
       m_rep (new typename Array<T, Alloc>::ArrayRep (dv.safe_numel ())),
@@ -323,10 +330,12 @@ public:
 
   //! Constructor from standard library sequence containers.
   template<template <typename...> class Container>
+  OCTARRAY_API
   Array (const Container<T>& a, const dim_vector& dv);
 
   //! Type conversion case.
   template <typename U, typename A = Alloc>
+  OCTARRAY_OVERRIDABLE_FUNC_API
   Array (const Array<U, A>& a)
     : m_dimensions (a.dims ()),
       m_rep (new typename Array<T, Alloc>::ArrayRep (a.data (), a.numel ())),
@@ -334,6 +343,7 @@ public:
   { }
 
   //! No type conversion case.
+  OCTARRAY_OVERRIDABLE_FUNC_API
   Array (const Array<T, Alloc>& a)
     : m_dimensions (a.m_dimensions), m_rep (a.m_rep), m_slice_data (a.m_slice_data),
       m_slice_len (a.m_slice_len)
@@ -341,6 +351,7 @@ public:
     m_rep->m_count++;
   }
 
+  OCTARRAY_OVERRIDABLE_FUNC_API
   Array (Array<T, Alloc>&& a)
     : m_dimensions (std::move (a.m_dimensions)), m_rep (a.m_rep),
       m_slice_data (a.m_slice_data), m_slice_len (a.m_slice_len)
@@ -352,7 +363,7 @@ public:
 
 public:
 
-  virtual ~Array ()
+  virtual OCTARRAY_OVERRIDABLE_FUNC_API ~Array ()
   {
     // Because we define a move constructor and a move assignment
     // operator, m_rep may be a nullptr here.  We should only need to
@@ -362,7 +373,8 @@ public:
       delete m_rep;
   }
 
-  Array<T, Alloc>& operator = (const Array<T, Alloc>& a)
+  OCTARRAY_OVERRIDABLE_FUNC_API Array<T, Alloc>&
+  operator = (const Array<T, Alloc>& a)
   {
     if (this != &a)
       {
@@ -380,7 +392,8 @@ public:
     return *this;
   }
 
-  Array<T, Alloc>& operator = (Array<T, Alloc>&& a)
+  OCTARRAY_OVERRIDABLE_FUNC_API Array<T, Alloc>&
+  operator = (Array<T, Alloc>&& a)
   {
     if (this != &a)
       {
@@ -410,7 +423,8 @@ public:
   OCTARRAY_API void clear ();
   OCTARRAY_API void clear (const dim_vector& dv);
 
-  void clear (octave_idx_type r, octave_idx_type c)
+  OCTARRAY_OVERRIDABLE_FUNC_API void
+  clear (octave_idx_type r, octave_idx_type c)
   { clear (dim_vector (r, c)); }
 
   //! Number of elements in the array.
@@ -857,6 +871,7 @@ public:
 #else
   template <typename U, typename F, typename A = std::allocator<U>>
 #endif
+  OCTARRAY_OVERRIDABLE_FUNC_API
   Array<U, A>
   map (F fcn) const
   {
@@ -893,6 +908,7 @@ public:
 #else
   template <typename U, typename A = std::allocator<U>>
 #endif
+  OCTARRAY_OVERRIDABLE_FUNC_API
   Array<U, A>
   map (U (&fcn) (T)) const
   { return map<U, U (&) (T), A> (fcn); }
@@ -902,6 +918,7 @@ public:
 #else
   template <typename U, typename A = std::allocator<U>>
 #endif
+  OCTARRAY_OVERRIDABLE_FUNC_API
   Array<U, A>
   map (U (&fcn) (const T&)) const
   { return map<U, U (&) (const T&), A> (fcn); }
@@ -909,6 +926,7 @@ public:
 
   //! Generic any/all test functionality with arbitrary predicate.
   template <typename F, bool zero>
+  OCTARRAY_OVERRIDABLE_FUNC_API
   bool test (F fcn) const
   {
     return octave::any_all_test<F, T, zero> (fcn, data (), numel ());
@@ -917,26 +935,28 @@ public:
   //@{
   //! Simpler calls.
   template <typename F>
+  OCTARRAY_OVERRIDABLE_FUNC_API
   bool test_any (F fcn) const
   { return test<F, false> (fcn); }
 
   template <typename F>
+  OCTARRAY_OVERRIDABLE_FUNC_API
   bool test_all (F fcn) const
   { return test<F, true> (fcn); }
   //@}
 
   //@{
   //! Overloads for function references.
-  bool test_any (bool (&fcn) (T)) const
+  OCTARRAY_OVERRIDABLE_FUNC_API bool test_any (bool (&fcn) (T)) const
   { return test<bool (&) (T), false> (fcn); }
 
-  bool test_any (bool (&fcn) (const T&)) const
+  OCTARRAY_OVERRIDABLE_FUNC_API bool test_any (bool (&fcn) (const T&)) const
   { return test<bool (&) (const T&), false> (fcn); }
 
-  bool test_all (bool (&fcn) (T)) const
+  OCTARRAY_OVERRIDABLE_FUNC_API bool test_all (bool (&fcn) (T)) const
   { return test<bool (&) (T), true> (fcn); }
 
-  bool test_all (bool (&fcn) (const T&)) const
+  OCTARRAY_OVERRIDABLE_FUNC_API bool test_all (bool (&fcn) (const T&)) const
   { return test<bool (&) (const T&), true> (fcn); }
   //@}
 
@@ -956,6 +976,7 @@ private:
 // to Container<T>. http://stackoverflow.com/a/20499809/1609556
 template<typename T, typename Alloc>
 template<template <typename...> class Container>
+OCTARRAY_OVERRIDABLE_FUNC_API
 Array<T, Alloc>::Array (const Container<T>& a, const dim_vector& dv)
   : m_dimensions (dv), m_rep (new typename Array<T, Alloc>::ArrayRep (dv.safe_numel ())),
     m_slice_data (m_rep->m_data), m_slice_len (m_rep->m_len)

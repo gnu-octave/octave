@@ -38,7 +38,7 @@ class tree_decl_command;
 
 // How to check the semantics of the code that the parse trees represent.
 
-class tree_checker : public tree_walker
+class OCTINTERP_API tree_checker : public tree_walker
 {
 public:
 

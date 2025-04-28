@@ -36,7 +36,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 // In possibly nested definitions of anonymous functions, collect
 // their scopes and the symbol records therein.
 
-class tree_anon_scopes : public tree_walker
+class OCTINTERP_API tree_anon_scopes : public tree_walker
 {
 public:
 

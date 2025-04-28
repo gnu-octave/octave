@@ -38,7 +38,7 @@ class tree_statement_list;
 
 // Spmd.
 
-class tree_spmd_command : public tree_command
+class OCTINTERP_API tree_spmd_command : public tree_command
 {
 public:
 

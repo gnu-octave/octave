@@ -39,7 +39,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 class tree;
 class tree_decl_command;
 
-class tree_breakpoint : public tree_walker
+class OCTINTERP_API tree_breakpoint : public tree_walker
 {
 public:
 

@@ -49,7 +49,7 @@ class tree_argument_list;
 
 // Simple assignment expressions.
 
-class tree_simple_assignment : public tree_expression
+class OCTINTERP_API tree_simple_assignment : public tree_expression
 {
 public:
 
@@ -119,7 +119,7 @@ private:
 
 // Multi-valued assignment expressions.
 
-class tree_multi_assignment : public tree_expression
+class OCTINTERP_API tree_multi_assignment : public tree_expression
 {
 public:
 

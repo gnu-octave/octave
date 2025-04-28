@@ -35,7 +35,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class tree_delimiter_list
+class OCTINTERP_API tree_delimiter_list
 {
 public:
 

@@ -42,7 +42,7 @@ class tree_statement_list;
 
 // While.
 
-class tree_while_command : public tree_command
+class OCTINTERP_API tree_while_command : public tree_command
 {
 public:
 
@@ -88,7 +88,7 @@ private:
 
 // Do-Until.
 
-class tree_do_until_command : public tree_command
+class OCTINTERP_API tree_do_until_command : public tree_command
 {
 public:
 
@@ -134,7 +134,7 @@ private:
 
 // For.
 
-class tree_simple_for_command : public tree_command
+class OCTINTERP_API tree_simple_for_command : public tree_command
 {
 public:
 
@@ -210,7 +210,7 @@ private:
   token m_end_tok;
 };
 
-class tree_complex_for_command : public tree_command
+class OCTINTERP_API tree_complex_for_command : public tree_command
 {
 public:
 

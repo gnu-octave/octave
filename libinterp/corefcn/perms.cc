@@ -238,7 +238,7 @@ Programming Note: If the @qcode{"unique"} option is not used, the length of
   else if (clname == "uint64")
     retval = GetPerms<octave_uint64> (args (0).uint64_array_value (), uniq_v);
   else if (clname == "cell")
-    retval = GetPerms<octave_value> (args (0).cell_value (), uniq_v);
+    retval = Cell (GetPerms<octave_value> (args (0).cell_value (), uniq_v));
   else if (clname == "struct")
     {
       const octave_map map_in (args (0).map_value ());

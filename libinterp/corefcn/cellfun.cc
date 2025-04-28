@@ -2073,7 +2073,10 @@ do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
       for (octave_idx_type i = 0; i < nidx; i++)
         {
           octave_idx_type u = l + d[ivec](i);
-          retval.xelem (i) = a.index (idx_vector (l, u));
+          if constexpr (std::is_same_v<Array2D, Cell>)
+            retval.xelem (i) = Cell (a.index (idx_vector (l, u)));
+          else
+            retval.xelem (i) = a.index (idx_vector (l, u));
           l = u;
         }
     }
@@ -2091,7 +2094,10 @@ do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
           {
             octave_quit ();
 
-            retval.xelem (i, j) = a.index (ridx[i], cidx[j]);
+            if constexpr (std::is_same_v<Array2D, Cell>)
+              retval.xelem (i, j) = Cell (a.index (ridx[i], cidx[j]));
+            else
+              retval.xelem (i, j) = a.index (ridx[i], cidx[j]);
           }
     }
 
@@ -2160,7 +2166,10 @@ do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
         ra_idx.xelem (i) = idx[i][ridx[i]];
 
       // Perform indexing operation and store in output retval.
-      retval.xelem (j) = a.index (ra_idx);
+      if constexpr (std::is_same_v<ArrayND, Cell>)
+        retval.xelem (j) = Cell (a.index (ra_idx));
+      else
+        retval.xelem (j) = a.index (ra_idx);
 
       // DO NOT increment on last loop because it will overflow past
       // declared size of ridx (bug #63682).

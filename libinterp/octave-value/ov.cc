@@ -534,12 +534,6 @@ octave_value::octave_value (const Cell& c, bool is_csl)
            : dynamic_cast<octave_base_value *> (new octave_cell (c)))
 { }
 
-octave_value::octave_value (const Array<octave_value>& a, bool is_csl)
-  : m_rep (is_csl
-           ? dynamic_cast<octave_base_value *> (new octave_cs_list (Cell (a)))
-           : dynamic_cast<octave_base_value *> (new octave_cell (Cell (a))))
-{ }
-
 octave_value::octave_value (const Matrix& m, const MatrixType& t)
   : m_rep (new octave_matrix (m, t))
 {

@@ -175,11 +175,23 @@ public:
 
   OCTINTERP_OVERRIDABLE_FUNC_API octave_value
   sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
-  { return octave_value (m_matrix.sort (dim, mode)); }
+  {
+    if constexpr (std::is_same_v<MT, Cell>)
+      return octave_value (Cell (static_cast<Array<octave_value>>
+                                 (m_matrix.sort (dim, mode))));
+    else
+      return octave_value (m_matrix.sort (dim, mode));
+  }
   OCTINTERP_OVERRIDABLE_FUNC_API octave_value
   sort (Array<octave_idx_type>& sidx, octave_idx_type dim = 0,
         sortmode mode = ASCENDING) const
-  { return octave_value (m_matrix.sort (sidx, dim, mode)); }
+  {
+    if constexpr (std::is_same_v<MT, Cell>)
+      return octave_value (Cell (static_cast<Array<octave_value>>
+                                 (m_matrix.sort (sidx, dim, mode))));
+    else
+      return octave_value (m_matrix.sort (sidx, dim, mode));
+  }
 
   OCTINTERP_OVERRIDABLE_FUNC_API sortmode issorted (sortmode mode = UNSORTED) const
   { return m_matrix.issorted (mode); }

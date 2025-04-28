@@ -8510,7 +8510,10 @@ endfor
       BTYP_BRANCH (uint32, uint32_array);
       BTYP_BRANCH (uint64, uint64_array);
 
-      BTYP_BRANCH (cell, cell);
+      case btyp_cell:
+        retval = Cell (do_repelems (x.cell_value (), r));
+        break;
+
       //BTYP_BRANCH (struct, map);//FIXME
 
 #undef BTYP_BRANCH

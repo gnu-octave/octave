@@ -235,6 +235,11 @@ major release after 10):
         __lo_ieee_isfinite, __lo_ieee_float_isfinite | std::isfinite  or  isfinite
         __lo_ieee_isinf,    __lo_ieee_float_isinf    | std::isinf     or  isinf
         __lo_ieee_signbit,  __lo_ieee_float_signbit  | std::signbit   or  signbit
+        octave_value (const Array<octave_value>& a)  | octave_value (const Cell&)
+
+  - The `octave_value (const Array<octave_value>& a)` constructor will already
+    be removed in Octave 11 (or whatever version is the next major release
+    after Octave 10).
 
   - A new method `rwdata ()` provides direct read/write access (a pointer) to
     the data in a liboctave `Array` object (or its derived classes such as

@@ -127,6 +127,21 @@ public:
     std::ostream *os = output_stream ();
     if (os && *os)
       {
+#ifdef HAVE_PRAGMA_GCC_DIAGNOSTIC
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+        // The std::wbuffer_convert template is deprecated in C++17.
+        // A deprecation warning is emitted when using STL headers from LLVM
+        // libc++ or GCC libstdc++ (for GCC 15 or newer).  This header is
+        // included in many compilation units which results in a torrent of
+        // deprecation warnings when building Octave with those implementations
+        // of the STL.
+        // Silence these deprecation warnings here to have a more digestable
+        // build output.
+        // FIXME: Implement alternative for stream encoding conversion that
+        //        does not rely on deprecated features.
+
         // FIXME: Using std::make_unique could simplify the following
         //        expressions once we require C++14.
         m_converter
@@ -135,6 +150,9 @@ public:
              (os->rdbuf (), new convfacet_u8 (m_encoding)));
         m_conv_ostream = std::unique_ptr<std::ostream>
                          (new std::ostream (m_converter.get ()));
+#ifdef HAVE_PRAGMA_GCC_DIAGNOSTIC
+#  pragma GCC diagnostic pop
+#endif
       }
 
     return (m_conv_ostream ? m_conv_ostream.get () : output_stream ());
@@ -211,7 +229,14 @@ private:
   // encoding conversion facet
   typedef string::deletable_facet<string::codecvt_u8> convfacet_u8;
 
+#ifdef HAVE_PRAGMA_GCC_DIAGNOSTIC
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
   std::unique_ptr<std::wbuffer_convert<convfacet_u8, char>> m_converter;
+#ifdef HAVE_PRAGMA_GCC_DIAGNOSTIC
+#  pragma GCC diagnostic pop
+#endif
 
   // wrappers for encoding conversion
   // std::unique_ptr<std::istream> m_conv_istream;

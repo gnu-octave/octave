@@ -24,6 +24,9 @@ Summary of bugs fixed for version 10.2.0 (tbd):
   these symbols from that list.  This fixes unloading .mex files with `clear`.
 - Remove break points only from user functions (defined in .m file).  This
   fixes an infinite recursion issue when re-loading updated .oct or .mex files.
+- For improved Matlab compatibility the `strncmp` and `strncmpi` functions now
+  return `true` if the number of characters specified by `N` is equal to 0 
+  (bug #57879).
 
 ### GUI
 

@@ -38,6 +38,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 
 - The function `zscore` now accepts the optional arguments `"all"` or `vecdim`,
   and `"omitnan"`.
+   
+- The `strncmp` and `strncmpi` functions now return `true` if the number of
+  characters specified by `N` is equal to 0.
 
 ### Alphabetical list of new functions added in Octave 11
 

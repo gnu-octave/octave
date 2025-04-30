@@ -84,6 +84,16 @@ public:
     ECHO_ALL = 4
   };
 
+  // Possible types of evaluation contexts.
+  enum stmt_list_type
+  {
+    SC_FUNCTION,  // function body
+    SC_SCRIPT,    // script file
+    SC_OTHER      // command-line input or eval string
+  };
+
+  typedef void (*decl_elt_init_fcn) (tree_decl_elt&);
+
   template <typename T>
   class value_stack
   {
@@ -130,8 +140,6 @@ public:
 
     std::stack<T> m_stack;
   };
-
-  typedef void (*decl_elt_init_fcn) (tree_decl_elt&);
 
   tree_evaluator (interpreter& interp)
     : m_interpreter (interp), m_parser (), m_error_system (interp),
@@ -352,14 +360,6 @@ public:
   void keyboard (const std::string& prompt = "debug> ");
 
   void dbupdown (int n, bool verbose = false);
-
-  // Possible types of evaluation contexts.
-  enum stmt_list_type
-  {
-    SC_FUNCTION,  // function body
-    SC_SCRIPT,    // script file
-    SC_OTHER      // command-line input or eval string
-  };
 
   Matrix ignored_fcn_outputs () const;
 
@@ -941,6 +941,8 @@ private:
                            const octave_value_list& va_args);
 
   std::string check_autoload_file (const std::string& nm) const;
+
+  //--------
 
   interpreter& m_interpreter;
 

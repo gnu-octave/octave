@@ -160,9 +160,11 @@ public:
 
 private:
 
-  octave_value m_fcn;
-
   tree_function_def (const octave_value& v) : m_fcn (v) { }
+
+  //--------
+
+  octave_value m_fcn;
 };
 
 OCTAVE_END_NAMESPACE(octave)

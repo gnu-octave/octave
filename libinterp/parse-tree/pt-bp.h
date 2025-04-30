@@ -155,6 +155,8 @@ private:
 
   void take_action (tree_statement& stmt);
 
+  //--------
+
   // Statement line number we are looking for.
   int m_line;
 

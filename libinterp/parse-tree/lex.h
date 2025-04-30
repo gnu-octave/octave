@@ -345,6 +345,8 @@ public:
   void mark_as_variable (const std::string& nm);
   void mark_as_variables (const std::list<std::string>& lst);
 
+  //--------
+
   interpreter& m_interpreter;
 
   // true means that we have encountered eof on the input stream.
@@ -773,6 +775,8 @@ public:
   }
 
   int fill_flex_buffer (char *buf, unsigned int max_size);
+
+  //--------
 
   input_reader m_reader;
 

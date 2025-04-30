@@ -44,6 +44,7 @@ class tree_evaluator;
 struct bp_type
 {
 public:
+
   bp_type (int l, const std::string& c) : line (l), cond (c) { }
 
   //--------
@@ -172,21 +173,6 @@ public:
 
 private:
 
-  typedef std::set<std::string>::const_iterator const_bp_set_iterator;
-  typedef std::set<std::string>::iterator bp_set_iterator;
-
-  tree_evaluator& m_evaluator;
-
-  // Set of function (.m file) names containing at least one breakpoint.
-  std::set<std::string> m_bp_set;
-
-  // Set of error and warning message IDs that cause us to stop
-  // *if* Vdebug_on_error / Vdebug_on_caught / Vdebug_on_warning is set.
-  // Empty means stop on any error / caught error / warning.
-  std::set<std::string> m_errors_that_stop;
-  std::set<std::string> m_caught_that_stop;
-  std::set<std::string> m_warnings_that_stop;
-
   void set_stop_flag (const char *who, const std::string& condition,
                       bool on_off);
 
@@ -204,6 +190,23 @@ private:
 
   bp_lines remove_all_breakpoints_in_file_1 (octave_user_code *fcn,
                                              const std::string& fname);
+
+  //--------
+
+  typedef std::set<std::string>::const_iterator const_bp_set_iterator;
+  typedef std::set<std::string>::iterator bp_set_iterator;
+
+  tree_evaluator& m_evaluator;
+
+  // Set of function (.m file) names containing at least one breakpoint.
+  std::set<std::string> m_bp_set;
+
+  // Set of error and warning message IDs that cause us to stop
+  // *if* Vdebug_on_error / Vdebug_on_caught / Vdebug_on_warning is set.
+  // Empty means stop on any error / caught error / warning.
+  std::set<std::string> m_errors_that_stop;
+  std::set<std::string> m_caught_that_stop;
+  std::set<std::string> m_warnings_that_stop;
 };
 
 OCTAVE_END_NAMESPACE(octave)

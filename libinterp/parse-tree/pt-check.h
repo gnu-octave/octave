@@ -63,11 +63,13 @@ public:
 
 private:
 
+  OCTAVE_NORETURN void errmsg (const std::string& msg, int line);
+
+  //--------
+
   bool m_do_lvalue_check;
 
   std::string m_file_name;
-
-  OCTAVE_NORETURN void errmsg (const std::string& msg, int line);
 };
 
 OCTAVE_END_NAMESPACE(octave)

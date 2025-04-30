@@ -133,6 +133,8 @@ protected:
     : m_sym (sym), m_token (tok)
   { }
 
+  //--------
+
   // The symbol record that this identifier references.
   symbol_record m_sym;
 

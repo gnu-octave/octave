@@ -164,23 +164,6 @@ public:
 
 private:
 
-  std::ostream& m_os;
-
-  std::string m_prefix;
-
-  std::stack<char> m_nesting;
-
-  bool m_print_original_text;
-
-  // Current indentation.
-  int m_curr_print_indent_level;
-
-  // TRUE means we are at the beginning of a line.
-  bool m_beginning_of_line;
-
-  // Nonzero means we are not printing newlines and indenting.
-  int m_suppress_newlines;
-
   void reset_indent_level () { m_curr_print_indent_level = 0; }
 
   void increment_indent_level () { m_curr_print_indent_level += 2; }
@@ -204,6 +187,25 @@ private:
   // Must create with an output stream!
 
   tree_print_code ();
+
+  //--------
+
+  std::ostream& m_os;
+
+  std::string m_prefix;
+
+  std::stack<char> m_nesting;
+
+  bool m_print_original_text;
+
+  // Current indentation.
+  int m_curr_print_indent_level;
+
+  // TRUE means we are at the beginning of a line.
+  bool m_beginning_of_line;
+
+  // Nonzero means we are not printing newlines and indenting.
+  int m_suppress_newlines;
 };
 
 OCTAVE_END_NAMESPACE(octave)

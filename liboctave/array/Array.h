@@ -330,7 +330,7 @@ public:
 
   //! Constructor from standard library sequence containers.
   template<template <typename...> class Container>
-  OCTARRAY_API
+  OCTARRAY_OVERRIDABLE_FUNC_API
   Array (const Container<T>& a, const dim_vector& dv);
 
   //! Type conversion case.

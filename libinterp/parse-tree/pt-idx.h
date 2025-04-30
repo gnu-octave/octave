@@ -124,6 +124,12 @@ public:
 
 private:
 
+  tree_index_expression () = default;
+
+  octave_map make_arg_struct () const;
+
+  //--------
+
   // The LHS of this index expression.
   tree_expression *m_expr {nullptr};
 
@@ -148,10 +154,6 @@ private:
 
   // TRUE if this expression was parsed as a word list command.
   bool m_word_list_cmd {false};
-
-  tree_index_expression () = default;
-
-  octave_map make_arg_struct () const;
 };
 
 OCTAVE_END_NAMESPACE(octave)

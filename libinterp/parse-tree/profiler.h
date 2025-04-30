@@ -46,12 +46,6 @@ public:
   // functions in a manner protected from stack unwinding.
   template <typename T> class enter
   {
-  private:
-
-    profiler& m_profiler;
-    std::string m_fcn;
-    bool m_enabled;
-
   public:
 
     enter (profiler& p, const T& t) : m_profiler (p)
@@ -81,6 +75,12 @@ public:
       if (m_enabled)
         m_profiler.exit_function (m_fcn);
     }
+
+  private:
+
+    profiler& m_profiler;
+    std::string m_fcn;
+    bool m_enabled;
   };
 
   profiler ();
@@ -172,6 +172,24 @@ private:
     std::size_t m_calls;
   };
 
+  // These are private as only the unwind-protecting inner class enter
+  // should be allowed to call them.
+  void enter_function (const std::string&);
+  void exit_function (const std::string&);
+
+  // Query a timestamp, used for timing calls (obviously).
+  // This is not static because in the future, maybe we want a flag
+  // in the profiler or something to choose between cputime, wall-time,
+  // user-time, system-time, ...
+  double query_time () const;
+
+  // Add the time elapsed since last_time to the function we're currently in.
+  // This is called from two different positions, thus it is useful to have
+  // it as a separate function.
+  void add_current_time ();
+
+  //--------
+
   // Each function we see in the profiler is given a unique index (which
   // simply counts starting from 1).  We thus have to map profiler-names to
   // those indices.  For all other stuff, we identify functions by their
@@ -191,22 +209,6 @@ private:
   // Store last timestamp we had, when the currently active function was
   // called.
   double m_last_time;
-
-  // These are private as only the unwind-protecting inner class enter
-  // should be allowed to call them.
-  void enter_function (const std::string&);
-  void exit_function (const std::string&);
-
-  // Query a timestamp, used for timing calls (obviously).
-  // This is not static because in the future, maybe we want a flag
-  // in the profiler or something to choose between cputime, wall-time,
-  // user-time, system-time, ...
-  double query_time () const;
-
-  // Add the time elapsed since last_time to the function we're currently in.
-  // This is called from two different positions, thus it is useful to have
-  // it as a separate function.
-  void add_current_time ();
 };
 
 OCTAVE_END_NAMESPACE(octave)

@@ -187,8 +187,6 @@ public:
 
 private:
 
-  std::list<octave_value> m_values;
-
   void init_element (const octave_value&, bool&);
 
   void init (const tree_argument_list&, tree_evaluator& tw);
@@ -196,6 +194,11 @@ private:
 #if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
   void init (const stack_element *beg, const stack_element *end);
 #endif
+
+  //--------
+
+  std::list<octave_value> m_values;
+
 };
 
 class OCTINTERP_API tm_const : public tm_info
@@ -231,14 +234,6 @@ public:
 
 private:
 
-  tree_evaluator& m_evaluator;
-
-  // The list of lists of octave_value objects that contain the
-  // values of elements in each row of the tree_matrix object we are
-  // evaluating.
-
-  std::list<tm_row_const> m_tm_rows;
-
   void init (const tree_matrix& tm);
 
 #if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
@@ -266,6 +261,16 @@ private:
 
   template <typename MAP>
   octave_map map_concat () const;
+
+  //--------
+
+  tree_evaluator& m_evaluator;
+
+  // The list of lists of octave_value objects that contain the
+  // values of elements in each row of the tree_matrix object we are
+  // evaluating.
+
+  std::list<tm_row_const> m_tm_rows;
 };
 
 OCTAVE_END_NAMESPACE(octave)

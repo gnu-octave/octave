@@ -81,9 +81,9 @@ public:
 
 private:
 
-  octave_value
-  eval_for_numel (const std::string& type,
-                  const std::list<octave_value_list>& idx) const;
+  octave_value eval_for_numel (const std::string& type, const std::list<octave_value_list>& idx) const;
+
+  //--------
 
   symbol_record m_sym;
 

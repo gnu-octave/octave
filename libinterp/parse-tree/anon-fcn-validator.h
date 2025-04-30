@@ -67,12 +67,14 @@ public:
 
 private:
 
+  void error (tree_expression& expr);
+
+  //--------
+
   bool m_ok {true};
   filepos m_beg_pos;
   filepos m_end_pos;
   std::string m_message;
-
-  void error (tree_expression& expr);
 };
 
 OCTAVE_END_NAMESPACE(octave)

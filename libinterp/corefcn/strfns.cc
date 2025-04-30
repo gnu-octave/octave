@@ -642,14 +642,8 @@ strncmp ("abce", @{"abcd", "bca", "abc"@}, 3)
 @end example
 
 @strong{Caution:} For compatibility with @sc{matlab}, Octave's strncmp
-function returns true if the character strings are equal, and false
-otherwise.  This is just the opposite of the corresponding C library
-function.  In addition Octave's strncmp function returns true if N = 0.
-
-Matlab incompatibility : Octave's strncmp function produces an error if
-N < 0, while @sc{matlab} treats N < 0 the same as N = 0, always returning
-true.
-
+function returns 1 if the character strings are equal, and 0 otherwise.
+This is just the opposite of the corresponding C library function.
 @seealso{strncmpi, strcmp, strcmpi}
 @end deftypefn */)
 {
@@ -658,12 +652,12 @@ true.
 
   octave_idx_type n = args(2).idx_type_value ();
 
-  if (n >= 0)
+  if (n > 0)
     return ovl (do_strcmp_fcn (args(0), args(1), n, "strncmp",
                                string::strncmp,
                                string::strncmp));
   else
-    error ("strncmp: N must be greater than or equal to 0");
+    error ("strncmp: N must be greater than 0");
 }
 
 /*
@@ -678,13 +672,9 @@ true.
 %!assert (strncmp ("abc", {"abcd", 10}, 2), logical ([1, 0]))
 
 %!assert <*54373> (strncmp ("abc", "abc", 100))
-%!assert <*57879> (strncmp ("abc", "abc", 0))
-%!assert <*57879> (strncmp ("abc", "def", 0))
-%!assert <*57879> (strncmp ("abc", "ac", 0))
 
 %!error strncmp ()
 %!error strncmp ("abc", "def")
-%!error <N must be greater than or equal> strncmp ("abc", "abc", -1)
 */
 
 DEFUNX ("strcmpi", Fstrcmpi, args, ,
@@ -699,7 +689,7 @@ every member of the cell array.  The other argument may also be a cell
 array of strings (of the same size or with only one element), char matrix
 or character string.
 
-@strong{Caution:} For compatibility with @sc{matlab}, Octave's strcmpi
+@strong{Caution:} For compatibility with @sc{matlab}, Octave's strcmp
 function returns 1 if the character strings are equal, and 0 otherwise.
 This is just the opposite of the corresponding C library function.
 
@@ -731,13 +721,8 @@ array of strings (of the same size or with only one element), char matrix
 or character string.
 
 @strong{Caution:} For compatibility with @sc{matlab}, Octave's strncmpi
-function returns true if the character strings are equal, and false
-otherwise.  This is just the opposite of the corresponding C library
-function.  In addition Octave's strncmpi function returns true if N = 0.
-
-Matlab incompatibility : Octave's strncmpi function produces an error if
-N < 0, while @sc{matlab} treats N < 0 the same as N = 0, always returning
-true.
+function returns 1 if the character strings are equal, and 0 otherwise.
+This is just the opposite of the corresponding C library function.
 
 @strong{Caution:} National alphabets are not supported.
 @seealso{strncmp, strcmp, strcmpi}
@@ -748,20 +733,18 @@ true.
 
   octave_idx_type n = args(2).idx_type_value ();
 
-  if (n >= 0)
+  if (n > 0)
     return ovl (do_strcmp_fcn (args(0), args(1), n, "strncmpi",
                                string::strncmpi,
                                string::strncmpi));
   else
-    error ("strncmpi: N must be greater than or equal to 0");
+    error ("strncmpi: N must be greater than 0");
 }
 
 /*
-%!assert (strncmpi ("abc123", "ABC456", 3))
-%!assert <*57879> (strncmpi ("abc", "abc", 0))
-%!assert <*57879> (strncmpi ("abc", "def", 0))
-%!assert <*57879> (strncmpi ("abc", "ac", 0))
-%!error <N must be greater than or equal> strncmpi ("abc", "abc", -1)
+%!assert (strncmpi ("abc123", "ABC456", 3), true)
+
+%!assert <*54373> (strncmpi ("abc", "abC", 100))
 */
 
 DEFUN (str2double, args, ,

@@ -30,7 +30,7 @@
 
 #include <iosfwd>
 
-#include "Array-fwd.h"
+#include "Array.h"
 #include "intNDArray-fwd.h"
 #include "oct-cmplx.h"
 #include "oct-inttypes-fwd.h"

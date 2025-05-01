@@ -29,7 +29,7 @@
 
 #include <algorithm>
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "base64-wrappers.h"
 #include "oct-base64.h"
 

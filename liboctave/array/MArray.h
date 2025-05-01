@@ -28,99 +28,108 @@
 
 #include "octave-config.h"
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "MArray-fwd.h"
 #include "mx-inlines.cc"
 
-template <typename T> OCTARRAY_API MArray<T>& operator += (MArray<T>&, const T&);
-template <typename T> OCTARRAY_API MArray<T>& operator -= (MArray<T>&, const T&);
-template <typename T> OCTARRAY_API MArray<T>& operator *= (MArray<T>&, const T&);
-template <typename T> OCTARRAY_API MArray<T>& operator /= (MArray<T>&, const T&);
-template <typename T> OCTARRAY_API MArray<T>& operator += (MArray<T>&, const MArray<T>&);
-template <typename T> OCTARRAY_API MArray<T>& operator -= (MArray<T>&, const MArray<T>&);
-template <typename T> OCTARRAY_API MArray<T>& product_eq (MArray<T>&, const MArray<T>&);
-template <typename T> OCTARRAY_API MArray<T>& quotient_eq (MArray<T>&, const MArray<T>&);
-template <typename T> OCTARRAY_API MArray<T> operator + (const MArray<T>&);
-template <typename T> OCTARRAY_API MArray<T> operator - (const MArray<T>&);
-template <typename T> OCTARRAY_API MArray<T> operator + (const MArray<T>&, const T&);
-template <typename T> OCTARRAY_API MArray<T> operator - (const MArray<T>&, const T&);
-template <typename T> OCTARRAY_API MArray<T> operator * (const MArray<T>&, const T&);
-template <typename T> OCTARRAY_API MArray<T> operator / (const MArray<T>&, const T&);
-template <typename T> OCTARRAY_API MArray<T> operator + (const T&, const MArray<T>&);
-template <typename T> OCTARRAY_API MArray<T> operator - (const T&, const MArray<T>&);
-template <typename T> OCTARRAY_API MArray<T> operator * (const T&, const MArray<T>&);
-template <typename T> OCTARRAY_API MArray<T> operator / (const T&, const MArray<T>&);
-template <typename T> OCTARRAY_API MArray<T> operator + (const MArray<T>&, const MArray<T>&);
-template <typename T> OCTARRAY_API MArray<T> operator - (const MArray<T>&, const MArray<T>&);
-template <typename T> OCTARRAY_API MArray<T> quotient (const MArray<T>&, const MArray<T>&);
-template <typename T> OCTARRAY_API MArray<T> product (const MArray<T>&, const MArray<T>&);
+template <typename T> OCTAVE_API MArray<T>& operator += (MArray<T>&, const T&);
+template <typename T> OCTAVE_API MArray<T>& operator -= (MArray<T>&, const T&);
+template <typename T> OCTAVE_API MArray<T>& operator *= (MArray<T>&, const T&);
+template <typename T> OCTAVE_API MArray<T>& operator /= (MArray<T>&, const T&);
+template <typename T> OCTAVE_API MArray<T>& operator += (MArray<T>&, const MArray<T>&);
+template <typename T> OCTAVE_API MArray<T>& operator -= (MArray<T>&, const MArray<T>&);
+template <typename T> OCTAVE_API MArray<T>& product_eq (MArray<T>&, const MArray<T>&);
+template <typename T> OCTAVE_API MArray<T>& quotient_eq (MArray<T>&, const MArray<T>&);
+template <typename T> OCTAVE_API MArray<T> operator + (const MArray<T>&);
+template <typename T> OCTAVE_API MArray<T> operator - (const MArray<T>&);
+template <typename T> OCTAVE_API MArray<T> operator + (const MArray<T>&, const T&);
+template <typename T> OCTAVE_API MArray<T> operator - (const MArray<T>&, const T&);
+template <typename T> OCTAVE_API MArray<T> operator * (const MArray<T>&, const T&);
+template <typename T> OCTAVE_API MArray<T> operator / (const MArray<T>&, const T&);
+template <typename T> OCTAVE_API MArray<T> operator + (const T&, const MArray<T>&);
+template <typename T> OCTAVE_API MArray<T> operator - (const T&, const MArray<T>&);
+template <typename T> OCTAVE_API MArray<T> operator * (const T&, const MArray<T>&);
+template <typename T> OCTAVE_API MArray<T> operator / (const T&, const MArray<T>&);
+template <typename T> OCTAVE_API MArray<T> operator + (const MArray<T>&, const MArray<T>&);
+template <typename T> OCTAVE_API MArray<T> operator - (const MArray<T>&, const MArray<T>&);
+template <typename T> OCTAVE_API MArray<T> quotient (const MArray<T>&, const MArray<T>&);
+template <typename T> OCTAVE_API MArray<T> product (const MArray<T>&, const MArray<T>&);
 
 //! Template for N-dimensional array classes with like-type math operators.
 template <typename T>
-class OCTARRAY_API MArray : public Array<T>
+class OCTAVE_API MArray : public Array<T>
 {
 public:
 
+  OCTAVE_OVERRIDABLE_FUNC_API
   MArray () : Array<T> () { }
 
-  explicit MArray (const dim_vector& dv)
+  explicit OCTAVE_OVERRIDABLE_FUNC_API
+  MArray (const dim_vector& dv)
     : Array<T> (dv) { }
 
-  explicit MArray (const dim_vector& dv, const T& val)
+  explicit OCTAVE_OVERRIDABLE_FUNC_API
+  MArray (const dim_vector& dv, const T& val)
     : Array<T> (dv, val) { }
 
+  OCTAVE_OVERRIDABLE_FUNC_API
   MArray (const MArray<T>& a) : Array<T> (a) { }
 
   template <typename U>
+  OCTAVE_OVERRIDABLE_FUNC_API
   MArray (const Array<U>& a) : Array<T> (a) { }
 
-  ~MArray () = default;
+  OCTAVE_OVERRIDABLE_FUNC_API ~MArray () = default;
 
-  MArray<T>& operator = (const MArray<T>& a)
+  OCTAVE_OVERRIDABLE_FUNC_API MArray<T>& operator = (const MArray<T>& a)
   {
     Array<T>::operator = (a);
     return *this;
   }
 
-  MArray<T> reshape (const dim_vector& new_dims) const
+  OCTAVE_OVERRIDABLE_FUNC_API MArray<T>
+  reshape (const dim_vector& new_dims) const
   { return Array<T>::reshape (new_dims); }
 
-  MArray<T> permute (const Array<octave_idx_type>& vec,
-                     bool inv = false) const
+  OCTAVE_OVERRIDABLE_FUNC_API MArray<T>
+  permute (const Array<octave_idx_type>& vec, bool inv = false) const
   { return Array<T>::permute (vec, inv); }
 
-  MArray<T> ipermute (const Array<octave_idx_type>& vec) const
+  OCTAVE_OVERRIDABLE_FUNC_API MArray<T>
+  ipermute (const Array<octave_idx_type>& vec) const
   { return Array<T>::ipermute (vec); }
 
-  MArray squeeze () const { return Array<T>::squeeze (); }
+  OCTAVE_OVERRIDABLE_FUNC_API MArray squeeze () const
+  { return Array<T>::squeeze (); }
 
-  MArray<T> transpose () const
+  OCTAVE_OVERRIDABLE_FUNC_API MArray<T> transpose () const
   { return Array<T>::transpose (); }
 
-  MArray<T> hermitian (T (*fcn) (const T&) = nullptr) const
+  OCTAVE_OVERRIDABLE_FUNC_API MArray<T>
+  hermitian (T (*fcn) (const T&) = nullptr) const
   { return Array<T>::hermitian (fcn); }
 
   //! Performs indexed accumulative addition.
   //@{
-  OCTARRAY_API void idx_add (const octave::idx_vector& idx, T val);
-  OCTARRAY_API void
+  OCTAVE_API void idx_add (const octave::idx_vector& idx, T val);
+  OCTAVE_API void
   idx_add (const octave::idx_vector& idx, const MArray<T>& vals);
   //@}
 
-  OCTARRAY_API void
+  OCTAVE_API void
   idx_min (const octave::idx_vector& idx, const MArray<T>& vals);
 
-  OCTARRAY_API void
+  OCTAVE_API void
   idx_max (const octave::idx_vector& idx, const MArray<T>& vals);
 
-  OCTARRAY_API void
+  OCTAVE_API void
   idx_add_nd (const octave::idx_vector& idx, const MArray<T>& vals,
               int dim = -1);
 
-  OCTARRAY_API void changesign ();
+  OCTAVE_API void changesign ();
 
 private:
-  OCTARRAY_API static void instantiation_guard ();
+  OCTAVE_API static void instantiation_guard ();
 };
 
 // Define all the MArray forwarding functions for return type R and
@@ -261,5 +270,41 @@ private:
                                           const MDiagArray2<T>&);       \
   template API MDiagArray2<T> product (const MDiagArray2<T>&,           \
                                        const MDiagArray2<T>&);
+
+#if ! defined (OCTAVE_EXTERN_TEMPLATE_MARRAY)
+// guard against double extern template declarations
+#define OCTAVE_EXTERN_TEMPLATE_MARRAY
+
+#include "oct-cmplx.h"
+#include "oct-inttypes-fwd.h"
+
+// "Protect" MArray<T> instantiations that are exported by liboctave from
+// being implicitly instantiated in compilation units including this file.
+
+// instantiated in MArray-C.cc
+extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<Complex>;
+// instantiated in MArray-d.cc
+extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<double>;
+// instantiated in MArray-f.cc
+extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<float>;
+// instantiated in MArray-fC.cc
+extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<FloatComplex>;
+// instantiated in MArray-i.cc
+extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<int>;
+#if defined (OCTAVE_ENABLE_64)
+extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<int64_t>;
+#endif
+extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<octave_int8>;
+extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<octave_int16>;
+extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<octave_int32>;
+extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<octave_int64>;
+extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<octave_uint8>;
+extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<octave_uint16>;
+extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<octave_uint32>;
+extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<octave_uint64>;
+// instantiated in MArray-s.cc
+extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<short>;
+
+#endif  // OCTAVE_EXTERN_TEMPLATE_MARRAY
 
 #endif

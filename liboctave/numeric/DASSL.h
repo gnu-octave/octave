@@ -32,7 +32,7 @@
 
 #include "mx-fwd.h"
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "DASSL-opts.h"
 
 class OCTAVE_API DASSL : public DAE, public DASSL_options

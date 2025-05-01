@@ -27,7 +27,7 @@
 #  include "config.h"
 #endif
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "Quad.h"
 #include "f77-fcn.h"
 #include "lo-error.h"

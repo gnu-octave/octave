@@ -28,7 +28,7 @@
 
 #include "octave-config.h"
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "bsxfun-decl.h"
 #include "mx-defs.h"
 #include "mx-op-decl.h"

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2022-2025 The Octave Project Developers
+// Copyright (C) 2025 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -24,8 +24,13 @@
 ////////////////////////////////////////////////////////////////////////
 
 
-// Include this file when instantiating the Array class with new types in
-// projects linking to "liboctave" but not to "liboctinterp".
+// Include this file when instantiating the Array<T> template class with new
+// types in projects linking to "liboctave" but not to "liboctinterp".
+
+#if ! defined (octave_Array_oct_h)
+#define octave_Array_oct_h 1
+
+#include "octave-config.h"
 
 #include "Array-base.h"
 
@@ -43,9 +48,6 @@
 
 // "Protect" Array<T> instantiations that are exported by liboctave from
 // being implicitly instantiated in compilation units including this file.
-
-// Declare extern templates before including "Array-base.cc" to avoid
-// implicitly instantiating Array<octave::idx_vector>.
 
 // instantiated in Array-C.cc
 extern template class OCTAVE_EXTERN_TEMPLATE_API Array<Complex>;
@@ -93,4 +95,4 @@ extern template class OCTAVE_EXTERN_TEMPLATE_API Array<void *>;
 
 #endif  // OCTAVE_EXTERN_TEMPLATE_ARRAY
 
-#include "Array-base.cc"
+#endif

@@ -23,8 +23,8 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#if ! defined (octave_Array_h)
-#define octave_Array_h 1
+#if ! defined (octave_Array_base_h)
+#define octave_Array_base_h 1
 
 #include "octave-config.h"
 
@@ -684,7 +684,7 @@ public:
 
   // Alias for direct read-write access to Array data.
   // FIXME: It is recommended to use rwdata() in future code for clarity.
-  inline T * fortran_vec ()
+  inline OCTARRAY_OVERRIDABLE_FUNC_API T * fortran_vec ()
   { return rwdata (); }
 
   OCTARRAY_OVERRIDABLE_FUNC_API bool is_shared () const

@@ -31,7 +31,7 @@
 #include <map>
 #include <string>
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "dNDArray.h"
 #include "fNDArray.h"
 #include "lo-ieee.h"

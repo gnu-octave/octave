@@ -32,7 +32,7 @@
 #include <list>
 #include <string>
 
-#include "Array.h"
+#include "Array-oct.h"
 
 class OCTAVE_API string_vector
 {

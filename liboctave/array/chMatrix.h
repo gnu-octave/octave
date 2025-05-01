@@ -30,7 +30,7 @@
 
 #include <string>
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "chNDArray.h"
 #include "mx-defs.h"
 #include "mx-op-decl.h"

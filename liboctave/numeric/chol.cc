@@ -27,7 +27,7 @@
 #  include "config.h"
 #endif
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "CColVector.h"
 #include "CMatrix.h"
 #include "chol.h"

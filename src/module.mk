@@ -15,6 +15,8 @@ SRC_DIR_CPPFLAGS = \
   -Iliboctave/wrappers -I$(srcdir)/liboctave/wrappers \
   -Ilibinterp -I$(srcdir)/libinterp \
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
+  -I$(srcdir)/libinterp/octave-value \
+  -I$(srcdir)/libinterp/template-inst \
   -Ilibmex -I$(srcdir)/libmex \
   -I$(srcdir)/src
 

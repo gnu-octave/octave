@@ -30,7 +30,7 @@
 
 #include <string>
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "str-vec.h"
 
 class OCTAVE_API glob_match

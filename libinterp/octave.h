@@ -32,6 +32,7 @@
 #include <memory>
 #include <string>
 
+#include "Array.h"
 #include "str-vec.h"
 
 class octave_value;

@@ -27,7 +27,7 @@
 #  include "config.h"
 #endif
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "CMatrix.h"
 #include "dMatrix.h"
 #include "fCMatrix.h"

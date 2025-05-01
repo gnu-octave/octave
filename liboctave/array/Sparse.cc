@@ -35,7 +35,7 @@
 #include <sstream>
 #include <vector>
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "MArray.h"
 #include "Array-util.h"
 #include "Range.h"

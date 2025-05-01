@@ -33,7 +33,7 @@
 #include <limits>
 #include <vector>
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "CColVector.h"
 #include "CMatrix.h"
 #include "CRowVector.h"

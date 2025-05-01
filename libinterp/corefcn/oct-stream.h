@@ -44,7 +44,7 @@ class octave_value;
 class octave_value_list;
 class string_vector;
 
-#include "Array-fwd.h"
+#include "Array.h"
 #include "data-conv.h"
 #include "mach-info.h"
 

@@ -30,7 +30,7 @@
 
 #include <string>
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "DASPK-opts.h"
 
 #include "mx-fwd.h"

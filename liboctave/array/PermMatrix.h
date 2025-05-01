@@ -28,7 +28,7 @@
 
 #include "octave-config.h"
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "mx-defs.h"
 
 // Array<T> is inherited privately so that some methods, like index, don't

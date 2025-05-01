@@ -35,7 +35,7 @@
 #include <algorithm>
 
 #include "Array-util.h"
-#include "Array.h"
+#include "Array-oct.h"
 #include "bsxfun.h"
 #include "oct-cmplx.h"
 #include "oct-inttypes-fwd.h"

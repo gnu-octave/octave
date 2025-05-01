@@ -30,6 +30,7 @@
 
 // Things that are often included to create .oct files.
 
+#include "Array.h"
 #include "Matrix.h"
 #include "oct-locbuf.h"
 #include "defun-dld.h"

@@ -19,6 +19,7 @@ LIBINTERP_DEFUN_FILES =
   -Ilibinterp -I$(srcdir)/libinterp \
   -I$(srcdir)/%reldir%/operators \
   -I%reldir%/parse-tree -I$(srcdir)/%reldir%/parse-tree \
+  -I$(srcdir)/%reldir%/template-inst \
   -I%reldir%/corefcn -I$(srcdir)/%reldir%/corefcn \
   -I$(srcdir)/liboctave/wrappers \
   $(HDF5_CPPFLAGS) \

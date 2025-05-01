@@ -31,7 +31,8 @@
 
 // Instantiate Arrays of void *.
 
-#include "Array.h"
+#define OCTAVE_EXTERN_TEMPLATE_ARRAY
+#include "Array-oct.h"
 
 // Prevent implicit instantiations on some systems (Windows, others?)
 // that can lead to duplicate definitions of static data members.

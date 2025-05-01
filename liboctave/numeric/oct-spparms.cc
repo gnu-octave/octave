@@ -29,7 +29,7 @@
 
 #include <ostream>
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "oct-spparms.h"

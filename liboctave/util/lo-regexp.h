@@ -32,7 +32,7 @@
 #include <sstream>
 #include <string>
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "Matrix.h"
 #include "str-vec.h"
 

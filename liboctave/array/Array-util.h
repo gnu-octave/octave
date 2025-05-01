@@ -28,7 +28,7 @@
 
 #include "octave-config.h"
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "lo-array-errwarn.h"
 
 extern OCTAVE_API bool index_in_bounds (const Array<octave_idx_type>& ra_idx,

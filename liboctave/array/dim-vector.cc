@@ -33,7 +33,7 @@
 #include <new>
 #include <sstream>
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "dim-vector.h"
 
 void

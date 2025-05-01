@@ -30,7 +30,7 @@
 
 #include <string>
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "LSODE-opts.h"
 
 class OCTAVE_API LSODE : public ODE, public LSODE_options

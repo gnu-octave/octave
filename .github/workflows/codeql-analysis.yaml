@@ -154,7 +154,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: bootstrap
-        run: ./bootstrap
+        run: GNULIB_URL=https://github.com/coreutils/gnulib.git ./bootstrap
 
       - name: configure
         # configure sometimes hangs while compiling 32bit Fortran.

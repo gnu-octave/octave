@@ -30,7 +30,7 @@
 
 #include "mx-fwd.h"
 
-#include "Array.h"
+#include "Array-oct.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 

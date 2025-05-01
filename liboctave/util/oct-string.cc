@@ -36,7 +36,7 @@
 #include <string>
 #include <unordered_set>
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "iconv-wrappers.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"

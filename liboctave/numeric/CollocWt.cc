@@ -32,7 +32,7 @@
 #include <limits>
 #include <ostream>
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "CollocWt.h"
 #include "lo-error.h"
 #include "lo-mappers.h"

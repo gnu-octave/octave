@@ -33,7 +33,7 @@
 #include <ostream>
 
 #include "idx-vector.h"
-#include "Array.h"
+#include "Array-oct.h"
 #include "Array-util.h"
 #include "Sparse.h"
 #include "Range.h"

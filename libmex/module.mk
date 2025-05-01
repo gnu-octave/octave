@@ -12,6 +12,7 @@ DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
   -I$(srcdir)/libinterp/octave-value \
   -I$(srcdir)/libinterp/parse-tree \
+  -I$(srcdir)/libinterp/template-inst \
   -I$(srcdir)/liboctave/array \
   -I$(srcdir)/liboctave/numeric \
   -Iliboctave/operators -I$(srcdir)/liboctave/operators \

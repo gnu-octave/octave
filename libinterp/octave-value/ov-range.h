@@ -34,7 +34,7 @@
 #include <string>
 #include <type_traits>
 
-#include "Array-fwd.h"
+#include "Array.h"
 #include "Range.h"
 
 #include "lo-mappers.h"

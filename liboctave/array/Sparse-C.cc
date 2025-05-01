@@ -32,7 +32,7 @@
 #include "oct-cmplx.h"
 #include "lo-mappers.h"
 #include "lo-ieee.h"
-#include "Array.h"
+#include "Array-oct.h"
 #include "Sparse.h"
 #include "Sparse.cc"
 

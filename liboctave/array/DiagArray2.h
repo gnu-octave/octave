@@ -30,7 +30,7 @@
 
 #include <cstdlib>
 
-#include "Array.h"
+#include "Array-oct.h"
 
 // Array<T> is inherited privately so that some methods, like index, don't
 // produce unexpected results.

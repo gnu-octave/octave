@@ -28,7 +28,7 @@
 
 #include "octave-config.h"
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "Sparse.h"
 #include "Array-util.h"
 

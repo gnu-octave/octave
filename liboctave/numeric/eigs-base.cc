@@ -31,7 +31,7 @@
 
 #include <ostream>
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "CSparse.h"
 #include "MatrixType.h"
 #include "PermMatrix.h"

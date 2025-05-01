@@ -29,7 +29,7 @@
 
 #include <algorithm>
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "CMatrix.h"
 #include "MArray.h"
 #include "dMatrix.h"

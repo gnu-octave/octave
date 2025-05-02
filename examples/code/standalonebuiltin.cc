@@ -18,7 +18,7 @@ main ()
   octave_value_list in;
   in(0) = a_matrix;
 
-  octave_value_list out = Fnorm (in, 1);
+  octave_value_list out = octave::Fnorm (in, 1);
   double norm_of_the_matrix = out(0).double_value ();
 
   std::cout << "This is the norm of the matrix:" << std::endl

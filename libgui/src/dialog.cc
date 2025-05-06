@@ -192,6 +192,7 @@ QUIWidgetCreator::handle_create_dialog (const QString& message,
            this, &QUIWidgetCreator::dialog_button_clicked);
 
   message_dialog->setAttribute (Qt::WA_DeleteOnClose);
+  message_dialog->setModal (true);
   message_dialog->show ();
 }
 
@@ -246,6 +247,7 @@ QUIWidgetCreator::handle_create_listview (const QStringList& list,
            this, &QUIWidgetCreator::list_select_finished);
 
   list_dialog->setAttribute (Qt::WA_DeleteOnClose);
+  list_dialog->setModal (true);
   list_dialog->show ();
 }
 
@@ -279,6 +281,7 @@ QUIWidgetCreator::handle_create_inputlayout (const QStringList& prompt,
            this, &QUIWidgetCreator::input_finished);
 
   input_dialog->setAttribute (Qt::WA_DeleteOnClose);
+  input_dialog->setModal (true);
   input_dialog->show ();
 }
 
@@ -309,6 +312,7 @@ QUIWidgetCreator::handle_create_filedialog (const QStringList& filters,
            this, &QUIWidgetCreator::filedialog_finished);
 
   file_dialog->setAttribute (Qt::WA_DeleteOnClose);
+  file_dialog->setModal (true);
   file_dialog->show ();
 }
 

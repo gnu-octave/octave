@@ -513,6 +513,12 @@ tree_index_expression::evaluate_n (tree_evaluator& tw, int nargout)
 
           if (fcn)
             {
+              // If there are more indices after the function call,
+              // nargout should be 1 at most
+              int nargout_saved = nargout;
+              if (n > beg+1)
+                nargout = std::min (nargout, 1);
+
               try
                 {
                   retval = fcn->call (tw, nargout, first_args);
@@ -522,6 +528,7 @@ tree_index_expression::evaluate_n (tree_evaluator& tw, int nargout)
                   tw.final_index_error (ie, m_expr);
                 }
 
+              nargout = nargout_saved;
               beg++;
               p_args++;
               p_arg_nm++;
@@ -826,4 +833,21 @@ OCTAVE_END_NAMESPACE(octave)
 %! x = struct (zeros (0, 1), {"a", "b"});
 %! x(2).b = 1;
 %! assert (x(2).b == 1);
+
+%!test
+%! function [a] = fcell ()
+%!   a = num2cell (1:2);
+%! endfunction
+%!
+%! [a, b] = fcell () {1:2};
+%! assert ([a, b], [1, 2])
+
+%!test
+%! function [a] = fstruct ()
+%!   a = struct ('a', {1, 2}, 'b', {3, 4});
+%! endfunction
+%!
+%! [a, b] = fstruct ().b;
+%! assert ([a, b], [3, 4])
+
 */

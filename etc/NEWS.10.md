@@ -25,20 +25,29 @@ Summary of bugs fixed for version 10.2.0 (tbd):
 - Remove break points only from user functions (defined in .m file).  This
   fixes an infinite recursion issue when re-loading updated .oct or .mex files.
 - For improved Matlab compatibility the `strncmp` and `strncmpi` functions now
-  return `true` if the number of characters specified by `N` is equal to 0 
+  return `true` if the number of characters specified by `N` is equal to 0
   (bug #57879).
+- Fix `nargout` in multi-output indexing expressions beginning with function
+  call (bug #67096).
 
 ### GUI
 
 - Fix build error without QScintilla installed (bug #66962).
 - Avoid potential integer overflow on Windows.
+- Make dialogs shown by `inputdlg`, `listdlg`, `questdlg`, `uigetdir`, or
+  `uigetfile` modal.
 
 ### Build system / Tests
 
 - Add visibility attributes for the `octave::base_fcn_handle` class.
+- Add visibility attributes to parse tree symbols (bug #67056).
+- Add visibility attributes to Array<T> template class member functions.
+- Use correct preprocessor macro when instantiating MArray template class.
+- Disable visibility flags by default.
 - Support passing additional flags when linking `octave*` executables.
 - Single-quote path that might contain unescaped backslashes in the generation
   of the doc cache.
+- Ignore deprecation warning for std::wbuffer_convert in header.
 
 ### Documentation
 
@@ -58,6 +67,8 @@ Summary of bugs fixed for version 10.2.0 (tbd):
 - Document use of `:` keyword as a range operator.
 - Correct and expand documentation on ranges.
 - Remove outdated text on range arithmetic from manual.
+- Examples: Add missing namespace `octave` when calling built-in function in
+  `standalonebuiltin.cc`.
 
 
 Summary of important user-visible changes for version 10 (2025-03-28):

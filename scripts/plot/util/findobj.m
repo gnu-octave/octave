@@ -255,7 +255,7 @@ function h = findobj (varargin)
                 match(nh,np) = true;
               endif
             elseif (numel (p.(pname{np})) == numel (pvalue{np}))
-              if (ischar (pvalue{np}) && ischar (p.(pname{np})))
+              if (ischar (p.(pname{np})))
                 match(nh,np) = strcmpi (pvalue{np}, p.(pname{np}));
               elseif (isnumeric (pvalue{np}) && isnumeric (p.(pname{np})))
                 match(nh,np) = all ((pvalue{np} == p.(pname{np}))(:));
@@ -303,8 +303,12 @@ function h = findobj (varargin)
     match = true (numel (h), 1);
   endif
 
-  h = h(match);
-  h = h(:);
+  if (! any (match))
+    h = [];
+  else
+    h = h(match);
+    h = h(:);
+  endif
 
 endfunction
 
@@ -442,6 +446,33 @@ endfunction
 %!    hl2 = plot (rand (10,1));
 %!   hobj = findobj (hf);
 %!   assert (hobj, [hf; hax2; hax1; hl2; hl1]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   ind = findobj (0, "tag", []);
+%!   assert (ind, []);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure (3, "visible", "off");
+%! unwind_protect
+%!   ind = findobj (0, "tag", "");
+%!   assert (ind, [0; 3]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off", "tag", "A");
+%! unwind_protect
+%!   ind = findobj (0, "tag", 65);
+%!   assert (ind, []);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

@@ -539,7 +539,7 @@ tree_index_expression::evaluate_n (tree_evaluator& tw, int nargout)
                   // More indices to follow.  Silently ignore
                   // extra output values.
 
-                  if (retval.length () == 0)
+                  if (retval.length () == 0 || retval(0).is_undefined ())
                     error ("indexing undefined value");
                   else
                     base_expr_val = retval(0);
@@ -850,4 +850,23 @@ OCTAVE_END_NAMESPACE(octave)
 %! [a, b] = fstruct ().b;
 %! assert ([a, b], [3, 4])
 
+%!test <*67111>
+%! function [a] = fcelln (n)
+%!   if (n >= 0)
+%!     a = num2cell (1:n);
+%!   endif
+%! endfunction
+%!
+%! fail ("fcelln (-5) {1:3}", "indexing undefined value")
+%! fail ("fcelln (-5) (1:3)", "indexing undefined value")
+%! fail ("fcelln (-5).prop", "indexing undefined value")
+
+%!test <*67111>
+%! function [a] = fnothing ()
+%! endfunction
+%!
+%! fail ("fnothing () {1:3}", "indexing undefined value")
+%! fail ("fnothing () (1:3)", "indexing undefined value")
+%! fail ("fnothing ().prop", "indexing undefined value")
+%! fail ("fnothing () ()", "indexing undefined value")
 */

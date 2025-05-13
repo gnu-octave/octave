@@ -63,6 +63,8 @@ GetPerms (const Array<T>& ar_in, bool uniq_v = false)
 
   const T *Ar = ar_in.data ();
 
+  nr = Factorial (m);
+
   if (uniq_v)
     {
       // Mutual Comparison is used to detect duplicated values.
@@ -74,9 +76,6 @@ GetPerms (const Array<T>& ar_in, bool uniq_v = false)
       // In practice, and because n must be very small, mutual comparison is
       // typically faster and consumes less memory.
 
-      octave_idx_type N_el = 1;
-      double denom = 1.0;
-      // Number of unique permutations is n! / (n_el1! * n_el2! * ...)
       for (octave_idx_type i = 0; i < m - 1; i++)
         {
           for (octave_idx_type j = i + 1; j < m; j++)
@@ -89,22 +88,21 @@ GetPerms (const Array<T>& ar_in, bool uniq_v = false)
                 isequal = (Ar[i] == Ar[j]);
 
               if (myvidx[j] > myvidx[i] && isequal)
-                {
-                  myvidx[j] = myvidx[i];  // not yet processed...
-                  N_el++;
-                }
-              else
-                {
-                  denom *= Factorial (N_el);
-                  N_el = 1;
-                }
+                myvidx[j] = myvidx[i];  // not yet processed...
             }
         }
-      denom *= Factorial (N_el);
-      nr = Factorial (m) / denom;
+
+      // Number of unique permutations is n! / (n_el1! * n_el2! * ...)
+      for (octave_idx_type i = 0; i < m; i++)
+        {
+          octave_idx_type count = 0;
+          for (octave_idx_type j = 0; j < m; j++)
+            if (myvidx[j] == i)
+              ++count;
+
+          nr /= Factorial (count);
+        }
     }
-  else
-    nr = Factorial (m);
 
   // Sort vector indices for inverse lexicographic order later.
   std::sort (myvidx, myvidx + m, std::greater<octave_idx_type> ());
@@ -290,6 +288,14 @@ Programming Note: If the @qcode{"unique"} option is not used, the length of
 %!assert (sortrows (perms ("abb", "unique")), ["abb"; "bab"; "bba"])
 %!assert (size (perms ([1 1 1 1 2 2 2 3 3], "unique")), [1260 9])
 %!assert (size (perms (int8([1 1 1 1 1 2 2 2 2 3 3 3]), "unique")), [27720 12])
+
+## Test "unique" with different input orders.
+%!assert <*67115> (sortrows (perms ([1 1 2 2], "unique")), [1 1 2 2; 1 2 1 2; 1 2 2 1; 2 1 1 2; 2 1 2 1; 2 2 1 1])
+%!assert <*67115> (sortrows (perms ([1 2 1 2], "unique")), [1 1 2 2; 1 2 1 2; 1 2 2 1; 2 1 1 2; 2 1 2 1; 2 2 1 1])
+%!assert <*67115> (sortrows (perms ([1 2 2 1], "unique")), [1 1 2 2; 1 2 1 2; 1 2 2 1; 2 1 1 2; 2 1 2 1; 2 2 1 1])
+%!assert <*67115> (sortrows (perms ([2 1 1 2], "unique")), [1 1 2 2; 1 2 1 2; 1 2 2 1; 2 1 1 2; 2 1 2 1; 2 2 1 1])
+%!assert <*67115> (sortrows (perms ([2 1 2 1], "unique")), [1 1 2 2; 1 2 1 2; 1 2 2 1; 2 1 1 2; 2 1 2 1; 2 2 1 1])
+%!assert <*67115> (sortrows (perms ([2 2 1 1], "unique")), [1 1 2 2; 1 2 1 2; 1 2 2 1; 2 1 1 2; 2 1 2 1; 2 2 1 1])
 
 ## Should work for any array type, such as cells and structs,
 ## and not only for numeric data.

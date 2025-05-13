@@ -55,7 +55,7 @@ static inline Array<T>
 GetPerms (const Array<T>& ar_in, bool uniq_v = false)
 {
   octave_idx_type m = ar_in.numel ();
-  double nr;  // number of rows of resulting array
+  double nr = Factorial (m);  // number of rows of resulting array
 
   // Setup index vector filled from 0..m-1
   OCTAVE_LOCAL_BUFFER (octave_idx_type, myvidx, m);
@@ -63,9 +63,7 @@ GetPerms (const Array<T>& ar_in, bool uniq_v = false)
 
   const T *Ar = ar_in.data ();
 
-  nr = Factorial (m);
-
-  if (uniq_v)
+  if (uniq_v)  // need to reduce the size of the resulting array
     {
       // Mutual Comparison is used to detect duplicated values.
       // Using sort would be possible for numerical values and be of
@@ -92,15 +90,25 @@ GetPerms (const Array<T>& ar_in, bool uniq_v = false)
             }
         }
 
+      // At this point, myvidx serves as a unique id of the elements.
+      // Two elements having the same myvidx are equal.
+
       // Number of unique permutations is n! / (n_el1! * n_el2! * ...)
-      for (octave_idx_type i = 0; i < m; i++)
+      // where n_elX is the number of myvidx elements with value X.
+      // There can be no more than m different ids.
+      octave_idx_type cumulative = 0;
+      for (octave_idx_type i = 0; i < m; i++)  // each possible id
         {
           octave_idx_type count = 0;
-          for (octave_idx_type j = 0; j < m; j++)
+          for (octave_idx_type j = i; j < m; j++)  // range for this id
             if (myvidx[j] == i)
               ++count;
 
           nr /= Factorial (count);
+
+          cumulative += count;
+          if (cumulative == m)  // all elements accounted for, break early
+            break;
         }
     }
 

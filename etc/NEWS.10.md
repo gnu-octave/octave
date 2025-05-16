@@ -29,6 +29,11 @@ Summary of bugs fixed for version 10.2.0 (tbd):
   (bug #57879).
 - Fix `nargout` in multi-output indexing expressions beginning with function
   call (bug #67096).
+- `findobj`: Do not match empty tags with `[]` (bug #67048).
+- Check for undefined output when indexing function output (bug #67111).
+- `perms`: Fix buffer overflow and crash; minor code cleanup (bug #67115).
+- `mkoctfile`: Support spaces in output path of linker step.
+
 
 ### GUI
 

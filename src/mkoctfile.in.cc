@@ -1361,10 +1361,10 @@ main (int argc, char **sys_argv)
 
       std::string cmd
         = (vars["CXXLD"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
-           + pass_on_options + " -o " + octfile + ' ' + objfiles + ' '
-           + libfiles + ' ' + ldflags + ' ' + vars["DL_LDFLAGS"] + ' '
-           + vars["LDFLAGS"] + ' ' + octave_libs + ' '
-           + vars["OCT_LINK_OPTS"]);
+           + pass_on_options + " -o " + quote_path (octfile) + ' '
+           + objfiles + ' ' + libfiles + ' ' + ldflags + ' '
+           + vars["DL_LDFLAGS"] + ' ' + vars["LDFLAGS"] + ' '
+           + octave_libs + ' ' + vars["OCT_LINK_OPTS"]);
 
       if (! creating_mex_file)
         cmd += ' ' + vars["OCT_LINK_DEPS"];

@@ -1384,7 +1384,7 @@ main (int argc, char **sys_argv)
 
   if (strip)
     {
-      std::string cmd = "strip " + octfile;
+      std::string cmd = "strip " + quote_path (octfile);
 
       int status = run_command (cmd, verbose, printonly);
 

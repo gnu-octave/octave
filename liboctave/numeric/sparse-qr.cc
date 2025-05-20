@@ -259,7 +259,7 @@ ors2crs (const SparseMatrix& a)
   A.dtype = CHOLMOD_DOUBLE;
   A.nz = nullptr;
   A.z = nullptr;
-  if (! octave_suitesparse_ptr_size_mismatch)
+  if constexpr (! octave_suitesparse_ptr_size_mismatch)
     {
       A.p = reinterpret_cast<SuiteSparse_long *> (a.cidx ());
       A.i = reinterpret_cast<SuiteSparse_long *> (a.ridx ());
@@ -303,7 +303,7 @@ ocs2ccs (const SparseComplexMatrix& a)
   A.dtype = CHOLMOD_DOUBLE;
   A.nz = nullptr;
   A.z = nullptr;
-  if (! octave_suitesparse_ptr_size_mismatch)
+  if constexpr (! octave_suitesparse_ptr_size_mismatch)
     {
       A.p = reinterpret_cast<SuiteSparse_long *> (a.cidx ());
       A.i = reinterpret_cast<SuiteSparse_long *> (a.ridx ());

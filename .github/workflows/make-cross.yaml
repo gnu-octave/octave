@@ -1,0 +1,299 @@
+name: make-cross-build
+on:
+  workflow_dispatch:
+  # schedule:
+  #   # Run job every Wednesday and Saturday at 16:30 UTC
+  #   - cron: '30 16 * * 3,6'
+  # push:
+concurrency: ci-cross-build-${{ github.ref }}
+
+jobs:
+
+  cross-build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      # Allow other runners in the matrix to continue if some fail
+      fail-fast: false
+
+      matrix:
+        # List of architectures that are supported by Ubuntu:
+        # https://canonical-ubuntu-packaging-guide.readthedocs-hosted.com/en/latest/reference/architectures/
+        arch: [armhf, ppc64el, s390x, riscv64]
+        include:
+          - arch: armhf
+            target-triple: arm-linux-gnueabihf
+            os: ubuntu-24.04-arm
+            ccache-max: 1G
+          - arch: ppc64el
+            target-triple: powerpc64le-linux-gnu
+            os: ubuntu-24.04-arm
+            ccache-max: 1G
+          - arch: s390x
+            target-triple: s390x-linux-gnu
+            os: ubuntu-24.04
+            ccache-max: 1G
+          - arch: riscv64
+            target-triple: riscv64-linux-gnu
+            os: ubuntu-24.04-arm
+            ccache-max: 1.4G
+
+    name: cross ${{ matrix.arch }}
+
+    env:
+      CC: ${{ matrix.target-triple }}-gcc
+      CXX: ${{ matrix.target-triple }}-g++
+      F77: ${{ matrix.target-triple }}-gfortran
+
+    steps:
+      - name: get CPU information
+        run: lscpu
+
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: install toolchain for ${{ matrix.arch }}
+        run: |
+          sudo apt -qq update
+          sudo apt install -y \
+            g++-${{ matrix.target-triple }} \
+            gfortran-${{ matrix.target-triple }} \
+            autoconf automake bison ccache \
+            dvipng epstool fig2dev flex gnuplot-x11 gperf gzip icoutils \
+            libtool make perl pstoedit qt6-tools-dev-tools rsync tar texinfo \
+            qemu-user-binfmt
+
+      - name: add repositories for ${{ matrix.arch }} packages
+        # deb822-style format:
+        # https://manpages.ubuntu.com/manpages/noble/man5/sources.list.5.html
+        run: |
+          sudo dpkg --add-architecture ${{ matrix.arch }}
+          case ${{ matrix.os }} in
+            "ubuntu-24.04-arm")
+              sudo bash -c 'cat - >/etc/apt/sources.list.d/ubuntu.sources' <<-EOF
+          Types: deb
+          URIs: http://ports.ubuntu.com/ubuntu-ports/
+          Suites: noble noble-updates noble-backports
+          Components: main restricted universe multiverse
+          Architectures: arm64 ${{ matrix.arch }}
+          Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+          
+          Types: deb
+          URIs: http://security.ports.ubuntu.com/ubuntu-ports/
+          Suites: noble-security
+          Components: main restricted universe multiverse
+          Architectures: arm64 ${{ matrix.arch }}
+          Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+          
+          EOF
+              ;;
+            "ubuntu-24.04")
+              sudo bash -c 'cat - >/etc/apt/sources.list.d/ubuntu.sources' <<-EOF
+          Types: deb
+          URIs: http://archive.ubuntu.com/ubuntu/
+          Suites: noble noble-updates noble-backports
+          Components: main restricted universe multiverse
+          Architectures: amd64
+          Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+          
+          Types: deb
+          URIs: http://security.ubuntu.com/ubuntu/
+          Suites: noble-security
+          Components: main restricted universe multiverse
+          Architectures: amd64
+          Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+          
+          Types: deb
+          URIs: http://ports.ubuntu.com/ubuntu-ports/
+          Suites: noble noble-updates noble-backports
+          Components: main restricted universe multiverse
+          Architectures: ${{ matrix.arch }}
+          Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+          
+          Types: deb
+          URIs: http://security.ports.ubuntu.com/ubuntu-ports/
+          Suites: noble-security
+          Components: main restricted universe multiverse
+          Architectures: ${{ matrix.arch }}
+          Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+          
+          EOF
+              ;;
+          esac
+          sudo apt update
+
+      - name: install dependencies for ${{ matrix.arch }}
+        run: |
+          sudo apt install -y \
+            libarpack2-dev:${{ matrix.arch }} \
+            libblas-dev:${{ matrix.arch }} \
+            libcurl4-gnutls-dev:${{ matrix.arch }} \
+            libfftw3-dev:${{ matrix.arch }} \
+            libfltk1.3-dev:${{ matrix.arch }} \
+            libfontconfig1-dev:${{ matrix.arch }} \
+            libfreetype6-dev:${{ matrix.arch }} \
+            libgl1-mesa-dev:${{ matrix.arch }} \
+            libgl2ps-dev:${{ matrix.arch }} \
+            libglpk-dev:${{ matrix.arch }} \
+            libgraphicsmagick++1-dev:${{ matrix.arch }} \
+            libhdf5-dev:${{ matrix.arch }} \
+            liblapack-dev:${{ matrix.arch }} \
+            libosmesa6-dev:${{ matrix.arch }} \
+            libpcre2-dev:${{ matrix.arch }} \
+            libqhull-dev:${{ matrix.arch }} \
+            libqscintilla2-qt6-dev:${{ matrix.arch }} \
+            libqrupdate-dev:${{ matrix.arch }} \
+            libreadline-dev:${{ matrix.arch }} \
+            librsvg2-bin:${{ matrix.arch }} \
+            libsndfile1-dev:${{ matrix.arch }} \
+            libsuitesparse-dev:${{ matrix.arch }} \
+            libxft-dev:${{ matrix.arch }} \
+            portaudio19-dev:${{ matrix.arch }} \
+            qt6-5compat-dev:${{ matrix.arch }} \
+            qt6-base-dev:${{ matrix.arch }} \
+            qt6-tools-dev:${{ matrix.arch }} \
+            rapidjson-dev:${{ matrix.arch }} \
+            zlib1g-dev:${{ matrix.arch }}
+
+      - name: prepare ccache
+        # create key with human readable timestamp
+        # used in action/cache/restore and action/cache/save steps
+        id: ccache-prepare
+        run: |
+          echo "key=ccache:cross:${{ matrix.os }}:${{ matrix.arch }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
+
+      - name: restore ccache
+        # setup the github cache used to maintain the ccache from one job to the next
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.ccache
+          key: ${{ steps.ccache-prepare.outputs.key }}
+          restore-keys: |
+            ccache:cross:${{ matrix.os }}:${{ matrix.arch }}:${{ github.ref }}
+            ccache:cross:${{ matrix.os }}:${{ matrix.arch }}:refs/heads/default
+
+      - name: configure ccache
+        env:
+          CCACHE_MAX: ${{ matrix.ccache-max }}
+        run: |
+          test -d ~/.ccache || mkdir ~/.ccache
+          echo "max_size = $CCACHE_MAX" >> ~/.ccache/ccache.conf
+          ccache -s
+          echo "/usr/lib/ccache" >> $GITHUB_PATH
+
+      - name: bootstrap
+        run: GNULIB_URL=https://github.com/coreutils/gnulib.git ./bootstrap
+
+      - name: configure
+        id: configure
+        timeout-minutes: 30
+        run: |
+          echo $PATH
+          echo which ccache
+          which ccache
+          which $CC
+          echo $CC --version
+          $CC --version
+          which ${CXX% *}
+          echo ${CXX% *} --version
+          ${CXX% *} --version
+          which $F77
+          echo $F77 --version
+          $F77 --version
+          echo $CC --version
+          $CC --version
+          mkdir .build
+          echo "::group::Run configure script"
+          cd .build && ../configure \
+            --host=${{ matrix.target-triple }} \
+            --disable-docs \
+            --disable-java \
+            JAVA_HOME="" \
+            PKG_CONFIG_PATH=/usr/lib/${{ matrix.target-triple }}/pkgconfig/
+          echo "::endgroup::"
+
+      - name: display config.log
+        if: always() && (steps.configure.outcome != 'skipped')
+        continue-on-error: true
+        # Displaying the log shouldn't take long. Cancel the step if it does.
+        timeout-minutes: 5
+        run: cat ./.build/config.log
+
+      - name: build
+        run: XDG_RUNTIME_DIR=$RUNNER_TEMP make -C ./.build -j $(nproc) all V=1
+
+      - name: ccache status
+        run: ccache -s
+
+      - name: save ccache
+        # Save the cache after we are done (successfully) building
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.ccache
+          key: ${{ steps.ccache-prepare.outputs.key }}
+
+      - name: check
+        id: run-test-suite
+        timeout-minutes: 60
+        # Without "-cli", there are deadlocks or crashes while running some
+        # tests that are related to graphics. This might be due to using qemu
+        # or xvfb-run or a combination of the two or an actual issue in Octave.
+        run: XDG_RUNTIME_DIR=$RUNNER_TEMP RUN_OCTAVE_OPTIONS="-cli" make -C ./.build check | tee ./test-suite.log
+
+      - name: display test suite log
+        if: always() && (steps.run-test-suite.outcome != 'skipped')
+        continue-on-error: true
+        # Displaying the log shouldn't take long. Cancel the step if it does.
+        timeout-minutes: 5
+        run: cat ./.build/test/fntests.log
+
+      - name: test history file creation
+        # see bug #62365
+        # Pipe to an interactive session to trigger appending the command to
+        # the history.  This will trigger the creation of a history file.
+        run:  |
+          echo "history_file (make_absolute_filename ('./a/b/c/history')); disp ('test')" | ./.build/run-octave -i
+          [ -f ./a/b/c/history ] || echo "::warning::Creating history file failed"
+
+      - name: install
+        run: |
+          sudo make -C ./.build install
+
+      - name: test stand-alone executable
+        run: |
+          unset CC
+          unset CXX
+          cd examples/code
+          mkoctfile --link-stand-alone embedded.cc -o embedded
+          LD_LIBRARY_PATH="/usr/local/lib/octave/$(octave --eval "disp(version())")" \
+            ./embedded
+
+      - name: test Octave packages
+        env:
+          # colon separated list of packages
+          PACKAGE_NAMES: "control:stk"
+        run: |
+          unset CC
+          unset CXX
+          IFS=':' read -r -a packages <<< "${PACKAGE_NAMES}"
+          for package in "${packages[@]}"; do
+            printf "   \033[0;32m==>\033[0m Octave package \033[0;32m${package}\033[0m\n"
+            echo "::group::Install ${package}"
+            octave --eval "pkg install -verbose -forge ${package}"
+            echo "::endgroup::"
+            if [ ${{ matrix.arch }} = "armhf" ]; then
+              echo "::group::Test ${package}"
+              octave --eval "pkg test ${package}"
+              echo "::endgroup::"
+              echo "::group::Test log for ${package}"
+              cat ${GITHUB_WORKSPACE}/fntests.log
+              echo "::endgroup::"
+            fi
+           done
+
+      - name: analyze test suite results
+        # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
+        run:  |
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || exit 1
+          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || exit 1
+          echo No unknown failing tests.

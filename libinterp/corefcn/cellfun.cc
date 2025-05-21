@@ -577,27 +577,26 @@ v = cellfun (@@det, C);         # 40% faster
           if (count == 0)
             {
               // First time through loop.  Initialize expected number of
-              // outputs based on output from first function evaluation.
-              expected_nargout = y_nel;
-
-              if (nargout > 0 && y_nel < nargout)
-                error ("cellfun: function returned fewer than nargout values");
+              // outputs based on nargout and output from first function evaluation.
+              if (nargout==0)
+                expected_nargout = (y_nel>0 && y(0).is_defined())? 1 : 0;
+              else
+                expected_nargout = nargout;
             }
-          else if (y_nel != expected_nargout)
+          if (y_nel < expected_nargout)
+            error ("cellfun: function fewer than nargout values");
+          else if (expected_nargout==0 && y_nel > 0 && y(0).is_defined())
             error ("cellfun: function returned unexpected number of values");
 
           // Copy loop results to output if necessary 
-          if (nargout > 0
-              || (nargout == 0 && y_nel > 0 && y(0).is_defined ()))
+          if (expected_nargout > 0)
             {
-              int num_to_copy = std::min (y_nel, nargout1);
-
               if (count == 0)
                 {
                   // First time through loop create output with class of
                   // function output and size of input cell arrays.
                   // Predeclaring output is more efficient than growing array.
-                  for (int j = 0; j < num_to_copy; j++)
+                  for (int j = 0; j < expected_nargout; j++)
                     {
                       if (y(j).is_undefined ())
                         error ("cellfun: function returned fewer than nargout values");
@@ -611,7 +610,7 @@ v = cellfun (@@det, C);         # 40% faster
                 }
               else
                 {
-                  for (int j = 0; j < num_to_copy; j++)
+                  for (int j = 0; j < expected_nargout; j++)
                     {
                       if (y(j).is_undefined ())
                         error ("cellfun: function returned fewer than nargout values");
@@ -1067,13 +1066,13 @@ v = cellfun (@@det, C);         # 40% faster
 %!    b = x;
 %!  endif
 %!endfunction
-%!test <66642> # First call returns fewer outputs
+%!test <*66642> # First call returns fewer outputs
 %! fail ("[a, b] = cellfun (@__counterror, {-1, 4})");
-%!test <66642> # Subsequent call returns fewer outputs
+%!test <*66642> # Subsequent call returns fewer outputs
 %! fail ("[a, b] = cellfun (@__counterror, {1, -4})");
-%!test <66642> # Non-uniform output
+%!test <*66642> # Non-uniform output with one call returning fewer outputs
 %! fail ("[a, b] = cellfun (@__counterror, {1, -4}, 'UniformOutput', false)");
-%!test <66642> # It's OK to return more outputs than requested
+%!test  # It's OK to return more outputs than requested
 %! a = cellfun (@__counterror, {1, -4});
 %! assert (a, [1, -4])
 %! a = cellfun (@__counterror, {-1, 4});
@@ -1082,6 +1081,35 @@ v = cellfun (@@det, C);         # 40% faster
 %! assert (ans, [-1, 4]);
 %! cellfun (@__counterror, {1, -4});
 %! assert (ans, [1, -4]);
+%!
+## Testing nargout=0
+%!function r = __counterror1 (x)
+%!  if x > 0
+%!    r = x;
+%!  endif
+%!endfunction
+##  With nargout=0 and UniformOutput=true, either every call returns something,
+##  or none does
+%!test <*66642>
+%!  fail ("cellfun (@__counterror1, {1, -2})", "cellfun: function returned fewer than nargout values");
+%!test <*66642>
+%!  fail ("cellfun (@__counterror1, {-1, 2})");
+##  With nargout=0 and UniformOutput=false, each function call can either return
+##  something or not
+%!test
+%! cellfun (@__counterror1, {1, -2}, "UniformOutput", false);
+%! assert (ans, {1, []});
+%!test
+%! cellfun (@__counterror1, {-1, 2}, "UniformOutput", false);
+%! assert (ans, {[], 2});
+%!
+%!function varargout = __fvarg (n)
+%!  varargout = num2cell (n:-1:1);
+%!endfunction
+%!
+%!test <*66642>  # varargout, with number of outputs >= nargout
+%!  a = cellfun (@__fvarg, {2, 1, 3});
+%!  assert (a, [2,1,3])
 
 ## Test input validation
 %!error <Invalid call> cellfun (1)
@@ -1342,6 +1370,7 @@ arrayfun (@@str2num, [1234],
 
           OCTAVE_LOCAL_BUFFER (octave_value, retv, nargout1);
 
+          int expected_nargout;
           for (octave_idx_type count = 0; count < k; count++)
             {
               idx_list.front ()(0) = count + 1.0;
@@ -1352,30 +1381,37 @@ arrayfun (@@str2num, [1234],
                     inputlist.xelem (j) = inputs[j].index_op (idx_list);
                 }
 
-              const octave_value_list tmp
+              const octave_value_list y
                 = fcn_eval (interp, count, nargout, inputlist, fcn,
                             error_handler);
 
-              if (nargout > 0 && tmp.length () < nargout)
+              // Validate number of generated results is correct
+              int y_nel = y.length ();
+              if (count == 0)
+                {
+                  // First time through loop.  Initialize expected number of
+                  // outputs based on output from first function evaluation.
+                  if (nargout==0)
+                    expected_nargout = (y_nel>0 && y(0).is_defined())? 1 : 0;
+                  else
+                    expected_nargout = nargout;
+                }
+              if (y_nel < expected_nargout)
                 error_with_id ("Octave:invalid-fun-call",
                                "arrayfun: function returned fewer than nargout values");
+              else if (expected_nargout==0 && y_nel > 0 && y(0).is_defined())
+                error ("cellfun: function returned unexpected number of values");
 
-              if (nargout > 0
-                  || (nargout == 0
-                      && tmp.length () > 0 && tmp(0).is_defined ()))
+
+              if (expected_nargout > 0)
                 {
-                  int num_to_copy = tmp.length ();
-
-                  if (num_to_copy > nargout1)
-                    num_to_copy = nargout1;
-
                   if (count == 0)
                     {
-                      for (int j = 0; j < num_to_copy; j++)
+                      for (int j = 0; j < expected_nargout; j++)
                         {
-                          if (tmp(j).is_defined ())
+                          if (y(j).is_defined ())
                             {
-                              octave_value val = tmp(j);
+                              octave_value val = y(j);
 
                               if (val.numel () == 1)
                                 retv[j] = val.resize (fdims);
@@ -1389,11 +1425,11 @@ arrayfun (@@str2num, [1234],
                     }
                   else
                     {
-                      for (int j = 0; j < num_to_copy; j++)
+                      for (int j = 0; j < expected_nargout; j++)
                         {
-                          if (tmp(j).is_defined ())
+                          if (y(j).is_defined ())
                             {
-                              octave_value val = tmp(j);
+                              octave_value val = y(j);
 
                               if (! retv[j].fast_elem_insert (count, val))
                                 {
@@ -1448,19 +1484,19 @@ arrayfun (@@str2num, [1234],
                     inputlist.xelem (j) = inputs[j].index_op (idx_list);
                 }
 
-              const octave_value_list tmp
+              const octave_value_list y
                 = fcn_eval (interp, count, nargout, inputlist, fcn,
                             error_handler);
 
-              if (nargout > 0 && tmp.length () < nargout)
+              if (nargout > 0 && y.length () < nargout)
                 error_with_id ("Octave:invalid-fun-call",
                                "arrayfun: function returned fewer than nargout values");
 
               if (nargout > 0
                   || (nargout == 0
-                      && tmp.length () > 0 && tmp(0).is_defined ()))
+                      && y.length () > 0 && y(0).is_defined ()))
                 {
-                  int num_to_copy = tmp.length ();
+                  int num_to_copy = y.length ();
 
                   if (num_to_copy > nargout1)
                     num_to_copy = nargout1;
@@ -1470,9 +1506,9 @@ arrayfun (@@str2num, [1234],
 
                   for (int j = 0; j < num_to_copy; j++)
                     {
-                      if (tmp(j).is_undefined ())
+                      if (y(j).is_undefined ())
                         error ("arrayfun: function returned fewer than nargout values");
-                      results[j](count) = tmp(j);
+                      results[j](count) = y(j);
                     }
                 }
             }
@@ -1737,19 +1773,13 @@ arrayfun (@@str2num, [1234],
 %! assert ([A(1).index, A(2).index], [1, 2]);
 
 ## An error should occur if called function does not return requested outputs
-%!function [a, b] = __counterror (x)
-%!  a = x;
-%!  if x>0
-%!    b = x;
-%!  endif
-%!endfunction
-%!test <66642> # First call returns fewer outputs
+%!test <*66642> # First call returns fewer outputs
 %! fail ("[a, b] = arrayfun (@__counterror, [-1, 4])");
-%!test <66642> # Subsequent call returns fewer outputs
+%!test <*66642> # Subsequent call returns fewer outputs
 %! fail ("[a, b] = arrayfun (@__counterror, [1, -4])");
-%!test <66642> # Non-uniform output
+%!test <*66642> # Non-uniform output
 %! fail ("[a, b] = arrayfun (@__counterror, [1, -4], 'UniformOutput', false)");
-%!test <66642> # It's OK to return more outputs than requested
+%!test  # It's OK to return more outputs than requested
 %! a = arrayfun (@__counterror, [1, -4]);
 %! assert (a, [1, -4])
 %! a = arrayfun (@__counterror, [-1, 4]);
@@ -1758,6 +1788,30 @@ arrayfun (@@str2num, [1234],
 %! assert (ans, [-1, 4]);
 %! arrayfun (@__counterror, [1, -4]);
 %! assert (ans, [1, -4]);
+%!
+## Testing nargout=0
+##  With nargout=0 and UniformOutput=true, either every call returns something,
+##  or none does
+%!test <*66642>
+%!  fail ("arrayfun (@__counterror1, [1, -2])", "arrayfun: function returned fewer than nargout values")
+%!test <*66642>
+%!  fail ("arrayfun (@__counterror1, [-1, 2])")
+##  With nargout=0 and UniformOutput=false, each function call can either return
+##  something or not
+%!test
+%! arrayfun (@__counterror1, [1,-2], "UniformOutput", false);
+%! assert (ans, {1, []});
+%!test
+%! arrayfun (@__counterror1, [-1,2], "UniformOutput", false);
+%! assert (ans, {[], 2});
+%!
+%!function varargout = __fvarg (n)
+%!  varargout = num2cell (n:-1:1);
+%!endfunction
+%!
+%!test # varargout, with number of outputs >= nargout
+%!  a = arrayfun (@__fvarg, [2, 1, 3]);
+%!  assert (a, [2, 1, 3])
 */
 
 static void

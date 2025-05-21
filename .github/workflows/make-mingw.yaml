@@ -197,9 +197,13 @@ jobs:
             --disable-docs \
             ${{ matrix.extra-config-flags }}
           echo "::endgroup::"
-          echo "::group::Show config.log"
-          cat ./config.log
-          echo "::endgroup::"
+
+      - name: display config.log
+        if: always() && (steps.configure.outcome != 'skipped')
+        continue-on-error: true
+        # Displaying the log shouldn't take long. Cancel the step if it does.
+        timeout-minutes: 5
+        run: cat ./.build/config.log
 
       - name: build
         # Spawning processes seems to have a big overhead on this platform. Use a somewhat larger number of parallel processes to compensate for that.

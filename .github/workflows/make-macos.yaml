@@ -156,9 +156,13 @@ jobs:
             --with-java-homedir="${HOMEBREW_PREFIX}/opt/openjdk" \
             --prefix="${HOME}/usr"
           echo "::endgroup::"
-          echo "::group::Show config.log"
-          cat ./config.log
-          echo "::endgroup::"
+
+      - name: display config.log
+        if: always() && (steps.configure.outcome != 'skipped')
+        continue-on-error: true
+        # Displaying the log shouldn't take long. Cancel the step if it does.
+        timeout-minutes: 5
+        run: cat ./.build/config.log
 
       - name: build
         run: make -C ./.build all -j3 V=1

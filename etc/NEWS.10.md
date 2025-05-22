@@ -34,7 +34,9 @@ Summary of bugs fixed for version 10.2.0 (tbd):
 - `perms`: Fix buffer overflow and crash; minor code cleanup (bug #67115).
 - `mkoctfile`: Support spaces in output path of linker step.
 - `mkoctfile`: Support spaces in path to binary when stripping debug info.
-
+- `octave-svgconvert`: Speed up printing to PDF (bug #66959).
+- `error`: Fix segmentation fault on missing fields in `err.stack` structure
+  (bug #67143).
 
 ### GUI
 

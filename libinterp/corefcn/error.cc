@@ -203,7 +203,8 @@ maybe_extract_message_id (const std::string& caller,
 
   if (nargin > 0)
     {
-      std::string arg1 = args(0).string_value ();
+      std::string arg1 = args(0).xstring_value ("%s: MESSAGE must be a string or error structure",
+                                                caller.c_str ());
 
       // For compatibility with Matlab, an identifier must contain ':',
       // but not at the beginning or the end, and it must not contain '%'
@@ -395,8 +396,8 @@ error_system::make_stack_map (const std::list<frame_info>& frames)
   return retval;
 }
 
-std::list<frame_info>
-error_system::make_stack_frame_list (const octave_map& stack)
+static std::list<frame_info>
+make_stack_frame_list_intern (const octave_map& stack)
 {
   std::list<frame_info> frames;
 
@@ -414,6 +415,25 @@ error_system::make_stack_frame_list (const octave_map& stack)
                                   column(i).int_value ()));
 
   return frames;
+}
+
+std::list<frame_info>
+error_system::make_stack_frame_list (const octave_map& stack,
+                                     const std::string& who)
+{
+  if (! (stack.contains ("file") && stack.contains ("name")
+         && stack.contains ("line")))
+    error ("%s: STACK struct must contain the fields 'file', 'name', and 'line'",
+           who.c_str ());
+
+  if (! stack.contains ("column"))
+    {
+      octave_map stack1 (stack);  // copy before modification
+      stack1.setfield ("column", Cell (octave_value (-1)));
+      return make_stack_frame_list_intern (stack1);
+    }
+  else
+    return make_stack_frame_list_intern (stack);
 }
 
 // For given warning ID, return 0 if warnings are disabled, 1 if
@@ -622,22 +642,7 @@ error_system::rethrow_error (const std::string& id,
   execution_exception ee ("error", id, msg, stack_info);
 
   if (! stack.isempty ())
-    {
-      if (! (stack.contains ("file") && stack.contains ("name")
-             && stack.contains ("line")))
-        error ("rethrow: STACK struct must contain the fields 'file', 'name', and 'line'");
-
-      if (! stack.contains ("column"))
-        {
-          octave_map new_stack = stack;
-
-          new_stack.setfield ("column", Cell (octave_value (-1)));
-
-          ee.set_stack_info (make_stack_frame_list (new_stack));
-        }
-      else
-        ee.set_stack_info (make_stack_frame_list (stack));
-    }
+    ee.set_stack_info (make_stack_frame_list (stack, "rethrow"));
 
   throw_error (ee);
 }
@@ -1308,25 +1313,28 @@ disable escape sequence expansion use a second backslash before the sequence
         {
           octave_value c = m.getfield ("message");
 
-          if (c.is_string ())
-            message = c.string_value ();
+          if (! c.isempty ())
+            message = c.xstring_value ("error: MESSAGE must be a string");
         }
 
       if (m.contains ("identifier"))
         {
           octave_value c = m.getfield ("identifier");
 
-          if (c.is_string ())
-            id = c.string_value ();
+          if (! c.isempty ())
+            id = c.xstring_value ("error: IDENTIFIER must be a string");
         }
 
       if (m.contains ("stack"))
         {
           octave_value c = m.getfield ("stack");
 
-          if (c.isstruct ())
-            stack_info
-              = error_system::make_stack_frame_list (c.map_value ());
+          if (! c.isempty ())
+            {
+              octave_map stack = c.xmap_value ("error: STACK must be a structure");
+              stack_info = error_system::make_stack_frame_list (stack,
+                                                                "error");
+            }
         }
     }
   else
@@ -1368,6 +1376,64 @@ disable escape sequence expansion use a second backslash before the sequence
 
   return retval;
 }
+
+/*
+%!error <some message>
+%! error ('some message');
+
+%!error <some message>
+%! error ('my:err', 'some message');
+
+%!error id=my:err
+%! error ('my:err', 'some message');
+
+%!error <some message>
+%! err.identifier = 'my:err';
+%! err.message = 'some message';
+%! error (err);
+
+%!error id=my:err
+%! err.identifier = 'my:err';
+%! err.message = 'some message';
+%! error (err);
+
+%!error <MESSAGE must be a string> error ({1});
+
+%!error <MESSAGE must be a string>
+%! err.message = struct ();
+%! error (err);
+
+%!error <IDENTIFIER must be a string>
+%! err.identifier = struct ();
+%! err.message = 'some message';
+%! error (err);
+
+%!error <STACK must be a structure>
+%! err.identifier = 'my:err';
+%! err.message = 'some message';
+%! err.stack = 5;
+%! error (err);
+
+## bug #67143
+%!error <some message>
+%! err.identifier = 'my:err';
+%! err.message = 'some message';
+%! err.stack = struct ('file', '', 'name', 'my function', 'line', 0);
+%! error (err);
+
+%!error id=my:err
+%! err.identifier = 'my:err';
+%! err.message = 'some message';
+%! err.stack = struct ('file', '', 'name', 'my function', 'line', 0, ...
+%!                     'column', 0);
+%! error (err);
+
+%!error <must contain .*file>
+%! err.identifier = 'my:err';
+%! err.message = 'some message';
+%! err.stack = struct ('name', 'my function', 'line', 0);
+%! error (err);
+*/
 
 DEFMETHOD (warning, interp, args, nargout,
            doc: /* -*- texinfo -*-

@@ -116,6 +116,7 @@ jobs:
         run: GNULIB_URL=https://github.com/coreutils/gnulib.git ./bootstrap
 
       - name: configure
+        id: configure
         timeout-minutes: 30
         env:
           MY_CPPFLAGS: ${{ matrix.cppflags }}

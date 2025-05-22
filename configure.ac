@@ -1227,8 +1227,8 @@ if test $octave_cv_overload_char_int8_t = yes; then
     [Define to 1 if C++ allows overload of char, int8_t, and uint8_t types.])
 fi
 
-## Check for MIPS-specific non-standard encoding of NaN value
-OCTAVE_MIPS_NAN
+## Check whether encoding of quiet NaN value is conformant to IEEE 754-2008
+OCTAVE_IEEE754_QNAN
 
 ### Checks for functions and variables.
 

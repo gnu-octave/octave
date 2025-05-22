@@ -218,3 +218,13 @@
 ## This is bug #66930.
 %!error <duplicate method>   A = class_bug66930A ([1 2 3], 3);
 %!error <duplicate property> B = class_bug66930B ([1 2 3], 3);
+
+## duplicate definitions of methods in parent classes (bug #50011)
+%!error <method .* conflicting>
+%! cls_50011 = class_bug50011_1 ();
+%! cls_50011.m_c ();
+
+## duplicate definitions of properties in parent classes (bug #50011)
+%!error <property .* conflicting>
+%! cls_50011 = class_bug50011_2 ();
+%! cls_50011.m_c ();

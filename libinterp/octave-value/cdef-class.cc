@@ -112,6 +112,8 @@ cdef_class::cdef_class_rep::find_method (const std::string& nm, bool local)
       // Look into superclasses
 
       Cell super_classes = get ("SuperClasses").cell_value ();
+      cdef_class cls1;
+      int nfnd = 0;
 
       for (int i = 0; i < super_classes.numel (); i++)
         {
@@ -120,8 +122,22 @@ cdef_class::cdef_class_rep::find_method (const std::string& nm, bool local)
           cdef_method meth = cls.find_method (nm);
 
           if (meth.ok ())
-            return meth;
+            {
+              nfnd++;
+              if (nfnd == 1)
+                cls1 = cls;
+              else if (nfnd == 2)
+                // FIXME: This error is emitted when a method with conflicting
+                //        definitions is attempted to be used. Ideally, this
+                //        error would be emitted on construction of the object.
+                error ("method %s: conflicting definitions in classes '%s' and '%s'",
+                       nm.c_str (), cls1.get_name ().c_str (),
+                       cls.get_name ().c_str ());
+            }
         }
+
+      if (nfnd == 1)
+        return cls1.find_method (nm);
     }
 
   return cdef_method ();
@@ -379,6 +395,8 @@ cdef_class::cdef_class_rep::find_property (const std::string& nm)
   // Look into superclasses
 
   Cell super_classes = get ("SuperClasses").cell_value ();
+  cdef_class cls1;
+  int nfnd = 0;
 
   for (int i = 0; i < super_classes.numel (); i++)
     {
@@ -387,8 +405,22 @@ cdef_class::cdef_class_rep::find_property (const std::string& nm)
       cdef_property prop = cls.find_property (nm);
 
       if (prop.ok ())
-        return prop;
-    }
+        {
+          nfnd++;
+          if (nfnd == 1)
+            cls1 = cls;
+          else if (nfnd == 2)
+            // FIXME: This error is emitted when a property with conflicting
+            //        definitions is attempted to be used. Ideally, this
+            //        error would be emitted on construction of the object.
+            error ("property %s: conflicting definitions in classes '%s' and '%s'",
+                   nm.c_str (), cls1.get_name ().c_str (),
+                   cls.get_name ().c_str ());
+        }
+     }
+
+  if (nfnd == 1)
+    return cls1.find_property (nm);
 
   return cdef_property ();
 }

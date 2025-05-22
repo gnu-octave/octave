@@ -173,6 +173,7 @@ jobs:
         run: GNULIB_URL=https://github.com/coreutils/gnulib.git ./bootstrap
 
       - name: configure
+        id: configure
         # configure sometimes hangs while compiling 32bit Fortran.
         # It should take much less than 30 minutes. Cancel the step if it takes longer.
         timeout-minutes: 30

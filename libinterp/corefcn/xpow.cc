@@ -1263,7 +1263,7 @@ elem_xpow (const NDArray& a, const NDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+      if (! is_valid_bsxfun (a_dims, b_dims))
         octave::err_nonconformant ("operator .^", a_dims, b_dims);
 
       // Potentially complex results
@@ -1346,7 +1346,7 @@ elem_xpow (const NDArray& a, const ComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+      if (! is_valid_bsxfun (a_dims, b_dims))
         octave::err_nonconformant ("operator .^", a_dims, b_dims);
 
       return bsxfun_pow (a, b);
@@ -1441,7 +1441,7 @@ elem_xpow (const ComplexNDArray& a, const NDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+      if (! is_valid_bsxfun (a_dims, b_dims))
         octave::err_nonconformant ("operator .^", a_dims, b_dims);
 
       return bsxfun_pow (a, b);
@@ -1486,7 +1486,7 @@ elem_xpow (const ComplexNDArray& a, const ComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+      if (! is_valid_bsxfun (a_dims, b_dims))
         octave::err_nonconformant ("operator .^", a_dims, b_dims);
 
       return bsxfun_pow (a, b);
@@ -2583,7 +2583,7 @@ elem_xpow (const FloatNDArray& a, const FloatNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+      if (! is_valid_bsxfun (a_dims, b_dims))
         octave::err_nonconformant ("operator .^", a_dims, b_dims);
 
       // Potentially complex results
@@ -2666,7 +2666,7 @@ elem_xpow (const FloatNDArray& a, const FloatComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+      if (! is_valid_bsxfun (a_dims, b_dims))
         octave::err_nonconformant ("operator .^", a_dims, b_dims);
 
       return bsxfun_pow (a, b);
@@ -2761,7 +2761,7 @@ elem_xpow (const FloatComplexNDArray& a, const FloatNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+      if (! is_valid_bsxfun (a_dims, b_dims))
         octave::err_nonconformant ("operator .^", a_dims, b_dims);
 
       return bsxfun_pow (a, b);
@@ -2806,7 +2806,7 @@ elem_xpow (const FloatComplexNDArray& a, const FloatComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+      if (! is_valid_bsxfun (a_dims, b_dims))
         octave::err_nonconformant ("operator .^", a_dims, b_dims);
 
       return bsxfun_pow (a, b);

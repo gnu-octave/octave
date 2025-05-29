@@ -706,7 +706,7 @@
     const dim_vector& b_dims = b.dims ();                       \
     if (a_dims != b_dims)                                       \
       {                                                         \
-        if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))  \
+        if (! is_valid_bsxfun (a_dims, b_dims))                 \
           octave::err_nonconformant ("operator .^", a_dims, b_dims);    \
                                                                 \
         return bsxfun_pow (a, b);                               \
@@ -727,7 +727,7 @@
     const dim_vector& b_dims = b.dims ();                       \
     if (a_dims != b_dims)                                       \
       {                                                         \
-        if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))  \
+        if (! is_valid_bsxfun (a_dims, b_dims))                 \
           octave::err_nonconformant ("operator .^", a_dims, b_dims);    \
                                                                 \
         return bsxfun_pow (a, b);                               \
@@ -748,7 +748,7 @@
     const dim_vector& b_dims = b.dims ();                       \
     if (a_dims != b_dims)                                       \
       {                                                         \
-        if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))  \
+        if (! is_valid_bsxfun (a_dims, b_dims))                 \
           octave::err_nonconformant ("operator .^", a_dims, b_dims);    \
                                                                 \
         return bsxfun_pow (a, b);                               \
@@ -769,7 +769,7 @@
     const dim_vector& b_dims = b.dims ();                       \
     if (a_dims != b_dims)                                       \
       {                                                         \
-        if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))  \
+        if (! is_valid_bsxfun (a_dims, b_dims))                 \
           octave::err_nonconformant ("operator .^", a_dims, b_dims);    \
                                                                 \
         return bsxfun_pow (a, b);                               \
@@ -790,7 +790,7 @@
     const dim_vector& b_dims = b.dims ();                       \
     if (a_dims != b_dims)                                       \
       {                                                         \
-        if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))  \
+        if (! is_valid_bsxfun (a_dims, b_dims))                 \
           octave::err_nonconformant ("operator .^", a_dims, b_dims);    \
                                                                 \
         return bsxfun_pow (a, b);                               \

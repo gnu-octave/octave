@@ -49,188 +49,85 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-static Matrix
-chol2inv_internal (const Matrix& r, bool is_upper = true)
+static inline void
+blas_potri (const F77_INT& n, Matrix& r, F77_INT& info, bool is_upper)
 {
-  Matrix retval;
-
-  octave_idx_type r_nr = r.rows ();
-  octave_idx_type r_nc = r.cols ();
-
-  if (r_nr != r_nc)
-    (*current_liboctave_error_handler) ("chol2inv requires square matrix");
-
-  F77_INT n = to_f77_int (r_nc);
-  F77_INT info;
-
-  Matrix tmp = r;
-  double *v = tmp.rwdata ();
-
-  if (is_upper)
-    F77_XFCN (dpotri, DPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
-                               v, n, info
-                               F77_CHAR_ARG_LEN (1)));
-  else
-    F77_XFCN (dpotri, DPOTRI, (F77_CONST_CHAR_ARG2 ("L", 1), n,
-                               v, n, info
-                               F77_CHAR_ARG_LEN (1)));
-
-  // FIXME: Should we check info exit value and possibly report an error?
-
-  // If someone thinks of a more graceful way of doing this
-  // (or faster for that matter :-)), please let me know!
-
-  if (n > 1)
-    {
-      if (is_upper)
-        for (octave_idx_type j = 0; j < r_nc; j++)
-          for (octave_idx_type i = j+1; i < r_nr; i++)
-            tmp.xelem (i, j) = tmp.xelem (j, i);
-      else
-        for (octave_idx_type j = 0; j < r_nc; j++)
-          for (octave_idx_type i = j+1; i < r_nr; i++)
-            tmp.xelem (j, i) = tmp.xelem (i, j);
-    }
-
-  retval = tmp;
-
-  return retval;
+  const char *str = is_upper ? "U" : "L";
+  F77_FUNC (dpotri, DPOTRI) (F77_CONST_CHAR_ARG2 (str, 1), n, r.rwdata (), n,
+                             info F77_CHAR_ARG_LEN (1));
 }
 
-static FloatMatrix
-chol2inv_internal (const FloatMatrix& r, bool is_upper = true)
+static inline void
+blas_potri (const F77_INT& n, FloatMatrix& r, F77_INT& info, bool is_upper)
 {
-  FloatMatrix retval;
-
-  octave_idx_type r_nr = r.rows ();
-  octave_idx_type r_nc = r.cols ();
-
-  if (r_nr != r_nc)
-    (*current_liboctave_error_handler) ("chol2inv requires square matrix");
-
-  F77_INT n = to_f77_int (r_nc);
-  F77_INT info;
-
-  FloatMatrix tmp = r;
-  float *v = tmp.rwdata ();
-
-  if (is_upper)
-    F77_XFCN (spotri, SPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
-                               v, n, info
-                               F77_CHAR_ARG_LEN (1)));
-  else
-    F77_XFCN (spotri, SPOTRI, (F77_CONST_CHAR_ARG2 ("L", 1), n,
-                               v, n, info
-                               F77_CHAR_ARG_LEN (1)));
-
-  // FIXME: Should we check info exit value and possibly report an error?
-
-  // If someone thinks of a more graceful way of doing this (or
-  // faster for that matter :-)), please let me know!
-
-  if (n > 1)
-    {
-      if (is_upper)
-        for (octave_idx_type j = 0; j < r_nc; j++)
-          for (octave_idx_type i = j+1; i < r_nr; i++)
-            tmp.xelem (i, j) = tmp.xelem (j, i);
-      else
-        for (octave_idx_type j = 0; j < r_nc; j++)
-          for (octave_idx_type i = j+1; i < r_nr; i++)
-            tmp.xelem (j, i) = tmp.xelem (i, j);
-    }
-
-  retval = tmp;
-
-  return retval;
+  const char *str = is_upper ? "U" : "L";
+  F77_FUNC (spotri, SPOTRI) (F77_CONST_CHAR_ARG2 (str, 1), n, r.rwdata (), n,
+                             info F77_CHAR_ARG_LEN (1));
 }
 
-static ComplexMatrix
-chol2inv_internal (const ComplexMatrix& r, bool is_upper = true)
+static inline void
+blas_potri (const F77_INT& n, ComplexMatrix& r, F77_INT& info, bool is_upper)
 {
-  ComplexMatrix retval;
-
-  octave_idx_type r_nr = r.rows ();
-  octave_idx_type r_nc = r.cols ();
-
-  if (r_nr != r_nc)
-    (*current_liboctave_error_handler) ("chol2inv requires square matrix");
-
-  F77_INT n = to_f77_int (r_nc);
-  F77_INT info;
-
-  ComplexMatrix tmp = r;
-
-  if (is_upper)
-    F77_XFCN (zpotri, ZPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
-                               F77_DBLE_CMPLX_ARG (tmp.rwdata ()), n, info
-                               F77_CHAR_ARG_LEN (1)));
-  else
-    F77_XFCN (zpotri, ZPOTRI, (F77_CONST_CHAR_ARG2 ("L", 1), n,
-                               F77_DBLE_CMPLX_ARG (tmp.rwdata ()), n, info
-                               F77_CHAR_ARG_LEN (1)));
-
-  // If someone thinks of a more graceful way of doing this (or
-  // faster for that matter :-)), please let me know!
-
-  if (n > 1)
-    {
-      if (is_upper)
-        for (octave_idx_type j = 0; j < r_nc; j++)
-          for (octave_idx_type i = j+1; i < r_nr; i++)
-            tmp.xelem (i, j) = std::conj (tmp.xelem (j, i));
-      else
-        for (octave_idx_type j = 0; j < r_nc; j++)
-          for (octave_idx_type i = j+1; i < r_nr; i++)
-            tmp.xelem (j, i) = std::conj (tmp.xelem (i, j));
-    }
-
-  retval = tmp;
-
-  return retval;
+  const char *str = is_upper ? "U" : "L";
+  F77_FUNC (zpotri, ZPOTRI) (F77_CONST_CHAR_ARG2 (str, 1), n,
+                             F77_DBLE_CMPLX_ARG (r.rwdata ()), n, info
+                             F77_CHAR_ARG_LEN (1));
 }
 
-static FloatComplexMatrix
-chol2inv_internal (const FloatComplexMatrix& r, bool is_upper = true)
+static inline void
+blas_potri (const F77_INT& n, FloatComplexMatrix& r, F77_INT& info, bool is_upper)
 {
-  FloatComplexMatrix retval;
+  const char *str = is_upper ? "U" : "L";
+  F77_FUNC (cpotri, CPOTRI) (F77_CONST_CHAR_ARG2 (str, 1), n,
+                             F77_CMPLX_ARG (r.rwdata ()), n, info
+                             F77_CHAR_ARG_LEN (1));
+}
 
-  octave_idx_type r_nr = r.rows ();
-  octave_idx_type r_nc = r.cols ();
+template <typename T>
+static T
+chol2inv_internal (const T& r, bool is_upper = true)
+{
+  octave_idx_type nr = r.rows ();
+  octave_idx_type nc = r.cols ();
 
-  if (r_nr != r_nc)
+  if (nr != nc)
     (*current_liboctave_error_handler) ("chol2inv requires square matrix");
 
-  F77_INT n = to_f77_int (r_nc);
+  F77_INT n = to_f77_int (nc);
   F77_INT info;
 
-  FloatComplexMatrix tmp = r;
-
-  if (is_upper)
-    F77_XFCN (cpotri, CPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
-                               F77_CMPLX_ARG (tmp.rwdata ()), n, info
-                               F77_CHAR_ARG_LEN (1)));
-  else
-    F77_XFCN (cpotri, CPOTRI, (F77_CONST_CHAR_ARG2 ("L", 1), n,
-                               F77_CMPLX_ARG (tmp.rwdata ()), n, info
-                               F77_CHAR_ARG_LEN (1)));
-
-  // If someone thinks of a more graceful way of doing this (or
-  // faster for that matter :-)), please let me know!
+  T retval = r;
+  blas_potri (n, retval, info, is_upper);
+  // FIXME: Error based on value of info?
 
   if (n > 1)
     {
-      if (is_upper)
-        for (octave_idx_type j = 0; j < r_nc; j++)
-          for (octave_idx_type i = j+1; i < r_nr; i++)
-            tmp.xelem (i, j) = std::conj (tmp.xelem (j, i));
-      else
-        for (octave_idx_type j = 0; j < r_nc; j++)
-          for (octave_idx_type i = j+1; i < r_nr; i++)
-            tmp.xelem (j, i) = std::conj (tmp.xelem (i, j));
+      // If someone thinks of a more graceful way of doing this
+      // (or faster for that matter :-)), please let me know!
+      if constexpr (std::is_same<T, ComplexMatrix>::value
+                    || std::is_same<T, FloatComplexMatrix>::value)
+        {
+          if (is_upper)
+            for (octave_idx_type j = 0; j < nc; j++)
+              for (octave_idx_type i = j+1; i < nr; i++)
+                retval.xelem (i, j) = std::conj (retval.xelem (j, i));
+          else
+            for (octave_idx_type j = 0; j < nc; j++)
+              for (octave_idx_type i = j+1; i < nr; i++)
+                retval.xelem (j, i) = std::conj (retval.xelem (i, j));
+        }
+      else  // not complex type ==> don't need std::conj.
+        {
+          if (is_upper)
+            for (octave_idx_type j = 0; j < nc; j++)
+              for (octave_idx_type i = j+1; i < nr; i++)
+                retval.xelem (i, j) = retval.xelem (j, i);
+          else
+            for (octave_idx_type j = 0; j < nc; j++)
+              for (octave_idx_type i = j+1; i < nr; i++)
+                retval.xelem (j, i) = retval.xelem (i, j);
+        }
     }
-
-  retval = tmp;
 
   return retval;
 }
@@ -241,7 +138,7 @@ template <typename T>
 T
 chol2inv (const T& r)
 {
-  return chol2inv_internal (r);
+  return chol2inv_internal<T> (r);
 }
 
 // Compute the inverse of a matrix using the Cholesky factorization.
@@ -249,7 +146,7 @@ template <typename T>
 T
 chol<T>::inverse () const
 {
-  return chol2inv_internal (m_chol_mat, m_is_upper);
+  return chol2inv_internal<T> (m_chol_mat, m_is_upper);
 }
 
 template <typename T>

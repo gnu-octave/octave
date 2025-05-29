@@ -39,6 +39,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The function `zscore` now accepts the optional arguments `"all"` or `vecdim`,
   and `"omitnan"`.
 
+- The warning `"Octave:language-extension"` is no longer emitted for automatic
+  broadcasting which Matlab has supported since version 2016B.
+
 ### Alphabetical list of new functions added in Octave 11
 
 * `corrcov`

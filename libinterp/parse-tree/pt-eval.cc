@@ -419,8 +419,6 @@ debugger::repl (const std::string& prompt_arg)
               std::string prompt
                 = command_editor::decode_prompt_string (tmp_prompt);
 
-              input_system& input_sys = m_interpreter.get_input_system ();
-
               bool auto_repeat_state = input_sys.auto_repeat_debug_command ();
 
               unwind_action restore_auto_repeat_debugging_command ([&input_sys, auto_repeat_state] () { input_sys.auto_repeat_debug_command (auto_repeat_state); });

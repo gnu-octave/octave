@@ -516,7 +516,7 @@ do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
       op (r.numel (), r.rwdata (), x.data (), y.data ());
       return r;
     }
-  else if (is_valid_bsxfun (opname, dx, dy))
+  else if (is_valid_bsxfun (dx, dy))
     {
       return do_bsxfun_op (x, y, op, op1, op2);
     }
@@ -555,7 +555,7 @@ do_mm_inplace_op (Array<R>& r, const Array<X>& x,
   const dim_vector& dx = x.dims ();
   if (dr == dx)
     op (r.numel (), r.rwdata (), x.data ());
-  else if (is_valid_inplace_bsxfun (opname, dr, dx))
+  else if (is_valid_inplace_bsxfun (dr, dx))
     do_inplace_bsxfun_op (r, x, op, op1);
   else
     octave::err_nonconformant (opname, dr, dx);

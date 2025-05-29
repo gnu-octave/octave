@@ -36,8 +36,7 @@
 
 inline
 bool
-is_valid_bsxfun (const std::string& name,
-                 const dim_vector& xdv, const dim_vector& ydv)
+is_valid_bsxfun (const dim_vector& xdv, const dim_vector& ydv)
 {
   for (int i = 0; i < std::min (xdv.ndims (), ydv.ndims ()); i++)
     {
@@ -48,10 +47,6 @@ is_valid_bsxfun (const std::string& name,
         return false;
     }
 
-  (*current_liboctave_warning_with_id_handler)
-    ("Octave:language-extension", "performing '%s' automatic broadcasting",
-     name.c_str ());
-
   return true;
 }
 
@@ -60,8 +55,7 @@ is_valid_bsxfun (const std::string& name,
 // alters the conditions to check.
 inline
 bool
-is_valid_inplace_bsxfun (const std::string& name,
-                         const dim_vector& rdv, const dim_vector& xdv)
+is_valid_inplace_bsxfun (const dim_vector& rdv, const dim_vector& xdv)
 {
   octave_idx_type r_nd = rdv.ndims ();
   octave_idx_type x_nd = xdv.ndims ();
@@ -77,10 +71,6 @@ is_valid_inplace_bsxfun (const std::string& name,
       if ((rk != xk) && xk != 1)
         return false;
     }
-
-  (*current_liboctave_warning_with_id_handler)
-    ("Octave:language-extension", "performing '%s' automatic broadcasting",
-     name.c_str ());
 
   return true;
 }

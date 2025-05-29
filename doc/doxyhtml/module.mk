@@ -1,7 +1,7 @@
 # Generate README.md from README and replace first line by a Doxygen
 # specific one.
 %reldir%/pages/README.md: $(srcdir)/README
-	$(MKDIR_P) $(@D)
+	$(AM_V_GEN)$(MKDIR_P) $(@D) && \
 	cat $< | $(SED) '1s/.*/notitle {#mainpage}/; 2s/.*/=======/' > $@
 
 DOXYGEN_PAGES = \

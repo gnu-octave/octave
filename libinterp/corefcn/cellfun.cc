@@ -1063,9 +1063,25 @@ v = cellfun (@@det, C);         # 40% faster
 ## An error should occur if called function does not return requested outputs
 %!function [a, b] = __counterror (x)
 %!  a = x;
+%!  if x>0
+%!    b = x;
+%!  endif
 %!endfunction
-%!test <66642>
-%! fail ("[a, b] = cellfun (@__counterror, {1, 4})");
+%!test <66642> # First call returns fewer outputs
+%! fail ("[a, b] = cellfun (@__counterror, {-1, 4})");
+%!test <66642> # Subsequent call returns fewer outputs
+%! fail ("[a, b] = cellfun (@__counterror, {1, -4})");
+%!test <66642> # Non-uniform output
+%! fail ("[a, b] = cellfun (@__counterror, {1, -4}, 'UniformOutput', false)");
+%!test <66642> # It's OK to return more outputs than requested
+%! a = cellfun (@__counterror, {1, -4});
+%! assert (a, [1, -4])
+%! a = cellfun (@__counterror, {-1, 4});
+%! assert (a, [-1, 4])
+%! cellfun (@__counterror, {-1, 4});
+%! assert (ans, [-1, 4]);
+%! cellfun (@__counterror, {1, -4});
+%! assert (ans, [1, -4]);
 
 ## Test input validation
 %!error <Invalid call> cellfun (1)
@@ -1723,9 +1739,25 @@ arrayfun (@@str2num, [1234],
 ## An error should occur if called function does not return requested outputs
 %!function [a, b] = __counterror (x)
 %!  a = x;
+%!  if x>0
+%!    b = x;
+%!  endif
 %!endfunction
-%!test <66642>
-%! fail ("[a, b] = arrayfun (@__counterror, [1, 4])");
+%!test <66642> # First call returns fewer outputs
+%! fail ("[a, b] = arrayfun (@__counterror, [-1, 4])");
+%!test <66642> # Subsequent call returns fewer outputs
+%! fail ("[a, b] = arrayfun (@__counterror, [1, -4])");
+%!test <66642> # Non-uniform output
+%! fail ("[a, b] = arrayfun (@__counterror, [1, -4], 'UniformOutput', false)");
+%!test <66642> # It's OK to return more outputs than requested
+%! a = arrayfun (@__counterror, [1, -4]);
+%! assert (a, [1, -4])
+%! a = arrayfun (@__counterror, [-1, 4]);
+%! assert (a, [-1, 4])
+%! arrayfun (@__counterror, [-1, 4]);
+%! assert (ans, [-1, 4]);
+%! arrayfun (@__counterror, [1, -4]);
+%! assert (ans, [1, -4]);
 */
 
 static void

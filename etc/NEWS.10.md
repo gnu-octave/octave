@@ -37,6 +37,9 @@ Summary of bugs fixed for version 10.2.0 (tbd):
 - `octave-svgconvert`: Speed up printing to PDF (bug #66959).
 - `error`: Fix segmentation fault on missing fields in `err.stack` structure
   (bug #67143).
+- Avoid parse error for empty lines in debug mode (bug #67108).
+- Check if effective SOVERSION is exported from .mex file libraries
+  (bug #67163).
 
 ### GUI
 
@@ -49,13 +52,14 @@ Summary of bugs fixed for version 10.2.0 (tbd):
 
 - Add visibility attributes for the `octave::base_fcn_handle` class.
 - Add visibility attributes to parse tree symbols (bug #67056).
-- Add visibility attributes to Array<T> template class member functions.
-- Use correct preprocessor macro when instantiating MArray template class.
+- Add visibility attributes to `Array<T>` template class member functions.
+- Use correct preprocessor macro when instantiating `MArray` template class.
 - Disable visibility flags by default.
 - Support passing additional flags when linking `octave*` executables.
 - Single-quote path that might contain unescaped backslashes in the generation
   of the doc cache.
-- Ignore deprecation warning for std::wbuffer_convert in header.
+- Ignore deprecation warning for `std::wbuffer_convert` in header.
+- `error`: Add more built-in self-tests.
 
 ### Documentation
 
@@ -77,6 +81,7 @@ Summary of bugs fixed for version 10.2.0 (tbd):
 - Remove outdated text on range arithmetic from manual.
 - Examples: Add missing namespace `octave` when calling built-in function in
   `standalonebuiltin.cc`.
+- Document calling `error()` with structure input (bug #67143).
 
 
 Summary of important user-visible changes for version 10 (2025-03-28):

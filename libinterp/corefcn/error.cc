@@ -203,7 +203,7 @@ maybe_extract_message_id (const std::string& caller,
 
   if (nargin > 0)
     {
-      std::string arg1 = args(0).xstring_value ("%s: MESSAGE must be a string or error structure",
+      std::string arg1 = args(0).xstring_value ("%s: MESSAGE must be a string",
                                                 caller.c_str ());
 
       // For compatibility with Matlab, an identifier must contain ':',
@@ -1178,26 +1178,27 @@ error.  Typically @var{err} is returned from @code{lasterror}.
 
 DEFMETHOD (error, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} error (@var{template}, @dots{})
+@deftypefn  {} {} error (@var{msg})
+@deftypefnx {} {} error (@var{template}, @dots{})
 @deftypefnx {} {} error (@var{id}, @var{template}, @dots{})
+@deftypefnx {} {} error (@var{errstruct})
 Display an error message and stop m-file execution.
 
-Format the optional arguments under the control of the template string
-@var{template} using the same rules as the @code{printf} family of
-functions (@pxref{Formatted Output}) and print the resulting message
-on the @code{stderr} stream.  This formatting is only done for
-single-quoted character vectors if there are additional arguments
-following the template string.  If there are no additional arguments, the
-template string is used literally (i.e., without interpreting any escape
-sequences in single-quoted character vectors).  The message is prefixed
-by @samp{error: }.
+The input @var{msg} is a simple string to which the text @samp{error: } is
+prepended.  The resulting message is printed on the @code{stderr} stream.
+Alternatively, the first input may be a template string @var{template} which
+uses the same rules as the @code{printf} family of functions (@pxref{Formatted
+Output}).  Formatting is only done for single-quoted character vectors if there
+are additional arguments following the template string.  If there are no
+additional arguments, the template string is used literally (i.e., without
+interpreting any escape sequences in single-quoted character vectors).
 
 The optional @var{id} argument allows programmers to tag an error
 with a specific identifier so that users can later retrieve it (using
 @code{lasterr} or @code{lasterror}) and know the origin of the error.
 The identifier must contain at least one colon character (@qcode{':'})
 and must not contain any whitespace characters.  It should be a string of
-the form @qcode{"NAMESPACE:ERROR-NAME"}.  Octave's own errors use the
+the form @qcode{"NAMESPACE:ERROR-NAME"}@.  Octave's own errors use the
 @qcode{"Octave"} namespace (@pxref{XREFerror_ids,,@code{error_ids}}).
 For example:
 
@@ -1274,6 +1275,13 @@ error (err_msg);
 @noindent
 which will only stop execution if an error has been found.
 
+The function may also be called with an error structure such as that returned
+from @code{lasterror}.  The @var{errstruct} argument must contain fields
+@code{message}, @code{identifier}, and @code{stack}.  The first two fields are
+strings with the meanings discussed above.  The @code{stack} field must be a
+structure or structure array with fields @code{file}, @code{name}, and
+@code{line}.
+
 Implementation Note: For compatibility with @sc{matlab}, escape
 sequences in @var{template} (e.g., @qcode{"@backslashchar{}n"} =>
 newline) are processed regardless of whether @var{template} has been defined
@@ -1303,13 +1311,16 @@ disable escape sequence expansion use a second backslash before the sequence
       if (args(0).isempty ())
         return retval;
 
-      octave_scalar_map m = args(0).scalar_map_value ();
+      octave_scalar_map m = args(0).xscalar_map_value ("ERRSTRUCT must be a scalar structure with fields 'message' and 'identifier'");
 
       // empty struct is not an error.  return and resume calling function.
       if (m.nfields () == 0)
         return retval;
 
-      if (m.contains ("message"))
+      if (! m.contains ("message"))
+        error_with_id ("Octave:invalid-input-arg",
+                       "error: ERRSTRUCT must have field 'message'");
+      else
         {
           octave_value c = m.getfield ("message");
 
@@ -1317,7 +1328,10 @@ disable escape sequence expansion use a second backslash before the sequence
             message = c.xstring_value ("error: MESSAGE must be a string");
         }
 
-      if (m.contains ("identifier"))
+      if (! m.contains ("identifier"))
+        error_with_id ("Octave:invalid-input-arg",
+                       "error: ERRSTRUCT must have field 'identifier'");
+      else
         {
           octave_value c = m.getfield ("identifier");
 
@@ -1378,61 +1392,93 @@ disable escape sequence expansion use a second backslash before the sequence
 }
 
 /*
-%!error <some message>
-%! error ('some message');
+%!error <error message 1>
+%! error ('error message 1');
 
-%!error <some message>
-%! error ('my:err', 'some message');
+%!error <error message 2>
+%! error ('my:error_id_2', 'error message 2');
 
-%!error id=my:err
-%! error ('my:err', 'some message');
+%!error id=my:error_id_3
+%! error ('my:error_id_3', 'error message 3');
 
-%!error <some message>
-%! err.identifier = 'my:err';
-%! err.message = 'some message';
-%! error (err);
+%!error <error message 4>
+%! serr.message = 'error message 4';
+%! serr.identifier = 'my:error_id_4';
+%! error (serr);
 
-%!error id=my:err
-%! err.identifier = 'my:err';
-%! err.message = 'some message';
-%! error (err);
+%!error id=my:error_id_5
+%! serr.message = 'error message 5';
+%! serr.identifier = 'my:error_id_5';
+%! error (serr);
+
+## bug #67143
+%!error <error message 6>
+%! serr.identifier = 'my:error_id_6';
+%! serr.message = 'error message 6';
+%! serr.stack = struct ('file', 'myfile', 'name', 'myfcn', 'line', 0);
+%! error (serr);
+
+%!error id=my:error_id_7
+%! serr.identifier = 'my:error_id_7';
+%! serr.message = 'error message 7';
+%! serr.stack = struct ('file', 'myfile', 'name', 'myfcn', 'line', 0, ...
+%!                      'column', 0);
+%! error (serr);
+
+## Test input validation
+############################################################
+%!error <Invalid call> error ()
+
+%!error <ERRSTRUCT must be a scalar structure>
+%! serr(1).message = 'msg1';
+%! serr(1).identifier = 'id1';
+%! serr(2).message = 'msg2';
+%! serr(2).identifier = 'id2';
+%! error (serr);
+
+%!error <ERRSTRUCT must have field 'message'>
+%! serr.identifier = 'id';
+%! error (serr);
+
+%!error <MESSAGE must be a string>
+%! serr.message = {1};
+%! error (serr);
+
+%!error <ERRSTRUCT must have field 'identifier'>
+%! serr.message = 'msg';
+%! error (serr);
+
+%!error <IDENTIFIER must be a string>
+%! serr.message = 'msg';
+%! serr.identifier = {1};
+%! error (serr);
+
+%!error <STACK must be a structure>
+%! serr.message = 'msg';
+%! serr.identifier = 'id';
+%! serr.stack = 5;
+%! error (serr);
+
+%!error <STACK struct must contain the fields 'file'>
+%! serr.message = 'msg';
+%! serr.identifier = 'id';
+%! serr.stack = struct ('name', 'myfcn', 'line', 0);
+%! error (serr);
+
+%!error <STACK struct must contain the fields .* 'name'>
+%! serr.message = 'msg';
+%! serr.identifier = 'id';
+%! serr.stack = struct ('file', 'myfile', 'line', 0);
+%! error (serr);
+
+%!error <STACK struct must contain the fields .* 'line'>
+%! serr.message = 'msg';
+%! serr.identifier = 'id';
+%! serr.stack = struct ('file', 'myfile', 'name', 'myfcn');
+%! error (serr);
 
 %!error <MESSAGE must be a string> error ({1});
 
-%!error <MESSAGE must be a string>
-%! err.message = struct ();
-%! error (err);
-
-%!error <IDENTIFIER must be a string>
-%! err.identifier = struct ();
-%! err.message = 'some message';
-%! error (err);
-
-%!error <STACK must be a structure>
-%! err.identifier = 'my:err';
-%! err.message = 'some message';
-%! err.stack = 5;
-%! error (err);
-
-## bug #67143
-%!error <some message>
-%! err.identifier = 'my:err';
-%! err.message = 'some message';
-%! err.stack = struct ('file', '', 'name', 'my function', 'line', 0);
-%! error (err);
-
-%!error id=my:err
-%! err.identifier = 'my:err';
-%! err.message = 'some message';
-%! err.stack = struct ('file', '', 'name', 'my function', 'line', 0, ...
-%!                     'column', 0);
-%! error (err);
-
-%!error <must contain .*file>
-%! err.identifier = 'my:err';
-%! err.message = 'some message';
-%! err.stack = struct ('name', 'my function', 'line', 0);
-%! error (err);
 */
 
 DEFMETHOD (warning, interp, args, nargout,

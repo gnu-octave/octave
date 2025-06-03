@@ -1,4 +1,4 @@
-Summary of bugs fixed for version 10.2.0 (tbd):
+Summary of bugs fixed for version 10.2.0 (2025-05-29):
 -----------------------------------------------------
 
 ## Improvements and fixes

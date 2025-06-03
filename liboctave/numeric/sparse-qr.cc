@@ -43,15 +43,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(math)
 
-#if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
-// Decide once at runtime whether Octave must workaround SuiteSparse library.
-static constexpr bool octave_suitesparse_ptr_size_mismatch
-  = (sizeof (octave_idx_type) != sizeof (SuiteSparse_long));
-
-static constexpr bool suitesparse_integer_long_mismatch
-  = (sizeof (suitesparse_integer) != sizeof (SuiteSparse_long));
-#endif
-
 #if defined (HAVE_CXSPARSE)
 template <typename SPARSE_T>
 class cxsparse_types
@@ -259,24 +250,24 @@ ors2crs (const SparseMatrix& a)
   A.dtype = CHOLMOD_DOUBLE;
   A.nz = nullptr;
   A.z = nullptr;
-  if constexpr (! octave_suitesparse_ptr_size_mismatch)
-    {
-      A.p = reinterpret_cast<SuiteSparse_long *> (a.cidx ());
-      A.i = reinterpret_cast<SuiteSparse_long *> (a.ridx ());
-    }
-  else
-    {
-      SuiteSparse_long *A_p;
-      A_p = new SuiteSparse_long[ncols+1];
-      for (octave_idx_type i = 0; i < ncols+1; i++)
-        A_p[i] = a.cidx (i);
-      A.p = A_p;
-      SuiteSparse_long *A_i;
-      A_i = new SuiteSparse_long[nnz];
-      for (octave_idx_type i = 0; i < nnz; i++)
-        A_i[i] = a.ridx (i);
-      A.i = A_i;
-    }
+
+#  if defined (OCTAVE_SUITESPARSE_LONG_MATCH)
+  A.p = reinterpret_cast<SuiteSparse_long *> (a.cidx ());
+  A.i = reinterpret_cast<SuiteSparse_long *> (a.ridx ());
+#  else
+  SuiteSparse_long *A_p;
+  A_p = new SuiteSparse_long[ncols+1];
+  for (octave_idx_type i = 0; i < ncols+1; i++)
+    A_p[i] = a.cidx (i);
+  A.p = A_p;
+
+  SuiteSparse_long *A_i;
+  A_i = new SuiteSparse_long[nnz];
+  for (octave_idx_type i = 0; i < nnz; i++)
+    A_i[i] = a.ridx (i);
+  A.i = A_i;
+#  endif
+
   A.x = const_cast<double *> (a.data ());
 
   return A;
@@ -303,24 +294,24 @@ ocs2ccs (const SparseComplexMatrix& a)
   A.dtype = CHOLMOD_DOUBLE;
   A.nz = nullptr;
   A.z = nullptr;
-  if constexpr (! octave_suitesparse_ptr_size_mismatch)
-    {
-      A.p = reinterpret_cast<SuiteSparse_long *> (a.cidx ());
-      A.i = reinterpret_cast<SuiteSparse_long *> (a.ridx ());
-    }
-  else
-    {
-      SuiteSparse_long *A_p;
-      A_p = new SuiteSparse_long[ncols+1];
-      for (octave_idx_type i = 0; i < ncols+1; i++)
-        A_p[i] = a.cidx (i);
-      A.p = A_p;
-      SuiteSparse_long *A_i;
-      A_i = new SuiteSparse_long[nnz];
-      for (octave_idx_type i = 0; i < nnz; i++)
-        A_i[i] = a.ridx (i);
-      A.i = A_i;
-    }
+
+#  if defined (OCTAVE_SUITESPARSE_LONG_MATCH)
+  A.p = reinterpret_cast<SuiteSparse_long *> (a.cidx ());
+  A.i = reinterpret_cast<SuiteSparse_long *> (a.ridx ());
+#  else
+  SuiteSparse_long *A_p;
+  A_p = new SuiteSparse_long[ncols+1];
+  for (octave_idx_type i = 0; i < ncols+1; i++)
+    A_p[i] = a.cidx (i);
+  A.p = A_p;
+
+  SuiteSparse_long *A_i;
+  A_i = new SuiteSparse_long[nnz];
+  for (octave_idx_type i = 0; i < nnz; i++)
+    A_i[i] = a.ridx (i);
+  A.i = A_i;
+#  endif
+
   A.x = const_cast<Complex *>
         (reinterpret_cast<const Complex *> (a.data ()));
 
@@ -460,7 +451,7 @@ ors2ccs (const SparseMatrix& a, cholmod_common *cc)
   return A;
 }
 
-#ifdef HAVE_CXSPARSE
+#if defined (HAVE_CXSPARSE) && ! defined (OCTAVE_SUITESPARSE_INTEGER_MATCH)
 static suitesparse_integer
 suitesparse_long_to_suitesparse_integer (SuiteSparse_long x)
 {
@@ -544,11 +535,10 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::sparse_qr_rep
                          &A, &m_R, &m_E, &m_H, &m_HPinv, &m_Htau, &m_cc);
   spqr_error_handler (&m_cc);
 
-  if (octave_suitesparse_ptr_size_mismatch)
-    {
-      delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
-      delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
-    }
+#  if ! defined (OCTAVE_SUITESPARSE_LONG_MATCH)
+  delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
+  delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
+#  endif
 }
 
 #elif defined (HAVE_CXSPARSE)
@@ -948,38 +938,35 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<MArray<double>, Matrix>
   R2.m = ncols;
   R2.nzmax = m_R->nzmax;
   R2.x = reinterpret_cast<double *> (m_R->x);
+#  if defined (OCTAVE_SUITESPARSE_INTEGER_MATCH)
+  R2.p = reinterpret_cast<suitesparse_integer *> (m_R->p);
+  R2.i = reinterpret_cast<suitesparse_integer *> (m_R->i);
+#  else
   suitesparse_integer *R2_p;
+  R2_p = new suitesparse_integer[ncols+1];
+  SuiteSparse_long *R_p = reinterpret_cast<SuiteSparse_long *> (m_R->p);
+  for (octave_idx_type i = 0; i < ncols+1; i++)
+    R2_p[i] = suitesparse_long_to_suitesparse_integer (R_p[i]);
+  R2.p = R2_p;
+
   suitesparse_integer *R2_i;
-  if (! suitesparse_integer_long_mismatch)
-    {
-      R2.p = reinterpret_cast<suitesparse_integer *> (m_R->p);
-      R2.i = reinterpret_cast<suitesparse_integer *> (m_R->i);
-    }
-  else
-    {
-      R2_p = new suitesparse_integer[ncols+1];
-      SuiteSparse_long *R_p = reinterpret_cast<SuiteSparse_long *> (m_R->p);
-      for (octave_idx_type i = 0; i < ncols+1; i++)
-        R2_p[i] = suitesparse_long_to_suitesparse_integer (R_p[i]);
-      R2.p = R2_p;
-      octave_idx_type nnz = from_suitesparse_long (cholmod_l_nnz (m_R, &m_cc));
-      R2_i = new suitesparse_integer[nnz];
-      SuiteSparse_long *R_i = reinterpret_cast<SuiteSparse_long *> (m_R->i);
-      for (octave_idx_type i = 0; i < nnz; i++)
-        R2_i[i] =  suitesparse_long_to_suitesparse_integer (R_i[i]);
-      R2.i = R2_i;
-    }
+  octave_idx_type nnz = from_suitesparse_long (cholmod_l_nnz (m_R, &m_cc));
+  R2_i = new suitesparse_integer[nnz];
+  SuiteSparse_long *R_i = reinterpret_cast<SuiteSparse_long *> (m_R->i);
+  for (octave_idx_type i = 0; i < nnz; i++)
+    R2_i[i] =  suitesparse_long_to_suitesparse_integer (R_i[i]);
+  R2.i = R2_i;
+#  endif
   R2.nz = -1;
   double *x_vec = const_cast<double *> (x.rwdata ());
   suitesparse_integer *E;
-  if (suitesparse_integer_long_mismatch)
-    {
-      E = new suitesparse_integer [ncols];
-      for (octave_idx_type i = 0; i < ncols; i++)
-        E[i] = suitesparse_long_to_suitesparse_integer (m_E[i]);
-    }
-  else
-    E = reinterpret_cast<suitesparse_integer *> (m_E);
+#  if defined (OCTAVE_SUITESPARSE_INTEGER_MATCH)
+  E = reinterpret_cast<suitesparse_integer *> (m_E);
+#  else
+  E = new suitesparse_integer [ncols];
+  for (octave_idx_type i = 0; i < ncols; i++)
+    E[i] = suitesparse_long_to_suitesparse_integer (m_E[i]);
+#  endif
   for (octave_idx_type j = 0; j < b_nc; j++)
     {
       // fill x(:,j)
@@ -992,12 +979,11 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<MArray<double>, Matrix>
        &x_vec[j * ncols], ncols);
     }
 
-  if (suitesparse_integer_long_mismatch)
-    {
-      delete [] R2_p;
-      delete [] R2_i;
-      delete [] E;
-    }
+#  if ! defined (OCTAVE_SUITESPARSE_INTEGER_MATCH)
+  delete [] R2_p;
+  delete [] R2_i;
+  delete [] E;
+#  endif
   cholmod_l_free_dense (&QTB, &m_cc);
 
   info = 0;
@@ -1482,11 +1468,10 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::sparse_qr_rep
                           &m_HPinv, &m_Htau, &m_cc);
   spqr_error_handler (&m_cc);
 
-  if (octave_suitesparse_ptr_size_mismatch)
-    {
-      delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
-      delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
-    }
+#  if ! defined (OCTAVE_SUITESPARSE_LONG_MATCH)
+  delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
+  delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
+#  endif
 }
 
 #elif defined (HAVE_CXSPARSE)
@@ -2806,11 +2791,10 @@ sparse_qr<SparseMatrix>::min2norm_solve<MArray<double>, Matrix>
     xdata[i] = reinterpret_cast<double *> (X->x)[i];
   info = 0;
 
-  if (octave_suitesparse_ptr_size_mismatch)
-    {
-      delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
-      delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
-    }
+#  if ! defined (OCTAVE_SUITESPARSE_LONG_MATCH)
+  delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
+  delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
+#  endif
   cholmod_l_free_dense (&X, &cc);
   cholmod_l_finish (&cc);
 
@@ -2839,13 +2823,12 @@ sparse_qr<SparseMatrix>::min2norm_solve<SparseMatrix, SparseMatrix>
   x = crs2ors (X, &cc);
   info = 0;
 
-  if (octave_suitesparse_ptr_size_mismatch)
-    {
-      delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
-      delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
-      delete [] reinterpret_cast<SuiteSparse_long *> (B.p);
-      delete [] reinterpret_cast<SuiteSparse_long *> (B.i);
-    }
+  #if ! defined (OCTAVE_SUITESPARSE_LONG_MATCH)
+  delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
+  delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
+  delete [] reinterpret_cast<SuiteSparse_long *> (B.p);
+  delete [] reinterpret_cast<SuiteSparse_long *> (B.i);
+  #endif
   cholmod_l_free_sparse (&X, &cc);
   cholmod_l_finish (&cc);
 
@@ -2906,11 +2889,10 @@ sparse_qr<SparseMatrix>::min2norm_solve<SparseComplexMatrix, SparseComplexMatrix
   SparseComplexMatrix ret = ccs2ocs (X, &cc);
   info = 0;
 
-  if (octave_suitesparse_ptr_size_mismatch)
-    {
-      delete [] reinterpret_cast<SuiteSparse_long *> (B.p);
-      delete [] reinterpret_cast<SuiteSparse_long *> (B.i);
-    }
+#  if ! defined (OCTAVE_SUITESPARSE_LONG_MATCH)
+  delete [] reinterpret_cast<SuiteSparse_long *> (B.p);
+  delete [] reinterpret_cast<SuiteSparse_long *> (B.i);
+#  endif
   cholmod_l_free_sparse (&A, &cc);
   cholmod_l_free_sparse (&X, &cc);
   cholmod_l_finish (&cc);
@@ -2944,11 +2926,10 @@ sparse_qr<SparseComplexMatrix>::min2norm_solve<MArray<Complex>, ComplexMatrix>
     xdata[i] = reinterpret_cast<Complex *> (X->x)[i];
   info = 0;
 
-  if (octave_suitesparse_ptr_size_mismatch)
-    {
-      delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
-      delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
-    }
+#  if ! defined (OCTAVE_SUITESPARSE_LONG_MATCH)
+  delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
+  delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
+#  endif
   cholmod_l_free_dense (&X, &cc);
   cholmod_l_finish (&cc);
 
@@ -2985,11 +2966,10 @@ sparse_qr<SparseComplexMatrix>::min2norm_solve<MArray<double>, ComplexMatrix>
     xdata[i] = reinterpret_cast<Complex *> (X->x)[i];
   info = 0;
 
-  if (octave_suitesparse_ptr_size_mismatch)
-    {
-      delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
-      delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
-    }
+#  if ! defined (OCTAVE_SUITESPARSE_LONG_MATCH)
+  delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
+  delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
+#  endif
   cholmod_l_free_dense (&B, &cc);
   cholmod_l_free_dense (&X, &cc);
   cholmod_l_finish (&cc);
@@ -3018,13 +2998,12 @@ sparse_qr<SparseComplexMatrix>::min2norm_solve<SparseComplexMatrix, SparseComple
   SparseComplexMatrix ret = ccs2ocs (X, &cc);
   info = 0;
 
-  if (octave_suitesparse_ptr_size_mismatch)
-    {
-      delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
-      delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
-      delete [] reinterpret_cast<SuiteSparse_long *> (B.p);
-      delete [] reinterpret_cast<SuiteSparse_long *> (B.i);
-    }
+#  if ! defined (OCTAVE_SUITESPARSE_LONG_MATCH)
+  delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
+  delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
+  delete [] reinterpret_cast<SuiteSparse_long *> (B.p);
+  delete [] reinterpret_cast<SuiteSparse_long *> (B.i);
+#  endif
   cholmod_l_free_sparse (&X, &cc);
   cholmod_l_finish (&cc);
 
@@ -3056,11 +3035,10 @@ sparse_qr<SparseComplexMatrix>::min2norm_solve<SparseMatrix, SparseComplexMatrix
   SparseComplexMatrix ret = ccs2ocs (X, &cc);
   info = 0;
 
-  if (octave_suitesparse_ptr_size_mismatch)
-    {
-      delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
-      delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
-    }
+#  if ! defined (OCTAVE_SUITESPARSE_LONG_MATCH)
+  delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
+  delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
+#  endif
   cholmod_l_free_sparse (&B, &cc);
   cholmod_l_free_sparse (&X, &cc);
   cholmod_l_finish (&cc);

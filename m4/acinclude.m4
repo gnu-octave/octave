@@ -3718,6 +3718,70 @@ AC_DEFUN([OCTAVE_SET_DEFAULT], [
   AC_SUBST($1)
 ])
 dnl
+dnl Check whether integer types that are used for indexing in SuiteSparse match.
+dnl
+AC_DEFUN([OCTAVE_CHECK_SUITESPARSE_SIZEOF_IDX_TYPES], [
+  if test -n "$SPQR_LIBS" && test -n "$CHOLMOD_LIBS"; then
+    save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$CHOLMOD_CPPFLAGS $CPPFLAGS"
+
+    AC_CACHE_CHECK([whether SuiteSparse_long and octave_idx_type have same size],
+      [octave_cv_suitesparse_long_match],
+      [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+          #if defined (HAVE_SUITESPARSE_CHOLMOD_H)
+          #  include <suitesparse/cholmod.h>
+          #elif defined (HAVE_CHOLMOD_CHOLMOD_H)
+          #  include <cholmod/cholmod.h>
+          #elif defined (HAVE_CHOLMOD_H)
+          #  include <cholmod.h>
+          #endif
+          #include <assert.h>
+          ]], [[
+          static_assert (sizeof (SuiteSparse_long) == sizeof (OCTAVE_IDX_TYPE),
+                         "SuiteSparse_long does not match size of octave_idx_type");
+        ]])],
+        octave_cv_suitesparse_long_match=yes,
+        octave_cv_suitesparse_long_match=no)
+    ])
+    if test $octave_cv_suitesparse_long_match = yes; then
+      AC_DEFINE(OCTAVE_SUITESPARSE_LONG_MATCH, 1,
+        [Define to 1 if SuiteSparse_long and octave_idx_type have same size.])
+    fi
+
+    if test -n "$CXSPARSE_LIBS"; then
+      AC_CACHE_CHECK([whether SuiteSparse_long and suitesparse_integer have same size],
+        [octave_cv_suitesparse_integer_match],
+        [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+            #if defined (HAVE_SUITESPARSE_CHOLMOD_H)
+            #  include <suitesparse/cholmod.h>
+            #elif defined (HAVE_CHOLMOD_CHOLMOD_H)
+            #  include <cholmod/cholmod.h>
+            #elif defined (HAVE_CHOLMOD_H)
+            #  include <cholmod.h>
+            #endif
+            #include <assert.h>
+            ]], [[
+            #  if defined (OCTAVE_ENABLE_64)
+            typedef SuiteSparse_long suitesparse_integer;
+            #  else
+            typedef int suitesparse_integer;
+            #  endif
+            static_assert (sizeof (SuiteSparse_long) == sizeof (suitesparse_integer),
+                           "SuiteSparse_long does not match size of suitesparse_integer");
+          ]])],
+          octave_cv_suitesparse_integer_match=yes,
+          octave_cv_suitesparse_integer_match=no)
+      ])
+      if test $octave_cv_suitesparse_integer_match = yes; then
+        AC_DEFINE(OCTAVE_SUITESPARSE_INTEGER_MATCH, 1,
+          [Define to 1 if SuiteSparse_long and suitesparse_integer have same size.])
+      fi
+    fi
+
+    CPPFLAGS="$save_CPPFLAGS"
+  fi
+])
+dnl
 dnl Check for UMFPACK separately split complex matrix and RHS.
 dnl
 dnl Macro assumes that the check for umfpack has already been performed.

@@ -173,13 +173,18 @@ and after the nested call.
      {                                                          \
        curr_lexer->lexer_debug (PATTERN);                       \
                                                                 \
+       /* Preserve values before they may be invalidated by     \
+          a call to unput.  */                                  \
+       std::string tok_txt (yytext);                            \
+       int tok_len = yyleng;                                    \
+                                                                \
        if (curr_lexer->looks_like_command_arg ())               \
          {                                                      \
            yyless (0);                                          \
            curr_lexer->push_start_state (COMMAND_START);        \
          }                                                      \
        else                                                     \
-         return curr_lexer->handle_op (TOK_ID, false, COMPAT);  \
+         return curr_lexer->handle_op (TOK_ID, tok_txt, tok_len, false, COMPAT); \
      }                                                          \
    while (0)
 
@@ -187,6 +192,11 @@ and after the nested call.
    do                                                                   \
      {                                                                  \
        curr_lexer->lexer_debug (PATTERN);                               \
+                                                                        \
+       /* Preserve values before they may be invalidated by             \
+          a call to unput.  */                                          \
+       std::string tok_txt (yytext);                                    \
+       int tok_len = yyleng;                                            \
                                                                         \
        if (curr_lexer->previous_token_may_be_command ())                \
          {                                                              \
@@ -196,7 +206,7 @@ and after the nested call.
                curr_lexer->push_start_state (COMMAND_START);            \
              }                                                          \
            else                                                         \
-             return curr_lexer->handle_op (TOK_ID, false, COMPAT);      \
+             return curr_lexer->handle_op (TOK_ID, tok_txt, tok_len, false, COMPAT); \
          }                                                              \
        else                                                             \
          {                                                              \
@@ -206,7 +216,7 @@ and after the nested call.
                curr_lexer->xunput (',');                                \
              }                                                          \
            else                                                         \
-             return curr_lexer->handle_op (TOK_ID, false, COMPAT);      \
+             return curr_lexer->handle_op (TOK_ID, tok_txt, tok_len, false, COMPAT); \
          }                                                              \
      }                                                                  \
    while (0)
@@ -1611,7 +1621,7 @@ ANY_INCLUDING_NL (.|{NL})
 
     curr_lexer->lexer_debug ("\\");
 
-    return curr_lexer->handle_op (LEFTDIV);
+    return curr_lexer->handle_op (LEFTDIV, yytext, yyleng);
   }
 
 "^"   { CMD_OR_OP ("^", POW, true); }
@@ -1625,7 +1635,7 @@ ANY_INCLUDING_NL (.|{NL})
       = (! (curr_lexer->whitespace_is_significant ()
             || curr_lexer->m_looking_at_object_index.front ()));
 
-    return curr_lexer->handle_op (';', at_beginning_of_statement);
+    return curr_lexer->handle_op (';', yytext, yyleng, at_beginning_of_statement);
   }
 
 "+" { CMD_OR_UNARY_OP ("+", '+', true); }
@@ -1641,13 +1651,13 @@ ANY_INCLUDING_NL (.|{NL})
       = (! (curr_lexer->whitespace_is_significant ()
             || curr_lexer->m_looking_at_object_index.front ()));
 
-    return curr_lexer->handle_op (',', at_beginning_of_statement);
+    return curr_lexer->handle_op (',', yytext, yyleng, at_beginning_of_statement);
   }
 
 ".'" {
     curr_lexer->lexer_debug (".'");
 
-    return curr_lexer->handle_op (TRANSPOSE);
+    return curr_lexer->handle_op (TRANSPOSE, yytext, yyleng);
   }
 
 "++" { CMD_OR_UNARY_OP ("++", PLUS_PLUS, false); }
@@ -1743,7 +1753,7 @@ ANY_INCLUDING_NL (.|{NL})
 "=" {
     curr_lexer->lexer_debug ("=");
 
-    return curr_lexer->handle_op ('=');
+    return curr_lexer->handle_op ('=', yytext, yyleng);
   }
 
 "+="   { CMD_OR_OP ("+=", ADD_EQ, false); }
@@ -3884,12 +3894,12 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   int
-  base_lexer::handle_op (int tok_id, bool bos, bool compat)
+  base_lexer::handle_op (int tok_id, const std::string& tok_txt, int tok_len, bool bos, bool compat)
   {
     if (! compat)
-      warn_language_extension_operator (flex_yytext ());
+      warn_language_extension_operator (tok_txt);
 
-    update_token_positions (flex_yyleng ());
+    update_token_positions (tok_len);
 
     token *tok = new token (tok_id, m_tok_beg, m_tok_end, get_comment_list ());
 

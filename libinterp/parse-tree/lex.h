@@ -705,7 +705,7 @@ public:
 
   bool maybe_unput_comma_before_unary_op (int tok_id);
 
-  int handle_op (int tok_id, bool bos = false, bool compat = true);
+  int handle_op (int tok_id, const std::string& tok_txt, int tok_len, bool bos = false, bool compat = true);
 
   int finish_command_arg ();
 

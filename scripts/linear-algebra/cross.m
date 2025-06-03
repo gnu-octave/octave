@@ -118,6 +118,13 @@ function z = cross (x, y, dim)
     error ("cross: X and Y must have the same dimensions");
   endif
 
+  ## For Matlab compatibility with complex inputs, we conjugate the output
+  ## so that the dot product of the output with either of its inputs becomes
+  ## zero even when the inputs are complex (bug #67186). This is one of many
+  ## possible extensions of cross products to complex numbers, and this
+  ## specific one is useful in electromagnetics.
+  z = conj (z);
+
 endfunction
 
 
@@ -162,6 +169,13 @@ endfunction
 %! assert (cross (x', y), r, eps);
 %! assert (cross (x, y'), r, eps);
 
+## Test complex inputs
+%!test <*67186>
+%! a = [1+2i, 2-i, 4-2i];
+%! b = [2+i, 3-4i, 1-3i];
+%! c = cross (a, b);
+%! assert (dot (c, a), 0, eps);
+%! assert (dot (c, b), 0, eps);
 
 ## Test input validation
 %!error <Invalid call> cross ()

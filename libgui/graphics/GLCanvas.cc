@@ -68,7 +68,8 @@ GLWidget::draw (graphics_object go)
 {
   if (go)
     {
-      begin_rendering ();
+      if (! begin_rendering ())
+        return;
 
       unwind_action reset_current ([this] () { end_rendering (); });
 
@@ -93,7 +94,8 @@ GLWidget::do_getPixels (graphics_object go)
       pos(2) *= dpr;
       pos(3) *= dpr;
 
-      begin_rendering ();
+      if (! begin_rendering ())
+        return uint8NDArray ();
 
       unwind_action reset_current ([this] () { end_rendering (); });
 
@@ -136,7 +138,8 @@ GLWidget::do_print (const QString& file_cmd, const QString& term,
 {
   if (go.valid_object ())
     {
-      begin_rendering ();
+      if (! begin_rendering ())
+        return;
 
       unwind_action reset_current ([this] () { end_rendering (); });
 
@@ -173,7 +176,8 @@ GLWidget::selectFromAxes (const graphics_object& ax, const QPoint& pt)
 {
   if (ax)
     {
-      begin_rendering ();
+      if (! begin_rendering ())
+        return graphics_object ();
 
       unwind_action reset_current ([this] () { end_rendering (); });
 
@@ -200,7 +204,8 @@ GLWidget::drawZoomBox (const QPoint& p1, const QPoint& p2)
   double borderalpha = 0.9;
   double borderwidth = 1.5;
 
-  begin_rendering ();
+  if (! begin_rendering ())
+    return;
 
   unwind_action reset_current ([this] () { end_rendering (); });
 

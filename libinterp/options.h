@@ -94,7 +94,7 @@ struct octave_getopt_options long_opts[] =
   // Alias for --no-init-user, not displayed in help
   { "no-init-file",             octave_no_arg,       nullptr, NO_INIT_USER_OPTION },
   { "no-init-path",             octave_no_arg,       nullptr, NO_INIT_PATH_OPTION },
-  { "no-init-user",             octave_no_arg,       nullptr, NO_INIT_PATH_OPTION },
+  { "no-init-user",             octave_no_arg,       nullptr, NO_INIT_USER_OPTION },
   { "no-line-editing",          octave_no_arg,       nullptr, NO_LINE_EDITING_OPTION },
   { "no-init-site",             octave_no_arg,       nullptr, NO_INIT_SITE_OPTION },
   // Alias for --no-init-site, not displayed in help

@@ -146,17 +146,17 @@ endfunction
 
 function h = __img__ (hax, do_new, x, y, img, varargin)
 
+  ## Initialize XDATA and YDATA to handle case where IMG is empty
+  xdata = [];
+  ydata = [];
+
   if (! isempty (img))
 
-    if (isempty (x))
-      xdata = [];
-    else
+    if (! isempty (x))
       xdata = x([1, end])(:).';  # (:).' is a hack to guarantee row vector
     endif
 
-    if (isempty (y))
-      ydata = [];
-    else
+    if (! isempty (y))
       ydata = y([1, end])(:).';
     endif
 

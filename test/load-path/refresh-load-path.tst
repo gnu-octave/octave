@@ -36,3 +36,48 @@
 %!   path (path_orig);
 %!   cd (pwd_orig);
 %! end_unwind_protect
+
+%!warning <shadows a built-in function>
+%! path_orig = path ();
+%! unwind_protect
+%!   addpath (fullfile (pwd (), "shadowed-builtin"));
+%! unwind_protect_cleanup
+%!   path (path_orig);
+%! end_unwind_protect
+
+%!warning <shadows a core library function>
+%! path_orig = path ();
+%! orig_sys_path = __pathorig__ ();
+%! unwind_protect
+%!   ## Temporarily override sys_path so this test works even before Octave
+%!   ## has been installed and __pathorig__ is empty by default.
+%!    __pathorig__ (path_orig);
+%!   addpath (fullfile (pwd (), "shadowed-corelib"));
+%! unwind_protect_cleanup
+%!   path (path_orig);
+%!   __pathorig__ (orig_sys_path);
+%! end_unwind_protect
+
+## Test that no shadowing warning is emitted if a function with the same name
+## as a builtin function is added inside a (different) +namespace.
+%!test <*46849>
+%! path_orig = path ();
+%! lastwarn ("");
+%! unwind_protect
+%!   addpath (fullfile (pwd (), "namespace-builtin"));
+%!   assert (lastwarn (), "");
+%! unwind_protect_cleanup
+%!   path (path_orig);
+%! end_unwind_protect
+
+## Test that no shadowing warning is emitted if a function with the same name
+## as a function from the core library is added inside a (different) +namespace.
+%!test <*46849>
+%! path_orig = path ();
+%! lastwarn ("");
+%! unwind_protect
+%!   addpath (fullfile (pwd (), "namespace-corelib"));
+%!   assert (lastwarn (), "");
+%! unwind_protect_cleanup
+%!   path (path_orig);
+%! end_unwind_protect

@@ -1583,6 +1583,64 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
   AC_SUBST(OPENGL_LIBS)
   if test -n "$OPENGL_LIBS"; then
     AC_DEFINE(HAVE_OPENGL, 1, [Define to 1 if OpenGL is available.])
+
+    save_LIBS="$LIBS"
+    LIBS="$LIBS $OPENGL_LIBS"
+    AC_CACHE_CHECK([for glBlendFuncSeparate],
+      [octave_cv_func_glblendfuncseparate],
+      [AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+#if defined (HAVE_WINDOWS_H)
+# include <windows.h>
+#endif
+#if defined (HAVE_GL_GL_H)
+# include <GL/gl.h>
+#elif defined (HAVE_OPENGL_GL_H)
+# include <OpenGL/gl.h>
+#endif
+#if defined (HAVE_GL_GLEXT_H)
+#  include <GL/glext.h>
+#elif defined (HAVE_OPENGL_GLEXT_H) || defined (HAVE_FRAMEWORK_OPENGL)
+#  include <OpenGL/glext.h>
+#endif
+        ]], [[
+        GLenum sfactor=0;
+        GLenum dfactor=0;
+        GLenum salpha=0;
+        GLenum dalpha=0;
+        glBlendFuncSeparate (sfactor, dfactor, salpha, dalpha);
+        ]])],
+        octave_cv_func_glblendfuncseparate=yes,
+        [AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+#define GL_GLEXT_PROTOTYPES 1
+#if defined (HAVE_WINDOWS_H)
+# include <windows.h>
+#endif
+#if defined (HAVE_GL_GL_H)
+# include <GL/gl.h>
+#elif defined (HAVE_OPENGL_GL_H)
+# include <OpenGL/gl.h>
+#endif
+#if defined (HAVE_GL_GLEXT_H)
+#  include <GL/glext.h>
+#elif defined (HAVE_OPENGL_GLEXT_H) || defined (HAVE_FRAMEWORK_OPENGL)
+#  include <OpenGL/glext.h>
+#endif
+          ]], [[
+          GLenum sfactor=0;
+          GLenum dfactor=0;
+          GLenum salpha=0;
+          GLenum dalpha=0;
+          glBlendFuncSeparate (sfactor, dfactor, salpha, dalpha);
+          ]])],
+          [AC_DEFINE(GL_GLEXT_PROTOTYPES, 1, [Define to 1 to enable OpenGL extensions in headers.])
+          octave_cv_func_glblendfuncseparate=yes],
+          octave_cv_func_glblendfuncseparate=no)
+        ])
+      ])
+    LIBS="$save_LIBS"
+    if test $octave_cv_func_glblendfuncseparate = yes; then
+      AC_DEFINE(HAVE_GLBLENDFUNCSEPARATE, 1, [Define to 1 if glBlendFuncSeparate can be used directly.])
+    fi
   fi
 ])
 dnl

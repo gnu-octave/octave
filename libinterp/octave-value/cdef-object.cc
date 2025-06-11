@@ -532,7 +532,11 @@ cdef_object_scalar::subsref (const std::string& type,
 
         if (meth.ok ())
           {
-            int _nargout = (type.length () > 2 ? 1 : nargout);
+            // If the method call is followed by another index operation,
+            // the number of outputs of the call will be 1.
+            int nargout_mtd = (type.length () > 2
+                               || (type.length () == 2 && type[1] != '(')
+                               ? 1 : nargout);
 
             octave_value_list args;
 
@@ -548,11 +552,11 @@ cdef_object_scalar::subsref (const std::string& type,
               }
 
             if (meth.is_static ())
-              retval = meth.execute (args, _nargout, true, "subsref");
+              retval = meth.execute (args, nargout_mtd, true, "subsref");
             else
               {
                 m_count++;
-                retval = meth.execute (cdef_object (this), args, _nargout,
+                retval = meth.execute (cdef_object (this), args, nargout_mtd,
                                        true, "subsref");
               }
           }

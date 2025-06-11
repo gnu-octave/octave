@@ -446,6 +446,11 @@ tree_index_expression::evaluate_n (tree_evaluator& tw, int nargout)
   int n = m_args.size ();
   int beg = 0;
 
+  // Set nargout to 1 for all subsref operations except the last one.
+  int nargout_saved = nargout;
+  if (n > 1)
+    nargout = 1;
+
   octave_value base_expr_val;
 
   if (m_expr->is_identifier () && m_type[beg] == '(')
@@ -513,12 +518,6 @@ tree_index_expression::evaluate_n (tree_evaluator& tw, int nargout)
 
           if (fcn)
             {
-              // If there are more indices after the function call,
-              // nargout should be 1 at most
-              int nargout_saved = nargout;
-              if (n > beg+1)
-                nargout = std::min (nargout, 1);
-
               try
                 {
                   retval = fcn->call (tw, nargout, first_args);
@@ -528,7 +527,6 @@ tree_index_expression::evaluate_n (tree_evaluator& tw, int nargout)
                   tw.final_index_error (ie, m_expr);
                 }
 
-              nargout = nargout_saved;
               beg++;
               p_args++;
               p_arg_nm++;
@@ -695,6 +693,9 @@ tree_index_expression::evaluate_n (tree_evaluator& tw, int nargout)
       }
   }
 
+  // Restore original nargout for last subsref operation
+  nargout = nargout_saved;
+
   // If ! idx_list.empty () that means we still have stuff to index
   // otherwise they would have been dealt with and idx_list would have
   // been emptied.
@@ -834,21 +835,69 @@ OCTAVE_END_NAMESPACE(octave)
 %! x(2).b = 1;
 %! assert (x(2).b == 1);
 
-%!test
-%! function [a] = fcell ()
-%!   a = num2cell (1:2);
-%! endfunction
+## Test nargout when indexing function calls
 %!
-%! [a, b] = fcell () {1:2};
-%! assert ([a, b], [1, 2])
-
-%!test
-%! function [a] = fstruct ()
-%!   a = struct ('a', {1, 2}, 'b', {3, 4});
-%! endfunction
+%!function [a] = __fcell ()
+%!  a = num2cell (1:5);
+%!endfunction
 %!
-%! [a, b] = fstruct ().b;
-%! assert ([a, b], [3, 4])
+%!function [a] = __fstruct ()
+%!  a = struct ('a', {1, 2}, 'b', {3, 4});
+%!endfunction
+%!
+%!test  # Function call at the start of the index expression
+%! [a, b] = __fcell () {1:2};
+%! assert ([a, b], [1, 2]);
+%! [a, b] = __fstruct ().b;
+%! assert ([a, b], [3, 4]);
+#!
+%!test  # Function handle call at the start of the index expression
+%! f = @__fcell;
+%! [a, b] = f () {1:2};
+%! assert ([a, b], [1, 2]);
+%! f = @__fstruct;
+%! [a, b] = f ().b;
+%! assert ([a, b], [3, 4]);
+#!
+%!test  # Intermediate function handle call followed by {} indexing
+%! x = {@__fcell};
+%! [a, b] = x {1} () {1:2};
+%! assert ([a, b], [1, 2]);
+%! s.f = @__fcell;
+%! [a, b] = s.f () {3:4};
+%! assert ([a, b], [3, 4]);
+%!
+%!test  # Intermediate function handle call followed by . indexing
+%! x = {@__fstruct};
+%! [a, b] = x {1} ().a;
+%! assert ([a, b], [1, 2]);
+%! s.f = @__fstruct;
+%! [a, b] = s.f ().b;
+%! assert ([a, b], [3, 4]);
+%!
+%!test  # Anonymous function call at the start of the index expression
+%! f = @() num2cell (1:5);
+%! [a, b] = f () {1:2};
+%! assert ([a, b], [1, 2]);
+%! f = @() struct ('a', {1, 2}, 'b', {3, 4});
+%! [a, b] = f ().b;
+%! assert ([a, b], [3, 4]);
+#!
+%!test  # Intermediate anon func call followed by {} indexing
+%! x = {@() num2cell (1:5)};
+%! [a, b] = x {1} () {1:2};
+%! assert ([a, b], [1, 2]);
+%! s.f = @() num2cell (1:5);
+%! [a, b] = s.f () {3:4};
+%! assert ([a, b], [3, 4]);
+%!
+%!test  # Intermediate anon func call followed by . indexing
+%! x = {@() struct ('a', {1, 2}, 'b', {3, 4})};
+%! [a, b] = x {1} ().a;
+%! assert ([a, b], [1, 2]);
+%! s.f = @() struct ('a', {1, 2}, 'b', {3, 4});
+%! [a, b] = s.f ().b;
+%! assert ([a, b], [3, 4]);
 
 %!test <*67111>
 %! function [a] = fcelln (n)
@@ -857,16 +906,16 @@ OCTAVE_END_NAMESPACE(octave)
 %!   endif
 %! endfunction
 %!
-%! fail ("fcelln (-5) {1:3}", "indexing undefined value")
-%! fail ("fcelln (-5) (1:3)", "indexing undefined value")
-%! fail ("fcelln (-5).prop", "indexing undefined value")
+%! fail ("fcelln (-5) {1:3}", "indexing undefined value");
+%! fail ("fcelln (-5) (1:3)", "indexing undefined value");
+%! fail ("fcelln (-5).prop", "indexing undefined value");
 
 %!test <*67111>
 %! function [a] = fnothing ()
 %! endfunction
 %!
-%! fail ("fnothing () {1:3}", "indexing undefined value")
-%! fail ("fnothing () (1:3)", "indexing undefined value")
-%! fail ("fnothing ().prop", "indexing undefined value")
-%! fail ("fnothing () ()", "indexing undefined value")
+%! fail ("fnothing () {1:3}", "indexing undefined value");
+%! fail ("fnothing () (1:3)", "indexing undefined value");
+%! fail ("fnothing ().prop", "indexing undefined value");
+%! fail ("fnothing () ()", "indexing undefined value");
 */

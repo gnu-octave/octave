@@ -206,6 +206,11 @@ public:
   }
 
   std::string system_path () const { return s_sys_path; }
+  void system_path (const std::string& sys_path)
+  {
+    s_sys_path = sys_path;
+    return;
+  }
 
   void rehash ();
 

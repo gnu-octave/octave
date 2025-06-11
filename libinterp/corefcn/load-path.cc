@@ -1999,7 +1999,14 @@ load_path::package_info::add_to_fcn_map (const dir_info& di,
                 {
                   symbol_table& symtab = __get_symbol_table__ ();
 
-                  if (symtab.is_built_in_function_name (base))
+                  // FIXME: It is currently not possible to check for built-in
+                  //        functions including their +package namespace.
+                  //        Assume that no built-in functions with a +package
+                  //        namespace are installed and skip the warning for
+                  //        new functions that *are* in a +package namespace.
+
+                  if (m_package_name.empty ()
+                      && symtab.is_built_in_function_name (base))
                     {
                       std::string fcn_path = sys::file_ops::concat (dir_name,
                                              fname);
@@ -2584,15 +2591,22 @@ The re-initialized path is returned as an output.
 // exists prior to running the system's octaverc file or the user's
 // ~/.octaverc file
 
-DEFMETHOD (__pathorig__, interp, , ,
+DEFMETHOD (__pathorig__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {@var{str} =} __pathorig__ ()
+@deftypefn  {} {@var{sys_path} =} __pathorig__ ()
+@deftypefnx {} {@var{prev_sys_path} =} __pathorig__ (sys_path)
 Undocumented internal function.
 @end deftypefn */)
 {
   load_path& lp = interp.get_load_path ();
 
-  return ovl (lp.system_path ());
+  if (args.empty ())
+    return ovl (lp.system_path ());
+
+  std::string sys_path = args(0).xstring_value ("__pathorig__: SYS_PATH must be a string");
+  std::string prev_sys_path = lp.system_path ();
+  lp.system_path (sys_path);
+  return ovl (prev_sys_path);
 }
 
 DEFMETHOD (path, interp, args, nargout,

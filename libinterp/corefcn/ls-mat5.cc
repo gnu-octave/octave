@@ -2203,90 +2203,90 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
 
   else if (cname == "int8")
     INT_LEN (tc.int8_array_value ().numel (), 1)
-    else if (cname == "int16")
-      INT_LEN (tc.int16_array_value ().numel (), 2)
-      else if (cname == "int32")
-        INT_LEN (tc.int32_array_value ().numel (), 4)
-        else if (cname == "int64")
-          INT_LEN (tc.int64_array_value ().numel (), 8)
-          else if (cname == "uint8")
-            INT_LEN (tc.uint8_array_value ().numel (), 1)
-            else if (cname == "uint16")
-              INT_LEN (tc.uint16_array_value ().numel (), 2)
-              else if (cname == "uint32")
-                INT_LEN (tc.uint32_array_value ().numel (), 4)
-                else if (cname == "uint64")
-                  INT_LEN (tc.uint64_array_value ().numel (), 8)
-                  else if (tc.islogical ())
-                    INT_LEN (tc.bool_array_value ().numel (), 1)
-                    else if (tc.is_real_scalar () || tc.is_real_matrix () || tc.is_range ())
-                      {
-                        if (tc.is_single_type ())
-                          {
-                            const FloatNDArray m = tc.float_array_value ();
-                            ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
-                          }
-                        else
-                          {
-                            const NDArray m = tc.array_value ();
-                            ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
-                          }
-                      }
-                    else if (tc.iscell ())
-                      {
-                        Cell cell = tc.cell_value ();
-                        octave_idx_type nel = cell.numel ();
+  else if (cname == "int16")
+    INT_LEN (tc.int16_array_value ().numel (), 2)
+  else if (cname == "int32")
+    INT_LEN (tc.int32_array_value ().numel (), 4)
+  else if (cname == "int64")
+    INT_LEN (tc.int64_array_value ().numel (), 8)
+  else if (cname == "uint8")
+    INT_LEN (tc.uint8_array_value ().numel (), 1)
+  else if (cname == "uint16")
+    INT_LEN (tc.uint16_array_value ().numel (), 2)
+  else if (cname == "uint32")
+    INT_LEN (tc.uint32_array_value ().numel (), 4)
+  else if (cname == "uint64")
+    INT_LEN (tc.uint64_array_value ().numel (), 8)
+  else if (tc.islogical ())
+    INT_LEN (tc.bool_array_value ().numel (), 1)
+  else if (tc.is_real_scalar () || tc.is_real_matrix () || tc.is_range ())
+    {
+      if (tc.is_single_type ())
+        {
+          const FloatNDArray m = tc.float_array_value ();
+          ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
+        }
+      else
+        {
+          const NDArray m = tc.array_value ();
+          ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
+        }
+    }
+  else if (tc.iscell ())
+    {
+      Cell cell = tc.cell_value ();
+      octave_idx_type nel = cell.numel ();
 
-                        for (int i = 0; i < nel; i++)
-                          ret += 8 +
-                                 save_mat5_element_length (cell (i), "", save_as_floats, mat7_format);
-                      }
-                    else if (tc.is_complex_scalar () || tc.is_complex_matrix ())
-                      {
-                        if (tc.is_single_type ())
-                          {
-                            const FloatComplexNDArray m = tc.float_complex_array_value ();
-                            ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
-                          }
-                        else
-                          {
-                            const ComplexNDArray m = tc.complex_array_value ();
-                            ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
-                          }
-                      }
-                    else if (tc.isstruct () || tc.is_inline_function () || tc.isobject ())
-                      {
-                        int fieldcnt = 0;
-                        const octave_map m = tc.map_value ();
-                        octave_idx_type nel = m.numel ();
+      for (int i = 0; i < nel; i++)
+        ret += 8 +
+               save_mat5_element_length (cell (i), "", save_as_floats, mat7_format);
+    }
+  else if (tc.is_complex_scalar () || tc.is_complex_matrix ())
+    {
+      if (tc.is_single_type ())
+        {
+          const FloatComplexNDArray m = tc.float_complex_array_value ();
+          ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
+        }
+      else
+        {
+          const ComplexNDArray m = tc.complex_array_value ();
+          ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
+        }
+    }
+  else if (tc.isstruct () || tc.is_inline_function () || tc.isobject ())
+    {
+      int fieldcnt = 0;
+      const octave_map m = tc.map_value ();
+      octave_idx_type nel = m.numel ();
 
-                        if (tc.is_inline_function ())
-                          ret += 8 + PAD (6);  // length of "inline" is 6
-                        else if (tc.isobject ())
-                          {
-                            std::size_t classlen = tc.class_name ().length ();
+      if (tc.is_inline_function ())
+        ret += 8 + PAD (6);  // length of "inline" is 6
+      else if (tc.isobject ())
+        {
+          std::size_t classlen = tc.class_name ().length ();
 
-                            ret += 8 + PAD (classlen > max_namelen ? max_namelen : classlen);
-                          }
+          ret += 8 + PAD (classlen > max_namelen ? max_namelen : classlen);
+        }
 
-                        for (auto i = m.begin (); i != m.end (); i++)
-                          fieldcnt++;
+      for (auto i = m.begin (); i != m.end (); i++)
+        fieldcnt++;
 
-                        ret += 16 + fieldcnt * (max_namelen + 1);
+      ret += 16 + fieldcnt * (max_namelen + 1);
 
-                        for (octave_idx_type j = 0; j < nel; j++)
-                          {
-                            for (auto i = m.begin (); i != m.end (); i++)
-                              {
-                                const Cell elts = m.contents (i);
+      for (octave_idx_type j = 0; j < nel; j++)
+        {
+          for (auto i = m.begin (); i != m.end (); i++)
+            {
+              const Cell elts = m.contents (i);
 
-                                ret += 8 + save_mat5_element_length (elts(j), "", save_as_floats,
-                                                                     mat7_format);
-                              }
-                          }
-                      }
-                    else
-                      ret = -1;
+              ret += 8 + save_mat5_element_length (elts(j), "", save_as_floats,
+                                                   mat7_format);
+            }
+        }
+    }
+  else
+    ret = -1;
 
   return ret;
 }

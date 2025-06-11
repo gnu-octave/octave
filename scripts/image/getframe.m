@@ -111,6 +111,16 @@ function frame = getframe (h = [], rect = [])
     units = get (hf, "units");
     set (hf, "units", "pixels");
     cdata = __get_frame__ (hf);
+
+    if (isempty (cdata))
+      ## FIXME: This can happen if the graphics subsystem is inadequate (e.g.,
+      ##        too low color depth for OpenGL rendering, see bug #65866).
+      ##        This should have been detected earlier and "have_window_system"
+      ##        should be false.
+      error (["getframe: failed to capture frame data, potentially due to ", ...
+              "insufficient graphics capabilities"]);
+    endif
+
   unwind_protect_cleanup
     set (hf, "units", units)
   end_unwind_protect

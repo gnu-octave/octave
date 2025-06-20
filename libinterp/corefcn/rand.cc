@@ -31,7 +31,7 @@
 #include <string>
 
 #include "f77-fcn.h"
-#include "lo-mappers.h"
+#include "mappers.h"
 #include "oct-rand.h"
 #include "quit.h"
 

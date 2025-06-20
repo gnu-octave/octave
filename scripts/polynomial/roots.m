@@ -84,10 +84,12 @@
 
 function r = roots (c)
 
-  if (nargin < 1 || (! isvector (c) && ! isempty (c)))
+  if (nargin < 1)
     print_usage ();
+  elseif (! isnumeric (c) || (! isvector (c) && ! isempty (c)))
+    error ("roots: C must be a numeric vector");
   elseif (any (! isfinite (c)))
-    error ("roots: inputs must not contain Inf or NaN");
+    error ("roots: C must not contain Inf or NaN");
   endif
 
   c = c(:);
@@ -136,6 +138,7 @@ endfunction
 %!assert (roots ([1e-200, -1e200 * 1i, 1]), -1e-200 * 1i)
 
 %!error <Invalid call> roots ()
-%!error roots ([1, 2; 3, 4])
-%!error <inputs must not contain Inf or NaN> roots ([1 Inf 1])
-%!error <inputs must not contain Inf or NaN> roots ([1 NaN 1])
+%!error <C must be a numeric> roots ('ABC')
+%!error <C must be a .* vector> roots ([1, 2; 3, 4])
+%!error <C must not contain Inf or NaN> roots ([1 Inf 1])
+%!error <C must not contain Inf or NaN> roots ([1 NaN 1])

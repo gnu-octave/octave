@@ -37,12 +37,11 @@
 #include "strmode-wrapper.h"
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-#  include "lo-regexp.h"
 #  include "oct-env.h"
+#  include "oct-regexp.h"
 #endif
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 // FIXME: the is_* and mode_as_string functions are only valid

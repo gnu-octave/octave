@@ -33,10 +33,10 @@
 #include <iosfwd>
 #include <string>
 
-#include "lo-mappers.h"
-#include "lo-utils.h"
-#include "str-vec.h"
 #include "MatrixType.h"
+#include "lo-utils.h"
+#include "mappers.h"
+#include "str-vec.h"
 
 #include "ov-base.h"
 #include "ov-typeinfo.h"

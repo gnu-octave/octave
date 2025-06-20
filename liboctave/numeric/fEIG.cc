@@ -28,11 +28,11 @@
 #endif
 
 #include "Array-oct.h"
-#include "fEIG.h"
 #include "fColVector.h"
+#include "fEIG.h"
 #include "fMatrix.h"
-#include "lo-error.h"
-#include "lo-lapack-proto.h"
+#include "lapack-proto.h"
+#include "oct-error.h"
 
 octave_idx_type
 FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,

@@ -48,10 +48,10 @@
 #include "file-ops.h"
 #include "file-stat.h"
 #include "gen-tempname-wrapper.h"
-#include "lo-sysdep.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
 #include "oct-password.h"
+#include "oct-sysdep.h"
 #include "quit.h"
 #include "stat-wrappers.h"
 #include "str-vec.h"
@@ -216,7 +216,6 @@ tilde_expand_word (const std::string& filename)
 }
 
 OCTAVE_BEGIN_NAMESPACE(sys)
-
 OCTAVE_BEGIN_NAMESPACE(file_ops)
 
 char dev_sep_char ()

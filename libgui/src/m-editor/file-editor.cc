@@ -53,8 +53,8 @@
 #include "gui-settings.h"
 #include "main-window.h"
 
-#include "lo-sysdep.h"
 #include "oct-env.h"
+#include "oct-sysdep.h"
 
 #include "event-manager.h"
 #include "interpreter.h"

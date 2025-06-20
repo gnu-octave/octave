@@ -35,7 +35,6 @@
 #include "str-vec.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 OCTAVE_BEGIN_NAMESPACE(file_ops)

@@ -34,7 +34,6 @@
 #include "uname-wrapper.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 void

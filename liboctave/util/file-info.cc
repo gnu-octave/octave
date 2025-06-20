@@ -32,8 +32,8 @@
 
 #include "file-info.h"
 #include "file-stat.h"
-#include "lo-error.h"
-#include "lo-sysdep.h"
+#include "oct-error.h"
+#include "oct-sysdep.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 

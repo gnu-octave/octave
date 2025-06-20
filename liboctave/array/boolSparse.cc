@@ -31,9 +31,9 @@
 #include <ostream>
 #include <vector>
 
-#include "quit.h"
 #include "lo-ieee.h"
-#include "lo-mappers.h"
+#include "mappers.h"
+#include "quit.h"
 
 #include "boolSparse.h"
 #include "dSparse.h"

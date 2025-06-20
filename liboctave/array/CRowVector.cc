@@ -32,11 +32,11 @@
 #include <type_traits>
 
 #include "Array-util.h"
-#include "lo-blas-proto.h"
-#include "lo-error.h"
+#include "blas-proto.h"
 #include "mx-base.h"
 #include "mx-inlines.cc"
 #include "oct-cmplx.h"
+#include "oct-error.h"
 
 // Complex Row Vector class
 

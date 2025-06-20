@@ -34,7 +34,7 @@
 #include "Array-fwd.h"
 #include "dMatrix.h"
 #include "dim-vector.h"
-#include "lo-error.h"
+#include "oct-error.h"
 #include "oct-sort.h"
 #include "range-fwd.h"
 

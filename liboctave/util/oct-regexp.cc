@@ -48,10 +48,10 @@
 #endif
 
 #include "Matrix.h"
-#include "lo-error.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
+#include "oct-regexp.h"
 #include "quit.h"
-#include "lo-regexp.h"
 #include "str-vec.h"
 #include "unistr-wrappers.h"
 #include "unwind-prot.h"

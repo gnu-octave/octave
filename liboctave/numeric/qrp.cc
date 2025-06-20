@@ -37,12 +37,11 @@
 #include "fCMatrix.h"
 #include "fMatrix.h"
 #include "fRowVector.h"
-#include "lo-lapack-proto.h"
+#include "lapack-proto.h"
 #include "oct-locbuf.h"
 #include "qrp.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(math)
 
 // Specialization.

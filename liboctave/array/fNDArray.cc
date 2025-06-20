@@ -34,11 +34,11 @@
 #include "Array-util.h"
 #include "f77-fcn.h"
 #include "fNDArray.h"
-#include "lo-error.h"
 #include "lo-ieee.h"
-#include "lo-mappers.h"
+#include "mappers.h"
 #include "mx-base.h"
 #include "mx-op-defs.h"
+#include "oct-error.h"
 #include "oct-fftw.h"
 #include "oct-locbuf.h"
 

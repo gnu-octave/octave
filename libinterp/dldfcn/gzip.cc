@@ -64,8 +64,8 @@
 #include "file-ops.h"
 #include "file-stat.h"
 #include "glob-match.h"
-#include "lo-sysdep.h"
 #include "oct-env.h"
+#include "oct-sysdep.h"
 #include "str-vec.h"
 
 #include "Cell.h"

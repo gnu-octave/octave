@@ -42,12 +42,11 @@
 
 #include "dir-ops.h"
 #include "file-ops.h"
-#include "lo-error.h"
-#include "lo-sysdep.h"
+#include "oct-error.h"
+#include "oct-sysdep.h"
 #include "str-vec.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 bool

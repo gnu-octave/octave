@@ -31,8 +31,8 @@
 #include "EIG.h"
 #include "dColVector.h"
 #include "dMatrix.h"
-#include "lo-error.h"
-#include "lo-lapack-proto.h"
+#include "lapack-proto.h"
+#include "oct-error.h"
 
 octave_idx_type
 EIG::init (const Matrix& a, bool calc_rev, bool calc_lev, bool balance)

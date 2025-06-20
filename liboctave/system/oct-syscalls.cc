@@ -33,8 +33,8 @@
 
 #include "fcntl-wrappers.h"
 #include "lo-utils.h"
-#include "lo-sysdep.h"
 #include "oct-syscalls.h"
+#include "oct-sysdep.h"
 #include "octave-popen2.h"
 #include "signal-wrappers.h"
 #include "str-vec.h"
@@ -45,7 +45,6 @@
   nm ": not supported on this system"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 int

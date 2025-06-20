@@ -27,7 +27,7 @@
 #  include "config.h"
 #endif
 
-#include "lo-specfun.h"
+#include "oct-specfun.h"
 #include "quit.h"
 
 #include "defun.h"

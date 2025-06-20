@@ -32,7 +32,7 @@
 #include <string>
 
 #include "dim-vector.h"
-#include "lo-error.h"
+#include "oct-error.h"
 
 inline
 bool

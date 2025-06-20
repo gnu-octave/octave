@@ -31,7 +31,7 @@
 #include <cstdarg>
 #include <cstdio>
 
-#include "lo-error.h"
+#include "oct-error.h"
 #include "oct-sparse.h"
 #include "sparse-util.h"
 

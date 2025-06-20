@@ -32,9 +32,9 @@
 
 #include <limits>
 
-#include "lo-error.h"
 #include "lo-ieee.h"
 #include "mach-info.h"
+#include "oct-error.h"
 
 static double lo_inf;
 static double lo_nan;

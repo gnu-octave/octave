@@ -27,7 +27,7 @@
 #  include "config.h"
 #endif
 
-#include "lo-error.h"
+#include "oct-error.h"
 #include "singleton-cleanup.h"
 
 singleton_cleanup_list *singleton_cleanup_list::s_instance = nullptr;

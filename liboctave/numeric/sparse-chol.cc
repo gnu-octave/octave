@@ -33,8 +33,8 @@
 #include "MatrixType.h"
 #include "dRowVector.h"
 #include "dSparse.h"
-#include "lo-error.h"
 #include "oct-cmplx.h"
+#include "oct-error.h"
 #include "oct-sparse.h"
 #include "oct-spparms.h"
 #include "quit.h"
@@ -42,7 +42,6 @@
 #include "sparse-util.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(math)
 
 template <typename chol_type>

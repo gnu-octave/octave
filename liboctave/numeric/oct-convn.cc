@@ -35,6 +35,7 @@
 #include "CNDArray.h"
 #include "CRowVector.h"
 #include "MArray.h"
+#include "blas-proto.h"
 #include "dColVector.h"
 #include "dMatrix.h"
 #include "dNDArray.h"
@@ -48,7 +49,6 @@
 #include "fMatrix.h"
 #include "fNDArray.h"
 #include "fRowVector.h"
-#include "lo-blas-proto.h"
 #include "oct-convn.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)

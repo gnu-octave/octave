@@ -31,7 +31,7 @@
 #include <string>
 #include <vector>
 
-#include "lo-mappers.h"
+#include "mappers.h"
 
 #include "defun.h"
 #include "interpreter.h"

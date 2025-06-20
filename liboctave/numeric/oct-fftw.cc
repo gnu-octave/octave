@@ -31,7 +31,7 @@
 #  include <fftw3.h>
 #endif
 
-#include "lo-error.h"
+#include "oct-error.h"
 #include "oct-fftw.h"
 #include "oct-locbuf.h"
 #include "quit.h"

@@ -44,8 +44,8 @@
 #include "cmd-edit.h"
 #include "file-ops.h"
 #include "file-stat.h"
-#include "lo-sysdep.h"
 #include "oct-locbuf.h"
+#include "oct-sysdep.h"
 #include "oct-time.h"
 
 #include "builtin-defun-decls.h"

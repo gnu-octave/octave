@@ -31,7 +31,7 @@
 #include "Array-util.h"
 #include "MArray.h"
 #include "Sparse.h"
-#include "lo-error.h"
+#include "oct-error.h"
 #include "quit.h"
 
 

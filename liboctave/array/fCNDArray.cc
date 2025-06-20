@@ -35,10 +35,10 @@
 #include "f77-fcn.h"
 #include "fCNDArray.h"
 #include "lo-ieee.h"
-#include "lo-mappers.h"
+#include "mappers.h"
 #include "mx-base.h"
-#include "mx-op-defs.h"
 #include "mx-fcnda-fs.h"
+#include "mx-op-defs.h"
 #include "oct-fftw.h"
 #include "oct-locbuf.h"
 

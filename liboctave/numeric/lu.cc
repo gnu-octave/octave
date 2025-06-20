@@ -38,14 +38,13 @@
 #include "fCMatrix.h"
 #include "fColVector.h"
 #include "fMatrix.h"
-#include "lo-error.h"
-#include "lo-lapack-proto.h"
-#include "lo-qrupdate-proto.h"
+#include "lapack-proto.h"
 #include "lu.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
+#include "qrupdate-proto.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(math)
 
 // FIXME: PermMatrix::col_perm_vec returns Array<octave_idx_type>

@@ -46,13 +46,13 @@
 
 #include "data-conv.h"
 #include "lo-ieee.h"
+#include "mappers.h"
 #include "lo-utils.h"
-#include "lo-specfun.h"
-#include "lo-mappers.h"
 #include "mach-info.h"
 #include "mx-base.h"
-#include "quit.h"
 #include "oct-locbuf.h"
+#include "oct-specfun.h"
+#include "quit.h"
 
 #include "defun.h"
 #include "errwarn.h"
@@ -215,7 +215,12 @@ octave_float_matrix::char_array_value (bool) const
   octave_idx_type nel = numel ();
 
   for (octave_idx_type i = 0; i < nel; i++)
-    retval.elem (i) = static_cast<char> (m_matrix.elem (i));
+#if ! defined (HAVE_FLOAT_QNAN_CHAR_0)
+    if (octave::math::isnan (m_matrix.elem (i)))
+      retval.elem (i) = 0.0;
+    else
+#endif
+      retval.elem (i) = static_cast<char> (m_matrix.elem (i));
 
   return retval;
 }

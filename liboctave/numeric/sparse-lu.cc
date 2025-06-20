@@ -30,15 +30,14 @@
 #include "CSparse.h"
 #include "PermMatrix.h"
 #include "dSparse.h"
-#include "lo-error.h"
-#include "lo-mappers.h"
+#include "mappers.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
 #include "oct-sparse.h"
 #include "oct-spparms.h"
 #include "sparse-lu.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(math)
 
 // Wrappers for SuiteSparse (formerly UMFPACK) functions that have

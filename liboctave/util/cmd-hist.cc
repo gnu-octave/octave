@@ -36,8 +36,8 @@
 #include "cmd-edit.h"
 #include "cmd-hist.h"
 #include "file-ops.h"
-#include "lo-error.h"
-#include "lo-sysdep.h"
+#include "oct-error.h"
+#include "oct-sysdep.h"
 #include "singleton-cleanup.h"
 #include "str-vec.h"
 

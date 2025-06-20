@@ -62,7 +62,7 @@
 #include "interpreter.h"
 #include "lex.h"
 #include "load-path.h"
-#include "lo-sysdep.h"
+#include "oct-sysdep.h"
 #include "oct-hist.h"
 #include "oct-map.h"
 #include "ov-classdef.h"

@@ -37,8 +37,8 @@
 #include "fDiagMatrix.h"
 #include "fMatrix.h"
 #include "gsvd.h"
-#include "lo-error.h"
-#include "lo-lapack-proto.h"
+#include "lapack-proto.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
 #include "oct-shlib.h"
 

@@ -27,10 +27,10 @@
 #  include "config.h"
 #endif
 
-#include "schur.h"
 #include "lo-ieee.h"
-#include "lo-mappers.h"
+#include "mappers.h"
 #include "oct-norm.h"
+#include "schur.h"
 
 #include "defun.h"
 #include "error.h"

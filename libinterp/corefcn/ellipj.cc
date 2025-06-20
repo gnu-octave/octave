@@ -29,7 +29,7 @@
 
 #include "defun.h"
 #include "error.h"
-#include "lo-specfun.h"
+#include "oct-specfun.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 

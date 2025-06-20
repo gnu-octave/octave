@@ -41,9 +41,9 @@
 
 #include "file-ops.h"
 #include "filepos-wrappers.h"
-#include "lo-mappers.h"
-#include "oct-locbuf.h"
+#include "mappers.h"
 #include "oct-env.h"
+#include "oct-locbuf.h"
 #include "unistd-wrappers.h"
 #include "unistr-wrappers.h"
 #include "unwind-prot.h"

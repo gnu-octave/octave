@@ -29,12 +29,12 @@
 
 // Instantiate Sparse matrix of complex values.
 
-#include "oct-cmplx.h"
-#include "lo-mappers.h"
-#include "lo-ieee.h"
 #include "Array-oct.h"
-#include "Sparse.h"
 #include "Sparse.cc"
+#include "Sparse.h"
+#include "lo-ieee.h"
+#include "mappers.h"
+#include "oct-cmplx.h"
 
 
 static double

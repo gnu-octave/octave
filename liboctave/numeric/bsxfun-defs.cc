@@ -32,8 +32,8 @@
 #include <algorithm>
 
 #include "dim-vector.h"
-#include "lo-error.h"
 #include "mx-inlines.cc"
+#include "oct-error.h"
 #include "oct-locbuf.h"
 
 template <typename R, typename X, typename Y>

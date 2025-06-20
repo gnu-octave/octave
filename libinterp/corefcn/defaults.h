@@ -33,7 +33,6 @@
 #include "pathsearch.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(config)
 
 extern OCTINTERP_API std::string

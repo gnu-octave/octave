@@ -33,12 +33,11 @@
 #include <string>
 
 #include "hash-wrappers.h"
-#include "lo-error.h"
-#include "lo-hash.h"
+#include "oct-error.h"
+#include "oct-hash.h"
 #include "oct-locbuf.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(crypto)
 
 std::string

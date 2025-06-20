@@ -31,7 +31,7 @@
 #include <string>
 
 #include "DASRT.h"
-#include "lo-mappers.h"
+#include "mappers.h"
 
 #include "defun.h"
 #include "error.h"

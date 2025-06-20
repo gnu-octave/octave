@@ -31,7 +31,6 @@
 #include "oct-map.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(build_env)
 
 extern OCTINTERP_API octave_scalar_map features ();

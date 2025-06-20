@@ -32,7 +32,7 @@
 #include <ostream>
 
 #include "lo-ieee.h"
-#include "lo-mappers.h"
+#include "mappers.h"
 
 #include "defun.h"
 #include "errwarn.h"

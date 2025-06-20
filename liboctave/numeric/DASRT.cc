@@ -32,7 +32,7 @@
 
 #include "DASRT.h"
 #include "f77-fcn.h"
-#include "lo-error.h"
+#include "oct-error.h"
 #include "quit.h"
 
 typedef F77_INT (*dasrt_fcn_ptr) (const double&, const double *, const double *,

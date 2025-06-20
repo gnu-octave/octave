@@ -27,7 +27,7 @@
 #  include "config.h"
 #endif
 
-#include "lo-error.h"
+#include "oct-error.h"
 #include "oct-sparse.h"
 
 #if (defined (HAVE_AMD) || defined (HAVE_CCOLAMD)               \

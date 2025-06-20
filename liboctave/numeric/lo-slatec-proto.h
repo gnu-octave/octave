@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2016-2025 The Octave Project Developers
+// Copyright (C) 2025 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -26,37 +26,8 @@
 #if ! defined (octave_lo_slatec_proto_h)
 #define octave_lo_slatec_proto_h 1
 
-#include "octave-config.h"
+#warning 'header file "lo-slatec-proto.h" is deprecated, use "slatec-proto.h" instead'
 
-#include "f77-fcn.h"
-
-extern "C"
-{
-  // PCHIM
-
-  F77_RET_T
-  F77_FUNC (dpchim, DPCHIM) (const F77_INT& n, const F77_DBLE *x,
-                             const F77_DBLE *f, F77_DBLE *d,
-                             const F77_INT& incfd,
-                             F77_INT& ierr);
-
-  F77_RET_T
-  F77_FUNC (pchim, PCHIM) (const F77_INT& n, const F77_REAL *x,
-                           const F77_REAL *f, F77_REAL *d,
-                           const F77_INT& incfd,
-                           F77_INT& ierr);
-
-  // PSIFN
-
-  F77_RET_T
-  F77_FUNC (psifn, PSIFN) (const F77_REAL&, const F77_INT&,
-                           const F77_INT&, const F77_INT&,
-                           F77_REAL&, F77_INT&, F77_INT&);
-
-  F77_RET_T
-  F77_FUNC (dpsifn, DPSIFN) (const F77_DBLE&, const F77_INT&,
-                             const F77_INT&, const F77_INT&,
-                             F77_DBLE&, F77_INT&, F77_INT&);
-}
+#include "slatec-proto.h"
 
 #endif

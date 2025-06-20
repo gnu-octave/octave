@@ -38,7 +38,7 @@
 
 #include "file-ops.h"
 #include "lo-ieee.h"
-#include "lo-sysdep.h"
+#include "oct-sysdep.h"
 
 #include "defun.h"
 #include "interpreter.h"

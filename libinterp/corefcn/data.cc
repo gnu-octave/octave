@@ -5326,8 +5326,15 @@ either @qcode{"double"} or @qcode{"single"}.
 }
 
 /*
-%!assert (single (NA ("double")), NA ("single"))
-%!assert (double (NA ("single")), NA ("double"))
+%!testif HAVE_QNAN_WITH_PAYLOAD
+%! assert (single (NA ("double")), NA ("single"))
+%!testif HAVE_QNAN_WITH_PAYLOAD
+%! assert (double (NA ("single")), NA ("double"))
+// Duplicate from above.  Only for test statistics
+%!testif ; ! __have_feature__ ("QNAN_WITH_PAYLOAD") <59830>
+%! assert (single (NA ("double")), NA ("single"))
+%!testif ; ! __have_feature__ ("QNAN_WITH_PAYLOAD") <59830>
+%! assert (double (NA ("single")), NA ("double"))
 */
 
 DEFUN (false, args, ,

@@ -36,18 +36,18 @@
 #include <vector>
 
 #include "Array-oct.h"
-#include "MArray.h"
 #include "Array-util.h"
+#include "MArray.h"
 #include "Range.h"
 #include "idx-vector.h"
-#include "lo-error.h"
-#include "quit.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
+#include "quit.h"
 
 #include "Sparse.h"
-#include "sparse-util.h"
-#include "oct-spparms.h"
 #include "mx-inlines.cc"
+#include "oct-spparms.h"
+#include "sparse-util.h"
 
 #include "PermMatrix.h"
 

@@ -31,7 +31,6 @@
 #include <string>
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(mach_info)
 
 enum float_format
@@ -49,6 +48,8 @@ OCTAVE_API float_format native_float_format ();
 OCTAVE_API bool words_big_endian ();
 
 OCTAVE_API bool words_little_endian ();
+
+OCTAVE_API bool nan_with_payload ();
 
 OCTAVE_API float_format string_to_float_format (const std::string&);
 

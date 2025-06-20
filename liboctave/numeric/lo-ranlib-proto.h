@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2016-2025 The Octave Project Developers
+// Copyright (C) 2025 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -26,53 +26,8 @@
 #if ! defined (octave_lo_ranlib_proto_h)
 #define octave_lo_ranlib_proto_h 1
 
-#include "octave-config.h"
+#warning 'header file "lo-ranlib-proto.h" is deprecated, use "ranlib-proto.h" instead'
 
-#include "f77-fcn.h"
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (dgenexp, DGENEXP) (const F77_DBLE&, F77_DBLE&);
-
-  F77_RET_T
-  F77_FUNC (dgengam, DGENGAM) (const F77_DBLE&, const F77_DBLE&, F77_DBLE&);
-
-  F77_RET_T
-  F77_FUNC (dgennor, DGENNOR) (const F77_DBLE&, const F77_DBLE&, F77_DBLE&);
-
-  F77_RET_T
-  F77_FUNC (dgenunf, DGENUNF) (const F77_DBLE&, const F77_DBLE&, F77_DBLE&);
-
-  F77_RET_T
-  F77_FUNC (dignpoi, DIGNPOI) (const F77_DBLE&, F77_DBLE&);
-
-  F77_RET_T
-  F77_FUNC (fgenexp, FGENEXP) (const F77_REAL&, F77_REAL&);
-
-  F77_RET_T
-  F77_FUNC (fgengam, FGENGAM) (const F77_REAL&, const F77_REAL&, F77_REAL&);
-
-  F77_RET_T
-  F77_FUNC (fgennor, FGENNOR) (const F77_REAL&, const F77_REAL&, F77_REAL&);
-
-  F77_RET_T
-  F77_FUNC (fgenunf, FGENUNF) (const F77_REAL&, const F77_REAL&, F77_REAL&);
-
-  F77_RET_T
-  F77_FUNC (fignpoi, FIGNPOI) (const F77_REAL&, F77_REAL&);
-
-  F77_RET_T
-  F77_FUNC (getsd, GETSD) (F77_INT4&, F77_INT4&);
-
-  F77_RET_T
-  F77_FUNC (setall, SETALL) (const F77_INT4&, const F77_INT4&);
-
-  F77_RET_T
-  F77_FUNC (setcgn, SETCGN) (const F77_INT4&);
-
-  F77_RET_T
-  F77_FUNC (setsd, SETSD) (const F77_INT4&, const F77_INT4&);
-}
+#include "ranlib-proto.h"
 
 #endif

@@ -33,7 +33,7 @@
 #include <iosfwd>
 #include <string>
 
-#include "lo-mappers.h"
+#include "mappers.h"
 #include "lo-utils.h"
 #include "mx-base.h"
 #include "str-vec.h"
@@ -195,7 +195,12 @@ public:
   char_array_value (bool = false) const
   {
     charNDArray retval (dim_vector (1, 1));
-    retval(0) = static_cast<char> (scalar);
+#if ! defined (HAVE_FLOAT_QNAN_CHAR_0)
+    if (octave::math::isnan (scalar))
+      retval(0) = 0.0;
+    else
+#endif
+      retval(0) = static_cast<char> (scalar);
     return retval;
   }
 

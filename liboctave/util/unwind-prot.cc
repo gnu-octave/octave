@@ -27,7 +27,7 @@
 #  include "config.h"
 #endif
 
-#include "lo-error.h"
+#include "oct-error.h"
 #include "unwind-prot.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)

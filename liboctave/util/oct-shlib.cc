@@ -50,12 +50,12 @@ extern "C"
 
 #include "file-ops.h"
 #include "file-stat.h"
-#include "lo-error.h"
+#include "oct-error.h"
 #include "oct-shlib.h"
 #include "str-vec.h"
 
 #if defined (HAVE_LOADLIBRARY_API)
-#  include "lo-sysdep.h"
+#  include "oct-sysdep.h"
 #endif
 
 OCTAVE_BEGIN_NAMESPACE(octave)

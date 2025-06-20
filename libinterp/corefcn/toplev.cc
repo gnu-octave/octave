@@ -41,7 +41,7 @@
 
 #include "async-system-wrapper.h"
 #include "child-list.h"
-#include "lo-error.h"
+#include "oct-error.h"
 #include "oct-fftw.h"
 #include "oct-locbuf.h"
 #include "oct-syscalls.h"
@@ -591,6 +591,9 @@ specified option.
 
       config.assign ("words_little_endian",
                      octave_value (mach_info::words_little_endian ()));
+
+      config.assign ("nan_with_payload",
+                     octave_value (mach_info::nan_with_payload ()));
 
       config.assign ("build_environment", octave_value (build_env));
 

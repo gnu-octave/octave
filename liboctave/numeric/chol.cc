@@ -37,11 +37,11 @@
 #include "fCMatrix.h"
 #include "fColVector.h"
 #include "fMatrix.h"
-#include "lo-error.h"
-#include "lo-lapack-proto.h"
-#include "lo-qrupdate-proto.h"
+#include "lapack-proto.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
 #include "oct-norm.h"
+#include "qrupdate-proto.h"
 
 #if ! defined (HAVE_QRUPDATE)
 #  include "qr.h"

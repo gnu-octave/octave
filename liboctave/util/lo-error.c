@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "lo-error.h"
+#include "oct-error.h"
 
 /* Having this file in this directory is a kluge to avoid unresolved
    symbol errors when creating shared versions of liboctave. */

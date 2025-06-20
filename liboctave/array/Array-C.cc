@@ -29,8 +29,8 @@
 
 // Instantiate Arrays of Complex values.
 
+#include "mappers.h"
 #include "oct-cmplx.h"
-#include "lo-mappers.h"
 
 #define OCTAVE_EXTERN_TEMPLATE_ARRAY
 #include "Array-oct.h"

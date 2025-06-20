@@ -27,7 +27,7 @@
 #  include "config.h"
 #endif
 
-#include "lo-slatec-proto.h"
+#include "slatec-proto.h"
 
 #include "defun.h"
 #include "error.h"

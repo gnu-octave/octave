@@ -42,16 +42,15 @@
 #include "fColVector.h"
 #include "fMatrix.h"
 #include "fRowVector.h"
-#include "lo-error.h"
-#include "lo-lapack-proto.h"
-#include "lo-qrupdate-proto.h"
+#include "lapack-proto.h"
 #include "oct-cmplx.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
 #include "oct-sort.h"
 #include "qr.h"
+#include "qrupdate-proto.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(math)
 
 template <typename T>

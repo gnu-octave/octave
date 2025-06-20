@@ -27,7 +27,7 @@
 #  include "config.h"
 #endif
 
-#include "lo-mappers.h"
+#include "mappers.h"
 
 #include "defun.h"
 #include "error.h"

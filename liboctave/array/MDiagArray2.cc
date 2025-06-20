@@ -29,7 +29,7 @@
 
 #include "MDiagArray2.h"
 #include "Array-util.h"
-#include "lo-error.h"
+#include "oct-error.h"
 
 template <typename T>
 bool

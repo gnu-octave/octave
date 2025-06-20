@@ -39,9 +39,9 @@
 #include "file-ops.h"
 #include "file-stat.h"
 #include "glob-match.h"
-#include "lo-sysdep.h"
 #include "oct-env.h"
 #include "oct-glob.h"
+#include "oct-sysdep.h"
 #include "pathsearch.h"
 #include "str-vec.h"
 

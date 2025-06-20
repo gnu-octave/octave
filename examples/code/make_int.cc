@@ -6,8 +6,8 @@
 #include <ostream>
 #include <string>
 
-#include <octave/lo-mappers.h>
 #include <octave/lo-utils.h>
+#include <octave/mappers.h>
 #include <octave/mx-base.h>
 #include <octave/str-vec.h>
 

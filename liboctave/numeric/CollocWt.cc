@@ -34,8 +34,8 @@
 
 #include "Array-oct.h"
 #include "CollocWt.h"
-#include "lo-error.h"
-#include "lo-mappers.h"
+#include "mappers.h"
+#include "oct-error.h"
 
 // The following routines jcobi, dif, and dfopr are based on the code
 // found in Villadsen, J. and M. L. Michelsen, Solution of Differential

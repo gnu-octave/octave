@@ -28,8 +28,8 @@
 #endif
 
 #include "file-stat.h"
-#include "lo-sysdep.h"
 #include "oct-env.h"
+#include "oct-sysdep.h"
 #include "oct-time.h"
 
 #include "defun.h"

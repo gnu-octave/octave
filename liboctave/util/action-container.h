@@ -39,7 +39,6 @@
 // FIXME: is there a better name for this class?
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(util)
 
 template <typename T>

@@ -32,8 +32,8 @@
 
 #include "dir-ops.h"
 #include "file-ops.h"
-#include "lo-sysdep.h"
 #include "oct-env.h"
+#include "oct-sysdep.h"
 #include "pathsearch.h"
 #if ! defined (OCTAVE_USE_WINDOWS_API)
 #  include "file-stat.h"

@@ -32,10 +32,10 @@
 
 #include "glob-wrappers.h"
 
-#include "oct-glob.h"
 #include "file-ops.h"
 #include "file-stat.h"
-#include "lo-sysdep.h"
+#include "oct-glob.h"
+#include "oct-sysdep.h"
 #include "unwind-prot.h"
 
 #if defined (OCTAVE_USE_WINDOWS_API)
@@ -51,7 +51,6 @@
 // which is not what we want...
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 bool

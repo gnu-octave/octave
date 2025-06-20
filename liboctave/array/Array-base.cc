@@ -33,10 +33,10 @@
 
 #include <ostream>
 
-#include "Array-util.h"
 #include "Array-oct.h"
-#include "lo-error.h"
-#include "lo-mappers.h"
+#include "Array-util.h"
+#include "mappers.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
 
 // One dimensional array class.  Handles the reference counting for

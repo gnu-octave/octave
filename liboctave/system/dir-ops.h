@@ -33,7 +33,6 @@
 #include "str-vec.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 class OCTAVE_API dir_entry

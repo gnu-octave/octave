@@ -75,6 +75,7 @@ workspace_view::workspace_view (QWidget *p)
   m_view->setContextMenuPolicy (Qt::CustomContextMenu);
   m_view->setShowGrid (false);
   (m_view->verticalHeader) ()->hide ();
+  m_view->verticalHeader ()->setMinimumSectionSize(1);  // allow smaller row sizes
   m_view->setAlternatingRowColors (true);
   m_view_previous_row_count = 0;
 

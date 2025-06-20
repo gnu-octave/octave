@@ -28,7 +28,7 @@
 #endif
 
 #include "Array-util.h"
-#include "lo-error.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
 
 bool

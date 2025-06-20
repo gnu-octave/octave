@@ -43,8 +43,8 @@
 #  include <unistd.h>
 #endif
 
-#include "lo-mappers.h"
 #include "lo-utils.h"
+#include "mappers.h"
 #include "oct-procbuf.h"
 #include "oct-syscalls.h"
 #include "sysdep.h"

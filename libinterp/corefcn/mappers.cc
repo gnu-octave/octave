@@ -30,8 +30,8 @@
 #include <cctype>
 
 #include "lo-ieee.h"
-#include "lo-specfun.h"
-#include "lo-mappers.h"
+#include "mappers.h"
+#include "oct-specfun.h"
 
 #include "defun.h"
 #include "error.h"
@@ -1483,10 +1483,21 @@ isna ([13, Inf, NA, NaN])
 
 %!assert (! isna (single (Inf)))
 %!assert (! isna (single (NaN)))
-%!assert (isna (single (NA)))
-%!assert (isna (single (rand (1,10))), false (1,10))
-%!assert (isna (single ([NaN -Inf -1 0 1 Inf NA])),
-%!        [false, false, false, false, false, false, true])
+%!testif HAVE_QNAN_WITH_PAYLOAD
+%! assert (isna (single (NA)))
+%!testif HAVE_QNAN_WITH_PAYLOAD
+%! assert (isna (single (rand (1,10))), false (1,10))
+%!testif HAVE_QNAN_WITH_PAYLOAD
+%! assert (isna (single ([NaN -Inf -1 0 1 Inf NA])),
+%!         [false, false, false, false, false, false, true])
+// Duplicate from above.  Only for test statistics
+%!testif ; ! __have_feature__ ("QNAN_WITH_PAYLOAD") <59830>
+%! assert (isna (single (NA)))
+%!testif ; ! __have_feature__ ("QNAN_WITH_PAYLOAD") <59830>
+%! assert (isna (single (rand (1,10))), false (1,10))
+%!testif ; ! __have_feature__ ("QNAN_WITH_PAYLOAD") <59830>
+%! assert (isna (single ([NaN -Inf -1 0 1 Inf NA])),
+%!         [false, false, false, false, false, false, true])
 
 %!error isna ()
 %!error isna (1, 2)

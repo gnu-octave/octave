@@ -33,7 +33,7 @@
 #  include <grp.h>
 #endif
 
-#include "lo-error.h"
+#include "oct-error.h"
 #include "oct-group.h"
 #include "str-vec.h"
 
@@ -48,7 +48,6 @@ err_invalid ()
 }
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 std::string

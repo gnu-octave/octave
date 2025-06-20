@@ -29,7 +29,7 @@
 
 // Instantiate Arrays of double values.
 
-#include "lo-mappers.h"
+#include "mappers.h"
 #define OCTAVE_EXTERN_TEMPLATE_ARRAY
 #include "Array-oct.h"
 

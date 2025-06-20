@@ -46,7 +46,7 @@
 #include "input.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
-#include "lo-sysdep.h"
+#include "oct-sysdep.h"
 #include "octave-preserve-stream-state.h"
 #include "ov-usr-fcn.h"
 #include "ov.h"

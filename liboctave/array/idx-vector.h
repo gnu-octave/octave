@@ -35,11 +35,11 @@
 #include <memory>
 
 #include "Array-fwd.h"
+#include "Sparse-fwd.h"
 #include "dim-vector.h"
-#include "lo-error.h"
+#include "oct-error.h"
 #include "oct-inttypes.h"
 #include "oct-refcount.h"
-#include "Sparse-fwd.h"
 #include "range-fwd.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)

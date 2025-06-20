@@ -31,7 +31,6 @@
 #include <string>
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 class OCTAVE_API env

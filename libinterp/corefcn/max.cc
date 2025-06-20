@@ -30,7 +30,7 @@
 #include <cmath>
 
 #include "lo-ieee.h"
-#include "lo-mappers.h"
+#include "mappers.h"
 #include "dNDArray.h"
 #include "CNDArray.h"
 #include "quit.h"

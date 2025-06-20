@@ -32,7 +32,7 @@
 
 #include "LSODE.h"
 #include "f77-fcn.h"
-#include "lo-error.h"
+#include "oct-error.h"
 #include "quit.h"
 
 typedef F77_INT (*lsode_fcn_ptr) (const F77_INT&, const double&, double *,

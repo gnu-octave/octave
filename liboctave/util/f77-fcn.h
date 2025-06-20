@@ -28,7 +28,7 @@
 
 #include "octave-config.h"
 
-#include "lo-error.h"
+#include "oct-error.h"
 #include "quit.h"
 
 #if defined (__cplusplus)

@@ -48,7 +48,6 @@
 #include "default-defs.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(config)
 
 // Variables that name directories or files are substituted into source

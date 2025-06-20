@@ -35,7 +35,7 @@
 #include <map>
 #include <set>
 
-#include "lo-mappers.h"
+#include "mappers.h"
 
 #include "oct-handle.h"
 #include "url-transfer.h"

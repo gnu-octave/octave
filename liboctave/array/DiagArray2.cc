@@ -31,7 +31,7 @@
 
 #include "DiagArray2.h"
 
-#include "lo-error.h"
+#include "oct-error.h"
 
 template <typename T>
 DiagArray2<T>::DiagArray2 (const Array<T>& a, octave_idx_type r,

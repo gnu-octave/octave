@@ -29,7 +29,7 @@
 
 #include "MArray.h"
 #include "Array-util.h"
-#include "lo-error.h"
+#include "oct-error.h"
 
 template <typename T>
 class _idxadds_helper

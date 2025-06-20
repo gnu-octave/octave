@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2018-2025 The Octave Project Developers
+// Copyright (C) 2025 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -26,19 +26,8 @@
 #if ! defined (octave_lo_sysinfo_h)
 #define octave_lo_sysinfo_h 1
 
-#include "octave-config.h"
+#warning 'header file "lo-sysinfo.h" is deprecated, use "oct-sysinfo.h" instead'
 
-#include <string>
-
-OCTAVE_BEGIN_NAMESPACE(octave)
-
-OCTAVE_BEGIN_NAMESPACE(sys)
-
-extern OCTAVE_API std::string blas_version ();
-
-extern OCTAVE_API std::string lapack_version ();
-
-OCTAVE_END_NAMESPACE(sys)
-OCTAVE_END_NAMESPACE(octave)
+#include "oct-sysinfo.h"
 
 #endif

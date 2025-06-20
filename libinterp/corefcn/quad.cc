@@ -30,16 +30,16 @@
 #include <string>
 
 #include "Quad.h"
-#include "lo-mappers.h"
+#include "mappers.h"
 
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
-#include "pager.h"
 #include "ov.h"
 #include "ovl.h"
+#include "pager.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"

@@ -27,11 +27,11 @@
 #  include "config.h"
 #endif
 
-#include "dNDArray.h"
 #include "CNDArray.h"
-#include "fNDArray.h"
+#include "dNDArray.h"
 #include "fCNDArray.h"
-#include "lo-mappers.h"
+#include "fNDArray.h"
+#include "mappers.h"
 #include "oct-binmap.h"
 
 #include "defun.h"

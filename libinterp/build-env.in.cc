@@ -32,7 +32,6 @@
 #include "build-env.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(build_env)
 
 const char *AMD_CPPFLAGS = %OCTAVE_CONF_AMD_CPPFLAGS%;

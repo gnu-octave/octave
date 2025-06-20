@@ -29,8 +29,8 @@
 
 #include <iostream>
 
+#include "blas-proto.h"
 #include "f77-fcn.h"
-#include "lo-blas-proto.h"
 
 typedef void (*xerbla_handler_fptr) (void);
 

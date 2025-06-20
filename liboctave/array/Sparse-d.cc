@@ -29,10 +29,10 @@
 
 // Instantiate Sparse matrix of double values.
 
-#include "lo-mappers.h"
 #include "Array-oct.h"
-#include "Sparse.h"
 #include "Sparse.cc"
+#include "Sparse.h"
+#include "mappers.h"
 
 template <>
 OCTAVE_API

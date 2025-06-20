@@ -27,8 +27,8 @@
 #  include "config.h"
 #endif
 
+#include "oct-error.h"
 #include "oct-mutex.h"
-#include "lo-error.h"
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 #  include <windows.h>

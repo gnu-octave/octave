@@ -36,7 +36,7 @@
 #  include <windows.h>
 #endif
 
-#include "lo-mappers.h"
+#include "mappers.h"
 #include "oct-locbuf.h"
 
 #include "errwarn.h"

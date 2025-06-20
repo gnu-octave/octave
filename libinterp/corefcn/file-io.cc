@@ -55,11 +55,11 @@
 #include "file-stat.h"
 #include "iconv-wrappers.h"
 #include "lo-ieee.h"
-#include "lo-sysdep.h"
 #include "localcharset-wrapper.h"
 #include "mkostemp-wrapper.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
+#include "oct-sysdep.h"
 #include "unistd-wrappers.h"
 
 #include "builtin-defun-decls.h"

@@ -34,8 +34,8 @@
 
 #include "data-conv.h"
 #include "mach-info.h"
-#include "lo-specfun.h"
-#include "lo-mappers.h"
+#include "mappers.h"
+#include "oct-specfun.h"
 
 #include "defun.h"
 #include "errwarn.h"

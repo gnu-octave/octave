@@ -30,8 +30,8 @@
 #include <ostream>
 
 #include "Array-oct.h"
-#include "lo-error.h"
 #include "lo-ieee.h"
+#include "oct-error.h"
 #include "oct-spparms.h"
 #include "singleton-cleanup.h"
 

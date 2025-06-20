@@ -32,15 +32,15 @@
 
 #include <ostream>
 
-#include "idx-vector.h"
 #include "Array-oct.h"
 #include "Array-util.h"
-#include "Sparse.h"
 #include "Range.h"
+#include "Sparse.h"
+#include "idx-vector.h"
 
+#include "mappers.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
-#include "lo-error.h"
-#include "lo-mappers.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 

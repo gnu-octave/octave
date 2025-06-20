@@ -31,9 +31,9 @@
 
 #include "Array-util.h"
 #include "chNDArray.h"
-#include "mx-base.h"
 #include "lo-ieee.h"
-#include "lo-mappers.h"
+#include "mappers.h"
+#include "mx-base.h"
 #include "mx-op-defs.h"
 #include "str-vec.h"
 

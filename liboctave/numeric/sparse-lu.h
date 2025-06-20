@@ -35,7 +35,6 @@
 #include "dSparse.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(math)
 
 // If the sparse matrix classes become templated on the element type

@@ -43,7 +43,6 @@ as_double (OCTAVE_TIME_T sec, long usec)
 }
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 class base_tm;

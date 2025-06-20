@@ -33,7 +33,7 @@
 #include "DASSL.h"
 #include "dMatrix.h"
 #include "f77-fcn.h"
-#include "lo-error.h"
+#include "oct-error.h"
 #include "quit.h"
 
 typedef F77_INT (*dassl_fcn_ptr) (const double&, const double *,

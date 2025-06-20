@@ -44,7 +44,7 @@
 #endif
 
 #include "f77-fcn.h"
-#include "lo-lapack-proto.h"
+#include "lapack-proto.h"
 #include "qr.h"
 #include "quit.h"
 

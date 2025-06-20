@@ -27,7 +27,7 @@
 #  include "config.h"
 #endif
 
-#include "lo-regexp.h"
+#include "oct-regexp.h"
 #include "str-vec.h"
 
 #include "builtin-defun-decls.h"

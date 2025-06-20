@@ -1587,8 +1587,9 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
     save_LIBS="$LIBS"
     LIBS="$LIBS $OPENGL_LIBS"
     AC_CACHE_CHECK([for glBlendFuncSeparate],
-      [octave_cv_func_glblendfuncseparate],
-      [AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+      [octave_cv_func_glblendfuncseparate],[
+      AC_LANG_PUSH(C++)
+      AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #if defined (HAVE_WINDOWS_H)
 # include <windows.h>
 #endif
@@ -1610,7 +1611,16 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
         glBlendFuncSeparate (sfactor, dfactor, salpha, dalpha);
         ]])],
         octave_cv_func_glblendfuncseparate=yes,
-        [AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+        octave_cv_func_glblendfuncseparate=no)
+      AC_LANG_POP(C++)
+      ])
+    if test $octave_cv_func_glblendfuncseparate = yes; then
+      AC_DEFINE(HAVE_GLBLENDFUNCSEPARATE, 1, [Define to 1 if glBlendFuncSeparate can be used directly.])
+    else
+      AC_CACHE_CHECK([for glBlendFuncSeparate with GL_GLEXT_PROTOTYPES],
+        [octave_cv_func_glblendfuncseparate_as_ext],[
+        AC_LANG_PUSH(C++)
+        AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #define GL_GLEXT_PROTOTYPES 1
 #if defined (HAVE_WINDOWS_H)
 # include <windows.h>
@@ -1632,15 +1642,15 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
           GLenum dalpha=0;
           glBlendFuncSeparate (sfactor, dfactor, salpha, dalpha);
           ]])],
-          [AC_DEFINE(GL_GLEXT_PROTOTYPES, 1, [Define to 1 to enable OpenGL extensions in headers.])
-          octave_cv_func_glblendfuncseparate=yes],
-          octave_cv_func_glblendfuncseparate=no)
+          octave_cv_func_glblendfuncseparate_as_ext=yes,
+          octave_cv_func_glblendfuncseparate_as_ext=no)
         ])
-      ])
-    LIBS="$save_LIBS"
-    if test $octave_cv_func_glblendfuncseparate = yes; then
-      AC_DEFINE(HAVE_GLBLENDFUNCSEPARATE, 1, [Define to 1 if glBlendFuncSeparate can be used directly.])
+      if test $octave_cv_func_glblendfuncseparate_as_ext = yes; then
+        AC_DEFINE(HAVE_GLBLENDFUNCSEPARATE, 1, [Define to 1 if glBlendFuncSeparate can be used directly.])
+        AC_DEFINE(GL_GLEXT_PROTOTYPES, 1, [Define to 1 to enable OpenGL extensions in headers.])
+      fi
     fi
+    LIBS="$save_LIBS"
   fi
 ])
 dnl
@@ -3238,7 +3248,7 @@ AC_DEFUN([OCTAVE_IEEE754_QNAN], [
           /* When cross-compiling, only test whether MIPS is the target
            * architecture.
            * FIXME: Add more conditions as needed.  */
-          #if defined (__mips__)
+          #if defined (__mips__) || defined (mips) || defined (__mips) || defined (__MIPS__)
           #  error "quiet NaN on MIPS is not conformant to IEEE 754-2008"
           #endif
         ]])],
@@ -3250,6 +3260,178 @@ AC_DEFUN([OCTAVE_IEEE754_QNAN], [
   if test $octave_cv_ieee754_qnan = yes; then
     AC_DEFINE(HAVE_IEEE754_QNAN, 1,
       [Define to 1 if quiet NaN values are encoded according to IEEE 754-2008.])
+  fi
+])
+dnl
+dnl Check if the payload of quiet NaN values is retained on arithmetic
+dnl operations.  That is needed for consistent NA handling.
+dnl
+AC_DEFUN([OCTAVE_QNAN_WITH_PAYLOAD], [
+  AC_CACHE_CHECK([whether quiet NaN values retain payload on arithmetic operations],
+    [octave_cv_qnan_with_payload],
+    [AC_LANG_PUSH(C)
+    save_CFLAGS="$CFLAGS"
+    CFLAGS="$CFLAGS -O0"
+    AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+        #include <math.h>
+        #include <stdint.h>
+        #include <string.h>
+        ]], [[
+        /* Quiet NaNs retain the "payload" (i.e., the value of the mantissa)
+         * when performing arithmetic operations.  That is not the case for
+         * some architectures, e.g., RISC-V.  */
+
+        #if defined (HAVE_IEEE754_QNAN)
+        #  define LO_IEEE_NA_HW 0x7FF840F4
+        #else
+        #  define LO_IEEE_NA_HW 0x7FF040F4
+        #endif
+        #define LO_IEEE_NA_LW 0x40000000
+        uint32_t word_NA[2];
+        double oct_NA;
+        uint64_t bits_NA;
+        uint64_t bits_NA_1;
+
+        /* Check whether platform is Big Endian */
+        union
+        {
+          long l;
+          char c[sizeof (long)];
+        } u;
+        u.l = 1;
+
+        /* value used as NA in Octave */
+        if (u.c[sizeof (long) - 1] == 1)
+          {
+            /* Big Endian */
+            word_NA[0] = LO_IEEE_NA_HW;
+            word_NA[1] = LO_IEEE_NA_LW;
+          }
+        else
+          {
+            /* Little Endian */
+            word_NA[1] = LO_IEEE_NA_HW;
+            word_NA[0] = LO_IEEE_NA_LW;
+          }
+
+        memcpy (&oct_NA, &word_NA, sizeof (oct_NA));
+
+        memcpy (&bits_NA, &oct_NA, sizeof (oct_NA));
+        oct_NA += 1.0;
+        memcpy (&bits_NA_1, &oct_NA, sizeof (oct_NA));
+        if (bits_NA == bits_NA_1)
+          /* payload of quiet NaN was retained */
+          return 0;
+        else
+          /* payload of quiet NaN was not retained */
+          return 1;
+      ]])],
+      octave_cv_qnan_with_payload=yes,
+      octave_cv_qnan_with_payload=no,
+      [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+          ]], [[
+          /* When cross-compiling, only test whether the target architecture is
+           * RISC-V.
+           * FIXME: Add more conditions as needed.  */
+          #if defined(__riscv)
+          #  error "quiet NaN values do not retain the payload on arithmetic operations"
+          #endif
+        ]])],
+        octave_cv_qnan_with_payload=yes,
+        octave_cv_qnan_with_payload=no)
+    ])
+    CFLAGS="$save_CFLAGS"
+    AC_LANG_POP(C)
+  ])
+  if test $octave_cv_qnan_with_payload = yes; then
+    AC_DEFINE(HAVE_QNAN_WITH_PAYLOAD, 1,
+      [Define to 1 if quiet NaN values retain their payload on arithmetic operations.])
+  fi
+])
+dnl
+dnl Check whether casting double precision NaN values to the type "char"
+dnl results in 0.
+dnl
+AC_DEFUN([OCTAVE_DOUBLE_QNAN_CHAR_0], [
+  AC_CACHE_CHECK([whether double precision NaN values convert to char 0],
+    [octave_cv_double_qnan_char_0],
+    [AC_LANG_PUSH(C)
+    save_CFLAGS="$CFLAGS"
+    CFLAGS="$CFLAGS -O0"
+    AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+        #include <math.h>
+        ]], [[
+        /* Octave expects that NaN values convert to 0 when casting to char.
+         * That is not the case for some architectures, e.g., RISC-V.  */
+        double qNaN = NAN;  // quiet NaN
+        if ((char) qNaN == 0)
+          return 0;
+        else
+          return 1;
+      ]])],
+      octave_cv_double_qnan_char_0=yes,
+      octave_cv_double_qnan_char_0=no,
+      [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+          ]], [[
+          /* When cross-compiling, only test whether target architecture is
+           * RISC-V.
+           * FIXME: Add more conditions as needed.  */
+          #if defined(__riscv)
+          #  error "double NaN do not static cast to char 0"
+          #endif
+        ]])],
+        octave_cv_double_qnan_char_0=yes,
+        octave_cv_double_qnan_char_0=no)
+    ])
+    CFLAGS="$save_CFLAGS"
+    AC_LANG_POP(C)
+  ])
+  if test $octave_cv_double_qnan_char_0 = yes; then
+    AC_DEFINE(HAVE_DOUBLE_QNAN_CHAR_0, 1,
+      [Define to 1 if double precision NaN values convert to char 0.])
+  fi
+])
+dnl
+dnl Check whether casting double precision NaN values to the type "char"
+dnl results in 0.
+dnl
+AC_DEFUN([OCTAVE_FLOAT_QNAN_CHAR_0], [
+  AC_CACHE_CHECK([whether single precision NaN values convert to char 0],
+    [octave_cv_float_qnan_char_0],
+    [AC_LANG_PUSH(C)
+    save_CFLAGS="$CFLAGS"
+    CFLAGS="$CFLAGS -O0"
+    AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+        #include <math.h>
+        ]], [[
+        /* Octave expects that NaN values convert to 0 when casting to char.
+         * That is not the case for some architectures, e.g., RISC-V.  */
+        float qNaN = NAN;  // quiet NaN
+        if ((char) qNaN == 0)
+          return 0;
+        else
+          return 1;
+      ]])],
+      octave_cv_float_qnan_char_0=yes,
+      octave_cv_float_qnan_char_0=no,
+      [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+          ]], [[
+          /* When cross-compiling, only test whether target architecture is
+           * RISC-V.
+           * FIXME: Add more conditions as needed.  */
+          #if defined(__riscv)
+          #  error "float NaN do not static cast to char 0"
+          #endif
+        ]])],
+        octave_cv_float_qnan_char_0=yes,
+        octave_cv_float_qnan_char_0=no)
+    ])
+    CFLAGS="$save_CFLAGS"
+    AC_LANG_POP(C)
+  ])
+  if test $octave_cv_float_qnan_char_0 = yes; then
+    AC_DEFINE(HAVE_FLOAT_QNAN_CHAR_0, 1,
+      [Define to 1 if single precision NaN values convert to char 0.])
   fi
 ])
 dnl

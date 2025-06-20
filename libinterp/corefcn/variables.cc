@@ -39,7 +39,7 @@
 #include "oct-env.h"
 #include "file-ops.h"
 #include "glob-match.h"
-#include "lo-regexp.h"
+#include "oct-regexp.h"
 #include "str-vec.h"
 
 #include "Cell.h"

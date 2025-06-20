@@ -28,7 +28,7 @@
 #endif
 
 #include "fpucw-wrappers.h"
-#include "lo-error.h"
+#include "oct-error.h"
 #include "oct-inttypes.h"
 
 template <typename T>

@@ -35,8 +35,8 @@
 #include <string>
 
 #include "glob-match.h"
-#include "lo-regexp.h"
 #include "oct-refcount.h"
+#include "oct-regexp.h"
 
 class tree_argument_list;
 class octave_user_function;

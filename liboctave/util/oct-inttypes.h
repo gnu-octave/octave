@@ -34,14 +34,13 @@
 #include <iosfwd>
 #include <limits>
 
-#include "lo-mappers.h"
-#include "lo-traits.h"
+#include "mappers.h"
 #include "oct-inttypes-fwd.h"
+#include "oct-traits.h"
 
 #if defined (OCTAVE_INT_USE_LONG_DOUBLE)
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(math)
 
 inline long double round (long double x)
@@ -927,7 +926,6 @@ mod (const octave_int<T>& x, const octave_int<T>& y)
 // No mixed integer binary operations!
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(math)
 
 template <typename T>

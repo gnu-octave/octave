@@ -31,11 +31,10 @@
 
 #include <limits>
 
-#include "lo-error.h"
 #include "lo-ieee.h"
-#include "lo-mappers.h"
-#include "lo-ranlib-proto.h"
 #include "mach-info.h"
+#include "mappers.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
 #include "oct-rand.h"
 #include "oct-time.h"
@@ -43,6 +42,7 @@
 #include "randgamma.h"
 #include "randmtzig.h"
 #include "randpoisson.h"
+#include "ranlib-proto.h"
 #include "singleton-cleanup.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)

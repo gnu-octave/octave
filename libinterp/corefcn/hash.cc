@@ -42,7 +42,7 @@ for now.
 
 #include <string>
 
-#include "lo-hash.h"
+#include "oct-hash.h"
 
 #include "defun.h"
 #include "error.h"

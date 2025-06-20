@@ -32,8 +32,8 @@
 #include <sstream>
 
 #include "lo-ieee.h"
-#include "lo-specfun.h"
-#include "lo-mappers.h"
+#include "mappers.h"
+#include "oct-specfun.h"
 
 #include "mxarray.h"
 #include "ovl.h"

@@ -32,12 +32,12 @@
 #include <limits>
 #include <ostream>
 
-#include "quit.h"
-#include "lo-ieee.h"
-#include "lo-lapack-proto.h"
-#include "lo-mappers.h"
 #include "dRowVector.h"
+#include "lapack-proto.h"
+#include "lo-ieee.h"
+#include "mappers.h"
 #include "oct-locbuf.h"
+#include "quit.h"
 
 #include "dDiagMatrix.h"
 #include "CSparse.h"

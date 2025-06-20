@@ -91,7 +91,7 @@
 
 #include <functional>
 
-#include "lo-traits.h"
+#include "oct-traits.h"
 
 // Enum for type of sort function
 enum sortmode { UNSORTED = 0, ASCENDING, DESCENDING };

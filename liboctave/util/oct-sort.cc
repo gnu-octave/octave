@@ -111,11 +111,11 @@
 #include <cstring>
 #include <stack>
 
-#include "lo-error.h"
-#include "lo-mappers.h"
-#include "quit.h"
-#include "oct-sort.h"
+#include "mappers.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
+#include "oct-sort.h"
+#include "quit.h"
 
 template <typename T>
 octave_sort<T>::octave_sort () :

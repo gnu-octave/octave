@@ -29,8 +29,8 @@
 
 #include <iostream>
 
-#include "lo-regexp.h"
-#include "lo-sysdep.h"
+#include "oct-regexp.h"
+#include "oct-sysdep.h"
 #include "str-vec.h"
 
 #include "defun.h"

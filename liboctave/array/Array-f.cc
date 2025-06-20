@@ -29,7 +29,7 @@
 
 // Instantiate Arrays of float values.
 
-#include "lo-mappers.h"
+#include "mappers.h"
 #define OCTAVE_EXTERN_TEMPLATE_ARRAY
 #include "Array-oct.h"
 

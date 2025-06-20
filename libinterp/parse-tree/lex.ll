@@ -100,7 +100,7 @@ and after the nested call.
 #include <stack>
 
 #include "cmd-edit.h"
-#include "lo-mappers.h"
+#include "mappers.h"
 #include "quit.h"
 #include "unistd-wrappers.h"
 

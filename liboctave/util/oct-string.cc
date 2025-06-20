@@ -39,7 +39,7 @@
 #include "Array-oct.h"
 #include "iconv-wrappers.h"
 #include "lo-ieee.h"
-#include "lo-mappers.h"
+#include "mappers.h"
 #include "oct-locbuf.h"
 #include "uniconv-wrappers.h"
 #include "unistr-wrappers.h"

@@ -34,8 +34,8 @@
 
 #include "file-ops.h"
 #include "getopt-wrapper.h"
-#include "lo-error.h"
 #include "oct-env.h"
+#include "oct-error.h"
 #include "str-vec.h"
 
 #include "Cell.h"

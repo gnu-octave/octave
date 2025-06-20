@@ -27,9 +27,10 @@
 #  include "config.h"
 #endif
 
+#include "lapack-proto.h"
+
 #include "defun.h"
 #include "error.h"
-#include "lo-lapack-proto.h"
 #include "ovl.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)

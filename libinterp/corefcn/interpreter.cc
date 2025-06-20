@@ -35,19 +35,19 @@
 #include <string>
 #include <thread>
 
+#include "blas-proto.h"
 #include "cmd-edit.h"
 #include "cmd-hist.h"
 #include "file-ops.h"
-#include "file-stat.h"
 #include "file-ops.h"
+#include "file-stat.h"
 #include "fpucw-wrappers.h"
-#include "lo-blas-proto.h"
-#include "lo-error.h"
-#include "lo-sysdep.h"
 #include "oct-env.h"
+#include "oct-error.h"
+#include "oct-sysdep.h"
 #include "quit.h"
-#include "str-vec.h"
 #include "signal-wrappers.h"
+#include "str-vec.h"
 #include "unistd-wrappers.h"
 
 #include "builtin-defun-decls.h"

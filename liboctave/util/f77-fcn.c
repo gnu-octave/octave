@@ -31,8 +31,8 @@
 #include <string.h>
 
 #include "f77-fcn.h"
+#include "oct-error.h"
 #include "quit.h"
-#include "lo-error.h"
 
 /* All the STOP statements in the Fortran routines have been replaced
    with a call to XSTOPX.

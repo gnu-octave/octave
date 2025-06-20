@@ -30,10 +30,10 @@
 #include <ostream>
 
 #include "Array-util.h"
-#include "lo-error.h"
 #include "mx-base.h"
 #include "mx-inlines.cc"
 #include "oct-cmplx.h"
+#include "oct-error.h"
 
 // Diagonal Matrix class.
 

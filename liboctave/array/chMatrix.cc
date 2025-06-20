@@ -32,11 +32,11 @@
 #include <ostream>
 #include <string>
 
-#include "lo-error.h"
-#include "str-vec.h"
 #include "mx-base.h"
 #include "mx-inlines.cc"
 #include "mx-op-defs.h"
+#include "oct-error.h"
+#include "str-vec.h"
 
 // charMatrix class.
 

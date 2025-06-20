@@ -34,7 +34,7 @@
 #include <memory>
 #include <string>
 
-#include "lo-mappers.h"
+#include "mappers.h"
 #include "lo-utils.h"
 #include "mx-base.h"
 

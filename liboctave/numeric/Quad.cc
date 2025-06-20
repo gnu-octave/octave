@@ -30,7 +30,7 @@
 #include "Array-oct.h"
 #include "Quad.h"
 #include "f77-fcn.h"
-#include "lo-error.h"
+#include "oct-error.h"
 #include "quit.h"
 
 static integrand_fcn user_fcn;

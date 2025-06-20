@@ -34,9 +34,9 @@
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
-#include "lo-error.h"
-#include "lo-sysdep.h"
 #include "localcharset-wrapper.h"
+#include "oct-error.h"
+#include "oct-sysdep.h"
 #include "putenv-wrapper.h"
 #include "unistd-wrappers.h"
 #include "unsetenv-wrapper.h"
@@ -46,14 +46,13 @@
 #  include <wchar.h>
 
 #  include "filepos-wrappers.h"
-#  include "lo-hash.h"
+#  include "oct-hash.h"
 #  include "oct-locbuf.h"
 #  include "uniconv-wrappers.h"
 #  include "unwind-prot.h"
 #endif
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 int

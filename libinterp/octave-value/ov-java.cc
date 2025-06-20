@@ -38,30 +38,30 @@
 
 #include <algorithm>
 #include <array>
+#include <clocale>
 #include <fstream>
 #include <map>
 #include <string>
 #include <vector>
 
-#include <clocale>
+#include "cmd-edit.h"
+#include "file-ops.h"
+#include "file-stat.h"
+#include "fpucw-wrappers.h"
+#include "oct-env.h"
+#include "oct-shlib.h"
+#include "oct-sysdep.h"
 
 #include "Cell.h"
 #include "builtin-defun-decls.h"
-#include "cmd-edit.h"
 #include "defaults.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
-#include "file-ops.h"
-#include "file-stat.h"
-#include "fpucw-wrappers.h"
-#include "interpreter.h"
 #include "interpreter-private.h"
+#include "interpreter.h"
 #include "load-path.h"
-#include "lo-sysdep.h"
-#include "oct-env.h"
 #include "oct-process.h"
-#include "oct-shlib.h"
 #include "ov-java.h"
 #include "variables.h"
 

@@ -32,9 +32,9 @@
 #include <string>
 
 #include "kpse.h"
-#include "lo-error.h"
 #include "lo-utils.h"
 #include "oct-env.h"
+#include "oct-error.h"
 #include "pathsearch.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)

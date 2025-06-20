@@ -37,8 +37,8 @@
 
 #include "byte-swap.h"
 #include "data-conv.h"
-#include "lo-error.h"
 #include "lo-ieee.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
 
 // FIXME: Almost all platform-dependent sizes such as "short" are now defined

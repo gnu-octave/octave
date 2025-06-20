@@ -32,13 +32,12 @@
 #include "dMatrix.h"
 #include "fCMatrix.h"
 #include "fMatrix.h"
-#include "lo-error.h"
-#include "lo-lapack-proto.h"
+#include "lapack-proto.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
 #include "schur.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(math)
 
 // For real types.

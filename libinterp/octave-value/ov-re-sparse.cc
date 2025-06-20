@@ -32,9 +32,9 @@
 #include <ostream>
 #include <vector>
 
-#include "lo-specfun.h"
-#include "lo-mappers.h"
+#include "mappers.h"
 #include "oct-locbuf.h"
+#include "oct-specfun.h"
 
 #include "mxarray.h"
 #include "errwarn.h"
@@ -119,7 +119,12 @@ octave_sparse_matrix::char_array_value (bool) const
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = matrix.cidx (j); i < matrix.cidx (j+1); i++)
-      retval(matrix.ridx (i) + nr * j) = static_cast<char> (matrix.data (i));
+#if ! defined (HAVE_DOUBLE_QNAN_CHAR_0)
+      if (octave::math::isnan (matrix.data (i)))
+        retval(matrix.ridx (i) + nr * j) = 0.0;
+      else
+#endif
+        retval(matrix.ridx (i) + nr * j) = static_cast<char> (matrix.data (i));
 
   return retval;
 }

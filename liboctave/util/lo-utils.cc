@@ -39,10 +39,10 @@
 #include "quit.h"
 
 #include "intprops-wrappers.h"
-#include "lo-error.h"
 #include "lo-ieee.h"
-#include "lo-mappers.h"
 #include "lo-utils.h"
+#include "mappers.h"
+#include "oct-error.h"
 #include "oct-inttypes.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)

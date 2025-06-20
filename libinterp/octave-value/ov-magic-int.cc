@@ -33,9 +33,9 @@
 #include "oct-inttypes-fwd.h"
 
 #include "data-conv.h"
+#include "mappers.h"
 #include "mach-info.h"
-#include "lo-specfun.h"
-#include "lo-mappers.h"
+#include "oct-specfun.h"
 
 #include "defun.h"
 #include "errwarn.h"

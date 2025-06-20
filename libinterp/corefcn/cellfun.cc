@@ -27,12 +27,12 @@
 #  include "config.h"
 #endif
 
-#include <string>
-#include <vector>
 #include <list>
 #include <memory>
+#include <string>
+#include <vector>
 
-#include "lo-mappers.h"
+#include "mappers.h"
 #include "oct-locbuf.h"
 #include "oct-string.h"
 

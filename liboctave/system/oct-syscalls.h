@@ -35,7 +35,6 @@ class string_vector;
 #include <sys/types.h>
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 extern OCTAVE_API int dup2 (int, int);

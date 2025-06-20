@@ -33,7 +33,7 @@
 #include <string>
 
 #include "lo-ieee.h"
-#include "lo-sysdep.h"
+#include "oct-sysdep.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 

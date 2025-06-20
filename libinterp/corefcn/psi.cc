@@ -27,13 +27,13 @@
 #  include "config.h"
 #endif
 
+#include "oct-specfun.h"
+
 #include "ov.h"
 #include "defun.h"
 #include "error.h"
 #include "dNDArray.h"
 #include "fNDArray.h"
-
-#include "lo-specfun.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 

@@ -27,7 +27,7 @@
 #  include "config.h"
 #endif
 
-#include "lo-blas-proto.h"
+#include "blas-proto.h"
 #include "mx-base.h"
 
 #include "builtin-defun-decls.h"

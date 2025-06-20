@@ -361,7 +361,22 @@ endfunction
 
 ## Test that interpolating a complex matrix is equivalent to interpolating its
 ## real and imaginary parts separately.
-%!test <*61907>
+%!testif HAVE_QNAN_WITH_PAYLOAD <*61907>
+%! yi = [0.5, 1.5]';
+%! xi = [2.5, 3.5];
+%! zi = [2.25, 4.75];
+%! rand ("state", 1340640850);
+%! v = rand (4, 3, 5) + 1i * rand (4, 3, 5);
+%! for method = {"nearest", "linear", "spline"}
+%!   vi_complex = interpn (v, yi, xi, zi, method{1});
+%!   vi_real = interpn (real (v), yi, xi, zi, method{1});
+%!   vi_imag = interpn (imag (v), yi, xi, zi, method{1});
+%!   assert (real (vi_complex), vi_real, 2*eps);
+%!   assert (imag (vi_complex), vi_imag, 2*eps);
+%! endfor
+
+## Duplicate from above.  Only for test statistics
+%!testif ; ! __have_feature__ ("QNAN_WITH_PAYLOAD") <59830>
 %! yi = [0.5, 1.5]';
 %! xi = [2.5, 3.5];
 %! zi = [2.25, 4.75];

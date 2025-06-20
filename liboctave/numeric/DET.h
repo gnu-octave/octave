@@ -30,7 +30,7 @@
 
 #include <cmath>
 
-#include "lo-mappers.h"
+#include "mappers.h"
 #include "oct-cmplx.h"
 
 template <typename T>

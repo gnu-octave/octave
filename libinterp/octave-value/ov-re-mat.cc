@@ -225,11 +225,9 @@ octave_matrix::char_array_value (bool) const
   octave_idx_type nel = numel ();
 
   for (octave_idx_type i = 0; i < nel; i++)
-#if ! defined (HAVE_DOUBLE_QNAN_CHAR_0)
     if (octave::math::isnan (m_matrix.elem (i)))
-      retval.elem (i) = 0.0;
+      retval.elem (i) = 0;
     else
-#endif
       retval.elem (i) = static_cast<char> (m_matrix.elem (i));
 
   return retval;

@@ -119,11 +119,9 @@ octave_sparse_matrix::char_array_value (bool) const
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = matrix.cidx (j); i < matrix.cidx (j+1); i++)
-#if ! defined (HAVE_DOUBLE_QNAN_CHAR_0)
       if (octave::math::isnan (matrix.data (i)))
-        retval(matrix.ridx (i) + nr * j) = 0.0;
+        retval(matrix.ridx (i) + nr * j) = 0;
       else
-#endif
         retval(matrix.ridx (i) + nr * j) = static_cast<char> (matrix.data (i));
 
   return retval;

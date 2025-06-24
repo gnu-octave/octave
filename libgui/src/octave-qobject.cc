@@ -334,6 +334,10 @@ base_qobject::~base_qobject ()
   // deleteLater slot that is called when the m_main_thread issues a
   // finished signal.
 
+  // Prevent Qt from delivering signals to widgets during destruction
+  if (m_qapplication)
+    disconnect(m_qapplication, &QApplication::focusChanged, nullptr, nullptr);
+
   // FIXME: Why are dock widget settings and/or the main window
   // configuration not saved correctly if the main window is deleted
   // after the dock widgets?
@@ -344,31 +348,58 @@ base_qobject::~base_qobject ()
   if (! m_main_window)
     {
       if (m_terminal_widget)
-        m_terminal_widget->close ();
+        {
+          disconnect(m_terminal_widget, nullptr, nullptr, nullptr);
+          m_terminal_widget->close ();
+	}
 
       if (m_documentation_widget)
-        m_documentation_widget->close ();
+        {
+          disconnect(m_documentation_widget, nullptr, nullptr, nullptr);
+          m_documentation_widget->close ();
+	}
 
       if (m_file_browser_widget)
-        m_file_browser_widget->close ();
+        {
+          disconnect(m_file_browser_widget, nullptr, nullptr, nullptr);
+          m_file_browser_widget->close ();
+        }
 
       if (m_history_widget)
-        m_history_widget->close ();
+        {
+          disconnect(m_history_widget, nullptr, nullptr, nullptr);
+          m_history_widget->close ();
+        }
 
       if (m_workspace_widget)
-        m_workspace_widget->close ();
+        {
+          disconnect(m_workspace_widget, nullptr, nullptr, nullptr);
+          m_workspace_widget->close ();
+        }
 
       if (m_editor_widget)
-        m_editor_widget->close ();
+        {
+          disconnect(m_editor_widget, nullptr, nullptr, nullptr);
+          m_editor_widget->close ();
+        }
 
       if (m_variable_editor_widget)
-        m_variable_editor_widget->close ();
+        {
+          disconnect(m_variable_editor_widget, nullptr, nullptr, nullptr);
+          m_variable_editor_widget->close ();
+        }
 
       if (m_community_news)
-        m_community_news->close ();
+        {
+          disconnect(m_community_news, nullptr, nullptr, nullptr);
+          m_community_news->close ();
+	}
     }
   else
     {
+      if (m_main_window)
+        disconnect(m_main_window, nullptr, nullptr, nullptr);
+
       m_main_window->deleteLater ();
     }
 
@@ -380,6 +411,10 @@ base_qobject::~base_qobject ()
   delete m_editor_widget;
   delete m_variable_editor_widget;
   delete m_community_news;
+
+  // Disconnect interpreter signals before deletion
+  if (m_interpreter_qobj)
+    disconnect(m_interpreter_qobj, nullptr, nullptr, nullptr);
 
   delete m_interpreter_qobj;
   delete m_qsci_tr;

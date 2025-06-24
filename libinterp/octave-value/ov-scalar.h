@@ -198,11 +198,9 @@ public:
   char_array_value (bool = false) const
   {
     charNDArray retval (dim_vector (1, 1));
-#if ! defined (HAVE_DOUBLE_QNAN_CHAR_0)
     if (octave::math::isnan (scalar))
-      retval(0) = 0.0;
+      retval(0) = 0;
     else
-#endif
       retval(0) = static_cast<char> (scalar);
     return retval;
   }

@@ -218,11 +218,9 @@ octave_float_complex_matrix::char_array_value (bool frc_str_conv) const
       octave_idx_type nel = numel ();
 
       for (octave_idx_type i = 0; i < nel; i++)
-#if ! defined (HAVE_FLOAT_QNAN_CHAR_0)
         if (octave::math::isnan (std::real (m_matrix.elem (i))))
-          retval.elem (i) = 0.0;
+          retval.elem (i) = 0;
         else
-#endif
           retval.elem (i) = static_cast<char> (std::real (m_matrix.elem (i)));
     }
 

@@ -117,6 +117,7 @@ file_editor::file_editor (QWidget *p)
   m_closed = true;
   m_no_focus = false;
   m_editor_ready = false;
+  m_is_octave_file = true;
 
   m_copy_action_enabled = false;
   m_undo_action_enabled = false;

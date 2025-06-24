@@ -77,14 +77,19 @@
 ##
 ## @var{options} is a structure specifying additional parameters which
 ## control the algorithm.  Currently, @code{qp} recognizes these options:
-## @qcode{"MaxIter"}, @qcode{"TolX"}.
+## @qcode{"MaxIter"}, @qcode{"TolX"}, @qcode{"AllowSemidefinite"}.
 ##
-## @qcode{"MaxIter"} proscribes the maximum number of algorithm iterations
-## before optimization is halted.  The default value is 200.
+## @qcode{"MaxIter"} sets the maximum number of algorithm iterations before
+## optimization is halted.  The default value is 200.
 ## The value must be a positive integer.
 ##
 ## @qcode{"TolX"} specifies the termination tolerance for the unknown variables
 ## @var{x}.  The default is @code{sqrt (eps)} or approximately 1e-8.
+##
+## @qcode{"AllowSemidefinite"} is a boolean flag: @code{true} allows positive
+## semidefinite problems (one or more eigenvalues of the Hessian are zero).
+## @code{false} requires positive definiteness (all eigenvalues positive).
+## The default is @code{false}.
 ##
 ## On return, @var{x} is the location of the minimum and @var{fval} contains
 ## the value of the objective function at @var{x}.
@@ -128,7 +133,7 @@
 function [x, obj, INFO, lambda] = qp (x0, H, varargin)
 
   if (nargin == 1 && ischar (x0) && strcmp (x0, "defaults"))
-    x = struct ("MaxIter", 200, "TolX", sqrt (eps));
+    x = struct ("MaxIter", 200, "TolX", sqrt (eps), "AllowSemidefinite", false);
     return;
   endif
 
@@ -178,6 +183,16 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
 
   maxit = optimget (options, "MaxIter", 200);
   tol = optimget (options, "TolX", sqrt (eps));
+  allowsemidefinite = optimget (options, "AllowSemidefinite", false);
+
+  ## Validate options.
+  if (maxit <= 0 || ceil (maxit) != floor (maxit))
+    error ("qp: MaxIter should be a positive integer");
+  endif
+  if (! islogical (allowsemidefinite))
+    warning ("qp: converting AllowSemidefinite to a logical value (true or false)");
+    allowsemidefinite = logical (allowsemidefinite)
+  endif
 
   ## Validate the quadratic penalty.
   if (! issquare (H))
@@ -348,7 +363,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
 
   info = 0;
 
-  if (isdefinite (H) != 1)
+  if (! allowsemidefinite && isdefinite (H) != 1)
     info = 2;
   endif
 
@@ -465,3 +480,17 @@ endfunction
 %! assert (x, zeros (3, 1));
 %! assert (obj, 0);
 %! assert (info.info, 2);
+
+## Check positive semidefinite input
+%!test <*64346>
+%! H = [1 1; 1 1];
+%! q = [-1; -1];
+%! A = [1 -1];
+%! b = 0;
+%! lb = [0; 0];
+%! ub = [10; 10];
+%! [x, obj, info, lambda] = qp([], H, q, A, b, lb, ub, [], [], []);  # default value: semidefinite not allowed
+%! assert (info.info, 2)
+%! [x, obj, info, lambda] = qp([], H, q, A, b, lb, ub, [], [], [], optimset ("AllowSemidefinite", true));
+%! assert (info.info, 0)
+%! assert (x, [1/2; 1/2], eps)

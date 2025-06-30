@@ -275,7 +275,6 @@ Convert a real, upper quasi-triangular Schur@tie{}form @var{TR} to a
 complex, upper triangular Schur@tie{}form @var{T}.
 
 Note that the following relations hold:
-
 @tex
 $UR \cdot TR \cdot {UR}^T = U T U^{\dagger}$ and
 $U^{\dagger} U$ is the identity matrix I.

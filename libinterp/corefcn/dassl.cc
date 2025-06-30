@@ -210,7 +210,6 @@ If @var{fcn} is a two-element string array or a two-element cell array
 of strings, inline functions, or function handles, the first element names
 the function @math{f} described above, and the second element names a
 function to compute the modified Jacobian
-
 @tex
 $$
 J = {\partial f \over \partial x}

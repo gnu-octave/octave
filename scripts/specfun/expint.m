@@ -28,7 +28,6 @@
 ## Compute the exponential integral.
 ##
 ## The exponential integral is defined as:
-##
 ## @tex
 ## $$
 ## {\rm E_1} (x) = \int_x^\infty {e^{-t} \over t} dt

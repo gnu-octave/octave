@@ -452,7 +452,6 @@ an arbitrary greatest common divisor among the four possible is returned.
 
 Optional return arguments @var{v1}, @dots{}, contain integer vectors such
 that,
-
 @tex
 $g = v_1 a_1 + v_2 a_2 + \cdots$
 @end tex

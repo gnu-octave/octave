@@ -131,6 +131,18 @@ main_window::main_window (base_qobject& oct_qobj)
 
       // After settings.
       m_octave_qobj.config_translators ();
+
+      if (settings.bool_value (global_show_splash_screen))
+        {
+          splash_screen *splash = new splash_screen ();
+          splash->setWindowFlags(Qt::SplashScreen);
+          QTimer::singleShot (1000, this, [splash] () { splash->close (); });
+          // FIXME: exec() stops execiton for 1s (see timer above)
+          //        show() or open() should be used instead, but then the
+          //        splash screen is empty until the main window shows up,
+          //        despite using repaint() and qApp::processEvents().
+          splash->exec ();
+        }
     }
 
   setObjectName (gui_obj_name_main_window);

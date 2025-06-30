@@ -115,7 +115,6 @@ Compute the generalized singular value decomposition of (@var{A}, @var{B}).
 
 The generalized singular value decomposition is defined by the following
 relations:
-
 @tex
 $$ A = U C X^\dagger $$
 $$ B = V S X^\dagger $$

@@ -43,7 +43,6 @@
 ## dimension more than @var{x}.
 ##
 ## The associated Legendre function of degree @var{n} and order @var{m}:
-##
 ## @tex
 ## $$
 ## P^m_n(x) = (-1)^m (1-x^2)^{m/2}{d^m\over {dx^m}}P_n (x)
@@ -63,7 +62,6 @@
 ##
 ## @noindent
 ## with Legendre polynomial of degree @var{n}:
-##
 ## @tex
 ## $$
 ## P(x) = {1\over{2^n n!}}\biggl({d^n\over{dx^n}}(x^2 - 1)^n\biggr)
@@ -101,7 +99,6 @@
 ## Legendre functions by the following:
 ##
 ## For Legendre functions of degree @var{n} and order 0:
-##
 ## @tex
 ## $$
 ## SP^0_n (x) = P^0_n (x)
@@ -120,7 +117,6 @@
 ## @end ifnottex
 ##
 ## For Legendre functions of degree n and order m:
-##
 ## @tex
 ## $$
 ## SP^m_n (x) = P^m_n (x)(-1)^m\biggl({2(n-m)!\over{(n+m)!}}\biggl)^{0.5}
@@ -144,7 +140,6 @@
 ## Legendre functions by the following:
 ##
 ## For Legendre functions of degree @var{n} and order @var{m}
-##
 ## @tex
 ## $$
 ## NP^m_n (x) = P^m_n (x)(-1)^m\biggl({(n+0.5)(n-m)!\over{(n+m)!}}\biggl)^{0.5}

@@ -29,7 +29,6 @@
 ## Evaluate a function with multiple minima, maxima, and zero crossings.
 ##
 ## The output @var{y} is the evaluation of the rational function:
-##
 ## @tex
 ## $$y = -{ {1200x^4 - 2880x^3 + 2036x^2 - 348x - 88} \over {200x^4 - 480x^3 + 406x^2 - 138x + 17} }$$
 ## @end tex

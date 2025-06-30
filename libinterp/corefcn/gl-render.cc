@@ -3781,9 +3781,9 @@ opengl_renderer::draw_scatter (const scatter::properties& props)
       bool do_edge = draw_all || ! props.markeredgecolor_is ("none");
       bool do_face = draw_all || ! props.markerfacecolor_is ("none");
 
-      const Matrix x = props.get_xdata ().matrix_value ();
-      const Matrix y = props.get_ydata ().matrix_value ();
-      const Matrix z = props.get_zdata ().matrix_value ();
+      const Matrix x = m_xform.xscale (props.get_xdata ().matrix_value ());
+      const Matrix y = m_xform.yscale (props.get_ydata ().matrix_value ());
+      const Matrix z = m_xform.zscale (props.get_zdata ().matrix_value ());
       const Matrix c = props.get_color_data ().matrix_value ();
       const Matrix s = props.get_sizedata ().matrix_value ();
 

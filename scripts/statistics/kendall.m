@@ -45,7 +45,6 @@
 ## is the correlation of the signs of all rank differences of
 ## @var{x} and @var{y}; i.e., if both @var{x} and @var{y} have distinct
 ## entries, then
-##
 ## @tex
 ## $$ \tau = {1 \over N(N-1)} \sum_{i,j} {\rm sign}(q_i-q_j) \, {\rm sign}(r_i-r_j) $$
 ## @end tex

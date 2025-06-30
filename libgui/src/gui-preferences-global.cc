@@ -35,6 +35,9 @@ gui_pref
 global_skip_welcome_wizard ("global_skip_welcome_wizard", false);
 
 gui_pref
+global_show_splash_screen ("global_show_splash_screen", false);
+
+gui_pref
 global_mono_font ("monospace_font", global_font_family);
 
 // Style

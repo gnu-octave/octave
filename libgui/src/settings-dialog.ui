@@ -35,7 +35,7 @@
       <string/>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -55,8 +55,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1035</width>
-            <height>573</height>
+            <width>1021</width>
+            <height>593</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -485,6 +485,13 @@
                  <widget class="QCheckBox" name="cb_prompt_to_exit">
                   <property name="text">
                    <string>Confirm before exiting</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cb_show_splash_screen">
+                  <property name="text">
+                   <string>Show splash screen at startup</string>
                   </property>
                  </widget>
                 </item>

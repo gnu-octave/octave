@@ -83,7 +83,6 @@ DEFUN (svd, args, nargout,
 Compute the singular value decomposition of @var{A}.
 
 The singular value decomposition is defined by the relation
-
 @tex
 $$
  A = U S V^{\dagger}

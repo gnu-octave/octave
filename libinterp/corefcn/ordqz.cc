@@ -62,7 +62,6 @@ DEFUN (ordqz, args, nargout,
 Reorder the QZ@tie{}decomposition of a generalized eigenvalue problem.
 
 The generalized eigenvalue problem is defined as
-
 @tex
 $$A x = \lambda B x$$
 @end tex
@@ -96,7 +95,6 @@ The @code{ordqz} function computes a unitary transformation @var{QR} and
 @var{ZR} such that the order of the eigenvalue on the diagonal of @var{AA} and
 @var{BB} is changed.  The resulting reordered matrices @var{AR} and @var{BR}
 fulfill:
-
 @tex
 $$ A_R = Q_R \cdot A \cdot Z_R, B_R = Q_R \cdot B \cdot Z_R $$
 @end tex

@@ -35,7 +35,7 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
   [local_packages, global_packages] = installed_packages (local_list,
                                                           global_list);
   if (global_install)
-    installed_pkgs_lst = [local_packages, global_packages];
+    installed_pkgs_lst = global_packages;
   else
     installed_pkgs_lst = local_packages;
   endif
@@ -64,10 +64,21 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
 
   ## inform user if any global packages can't be uninstalled
   if (! global_install)
-    for i = 1:numel (global_packages)
-      if (any (strcmp (global_packages{i}.name, pkgnames)))
-        warning ("%s is a global package and cannot be removed locally\n", ...
-          global_packages{i}.name);
+    for i_global = 1:numel (global_packages)
+      global_pkg_hits = strcmp (global_packages{i_global}.name, pkgnames);
+      for i_global_hit = find (global_pkg_hits)
+        for i_local = 1:numel (local_packages)
+          if (strcmp (pkgnames{i_global_hit},
+                      local_packages{i_local}.name))
+            global_pkg_hits(i_global_hit) = false;
+            warning ("package %s will remain being installed globally\n", ...
+              global_packages{i_global}.name);
+          endif
+        endfor
+      endfor
+      if (any (global_pkg_hits))
+        error ("%s is a global package and cannot be removed locally\n", ...
+          global_packages{i_global}.name);
       endif
     endfor
   endif
@@ -99,7 +110,7 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
       endfor
 
       if (! isempty (error_text))
-        error ("the following dependencies where unsatisfied:\n  %s", error_text);
+        error ("the following dependencies would be unsatisfied (consider '-nodeps'):\n  %s", error_text);
       endif
     endif
 

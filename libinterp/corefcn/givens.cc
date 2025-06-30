@@ -40,7 +40,6 @@ DEFUN (givens, args, nargout,
 @deftypefn  {} {@var{G} =} givens (@var{x}, @var{y})
 @deftypefnx {} {[@var{c}, @var{s}] =} givens (@var{x}, @var{y})
 Compute the Givens rotation matrix @var{G}.
-
 @tex
 The Givens matrix is a $2\times 2$ orthogonal matrix
 $$

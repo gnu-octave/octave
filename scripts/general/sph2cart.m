@@ -45,7 +45,6 @@
 ## @var{r} is the distance to the origin @w{(0, 0, 0)}.
 ##
 ## The coordinate transformation is computed using:
-##
 ## @tex
 ## $$ x = r \cos \phi  \cos \theta $$
 ## $$ y = r \cos \phi  \sin \theta $$
@@ -62,9 +61,7 @@
 ## @end example
 ##
 ## @end ifnottex
-## @c FIXME: Remove this note in Octave 9.1 (two releases after 7.1).
-## Note: For @sc{matlab} compatibility, this function no longer returns a full
-## coordinate matrix when called with a single return argument.
+##
 ## @seealso{cart2sph, pol2cart, cart2pol}
 ## @end deftypefn
 

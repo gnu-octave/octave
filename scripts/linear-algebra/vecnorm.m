@@ -31,7 +31,6 @@
 ## @var{dim}.
 ##
 ## The p-norm of a vector is defined as
-##
 ## @tex
 ## $$ {\Vert A \Vert}_p  = \left[ \sum_{i=1}^N {| A_i |}^p \right] ^ {1/p} $$
 ## @end tex

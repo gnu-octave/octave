@@ -41,6 +41,7 @@
 #include "gui-preferences-nr.h"
 #include "gui-settings.h"
 #include "welcome-wizard.h"
+#include "version.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -387,6 +388,67 @@ final_page::final_page (welcome_wizard *wizard)
            wizard, &welcome_wizard::previous_page);
   connect (m_finish, &QPushButton::clicked, wizard, &welcome_wizard::accept);
   connect (m_cancel, &QPushButton::clicked, wizard, &welcome_wizard::reject);
+}
+
+
+
+// Splash Screen
+
+splash_screen::splash_screen (QWidget *p)
+  : QDialog (p)
+{
+  setWindowTitle (tr ("Welcome to GNU Octave"));
+
+  setSizePolicy (QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+
+  QLabel *title = new QLabel (tr ("Welcome to Octave!"), this);
+  QFont ft;
+  ft.setPointSize (18);
+  title->setFont (ft);
+
+  gui_settings settings;
+
+  time_t timestamp = time(&timestamp);
+  struct tm datetime = *localtime(&timestamp);
+  QLabel *message = new QLabel (
+       QString ( "<html><body>\n"
+            "<p><b>GNU Octave, version %1</b><br><br>\n"
+            "<p>Copyright (C) 1993-%2 The Octave Project Developers</p>\n"
+            "</body></html>" ).arg (OCTAVE_VERSION).arg (datetime.tm_year + 1900) );
+  ft.setPointSize (10);
+  message->setFont (ft);
+
+  QVBoxLayout *message_layout = new QVBoxLayout;
+
+  int left, top, right, bottom;
+  message_layout->getContentsMargins (&left, &top, &right, &bottom);
+  left = std::max (6, left);
+  top = std::max (6, top);
+  right = std::max (6, right);
+  bottom = std::max (6, bottom);
+  message_layout->setContentsMargins (left, 0*top, right, 0*bottom);
+  message_layout->addWidget (title);
+  message_layout->addSpacing (top);
+  message_layout->addWidget (message);
+
+  QHBoxLayout *message_and_logo = new QHBoxLayout;
+
+  message_and_logo->setContentsMargins (left, top, right, bottom);
+  message_and_logo->addLayout (message_layout);
+  message_and_logo->addSpacing (2*left);
+  message_and_logo->addWidget (make_octave_logo (this), 0, Qt::AlignTop);
+
+  QVBoxLayout *page_layout = new QVBoxLayout (this);
+  setLayout (page_layout);
+
+  page_layout->addLayout (message_and_logo);
+
+  setSizePolicy (QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+  // HACK to forceshow of dialog if started minimized
+  ShowWindow (reinterpret_cast<HWND> (winId ()), SW_SHOWNORMAL);
+#endif
 }
 
 OCTAVE_END_NAMESPACE(octave)

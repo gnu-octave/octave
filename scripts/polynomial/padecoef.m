@@ -28,7 +28,6 @@
 ## @deftypefnx {} {[@var{num}, @var{den}] =} padecoef (@var{T}, @var{N})
 ## Compute the @var{N}th-order Pad@'e approximant of the continuous-time
 ## delay @var{T} in transfer function form.
-##
 ## @tex
 ## The Pad\'e approximant of $e^{-sT}$ is defined by the following equation
 ## $$ e^{-sT} \approx {P_n(s) \over Q_n(s)} $$

@@ -32,7 +32,6 @@
 ## Compute the @var{p}-th central moment of the vector @var{x}.
 ##
 ## The @var{p}-th central moment of @var{x} is defined as:
-##
 ## @tex
 ## $$
 ## {\sum_{i=1}^N (x_i - \bar{x})^p \over N}
@@ -87,7 +86,6 @@
 ##
 ## @item @qcode{"r"}
 ##   Raw Moment.  The moment about zero defined as
-##
 ## @tex
 ## $$
 ## {\rm moment} (x) = { \sum_{i=1}^N {x_i}^p \over N }

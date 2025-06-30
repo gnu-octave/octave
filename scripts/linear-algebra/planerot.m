@@ -27,7 +27,6 @@
 ## @deftypefn {} {[@var{G}, @var{y}] =} planerot (@var{x})
 ## Compute the Givens rotation matrix for the two-element column vector
 ## @var{x}.
-##
 ## @tex
 ## The Givens matrix is a $2\times 2$ orthogonal matrix
 ## $$

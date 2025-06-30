@@ -44,7 +44,6 @@
 ## @var{r} is the distance to the origin @w{(0, 0, 0)}.
 ##
 ## The coordinate transformation is computed using:
-##
 ## @tex
 ## $$ \theta = \arctan \left ({y \over x} \right ) $$
 ## $$ \phi = \arctan \left ( {z \over {\sqrt{x^2+y^2}}} \right ) $$
@@ -62,9 +61,6 @@
 ##
 ## @end ifnottex
 ##
-## @c FIXME: Remove this note in Octave 9.1 (two releases after 7.1).
-## Note: For @sc{matlab} compatibility, this function no longer returns a full
-## coordinate matrix when called with a single return argument.
 ## @seealso{sph2cart, cart2pol, pol2cart}
 ## @end deftypefn
 

@@ -49,7 +49,6 @@ of zero computes the digamma function, a value of 1, the trigamma function,
 and so on.
 
 The digamma function is defined:
-
 @tex
 $$
 \Psi (z) = {d (log (\Gamma (z))) \over dx}

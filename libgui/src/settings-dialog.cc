@@ -255,6 +255,9 @@ settings_dialog::read_settings (bool first)
   // prompt on exit
   cb_prompt_to_exit->setChecked (settings.bool_value (global_prompt_to_exit));
 
+  // show splash screen
+  cb_show_splash_screen->setChecked (settings.bool_value (global_show_splash_screen));
+
   // Main status bar
   cb_status_bar->setChecked (settings.bool_value (global_status_bar));
 
@@ -1252,6 +1255,9 @@ settings_dialog::write_changed_settings ()
 
   // promp to exit
   settings.setValue (global_prompt_to_exit.settings_key (), cb_prompt_to_exit->isChecked ());
+
+  // show splash screen
+  settings.setValue (global_show_splash_screen.settings_key (), cb_show_splash_screen->isChecked ());
 
   // status bar
   settings.setValue (global_status_bar.settings_key (), cb_status_bar->isChecked ());

@@ -45,7 +45,6 @@
 ##
 ## Programming Notes:
 ## The applied formula is
-##
 ## @tex
 ## $$B = l + {A - inmin \over inmax - inmin} \cdot (u - l)$$
 ## @end tex

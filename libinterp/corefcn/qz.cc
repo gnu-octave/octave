@@ -66,7 +66,6 @@ DEFUN (qz, args, nargout,
 Compute the QZ@tie{}decomposition of a generalized eigenvalue problem.
 
 The generalized eigenvalue problem is defined as
-
 @tex
 $$A x = \lambda B x$$
 @end tex

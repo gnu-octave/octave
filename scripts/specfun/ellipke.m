@@ -42,7 +42,6 @@
 ## Mathematical Note:
 ##
 ## Elliptic integrals of the first kind are defined as
-##
 ## @tex
 ## $$
 ## {\rm K} (m) = \int_0^1 {dt \over \sqrt{(1 - t^2) (1 - m t^2)}}
@@ -63,7 +62,6 @@
 ## @end ifnottex
 ##
 ## Elliptic integrals of the second kind are defined as
-##
 ## @tex
 ## $$
 ## {\rm E} (m) = \int_0^1 {\sqrt{1 - m t^2} \over \sqrt{1 - t^2}} dt

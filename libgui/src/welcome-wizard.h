@@ -146,6 +146,19 @@ private:
   QPushButton *m_cancel;
 };
 
+
+
+class splash_screen : public QDialog
+{
+  Q_OBJECT
+
+public:
+
+  splash_screen (QWidget *parent = nullptr);
+
+  ~splash_screen () = default;
+};
+
 OCTAVE_END_NAMESPACE(octave)
 
 #endif

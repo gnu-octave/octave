@@ -357,7 +357,7 @@ svd<Matrix>::gesvd (char& jobu, char& jobv, F77_INT m, F77_INT n,
   GESVD_REAL_STEP (dgesvd, DGESVD);
 
   lwork = static_cast<F77_INT> (work[0]);
-  work.reserve (lwork);
+  work.resize (lwork);
 
   GESVD_REAL_STEP (dgesvd, DGESVD);
 }
@@ -374,7 +374,7 @@ svd<FloatMatrix>::gesvd (char& jobu, char& jobv, F77_INT m, F77_INT n,
   GESVD_REAL_STEP (sgesvd, SGESVD);
 
   lwork = static_cast<F77_INT> (work[0]);
-  work.reserve (lwork);
+  work.resize (lwork);
 
   GESVD_REAL_STEP (sgesvd, SGESVD);
 }
@@ -393,7 +393,7 @@ svd<ComplexMatrix>::gesvd (char& jobu, char& jobv, F77_INT m, F77_INT n,
   GESVD_COMPLEX_STEP (zgesvd, ZGESVD, F77_DBLE_CMPLX_ARG);
 
   lwork = static_cast<F77_INT> (work[0].real ());
-  work.reserve (lwork);
+  work.resize (lwork);
 
   GESVD_COMPLEX_STEP (zgesvd, ZGESVD, F77_DBLE_CMPLX_ARG);
 }
@@ -413,7 +413,7 @@ svd<FloatComplexMatrix>::gesvd (char& jobu, char& jobv, F77_INT m,
   GESVD_COMPLEX_STEP (cgesvd, CGESVD, F77_CMPLX_ARG);
 
   lwork = static_cast<F77_INT> (work[0].real ());
-  work.reserve (lwork);
+  work.resize (lwork);
 
   GESVD_COMPLEX_STEP (cgesvd, CGESVD, F77_CMPLX_ARG);
 }
@@ -449,7 +449,7 @@ svd<Matrix>::gesdd (char& jobz, F77_INT m, F77_INT n, double *tmp_data,
   GESDD_REAL_STEP (dgesdd, DGESDD);
 
   lwork = static_cast<F77_INT> (work[0]);
-  work.reserve (lwork);
+  work.resize (lwork);
 
   GESDD_REAL_STEP (dgesdd, DGESDD);
 }
@@ -465,7 +465,7 @@ svd<FloatMatrix>::gesdd (char& jobz, F77_INT m, F77_INT n, float *tmp_data,
   GESDD_REAL_STEP (sgesdd, SGESDD);
 
   lwork = static_cast<F77_INT> (work[0]);
-  work.reserve (lwork);
+  work.resize (lwork);
 
   GESDD_REAL_STEP (sgesdd, SGESDD);
 }
@@ -494,7 +494,7 @@ svd<ComplexMatrix>::gesdd (char& jobz, F77_INT m, F77_INT n,
   GESDD_COMPLEX_STEP (zgesdd, ZGESDD, F77_DBLE_CMPLX_ARG);
 
   lwork = static_cast<F77_INT> (work[0].real ());
-  work.reserve (lwork);
+  work.resize (lwork);
 
   GESDD_COMPLEX_STEP (zgesdd, ZGESDD, F77_DBLE_CMPLX_ARG);
 }
@@ -523,7 +523,7 @@ svd<FloatComplexMatrix>::gesdd (char& jobz, F77_INT m, F77_INT n,
   GESDD_COMPLEX_STEP (cgesdd, CGESDD, F77_CMPLX_ARG);
 
   lwork = static_cast<F77_INT> (work[0].real ());
-  work.reserve (lwork);
+  work.resize (lwork);
 
   GESDD_COMPLEX_STEP (cgesdd, CGESDD, F77_CMPLX_ARG);
 }
@@ -580,7 +580,7 @@ svd<Matrix>::gejsv (char& joba, char& jobu, char& jobv,
                     F77_INT& info)
 {
   lwork = gejsv_lwork<Matrix>::optimal (joba, jobu, jobv, m, n);
-  work.reserve (lwork);
+  work.resize (lwork);
 
   GEJSV_REAL_STEP (dgejsv, DGEJSV);
 }
@@ -597,7 +597,7 @@ svd<FloatMatrix>::gejsv (char& joba, char& jobu, char& jobv,
                          F77_INT& info)
 {
   lwork = gejsv_lwork<FloatMatrix>::optimal (joba, jobu, jobv, m, n);
-  work.reserve (lwork);
+  work.resize (lwork);
 
   GEJSV_REAL_STEP (sgejsv, SGEJSV);
 }
@@ -615,18 +615,18 @@ svd<ComplexMatrix>::gejsv (char& joba, char& jobu, char& jobv,
 {
   F77_INT lrwork = -1;          // work space size query
   std::vector<double> rwork (1);
-  work.reserve (2);
+  work.resize (2);
 
   GEJSV_COMPLEX_STEP (zgejsv, ZGEJSV, F77_DBLE_CMPLX_ARG);
 
   lwork = static_cast<F77_INT> (work[0].real ());
-  work.reserve (lwork);
+  work.resize (lwork);
 
   lrwork = static_cast<F77_INT> (rwork[0]);
-  rwork.reserve (lrwork);
+  rwork.resize (lrwork);
 
   F77_INT liwork = static_cast<F77_INT> (iwork[0]);
-  iwork.reserve (liwork);
+  iwork.resize (liwork);
 
   GEJSV_COMPLEX_STEP (zgejsv, ZGEJSV, F77_DBLE_CMPLX_ARG);
 }
@@ -644,18 +644,18 @@ svd<FloatComplexMatrix>::gejsv (char& joba, char& jobu, char& jobv,
 {
   F77_INT lrwork = -1;          // work space size query
   std::vector<float> rwork (1);
-  work.reserve (2);
+  work.resize (2);
 
   GEJSV_COMPLEX_STEP (cgejsv, CGEJSV, F77_CMPLX_ARG);
 
   lwork = static_cast<F77_INT> (work[0].real ());
-  work.reserve (lwork);
+  work.resize (lwork);
 
   lrwork = static_cast<F77_INT> (rwork[0]);
-  rwork.reserve (lrwork);
+  rwork.resize (lrwork);
 
   F77_INT liwork = static_cast<F77_INT> (iwork[0]);
-  iwork.reserve (liwork);
+  iwork.resize (liwork);
 
   GEJSV_COMPLEX_STEP (cgejsv, CGEJSV, F77_CMPLX_ARG);
 }
@@ -757,9 +757,18 @@ svd<T>::svd (const T& a, svd::Type type, svd::Driver driver)
   P *vt = m_right_sm.rwdata ();
 
   // Query _GESVD for the correct dimension of WORK.
-
   F77_INT lwork = -1;
-
+  // FIXME: A variable-sized scratchpad is required for Fortran SVD routines.
+  // Octave calls LAPACK routines with lwork of -1 initially which causes
+  // LAPACK to calculate the size of the required scratchpad and return that
+  // value in the first entry of the "work" array.  The temporary buffer was
+  // grown to the desired size using std::vector::reserve().  However, this
+  // leads to undefined behavior outside the C++ specification.  To work around
+  // this (7/4//2025) all of the calls were changed to std::vector::resize().
+  // This is correct, but unnecessarily initializes all values of the array.
+  // The code should be re-architected to avoid this, possibly by moving
+  // this scratchpad memory out of this function and in to the lower-level
+  // routines where the memory is used.
   std::vector<P> work (1);
 
   const F77_INT f77_int_one = static_cast<F77_INT> (1);

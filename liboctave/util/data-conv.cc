@@ -625,15 +625,15 @@ oct_data_conv::data_type_as_string (oct_data_conv::data_type dt)
 #define LS_DO_WRITE(TYPE, data, size, len, stream)                      \
   do                                                                    \
     {                                                                   \
-     if (len > 0)                                                       \
-       {                                                                \
-        char tmp_type = type;                                           \
-        stream.write (&tmp_type, 1);                                    \
-        OCTAVE_LOCAL_BUFFER (TYPE, ptr, len);                           \
-        for (octave_idx_type i = 0; i < len; i++)                       \
-          ptr[i] = static_cast<TYPE> (data[i]);                         \
-        std::streamsize n_bytes = size * static_cast<std::streamsize> (len); \
-        stream.write (reinterpret_cast<char *> (ptr), n_bytes);         \
+      char tmp_type = type;                                             \
+      stream.write (&tmp_type, 1);                                      \
+      if (len > 0)                                                      \
+        {                                                               \
+          OCTAVE_LOCAL_BUFFER (TYPE, ptr, len);                         \
+          for (octave_idx_type i = 0; i < len; i++)                     \
+            ptr[i] = static_cast<TYPE> (data[i]);                       \
+          std::streamsize n_bytes = size * static_cast<std::streamsize> (len); \
+          stream.write (reinterpret_cast<char *> (ptr), n_bytes);       \
         }                                                               \
      }                                                                  \
   while (0)

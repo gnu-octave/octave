@@ -1132,7 +1132,7 @@ the @qcode{"latex"} interpreter is equivalent to @qcode{"none"}.
 @cindex printing plots
 @cindex saving plots
 
-The @code{print} command allows you to send plots to you printer and
+The @code{print} command allows you to send plots to your printer and
 to save plots in a variety of formats.  For example,
 
 @example
@@ -1143,20 +1143,24 @@ print -dpsc
 prints the current figure to a color PostScript printer.  And,
 
 @example
-print -deps foo.eps
+print foo.pdf
 @end example
 
 @noindent
-saves the current figure to an encapsulated PostScript file called
-@file{foo.eps}.
+saves the current figure to a Portable Document encapsulated PostScript file
+called @file{foo.pdf}.
 
-The current graphic toolkits produce very similar graphic displays, but differ
-in their capability to display unusual text and in their ability to print
-such text.  In general, the @qcode{"tex"} interpreter (default) is the best
-all-around performer for both on-screen display and printing.  However, for the
-reproduction of complicated text formulas the @qcode{"latex"} interpreter is
-preferred.  When printing with the @option{-painters} renderer, the default for
-all vector formats, two options may be considered:
+The current graphic toolkits produce very similar graphic displays, but the
+interpreters differ in their capability to display unusual text and in their
+ability to print such text.  In general, the @qcode{"tex"} interpreter
+(default) is the best all-around performer for both on-screen display and
+printing.  However, for the reproduction of complicated text formulas the
+@qcode{"latex"} interpreter is preferred.  The @qcode{"none"} interpreter
+prints text verbatim (exactly as it appears) which is very portable, but there
+is no support for bold, italic, superscripts, subscripts, Greek letters, etc.
+
+When printing with the @option{-painters} renderer, the default for all vector
+formats, two options may be considered:
 
 @itemize @bullet
 @item

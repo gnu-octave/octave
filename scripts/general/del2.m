@@ -36,9 +36,9 @@
 ## operator.
 ## @end ifnottex
 ##
-## For a 2-dimensional matrix @var{M} this is defined as
+## For a 2-dimensional matrix @math{M(x, y)} this is defined as
 ## @tex
-## $$L = {1 \over 4} \left( {d^2 \over dx^2} M(x,y) + {d^2 \over dy^2} M(x,y) \right)$$
+## $$L = {1 \over 4} \left( \frac{\partial^2 M}{\partial{x}^2} + \frac{\partial^2 M}{\partial{y}^2} \right)$$
 ## @end tex
 ## @ifnottex
 ##

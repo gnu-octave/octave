@@ -193,7 +193,7 @@
 ##
 ## Depending on whether Octave is being run with administrative privileges
 ## only global or local packages are removed by default. See @option{-global}
-## or @option{-global} to override that default behavior.
+## or @option{-local} to override that default behavior.
 ##
 ## @item load
 ## Add named packages to the path.  After loading a package it is

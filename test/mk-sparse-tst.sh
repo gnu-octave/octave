@@ -210,10 +210,10 @@ cat <<EOF
 %% of a singular matrix, which is consistent with the full matrix
 %% behavior.  They are therefore disabled.
 %!testif HAVE_UMFPACK
-%! assert (inv (sparse ([1,1;1,1+i])), sparse ([1-1i,1i;1i,-1i]), 10*eps);
+%! assert (inv (sparse ([1,1;1,1+1i])), sparse ([1-1i,1i;1i,-1i]), 10*eps);
 %#!error inv ( sparse ([1,1;1,1]  ) );
 %#!error inv ( sparse ([0,0;0,1]  ) );
-%#!error inv ( sparse ([0,0;0,1+i]) );
+%#!error inv ( sparse ([0,0;0,1+1i]) );
 %#!error inv ( sparse ([0,0;0,0]  ) );
 
 EOF
@@ -665,7 +665,7 @@ gen_square_tests() {
 %! ## and sparse input while also avoiding the warning.  So use
 %! ## warning ("off", ...) instead of additional outputs.
 %! warning ("off", "Octave:lu:sparse_input", "local");
-%! [l,u] = lu (sparse ([1,1;1,1+i]));
+%! [l,u] = lu (sparse ([1,1;1,1+1i]));
 %! assert (l, sparse ([1,2,2],[1,1,2],1), 10*eps);
 %! assert (u, sparse ([1,1,2],[1,2,2],[1,1,1i]), 10*eps);
 
@@ -716,6 +716,54 @@ gen_square_tests() {
 %! assert (i-j>=0);
 %! [i,j,v] = find (U);
 %! assert (j-i>=0);
+
+%!testif HAVE_UMFPACK
+%! ## Yes, we want to test lu with fewer than 4 output arguments
+%! ## and sparse input while also avoiding the warning.  So use
+%! ## warning ("off", ...) instead of additional outputs.
+%! warning ("off", "Octave:lu:sparse_input", "local");
+%! n = 100;
+%! rand ("state", 42);
+%! randn ("state", 42);
+%! A = sprandn (n, n, 0.1);
+%! [L, U] = lu (A);
+%! # mldivide with permuted lower triangular matrix L with different rhs
+%! brf = rand (n, 1);
+%! x = U \ (L \ brf);
+%! assert (norm (A*x - brf), 0, 20*eps*n);
+%! brs = sprand (n, 1, 0.5);
+%! x = U \ (L \ brs);
+%! assert (norm (A*x - brs), 0, 20*eps*n);
+%! bif = rand (n, 1) + 1i * rand (n, 1);
+%! x = U \ (L \ bif);
+%! assert (norm (A*x - bif), 0, 50*eps*n);
+%! bis = sprand (n, 1, 0.3) + 1i * sprand (n, 1, 0.3);
+%! x = U \ (L \ bis);
+%! assert (norm (A*x - bis), 0, 50*eps*n);
+
+%!testif HAVE_UMFPACK
+%! ## Yes, we want to test lu with fewer than 4 output arguments
+%! ## and sparse input while also avoiding the warning.  So use
+%! ## warning ("off", ...) instead of additional outputs.
+%! warning ("off", "Octave:lu:sparse_input", "local");
+%! n = 100;
+%! rand ("state", 42);
+%! randn ("state", 42);
+%! A = sprandn (n, n, 0.1) + 1i * sprandn (n, n, 0.1);
+%! [L, U] = lu (A);
+%! # mldivide with permuted lower triangular matrix L with different rhs
+%! brf = rand (n, 1);
+%! x = U \ (L \ brf);
+%! assert (norm (A*x - brf), 0, 20*eps*n);
+%! brs = sprand (n, 1, 0.5);
+%! x = U \ (L \ brs);
+%! assert (norm (A*x - brs), 0, 20*eps*n);
+%! bif = rand (n, 1) + 1i * rand (n, 1);
+%! x = U \ (L \ bif);
+%! assert (norm (A*x - bif), 0, 50*eps*n);
+%! bis = sprand (n, 1, 0.3) + 1i * sprand (n, 1, 0.3);
+%! x = U \ (L \ bis);
+%! assert (norm (A*x - bis), 0, 50*eps*n);
 
 %!testif HAVE_UMFPACK   # inverse
 %! assert (inv (bs)*bs, sparse (eye (rows (bs))), 1e-10);

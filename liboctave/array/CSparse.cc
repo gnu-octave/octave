@@ -2588,14 +2588,18 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const Matrix& b,
         {
           retval.resize (nc, b_nc);
           OCTAVE_LOCAL_BUFFER (Complex, work, nm);
+
           octave_idx_type *perm = mattype.triangular_perm ();
+          OCTAVE_LOCAL_BUFFER (octave_idx_type, inv_perm, nr);
+          for (octave_idx_type i = 0; i < nr; i++)
+            inv_perm[perm[i]] = i;
 
           for (octave_idx_type j = 0; j < b_nc; j++)
             {
               for (octave_idx_type i = 0; i < nm; i++)
                 work[i] = 0.;
               for (octave_idx_type i = 0; i < nr; i++)
-                work[perm[i]] = b(i, j);
+                work[inv_perm[i]] = b(i, j);
 
               for (octave_idx_type k = 0; k < nc; k++)
                 {
@@ -2604,10 +2608,11 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const Matrix& b,
                       octave_idx_type minr = nr;
                       octave_idx_type mini = 0;
 
+                      // Check that permutation leads to lower triangular form
                       for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
-                        if (perm[ridx (i)] < minr)
+                        if (inv_perm[ridx (i)] < minr)
                           {
-                            minr = perm[ridx (i)];
+                            minr = inv_perm[ridx (i)];
                             mini = i;
                           }
 
@@ -2624,7 +2629,7 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const Matrix& b,
                           if (i == mini)
                             continue;
 
-                          octave_idx_type iidx = perm[ridx (i)];
+                          octave_idx_type iidx = inv_perm[ridx (i)];
                           work[iidx] = work[iidx] - tmp * data (i);
                         }
                     }
@@ -2653,9 +2658,9 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const Matrix& b,
 
                           for (octave_idx_type i = cidx (k);
                                i < cidx (k+1); i++)
-                            if (perm[ridx (i)] < minr)
+                            if (inv_perm[ridx (i)] < minr)
                               {
-                                minr = perm[ridx (i)];
+                                minr = inv_perm[ridx (i)];
                                 mini = i;
                               }
 
@@ -2667,7 +2672,7 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const Matrix& b,
                               if (i == mini)
                                 continue;
 
-                              octave_idx_type iidx = perm[ridx (i)];
+                              octave_idx_type iidx = inv_perm[ridx (i)];
                               work[iidx] = work[iidx] - tmp * data (i);
                             }
                         }
@@ -2841,14 +2846,18 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const SparseMatrix& b,
       if (typ == MatrixType::Permuted_Lower)
         {
           OCTAVE_LOCAL_BUFFER (Complex, work, nm);
+
           octave_idx_type *perm = mattype.triangular_perm ();
+          OCTAVE_LOCAL_BUFFER (octave_idx_type, inv_perm, nr);
+          for (octave_idx_type i = 0; i < nr; i++)
+            inv_perm[perm[i]] = i;
 
           for (octave_idx_type j = 0; j < b_nc; j++)
             {
               for (octave_idx_type i = 0; i < nm; i++)
                 work[i] = 0.;
               for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
-                work[perm[b.ridx (i)]] = b.data (i);
+                work[inv_perm[b.ridx (i)]] = b.data (i);
 
               for (octave_idx_type k = 0; k < nc; k++)
                 {
@@ -2857,10 +2866,11 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const SparseMatrix& b,
                       octave_idx_type minr = nr;
                       octave_idx_type mini = 0;
 
+                      // Check that permutation leads to lower triangular form
                       for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
-                        if (perm[ridx (i)] < minr)
+                        if (inv_perm[ridx (i)] < minr)
                           {
-                            minr = perm[ridx (i)];
+                            minr = inv_perm[ridx (i)];
                             mini = i;
                           }
 
@@ -2877,7 +2887,7 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const SparseMatrix& b,
                           if (i == mini)
                             continue;
 
-                          octave_idx_type iidx = perm[ridx (i)];
+                          octave_idx_type iidx = inv_perm[ridx (i)];
                           work[iidx] = work[iidx] - tmp * data (i);
                         }
                     }
@@ -2928,9 +2938,9 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const SparseMatrix& b,
 
                           for (octave_idx_type i = cidx (k);
                                i < cidx (k+1); i++)
-                            if (perm[ridx (i)] < minr)
+                            if (inv_perm[ridx (i)] < minr)
                               {
-                                minr = perm[ridx (i)];
+                                minr = inv_perm[ridx (i)];
                                 mini = i;
                               }
 
@@ -2942,7 +2952,7 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const SparseMatrix& b,
                               if (i == mini)
                                 continue;
 
-                              octave_idx_type iidx = perm[ridx (i)];
+                              octave_idx_type iidx = inv_perm[ridx (i)];
                               work[iidx] = work[iidx] - tmp * data (i);
                             }
                         }
@@ -3134,14 +3144,18 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const ComplexMatrix& b,
         {
           retval.resize (nc, b_nc);
           OCTAVE_LOCAL_BUFFER (Complex, work, nm);
+
           octave_idx_type *perm = mattype.triangular_perm ();
+          OCTAVE_LOCAL_BUFFER (octave_idx_type, inv_perm, nr);
+          for (octave_idx_type i = 0; i < nr; i++)
+            inv_perm[perm[i]] = i;
 
           for (octave_idx_type j = 0; j < b_nc; j++)
             {
               for (octave_idx_type i = 0; i < nm; i++)
                 work[i] = 0.;
               for (octave_idx_type i = 0; i < nr; i++)
-                work[perm[i]] = b(i, j);
+                work[inv_perm[i]] = b(i, j);
 
               for (octave_idx_type k = 0; k < nc; k++)
                 {
@@ -3151,9 +3165,9 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const ComplexMatrix& b,
                       octave_idx_type mini = 0;
 
                       for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
-                        if (perm[ridx (i)] < minr)
+                        if (inv_perm[ridx (i)] < minr)
                           {
-                            minr = perm[ridx (i)];
+                            minr = inv_perm[ridx (i)];
                             mini = i;
                           }
 
@@ -3170,7 +3184,7 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const ComplexMatrix& b,
                           if (i == mini)
                             continue;
 
-                          octave_idx_type iidx = perm[ridx (i)];
+                          octave_idx_type iidx = inv_perm[ridx (i)];
                           work[iidx] = work[iidx] - tmp * data (i);
                         }
                     }
@@ -3199,9 +3213,9 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const ComplexMatrix& b,
 
                           for (octave_idx_type i = cidx (k);
                                i < cidx (k+1); i++)
-                            if (perm[ridx (i)] < minr)
+                            if (inv_perm[ridx (i)] < minr)
                               {
-                                minr = perm[ridx (i)];
+                                minr = inv_perm[ridx (i)];
                                 mini = i;
                               }
 
@@ -3213,7 +3227,7 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const ComplexMatrix& b,
                               if (i == mini)
                                 continue;
 
-                              octave_idx_type iidx = perm[ridx (i)];
+                              octave_idx_type iidx = inv_perm[ridx (i)];
                               work[iidx] = work[iidx] - tmp * data (i);
                             }
                         }
@@ -3389,14 +3403,18 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const SparseComplexMatrix& b,
       if (typ == MatrixType::Permuted_Lower)
         {
           OCTAVE_LOCAL_BUFFER (Complex, work, nm);
+
           octave_idx_type *perm = mattype.triangular_perm ();
+          OCTAVE_LOCAL_BUFFER (octave_idx_type, inv_perm, nr);
+          for (octave_idx_type i = 0; i < nr; i++)
+            inv_perm[perm[i]] = i;
 
           for (octave_idx_type j = 0; j < b_nc; j++)
             {
               for (octave_idx_type i = 0; i < nm; i++)
                 work[i] = 0.;
               for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
-                work[perm[b.ridx (i)]] = b.data (i);
+                work[inv_perm[b.ridx (i)]] = b.data (i);
 
               for (octave_idx_type k = 0; k < nc; k++)
                 {
@@ -3406,9 +3424,9 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                       octave_idx_type mini = 0;
 
                       for (octave_idx_type i = cidx (k); i < cidx (k+1); i++)
-                        if (perm[ridx (i)] < minr)
+                        if (inv_perm[ridx (i)] < minr)
                           {
-                            minr = perm[ridx (i)];
+                            minr = inv_perm[ridx (i)];
                             mini = i;
                           }
 
@@ -3425,7 +3443,7 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                           if (i == mini)
                             continue;
 
-                          octave_idx_type iidx = perm[ridx (i)];
+                          octave_idx_type iidx = inv_perm[ridx (i)];
                           work[iidx] = work[iidx] - tmp * data (i);
                         }
                     }
@@ -3476,9 +3494,9 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const SparseComplexMatrix& b,
 
                           for (octave_idx_type i = cidx (k);
                                i < cidx (k+1); i++)
-                            if (perm[ridx (i)] < minr)
+                            if (inv_perm[ridx (i)] < minr)
                               {
-                                minr = perm[ridx (i)];
+                                minr = inv_perm[ridx (i)];
                                 mini = i;
                               }
 
@@ -3490,7 +3508,7 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                               if (i == mini)
                                 continue;
 
-                              octave_idx_type iidx = perm[ridx (i)];
+                              octave_idx_type iidx = inv_perm[ridx (i)];
                               work[iidx] = work[iidx] - tmp * data (i);
                             }
                         }

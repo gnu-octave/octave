@@ -1854,8 +1854,8 @@ orderfields, isstruct, structfun}
 
   // struct ([]) returns an empty struct.
 
-  // struct (empty_matrix) returns an empty struct with the same
-  // dimensions as the empty matrix.
+  // struct (empty_matrix) or struct (empty_matrix, cell_array_of field_names)
+  // return an empty struct with the same dimensions as the empty matrix.
 
   // Note that struct () creates a 1x1 struct with no fields for
   // compatibility with Matlab.
@@ -1867,7 +1867,8 @@ orderfields, isstruct, structfun}
     return ovl (args(0).map_value ());
 
   if ((nargin == 1 || nargin == 2)
-      && args(0).isempty () && args(0).is_real_matrix ())
+      && args(0).isempty () && args(0).is_real_matrix ()
+      && ! args(0).is_char_matrix ())
     {
       if (nargin == 2)
         {
@@ -1970,6 +1971,10 @@ orderfields, isstruct, structfun}
 %!error <arguments must occur as "field", VALUE pairs> struct (1,2,3,4)
 %!fail ('struct ("1",2,"3")',
 %!      'struct: additional arguments must occur as "field", VALUE pairs')
+
+%!test <*67255>  # Test empty string as field name
+% s.('') = 3;
+% assert (struct ('', 3), s)
 */
 
 DEFUN (isstruct, args, ,
@@ -2106,7 +2111,7 @@ get_cell2struct_fields (const octave_value& arg)
 {
   if (arg.is_string ())
     {
-      if (arg.rows () != 1)
+      if (arg.rows () > 1)
         invalid_cell2struct_fields_error ();
 
       return Array<std::string> (dim_vector (1, 1), arg.string_value ());
@@ -2122,7 +2127,7 @@ get_cell2struct_fields (const octave_value& arg)
         {
           const octave_value val = c(i);
 
-          if (! val.is_string () || val.rows () != 1)
+          if (! val.is_string () || val.rows () > 1)
             invalid_cell2struct_fields_error ();
 
           retval(i) = c(i).string_value ();
@@ -2239,6 +2244,9 @@ S(1)
 %!assert (cell2struct ({1, 2, 3, 4}, {'a', 'b'; 'c', 'd'}, 2),
 %!        struct ('a', 1, 'c', 2, 'b', 3, 'd', 4));
 %!error cell2struct ({1, 2, 3, 4}, {'a', 'b'; 'c', 'd'})
+
+%!test <*67255>  # Test empty string as field name
+% assert (cell2struct ({3}, {''}), struct ('', {3}))
 */
 
 DEFUN (rmfield, args, ,

@@ -79,7 +79,7 @@
 %!   pkg ("uninstall", mfile_pkg_name{i});
 %! endfor
 %!
-%!error pkg ("install", "nonexistent.zip")
+%!error pkg ("install", "./nonexistent.zip")
 
 ## -local
 %!testif HAVE_Z

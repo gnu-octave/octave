@@ -5525,20 +5525,16 @@ visit_index_expression (tree_index_expression& expr)
         int slot = SLOT (first_expression->name ());
         MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
         PUSH_CODE (INSTR::INDEX_STRUCT_CALL);
-        if (m1_magic_nargout)
-          PUSH_CODE (1); // Note, 1, not -1. Since there is no subsref in INDEX_STRUCT_CALL
-        else
-          PUSH_CODE (nargout);
+        // nargout=1 because this is followed by more index operations
+        PUSH_CODE (1); // Note, 1, not -1. Since there is no subsref in INDEX_STRUCT_CALL
         PUSH_WSLOT (slot); // the slot
       }
     else
       {
         MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
         PUSH_CODE (INSTR::INDEX_STRUCT_CALL);
-        if (m1_magic_nargout)
-          PUSH_CODE (1); // Note, 1, not -1.
-        else
-          PUSH_CODE (nargout);
+        // nargout=1 because this is followed by more index operations
+        PUSH_CODE (1); // Note, 1, not -1.
         PUSH_WSLOT (0); // slot ignored
       }
 
@@ -5555,7 +5551,8 @@ visit_index_expression (tree_index_expression& expr)
     if (m1_magic_nargout)
       PUSH_CODE (-1);
     else
-      PUSH_CODE (nargout);
+      // nargout=1 because this is followed by more index operations
+      PUSH_CODE (1);
     PUSH_CODE (0);
     PUSH_CODE (v_n_args.size ());
     PUSH_CODE (v_n_args[0]);
@@ -5567,6 +5564,7 @@ visit_index_expression (tree_index_expression& expr)
   while (arg_lists_it != arg_lists.end ())
     {
       cntr++; // One first iteration of the loop
+      bool last = (cntr == static_cast<int> (n_chained-1));
       tree_argument_list *arg_list = *arg_lists_it++;
       string_vector field_names = *arg_names_it++;
       tree_expression *dyn_expr = *arg_lists_dyn_it++;
@@ -5584,7 +5582,7 @@ visit_index_expression (tree_index_expression& expr)
       if (m1_magic_nargout)
         PUSH_CODE (-1);
       else
-        PUSH_CODE (nargout);
+        PUSH_CODE (last ? nargout : 1);
       PUSH_CODE (cntr);
       PUSH_CODE (v_n_args.size ());
       PUSH_CODE (v_n_args[cntr]);

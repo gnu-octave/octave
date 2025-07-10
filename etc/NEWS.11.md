@@ -37,6 +37,10 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 
 ### Graphics backend
 
+- `polar` plot background patch object has been moved to the Z=0 plane to
+  permit view changes that previously resulted in an obscured plot area
+  (bug #67574).
+
 ### Matlab compatibility
 
 - The function `zscore` now accepts the optional arguments `"all"` or `vecdim`,

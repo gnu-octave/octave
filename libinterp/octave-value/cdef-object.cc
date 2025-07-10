@@ -134,15 +134,16 @@ cdef_object_rep::map_keys () const
 }
 
 octave_map
-cdef_object::map_value () const
+cdef_object::map_value (bool warn) const
 {
   octave_map retval;
 
-  warning_with_id ("Octave:classdef-to-struct",
-                   "struct: converting a classdef object into a struct "
-                   "overrides the access restrictions defined for properties. "
-                   "All properties are returned, including private and "
-                   "protected ones.");
+  if (warn)
+    warning_with_id ("Octave:classdef-to-struct",
+                     "struct: converting a classdef object into a struct "
+                     "overrides the access restrictions defined for "
+                     "properties. All properties are returned, including "
+                     "private and protected ones.");
 
   cdef_class cls = get_class ();
 

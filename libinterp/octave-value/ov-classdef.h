@@ -123,7 +123,9 @@ public:
 
   string_vector map_keys () const { return m_object.map_keys (); }
 
-  octave_map map_value () const { return m_object.map_value (); }
+  octave_map map_value () const { return m_object.map_value (true); }
+
+  octave_map map_value (bool warn) const { return m_object.map_value (warn); }
 
   dim_vector dims () const { return m_object.dims (); }
 
@@ -154,6 +156,12 @@ public:
   static std::string static_type_name () { return s_t_name; }
   static std::string static_class_name () { return "<unknown>"; }
   static OCTINTERP_API void register_type (octave::type_info&);
+
+private:
+
+  void loadobj (octave_map& arg, const bool custom_saveobj_ret_type);
+
+  octave_map saveobj (bool& custom_saveobj_ret_type);
 
 private:
 

@@ -614,10 +614,13 @@ ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
         }
 
       it = iw_u.begin ();
-      jrow = *it;
       total_sum = zero;
-      while ((jrow < k) && (it != iw_u.end ()))
+      while (it != iw_u.end ())
         {
+          jrow = *it;
+          if (jrow >= k)
+            break;
+
           if (opt == COL)
             partial_col_sum = w_data[jrow];
           if (w_data[jrow] != zero)
@@ -663,10 +666,7 @@ ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
                   else if (opt == ROW)
                     total_sum += partial_row_sum;
                   w_data[jrow] = zero;
-                  it2 = it;
-                  it++;
-                  iw_u.erase (it2);
-                  jrow = *it;
+                  it = iw_u.erase (it);  // Returns next valid iterator
                   continue;
                 }
               else
@@ -675,7 +675,7 @@ ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
                 if (opt == ROW)
                   w_data[jrow] = tl;
             }
-          jrow = *(++it);
+          ++it;  // Increment only when we did not erase
         }
 
       // Search for the pivot and update iw_l and iw_u if the pivot is not the
@@ -703,15 +703,11 @@ ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
                 iw_l.insert (perm[k]);
               else
                 iw_u.insert (k);
-              // Swap data and update permutation vectors
-              aux = w_data[k];
+              // Update permutation vectors and swap data
               iperm[perm[p_perm]] = k;
               iperm[perm[k]] = p_perm;
-              c = perm[k];
-              perm[k] = perm[p_perm];
-              perm[p_perm] = c;
-              w_data[k] = w_data[p_perm];
-              w_data[p_perm] = aux;
+              std::swap (perm[k], perm[p_perm]);
+              std::swap (w_data[k], w_data[p_perm]);
             }
 
         }
@@ -728,9 +724,7 @@ ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
                 if (opt != OFF)
                   total_sum += w_data[p_perm];
                 w_data[p_perm] = zero;
-                it2 = it;
-                it++;
-                iw_l.erase (it2);
+                it = iw_l.erase (it);
                 continue;
               }
 

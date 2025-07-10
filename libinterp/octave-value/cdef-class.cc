@@ -874,9 +874,10 @@ cdef_class::cdef_class_rep::get_method (int line) const
 }
 
 octave_value
-cdef_class::cdef_class_rep::construct (const octave_value_list& args)
+cdef_class::cdef_class_rep::construct (const octave_value_list& args,
+                                       const bool default_initialize)
 {
-  cdef_object obj = construct_object (args);
+  cdef_object obj = construct_object (args, default_initialize);
 
   if (obj.ok ())
     return to_ov (obj);
@@ -885,7 +886,8 @@ cdef_class::cdef_class_rep::construct (const octave_value_list& args)
 }
 
 cdef_object
-cdef_class::cdef_class_rep::construct_object (const octave_value_list& args)
+cdef_class::cdef_class_rep::construct_object (const octave_value_list& args,
+                                              const bool default_initialize)
 {
   if (is_abstract ())
     error ("cannot instantiate object for abstract class '%s'",
@@ -953,7 +955,8 @@ cdef_class::cdef_class_rep::construct_object (const octave_value_list& args)
 
       initialize_object (obj);
 
-      run_constructor (obj, args);
+      if (! default_initialize)
+        run_constructor (obj, args);
 
       return obj;
     }

@@ -130,10 +130,13 @@ private:
 
     OCTINTERP_API octave_value get_method (int line) const;
 
-    OCTINTERP_API octave_value construct (const octave_value_list& args);
+    OCTINTERP_API octave_value
+    construct (const octave_value_list& args,
+               const bool default_initialize = false);
 
     OCTINTERP_API cdef_object
-    construct_object (const octave_value_list& args);
+    construct_object (const octave_value_list& args,
+                      const bool default_initialize = false);
 
     OCTINTERP_API void initialize_object (cdef_object& obj);
 
@@ -376,14 +379,16 @@ public:
     return get_method_function (get_name ());
   }
 
-  octave_value construct (const octave_value_list& args)
+  octave_value construct (const octave_value_list& args,
+                          const bool default_initialize = false)
   {
-    return get_rep ()->construct (args);
+    return get_rep ()->construct (args, default_initialize);
   }
 
-  cdef_object construct_object (const octave_value_list& args)
+  cdef_object construct_object (const octave_value_list& args,
+                                const bool default_initialize = false)
   {
-    return get_rep ()->construct_object (args);
+    return get_rep ()->construct_object (args, default_initialize);
   }
 
   void initialize_object (cdef_object& obj)

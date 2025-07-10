@@ -360,8 +360,11 @@ function __update_polar_grid__ (hax, ~, hg)
   x = kron (cos (t), rtick);
   y = kron (sin (t), rtick);
 
-  ## Draw colored disk under axes at Z-depth = -1
-  patch (x(:,end), y(:,end), -ones (circle_points, 1),
+  ## Draw colored disk in the Z=0 plane for solid background and border.
+  ## FIXME: Patch solid border is not visible through polar plot lines.  If
+  ##        solid border visibility is needed without obscuring other plot
+  ##        features additional line objects may be needed.
+  patch (x(:,end), y(:,end), zeros (circle_points, 1),
          get (hax, "color"), "parent", hg);
 
   ## Plot grid circles
@@ -456,6 +459,13 @@ endfunction
 %! set (gca, "rtick", 0.2:0.2:1);
 %! title ("polar() plot");
 
+%!demo
+%! clf;
+%! theta = linspace (0,8*pi,1000);
+%! rho = sin (5/4*theta);
+%! polar (theta, rho);
+%! view (90, -90);
+%! title ("polar() plot with modified axis orientation");
 
 ## Test correct handle type (line) returned by polar.
 %!test

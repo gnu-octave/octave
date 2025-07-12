@@ -43,11 +43,14 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 
 ### Matlab compatibility
 
+- The warning `"Octave:language-extension"` is no longer emitted for automatic
+  broadcasting which Matlab has supported since version 2016B.
+
 - The function `zscore` now accepts the optional arguments `"all"` or `vecdim`,
   and `"omitnan"`.
 
-- The warning `"Octave:language-extension"` is no longer emitted for automatic
-  broadcasting which Matlab has supported since version 2016B.
+- The function `gradient` with a numeric input now only accepts type double
+  or single.
 
 ### Alphabetical list of new functions added in Octave 11
 

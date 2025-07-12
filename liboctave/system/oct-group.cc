@@ -195,7 +195,12 @@ group::group (void *p, std::string& msg)
 
   if (p)
     {
-      struct ::group *gr = static_cast<struct ::group *> (p);
+      // struct ::group *gr = static_cast<struct ::group *> (p);
+      // Ths code assumes memory alignment that is not the case on MacOS.
+      // Copy struct group to aligned local storage.
+      struct ::group tmpgr;
+      std::memcpy (&tmpgr, p, sizeof (tmpgr));
+      struct ::group *gr = &tmpgr;
 
       m_name = gr->gr_name;
 

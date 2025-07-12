@@ -107,6 +107,9 @@ function varargout = gradient (m, varargin)
 
   nargout_with_ans = max (1,nargout);
   if (isnumeric (m))
+    if (! isfloat (m))
+      error ("gradient: M must be a floating point vector or array");
+    endif
     [varargout{1:nargout_with_ans}] = matrix_gradient (m, varargin{:});
   elseif (is_function_handle (m))
     [varargout{1:nargout_with_ans}] = handle_gradient (m, varargin{:});
@@ -342,3 +345,7 @@ endfunction
 %! [dx, dy] = gradient (f, xy);
 %! assert (dx, df_dx (xy (:, 1), xy (:, 2)), 0.1);
 %! assert (dy, df_dy (xy (:, 1), xy (:, 2)), 0.1);
+
+## Test input validation
+%!error <Invalid call> gradient ()
+%!error <M must be a floating point vector or array> gradient (int8 ([1 2 3]))

@@ -146,6 +146,10 @@ public:
 
   static OCTINTERP_API octave_value metaclass_query (const std::string& cls);
 
+  OCTINTERP_API bool save_ascii (std::ostream& os);
+
+  OCTINTERP_API bool load_ascii (std::istream& is);
+
 public:
 
   int type_id () const { return s_t_id; }

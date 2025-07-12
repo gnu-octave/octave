@@ -1467,7 +1467,7 @@ SparseMatrix::utsolve (MatrixType& mattype, const Matrix& b,
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nm = (nc > nr ? nc : nr);
+  octave_idx_type nm = std::max (nc, nr);
   err = 0;
 
   if (nr != b.rows ())
@@ -1694,7 +1694,7 @@ SparseMatrix::utsolve (MatrixType& mattype, const SparseMatrix& b,
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nm = (nc > nr ? nc : nr);
+  octave_idx_type nm = std::max (nc, nr);
   err = 0;
 
   if (nr != b.rows ())
@@ -1973,7 +1973,7 @@ SparseMatrix::utsolve (MatrixType& mattype, const ComplexMatrix& b,
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nm = (nc > nr ? nc : nr);
+  octave_idx_type nm = std::max (nc, nr);
   err = 0;
 
   if (nr != b.rows ())
@@ -2203,7 +2203,7 @@ SparseMatrix::utsolve (MatrixType& mattype, const SparseComplexMatrix& b,
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nm = (nc > nr ? nc : nr);
+  octave_idx_type nm = std::max (nc, nr);
   err = 0;
 
   if (nr != b.rows ())
@@ -2485,7 +2485,7 @@ SparseMatrix::ltsolve (MatrixType& mattype, const Matrix& b,
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nm = (nc > nr ? nc : nr);
+  octave_idx_type nm = std::max (nc, nr);
   err = 0;
 
   if (nr != b.rows ())
@@ -2740,7 +2740,7 @@ SparseMatrix::ltsolve (MatrixType& mattype, const SparseMatrix& b,
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nm = (nc > nr ? nc : nr);
+  octave_idx_type nm = std::max (nc, nr);
   err = 0;
 
   if (nr != b.rows ())
@@ -3043,7 +3043,7 @@ SparseMatrix::ltsolve (MatrixType& mattype, const ComplexMatrix& b,
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nm = (nc > nr ? nc : nr);
+  octave_idx_type nm = std::max (nc, nr);
   err = 0;
 
   if (nr != b.rows ())
@@ -3299,7 +3299,7 @@ SparseMatrix::ltsolve (MatrixType& mattype, const SparseComplexMatrix& b,
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nm = (nc > nr ? nc : nr);
+  octave_idx_type nm = std::max (nc, nr);
   err = 0;
 
   if (nr != b.rows ())

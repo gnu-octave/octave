@@ -288,7 +288,6 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
                 const bool do_name_validation)
 {
   // Read name for this entry or break on EOF.
-
   std::string name = extract_keyword (is, "name");
 
   if (name.empty ())
@@ -324,6 +323,9 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
   else
     typ = tag;
 
+  std::string class_type;
+  octave::__get_help_system__ ().which (typ, class_type);
+
   // Special case for backward compatibility.  A small bit of cruft
   if (SUBSTRING_COMPARE_EQ (typ, 0, 12, "string array"))
     tc = charMatrix ();
@@ -332,6 +334,11 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
       // Special case for loading old octave_inline_fcn objects.
       tc = load_inline_fcn (is, filename);
       return name;
+    }
+  else if (SUBSTRING_COMPARE_EQ (class_type, 0, 17, "class constructor"))
+    {
+      octave::cdef_class cls = octave::__get_cdef_manager__ ().find_class (typ);
+      tc = cls.construct (octave_value_list (), true);
     }
   else
     {
@@ -368,9 +375,14 @@ save_text_data (std::ostream& os, const octave_value& val_arg,
   octave_value val = val_arg;
 
   if (mark_global)
-    os << "# type: global " << val.type_name () << "\n";
+    os << "# type: global ";
   else
-    os << "# type: " << val.type_name () << "\n";
+    os << "# type: ";
+
+  if (val.is_classdef_object ())
+    os << val.class_name () << "\n";
+  else
+    os << val.type_name () << "\n";
 
   if (! precision)
     precision = Vsave_precision;

@@ -202,11 +202,6 @@ classdef Map < handle
         ## Check type of keys and values, and define numeric_keys
         check_types (this);
 
-        ## Flatten char keys
-        if (! this.numeric_keys)
-          keys = cellfun (@(x) x(:).', keys, 'UniformOutput', false);
-        endif
-
         ## Sort keys (faster than call to sort_keys once encoded)
         if (this.numeric_keys)
           [~, I] = sort (cell2mat (keys));
@@ -266,10 +261,6 @@ classdef Map < handle
         if (! iscell (keySet))
           error ("containers.Map: input argument 'keySet' must be a cell");
         endif
-        if (! this.numeric_keys)
-          ## Flatten char keys
-          keySet = cellfun (@(x) x(:).', keySet, 'UniformOutput', false);
-        endif
         enckeySet = encode_keys (this, keySet);
         valueSet = cell (size (keySet));
         for i = 1:numel (valueSet)
@@ -307,8 +298,6 @@ classdef Map < handle
       in = cellfun ("isnumeric", keySet) | cellfun ("islogical", keySet);
       if (! this.numeric_keys)
         in = ! in;
-        ## Flatten char keys
-        keySet = cellfun (@(x) x(:).', keySet, 'UniformOutput', false);
       endif
       keySet = encode_keys (this, keySet(in));
       tf(in) = isfield (this.map, keySet);
@@ -337,8 +326,6 @@ classdef Map < handle
       in = cellfun ("isnumeric", keySet) | cellfun ("islogical", keySet);
       if (! this.numeric_keys)
         in = ! in;
-        ## Flatten char keys
-        keySet = cellfun (@(x) x(:).', keySet, 'UniformOutput', false);
       endif
       keySet = encode_keys (this, keySet(in));
       in = isfield (this.map, keySet);
@@ -447,9 +434,6 @@ classdef Map < handle
                                         || ! isscalar (key))))
             error ("containers.Map: specified key type does not match the type of this container");
           endif
-          if (ischar (key))
-            key = key(:).';
-          endif
           enckey = encode_keys (this, key);
           if (! isfield (this.map, enckey))
             error ("containers.Map: specified key <%s> does not exist",
@@ -488,9 +472,6 @@ classdef Map < handle
               error ("containers.Map: specified value type does not match the type of this container");
             endif
             val = feval (this.ValueType, val);
-          endif
-          if (ischar (key))
-            key = key(:).';
           endif
           key = encode_keys (this, key);
           if (isfield (this.map, key))
@@ -670,19 +651,6 @@ endclassdef
 %!test <*67255>
 %! m = containers.Map ('', 3);
 %! assert (m(''), 3);
-
-## Test multi-row char array keys
-%!test <*67283>
-%! k1 = char ("key", "one");
-%! k2 = char ("key", "two");
-%! k3 = char ("key", "three");
-%! m = containers.Map ({k1, k2}, {1, 2});
-%! m(k3) = 3;
-%! assert (m(k1), 1);
-%! assert (m.values ({k1, k3}), {1, 3});
-%! m.remove ({k1, k3});
-%! assert (m(k2), 2);
-%! assert (m.isKey ({k1, k2, k3}), [false, true, false]);
 
 ## Test numeric keys
 %!test

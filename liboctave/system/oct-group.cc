@@ -195,12 +195,7 @@ group::group (void *p, std::string& msg)
 
   if (p)
     {
-      // struct ::group *gr = static_cast<struct ::group *> (p);
-      // Ths code assumes memory alignment that is not the case on MacOS.
-      // Copy struct group to aligned local storage.
-      struct ::group tmpgr;
-      std::memcpy (&tmpgr, p, sizeof (tmpgr));
-      struct ::group *gr = &tmpgr;
+      struct ::group *gr = static_cast<struct ::group *> (p);
 
       m_name = gr->gr_name;
 
@@ -210,24 +205,7 @@ group::group (void *p, std::string& msg)
 
       m_gid = gr->gr_gid;
 
-      // FIXME: Maybe there should be a string_vector constructor
-      //        that takes a NUL terminated list of C strings?
-
-      const char *const *tmp = gr->gr_mem;
-
-      int k = 0;
-      while (*tmp++)
-        k++;
-
-      if (k > 0)
-        {
-          tmp = gr->gr_mem;
-
-          m_mem.resize (k);
-
-          for (int i = 0; i < k; i++)
-            m_mem[i] = tmp[i];
-        }
+      m_mem = string_vector (gr->gr_mem);
 
       m_valid = true;
     }

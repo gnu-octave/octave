@@ -323,8 +323,8 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
   else
     typ = tag;
 
-  std::string class_type;
-  octave::__get_help_system__ ().which (typ, class_type);
+  octave::cdef_manager& cdm = octave::__get_cdef_manager__ ();
+  octave::cdef_class cls = cdm.find_class(typ, false, false);
 
   // Special case for backward compatibility.  A small bit of cruft
   if (SUBSTRING_COMPARE_EQ (typ, 0, 12, "string array"))
@@ -335,9 +335,8 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
       tc = load_inline_fcn (is, filename);
       return name;
     }
-  else if (SUBSTRING_COMPARE_EQ (class_type, 0, 17, "class constructor"))
+  else if (cls.ok ()) 
     {
-      octave::cdef_class cls = octave::__get_cdef_manager__ ().find_class (typ);
       tc = cls.construct (octave_value_list (), true);
     }
   else

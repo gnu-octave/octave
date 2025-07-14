@@ -29,7 +29,7 @@
 ## @deftypefnx {} {} rose (@var{theta}, @var{bins})
 ## @deftypefnx {} {} rose (@var{hax}, @dots{})
 ## @deftypefnx {} {@var{h} =} rose (@dots{})
-## @deftypefnx {} {[@var{th} @var{r}] =} rose (@dots{})
+## @deftypefnx {} {[@var{th}, @var{r}] =} rose (@dots{})
 ## Plot an angular histogram.
 ##
 ## With one vector argument, @var{th}, plot the histogram with 20 angular bins.
@@ -71,13 +71,15 @@
 ## "mod (th, 2*pi)" changes any 2*pi values to 0, this last bin should always
 ## be zero and can be safely deleted.
 
-function [th, r] = rose (varargin)
+function [thout, rout] = rose (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("rose", varargin{:});
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
+
+  ## FIXME: Need input validation.  No check that inputs are even numeric!
 
   ## Force theta to range [0,2*pi)
   th = mod (varargin{1}, 2*pi);
@@ -100,42 +102,47 @@ function [th, r] = rose (varargin)
 
   binedge = bins(1:end-1) + diff (bins) / 2;  # halfway between bin centers
   if (! custom_bins)
-    counts = histc (th, [0, binedge, 2*pi]);  # Add implicit edges at 0, 2*pi
-    if (isrow (counts))
-      counts = counts(:);
-    endif
-    ## FIXME: Remove in Octave 11 if no bug reports filed
-    if (any (counts(end,:)))
-      error ("rose: internal error, histc returned count for theta == 2*pi, please file a bug report");
-    endif
-    counts(end,:) = [];            # remove temporary bin
+    binedge = [0, binedge, 2*pi];  # Add implicit edges at 0, 2*pi
+    counts = histc (th, binedge);
   else
     last_binedge = bins(end) + diff ([bins(end), 2*pi+bins(1)]) / 2;
     if (last_binedge >= 2*pi)
-      counts = histc (th, [0, last_binedge - 2*pi, binedge, 2*pi]);
+      wraparound = true;
+      binedge = [0, last_binedge - 2*pi, binedge, 2*pi];
+      counts = histc (th, binedge);
     else
-      counts = histc (th, [0, binedge, last_binedge, 2*pi]);
+      wraparound = false;
+      binedge = [0, binedge, last_binedge, 2*pi];
+      counts = histc (th, binedge);
     endif
-    if (isrow (counts))
-      counts = counts(:);
-    endif
-    counts(end-1,:) += counts(1,:);  # Combine counts for first, last bin
-    ## FIXME: Remove in Octave 11 if no bug reports filed
-    if (any (counts(end,:)))
-      error ("rose: internal error, histc returned count for theta == 2*pi, please file a bug report");
-    endif
-    counts([1,end], :) = [];         # remove temporary bins
   endif
 
-  binedge = [binedge ; zeros(size(binedge)); zeros(size(binedge)); binedge];
-  binedge = binedge(:);
-  if (! custom_bins)
-    ## Add implicit edges at 0 and 2*pi
-    th = [0; 0; binedge; 2*pi ; 0];
-  else
-    ## Add final edge for custom bin
-    th = [0; last_binedge; binedge; last_binedge; 0];
+  ## Use column vectors unless input contains multiple data series
+  if (isrow (counts))
+    counts = counts(:);
   endif
+  ## FIXME: Remove in Octave 12 if no bug reports filed
+  if (any (counts(end,:)))
+    error ("rose: internal error, histc returned count for theta == 2*pi, please file a bug report");
+  endif
+  counts(end,:) = [];              # remove overflow bin
+
+  if (custom_bins)
+    counts(end,:) += counts(1,:);  # Add first bin to wraparound bin
+    counts(1, :) = [];             # Remove first bin
+  endif
+
+  th = zeros (4 * rows (counts), 1);
+  if (! custom_bins)
+    binedge(end) = [];      # Remove inserted edge at 2*pi
+    th(2:4:end) = binedge;
+    th(3:4:end) = circshift (binedge, -1);
+  else
+    binedge([1,end]) = [];  # Remove inserted edges at 0, 2*pi
+    th(2:4:end) = binedge;
+    th(3:4:end) = circshift (binedge, -1);
+  endif
+  th(end-1) += 2*pi;        # For Matlab compatibility, wrap final edge
 
   r = zeros (4 * rows (counts), columns (counts));
   r(2:4:end, :) = counts;
@@ -160,8 +167,11 @@ function [th, r] = rose (varargin)
     end_unwind_protect
 
     if (nargout > 0)
-      th = htmp;
+      thout = htmp;
     endif
+  else
+    thout = th;
+    rout = r;
   endif
 
 endfunction
@@ -196,16 +206,38 @@ endfunction
 %! assert ([t(2); t(3:4:end)], [0; pi/2; pi; 3*pi/2; 2*pi]);
 %! assert (r(2:4:end), [2; 0; 0; 0]);
 
-## Custom bins, synthesized bin1 cut-off is exactly 36 degrees
+## Custom bin centers, values exactly at 0 and 2*pi go to bin 1
 %!test
-%! [t,r] = rose (deg2rad ([35, 36]), pi * [1/2, 1, 1.5, 1.9]);
+%! [t,r] = rose ([0,2*pi], deg2rad (45:90:360));
+%! assert (size (t), [16, 1]);
+%! assert (size (r), [16, 1]);
+%! assert (r(2:4:end), [2; 0; 0; 0]);
+%! assert ([t(2); t(3:4:end)], [0; pi/2; pi; 3*pi/2; 2*pi]);
+
+## Custom bins, synthesized bin1 edge is exactly 36 degrees (wraparound)
+%!test
+%! [t,r] = rose (deg2rad ([35, 36]), deg2rad ([90, 180, 270, 342]));
 %! assert (r(2:4:end), [1; 0; 0; 1]);
+%! assert (rad2deg (t(2:4:end)), [36; 135; 225; 306]);
+%! assert (rad2deg (t(end-1)), 396);
 
-## Custom bins, synthesized bin1 cut-off is exactly -36 degrees
+## Custom bins, synthesized bin1 cut-off is exactly -36 degrees (no wrap)
 %!test
-%! [t,r] = rose (deg2rad ([-36, -37, 360]), pi * [1/10, 1/2, 1, 1.5]);
+%! [t,r] = rose (deg2rad ([-36, -37, 360]), deg2rad ([18, 90, 180, 270]));
 %! assert (r(2:4:end), [0; 0; 1; 2]);
+%! assert (rad2deg (t(2:4:end)), [54; 135; 225; 324]);
+%! assert (rad2deg (t(end-1)), 414);
 
-## Test input validation
+%!test <*67280>
+%! d = deg2rad (0:359) + 4*eps;  # uniformly spaced data around unit circle
+%! d = [d, repmat(deg2rad(4), [1,30])];  # Add 30 data points at 4 degrees 
+%! [t,r] = rose (d, 30);   
+%! assert (r(2), 42);   # All 30 data points went into bin 1.
+%! assert (t(2:3), [0; .2094], 1e-4);  # bin 1 starts at 0 
+%! [t,r] = rose (d, deg2rad (0:12:348));
+%! assert (r(end-2), 42);   # All 30 data points went into last bin.
+%! assert (t(end-([2,1])), [6.1785; 6.3879], 1e-4);  # last bin centered at 0 
+
+## Test input validation8
 %!error <Invalid call> rose ()
 %!error <Invalid call> rose (1,2,3)

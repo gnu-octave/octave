@@ -116,7 +116,7 @@ octave::comment_list octave_user_code::trailing_comments () const
 
       octave::tree_command *cmd = last_stmt->command ();
 
-      octave::tree_no_op_command *no_op_cmd = dynamic_cast <octave::tree_no_op_command *> (cmd);
+      octave::tree_no_op_command *no_op_cmd = dynamic_cast<octave::tree_no_op_command *> (cmd);
 
       if (no_op_cmd && (no_op_cmd->is_end_of_fcn_or_script () || no_op_cmd->is_end_of_file ()))
         return no_op_cmd->trailing_comments ();
@@ -349,7 +349,7 @@ octave_user_function::attach_trailing_comments (const octave::comment_list& lst)
 
       octave::tree_command *cmd = last_stmt->command ();
 
-      octave::tree_no_op_command *no_op_cmd = dynamic_cast <octave::tree_no_op_command *> (cmd);
+      octave::tree_no_op_command *no_op_cmd = dynamic_cast<octave::tree_no_op_command *> (cmd);
 
       if (no_op_cmd && (no_op_cmd->is_end_of_fcn_or_script () || no_op_cmd->is_end_of_file ()))
         no_op_cmd->attach_trailing_comments (lst);

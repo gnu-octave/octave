@@ -100,7 +100,7 @@ public:
 private:
 
   // Map from shortcut identifier (settings key) to gui_pref object.
-  QHash <QString, gui_pref> m_hash;
+  QHash<QString, gui_pref> m_hash;
 
   void do_insert (const QString& settings_key, const gui_pref& pref);
 
@@ -195,7 +195,7 @@ public:
 private:
 
   // Map from shortcut identifier (settings key) to sc_pref object.
-  QHash <QString, sc_pref> m_hash;
+  QHash<QString, sc_pref> m_hash;
 
   void do_insert (const QString& settings_key, const sc_pref& scpref);
 

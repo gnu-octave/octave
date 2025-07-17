@@ -290,7 +290,7 @@ public:
 };
 
 template <>
-class fp_type_traits <FloatComplex>
+class fp_type_traits<FloatComplex>
 {
 public:
   static const bool is_complex = true;

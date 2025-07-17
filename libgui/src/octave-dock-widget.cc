@@ -555,11 +555,11 @@ octave_dock_widget::handle_settings ()
   set_style (false);
 
   // Compacter design
-  QToolBar *toolbar = findChild <QToolBar *> ();
+  QToolBar *toolbar = findChild<QToolBar *> ();
   if (toolbar)
     toolbar->setStyleSheet (toolbar->styleSheet () + global_toolbar_style);
 
-  QMenuBar *menubar = findChild <QMenuBar *> ();
+  QMenuBar *menubar = findChild<QMenuBar *> ();
   if (menubar)
     menubar->setStyleSheet (menubar->styleSheet () + global_menubar_style);
 

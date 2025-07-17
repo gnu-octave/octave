@@ -1013,5 +1013,5 @@ rational_approx (T val, int len)
 }
 
 // instantiate the template for float and double
-template OCTAVE_API std::string rational_approx <float> (float val, int len);
-template OCTAVE_API std::string rational_approx <double> (double val, int len);
+template OCTAVE_API std::string rational_approx<float> (float val, int len);
+template OCTAVE_API std::string rational_approx<double> (double val, int len);

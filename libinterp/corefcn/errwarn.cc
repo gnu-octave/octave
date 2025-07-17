@@ -303,7 +303,8 @@ void
 warn_complex_cmp ()
 {
   warning_with_id ("Octave:language-extension",
-                   "comparing complex numbers is not supported in Matlab");
+                   "comparing the complex part of complex numbers is not"
+                   " supported in Matlab");
 }
 
 void

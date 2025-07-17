@@ -335,7 +335,7 @@ file_system_browser::file_system_browser (QWidget *p)
   m_columns_shown_keys.append (fb_show_hidden.settings_key ());
   m_columns_shown_keys.append (fb_show_altcol.settings_key ());
 
-  m_columns_shown_defs = QList <QVariant> ();
+  m_columns_shown_defs = QList<QVariant> ();
   m_columns_shown_defs.append (fb_show_size.def ());
   m_columns_shown_defs.append (fb_show_type.def ());
   m_columns_shown_defs.append (fb_show_date.def ());
@@ -1524,7 +1524,7 @@ void editor_files_browser::add_editor_file (const QString& file)
 
   QStandardItem *dir_item;
 
-  QList <QStandardItem *> dir_items = m_editor_files_model->findItems (dir_name);
+  QList<QStandardItem *> dir_items = m_editor_files_model->findItems (dir_name);
   if (dir_items.isEmpty ())
     {
       // The directory does not yet exist
@@ -1568,7 +1568,7 @@ void editor_files_browser::rename_editor_file (const QString& file,
 
   QStandardItem *dir_item;
 
-  QList <QStandardItem *> dir_items = m_editor_files_model->findItems (dir_name);
+  QList<QStandardItem *> dir_items = m_editor_files_model->findItems (dir_name);
     if (! dir_items.isEmpty ())
     {
       dir_item = dir_items[0];

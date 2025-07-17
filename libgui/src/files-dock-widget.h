@@ -238,7 +238,7 @@ private:
 
   QStringList m_columns_shown;
   QStringList m_columns_shown_keys;
-  QList <QVariant> m_columns_shown_defs;
+  QList<QVariant> m_columns_shown_defs;
   QSignalMapper *m_sig_mapper;
 };
 

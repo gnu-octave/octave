@@ -329,7 +329,7 @@ octave_w32_shlib::octave_w32_shlib (const std::string& f)
                       FORMAT_MESSAGE_IGNORE_INSERTS,
                       nullptr, last_error,
                       MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT),
-                      reinterpret_cast <wchar_t *> (&error_text), 0, nullptr);
+                      reinterpret_cast<wchar_t *> (&error_text), 0, nullptr);
 
       std::ostringstream err_str;
       err_str << "opening the library '" << m_file << "' failed (error "

@@ -145,7 +145,7 @@ get_dirlist (const std::string& dirname, string_vector& dirlist,
                       FORMAT_MESSAGE_IGNORE_INSERTS,
                       nullptr, errCode,
                       MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT),
-                      reinterpret_cast <char *> (&errorText), 0, nullptr);
+                      reinterpret_cast<char *> (&errorText), 0, nullptr);
       if (errorText != nullptr)
         {
           msg = std::string (errorText);
@@ -322,7 +322,7 @@ get_formatted_last_error ()
                   FORMAT_MESSAGE_IGNORE_INSERTS,
                   nullptr, last_error,
                   MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT),
-                  reinterpret_cast <wchar_t *> (&error_text), 0, nullptr);
+                  reinterpret_cast<wchar_t *> (&error_text), 0, nullptr);
 
   if (error_text != nullptr)
     {

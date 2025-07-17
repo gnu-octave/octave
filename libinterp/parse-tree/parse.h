@@ -737,7 +737,7 @@ protected:
   std::shared_ptr<tree_classdef> m_classdef_object;
 
   // Result of parsing input.
-  std::shared_ptr <tree_statement_list> m_stmt_list;
+  std::shared_ptr<tree_statement_list> m_stmt_list;
 
   // State of the lexer.
   base_lexer& m_lexer;

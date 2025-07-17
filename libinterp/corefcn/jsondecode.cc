@@ -624,7 +624,7 @@ jsondecode ('@{"1": "one", "2": "two"@}', 'Prefix', 'm_')
   // problem in decoding JSON arrays as the output may be an array or a cell
   // and that doesn't only depend on the event (startArray) but also on the
   // types of the elements inside the array.
-  d.Parse <rapidjson::kParseNanAndInfFlag> (json.c_str ());
+  d.Parse<rapidjson::kParseNanAndInfFlag> (json.c_str ());
 
   if (d.HasParseError ())
     error ("jsondecode: parse error at offset %u: %s\n",

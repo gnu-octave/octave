@@ -63,7 +63,7 @@ public:
 };
 
 template <typename T>
-class equal_types <T, T>
+class equal_types<T, T>
 {
 public:
 
@@ -81,7 +81,7 @@ public:
 };
 
 template <template <typename> class Template, typename T>
-class is_instance <Template, Template<T>>
+class is_instance<Template, Template<T>>
 {
 public:
 

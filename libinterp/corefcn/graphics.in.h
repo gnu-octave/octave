@@ -6770,7 +6770,7 @@ public:
                     bool redraw_figure = false);
 private:
 
-  std::shared_ptr <base_graphics_event> m_rep;
+  std::shared_ptr<base_graphics_event> m_rep;
 };
 
 OCTINTERP_API base_graphics_object *

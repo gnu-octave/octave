@@ -10641,13 +10641,13 @@ Update FaceNormals and VertexNormals of the patch or surface referred to by
   if (go.isa ("surface"))
     {
       surface::properties& props
-        = dynamic_cast <surface::properties&> (go.get_properties ());
+        = dynamic_cast<surface::properties&> (go.get_properties ());
       props.update_normals (false, true);
     }
   else if (go.isa ("patch"))
     {
       patch::properties& props
-        = dynamic_cast <patch::properties&> (go.get_properties ());
+        = dynamic_cast<patch::properties&> (go.get_properties ());
       props.update_normals (false, true);
     }
   else

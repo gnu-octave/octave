@@ -1322,8 +1322,8 @@ gl2ps_renderer::draw_image (const image::properties& props)
   Matrix vp = get_viewport_scaled ();
 
   ColumnVector vp_lim_min
-    = m_xform.untransform (std::numeric_limits <float>::epsilon (),
-                           std::numeric_limits <float>::epsilon ());
+    = m_xform.untransform (std::numeric_limits<float>::epsilon (),
+                           std::numeric_limits<float>::epsilon ());
   ColumnVector vp_lim_max = m_xform.untransform (vp(2), vp(3));
 
   if (vp_lim_min(0) > vp_lim_max(0))

@@ -40,6 +40,9 @@ Summary of bugs fixed for version 10.2.0 (2025-05-29):
 - Avoid parse error for empty lines in debug mode (bug #67108).
 - Check if effective SOVERSION is exported from .mex file libraries
   (bug #67163).
+- Clarify the `"Octave:language-extension" warning message for comparing
+  complex numbers that the compatibility difference is that Octave considers
+  the complex part of the number (bug #67257).
 
 ### GUI
 

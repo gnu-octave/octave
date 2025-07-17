@@ -75,8 +75,8 @@ class main_window : public QMainWindow
 
 public:
 
-  typedef std::pair <std::string, std::string> name_pair;
-  typedef std::pair <int, int> int_pair;
+  typedef std::pair<std::string, std::string> name_pair;
+  typedef std::pair<int, int> int_pair;
 
   main_window (base_qobject& oct_qobj);
 
@@ -120,7 +120,7 @@ Q_SIGNALS:
   void selectAll_signal ();
   void undo_signal ();
 
-  void add_actions_signal (QList <QAction *> action_list);
+  void add_actions_signal (QList<QAction *> action_list);
 
   void warning_function_not_found_signal (const QString& message);
 

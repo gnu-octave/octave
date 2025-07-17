@@ -368,7 +368,7 @@ shortcut_edit_dialog::finished (int result)
 shortcuts_tree_widget::shortcuts_tree_widget (QWidget *parent)
   : QTreeWidget (parent)
 {
-  QHash <QString, QTreeWidgetItem *> level_hash;
+  QHash<QString, QTreeWidgetItem *> level_hash;
 
   header ()->setSectionResizeMode (QHeaderView::ResizeToContents);
 
@@ -470,7 +470,7 @@ shortcuts_tree_widget::shortcuts_tree_widget (QWidget *parent)
   // Sort the keys with respect to the description, by adding
   // descriptions as keys and the settings keys as values to a map.
   // Use QMultiMap since descriptions might not be unique.
-  QMultiMap <QString, QString> shortcut_settings_map;
+  QMultiMap<QString, QString> shortcut_settings_map;
   for (const auto& settings_key : shortcut_settings_keys)
     {
       const sc_pref scpref = all_shortcut_preferences::value (settings_key);
@@ -550,7 +550,7 @@ shortcuts_tree_widget::get_item (const QString& settings_key)
 {
   // There aren't many shortcuts so iterating over all of them to find
   // an individual item isn't a big performance issue.  If we had many
-  // more items we could use a QHash <settings_key, sc_pref> data member.
+  // more items we could use a QHash<settings_key, sc_pref> data member.
 
   tree_widget_shortcut_item *item = nullptr;
 

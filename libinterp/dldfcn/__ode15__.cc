@@ -286,7 +286,7 @@ public:
             N_Vector yyp, N_Vector, SUNMatrix JJ, void *user_data, N_Vector,
             N_Vector, N_Vector)
   {
-    IDA *self = static_cast <IDA *> (user_data);
+    IDA *self = static_cast<IDA *> (user_data);
     self->jacdense_impl (t, cj, yy, yyp, JJ);
     return 0;
   }
@@ -301,7 +301,7 @@ public:
              N_Vector yyp, N_Vector, SUNMatrix Jac, void *user_data, N_Vector,
              N_Vector, N_Vector)
   {
-    IDA *self = static_cast <IDA *> (user_data);
+    IDA *self = static_cast<IDA *> (user_data);
     self->jacsparse_impl (t, cj, yy, yyp, Jac);
     return 0;
   }
@@ -388,7 +388,7 @@ int
 IDA::resfun (OCTAVE_SUNREALTYPE t, N_Vector yy, N_Vector yyp, N_Vector rr,
              void *user_data)
 {
-  IDA *self = static_cast <IDA *> (user_data);
+  IDA *self = static_cast<IDA *> (user_data);
   self->resfun_impl (t, yy, yyp, rr);
   return 0;
 }

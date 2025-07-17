@@ -81,7 +81,7 @@ private:
   void switch_tab (int direction, bool movetab = false);
 
   QMenu *m_context_menu;
-  QList <QAction *> m_ctx_actions;
+  QList<QAction *> m_ctx_actions;
   int m_rotated;
 };
 

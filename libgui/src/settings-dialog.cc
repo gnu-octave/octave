@@ -405,7 +405,7 @@ settings_dialog::read_settings (bool first)
   else
     {
       QCheckBox *cb_color_mode
-        = terminal_colors_box->findChild <QCheckBox *> (cs_color_mode.settings_key ());
+        = terminal_colors_box->findChild<QCheckBox *> (cs_color_mode.settings_key ());
       bool sec_color_mode = settings.bool_value (cs_color_mode);
       if (cb_color_mode->isChecked () == sec_color_mode)
         {
@@ -471,7 +471,7 @@ settings_dialog::read_settings (bool first)
     {
       m_ws_enable_colors->setChecked (settings.bool_value (ws_enable_colors));
       QCheckBox *cb_color_mode
-        = workspace_colors_box->findChild <QCheckBox *> (ws_color_mode.settings_key ());
+        = workspace_colors_box->findChild<QCheckBox *> (ws_color_mode.settings_key ());
       bool sec_color_mode = settings.bool_value (ws_color_mode);
       if (cb_color_mode->isChecked () == sec_color_mode)
         {
@@ -509,7 +509,7 @@ settings_dialog::read_settings (bool first)
   else
     {
       QCheckBox *cb_color_mode
-        = varedit_colors_box->findChild <QCheckBox *> (ve_color_mode.settings_key ());
+        = varedit_colors_box->findChild<QCheckBox *> (ve_color_mode.settings_key ());
       bool sec_color_mode = settings.bool_value (ve_color_mode);
       if (cb_color_mode->isChecked () == sec_color_mode)
         {
@@ -597,7 +597,7 @@ settings_dialog::read_settings (bool first)
   else
     {
       QCheckBox *cb_color_mode
-        = group_box_editor_styles->findChild <QCheckBox *> (ed_color_mode.settings_key ());
+        = group_box_editor_styles->findChild<QCheckBox *> (ed_color_mode.settings_key ());
       bool sec_color_mode = settings.bool_value (ed_color_mode);
       if (cb_color_mode->isChecked () == sec_color_mode)
         {
@@ -623,7 +623,7 @@ settings_dialog::show_tab (const QString& tab)
     tabWidget->setCurrentIndex (settings.int_value (sd_last_tab));
   else
     {
-      QHash <QString, QWidget *> tab_hash;
+      QHash<QString, QWidget *> tab_hash;
       tab_hash["editor"] = tab_editor;
       tab_hash["editor_styles"] = tab_editor;
       tabWidget->setCurrentIndex (tabWidget->indexOf (tab_hash.value (tab)));
@@ -807,13 +807,13 @@ settings_dialog::update_editor_lexers (int def)
 #if defined (HAVE_QSCINTILLA)
 
   QCheckBox *cb_color_mode
-    = group_box_editor_styles->findChild <QCheckBox *> (ed_color_mode.settings_key ());
+    = group_box_editor_styles->findChild<QCheckBox *> (ed_color_mode.settings_key ());
 
   int m = 0;
   if (cb_color_mode && cb_color_mode->isChecked ())
     m = 1;
 
-  color_picker *c_picker = findChild <color_picker *> (ed_highlight_current_line_color.settings_key ());
+  color_picker *c_picker = findChild<color_picker *> (ed_highlight_current_line_color.settings_key ());
   if (c_picker)
     {
       gui_settings settings;
@@ -922,7 +922,7 @@ settings_dialog::update_lexer (QsciLexer *lexer, int mode, int def)
     {
       QString actual_name = lexer->description (styles[i]);
       color_picker *bg_color
-        = tab->findChild <color_picker *> (actual_name + "_bg_color");
+        = tab->findChild<color_picker *> (actual_name + "_bg_color");
       if (bg_color)
         {
           // Update
@@ -937,23 +937,23 @@ settings_dialog::update_lexer (QsciLexer *lexer, int mode, int def)
             }
         }
 
-      color_picker *color = tab->findChild <color_picker *> (actual_name + "_color");
+      color_picker *color = tab->findChild<color_picker *> (actual_name + "_color");
       if (color)
         color->set_color (lexer->color (styles[i]));
 
       QFont font = lexer->font (styles[i]);
 
-      QCheckBox *cb = tab->findChild <QCheckBox *> (actual_name + "_bold");
+      QCheckBox *cb = tab->findChild<QCheckBox *> (actual_name + "_bold");
       if (cb)
         cb->setChecked (font.bold ());
-      cb = tab->findChild <QCheckBox *> (actual_name + "_italic");
+      cb = tab->findChild<QCheckBox *> (actual_name + "_italic");
       if (cb)
         cb->setChecked (font.italic ());
-      cb = tab->findChild <QCheckBox *> (actual_name + "_underline");
+      cb = tab->findChild<QCheckBox *> (actual_name + "_underline");
       if (cb)
         cb->setChecked (font.underline ());
 
-      QFontComboBox *fcb = tab->findChild <QFontComboBox *> (actual_name + "_font");
+      QFontComboBox *fcb = tab->findChild<QFontComboBox *> (actual_name + "_font");
       if (fcb)
         {
           if (styles[i] == 0)
@@ -969,7 +969,7 @@ settings_dialog::update_lexer (QsciLexer *lexer, int mode, int def)
                 fcb->setEditText (font.family ());
             }
         }
-      QSpinBox *fs = tab->findChild <QSpinBox *> (actual_name + "_size");
+      QSpinBox *fs = tab->findChild<QSpinBox *> (actual_name + "_size");
       if (fs)
         {
           if (styles[i] == 0)
@@ -1100,7 +1100,7 @@ settings_dialog::write_lexer_settings (QsciLexer *lexer)
   gui_settings settings;
 
   QCheckBox *cb_color_mode
-    = group_box_editor_styles->findChild <QCheckBox *> (ed_color_mode.settings_key ());
+    = group_box_editor_styles->findChild<QCheckBox *> (ed_color_mode.settings_key ());
   int mode = 0;
   if (cb_color_mode && cb_color_mode->isChecked ())
     mode = 1;
@@ -1108,7 +1108,7 @@ settings_dialog::write_lexer_settings (QsciLexer *lexer)
   settings.setValue (ed_color_mode.settings_key (), mode);
 
   QWidget *tab = tabs_editor_lexers->
-    findChild <QWidget *> (QString (lexer->language ()) + "_styles");
+    findChild<QWidget *> (QString (lexer->language ()) + "_styles");
   int styles[ed_max_lexer_styles];  // array for saving valid styles
                                     // (enum is not continuous)
 
@@ -1121,7 +1121,7 @@ settings_dialog::write_lexer_settings (QsciLexer *lexer)
   color_picker *bg_color;
   int default_size = 10;
 
-  color = findChild <color_picker *> (ed_highlight_current_line_color.settings_key ());
+  color = findChild<color_picker *> (ed_highlight_current_line_color.settings_key ());
   if (color)
     settings.setValue (ed_highlight_current_line_color.settings_key ()
                        + settings_color_modes_ext[mode], color->color ());
@@ -1134,13 +1134,13 @@ settings_dialog::write_lexer_settings (QsciLexer *lexer)
   for (int i = 0; i < max_style; i++)  // get dialog elements and their contents
     {
       QString actual_name = lexer->description (styles[i]);
-      select_font = tab->findChild <QFontComboBox *> (actual_name + "_font");
-      font_size = tab->findChild <QSpinBox *> (actual_name + "_size");
-      attrib_font[0] = tab->findChild <QCheckBox *> (actual_name + "_bold");
-      attrib_font[1] = tab->findChild <QCheckBox *> (actual_name + "_italic");
-      attrib_font[2] = tab->findChild <QCheckBox *> (actual_name + "_underline");
-      color = tab->findChild <color_picker *> (actual_name + "_color");
-      bg_color = tab->findChild <color_picker *> (actual_name + "_bg_color");
+      select_font = tab->findChild<QFontComboBox *> (actual_name + "_font");
+      font_size = tab->findChild<QSpinBox *> (actual_name + "_size");
+      attrib_font[0] = tab->findChild<QCheckBox *> (actual_name + "_bold");
+      attrib_font[1] = tab->findChild<QCheckBox *> (actual_name + "_italic");
+      attrib_font[2] = tab->findChild<QCheckBox *> (actual_name + "_underline");
+      color = tab->findChild<color_picker *> (actual_name + "_color");
+      bg_color = tab->findChild<color_picker *> (actual_name + "_bg_color");
       QFont new_font = default_font;
       if (select_font)
         {
@@ -1533,7 +1533,7 @@ void
 settings_dialog::update_workspace_colors (int def)
 {
   QCheckBox *cb_color_mode
-    = workspace_colors_box->findChild <QCheckBox *> (ws_color_mode.settings_key ());
+    = workspace_colors_box->findChild<QCheckBox *> (ws_color_mode.settings_key ());
 
   int m = 0;
   if (cb_color_mode && cb_color_mode->isChecked ())
@@ -1545,7 +1545,7 @@ settings_dialog::update_workspace_colors (int def)
 
   for (unsigned int i = 0; i < ws_colors_count; i++)
     {
-      c_picker = workspace_colors_box->findChild <color_picker *> (ws_colors[i].settings_key ());
+      c_picker = workspace_colors_box->findChild<color_picker *> (ws_colors[i].settings_key ());
       if (c_picker)
         {
           if (def != settings_reload_default_colors_flag)
@@ -1571,7 +1571,7 @@ settings_dialog::write_workspace_colors ()
   settings.setValue (ws_hide_tool_tips.settings_key (), m_ws_hide_tool_tips->isChecked ());
 
   QCheckBox *cb_color_mode
-    = workspace_colors_box->findChild <QCheckBox *> (ws_color_mode.settings_key ());
+    = workspace_colors_box->findChild<QCheckBox *> (ws_color_mode.settings_key ());
 
   int mode = 0;
   if (cb_color_mode && cb_color_mode->isChecked ())
@@ -1581,7 +1581,7 @@ settings_dialog::write_workspace_colors ()
 
   for (int i = 0; i < ws_colors_count; i++)
     {
-      color = workspace_colors_box->findChild <color_picker *> (ws_colors[i].settings_key ());
+      color = workspace_colors_box->findChild<color_picker *> (ws_colors[i].settings_key ());
       if (color)
         settings.set_color_value (ws_colors[i], color->color (), mode);
     }
@@ -1653,7 +1653,7 @@ void
 settings_dialog::update_terminal_colors (int def)
 {
   QCheckBox *cb_color_mode
-    = terminal_colors_box->findChild <QCheckBox *> (cs_color_mode.settings_key ());
+    = terminal_colors_box->findChild<QCheckBox *> (cs_color_mode.settings_key ());
 
   int m = 0;
   if (cb_color_mode && cb_color_mode->isChecked ())
@@ -1665,7 +1665,7 @@ settings_dialog::update_terminal_colors (int def)
 
   for (unsigned int i = 0; i < cs_colors_count; i++)
     {
-      c_picker = terminal_colors_box->findChild <color_picker *> (cs_colors[i].settings_key ());
+      c_picker = terminal_colors_box->findChild<color_picker *> (cs_colors[i].settings_key ());
       if (c_picker)
         {
           if (def != settings_reload_default_colors_flag)
@@ -1686,7 +1686,7 @@ void
 settings_dialog::write_terminal_colors ()
 {
   QCheckBox *cb_color_mode
-    = terminal_colors_box->findChild <QCheckBox *> (cs_color_mode.settings_key ());
+    = terminal_colors_box->findChild<QCheckBox *> (cs_color_mode.settings_key ());
 
   int mode = 0;
   if (cb_color_mode && cb_color_mode->isChecked ())
@@ -1698,7 +1698,7 @@ settings_dialog::write_terminal_colors ()
 
   for (int i = 0; i < cs_color_names.size (); i++)
     {
-      color = terminal_colors_box->findChild <color_picker *> (cs_colors[i].settings_key ());
+      color = terminal_colors_box->findChild<color_picker *> (cs_colors[i].settings_key ());
       if (color)
         settings.set_color_value (cs_colors[i], color->color (), mode);
     }
@@ -1771,7 +1771,7 @@ void
 settings_dialog::update_varedit_colors (int def)
 {
   QCheckBox *cb_color_mode
-    = varedit_colors_box->findChild <QCheckBox *> (ve_color_mode.settings_key ());
+    = varedit_colors_box->findChild<QCheckBox *> (ve_color_mode.settings_key ());
 
   int m = 0;
   if (cb_color_mode && cb_color_mode->isChecked ())
@@ -1783,7 +1783,7 @@ settings_dialog::update_varedit_colors (int def)
 
   for (unsigned int i = 0; i < ve_colors_count; i++)
     {
-      c_picker = varedit_colors_box->findChild <color_picker *> (ve_colors[i].settings_key ());
+      c_picker = varedit_colors_box->findChild<color_picker *> (ve_colors[i].settings_key ());
       if (c_picker)
         {
           if (def != settings_reload_default_colors_flag)
@@ -1804,7 +1804,7 @@ void
 settings_dialog::write_varedit_colors ()
 {
   QCheckBox *cb_color_mode
-    = varedit_colors_box->findChild <QCheckBox *> (ve_color_mode.settings_key ());
+    = varedit_colors_box->findChild<QCheckBox *> (ve_color_mode.settings_key ());
 
   int mode = 0;
   if (cb_color_mode && cb_color_mode->isChecked ())
@@ -1816,7 +1816,7 @@ settings_dialog::write_varedit_colors ()
 
   for (int i = 0; i < ve_colors_count; i++)
     {
-      color = varedit_colors_box->findChild <color_picker *> (ve_colors[i].settings_key ());
+      color = varedit_colors_box->findChild<color_picker *> (ve_colors[i].settings_key ());
       if (color)
         settings.set_color_value (ve_colors[i], color->color (), mode);
     }

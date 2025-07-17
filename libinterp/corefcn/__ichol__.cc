@@ -208,7 +208,7 @@ Undocumented internal function.
   if (! args(0).iscomplex ())
     {
       SparseMatrix sm = Ftril (ovl (args(0)))(0).sparse_matrix_value ();
-      ichol_0 <SparseMatrix, double, ichol_mult_real,
+      ichol_0<SparseMatrix, double, ichol_mult_real,
               ichol_checkpivot_real> (sm, michol);
       return ovl (sm);
     }
@@ -216,7 +216,7 @@ Undocumented internal function.
     {
       SparseComplexMatrix sm
         = Ftril (ovl (args(0)))(0).sparse_complex_matrix_value ();
-      ichol_0 <SparseComplexMatrix, Complex, ichol_mult_complex,
+      ichol_0<SparseComplexMatrix, Complex, ichol_mult_complex,
               ichol_checkpivot_complex> (sm, michol);
       return ovl (sm);
     }
@@ -253,11 +253,11 @@ ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T *cols_norm,
   // the process, obtaining a good performance.
   max_len = sm.nnz ();
   max_len += (0.1 * max_len) > n ? 0.1 * max_len : n;
-  Array <octave_idx_type> cidx_out_l (dim_vector (n + 1, 1));
+  Array<octave_idx_type> cidx_out_l (dim_vector (n + 1, 1));
   octave_idx_type *cidx_l = cidx_out_l.rwdata ();
-  Array <octave_idx_type> ridx_out_l (dim_vector (max_len, 1));
+  Array<octave_idx_type> ridx_out_l (dim_vector (max_len, 1));
   octave_idx_type *ridx_l = ridx_out_l.rwdata ();
-  Array <T> data_out_l (dim_vector (max_len, 1));
+  Array<T> data_out_l (dim_vector (max_len, 1));
   T *data_l = data_out_l.rwdata ();
 
   // Working arrays
@@ -443,7 +443,7 @@ Undocumented internal function.
       SparseMatrix L;
       SparseMatrix sm_l = Ftril (ovl (args(0)))(0).sparse_matrix_value ();
       RowVector sm_col_norms = xcolnorms (sm_l, 1);
-      ichol_t <SparseMatrix,
+      ichol_t<SparseMatrix,
               double, ichol_mult_real, ichol_checkpivot_real>
               (sm_l, L, sm_col_norms.rwdata (), droptol, michol);
 
@@ -454,7 +454,7 @@ Undocumented internal function.
       SparseComplexMatrix L;
       SparseComplexMatrix sm_l
         = Ftril (ovl (args(0)))(0).sparse_complex_matrix_value ();
-      Array <Complex> cols_norm = xcolnorms (sm_l, 1);
+      Array<Complex> cols_norm = xcolnorms (sm_l, 1);
       ichol_t <SparseComplexMatrix,
               Complex, ichol_mult_complex, ichol_checkpivot_complex>
               (sm_l, L, cols_norm.rwdata (),

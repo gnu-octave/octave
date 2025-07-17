@@ -44,7 +44,7 @@ extern gui_pref dw_title_bg_color_active;
 
 extern gui_pref dw_icon_set;
 
-const QHash <QString, QString> dw_icon_set_names
+const QHash<QString, QString> dw_icon_set_names
   = {
       // array of possible icon sets (name, path (complete for NONE))
       // the first entry here is the default!

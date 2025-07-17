@@ -381,7 +381,7 @@ gui_settings::get_default_font ()
 
   int font_size = font.pointSize ();
   if (font_size == -1)
-    font_size = static_cast <int> (std::floor (font.pointSizeF ()));
+    font_size = static_cast<int> (std::floor (font.pointSizeF ()));
 
   // check for valid font size, otherwise take default 10
   QString default_font_size = "10";

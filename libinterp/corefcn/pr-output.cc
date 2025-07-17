@@ -2213,7 +2213,7 @@ octave_print_internal (std::ostream& os, const NDArray& nda,
       break;
 
     default:
-      print_nd_array <NDArray, double, Matrix> (os, nda, pr_as_read_syntax);
+      print_nd_array<NDArray, double, Matrix> (os, nda, pr_as_read_syntax);
       break;
     }
 }
@@ -2231,7 +2231,7 @@ octave_print_internal (std::ostream& os, const FloatNDArray& nda,
       break;
 
     default:
-      print_nd_array <FloatNDArray, float, FloatMatrix> (os, nda, pr_as_read_syntax);
+      print_nd_array<FloatNDArray, float, FloatMatrix> (os, nda, pr_as_read_syntax);
       break;
     }
 }
@@ -2417,7 +2417,7 @@ octave_print_internal (std::ostream& os, const ComplexNDArray& nda,
       break;
 
     default:
-      print_nd_array <ComplexNDArray, Complex, ComplexMatrix>
+      print_nd_array<ComplexNDArray, Complex, ComplexMatrix>
       (os, nda, pr_as_read_syntax);
       break;
     }
@@ -2436,7 +2436,7 @@ octave_print_internal (std::ostream& os, const FloatComplexNDArray& nda,
       break;
 
     default:
-      print_nd_array <FloatComplexNDArray, FloatComplex, FloatComplexMatrix>
+      print_nd_array<FloatComplexNDArray, FloatComplex, FloatComplexMatrix>
       (os, nda, pr_as_read_syntax);
       break;
     }
@@ -2693,8 +2693,8 @@ octave_print_internal (std::ostream& os, const charNDArray& nda,
       break;
 
     default:
-      print_nd_array <charNDArray, char, charMatrix> (os, nda,
-          pr_as_read_syntax);
+      print_nd_array<charNDArray, char, charMatrix> (os, nda,
+                                                     pr_as_read_syntax);
       break;
     }
 }

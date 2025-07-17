@@ -396,7 +396,7 @@ umfpack_report_status<Complex> (double *Control, octave_idx_type status)
 
 template <>
 inline OCTAVE_API void
-umfpack_report_symbolic <Complex> (void *Symbolic, const double *Control)
+umfpack_report_symbolic<Complex> (void *Symbolic, const double *Control)
 {
   UMFPACK_ZNAME (report_symbolic) (Symbolic, Control);
 }

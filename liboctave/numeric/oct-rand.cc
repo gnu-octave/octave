@@ -664,7 +664,7 @@ rand::set_internal_state (const uint32NDArray& s)
 {
   octave_idx_type len = s.numel ();
 
-  const uint32_t *sdata = reinterpret_cast <const uint32_t *> (s.data ());
+  const uint32_t *sdata = reinterpret_cast<const uint32_t *> (s.data ());
 
   if (len == MT_N + 1 && sdata[MT_N] <= MT_N && sdata[MT_N] > 0)
     set_mersenne_twister_state (sdata);

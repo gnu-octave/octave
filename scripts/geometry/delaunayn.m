@@ -70,7 +70,11 @@ function T = delaunayn (pts, varargin)
 
   ## NOTE: varargin options input validation is performed in __delaunayn__
   if ((! isnumeric (pts)) || (ndims (pts) > 2))
-    error ("delaunayn: input PTS must be a 2-dimensional numeric array");
+    error ("delaunayn: PTS must be a 2-dimensional numeric array");
+  endif
+  ## QHull library will segfault if input contains Inf or NaN (bug #67315)
+  if (any (! isfinite (pts(:))))
+    error ("delaunayn: PTS must not contain Inf or NaN values");
   endif
 
   ## Perform delaunay calculation using either default or specified options
@@ -257,7 +261,9 @@ endfunction
 
 ## Input validation tests
 %!error <Invalid call> delaunayn ()
-%!error <input PTS must be> delaunayn ("abc")
-%!error <input PTS must be> delaunayn ({1})
-%!error <input PTS must be> delaunayn (true)
-%!error <input PTS must be> delaunayn (ones (3,3,3))
+%!error <PTS must be .* numeric array> delaunayn ("abc")
+%!error <PTS must be .* numeric array> delaunayn ({1})
+%!error <PTS must be .* numeric array> delaunayn (true)
+%!error <PTS must be a 2-dimensional .* array> delaunayn (ones (3,3,3))
+%!error <PTS must not contain Inf> delaunayn ([1, Inf, 3])
+%!error <PTS must not contain .* NaN> delaunayn ([1, NaN, 3])

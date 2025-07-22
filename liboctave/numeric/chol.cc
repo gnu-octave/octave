@@ -104,29 +104,14 @@ chol2inv_internal (const T& r, bool is_upper = true)
     {
       // If someone thinks of a more graceful way of doing this
       // (or faster for that matter :-)), please let me know!
-      if constexpr (std::is_same<T, ComplexMatrix>::value
-                    || std::is_same<T, FloatComplexMatrix>::value)
-        {
-          if (is_upper)
-            for (octave_idx_type j = 0; j < nc; j++)
-              for (octave_idx_type i = j+1; i < nr; i++)
-                retval.xelem (i, j) = std::conj (retval.xelem (j, i));
-          else
-            for (octave_idx_type j = 0; j < nc; j++)
-              for (octave_idx_type i = j+1; i < nr; i++)
-                retval.xelem (j, i) = std::conj (retval.xelem (i, j));
-        }
-      else  // not complex type ==> don't need std::conj.
-        {
-          if (is_upper)
-            for (octave_idx_type j = 0; j < nc; j++)
-              for (octave_idx_type i = j+1; i < nr; i++)
-                retval.xelem (i, j) = retval.xelem (j, i);
-          else
-            for (octave_idx_type j = 0; j < nc; j++)
-              for (octave_idx_type i = j+1; i < nr; i++)
-                retval.xelem (j, i) = retval.xelem (i, j);
-        }
+      if (is_upper)
+        for (octave_idx_type j = 0; j < nc; j++)
+          for (octave_idx_type i = j+1; i < nr; i++)
+            retval.xelem (i, j) = math::conj (retval.xelem (j, i));
+      else
+        for (octave_idx_type j = 0; j < nc; j++)
+          for (octave_idx_type i = j+1; i < nr; i++)
+            retval.xelem (j, i) = math::conj (retval.xelem (i, j));
     }
 
   return retval;

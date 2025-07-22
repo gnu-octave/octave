@@ -871,7 +871,7 @@ ComplexMatrix::finverse (MatrixType& mattype, octave_idx_type& info,
                              tmp_info));
 
   lwork = static_cast<F77_INT> (std::real (z(0)));
-  lwork = (lwork < 2 * nc ? 2 * nc : lwork);
+  lwork = std::max (lwork, 2 * nc);
   z.resize (dim_vector (lwork, 1));
   Complex *pz = z.rwdata ();
 
@@ -1062,7 +1062,7 @@ ComplexMatrix::fourier () const
 
   if (nr == 1 || nc == 1)
     {
-      npts = (nr > nc ? nr : nc);
+      npts = std::max (nr, nc);
       nsamples = 1;
     }
   else
@@ -1091,7 +1091,7 @@ ComplexMatrix::ifourier () const
 
   if (nr == 1 || nc == 1)
     {
-      npts = (nr > nc ? nr : nc);
+      npts = std::max (nr, nc);
       nsamples = 1;
     }
   else
@@ -2295,8 +2295,8 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
     retval = ComplexMatrix (n, b_nc, Complex (0.0, 0.0));
   else
     {
-      F77_INT minmn = (m < n ? m : n);
-      F77_INT maxmn = (m > n ? m : n);
+      F77_INT minmn = std::min (m, n);
+      F77_INT maxmn = std::max (m, n);
       rcon = -1.0;
 
       if (m != n)
@@ -2522,8 +2522,8 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
     retval = ComplexColumnVector (n, Complex (0.0, 0.0));
   else
     {
-      F77_INT minmn = (m < n ? m : n);
-      F77_INT maxmn = (m > n ? m : n);
+      F77_INT minmn = std::min (m, n);
+      F77_INT maxmn = std::max (m, n);
       rcon = -1.0;
 
       if (m != n)

@@ -756,6 +756,13 @@ periodic, @code{mod} is a better choice.
 
 %!assert <*42627> (rem (0.94, 0.01), 0.0)
 
+## Test rem (x-1, x) for x close to flintmax. Should return x-1 and not zero.
+%!test <*67339>
+%! x = flintmax - (10:-1:1);
+%! assert (rem (x-1, x), x-1);
+%! x = flintmax ("single") - (10:-1:1);
+%! assert (rem (x-1, x), x-1);
+
 %!error rem (uint (8), int8 (5))
 %!error rem (uint8 ([1, 2]), uint8 ([3, 4, 5]))
 %!error rem ()
@@ -957,6 +964,13 @@ negative numbers or when the values are periodic.
 %!assert <*54602> (mod (int8 (-125), int8 (-25)), int8 (0))
 %!assert <*54602> (mod (int8 (-125), int8 (0)), int8 (-125))
 %!assert <*54602> (mod (int8 (0), int8 (-25)), int8 (0))
+
+## Test mod (x-1, x) for x close to flintmax. Should return x-1 and not zero.
+%!test <*67339>
+%! x = flintmax - (10:-1:1);
+%! assert (mod (x-1, x), x-1);
+%! x = flintmax ("single") - (10:-1:1);
+%! assert (mod (x-1, x), x-1);
 
 */
 

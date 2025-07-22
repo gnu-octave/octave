@@ -338,13 +338,13 @@ Sparse<T, Alloc>::Sparse (const Array<T>& a,
     (*current_liboctave_error_handler) ("sparse: dimension mismatch");
 
   // Only create m_rep after input validation to avoid memory leak.
-  m_rep = new typename Sparse<T, Alloc>::SparseRep (nr, nc, (nzm > 0 ? nzm : 0));
+  m_rep = new typename Sparse<T, Alloc>::SparseRep (nr, nc, std::max<octave_idx_type> (nzm, 0));
 
   if (rl <= 1 && cl <= 1)
     {
       if (n == 1 && a(0) != T ())
         {
-          change_capacity (nzm > 1 ? nzm : 1);
+          change_capacity (std::max<octave_idx_type> (nzm, 1));
           xridx (0) = r(0);
           xdata (0) = a(0);
           std::fill_n (xcidx () + c(0) + 1, nc - c(0), 1);
@@ -372,7 +372,7 @@ Sparse<T, Alloc>::Sparse (const Array<T>& a,
             new_nz += rd[i-1] != rd[i];
 
           // Allocate result.
-          change_capacity (nzm > new_nz ? nzm : new_nz);
+          change_capacity (std::max (nzm, new_nz));
           std::fill_n (xcidx () + c(0) + 1, nc - c(0), new_nz);
 
           octave_idx_type *rri = ridx ();
@@ -463,7 +463,7 @@ Sparse<T, Alloc>::Sparse (const Array<T>& a,
               xcidx (j+1) = xcidx (j) + nzj;
             }
 
-          change_capacity (nzm > xcidx (nc) ? nzm : xcidx (nc));
+          change_capacity (std::max (nzm, xcidx (nc)));
           octave_idx_type *rri = ridx ();
           T *rrd = data ();
 
@@ -521,7 +521,7 @@ Sparse<T, Alloc>::Sparse (const Array<T>& a,
         new_nz += rd[i-1] != rd[i];
 
       // Allocate result.
-      change_capacity (nzm > new_nz ? nzm : new_nz);
+      change_capacity (std::max (nzm, new_nz));
       std::fill_n (xcidx () + c(0) + 1, nc - c(0), new_nz);
 
       octave_idx_type *rri = ridx ();
@@ -615,7 +615,7 @@ Sparse<T, Alloc>::Sparse (const Array<T>& a,
           xcidx (j+1) = xcidx (j) + nzj;
         }
 
-      change_capacity (nzm > xcidx (nc) ? nzm : xcidx (nc));
+      change_capacity (std::max (nzm, xcidx (nc)));
       octave_idx_type *rri = ridx ();
       T *rrd = data ();
 
@@ -2506,7 +2506,7 @@ Sparse<T, Alloc>::diag (octave_idx_type k) const
 
       if (nnr > 0 && nnc > 0)
         {
-          octave_idx_type ndiag = (nnr < nnc) ? nnr : nnc;
+          octave_idx_type ndiag = std::min (nnr,  nnc);
 
           // Count the number of nonzero elements
           octave_idx_type nel = 0;

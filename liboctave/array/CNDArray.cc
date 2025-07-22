@@ -69,7 +69,7 @@ ComplexNDArray::fourier (int dim) const
     stride *= dv(i);
 
   octave_idx_type howmany = numel () / dv(dim);
-  howmany = (stride == 1 ? howmany : (howmany > stride ? stride : howmany));
+  howmany = (stride == 1) ? howmany : std::min (howmany, stride);
   octave_idx_type nloop = (stride == 1 ? 1 : numel () / dv(dim) / stride);
   octave_idx_type dist = (stride == 1 ? n : 1);
 
@@ -100,7 +100,7 @@ ComplexNDArray::ifourier (int dim) const
     stride *= dv(i);
 
   octave_idx_type howmany = numel () / dv(dim);
-  howmany = (stride == 1 ? howmany : (howmany > stride ? stride : howmany));
+  howmany = (stride == 1) ? howmany : std::min (howmany, stride);
   octave_idx_type nloop = (stride == 1 ? 1 : numel () / dv(dim) / stride);
   octave_idx_type dist = (stride == 1 ? n : 1);
 

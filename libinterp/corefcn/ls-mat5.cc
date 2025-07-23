@@ -1983,7 +1983,7 @@ save_mat5_array_length (const double *val, octave_idx_type nel,
       //     if (val < min_val)
       //       min_val = val;
       //
-      //     if (octave::math::x_nint (val) != val)
+      //     if (octave::math::round (val) != val)
       //       {
       //         all_integers = false;
       //         break;
@@ -2037,7 +2037,7 @@ save_mat5_array_length (const float * /* val */, octave_idx_type nel, bool)
       //     if (val < min_val)
       //       min_val = val;
       //
-      //     if (octave::math::x_nint (val) != val)
+      //     if (octave::math::round (val) != val)
       //       {
       //         all_integers = false;
       //         break;

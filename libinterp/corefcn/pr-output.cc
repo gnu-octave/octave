@@ -511,7 +511,7 @@ make_scalar_format (const T& val)
 
   bool inf_or_nan = (octave::math::isinf (val) || octave::math::isnan (val));
 
-  bool int_only = (! inf_or_nan && octave::math::x_nint (val) == val);
+  bool int_only = (! inf_or_nan && octave::math::round (val) == val);
 
   T val_abs = (val < 0 ? -val : val);
 
@@ -901,8 +901,8 @@ make_complex_scalar_format (const std::complex<T>& c)
   bool i_inf_or_nan = (octave::math::isinf (ip) || octave::math::isnan (ip));
   bool inf_or_nan = r_inf_or_nan || i_inf_or_nan;
 
-  bool int_only = ((r_inf_or_nan || octave::math::x_nint (rp) == rp)
-                   && (i_inf_or_nan || octave::math::x_nint (ip) == ip));
+  bool int_only = ((r_inf_or_nan || octave::math::round (rp) == rp)
+                   && (i_inf_or_nan || octave::math::round (ip) == ip));
 
   T r_abs = (rp < 0 ? -rp : rp);
   T i_abs = (ip < 0 ? -ip : ip);

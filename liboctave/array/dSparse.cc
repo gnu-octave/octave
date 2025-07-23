@@ -7250,7 +7250,7 @@ SparseMatrix::all_elements_are_int_or_inf_or_nan () const
   for (octave_idx_type i = 0; i < nel; i++)
     {
       double val = data (i);
-      if (octave::math::isnan (val) || octave::math::x_nint (val) == val)
+      if (octave::math::isnan (val) || octave::math::round (val) == val)
         continue;
       else
         return false;
@@ -7283,7 +7283,7 @@ SparseMatrix::all_integers (double& max_val, double& min_val) const
       if (val < min_val)
         min_val = val;
 
-      if (octave::math::x_nint (val) != val)
+      if (octave::math::round (val) != val)
         return false;
     }
 

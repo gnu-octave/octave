@@ -49,7 +49,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 bool is_int_or_inf_or_nan (double x)
 {
-  return math::isnan (x) || math::x_nint (x) == x;
+  return math::isnan (x) || math::round (x) == x;
 }
 
 bool
@@ -69,7 +69,7 @@ too_large_for_float (const Complex& x)
 bool
 is_int_or_inf_or_nan (float x)
 {
-  return math::isnan (x) || math::x_nint (x) == x;
+  return math::isnan (x) || math::round (x) == x;
 }
 
 // Save a string.

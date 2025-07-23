@@ -857,8 +857,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n
-              || octave::math::x_nint (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -1152,8 +1151,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n
-              || octave::math::x_nint (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -1449,8 +1447,7 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n
-              || octave::math::x_nint (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -1834,8 +1831,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n
-              || octave::math::x_nint (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -2189,8 +2185,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n
-              || octave::math::x_nint (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -2554,8 +2549,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n
-              || octave::math::x_nint (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -3003,8 +2997,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n
-              || octave::math::x_nint (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -3310,8 +3303,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n
-              || octave::math::x_nint (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -3625,8 +3617,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n
-              || octave::math::x_nint (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }

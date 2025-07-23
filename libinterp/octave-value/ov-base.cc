@@ -553,7 +553,7 @@ octave_base_value::print_info (std::ostream& os,
                                                                         \
     static constexpr double out_of_range_top                            \
       = static_cast<double> (std::numeric_limits<T>::max ()) + 1.0;     \
-    if (require_int && octave::math::x_nint (d) != d)                   \
+    if (require_int && octave::math::round (d) != d)                    \
       error_with_cfn ("conversion of %g to " #T " value failed", d);    \
     else if (d < std::numeric_limits<T>::min ())                        \
       retval = std::numeric_limits<T>::min ();                          \

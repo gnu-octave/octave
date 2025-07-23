@@ -328,8 +328,8 @@ ComplexNDArray::all_integers (double& max_val, double& min_val) const
       if (i_val < min_val)
         min_val = i_val;
 
-      if (octave::math::x_nint (r_val) != r_val
-          || octave::math::x_nint (i_val) != i_val)
+      if (octave::math::round (r_val) != r_val
+          || octave::math::round (i_val) != i_val)
         return false;
     }
 

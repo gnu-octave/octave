@@ -104,7 +104,7 @@ If the user ID does not exist in the database, @code{getpwuid} returns 0.
 
   double dval = args(0).double_value ();
 
-  if (math::x_nint (dval) != dval)
+  if (math::round (dval) != dval)
     error ("getpwuid: UID must be an integer");
 
   uid_t uid = static_cast<uid_t> (dval);

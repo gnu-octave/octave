@@ -273,13 +273,13 @@ x_nint (T x)
 template <>
 inline double x_nint (double x)
 {
-  return std::round (x);
+  return round (x);
 }
 
 template <>
 inline float x_nint (float x)
 {
-  return std::round (x);
+  return round (x);
 }
 
 extern OCTAVE_API octave_idx_type nint_big (double x);
@@ -300,8 +300,8 @@ mod (T x, T y)
     {
       T q = x / y;
 
-      if (x_nint (y) != y
-          && (std::abs ((q - x_nint (q)) / x_nint (q))
+      if (round (y) != y
+          && (std::abs ((q - round (q)) / round (q))
               < std::numeric_limits<T>::epsilon ()))
         retval = 0;
       else
@@ -333,8 +333,8 @@ rem (T x, T y)
     {
       T q = x / y;
 
-      if (x_nint (y) != y
-          && (std::abs ((q - x_nint (q)) / x_nint (q))
+      if (round (y) != y
+          && (std::abs ((q - round (q)) / round (q))
               < std::numeric_limits<T>::epsilon ()))
         retval = 0;
       else

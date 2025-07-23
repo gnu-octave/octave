@@ -116,8 +116,8 @@ is stored in the audio file.
       double dend = (math::isinf (range(1)) ? info.frames : range(1));
 
       if (dstart < 1 || dstart > dend || dend > info.frames
-          || math::x_nint (dstart) != dstart
-          || math::x_nint (dend) != dend)
+          || math::round (dstart) != dstart
+          || math::round (dend) != dend)
         error ("audioread: invalid specification for range of frames");
 
       start = dstart - 1;

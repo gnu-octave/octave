@@ -12954,7 +12954,7 @@ Undocumented internal function.
               go.get_properties ().init_integerhandle ("off");
             }
         }
-      else if (val > 0 && octave::math::x_nint (val) == val)
+      else if (val > 0 && octave::math::round (val) == val)
         h = gh_mgr.make_figure_handle (val, false);
 
       if (! h.ok ())

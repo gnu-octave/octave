@@ -53,45 +53,40 @@
 octave_map
 octave_classdef::saveobj (bool& custom_saveobj_ret_type)
 {
-  std::map<std::string, octave::cdef_method> method_map
-    = get_object ().get_class ().get_method_map ();
-
   octave_value retval;
-  for (auto it = method_map.begin (); it != method_map.end (); it++)
+
+  octave::cdef_class cls = m_object.get_class ();
+  octave::cdef_method meth = cls.find_method ("saveobj");
+
+  // Default behaviour of saving is triggered if saveobj is static
+  if (meth.ok () && ! meth.is_static ())
     {
-      if (it->first == "saveobj")
+      retval = (meth.execute (get_object_ref (), octave_value_list (), 1))(0);
+
+      if (! retval.is_defined ())
         {
-          // Default behaviour of saving is triggered if saveobj is static
-          if (it->second.is_static ())
-            break;
-
-          retval = (it->second.execute (get_object_ref (), octave_value_list (), 1))(0);
-
-          if (! retval.is_defined ())
-            {
-              warning ("saveobj method does not return a value");
-              return octave_map ();
-            }
-
-          // If retval is not a struct or an object, we put the value in a map
-          // and set the 'custom_saveobj_ret_type' flag, which has to be
-          // encoded in the file metadata.
-          // It's the caller's responsibility to check the flag.
-          if (! (retval.isobject () || retval.isstruct ()))
-            {
-              octave_map m;
-              m.setfield ("any", retval);
-              custom_saveobj_ret_type = true;
-              return m;
-            }
-
-          // FIXME: This could potentially lead to an infinite recursion for
-          //        nested handle classes that are self-referencing.
-          if (retval.is_classdef_object ())
-            return retval.classdef_object_value ()->map_value (false);
-          else
-            return retval.map_value ();
+          warning ("saveobj method does not return a value");
+          return octave_map ();
         }
+
+      // If retval is not a struct or an object, we put the value in a map and
+      // set the 'custom_saveobj_ret_type' flag, which has to be encoded in the
+      // file metadata.
+      // It's the caller's responsibility to check the flag.
+      if (! (retval.isobject () || retval.isstruct ()))
+        {
+          octave_map m;
+          m.setfield ("any", retval);
+          custom_saveobj_ret_type = true;
+          return m;
+        }
+
+      // FIXME: This could potentially lead to an infinite recursion for nested
+      //        handle classes that are self-referencing.
+      if (retval.is_classdef_object ())
+        return retval.classdef_object_value ()->map_value (false);
+      else
+        return retval.map_value ();
     }
 
   // Default behavior of 'loadobj' is to return this object's map_value,
@@ -104,41 +99,36 @@ octave_classdef::saveobj (bool& custom_saveobj_ret_type)
 void
 octave_classdef::loadobj (octave_map& m, const bool custom_saveobj_ret_type)
 {
-  std::map<std::string, octave::cdef_method> method_map
-    = get_object ().get_class ().get_method_map ();
-
   octave_value retval;
-  for (auto it = method_map.begin (); it != method_map.end (); it++)
+
+  octave::cdef_class cls = m_object.get_class ();
+  octave::cdef_method meth = cls.find_method ("loadobj");
+
+  // Default behaviour of loading is triggered if loadobj is not static
+  if (meth.ok () && meth.is_static ())
     {
-      if (it->first == "loadobj")
+      if (custom_saveobj_ret_type)
         {
-          // Default behaviour of loading is triggered if loadobj is not static
-          if (! it->second.is_static ())
-            break;
+          octave_value any = m.contents ("any").elem (0);
+          retval = (meth.execute (octave_value_list (any), 1))(0);
+        }
+      else
+        retval = (meth.execute (octave_value_list (m), 1))(0);
 
-          if (custom_saveobj_ret_type)
-            {
-              octave_value any = m.contents ("any").elem (0);
-              retval = (it->second.execute (octave_value_list (any), 1))(0);
-            }
-          else
-            retval = (it->second.execute (octave_value_list (m), 1))(0);
-
-          if (! retval.is_defined ())
-            {
-              warning ("loadobj method does not return a value");
-              return;
-            }
-
-          // FIXME: A loadobj method can return any type. If the return type is
-          //        not a classdef object, then the loaded object must be
-          //        replaced by whatever the return type and contents are.
-          if (! retval.isobject ())
-            return;
-
-          m_object = retval.classdef_object_value ()->m_object;
+      if (! retval.is_defined ())
+        {
+          warning ("loadobj method does not return a value");
           return;
         }
+
+      // FIXME: A loadobj method can return any type. If the return type is not
+      //        a classdef object, then the loaded object must be replaced by
+      //        whatever the return type and contents are.
+      if (! retval.isobject ())
+        return;
+
+      m_object = retval.classdef_object_value ()->m_object;
+      return;
     }
 
   // If custom saveobj is implemented, then a variable named 'any' is meant to

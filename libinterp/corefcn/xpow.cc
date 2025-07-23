@@ -73,7 +73,7 @@ template <typename T>
 static inline bool
 xisint (T x)
 {
-  return (octave::math::x_nint (x) == x
+  return (octave::math::round (x) == x
           && x <= std::numeric_limits<int>::max ()
           && x >= std::numeric_limits<int>::min ());
 }
@@ -84,7 +84,7 @@ xisint (float x)
   static constexpr float out_of_range_top
     = static_cast<float> (std::numeric_limits<int>::max ()) + 1.0;
 
-  return (octave::math::x_nint (x) == x
+  return (octave::math::round (x) == x
           && x < out_of_range_top
           && x >= std::numeric_limits<int>::min ());
 }

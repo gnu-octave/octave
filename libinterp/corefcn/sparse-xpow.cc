@@ -48,7 +48,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 static inline bool
 xisint (double x)
 {
-  return (octave::math::x_nint (x) == x
+  return (octave::math::round (x) == x
           && ((x >= 0 && x < std::numeric_limits<int>::max ())
               || (x <= 0 && x > std::numeric_limits<int>::min ())));
 }

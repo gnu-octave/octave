@@ -194,7 +194,7 @@ nint_big (double x)
   else if (x < std::numeric_limits<octave_idx_type>::min ())
     return std::numeric_limits<octave_idx_type>::min ();
   else
-    return static_cast<octave_idx_type> ((x > 0.0) ? (x + 0.5) : (x - 0.5));
+    return static_cast<octave_idx_type> (round (x));
 }
 
 octave_idx_type
@@ -208,7 +208,7 @@ nint_big (float x)
   else if (x < std::numeric_limits<octave_idx_type>::min ())
     return std::numeric_limits<octave_idx_type>::min ();
   else
-    return static_cast<octave_idx_type> ((x > 0.0f) ? (x + 0.5f) : (x - 0.5f));
+    return static_cast<octave_idx_type> (round (x));
 }
 
 int
@@ -219,7 +219,7 @@ nint (double x)
   else if (x < std::numeric_limits<int>::min ())
     return std::numeric_limits<int>::min ();
   else
-    return static_cast<int> ((x > 0.0) ? (x + 0.5) : (x - 0.5));
+    return static_cast<int> (round (x));
 }
 
 int
@@ -233,7 +233,7 @@ nint (float x)
   else if (x < std::numeric_limits<int>::min ())
     return std::numeric_limits<int>::min ();
   else
-    return static_cast<int> ((x > 0.0f) ? (x + 0.5f) : (x - 0.5f));
+    return static_cast<int> (round (x));
 }
 
 Complex

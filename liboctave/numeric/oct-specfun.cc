@@ -2028,7 +2028,7 @@ xpsi (T z)
       for (octave_idx_type k = z - 1; k > 0; k--)
         p += 1.0 / k;
     }
-  else if (std::floor (z + 0.5) == z + 0.5)
+  else if (z - std::floor (z) == 0.5)
     {
       // Abramowitz and Stegun, page 258, eq 6.3.3 and 6.3.4
       for (octave_idx_type k = z; k > 0; k--)

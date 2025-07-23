@@ -3270,8 +3270,6 @@ AC_DEFUN([OCTAVE_QNAN_WITH_PAYLOAD], [
   AC_CACHE_CHECK([whether quiet NaN values retain payload on arithmetic operations],
     [octave_cv_qnan_with_payload],
     [AC_LANG_PUSH(C)
-    save_CFLAGS="$CFLAGS"
-    CFLAGS="$CFLAGS -O0"
     AC_RUN_IFELSE([AC_LANG_PROGRAM([[
         #include <math.h>
         #include <stdint.h>
@@ -3288,7 +3286,7 @@ AC_DEFUN([OCTAVE_QNAN_WITH_PAYLOAD], [
         #endif
         #define LO_IEEE_NA_LW 0x40000000
         uint32_t word_NA[2];
-        double oct_NA;
+        volatile double oct_NA;
         uint64_t bits_NA;
         uint64_t bits_NA_1;
 
@@ -3314,11 +3312,11 @@ AC_DEFUN([OCTAVE_QNAN_WITH_PAYLOAD], [
             word_NA[0] = LO_IEEE_NA_LW;
           }
 
-        memcpy (&oct_NA, &word_NA, sizeof (oct_NA));
+        memcpy ((void *) &oct_NA, &word_NA, sizeof (oct_NA));
 
-        memcpy (&bits_NA, &oct_NA, sizeof (oct_NA));
+        memcpy (&bits_NA, (const void *) &oct_NA, sizeof (oct_NA));
         oct_NA += 1.0;
-        memcpy (&bits_NA_1, &oct_NA, sizeof (oct_NA));
+        memcpy (&bits_NA_1, (const void *) &oct_NA, sizeof (oct_NA));
         if (bits_NA == bits_NA_1)
           /* payload of quiet NaN was retained */
           return 0;
@@ -3340,7 +3338,6 @@ AC_DEFUN([OCTAVE_QNAN_WITH_PAYLOAD], [
         octave_cv_qnan_with_payload=yes,
         octave_cv_qnan_with_payload=no)
     ])
-    CFLAGS="$save_CFLAGS"
     AC_LANG_POP(C)
   ])
   if test $octave_cv_qnan_with_payload = yes; then

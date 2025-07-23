@@ -102,9 +102,9 @@ IEEE floating point format, values in the range of approximately
 The exact values are given by the variables @code{realmin},
 @code{realmax}, and @code{eps}, respectively.
 
-Matrix objects can be of any size, and can be dynamically reshaped and
-resized.  It is easy to extract individual rows, columns, or submatrices
-using a variety of powerful indexing features.  @xref{Index Expressions}.
+Matrix objects can be of any size, and can be dynamically reshaped and resized.
+It is easy to extract individual rows, columns, or submatrices using a variety
+of powerful indexing features.  @xref{Index Expressions}.
 
 @xref{Numeric Data Types}, for more information.
 
@@ -112,11 +112,44 @@ using a variety of powerful indexing features.  @xref{Index Expressions}.
 @subsection Missing Data
 @cindex missing data
 
-It is possible to represent missing data explicitly in Octave using
-@code{NA} (short for ``Not Available'').  Missing data can only be
-represented when data is represented as floating point numbers.  In this
-case missing data is represented as a special case of the representation
-of @code{NaN}.
+It is possible to represent missing data explicitly in Octave using NA (short
+for ``@w{Not} @w{Available}'').  This is helpful in distinguishing between a
+property of the data (i.e., some of it was not recorded) and calculations on
+the data which generated an error (i.e., created NaN values).  In short, if you
+do not get the result you expect is it your data or your algorithm?
+
+The missing data marker is a special case of the representation of NaN.
+Because of that, it can only be used with data represented by floating point
+numbers---no integer, logical, or char values.
+
+In general, use NA and the test @code{isna}, to describe the dataset or to
+reduce the dataset to only valid entries.  Numerical calculations with NA will
+generally "poison" the results and conclude with an output NA.  However, this
+can not be guaranteed on all platforms and NA may be replaced by NaN.
+
+Example 1 : Describing the dataset
+
+@example
+@group
+data = [1, NA, 3];
+percent_missing = 100 * sum (isna (data(:))) / numel (data);
+printf ('%2.0f%% of the dataset is missing\n', percent_missing);
+@print{} 33% of the dataset is missing
+@end group
+@end example
+
+Example 2 : Restrict calculations to valid data
+
+@example
+@group
+raw_data = [1, NA, 3];
+printf ('mean of raw data is %.1f\n', mean (raw_data));
+@print{} mean of raw data is NA
+valid_data = raw_data (! isna (raw_data));
+printf ('mean of valid data is %.1f\n', mean (valid_data));
+@print{} mean of valid data is 2.0
+@end group
+@end example
 
 @DOCSTRING(NA)
 

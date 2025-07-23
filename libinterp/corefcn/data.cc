@@ -5313,10 +5313,10 @@ DEFUN (NA, args, ,
 @deftypefnx {} {@var{val} =} NA (@dots{}, "like", @var{var})
 @deftypefnx {} {@var{val} =} NA (@dots{}, @var{class})
 Return a scalar, matrix, or N-dimensional array whose elements are all equal
-to the special constant used to designate missing values.
+to the special constant NA (Not Available) used to designate missing values.
 
-Note that NA always compares not equal to NA (NA != NA).
-To find NA values, use the @code{isna} function.
+Note that NA always compares not equal to NA (NA != NA).  To find NA values,
+use the @code{isna} function.
 
 When called with no arguments, return a scalar with the value @samp{NA}.
 
@@ -5332,6 +5332,12 @@ will have the same data type, complexity, and sparsity as @var{var}.
 
 The optional argument @var{class} specifies the return type and may be
 either @qcode{"double"} or @qcode{"single"}.
+
+Programming Note: The missing data marker NA is a special case of the
+representation of NaN.  Numerical calculations with NA will generally "poison"
+the results and conclude with an output of NA.  However, this can not be
+guaranteed on all platforms and NA may be replaced by NaN.
+@xref{Missing Data}.
 @seealso{isna}
 @end deftypefn */)
 {

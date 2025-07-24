@@ -239,12 +239,6 @@ airy (const FloatComplexNDArray& z, bool deriv, bool scaled,
   return retval;
 }
 
-static inline bool
-is_integer_value (double x)
-{
-  return x == static_cast<double> (static_cast<long> (x));
-}
-
 static inline Complex
 zbesj (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
 
@@ -287,7 +281,7 @@ zbesj (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
 
       retval = bessel_return_value (Complex (yr, yi), ierr);
     }
-  else if (is_integer_value (alpha))
+  else if (octave::math::isinteger (alpha))
     {
       // zbesy can overflow as z->0, and cause troubles for generic case below
       alpha = -alpha;
@@ -353,7 +347,7 @@ zbesy (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
 
       return bessel_return_value (Complex (yr, yi), ierr);
     }
-  else if (is_integer_value (alpha - 0.5))
+  else if (octave::math::isinteger (alpha - 0.5))
     {
       // zbesy can overflow as z->0, and cause troubles for generic case below
       alpha = -alpha;
@@ -406,7 +400,7 @@ zbesi (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
 
       retval = bessel_return_value (Complex (yr, yi), ierr);
     }
-  else if (is_integer_value (alpha))
+  else if (octave::math::isinteger (alpha))
     {
       // zbesi can overflow as z->0, and cause troubles for generic case below
       alpha = -alpha;
@@ -819,12 +813,6 @@ cbesh1 (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr);
 static inline FloatComplex
 cbesh2 (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr);
 
-static inline bool
-is_integer_value (float x)
-{
-  return x == static_cast<float> (static_cast<long> (x));
-}
-
 static inline FloatComplex
 cbesj (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 {
@@ -846,7 +834,7 @@ cbesj (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 
       retval = bessel_return_value (y, ierr);
     }
-  else if (is_integer_value (alpha))
+  else if (octave::math::isinteger (alpha))
     {
       // zbesy can overflow as z->0, and cause troubles for generic case below
       alpha = -alpha;
@@ -910,7 +898,7 @@ cbesy (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 
       return bessel_return_value (y, ierr);
     }
-  else if (is_integer_value (alpha - 0.5))
+  else if (octave::math::isinteger (alpha - 0.5))
     {
       // zbesy can overflow as z->0, and cause troubles for generic case below
       alpha = -alpha;

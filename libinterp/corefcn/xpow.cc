@@ -73,7 +73,7 @@ template <typename T>
 static inline bool
 xisint (T x)
 {
-  return (octave::math::round (x) == x
+  return (octave::math::isinteger (x)
           && x <= std::numeric_limits<int>::max ()
           && x >= std::numeric_limits<int>::min ());
 }
@@ -84,7 +84,15 @@ xisint (float x)
   static constexpr float out_of_range_top
     = static_cast<float> (std::numeric_limits<int>::max ()) + 1.0;
 
-  return (octave::math::round (x) == x
+  // FIXME: If we return *only* octave::math::isinteger (x)
+  // and delete the lines with numeric_limits<int>,
+  // then that works on MacOS but not on Linux.
+  // A simple test is:    Complex (realmin, realmin) .^ realmax.
+  // On MacOS it gives zero. On Linux it gives Inf - Nani.
+  // If we can make both platforms work without the extra check with
+  // numeric_limits<int>, then we should do so.
+
+  return (octave::math::isinteger (x)
           && x < out_of_range_top
           && x >= std::numeric_limits<int>::min ());
 }

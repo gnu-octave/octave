@@ -48,7 +48,16 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 static inline bool
 xisint (double x)
 {
-  return (octave::math::round (x) == x
+  // FIXME: If we return *only* octave::math::isinteger (x)
+  // and delete the lines with numeric_limits<int>,
+  // then that works on MacOS but not on Linux.
+  // It fails a test in sparse.tst that requires this calculation:
+  // Complex (realmin, realmin) .^ realmax.
+  // On MacOS it correctly gives zero, matching Matlab.
+  // On Linux it gives Inf + Nani.
+  // If we can make both platforms work without the extra check with
+  // numeric_limits<int>, then we should do so.
+  return (octave::math::isinteger (x)
           && ((x >= 0 && x < std::numeric_limits<int>::max ())
               || (x <= 0 && x > std::numeric_limits<int>::min ())));
 }

@@ -931,7 +931,7 @@ rational_approx (T val, int len)
   else if (octave::math::isnan (val))
     s = "0/0";
   else if (val <= out_of_range_bottom || val >= out_of_range_top
-           || octave::math::round (val) == val)
+           || octave::math::isinteger (val))
     {
       std::ostringstream buf;
       buf.flags (std::ios::fixed);

@@ -1880,7 +1880,7 @@ gamma (double x)
     result = (math::negative_sign (x)
               ? -numeric_limits<double>::Inf ()
               : numeric_limits<double>::Inf ());
-  else if ((x < 0 && math::round (x) == x)
+  else if ((x < 0 && math::isinteger (x))
            || math::isinf (x))
     result = numeric_limits<double>::Inf ();
   else if (math::isnan (x))
@@ -1903,7 +1903,7 @@ gamma (float x)
     result = (math::negative_sign (x)
               ? -numeric_limits<float>::Inf ()
               : numeric_limits<float>::Inf ());
-  else if ((x < 0 && math::round (x) == x)
+  else if ((x < 0 && math::isinteger (x))
            || math::isinf (x))
     result = numeric_limits<float>::Inf ();
   else if (math::isnan (x))

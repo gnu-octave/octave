@@ -220,9 +220,11 @@ isinf (const std::complex<T>& x)
 // Some useful tests, that are commonly repeated.
 // Test for a finite integer.
 
-// FIXME: Benchmark whether trunc might be faster than round here.
-inline bool isinteger (double x) { return isfinite (x) && x == round (x); }
-inline bool isinteger (float x) { return isfinite (x) && x == round (x); }
+// A large benchmark of std::round vs std::trunc showed that trunc was some
+// 3 times faster than round, taking some 1.4 nanoseconds for trunc and
+// some 4.1 nanoseconds for round.
+inline bool isinteger (double x) { return isfinite (x) && x == std::trunc (x); }
+inline bool isinteger (float x) { return isfinite (x) && x == std::trunc (x); }
 
 inline double
 signum (double x)

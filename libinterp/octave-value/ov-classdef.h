@@ -163,9 +163,10 @@ public:
 
 private:
 
-  void loadobj (octave_map& arg, const bool custom_saveobj_ret_type);
+  void loadobj (std::vector<octave_map>& arg, dim_vector& dv,
+                const bool custom_saveobj_ret_type);
 
-  octave_map saveobj (bool& custom_saveobj_ret_type);
+  std::vector<octave_map> saveobj (bool& custom_saveobj_ret_type);
 
 private:
 

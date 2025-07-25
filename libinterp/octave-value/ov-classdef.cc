@@ -50,130 +50,147 @@
 #include "pt-misc.h"
 #include "oct-lvalue.h"
 
-octave_map
+std::vector<octave_map>
 octave_classdef::saveobj (bool& custom_saveobj_ret_type)
 {
-  octave_value retval;
-
   octave::cdef_class cls = m_object.get_class ();
   octave::cdef_method meth = cls.find_method ("saveobj");
 
-  // Default behaviour of saving is triggered if saveobj is static
-  if (meth.ok () && ! meth.is_static ())
+  std::vector<octave_map> m (numel ());
+
+  // The saveobj method needs to be called separately for each element of
+  // N-d arrays.
+  for (octave_idx_type n = 0; n < numel (); n++)
     {
-      retval = (meth.execute (get_object_ref (), octave_value_list (), 1))(0);
+      octave_value retval;
 
-      if (! retval.is_defined ())
-        {
-          warning ("saveobj method does not return a value");
-          return octave_map ();
-        }
+      octave_value_list ovl_idx;
+      std::list<octave_value_list> idx_tmp;
+      ovl_idx(0) = n+1;
+      idx_tmp.push_back (ovl_idx);
+      octave_value elem = (subsref ("(", idx_tmp, 1))(0);
 
-      // If retval is not a struct or an object, we put the value in a map and
-      // set the 'custom_saveobj_ret_type' flag, which has to be encoded in the
-      // file metadata.
-      // It's the caller's responsibility to check the flag.
-      if (! (retval.isobject () || retval.isstruct ()))
-        {
-          octave_map m;
-          m.setfield ("any", retval);
-          custom_saveobj_ret_type = true;
-          return m;
-        }
-
-      // FIXME: This could potentially lead to an infinite recursion for nested
-      //        handle classes that are self-referencing.
-      if (retval.is_classdef_object ())
-        return retval.classdef_object_value ()->map_value (false);
+      // Default behavior of 'loadobj' is to return this object's
+      // map_value, including all protected, private and hidden properties.
+      // FIXME: This could potentially lead to an infinite recursion for
+      //        nested handle classes that are self-referencing.
+      if (! meth.ok () || meth.is_static ())
+        // Default behaviour of saving is triggered if saveobj is static
+        m[n] = elem.classdef_object_value ()->map_value (false);
       else
-        return retval.map_value ();
+        {
+          retval = (meth.execute (elem.classdef_object_value ()->get_object_ref (),
+                                  octave_value_list (), 1))(0);
+
+          if (! retval.is_defined ())
+            {
+              warning ("saveobj method does not return a value");
+              return m;
+            }
+          else if (! (retval.isobject () || retval.isstruct ()))
+            {
+              // If retval is not a struct or an object, we put the value in a
+              // map and set the 'custom_saveobj_ret_type' flag, which has to
+              // be encoded in the file metadata.
+              // It's the caller's responsibility to check the flag.
+              m[n].setfield ("any", retval);
+              custom_saveobj_ret_type = true;
+            }
+
+          // FIXME: This could potentially lead to an infinite recursion for
+          //        nested handle classes that are self-referencing.
+          else if (retval.is_classdef_object ())
+            m[n] = retval.classdef_object_value ()->map_value (false);
+          else
+            m[n] = retval.map_value ();
+        }
     }
 
-  // Default behavior of 'loadobj' is to return this object's map_value,
-  // including all protected, private and hidden properties.
-  // FIXME: This could potentially lead to an infinite recursion for nested
-  //        handle classes that are self-referencing.
-  return map_value (false);
+  return m;
 }
 
 void
-octave_classdef::loadobj (octave_map& m, const bool custom_saveobj_ret_type)
+octave_classdef::loadobj (std::vector<octave_map>& m, dim_vector& dv,
+                          const bool custom_saveobj_ret_type)
 {
   octave_value retval;
 
+  octave::cdef_object scalar_obj = m_object.copy ();
   octave::cdef_class cls = m_object.get_class ();
   octave::cdef_method meth = cls.find_method ("loadobj");
 
-  // Default behaviour of loading is triggered if loadobj is not static
-  if (meth.ok () && meth.is_static ())
+  // The loadobj method needs to be called separately for each element of
+  // N-d arrays.
+  for (octave_idx_type n = 0; static_cast<size_t> (n) < m.size (); n++)
     {
-      if (custom_saveobj_ret_type)
+      // Default behaviour of loading is triggered if loadobj is not static
+      if (meth.ok () && meth.is_static ())
         {
-          octave_value any = m.contents ("any").elem (0);
-          retval = (meth.execute (octave_value_list (any), 1))(0);
-        }
-      else
-        retval = (meth.execute (octave_value_list (m), 1))(0);
-
-      if (! retval.is_defined ())
-        {
-          warning ("loadobj method does not return a value");
-          return;
-        }
-
-      // FIXME: A loadobj method can return any type. If the return type is not
-      //        a classdef object, then the loaded object must be replaced by
-      //        whatever the return type and contents are.
-      if (! retval.isobject ())
-        return;
-
-      m_object = retval.classdef_object_value ()->m_object;
-      return;
-    }
-
-  // If custom saveobj is implemented, then a variable named 'any' is meant to
-  // be passed to loadobj, but if loadobj is not implemented, it should not
-  // fill in any property 'any' in the class.
-  if (custom_saveobj_ret_type)
-    return;
-
-  // FIXME: Add support for empty arrays of any dimensions.
-  if (m.numel () > 0)
-    {
-      octave_value_list clones (m.numel () - 1);
-      for (octave_idx_type n = 0; n < m.numel () - 1; n++)
-        clones(n) = clone ();
-
-      string_vector fnames = m.fieldnames ();
-      string_vector sv = map_keys ();
-      for (octave_idx_type i = 0; i < m.nfields (); i++)
-        for (octave_idx_type j = 0; j < sv.numel (); j++)
-          if (sv[j] == fnames(i))
+          if (custom_saveobj_ret_type)
             {
-              set_property (0, sv[j], m.contents (fnames(i)).xelem (0));
-              for (octave_idx_type n = 1; n < m.numel (); n++)
-                clones(n-1).classdef_object_value ()->set_property (0, sv[j], m.contents (fnames(i)).xelem (n));
-              break;
+              octave_value any = m[n].contents ("any").elem (0);
+              retval = (meth.execute (octave_value_list (any), 1))(0);
+            }
+          else
+            retval = (meth.execute (octave_value_list (m[n]), 1))(0);
+
+          if (! retval.is_defined ())
+            {
+              warning ("loadobj method does not return a value");
+              return;
             }
 
-      for (octave_idx_type n = 1; n < m.numel (); n++)
+          // FIXME: A loadobj method can return any type. If the return type is
+          //        not a classdef object, then the loaded object must be
+          //        replaced by whatever the return type and contents are.
+          if (! retval.isobject ())
+            return;
+        }
+      else
+        {
+          // If custom saveobj is implemented, then a variable named 'any' is
+          // meant to be passed to loadobj, but if loadobj is not implemented,
+          // it should not fill in any property 'any' in the class.
+          if (custom_saveobj_ret_type)
+            return;
+
+          octave::cdef_object new_object = scalar_obj.copy ();
+
+          string_vector fnames = m[n].fieldnames ();
+          string_vector sv = map_keys ();
+          for (octave_idx_type i = 0; i < m[n].nfields (); i++)
+            for (octave_idx_type j = 0; j < sv.numel (); j++)
+              if (sv[j] == fnames(i))
+                {
+                  new_object.set_property (0, sv[j], m[n].contents (fnames(i)).xelem (0));
+                  break;
+                }
+
+          retval = octave::to_ov (new_object);
+        }
+
+      if (m.size () == 0)
+        m_object = retval.classdef_object_value ()->m_object;
+      else
         {
           octave_value_list ovl_idx;
           std::list<octave_value_list> idx_tmp;
           ovl_idx(0) = n+1;
           idx_tmp.push_back (ovl_idx);
-          octave_value tmp = subsasgn ("(", idx_tmp, clones(n-1));
+          octave_value tmp = subsasgn ("(", idx_tmp, retval);
+
           // FIXME: Is this assignment only needed for value classes?
           m_object = tmp.classdef_object_value ()->m_object;
         }
+    }
 
-      // FIXME: Reshape to the correct dimensions.
-      if (m.dims () != dims ())
-        {
-          std::string orig_dim_str = m.dims ().str ();
-          warning ("load: loading classdef array of originally %s as row vector",
-                   orig_dim_str.c_str ());
-        }
+
+  // FIXME: Reshape to the correct dimensions.
+  if (dv != dims ())
+    {
+      std::string orig_dim_str = dv.str ();
+      warning ("load: loading classdef array of originally %s as row vector",
+               orig_dim_str.c_str ());
     }
 }
 
@@ -181,7 +198,6 @@ bool
 octave_classdef::save_ascii (std::ostream& os)
 {
   bool custom_saveobj_ret_type = false;
-  octave_map m = saveobj (custom_saveobj_ret_type);
 
   os << "# metadata: ";
   if (custom_saveobj_ret_type)
@@ -196,28 +212,31 @@ octave_classdef::save_ascii (std::ostream& os)
   os << "\n";
 
 
-  octave_idx_type nf = m.nfields ();
+  std::vector<octave_map> m = saveobj (custom_saveobj_ret_type);
 
-  os << "# length: " << nf << "\n";
-
-  string_vector keys = m.fieldnames ();
-
-  for (octave_idx_type i = 0; i < nf; i++)
+  for (octave_idx_type n = 0; static_cast<size_t> (n) < m.size (); n++)
     {
-      std::string key = keys(i);
+      // FIXME: Assign unique ID to each object in the file.
+      os << "# id: " << n+1 << "\n";
 
-      // m is an octave_map, querying its values returns 'Cell' objects
-      octave_value val = m.contents (key);
+      octave_idx_type nf = m[n].nfields ();
 
-      if (val.numel () == 1) {
-        val = m.contents (key)(0, 0);
-      }
+      os << "# length: " << nf << "\n";
 
-      bool b = save_text_data (os, val, key, false, 0);
+      string_vector keys = m[n].fieldnames ();
 
-      if (! b)
-        return ! os.fail ();
+      for (octave_idx_type i = 0; i < nf; i++)
+        {
+          std::string key = keys(i);
 
+          // m is an octave_map, querying its values returns 'Cell' objects
+          octave_value val = (m[n].contents (key))(0);
+
+          bool b = save_text_data (os, val, key, false, 0);
+
+          if (! b)
+            return ! os.fail ();
+        }
     }
 
   return true;
@@ -228,70 +247,58 @@ octave_classdef::load_ascii (std::istream& is)
 {
   octave_idx_type len = 0;
   dim_vector dv (1, 1);
-  bool success = true;
-
-  string_vector keywords (2);
-  keywords[0] = "ndims";
-  keywords[1] = "length";
-
-  std::string kw;
 
   std::string metadata = extract_keyword (is, "metadata");
 
-  bool saveobj_defined = false;
   size_t pos = metadata.find ("saveobj_defined");
-  if (pos != std::string::npos)
-    saveobj_defined = true;
+  bool saveobj_defined = (pos != std::string::npos);
 
-  if (extract_keyword (is, keywords, kw, len, true))
+  if (extract_keyword (is, "ndims", len, true))
     {
-      if (kw == keywords[0])
-        {
-          int mdims = std::max (static_cast<int> (len), 2);
-          dv.resize (mdims);
-          for (int i = 0; i < mdims; i++)
-            is >> dv(i);
-
-          success = extract_keyword (is, keywords[1], len);
-        }
+      int mdims = std::max (static_cast<int> (len), 2);
+      dv.resize (mdims);
+      for (int i = 0; i < mdims; i++)
+        is >> dv(i);
     }
   else
-    success = false;
+    error ("load: failed to extract keyword 'ndims' for classdef object");
 
-  if (len < 0)
-    error ("load: failed to extract number of properties from classdef object");
+  std::vector<octave_map> m (dv.numel ());
 
-  if (! success)
-    error ("load: failed to extract keywords from classdef object");
-
-  octave_map m (dv);
-
-  for (octave_idx_type j = 0; j < len; j++)
+  for (octave_idx_type i = 0; i < dv.numel (); i++)
     {
-      octave_value t2;
-      bool dummy;
+      uint32_t id;
+      // FIXME: Use id to identify references to the same handle object.
+      if (! extract_keyword (is, "id", id, true))
+        error ("load: failed to extract keyword 'id' for classdef object");
 
-      std::string nm = read_text_data (is, "", dummy, t2, j, false);
+      if (! extract_keyword (is, "length", len, true))
+        error ("load: failed to extract keyword 'length' for classdef object");
+
+      if (len < 0)
+        error ("load: failed to extract number of properties for classdef object");
+
+      for (octave_idx_type j = 0; j < len; j++)
+        {
+          octave_value t2;
+          bool dummy;
+
+          std::string nm = read_text_data (is, "", dummy, t2, j, false);
+
+          if (! is)
+            break;
+
+          // Set the field in the octave_map
+          m[i].setfield (nm, t2);
+        }
 
       if (! is)
-        break;
-
-      Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading struct elements") :
-                    Cell (t2));
-
-      if (m.dims () != tcell.dims ())
-        tcell = Cell (octave_value (tcell));
-
-      // Set the field in the octave_map
-      m.setfield (nm, tcell);
+        error ("load: failed to load classdef object");
     }
 
-  if (! is)
-      error ("load: failed to load classdef object");
+  loadobj (m, dv, saveobj_defined);
 
-  loadobj (m, saveobj_defined);
-
-  return success;
+  return true;
 }
 
 static bool

@@ -438,18 +438,11 @@ elem_xpow (const SparseMatrix& a, double b)
         {
           ComplexMatrix result (nr, nc, Complex (std::pow (0.0, b)));
 
-          // FIXME: avoid apparent GNU libm bug by
-          // converting A and B to complex instead of just A.
-          Complex btmp (b);
-
           for (octave_idx_type j = 0; j < nc; j++)
             for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
               {
                 octave_quit ();
-
-                Complex atmp (a.data (i));
-
-                result(a.ridx (i), j) = std::pow (atmp, btmp);
+                result(a.ridx (i), j) = std::pow (a.data (i), b);
               }
 
           retval = octave_value (result);
@@ -475,14 +468,7 @@ elem_xpow (const SparseMatrix& a, double b)
       for (octave_idx_type i = 0; i < nz; i++)
         {
           octave_quit ();
-
-          // FIXME: avoid apparent GNU libm bug by
-          // converting A and B to complex instead of just A.
-
-          Complex atmp (a.data (i));
-          Complex btmp (b);
-
-          result.data (i) = std::pow (atmp, btmp);
+          result.data (i) = std::pow (a.data (i), b);
         }
 
       result.maybe_compress (true);

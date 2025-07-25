@@ -69,8 +69,10 @@ major release after 11):
 
 - Core
 
-        Function               | Replacement
-        -----------------------|------------------
+        Function                  | Replacement
+        --------------------------|--------------------------
+        octave::math::x_nint      | octave::math::round
+        octave::math::isinteger   | octave::math::is_integer
 
 The following features were deprecated in Octave 9 and have been removed
 from Octave 11.

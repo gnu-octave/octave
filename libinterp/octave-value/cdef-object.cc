@@ -278,7 +278,20 @@ cdef_object_array::subsref (const std::string& type,
       break;
 
     case '.':
-      if (type.size () == 1 && idx.size () == 1)
+      if (m_array.numel () == 1)
+        {
+          // If there is only one element in the array, implicitly index the
+          // first element. In this case, also allow indexing with more than
+          // one level.
+
+          // dummy variables
+          std::size_t dummy_skip;
+          cdef_class dummy_cls;
+          retval = m_array(0).subsref (type, idx, 1, dummy_skip, dummy_cls);
+
+          break;
+        }
+      else if (type.size () == 1 && idx.size () == 1)
         {
           Cell c (dims ());
 
@@ -466,6 +479,18 @@ cdef_object_array::subsasgn (const std::string& type,
           retval = to_ov (cdef_object (this));
         }
       break;
+
+    case '.':
+      if (m_array.numel () == 1)
+        {
+          // If there is only one element in the array, implicitly index the
+          // first element.
+
+          retval = m_array(0).subsasgn (type, idx, rhs);
+
+          break;
+        }
+      OCTAVE_FALLTHROUGH;
 
     default:
       error ("can't perform indexing operation on array of %s objects",

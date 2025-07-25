@@ -327,7 +327,7 @@ FloatNDArray::all_integers (float& max_val, float& min_val) const
       if (val < min_val)
         min_val = val;
 
-      if (! octave::math::isinteger (val))
+      if (! octave::math::is_integer (val))
         return false;
     }
 
@@ -337,7 +337,7 @@ FloatNDArray::all_integers (float& max_val, float& min_val) const
 bool
 FloatNDArray::all_integers () const
 {
-  return test_all (octave::math::isinteger);
+  return test_all (octave::math::is_integer);
 }
 
 bool

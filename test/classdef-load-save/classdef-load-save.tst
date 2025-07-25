@@ -110,7 +110,7 @@
 %!   delete (savefile);
 %! end_unwind_protect
 
-## No constructor, ConstructOnLoad = false, saveobj return a struct, no loadobj
+## No constructor, ConstructOnLoad = false, saveobj returns a struct, no loadobj
 %!test
 %! obj = saveobj_class ();
 %! obj.a = 1;

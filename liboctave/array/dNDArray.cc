@@ -370,7 +370,7 @@ NDArray::all_integers (double& max_val, double& min_val) const
       if (val < min_val)
         min_val = val;
 
-      if (! octave::math::isinteger (val))
+      if (! octave::math::is_integer (val))
         return false;
     }
 
@@ -380,7 +380,7 @@ NDArray::all_integers (double& max_val, double& min_val) const
 bool
 NDArray::all_integers () const
 {
-  return test_all (octave::math::isinteger);
+  return test_all (octave::math::is_integer);
 }
 
 bool

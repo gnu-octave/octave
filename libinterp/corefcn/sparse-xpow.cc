@@ -48,7 +48,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 static inline bool
 xisint (double x)
 {
-  // FIXME: If we return *only* octave::math::isinteger (x)
+  // FIXME: If we return *only* octave::math::is_integer (x)
   // and delete the lines with numeric_limits<int>,
   // then that works on MacOS but not on Linux.
   // It fails a test in sparse.tst that requires this calculation:
@@ -57,7 +57,7 @@ xisint (double x)
   // On Linux it gives Inf + Nani.
   // If we can make both platforms work without the extra check with
   // numeric_limits<int>, then we should do so.
-  return (octave::math::isinteger (x)
+  return (octave::math::is_integer (x)
           && ((x >= 0 && x < std::numeric_limits<int>::max ())
               || (x <= 0 && x > std::numeric_limits<int>::min ())));
 }

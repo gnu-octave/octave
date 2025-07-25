@@ -43,7 +43,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 static double
 simple_gcd (double a, double b)
 {
-  if (! math::isinteger (a) || ! math::isinteger (b))
+  if (! math::is_integer (a) || ! math::is_integer (b))
     error ("gcd: all values must be integers");
 
   double aa = fabs (a);
@@ -76,10 +76,10 @@ template <typename FP>
 static std::complex<FP>
 simple_gcd (const std::complex<FP>& a, const std::complex<FP>& b)
 {
-  if (! math::isinteger (a.real ())
-      || ! math::isinteger (a.imag ())
-      || ! math::isinteger (b.real ())
-      || ! math::isinteger (b.imag ()))
+  if (! math::is_integer (a.real ())
+      || ! math::is_integer (a.imag ())
+      || ! math::is_integer (b.real ())
+      || ! math::is_integer (b.imag ()))
     error ("gcd: all complex parts must be integers");
 
   std::complex<FP> aa = a;
@@ -119,7 +119,7 @@ simple_gcd (const octave_int<T>& a, const octave_int<T>& b)
 static double
 extended_gcd (double a, double b, double& x, double& y)
 {
-  if (! math::isinteger (a) || ! math::isinteger (b))
+  if (! math::is_integer (a) || ! math::is_integer (b))
     error ("gcd: all values must be integers");
 
   double aa = fabs (a);
@@ -157,10 +157,10 @@ static std::complex<FP>
 extended_gcd (const std::complex<FP>& a, const std::complex<FP>& b,
               std::complex<FP>& x, std::complex<FP>& y)
 {
-  if (! math::isinteger (a.real ())
-      || ! math::isinteger (a.imag ())
-      || ! math::isinteger (b.real ())
-      || ! math::isinteger (b.imag ()))
+  if (! math::is_integer (a.real ())
+      || ! math::is_integer (a.imag ())
+      || ! math::is_integer (b.real ())
+      || ! math::is_integer (b.imag ()))
     error ("gcd: all complex parts must be integers");
 
   std::complex<FP> aa = a;

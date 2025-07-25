@@ -281,7 +281,7 @@ zbesj (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
 
       retval = bessel_return_value (Complex (yr, yi), ierr);
     }
-  else if (octave::math::isinteger (alpha))
+  else if (octave::math::is_integer (alpha))
     {
       // zbesy can overflow as z->0, and cause troubles for generic case below
       alpha = -alpha;
@@ -347,7 +347,7 @@ zbesy (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
 
       return bessel_return_value (Complex (yr, yi), ierr);
     }
-  else if (octave::math::isinteger (alpha - 0.5))
+  else if (octave::math::is_integer (alpha - 0.5))
     {
       // zbesy can overflow as z->0, and cause troubles for generic case below
       alpha = -alpha;
@@ -400,7 +400,7 @@ zbesi (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
 
       retval = bessel_return_value (Complex (yr, yi), ierr);
     }
-  else if (octave::math::isinteger (alpha))
+  else if (octave::math::is_integer (alpha))
     {
       // zbesi can overflow as z->0, and cause troubles for generic case below
       alpha = -alpha;
@@ -834,7 +834,7 @@ cbesj (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 
       retval = bessel_return_value (y, ierr);
     }
-  else if (octave::math::isinteger (alpha))
+  else if (octave::math::is_integer (alpha))
     {
       // zbesy can overflow as z->0, and cause troubles for generic case below
       alpha = -alpha;
@@ -898,7 +898,7 @@ cbesy (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 
       return bessel_return_value (y, ierr);
     }
-  else if (octave::math::isinteger (alpha - 0.5))
+  else if (octave::math::is_integer (alpha - 0.5))
     {
       // zbesy can overflow as z->0, and cause troubles for generic case below
       alpha = -alpha;
@@ -1868,7 +1868,7 @@ gamma (double x)
     result = (math::negative_sign (x)
               ? -numeric_limits<double>::Inf ()
               : numeric_limits<double>::Inf ());
-  else if ((x < 0 && math::isinteger (x))
+  else if ((x < 0 && math::is_integer (x))
            || math::isinf (x))
     result = numeric_limits<double>::Inf ();
   else if (math::isnan (x))
@@ -1891,7 +1891,7 @@ gamma (float x)
     result = (math::negative_sign (x)
               ? -numeric_limits<float>::Inf ()
               : numeric_limits<float>::Inf ());
-  else if ((x < 0 && math::isinteger (x))
+  else if ((x < 0 && math::is_integer (x))
            || math::isinf (x))
     result = numeric_limits<float>::Inf ();
   else if (math::isnan (x))

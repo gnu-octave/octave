@@ -5570,7 +5570,7 @@ printf_value_cache::get_next_value (char type)
                     {
                       double dval = val(idx);
 
-                      if (! math::isinteger (dval)
+                      if (! math::is_integer (dval)
                           || dval < 0 || dval > 255)
                         break;
                     }
@@ -5598,7 +5598,7 @@ printf_value_cache::get_next_value (char type)
                 {
                   double dval = retval.double_value ();
 
-                  if (math::isinteger (dval) && dval >= 0 && dval < 256)
+                  if (math::is_integer (dval) && dval >= 0 && dval < 256)
                     retval = static_cast<char> (dval);
                 }
             }
@@ -5646,7 +5646,7 @@ printf_value_cache::int_value ()
   double dval = val.double_value (true);
 
   if (dval < 0 || dval > std::numeric_limits<int>::max ()
-      || ! math::isinteger (dval))
+      || ! math::is_integer (dval))
     {
       m_curr_state = conversion_error;
       return -1;

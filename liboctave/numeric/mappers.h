@@ -223,8 +223,14 @@ isinf (const std::complex<T>& x)
 // A large benchmark of std::round vs std::trunc showed that trunc was some
 // 3 times faster than round, taking some 1.4 nanoseconds for trunc and
 // some 4.1 nanoseconds for round.
-inline bool isinteger (double x) { return isfinite (x) && x == std::trunc (x); }
-inline bool isinteger (float x) { return isfinite (x) && x == std::trunc (x); }
+inline bool is_integer (double x) { return isfinite (x) && x == std::trunc (x); }
+inline bool is_integer (float x) { return isfinite (x) && x == std::trunc (x); }
+
+OCTAVE_DEPRECATED (11, "use octave::math::is_integer instead")
+inline bool isinteger (double x) { return is_integer (x); }
+
+OCTAVE_DEPRECATED (11, "use octave::math::is_integer instead")
+inline bool isinteger (float x) { return is_integer (x); }
 
 inline double
 signum (double x)
@@ -261,11 +267,13 @@ signum (const std::complex<T>& x)
   return tmp == 0 ? 0.0 : x / tmp;
 }
 
+// FIXME: Deprecated in Octave 11.  Remove in Octave 13.
 // Convert X to the nearest integer value.  Should not pass NaN to
 // this function.
 
 // For integer types?  Hmm.  Need to be sure T is an integer type...
 template <typename T>
+OCTAVE_DEPRECATED (11, "use octave::math::round instead")
 T
 x_nint (T x)
 {
@@ -273,12 +281,14 @@ x_nint (T x)
 }
 
 template <>
+OCTAVE_DEPRECATED (11, "use octave::math::round instead")
 inline double x_nint (double x)
 {
   return round (x);
 }
 
 template <>
+OCTAVE_DEPRECATED (11, "use octave::math::round instead")
 inline float x_nint (float x)
 {
   return round (x);

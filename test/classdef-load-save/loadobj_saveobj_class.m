@@ -1,7 +1,7 @@
 classdef loadobj_saveobj_class < regular_class
   methods (Static)
     function obj = loadobj (s)
-      obj = loadobj_class ();
+      obj = loadobj_saveobj_class ();
       if (isstruct (s))
         obj.a = s.a;
         obj.b = s.b;

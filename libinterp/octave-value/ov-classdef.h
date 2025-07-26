@@ -119,6 +119,8 @@ public:
 
   OCTINTERP_API Matrix size ();
 
+  OCTINTERP_API octave_value reshape (const dim_vector& new_dims) const;
+
   OCTINTERP_API octave_idx_type xnumel (const octave_value_list&);
 
   string_vector map_keys () const { return m_object.map_keys (); }
@@ -126,6 +128,9 @@ public:
   octave_map map_value () const { return m_object.map_value (true); }
 
   octave_map map_value (bool warn) const { return m_object.map_value (warn); }
+
+  octave_map map_value (bool warn, bool for_save) const
+  { return m_object.map_value (warn, for_save); }
 
   dim_vector dims () const { return m_object.dims (); }
 
@@ -163,10 +168,20 @@ public:
 
 private:
 
-  void loadobj (std::vector<octave_map>& arg, dim_vector& dv,
-                const bool custom_saveobj_ret_type);
+  // Load an array of the size dv using a vector with
+  // * a map with the values of the class properties
+  // * a unique identifier of the object in the file
+  // * an indicator whether the object has a custom return type
+  OCTINTERP_API void
+  loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m,
+           dim_vector& dv);
 
-  std::vector<octave_map> saveobj (bool& custom_saveobj_ret_type);
+  // Return a vector for each element in the array containing:
+  // * a map with the values of the class properties
+  // * a unique identifier of the object in the file
+  // * an indicator whether the object has a custom return type
+  OCTINTERP_API std::vector<std::tuple<octave_map, uint32_t, bool>>
+  saveobj (std::vector<bool>& is_new);
 
 private:
 

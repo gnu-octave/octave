@@ -494,6 +494,8 @@ load_save_system::load_vars (std::istream& stream,
         }
     }
 
+  clear_mcos_object_cache ();
+
   if (list_only && count)
     {
       if (verbose)
@@ -1566,6 +1568,54 @@ load_save_system::save (const octave_value_list& args, int nargout)
     }
 
   return retval;
+}
+
+void
+load_save_system::clear_mcos_object_cache ()
+{
+  m_mcos_object_load_cache.clear ();
+  m_mcos_object_save_cache.clear ();
+}
+
+void
+load_save_system::set_mcos_object_cache_entry (uint32_t object_id,
+                                               octave_value& obj)
+{
+  m_mcos_object_load_cache[object_id] = obj;
+}
+
+octave_value&
+load_save_system::get_mcos_object_cache_entry (uint32_t object_id)
+{
+  return m_mcos_object_load_cache[object_id];
+}
+
+bool
+load_save_system::is_mcos_object_cache_entry (uint32_t object_id)
+{
+  // FIXME: Consider replacing this with std::unordered_map<>::contains when we
+  //        allow C++20.
+  return m_mcos_object_load_cache.find (object_id)
+           !=  m_mcos_object_load_cache.end ();
+}
+
+uint32_t
+load_save_system::get_mcos_object_cache_id (const void *obj, bool& new_entry)
+{
+  // identify objects by their address in memory
+  uint32_t id = m_mcos_object_save_cache[obj];
+  if (id == 0)
+    {
+      // The object hasn't been present in the cache yet.
+      // Assign and return a new id (starting at 1).
+      id = m_mcos_object_save_cache.size ();
+      m_mcos_object_save_cache[obj] = id;
+      new_entry = true;
+    }
+  else
+    new_entry = false;
+
+  return id;
 }
 
 DEFMETHOD (load, interp, args, nargout,

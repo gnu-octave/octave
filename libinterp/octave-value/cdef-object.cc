@@ -134,7 +134,7 @@ cdef_object_rep::map_keys () const
 }
 
 octave_map
-cdef_object::map_value (bool warn) const
+cdef_object::map_value (bool warn, bool for_save) const
 {
   octave_map retval;
 
@@ -156,6 +156,11 @@ cdef_object::map_value (bool warn) const
       // FIXME: Why not const here?
       for (auto& prop_val : props)
         {
+          // Do not include properties that have the "Transient" attribute
+          // when creating the map for saving the object to a file.
+          if (for_save && prop_val.second.get ("Transient").bool_value ())
+            continue;
+
           if (is_array ())
             {
               Array<cdef_object> a_obj = array_value ();
@@ -501,6 +506,14 @@ cdef_object_array::subsasgn (const std::string& type,
   return retval;
 }
 
+octave_value
+cdef_object_array::reshape (const dim_vector& new_dims) const
+{
+  cdef_object_array retval = cdef_object_array (*this);
+  retval.m_array = Array<cdef_object> (m_array, new_dims);
+  return to_ov (cdef_object (new cdef_object_array (retval)));
+}
+
 void
 cdef_object_array::fill_empty_values (Array<cdef_object>& arr)
 {
@@ -719,6 +732,19 @@ cdef_object_scalar::subsasgn (const std::string& type,
     }
 
   return retval;
+}
+
+octave_value
+cdef_object_scalar::reshape (const dim_vector& new_dims) const
+{
+  if (new_dims.numel () != 1)
+    {
+      std::string new_dims_str = new_dims.str ();
+      error ("reshape: cannot reshape scalar classdef object to %s array",
+             new_dims_str.c_str ());
+    }
+
+  return to_ov (cdef_object (clone()));
 }
 
 void

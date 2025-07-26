@@ -194,6 +194,19 @@ public:
   save (const octave_value_list& args = octave_value_list (),
         int nargout = 0);
 
+  // MCOS object cache management for loading classdef objects
+  OCTINTERP_API void clear_mcos_object_cache ();
+
+  OCTINTERP_API void
+  set_mcos_object_cache_entry (uint32_t object_id, octave_value& obj);
+
+  OCTINTERP_API octave_value& get_mcos_object_cache_entry (uint32_t object_id);
+
+  OCTINTERP_API bool is_mcos_object_cache_entry (uint32_t object_id);
+
+  OCTINTERP_API uint32_t
+  get_mcos_object_cache_id (const void *obj, bool& new_entry);
+
 private:
 
   interpreter& m_interpreter;
@@ -220,6 +233,12 @@ private:
   // text-format save files.  Passed to strftime.  Should begin with
   // '#' and contain no newline characters.
   std::string m_save_header_format_string;
+
+  // Cache for constructed MCOS objects and their object IDs during loading
+  std::unordered_map<uint32_t, octave_value> m_mcos_object_load_cache;
+
+  // Cache for constructed MCOS objects and their object IDs during saving
+  std::unordered_map<const void *, uint32_t> m_mcos_object_save_cache;
 
   OCTINTERP_API void
   write_header (std::ostream& os, const load_save_format& fmt);

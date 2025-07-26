@@ -228,3 +228,36 @@
 %!error <property .* conflicting>
 %! cls_50011 = class_bug50011_2 ();
 %! cls_50011.m_c ();
+
+## reshape array of value class objects
+%!test <*65179>
+%! obj(1,1) = value_class ();
+%! obj(2,3) = value_class ();
+%! assert (size (obj), [2, 3]);
+%! assert (size (reshape (obj, [3, 2])), [3, 2]);
+
+## reshape array of handle class objects
+%!test <*65179>
+%! obj1(1,1) = handle_class ();
+%! obj1(2,3) = handle_class ();
+%! assert (size (obj1), [2, 3]);
+%! obj2 = reshape (obj1, [3, 2]);
+%! assert (size (obj2), [3, 2]);
+%! obj1(2,3).a = 42;
+%! assert (obj2(3,2).a, 42);
+
+## reshape array of value class objects with overloaded reshape function
+%!test <*65179>
+%! obj1(1,1) = value_class_reshape ();
+%! obj1(2,3) = value_class_reshape ();
+%! assert (size (obj1), [2, 3]);
+%! obj2 = reshape (obj1, [3, 2]);
+%! assert (size (obj2), [2, 3]);
+%! assert (obj2(end).a, [3, 2]);
+
+## reshape on scalar objects only works for all-one dimensions
+%!test <*65179>
+%! assert (size (reshape (value_class (), [1, 1])), [1, 1]);
+
+%!error <cannot reshape scalar .* to .* array>
+%! reshape (value_class (), [3, 2]);

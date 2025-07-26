@@ -337,7 +337,8 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
     }
   else if (cls.ok ()) 
     {
-      tc = cls.construct (octave_value_list (), true);
+      bool skip_constructor = ! cls.get ("ConstructOnLoad").bool_value ();
+      tc = cls.construct (octave_value_list (), skip_constructor);
     }
   else
     {

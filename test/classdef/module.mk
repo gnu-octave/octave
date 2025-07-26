@@ -18,9 +18,12 @@ classdef_TEST_FILES = \
   %reldir%/foo_static_method_constant_property.m \
   %reldir%/foo_subsref_subsasgn.m \
   %reldir%/foo_value_class.m \
+  %reldir%/handle_class.m \
   %reldir%/plist_t1.m \
   %reldir%/plist_t2.m \
   %reldir%/plist_t3.m \
-  %reldir%/struct_wrapper.m
+  %reldir%/struct_wrapper.m \
+  %reldir%/value_class.m \
+  %reldir%/value_class_reshape.m
 
 TEST_FILES += $(classdef_TEST_FILES)

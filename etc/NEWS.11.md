@@ -4,8 +4,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 ### General improvements
 
 - The internal interface to Java has been updated to be more memory-efficient
-  (faster culling of unused objects).  Octave now requires Java 1.9 to build
-  from sources.  Distributed versions of Octave will run with any JVM.
+  (faster culling of unused objects).  Java 1.9 is now required for building
+  Octave from source.  Distributed, precompiled versions of Octave will run
+  with any JVM.
 
 - The `pkg` command has these user-visible changes:
   * The package installation command `pkg install foo` now automatically
@@ -52,6 +53,10 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The function `gradient` with a numeric input now only accepts type double
   or single.
 
+- The function `polyfit` now returns the highest powers possible and the
+  constant term when there is insufficient data to create all N terms of the
+  polynomial.
+
 ### Alphabetical list of new functions added in Octave 11
 
 * `corrcov`
@@ -66,6 +71,7 @@ major release after 11):
 
         Function               | Replacement
         -----------------------|------------------
+        polyfit output s.X     | polyfit output s.V
 
 - Core
 

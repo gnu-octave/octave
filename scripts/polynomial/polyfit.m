@@ -47,7 +47,11 @@
 ## @item yf
 ## The values of the polynomial for each value of @var{x}.
 ##
-## @item X
+## @item V
+## The @nospell{Vandermonde} matrix used to compute the polynomial
+## coefficients.
+##
+## @item X (deprecated, will be removed in Octave 13)
 ## The @nospell{Vandermonde} matrix used to compute the polynomial
 ## coefficients.
 ##
@@ -56,7 +60,7 @@
 ##
 ## @item C
 ## The unscaled covariance matrix, formally equal to the inverse of
-## @var{x'}*@var{x}, but computed in a way minimizing roundoff error
+## @var{v'}*@var{v}, but computed in a way minimizing roundoff error
 ## propagation.
 ##
 ## @item df
@@ -91,10 +95,16 @@
 ## @result{} p = [ 0.0680, 0, 4.2444, 0 ]
 ## ## Fit data to polynomial using all terms up to x^3
 ## p = polyfit (x, y, 3)
-## @result{} p = [ -4.9608e-17, 1.0000e+00, -3.3813e-15, 5.0000e+00 ]
+## @result{} p = [ -4.9608e-17, 1.0000e+00, -1.6906e-15, 5.0000e+00 ]
 ## @end group
 ## @end example
 ##
+## Programming Note: If the desired polynomial degree @var{n} @geq{} number
+## of data points, the solution is not unique.  Instead, the fitting calculates
+## @code{@var{m} = numel (@var{x}) - 1} terms.  The return polynomial has
+## coefficients for @var{x}^@var{n}, @var{x}^@var{n}-1, @dots{},
+## @var{x}^@var{n}-@var{m}, and the constant term @var{x}^0, with all other
+## coefficients set to 0.
 ## @seealso{polyval, polyaffine, roots, vander, zscore}
 ## @end deftypefn
 
@@ -139,21 +149,25 @@ function [p, s, mu] = polyfit (x, y, n)
   endif
 
   if (m >= nx)
-    warning ("polyfit: degree of polynomial N is >= number of data points; solution is not unique");
+    warning ("polyfit: degree of polynomial N is >= number of data points; solution is not unique.");
     m = nx;
     pad_output = true;
-    ## Keep the lowest m entries in polymask
-    idx = find (polymask);
-    idx((end-m+1):end) = [];
-    polymask(idx) = false;
+    ## Keep the highest m-1 entries and the constant term in polymask
+    polymask(:) = false;
+    if (m == 1)
+      polymask(1) = true;
+    else
+      polymask([1:m-1,end]) = true;
+    endif
   endif
 
   ## Construct the Vandermonde matrix.
-  X = vander (x, n+1);
-  v = X(:, polymask);
+  v = vander (x, n+1);
+  ## Reduce columns of matrix, rather than zero them, to improve qr results.
+  v = v(:, polymask);  
 
   ## Solve by QR decomposition.
-  [q, r, k] = qr (v, 0);
+  [q, r, k] = qr (v, 0);  # Use '0' to create 'econ' factoring.
   p = r \ (q' * y);
   p(k) = p;
 
@@ -165,8 +179,6 @@ function [p, s, mu] = polyfit (x, y, n)
       s.yf = yf;
     endif
 
-    s.X = X;
-
     ## r.'*r is positive definite if matrix v is of full rank.  Invert it by
     ## cholinv to avoid taking the square root of squared quantities.
     ## If cholinv fails, then v is rank deficient and not invertible.
@@ -177,10 +189,15 @@ function [p, s, mu] = polyfit (x, y, n)
     end_try_catch
 
     if (pad_output)
-      s.X(:, ! polymask) = 0;
+      s.V = zeros (rows (v), n+1); s.V(:, polymask) = v;
+      ## FIXME: Deprecated.  Remove in Octave 13.
+      s.X = s.V;
       s.R = zeros (rows (r), n+1); s.R(:, polymask) = r;
       s.C = zeros (rows (C), n+1); s.C(:, polymask) = C;
     else
+      s.V = v;
+      ## FIXME: Deprecated.  Remove in Octave 13.
+      s.X = s.V;
       s.R = r;
       s.C = C;
     endif
@@ -191,9 +208,9 @@ function [p, s, mu] = polyfit (x, y, n)
 
   if (pad_output)
     ## Zero pad output
-    q = p;
+    p_nonzero = p;
     p = zeros (n+1, 1);
-    p(polymask) = q;
+    p(polymask) = p_nonzero;
   endif
   p = p.';  # Return a row vector.
 
@@ -263,7 +280,7 @@ endfunction
 %! expected = [0, 1, -14, 65, -112, 60] / 12;
 %! assert (p, expected, sqrt (eps));
 
-## Orientation of output
+## Orientation of output is always row vector
 %!test
 %! x = 0:5;
 %! y = x.^4 + 2*x + 5;
@@ -273,49 +290,48 @@ endfunction
 %! assert (iscolumn (s.yf));
 
 ## Insufficient data for fit
-%!test
-%! x = [1, 2];
-%! y = [3, 4];
+%!test <*57964>
 %! ## Disable warnings entirely because there is not a specific ID to disable.
 %! wstate = warning ();
 %! unwind_protect
 %!   warning ("off", "all");
+%!   x = [1, 2];
+%!   y = [1.5, 9];
 %!   p0 = polyfit (x, y, 4);
 %!   [p1, s, mu] = polyfit (x, y, 4);
 %! unwind_protect_cleanup
 %!   warning (wstate);
 %! end_unwind_protect
-%! assert (p0, [0, 0, 0, 1, 2], 10*eps);
-%! assert (p1, [0, 0, 0, sqrt(2)/2, 3.5], 10*eps);
-%! assert (size (s.X), [2, 5]);
-%! assert (s.X(:,1:3), zeros (2,3));
+%! assert (p0, [0.5, 0, 0, 0, 1], 12*eps);
+%! assert (p1, [1.2353, 0, 0, 0, 4.9412], 1e-4);
+%! assert (size (s.V), [2, 5]);
+%! assert (s.V(:,2:4), zeros (2,3));
 %! assert (size (s.R), [2, 5]);
-%! assert (s.R(:,1:3), zeros (2,3));
+%! assert (s.R(:,2:4), zeros (2,3));
 %! assert (size (s.C), [2, 5]);
-%! assert (s.C(:,1:3), zeros (2,3));
+%! assert (s.C(:,2:4), zeros (2,3));
 %! assert (s.df, 0);
 %! assert (mu, [1.5, sqrt(2)/2]);
 
 %!test
-%! x = [1, 2, 3];
-%! y = 2*x + 1;
-%! ## Disable warnings entirely because there is not a specific ID to disable.
 %! wstate = warning ();
 %! unwind_protect
 %!   warning ("off", "all");
-%!   p0 = polyfit (x, y, logical ([1, 1, 1, 0 1]));
-%!   [p1, s, mu] = polyfit (x, y, logical ([1, 1, 1, 0 1]));
+%!   x = [1, 2, 3];
+%!   y = 2*x + 1;
+%!   p0 = polyfit (x, y, logical ([1, 1, 1, 0, 1]));
+%!   [p1, s, mu] = polyfit (x, y, logical ([1, 1, 1, 0, 1]));
 %! unwind_protect_cleanup
 %!   warning (wstate);
 %! end_unwind_protect
-%! assert (p0, [0, -2/11, 12/11, 0, 23/11], 10*eps);
+%! assert (p0(3:4), [0, 0]);
 %! assert (p1, [0, 2, 0, 0, 5], 10*eps);
-%! assert (size (s.X), [3, 5]);
-%! assert (s.X(:,[1,4]), zeros (3,2));
+%! assert (size (s.V), [3, 5]);
+%! assert (s.V(:,3:4), zeros (3,2));
 %! assert (size (s.R), [3, 5]);
-%! assert (s.R(:,[1,4]), zeros (3,2));
+%! assert (s.R(:,3:4), zeros (3,2));
 %! assert (size (s.C), [3, 5]);
-%! assert (s.C(:,[1,4]), zeros (3,2));
+%! assert (s.C(:,3:4), zeros (3,2));
 %! assert (s.df, 0);
 %! assert (mu, [2, 1]);
 
@@ -328,13 +344,39 @@ endfunction
 %! unwind_protect_cleanup
 %!   warning (wstate);
 %! end_unwind_protect
-%! assert (size (p), [1, 3]);
-%! assert (size (s.X), [2, 3]);
-%! assert (s.X(:,1), [0; 0]);
+%! assert (p, [1/3, 0, 8/3], 6*eps);
+%! assert (size (s.V), [2, 3]);
+%! assert (s.V(:,2), [0; 0]);
 %! assert (size (s.R), [2, 3]);
-%! assert (s.R(:,1), [0; 0]);
+%! assert (s.R(:,2), [0; 0]);
 %! assert (size (s.C), [2, 3]);
-%! assert (s.C(:,1), [0; 0]);
+%! assert (s.C(:,2), [0; 0]);
+
+## Verify Matlab-compatible return of upper powers
+%!test <*67296>
+%! wstate = warning ();
+%! unwind_protect
+%!   warning ("off", "all");
+%!   x = 1:3;
+%!   y = [0.9, 0.2, 0.3];
+%!   p3 = polyfit (x, y, 3);
+%!   p4 = polyfit (x, y, 4);
+%! unwind_protect_cleanup
+%!   warning (wstate);
+%! end_unwind_protect
+%! assert (p3, [0.1727, -0.6364, 0, 1.3636], 1e-4);
+%! assert (p4, [0.0824, -0.2765, 0, 0, 1.0941], 1e-4);
+
+## Verify Matlab-compatible corner case with only one output term
+%!test <*67296>
+%! wstate = warning ();
+%! unwind_protect
+%!   warning ("off", "all");
+%!   p = polyfit (1,2,3);
+%! unwind_protect_cleanup
+%!   warning (wstate);
+%! end_unwind_protect
+%! assert (p, [2 0 0 0]);
 
 ## Test input validation
 %!error <Invalid call> polyfit ()

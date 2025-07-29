@@ -68,6 +68,9 @@
 ##
 ## @item normr
 ## The norm of the residuals.
+##
+## @item rsquared
+## Coefficient of determination, or R-squared.
 ## @end table
 ##
 ## The second output may be used by @code{polyval} to calculate the statistical
@@ -114,9 +117,10 @@ function [p, s, mu] = polyfit (x, y, n)
     print_usage ();
   endif
 
+  scale_x = (nargout == 3);
   y_is_row_vector = isrow (y);
-
-  ## Reshape x & y into column vectors.
+  
+  ## Reshape x and y into column vectors.
   x = x(:);
   y = y(:);
 
@@ -126,14 +130,14 @@ function [p, s, mu] = polyfit (x, y, n)
     error ("polyfit: X and Y must have the same number of points");
   endif
 
-  if (nargout > 2)
+  if (scale_x)
     ## Center and scale the x values.
     mu = [mean(x), std(x)];
     x = (x - mu(1)) / mu(2);
   endif
 
-  ## n is the polynomial degree (an input, or deduced from the polymask size)
-  ## m is the effective number of coefficients.
+  ## n is the polynomial degree (an input, or deduced from the polymask size).
+  ## m is the effective number of coefficients (accounts for insufficient data).
   if (islogical (n))
     polymask = n(:).';          # force to row vector
     n = numel (polymask) - 1;
@@ -152,6 +156,9 @@ function [p, s, mu] = polyfit (x, y, n)
     warning ("polyfit: degree of polynomial N is >= number of data points; solution is not unique.");
     m = nx;
     pad_output = true;
+    if (scale_x && nx < 3)
+      error ("polyfit: number of data points must be > 2 when scaling input X");
+    endif
     ## Keep the highest m-1 entries and the constant term in polymask
     polymask(:) = false;
     if (m == 1)
@@ -203,7 +210,9 @@ function [p, s, mu] = polyfit (x, y, n)
     endif
 
     s.df = max (0, nx - m - 1);
-    s.normr = norm (yf - y);
+    resid = sumsq (yf - y);
+    s.normr = sqrt (resid);
+    s.rsquared = 1 - resid / sumsq (y - mean (y));
   endif
 
   if (pad_output)
@@ -297,13 +306,11 @@ endfunction
 %!   warning ("off", "all");
 %!   x = [1, 2];
 %!   y = [1.5, 9];
-%!   p0 = polyfit (x, y, 4);
-%!   [p1, s, mu] = polyfit (x, y, 4);
+%!   [p,s] = polyfit (x, y, 4);
 %! unwind_protect_cleanup
 %!   warning (wstate);
 %! end_unwind_protect
-%! assert (p0, [0.5, 0, 0, 0, 1], 12*eps);
-%! assert (p1, [1.2353, 0, 0, 0, 4.9412], 1e-4);
+%! assert (p, [0.5, 0, 0, 0, 1], 12*eps);
 %! assert (size (s.V), [2, 5]);
 %! assert (s.V(:,2:4), zeros (2,3));
 %! assert (size (s.R), [2, 5]);
@@ -311,7 +318,8 @@ endfunction
 %! assert (size (s.C), [2, 5]);
 %! assert (s.C(:,2:4), zeros (2,3));
 %! assert (s.df, 0);
-%! assert (mu, [1.5, sqrt(2)/2]);
+%! assert (s.normr, 0, 20*eps);
+%! assert (s.rsquared, 1, 20*eps);
 
 %!test
 %! wstate = warning ();
@@ -390,3 +398,6 @@ endfunction
 %!error <N must be a non-negative integer> polyfit (1, 2, 1.5)
 %!test <*57964>
 %! fail ("p = polyfit ([1,2], [3,4], 4)", "warning", "solution is not unique");
+%!error <data points must be . 2 when scaling> [p,s,mu] = polyfit (1,2,3)
+%!error <data points must be . 2 when scaling>
+%! [p,s,mu] = polyfit ([1 2], [3 4], 3)

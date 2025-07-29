@@ -73,28 +73,13 @@ template <typename T>
 static inline bool
 xisint (T x)
 {
-  return (octave::math::is_integer (x)
-          && x <= std::numeric_limits<int>::max ()
-          && x >= std::numeric_limits<int>::min ());
+  return octave::math::is_integer (x);
 }
 
 static inline bool
 xisint (float x)
 {
-  static constexpr float out_of_range_top
-    = static_cast<float> (std::numeric_limits<int>::max ()) + 1.0;
-
-  // FIXME: If we return *only* octave::math::is_integer (x)
-  // and delete the lines with numeric_limits<int>,
-  // then that works on MacOS but not on Linux.
-  // A simple test is:    Complex (realmin, realmin) .^ realmax.
-  // On MacOS it gives zero. On Linux it gives Inf - Nani.
-  // If we can make both platforms work without the extra check with
-  // numeric_limits<int>, then we should do so.
-
-  return (octave::math::is_integer (x)
-          && x < out_of_range_top
-          && x >= std::numeric_limits<int>::min ());
+  return octave::math::is_integer (x);
 }
 
 // Safer pow functions.

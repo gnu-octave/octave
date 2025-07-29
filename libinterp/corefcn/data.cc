@@ -6675,6 +6675,9 @@ This function and @w{@tcode{@var{A} ^ @var{B}}}@ are equivalent.
 {
   return binary_op_defun_body (octave_value::op_pow, args);
 }
+/*
+%!assert (complex (realmin, realmin) ^ realmax, 0)
+*/
 
 DEFUN (mldivide, args, ,
        doc: /* -*- texinfo -*-
@@ -6805,6 +6808,9 @@ non-negative argument (angle).  Use @code{realpow}, @code{realsqrt},
 {
   return binary_op_defun_body (octave_value::op_el_pow, args);
 }
+/*
+%!assert (complex (realmin, realmin) .^ realmax, 0)
+*/
 
 DEFUN (ldivide, args, ,
        doc: /* -*- texinfo -*-

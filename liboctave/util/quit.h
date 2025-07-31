@@ -28,19 +28,12 @@
 
 #include "octave-config.h"
 
-/* The signal header is just needed for the sig_atomic_t type.  */
 #if defined (__cplusplus)
 #  include <atomic>
-#  include <csignal>
 #  include <iosfwd>
 #  include <list>
 #  include <stdexcept>
 #  include <string>
-#else
-#  include <signal.h>
-#endif
-
-#if defined (__cplusplus)
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 

@@ -392,6 +392,9 @@ load_save_system::load_vars (std::istream& stream,
 
   octave_idx_type count = 0;
 
+  octave::unwind_action
+  clear_obj_cache ([this] () { clear_mcos_object_cache (); });
+
   for (;;)
     {
       bool global = false;
@@ -493,8 +496,6 @@ load_save_system::load_vars (std::istream& stream,
             break;
         }
     }
-
-  clear_mcos_object_cache ();
 
   if (list_only && count)
     {
@@ -681,6 +682,9 @@ load_save_system::save_vars (const string_vector& argv, int argv_idx,
 {
   if (write_header_info)
     write_header (os, fmt);
+
+  octave::unwind_action
+  clear_obj_cache ([this] () { clear_mcos_object_cache (); });
 
   if (argv_idx == argc)
     {

@@ -547,6 +547,10 @@ AC_DEFINE_UNQUOTED(OCTAVE_IDX_TYPE, [$OCTAVE_IDX_TYPE],
 
 OCTAVE_LLVM_LIBCXX
 
+### Check for BSD or Apple libc library.
+
+OCTAVE_BSD_LIBC
+
 ### Check for pthread library.
 
 AX_PTHREAD

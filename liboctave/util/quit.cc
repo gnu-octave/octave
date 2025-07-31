@@ -36,7 +36,7 @@
 
 #include "quit.h"
 
-std::atomic<sig_atomic_t> octave_interrupt_state{0};
+std::atomic<int> octave_interrupt_state{0};
 
 std::atomic<bool> octave_signal_caught{false};
 
@@ -111,7 +111,7 @@ octave_handle_signal ()
   if (octave_signal_hook)
     octave_signal_hook ();
 
-  sig_atomic_t curr_interrupt_state = octave_interrupt_state.load ();
+  int curr_interrupt_state = octave_interrupt_state.load ();
 
   while (curr_interrupt_state > 0 &&
          ! octave_interrupt_state.compare_exchange_weak (curr_interrupt_state, -1))

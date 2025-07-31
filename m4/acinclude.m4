@@ -167,6 +167,24 @@ static void * threadfunc(void *arg)
   fi
 ])
 dnl
+dnl Check for BSD or Apple libc library.
+dnl
+AC_DEFUN([OCTAVE_BSD_LIBC], [
+  AC_CACHE_CHECK([whether using C library from BSD or Apple],
+    [octave_cv_bsd_libc], [
+    AC_PREPROC_IFELSE([AC_LANG_SOURCE([[#include <sys/sysctl.h>]])], [
+      AC_PREPROC_IFELSE([AC_LANG_SOURCE([[#include <linux/sysctl.h>]])],
+        octave_cv_bsd_libc=no,
+        octave_cv_bsd_libc=yes)
+      ],
+      octave_cv_bsd_libc=no)
+  ])
+  if test $octave_cv_bsd_libc = yes; then
+    AC_DEFINE(HAVE_BSD_LIBC, 1,
+      [Define to 1 if BSD or Apple libc is used])
+  fi
+])
+dnl
 dnl Check for LLVM or Apple libc++ library.
 dnl
 AC_DEFUN([OCTAVE_LLVM_LIBCXX], [

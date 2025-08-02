@@ -48,6 +48,7 @@
 #include "quit.h"
 #include "str-vec.h"
 
+#include "cdef-utils.h"
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
@@ -323,8 +324,7 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
   else
     typ = tag;
 
-  octave::cdef_manager& cdm = octave::__get_cdef_manager__ ();
-  octave::cdef_class cls = cdm.find_class(typ, false, false);
+  octave::cdef_class cls = octave::lookup_class (typ, false, true);
 
   // Special case for backward compatibility.  A small bit of cruft
   if (SUBSTRING_COMPARE_EQ (typ, 0, 12, "string array"))

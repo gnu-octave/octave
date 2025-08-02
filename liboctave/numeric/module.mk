@@ -113,6 +113,7 @@ LIBOCTAVE_TEMPLATE_SRC += \
 ## Special rules for sources which must be built before rest of compilation.
 $(LIBOCTAVE_OPT_INC) : %.h : %.in
 	$(AM_V_GEN)rm -f $@-t $@ && \
+	([ -z $@-t.__DIR__ ] || mkdir -p $@-t.__DIR__) && \
 	$(PERL) $(srcdir)/build-aux/mk-opts.pl --opt-class-header $< > $@-t && \
 	mv $@-t $@
 

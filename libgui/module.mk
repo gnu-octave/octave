@@ -85,6 +85,7 @@ DIRSTAMP_FILES += \
 
 define moc-command
   rm -f $@-t $@ && \
+  ([ -z $@-t.__DIR__ ] || mkdir -p $@-t.__DIR__) && \
   ( echo "#if defined (HAVE_CONFIG_H)"; \
     echo '#  include "config.h"'; \
     echo "#endif"; \
@@ -99,6 +100,7 @@ endef
 
 define rcc-command
   rm -f $@-t $@ && \
+  ([ -z $@-t.__DIR__ ] || mkdir -p $@-t.__DIR__) && \
   ( echo "#if defined (HAVE_CONFIG_H)"; \
     echo '#  include "config.h"'; \
     echo "#endif"; \

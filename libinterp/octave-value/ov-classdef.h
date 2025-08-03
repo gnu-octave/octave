@@ -166,8 +166,6 @@ public:
   static std::string static_class_name () { return "<unknown>"; }
   static OCTINTERP_API void register_type (octave::type_info&);
 
-private:
-
   // Load an array of the size dv using a vector with
   // * a map with the values of the class properties
   // * a unique identifier of the object in the file

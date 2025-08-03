@@ -75,6 +75,21 @@
 %!   delete (savefile);
 %! end_unwind_protect
 
+## No constructor, ConstructOnLoad = false, no loadobj/saveobj, nested object inside a struct
+%!test
+%! obj = regular_class ();
+%! s.obj_field = regular_class_with_constructor ();
+%! obj.a = s;
+%! savefile = tempname ();
+%! save ('-text', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (class(obj.a.obj_field), "regular_class_with_constructor");
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
 ## Vector of value class objects.
 %!test
 %! obj = regular_class;

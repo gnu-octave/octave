@@ -658,6 +658,10 @@ file_editor::request_mru_open_file (QAction *action)
 {
   if (action)
     {
+      show ();  // Make sure, the editor is shown. In case the previous
+                // session has to be restored, all previous files are
+                // opened before the selected file from the mru list is
+                // opended.
       request_open_file (action->data ().toStringList ().at (0),
                          action->data ().toStringList ().at (1));
     }

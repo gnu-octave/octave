@@ -78,6 +78,7 @@
 #include "ls-mat5.h"
 #include "ls-oct-text.h"
 #include "ls-oct-binary.h"
+#include "ls-mat-subsys.h"
 
 // Remove gnulib definitions, if any.
 #if defined (close)
@@ -1620,6 +1621,24 @@ load_save_system::get_mcos_object_cache_id (const void *obj, bool& new_entry)
     new_entry = false;
 
   return id;
+}
+
+void
+load_save_system::create_subsystem_handler ()
+{
+  m_subsystem_handler = std::make_unique<subsystem_handler> ();
+}
+
+subsystem_handler*
+load_save_system::get_subsystem_handler ()
+{
+  return m_subsystem_handler.get ();
+}
+
+void
+load_save_system::clear_subsystem_handler ()
+{
+  m_subsystem_handler.reset ();
 }
 
 DEFMETHOD (load, interp, args, nargout,

@@ -324,7 +324,6 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
   else
     typ = tag;
 
-  octave::cdef_class cls = octave::lookup_class (typ, false, true);
 
   // Special case for backward compatibility.  A small bit of cruft
   if (SUBSTRING_COMPARE_EQ (typ, 0, 12, "string array"))
@@ -335,8 +334,20 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
       tc = load_inline_fcn (is, filename);
       return name;
     }
-  else if (cls.ok ()) 
+  else if (SUBSTRING_COMPARE_EQ (typ, 0, 6, "object")) 
     {
+      // classdef object
+      std::string class_nm = extract_keyword (is, "classname");
+
+      if (class_nm.empty ())
+        error ("load: failed to extract keyword specifying classdef class");
+
+      octave::cdef_class cls = octave::lookup_class (class_nm, false, true);
+
+      if (! cls.ok () || (cls.get_name () != class_nm))
+        error ("load: no definition for classdef '%s' available",
+               class_nm.c_str ());
+
       bool skip_constructor = ! cls.get ("ConstructOnLoad").bool_value ();
       tc = cls.construct (octave_value_list (), skip_constructor);
     }
@@ -379,10 +390,7 @@ save_text_data (std::ostream& os, const octave_value& val_arg,
   else
     os << "# type: ";
 
-  if (val.is_classdef_object ())
-    os << val.class_name () << "\n";
-  else
-    os << val.type_name () << "\n";
+  os << val.type_name () << "\n";
 
   if (! precision)
     precision = Vsave_precision;

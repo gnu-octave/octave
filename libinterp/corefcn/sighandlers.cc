@@ -27,10 +27,10 @@
 #  include "config.h"
 #endif
 
-#include <atomic>
 #include <csignal>
 #include <cstdlib>
 
+#include <atomic>
 #include <iostream>
 #include <new>
 
@@ -292,7 +292,7 @@ generic_sig_handler (int sig)
       || (have_sigbreak && sig == sigbreak))
     {
       if (! octave_initialized)
-        exit (1);
+        std::exit (EXIT_FAILURE);
 
       if (can_interrupt)
         {

@@ -550,12 +550,6 @@ v = cellfun (@@det, C);         # 40% faster
   // Apply function
   if (uniform_output)
     {
-      // FIXME: These 3 declarations are possibly unnecessary if the
-      // code below that uses them is unreachable.
-      std::list<octave_value_list> idx_list (1);
-      idx_list.front ().resize (1);
-      const std::string idx_type = "(";
-
       OCTAVE_LOCAL_BUFFER (octave_value, results, nargout1);
 
       int expected_nargout;
@@ -619,15 +613,10 @@ v = cellfun (@@det, C);         # 40% faster
 
                       if (! results[j].fast_elem_insert (count, val))
                         {
-                          // FIXME: Isn't this a guaranteed error if this point
-                          // is reached?  Added warning 2025/04/13.
-                          warning ("cellfun: This code should be unreachable.  Please report to bugs.octave.org");
-
                           if (val.numel () != 1)
                             error ("cellfun: all values must be scalars when UniformOutput = true");
-                          idx_list.front ()(0) = count + 1.0;
-                          results[j].assign (octave_value::op_asn_eq,
-                                          idx_type, idx_list, val);
+
+                          error ("cellfun: all values should be of the same type when UniformOutput = true");
                         }
                     }
                 }
@@ -1047,6 +1036,14 @@ v = cellfun (@@det, C);         # 40% faster
 %!                 [false, false, false, false])
 %!assert <*40467> (cellfun ('iscomplex', {1 inf NaN []}, "UniformOutput", false),
 %!                 {false, false, false, false})
+
+## Output values of different sizes
+%!test <*67217> 
+%! fail ("cellfun (@(x) x, {5, [1, 2]})", "all values must be scalars");
+
+## Output values of different types
+%!test <*67217> 
+%! fail ("cellfun (@(x) x, {5, true})", "all values should be of the same type");
 
 %!function retval = __errfcn (S, varargin)
 %!  global __errmsg;

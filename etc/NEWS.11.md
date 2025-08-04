@@ -59,6 +59,10 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   coefficient of determination describing how well the polynomial fits the
   data.
 
+- The function `cellfun` now fails if the returned type does not match in the
+  invocations for each cell element.  In earlier versions, the elements were
+  converted to a compatible type if possible.
+
 ### Alphabetical list of new functions added in Octave 11
 
 * `corrcov`

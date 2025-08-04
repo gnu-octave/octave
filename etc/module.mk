@@ -102,6 +102,7 @@ all-icons: %reldir%/icons/org.octave.Octave.desktop $(BUILT_ICONS)
 
 %reldir%/icons/org.octave.Octave.desktop: %reldir%/icons/org.octave.Octave.desktop.in | %reldir%/icons/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
+	([ -z $@-t.__DIR__ ] || mkdir -p $@-t.__DIR__) && \
 	$(SED) < $< > $@-t \
 	  -e "s|%OCTAVE_PREFIX%|${prefix}|" && \
 	mv $@-t $@
@@ -113,6 +114,7 @@ $(BUILT_PNG_ICONS): %reldir%/icons/octave-logo.svg | %reldir%/icons/$(octave_dir
 
 %reldir%/icons/octave-logo.ico: $(WINDOWS_PNG_ICONS) | %reldir%/icons/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
+	([ -z $@-t.__DIR__ ] || mkdir -p $@-t.__DIR__) && \
 	$(ICOTOOL) --create --raw  $(WINDOWS_PNG_ICONS) > $@-t && \
 	mv $@-t $@
 

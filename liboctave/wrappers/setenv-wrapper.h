@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2016-2025 The Octave Project Developers
+// Copyright (C) 2025 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -23,14 +23,15 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#if ! defined (octave_putenv_wrapper_h)
-#define octave_putenv_wrapper_h 1
+#if ! defined (octave_setenv_wrapper_h)
+#define octave_setenv_wrapper_h 1
 
 #if defined (__cplusplus)
 extern "C" {
 #endif
 
-extern OCTAVE_API int octave_putenv_wrapper (char *str);
+extern OCTAVE_API int
+octave_setenv_wrapper (const char *envname, const char *envval, int overwrite);
 
 #if defined (__cplusplus)
 }

@@ -28,6 +28,8 @@
 
 #include "octave-config.h"
 
+#include <cstdlib>
+
 #include <iosfwd>
 
 #include "version.h"
@@ -94,7 +96,7 @@ Options:\n\
             << octave_bugs_statement ()
             << "\n";
 
-  exit (0);
+  std::exit (EXIT_SUCCESS);
 }
 
 // Terse usage message.
@@ -104,7 +106,7 @@ octave_print_terse_usage_and_exit ()
 {
   std::cerr << "\nusage: " << usage_string << "\n\n";
 
-  exit (1);
+  std::exit (EXIT_FAILURE);
 }
 
 static void
@@ -112,7 +114,7 @@ octave_print_version_and_exit ()
 {
   std::cout << octave_name_version_copyright_copying_warranty_and_bugs ()
             << "\n";
-  exit (0);
+  std::exit (EXIT_SUCCESS);
 }
 
 #endif

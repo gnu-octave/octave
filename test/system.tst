@@ -350,8 +350,8 @@
 
 %!assert (ischar (pwd ()))
 
-%!testif HAVE_GETPWENT
-%! endpwent ();
+%!testif HAVE_GETPWENT, HAVE_SETPWENT, HAVE_ENDPWENT
+%! setpwent ();
 %! s = getpwent ();
 %! endpwent ();
 %! assert (isstruct (s)
@@ -365,9 +365,10 @@
 
 %!error <Invalid call to getpwent> getpwent (1)
 
-%!testif HAVE_GETPWUID
-%! endpwent ();
+%!testif HAVE_GETPWUID, HAVE_GETPWENT, HAVE_SETPWENT, HAVE_ENDPWENT
+%! setpwent ();
 %! x = getpwent ();
+%! setpwent ();
 %! y = getpwuid (x.uid);
 %! endpwent ();
 %! assert (strcmp (x.name, y.name) && x.uid == y.uid && x.gid == y.gid);
@@ -375,8 +376,8 @@
 %!error <Invalid call to getpwuid> getpwuid ()
 %!error <Invalid call to getpwuid> getpwuid (1, 2)
 
-%!testif HAVE_GETPWNAM
-%! endpwent ();
+%!testif HAVE_GETPWNAM, HAVE_SETPWENT, HAVE_GETPWENT
+%! setpwent ();
 %! x = getpwent ();
 %! y = getpwnam (x.name);
 %! endpwent ();
@@ -385,8 +386,8 @@
 %!error <Invalid call to getpwnam> getpwnam ()
 %!error <Invalid call to getpwnam> getpwnam ("foo", 1)
 
-%!testif HAVE_SETPWENT
-%! endpwent ();
+%!testif HAVE_SETPWENT, HAVE_GETPWENT, HAVE_ENDPWENT
+%! setpwent ();
 %! x = getpwent ();
 %! setpwent ();
 %! y = getpwent ();

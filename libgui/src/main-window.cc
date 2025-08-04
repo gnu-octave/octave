@@ -27,6 +27,8 @@
 #  include "config.h"
 #endif
 
+#include <cstdlib>
+
 #include <utility>
 
 #include <QAction>
@@ -117,7 +119,7 @@ main_window::main_window (base_qobject& oct_qobj)
       welcome_wizard welcomeWizard;
 
       if (welcomeWizard.exec () == QDialog::Rejected)
-        exit (1);
+        std::exit (EXIT_FAILURE);
 
       settings.setValue (global_skip_welcome_wizard.settings_key (), QVariant (true));
 

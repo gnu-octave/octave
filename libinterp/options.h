@@ -33,7 +33,7 @@
 // This is here so that it's more likely that the usage message and
 // the real set of options will agree.  Note: the '+' must come first
 // to prevent getopt from permuting arguments!
-static const char *short_opts = "+GHWVde:fghip:qvx";
+static const char *short_opts = "+GHWVe:fghip:qvx";
 
 // Long options.  See the comments in getopt.h for the meanings of the
 // fields in this structure.

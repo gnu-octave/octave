@@ -28,6 +28,7 @@
 #endif
 
 #include <cerrno>
+#include <cstdlib>
 
 #include <iomanip>
 
@@ -151,7 +152,7 @@ procbuf::open (const char *command, int mode)
 
       execl (SHELL_PATH, "sh", "-c", command, static_cast<void *> (nullptr));
 
-      exit (127);
+      std::exit (127);
     }
 
   octave_close_wrapper (child_end);

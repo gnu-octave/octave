@@ -37,7 +37,7 @@
 #include "localcharset-wrapper.h"
 #include "oct-error.h"
 #include "oct-sysdep.h"
-#include "putenv-wrapper.h"
+#include "setenv-wrapper.h"
 #include "unistd-wrappers.h"
 #include "unsetenv-wrapper.h"
 
@@ -647,16 +647,21 @@ ofstream (const std::string& filename, const std::ios::openmode mode)
 void
 putenv_wrapper (const std::string& name, const std::string& value)
 {
-  std::string new_env = name + "=" + value;
-
-  // FIXME: The malloc leaks memory, but so would a call to setenv.
   // Short of extreme measures to track memory, altering the environment
   // always leaks memory, but the saving grace is that the leaks are small.
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+  // FIXME: The malloc leaks memory, but so would a call to setenv.
 
   // As far as I can see there's no way to distinguish between the
   // various errors; putenv doesn't have errno values.
 
-#if defined (OCTAVE_USE_WINDOWS_API)
+  if (name.find ('=') != std::string::npos)
+    (*current_liboctave_error_handler)
+      ("putenv: name (%s) must not contain '='", name.c_str());
+
+  std::string new_env = name + "=" + value;
+
   std::wstring new_wenv = u8_to_wstring (new_env);
 
   int len = (new_wenv.length () + 1) * sizeof (wchar_t);
@@ -669,14 +674,12 @@ putenv_wrapper (const std::string& name, const std::string& value)
     (*current_liboctave_error_handler)
       ("putenv (%s) failed", new_env.c_str());
 #else
-  int len = new_env.length () + 1;
-
-  char *new_item = static_cast<char *> (std::malloc (len));
-
-  std::strcpy (new_item, new_env.c_str());
-
-  if (octave_putenv_wrapper (new_item) < 0)
-    (*current_liboctave_error_handler) ("putenv (%s) failed", new_item);
+  // FIXME: Using setenv leaks memory, but so would using malloc and putenv.
+ 
+  if (octave_setenv_wrapper (name.c_str (), value.c_str (), 1) < 0)
+    (*current_liboctave_error_handler)
+      ("setenv (%s, %s) failed with error %d", name.c_str (), value.c_str (),
+       errno);
 #endif
 }
 
@@ -699,6 +702,7 @@ unsetenv_wrapper (const std::string& name)
 #if defined (OCTAVE_USE_WINDOWS_API)
   putenv_wrapper (name, "");
 
+  // Also remove variable from environment.
   std::wstring wname = u8_to_wstring (name);
   return (SetEnvironmentVariableW (wname.c_str (), nullptr) ? 0 : -1);
 #else

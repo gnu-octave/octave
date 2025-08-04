@@ -29,6 +29,8 @@
 #  include "config.h"
 #endif
 
+#include <cstdlib>
+
 #include <iostream>
 #include <string>
 
@@ -234,9 +236,9 @@ cmdline_options::cmdline_options (int argc, char **argv)
           // getopt_long should print a message about unrecognized options and
           // return '?', which is handled above.  If we end up here, it is
           // because there was an option but we forgot to handle it.
-          // That should be fatal.
-
-          error ("unexpected option (= %d) - please reportt this bug", optc);
+          // This is fatal.
+          std::cerr << "unexpected option (= " << optc << ") - please report this bug\n";
+          std::exit (EXIT_FAILURE);
           break;
         }
     }

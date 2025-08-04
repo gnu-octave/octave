@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2016-2025 The Octave Project Developers
+// Copyright (C) 2025 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -23,7 +23,7 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-// putenv may be provided by gnulib.  We don't include gnulib headers
+// unsetenv may be provided by gnulib.  We don't include gnulib headers
 // directly in Octave's C++ source files to avoid problems that may be
 // caused by the way that gnulib overrides standard library functions.
 
@@ -33,10 +33,10 @@
 
 #include <stdlib.h>
 
-#include "putenv-wrapper.h"
+#include "setenv-wrapper.h"
 
 int
-octave_putenv_wrapper (char *str)
+octave_setenv_wrapper (const char *envname, const char *envval, int overwrite)
 {
-  return putenv (str);
+  return setenv (envname, envval, overwrite);
 }

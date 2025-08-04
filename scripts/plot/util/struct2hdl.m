@@ -770,7 +770,7 @@ function out = valcomp (x, hdls)
   if (isfloat (x) && isscalar (x))
     out = any (x == hdls);
   else
-    out = 0;
+    out = false;
   endif
 
 endfunction

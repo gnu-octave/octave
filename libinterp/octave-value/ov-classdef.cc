@@ -248,6 +248,8 @@ octave_classdef::loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m
 bool
 octave_classdef::save_ascii (std::ostream& os)
 {
+  os << "# classname: " << class_name () << "\n";
+
   const dim_vector dv = m_object.dims ();
   os << "# ndims: " << dv.ndims () << "\n";
 

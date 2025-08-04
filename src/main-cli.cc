@@ -99,7 +99,7 @@ check_hg_versions ()
     }
 
   if (! ok)
-    exit (1);
+    std::exit (EXIT_FAILURE);
 }
 
 #if defined (OCTAVE_USE_WINDOWS_API) && defined (_UNICODE)

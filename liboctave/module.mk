@@ -64,6 +64,7 @@ LIBOCTAVE_TEMPLATE_SRC =
 ## A list of all files that could include tests
 
 %canon_reldir%_liboctave_la_LIBADD =
+%canon_reldir%_liboctave_la_LDFLAGS =
 
 include %reldir%/array/module.mk
 include %reldir%/external/module.mk
@@ -91,7 +92,7 @@ nodist_%canon_reldir%_liboctave_la_SOURCES = \
 
 %canon_reldir%_liboctave_version_info = $(%canon_reldir%_liboctave_current):$(%canon_reldir%_liboctave_revision):$(%canon_reldir%_liboctave_age)
 
-%canon_reldir%_liboctave_la_LDFLAGS = \
+%canon_reldir%_liboctave_la_LDFLAGS += \
   $(AM_LDFLAGS) \
   -version-info $(%canon_reldir%_liboctave_version_info) \
   $(NO_UNDEFINED_LDFLAG) \

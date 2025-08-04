@@ -108,7 +108,7 @@ liboctave_fatal (const char *fmt, ...)
   verror ("fatal", fmt, args);
   va_end (args);
 
-  exit (1);
+  exit (EXIT_FAILURE);
 }
 
 void
@@ -121,7 +121,7 @@ liboctave_fatal_with_id (const char *id, const char *fmt, ...)
   verror ("fatal", fmt, args);
   va_end (args);
 
-  exit (1);
+  exit (EXIT_FAILURE);
 }
 
 void

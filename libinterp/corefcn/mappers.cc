@@ -135,9 +135,10 @@ Compute the inverse cosine in radians for each element of @var{x}.
 %! v = [0, pi, pi/2, pi/2];
 %! assert (real (acos (x)), v);
 
-%!testif ; __have_feature__ ("LLVM_LIBCXX")  <52627>
+%!testif HAVE_LLVM_LIBCXX  <52627>
 %! ## Same test code as above, but intended for test statistics with libc++.
 %! ## Their trig/hyperbolic functions have huge tolerances.
+%! ## LLVM libc++ returns 0 for x(2) and x(4).
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [0, pi, pi/2, pi/2];
 %! assert (real (acos (x)), v);
@@ -160,36 +161,39 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 }
 
 /*
-%!testif ; ! ismac ()
+%!testif ; ! __have_feature__ ("BSD_LIBC")
 %! x = [1, 0, -1, 0];
 %! v = [0, pi/2*i, pi*i, pi/2*i];
 %! assert (acosh (x), v, sqrt (eps));
 
-%!testif ; ismac ()   <52627>
-%! ## Same test code as above, but intended only for test statistics on Mac.
-%! ## Mac trig/hyperbolic functions have huge tolerances.
+%!testif HAVE_BSD_LIBC   <52627>
+%! ## Same test code as above, but intended only for test statistics with BSD
+%! ## libc.  The trig/hyperbolic functions in that C library used to have huge
+%! ## tolerances.
 %! x = [1, 0, -1, 0];
 %! v = [0, pi/2*i, pi*i, pi/2*i];
 %! assert (acosh (x), v, sqrt (eps));
 
-## FIXME: std::acosh on Windows platforms, returns a result that differs
-## by 1 in the last significant digit.  This is ~30*eps which is quite large.
+## FIXME: std::acosh on Windows platforms and with LLVM libc++, returns a
+## result that differs by 1 in the last significant digit.  This is ~30*eps
+## which is quite large.
 ## The decision now (9/15/2016) is to mark the test with a bug number so
-## it is understood why it is failing, and wait for MinGw to improve their
-## std library.
+## it is understood why it is failing, and wait for MinGW and LLVM to improve
+## their std library.
 %!test <49091>
 %! re = 2.99822295029797;
 %! im = pi/2;
 %! assert (acosh (-10i), re - i*im);
 
-%!testif ; ! ismac ()
+%!testif ; ! __have_feature__ ("BSD_LIBC")
 %! x = single ([1, 0, -1, 0]);
 %! v = single ([0, pi/2*i, pi*i, pi/2*i]);
 %! assert (acosh (x), v, sqrt (eps ("single")));
 
-%!testif ; ismac ()   <52627>
-%! ## Same test code as above, but intended only for test statistics on Mac.
-%! ## Mac trig/hyperbolic functions have huge tolerances.
+%!testif HAVE_BSD_LIBC  <52627>
+%! ## Same test code as above, but intended only for test statistics with BSD
+%! ## libc.  The trig/hyperbolic functions in that C library used to have huge
+%! ## tolerances.
 %! x = single ([1, 0, -1, 0]);
 %! v = single ([0, pi/2*i, pi*i, pi/2*i]);
 %! assert (acosh (x), v, sqrt (eps ("single")));
@@ -207,9 +211,10 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 %! v = [0, pi, pi/2, -pi/2];
 %! assert (imag (acosh (x)), v);
 
-%!testif ; __have_feature__ ("LLVM_LIBCXX")  <52627>
+%!testif HAVE_LLVM_LIBCXX  <52627>
 %! ## Same test code as above, but intended for test statistics with libc++.
 %! ## Their trig/hyperbolic functions have huge tolerances.
+%! ## LLVM libc++ returns 0 for x(2) and x(4).
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [0, pi, pi/2, -pi/2];
 %! assert (imag (acosh (x)), v);
@@ -321,8 +326,8 @@ Compute the inverse sine in radians for each element of @var{x}.
 %! ival = 1.31695789692481635;
 %! obs = asin ([2, 2-i*eps, 2+i*eps]);
 %! exp = [rval - ival*i, rval - ival*i, rval + ival*i];
-%! if (ismac ())
-%!   ## Math libraries on macOS seem to implement asin with less accuracy.
+%! if (__have_feature__ ("BSD_LIBC"))
+%!   ## BSD libc seems to implement asin with less accuracy.
 %!   tol = 6*eps;
 %! else
 %!   tol = 2*eps;
@@ -341,9 +346,10 @@ Compute the inverse sine in radians for each element of @var{x}.
 %! v = [pi/2, -pi/2, 0, -0];
 %! assert (real (asin (x)), v);
 
-%!testif ; __have_feature__ ("LLVM_LIBCXX")  <52627>
+%!testif HAVE_LLVM_LIBCXX  <52627>
 %! ## Same test code as above, but intended for test statistics with libc++.
 %! ## Their trig/hyperbolic functions have huge tolerances.
+%! ## LLVM libc++ returns 0 for x(1) and x(2).
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [pi/2, -pi/2, 0, -0];
 %! assert (real (asin (x)), v);
@@ -383,9 +389,10 @@ Compute the inverse hyperbolic sine for each element of @var{x}.
 %! v = [0, 0, pi/2, -pi/2];
 %! assert (imag (asinh (x)), v);
 
-%!testif ; __have_feature__ ("LLVM_LIBCXX")  <52627>
+%!testif HAVE_LLVM_LIBCXX  <52627>
 %! ## Same test code as above, but intended for test statistics with libc++.
 %! ## Their trig/hyperbolic functions have huge tolerances.
+%! ## LLVM libc++ returns 0 for x(4).
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [0, 0, pi/2, -pi/2];
 %! assert (imag (asinh (x)), v);

@@ -27,11 +27,12 @@
 #  include "config.h"
 #endif
 
+#include <cmath>
+#include <cstdlib>
+
 #include <algorithm>
 #include <array>
 #include <string>
-
-#include <cmath>
 
 #include <QAction>
 #include <QApplication>
@@ -833,7 +834,7 @@ gui_settings::check ()
                              .arg (file_name ())
                              .arg (directory_name ()));
 
-      exit (1);
+      std::exit (EXIT_FAILURE);
     }
   else
     remove ("dummy");  // Remove test entry

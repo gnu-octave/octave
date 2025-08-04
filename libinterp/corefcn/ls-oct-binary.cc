@@ -341,6 +341,28 @@ save_binary_data (std::ostream& os, const octave_value& tc,
                   const std::string& name, const std::string& doc,
                   bool mark_global, bool save_as_floats)
 {
+  static octave_idx_type max_dim_val = std::numeric_limits<int32_t>::max () - 1;
+
+  dim_vector dv = tc.dims ();
+  if (dv.ndims () > max_dim_val)
+    {
+      warning_with_id ("Octave:save:dimension-too-large",
+                       "save: skipping %s: number of dimensions too large for binary format",
+                       name.c_str ());
+      return true;
+    }
+
+  for (octave_idx_type i_dim = 0; i_dim < dv.ndims (); i_dim++)
+    {
+      if (dv(i_dim) > max_dim_val)
+        {
+          warning_with_id ("Octave:save:dimension-too-large",
+                           "save: skipping %s: dimensions too large for binary format",
+                           name.c_str ());
+          return true;
+        }
+    }
+
   int32_t name_len = name.length ();
 
   os.write (reinterpret_cast<char *> (&name_len), 4);

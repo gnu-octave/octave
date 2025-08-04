@@ -610,7 +610,9 @@ oct_data_conv::data_type_as_string (oct_data_conv::data_type dt)
         {                                                               \
           OCTAVE_LOCAL_BUFFER (TYPE, ptr, len);                         \
           std::streamsize n_bytes = size * static_cast<std::streamsize> (len); \
-          stream.read (reinterpret_cast<char *> (ptr), n_bytes);        \
+          do_read (stream, reinterpret_cast<char *> (ptr), n_bytes);    \
+          if (! stream)                                                 \
+            return;                                                     \
           if (swap)                                                     \
             swap_bytes< size > (ptr, len);                              \
           for (octave_idx_type i = 0; i < len; i++)                     \
@@ -633,7 +635,7 @@ oct_data_conv::data_type_as_string (oct_data_conv::data_type dt)
           for (octave_idx_type i = 0; i < len; i++)                     \
             ptr[i] = static_cast<TYPE> (data[i]);                       \
           std::streamsize n_bytes = size * static_cast<std::streamsize> (len); \
-          stream.write (reinterpret_cast<char *> (ptr), n_bytes);       \
+          do_write (stream, reinterpret_cast<const char *> (ptr), n_bytes); \
         }                                                               \
      }                                                                  \
   while (0)
@@ -798,6 +800,22 @@ do_float_format_conversion (void *data, std::size_t sz, octave_idx_type len,
     }
 }
 
+static void
+do_read (std::istream& is, char *byte_data, std::streamsize n_bytes)
+{
+  // read large data in chunks of 64 MiB
+  constexpr std::streamsize chunk_size = 64 * 1024 * 1024;
+  for (std::streamsize offset = 0; offset < n_bytes; )
+    {
+      std::streamsize to_read = std::min (chunk_size, n_bytes - offset);
+      is.read (byte_data + offset, to_read);
+
+      if (! is)
+        return;
+
+      offset += to_read;
+    }
+}
 void
 read_doubles (std::istream& is, double *data, save_type type,
               octave_idx_type len, bool swap,
@@ -832,8 +850,10 @@ read_doubles (std::istream& is, double *data, save_type type,
     case LS_FLOAT:
       {
         OCTAVE_LOCAL_BUFFER (float, ptr, len);
-        std::streamsize n_bytes = 4 * static_cast<std::streamsize> (len);
-        is.read (reinterpret_cast<char *> (ptr), n_bytes);
+        std::streamsize n_bytes = sizeof (float) * static_cast<std::streamsize> (len);
+        do_read (is, reinterpret_cast<char *> (data), n_bytes);
+        if (! is)
+          return;
         do_float_format_conversion (ptr, len, fmt);
         for (octave_idx_type i = 0; i < len; i++)
           data[i] = ptr[i];
@@ -842,8 +862,10 @@ read_doubles (std::istream& is, double *data, save_type type,
 
     case LS_DOUBLE: // No conversion necessary.
       {
-        std::streamsize n_bytes = 8 * static_cast<std::streamsize> (len);
-        is.read (reinterpret_cast<char *> (data), n_bytes);
+        std::streamsize n_bytes = sizeof (double) * static_cast<std::streamsize> (len);
+        do_read (is, reinterpret_cast<char *> (data), n_bytes);
+        if (! is)
+          return;
         do_double_format_conversion (data, len, fmt);
         // FIXME: Potentially add conversion code for MIPS NA here, Bug #59830.
         //
@@ -891,8 +913,10 @@ read_floats (std::istream& is, float *data, save_type type,
 
     case LS_FLOAT: // No conversion necessary.
       {
-        std::streamsize n_bytes = 4 * static_cast<std::streamsize> (len);
-        is.read (reinterpret_cast<char *> (data), n_bytes);
+        std::streamsize n_bytes = sizeof (float) * static_cast<std::streamsize> (len);
+        do_read (is, reinterpret_cast<char *> (data), n_bytes);
+        if (! is)
+          return;
         do_float_format_conversion (data, len, fmt);
       }
       break;
@@ -901,7 +925,9 @@ read_floats (std::istream& is, float *data, save_type type,
       {
         OCTAVE_LOCAL_BUFFER (double, ptr, len);
         std::streamsize n_bytes = 8 * static_cast<std::streamsize> (len);
-        is.read (reinterpret_cast<char *> (ptr), n_bytes);
+        do_read (is, reinterpret_cast<char *> (data), n_bytes);
+        if (! is)
+          return;
         do_double_format_conversion (ptr, len, fmt);
         for (octave_idx_type i = 0; i < len; i++)
           data[i] = ptr[i];
@@ -911,6 +937,22 @@ read_floats (std::istream& is, float *data, save_type type,
     default:
       is.clear (std::ios::failbit | is.rdstate ());
       break;
+    }
+}
+
+static void
+do_write (std::ostream& os, const char *byte_data, std::streamsize n_bytes)
+{
+  // write large data in chunks of 64 MiB
+  constexpr std::streamsize chunk_size = 64 * 1024 * 1024;
+  for (std::streamsize written = 0; written < n_bytes; )
+    {
+      std::streamsize remaining = n_bytes - written;
+      std::streamsize to_write = std::min (chunk_size, remaining);
+      os.write (byte_data + written, to_write);
+      if (! os)
+        return;
+      written += to_write;
     }
 }
 
@@ -952,8 +994,9 @@ write_doubles (std::ostream& os, const double *data, save_type type,
       {
         char tmp_type = static_cast<char> (type);
         os.write (&tmp_type, 1);
-        std::streamsize n_bytes = 8 * static_cast<std::streamsize> (len);
-        os.write (reinterpret_cast<const char *> (data), n_bytes);
+
+        std::streamsize n_bytes = sizeof (double) * static_cast<std::streamsize> (len);
+        do_write (os, reinterpret_cast<const char *> (data), n_bytes);
       }
       break;
 
@@ -998,8 +1041,8 @@ write_floats (std::ostream& os, const float *data, save_type type,
       {
         char tmp_type = static_cast<char> (type);
         os.write (&tmp_type, 1);
-        std::streamsize n_bytes = 4 * static_cast<std::streamsize> (len);
-        os.write (reinterpret_cast<const char *> (data), n_bytes);
+        std::streamsize n_bytes = sizeof (float) * static_cast<std::streamsize> (len);
+        do_write (os, reinterpret_cast<const char *> (data), n_bytes);
       }
       break;
 

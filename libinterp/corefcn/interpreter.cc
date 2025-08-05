@@ -601,6 +601,9 @@ interpreter::interpreter (application *app_context)
       if (! texi_macros_file.empty ())
         Ftexi_macros_file (*this, ovl (texi_macros_file));
     }
+  else
+    // No arguments for embedded interpreters
+    intern_nargin (0);
 
   // FIXME: we defer creation of the gh_manager object because it
   // creates a root_figure object that requires the display_info

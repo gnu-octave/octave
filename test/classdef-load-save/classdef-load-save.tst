@@ -110,16 +110,33 @@
 %!   delete (savefile);
 %! end_unwind_protect
 
+## No constructor, ConstructOnLoad = false, saveobj returns an object, no loadobj
+%!test
+%! obj = saveobj_obj_class ();
+%! obj.a = 1;
+%! obj.b = 3;
+%! savefile = tempname ();
+%! save ('-text', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert(obj.a, 2);
+%!   assert(obj.b, 3);
+%!   assert(obj.c, []);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
 ## No constructor, ConstructOnLoad = false, saveobj returns a struct, no loadobj
 %!test
-%! obj = saveobj_class ();
+%! obj = saveobj_struct_class ();
 %! obj.a = 1;
 %! savefile = tempname ();
 %! save ('-text', savefile, 'obj');
 %! unwind_protect
 %!   clear obj;
 %!   load (savefile);
-%!   assert(obj.a, 1);
+%!   assert(obj.a, []);
 %!   assert(obj.b, []);
 %! unwind_protect_cleanup
 %!   delete (savefile);

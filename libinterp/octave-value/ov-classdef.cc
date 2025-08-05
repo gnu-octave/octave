@@ -104,11 +104,12 @@ octave_classdef::saveobj (std::vector<bool>& is_new)
                   warning ("save: saveobj method does not return a value");
                   return m;
                 }
-              else if (! (retval.isobject () || retval.isstruct ()))
+              else if (! retval.is_classdef_object ()
+                       || retval.class_name () != class_name ())
                 {
-                  // If retval is not a struct or an object, we put the value
-                  // in a map and set the 'custom_saveobj_ret_type' flag, which
-                  // has to be encoded in the file metadata.
+                  // If retval is not an object of the matching class, we put
+                  // the value in a map and set the 'custom_saveobj_ret_type'
+                  // flag, which has to be encoded in the file metadata.
                   // It's the caller's responsibility to check the flag.
                   std::get<octave_map> (m[n]).setfield ("any", retval);
                   std::get<bool> (m[n]) = true;
@@ -171,15 +172,23 @@ octave_classdef::loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m
                 }
 
               // FIXME: A loadobj method can return any type. If the return
-              //        type is not a classdef object, then the loaded object
-              //        must be replaced by whatever the return type and
-              //        contents are.
-              if (! ov.isobject ())
+              //        type is not a classdef object of the correct class,
+              //        then the loaded object must be replaced by whatever the
+              //        return type and contents are.
+              if (! ov.is_classdef_object ())
                 {
                   std::string type = ov.type_name ();
-                  warning ("load: loadobj method return non-classdef return type '%s'. "
-                           "This is currently not supported.",
+                  warning ("load: loadobj method does not return correct type "
+                           "'%s'. This is currently not supported.",
                            type.c_str ());
+                  return;
+                }
+              else if (ov.class_name () != class_name ())
+                {
+                  std::string class_nm = ov.class_name ();
+                  warning ("load: loadobj method does not return classdef object "
+                           "of correct class '%s'. This is currently not supported.",
+                           class_nm.c_str ());
                   return;
                 }
 
@@ -192,12 +201,42 @@ octave_classdef::loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m
             }
           else
             {
-              // If custom saveobj is implemented, then a variable named 'any'
-              // is meant to be passed to loadobj, but if loadobj is not
-              // implemented, it should not fill in any property 'any' in the
-              // class.
               if (std::get<bool> (m[n]))
-                return;
+                {
+                  // If saveobj is overloaded by this classdef and it returned
+                  // anything other than a classdef object of the correct
+                  // class, then a variable named 'any' is meant to be passed
+                  // to loadobj, but if loadobj is not overloaded, it should
+                  // not fill in any property 'any' in the loaded object.
+                  if (! prop_map.isfield ("any") || prop_map.numel () != 1)
+                    {
+                      warning ("load: expected scalar value for custom type when loading object");
+                      return;
+                    }
+
+                  // FIXME: What should be done here?
+                  octave_value any_val = (prop_map.getfield ("any"))(0);
+                  std::string type = any_val.type_name ();
+                  if (type != type_name ())
+                    {
+                      warning ("load: cannot restore value of object that was saved as a different type (%s)",
+                               type.c_str ());
+                      return;
+                    }
+
+                  std::string cls_nm = any_val.class_name ();
+                  if (cls_nm != class_name ())
+                    {
+                      warning ("load: cannot restore value of object that was saved as a different class (%s)",
+                               cls_nm.c_str ());
+                      return;
+                    }
+
+                  // If the value in the "any" field has the correct type and
+                  // class, we can load it like it were saved "normally".
+                  // FIXME: Can this ever happen?
+                  prop_map = any_val.classdef_object_value ()->map_value (false, true);
+                }
 
               octave::cdef_object new_object;
               if (in_obj_cache)

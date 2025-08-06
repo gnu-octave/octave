@@ -1,4 +1,4 @@
-classdef saveobj_class < regular_class
+classdef saveobj_struct_class < regular_class
   methods
     function s = saveobj (obj)
       s.a = obj.a;

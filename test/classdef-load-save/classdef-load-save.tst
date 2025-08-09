@@ -171,6 +171,32 @@
 %!   delete (savefile);
 %! end_unwind_protect
 
+## No constructor, ConstructOnLoad = false, loadobj is defined, no saveobj
+## Class definition changes between saving and loading the object
+%!test <67414>
+%! obj = loadobj_changed_class ();
+%! obj.a = 0;
+%! savefile = fullfile (tempdir (), "oct-changed-class.sav");
+%! save ('-text', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (obj.a, "object");
+%!   clear obj;
+%!   ## change to directory with classdef with renamed property name
+%!   cd ("changed-class");
+%!   clear classes;  # includes "clear all"
+%!   savefile = fullfile (tempdir (), "oct-changed-class.sav");
+%!   load (savefile);
+%!   assert (obj.a, "changed-struct");
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%!   [~, curr_dir] = fileparts (pwd ());
+%!   if (strcmp (curr_dir, "changed-class"))
+%!     cd ..
+%!   endif
+%! end_unwind_protect
+
 ## No constructor, ConstructOnLoad = false, loadobj is defined, saveobj is defined
 %!test
 %! obj = loadobj_saveobj_class ();

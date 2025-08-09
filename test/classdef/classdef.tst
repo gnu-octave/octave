@@ -261,3 +261,8 @@
 
 %!error <cannot reshape scalar .* to .* array>
 %! reshape (value_class (), [3, 2]);
+
+## properties take precedence over methods with the same name
+%!test <*67362>
+%! obj = class_bug67362 ();
+%! assert (obj.shared_name, 42);

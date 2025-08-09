@@ -1,6 +1,8 @@
 classdef_TEST_FILES = \
   %reldir%/@class_bug62802/amethod.m \
   %reldir%/@class_bug62802/class_bug62802.m \
+  %reldir%/@class_bug67362/class_bug67362.m \
+  %reldir%/@class_bug67362/shared_name.m \
   %reldir%/bug_60763.m \
   %reldir%/class_bug50011_1.m \
   %reldir%/class_bug50011_1A.m \

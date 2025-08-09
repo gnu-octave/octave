@@ -55,6 +55,7 @@ COREFCN_INC = \
   %reldir%/ls-ascii-helper.h \
   %reldir%/ls-hdf5.h \
   %reldir%/ls-mat-ascii.h \
+  %reldir%/ls-mat-subsys.h \
   %reldir%/ls-mat4.h \
   %reldir%/ls-mat5.h \
   %reldir%/ls-oct-text.h \
@@ -207,6 +208,7 @@ COREFCN_SRC = \
   %reldir%/ls-ascii-helper.cc \
   %reldir%/ls-hdf5.cc \
   %reldir%/ls-mat-ascii.cc \
+  %reldir%/ls-mat-subsys.cc \
   %reldir%/ls-mat4.cc \
   %reldir%/ls-mat5.cc \
   %reldir%/ls-oct-binary.cc \

@@ -341,7 +341,7 @@ save_binary_data (std::ostream& os, const octave_value& tc,
                   const std::string& name, const std::string& doc,
                   bool mark_global, bool save_as_floats)
 {
-  static octave_idx_type max_dim_val = std::numeric_limits<int32_t>::max () - 1;
+  constexpr octave_idx_type max_dim_val = std::numeric_limits<int32_t>::max () - 1;
 
   dim_vector dv = tc.dims ();
   if (dv.ndims () > max_dim_val)

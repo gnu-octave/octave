@@ -41,6 +41,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 class interpreter;
 class load_save_format;
 class symbol_info;
+class subsystem_handler;
 
 class load_save_system
 {
@@ -208,7 +209,16 @@ public:
   OCTINTERP_API uint32_t
   get_mcos_object_cache_id (const void *obj, bool& new_entry);
 
+  OCTINTERP_API void create_subsystem_handler ();
+
+  OCTINTERP_API subsystem_handler * get_subsystem_handler ();
+
+  OCTINTERP_API void clear_subsystem_handler ();
+
 private:
+
+  // Subsystem handler is used to read and write MCOS objects in MAT-files
+  std::unique_ptr<subsystem_handler> m_subsystem_handler;
 
   interpreter& m_interpreter;
 

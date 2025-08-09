@@ -1,7 +1,11 @@
 classdef_load_save_TEST_FILES = \
-  %reldir%/classdef-load-save.tst \
+  %reldir%/changed-class/loadobj_changed_class.m \
+  %reldir%/classdef-load-save-text.tst \
+  %reldir%/classdef-load-save-v6.tst \
+  %reldir%/classdef-load-save-v7.tst \
   %reldir%/custom_saveobj.m \
   %reldir%/invalid_saveobj_class.m \
+  %reldir%/loadobj_changed_class.m \
   %reldir%/loadobj_class.m \
   %reldir%/loadobj_saveobj_class.m \
   %reldir%/regular_class.m \

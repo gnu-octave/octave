@@ -567,10 +567,29 @@ cdef_object_scalar::subsref (const std::string& type,
       {
         std::string name = (idx.front ())(0).string_value ();
 
-        cdef_method meth = cls.find_method (name);
+        cdef_property prop = cls.find_property (name);
 
-        if (meth.ok ())
+        if (prop.ok ())
           {
+            if (prop.is_constant ())
+              retval(0) = prop.get_value (true, "subsref");
+            else
+              {
+                m_count++;
+                retval(0) = prop.get_value (cdef_object (this),
+                                            true, "subsref");
+              }
+
+            skip = 1;
+          }
+
+        if (skip == 0)
+          {
+            cdef_method meth = cls.find_method (name);
+
+            if (! meth.ok ())
+              error ("subsref: unknown method or property: %s", name.c_str ());
+
             // If the method call is followed by another index operation,
             // the number of outputs of the call will be 1.
             int nargout_mtd = (type.length () > 2
@@ -600,24 +619,6 @@ cdef_object_scalar::subsref (const std::string& type,
               }
           }
 
-        if (skip == 0)
-          {
-            cdef_property prop = cls.find_property (name);
-
-            if (! prop.ok ())
-              error ("subsref: unknown method or property: %s", name.c_str ());
-
-            if (prop.is_constant ())
-              retval(0) = prop.get_value (true, "subsref");
-            else
-              {
-                m_count++;
-                retval(0) = prop.get_value (cdef_object (this),
-                                            true, "subsref");
-              }
-
-            skip = 1;
-          }
         break;
       }
 

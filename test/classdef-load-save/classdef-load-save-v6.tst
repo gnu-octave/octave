@@ -32,7 +32,7 @@
 %! obj.d = struct ("a", 1, "b", 2);
 %! obj.e = {1, "Regular Class"};
 %! savefile = tempname ();
-%! save ('-text', savefile, 'obj');
+%! save ('-v6', savefile, 'obj');
 %! unwind_protect
 %!   clear obj;
 %!   load (savefile);
@@ -51,7 +51,7 @@
 %! obj = regular_class_with_constructor ();
 %! obj.a = [];
 %! savefile = tempname ();
-%! save ('-text', savefile, 'obj');
+%! save ('-v6', savefile, 'obj');
 %! unwind_protect
 %!   clear obj;
 %!   load (savefile);
@@ -65,12 +65,27 @@
 %! obj = regular_class ();
 %! obj.a = regular_class_with_constructor ();
 %! savefile = tempname ();
-%! save ('-text', savefile, 'obj');
+%! save ('-v6', savefile, 'obj');
 %! unwind_protect
 %!   clear obj;
 %!   load (savefile);
 %!   assert (class(obj.a), "regular_class_with_constructor");
 %!   assert (obj.a.a, 1);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## No constructor, ConstructOnLoad = false, no loadobj/saveobj, nested object inside a struct
+%!test <45833>
+%! obj = regular_class ();
+%! s.obj_field = regular_class_with_constructor ();
+%! obj.a = s;
+%! savefile = tempname ();
+%! save ('-v6', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (class(obj.a.obj_field), "regular_class_with_constructor");
 %! unwind_protect_cleanup
 %!   delete (savefile);
 %! end_unwind_protect
@@ -82,7 +97,7 @@
 %! obj(2) = regular_class;
 %! obj(2).a = 2;
 %! savefile = tempname ();
-%! save ('-text', savefile, 'obj');
+%! save ('-v6', savefile, 'obj');
 %! unwind_protect
 %!   clear obj;
 %!   load (savefile);
@@ -99,7 +114,7 @@
 %! obj(2,3) = regular_class;
 %! obj(2,3).a = 2;
 %! savefile = tempname ();
-%! save ('-text', savefile, 'obj');
+%! save ('-v6', savefile, 'obj');
 %! unwind_protect
 %!   clear obj;
 %!   load (savefile);
@@ -116,7 +131,7 @@
 %! obj.a = 1;
 %! obj.b = 3;
 %! savefile = tempname ();
-%! save ('-text', savefile, 'obj');
+%! save ('-v6', savefile, 'obj');
 %! unwind_protect
 %!   clear obj;
 %!   load (savefile);
@@ -132,7 +147,7 @@
 %! obj = saveobj_struct_class ();
 %! obj.a = 1;
 %! savefile = tempname ();
-%! save ('-text', savefile, 'obj');
+%! save ('-v6', savefile, 'obj');
 %! unwind_protect
 %!   clear obj;
 %!   load (savefile);
@@ -147,7 +162,7 @@
 %! obj = loadobj_class ();
 %! obj.a = 1;
 %! savefile = tempname ();
-%! save ('-text', savefile, 'obj');
+%! save ('-v6', savefile, 'obj');
 %! unwind_protect
 %!   clear obj;
 %!   load (savefile);
@@ -156,12 +171,39 @@
 %!   delete (savefile);
 %! end_unwind_protect
 
+## No constructor, ConstructOnLoad = false, loadobj is defined, no saveobj
+## Class definition changes between saving and loading the object
+%!test <67414>
+%! clear classes;
+%! obj = loadobj_changed_class ();
+%! obj.a = 0;
+%! savefile = fullfile (tempdir (), "oct-changed-class.sav");
+%! save ('-v6', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (obj.a, "object");
+%!   clear obj;
+%!   ## change to directory with classdef with renamed property name
+%!   cd ("changed-class");
+%!   clear classes;  # includes "clear all"
+%!   savefile = fullfile (tempdir (), "oct-changed-class.sav");
+%!   load (savefile);
+%!   assert (obj.a, "changed-struct");
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%!   [~, curr_dir] = fileparts (pwd ());
+%!   if (strcmp (curr_dir, "changed-class"))
+%!     cd ..
+%!   endif
+%! end_unwind_protect
+
 ## No constructor, ConstructOnLoad = false, loadobj is defined, saveobj is defined
 %!test
 %! obj = loadobj_saveobj_class ();
 %! obj.a = 1;
 %! savefile = tempname ();
-%! save ('-text', savefile, 'obj');
+%! save ('-v6', savefile, 'obj');
 %! unwind_protect
 %!   clear obj;
 %!   load (savefile);
@@ -174,7 +216,7 @@
 %!test
 %! obj = custom_saveobj ();
 %! savefile = tempname ();
-%! save ('-text', savefile, 'obj');
+%! save ('-v6', savefile, 'obj');
 %! unwind_protect
 %!   clear obj;
 %!   load (savefile);
@@ -188,11 +230,11 @@
 %! obj = invalid_saveobj_class ();
 %! obj.a = 1;
 %! savefile = tempname ();
-%! save ('-text', savefile, 'obj');
+%! save ('-v6', savefile, 'obj');
 %! unwind_protect
 %!   clear obj;
 %!   load (savefile);
-%!   assert (obj.a, []);
+%!   assert (obj.a, []);  # fails in MATLAB
 %! unwind_protect_cleanup
 %!   delete (savefile);
 %! end_unwind_protect
@@ -202,7 +244,7 @@
 %! obj = invalid_saveobj_class ();
 %! obj.a = 1;
 %! savefile = tempname ();
-%! save ('-text', savefile, 'obj');
+%! save ('-v6', savefile, 'obj');
 %! delete (savefile);
 
 ## Handle class, no constructor, ConstructOnLoad = false, no loadobj/saveobj
@@ -211,7 +253,7 @@
 %! obj2 = obj1;
 %! obj2.a = 1;
 %! savefile = tempname ();
-%! save ('-text', savefile, 'obj1', 'obj2');
+%! save ('-v6', savefile, 'obj1', 'obj2');
 %! unwind_protect
 %!   clear obj1 obj2;
 %!   load (savefile);
@@ -229,7 +271,7 @@
 %! obj.a.b = obj;
 %! obj.a.d = 2;
 %! savefile = tempname ();
-%! save ('-text', savefile, 'obj');
+%! save ('-v6', savefile, 'obj');
 %! unwind_protect
 %!   clear obj;
 %!   load (savefile);
@@ -251,7 +293,7 @@
 %! obj(1).a = 1;
 %! obj(2).a = 2;
 %! savefile = tempname ();
-%! save ('-text', savefile, 'obj');
+%! save ('-v6', savefile, 'obj');
 %! unwind_protect
 %!   clear obj;
 %!   load (savefile);
@@ -269,7 +311,7 @@
 %! obj.a = 1;
 %! obj.transient_property = 6;
 %! savefile = tempname ();
-%! save ('-text', savefile, 'obj');
+%! save ('-v6', savefile, 'obj');
 %! unwind_protect
 %!   clear obj;
 %!   load (savefile);
@@ -286,7 +328,7 @@
 %! obj.a = 10;
 %! obj.f = 16;
 %! savefile = tempname ();
-%! save ('-text', savefile, 'obj');
+%! save ('-v6', savefile, 'obj');
 %! unwind_protect
 %!   clear obj;
 %!   load (savefile);

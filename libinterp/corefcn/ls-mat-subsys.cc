@@ -29,16 +29,13 @@
 
 #include "byte-swap.h"
 
-#include "Cell.h"
 #include "cdef-class.h"
 #include "cdef-utils.h"
 #include "error.h"
 #include "interpreter-private.h"
 #include "load-save.h"
 #include "ls-mat-subsys.h"
-#include "oct-map.h"
 #include "ov-classdef.h"
-#include "ov.h"
 
 static inline bool
 is_valid_mcos_object (const octave_value& metadata)

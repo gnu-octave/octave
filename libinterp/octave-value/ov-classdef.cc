@@ -154,7 +154,7 @@ octave_classdef::loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m
       if (! in_obj_cache || prop_map.nfields () > 0)
         {
           // Default behaviour of loading is triggered if loadobj is not static
-          if (meth.ok () && meth.is_static ())
+          if (meth.ok () && meth.is_static () && prop_map.nfields () > 0)
             {
               octave_value ov;
               if (std::get<bool> (m[n]))
@@ -163,7 +163,49 @@ octave_classdef::loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m
                   ov = (meth.execute (octave_value_list (any), 1))(0);
                 }
               else
-                ov = (meth.execute (octave_value_list (prop_map), 1))(0);
+                {
+                  // create object from saved properties
+                  octave::cdef_object new_object;
+                  if (in_obj_cache)
+                    new_object = ovc.classdef_object_value ()->m_object;
+                  else
+                    new_object = scalar_obj.copy ();
+
+                  bool props_changed = false;
+                  string_vector fnames = prop_map.fieldnames ();
+                  string_vector sv = map_keys ();
+                  for (octave_idx_type i = 0; i < prop_map.nfields (); i++)
+                    {
+                      octave_idx_type j;
+                      for (j = 0; j < sv.numel (); j++)
+                        {
+                          if (sv[j] == fnames(i))
+                            {
+                              new_object.set_property (0, sv[j], prop_map.contents (fnames(i)).xelem (0));
+                              break;
+                            }
+                        }
+                      if (j == sv.numel ())
+                        {
+                          // properties have been renamed or deleted
+                          props_changed = true;
+                          break;
+                        }
+                    }
+
+                  if (props_changed)
+                    // attempting to create the object failed
+                    // call loadobj with struct
+                    ov = (meth.execute (octave_value_list (prop_map), 1))(0);
+                  else
+                    {
+                      if (! in_obj_cache)
+                        ovc = octave::to_ov (new_object);
+
+                      // pass object to loadobj
+                      ov = (meth.execute (octave_value_list (ovc), 1))(0);
+                    }
+                }
 
               if (! ov.is_defined ())
                 {

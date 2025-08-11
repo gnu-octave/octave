@@ -173,7 +173,7 @@
 
 ## No constructor, ConstructOnLoad = false, loadobj is defined, no saveobj
 ## Class definition changes between saving and loading the object
-%!testif HAVE_ZLIB  <67414>
+%!testif HAVE_ZLIB  <*67414>
 %! clear classes;
 %! obj = loadobj_changed_class ();
 %! obj.a = 0;

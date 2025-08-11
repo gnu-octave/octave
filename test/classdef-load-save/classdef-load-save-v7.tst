@@ -24,7 +24,7 @@
 ########################################################################
 
 ## No constructor, ConstructOnLoad = false, no loadobj/saveobj
-%!test
+%!testif HAVE_ZLIB
 %! obj = regular_class ();
 %! obj.a = 1;
 %! obj.b = "Regular Class";
@@ -47,7 +47,7 @@
 
 ## Constructor defined, ConstructOnLoad = false, no loadobj/saveobj
 ## (ensures that constructor is NOT called on load)
-%!test
+%!testif HAVE_ZLIB
 %! obj = regular_class_with_constructor ();
 %! obj.a = [];
 %! savefile = tempname ();
@@ -61,7 +61,7 @@
 %! end_unwind_protect
 
 ## No constructor, ConstructOnLoad = false, no loadobj/saveobj, nested object
-%!test
+%!testif HAVE_ZLIB
 %! obj = regular_class ();
 %! obj.a = regular_class_with_constructor ();
 %! savefile = tempname ();
@@ -76,7 +76,7 @@
 %! end_unwind_protect
 
 ## No constructor, ConstructOnLoad = false, no loadobj/saveobj, nested object inside a struct
-%!test <45833>
+%!testif HAVE_ZLIB  <45833>
 %! obj = regular_class ();
 %! s.obj_field = regular_class_with_constructor ();
 %! obj.a = s;
@@ -91,7 +91,7 @@
 %! end_unwind_protect
 
 ## Vector of value class objects.
-%!test
+%!testif HAVE_ZLIB
 %! obj = regular_class;
 %! obj.a = 1;
 %! obj(2) = regular_class;
@@ -108,7 +108,7 @@
 %! end_unwind_protect
 
 ## Matrix of value class objects.
-%!test <*65179>
+%!testif HAVE_ZLIB  <*65179>
 %! obj = regular_class;
 %! obj.a = 1;
 %! obj(2,3) = regular_class;
@@ -126,7 +126,7 @@
 %! end_unwind_protect
 
 ## No constructor, ConstructOnLoad = false, saveobj returns an object, no loadobj
-%!test
+%!testif HAVE_ZLIB
 %! obj = saveobj_obj_class ();
 %! obj.a = 1;
 %! obj.b = 3;
@@ -143,7 +143,7 @@
 %! end_unwind_protect
 
 ## No constructor, ConstructOnLoad = false, saveobj returns a struct, no loadobj
-%!test
+%!testif HAVE_ZLIB
 %! obj = saveobj_struct_class ();
 %! obj.a = 1;
 %! savefile = tempname ();
@@ -158,7 +158,7 @@
 %! end_unwind_protect
 
 ## No constructor, ConstructOnLoad = false, loadobj is defined, no saveobj
-%!test
+%!testif HAVE_ZLIB
 %! obj = loadobj_class ();
 %! obj.a = 1;
 %! savefile = tempname ();
@@ -173,7 +173,7 @@
 
 ## No constructor, ConstructOnLoad = false, loadobj is defined, no saveobj
 ## Class definition changes between saving and loading the object
-%!test <67414>
+%!testif HAVE_ZLIB  <67414>
 %! clear classes;
 %! obj = loadobj_changed_class ();
 %! obj.a = 0;
@@ -199,7 +199,7 @@
 %! end_unwind_protect
 
 ## No constructor, ConstructOnLoad = false, loadobj is defined, saveobj is defined
-%!test
+%!testif HAVE_ZLIB
 %! obj = loadobj_saveobj_class ();
 %! obj.a = 1;
 %! savefile = tempname ();
@@ -213,7 +213,7 @@
 %! end_unwind_protect
 
 ## Constructor defined, ConstructOnLoad = false, custom return type for loadobj/saveobj
-%!test
+%!testif HAVE_ZLIB
 %! obj = custom_saveobj ();
 %! savefile = tempname ();
 %! save ('-v7', savefile, 'obj');
@@ -226,7 +226,7 @@
 %! end_unwind_protect
 
 ## No constructor, ConstructOnLoad = false, undefined return variable from saveobj (should return default initialized classdef)
-%!test
+%!testif HAVE_ZLIB
 %! obj = invalid_saveobj_class ();
 %! obj.a = 1;
 %! savefile = tempname ();
@@ -240,15 +240,20 @@
 %! end_unwind_protect
 
 ## No constructor, ConstructOnLoad = false, undefined return variable from saveobj (should emit a warning)
-%!warning <saveobj.*does not return.*value>
+%!testif HAVE_ZLIB
 %! obj = invalid_saveobj_class ();
 %! obj.a = 1;
 %! savefile = tempname ();
-%! save ('-v7', savefile, 'obj');
-%! delete (savefile);
+%! lastwarn ("");
+%! unwind_protect
+%!   save ('-v7', savefile, 'obj');
+%!   assert (! isempty (regexp (lastwarn (), "saveobj.*does not return.*value", "once")));
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
 
 ## Handle class, no constructor, ConstructOnLoad = false, no loadobj/saveobj
-%!test
+%!testif HAVE_ZLIB
 %! obj1 = regular_handle_class ();
 %! obj2 = obj1;
 %! obj2.a = 1;
@@ -264,7 +269,7 @@
 %! end_unwind_protect
 
 ## Handle class, no constructor, ConstructOnLoad = false, no loadobj/saveobj, circular references
-%!test
+%!testif HAVE_ZLIB
 %! obj = regular_handle_class ();
 %! obj.a = regular_handle_class ();
 %! obj.c = 1;
@@ -286,7 +291,7 @@
 %! end_unwind_protect
 
 ## Handle class, no constructor, ConstructOnLoad = false, no loadobj/saveobj, vector
-%!test
+%!testif HAVE_ZLIB
 %! obj = regular_handle_class ();
 %! obj(2) = regular_handle_class ();
 %! obj(3) = obj(1);
@@ -306,7 +311,7 @@
 %! end_unwind_protect
 
 ## Constructor, ConstructOnLoad = false, Transient property
-%!test
+%!testif HAVE_ZLIB
 %! obj = transient_property_class ();
 %! obj.a = 1;
 %! obj.transient_property = 6;
@@ -323,7 +328,7 @@
 %! end_unwind_protect
 
 ## Constructor, ConstructOnLoad = true, Transient property, no loadobj/saveobj
-%!test
+%!testif HAVE_ZLIB
 %! obj = regular_class_construct_on_load ();
 %! obj.a = 10;
 %! obj.f = 16;

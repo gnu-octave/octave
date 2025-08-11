@@ -28,8 +28,19 @@
 
 #include "octave-config.h"
 
+#include <cstdint>
+
+#include <array>
 #include <iosfwd>
 #include <string>
+#include <tuple>
+#include <utility>
+#include <vector>
+
+#include "Cell.h"
+#include "oct-map.h"
+#include "ov.h"
+#include "str-vec.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 

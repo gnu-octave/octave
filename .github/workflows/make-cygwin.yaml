@@ -39,7 +39,7 @@ jobs:
       - name: checkout repository
         # This must be done before installing Cygwin because their git is
         # incompatible with this action.
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: install Cygwin build environment
         uses: cygwin/cygwin-install-action@v6

@@ -69,14 +69,14 @@
 %! unwind_protect
 %!   clear obj;
 %!   load (savefile);
-%!   assert (class(obj.a), "regular_class_with_constructor");
+%!   assert (class (obj.a), "regular_class_with_constructor");
 %!   assert (obj.a.a, 1);
 %! unwind_protect_cleanup
 %!   delete (savefile);
 %! end_unwind_protect
 
 ## No constructor, ConstructOnLoad = false, no loadobj/saveobj, nested object inside a struct
-%!test <45833>
+%!test <*45833>
 %! obj = regular_class ();
 %! s.obj_field = regular_class_with_constructor ();
 %! obj.a = s;
@@ -85,7 +85,37 @@
 %! unwind_protect
 %!   clear obj;
 %!   load (savefile);
-%!   assert (class(obj.a.obj_field), "regular_class_with_constructor");
+%!   assert (class (obj.a.obj_field), "regular_class_with_constructor");
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## No constructor, ConstructOnLoad = false, no loadobj/saveobj, nested object inside struct array
+%!test <*45833>
+%! obj = regular_class ();
+%! s(2,3).obj_field = regular_class_with_constructor ();
+%! obj.a = s;
+%! savefile = tempname ();
+%! save ('-v6', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (class (obj.a(2,3).obj_field), "regular_class_with_constructor");
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## No constructor, ConstructOnLoad = false, no loadobj/saveobj, nested object inside cell array
+%!test <*45833>
+%! obj = regular_class ();
+%! c{2,3}.obj_field = regular_class_with_constructor ();
+%! obj.a = c;
+%! savefile = tempname ();
+%! save ('-v6', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (class (obj.a{2,3}.obj_field), "regular_class_with_constructor");
 %! unwind_protect_cleanup
 %!   delete (savefile);
 %! end_unwind_protect

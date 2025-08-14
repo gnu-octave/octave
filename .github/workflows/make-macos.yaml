@@ -40,7 +40,7 @@ jobs:
 
     steps:
       - name: checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: install dependencies
         # This step sometimes takes long and still recovers. But sometimes it

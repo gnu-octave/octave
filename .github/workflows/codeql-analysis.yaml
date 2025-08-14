@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: install dependencies
         run: |
@@ -151,7 +151,7 @@ jobs:
           msystem: ${{ matrix.msystem }}
 
       - name: checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: bootstrap
         run: GNULIB_URL=https://github.com/coreutils/gnulib.git ./bootstrap

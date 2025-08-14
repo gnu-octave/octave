@@ -154,7 +154,7 @@ octave_classdef::loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m
       if (! in_obj_cache || prop_map.nfields () > 0)
         {
           // Default behaviour of loading is triggered if loadobj is not static
-          if (meth.ok () && meth.is_static ())
+          if (meth.ok () && meth.is_static () && prop_map.nfields () > 0)
             {
               octave_value ov;
               if (std::get<bool> (m[n]))
@@ -163,7 +163,49 @@ octave_classdef::loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m
                   ov = (meth.execute (octave_value_list (any), 1))(0);
                 }
               else
-                ov = (meth.execute (octave_value_list (prop_map), 1))(0);
+                {
+                  // create object from saved properties
+                  octave::cdef_object new_object;
+                  if (in_obj_cache)
+                    new_object = ovc.classdef_object_value ()->m_object;
+                  else
+                    new_object = scalar_obj.copy ();
+
+                  bool props_changed = false;
+                  string_vector fnames = prop_map.fieldnames ();
+                  string_vector sv = map_keys ();
+                  for (octave_idx_type i = 0; i < prop_map.nfields (); i++)
+                    {
+                      octave_idx_type j;
+                      for (j = 0; j < sv.numel (); j++)
+                        {
+                          if (sv[j] == fnames(i))
+                            {
+                              new_object.set_property (0, sv[j], prop_map.contents (fnames(i)).xelem (0));
+                              break;
+                            }
+                        }
+                      if (j == sv.numel ())
+                        {
+                          // properties have been renamed or deleted
+                          props_changed = true;
+                          break;
+                        }
+                    }
+
+                  if (props_changed)
+                    // attempting to create the object failed
+                    // call loadobj with struct
+                    ov = (meth.execute (octave_value_list (prop_map), 1))(0);
+                  else
+                    {
+                      if (! in_obj_cache)
+                        ovc = octave::to_ov (new_object);
+
+                      // pass object to loadobj
+                      ov = (meth.execute (octave_value_list (ovc), 1))(0);
+                    }
+                }
 
               if (! ov.is_defined ())
                 {
@@ -447,46 +489,50 @@ octave_classdef::subsref (const std::string& type,
           m_count++;
           args(0) = octave_value (this);
 
-          octave::cdef_method meth_nargout
-            = cls.find_method ("numArgumentsFromSubscript");
-          if (meth_nargout.ok ())
+          if (nargout <= 0) 
             {
-              octave_value_list args_nargout (3);
-
-              args_nargout(0) = args(0);
-              args_nargout(1) = args(1);
-              // FIXME: Third argument should be one of the possible values of
-              //        the matlab.mixin.util.IndexingContext enumeration class.
-              args_nargout(2) = octave_value (Matrix ());
-              retval = meth_nargout.execute (args_nargout, 1, true,
-                                             "numArgumentsFromSubscript");
-
-              nargout = retval(0).strict_int_value
-                ("subsref: return value of 'numArgumentsFromSubscript' must be integer");
-            }
-          else if (nargout <= 0)
-            {
-              // If the number of output arguments is unknown, attempt to set up
-              // a proper value for nargout at least in the simple case where the
-              // cs-list-type expression - i.e., {} or ().x, is the leading one.
-              bool maybe_cs_list_query = (type[0] == '.' || type[0] == '{'
-                                          || (type.length () > 1 && type[0] == '('
-                                              && type[1] == '.'));
-
-              if (maybe_cs_list_query)
+              // If the last index type is not '()', the final value of nargout is
+              // unknown. Try to get its value
+              if (type.back () != '(')
                 {
-                  // Set up a proper nargout for the subsref call by calling numel.
-                  octave_value_list tmp;
-                  int nout;
-                  if (type[0] != '.')
-                    tmp = idx.front ();
+                  // See if method numArgumentsFromSubscript is defined
+                  octave::cdef_method meth_nargout
+                    = cls.find_method ("numArgumentsFromSubscript");
 
-                  nout = xnumel (tmp);
-                  // Take nout as nargout for subsref, unless the index expression
-                  // is a whole sentence starting with the form id.member and id is
-                  // one element (in that case, nargout remains 0).
-                  if (type[0] != '.' || nout != 1 || nargout < 0)
-                    nargout = nout;
+                  if (meth_nargout.ok ())
+                    {
+                      octave_value_list args_nargout (3);
+
+                      args_nargout(0) = args(0);
+                      args_nargout(1) = args(1);
+                      // FIXME: Third argument should be one of the possible values of
+                      //        the matlab.mixin.util.IndexingContext enumeration class.
+                      args_nargout(2) = octave_value (Matrix ());
+                      retval = meth_nargout.execute (args_nargout, 1, true,
+                                                    "numArgumentsFromSubscript");
+
+                      nargout = retval(0).strict_int_value
+                        ("subsref: return value of 'numArgumentsFromSubscript' must be integer");
+                    }
+                  else
+                    {
+                      // Method numArgumentsFromSubscript undefined. Attempt to set up
+                      // a proper value for nargout at least in the simple case where the
+                      // cs-list-type expression - i.e., {} or ().x, is the leading one.
+
+                      // Set up a proper nargout for the subsref call by calling numel.
+                      octave_value_list tmp;
+                      int nout;
+                      if (type[0] != '.')
+                        tmp = idx.front ();
+
+                      nout = xnumel (tmp);
+                      // Take nout as nargout for subsref, unless the index expression
+                      // is a whole sentence starting with the form id.member and id is
+                      // one element (in that case, nargout remains 0).
+                      if (type[0] != '.' || nout != 1 || nargout < 0)
+                        nargout = nout;
+                    }
                 }
               else if (nargout < 0)
                 nargout = 1;

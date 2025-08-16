@@ -698,6 +698,15 @@ octave_classdef::xnumel (const octave_value_list& idx)
 {
   octave_idx_type retval = -1;
 
+  // FIXME: This method is only used in subsref and subsasgn operations, to find
+  // out the number of elements in the cs-list corresponding to the subsref
+  // output or the subsasgn lvalue.
+  // This method currently calls the classdef's numel method to do its task, but
+  // this is incompatible with Matlab. Matlab calls numArgumentsFromSubscript
+  // for that purpose. We cannot call numArgumentsFromSubscript here because that
+  // method needs all the information about the indices of the subsref/subsasgn
+  // operation (possibly multiple levels of indexing of different types)
+
   octave::cdef_class cls = m_object.get_class ();
 
   if (! in_class_method (cls) && ! called_from_builtin ())

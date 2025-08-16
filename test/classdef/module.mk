@@ -15,6 +15,8 @@ classdef_TEST_FILES = \
   %reldir%/class_bug52614A.m \
   %reldir%/class_bug52614B.m \
   %reldir%/class_bug55766.m \
+  %reldir%/class_bug60723A.m \
+  %reldir%/class_bug60723B.m \
   %reldir%/class_bug66930A.m \
   %reldir%/class_bug66930B.m \
   %reldir%/class_pair.m \

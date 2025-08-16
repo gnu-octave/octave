@@ -91,9 +91,6 @@ tree_simple_assignment::evaluate (tree_evaluator& tw, int)
           }, tw.lvalue_list ());
           tw.set_lvalue_list (&lvalue_list);
 
-          if (ult.numel () != 1)
-            err_invalid_structure_assignment ();
-
           octave_value rhs_val = m_rhs->evaluate (tw);
 
           if (rhs_val.is_undefined ())

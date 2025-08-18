@@ -5441,6 +5441,8 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   m_xlimitmethod = "tickaligned";
   m_xminorgrid = "off";
   m_xminortick = "off";
+  m_xminortickvalues = Matrix ();
+  m_xminortickvaluesmode = "auto";
   m_xscale = "linear";
   m_xtick = Matrix ();
   m_xticklabel = "";
@@ -5457,6 +5459,8 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   m_ylimitmethod = "tickaligned";
   m_yminorgrid = "off";
   m_yminortick = "off";
+  m_yminortickvalues = Matrix ();
+  m_yminortickvaluesmode = "auto";
   m_yscale = "linear";
   m_ytick = Matrix ();
   m_yticklabel = "";
@@ -5471,6 +5475,8 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   m_zlimitmethod = "tickaligned";
   m_zminorgrid = "off";
   m_zminortick = "off";
+  m_zminortickvalues = Matrix ();
+  m_zminortickvaluesmode = "auto";
   m_zscale = "linear";
   m_ztick = Matrix ();
   m_zticklabel = "";
@@ -7986,6 +7992,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
                                        array_property& mticks,
                                        bool limmode_is_auto,
                                        bool tickmode_is_auto,
+                                       bool minortickvaluesmode_is_auto,
                                        bool is_logscale,
                                        bool method_is_padded,
                                        bool method_is_tight)
@@ -8111,42 +8118,48 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
     return;
 
   // minor ticks between, above, and below min and max ticks
-  const int MAX_MINOR_TICKS = 1000;
-  int n = (is_logscale ? 8 : 4);
-  double mult_below = (is_logscale ? tmp_ticks(1) / tmp_ticks(0) : 1);
-  double mult_above = (is_logscale ? tmp_ticks(n_ticks-1) / tmp_ticks(n_ticks-2)
-                       : 1);
-
-  double d_below = (tmp_ticks(1) - tmp_ticks(0)) / mult_below / (n+1);
-  int n_below = static_cast<int> (std::floor ((tmp_ticks(0)-lo_lim) / d_below));
-  if (n_below < 0)
-    n_below = 0;
-  else if (n_below > MAX_MINOR_TICKS)
-    n_below = MAX_MINOR_TICKS;
-
-  int n_between = n * (n_ticks - 1);
-  double d_above = (tmp_ticks(n_ticks-1) - tmp_ticks(n_ticks-2)) * mult_above
-                   / (n+1);
-  int n_above = static_cast<int> (std::floor ((hi_lim-tmp_ticks(n_ticks-1))
-                                  / d_above));
-  if (n_above < 0)
-    n_above = 0;
-  else if (n_above > MAX_MINOR_TICKS)
-    n_above = MAX_MINOR_TICKS;
-
-  Matrix tmp_mticks (1, n_below + n_between + n_above);
-  for (int i = 0; i < n_below; i++)
-    tmp_mticks(i) = tmp_ticks(0) - (n_below-i) * d_below;
-  for (int i = 0; i < n_ticks-1; i++)
+  if (minortickvaluesmode_is_auto)
     {
-      double d = (tmp_ticks(i+1) - tmp_ticks(i)) / (n + 1);
-      for (int j = 0; j < n; j++)
-        tmp_mticks(n_below+n*i+j) = tmp_ticks(i) + d * (j+1);
-    }
-  for (int i = 0; i < n_above; i++)
-    tmp_mticks(n_below+n_between+i) = tmp_ticks(n_ticks-1) + (i + 1) * d_above;
+      const int MAX_MINOR_TICKS = 1000;
+      int n = (is_logscale ? 8 : 4);
+      double mult_below = (is_logscale ? tmp_ticks(1) / tmp_ticks(0) : 1);
+      double mult_above = (is_logscale ?
+                           tmp_ticks(n_ticks-1) / tmp_ticks(n_ticks-2) : 1);
 
-  mticks = tmp_mticks;
+      double d_below = (tmp_ticks(1) - tmp_ticks(0)) / mult_below / (n+1);
+      int n_below = static_cast<int> (std::floor ((tmp_ticks(0)-lo_lim)
+                                                  / d_below));
+      if (n_below < 0)
+        n_below = 0;
+      else if (n_below > MAX_MINOR_TICKS)
+        n_below = MAX_MINOR_TICKS;
+
+      int n_between = n * (n_ticks - 1);
+      double d_above = (tmp_ticks(n_ticks-1) - tmp_ticks(n_ticks-2))
+        * mult_above
+        / (n+1);
+      int n_above = static_cast<int> (std::floor ((hi_lim-tmp_ticks(n_ticks-1))
+                                                  / d_above));
+      if (n_above < 0)
+        n_above = 0;
+      else if (n_above > MAX_MINOR_TICKS)
+        n_above = MAX_MINOR_TICKS;
+
+      Matrix tmp_mticks (1, n_below + n_between + n_above);
+      for (int i = 0; i < n_below; i++)
+        tmp_mticks(i) = tmp_ticks(0) - (n_below-i) * d_below;
+      for (int i = 0; i < n_ticks-1; i++)
+        {
+          double d = (tmp_ticks(i+1) - tmp_ticks(i)) / (n + 1);
+          for (int j = 0; j < n; j++)
+            tmp_mticks(n_below+n*i+j) = tmp_ticks(i) + d * (j+1);
+        }
+      for (int i = 0; i < n_above; i++)
+        tmp_mticks(n_below+n_between+i) = tmp_ticks(n_ticks-1) + (i + 1)
+          * d_above;
+
+      mticks = tmp_mticks;
+    }
 }
 
 /*

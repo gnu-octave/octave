@@ -52,6 +52,10 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   ticklabels (bug #67302).  This makes it possible to use a monospaced font to
   align labels as the user intends.  This change is Matlab-compatible.
 
+- The `xminortickvalues`, `yminortickvalues`, `zminortickvalues` axes properties
+  that were previously hidden have been made visible to allow users to control
+  the position of minor ticks (bug #67394).
+
 ### Matlab compatibility
 
 - The warning `"Octave:language-extension"` is no longer emitted for automatic

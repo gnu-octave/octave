@@ -3,11 +3,12 @@
 # The generic file that can be used as a template for new
 # translation files is en_US.ts
 
+ast_ES José Luis García Pallero <jgpallero@gmail.com>
 be_BY  N.N.
 ca_ES  Salva Ardid <jsardid@gmail.com>
 de_DE  Andreas Weber <andy.weber.aw@googlemail.com>
-es_ES  Valentin Ortega-Clavero <arcanos3030@gmail.com>
-       José Luis García Pallero <jgpallero@gmail.com>
+es_ES  José Luis García Pallero <jgpallero@gmail.com>
+       Valentin Ortega-Clavero <arcanos3030@gmail.com>
 eu_ES  Ander Aurrekoetxea <zaurreko@gmail.com>
 fr_FR  David Bateman <dbateman@free.fr>
        Catalin Codreanu <codreanu.catalin@gmail.com>
@@ -16,7 +17,7 @@ hu_HU  Óvári <ovari123@zoho.com>
 it_IT  Marco Caliari <marco.caliari@univr.it>
        Massimiliano Fasi <massimiliano.fasi@studio.unibo.it>
 ja_JP  Tatsuro Matsuoka <tmacchant@yahoo.co.jp>
-lt_LT  
+lt_LT
 nl_NL  Philip Nienhuis <prnienhuis@users.sf.net>
 pt_BR  Leonardo S. Borges <lsbplsb@yahoo.com>
        Felipe G. Nievinski <fgnievinski@gmail.com>

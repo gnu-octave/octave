@@ -1584,7 +1584,7 @@ ha sido eliminado o renombrado. ¿Desea guardarlo ahora?%2</translation>
 </source>
         <comment>String ends with 
 !</comment>
-        <translation>Crear archivo en
+        <translation>¡Crear archivo en
 </translation>
     </message>
     <message>
@@ -2185,7 +2185,7 @@ por lo que no se puede editar.</translation>
     <message>
         <location line="+41"/>
         <source>Can not find function %1</source>
-        <translation>No se puede encontrar la función %1</translation>
+        <translation>No se encuentra la función %1</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -3793,7 +3793,7 @@ Error: </translation>
     <message>
         <location line="-857"/>
         <source>command line (%f=file, %l=line):</source>
-        <translation>línea de comandos (%f=archivo, %l=linea):</translation>
+        <translation>línea de comandos (%f=archivo, %l=línea):</translation>
     </message>
     <message>
         <location line="-500"/>
@@ -4134,7 +4134,7 @@ Error: </translation>
     <message>
         <location line="+80"/>
         <source>Text encoding used for loading and saving</source>
-        <translation>Codificación de texto usado para cargar y guardar</translation>
+        <translation>Codificación de texto usada para cargar y guardar</translation>
     </message>
     <message>
         <location line="+25"/>

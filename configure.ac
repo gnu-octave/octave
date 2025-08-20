@@ -2691,6 +2691,13 @@ do
         JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/darwin"
       fi
     ;;
+    solaris2*)
+      if test -n "$JAVA_CPPFLAGS"; then
+        JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS} -I${JAVA_CPPFLAGS}/solaris"
+      else
+        JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/solaris"
+      fi
+    ;;
     *)
       if test -n "$JAVA_CPPFLAGS"; then
         JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS} -I${JAVA_CPPFLAGS}/linux"

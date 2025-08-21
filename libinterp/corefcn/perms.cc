@@ -74,8 +74,11 @@ GetPerms (const Array<T>& ar_in, bool uniq_v = false)
       // In practice, and because n must be very small, mutual comparison is
       // typically faster and consumes less memory.
 
+      // Number of unique permutations is n! / (n_el1! * n_el2! * ...)
+      // where n_elX is the number of myvidx elements with value X.
       for (octave_idx_type i = 0; i < m - 1; i++)
         {
+          octave_idx_type count = 1;
           for (octave_idx_type j = i + 1; j < m; j++)
             {
               bool isequal;
@@ -86,30 +89,15 @@ GetPerms (const Array<T>& ar_in, bool uniq_v = false)
                 isequal = (Ar[i] == Ar[j]);
 
               if (myvidx[j] > myvidx[i] && isequal)
+              {
                 myvidx[j] = myvidx[i];  // not yet processed...
+                ++count;
+              }
             }
+          nr /= Factorial (count);
         }
 
       // At this point, myvidx serves as a unique id of the elements.
-      // Two elements having the same myvidx are equal.
-
-      // Number of unique permutations is n! / (n_el1! * n_el2! * ...)
-      // where n_elX is the number of myvidx elements with value X.
-      // There can be no more than m different ids.
-      octave_idx_type cumulative = 0;
-      for (octave_idx_type i = 0; i < m; i++)  // each possible id
-        {
-          octave_idx_type count = 0;
-          for (octave_idx_type j = i; j < m; j++)  // range for this id
-            if (myvidx[j] == i)
-              ++count;
-
-          nr /= Factorial (count);
-
-          cumulative += count;
-          if (cumulative == m)  // all elements accounted for, break early
-            break;
-        }
     }
 
   // Sort vector indices for inverse lexicographic order later.

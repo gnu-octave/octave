@@ -16,6 +16,7 @@ MOC_OCTAVE_CPPFLAGS = $(filter -I% -D% -U%, $(AM_CPPFLAGS) $(CPPFLAGS))
 octlib_LTLIBRARIES += %reldir%/liboctgui.la
 
 TRANSLATIONS = \
+  %reldir%/languages/ast_ES.ts \
   %reldir%/languages/be_BY.ts \
   %reldir%/languages/ca_ES.ts \
   %reldir%/languages/de_DE.ts \

@@ -39,6 +39,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 
 - The GUI now uses scalable SVG icons for beautiful display at any size.
 
+- The text of the Octave GUI has been translated to a new language: Asturian.
+  It uses the ISO 639 language code ast_ES.
+
 ### Graphics backend
 
 - `polar` plot background patch object has been moved to the Z=0 plane to

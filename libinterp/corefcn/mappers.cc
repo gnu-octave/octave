@@ -279,7 +279,7 @@ arg (3 + 4i)
 %!assert (arg (single (i)), single (pi/2))
 %!test
 %! if (ismac ())
-%!   ## Avoid failing for a MacOS feature
+%!   ## Avoid failing on a MacOS feature or bug, depending on your view
 %!   assert (arg (single (-1)), single (pi), 2* eps (single (1)));
 %! else
 %!   assert (arg (single (-1)), single (pi));

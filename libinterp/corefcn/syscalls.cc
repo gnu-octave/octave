@@ -320,7 +320,7 @@ exit status, it will linger until Octave exits.
 /*
 
 %!test  # UNIX-style test
-%! if (isunix () || ismac ())
+%! if (isunix ())
 %!   [in, out, pid] = popen2 ("sort", "-r");
 %!   EAGAIN = errno ("EAGAIN");
 %!   fputs (in, "these\nare\nsome\nstrings\n");
@@ -330,9 +330,6 @@ exit status, it will linger until Octave exits.
 %!   idx = 0;
 %!   errs = 0;
 %!   do
-%!     if (ismac ())  # FIXME: Is this necessary?
-%!       errno (0);
-%!     endif
 %!     s = fgets (out);
 %!     if (ischar (s))
 %!       idx++;

@@ -155,7 +155,7 @@
 
 %!test
 %! ## Test makes no sense on Windows systems
-%! if (isunix () || ismac ())
+%! if (isunix ())
 %!   orig_umask = umask (0);
 %!   nm = tempname ();
 %!   id = fopen (nm, "wb");

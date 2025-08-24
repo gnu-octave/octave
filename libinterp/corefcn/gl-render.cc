@@ -1097,8 +1097,6 @@ opengl_renderer::render_ticktexts (const Matrix& ticks,
           Matrix b;
 
           std::string label (ticklabels(i % nlabels));
-          label.erase (0, label.find_first_not_of (' '));
-          label = label.substr (0, label.find_last_not_of (' ')+1);
 
           // FIXME: As tick text is transparent, shouldn't it be
           //        drawn after axes object, for correct rendering?

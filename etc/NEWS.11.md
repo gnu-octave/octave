@@ -48,6 +48,10 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   permit view changes that previously resulted in an obscured plot area
   (bug #67574).
 
+- Octave no longer strips leading and trailing spaces from user-specified
+  ticklabels (bug #67302).  This makes it possible to use a monospaced font to
+  align labels as the user intends.  This change is Matlab-compatible.
+
 ### Matlab compatibility
 
 - The warning `"Octave:language-extension"` is no longer emitted for automatic

@@ -3882,6 +3882,8 @@ public:
       radio_property xlimmode al , "{auto}|manual"
       bool_property xminorgrid , "off"
       bool_property xminortick , "off"
+      row_vector_property xminortickvalues m , Matrix ()
+      radio_property xminortickvaluesmode u , "{auto}|manual"
       radio_property xscale alu , "{linear}|log"
       row_vector_property xtick mu , default_axes_tick ()
       // FIXME: should be kind of string array.
@@ -3902,6 +3904,8 @@ public:
       radio_property ylimmode al , "{auto}|manual"
       bool_property yminorgrid , "off"
       bool_property yminortick , "off"
+      row_vector_property yminortickvalues m , Matrix ()
+      radio_property yminortickvaluesmode u , "{auto}|manual"
       radio_property yscale alu , "{linear}|log"
       row_vector_property ytick mu , default_axes_tick ()
       any_property yticklabel S , ""
@@ -3920,6 +3924,8 @@ public:
       radio_property zlimmode al , "{auto}|manual"
       bool_property zminorgrid , "off"
       bool_property zminortick , "off"
+      row_vector_property zminortickvalues m , Matrix ()
+      radio_property zminortickvaluesmode u , "{auto}|manual"
       radio_property zscale alu , "{linear}|log"
       row_vector_property ztick mu , default_axes_tick ()
       any_property zticklabel S , ""
@@ -3935,10 +3941,6 @@ public:
       radio_property __autopos_tag__ h , "{none}|subplot"
       // hidden properties for inset
       array_property looseinset hu , Matrix (1, 4, 0.0)
-      // hidden properties for minor ticks
-      row_vector_property xminortickvalues h , Matrix ()
-      row_vector_property yminortickvalues h , Matrix ()
-      row_vector_property zminortickvalues h , Matrix ()
       // hidden property for text rendering
       double_property __fontsize_points__ hgr , 0
    END_PROPERTIES
@@ -4096,6 +4098,7 @@ public:
     {
       calc_ticks_and_lims (m_xlim, m_xtick, m_xminortickvalues,
                            m_xlimmode.is ("auto"), m_xtickmode.is ("auto"),
+                           m_xminortickvaluesmode.is ("auto"),
                            m_xscale.is ("log"), m_xlimitmethod.is ("padded"),
                            m_xlimitmethod.is ("tight"));
       if (m_xticklabelmode.is ("auto"))
@@ -4113,6 +4116,7 @@ public:
     {
       calc_ticks_and_lims (m_ylim, m_ytick, m_yminortickvalues,
                            m_ylimmode.is ("auto"), m_ytickmode.is ("auto"),
+                           m_yminortickvaluesmode.is ("auto"),
                            m_yscale.is ("log"), m_ylimitmethod.is ("padded"),
                            m_ylimitmethod.is ("tight"));
       if (m_yticklabelmode.is ("auto"))
@@ -4130,6 +4134,7 @@ public:
     {
       calc_ticks_and_lims (m_zlim, m_ztick, m_zminortickvalues,
                            m_zlimmode.is ("auto"), m_ztickmode.is ("auto"),
+                           m_zminortickvaluesmode.is ("auto"),
                            m_zscale.is ("log"), m_zlimitmethod.is ("padded"),
                            m_zlimitmethod.is ("tight"));
       if (m_zticklabelmode.is ("auto"))
@@ -4181,6 +4186,34 @@ public:
       if (m_zticklabelmode.is ("auto"))
         calc_ticklabels (m_ztick, m_zticklabel, m_zscale.is ("log"),
                          false, 2, m_zlim);
+    }
+
+    void update_xminortickvaluesmode ()
+    {
+      if (m_xminortickvaluesmode.is ("auto"))
+        calc_ticks_and_lims (m_xlim, m_xtick, m_xminortickvalues,
+                             m_xlimmode.is ("auto"), m_xtickmode.is ("auto"),
+                             true,
+                             m_xscale.is ("log"), m_xlimitmethod.is ("padded"),
+                             m_xlimitmethod.is ("tight"));
+    }
+    void update_yminortickvaluesmode ()
+    {
+      if (m_yminortickvaluesmode.is ("auto"))
+        calc_ticks_and_lims (m_ylim, m_ytick, m_yminortickvalues,
+                             m_ylimmode.is ("auto"), m_ytickmode.is ("auto"),
+                             true,
+                             m_yscale.is ("log"), m_ylimitmethod.is ("padded"),
+                             m_ylimitmethod.is ("tight"));
+    }
+    void update_zminortickvaluesmode ()
+    {
+      if (m_zminortickvaluesmode.is ("auto"))
+        calc_ticks_and_lims (m_zlim, m_ztick, m_zminortickvalues,
+                             m_zlimmode.is ("auto"), m_ztickmode.is ("auto"),
+                             true,
+                             m_zscale.is ("log"), m_zlimitmethod.is ("padded"),
+                             m_zlimitmethod.is ("tight"));
     }
 
     void update_fontname ()
@@ -4236,8 +4269,8 @@ public:
     OCTINTERP_API void
     calc_ticks_and_lims (array_property& lims, array_property& ticks,
                          array_property& mticks, bool limmode_is_auto,
-                         bool tickmode_is_auto, bool is_logscale,
-                         bool method_is_padded, bool method_is_tight);
+                         bool tickmode_is_auto, bool minortickvaluemode_is_auto,
+                         bool is_logscale, bool method_is_padded, bool method_is_tight);
     OCTINTERP_API void
     calc_ticklabels (const array_property& ticks, any_property& labels,
                      bool is_logscale, const bool is_origin,
@@ -4298,6 +4331,7 @@ public:
 
       calc_ticks_and_lims (m_xlim, m_xtick, m_xminortickvalues,
                            m_xlimmode.is ("auto"), m_xtickmode.is ("auto"),
+                           m_xminortickvaluesmode.is ("auto"),
                            m_xscale.is ("log"), m_xlimitmethod.is ("padded"),
                            m_xlimitmethod.is ("tight"));
       if (m_xticklabelmode.is ("auto"))
@@ -4326,6 +4360,7 @@ public:
 
       calc_ticks_and_lims (m_ylim, m_ytick, m_yminortickvalues,
                            m_ylimmode.is ("auto"), m_ytickmode.is ("auto"),
+                           m_yminortickvaluesmode.is ("auto"),
                            m_yscale.is ("log"), m_ylimitmethod.is ("padded"),
                            m_ylimitmethod.is ("tight"));
       if (m_yticklabelmode.is ("auto"))
@@ -4354,6 +4389,7 @@ public:
 
       calc_ticks_and_lims (m_zlim, m_ztick, m_zminortickvalues,
                            m_zlimmode.is ("auto"), m_ztickmode.is ("auto"),
+                           m_zminortickvaluesmode.is ("auto"),
                            m_zscale.is ("log"), m_zlimitmethod.is ("padded"),
                            m_zlimitmethod.is ("tight"));
       if (m_zticklabelmode.is ("auto"))

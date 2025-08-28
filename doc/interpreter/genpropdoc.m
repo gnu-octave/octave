@@ -1305,6 +1305,16 @@ or automatically set to span the plotted data according to the \
         s.doc = "Control whether minor x tick marks are displayed.";
         s.category = "Axes Box Appearance";
 
+      case "xminortickvalues"
+        s.doc = "Position of minor tick marks.  __modemsg__";
+        s.category = "Axes Box Appearance";
+
+      case "xminortickvaluesmode"
+        s.doc = "Setting to determine whether the xminortick locations and \
+spacing are set automatically by Octave or manually using the \
+@ref{XREFaxesxminortickvalues, , @w{@qcode{\"xminortickvalues\"} property}}.";
+        s.category = "Axes Box Appearance";
+
       case "xscale"
         s.doc = "Set the x-axis to a linear or logarithmic scale.";
         s.category = "Axes Grid Appearance";
@@ -1404,6 +1414,16 @@ or automatically set to span the plotted data according to the \
         s.doc = "Control whether minor y tick marks are displayed.";
         s.category = "Axes Grid Appearance";
 
+      case "yminortickvalues"
+        s.doc = "Position of minor tick marks.  __modemsg__";
+        s.category = "Axes Box Appearance";
+
+      case "yminortickvaluesmode"
+        s.doc = "Setting to determine whether the yminortick locations and \
+spacing are set automatically by Octave or manually using the \
+@ref{XREFaxesyminortickvalues, , @w{@qcode{\"yminortickvalues\"} property}}.";
+        s.category = "Axes Box Appearance";
+
       case "yscale"
         s.doc = "Set the y-axis to a linear or logarithmic scale.";
         s.category = "Axes Grid Appearance";
@@ -1497,6 +1517,16 @@ or automatically set to span the plotted data according to the \
 
       case "zminortick"
         s.doc = "Control whether minor z tick marks are displayed.";
+        s.category = "Axes Box Appearance";
+
+      case "zminortickvalues"
+        s.doc = "Position of minor tick marks.  __modemsg__";
+        s.category = "Axes Box Appearance";
+
+      case "zminortickvaluesmode"
+        s.doc = "Setting to determine whether the zminortick locations and \
+spacing are set automatically by Octave or manually using the \
+@ref{XREFaxeszminortickvalues, , @w{@qcode{\"zminortickvalues\"} property}}.";
         s.category = "Axes Box Appearance";
 
       case "zscale"

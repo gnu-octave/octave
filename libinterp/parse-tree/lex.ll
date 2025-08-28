@@ -1837,31 +1837,37 @@ ANY_INCLUDING_NL (.|{NL})
 . {
     curr_lexer->lexer_debug (".");
 
-    curr_lexer->xunput (yytext[0]);
+    // Check for possible command syntax before doing any other operations
+    // that may modify the input buffer.
 
-    int c = curr_lexer->text_yyinput ();
-
-    if (c == 1)
-      return -1;
-    else if (c == EOF)
-      return curr_lexer->handle_end_of_input ();
-    else if (curr_lexer->previous_token_may_be_command ()
-             && curr_lexer->space_follows_previous_token ())
+    if (curr_lexer->previous_token_may_be_command ()
+        && curr_lexer->space_follows_previous_token ())
       {
         yyless (0);
         curr_lexer->push_start_state (COMMAND_START);
       }
     else
       {
-        std::ostringstream buf;
+        curr_lexer->xunput (yytext[0]);
 
-        buf << "invalid character '"
-            << octave::undo_string_escape (static_cast<char> (c))
-            << "' (ASCII " << c << ")";
+        int c = curr_lexer->text_yyinput ();
 
-        curr_lexer->update_token_positions (yyleng);
+        if (c == 1)
+          return -1;
+        else if (c == EOF)
+          return curr_lexer->handle_end_of_input ();
+        else
+          {
+            std::ostringstream buf;
 
-        return curr_lexer->syntax_error (buf.str ());
+            buf << "invalid character '"
+                << octave::undo_string_escape (static_cast<char> (c))
+                << "' (ASCII " << c << ")";
+
+            curr_lexer->update_token_positions (yyleng);
+
+            return curr_lexer->syntax_error (buf.str ());
+          }
       }
   }
 

@@ -24,8 +24,10 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{s} =} mat2str (@var{x}, @var{n})
-## @deftypefnx {} {@var{s} =} mat2str (@var{x}, @var{n}, "class")
+## @deftypefn  {} {@var{s} =} mat2str (@var{x})
+## @deftypefnx {} {@var{s} =} mat2str (@var{x}, @var{n})
+## @deftypefnx {} {@var{s} =} mat2str (@var{x}, [@var{n1}, @var{n2}])
+## @deftypefnx {} {@var{s} =} mat2str (@dots{}, "class")
 ## Format real, complex, and logical matrices as strings.
 ##
 ## The returned string may be used to reconstruct the original matrix by using
@@ -43,6 +45,12 @@
 ##
 ## @example
 ## @group
+## mat2str (pi)
+##      @result{} "3.14159265358979"
+##
+## mat2str (pi, 5)
+##      @result{} "3.1416"
+##
 ## mat2str ([ -1/3 + i/7; 1/3 - i/7 ], [4 2])
 ##      @result{} "[-0.3333+0.14i;0.3333-0.14i]"
 ##
@@ -67,8 +75,10 @@ function s = mat2str (x, n = 15, cls = "")
 
   if (nargin < 1 || ! (isnumeric (x) || islogical (x)))
     print_usage ();
-  elseif (ndims (x) > 2)
-    error ("mat2str: X must be two dimensional");
+  endif
+
+  if (ndims (x) > 2)
+    error ("mat2str: X must be 2-D array");
   endif
 
   if (nargin == 2 && ischar (n))
@@ -89,7 +99,11 @@ function s = mat2str (x, n = 15, cls = "")
     if (isscalar (n))
       n = [n, n];
     endif
-    fmt = sprintf ("%%.%dg%%+.%dgi", n(1), n(2));
+    if (any (! isfinite (imag (x(:)))))
+      fmt = sprintf ("complex(%%.%dg,%%.%dg)", n(1), n(2));
+    else
+      fmt = sprintf ("%%.%dg%%+.%dgi", n(1), n(2));
+    endif
   elseif (x_islogical)
     v = {"false", "true"};
     fmt = "%s";
@@ -142,6 +156,7 @@ endfunction
 %!assert (mat2str (pi), "3.14159265358979")
 %!assert (mat2str (pi, 5), "3.1416")
 %!assert (mat2str (single (pi), 5, "class"), "single(3.1416)")
+%!assert (mat2str (complex (NaN, 2)), "NaN+2i")
 %!assert (mat2str ([-1/3 + i/7; 1/3 - i/7], [4 2]),
 %!        "[-0.3333+0.14i;0.3333-0.14i]")
 %!assert (mat2str ([-1/3 +i/7; 1/3 -i/7], [4 2]),
@@ -152,8 +167,14 @@ endfunction
 %!assert (mat2str (logical (eye (2))), "[true false;false true]")
 %!assert (mat2str (logical ([0 1; 0 0])), "[false true;false false]")
 
+%!test <*67462>
+%! x = [complex(1,0); complex(0, Inf)];
+%! s = mat2str (x);
+%! y = eval (s);
+%! assert (y, x);
+
 ## Test input validation
 %!error <Invalid call> mat2str ()
-%!error mat2str (["Hello"])
-%!error <X must be two dimensional> mat2str (ones (3,3,2))
+%!error <Invalid call> mat2str (["Hello"])
+%!error <X must be 2-D array> mat2str (ones (3,3,2))
 %!error <N must have only 1 or 2 elements> mat2str (ones (3,3), [1 2 3])

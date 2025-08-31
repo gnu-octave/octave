@@ -3812,8 +3812,8 @@ dnl
 dnl Check for options that can be passed to tar to make archives reproducible.
 dnl
 AC_DEFUN([OCTAVE_PROG_TAR_REPRODUCIBLE], [
-  AC_MSG_CHECKING([for options to make reproducible archives with GNU tar])
-  AC_CACHE_VAL([octave_cv_tar_flags],
+  AC_CACHE_CHECK([for options to make reproducible archives with GNU tar],
+    [octave_cv_tar_flags],
     [octave_cv_tar_flags=
     dnl This uses Automake's logic for finding GNU tar under various names
     for octave_tar in tar gnutar gtar :; do
@@ -3831,10 +3831,8 @@ AC_DEFUN([OCTAVE_PROG_TAR_REPRODUCIBLE], [
       rm -f conftest.tar conftest.txt
     fi
   ])
-
   REPRODUCIBLE_TAR_FLAGS="$octave_cv_tar_flags"
   AC_SUBST(REPRODUCIBLE_TAR_FLAGS)
-  AC_MSG_RESULT([$REPRODUCIBLE_TAR_FLAGS])
 ])
 dnl
 dnl Check for texi2dvi.

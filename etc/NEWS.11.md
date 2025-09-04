@@ -29,6 +29,8 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   or permutation of the inputs for performance.  Now Octave automatically picks
   the fastest calculation order irrespective of the input orientation.
 
+- The `fzero` function is now more accurate (1-2 eps when TolX is eps).
+
 - The `roots` function now accepts only a numeric argument.  Convert any
   non-numeric input to a numeric value with `double()`.
 

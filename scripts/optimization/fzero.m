@@ -407,8 +407,17 @@ function [x, fval, info, output] = fzero (fcn, x0, options = struct ())
     endif
   endwhile
 
-  ## Check solution for a singularity by examining slope
   if (info == 1)
+    ## Solution converged.  Pick 'a' or 'b' based on smallest residual y-value.
+    if (abs (fa) < abs (fb))
+      x = a;
+      fval = fa;
+    else
+      x = b;
+      fval = fb;
+    endif
+
+    ## Check solution for a singularity by examining slope
     if ((b - a) != 0
         && abs ((fb - fa)/(b - a) / slope0) > max (1e6, 0.5/(macheps+tolx)))
       info = -5;

@@ -139,8 +139,8 @@ the last two are only used with @var{class}; they indicate that a
 complex-valued result is requested.  Complex arrays are stored in memory as
 consecutive pairs of real numbers.  The sizes of integer types are given by
 their bit counts.  Both logical and char are typically one byte wide;
-however, this is not guaranteed by C++.  If your system is IEEE conformant,
-single and double will be 4 bytes and 8 bytes wide, respectively.
+however, this is not guaranteed by C++.  If your system is IEEE@tie{}754
+conformant, single and double will be 4 bytes and 8 bytes wide, respectively.
 @qcode{"logical"} is not allowed for @var{class}.
 
 If the input is a row vector, the return value is a row vector, otherwise it

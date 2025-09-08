@@ -486,10 +486,10 @@ Query or set the internal variable that specifies the number of digits to
 keep when saving data in text format.
 
 The default value is 17 which is the minimum necessary for the lossless saving
-and restoring of IEEE-754 double values; For IEEE-754 single values the minimum
-value is 9.  If file size is a concern, it is probably better to choose a
-binary format for saving data rather than to reduce the precision of the saved
-values.
+and restoring of IEEE@tie{}754 double values; For IEEE@tie{}754 single values
+the minimum value is 9.  If file size is a concern, it is probably better to
+choose a binary format for saving data rather than to reduce the precision of
+the saved values.
 
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.

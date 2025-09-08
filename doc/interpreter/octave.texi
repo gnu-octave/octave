@@ -306,6 +306,7 @@ Matrices
 
 Integer Data Types
 
+* Hexadecimal and Binary Integer Constants
 * Integer Arithmetic::
 
 Strings

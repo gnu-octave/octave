@@ -27,11 +27,11 @@
 ## @deftypefn {} {@var{y} =} cospi (@var{x})
 ## Compute cosine (@var{x} * pi) for each element of @var{x} accurately.
 ##
-## The ordinary @code{cos} function uses IEEE floating point numbers and may
-## produce results that are very close (within a few eps) of the correct
-## value, but which are not exact.  The @code{cospi} function is more accurate
-## and returns 0 exactly for half-integer values of @var{x} (e.g., @dots{},
-## -3/2, -1/2, 1/2, 3/2, @dots{}), and +1/-1 for integer values.
+## The ordinary @code{cos} function uses IEEE@tie{}754 floating point numbers
+## and may produce results that are very close (within a few eps) of the
+## correct value, but which are not exact.  The @code{cospi} function is more
+## accurate and returns 0 exactly for half-integer values of @var{x} (e.g.,
+## @dots{}, -3/2, -1/2, 1/2, 3/2, @dots{}), and +1/-1 for integer values.
 ##
 ## Example @*
 ## comparison of @code{cos} and @code{cospi} for half-integer values of @var{x}

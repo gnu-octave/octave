@@ -53,10 +53,17 @@ $(%canon_reldir%_JAVA_CLASSES) : %.class : %.java | %reldir%/$(octave_dirstamp)
 	             $(org_octave_dir)/$(<F) )
 
 if AMCOND_HAVE_JAVA
+JAR_DATE = $(shell date -u -d"@$(SOURCE_MTIME)" -I'seconds')
+
 %reldir%/octave.jar: $(%canon_reldir%_JAVA_CLASSES)
 	$(OCT_V_JAR)rm -f $@-t $@ && \
 	( cd scripts/java; \
-	  "$(JAR)" cf octave.jar-t $(JAVA_CLASSES) ) && \
+		if test "x$(JAR_SUPPORTS_DATE)" = "xyes"; then \
+			"$(JAR)" -c --date="$(JAR_DATE)" -f octave.jar-t $(JAVA_CLASSES) ; \
+		else \
+			"$(JAR)" -c -f octave.jar-t $(JAVA_CLASSES) ; \
+		fi \
+	) && \
 	mv $@-t $@
 endif
 

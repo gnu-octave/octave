@@ -537,8 +537,8 @@ myfile = fopen ("splat.dat", "r", "ieee-le");
 
 @noindent
 opens the file @file{splat.dat} for reading.  If necessary, binary
-numeric values will be read assuming they are stored in IEEE format with
-the least significant bit first, and then converted to the native
+numeric values will be read assuming they are stored in IEEE@tie{}754 format
+with the least significant bit first, and then converted to the native
 representation.
 
 Opening a file that is already open simply opens it again and returns a

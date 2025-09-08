@@ -1099,15 +1099,15 @@ better ways to solve this problem are welcome!
 
 @item
 If Octave crashes immediately with a floating point exception, it is
-likely that it is failing to initialize the IEEE floating point values
+likely that it is failing to initialize the IEEE@tie{}754 floating point values
 for infinity and NaN.
 
-If your system actually does support IEEE arithmetic, you should be able
-to fix this problem by modifying the function @code{octave_ieee_init} in
+If your system actually does support IEEE@tie{}754 arithmetic, you should be
+able to fix this problem by modifying the function @code{octave_ieee_init} in
 the file @file{lo-ieee.cc} to correctly initialize Octave's internal
 infinity and NaN variables.
 
-If your system does not support IEEE arithmetic but Octave's configure
+If your system does not support IEEE@tie{}754 arithmetic but Octave's configure
 script incorrectly determined that it does, you can work around the
 problem by editing the file @file{config.h} to not define
 @w{@code{HAVE_ISINF}}, @w{@code{HAVE_FINITE}}, and

@@ -382,7 +382,7 @@ endif
 Usually Octave will manage the memory, but sometimes it can be practical
 to remove variables from memory manually.  This is usually needed when
 working with large variables that fill a substantial part of the memory.
-On a computer that uses the IEEE floating point format, the following
+On a computer that uses the IEEE@tie{}754 floating point format, the following
 program allocates a matrix that requires around 128 MB memory.
 
 @example

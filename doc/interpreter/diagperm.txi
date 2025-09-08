@@ -512,7 +512,7 @@ implies, as a side effect, small differences in treating zeros.
 The contents of this section apply also to sparse matrices, discussed in
 the following chapter.  (@pxref{Sparse Matrices})
 
-The IEEE floating point standard defines the result of the expressions
+The IEEE@tie{}754 floating point standard defines the result of the expressions
 @code{0*Inf} and @code{0*NaN} as @code{NaN}.  This is widely agreed to be a
 good compromise.  Numerical software dealing with structured and sparse
 matrices (including Octave) however, almost always makes a distinction between

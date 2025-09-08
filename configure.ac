@@ -2742,6 +2742,16 @@ do
     break
   fi
 
+  ## Test if jar supports --date for reproducible builds
+  AC_CACHE_CHECK([whether jar supports '--date' option],
+    [octave_cv_jar_has_date_option],
+    [octave_cv_jar_has_date_option=no
+    if $JAR --help | $GREP -- '--date=' >/dev/null 2>&1; then
+      octave_cv_jar_has_date_option=yes
+    fi
+  ])
+  JAR_SUPPORTS_DATE=$octave_cv_jar_has_date_option
+
   ## Passed all configuration tests.  A workable Java installation was found.
   build_java=yes
   AC_DEFINE(HAVE_JAVA, 1,
@@ -2756,6 +2766,7 @@ AM_CONDITIONAL([AMCOND_HAVE_JAVA], [test $build_java = yes])
 AC_SUBST(JAVA)
 AC_SUBST(JAVAC)
 AC_SUBST(JAR)
+AC_SUBST(JAR_SUPPORTS_DATE)
 AC_SUBST(JAVA_CPPFLAGS)
 AC_SUBST(JAVA_LIBS)
 AC_DEFINE_UNQUOTED([JAVA_HOME], ["$JAVA_HOME"], [Java home (top-level installation dir)])

@@ -4822,11 +4822,11 @@ DEFUN (Inf, args, ,
 @deftypefnx {} {@var{A} =} Inf (@var{n}, @var{m}, @var{k}, @dots{})
 @deftypefnx {} {@var{A} =} Inf (@dots{}, @var{class})
 Return a scalar, matrix or N-dimensional array whose elements are all equal
-to the IEEE representation for positive infinity.
+to the IEEE@tie{}754 representation for positive infinity.
 
 Infinity is produced when results are too large to be represented using the
-IEEE floating point format for numbers.  Two common examples which produce
-infinity are division by zero and overflow.
+IEEE@tie{}754 floating point format for numbers.  Two common examples which
+produce infinity are division by zero and overflow.
 
 @example
 @group
@@ -4903,7 +4903,7 @@ DEFUN (NaN, args, ,
 @deftypefnx {} {@var{val} =} NaN (@dots{}, "like", @var{var})
 @deftypefnx {} {@var{val} =} NaN (@dots{}, @var{class})
 Return a scalar, matrix, or N-dimensional array whose elements are all equal
-to the IEEE symbol NaN (Not a Number).
+to the IEEE@tie{}754 symbol NaN (Not a Number).
 
 NaN is the result of operations which do not produce a well defined
 numerical result.  Common operations which produce a NaN are arithmetic
@@ -4917,8 +4917,8 @@ with infinity
 and any operation involving another NaN value (5 + NaN).
 
 Note that NaN always compares not equal to NaN (NaN != NaN).  This behavior
-is specified by the IEEE standard for floating point arithmetic.  To find
-NaN values, use the @code{isnan} function.
+is specified by the IEEE@tie{}754 standard for floating point arithmetic.  To
+find NaN values, use the @code{isnan} function.
 
 When called with no arguments, return a scalar with the value @samp{NaN}.
 
@@ -5054,8 +5054,8 @@ the machine precision.
 
 More precisely, @code{eps} is the relative spacing between any two adjacent
 numbers in the machine's floating point system.  This number is obviously
-system dependent.  On machines that support IEEE floating point arithmetic,
-@code{eps} is approximately
+system dependent.  On machines that support IEEE@tie{}754 floating point
+arithmetic, @code{eps} is approximately
 @tex
 $2.2204\times10^{-16}$ for double precision and $1.1921\times10^{-7}$
 @end tex
@@ -5191,7 +5191,7 @@ DEFUN (realmax, args, ,
 Return a scalar, matrix, or N-dimensional array whose elements are all equal
 to the largest floating point number that is representable.
 
-The actual value is system dependent.  On machines that support IEEE
+The actual value is system dependent.  On machines that support IEEE@tie{}754
 floating point arithmetic, @code{realmax} is approximately
 @tex
 $1.7977\times10^{308}$ for double precision and $3.4028\times10^{38}$
@@ -5230,8 +5230,8 @@ DEFUN (realmin, args, ,
 Return a scalar, matrix, or N-dimensional array whose elements are all equal
 to the smallest normalized floating point number that is representable.
 
-The actual value is system dependent.  On machines that support IEEE floating
-point arithmetic, @code{realmin} is approximately
+The actual value is system dependent.  On machines that support IEEE@tie{}754
+floating point arithmetic, @code{realmin} is approximately
 @tex
 $2.2251\times10^{-308}$ for double precision and $1.1755\times10^{-38}$
 @end tex

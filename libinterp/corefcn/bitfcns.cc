@@ -669,7 +669,7 @@ The input is either a string specifying a floating point type, or it is an
 existing floating point variable @var{var}.
 
 The default type is @qcode{"double"}, but @qcode{"single"} is a valid option.
-On IEEE 754 compatible systems, @code{flintmax} is @w{@math{2^{53}}}@ for
+On IEEE@tie{}754 compatible systems, @code{flintmax} is @w{@math{2^{53}}}@ for
 @qcode{"double"} and @w{@math{2^{24}}}@ for @qcode{"single"}.
 
 Example Code - query an existing variable

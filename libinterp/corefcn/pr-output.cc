@@ -3952,8 +3952,8 @@ most significant bit first.  For example, @code{pi} is printed like this:
 @noindent
 where spaces have been added for clarity to show the sign bit, the 11-bit
 exponent, and the 52-bit mantissa, in that order.  Together they represent
-@code{pi} as an IEEE 754 double precision floating point number in the normal
-form.  Single precision floating point numbers are analogous.
+@code{pi} as an IEEE@tie{}754 double precision floating point number in the
+normal form.  Single precision floating point numbers are analogous.
 
 @item native-bit
 Print the bit representation of numbers as stored in memory.  For big-endian

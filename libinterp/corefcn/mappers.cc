@@ -1947,7 +1947,7 @@ sign (x) =  0, x = 0;
 
 For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.
 
-Note that @code{sign (-0.0)} is 0.  Although IEEE 754 floating point
+Note that @code{sign (-0.0)} is 0.  Although IEEE@tie{}754 floating point
 allows zero to be signed, 0.0 and -0.0 compare equal.  If you must test
 whether zero is signed, use the @code{signbit} function.
 @seealso{signbit}
@@ -1984,7 +1984,7 @@ This behavior is consistent with the other logical functions.
 @xref{Logical Values}.  The behavior differs from the C language function
 which returns nonzero if the sign bit is set.
 
-This is not the same as @code{x < 0.0}, because IEEE 754 floating point
+This is not the same as @code{x < 0.0}, because IEEE@tie{}754 floating point
 allows zero to be signed.  The comparison @code{-0.0 < 0.0} is false,
 but @code{signbit (-0.0)} will return a nonzero value.
 @seealso{sign}

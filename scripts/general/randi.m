@@ -53,8 +53,8 @@
 ## Implementation Note: @code{randi} relies internally on @code{rand} which
 ## uses class @qcode{"double"} to represent numbers.  This limits the maximum
 ## integer (@var{imax}) and range (@var{imax} - @var{imin}) to the value
-## returned by the @code{flintmax} function.  For IEEE floating point numbers
-## this value is @w{@math{2^{53} - 1}}.
+## returned by the @code{flintmax} function.  For IEEE@tie{}754 floating point
+## numbers this value is @w{@math{2^{53} - 1}}.
 ##
 ## @seealso{rand, randn}
 ## @end deftypefn

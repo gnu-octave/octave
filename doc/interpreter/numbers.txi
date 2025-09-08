@@ -25,25 +25,27 @@ A @dfn{numeric constant} may be a scalar, a vector, or a matrix, and it may
 contain complex values.
 
 The simplest form of a numeric constant, a scalar, is a single number.  Note
-that by default numeric constants are represented within Octave by IEEE 754
-double precision (binary64) floating-point format (complex constants are
-stored as pairs of binary64 values).  It is, however, possible to represent
-real integers as described in @ref{Integer Data Types}.
+that by default numbers are represented within Octave by IEEE@tie{}754 double
+precision (binary64) floating-point format (complex constants are stored as
+pairs of binary64 values).  It is, however, possible to represent true integers
+as described in @ref{Integer Data Types}.
 
 If the numeric constant is a real integer, it can be defined in decimal,
-hexadecimal, or binary notation.  Hexadecimal notation starts with @samp{0x} or
-@samp{0X}, binary notation starts with @samp{0b} or @samp{0B}, otherwise
-decimal notation is assumed.  As a consequence, @samp{0b} is not a hexadecimal
-number, in fact, it is not a valid number at all.
+hexadecimal, or binary notation.  An important difference, however, is that
+decimal constants will be stored as binary64 values while using hexadecimal or
+binary notation will result in a true integer with a storage class just large
+enough to hold the specified number.  Hexadecimal notation starts with
+@samp{0x} or @samp{0X}, binary notation starts with @samp{0b} or @samp{0B},
+otherwise decimal notation is assumed.  As a consequence, @samp{0b} is not a
+hexadecimal number, in fact, it is not a valid number at all.
 
 For better readability, digits may be partitioned by the underscore separator
 @samp{_}, which is ignored by the Octave interpreter.  Here are some examples
-of real-valued integer constants, which all represent the same value and are
-internally stored as binary64:
+of real-valued integer constants, which all represent the same value:
 
 @example
 @group
-42            # decimal notation
+42            # decimal notation, binary64
 0x2A          # hexadecimal notation
 0b101010      # binary notation
 0b10_1010     # underscore notation
@@ -75,8 +77,9 @@ real-valued numeric constant followed immediately by a complex value indicator
   @code{sqrt (-1)}).
 @end ifnottex
 No spaces are allowed between the numeric constant and the complex value
-indicator.  Some examples of complex numeric constants that all represent the
-same value:
+indicator.  All complex values are stored as pairs of binary64 values and the
+use of hexadecimal or binary notation does @emph{not} result in a true integer.
+Some examples of complex numeric constants that all represent the same value:
 
 @example
 @group
@@ -556,17 +559,16 @@ will all return single precision matrices.
 @node Integer Data Types
 @section Integer Data Types
 
-Octave supports integer matrices as an alternative to using double
-precision.  It is possible to use both signed and unsigned integers
-represented by 8, 16, 32, or 64 bits.  It should be noted that most
-computations require floating point data, meaning that integers will
-often change type when involved in numeric computations.  For this
-reason integers are most often used to store data, and not for
-calculations.
+Octave supports integer matrices as an alternative to using double precision.
+It is possible to use both signed and unsigned integers represented by 8, 16,
+32, or 64 bits.  It should be noted that most computations require floating
+point data, meaning that integers will often change type when involved in
+numeric computations.  For this reason integers are most often used to store
+data, and not for calculations.
 
-In general most integer matrices are created by casting
-existing matrices to integers.  The following example shows how to cast
-a matrix into 32 bit integers.
+In general, most integer matrices are created by casting existing matrices to
+integers.  The following example shows how to cast a matrix into 32-bit
+integers.
 
 @example
 @group
@@ -580,8 +582,8 @@ integer = int32 (float)
 @end example
 
 @noindent
-As can be seen, floating point values are rounded to the nearest integer
-when converted.
+As can be seen, floating point values are rounded to the nearest integer when
+converted.
 
 @DOCSTRING(isinteger)
 
@@ -608,8 +610,48 @@ when converted.
 @DOCSTRING(flintmax)
 
 @menu
+* Hexadecimal and Binary Integer Constants::
 * Integer Arithmetic::
 @end menu
+
+@node Hexadecimal and Binary Integer Constants
+@subsection Hexadecimal and Binary Integer Constants
+
+The use of hexadecimal or binary notation to define a number will automatically
+create an unsigned integer using a representation that is just large enough to
+hold the specified value.  For example:
+
+@example
+@group
+0b101        # uint8
+0x100        # uint16
+0xDEADBEEF   # uint32
+0x1DEADBEEF  # uint64
+@end group
+@end example
+
+The storage class can be specified by adding a suffix.  Use @samp{s} for signed
+integers and @samp{u} for unsigned integers along with a size (@samp{8},
+@samp{16}, @samp{32}, @samp{64}).  The use of the underscore separator @samp{_}
+can improve readability.  For example:
+
+@example
+@group
+0b101s16        # int16
+0b101_s16       # int16, value and representation separated
+0xDEADBEEFs32   # int32
+0xDEADBEEF_u64  # uint64
+@end group
+@end example
+
+Note that when defining matrices of integer constants the overall matrix will
+have the storage class of its first element.  The matrix
+@code{[0x1; 0x100; 0x10000]} will be of type @code{uint8} and the larger values
+will be truncated because of the saturation semantics of integer values.  To
+avoid this issue either: 1) declare the first integer to be of the desired size
+such as @code{0x1u32; 0x100; 0x10000]}, or 2) pad constants in array
+expressions with leading zeros so that they use the same number of digits for
+each value such as @code{[0x00_00_01; 0x00_01_00; 0x01_00_00]}.
 
 @node Integer Arithmetic
 @subsection Integer Arithmetic
@@ -617,8 +659,8 @@ when converted.
 While many numerical computations can't be carried out in integers,
 Octave does support basic operations like addition and multiplication
 on integers.  The operators @code{+}, @code{-}, @code{.*}, and @code{./}
-work on integers of the same type.  So, it is possible to add two 32 bit
-integers, but not to add a 32 bit integer and a 16 bit integer.
+work on integers of the same type.  So, it is possible to add two 32-bit
+integers, but not to add a 32-bit integer and a 16-bit integer.
 
 When doing integer arithmetic one should consider the possibility of
 underflow and overflow.  This happens when the result of the computation

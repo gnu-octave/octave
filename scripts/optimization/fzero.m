@@ -34,13 +34,13 @@
 ## @var{fcn} is a function handle, inline function, or string containing the
 ## name of the function to evaluate.
 ##
-## @var{x0} should be a two-element vector specifying two points which
-## bracket a zero.  In other words, there must be a change in sign of the
-## function between @var{x0}(1) and @var{x0}(2).  More mathematically, the
-## following must hold
+## @var{x0} should be a two-element vector specifying two points which bracket
+## a zero.  In other words, there must be a change in sign of the function
+## between @var{x0}(1) and @var{x0}(2).  More mathematically, the following
+## must hold
 ##
 ## @example
-## sign (@var{fcn}(@var{x0}(1))) * sign (@var{fcn}(@var{x0}(2))) <= 0
+## sign (@var{fcn} (@var{x0}(1))) * sign (@var{fcn} (@var{x0}(2))) <= 0
 ## @end example
 ##
 ## If @var{x0} is a single scalar then several nearby and distant values are
@@ -82,24 +82,33 @@
 ##  Maximum number of iterations or function evaluations has been reached.
 ##
 ## @item -1
-## The algorithm has been terminated by a user @code{OutputFcn}.
+##  The algorithm has been terminated by a user @code{OutputFcn}.
 ##
 ## @item -5
-## The algorithm may have converged to a singular point.
+##  The algorithm may have converged to a singular point.
+##
+## @item -6
+##  No valid initial bracketing with a sign change found.
 ## @end itemize
 ##
 ## @var{output} is a structure containing runtime information about the
 ## @code{fzero} algorithm.  Fields in the structure are:
 ##
 ## @itemize
+## @item intervaliterations
+##  Number of iterations searching for a bracketing interval.
+##
 ## @item iterations
-##  Number of iterations through loop.
+##  Number of iterations searching for a zero.
 ##
 ## @item @nospell{funcCount}
 ##  Number of function evaluations.
 ##
 ## @item algorithm
 ##  The string @qcode{"bisection, interpolation"}.
+##
+## @item message
+##  A string with the final status of the algorithm.
 ##
 ## @item bracketx
 ##  A two-element vector with the final bracketing of the zero along the
@@ -109,7 +118,13 @@
 ##  A two-element vector with the final bracketing of the zero along the
 ## y-axis.
 ## @end itemize
-## @seealso{optimset, fsolve}
+##
+## Programming Notes: The algorithm relies on the function crossing the x-axis
+## and having both positive and negative values.  It will not generally work
+## for functions which only touch the x-axis, e.g., @math{x^2}.  The function
+## will generally be faster if a 2-element bracketing interval @var{x0} is
+## supplied since no interval search will be conducted.
+## @seealso{fsolve, fminbnd, optimset}
 ## @end deftypefn
 
 ## This is essentially the @nospell{ACM} algorithm 748: Enclosing Zeros of
@@ -117,7 +132,7 @@
 ## Transactions on Mathematical Software, Vol. 21, No. 3, September 1995.
 ## Although the workflow should be the same, the structure of the algorithm has
 ## been transformed non-trivially; instead of the authors' approach of
-## sequentially calling building blocks subprograms we implement here a
+## sequentially calling building block subprograms we implement here a
 ## FSM version using one interior point determination and one bracketing
 ## per iteration, thus reducing the number of temporary variables and
 ## simplifying the algorithm structure.  Further, this approach reduces
@@ -161,8 +176,11 @@ function [x, fval, info, output] = fzero (fcn, x0, options = struct ())
   maxfev = optimget (options, "MaxFunEvals", Inf);
   maxiter = optimget (options, "MaxIter", Inf);
   outfcn = optimget (options, "OutputFcn");
+  have_outfcn = ! isempty (outfcn);
   tolx = optimget (options, "TolX", eps);
 
+  ## FIXME: This "constant" is used twice, but no apparent reason why it
+  ## shouldn't just be a fixed value in the code.
   mu = 0.5;
 
   if (funvalchk)
@@ -171,53 +189,55 @@ function [x, fval, info, output] = fzero (fcn, x0, options = struct ())
   endif
 
   info = 0;  # The default exit flag if number of iterations exceeded.
-  niter = 0;
-  nfev = 0;
-
+  nint = 0;  # number of interval searches if only one point x0 given
+  niter = 0; # number of iterations of search algorithm
+  nfev = 0;  # number of function evaluations
   x = fval = a = fa = b = fb = NaN;
 
-  ## Prepare...
+  ## Prepare initial bracket [a,b] around a change in sign
   a = x0(1);
   fa = fcn (a);
   nfev = 1;
-  if (length (x0) > 1)
+  if (numel (x0) > 1)
+    ## fzero called with initial bracket x0 = [a,b]
     b = x0(2);
     fb = fcn (b);
     nfev += 1;
   else
-    ## Try to find a value for b which brackets a zero-crossing
-    if (displev == 1)
-      printf ( ...
-        "\nSearch for an interval around %g containing a sign change:\n", a);
-      printf (" Fcn-count    a          f(a)             b          ");
-      printf ("f(b)        Procedure\n");
-      fmt_str = " %4d  %13.6g %13.6g %13.6g %13.6g   %s\n";
-    endif
-
+    ## Only a given.  Try to find a value for b which brackets a zero-crossing.
     ## For very small values, switch to absolute rather than relative search
     if (abs (a) < .001)
       aa = ifelse (a == 0, 0.1, sign (a) * 0.1);
     else
       aa = a;
     endif
+
     if (displev == 1)
+      printf ("\nSearch for an interval around %g containing a sign change:\n", a);
+      printf (" Fcn-count       a           f(a)            b           f(b)        Procedure\n");
+      fmt_str = " %4d     %13.6g %13.6g %13.6g %13.6g    %s\n";
       printf (fmt_str, nfev, a, fa, a, fa, "initial interval");
     endif
+
+    info = -6;  # Preset error condition as bracket not found
     ## Search in an ever-widening range around the initial point.
     for srch = [-.01 +.025 -.05 +.10 -.25 +.50 -1 +2.5 -5 +10 -50 +100 -500 +1000]
       b = aa + aa*srch;
+      nint += 1;
       fb = fcn (b);
       nfev += 1;
       if (displev == 1)
         printf (fmt_str, nfev, a, fa, b, fb, "search");
       endif
       if (sign (fa) * sign (fb) <= 0)
+        info = 0;
         break;
       endif
     endfor
   endif
 
   if (b < a)
+    ## Swap a and b so that a is lower bound and b is upper bound
     u = a;
     a = b;
     b = u;
@@ -227,14 +247,24 @@ function [x, fval, info, output] = fzero (fcn, x0, options = struct ())
     fb = fu;
   endif
 
-  if (! (sign (fa) * sign (fb) <= 0))
+  if (info == 0 && ! (sign (fa) * sign (fb) <= 0))
     error ("Octave:fzero:bracket", "fzero: not a valid initial bracketing");
   endif
 
   if (displev == 1)
     printf ("\nSearch for a zero in the interval [%g, %g]:\n", a, b);
-    disp (" Fcn-count    x          f(x)             Procedure");
-    fmt_str = " %4d  %13.6g %13.6g        %s\n";
+    disp (" Fcn-count       x           f(x)        Procedure");
+    fmt_str = " %4d     %13.6g %13.6g    %s\n";
+  endif
+
+  ## Call user OutputFcn first time with 'init' state
+  if (have_outfcn)
+    optv.funccount = nfev;
+    optv.fval = [];
+    optv.iteration = 0;
+    if (outfcn ([], optv, "init"))
+      info = -1;
+    endif
   endif
 
   slope0 = (fb - fa) / (b - a);
@@ -247,7 +277,7 @@ function [x, fval, info, output] = fzero (fcn, x0, options = struct ())
     fa = fb;
   endif
 
-  itype = 1;
+  itype = 1;  # "initial" iter indicator
 
   if (abs (fa) < abs (fb))
     u = a; fu = fa;
@@ -271,6 +301,9 @@ function [x, fval, info, output] = fzero (fcn, x0, options = struct ())
     switch (itype)
       case 1
         ## The initial test.
+        if (info != 0)
+          break;  # interval search or OutputFcn caused termination
+        endif
         if (b - a <= 2*(2 * abs (u) * macheps + tolx))
           x = u; fval = fu;
           info = 1;
@@ -286,7 +319,7 @@ function [x, fval, info, output] = fzero (fcn, x0, options = struct ())
         d = u; fd = fu;
         itype = 5;
       case {2, 3}
-        l = length (unique ([fa, fb, fd, fe]));
+        l = numel (unique ([fa, fb, fd, fe]));
         if (l == 4)
           ## Inverse cubic interpolation.
           q11 = (d - e) * fd / (fe - fd);
@@ -369,6 +402,7 @@ function [x, fval, info, output] = fzero (fcn, x0, options = struct ())
       d = a; fd = fa;
       a = c; fa = fc;
     elseif (fc == 0)
+      ## Found an exact zero, stop.
       a = b = c; fa = fb = fc;
       info = 1;
       break;
@@ -377,8 +411,8 @@ function [x, fval, info, output] = fzero (fcn, x0, options = struct ())
       error ("Octave:fzero:bracket", "fzero: zero point is not bracketed");
     endif
 
-    ## If there's an output function, use it now.
-    if (! isempty (outfcn))
+    ## Call user OutputFcn at end of each iteration
+    if (have_outfcn)
       optv.funccount = nfev;
       optv.fval = fval;
       optv.iteration = niter;
@@ -393,6 +427,7 @@ function [x, fval, info, output] = fzero (fcn, x0, options = struct ())
     else
       u = b; fu = fb;
     endif
+    ## Check whether algorithm has converged at end of every iteration
     if (b - a <= 2*(2 * abs (u) * macheps + tolx))
       info = 1;
       break;
@@ -406,6 +441,9 @@ function [x, fval, info, output] = fzero (fcn, x0, options = struct ())
       mba = mu * (b - a);
     endif
   endwhile
+
+  #############################################################  
+  ## Post-algorithm operations
 
   if (info == 1)
     ## Solution converged.  Pick 'a' or 'b' based on smallest residual y-value.
@@ -424,27 +462,48 @@ function [x, fval, info, output] = fzero (fcn, x0, options = struct ())
     endif
   endif
 
-  if (displev != 0)
+  ## Call user OutputFcn final time with 'done' state
+  if (have_outfcn)
+    optv.funccount = nfev;
+    optv.fval = fval;
+    optv.iteration = niter;
+    if (outfcn (x, optv, "done"))
+      info = -1;
+    endif
+  endif
+
+  if (displev != 0 || nargout == 4)
     switch (info)
       case 1
-        if (displev != 3)
-          disp ("\nAlgorithm converged.\n");
-        endif
+        msg = "Algorithm converged.";
+      case 0
+        msg = "Maximum number of iterations or function evaluations reached.";
       case -1
-        disp ("\nAlgorithm has been terminated by user.\n");
+        msg = "Algorithm terminated by user OutputFcn.";
       case -5
-        disp ("\nAlgorithm seemingly converged to a singular point.\n");
-      otherwise
-        disp ( ...
-          "\nMaximum number of iterations or function evaluations reached.\n");
+        msg = "Algorithm seemingly converged to a singular point.";
+      case -6
+        msg = "No valid initial bracketing with a sign change found.";
     endswitch
   endif
 
-  output.iterations = niter;
-  output.funcCount = nfev;
-  output.algorithm = "bisection, interpolation";
-  output.bracketx = [a, b];
-  output.brackety = [fa, fb];
+  if (displev != 0)
+    if (info != 1)
+      disp (["\n" msg "\n"]);
+    elseif (displev != 3)
+      disp (["\n" msg "\n"]);
+    endif
+  endif
+
+  if (nargout == 4)
+    output.intervaliterations = nint;
+    output.iterations = niter;
+    output.funcCount = nfev;
+    output.algorithm = "bisection, interpolation";
+    output.message = msg;
+    output.bracketx = [a, b];
+    output.brackety = [fa, fb];
+  endif
 
 endfunction
 
@@ -466,5 +525,61 @@ endfunction
 %! opt0 = optimset ("tolx", 0);
 %!assert (fzero (@cos, [0, 3], opt0), pi/2, 10*eps)
 %!assert (fzero (@(x) x^(1/3) - 1e-8, [0,1], opt0), 1e-24, 1e-22*eps)
+
 %!assert <*54445> (fzero (@ (x) x, 0), 0)
 %!assert <*54445> (fzero (@ (x) x + 1, 0), -1)
+
+## Test exit codes
+%!test
+%! ## Code 1 : Algorithm converged
+%! [~, ~, info] = fzero (@(x) x.^2 - 4, [1, 3]);
+%! assert (info, 1);
+
+%!test
+%! ## Code 0 : Maximum iterations exceeded
+%! opts.MaxIter = 1;
+%! [~, ~, info] = fzero (@sin, [-2, 1], opts);
+%! assert (info, 0);
+%! clear opts
+%! opts.MaxFunEvals = 1;
+%! [~, ~, info] = fzero (@sin, [-2, 1], opts);
+%! assert (info, 0);
+
+%!function stop = terminate_outputfcn1 (x, optv, state)
+%!  stop = true;
+%!endfunction
+%!function stop = terminate_outputfcn2 (x, optv, state)
+%!  stop = false;
+%!  if (strcmp (state, 'iter'))
+%!    stop = true;
+%!  endif
+%!endfunction
+%!test
+%! ## Code -1 : Algorithm terminated by OutputFcn in 'init' state
+%! opts.OutputFcn = @terminate_outputfcn1;
+%! [x, fval, info, output] = fzero (@sin, [-2, 1], opts);
+%! assert (info, -1);
+%! assert (x, NaN);
+%! assert (fval, NaN);
+%! assert (output.iterations, 0);
+%!test
+%! ## Code -1 : Algorithm terminated by OutputFcn in 'iter' state
+%! opts.OutputFcn = @terminate_outputfcn2;
+%! [x, fval, info, output] = fzero (@sin, [-2, 1], opts);
+%! assert (info, -1);
+%! assert (output.iterations, 1);
+
+%!test
+%! ## Code -5 : Algorithm converged to a singular point
+%! [~, ~, info] = fzero (@(x) 1./x, [-1, 1]);
+%! assert (info, -5);
+
+%!test
+%! ## Code -6 : No valid initial bracking found
+%! [~, ~, info] = fzero (@(x) x.^2 + 1, 0);
+%! assert (info, -6);
+
+## Test input validation
+%!error <Invalid call> fzero ()
+%!error <Invalid call> fzero (@sin)
+%!error <not a valid initial bracketing> fzero (@sin, [1, 2]) 

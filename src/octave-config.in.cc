@@ -74,7 +74,7 @@ static std::string help_msg =
   "  -p VAR, --print VAR   Print the value of the given configuration\n"
   "                        variable VAR.  Recognized variables are:\n"
   "\n"
-  "                          API_VERSION            LOCALARCHLIBDIR\n"
+  "                          API_VERSION            LOCALARCHLIBDIR\n"    
   "                          ARCHLIBDIR             LOCALFCNFILEDIR\n"    
   "                          BINDIR                 LOCALOCTFILEDIR\n"    
   "                          CANONICAL_HOST_TYPE    LOCALSTARTUPFILEDIR\n"

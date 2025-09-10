@@ -450,7 +450,7 @@ function [x, fval, info, output] = fzero (fcn, x0, options = struct ())
     endif
   endwhile
 
-  #############################################################  
+  #############################################################
   ## Post-algorithm operations
 
   if (info == 1)
@@ -590,4 +590,4 @@ endfunction
 ## Test input validation
 %!error <Invalid call> fzero ()
 %!error <Invalid call> fzero (@sin)
-%!error <not a valid initial bracketing> fzero (@sin, [1, 2]) 
+%!error <not a valid initial bracketing> fzero (@sin, [1, 2])

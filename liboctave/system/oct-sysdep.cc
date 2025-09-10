@@ -675,7 +675,7 @@ putenv_wrapper (const std::string& name, const std::string& value)
       ("putenv (%s) failed", new_env.c_str());
 #else
   // FIXME: Using setenv leaks memory, but so would using malloc and putenv.
- 
+
   if (octave_setenv_wrapper (name.c_str (), value.c_str (), 1) < 0)
     (*current_liboctave_error_handler)
       ("setenv (%s, %s) failed with error %d", name.c_str (), value.c_str (),

@@ -7,7 +7,7 @@
 # the strings to translate
 #
 # Syntax
-# 
+#
 #     update_external_sources  path-to-qt-src  path-to-qsci-src
 #
 # Parameter
@@ -41,14 +41,14 @@ QSCI=$2
 OCTQT="octave-qt"
 OCTQSCI="octave-qsci"
 
-if [ ! -d $QT ] 
+if [ ! -d $QT ]
 then
-    echo "Directory $QT does not exist." 
+    echo "Directory $QT does not exist."
     exit 1
 fi
-if [ ! -d $QSCI ] 
+if [ ! -d $QSCI ]
 then
-    echo "Directory $QSCI does not exist." 
+    echo "Directory $QSCI does not exist."
     exit 1
 fi
 
@@ -68,7 +68,7 @@ echo
 
 for file in $(find $OCTQSCI -maxdepth 1 -not -type d)
 do
-    bfile=`basename $file`  
+    bfile=`basename $file`
     find $QSCI -type f -name $bfile -exec cp -v -u "{}" $OCTQSCI \;
 done
 

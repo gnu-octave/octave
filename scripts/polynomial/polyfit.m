@@ -119,7 +119,7 @@ function [p, s, mu] = polyfit (x, y, n)
 
   scale_x = (nargout == 3);
   y_is_row_vector = isrow (y);
-  
+
   ## Reshape x and y into column vectors.
   x = x(:);
   y = y(:);
@@ -171,7 +171,7 @@ function [p, s, mu] = polyfit (x, y, n)
   ## Construct the Vandermonde matrix.
   v = vander (x, n+1);
   ## Reduce columns of matrix, rather than zero them, to improve qr results.
-  v = v(:, polymask);  
+  v = v(:, polymask);
 
   ## Solve by QR decomposition.
   [q, r, k] = qr (v, 0);  # Use '0' to create 'econ' factoring.

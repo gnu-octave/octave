@@ -259,7 +259,6 @@ optimize_permutation_matrix     = false
 optimize_range                  = false
 fixed_point_format              = true
 history_timestamp_format_string = "%%-- %D %I:%M %p --%%"
-print_empty_dimensions          = false
 print_struct_array_contents     = true
 save_default_options            = "-mat-binary"
 struct_levels_to_print          = 0

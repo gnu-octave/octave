@@ -538,18 +538,20 @@ endfunction
 %!assert <*54445> (fzero (@ (x) x + 1, 0), -1)
 
 ## Test exit codes
+%!shared optsilent
+%! optsilent = optimset ('Display', 'none');
 %!test
 %! ## Code 1 : Algorithm converged
-%! [~, ~, info] = fzero (@(x) x.^2 - 4, [1, 3]);
+%! [~, ~, info] = fzero (@(x) x.^2 - 4, [1, 3], optsilent);
 %! assert (info, 1);
 
 %!test
 %! ## Code 0 : Maximum iterations exceeded
-%! opts.MaxIter = 1;
+%! opts = optimset (optsilent, 'MaxIter', 1);
 %! [~, ~, info] = fzero (@sin, [-2, 1], opts);
 %! assert (info, 0);
 %! clear opts
-%! opts.MaxFunEvals = 1;
+%! opts = optimset (optsilent, 'MaxFunEvals', 1);
 %! [~, ~, info] = fzero (@sin, [-2, 1], opts);
 %! assert (info, 0);
 
@@ -564,7 +566,7 @@ endfunction
 %!endfunction
 %!test
 %! ## Code -1 : Algorithm terminated by OutputFcn in 'init' state
-%! opts.OutputFcn = @terminate_outputfcn1;
+%! opts = optimset (optsilent, 'OutputFcn', @terminate_outputfcn1);
 %! [x, fval, info, output] = fzero (@sin, [-2, 1], opts);
 %! assert (info, -1);
 %! assert (x, NaN);
@@ -572,19 +574,19 @@ endfunction
 %! assert (output.iterations, 0);
 %!test
 %! ## Code -1 : Algorithm terminated by OutputFcn in 'iter' state
-%! opts.OutputFcn = @terminate_outputfcn2;
+%! opts = optimset (optsilent, 'OutputFcn', @terminate_outputfcn2);
 %! [x, fval, info, output] = fzero (@sin, [-2, 1], opts);
 %! assert (info, -1);
 %! assert (output.iterations, 1);
 
 %!test
 %! ## Code -5 : Algorithm converged to a singular point
-%! [~, ~, info] = fzero (@(x) 1./x, [-1, 1]);
+%! [~, ~, info] = fzero (@(x) 1./x, [-1, 1], optsilent);
 %! assert (info, -5);
 
 %!test
 %! ## Code -6 : No valid initial bracking found
-%! [~, ~, info] = fzero (@(x) x.^2 + 1, 0);
+%! [~, ~, info] = fzero (@(x) x.^2 + 1, 0, optsilent);
 %! assert (info, -6);
 
 ## Test input validation

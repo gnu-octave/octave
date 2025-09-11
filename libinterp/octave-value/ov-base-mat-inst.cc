@@ -133,7 +133,7 @@ octave_base_matrix<Cell>::fast_elem_insert (octave_idx_type n,
 // importantly Octave builds and runs correctly with "-fvisibility=hidden".
 // Therefore, this seems like a false positive that can be ignored.  Multiple
 // attempts have been made to try and locate the prior definition, but without
-// success. 
+// success.
 #ifdef HAVE_PRAGMA_GCC_DIAGNOSTIC
 #  pragma GCC diagnostic push
 #  pragma GCC diagnostic ignored "-Wattributes"

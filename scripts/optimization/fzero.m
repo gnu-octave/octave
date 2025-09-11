@@ -132,7 +132,7 @@
 ## Transactions on Mathematical Software, Vol. 21, No. 3, September 1995.
 ## Although the workflow should be the same, the structure of the algorithm has
 ## been transformed non-trivially; instead of the authors' approach of
-## sequentially calling building block subprograms we implement here a
+## sequentially calling building block subprograms we implement here an
 ## FSM version using one interior point determination and one bracketing
 ## per iteration, thus reducing the number of temporary variables and
 ## simplifying the algorithm structure.  Further, this approach reduces
@@ -221,6 +221,11 @@ function [x, fval, info, output] = fzero (fcn, x0, options = struct ())
 
     info = -6;  # Preset error condition as bracket not found
     ## Search in an ever-widening range around the initial point.
+    ## FIXME: Matlab does a much more exhaustive search moving both a and b and
+    ## increasing the range by approximately sqrt(2) each time.  This can
+    ## proceed for 1000's of function evaluations.  Octave does a quick search
+    ## and if no bracket is found returns control to the user to provide a
+    ## bracket.
     for srch = [-.01 +.025 -.05 +.10 -.25 +.50 -1 +2.5 -5 +10 -50 +100 -500 +1000]
       b = aa + aa*srch;
       nint += 1;
@@ -300,7 +305,7 @@ function [x, fval, info, output] = fzero (fcn, x0, options = struct ())
   while (niter < maxiter && nfev < maxfev)
     switch (itype)
       case 1
-        ## The initial test.
+        ## The initial test for termination.
         if (info != 0)
           break;  # interval search or OutputFcn caused termination
         endif
@@ -314,12 +319,15 @@ function [x, fval, info, output] = fzero (fcn, x0, options = struct ())
           c = u - (a - b) / (fa - fb) * fu;
         else
           ## Bisection step.
-          c = 0.5*(a + b);
+          c = 0.5 * (a + b);
         endif
         d = u; fd = fu;
         itype = 5;
       case {2, 3}
-        l = numel (unique ([fa, fb, fd, fe]));
+        ## l = numel (unique ([fa, fb, fd, fe]));
+        ## unique() code is heavyweight, replace with quick local version
+        uniq = sort ([fa, fb, fd, fe]);
+        l = 1 + sum (uniq(1:end-1) != uniq(2:end));
         if (l == 4)
           ## Inverse cubic interpolation.
           q11 = (d - e) * fd / (fe - fd);
@@ -359,19 +367,19 @@ function [x, fval, info, output] = fzero (fcn, x0, options = struct ())
         c = u - 2*(b - a)/(fb - fa)*fu;
         ## Bisect if too far.
         if (abs (c - u) > 0.5*(b - a))
-          c = 0.5 * (b + a);
+          c = 0.5 * (a + b);
         endif
         itype = 5;
       case 5
         ## Bisection step.
-        c = 0.5 * (b + a);
+        c = 0.5 * (a + b);
         itype = 2;
     endswitch
 
     ## Don't let c come too close to a or b.
     delta = 2*0.7*(2 * abs (u) * macheps + tolx);
     if ((b - a) <= 2*delta)
-      c = (a + b)/2;
+      c = 0.5 * (a + b);
     else
       c = max (a + delta, min (b - delta, c));
     endif
@@ -442,7 +450,7 @@ function [x, fval, info, output] = fzero (fcn, x0, options = struct ())
     endif
   endwhile
 
-  #############################################################  
+  #############################################################
   ## Post-algorithm operations
 
   if (info == 1)
@@ -530,18 +538,20 @@ endfunction
 %!assert <*54445> (fzero (@ (x) x + 1, 0), -1)
 
 ## Test exit codes
+%!shared optsilent
+%! optsilent = optimset ('Display', 'none');
 %!test
 %! ## Code 1 : Algorithm converged
-%! [~, ~, info] = fzero (@(x) x.^2 - 4, [1, 3]);
+%! [~, ~, info] = fzero (@(x) x.^2 - 4, [1, 3], optsilent);
 %! assert (info, 1);
 
 %!test
 %! ## Code 0 : Maximum iterations exceeded
-%! opts.MaxIter = 1;
+%! opts = optimset (optsilent, 'MaxIter', 1);
 %! [~, ~, info] = fzero (@sin, [-2, 1], opts);
 %! assert (info, 0);
 %! clear opts
-%! opts.MaxFunEvals = 1;
+%! opts = optimset (optsilent, 'MaxFunEvals', 1);
 %! [~, ~, info] = fzero (@sin, [-2, 1], opts);
 %! assert (info, 0);
 
@@ -556,7 +566,7 @@ endfunction
 %!endfunction
 %!test
 %! ## Code -1 : Algorithm terminated by OutputFcn in 'init' state
-%! opts.OutputFcn = @terminate_outputfcn1;
+%! opts = optimset (optsilent, 'OutputFcn', @terminate_outputfcn1);
 %! [x, fval, info, output] = fzero (@sin, [-2, 1], opts);
 %! assert (info, -1);
 %! assert (x, NaN);
@@ -564,22 +574,22 @@ endfunction
 %! assert (output.iterations, 0);
 %!test
 %! ## Code -1 : Algorithm terminated by OutputFcn in 'iter' state
-%! opts.OutputFcn = @terminate_outputfcn2;
+%! opts = optimset (optsilent, 'OutputFcn', @terminate_outputfcn2);
 %! [x, fval, info, output] = fzero (@sin, [-2, 1], opts);
 %! assert (info, -1);
 %! assert (output.iterations, 1);
 
 %!test
 %! ## Code -5 : Algorithm converged to a singular point
-%! [~, ~, info] = fzero (@(x) 1./x, [-1, 1]);
+%! [~, ~, info] = fzero (@(x) 1./x, [-1, 1], optsilent);
 %! assert (info, -5);
 
 %!test
 %! ## Code -6 : No valid initial bracking found
-%! [~, ~, info] = fzero (@(x) x.^2 + 1, 0);
+%! [~, ~, info] = fzero (@(x) x.^2 + 1, 0, optsilent);
 %! assert (info, -6);
 
 ## Test input validation
 %!error <Invalid call> fzero ()
 %!error <Invalid call> fzero (@sin)
-%!error <not a valid initial bracketing> fzero (@sin, [1, 2]) 
+%!error <not a valid initial bracketing> fzero (@sin, [1, 2])

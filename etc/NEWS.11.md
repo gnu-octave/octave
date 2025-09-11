@@ -112,8 +112,8 @@ from Octave 11.
         octave::initialized                          | octave::is_initialized
         octave::same_file                            | octave::sys::same_file
         octave::interpreter_initialized              | octave::interpreter_is_initialized
-        all_ok (Array<octave::idx_vector>&)          | 
-        idx_vector::bool ()                          | 
+        all_ok (Array<octave::idx_vector>&)          |
+        idx_vector::bool ()                          |
         octave_value (const Array<octave_value>& a)  | octave_value (const Cell&)
 
   - The `octave_value (const Array<octave_value>& a)` constructor was

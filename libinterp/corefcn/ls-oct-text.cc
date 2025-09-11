@@ -334,7 +334,7 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
       tc = load_inline_fcn (is, filename);
       return name;
     }
-  else if (SUBSTRING_COMPARE_EQ (typ, 0, 6, "object")) 
+  else if (SUBSTRING_COMPARE_EQ (typ, 0, 6, "object"))
     {
       // classdef object
       std::string class_nm = extract_keyword (is, "classname");

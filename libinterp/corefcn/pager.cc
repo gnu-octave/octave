@@ -538,14 +538,15 @@ Valid options are:
 
 @table @asis
 @item on
-Start recording a session in a file called @file{diary} in the current working
-directory.
+Start or resume recording a session.  If no @var{filename} has previously been
+specified recording will take place in a file called @file{diary} in the
+current working directory.
 
 @item off
 Stop recording the session in the diary file.
 
 @item @var{filename}
-Record the session in the file named @var{filename}.
+Start or resume recording the session in the file named @var{filename}.
 @end table
 
 With no input or output arguments, @code{diary} toggles the current diary

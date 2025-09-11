@@ -2225,23 +2225,17 @@ interpreter::maximum_braindamage ()
   PS1 (">> ");
   PS2 ("");
   PS4 ("");
-
-  m_load_save_system.crash_dumps_octave_core (false);
-  m_load_save_system.save_default_options ("-mat-binary");
-
-  m_history_system.timestamp_format_string ("%%-- %D %I:%M %p --%%");
-
   error_system& es = get_error_system ();
-
   es.beep_on_error (true);
-
   Fconfirm_recursive_rmdir (ovl (false));
+  m_load_save_system.crash_dumps_octave_core (false);
   Foptimize_diagonal_matrix (ovl (false));
   Foptimize_permutation_matrix (ovl (false));
   Foptimize_range (ovl (false));
   Ffixed_point_format (ovl (true));
-  Fprint_empty_dimensions (ovl (false));
+  m_history_system.timestamp_format_string ("%%-- %D %I:%M %p --%%");
   Fprint_struct_array_contents (ovl (true));
+  m_load_save_system.save_default_options ("-mat-binary");
   Fstruct_levels_to_print (ovl (0));
 
   es.disable_warning ("Octave:abbreviated-property-match");

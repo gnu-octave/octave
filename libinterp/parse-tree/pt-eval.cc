@@ -5677,15 +5677,13 @@ Valid options are:
 Enable echoing of commands as they are executed in script files.
 
 @item off
-Disable echoing of commands as they are executed in script files.
+Disable echoing of commands as they are executed in script and function files.
 
 @item on all
-Enable echoing of commands as they are executed in script files and
-functions.
+Enable echoing of commands as they are executed in script files and functions.
 
 @item off all
-Disable echoing of commands as they are executed in script files and
-functions.
+Disable echoing of commands as they are executed in script files and functions.
 
 @item @var{function} on
 Enable echoing of commands as they are executed in the named function.
@@ -5697,6 +5695,10 @@ Disable echoing of commands as they are executed in the named function.
 @noindent
 With no arguments, @code{echo} toggles the current echo state.
 
+Programming Note: Echoing all commands can be a simple way to debug an easy
+coding problem.  However, the amount of output can grow quite quickly.  For
+more difficult problems the built-in debugger (@code{help debug}) is more
+useful.
 @seealso{PS4}
 @end deftypefn */)
 {

@@ -544,7 +544,7 @@ v = cellfun (@@det, C);         # 40% faster
             error ("cellfun: input cell dimensions mismatch");
         }
       else
-        inputovl(j) = cinputs[j](0);  // scalar, pre-fill inputovl 
+        inputovl(j) = cinputs[j](0);  // scalar, pre-fill inputovl
     }
 
   // Apply function
@@ -583,7 +583,7 @@ v = cellfun (@@det, C);         # 40% faster
           else if (expected_nargout == 0 && y_nel > 0 && y(0).is_defined ())
             error ("cellfun: function returned unexpected number of values");
 
-          // Copy loop results to output if necessary 
+          // Copy loop results to output if necessary
           if (expected_nargout > 0)
             {
               if (count == 0)
@@ -623,7 +623,7 @@ v = cellfun (@@det, C);         # 40% faster
             }
         }
 
-      // Resize return array and fill with collected results 
+      // Resize return array and fill with collected results
       retval.resize (nargout1);
       for (int j = 0; j < nargout1; j++)
         {
@@ -1038,11 +1038,11 @@ v = cellfun (@@det, C);         # 40% faster
 %!                 {false, false, false, false})
 
 ## Output values of different sizes
-%!test <*67217> 
+%!test <*67217>
 %! fail ("cellfun (@(x) x, {5, [1, 2]})", "all values must be scalars");
 
 ## Output values of different types
-%!test <*67217> 
+%!test <*67217>
 %! fail ("cellfun (@(x) x, {5, true})", "all values should be of the same type");
 
 %!function retval = __errfcn (S, varargin)

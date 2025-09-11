@@ -489,7 +489,7 @@ octave_classdef::subsref (const std::string& type,
           m_count++;
           args(0) = octave_value (this);
 
-          if (nargout <= 0) 
+          if (nargout <= 0)
             {
               // If the last index type is not '()', the final value of nargout is
               // unknown. Try to get its value

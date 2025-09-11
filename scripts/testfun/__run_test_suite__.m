@@ -71,8 +71,8 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
       tot_cpu_tm = cputime ();
       tot_tic_tag = tic ();
       test ("", "explain", fid);
-      puts ("\nIntegrated test scripts:\n\n");
-      printf ("%101s\n", "[ CPU    /  CLOCK ]");
+      puts ("\nIntegrated test scripts:\n");
+      printf ("%101s\n", "[ CPU    |  CLOCK ]");
       for i = 1:length (fcndirs)
         [p, n, xf, xb, sk, rtsk, rgrs] = run_test_dir (fid, fcndirs{i}, false);
         dp += p;
@@ -96,7 +96,7 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
       endfor
       tot_clock_tm = toc (tot_tic_tag);
       tot_cpu_tm = cputime () - tot_cpu_tm;
-      printf ("%80s  [%6.1fs / %6.1fs]", "total time (CPU / CLOCK)", tot_cpu_tm, tot_clock_tm);
+      printf ("%80s  [%6.1fs | %6.1fs]", "total time (CPU | CLOCK)", tot_cpu_tm, tot_clock_tm);
       if (! isempty (summary_failure_info))
         puts ("\nFailure Summary:\n\n");
         for i = 1:numel (summary_failure_info)
@@ -286,7 +286,7 @@ function fail_info = print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs, cpu_tm, cloc
   if ((n + sk + rtsk + rgrs) > 0)
     printf (" pass %4d/%-4d", p, n);
     if (cpu_tm != 0 || clock_tm != 0)
-      printf (" [%6.3fs / %6.3fs]", cpu_tm, clock_tm);
+      printf (" [%6.3fs | %6.3fs]", cpu_tm, clock_tm);
     endif
     nfail = n - p - xf - xb - rgrs;
     if (nfail > 0)

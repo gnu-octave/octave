@@ -3901,6 +3901,8 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
     push_start_state (INITIAL);
   }
 
+
+#if defined (OCTAVE_PARSER_DEBUG)
   void
   base_lexer::display_start_state () const
   {
@@ -3949,6 +3951,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
         break;
       }
   }
+#endif
 
   bool
   base_lexer::maybe_unput_comma_before_unary_op (int tok_id)

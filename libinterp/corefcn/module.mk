@@ -83,7 +83,6 @@ COREFCN_INC = \
   %reldir%/pr-flt-fmt.h \
   %reldir%/pr-output.h \
   %reldir%/procstream.h \
-  %reldir%/settings.h \
   %reldir%/sighandlers.h \
   %reldir%/sparse-xdiv.h \
   %reldir%/sparse-xpow.h \
@@ -253,7 +252,6 @@ COREFCN_SRC = \
   %reldir%/rcond.cc \
   %reldir%/regexp.cc \
   %reldir%/schur.cc \
-  %reldir%/settings.cc \
   %reldir%/sighandlers.cc \
   %reldir%/sparse-xdiv.cc \
   %reldir%/sparse-xpow.cc \

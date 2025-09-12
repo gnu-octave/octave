@@ -37,6 +37,9 @@ and after the nested call.
 //
 ////////////////////////////////////////////////////////////////////////
 
+// Uncomment to enable parser debugging
+// #define OCTAVE_PARSER_DEBUG 1
+
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
@@ -1904,6 +1907,7 @@ octave_free (void *ptr, yyscan_t)
   std::free (ptr);
 }
 
+#if defined (OCTAVE_PARSER_DEBUG)
 static void
 display_character (char c)
 {
@@ -2049,8 +2053,15 @@ display_character (char c)
         break;
       }
 }
+#endif
 
 OCTAVE_BEGIN_NAMESPACE(octave)
+
+#if defined (OCTAVE_PARSER_DEBUG)
+static bool V__lexer_debug_flag__ = false;
+static bool V__display_tokens__ = false;
+static std::size_t V__token_count__ = 0;
+#endif
 
 DEFUN (iskeyword, args, ,
        doc: /* -*- texinfo -*-
@@ -2114,6 +2125,71 @@ If @var{name} is omitted, return a list of keywords.
 %!error <NAME must be a string> iskeyword (1)
 
 */
+
+DEFUN (__lexer_debug_flag__, args, nargout,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} __lexer_debug_flag__ ()
+@deftypefnx {} {@var{old_val} =} __lexer_debug_flag__ (@var{new_val})
+@deftypefnx {} {@var{old_val} =} __lexer_debug_flag__ (@var{new_val}, "local")
+Query or set the internal flag that determines whether Octave's lexer prints
+debug information as it processes an expression.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{__display_tokens__, __token_count__, __parser_debug_flag__}
+@end deftypefn */)
+{
+#if defined (OCTAVE_PARSER_DEBUG)
+  return set_internal_variable (V__lexer_debug_flag__, args, nargout,
+                                "__lexer_debug_flag__");
+#else
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+
+  error ("__lexer_debug_flag__: support for debugging the lexer was disabled when Octave was built");
+#endif
+}
+
+DEFUN (__display_tokens__, args, nargout,
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} __display_tokens__ ()
+@deftypefnx {} {@var{old_val} =} __display_tokens__ (@var{new_val})
+@deftypefnx {} {@var{old_val} =} __display_tokens__ (@var{new_val}, "local")
+Query or set the internal variable that determines whether Octave's
+lexer displays tokens as they are read.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{__token_count__, __lexer_debug_flag__, __parser_debug_flag__}
+@end deftypefn */)
+{
+#if defined (OCTAVE_PARSER_DEBUG)
+  return set_internal_variable (V__display_tokens__, args, nargout,
+                                "__display_tokens__");
+#else
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+
+  error ("__display_tokens__: support for debugging the lexer was disabled when Octave was built");
+#endif
+}
+
+DEFUN (__token_count__, , ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{n} =} __token_count__ ()
+Return the number of language tokens processed since Octave startup.
+@seealso{__display_tokens__, __lexer_debug_flag__, __parser_debug_flag__}
+@end deftypefn */)
+{
+#if defined (OCTAVE_PARSER_DEBUG)
+  return octave_value (V__token_count__);
+#else
+  error ("__token_count__: support for debugging the lexer was disabled when Octave was built");
+#endif
+}
+
 
   void
   lexical_feedback::symbol_table_context::clear ()
@@ -2521,25 +2597,28 @@ looks_like_shebang (const std::string& s)
   {
     int c = yyinput (m_scanner);
 
-    if (debug_flag ())
+#if defined (OCTAVE_PARSER_DEBUG)
+    if (V__lexer_debug_flag__)
       {
         std::cerr << "I: ";
         display_character (c);
         std::cerr << std::endl;
       }
+#endif
 
     // Convert CRLF into just LF and single CR into LF.
-
     if (c == '\r')
       {
         c = yyinput (m_scanner);
 
-        if (debug_flag ())
+#if defined (OCTAVE_PARSER_DEBUG)
+        if (V__lexer_debug_flag__)
           {
             std::cerr << "I: ";
             display_character (c);
             std::cerr << std::endl;
           }
+#endif
 
         if (c != '\n')
           {
@@ -2556,13 +2635,14 @@ looks_like_shebang (const std::string& s)
   {
     if (c != EOF)
       {
-        if (debug_flag ())
+#if defined (OCTAVE_PARSER_DEBUG)
+        if (V__lexer_debug_flag__)
           {
             std::cerr << "U: ";
             display_character (c);
             std::cerr << std::endl;
           }
-
+#endif
         yyunput (c, buf, m_scanner);
       }
   }
@@ -3619,6 +3699,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
     return m_tokens.size ();
   }
 
+#if defined (OCTAVE_PARSER_DEBUG)
   void
   base_lexer::display_token (int tok_id)
   {
@@ -3746,6 +3827,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
         break;
       }
   }
+#endif
 
   void
   base_lexer::fatal_error (const char *msg)
@@ -3753,33 +3835,21 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
     ::error ("fatal lexer error: %s", msg);
   }
 
-  bool
-  base_lexer::debug_flag () const
-  {
-    settings& stgs = m_interpreter.get_settings ();
-    return stgs.lexer_debug_flag ();
-  }
-
-  bool
-  base_lexer::display_tokens () const
-  {
-    settings& stgs = m_interpreter.get_settings ();
-    return stgs.display_tokens ();
-  }
-
   void
   base_lexer::increment_token_count ()
   {
-    settings& stgs = m_interpreter.get_settings ();
-    stgs.increment_token_count ();
-
     m_token_count++;
+
+#if defined (OCTAVE_PARSER_DEBUG)
+    ++V__token_count__;
+#endif
   }
 
   void
   base_lexer::lexer_debug (const char *pattern)
   {
-    if (debug_flag ())
+#if defined (OCTAVE_PARSER_DEBUG)
+    if (V__lexer_debug_flag__)
       {
         std::cerr << std::endl;
 
@@ -3788,6 +3858,10 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
         std::cerr << "P: " << pattern << std::endl;
         std::cerr << "T: " << flex_yytext () << std::endl;
       }
+#else
+    // No code.  Compiler should optimize this away.
+    octave_unused_parameter (pattern);
+#endif
   }
 
   bool
@@ -3981,16 +4055,17 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   int
   base_lexer::show_token (int tok_id)
   {
-
-    if (display_tokens ())
+#if defined (OCTAVE_PARSER_DEBUG)
+    if (V__display_tokens__)
       display_token (tok_id);
 
-    if (debug_flag ())
+    if (V__lexer_debug_flag__)
       {
         std::cerr << "R: ";
         display_token (tok_id);
         std::cerr << std::endl;
       }
+#endif
 
     return tok_id;
   }

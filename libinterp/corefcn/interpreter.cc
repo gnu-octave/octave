@@ -76,7 +76,6 @@
 #include "pt-eval.h"
 #include "pt-jump.h"
 #include "pt-stmt.h"
-#include "settings.h"
 #include "sighandlers.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
@@ -434,7 +433,6 @@ interpreter::interpreter (application *app_context)
     m_atexit_fcns (),
     m_display_info (),
     m_environment (),
-    m_settings (),
     m_evaluator (*this),
     m_help_system (*this),
     m_input_system (*this),

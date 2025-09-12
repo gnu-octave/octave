@@ -29,7 +29,12 @@
 
 %{
 
-#define YYDEBUG 1
+// Uncomment to enable parser debugging
+// #define OCTAVE_PARSER_DEBUG 1
+#if defined (OCTAVE_PARSER_DEBUG)
+  // Magic variable used by Bison
+  #define OCTAVE_DEBUG 1
+#endif
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -6278,6 +6283,7 @@ prints debug information as it processes an expression.
 @seealso{__lexer_debug_flag__}
 @end deftypefn */)
 {
+#if defined (OCTAVE_PARSER_DEBUG)
   octave_value retval;
 
   bool debug_flag = octave_debug;
@@ -6288,6 +6294,14 @@ prints debug information as it processes an expression.
   octave_debug = debug_flag;
 
   return retval;
+#else
+
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+
+  error ("__parser_debug_flag__: support for debugging the parser was disabled when Octave was built");
+
+#endif
 }
 
 DEFMETHOD (__parse_file__, interp, args, ,

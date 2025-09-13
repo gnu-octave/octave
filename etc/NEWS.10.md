@@ -1,3 +1,62 @@
+Summary of bugs fixed for version 10.3.0 (tbd):
+-----------------------------------------------------
+
+## Improvements and fixes
+
+- Correctly interpret command line option `--no-init-user` (bug #67187).
+- `image`: Avoid error if image data is empty (bug #65866).
+- Respect logarithmic scaling of axis when plotting scatter objects
+  (bug #67239).
+- Avoid segmentation fault with display with too low color depth (bug #65866).
+- Store save type in `binary-float` format also for empty matrices
+  (bug #67271).
+- Fix ASAN bug in liboctave `svd` code caused by use of
+  `std::vector::reserve ()` (bug #67248).
+- `mldivide`: Correctly apply permutation for sparse matrix with permuted lower
+  form.
+- Allow empty field names in `struct` and `cell2struct` functions (bug #67255).
+- `containers.Map`: Allow empty `char` arrays as keys (bug #67255).
+- Fix ASAN warnings in `__ilu__.cc` (bug #67249).
+- `rose.m`: Fix regression where output variables always returned (bug #48889).
+- `rose.m`: Overhaul function to resolve incorrect custom bin placement
+  (bug #67280).
+- Clarify the `"Octave:language-extension"` warning message for comparing
+  complex numbers that the compatibility difference is that Octave considers
+  the complex part of the number (bug #67257).
+- `delaunayn.m`: Check inputs for non-finite values to avoid segfault in QHull
+  (bug #67315).
+- Fix calculation of "nearest integer" function (bug #67339).
+- `struct2hdl.m`: Use a consistent output type for `valcomp` (bug #67217).
+- Avoid crash when Octave invoked with `-d` argument.
+- Skip saving too large arrays in `-binary` format (bug #67382).
+- Write and read large array in chunks for `-binary` file format (bug #67382).
+- Correctly parse `clear ?` (bug #67459).
+
+### GUI
+
+- Fix `SIGABRT` on exit of GUI (bug #67230).
+- Fix focus when reopening editor file from MRU list (bug #67384).
+
+### Build system / Tests
+
+- Add tests for shadowed functions in core Octave (bug #46849).
+- Fix building Java on solaris2 platforms (bug #67442).
+
+### Documentation
+
+- Expand on orthogonality properties of the cross product (bug #67186).
+- Remove newline before `@tex` invocation for better alignment.
+- Remove notes in documentation scheduled for deletion in version 9.1.
+- Clarify use of "interpreter" property when printing.
+- Improve TeX output for vector calculus functions.
+- Explain more clearly uses and pitfalls of `NA`.
+- Add documentation for hexadecimal and binary integer constants (bug #67645).
+- Use `IEEE@tie{}754` when referring to floating point standard.
+- `diary`: Clarify documentation.
+- `echo`: Clarify documentation.
+- Update manual for `--traditional` option to note that `PS4` is set.
+
+
 Summary of bugs fixed for version 10.2.0 (2025-05-29):
 -----------------------------------------------------
 
@@ -40,9 +99,6 @@ Summary of bugs fixed for version 10.2.0 (2025-05-29):
 - Avoid parse error for empty lines in debug mode (bug #67108).
 - Check if effective SOVERSION is exported from .mex file libraries
   (bug #67163).
-- Clarify the `"Octave:language-extension" warning message for comparing
-  complex numbers that the compatibility difference is that Octave considers
-  the complex part of the number (bug #67257).
 
 ### GUI
 

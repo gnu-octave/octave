@@ -43,7 +43,7 @@
 #include "variables.h"
 
 // Extended debugging.
-#define DEBUG_QUADCC 0
+#define OCTAVE_QUADCC_DEBUG 0
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -1800,7 +1800,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
       m = (iv->a + iv->b) / 2;
       h = (iv->b - iv->a) / 2;
 
-#if (DEBUG_QUADCC)
+#if (OCTAVE_QUADCC_DEBUG)
       printf ("quadcc: processing ival %i (of %i) with [%e,%e] int=%e, err=%e, depth=%i\n",
               heap[0], nivals, iv->a, iv->b, iv->igral, iv->err, iv->depth);
 #endif
@@ -1899,7 +1899,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
           || (m + h*xi[31]) >= (m + h*xi[32])
           || iv->err < fabs (iv->igral) * DROP_RELTOL)
         {
-#if (DEBUG_QUADCC)
+#if (OCTAVE_QUADCC_DEBUG)
           printf ("quadcc: dropping ival %i (of %i) with [%e,%e] int=%e, err=%e, depth=%i\n",
                   heap[0], nivals, iv->a, iv->b, iv->igral, iv->err, iv->depth);
 #endif
@@ -2178,7 +2178,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
       while (nivals > cquad_heapsize - 2)
         {
           iv = &(ivals[heap[nivals - 1]]);
-#if (DEBUG_QUADCC)
+#if (OCTAVE_QUADCC_DEBUG)
           printf ("quadcc: dropping ival %i (of %i) with [%e,%e] int=%e, err=%e, depth=%i\n",
                   heap[0], nivals, iv->a, iv->b, iv->igral, iv->err, iv->depth);
 #endif
@@ -2197,7 +2197,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
         }
     }
 
-#if (DEBUG_QUADCC)
+#if (OCTAVE_QUADCC_DEBUG)
   // Dump the contents of the heap.
   for (i = 0; i < nivals; i++)
     {

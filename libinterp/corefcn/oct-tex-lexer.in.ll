@@ -24,6 +24,8 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
+// #define OCTAVE_TEX_DEBUG 1
+
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
@@ -66,7 +68,6 @@
 #include "unistd-wrappers.h"
 
 #include "text-engine.h"
-
 // oct-tex-parser.h must be included after text-engine.h
 #include "oct-tex-parser.h"
 
@@ -216,41 +217,41 @@ octave_tex_free (void *ptr, yyscan_t)
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  bool text_parser_tex::init_lexer (const std::string& s)
-  {
-    if (! m_scanner)
-      octave_tex_lex_init (&m_scanner);
+bool text_parser_tex::init_lexer (const std::string& s)
+{
+  if (! m_scanner)
+    octave_tex_lex_init (&m_scanner);
 
-    if (m_scanner)
-      {
-        if (m_buffer_state)
-          {
-            octave_tex__delete_buffer (reinterpret_cast<YY_BUFFER_STATE> (m_buffer_state),
-                                       m_scanner);
-            m_buffer_state = nullptr;
-          }
+  if (m_scanner)
+    {
+      if (m_buffer_state)
+        {
+          octave_tex__delete_buffer (reinterpret_cast<YY_BUFFER_STATE> (m_buffer_state),
+                                     m_scanner);
+          m_buffer_state = nullptr;
+        }
 
-        m_buffer_state = octave_tex__scan_bytes (s.data (), s.length (),
-                                                 m_scanner);
-      }
+      m_buffer_state = octave_tex__scan_bytes (s.data (), s.length (),
+                                               m_scanner);
+    }
 
-    return (m_scanner && m_buffer_state);
-  }
+  return (m_scanner && m_buffer_state);
+}
 
-  void text_parser_tex::destroy_lexer ()
-  {
-    if (m_buffer_state)
-      {
-        octave_tex__delete_buffer (reinterpret_cast<YY_BUFFER_STATE> (m_buffer_state),
-                                   m_scanner);
-        m_buffer_state = nullptr;
-      }
+void text_parser_tex::destroy_lexer ()
+{
+  if (m_buffer_state)
+    {
+      octave_tex__delete_buffer (reinterpret_cast<YY_BUFFER_STATE> (m_buffer_state),
+                                 m_scanner);
+      m_buffer_state = nullptr;
+    }
 
-    if (m_scanner)
-      {
-        octave_tex_lex_destroy (m_scanner);
-        m_scanner = nullptr;
-      }
-  }
+  if (m_scanner)
+    {
+      octave_tex_lex_destroy (m_scanner);
+      m_scanner = nullptr;
+    }
+}
 
 OCTAVE_END_NAMESPACE(octave)

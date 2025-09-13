@@ -45,8 +45,21 @@ Logger::Logger ()
 {
   QProcessEnvironment pe (QProcessEnvironment::systemEnvironment ());
 
-  if (pe.value ("QTHANDLES_DEBUG", "0") != "0")
+  if (pe.value ("OCTAVE_QTHANDLES_DEBUG", "0") != "0")
     m_debugEnabled = true;
+
+  // FIXME: Deprecated, remove in Octave 13.
+  if (pe.value ("QTHANDLES_DEBUG", "0") != "0")
+    {
+      m_debugEnabled = true;
+
+      static bool warned = false;
+      if (! warned)
+        {
+          qWarning ("The environment variable QTHANDLES_DEBUG is deprecated and will be removed from a future version of Octave, please use OCTAVE_QTHANDLES_DEBUG instead\n");
+          warned = true;
+        }
+    }
 }
 
 Logger::~Logger ()

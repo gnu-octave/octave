@@ -27,9 +27,9 @@
 #  include "config.h"
 #endif
 
-// #define DEBUG 1
+// #define OCTAVE_MEX_DEBUG 1
 
-#if defined (DEBUG)
+#if defined (OCTAVE_MEX_DEBUG)
 #  include <iostream>
 #endif
 
@@ -243,7 +243,7 @@ xmalloc (size_t n)
 {
   void *ptr = std::malloc (n);
 
-#if defined (DEBUG)
+#if defined (OCTAVE_MEX_DEBUG)
   std::cerr << "xmalloc (" << n << ") = " << ptr << std::endl;
 #endif
 
@@ -255,9 +255,8 @@ xrealloc (void *ptr, size_t n)
 {
   void *newptr = std::realloc (ptr, n);
 
-#if defined (DEBUG)
-  std::cerr << "xrealloc (" << ptr << ", " << n << ") = " << newptr
-            << std::endl;
+#if defined (OCTAVE_MEX_DEBUG)
+  std::cerr << "xrealloc (" << ptr << ", " << n << ") = " << newptr << std::endl;
 #endif
 
   return newptr;
@@ -266,7 +265,7 @@ xrealloc (void *ptr, size_t n)
 static void
 xfree (void *ptr)
 {
-#if defined (DEBUG)
+#if defined (OCTAVE_MEX_DEBUG)
   std::cerr << "xfree (" << ptr << ")" << std::endl;
 #endif
 

@@ -28,8 +28,7 @@
 // Originally written by A. S. Hodel <scotte@eng.auburn.edu>, but is
 // substantially different with the change to use LAPACK.
 
-#define OCTAVE_QZ_DEBUG
-//#undef OCTAVE_QZ_DEBUG
+#undef OCTAVE_QZ_DEBUG
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"

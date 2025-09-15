@@ -559,23 +559,6 @@ the resulting @var{AA} and @var{BB} matrices.
 
     }
 
-  // FIXME: The API for qz changed in version 9.
-  // These warnings can be removed in Octave version 11.
-  if (nargout == 1)
-    {
-      warning_with_id ("Octave:qz:single-arg-out",
-                       "qz: requesting a single output argument no longer returns eigenvalues since version 9");
-      disable_warning ("Octave:qz:single-arg-out");
-    }
-
-  if (nargin == 2 && args(0).isreal () && args(1).isreal ()
-      && retval(0).iscomplex ())
-    {
-      warning_with_id ("Octave:qz:complex-default",
-                       "qz: returns the complex QZ by default on real matrices since version 9");
-      disable_warning ("Octave:qz:complex-default");
-    }
-
 #if defined (OCTAVE_QZ_DEBUG)
   octave_stdout << "qz: exiting (at long last)" << std::endl;
 #endif

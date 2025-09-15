@@ -35,8 +35,10 @@
 #include "interpreter-private.h"
 #include "ov-classdef.h"
 
-// Define to 1 to enable debugging statements.
-#define DEBUG_TRACE 0
+#define OCTAVE_CDEF_OBJECT_DEBUG 0
+#if OCTAVE_CDEF_OBJECT_DEBUG
+#  include <iostream>
+#endif
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -794,7 +796,7 @@ cdef_object_scalar::mark_as_constructed (const cdef_class& cls)
 
 handle_cdef_object::~handle_cdef_object ()
 {
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_OBJECT_DEBUG
   std::cerr << "deleting " << get_class ().get_name ()
             << " object (handle)" << std::endl;
 #endif
@@ -802,7 +804,7 @@ handle_cdef_object::~handle_cdef_object ()
 
 value_cdef_object::~value_cdef_object ()
 {
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_OBJECT_DEBUG
   std::cerr << "deleting " << get_class ().get_name ()
             << " object (value)" << std::endl;
 #endif

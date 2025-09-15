@@ -741,7 +741,7 @@ public:
   // Mark a pointer to be freed on exit.
   void mark (void *ptr)
   {
-#if defined (DEBUG)
+#if defined (OCTAVE_MXARRAY_DEBUG)
     if (m_memlist.find (ptr) != m_memlist.end ())
       warning ("%s: double registration ignored", function_name ());
 #endif
@@ -757,7 +757,7 @@ public:
 
     if (p != m_memlist.end ())
       m_memlist.erase (p);
-#if defined (DEBUG)
+#if defined (OCTAVE_MXARRAY_DEBUG)
     else
       warning ("%s: value not marked", function_name ());
 #endif
@@ -780,7 +780,7 @@ public:
   // Mark a pointer as one we allocated.
   void mark_foreign (void *ptr)
   {
-#if defined (DEBUG)
+#if defined (OCTAVE_MXARRAY_DEBUG)
     if (m_foreign_memlist.find (ptr) != m_foreign_memlist.end ())
       warning ("%s: double registration ignored", function_name ());
 #endif
@@ -795,11 +795,10 @@ public:
 
     if (p != m_foreign_memlist.end ())
       m_foreign_memlist.erase (p);
-#if defined (DEBUG)
+#if defined (OCTAVE_MXARRAY_DEBUG)
     else
       warning ("%s: value not marked", function_name ());
 #endif
-
   }
 
   // Make a new array value and initialize from an octave value; it will be
@@ -824,7 +823,7 @@ public:
         m_arraylist.erase (p);
         delete ptr;
       }
-#if defined (DEBUG)
+#if defined (OCTAVE_MXARRAY_DEBUG)
     else
       warning ("mex::free_value: skipping memory not allocated by mex::make_value");
 #endif
@@ -843,7 +842,7 @@ public:
   // Mark a pointer as one we allocated.
   void global_mark (void *ptr)
   {
-#if defined (DEBUG)
+#if defined (OCTAVE_MXARRAY_DEBUG)
     if (s_global_memlist.find (ptr) != s_global_memlist.end ())
       warning ("%s: double registration ignored", function_name ());
 #endif
@@ -858,7 +857,7 @@ public:
 
     if (p != s_global_memlist.end ())
       s_global_memlist.erase (p);
-#if defined (DEBUG)
+#if defined (OCTAVE_MXARRAY_DEBUG)
     else
       warning ("%s: value not marked", function_name ());
 #endif

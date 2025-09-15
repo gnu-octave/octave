@@ -54,9 +54,8 @@
 #include "pt-walk.h"
 #include "unwind-prot.h"
 
-// Define to 1 to enable debugging statements.
-#define DEBUG_TRACE 0
-#if DEBUG_TRACE
+#define OCTAVE_CDEF_CLASS_DEBUG 0
+#if OCTAVE_CDEF_CLASS_DEBUG
 #  include <iostream>
 #endif
 
@@ -291,7 +290,7 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
 
               for (const auto& cdef_cls : explicit_ctor_list)
                 {
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
                   std::cerr << "explicit superclass constructor: "
                             << cdef_cls.get_name () << std::endl;
 #endif
@@ -642,7 +641,7 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
     case '(':
       // Constructor call
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
       std::cerr << "constructor" << std::endl;
 #endif
 
@@ -653,7 +652,7 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
       {
         // Static method, constant (or property?)
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
         std::cerr << "static method/property" << std::endl;
 #endif
 
@@ -1015,7 +1014,7 @@ cdef_class::make_meta_class (interpreter& interp,
   if (! t->package_name ().empty ())
     full_class_name = t->package_name () + '.' + full_class_name;
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
   std::cerr << "class: " << full_class_name << std::endl;
 #endif
 
@@ -1037,7 +1036,7 @@ cdef_class::make_meta_class (interpreter& interp,
         {
           std::string sclass_name = (scls)->class_name ();
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
           std::cerr << "superclass: " << sclass_name << std::endl;
 #endif
 
@@ -1082,7 +1081,7 @@ cdef_class::make_meta_class (interpreter& interp,
           std::string aname = attr->ident ()->name ();
           octave_value avalue = compute_attribute_value (tw, attr);
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
           std::cerr << "class attribute: " << aname << " = "
                     << attribute_value_to_string (attr, avalue) << std::endl;
 #endif
@@ -1111,7 +1110,7 @@ cdef_class::make_meta_class (interpreter& interp,
         {
           std::map<std::string, octave_value> amap;
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
           std::cerr << "method block" << std::endl;
 #endif
 
@@ -1124,7 +1123,7 @@ cdef_class::make_meta_class (interpreter& interp,
                   std::string aname = attr_p->ident ()->name ();
                   octave_value avalue = compute_attribute_value (tw, attr_p);
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
                   std::cerr << "method attribute: " << aname << " = "
                             << attribute_value_to_string (attr_p, avalue)
                             << std::endl;
@@ -1153,9 +1152,9 @@ cdef_class::make_meta_class (interpreter& interp,
                     {
                       cdef_method meth = cdm.make_method (retval, mname, mtd);
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
                       std::cerr << (mname == class_name ? "constructor"
-                                    : "method")
+                                                        : "method")
                                 << ": " << mname << std::endl;
 #endif
 
@@ -1223,7 +1222,7 @@ cdef_class::make_meta_class (interpreter& interp,
         {
           std::map<std::string, octave_value> amap;
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
           std::cerr << "property block" << std::endl;
 #endif
 
@@ -1236,7 +1235,7 @@ cdef_class::make_meta_class (interpreter& interp,
                   std::string aname = attr_p->ident ()->name ();
                   octave_value avalue = compute_attribute_value (tw, attr_p);
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
                   std::cerr << "property attribute: " << aname << " = "
                             << attribute_value_to_string (attr_p, avalue)
                             << std::endl;
@@ -1264,7 +1263,7 @@ cdef_class::make_meta_class (interpreter& interp,
 
                   prop.doc_string (prop_p->doc_string ());
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
                   std::cerr << "property: " << prop_p->ident ()->name ()
                             << std::endl;
 #endif
@@ -1274,7 +1273,7 @@ cdef_class::make_meta_class (interpreter& interp,
                     {
                       octave_value pvalue = expr->evaluate (tw);
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
                       std::cerr << "property default: "
                                 << attribute_value_to_string (prop_p, pvalue)
                                 << std::endl;

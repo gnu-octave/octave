@@ -53,7 +53,7 @@ $(%canon_reldir%_JAVA_CLASSES) : %.class : %.java | %reldir%/$(octave_dirstamp)
 	             $(org_octave_dir)/$(<F) )
 
 if AMCOND_HAVE_JAVA
-JAR_DATE = $(shell date -u -d"@$(SOURCE_MTIME)" -I'seconds')
+JAR_DATE = $(shell $(PERL) -MPOSIX -e 'print strftime ("%Y-%m-%dT%H:%M:%S+00:00", gmtime ($(SOURCE_MTIME)))')
 
 %reldir%/octave.jar: $(%canon_reldir%_JAVA_CLASSES)
 	$(OCT_V_JAR)rm -f $@-t $@ && \

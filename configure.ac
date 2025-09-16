@@ -2319,7 +2319,7 @@ fi
 
 OCTAVE_CHECK_LIB(sundials_nvecserial, [SUNDIALS NVECTOR],
   [SUNDIALS NVECTOR serial library not found.  The solvers ode15i and ode15s will be disabled.],
-  [nvector_serial.h nvector/nvector_serial.h], [N_VNew_Serial],
+  [nvector/nvector_serial.h], [N_VNew_Serial],
   [C++], [don't use SUNDIALS NVECTOR library, disable solvers ode15i and ode15s])
 
 ### Check for SUNDIALS IDA library and header.

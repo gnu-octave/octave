@@ -2583,6 +2583,8 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNREALTYPE], [
     [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
         #if defined (HAVE_IDA_IDA_H)
         #  include <ida/ida.h>
+        #elif defined (HAVE_IDA_H)
+        #  include <ida.h>
         #endif
         ]], [[
         sunrealtype test;
@@ -2609,6 +2611,8 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE], [
     [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
         #if defined (HAVE_IDA_IDA_H)
         #  include <ida/ida.h>
+        #elif defined (HAVE_IDA_H)
+        #  include <ida.h>
         #endif
         #include <assert.h>
         ]], [[
@@ -2677,7 +2681,9 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
       [octave_cv_sundials_sunlinsol_klu],
       [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
          #if defined (HAVE_IDA_IDA_H)
-         #include <ida/ida.h>
+         #  include <ida/ida.h>
+         #elif defined (HAVE_IDA_H)
+         #  include <ida.h>
          #endif
          #if defined (HAVE_KLU_H)
          #include <klu.h>
@@ -2721,7 +2727,9 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
         [octave_cv_sundials_sunlinsol_klu],
         [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
            #if defined (HAVE_IDA_IDA_H)
-           #include <ida/ida.h>
+           #  include <ida/ida.h>
+           #elif defined (HAVE_IDA_H)
+           #  include <ida.h>
            #endif
            #if defined (HAVE_KLU_H)
            #include <klu.h>

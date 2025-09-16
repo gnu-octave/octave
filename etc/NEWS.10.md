@@ -41,6 +41,8 @@ Summary of bugs fixed for version 10.3.0 (tbd):
 
 - Add tests for shadowed functions in core Octave (bug #46849).
 - Fix building Java on solaris2 platforms (bug #67442).
+- Include `ida.h` in configure tests from the locations at which it is looked
+  for.
 
 ### Documentation
 

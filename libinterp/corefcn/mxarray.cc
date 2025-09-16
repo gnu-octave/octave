@@ -27,11 +27,7 @@
 #  include "config.h"
 #endif
 
-// #define DEBUG 1
-
-#if defined (DEBUG)
-#  include <iostream>
-#endif
+// #define OCTAVE_MXARRAY_DEBUG 1
 
 #include <cstdarg>
 #include <cstdlib>
@@ -45,6 +41,10 @@
 #endif
 #include <set>
 #include <string>
+
+#if defined (OCTAVE_MXARRAY_DEBUG)
+#  include <iostream>
+#endif
 
 #include "f77-fcn.h"
 #include "oct-locbuf.h"
@@ -78,7 +78,7 @@ xmalloc (size_t n)
 {
   void *ptr = std::malloc (n);
 
-#if defined (DEBUG)
+#if defined (OCTAVE_MXARRAY_DEBUG)
   std::cerr << "xmalloc (" << n << ") = " << ptr << std::endl;
 #endif
 
@@ -90,9 +90,8 @@ xrealloc (void *ptr, size_t n)
 {
   void *newptr = std::realloc (ptr, n);
 
-#if defined (DEBUG)
-  std::cerr << "xrealloc (" << ptr << ", " << n << ") = " << newptr
-            << std::endl;
+#if defined (OCTAVE_MXARRAY_DEBUG)
+  std::cerr << "xrealloc (" << ptr << ", " << n << ") = " << newptr << std::endl;
 #endif
 
   return newptr;
@@ -101,7 +100,7 @@ xrealloc (void *ptr, size_t n)
 static void
 xfree (void *ptr)
 {
-#if defined (DEBUG)
+#if defined (OCTAVE_MXARRAY_DEBUG)
   std::cerr << "xfree (" << ptr << ")" << std::endl;
 #endif
 
@@ -3344,7 +3343,7 @@ void mex::free (void *ptr)
 
           if (p != m_foreign_memlist.end ())
             m_foreign_memlist.erase (p);
-#if defined (DEBUG)
+#if defined (OCTAVE_MXARRAY_DEBUG)
           else
             warning ("mxFree: skipping memory not allocated by mxMalloc, mxCalloc, or mxRealloc");
 #endif

@@ -1063,6 +1063,7 @@ opengl_renderer::render_tickmarks (const Matrix& ticks,
   octave_unused_parameter (dz);
   octave_unused_parameter (xyz);
   octave_unused_parameter (mirror);
+  octave_unused_parameter (tickdir_both);
 
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.

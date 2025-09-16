@@ -101,9 +101,6 @@ OCTAVE_END_NAMESPACE(octave)
 
 #include "ovl.h"
 
-// Nonzero means print parser debugging info (-d).
-extern int octave_debug;
-
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 class base_parser

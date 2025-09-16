@@ -23,6 +23,8 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
+// #define OCTAVE_LOADPATH_DEBUG 1
+
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
@@ -1712,7 +1714,7 @@ load_path::package_info::display (std::ostream& os) const
       print_fcn_list (os, dir_fnlst.second);
     }
 
-#if defined (DEBUG_LOAD_PATH)
+#if defined (OCTAVE_LOADPATH_DEBUG)
 
   for (const auto& nm_filst : m_fcn_map)
     {
@@ -1754,8 +1756,8 @@ load_path::package_info::display (std::ostream& os) const
     }
 
   os << "\n";
-
 #endif
+
 }
 
 std::string

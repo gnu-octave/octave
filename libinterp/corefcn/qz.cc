@@ -28,9 +28,7 @@
 // Originally written by A. S. Hodel <scotte@eng.auburn.edu>, but is
 // substantially different with the change to use LAPACK.
 
-#undef DEBUG
-#undef DEBUG_SORT
-#undef DEBUG_EIG
+#undef OCTAVE_QZ_DEBUG
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -38,10 +36,6 @@
 
 #include <cctype>
 #include <cmath>
-
-#if defined (DEBUG_EIG)
-#  include <iomanip>
-#endif
 
 #include "f77-fcn.h"
 #include "lapack-proto.h"
@@ -52,7 +46,8 @@
 #include "error.h"
 #include "errwarn.h"
 #include "ovl.h"
-#if defined (DEBUG) || defined (DEBUG_SORT)
+
+#if defined (OCTAVE_QZ_DEBUG)
 #  include "pager.h"
 #  include "pr-output.h"
 #endif
@@ -134,7 +129,7 @@ the resulting @var{AA} and @var{BB} matrices.
 {
   int nargin = args.length ();
 
-#if defined (DEBUG)
+#if defined (OCTAVE_QZ_DEBUG)
   octave_stdout << "qz: nargin = " << nargin
                 << ", nargout = " << nargout << std::endl;
 #endif
@@ -164,7 +159,7 @@ the resulting @var{AA} and @var{BB} matrices.
         error ("qz: OPT must be 'real' or 'complex'");
     }
 
-#if defined (DEBUG)
+#if defined (OCTAVE_QZ_DEBUG)
   octave_stdout << "qz: check matrix A" << std::endl;
 #endif
 
@@ -172,9 +167,8 @@ the resulting @var{AA} and @var{BB} matrices.
   F77_INT nn = to_f77_int (args(0).rows ());
   F77_INT nc = to_f77_int (args(0).columns ());
 
-#if defined (DEBUG)
-  octave_stdout << "Matrix A dimensions: (" << nn << ',' << nc << ')'
-                << std::endl;
+#if defined (OCTAVE_QZ_DEBUG)
+  octave_stdout << "Matrix A dimensions: (" << nn << ',' << nc << ')' << std::endl;
 #endif
 
   if (nc != nn)
@@ -189,7 +183,7 @@ the resulting @var{AA} and @var{BB} matrices.
   else
     aa = args(0).matrix_value ();
 
-#if defined (DEBUG)
+#if defined (OCTAVE_QZ_DEBUG)
   octave_stdout << "qz: check matrix B" << std::endl;
 #endif
 
@@ -239,10 +233,6 @@ the resulting @var{AA} and @var{BB} matrices.
 
   if (complex_case)
     {
-#if defined (DEBUG)
-      if (comp_q == 'V')
-        octave_stdout << "qz: performing balancing; CQ =\n" << CQ << std::endl;
-#endif
       if (args(0).isreal ())
         caa = ComplexMatrix (aa);
 
@@ -251,6 +241,11 @@ the resulting @var{AA} and @var{BB} matrices.
 
       if (comp_q == 'V')
         CQ = ComplexMatrix (QQ);
+
+#if defined (OCTAVE_QZ_DEBUG)
+      if (comp_q == 'V')
+        octave_stdout << "qz: performing balancing; CQ =\n" << CQ << std::endl;
+#endif
 
       if (comp_z == 'V')
         CZ = ComplexMatrix (ZZ);
@@ -265,7 +260,7 @@ the resulting @var{AA} and @var{BB} matrices.
     }
   else
     {
-#if defined (DEBUG)
+#if defined (OCTAVE_QZ_DEBUG)
       if (comp_q == 'V')
         octave_stdout << "qz: performing balancing; QQ =\n" << QQ << std::endl;
 #endif
@@ -350,27 +345,26 @@ the resulting @var{AA} and @var{BB} matrices.
     }
   else
     {
-#if defined (DEBUG)
+#if defined (OCTAVE_QZ_DEBUG)
       octave_stdout << "qz: performing qr decomposition of bb" << std::endl;
 #endif
 
       // Compute the QR factorization of bb.
       math::qr<Matrix> bqr (bb);
 
-#if defined (DEBUG)
-      octave_stdout << "qz: qr (bb) done; now performing qz decomposition"
-                    << std::endl;
+#if defined (OCTAVE_QZ_DEBUG)
+      octave_stdout << "qz: qr (bb) done; now performing qz decomposition" << std::endl;
 #endif
 
       bb = bqr.R ();
 
-#if defined (DEBUG)
+#if defined (OCTAVE_QZ_DEBUG)
       octave_stdout << "qz: extracted bb" << std::endl;
 #endif
 
       aa = (bqr.Q ()).transpose () * aa;
 
-#if defined (DEBUG)
+#if defined (OCTAVE_QZ_DEBUG)
       octave_stdout << "qz: updated aa " << std::endl;
       octave_stdout << "bqr.Q () =\n" << bqr.Q () << std::endl;
 
@@ -381,13 +375,9 @@ the resulting @var{AA} and @var{BB} matrices.
       if (comp_q == 'V')
         QQ = QQ * bqr.Q ();
 
-#if defined (DEBUG)
+#if defined (OCTAVE_QZ_DEBUG)
       octave_stdout << "qz: precursors done..." << std::endl;
-#endif
-
-#if defined (DEBUG)
-      octave_stdout << "qz: comp_q = " << comp_q << ", comp_z = " << comp_z
-                    << std::endl;
+      octave_stdout << "qz: comp_q = " << comp_q << ", comp_z = " << comp_z << std::endl;
 #endif
 
       // Reduce to generalized Hessenberg form.
@@ -426,7 +416,7 @@ the resulting @var{AA} and @var{BB} matrices.
                      F77_CHAR_ARG_LEN (1)
                      F77_CHAR_ARG_LEN (1)));
 
-#if defined (DEBUG)
+#if defined (OCTAVE_QZ_DEBUG)
           if (comp_q == 'V')
             octave_stdout << "qz: balancing done; QQ=\n" << QQ << std::endl;
 #endif
@@ -443,7 +433,7 @@ the resulting @var{AA} and @var{BB} matrices.
                      F77_CHAR_ARG_LEN (1)
                      F77_CHAR_ARG_LEN (1)));
 
-#if defined (DEBUG)
+#if defined (OCTAVE_QZ_DEBUG)
           if (comp_z == 'V')
             octave_stdout << "qz: balancing done; ZZ=\n" << ZZ << std::endl;
 #endif
@@ -483,7 +473,7 @@ the resulting @var{AA} and @var{BB} matrices.
         }
       else
         {
-#if defined (DEBUG)
+#if defined (OCTAVE_QZ_DEBUG)
           octave_stdout << "qz: computing generalized eigenvectors" << std::endl;
 #endif
 
@@ -542,7 +532,7 @@ the resulting @var{AA} and @var{BB} matrices.
       {
         if (complex_case)
           {
-#if defined (DEBUG)
+#if defined (OCTAVE_QZ_DEBUG)
             octave_stdout << "qz: retval(1) = cbb =\n";
             octave_print_internal (octave_stdout, cbb);
             octave_stdout << "\nqz: retval(0) = caa =\n";
@@ -554,7 +544,7 @@ the resulting @var{AA} and @var{BB} matrices.
           }
         else
           {
-#if defined (DEBUG)
+#if defined (OCTAVE_QZ_DEBUG)
             octave_stdout << "qz: retval(1) = bb =\n";
             octave_print_internal (octave_stdout, bb);
             octave_stdout << "\nqz: retval(0) = aa =\n";
@@ -569,24 +559,7 @@ the resulting @var{AA} and @var{BB} matrices.
 
     }
 
-  // FIXME: The API for qz changed in version 9.
-  // These warnings can be removed in Octave version 11.
-  if (nargout == 1)
-    {
-      warning_with_id ("Octave:qz:single-arg-out",
-                       "qz: requesting a single output argument no longer returns eigenvalues since version 9");
-      disable_warning ("Octave:qz:single-arg-out");
-    }
-
-  if (nargin == 2 && args(0).isreal () && args(1).isreal ()
-      && retval(0).iscomplex ())
-    {
-      warning_with_id ("Octave:qz:complex-default",
-                       "qz: returns the complex QZ by default on real matrices since version 9");
-      disable_warning ("Octave:qz:complex-default");
-    }
-
-#if defined (DEBUG)
+#if defined (OCTAVE_QZ_DEBUG)
   octave_stdout << "qz: exiting (at long last)" << std::endl;
 #endif
 

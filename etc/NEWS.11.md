@@ -102,6 +102,12 @@ major release after 11):
         octave::math::x_nint      | octave::math::round
         octave::math::isinteger   | octave::math::is_integer
 
+    The environment variable `OCTAVE_LATEX_DEBUG_FLAG` to enable debugging of
+    the latex interpreter has been renamed to `OCTAVE_LATEX_DEBUG`.
+
+    The environment variable `QTHANDLES_DEBUG` to enable debugging of the GUI
+    has been renamed to `OCTAVE_QTHANDLES_DEBUG`.
+
 The following features were deprecated in Octave 9 and have been removed
 from Octave 11.
 

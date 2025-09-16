@@ -57,7 +57,6 @@
 #include "ov-typeinfo.h"
 #include "pager.h"
 #include "pt-eval.h"
-#include "settings.h"
 #include "symtab.h"
 #include "url-handle-manager.h"
 
@@ -247,11 +246,6 @@ public:
   environment& get_environment ()
   {
     return m_environment;
-  }
-
-  settings& get_settings ()
-  {
-    return m_settings;
   }
 
   error_system& get_error_system ()
@@ -610,8 +604,6 @@ private:
   display_info m_display_info;
 
   environment m_environment;
-
-  settings m_settings;
 
   tree_evaluator m_evaluator;
 

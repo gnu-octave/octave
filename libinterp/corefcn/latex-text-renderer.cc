@@ -71,7 +71,19 @@ public:
     if (! bin.empty ())
       m_dvisvg_binary = quote_string (bin);
 
-    m_debug = ! sys::env::getenv ("OCTAVE_LATEX_DEBUG_FLAG").empty ();
+    m_debug = ! sys::env::getenv ("OCTAVE_LATEX_DEBUG").empty ();
+    // FIXME: Deprecated, remove in Octave 13.
+    if (! sys::env::getenv ("OCTAVE_LATEX_DEBUG_FLAG").empty ())
+      {
+        m_debug = true; 
+
+        static bool warned = false;
+        if (! warned)
+          {  
+            warning ("The environment variable OCTAVE_LATEX_DEBUG_FLAG is deprecated and will be removed from a future version of Octave, please use OCTAVE_LATEX_DEBUG instead\n");  
+            warned = true;
+          }
+      }
   }
 
   OCTAVE_DISABLE_COPY_MOVE (latex_renderer)

@@ -220,6 +220,19 @@ cdef_object_base::make_array () const
   return r;
 }
 
+cdef_object_rep *
+cdef_object_array::clone () const
+{
+  Array<cdef_object> new_array (m_array.dims ());
+
+  for (octave_idx_type i = 0; i < m_array.numel (); i++)
+    new_array(i) = m_array(i).clone ();
+
+  cdef_object_array *retval = new cdef_object_array (new_array);
+  retval->set_class (get_class ());
+  return retval;
+}
+
 octave_value_list
 cdef_object_array::subsref (const std::string& type,
                             const std::list<octave_value_list>& idx,

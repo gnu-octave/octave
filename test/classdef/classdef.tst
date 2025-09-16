@@ -273,3 +273,21 @@
 %!test <*67362>
 %! obj = class_bug67362 ();
 %! assert (obj.shared_name, 42);
+
+## deep copy (on write) of value class arrays
+%!test <*54028>
+%! arr1 = value_class ();
+%! arr1.a = 1;
+%! arr1(2) = arr1;
+%! arr2 = arr1;
+%! arr2(1).a = 2;
+%! assert (arr1(1).a, 1);
+
+## same thing with handle class arrays
+%!test
+%! arr1 = handle_class ();
+%! arr1.a = 1;
+%! arr1(2) = arr1;
+%! arr2 = arr1;
+%! arr2(1).a = 2;
+%! assert (arr1(1).a, 2);

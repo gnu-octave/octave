@@ -23,8 +23,6 @@
 ##
 ########################################################################
 
-## Undocumented internal function.
-
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{isoval} =} __calc_isovalue_from_data__ (@var{data})
 ## Calculate a @nospell{"good"} iso value from histogram of data.
@@ -64,3 +62,6 @@ function isoval = __calc_isovalue_from_data__ (data)
   isoval = bin_centers(floor (numel (bin_centers) / 2));
 
 endfunction
+
+
+%!assert (__calc_isovalue_from_data__ (1:5), 3.02)

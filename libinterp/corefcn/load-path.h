@@ -233,27 +233,27 @@ private:
     struct class_info
     {
     public:
-      class_info () : method_file_map (), private_file_map () { }
+      class_info () : m_method_file_map (), m_private_file_map () { }
 
       class_info (const class_info& ci)
-        : method_file_map (ci.method_file_map),
-          private_file_map (ci.private_file_map)
+        : m_method_file_map (ci.m_method_file_map),
+          m_private_file_map (ci.m_private_file_map)
       { }
 
       class_info& operator = (const class_info& ci)
       {
         if (this != &ci)
           {
-            method_file_map = ci.method_file_map;
-            private_file_map = ci.private_file_map;
+            m_method_file_map = ci.m_method_file_map;
+            m_private_file_map = ci.m_private_file_map;
           }
         return *this;
       }
 
       ~class_info () = default;
 
-      fcn_file_map_type method_file_map;
-      fcn_file_map_type private_file_map;
+      fcn_file_map_type m_method_file_map;
+      fcn_file_map_type m_private_file_map;
     };
 
     // <CLASS_NAME, CLASS_INFO>
@@ -274,9 +274,10 @@ private:
     dir_info () = default;
 
     dir_info (const std::string& d)
-      : dir_name (d), abs_dir_name (), is_relative (false),
-        dir_mtime (), dir_time_last_checked (), all_files (), fcn_files (),
-        private_file_map (), method_file_map (), package_dir_map ()
+      : m_dir_name (d), m_abs_dir_name (), m_is_relative (false),
+        m_dir_mtime (), m_dir_time_last_checked (), m_all_files (),
+        m_fcn_files (), m_private_file_map (), m_method_file_map (),
+        m_package_dir_map ()
     {
       initialize ();
     }
@@ -289,18 +290,20 @@ private:
 
     bool update ();
 
-    std::string dir_name;
-    std::string abs_dir_name;
-    bool is_relative;
-    sys::file_time dir_mtime;
-    sys::file_time dir_time_last_checked;
-    string_vector all_files;
-    string_vector fcn_files;
-    fcn_file_map_type private_file_map;
-    method_file_map_type method_file_map;
-    package_dir_map_type package_dir_map;
-
     bool is_package (const std::string& name) const;
+
+    //--------
+
+    std::string m_dir_name;
+    std::string m_abs_dir_name;
+    bool m_is_relative;
+    sys::file_time m_dir_mtime;
+    sys::file_time m_dir_time_last_checked;
+    string_vector m_all_files;
+    string_vector m_fcn_files;
+    fcn_file_map_type m_private_file_map;
+    method_file_map_type m_method_file_map;
+    package_dir_map_type m_package_dir_map;
 
   private:
 
@@ -317,7 +320,7 @@ private:
                           const std::string& package_name);
 
     friend fcn_file_map_type get_fcn_files (const std::string& d);
-  };
+  };  // end class dir_info
 
   class file_info
   {
@@ -325,10 +328,10 @@ private:
 
     file_info () = delete;
 
-    file_info (const std::string& d, int t) : dir_name (d), types (t) { }
+    file_info (const std::string& d, int t) : m_dir_name (d), m_types (t) { }
 
     file_info (const file_info& fi)
-      : dir_name (fi.dir_name), types (fi.types) { }
+      : m_dir_name (fi.m_dir_name), m_types (fi.m_types) { }
 
     ~file_info () = default;
 
@@ -336,16 +339,18 @@ private:
     {
       if (&fi != this)
         {
-          dir_name = fi.dir_name;
-          types = fi.types;
+          m_dir_name = fi.m_dir_name;
+          m_types = fi.m_types;
         }
 
       return *this;
     }
 
-    std::string dir_name;
-    int types;
-  };
+    //--------
+
+    std::string m_dir_name;
+    int m_types;
+  };  // end class file_info
 
   // We maintain two ways of looking at the same information.
   //
@@ -400,8 +405,7 @@ private:
 
     package_info (const std::string& package_name = "")
       : m_package_name (package_name), m_dir_list (), m_fcn_map (),
-        m_private_fcn_map (),
-        m_method_map ()
+        m_private_fcn_map (), m_method_map ()
     { }
 
     package_info (const package_info& l)
@@ -428,9 +432,9 @@ private:
     void add (const dir_info& di, bool at_end, bool updating)
     {
       if (at_end)
-        m_dir_list.push_back (di.dir_name);
+        m_dir_list.push_back (di.m_dir_name);
       else
-        m_dir_list.push_front (di.dir_name);
+        m_dir_list.push_front (di.m_dir_name);
 
       add_to_fcn_map (di, at_end, updating);
 
@@ -503,6 +507,8 @@ private:
     void print_fcn_list (std::ostream& os,
                          const dir_info::fcn_file_map_type& lst) const;
 
+    //--------
+
     std::string m_package_name;
 
     std::list<std::string> m_dir_list;
@@ -512,7 +518,7 @@ private:
     private_fcn_map_type m_private_fcn_map;
 
     method_map_type m_method_map;
-  };
+  };  // end class package_info
 
   // <PACKAGE_NAME, PACKAGE_INFO>
   typedef std::map<std::string, package_info> package_map_type;
@@ -585,7 +591,7 @@ private:
 
   std::string m_command_line_path;
 
-};
+};  // end class load_path
 
 extern std::string
 genpath (const std::string& dir, const string_vector& skip = "private");

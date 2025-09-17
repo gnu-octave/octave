@@ -104,43 +104,6 @@ directory_path::find_all_first_of (const std::list<std::string>& names)
 void
 directory_path::init ()
 {
-  static bool octave_kpse_initialized = false;
-
-  if (! octave_kpse_initialized)
-    {
-      std::string env_val = sys::env::getenv ("KPATHSEA_DEBUG");
-
-      if (! env_val.empty ())
-        {
-          unsigned int env_debug_flags = 0;
-
-          try
-            {
-              unsigned long val = std::stoul (env_val);
-
-              if (val > std::numeric_limits<unsigned int>::max ())
-                (*current_liboctave_warning_with_id_handler)
-                  ("Octave:kpathsea-debug-value-ignored", "directory_path::init: ignoring out of range KPATHSEA_DEBUG value '%s'", env_val.c_str ());
-              else
-                env_debug_flags = val;
-            }
-          catch (const std::invalid_argument&)
-            {
-              (*current_liboctave_warning_with_id_handler)
-                ("Octave:kpathsea-debug-value-ignored", "directory_path::init: ignoring invalid KPATHSEA_DEBUG value '%s'", env_val.c_str ());
-            }
-          catch (const std::out_of_range&)
-            {
-              (*current_liboctave_warning_with_id_handler)
-                ("Octave:kpathsea-debug-value-ignored", "directory_path::init: ignoring out of range KPATHSEA_DEBUG value '%s'", env_val.c_str ());
-            }
-
-          kpse_debug |= env_debug_flags;
-        }
-
-      octave_kpse_initialized = true;
-    }
-
   m_expanded_path = kpse_path_expand (m_orig_path);
 
   for (kpse_path_iterator pi (m_expanded_path); pi != std::string::npos; pi++)

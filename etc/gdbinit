@@ -29,6 +29,7 @@
 
 set print thread-events off
 
+############################################################
 ## Helpful macros for debugging Octave.
 
 ## Programming Note: Don't strip the trailing space from the lines that
@@ -107,7 +108,6 @@ of ordinary Octave arrays.
 end
 
 ############################################################
-
 ## Display Octave debugging stack
 
 define show-octave-dbstack

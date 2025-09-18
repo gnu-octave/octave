@@ -598,8 +598,3 @@ endfunction
 %!error <COL must be passed to return C> [f, v, c] = isosurface (val, iso)
 %!warning <colors will be calculated, but no output argument to receive it>
 %! [f, v] = isosurface (val, iso, yy);
-
-## test for __calc_isovalue_from_data__
-## FIXME: private function cannot be tested, unless bug #38776 is resolved.
-%!test <38776>
-%! assert (__calc_isovalue_from_data__ (1:5), 3.02);

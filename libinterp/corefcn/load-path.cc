@@ -1399,7 +1399,7 @@ load_path::dir_info::update ()
 #if defined (OCTAVE_USE_WINDOWS_API)
   std::string msg;
 
-  if (! sys::dir_exists (dir_name, msg))
+  if (! sys::dir_exists (m_dir_name, msg))
     {
 #else
   sys::file_stat fs (m_dir_name);
@@ -1432,7 +1432,7 @@ load_path::dir_info::update ()
               const dir_info& di = p->second;
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-              if ((sys::file_time (dir_name)
+              if ((sys::file_time (m_dir_name)
 #else
               if ((sys::file_time (fs.mtime ().unix_time ())
 #endif
@@ -1472,7 +1472,7 @@ load_path::dir_info::update ()
     }
   // Absolute path, check timestamp to see whether it requires re-caching
 #if defined (OCTAVE_USE_WINDOWS_API)
-  else if (sys::file_time (dir_name)
+  else if (sys::file_time (m_dir_name)
 #else
   else if (sys::file_time (fs.mtime ().unix_time ())
 #endif
@@ -1514,7 +1514,7 @@ load_path::dir_info::initialize ()
 #if defined (OCTAVE_USE_WINDOWS_API)
   std::string msg;
 
-  if (sys::dir_exists (dir_name, msg))
+  if (sys::dir_exists (m_dir_name, msg))
 #else
   sys::file_stat fs (m_dir_name);
 
@@ -1525,7 +1525,7 @@ load_path::dir_info::initialize ()
       m_package_dir_map.clear ();
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-      m_dir_mtime = sys::file_time (dir_name);
+      m_dir_mtime = sys::file_time (m_dir_name);
 #else
       m_dir_mtime = fs.mtime ().unix_time ();
 #endif

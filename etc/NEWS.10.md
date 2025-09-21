@@ -31,6 +31,7 @@ Summary of bugs fixed for version 10.3.0 (tbd):
 - Skip saving too large arrays in `-binary` format (bug #67382).
 - Write and read large array in chunks for `-binary` file format (bug #67382).
 - Correctly parse `clear ?` (bug #67459).
+- `colorbar.m`: Don't emit error if "position" property given (bug #67537).
 
 ### GUI
 

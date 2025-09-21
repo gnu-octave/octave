@@ -272,6 +272,12 @@ function h = colorbar (varargin)
       [axpos, cbpos, vertical, mirror] = ...
         calc_cbar_position (loc, props, ancestor (hpar, "figure"));
       set (hax, "position", axpos);
+    else
+      ## colorbar position specified.
+      ## 1) Don't shrink existing plot axes,
+      ## 2) Assume "EastOutside" orientation (vertical=true, mirror=true)
+      vertical = true;
+      mirror = true;
     endif
 
     ## Create colorbar axes if necessary

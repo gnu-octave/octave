@@ -79,6 +79,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   invocations for each cell element.  In earlier versions, the elements were
   converted to a compatible type if possible.
 
+- The function `fill` now handles all input combination of vector and matrix
+  vertex data and color data in a Matlab-compatible way.
+
 ### Alphabetical list of new functions added in Octave 11
 
 * `corrcov`

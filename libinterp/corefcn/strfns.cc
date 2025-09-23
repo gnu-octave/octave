@@ -890,6 +890,9 @@ efficient, and avoids the security risk of using @code{eval} on unknown data.
 %!assert (str2double (''), NaN)
 %!assert (str2double ([]), NaN)
 %!assert (str2double (char (zeros (3,0))), NaN)
+%!assert (str2double ("1.000444"), 1.000444)
+%!assert (str2double ("1e999"), Inf)
+%!assert (str2double ("-1e999"), -Inf)
 */
 
 DEFUN (__native2unicode__, args, ,

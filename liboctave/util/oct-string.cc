@@ -32,6 +32,7 @@
 #include <algorithm>
 #include <cctype>
 #include <cstring>
+#include <charconv>
 #include <iomanip>
 #include <string>
 #include <unordered_set>
@@ -249,54 +250,83 @@ single_num (std::istringstream& is)
 {
   double num = 0.0;
 
-  char c = is.peek ();
+  // Get the remaining string from current position
+  std::string str;
+  std::streampos start_pos = is.tellg ();
+  std::getline (is, str);
 
-  // Skip spaces.
-  while (isspace (c))
+  const char* first = str.data ();
+  const char* last = first + str.size ();
+
+  // Skip leading whitespace
+  while (first != last && std::isspace (static_cast<unsigned char> (*first)))
+    ++first;
+
+  if (first == last)
     {
-      is.get ();
-      c = is.peek ();
+      is.seekg (start_pos);
+      is.setstate (std::ios::failbit);
+      return num;
     }
 
-  if (std::toupper (c) == 'I')
+  // Special check for "NA" value (not handled by from_chars)
+  if (first + 2 <= last && first[0] == 'N' && first[1] == 'A' &&
+      (first + 2 == last || std::isspace (static_cast<unsigned char> (first[2]))))
     {
-      // It's infinity.
-      is.get ();
-      char c1 = is.get ();
-      char c2 = is.get ();
-      if (std::tolower (c1) == 'n' && std::tolower (c2) == 'f')
-        {
-          num = octave::numeric_limits<double>::Inf ();
-          is.peek (); // May set EOF bit.
-        }
-      else
-        is.setstate (std::ios::failbit); // indicate that read has failed.
+      num = octave_NA;
+      is.seekg (start_pos + static_cast<std::streamoff> (first - str.data () + 2));
+      return num;
     }
-  else if (c == 'N')
+
+  // Use from_chars for all other numbers (including Inf, -Inf, NaN)
+  auto [ptr, ec] = std::from_chars (first, last, num);
+
+  if (ec == std::errc {})
     {
-      // It's NA or NaN
-      is.get ();
-      char c1 = is.get ();
-      if (c1 == 'A')
-        {
-          num = octave_NA;
-          is.peek (); // May set EOF bit.
-        }
-      else
-        {
-          char c2 = is.get ();
-          if (c1 == 'a' && c2 == 'N')
-            {
-              num = octave::numeric_limits<double>::NaN ();
-              is.peek (); // May set EOF bit.
-            }
-          else
-            is.setstate (std::ios::failbit); // indicate that read has failed.
-        }
+      // Successfully parsed a number
+      std::streamoff chars_consumed = static_cast<std::streamoff> (ptr - str.data ());
+      is.seekg (start_pos + chars_consumed);
+
+      // Check if we are at EOF after consuming the number
+      if (ptr == last)
+        is.seekg (0, std::ios::end);
     }
   else
-    is >> num;
+    {
+      // Parse failed
+      switch (ec)
+        {
+        case std::errc::invalid_argument:
+          // No valid number could be parsed
+          is.seekg (start_pos);
+          is.setstate (std::ios::failbit);
+          break;
+        case std::errc::result_out_of_range:
+          // Number is out of range for double
+          // Determine sign and set to appropriate infinity
+          {
+            // Check for negative sign
+            const char* p = first;
+            while (p < ptr && std::isspace (static_cast<unsigned char> (*p)))
+              ++p;
 
+            if (p < ptr && *p == '-')
+              num = -octave::numeric_limits<double>::Inf ();
+            else
+              num = octave::numeric_limits<double>::Inf ();
+
+            std::streamoff chars_consumed = static_cast<std::streamoff> (ptr - str.data ());
+            is.seekg (start_pos + chars_consumed);
+          }
+          break;
+
+        default:
+          // Unexpected error
+          is.seekg (start_pos);
+          is.setstate (std::ios::failbit);
+          break;
+        }
+    }
   return num;
 }
 

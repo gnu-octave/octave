@@ -94,6 +94,7 @@ and after the nested call.
 
 #include <cctype>
 #include <cstring>
+#include <charconv>
 
 #include <algorithm>
 #include <iostream>
@@ -1018,8 +1019,25 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->update_token_positions (yyleng);
 
     unsigned int result;
-    if (sscanf (yytext+1, "%o", &result) != 1)
-      curr_lexer->fatal_error ("scanf failed in lexer rule <DQ_STRING_START>\\\\[0-7]{1,3} - please report this bug");
+    const char *chars_start = yytext + 1;
+    const char *chars_end = yytext + yyleng;
+    auto [ptr, ec] = std::from_chars (chars_start, chars_end, result, 8);
+    if (ec != std::errc{})
+      {
+        switch (ec)
+          {
+          case std::errc::invalid_argument:
+            curr_lexer->fatal_error ("invalid octal digits in lexer rule <DQ_STRING_START>\\\\[0-7]{1,3} - please report this bug");
+            break;
+          case std::errc::result_out_of_range:
+            curr_lexer->fatal_error ("octal value out of range in lexer rule <DQ_STRING_START>\\\\[0-7]{1,3} - please report this bug");
+            break;
+          default:
+            curr_lexer->fatal_error ("from_chars failed in lexer rule <DQ_STRING_START>\\\\[0-7]{1,3} - please report this bug");
+            break;
+          }
+      }
+
 
     if (result > 0xff)
       {
@@ -1037,8 +1055,25 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->m_filepos.increment_column (yyleng);
 
     unsigned int result;
-    if (sscanf (yytext+2, "%x", &result) != 1)
-      curr_lexer->fatal_error ("scanf failed in lexer rule <DQ_STRING_START>\\\\x[0-9a-fA-F]+ - please report this bug");
+    const char *chars_start = yytext + 2;
+    const char *chars_end = yytext + yyleng;
+    auto [ptr, ec] = std::from_chars (chars_start, chars_end, result, 16);
+    if (ec != std::errc{})
+      {
+        switch (ec)
+          {
+          case std::errc::invalid_argument:
+            curr_lexer->fatal_error ("invalid hexadecimal digits in lexer rule <DQ_STRING_START>\\\\x[0-9a-fA-F]+ - please report this bug");
+            break;
+          case std::errc::result_out_of_range:
+            curr_lexer->fatal_error ("hexadecimal value out of range in lexer rule <DQ_STRING_START>\\\\x[0-9a-fA-F]+ - please report this bug");
+            break;
+          default:
+            curr_lexer->fatal_error ("from_chars failed in lexer rule <DQ_STRING_START>\\\\x[0-9a-fA-F]+ - please report this bug");
+            break;
+          }
+      }
+
 
     // Truncate the value silently instead of checking the range like
     // we do for octal above.  This is to match C/C++ where any number
@@ -2993,7 +3028,7 @@ base_lexer::whitespace_is_significant ()
   return (m_nesting_level.is_bracket ()
           || (m_nesting_level.is_brace ()
               && ! m_looking_at_object_index.front ()));
-  }
+}
 
 static inline bool
 looks_like_bin (const char *s, int len)
@@ -3202,8 +3237,29 @@ base_lexer::handle_number<10> ()
   *p = '\0';
 
   double value = 0.0;
-  if (sscanf (tmptxt, "%lf", &value) != 1)
-    fatal_error ("scanf failed in base_lexer::handle_number<10> - please report this bug");
+  const char *chars_start = tmptxt;
+  const char *chars_end = tmptxt + std::strlen (tmptxt);
+  auto [ptr, ec] = std::from_chars (chars_start, chars_end, value);
+  if (ec != std::errc{})
+    {
+      switch (ec)
+        {
+        case std::errc::invalid_argument:
+          fatal_error ("invalid floating point format in base_lexer::handle_number<10> - please report this bug");
+          break;
+        case std::errc::result_out_of_range:
+            // For floating point, convert overflow to infinity (like sscanf did)
+            // Check if the input represents a negative number
+            if (tmptxt[0] == '-')
+              value = -std::numeric_limits<double>::infinity ();
+            else
+              value = std::numeric_limits<double>::infinity ();
+          break;
+        default:
+          fatal_error ("from_chars failed in base_lexer::handle_number<10> - please report this bug");
+          break;
+        }
+      }
 
   octave_value ov;
 
@@ -3254,6 +3310,11 @@ base_lexer::handle_number<10> ()
 
   return handle_token (tok);
 }
+
+/*
+%!assert (1e999, Inf)
+%!assert (-1e999, -Inf)
+*/
 
 template <>
 int
@@ -3306,8 +3367,25 @@ base_lexer::handle_number<16> ()
     }
 
   uintmax_t long_int_val;
-  if (sscanf (yytxt.c_str (), "%jx", &long_int_val) != 1)
-    fatal_error ("sscanf failed in base_lexer::handle_number<16> - please report this bug");
+  const char *chars_start = yytxt.c_str ();
+  const char *chars_end = chars_start + yytxt.length ();
+  auto [ptr, ec] = std::from_chars (chars_start, chars_end, long_int_val, 16);
+  if (ec != std::errc{})
+    {
+      switch (ec)
+        {
+        case std::errc::invalid_argument:
+          fatal_error ("invalid hexadecimal format in base_lexer::handle_number<16> - please report this bug");
+          break;
+        case std::errc::result_out_of_range:
+          fatal_error ("hexadecimal value out of range in base_lexer::handle_number<16> - please report this bug");
+          break;
+        default:
+          fatal_error ("from_chars failed in base_lexer::handle_number<16> - please report this bug");
+          break;
+        }
+      }
+
 
   octave_value ov = make_integer_value (long_int_val, unsigned_val, bytes);
 

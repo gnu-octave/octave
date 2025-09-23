@@ -82,6 +82,11 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The function `fill` now handles all input combination of vector and matrix
   vertex data and color data in a Matlab-compatible way.
 
+- The function `colorbar` now requires the `location` input to be the first
+  argument rather than the last argument.  This may require updating existing
+  Octave scripts.  The graphics properties `AxisLocation`, `Direction`, and
+  `TickLabels` have been implemented.
+
 ### Alphabetical list of new functions added in Octave 11
 
 * `corrcov`

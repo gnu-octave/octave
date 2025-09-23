@@ -40,11 +40,11 @@
 ## is a single color specification such as a @code{plot} format or an
 ## RGB-triple.  In this case the polygon(s) will have one unique color.  If
 ## @var{c} is a vector or matrix then the color data is first scaled using
-## @code{clim} and then indexed into the current colormap.  A row vector will
-## color each polygon (a column from matrices @var{x} and @var{y}) with a
-## single computed color.  A matrix @var{c} of the same size as @var{x} and
-## @var{y} will compute the color of each vertex and then interpolate the face
-## color between the vertices.
+## @code{clim} and then indexed into the current colormap.  A vector will color
+## each polygon (a column from matrices @var{x} and @var{y}) with a single
+## computed color.  A matrix @var{c} of the same size as @var{x} and @var{y}
+## will compute the color of each vertex and then interpolate the face color
+## between the vertices.
 ##
 ## Multiple property/value pairs for the underlying patch object may be
 ## specified, but they must appear in pairs.  The full list of properties is
@@ -53,8 +53,8 @@
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ##
-## The optional return value @var{h} is a vector of graphics handles to
-## the created patch objects.
+## The optional return value @var{h} is a vector of graphics handles to the
+## created patch objects.
 ##
 ## Example: red square
 ##
@@ -102,20 +102,12 @@ function h = fill (varargin)
     unwind_protect
       set (hax, "nextplot", "add");
 
-      for i = 1 : length (iargs)
+      for i = 1 : numel (iargs)
         x = varargin{iargs(i)};
         y = varargin{iargs(i) + 1};
         cdata = varargin{iargs(i) + 2};
 
-        if (! size_equal (x, y))
-          if (iscolumn (y) && rows (y) == rows (x))
-            y = repmat (y, [1, columns(x)]);
-          elseif (iscolumn (x) && rows (x) == rows (y))
-            x = repmat (x, [1, columns(y)]);
-          else
-            error ("fill: X and Y must have same number of rows");
-          endif
-        endif
+        ## FIXME: Probably should validate that x, y, cdata are 2-D.
 
         if (isrow (x))
           x = x(:);
@@ -124,17 +116,52 @@ function h = fill (varargin)
           y = y(:);
         endif
 
-        if (ischar (cdata) || isequal (size (cdata), [1, 3]))
+        if (! size_equal (x, y))
+          if (iscolumn (x))
+            rx = rows (x);
+            [ry, cy] = size (y);
+            if (rx == ry)
+              x = repmat (x, [1, cy]);
+            elseif (rx == cy)
+              y = y.';
+              x = repmat (x, [1, ry]);
+            else
+              error ("fill: vector X and matrix Y must have a length which matches along one dimension");
+            endif
+          elseif (iscolumn (y))
+            ry = rows (y);
+            [rx, cx] = size (x);
+            if (ry == rx)
+              y = repmat (y, [1, cx]);
+            elseif (ry == cx)
+              x = x.';
+              y = repmat (y, [1, rx]);
+            else
+              error ("fill: matrix X and vector Y must have a length which matches along one dimension");
+            endif
+          else
+            error ("fill: matrices X and Y must be the same size");
+          endif
+        endif
+
+        ## Test for color specification as text ('r') or RGB triple.
+        if (ischar (cdata) ||
+            (all (size (cdata) == [1, 3]) && all (cdata >= 0 & cdata <= 1)))
           one_color = true;
         else
           one_color = false;
         endif
 
-        ## For Matlab compatibility, replicate cdata to match size of data
-        if (! one_color && iscolumn (cdata))
-          sz = size (x);
-          if (all (sz > 1))
-            cdata = repmat (cdata, [1, sz(2)]);
+        ## Manage cdata to ensure for loop below works
+        if (! one_color && isvector (cdata))
+          if (numel (cdata) == columns (x))
+            ## One color per polygon
+            cdata = cdata(:).';
+          elseif (numel (cdata) == rows (x))
+            ## Vertex colors.  Replicate cdata to match size of data.
+            cdata = repmat (cdata(:), [1, columns(x)]);
+          else
+            error ("fill: invalid format for color data C");
           endif
         endif
 

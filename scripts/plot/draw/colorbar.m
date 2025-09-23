@@ -25,21 +25,20 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} colorbar
-## @deftypefnx {} {} colorbar (@dots{}, @var{loc})
+## @deftypefnx {} {} colorbar (@var{loc}, @dots{})
 ## @deftypefnx {} {} colorbar (@var{delete_option})
 ## @deftypefnx {} {} colorbar (@var{hcb}, @dots{})
 ## @deftypefnx {} {} colorbar (@var{hax}, @dots{})
-## @deftypefnx {} {} colorbar (@dots{}, "peer", @var{hax}, @dots{})
 ## @deftypefnx {} {} colorbar (@dots{}, "location", @var{loc}, @dots{})
 ## @deftypefnx {} {} colorbar (@dots{}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {} {@var{h} =} colorbar (@dots{})
 ## Add a colorbar to the current axes.
 ##
-## A colorbar displays the current colormap along with numerical rulings
-## so that the color scale can be interpreted.
+## A colorbar displays the current colormap along with numerical rulings so
+## that the color scale can be interpreted.
 ##
 ## The optional input @nospell{@var{loc}} determines the location of the
-## colorbar.  If present, it must be the last argument to @code{colorbar}.
+## colorbar.  If present, it must be the first argument to @code{colorbar}.
 ## Valid values for @nospell{@var{loc}} are
 ##
 ## @table @asis
@@ -73,25 +72,24 @@
 ##
 ## If the first argument @var{hax} is an axes handle, then the colorbar is
 ## added to this axes, rather than the current axes returned by @code{gca}.
-## Alternatively, If the argument @qcode{"peer"} is given, then the following
-## argument is treated as the axes handle in which to add the colorbar.  The
-## @qcode{"peer"} calling syntax may be removed in the future and is not
-## recommended.
 ##
 ## If the first argument @var{hcb} is a handle to a colorbar object, then
 ## operate on this colorbar directly.
 ##
 ## Additional property/value pairs are passed directly to the underlying axes
-## object.  The full list of properties is documented at
-## @ref{Axes Properties}.
+## object.  The full list of properties is documented at @ref{Axes Properties}.
 ##
 ## The optional return value @var{h} is a graphics handle to the created
 ## colorbar object.
 ##
-## Implementation Note: A colorbar is created as an additional axes object
-## with the @qcode{"tag"} property set to @qcode{"colorbar"}.  The created
-## object has the extra property @qcode{"location"} which controls the
-## positioning of the colorbar.
+## Implementation Note: A colorbar is created as an additional axes object with
+## the @qcode{"tag"} property set to @qcode{"colorbar"}.  The created object
+## has the extra property @qcode{"location"} which controls the positioning of
+## the colorbar.
+##
+## If the argument @qcode{"peer"} is given, then the following argument is
+## treated as the axes handle in which to add the colorbar.  The @qcode{"peer"}
+## calling syntax may be removed in the future and is not recommended.
 ## @seealso{colormap}
 ## @end deftypefn
 
@@ -120,8 +118,8 @@ function h = colorbar (varargin)
     switch (lower (arg))
       case {"north", "south", "east", "west", ...
             "northoutside", "southoutside", "eastoutside", "westoutside"}
-        if (i <= nargin)
-          error ("colorbar: LOC specification must occur as final argument");
+        if (i != 2)
+          error ("colorbar: LOC specification must occur as first argument");
         endif
         loc = lower (arg);
 
@@ -165,7 +163,7 @@ function h = colorbar (varargin)
     if (! any (strcmp (loc, {"eastoutside"; "east"; "westoutside"; "west";
                              "northoutside"; "north"; "southoutside"; "south";
                              "manual"})))
-      error ("colorbar: unrecognized colorbar location");
+      error ("colorbar: unrecognized colorbar location '%s'", loc);
     endif
   endif
 
@@ -268,10 +266,15 @@ function h = colorbar (varargin)
 
     if (isempty (cbpos))
       ## auto positioning
-      ## FIXME: Should handle user-specified "AxisLocation" property (mirror).
       [axpos, cbpos, vertical, mirror] = ...
         calc_cbar_position (loc, props, ancestor (hpar, "figure"));
       set (hax, "position", axpos);
+    else
+      ## colorbar position specified.
+      ## 1) Don't shrink existing plot axes,
+      ## 2) Use default "EastOutside" orientation
+      vertical = true;
+      mirror = true;
     endif
 
     ## Create colorbar axes if necessary
@@ -284,14 +287,18 @@ function h = colorbar (varargin)
 
       addproperty ("axislocation", hcb, "radio", "{out}|in");
       addproperty ("axislocationmode", hcb, "radio", "{auto}|manual");
-      addproperty ("label", hcb, "handle", get (hcb, "ylabel"));
       addproperty ("direction", hcb, "AxesYdir", "normal");
+      addproperty ("label", hcb, "handle", get (hcb, "ylabel"));
       addproperty ("limits", hcb, "AxesYlim");
       addproperty ("limitsmode", hcb, "AxesYlimMode", "auto");
       addproperty ("location", hcb, "radio",
                    "{eastoutside}|east|westoutside|west|northoutside|north|southoutside|south|manual",
                    loc);
       addproperty ("tickdirection", hcb, "AxesTickdir", "in");
+      addproperty ("ticklabels", hcb, "AxesYtickLabel");
+      addproperty ("ticklabelsmode", hcb, "AxesYtickLabelMode", "auto");
+      addproperty ("ticks", hcb, "AxesYtick");
+      addproperty ("ticksmode", hcb, "AxesYtickMode", "auto");
       ## FIXME: Matlab uses just a scalar for ticklength, but axes already
       ##        has a 2-element ticklength property which cannot be overridden.
       ## addproperty ("ticklength", hcb, "double", 0.01);
@@ -322,13 +329,13 @@ function h = colorbar (varargin)
                   "ytickmode", "auto", "ylim", cext,
                   "yaxislocation", "right", "label", get (hcb, "ylabel"),
                   "__vertical__", vertical,
-                  "layer", "top", args{:});
+                  "layer", "top");
       else
         set (hcb, "xtick", [], "xlim", [-0.5, 1.5],
                   "ytickmode", "auto", "ylim", cext,
                   "yaxislocation", "left", "label", get (hcb, "ylabel"),
                   "__vertical__", vertical,
-                  "layer", "top", args{:});
+                  "layer", "top");
       endif
     else
       set (hi, "xdata", [cmin, cmax], "ydata", [0,1], "cdata", [1 : clen]);
@@ -337,13 +344,13 @@ function h = colorbar (varargin)
                   "xtickmode", "auto", "xlim", cext,
                   "xaxislocation", "top", "label", get (hcb, "xlabel"),
                   "__vertical__", vertical,
-                  "layer", "top", args{:});
+                  "layer", "top");
       else
         set (hcb, "ytick", [], "ylim", [-0.5, 1.5],
                   "xtickmode", "auto", "xlim", cext,
                   "xaxislocation", "bottom", "label", get (hcb, "xlabel"),
                   "__vertical__", vertical,
-                  "layer", "top", args{:});
+                  "layer", "top");
       endif
     endif
 
@@ -358,9 +365,15 @@ function h = colorbar (varargin)
 
       set (hcb, "deletefcn", {@cb_restore_axes, hax, props});
 
+      addlistener (hcb, "axislocation", {@cb_axislocation});
+      addlistener (hcb, "direction", {@cb_direction});
+      addlistener (hcb, "tickdirection", @cb_tickdirection);
+      addlistener (hcb, "ticks", {@cb_ticks});
+      addlistener (hcb, "ticksmode", {@cb_ticksmode});
+      addlistener (hcb, "ticklabels", {@cb_ticklabels});
+      addlistener (hcb, "ticklabelsmode", {@cb_ticklabelsmode});
       addlistener (hcb, "xscale", {@cb_error_on_logscale, "xscale"});
       addlistener (hcb, "yscale", {@cb_error_on_logscale, "yscale"});
-      addlistener (hcb, "tickdirection", @cb_tickdirection);
 
       if (strcmp (get (hpar, "type"), "figure"))
         addlistener (hpar, "colormap", {@cb_colormap, ...
@@ -376,9 +389,14 @@ function h = colorbar (varargin)
                                                    hcb, props});
       addlistener (hax, "position", {@cb_colorbar_axis, hcb, props});
 
-      ## FIXME: Need listeners for colorbar: axislocation, axislocationmode,
-      ##        direction, limits, limitsmode, location.
+      ## FIXME: Need listeners for limits, limitsmode, location.
     endif
+
+  ## Called after listeners have been installed
+  if (! isempty (args))
+    set (hcb, args{:});
+  endif
+
   unwind_protect_cleanup
     set (hfig, "currentaxes", origaxes);
     if (! isempty (origfig))
@@ -394,7 +412,6 @@ endfunction
 
 ## Axes to which colorbar was attached is being deleted/reset. Delete colorbar.
 function cb_axes_deleted (~, ~, hax, hcb)
-
   if (isaxes (hcb))
     if (strcmp (get (hax, "beingdeleted"), "on"))
       ## Axes are being deleted.  Disable call to cb_restore_axes.
@@ -402,7 +419,6 @@ function cb_axes_deleted (~, ~, hax, hcb)
     endif
     delete (hcb);
   endif
-
 endfunction
 
 ## Error on attempt to set logscale on colorbar axes
@@ -413,7 +429,81 @@ function cb_error_on_logscale (hcb, ~, scale)
   endif
 endfunction
 
-## Colorbar "TickDirection" callback which just maps to axes "TickDir"
+## colorbar property "AxisLocation" which maps to axes "[X|Y]AxisLocation".
+function cb_axislocation (hcb, ~)
+  vertical = strcmp (get (hcb, '__vertical__'), 'on');
+  location = get (hcb, 'axislocation');
+  if (vertical)
+    location = ifelse (strcmp (location, 'in'), 'left', 'right');
+    set (hcb, 'yaxislocation', location);
+  else
+    location = ifelse (strcmp (location, 'in'), 'top', 'bottom');
+    set (hcb, 'xaxislocation', location);
+  endif
+endfunction
+
+## colorbar property "Direction" which maps to axes "YDir" or "XDir".
+function cb_direction (hcb, ~)
+  vertical = strcmp (get (hcb, '__vertical__'), 'on');
+  direction = get (hcb, 'direction');
+  if (vertical)
+    set (hcb, 'ydir', direction);
+  else
+    set (hcb, 'xdir', direction);
+  endif
+endfunction
+
+## colorbar property "Ticks" which maps to axes "YTick" or "XTick".
+function cb_ticks (hcb, ~)
+  vertical = strcmp (get (hcb, '__vertical__'), 'on');
+  ticks = get (hcb, 'ticks');
+  if (vertical)
+    set (hcb, 'YTick', ticks);
+  else
+    set (hcb, 'XTick', ticks);
+  endif
+  set (hcb, 'ticksmode', 'manual');
+endfunction
+
+## colorbar property "TicksMode" which maps to axes "[Y|X]TickMode".
+function cb_ticksmode (hcb, ~)
+  mode = get (hcb, 'ticksmode');
+  if (strcmp (mode, 'auto'))
+    vertical = strcmp (get (hcb, '__vertical__'), 'on');
+    if (vertical)
+      set (hcb, 'YTickMode', 'auto');
+    else
+      set (hcb, 'XTickMode', 'auto');
+    endif
+  endif
+endfunction
+
+## colorbar property "TickLabels" which maps to axes "[Y|X]TickLabel".
+function cb_ticklabels (hcb, ~)
+  vertical = strcmp (get (hcb, '__vertical__'), 'on');
+  ticklabels = get (hcb, 'ticklabels');
+  if (vertical)
+    set (hcb, 'YTickLabel', ticklabels);
+  else
+    set (hcb, 'XTickLabel', ticklabels);
+  endif
+  set (hcb, 'ticklabelsmode', 'manual');
+endfunction
+
+## colorbar property "TickLabelsMode" which maps to axes "[Y|X]TickLabelMode".
+function cb_ticklabelsmode (hcb, ~)
+  mode = get (hcb, 'ticklabelsmode');
+  if (strcmp (mode, 'auto'))
+    vertical = strcmp (get (hcb, '__vertical__'), 'on');
+    if (vertical)
+      set (hcb, 'YTickLabelMode', 'auto');
+    else
+      set (hcb, 'XTickLabelMode', 'auto');
+    endif
+  endif
+endfunction
+
+## colorbar property "TickDirection" which maps to axes property "TickDir".
 function cb_tickdirection (hcb, ~)
   set (hcb, "tickdir", get (hcb, "tickdirection"));
 endfunction
@@ -431,6 +521,8 @@ function cb_restore_axes (hcb, ~, hax, orig_props)
     ## FIXME: It is wrong to delete every listener for colormap on figure,
     ##        but we don't have a way of deleting just this instance.
     dellistener (hf, "colormap");
+    dellistener (hax, "colormap");
+    dellistener (hax, "clim");
     dellistener (hax, "dataaspectratio");
     dellistener (hax, "dataaspectratiomode");
     dellistener (hax, "plotboxaspectratio");
@@ -508,7 +600,7 @@ function cb_colorbar_axis (hax, ~, hcb, orig_props)
     props.position = orig_props.position;
     props.outerposition = orig_props.outerposition;
     [axpos, cbpos, vertical, mirror] = ...
-       calc_cbar_position (loc, props, ancestor (hax, "figure"));
+      calc_cbar_position (loc, props, ancestor (hax, "figure"));
 
     set (hcb, "position", cbpos);
   endif
@@ -518,8 +610,7 @@ endfunction
 ## FIXME: The algorithm for positioning in legend.m is much more sophisticated
 ##        and should be borrowed for colorbar.  One problem is that colorbar
 ##        positioning does not take in to account multi-line axes labels.
-## FIXME: Should handle user-specified "AxisLocation" property (mirror var).
-function [axpos, cbpos, vertical, mirr] = calc_cbar_position (loc, props, cf)
+function [axpos, cbpos, vertical, mirror] = calc_cbar_position (loc, props, cf)
 
   ## This will always represent the position prior to adding the colorbar.
   axpos = props.position;
@@ -554,47 +645,47 @@ function [axpos, cbpos, vertical, mirr] = calc_cbar_position (loc, props, cf)
       origin = axpos(1:2) + [0., 0.9] .* sz + [1, -1] .* off;
       sz .*= [1.0, 0.06];
       axpos(4) = 0.8 * axpos(4);
-      mirr = true;
+      mirror = true;
       vertical = false;
     case "north"
       origin = axpos(1:2) + [0.05, 0.9] .* sz + [1, -1] .* off;
       sz .*= [1.0, 0.06] * 0.9;
-      mirr = false;
+      mirror = false;
       vertical = false;
     case "southoutside"
       origin = axpos(1:2) + off;
       sz .*= [1.0, 0.06];
       axpos(2) = axpos(2) + axpos(4) * 0.2;
       axpos(4) = 0.8 * axpos(4);
-      mirr = false;
+      mirror = false;
       vertical = false;
     case "south"
       origin = axpos(1:2) + [0.05, 0.05] .* sz + off;
       sz .*= [1.0, 0.06] * 0.9;
-      mirr = true;
+      mirror = true;
       vertical = false;
     case "eastoutside"
       origin = axpos(1:2) + [0.9, 0] .* sz + [-1, 1] .* off;
       sz .*= [0.06, 1.0];
       axpos(3) = 0.8 * axpos(3);
-      mirr = true;
+      mirror = true;
       vertical = true;
     case "east"
       origin = axpos(1:2) + [0.9, 0.05] .* sz + [-1, 1] .* off;
       sz .*= [0.06, 1.0] * 0.9;
-      mirr = false;
+      mirror = false;
       vertical = true;
     case "westoutside"
       origin = axpos(1:2) + off;
       sz .*= [0.06, 1.0];
       axpos(1) = axpos(1) + axpos(3) * 0.2;
       axpos(3) = 0.8 * axpos(3);
-      mirr = false;
+      mirror = false;
       vertical = true;
     case "west"
       origin = axpos(1:2) + [0.05, 0.05] .* sz + off;
       sz .*= [0.06, 1.0] .* 0.9;
-      mirr = true;
+      mirror = true;
       vertical = true;
   endswitch
 
@@ -921,7 +1012,7 @@ endfunction
 
 ## Test input validation
 %!error <expected string argument at position 1> colorbar (-pi)
-%!error <LOC specification must occur as final arg> colorbar ("east", "p", "v")
+%!error <LOC specification must occur as first arg> colorbar ("p", "v", "east")
 %!error <missing value after "location"> colorbar ("location")
 %!error <missing axes handle after "peer"> colorbar ("peer")
 %!error <invalid axes handle following "peer"> colorbar ("peer", -1)

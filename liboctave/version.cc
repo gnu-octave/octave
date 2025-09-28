@@ -32,17 +32,12 @@
 #include "version.h"
 
 static std::string
-octave_warranty_statement (const std::string& extra_info = "")
-{
-  return "There is ABSOLUTELY NO WARRANTY; not even for MERCHANTABILITY or\n\
-FITNESS FOR A PARTICULAR PURPOSE."
-         + extra_info;
-}
-
-static std::string
 format_url (bool html, const std::string& url)
 {
-  return html ? R"(<a href=")" + url + R"(">)" + url + "</a>" : url;
+  if (html)
+    return R"(<a href=")" + url + R"(">)" + url + "</a>";
+  else
+    return "<" + url + ">";
 }
 
 std::string
@@ -53,13 +48,6 @@ octave_www_statement (bool html)
 }
 
 std::string
-octave_contrib_statement (bool html)
-{
-  return "Improve Octave:       "
-         + format_url (html, "https://octave.org/get-involved");
-}
-
-std::string
 octave_bugs_statement (bool html)
 {
   return "Support resources:    "
@@ -67,44 +55,63 @@ octave_bugs_statement (bool html)
 }
 
 std::string
-octave_name_version_and_copyright (bool html)
+octave_contrib_statement (bool html)
 {
-  // The GNU coding standards say that on the first line printed by
-  // --version, the version number should follow the last space on the
-  // line.
+  return "Improve Octave:       "
+         + format_url (html, "https://octave.org/get-involved");
+}
+
+std::string
+octave_name_version_copyright (bool html)
+{
+  // The GNU coding standards say that the first line printed by --version
+  // should place the version number following the last space on the line.
   std::string br = (html ? "<br>\n" : "\n");
 
-  return "GNU Octave, version " OCTAVE_VERSION
-         + br
+  return "GNU Octave (" OCTAVE_CANONICAL_HOST_TYPE ") version " OCTAVE_VERSION + br
          + OCTAVE_COPYRIGHT;
 }
 
 std::string
-octave_name_version_copyright_copying_and_warranty
+octave_name_version_copyright_license (bool html)
+{
+  std::string br = (html ? "<br>\n" : "\n");
+
+  return octave_name_version_copyright (html) + br
+         + "License GPLv3+: GNU GPL version 3 or later "
+         + format_url (html, "https://gnu.org/licenses/gpl.html");
+}
+
+static std::string
+octave_warranty_statement (bool html, const std::string& extra_info = "")
+{
+  std::string br = (html ? "\n" : "\n");
+
+  return "There is NO WARRANTY, to the extent permitted by law."
+         + extra_info;
+}
+
+std::string
+octave_name_version_copyright_license_copying_warranty
   (bool html, const std::string& extra_info)
 {
   std::string br = (html ? "<br>\n" : "\n");
   std::string sep = (html ? "\n</p>\n<p>\n" : "\n\n");
 
-  return octave_name_version_and_copyright (html)
-         + br
-         + "This is free software; see the source code for copying conditions."
-         + br
-         + octave_warranty_statement (extra_info)
+  return octave_name_version_copyright_license (html)
          + sep
-         + R"(Octave was configured for ")"
-         + OCTAVE_CANONICAL_HOST_TYPE
-         + R"(".)";
+         + "This is free software; see the source code for copying conditions." + br
+         + octave_warranty_statement (html, extra_info) ;
 }
 
 std::string
-octave_name_version_copyright_copying_warranty_and_bugs
+octave_name_version_copyright_license_copying_warranty_bugs
   (bool html, const std::string& extra_info)
 {
   std::string sep = (html ? "\n</p>\n<p>\n" : "\n");
   std::string msg =
     (html ? "<p>\n" : "")
-    + octave_name_version_copyright_copying_and_warranty (html, extra_info)
+    + octave_name_version_copyright_license_copying_warranty (html, extra_info)
     + (html ? "" : "\n")               + sep
     + octave_www_statement (html)      + sep
     + octave_bugs_statement (html)     + sep
@@ -118,13 +125,11 @@ std::string
 octave_startup_message (bool html)
 {
   std::string msg
-    = octave_name_version_copyright_copying_warranty_and_bugs
+    = octave_name_version_copyright_license_copying_warranty_bugs
         (html, "  For details, type 'warranty'.");
 
   msg += (html ? "<p>\n" : "\n");
-
   msg += "For changes from previous versions, type 'news'.";
-
   msg += (html ? "\n</p>" : "");
 
   return msg;

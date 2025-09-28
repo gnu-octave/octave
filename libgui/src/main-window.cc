@@ -945,7 +945,7 @@ void
 main_window::show_about_octave ()
 {
   std::string message
-    = octave_name_version_copyright_copying_warranty_and_bugs (true);
+    = octave_name_version_copyright_license_copying_warranty_bugs (true);
 
   QMessageBox::about (this, tr ("About Octave"),
                       QString::fromStdString (message));

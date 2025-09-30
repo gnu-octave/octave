@@ -34,7 +34,7 @@ function [in_arg, sz, is_im, is_nd] ...
   cls = class (in_arg);
   sz = size (in_arg);
 
-  ## If we have an image convert it into a color map.
+  ## If we have an image convert it into a colormap.
   if (! iscolormap (in_arg))
     if (! any (strcmp (cls, {"uint8", "int8", "int16", "uint16", ...
                              "single", "double"})))

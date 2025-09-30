@@ -435,7 +435,7 @@ are visible in their parents' children list, regardless of the value of their \
         s.category = "Appearance";
 
       case "colormap"
-        s.doc = "A matrix containing the RGB color map for the current axes.";
+        s.doc = "A matrix containing the RGB colormap for the current axes.";
         s.valid = "N-by-3 matrix";
         s.category = "Appearance";
 
@@ -904,7 +904,7 @@ children.";
         endif
 
       case "colormap"
-        s.doc = "A matrix containing the RGB color map for this __objname__ \
+        s.doc = "A matrix containing the RGB colormap for this __objname__ \
 object.";
         s.valid = "N-by-3 matrix";
         s.category = "Color and Transparency";

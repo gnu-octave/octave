@@ -502,27 +502,44 @@ printing.";
         s.category = "Printing/Saving";
 
       case "keypressfcn"
-        s.doc = "Callback function executed when a keystroke event \
-happens while the figure has focus.  The actual key that was pressed \
-can be retrieved using the second argument 'evt' of the function.\
+        s.doc = "Callback function executed when a key is pressed while the \
+figure has focus.  The first argument to the function is the handle of the \
+calling figure.  The second argument holds an event structure which has the \
+following members:\n\
+@table @code\n\
+@item Character:\n\
+The ASCII value of the key\n\
+@item Modifier:\n\
+A cell array containing strings representing the modifiers pressed with the \
+key.\n\
+@item Key:\n\
+Lowercase description of the key\n\
+@item Source:\n\
+Graphics handle of the object executing the callback function\n\
+@item EventName:\n\
+\"KeyPress\"\n\
+@end table\
 \n\n__fcnmsg__";
         s.valid = valid_fcn;
         s.category = "Keyboard Interaction";
 
       case "keyreleasefcn"
-        s.doc = "With @code{keypressfcn}, the keyboard callback functions.  \
-These callback functions are called when a key is pressed/released \
-respectively.  The functions are called with two input arguments.  The first \
-argument holds the handle of the calling figure.  The second argument holds \
-an event structure which has the following members:\n\
+        s.doc = "Callback function executed when a key is release while the \
+figure has focus.  The first argument to the function is the handle of the \
+calling figure.  The second argument holds an event structure which has the \
+following members:\n\
 @table @code\n\
 @item Character:\n\
 The ASCII value of the key\n\
-@item Key:\n\
-Lowercase value of the key\n\
 @item Modifier:\n\
 A cell array containing strings representing the modifiers pressed with the \
 key.\n\
+@item Key:\n\
+Lowercase description of the key\n\
+@item Source:\n\
+Graphics handle of the object executing the callback function\n\
+@item EventName:\n\
+\"KeyRelease\"\n\
 @end table\
 \n\n__fcnmsg__";
         s.valid = valid_fcn;
@@ -3041,8 +3058,24 @@ the uicontrol object.";
         s.category = "Text Appearance";
 
       case "keypressfcn"
-        s.doc = "Function that is executed when a key is pressed and \
-the control object has focus.\n\n__fcnmsg__";
+        s.doc = "Callback function executed when a key is pressed while the \
+uicontrol object has focus.  The first argument to the function is the handle \
+of the calling uicontrol.  The second argument holds an event structure which \
+has the following members:\n\
+@table @code\n\
+@item Character:\n\
+The ASCII value of the key\n\
+@item Modifier:\n\
+A cell array containing strings representing the modifiers pressed with the \
+key.\n\
+@item Key:\n\
+Lowercase description of the key\n\
+@item Source:\n\
+Graphics handle of the object executing the callback function\n\
+@item EventName:\n\
+\"KeyPress\"\n\
+@end table\
+\n\n__fcnmsg__";
         s.valid = valid_fcn;
         s.category = "Callback Execution";
 
@@ -3232,14 +3265,47 @@ fourth elements contain the height and width of the table.";
         s.category = "Appearance";
 
       case "keypressfcn"
-        s.doc = "A string consisting of a valid Octave expression that will \
-be executed whenever a key is pressed in this table object.";
-        s.valid = "string";
+        s.doc = "Callback function executed when a key is pressed while the \
+table object has focus.  The first argument to the function is the handle of \
+the calling table.  The second argument holds an event structure which has the \
+following members:\n\
+@table @code\n\
+@item Character:\n\
+The ASCII value of the key\n\
+@item Modifier:\n\
+A cell array containing strings representing the modifiers pressed with the \
+key.\n\
+@item Key:\n\
+Lowercase description of the key\n\
+@item Source:\n\
+Graphics handle of the object executing the callback function\n\
+@item EventName:\n\
+\"KeyPress\"\n\
+@end table\
+\n\n__fcnmsg__";
+        s.valid = valid_fcn;
         s.category = "Callback Execution";
 
       case "keyreleasefcn"
-        s.doc = "A string consisting of a valid Octave expression that will \
-be executed whenever a key is released in this table object.";
+        s.doc = "Callback function executed when a key is released while the \
+table object has focus.  The first argument to the function is the handle of \
+the calling table.  The second argument holds an event structure which has the \
+following members:\n\
+@table @code\n\
+@item Character:\n\
+The ASCII value of the key\n\
+@item Modifier:\n\
+A cell array containing strings representing the modifiers pressed with the \
+key.\n\
+@item Key:\n\
+Lowercase description of the key\n\
+@item Source:\n\
+Graphics handle of the object executing the callback function\n\
+@item EventName:\n\
+\"KeyRelease\"\n\
+@end table\
+\n\n__fcnmsg__";
+        s.valid = valid_fcn;
         s.category = "Callback Execution";
 
       case "position"

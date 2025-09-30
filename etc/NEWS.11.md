@@ -94,6 +94,10 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   functions such as `KeyPressFcn` now returns fieldnames in the same order
   as Matlab: `Character`, `Modifier`, `Key`.
 
+- The `KeyEvent` structure now includes the fields `Source` (graphics handle
+  of object returning `KeyEvent`) and `EventName` (e.g., `KeyPress` or
+  `KeyRelease`).
+
 ### Alphabetical list of new functions added in Octave 11
 
 * `corrcov`

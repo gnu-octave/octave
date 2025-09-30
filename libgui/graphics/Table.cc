@@ -1569,12 +1569,16 @@ Table::eventFilter (QObject *watched, QEvent *xevent)
               {
                 octave::autolock guard (gh_mgr.graphics_lock ());
 
-                octave_scalar_map keyData = Utils::makeKeyEventStruct (k);
+                octave_scalar_map keyEvent = Utils::makeKeyEventStruct (k);
+                keyEvent.setfield ("Source",
+                                   object ().get_handle ().as_octave_value ());
+                keyEvent.setfield ("EventName", "KeyPress");
+
                 graphics_object fig = object ().get_ancestor ("figure");
 
                 Q_EMIT gh_set_event (fig.get_handle (), "currentcharacter",
-                                     keyData.getfield ("Character"), false);
-                Q_EMIT gh_callback_event (m_handle, "keypressfcn", keyData);
+                                     keyEvent.getfield ("Character"), false);
+                Q_EMIT gh_callback_event (m_handle, "keypressfcn", keyEvent);
               }
             int row = m_tableWidget->currentRow ();
             int col = m_tableWidget->currentColumn ();
@@ -1655,12 +1659,16 @@ Table::eventFilter (QObject *watched, QEvent *xevent)
 
                 QKeyEvent *k = dynamic_cast<QKeyEvent *> (xevent);
 
-                octave_scalar_map keyData = Utils::makeKeyEventStruct (k);
+                octave_scalar_map keyEvent = Utils::makeKeyEventStruct (k);
+                keyEvent.setfield ("Source",
+                                   object ().get_handle ().as_octave_value ());
+                keyEvent.setfield ("EventName", "KeyRelease");
+
                 graphics_object fig = object ().get_ancestor ("figure");
 
                 Q_EMIT gh_set_event (fig.get_handle (), "currentcharacter",
-                                     keyData.getfield ("Character"), false);
-                Q_EMIT gh_callback_event (m_handle, "keyreleasefcn", keyData);
+                                     keyEvent.getfield ("Character"), false);
+                Q_EMIT gh_callback_event (m_handle, "keyreleasefcn", keyEvent);
               }
           }
           break;

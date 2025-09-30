@@ -135,9 +135,9 @@ A pixel in a binary image is black if it is @code{false} and white
 if it is @code{true}.
 
 An indexed image consists of an M-by-N matrix of integers
-and a C-by-3 color map.  Each integer corresponds to an
-index in the color map, and each row in the color map corresponds to
-an RGB color.  The color map must be of class @code{double} with values
+and a C-by-3 colormap.  Each integer corresponds to an
+index in the colormap, and each row in the colormap corresponds to
+an RGB color.  The colormap must be of class @code{double} with values
 between 0 and 1.
 
 The following convenience functions are available for conversion between image

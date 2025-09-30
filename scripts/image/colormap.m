@@ -33,9 +33,9 @@
 ## @deftypefnx {} {} colormap @var{map_name}
 ## Query or set the current colormap.
 ##
-## With no input arguments, @code{colormap} returns the current color map.  If
+## With no input arguments, @code{colormap} returns the current colormap.  If
 ## there is no current figure, a new figure will be opened and the default
-## color map will be returned.
+## colormap will be returned.
 ##
 ## @code{colormap (@var{map})} sets the current colormap to @var{map}.  The
 ## colormap should be an @var{n} row by 3 column matrix.  The columns
@@ -150,7 +150,7 @@ function cmap = colormap (varargin)
       if (isempty (cf))
         cf = gcf ();
       endif
-      ## Set the new color map
+      ## Set the new colormap
       set (cf, "colormap", map);
       if (have_fig)
         ## Matlab Compatibility: Also clear any axes colormaps as of R2018A.
@@ -160,7 +160,7 @@ function cmap = colormap (varargin)
     endif
   endif
 
-  ## Return current color map.
+  ## Return current colormap.
   if (nargout > 0 || nargin == 0)
     if (isempty (cf))
       cf = gcf ();

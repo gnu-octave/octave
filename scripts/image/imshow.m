@@ -39,8 +39,8 @@
 ## an empty matrix is passed for @var{limits}, the display range is computed
 ## as the range between the minimal and the maximal value in the image.
 ##
-## If @var{map} is a valid color map, the image will be shown as an indexed
-## image using the supplied color map.
+## If @var{map} is a valid colormap, the image will be shown as an indexed
+## image using the supplied colormap.
 ##
 ## If a filename is given instead of an image, the file will be read and shown.
 ##

@@ -90,6 +90,10 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   Octave scripts.  The graphics properties `AxisLocation`, `Direction`, and
   `TickLabels` have been implemented.
 
+- The `KeyEvent` structure passed as an input paramater to graphics callback
+  functions such as `KeyPressFcn` now returns fieldnames in the same order
+  as Matlab: `Character`, `Modifier`, `Key`.
+
 ### Alphabetical list of new functions added in Octave 11
 
 * `corrcov`

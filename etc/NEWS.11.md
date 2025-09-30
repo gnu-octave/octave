@@ -82,6 +82,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The functions `fill` and `fill3 now handle all input combinations of vector
   and matrix vertex data and color data in a Matlab-compatible way.
 
+- The `image` function now validates that `x` and `y` inputs are vectors, and
+  accepts and processes 1-element vectors for compatibility.
+
 - The function `colorbar` now requires the `location` input to be the first
   argument rather than the last argument.  This may require updating existing
   Octave scripts.  The graphics properties `AxisLocation`, `Direction`, and

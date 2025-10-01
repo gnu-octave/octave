@@ -921,16 +921,16 @@ DEFMETHOD (dbstack, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} dbstack
 @deftypefnx {} {} dbstack @var{n}
-@deftypefnx {} {} dbstack @var{-completenames}
+@deftypefnx {} {} dbstack -completenames
 @deftypefnx {} {[@var{stack}, @var{idx}] =} dbstack (@dots{})
 Display or return current debugging function stack information.
 
 With optional argument @var{n}, omit the @var{n} innermost stack frames.
 
-Although accepted, the argument @var{-completenames} is silently ignored.
+Although accepted, the argument @code{-completenames} is silently ignored.
 Octave always returns absolute filenames.
 
-The arguments @var{n} and @var{-completenames} can both be specified and may
+The arguments @var{n} and @code{-completenames} can both be specified and may
 appear in any order.
 
 The optional return argument @var{stack} is a struct array with the

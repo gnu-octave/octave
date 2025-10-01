@@ -26,41 +26,54 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} image (@var{img})
 ## @deftypefnx {} {} image (@var{x}, @var{y}, @var{img})
-## @deftypefnx {} {} image (@dots{}, "@var{prop}", @var{val}, @dots{})
-## @deftypefnx {} {} image ("@var{prop1}", @var{val1}, @dots{})
+## @deftypefnx {} {} image ("CData", @var{img})
+## @deftypefnx {} {} image ("XData", @var{x}, "YData", @var{y}, "CData", @var{img})
+## @deftypefnx {} {} image (@dots{}, @var{prop}, @var{val})
+## @deftypefnx {} {} image (@var{hax}, @dots{})
 ## @deftypefnx {} {@var{h} =} image (@dots{})
-## Display a matrix as an indexed color image.
+## Display a matrix as an image.
 ##
-## The elements of @var{img} are indices into the current colormap.
+## @var{img} may be a 2-D matrix where each element is an index into the
+## current colormap.  For floating point data, the value 1 chooses the first
+## color in the colormap.  For integer data, the value 0 chooses the first
+## color in the colormap.
 ##
-## @var{x} and @var{y} are optional 2-element vectors, @w{@code{[min, max]}},
-## which specify the coordinates of the centers of the corner pixels.
-## If a range is specified as @w{@code{[max, min]}}@ then the image will be
-## reversed along that axis.  For convenience, @var{x} and @var{y} may be
-## specified as N-element vectors matching the length of the data in @var{img}.
-## However, only the first and last elements will be used to determine the axis
-## limits.
+## Or @var{img} may be a 3-D matrix where the third dimension is an RGB triplet
+## specifying the color.  If the image data is floating point then the data
+## must be in the range [0, 1].  If the image data is of integer type (uint8 or
+## uint16) then the data must be in the range [0, INTMAX].
+##
+## @var{x} and @var{y} are optional 1-element (@code{[min]}) or 2-element
+## vectors (@w{@code{[min, max]}}) which specify the coordinate(s) of the
+## @emph{center} of a corner pixel.  If unspecified, the default minimum value
+## is 1 and the maximum is the length of @var{img} along the specific
+## dimension.  If a range is specified as @w{@code{[max, min]}}@ then the image
+## will be reversed along that axis.  For convenience, @var{x} and @var{y} may
+## be specified as vectors, however, only the first and last elements will be
+## used to determine the axis limits.
 ##
 ## Multiple property/value pairs may be specified for the image object, but
 ## they must appear in pairs.
 ##
+## If the first argument @var{hax} is an axes handle, then plot into this axes,
+## rather than the current axes returned by @code{gca}.
+##
 ## The optional return value @var{h} is a graphics handle to the image.
 ##
-## Implementation Note: The origin (0, 0) for images is located in the
-## upper left.  For ordinary plots, the origin is located in the lower
-## left.  Octave handles this inversion by plotting the data normally,
-## and then reversing the direction of the y-axis by setting the
-## @code{ydir} property to @qcode{"reverse"}.  This has implications whenever
-## an image and an ordinary plot need to be overlaid.  The recommended
-## solution is to display the image and then plot the reversed ydata
-## using, for example, @code{flipud (ydata)}.
+## Implementation Note: The origin (0, 0) for images is located in the upper
+## left.  For ordinary plots, the origin is located in the lower left.  Octave
+## handles this inversion by plotting the data normally, and then reversing the
+## direction of the y-axis by setting the @code{ydir} property to
+## @qcode{"reverse"}.  This has implications whenever an image and an ordinary
+## plot need to be overlaid.  The recommended solution is to display the image
+## and then plot the reversed ydata using, for example, @code{flipud (ydata)}.
 ##
 ## Calling Forms: The @code{image} function can be called in two forms:
 ## High-Level and Low-Level.  When invoked with normal options, the High-Level
 ## form is used which first calls @code{newplot} to prepare the graphic figure
 ## and axes.  When the only inputs to @code{image} are property/value pairs
 ## the Low-Level form is used which creates a new instance of an image object
-## and inserts it in the current axes.
+## and inserts it in the current axes (as if @code{hold on} was in effect).
 ##
 ## Graphic Properties: The full list of properties is documented at
 ## @ref{Image Properties}.
@@ -153,50 +166,47 @@ function h = __img__ (hax, do_new, x, y, img, varargin)
   if (! isempty (img))
 
     if (! isempty (x))
-      xdata = x([1, end])(:).';  # (:).' is a hack to guarantee row vector
-    endif
-
-    if (! isempty (y))
-      ydata = y([1, end])(:).';
-    endif
-
-    if (numel (x) > 2 && numel (y) > 2)
-      ## Test data for non-linear spacing which is unsupported
-      tol = .01;  # 1% tolerance.  FIXME: this value was chosen without thought.
-      dx = diff (x);
-      dxmean = (max (x) - min (x)) / (numel (x) - 1);
-      dx = abs ((abs (dx) - dxmean) / dxmean);
-      dy = diff (y);
-      dymean = (max (y) - min (y)) / (numel (y) - 1);
-      dy = abs ((abs (dy) - dymean) / dymean);
-      if (any (dx > tol) || any (dy > tol))
-        warning (["image: non-linear X, Y data is ignored.  " ...
-                  "IMG will be shown with linear mapping"]);
+      if (! isvector (x))
+        error ("image: X must be a vector");
+      endif
+      if (isscalar (x))
+        xdata = [x(1), x(1)+columns(img)-1];
+      else
+        xdata = x([1, end])(:).';  # (:).' is a hack to guarantee row vector
       endif
     endif
 
-  endif  # ! isempty (img)
+    if (! isempty (y))
+      if (! isvector (y))
+        error ("image: Y must be a vector");
+      endif
+      if (isscalar (y))
+        ydata = [y(1), y(1)+rows(img)-1];
+      else
+        ydata = y([1, end])(:).';
+      endif
+    endif
 
-  if (do_new && ! ishold (hax))
+  endif
+
+  scale_axis = do_new && ! ishold (hax) && ! isempty (img);
+  if (scale_axis)
     ## Set axis properties for new images
     ## NOTE: Do this before calling __go_image__ so that image is not drawn
     ##       once with default auto-scale axis limits and then a second time
     ##       with tight axis limits.
-    if (! isempty (img))
-      if (isempty (get (hax, "children")))
-        axis (hax, "tight");
-      endif
-    endif  # ! isempty (img)
+    if (isempty (get (hax, "children")))
+      axis (hax, "tight");
+    endif
 
     set (hax, "view", [0, 90], "ydir", "reverse", "layer", "top", "box", "on");
 
-  endif  # do_new
+  endif
 
   h = __go_image__ (hax, "cdata", img, "xdata", xdata, "ydata", ydata,
                          "cdatamapping", "direct", varargin{:});
 
-  if (do_new && ! ishold (hax) && ! isempty (img)
-      && isscalar (get (hax, "children")))
+  if (scale_axis && isscalar (get (hax, "children")))
     ## Re-scale axis limits for an image in a new figure or axis.
     axis (hax, "tight");
   endif
@@ -250,7 +260,5 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
-
-## FIXME: Need %!tests for linear
 
 %!error <IMG data can not be complex> image ([1, i])

@@ -289,7 +289,7 @@ that works in Octave but not @sc{matlab} (@pxref{XREFwarning,,warning},
 @itemx -v
 @cindex @sortas{options, Octave command --version} @ @ @code{--version}
 @cindex @sortas{options, Octave command -v} @ @ @code{-v}
-Print the program version number and exit.
+Print program version information and exit.
 
 @item @var{file}
 Execute commands from @var{file}.  Exit when done unless @option{--persist} is

@@ -178,7 +178,7 @@ function h = fill (varargin)
       endfor
 
     unwind_protect_cleanup
-      if (strcmp (old_nxtplt, "replace"))
+      if (! strcmp (old_nxtplt, "add"))
         set (hax, "nextplot", old_nxtplt);
       endif
     end_unwind_protect

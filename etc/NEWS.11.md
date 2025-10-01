@@ -79,13 +79,24 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   invocations for each cell element.  In earlier versions, the elements were
   converted to a compatible type if possible.
 
-- The function `fill` now handles all input combination of vector and matrix
-  vertex data and color data in a Matlab-compatible way.
+- The functions `fill` and `fill3 now handle all input combinations of vector
+  and matrix vertex data and color data in a Matlab-compatible way.
+
+- The `image` function now validates that `x` and `y` inputs are vectors, and
+  accepts and processes 1-element vectors for compatibility.
 
 - The function `colorbar` now requires the `location` input to be the first
   argument rather than the last argument.  This may require updating existing
   Octave scripts.  The graphics properties `AxisLocation`, `Direction`, and
   `TickLabels` have been implemented.
+
+- The `KeyEvent` structure passed as an input paramater to graphics callback
+  functions such as `KeyPressFcn` now returns fieldnames in the same order
+  as Matlab: `Character`, `Modifier`, `Key`.
+
+- The `KeyEvent` structure now includes the fields `Source` (graphics handle
+  of object returning `KeyEvent`) and `EventName` (e.g., `KeyPress` or
+  `KeyRelease`).
 
 ### Alphabetical list of new functions added in Octave 11
 

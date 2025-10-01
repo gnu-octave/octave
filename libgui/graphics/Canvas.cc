@@ -1065,6 +1065,9 @@ Canvas::canvasKeyPressEvent (QKeyEvent *event)
           updateCurrentPoint (figObj, obj);
 
           octave_scalar_map eventData = Utils::makeKeyEventStruct (event);
+          eventData.setfield ("Source",
+                              figObj.get_handle ().as_octave_value ());
+          eventData.setfield ("EventName", "KeyPress");
 
           Q_EMIT gh_set_event (figObj.get_handle (), "currentcharacter",
                                eventData.getfield ("Character"), false);
@@ -1092,8 +1095,13 @@ Canvas::canvasKeyReleaseEvent (QKeyEvent *event)
       if (obj.valid_object ())
         {
           graphics_object figObj (obj.get_ancestor ("figure"));
+          octave_scalar_map eventData = Utils::makeKeyEventStruct (event);
+          eventData.setfield ("Source",
+                              figObj.get_handle ().as_octave_value ());
+          eventData.setfield ("EventName", "KeyRelease");
+
           Q_EMIT gh_callback_event (figObj.get_handle (), "keyreleasefcn",
-                                    Utils::makeKeyEventStruct (event));
+                                    eventData);
         }
 
       return true;

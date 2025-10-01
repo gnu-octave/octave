@@ -48,7 +48,7 @@ function [x, map] = ind2x (caller, x, map)
     error ("%s: MAP must be a valid colormap", caller);
   endif
 
-  ## Any color indices below the lower bound of the color map are modified
+  ## Any color indices below the lower bound of the colormap are modified
   ## to point to the first color in the map (see bug #41851).
   if (isfloat (x))
     invalid_idx = x < 1;

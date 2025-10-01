@@ -34,7 +34,7 @@
 
 #include "version.h"
 
-// Usage message
+// Usage message for terse output.
 static const char *usage_string =
   "octave [-GHVWefghiqvx] [--echo-commands] [--eval CODE]\n\
        [--experimental-terminal-widget] [--gui] [--help] [--interactive]\n\
@@ -44,13 +44,11 @@ static const char *usage_string =
        [--path path] [--persist] [--quiet] [--server] [--traditional]\n\
        [--version] [file]";
 
-// Usage message with extra help.
-
+// Usage message for --help argument.
 static void
 octave_print_verbose_usage_and_exit ()
 {
-  std::cout << octave_name_version_copyright_copying_and_warranty ()
-            << "\n\
+  std::cout << octave_name_version_copyright_license_copying_warranty () << "\n\
 \n\
 Usage: octave [options] [FILE]\n\
 \n\
@@ -84,23 +82,19 @@ Options:\n\
   --server                Enter server mode at startup.\n\
   --quiet, --silent, -q   Don't print message at startup.\n\
   --traditional           Set variables for closer MATLAB compatibility.\n\
-  --version, -v           Print version number and exit.\n\
+  --version, -v           Print version information and exit.\n\
 \n\
   FILE                    Execute commands from FILE.  Exit when done\n\
                           unless --persist is also specified.\n\
 \n"
-            << octave_www_statement ()
-            << "\n\n"
-            << octave_contrib_statement ()
-            << "\n\n"
-            << octave_bugs_statement ()
-            << "\n";
+            << octave_www_statement () << "\n"
+            << octave_bugs_statement () << "\n"
+            << octave_contrib_statement () << "\n";
 
   std::exit (EXIT_SUCCESS);
 }
 
-// Terse usage message.
-
+// Terse usage message when argument is not recognized.
 static void
 octave_print_terse_usage_and_exit ()
 {
@@ -109,10 +103,11 @@ octave_print_terse_usage_and_exit ()
   std::exit (EXIT_FAILURE);
 }
 
+// Version message for --version argument.
 static void
 octave_print_version_and_exit ()
 {
-  std::cout << octave_name_version_copyright_copying_warranty_and_bugs ()
+  std::cout << octave_name_version_copyright_license_copying_warranty_bugs ()
             << "\n";
   std::exit (EXIT_SUCCESS);
 }

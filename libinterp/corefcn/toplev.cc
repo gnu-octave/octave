@@ -82,7 +82,7 @@ DEFUN (warranty, , ,
 Describe the conditions for copying and distributing Octave.
 @end deftypefn */)
 {
-  octave_stdout << "\n" << octave_name_version_and_copyright () << "\n\
+  octave_stdout << "\n" << octave_name_version_copyright () << "\n\
 \n\
 GNU Octave is free software: you can redistribute it and/or modify it\n\
 under the terms of the GNU General Public License as published by\n\
@@ -96,7 +96,7 @@ GNU General Public License for more details.\n\
 \n\
 You should have received a copy of the GNU General Public License\n\
 along with GNU Octave; see the file COPYING.  If not, see\n\
-<https://www.gnu.org/licenses/>.\n\
+<https://gnu.org/licenses/gpl.html>.\n\
 \n";
 
   return ovl ();

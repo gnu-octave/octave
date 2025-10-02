@@ -29,9 +29,7 @@
 ## @deftypefnx {} {@var{cstr} =} inputdlg (@var{prompt}, @var{title}, @var{rowscols})
 ## @deftypefnx {} {@var{cstr} =} inputdlg (@var{prompt}, @var{title}, @var{rowscols}, @var{defaults})
 ## @deftypefnx {} {@var{cstr} =} inputdlg (@var{prompt}, @var{title}, @var{rowscols}, @var{defaults}, @var{options})
-## Return user input from a multi-textfield dialog box in a cell array of
-## strings, or an empty cell array if the dialog is closed by the Cancel
-## button.
+## Return user input from a multi-textfield dialog box.
 ##
 ## Inputs:
 ##
@@ -44,19 +42,23 @@
 ## @qcode{"Input Dialog"}.
 ##
 ## @item rowscols
-## Specifies the size of the text fields and can take three forms:
+## Specifies the size of the text fields and can take four forms:
 ##
 ## @enumerate
 ## @item a scalar value which defines the number of rows used for each text
 ## field.
 ##
-## @item a vector which defines the individual number of rows used for each
-## text field.
+## @item a row or column vector with the number of elements matching the number
+## of prompts.  Each element defines the number of rows used for the
+## corresponding text field.
 ##
-## @item a matrix which defines the individual number of rows and columns used
-## for each text field.  In the matrix each row describes a single text field.
-## The first column specifies the number of input rows to use and the second
-## column specifies the text field width.
+## @item a 1x2 row vector which defines the number of rows and the number of
+## columns used for all text fields.
+##
+## @item an Mx2 matrix which defines the individual number of rows and columns
+## used for each text field.  In the matrix, each row describes a single text
+## field.  The first column specifies the number of input rows to use and the
+## second column specifies the text field width.
 ## @end enumerate
 ##
 ## @item defaults
@@ -66,6 +68,11 @@
 ## @item options
 ## Not supported, only for @sc{matlab} compatibility.
 ## @end table
+##
+## Output:
+## The output is a cell array of strings with each element being the text that
+## was entered by the user.  An empty cell array is returned if the dialog was
+## closed by the Cancel button.
 ##
 ## Example:
 ##
@@ -84,7 +91,9 @@
 
 function cstr = inputdlg (prompt, varargin)
 
-  narginchk (1, 5);
+  if (nargin < 1 || nargin > 5)
+    print_usage ();
+  endif
 
   if (iscell (prompt))
     ## Silently extract only char elements
@@ -106,6 +115,9 @@ function cstr = inputdlg (prompt, varargin)
   linespec = 1;
   if (nargin > 2)
     linespec = varargin{2};
+    if (! isnumeric (linespec))
+      error ("inputdlg: ROWSCOLS must be numeric");
+    endif
   endif
 
   defaults = cellstr (cell (size (prompt)));
@@ -127,47 +139,43 @@ function cstr = inputdlg (prompt, varargin)
   ## r1  1   10   first  text field is 1x10
   ## r2  2   20   second text field is 2x20
   ## r3  3   30   third  text field is 3x30
-  if (! isnumeric (linespec))
-    error ("inputdlg: ROWSCOLS must be numeric");
-  endif
 
   if (isscalar (linespec))
-    ## only scalar value in lineTo, copy from linespec and add defaults
+    ## only scalar value setting Height for all prompts
     rowscols = zeros (numel (prompt), 2);
-    ## cols
-    rowscols(:,2) = 25;
     rowscols(:,1) = linespec;
+    rowscols(:,2) = 25;
+  elseif (isrow (linespec) && columns (linespec) == 2)
+    ## One HxW specification for all prompts
+    rowscols = repmat (linespec, numel (prompt), 1);
   elseif (ismatrix (linespec))
     if (rows (linespec) == columns (prompt) && columns (linespec) == 2)
       ## (rows x columns) match, copy array linespec
       rowscols = linespec;
     elseif (isvector (linespec))
-      if (numel (linespec) == numel (prompt))
-        ## only one column in lineTo, copy from vector linespec and add defaults
-        rowscols = zeros (numel (prompt), 2);
-        ## rows from column vector linespec, columns are set to default
-        rowscols(:,2) = 25;
-        rowscols(:,1) = linespec(:);
-      else
+      if (numel (linespec) != numel (prompt))
         error ("inputdlg: ROWSCOLS vector does not match size of PROMPT");
       endif
+      ## rows from column vector linespec, columns are set to default
+      rowscols = zeros (numel (prompt), 2);
+      rowscols(:,1) = linespec(:);
+      rowscols(:,2) = 25;
     else
       error ("inputdlg: ROWSCOLS matrix does not match size of PROMPT");
     endif
   else
-    ## dunno
-    error ("inputdlg: unknown form of ROWSCOLS argument");
+    error ("inputdlg: invalid form of ROWSCOLS argument");
   endif
   rowscols = ceil (rowscols);
 
   ## convert numeric values in defaults cell array to strings
   defs = cellfun ('num2str', defaults, "UniformOutput", false);
 
-  if (__event_manager_have_dialogs__ ())
-    cstr = __event_manager_input_dialog__ (prompt, title, rowscols, defs);
-  else
+  if (! __event_manager_have_dialogs__ ())
     error ("inputdlg is not available in this version of Octave");
   endif
+
+  cstr = __event_manager_input_dialog__ (prompt, title, rowscols, defs);
 
 endfunction
 
@@ -249,9 +257,16 @@ endfunction
 %!   helpdlg (sprintf ('answer = %d', str2num (answer{1})), 'answer');
 %! endif
 
-%!error inputdlg (1, 2, 3, 4, 5, 6)
+%!error <Invalid call> inputdlg ()
+%!error <Invalid call> inputdlg (1, 2, 3, 4, 5, 6)
 %!error <PROMPT must be a character string> inputdlg (1)
 %!error <TITLE must be a character string> inputdlg ("msg", 1)
 %!error <ROWSCOLS must be numeric> inputdlg ("msg", "title", "1")
-%!error <ROWSCOLS vector does not match size>
+%!error <number of DEFAULT items must match number of PROMPT items>
+%!  inputdlg ("prompt", "title", 1, {'1', '2'})
+%!error <ROWSCOLS vector does not match size of PROMPT>
 %! inputdlg ({"a1", "a2"}, "title", [1, 2, 3]);
+%!error <ROWSCOLS matrix does not match size of PROMPT>
+%! inputdlg ({"a1", "a2"}, "title", [1, 2, 3; 4, 5, 6]);
+%!error <invalid form of ROWSCOLS argument>
+%! inputdlg ({"a1", "a2"}, "title", ones (2,2,2));

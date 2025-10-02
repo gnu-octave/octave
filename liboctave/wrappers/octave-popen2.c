@@ -253,9 +253,9 @@ octave_popen2 (const char *cmd, char *const *args, bool sync_mode,
         }
     }
 
-  *errmsg = "foobar!";
+  // Reaching this code means fork() was unsuccessful
   *errmsg = strerror (errno);
-  return pid;
+  return -1;
 }
 
 #endif

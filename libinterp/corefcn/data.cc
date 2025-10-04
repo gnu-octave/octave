@@ -5533,19 +5533,26 @@ identity_matrix (int nr, int nc, oct_data_conv::data_type dt)
 
 DEFUN (eye, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{I} =} eye (@var{n})
+@deftypefn  {} {@var{I} =} eye ()
+@deftypefnx {} {@var{I} =} eye (@var{n})
 @deftypefnx {} {@var{I} =} eye (@var{m}, @var{n})
-@deftypefnx {} {@var{I} =} eye ([@var{m} @var{n}])
+@deftypefnx {} {@var{I} =} eye ([@var{m}, @var{n}])
 @deftypefnx {} {@var{I} =} eye (@dots{}, @var{class})
 Return an identity matrix.
 
-If invoked with a single scalar argument @var{n}, return a square
-@nospell{NxN} identity matrix.
+If called with no arguments, return the scalar value @code{1}.
 
-If supplied two scalar arguments (@var{m}, @var{n}), @code{eye} takes them
-to be the number of rows and columns.  If given a vector with two elements,
-@code{eye} uses the values of the elements as the number of rows and
-columns, respectively.  For example:
+If invoked with a single scalar argument @var{n}, return a square @nospell{NxN}
+identity matrix.
+
+If supplied two scalar arguments (@var{m}, @var{n}), or a 2-element vector
+@w{@code{[@var{m}, @var{n}]}}, return an @nospell{MxN} identity matrix with
+@var{m} rows and @var{n} columns.
+
+The optional argument @var{class} specifies the return type of the matrix and
+defaults to @qcode{"double"}.
+
+Example 1 : 1-input, square identity matrix
 
 @example
 @group
@@ -5556,28 +5563,25 @@ eye (3)
 @end group
 @end example
 
-The following expressions all produce the same result:
+Example 2 : following expressions all produce 2x2 identity matrix
 
 @example
 @group
-eye (2)
-@equiv{}
-eye (2, 2)
-@equiv{}
-eye (size ([1, 2; 3, 4]))
+eye (2) @equiv{} eye (2, 2) @equiv{} eye (size ([1, 2; 3, 4]))
+ @result{}  1  0
+     0  1
 @end group
 @end example
 
-The optional argument @var{class}, allows @code{eye} to return an array of
-the specified type, like
+Example 3 : 2x2 uint8 identity matrix
 
 @example
-val = zeros (n,m, "uint8")
+I = eye (2, "uint8")
 @end example
 
-Calling @code{eye} with no arguments is equivalent to calling it with an
-argument of 1.  Any negative dimensions are treated as zero.  These odd
-definitions are for compatibility with @sc{matlab}.
+Programming Note: Calling @code{eye} with no arguments is equivalent to calling
+it with an argument of @code{1}.  Any negative dimensions are treated as zero.
+These odd definitions are for compatibility with @sc{matlab}.
 @seealso{speye, ones, zeros}
 @end deftypefn */)
 {

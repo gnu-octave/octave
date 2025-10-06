@@ -17,7 +17,7 @@ jobs:
 
       matrix:
         # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
-        os: [macos-14, macos-13]
+        os: [macos-14, macos-15]
         # Most (or all) homebrew packages are compiled with clang and link
         # against libc++.  So we also use clang to avoid issues with symbols
         # that don't match.
@@ -33,13 +33,10 @@ jobs:
           - compiler: clang
             cc: "clang"
             cxx: "clang++"
-          - os: macos-13
+          - os: macos-15-intel
             qt: "5"
             cc: "clang"
             cxx: "clang++"
-            # SUNDIALS >= 6.5.0 doesn't compile with the default flags determined
-            # by the configure script. Set CXX manually to enable building with it.
-            cxx-compiler-flags: "-std=gnu++14"
 
     env:
       CC: ${{ matrix.cc }}

@@ -313,7 +313,7 @@ Programming Note: If the @qcode{"unique"} option is not used, the length of
 ## Also sort logical input with order dependent on the input order and
 ## not their values.
 
-%!assert <*52431> (perms (logical ([1 0])), logical ([0 1;, 1 0]))
+%!assert <*52431> (perms (logical ([1 0])), logical ([0 1; 1 0]))
 %!assert <*52431> (perms (logical ([0 1])), logical ([1 0; 0 1]))
 %!assert <*52431> (perms (logical ([0 1 0])),
 %!                logical ([0 1 0; 0 0 1; 1 0 0; 1 0 0; 0 0 1; 0 1 0]))

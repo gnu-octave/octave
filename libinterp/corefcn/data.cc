@@ -4651,13 +4651,16 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
 
 DEFUN (ones, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} ones (@var{n})
-@deftypefnx {} {@var{val} =} ones (@var{m}, @var{n})
-@deftypefnx {} {@var{val} =} ones (@var{m}, @var{n}, @var{k}, @dots{})
-@deftypefnx {} {@var{val} =} ones ([@var{m} @var{n} @dots{}])
-@deftypefnx {} {@var{val} =} ones (@dots{}, "like", @var{var})
-@deftypefnx {} {@var{val} =} ones (@dots{}, @var{class})
-Return a matrix or N-dimensional array whose elements are all 1.
+@deftypefn  {} {@var{x} =} ones ()
+@deftypefnx {} {@var{x} =} ones (@var{n})
+@deftypefnx {} {@var{x} =} ones (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{x} =} ones ([@var{m}, @var{n}, @dots{}])
+@deftypefnx {} {@var{x} =} ones (@dots{}, @var{class})
+@deftypefnx {} {@var{x} =} ones (@dots{}, "like", @var{var})
+Return a scalar, matrix, or N-dimensional array whose elements are all
+@code{1}.
+
+If called with no arguments, return the scalar value @code{1}.
 
 If invoked with a single scalar integer argument @var{n}, return a square
 @nospell{NxN} matrix.
@@ -4665,39 +4668,47 @@ If invoked with a single scalar integer argument @var{n}, return a square
 If invoked with two or more scalar integer arguments, or a vector of integer
 values, return an array with the given dimensions.
 
-To create a constant matrix whose values are all the same use an expression
-such as
-
-@example
-val_matrix = val * ones (m, n)
-@end example
+The optional argument @var{class} specifies the class of the return array
+and defaults to @qcode{"double"}.
 
 If a variable @var{var} is specified after @qcode{"like"}, the output @var{val}
 will have the same data type, complexity, and sparsity as @var{var}.
 
-The optional argument @var{class} specifies the class of the return array
-and defaults to double.  For example:
+Example 1 : MxN matrix of constant value @var{val}
 
 @example
-val = ones (m,n, "uint8")
+@var{C} = @var{val} * ones (@var{m}, @var{n})
 @end example
-@seealso{zeros}
+
+Example 2 : MxN matrix of uint8
+
+@example
+@var{C} = ones (@var{m}, @var{n}, "uint8")
+@end example
+
+Programming Note: Any negative dimensions are treated as zero, and any zero
+dimensions will result in an empty matrix.  This odd behavior is for
+@sc{matlab} compatibility.
+@seealso{zeros, true, false}
 @end deftypefn */)
 {
   return fill_matrix (args, 1, "ones");
 }
 
 /*
+%!assert (ones (), 1)
 %!assert (ones (3), [1, 1, 1; 1, 1, 1; 1, 1, 1])
 %!assert (ones (2, 3), [1, 1, 1; 1, 1, 1])
 %!assert (ones (3, 2), [1, 1; 1, 1; 1, 1])
 %!assert (size (ones (3, 4, 5)), [3, 4, 5])
 
+%!assert (ones ("single"), single (1))
 %!assert (ones (3, "single"), single ([1, 1, 1; 1, 1, 1; 1, 1, 1]))
 %!assert (ones (2, 3, "single"), single ([1, 1, 1; 1, 1, 1]))
 %!assert (ones (3, 2, "single"), single ([1, 1; 1, 1; 1, 1]))
 %!assert (size (ones (3, 4, 5, "single")), [3, 4, 5])
 
+%!assert (ones ("int8"), int8 (1))
 %!assert (ones (3, "int8"), int8 ([1, 1, 1; 1, 1, 1; 1, 1, 1]))
 %!assert (ones (2, 3, "int8"), int8 ([1, 1, 1; 1, 1, 1]))
 %!assert (ones (3, 2, "int8"), int8 ([1, 1; 1, 1; 1, 1]))
@@ -4715,6 +4726,7 @@ val = ones (m,n, "uint8")
 %!assert (size (ones (1, -2, 2)), [1, 0, 2])
 
 ## Test input validation
+%!error <invalid data type specified> ones (1, 1, "foobar")
 %!error <conversion of 1.1 .*failed> ones (1.1)
 %!error <conversion of 1.1 .*failed> ones (1, 1.1)
 %!error <conversion of 1.1 .*failed> ones ([1, 1.1])
@@ -4745,40 +4757,62 @@ val = ones (m,n, "uint8")
 
 DEFUN (zeros, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} zeros (@var{n})
-@deftypefnx {} {@var{val} =} zeros (@var{m}, @var{n})
-@deftypefnx {} {@var{val} =} zeros (@var{m}, @var{n}, @var{k}, @dots{})
-@deftypefnx {} {@var{val} =} zeros ([@var{m} @var{n} @dots{}])
-@deftypefnx {} {@var{val} =} zeros (@dots{}, "like", @var{var})
-@deftypefnx {} {@var{val} =} zeros (@dots{}, @var{class})
-Return a matrix or N-dimensional array whose elements are all 0.
+@deftypefn  {} {@var{x} =} zeros ()
+@deftypefnx {} {@var{x} =} zeros (@var{n})
+@deftypefnx {} {@var{x} =} zeros (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{x} =} zeros ([@var{m}, @var{n}, @dots{}])
+@deftypefnx {} {@var{x} =} zeros (@dots{}, @var{class})
+@deftypefnx {} {@var{x} =} zeros (@dots{}, "like", @var{var})
+Return a scalar, matrix, or N-dimensional array whose elements are all
+@code{0}.
 
-If invoked with a single scalar integer argument, return a square
+If called with no arguments, return the scalar value @code{0}.
+
+If invoked with a single scalar integer argument @var{n}, return a square
 @nospell{NxN} matrix.
 
 If invoked with two or more scalar integer arguments, or a vector of integer
 values, return an array with the given dimensions.
 
+The optional argument @var{class} specifies the class of the return array
+and defaults to @qcode{"double"}.
+
 If a variable @var{var} is specified after @qcode{"like"}, the output @var{val}
 will have the same data type, complexity, and sparsity as @var{var}.
 
-The optional argument @var{class} specifies the class of the return array
-and defaults to double.  For example:
+Example : MxN matrix of uint8
 
 @example
-val = zeros (m,n, "uint8")
+@var{C} = ones (@var{m}, @var{n}, "uint8")
 @end example
-@seealso{ones}
+
+Programming Note: Any negative dimensions are treated as zero, and any zero
+dimensions will result in an empty matrix.  This odd behavior is for
+@sc{matlab} compatibility.
+@seealso{ones, true, false}
 @end deftypefn */)
 {
   return fill_matrix (args, 0, "zeros");
 }
 
 /*
+%!assert (zeros (), 0)
 %!assert (zeros (3), [0, 0, 0; 0, 0, 0; 0, 0, 0])
 %!assert (zeros (2, 3), [0, 0, 0; 0, 0, 0])
 %!assert (zeros (3, 2), [0, 0; 0, 0; 0, 0])
 %!assert (size (zeros (3, 4, 5)), [3, 4, 5])
+
+%!assert (zeros ("single"), single (0))
+%!assert (zeros (3, "single"), single ([0, 0, 0; 0, 0, 0; 0, 0, 0]))
+%!assert (zeros (2, 3, "single"), single ([0, 0, 0; 0, 0, 0]))
+%!assert (zeros (3, 2, "single"), single ([0, 0; 0, 0; 0, 0]))
+%!assert (size (zeros (3, 4, 5, "single")), [3, 4, 5])
+
+%!assert (zeros ("int8"), int8 (0))
+%!assert (zeros (3, "int8"), int8 ([0, 0, 0; 0, 0, 0; 0, 0, 0]))
+%!assert (zeros (2, 3, "int8"), int8 ([0, 0, 0; 0, 0, 0]))
+%!assert (zeros (3, 2, "int8"), int8 ([0, 0; 0, 0; 0, 0]))
+%!assert (size (zeros (3, 4, 5, "int8")), [3, 4, 5])
 
 %!assert (zeros (2, 2, "like", double (1)), double ([0, 0; 0, 0]))
 %!assert (zeros (2, 2, "like", complex (ones (2, 2))), [0, 0; 0, 0])
@@ -4787,23 +4821,11 @@ val = zeros (m,n, "uint8")
 %!assert (zeros (2, 2, "like", uint8 (8)), uint8 ([0, 0; 0, 0]))
 %!assert (zeros (2, "like", speye (2)), sparse ([0, 0; 0, 0]))
 
-%!assert (zeros (3, "single"), single ([0, 0, 0; 0, 0, 0; 0, 0, 0]))
-%!assert (zeros (2, 3, "single"), single ([0, 0, 0; 0, 0, 0]))
-%!assert (zeros (3, 2, "single"), single ([0, 0; 0, 0; 0, 0]))
-%!assert (size (zeros (3, 4, 5, "single")), [3, 4, 5])
-
-%!assert (zeros (3, "int8"), int8 ([0, 0, 0; 0, 0, 0; 0, 0, 0]))
-%!assert (zeros (2, 3, "int8"), int8 ([0, 0, 0; 0, 0, 0]))
-%!assert (zeros (3, 2, "int8"), int8 ([0, 0; 0, 0; 0, 0]))
-%!assert (size (zeros (3, 4, 5, "int8")), [3, 4, 5])
-
 ## Test input validation
 %!error <invalid data type specified> zeros (1, 1, "foobar")
 %!error <conversion of 1.1 .*failed> zeros (1.1)
 %!error <conversion of 1.1 .*failed> zeros (1, 1.1)
 %!error <conversion of 1.1 .*failed> zeros ([1, 1.1])
-%!error <conversion of 1.1 .*failed> zeros (1, 1.1, 2)
-%!error <conversion of 1.1 .*failed> zeros ([1, 1.1, 2])
 %!error <sparse ND .* not supported> zeros (3, 3, 3, "like", speye (1))
 %!error <must be scalar> zeros (1:3, 1)
 %!error <must be scalar> zeros (1, 1:3)
@@ -5359,34 +5381,49 @@ guaranteed on all platforms and NA may be replaced by NaN.
 
 DEFUN (false, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} false (@var{x})
-@deftypefnx {} {@var{val} =} false (@var{n}, @var{m})
-@deftypefnx {} {@var{val} =} false (@var{n}, @var{m}, @var{k}, @dots{})
-@deftypefnx {} {@var{val} =} false (@dots{}, "like", @var{var})
-Return a matrix or N-dimensional array whose elements are all logical 0.
+@deftypefn  {} {@var{F} =} false
+@deftypefnx {} {@var{F} =} false (@var{n})
+@deftypefnx {} {@var{F} =} false (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{F} =} false ([@var{m}, @var{n}, @dots{}])
+@deftypefnx {} {@var{F} =} false (@dots{}, "like", @var{var})
+Return a scalar, matrix, or N-dimensional array whose elements are all logical
+@code{0}.
 
-If invoked with a single scalar integer argument, return a square
-matrix of the specified size.
+If called with no arguments, return the scalar value logical @code{0}.
+
+If invoked with a single scalar integer argument @var{n}, return a square
+@nospell{NxN} matrix.
 
 If invoked with two or more scalar integer arguments, or a vector of integer
-values, return an array with given dimensions.
+values, return an array with the given dimensions.
 
 If a logical variable @var{var} is specified after @qcode{"like"}, the output
-@var{val} will have the same sparsity as @var{var}.
-@seealso{true}
+@var{F} will have the same sparsity as @var{var}.
+
+Programming Note: The code @code{false (@dots{})} is faster (30X) and more
+memory efficient than @code{logical (zeros (@dots{}))}.
+
+Any negative dimensions are treated as zero, and any zero dimensions will
+result in an empty matrix.  This odd behavior is for @sc{matlab} compatibility.
+@seealso{true, logical, ones, zeros}
 @end deftypefn */)
 {
   return fill_matrix (args, false, "false");
 }
 
 /*
-%!assert (false (2, 3), logical (zeros (2, 3)))
+%!assert (false, logical (0))
+%!assert (false (3), logical ([0, 0, 0; 0, 0, 0; 0, 0, 0]))
+%!assert (false (2, 3), logical ([0, 0, 0; 0, 0, 0]))
+%!assert (false (3, 2), logical ([0, 0; 0, 0; 0, 0]))
+%!assert (size (false (3, 4, 5)), [3, 4, 5])
 %!assert (false (2, 3, "logical"), logical (zeros (2, 3)))
 %!assert (false (2, 1, "like", true), [false; false])
 %!assert (false (2, 1, "like", sparse (true)), sparse ([false; false]))
 
+## Test input validation
 %!error false (2, 3, "double")
-%!error <input .* logical> false (2, 1, "like", sparse (1))
+%!error <input .* must be logical> false (2, 1, "like", double (1))
 %!error <must be scalar> false (1:3, 1)
 %!error <must be scalar> false (1, 1:3)
 %!error <must be scalar> false (1, 2, 1:3)
@@ -5394,34 +5431,50 @@ If a logical variable @var{var} is specified after @qcode{"like"}, the output
 
 DEFUN (true, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} true (@var{x})
-@deftypefnx {} {@var{val} =} true (@var{n}, @var{m})
-@deftypefnx {} {@var{val} =} true (@var{n}, @var{m}, @var{k}, @dots{})
-@deftypefnx {} {@var{val} =} true (@dots{}, "like", @var{var})
-Return a matrix or N-dimensional array whose elements are all logical 1.
+@deftypefn  {} {@var{T} =} true
+@deftypefnx {} {@var{T} =} true (@var{n})
+@deftypefnx {} {@var{T} =} true (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{T} =} true ([@var{m}, @var{n}, @dots{}])
+@deftypefnx {} {@var{T} =} true (@dots{}, "like", @var{var})
+Return a scalar, matrix, or N-dimensional array whose elements are all logical
+@code{1}.
 
-If invoked with a single scalar integer argument, return a square
-matrix of the specified size.
+If called with no arguments, return the scalar value logical @code{1}.
+
+If invoked with a single scalar integer argument @var{n}, return a square
+@nospell{NxN} matrix.
 
 If invoked with two or more scalar integer arguments, or a vector of integer
-values, return an array with given dimensions.
+values, return an array with the given dimensions.
 
 If a logical variable @var{var} is specified after @qcode{"like"}, the output
-@var{val} will have the same sparsity as @var{var}.
-@seealso{false}
+@var{T} will have the same sparsity as @var{var}.
+
+Programming Notes: The code @code{true (@dots{})} is faster (30X) and more
+memory efficient than @code{logical (ones (@dots{}))}.
+
+Any negative dimensions are treated as zero, and any zero dimensions will
+result in an empty matrix.  This odd behavior is for @sc{matlab} compatibility.
+@seealso{false, logical, ones, zeros}
 @end deftypefn */)
 {
   return fill_matrix (args, true, "true");
 }
 
 /*
-%!assert (true (2, 3), logical (ones (2, 3)))
+
+%!assert (true, logical (1))
+%!assert (true (3), logical ([1, 1, 1; 1, 1, 1; 1, 1, 1]))
+%!assert (true (2, 3), logical ([1, 1, 1; 1, 1, 1]))
+%!assert (true (3, 2), logical ([1, 1; 1, 1; 1, 1]))
+%!assert (size (true (3, 4, 5)), [3, 4, 5])
 %!assert (true (2, 3, "logical"), logical (ones (2, 3)))
 %!assert (true (2, 1, "like", false), [true; true])
 %!assert (true (2, 1, "like", sparse (true)), sparse ([true; true]))
 
+## Test input validation
 %!error true (2, 3, "double")
-%!error <input .* logical> true (2, 1, "like", double (1))
+%!error <input .* must be logical> true (2, 1, "like", double (1))
 %!error <must be scalar> true (1:3, 1)
 %!error <must be scalar> true (1, 1:3)
 %!error <must be scalar> true (1, 2, 1:3)

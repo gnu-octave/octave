@@ -315,13 +315,14 @@ classdef weboptions < handle
     function f = set.HeaderFields (f, value)
 
       if (! isempty (value))
-        if (! iscellstr (value) || ! ismatrix (value))
-          error ("weboptions: HeaderFields must be array of strings or a cell array");
-        elseif (columns (value) != 2)
+        if (! iscellstr (value))
+          error ("weboptions: HeaderFields must be a cell array of strings");
+        elseif (ndims (value) != 2 || columns (value) != 2)
           error ("weboptions: HeaderFields must be of size m-by-2");
         endif
       endif
-      f.HeaderFields = value;
+      ## C++ code requires row vector of "prop", "value" pairs.
+      f.HeaderFields = (value')(:)';
 
     endfunction
 

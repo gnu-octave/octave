@@ -83,10 +83,6 @@ function response = webwrite (url, varargin)
     options.RequestMethod = "post";
   endif
 
-  ## Flatten the cell array because the internal processing takes place on
-  ## a flattened array.
-  options.HeaderFields = options.HeaderFields(:)';
-
   nargs = numel (varargin);
   if (nargs == 0)
     error ("webwrite: DATA must be a string");

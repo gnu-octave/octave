@@ -357,21 +357,39 @@ gen_matrix:
 
 DEFUN (rand, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{x} =} rand (@var{n})
+@deftypefn  {} {@var{x} =} rand ()
+@deftypefnx {} {@var{x} =} rand (@var{n})
 @deftypefnx {} {@var{x} =} rand (@var{m}, @var{n}, @dots{})
-@deftypefnx {} {@var{x} =} rand ([@var{m} @var{n} @dots{}])
-@deftypefnx {} {@var{x} =} rand (@dots{}, "single")
-@deftypefnx {} {@var{x} =} rand (@dots{}, "double")
+@deftypefnx {} {@var{x} =} rand ([@var{m}, @var{n}, @dots{}])
+@deftypefnx {} {@var{x} =} rand (@dots{}, @var{class})
+@c FIXME: Should implement "like" option for rand function
+@c @deftypefnx {} {@var{x} =} rand (@dots{}, "like", @var{var})
 @deftypefnx {} {@var{v} =} rand ("state")
 @deftypefnx {} {} rand ("state", @var{v})
 @deftypefnx {} {} rand ("state", "reset")
 @deftypefnx {} {@var{v} =} rand ("seed")
 @deftypefnx {} {} rand ("seed", @var{v})
 @deftypefnx {} {} rand ("seed", "reset")
-Return a matrix with random elements uniformly distributed on the
-interval (0, 1).
+Return a scalar, matrix, or N-dimensional array whose elements are random
+numbers uniformly distributed on the interval (0, 1).
 
-The arguments are handled the same as the arguments for @code{eye}.
+If called with no arguments, return a scalar random value.
+
+If invoked with a single scalar integer argument @var{n}, return a square
+@nospell{NxN} matrix.
+
+If invoked with two or more scalar integer arguments, or a vector of integer
+values, return an array with the given dimensions.
+
+The optional argument @var{class} specifies the class of the return array.
+The only valid options are @qcode{"double"} (default) or @qcode{"single"}.
+
+Programming Note: Any negative dimensions are treated as zero, and any zero
+dimensions will result in an empty matrix.  This odd behavior is for
+@sc{matlab} compatibility.
+
+The additional calling forms provide an interface to the underlying random
+number generator.
 
 You can query the state of the random number generator using the form
 
@@ -388,62 +406,57 @@ rand ("state", v)
 
 @noindent
 You may also initialize the state vector from an arbitrary vector of length
-@leq{} 625 for @var{v}.  This new state will be a hash based on the value of
+@leq{} 625 for @var{v}.  The new state will be a hash based on the value of
 @var{v}, not @var{v} itself.
 
 By default, the generator is initialized by contributing entropy from the
 wall clock time, the CPU time, the current fraction of a second, the process
-ID and---if available---up to 1024 bits from the C++ random numbers source
+ID and---if available---up to 1024 bits from the C++ random number source
 @code{random_device}, which might be non-deterministic (implementation
 specific).  Note that this differs from @sc{matlab}, which always initializes
-the state to the same state at startup.  To obtain behavior comparable to
-@sc{matlab}, initialize with a deterministic state vector in Octave's startup
-files (@pxref{Startup Files}).
+the random number generator to the same state at startup.  To obtain behavior
+comparable to @sc{matlab}, initialize with a deterministic state vector in
+Octave's startup files (@pxref{Startup Files}).
 
-To compute the pseudo-random sequence, @code{rand} uses the Mersenne
-Twister with a period of @math{2^{19937}-1}
-(See @nospell{M. Matsumoto and T. Nishimura},
-@cite{Mersenne Twister: A 623-dimensionally equidistributed uniform
-pseudorandom number generator},
-@nospell{ACM} Trans.@: on Modeling and Computer Simulation Vol.@: 8, No.@: 1,
-pp.@: 3--30, January 1998,
+Programming Notes: To compute the pseudo-random sequence, @code{rand} uses the
+Mersenne Twister with a period of @math{2^{19937}-1} (See
+@nospell{M. Matsumoto and T. Nishimura}, @cite{Mersenne Twister: A
+623-dimensionally equidistributed uniform pseudorandom number generator},
+@nospell{ACM} Trans.@: on Modeling and Computer Simulation Vol.@tie{}8,
+No.@tie{}1, pp.@tie{}3--30, January 1998,
 @url{http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html}).
-Do @strong{not} use for cryptography without securely hashing several
-returned values together, otherwise the generator state can be learned after
-reading 624 consecutive values.
+Do @strong{not} use for cryptography without securely hashing several returned
+values together, otherwise the generator state can be learned after reading 624
+consecutive values.
 
-Older versions of Octave used a different random number generator.
-The new generator is used by default as it is significantly faster than the
-old generator, and produces random numbers with a significantly longer cycle
-time.  However, in some circumstances it might be desirable to obtain the
-same random sequences as produced by the old generators.  To do this the
-keyword @qcode{"seed"} is used to specify that the old generators should
-be used, as in
+Older versions of Octave used a different random number generator.  The new
+generator is used by default as it is significantly faster than the old
+generator, and produces random numbers with a significantly longer cycle time.
+However, in some circumstances it might be desirable to obtain the same random
+sequences as produced by the old generators.  To do this the keyword
+@qcode{"seed"} is used to specify that the old generators should be used, as in
 
 @example
 rand ("seed", val)
 @end example
 
 @noindent
-which sets the seed of the generator to @var{val}.  The seed of the
-generator can be queried with
+which sets the seed of the generator to @var{val}.  The seed of the generator
+can be queried with
 
 @example
 s = rand ("seed")
 @end example
 
-However, it should be noted that querying the seed will not cause
-@code{rand} to use the old generators, only setting the seed will.  To cause
-@code{rand} to once again use the new generators, the keyword
-@qcode{"state"} should be used to reset the state of the @code{rand}.
+However, it should be noted that querying the seed will not cause @code{rand}
+to use the old generators, only setting the seed will.  To cause @code{rand} to
+once again use the new generators, the keyword @qcode{"state"} must be used
+to reset @code{rand} back to using the default generator.
 
 The state or seed of the generator can be reset to a new random value using
 the @qcode{"reset"} keyword.
 
-The class of the value returned can be controlled by a trailing
-@qcode{"double"} or @qcode{"single"} argument.  These are the only valid
-classes.
-@seealso{randn, rande, randg, randp}
+@seealso{randi, randn, rande, randg, randp}
 @end deftypefn */)
 {
   return do_rand (args, args.length (), "rand", "uniform");
@@ -550,35 +563,52 @@ static std::string current_distribution = rand::distribution ();
 
 DEFUN (randn, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{x} =} randn (@var{n})
+@deftypefn  {} {@var{x} =} randn ()
+@deftypefnx {} {@var{x} =} randn (@var{n})
 @deftypefnx {} {@var{x} =} randn (@var{m}, @var{n}, @dots{})
-@deftypefnx {} {@var{x} =} randn ([@var{m} @var{n} @dots{}])
-@deftypefnx {} {@var{x} =} randn (@dots{}, "single")
-@deftypefnx {} {@var{x} =} randn (@dots{}, "double")
+@deftypefnx {} {@var{x} =} randn ([@var{m}, @var{n}, @dots{}])
+@deftypefnx {} {@var{x} =} randn (@dots{}, @var{class})
+@c FIXME: Should implement "like" option for randn function
+@c @deftypefnx {} {@var{x} =} randn (@dots{}, "like", @var{var})
 @deftypefnx {} {@var{v} =} randn ("state")
 @deftypefnx {} {} randn ("state", @var{v})
 @deftypefnx {} {} randn ("state", "reset")
 @deftypefnx {} {@var{v} =} randn ("seed")
 @deftypefnx {} {} randn ("seed", @var{v})
 @deftypefnx {} {} randn ("seed", "reset")
-Return a matrix with normally distributed random elements having zero mean
-and variance one.
+Return a scalar, matrix, or N-dimensional array whose elements are random
+numbers from the stdnormal distribution having a mean of @code{0} and a
+variance of @code{1}.
 
-The arguments are handled the same as the arguments for @code{rand}.
+If called with no arguments, return a scalar random value.
 
-By default, @code{randn} uses the @nospell{Marsaglia and Tsang}
-``Ziggurat technique'' to transform from a uniform to a normal distribution.
+If invoked with a single scalar integer argument @var{n}, return a square
+@nospell{NxN} matrix.
 
-The class of the value returned can be controlled by a trailing
-@qcode{"double"} or @qcode{"single"} argument.  These are the only valid
-classes.
+If invoked with two or more scalar integer arguments, or a vector of integer
+values, return an array with the given dimensions.
+
+The optional argument @var{class} specifies the class of the return array.
+The only valid options are @qcode{"double"} (default) or @qcode{"single"}.
+
+Programming Note: Any negative dimensions are treated as zero, and any zero
+dimensions will result in an empty matrix.  This odd behavior is for
+@sc{matlab} compatibility.
+
+The additional calling forms provide an interface to the underlying random
+number generator.  See @ref{XREFrand,,@code{rand}} for documentation on
+querying and controlling the random number generator.
+
+Programming Note: By default, @code{randn} uses the
+@nospell{Marsaglia and Tsang} ``Ziggurat technique'' to transform from a
+uniform to a normal distribution.
 
 Reference: @nospell{G. Marsaglia and W.W. Tsang},
 @cite{Ziggurat Method for Generating Random Variables},
-J. Statistical Software, vol 5, 2000,
+J.@tie{}Statistical Software, vol@tie{}5, 2000,
 @url{https://www.jstatsoft.org/v05/i08/}
 
-@seealso{rand, rande, randg, randp}
+@seealso{rand, randi, rande, randg, randp}
 @end deftypefn */)
 {
   return do_rand (args, args.length (), "randn", "normal");
@@ -617,35 +647,51 @@ J. Statistical Software, vol 5, 2000,
 
 DEFUN (rande, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{x} =} rande (@var{n})
+@deftypefn  {} {@var{x} =} rande ()
+@deftypefnx {} {@var{x} =} rande (@var{n})
 @deftypefnx {} {@var{x} =} rande (@var{m}, @var{n}, @dots{})
-@deftypefnx {} {@var{x} =} rande ([@var{m} @var{n} @dots{}])
-@deftypefnx {} {@var{x} =} rande (@dots{}, "single")
-@deftypefnx {} {@var{x} =} rande (@dots{}, "double")
+@deftypefnx {} {@var{x} =} rande ([@var{m}, @var{n}, @dots{}])
+@deftypefnx {} {@var{x} =} rande (@dots{}, @var{class})
+@c FIXME: Should implement "like" option for rande function
+@c @deftypefnx {} {@var{x} =} rande (@dots{}, "like", @var{var})
 @deftypefnx {} {@var{v} =} rande ("state")
 @deftypefnx {} {} rande ("state", @var{v})
 @deftypefnx {} {} rande ("state", "reset")
 @deftypefnx {} {@var{v} =} rande ("seed")
 @deftypefnx {} {} rande ("seed", @var{v})
 @deftypefnx {} {} rande ("seed", "reset")
-Return a matrix with exponentially distributed random elements.
+Return a scalar, matrix, or N-dimensional array whose elements are random
+numbers from the exponential distribution with rate parameter @code{0}.
 
-The arguments are handled the same as the arguments for @code{rand}.
+If called with no arguments, return a scalar random value.
 
-By default, @code{rande} uses the @nospell{Marsaglia and Tsang}
-``Ziggurat technique'' to transform from a uniform to an exponential
-distribution.
+If invoked with a single scalar integer argument @var{n}, return a square
+@nospell{NxN} matrix.
 
-The class of the value returned can be controlled by a trailing
-@qcode{"double"} or @qcode{"single"} argument.  These are the only valid
-classes.
+If invoked with two or more scalar integer arguments, or a vector of integer
+values, return an array with the given dimensions.
+
+The optional argument @var{class} specifies the class of the return array.
+The only valid options are @qcode{"double"} (default) or @qcode{"single"}.
+
+Programming Note: Any negative dimensions are treated as zero, and any zero
+dimensions will result in an empty matrix.  This odd behavior is for
+@sc{matlab} compatibility.
+
+The additional calling forms provide an interface to the underlying random
+number generator.  See @ref{XREFrand,,@code{rand}} for documentation on
+querying and controlling the random number generator.
+
+Programming Note: By default, @code{rande} uses the
+@nospell{Marsaglia and Tsang} ``Ziggurat technique'' to transform from a
+uniform to an exponential distribution.
 
 Reference: @nospell{G. Marsaglia and W.W. Tsang},
 @cite{Ziggurat Method for Generating Random Variables},
-J. Statistical Software, vol 5, 2000,
+J.@tie{}Statistical Software, vol@tie{}5, 2000,
 @url{https://www.jstatsoft.org/v05/i08/}
 
-@seealso{rand, randn, randg, randp}
+@seealso{rand, randi, randn, randg, randp}
 @end deftypefn */)
 {
   return do_rand (args, args.length (), "rande", "exponential");
@@ -686,24 +732,43 @@ J. Statistical Software, vol 5, 2000,
 
 DEFUN (randg, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{x} =} randg (@var{a}, @var{n})
+@deftypefn  {} {@var{x} =} randg (@var{a})
+@deftypefnx {} {@var{x} =} randg (@var{a}, @var{n})
 @deftypefnx {} {@var{x} =} randg (@var{a}, @var{m}, @var{n}, @dots{})
-@deftypefnx {} {@var{x} =} randg (@var{a}, [@var{m} @var{n} @dots{}])
-@deftypefnx {} {@var{x} =} randg (@dots{}, "single")
-@deftypefnx {} {@var{x} =} randg (@dots{}, "double")
+@deftypefnx {} {@var{x} =} randg (@var{a}, [@var{m}, @var{n}, @dots{}])
+@deftypefnx {} {@var{x} =} randg (@dots{}, @var{class})
+@c FIXME: Should implement "like" option for randg function
+@c @deftypefnx {} {@var{x} =} randg (@dots{}, "like", @var{var})
 @deftypefnx {} {@var{v} =} randg ("state")
 @deftypefnx {} {} randg ("state", @var{v})
 @deftypefnx {} {} randg ("state", "reset")
 @deftypefnx {} {@var{v} =} randg ("seed")
 @deftypefnx {} {} randg ("seed", @var{v})
 @deftypefnx {} {} randg ("seed", "reset")
+Return a scalar, matrix, or N-dimensional array whose elements are random
+numbers from the gamma distribution @code{gamma (@var{a},1)}.
 
-Return a matrix with @code{gamma (@var{a},1)} distributed random elements.
+If called with no size arguments, return a scalar random value.
 
-The arguments are handled the same as the arguments for @code{rand}, except
-for the argument @var{a}.
+If invoked with a single scalar size argument @var{n}, return a square
+@nospell{NxN} matrix.
 
-This can be used to generate many distributions:
+If invoked with two or more scalar integer size arguments, or a vector of
+integer values, return an array with the given dimensions.
+
+The optional argument @var{class} specifies the class of the return array.
+The only valid options are @qcode{"double"} (default) or @qcode{"single"}.
+
+Programming Note: Any negative dimensions are treated as zero, and any zero
+dimensions will result in an empty matrix.  This odd behavior is for
+@sc{matlab} compatibility.
+
+The additional calling forms provide an interface to the underlying random
+number generator.  See @ref{XREFrand,,@code{rand}} for documentation on
+querying and controlling the random number generator.
+
+Programming Notes: The gamma distribution can be used to generate many
+other distributions:
 
 @table @asis
 @item @code{gamma (a, b)} for @code{a > -1}, @code{b > 0}
@@ -779,10 +844,7 @@ r = r / sum (r)
 
 @end table
 
-The class of the value returned can be controlled by a trailing
-@qcode{"double"} or @qcode{"single"} argument.  These are the only valid
-classes.
-@seealso{rand, randn, rande, randp}
+@seealso{rand, randi, randn, rande, randp}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -961,53 +1023,69 @@ classes.
 
 DEFUN (randp, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{x} =} randp (@var{l}, @var{n})
+@deftypefn  {} {@var{x} =} randp (@var{l})
+@deftypefnx {} {@var{x} =} randp (@var{l}, @var{n})
 @deftypefnx {} {@var{x} =} randp (@var{l}, @var{m}, @var{n}, @dots{})
-@deftypefnx {} {@var{x} =} randp (@var{l}, [@var{m} @var{n} @dots{}])
-@deftypefnx {} {@var{x} =} randp (@dots{}, "single")
-@deftypefnx {} {@var{x} =} randp (@dots{}, "double")
+@deftypefnx {} {@var{x} =} randp (@var{l}, [@var{m}, @var{n}, @dots{}])
+@deftypefnx {} {@var{x} =} randp (@dots{}, @var{class})
+@c FIXME: Should implement "like" option for randp function
+@c @deftypefnx {} {@var{x} =} randp (@dots{}, "like", @var{var})
 @deftypefnx {} {@var{v} =} randp ("state")
 @deftypefnx {} {} randp ("state", @var{v})
 @deftypefnx {} {} randp ("state", "reset")
 @deftypefnx {} {@var{v} =} randp ("seed")
 @deftypefnx {} {} randp ("seed", @var{v})
 @deftypefnx {} {} randp ("seed", "reset")
-Return a matrix with Poisson distributed random elements with mean value
-parameter given by the first argument, @var{l}.
+Return a scalar, matrix, or N-dimensional array whose elements are random
+numbers from the Poisson distribution with mean value parameter @var{l}.
 
-The arguments are handled the same as the arguments for @code{rand}, except
-for the argument @var{l}.
+If called with no size arguments, return a scalar random value.
 
-Five different algorithms are used depending on the range of @var{l} and
-whether or not @var{l} is a scalar or a matrix.
+If invoked with a single scalar size argument @var{n}, return a square
+@nospell{NxN} matrix.
+
+If invoked with two or more scalar integer size arguments, or a vector of
+integer values, return an array with the given dimensions.
+
+The optional argument @var{class} specifies the class of the return array.
+The only valid options are @qcode{"double"} (default) or @qcode{"single"}.
+
+Programming Note: Any negative dimensions are treated as zero, and any zero
+dimensions will result in an empty matrix.  This odd behavior is for
+@sc{matlab} compatibility.
+
+The additional calling forms provide an interface to the underlying random
+number generator.  See @ref{XREFrand,,@code{rand}} for documentation on
+querying and controlling the random number generator.
+
+Programming Notes: Five different algorithms are used depending on the range of
+@var{l} and whether @var{l} is a scalar or a matrix.
 
 @table @asis
 @item For scalar @var{l} @leq{} 12, use direct method.
-W.H. Press, et al., @cite{Numerical Recipes in C},
+W.H.@tie{}Press, et@tie{}al., @cite{Numerical Recipes in C},
 Cambridge University Press, 1992.
 
 @item For scalar @var{l} > 12, use rejection method.[1]
-W.H. Press, et al., @cite{Numerical Recipes in C},
+W.H.@tie{}Press, et@tie{}al., @cite{Numerical Recipes in C},
 Cambridge University Press, 1992.
 
 @item For matrix @var{l} @leq{} 10, use inversion method.[2]
-@nospell{E. Stadlober, et al., WinRand source code}, available via FTP.
+@nospell{E.@tie{}Stadlober, et@tie{}al., WinRand source code}, available via
+FTP.
 
 @item For matrix @var{l} > 10, use patchwork rejection method.
-@nospell{E. Stadlober, et al., WinRand source code}, available via FTP, or
-@nospell{H. Zechner}, @cite{Efficient sampling from continuous and discrete
-unimodal distributions}, Doctoral Dissertation, 156pp., Technical
+@nospell{E.@tie{}Stadlober, et@tie{}al., WinRand source code}, available via
+FTP, or @nospell{H.@tie{}Zechner}, @cite{Efficient sampling from continuous and
+discrete unimodal distributions}, Doctoral Dissertation, 156pp., Technical
 University @nospell{Graz}, Austria, 1994.
 
 @item For @var{l} > 1e8, use normal approximation.
-@nospell{L. Montanet}, et al., @cite{Review of Particle Properties},
-Physical Review D 50 p1284, 1994.
+@nospell{L.@tie{}Montanet}, et@tie{}al., @cite{Review of Particle Properties},
+Physical Review@tie{}D 50 p1284, 1994.
 @end table
 
-The class of the value returned can be controlled by a trailing
-@qcode{"double"} or @qcode{"single"} argument.  These are the only valid
-classes.
-@seealso{rand, randn, rande, randg}
+@seealso{rand, randi, randn, rande, randg}
 @end deftypefn */)
 {
   int nargin = args.length ();

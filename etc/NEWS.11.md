@@ -41,6 +41,11 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 
 - The GUI now uses scalable SVG icons for beautiful display at any size.
 
+- The GUI now uses the default Octave command prompt.  This prompt is
+  completely customizable by calling `PS1` in an initialization file such as
+  `.octaverc`.  To recover the former behavior of the GUI use `PS1 ('>> '); PS2
+  ('')`.
+
 - The text of the Octave GUI has been translated to a new language: Asturian.
   It uses the ISO 639 language code ast_ES.
 
@@ -89,6 +94,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   argument rather than the last argument.  This may require updating existing
   Octave scripts.  The graphics properties `AxisLocation`, `Direction`, and
   `TickLabels` have been implemented.
+
+- The `weboptions` has been re-written internally.  Support for non-integer
+  Timeout values, and the special value `Inf`, has been added.
 
 - The `KeyEvent` structure passed as an input paramater to graphics callback
   functions such as `KeyPressFcn` now returns fieldnames in the same order

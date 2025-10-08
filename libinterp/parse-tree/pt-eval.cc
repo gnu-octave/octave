@@ -322,6 +322,8 @@ debugger::repl (const std::string& prompt_arg)
 
               if (! line_buf.empty ())
                 buf << curr_debug_line << ": " << line_buf;
+              else
+                buf << "[End of function]";
             }
         }
     }

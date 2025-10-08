@@ -95,6 +95,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   Octave scripts.  The graphics properties `AxisLocation`, `Direction`, and
   `TickLabels` have been implemented.
 
+- The `weboptions` has been re-written internally.  Support for non-integer
+  Timeout values, and the special value `Inf`, has been added.
+
 - The `KeyEvent` structure passed as an input paramater to graphics callback
   functions such as `KeyPressFcn` now returns fieldnames in the same order
   as Matlab: `Character`, `Modifier`, `Key`.

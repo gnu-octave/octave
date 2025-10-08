@@ -26,15 +26,15 @@
 classdef weboptions < handle
 
   ## -*- texinfo -*-
-  ## @deftypefn  {} {@var{output} =} weboptions ()
-  ## @deftypefnx {} {@var{output} =} weboptions (@var{name1}, @var{value1}, @dots{})
+  ## @deftypefn  {} {@var{options} =} weboptions ()
+  ## @deftypefnx {} {@var{options} =} weboptions (@var{name1}, @var{value1}, @dots{})
   ##
   ## Specify parameters for RESTful web services.
   ##
-  ## @code{weboptions} with no inputs returns a default @code{weboptions}
-  ## object to specify parameters for a request to a web service.  A
-  ## @code{weboptions} object can be an optional input argument to the
-  ## @code{webread} and @code{webwrite} functions.
+  ## When called with with no inputs return a default @code{weboptions} object
+  ## to specify parameters for a request to a web service.  A @code{weboptions}
+  ## object is an optional input argument to the @code{webread} and
+  ## @code{webwrite} functions.
   ##
   ## Multiple name and value pair arguments may be specified in any order as
   ## @var{name1}, @var{value1}, @var{name2}, @var{value2}, etc.
@@ -48,30 +48,32 @@ classdef weboptions < handle
   ## @item
   ## @samp{CharacterEncoding} --- Specify the character encoding of the data:
   ##
-  ## @samp{auto} (default), @samp{UTF-8}, @samp{US-ASCII}
+  ## @samp{auto} (default), @samp{UTF-8}, @samp{US-ASCII}.
   ## @samp{auto} chooses an encoding based on the content-type of the data.
   ##
   ## @item
   ## @samp{UserAgent} --- Specify the User Agent for the connection.
   ##
-  ## Default value is @samp{GNU Octave/version}, where @samp{version} is the
+  ## Default value is @samp{Octave/version}, where @samp{version} is the
   ## current version of Octave as returned by @code{version}.
   ##
   ## @item
   ## @samp{Timeout} --- Specify the timeout value for the connection in
   ## seconds.
   ##
-  ## Default is 10 seconds.  @samp{Inf} is not currently supported.
+  ## Default is 5 seconds.  The special value @samp{Inf} sets the timeout to
+  ## the maximum value of 2147.483647 seconds.
   ##
   ## @item
   ## @samp{Username} --- User identifier for a basic HTTP connection.
   ##
-  ## Default is NULL@.  It must be a string.
+  ## Default is @qcode{''}.  It must be a string.
   ##
   ## @item
   ## @samp{Password} --- User authentication password for HTTP connection.
   ##
-  ## Default is NULL@.  It must be a string or character vector.
+  ## Default is @qcode{''}.  It must be a string or character vector.
+  ##
   ## Programming Note: If you display a @code{weboption} object with the
   ## Password property set, the value is displayed as a string containing
   ## @qcode{'*'}.  However, the object stores the value of the Password
@@ -79,20 +81,22 @@ classdef weboptions < handle
   ##
   ## @item
   ## @samp{KeyName} --- Specify the name of an additional key to be added to
-  ## the HTTP request header.  It should be coupled with @samp{KeyValue}.  It
-  ## must be a string or character vector.
+  ## the HTTP request header.
+  ##
+  ## It must be a string or character vector.  It should be coupled with
+  ## @samp{KeyValue}.
   ##
   ## @item
   ## @samp{KeyValue} --- Specify the value of the key @samp{KeyName}.
   ##
-  ## @samp{KeyName} must be present in order to assign to this field.
+  ## @samp{KeyName} must already be assigned in order to specify this field.
   ##
   ## @item
-  ## @samp{@nospell{HeaderFields}} --- Specify the header fields for the
+  ## @samp{@nospell{HeaderFields}} --- Specify header fields for the
   ## connection.
   ##
-  ## Names and values of header fields, specified as an m-by-2 array of strings
-  ## or cell array of character vectors to add to the HTTP request header.
+  ## Names and values of header fields, specified as an m-by-2 cell array of
+  ## strings, to add to the HTTP request header.
   ## @code{@nospell{HeaderFields}@{i,1@}} is the name of a field and
   ## @code{@nospell{HeaderFields}@{i,2@}} is its value.
   ##
@@ -150,8 +154,8 @@ classdef weboptions < handle
 
   properties
     CharacterEncoding = "auto";
-    UserAgent = ["GNU Octave/", version()];
-    Timeout = 10;
+    UserAgent = ["Octave/", version()];
+    Timeout = 5;
     Username = "";
     Password = "";
     KeyName = "";
@@ -171,110 +175,87 @@ classdef weboptions < handle
 
       if (rem (numel (varargin), 2) != 0)
         error ("weboptions: invalid number of arguments");
-      else
-        h = cell2struct (varargin(2:2:end), varargin(1:2:end), 2);
-        if (numfields (h) > 14)
-          error ("weboptions: invalid number of arguments");
-        endif
-
-        if (isfield (h, "CharacterEncoding"))
-          f.CharacterEncoding = h.CharacterEncoding;
-          h = rmfield (h, "CharacterEncoding");
-        endif
-
-        if (isfield (h, "UserAgent"))
-          f.UserAgent = h.UserAgent;
-          h = rmfield (h, "UserAgent");
-        endif
-
-        if (isfield (h, "Timeout"))
-          f.Timeout = h.Timeout;
-          h = rmfield (h, "Timeout");
-        endif
-
-        if (isfield (h, "Username"))
-          f.Username = h.Username;
-          h = rmfield (h, "Username");
-        endif
-
-        if (isfield (h, "Password"))
-          f.Password = h.Password;
-          h = rmfield (h, "Password");
-        endif
-
-        if (isfield (h, "KeyName"))
-          f.KeyName = h.KeyName;
-          h = rmfield (h, "KeyName");
-        endif
-
-        if (isfield (h, "KeyValue"))
-          f.KeyValue = h.KeyValue;
-          h = rmfield (h, "KeyValue");
-        endif
-
-        if (isfield (h, "HeaderFields"))
-          f.HeaderFields = h.HeaderFields;
-          h = rmfield (h, "HeaderFields");
-        endif
-
-        if (isfield (h, "ContentType"))
-          f.ContentType = h.ContentType;
-          h = rmfield (h, "ContentType");
-        endif
-
-        if (isfield (h, "ContentReader"))
-          f.ContentReader = h.ContentReader;
-          h = rmfield (h, "ContentReader");
-        endif
-
-        if (isfield (h, "MediaType"))
-          f.MediaType = h.MediaType;
-          h = rmfield (h, "MediaType");
-        endif
-
-        if (isfield (h, "RequestMethod"))
-          f.RequestMethod = h.RequestMethod;
-          h = rmfield (h, "RequestMethod");
-        endif
-
-        if (isfield (h, "ArrayFormat"))
-          f.ArrayFormat = h.ArrayFormat;
-          h = rmfield (h, "ArrayFormat");
-        endif
-
-        if (isfield (h, "CertificateFilename"))
-          f.CertificateFilename = h.CertificateFilename;
-          h = rmfield (h, "CertificateFilename");
-        endif
-
-        if (! isempty (fieldnames (h)))
-          field = fieldnames (h){1};
-          error (["weboptions: Undefined field " field]);
-        endif
+      elseif (numel (varargin) > 28)
+        error ("weboptions: invalid number of arguments");
       endif
+
+      h = cell2struct (varargin(2:2:end), varargin(1:2:end), 2);
+
+      for fieldname = fieldnames (h)'
+
+        switch (fieldname{1})
+
+          case "CharacterEncoding"
+            f.CharacterEncoding = h.CharacterEncoding;
+
+          case "UserAgent"
+            f.UserAgent = h.UserAgent;
+
+          case "Timeout"
+            f.Timeout = h.Timeout;
+
+          case "Username"
+            f.Username = h.Username;
+
+          case "Password"
+            f.Password = h.Password;
+
+          case "KeyName"
+            f.KeyName = h.KeyName;
+
+          case "KeyValue"
+            f.KeyValue = h.KeyValue;
+
+          case "HeaderFields"
+            f.HeaderFields = h.HeaderFields;
+
+          case "ContentType"
+            f.ContentType = h.ContentType;
+
+          case "ContentReader"
+            f.ContentReader = h.ContentReader;
+
+          case "MediaType"
+            f.MediaType = h.MediaType;
+
+          case "RequestMethod"
+            f.RequestMethod = h.RequestMethod;
+
+          case "ArrayFormat"
+            f.ArrayFormat = h.ArrayFormat;
+
+          case "CertificateFilename"
+            f.CertificateFilename = h.CertificateFilename;
+
+          otherwise
+            error ("weboptions: Undefined field '%s'", field);
+
+        endswitch
+      endfor
 
     endfunction
 
     function f = set.CharacterEncoding (f, value)
-      if (! any (strcmpi (value, {"UTF-8", 'US-ASCII', "auto"})))
+      ## FIXME: Why validate this?  There are many other possible encodings.
+      if (! any (strcmpi (value, {'auto', 'US-ASCII', 'UTF-8'})))
         error ("weboptions: Invalid CharacterEncoding value");
-      else
-        f.CharacterEncoding = value;
       endif
+      f.CharacterEncoding = value;
     endfunction
 
     function f = set.UserAgent (f, value)
       if (! ischar (value) && ! isrow (value))
         error ("weboptions: UserAgent must be a string");
-      else
-        f.UserAgent = value;
       endif
+      f.UserAgent = value;
     endfunction
 
     function f = set.Timeout (f, value)
-      if (! isreal (value) || ! isscalar (value)
-          || floor (value) != value || value < 0)
-        error ("weboptions: invalid Timeout value");
+      if (! (isreal (value) && isscalar (value) && value > 0))
+        error ("weboptions: Timeout must be a real scalar > 0");
+      endif
+      if (value == Inf)
+        f.Timeout = 2147.483647;
       else
         f.Timeout = value;
       endif
@@ -283,33 +264,29 @@ classdef weboptions < handle
     function f = set.Username (f, value)
       if (! ischar (value) && ! isrow (value))
         error ("weboptions: Username must be a string");
-      else
-        f.Username = value;
       endif
+      f.Username = value;
     endfunction
 
     function f = set.Password (f, value)
       if (! ischar (value) && ! isrow (value))
         error ("weboptions: Password must be a string");
-      else
-        f.Password = value;
       endif
+      f.Password = value;
     endfunction
 
     function f = set.KeyName (f, value)
       if (! ischar (value) && ! isrow (value))
         error ("weboptions: invalid KeyName value");
-      else
-        f.KeyName = value;
       endif
+      f.KeyName = value;
     endfunction
 
     function f = set.KeyValue (f, value)
       if (isempty (f.KeyName) && ! isempty (value))
-        error ("weboptions: field KeyName empty.  Cannot set KeyValue.");
-      else
-        f.KeyValue = value;
+        error ("weboptions: KeyName field empty.  Cannot set KeyValue.");
       endif
+      f.KeyValue = value;
     endfunction
 
     function f = set.HeaderFields (f, value)
@@ -336,18 +313,22 @@ classdef weboptions < handle
     endfunction
 
     function f = set.ContentReader (f, value)
+      if (! is_function_handle (value))
+        error ("weboptions: ContentReader must be a function handle");
+      endif
+        ## FIXME: Should emit a warning about unimplemented feature
       f.ContentReader = value;
     endfunction
 
     function f = set.MediaType (f, value)
+      ## FIXME: Should emit a warning about unimplemented feature
       f.MediaType = value;
     endfunction
 
     function f = set.RequestMethod (f, value)
-
       if (! isempty (value))
-        if (! any (strcmpi (value, {"auto", "get", "put", "post",...
-                                    "delete", "patch"})))
+        if (! any (strcmpi (value,
+                            {"auto", "get", "put", "post", "delete", "patch"})))
           error ("weboptions: invalid RequestMethod value");
         endif
       endif
@@ -365,16 +346,17 @@ classdef weboptions < handle
     endfunction
 
     function f = set.CertificateFilename (f, value)
+      ## FIXME: Should emit a warning about unimplemented feature
       f.CertificateFilename = value;
     endfunction
 
-    function display (f)
+    function disp (f)
 
-      Timeout = int2str (f.Timeout);
+      Timeout = num2str (f.Timeout);
       Password = repmat ("*", 1, numel (num2str (f.Password)));
 
       if (! isempty (f.ContentReader))
-        ContentReader = ['["', strjoin(f.ContentReader, '", "'), '"]'];
+        ContentReader = disp (f.ContentReader);
       else
         ContentReader = "[]";
       endif
@@ -391,8 +373,7 @@ classdef weboptions < handle
         KeyValue = "''";
       endif
 
-      printf ("%s =", inputname (1));
-      output = ["\n\n   weboptions with properties:     \n",...
+      output = ["  weboptions with properties:\n",...
                 "\n      CharacterEncoding: '", f.CharacterEncoding, "'",...
                 "\n              UserAgent: '", f.UserAgent, "'",...
                 "\n                Timeout: " , Timeout, "",...
@@ -406,7 +387,7 @@ classdef weboptions < handle
                 "\n          RequestMethod: '", f.RequestMethod, "'",...
                 "\n            ArrayFormat: '", f.ArrayFormat, "'",...
                 "\n           HeaderFields: " , HeaderFields,...
-                "\n    CertificateFilename: '", f.CertificateFilename, "'\n"];
+                "\n    CertificateFilename: '", f.CertificateFilename];
       disp (output);
 
     endfunction

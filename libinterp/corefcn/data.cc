@@ -5068,16 +5068,17 @@ DEFUN (eps, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{d} =} eps
 @deftypefnx {} {@var{d} =} eps (@var{x})
-@deftypefnx {} {@var{d} =} eps (@var{n}, @var{m})
-@deftypefnx {} {@var{d} =} eps (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {@var{d} =} eps (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{d} =} eps ([@var{m}, @var{n}, @dots{}])
 @deftypefnx {} {@var{d} =} eps (@dots{}, @var{class})
-Return a scalar, matrix or N-dimensional array whose elements are all eps,
+Return a scalar, matrix or N-dimensional array whose elements are eps,
 the machine precision.
 
 More precisely, @code{eps} is the relative spacing between any two adjacent
-numbers in the machine's floating point system.  This number is obviously
-system dependent.  On machines that support IEEE@tie{}754 floating point
-arithmetic, @code{eps} is approximately
+numbers in the machine's floating point system.  This number depends both on
+the system and where the number lies in the range representable by the floating
+point system.  On machines that support IEEE@tie{}754 floating point
+arithmetic, @w{@code{eps (1.0)}} is approximately
 @tex
 $2.2204\times10^{-16}$ for double precision and $1.1921\times10^{-7}$
 @end tex
@@ -5086,16 +5087,18 @@ $2.2204\times10^{-16}$ for double precision and $1.1921\times10^{-7}$
 @end ifnottex
 for single precision.
 
-When called with no arguments, return a scalar with the value
-@code{eps (1.0)}.
+If called with no arguments, return the scalar value @w{@code{eps (1.0)}}.
 
-Given a single argument @var{x}, return the distance between @var{x} and the
-next largest value.
+Given a floating point argument @var{x}, return an array @var{d} of the same
+size where each element is the distance between the element of @var{x} and
+the next largest value.
 
-When called with more than one argument the first two arguments are taken as
-the number of rows and columns and any further arguments specify additional
-matrix dimensions.  The optional argument @var{class} specifies the return
-type and may be either @qcode{"double"} or @qcode{"single"}.
+If invoked with two or more scalar integer arguments, or a vector of integer
+values, return an array with the given dimensions whose elements are all the
+scalar value @code{eps}.
+
+The optional argument @var{class} specifies the class of the return array.
+The only valid options are @qcode{"double"} (default) or @qcode{"single"}.
 @seealso{realmax, realmin, intmax, flintmax}
 @end deftypefn */)
 {
@@ -5207,13 +5210,14 @@ DEFUN (realmax, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{Rmax} =} realmax
 @deftypefnx {} {@var{Rmax} =} realmax (@var{n})
-@deftypefnx {} {@var{Rmax} =} realmax (@var{n}, @var{m})
-@deftypefnx {} {@var{Rmax} =} realmax (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {@var{Rmax} =} realmax (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{Rmax} =} realmax ([@var{m}, @var{n}, @dots{}])
 @deftypefnx {} {@var{Rmax} =} realmax (@dots{}, @var{class})
+@deftypefnx {} {@var{Rmax} =} realmax (@dots{}, "like", @var{var})
 Return a scalar, matrix, or N-dimensional array whose elements are all equal
 to the largest floating point number that is representable.
 
-The actual value is system dependent.  On machines that support IEEE@tie{}754
+The actual value is system-dependent.  On machines that support IEEE@tie{}754
 floating point arithmetic, @code{realmax} is approximately
 @tex
 $1.7977\times10^{308}$ for double precision and $3.4028\times10^{38}$
@@ -5223,18 +5227,20 @@ $1.7977\times10^{308}$ for double precision and $3.4028\times10^{38}$
 @end ifnottex
 for single precision.
 
-When called with no arguments, return a scalar with the value
+If called with no arguments, return the scalar value
 @code{realmax (@qcode{"double"})}.
 
-When called with a single argument, return a square matrix with the
-dimension specified.
+If invoked with a single scalar integer argument @var{n}, return a square
+@nospell{NxN} matrix.
 
-When called with more than one scalar argument the first two arguments are
-taken as the number of rows and columns and any further arguments specify
-additional matrix dimensions.
+If invoked with two or more scalar integer arguments, or a vector of integer
+values, return an array with the given dimensions.
 
-The optional argument @var{class} specifies the return type and may be
-either @qcode{"double"} or @qcode{"single"}.
+The optional argument @var{class} specifies the class of the return array.
+The only valid options are @qcode{"double"} (default) or @qcode{"single"}.
+
+If a variable @var{var} is specified after @qcode{"like"}, the output
+@var{Rmax} will have the same data type, complexity, and sparsity as @var{var}.
 @seealso{realmin, intmax, flintmax, eps}
 @end deftypefn */)
 {
@@ -5246,13 +5252,14 @@ DEFUN (realmin, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{Rmin} =} realmin
 @deftypefnx {} {@var{Rmin} =} realmin (@var{n})
-@deftypefnx {} {@var{Rmin} =} realmin (@var{n}, @var{m})
-@deftypefnx {} {@var{Rmin} =} realmin (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {@var{Rmin} =} realmin (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{Rmin} =} realmin ([@var{m}, @var{n}, @dots{}])
 @deftypefnx {} {@var{Rmin} =} realmin (@dots{}, @var{class})
+@deftypefnx {} {@var{Rmin} =} realmin (@dots{}, "like", @var{var})
 Return a scalar, matrix, or N-dimensional array whose elements are all equal
 to the smallest normalized floating point number that is representable.
 
-The actual value is system dependent.  On machines that support IEEE@tie{}754
+The actual value is system-dependent.  On machines that support IEEE@tie{}754
 floating point arithmetic, @code{realmin} is approximately
 @tex
 $2.2251\times10^{-308}$ for double precision and $1.1755\times10^{-38}$
@@ -5262,18 +5269,20 @@ $2.2251\times10^{-308}$ for double precision and $1.1755\times10^{-38}$
 @end ifnottex
 for single precision.
 
-When called with no arguments, return a scalar with the value
+If called with no arguments, return the scalar value
 @code{realmin (@qcode{"double"})}.
 
-When called with a single argument, return a square matrix with the dimension
-specified.
+If invoked with a single scalar integer argument @var{n}, return a square
+@nospell{NxN} matrix.
 
-When called with more than one scalar argument the first two arguments are
-taken as the number of rows and columns and any further arguments specify
-additional matrix dimensions.
+If invoked with two or more scalar integer arguments, or a vector of integer
+values, return an array with the given dimensions.
 
-The optional argument @var{class} specifies the return type and may be either
-@qcode{"double"} or @qcode{"single"}.
+The optional argument @var{class} specifies the class of the return array.
+The only valid options are @qcode{"double"} (default) or @qcode{"single"}.
+
+If a variable @var{var} is specified after @qcode{"like"}, the output
+@var{Rmin} will have the same data type, complexity, and sparsity as @var{var}.
 @seealso{realmax, intmin, eps}
 @end deftypefn */)
 {

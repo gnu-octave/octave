@@ -4838,11 +4838,12 @@ DEFUN (Inf, args, ,
 @c List other form of function in documentation index
 @findex inf
 
-@deftypefn  {} {@var{A} =} Inf
-@deftypefnx {} {@var{A} =} Inf (@var{n})
-@deftypefnx {} {@var{A} =} Inf (@var{n}, @var{m})
-@deftypefnx {} {@var{A} =} Inf (@var{n}, @var{m}, @var{k}, @dots{})
-@deftypefnx {} {@var{A} =} Inf (@dots{}, @var{class})
+@deftypefn  {} {@var{x} =} Inf
+@deftypefnx {} {@var{x} =} Inf (@var{n})
+@deftypefnx {} {@var{x} =} Inf (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{x} =} Inf ([@var{m}, @var{n}, @dots{}])
+@deftypefnx {} {@var{x} =} Inf (@dots{}, @var{class})
+@deftypefnx {} {@var{x} =} Inf (@dots{}, "like", @var{var})
 Return a scalar, matrix or N-dimensional array whose elements are all equal
 to the IEEE@tie{}754 representation for positive infinity.
 
@@ -4857,17 +4858,19 @@ produce infinity are division by zero and overflow.
 @end group
 @end example
 
-When called with no arguments, return a scalar with the value @samp{Inf}.
+If called with no arguments, return the scalar value @code{Inf}.
 
-When called with a single argument, return a square matrix with the
-dimension specified.
+If invoked with a single scalar integer argument @var{n}, return a square
+@nospell{NxN} matrix.
 
-When called with more than one scalar argument the first two arguments are
-taken as the number of rows and columns and any further arguments specify
-additional matrix dimensions.
+If invoked with two or more scalar integer arguments, or a vector of integer
+values, return an array with the given dimensions.
 
-The optional argument @var{class} specifies the return type and may be
-either @qcode{"double"} or @qcode{"single"}.
+The optional argument @var{class} specifies the class of the return array.
+The only valid options are @qcode{"double"} (default) or @qcode{"single"}.
+
+If a variable @var{var} is specified after @qcode{"like"}, the output @var{x}
+will have the same data type, complexity, and sparsity as @var{var}.
 @seealso{isinf, NaN}
 @end deftypefn */)
 {
@@ -4918,17 +4921,17 @@ DEFUN (NaN, args, ,
 @c List other form of function in documentation index
 @findex nan
 
-@deftypefn  {} {@var{val} =} NaN
-@deftypefnx {} {@var{val} =} NaN (@var{n})
-@deftypefnx {} {@var{val} =} NaN (@var{n}, @var{m})
-@deftypefnx {} {@var{val} =} NaN (@var{n}, @var{m}, @var{k}, @dots{})
-@deftypefnx {} {@var{val} =} NaN (@dots{}, "like", @var{var})
-@deftypefnx {} {@var{val} =} NaN (@dots{}, @var{class})
+@deftypefn  {} {@var{x} =} NaN
+@deftypefnx {} {@var{x} =} NaN (@var{n})
+@deftypefnx {} {@var{x} =} NaN (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{x} =} NaN ([@var{m}, @var{n}, @dots{}])
+@deftypefnx {} {@var{x} =} NaN (@dots{}, @var{class})
+@deftypefnx {} {@var{x} =} NaN (@dots{}, "like", @var{var})
 Return a scalar, matrix, or N-dimensional array whose elements are all equal
 to the IEEE@tie{}754 symbol NaN (Not a Number).
 
-NaN is the result of operations which do not produce a well defined
-numerical result.  Common operations which produce a NaN are arithmetic
+@code{NaN} is the result of operations which do not produce a well defined
+numerical result.  Common operations which produce a @code{NaN} are arithmetic
 with infinity
 @tex
 ($\infty - \infty$), zero divided by zero ($0/0$),
@@ -4936,26 +4939,26 @@ with infinity
 @ifnottex
 (Inf - Inf), zero divided by zero (0/0),
 @end ifnottex
-and any operation involving another NaN value (5 + NaN).
+and any operation involving another @code{NaN} value (5 + @code{NaN}).
 
-Note that NaN always compares not equal to NaN (NaN != NaN).  This behavior
-is specified by the IEEE@tie{}754 standard for floating point arithmetic.  To
-find NaN values, use the @code{isnan} function.
+Note that @code{NaN} always compares not equal to @code{NaN}
+(@code{NaN != NaN}).  This behavior is specified by the IEEE@tie{}754 standard
+for floating point arithmetic.  To find @code{NaN} values, use the @code{isnan}
+function.
 
-When called with no arguments, return a scalar with the value @samp{NaN}.
+If called with no arguments, return the scalar value @code{NaN}.
 
-When called with a single argument, return a square matrix with the
-dimension specified.
+If invoked with a single scalar integer argument @var{n}, return a square
+@nospell{NxN} matrix.
 
-When called with more than one scalar argument the first two arguments are
-taken as the number of rows and columns and any further arguments specify
-additional matrix dimensions.
+If invoked with two or more scalar integer arguments, or a vector of integer
+values, return an array with the given dimensions.
 
-If a variable @var{var} is specified after @qcode{"like"}, the output @var{val}
+The optional argument @var{class} specifies the class of the return array.
+The only valid options are @qcode{"double"} (default) or @qcode{"single"}.
+
+If a variable @var{var} is specified after @qcode{"like"}, the output @var{x}
 will have the same data type, complexity, and sparsity as @var{var}.
-
-The optional argument @var{class} specifies the return type and may be
-either @qcode{"double"} or @qcode{"single"}.
 @seealso{isnan, Inf}
 @end deftypefn */)
 {
@@ -5000,11 +5003,11 @@ DEFALIAS (nan, NaN);
 
 DEFUN (e, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{A} =} e
-@deftypefnx {} {@var{A} =} e (@var{n})
-@deftypefnx {} {@var{A} =} e (@var{n}, @var{m})
-@deftypefnx {} {@var{A} =} e (@var{n}, @var{m}, @var{k}, @dots{})
-@deftypefnx {} {@var{A} =} e (@dots{}, @var{class})
+@deftypefn  {} {@var{x} =} e
+@deftypefnx {} {@var{x} =} e (@var{n})
+@deftypefnx {} {@var{x} =} e (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{x} =} e ([@var{m}, @var{n}, @dots{}])
+@deftypefnx {} {@var{x} =} e (@dots{}, @var{class})
 Return a scalar, matrix, or N-dimensional array whose elements are all equal
 to the base of natural logarithms.
 
@@ -5016,17 +5019,16 @@ $e$ satisfies the equation $\log (e) = 1$.
 @samp{e} satisfies the equation @code{log} (e) = 1.
 @end ifnottex
 
-When called with no arguments, return a scalar with the value @math{e}.
+If called with no arguments, return the scalar value @math{e}.
 
-When called with a single argument, return a square matrix with the dimension
-specified.
+If invoked with a single scalar integer argument @var{n}, return a square
+@nospell{NxN} matrix.
 
-When called with more than one scalar argument the first two arguments are
-taken as the number of rows and columns and any further arguments specify
-additional matrix dimensions.
+If invoked with two or more scalar integer arguments, or a vector of integer
+values, return an array with the given dimensions.
 
-The optional argument @var{class} specifies the return type and may be either
-@qcode{"double"} or @qcode{"single"}.
+The optional argument @var{class} specifies the class of the return array.
+The only valid options are @qcode{"double"} (default) or @qcode{"single"}.
 @seealso{log, exp, pi, I}
 @end deftypefn */)
 {
@@ -5068,16 +5070,17 @@ DEFUN (eps, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{d} =} eps
 @deftypefnx {} {@var{d} =} eps (@var{x})
-@deftypefnx {} {@var{d} =} eps (@var{n}, @var{m})
-@deftypefnx {} {@var{d} =} eps (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {@var{d} =} eps (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{d} =} eps ([@var{m}, @var{n}, @dots{}])
 @deftypefnx {} {@var{d} =} eps (@dots{}, @var{class})
-Return a scalar, matrix or N-dimensional array whose elements are all eps,
+Return a scalar, matrix or N-dimensional array whose elements are eps,
 the machine precision.
 
 More precisely, @code{eps} is the relative spacing between any two adjacent
-numbers in the machine's floating point system.  This number is obviously
-system dependent.  On machines that support IEEE@tie{}754 floating point
-arithmetic, @code{eps} is approximately
+numbers in the machine's floating point system.  This number depends both on
+the system and where the number lies in the range representable by the floating
+point system.  On machines that support IEEE@tie{}754 floating point
+arithmetic, @w{@code{eps (1.0)}} is approximately
 @tex
 $2.2204\times10^{-16}$ for double precision and $1.1921\times10^{-7}$
 @end tex
@@ -5086,16 +5089,18 @@ $2.2204\times10^{-16}$ for double precision and $1.1921\times10^{-7}$
 @end ifnottex
 for single precision.
 
-When called with no arguments, return a scalar with the value
-@code{eps (1.0)}.
+If called with no arguments, return the scalar value @w{@code{eps (1.0)}}.
 
-Given a single argument @var{x}, return the distance between @var{x} and the
-next largest value.
+Given a floating point argument @var{x}, return an array @var{d} of the same
+size where each element is the distance between the element of @var{x} and
+the next largest value.
 
-When called with more than one argument the first two arguments are taken as
-the number of rows and columns and any further arguments specify additional
-matrix dimensions.  The optional argument @var{class} specifies the return
-type and may be either @qcode{"double"} or @qcode{"single"}.
+If invoked with two or more scalar integer arguments, or a vector of integer
+values, return an array with the given dimensions whose elements are all the
+scalar value @code{eps}.
+
+The optional argument @var{class} specifies the class of the return array.
+The only valid options are @qcode{"double"} (default) or @qcode{"single"}.
 @seealso{realmax, realmin, intmax, flintmax}
 @end deftypefn */)
 {
@@ -5162,8 +5167,8 @@ DEFUN (pi, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{p} =} pi
 @deftypefnx {} {@var{p} =} pi (@var{n})
-@deftypefnx {} {@var{p} =} pi (@var{n}, @var{m})
-@deftypefnx {} {@var{p} =} pi (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {@var{p} =} pi (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{p} =} pi ([@var{m}, @var{n}, @dots{}])
 @deftypefnx {} {@var{p} =} pi (@dots{}, @var{class})
 Return a scalar, matrix, or N-dimensional array whose elements are all equal
 to the ratio of the circumference of a circle to its
@@ -5174,7 +5179,7 @@ diameter($\pi$).
 diameter.
 @end ifnottex
 
-When called with no arguments, return a scalar with the value of
+If called with no arguments, return the scalar value 
 @tex
 $\pi$.
 @end tex
@@ -5182,15 +5187,14 @@ $\pi$.
 pi.
 @end ifnottex
 
-When called with a single argument, return a square matrix with the dimension
-specified.
+If invoked with a single scalar integer argument @var{n}, return a square
+@nospell{NxN} matrix.
 
-When called with more than one scalar argument the first two arguments are
-taken as the number of rows and columns and any further arguments specify
-additional matrix dimensions.
+If invoked with two or more scalar integer arguments, or a vector of integer
+values, return an array with the given dimensions.
 
-The optional argument @var{class} specifies the return type and may be either
-@qcode{"double"} or @qcode{"single"}.
+The optional argument @var{class} specifies the class of the return array.
+The only valid options are @qcode{"double"} (default) or @qcode{"single"}.
 @seealso{e, I}
 @end deftypefn */)
 {
@@ -5207,13 +5211,14 @@ DEFUN (realmax, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{Rmax} =} realmax
 @deftypefnx {} {@var{Rmax} =} realmax (@var{n})
-@deftypefnx {} {@var{Rmax} =} realmax (@var{n}, @var{m})
-@deftypefnx {} {@var{Rmax} =} realmax (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {@var{Rmax} =} realmax (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{Rmax} =} realmax ([@var{m}, @var{n}, @dots{}])
 @deftypefnx {} {@var{Rmax} =} realmax (@dots{}, @var{class})
+@deftypefnx {} {@var{Rmax} =} realmax (@dots{}, "like", @var{var})
 Return a scalar, matrix, or N-dimensional array whose elements are all equal
 to the largest floating point number that is representable.
 
-The actual value is system dependent.  On machines that support IEEE@tie{}754
+The actual value is system-dependent.  On machines that support IEEE@tie{}754
 floating point arithmetic, @code{realmax} is approximately
 @tex
 $1.7977\times10^{308}$ for double precision and $3.4028\times10^{38}$
@@ -5223,18 +5228,20 @@ $1.7977\times10^{308}$ for double precision and $3.4028\times10^{38}$
 @end ifnottex
 for single precision.
 
-When called with no arguments, return a scalar with the value
+If called with no arguments, return the scalar value
 @code{realmax (@qcode{"double"})}.
 
-When called with a single argument, return a square matrix with the
-dimension specified.
+If invoked with a single scalar integer argument @var{n}, return a square
+@nospell{NxN} matrix.
 
-When called with more than one scalar argument the first two arguments are
-taken as the number of rows and columns and any further arguments specify
-additional matrix dimensions.
+If invoked with two or more scalar integer arguments, or a vector of integer
+values, return an array with the given dimensions.
 
-The optional argument @var{class} specifies the return type and may be
-either @qcode{"double"} or @qcode{"single"}.
+The optional argument @var{class} specifies the class of the return array.
+The only valid options are @qcode{"double"} (default) or @qcode{"single"}.
+
+If a variable @var{var} is specified after @qcode{"like"}, the output
+@var{Rmax} will have the same data type, complexity, and sparsity as @var{var}.
 @seealso{realmin, intmax, flintmax, eps}
 @end deftypefn */)
 {
@@ -5246,13 +5253,14 @@ DEFUN (realmin, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{Rmin} =} realmin
 @deftypefnx {} {@var{Rmin} =} realmin (@var{n})
-@deftypefnx {} {@var{Rmin} =} realmin (@var{n}, @var{m})
-@deftypefnx {} {@var{Rmin} =} realmin (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {} {@var{Rmin} =} realmin (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{Rmin} =} realmin ([@var{m}, @var{n}, @dots{}])
 @deftypefnx {} {@var{Rmin} =} realmin (@dots{}, @var{class})
+@deftypefnx {} {@var{Rmin} =} realmin (@dots{}, "like", @var{var})
 Return a scalar, matrix, or N-dimensional array whose elements are all equal
 to the smallest normalized floating point number that is representable.
 
-The actual value is system dependent.  On machines that support IEEE@tie{}754
+The actual value is system-dependent.  On machines that support IEEE@tie{}754
 floating point arithmetic, @code{realmin} is approximately
 @tex
 $2.2251\times10^{-308}$ for double precision and $1.1755\times10^{-38}$
@@ -5262,18 +5270,20 @@ $2.2251\times10^{-308}$ for double precision and $1.1755\times10^{-38}$
 @end ifnottex
 for single precision.
 
-When called with no arguments, return a scalar with the value
+If called with no arguments, return the scalar value
 @code{realmin (@qcode{"double"})}.
 
-When called with a single argument, return a square matrix with the dimension
-specified.
+If invoked with a single scalar integer argument @var{n}, return a square
+@nospell{NxN} matrix.
 
-When called with more than one scalar argument the first two arguments are
-taken as the number of rows and columns and any further arguments specify
-additional matrix dimensions.
+If invoked with two or more scalar integer arguments, or a vector of integer
+values, return an array with the given dimensions.
 
-The optional argument @var{class} specifies the return type and may be either
-@qcode{"double"} or @qcode{"single"}.
+The optional argument @var{class} specifies the class of the return array.
+The only valid options are @qcode{"double"} (default) or @qcode{"single"}.
+
+If a variable @var{var} is specified after @qcode{"like"}, the output
+@var{Rmin} will have the same data type, complexity, and sparsity as @var{var}.
 @seealso{realmax, intmin, eps}
 @end deftypefn */)
 {
@@ -5288,11 +5298,11 @@ DEFUN (I, args, ,
 @findex j
 @findex J
 
-@deftypefn  {} {@var{A} =} I
-@deftypefnx {} {@var{A} =} I (@var{n})
-@deftypefnx {} {@var{A} =} I (@var{n}, @var{m})
-@deftypefnx {} {@var{A} =} I (@var{n}, @var{m}, @var{k}, @dots{})
-@deftypefnx {} {@var{A} =} I (@dots{}, @var{class})
+@deftypefn  {} {@var{x} =} I
+@deftypefnx {} {@var{x} =} I (@var{n})
+@deftypefnx {} {@var{x} =} I (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{x} =} I ([@var{m}, @var{n}, @dots{}])
+@deftypefnx {} {@var{x} =} I (@dots{}, @var{class})
 Return a scalar, matrix, or N-dimensional array whose elements are all equal
 to the pure imaginary unit, defined as
 @tex
@@ -5302,20 +5312,20 @@ $\sqrt{-1}$.
 @w{@code{sqrt (-1)}}.
 @end ifnottex
 
-I, and its equivalents i, j, and J, are functions so any of the names may
-be reused for other purposes (such as i for a counter variable).
+@code{I}, and its equivalents @code{i}, @code{j}, and @code{J}, are functions
+so any of the names may be reused for other purposes (such as @code{i} for a
+counter variable).
 
-When called with no arguments, return a scalar with the value @math{i}.
+If called with no arguments, return the scalar value @code{complex (0, 1)}. 
 
-When called with a single argument, return a square matrix with the
-dimension specified.
+If invoked with a single scalar integer argument @var{n}, return a square
+@nospell{NxN} matrix.
 
-When called with more than one scalar argument the first two arguments are
-taken as the number of rows and columns and any further arguments specify
-additional matrix dimensions.
+If invoked with two or more scalar integer arguments, or a vector of integer
+values, return an array with the given dimensions.
 
-The optional argument @var{class} specifies the return type and may be
-either @qcode{"double"} or @qcode{"single"}.
+The optional argument @var{class} specifies the class of the return array.
+The only valid options are @qcode{"double"} (default) or @qcode{"single"}.
 @seealso{e, pi, log, exp}
 @end deftypefn */)
 {
@@ -5328,38 +5338,34 @@ DEFALIAS (j, I);
 
 DEFUN (NA, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} NA
-@deftypefnx {} {@var{val} =} NA (@var{n})
-@deftypefnx {} {@var{val} =} NA (@var{n}, @var{m})
-@deftypefnx {} {@var{val} =} NA (@var{n}, @var{m}, @var{k}, @dots{})
-@deftypefnx {} {@var{val} =} NA (@dots{}, "like", @var{var})
-@deftypefnx {} {@var{val} =} NA (@dots{}, @var{class})
+@deftypefn  {} {@var{x} =} NA
+@deftypefnx {} {@var{x} =} NA (@var{n})
+@deftypefnx {} {@var{x} =} NA (@var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{x} =} NA ([@var{m}, @var{n}, @dots{}])
+@deftypefnx {} {@var{x} =} NA (@dots{}, @var{class})
+@deftypefnx {} {@var{x} =} NA (@dots{}, "like", @var{var})
 Return a scalar, matrix, or N-dimensional array whose elements are all equal
 to the special constant NA (Not Available) used to designate missing values.
 
-Note that NA always compares not equal to NA (NA != NA).  To find NA values,
-use the @code{isna} function.
+Note that @code{NA} always compares not equal to @code{NA} (@code{NA != NA}).
+To find @code{NA} values, use the @code{isna} function.
 
-When called with no arguments, return a scalar with the value @samp{NA}.
+If called with no arguments, return the scalar value @code{NA}.
 
-When called with a single argument, return a square matrix with the
-dimension specified.
+If invoked with a single scalar integer argument @var{n}, return a square
+@nospell{NxN} matrix.
 
-When called with more than one scalar argument the first two arguments are
-taken as the number of rows and columns and any further arguments specify
-additional matrix dimensions.
+If invoked with two or more scalar integer arguments, or a vector of integer
+values, return an array with the given dimensions.
 
-If a variable @var{var} is specified after @qcode{"like"}, the output @var{val}
-will have the same data type, complexity, and sparsity as @var{var}.
+The optional argument @var{class} specifies the class of the return array.
+The only valid options are @qcode{"double"} (default) or @qcode{"single"}.
 
-The optional argument @var{class} specifies the return type and may be
-either @qcode{"double"} or @qcode{"single"}.
-
-Programming Note: The missing data marker NA is a special case of the
-representation of NaN.  Numerical calculations with NA will generally "poison"
-the results and conclude with an output of NA.  However, this can not be
-guaranteed on all platforms and NA may be replaced by NaN.
-@xref{Missing Data}.
+Programming Note: The missing data marker @code{NA} is a special case of the
+representation of @code{NaN}.  Numerical calculations with @code{NA} will
+generally "poison" the results and conclude with an output of @code{NA}.
+However, this can not be guaranteed on all platforms and @code{NA} may be
+replaced by @code{NaN}.  @xref{Missing Data}.
 @seealso{isna}
 @end deftypefn */)
 {

@@ -367,6 +367,8 @@ they can be used, look at the definition of the function @code{popen2}.
 
 @DOCSTRING(fork)
 
+@DOCSTRING(_exit)
+
 @DOCSTRING(exec)
 
 @DOCSTRING(pipe)

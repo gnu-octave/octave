@@ -33,6 +33,7 @@
 #endif
 
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 
 #include "cmd-hist.h"
@@ -496,17 +497,19 @@ Fork can return one of the following values:
 @table @asis
 @item > 0
 You are in the parent process.  The value returned from @code{fork} is the
-process id of the child process.  You should probably arrange to wait for
-any child processes to exit.
+process id of the child process.  You should probably arrange to wait for any
+child processes to exit by using @code{waitpid}.
 
 @item 0
 You are in the child process.  You can call @code{exec} to start another
-process.  If that fails, you should probably call @code{exit}.
+process.  If that fails, you should probably call @code{_exit} to terminate the
+child.
 
 @item < 0
-The call to @code{fork} failed for some reason.  You must take evasive
-action.  A system dependent error message will be waiting in @var{msg}.
+The call to @code{fork} failed for some reason.  You must take evasive action.
+A system-dependent error message will be waiting in @var{msg}.
 @end table
+@seealso{exec, _exit}
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -520,6 +523,35 @@ action.  A system dependent error message will be waiting in @var{msg}.
   pid_t pid = sys::fork (msg);
 
   return ovl (pid, msg);
+}
+
+DEFUNX ("_exit", F_exit, args, ,
+        doc: /* -*- texinfo -*-
+@deftypefn  {} {} _exit ()
+@deftypefnx {} {} _exit (@var{status})
+Exit the currently running process with exit code @var{status}.
+
+If called with no arguments, exit with status @code{0} indicating success.
+
+The optional integer argument @var{status} specifies the exit code.
+
+Programming Note: This function maps to the C++ function @code{quick_exit}.
+The calling process is stopped and any open file descriptors are closed.  This
+is the correct function to call to end a child process started from Octave.
+The ordinary C library function `exit` will not work.
+@seealso{fork}
+@end deftypefn */)
+{
+  int nargin = args.length ();
+  if (nargin > 1)
+    print_usage ();
+
+  int status = EXIT_SUCCESS;
+
+  if (nargin == 1)
+    status = args(0).xint_value ("_exit: STATUS must be an integer");
+
+  std::quick_exit (status);
 }
 
 DEFUNX ("getpgrp", Fgetpgrp, args, ,

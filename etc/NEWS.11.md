@@ -29,10 +29,6 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   or permutation of the inputs for performance.  Now Octave automatically picks
   the fastest calculation order irrespective of the input orientation.
 
-- New function `_exit` has been added which makes it possible to use
-  `fork`/`_exit` sequence to perform work in parallel child processes for
-  potential performance gains.
-
 - The `fzero` function is now more accurate (1-2 eps when TolX is eps).
 
 - The `roots` function now accepts only a numeric argument.  Convert any
@@ -112,7 +108,6 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 
 ### Alphabetical list of new functions added in Octave 11
 
-* `_exit`
 * `corrcov`
 
 ### Deprecated functions, properties, and operators

@@ -50,6 +50,7 @@
 #  include <errno.h>
 #  include <fcntl.h>
 #  include <sys/types.h>
+#  include <sys/wait.h>
 #  include <unistd.h>
 #endif
 
@@ -179,6 +180,9 @@ octave_popen2 (const char *cmd, char *const *args, bool sync_mode,
 
 #else
 
+// Magic value used to indicate child failed back to parent process
+#define OCTAVE_CHILD_FAILURE 129
+
 pid_t
 octave_popen2 (const char *cmd, char *const *args, bool sync_mode,
                int *fildes, const char **errmsg)
@@ -220,15 +224,15 @@ octave_popen2 (const char *cmd, char *const *args, bool sync_mode,
               close (child_stdout[1]);
 
               if (execvp (cmd, args) < 0)
-                perror ("popen2 (child)");
+                perror ("error: popen2 (child)");
             }
           else
-            perror ("popen2 (child)");
+            perror ("error: popen2 (child)");
         }
       else
-        perror ("popen2 (child)");
+        perror ("error: popen2 (child)");
 
-      _exit (127);
+      _exit (OCTAVE_CHILD_FAILURE);  
     }
   else if (pid > 0)
     {
@@ -248,6 +252,29 @@ octave_popen2 (const char *cmd, char *const *args, bool sync_mode,
         {
           fildes[0] = child_stdin[1];
           fildes[1] = child_stdout[0];
+
+          // Sanity check that child process hasn't already aborted.
+          // Note: Maybe use nanosleep() as usleep() is deprecated/removed
+          // after 2008?
+          usleep (5e3);  // wait for 5 milliseconds
+          int wstatus;
+          pid_t tst_pid = waitpid (pid, &wstatus, WNOHANG);
+          if (tst_pid == -1)
+            {
+              // Error with waitpid ()
+              *errmsg = strerror (errno);
+              return -1;
+            }
+          else if (tst_pid != 0)
+            {
+              // Child has already changed state, probably bad, but verify
+              if (WIFEXITED(wstatus)
+                  && WEXITSTATUS(wstatus) == OCTAVE_CHILD_FAILURE)
+                {
+                  *errmsg = "popen2 (parent): failure in child process";
+                  return -1;
+                }
+            }
 
           return pid;
         }

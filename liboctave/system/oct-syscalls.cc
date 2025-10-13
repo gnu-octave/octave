@@ -332,8 +332,7 @@ popen2 (const std::string& cmd, const string_vector& args,
   char **argv = args.c_str_vec ();
   const char *errmsg;
 
-  pid_t pid = octave_popen2 (cmd.c_str (), argv, sync_mode, fildes,
-                             &errmsg);
+  pid_t pid = octave_popen2 (cmd.c_str (), argv, sync_mode, fildes, &errmsg);
 
   string_vector::delete_c_str_vec (argv);
 

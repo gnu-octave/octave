@@ -52,7 +52,7 @@ jobs:
 
       - name: initialize CodeQL
         # Initialize the CodeQL tools for scanning.
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
           # If you wish to specify custom queries, you can do so here or in a config file.
@@ -64,7 +64,7 @@ jobs:
         run: make -C ./.build all -j2 V=1
 
       - name: perform CodeQL analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
 
 
   windows:
@@ -172,7 +172,7 @@ jobs:
 
       - name: initialize CodeQL
         # Initialize the CodeQL tools for scanning.
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
           # If you wish to specify custom queries, you can do so here or in a config file.
@@ -186,4 +186,4 @@ jobs:
         run: make -C ./.build all -j8 V=1
 
       - name: perform CodeQL analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4

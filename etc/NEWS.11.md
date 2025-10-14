@@ -90,6 +90,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The `image` function now validates that `x` and `y` inputs are vectors, and
   accepts and processes 1-element vectors for compatibility.
 
+- The `ind2rgb` and `ind2gray` functions now clip exceptional values such as
+  `NaN` or `Inf` to the last value in the colormap for for compatibility.
+
 - The function `colorbar` now requires the `location` input to be the first
   argument rather than the last argument.  This may require updating existing
   Octave scripts.  The graphics properties `AxisLocation`, `Direction`, and

@@ -28,18 +28,23 @@
 ## Convert a color indexed image to a grayscale intensity image.
 ##
 ## The image @var{x} must be an indexed image which will be converted using the
-## colormap @var{map}.  If @var{map} does not contain enough colors for the
-## image, pixels in @var{x} outside the range are mapped to the last color in
-## the map before conversion to grayscale.
+## colormap @var{map}.  Pixels in @var{x} that are outside the colormap are
+## @strong{clipped} to the range of @var{map}.
 ##
 ## The output @var{I} is of the same class as the input @var{x} and may be
 ## one of @code{uint8}, @code{uint16}, @code{single}, or @code{double}.
 ##
-## Implementation Note: There are several ways of converting colors to
+## Programming Notes: There are several ways of converting colors to
 ## grayscale intensities.  This functions uses the luminance value obtained
 ## from @code{rgb2gray} which is @code{I = 0.299*R + 0.587*G + 0.114*B}.
 ## Other possibilities include the value component from @code{rgb2hsv} or
 ## using a single color channel from @code{ind2rgb}.
+##
+## Index values in @var{x} outside of the number of colors in @var{map} are
+## clipped to the range of @var{map}.  For example, negative indices are
+## clipped to the first color while large values, including exceptional values
+## such as @code{NaN} and @code{Inf}, are clipped to the last color.
+##
 ## @seealso{gray2ind, ind2rgb}
 ## @end deftypefn
 
@@ -48,6 +53,7 @@ function I = ind2gray (x, map)
   if (nargin != 2)
     print_usage ();
   endif
+
   [x, map] = ind2x ("ind2gray", x, map);
 
   ## Convert colormap to luminance intensity values
@@ -83,14 +89,12 @@ endfunction
 %!error <X must be an indexed image> ind2gray (1+i, jet (64))
 %!error <X must be an indexed image> ind2gray (sparse (1), jet (64))
 %!error <X must be an indexed image> ind2gray (1.1, jet (64))
+%!error <X must be an indexed image> ind2rgb (int8 (1), jet (64))
 %!error <X must be an indexed image> ind2gray ({1}, jet (64))
 %!error <MAP must be a valid colormap> ind2gray (1, {1})
-%!error <MAP must be a valid colormap> ind2gray (1, 1+i)
-%!error <MAP must be a valid colormap> ind2gray (1, ones (2,2,2))
-%!error <MAP must be a valid colormap> ind2gray (1, ones (2,4))
-%!error <MAP must be a valid colormap> ind2gray (1, [-1])
-%!error <MAP must be a valid colormap> ind2gray (1, [2])
-
+%!warning <contains colors outside of colormap> ind2gray ([-1 1], jet (64));
 %!warning <contains colors outside of colormap> ind2gray ([0 1 2], gray (5));
 %!warning <contains colors outside of colormap> ind2gray ([1 2 6], gray (5));
-%!warning <contains colors outside of colormap> ind2gray (uint8 ([1 2 5]), gray (5));
+%!warning <contains colors outside of colormap> ind2gray ([1 2 NaN], gray (5));
+%!warning <contains colors outside of colormap>
+%! ind2gray (uint8 ([1 2 5]), gray (5));

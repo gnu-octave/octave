@@ -241,6 +241,10 @@ function [x, fval, info, output] = fzero (fcn, x0, options = struct ())
     endfor
   endif
 
+  if (iscomplex (fa) || iscomplex (fb) || ! isfinite (fa) || ! isfinite (fb))
+    error ("Octave:fzero:bracket", "fzero: function must be real and finite at bracketing endpoints");
+  endif
+
   if (b < a)
     ## Swap a and b so that a is lower bound and b is upper bound
     u = a;
@@ -592,4 +596,8 @@ endfunction
 ## Test input validation
 %!error <Invalid call> fzero ()
 %!error <Invalid call> fzero (@sin)
+%!error <function must be real> fzero (@(x) i*x, [-1, 0])
+%!error <function must be real> fzero (@(x) i*x, [0, 1])
+%!error <function must be .* finite> fzero (@(x) 1./x - 1, [0, 2])
+%!error <function must be .* finite> fzero (@(x) 1./x - 1, [-2, 0])
 %!error <not a valid initial bracketing> fzero (@sin, [1, 2])

@@ -18,23 +18,25 @@
 ## @deftypefn  {Function File} {@var{X} = } dither (@var{RGB}, @var{map})
 ## @deftypefnx {Function File} {@var{X} = } dither (@var{RGB}, @var{map}, @var{Qm}, @var{Qe})
 ## @deftypefnx {Function File} {@var{BW} = } dither (@var{I})
+## Quantize an image, using dithering to increase the apparent color resolution.
 ##
 ## @code{@var{X} = dither (@var{RGB},@var{map})} creates an indexed image 
-## approximation, using the color provided in the colormap, and uses dithering
-## to increase apparent color resolution. Floyd-Steinberg error filter is used: 
+## approximation. It uses the color provided in the colormap, and uses dithering
+## to increase apparent color resolution. Floyd-Steinberg error filter is: 
 ## [   x  7]
 ## [3  5  1] / 16
-## It used a raster scan and no weight renormalization at boundaries.
+## It uses a raster scan and no weight renormalization at boundaries.
 ## The default values are used: @var{Qm}=5, and @var{Qe}=8.
 ## 
-## Inputs:
-## @var{RGB} is a  m x n x 3 array with values in [0, 1] (double) or [0, 255] (uint8).
-## @var{map} is c x 3 matrix holding RGB triplets in [0, 1] (double).
+## @var{RGB} is a mxnx3 array with values in [0, 1] (double) or [0, 255] (uint8).
+##
+## @var{map} is cx3 matrix holding RGB triplets in [0, 1] (double).
+##
 ## @var{Qm} is the number of quantization bits per axis for inverse colormap (default: 5).
+##
 ## @var{Qe} is the number of quantization bits for error diffusion (default: 8, max 16).
 ##
-## Output:
-## @var{X} is a m x n indexed image (uint8 if c<=256, else uint16) for the 
+## @var{X} is a mxn indexed image (uint8 if c<=256, else uint16) for the 
 ## colormap @var{map} provided. 
 ##
 ## Example:
@@ -52,7 +54,7 @@
 ## error calculations in the Floyd-Steinberg error diffusion algorithm. 
 ## It controls the precision of the error values that are calculated and
 ## propagated during dithering.  If @var{Qe} < @var{Qm}, the error diffusion
-## process may lose precision, therefore dithering cannot be performed, and the
+## process may lose precision. Therefore dithering cannot be performed, and the
 ## function returns an undithered indexed image.
 ##
 ## @code{@var{BW} = dither (@var{I})} converts the grayscale input image @var{I}
@@ -73,20 +75,20 @@ function X = dither (RGB, map, Qm = 5, Qe = 8)
         print_usage;
   endif
   if ndims (RGB) == 2
-    RGB = cat (3, RGB, RGB, RGB); % Duplicate grayscale to RGB
+    RGB = cat (3, RGB, RGB, RGB);  # Duplicate grayscale to RGB
     if nargin < 2,
       map = [0 0 0; 1 1 1]; % binary (black and white) colormap
       Qm = 1;
     endif
   endif
-  if ndims (RGB) != 3 || size (RGB, 3) != 3
-    error('dither: RGB must be an m x n x 3 array.');
+  if (ndims (RGB) != 3 || size (RGB, 3) != 3)
+    error ('dither: RGB must be an m x n x 3 array.');
   end
-  if !ismatrix (map) || size (map, 2) != 3 || min (map(:)) < 0 || max (map(:)) > 1
-    error('dither: Colormap must be a c x 3 matrix.');
+  if (! ismatrix (map) || size (map, 2) != 3 || min (map(:)) < 0 || max (map(:)) > 1)
+    error ('dither: Colormap must be a c x 3 matrix.');
   endif
   if nargin > 2,
-    if Qm < 1 || Qe < 1 || fix (Qm) != Qm || fix (Qe) != Qe
+    if (Qm < 1 || Qe < 1 || fix (Qm) != Qm || fix (Qe) != Qe)
       error ('Qm and Qe must be a positive integers.');
     elseif Qe < Qm
       warning ('dither: Qe < Qm, returning undithered image.');
@@ -104,7 +106,7 @@ function X = dither (RGB, map, Qm = 5, Qe = 8)
   endif
   Qe = min (Qe, 16); % Cap Qe to avoid excessive precision
 
-  % Scale RGB and map to [0, 1]
+  ## Scale RGB and map to [0, 1]
   if isa (RGB, 'uint8')
     RGB = double (RGB) / 255;
   elseif max (RGB(:)) > 1

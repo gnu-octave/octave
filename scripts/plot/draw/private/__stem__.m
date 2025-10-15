@@ -319,19 +319,17 @@ function [x, y, z, dofill, lc, ls, mc, ms, args] = check_stem_arg (have_z, varar
         [lc, ls, mc, ms] = stem_line_spec (linespec);
       else
         args{end+1} = arg;
-        if (ioff <= nargin)
-          args{end+1} = varargin{ioff++};
-        else
+        if (ioff > nargin)
           error ('%s: No value specified for property "%s"', caller, arg);
         endif
+        args{end+1} = varargin{ioff++};
       endif
     else
       args{end+1} = arg;
-      if (ioff <= nargin)
-        args{end+1} = varargin{ioff++};
-      else
+      if (ioff > nargin)
         error ('%s: No value specified for property "%s"', caller, arg);
       endif
+      args{end+1} = varargin{ioff++};
     endif
   endwhile
 

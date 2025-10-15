@@ -63,12 +63,11 @@ function [c, hg] = __contour__ (varargin)
           linespec.linestyle = lspec.linestyle;
         endif
       else  # unrecognized option, pass unmodified in opts cell array
-        if (i < length (varargin))
-          opts(end+(1:2)) = varargin(i:i+1);
-          varargin(i:i+1) = [];
-        else
+        if (i >= numel (varargin))
           error ("__contour__: Uneven number of PROP/VAL pairs");
         endif
+        opts(end+(1:2)) = varargin(i:i+1);
+        varargin(i:i+1) = [];
       endif
 
     else  # skip numeric arguments

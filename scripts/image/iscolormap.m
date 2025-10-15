@@ -31,7 +31,7 @@
 ## Each row represents a single color.  The 3 columns contain red, green,
 ## and blue intensities respectively.
 ##
-## All values in a colormap should be in the [0 1] range but this is not
+## All values in a colormap should be in the range [0, 1], but this is not
 ## enforced.  Each function must decide what to do for values outside this
 ## range.
 ##
@@ -44,14 +44,17 @@ function tf = iscolormap (cmap)
     print_usage ();
   endif
 
-  tf = isnumeric (cmap) && isreal (cmap) && isfloat (cmap) ...
-       && ndims (cmap) == 2 && columns (cmap) == 3;
+  tf = isfloat (cmap) && isreal (cmap) ...
+       && ismatrix (cmap) && columns (cmap) == 3 && ! isempty (cmap);
 
 endfunction
 
 
-%!assert (iscolormap (jet (64)))
+%!assert (iscolormap (jet (64)), true)
 %!assert (iscolormap ({0 1 0}), false)
 %!assert (iscolormap ([0 1i 0]), false)
 %!assert (iscolormap (ones (3,3,3)), false)
 %!assert (iscolormap (ones (3,4)), false)
+%!assert (iscolormap (ones (0,3)), false)
+
+%!error <Invalid call> iscolormap ()

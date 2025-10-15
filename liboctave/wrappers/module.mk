@@ -1,4 +1,5 @@
 NOINSTALL_WRAPPERS_INC = \
+  %reldir%/_Exit-wrapper.h \
   %reldir%/areadlink-wrapper.h \
   %reldir%/async-system-wrapper.h \
   %reldir%/base64-wrappers.h \
@@ -44,6 +45,7 @@ NOINSTALL_WRAPPERS_INC = \
   %reldir%/wait-wrappers.h
 
 WRAPPERS_SRC = \
+  %reldir%/_Exit-wrapper.c \
   %reldir%/areadlink-wrapper.c \
   %reldir%/async-system-wrapper.c \
   %reldir%/base64-wrappers.c \

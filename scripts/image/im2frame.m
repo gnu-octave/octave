@@ -31,10 +31,9 @@
 ## A movie frame is simply a struct with the fields @qcode{"cdata"} and
 ## @qcode{"colormap"}.
 ##
-## Support for N-dimensional images is given when each image projection,
-## matrix sizes of @nospell{MxN and MxNx3} for RGB images, is concatenated
-## along the fourth dimension.  In such cases, the returned value is a struct
-## array.
+## Support for N-dimensional images is given when each image projection, matrix
+## sizes of @nospell{MxN and MxNx3} for RGB images, is concatenated along the
+## fourth dimension.  In such cases, the returned value is a struct array.
 ##
 ## @seealso{frame2im}
 ## @end deftypefn
@@ -44,9 +43,11 @@ function frame = im2frame (x, map = [])
   if (nargin < 1)
     print_usage ();
   elseif (ndims (x) > 4)
-    error ("im2frame: X and RGB must be a single image");
+    error ("im2frame: X or RGB must be a single image");
   endif
 
+  ## FIXME: No validation of class of input.  Matlab only accepts double or
+  ## uint8.
   ## Matlab documentation is incorrect.  Singleton 3rd dimension will error
   ## without cmap (no use of default cmap), and cmap is added to the frame
   ## even when image is RGB.
@@ -106,3 +107,9 @@ endfunction
 %! cmap = bone (100);
 %! assert (im2frame (cat (4, ind1, ind2, ind3, ind4), cmap),
 %!         struct ("cdata", {ind1, ind2, ind3, ind4}, "colormap", cmap));
+
+## Test input validation
+%!error <Invalid call> im2frame ()
+%!error <must be a single image> im2frame (ones (1,2,3,4,5))
+%!error <MAP required for indexed images> im2frame (ones (2,2))
+%!error <argument must be indexed or RGB image> im2frame (ones (2,2,2))

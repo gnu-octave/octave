@@ -29,18 +29,22 @@
 ## Convert an indexed image to red, green, and blue color components.
 ##
 ## The image @var{x} must be an indexed image which will be converted using the
-## colormap @var{map}.  If @var{map} does not contain enough colors for the
-## image, pixels in @var{x} outside the range are mapped to the last color in
-## the map.
+## colormap @var{map}.  Pixels in @var{x} that are outside the colormap are
+## @strong{clipped} to the range of @var{map}.
+##
+## Multi-dimensional indexed images (of size @nospell{MxNx1xK}) are also
+## supported.
 ##
 ## The output may be a single RGB image (@nospell{MxNx3} matrix where M and N
 ## are the original image @var{x} dimensions, one for each of the red, green
 ## and blue channels).  Alternatively, the individual red, green, and blue
 ## color matrices of size @nospell{MxN} may be returned.
 ##
-## Multi-dimensional indexed images (of size @nospell{MxNx1xK}) are also
-## supported.
-##
+## Programming Note: Index values in @var{x} outside of the number of colors
+## in @var{map} are clipped to the range of @var{map}.  For example, negative
+## indices are clipped to the first color while large values, including
+## exceptional values such as @code{NaN} and @code{Inf}, are clipped to the
+## last color.
 ## @seealso{rgb2ind, ind2gray, hsv2rgb}
 ## @end deftypefn
 
@@ -49,6 +53,7 @@ function [R, G, B] = ind2rgb (x, map)
   if (nargin != 2)
     print_usage ();
   endif
+
   [x, map] = ind2x ("ind2rgb", x, map);
 
   ## Compute result
@@ -57,7 +62,7 @@ function [R, G, B] = ind2rgb (x, map)
   G = reshape (map(x(:), 2), sz);
   B = reshape (map(x(:), 3), sz);
 
-  ## Use ND array if only one output is requested.
+  ## Use ND-array if only one output is requested.
   if (nargout <= 1)
     if (ndims (x) == 2)
       R = reshape ([R(:); G(:); B(:)], [sz, 3]);
@@ -65,8 +70,8 @@ function [R, G, B] = ind2rgb (x, map)
       R = permute (reshape ([R(:); G(:); B(:)], [sz(1) sz(2) sz(4) 3]), ...
                    [1 2 4 3]);
     else
-      ## we should never reach here since ind2x() should filter them out
-      error ("ind2rgb: an indexed image must have 2 or 4 dimensions");
+      ## We should never reach here since ind2x() should filter them out.
+      error ("ind2rgb: Unreachable code.  Please report this at bugs.octave.org");
     endif
   endif
 
@@ -94,36 +99,21 @@ endfunction
 %! img = uint8 (img - 1);
 %! [rgb] = ind2rgb (img, map);
 %! assert (ergb, rgb);
-%!test
+%!test <*41851>
 %! ## Check that values below lower bound are mapped to first color value
 %! warning ("off", "Octave:ind2rgb:invalid-idx-img", "local");
 %! rgb = ind2rgb ([-1 0 2], gray (64));
 %! assert (rgb(:,1:2,:), zeros (1,2,3));
 %! assert (rgb(:,3,:), 1/63 * ones (1,1,3));
+%!test <*56950>
+%! ## Check that NaN & Inf values mapped to last color value
+%! warning ("off", "Octave:ind2rgb:invalid-idx-img", "local");
+%! rgb = ind2rgb ([NaN, Inf, 3], gray (64));
+%! assert (rgb(:,1:2,:), ones (1,2,3));
+%! assert (rgb(:,3,:), 2/63 * ones (1,1,3));
 
-## Test input validation
-%!error <Invalid call> ind2rgb ()
-%!error <Invalid call> ind2rgb (1)
-%!error <X must be an indexed image> ind2rgb (ones (3,3,3), jet (64))
-%!error <X must be an indexed image> ind2rgb (1+i, jet (64))
-%!error <X must be an indexed image> ind2rgb (sparse (1), jet (64))
-%!error <X must be an indexed image> ind2rgb (1.1, jet (64))
-%!error <X must be an indexed image> ind2rgb ({1}, jet (64))
-%!error <MAP must be a valid colormap> ind2rgb (1, {1})
-%!error <MAP must be a valid colormap> ind2rgb (1, 1+i)
-%!error <MAP must be a valid colormap> ind2rgb (1, ones (2,2,2))
-%!error <MAP must be a valid colormap> ind2rgb (1, ones (2,4))
-%!error <MAP must be a valid colormap> ind2rgb (1, [-1])
-%!error <MAP must be a valid colormap> ind2rgb (1, [2])
-
-%!warning <contains colors outside of colormap> ind2rgb ([-1 1], jet (64));
-%!warning <contains colors outside of colormap> ind2rgb ([0 1 2], gray (5));
-%!warning <contains colors outside of colormap> ind2rgb ([1 2 6], gray (5));
-%!warning <contains colors outside of colormap> ind2rgb (uint8 ([1 2 5]), gray (5));
-
-## We support any unsigned integer type which Matlab does not.  See
-## bug #47115.
-%!test
+## We support any unsigned integer type which Matlab does not.
+%!test <*47115>
 %! cmap = repmat (linspace (0, 1, 9)(:), [1 3]);
 %! ind = [0 3 6; 1 4 7; 2 5 8];
 %! rgb = repmat (reshape (linspace (0, 1, 9), [3 3]), [1 1 3]);
@@ -146,3 +136,20 @@ endfunction
 %! warning ("off", "Octave:ind2rgb:invalid-idx-img", "local");
 %! assert (ind2rgb (uint64 (intmax ("uint64")), jet (64)), ...
 %!         reshape ([0.5,0,0], [1,1,3]));
+
+## Test input validation
+%!error <Invalid call> ind2rgb ()
+%!error <Invalid call> ind2rgb (1)
+%!error <X must be an indexed image> ind2rgb (ones (3,3,3), jet (64))
+%!error <X must be an indexed image> ind2rgb (1+i, jet (64))
+%!error <X must be an indexed image> ind2rgb (sparse (1), jet (64))
+%!error <X must be an indexed image> ind2rgb (1.1, jet (64))
+%!error <X must be an indexed image> ind2rgb (int8 (1), jet (64))
+%!error <X must be an indexed image> ind2rgb ({1}, jet (64))
+%!error <MAP must be a valid colormap> ind2rgb (1, {1})
+%!warning <contains colors outside of colormap> ind2rgb ([-1 1], jet (64));
+%!warning <contains colors outside of colormap> ind2rgb ([0 1 2], gray (5));
+%!warning <contains colors outside of colormap> ind2rgb ([1 2 6], gray (5));
+%!warning <contains colors outside of colormap> ind2rgb ([1 2 NaN], gray (5));
+%!warning <contains colors outside of colormap>
+%! ind2rgb (uint8 ([1 2 5]), gray (5));

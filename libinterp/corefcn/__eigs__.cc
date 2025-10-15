@@ -230,77 +230,74 @@ Undocumented internal function.
   if (args(0).is_function_handle () || args(0).is_inline_function ()
       || args(0).is_string ())
     {
+      have_a_fcn = true;
       callback.m_eigs_fcn = get_function_handle (interp, args(0), "x");
 
       if (callback.m_eigs_fcn.is_undefined ())
         error ("eigs: unknown function");
-
       if (nargin < 2)
         error ("eigs: incorrect number of arguments");
 
       n = args(1).strict_int_value ();
       arg_offset = 1;
-      have_a_fcn = true;
     }
   else
     {
+      // Matrix A
       if (args(0).iscomplex ())
         {
+          a_is_complex = true;
           if (args(0).issparse ())
             {
-              ascm = (args(0).sparse_complex_matrix_value ());
               a_is_sparse = true;
+              ascm = args(0).sparse_complex_matrix_value ();
+              // Validation is 17x faster in C++ than in m-file.
+              if (ascm.any_element_is_inf_or_nan ())
+                error ("eigs: matrix A contains Inf or NaN values");
             }
           else
-            acm = (args(0).complex_matrix_value ());
-          a_is_complex = true;
+            {
+              acm = args(0).complex_matrix_value ();
+              if (acm.any_element_is_inf_or_nan ())
+                error ("eigs: matrix A contains Inf or NaN values");
+            }
         }
       else
         {
           if (args(0).issparse ())
             {
-              asmm = (args(0).sparse_matrix_value ());
               a_is_sparse = true;
+              asmm = args(0).sparse_matrix_value ();
+              if (asmm.any_element_is_inf_or_nan ())
+                error ("eigs: matrix A contains Inf or NaN values");
             }
           else
             {
-              amm = (args(0).matrix_value ());
+              amm = args(0).matrix_value ();
+              if (amm.any_element_is_inf_or_nan ())
+                error ("eigs: matrix A contains Inf or NaN values");
             }
         }
     }
 
-  // Note hold off reading B until later to avoid issues of double
+  // Note: hold off converting B until later to avoid issues of double
   // copies of the matrix if B is full/real while A is complex.
-  if (nargin > 1 + arg_offset
-      && ! (args(1 + arg_offset).is_real_scalar ()))
+  if (nargin > (1+arg_offset) && ! args(1+arg_offset).is_real_scalar ())
     {
-      if (args(1+arg_offset).iscomplex ())
+      have_b = true;
+      b_arg = 1 + arg_offset;
+      if (args(b_arg).iscomplex ())
         {
-          b_arg = 1+arg_offset;
-          if (args(b_arg).issparse ())
-            {
-              bscm = (args(b_arg).sparse_complex_matrix_value ());
-              b_is_sparse = true;
-            }
-          else
-            bcm = (args(b_arg).complex_matrix_value ());
-          have_b = true;
           b_is_complex = true;
-          arg_offset++;
+          if (args(b_arg).issparse ())
+            b_is_sparse = true;
         }
       else
         {
-          b_arg = 1+arg_offset;
           if (args(b_arg).issparse ())
-            {
-              bsmm = (args(b_arg).sparse_matrix_value ());
-              b_is_sparse = true;
-            }
-          else
-            bmm = (args(b_arg).matrix_value ());
-          have_b = true;
-          arg_offset++;
+            b_is_sparse = true;
         }
+      arg_offset++;
     }
 
   if (nargin > (1+arg_offset))
@@ -311,7 +308,6 @@ Undocumented internal function.
       if (args(2+arg_offset).is_string ())
         {
           typ = args(2+arg_offset).string_value ();
-
           // Use STL function to convert to upper case
           transform (typ.begin (), typ.end (), typ.begin (), toupper);
 
@@ -319,9 +315,8 @@ Undocumented internal function.
         }
       else
         {
-          sigma = args(2+arg_offset).xcomplex_value ("eigs: SIGMA must be a scalar or a string");
-
           have_sigma = true;
+          sigma = args(2+arg_offset).xcomplex_value ("eigs: SIGMA must be a scalar or a string");
         }
     }
 
@@ -333,8 +328,7 @@ Undocumented internal function.
       if (! args(3+arg_offset).isstruct ())
         error ("eigs: OPTS argument must be a structure");
 
-      octave_scalar_map map = args(3
-                                   +arg_offset).xscalar_map_value ("eigs: OPTS argument must be a scalar structure");
+      octave_scalar_map map = args(3+arg_offset).xscalar_map_value ("eigs: OPTS argument must be a scalar structure");
 
       octave_value tmp;
 
@@ -423,21 +417,39 @@ Undocumented internal function.
         }
     }
 
+  // Matrix B
   if (have_b)
     {
       if (a_is_complex || b_is_complex)
         {
           if (b_is_sparse)
-            bscm = args(b_arg).sparse_complex_matrix_value ();
+            {
+              bscm = args(b_arg).sparse_complex_matrix_value ();
+              // Validation is 17x faster in C++ than in m-file.
+              if (bscm.any_element_is_inf_or_nan ())
+                error ("eigs: matrix A contains Inf or NaN values");
+            }
           else
-            bcm = args(b_arg).complex_matrix_value ();
+            {
+              bcm = args(b_arg).complex_matrix_value ();
+              if (bcm.any_element_is_inf_or_nan ())
+                error ("eigs: matrix B contains Inf or NaN values");
+            }
         }
       else
         {
           if (b_is_sparse)
-            bsmm = args(b_arg).sparse_matrix_value ();
+            {
+              bsmm = args(b_arg).sparse_matrix_value ();
+              if (bsmm.any_element_is_inf_or_nan ())
+                error ("eigs: matrix B contains Inf or NaN values");
+            }
           else
-            bmm = args(b_arg).matrix_value ();
+            {
+              bmm = args(b_arg).matrix_value ();
+              if (bmm.any_element_is_inf_or_nan ())
+                error ("eigs: matrix B contains Inf or NaN values");
+            }
         }
     }
 

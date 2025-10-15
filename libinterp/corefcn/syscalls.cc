@@ -36,6 +36,7 @@
 #include <cstdlib>
 #include <cstring>
 
+#include "_Exit-wrapper.h"
 #include "cmd-hist.h"
 #include "fcntl-wrappers.h"
 #include "file-ops.h"
@@ -502,14 +503,14 @@ child processes to exit by using @code{waitpid}.
 
 @item 0
 You are in the child process.  You can call @code{exec} to start another
-process.  If that fails, you should probably call @code{_exit} to terminate the
+process.  If that fails, you should probably call @code{_Exit} to terminate the
 child.
 
 @item < 0
 The call to @code{fork} failed for some reason.  You must take evasive action.
 A system-dependent error message will be waiting in @var{msg}.
 @end table
-@seealso{exec, _exit}
+@seealso{exec, _Exit}
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -525,10 +526,10 @@ A system-dependent error message will be waiting in @var{msg}.
   return ovl (pid, msg);
 }
 
-DEFUNX ("_exit", F_exit, args, ,
+DEFUNX ("_Exit", F_Exit, args, ,
         doc: /* -*- texinfo -*-
-@deftypefn  {} {} _exit ()
-@deftypefnx {} {} _exit (@var{status})
+@deftypefn  {} {} _Exit ()
+@deftypefnx {} {} _Exit (@var{status})
 Exit the currently running process with exit code @var{status}.
 
 If called with no arguments, exit with status @code{0} indicating success.
@@ -549,9 +550,9 @@ The ordinary C library function `exit` will not work.
   int status = EXIT_SUCCESS;
 
   if (nargin == 1)
-    status = args(0).xint_value ("_exit: STATUS must be an integer");
+    status = args(0).xint_value ("_Exit: STATUS must be an integer");
 
-  std::quick_exit (status);
+  octave__Exit_wrapper (status);
 }
 
 DEFUNX ("getpgrp", Fgetpgrp, args, ,

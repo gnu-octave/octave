@@ -29,8 +29,8 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   or permutation of the inputs for performance.  Now Octave automatically picks
   the fastest calculation order irrespective of the input orientation.
 
-- New function `_exit` has been added which makes it possible to use
-  `fork`/`_exit` sequence to perform work in parallel child processes for
+- New function `_Exit` has been added which makes it possible to use
+  `fork`/`_Exit` sequence to perform work in parallel child processes for
   potential performance gains.
 
 - The `fzero` function is now more accurate (1-2 eps when TolX is eps).
@@ -94,6 +94,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The `image` function now validates that `x` and `y` inputs are vectors, and
   accepts and processes 1-element vectors for compatibility.
 
+- The `ind2rgb` and `ind2gray` functions now clip exceptional values such as
+  `NaN` or `Inf` to the last value in the colormap for for compatibility.
+
 - The function `colorbar` now requires the `location` input to be the first
   argument rather than the last argument.  This may require updating existing
   Octave scripts.  The graphics properties `AxisLocation`, `Direction`, and
@@ -112,7 +115,7 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 
 ### Alphabetical list of new functions added in Octave 11
 
-* `_exit`
+* `_Exit`
 * `corrcov`
 
 ### Deprecated functions, properties, and operators

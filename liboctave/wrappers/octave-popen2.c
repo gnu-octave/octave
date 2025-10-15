@@ -232,7 +232,7 @@ octave_popen2 (const char *cmd, char *const *args, bool sync_mode,
       else
         perror ("error: popen2 (child)");
 
-      _exit (OCTAVE_CHILD_FAILURE);  
+      _Exit (OCTAVE_CHILD_FAILURE);  
     }
   else if (pid > 0)
     {

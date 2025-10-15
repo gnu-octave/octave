@@ -361,7 +361,7 @@ expanded to the size of the other arguments.  For example:
 @example
 @group
 cellfun ("atan2", @{1, 0@}, @{0, 1@})
-     @result{} [ 1.57080   0.00000 ]
+     @xresult{} [ 1.57080   0.00000 ]
 @end group
 @end example
 
@@ -377,7 +377,7 @@ function [a, b] = twoouts (x)
   b = x*x;
 endfunction
 [aa, bb] = cellfun (@@twoouts, @{1, 2, 3@})
-     @result{}
+     @xresult{}
         aa =
            1 2 3
         bb =
@@ -397,7 +397,7 @@ into a cell array (or cell arrays).  For example:
 @group
 cellfun ("lower", @{"Foo", "Bar", "FooBar"@},
          "UniformOutput", false)
-@result{} @{"foo", "bar", "foobar"@}
+@xresult{} @{"foo", "bar", "foobar"@}
 @end group
 @end example
 
@@ -419,7 +419,7 @@ input arguments of the element that caused the error.  For example:
 @group
 function y = errfcn (s, x), y = NaN; endfunction
 cellfun ("factorial", @{-1, 2@}, "ErrorHandler", @@errfcn)
-@result{} [NaN 2]
+@xresult{} [NaN 2]
 @end group
 @end example
 
@@ -1182,7 +1182,7 @@ input arguments must have the same sizes.  For example:
 @example
 @group
 arrayfun (@@atan2, [1, 0], [0, 1])
-     @result{} [ 1.57080   0.00000 ]
+     @xresult{} [ 1.57080   0.00000 ]
 @end group
 @end example
 
@@ -1196,7 +1196,7 @@ example:
 @example
 @group
 arrayfun (@@(x,y) x:y, "abc", "def", "UniformOutput", false)
-@result{}
+@xresult{}
    @{
      [1,1] = abcd
      [1,2] = bcde
@@ -1211,7 +1211,7 @@ the number of return values that also are expected, for example:
 @example
 @group
 [A, B, C] = arrayfun (@@find, [10; 0], "UniformOutput", false)
-@result{}
+@xresult{}
 A =
 @{
    [1,1] =  1
@@ -1254,7 +1254,7 @@ otherwise a real error is thrown.  For example:
 function y = ferr (s, x), y = "MyString"; endfunction
 arrayfun (@@str2num, [1234],
           "UniformOutput", false, "ErrorHandler", @@ferr)
-@result{}
+@xresult{}
    @{
      [1,1] = MyString
    @}
@@ -1983,13 +1983,13 @@ For example:
 
 @example
 x = [1,2;3,4]
-@result{}
+@xresult{}
     1    2
     3    4
 
 ## each element of A becomes a 1x1 element of C
 num2cell (x)
-   @result{}
+   @xresult{}
       @{
         [1,1] =  1
         [2,1] =  3
@@ -1998,7 +1998,7 @@ num2cell (x)
       @}
 ## all rows (dim 1) of A appear in each element of C
 num2cell (x, 1)
-   @result{}
+   @xresult{}
       @{
         [1,1] =
            1
@@ -2009,7 +2009,7 @@ num2cell (x, 1)
       @}
 ## all columns (dim 2) of A appear in each element of C
 num2cell (x, 2)
-   @result{}
+   @xresult{}
       @{
         [1,1] =
            1   2
@@ -2019,7 +2019,7 @@ num2cell (x, 2)
 ## all rows and cols appear in each element of C
 ## (hence, only 1 output)
 num2cell (x, [1, 2])
-   @result{}
+   @xresult{}
       @{
         [1,1] =
            1   2
@@ -2368,7 +2368,7 @@ Examples
 
 @example
 x = reshape (1:12, [3, 4])'
-@result{}
+@xresult{}
     1    2    3
     4    5    6
     7    8    9
@@ -2380,7 +2380,7 @@ x = reshape (1:12, [3, 4])'
 ## The 3 cols (dim2) are divided in to three cell elements
 ## with 1 col each.
 mat2cell (x, [2,2], [1,1,1])
-@result{}
+@xresult{}
 @{
   [1,1] =
 
@@ -2417,7 +2417,7 @@ mat2cell (x, [2,2], [1,1,1])
 ## with a 3/1 split.
 ## All columns appear in each output element.
 mat2cell (x, [3,1])
-@result{}
+@xresult{}
 @{
   [1,1] =
 

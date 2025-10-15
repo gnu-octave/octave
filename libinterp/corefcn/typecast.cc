@@ -155,7 +155,7 @@ An example of the use of typecast on a little-endian machine is
 @group
 @var{x} = uint16 ([1, 65535]);
 typecast (@var{x}, "uint8")
-@result{} [   1,   0, 255, 255]
+@xresult{} [   1,   0, 255, 255]
 @end group
 @end example
 @seealso{cast, bitpack, bitunpack, swapbytes}

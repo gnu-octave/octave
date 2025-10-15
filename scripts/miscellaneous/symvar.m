@@ -38,7 +38,7 @@
 ## @example
 ## @group
 ## symvar ("x^2 + y^2 == 4")
-## @result{} @{
+## @xresult{} @{
 ##      [1,1] = x
 ##      [2,1] = y
 ##    @}

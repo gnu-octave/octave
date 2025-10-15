@@ -39,21 +39,21 @@
 ## @example
 ## @group
 ## strcat ("|", " leading space is preserved", "|")
-##     @result{} | leading space is preserved|
+##     @xresult{} | leading space is preserved|
 ## @end group
 ## @end example
 ##
 ## @example
 ## @group
 ## strcat ("|", "trailing space is eliminated ", "|")
-##     @result{} |trailing space is eliminated|
+##     @xresult{} |trailing space is eliminated|
 ## @end group
 ## @end example
 ##
 ## @example
 ## @group
 ## strcat ("homogeneous space |", "  ", "| is also eliminated")
-##     @result{} homogeneous space || is also eliminated
+##     @xresult{} homogeneous space || is also eliminated
 ## @end group
 ## @end example
 ##
@@ -61,7 +61,7 @@
 ## @group
 ## s = [ "ab"; "cde" ];
 ## strcat (s, s, s)
-##     @result{}
+##     @xresult{}
 ##         "ababab   "
 ##         "cdecdecde"
 ## @end group
@@ -71,7 +71,7 @@
 ## @group
 ## s = @{ "ab"; "cd " @};
 ## strcat (s, s, s)
-##     @result{}
+##     @xresult{}
 ##         @{
 ##           [1,1] = ababab
 ##           [2,1] = cd cd cd

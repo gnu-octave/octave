@@ -34,14 +34,14 @@
 ## @example
 ## @group
 ##   mpth = __w2mpth__ ('D:\full\path\to\file.dat')
-##   @result{} '/D/full/path/to/file.dat'
+##   @xresult{} '/D/full/path/to/file.dat'
 ## @end group
 ## @end example
 ##
 ## @example
 ## @group
 ##   mpth = __w2mpth__ ('relative\path\to\file.dat')
-##   @result{} 'relative/path/to/file.dat'
+##   @xresult{} 'relative/path/to/file.dat'
 ## @end group
 ## @end example
 ##

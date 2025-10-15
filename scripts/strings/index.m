@@ -36,7 +36,7 @@
 ## @example
 ## @group
 ## index ("Teststring", "t")
-##     @result{} 4
+##     @xresult{} 4
 ## @end group
 ## @end example
 ##

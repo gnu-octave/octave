@@ -143,7 +143,7 @@ For example:
 @example
 @group
 gmtime (time ())
-     @result{} @{
+     @xresult{} @{
            usec = 0
            sec = 6
            min = 15
@@ -199,7 +199,7 @@ return a time structure corresponding to the local time zone.
 @example
 @group
 localtime (time ())
-     @result{} @{
+     @xresult{} @{
            usec = 0
            sec = 6
            min = 15
@@ -257,7 +257,7 @@ For example:
 @example
 @group
 mktime (localtime (time ()))
-     @result{} 856163706
+     @xresult{} 856163706
 @end group
 @end example
 @seealso{strftime, strptime, localtime, gmtime, time, now, date, clock, datenum,
@@ -308,7 +308,7 @@ to the output without change.  For example:
 @example
 @group
 strftime ("%r (%Z) %A %e %B %Y", localtime (time ()))
-      @result{} "01:15:06 AM (CST) Monday 17 February 1997"
+      @xresult{} "01:15:06 AM (CST) Monday 17 February 1997"
 @end group
 @end example
 

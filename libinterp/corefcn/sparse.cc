@@ -134,10 +134,10 @@ Example 1 (convert full matrix to sparse to save memory):
 @group
 x = full (diag (1:1000));
 sizeof (x)
-@result{}  8000000
+@xresult{}  8000000
 s = sparse (x);
 sizeof (xs)
-@result{}  24008
+@xresult{}  24008
 @end group
 @end example
 
@@ -147,7 +147,7 @@ Example 2 (sum at repeated indices):
 @group
 @var{i} = [1 1 2]; @var{j} = [1 1 2]; @var{sv} = [3 4 5];
 sparse (@var{i}, @var{j}, @var{sv}, 3, 4)
-@result{}
+@xresult{}
    Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])
 
      (1, 1) ->  7
@@ -161,7 +161,7 @@ Example 3 ("unique" option):
 @group
 @var{i} = [1 1 2]; @var{j} = [1 1 2]; @var{sv} = [3 4 5];
 sparse (@var{i}, @var{j}, @var{sv}, 3, 4, "unique")
-@result{}
+@xresult{}
    Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])
 
      (1, 1) ->  4

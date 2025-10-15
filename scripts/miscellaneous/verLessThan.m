@@ -42,10 +42,10 @@
 ## @example
 ## @group
 ## tf = verLessThan ("Octave", "5")
-## @result{} tf = 0
+## @xresult{} tf = 0
 ##
 ## tf = verLessThan ("io", "2.4.12")
-## @result{} ...
+## @xresult{} ...
 ##
 ## if (! verLessThan ("Octave", "5"))
 ##   ## ... use new Octave 5 features ...

@@ -33,7 +33,7 @@
 ## @example
 ## @group
 ## isstrprop ("abc123", "alpha")
-## @result{} [1, 1, 1, 0, 0, 0]
+## @xresult{} [1, 1, 1, 0, 0, 0]
 ## @end group
 ## @end example
 ##

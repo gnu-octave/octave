@@ -42,13 +42,13 @@
 ## @example
 ## @group
 ## >> hsv2rgb ([0.5 1 1])
-## @result{} ans = 0 1 1
+## @xresult{} ans = 0 1 1
 ##
 ## >> hsv2rgb ([2.5 1 1])
-## @result{} ans = 0 1 1
+## @xresult{} ans = 0 1 1
 ##
 ## >> hsv2rgb ([3.5 1 1])
-## @result{} ans = 0 1 1
+## @xresult{} ans = 0 1 1
 ## @end group
 ## @end example
 ##

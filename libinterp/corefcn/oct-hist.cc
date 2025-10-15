@@ -726,7 +726,7 @@ For example:
 disp (1)
 disp (2)
 run_history -1 -2
-@result{}
+@xresult{}
  2
  1
 @end group

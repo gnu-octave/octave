@@ -131,7 +131,7 @@ For example:
 @group
 global x
 isglobal ("x")
-   @result{} 1
+   @xresult{} 1
 @end group
 @end example
 @seealso{isvarname, exist}

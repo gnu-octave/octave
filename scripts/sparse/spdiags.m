@@ -51,7 +51,7 @@
 ## @example
 ## @group
 ## spdiags (reshape (1:12, 4, 3), [-1 0 1], 5, 4)
-##    @result{} 5 10  0  0
+##    @xresult{} 5 10  0  0
 ##       1  6 11  0
 ##       0  2  7 12
 ##       0  0  3  8

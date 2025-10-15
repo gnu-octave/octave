@@ -41,11 +41,11 @@
 ## @example
 ## @group
 ## substr ("This is a test string", 6, 9)
-##      @result{} "is a test"
+##      @xresult{} "is a test"
 ## substr ("This is a test string", -11)
-##      @result{} "test string"
+##      @xresult{} "test string"
 ## substr ("This is a test string", -11, -7)
-##      @result{} "test"
+##      @xresult{} "test"
 ## @end group
 ## @end example
 ##

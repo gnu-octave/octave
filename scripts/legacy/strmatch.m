@@ -44,13 +44,13 @@
 ## @example
 ## @group
 ## strmatch ("apple", "apple juice")
-##      @result{} 1
+##      @xresult{} 1
 ##
 ## strmatch ("apple", ["apple  "; "apple juice"; "an apple"])
-##      @result{} [1; 2]
+##      @xresult{} [1; 2]
 ##
 ## strmatch ("apple", ["apple  "; "apple juice"; "an apple"], "exact")
-##      @result{} [1]
+##      @xresult{} [1]
 ## @end group
 ## @end example
 ##

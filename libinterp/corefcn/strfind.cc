@@ -178,17 +178,17 @@ Examples:
 @example
 @group
 strfind ("abababa", "aba")
-     @result{} [1, 3, 5]
+     @xresult{} [1, 3, 5]
 @end group
 
 @group
 strfind ("abababa", "aba", "overlaps", false)
-     @result{} [1, 5]
+     @xresult{} [1, 5]
 @end group
 
 @group
 strfind (@{"abababa", "bebebe", "ab"@}, "aba")
-     @result{}
+     @xresult{}
         @{
           [1,1] =
 
@@ -201,7 +201,7 @@ strfind (@{"abababa", "bebebe", "ab"@}, "aba")
 
 @group
 strfind ("abababa", "aba", "forcecelloutput", true)
-     @result{}
+     @xresult{}
         @{
           [1,1] =
 
@@ -405,7 +405,7 @@ Example:
 @example
 @group
 strrep ("This is a test string", "is", "&%$")
-    @result{}  "Th&%$ &%$ a test string"
+    @xresult{}  "Th&%$ &%$ a test string"
 @end group
 @end example
 

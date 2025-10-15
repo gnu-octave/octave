@@ -546,29 +546,29 @@ Examples:
 @smallexample
 @group
 jsonencode ([1, NaN; 3, 4])
-@result{} [[1,null],[3,4]]
+@xresult{} [[1,null],[3,4]]
 @end group
 
 @group
 jsonencode ([1, NaN; 3, 4], "ConvertInfAndNaN", false)
-@result{} [[1,NaN],[3,4]]
+@xresult{} [[1,NaN],[3,4]]
 @end group
 
 @group
 ## Escape characters inside a single-quoted string
 jsonencode ('\0\a\b\t\n\v\f\r')
-@result{} "\\0\\a\\b\\t\\n\\v\\f\\r"
+@xresult{} "\\0\\a\\b\\t\\n\\v\\f\\r"
 @end group
 
 @group
 ## Escape characters inside a double-quoted string
 jsonencode ("\a\b\t\n\v\f\r")
-@result{} "\u0007\b\t\n\u000B\f\r"
+@xresult{} "\u0007\b\t\n\u000B\f\r"
 @end group
 
 @group
 jsonencode ([true; false], "PrettyPrint", true)
-@result{} ans = [
+@xresult{} ans = [
      true,
      false
    ]
@@ -576,27 +576,27 @@ jsonencode ([true; false], "PrettyPrint", true)
 
 @group
 jsonencode (['foo', 'bar'; 'foo', 'bar'])
-@result{} ["foobar","foobar"]
+@xresult{} ["foobar","foobar"]
 @end group
 
 @group
 jsonencode (struct ('a', Inf, 'b', [], 'c', struct ()))
-@result{} @{"a":null,"b":[],"c":@{@}@}
+@xresult{} @{"a":null,"b":[],"c":@{@}@}
 @end group
 
 @group
 jsonencode (struct ('structarray', struct ('a', @{1; 3@}, 'b', @{2; 4@})))
-@result{} @{"structarray":[@{"a":1,"b":2@},@{"a":3,"b":4@}]@}
+@xresult{} @{"structarray":[@{"a":1,"b":2@},@{"a":3,"b":4@}]@}
 @end group
 
 @group
 jsonencode (@{'foo'; 'bar'; @{'foo'; 'bar'@}@})
-@result{} ["foo","bar",["foo","bar"]]
+@xresult{} ["foo","bar",["foo","bar"]]
 @end group
 
 @group
 jsonencode (containers.Map(@{'foo'; 'bar'; 'baz'@}, [1, 2, 3]))
-@result{} @{"bar":2,"baz":3,"foo":1@}
+@xresult{} @{"bar":2,"baz":3,"foo":1@}
 @end group
 @end smallexample
 

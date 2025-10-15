@@ -40,9 +40,9 @@
 ## @example
 ## @group
 ## nthroot (-1, 3)
-## @result{} -1
+## @xresult{} -1
 ## (-1) ^ (1 / 3)
-## @result{} 0.50000 - 0.86603i
+## @xresult{} 0.50000 - 0.86603i
 ## @end group
 ## @end example
 ## @seealso{realsqrt, sqrt, cbrt}

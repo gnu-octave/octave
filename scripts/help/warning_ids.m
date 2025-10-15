@@ -329,9 +329,9 @@
 ## @group
 ## a = [1 2 3 4 5];
 ## b = 2.2:4.2
-## @result{} 1.2  2.2  3.2
+## @xresult{} 1.2  2.2  3.2
 ## a(b)
-## @result{} 2 3 4
+## @xresult{} 2 3 4
 ## @end group
 ## @end example
 ##
@@ -349,7 +349,7 @@
 ## @example
 ## @group
 ## [ "f", 111, 111 ]
-## @result{} "foo"
+## @xresult{} "foo"
 ## @end group
 ## @end example
 ##
@@ -430,7 +430,7 @@
 ## @example
 ## @group
 ## "abc" + 0
-## @result{} 97 98 99
+## @xresult{} 97 98 99
 ## @end group
 ## @end example
 ##

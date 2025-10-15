@@ -94,12 +94,12 @@
 ## @group
 ## Convert from datestrs:
 ## d = datenum ("1966-06-14")
-## @result{} d = 718232
+## @xresult{} d = 718232
 ## @end group
 ##
 ## @group
 ## d = datenum (@{"1966-06-14", "1966-06-15", "1966-06-16"@})
-## @result{} d =
+## @xresult{} d =
 ##       718232
 ##       718233
 ##       718234
@@ -108,23 +108,23 @@
 ## @group
 ## Convert from datevec:
 ## d = datenum ([1966 06 14])
-## @result{} d = 718232
+## @xresult{} d = 718232
 ## @end group
 ##
 ## @group
 ## d = datenum ([1966 06 14 23 59 59])
-## @result{} d = 718232.9999884259
+## @xresult{} d = 718232.9999884259
 ## @end group
 ##
 ## @group
 ## Specify date components separately:
 ## d = datenum (1966, 6, 14)
-## @result{} d = 718232
+## @xresult{} d = 718232
 ## @end group
 ##
 ## @group
 ## d = datenum (1966, magic(3), 1)
-## @result{} d =
+## @xresult{} d =
 ##
 ##       718280   718068   718219
 ##       718127   718188   718249

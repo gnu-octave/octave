@@ -39,11 +39,11 @@
 ## @example
 ## @group
 ## cos ([-3/2, -1/2, 1/2, 3/2] * pi)
-## @result{}
+## @xresult{}
 ##      -1.8370e-16   6.1232e-17   6.1232e-17  -1.8370e-16
 ##
 ## cospi ([-3/2, -1/2, 1/2, 3/2])
-## @result{}
+## @xresult{}
 ##        0   0   0   0
 ## @end group
 ## @end example

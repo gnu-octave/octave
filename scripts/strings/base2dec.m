@@ -31,7 +31,7 @@
 ## @example
 ## @group
 ## base2dec ("11120", 3)
-##    @result{} 123
+##    @xresult{} 123
 ## @end group
 ## @end example
 ##
@@ -49,7 +49,7 @@
 ## @example
 ## @group
 ## base2dec ("yyyzx", "xyz")
-##    @result{} 123
+##    @xresult{} 123
 ## @end group
 ## @end example
 ## @seealso{dec2base, bin2dec, hex2dec}

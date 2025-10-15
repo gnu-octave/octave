@@ -99,11 +99,11 @@
 ## @example
 ## @group
 ## test sind
-## @result{}
+## @xresult{}
 ## PASSES 5 out of 5 tests
 ##
 ## [n, nmax] = test ("sind")
-## @result{}
+## @xresult{}
 ## n =  5
 ## nmax =  5
 ## @end group

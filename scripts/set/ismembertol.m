@@ -45,8 +45,8 @@
 ## a = [3, 10, 1];
 ## s = [0:9];
 ## [tf, s_idx] = ismembertol (a, s)
-##      @result{} tf = [1, 0, 1]
-##      @result{} s_idx = [4, 0, 2]
+##      @xresult{} tf = [1, 0, 1]
+##      @xresult{} s_idx = [4, 0, 2]
 ## @end group
 ## @end example
 ##

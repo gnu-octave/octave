@@ -634,7 +634,7 @@ character string.  For example:
 @example
 @group
 file_in_path (EXEC_PATH, "sh")
-     @result{} "/bin/sh"
+     @xresult{} "/bin/sh"
 @end group
 @end example
 

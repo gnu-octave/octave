@@ -922,7 +922,7 @@ For example:
 
 @example
 [info, err, msg] = stat ("/vmlinuz")
-  @result{} info =
+  @xresult{} info =
      @{
        atime = 855399756
        rdev = 0
@@ -939,8 +939,8 @@ For example:
        ino = 9316
        dev = 2049
      @}
-  @result{} err = 0
-  @result{} msg =
+  @xresult{} err = 0
+  @xresult{} msg =
 @end example
 @seealso{lstat, ls, dir, isfile, isfolder}
 @end deftypefn */)
@@ -1132,7 +1132,7 @@ For example:
 @example
 @group
 uname ()
-   @result{} @{
+   @xresult{} @{
          sysname = x86_64
          nodename = segfault
          release = 2.6.15-1-amd64-k8-smp

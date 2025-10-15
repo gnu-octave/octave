@@ -315,7 +315,7 @@ y = [10 20 30
      10 20 30];
 
 x + y
-@result{}    11   22   33
+@xresult{}    11   22   33
       14   25   36
       17   28   39
 @end group
@@ -334,7 +334,7 @@ pairwise differences of the elements of a vector with itself:
 @example
 @group
 y - y'
-@result{}    0   10   20
+@xresult{}    0   10   20
     -10    0   10
     -20  -10    0
 @end group

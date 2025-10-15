@@ -48,11 +48,11 @@
 ## A = [1 2; 3 4];
 ## b = [4; 2];
 ## x = A \ b
-##   @result{} x =
+##   @xresult{} x =
 ##        -6
 ##         5
 ## isequal (A*x, b)
-##   @result{} 1
+##   @xresult{} 1
 ## @end group
 ## @end example
 ##
@@ -85,7 +85,7 @@
 ## A = [1 10 12; 24 30 42];
 ## B = [1 5 4; 6 6 7];
 ## A ./ B
-##   @result{}
+##   @xresult{}
 ##        1   2   3
 ##        4   5   6
 ## @end group
@@ -97,11 +97,11 @@
 ## @example
 ## @group
 ## 420 ./ B
-##   @result{}
+##   @xresult{}
 ##        420    84   105
 ##         70    70    60
 ## [20; 42] ./ B
-##   @result{}
+##   @xresult{}
 ##        20    4    5
 ##         7    7    6
 ## @end group

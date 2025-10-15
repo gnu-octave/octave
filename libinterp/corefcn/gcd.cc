@@ -468,7 +468,7 @@ Example code:
 @example
 @group
 gcd ([15, 9], [20, 18])
-   @result{}  5  9
+   @xresult{}  5  9
 @end group
 @end example
 
@@ -479,7 +479,7 @@ Programming tip: To find the GCD of all the elements of a single array, use
 @group
 x = [30 42 70 105];    # vector or array of inputs
 gcd (num2cell (x) @{:@})
-   @result{}     1
+   @xresult{}     1
 @end group
 @end example
 

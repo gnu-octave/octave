@@ -40,7 +40,7 @@
 ## @example
 ## @group
 ## deg2rad ([0, 90, 180, 270, 360])
-##   @result{}  0.00000   1.57080   3.14159   4.71239   6.28319
+##   @xresult{}  0.00000   1.57080   3.14159   4.71239   6.28319
 ## @end group
 ## @end example
 ## @seealso{rad2deg}

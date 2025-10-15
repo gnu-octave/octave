@@ -33,7 +33,7 @@
 ## @example
 ## @group
 ## fliplr ([1, 2; 3, 4])
-##      @result{}  2  1
+##      @xresult{}  2  1
 ##          4  3
 ## @end group
 ## @end example

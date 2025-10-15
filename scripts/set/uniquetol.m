@@ -90,9 +90,9 @@
 ## ## Inverse_Function (Function (x)) should return exactly x
 ## y = exp (log (x));
 ## D = unique ([x, y])
-## @result{} [1   2   3   3   4   5   5]
+## @xresult{} [1   2   3   3   4   5   5]
 ## C = uniquetol ([x, y])
-## @result{} [1   2   3   4   5]
+## @xresult{} [1   2   3   4   5]
 ## @end group
 ## @end example
 ##

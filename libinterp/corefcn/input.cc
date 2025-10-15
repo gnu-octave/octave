@@ -1265,7 +1265,7 @@ controlling Octave and handling user input.  For example:
 @example
 @group
 completion_matches ("sine")
-@result{}
+@xresult{}
 sinetone
 sinewave
 @end group

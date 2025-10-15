@@ -118,7 +118,7 @@ compute the definite integral of @math{p(x) = x^2 + 1} from 0 to 3.
 c = [1, 0, 1];
 integral = polyint (c);
 area = polyval (integral, 3) - polyval (integral, 0)
-@result{} 12
+@xresult{} 12
 @end group
 @end example
 

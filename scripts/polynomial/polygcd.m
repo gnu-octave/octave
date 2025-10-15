@@ -43,9 +43,9 @@
 ## @example
 ## @group
 ## polygcd (poly (1:8), poly (3:12)) - poly (3:8)
-## @result{} [ 0, 0, 0, 0, 0, 0, 0 ]
+## @xresult{} [ 0, 0, 0, 0, 0, 0, 0 ]
 ## deconv (poly (1:8), polygcd (poly (1:8), poly (3:12))) - poly (1:2)
-## @result{} [ 0, 0, 0 ]
+## @xresult{} [ 0, 0, 0 ]
 ## @end group
 ## @end example
 ## @seealso{poly, roots, conv, deconv, residue}

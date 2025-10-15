@@ -94,7 +94,7 @@ will be set on the first executable statement in the function.  For example:
 @example
 @group
 dbstop ("asind", 1)
-@result{} 29
+@xresult{} 29
 @end group
 @end example
 
@@ -134,7 +134,7 @@ then a breakpoint can be set at the start of the subfunction directly with
 @example
 @group
 dbstop func1>func2
-@result{} 5
+@xresult{} 5
 @end group
 @end example
 
@@ -296,10 +296,10 @@ If we execute the two main functions, we get:
 @example
 @group
 tic; foo; toc;
-@result{} Elapsed time is 2.37338 seconds.
+@xresult{} Elapsed time is 2.37338 seconds.
 
 tic; bar (20); toc;
-@result{} Elapsed time is 2.04952 seconds.
+@xresult{} Elapsed time is 2.04952 seconds.
 @end group
 @end example
 

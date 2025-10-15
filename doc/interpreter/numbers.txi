@@ -530,11 +530,11 @@ for example:
 @example
 @group
 sngl = single (rand (2, 2))
-     @result{} sngl =
+     @xresult{} sngl =
         0.37569   0.92982
         0.11962   0.50876
 class (sngl)
-    @result{} single
+    @xresult{} single
 @end group
 @end example
 
@@ -573,10 +573,10 @@ integers.
 @example
 @group
 float = rand (2, 2)
-     @result{} float = 0.37569   0.92982
+     @xresult{} float = 0.37569   0.92982
                 0.11962   0.50876
 integer = int32 (float)
-     @result{} integer = 0  1
+     @xresult{} integer = 0  1
                   0  1
 @end group
 @end example
@@ -745,9 +745,9 @@ during a right shift.  For example:
 @example
 @group
 bitshift (-10, -1)
-@result{} -5
+@xresult{} -5
 bitshift (int8 (-1), -1)
-@result{} -1
+@xresult{} -1
 @end group
 @end example
 
@@ -795,17 +795,17 @@ Many operators and functions can work with mixed data types.  For example,
 @example
 @group
 uint8 (1) + 1
-    @result{} 2
+    @xresult{} 2
 @end group
 
 @group
 single (1) + 1
-    @result{} 2
+    @xresult{} 2
 @end group
 
 @group
 min (single (1), 0)
-   @result{} 0
+   @xresult{} 0
 @end group
 @end example
 
@@ -831,14 +831,14 @@ conversion is function-dependent:
 @example
 @group
 a = det (int8 ([1 2; 3 4]))
-    @result{} a = -2
+    @xresult{} a = -2
 class (a)
-    @result{} double
+    @xresult{} double
 @end group
 
 @group
 a = eig (int8 ([1 2; 3 4]))
-    @result{} error: eig: wrong type argument 'int8 matrix'
+    @xresult{} error: eig: wrong type argument 'int8 matrix'
 @end group
 @end example
 
@@ -848,14 +848,14 @@ convert them to the wider bitwidth, and other cases throw an error:
 @example
 @group
 a = min (int8 (100), int16 (200))
-    @result{} 100
+    @xresult{} 100
 class (a)
-    @result{} int16
+    @xresult{} int16
 @end group
 
 @group
 int8 (100) + int16 (200)
-   @result{} error: binary operator '+' not implemented
+   @xresult{} error: binary operator '+' not implemented
    for 'int8 scalar' by 'int16 scalar' operations
 @end group
 @end example
@@ -867,7 +867,7 @@ are of the same bitwidth.
 @example
 @group
 min (int16 (100), uint16 (200))
-   @result{} error: min: cannot compute min (int16 scalar, uint16 scalar)
+   @xresult{} error: min: cannot compute min (int16 scalar, uint16 scalar)
 @end group
 @end example
 
@@ -878,7 +878,7 @@ changed.  For example,
 @group
 x = ones (2, 2);
 x(1, 1) = single (2)
-   @result{} x = 2   1
+   @xresult{} x = 2   1
           1   1
 @end group
 @end example

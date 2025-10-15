@@ -60,7 +60,7 @@
 ## a = myclass (1:4);
 ## b = 1:10;
 ## b(a)
-## @result{} 1  2  3  4
+## @xresult{} 1  2  3  4
 ## @end group
 ## @end example
 ##

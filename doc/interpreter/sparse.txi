@@ -129,10 +129,10 @@ The nonzero elements of this matrix are
 
 @example
 @group
-   (1, 1)  @result{} 1
-   (1, 2)  @result{} 2
-   (2, 4)  @result{} 3
-   (3, 4)  @result{} 4
+   (1, 1)  @xresult{} 1
+   (1, 2)  @xresult{} 2
+   (2, 4)  @xresult{} 3
+   (3, 4)  @xresult{} 4
 @end group
 @end example
 
@@ -266,7 +266,7 @@ the size of the sparse matrix.  For example:
 @example
 @group
 s = spconvert ([1 2 3 4; 1 3 4 4; 1 2 3 0]')
-@result{} Compressed Column Sparse (rows=4, cols=4, nnz=3)
+@xresult{} Compressed Column Sparse (rows=4, cols=4, nnz=3)
       (1 , 1) -> 1
       (2 , 3) -> 2
       (3 , 4) -> 3
@@ -521,7 +521,7 @@ make it a full matrix, and so the example,
 @example
 @group
 speye (3) + 0
-@result{}   1  0  0
+@xresult{}   1  0  0
   0  1  0
   0  0  1
 @end group
@@ -603,10 +603,10 @@ stored.  In certain cases the sign-bit of zero is important.  For example:
 @group
  a = 0 ./ [-1, 1; 1, -1];
  b = 1 ./ a
- @result{} -Inf            Inf
+ @xresult{} -Inf            Inf
      Inf           -Inf
  c = 1 ./ sparse (a)
- @result{}  Inf            Inf
+ @xresult{}  Inf            Inf
      Inf            Inf
 @end group
 @end example

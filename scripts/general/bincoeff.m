@@ -51,7 +51,7 @@
 ## @example
 ## @group
 ## bincoeff (5, 2)
-##    @result{} 10
+##    @xresult{} 10
 ## @end group
 ## @end example
 ##

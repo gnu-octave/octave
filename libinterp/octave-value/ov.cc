@@ -3705,13 +3705,13 @@ The following example shows how to extract the first two columns of a matrix
 @example
 @group
 val = magic (3)
-    @result{} val = [ 8   1   6
+    @xresult{} val = [ 8   1   6
                3   5   7
                4   9   2 ]
 idx.type = "()";
 idx.subs = @{":", 1:2@};
 subsref (val, idx)
-     @result{} [ 8   1
+     @xresult{} [ 8   1
           3   5
           4   9 ]
 @end group
@@ -3764,7 +3764,7 @@ val = magic (3);
 idx.type = "()";
 idx.subs = @{":", 1:2@};
 val = subsasgn (val, idx, 0)
-     @result{}  [ 0   0   6
+     @xresult{}  [ 0   0   6
            0   0   7
            0   0   2 ]
 @end group

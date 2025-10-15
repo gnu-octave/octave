@@ -321,7 +321,7 @@ When putting this in a file @file{must_be_zero.m}, and running the test, we see
 @group
 test must_be_zero verbose
 
-@result{}
+@xresult{}
 >>>>> /path/to/must_be_zero.m
 ***** fail ("must_be_zero (1)")
 ***** assert (must_be_zero (0), 0)

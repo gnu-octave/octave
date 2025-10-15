@@ -329,7 +329,7 @@ When constructing ranges, @samp{:} is the separator between @var{base}, @var{inc
 
 @example
 1:2:8
-@result{}  1  3  5  7
+@xresult{}  1  3  5  7
 @end example
 @end deftypefn
 ;
@@ -420,7 +420,7 @@ Example:
 @group
 f = @@plus;
 f (2, 2)
-@result{}  4
+@xresult{}  4
 @end group
 @end example
 

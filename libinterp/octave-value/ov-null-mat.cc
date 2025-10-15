@@ -131,9 +131,9 @@ behavior when @code{isnull} is used correctly.
 str = "Hello World";
 nm = "Wally";
 str(7:end) = nm                # indexed assignment
-  @result{} str = Hello Wally
+  @xresult{} str = Hello Wally
 str(7:end) = ""                # indexed deletion
-  @result{} str = Hello
+  @xresult{} str = Hello
 @end group
 @end example
 @seealso{isempty, isindex}

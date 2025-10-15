@@ -33,7 +33,7 @@
 ## @example
 ## @group
 ## cstrcat ("ab   ", "cd")
-##       @result{} "ab   cd"
+##       @xresult{} "ab   cd"
 ## @end group
 ## @end example
 ##
@@ -41,7 +41,7 @@
 ## @group
 ## s = [ "ab"; "cde" ];
 ## cstrcat (s, s, s)
-##       @result{} "ab ab ab "
+##       @xresult{} "ab ab ab "
 ##          "cdecdecde"
 ## @end group
 ## @end example

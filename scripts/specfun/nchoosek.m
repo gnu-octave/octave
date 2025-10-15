@@ -67,7 +67,7 @@
 ## @example
 ## @group
 ## nchoosek (3, 2)
-##    @result{} 3
+##    @xresult{} 3
 ## @end group
 ## @end example
 ##
@@ -76,7 +76,7 @@
 ## @example
 ## @group
 ## nchoosek (1:3, 2)
-##    @result{}  1   2
+##    @xresult{}  1   2
 ##        1   3
 ##        2   3
 ## @end group

@@ -45,10 +45,10 @@
 ## @example
 ## @group
 ## strtok ("this is the life")
-##      @result{} "this"
+##      @xresult{} "this"
 ##
 ## [tok, rem] = strtok ("14*27+31", "+-*/")
-##      @result{}
+##      @xresult{}
 ##         tok = 14
 ##         rem = *27+31
 ## @end group

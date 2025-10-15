@@ -343,7 +343,7 @@ For example:
 @example
 @group
 find (eye (2))
-  @result{} [ 1; 4 ]
+  @xresult{} [ 1; 4 ]
 @end group
 @end example
 
@@ -361,8 +361,8 @@ indices of nonzero elements of a matrix.  For example:
 @example
 @group
 [i, j] = find (2 * eye (2))
-    @result{} i = [ 1; 2 ]
-    @result{} j = [ 1; 2 ]
+    @xresult{} i = [ 1; 2 ]
+    @xresult{} j = [ 1; 2 ]
 @end group
 @end example
 
@@ -372,9 +372,9 @@ containing the nonzero values.  For example:
 @example
 @group
 [i, j, v] = find (3 * eye (2))
-       @result{} i = [ 1; 2 ]
-       @result{} j = [ 1; 2 ]
-       @result{} v = [ 3; 3 ]
+       @xresult{} i = [ 1; 2 ]
+       @xresult{} j = [ 1; 2 ]
+       @xresult{} v = [ 3; 3 ]
 @end group
 @end example
 

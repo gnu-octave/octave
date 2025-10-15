@@ -35,9 +35,9 @@
 ## @example
 ## @group
 ## [err, a, b] = common_size ([1 2; 3 4], 5)
-##      @result{} err = 0
-##      @result{} a = [ 1, 2; 3, 4 ]
-##      @result{} b = [ 5, 5; 5, 5 ]
+##      @xresult{} err = 0
+##      @xresult{} a = [ 1, 2; 3, 4 ]
+##      @xresult{} b = [ 5, 5; 5, 5 ]
 ## @end group
 ## @end example
 ##

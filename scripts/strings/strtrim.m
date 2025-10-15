@@ -36,10 +36,10 @@
 ## @example
 ## @group
 ## strtrim ("    abc  ")
-##      @result{}  "abc"
+##      @xresult{}  "abc"
 ##
 ## strtrim ([" abc   "; "   def   "])
-##      @result{}  ["abc  "  ; "  def"]
+##      @xresult{}  ["abc  "  ; "  def"]
 ## @end group
 ## @end example
 ## @seealso{deblank}

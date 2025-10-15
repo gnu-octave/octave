@@ -1350,9 +1350,9 @@ Thus, for example:
 @example
 h = figure ();
 get (h, "type")
-@result{} ans = figure
+@xresult{} ans = figure
 set (h)
-@result{}
+@xresult{}
         alphamap:
         beingdeleted:  [ @{off@} | on ]
         busyaction:  [ cancel | @{queue@} ]
@@ -1508,7 +1508,7 @@ properties for graphics objects.  For example,
 @example
 @group
 get (groot)
-    @result{} ans =
+    @xresult{} ans =
        @{
          type = root
          currentfigure = [](0x0)
@@ -1533,7 +1533,7 @@ property.  For example,
 @example
 @group
 get (gca (), "xlim")
-    @result{} [ 0 1 ]
+    @xresult{} [ 0 1 ]
 @end group
 @end example
 
@@ -2270,9 +2270,9 @@ example
 @group
 h = stem (1:4)
 get (h, "xdata")
-@result{} [  1   2   3   4]'
+@xresult{} [  1   2   3   4]'
 get (get (h, "children")(1), "xdata")
-@result{} [  1   1 NaN   2   2 NaN   3   3 NaN   4   4 NaN]'
+@xresult{} [  1   1 NaN   2   2 NaN   3   3 NaN   4   4 NaN]'
 @end group
 @end example
 

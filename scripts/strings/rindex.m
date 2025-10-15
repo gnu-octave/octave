@@ -36,7 +36,7 @@
 ## @example
 ## @group
 ## rindex ("Teststring", "t")
-##      @result{} 6
+##      @xresult{} 6
 ## @end group
 ## @end example
 ##

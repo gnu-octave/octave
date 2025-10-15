@@ -37,12 +37,12 @@
 ## @example
 ## @group
 ## x = bitset (1, 3:5)
-##   @result{} x =
+##   @xresult{} x =
 ##
 ##    5    9   17
 ##
 ## dec2bin (x)
-##   @result{}
+##   @xresult{}
 ##      00101
 ##      01001
 ##      10001
@@ -54,7 +54,7 @@
 ## @example
 ## @group
 ## x = bitset ([15 14], 1, [0 1])
-##   @result{} x =
+##   @xresult{} x =
 ##
 ##    14    15
 ## @end group

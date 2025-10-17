@@ -43,7 +43,7 @@
 ## @example
 ## @group
 ## strjoin (@{'Octave','Scilab','Lush','Yorick'@}, '*')
-##       @result{} 'Octave*Scilab*Lush*Yorick'
+##       @xresult{} 'Octave*Scilab*Lush*Yorick'
 ## @end group
 ## @end example
 ## @seealso{strsplit}

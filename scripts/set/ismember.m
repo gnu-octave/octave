@@ -40,8 +40,8 @@
 ## a = [3, 10, 1];
 ## s = [0:9];
 ## [tf, s_idx] = ismember (a, s)
-##      @result{} tf = [1, 0, 1]
-##      @result{} s_idx = [4, 0, 2]
+##      @xresult{} tf = [1, 0, 1]
+##      @xresult{} s_idx = [4, 0, 2]
 ## @end group
 ## @end example
 ##
@@ -52,8 +52,8 @@
 ## a = @{"abc"@};
 ## s = @{"abc", "def"@};
 ## [tf, s_idx] = ismember (a, s)
-##      @result{} tf = 1
-##      @result{} s_idx = 1
+##      @xresult{} tf = 1
+##      @xresult{} s_idx = 1
 ## @end group
 ## @end example
 ##
@@ -66,8 +66,8 @@
 ## a = [1:3; 5:7; 4:6];
 ## s = [0:2; 1:3; 2:4; 3:5; 4:6];
 ## [tf, s_idx] = ismember (a, s, "rows")
-##      @result{} tf = logical ([1; 0; 1])
-##      @result{} s_idx = [2; 0; 5];
+##      @xresult{} tf = logical ([1; 0; 1])
+##      @xresult{} s_idx = [2; 0; 5];
 ## @end group
 ## @end example
 ##

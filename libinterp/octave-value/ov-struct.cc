@@ -1818,19 +1818,19 @@ the following examples:
 @example
 @group
 struct ("foo", 1)
-  @result{} scalar structure containing the fields:
+  @xresult{} scalar structure containing the fields:
     foo =  1
 
 struct ("foo", @{@})
-  @result{} 0x0 struct array containing the fields:
+  @xresult{} 0x0 struct array containing the fields:
     foo
 
 struct ("foo", @{ @{@} @})
-  @result{} scalar structure containing the fields:
+  @xresult{} scalar structure containing the fields:
     foo = @{@}(0x0)
 
 struct ("foo", @{1, 2, 3@})
-  @result{} 1x3 struct array containing the fields:
+  @xresult{} 1x3 struct array containing the fields:
     foo
 
 @end group
@@ -2156,7 +2156,7 @@ S = cell2struct (@{"Peter", "Hannah", "Robert";
                    185, 170, 168@},
                  @{"Name","Height"@}, 1);
 S(1)
-   @result{}
+   @xresult{}
       @{
         Name   = Peter
         Height = 185

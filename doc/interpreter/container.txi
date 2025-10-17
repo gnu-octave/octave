@@ -77,7 +77,7 @@ of the structure you can type its name, just as for any other variable:
 @example
 @group
 x
-     @result{} x =
+     @xresult{} x =
 
          scalar structure containing the fields:
 
@@ -99,7 +99,7 @@ Structures may be copied just like any other variable:
 @example
 @group
 y = x
-     @result{} y =
+     @xresult{} y =
 
          scalar structure containing the fields:
 
@@ -121,14 +121,14 @@ structure containing the single field @code{a}, which has a value of 3.
 @example
 x.d.a = 3;
 x.d
-     @result{} ans =
+     @xresult{} ans =
 
          scalar structure containing the fields:
 
            a =  3
 
 x
-     @result{} x =
+     @xresult{} x =
 
          scalar structure containing the fields:
 
@@ -153,7 +153,7 @@ other structures, only a few levels are displayed.  For example:
 @group
 a.b.c.d.e = 1;
 a
-     @result{} a =
+     @xresult{} a =
 
          scalar structure containing the fields:
 
@@ -200,7 +200,7 @@ function argument.
 @example
 @group
 f (rand (2) + rand (2) * I)
-     @result{} ans =
+     @xresult{} ans =
 
          scalar structure containing the fields:
 
@@ -223,7 +223,7 @@ indexed like any other variable.  For example:
 [ x.u, x.s(2:3,2:3), x.v ] = svd ([1, 2; 3, 4]);
 x
 
-     @result{} x =
+     @xresult{} x =
 
          scalar structure containing the fields:
 
@@ -275,7 +275,7 @@ the structure array, you can type its name:
 @example
 @group
 x
-     @result{} x =
+     @xresult{} x =
         @{
           1x2 struct array containing the fields:
 
@@ -292,7 +292,7 @@ two fields:
 @example
 @group
 x(1)
-     @result{} ans =
+     @xresult{} ans =
         @{
           a = string1
           b =  1
@@ -307,7 +307,7 @@ own field names.  For example:
 @example
 @group
 x.a
-     @result{}
+     @xresult{}
         ans = string1
         ans = string2
 @end group
@@ -320,9 +320,9 @@ left-hand side of an assignment:
 @group
 [x.a] = deal ("new string1", "new string2");
  x(1).a
-     @result{} ans = new string1
+     @xresult{} ans = new string1
  x(2).a
-     @result{} ans = new string2
+     @xresult{} ans = new string2
 @end group
 @end example
 
@@ -334,7 +334,7 @@ Just as for numerical arrays, it is possible to use vectors as indices
 x(3:4) = x(1:2);
 [x([1,3]).a] = deal ("other string1", "other string2");
 x.a
-     @result{}
+     @xresult{}
         ans = other string1
         ans = new string2
         ans = other string2
@@ -348,7 +348,7 @@ the example above
 @example
 @group
 size (x)
-     @result{} ans =
+     @xresult{} ans =
 
           1   4
 @end group
@@ -362,7 +362,7 @@ example
 @group
 in = struct ("call1", @{x, Inf, "last"@},
              "call2", @{x, Inf, "first"@})
-     @result{} in =
+     @xresult{} in =
         @{
           1x3 struct array containing the fields:
 
@@ -372,7 +372,7 @@ in = struct ("call1", @{x, Inf, "last"@},
 
 in(1) = [];
 in.call1
-     @result{}
+     @xresult{}
        ans = Inf
        ans = last
 @end group
@@ -392,7 +392,7 @@ a = "field2";
 x.a = 1;
 x.(a) = 2;
 x
-     @result{} x =
+     @xresult{} x =
         @{
           a =  1
           field2 =  2
@@ -410,7 +410,7 @@ a = "long field with spaces (and funny char$)";
 x.a = 1;
 x.(a) = 2;
 x
-     @result{} x =
+     @xresult{} x =
         @{
           a =  1
           long field with spaces (and funny char$) =  2
@@ -433,7 +433,7 @@ for i = 1:rows (names)
   database.(names(i,:)) = ages(i);
 endfor
 database
-     @result{} database =
+     @xresult{} database =
         @{
           Bill =  37
           Mary =  26
@@ -451,7 +451,7 @@ example:
 @example
 @group
 struct ("field1", 1, "field2", 2)
-@result{} ans =
+@xresult{} ans =
       @{
         field1 =  1
         field2 =  2
@@ -468,17 +468,17 @@ structure array with a consistent dimension.  For example:
 s = struct ("field1", @{1, "one"@}, "field2", @{2, "two"@},
         "field3", 3);
 s.field1
-     @result{}
+     @xresult{}
         ans =  1
         ans = one
 
 s.field2
-     @result{}
+     @xresult{}
         ans =  2
         ans = two
 
 s.field3
-     @result{}
+     @xresult{}
         ans =  3
         ans =  3
 @end group
@@ -491,7 +491,7 @@ the following example:
 @example
 @group
 struct ("field1", @{@{1, "one"@}@}, "field2", 2)
-     @result{} ans =
+     @xresult{} ans =
         @{
           field1 =
 
@@ -598,7 +598,7 @@ can be indexed like this:
 @example
 @group
 c@{1@}
-     @result{} ans = a string
+     @xresult{} ans = a string
 @end group
 @end example
 
@@ -609,8 +609,8 @@ extracted by indexing with a vector of indexes
 @example
 @group
 c@{1:2@}
-     @result{} ans = a string
-     @result{} ans =
+     @xresult{} ans = a string
+     @xresult{} ans =
 
                0.593993   0.627732
                0.377037   0.033643
@@ -624,7 +624,7 @@ third place of the previously created cell array
 @example
 @group
 c@{3@} = 3
-     @result{} c =
+     @xresult{} c =
 
          @{
            [1,1] = a string
@@ -653,10 +653,10 @@ function.  For example:
 @example
 @group
 iscell (c)
-     @result{} ans = 1
+     @xresult{} ans = 1
 
 iscell (3)
-     @result{} ans = 0
+     @xresult{} ans = 0
 
 @end group
 @end example
@@ -679,7 +679,7 @@ a 2-by-2 cell array containing empty matrices
 @example
 @group
 c = cell (2,2)
-     @result{} c =
+     @xresult{} c =
 
          @{
            [1,1] = [](0x0)
@@ -702,7 +702,7 @@ of the first one is displayed
 c1 = cell (3, 4, 5);
 c2 = cell ( [3, 4, 5] );
 size (c1)
-     @result{} ans =
+     @xresult{} ans =
          3   4   5
 @end group
 @end example
@@ -738,10 +738,10 @@ following example illustrates the difference:
 @group
 c = @{"1", "2", "3"; "x", "y", "z"; "4", "5", "6"@};
 c@{2,3@}
-     @result{} ans = z
+     @xresult{} ans = z
 
 c(2,3)
-     @result{} ans =
+     @xresult{} ans =
         @{
           [1,1] = z
         @}
@@ -760,7 +760,7 @@ with the following command:
 @example
 @group
 c(:, [1, 3]) = @{0@}
-     @result{} =
+     @xresult{} =
         @{
           [1,1] = 0
           [2,1] = 0
@@ -792,7 +792,7 @@ following command:
 @group
 c = @{1, 2, 3; 4, 5, 6@};
 c([1, 2], :) = c([2, 1], :)
-     @result{} =
+     @xresult{} =
         @{
           [1,1] =  4
           [2,1] =  1
@@ -813,7 +813,7 @@ example can be swapped back like this:
 @example
 @group
 [c@{[1,2], :@}] = deal (c@{[2, 1], :@})
-     @result{} =
+     @xresult{} =
         @{
           [1,1] =  1
           [2,1] =  4
@@ -832,7 +832,7 @@ can be used to delete elements from a cell array:
 @group
 x = @{"1", "2"; "3", "4"@};
 x(1, :) = []
-     @result{} x =
+     @xresult{} x =
         @{
           [1,1] = 3
           [1,2] = 4
@@ -847,7 +847,7 @@ array elements but not delete the space for them:
 @group
 x = @{"1", "2"; "3", "4"@};
 x(1, :) = @{[]@}
-@result{} x =
+@xresult{} x =
       @{
         [1,1] = [](0x0)
         [2,1] = 3
@@ -883,7 +883,7 @@ converts a character array to a cell array of strings:
 @group
 a = ["hello"; "world"];
 c = cellstr (a)
-     @result{} c =
+     @xresult{} c =
          @{
            [1,1] = hello
            [2,1] = world
@@ -905,7 +905,7 @@ argument:
 @group
 c = @{"hello", "world"@};
 strcmp ("hello", c)
-     @result{} ans =
+     @xresult{} ans =
         1   0
 @end group
 @end example
@@ -1011,7 +1011,7 @@ of a cell array can be extracted into a comma-separated list with the
 @group
 a = @{1, [2, 3], 4, 5, 6@};
 b = [a@{1:4@}]
-     @result{} b =
+     @xresult{} b =
          1   2   3   4   5
 @end group
 @end example
@@ -1025,7 +1025,7 @@ following example illustrates:
 @group
 a = @{1, rand(2, 2), "three"@};
 b = @{ a@{ [1, 3] @} @}
-     @result{} b =
+     @xresult{} b =
          @{
            [1,1] =  1
            [1,2] = three
@@ -1061,7 +1061,7 @@ in@{4@} = "first";
 out = cell (4, 1);
 [out@{1:3@}] = in@{1 : 3@};
 [out@{4:6@}] = in@{[1, 2, 4]@})
-     @result{} out =
+     @xresult{} out =
         @{
            [1,1] =
 

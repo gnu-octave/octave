@@ -32,11 +32,11 @@
 ## @example
 ## @group
 ## bitcmp (7,4)
-##   @result{} 8
+##   @xresult{} 8
 ## dec2bin (11)
-##   @result{} 1011
+##   @xresult{} 1011
 ## dec2bin (bitcmp (11, 6))
-##   @result{} 110100
+##   @xresult{} 110100
 ## @end group
 ## @end example
 ##

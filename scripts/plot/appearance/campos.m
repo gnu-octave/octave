@@ -39,7 +39,7 @@
 ## hf = figure();
 ## peaks()
 ## p = campos ()
-##   @result{} p =
+##   @xresult{} p =
 ##       -27.394  -35.701   64.079
 ## @end group
 ## @end example
@@ -50,7 +50,7 @@
 ## @group
 ## campos (p + [0 0 10])
 ## campos ()
-##   @result{} ans =
+##   @xresult{} ans =
 ##       -27.394  -35.701   74.079
 ## @end group
 ## @end example
@@ -60,7 +60,7 @@
 ## @example
 ## @group
 ## campos ("mode")
-##   @result{} manual
+##   @xresult{} manual
 ## @end group
 ## @end example
 ##
@@ -70,7 +70,7 @@
 ## @group
 ## campos ("auto")
 ## campos ()
-##   @result{} ans =
+##   @xresult{} ans =
 ##       -27.394  -35.701   64.079
 ## close (hf)
 ## @end group

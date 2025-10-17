@@ -52,7 +52,7 @@ whether the elements are nonzero.  For example,
 @example
 @group
 all (all (rand (5) < 0.9))
-     @result{} 0
+     @xresult{} 0
 @end group
 @end example
 

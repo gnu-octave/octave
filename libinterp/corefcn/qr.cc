@@ -166,7 +166,7 @@ which multiplied together return the original matrix
 @example
 @group
 @var{Q} * @var{R}
-  @result{}
+  @xresult{}
      1.0000   2.0000
      3.0000   4.0000
 @end group

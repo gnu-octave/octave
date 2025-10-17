@@ -56,7 +56,7 @@
 ##
 ## @example
 ## strsplit ("a b c")
-##       @result{}
+##       @xresult{}
 ##           @{
 ##             [1,1] = a
 ##             [1,2] = b
@@ -64,7 +64,7 @@
 ##           @}
 ##
 ## strsplit ("a,b,c", ",")
-##       @result{}
+##       @xresult{}
 ##           @{
 ##             [1,1] = a
 ##             [1,2] = b
@@ -72,7 +72,7 @@
 ##           @}
 ##
 ## strsplit ("a foo b,bar c", @{" ", ",", "foo", "bar"@})
-##       @result{}
+##       @xresult{}
 ##           @{
 ##             [1,1] = a
 ##             [1,2] = b
@@ -80,7 +80,7 @@
 ##           @}
 ##
 ## strsplit ("a,,b, c", @{",", " "@}, "collapsedelimiters", false)
-##       @result{}
+##       @xresult{}
 ##           @{
 ##             [1,1] = a
 ##             [1,2] =
@@ -96,7 +96,7 @@
 ## @smallexample
 ## strsplit ("a foo b,bar c", ',|\s|foo|bar', ...
 ##           "delimitertype", "regularexpression")
-##       @result{}
+##       @xresult{}
 ##           @{
 ##             [1,1] = a
 ##             [1,2] = b
@@ -105,7 +105,7 @@
 ##
 ## strsplit ("a,,b, c", '[, ]', "collapsedelimiters", false, ...
 ##           "delimitertype", "regularexpression")
-##       @result{}
+##       @xresult{}
 ##           @{
 ##             [1,1] = a
 ##             [1,2] =
@@ -115,7 +115,7 @@
 ##           @}
 ##
 ## strsplit ("a,\t,b, c", @{',', '\s'@}, "delimitertype", "regularexpression")
-##       @result{}
+##       @xresult{}
 ##           @{
 ##             [1,1] = a
 ##             [1,2] = b
@@ -123,7 +123,7 @@
 ##           @}
 ##
 ## strsplit ("a,\t,b, c", @{',', ' ', '\t'@}, "collapsedelimiters", false)
-##       @result{}
+##       @xresult{}
 ##           @{
 ##             [1,1] = a
 ##             [1,2] =

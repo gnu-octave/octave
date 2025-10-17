@@ -82,16 +82,14 @@ function h = compass (varargin)
 
   if (have_line_spec)
     arg = varargin{end};
-    if (ischar (arg) || iscellstr (arg))
-      [~, valid] = __pltopt__ ("compass", arg, false);
-      if (valid)
-        line_spec = arg;
-      else
-        error ("compass: invalid linestyle STYLE");
-      endif
-    else
+    if (! (ischar (arg) || iscellstr (arg)))
       error ("compass: invalid linestyle STYLE");
     endif
+    [~, valid] = __pltopt__ ("compass", arg, false);
+    if (! valid)
+      error ("compass: invalid linestyle STYLE");
+    endif
+    line_spec = arg;
   endif
 
   ## Matlab draws compass plots with the arrow head as one continuous line,

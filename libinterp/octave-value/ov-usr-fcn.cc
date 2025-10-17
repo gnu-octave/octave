@@ -809,7 +809,7 @@ function [y, ia, ib] = union (a, b, varargin)
 and
 
 nargin ("union")
-@result{} -3
+@xresult{} -3
 @end group
 @end example
 

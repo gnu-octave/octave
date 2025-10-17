@@ -223,9 +223,9 @@ which triangle a point falls in like
 @example
 @group
 tsearch (@var{x}, @var{y}, @var{tri}, -0.5, -0.5)
-@result{} 1
+@xresult{} 1
 tsearch (@var{x}, @var{y}, @var{tri}, 0.5, 0.5)
-@result{} 2
+@xresult{} 2
 @end group
 @end example
 
@@ -235,7 +235,7 @@ and we can confirm that a point doesn't lie within one of the triangles like
 @example
 @group
 tsearch (@var{x}, @var{y}, @var{tri}, 2, 2)
-@result{} NaN
+@xresult{} NaN
 @end group
 @end example
 
@@ -253,7 +253,7 @@ An example of the use of @code{dsearchn}, using the above values of @var{x},
 @example
 @group
 dsearchn ([@var{x}, @var{y}], @var{tri}, [-2, -2])
-@result{} 1
+@xresult{} 1
 @end group
 @end example
 
@@ -263,9 +263,9 @@ then @code{dsearchn} can be used as
 @example
 @group
 dsearchn ([@var{x}, @var{y}], @var{tri}, [-2, -2], NaN)
-@result{} NaN
+@xresult{} NaN
 dsearchn ([@var{x}, @var{y}], @var{tri}, [-0.5, -0.5], NaN)
-@result{} 1
+@xresult{} 1
 @end group
 @end example
 

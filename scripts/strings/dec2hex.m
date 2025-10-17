@@ -43,10 +43,10 @@
 ## @example
 ## @group
 ## dec2hex (2748)
-##      @result{} "ABC"
+##      @xresult{} "ABC"
 ##
 ## dec2hex (-2)
-##      @result{} "FE"
+##      @xresult{} "FE"
 ## @end group
 ## @end example
 ##

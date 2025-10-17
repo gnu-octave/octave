@@ -239,13 +239,10 @@ function [options, valid] = decode_linespec (caller, opt, err_on_invalid)
         options.key = opt(2:t);
         n = t+1;
       else
-        if (err_on_invalid)
-          error ("%s: unfinished key label", caller);
-        else
-          valid = false;
-          options = default_options;
-          return;
-        endif
+        ## Note: err_on_invalid is not applied here.  The calling code pattern
+        ## uses this parameter to detect a linespec versus a property name.
+        ## Here, a linespec has been found, but it is badly constructed.
+        error ("%s: key label missing terminating ';'", caller);
       endif
     else
       if (err_on_invalid)
@@ -308,5 +305,5 @@ endfunction
 
 ## Test input validation
 %!error <argument must be a character string or cell array> __pltopt__ ("abc", 1)
-%!error <unfinished key label> __pltopt__ ("abc", "rx;my_title", true)
+%!error <missing terminating ';'> __pltopt__ ("abc", "rx;my_title", true)
 %!error <unrecognized format character: 'u'> __pltopt__ ("abc", "u", true)

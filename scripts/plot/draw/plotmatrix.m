@@ -145,16 +145,13 @@ function [h, ax, p, pax] = __plotmatrix__ (bigax, varargin)
   for i = 1 : narg - 1
     arg = varargin{i};
     if (ischar (arg) || iscellstr (arg))
-      [linespec, valid] = __pltopt__ ("plotmatrix", varargin{i}, false);
-      if (valid)
-        have_line_spec = true;
-        linespec = varargin(i);
-        varargin(i) = [];
-        narg -= 1;
-        break;
-      else
-        print_usage ("plotmatrix");
-      endif
+      ## __pltopt__ will error and stop function if linespec is invalid
+      __pltopt__ ("plotmatrix", varargin{i});
+      have_line_spec = true;
+      linespec = varargin(i);
+      varargin(i) = [];
+      narg -= 1;
+      break;
     endif
   endfor
 

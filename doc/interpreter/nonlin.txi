@@ -205,7 +205,7 @@ parameter(s).  See the example below:
 A = 2; B = 3;
 f = @@(x) sin (A*x + B);
 fminbnd (f, 0, 2)
-   @result{}   0.8562
+   @xresult{}   0.8562
 @end group
 @end example
 
@@ -217,10 +217,10 @@ affect output of the function until it is redefined:
 @group
 B = 4;
 fminbnd (f, 0, 2)
-   @result{}   0.8562
+   @xresult{}   0.8562
 f = @@(x) sin (A*x + B);
 fminbnd (f, 0, 2)
-   @result{}   0.3562
+   @xresult{}   0.3562
 @end group
 @end example
 

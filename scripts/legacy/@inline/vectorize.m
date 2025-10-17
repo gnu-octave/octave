@@ -36,9 +36,9 @@
 ## @example
 ## @group
 ## fobj = vectorize (inline ("x^2 - 1"))
-##    @result{} fobj = f(x) = x.^2 - 1
+##    @xresult{} fobj = f(x) = x.^2 - 1
 ## quadv (fobj, 0, 3)
-##    @result{} 6
+##    @xresult{} 6
 ## @end group
 ## @end example
 ## @seealso{inline, formula, argnames}

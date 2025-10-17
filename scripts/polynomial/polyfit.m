@@ -95,10 +95,10 @@
 ## y = f (x);
 ## ## Fit data to polynomial A*x^3 + B*x^1
 ## p = polyfit (x, y, logical ([1, 0, 1, 0]))
-## @result{} p = [ 0.0680, 0, 4.2444, 0 ]
+## @xresult{} p = [ 0.0680, 0, 4.2444, 0 ]
 ## ## Fit data to polynomial using all terms up to x^3
 ## p = polyfit (x, y, 3)
-## @result{} p = [ -4.9608e-17, 1.0000e+00, -1.6906e-15, 5.0000e+00 ]
+## @xresult{} p = [ -4.9608e-17, 1.0000e+00, -1.6906e-15, 5.0000e+00 ]
 ## @end group
 ## @end example
 ##

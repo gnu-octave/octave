@@ -60,8 +60,8 @@
 ## @group
 ## c = [1, 0, -5];
 ## roots (c)
-## @result{}  2.2361
-## @result{} -2.2361
+## @xresult{}  2.2361
+## @xresult{} -2.2361
 ## @end group
 ## @end example
 ##

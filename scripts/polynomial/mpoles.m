@@ -55,9 +55,9 @@
 ## @group
 ## p = [2 3 1 1 2];
 ## [m, n] = mpoles (p)
-##    @result{} m = [1; 1; 2; 1; 2]
-##    @result{} n = [2; 5; 1; 4; 3]
-##    @result{} p(n) = [3, 2, 2, 1, 1]
+##    @xresult{} m = [1; 1; 2; 1; 2]
+##    @xresult{} n = [2; 5; 1; 4; 3]
+##    @xresult{} p(n) = [3, 2, 2, 1, 1]
 ## @end group
 ## @end example
 ##

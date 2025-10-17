@@ -39,7 +39,7 @@
 ## hf = figure ();
 ## sphere (36)
 ## v = camup ()
-##   @result{} v =
+##   @xresult{} v =
 ##       0   0   1
 ## @end group
 ## @end example
@@ -50,9 +50,9 @@
 ## @group
 ## camup ([1 1 0])
 ## camup ()
-##   @result{}   1   1   0
+##   @xresult{}   1   1   0
 ## camup ("mode")
-##   @result{} manual
+##   @xresult{} manual
 ## @end group
 ## @end example
 ##
@@ -64,7 +64,7 @@
 ## @group
 ## camup ([1 2 3])
 ## dot (camup (), camtarget () - campos ())
-##   @result{} 6...
+##   @xresult{} 6...
 ## @end group
 ## @end example
 ##
@@ -79,7 +79,7 @@
 ## @group
 ## camup ("auto")
 ## camup ()
-##   @result{}   0   0   1
+##   @xresult{}   0   0   1
 ## close (hf)
 ## @end group
 ## @end example

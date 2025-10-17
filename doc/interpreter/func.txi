@@ -461,9 +461,9 @@ When called this function returns values like this
 @example
 @group
 [a, b, c] = one_to_n ()
-     @result{} a =  1
-     @result{} b =  2
-     @result{} c =  3
+     @xresult{} a =  1
+     @xresult{} b =  2
+     @xresult{} c =  3
 @end group
 @end example
 
@@ -596,7 +596,7 @@ placeholder.
 @group
 x = [2, 3, 1];
 [s, i] = sort (x)
-@result{}
+@xresult{}
 s =
 
    1   2   3
@@ -606,7 +606,7 @@ i =
    3   1   2
 
 [~, i] = sort (x)
-@result{}
+@xresult{}
 i =
 
    3   1   2
@@ -1015,7 +1015,7 @@ function y = foo ()
 endfunction
 
 foo ()
- @result{} 20
+ @xresult{} 20
 @end group
 @end example
 
@@ -1048,7 +1048,7 @@ function z = foobar ()
 endfunction
 
 foobar ()
-    @result{} 10
+    @xresult{} 10
 @end group
 @end example
 
@@ -1075,13 +1075,13 @@ function y = foo (to_eval)
 endfunction
 
 foo ("x = 5;")
-    @result{} error: can not add variable "x" to a static workspace
+    @xresult{} error: can not add variable "x" to a static workspace
 
 foo ("y = 10;")
-    @result{} 10
+    @xresult{} 10
 
 foo ("")
-    @result{} 100
+    @xresult{} 100
 @end group
 @end example
 
@@ -1197,10 +1197,10 @@ locked into memory with the @code{mislocked}, and to unlock a function with
 @group
 my_function ();
 mislocked ("my_function")
-@result{} ans = 1
+@xresult{} ans = 1
 munlock ("my_function");
 mislocked ("my_function")
-@result{} ans = 0
+@xresult{} ans = 0
 @end group
 @end example
 
@@ -1792,7 +1792,7 @@ a function as an argument to another function like @code{quad} or
 @group
 f = @@sin;
 quad (f, 0, pi)
-    @result{} 2
+    @xresult{} 2
 @end group
 @end example
 
@@ -1805,9 +1805,9 @@ list.  If there are no arguments, you must use an empty argument list
 @group
 f = @@sin;
 feval (f, pi/4)
-    @result{} 0.70711
+    @xresult{} 0.70711
 f (pi/4)
-    @result{} 0.70711
+    @xresult{} 0.70711
 @end group
 @end example
 
@@ -1841,7 +1841,7 @@ example,
 @group
 f = @@(x) x.^2;
 quad (f, 0, 10)
-    @result{} 333.33
+    @xresult{} 333.33
 @end group
 @end example
 
@@ -1852,7 +1852,7 @@ passes it to @code{quad},
 @example
 @group
 quad (@@(x) sin (x), 0, pi)
-    @result{} 2
+    @xresult{} 2
 @end group
 @end example
 
@@ -1864,7 +1864,7 @@ wraps another function, and
 a = 1;
 b = 2;
 quad (@@(x) betainc (x, a, b), 0, 0.4)
-    @result{} 0.13867
+    @xresult{} 0.13867
 @end group
 @end example
 
@@ -1956,7 +1956,7 @@ For example:
 @example
 @group
 upper lower_case_arg
-   @result{} ans = LOWER_CASE_ARG
+   @xresult{} ans = LOWER_CASE_ARG
 @end group
 @end example
 
@@ -1968,9 +1968,9 @@ case, a command must be called using the function syntax.  For example:
 @group
 strvar = "hello world";
 upper strvar
-   @result{} ans = STRVAR
+   @xresult{} ans = STRVAR
 upper (strvar)
-   @result{} ans = HELLO WORLD
+   @xresult{} ans = HELLO WORLD
 @end group
 @end example
 

@@ -40,8 +40,8 @@
 ##
 ## @example
 ## @group
-## isdefinite (@var{A}) @result{} 0
-## isdefinite (@var{A} + 5*@var{tol}, @var{tol}) @result{} 1
+## isdefinite (@var{A}) @xresult{} 0
+## isdefinite (@var{A} + 5*@var{tol}, @var{tol}) @xresult{} 1
 ## @end group
 ## @end example
 ## @seealso{issymmetric, ishermitian}

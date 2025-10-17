@@ -42,34 +42,34 @@
 ## @group
 ## ## one string and one pattern while considering case
 ## startsWith ("hello", "he")
-##       @result{}  1
+##       @xresult{}  1
 ## @end group
 ##
 ## @group
 ## ## one string and one pattern while ignoring case
 ## startsWith ("hello", "HE", "IgnoreCase", true)
-##       @result{}  1
+##       @xresult{}  1
 ## @end group
 ##
 ## @group
 ## ## multiple strings and multiple patterns while considering case
 ## startsWith (@{"lab work.pptx", "data.txt", "foundations.ppt"@},
 ##             @{"lab", "data"@})
-##       @result{}  1  1  0
+##       @xresult{}  1  1  0
 ## @end group
 ##
 ## @group
 ## ## multiple strings and one pattern while considering case
 ## startsWith (@{"DATASHEET.ods", "data.txt", "foundations.ppt"@},
 ##             "data", "IgnoreCase", false)
-##       @result{}  0  1  0
+##       @xresult{}  0  1  0
 ## @end group
 ##
 ## @group
 ## ## multiple strings and one pattern while ignoring case
 ## startsWith (@{"DATASHEET.ods", "data.txt", "foundations.ppt"@},
 ##             "data", "IgnoreCase", true)
-##       @result{}  1  1  0
+##       @xresult{}  1  1  0
 ## @end group
 ## @end example
 ##

@@ -76,9 +76,9 @@
 ## @example
 ## @group
 ## gradient (@@cos, pi/2, .1)
-## @result{} -0.9983
+## @xresult{} -0.9983
 ## -sin (pi/2)
-## @result{} -1
+## @xresult{} -1
 ## @end group
 ## @end example
 ##

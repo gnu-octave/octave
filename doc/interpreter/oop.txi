@@ -128,9 +128,9 @@ To check whether a variable belongs to a user class, the @code{isobject} and
 @group
 p = polynomial ([1, 0, 1]);
 isobject (p)
-  @result{} 1
+  @xresult{} 1
 isa (p, "polynomial")
-  @result{} 1
+  @xresult{} 1
 @end group
 @end example
 
@@ -163,7 +163,7 @@ We can check for the existence of the @code{roots}-method by calling:
 @group
 p = polynomial ([1, 0, 1]);
 ismethod (p, "roots")
-  @result{} 1
+  @xresult{} 1
 @end group
 @end example
 
@@ -328,7 +328,7 @@ class is then
 @group
 p = polynomial ([1,2,3,4]);
 p@{end-1@}
-  @result{} 3
+  @xresult{} 3
 @end group
 @end example
 
@@ -853,7 +853,7 @@ constructor:
 @example
 @group
 >> p = polynomial2 ([1, 0, 1])
-@result{} p =
+@xresult{} p =
 
  1 + X ^ 2
 @end group
@@ -1004,11 +1004,11 @@ first argument even if called using an object of @code{some_class}.
 @example
 @group
 >> some_class.circumference (3)
-@result{} ans =  18.850
+@xresult{} ans =  18.850
 >> obj = some_class ();
 New instance created.
 >> obj.circumference (3)
-@result{} ans =  18.850
+@xresult{} ans =  18.850
 @end group
 @end example
 
@@ -1066,9 +1066,9 @@ object:
 >> b = a;
 >> b.prop1 = 2;
 >> b.prop1
-@result{} ans =  2
+@xresult{} ans =  2
 >> a.prop1
-@result{} ans =  1
+@xresult{} ans =  1
 @end group
 @end example
 
@@ -1080,14 +1080,14 @@ changes properties back to the object manually:
 >> a = value_class ();
 >> a.prop1 = 1;
 >> a.set_prop1 (3);
-@result{} ans =
+@xresult{} ans =
 
 <object value_class>
 
 >> ans.prop1
-@result{} ans =  3
+@xresult{} ans =  3
 >> a.prop1
-@result{} ans =  1
+@xresult{} ans =  1
 @end group
 @end example
 
@@ -1120,9 +1120,9 @@ very same object of class @code{handle_class}:
 >> b = a;
 >> b.prop1 = 2;
 >> b.prop1
-@result{} ans =  2
+@xresult{} ans =  2
 >> a.prop1
-@result{} ans =  2
+@xresult{} ans =  2
 @end group
 @end example
 
@@ -1133,6 +1133,6 @@ persistently:
 @group
 >> a.set_prop1 (3);
 >> a.prop1
-@result{} ans =  3
+@xresult{} ans =  3
 @end group
 @end example

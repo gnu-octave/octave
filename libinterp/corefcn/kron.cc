@@ -260,7 +260,7 @@ For example:
 @example
 @group
 kron (1:4, ones (3, 1))
-     @result{}  1  2  3  4
+     @xresult{}  1  2  3  4
          1  2  3  4
          1  2  3  4
 @end group

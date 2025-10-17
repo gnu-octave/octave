@@ -41,7 +41,7 @@
 ## @example
 ## @group
 ## ostrsplit ("a,b,c", ",")
-##       @result{}
+##       @xresult{}
 ##           @{
 ##             [1,1] = a
 ##             [1,2] = b
@@ -49,7 +49,7 @@
 ##           @}
 ##
 ## ostrsplit (["a,b" ; "cde"], ",")
-##       @result{}
+##       @xresult{}
 ##           @{
 ##             [1,1] = a
 ##             [1,2] = b

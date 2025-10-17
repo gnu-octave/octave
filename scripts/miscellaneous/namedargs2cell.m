@@ -37,7 +37,7 @@
 ## s.Age = 42;
 ##
 ## c = namedargs2cell (s)
-##   @result{} @{ "Name", "Peter", "Height", 185, "Age", 42 @}
+##   @xresult{} @{ "Name", "Peter", "Height", 185, "Age", 42 @}
 ## @end group
 ## @end example
 ##

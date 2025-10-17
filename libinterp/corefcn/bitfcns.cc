@@ -548,7 +548,7 @@ If @var{n} is omitted it defaults to 64.  @var{n} must be in the range [1,64].
 @example
 @group
 bitshift (eye (3), 1)
-@result{}
+@xresult{}
 @group
 2 0 0
 0 2 0
@@ -556,12 +556,12 @@ bitshift (eye (3), 1)
 @end group
 
 bitshift (10, [-2, -1, 0, 1, 2])
-@result{} 2   5  10  20  40
+@xresult{} 2   5  10  20  40
 @c FIXME: restore this example when third arg is allowed to be an array.
 @c
 @c
 @c bitshift ([1, 10], 2, [3,4])
-@c @result{} 4  8
+@c @xresult{} 4  8
 @end group
 @end example
 @seealso{bitand, bitor, bitxor, bitset, bitget, bitcmp, intmax, flintmax}
@@ -678,7 +678,7 @@ Example Code - query an existing variable
 @group
 x = single (1);
 flintmax (x)
-  @result{} 16777216
+  @xresult{} 16777216
 @end group
 @end example
 
@@ -770,7 +770,7 @@ Example Code - query an existing variable
 @group
 x = int8 (1);
 intmax (x)
-  @result{} 127
+  @xresult{} 127
 @end group
 @end example
 
@@ -884,7 +884,7 @@ Example Code - query an existing variable
 @group
 x = int8 (1);
 intmin (x)
-  @result{} -128
+  @xresult{} -128
 @end group
 @end example
 

@@ -36,21 +36,21 @@
 ## @group
 ## ## string, single pattern
 ## erase ("Hello World!", " World")
-##     @result{} "Hello!"
+##     @xresult{} "Hello!"
 ##
 ## ## cellstr, single pattern
 ## erase (@{"Hello", "World!"@}, "World")
-##     @result{} @{"Hello", "!"@}
+##     @xresult{} @{"Hello", "!"@}
 ##
 ## ## string, multiple patterns
 ## erase ("The Octave interpreter is fabulous", ...
 ##        @{"interpreter ", "The "@})
-##     @result{} "Octave is fabulous"
+##     @xresult{} "Octave is fabulous"
 ##
 ## ## cellstr, multiple patterns
 ## erase (@{"The ", "Octave interpreter ", "is fabulous"@}, ...
 ##        @{"interpreter ", "The "@})
-##     @result{} @{"", "Octave ", "is fabulous"@}
+##     @xresult{} @{"", "Octave ", "is fabulous"@}
 ## @end group
 ## @end example
 ##
@@ -60,7 +60,7 @@
 ## @example
 ## @group
 ## erase ("abababa", "aba")
-##     @result{} "b"
+##     @xresult{} "b"
 ## @end group
 ## @end example
 ##

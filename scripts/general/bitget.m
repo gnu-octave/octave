@@ -33,7 +33,7 @@
 ## @example
 ## @group
 ## bitget (100, 8:-1:1)
-## @result{} 0  1  1  0  0  1  0  0
+## @xresult{} 0  1  1  0  0  1  0  0
 ## @end group
 ## @end example
 ## @seealso{bitand, bitor, bitxor, bitset, bitcmp, bitshift, intmax, flintmax}

@@ -42,34 +42,34 @@
 ## @group
 ## ## one string and one pattern while considering case
 ## endsWith ("hello", "lo")
-##       @result{}  1
+##       @xresult{}  1
 ## @end group
 ##
 ## @group
 ## ## one string and one pattern while ignoring case
 ## endsWith ("hello", "LO", "IgnoreCase", true)
-##       @result{}  1
+##       @xresult{}  1
 ## @end group
 ##
 ## @group
 ## ## multiple strings and multiple patterns while considering case
 ## endsWith (@{"tests.txt", "mydoc.odt", "myFunc.m", "results.pptx"@},
 ##           @{".docx", ".odt", ".txt"@})
-##       @result{}  1  1  0  0
+##       @xresult{}  1  1  0  0
 ## @end group
 ##
 ## @group
 ## ## multiple strings and one pattern while considering case
 ## endsWith (@{"TESTS.TXT", "mydoc.odt", "result.txt", "myFunc.m"@},
 ##           ".txt", "IgnoreCase", false)
-##       @result{}  0  0  1  0
+##       @xresult{}  0  0  1  0
 ## @end group
 ##
 ## @group
 ## ## multiple strings and one pattern while ignoring case
 ## endsWith (@{"TESTS.TXT", "mydoc.odt", "result.txt", "myFunc.m"@},
 ##           ".txt", "IgnoreCase", true)
-##       @result{}  1  0  1  0
+##       @xresult{}  1  0  1  0
 ## @end group
 ## @end example
 ##

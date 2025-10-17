@@ -129,10 +129,10 @@ The second step is to call quad with the limits of integration:
 @example
 @group
 [q, ier, nfun, err] = quad ("f", 0, 3)
-     @result{} 1.9819
-     @result{} 1
-     @result{} 5061
-     @result{} 1.1522e-07
+     @xresult{} 1.9819
+     @xresult{} 1
+     @xresult{} 5061
+     @xresult{} 1.1522e-07
 @end group
 @end example
 
@@ -149,7 +149,7 @@ without having to fully define a function in an m-file.  For example:
 # Verify gamma function = (n-1)! for n = 4
 f = @@(x) x.^3 .* exp (-x);
 quadcc (f, 0, Inf)
-     @result{} 6.0000
+     @xresult{} 6.0000
 @end group
 @end example
 
@@ -178,7 +178,7 @@ over the range [0, pi/2).
 x = 0:0.1:pi/2;  # Uniformly spaced points
 y = cos (x);
 trapz (x, y)
-     @result{} 0.99666
+     @xresult{} 0.99666
 @end group
 @end example
 
@@ -193,7 +193,7 @@ over the range [0, pi/2) produces far inferior results.
 x = 0:0.1:pi/2;  # Uniformly spaced points
 y = sin (x);
 trapz (x, y)
-     @result{} 0.92849
+     @xresult{} 0.92849
 @end group
 @end example
 
@@ -206,7 +206,7 @@ spaced differently produces a more accurate answer.
 x = linspace (0, pi/2, 16);  # Uniformly spaced, but including endpoint
 y = sin (x);
 trapz (x, y)
-     @result{} 0.99909
+     @xresult{} 0.99909
 @end group
 @end example
 
@@ -261,7 +261,7 @@ Then the solution at the roots @var{r} is
 @example
 @group
 u = [ 0; (at - alpha * bt) \ rhs; 1]
-     @result{} [ 0.00; 0.004; 0.01 0.00; 0.12; 0.62; 1.00 ]
+     @xresult{} [ 0.00; 0.004; 0.01 0.00; 0.12; 0.62; 1.00 ]
 @end group
 @end example
 
@@ -304,7 +304,7 @@ function q = g(y)
 endfunction
 
 I = quadgk ("g", 0, 1)
-      @result{} 0.30022
+      @xresult{} 0.30022
 @end group
 @end example
 
@@ -316,7 +316,7 @@ result above can be replicated with a call to @code{dblquad} as shown below.
 @example
 @group
 I = dblquad (@@(x, y) sin (pi*x.*y) .* sqrt (x.*y), 0, 1, 0, 1)
-      @result{} 0.30022
+      @xresult{} 0.30022
 @end group
 @end example
 
@@ -368,7 +368,7 @@ f = @@(x,y) sin (pi*x*y') .* sqrt (x*y');
 n = 8;
 [t, ~, ~, q] = colloc (n);
 I = q'*f(t,t)*q;
-      @result{} 0.30022
+      @xresult{} 0.30022
 @end group
 @end example
 

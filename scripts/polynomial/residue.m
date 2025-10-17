@@ -61,10 +61,10 @@
 ## b = [1, 1, 1];
 ## a = [1, -5, 8, -4];
 ## [r, p, k, e] = residue (b, a)
-##    @result{} r = [-2; 7; 3]
-##    @result{} p = [2; 2; 1]
-##    @result{} k = [](0x0)
-##    @result{} e = [1; 2; 1]
+##    @xresult{} r = [-2; 7; 3]
+##    @xresult{} p = [2; 2; 1]
+##    @xresult{} k = [](0x0)
+##    @xresult{} e = [1; 2; 1]
 ## @end group
 ## @end example
 ##
@@ -104,8 +104,8 @@
 ## p = [2; 2; 1];
 ## k = [1, 0];
 ## [b, a] = residue (r, p, k)
-##    @result{} b = [1, -5, 9, -3, 1]
-##    @result{} a = [1, -5, 8, -4]
+##    @xresult{} b = [1, -5, 9, -3, 1]
+##    @xresult{} a = [1, -5, 8, -4]
 ##
 ## where mpoles is used to determine e = [1; 2; 1]
 ## @end group
@@ -120,8 +120,8 @@
 ## k = [1, 0];
 ## e = [2; 1; 1];
 ## [b, a] = residue (r, p, k, e)
-##    @result{} b = [1, -5, 9, -3, 1]
-##    @result{} a = [1, -5, 8, -4]
+##    @xresult{} b = [1, -5, 9, -3, 1]
+##    @xresult{} a = [1, -5, 8, -4]
 ## @end group
 ## @end example
 ##

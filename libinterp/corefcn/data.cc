@@ -82,7 +82,7 @@ the matrix are nonzero.  For example:
 @example
 @group
 all ([2, 3; 1, 0])
-    @result{} [ 1, 0 ]
+    @xresult{} [ 1, 0 ]
 @end group
 @end example
 
@@ -139,7 +139,7 @@ the matrix are nonzero.  For example:
 @example
 @group
 any (eye (2, 4))
- @result{} [ 1, 1, 0, 0 ]
+ @xresult{} [ 1, 1, 0, 0 ]
 @end group
 @end example
 
@@ -149,7 +149,7 @@ For example:
 @example
 @group
 any (eye (2, 4), 2)
- @result{} [ 1; 1 ]
+ @xresult{} [ 1; 1 ]
 @end group
 @end example
 @seealso{all}
@@ -1050,7 +1050,7 @@ For example:
 @example
 @group
 cumprod ([1, 2; 3, 4; 5, 6])
-   @result{}  1   2
+   @xresult{}  1   2
        3   8
       15  48
 @end group
@@ -1098,7 +1098,7 @@ For example:
 @example
 @group
 cumsum ([1, 2; 3, 4; 5, 6])
-   @result{}  1   2
+   @xresult{}  1   2
        4   6
        9  12
 @end group
@@ -1254,7 +1254,7 @@ is placed on the main diagonal.  For example:
 @example
 @group
 diag ([1, 2, 3], 1)
-   @result{}  0  1  0  0
+   @xresult{}  0  1  0  0
        0  0  2  0
        0  0  0  3
        0  0  0  0
@@ -1408,9 +1408,9 @@ For example:
 @example
 @group
 prod ([true, true])
-   @result{} 1
+   @xresult{} 1
 prod ([true, true], "native")
-   @result{} true
+   @xresult{} true
 @end group
 @end example
 
@@ -2352,7 +2352,7 @@ Return the concatenation of N-D array objects, @var{array1}, @var{array2},
 A = ones (2, 2);
 B = zeros (2, 2);
 cat (2, A, B)
-  @result{} 1 1 0 0
+  @xresult{} 1 1 0 0
      1 1 0 0
 @end group
 @end example
@@ -2372,7 +2372,7 @@ result will thus have @var{dim} dimensions as the following example shows:
 @example
 @group
 cat (4, ones (2, 2), zeros (2, 2))
-  @result{} ans(:,:,1,1) =
+  @xresult{} ans(:,:,1,1) =
 
        1 1
        1 1
@@ -2589,17 +2589,17 @@ once).  The @var{N}th dimension of @var{A} gets remapped to dimension
 @group
 @var{x} = zeros ([2, 3, 5, 7]);
 size (@var{x})
-   @result{}  2   3   5   7
+   @xresult{}  2   3   5   7
 
 size (permute (@var{x}, [2, 1, 3, 4]))
-   @result{}  3   2   5   7
+   @xresult{}  3   2   5   7
 
 size (permute (@var{x}, [1, 3, 4, 2]))
-   @result{}  2   5   7   3
+   @xresult{}  2   5   7   3
 
 ## The identity permutation
 size (permute (@var{x}, [1, 2, 3, 4]))
-   @result{}  2   3   5   7
+   @xresult{}  2   3   5   7
 @end group
 @end example
 @seealso{ipermute}
@@ -2657,7 +2657,7 @@ greater than 2 for which @code{size (@var{A}, @var{d}) = 1}.
 @example
 @group
 ndims (ones (4, 1, 2, 1))
-    @result{} 3
+    @xresult{} 3
 @end group
 @end example
 @seealso{size}
@@ -2775,7 +2775,7 @@ Example 1: single row vector output
 @example
 @group
 size ([1, 2; 3, 4; 5, 6])
-   @result{} [ 3, 2 ]
+   @xresult{} [ 3, 2 ]
 @end group
 @end example
 
@@ -2784,7 +2784,7 @@ Example 2: number of elements in 2nd dimension (columns)
 @example
 @group
 size ([1, 2; 3, 4; 5, 6], 2)
-    @result{} 2
+    @xresult{} 2
 @end group
 @end example
 
@@ -2793,8 +2793,8 @@ Example 3: number of output arguments == number of dimensions
 @example
 @group
 [nr, nc] = size ([1, 2; 3, 4; 5, 6])
-    @result{} nr = 3
-    @result{} nc = 2
+    @xresult{} nr = 3
+    @xresult{} nc = 2
 @end group
 @end example
 
@@ -2803,8 +2803,8 @@ Example 4: number of output arguments < number of dimensions
 @example
 @group
 [nr, remainder] = size (ones (2, 3, 4, 5))
-    @result{} nr = 2
-    @result{} remainder = 60
+    @xresult{} nr = 2
+    @xresult{} remainder = 60
 @end group
 @end example
 
@@ -2813,7 +2813,7 @@ Example 5: number of elements in dimension > number of actual dimensions
 @example
 @group
 sz4 = size (ones (2, 3), 4)
-    @result{} sz4 = 1
+    @xresult{} sz4 = 1
 @end group
 @end example
 
@@ -3145,9 +3145,9 @@ For example:
 @example
 @group
 sum ([true, true])
-   @result{} 2
+   @xresult{} 2
 sum ([true, true], "native")
-   @result{} true
+   @xresult{} true
 @end group
 @end example
 
@@ -3550,7 +3550,7 @@ For example:
 @example
 @group
 complex ([1, 2], [3, 4])
-  @result{} [ 1 + 3i   2 + 4i ]
+  @xresult{} [ 1 + 3i   2 + 4i ]
 @end group
 @end example
 @seealso{real, imag, iscomplex, abs, arg}
@@ -4854,7 +4854,7 @@ produce infinity are division by zero and overflow.
 @example
 @group
 [ 1/0 e^800 ]
-@result{} Inf   Inf
+@xresult{} Inf   Inf
 @end group
 @end example
 
@@ -5623,7 +5623,7 @@ Example 1 : 1-input, square identity matrix
 @example
 @group
 eye (3)
- @result{}  1  0  0
+ @xresult{}  1  0  0
      0  1  0
      0  0  1
 @end group
@@ -5634,7 +5634,7 @@ Example 2 : following expressions all produce 2x2 identity matrix
 @example
 @group
 eye (2) @equiv{} eye (2, 2) @equiv{} eye (size ([1, 2; 3, 4]))
- @result{}  1  0
+ @xresult{}  1  0
      0  1
 @end group
 @end example
@@ -6055,7 +6055,7 @@ matrix.
 @example
 @group
 reshape ([1, 2, 3, 4], 2, 2)
-      @result{}  1  3
+      @xresult{}  1  3
           2  4
 @end group
 @end example
@@ -6987,11 +6987,11 @@ Example 2 : mixed timer id and internal timer
 tic;
 pause (1);
 toc
-@result{} Elapsed time is 1.0089 seconds.
+@xresult{} Elapsed time is 1.0089 seconds.
 id = tic;
 pause (2);
 toc (id)
-@result{} Elapsed time is 2.01142 seconds.
+@xresult{} Elapsed time is 2.01142 seconds.
 toc
 Elapsed time is 3.02308 seconds.
 @end group
@@ -7136,7 +7136,7 @@ For example:
 @example
 @group
 sort ([1, 2; 2, 3; 3, 1])
-   @result{}  1  1
+   @xresult{}  1  1
        2  2
        3  3
 @end group
@@ -7154,10 +7154,10 @@ matrix.  For example:
 @example
 @group
 [s, i] = sort ([1, 2; 2, 3; 3, 1])
-  @result{} s = 1  1
+  @xresult{} s = 1  1
          2  2
          3  3
-  @result{} i = 1  3
+  @xresult{} i = 1  3
          2  1
          3  2
 @end group
@@ -7173,7 +7173,7 @@ Sorting of complex entries is done first by magnitude
 @example
 @group
 sort ([1+i; 1; 1-i])
-    @result{} 1 + 0i
+    @xresult{} 1 + 0i
        1 - 1i
        1 + 1i
 @end group

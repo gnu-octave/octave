@@ -77,11 +77,11 @@
 ## t = 0.1;
 ## n = 4;
 ## [num, den] = padecoef (t, n)
-## @result{} num =
+## @xresult{} num =
 ##
 ##       1.0000e-04  -2.0000e-02   1.8000e+00  -8.4000e+01   1.6800e+03
 ##
-## @result{} den =
+## @xresult{} den =
 ##
 ##       1.0000e-04   2.0000e-02   1.8000e+00   8.4000e+01   1.6800e+03
 ## @end group

@@ -80,7 +80,7 @@ For example:
 @example
 @group
 givens (1, 1)
-   @result{}   0.70711   0.70711
+   @xresult{}   0.70711   0.70711
        -0.70711   0.70711
 @end group
 @end example

@@ -32,7 +32,7 @@
 ## @example
 ## @group
 ## idx = substruct ("()", @{3, ":"@})
-##   @result{} idx =
+##   @xresult{} idx =
 ##        scalar structure containing the fields:
 ##          type = ()
 ##          subs =
@@ -44,7 +44,7 @@
 ##      4, 5, 6;
 ##      7, 8, 9];
 ## subsref (x, idx)
-##   @result{}   7   8   9
+##   @xresult{}   7   8   9
 ## @end group
 ## @end example
 ##

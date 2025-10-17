@@ -143,7 +143,7 @@ Example 1
 @example
 @group
 perms ([1, 2, 3])
-@result{}
+@xresult{}
 3   2   1
 3   1   2
 2   3   1
@@ -158,7 +158,7 @@ Example 2
 @example
 @group
 perms ([1, 1, 2, 2], "unique")
-@result{}
+@xresult{}
 2   2   1   1
 2   1   2   1
 2   1   1   2

@@ -531,7 +531,7 @@ Examples:
 @example
 @group
 jsondecode ('[1, 2, null, 3]')
-    @result{} ans =
+    @xresult{} ans =
 
       1
       2
@@ -541,7 +541,7 @@ jsondecode ('[1, 2, null, 3]')
 
 @group
 jsondecode ('["foo", "bar", ["foo", "bar"]]')
-    @result{} ans =
+    @xresult{} ans =
        @{
          [1,1] = foo
          [2,1] = bar
@@ -557,7 +557,7 @@ jsondecode ('["foo", "bar", ["foo", "bar"]]')
 @group
 jsondecode ('@{"nu#m#ber": 7, "s#tr#ing": "hi"@}', ...
             'ReplacementStyle', 'delete')
-    @result{} scalar structure containing the fields:
+    @xresult{} scalar structure containing the fields:
 
          number = 7
          string = hi
@@ -566,7 +566,7 @@ jsondecode ('@{"nu#m#ber": 7, "s#tr#ing": "hi"@}', ...
 @group
 jsondecode ('@{"nu#m#ber": 7, "s#tr#ing": "hi"@}', ...
             'makeValidName', false)
-    @result{} scalar structure containing the fields:
+    @xresult{} scalar structure containing the fields:
 
          nu#m#ber = 7
          s#tr#ing = hi
@@ -574,7 +574,7 @@ jsondecode ('@{"nu#m#ber": 7, "s#tr#ing": "hi"@}', ...
 
 @group
 jsondecode ('@{"1": "one", "2": "two"@}', 'Prefix', 'm_')
-    @result{} scalar structure containing the fields:
+    @xresult{} scalar structure containing the fields:
 
          m_1 = one
          m_2 = two

@@ -305,7 +305,7 @@ to the result.
 @group
 a = 1/0
      @print{} warning: division by zero
-     @result{} a = Inf
+     @xresult{} a = Inf
 @end group
 @end example
 

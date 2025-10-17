@@ -39,7 +39,7 @@
 ## @example
 ## @group
 ## rot90 ([1, 2; 3, 4], -1)
-##     @result{}  3  1
+##     @xresult{}  3  1
 ##         4  2
 ## @end group
 ## @end example

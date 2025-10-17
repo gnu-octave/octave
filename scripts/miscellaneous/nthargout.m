@@ -44,7 +44,7 @@
 ## @var{m} = magic (5);
 ## cell2mat (nthargout ([1, 2], @@ind2sub, size (@var{m}),
 ##                      nthargout (2, @@max, @var{m}(:))))
-## @result{} 5   3
+## @xresult{} 5   3
 ## @end group
 ## @end example
 ##
@@ -57,7 +57,7 @@
 ## [~, idx] = max (@var{M}(:));
 ## [i, j] = ind2sub (size (@var{m}), idx);
 ## [i, j]
-## @result{} 5   3
+## @xresult{} 5   3
 ## @end group
 ## @end example
 ##

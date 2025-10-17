@@ -57,7 +57,7 @@ For example:
 @example
 @group
 abs (3 + 4i)
-     @result{} 5
+     @xresult{} 5
 @end group
 @end example
 @seealso{arg}
@@ -256,7 +256,7 @@ For example:
 @example
 @group
 arg (3 + 4i)
-     @result{} 0.92730
+     @xresult{} 0.92730
 @end group
 @end example
 @seealso{abs}
@@ -520,7 +520,7 @@ If @var{x} is complex, return
 @example
 @group
 ceil ([-2.7, 2.7])
-    @result{} -2    3
+    @xresult{} -2    3
 @end group
 @end example
 @seealso{floor, round, fix}
@@ -1035,7 +1035,7 @@ For example:
 @example
 @group
 isfinite ([13, Inf, NA, NaN])
-     @result{} [ 1, 0, 0, 0 ]
+     @xresult{} [ 1, 0, 0, 0 ]
 @end group
 @end example
 @seealso{isinf, isnan, isna}
@@ -1072,7 +1072,7 @@ This is equivalent to rounding towards zero.  If @var{x} is complex, return
 @example
 @group
 fix ([-2.7, 2.7])
-   @result{} -2    2
+   @xresult{} -2    2
 @end group
 @end example
 @seealso{ceil, floor, round}
@@ -1106,7 +1106,7 @@ complex, return @code{floor (real (@var{x})) + floor (imag (@var{x})) * I}.
 @example
 @group
 floor ([-2.7, 2.7])
-     @result{} -3    2
+     @xresult{} -3    2
 @end group
 @end example
 @seealso{ceil, round, fix}
@@ -1372,7 +1372,7 @@ For example:
 @example
 @group
 isinf ([13, Inf, NA, NaN])
-      @result{} [ 0, 1, 0, 0 ]
+      @xresult{} [ 0, 1, 0, 0 ]
 @end group
 @end example
 @seealso{isfinite, isnan, isna}
@@ -1468,7 +1468,7 @@ For example:
 @example
 @group
 isna ([13, Inf, NA, NaN])
-     @result{} [ 0, 0, 1, 0 ]
+     @xresult{} [ 0, 0, 1, 0 ]
 @end group
 @end example
 @seealso{isnan, isinf, isfinite}
@@ -1521,7 +1521,7 @@ NA values are also considered NaN values.  For example:
 @example
 @group
 isnan ([13, Inf, NA, NaN])
-      @result{} [ 0, 0, 1, 1 ]
+      @xresult{} [ 0, 0, 1, 1 ]
 @end group
 @end example
 @seealso{isna, isinf, isfinite}
@@ -1867,7 +1867,7 @@ are two nearest integers, return the one further away from zero.
 @example
 @group
 round ([-2.7, 2.7])
-     @result{} -3    3
+     @xresult{} -3    3
 @end group
 @end example
 @seealso{ceil, floor, fix, roundb}
@@ -2200,7 +2200,7 @@ For example:
 @example
 @group
 lower ("MiXeD cAsE 123")
-    @result{} "mixed case 123"
+    @xresult{} "mixed case 123"
 @end group
 @end example
 
@@ -2272,7 +2272,7 @@ For example:
 @example
 @group
 upper ("MiXeD cAsE 123")
-    @result{} "MIXED CASE 123"
+    @xresult{} "MIXED CASE 123"
 @end group
 @end example
 

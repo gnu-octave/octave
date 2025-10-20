@@ -72,31 +72,31 @@
 
 function X = dither (RGB, map, Qm = 5, Qe = 8)
   if (nargin < 1 || nargin > 4 || nargin == 3)
-        print_usage;
+    print_usage;
   endif
   if (ndims (RGB) == 2)
     RGB = cat (3, RGB, RGB, RGB);  # Duplicate grayscale to RGB
     if nargin < 2,
-      map = [0 0 0; 1 1 1]; # binary (black and white) colormap
+      map = [0 0 0; 1 1 1];  # binary (black and white) colormap
       Qm = 1;
     endif
   endif
   if (ndims (RGB) != 3 || size (RGB, 3) != 3)
-    error ('dither: RGB must be an m x n x 3 array.');
-  end
+    error ('dither: RGB must be an m x n x 3 array');
+  endif
   if (! ismatrix (map) || size (map, 2) != 3 || min (map(:)) < 0 || max (map(:)) > 1)
-    error ('dither: Colormap must be a c x 3 matrix.');
+    error ('dither: Colormap must be a c x 3 matrix');
   endif
   if (nargin > 2)
     if (Qm < 1 || Qe < 1 || fix (Qm) != Qm || fix (Qe) != Qe)
-      error ('Qm and Qe must be a positive integers.');
+      error ('Qm and Qe must be a positive integers');
     elseif Qe < Qm
-      warning ('dither: Qe < Qm, returning undithered image.');
+      warning ('dither: Qe < Qm, returning undithered image');
       X = zeros (size (RGB, 1), size (RGB, 2), 'uint16');
       for i = 1:size (RGB, 1)
-      for j = 1:size (RGB, 2)
-        X(i, j) = rgb2indLUT (RGB(i, j, :), map, Qm);
-      endfor
+        for j = 1:size (RGB, 2)
+          X(i, j) = rgb2indLUT (RGB(i, j, :), map, Qm);
+        endfor
       endfor
       if (size (map, 1) <= 256)
         X = uint8 (X);
@@ -104,26 +104,26 @@ function X = dither (RGB, map, Qm = 5, Qe = 8)
       return;
     endif
   endif
-  Qe = min (Qe, 16); # Cap Qe to avoid excessive precision
+  Qe = min (Qe, 16);  # Cap Qe to avoid excessive precision
 
   ## Scale RGB and map to [0, 1]
   if (isa (RGB, 'uint8'))
     RGB = double (RGB) / 255;
   elseif (max (RGB(:)) > 1)
     RGB = double (RGB) / 255;
-  end
+  endif
   RGB = max (0, min (1, RGB));
   if (max (map(:)) > 1)
     map = double (map) / 255;
-  end
+  endif
   map = max (0, min (1, map));
 
   ## Initialize output
   [h, w, _] = size (RGB);
-  X = zeros (h, w, 'uint16'); # Indices (1-based)
+  X = zeros (h, w, 'uint16');  # Indices (1-based)
 
   ## Floyd-Steinberg weights (raster scan, no renormalization)
-  FSweights = [0 0 7; 3 5 1] / 16; # Sum = 1
+  FSweights = [0 0 7; 3 5 1] / 16;  # Sum = 1
 
   ## neighbor offsets and weights
   offsets = [0 1; 1 -1; 1 0; 1 1];
@@ -138,7 +138,7 @@ function X = dither (RGB, map, Qm = 5, Qe = 8)
     for j = 1:w
       ## Get current pixel (with accumulated errors)
       pixel = RGB(i, j, :);
-      pixel = reshape (max (0, min (1, pixel)), 1, 3); # Clamp to [0, 1]
+      pixel = reshape (max (0, min (1, pixel)), 1, 3);  # Clamp to [0, 1]
 
       ## Quantize to nearest colormap color
       id = rgb2indLUT (pixel, map, Qm);
@@ -146,8 +146,8 @@ function X = dither (RGB, map, Qm = 5, Qe = 8)
 
       ## Compute quantization error
       chosen_color = map(id+1, :);
-      error = pixel - chosen_color; # 1x3
-      error = round (error * error_scale) / error_scale; # Quantize to Qe bits
+      error = pixel - chosen_color;  # 1x3
+      error = round (error * error_scale) / error_scale;  # Quantize to Qe bits
 
       ## Diffuse error to neighboring pixels (no renormalization)
       for k = 1:length (weights)
@@ -193,26 +193,26 @@ function id = rgb2indLUT (pixel, map, Qm = 5)
 
   ## Validate inputs
   if (nargin < 2)
-    error ('rgb2indLUT: Not enough input arguments.  Pixel and colormap required.');
+    error ('rgb2indLUT: Not enough input arguments.  Pixel and colormap required');
   endif
   if (length (pixel) != 3)
-    error ('rgb2indLUT: Pixel must be a 1x3 RGB vector.');
+    error ('rgb2indLUT: Pixel must be a 1x3 RGB vector');
     if (! isvector (pixel))
       [s, i] = sort (size (pixel),'descend');
       pixel = permute (pixel, i);
     endif
   endif
   if (! ismatrix (map) || size (map, 2) != 3)
-    error ('rgb2indLUT: Colormap must be a c-by-3 matrix.');
+    error ('rgb2indLUT: Colormap must be a c-by-3 matrix');
   endif
   if (nargin < 3)
     Qm = 5; % Default quantization bits
-  end
+  endif
   if (! isscalar (Qm) || Qm < 1 || floor (Qm) != Qm)
-    error ('rgb2indLUT: Qm must be a positive integer.');
-  end
+    error ('rgb2indLUT: Qm must be a positive integer');
+  endif
   if (Qm > 8)
-    warning ('rgb2indLUT: Qm > 8 may use excessive memory (%d^3 bins).', 2^Qm);
+    warning ('rgb2indLUT: Qm > 8 may use excessive memory (%d^3 bins)', 2^Qm);
   endif
 
   ## Scale pixel to [0, 1]
@@ -246,21 +246,21 @@ function id = rgb2indLUT (pixel, map, Qm = 5)
     lut = zeros (n_bins, n_bins, n_bins, 'uint16');
 
     ## Compute bin centers for distance calculations
-    bin_centers = (0:(n_bins-1))' / (n_bins-1); # [0, 1] range, column vector
-    [R, G, B] = ndims_grid (n_bins, n_bins, n_bins); # Meshgrid for bin indices
-    bin_rgb = [bin_centers(R(:)), bin_centers(G(:)), bin_centers(B(:))]; # n_bins^3 x 3
+    bin_centers = (0:(n_bins-1))' / (n_bins-1);  # [0, 1] range, column vector
+    [R, G, B] = ndims_grid (n_bins, n_bins, n_bins);  # Meshgrid for bin indices
+    bin_rgb = [bin_centers(R(:)), bin_centers(G(:)), bin_centers(B(:))];  # n_bins^3 x 3
 
     ## Compute Euclidean distances from each bin to each colormap color
-    c = size (map, 1); # Number of colors
+    c = size (map, 1);  # Number of colors
     distances = zeros (n_bins^3, c);
     for i = 1:c
-      diff = bin_rgb - map(i, :); # n_bins^3 x 3
-      distances(:, i) = sqrt (sum (diff.^2, 2)); # n_bins^3 x 1
+      diff = bin_rgb - map(i, :);  # n_bins^3 x 3
+      distances(:, i) = sqrt (sum (diff.^2, 2));  # n_bins^3 x 1
     endfor
 
     ## Find the nearest colormap index (1-based) for each bin
     [_, indices] = min (distances, [], 2);
-    lut(:) = indices; # Assign to LUT
+    lut(:) = indices;  # Assign to LUT
 
     ## Update cached parameters
     last_map = map;

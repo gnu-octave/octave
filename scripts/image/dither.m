@@ -7,7 +7,7 @@
 ##
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
@@ -18,26 +18,26 @@
 ## @deftypefn  {Function File} {@var{X} = } dither (@var{RGB}, @var{map})
 ## @deftypefnx {Function File} {@var{X} = } dither (@var{RGB}, @var{map}, @var{Qm}, @var{Qe})
 ## @deftypefnx {Function File} {@var{BW} = } dither (@var{I})
-## Quantize an image, using dithering to increase the apparent color resolution.
+## Quantize an image using dithering to increase the apparent color resolution.
 ##
-## @code{@var{X} = dither (@var{RGB},@var{map})} creates an indexed image 
+## @code{@var{X} = dither (@var{RGB},@var{map})} creates an indexed image
 ## approximation.  It uses the color provided in the colormap, and uses dithering
-## to increase apparent color resolution.  Floyd-Steinberg error filter is: 
-## [   x  7]
-## [3  5  1] / 16
+## to increase apparent color resolution.  Floyd-Steinberg error filter is:
+## @code{[   x  7]}
+## @code{[3  5  1] / 16}
 ## It uses a raster scan and no weight renormalization at boundaries.
-## The default values are used: @var{Qm}=5, and @var{Qe}=8.
-## 
-## @var{RGB} is a mxnx3 array with values in [0, 1] (double) or [0, 255] (uint8).
+## The default values are used: @var{Qm}=5 and @var{Qe}=8.
 ##
-## @var{map} is cx3 matrix holding RGB triplets in [0, 1] (double).
+## @var{RGB} is a mxnx3 array with values in @code{[0, 1]} (double) or @code{[0, 255]} (uint8).
+##
+## @var{map} is cx3 matrix holding RGB triplets in @code{[0, 1]} (double).
 ##
 ## @var{Qm} is the number of quantization bits per axis for inverse colormap (default: 5).
 ##
 ## @var{Qe} is the number of quantization bits for error diffusion (default: 8, max 16).
 ##
-## @var{X} is a mxn indexed image (uint8 if c<=256, else uint16) for the 
-## colormap @var{map} provided. 
+## @var{X} is a mxn indexed image (uint8 if c<=256, else uint16) for the
+## colormap @var{map} provided.
 ##
 ## Example:
 ## @example
@@ -46,26 +46,26 @@
 ##
 ## @code{@var{X} = dither (@var{RGB}, @var{map}, @var{Qm}, @var{Qe})}
 ##
-## @var{Qm} is the number of quantization bits along each color axis for the 
+## @var{Qm} is the number of quantization bits along each color axis for the
 ## inverse colormap.  @var{Qm} determines the resolution of this grid along each
-## color axis (R, G, B).  @var{Qm} defines the precision of the color space 
+## color axis (R, G, B).  @var{Qm} defines the precision of the color space
 ## discretization used to map input RGB values to those colors available in the
 ## colormap.  @var{Qe} is the number of quantization bits for the color space
-## error calculations in the Floyd-Steinberg error diffusion algorithm. 
+## error calculations in the Floyd-Steinberg error diffusion algorithm.
 ## It controls the precision of the error values that are calculated and
 ## propagated during dithering.  If @var{Qe} < @var{Qm}, the error diffusion
 ## process may lose precision.  Therefore dithering cannot be performed, and the
 ## function returns an undithered indexed image.
 ##
 ## @code{@var{BW} = dither (@var{I})} converts the grayscale input image @var{I}
-## into binary applying dithering in the process.  The output image @var{BW} 
+## into binary applying dithering in the process.  The output image @var{BW}
 ## is a black and white image where dithering creates the illusion of shades of
 ## gray.
 ##
-## Ref [1] Floyd, R. W., and Steinberg, L., An Adaptive Algorithm for Spatial 
-## Gray Scale, International Symposium Digest of Technical Papers, Society for 
-## Information Displays, 1975, p. 36.
-## Ref [2] Ulichney. R., Digital Halftoning, The MIT Press, 1987.
+## @cite{Floyd, R. W., and Steinberg, L., An Adaptive Algorithm for Spatial Gray
+## Scale, International Symposium Digest of Technical Papers, Society for
+## Information Displays, 1975, p. 36.}
+## @cite{Ulichney, R., Digital Halftoning, The MIT Press, 1987.}
 ##
 ## @seealso{rgb2ind, imapprox}
 ## @end deftypefn
@@ -285,8 +285,8 @@ endfunction
 %! I = ones (256)/2;
 %! X = dither (I);
 %! figure;
-%! subplot (121); imshow (I); title ('original'); 
-%! subplot (122); imshow (double(X)); title ('dithered'); 
+%! subplot (121); imshow (I); title ('original');
+%! subplot (122); imshow (double(X)); title ('dithered');
 
 %!demo
 %! ## Four solid gray levels
@@ -299,7 +299,7 @@ endfunction
 
 %!demo
 %! ## Black-White Gradient
-%! 
+%!
 %! I = repmat ([0:255]./255,256,1);
 %! X = dither (I);
 %! figure;
@@ -325,7 +325,7 @@ endfunction
 %! image(:, :, 1) = (1 - x) .* (1 - y) * lowerleft(1) + x .* (1 - y) * lowerright(1) + (1 - x) .* y * upperleft(1) + x .* y * upperright(1);
 %! image(:, :, 2) = (1 - x) .* (1 - y) * lowerleft(2) + x .* (1 - y) * lowerright(2) + (1 - x) .* y * upperleft(2) + x .* y * upperright(2);
 %! image(:, :, 3) = (1 - x) .* (1 - y) * lowerleft(3) + x .* (1 - y) * lowerright(3) + (1 - x) .* y * upperleft(3) + x .* y * upperright(3);
-%! 
+%!
 %! ## Use the corner colors to define the colormap
 %! map = [upperleft; upperright; lowerleft; lowerright];
 %! % Apply dither
@@ -344,8 +344,8 @@ endfunction
 %! X = dither (rgb_image, map);
 %! I = reshape (map(X(:)+1,:), [size(X) 3]);
 %! figure;
-%! subplot (121); imshow (rgb_image); title ('original'); 
-%! subplot (122); imshow (I); title ('dithered'); 
+%! subplot (121); imshow (rgb_image); title ('original');
+%! subplot (122); imshow (I); title ('dithered');
 
 ## Test input validation
 %!error dither ()

@@ -280,7 +280,7 @@ function hglist = bars (hax, ishist, vertical, x, y, xb, yb, width, group,
 
   ## Code to create hggroup Bar object
   for i = 1:nbars
-    hg = hggroup ();
+    hg = hggroup (hax);
     hglist = [hglist; hg];
     args = __add_datasource__ ("bar", hg, {"x", "y"}, varargin{:});
 

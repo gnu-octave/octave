@@ -105,6 +105,12 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The `weboptions` has been re-written internally.  Support for non-integer
   Timeout values, and the special value `Inf`, has been added.
 
+- The `newplot` function has been re-written to remove functionality that was
+  possibly never used in Octave, and has been removed from Matlab.  The
+  function is also more compatible, and does not change the current figure
+  unexpectedly.  However, any user plotting code that depends on this broken
+  behavior will need to be updated.
+
 - The `KeyEvent` structure passed as an input paramater to graphics callback
   functions such as `KeyPressFcn` now returns fieldnames in the same order
   as Matlab: `Character`, `Modifier`, `Key`.

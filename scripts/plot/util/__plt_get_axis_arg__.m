@@ -62,7 +62,7 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
         varargin(parent:parent+1) = [];
       else
         ## "parent" property for some other type like hggroup
-        h = [ancestor(htmp, "axes"), htmp];
+        h = ancestor (htmp, "axes");
       endif
     endif
   endif

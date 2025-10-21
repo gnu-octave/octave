@@ -21,20 +21,24 @@
 ## Quantize an image using dithering to increase the apparent color resolution.
 ##
 ## @code{@var{X} = dither (@var{RGB},@var{map})} creates an indexed image
-## approximation.  It uses the color provided in the colormap, and uses dithering
-## to increase apparent color resolution.  Floyd-Steinberg error filter is:
+## approximation.  It uses the color provided in the colormap, and uses
+## dithering to increase apparent color resolution.  Floyd-Steinberg error
+## filter is:
 ## @code{[   x  7]}
 ## @code{[3  5  1] / 16}
 ## It uses a raster scan and no weight renormalization at boundaries.
 ## The default values are used: @var{Qm}=5 and @var{Qe}=8.
 ##
-## @var{RGB} is a mxnx3 array with values in @code{[0, 1]} (double) or @code{[0, 255]} (uint8).
+## @var{RGB} is a mxnx3 array with values in @code{[0, 1]} (double) or
+## @code{[0, 255]} (uint8).
 ##
 ## @var{map} is cx3 matrix holding RGB triplets in @code{[0, 1]} (double).
 ##
-## @var{Qm} is the number of quantization bits per axis for inverse colormap (default: 5).
+## @var{Qm} is the number of quantization bits per axis for inverse colormap
+## (default: 5).
 ##
-## @var{Qe} is the number of quantization bits for error diffusion (default: 8, max 16).
+## @var{Qe} is the number of quantization bits for error diffusion (default: 8,
+## max 16).
 ##
 ## @var{X} is a mxn indexed image (uint8 if c<=256, else uint16) for the
 ## colormap @var{map} provided.
@@ -84,7 +88,10 @@ function X = dither (RGB, map, Qm = 5, Qe = 8)
   if (ndims (RGB) != 3 || size (RGB, 3) != 3)
     error ('dither: RGB must be an m x n x 3 array');
   endif
-  if (! ismatrix (map) || size (map, 2) != 3 || min (map(:)) < 0 || max (map(:)) > 1)
+  if (! ismatrix (map) ||  ...
+      size (map, 2) != 3 || ...
+      min (map(:)) < 0 || ...
+      max (map(:)) > 1)
     error ('dither: Colormap must be a c x 3 matrix');
   endif
   if (nargin > 2)
@@ -127,7 +134,8 @@ function X = dither (RGB, map, Qm = 5, Qe = 8)
 
   ## neighbor offsets and weights
   offsets = [0 1; 1 -1; 1 0; 1 1];
-  weights = [FSweights(1, 3), FSweights(2, 1), FSweights(2, 2), FSweights(2, 3)];
+  weights = [FSweights(1, 3), FSweights(2, 1), FSweights(2, 2), ...
+             FSweights(2, 3)];
 
   ## Quantization levels for error (Qe)
   n_levels = 2^Qe;
@@ -170,30 +178,45 @@ function X = dither (RGB, map, Qm = 5, Qe = 8)
   endif
 endfunction
 
+## -*- texinfo -*-
+## @deftypefn  {Auxiliary Function} {@var{id} = } rgb2indLUT (@var{pixel}, @var{map})
+## @deftypefnx {Auxiliary Function} {@var{id} = } rgb2indLUT (@var{pixel}, @var{map}, @var{Qm})
+## Map an RGB pixel to the nearest colormap index using a lookup table.
+##
+## @code{@var{id} = rgb2indLUT (@var{pixel}, @var{map})} returns the 1-based
+## index of the closest color in the colormap @var{map} for the input RGB pixel
+## (1x3 vector), using a quantized inverse colormap with 2^5 bins per RGB axis.
+##
+## @code{@var{id} = rgb2indLUT (@var{pixel}, @var{map}, @var{Qm})} uses
+## @var{Qm} bits for quantization per RGB axis.
+##
+## @var{pixel} is a 1x3 vector @code{[R, G, B]}, values in @code{[0, 1]}
+## (double) or @code{[0, 255]} (uint8).
+##
+## @var{map} is a c-by-3 matrix, each row an RGB triplet in @code{[0, 1]}
+## (double).
+##
+## @var{Qm} is the number of quantization bits per axis (default: 5).
+##
+## @var{id} is an index (1-based) into the colormap @var{map} for the closest
+## color.
+##
+## Notes: It uses a persistent lookup table (LUT) for speed; LUT is recomputed
+## if @var{map} or @var{Qm} changes; warns if @var{Qm} is too large (>8) due
+## to memory constraints; assumes input @var{pixel} and @var{map} are properly
+## scaled (pixel auto-scaled if needed).
+##
+## Example:
+## @example
+## id = rgb2indLUT (pixel, map);
+## @end example
+##
+## @end deftypefn
 function id = rgb2indLUT (pixel, map, Qm = 5)
-  ## RGB2INDLUT Map an RGB pixel to the nearest colormap index using a lookup table.
-  ##   id = RGB2INDLUT (pixel, map) returns the 1-based index of the closest color
-  ##   in the colormap 'map' for the input RGB pixel (1x3 vector), using a quantized
-  ##   inverse colormap with 2^5 bins per RGB axis.
-  ##   id = RGB2INDLUT (pixel, map, Qm) uses Qm bits for quantization per RGB axis.
-  ##
-  ## Inputs:
-  ##   pixel: 1x3 vector [R, G, B], values in [0, 1] (double) or [0, 255] (uint8).
-  ##   map: c-by-3 matrix, each row an RGB triplet in [0, 1] (double).
-  ##   Qm: Number of quantization bits per axis (default: 5).
-  ##
-  ## Output:
-  ##   id: Index (1-based) into the colormap 'map' for the closest color.
-  ##
-  ## Notes:
-  ##   - Uses a persistent lookup table (LUT) for speed.
-  ##   - LUT is recomputed if map or Qm changes.
-  ##   - Warns if Qm is too large (>8) due to memory constraints.
-  ##   - Assumes input pixel and map are properly scaled (pixel auto-scaled if needed).
-
   ## Validate inputs
   if (nargin < 2)
-    error ('rgb2indLUT: Not enough input arguments.  Pixel and colormap required');
+    error (['rgb2indLUT: Not enough input arguments.  ' ...
+    'Pixel and colormap required']);
   endif
   if (length (pixel) != 3)
     error ('rgb2indLUT: Pixel must be a 1x3 RGB vector');
@@ -206,7 +229,7 @@ function id = rgb2indLUT (pixel, map, Qm = 5)
     error ('rgb2indLUT: Colormap must be a c-by-3 matrix');
   endif
   if (nargin < 3)
-    Qm = 5; % Default quantization bits
+    Qm = 5;  # Default quantization bits
   endif
   if (! isscalar (Qm) || Qm < 1 || floor (Qm) != Qm)
     error ('rgb2indLUT: Qm must be a positive integer');
@@ -217,11 +240,11 @@ function id = rgb2indLUT (pixel, map, Qm = 5)
 
   ## Scale pixel to [0, 1]
   if (isa (pixel, 'uint8'))
-    pixel = double (pixel) / 255; % Convert to [0, 1]
+    pixel = double (pixel) / 255;  # Convert to [0, 1]
   elseif (max (pixel(:)) > 1)
-    pixel = double (pixel) / 255; % Assume [0, 255] if values exceed 1
+    pixel = double (pixel) / 255;  # Assume [0, 255] if values exceed 1
   endif
-  pixel = max (0, min (1, pixel)); % Clamp to [0, 1]
+  pixel = max (0, min (1, pixel));  # Clamp to [0, 1]
 
   ## Ensure map is in [0, 1]
   if (max (map(:)) > 1)
@@ -248,7 +271,8 @@ function id = rgb2indLUT (pixel, map, Qm = 5)
     ## Compute bin centers for distance calculations
     bin_centers = (0:(n_bins-1))' / (n_bins-1);  # [0, 1] range, column vector
     [R, G, B] = ndims_grid (n_bins, n_bins, n_bins);  # Meshgrid for bin indices
-    bin_rgb = [bin_centers(R(:)), bin_centers(G(:)), bin_centers(B(:))];  # n_bins^3 x 3
+    bin_rgb = [bin_centers(R(:)), bin_centers(G(:)), ...
+               bin_centers(B(:))];  # n_bins^3 x 3
 
     ## Compute Euclidean distances from each bin to each colormap color
     c = size (map, 1);  # Number of colors
@@ -321,26 +345,36 @@ endfunction
 %! image = zeros (height, width, 3);
 %! ## Calculate the interpolated colors for each point
 %! ## The logic is a bilinear interpolation of the four corner colors
-%! ## The first dimension of the `image` matrix is the height (y-axis) and the second is the width (x-axis)
-%! image(:, :, 1) = (1 - x) .* (1 - y) * lowerleft(1) + x .* (1 - y) * lowerright(1) + (1 - x) .* y * upperleft(1) + x .* y * upperright(1);
-%! image(:, :, 2) = (1 - x) .* (1 - y) * lowerleft(2) + x .* (1 - y) * lowerright(2) + (1 - x) .* y * upperleft(2) + x .* y * upperright(2);
-%! image(:, :, 3) = (1 - x) .* (1 - y) * lowerleft(3) + x .* (1 - y) * lowerright(3) + (1 - x) .* y * upperleft(3) + x .* y * upperright(3);
+%! ## The first dimension of the `image` matrix is the height (y-axis) and the
+%! ## second is the width (x-axis)
+%! image(:, :, 1) = (1 - x) .* (1 - y) * lowerleft(1) + ...
+%!                  x .* (1 - y) * lowerright(1) + ...
+%!                  (1 - x) .* y * upperleft(1) + x .* y * upperright(1);
+%! image(:, :, 2) = (1 - x) .* (1 - y) * lowerleft(2) + ...
+%!                  x .* (1 - y) * lowerright(2) + ...
+%!                  (1 - x) .* y * upperleft(2) + x .* y * upperright(2);
+%! image(:, :, 3) = (1 - x) .* (1 - y) * lowerleft(3) + ...
+%!                  x .* (1 - y) * lowerright(3) + ...
+%!                  (1 - x) .* y * upperleft(3) + x .* y * upperright(3);
 %!
 %! ## Use the corner colors to define the colormap
 %! map = [upperleft; upperright; lowerleft; lowerright];
-%! % Apply dither
+%! ## Apply dither
 %! X = dither (image, map);
 %!
 %! ## Display the results
 %! figure;
 %! subplot (121); imshow (image); title ('original');
-%! subplot (122); imshow (reshape (map(X(:)+1,:), [size(X) 3])); title ('dithered');
+%! subplot (122); imshow (reshape (map(X(:)+1,:), [size(X) 3]));
+%! title ('dithered');
 
 %!demo
 %! # Lenna
-%! url = 'https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png';
+%! url = ['https://upload.wikimedia.org/wikipedia/en/7/7d/' ...
+%!       'Lenna_%28test_image%29.png'];
 %! rgb_image = imread(url);
-%! map = [226 143 122; 199 127 124; 175 71 82; 230 191 168; 210 100 98; 132 50 81; 94 24 65; 149 97 139] / 255;
+%! map = [226 143 122; 199 127 124; 175 71 82; 230 191 168; ...
+%!        210 100 98; 132 50 81; 94 24 65; 149 97 139] / 255;
 %! X = dither (rgb_image, map);
 %! I = reshape (map(X(:)+1,:), [size(X) 3]);
 %! figure;

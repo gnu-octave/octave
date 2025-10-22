@@ -24,15 +24,19 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{rgb} =} __next_line_color__ (@var{reset})
+## @deftypefn {} {@var{rgb} =} __next_line_color__ (@var{hax})
 ## Undocumented internal function.
 ## @end deftypefn
 
 ## Return the next line color in the rotation.
 
-function rgb = __next_line_color__ ()
+function rgb = __next_line_color__ (hax)
 
-  ca = gca ();
+  if (nargin == 1)
+    ca = hax;
+  else
+    ca = gca ();
+  endif
 
   colororder = get (ca, "colororder");
   if (isempty (colororder))

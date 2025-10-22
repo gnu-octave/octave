@@ -91,32 +91,22 @@ function [ax, h1, h2] = plotyy (varargin)
     print_usage ();
   endif
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
+  hax = newplot (hax);
+
+  ## FIXME: Second conditional test shouldn't be required.
+  ##        'cla reset' needs to delete user properties like __plotyy_axes__.
+  if (isprop (hax, "__plotyy_axes__")
+      && isaxes (get (hax, "__plotyy_axes__")) == [true; true])
+    hax = get (hax, "__plotyy_axes__");
+  else
+    hax = [hax; axes("nextplot", get (hax(1), "nextplot"), ...
+                     "parent", get (hax(1), "parent"))];
   endif
-  unwind_protect
-    hax = newplot (hax);
 
-    ## FIXME: Second conditional test shouldn't be required.
-    ##        'cla reset' needs to delete user properties like __plotyy_axes__.
-    if (isprop (hax, "__plotyy_axes__")
-        && isaxes (get (hax, "__plotyy_axes__")) == [true; true])
-      hax = get (hax, "__plotyy_axes__");
-    else
-      hax = [hax; axes("nextplot", get (hax(1), "nextplot"), ...
-                       "parent", get (hax(1), "parent"))];
-    endif
+  [axtmp, h1tmp, h2tmp] = __plotyy__ (hax, varargin{:});
 
-    [axtmp, h1tmp, h2tmp] = __plotyy__ (hax, varargin{:});
-
-    set (gcf, "currentaxes", hax(1));
-
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
+  ## FIXME: Is this correct?  Can there be any other parent besides a figure?
+  set (get (hax(1), 'parent'), "currentaxes", hax(1));
 
   if (nargout > 0)
     ax = axtmp;

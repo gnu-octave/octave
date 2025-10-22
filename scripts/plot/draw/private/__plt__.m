@@ -286,11 +286,11 @@ function retval = __plt2mm__ (hp, x, y, options, properties = {})
     linestyle = options(i).linestyle;
     marker = options(i).marker;
     if (isempty (marker) && isempty (linestyle))
-      [linestyle, marker] = __next_line_style__ ();
+      [linestyle, marker] = __next_line_style__ (hp);
     endif
     color = options(i).color;
     if (isempty (color))
-      color = __next_line_color__ ();
+      color = __next_line_color__ (hp);
     endif
 
     retval(i) = __go_line__ (hp, "xdata", x(:,i), "ydata", y(:,i),
@@ -327,11 +327,11 @@ function retval = __plt2mv__ (hp, x, y, options, properties = {})
     linestyle = options(i).linestyle;
     marker = options(i).marker;
     if (isempty (marker) && isempty (linestyle))
-      [linestyle, marker] = __next_line_style__ ();
+      [linestyle, marker] = __next_line_style__ (hp);
     endif
     color = options(i).color;
     if (isempty (color))
-      color = __next_line_color__ ();
+      color = __next_line_color__ (hp);
     endif
 
     retval(i) = __go_line__ (hp, "xdata", x(:,i), "ydata", y,
@@ -360,7 +360,7 @@ function retval = __plt2ss__ (hp, x, y, options, properties = {})
   endif
   color = options.color;
   if (isempty (color))
-    color = __next_line_color__ ();
+    color = __next_line_color__ (hp);
   endif
 
   retval = __go_line__ (hp, "xdata", x, "ydata", y,
@@ -390,7 +390,7 @@ function retval = __plt2sv__ (hp, x, y, options, properties = {})
     endif
     color = options(i).color;
     if (isempty (color))
-      color = __next_line_color__ ();
+      color = __next_line_color__ (hp);
     endif
 
     retval(i) = __go_line__ (hp, "xdata", x, "ydata", y(i),
@@ -427,11 +427,11 @@ function retval = __plt2vm__ (hp, x, y, options, properties = {})
     linestyle = options(i).linestyle;
     marker = options(i).marker;
     if (isempty (marker) && isempty (linestyle))
-      [linestyle, marker] = __next_line_style__ ();
+      [linestyle, marker] = __next_line_style__ (hp);
     endif
     color = options(i).color;
     if (isempty (color))
-      color = __next_line_color__ ();
+      color = __next_line_color__ (hp);
     endif
 
     retval(i) = __go_line__ (hp, "xdata", x, "ydata", y(:,i),
@@ -462,7 +462,7 @@ function retval = __plt2vs__ (hp, x, y, options, properties = {})
     endif
     color = options(i).color;
     if (isempty (color))
-      color = __next_line_color__ ();
+      color = __next_line_color__ (hp);
     endif
 
     retval(i) = __go_line__ (hp, "xdata", x(i), "ydata", y,
@@ -492,11 +492,11 @@ function retval = __plt2vv__ (hp, x, y, options, properties = {})
   linestyle = options.linestyle;
   marker = options.marker;
   if (isempty (marker) && isempty (linestyle))
-    [linestyle, marker] = __next_line_style__ ();
+    [linestyle, marker] = __next_line_style__ (hp);
   endif
   color = options.color;
   if (isempty (color))
-    color = __next_line_color__ ();
+    color = __next_line_color__ (hp);
   endif
 
   retval = __go_line__ (hp, "xdata", x, "ydata", y,

@@ -141,64 +141,54 @@ function h = surfl (varargin)
     endif
   endif
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
+  hax = newplot (hax);
+
+  htmp = surface (hax, varargin{:});
+
+  if (! ishold (hax))
+    set (hax, "view", [-37.5, 30],
+              "xgrid", "on", "ygrid", "on", "zgrid", "on");
   endif
-  unwind_protect
-    hax = newplot (hax);
 
-    htmp = surface (varargin{:});
-    if (! ishold ())
-      set (hax, "view", [-37.5, 30],
-                "xgrid", "on", "ygrid", "on", "zgrid", "on");
-    endif
+  ## Get view vector (vv).
+  [az, el] = view (hax);
+  [vv(1), vv(2), vv(3)] = sph2cart ((az - 90) * pi/180.0, el * pi/180.0, 1.0);
 
-    ## Get view vector (vv).
-    [az, el] = view ();
-    [vv(1), vv(2), vv(3)] = sph2cart ((az - 90) * pi/180.0, el * pi/180.0, 1.0);
+  if (! have_lv)
+    ## Calculate light vector (lv) from view vector.
+    phi = pi / 4;  # 45 degrees
+    R = [cos(phi), -sin(phi), 0;
+         sin(phi),  cos(phi), 0;
+         0,         0,        1];
+    lv = (R * vv.').';
+  endif
 
-    if (! have_lv)
-      ## Calculate light vector (lv) from view vector.
-      phi = pi / 4;  # 45 degrees
-      R = [cos(phi), -sin(phi), 0;
-           sin(phi),  cos(phi), 0;
-           0,         0,        1];
-      lv = (R * vv.').';
-    endif
+  if (use_cdata)
+    set (hax, "clim", [0 1]);
 
-    if (use_cdata)
-      set (hax, "clim", [0 1]);
+    __update_normals__ (htmp);
+    vn = get (htmp, "vertexnormals");
+    dar = get (hax, "dataaspectratio");
+    vn(:,:,1) *= dar(1);
+    vn(:,:,2) *= dar(2);
+    vn(:,:,3) *= dar(3);
 
-      __update_normals__ (htmp);
-      vn = get (htmp, "vertexnormals");
-      dar = get (hax, "dataaspectratio");
-      vn(:,:,1) *= dar(1);
-      vn(:,:,2) *= dar(2);
-      vn(:,:,3) *= dar(3);
+    ## Normalize vn.
+    vn ./= repmat (sqrt (sumsq (vn, 3)), [1, 1, 3]);
+    [nr, nc] = size (get (htmp, "zdata"));
 
-      ## Normalize vn.
-      vn ./= repmat (sqrt (sumsq (vn, 3)), [1, 1, 3]);
-      [nr, nc] = size (get (htmp, "zdata"));
+    ## Ambient, diffuse, and specular term.
+    cdata = (  r(1) * ones (nr, nc)
+             + r(2) * diffuse  (vn(:,:,1), vn(:,:,2), vn(:,:,3), lv)
+             + r(3) * specular (vn(:,:,1), vn(:,:,2), vn(:,:,3), lv, vv, r(4)));
+    cdata ./= sum (r(1:3));
 
-      ## Ambient, diffuse, and specular term.
-      cdata = (  r(1) * ones (nr, nc)
-               + r(2) * diffuse  (vn(:,:,1), vn(:,:,2), vn(:,:,3), lv)
-               + r(3) * specular (vn(:,:,1), vn(:,:,2), vn(:,:,3), lv, vv, r(4)));
-      cdata ./= sum (r(1:3));
-
-      set (htmp, "cdata", cdata);
-    else
-      light (hax, "position", lv);
-      set (htmp, "ambientstrength", r(1), "diffusestrength", r(2), ...
-                 "specularstrength", r(3), "specularexponent", r(4));
-    endif
-
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
+    set (htmp, "cdata", cdata);
+  else
+    light (hax, "position", lv);
+    set (htmp, "ambientstrength", r(1), "diffusestrength", r(2), ...
+               "specularstrength", r(3), "specularexponent", r(4));
+  endif
 
   if (nargout > 0)
     h = htmp;

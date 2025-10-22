@@ -108,12 +108,12 @@ function h = __do_errplot__ (fstr, hax, varargin)
   for i = 1:nplots
 
     if (isempty (fmt.color))
-      lc = __next_line_color__ ();
+      lc = __next_line_color__ (hax);
     else
       lc = fmt.color;
     endif
     if (isempty (fmt.marker) && isempty (fmt.linestyle))
-      [ls, mk] = __next_line_style__ ();
+      [ls, mk] = __next_line_style__ (hax);
     else
       ls = fmt.linestyle;
       mk = fmt.marker;

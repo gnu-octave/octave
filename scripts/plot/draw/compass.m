@@ -106,18 +106,8 @@ function h = compass (varargin)
        ytmp - u * arrowsize / 3];
   [r, p] = cart2pol (x, y);
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
-  endif
-  unwind_protect
-    hax = newplot (hax);
-    htmp = polar (r, p, line_spec);
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
+  hax = newplot (hax);
+  htmp = polar (hax, r, p, line_spec);
 
   if (nargout > 0)
     h = htmp;

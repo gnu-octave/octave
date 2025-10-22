@@ -58,24 +58,14 @@ function h = loglogerr (varargin)
 
   [hax, varargin] = __plt_get_axis_arg__ ("loglogerr", varargin{:});
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
+  hax = newplot (hax);
+
+  set (hax, "xscale", "log", "yscale", "log");
+  if (! ishold (hax))
+    set (hax, "xminortick", "on", "yminortick", "on", "box", "on");
   endif
-  unwind_protect
-    hax = newplot (hax);
 
-    set (hax, "xscale", "log", "yscale", "log");
-    if (! ishold ())
-      set (hax, "xminortick", "on", "yminortick", "on", "box", "on");
-    endif
-    htmp = __errplot__ ("loglogerr", hax, varargin{:});
-
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
+  htmp = __errplot__ ("loglogerr", hax, varargin{:});
 
   if (nargout > 0)
     h = htmp;

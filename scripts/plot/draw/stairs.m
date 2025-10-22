@@ -80,35 +80,25 @@ function [xstep, ystep] = stairs (varargin)
   endif
 
   if (nargout < 2)
-    oldfig = [];
-    if (! isempty (hax))
-      oldfig = get (0, "currentfigure");
+    hax = newplot (hax);
+    htmp = __stairs__ (true, hax, varargin{:});
+
+    if (! ishold (hax))
+      set (hax, "box", "on");
     endif
-    unwind_protect
-      hax = newplot (hax);
-      htmp = __stairs__ (true, varargin{:});
 
-      if (! ishold ())
-        set (hax, "box", "on");
-      endif
-
-    unwind_protect_cleanup
-      if (! isempty (oldfig))
-        set (0, "currentfigure", oldfig);
-      endif
-    end_unwind_protect
     if (nargout == 1)
       xstep = htmp;
     endif
   else
-    [~, xstep, ystep] = __stairs__ (false, varargin{:});
+    [~, xstep, ystep] = __stairs__ (false, [], varargin{:});
   endif
 
 endfunction
 
-function [h, xs, ys] = __stairs__ (doplot, varargin)
+function [h, xs, ys] = __stairs__ (doplot, hax, varargin)
 
-  if (nargin == 2 || ischar (varargin{2}))
+  if (nargin == 3 || ischar (varargin{2}))
     y = varargin{1};
     varargin(1) = [];
     if (! isnumeric (y) || ndims (y) > 2)
@@ -175,14 +165,14 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
 
   if (doplot)
     h = [];
-    hold_state = get (gca (), "nextplot");
+    hold_state = get (hax, "nextplot");
     unwind_protect
       for i = 1 : columns (y)
 
         if (have_line_spec)
           lc = linespec.color;
           if (isempty (lc))
-            lc = __next_line_color__ ();
+            lc = __next_line_color__ (hax);
           endif
           ls = linespec.linestyle;
           if (isempty (ls))
@@ -193,13 +183,13 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
             mk = "none";
           endif
         else
-          lc = __next_line_color__ ();
+          lc = __next_line_color__ (hax);
           ls = "-";
           mk = "none";
         endif
 
         ## Must occur after __next_line_color__ in order to work correctly.
-        hg = hggroup ();
+        hg = hggroup (hax);
         h = [h; hg];
         args = __add_datasource__ ("stairs", hg, {"x", "y"}, varargin{:});
 
@@ -209,8 +199,8 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
         addlistener (hg, "xdata", @update_data);
         addlistener (hg, "ydata", @update_data);
 
-        htmp = line (xs(:,i).', ys(:,i).', "color", lc, "linestyle", ls,
-                                           "marker", mk, "parent", hg);
+        htmp = line (hax, xs(:,i).', ys(:,i).', "color", lc, "linestyle", ls,
+                                                "marker", mk, "parent", hg);
 
         addproperty ("color", hg, "linecolor", get (htmp, "color"));
         addproperty ("linestyle", hg, "linelinestyle", get (htmp, "linestyle"));
@@ -240,7 +230,7 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
         endif
       endfor
     unwind_protect_cleanup
-      set (gca (), "nextplot", hold_state);
+      set (hax, "nextplot", hold_state);
     end_unwind_protect
   else
     h = 0;

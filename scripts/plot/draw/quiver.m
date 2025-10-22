@@ -84,24 +84,13 @@ function h = quiver (varargin)
     print_usage ();
   endif
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
+  [hax, htmp] = __quiver__ (hax, false, varargin{:});
+
+  ## FIXME: This should be moved into __quiver__ when problem with
+  ##        re-initialization of title object is fixed.
+  if (! ishold (hax))
+    set (hax, "box", "on");
   endif
-  unwind_protect
-    [hax, htmp] = __quiver__ (hax, false, varargin{:});
-
-    ## FIXME: This should be moved into __quiver__ when problem with
-    ##        re-initialization of title object is fixed.
-    if (! ishold ())
-      set (hax, "box", "on");
-    endif
-
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
 
   if (nargout > 0)
     h = htmp;

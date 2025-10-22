@@ -138,45 +138,36 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
         w.z(2:end,1:end-1) + w.z(2:end,2:end)) / 4;
 
   if (nargout == 0)
-    oldfig = [];
-    if (! isempty (hax))
-      oldfig = get (0, "currentfigure");
-    endif
+    hax = newplot (hax);
+
+    surf (hax, x, y, z, varargin{ioff:end});
+    old_hold_state = get (hax, "nextplot");
     unwind_protect
-      hax = newplot (hax);
+      set (hax, "nextplot", "add");
 
-      surf (x, y, z, varargin{ioff:end});
-      old_hold_state = get (hax, "nextplot");
-      unwind_protect
-        set (hax, "nextplot", "add");
+      ## Normalize the normal vectors
+      nmag = sqrt (nx.^2 + ny.^2 + nz.^2);
 
-        ## Normalize the normal vectors
-        nmag = sqrt (nx.^2 + ny.^2 + nz.^2);
+      ## And correct for the aspect ratio of the display
+      daratio = daspect (hax);
+      damag = sqrt (sumsq (daratio));
 
-        ## And correct for the aspect ratio of the display
-        daratio = daspect (hax);
-        damag = sqrt (sumsq (daratio));
+      ## FIXME: May also want to normalize the vectors relative to the size
+      ##        of the diagonal.
 
-        ## FIXME: May also want to normalize the vectors relative to the size
-        ##        of the diagonal.
+      nx ./= nmag / (daratio(1)^2 / damag);
+      ny ./= nmag / (daratio(2)^2 / damag);
+      nz ./= nmag / (daratio(3)^2 / damag);
 
-        nx ./= nmag / (daratio(1)^2 / damag);
-        ny ./= nmag / (daratio(2)^2 / damag);
-        nz ./= nmag / (daratio(3)^2 / damag);
-
-        plot3 ([x(:).'; x(:).' + nx(:).' ; NaN(size(x(:).'))](:),
-               [y(:).'; y(:).' + ny(:).' ; NaN(size(y(:).'))](:),
-               [z(:).'; z(:).' + nz(:).' ; NaN(size(z(:).'))](:),
-               "r");
-      unwind_protect_cleanup
-        set (hax, "nextplot", old_hold_state);
-      end_unwind_protect
+      plot3 (hax, [x(:).'; x(:).' + nx(:).' ; NaN(size(x(:).'))](:),
+                  [y(:).'; y(:).' + ny(:).' ; NaN(size(y(:).'))](:),
+                  [z(:).'; z(:).' + nz(:).' ; NaN(size(z(:).'))](:),
+                  "r");
 
     unwind_protect_cleanup
-      if (! isempty (oldfig))
-        set (0, "currentfigure", oldfig);
-      endif
+      set (hax, "nextplot", old_hold_state);
     end_unwind_protect
+
   else
     Nx = nx;
     Ny = ny;

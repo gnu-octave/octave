@@ -24,16 +24,20 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{style} =} __next_line_style__ (@var{reset})
+## @deftypefn {} {@var{style} =} __next_line_style__ (@var{hax})
 ## Undocumented internal function.
 ## @end deftypefn
 
 ## Return the next line style in the rotation.
 
 
-function [linestyle, marker] = __next_line_style__ ()
+function [linestyle, marker] = __next_line_style__ (hax)
 
-  ca = gca ();
+  if (nargin == 1)
+    ca = hax;
+  else
+    ca = gca ();
+  endif
 
   styleorder = get (ca, "linestyleorder");
   if (isempty (styleorder))

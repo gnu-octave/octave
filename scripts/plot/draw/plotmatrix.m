@@ -82,27 +82,16 @@ function [h, ax, bigax, p, pax] = plotmatrix (varargin)
     print_usage ();
   endif
 
-  oldfig = [];
-  if (! isempty (bigax2))
-    oldfig = get (0, "currentfigure");
-  endif
-  unwind_protect
-    bigax2 = newplot (bigax2);
+  bigax2 = newplot (bigax2);
 
-    [h2, ax2, p2, pax2] = __plotmatrix__ (bigax2, varargin{:});
+  [h2, ax2, p2, pax2] = __plotmatrix__ (bigax2, varargin{:});
 
-    axes (bigax2);
-    ctext = text (0, 0, "", "visible", "off",
-                  "handlevisibility", "off", "xliminclude", "off",
-                  "yliminclude", "off", "zliminclude", "off",
-                  "deletefcn", {@plotmatrixdelete, [ax2; pax2]});
-    set (bigax2, "visible", "off");
-
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
+  axes (bigax2);
+  ctext = text (bigax2, 0, 0, "", "visible", "off",
+                "handlevisibility", "off", "xliminclude", "off",
+                "yliminclude", "off", "zliminclude", "off",
+                "deletefcn", {@plotmatrixdelete, [ax2; pax2]});
+  set (bigax2, "visible", "off");
 
   if (nargout > 0)
     h = h2;
@@ -188,21 +177,21 @@ function [h, ax, p, pax] = __plotmatrix__ (bigax, varargin)
   for i = 1 : m
     for j = 1 : n
       pos = [xsize * (i - 1) + xoff, ysize * (n - j) + yoff, xsize, ysize];
-      tmp = axes ("outerposition", pos, "position", pos + border,
+      hax = axes ("outerposition", pos, "position", pos + border,
                   "parent", parent);
       if (i == j && have_hist)
-        pax = [pax ; tmp];
-        [nn, xx] = hist (X(:, i));
-        tmp = bar (xx, nn, 1.0);
-        p = [p; tmp];
+        pax = [pax ; hax];
+        [nn, xx] = hist (hax, X(:, i));
+        htmp = bar (hax, xx, nn, 1.0);
+        p = [p; htmp];
       else
-        ax = [ax ; tmp];
+        ax = [ax ; hax];
         if (have_line_spec)
-          tmp = plot (X (:, i), Y (:, j), linespec);
+          htmp = plot (hax, X(:, i), Y(:, j), linespec);
         else
-          tmp = plot (X (:, i), Y (:, j), ".");
+          htmp = plot (hax, X(:, i), Y(:, j), ".");
         endif
-        h = [h ; tmp];
+        h = [h ; htmp];
       endif
     endfor
   endfor

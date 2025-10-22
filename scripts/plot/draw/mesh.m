@@ -70,32 +70,22 @@ function h = mesh (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("mesh", varargin{:});
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
+  hax = newplot (hax);
+
+  mesh_props = {"facecolor", "w", "edgecolor", "flat", ...
+                "facelighting", "none", "edgelighting", "flat"};
+  chararg = find (cellfun ("isclass", varargin, "char"), 1);
+  if (isempty (chararg))
+    htmp = surface (hax, varargin{:}, mesh_props{:});
+  else
+    htmp = surface (hax, varargin{1:chararg-1}, mesh_props{:},
+                         varargin{chararg:end});
   endif
-  unwind_protect
-    hax = newplot (hax);
 
-    mesh_props = {"facecolor", "w", "edgecolor", "flat", ...
-                  "facelighting", "none", "edgelighting", "flat"};
-    chararg = find (cellfun ("isclass", varargin, "char"), 1);
-    if (isempty (chararg))
-      htmp = surface (varargin{:}, mesh_props{:});
-    else
-      htmp = surface (varargin{1:chararg-1}, mesh_props{:},
-                      varargin{chararg:end});
-    endif
-
-    if (! ishold ())
-      set (hax, "view", [-37.5, 30],
-                "xgrid", "on", "ygrid", "on", "zgrid", "on");
-    endif
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
+  if (! ishold (hax))
+    set (hax, "view", [-37.5, 30],
+              "xgrid", "on", "ygrid", "on", "zgrid", "on");
+  endif
 
   if (nargout > 0)
     h = htmp;

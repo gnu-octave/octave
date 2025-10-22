@@ -115,23 +115,12 @@ function h = area (varargin)
     x = repmat (x(:), 1, columns (y));
   endif
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
+  hax = newplot (hax);
+  htmp = __area__ (hax, x, y, bv, varargin{num_numeric+1:end});
+
+  if (! ishold (hax))
+    set (hax, "box", "on");
   endif
-  unwind_protect
-    hax = newplot (hax);
-    htmp = __area__ (hax, x, y, bv, varargin{num_numeric+1:end});
-
-    if (! ishold ())
-      set (hax, "box", "on");
-    endif
-
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
 
   if (nargout > 0)
     h = htmp;
@@ -146,10 +135,10 @@ function retval = __area__ (ax, x, y, bv, varargin)
   retval = [];
   for i = 1: columns (y)
 
-    lc = __next_line_color__ ();
+    lc = __next_line_color__ (ax);
 
     ## Must occur after __next_line_color__ in order to work correctly.
-    hg = hggroup ();
+    hg = hggroup (ax);
     retval = [retval; hg];
     args = __add_datasource__ ("area", hg, {"x", "y"}, varargin{:});
 

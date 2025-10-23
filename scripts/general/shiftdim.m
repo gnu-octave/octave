@@ -44,14 +44,14 @@
 ## @group
 ## x = ones (1, 2, 3);
 ## size (shiftdim (x, -1))
-##   @result{}   1   1   2   3
+##   @xresult{}   1   1   2   3
 ## size (shiftdim (x, 1))
-##   @result{}   2   3
+##   @xresult{}   2   3
 ## [b, ns] = shiftdim (x)
-##   @result{} b =
+##   @xresult{} b =
 ##         1   1   1
 ##         1   1   1
-##   @result{} ns = 1
+##   @xresult{} ns = 1
 ## @end group
 ## @end example
 ## @seealso{reshape, permute, ipermute, circshift, squeeze}

@@ -33,7 +33,7 @@
 ## @group
 ## blanks (10);
 ## whos ans
-##      @result{}
+##      @xresult{}
 ##       Attr Name        Size                     Bytes  Class
 ##       ==== ====        ====                     =====  =====
 ##            ans         1x10                        10  char

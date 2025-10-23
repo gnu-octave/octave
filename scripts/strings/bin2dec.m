@@ -33,7 +33,7 @@
 ## @example
 ## @group
 ## bin2dec ("1110")
-##      @result{} 14
+##      @xresult{} 14
 ## @end group
 ## @end example
 ##
@@ -43,7 +43,7 @@
 ## @example
 ## @group
 ## bin2dec ("1000 0001")
-##      @result{} 129
+##      @xresult{} 129
 ## @end group
 ## @end example
 ##

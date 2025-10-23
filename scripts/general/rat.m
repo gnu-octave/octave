@@ -45,14 +45,14 @@
 ## @example
 ## @group
 ## s = rat (pi)
-## @result{} s = 3 + 1/(7 + 1/16)
+## @xresult{} s = 3 + 1/(7 + 1/16)
 ##
 ## [n, d] = rat (pi)
-## @result{} n =  355
-## @result{} d =  113
+## @xresult{} n =  355
+## @xresult{} d =  113
 ##
 ## n / d - pi
-## @result{} 2.6676e-07
+## @xresult{} 2.6676e-07
 ## @end group
 ## @end example
 ##
@@ -61,14 +61,14 @@
 ## @example
 ## @group
 ## s = rat (0.5 + i * pi)
-## @result{} s = complex (1 + 1/(-2), 3 + 1/(7 + 1/16))
+## @xresult{} s = complex (1 + 1/(-2), 3 + 1/(7 + 1/16))
 ##
 ## [n, d] = rat (0.5 + i * pi)
-## @result{} n =  113 + 710i
-## @result{} d =  226
+## @xresult{} n =  113 + 710i
+## @xresult{} d =  226
 ##
 ## n / d - (0.5 + i * pi)
-## @result{} 0 + 2.6676e-07i
+## @xresult{} 0 + 2.6676e-07i
 ## @end group
 ## @end example
 ##

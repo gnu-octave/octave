@@ -1555,6 +1555,9 @@ private:
               const char *e_text = Fl::event_text ();
               int e_state = Fl::event_state ();
               octave_scalar_map evt = format_key_event (e_key, e_text, e_state);
+              // FIXME: This should return the graphics handle of the object
+              evt.assign ("Source", "");
+              evt.assign ("EventName", "KeyPress");
 
               m_fp.set_currentcharacter (std::string (e_text));
 
@@ -1631,6 +1634,9 @@ private:
                   const char *e_text = Fl::event_text ();
                   evt = format_key_event (e_key, e_text, e_state);
                 }
+              // FIXME: This should return the graphics handle of the object
+              evt.assign ("Source", "");
+              evt.assign ("EventName", "KeyRelease");
 
               if (! m_fp.get_keyreleasefcn ().isempty ()
                   && (evt.contents ("Key").length () > 0))

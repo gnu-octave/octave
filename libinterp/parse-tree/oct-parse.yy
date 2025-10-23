@@ -5842,7 +5842,7 @@ named function.  For example,
 @example
 @group
 feval ("acos", -1)
-     @result{} 3.1416
+     @xresult{} 3.1416
 @end group
 @end example
 
@@ -5858,9 +5858,9 @@ due to the cleaner syntax they offer.  For example,
 @group
 @var{f} = @@exp;
 feval (@var{f}, 1)
-    @result{} 2.7183
+    @xresult{} 2.7183
 @var{f} (1)
-    @result{} 2.7183
+    @xresult{} 2.7183
 @end group
 @end example
 
@@ -5893,12 +5893,12 @@ A trivial example which redefines the @code{sin} function to be the
 @example
 @group
 sin (0)
-  @result{} 0
+  @xresult{} 0
 function y = sin (x), y = cos (x); endfunction
 sin (0)
-  @result{} 1
+  @xresult{} 1
 builtin ("sin", 0)
-  @result{} 0
+  @xresult{} 0
 @end group
 @end example
 @end deftypefn */)
@@ -6123,9 +6123,9 @@ Example 1:
 @example
 @group
 s = evalc ("t = 42"), t
-  @result{} s = t =  42
+  @xresult{} s = t =  42
 
-  @result{} t =  42
+  @xresult{} t =  42
 @end group
 @end example
 
@@ -6134,7 +6134,7 @@ Example 2:
 @example
 @group
 [~, p] = evalc ("pi")
-  @result{} p = 3.1416
+  @xresult{} p = 3.1416
 @end group
 @end example
 

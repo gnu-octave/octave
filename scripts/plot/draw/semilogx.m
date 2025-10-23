@@ -50,25 +50,14 @@ function h = semilogx (varargin)
     print_usage ();
   endif
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
+  hax = newplot (hax);
+
+  set (hax, "xscale", "log");
+  if (! ishold (hax))
+    set (hax, "xminortick", "on", "box", "on");
   endif
-  unwind_protect
-    hax = newplot (hax);
 
-    set (hax, "xscale", "log");
-    if (! ishold ())
-      set (hax, "xminortick", "on", "box", "on");
-    endif
-
-    htmp = __plt__ ("semilogx", hax, varargin{:});
-
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
+  htmp = __plt__ ("semilogx", hax, varargin{:});
 
   if (nargout > 0)
     h = htmp;

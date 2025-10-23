@@ -40,7 +40,7 @@
 ## @example
 ## @group
 ## fullfile ("/home/username", "data", @{"f1.csv", "f2.csv", "f3.csv"@})
-##   @result{}
+##   @xresult{}
 ##       @{
 ##         [1,1] = /home/username/data/f1.csv
 ##         [1,2] = /home/username/data/f2.csv

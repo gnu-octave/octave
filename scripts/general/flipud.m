@@ -33,7 +33,7 @@
 ## @example
 ## @group
 ## flipud ([1, 2; 3, 4])
-##      @result{}  3  4
+##      @xresult{}  3  4
 ##          1  2
 ## @end group
 ## @end example

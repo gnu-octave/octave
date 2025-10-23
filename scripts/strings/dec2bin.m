@@ -46,10 +46,10 @@
 ## @example
 ## @group
 ## dec2bin (14)
-##      @result{} "1110"
+##      @xresult{} "1110"
 ##
 ## dec2bin (-14)
-##      @result{} "11110010"
+##      @xresult{} "11110010"
 ## @end group
 ## @end example
 ##

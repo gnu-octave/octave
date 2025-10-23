@@ -59,7 +59,7 @@ For example:
 @example
 @group
 sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])
-   @result{} [ 0.50000, 0.66667; 0.66667, 0.50000 ]
+   @xresult{} [ 0.50000, 0.66667; 0.66667, 0.50000 ]
 @end group
 @end example
 @end deftypefn */)

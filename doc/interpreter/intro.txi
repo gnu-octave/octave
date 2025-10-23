@@ -477,12 +477,12 @@ in this font or form: @key{RET}.
 @cindex documentation notation
 
 In the examples in this manual, results from expressions that you
-evaluate are indicated with @samp{@result{}}.  For example:
+evaluate are indicated with @samp{@xresult{}}.  For example:
 
 @example
 @group
 sqrt (2)
-     @result{} 1.4142
+     @xresult{} 1.4142
 @end group
 @end example
 
@@ -495,7 +495,7 @@ displayed like this
 @example
 @group
 [1, 2; 3, 4] == [1, 3; 2, 4]
-     @result{} [ 1, 0; 0, 1 ]
+     @xresult{} [ 1, 0; 0, 1 ]
 @end group
 @end example
 
@@ -505,7 +505,7 @@ and in other cases, they are displayed like this
 @example
 @group
 eye (3)
-     @result{}  1  0  0
+     @xresult{}  1  0  0
          0  1  0
          0  0  1
 @end group
@@ -535,14 +535,14 @@ rot90 ([1, 2; 3, 4], 7)
 Many of the examples in this manual print text when they are evaluated.
 In this manual the printed text resulting from an example is indicated
 by @samp{@print{}}.  The value that is returned by evaluating the
-expression is displayed with @samp{@result{}} (@code{1} in the next
+expression is displayed with @samp{@xresult{}} (@code{1} in the next
 example) and follows on a separate line.
 
 @example
 @group
 printf ("foo %s\n", "bar")
      @print{} foo bar
-     @result{} 1
+     @xresult{} 1
 @end group
 @end example
 
@@ -611,9 +611,9 @@ Example:
 @example
 @group
 foo (1, [3, 5], 3, 9)
-     @result{} [ 14, 16 ]
+     @xresult{} [ 14, 16 ]
 foo (5)
-     @result{} 14
+     @xresult{} 14
 @end group
 @end example
 

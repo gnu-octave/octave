@@ -48,7 +48,7 @@
 ## @group
 ## s = struct ("d", 4, "b", 2, "a", 1, "c", 3);
 ## t1 = orderfields (s)
-##   @result{} t1 =
+##   @xresult{} t1 =
 ##        scalar structure containing the fields:
 ##          a =  1
 ##          b =  2
@@ -61,7 +61,7 @@
 ## @group
 ## t = struct ("d", @{@}, "c", @{@}, "b", @{@}, "a", @{@});
 ## t2 = orderfields (s, t)
-##   @result{} t2 =
+##   @xresult{} t2 =
 ##        scalar structure containing the fields:
 ##          d =  4
 ##          c =  3
@@ -73,7 +73,7 @@
 ## @example
 ## @group
 ## t3 = orderfields (s, [3, 2, 4, 1])
-##   @result{} t3 =
+##   @xresult{} t3 =
 ##        scalar structure containing the fields:
 ##          a =  1
 ##          b =  2
@@ -85,7 +85,7 @@
 ## @example
 ## @group
 ## [t4, p] = orderfields (s, @{"d", "c", "b", "a"@})
-##   @result{} t4 =
+##   @xresult{} t4 =
 ##        scalar structure containing the fields:
 ##          d =  4
 ##          c =  3

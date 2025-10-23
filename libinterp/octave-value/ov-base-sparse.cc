@@ -327,22 +327,19 @@ octave_base_sparse<T>::print_raw (std::ostream& os,
     {
       double pct = (nz / dnel * 100);
 
-      int prec = 2;
+      // Display at least 2 significant digits, and up to 4 as we approach
+      // 100%.  Avoid having limited precision of the display result in
+      // reporting 100% for matrices that are not actually 100% full.
+      int prec;
 
-      // Display at least 2 significant figures and up to 4 as we
-      // approach 100%.  Avoid having limited precision of the display
-      // result in reporting 100% for matrices that are not actually
-      // 100% full.
-
-      if (pct == 100)
+      if (pct <= 99)
+        prec = 2;
+      else if (pct <= 99.9 || pct == 100)
         prec = 3;
       else
         {
-          if (pct > 99.9)
-            prec = 4;
-          else if (pct > 99)
-            prec = 3;
-
+          // pct is in range (99.9, 100).
+          prec = 4;
           if (pct > 99.99)
             pct = 99.99;
         }

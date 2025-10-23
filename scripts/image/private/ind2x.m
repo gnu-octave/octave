@@ -37,9 +37,25 @@ function [x, map] = ind2x (caller, x, map)
   ## Matlab behaves.  But we want to support N-D images, so we will allow up to
   ## 4-D and check that the 3rd dimension is a singleton.
   if (all (ndims (x) != [2 4]) || size (x, 3) != 1
-      || iscomplex (x) || issparse (x)
-      || ! (isfloat (x) && all (x(:) == fix (x(:)))
-            || (isinteger (x) && intmin (x) == 0)))
+      || iscomplex (x) || issparse (x))
+    error ("%s: X must be an indexed image", caller);
+  endif
+
+  ## Keep track of whether any X values are out-of-bounds.
+  do_warn = false;
+  if (isfloat (x))
+    ## NaN values have to be handled specially.
+    invalid_idx = isnan (x);
+    if (any (invalid_idx(:)))
+      do_warn = true;
+      x(invalid_idx) = Inf;  # Set to Inf which will map to last value of cmap.
+    endif
+  endif
+
+  ## Must follow NaN replacement code above or test for floating point integers
+  ## below will fail because NaN != NaN.
+  if (! (isfloat (x) && all (x(:) == fix (x(:)))
+         || (isinteger (x) && intmin (x) == 0)))
     error ("%s: X must be an indexed image", caller);
   endif
 
@@ -48,13 +64,12 @@ function [x, map] = ind2x (caller, x, map)
     error ("%s: MAP must be a valid colormap", caller);
   endif
 
-  ## Any color indices below the lower bound of the color map are modified
-  ## to point to the first color in the map (see bug #41851).
+  ## Any color indices below the lower bound of the colormap are modified
+  ## to point to the first color in the map (bug #41851).
   if (isfloat (x))
     invalid_idx = x < 1;
     if (any (invalid_idx(:)))
-      warning (["Octave:" caller ":invalid-idx-img"],
-               [caller ": indexed image contains colors outside of colormap"]);
+      do_warn = true;
       x(invalid_idx) = 1;
     endif
   endif
@@ -75,16 +90,21 @@ function [x, map] = ind2x (caller, x, map)
   ## pad the colormap with the last color in the map for Matlab compatibility.
   num_colors = rows (map);
   if (num_colors - is_int < maxidx)
-    warning (["Octave:" caller ":invalid-idx-img"],
-             [caller ": indexed image contains colors outside of colormap"]);
+    do_warn = true;
     if (numel (x) > maxidx - num_colors + is_int)
-      ## The image is large. So extend the map.
+      ## The image is large.  So extend the map.
       pad = repmat (map(end,:), maxidx - num_colors + is_int, 1);
       map(end+(1:rows (pad)), :) = pad;
     else
-      ## The map extension would be large. So clip the image.
+      ## The map extension would be large.  So clip the image.
       x(x > rows (map)) = rows (map);
     endif
+  endif
+
+  ## Only issue warning once.
+  if (do_warn)
+    warning (["Octave:" caller ":invalid-idx-img"],
+             [caller ": indexed image contains colors outside of colormap"]);
   endif
 
 endfunction

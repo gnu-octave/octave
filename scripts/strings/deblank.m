@@ -36,10 +36,10 @@
 ## @example
 ## @group
 ## deblank ("    abc  ")
-##      @result{}  "    abc"
+##      @xresult{}  "    abc"
 ##
 ## deblank ([" abc   "; "   def   "])
-##      @result{}  [" abc  " ; "   def"]
+##      @xresult{}  [" abc  " ; "   def"]
 ## @end group
 ## @end example
 ## @seealso{strtrim}

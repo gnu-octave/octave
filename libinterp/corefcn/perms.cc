@@ -143,7 +143,7 @@ Example 1
 @example
 @group
 perms ([1, 2, 3])
-@result{}
+@xresult{}
 3   2   1
 3   1   2
 2   3   1
@@ -158,7 +158,7 @@ Example 2
 @example
 @group
 perms ([1, 1, 2, 2], "unique")
-@result{}
+@xresult{}
 2   2   1   1
 2   1   2   1
 2   1   1   2
@@ -313,7 +313,7 @@ Programming Note: If the @qcode{"unique"} option is not used, the length of
 ## Also sort logical input with order dependent on the input order and
 ## not their values.
 
-%!assert <*52431> (perms (logical ([1 0])), logical ([0 1;, 1 0]))
+%!assert <*52431> (perms (logical ([1 0])), logical ([0 1; 1 0]))
 %!assert <*52431> (perms (logical ([0 1])), logical ([1 0; 0 1]))
 %!assert <*52431> (perms (logical ([0 1 0])),
 %!                logical ([0 1 0; 0 0 1; 1 0 0; 1 0 0; 0 0 1; 0 1 0]))

@@ -29,6 +29,10 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   or permutation of the inputs for performance.  Now Octave automatically picks
   the fastest calculation order irrespective of the input orientation.
 
+- New function `_Exit` has been added which makes it possible to use
+  `fork`/`_Exit` sequence to perform work in parallel child processes for
+  potential performance gains.
+
 - The `fzero` function is now more accurate (1-2 eps when TolX is eps).
 
 - The `roots` function now accepts only a numeric argument.  Convert any
@@ -40,6 +44,11 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 ### Graphical User Interface
 
 - The GUI now uses scalable SVG icons for beautiful display at any size.
+
+- The GUI now uses the default Octave command prompt.  This prompt is
+  completely customizable by calling `PS1` in an initialization file such as
+  `.octaverc`.  To recover the former behavior of the GUI use `PS1 ('>> '); PS2
+  ('')`.
 
 - The text of the Octave GUI has been translated to a new language: Asturian.
   It uses the ISO 639 language code ast_ES.
@@ -79,16 +88,40 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   invocations for each cell element.  In earlier versions, the elements were
   converted to a compatible type if possible.
 
-- The function `fill` now handles all input combination of vector and matrix
-  vertex data and color data in a Matlab-compatible way.
+- The functions `fill` and `fill3 now handle all input combinations of vector
+  and matrix vertex data and color data in a Matlab-compatible way.
+
+- The `image` function now validates that `x` and `y` inputs are vectors, and
+  accepts and processes 1-element vectors for compatibility.
+
+- The `ind2rgb` and `ind2gray` functions now clip exceptional values such as
+  `NaN` or `Inf` to the last value in the colormap for for compatibility.
 
 - The function `colorbar` now requires the `location` input to be the first
   argument rather than the last argument.  This may require updating existing
   Octave scripts.  The graphics properties `AxisLocation`, `Direction`, and
   `TickLabels` have been implemented.
 
+- The `weboptions` has been re-written internally.  Support for non-integer
+  Timeout values, and the special value `Inf`, has been added.
+
+- The `newplot` function has been re-written to remove functionality that was
+  possibly never used in Octave, and has been removed from Matlab.  The
+  function is also more compatible, and does not change the current figure
+  unexpectedly.  However, any user plotting code that depends on this broken
+  behavior will need to be updated.
+
+- The `KeyEvent` structure passed as an input paramater to graphics callback
+  functions such as `KeyPressFcn` now returns fieldnames in the same order
+  as Matlab: `Character`, `Modifier`, `Key`.
+
+- The `KeyEvent` structure now includes the fields `Source` (graphics handle
+  of object returning `KeyEvent`) and `EventName` (e.g., `KeyPress` or
+  `KeyRelease`).
+
 ### Alphabetical list of new functions added in Octave 11
 
+* `_Exit`
 * `corrcov`
 
 ### Deprecated functions, properties, and operators

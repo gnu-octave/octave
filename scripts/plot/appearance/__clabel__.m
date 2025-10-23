@@ -35,7 +35,7 @@ function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
   set (hax, "units", "points");
   axpos = get (hax, "position");
   set (hax, "units", units);
-  lims = axis ();
+  lims = axis (hax);
   xspacing = axpos(3) / (lims(2) - lims (1));
   yspacing = axpos(4) / (lims(4) - lims (3));
 

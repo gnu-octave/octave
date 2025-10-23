@@ -337,6 +337,8 @@ debugger::repl (const std::string& prompt_arg)
 
               if (! line_buf.empty ())
                 buf << curr_debug_line << ": " << line_buf;
+              else
+                buf << "[End of function]";
             }
         }
     }
@@ -2304,11 +2306,11 @@ Example:
 @group
 @var{x} = [ 1 2 3; 4 5 6 ];
 @var{x}(1,end)
- @result{} 3
+ @xresult{} 3
 @var{x}(end,1)
- @result{} 4
+ @xresult{} 4
 @var{x}(end,end)
- @result{} 6
+ @xresult{} 6
 @end group
 @end example
 
@@ -5564,7 +5566,7 @@ single space).  For example:
 @group
 string_fill_char ("X");
 [ "these"; "are"; "strings" ]
-    @result{}  "theseXX"
+    @xresult{}  "theseXX"
         "areXXXX"
         "strings"
 @end group

@@ -377,7 +377,7 @@ function.  An example of the use of this demonstration function is
 @example
 @group
 addtwomatrices (ones (2, 2), eye (2, 2))
-      @result{}  2  1
+      @xresult{}  2  1
           1  2
 @end group
 @end example
@@ -426,16 +426,16 @@ An example of the use of this function is
 @group
 s0 = ["First String"; "Second String"];
 [s1,s2] = stringdemo (s0)
-@result{} s1 = Second String
+@xresult{} s1 = Second String
         First String
 
-@result{} s2 = First String
+@xresult{} s2 = First String
         Second String
 
 typeinfo (s2)
-@result{} sq_string
+@xresult{} sq_string
 typeinfo (s1)
-@result{} string
+@xresult{} string
 @end group
 @end example
 
@@ -491,7 +491,7 @@ them as individual output arguments.  For example:
 @example
 @group
 [b1, b2, b3] = celldemo (@{1, [1, 2], "test"@})
-@result{}
+@xresult{}
 b1 =  1
 b2 =
 
@@ -520,7 +520,7 @@ An example of its use is
 @group
 x.a = 1; x.b = "test"; x.c = [1, 2];
 structdemo (x, "b")
-@result{} selected = test
+@xresult{} selected = test
 @end group
 @end example
 
@@ -892,11 +892,11 @@ An example of its use is
 global a b
 b = 10;
 globaldemo ("b")
-@result{} 10
+@xresult{} 10
 globaldemo ("c")
-@result{} "Global variable not found"
+@xresult{} "Global variable not found"
 num2str (a)
-@result{} 42
+@xresult{} 42
 @end group
 @end example
 
@@ -932,13 +932,13 @@ remaining arguments are all passed to the function.
 @example
 @group
 funcdemo (@@sin, 1)
-@result{} 0.84147
+@xresult{} 0.84147
 funcdemo (@@(x) sin (x), 1)
-@result{} 0.84147
+@xresult{} 0.84147
 funcdemo ("sin", 1)
-@result{} 0.84147
+@xresult{} 0.84147
 funcdemo (@@atan2, 1, 1)
-@result{} 0.78540
+@xresult{} 0.78540
 @end group
 @end example
 
@@ -1107,7 +1107,7 @@ example to work.
 @group
 mkoctfile fortrandemo.cc fortransub.f
 [b, s] = fortrandemo (1:3)
-@result{}
+@xresult{}
   b = 1.00000   0.50000   0.33333
   s = There are   3 values in the input vector
 [b, s] = fortrandemo (0:3)
@@ -1167,7 +1167,7 @@ An example of its use is:
 @example
 @group
 paramdemo ([1, 2, NaN, Inf])
-@result{} Properties of input array:
+@xresult{} Properties of input array:
      includes Inf or NaN values
      includes other values than 1 and 0
      includes only int, Inf or NaN values
@@ -1238,9 +1238,9 @@ As can be seen in the example:
 @example
 @group
 unwinddemo (1, 0)
-@result{} Inf
+@xresult{} Inf
 1 / 0
-@result{} warning: division by zero
+@xresult{} warning: division by zero
    Inf
 @end group
 @end example
@@ -1391,8 +1391,8 @@ Octave as
 @example
 @group
 myhello (1,2,3)
-@result{} Hello, World!
-@result{} I have 3 inputs and 0 outputs
+@xresult{} Hello, World!
+@xresult{} I have 3 inputs and 0 outputs
 @end group
 @end example
 
@@ -1437,10 +1437,10 @@ then as can be seen by
 @example
 @group
 myfunc ()
-@result{} You called function: myfunc
+@xresult{} You called function: myfunc
     This is the principal function
 myfunc2 ()
-@result{} You called function: myfunc2
+@xresult{} You called function: myfunc2
 @end group
 @end example
 
@@ -1512,7 +1512,7 @@ An example of its use is
 @group
 b = randn (4,1) + 1i * randn (4,1);
 all (b.^2 == mypow2 (b))
-@result{} 1
+@xresult{} 1
 @end group
 @end example
 
@@ -1541,7 +1541,7 @@ An example of its expected output is
 @example
 @group
 mystring (["First String"; "Second String"])
-@result{} Second String
+@xresult{} Second String
    First String
 @end group
 @end example
@@ -1570,7 +1570,7 @@ The output is identical to the oct-file version as well.
 @example
 @group
 [b1, b2, b3] = mycell (@{1, [1, 2], "test"@})
-@result{}
+@xresult{}
 b1 =  1
 b2 =
 
@@ -1653,18 +1653,18 @@ An example of the behavior of this function within Octave is then
 a(1).f1 = "f11"; a(1).f2 = "f12";
 a(2).f1 = "f21"; a(2).f2 = "f22";
 b = mystruct (a);
-@result{}  field f1(0) = f11
+@xresult{}  field f1(0) = f11
     field f1(1) = f21
     field f2(0) = f12
     field f2(1) = f22
 b
-@result{} 2x2 struct array containing the fields:
+@xresult{} 2x2 struct array containing the fields:
 
      this
      that
 
 b(3)
-@result{} scalar structure containing the fields:
+@xresult{} scalar structure containing the fields:
 
      this = this3
      that = that3
@@ -1734,7 +1734,7 @@ A sample usage of @code{mysparse} is
 @group
 sm = sparse ([1, 0; 0, pi]);
 mysparse (sm)
-@result{}
+@xresult{}
 Matrix is 2-by-2 real sparse matrix with 2 elements
 last nonzero element (2, 2) = 3.14159
 @end group
@@ -1757,7 +1757,7 @@ If this code is in the file @file{myfeval.c}, and is compiled to
 @example
 @group
 a = myfeval ("sin", 1)
-@result{} Starting file myfeval.mex
+@xresult{} Starting file myfeval.mex
    I have 2 inputs and 1 outputs
    I'm going to call the interpreter function sin
    a =  0.84147
@@ -2029,13 +2029,13 @@ addition to the previous example:
 @example
 @group
 isjava (a)
-@result{} ans = 0
+@xresult{} ans = 0
 class (a)
-@result{} ans = double
+@xresult{} ans = double
 isjava (b)
-@result{} ans = 1
+@xresult{} ans = 1
 class (b)
-@result{} ans = java.math.BigDecimal
+@xresult{} ans = java.math.BigDecimal
 @end group
 @end example
 
@@ -2047,13 +2047,13 @@ a = javaObject ("java.lang.Double", 1.001);
 b = javaObject ("java.math.BigDecimal", a);
 
 isjava (a)
-@result{} ans = 1
+@xresult{} ans = 1
 class (a)
-@result{} ans = java.lang.Double
+@xresult{} ans = java.lang.Double
 isjava (b)
-@result{} ans = 1
+@xresult{} ans = 1
 class (b)
-@result{} ans = java.math.BigDecimal
+@xresult{} ans = java.math.BigDecimal
 @end group
 @end example
 
@@ -2073,9 +2073,9 @@ It is possible to invoke public member methods on Java objects in Java syntax:
 @example
 @group
 a.toString
-@result{} ans = 1.001
+@xresult{} ans = 1.001
 b.toString
-@result{} ans = 1.000999999999999889865...
+@xresult{} ans = 1.000999999999999889865...
 @end group
 @end example
 
@@ -2119,7 +2119,7 @@ represent Java's @code{null} value and how Java exceptions are represented.
 @example
 @group
 javaObject ("java.math.BigDecimal", []);
-@result{} error: [java] java.lang.NullPointerException
+@xresult{} error: [java] java.lang.NullPointerException
 @end group
 @end example
 
@@ -2146,7 +2146,7 @@ the stack trace are displayed.
 @group
 debug_java (true)  # use "false" to omit display of stack trace
 debug_java ()
-@result{} ans = 1
+@xresult{} ans = 1
 javaObject ("java.math.BigDecimal", "1") ...
   .divide (javaObject ("java.math.BigDecimal", "0"))
 @end group
@@ -2274,7 +2274,7 @@ to return the fields of a Java object.  For example:
 @group
 dobj = javaObject ("java.lang.Double", pi);
 fieldnames (dobj)
-@result{}
+@xresult{}
 @{
   [1,1] = public static final double java.lang.Double.POSITIVE_INFINITY
   [1,2] = public static final double java.lang.Double.NEGATIVE_INFINITY
@@ -2301,9 +2301,9 @@ An example of both styles is shown below.
 @group
 dobj = javaObject ("java.lang.Double", pi);
 dobj.MAX_VALUE
-@result{}  1.7977e+308
+@xresult{}  1.7977e+308
 java_get ("java.lang.Float", "MAX_VALUE")
-@result{}  3.4028e+38
+@xresult{}  3.4028e+38
 @end group
 @end example
 
@@ -2319,7 +2319,7 @@ example, using the previously created @var{dobj}:
 @example
 @group
 methods (dobj)
-@result{}
+@xresult{}
 Methods for class java.lang.Double:
 boolean equals(java.lang.Object)
 java.lang.String toString(double)
@@ -2337,9 +2337,9 @@ below.
 @group
 dobj = javaObject ("java.lang.Double", pi);
 dobj.equals (3)
-@result{}  0
+@xresult{}  0
 javaMethod ("equals", dobj, pi)
-@result{}  1
+@xresult{}  1
 @end group
 @end example
 

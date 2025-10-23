@@ -100,7 +100,7 @@
 ## @group
 ## @var{f} = @@(@var{x},@var{y},@var{z}) ones (size (@var{x}));
 ## @var{q} = integral3 (@var{f}, 0, 1, 0, 1, 0, 1)
-##   @result{} @var{q} =  1.00000
+##   @xresult{} @var{q} =  1.00000
 ## @end group
 ## @end example
 ##
@@ -115,7 +115,7 @@
 ## @var{ymax} = @@(@var{x}) sqrt (1 - @var{x}.^2);
 ## @var{zmax} = @@(@var{x},@var{y}) sqrt (1 - @var{x}.^2 - @var{y}.^2);
 ## @var{q} = integral3 (@var{f}, 0, 1, 0, @var{ymax}, 0, @var{zmax})
-##   @result{} @var{q} =  0.52360
+##   @xresult{} @var{q} =  0.52360
 ## @end group
 ## @end example
 ##
@@ -128,12 +128,12 @@
 ## @group
 ## @var{f} = @@(@var{x},@var{y}) sinc (@var{x}) * sinc (@var{y}), * sinc (@var{z});
 ## @var{q} = integral3 (@var{f}, -1, 1, -1, 1, -1, 1)
-##   @result{} @var{q} =  14.535  (incorrect)
+##   @xresult{} @var{q} =  14.535  (incorrect)
 ## @var{q} = integral3 (@var{f}, -1, 1, -1, 1, -1, 1, "Vectorized", false)
-##   @result{} @var{q} =  1.6388 (correct)
+##   @xresult{} @var{q} =  1.6388 (correct)
 ## @var{f} = @@(@var{x},@var{y},@var{z}) sinc (@var{x}) .* sinc (@var{y}), .* sinc (@var{z});
 ## @var{q} = integral3 (@var{f}, -1, 1, -1, 1, -1, 1)
-##   @result{} @var{q} =  1.6388  (correct)
+##   @xresult{} @var{q} =  1.6388  (correct)
 ## @end group
 ## @end example
 ##

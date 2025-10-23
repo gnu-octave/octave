@@ -27,15 +27,20 @@
 ## @deftypefn  {} {@var{R} =} randi (@var{imax})
 ## @deftypefnx {} {@var{R} =} randi (@var{imax}, @var{n})
 ## @deftypefnx {} {@var{R} =} randi (@var{imax}, @var{m}, @var{n}, @dots{})
-## @deftypefnx {} {@var{R} =} randi ([@var{imin} @var{imax}], @dots{})
+## @deftypefnx {} {@var{R} =} randi (@var{imax}, [@var{m}, @var{n}, @dots{}])
+## @deftypefnx {} {@var{R} =} randi ([@var{imin}, @var{imax}], @dots{})
 ## @deftypefnx {} {@var{R} =} randi (@dots{}, "@var{class}")
-## Return random integers in the range 1:@var{imax}.
 ##
-## Additional arguments determine the shape of the return matrix.  When no
-## arguments are specified a single random integer is returned.  If one
-## argument @var{n} is specified then a square matrix @w{(@var{n} x @var{n})}
-## is returned.  Two or more arguments will return a multi-dimensional matrix
-## @w{(@var{m} x @var{n} x @dots{})}.
+## Return a scalar, matrix, or N-dimensional array whose elements are random
+## random integers in the range 1:@var{imax}.
+##
+## If called with no size arguments, return a scalar random value.
+##
+## If invoked with a single scalar size argument @var{n}, return a square
+## @nospell{NxN} matrix.
+##
+## If invoked with two or more scalar integer size arguments, or a vector of
+## integer values, return an array with the given dimensions.
 ##
 ## The integer range may optionally be described by a two-element matrix with a
 ## lower and upper bound in which case the returned integers will be on the
@@ -44,7 +49,7 @@
 ## The optional argument @var{class} will return a matrix of the requested
 ## type.  The default is @qcode{"double"}.
 ##
-## The following example returns 150 integers in the range 1--10.
+## Example: 150 integers in the range 1--10.
 ##
 ## @example
 ## ri = randi (10, 150, 1)
@@ -56,7 +61,7 @@
 ## returned by the @code{flintmax} function.  For IEEE@tie{}754 floating point
 ## numbers this value is @w{@math{2^{53} - 1}}.
 ##
-## @seealso{rand, randn}
+## @seealso{rand, randn, rande, randg, randp}
 ## @end deftypefn
 
 function R = randi (bounds, varargin)
@@ -101,7 +106,7 @@ function R = randi (bounds, varargin)
     rclass = "double";
   endif
 
-  ## Expand dimension argument to at least 2-D for reshape
+  ## Expand dimension argument to at least 2-D for reshape.
   if (nargin == 1)
     varargin = {1, 1};
   elseif (nargin == 2 && isscalar (varargin{1}))
@@ -138,7 +143,7 @@ function R = randi (bounds, varargin)
                 "Values might be truncated to requested type."]);
     elseif (imin < minval)
       warning (["randi: integer IMIN exceeds requested type.  ", ...
-                " Values might be truncated to requested type."]);
+                "Values might be truncated to requested type."]);
     endif
 
     R = cast (R, rclass);

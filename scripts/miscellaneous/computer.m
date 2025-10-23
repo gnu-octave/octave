@@ -41,7 +41,7 @@
 ##    @print{} x86_64-pc-linux-gnu
 ##
 ## mycomp = computer ()
-##    @result{} mycomp = x86_64-pc-linux-gnu
+##    @xresult{} mycomp = x86_64-pc-linux-gnu
 ## @end group
 ## @end example
 ##

@@ -31,15 +31,15 @@
 ## @example
 ## @group
 ## int2str (123)
-##   @result{} 123
+##   @xresult{} 123
 ##
 ## s = int2str ([1, 2, 3; 4, 5, 6])
-##   @result{} s =
+##   @xresult{} s =
 ##         1  2  3
 ##         4  5  6
 ##
 ## whos s
-##   @result{} Variables in the current scope:
+##   @xresult{} Variables in the current scope:
 ##         Attr Name        Size                     Bytes  Class
 ##         ==== ====        ====                     =====  =====
 ##              s           2x7                         14  char

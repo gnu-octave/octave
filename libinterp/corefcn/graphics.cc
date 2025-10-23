@@ -12458,7 +12458,7 @@ Example Query
 @group
 hf = figure ();
 set (hf, "paperorientation")
-@result{}  [ landscape | @{portrait@} ]
+@xresult{}  [ landscape | @{portrait@} ]
 @end group
 @end example
 

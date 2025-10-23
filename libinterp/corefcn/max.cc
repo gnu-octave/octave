@@ -470,7 +470,7 @@ returns the smallest element of the 2-D matrix @var{x}, and
 @example
 @group
 min (2:5, pi)
-    @result{}  2.0000  3.0000  3.1416  3.1416
+    @xresult{}  2.0000  3.0000  3.1416  3.1416
 @end group
 @end example
 
@@ -485,7 +485,7 @@ by phase angle in the range (-pi, pi].  Hence,
 @example
 @group
 min ([-1 i 1 -i])
-    @result{} -i
+    @xresult{} -i
 @end group
 @end example
 
@@ -499,7 +499,7 @@ the first index of the minimum value(s).  Thus,
 @example
 @group
 [x, ix] = min ([1, 3, 0, 2, 0])
-    @result{}  x = 0
+    @xresult{}  x = 0
         ix = 3
 @end group
 @end example
@@ -692,7 +692,7 @@ returns the largest element of the 2-D matrix @var{x}, and
 @example
 @group
 max (2:5, pi)
-    @result{}  3.1416  3.1416  4.0000  5.0000
+    @xresult{}  3.1416  3.1416  4.0000  5.0000
 @end group
 @end example
 
@@ -707,7 +707,7 @@ by phase angle in the range (-pi, pi].  Hence,
 @example
 @group
 max ([-1 i 1 -i])
-    @result{} -1
+    @xresult{} -1
 @end group
 @end example
 
@@ -721,7 +721,7 @@ the first index of the maximum value(s).  Thus,
 @example
 @group
 [x, ix] = max ([1, 3, 5, 2, 5])
-    @result{}  x = 5
+    @xresult{}  x = 5
         ix = 3
 @end group
 @end example
@@ -1004,7 +1004,7 @@ example:
 @example
 @group
 cummin ([5 4 6 2 3 1])
-   @result{}  5  4  4  2  2  1
+   @xresult{}  5  4  4  2  2  1
 @end group
 @end example
 
@@ -1014,7 +1014,7 @@ returned.
 @example
 @group
 [M, IM] = cummin ([5 4 6 2 3 1])
-@result{}
+@xresult{}
 M =  5  4  4  2  2  1
 IM = 1  2  2  4  4  6
 @end group
@@ -1059,7 +1059,7 @@ example:
 @example
 @group
 cummax ([1 3 2 6 4 5])
-   @result{}  1  3  3  6  6  6
+   @xresult{}  1  3  3  6  6  6
 @end group
 @end example
 
@@ -1069,7 +1069,7 @@ returned.
 @example
 @group
 [w, iw] = cummax ([1 3 2 6 4 5])
-@result{}
+@xresult{}
 M =  1  3  3  6  6  6
 IM = 1  2  2  4  4  4
 @end group

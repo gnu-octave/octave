@@ -1393,9 +1393,9 @@ Examples:
 @example
 @group
 tilde_expand ("~joeuser/bin")
-     @result{} "/home/joeuser/bin"
+     @xresult{} "/home/joeuser/bin"
 tilde_expand ("~/bin")
-     @result{} "/home/jwe/bin"
+     @xresult{} "/home/jwe/bin"
 @end group
 @end example
 @end deftypefn */)

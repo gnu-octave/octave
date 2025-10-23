@@ -71,18 +71,8 @@ function h = pie3 (varargin)
     error ("pie3: all data in X must be finite");
   endif
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
-  endif
-  unwind_protect
-    hax = newplot (hax);
-    htmp = __pie__ ("pie3", hax, varargin{:});
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
+  hax = newplot (hax);
+  htmp = __pie__ ("pie3", hax, varargin{:});
 
   if (nargout > 0)
     h = htmp;

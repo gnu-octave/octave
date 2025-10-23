@@ -84,10 +84,6 @@ function response = webread (url, varargin)
     options.RequestMethod = "get";
   endif
 
-  ## Flatten the cell array because the internal processing takes place on
-  ## a flattened array.
-  options.HeaderFields = options.HeaderFields(:).';
-
   nargs = 1 + numel (varargin);
   if (nargs == 1)
     response = __restful_service__ (url, cell (), options);

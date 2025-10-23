@@ -71,8 +71,8 @@
 @c
 @c Implementation Note:
 @c For TeX, @vskip produces a nice separation.
-@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
-@c for HTML.  We use a simple blank line to produce the correct behavior.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results.
+@c For HTML, a simple blank line produces the correct behavior.
 @c
 @c The macro is named @xseealso now because Texinfo introduced its own @seealso
 @c command.  But, instead of modifying all source files, the build system uses
@@ -94,3 +94,18 @@
 See also: \args\.
 @end ifinfo
 @end macro
+
+@c The following macro works around the HTML expansion of @result{} which is
+@c a single glyph (right arrow "&rarr").  All other formats expand to a
+@c sequence that is 2-characters wide.  The resulting one-character difference
+@c throws off alignment of columns in the documentation.  Only for HTML,
+@c expand @xresult to "right arrow" + "SPACE".
+
+@ifhtml
+@macro xresult
+@result{} 
+@end macro
+@end ifhtml
+@ifnothtml
+@alias xresult=result
+@end ifnothtml

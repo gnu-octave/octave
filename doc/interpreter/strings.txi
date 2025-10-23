@@ -82,9 +82,9 @@ is not a special character.  Here is an example showing the difference:
 @example
 @group
 double ("\n")
-    @result{} 10
+    @xresult{} 10
 double ('\n')
-    @result{} [ 92 110 ]
+    @xresult{} [ 92 110 ]
 @end group
 @end example
 
@@ -146,7 +146,7 @@ example,
 @example
 @group
 'I can''t escape'
-    @result{} I can't escape
+    @xresult{} I can't escape
 @end group
 @end example
 
@@ -193,13 +193,13 @@ in combination with the @code{isrow} function as in the following example:
 @example
 @group
 ischar (collection)
-     @result{} 1
+     @xresult{} 1
 
 ischar (collection) && isrow (collection)
-     @result{} 0
+     @xresult{} 0
 
 ischar ("my string") && isrow ("my string")
-     @result{} 1
+     @xresult{} 1
 @end group
 @end example
 
@@ -233,7 +233,7 @@ all blank characters with underscores.
 quote = ...
   "First things first, but not necessarily in that order";
 quote( quote == " " ) = "_"
-@result{} quote =
+@xresult{} quote =
     First_things_first,_but_not_necessarily_in_that_order
 @end group
 @end example
@@ -311,7 +311,7 @@ example:
 @example
 @group
 char ([98, 97, 110, 97, 110, 97])
-   @result{} banana
+   @xresult{} banana
 @end group
 @end example
 
@@ -327,13 +327,13 @@ horizontally.  For example:
 @example
 @group
 char ("an apple", "two pears")
-    @result{} an apple
+    @xresult{} an apple
        two pears
 @end group
 
 @group
 strcat ("oc", "tave", " is", " good", " for you")
-     @result{} octave is good for you
+     @xresult{} octave is good for you
 @end group
 @end example
 
@@ -344,7 +344,7 @@ eliminates empty strings.
 @example
 @group
 char ("orange", "green", "", "red")
-    @result{} orange
+    @xresult{} orange
        green
 
        red
@@ -352,7 +352,7 @@ char ("orange", "green", "", "red")
 
 @group
 strvcat ("orange", "green", "", "red")
-    @result{} orange
+    @xresult{} orange
        green
        red
 @end group
@@ -366,7 +366,7 @@ concatenates within the cells of the cell arrays:
 @example
 @group
 char (@{"red", "green", "", "blue"@})
-     @result{} red
+     @xresult{} red
         green
 
         blue
@@ -374,7 +374,7 @@ char (@{"red", "green", "", "blue"@})
 
 @group
 strcat (@{"abc"; "ghi"@}, @{"def"; "jkl"@})
-     @result{}
+     @xresult{}
         @{
           [1,1] = abcdef
           [2,1] = ghijkl
@@ -389,13 +389,13 @@ kinds of behavior can be useful as can be seen in the examples:
 @example
 @group
 strcat (["dir1";"directory2"], ["/";"/"], ["file1";"file2"])
-     @result{} dir1/file1
+     @xresult{} dir1/file1
         directory2/file2
 @end group
 @group
 
 cstrcat (["thirteen apples"; "a banana"], [" 5$";" 1$"])
-      @result{} thirteen apples 5$
+      @xresult{} thirteen apples 5$
          a banana        1$
 @end group
 @end example
@@ -436,7 +436,7 @@ element by element as the following example shows:
 @group
 GNU = "GNU's Not UNIX";
 spaces = (GNU == " ")
-     @result{} spaces =
+     @xresult{} spaces =
        0   0   0   0   0   1   0   0   0   1   0   0   0   0
 @end group
 @end example
@@ -572,7 +572,7 @@ corresponding character in the string array.  For example:
 @example
 @group
 isalpha ("!Q@@WERT^Y&")
-     @result{} [ 0, 1, 0, 1, 1, 1, 1, 0, 1, 0 ]
+     @xresult{} [ 0, 1, 0, 1, 1, 1, 1, 0, 1, 0 ]
 @end group
 @end example
 

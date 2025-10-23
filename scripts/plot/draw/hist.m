@@ -57,7 +57,7 @@
 ## @group
 ## [nn, xx] = hist (rand (10, 3), 5, [1 2 3]);
 ## sum (nn, 1)
-## @result{} ans =
+## @xresult{} ans =
 ##       1   2   3
 ## @end group
 ## @end example

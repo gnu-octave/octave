@@ -138,66 +138,55 @@ function h = slice (varargin)
     error ("slice: dimensional mismatch for (XI, YI, ZI) or (SX, SY, SZ)");
   endif
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
+  hax = newplot (hax);
+
+  sidx = 1;
+  minv = min (v(:));
+  maxv = max (v(:));
+  set (hax, "clim", double ([minv, maxv]));
+
+  if (have_sval)
+    ns = length (sx) + length (sy) + length (sz);
+    hs = zeros (ns,1);
+    [ny, nx, nz] = size (v);
+    if (length (sz) > 0)
+      for i = 1:length (sz)
+        [xi, yi, zi] = meshgrid (squeeze (x(1,:,1)),
+                                 squeeze (y(:,1,1)), sz(i));
+        vz = squeeze (interp3 (x, y, z, v, xi, yi, zi, method));
+        htmp(sidx++) = surface (hax, xi, yi, sz(i) * ones (size (yi)), vz);
+      endfor
+    endif
+
+    if (length (sy) > 0)
+      for i = length (sy):-1:1
+        [xi, yi, zi] = meshgrid (squeeze (x(1,:,1)),
+                                 sy(i),
+                                 squeeze (z(1,1,:)));
+        vy = squeeze (interp3 (x, y, z, v, xi, yi, zi, method));
+        htmp(sidx++) = surface (hax, squeeze (xi),
+                                     squeeze (sy(i) * ones (size (zi))),
+                                     squeeze (zi), vy);
+      endfor
+    endif
+
+    if (length (sx) > 0)
+      for i = length (sx):-1:1
+        [xi, yi, zi] = meshgrid (sx(i), squeeze (y(:,1,1)), squeeze (z(1,1,:)));
+        vx = squeeze (interp3 (x, y, z, v, xi, yi, zi, method));
+        htmp(sidx++) = surface (hax, squeeze (sx(i) * ones (size (zi))),
+                                     squeeze (yi), squeeze (zi), vx);
+      endfor
+    endif
+  else
+    vi = interp3 (x, y, z, v, sx, sy, sz);
+    htmp = surface (hax, sx, sy, sz, vi);
   endif
-  unwind_protect
-    hax = newplot (hax);
 
-    sidx = 1;
-    minv = min (v(:));
-    maxv = max (v(:));
-    set (hax, "clim", double ([minv, maxv]));
-
-    if (have_sval)
-      ns = length (sx) + length (sy) + length (sz);
-      hs = zeros (ns,1);
-      [ny, nx, nz] = size (v);
-      if (length (sz) > 0)
-        for i = 1:length (sz)
-          [xi, yi, zi] = meshgrid (squeeze (x(1,:,1)),
-                                   squeeze (y(:,1,1)), sz(i));
-          vz = squeeze (interp3 (x, y, z, v, xi, yi, zi, method));
-          htmp(sidx++) = surface (xi, yi, sz(i) * ones (size (yi)), vz);
-        endfor
-      endif
-
-      if (length (sy) > 0)
-        for i = length (sy):-1:1
-          [xi, yi, zi] = meshgrid (squeeze (x(1,:,1)),
-                                   sy(i),
-                                   squeeze (z(1,1,:)));
-          vy = squeeze (interp3 (x, y, z, v, xi, yi, zi, method));
-          htmp(sidx++) = surface (squeeze (xi),
-                                  squeeze (sy(i) * ones (size (zi))),
-                                  squeeze (zi), vy);
-        endfor
-      endif
-
-      if (length (sx) > 0)
-        for i = length (sx):-1:1
-          [xi, yi, zi] = meshgrid (sx(i), squeeze (y(:,1,1)), squeeze (z(1,1,:)));
-          vx = squeeze (interp3 (x, y, z, v, xi, yi, zi, method));
-          htmp(sidx++) = surface (squeeze (sx(i) * ones (size (zi))),
-                                  squeeze (yi), squeeze (zi), vx);
-        endfor
-      endif
-    else
-      vi = interp3 (x, y, z, v, sx, sy, sz);
-      htmp = surface (sx, sy, sz, vi);
-    endif
-
-    if (! ishold ())
-      set (hax, "view", [-37.5, 30.0],
-                "xgrid", "on", "ygrid", "on", "zgrid", "on");
-    endif
-
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
+  if (! ishold (hax))
+    set (hax, "view", [-37.5, 30.0],
+              "xgrid", "on", "ygrid", "on", "zgrid", "on");
+  endif
 
   if (nargout > 0)
     h = htmp;

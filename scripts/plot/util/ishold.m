@@ -38,8 +38,8 @@
 function tf = ishold (h)
 
   if (nargin == 0)
-    fig = gcf ();
-    ax = get (fig, "currentaxes");
+    hfig = gcf ();
+    hax = get (hfig, "currentaxes");
   else
     if (! ishghandle (h))
       error ("ishold: H must be an axes or figure graphics handle");
@@ -47,12 +47,12 @@ function tf = ishold (h)
 
     switch (get (h, "type"))
       case "figure"
-        fig = h;
-        ax = get (fig, "currentaxes");
+        hfig = h;
+        hax = get (hfig, "currentaxes");
 
       case "axes"
-        ax = h;
-        fig = ancestor (ax, "figure");
+        hax = h;
+        hfig = ancestor (hax, "figure");
 
       otherwise
         error ("ishold: H must be an axes or figure graphics handle");
@@ -60,8 +60,8 @@ function tf = ishold (h)
     endswitch
   endif
 
-  tf = (strcmp (get (fig, "nextplot"), "add")
-            && ! isempty (ax) && strcmp (get (ax, "nextplot"), "add"));
+  tf = (strcmp (get (hfig, "nextplot"), "add")
+        && ! isempty (hax) && strcmp (get (hax, "nextplot"), "add"));
 
 endfunction
 
@@ -83,8 +83,11 @@ endfunction
 %!   assert (get (gca, "NextPlot"), "add");
 %!   assert (get (hf, "NextPlot"), "add");
 %!   p = fill ([0 1 1], [0 0 1],"black");
-%!   assert (length (get (hf, "children")), 1);
-%!   assert (length (get (gca, "children")), 2);
+%!   assert (numel (get (hf, "children")), 1);
+%!   assert (numel (get (gca, "children")), 2);
+%!   set (hf, "NextPlot", "new");
+%!   assert (! ishold);
+%!   assert (! ishold (gca));
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

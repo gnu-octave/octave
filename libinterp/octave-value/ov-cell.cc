@@ -1326,16 +1326,16 @@ array will have a dimension vector corresponding to
 s = struct ("name", @{"Peter", "Hannah", "Robert"@},
            "age", @{23, 16, 3@});
 c = struct2cell (s)
-   @result{} c = @{2x1x3 Cell Array@}
+   @xresult{} c = @{2x1x3 Cell Array@}
 c(1,1,:)(:)
-   @result{}
+   @xresult{}
       @{
         [1,1] = Peter
         [2,1] = Hannah
         [3,1] = Robert
       @}
 c(2,1,:)(:)
-   @result{}
+   @xresult{}
       @{
         [1,1] = 23
         [2,1] = 16

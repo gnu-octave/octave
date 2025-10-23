@@ -49,9 +49,9 @@
 ## @example
 ## @group
 ## cond (rand (5))
-##    @result{} 14.392
+##    @xresult{} 14.392
 ## cond (hilb (5))
-##    @result{} 4.7661e+05
+##    @xresult{} 4.7661e+05
 ## @end group
 ## @end example
 ##

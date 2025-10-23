@@ -46,7 +46,7 @@ function [hax, hg]= __quiver__ (varargin)
     lastnumeric = nargin;
     ## Recast non-float inputs as doubles to avoid erroneous plots.
     varargin(3:end) = cellfun ('double', varargin(3:end), ...
-                                  "UniformOutput", false);
+                               "UniformOutput", false);
   else
 
     lastnumeric += 2;
@@ -228,15 +228,15 @@ function [hax, hg]= __quiver__ (varargin)
       ls = linespec.linestyle;
       lc = linespec.color;
       if (isempty (lc))
-        lc = __next_line_color__ ();
+        lc = __next_line_color__ (hax);
       endif
     else
       ls = "-";
-      lc = __next_line_color__ ();
+      lc = __next_line_color__ (hax);
     endif
 
     ## Must occur after __next_line_color__ in order to work correctly.
-    hg = hggroup ("__appdata__", struct ("__creator__", "__quiver__"));
+    hg = hggroup (hax, "__appdata__", struct ("__creator__", "__quiver__"));
     if (is3d)
       args = __add_datasource__ ("quiver3", hg,
                                  {"x", "y", "z", "u", "v", "w"}, args{:});
@@ -278,14 +278,14 @@ function [hax, hg]= __quiver__ (varargin)
 
     ## Draw arrow shaft as one line object
     if (is3d)
-      h1 = plot3 ([x.'; xend.'; NaN(1, length (x))](:),
-                  [y.'; yend.'; NaN(1, length (y))](:),
-                  [z.'; zend.'; NaN(1, length (z))](:),
-                  "linestyle", ls, "color", lc, "parent", hg);
+      h1 = plot3 (hax, [x.'; xend.'; NaN(1, length (x))](:),
+                       [y.'; yend.'; NaN(1, length (y))](:),
+                       [z.'; zend.'; NaN(1, length (z))](:),
+                       "linestyle", ls, "color", lc, "parent", hg);
     else
-      h1 = plot ([x.'; xend.'; NaN(1, length (x))](:),
-                 [y.'; yend.'; NaN(1, length (y))](:),
-                 "linestyle", ls, "color", lc, "parent", hg);
+      h1 = plot (hax, [x.'; xend.'; NaN(1, length (x))](:),
+                      [y.'; yend.'; NaN(1, length (y))](:),
+                      "linestyle", ls, "color", lc, "parent", hg);
     endif
 
     xtmp = x + uu(:) * (1 - arrowsize);
@@ -316,14 +316,14 @@ function [hax, hg]= __quiver__ (varargin)
     endif
 
     if (is3d)
-      h2 = plot3 ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
-                  [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
-                  [zarrw1.'; zend.'; zarrw2.'; NaN(1, length (z))](:),
-                  "linestyle", ls, "color", lc, "parent", hg);
+      h2 = plot3 (hax, [xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
+                       [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
+                       [zarrw1.'; zend.'; zarrw2.'; NaN(1, length (z))](:),
+                       "linestyle", ls, "color", lc, "parent", hg);
     else
-      h2 = plot ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
-                 [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
-                  "linestyle", ls, "color", lc, "parent", hg);
+      h2 = plot (hax, [xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
+                      [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
+                      "linestyle", ls, "color", lc, "parent", hg);
     endif
 
     ## Draw arrow base marker as a third line object
@@ -333,11 +333,11 @@ function [hax, hg]= __quiver__ (varargin)
       mk = linespec.marker;
     endif
     if (is3d)
-      h3 = plot3 (x, y, z, "linestyle", "none", "color", lc, "marker", mk,
-                           "parent", hg);
+      h3 = plot3 (hax, x, y, z, "linestyle", "none", "color", lc, "marker", mk,
+                                "parent", hg);
     else
-      h3 = plot (x, y, "linestyle", "none", "color", lc, "marker", mk,
-                 "parent", hg);
+      h3 = plot (hax, x, y, "linestyle", "none", "color", lc, "marker", mk,
+                            "parent", hg);
     endif
     if (have_filled)
       set (h3, "markerfacecolor", lc);

@@ -125,7 +125,7 @@ Given a string matrix, @code{hex2num} treats each row as a separate number.
 @example
 @group
 hex2num (["4005bf0a8b145769"; "4024000000000000"])
-   @result{} [2.7183; 10.000]
+   @xresult{} [2.7183; 10.000]
 @end group
 @end example
 
@@ -152,7 +152,7 @@ For example:
 @example
 @group
 hex2num (["402df854"; "41200000"], "single")
-   @result{} [2.7183; 10.000]
+   @xresult{} [2.7183; 10.000]
 @end group
 @end example
 @seealso{num2hex, hex2dec, dec2hex}
@@ -278,7 +278,7 @@ For example:
 @example
 @group
 num2hex ([-1, 1, e, Inf])
-@result{} "bff0000000000000
+@xresult{} "bff0000000000000
     3ff0000000000000
     4005bf0a8b145769
     7ff0000000000000"
@@ -291,7 +291,7 @@ string has a length of 8.  For example:
 @example
 @group
 num2hex (single ([-1, 1, e, Inf]))
-@result{} "bf800000
+@xresult{} "bf800000
     3f800000
     402df854
     7f800000"

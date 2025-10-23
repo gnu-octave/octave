@@ -39,7 +39,7 @@
 ## @example
 ## @group
 ## strjust (["a"; "ab"; "abc"; "abcd"])
-##      @result{}
+##      @xresult{}
 ##         "   a"
 ##         "  ab"
 ##         " abc"

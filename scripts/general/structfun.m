@@ -51,7 +51,7 @@
 ## s.name2 = "Jill Jones";
 ## structfun (@@(x) regexp (x, '(\w+)$', "matches")@{1@}, s,
 ##            "UniformOutput", false)
-##   @result{} scalar structure containing the fields:
+##   @xresult{} scalar structure containing the fields:
 ##        name1 = Smith
 ##        name2 = Jones
 ## @end group

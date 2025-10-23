@@ -40,7 +40,7 @@
 ## @example
 ## @group
 ## rad2deg ([0, pi/2, pi, 3/2*pi, 2*pi])
-##   @result{}  0    90   180   270   360
+##   @xresult{}  0    90   180   270   360
 ## @end group
 ## @end example
 ## @seealso{deg2rad}

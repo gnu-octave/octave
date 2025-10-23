@@ -39,7 +39,7 @@
 ## hf = figure();
 ## sphere (36)
 ## a = camva ()
-##   @result{} a =  10.340
+##   @xresult{} a =  10.340
 ## @end group
 ## @end example
 ##
@@ -50,7 +50,7 @@
 ## @group
 ## camva (2*a)
 ## camva ("mode")
-##   @result{} manual
+##   @xresult{} manual
 ## @end group
 ## @end example
 ##
@@ -60,9 +60,9 @@
 ## @group
 ## camva ("auto")
 ## camva ("mode")
-##   @result{} auto
+##   @xresult{} auto
 ## camva ()
-##   @result{} ans =  10.340
+##   @xresult{} ans =  10.340
 ## close (hf)
 ## @end group
 ## @end example

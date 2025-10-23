@@ -31,7 +31,7 @@
 function hg = __gnuplot_scatter__ (hax, fcn, x, y, z, c, s, marker, filled, newargs)
 
 if (isempty (c))
-  c = __next_line_color__ ();
+  c = __next_line_color__ (hax);
 endif
 
 ## Must occur after __next_line_color__ in order to work correctly.
@@ -165,7 +165,7 @@ endfunction
 function render_size_color (hg, vert, s, c, marker, filled, isflat)
 
   if (isempty (c))
-    c = __next_line_color__ ();
+    c = __next_line_color__ (hax);
   endif
 
   if (isscalar (s))

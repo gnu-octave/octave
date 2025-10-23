@@ -54,21 +54,21 @@
 ## A = [1 2 3 4 5];
 ## B = [2 1 0 1 2];
 ## repelem (A, B)
-##   @result{}   1   1   2   4   5   5
+##   @xresult{}   1   1   2   4   5   5
 ## @end group
 ## @end example
 ##
 ## @example
 ## @group
 ## A = magic (3)
-##   @result{} A =
+##   @xresult{} A =
 ##        8   1   6
 ##        3   5   7
 ##        4   9   2
 ## B1 = [1 2 3];
 ## B2 = 2;
 ## repelem (A, B1, B2)
-##   @result{}     8   8   1   1   6   6
+##   @xresult{}     8   8   1   1   6   6
 ##          3   3   5   5   7   7
 ##          3   3   5   5   7   7
 ##          4   4   9   9   2   2
@@ -89,7 +89,7 @@
 ## B2 = [2 1 3 0 2];
 ## B3 = 3;
 ## repelem (A, B1, B2, B3)
-##   @result{}    ans(:,:,1) =
+##   @xresult{}    ans(:,:,1) =
 ##            1   1   2   3   3   3   5   5
 ##            1   1   2   3   3   3   5   5
 ##
@@ -110,7 +110,7 @@
 ## @example
 ## @group
 ## repelem ([-1, 0; 0, 1], 1, 2, 1, 2)
-##   @result{}  ans(:,:,1,1) =
+##   @xresult{}  ans(:,:,1,1) =
 ##         -1  -1   0   0
 ##          0   0   1   1
 ##
@@ -125,7 +125,7 @@
 ##
 ## @example
 ## A = cat (3, [-1 0; 0 1], [-1 0; 0 1])
-##   @result{}  ans(:,:,1) =
+##   @xresult{}  ans(:,:,1) =
 ##         -1   0
 ##          0   1
 ##
@@ -134,7 +134,7 @@
 ##          0   1
 ##
 ## repelem (A,2,3)
-##   @result{}  ans(:,:,1) =
+##   @xresult{}  ans(:,:,1) =
 ##         -1  -1  -1   0   0   0
 ##         -1  -1  -1   0   0   0
 ##          0   0   0   1   1   1
@@ -154,11 +154,11 @@
 ## @example
 ## @group
 ## repelem ("Octave", 2, 3)
-##   @result{}    OOOccctttaaavvveee
+##   @xresult{}    OOOccctttaaavvveee
 ##         OOOccctttaaavvveee
 ##
 ## repelem ([1 2 3; 1 2 3], 2, 0)
-##   @result{}    [](4x0)
+##   @xresult{}    [](4x0)
 ## @end group
 ## @end example
 ##

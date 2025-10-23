@@ -90,7 +90,7 @@ function h = trisurf (tri, x, y, z, varargin)
   htmp = patch ("Faces", tri, "Vertices", [x(:), y(:), z(:)],
                 "FaceVertexCData", c, varargin{:});
 
-  if (! ishold ())
+  if (! ishold (hax))
     set (hax, "view", [-37.5, 30],
               "xgrid", "on", "ygrid", "on", "zgrid", "on");
   endif

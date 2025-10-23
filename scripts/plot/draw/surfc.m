@@ -73,53 +73,42 @@ function h = surfc (varargin)
     print_usage ();
   endif
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
+  hax = newplot (hax);
+
+  surfc_props = {"facecolor", "flat"};
+  chararg = find (cellfun ("isclass", varargin, "char"), 1);
+  if (isempty (chararg))
+    htmp = surface (hax, varargin{:}, surfc_props{:});
+  else
+    htmp = surface (hax, varargin{1:chararg-1}, surfc_props{:},
+                         varargin{chararg:end});
   endif
-  unwind_protect
-    hax = newplot (hax);
 
-    surfc_props = {"facecolor", "flat"};
-    chararg = find (cellfun ("isclass", varargin, "char"), 1);
-    if (isempty (chararg))
-      htmp = surface (varargin{:}, surfc_props{:});
-    else
-      htmp = surface (varargin{1:chararg-1}, surfc_props{:},
-                      varargin{chararg:end});
-    endif
+  if (! ishold (hax))
+    set (hax, "view", [-37.5, 30],
+              "xgrid", "on", "ygrid", "on", "zgrid", "on",
+              "xlimmode", "manual", "ylimmode", "manual");
+  endif
 
-    if (! ishold ())
-      set (hax, "view", [-37.5, 30],
-                "xgrid", "on", "ygrid", "on", "zgrid", "on",
-                "xlimmode", "manual", "ylimmode", "manual");
-    endif
+  drawnow ();
 
-    drawnow ();
+  ## don't pass string arguments to __contour__()
+  stop_idx = find (cellfun ("isclass", varargin, "char"), 1);
+  if (isempty (stop_idx))
+    stop_idx = nargin;
+  else
+    stop_idx -= 1;
+  endif
 
-    ## don't pass string arguments to __contour__()
-    stop_idx = find (cellfun ("isclass", varargin, "char"), 1);
-    if (isempty (stop_idx))
-      stop_idx = nargin;
-    else
-      stop_idx -= 1;
-    endif
+  if (stop_idx - 1 == 1 || stop_idx - 1 == 3)
+    ## Don't pass a color matrix c to __contour__
+    stop_idx -= 1;
+  endif
 
-    if (stop_idx - 1 == 1 || stop_idx - 1 == 3)
-      ## Don't pass a color matrix c to __contour__
-      stop_idx -= 1;
-    endif
+  zmin = get (hax, "zlim")(1);
+  [~, htmp2] = __contour__ (hax, zmin, varargin{1:stop_idx});
 
-    zmin = get (hax, "zlim")(1);
-    [~, htmp2] = __contour__ (hax, zmin, varargin{1:stop_idx});
-
-    htmp = [htmp; htmp2];
-
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
+  htmp = [htmp; htmp2];
 
   if (nargout > 0)
     h = htmp;

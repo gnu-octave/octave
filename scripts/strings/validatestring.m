@@ -52,10 +52,10 @@
 ## @smallexample
 ## @group
 ## validatestring ("r", @{"red", "green", "blue"@})
-## @result{} "red"
+## @xresult{} "red"
 ##
 ## validatestring ("b", @{"red", "green", "blue", "black"@})
-## @result{} error: validatestring: multiple unique matches were found for 'b':
+## @xresult{} error: validatestring: multiple unique matches were found for 'b':
 ##    blue, black
 ## @end group
 ## @end smallexample

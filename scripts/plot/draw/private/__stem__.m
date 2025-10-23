@@ -41,160 +41,149 @@ function h = __stem__ (have_z, varargin)
   [x, y, z, dofill, llc, ls, mmc, ms, varargin] = ...
                                            check_stem_arg (have_z, varargin{:});
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
-  endif
-  unwind_protect
-    hax = newplot (hax);
-    hold_state = get (hax, "nextplot");
-    set (hax, "nextplot", "add");
+  hax = newplot (hax);
+  hold_state = get (hax, "nextplot");
+  set (hax, "nextplot", "add");
 
-    h = [];
-    nx = rows (x);
-    h_baseline = [];
+  h = [];
+  nx = rows (x);
+  h_baseline = [];
 
-    for i = 1 : columns (x)
-      if (have_z)
-        xt = x(:)';
-        xt = [xt; xt; NaN(1, nx)](:);
-        yt = y(:)';
-        yt = [yt; yt; NaN(1, nx)](:);
-        zt = z(:)';
-        zt = [zeros(1, nx); zt; NaN(1, nx)](:);
+  for i = 1 : columns (x)
+    if (have_z)
+      xt = x(:)';
+      xt = [xt; xt; NaN(1, nx)](:);
+      yt = y(:)';
+      yt = [yt; yt; NaN(1, nx)](:);
+      zt = z(:)';
+      zt = [zeros(1, nx); zt; NaN(1, nx)](:);
+    else
+      xt = x(:, i)';
+      xt = [xt; xt; NaN(1, nx)](:);
+      yt = y(:, i)';
+      yt = [zeros(1, nx); yt; NaN(1, nx)](:);
+    endif
+
+    if (isempty (llc))
+      lc = __next_line_color__ (hax);
+    else
+      lc = llc;
+    endif
+
+    if (isempty (mmc))
+      mc = lc;
+    else
+      mc = mmc;
+    endif
+
+    if (dofill)
+      fc = mc;
+    else
+      fc = "none";
+    endif
+
+    ## Must occur after __next_line_color__ in order to work correctly.
+    hg = hggroup (hax, "__appdata__", struct ("__creator__", "__stem__"));
+    h = [h; hg];
+    args = __add_datasource__ (caller, hg, {"x", "y", "z"}, varargin{:});
+
+    if (have_z)
+      __line__ (hax, xt, yt, zt, "color", lc, "linestyle", ls, "parent", hg);
+      __line__ (hax, x, y, z, "color", mc, "linestyle", "none",
+                     "marker", ms, "markerfacecolor", fc, "parent", hg);
+    else
+      __line__ (hax, xt, yt, "color", lc, "linestyle", ls, "parent", hg);
+      __line__ (hax, x(:,i), y(:, i), "color", mc, "linestyle", "none",
+                     "marker", ms, "markerfacecolor", fc, "parent", hg);
+
+      x_axis_range = get (hax, "xlim");
+      if (isempty (h_baseline))
+        h_baseline = __go_line__ (hax, "xdata", x_axis_range,
+                                       "ydata", [0, 0],
+                                       "color", [0, 0, 0]);
+        set (h_baseline, "handlevisibility", "off", "xliminclude", "off");
+        addproperty ("basevalue", h_baseline, "data", 0);
       else
-        xt = x(:, i)';
-        xt = [xt; xt; NaN(1, nx)](:);
-        yt = y(:, i)';
-        yt = [zeros(1, nx); yt; NaN(1, nx)](:);
+        set (h_baseline, "xdata", x_axis_range);
       endif
+    endif
 
-      if (isempty (llc))
-        lc = __next_line_color__ ();
-      else
-        lc = llc;
-      endif
+    ## Setup the hggroup and listeners.
+    addproperty ("showbaseline", hg, "radio", "{on}|off");
+    addproperty ("baseline", hg, "data", h_baseline);
+    addproperty ("basevalue", hg, "data", 0);
 
-      if (isempty (mmc))
-        mc = lc;
-      else
-        mc = mmc;
-      endif
+    addproperty ("color", hg, "linecolor", lc);
+    addproperty ("linestyle", hg, "linelinestyle", ls);
+    addproperty ("linewidth", hg, "linelinewidth", 0.5);
+    addproperty ("marker", hg, "linemarker", ms);
+    addproperty ("markeredgecolor", hg, "linemarkerfacecolor", mc);
+    addproperty ("markerfacecolor", hg, "linemarkerfacecolor", fc);
+    addproperty ("markersize", hg, "linemarkersize", 6);
 
-      if (dofill)
-        fc = mc;
-      else
-        fc = "none";
-      endif
+    addlistener (hg, "color", @update_props);
+    addlistener (hg, "linestyle", @update_props);
+    addlistener (hg, "linewidth", @update_props);
+    addlistener (hg, "marker", @update_props);
+    addlistener (hg, "markeredgecolor", @update_props);
+    addlistener (hg, "markerfacecolor", @update_props);
+    addlistener (hg, "markersize", @update_props);
 
-      ## Must occur after __next_line_color__ in order to work correctly.
-      hg = hggroup ("__appdata__", struct ("__creator__", "__stem__"));
-      h = [h; hg];
-      args = __add_datasource__ (caller, hg, {"x", "y", "z"}, varargin{:});
+    if (islogical (x))
+      x = double (x);
+    endif
+    addproperty ("xdata", hg, "data", x(:, i));
+    if (islogical (y))
+      y = double (y);
+    endif
+    addproperty ("ydata", hg, "data", y(:, i));
+    if (have_z)
+      addproperty ("zdata", hg, "data", z(:, i));
+    else
+      addproperty ("zdata", hg, "data", []);
+    endif
 
-      if (have_z)
-        __line__ (hax, xt, yt, zt, "color", lc, "linestyle", ls, "parent", hg);
-        __line__ (hax, x, y, z, "color", mc, "linestyle", "none",
-                       "marker", ms, "markerfacecolor", fc, "parent", hg);
-      else
-        __line__ (hax, xt, yt, "color", lc, "linestyle", ls, "parent", hg);
-        __line__ (hax, x(:,i), y(:, i), "color", mc, "linestyle", "none",
-                       "marker", ms, "markerfacecolor", fc, "parent", hg);
+    addlistener (hg, "xdata", @update_data);
+    addlistener (hg, "ydata", @update_data);
+    addlistener (hg, "zdata", @update_data);
 
-        x_axis_range = get (hax, "xlim");
-        if (isempty (h_baseline))
-          h_baseline = __go_line__ (hax, "xdata", x_axis_range,
-                                         "ydata", [0, 0],
-                                         "color", [0, 0, 0]);
-          set (h_baseline, "handlevisibility", "off", "xliminclude", "off");
-          addproperty ("basevalue", h_baseline, "data", 0);
-        else
-          set (h_baseline, "xdata", x_axis_range);
-        endif
-      endif
+    ## Matlab property, although Octave does not implement it.
+    addproperty ("hittestarea", hg, "radio", "on|{off}", "off");
 
-      ## Setup the hggroup and listeners.
-      addproperty ("showbaseline", hg, "radio", "{on}|off");
-      addproperty ("baseline", hg, "data", h_baseline);
-      addproperty ("basevalue", hg, "data", 0);
+  endfor
 
-      addproperty ("color", hg, "linecolor", lc);
-      addproperty ("linestyle", hg, "linelinestyle", ls);
-      addproperty ("linewidth", hg, "linelinewidth", 0.5);
-      addproperty ("marker", hg, "linemarker", ms);
-      addproperty ("markeredgecolor", hg, "linemarkerfacecolor", mc);
-      addproperty ("markerfacecolor", hg, "linemarkerfacecolor", fc);
-      addproperty ("markersize", hg, "linemarkersize", 6);
+  ## baseline listeners
+  if (! isempty (h_baseline))
+    fcn_handle = @update_xlim;
+    addlistener (hax, "xlim", fcn_handle);
+    set (h_baseline, "deletefcn", {@rm_xlim_listener, hax, fcn_handle});
 
-      addlistener (hg, "color", @update_props);
-      addlistener (hg, "linestyle", @update_props);
-      addlistener (hg, "linewidth", @update_props);
-      addlistener (hg, "marker", @update_props);
-      addlistener (hg, "markeredgecolor", @update_props);
-      addlistener (hg, "markerfacecolor", @update_props);
-      addlistener (hg, "markersize", @update_props);
-
-      if (islogical (x))
-        x = double (x);
-      endif
-      addproperty ("xdata", hg, "data", x(:, i));
-      if (islogical (y))
-        y = double (y);
-      endif
-      addproperty ("ydata", hg, "data", y(:, i));
-      if (have_z)
-        addproperty ("zdata", hg, "data", z(:, i));
-      else
-        addproperty ("zdata", hg, "data", []);
-      endif
-
-      addlistener (hg, "xdata", @update_data);
-      addlistener (hg, "ydata", @update_data);
-      addlistener (hg, "zdata", @update_data);
-
-      ## Matlab property, although Octave does not implement it.
-      addproperty ("hittestarea", hg, "radio", "on|{off}", "off");
-
+    for hg = h'
+      addlistener (hg, "showbaseline", @show_baseline);
+      addlistener (hg, "visible", {@show_baseline, h});
+      addlistener (hg, "basevalue", @move_baseline);
     endfor
 
-    ## baseline listeners
-    if (! isempty (h_baseline))
-      fcn_handle = @update_xlim;
-      addlistener (hax, "xlim", fcn_handle);
-      set (h_baseline, "deletefcn", {@rm_xlim_listener, hax, fcn_handle});
+    addlistener (h_baseline, "basevalue", {@update_baseline, 0});
+    addlistener (h_baseline, "ydata", {@update_baseline, 1});
+    addlistener (h_baseline, "visible", {@update_baseline, 2});
+    set (h_baseline, "parent", get (hg(1), "parent"));
+  endif
 
-      for hg = h'
-        addlistener (hg, "showbaseline", @show_baseline);
-        addlistener (hg, "visible", {@show_baseline, h});
-        addlistener (hg, "basevalue", @move_baseline);
-      endfor
+  ## property/value pairs
+  if (! isempty (args))
+      set (h, args{:});
+  endif
 
-      addlistener (h_baseline, "basevalue", {@update_baseline, 0});
-      addlistener (h_baseline, "ydata", {@update_baseline, 1});
-      addlistener (h_baseline, "visible", {@update_baseline, 2});
-      set (h_baseline, "parent", get (hg(1), "parent"));
+  if (! strcmp (hold_state, "add"))
+    if (! have_z)
+      set (hax, "box", "on");
+    else
+      set (hax, "view", [-37.5 30],
+                "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif
-
-    ## property/value pairs
-    if (! isempty (args))
-        set (h, args{:});
-    endif
-
-    if (! strcmp (hold_state, "add"))
-      if (! have_z)
-        set (hax, "box", "on");
-      else
-        set (hax, "view", [-37.5 30],
-                  "xgrid", "on", "ygrid", "on", "zgrid", "on");
-      endif
-    endif
-    set (hax, "nextplot", hold_state);
-
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
+  endif
+  set (hax, "nextplot", hold_state);
 
 endfunction
 
@@ -319,19 +308,17 @@ function [x, y, z, dofill, lc, ls, mc, ms, args] = check_stem_arg (have_z, varar
         [lc, ls, mc, ms] = stem_line_spec (linespec);
       else
         args{end+1} = arg;
-        if (ioff <= nargin)
-          args{end+1} = varargin{ioff++};
-        else
+        if (ioff > nargin)
           error ('%s: No value specified for property "%s"', caller, arg);
         endif
+        args{end+1} = varargin{ioff++};
       endif
     else
       args{end+1} = arg;
-      if (ioff <= nargin)
-        args{end+1} = varargin{ioff++};
-      else
+      if (ioff > nargin)
         error ('%s: No value specified for property "%s"', caller, arg);
       endif
+      args{end+1} = varargin{ioff++};
     endif
   endwhile
 

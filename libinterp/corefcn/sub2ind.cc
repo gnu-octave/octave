@@ -106,7 +106,7 @@ single call to @code{sub2ind}.
 s1 = [2, 2];
 s2 = [1, 3];
 ind = sub2ind ([3, 3], s1, s2)
-    @result{} ind =  2   8
+    @xresult{} ind =  2   8
 @end group
 @end example
 @seealso{ind2sub, size}
@@ -229,8 +229,8 @@ The following example shows how to convert the linear indices @code{2} and
 @group
 ind = [2, 8];
 [r, c] = ind2sub ([3, 3], ind)
-    @result{} r =  2   2
-    @result{} c =  1   3
+    @xresult{} r =  2   2
+    @xresult{} c =  1   3
 @end group
 @end example
 
@@ -246,12 +246,12 @@ ind  = [2, 8];
 dims = [3, 3];
 ## same as dims = [3, 3, 1]
 [r, c, s] = ind2sub (dims, ind)
-    @result{} r =  2   2
-    @result{} c =  1   3
-    @result{} s =  1   1
+    @xresult{} r =  2   2
+    @xresult{} c =  1   3
+    @xresult{} s =  1   1
 ## same as dims = [9]
 r = ind2sub (dims, ind)
-    @result{} r =  2   8
+    @xresult{} r =  2   8
 @end group
 @end example
 @seealso{sub2ind, size}

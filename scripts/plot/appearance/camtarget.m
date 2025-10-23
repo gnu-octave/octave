@@ -39,7 +39,7 @@
 ## hf = figure();
 ## sphere (36)
 ## v = camtarget ()
-##   @result{} v =
+##   @xresult{} v =
 ##       0   0   0
 ## @end group
 ## @end example
@@ -50,7 +50,7 @@
 ## @group
 ## camtarget ([1 1 1])
 ## camtarget ()
-##   @result{}   1   1   1
+##   @xresult{}   1   1   1
 ## @end group
 ## @end example
 ##
@@ -59,7 +59,7 @@
 ## @example
 ## @group
 ## camtarget ("mode")
-##   @result{} manual
+##   @xresult{} manual
 ## @end group
 ## @end example
 ##
@@ -71,7 +71,7 @@
 ## hold on;
 ## peaks ()
 ## camtarget ()
-##   @result{}   1   1   1
+##   @xresult{}   1   1   1
 ## @end group
 ## @end example
 ##
@@ -83,7 +83,7 @@
 ## @c https://savannah.gnu.org/bugs/?44503
 ## camtarget ("auto")
 ## camtarget ()
-##   @result{}   0   0   0.76426
+##   @xresult{}   0   0   0.76426
 ## close (hf)
 ## @end group
 ## @end example

@@ -59,13 +59,13 @@
 ## @example
 ## @group
 ## idivide (int8 ([-3, 3]), int8 (4), "fix")
-##   @result{}   0   0
+##   @xresult{}   0   0
 ## idivide (int8 ([-3, 3]), int8 (4), "round")
-##   @result{}  -1   1
+##   @xresult{}  -1   1
 ## idivide (int8 ([-3, 3]), int8 (4), "floor")
-##   @result{}  -1   0
+##   @xresult{}  -1   0
 ## idivide (int8 ([-3, 3]), int8 (4), "ceil")
-##   @result{}   0   1
+##   @xresult{}   0   1
 ## @end group
 ## @end example
 ##

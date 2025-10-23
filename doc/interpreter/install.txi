@@ -1051,11 +1051,11 @@ form @code{NaN * 0}.
 @example
 @group
 [NaN, 1; 0, 0] * [0; 1]
-@result{}
+@xresult{}
 [ 1
   0 ]
 
-correct result @result{}
+correct result @xresult{}
 [ NaN
   0   ]
 @end group

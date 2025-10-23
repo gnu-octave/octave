@@ -833,10 +833,10 @@ mixed numeric and string output types:
 @group
 teststr = "1 is a lonely number";
 sscanf (teststr, "%s is a %s")
-@result{} 1lonelynumber
+@xresult{} 1lonelynumber
 
 sscanf (teststr, "%g is a %s")
-@result{}
+@xresult{}
      1
    108
    111
@@ -846,9 +846,9 @@ sscanf (teststr, "%g is a %s")
    121
 
 [a, b, c] = sscanf ("1 is a lonely number", "%g is a %s %s", "C")
-@result{} a =  1
-@result{} b = lonely
-@result{} c = number
+@xresult{} a =  1
+@xresult{} b = lonely
+@xresult{} c = number
 @end group
 @end example
 

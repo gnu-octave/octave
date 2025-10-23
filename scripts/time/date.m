@@ -32,7 +32,7 @@
 ## @example
 ## @group
 ## date ()
-##   @result{} 20-Aug-1993
+##   @xresult{} 20-Aug-1993
 ## @end group
 ## @end example
 ## @seealso{now, clock, datestr, localtime}

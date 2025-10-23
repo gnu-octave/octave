@@ -153,18 +153,8 @@ function [thout, rout] = rose (varargin)
       warning ("rose: bin sizes >= pi will not plot correctly");
     endif
 
-    oldfig = [];
-    if (! isempty (hax))
-      oldfig = get (0, "currentfigure");
-    endif
-    unwind_protect
-      hax = newplot (hax);
-      htmp = polar (th, r);
-    unwind_protect_cleanup
-      if (! isempty (oldfig))
-        set (0, "currentfigure", oldfig);
-      endif
-    end_unwind_protect
+    hax = newplot (hax);
+    htmp = polar (hax, th, r);
 
     if (nargout > 0)
       thout = htmp;

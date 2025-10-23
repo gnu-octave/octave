@@ -33,7 +33,7 @@
 ## @example
 ## @group
 ## asctime (localtime (time ()))
-##      @result{} "Mon Feb 17 01:15:06 1997@backslashchar{}n"
+##      @xresult{} "Mon Feb 17 01:15:06 1997@backslashchar{}n"
 ## @end group
 ## @end example
 ##

@@ -64,42 +64,31 @@ function comet (varargin)
     p = varargin{3};
   endif
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
-  endif
-  unwind_protect
-    hax = newplot (hax);
-    limits = [min(x), max(x), min(y), max(y)];
-    num = numel (y);
-    dn = round (num/10);
+  hax = newplot (hax);
+  limits = [min(x), max(x), min(y), max(y)];
+  num = numel (y);
+  dn = round (num/10);
 
-    hl = plot (x(1), y(1), "color", "r", "marker", "none",
-               x(1), y(1), "color", "g", "marker", "none",
-               x(1), y(1), "color", "b", "marker", "o");
-    axis (limits);  # set manual limits to speed up plotting
+  hl = plot (hax, x(1), y(1), "color", "r", "marker", "none",
+                  x(1), y(1), "color", "g", "marker", "none",
+                  x(1), y(1), "color", "b", "marker", "o");
+  axis (hax, limits);  # set manual limits to speed up plotting
 
-    ## Initialize the timer
-    t = p;
-    timerid = tic ();
+  ## Initialize the timer
+  t = p;
+  timerid = tic ();
 
-    for n = 2:(num+dn)
-      m = n - dn;
-      m = max ([m, 1]);
-      k = min ([n, num]);
-      set (hl(1), "xdata", x(1:m), "ydata", y(1:m));
-      set (hl(2), "xdata", x(m:k), "ydata", y(m:k));
-      set (hl(3), "xdata", x(k),   "ydata", y(k));
+  for n = 2:(num+dn)
+    m = n - dn;
+    m = max ([m, 1]);
+    k = min ([n, num]);
+    set (hl(1), "xdata", x(1:m), "ydata", y(1:m));
+    set (hl(2), "xdata", x(m:k), "ydata", y(m:k));
+    set (hl(3), "xdata", x(k),   "ydata", y(k));
 
-      pause (t - toc (timerid));
-      t += p;
-    endfor
-
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
+    pause (t - toc (timerid));
+    t += p;
+  endfor
 
 endfunction
 

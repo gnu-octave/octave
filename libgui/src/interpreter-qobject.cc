@@ -65,13 +65,6 @@ interpreter_qobject::execute ()
 
       interp.initialize ();
 
-      if (app_context.start_gui_p ()
-          && ! m_octave_qobj.experimental_terminal_widget ())
-        {
-          interp.PS1 (">> ");
-          interp.PS2 ("");
-        }
-
       if (interp.is_initialized ())
         {
           // The interpreter should be completely ready at this point so let

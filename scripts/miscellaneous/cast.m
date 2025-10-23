@@ -62,9 +62,9 @@
 ## @example
 ## @group
 ## cast (-5, "uint8")
-##    @result{} 0
+##    @xresult{} 0
 ## cast (300, "int8")
-##    @result{} 127
+##    @xresult{} 127
 ## @end group
 ## @end example
 ##

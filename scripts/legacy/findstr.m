@@ -38,9 +38,9 @@
 ## @example
 ## @group
 ## findstr ("ababab", "a")
-##      @result{} [1, 3, 5];
+##      @xresult{} [1, 3, 5];
 ## findstr ("abababa", "aba", 0)
-##      @result{} [1, 5]
+##      @xresult{} [1, 5]
 ## @end group
 ## @end example
 ##

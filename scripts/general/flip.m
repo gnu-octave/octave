@@ -36,23 +36,23 @@
 ## @example
 ## ## row vector
 ## flip ([1  2  3  4])
-##       @result{}  4  3  2  1
+##       @xresult{}  4  3  2  1
 ##
 ## ## column vector
 ## flip ([1; 2; 3; 4])
-##       @result{}  4
+##       @xresult{}  4
 ##           3
 ##           2
 ##           1
 ##
 ## ## 2-D matrix along dimension 1
 ## flip ([1 2; 3 4])
-##       @result{}  3  4
+##       @xresult{}  3  4
 ##           1  2
 ##
 ## ## 2-D matrix along dimension 2
 ## flip ([1 2; 3 4], 2)
-##       @result{}  2  1
+##       @xresult{}  2  1
 ##           4  3
 ## @end example
 ##

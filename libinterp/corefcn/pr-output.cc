@@ -3486,7 +3486,7 @@ avoid the default output:
 @example
 @group
 myobj = myclass (@dots{})
-  @result{} myobj =
+  @xresult{} myobj =
 
   <class myclass>
 @end group

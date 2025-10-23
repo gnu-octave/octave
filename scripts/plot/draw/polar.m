@@ -67,96 +67,85 @@ function h = polar (varargin)
     print_usage ();
   endif
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
-  endif
-  unwind_protect
-    hax = newplot (hax);
+  hax = newplot (hax);
 
-    if (nargs == 3)
-      if (! ischar (varargin{3}))
-        error ("polar: FMT argument must be a string");
-      endif
-      htmp = __plr2__ (hax, varargin{:});
-      maxr = max (abs (varargin{2}(:)));
-    elseif (nargs == 2)
-      if (ischar (varargin{2}))
-        htmp = __plr1__ (hax, varargin{:});
-        if (iscomplex (varargin{1}))
-          maxr = max (abs (imag (varargin{1})(:)));
-        else
-          maxr = max (abs (varargin{1}(:)));
-        endif
-      else
-        fmt = "";
-        htmp = __plr2__ (hax, varargin{:}, fmt);
-        maxr = max (abs (varargin{2}(:)));
-      endif
-    elseif (nargs == 1)
-      fmt = "";
-      htmp = __plr1__ (hax, varargin{:}, fmt);
+  if (nargs == 3)
+    if (! ischar (varargin{3}))
+      error ("polar: FMT argument must be a string");
+    endif
+    htmp = __plr2__ (hax, varargin{:});
+    maxr = max (abs (varargin{2}(:)));
+  elseif (nargs == 2)
+    if (ischar (varargin{2}))
+      htmp = __plr1__ (hax, varargin{:});
       if (iscomplex (varargin{1}))
         maxr = max (abs (imag (varargin{1})(:)));
       else
         maxr = max (abs (varargin{1}(:)));
       endif
     else
-      print_usage ();
+      fmt = "";
+      htmp = __plr2__ (hax, varargin{:}, fmt);
+      maxr = max (abs (varargin{2}(:)));
     endif
-
-    if (! ishold ())
-      hg = hggroup (hax, "tag", "polar_grid", "handlevisibility", "off");
-
-      set (hax, "visible", "off", "plotboxaspectratio", [1, 1, 1],
-                "zlim", [-1 1], "tag", "polaraxes");
-
-      if (! isprop (hax, "rtick"))
-        addproperty ("rtick", hax, "data");
-      endif
-
-      set (hax, "rtick", __calc_rtick__ (hax, maxr));
-
-      ## add t(heta)tick
-      if (! isprop (hax, "ttick"))
-        addproperty ("ttick", hax, "data");
-      endif
-
-      ## theta(angular) ticks in degrees
-      set (hax, "ttick", 0:30:330);
-
-      __update_polar_grid__ (hax, [], hg);
-
-      set (hg, "deletefcn", {@resetaxis, hax});
-
-      addlistener (hax, "rtick", {@__update_polar_grid__, hg});
-      addlistener (hax, "ttick", {@__update_polar_grid__, hg});
-      addlistener (hax, "color", {@__update_patch__, hg});
-      addlistener (hax, "fontangle", {@__update_text__, hg, "fontangle"});
-      addlistener (hax, "fontname", {@__update_text__, hg, "fontname"});
-      addlistener (hax, "fontsize", {@__update_text__, hg, "fontsize"});
-      addlistener (hax, "fontunits", {@__update_text__, hg, "fontunits"});
-      addlistener (hax, "fontweight", {@__update_text__, hg, "fontweight"});
-      addlistener (hax, "ticklabelinterpreter",
-                   {@__update_text__, hg, "interpreter"});
-      addlistener (hax, "layer", {@__update_layer__, hg});
-      addlistener (hax, "gridlinestyle",{@__update_lines__,hg,"gridlinestyle"});
-      addlistener (hax, "linewidth", {@__update_lines__, hg, "linewidth"});
+  elseif (nargs == 1)
+    fmt = "";
+    htmp = __plr1__ (hax, varargin{:}, fmt);
+    if (iscomplex (varargin{1}))
+      maxr = max (abs (imag (varargin{1})(:)));
     else
-      hg = findall (hax, "tag", "polar_grid");
-      if (! isempty (hg))
-        oldrtick = max (get (hax, "rtick"));
-        if (maxr > oldrtick)
-          set (hax, "rtick", __calc_rtick__ (hax, maxr));
-        endif
-      endif
+      maxr = max (abs (varargin{1}(:)));
+    endif
+  else
+    print_usage ();
+  endif
+
+  if (! ishold (hax))
+    hg = hggroup (hax, "tag", "polar_grid", "handlevisibility", "off");
+
+    set (hax, "visible", "off", "plotboxaspectratio", [1, 1, 1],
+              "zlim", [-1 1], "tag", "polaraxes");
+
+    if (! isprop (hax, "rtick"))
+      addproperty ("rtick", hax, "data");
     endif
 
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
+    set (hax, "rtick", __calc_rtick__ (hax, maxr));
+
+    ## add t(heta)tick
+    if (! isprop (hax, "ttick"))
+      addproperty ("ttick", hax, "data");
     endif
-  end_unwind_protect
+
+    ## theta(angular) ticks in degrees
+    set (hax, "ttick", 0:30:330);
+
+    __update_polar_grid__ (hax, [], hg);
+
+    set (hg, "deletefcn", {@resetaxis, hax});
+
+    addlistener (hax, "rtick", {@__update_polar_grid__, hg});
+    addlistener (hax, "ttick", {@__update_polar_grid__, hg});
+    addlistener (hax, "color", {@__update_patch__, hg});
+    addlistener (hax, "fontangle", {@__update_text__, hg, "fontangle"});
+    addlistener (hax, "fontname", {@__update_text__, hg, "fontname"});
+    addlistener (hax, "fontsize", {@__update_text__, hg, "fontsize"});
+    addlistener (hax, "fontunits", {@__update_text__, hg, "fontunits"});
+    addlistener (hax, "fontweight", {@__update_text__, hg, "fontweight"});
+    addlistener (hax, "ticklabelinterpreter",
+                 {@__update_text__, hg, "interpreter"});
+    addlistener (hax, "layer", {@__update_layer__, hg});
+    addlistener (hax, "gridlinestyle",{@__update_lines__,hg,"gridlinestyle"});
+    addlistener (hax, "linewidth", {@__update_lines__, hg, "linewidth"});
+  else
+    hg = findall (hax, "tag", "polar_grid");
+    if (! isempty (hg))
+      oldrtick = max (get (hax, "rtick"));
+      if (maxr > oldrtick)
+        set (hax, "rtick", __calc_rtick__ (hax, maxr));
+      endif
+    endif
+  endif
 
   if (nargout > 0)
     h = htmp;

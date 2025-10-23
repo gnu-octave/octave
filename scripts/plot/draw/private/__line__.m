@@ -151,12 +151,12 @@ function h = __line__ (hp, varargin)
         ##        use an unwind_protect block to restore any values we may
         ##        have modified.  Testing shows only 4 millisecond extra delay
         ##        when plotting 53 lines.
-        [linestyle, marker] = __next_line_style__ ();
+        [linestyle, marker] = __next_line_style__ (hp);
         if (nr == 1)
           ## Marker for a single point is always '.' (bug #38825).
           marker = '.';
         endif
-        color = __next_line_color__ ();
+        color = __next_line_color__ (hp);
 
         handles(i) = __go_line__ (hp, data_args{:},
                                   "color", color, "linestyle", linestyle,

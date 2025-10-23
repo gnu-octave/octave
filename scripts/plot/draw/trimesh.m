@@ -94,7 +94,7 @@ function h = trimesh (tri, x, y, z, varargin)
                   "FaceLighting", "none", "EdgeLighting", "flat",
                   "Tag", "trimesh", varargin{:});
 
-    if (! ishold ())
+    if (! ishold (hax))
       set (hax, "view", [-37.5, 30],
                 "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif

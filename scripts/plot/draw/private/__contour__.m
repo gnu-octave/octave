@@ -63,12 +63,11 @@ function [c, hg] = __contour__ (varargin)
           linespec.linestyle = lspec.linestyle;
         endif
       else  # unrecognized option, pass unmodified in opts cell array
-        if (i < length (varargin))
-          opts(end+(1:2)) = varargin(i:i+1);
-          varargin(i:i+1) = [];
-        else
+        if (i >= numel (varargin))
           error ("__contour__: Uneven number of PROP/VAL pairs");
         endif
+        opts(end+(1:2)) = varargin(i:i+1);
+        varargin(i:i+1) = [];
       endif
 
     else  # skip numeric arguments
@@ -146,7 +145,7 @@ function [c, hg] = __contour__ (varargin)
     [c, lev] = contourc (x1, y1, z1, lvl);
   endif
 
-  hg = hggroup ("__appdata__", struct ("__creator__", "__contour__"));
+  hg = hggroup (ax, "__appdata__", struct ("__creator__", "__contour__"));
   opts = __add_datasource__ ("__countour__", hg, {"x", "y", "z"}, opts{:});
 
   addproperty ("xdata", hg, "data", x1);
@@ -226,11 +225,11 @@ function [c, hg] = __contour__ (varargin)
 
   ## Set axis before adding patches so that each new patch does not trigger
   ## new axis calculation.  No need if mode is already "manual".
-  if (all (strcmp (get (gca (), {"xlimmode", "ylimmode"}), "auto")))
-    axis ([min(x1(:)) max(x1(:)) min(y1(:)) max(y1(:))]);
+  if (all (strcmp (get (ax, {"xlimmode", "ylimmode"}), "auto")))
+    axis (ax, [min(x1(:)) max(x1(:)) min(y1(:)) max(y1(:))]);
   endif
 
-  add_patch_children (hg);
+  add_patch_children (ax, hg);
 
   if (! isempty (opts))
     set (hg, opts{:});
@@ -238,8 +237,11 @@ function [c, hg] = __contour__ (varargin)
 
 endfunction
 
-function add_patch_children (hg)
+function add_patch_children (ca, hg)
 
+  if (isempty (ca))
+    ca = gca ();
+  endif
   c = get (hg, "contourmatrix");
   lev = get (hg, "levellist");
   fill = get (hg, "fill");
@@ -249,7 +251,6 @@ function add_patch_children (hg)
   lw = get (hg, "linewidth");
   ls = get (hg, "linestyle");
   filled = get (hg, "fill");
-  ca = gca ();
 
   ## Turn off automatic updating of clim while adding patches
   climmode = get (ca, "climmode");
@@ -523,7 +524,7 @@ function update_data (h, ~, prop = "")
       set (h, "levelstep", lvlstep);
     endif
 
-    add_patch_children (h);
+    add_patch_children ([], h);
     update_text (h);
     recursive = false;
   endif

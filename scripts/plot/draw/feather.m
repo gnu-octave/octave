@@ -82,16 +82,14 @@ function h = feather (varargin)
 
   if (have_line_spec)
     arg = varargin{end};
-    if (ischar (arg) || iscellstr (arg))
-      [~, valid] = __pltopt__ ("feather", arg, false);
-      if (valid)
-        line_spec = arg;
-      else
-        error ("feather: invalid linestyle STYLE");
-      endif
-    else
+    if (! (ischar (arg) || iscellstr (arg)))
       error ("feather: invalid linestyle STYLE");
     endif
+    [~, valid] = __pltopt__ ("feather", arg, false);
+    if (! valid)
+      error ("feather: invalid linestyle STYLE");
+    endif
+    line_spec = arg;
   endif
 
   ## Matlab draws feather plots, with the arrow head as one continuous line,
@@ -107,18 +105,8 @@ function h = feather (varargin)
   y = [zeros(1, n); yend; ytmp + u * arrowsize / 3; yend; ...
        ytmp - u * arrowsize / 3];
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
-  endif
-  unwind_protect
-    hax = newplot (hax);
-    htmp = plot (x, y, line_spec, [1, n], [0, 0], line_spec);
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
+  hax = newplot (hax);
+  htmp = plot (hax, x, y, line_spec, [1, n], [0, 0], line_spec);
 
   if (nargout > 0)
     h = htmp;

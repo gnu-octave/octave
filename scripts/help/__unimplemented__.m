@@ -747,7 +747,6 @@ function rlist = missing_functions ()
   "discretize",
   "dissect",
   "distances",
-  "dither",
   "docsearch",
   "dragrect",
   "duration",

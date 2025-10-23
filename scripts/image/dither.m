@@ -56,11 +56,6 @@
 ## @var{X} is a MxN indexed image (uint8 if c<=256, else uint16) for the
 ## colormap @var{map} provided.
 ##
-## Example:
-## @example
-## X = dither (RGB, map);
-## @end example
-##
 ## @var{Qm} is the number of quantization bits along each color axis for the
 ## inverse colormap.  @var{Qm} determines the resolution of this grid along each
 ## color axis (R, G, B).  @var{Qm} defines the precision of the color space
@@ -76,6 +71,8 @@
 ## into binary applying dithering in the process.  The output image @var{BW}
 ## is a black and white image where dithering creates the illusion of shades of
 ## gray.
+##
+## References:
 ##
 ## @itemize
 ## @item

@@ -487,6 +487,11 @@ interpreter::interpreter (application *app_context)
   sys::env::putenv ("LC_NUMERIC", "C");
   sys::env::putenv ("LC_TIME", "C");
 
+  // Perform system-dependent initialization here in case it has not
+  // already been executed (for example, by the application
+  // constructor).
+  sysdep_init ();
+
   // Initialize the default floating point unit control state.
   octave_set_default_fpucw ();
 

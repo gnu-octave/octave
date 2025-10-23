@@ -66,16 +66,11 @@ qt_application::qt_application (const std::string& organization_name,
 
   // FIXME: Is there a better place for this?
   QSettings::setDefaultFormat (QSettings::IniFormat);
-
-  // This should probably happen early.
-  sysdep_init ();
 }
 
 qt_application::qt_application (int argc, char **argv)
   : application (argc, argv)
 {
-  // This should probably happen early.
-  sysdep_init ();
 }
 
 bool

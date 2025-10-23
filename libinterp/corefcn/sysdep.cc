@@ -436,6 +436,11 @@ drive_or_unc_share (const std::string& name)
 void
 sysdep_init ()
 {
+  static bool initialized = false;
+
+  if (initialized)
+    return;
+
   // Use a function from libgomp to force loading of OpenMP library.
   // Otherwise, a dynamically loaded library making use of OpenMP such
   // as GraphicsMagick will segfault on exit (bug #41699).
@@ -450,6 +455,8 @@ sysdep_init ()
 #elif defined (_MSC_VER)
   MSVC_init ();
 #endif
+
+  initialized = true;
 }
 
 void

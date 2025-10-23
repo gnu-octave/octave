@@ -123,6 +123,7 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 
 * `_Exit`
 * `corrcov`
+* `dither`
 
 ### Deprecated functions, properties, and operators
 

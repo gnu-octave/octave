@@ -25,6 +25,7 @@ FCN_FILE_DIRS += \
   %reldir%/cool.m \
   %reldir%/copper.m \
   %reldir%/cubehelix.m \
+  %reldir%/dither.m \
   %reldir%/flag.m \
   %reldir%/frame2im.m \
   %reldir%/getframe.m \

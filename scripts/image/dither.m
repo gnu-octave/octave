@@ -15,9 +15,6 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{X} = } dither (@var{RGB}, @var{map})
-## @deftypefnx {Function File} {@var{X} = } dither (@var{RGB}, @var{map}, @var{Qm}, @var{Qe})
-## @deftypefnx {Function File} {@var{BW} = } dither (@var{I})
 ## @deftypefn  {} {@var{X} = } dither (@var{RGB}, @var{map})
 ## @deftypefnx {} {@var{X} = } dither (@var{RGB}, @var{map}, @var{Qm}, @var{Qe})
 ## @deftypefnx {} {@var{BW} = } dither (@var{I})
@@ -310,7 +307,6 @@ function id = rgb2indLUT (pixel, map, Qm = 5)
 endfunction
 
 function [X, Y, Z] = ndims_grid (nx, ny, nz)
-  ## NDIMS_GRID Create 3D grid indices (emulates meshgrid for 3D).
   ## Create 3D grid indices (emulates meshgrid for 3D).
   [x, y, z] = ind2sub ([nx, ny, nz], 1:(nx*ny*nz));
   X = reshape (x, nx, ny, nz);

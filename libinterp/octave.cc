@@ -438,7 +438,8 @@ application::init ()
                          && ! m_options.persist ()
                          && ! m_options.traditional ());
 
-  // This should probably happen early.
+  // Perform system-dependent initialization here in case it is needed
+  // prior to constructing the interpreter object.
   sysdep_init ();
 }
 

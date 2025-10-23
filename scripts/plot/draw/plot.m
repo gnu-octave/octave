@@ -231,22 +231,12 @@ function h = plot (varargin)
     print_usage ();
   endif
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
-  endif
-  unwind_protect
-    hax = newplot (hax);
-    htmp = __plt__ ("plot", hax, varargin{:});
+  hax = newplot (hax);
+  htmp = __plt__ ("plot", hax, varargin{:});
 
-    if (! ishold ())
-      set (hax, "box", "on");
-    endif
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
+  if (! ishold (hax))
+    set (hax, "box", "on");
+  endif
 
   if (nargout > 0)
     h = htmp;

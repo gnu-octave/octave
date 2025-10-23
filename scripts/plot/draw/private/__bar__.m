@@ -218,23 +218,13 @@ function varargout = __bar__ (fcn, vertical, varargin)
   yb = reshape (yb, [4, ngrp, nbars]);
 
   if (nargout < 2)
-    oldfig = [];
-    if (! isempty (hax))
-      oldfig = get (0, "currentfigure");
+    hax = newplot (hax);
+    htmp = bars (hax, ishist, vertical, x, y, xb, yb, gwidth, group,
+                 have_line_spec, bv, newargs{:});
+    if (! ishold (hax))
+      update_axes_limits (hax, x, vertical, ishist && histc);
     endif
-    unwind_protect
-      hax = newplot (hax);
-      htmp = bars (hax, ishist, vertical, x, y, xb, yb, gwidth, group,
-                   have_line_spec, bv, newargs{:});
-      if (! ishold ())
-        update_axes_limits (hax, x, vertical, ishist && histc);
-      endif
 
-    unwind_protect_cleanup
-      if (! isempty (oldfig))
-        set (0, "currentfigure", oldfig);
-      endif
-    end_unwind_protect
     if (nargout == 1)
       varargout{1} = htmp;
     endif
@@ -280,20 +270,20 @@ function hglist = bars (hax, ishist, vertical, x, y, xb, yb, width, group,
 
   ## Code to create hggroup Bar object
   for i = 1:nbars
-    hg = hggroup ();
+    hg = hggroup (hax);
     hglist = [hglist; hg];
     args = __add_datasource__ ("bar", hg, {"x", "y"}, varargin{:});
 
     if (vertical)
       if (! have_color_spec)
-        color = __next_line_color__ ();
+        color = __next_line_color__ (hax);
         h = patch (hax, xb(:,:,i), yb(:,:,i), "FaceColor", color, "parent", hg);
       else
         h = patch (hax, xb(:,:,i), yb(:,:,i), "cdata", i, "parent", hg);
       endif
     else
       if (! have_color_spec)
-        color = __next_line_color__ ();
+        color = __next_line_color__ (hax);
         h = patch (hax, yb(:,:,i), xb(:,:,i), "FaceColor", color, "parent", hg);
       else
         h = patch (hax, yb(:,:,i), xb(:,:,i), "cdata", i, "parent", hg);
@@ -567,7 +557,7 @@ function update_data (hg, ~)
         set (bl, "xdata", [b0, b0]);
       endif
 
-      if (! ishold ())
+      if (! ishold (hax))
         update_axes_limits (hax, x, vertical, strcmpi (blo, "histc"));
       endif
 

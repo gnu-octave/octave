@@ -553,6 +553,9 @@ The ordinary C library function `exit` will not work.
     status = args(0).xint_value ("_Exit: STATUS must be an integer");
 
   octave__Exit_wrapper (status);
+
+  // This function never returns.  Silent compiler warning.
+  return ovl ();
 }
 
 DEFUNX ("getpgrp", Fgetpgrp, args, ,

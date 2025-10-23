@@ -80,35 +80,24 @@ function h = ribbon (varargin)
     x = repmat (x(:), 1, columns (y));
   endif
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
+  hax = newplot (hax);
+
+  [nr, nc] = size (y);
+  htmp = zeros (nc, 1);
+
+  for c = nc:-1:1
+    zz = [y(:,c), y(:,c)];
+    yy = x(:,c);
+    xx = [c - width / 2, c + width / 2];
+    [xx, yy] = meshgrid (xx, yy);
+    cc = repmat (c, size (zz));
+    htmp(c) = surface (hax, xx, yy, zz, cc);
+  endfor
+
+  if (! ishold (hax))
+    set (hax, "view", [-37.5, 30],
+              "xgrid", "on", "ygrid", "on", "zgrid", "on");
   endif
-  unwind_protect
-    hax = newplot (hax);
-
-    [nr, nc] = size (y);
-    htmp = zeros (nc, 1);
-
-    for c = nc:-1:1
-      zz = [y(:,c), y(:,c)];
-      yy = x(:,c);
-      xx = [c - width / 2, c + width / 2];
-      [xx, yy] = meshgrid (xx, yy);
-      cc = repmat (c, size (zz));
-      htmp(c) = surface (xx, yy, zz, cc);
-    endfor
-
-    if (! ishold ())
-      set (hax, "view", [-37.5, 30],
-                "xgrid", "on", "ygrid", "on", "zgrid", "on");
-    endif
-
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
 
   if (nargout > 0)
     h = htmp;

@@ -115,221 +115,74 @@ function h = plot3 (varargin)
     print_usage ();
   endif
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
-  endif
-  unwind_protect
-    hax = newplot (hax);
+  hax = newplot (hax);
 
-    x_set = 0;
-    y_set = 0;
-    z_set = 0;
-    property_set = 0;
-    fmt_set = 0;
-    properties = {};
-    tlgnd = {};
-    hlgnd = [];
-    htmp = [];
-    idx = 0;
+  x_set = 0;
+  y_set = 0;
+  z_set = 0;
+  property_set = 0;
+  fmt_set = 0;
+  properties = {};
+  tlgnd = {};
+  hlgnd = [];
+  htmp = [];
+  idx = 0;
 
-    ## Gather arguments, decode format, and plot lines.
-    arg = 0;
-    while (arg++ < nargs)
-      new = varargin{arg};
-      new_cell = varargin(arg);
-
-      if (property_set)
-        properties = [properties, new_cell];
-        property_set = 0;
-        continue;
-      endif
-
-      if (ischar (new))
-        if (! z_set)
-          if (! y_set)
-            if (! x_set)
-              error ("plot3: needs X, [ Y, [ Z ] ]");
-            else
-              y = real (x);
-              z = imag (x);
-              y_set = 1;
-              z_set = 1;
-              if (rows (x) > 1)
-                x = repmat ((1:rows (x))', 1, columns (x));
-              else
-                x = 1:columns (x);
-              endif
-            endif
-          else
-            z = imag (y);
-            y = real (y);
-            z_set = 1;
-          endif
-        endif
-
-        if (! fmt_set)
-          [options, valid] = __pltopt__ ("plot3", new, false);
-          if (! valid)
-            properties = [properties, new_cell];
-            property_set = 1;
-            continue;
-          else
-            fmt_set = 1;
-            while (arg < nargs && ischar (varargin{arg+1}))
-              if (nargs - arg < 2)
-                error ("plot3: properties must appear followed by a value");
-              endif
-              properties = [properties, varargin(arg+1:arg+2)];
-              arg += 2;
-            endwhile
-          endif
-        else
-          properties = [properties, new_cell];
-          property_set = 1;
-          continue;
-        endif
-
-        if (isvector (x) && isvector (y))
-          if (isvector (z))
-            x = x(:);
-            y = y(:);
-            z = z(:);
-          elseif (length (x) == rows (z) && length (y) == columns (z))
-            [x, y] = meshgrid (x, y);
-          else
-            error ("plot3: [length(X), length(Y)] must match size (Z)");
-          endif
-        endif
-
-        if (! size_equal (x, y, z))
-          error ("plot3: X, Y, and Z must have the same shape");
-        elseif (ndims (x) > 2)
-          error ("plot3: X, Y, and Z must not have more than two dimensions");
-        endif
-
-        for i = 1 : columns (x)
-          linestyle = options.linestyle;
-          marker = options.marker;
-          if (isempty (marker) && isempty (linestyle))
-            if (isscalar (x))
-              ## If unspecified, marker for a point is always "."
-              linestyle = "-";
-              marker = ".";
-            else
-              [linestyle, marker] = __next_line_style__ ();
-            endif
-          endif
-          color = options.color;
-          if (isempty (color))
-            color = __next_line_color__ ();
-          endif
-
-          htmp(++idx) = __go_line__ (hax, "xdata", x(:, i), "ydata", y(:, i),
-                                     "zdata", z(:, i),
-                                     "color", color, "linestyle", linestyle,
-                                     "marker", marker, properties{:});
-          key = options.key;
-          if (! isempty (key))
-            hlgnd = [hlgnd, htmp(idx)];
-            tlgnd = {tlgnd{:}, key};
-          endif
-        endfor
-
-        x_set = 0;
-        y_set = 0;
-        z_set = 0;
-        fmt_set = 0;
-        properties = {};
-      elseif (! x_set)
-        x = new;
-        x_set = 1;
-      elseif (! y_set)
-        y = new;
-        y_set = 1;
-      elseif (! z_set)
-        z = new;
-        z_set = 1;
-      else
-        if (isvector (x) && isvector (y))
-          if (isvector (z))
-            x = x(:);
-            y = y(:);
-            z = z(:);
-          elseif (length (x) == rows (z) && length (y) == columns (z))
-            [x, y] = meshgrid (x, y);
-          else
-            error ("plot3: [length(X), length(Y)] must match size (Z)");
-          endif
-        endif
-
-        if (! size_equal (x, y, z))
-          error ("plot3: X, Y, and Z must have the same shape");
-        elseif (ndims (x) > 2)
-          error ("plot3: X, Y, and Z must not have more than two dimensions");
-        endif
-
-        options = __default_plot_options__ ();
-        for i = 1 : columns (x)
-          linestyle = options.linestyle;
-          marker = options.marker;
-          if (isempty (marker) && isempty (linestyle))
-            if (isscalar (x))
-              ## If unspecified, marker for a point is always "."
-              linestyle = "-";
-              marker = ".";
-            else
-              [linestyle, marker] = __next_line_style__ ();
-            endif
-          endif
-          color = options.color;
-          if (isempty (color))
-            color = __next_line_color__ ();
-          endif
-
-          htmp(++idx) = __go_line__ (hax, "xdata", x(:, i), "ydata", y(:, i),
-                                     "zdata", z(:, i),
-                                     "color", color, "linestyle", linestyle,
-                                     "marker", marker, properties{:});
-          key = options.key;
-          if (! isempty (key))
-            hlgnd = [hlgnd, htmp(idx)];
-            tlgnd = {tlgnd{:}, key};
-          endif
-        endfor
-
-        x = new;
-        y_set = 0;
-        z_set = 0;
-        fmt_set = 0;
-        properties = {};
-      endif
-
-    endwhile
+  ## Gather arguments, decode format, and plot lines.
+  arg = 0;
+  while (arg++ < nargs)
+    new = varargin{arg};
+    new_cell = varargin(arg);
 
     if (property_set)
-      error ("plot3: properties must appear followed by a value");
+      properties = [properties, new_cell];
+      property_set = 0;
+      continue;
     endif
 
-    ## Handle last plot.
-
-    if (x_set)
-      if (y_set)
-        if (! z_set)
+    if (ischar (new))
+      if (! z_set)
+        if (! y_set)
+          if (! x_set)
+            error ("plot3: needs X, [ Y, [ Z ] ]");
+          else
+            y = real (x);
+            z = imag (x);
+            y_set = 1;
+            z_set = 1;
+            if (rows (x) > 1)
+              x = repmat ((1:rows (x))', 1, columns (x));
+            else
+              x = 1:columns (x);
+            endif
+          endif
+        else
           z = imag (y);
           y = real (y);
           z_set = 1;
         endif
-      else
-        y = real (x);
-        z = imag (x);
-        y_set = 1;
-        z_set = 1;
-        if (rows (x) > 1)
-          x = repmat ((1:rows (x))', 1, columns (x));
+      endif
+
+      if (! fmt_set)
+        [options, valid] = __pltopt__ ("plot3", new, false);
+        if (! valid)
+          properties = [properties, new_cell];
+          property_set = 1;
+          continue;
         else
-          x = 1:columns (x);
+          fmt_set = 1;
+          while (arg < nargs && ischar (varargin{arg+1}))
+            if (nargs - arg < 2)
+              error ("plot3: properties must appear followed by a value");
+            endif
+            properties = [properties, varargin(arg+1:arg+2)];
+            arg += 2;
+          endwhile
         endif
+      else
+        properties = [properties, new_cell];
+        property_set = 1;
+        continue;
       endif
 
       if (isvector (x) && isvector (y))
@@ -350,8 +203,6 @@ function h = plot3 (varargin)
         error ("plot3: X, Y, and Z must not have more than two dimensions");
       endif
 
-      options = __default_plot_options__ ();
-
       for i = 1 : columns (x)
         linestyle = options.linestyle;
         marker = options.marker;
@@ -361,12 +212,12 @@ function h = plot3 (varargin)
             linestyle = "-";
             marker = ".";
           else
-            [linestyle, marker] = __next_line_style__ ();
+            [linestyle, marker] = __next_line_style__ (hax);
           endif
         endif
         color = options.color;
         if (isempty (color))
-          color = __next_line_color__ ();
+          color = __next_line_color__ (hax);
         endif
 
         htmp(++idx) = __go_line__ (hax, "xdata", x(:, i), "ydata", y(:, i),
@@ -379,21 +230,159 @@ function h = plot3 (varargin)
           tlgnd = {tlgnd{:}, key};
         endif
       endfor
+
+      x_set = 0;
+      y_set = 0;
+      z_set = 0;
+      fmt_set = 0;
+      properties = {};
+    elseif (! x_set)
+      x = new;
+      x_set = 1;
+    elseif (! y_set)
+      y = new;
+      y_set = 1;
+    elseif (! z_set)
+      z = new;
+      z_set = 1;
+    else
+      if (isvector (x) && isvector (y))
+        if (isvector (z))
+          x = x(:);
+          y = y(:);
+          z = z(:);
+        elseif (length (x) == rows (z) && length (y) == columns (z))
+          [x, y] = meshgrid (x, y);
+        else
+          error ("plot3: [length(X), length(Y)] must match size (Z)");
+        endif
+      endif
+
+      if (! size_equal (x, y, z))
+        error ("plot3: X, Y, and Z must have the same shape");
+      elseif (ndims (x) > 2)
+        error ("plot3: X, Y, and Z must not have more than two dimensions");
+      endif
+
+      options = __default_plot_options__ ();
+      for i = 1 : columns (x)
+        linestyle = options.linestyle;
+        marker = options.marker;
+        if (isempty (marker) && isempty (linestyle))
+          if (isscalar (x))
+            ## If unspecified, marker for a point is always "."
+            linestyle = "-";
+            marker = ".";
+          else
+            [linestyle, marker] = __next_line_style__ (hax);
+          endif
+        endif
+        color = options.color;
+        if (isempty (color))
+          color = __next_line_color__ (hax);
+        endif
+
+        htmp(++idx) = __go_line__ (hax, "xdata", x(:, i), "ydata", y(:, i),
+                                   "zdata", z(:, i),
+                                   "color", color, "linestyle", linestyle,
+                                   "marker", marker, properties{:});
+        key = options.key;
+        if (! isempty (key))
+          hlgnd = [hlgnd, htmp(idx)];
+          tlgnd = {tlgnd{:}, key};
+        endif
+      endfor
+
+      x = new;
+      y_set = 0;
+      z_set = 0;
+      fmt_set = 0;
+      properties = {};
     endif
 
-    if (! isempty (hlgnd))
-      legend (hax, hlgnd, tlgnd);
+  endwhile
+
+  if (property_set)
+    error ("plot3: properties must appear followed by a value");
+  endif
+
+  ## Handle last plot.
+
+  if (x_set)
+    if (y_set)
+      if (! z_set)
+        z = imag (y);
+        y = real (y);
+        z_set = 1;
+      endif
+    else
+      y = real (x);
+      z = imag (x);
+      y_set = 1;
+      z_set = 1;
+      if (rows (x) > 1)
+        x = repmat ((1:rows (x))', 1, columns (x));
+      else
+        x = 1:columns (x);
+      endif
     endif
 
-    if (! ishold ())
-      set (hax, "view", [-37.5, 30]);
+    if (isvector (x) && isvector (y))
+      if (isvector (z))
+        x = x(:);
+        y = y(:);
+        z = z(:);
+      elseif (length (x) == rows (z) && length (y) == columns (z))
+        [x, y] = meshgrid (x, y);
+      else
+        error ("plot3: [length(X), length(Y)] must match size (Z)");
+      endif
     endif
 
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
+    if (! size_equal (x, y, z))
+      error ("plot3: X, Y, and Z must have the same shape");
+    elseif (ndims (x) > 2)
+      error ("plot3: X, Y, and Z must not have more than two dimensions");
     endif
-  end_unwind_protect
+
+    options = __default_plot_options__ ();
+
+    for i = 1 : columns (x)
+      linestyle = options.linestyle;
+      marker = options.marker;
+      if (isempty (marker) && isempty (linestyle))
+        if (isscalar (x))
+          ## If unspecified, marker for a point is always "."
+          linestyle = "-";
+          marker = ".";
+        else
+          [linestyle, marker] = __next_line_style__ (hax);
+        endif
+      endif
+      color = options.color;
+      if (isempty (color))
+        color = __next_line_color__ (hax);
+      endif
+
+      htmp(++idx) = __go_line__ (hax, "xdata", x(:, i), "ydata", y(:, i),
+                                 "zdata", z(:, i),
+                                 "color", color, "linestyle", linestyle,
+                                 "marker", marker, properties{:});
+      key = options.key;
+      if (! isempty (key))
+        hlgnd = [hlgnd, htmp(idx)];
+        tlgnd = {tlgnd{:}, key};
+      endif
+    endfor
+  endif
+
+  if (! isempty (hlgnd))
+    legend (hax, hlgnd, tlgnd);
+  endif
+
+  if (! ishold (hax))
+    set (hax, "view", [-37.5, 30]);
+  endif
 
   if (nargout > 0)
     h = htmp;

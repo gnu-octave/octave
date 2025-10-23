@@ -129,10 +129,10 @@ function hlist = __pie__ (caller, varargin)
       sc = i * ones (size (sz));
 
       hlist = [hlist;
-        patch(xoff + [0, -sind(xn)], yoff + [0, cosd(xn)], zeros (1, ln + 1), i);
-        surface(sx, sy, sz, sc);
-        patch(xoff + [0, -sind(xn)], yoff + [0, cosd(xn)], zlvl * ones (1, ln + 1), i);
-        text(xt, yt, zlvl, labels{i})];
+        patch(h, xoff + [0, -sind(xn)], yoff + [0, cosd(xn)], zeros (1, ln + 1), i);
+        surface(h, sx, sy, sz, sc);
+        patch(h, xoff + [0, -sind(xn)], yoff + [0, cosd(xn)], zlvl * ones (1, ln + 1), i);
+        text(h, xt, yt, zlvl, labels{i})];
 
     elseif (strcmp (caller, "pie"))
       if (xt > 0)
@@ -143,21 +143,21 @@ function hlist = __pie__ (caller, varargin)
         align = "center";
       endif
 
-      hlist = [hlist; patch(xoff + [0, -sind(xn)], yoff + [0, cosd(xn)], i);
-               text(xt, yt, labels{i}, "horizontalalignment", align)];
+      hlist = [hlist; patch(h, xoff + [0, -sind(xn)], yoff + [0, cosd(xn)], i);
+               text(h, xt, yt, labels{i}, "horizontalalignment", align)];
 
     else
       error ("__pie__: unknown caller '%s'", caller);
     endif
   endfor
 
-  addlistener (gca, "view", {@update_text_pos, hlist});
+  addlistener (h, "view", {@update_text_pos, hlist});
 
   if (strcmp (caller, "pie3"))
-    axis ([-1.25, 1.25, -1.25, 1.25, -0.05, 0.4], "equal", "off");
-    view (-37.5, 30);
+    axis (h, [-1.25, 1.25, -1.25, 1.25, -0.05, 0.4], "equal", "off");
+    view (h, -37.5, 30);
   elseif (strcmp (caller, "pie"))
-    axis ([-1.5, 1.5, -1.5, 1.5], "square", "off");
+    axis (h, [-1.5, 1.5, -1.5, 1.5], "square", "off");
   endif
 
 endfunction

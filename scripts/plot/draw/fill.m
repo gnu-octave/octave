@@ -89,103 +89,92 @@ function h = fill (varargin)
     print_usage ();
   endif
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
+  hax = newplot (hax);
+  old_nxtplt = get (hax, "nextplot");
+  if (! ishold (hax))
+    set (hax, "box", "on");
   endif
   unwind_protect
-    hax = newplot (hax);
-    old_nxtplt = get (hax, "nextplot");
-    if (! ishold ())
-      set (hax, "box", "on");
-    endif
-    unwind_protect
-      set (hax, "nextplot", "add");
+    set (hax, "nextplot", "add");
 
-      for i = 1 : numel (iargs)
-        x = varargin{iargs(i)};
-        y = varargin{iargs(i) + 1};
-        cdata = varargin{iargs(i) + 2};
+    for i = 1 : numel (iargs)
+      x = varargin{iargs(i)};
+      y = varargin{iargs(i) + 1};
+      cdata = varargin{iargs(i) + 2};
 
-        ## FIXME: Probably should validate that x, y, cdata are 2-D.
+      ## FIXME: Probably should validate that x, y, cdata are 2-D.
 
-        if (isrow (x))
-          x = x(:);
-        endif
-        if (isrow (y))
-          y = y(:);
-        endif
+      if (isrow (x))
+        x = x(:);
+      endif
+      if (isrow (y))
+        y = y(:);
+      endif
 
-        if (! size_equal (x, y))
-          if (iscolumn (x))
-            rx = rows (x);
-            [ry, cy] = size (y);
-            if (rx == ry)
-              x = repmat (x, [1, cy]);
-            elseif (rx == cy)
-              y = y.';
-              x = repmat (x, [1, ry]);
-            else
-              error ("fill: vector X and matrix Y must have a length which matches along one dimension");
-            endif
-          elseif (iscolumn (y))
-            ry = rows (y);
-            [rx, cx] = size (x);
-            if (ry == rx)
-              y = repmat (y, [1, cx]);
-            elseif (ry == cx)
-              x = x.';
-              y = repmat (y, [1, rx]);
-            else
-              error ("fill: matrix X and vector Y must have a length which matches along one dimension");
-            endif
+      if (! size_equal (x, y))
+        if (iscolumn (x))
+          rx = rows (x);
+          [ry, cy] = size (y);
+          if (rx == ry)
+            x = repmat (x, [1, cy]);
+          elseif (rx == cy)
+            y = y.';
+            x = repmat (x, [1, ry]);
           else
-            error ("fill: matrices X and Y must be the same size");
+            error ("fill: vector X and matrix Y must have a length which matches along one dimension");
           endif
-        endif
-
-        ## Test for color specification as text ('r') or RGB triple.
-        if (ischar (cdata) ||
-            (all (size (cdata) == [1, 3]) && all (cdata >= 0 & cdata <= 1)))
-          one_color = true;
+        elseif (iscolumn (y))
+          ry = rows (y);
+          [rx, cx] = size (x);
+          if (ry == rx)
+            y = repmat (y, [1, cx]);
+          elseif (ry == cx)
+            x = x.';
+            y = repmat (y, [1, rx]);
+          else
+            error ("fill: matrix X and vector Y must have a length which matches along one dimension");
+          endif
         else
-          one_color = false;
+          error ("fill: matrices X and Y must be the same size");
         endif
+      endif
 
-        ## Manage cdata to ensure for loop below works
-        if (! one_color && isvector (cdata))
-          if (numel (cdata) == columns (x))
-            ## One color per polygon
-            cdata = cdata(:).';
-          elseif (numel (cdata) == rows (x))
-            ## Vertex colors.  Replicate cdata to match size of data.
-            cdata = repmat (cdata(:), [1, columns(x)]);
-          else
-            error ("fill: invalid format for color data C");
-          endif
+      ## Test for color specification as text ('r') or RGB triple.
+      if (ischar (cdata) ||
+          (all (size (cdata) == [1, 3]) && all (cdata >= 0 & cdata <= 1)))
+        one_color = true;
+      else
+        one_color = false;
+      endif
+
+      ## Manage cdata to ensure for loop below works
+      if (! one_color && isvector (cdata))
+        if (numel (cdata) == columns (x))
+          ## One color per polygon
+          cdata = cdata(:).';
+        elseif (numel (cdata) == rows (x))
+          ## Vertex colors.  Replicate cdata to match size of data.
+          cdata = repmat (cdata(:), [1, columns(x)]);
+        else
+          error ("fill: invalid format for color data C");
         endif
+      endif
 
-        ## For Matlab compatibility, return 1 patch object for each column
-        for j = 1 : columns (x)
-          if (one_color)
-            htmp = __patch__ (hax, x(:,j), y(:,j), cdata, opts{:});
-          else
-            htmp = __patch__ (hax, x(:,j), y(:,j), cdata(:,j), opts{:});
-          endif
-          hlist(end+1, 1) = htmp;
-        endfor
-
+      ## For Matlab compatibility, return 1 patch object for each column
+      for j = 1 : columns (x)
+        if (one_color)
+          htmp = __patch__ (hax, x(:,j), y(:,j), cdata, opts{:});
+        else
+          htmp = __patch__ (hax, x(:,j), y(:,j), cdata(:,j), opts{:});
+        endif
+        hlist(end+1, 1) = htmp;
       endfor
 
-    unwind_protect_cleanup
-      if (! strcmp (old_nxtplt, "add"))
-        set (hax, "nextplot", old_nxtplt);
-      endif
-    end_unwind_protect
+    endfor
 
   unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
+    if (! strcmp (old_nxtplt, "add"))
+      set (hax, "nextplot", old_nxtplt);
     endif
   end_unwind_protect
 

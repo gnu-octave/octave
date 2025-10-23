@@ -111,7 +111,7 @@ function h = tetramesh (varargin)
     endfor
   endif
 
-  if (! ishold ())
+  if (! ishold (hax))
     set (hax, "view", [-37.5, 30]);
   endif
 

@@ -93,18 +93,8 @@ function [x, y, z] = cylinder (varargin)
     y = yy;
     z = zz;
   else
-    oldfig = [];
-    if (! isempty (hax))
-      oldfig = get (0, "currentfigure");
-    endif
-    unwind_protect
-      hax = newplot (hax);
-      surf (xx, yy, zz);
-    unwind_protect_cleanup
-      if (! isempty (oldfig))
-        set (0, "currentfigure", oldfig);
-      endif
-    end_unwind_protect
+    hax = newplot (hax);
+    surf (hax, xx, yy, zz);
   endif
 
 endfunction

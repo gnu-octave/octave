@@ -153,6 +153,10 @@ formats.
 
 @DOCSTRING(ind2rgb)
 
+The following function allows processing an existing image.
+
+@DOCSTRING(dither)
+
 Octave also provides tools to produce and work with movie frame structures.
 Those structures encapsulate the image data (@qcode{"cdata"} field) together
 with the corresponding colormap (@qcode{"colormap"} field).

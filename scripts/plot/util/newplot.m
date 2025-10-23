@@ -37,20 +37,21 @@
 ##
 ## @multitable @columnfractions .25 .75
 ## @headitem Figure NextPlot @tab Action
-## @item @qcode{"new"} @tab Create a new figure and make it the current figure.
-##
 ## @item @qcode{"add"} (default) @tab Add new graphic objects to the current
 ## figure.
+##
+## @item @qcode{"new"} @tab Create a new figure and make it the current figure.
+##
+## @item @qcode{"replace"} @tab Delete all child objects of the figure and
+## reset all figure properties to their defaults.  However, the following
+## four properties are not reset: Position, Units, PaperPosition, PaperUnits.
+## In addition, the NextPlot property is set to @qcode{"add"} regardless of
+## user-defined defaults.  This is equivalent to @code{clf reset}.
 ##
 ## @item @qcode{"replacechildren"} @tab Delete child objects whose
 ## HandleVisibility is set to @qcode{"on"}.  Set NextPlot property to
 ## @qcode{"add"}.  This typically clears a figure, but leaves in place hidden
 ## objects such as menubars.  This is equivalent to @code{clf}.
-##
-## @item @qcode{"replace"} @tab Delete all child objects of the figure and
-## reset all figure properties to their defaults.  However, the following
-## four properties are not reset: Position, Units, PaperPosition, PaperUnits.
-## This is equivalent to @code{clf reset}.
 ## @end multitable
 ##
 ## @multitable @columnfractions .25 .75
@@ -58,15 +59,22 @@
 ## @item @qcode{"add"} @tab Add new graphic objects to the current axes.  This
 ## is equivalent to @code{hold on}.
 ##
-## @item @qcode{"replacechildren"} @tab Delete child objects whose
-## HandleVisibility is set to @qcode{"on"}, but leave axes properties
-## unmodified.  This typically clears a plot, but preserves special settings
-## such as log scaling for axes.  This is equivalent to @code{cla}.
-##
 ## @item @qcode{"replace"} (default) @tab Delete all child objects of the
 ## axes and reset all axes properties to their defaults.  However, the
 ## following properties are not reset: Position, Units.  This is equivalent
 ## to @code{cla reset}.
+##
+## @c FIXME: Uncomment when "replaceall" property value added to axes
+## @c @item @qcode{"replaceall"} @tab For plots with one y-axis this is equivalent
+## @c to @qcode{"replace"}.  For plots created with @code{plotyy}, operate on both
+## @c axes rather than just the single axes object @code{hax}.
+##
+## @item @qcode{"replacechildren"} @tab Delete child objects whose
+## HandleVisibility is set to @qcode{"on"}, but leave axes properties
+## unmodified except for ColorOrderIndex and LineStyleOrderIndex which are set
+## to 1.  This typically clears a plot, but preserves special settings such as
+## log scaling for axes.  This is equivalent to @code{cla}.
+##
 ## @end multitable
 ##
 ## If the optional input @var{hfig} or @var{hax} is given then prepare the
@@ -74,61 +82,50 @@
 ##
 ## The optional return value @var{hax} is a graphics handle to the created
 ## axes object (not figure).
-##
-## @strong{Caution:} Calling @code{newplot} may change the current figure and
-## current axes.
 ## @end deftypefn
 
-## FIXME: The Matlab function takes an optional list of file handles, hsave,
-##        which are not deleted when the figure and axes are prepared.
-##        I'm sure there is a good reason for that, but coding such
-##        compatibility is really tricky and doesn't serve much purpose since
-##        newplot is nearly exclusively used by Octave's internal plotting
-##        functions.  In Octave's case the argument is almost always null,
-##        or occasionally the axes handle to plot into.
+function hax = newplot (hg = [])
 
-function hax = newplot (hsave = [])
+  old_cf = [];
+  cf = ca = [];
 
-  cf = [];
-  ca = [];
-
-  if (! isempty (hsave))
-    ## Find the first valid axes
-    ca = ancestor (hsave, "axes", "toplevel");
-    if (iscell (ca))
-      ca = [ca{:}];
+  if (! isempty (hg))
+    if (! isscalar (hg))
+      error ("newplot: first argument must be scalar graphics handle");
     endif
-    ca = ca(find (ca, 1));
-    hsave(hsave == ca) = [];
-    ## Next, find the figure associated with any axis found
-    if (! isempty (ca))
+
+    if (isaxes (hg))
+      ca = hg;
       cf = ancestor (ca, "figure", "toplevel");
+    elseif (isfigure (hg))
+      cf = hg;
     else
-      cf = ancestor (hsave, "figure", "toplevel");
-      if (iscell (cf))
-        cf = [cf{:}];
-      endif
-      cf = cf(find (cf, 1));
+      error ("newplot: first argument must be an axes or figure handle");
     endif
   endif
 
   do_reset = true;
   if (isempty (cf))
     ## get current figure, or create a new one if necessary
-    cf = get (0, "currentfigure");
-    if (isempty (cf))
+    old_cf = get (0, "currentfigure");
+    if (isempty (old_cf))
       cf = figure ();
       do_reset = false;
+    else
+      cf = old_cf;
     endif
   else
     ## switch to figure provided without causing other updates
+    old_cf = get (0, "currentfigure");
     set (0, "currentfigure", cf);
   endif
 
   fnp = get (cf, "nextplot");
   switch (fnp)
+
     case "add"
       ## Default case.  Doesn't require action.
+
     case "new"
       ## Ordinarily, create a new figure to hold plot.
       ## But, if user has requested preparing a specific axis, then
@@ -136,12 +133,7 @@ function hax = newplot (hsave = [])
       if (isempty (ca))
         cf = figure ();
       endif
-    case "replacechildren"
-      kids = get (cf, "children");
-      if (! isempty (ca))
-        kids(kids == ca) = [];
-      endif
-      delete (kids);
+
     case "replace"
       if (do_reset)
         kids = allchild (cf);
@@ -151,8 +143,17 @@ function hax = newplot (hsave = [])
         delete (kids);
         reset (cf);
       endif
+      set (cf, "nextplot", "add");  # Matlab compatibility
+
+    case "replacechildren"
+      kids = get (cf, "children");
+      if (! isempty (ca))
+        kids(kids == ca) = [];
+      endif
+      delete (kids);
+      set (cf, "nextplot", "add");  # Matlab compatibility
+
   endswitch
-  set (cf, "nextplot", "add");  # Matlab compatibility
 
   do_reset = true;
   if (isempty (ca))
@@ -161,63 +162,74 @@ function hax = newplot (hsave = [])
       ca = axes ();
       do_reset = false;
     endif
-    deleteall = true;
   else
+    ## FIXME: Does ca need to be re-parented as well?
     set (cf, "currentaxes", ca);
-    deleteall = false;
   endif
 
   anp = get (ca, "nextplot");
   switch (anp)
     case "add"
       ## Default case.  Doesn't require action.
-    case "replacechildren"
-      if (! deleteall && ca != hsave)
-        ## preserve hsave and its parents, uncles, ...
-        kids = allchild (ca);
-        hkid = hsave;
-        while (! any (hkid == kids))
-          hkid = get (hkid, "parent");
-        endwhile
-        kids(kids == hkid) = [];
-        delete (kids);
-      else
-        delete (get (ca, "children"));
-      endif
+
     case "replace"
-      if (! deleteall && ca != hsave)
-        ## preserve hsave and its parents, uncles, ...
-        kids = allchild (ca);
-        hkid = hsave;
-        while (! any (hkid == kids))
-          hkid = get (hkid, "parent");
-        endwhile
-        kids(kids == hkid) = [];
-        delete (kids);
-      else
-        if (isprop (ca, "__plotyy_axes__") ...
-            && ! any (strcmp({dbstack().name}, "plotyy")))
-          ## Hack for bug #44246.  There is no way to reset or remove a
-          ## property created with addproperty short of deleting the object.
-          old_units = get (ca, "units");
-          old_position = get (ca, "position");
-          delete (ca);
-          ca = axes ("units", old_units, "position", old_position);
-        elseif (do_reset)
-          rcn = getappdata (ca, "__subplotrcn__");
-          delete (allchild (ca));
-          reset (ca);
-          ## Reinstall listeners for subplot
-          if (! isempty (rcn))
-            subplot (rcn{:}, ca)
-          endif
+      if (isprop (ca, "__plotyy_axes__") ...
+          && ! any (strcmp({dbstack().name}, "plotyy")))
+        ## Hack for bug #44246.  There is no way to reset or remove a property
+        ## created with addproperty short of deleting the object.
+        old_units = get (ca, "units");
+        old_position = get (ca, "position");
+        delete (ca);
+        ca = axes ("units", old_units, "position", old_position);
+      elseif (do_reset)
+        rcn = getappdata (ca, "__subplotrcn__");
+        delete (allchild (ca));
+        reset (ca);
+        ## Reinstall listeners for subplot
+        if (! isempty (rcn))
+          subplot (rcn{:}, ca)
         endif
       endif
+
+    ## FIXME: Uncomment when "replaceall" property value added to axes
+    #{
+    ## Only difference over "replace" is that both axes of plotyy are cleared
+    case "replaceall"
+      if (isprop (ca, "__plotyy_axes__") ...
+          && ! any (strcmp({dbstack().name}, "plotyy")))
+        ## Hack for bug #44246.  There is no way to reset or remove a property
+        ## created with addproperty short of deleting the object.
+        ca2 = get (ca, '__plotyy_axes__');
+        ca2(ca2 == ca) = [];
+        old_units = get (ca, "units");
+        old_position = get (ca, "position");
+        delete (ca);
+        ca = axes ("units", old_units, "position", old_position);
+        old_units = get (ca2, "units");
+        old_position = get (ca2, "position");
+        delete (ca2);
+        axes ("units", old_units, "position", old_position);
+      elseif (do_reset)
+        rcn = getappdata (ca, "__subplotrcn__");
+        delete (allchild (ca));
+        reset (ca);
+        ## Reinstall listeners for subplot
+        if (! isempty (rcn))
+          subplot (rcn{:}, ca)
+        endif
+      endif
+    #}
+
+    case "replacechildren"
+      delete (get (ca, "children"));
+      set (ca, "colororderindex", 1, "linestyleorderindex", 1);
+
   endswitch
 
-  ## Reset line and color styles when hold is not on
-  if (! strcmp (anp, "add"))
-    set (ca, "colororderindex", 1, "linestyleorderindex", 1);
+  ## Restore figure and axes if necessary
+  if (! isempty (old_cf))
+    set (0, 'currentfigure', old_cf);
+    cf = old_cf;
   endif
 
   if (nargout > 0)
@@ -238,37 +250,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!test
-%! hf = figure ("visible", "off");
-%! unwind_protect
-%!   hax = axes ();
-%!   hold on;
-%!   hg1 = hggroup ();
-%!   hg2 = hggroup ("parent", hg1);
-%!   li0 = line (1:10, 1:10);
-%!   li1 = line (1:10, -1:-1:-10, "parent", hg1);
-%!   li2 = line (1:10, sin (1:10), "parent", hg2);
-%!   hold off;
-%!   newplot (hg2);
-%!   assert (ishghandle (li0), false);
-%!   assert (get (hax, "children"), hg1);
-%!
-%!   ## kids are preserved for hggroups
-%!   kids = get (hg1, "children");
-%!   newplot (hg1);
-%!   assert (get (hg1, "children"), kids);
-%!
-%!   ## preserve objects
-%!   newplot (li1);
-%!   assert (ishghandle (li1));
-%!
-%!   ## kids are deleted for axes
-%!   newplot (hax);
-%!   assert (isempty (get (hax, "children")));
-%! unwind_protect_cleanup
-%!   close (hf);
-%! end_unwind_protect
-
+## Test double axes with plotyy
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
@@ -279,4 +261,21 @@ endfunction
 %!   assert (get (hax2, "position"), [0.1, 0.1, 0.8, 0.3]);
 %! unwind_protect_cleanup
 %!   close (hf);
+%! end_unwind_protect
+
+## Test that current figure is preserved
+%!test
+%! hf1 = figure ('visible', 'off');
+%! hax1 = axes ();
+%! hf2 = figure ('visible', 'off');
+%! hax2 = axes;
+%! unwind_protect
+%!   cf = gcf ();
+%!   ca = gca ();
+%!   hax = newplot (hax1);
+%!   assert (gcf (), cf);
+%!   assert (gca (), ca);
+%!   assert (hax, hax1);
+%! unwind_protect_cleanup
+%!   close ([hf1, hf2]);
 %! end_unwind_protect

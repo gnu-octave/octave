@@ -133,18 +133,8 @@ function h = meshz (varargin)
        cref .* ones(rows(c), 2), c, cref .* ones(rows(c), 2);
        cref .* ones(2, columns(c) + 4)];
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
-  endif
-  unwind_protect
-    hax = newplot (hax);
-    htmp = mesh (x, y, z, c, varargin{charidx:end});
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
+  hax = newplot (hax);
+  htmp = mesh (hax, x, y, z, c, varargin{charidx:end});
 
   if (nargout > 0)
     h = htmp;

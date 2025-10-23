@@ -74,25 +74,14 @@ function [c, h] = contour3 (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("contour3", varargin{:});
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
-  endif
-  unwind_protect
-    hax = newplot (hax);
+  hax = newplot (hax);
 
-    [ctmp, htmp] = __contour__ (hax, "auto", varargin{:});
+  [ctmp, htmp] = __contour__ (hax, "auto", varargin{:});
 
-  if (! ishold ())
+  if (! ishold (hax))
     set (hax, "view", [-37.5, 30], "box", "on",
               "xgrid", "on", "ygrid", "on", "zgrid", "on");
   endif
-
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
 
   if (nargout > 0)
     c = ctmp;

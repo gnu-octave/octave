@@ -70,44 +70,33 @@ function h = meshc (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("meshc", varargin{:});
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
+  hax = newplot (hax);
+
+  ## FIXME: gnuplot does not support a filled surface and a
+  ##        non-filled contour.  3-D filled patches are also not supported.
+  ##        Thus, the facecolor will be transparent for the gnuplot backend.
+  mesh_props = {"facecolor", "w", "edgecolor", "flat", ...
+                "facelighting", "none", "edgelighting", "flat"};
+  chararg = find (cellfun ("isclass", varargin, "char"), 1);
+  if (isempty (chararg))
+    htmp = surface (hax, varargin{:}, mesh_props{:});
+  else
+    htmp = surface (hax, varargin{1:chararg-1}, mesh_props{:},
+                         varargin{chararg:end});
   endif
-  unwind_protect
-    hax = newplot (hax);
 
-    ## FIXME: gnuplot does not support a filled surface and a
-    ##        non-filled contour.  3-D filled patches are also not supported.
-    ##        Thus, the facecolor will be transparent for the gnuplot backend.
-    mesh_props = {"facecolor", "w", "edgecolor", "flat", ...
-                  "facelighting", "none", "edgelighting", "flat"};
-    chararg = find (cellfun ("isclass", varargin, "char"), 1);
-    if (isempty (chararg))
-      htmp = surface (varargin{:}, mesh_props{:});
-    else
-      htmp = surface (varargin{1:chararg-1}, mesh_props{:},
-                      varargin{chararg:end});
-    endif
+  if (! ishold (hax))
+    set (hax, "view", [-37.5, 30],
+              "xgrid", "on", "ygrid", "on", "zgrid", "on",
+              "xlimmode", "manual", "ylimmode", "manual");
+  endif
 
-    if (! ishold ())
-      set (hax, "view", [-37.5, 30],
-                "xgrid", "on", "ygrid", "on", "zgrid", "on",
-                "xlimmode", "manual", "ylimmode", "manual");
-    endif
+  drawnow ();
 
-    drawnow ();
+  zmin = get (hax, "zlim")(1);
+  [~, htmp2] = __contour__ (hax, zmin, varargin{:});
 
-    zmin = get (hax, "zlim")(1);
-    [~, htmp2] = __contour__ (hax, zmin, varargin{:});
-
-    htmp = [htmp; htmp2];
-
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
+  htmp = [htmp; htmp2];
 
   if (nargout > 0)
     h = htmp;

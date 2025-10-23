@@ -69,7 +69,9 @@ jobs:
           brew install arpack epstool fftw fig2dev fltk fontconfig freetype \
             ghostscript gl2ps glpk gnuplot graphicsmagick hdf5 libiconv libsndfile \
             libtool openblas pcre2 portaudio pstoedit qhull qrupdate \
-            qscintilla2 qt@${{ matrix.qt }} rapidjson readline suite-sparse sundials texinfo \
+            qscintilla2 \
+            ${{ matrix.qt == '6' && 'qt5compat qtbase qttools' || 'qt@5' }} \
+            rapidjson readline suite-sparse sundials texinfo \
             ccache gnu-sed openjdk pkg-config \
             automake autoconf bison gettext icoutils librsvg mactex-no-gui
           eval "$(/usr/libexec/path_helper)"

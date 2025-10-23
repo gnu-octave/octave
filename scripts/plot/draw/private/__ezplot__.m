@@ -429,60 +429,50 @@ function [h, needusage] = __ezplot__ (pltfcn, varargin)
   until (domain_ok)
 
   ## Now, actually call the correct plot function with valid data and domain.
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
-  endif
-  unwind_protect
-    hax = newplot (hax);
-    if (iscontour)
-      [~, h] = feval (pltfcn, hax, X, Y, Z);
-    elseif (isplot && nargs == 2)
-      h = zeros (length (XX), 1);
-      hold_state = get (hax, "nextplot");
-      for i = 1 : length (XX)
-        if (i == 1)
-          h(1) = plot (hax, XX{1}, YY{1});
-          set (hax, "nextplot", "add");
-          color = get (h(1), "color");
-        else
-          h(i) = plot (hax, XX{i}, YY{i}, "color", color);
-        endif
-      endfor
-      set (hax, "nextplot", hold_state);
-      axis (hax, domain);
-    elseif (isplot || ispolar)
-      h = feval (pltfcn, hax, X, Z);
-      if (isplot)
-        if (! parametric)
-          axis (hax, domain);
-        else
-          axis ("equal");
-        endif
-      endif
-    elseif (isplot3)
-      if (animate)
-        comet3 (hax, X, Y, Z);
+  hax = newplot (hax);
+  if (iscontour)
+    [~, h] = feval (pltfcn, hax, X, Y, Z);
+  elseif (isplot && nargs == 2)
+    h = zeros (length (XX), 1);
+    hold_state = get (hax, "nextplot");
+    for i = 1 : length (XX)
+      if (i == 1)
+        h(1) = plot (hax, XX{1}, YY{1});
+        set (hax, "nextplot", "add");
+        color = get (h(1), "color");
       else
-        h = feval (pltfcn, hax, X, Y, Z);
+        h(i) = plot (hax, XX{i}, YY{i}, "color", color);
       endif
-      grid (hax, "on");
-      zlabel (hax, "z");
-    else  # mesh and surf plots
-      h = feval (pltfcn, hax, X, Y, Z);
-      ## FIXME: surf, mesh should really do a better job of setting zlim
+    endfor
+    set (hax, "nextplot", hold_state);
+    axis (hax, domain);
+  elseif (isplot || ispolar)
+    h = feval (pltfcn, hax, X, Z);
+    if (isplot)
       if (! parametric)
         axis (hax, domain);
+      else
+        axis (hax, "equal");
       endif
     endif
-    xlabel (hax, xarg);
-    ylabel (hax, yarg);
-    title (hax, fstr);
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
+  elseif (isplot3)
+    if (animate)
+      comet3 (hax, X, Y, Z);
+    else
+      h = feval (pltfcn, hax, X, Y, Z);
     endif
-  end_unwind_protect
+    grid (hax, "on");
+    zlabel (hax, "z");
+  else  # mesh and surf plots
+    h = feval (pltfcn, hax, X, Y, Z);
+    ## FIXME: surf, mesh should really do a better job of setting zlim
+    if (! parametric)
+      axis (hax, domain);
+    endif
+  endif
+  xlabel (hax, xarg);
+  ylabel (hax, yarg);
+  title (hax, fstr);
 
 endfunction
 

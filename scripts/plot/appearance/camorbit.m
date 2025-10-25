@@ -123,7 +123,7 @@ function camorbit (varargin)
     coorsys = "data";
   else
     coorsys = varargin{3};
-    if (! any (strcmpi (coorsys, {"data" "camera"})))
+    if (! any (strcmpi (coorsys, {"data", "camera"})))
       error ("camorbit: COORSYS must be 'data' or 'camera'");
     endif
   endif
@@ -132,7 +132,7 @@ function camorbit (varargin)
     dir = "z";
   else
     if (strcmpi (coorsys, "camera"))
-      error ("camorbit: DIR must not be used with 'camera' COORSYS");
+      error ("camorbit: DIR can not be used with 'camera' COORSYS");
     endif
     dir = varargin{4};
   endif
@@ -146,13 +146,11 @@ function camorbit (varargin)
       case "z"
         dir = [0 0 1];
       otherwise
-        error ("camorbit: DIR must be 'x', 'y', 'z' or a numeric 3-element \
-                vector.");
+        error ("camorbit: DIR must be 'x', 'y', 'z' or a numeric 3-element vector");
     endswitch
   endif
   if (! (isnumeric (dir) && numel (dir) == 3))
-    error ("camorbit: DIR must be 'x', 'y', 'z' or a numeric 3-element \
-            vector.");
+    error ("camorbit: DIR must be 'x', 'y', 'z' or a numeric 3-element vector");
   endif
 
   if (isempty (hax))
@@ -288,5 +286,5 @@ endfunction
 %!error <Invalid call> camorbit (1, 2, "data", "z", 42)
 %!error <DIR must be> camorbit (1, 2, "data", "meh")
 %!error <DIR must be> camorbit (1, 2, "data", [1 2 3 4])
-%!error <DIR must not be> camorbit (1, 2, "camera", "x")
+%!error <DIR can not be> camorbit (1, 2, "camera", "x")
 %!error <COORSYS must be> camorbit (1, 2, "meh")

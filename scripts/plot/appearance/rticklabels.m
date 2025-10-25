@@ -65,16 +65,15 @@
 
 function labels = rticklabels (varargin)
 
-  [hax, varargin, nargs] = __plt_get_axis_arg__ ("rticklabels", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("rticklabels", varargin{:});
 
-  if (nargs > 1)
+  if (nargin > 1)
     print_usage;
   endif
 
   returnlabels = true;
 
-  ## Check first input for axes handle and remove from argument list.
-  if (nargs > 0)
+  if (nargin > 0)
     ## Single remaining input must be tick labels and should be a numeric
     ## vector or a cell vector of numbers and strings.
 
@@ -93,33 +92,27 @@ function labels = rticklabels (varargin)
       arg = num2cell (arg(:));
 
     elseif (iscell (arg))
-
-      if (! all ((cellarg_num = cellfun ('isnumeric', arg))
-                           | (cellarg_char = cellfun ('ischar', arg))))
+      if (! all (  (cellarg_num = cellfun ('isnumeric', arg))
+                 | (cellarg_char = cellfun ('ischar', arg))))
         error ("rticklabels: TICKVAL cell must contain numbers or strings");
       endif
-
     else
-      error (["rticklabels: TICKVAL must be numeric or a cell ", ...
-              "containing numbers and strings"]);
+      error ("rticklabels: TICKVAL must be numeric or a cell containing numbers and strings");
     endif
 
-  ## Finish converting TICVAL into a cellstr.
-
-  ## Convert numeric elements to characters and make it a 1-D cell array.
-  arg(cellarg_num) = cellfun ('num2str', arg(cellarg_num), ...
-                              "UniformOutput", false);
-  arg = arg(:);
+    ## Finish converting TICKVAL into a cellstr.
+    ## Convert numeric elements to characters and make it a 1-D cell array.
+    arg(cellarg_num) = cellfun ('num2str', arg(cellarg_num), ...
+                                "UniformOutput", false);
+    arg = arg(:);
   endif
 
   if (isempty (hax))
     hax = gca ();
   endif
 
-  ## Error if the remaining input
+  ## Error if hax does not point to a polar plot.
   polarhandle = findall (hax, "tag", "polar_grid");
-
-  ## Error if hax does not point to a polar plot with r elements.
   if (isempty (polarhandle))
     error ("rticklabels: rticklabels can only be used on a polar plot");
   elseif (! isfield (get (hax), "rtick") )
@@ -145,10 +138,9 @@ function labels = rticklabels (varargin)
   ##  2*nt+1:2*nt+nr = text handles containing nr rtick labels (reverse order)
   ##  2*nt+nr+1:2*nt+2*nr = line object handles for rtick circles
   ##  end = patch object handle for darker outside border
+  rlabelrange = 2*nt + [nr:-1:1];  # Flip back to increasing order.
 
-  rlabelrange = 2*nt + [nr:-1:1]; # Flip back to increasing order.
-
-  if (nargs == 0)
+  if (nargin == 0)
     ## Get radius labels.
     labels = get (rt_label_handles(rlabelrange), "string");
 

@@ -54,8 +54,7 @@ function datetick (varargin)
   oldfig = [];
   if (! isempty (hax))
     oldfig = get (0, "currentfigure");
-  endif
-  if (isempty (hax))
+  else
     hax = gca ();
   endif
 
@@ -147,7 +146,7 @@ function __datetick__ (varargin)
   endif
 
   ## Don't publish the existence of this variable for use with dateaxis
-  if (length (varargin) > 0)
+  if (numel (varargin) > 0)
     startdate = varargin{1};
   else
     startdate = [];
@@ -272,7 +271,7 @@ function __datetick__ (varargin)
     endif
   endif
 
-  if (length (ticks) == 6)
+  if (numel (ticks) == 6)
     ## Careful that its not treated as a datevec
     if (! isempty (startdate))
       sticks = strvcat (datestr (ticks(1:end-1) - ticks(1) + startdate, form),

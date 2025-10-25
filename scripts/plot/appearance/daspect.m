@@ -79,7 +79,7 @@ function daratio = daspect (varargin)
       elseif (numel (arg) == 3)
         set (hax, "dataaspectratio", arg);
       else
-        error ("daspect: DATA_ASPECT_RATIO must be a 2 or 3 element vector");
+        error ("daspect: DATA_ASPECT_RATIO must be a 2- or 3-element vector");
       endif
     elseif (ischar (arg))
       arg = lower (arg);

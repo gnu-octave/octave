@@ -63,16 +63,16 @@
 
 function labels = thetaticklabels (varargin)
 
-  [hax, varargin, nargs] = __plt_get_axis_arg__ ("thetaticklabels", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("thetaticklabels", varargin{:});
 
-  if (nargs > 1)
+  if (nargin > 1)
     print_usage;
   endif
 
   returnlabels = true;
 
   ## Check first input for axes handle and remove from argument list.
-  if (nargs > 0)
+  if (nargin > 0)
     ## Single remaining input must be tick labels and should be a numeric
     ## vector or a cell vector of numbers and strings.
 
@@ -91,19 +91,16 @@ function labels = thetaticklabels (varargin)
       arg = num2cell (arg(:));
 
     elseif (iscell (arg))
-
-      if (! all ((cellarg_num = cellfun ('isnumeric', arg))
-                           | (cellarg_char = cellfun ('ischar', arg))))
+      if (! all (  (cellarg_num = cellfun ('isnumeric', arg))
+                 | (cellarg_char = cellfun ('ischar', arg))))
         error ("thetaticklabels: TICKVAL cell must contain numbers or strings");
       endif
 
     else
-      error (["thetaticklabels: TICKVAL must be numeric or a cell ", ...
-              "containing numbers and strings"]);
+      error ("thetaticklabels: TICKVAL must be numeric or a cell containing numbers and strings");
     endif
 
-  ## Finish converting TICVAL into a cellstr.
-
+  ## Finish converting TICKVAL into a cellstr.
   ## Convert numeric elements to characters and make it a 1-D cell array.
   arg(cellarg_num) = cellfun ('num2str', arg(cellarg_num),
                               "UniformOutput", false);
@@ -114,10 +111,8 @@ function labels = thetaticklabels (varargin)
     hax = gca ();
   endif
 
-  ## Error if the remaining input
+  ## Error if hax does not point to a polar plot.
   polarhandle = findall (hax, "tag", "polar_grid");
-
-  ## Error if hax does not point to a polar plot with theta elements.
   if (isempty (polarhandle))
     error ("thetaticklabels: function can only be used on a polar plot");
   elseif (! isfield (get (hax), "ttick") )
@@ -137,7 +132,7 @@ function labels = thetaticklabels (varargin)
   ## Get theta label handles, reverse order so output is in increasing.
   tlabel_handles = get (polarhandle, "children")(nt:-1:1);
 
-  if (nargs == 0)
+  if (nargin == 0)
     ## Just return theta labels.
     labels = get (tlabel_handles, "string");
 

@@ -152,7 +152,7 @@
 ## @seealso{xlabel, ylabel, zlabel, title, text, gtext, legend, colorbar}
 ## @end deftypefn
 
-function varargout = annotation (varargin)
+function h = annotation (varargin)
 
   nargin = numel (varargin);
   if (nargin == 0)
@@ -188,12 +188,11 @@ function varargout = annotation (varargin)
         y = varargin{2};
         varargin(1:2) = [];
 
-        if (isnumeric (x) && isnumeric (y)
-            && length (x) == 2 && length (y) == 2)
-          lims = [x(1), y(1), diff(x), diff(y)];
-        else
+        if (! (isnumeric (x) && isnumeric (y)
+               && numel (x) == 2 && numel (y) == 2))
           error ("annotation: X and Y must be 2-element vectors");
         endif
+        lims = [x(1), y(1), diff(x), diff(y)];
       else
         print_usage ();
       endif
@@ -258,7 +257,7 @@ function varargout = annotation (varargin)
   end_unwind_protect
 
   if (nargout != 0)
-    varargout{1} = htmp;
+    h = htmp;
   endif
 
 endfunction
@@ -301,7 +300,7 @@ endfunction
 function h = buildannot (hax, objtype, pos)
 
   ## Base hggroup
-  h = hggroup ("parent", hax);
+  h = hggroup (hax);
 
   ## Base context menu
   hui = uicontextmenu (get (hax, "parent"));
@@ -831,9 +830,8 @@ function addbaseprops (h, proptable)
            proptable(1:3:end), proptable(2:3:end), proptable(3:3:end));
 endfunction
 
-## FIXME: there are some calls to addbasemenu with option-like arguments
-## but we don't do anything with varargin here.  What is the right thing
-## to do?
+## FIXME: there are some calls to addbasemenu with option-like arguments but
+## we don't do anything with varargin here.  What is the right thing to do?
 function addbasemenu (hm, hpar, pname, vals, mainlabel = "", varargin)
 
   if (isempty (mainlabel))

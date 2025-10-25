@@ -84,11 +84,11 @@ function retval = material (varargin)
   endif
 
   ## resolve input
-  h = [];
+  hax = [];
   if (nargout == 0)
     ## Check whether first argument is list of graphics handles.
     if (all (ishghandle (varargin{1})))
-      h = varargin{1};
+      hax = varargin{1};
       varargin(1) = [];
     endif
 
@@ -177,11 +177,11 @@ function retval = material (varargin)
     error ("material: MTYPE must be a named material or a vector");
   endif
 
-  if (isempty (h))
-    h = gca ();
+  if (isempty (hax))
+    hax = gca ();
   endif
   ## find all patch and surface objects in current axes
-  hps = findobj (h, "Type", "patch", "-or", "Type", "surface");
+  hps = findobj (hax, "Type", "patch", "-or", "Type", "surface");
 
   ## set properties
   set (hps,

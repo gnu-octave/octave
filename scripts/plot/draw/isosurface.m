@@ -203,10 +203,10 @@ function varargout = isosurface (varargin)
                   "FaceVertexCData", fc,
                   "FaceColor", "flat", "EdgeColor", ec,
                   "FaceLighting", "gouraud");
-      if (! ishold ())
+      if (! ishold (hax))
         set (hax, "View", [-37.5, 30]);
       endif
-      isonormals (x, y, z, v, pa);
+      isonormals (hax, x, y, z, v, pa);
       lights = findobj (hax, "Type", "light");
       if (isempty (lights))
         camlight ();

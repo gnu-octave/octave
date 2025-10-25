@@ -40,34 +40,35 @@
 
 function box (varargin)
 
-  [hax, varargin, nargs] = __plt_get_axis_arg__ ("box", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("box", varargin{:});
+
+  if (nargin > 1)
+    print_usage ();
+  endif
 
   if (isempty (hax))
     hax = gca ();
   endif
 
-  if (nargs == 0)
+  if (nargin == 0)
     box_state = get (hax, "box");
     if (strcmp (box_state, "on"))
       box_state = "off";
     else
       box_state = "on";
     endif
-  elseif (nargs == 1)
+  else
     state = varargin{1};
-    if (ischar (state))
-      if (strcmpi (state, "off"))
-        box_state = "off";
-      elseif (strcmpi (state, "on"))
-        box_state = "on";
-      else
-        error ('box: argument must be "on" or "off"');
-      endif
+    if (! ischar (state))
+      error ('box: argument must be "on" or "off"');
+    endif
+    if (strcmpi (state, "off"))
+      box_state = "off";
+    elseif (strcmpi (state, "on"))
+      box_state = "on";
     else
       error ('box: argument must be "on" or "off"');
     endif
-  else
-    print_usage ();
   endif
 
   set (hax, "box", box_state);

@@ -310,7 +310,7 @@ endfunction
 
 ## Test input validation
 %!error <called with too many inputs> camlookat (1, 2)
-%!error <must be handle> camlookat ("a")
+%!error <must be graphic handles> camlookat ("a")
 %!error <children of the same axes>
 %! hf = figure ("visible", "off");
 %! unwind_protect

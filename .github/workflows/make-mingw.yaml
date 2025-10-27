@@ -312,7 +312,7 @@ jobs:
       - name: upload build artifact
         if: matrix.msystem == 'MINGW64'
         continue-on-error: true
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ matrix.mingw-prefix }}-octave-${{ steps.ccache-prepare.outputs.timestamp }}
           path: C:\octave\pkg\octave.tar.gz

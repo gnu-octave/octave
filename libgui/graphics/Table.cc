@@ -465,6 +465,9 @@ Table::Table (octave::interpreter& interp,
                               octave::math::round (bb(3)));
   m_tableWidget->setFont (Utils::computeFont<uitable> (tp)) ;
   m_tableWidget->setSelectionBehavior (QAbstractItemView::SelectItems);
+  // Workaround Qt behavior which stops setColumnWidth from working for small
+  // column widths (see bug #63422).
+  m_tableWidget->horizontalHeader()->setMinimumSectionSize (1);
   updatePalette ();
   m_keyPressHandlerDefined = ! tp.get_keypressfcn ().isempty ();
   m_keyReleaseHandlerDefined = ! tp.get_keyreleasefcn ().isempty ();
@@ -1079,23 +1082,33 @@ Table::updateColumnwidth ()
   uitable::properties& tp = properties<uitable> ();
 
   octave_value columnwidth = tp.get_columnwidth ();
-  if (columnwidth.isempty ()
-      || (columnwidth.is_string ()
-          && columnwidth.string_value (false) == "auto"))
-    for (int i = 0; i < m_tableWidget->columnCount (); i++)
-      m_tableWidget->setColumnWidth (i, AUTO_WIDTH);
-  else if (columnwidth.is_string ()
-           && columnwidth.string_value (false) == "preferred")
-    for (int i = 0; i < m_tableWidget->columnCount (); i++)
-      {
-        int column_size =
-          (qobject_cast<QAbstractItemView *> (m_tableWidget))->sizeHintForColumn (i);
-        int header_size = m_tableWidget->horizontalHeader ()->sectionSizeHint (i);
+  if (columnwidth.isempty ())
+    {
+      for (int i = 0; i < m_tableWidget->columnCount (); i++)
+        m_tableWidget->setColumnWidth (i, AUTO_WIDTH);
+    }
+  else if (columnwidth.is_string ())
+    {
+      std::string option = columnwidth.string_value (false);
+      if (option == "auto")
+        {
+          for (int i = 0; i < m_tableWidget->columnCount (); i++)
+            m_tableWidget->setColumnWidth (i, AUTO_WIDTH);
+        }
+      else if (option == "fit")
+        {
+          for (int i = 0; i < m_tableWidget->columnCount (); i++)
+            {
+              int column_size = (qobject_cast<QAbstractItemView *> (m_tableWidget))->sizeHintForColumn (i);
+              int header_size = m_tableWidget->horizontalHeader ()->sectionSizeHint (i);
 
-        if (column_size > header_size)
-          header_size = column_size;
-        m_tableWidget->setColumnWidth (i, header_size);
-      }
+              if (column_size > header_size)
+                m_tableWidget->setColumnWidth (i, column_size);
+              else
+                m_tableWidget->setColumnWidth (i, header_size);
+            }
+        }
+    }
   else if (columnwidth.iscell ())
     {
       Cell cell_value = columnwidth.cell_value ();
@@ -1103,17 +1116,21 @@ Table::updateColumnwidth ()
       for (; i < m_tableWidget->columnCount () && i < cell_value.numel (); i++)
         {
           octave_value v = cell_value (i);
-          if (v.is_string ()  && v.string_value (false) == "auto")
-            m_tableWidget->setColumnWidth (i, AUTO_WIDTH);
-          else if (v.is_string () && v.string_value (false) == "preferred")
+          if (v.is_string ())
             {
-              int column_size =
-                (qobject_cast<QAbstractItemView *> (m_tableWidget))->sizeHintForColumn (i);
-              int header_size = m_tableWidget->horizontalHeader ()->sectionSizeHint (i);
+              std::string option = v.string_value (false);
+              if (option == "auto")
+                m_tableWidget->setColumnWidth (i, AUTO_WIDTH);
+              else if (option == "fit")
+                {
+                  int column_size = (qobject_cast<QAbstractItemView *> (m_tableWidget))->sizeHintForColumn (i);
+                  int header_size = m_tableWidget->horizontalHeader ()->sectionSizeHint (i);
 
-              if (column_size > header_size)
-                header_size = column_size;
-              m_tableWidget->setColumnWidth (i, header_size);
+                  if (column_size > header_size)
+                    m_tableWidget->setColumnWidth (i, column_size);
+                  else
+                    m_tableWidget->setColumnWidth (i, header_size);
+                }
             }
           else
             {
@@ -1121,29 +1138,15 @@ Table::updateColumnwidth ()
               m_tableWidget->setColumnWidth (i, w);
             }
         }
+      // Remaining columns use "auto" width for Matlab compatibility.
       for (; i < m_tableWidget->columnCount (); i++)
-        {
-          int column_size =
-            (qobject_cast<QAbstractItemView *> (m_tableWidget))->sizeHintForColumn (i);
-          int header_size = m_tableWidget->horizontalHeader ()->sectionSizeHint (i);
-
-          if (column_size > header_size)
-            header_size = column_size;
-          m_tableWidget->setColumnWidth (i, header_size);
-        }
+        m_tableWidget->setColumnWidth (i, AUTO_WIDTH);
     }
   else if (columnwidth.is_matrix_type ())
     {
-      Matrix matrix_value = columnwidth.matrix_value ();
-      int i = 0;
-      for (; i < m_tableWidget->columnCount () && i < matrix_value.numel (); i++)
-        {
-          octave_value v = matrix_value(i);
-          int w = int (v.double_value ());
-          m_tableWidget->setColumnWidth (i, w);
-        }
-      for (; i < m_tableWidget->columnCount (); i++)
-        m_tableWidget->setColumnWidth (i, AUTO_WIDTH);
+      // FIXME: 2025/10/27: Added call to error_impossible().
+      //        If no bug reports for 2 years, remove code entirely.
+      error_impossible ();
     }
 }
 

@@ -11671,10 +11671,14 @@ uitable::properties::set_columnformat (const octave_value& val)
 void
 uitable::properties::set_columnwidth (const octave_value& val)
 {
-  bool error_exists = false;
+  bool isvalid = true;
 
-  if (val.is_string () && val.string_value (false) == "auto")
-    error_exists = false;
+  if (val.is_string ())
+    {
+      std::string option = val.string_value (false);
+      if (option != "auto" && option != "fit")
+        isvalid = false;
+    }
   else if (val.iscell ())
     {
       Cell cell_value = val.cell_value ();
@@ -11683,29 +11687,24 @@ uitable::properties::set_columnwidth (const octave_value& val)
           octave_value v = cell_value(i);
           if (v.is_string ())
             {
-              if (v.string_value (false) != "auto")
-                error_exists = true;
+              std::string option = v.string_value (false);
+              if (option != "auto" && option != "fit")
+                isvalid = false;
             }
-          else if (v.iscell ())
+          else if (! (v.isreal () && v.is_scalar_type ()))
             {
-              error_exists = true;
-            }
-          else if (! v.is_scalar_type ())
-            {
-              error_exists = true;
+              isvalid = false;
             }
         }
     }
   else
-    error_exists = true;
+    isvalid = false;
 
-  if (error_exists)
-    error ("set: expecting either 'auto' or a cell of pixel values or auto");
-  else
-    {
-      if (m_columnwidth.set (val, true))
-        mark_modified ();
-    }
+  if (! isvalid)
+    error ("set: expecting either 'auto', 'fit', or a cell array of pixel values, 'auto', or 'fit'");
+
+  if (m_columnwidth.set (val, true))
+    mark_modified ();
 }
 
 void

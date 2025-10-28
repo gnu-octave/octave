@@ -1243,8 +1243,16 @@ function safe_property_link (h1, h2, props)
     prop = props{ii};
     lsn = {h1, prop, @(h, ~) set (h2, prop, get (h, prop))};
     addlistener (lsn{:});
-    addlistener (h2, "beingdeleted", @(~, ~) dellistener (lsn{:}));
+    addlistener (h2, "beingdeleted", @(~, ~) safe_dellistener (lsn{:}));
   endfor
+
+endfunction
+
+function safe_dellistener (h, prop, fcn)
+
+  if (ishghandle (h))
+    dellistener (h, prop, fcn);
+  endif
 
 endfunction
 

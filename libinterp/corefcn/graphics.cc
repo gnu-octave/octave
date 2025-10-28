@@ -11708,6 +11708,16 @@ uitable::properties::set_columnwidth (const octave_value& val)
 }
 
 void
+uitable::properties::set_data (const octave_value& val)
+{
+  if (! (val.iscell () || val.is_matrix_type () || val.is_scalar_type ()))
+    error ("set: 'Data' must be an array or cell array");
+
+  if (m_data.set (val, true))
+    mark_modified ();
+}
+
+void
 uitable::properties::set_units (const octave_value& val)
 {
   caseless_str old_units = get_units ();

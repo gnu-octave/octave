@@ -1291,7 +1291,7 @@ Table::updateData ()
 
   octave_value data = tp.get_data ();
 
-  if (data.iscell () || data.is_matrix_type ())
+  if (data.iscell () || data.is_matrix_type () || data.is_scalar_type ())
     {
       m_tableWidget->setRowCount (data.rows ());
       m_tableWidget->setColumnCount (data.columns ());

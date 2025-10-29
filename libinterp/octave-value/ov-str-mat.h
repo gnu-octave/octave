@@ -124,6 +124,9 @@ public:
 
   NDArray array_value (bool = false) const;
 
+  boolNDArray bool_array_value (bool = false) const
+  { return boolNDArray (m_matrix); }
+
   Complex complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const;

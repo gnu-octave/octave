@@ -1276,7 +1276,7 @@ public:
 
   bool eof ()
   {
-    return (m_eob == m_buf + m_overlap && m_i_stream.eof ())
+    return ((m_eob - m_buf) == m_overlap && m_i_stream.eof ())
             || (m_flags & std::ios_base::eofbit);
   }
 
@@ -1370,6 +1370,7 @@ delimited_stream::delimited_stream (std::istream& is,
   m_buf = new char[m_bufsize];
   m_eob = m_buf + m_bufsize;
   m_idx = m_eob;                // refresh_buf shouldn't try to copy old data
+  m_overlap = 0;                // initialize value for eof() test
   m_progress_marker = m_idx;
   refresh_buf (true);           // load the first batch of data
 }
@@ -1463,16 +1464,16 @@ delimited_stream::refresh_buf (bool initialize)
   else
     {
       old_overlap = m_overlap;
-      // Retain the last 25 bytes in the buffer.  That should be more than enough
-      // to putback an entire double precision floating point number in decimal
-      // including 3 digit exponent and signs.  Do we ever need to putback more
-      // than that?
+      // Retain the last 25 bytes in the buffer.  That should be more than
+      // enough to putback an entire double precision floating point number in
+      // decimal including 3 digit exponent and signs.  Do we ever need to
+      // putback more than that?
       m_overlap = 25;
       // Assure we don't "underflow" with the overlap
       m_overlap = std::min (m_overlap, m_idx - m_buf - 1);
     }
 
-  octave_quit ();                       // allow ctrl-C
+  octave_quit ();                       // allow Ctrl-C
 
   if (old_remaining + m_overlap > 0)
     {

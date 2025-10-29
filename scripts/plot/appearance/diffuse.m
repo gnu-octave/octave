@@ -45,9 +45,9 @@ function d = diffuse (sx, sy, sz, lv)
   endif
 
   ## Check light vector (lv) argument
-  if (! isvector (lv) || length (lv) < 2 || length (lv) > 3)
+  if (! isvector (lv) || numel (lv) < 2 || numel (lv) > 3)
     error ("diffuse: light vector LV must be a 2- or 3-element vector");
-  elseif (length (lv) == 2)
+  elseif (numel (lv) == 2)
     [lv(1), lv(2), lv(3)] = sph2cart (lv(1) * pi/180, lv(2) * pi/180, 1.0);
   endif
 

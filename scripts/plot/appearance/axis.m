@@ -363,31 +363,31 @@ function limits = __axis__ (ca, varargin)
 
     elseif (isnumeric (opt) && isvector (opt))
 
-      len = length (opt);
+      nel = numel (opt);
 
-      if (len != 2 && len != 4 && len != 6 && len != 8)
+      if (nel != 2 && nel != 4 && nel != 6 && nel != 8)
         error ("axis: LIMITS vector must have 2, 4, 6, or 8 elements");
       endif
 
-      for i = 1:2:len
+      for i = 1:2:nel
         if (opt(i) >= opt(i+1))
           error ("axis: LIMITS(%d) must be less than LIMITS(%d)", i, i+1);
         endif
       endfor
 
-      if (len > 1)
+      if (nel > 1)
         xlim (ca, opt(1:2));
       endif
 
-      if (len > 3)
+      if (nel > 3)
         ylim (ca, opt(3:4));
       endif
 
-      if (len > 5)
+      if (nel > 5)
         zlim (ca, opt(5:6));
       endif
 
-      if (len > 7)
+      if (nel > 7)
         clim (ca, opt(7:8));
       endif
 

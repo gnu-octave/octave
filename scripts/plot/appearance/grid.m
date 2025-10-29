@@ -53,25 +53,25 @@
 
 function grid (varargin)
 
-  [hax, varargin, nargs] = __plt_get_axis_arg__ ("grid", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("grid", varargin{:});
 
   if (isempty (hax))
     hax = gca ();
   endif
 
   ## Must be after gca (), since grid with no plot should create one.
-  if (nargs > 2)
+  if (nargin > 2)
     print_usage ();
   endif
 
   grid_on = any (strcmp (get (hax, {"xgrid", "ygrid", "zgrid"}), "on"));
 
-  minor_on = any (strcmp (get (hax, {"xminorgrid", "yminorgrid", "zminorgrid"}),
-                         "on") &
-                  ! strcmp (get (hax, {"xscale", "yscale", "zscale"}), "log"));
+  minor_on = ...
+    any (strcmp (get (hax, {"xminorgrid", "yminorgrid", "zminorgrid"}), "on")
+         & ! strcmp (get (hax, {"xscale", "yscale", "zscale"}), "log"));
 
   minor_auto = true;
-  if (nargs == 0)
+  if (nargin == 0)
     grid_on = ! grid_on;
     if (! grid_on)
       minor_auto = false;
@@ -90,7 +90,7 @@ function grid (varargin)
       minor_auto = true;
     elseif (strcmpi (arg1, "minor"))
       minor_auto = false;
-      if (nargs == 2)
+      if (nargin == 2)
         arg2 = varargin{2};
         if (strcmpi (arg2, "on"))
           minor_on = true;

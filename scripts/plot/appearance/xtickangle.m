@@ -42,12 +42,13 @@
 ## Programming Notes:
 ## @enumerate
 ## @item
-## The @qcode{"XTickLabelRotation"} property is currently unimplemented in
-## Octave.  The property can be set and queried, but has no effect on the plot.
+## The @qcode{"XTickLabelRotation"} property is @emph{not} currently
+## implemented in Octave.  The property can be set and queried, but has no
+## effect on the plot.
 ##
 ## @item
-## Requesting a return value while also setting a specified
-## rotation will result in an error.
+## Requesting a return value while also setting a specified rotation will
+## result in an error.
 ## @end enumerate
 ##
 ## @seealso{ytickangle, ztickangle, get, set}

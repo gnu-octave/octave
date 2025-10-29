@@ -3212,10 +3212,11 @@ heading.";
 
       case "columnwidth"
         s.doc = "Setting for determining width of each column, valid \
-options include:  @qcode{\"auto\"}, @qcode{\"fit\"}, evenly divided \
+options include: @qcode{\"auto\"}, @qcode{\"fit\"}, evenly divided \
 multiples specified as @qcode{\"1x\"}, @qcode{\"2x\"}, etc., or a 1 x N cell \
 vector where each element corresponds to one of N table columns, and \
-containing any of the above options or a fixed width specified in pixels.";
+contains any of the above string options or a fixed width specified in pixels.\
+  The @qcode{\"1x\"} property is not yet implemented.";
         s.category = "Table Data";
 
       case "data"
@@ -3229,7 +3230,7 @@ containing any of the above options or a fixed width specified in pixels.";
         s.category = "Table Operation";
 
       case "extent"
-        s.doc = "A for element vector indicating the size of the table.  \
+        s.doc = "A four-element vector indicating the size of the table.  \
 The first two elements of the array are always zero, while the third and \
 fourth elements contain the height and width of the table.";
         s.valid = valid_4elvec;

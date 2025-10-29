@@ -57,7 +57,7 @@ function camlookat (h)
   if (nargin == 0)
     hax = gca ();
     h = get (hax, "children");
-  elseif (nargin == 1)
+  else
     if (isaxes (h))
       hax = h;
       h = get (hax, "children");
@@ -81,7 +81,7 @@ function camlookat (h)
     hi = h(i);
 
     if (! ishghandle (hi))
-      error ("camlookat: Inputs must be handles");
+      error ("camlookat: inputs must be graphic handles");
     endif
 
     x0_ = min (get (hi, "xdata")(:));
@@ -310,7 +310,7 @@ endfunction
 
 ## Test input validation
 %!error <called with too many inputs> camlookat (1, 2)
-%!error <must be handle> camlookat ("a")
+%!error <must be graphic handles> camlookat ("a")
 %!error <children of the same axes>
 %! hf = figure ("visible", "off");
 %! unwind_protect

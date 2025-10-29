@@ -92,10 +92,9 @@ function h = text (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("text", varargin{:});
 
-  nargs = nargin;
   offset = 0;
 
-  if (nargs > 2 && isnumeric (varargin{1}) && isnumeric (varargin{2}))
+  if (nargin > 2 && isnumeric (varargin{1}) && isnumeric (varargin{2}))
     x = varargin{1};
     y = varargin{2};
 

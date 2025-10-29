@@ -111,6 +111,11 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   unexpectedly.  However, any user plotting code that depends on this broken
   behavior will need to be updated.
 
+- The `uitable` property `"ColumnWidth"` now supports the argument `"fit"`
+  which produces smaller column widths than `"auto"` (sized to width of data,
+  rather than possibly including `ColumnName` in width calculation).
+  Specifying small numeric widths down to 1-pixel now works correctly.
+
 - The `KeyEvent` structure passed as an input paramater to graphics callback
   functions such as `KeyPressFcn` now returns fieldnames in the same order
   as Matlab: `Character`, `Modifier`, `Key`.

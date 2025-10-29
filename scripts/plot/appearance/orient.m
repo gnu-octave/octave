@@ -51,23 +51,27 @@
 ## @seealso{print, saveas}
 ## @end deftypefn
 
-function orientation = orient (varargin)
+function orientation = orient (hfig, paporient)
 
-  cf = [];
-  if (nargin > 0 && isscalar (varargin{1}) && isfigure (varargin{1}))
-    cf = varargin{1};
-    varargin(1) = [];
-    nargin = nargin - 1;
-  endif
-
-  if (nargin > 1)
-    print_usage ();
-  endif
-
-  if (isempty (cf))
+  if (nargin == 0)
     cf = gcf ();
+  elseif (nargin == 1)
+    if (isscalar (hfig) && isfigure (hfig))
+      cf = hfig;
+    elseif (ischar (hfig))
+      cf = gcf ();
+      paporient = hfig;
+    else
+      print_usage ();
+    endif
+  else  # nargin == 2
+    if (! (isscalar (hfig) && isfigure (hfig)))
+      print_usage ();
+    elseif (! ischar (paporient))
+      print_usage ();
+    endif
   endif
-
+      
   paperunits = get (cf, "paperunits");
   unwind_protect
     set (cf, "paperunits", "inches");  # All Matlab calculations assume inches.
@@ -82,9 +86,7 @@ function orientation = orient (varargin)
         endif
       endif
     else
-      paporient = varargin{1};
-      if (strcmpi (paporient, "landscape")
-          || strcmpi (paporient, "portrait"))
+      if (any (strcmpi (paporient, {"landscape", "portrait"})))
         if (! strcmpi (get (cf, "paperorientation"), paporient))
           ## FIXME: with the proper listeners in place there won't be a need to
           ##        set the papersize and paperposition here.
@@ -109,7 +111,7 @@ function orientation = orient (varargin)
         papersize = get (cf, "papersize");
         set (cf, "paperposition", [0.25, 0.25, (papersize - 0.5)]);
       else
-        error ("orient: unknown ORIENTATION");
+        error ("orient: unknown ORIENTATION '%s'", paporient);
       endif
     endif
 
@@ -161,11 +163,12 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error orient (1.73, 2.5)
-%!error <unknown ORIENTATION>
+%!error <Invalid call> orient ({1})
+%!error <Invalid call> orient (1.73, 'portrait')
+%!error <unknown ORIENTATION 'foobar'>
 %! hfig = figure ("visible", "off");
 %! unwind_protect
-%!   orient ("nobody");
+%!   orient ("foobar");
 %! unwind_protect_cleanup
 %!   close (hfig);
 %! end_unwind_protect

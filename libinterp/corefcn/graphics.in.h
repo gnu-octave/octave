@@ -6396,7 +6396,7 @@ public:
       any_property columnformat S , Cell ()
       any_property columnname , "numbered"
       any_property columnwidth S , "auto"
-      any_property data u , Matrix ()
+      any_property data S , Matrix ()
       bool_property enable , "on"
       array_property extent rG , Matrix (1, 4, 0.0)
       radio_property fontangle u , "{normal}|italic"
@@ -6434,13 +6434,9 @@ public:
     OCTINTERP_API void update_units (const caseless_str& old_units);
     OCTINTERP_API void update_fontunits (const caseless_str& old_units);
     void update_table_extent () { };
-    void update_data () { update_table_extent (); }
     void update_fontname () { update_table_extent (); }
     void update_fontsize () { update_table_extent (); }
-    void update_fontangle ()
-    {
-      update_table_extent ();
-    }
+    void update_fontangle () { update_table_extent (); }
     void update_fontweight () { update_table_extent (); }
   };
 

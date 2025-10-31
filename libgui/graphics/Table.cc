@@ -1291,14 +1291,11 @@ Table::updateData ()
 
   octave_value data = tp.get_data ();
 
-  if (data.iscell () || data.is_matrix_type () || data.is_scalar_type ())
-    {
-      m_tableWidget->setRowCount (data.rows ());
-      m_tableWidget->setColumnCount (data.columns ());
+  m_tableWidget->setRowCount (data.rows ());
+  m_tableWidget->setColumnCount (data.columns ());
 
-      for (octave_idx_type col = 0; col < data.columns (); col++)
-        updateDataColumn (col);
-    }
+  for (octave_idx_type col = 0; col < data.columns (); col++)
+    updateDataColumn (col);
 
   for (octave_idx_type row = 0; row < m_tableWidget->rowCount (); row++)
     m_tableWidget->setRowHeight (row, AUTO_HEIGHT);

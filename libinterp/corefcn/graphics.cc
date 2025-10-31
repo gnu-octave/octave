@@ -11710,7 +11710,8 @@ uitable::properties::set_columnwidth (const octave_value& val)
 void
 uitable::properties::set_data (const octave_value& val)
 {
-  if (! (val.iscell () || val.is_matrix_type () || val.is_scalar_type ()))
+  if (! (val.iscell () || val.is_matrix_type () || val.is_scalar_type ()
+         || val.is_range ()))
     error ("set: 'Data' must be an array or cell array");
 
   if (m_data.set (val, true))

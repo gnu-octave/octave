@@ -98,7 +98,7 @@ endfunction
 %!   hl = plot (1:10);
 %!   assert (get (gca, "children"), hl);
 %!   delete (hl);
-%!   assert (get (gca, "children"), zeros (0,1));
+%!   assert (get (gca, "children"), zeros (0,0));
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

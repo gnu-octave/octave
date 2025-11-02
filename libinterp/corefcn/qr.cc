@@ -35,6 +35,7 @@
 #include "qrp.h"
 #include "sparse-qr.h"
 
+#include "builtin-defun-decls.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
@@ -111,17 +112,16 @@ DEFUN (qr, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{Q}, @var{R}] =} qr (@var{A})
 @deftypefnx {} {[@var{Q}, @var{R}, @var{P}] =} qr (@var{A})
-@deftypefnx {} {@var{X} =} qr (@var{A})  # non-sparse A
-@deftypefnx {} {@var{R} =} qr (@var{A})  # sparse A
-@deftypefnx {} {@var{X} =} qr (@var{A}, @var{B}) # sparse A
+@deftypefnx {} {@var{R} =} qr (@var{A})
 @deftypefnx {} {[@var{C}, @var{R}] =} qr (@var{A}, @var{B})
+@deftypefnx {} {[@var{C}, @var{R}, @var{P}] =} qr (@var{A}, @var{B})
+@deftypefnx {} {@var{X} =} qr (@var{A}, @var{B})  # sparse only
 @deftypefnx {} {[@dots{}] =} qr (@dots{}, "econ")
 @deftypefnx {} {[@dots{}] =} qr (@dots{}, "vector")
 @deftypefnx {} {[@dots{}] =} qr (@dots{}, "matrix")
 @deftypefnx {} {[@dots{}] =} qr (@dots{}, 0)
 @cindex QR factorization
-Compute the QR@tie{}factorization of @var{A}, using standard @sc{lapack}
-subroutines.
+Compute the QR@tie{}factorization of @var{A}.
 
 The QR@tie{}factorization is
 @tex
@@ -172,10 +172,9 @@ which multiplied together return the original matrix
 @end group
 @end example
 
-If just a single return value is requested then it is either @var{R}, if
-@var{A} is sparse, or @var{X}, such that @code{@var{R} = triu (@var{X})} if
-@var{A} is full.  (Note: unlike most commands, the single return value is not
-the first return value when multiple values are requested.)
+If just @strong{one return value} is requested then it is @var{R}.  (Note:
+unlike most commands, the single return value is not the first return value when
+multiple values are requested.)
 
 If a third output @var{P} is requested, then @code{qr} calculates the permuted
 QR@tie{}factorization
@@ -194,13 +193,14 @@ where @var{Q} is an orthogonal matrix, @var{R} is upper triangular, and
 @var{P} is a permutation matrix.
 @end ifnottex
 
-If @var{A} is dense, the permuted QR@tie{}factorization has the additional
-property that the diagonal entries of @var{R} are ordered by decreasing
-magnitude.  In other words, @code{abs (diag (@var{R}))} will be ordered
-from largest to smallest.
+If @var{A} is dense, the QR@tie{}factorization is computed using standard
+@sc{lapack} subroutines.  In this case, the permuted factorization has the
+additional property that the diagonal entries of @var{R} are ordered by
+decreasing magnitude.  In other words, @code{abs (diag (@var{R}))} will be
+ordered from largest to smallest.
 
-If @var{A} is sparse, @var{P} is a fill-reducing ordering of the columns
-of @var{A}.  In that case, the diagonal entries of @var{R} are not ordered by
+If @var{A} is sparse, @var{P} is a fill-reducing ordering of the columns of
+@var{A}.  In that case, the diagonal entries of @var{R} are not ordered by
 decreasing magnitude.
 
 For example, given the matrix @code{@var{A} = [1, 2; 3, 4]},
@@ -236,12 +236,12 @@ is computed by using @sc{SPQR} or @sc{cxsparse} (e.g., if @sc{SPQR} is not
 available).  Because the matrix @var{Q} is, in general, a full matrix, it is
 recommended to request only one return value @var{R}.  In that case, the
 computation avoids the construction of @var{Q} and returns a sparse @var{R}
-such that @code{@var{R} = chol (@var{A}' * @var{A})}.
+such that @w{@code{@var{R} = chol (@var{A}' * @var{A})}}.
 
-If @var{A} is dense, an additional input matrix @var{B} is supplied, and two
-return values are requested, then @code{qr} returns @var{C}, where
-@code{@var{C} = @var{Q}' * @var{B}}.  This allows the least squares
-approximation of @code{@var{A} \ @var{B}} to be calculated as
+If @var{A} is dense, and an additional input matrix @var{B} is supplied, and
+two return values are requested, then @code{qr} returns @var{C}, where
+@w{@code{@var{C} = @var{Q}' * @var{B}}}.  This allows the least squares
+approximation of @w{@code{@var{A} \ @var{B}}} to be calculated as
 
 @example
 @group
@@ -252,17 +252,17 @@ approximation of @code{@var{A} \ @var{B}} to be calculated as
 
 If @var{A} is a sparse @nospell{MxN} matrix and an additional matrix @var{B} is
 supplied, one or two return values are possible.  If one return value @var{X}
-is requested and M < N, then @var{X} is the minimum 2-norm solution of
-@w{@code{@var{A} \ @var{B}}}.  If M >= N, @var{X} is the least squares
-approximation @w{of @code{@var{A} \ @var{B}}}.  If two return values are
+is requested and @w{M < N}, then @var{X} is the minimum 2-norm solution of
+@w{@code{@var{A} \ @var{B}}}.  If @w{M >= N}, @var{X} is the least squares
+approximation of @w{@code{@var{A} \ @var{B}}}.  If two return values are
 requested, @var{C} and @var{R} have the same meaning as in the dense case
 (@var{C} is dense and @var{R} is sparse).  The version with one return
 parameter should be preferred because it uses less memory and can handle
 rank-deficient matrices better.
 
 If the final argument is the string @qcode{"vector"} then @var{P} is a
-permutation vector (of the columns of @var{A}) instead of a permutation
-matrix.  In this case, the defining relationship is:
+permutation vector (of the columns of @var{A}) instead of a permutation matrix.
+In this case, the defining relationship is:
 
 @example
 @var{Q} * @var{R} = @var{A}(:, @var{P})
@@ -273,13 +273,13 @@ explicitly specified by using a final argument of @qcode{"matrix"}.
 
 When the optional argument is the string @qcode{"econ"}, an economy
 factorization is returned.  If the original matrix @var{A} has size
-@nospell{MxN} and M > N, then the economy factorization will calculate just N
-rows in @var{R} and N columns in @var{Q} and omit the zeros in @var{R}.  If M
-@leq{} N, there is no difference between the economy and standard
+@nospell{MxN} and @w{M > N}, then the economy factorization will calculate just
+N rows in @var{R} and N columns in @var{Q} and omit the zeros in @var{R}.  If
+@w{M @leq{} N}, there is no difference between the economy and standard
 factorizations.
 
-If the optional argument is the numeric value 0 then @code{qr} acts as if
-the @qcode{"econ"} and @qcode{"vector"} arguments were both given.
+If the optional argument is the numeric value @code{0} then @code{qr} acts as
+if the @qcode{"econ"} and @qcode{"vector"} arguments were both given.
 @strong{Warning:} This syntax is accepted, but no longer recommended and may
 be removed in the future.  Use @qcode{"econ"} instead.
 
@@ -307,8 +307,8 @@ $A$
 is a tall, thin matrix).
 
 The permuted QR@tie{}factorization
-@code{[@var{Q}, @var{R}, @var{P}] = qr (@var{A})} allows the construction of an
-orthogonal basis of @code{span (A)}.
+@w{@code{[@var{Q}, @var{R}, @var{P}] = qr (@var{A})}} allows the construction
+of an orthogonal basis of @code{span (A)}.
 
 @seealso{chol, hess, lu, qz, schur, svd, qrupdate, qrinsert, qrdelete, qrshift}
 @end deftypefn */)
@@ -542,7 +542,7 @@ orthogonal basis of @code{span (A)}.
                 case 1:
                   {
                     math::qr<FloatMatrix> fact (m, type);
-                    retval = ovl (fact.R ());
+                    retval = Ftriu (ovl (fact.R ()));
                   }
                   break;
 
@@ -587,7 +587,7 @@ orthogonal basis of @code{span (A)}.
                 case 1:
                   {
                     math::qr<FloatComplexMatrix> fact (m, type);
-                    retval = ovl (fact.R ());
+                    retval = Ftriu (ovl (fact.R ()));
                   }
                   break;
 
@@ -627,7 +627,12 @@ orthogonal basis of @code{span (A)}.
                 case 1:
                   {
                     math::qr<Matrix> fact (m, type);
-                    retval = ovl (fact.R ());
+                    // Note: LAPACK routine returns matrix with R in
+                    // upper-triangular portion.  The lower-triangular portion
+                    // contains information about Q, but is not relevant here.
+                    // Matlab returns just upper-triangular R since v2022a.
+                    // Octave will do the same.  See bug #64861.
+                    retval = Ftriu (ovl (fact.R ()));
                   }
                   break;
 
@@ -671,7 +676,7 @@ orthogonal basis of @code{span (A)}.
                 case 1:
                   {
                     math::qr<ComplexMatrix> fact (m, type);
-                    retval = ovl (fact.R ());
+                    retval = Ftriu (ovl (fact.R ()));
                   }
                   break;
 
@@ -810,6 +815,21 @@ orthogonal basis of @code{span (A)}.
 %! assert (size (p), [3, 3]);
 %! [q, r, p] = qr (eye (3), 0);
 %! assert (size (p), [1, 3]);
+
+%!test <*64861>
+%! ## Return upper-triangular R for dense matrices
+%! A = [1; 4; 8];
+%! R = qr (A);
+%! assert (R, [-9; 0; 0]);
+%! A = single ([1; 4; 8]);
+%! R = qr (A);
+%! assert (R, single ([-9; 0; 0]));
+%! A = [1i; 4; 8];
+%! R = qr (A);
+%! assert (R, [-9; 0; 0]);
+%! A = single ([1i; 4; 8]);
+%! R = qr (A);
+%! assert (R, single ([-9; 0; 0]));
 
 %!testif ; (__have_feature__ ("SPQR") && __have_feature__ ("CHOLMOD")) || __have_feature__ ("CXSPARSE") <*66488>
 %! ## Orientation of 'p' output for sparse matrices

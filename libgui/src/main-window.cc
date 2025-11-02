@@ -1391,7 +1391,18 @@ main_window::request_open_file ()
   fileDialog.setAcceptMode (QFileDialog::AcceptOpen);
   fileDialog.setViewMode (QFileDialog::Detail);
   fileDialog.setFileMode (QFileDialog::ExistingFiles);
-  fileDialog.setDirectory (m_current_directory_combo_box->itemText (0));
+
+  QString directory = m_current_directory_combo_box->itemText (0);
+  if (is_internal &&
+      settings.bool_value (ed_open_dlg_follows_file))
+    {
+      // Get directory of current editor file. If it is still empty (new
+      // editor tab), the last directory is selected by the file dialog.
+      QFileInfo file_info (m_editor_window->get_current_filename ());
+      directory = file_info.canonicalPath ();
+    }
+
+  fileDialog.setDirectory (directory);
 
   if (fileDialog.exec ())
     {

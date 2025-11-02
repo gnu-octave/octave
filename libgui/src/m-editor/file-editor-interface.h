@@ -75,6 +75,8 @@ public:
 
   virtual void enable_menu_shortcuts (bool enable) = 0;
 
+  virtual const QString get_current_filename () = 0;
+
 Q_SIGNALS:
 
   void interpreter_event (const fcn_callback& fcn);

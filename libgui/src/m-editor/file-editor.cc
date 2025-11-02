@@ -181,6 +181,14 @@ file_editor::insert_global_actions (QList<QAction *> shared_actions)
   m_edit_menu->insertAction (m_find_action, m_find_files_action);
 }
 
+const QString
+file_editor::get_current_filename ()
+{
+  file_editor_tab *editor_tab
+    = static_cast<file_editor_tab *> (m_tab_widget->currentWidget ());
+  return editor_tab->file_name ();
+}
+
 void
 file_editor::handle_enter_debug_mode ()
 {

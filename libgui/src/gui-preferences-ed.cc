@@ -252,6 +252,10 @@ ed_mru_file_list ("editor/mru_file_list", QVariant ());
 gui_pref
 ed_mru_file_encodings ("editor/mru_file_encodings", QVariant ());
 
+gui_pref
+ed_open_dlg_follows_file ("open_dlg_follows_file", QVariant (false));
+
+
 // The find dialog
 
 // Dialog position, the default will be calculated from the editor's geometry

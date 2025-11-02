@@ -368,6 +368,7 @@ settings_dialog::read_settings (bool first)
   editor_restoreSession->setChecked (settings.bool_value (ed_restore_session));
   editor_create_new_file->setChecked (settings.bool_value (ed_create_new_file));
   editor_reload_changed_files->setChecked (settings.bool_value (ed_always_reload_changed_files));
+  editor_open_dlg_follows_file->setChecked (settings.bool_value (ed_open_dlg_follows_file));
   editor_force_newline->setChecked (settings.bool_value (ed_force_newline));
   editor_remove_trailing_spaces->setChecked (settings.bool_value (ed_rm_trailing_spaces));
   editor_hiding_closes_files->setChecked (settings.bool_value (ed_hiding_closes_files));
@@ -1331,6 +1332,7 @@ settings_dialog::write_changed_settings ()
   settings.setValue (ed_create_new_file.settings_key (), editor_create_new_file->isChecked ());
   settings.setValue (ed_hiding_closes_files.settings_key (), editor_hiding_closes_files->isChecked ());
   settings.setValue (ed_always_reload_changed_files.settings_key (), editor_reload_changed_files->isChecked ());
+  settings.setValue (ed_open_dlg_follows_file.settings_key (), editor_open_dlg_follows_file->isChecked ());
   settings.setValue (ed_force_newline.settings_key (), editor_force_newline->isChecked ());
   settings.setValue (ed_rm_trailing_spaces.settings_key (), editor_remove_trailing_spaces->isChecked ());
   settings.setValue (ed_show_dbg_file.settings_key (), editor_show_dbg_file->isChecked ());

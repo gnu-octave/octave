@@ -166,11 +166,7 @@ extern gui_pref global_restore_ov_dir;
 
 extern gui_pref global_use_custom_editor;
 
-#if defined (Q_OS_WIN32)
 extern gui_pref global_custom_editor;
-#else
-extern gui_pref global_custom_editor;
-#endif
 
 extern gui_pref global_prompt_to_exit;
 

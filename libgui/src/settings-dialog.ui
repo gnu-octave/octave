@@ -35,7 +35,7 @@
       <string/>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -56,7 +56,7 @@
             <x>0</x>
             <y>0</y>
             <width>1021</width>
-            <height>593</height>
+            <height>643</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -595,7 +595,7 @@
             <x>0</x>
             <y>0</y>
             <width>1035</width>
-            <height>573</height>
+            <height>567</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -874,9 +874,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-828</y>
             <width>1021</width>
-            <height>1404</height>
+            <height>1535</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1953,12 +1953,32 @@
                   <property name="topMargin">
                    <number>0</number>
                   </property>
-                  <item row="4" column="0">
-                   <widget class="QCheckBox" name="editor_reload_changed_files">
-                    <property name="text">
-                     <string>Reload externally changed files without prompt</string>
-                    </property>
-                   </widget>
+                  <item row="13" column="0">
+                   <layout class="QHBoxLayout" name="horizontalLayout_16">
+                    <item>
+                     <widget class="QLabel" name="label_16">
+                      <property name="text">
+                       <string>Text encoding used for loading and saving</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="editor_combo_encoding"/>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_32">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
                   </item>
                   <item row="1" column="0">
                    <widget class="QCheckBox" name="editor_restoreSession">
@@ -1970,6 +1990,26 @@
                     </property>
                     <property name="text">
                      <string>Restore editor tabs from previous session on startup or when editor is shown again after closing</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="0">
+                   <widget class="QCheckBox" name="editor_remove_trailing_spaces">
+                    <property name="text">
+                     <string>Remove trailing spaces when saving file</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="0">
+                   <widget class="QCheckBox" name="editor_force_newline">
+                    <property name="text">
+                     <string>Force newline at end when saving file</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -1987,6 +2027,23 @@
                    </widget>
                   </item>
                   <item row="10" column="0">
+                   <widget class="QCheckBox" name="editor_hiding_closes_files">
+                    <property name="text">
+                     <string>Close all files when the editor widget is closed/hidden</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="0">
+                   <widget class="QCheckBox" name="editor_reload_changed_files">
+                    <property name="text">
+                     <string>Reload externally changed files without prompt</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="11" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_2">
                     <property name="topMargin">
                      <number>0</number>
@@ -2044,60 +2101,10 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="12" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_16">
-                    <item>
-                     <widget class="QLabel" name="label_16">
-                      <property name="text">
-                       <string>Text encoding used for loading and saving</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QComboBox" name="editor_combo_encoding"/>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_32">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="9" column="0">
-                   <widget class="QCheckBox" name="editor_hiding_closes_files">
-                    <property name="text">
-                     <string>Close all files when the editor widget is closed/hidden</string>
-                    </property>
-                    <property name="checked">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="5" column="0">
-                   <widget class="QCheckBox" name="editor_force_newline">
+                   <widget class="QCheckBox" name="editor_open_dlg_follows_file">
                     <property name="text">
-                     <string>Force newline at end when saving file</string>
-                    </property>
-                    <property name="checked">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="6" column="0">
-                   <widget class="QCheckBox" name="editor_remove_trailing_spaces">
-                    <property name="text">
-                     <string>Remove trailing spaces when saving file</string>
-                    </property>
-                    <property name="checked">
-                     <bool>true</bool>
+                     <string>Directory of open file dialog follows current editor file instead of current Octave directory </string>
                     </property>
                    </widget>
                   </item>
@@ -2188,7 +2195,7 @@
             <x>0</x>
             <y>0</y>
             <width>1035</width>
-            <height>573</height>
+            <height>567</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -2338,7 +2345,7 @@
             <x>0</x>
             <y>0</y>
             <width>1035</width>
-            <height>573</height>
+            <height>567</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -2400,7 +2407,7 @@
             <x>0</x>
             <y>0</y>
             <width>1035</width>
-            <height>573</height>
+            <height>567</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_vesc_manual">
@@ -2565,7 +2572,7 @@
             <x>0</x>
             <y>0</y>
             <width>1035</width>
-            <height>573</height>
+            <height>567</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2785,7 +2792,7 @@ interference with readline key strokes.</string>
             <x>0</x>
             <y>0</y>
             <width>1035</width>
-            <height>573</height>
+            <height>567</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">

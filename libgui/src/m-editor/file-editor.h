@@ -126,6 +126,8 @@ public:
   void empty_script (bool startup, bool visible);
   void restore_session (bool visible = true);
 
+  const QString get_current_filename ();
+
 Q_SIGNALS:
 
   void fetab_settings_changed ();

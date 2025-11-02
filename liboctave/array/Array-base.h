@@ -156,7 +156,15 @@ protected:
     ArrayRep (U *d, octave_idx_type len)
       : Alloc (), m_data (allocate (len)), m_len (len), m_count (1)
     {
-      std::copy_n (d, len, m_data);
+      if constexpr (std::is_same_v<T, bool>)
+        {
+          // Required specialization because std::copy_n can sometimes choose
+          // to copy bool as bit, rather than as 8-bit byte.  See bug #63515.
+          for (octave_idx_type i = 0; i < len; i++)
+            m_data[i] = static_cast<bool> (d[i]);
+        }
+      else
+        std::copy_n (d, len, m_data);
     }
 
     // Use new instead of setting data to 0 so that rwdata() and data()

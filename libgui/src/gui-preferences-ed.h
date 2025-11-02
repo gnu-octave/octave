@@ -194,6 +194,8 @@ extern gui_pref ed_mru_file_list;
 
 extern gui_pref ed_mru_file_encodings;
 
+extern gui_pref ed_open_dlg_follows_file;
+
 // The find dialog
 
 enum find_dialog_options

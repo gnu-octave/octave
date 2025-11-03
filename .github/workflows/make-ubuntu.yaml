@@ -188,6 +188,9 @@ jobs:
       - name: test Octave packages
         env:
           # colon separated list of packages
+          # reasons for including these packages in the CI tests:
+          # * control: builds .oct files from C++ and Fortran sources
+          # * stk: builds .mex files from C sources
           PACKAGE_NAMES: "control:stk"
         run: |
           unset CC

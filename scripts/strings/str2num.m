@@ -82,6 +82,10 @@ endfunction
 
 %!assert (str2num ("-1.3e2"), -130)
 %!assert (str2num ("[1, 2; 3, 4]"), [1, 2; 3, 4])
+%!assert (str2num ("1.000444"), 1.000444)
+
+%!assert (str2num ("1e999"), Inf)
+%!assert (str2num ("-1e999"), -Inf)
 
 %!test
 %! [x, state] = str2num ("pi");

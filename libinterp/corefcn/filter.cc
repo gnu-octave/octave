@@ -170,6 +170,8 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
       const T *px = x.data ();
       psi += si_offset;
 
+      const T zero = static_cast<T> (0);
+
       if (a_len > 1)
         {
           const T *pa = a.data ();
@@ -192,9 +194,30 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
                   octave_idx_type hi = (lo + num_inner < num_execs-1)
                                        ? lo + num_inner : num_execs-1;
 
-                  // Inner loop, no interruption
-                  for (octave_idx_type j = lo; j <= hi; j++)
-                    psi[j] = psi[j+1] - pa[j+1] * py[idx] + pb[j+1] * px[idx];
+                  // FIXME: We try splitting up based on zero/nonzero
+                  // to avoid a long sequence of multiplying by zero values
+                  // for bug #67653 (see discussion there).
+                  // This part needs to be simplified to avoid the outer-inner
+                  // loop complication and the zero-nonzero complication.
+                  // Maybe BLAS axpy or std::transform?
+                  if (py[idx] != zero)
+                    {
+                      if (px[idx] != zero)
+                        for (octave_idx_type j = lo; j <= hi; j++)
+                          psi[j] = psi[j+1] - pa[j+1] * py[idx] + pb[j+1] * px[idx];
+                      else
+                        for (octave_idx_type j = lo; j <= hi; j++)
+                          psi[j] = psi[j+1] - pa[j+1] * py[idx];
+                    }
+                  else
+                    {
+                      if (px[idx] != zero)
+                        for (octave_idx_type j = lo; j <= hi; j++)
+                          psi[j] = psi[j+1] + pb[j+1] * px[idx];
+                      else
+                        for (octave_idx_type j = lo; j <= hi; j++)
+                          psi[j] = psi[j+1];
+                    }
 
                   octave_quit();  // Check for interruptions
                 }
@@ -220,9 +243,16 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
                   octave_idx_type hi = (lo + num_inner < num_execs-1)
                                        ? lo + num_inner : num_execs-1;
 
-                  // Inner loop, no interruption
-                  for (octave_idx_type j = lo; j <= hi; j++)
-                    psi[j] = psi[j+1] + pb[j+1] * px[idx];
+                  if (px[idx] != zero)
+                    {
+                      for (octave_idx_type j = lo; j <= hi; j++)
+                        psi[j] = psi[j+1] + pb[j+1] * px[idx];
+                    }
+                  else
+                    {
+                      for (octave_idx_type j = lo; j <= hi; j++)
+                        psi[j] = psi[j+1];
+                    }
 
                   octave_quit();  // Check for interruptions
                 }

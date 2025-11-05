@@ -53,6 +53,7 @@ function unload_packages (files, handle_deps, local_list, global_list)
   endif
   dirs = pdirs(idx);
   desc = installed_pkgs_lst(idx);
+  names = pnames(idx);
 
   if (handle_deps)
     ## Check for loaded inverse dependencies of packages to be unloaded.
@@ -105,6 +106,21 @@ function unload_packages (files, handle_deps, local_list, global_list)
       endif
     endif
   endfor
+
+  ## Unregister Qt help files
+  if (isguirunning)
+    for (ii = 1:numel (dirs))
+      qt_help_file = fullfile (dirs{ii}, "doc", [names{ii},".qch"]);
+      try
+        if (exist (qt_help_file, "file") &&
+            exist("__event_manager_unregister_documentation__"))
+          __event_manager_unregister_documentation__ (qt_help_file);
+        endif
+      catch
+        # do nothing
+      end_try_catch
+    endfor
+  endif
 
 endfunction
 

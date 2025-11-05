@@ -94,14 +94,20 @@ and after the nested call.
 
 #include <cctype>
 #include <cstring>
-#include <charconv>
 
 #include <algorithm>
+#if defined (OCTAVE_HAVE_STD_FROM_CHARS_DOUBLE)
+#  include <charconv>
+#endif
 #include <iostream>
 #include <set>
 #include <sstream>
 #include <string>
 #include <stack>
+
+#if defined (OCTAVE_HAVE_FAST_FLOAT)
+#  include <fast_float/fast_float.h>
+#endif
 
 #include "cmd-edit.h"
 #include "mappers.h"
@@ -1018,7 +1024,7 @@ ANY_INCLUDING_NL (.|{NL})
 
     curr_lexer->update_token_positions (yyleng);
 
-    unsigned int result;
+    unsigned int result = 0;
     const char *chars_start = yytext + 1;
     const char *chars_end = yytext + yyleng;
     auto [ptr, ec] = std::from_chars (chars_start, chars_end, result, 8);
@@ -1054,7 +1060,7 @@ ANY_INCLUDING_NL (.|{NL})
 
     curr_lexer->m_filepos.increment_column (yyleng);
 
-    unsigned int result;
+    unsigned int result = 0;
     const char *chars_start = yytext + 2;
     const char *chars_end = yytext + yyleng;
     auto [ptr, ec] = std::from_chars (chars_start, chars_end, result, 16);
@@ -3239,7 +3245,15 @@ base_lexer::handle_number<10> ()
   double value = 0.0;
   const char *chars_start = tmptxt;
   const char *chars_end = tmptxt + std::strlen (tmptxt);
+
+#if defined (OCTAVE_HAVE_STD_FROM_CHARS_DOUBLE)
   auto [ptr, ec] = std::from_chars (chars_start, chars_end, value);
+#elif defined (OCTAVE_HAVE_FAST_FLOAT)
+  auto [ptr, ec] = fast_float::from_chars (chars_start, chars_end, value);
+#else
+#  error "Cannot convert string to floating-point number. This should be unreachable."
+#endif
+
   if (ec != std::errc{})
     {
       switch (ec)
@@ -3366,7 +3380,7 @@ base_lexer::handle_number<16> ()
       return syntax_error (msg);
     }
 
-  uintmax_t long_int_val;
+  uintmax_t long_int_val = 0;
   const char *chars_start = yytxt.c_str ();
   const char *chars_end = chars_start + yytxt.length ();
   auto [ptr, ec] = std::from_chars (chars_start, chars_end, long_int_val, 16);

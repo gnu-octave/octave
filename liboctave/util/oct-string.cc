@@ -32,10 +32,16 @@
 #include <algorithm>
 #include <cctype>
 #include <cstring>
-#include <charconv>
+#if defined (OCTAVE_HAVE_STD_FROM_CHARS_DOUBLE)
+#  include <charconv>
+#endif
 #include <iomanip>
 #include <string>
 #include <unordered_set>
+
+#if defined (OCTAVE_HAVE_FAST_FLOAT)
+#  include <fast_float/fast_float.h>
+#endif
 
 #include "Array-oct.h"
 #include "iconv-wrappers.h"
@@ -255,8 +261,8 @@ single_num (std::istringstream& is)
   std::streampos start_pos = is.tellg ();
   std::getline (is, str);
 
-  const char* first = str.data ();
-  const char* last = first + str.size ();
+  const char *first = str.data ();
+  const char *last = first + str.size ();
 
   // Skip leading whitespace
   while (first != last && std::isspace (static_cast<unsigned char> (*first)))
@@ -279,7 +285,13 @@ single_num (std::istringstream& is)
     }
 
   // Use from_chars for all other numbers (including Inf, -Inf, NaN)
+#if defined (OCTAVE_HAVE_STD_FROM_CHARS_DOUBLE)
   auto [ptr, ec] = std::from_chars (first, last, num);
+#elif defined (OCTAVE_HAVE_FAST_FLOAT)
+  auto [ptr, ec] = fast_float::from_chars (first, last, num);
+#else
+#  error "Cannot convert string to floating-point number. This should be unreachable."
+#endif
 
   if (ec == std::errc {})
     {

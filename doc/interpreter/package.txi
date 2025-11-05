@@ -361,6 +361,11 @@ An optional directory containing documentation for the package.  The
 files in this directory will be directly installed in a sub-directory
 of the installed package for future reference.
 
+If the Octave GUI is running, the optional Qt help file
+@file{package/doc/pkg-name.qch} is added to the documentation browser
+while loading the package. The help file is removed from the documentation
+browser when the package is unloaded.
+
 @item package/bin
 An optional directory containing files that will be added to the
 Octave @w{@env{EXEC_PATH}}@ when the package is loaded.  This might contain

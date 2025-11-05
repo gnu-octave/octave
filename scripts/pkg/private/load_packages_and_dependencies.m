@@ -33,12 +33,18 @@ function load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst,
 
   idx = load_package_dirs (idx, [], handle_deps, installed_pkgs_lst);
   dirs = {};
+  qt_help_files = {};
   execpath = EXEC_PATH ();
   for i = idx
+    name = installed_pkgs_lst{i}.name;
     ndir = installed_pkgs_lst{i}.dir;
     dirs{end+1} = ndir;
     if (isfolder (fullfile (dirs{end}, "bin")))
       execpath = [execpath pathsep() fullfile(dirs{end}, "bin")];
+    endif
+    qt_help = fullfile (dirs{end}, "doc", [name,".qch"]);
+    if (exist (qt_help, "file"))
+      qt_help_files{end+1} = qt_help;
     endif
     tmpdir = getarchdir (installed_pkgs_lst{i});
     if (isfolder (tmpdir))
@@ -64,6 +70,19 @@ function load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst,
   ## Update lexer for autocompletion if necessary
   if (isguirunning && (length (idx) > 0))
     __event_manager_update_gui_lexer__;
+  endif
+
+  ## Register Qt help files
+  if (isguirunning)
+    for (ii = 1:numel (qt_help_files))
+      try
+        if exist("__event_manager_register_documentation__")
+          __event_manager_register_documentation__ (qt_help_files{ii});
+        endif
+      catch
+        # do nothing
+      end_try_catch
+    endfor
   endif
 
 endfunction

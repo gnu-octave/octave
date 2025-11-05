@@ -79,7 +79,8 @@ jobs:
             libsundials-dev libtool libxft-dev make openjdk-8-jdk \
             perl portaudio19-dev pstoedit qtbase5-dev qttools5-dev \
             qttools5-dev-tools rapidjson-dev rsync tar texinfo \
-            texlive-latex-extra xvfb zlib1g-dev
+            texlive-latex-extra xvfb zlib1g-dev \
+            ${{ (matrix.os != 'ubuntu-22.04' && matrix.compiler == 'clang') && 'libfast-float-dev' || '' }}
 
       - name: prepare ccache
         # create key with human readable timestamp
@@ -106,6 +107,29 @@ jobs:
           echo "max_size = $CCACHE_MAX" >> ~/.ccache/ccache.conf
           ccache -s
           echo "/usr/lib/ccache" >> $GITHUB_PATH
+
+      - name: build fast-float
+        # There is no fast-float package for Ubuntu 22.04.
+        # We need it as a fallback for LLVM libc++ before version 20.
+        if: matrix.os == 'ubuntu-22.04' && matrix.compiler == 'clang'
+        run: |
+          mkdir -p fast-float && cd fast-float
+          printf "::group::\033[0;32m==>\033[0m Download tarball\n"
+          wget -O fast-float-8.1.0.tar.gz https://github.com/fastfloat/fast_float/archive/refs/tags/v8.1.0.tar.gz
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Unpack tarball\n"
+          tar zxvf fast-float-8.1.0.tar.gz
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Configure\n"
+          mkdir -p build && cd build
+          cmake -DCMAKE_BUILD_TYPE=Release ../fast_float-8.1.0
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Build\n"
+          cmake --build .
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Install\n"
+          sudo cmake --install .
+          echo "::endgroup::"
 
       - name: bootstrap
         run: GNULIB_URL=https://github.com/coreutils/gnulib.git ./bootstrap

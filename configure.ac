@@ -1237,6 +1237,51 @@ OCTAVE_IEEE754_QNAN
 ## Check whether quiet NaN values retain their payload on arithmetic operations
 OCTAVE_QNAN_WITH_PAYLOAD
 
+## Check whether the C++ STL supports std::from_chars for double precision
+## floating-point
+AC_CACHE_CHECK([whether C++ STL supports std::from_chars for double precision floating-point],
+  [octave_cv_std_from_chars_double],
+  [AC_LANG_PUSH(C++)
+  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+    #include <charconv>
+    #include <string>
+
+    void test_from_chars_double ()
+    {
+      double num = 0.0;
+      std::string str = "3.14";
+      const char *chars_start = str.data ();
+      const char *chars_end = chars_start + str.size ();
+      auto [ptr, ec] = std::from_chars (chars_start, chars_end, num);
+    }
+    ]], [[
+    test_from_chars_double ();
+    ]])],
+    octave_cv_std_from_chars_double=yes,
+    octave_cv_std_from_chars_double=no)
+  AC_LANG_POP(C++)
+  ])
+
+if test $octave_cv_std_from_chars_double = yes; then
+  AC_DEFINE(OCTAVE_HAVE_STD_FROM_CHARS_DOUBLE, 1,
+    [Define to 1 if C++ STL supports std::from_chars for double precision floating-point.])
+else
+  ## Check whether fast-float header-only library is available
+  AC_LANG_PUSH(C++)
+  AC_CHECK_HEADER([fast_float/fast_float.h],
+                  [have_fast_float=yes],
+                  [have_fast_float=no])
+  AC_LANG_POP(C++)
+
+  if test $have_fast_float = yes; then
+    AC_DEFINE(OCTAVE_HAVE_FAST_FLOAT, 1,
+      [Define to 1 if fast-float header-only library is available.])
+  else
+    AC_MSG_ERROR([If the C++ STL does not support std::from_chars for double precision floating-point, the fast-float header-only library needs to be installed.])
+  fi
+fi
+
+
 ### Checks for functions and variables.
 
 dnl The list of functions is short because we use gnulib to guarantee

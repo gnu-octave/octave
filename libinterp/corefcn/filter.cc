@@ -35,6 +35,9 @@
 #  include "config.h"
 #endif
 
+#include <cmath>
+#include <type_traits>
+
 #include "quit.h"
 
 #include "defun.h"
@@ -42,6 +45,19 @@
 #include "ovl.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
+
+// Helper functions for fused multiply-add (FMA) operations
+// Use std::fma for real types, regular operations for complex types
+
+template <typename T>
+inline T
+fma_or_mul_add (const T& a, const T& b, const T& c)
+{
+  if constexpr (std::is_floating_point_v<T>)
+    return std::fma (a, b, c);
+  else
+    return a * b + c;
+}
 
 template <typename T>
 MArray<T>
@@ -147,7 +163,12 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
                i < x_len;
                i++, idx += x_stride)
             {
-              py[idx] = psi[0] + pb[0] * px[idx];
+              // Use FMA for the output calculation: y = si[0] + b[0]*x
+              py[idx] = fma_or_mul_add (pb[0], px[idx], psi[0]);
+              const T px_val = px[idx];
+              const T py_val = py[idx];
+              const bool px_nonzero = (px_val != zero);
+              const bool py_nonzero = (py_val != zero);
 
               // Split into cases based on zero/nonzero to avoid a long
               // sequence of multiplying by zero values. See bug #67653.
@@ -155,28 +176,44 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
               // Can this be made fast without duplication? It was reported
               // in bug #67653 that BLAS axpy is not as fast as these loops.
               // Maybe test std::transform in future?
-              if (py[idx] != zero)
+              if (py_nonzero)
                 {
-                  if (px[idx] != zero)
-                    for (octave_idx_type j = 0; j < num_execs; j++)
-                      psi[j] = psi[j+1] - pa[j+1] * py[idx] + pb[j+1] * px[idx];
+                  if (px_nonzero)
+                    {
+                      // Compute: psi[j] = psi[j+1] - pa[j+1]*py + pb[j+1]*px
+                      // Use two FMAs: temp = psi[j+1] - pa*py, then result = temp + pb*px
+                      for (octave_idx_type j = 0; j < num_execs; j++)
+                        {
+                          T temp = fma_or_mul_add (-pa[j+1], py_val, psi[j+1]);
+                          psi[j] = fma_or_mul_add (pb[j+1], px_val, temp);
+                        }
+                    }
                   else
-                    for (octave_idx_type j = 0; j < num_execs; j++)
-                      psi[j] = psi[j+1] - pa[j+1] * py[idx];
+                    {
+                      // Compute: psi[j] = psi[j+1] - pa[j+1]*py
+                      for (octave_idx_type j = 0; j < num_execs; j++)
+                        psi[j] = fma_or_mul_add (-pa[j+1], py_val, psi[j+1]);
+                    }
                 }
               else
                 {
-                  if (px[idx] != zero)
-                    for (octave_idx_type j = 0; j < num_execs; j++)
-                      psi[j] = psi[j+1] + pb[j+1] * px[idx];
+                  if (px_nonzero)
+                    {
+                      // Compute: psi[j] = psi[j+1] + pb[j+1]*px
+                      for (octave_idx_type j = 0; j < num_execs; j++)
+                        psi[j] = fma_or_mul_add (pb[j+1], px_val, psi[j+1]);
+                    }
                   else
                     for (octave_idx_type j = 0; j < num_execs; j++)
                       psi[j] = psi[j+1];
                 }
 
-              psi[iidx] = pb[si_len] * px[idx] - pa[si_len] * py[idx];
+              // Compute: psi[iidx] = pb[si_len]*px - pa[si_len]*py
+              T temp = fma_or_mul_add (-pa[si_len], py_val, zero);
+              psi[iidx] = fma_or_mul_add (pb[si_len], px_val, temp);
 
-              octave_quit();  // Check for interruptions
+              if ((i & 4095) == 0)  // Check for interruptions every 4096 samples
+                octave_quit();
             }
         }
       else // a_len <= 1 ==> si_len MUST be > 0
@@ -188,12 +225,17 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
                i < x_len;
                i++, idx += x_stride)
             {
-              py[idx] = psi[0] + pb[0] * px[idx];
+              const T px_val = px[idx];
+              const bool px_nonzero = (px_val != zero);
 
-              if (px[idx] != zero)
+              // Use FMA for: y = si[0] + b[0]*x
+              py[idx] = fma_or_mul_add (pb[0], px_val, psi[0]);
+
+              if (px_nonzero)
                 {
+                  // Use FMA to compute: psi[j] = psi[j+1] + pb[j+1]*px
                   for (octave_idx_type j = 0; j < num_execs; j++)
-                    psi[j] = psi[j+1] + pb[j+1] * px[idx];
+                    psi[j] = fma_or_mul_add (pb[j+1], px_val, psi[j+1]);
                 }
               else
                 {
@@ -201,9 +243,10 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
                     psi[j] = psi[j+1];
                 }
 
-              psi[si_len-1] = pb[si_len] * px[idx];
+              psi[si_len-1] = pb[si_len] * px_val;
 
-              octave_quit();  // Check for interruptions
+              if ((i & 4095) == 0)  // Check for interruptions every 4096 samples
+                octave_quit();
             }
         }
     }

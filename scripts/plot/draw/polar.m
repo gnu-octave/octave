@@ -133,7 +133,8 @@ function h = polar (varargin)
     addlistener (hax, "fontunits", {@__update_text__, hg, "fontunits"});
     addlistener (hax, "fontweight", {@__update_text__, hg, "fontweight"});
     addlistener (hax, "ticklabelinterpreter",
-                 {@__update_text__, hg, "interpreter"});
+                 {@__update_text__, hg, "interpreter", ...
+                  "ticklabelinterpreter"});
     addlistener (hax, "layer", {@__update_layer__, hg});
     addlistener (hax, "gridlinestyle",{@__update_lines__,hg,"gridlinestyle"});
     addlistener (hax, "linewidth", {@__update_lines__, hg, "linewidth"});
@@ -269,11 +270,15 @@ endfunction
 
 ## Callback functions for listeners
 
-function __update_text__ (hax, ~, hg, prop)
+function __update_text__ (hax, ~, hg, prop, axprop = "")
+
+  if (isempty (axprop))
+    axprop = prop;
+  endif
 
   kids = get (hg, "children");
   idx = strcmp (get (kids, "type"), "text");
-  set (kids(idx).', prop, get (hax, prop));
+  set (kids(idx).', prop, get (hax, axprop));
 
 endfunction
 

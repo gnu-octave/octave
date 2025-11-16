@@ -1945,6 +1945,36 @@ csvwrite, dlmwrite, fwrite}
 %! end_unwind_protect
 %! assert (struc, struc2);
 
+## Save and load double and single matrix in "-binary"
+%!test <*67699>
+%! x = [1, 1+eps()];
+%! y = single (x);  # i.e., [1, 1]
+%! mat_file = [tempname(), ".bin"];
+%! unwind_protect
+%!   save (mat_file, "x", "y", "-binary");
+%!   clear ("x", "y");
+%!   load (mat_file);
+%! unwind_protect_cleanup
+%!   unlink (mat_file);
+%! end_unwind_protect
+%! assert (x, [1, 1+eps()]);
+%! assert (y, single ([1, 1+eps()]));
+
+## Save and load double and single matrix in "-float-binary"
+%!test <*67699>
+%! x = [1, 1+eps()];  # truncates to [1, 1] when saving as "-float-binary"
+%! y = single (x);  # i.e., [1, 1]
+%! mat_file = [tempname(), ".bin"];
+%! unwind_protect
+%!   save (mat_file, "x", "y", "-float-binary");
+%!   clear ("x", "y");
+%!   load (mat_file);
+%! unwind_protect_cleanup
+%!   unlink (mat_file);
+%! end_unwind_protect
+%! assert (x, double (single ([1, 1+eps()])));
+%! assert (y, single ([1, 1+eps()]));
+
 ## Test input validation
 %!testif HAVE_ZLIB <*59225>
 %! fname = tempname ();

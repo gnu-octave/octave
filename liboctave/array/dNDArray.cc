@@ -404,6 +404,12 @@ NDArray::any (int dim) const
 }
 
 NDArray
+NDArray::flip (int dim) const
+{
+  return do_mx_flip_op<double, double> (*this, dim, mx_inline_flip);
+}
+
+NDArray
 NDArray::cumprod (int dim) const
 {
   return do_mx_cum_op<double, double> (*this, dim, mx_inline_cumprod);

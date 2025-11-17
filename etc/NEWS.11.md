@@ -85,7 +85,18 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   broadcasting which Matlab has supported since version 2016B.
 
 - The function `zscore` now accepts the optional arguments `"all"` or `vecdim`,
-  and `"omitnan"`.
+  and `nanflag`.
+
+- The functions `all` and `any` now accept the optional arguments `"all"` or
+  `vecdim`.
+
+- The functions `cumprod` and `cumsum` now accept the optional arguments `"all"`
+  or `vecdim`, `direction`, and `nanflag`.
+
+- The functions `prod`, `sum`, and `sumsq` now accept the optional arguments
+ `"all"` or `vecdim`, `nanflag`, and `"default"` in `outtype`.  `prod` and
+ `sumsq` functions now retain the class of the input argument by default.
+ 'sumsq' now also accepts an outtype argument.
 
 - The function `gradient` with a numeric input now only accepts type double
   or single.

@@ -225,10 +225,31 @@ intNDArray<T>::sum (int dim) const
 }
 
 template <typename T>
+intNDArray<T>
+intNDArray<T>::sumsq (int dim) const
+{
+  return do_mx_red_op<T, T> (*this, dim, mx_inline_sumsq);
+}
+
+template <typename T>
 NDArray
 intNDArray<T>::dsum (int dim) const
 {
   return do_mx_red_op<double, T> (*this, dim, mx_inline_dsum);
+}
+
+template <typename T>
+intNDArray<T>
+intNDArray<T>::flip (int dim) const
+{
+  return do_mx_flip_op<T, T> (*this, dim, mx_inline_flip);
+}
+
+template <typename T>
+intNDArray<T>
+intNDArray<T>::cumprod (int dim) const
+{
+  return do_mx_cum_op<T, T> (*this, dim, mx_inline_cumprod);
 }
 
 template <typename T>

@@ -43,12 +43,24 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 
 ### Graphical User Interface
 
+- The File Browser now has two tabs.  The first for browsing the file system
+  as usual and the second for viewing and managing all open editor files.
+
+- The Find File dialog now offers most recently used lists for input
+  fields and the ability to search for/in several file patterns at the
+  same time.
+
 - The GUI now uses scalable SVG icons for beautiful display at any size.
 
 - The GUI now uses the default Octave command prompt.  This prompt is
   completely customizable by calling `PS1` in an initialization file such as
   `.octaverc`.  To recover the former behavior of the GUI use `PS1 ('>> '); PS2
   ('')`.
+
+- The GUI has two new user preferences,  one for showing a small splash
+  screen at startup and one for using the directory of the currently focused
+  editor file instead of the current octave directory as initial folder of
+  the Open File dialog.
 
 - The text of the Octave GUI has been translated to a new language: Asturian.
   It uses the ISO 639 language code ast_ES.

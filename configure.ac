@@ -27,8 +27,10 @@ dnl
 
 ### Initialize Autoconf
 AC_PREREQ([2.65])
-AC_INIT([GNU Octave], [11.0.0], [https://bugs.octave.org], [octave],
-        [https://www.octave.org])
+AC_INIT([GNU Octave], [11.0.0],
+        [https://bugs.octave.org], [octave], [https://www.octave.org])
+AC_CONFIG_MACRO_DIRS([m4])
+AC_CONFIG_AUX_DIR([build-aux])
 
 ### Declare version numbers
 
@@ -78,8 +80,6 @@ dnl        AC_REVISION field whenever configure.ac is modified.
 dnl AC_REVISION($Revision: 1.603 $)
 AC_CONFIG_SRCDIR([libinterp/octave.cc])
 AC_CONFIG_HEADERS([config.h:config.in.h])
-AC_CONFIG_AUX_DIR([build-aux])
-AC_CONFIG_MACRO_DIR([m4])
 
 ### Initialize Automake
 AM_INIT_AUTOMAKE([1.14 -Wno-portability -Wno-override tar-ustar subdir-objects dist-lzip dist-xz])

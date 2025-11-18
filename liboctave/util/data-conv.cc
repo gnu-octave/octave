@@ -851,7 +851,7 @@ read_doubles (std::istream& is, double *data, save_type type,
       {
         OCTAVE_LOCAL_BUFFER (float, ptr, len);
         std::streamsize n_bytes = sizeof (float) * static_cast<std::streamsize> (len);
-        do_read (is, reinterpret_cast<char *> (data), n_bytes);
+        do_read (is, reinterpret_cast<char *> (ptr), n_bytes);
         if (! is)
           return;
         do_float_format_conversion (ptr, len, fmt);
@@ -925,7 +925,7 @@ read_floats (std::istream& is, float *data, save_type type,
       {
         OCTAVE_LOCAL_BUFFER (double, ptr, len);
         std::streamsize n_bytes = 8 * static_cast<std::streamsize> (len);
-        do_read (is, reinterpret_cast<char *> (data), n_bytes);
+        do_read (is, reinterpret_cast<char *> (ptr), n_bytes);
         if (! is)
           return;
         do_double_format_conversion (ptr, len, fmt);

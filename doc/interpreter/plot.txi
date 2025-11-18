@@ -1646,112 +1646,116 @@ Default property values are enclosed in @{ @}.
 
 @node Root Properties
 @subsubsection Root Properties
-@prindex @sortas{@ Root Properties} Root Properties
+@c FIXME: 2025/11/18: New versions of configuration file "texinfo.tex" do not
+@c allow for a space as the initial sorting character.  Eventually this
+@c regression may be fixed, in which case the initial character should be "@ "
+@c to create a space character which is not stripped.
+@prindex @sortas{* Root Properties} Root Properties
 
 @include plot-rootproperties.texi
 
 
 @node Figure Properties
 @subsubsection Figure Properties
-@prindex @sortas{@ Figure Properties} Figure Properties
+@prindex @sortas{* Figure Properties} Figure Properties
 
 @include plot-figureproperties.texi
 
 
 @node Axes Properties
 @subsubsection Axes Properties
-@prindex @sortas{@ Axes Properties} Axes Properties
+@prindex @sortas{* Axes Properties} Axes Properties
 
 @include plot-axesproperties.texi
 
 
 @node Legend Properties
 @subsubsection Legend Properties
-@prindex @sortas{@ Legend Properties} Legend Properties
+@prindex @sortas{* Legend Properties} Legend Properties
 
 @include plot-legendproperties.texi
 
 
 @node Line Properties
 @subsubsection Line Properties
-@prindex @sortas{@ Line Properties} Line Properties
+@prindex @sortas{* Line Properties} Line Properties
 
 @include plot-lineproperties.texi
 
 
 @node Text Properties
 @subsubsection Text Properties
-@prindex @sortas{@ Text Properties} Text Properties
+@prindex @sortas{* Text Properties} Text Properties
 
 @include plot-textproperties.texi
 
 
 @node Image Properties
 @subsubsection Image Properties
-@prindex @sortas{@ Image Properties} Image Properties
+@prindex @sortas{* Image Properties} Image Properties
 
 @include plot-imageproperties.texi
 
 
 @node Patch Properties
 @subsubsection Patch Properties
-@prindex @sortas{@ Patch Properties} Patch Properties
+@prindex @sortas{* Patch Properties} Patch Properties
 
 @include plot-patchproperties.texi
 
 
 @node Scatter Properties
 @subsubsection Scatter Properties
-@prindex @sortas{@ Scatter Properties} Scatter Properties
+@prindex @sortas{* Scatter Properties} Scatter Properties
 
 @include plot-scatterproperties.texi
 
 
 @node Surface Properties
 @subsubsection Surface Properties
-@prindex @sortas{@ Surface Properties} Surface Properties
+@prindex @sortas{* Surface Properties} Surface Properties
 
 @include plot-surfaceproperties.texi
 
 
 @node Light Properties
 @subsubsection Light Properties
-@prindex @sortas{@ Light Properties} Light Properties
+@prindex @sortas{* Light Properties} Light Properties
 
 @include plot-lightproperties.texi
 
 
 @node Uimenu Properties
 @subsubsection Uimenu Properties
-@prindex @sortas{@ Uimenu Properties} Uimenu Properties
+@prindex @sortas{* Uimenu Properties} Uimenu Properties
 
 @include plot-uimenuproperties.texi
 
 
 @node Uibuttongroup Properties
 @subsubsection Uibuttongroup Properties
-@prindex @sortas{@ Uibuttongroup Properties} Uibuttongroup Properties
+@prindex @sortas{* Uibuttongroup Properties} Uibuttongroup Properties
 
 @include plot-uibuttongroupproperties.texi
 
 
 @node Uicontextmenu Properties
 @subsubsection Uicontextmenu Properties
-@prindex @sortas{@ Uicontextmenu Properties} Uicontextmenu Properties
+@prindex @sortas{* Uicontextmenu Properties} Uicontextmenu Properties
 
 @include plot-uicontextmenuproperties.texi
 
 
 @node Uipanel Properties
 @subsubsection Uipanel Properties
-@prindex @sortas{@ Uipanel Properties} Uipanel Properties
+@prindex @sortas{* Uipanel Properties} Uipanel Properties
 
 @include plot-uipanelproperties.texi
 
 
 @node Uicontrol Properties
 @subsubsection Uicontrol Properties
-@prindex @sortas{@ Uicontrol Properties} Uicontrol Properties
+@prindex @sortas{* Uicontrol Properties} Uicontrol Properties
 
 @include plot-uicontrolproperties.texi
 
@@ -1765,21 +1769,21 @@ Default property values are enclosed in @{ @}.
 
 @node Uitoolbar Properties
 @subsubsection Uitoolbar Properties
-@prindex @sortas{@ Uitoolbar Properties} Uitoolbar Properties
+@prindex @sortas{* Uitoolbar Properties} Uitoolbar Properties
 
 @include plot-uitoolbarproperties.texi
 
 
 @node Uipushtool Properties
 @subsubsection Uipushtool Properties
-@prindex @sortas{@ Uipushtool Properties} Uipushtool Properties
+@prindex @sortas{* Uipushtool Properties} Uipushtool Properties
 
 @include plot-uipushtoolproperties.texi
 
 
 @node Uitoggletool Properties
 @subsubsection Uitoggletool Properties
-@prindex @sortas{@ Uitoggletool Properties} Uitoggletool Properties
+@prindex @sortas{* Uitoggletool Properties} Uitoggletool Properties
 
 @include plot-uitoggletoolproperties.texi
 

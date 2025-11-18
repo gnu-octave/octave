@@ -18,7 +18,34 @@ if (ispc () && isguirunning ())
     is_windows_console_host = true;
   end_try_catch
 
-  if (! is_windows_console_host)
+  try
+    ## Windows 11 also has the 'CurrentMajorVersionNumber' set to 10.
+    windows_major_version = ...
+      winqueryreg ("HKEY_LOCAL_MACHINE", ...
+                   'SOFTWARE\Microsoft\Windows NT\CurrentVersion', ...
+                   'CurrentMajorVersionNumber');
+  catch
+    ## Assume that this is an old version of Windows
+    windows_major_version = 9;
+  end_try_catch
+
+  ## Assume an older version of Windows 11 or 10 in case of errors below.
+  windows_build_number = 26099;
+  if (windows_major_version == 10)
+    try
+      ## Windows 11 24H2 has the build number 26100.
+      windows_build_number = ...
+        str2double (winqueryreg ("HKEY_LOCAL_MACHINE", ...
+                                 'SOFTWARE\Microsoft\Windows NT\CurrentVersion', ...
+                                 'CurrentBuild'));
+    end_try_catch
+  endif
+
+  is_working_console = is_windows_console_host ...
+    || ((windows_major_version == 10) && (windows_build_number >= 26100)) ...
+    || (windows_major_version > 10);
+
+  if (! is_working_console)
     warn_str = ["WARNING: You are using an incompatible Windows configuration!\n", ...
                 "Microsoft's new Terminal App is not compatible with Octave.\n", ...
                 "Please follow the instructions on the following page and set the ", ...
@@ -33,6 +60,6 @@ if (ispc () && isguirunning ())
     clear warn_str answer
   endif
 
-  clear is_windows_console_host
+  clear is_windows_console_host windows_major_version windows_build_number is_working_console
 
 endif

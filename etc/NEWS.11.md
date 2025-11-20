@@ -14,8 +14,8 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
     name in that order, and installs it as appropriate.  The `-forge` option is
     no longer required but is still accepted.  Octave will issue a warning
     which can be silenced with the warning ID `"Octave:pkg:install-forge"`.
-  * There is a new `pkg search` functionality.  Running `pkg search foo bar baz`
-    searches Octave Packages online for packages having all those keywords
+  * There is a new `pkg search` functionality.  Running `pkg search foo bar
+    baz` searches Octave Packages online for packages having all those keywords
     in their descriptions.  Search terms can also be regular expressions.
   * The old command `pkg list -forge`, which returned a list of packages found
     online, has been replaced by `pkg search -all`.  Calling `pkg list -forge`
@@ -75,9 +75,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   ticklabels (bug #67302).  This makes it possible to use a monospaced font to
   align labels as the user intends.  This change is Matlab-compatible.
 
-- The `xminortickvalues`, `yminortickvalues`, `zminortickvalues` axes properties
-  that were previously hidden have been made visible to allow users to control
-  the position of minor ticks (bug #67394).
+- The `xminortickvalues`, `yminortickvalues`, `zminortickvalues` axes
+  properties that were previously hidden have been made visible to allow users
+  to control the position of minor ticks (bug #67394).
 
 ### Matlab compatibility
 
@@ -90,8 +90,8 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The functions `all` and `any` now accept the optional arguments `"all"` or
   `vecdim`.
 
-- The functions `cumprod` and `cumsum` now accept the optional arguments `"all"`
-  or `vecdim`, `direction`, and `nanflag`.
+- The functions `cumprod` and `cumsum` now accept the optional arguments
+  `"all"` or `vecdim`, `direction`, and `nanflag`.
 
 - The functions `prod`, `sum`, and `sumsq` now accept the optional arguments
  `"all"` or `vecdim`, `nanflag`, and `"default"` in `outtype`.  `prod` and

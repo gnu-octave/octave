@@ -32,8 +32,7 @@
 ## @deftypefnx {} {@var{m} =} mean (@dots{}, @var{outtype})
 ## Compute the mean of the elements of @var{x}.
 ##
-## If @var{x} is a vector, then @code{mean (@var{x})} returns the mean of the
-## elements in @var{x} defined as
+## The mean is defined as 
 ## @tex
 ## $$ {\rm mean}(x) = \bar{x} = {1\over N} \sum_{i=1}^N x_i $$
 ## where $N$ is the number of elements of @var{x}.
@@ -49,21 +48,27 @@
 ##
 ## @end ifnottex
 ##
-## If @var{x} is an array, then @code{mean(@var{x})} computes the mean along
+## If @var{x} is a vector, then @code{mean (@var{x})} returns the mean of the
+## elements in @var{x}.
+##
+## If @var{x} is a matrix, then @code{mean (@var{x})} returns a row vector with
+## each element containing the mean of the corresponding column in @var{x}.
+## 
+## If @var{x} is an array, then @code{mean (@var{x})} computes the mean along
 ## the first non-singleton dimension of @var{x}.
 ##
-## The optional variable @var{dim} forces @code{mean} to operate over the
-## specified dimension, which must be a positive integer-valued number.
-## Specifying any singleton dimension in @var{x}, including any dimension
-## exceeding @code{ndims (@var{x})}, will result in a mean equal to @var{x}.
+## The optional input @var{dim} specifies the dimension to operate on and must
+## be a positive integer.  Specifying any singleton dimension of @var{x},
+## including any dimension exceeding @code{ndims (@var{x})}, will return
+## @var{x}.
 ##
-## Specifying the dimensions as  @var{vecdim}, a vector of non-repeating
+## Specifying the dimensions as @var{vecdim}, a vector of non-repeating
 ## dimensions, will return the mean over the array slice defined by
 ## @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
 ## equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
 ## greater than @code{ndims (@var{x})} is ignored.
 ##
-## Specifying the dimension as @qcode{"all"} will force @code{mean} to operate
+## Specifying the dimension as @qcode{"all"} will cause @code{mean} to operate
 ## on all elements of @var{x}, and is equivalent to @code{mean (@var{x}(:))}.
 ##
 ## The optional input @var{outtype} specifies the data type that is returned.

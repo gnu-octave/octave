@@ -28,10 +28,10 @@
 ## @deftypefnx {} {@var{s} =} std (@var{x}, @var{w})
 ## @deftypefnx {} {@var{s} =} std (@var{x}, @var{w}, @var{dim})
 ## @deftypefnx {} {@var{s} =} std (@var{x}, @var{w}, @var{vecdim})
-## @deftypefnx {} {@var{s} =} std (@var{x}, @var{w}, @qcode{"ALL"})
+## @deftypefnx {} {@var{s} =} std (@var{x}, @var{w}, @qcode{"all"})
 ## @deftypefnx {} {@var{s} =} std (@dots{}, @var{nanflag})
 ## @deftypefnx {} {[@var{s}, @var{m}] =} std (@dots{})
-## Compute the standard deviation of the elements of the vector @var{x}.
+## Compute the standard deviation of the elements of @var{x}.
 ##
 ## The standard deviation is defined as
 ## @tex
@@ -51,8 +51,15 @@
 ## where @math{N} is the number of elements of @var{x}.
 ## @end ifnottex
 ##
-## If @var{x} is an array, compute the standard deviation along the first
-## non-singleton dimensions of @var{x}.
+## If @var{x} is a vector, then @code{std (@var{x})} returns the standard
+## deviation of the elements in @var{x}.
+## 
+## If @var{x} is a matrix, then @code{std (@var{x})} returns a row vector with
+## each element containing the standard deviation of the corresponding column
+## in @var{x}.
+## 
+## If @var{x} is an array, then @code{std (@var{x})} computes the standard
+## deviation along the first non-singleton dimension of @var{x}.
 ##
 ## The optional argument @var{w} determines the weighting scheme to use.  Valid
 ## values are:
@@ -80,23 +87,22 @@
 ## @end table
 ##
 ## Note: @var{w} must always be specified before specifying any of the
-## following dimension options.  To use the default value for @var{w} you
-## may pass an empty input argument [].
+## following dimension options.  To use the default value for @var{w} you may
+## pass an empty input argument @code{[]}.
 ##
-## The optional variable @var{dim} forces @code{std} to operate over the
-## specified dimension, which must be a positive integer-valued number.
-## Specifying any singleton dimension in @var{x}, including any dimension
-## exceeding @code{ndims (@var{x})}, will result in a standard deviation of 0.
+## The optional input @var{dim} specifies the dimension to operate on and must
+## be a positive integer.  Specifying any singleton dimension of @var{x},
+## including any dimension exceeding @code{ndims (@var{x})}, will return
+## @code{zeros (size (@var{x}))}.
 ##
-## Specifying the dimensions as  @var{vecdim}, a vector of non-repeating
-## dimensions, will return the standard deviation calculated over the array
-## slice defined by @var{vecdim}.  If @var{vecdim} indexes all dimensions of
-## @var{x}, then it is equivalent to the option @qcode{"all"}.  Any
-## dimension in @var{vecdim} greater than @code{ndims (@var{x})} is ignored.
+## Specifying multiple dimensions with input @var{vecdim}, a vector of
+## non-repeating dimensions, will operate along the array slice defined by
+## @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+## equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
+## greater than @code{ndims (@var{x})} is ignored.
 ##
-## Specifying the dimension as @qcode{"all"} will force @code{std} to
-## operate on all elements of @var{x}, and is equivalent to
-## @code{std (@var{x}(:))}.
+## Specifying the dimension as @qcode{"all"} will cause @code{std} to operate
+## on all elements of @var{x}, and is equivalent to @code{std (@var{x}(:))}.
 ##
 ## The optional variable @var{nanflag} specifies whether to include or exclude
 ## NaN values from the calculation using any of the previously specified input

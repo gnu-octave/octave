@@ -68,7 +68,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-void
+static void
 get_dim_vecdim_all (const octave_value& dimarg, octave_value& arg,
                     int& dim, Array<int>& perm_vec, bool& do_perm,
                     bool& allflag, const char *fcn)
@@ -133,19 +133,15 @@ get_dim_vecdim_all (const octave_value& dimarg, octave_value& arg,
           // Add remaining dims to permutation vector
           for (int i = 0; i < ndims; i++)
             {
-              bool is_rem = true;
-              for (int j = 0; j < n; j++)
-                {
-                  if (vecdim[j] == i)
-                    is_rem = false;
-                }
-              if (is_rem)
+               if (std::find (vecdim.begin (), vecdim.end (), i)
+                   == vecdim.end ())
                 {
                   perm_vec(idx) = i;
                   new_sz(idx) = sz(i);
                   idx++;
                 }
             }
+
           new_sz(idx) = szvecdim;
           arg = arg.permute (perm_vec, false);
           arg = arg.reshape (new_sz);

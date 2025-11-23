@@ -101,6 +101,10 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The function `gradient` with a numeric input now only accepts type double
   or single.
 
+- The function `iqr` now calculates an optional second output `q` which
+  contains the 25th and 75th quantiles used to calculate the interquartile
+  range.
+
 - The function `polyfit` now returns the highest powers possible and the
   constant term when there is insufficient data to create all N terms of the
   polynomial.  The output structure has a new field `rsquared` which is the

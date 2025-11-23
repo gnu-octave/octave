@@ -164,7 +164,7 @@ dim_vector::concat (const dim_vector& dvb, int dim)
 //
 // 1. cat (dim, A, B) works
 //
-// 2. A, B are 2D and one of them is an empty vector, in which
+// 2. A, B are 2-D and one of them is an empty vector, in which
 // case the result is the other one except if both of them
 // are empty vectors, in which case the result is 0x0.
 

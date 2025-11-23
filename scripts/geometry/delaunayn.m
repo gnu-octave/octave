@@ -159,7 +159,7 @@ function T = delaunayn (pts, varargin)
     else
       ## 1-D and >= 4-D: simplex 'volume' proportional to det|edge_vecs|
 
-      ## FIXME: Vectorize this for n-D inputs without excessive memory impact
+      ## FIXME: Vectorize this for N-D inputs without excessive memory impact
       ## over __delaunayn__ itself, or move simplex checking into __delaunayn__;
       ## perhaps with an optimized page-wise determinant.
       ## See bug #60818 for speed/memory improvement attempts and concerns.

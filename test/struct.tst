@@ -125,7 +125,7 @@
 %! c(3, 3, 3, 3).value = 1;
 %! assert (c(2,2,2,2), struct ("name", [], "value", []));
 
-## assign to subrange of field in 4D struct array
+## assign to subrange of field in 4-D struct array
 %!test
 %! c(4, 4, 4, 4).name  = "a";
 %! c(3, 3, 3, 3).value = 1;

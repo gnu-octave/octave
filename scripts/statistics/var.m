@@ -636,7 +636,7 @@ endfunction
 %!assert (var ([1 2 3], "OmitNan"), 1)
 %!assert (var ([1 2 3], "IncludeNan"), 1)
 
-## Test dimension indexing with vecdim in n-dimensional arrays
+## Test dimension indexing with vecdim in N-dimensional arrays
 %!test
 %! x = repmat ([1:20;6:25], [5, 2, 6, 3]);
 %! assert (size (var (x, 0, [3 2])), [10, 1, 1, 3]);
@@ -663,7 +663,7 @@ endfunction
 %!assert (var (3*magic(3), ones(3,3), [1 4], 'omitnan'), [42 96 42])
 %!assert (var (3*magic(3), [1 1 1; 1 1 1; 1 NaN 1],[1 4],'omitnan'), [42 36 42])
 
-## Test results with vecdim in n-dimensional arrays and "omitnan"
+## Test results with vecdim in N-dimensional arrays and "omitnan"
 %!test
 %! x = repmat ([1:20;6:25], [5, 2, 6, 3]);
 %! v = repmat (33.38912133891213, [10, 1, 1, 3]);

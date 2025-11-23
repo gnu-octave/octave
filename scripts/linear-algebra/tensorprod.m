@@ -198,7 +198,7 @@ function C = tensorprod (A, B, varargin)
   remainDimA = [1:ndimsA];
   remainDimA(dimA) = [];   # Dimensions of A to keep
   newDimOrderA = [remainDimA, dimA];  # New dim order [to_keep, to_contract]
-  newSizeA = [prod(sizeA(remainDimA)), prod(sizeA(dimA))]; # Temp. 2D size for A
+  newSizeA = [prod(sizeA(remainDimA)), prod(sizeA(dimA))]; # tmp 2-D size for A
 
   ## Prepare for B (See comments for A.
   ## FIXME: Note that in principle, prod (sizeB (dimB)) should always be equal
@@ -208,7 +208,7 @@ function C = tensorprod (A, B, varargin)
   newDimOrderB = [remainDimB, dimB];
   newSizeB = [prod(sizeB(remainDimB)), prod(sizeB(dimB))];
 
-  ## Do reshaping into 2D array
+  ## Do reshaping into 2-D array
   newA = reshape (permute (A, newDimOrderA), newSizeA);
   newB = reshape (permute (B, newDimOrderB), newSizeB);
 

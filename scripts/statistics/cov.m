@@ -208,16 +208,16 @@ function c = cov (x, varargin)
   endif
 
   if (ndims (x) > 2)
-    ## Note: Matlab requires 2D inputs even if providing a y input results in
+    ## Note: Matlab requires 2-D inputs even if providing a y input results in
     ##       reshaping for operation as cov (x(:), y(:)) (tested in 2022b).
     ##       Octave permits arbitrarily shaped inputs for the cov(x,y) case as
     ##       long as numel (x) == numel (y).  Only when no y is provided is X
-    ##       restricted to 2D for consistent 2D columnwise behavior of cov.
+    ##       restricted to 2-D for consistent 2-D columnwise behavior of cov.
     error ("cov: X must be a 2-D matrix or vector");
   endif
 
   ## Special case: empty inputs.  Output shape changes depends on number of
-  ## columns.  Inputs already verified as limited to 2D.
+  ## columns.  Inputs already verified as limited to 2-D.
   if (isempty (x))
     sx = size (x);
 

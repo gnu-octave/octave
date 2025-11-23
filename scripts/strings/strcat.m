@@ -129,14 +129,14 @@ endfunction
 
 
 ## test the dimensionality
-## 1d
+## 1-D
 %!assert (strcat ("ab ", "ab "), "abab")
 %!assert (strcat ({"ab "}, "ab "), {"ab ab"})
 %!assert (strcat ("ab ", {"ab "}), {"abab "})
 %!assert (strcat ({"ab "}, {"ab "}), {"ab ab "})
 %!assert (strcat ("", "ab"), "ab")
 %!assert (strcat ("", {"ab"}, {""}), {"ab"})
-## 2d
+## 2-D
 %!assert (strcat (["ab ";"cde"], ["ab ";"cde"]), ["abab  ";"cdecde"])
 
 ## test for deblanking implied trailing spaces of character input

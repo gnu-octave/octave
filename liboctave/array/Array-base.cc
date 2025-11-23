@@ -2780,7 +2780,7 @@ Array<T, Alloc>::print_info (std::ostream& os, const std::string& prefix) const
      << prefix << "m_slice_data:    " << static_cast<void *> (m_slice_data) << '\n'
      << prefix << "m_slice_len:     " << m_slice_len << '\n';
 
-  // 2D info:
+  // 2-D info:
   //
   //     << pefix << "rows: " << rows () << "\n"
   //     << prefix << "cols: " << cols () << "\n";
@@ -2835,7 +2835,7 @@ operator << (std::ostream& os, const Array<T, Alloc>& a)
 
       Array<octave_idx_type> ra_idx (dim_vector (n_dims, 1), 0);
 
-      // Number of times the first 2d-array is to be displayed.
+      // Number of times the first 2-D array is to be displayed.
 
       octave_idx_type m = 1;
       for (int i = 2; i < n_dims; i++)

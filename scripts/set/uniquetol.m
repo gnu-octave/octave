@@ -322,7 +322,7 @@ endfunction
 %!assert (uniquetol (single ([1,2,2,3,2,4].'), "byrows", true),
 %!        single ([1;2;3;4]))
 
-## Test 2D array sorting
+## Test 2-D array sorting
 %!test
 %! a = [magic(3); 2 * magic(3)];
 %! assert (uniquetol (a), [1:10,12,14,16,18]');

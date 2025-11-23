@@ -594,7 +594,7 @@ endfunction
 %!assert (mean (magic (3), [1 3]), [5, 5, 5])
 %!assert (mean (magic (3), [1 99]), [5, 5, 5])
 
-## Test results with vecdim in n-dimensional arrays and "omitnan"
+## Test results with vecdim in N-dimensional arrays and "omitnan"
 %!test
 %! x = repmat ([1:20;6:25], [5 2 6 3]);
 %! m = repmat ([10.5;15.5], [5 1 1 3]);

@@ -274,6 +274,380 @@
 %! obj = class_bug67362 ();
 %! assert (obj.shared_name, 42);
 
+## concatenation of value classes without conversion
+%!test <*44665>
+%! p = class_pair (3, 5);
+%! p2 = class_pair (7, 4);
+%! y = [p, [p2, p]];
+%! assert (size (y), [1, 3]);
+%! assert ([y.first; y.second], [3, 7, 3; 5, 4, 5]);
+%! z = [y; p2, [p2, p]];
+%! assert (size (z), [2, 3]);
+%! assert ([z.first; z.second], [3, 7, 7, 7, 3, 3; 5, 4, 4, 4, 5, 5]);
+%! v = [z, z; y, p, [p2, p]];
+%! assert (size (v), [3, 6]);
+
+## concatenation of value classes using functions
+%!test <*44665>
+%! p = class_pair (3, 5);
+%! p2 = class_pair (7, 4);
+%! assert( size (horzcat (p, p2, p)), [1, 3]);
+%! assert( size (vertcat (p, p2, p)), [3, 1]);
+%! assert( size (cat (4, p, p2)), [1, 1, 1, 2]);
+
+## concatenation with handle class
+%!test <*44665>
+%! h = handle_class ();
+%! h.a = 1;
+%! h2 = handle_class ();
+%! h2.a = 2;
+%! arr = [h, h2, h];
+%! assert (size (arr), [1, 3]);
+%! assert ([arr(:).a], [1, 2, 1]);
+%! h(1).a = 3;
+%! assert ([arr(:).a], [3, 2, 3]);
+
+## error message when concatenating incompatible classdefs, no constructors
+%!error <cat: cannot convert from type "handle_class" to type "value_class">
+%! v = value_class ();
+%! h = handle_class ();
+%! [ v, h ];
+
+## previous test, but try type converting value class to handle class
+%!error <cat: cannot convert from type "value_class" to type "handle_class">
+%! v = value_class ();
+%! h = handle_class ();
+%! [ h, v ];
+
+## error message when concatenating classdef and builtin-type, no constructor
+%!error <cat: cannot convert from type "double" to type "value_class">
+%! v = value_class ();
+%! [ v, 3 ];
+
+## previous test, but try type converting value class to handle class
+%!error <cat: cannot convert from type "double" to type "handle_class">
+%! h = handle_class ();
+%! [ h, 3 ];
+
+## concatenation of empty object with value class
+%!test <*44665>
+%! v = value_class ();
+%! arr = [ [] v [] ];
+%! arr = [ [] arr [] ];
+%! assert (size(arr), [1 1]);
+
+## previous test, but with handle class
+%!test <*44665>
+%! h = handle_class ();
+%! arr = [ [] h [] ];
+%! arr = [ [] arr [] ];
+%! assert (size(arr), [1 1]);
+
+## error message when concatenating incompatible classdefs, failed constructor
+## FIXME: May change this error in the future to indicate that the type
+## conversion was tried explicitly during a concatenation. Right now, this
+## error is thrown in the function "attempt_type_conversion" in data.cc, which
+## may not necessarily be called by only "cat".
+%!error <foo_value_class constructor failed for class_pair_elem argument>
+%! f = foo_value_class (4, 12, 20000);
+%! p = class_pair_elem (5);
+%! [ f, p ];
+
+## classdef concatenation of value classes using conversion method of
+## non-dominant class.
+## Since neither class in this example has a defined dominance relation, the
+## dominant class is the left-most class in the concatenation.
+%!test <*44665>
+%! y = [class_pair_elem(7), class_pair(3, 5)];
+%! assert (class (y), 'class_pair_elem');
+%! assert (size (y), [1, 2]);
+%! assert ([y.value], [7, 3]);
+
+## previous test, but with handle classes
+%!test <*44665>
+%! y = [class_pair_elem_handle(7), class_pair_handle(3, 5)];
+%! assert (class (y), 'class_pair_elem_handle');
+%! assert (size (y), [1, 2]);
+%! assert ([y.value], [7, 3]);
+
+## classdef concatenation using constructor of dominant class to convert other
+## classdefs
+%!test <*44665>
+%! y = [class_pair(3, 5), class_pair_elem(7)];
+%! assert (class (y), 'class_pair');
+%! assert ([y.first; y.second], [3, 7; 5, 0]);
+
+## pprevious test, but with handle classes
+%!test <*44665>
+%! y = [class_pair_handle(3, 5), class_pair_elem_handle(7)];
+%! assert (class (y), 'class_pair_handle');
+%! assert ([y.first; y.second], [3, 7; 5, 0]);
+
+## classdef concatenation of value classes using constructor of dominant class
+## to convert built-in types
+%!test <*44665>
+%! y = class_pair_elem (1);
+%! y = [y, double(2)];
+%! y = [y, single(3)];
+%! y = [y, int8(4)];
+%! y = [y, uint8(5)];
+%! y = [y, int16(6)];
+%! y = [y, uint16(7)];
+%! y = [y, int32(8)];
+%! y = [y, uint32(9)];
+%! y = [y, 'a'];
+%! y = [y, true];
+%! ## Have to declare func handle separately to check equality
+%! f = @(x) x + 1;
+%! y = [y, f];
+%! y = [y, struct("foo", 1)];
+%! y = [y, {1, 2, 3}];
+%! assert (class (y), 'class_pair_elem');
+%! assert (size (y), [1, 14]);
+%! assert (y(2).value, double (2));
+%! assert (y(3).value, single (3));
+%! assert (y(4).value, int8 (4));
+%! assert (y(5).value, uint8 (5));
+%! assert (y(6).value, int16 (6));
+%! assert (y(7).value, uint16 (7));
+%! assert (y(8).value, int32 (8));
+%! assert (y(9).value, uint32 (9));
+%! assert (y(10).value, 'a');
+%! assert (y(11).value, true);
+%! assert (y(12).value, f);
+%! assert (y(13).value, struct ("foo", 1));
+%! assert (y(14).value, {1, 2, 3});
+
+## previous test, but with handle classes
+%!test <*44665>
+%! y = class_pair_elem_handle (1);
+%! y = [y, double(2)];
+%! y = [y, single(3)];
+%! y = [y, int8(4)];
+%! y = [y, uint8(5)];
+%! y = [y, int16(6)];
+%! y = [y, uint16(7)];
+%! y = [y, int32(8)];
+%! y = [y, uint32(9)];
+%! y = [y, 'a'];
+%! y = [y, true];
+%! ## Have to declare func handle separately to check equality
+%! f = @(x) x + 1;
+%! y = [y, f];
+%! y = [y, struct("foo", 1)];
+%! y = [y, {1, 2, 3}];
+%! assert (class (y), 'class_pair_elem_handle');
+%! assert (size (y), [1, 14]);
+%! assert (y(2).value, double (2));
+%! assert (y(3).value, single (3));
+%! assert (y(4).value, int8 (4));
+%! assert (y(5).value, uint8 (5));
+%! assert (y(6).value, int16 (6));
+%! assert (y(7).value, uint16 (7));
+%! assert (y(8).value, int32 (8));
+%! assert (y(9).value, uint32 (9));
+%! assert (y(10).value, 'a');
+%! assert (y(11).value, true);
+%! assert (y(12).value, f);
+%! assert (y(13).value, struct ("foo", 1));
+%! assert (y(14).value, {1, 2, 3});
+
+## concatenation of value classdef (dominant arg) and old-style classes
+%!test <*44665>
+%! p = class_pair_elem (1);
+%! o = osc (2);
+%! arr = [ p, o ];
+%! assert (class (arr), 'class_pair_elem');
+%! assert (size (arr), [1 2]);
+
+## concatenation of value classdef (dominant arg) and old-style classes
+%!test <*44665>
+%! p = class_pair_elem_handle (1);
+%! o = osc (2);
+%! arr = [ p, o ];
+%! assert (class (arr), 'class_pair_elem_handle');
+%! assert (size (arr), [1 2]);
+
+## concatenation of old-style class (dominant arg) and value classdef
+%!test <*44665>
+%! p = class_pair_elem (1);
+%! o = osc (2);
+%! arr = [ o, p ];
+%! assert (class (arr), 'osc');
+%! assert (size (arr), [1 2]);
+
+## concatenation of old-style class (dominant arg) and handle classdef
+%!test <*44665>
+%! p = class_pair_elem_handle (1);
+%! o = osc (2);
+%! arr = [ o, p ];
+%! assert (class (arr), 'osc');
+%! assert (size (arr), [1 2]);
+
+## classdef array concatenation of value classes has value semantics
+%!test <*44665>
+%! p1 = class_pair_elem (1);
+%! p2 = class_pair_elem (2);
+%! arr = [p1, p2];
+%! p1.value = 3;
+%! ## Array elements should be independent copies (value semantics)
+%! assert (arr(1).value, 1);
+%! assert (arr(2).value, 2);
+%! assert (p1.value, 3);
+
+## classdef array concatenation of handle classes has handle semantics
+%!test <*44665>
+%! p1 = class_pair_elem_handle (1);
+%! p2 = class_pair_elem_handle (2);
+%! arr = [p1, p2];
+%! p1.value = 3;
+%! ## Array elements should be pointers to the same underlying object
+%! assert (arr(1).value, 3);
+%! assert (arr(2).value, 2);
+%! assert (p1.value, 3);
+
+## concatenation edge cases - single object operations
+%!test <*44665>
+%! p1 = class_pair (1, 2);
+%! ## Concatenating single object should preserve dimensions
+%! result = [p1];
+%! assert (size (result), [1, 1]);
+%! assert (result.first, 1);
+%! ## Test assignment with a 1x1 object -- should work the same as a scalar
+%! result.first = 2;
+%! assert (result.first, 2);
+%! ## Using cat with single object
+%! result2 = cat (1, p1);
+%! assert (size (result2), [1, 1]);
+%! assert (result2.first, 1);
+
+## previous test, but with handle classes
+%!test <*44665>
+%! h = class_pair_handle (1, 2);
+%! ## Concatenating single object should preserve dimensions
+%! result = [h];
+%! assert (size (result), [1, 1]);
+%! assert (result.first, 1);
+%! ## Test assignment with a 1x1 object -- should work the same as a scalar
+%! result.first = 2;
+%! assert (result.first, 2);
+%! ## Using cat with single object
+%! result2 = cat (1, h);
+%! assert (size (result2), [1, 1]);
+%! assert (result2.first, 2);
+
+## Concatenation with overloaded "cat" method, value class
+%!test <*44665>
+%! o1 = overloaded_cat_class ();
+%! o1.data = 1;
+%! o2 = overloaded_cat_class ();
+%! o2.data = 2;
+%! arr = horzcat(o1, o2);
+%! # See "overloaded_cat_class.m" for specifics how cat is implemented
+%! assert (size (arr), [1, 1]);
+%! assert (numel ({arr.data}), 1);
+%! assert (arr.data, [1, 2]);
+%! arr = vertcat (arr, arr);
+%! assert (size (arr), [1, 1]);
+%! assert (numel ({arr.data}), 1);
+%! assert (arr.data, [1, 2; 1, 2]);
+%! arr = cat (3, arr, arr);
+%! assert (numel ({arr.data}), 1);
+%! assert (arr.data, cat (3, [1, 2; 1, 2], [1, 2; 1, 2]));
+
+## previous test, but with handle classes
+%!test <*44665>
+%! o1 = overloaded_cat_class_handle ();
+%! o1.data = 1;
+%! o2 = overloaded_cat_class_handle ();
+%! o2.data = 2;
+%! arr = horzcat (o1, o2);
+%! # See "overloaded_cat_class.m" for specifics how cat is implemented
+%! assert (size (arr), [1, 1]);
+%! assert (numel ({arr.data}), 1);
+%! assert (arr.data, [1, 2]);
+%! arr = vertcat (arr, arr);
+%! assert (size (arr), [1, 1]);
+%! assert (numel ({arr.data}), 1);
+%! assert (arr.data, [1, 2; 1, 2]);
+%! arr = cat (3, arr, arr);
+%! assert (numel ({arr.data}), 1);
+%! assert (arr.data, cat (3, [1, 2; 1, 2], [1, 2; 1, 2]));
+
+## Test concatenation of classdef that overloads horzcat and vertcat, but not cat
+## See "overloaded_horzcat_vertcat_class.m" for more specifics
+%!test <*44665>
+%! o1 = overloaded_horzcat_vertcat_class ();
+%! o1.data = 1;
+%! o2 = overloaded_horzcat_vertcat_class ();
+%! o2.data = 2;
+%! arr = horzcat(o1, o2);
+%! assert (size (arr), [1, 1]);
+%! assert (numel ({arr.data}), 1);
+%! assert (arr.data, [1, 2]);
+%! o1.data = 1;
+%! o2.data = 2;
+%! arr = vertcat (o1, o2);
+%! assert (size (arr), [1, 1]);
+%! assert (numel ({arr.data}), 1);
+%! assert (arr.data, [1; 2]);
+%! o1.data = 1;
+%! o2.data = 2;
+%! arr = [o1, o2; o1, o2];
+%! assert (size (arr), [1, 1]);
+%! assert (numel ({arr.data}), 1);
+%! assert (arr.data, [1, 2; 1, 2]);
+%! o1.data = 1;
+%! o2.data = 2;
+%! arr = cat (3, o1, o2);
+%! assert (size (arr), [1, 1, 2]);
+%! assert (numel ({arr.data}), 2);
+%! assert (cat (3, arr.data), cat (3, 1, 2));
+
+## previous test, but with handle classes
+%!test <*44665>
+%! o1 = overloaded_horzcat_vertcat_class_handle ();
+%! o1.data = 1;
+%! o2 = overloaded_horzcat_vertcat_class_handle ();
+%! o2.data = 2;
+%! arr_horzcat = horzcat (o1, o2);
+%! assert (size (arr_horzcat), [1, 1]);
+%! assert (numel ({arr_horzcat.data}), 1);
+%! assert (arr_horzcat.data, [1, 2]);
+%! o1.data = 1;
+%! o2.data = 2;
+%! arr_vertcat = vertcat (o1, o2);
+%! assert (size (arr_vertcat), [1, 1]);
+%! assert (numel ({arr_vertcat.data}), 1);
+%! assert (arr_vertcat.data, [1; 2]);
+%! o1.data = 1;
+%! o2.data = 2;
+%! arr_matrix = [o1, o2; o1, o2];
+%! assert (size (arr_matrix), [1, 1]);
+%! assert (numel ({arr_matrix.data}), 1);
+%! assert (arr_matrix.data, [1, 2, 2; 1, 2, 2]);
+%! o1.data = 1;
+%! o2.data = 2;
+%! arr = cat (3, o1, o2);
+%! assert (size (arr), [1, 1, 2]);
+%! assert (numel ({arr.data}), 2);
+%! assert (cat (3, arr.data), cat (3, 1, 2));
+
+# selection of dominant class when concatenating classdefs
+# FIXME: This relies on the "InferiorClasses" attribute being supported.
+%!test <44665>
+%! p1 = class_pair_elem (1);
+%! p2 = class_pair_elem_dominant (2);
+%! arr = [ p1, p2 ];
+%! assert (class (arr), 'class_pair_elem_dominant');
+
+## previous test, but with handle classes
+%!test <44665>
+%! p1 = class_pair_elem_handle (1);
+%! p2 = class_pair_elem_dominant_handle (2);
+%! arr = [ p1, p2 ];
+%! assert (class (arr), 'class_pair_elem_dominant_handle');
+
 ## deep copy (on write) of value class arrays
 %!test <*54028>
 %! arr1 = value_class ();

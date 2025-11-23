@@ -3,6 +3,7 @@ classdef_TEST_FILES = \
   %reldir%/@class_bug62802/class_bug62802.m \
   %reldir%/@class_bug67362/class_bug67362.m \
   %reldir%/@class_bug67362/shared_name.m \
+  %reldir%/@osc/osc.m \
   %reldir%/bug_60763.m \
   %reldir%/cdef_array_break_cycles.m \
   %reldir%/class_bug50011_1.m \
@@ -16,12 +17,21 @@ classdef_TEST_FILES = \
   %reldir%/class_bug55766.m \
   %reldir%/class_bug66930A.m \
   %reldir%/class_bug66930B.m \
+  %reldir%/class_pair.m \
+  %reldir%/class_pair_elem.m \
+  %reldir%/class_pair_elem_dominant.m \
+  %reldir%/class_pair_elem_dominant_handle.m \
+  %reldir%/class_pair_elem_handle.m \
   %reldir%/classdef.tst \
   %reldir%/foo_method_changes_property_size.m \
   %reldir%/foo_static_method_constant_property.m \
   %reldir%/foo_subsref_subsasgn.m \
   %reldir%/foo_value_class.m \
   %reldir%/handle_class.m \
+  %reldir%/overloaded_cat_class.m \
+  %reldir%/overloaded_cat_class_handle.m \
+  %reldir%/overloaded_horzcat_vertcat_class.m \
+  %reldir%/overloaded_horzcat_vertcat_class_handle.m \
   %reldir%/plist_t1.m \
   %reldir%/plist_t2.m \
   %reldir%/plist_t3.m \

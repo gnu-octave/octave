@@ -61,7 +61,7 @@ jobs:
         run: lscpu
 
       - name: checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: install dependencies
         env:

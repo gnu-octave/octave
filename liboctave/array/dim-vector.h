@@ -179,7 +179,7 @@ public:
 
   // The maximum allowed value for a dimension extent.  This will
   // normally be a tiny bit off the maximum value of octave_idx_type.
-  // Currently, 1 is subtracted to allow safe conversion of any 2D Array
+  // Currently, 1 is subtracted to allow safe conversion of any 2-D Array
   // into Sparse but this offset may change in the future.
 
   static constexpr octave_idx_type dim_max ()
@@ -408,8 +408,8 @@ public:
 
   //! Force certain dimensionality, preserving numel ().  Missing
   //! dimensions are set to 1, redundant are folded into the trailing
-  //! one.  If n = 1, the result is 2d and the second dim is 1
-  //! (dim_vectors are always at least 2D).
+  //! one.  If n = 1, the result is 2-D and the second dim is 1
+  //! (dim_vectors are always at least 2-D).
 
   OCTAVE_API dim_vector redim (int n) const;
 

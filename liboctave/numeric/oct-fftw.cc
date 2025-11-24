@@ -47,8 +47,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 fftw_planner *fftw_planner::s_instance = nullptr;
 
-// Helper class to create and cache FFTW plans for both 1D and
-// 2D.  This implementation defaults to using FFTW_ESTIMATE to create
+// Helper class to create and cache FFTW plans for both 1-D and
+// 2-D.  This implementation defaults to using FFTW_ESTIMATE to create
 // the plans, which in theory is suboptimal, but provides quite
 // reasonable performance in practice.
 

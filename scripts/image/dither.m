@@ -306,7 +306,7 @@ function id = rgb2indLUT (pixel, map, Qm = 5)
 endfunction
 
 function [X, Y, Z] = ndims_grid (nx, ny, nz)
-  ## Create 3D grid indices (emulates meshgrid for 3D).
+  ## Create 3-D grid indices (emulates meshgrid for 3-D).
   [x, y, z] = ind2sub ([nx, ny, nz], 1:(nx*ny*nz));
   X = reshape (x, nx, ny, nz);
   Y = reshape (y, nx, ny, nz);
@@ -351,7 +351,7 @@ endfunction
 %!
 %! ## Create a grid for interpolation
 %! [x, y] = meshgrid (linspace (0, 1, width), linspace (0, 1, height));
-%! ## Initialize the 3D array for the image
+%! ## Initialize the 3-D array for the image
 %! image = zeros (height, width, 3);
 %! ## Calculate the interpolated colors for each point
 %! ## The logic is a bilinear interpolation of the four corner colors

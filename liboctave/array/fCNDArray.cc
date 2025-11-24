@@ -355,6 +355,12 @@ FloatComplexNDArray::any (int dim) const
 }
 
 FloatComplexNDArray
+FloatComplexNDArray::flip (int dim) const
+{
+  return do_mx_flip_op<FloatComplex, FloatComplex> (*this, dim, mx_inline_flip);
+}
+
+FloatComplexNDArray
 FloatComplexNDArray::cumprod (int dim) const
 {
   return do_mx_cum_op<FloatComplex, FloatComplex> (*this, dim,
@@ -396,6 +402,12 @@ FloatComplexNDArray
 FloatComplexNDArray::sumsq (int dim) const
 {
   return do_mx_red_op<float, FloatComplex> (*this, dim, mx_inline_sumsq);
+}
+
+ComplexNDArray
+FloatComplexNDArray::dsumsq (int dim) const
+{
+  return do_mx_red_op<double, FloatComplex> (*this, dim, mx_inline_dsumsq);
 }
 
 FloatComplexNDArray

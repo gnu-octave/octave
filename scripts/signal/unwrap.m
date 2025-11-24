@@ -109,7 +109,7 @@ function retval = unwrap (x, tol, dim)
       retval(xfin_idx) = xfin + cumsum (p, dim);
 
     else
-      ## For n-dimensional arrays with a possibly unequal number of non-finite
+      ## For N-dimensional arrays with a possibly unequal number of non-finite
       ## values, mask entries with values that do not impact calcualation.
 
             ## Locate nonfinite values.

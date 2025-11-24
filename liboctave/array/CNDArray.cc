@@ -355,6 +355,12 @@ ComplexNDArray::any (int dim) const
 }
 
 ComplexNDArray
+ComplexNDArray::flip (int dim) const
+{
+  return do_mx_flip_op<Complex, Complex> (*this, dim, mx_inline_flip);
+}
+
+ComplexNDArray
 ComplexNDArray::cumprod (int dim) const
 {
   return do_mx_cum_op<Complex, Complex> (*this, dim, mx_inline_cumprod);

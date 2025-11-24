@@ -35,8 +35,9 @@
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ##
-## The range is a quickly computed measure of the dispersion of a data set, but
-## is less accurate than @code{iqr} if there are outlying data points.
+## Usage Note: The range is a quickly computed measure of the dispersion of a
+## data set, but is less accurate than @code{iqr} if there are outlying data
+## points.
 ## @seealso{bounds, iqr, mad, std}
 ## @end deftypefn
 

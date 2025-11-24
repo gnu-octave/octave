@@ -31,7 +31,7 @@
 ## @deftypefnx {} {@var{v} =} var (@var{x}, @var{w}, @qcode{"all"})
 ## @deftypefnx {} {@var{v} =} var (@dots{}, @var{nanflag})
 ## @deftypefnx {} {[@var{v}, @var{m}] =} var (@dots{})
-## Compute the variance of the elements of the vector @var{x}.
+## Compute the variance of the elements of @var{x}.
 ##
 ## The variance is defined as
 ## @tex
@@ -51,8 +51,14 @@
 ## where @math{N} is the number of elements of @var{x}.
 ## @end ifnottex
 ##
-## If @var{x} is an array, compute the variance along the first non-singleton
-## dimensions of @var{x}.
+## If @var{x} is a vector, then @code{var (@var{x})} returns the variance of
+## the elements in @var{x}.
+## 
+## If @var{x} is a matrix, then @code{var (@var{x})} returns a row vector with
+## each element containing the variance of the corresponding column in @var{x}.
+## 
+## If @var{x} is an array, then @code{var (@var{x})} computes the variance
+## along the first non-singleton dimension of @var{x}.
 ##
 ## The optional argument @var{w} determines the weighting scheme to use.  Valid
 ## values are:
@@ -75,27 +81,27 @@
 ## @item an array:
 ## Similar to vector weights, but @var{w} must be the same size as @var{x}.  If
 ## the operating dimension is supplied as @var{vecdim} or @qcode{"all"} and
-## @var{w} is not a scalar, @var{w} must be an same-sized array.
+## @var{w} is not a scalar, then @var{w} must match the size of the specified
+## array slice.
 ## @end table
 ##
 ## Note: @var{w} must always be specified before specifying any of the
 ## following dimension options.  To use the default value for @var{w} you
-## may pass an empty input argument [].
+## may pass an empty input argument @code{[]}.
 ##
-## The optional variable @var{dim} forces @code{var} to operate over the
-## specified dimension, which must be a positive integer-valued number.
-## Specifying any singleton dimension in @var{x}, including any dimension
-## exceeding @code{ndims (@var{x})}, will result in a variance of 0.
+## The optional input @var{dim} specifies the dimension to operate on and must
+## be a positive integer.  Specifying any singleton dimension of @var{x},
+## including any dimension exceeding @code{ndims (@var{x})}, will return
+## @code{zeros (size (@var{x}))}.
 ##
-## Specifying the dimensions as  @var{vecdim}, a vector of non-repeating
-## dimensions, will return the variance calculated over the array slice defined
-## by @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it
-## is equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
+## Specifying multiple dimensions with input @var{vecdim}, a vector of
+## non-repeating dimensions, will operate along the array slice defined by
+## @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+## equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
 ## greater than @code{ndims (@var{x})} is ignored.
 ##
-## Specifying the dimension as @qcode{"all"} will force @code{var} to
-## operate on all elements of @var{x}, and is equivalent to @code{var
-## (@var{x}(:))}.
+## Specifying the dimension as @qcode{"all"} will cause @code{var} to operate
+## on all elements of @var{x}, and is equivalent to @code{var (@var{x}(:))}.
 ##
 ## The optional variable @var{nanflag} specifies whether to include or exclude
 ## NaN values from the calculation using any of the previously specified input
@@ -630,7 +636,7 @@ endfunction
 %!assert (var ([1 2 3], "OmitNan"), 1)
 %!assert (var ([1 2 3], "IncludeNan"), 1)
 
-## Test dimension indexing with vecdim in n-dimensional arrays
+## Test dimension indexing with vecdim in N-dimensional arrays
 %!test
 %! x = repmat ([1:20;6:25], [5, 2, 6, 3]);
 %! assert (size (var (x, 0, [3 2])), [10, 1, 1, 3]);
@@ -657,7 +663,7 @@ endfunction
 %!assert (var (3*magic(3), ones(3,3), [1 4], 'omitnan'), [42 96 42])
 %!assert (var (3*magic(3), [1 1 1; 1 1 1; 1 NaN 1],[1 4],'omitnan'), [42 36 42])
 
-## Test results with vecdim in n-dimensional arrays and "omitnan"
+## Test results with vecdim in N-dimensional arrays and "omitnan"
 %!test
 %! x = repmat ([1:20;6:25], [5, 2, 6, 3]);
 %! v = repmat (33.38912133891213, [10, 1, 1, 3]);

@@ -90,7 +90,7 @@ blas_axpy (const F77_INT& n, const FloatComplex& alpha,
 }
 
 
-// 2d convolution with a matrix kernel.
+// 2-D convolution with a matrix kernel.
 template <typename T, typename R>
 static void
 convolve_2d (const T *a, F77_INT ma, F77_INT na,

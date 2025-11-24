@@ -761,9 +761,11 @@ OP_RED_FCN (mx_inline_sum, T, T, OP_RED_SUM, 0)
 OP_RED_FCN (mx_inline_dsum, T, PROMOTE_DOUBLE(T), op_dble_sum, 0.0)
 OP_RED_FCN (mx_inline_count, bool, T, OP_RED_SUM, 0)
 OP_RED_FCN (mx_inline_prod, T, T, OP_RED_PROD, 1)
-OP_RED_FCN (mx_inline_dprod, T, PROMOTE_DOUBLE(T), op_dble_prod, 1)
+OP_RED_FCN (mx_inline_dprod, T, PROMOTE_DOUBLE(T), op_dble_prod, 1.0)
 OP_RED_FCN (mx_inline_sumsq, T, T, OP_RED_SUMSQ, 0)
 OP_RED_FCN (mx_inline_sumsq, std::complex<T>, T, OP_RED_SUMSQC, 0)
+OP_RED_FCN (mx_inline_dsumsq, T, PROMOTE_DOUBLE(T), OP_RED_SUMSQ, 0.0)
+OP_RED_FCN (mx_inline_dsumsq, std::complex<T>, PROMOTE_DOUBLE(T), OP_RED_SUMSQC, 0.0)
 OP_RED_FCN (mx_inline_any, T, bool, OP_RED_ANYC, false)
 OP_RED_FCN (mx_inline_all, T, bool, OP_RED_ALLC, true)
 
@@ -786,9 +788,11 @@ OP_RED_FCN2 (mx_inline_sum, T, T, OP_RED_SUM, 0)
 OP_RED_FCN2 (mx_inline_dsum, T, PROMOTE_DOUBLE(T), op_dble_sum, 0.0)
 OP_RED_FCN2 (mx_inline_count, bool, T, OP_RED_SUM, 0)
 OP_RED_FCN2 (mx_inline_prod, T, T, OP_RED_PROD, 1)
-OP_RED_FCN2 (mx_inline_dprod, T, PROMOTE_DOUBLE(T), op_dble_prod, 0.0)
+OP_RED_FCN2 (mx_inline_dprod, T, PROMOTE_DOUBLE(T), op_dble_prod, 1.0)
 OP_RED_FCN2 (mx_inline_sumsq, T, T, OP_RED_SUMSQ, 0)
 OP_RED_FCN2 (mx_inline_sumsq, std::complex<T>, T, OP_RED_SUMSQC, 0)
+OP_RED_FCN2 (mx_inline_dsumsq, T, PROMOTE_DOUBLE(T), OP_RED_SUMSQ, 0.0)
+OP_RED_FCN2 (mx_inline_dsumsq, std::complex<T>, PROMOTE_DOUBLE(T), OP_RED_SUMSQC, 0.0)
 
 #define OP_RED_ANYR(ac, el) ac |= xis_true (el)
 #define OP_RED_ALLR(ac, el) ac &= xis_true (el)
@@ -864,6 +868,8 @@ OP_RED_FCNN (mx_inline_prod, T, T)
 OP_RED_FCNN (mx_inline_dprod, T, PROMOTE_DOUBLE(T))
 OP_RED_FCNN (mx_inline_sumsq, T, T)
 OP_RED_FCNN (mx_inline_sumsq, std::complex<T>, T)
+OP_RED_FCNN (mx_inline_dsumsq, T,  PROMOTE_DOUBLE(T))
+OP_RED_FCNN (mx_inline_dsumsq, std::complex<T>,  PROMOTE_DOUBLE(T))
 OP_RED_FCNN (mx_inline_any, T, bool)
 OP_RED_FCNN (mx_inline_all, T, bool)
 
@@ -937,6 +943,56 @@ OP_CUM_FCN2 (mx_inline_cumcount, bool, T, +)
 OP_CUM_FCNN (mx_inline_cumsum, T, T)
 OP_CUM_FCNN (mx_inline_cumprod, T, T)
 OP_CUM_FCNN (mx_inline_cumcount, bool, T)
+
+template <typename T>
+inline void
+mx_inline_flip (const T *v, T *r, octave_idx_type n)
+{
+  if (n)
+    {
+      for (octave_idx_type i = 0; i < n; i++)
+        r[i] = v[n-1-i];
+    }
+}
+
+template <typename T>
+inline void
+mx_inline_flip (const T *v, T *r, octave_idx_type m, octave_idx_type n)
+{
+  if (n)
+    {
+      for (octave_idx_type j = 0; j < n; j++)
+        {
+          for (octave_idx_type i = 0; i < m; i++)
+            r[(n-1-j)*m+i] = v[j*m+i];
+        }
+    }
+}
+
+template <typename T>
+inline void
+mx_inline_flip (const T *v, T *r, octave_idx_type l,
+                octave_idx_type n, octave_idx_type u)
+{
+  if (l == 1)
+    {
+      for (octave_idx_type i = 0; i < u; i++)
+        {
+          mx_inline_flip (v, r, n);
+          v += n;
+          r += n;
+        }
+    }
+  else
+    {
+      for (octave_idx_type i = 0; i < u; i++)
+        {
+          mx_inline_flip (v, r, l, n);
+          v += l*n;
+          r += l*n;
+        }
+    }
+}
 
 #define OP_MINMAX_FCN(F, OP)                                            \
   template <typename T>                                                 \
@@ -1562,6 +1618,23 @@ do_mx_red_op (const Array<T>& src, int dim,
 
   Array<R> ret (dims);
   mx_red_op (src.data (), ret.rwdata (), l, n, u);
+
+  return ret;
+}
+
+template <typename R, typename T>
+inline Array<R>
+do_mx_flip_op (const Array<T>& src, int dim,
+               void (*mx_flip_op) (const T *, R *, octave_idx_type,
+                                   octave_idx_type, octave_idx_type))
+{
+  octave_idx_type l, n, u;
+  const dim_vector& dims = src.dims ();
+  get_extent_triplet (dims, dim, l, n, u);
+
+  // Cumulative operation doesn't reduce the array size.
+  Array<R> ret (dims);
+  mx_flip_op (src.data (), ret.rwdata (), l, n, u);
 
   return ret;
 }

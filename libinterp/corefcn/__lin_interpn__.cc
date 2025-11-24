@@ -127,7 +127,7 @@ lookup (const T *x, octave_idx_type n, T y)
     }
 }
 
-// n-dimensional linear interpolation
+// N-dimensional linear interpolation
 
 template <typename T, typename DT>
 void

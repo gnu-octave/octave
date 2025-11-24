@@ -73,7 +73,7 @@ function dists = rectint (a, b)
   a_end   = reshape (a_end,   [na 1 nd]);
   b_end   = reshape (b_end,   [1 nb nd]);
 
-  ## We get a 3d matrix where each dimension is in the 3rd dimension
+  ## We get a 3-D matrix where each dimension is in the 3rd dimension
   dists = bsxfun (@min , a_end, b_end) - bsxfun (@max, a_start, b_start);
   dists(dists < 0) = 0;
   dists = prod (dists, 3);

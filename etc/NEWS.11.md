@@ -14,8 +14,8 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
     name in that order, and installs it as appropriate.  The `-forge` option is
     no longer required but is still accepted.  Octave will issue a warning
     which can be silenced with the warning ID `"Octave:pkg:install-forge"`.
-  * There is a new `pkg search` functionality.  Running `pkg search foo bar baz`
-    searches Octave Packages online for packages having all those keywords
+  * There is a new `pkg search` functionality.  Running `pkg search foo bar
+    baz` searches Octave Packages online for packages having all those keywords
     in their descriptions.  Search terms can also be regular expressions.
   * The old command `pkg list -forge`, which returned a list of packages found
     online, has been replaced by `pkg search -all`.  Calling `pkg list -forge`
@@ -38,10 +38,20 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The `roots` function now accepts only a numeric argument.  Convert any
   non-numeric input to a numeric value with `double()`.
 
+- The `mean` function no longer accepts character array inputs.  Convert any
+  character input to a numeric value (e.g., use `double()` or `single()`).
+
 - On dot-indexing of `classdef` objects, `subsref` now resolves to looking for
   a property first, and if a property is not found, then it looks for a method.
 
 ### Graphical User Interface
+
+- The File Browser now has two tabs: the first for browsing the file system
+  as usual, and the second for viewing and managing all open editor files.
+
+- The Find File dialog now offers most recently used lists for input
+  fields and the ability to search for/in several file patterns at the
+  same time.
 
 - The GUI now uses scalable SVG icons for beautiful display at any size.
 
@@ -49,6 +59,11 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   completely customizable by calling `PS1` in an initialization file such as
   `.octaverc`.  To recover the former behavior of the GUI use `PS1 ('>> '); PS2
   ('')`.
+
+- The GUI has two new user preferences: one for showing a small splash screen
+  at startup, and one for using the directory of the currently focused editor
+  file instead of the current Octave directory as the initial folder for the
+  Open File dialog.
 
 - The text of the Octave GUI has been translated to a new language: Asturian.
   It uses the ISO 639 language code ast_ES.
@@ -63,9 +78,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   ticklabels (bug #67302).  This makes it possible to use a monospaced font to
   align labels as the user intends.  This change is Matlab-compatible.
 
-- The `xminortickvalues`, `yminortickvalues`, `zminortickvalues` axes properties
-  that were previously hidden have been made visible to allow users to control
-  the position of minor ticks (bug #67394).
+- The `xminortickvalues`, `yminortickvalues`, `zminortickvalues` axes
+  properties that were previously hidden have been made visible to allow users
+  to control the position of minor ticks (bug #67394).
 
 ### Matlab compatibility
 
@@ -73,10 +88,25 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   broadcasting which Matlab has supported since version 2016B.
 
 - The function `zscore` now accepts the optional arguments `"all"` or `vecdim`,
-  and `"omitnan"`.
+  and `nanflag`.
+
+- The functions `all` and `any` now accept the optional arguments `"all"` or
+  `vecdim`.
+
+- The functions `cumprod` and `cumsum` now accept the optional arguments
+  `"all"` or `vecdim`, `direction`, and `nanflag`.
+
+- The functions `prod`, `sum`, and `sumsq` now accept the optional arguments
+ `"all"` or `vecdim`, `nanflag`, and `"default"` in `outtype`.  `prod` and
+ `sumsq` functions now retain the class of the input argument by default.
+ 'sumsq' now also accepts an outtype argument.
 
 - The function `gradient` with a numeric input now only accepts type double
   or single.
+
+- The function `iqr` now calculates an optional second output `q` which
+  contains the 25th and 75th quantiles used to calculate the interquartile
+  range.
 
 - The function `polyfit` now returns the highest powers possible and the
   constant term when there is insufficient data to create all N terms of the

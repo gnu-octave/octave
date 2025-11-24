@@ -100,7 +100,10 @@ public:
 
   OCTAVE_API intNDArray prod (int dim) const;
   OCTAVE_API intNDArray sum (int dim) const;
+  OCTAVE_API intNDArray sumsq (int dim) const;
   OCTAVE_API NDArray dsum (int dim) const;
+  OCTAVE_API intNDArray flip (int dim) const;
+  OCTAVE_API intNDArray cumprod (int dim) const;
   OCTAVE_API intNDArray cumsum (int dim) const;
 
   OCTAVE_API intNDArray diff (octave_idx_type order = 1, int dim = -1) const;

@@ -61,7 +61,7 @@ function [hax, hg]= __quiver__ (varargin)
   endif
 
   if (is3d)
-    ## quiver3 3D input validation.
+    ## quiver3 3-D input validation.
     switch (lastnumeric)
       case {6,7}
         [z, u, v, w] = deal (varargin{3:6});
@@ -106,7 +106,7 @@ function [hax, hg]= __quiver__ (varargin)
     endswitch
 
   else
-    ## quiver 2D input validation.
+    ## quiver 2-D input validation.
     switch (lastnumeric)
       case {4,5}
         [u, v] = deal (varargin{3:4});

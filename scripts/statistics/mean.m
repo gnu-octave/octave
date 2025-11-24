@@ -32,8 +32,7 @@
 ## @deftypefnx {} {@var{m} =} mean (@dots{}, @var{outtype})
 ## Compute the mean of the elements of @var{x}.
 ##
-## If @var{x} is a vector, then @code{mean (@var{x})} returns the mean of the
-## elements in @var{x} defined as
+## The mean is defined as 
 ## @tex
 ## $$ {\rm mean}(x) = \bar{x} = {1\over N} \sum_{i=1}^N x_i $$
 ## where $N$ is the number of elements of @var{x}.
@@ -49,21 +48,27 @@
 ##
 ## @end ifnottex
 ##
-## If @var{x} is an array, then @code{mean(@var{x})} computes the mean along
+## If @var{x} is a vector, then @code{mean (@var{x})} returns the mean of the
+## elements in @var{x}.
+##
+## If @var{x} is a matrix, then @code{mean (@var{x})} returns a row vector with
+## each element containing the mean of the corresponding column in @var{x}.
+## 
+## If @var{x} is an array, then @code{mean (@var{x})} computes the mean along
 ## the first non-singleton dimension of @var{x}.
 ##
-## The optional variable @var{dim} forces @code{mean} to operate over the
-## specified dimension, which must be a positive integer-valued number.
-## Specifying any singleton dimension in @var{x}, including any dimension
-## exceeding @code{ndims (@var{x})}, will result in a mean equal to @var{x}.
+## The optional input @var{dim} specifies the dimension to operate on and must
+## be a positive integer.  Specifying any singleton dimension of @var{x},
+## including any dimension exceeding @code{ndims (@var{x})}, will return
+## @var{x}.
 ##
-## Specifying the dimensions as  @var{vecdim}, a vector of non-repeating
+## Specifying the dimensions as @var{vecdim}, a vector of non-repeating
 ## dimensions, will return the mean over the array slice defined by
 ## @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
 ## equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
 ## greater than @code{ndims (@var{x})} is ignored.
 ##
-## Specifying the dimension as @qcode{"all"} will force @code{mean} to operate
+## Specifying the dimension as @qcode{"all"} will cause @code{mean} to operate
 ## on all elements of @var{x}, and is equivalent to @code{mean (@var{x}(:))}.
 ##
 ## The optional input @var{outtype} specifies the data type that is returned.
@@ -97,7 +102,11 @@ function m = mean (x, varargin)
     print_usage ();
   endif
 
-  ## Set initial conditions
+  if (! (isnumeric (x) || islogical (x)))
+    error ("mean: X must be a numeric or logical array");
+  endif
+
+  ## Initialize flags
   all_flag = false;
   omitnan  = false;
   out_flag = false;
@@ -138,13 +147,12 @@ function m = mean (x, varargin)
           out_flag = true;
 
         case "native"
-          outtype = class (x);
           if (out_flag)
             error ("mean: only one OUTTYPE can be specified");
-          elseif (strcmp (outtype, "logical"))
+          endif
+          outtype = class (x);
+          if (strcmp (outtype, "logical"))
             outtype = "double";
-          elseif (strcmp (outtype, "char"))
-            error ("mean: OUTTYPE 'native' cannot be used with char inputs");
           endif
           out_flag = true;
 
@@ -157,8 +165,10 @@ function m = mean (x, varargin)
 
         otherwise
           print_usage ();
+
       endswitch
     endfor
+
     varargin(varg_chars) = [];
     nvarg = numel (varargin);
   endif
@@ -171,19 +181,14 @@ function m = mean (x, varargin)
     endif
   endif
 
-  if (nvarg > 1 || (nvarg == 1 && ! isnumeric (varargin{1})))
-    ## After trimming char inputs can only be one varargin left, must be numeric
+  if (nvarg == 1 && ! isnumeric (varargin{1}))
+    ## After trimming char inputs only one arg can be left, must be numeric.
     print_usage ();
-  endif
-
-  if (! (isnumeric (x) || islogical (x) || ischar (x)))
-    error ("mean: X must be either a numeric, boolean, or character array");
   endif
 
   ## Process special cases of input/output sizes.
   if (nvarg == 0)
     ## Single numeric input argument, no dimensions given.
-
     if (all_flag)
       x = x(:);
 
@@ -202,9 +207,9 @@ function m = mean (x, varargin)
       (dim = find (szx != 1, 1)) || (dim = 1);
       n = szx(dim);
       if (omitnan)
-        idx = isnan (x);
-        n = sum (! idx, dim);
-        x(idx) = 0;
+        nanx = isnan (x);
+        n = sum (! nanx, dim);
+        x(nanx) = 0;
       endif
 
       if (any (isa (x, {"int64", "uint64"})))
@@ -216,11 +221,9 @@ function m = mean (x, varargin)
     endif
 
   else
-
     ## Two numeric input arguments, dimensions given.  Note scalar is vector!
     vecdim = varargin{1};
-    if (isempty (vecdim) || ! (isvector (vecdim) && all (vecdim > 0)
-        && all (rem (vecdim, 1)==0)))
+    if (isempty (vecdim) || ! (isvector (vecdim) && isindex (vecdim)))
       error ("mean: DIM must be a positive integer scalar or vector");
     endif
 
@@ -233,20 +236,21 @@ function m = mean (x, varargin)
     else
 
       if (isscalar (vecdim))
-        if (vecdim > ndx)
+        dim = vecdim;  # alias for code readability
+        if (dim > ndx)
           m = x;
         else
-          n = szx(vecdim);
+          n = szx(dim);
           if (omitnan)
             nanx = isnan (x);
-            n = sum (! nanx, vecdim);
+            n = sum (! nanx, dim);
             x(nanx) = 0;
           endif
 
           if (any (isa (x, {"int64", "uint64"})))
-            m = int64_mean (x, vecdim, n, outtype);
+            m = int64_mean (x, dim, n, outtype);
           else
-            m = sum (x, vecdim, "double") ./ n;
+            m = sum (x, dim, "double") ./ n;
           endif
 
         endif
@@ -257,14 +261,14 @@ function m = mean (x, varargin)
            error ("mean: VECDIM must contain non-repeating positive integers");
         endif
         ## Ignore dimensions in VECDIM larger than actual array.
-        vecdim(vecdim > ndims (x)) = [];
+        vecdim(vecdim > ndx) = [];
 
         if (isempty (vecdim))
           m = x;
         else
 
           ## Calculate permutation vector
-          remdims = 1 : ndx;     # All dimensions
+          remdims = 1:ndx;       # All dimensions
           remdims(vecdim) = [];  # Delete dimensions specified by vecdim
           nremd = numel (remdims);
 
@@ -308,6 +312,7 @@ function m = mean (x, varargin)
 
             ## Inverse permute back to correct dimensions
             m = ipermute (m, perm);
+
           endif
         endif
       endif
@@ -408,13 +413,6 @@ endfunction
 %! assert (mean (in, "default"), out, eps);
 %! assert (mean (in, "double"), out, eps);
 %! assert (mean (in, "native"), out, eps);
-
-%!test
-%! in = char ("ab");
-%! out = 97.5;
-%! assert (mean (in, "default"), mean (in), eps);
-%! assert (mean (in, "default"), out, eps);
-%! assert (mean (in, "double"), out, eps);
 
 %!test
 %! in = uint8 ([1 2 3]);
@@ -520,7 +518,7 @@ endfunction
 %! assert (mean (z, 2, "native", "omitnan"), m');
 %! assert (mean (z, 2, "omitnan", "native"), m');
 
-## Test boolean input
+## Test logical input
 %!test
 %! assert (mean (true, "all"), 1);
 %! assert (mean (false), 0);
@@ -530,12 +528,6 @@ endfunction
 %! assert (mean ([true false NaN], 2), NaN);
 %! assert (mean ([true false NaN], 2, "omitnan"), 0.5);
 %! assert (mean ([true false NaN], 2, "omitnan", "native"), 0.5);
-
-## Test char inputs
-%!assert (mean ("abc"), double (98))
-%!assert (mean ("ab"), double (97.5), eps)
-%!assert (mean ("abc", "double"), double (98))
-%!assert (mean ("abc", "default"), double (98))
 
 ## Test NaN inputs
 %!test
@@ -589,7 +581,7 @@ endfunction
 %!assert (mean (magic (3), [1 3]), [5, 5, 5])
 %!assert (mean (magic (3), [1 99]), [5, 5, 5])
 
-## Test results with vecdim in n-dimensional arrays and "omitnan"
+## Test results with vecdim in N-dimensional arrays and "omitnan"
 %!test
 %! x = repmat ([1:20;6:25], [5 2 6 3]);
 %! m = repmat ([10.5;15.5], [5 1 1 3]);
@@ -617,14 +609,15 @@ endfunction
 %!                35184372088833-1/(2^8), eps (35184372088833))
 
 ## Test input validation
-%!error <Invalid call to mean.  Correct usage is> mean ()
-%!error <Invalid call to mean.  Correct usage is> mean (1, 2, 3)
-%!error <Invalid call to mean.  Correct usage is> mean (1, 2, 3, 4)
-%!error <Invalid call to mean.  Correct usage is> mean (1, "all", 3)
-%!error <Invalid call to mean.  Correct usage is> mean (1, "b")
-%!error <Invalid call to mean.  Correct usage is> mean (1, 1, "foo")
-%!error <OUTTYPE 'native' cannot be used with char> mean ("abc", "native")
-%!error <X must be either a numeric, boolean, or character> mean ({1:5})
+%!error <Invalid call> mean ()
+%!error <Invalid call> mean (1, 2, 3, 4, 5)
+%!error <X must be a numeric or logical array> mean ({1:5})
+%!error <Invalid call> mean (1, 2, 3)
+%!error <Invalid call> mean (1, "all", 3)
+%!error <only one OUTTYPE> mean (1, 'native', 'default')
+%!error <only one OUTTYPE> mean (1, 'default', 'native')
+%!error <only one OUTTYPE> mean (1, 'default', 'double')
+%!error <Invalid call> mean (1, 'foobar')
 %!error <DIM must be a positive integer> mean (1, ones (2,2))
 %!error <DIM must be a positive integer> mean (1, 1.5)
 %!error <DIM must be a positive integer> mean (1, 0)

@@ -32,8 +32,8 @@
 ## @deftypefnx {} {@var{m} =} median (@dots{}, @var{outtype})
 ## Compute the median value of the elements of @var{x}.
 ##
-## When the elements of @var{x} are sorted, say
-## @code{@var{s} = sort (@var{x})}, the median is defined as
+## The median is defined on the sorted data @var{s}
+## (@w{@code{@var{s} = sort (@var{x})}}) as
 ## @tex
 ## $$
 ## {\rm median} (x) =
@@ -55,23 +55,30 @@
 ##
 ## @end ifnottex
 ##
-## If @var{x} is an array, then @code{median (@var{x})} operates along the
-## first non-singleton dimension of @var{x}.
+## If @var{x} is a vector, then @code{median (@var{x})} returns the median of
+## the elements in @var{x}.
 ##
-## The optional variable @var{dim} forces @code{median} to operate over the
-## specified dimension, which must be a positive integer-valued number.
-## Specifying any singleton dimension in @var{x}, including any dimension
-## exceeding @code{ndims (@var{x})}, will result in a median equal to @var{x}.
+## If @var{x} is a matrix, then @code{median (@var{x})} returns a row vector
+## with each element containing the median of the corresponding column in
+## @var{x}.
+## 
+## If @var{x} is an array, then @code{median (@var{x})} computes the median
+## along the first non-singleton dimension of @var{x}.
 ##
-## Specifying the dimensions as  @var{vecdim}, a vector of non-repeating
+## The optional input @var{dim} specifies the dimension to operate on and must
+## be a positive integer.  Specifying any singleton dimension of @var{x},
+## including any dimension exceeding @code{ndims (@var{x})}, will return
+## @var{x}.
+##
+## Specifying the dimensions as @var{vecdim}, a vector of non-repeating
 ## dimensions, will return the median over the array slice defined by
 ## @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
 ## equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
 ## greater than @code{ndims (@var{x})} is ignored.
 ##
-## Specifying the dimension as @qcode{"all"} will force @code{median} to
-## operate on all elements of @var{x}, and is equivalent to
-## @code{median (@var{x}(:))}.
+## Specifying the dimension as @qcode{"all"} will cause @code{median} to
+## operate on all elements of @var{x}, and is equivalent to @code{median
+## (@var{x}(:))}.
 ##
 ## @code{median (@dots{}, @var{outtype})} returns the median with a specified
 ## data type, using any of the input arguments in the previous syntaxes.
@@ -341,7 +348,7 @@ function m = median (x, varargin)
 
     else
       ## Each column may have a different n and k.  Force index column vector
-      ## for consistent orientation for 2D and nD inputs, then use sub2ind to
+      ## for consistent orientation for 2-D and N-D inputs, then use sub2ind to
       ## get correct element(s) for each column.
 
       n = sum (! isnan (x), 1)(:);
@@ -526,7 +533,7 @@ endfunction
 %! assert (median ([true, false, NaN], 2, "omitnan"), 0.5);
 %! assert (median ([true, false, NaN], 2, "omitnan", "native"), double (0.5));
 
-## Test dimension indexing with vecdim in n-dimensional arrays
+## Test dimension indexing with vecdim in N-dimensional arrays
 %!test
 %! x = repmat ([1:20; 6:25], [5, 2, 6, 3]);
 %! assert (size (median (x, [3, 2])), [10, 1, 1, 3]);
@@ -609,7 +616,7 @@ endfunction
 %!assert (median (single ([NaN, 2 ; NaN, 4]), "omitnan"), single ([NaN 3]))
 %!assert (median (single ([NaN, 2 ; NaN, 4]), "omitnan", "double"), double ([NaN 3]))
 
-## Test omitnan with 2D & 3D inputs to confirm correct sub2ind orientation
+## Test omitnan with 2-D & 3-D inputs to confirm correct sub2ind orientation
 %!test <*64011>
 %! x = [magic(3), magic(3)];
 %! x([3, 7, 11, 12, 16, 17]) = NaN;

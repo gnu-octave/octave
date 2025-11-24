@@ -86,6 +86,7 @@ public:
   OCTAVE_API boolNDArray all (int dim = -1) const;
   OCTAVE_API boolNDArray any (int dim = -1) const;
 
+  OCTAVE_API FloatNDArray flip (int dim = -1) const;
   OCTAVE_API FloatNDArray cumprod (int dim = -1) const;
   OCTAVE_API FloatNDArray cumsum (int dim = -1) const;
   OCTAVE_API FloatNDArray prod (int dim = -1) const;
@@ -93,6 +94,7 @@ public:
   OCTAVE_API FloatNDArray sum (int dim = -1) const;
   OCTAVE_API NDArray dsum (int dim = -1) const;
   OCTAVE_API FloatNDArray sumsq (int dim = -1) const;
+  OCTAVE_API NDArray dsumsq (int dim = -1) const;
   OCTAVE_API FloatNDArray
   concat (const FloatNDArray& rb, const Array<octave_idx_type>& ra_idx);
   OCTAVE_API FloatComplexNDArray

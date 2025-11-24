@@ -102,7 +102,7 @@ function [num, den] = padecoef (T, N = 1)
 
   N = round (N);
   k = N : -1 : 0;
-  num = prod (linspace ((N - k + 1), (2 * N - k), N)', ones (1, N)) ...
+  num = prod (linspace ((N - k + 1), (2 * N - k), N)', 1) ...
         / prod (N + 1 : 2 * N) ./ factorial (k);
   num /= num(1);
   den = num .* (T .^ k);

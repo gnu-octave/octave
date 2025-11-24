@@ -98,7 +98,7 @@ function r = corr (x, y = [])
     rowy = isrow (y);
 
     if ((! rowy && ndims (x) > 2) || (! rowx && ndims (y) > 2))
-      ## For compatibility 3D is permitted only if other input is row vector
+      ## For compatibility 3-D is permitted only if other input is row vector
       ## which results in NaNs.
         error (["corr: X and Y must be two dimensional unless the other ", ...
                 "input is a scalar or row vector"]);

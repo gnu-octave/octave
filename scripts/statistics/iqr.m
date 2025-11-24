@@ -24,40 +24,50 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{Z} =} iqr (@var{x})
-## @deftypefnx {} {@var{Z} =} iqr (@var{x}, @var{dim})
-## @deftypefnx {} {@var{Z} =} iqr (@var{x}, @qcode{"ALL"})
-## Return the interquartile range of @var{x}, defined as the distance between
-## the 25th and 75th percentile values of @var{x} calculated using:
-##    quantile (x, [0.25 0.75])
+## @deftypefn  {} {@var{r} =} iqr (@var{x})
+## @deftypefnx {} {@var{r} =} iqr (@var{x}, @var{dim})
+## @deftypefnx {} {@var{r} =} iqr (@var{x}, @var{vecdim})
+## @deftypefnx {} {@var{r} =} iqr (@var{x}, @qcode{"all"})
+## @deftypefnx {} {[@var{r}, @var{q}] =} iqr (@dots{})
+## Compute the interquartile range of @var{x}.
 ##
-## If @var{x} is a vector, @code{iqr (@var{x})} will operate on the data in
-## @var{x}.
+## The interquartile range is defined as the difference between the 75th and
+## 25th percentile values of @var{x} calculated using
 ##
-## If @var{x} is a matrix, @code{iqr (@var{x})} will operate independently on
-## each column in @var{x} returning a row vector @var{Z}.
+## @example
+## quantile (x, [0.25 , 0.75])
+## @end example
 ##
-## If @var{x} is a n-dimensional array, @code{iqr (@var{x})} will operate
-## independently on the first non-singleton dimension in @var{x}, returning an
-## array @var{Z} the same shape as @var{x} with the non-singleton dimenion
-## reduced to 1.
+## If @var{x} is a vector, then @code{iqr (@var{x})} returns the interquartile
+## range of the elements in @var{x}.
 ##
-## The optional variable @var{dim} can be used to force @code{iqr} to operate
-## over the specified dimension.  @var{dim} can either be a scalar dimension or
-## a vector of non-repeating dimensions over which to operate.  In either case
-## @var{dim} must be positive integers.  A vector @var{dim} concatenates all
-## specified dimensions for independent operation by @code{iqr}.
+## If @var{x} is a matrix, then @code{iqr (@var{x})} returns a row vector with
+## each element containing the interquartile range of the corresponding column
+## in @var{x}.
 ##
-## Specifying dimension @qcode{"ALL"} will force @code{iqr} to operate
+## If @var{x} is an array, then @code{iqr (@var{x})} computes the interquartile
+## range along the first non-singleton dimension of @var{x}.
+##
+## The optional input @var{dim} specifies the dimension to operate on and must
+## be a positive integer.  Specifying any singleton dimension of @var{x},
+## including any dimension exceeding @code{ndims (@var{x})}, will return
+## @code{zeros (size (@var{x}))}.
+##
+## Specifying multiple dimensions with input @var{vecdim}, a vector of
+## non-repeating dimensions, will operate along the array slice defined by
+## @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+## equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
+## greater than @code{ndims (@var{x})} is ignored.
+##
+## Specifying the dimension as @qcode{"all"} will cause @code{iqr} to operate
 ## on all elements of @var{x}, and is equivalent to @code{iqr (@var{x}(:))}.
-## Similarly, specifying a vector dimension including all non-singleton
-## dimensions of @var{x} is equivalent to @code{iqr (@var{x}, @qcode{"ALL"})}.
 ##
-## If @var{x} is a scalar, or only singleton dimensions are specified for
-## @var{dim}, the output will be @code{zeros (size (@var{x}))}.
+## The optional output @var{q} contains the quantiles for the 25th and 75th
+## percentile of the data.
 ##
-## As a measure of dispersion, the interquartile range is less affected by
-## outliers than either @code{range} or @code{std}.
+## Usage Note: As a measure of dispersion, the interquartile range is less
+## affected by outliers than either @code{range} or @code{std}.  The
+## interquartile range of a scalar is necessarily @code{0}.
 ##
 ## @seealso{bounds, mad, range, std, prctile, quantile}
 ## @end deftypefn
@@ -65,124 +75,131 @@
 ## TODO:  When Probability Distribution Objects are implemented, enable
 ##        handling for those object types.
 
-function z = iqr (x, dim)
+function [r, q] = iqr (x, dim = [])
 
-  ## Perform input checks.
   if (nargin < 1)
     print_usage ();
-  elseif (nargin < 2)
-    dim = [];
   endif
 
   vecdim_flag = false;
   nd = ndims (x);
   sz = size (x);
-  empty_x = any (sz == 0);
+  empty_x = isempty (x);
 
-  if (! (empty_x || isnumeric (x) || islogical (x)))
-    error ("iqr: X must be a numeric vector or matrix");
+  ## FIXME: Matlab only works on real floating point inputs (single, double).
+  ##        Should octave operate on integer or logical arrays?
+  if (! (isnumeric (x) || islogical (x)))
+    error ("iqr: X must be numeric or logical");
   endif
 
   if (isempty (dim))
     ## Find first non-singleton dimension.
-    if (max (sz) == 1  && ! empty_x)
-      dim = 2;
-    else
-      dim = find ((sz != 1), 1);
-    endif
+    (dim = find (sz != 1, 1)) || (dim = 1);
 
-  if (empty_x)
-    ## Handle empty x with no input dim.
-    if ((ndims (x) == 2 && all (sz == 0)) || iscolumn (x) || isrow (x))
-      z = NaN;
-    else
-      sz(dim) = 1;
-      z = NaN (sz);
+    ## Return immediately for an empty matrix
+    if (empty_x)
+      if (nd == 2 && max (sz) <= 1)
+        ## Matlab compatibility for 0x0, 1x0, 0x1 matrices
+        sz = [1, 1];
+      else
+        ## Function operates on DIM and reduces it to 1.
+        sz(dim) = 1;
+      endif
+      r = NaN (sz);
+      q = cat (dim, r, r);
+      return;
     endif
-    return;
-  endif
 
   else
 
-    if (isvector (dim) && isnumeric (dim)
-        && all (dim > 0) && all (rem (dim, 1) == 0))
+    ## Check for numeric DIM/VECDIM argument
+    if (isnumeric (dim) && isvector (dim) && isindex (dim))
 
-      if (((num_vecdims = numel (dim)) > 1) && all (diff (sort (dim))))
-        ## DIM must be 1-D and non repeating.
+      ## Check for proper VECDIM (more than 1 dim, no repeats)
+      nel_vecdim = numel (dim);
+      if (nel_vecdim > 1 && all (diff (sort (dim))))
 
         if (empty_x)
-          ## Handle empty x with input vecdim.
-          sz(dim(dim <= nd)) = 1;
-          z = NaN (sz);
+          ## Return immediately for an empty matrix
+          dim = dim(dim <= nd);  # exclude dims greater than ndims
+          sz(dim) = 1;           # opearate on VECDIMS and reduce to 1
+          r = NaN (sz);
+          ## Matlab compatibility: change only first VECDIM of q to 2.
+          sz(min (dim)) = 2;
+          q = NaN (sz);
           return;
         endif
 
         ## Detect trivial case of DIM being all dimensions (same as "all").
-        highest_dim = (max (nd, max (dim)));
-        if ((num_vecdims == nd) && (highest_dim == nd))
+        max_dim = max (nd, max (dim));
+        if (nel_vecdim == nd && max_dim == nd)
           x = x(:);
           sz = size (x);
           dim = 1;
         else
-          ## Move dimensions for operation to the front, keeping the order of
-          ## the remaining dimensions.
-          ## Reshape those into a single dimension.
-          ## Process as normal for a dim1 iqr on X, reshape when done.
+          ## Algorithm: Move dimensions for operation to the front, keeping the
+          ## order of the remaining dimensions.  Reshape the moved dims into a
+          ## single dimension (row).  Calculate as normal with iqr on dim1 of
+          ## X, then reshape to correct dimensions.
 
-          vecdim_flag = true;  ## flag for final reshape
+          vecdim_flag = true;  # reshape results at end
 
-          if (iscolumn (dim))
-            dim = dim.';
-          endif
+          dim = dim(:).';  # Force row vector
 
           ## Permutation vector with DIM at front
-          perm = [1:highest_dim];
+          perm = [1:max_dim];
           perm(dim) = [];
           perm = [dim, perm];
 
           ## Reshape X to put dims to process at front.
           x = permute (x, perm);
-          sz_x_new = size (x);
+          newsize = size (x);
 
           ## Preserve trailing singletons when dim > ndims (x).
-          sz_x_new = [sz_x_new, ones(1, highest_dim - numel (sz_x_new))];
+          newsize = [newsize, ones(1, max_dim - numel (newsize))];
 
-          newshape = [prod(sz_x_new(1:num_vecdims)), ...
-                      ones(1, (num_vecdims-1)), ...
-                      sz_x_new((num_vecdims+1):end)];
+          newshape = [prod(newsize(1:nel_vecdim)), ...
+                      ones(1, (nel_vecdim-1)), ...
+                      newsize((nel_vecdim+1):end)];
 
-          if (numel (newshape) == 1)
+          ## Size must always have 2 dimensions.
+          if (isscalar (newshape))
             newshape = [newshape, 1];
           endif
 
-          ## Collapse dimensions to be processses into single column.
+          ## Collapse dimensions to be processsed into single column.
           x = reshape (x, newshape);
 
-          ## Operate column-wise.
+          ## Operate on rows.
           dim = 1;
         endif
 
       elseif (! isscalar (dim))
-        error ("iqr: vector DIM must contain non-repeating positive integers");
+        error ("iqr: VECDIM must contain non-repeating positive integers");
 
       elseif (empty_x)
-        ## Handle empty x with scalar input dim.
-        sz(dim(dim <= nd)) = 1;
-        z = NaN (sz);
+        ## Return immediately for an empty matrix
+        if (dim <= nd)
+          sz(dim) = 1;
+        endif
+        r = NaN (sz);
+        q = cat (dim, r, r);
         return;
       endif
 
-    elseif (strcmp (lower (dim), "all"))
-      ## "ALL" simplifies to collapsing all elements to single vector.
-      x = x(:);
-      dim = 1;
-      sz = size (x);
+    elseif (strcmpi (dim, "all"))
 
+      ## Return immediately for an empty matrix
       if (empty_x)
-        ## Handle empty x with "all" dim input.
-        z = NaN;
+        r = NaN;
+        q = [NaN; NaN];
         return;
       endif
+
+      ## "all" simplifies to collapsing all elements to single vector.
+      x = x(:);
+      sz = size (x);
+      dim = 1;
 
     else
       error ("iqr: DIM must be a positive integer scalar, vector, or 'all'");
@@ -190,23 +207,29 @@ function z = iqr (x, dim)
 
   endif
 
-  if (((dim > nd) || (sz(dim) == 1)) && all (isfinite (x)))
-    ## Shortcut easy zeros.
-    z = zeros (sz);
-  elseif (iscolumn (x) && (dim == 1))
-    ## Detect col vector with quantile/diff dim requirement mismatch.
-    z = abs (diff (quantile (x, [0.25, 0.75], 1), [], 2));
+  if ((dim > nd || sz(dim) == 1) && all (isfinite (x)))
+    ## Shortcut, no calculation required for 1-element dimensions
+    r = zeros (sz);
+    q = cat (dim, x, x);
+  elseif (dim == 1 && iscolumn (x))
+    ## Work around quantile() where vector output orientation follows p input,
+    ## rather than x input.
+    q = quantile (x, [0.25; 0.75], 1);
+    r = abs (diff (q, [], 1));
   else
-    z = abs (diff (quantile (x, [0.25, 0.75], dim), [], dim));
+    q = quantile (x, [0.25, 0.75], dim);
+    r = abs (diff (q, [], dim));
   endif
 
   if (vecdim_flag)
-    z = ipermute (z, perm);
+    r = ipermute (r, perm);
+    q = ipermute (q, perm);
   endif
 
 endfunction
 
 
+## Basic tests
 %!assert (iqr (17), 0)
 %!assert (iqr (17, 1), 0)
 %!assert (iqr (17, 4), 0)
@@ -218,6 +241,7 @@ endfunction
 %!assert (iqr (1:10, 2), 5)
 %!assert (iqr (1:10, 1), zeros (1, 10))
 %!assert (iqr (1:10, 3), zeros (1, 10))
+%!assert (iqr ([1:5; 2:6], [1, 2]), 3)
 %!assert (iqr ([1:5; 2:6], "all"), 3)
 
 %!test
@@ -227,7 +251,7 @@ endfunction
 %! assert (iqr (x, 2), ones (1, 1, 3));
 %! assert (iqr (x, 3), [3, 3]);
 
-## n-D arrays
+## N-D arrays
 %!test
 %! x = magic (4); x = cat (3,x, 2*x, 3*x); x = cat (4, x, 2*x);
 %! y = cat (3, 8*[1, 1, 1, 1], 16*[1, 1, 1, 1], 24*[1, 1, 1, 1]);
@@ -285,6 +309,14 @@ endfunction
 %!assert (iqr (NaN (2), 3), NaN (2))
 %!assert (iqr ([[1, 2, 5], [2, NaN, 6]], "all"), 3.5)
 
+## Tests for q output
+%!assert ([~,q] = iqr ([1:100]), [25.5, 75.5])
+%!assert ([~,q] = iqr ([1:100]'), [25.5; 75.5])
+%!assert ([~,q] = iqr (repmat ([1:100]', [1,2])), repmat ([25.5; 75.5], [1,2]))
+%!assert ([~,q] = iqr (repmat ([1:100], [2,1]), 2), repmat ([25.5, 75.5], [2,1]))
+%!assert ([~,q] = iqr (repmat ([1:100], [2,1]), [1 2]), [25.5; 75.5])
+%!assert ([~,q] = iqr (repmat ([1:100], [2,1]), 'all'), [25.5; 75.5])
+
 ## Empty inputs
 %!assert <*65531> (iqr ([]), NaN)
 %!assert <*65531> (iqr (ones (0, 1)), NaN)
@@ -300,7 +332,6 @@ endfunction
 %!assert <*65531> (iqr (ones (0, 0, 1, 0)), NaN (1, 0, 1, 0))
 %!assert <*65531> (iqr (ones (1, 1, 1, 0)), NaN)
 %!assert <*65531> (iqr (ones (1, 1, 1, 0), 1), NaN (1, 1, 1, 0))
-%!assert <*65531> (iqr (ones (1, 1, 1, 0), 1), NaN (1, 1, 1, 0))
 %!assert <*65531> (iqr (ones (0, 0, 1, 0), 1), NaN (1, 0, 1, 0))
 %!assert <*65531> (iqr (ones (0, 0, 1, 0), 2), NaN (0, 1, 1, 0))
 %!assert <*65531> (iqr (ones (0, 0, 1, 0), 3), NaN (0, 0, 1, 0))
@@ -314,20 +345,47 @@ endfunction
 %!assert <*65531> (iqr (ones (1, 0), "all"), NaN)
 %!assert <*65531> (iqr (ones (1, 1, 0), "all"), NaN)
 %!assert <*65531> (iqr (ones (0, 0, 1, 0), 'all'), NaN)
+%!assert <*65531> ([~,q] = iqr ([]), NaN (2, 1))
+%!assert <*65531> ([~,q] = iqr (ones (0, 1)), NaN (2, 1))
+%!assert <*65531> ([~,q] = iqr (ones (0, 1), 1), NaN (2, 1))
+%!assert <*65531> ([~,q] = iqr (ones (0, 1), 2), NaN (0, 2))
+%!assert <*65531> ([~,q] = iqr (ones (0, 1), 3), NaN (0, 1, 2))
+%!assert <*65531> ([~,q] = iqr (ones (1, 0)), NaN (1, 2))
+%!assert <*65531> ([~,q] = iqr (ones (1, 0), 1), NaN (2, 0))
+%!assert <*65531> ([~,q] = iqr (ones (1, 0), 2), NaN (1, 2))
+%!assert <*65531> ([~,q] = iqr (ones (1, 0), 3), NaN (1, 0, 2))
+%!assert <*65531> ([~,q] = iqr (ones (1, 0), 9), NaN (1,0,1,1,1,1,1,1,2))
+%!assert <*65531> ([~,q] = iqr (ones (1, 1, 0)), NaN (1, 1, 2))
+%!assert <*65531> ([~,q] = iqr (ones (0, 0, 1, 0)), NaN (2, 0, 1, 0))
+%!assert <*65531> ([~,q] = iqr (ones (1, 1, 1, 0)), NaN (1, 1, 1, 2))
+%!assert <*65531> ([~,q] = iqr (ones (1, 1, 1, 0), 1), NaN (2, 1, 1, 0))
+%!assert <*65531> ([~,q] = iqr (ones (0, 0, 1, 0), 1), NaN (2, 0, 1, 0))
+%!assert <*65531> ([~,q] = iqr (ones (0, 0, 1, 0), 2), NaN (0, 2, 1, 0))
+%!assert <*65531> ([~,q] = iqr (ones (0, 0, 1, 0), 3), NaN (0, 0, 2, 0))
+%!assert <*65531> ([~,q] = iqr (ones (0, 0, 1, 0), 4), NaN (0, 0, 1, 2))
+%!assert <*65531> ([~,q] = iqr (ones (0, 0, 1, 0), 9), NaN (0,0,1,0,1,1,1,1,2))
+%!assert <*65531> ([~,q] = iqr (ones (0, 0, 1, 0), [1, 2]), NaN (2, 1, 1, 0))
+%!assert <*65531> ([~,q] = iqr (ones (0, 0, 1, 0), [1, 4]), NaN (2, 0, 1, 1))
+%!assert <*65531> ([~,q] = iqr (ones (0, 0, 1, 0), [1, 9]), NaN (2, 0, 1, 0))
+%!assert <*65531> ([~,q] = iqr ([], "all"), NaN (2, 1))
+%!assert <*65531> ([~,q] = iqr (ones (0, 1), "all"), NaN (2, 1))
+%!assert <*65531> ([~,q] = iqr (ones (1, 0), "all"), NaN (2, 1))
+%!assert <*65531> ([~,q] = iqr (ones (1, 1, 0), "all"), NaN (2, 1))
+%!assert <*65531> ([~,q] = iqr (ones (0, 0, 1, 0), 'all'), NaN (2, 1))
 
 ## input validation
 %!error <Invalid call> iqr ()
-%!error iqr (1, 2, 3)
-%!error <X must be a numeric> iqr (['A'; 'B'])
-%!error <DIM .* positive integer> iqr (1, 'A')
-%!error <DIM .* positive integer> iqr (1, 0)
-%!error <DIM .* positive integer> iqr (1, -2)
-%!error <DIM .* positive integer> iqr (1, 1.4)
-%!error <DIM .* positive integer> iqr (1, [1, -2])
-%!error <DIM .* positive integer> iqr (1, [1, 1.4])
-%!error <DIM .* positive integer> iqr ([1, 2, 3], NaN)
-%!error <DIM .* positive integer> iqr ([1, 2, 3], [2, NaN])
-%!error <DIM .* positive integer> iqr ([1, 2, 3], Inf)
-%!error <DIM .* positive integer> iqr ([1, 2, 3], [2, Inf])
-%!error <vector DIM .* non-repeating> iqr ([1, 2, 3], [1, 2, 1])
-%!error <DIM .* vector> iqr (1, [1, 2; 3, 4])
+%!error <X must be numeric or logical> iqr (['A'; 'B'])
+%!error <X must be numeric or logical> iqr ({1, 2})
+%!error <VECDIM must contain non-repeating> iqr ([1, 2, 3], [1, 2, 1])
+%!error <DIM must be a positive integer> iqr (1, 'A')
+%!error <DIM must be a positive integer> iqr (1, 0)
+%!error <DIM must be a positive integer> iqr (1, -2)
+%!error <DIM must be a positive integer> iqr (1, 1.4)
+%!error <DIM must be .* positive integer> iqr (1, [1, -2])
+%!error <DIM must be .* positive integer> iqr (1, [1, 1.4])
+%!error <DIM must be .* positive integer> iqr ([1, 2, 3], NaN)
+%!error <DIM must be .* positive integer> iqr ([1, 2, 3], [2, NaN])
+%!error <DIM must be .* positive integer> iqr ([1, 2, 3], Inf)
+%!error <DIM must be .* positive integer> iqr ([1, 2, 3], [2, Inf])
+%!error <DIM must be .* scalar, vector> iqr (1, [1, 2; 3, 4])

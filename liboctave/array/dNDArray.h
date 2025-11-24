@@ -89,6 +89,7 @@ public:
   OCTAVE_API boolNDArray all (int dim = -1) const;
   OCTAVE_API boolNDArray any (int dim = -1) const;
 
+  OCTAVE_API NDArray flip (int dim = -1) const;
   OCTAVE_API NDArray cumprod (int dim = -1) const;
   OCTAVE_API NDArray cumsum (int dim = -1) const;
   OCTAVE_API NDArray prod (int dim = -1) const;

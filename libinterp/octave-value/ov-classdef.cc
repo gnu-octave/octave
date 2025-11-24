@@ -63,7 +63,7 @@ octave_classdef::saveobj (std::vector<bool>& is_new)
   octave::load_save_system& lss = octave::__get_load_save_system__ ();
 
   // The saveobj method needs to be called separately for each element of
-  // N-d arrays.
+  // N-D arrays.
   for (octave_idx_type n = 0; n < numel (); n++)
     {
       octave_value retval;
@@ -138,7 +138,7 @@ octave_classdef::loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m
   octave::load_save_system& lss = octave::__get_load_save_system__ ();
 
   // The loadobj method needs to be called separately for each element of
-  // N-d arrays.
+  // N-D arrays.
   for (octave_idx_type n = 0; static_cast<size_t> (n) < m.size (); n++)
     {
       octave_value ovc;

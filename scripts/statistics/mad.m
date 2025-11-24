@@ -90,7 +90,7 @@ function m = mad (x, opt = 0, dim)
   endif
 
   if (! (isnumeric (x) || islogical (x)))
-    error ("mad: X must be a numeric vector or matrix");
+    error ("mad: X must be a numeric or logical array");
   endif
 
   if (isempty (opt))
@@ -243,5 +243,5 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> mad ()
-%!error <X must be a numeric> mad (['A'; 'B'])
+%!error <X must be a numeric or logical> mad (['A'; 'B'])
 %!error <OPT must be 0 or 1> mad (1, 2)

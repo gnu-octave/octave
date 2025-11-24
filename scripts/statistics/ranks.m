@@ -58,7 +58,7 @@ function y = ranks (x, dim, rtype = 0)
   endif
 
   if (! (isnumeric (x) || islogical (x)))
-    error ("ranks: X must be a numeric vector or matrix");
+    error ("ranks: X must be a numeric or logical array");
   endif
 
   nd = ndims (x);
@@ -169,8 +169,8 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> ranks ()
-%!error <X must be a numeric vector or matrix> ranks ({1, 2})
-%!error <X must be a numeric vector or matrix> ranks (['A'; 'B'])
+%!error <X must be a numeric or logical> ranks ({1, 2})
+%!error <X must be a numeric or logical> ranks (['A'; 'B'])
 %!error <DIM must be an integer> ranks (1, 1.5)
 %!error <DIM must be .* a valid dimension> ranks (1, 0)
 %!error <unknown RTYPE 'foobar'> ranks (ones (2), 1, "foobar")

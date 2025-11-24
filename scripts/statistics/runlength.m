@@ -49,7 +49,7 @@ function [count, value] = runlength (x)
   endif
 
   if (! (isnumeric (x) || islogical (x)) || ! isvector (x))
-    error ("runlength: X must be a numeric vector");
+    error ("runlength: X must be a numeric or logical vector");
   endif
 
   if (iscolumn (x))
@@ -74,5 +74,5 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> runlength ()
-%!error runlength (['A'; 'B'])
-%!error runlength (ones (2,2))
+%!error <must be a numeric or logical> runlength (['A'; 'B'])
+%!error <must be a .* vector> runlength (ones (2,2))

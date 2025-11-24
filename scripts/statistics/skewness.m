@@ -92,7 +92,7 @@ function y = skewness (x, flag, dim)
   endif
 
   if (! (isnumeric (x) || islogical (x)))
-    error ("skewness: X must be a numeric vector or matrix");
+    error ("skewness: X must be a numeric or logical array");
   endif
 
   if (nargin < 2 || isempty (flag))
@@ -162,7 +162,7 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> skewness ()
-%!error <X must be a numeric vector or matrix> skewness (['A'; 'B'])
+%!error <X must be a numeric or logical> skewness (['A'; 'B'])
 %!error <FLAG must be 0 or 1> skewness (1, 2)
 %!error <FLAG must be 0 or 1> skewness (1, [1 0])
 %!error <DIM must be an integer> skewness (1, [], ones (2,2))

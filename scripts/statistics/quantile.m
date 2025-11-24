@@ -161,7 +161,7 @@ function q = quantile (x, p = [], dim, method = 5)
   endif
 
   if (! (isnumeric (x) || islogical (x)) || isempty (x))
-    error ("quantile: X must be a non-empty numeric vector or matrix");
+    error ("quantile: X must be a non-empty numeric or logical array");
   endif
 
   if (isempty (p))
@@ -388,9 +388,9 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> quantile ()
-%!error quantile (['A'; 'B'], 10)
-%!error quantile (1:10, [true, false])
-%!error quantile (1:10, ones (2,2))
+%!error <must be .* numeric or logical> quantile (['A'; 'B'], 10)
+%!error <P must be a numeric vector> quantile (1:10, [true, false])
+%!error <P must be a numeric vector> quantile (1:10, ones (2,2))
 %!error quantile (1, 1, 1.5)
 %!error quantile (1, 1, 0)
 %!error quantile ((1:5)', 0.5, 1, 0)

@@ -51,7 +51,7 @@ function q = prctile (x, p = [], dim)
   endif
 
   if (! (isnumeric (x) || islogical (x)))
-    error ("prctile: X must be a numeric vector or matrix");
+    error ("prctile: X must be a numeric or logical array");
   endif
 
   if (isempty (p))
@@ -182,7 +182,7 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> prctile ()
-%!error prctile (['A'; 'B'], 10)
+%!error <must be a numeric or logical> prctile (['A'; 'B'], 10)
 %!error prctile (1:10, [true, false])
 %!error prctile (1:10, ones (2,2))
 %!error prctile (1, 1, 1.5)

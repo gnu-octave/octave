@@ -64,7 +64,7 @@ function r = corr (x, y = [])
   endif
 
   if (! (isnumeric (x) || islogical (x)))
-    error ("corr: X must be a numeric vector or matrix");
+    error ("corr: X must be a numeric or logical vector or matrix");
   endif
 
   ## No check for division by zero error, which happens only when
@@ -84,7 +84,7 @@ function r = corr (x, y = [])
     ##        input validation will need to be coded back into this function.
 
     if (! (isnumeric (y) || islogical (y)))
-      error ("corr: Y must be a numeric vector or matrix");
+      error ("corr: Y must be a numeric or logical vector or matrix");
     endif
 
     ## Check for equal number of rows before concatenating inputs for cov.
@@ -207,13 +207,11 @@ endfunction
 ## Test input validation
 %!error <Invalid call> corr ()
 %!error corr (1, 2, 3)
-%!error <X must be a> corr ("foo")
-%!error <X must be a> corr ({123})
-%!error <X must be a> corr (struct())
-%!error <Y must be a> corr (1, "foo")
-%!error <Y must be a> corr (1, {123})
-%!error <Y must be a> corr (1, struct())
-%!error <Y must be a> corr ([1; 2], ["A"; "B"])
+%!error <X must be a numeric or logical> corr ("foo")
+%!error <X must be a numeric or logical> corr ({123})
+%!error <Y must be a numeric or logical> corr (1, "foo")
+%!error <Y must be a numeric or logical> corr (1, {123})
+%!error <Y must be a numeric or logical> corr ([1; 2], ["A"; "B"])
 %!error <X and Y must have the same number of rows> corr (ones (2,2), ones (3,2))
 %!error <X and Y must have the same number of rows> corr ([1,2,3], [1,2,3]')
 %!error <X and Y must have the same number of rows> corr ([1,2,3]', [1,2,3])

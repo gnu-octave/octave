@@ -90,7 +90,7 @@ function [z, mu, sigma] = zscore (x, opt = 0, varargin)
   endif
 
   if (! (isnumeric (x) || islogical (x)))
-    error ("zscore: X must be a numeric vector or matrix");
+    error ("zscore: X must be a numeric or logical array");
   endif
 
   if (isempty (opt))
@@ -155,7 +155,7 @@ endfunction
 ## Test input validation
 %!error <Invalid call> zscore ()
 %!error zscore (1, 2, 3)
-%!error <X must be a numeric> zscore (['A'; 'B'])
+%!error <X must be a numeric or logical> zscore (['A'; 'B'])
 %!error <OPT must be empty, 0, or 1> zscore (1, ones (2,2))
 %!error <OPT must be empty, 0, or 1> zscore (1, 1.5)
 %!error <DIM must be .* scalar or vector> zscore (1, [], ones (2,2))

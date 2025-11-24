@@ -133,7 +133,7 @@ function m = moment (x, p, opt1, opt2)
   endif
 
   if (! (isnumeric (x) || islogical (x)) || isempty (x))
-    error ("moment: X must be a non-empty numeric matrix or vector");
+    error ("moment: X must be a non-empty numeric or logical array");
   endif
 
   if (! (isnumeric (p) && isscalar (p)))
@@ -206,8 +206,8 @@ endfunction
 ## Test input validation
 %!error <Invalid call> moment ()
 %!error <Invalid call> moment (1)
-%!error <X must be a non-empty numeric matrix> moment (['A'; 'B'], 2)
-%!error <X must be a non-empty numeric matrix> moment (ones (2,0,3), 2)
+%!error <X must be a non-empty numeric or logical> moment (['A'; 'B'], 2)
+%!error <X must be a non-empty> moment (ones (2,0,3), 2)
 %!error <P must be a numeric scalar> moment (1, true)
 %!error <P must be a numeric scalar> moment (1, ones (2,2))
 %!error <TYPE must be a string> moment (1, 2, 3, 4)

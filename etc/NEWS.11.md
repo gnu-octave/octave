@@ -38,6 +38,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The `roots` function now accepts only a numeric argument.  Convert any
   non-numeric input to a numeric value with `double()`.
 
+- The `mean` function no longer accepts character array inputs.  Convert any
+  character input to a numeric value (e.g., use `double()` or `single()`).
+
 - On dot-indexing of `classdef` objects, `subsref` now resolves to looking for
   a property first, and if a property is not found, then it looks for a method.
 

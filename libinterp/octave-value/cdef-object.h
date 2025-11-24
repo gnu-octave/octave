@@ -189,6 +189,11 @@ public:
     err_invalid_object ("permute");
   }
 
+  virtual cdef_object_rep * transpose () const
+  {
+    err_invalid_object ("transpose");
+  }
+
 protected:
 
   // Reference count
@@ -350,6 +355,9 @@ public:
   cdef_object permute (const Array<int>& vec, bool inv = false) const
   { return cdef_object (m_rep->permute (vec, inv)); }
 
+  cdef_object transpose () const
+  { return cdef_object (m_rep->transpose ()); }
+
 protected:
 
   cdef_object_rep * get_rep () { return m_rep; }
@@ -458,6 +466,8 @@ public:
   OCTINTERP_API cdef_object_rep *
   permute (const Array<int>& vec, bool inv = false) const;
 
+  cdef_object_rep * transpose () const;
+
 private:
 
   Array<cdef_object> m_array;
@@ -533,6 +543,11 @@ public:
   cdef_object_rep *
   permute ([[maybe_unused]] const Array<int>& vec,
            [[maybe_unused]] bool inv = false) const
+  {
+    return clone ();
+  }
+
+  cdef_object_rep * transpose () const
   {
     return clone ();
   }

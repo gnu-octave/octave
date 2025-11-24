@@ -32,6 +32,7 @@
 
 #include "oct-time.h"
 
+#include "cdef-utils.h"
 #include "errwarn.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
@@ -39,6 +40,7 @@
 #include "ovl.h"
 #include "ov.h"
 #include "ov-class.h"
+#include "ov-classdef.h"
 #include "ov-typeinfo.h"
 #include "ops.h"
 #include "symtab.h"
@@ -86,10 +88,8 @@ oct_unop_default (const octave_value& a, const std::string& opname)
 
       if (a.is_classdef_object ())
         {
-          // FIXME: Default transposition for classdef arrays.
-
-          error ("%s method not defined for %s class", opname.c_str (),
-                 class_name.c_str ());
+          auto result_obj = a.classdef_object_value ()->get_object_ref ().transpose ();
+          return new octave_classdef (result_obj);
         }
       else
         {

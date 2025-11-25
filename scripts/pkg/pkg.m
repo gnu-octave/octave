@@ -140,6 +140,13 @@
 ##
 ## @item -verbose
 ## Print the output of all commands as they are performed.
+##
+## @item -refresh
+## Force an update of the cached package database from the online repository.
+## By default, Octave uses a local cache of the package database that is updated
+## automatically when older than 7 days.  This option forces an immediate update
+## regardless of cache age.  The @option{-refresh} option applies to
+## @code{install}, @code{search}, and @code{update} commands.
 ## @end table
 ##
 ## @item update
@@ -430,6 +437,7 @@ function [local_packages, global_packages] = pkg (varargin)
   verbose = false;
   octave_forge = false;
   want_all_packages = false;
+  force_refresh = false;
   for i = 1:numel (varargin)
     switch (varargin{i})
       case "-nodeps"
@@ -447,6 +455,8 @@ function [local_packages, global_packages] = pkg (varargin)
         verbose = true;
         ## Send verbose output to pager immediately.  Change setting locally.
         page_output_immediately (true, "local");
+      case "-refresh"
+        force_refresh = true;
       case "-forge"
         if (! __octave_config_info__ ("CURL_LIBS"))
           error ("pkg: can't download from Octave Packages without the cURL library");
@@ -516,9 +526,9 @@ function [local_packages, global_packages] = pkg (varargin)
       endif
 
       if (nargout)
-        local_packages = search_packages (files, want_all_packages);
+        local_packages = search_packages (files, want_all_packages, force_refresh, verbose);
       else
-        search_packages (files, want_all_packages);
+        search_packages (files, want_all_packages, force_refresh, verbose);
       endif
 
     case "install"
@@ -567,7 +577,7 @@ function [local_packages, global_packages] = pkg (varargin)
             ## manually, just in case the package author chooses zip
             ## or any other archive format? Or will all packages always
             ## be required to give .tar.gz?
-            [v, url] = get_pkg_info (file);
+            [v, url] = get_pkg_info (file, force_refresh, verbose);
             tmp_file = tempname (tmp_dir, [file "-" v "-"]);
             tmp_file = [tmp_file, ".tar.gz"];
             local_files{end+1} = tmp_file;  # so that it gets cleaned up
@@ -771,7 +781,7 @@ function [local_packages, global_packages] = pkg (varargin)
         installed_pkg_name = installed_pkgs_lst{i}.name;
         installed_pkg_version = installed_pkgs_lst{i}.version;
         try
-          online_pkg_version = get_pkg_info (installed_pkg_name);
+          online_pkg_version = get_pkg_info (installed_pkg_name, force_refresh, verbose);
         catch
           warning ("pkg: package %s not found on Octave Packages - skipping update\n",
                    installed_pkg_name);

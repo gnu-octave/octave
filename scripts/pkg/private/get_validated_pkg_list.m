@@ -47,9 +47,6 @@ function retval = get_validated_pkg_list (force_refresh = false, verbose = false
   if (! isempty (__pkg__) && ! force_refresh)
     ## This function has been called already and __pkg__ exists.
     ## No need to query the server again unless refresh is forced.
-    if (verbose)
-      disp ("pkg: using cached package list from memory");
-    endif
     retval = __pkg__;
     return;
   endif
@@ -83,8 +80,8 @@ function retval = get_validated_pkg_list (force_refresh = false, verbose = false
       for i = 1:numel (cache_files)
         fname = cache_files(i).name;
         ## Extract timestamp: packages_yyyymmddHHMM.json
-        if (length (fname) == 25 && strcmp (fname(1:9), "packages_") &&
-            strcmp (fname(22:25), ".json"))
+        if (length (fname) == 26 && strcmp (fname(1:9), "packages_") &&
+            strcmp (fname(22:26), ".json"))
           timestamp_str = fname(10:21);
 
           try

@@ -24,16 +24,23 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{retval} =} search_packages (@var{searchterms})
+## @deftypefn  {} {@var{retval} =} search_packages (@var{searchterms})
+## @deftypefnx {} {@var{retval} =} search_packages (@var{searchterms}, @var{allpackages})
+## @deftypefnx {} {@var{retval} =} search_packages (@var{searchterms}, @var{allpackages}, @var{force_refresh})
+## @deftypefnx {} {@var{retval} =} search_packages (@var{searchterms}, @var{allpackages}, @var{force_refresh}, @var{verbose})
 ## Search for all packages on the Octave Packages repository whose
 ## descriptions include @var{searchterms}, then either display the search
 ## results with brief descriptions, or return the list of matching packages
 ## that can also be installed with @code{pkg install}.
+##
+## If @var{force_refresh} is true, always download fresh data from the server.
+##
+## If @var{verbose} is true, print diagnostic messages.
 ## @end deftypefn
 
-function retval = search_packages (searchterms, allpackages)
+function retval = search_packages (searchterms, allpackages, force_refresh = false, verbose = false)
 
-  __pkg__ = get_validated_pkg_list ();  # fresh data from packages.octave.org
+  __pkg__ = get_validated_pkg_list (force_refresh, verbose);
 
   pkgnames = fieldnames (__pkg__);
 

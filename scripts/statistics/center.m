@@ -49,7 +49,7 @@ function y = center (x, dim)
   endif
 
   if (! (isnumeric (x) || islogical (x)))
-    error ("center: X must be a numeric vector or matrix");
+    error ("center: X must be a numeric or logical array");
   endif
 
   if (isinteger (x))
@@ -93,6 +93,7 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> center ()
+%!error <X must be a numeric or logical> center ('foo')
 %!error <DIM must be an integer> center (1, ones (2,2))
 %!error <DIM must be an integer> center (1, 1.5)
 %!error <DIM must be .* a valid dimension> center (1, 0)

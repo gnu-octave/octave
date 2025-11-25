@@ -41,7 +41,7 @@ function cnt = run_count (x, n, dim)
   endif
 
   if (! (isnumeric (x) || islogical (x)))
-    error ("run_count: X must be a numeric vector or matrix");
+    error ("run_count: X must be a numeric or logical array");
   endif
 
   if (! (isscalar (n) && n == fix (n) && n > 0))
@@ -105,8 +105,8 @@ endfunction
 ## Test input validation
 %!error <Invalid call> run_count ()
 %!error <Invalid call> run_count (1)
-%!error run_count ({1, 2}, 3)
-%!error run_count (['A'; 'A'; 'B'], 3)
+%!error <must be a numeric or logical> run_count ({1, 2}, 3)
+%!error <must be a numeric or logical> run_count (['A'; 'A'; 'B'], 3)
 %!error run_count (1:5, ones (2,2))
 %!error run_count (1:5, 1.5)
 %!error run_count (1:5, -2)

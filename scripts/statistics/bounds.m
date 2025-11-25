@@ -53,7 +53,7 @@ function [s, l] = bounds (x, dim, nanflag = false)
   endif
 
   if (! (isnumeric (x) || islogical (x)))
-    error ("bounds: X must be a numeric vector or matrix");
+    error ("bounds: X must be a numeric or logical array");
   endif
 
   need_dim = true;
@@ -120,7 +120,7 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> bounds ()
-%!error <X must be a numeric> bounds (['A'; 'B'])
+%!error <X must be a numeric or logical> bounds (['A'; 'B'])
 %!error <DIM must be an integer> bounds (1, ones (2,2))
 %!error <DIM must be an integer> bounds (1, 1.5)
 %!error <DIM must be .* a valid dimension> bounds (1, 0)

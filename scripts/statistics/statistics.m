@@ -44,7 +44,7 @@ function stats = statistics (x, dim)
   endif
 
   if (! (isnumeric (x) || islogical (x)))
-    error ("statistics: X must be a numeric vector or matrix");
+    error ("statistics: X must be a numeric or logical array");
   endif
 
   nd = ndims (x);
@@ -94,7 +94,7 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> statistics ()
-%!error statistics (['A'; 'B'])
+%!error <must be a numeric or logical> statistics (['A'; 'B'])
 %!error statistics (1, ones (2,2))
 %!error statistics (1, 1.5)
 %!error statistics (1, 0)

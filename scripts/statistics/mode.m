@@ -50,7 +50,7 @@ function [m, f, c] = mode (x, dim)
   endif
 
   if (! (isnumeric (x) || islogical (x)))
-    error ("mode: X must be a numeric vector or matrix");
+    error ("mode: X must be a numeric or logical array");
   endif
 
   nd = ndims (x);
@@ -337,7 +337,7 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> mode ()
-%!error <X must be a numeric> mode ({1 2 3})
+%!error <X must be a numeric or logical> mode ({1 2 3})
 %!error <DIM must be an integer> mode (1, ones (2,2))
 %!error <DIM must be an integer> mode (1, 1.5)
 %!error <DIM must be .* a valid dimension> mode (1, 0)

@@ -21,6 +21,10 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
     online, has been replaced by `pkg search -all`.  Calling `pkg list -forge`
     now gives a warning and then executes `pkg search -all`.  The warning can
     be silenced with the ID `"Octave:pkg:list-forge"`.
+  * Package metadata is now cached on the local computer for speed and
+    reliability.  Previously, it used to be downloaded afresh for operations
+    such as `install` or `update` or `search`.  Metadata updates can also be
+    done on demand with the new option `-refresh` for those three actions.
 
 - Convolution of short and wide arrays (especially row vectors) is now faster
   by anywhere from 10% to 150X, depending on the array size and shape.

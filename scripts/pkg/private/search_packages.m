@@ -24,14 +24,17 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{retval} =} search_packages (@var{searchterms})
-## @deftypefnx {} {@var{retval} =} search_packages (@var{searchterms}, @var{allpackages})
+## @deftypefn {} {@var{retval} =} search_packages (@var{searchterms}, @var{allpackages})
 ## @deftypefnx {} {@var{retval} =} search_packages (@var{searchterms}, @var{allpackages}, @var{force_refresh})
 ## @deftypefnx {} {@var{retval} =} search_packages (@var{searchterms}, @var{allpackages}, @var{force_refresh}, @var{verbose})
 ## Search for all packages on the Octave Packages repository whose
 ## descriptions include @var{searchterms}, then either display the search
 ## results with brief descriptions, or return the list of matching packages
-## that can also be installed with @code{pkg install}.
+## that can also be installed with @code{pkg install}.  If an output variable
+## @var{retval} is provided, then return the list, otherwise display it.
+##
+## If @var{allpackages} is true, then return / display all packages,
+## with no filtering for @var{searchterms}.
 ##
 ## If @var{force_refresh} is true, always download fresh data from the server.
 ##

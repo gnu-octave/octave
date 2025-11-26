@@ -218,6 +218,8 @@ function retval = get_validated_pkg_list (force_refresh = false, verbose = false
   endif
 
   ## Download fresh data from server
+  downloaded_fresh_data = false;
+
   if (verbose || force_refresh)
     printf ("pkg: downloading latest package database from packages.octave.org...\n");
     if (! verbose)
@@ -234,7 +236,7 @@ function retval = get_validated_pkg_list (force_refresh = false, verbose = false
   if (! succ)
     ## Primary failed, try backup
     if (verbose)
-      printf ("pkg: primary repository unavailable, trying backup...\n");
+      printf ("pkg: primary repository unavailable, trying backup from gnu-octave.github.io...\n");
     endif
     [list, succ] = urlread (backup_url);
   endif
@@ -272,6 +274,11 @@ function retval = get_validated_pkg_list (force_refresh = false, verbose = false
     else
       error ("pkg: could not read URL and no cache available, please verify internet connection");
     endif
+  else
+    ## Download succeeded - capture timestamp
+    ## This reflects actual data freshness, not when we started trying
+    download_time = now ();
+    downloaded_fresh_data = true;
   endif
 
   if (verbose)
@@ -289,22 +296,24 @@ function retval = get_validated_pkg_list (force_refresh = false, verbose = false
     printf ("pkg: successfully parsed %d packages\n", numel (fieldnames (__pkg__)));
   endif
 
-  ## Save to cache with timestamp in filename
-  try
-    ## Create cache directory if it doesn't exist
-    if (! exist (cache_dir, "dir"))
-      if (verbose)
-        printf ("pkg: creating cache directory: %s\n", cache_dir);
+  ## Save to cache with timestamp in filename (only if we downloaded fresh data)
+  if (downloaded_fresh_data)
+    try
+      ## Create cache directory if it doesn't exist
+      if (! exist (cache_dir, "dir"))
+        if (verbose)
+          printf ("pkg: creating cache directory: %s\n", cache_dir);
+        endif
+        [success, msg] = mkdir (cache_dir);
+        if (! success)
+          warning ("pkg: could not create cache directory: %s", msg);
+        endif
       endif
-      [success, msg] = mkdir (cache_dir);
-      if (! success)
-        warning ("pkg: could not create cache directory: %s", msg);
-      endif
-    endif
 
     ## Generate timestamped filename using datestr
     ## Format: packages_yyyymmddHHMM.json
-    timestamp_str = datestr (now (), "yyyymmddHHMM");
+    ## Use download_time, not current time, so timestamp reflects data age
+    timestamp_str = datestr (download_time, "yyyymmddHHMM");
     new_cache_file = fullfile (cache_dir, ["packages_" timestamp_str ".json"]);
 
     if (verbose)
@@ -346,12 +355,13 @@ function retval = get_validated_pkg_list (force_refresh = false, verbose = false
           end_try_catch
         endfor
       endif
-    else
-      warning ("pkg: could not write to cache file");
-    endif
-  catch
-    warning ("pkg: error updating cache: %s", lasterr ());
-  end_try_catch
+      else
+        warning ("pkg: could not write to cache file");
+      endif
+    catch
+      warning ("pkg: error updating cache: %s", lasterr ());
+    end_try_catch
+  endif  ## if (downloaded_fresh_data)
 
   retval = __pkg__;
 

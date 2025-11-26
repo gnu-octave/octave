@@ -25,16 +25,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{ver}, @var{url}] =} get_pkg_info (@var{name})
-## @deftypefnx {} {[@var{ver}, @var{url}] =} get_pkg_info (@var{name}, @var{force_refresh})
-## @deftypefnx {} {[@var{ver}, @var{url}] =} get_pkg_info (@var{name}, @var{force_refresh}, @var{verbose})
+## @deftypefnx {} {[@var{ver}, @var{url}] =} get_pkg_info (@var{name}, @var{verbose})
 ## Return the current version and URL of the Octave package @var{name}.
-##
-## If @var{force_refresh} is true, always download fresh data from the server.
 ##
 ## If @var{verbose} is true, print diagnostic messages.
 ## @end deftypefn
 
-function [ver, url] = get_pkg_info (name, force_refresh = false, verbose = false)
+function [ver, url] = get_pkg_info (name, verbose = false)
 
   ## Verify that name is valid.
   if (! (ischar (name) && rows (name) == 1 && ndims (name) == 2))
@@ -45,7 +42,7 @@ function [ver, url] = get_pkg_info (name, force_refresh = false, verbose = false
 
   name = lower (name);
 
-  __pkg__ = get_validated_pkg_list (force_refresh, verbose);
+  __pkg__ = get_validated_pkg_list (false, verbose);
   pkgnames = fieldnames (__pkg__);  # all the different packages
 
   if (any (strcmp (pkgnames, name)))  # named package does exist

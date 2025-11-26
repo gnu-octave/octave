@@ -86,16 +86,31 @@ function retval = search_packages (searchterms, allpackages, verbose = false)
       v = convert_possible_cell_to_struct (__pkg__.(this).versions(1)).id;
       vers(i, 1:numel (v)) = v;
 
-      ## Add description, truncating long text with "..." but not mid-word.
-      ## FIXME: Maybe show only the relevant part of description that includes
-      ## the search term(s).
+      ## Add description, favoring the parts with the search terms.
       str = __pkg__.(this).description;
+      idx = cell2mat (regexpi (str, searchterms));
+      sp = find (isspace (str));
+      splo = max (sp(sp < min (idx) - 5));
+      if (! isempty (splo))
+        str(1:splo) = [];
+        str = ["...", str];
+      endif
+
+      idx = cell2mat (regexpi (str, searchterms));
+      sp = find (isspace (str));
+      sphi = min (sp(sp > max (idx) + 60));
+      if (! isempty (sphi))
+        str(sphi:end) = [];
+        str = [str, "..."];
+      endif
+
       if (numel (str) > 80)
         str(81:end) = [];
         idx = find (isspace (str), 1, "last");
         str(idx:end) = [];
         str = [str, "..."];
       endif
+
       desc(i, 1:numel (str)) = str;
 
     endif
@@ -120,7 +135,7 @@ function retval = search_packages (searchterms, allpackages, verbose = false)
     special = false;
 
     printf ("Search found %d results\n", nnz (has_search_terms));
-    printf ("              Package Name | Version | Description\n");
+    printf ("              Package Name | Version | Search terms\n");
     printf ("---------------------------+---------+------------------------------------\n");
 
     for i = find (has_search_terms)  # restrict attention to search results only

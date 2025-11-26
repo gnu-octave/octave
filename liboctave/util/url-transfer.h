@@ -49,6 +49,7 @@ struct weboptions
   std::string RequestMethod;
   std::string ArrayFormat;
   std::string CertificateFilename;
+  std::string CharacterEncoding;
 };
 
 class OCTAVE_API base_url_transfer

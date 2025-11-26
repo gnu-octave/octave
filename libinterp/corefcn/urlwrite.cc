@@ -30,6 +30,7 @@
 #include <string>
 #include <fstream>
 #include <iomanip>
+#include <algorithm>
 
 #include "dir-ops.h"
 #include "file-ops.h"
@@ -54,12 +55,90 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
+// Helper function to parse property/value pairs into weboptions struct
+static void
+parse_property_value_pairs (const octave_value_list& args, int start_idx,
+                            struct weboptions& options,
+                            std::string& method, Array<std::string>& param,
+                            const std::string& who)
+{
+  int nargin = args.length ();
+
+  if ((nargin - start_idx) % 2 != 0)
+    error ("%s: property/value arguments must occur in pairs", who.c_str ());
+
+  // Parse property/value pairs
+  for (int i = start_idx; i < nargin; i += 2)
+    {
+      if (! args(i).is_string ())
+        error ("%s: property names must be strings", who.c_str ());
+
+      std::string property = args(i).string_value ();
+
+      // Convert property name to lowercase for case-insensitive comparison
+      std::transform (property.begin (), property.end (), property.begin (),
+                     [] (unsigned char c) { return std::tolower(c); });
+
+      if (property == "get")
+        {
+          method = "get";
+          std::string err_msg = who + ": 'Get' value must be a cell array of strings";
+          param = args(i+1).xcellstr_value (err_msg.c_str ());
+          if (param.numel () % 2 == 1)
+            error ("%s: number of elements in 'Get' cell array must be even", who.c_str ());
+        }
+      else if (property == "post")
+        {
+          method = "post";
+          std::string err_msg = who + ": 'Post' value must be a cell array of strings";
+          param = args(i+1).xcellstr_value (err_msg.c_str ());
+          if (param.numel () % 2 == 1)
+            error ("%s: number of elements in 'Post' cell array must be even", who.c_str ());
+        }
+      else if (property == "timeout")
+        {
+          std::string err_msg = who + ": 'Timeout' value must be numeric";
+          double timeout = args(i+1).xdouble_value (err_msg.c_str ());
+          if (timeout <= 0)
+            error ("%s: 'Timeout' value must be positive", who.c_str ());
+          // Convert to milliseconds
+          options.Timeout = static_cast<long> (timeout * 1000);
+        }
+      else if (property == "useragent")
+        {
+          std::string err_msg = who + ": 'UserAgent' value must be a string";
+          options.UserAgent = args(i+1).xstring_value (err_msg.c_str ());
+        }
+      else if (property == "username")
+        {
+          std::string err_msg = who + ": 'Username' value must be a string";
+          options.Username = args(i+1).xstring_value (err_msg.c_str ());
+        }
+      else if (property == "password")
+        {
+          std::string err_msg = who + ": 'Password' value must be a string";
+          options.Password = args(i+1).xstring_value (err_msg.c_str ());
+        }
+      else if (property == "charset")
+        {
+          // Store for potential future use, but not used by curl_transfer yet
+          std::string err_msg = who + ": 'Charset' value must be a string";
+          options.CharacterEncoding = args(i+1).xstring_value (err_msg.c_str ());
+        }
+      else
+        {
+          error ("%s: unknown property '%s'", who.c_str (), args(i).string_value ().c_str ());
+        }
+    }
+}
+
 DEFUN (urlwrite, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} urlwrite (@var{url}, @var{localfile})
-@deftypefnx {} {@var{f} =} urlwrite (@var{url}, @var{localfile})
-@deftypefnx {} {[@var{f}, @var{success}] =} urlwrite (@var{url}, @var{localfile})
-@deftypefnx {} {[@var{f}, @var{success}, @var{message}] =} urlwrite (@var{url}, @var{localfile})
+@deftypefnx {} {} urlwrite (@var{url}, @var{localfile}, @var{Name}, @var{Value}, @dots{})
+@deftypefnx {} {@var{f} =} urlwrite (@var{url}, @var{localfile}, @dots{})
+@deftypefnx {} {[@var{f}, @var{success}] =} urlwrite (@var{url}, @var{localfile}, @dots{})
+@deftypefnx {} {[@var{f}, @var{success}, @var{message}] =} urlwrite (@var{url}, @var{localfile}, @dots{})
 Download a remote file specified by its @var{url} and save it as
 @var{localfile}.
 
@@ -91,24 +170,50 @@ urlwrite ("http://username:password@@example.com/file.txt",
 @end group
 @end example
 
-GET and POST requests can be specified by @var{method} and @var{param}.
-The parameter @var{method} is either @samp{get} or @samp{post} and
-@var{param} is a cell array of parameter and value pairs.
-For example:
+Additional options can be specified using property/value pairs:
 
+@table @code
+@item Get
+Cell array of name/value pairs for GET request parameters.
+
+@item Post
+Cell array of name/value pairs for POST request parameters.
+
+@item Timeout
+Timeout value in seconds.
+
+@item UserAgent
+User agent string for the request.
+
+@item Username
+Username for authentication.
+
+@item Password
+Password for authentication.
+@end table
+
+Example with property/value pairs:
+@example
+@group
+urlwrite ("http://www.example.com/data.txt", "data.txt",
+          "Timeout", 10, "UserAgent", "Octave");
+@end group
+@end example
+
+For backward compatibility, the old calling form is also supported:
 @example
 @group
 urlwrite ("http://www.google.com/search", "search.html",
           "get", @{"query", "octave"@});
 @end group
 @end example
-@seealso{urlread}
+@seealso{urlread, weboptions}
 @end deftypefn */)
 {
   int nargin = args.length ();
 
   // verify arguments
-  if (nargin != 2 && nargin != 4)
+  if (nargin < 2)
     print_usage ();
 
   std::string url = args(0).xstring_value ("urlwrite: URL must be a string");
@@ -116,11 +221,19 @@ urlwrite ("http://www.google.com/search", "search.html",
   // name to store the file if download is successful
   std::string filename = args(1).xstring_value ("urlwrite: LOCALFILE must be a string");
 
-  std::string method;
+  std::string method = "get";
   Array<std::string> param;
 
-  if (nargin == 4)
+  // Create a weboptions struct to hold option values
+  struct weboptions options;
+  // Set default timeout to match weboptions default
+  options.Timeout = 5000;  // 5 seconds in milliseconds
+
+  // Check if old calling form with 4 arguments (backward compatibility)
+  if (nargin == 4 && args(2).is_string ()
+      && (args(2).string_value () == "get" || args(2).string_value () == "post"))
     {
+      // Old calling form: urlwrite(url, file, method, param)
       method = args(2).xstring_value ("urlwrite: METHOD must be a string");
 
       if (method != "get" && method != "post")
@@ -130,6 +243,11 @@ urlwrite ("http://www.google.com/search", "search.html",
 
       if (param.numel () % 2 == 1)
         error ("urlwrite: number of elements in PARAM must be even");
+    }
+  else if (nargin > 2)
+    {
+      // New property/value pairs form
+      parse_property_value_pairs (args, 2, options, method, param, "urlwrite");
     }
 
   // The file should only be deleted if it doesn't initially exist, we
@@ -152,6 +270,10 @@ urlwrite ("http://www.google.com/search", "search.html",
   if (! url_xfer.is_valid ())
     error ("support for URL transfers was disabled when Octave was built");
 
+  // Apply weboptions if any were set
+  url_xfer.set_weboptions (options);
+
+  // Perform the HTTP action
   url_xfer.http_action (param, method);
 
   ofile.close ();
@@ -176,9 +298,9 @@ urlwrite ("http://www.google.com/search", "search.html",
 DEFUN (urlread, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{s} =} urlread (@var{url})
-@deftypefnx {} {[@var{s}, @var{success}] =} urlread (@var{url})
-@deftypefnx {} {[@var{s}, @var{success}, @var{message}] =} urlread (@var{url})
-@deftypefnx {} {[@dots{}] =} urlread (@var{url}, @var{method}, @var{param})
+@deftypefnx {} {@var{s} =} urlread (@var{url}, @var{Name}, @var{Value}, @dots{})
+@deftypefnx {} {[@var{s}, @var{success}] =} urlread (@var{url}, @dots{})
+@deftypefnx {} {[@var{s}, @var{success}, @var{message}] =} urlread (@var{url}, @dots{})
 Download a remote file specified by its @var{url} and return its content
 in string @var{s}.
 
@@ -203,33 +325,70 @@ For example:
 s = urlread ("http://user:password@@example.com/file.txt");
 @end example
 
-GET and POST requests can be specified by @var{method} and @var{param}.
-The parameter @var{method} is either @samp{get} or @samp{post} and
-@var{param} is a cell array of parameter and value pairs.
-For example:
+Additional options can be specified using property/value pairs:
 
+@table @code
+@item Get
+Cell array of name/value pairs for GET request parameters.
+
+@item Post
+Cell array of name/value pairs for POST request parameters.
+
+@item Timeout
+Timeout value in seconds.
+
+@item UserAgent
+User agent string for the request.
+
+@item Username
+Username for authentication.
+
+@item Password
+Password for authentication.
+
+@item Charset
+Character encoding (stored but not currently used).
+@end table
+
+Example with property/value pairs:
+@example
+@group
+s = urlread ("http://www.example.com/data",
+             "Get", @{"term", "octave"@}, "Timeout", 10);
+@end group
+@end example
+
+For backward compatibility, the old calling form is also supported:
 @example
 @group
 s = urlread ("http://www.google.com/search",
              "get", @{"query", "octave"@});
 @end group
 @end example
-@seealso{urlwrite}
+@seealso{urlwrite, weboptions}
 @end deftypefn */)
 {
   int nargin = args.length ();
 
   // verify arguments
-  if (nargin != 1 && nargin != 3)
+  if (nargin < 1)
     print_usage ();
 
   std::string url = args(0).xstring_value ("urlread: URL must be a string");
 
-  std::string method;
+  std::string method = "get";
   Array<std::string> param;
 
-  if (nargin == 3)
+  // Create a weboptions struct to hold option values
+  struct weboptions options;
+  // Set default timeout to match weboptions default
+  options.Timeout = 5000;  // 5 seconds in milliseconds
+
+  // Check if old calling form with 3 arguments (backward compatibility)
+  if (nargin == 3 && args(1).is_string ()
+      && (args(1).string_value () == "get" || args(1).string_value () == "post"))
     {
+      // Old calling form: urlread(url, method, param)
       method = args(1).xstring_value ("urlread: METHOD must be a string");
 
       if (method != "get" && method != "post")
@@ -240,6 +399,11 @@ s = urlread ("http://www.google.com/search",
       if (param.numel () % 2 == 1)
         error ("urlread: number of elements in PARAM must be even");
     }
+  else if (nargin > 1)
+    {
+      // New property/value pairs form
+      parse_property_value_pairs (args, 1, options, method, param, "urlread");
+    }
 
   std::ostringstream buf;
 
@@ -248,6 +412,10 @@ s = urlread ("http://www.google.com/search",
   if (! url_xfer.is_valid ())
     error ("support for URL transfers was disabled when Octave was built");
 
+  // Apply weboptions if any were set
+  url_xfer.set_weboptions (options);
+
+  // Perform the HTTP action
   url_xfer.http_action (param, method);
 
   if (nargout < 2 && ! url_xfer.good ())

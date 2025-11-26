@@ -145,6 +145,10 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The `weboptions` has been re-written internally.  Support for non-integer
   Timeout values, and the special value `Inf`, has been added.
 
+- The `urlread` and `urlwrite` functions now make use of the various
+  `weboptions` such as timeouts and user credentials.  The old calling form
+  with passing a cell array is still supported for backward compatibility.
+
 - The `newplot` function has been re-written to remove functionality that was
   possibly never used in Octave, and has been removed from Matlab.  The
   function is also more compatible, and does not change the current figure

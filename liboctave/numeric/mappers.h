@@ -385,6 +385,18 @@ max (T x, T y)
 // jump, hence the only conditional jump involved will be the first
 // (isnan), infrequent and hence friendly to branch prediction.
 
+inline char
+min (char x, char y)
+{
+  return x <= y ? x : y;
+}
+
+inline char
+max (char x, char y)
+{
+  return x >= y ? x : y;
+}
+
 inline double
 min (double x, double y)
 {
@@ -395,6 +407,56 @@ inline double
 max (double x, double y)
 {
   return isnan (y) ? x : (x >= y ? x : y);
+}
+
+inline double
+min (double x, double y, const bool nanflag)
+{
+  double out;
+  if (! nanflag && (isnan (x) || isnan (y)))
+    out = NAN;
+  else
+    out = isnan (y) ? x : (x <= y ? x : y);
+  return out;
+}
+
+inline double
+max (double x, double y, const bool nanflag)
+{
+  double out;
+  if (! nanflag && (isnan (x) || isnan (y)))
+    out = NAN;
+  else
+    out = isnan (y) ? x : (x >= y ? x : y);
+  return out;
+}
+
+inline double
+min (double x, double y, const bool nanflag, const bool realabs)
+{
+  double out;
+  if (! nanflag && (isnan (x) || isnan (y)))
+    out = NAN;
+  else if (realabs)
+    out = isnan (y) ? x : (x <= y ? x : y);
+  else
+    out = isnan (y) ? x :
+          (abs (x) < abs (y) ? x : (abs (x) == abs (y) && x <= y ? x : y));
+  return out;
+}
+
+inline double
+max (double x, double y, const bool nanflag, const bool realabs)
+{
+  double out;
+  if (! nanflag && (isnan (x) || isnan (y)))
+    out = NAN;
+  else if (realabs)
+    out = isnan (y) ? x : (x >= y ? x : y);
+  else
+    out = isnan (y) ? x :
+          (abs (x) > abs (y) ? x : (abs (x) == abs (y) && x >= y ? x : y));
+  return out;
 }
 
 inline float
@@ -409,42 +471,262 @@ max (float x, float y)
   return isnan (y) ? x : (x >= y ? x : y);
 }
 
+inline float
+min (float x, float y, const bool nanflag)
+{
+  float out;
+  if (! nanflag && (isnan (x) || isnan (y)))
+    out = NAN;
+  else
+    out = isnan (y) ? x : (x <= y ? x : y);
+  return out;
+}
+
+inline float
+max (float x, float y, const bool nanflag)
+{
+  float out;
+  if (! nanflag && (isnan (x) || isnan (y)))
+    out = NAN;
+  else
+    out = isnan (y) ? x : (x >= y ? x : y);
+  return out;
+}
+
+inline float
+min (float x, float y, const bool nanflag, const bool realabs)
+{
+  float out;
+  if (! nanflag && (isnan (x) || isnan (y)))
+    out = NAN;
+  else if (realabs)
+    out = isnan (y) ? x : (x <= y ? x : y);
+  else
+    out = isnan (y) ? x :
+          (abs (x) < abs (y) ? x : (abs (x) == abs (y) && x <= y ? x : y));
+  return out;
+}
+
+inline float
+max (float x, float y, const bool nanflag, const bool realabs)
+{
+  float out;
+  if (! nanflag && (isnan (x) || isnan (y)))
+    out = NAN;
+  else if (realabs)
+    out = isnan (y) ? x : (x >= y ? x : y);
+  else
+    out = isnan (y) ? x :
+          (abs (x) > abs (y) ? x : (abs (x) == abs (y) && x >= y ? x : y));
+  return out;
+}
+
 inline std::complex<double>
 min (const std::complex<double>& x, const std::complex<double>& y)
 {
-  return abs (x) <= abs (y) ? x : (isnan (x) ? x : y);
-}
-
-inline std::complex<float>
-min (const std::complex<float>& x, const std::complex<float>& y)
-{
-  return abs (x) <= abs (y) ? x : (isnan (x) ? x : y);
+  return isnan (y) ? x : (abs (x) < abs (y) ? x :
+         (abs (x) == abs (y) && std::arg (x) <= std::arg (y) ? x : y));
 }
 
 inline std::complex<double>
 max (const std::complex<double>& x, const std::complex<double>& y)
 {
-  return abs (x) >= abs (y) ? x : (isnan (x) ? x : y);
+  return isnan (y) ? x : (abs (x) > abs (y) ? x :
+         (abs (x) == abs (y) && std::arg (x) >= std::arg (y) ? x : y));
+}
+
+inline std::complex<double>
+min (const std::complex<double>& x, const std::complex<double>& y,
+     const bool nanflag)
+{
+  std::complex<double> out;
+  if (! nanflag && (isnan (x) || isnan (y)))
+    out = NAN;
+  else
+    out = isnan (y) ? x : (abs (x) < abs (y) ? x :
+          (abs (x) == abs (y) && std::arg (x) <= std::arg (y) ? x : y));
+  return out;
+}
+
+inline std::complex<double>
+max (const std::complex<double>& x, const std::complex<double>& y,
+     const bool nanflag)
+{
+  std::complex<double> out;
+  if (! nanflag && (isnan (x) || isnan (y)))
+    out = NAN;
+  else
+    out = isnan (y) ? x : (abs (x) > abs (y) ? x :
+          (abs (x) == abs (y) && std::arg (x) >= std::arg (y) ? x : y));
+  return out;
+}
+
+inline std::complex<double>
+min (const std::complex<double>& x, const std::complex<double>& y,
+     const bool nanflag, const bool realabs)
+{
+  std::complex<double> out;
+  if (! nanflag && (isnan (x) || isnan (y)))
+    out = NAN;
+  else if (realabs)
+    out = isnan (y) ? x : (std::real (x) < std::real (y) ? x :
+          (std::real (x) == std::real (y) &&
+           std::imag (x) <= std::imag (y) ? x : y));
+  else
+    out = isnan (y) ? x : (abs (x) < abs (y) ? x :
+          (abs (x) == abs (y) && std::arg (x) <= std::arg (y) ? x : y));
+  return out;
+}
+
+inline std::complex<double>
+max (const std::complex<double>& x, const std::complex<double>& y,
+     const bool nanflag, const bool realabs)
+{
+  std::complex<double> out;
+  if (! nanflag && (isnan (x) || isnan (y)))
+    out = NAN;
+  else if (realabs)
+    out = isnan (y) ? x : (std::real (x) > std::real (y) ? x :
+          (std::real (x) == std::real (y) &&
+           std::imag (x) >= std::imag (y) ? x : y));
+  else
+    out = isnan (y) ? x : (abs (x) > abs (y) ? x :
+          (abs (x) == abs (y) && std::arg (x) >= std::arg (y) ? x : y));
+  return out;
+}
+
+inline std::complex<float>
+min (const std::complex<float>& x, const std::complex<float>& y)
+{
+  return isnan (y) ? x : (abs (x) < abs (y) ? x :
+         (abs (x) == abs (y) && std::arg (x) <= std::arg (y) ? x : y));
 }
 
 inline std::complex<float>
 max (const std::complex<float>& x, const std::complex<float>& y)
 {
-  return abs (x) >= abs (y) ? x : (isnan (x) ? x : y);
+  return isnan (y) ? x : (abs (x) > abs (y) ? x :
+         (abs (x) == abs (y) && std::arg (x) >= std::arg (y) ? x : y));
+}
+
+inline std::complex<float>
+min (const std::complex<float>& x, const std::complex<float>& y,
+     const bool nanflag)
+{
+  std::complex<float> out;
+  if (! nanflag && (isnan (x) || isnan (y)))
+    out = NAN;
+  else
+    out = isnan (y) ? x : (abs (x) < abs (y) ? x :
+          (abs (x) == abs (y) && std::arg (x) <= std::arg (y) ? x : y));
+  return out;
+}
+
+inline std::complex<float>
+max (const std::complex<float>& x, const std::complex<float>& y,
+     const bool nanflag)
+{
+  std::complex<float> out;
+  if (! nanflag && (isnan (x) || isnan (y)))
+    out = NAN;
+  else
+    out = isnan (y) ? x : (abs (x) > abs (y) ? x :
+          (abs (x) == abs (y) && std::arg (x) >= std::arg (y) ? x : y));
+  return out;
+}
+
+inline std::complex<float>
+min (const std::complex<float>& x, const std::complex<float>& y,
+     const bool nanflag, const bool realabs)
+{
+  std::complex<float> out;
+  if (! nanflag && (isnan (x) || isnan (y)))
+    out = NAN;
+  else if (realabs)
+    out = isnan (y) ? x : (std::real (x) < std::real (y) ? x :
+          (std::real (x) == std::real (y) &&
+           std::imag (x) <= std::imag (y) ? x : y));
+  else
+    out = isnan (y) ? x : (abs (x) < abs (y) ? x :
+          (abs (x) == abs (y) && std::arg (x) <= std::arg (y) ? x : y));
+  return out;
+}
+
+inline std::complex<float>
+max (const std::complex<float>& x, const std::complex<float>& y,
+     const bool nanflag, const bool realabs)
+{
+  std::complex<float> out;
+  if (! nanflag && (isnan (x) || isnan (y)))
+    out = NAN;
+  else if (realabs)
+    out = isnan (y) ? x : (std::real (x) > std::real (y) ? x :
+          (std::real (x) == std::real (y) &&
+           std::imag (x) >= std::imag (y) ? x : y));
+  else
+    out = isnan (y) ? x : (abs (x) > abs (y) ? x :
+          (abs (x) == abs (y) && std::arg (x) >= std::arg (y) ? x : y));
+  return out;
 }
 
 template <typename T>
 inline octave_int<T>
 min (const octave_int<T>& x, const octave_int<T>& y)
 {
-  return xmin (x, y);
+  return x.value () <= y.value () ? x : y;
 }
 
 template <typename T>
 inline octave_int<T>
 max (const octave_int<T>& x, const octave_int<T>& y)
 {
-  return xmax (x, y);
+  return x.value () >= y.value () ? x : y;
+}
+
+template <typename T>
+inline octave_int<T>
+min (const octave_int<T>& x, const octave_int<T>& y,
+     [[maybe_unused]] const bool nanflag)
+{
+  return x.value () <= y.value () ? x : y;
+}
+
+template <typename T>
+inline octave_int<T>
+max (const octave_int<T>& x, const octave_int<T>& y,
+     [[maybe_unused]] const bool nanflag)
+{
+  return x.value () >= y.value () ? x : y;
+}
+
+template <typename T>
+inline octave_int<T>
+min (const octave_int<T>& x, const octave_int<T>& y,
+     [[maybe_unused]] const bool nanflag, const bool realabs)
+{
+  octave_int<T> out;
+  if (realabs)
+    out = x.value () <= y.value () ? x : y;
+  else
+    out = abs (x.value ()) < abs (y.value ()) ? x :
+          (abs (x.value ()) == abs (y.value ()) &&
+           x.value () <= y.value () ? x : y);
+  return out;
+}
+
+template <typename T>
+inline octave_int<T>
+max (const octave_int<T>& x, const octave_int<T>& y,
+     [[maybe_unused]] const bool nanflag, const bool realabs)
+{
+  octave_int<T> out;
+  if (realabs)
+    out = x.value () >= y.value () ? x : y;
+  else
+    out = abs (x.value ()) > abs (y.value ()) ? x :
+          (abs (x.value ()) == abs (y.value ()) &&
+           x.value () >= y.value () ? x : y);
+  return out;
 }
 
 // These map reals to Complex.

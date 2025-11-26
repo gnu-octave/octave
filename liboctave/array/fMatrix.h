@@ -367,11 +367,20 @@ public:
   OCTAVE_API FloatMatrix& operator += (const FloatDiagMatrix& a);
   OCTAVE_API FloatMatrix& operator -= (const FloatDiagMatrix& a);
 
-  OCTAVE_API FloatMatrix cumprod (int dim = -1) const;
-  OCTAVE_API FloatMatrix cumsum (int dim = -1) const;
-  OCTAVE_API FloatMatrix prod (int dim = -1) const;
-  OCTAVE_API FloatMatrix sum (int dim = -1) const;
-  OCTAVE_API FloatMatrix sumsq (int dim = -1) const;
+  // other operations
+
+  OCTAVE_API boolMatrix all (int dim = -1) const;
+  OCTAVE_API boolMatrix any (int dim = -1) const;
+
+  OCTAVE_API FloatMatrix flip (int dim = -1) const;
+  OCTAVE_API FloatMatrix cumprod (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API FloatMatrix cumsum (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API FloatMatrix prod (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API Matrix dprod (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API FloatMatrix sum (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API Matrix dsum (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API FloatMatrix sumsq (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API Matrix dsumsq (int dim = -1, bool nanflag = false) const;
   OCTAVE_API FloatMatrix abs () const;
 
   OCTAVE_API FloatMatrix diag (octave_idx_type k = 0) const;
@@ -422,13 +431,37 @@ extern OCTAVE_API FloatMatrix xgemm (const FloatMatrix& a, const FloatMatrix& b,
 extern OCTAVE_API FloatMatrix operator * (const FloatMatrix& a,
                                           const FloatMatrix& b);
 
-extern OCTAVE_API FloatMatrix min (float d, const FloatMatrix& m);
-extern OCTAVE_API FloatMatrix min (const FloatMatrix& m, float d);
+extern OCTAVE_API FloatMatrix min (float f, const FloatMatrix& m);
+extern OCTAVE_API FloatMatrix min (float f, const FloatMatrix& m,
+                                   const bool nanflag);
+extern OCTAVE_API FloatMatrix min (float f, const FloatMatrix& m,
+                                   const bool nanflag, const bool realabs);
+extern OCTAVE_API FloatMatrix min (const FloatMatrix& m, float f);
+extern OCTAVE_API FloatMatrix min (const FloatMatrix& m, float f,
+                                   const bool nanflag);
+extern OCTAVE_API FloatMatrix min (const FloatMatrix& m, float f,
+                                   const bool nanflag, const bool realabs);
 extern OCTAVE_API FloatMatrix min (const FloatMatrix& a, const FloatMatrix& b);
+extern OCTAVE_API FloatMatrix min (const FloatMatrix& a, const FloatMatrix& b,
+                                   const bool nanflag);
+extern OCTAVE_API FloatMatrix min (const FloatMatrix& a, const FloatMatrix& b,
+                                   const bool nanflag, const bool realabs);
 
-extern OCTAVE_API FloatMatrix max (float d, const FloatMatrix& m);
-extern OCTAVE_API FloatMatrix max (const FloatMatrix& m, float d);
+extern OCTAVE_API FloatMatrix max (float f, const FloatMatrix& m);
+extern OCTAVE_API FloatMatrix max (float f, const FloatMatrix& m,
+                                   const bool nanflag);
+extern OCTAVE_API FloatMatrix max (float f, const FloatMatrix& m,
+                                   const bool nanflag, const bool realabs);
+extern OCTAVE_API FloatMatrix max (const FloatMatrix& m, float f);
+extern OCTAVE_API FloatMatrix max (const FloatMatrix& m, float f,
+                                   const bool nanflag);
+extern OCTAVE_API FloatMatrix max (const FloatMatrix& m, float f,
+                                   const bool nanflag, const bool realabs);
 extern OCTAVE_API FloatMatrix max (const FloatMatrix& a, const FloatMatrix& b);
+extern OCTAVE_API FloatMatrix max (const FloatMatrix& a, const FloatMatrix& b,
+                                   const bool nanflag);
+extern OCTAVE_API FloatMatrix max (const FloatMatrix& a, const FloatMatrix& b,
+                                   const bool nanflag, const bool realabs);
 
 extern OCTAVE_API FloatMatrix linspace (const FloatColumnVector& x1,
                                         const FloatColumnVector& x2,

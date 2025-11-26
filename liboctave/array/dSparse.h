@@ -101,10 +101,16 @@ public:
 
   OCTAVE_API bool issymmetric () const;
 
-  OCTAVE_API SparseMatrix max (int dim = -1) const;
-  OCTAVE_API SparseMatrix max (Array<octave_idx_type>& index, int dim = -1) const;
-  OCTAVE_API SparseMatrix min (int dim = -1) const;
-  OCTAVE_API SparseMatrix min (Array<octave_idx_type>& index, int dim = -1) const;
+  OCTAVE_API SparseMatrix
+  max (int dim = -1, bool nanflag = true, bool realabs = true) const;
+  OCTAVE_API SparseMatrix
+  max (Array<octave_idx_type>& index, int dim = -1,
+       bool nanflag = true, bool realabs = true) const;
+  OCTAVE_API SparseMatrix
+  min (int dim = -1, bool nanflag = true, bool realabs = true) const;
+  OCTAVE_API SparseMatrix
+  min (Array<octave_idx_type>& index, int dim = -1,
+       bool nanflag = true, bool realabs = true) const;
 
   // destructive insert/delete/reorder operations
 
@@ -434,11 +440,11 @@ public:
   OCTAVE_API SparseBoolMatrix all (int dim = -1) const;
   OCTAVE_API SparseBoolMatrix any (int dim = -1) const;
 
-  OCTAVE_API SparseMatrix cumprod (int dim = -1) const;
-  OCTAVE_API SparseMatrix cumsum (int dim = -1) const;
-  OCTAVE_API SparseMatrix prod (int dim = -1) const;
-  OCTAVE_API SparseMatrix sum (int dim = -1) const;
-  OCTAVE_API SparseMatrix sumsq (int dim = -1) const;
+  OCTAVE_API SparseMatrix cumprod (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API SparseMatrix cumsum (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API SparseMatrix prod (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API SparseMatrix sum (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API SparseMatrix sumsq (int dim = -1, bool nanflag = false) const;
   OCTAVE_API SparseMatrix abs () const;
 
   OCTAVE_API SparseMatrix diag (octave_idx_type k = 0) const;
@@ -501,14 +507,40 @@ extern OCTAVE_API SparseMatrix operator * (const SparseMatrix&,
                                            const PermMatrix&);
 
 extern OCTAVE_API SparseMatrix min (double d, const SparseMatrix& m);
+extern OCTAVE_API SparseMatrix min (double d, const SparseMatrix& m,
+                                    const bool nanflag);
+extern OCTAVE_API SparseMatrix min (double d, const SparseMatrix& m,
+                                    const bool nanflag, const bool realabs);
 extern OCTAVE_API SparseMatrix min (const SparseMatrix& m, double d);
+extern OCTAVE_API SparseMatrix min (const SparseMatrix& m, double d,
+                                    const bool nanflag);
+extern OCTAVE_API SparseMatrix min (const SparseMatrix& m, double d,
+                                    const bool nanflag, const bool realabs);
 extern OCTAVE_API SparseMatrix min (const SparseMatrix& a,
                                     const SparseMatrix& b);
+extern OCTAVE_API SparseMatrix min (const SparseMatrix& a,
+                                    const SparseMatrix& b, const bool nanflag);
+extern OCTAVE_API SparseMatrix min (const SparseMatrix& a,
+                                    const SparseMatrix& b,
+                                    const bool nanflag, const bool realabs);
 
 extern OCTAVE_API SparseMatrix max (double d, const SparseMatrix& m);
+extern OCTAVE_API SparseMatrix max (double d, const SparseMatrix& m,
+                                    const bool nanflag);
+extern OCTAVE_API SparseMatrix max (double d, const SparseMatrix& m,
+                                    const bool nanflag, const bool realabs);
 extern OCTAVE_API SparseMatrix max (const SparseMatrix& m, double d);
+extern OCTAVE_API SparseMatrix max (const SparseMatrix& m, double d,
+                                    const bool nanflag);
+extern OCTAVE_API SparseMatrix max (const SparseMatrix& m, double d,
+                                    const bool nanflag, const bool realabs);
 extern OCTAVE_API SparseMatrix max (const SparseMatrix& a,
                                     const SparseMatrix& b);
+extern OCTAVE_API SparseMatrix max (const SparseMatrix& a,
+                                    const SparseMatrix& b, const bool nanflag);
+extern OCTAVE_API SparseMatrix max (const SparseMatrix& a,
+                                    const SparseMatrix& b,
+                                    const bool nanflag, const bool realabs);
 
 SPARSE_SMS_CMP_OP_DECLS (SparseMatrix, double, OCTAVE_API)
 SPARSE_SMS_BOOL_OP_DECLS (SparseMatrix, double, OCTAVE_API)

@@ -364,11 +364,12 @@ public:
   OCTAVE_API boolMatrix all (int dim = -1) const;
   OCTAVE_API boolMatrix any (int dim = -1) const;
 
-  OCTAVE_API Matrix cumprod (int dim = -1) const;
-  OCTAVE_API Matrix cumsum (int dim = -1) const;
-  OCTAVE_API Matrix prod (int dim = -1) const;
-  OCTAVE_API Matrix sum (int dim = -1) const;
-  OCTAVE_API Matrix sumsq (int dim = -1) const;
+  OCTAVE_API Matrix flip (int dim = -1) const;
+  OCTAVE_API Matrix cumprod (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API Matrix cumsum (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API Matrix prod (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API Matrix sum (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API Matrix sumsq (int dim = -1, bool nanflag = false) const;
   OCTAVE_API Matrix abs () const;
 
   OCTAVE_API Matrix diag (octave_idx_type k = 0) const;
@@ -419,12 +420,32 @@ extern OCTAVE_API Matrix xgemm (const Matrix& a, const Matrix& b,
 extern OCTAVE_API Matrix operator * (const Matrix& a, const Matrix& b);
 
 extern OCTAVE_API Matrix min (double d, const Matrix& m);
+extern OCTAVE_API Matrix min (double d, const Matrix& m, const bool nanflag);
+extern OCTAVE_API Matrix
+min (double d, const Matrix& m, const bool nanflag, const bool realabs);
 extern OCTAVE_API Matrix min (const Matrix& m, double d);
+extern OCTAVE_API Matrix min (const Matrix& m, double d, const bool nanflag);
+extern OCTAVE_API Matrix
+min (const Matrix& m, double d, const bool nanflag, const bool realabs);
 extern OCTAVE_API Matrix min (const Matrix& a, const Matrix& b);
+extern OCTAVE_API Matrix
+min (const Matrix& a, const Matrix& b, const bool nanflag);
+extern OCTAVE_API Matrix
+min (const Matrix& a, const Matrix& b, const bool nanflag, const bool realabs);
 
 extern OCTAVE_API Matrix max (double d, const Matrix& m);
+extern OCTAVE_API Matrix max (double d, const Matrix& m, const bool nanflag);
+extern OCTAVE_API Matrix
+max (double d, const Matrix& m, const bool nanflag, const bool realabs);
 extern OCTAVE_API Matrix max (const Matrix& m, double d);
+extern OCTAVE_API Matrix max (const Matrix& m, double d, const bool nanflag);
+extern OCTAVE_API Matrix
+max (const Matrix& m, double d, const bool nanflag, const bool realabs);
 extern OCTAVE_API Matrix max (const Matrix& a, const Matrix& b);
+extern OCTAVE_API Matrix
+max (const Matrix& a, const Matrix& b, const bool nanflag);
+extern OCTAVE_API Matrix
+max (const Matrix& a, const Matrix& b, const bool nanflag, const bool realabs);
 
 extern OCTAVE_API Matrix linspace (const ColumnVector& x1,
                                    const ColumnVector& x2,

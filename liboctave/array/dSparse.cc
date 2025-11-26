@@ -180,14 +180,15 @@ SparseMatrix::insert (const SparseMatrix& a, const Array<octave_idx_type>& indx)
 }
 
 SparseMatrix
-SparseMatrix::max (int dim) const
+SparseMatrix::max (int dim, bool nanflag, bool realabs) const
 {
   Array<octave_idx_type> dummy_idx;
-  return max (dummy_idx, dim);
+  return max (dummy_idx, dim, nanflag, realabs);
 }
 
 SparseMatrix
-SparseMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
+SparseMatrix::max (Array<octave_idx_type>& idx_arg, int dim,
+                   bool nanflag, bool realabs) const
 {
   SparseMatrix result;
   const dim_vector& dv = dims ();
@@ -211,38 +212,107 @@ SparseMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
         return SparseMatrix (nr == 0 ? 0 : 1, nc);
 
       octave_idx_type nel = 0;
-      for (octave_idx_type j = 0; j < nc; j++)
+      if (realabs)
         {
-          double tmp_max = octave::numeric_limits<double>::NaN ();
-          octave_idx_type idx_j = 0;
-          for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+          for (octave_idx_type j = 0; j < nc; j++)
             {
-              if (ridx (i) != idx_j)
-                break;
-              else
-                idx_j++;
-            }
-
-          if (idx_j != nr)
-            tmp_max = 0.;
-
-          for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
-            {
-              double tmp = data (i);
-
-              if (octave::math::isnan (tmp))
-                continue;
-              else if (octave::math::isnan (tmp_max) || tmp > tmp_max)
+              double tmp_max = octave::numeric_limits<double>::NaN ();
+              octave_idx_type idx_j = 0;
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
                 {
-                  idx_j = ridx (i);
-                  tmp_max = tmp;
+                  if (ridx (i) != idx_j)
+                    break;
+                  else
+                    idx_j++;
                 }
 
-            }
+              if (idx_j != nr)
+                tmp_max = 0.;
 
-          idx_arg.elem (j) = (octave::math::isnan (tmp_max) ? 0 : idx_j);
-          if (tmp_max != 0.)
-            nel++;
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                {
+                  double tmp = data (i);
+
+                  if (octave::math::isnan (tmp) && ! nanflag)
+                    {
+                      idx_j = ridx (i);
+                      tmp_max = tmp;
+                      break;
+                    }
+                  else if (octave::math::isnan (tmp))
+                    continue;
+                  else if (octave::math::isnan (tmp_max) || tmp > tmp_max)
+                    {
+                      idx_j = ridx (i);
+                      tmp_max = tmp;
+                    }
+
+                }
+
+              if (octave::math::isnan (tmp_max) && ! nanflag)
+                idx_arg.elem (j) = idx_j;
+              else
+                idx_arg.elem (j) = (octave::math::isnan (tmp_max) ? 0 : idx_j);
+              if (tmp_max != 0.)
+                nel++;
+            }
+        }
+      else
+        {
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              double tmp_max = octave::numeric_limits<double>::NaN ();
+              double abs_max = octave::numeric_limits<double>::NaN ();
+              octave_idx_type idx_j = 0;
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                {
+                  if (ridx (i) != idx_j)
+                    break;
+                  else
+                    idx_j++;
+                }
+
+              if (idx_j != nr)
+                {
+                  tmp_max = 0.;
+                  abs_max = 0.;
+                }
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                {
+                  double tmp = data (i);
+
+                  if (octave::math::isnan (tmp) && ! nanflag)
+                    {
+                      idx_j = ridx (i);
+                      tmp_max = tmp;
+                      break;
+                    }
+                  else if (octave::math::isnan (tmp))
+                    continue;
+
+                  double abs_tmp = std::abs (tmp);
+                  if (octave::math::isnan (abs_max) || abs_tmp > abs_max)
+                    {
+                      idx_j = ridx (i);
+                      tmp_max = tmp;
+                      abs_max = abs_tmp;
+                    }
+                  else if (abs_tmp == abs_max && tmp > tmp_max)
+                    {
+                      idx_j = ridx (i);
+                      tmp_max = tmp;
+                      abs_max = abs_tmp;
+                    }
+
+                }
+
+              if (octave::math::isnan (tmp_max) && ! nanflag)
+                idx_arg.elem (j) = idx_j;
+              else
+                idx_arg.elem (j) = (octave::math::isnan (tmp_max) ? 0 : idx_j);
+              if (tmp_max != 0.)
+                nel++;
+            }
         }
 
       result = SparseMatrix (1, nc, nel);
@@ -282,18 +352,53 @@ SparseMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
         if (found[i] > -nc && found[i] < 0)
           idx_arg.elem (i) = -found[i];
 
-      for (octave_idx_type j = 0; j < nc; j++)
+      if (realabs)
         {
-          for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+          for (octave_idx_type j = 0; j < nc; j++)
             {
-              octave_idx_type ir = ridx (i);
-              octave_idx_type ix = idx_arg.elem (ir);
-              double tmp = data (i);
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                {
+                  octave_idx_type ir = ridx (i);
+                  octave_idx_type ix = idx_arg.elem (ir);
+                  double tmp = data (i);
 
-              if (octave::math::isnan (tmp))
-                continue;
-              else if (ix == -1 || tmp > elem (ir, ix))
-                idx_arg.elem (ir) = j;
+                  if (octave::math::isnan (tmp) && ! nanflag)
+                    {
+                      idx_arg.elem (ir) = j;
+                      break;
+                    }
+                  else if (octave::math::isnan (tmp))
+                    continue;
+                  else if (ix == -1 || octave::math::isnan (elem (ir, ix)) ||
+                           tmp > elem (ir, ix))
+                    idx_arg.elem (ir) = j;
+                }
+            }
+        }
+      else
+        {
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                {
+                  octave_idx_type ir = ridx (i);
+                  octave_idx_type ix = idx_arg.elem (ir);
+                  double tmp = data (i);
+
+                  if (octave::math::isnan (tmp) && ! nanflag)
+                    {
+                      idx_arg.elem (ir) = j;
+                      break;
+                    }
+                  else if (octave::math::isnan (tmp))
+                    continue;
+                  else if (ix == -1 || octave::math::isnan (elem (ir, ix)) ||
+                           std::abs (tmp) > std::abs (elem (ir, ix)))
+                    idx_arg.elem (ir) = j;
+                  else if (std::abs (tmp) == std::abs (elem (ir, ix)) &&
+                           tmp > elem (ir, ix))
+                    idx_arg.elem (ir) = j;
+                }
             }
         }
 
@@ -331,14 +436,15 @@ SparseMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
 }
 
 SparseMatrix
-SparseMatrix::min (int dim) const
+SparseMatrix::min (int dim, bool nanflag, bool realabs) const
 {
   Array<octave_idx_type> dummy_idx;
-  return min (dummy_idx, dim);
+  return min (dummy_idx, dim, nanflag, realabs);
 }
 
 SparseMatrix
-SparseMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
+SparseMatrix::min (Array<octave_idx_type>& idx_arg, int dim,
+                   bool nanflag, bool realabs) const
 {
   SparseMatrix result;
   const dim_vector& dv = dims ();
@@ -362,38 +468,107 @@ SparseMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
         return SparseMatrix (nr == 0 ? 0 : 1, nc);
 
       octave_idx_type nel = 0;
-      for (octave_idx_type j = 0; j < nc; j++)
+      if (realabs)
         {
-          double tmp_min = octave::numeric_limits<double>::NaN ();
-          octave_idx_type idx_j = 0;
-          for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+          for (octave_idx_type j = 0; j < nc; j++)
             {
-              if (ridx (i) != idx_j)
-                break;
-              else
-                idx_j++;
-            }
-
-          if (idx_j != nr)
-            tmp_min = 0.;
-
-          for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
-            {
-              double tmp = data (i);
-
-              if (octave::math::isnan (tmp))
-                continue;
-              else if (octave::math::isnan (tmp_min) || tmp < tmp_min)
+              double tmp_max = octave::numeric_limits<double>::NaN ();
+              octave_idx_type idx_j = 0;
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
                 {
-                  idx_j = ridx (i);
-                  tmp_min = tmp;
+                  if (ridx (i) != idx_j)
+                    break;
+                  else
+                    idx_j++;
                 }
 
-            }
+              if (idx_j != nr)
+                tmp_max = 0.;
 
-          idx_arg.elem (j) = (octave::math::isnan (tmp_min) ? 0 : idx_j);
-          if (tmp_min != 0.)
-            nel++;
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                {
+                  double tmp = data (i);
+
+                  if (octave::math::isnan (tmp) && ! nanflag)
+                    {
+                      idx_j = ridx (i);
+                      tmp_max = tmp;
+                      break;
+                    }
+                  else if (octave::math::isnan (tmp))
+                    continue;
+                  else if (octave::math::isnan (tmp_max) || tmp < tmp_max)
+                    {
+                      idx_j = ridx (i);
+                      tmp_max = tmp;
+                    }
+
+                }
+
+              if (octave::math::isnan (tmp_max) && ! nanflag)
+                idx_arg.elem (j) = idx_j;
+              else
+                idx_arg.elem (j) = (octave::math::isnan (tmp_max) ? 0 : idx_j);
+              if (tmp_max != 0.)
+                nel++;
+            }
+        }
+      else
+        {
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              double tmp_max = octave::numeric_limits<double>::NaN ();
+              double abs_max = octave::numeric_limits<double>::NaN ();
+              octave_idx_type idx_j = 0;
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                {
+                  if (ridx (i) != idx_j)
+                    break;
+                  else
+                    idx_j++;
+                }
+
+              if (idx_j != nr)
+                {
+                  tmp_max = 0.;
+                  abs_max = 0.;
+                }
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                {
+                  double tmp = data (i);
+
+                  if (octave::math::isnan (tmp) && ! nanflag)
+                    {
+                      idx_j = ridx (i);
+                      tmp_max = tmp;
+                      break;
+                    }
+                  else if (octave::math::isnan (tmp))
+                    continue;
+
+                  double abs_tmp = std::abs (tmp);
+                  if (octave::math::isnan (abs_max) || abs_tmp < abs_max)
+                    {
+                      idx_j = ridx (i);
+                      tmp_max = tmp;
+                      abs_max = abs_tmp;
+                    }
+                  else if (abs_tmp == abs_max && tmp < tmp_max)
+                    {
+                      idx_j = ridx (i);
+                      tmp_max = tmp;
+                      abs_max = abs_tmp;
+                    }
+
+                }
+
+              if (octave::math::isnan (tmp_max) && ! nanflag)
+                idx_arg.elem (j) = idx_j;
+              else
+                idx_arg.elem (j) = (octave::math::isnan (tmp_max) ? 0 : idx_j);
+              if (tmp_max != 0.)
+                nel++;
+            }
         }
 
       result = SparseMatrix (1, nc, nel);
@@ -433,18 +608,53 @@ SparseMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
         if (found[i] > -nc && found[i] < 0)
           idx_arg.elem (i) = -found[i];
 
-      for (octave_idx_type j = 0; j < nc; j++)
+      if (realabs)
         {
-          for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+          for (octave_idx_type j = 0; j < nc; j++)
             {
-              octave_idx_type ir = ridx (i);
-              octave_idx_type ix = idx_arg.elem (ir);
-              double tmp = data (i);
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                {
+                  octave_idx_type ir = ridx (i);
+                  octave_idx_type ix = idx_arg.elem (ir);
+                  double tmp = data (i);
 
-              if (octave::math::isnan (tmp))
-                continue;
-              else if (ix == -1 || tmp < elem (ir, ix))
-                idx_arg.elem (ir) = j;
+                  if (octave::math::isnan (tmp) && ! nanflag)
+                    {
+                      idx_arg.elem (ir) = j;
+                      break;
+                    }
+                  else if (octave::math::isnan (tmp))
+                    continue;
+                  else if (ix == -1 || octave::math::isnan (elem (ir, ix)) ||
+                           tmp < elem (ir, ix))
+                    idx_arg.elem (ir) = j;
+                }
+            }
+        }
+      else
+        {
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                {
+                  octave_idx_type ir = ridx (i);
+                  octave_idx_type ix = idx_arg.elem (ir);
+                  double tmp = data (i);
+
+                  if (octave::math::isnan (tmp) && ! nanflag)
+                    {
+                      idx_arg.elem (ir) = j;
+                      break;
+                    }
+                  else if (octave::math::isnan (tmp))
+                    continue;
+                  else if (ix == -1 || octave::math::isnan (elem (ir, ix)) ||
+                           std::abs (tmp) < std::abs (elem (ir, ix)))
+                    idx_arg.elem (ir) = j;
+                  else if (std::abs (tmp) == std::abs (elem (ir, ix)) &&
+                           tmp < elem (ir, ix))
+                    idx_arg.elem (ir) = j;
+                }
             }
         }
 
@@ -7345,45 +7555,98 @@ SparseMatrix::any (int dim) const
 }
 
 SparseMatrix
-SparseMatrix::cumprod (int dim) const
+SparseMatrix::cumprod (int dim, bool nanflag) const
 {
   SPARSE_CUMPROD (SparseMatrix, double, cumprod);
 }
 
 SparseMatrix
-SparseMatrix::cumsum (int dim) const
+SparseMatrix::cumsum (int dim, bool nanflag) const
 {
-  SPARSE_CUMSUM (SparseMatrix, double, cumsum);
+#define NAN_EXPR                           \
+  if (! octave::math::isnan (data (j)))    \
+    t += data (j);                         \
+  else                                     \
+    t += 0.0
+
+#define EXPR                               \
+  t += data (j)
+
+  SPARSE_CUMSUM (SparseMatrix, double, cumsum, NAN_EXPR, EXPR);
+
+#undef NAN_EXPR
+#undef EXPR
 }
 
 SparseMatrix
-SparseMatrix::prod (int dim) const
+SparseMatrix::prod (int dim, bool nanflag) const
 {
   if ((rows () == 1 && dim == -1) || dim == 1)
-    return transpose ().prod (0).transpose ();
+    return transpose ().prod (0, nanflag).transpose ();
   else
     {
-      SPARSE_REDUCTION_OP (SparseMatrix, double, *=,
-                           (cidx (j+1) - cidx (j) < nr ? 0.0 : 1.0), 1.0);
+    #define ROW_EXPR                           \
+      double d = data (i);                     \
+      if (nanflag && octave::math::isnan (d))  \
+        tmp[ridx (i)] *= 1.0;                  \
+      else                                     \
+        tmp[ridx (i)] *= d
+
+    #define COL_EXPR                           \
+      double d = data (i);                     \
+      if (nanflag && octave::math::isnan (d))  \
+        tmp[j] *= 1.0;                         \
+      else                                     \
+        tmp[j] *= d
+
+      SPARSE_BASE_REDUCTION_OP (SparseMatrix, double, ROW_EXPR, COL_EXPR,
+                                (cidx (j+1) - cidx (j) < nr ? 0.0 : 1.0), 1.0);
+
+    #undef ROW_EXPR
+    #undef COL_EXPR
     }
 }
 
 SparseMatrix
-SparseMatrix::sum (int dim) const
+SparseMatrix::sum (int dim, bool nanflag) const
 {
-  SPARSE_REDUCTION_OP (SparseMatrix, double, +=, 0.0, 0.0);
+#define ROW_EXPR                           \
+  double d = data (i);                     \
+  if (nanflag && octave::math::isnan (d))  \
+    tmp[ridx (i)] += 0.0;                  \
+  else                                     \
+    tmp[ridx (i)] += d
+
+#define COL_EXPR                           \
+  double d = data (i);                     \
+  if (nanflag && octave::math::isnan (d))  \
+    tmp[j] += 0.0;                         \
+  else                                     \
+    tmp[j] += d
+
+  SPARSE_BASE_REDUCTION_OP (SparseMatrix, double, ROW_EXPR, COL_EXPR,
+                            0.0, 0.0);
+
+#undef ROW_EXPR
+#undef COL_EXPR
 }
 
 SparseMatrix
-SparseMatrix::sumsq (int dim) const
+SparseMatrix::sumsq (int dim, bool nanflag) const
 {
-#define ROW_EXPR                                \
-  double d = data (i);                          \
-  tmp[ridx (i)] += d * d
+#define ROW_EXPR                           \
+  double d = data (i);                     \
+  if (nanflag && octave::math::isnan (d))  \
+    tmp[ridx (i)] += 0.0;                  \
+  else                                     \
+    tmp[ridx (i)] += d * d
 
-#define COL_EXPR                                \
-  double d = data (i);                          \
-  tmp[j] += d * d
+#define COL_EXPR                           \
+  double d = data (i);                     \
+  if (nanflag && octave::math::isnan (d))  \
+    tmp[j] += 0.0;                         \
+  else                                     \
+    tmp[j] += d * d
 
   SPARSE_BASE_REDUCTION_OP (SparseMatrix, double, ROW_EXPR, COL_EXPR,
                             0.0, 0.0);
@@ -7563,6 +7826,21 @@ operator * (const SparseMatrix& a, const PermMatrix& p)
 SparseMatrix
 min (double d, const SparseMatrix& m)
 {
+  const bool nanflag = true;
+  const bool realabs = true;
+  return min (d, m, nanflag, realabs);
+}
+
+SparseMatrix
+min (double d, const SparseMatrix& m, const bool nanflag)
+{
+  const bool realabs = true;
+  return min (d, m, nanflag, realabs);
+}
+
+SparseMatrix
+min (double d, const SparseMatrix& m, const bool nanflag, const bool realabs)
+{
   SparseMatrix result;
 
   octave_idx_type nr = m.rows ();
@@ -7577,7 +7855,7 @@ min (double d, const SparseMatrix& m)
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
           {
-            double tmp = octave::math::min (d, m.data (i));
+            double tmp = octave::math::min (d, m.data (i), nanflag, realabs);
             if (tmp != 0.)
               {
                 octave_idx_type idx = m.ridx (i) + j * nr;
@@ -7591,7 +7869,7 @@ min (double d, const SparseMatrix& m)
       octave_idx_type nel = 0;
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
-          if (octave::math::min (d, m.data (i)) != 0.)
+          if (octave::math::min (d, m.data (i), nanflag, realabs) != 0.)
             nel++;
 
       result = SparseMatrix (nr, nc, nel);
@@ -7602,7 +7880,7 @@ min (double d, const SparseMatrix& m)
         {
           for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
             {
-              double tmp = octave::math::min (d, m.data (i));
+              double tmp = octave::math::min (d, m.data (i), nanflag, realabs);
 
               if (tmp != 0.)
                 {
@@ -7620,11 +7898,42 @@ min (double d, const SparseMatrix& m)
 SparseMatrix
 min (const SparseMatrix& m, double d)
 {
-  return min (d, m);
+  const bool nanflag = true;
+  const bool realabs = true;
+  return min (d, m, nanflag, realabs);
+}
+
+SparseMatrix
+min (const SparseMatrix& m, double d, const bool nanflag)
+{
+  const bool realabs = true;
+  return min (d, m, nanflag, realabs);
+}
+
+SparseMatrix
+min (const SparseMatrix& m, double d, const bool nanflag, const bool realabs)
+{
+  return min (d, m, nanflag, realabs);
 }
 
 SparseMatrix
 min (const SparseMatrix& a, const SparseMatrix& b)
+{
+  const bool nanflag = true;
+  const bool realabs = true;
+  return min (a, b, nanflag, realabs);
+}
+
+SparseMatrix
+min (const SparseMatrix& a, const SparseMatrix& b, const bool nanflag)
+{
+  const bool realabs = true;
+  return min (a, b, nanflag, realabs);
+}
+
+SparseMatrix
+min (const SparseMatrix& a, const SparseMatrix& b, const bool nanflag,
+     const bool realabs)
 {
   SparseMatrix r;
 
@@ -7654,7 +7963,8 @@ min (const SparseMatrix& a, const SparseMatrix& b)
               octave_quit ();
               if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
                 {
-                  double tmp = octave::math::min (a.data (ja), 0.);
+                  double tmp = octave::math::min (a.data (ja), 0.,
+                                                  nanflag, realabs);
                   if (tmp != 0.)
                     {
                       r.ridx (jx) = a.ridx (ja);
@@ -7667,7 +7977,8 @@ min (const SparseMatrix& a, const SparseMatrix& b)
               else if ((! ja_lt_max)
                        || (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
                 {
-                  double tmp = octave::math::min (0., b.data (jb));
+                  double tmp = octave::math::min (0., b.data (jb),
+                                                  nanflag, realabs);
                   if (tmp != 0.)
                     {
                       r.ridx (jx) = b.ridx (jb);
@@ -7679,7 +7990,8 @@ min (const SparseMatrix& a, const SparseMatrix& b)
                 }
               else
                 {
-                  double tmp = octave::math::min (a.data (ja), b.data (jb));
+                  double tmp = octave::math::min (a.data (ja), b.data (jb),
+                                                  nanflag, realabs);
                   if (tmp != 0.)
                     {
                       r.data (jx) = tmp;
@@ -7713,6 +8025,21 @@ min (const SparseMatrix& a, const SparseMatrix& b)
 SparseMatrix
 max (double d, const SparseMatrix& m)
 {
+  const bool nanflag = true;
+  const bool realabs = true;
+  return max (d, m, nanflag, realabs);
+}
+
+SparseMatrix
+max (double d, const SparseMatrix& m, const bool nanflag)
+{
+  const bool realabs = true;
+  return max (d, m, nanflag, realabs);
+}
+
+SparseMatrix
+max (double d, const SparseMatrix& m, const bool nanflag, const bool realabs)
+{
   SparseMatrix result;
 
   octave_idx_type nr = m.rows ();
@@ -7727,7 +8054,7 @@ max (double d, const SparseMatrix& m)
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
           {
-            double tmp = octave::math::max (d, m.data (i));
+            double tmp = octave::math::max (d, m.data (i), nanflag, realabs);
 
             if (tmp != 0.)
               {
@@ -7742,7 +8069,7 @@ max (double d, const SparseMatrix& m)
       octave_idx_type nel = 0;
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
-          if (octave::math::max (d, m.data (i)) != 0.)
+          if (octave::math::max (d, m.data (i), nanflag, realabs) != 0.)
             nel++;
 
       result = SparseMatrix (nr, nc, nel);
@@ -7753,7 +8080,7 @@ max (double d, const SparseMatrix& m)
         {
           for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
             {
-              double tmp = octave::math::max (d, m.data (i));
+              double tmp = octave::math::max (d, m.data (i), nanflag, realabs);
               if (tmp != 0.)
                 {
                   result.xdata (ii) = tmp;
@@ -7770,11 +8097,42 @@ max (double d, const SparseMatrix& m)
 SparseMatrix
 max (const SparseMatrix& m, double d)
 {
-  return max (d, m);
+  const bool nanflag = true;
+  const bool realabs = true;
+  return max (d, m, nanflag, realabs);
+}
+
+SparseMatrix
+max (const SparseMatrix& m, double d, const bool nanflag)
+{
+  const bool realabs = true;
+  return max (d, m, nanflag, realabs);
+}
+
+SparseMatrix
+max (const SparseMatrix& m, double d, const bool nanflag, const bool realabs)
+{
+  return max (d, m, nanflag, realabs);
 }
 
 SparseMatrix
 max (const SparseMatrix& a, const SparseMatrix& b)
+{
+  const bool nanflag = true;
+  const bool realabs = true;
+  return max (a, b, nanflag, realabs);
+}
+
+SparseMatrix
+max (const SparseMatrix& a, const SparseMatrix& b, const bool nanflag)
+{
+  const bool realabs = true;
+  return max (a, b, nanflag, realabs);
+}
+
+SparseMatrix
+max (const SparseMatrix& a, const SparseMatrix& b, const bool nanflag,
+     const bool realabs)
 {
   SparseMatrix r;
 
@@ -7804,7 +8162,8 @@ max (const SparseMatrix& a, const SparseMatrix& b)
               octave_quit ();
               if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
                 {
-                  double tmp = octave::math::max (a.data (ja), 0.);
+                  double tmp = octave::math::max (a.data (ja), 0.,
+                                                  nanflag, realabs);
                   if (tmp != 0.)
                     {
                       r.ridx (jx) = a.ridx (ja);
@@ -7817,7 +8176,8 @@ max (const SparseMatrix& a, const SparseMatrix& b)
               else if ((! ja_lt_max)
                        || (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
                 {
-                  double tmp = octave::math::max (0., b.data (jb));
+                  double tmp = octave::math::max (0., b.data (jb),
+                                                  nanflag, realabs);
                   if (tmp != 0.)
                     {
                       r.ridx (jx) = b.ridx (jb);
@@ -7829,7 +8189,8 @@ max (const SparseMatrix& a, const SparseMatrix& b)
                 }
               else
                 {
-                  double tmp = octave::math::max (a.data (ja), b.data (jb));
+                  double tmp = octave::math::max (a.data (ja), b.data (jb),
+                                                  nanflag, realabs);
                   if (tmp != 0.)
                     {
                       r.data (jx) = tmp;

@@ -411,11 +411,12 @@ public:
   OCTAVE_API boolMatrix all (int dim = -1) const;
   OCTAVE_API boolMatrix any (int dim = -1) const;
 
-  OCTAVE_API ComplexMatrix cumprod (int dim = -1) const;
-  OCTAVE_API ComplexMatrix cumsum (int dim = -1) const;
-  OCTAVE_API ComplexMatrix prod (int dim = -1) const;
-  OCTAVE_API ComplexMatrix sum (int dim = -1) const;
-  OCTAVE_API ComplexMatrix sumsq (int dim = -1) const;
+  OCTAVE_API ComplexMatrix flip (int dim = -1) const;
+  OCTAVE_API ComplexMatrix cumprod (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API ComplexMatrix cumsum (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API ComplexMatrix prod (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API ComplexMatrix sum (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API ComplexMatrix sumsq (int dim = -1, bool nanflag = false) const;
   OCTAVE_API Matrix abs () const;
 
   OCTAVE_API ComplexMatrix diag (octave_idx_type k = 0) const;
@@ -478,14 +479,40 @@ extern OCTAVE_API ComplexMatrix operator * (const ComplexMatrix&,
                                             const ComplexMatrix&);
 
 extern OCTAVE_API ComplexMatrix min (const Complex& c, const ComplexMatrix& m);
+extern OCTAVE_API ComplexMatrix min (const Complex& c, const ComplexMatrix& m,
+                                     const bool nanflag);
+extern OCTAVE_API ComplexMatrix min (const Complex& c, const ComplexMatrix& m,
+                                     const bool nanflag, const bool realabs);
 extern OCTAVE_API ComplexMatrix min (const ComplexMatrix& m, const Complex& c);
+extern OCTAVE_API ComplexMatrix min (const ComplexMatrix& m, const Complex& c,
+                                     const bool nanflag);
+extern OCTAVE_API ComplexMatrix min (const ComplexMatrix& m, const Complex& c,
+                                     const bool nanflag, const bool realabs);
 extern OCTAVE_API ComplexMatrix min (const ComplexMatrix& a,
                                      const ComplexMatrix& b);
+extern OCTAVE_API ComplexMatrix min (const ComplexMatrix& a,
+                                     const ComplexMatrix& b, const bool nanflag);
+extern OCTAVE_API ComplexMatrix min (const ComplexMatrix& a,
+                                     const ComplexMatrix& b,
+                                     const bool nanflag, const bool realabs);
 
 extern OCTAVE_API ComplexMatrix max (const Complex& c, const ComplexMatrix& m);
+extern OCTAVE_API ComplexMatrix max (const Complex& c, const ComplexMatrix& m,
+                                     const bool nanflag);
+extern OCTAVE_API ComplexMatrix max (const Complex& c, const ComplexMatrix& m,
+                                     const bool nanflag, const bool realabs);
 extern OCTAVE_API ComplexMatrix max (const ComplexMatrix& m, const Complex& c);
+extern OCTAVE_API ComplexMatrix max (const ComplexMatrix& m, const Complex& c,
+                                     const bool nanflag);
+extern OCTAVE_API ComplexMatrix max (const ComplexMatrix& m, const Complex& c,
+                                     const bool nanflag, const bool realabs);
 extern OCTAVE_API ComplexMatrix max (const ComplexMatrix& a,
                                      const ComplexMatrix& b);
+extern OCTAVE_API ComplexMatrix max (const ComplexMatrix& a,
+                                     const ComplexMatrix& b, const bool nanflag);
+extern OCTAVE_API ComplexMatrix max (const ComplexMatrix& a,
+                                     const ComplexMatrix& b,
+                                     const bool nanflag, const bool realabs);
 
 extern OCTAVE_API ComplexMatrix linspace (const ComplexColumnVector& x1,
                                           const ComplexColumnVector& x2,

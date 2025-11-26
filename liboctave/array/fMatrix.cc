@@ -2376,36 +2376,72 @@ operator * (const FloatColumnVector& v, const FloatRowVector& a)
   return retval;
 }
 
-// FIXME: Do these really belong here?  Maybe they should be in a base class?
+// unary operations
 
-FloatMatrix
-FloatMatrix::cumprod (int dim) const
+boolMatrix
+FloatMatrix::all (int dim) const
 {
-  return FloatNDArray::cumprod (dim);
+  return FloatNDArray::all (dim);
+}
+
+boolMatrix
+FloatMatrix::any (int dim) const
+{
+  return FloatNDArray::any (dim);
 }
 
 FloatMatrix
-FloatMatrix::cumsum (int dim) const
+FloatMatrix::flip (int dim) const
 {
-  return FloatNDArray::cumsum (dim);
+  return FloatNDArray::flip (dim);
 }
 
 FloatMatrix
-FloatMatrix::prod (int dim) const
+FloatMatrix::cumprod (int dim, bool nanflag) const
 {
-  return FloatNDArray::prod (dim);
+  return FloatNDArray::cumprod (dim, nanflag);
 }
 
 FloatMatrix
-FloatMatrix::sum (int dim) const
+FloatMatrix::cumsum (int dim, bool nanflag) const
 {
-  return FloatNDArray::sum (dim);
+  return FloatNDArray::cumsum (dim, nanflag);
 }
 
 FloatMatrix
-FloatMatrix::sumsq (int dim) const
+FloatMatrix::prod (int dim, bool nanflag) const
 {
-  return FloatNDArray::sumsq (dim);
+  return FloatNDArray::prod (dim, nanflag);
+}
+
+Matrix
+FloatMatrix::dprod (int dim, bool nanflag) const
+{
+  return FloatNDArray::dprod (dim, nanflag);
+}
+
+FloatMatrix
+FloatMatrix::sum (int dim, bool nanflag) const
+{
+  return FloatNDArray::sum (dim, nanflag);
+}
+
+Matrix
+FloatMatrix::dsum (int dim, bool nanflag) const
+{
+  return FloatNDArray::dsum (dim, nanflag);
+}
+
+FloatMatrix
+FloatMatrix::sumsq (int dim, bool nanflag) const
+{
+  return FloatNDArray::sumsq (dim, nanflag);
+}
+
+Matrix
+FloatMatrix::dsumsq (int dim, bool nanflag) const
+{
+  return FloatNDArray::dsumsq (dim, nanflag);
 }
 
 FloatMatrix
@@ -2888,7 +2924,22 @@ operator * (const FloatMatrix& a, const FloatMatrix& b)
     return T (nr, nc);
 
 FloatMatrix
-min (float d, const FloatMatrix& m)
+min (float f, const FloatMatrix& m)
+{
+  const bool nanflag = true;
+  const bool realabs = true;
+  return min (f, m, nanflag, realabs);
+}
+
+FloatMatrix
+min (float f, const FloatMatrix& m, const bool nanflag)
+{
+  const bool realabs = true;
+  return min (f, m, nanflag, realabs);
+}
+
+FloatMatrix
+min (float f, const FloatMatrix& m, const bool nanflag, const bool realabs)
 {
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
@@ -2901,14 +2952,29 @@ min (float d, const FloatMatrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = octave::math::min (d, m(i, j));
+        result(i, j) = octave::math::min (f, m(i, j), nanflag, realabs);
       }
 
   return result;
 }
 
 FloatMatrix
-min (const FloatMatrix& m, float d)
+min (const FloatMatrix& m, float f)
+{
+  const bool nanflag = true;
+  const bool realabs = true;
+  return min (f, m, nanflag, realabs);
+}
+
+FloatMatrix
+min (const FloatMatrix& m, float f, const bool nanflag)
+{
+  const bool realabs = true;
+  return min (f, m, nanflag, realabs);
+}
+
+FloatMatrix
+min (const FloatMatrix& m, float f, const bool nanflag, const bool realabs)
 {
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
@@ -2921,7 +2987,7 @@ min (const FloatMatrix& m, float d)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = octave::math::min (m(i, j), d);
+        result(i, j) = octave::math::min (m(i, j), f, nanflag, realabs);
       }
 
   return result;
@@ -2929,6 +2995,22 @@ min (const FloatMatrix& m, float d)
 
 FloatMatrix
 min (const FloatMatrix& a, const FloatMatrix& b)
+{
+  const bool nanflag = true;
+  const bool realabs = true;
+  return min (a, b, nanflag, realabs);
+}
+
+FloatMatrix
+min (const FloatMatrix& a, const FloatMatrix& b, const bool nanflag)
+{
+  const bool realabs = true;
+  return min (a, b, nanflag, realabs);
+}
+
+FloatMatrix
+min (const FloatMatrix& a, const FloatMatrix& b,
+     const bool nanflag, const bool realabs)
 {
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.columns ();
@@ -2945,14 +3027,29 @@ min (const FloatMatrix& a, const FloatMatrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = octave::math::min (a(i, j), b(i, j));
+        result(i, j) = octave::math::min (a(i, j), b(i, j), nanflag, realabs);
       }
 
   return result;
 }
 
 FloatMatrix
-max (float d, const FloatMatrix& m)
+max (float f, const FloatMatrix& m)
+{
+  const bool nanflag = true;
+  const bool realabs = true;
+  return max (f, m, nanflag, realabs);
+}
+
+FloatMatrix
+max (float f, const FloatMatrix& m, const bool nanflag)
+{
+  const bool realabs = true;
+  return max (f, m, nanflag, realabs);
+}
+
+FloatMatrix
+max (float f, const FloatMatrix& m, const bool nanflag, const bool realabs)
 {
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
@@ -2965,14 +3062,29 @@ max (float d, const FloatMatrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = octave::math::max (d, m(i, j));
+        result(i, j) = octave::math::max (f, m(i, j), nanflag, realabs);
       }
 
   return result;
 }
 
 FloatMatrix
-max (const FloatMatrix& m, float d)
+max (const FloatMatrix& m, float f)
+{
+  const bool nanflag = true;
+  const bool realabs = true;
+  return max (f, m, nanflag, realabs);
+}
+
+FloatMatrix
+max (const FloatMatrix& m, float f, const bool nanflag)
+{
+  const bool realabs = true;
+  return max (f, m, nanflag, realabs);
+}
+
+FloatMatrix
+max (const FloatMatrix& m, float f, const bool nanflag, const bool realabs)
 {
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
@@ -2985,7 +3097,7 @@ max (const FloatMatrix& m, float d)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = octave::math::max (m(i, j), d);
+        result(i, j) = octave::math::max (m(i, j), f, nanflag, realabs);
       }
 
   return result;
@@ -2993,6 +3105,22 @@ max (const FloatMatrix& m, float d)
 
 FloatMatrix
 max (const FloatMatrix& a, const FloatMatrix& b)
+{
+  const bool nanflag = true;
+  const bool realabs = true;
+  return max (a, b, nanflag, realabs);
+}
+
+FloatMatrix
+max (const FloatMatrix& a, const FloatMatrix& b, const bool nanflag)
+{
+  const bool realabs = true;
+  return max (a, b, nanflag, realabs);
+}
+
+FloatMatrix
+max (const FloatMatrix& a, const FloatMatrix& b,
+     const bool nanflag, const bool realabs)
 {
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.columns ();
@@ -3009,7 +3137,7 @@ max (const FloatMatrix& a, const FloatMatrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = octave::math::max (a(i, j), b(i, j));
+        result(i, j) = octave::math::max (a(i, j), b(i, j), nanflag, realabs);
       }
 
   return result;

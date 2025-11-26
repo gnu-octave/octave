@@ -336,12 +336,30 @@ mx_inline_imag (std::size_t n, T *r, const std::complex<T> *x)
     r[i] = x[i].imag ();
 }
 
+
 template <typename T>
 inline void
 mx_inline_xmin (std::size_t n, T *r, const T *x, const T *y)
 {
   for (std::size_t i = 0; i < n; i++)
     r[i] = octave::math::min (x[i], y[i]);
+}
+
+template <typename T>
+inline void
+mx_inline_xmin (std::size_t n, T *r, const T *x, const T *y, const bool nanflag)
+{
+  for (std::size_t i = 0; i < n; i++)
+    r[i] = octave::math::min (x[i], y[i], nanflag);
+}
+
+template <typename T>
+inline void
+mx_inline_xmin (std::size_t n, T *r, const T *x, const T *y,
+                const bool nanflag, const bool realabs)
+{
+  for (std::size_t i = 0; i < n; i++)
+    r[i] = octave::math::min (x[i], y[i], nanflag, realabs);
 }
 
 template <typename T>
@@ -354,10 +372,44 @@ mx_inline_xmin (std::size_t n, T *r, const T *x, T y)
 
 template <typename T>
 inline void
+mx_inline_xmin (std::size_t n, T *r, const T *x, T y, const bool nanflag)
+{
+  for (std::size_t i = 0; i < n; i++)
+    r[i] = octave::math::min (x[i], y, nanflag);
+}
+
+template <typename T>
+inline void
+mx_inline_xmin (std::size_t n, T *r, const T *x, T y,
+                const bool nanflag, const bool realabs)
+{
+  for (std::size_t i = 0; i < n; i++)
+    r[i] = octave::math::min (x[i], y, nanflag, realabs);
+}
+
+template <typename T>
+inline void
 mx_inline_xmin (std::size_t n, T *r, T x, const T *y)
 {
   for (std::size_t i = 0; i < n; i++)
     r[i] = octave::math::min (x, y[i]);
+}
+
+template <typename T>
+inline void
+mx_inline_xmin (std::size_t n, T *r, T x, const T *y, const bool nanflag)
+{
+  for (std::size_t i = 0; i < n; i++)
+    r[i] = octave::math::min (x, y[i], nanflag);
+}
+
+template <typename T>
+inline void
+mx_inline_xmin (std::size_t n, T *r, T x, const T *y,
+                const bool nanflag, const bool realabs)
+{
+  for (std::size_t i = 0; i < n; i++)
+    r[i] = octave::math::min (x, y[i], nanflag, realabs);
 }
 
 template <typename T>
@@ -370,10 +422,44 @@ mx_inline_xmax (std::size_t n, T *r, const T *x, const T *y)
 
 template <typename T>
 inline void
+mx_inline_xmax (std::size_t n, T *r, const T *x, const T *y, const bool nanflag)
+{
+  for (std::size_t i = 0; i < n; i++)
+    r[i] = octave::math::max (x[i], y[i], nanflag);
+}
+
+template <typename T>
+inline void
+mx_inline_xmax (std::size_t n, T *r, const T *x, const T *y,
+                const bool nanflag, const bool realabs)
+{
+  for (std::size_t i = 0; i < n; i++)
+    r[i] = octave::math::max (x[i], y[i], nanflag, realabs);
+}
+
+template <typename T>
+inline void
 mx_inline_xmax (std::size_t n, T *r, const T *x, T y)
 {
   for (std::size_t i = 0; i < n; i++)
     r[i] = octave::math::max (x[i], y);
+}
+
+template <typename T>
+inline void
+mx_inline_xmax (std::size_t n, T *r, const T *x, T y, const bool nanflag)
+{
+  for (std::size_t i = 0; i < n; i++)
+    r[i] = octave::math::max (x[i], y, nanflag);
+}
+
+template <typename T>
+inline void
+mx_inline_xmax (std::size_t n, T *r, const T *x, T y,
+                const bool nanflag, const bool realabs)
+{
+  for (std::size_t i = 0; i < n; i++)
+    r[i] = octave::math::max (x[i], y, nanflag, realabs);
 }
 
 template <typename T>
@@ -384,31 +470,22 @@ mx_inline_xmax (std::size_t n, T *r, T x, const T *y)
     r[i] = octave::math::max (x, y[i]);
 }
 
-// Specialize array-scalar max/min
-#define DEFMINMAXSPEC(T, F, OP)                                 \
-  template <>                                                   \
-  inline void F<T> (std::size_t n, T *r, const T *x, T y)       \
-  {                                                             \
-    if (octave::math::isnan (y))                                \
-      std::memcpy (r, x, n * sizeof (T));                       \
-    else                                                        \
-      for (std::size_t i = 0; i < n; i++)                       \
-        r[i] = (x[i] OP y ? x[i] : y);                          \
-  }                                                             \
-  template <>                                                   \
-  inline void F<T> (std::size_t n, T *r, T x, const T *y)       \
-  {                                                             \
-    if (octave::math::isnan (x))                                \
-      std::memcpy (r, y, n * sizeof (T));                       \
-    else                                                        \
-      for (std::size_t i = 0; i < n; i++)                       \
-        r[i] = (y[i] OP x ? y[i] : x);                          \
-  }
+template <typename T>
+inline void
+mx_inline_xmax (std::size_t n, T *r, T x, const T *y, const bool nanflag)
+{
+  for (std::size_t i = 0; i < n; i++)
+    r[i] = octave::math::max (x, y[i], nanflag);
+}
 
-DEFMINMAXSPEC (double, mx_inline_xmin, <=)
-DEFMINMAXSPEC (double, mx_inline_xmax, >=)
-DEFMINMAXSPEC (float, mx_inline_xmin, <=)
-DEFMINMAXSPEC (float, mx_inline_xmax, >=)
+template <typename T>
+inline void
+mx_inline_xmax (std::size_t n, T *r, T x, const T *y,
+                const bool nanflag, const bool realabs)
+{
+  for (std::size_t i = 0; i < n; i++)
+    r[i] = octave::math::max (x, y[i], nanflag, realabs);
+}
 
 // FIXME: Is this comment correct anymore?  It seems like std::pow is chosen.
 // Let the compiler decide which pow to use, whichever best matches the
@@ -541,6 +618,99 @@ do_sm_binary_op (const X& x, const Array<Y>& y,
 {
   Array<R> r (y.dims ());
   op (r.numel (), r.rwdata (), x, y.data ());
+  return r;
+}
+
+// These are required for min/max binary operations with extra
+// nanflag and realabs arguments
+
+template <typename R, typename X, typename Y>
+inline Array<R>
+do_mm_binary_op (const Array<X>& x, const Array<Y>& y, bool nanflag,
+                 void (*op) (std::size_t, R *, const X *, const Y *, bool),
+                 void (*op1) (std::size_t, R *, X, const Y *, bool),
+                 void (*op2) (std::size_t, R *, const X *, Y, bool),
+                 const char *opname)
+{
+  const dim_vector& dx = x.dims ();
+  const dim_vector& dy = y.dims ();
+  if (dx == dy)
+    {
+      Array<R> r (dx);
+      op (r.numel (), r.rwdata (), x.data (), y.data (), nanflag);
+      return r;
+    }
+  else if (is_valid_bsxfun (dx, dy))
+    {
+      return do_bsxfun1_op (x, y, nanflag, op, op1, op2);
+    }
+  else
+    octave::err_nonconformant (opname, dx, dy);
+}
+
+template <typename R, typename X, typename Y>
+inline Array<R>
+do_ms_binary_op (const Array<X>& x, const Y& y, bool nanflag,
+                 void (*op) (std::size_t, R *, const X *, Y, bool))
+{
+  Array<R> r (x.dims ());
+  op (r.numel (), r.rwdata (), x.data (), y, nanflag);
+  return r;
+}
+
+template <typename R, typename X, typename Y>
+inline Array<R>
+do_sm_binary_op (const X& x, const Array<Y>& y, bool nanflag,
+                 void (*op) (std::size_t, R *, X, const Y *, bool))
+{
+  Array<R> r (y.dims ());
+  op (r.numel (), r.rwdata (), x, y.data (), nanflag);
+  return r;
+}
+
+template <typename R, typename X, typename Y>
+inline Array<R>
+do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
+                 bool nanflag, bool realabs,
+                 void (*op) (std::size_t, R *, const X *, const Y *,
+                             bool, bool),
+                 void (*op1) (std::size_t, R *, X, const Y *, bool, bool),
+                 void (*op2) (std::size_t, R *, const X *, Y, bool, bool),
+                 const char *opname)
+{
+  const dim_vector& dx = x.dims ();
+  const dim_vector& dy = y.dims ();
+  if (dx == dy)
+    {
+      Array<R> r (dx);
+      op (r.numel (), r.rwdata (), x.data (), y.data (), nanflag, realabs);
+      return r;
+    }
+  else if (is_valid_bsxfun (dx, dy))
+    {
+      return do_bsxfun2_op (x, y, nanflag, realabs, op, op1, op2);
+    }
+  else
+    octave::err_nonconformant (opname, dx, dy);
+}
+
+template <typename R, typename X, typename Y>
+inline Array<R>
+do_ms_binary_op (const Array<X>& x, const Y& y, bool nanflag, bool realabs,
+                 void (*op) (std::size_t, R *, const X *, Y, bool, bool))
+{
+  Array<R> r (x.dims ());
+  op (r.numel (), r.rwdata (), x.data (), y, nanflag, realabs);
+  return r;
+}
+
+template <typename R, typename X, typename Y>
+inline Array<R>
+do_sm_binary_op (const X& x, const Array<Y>& y, bool nanflag, bool realabs,
+                 void (*op) (std::size_t, R *, X, const Y *, bool, bool))
+{
+  Array<R> r (y.dims ());
+  op (r.numel (), r.rwdata (), x, y.data (), nanflag, realabs);
   return r;
 }
 
@@ -769,6 +939,41 @@ OP_RED_FCN (mx_inline_dsumsq, std::complex<T>, PROMOTE_DOUBLE(T), OP_RED_SUMSQC,
 OP_RED_FCN (mx_inline_any, T, bool, OP_RED_ANYC, false)
 OP_RED_FCN (mx_inline_all, T, bool, OP_RED_ALLC, true)
 
+#define OP_RED_NAN_FCN(F, TSRC, TRES, OP, ZERO)       \
+  template <typename T>                               \
+  inline TRES                                         \
+  F (const TSRC *v, octave_idx_type n, bool nanflag)  \
+  {                                                   \
+    TRES ac = ZERO;                                   \
+    if (nanflag)                                      \
+      {                                               \
+        bool allnan = true;                           \
+        for (octave_idx_type i = 0; i < n; i++)       \
+          if (! octave::math::isnan (v[i]))           \
+            {                                         \
+              OP(ac, v[i]);                           \
+              allnan = false;                         \
+            }                                         \
+        if (allnan)                                   \
+          ac = NAN;                                   \
+      }                                               \
+    else                                              \
+      {                                               \
+        for (octave_idx_type i = 0; i < n; i++)       \
+          OP(ac, v[i]);                               \
+      }                                               \
+    return ac;                                        \
+  }
+
+OP_RED_NAN_FCN (mx_inline_sum, T, T, OP_RED_SUM, 0)
+OP_RED_NAN_FCN (mx_inline_dsum, T, PROMOTE_DOUBLE(T), op_dble_sum, 0.0)
+OP_RED_NAN_FCN (mx_inline_prod, T, T, OP_RED_PROD, 1)
+OP_RED_NAN_FCN (mx_inline_dprod, T, PROMOTE_DOUBLE(T), op_dble_prod, 1.0)
+OP_RED_NAN_FCN (mx_inline_sumsq, T, T, OP_RED_SUMSQ, 0)
+OP_RED_NAN_FCN (mx_inline_sumsq, std::complex<T>, T, OP_RED_SUMSQC, 0)
+OP_RED_NAN_FCN (mx_inline_dsumsq, T, PROMOTE_DOUBLE(T), OP_RED_SUMSQ, 0.0)
+OP_RED_NAN_FCN (mx_inline_dsumsq, std::complex<T>, PROMOTE_DOUBLE(T), OP_RED_SUMSQC, 0.0)
+
 #define OP_RED_FCN2(F, TSRC, TRES, OP, ZERO)                            \
   template <typename T>                                                 \
   inline void                                                           \
@@ -793,6 +998,52 @@ OP_RED_FCN2 (mx_inline_sumsq, T, T, OP_RED_SUMSQ, 0)
 OP_RED_FCN2 (mx_inline_sumsq, std::complex<T>, T, OP_RED_SUMSQC, 0)
 OP_RED_FCN2 (mx_inline_dsumsq, T, PROMOTE_DOUBLE(T), OP_RED_SUMSQ, 0.0)
 OP_RED_FCN2 (mx_inline_dsumsq, std::complex<T>, PROMOTE_DOUBLE(T), OP_RED_SUMSQC, 0.0)
+
+#define OP_RED_NAN_FCN2(F, TSRC, TRES, OP, ZERO)                        \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const TSRC *v, TRES *r, octave_idx_type m, octave_idx_type n,      \
+     bool nanflag)                                                      \
+  {                                                                     \
+    for (octave_idx_type i = 0; i < m; i++)                             \
+      r[i] = ZERO;                                                      \
+    if (nanflag)                                                        \
+      {                                                                 \
+        bool allnan = true;                                             \
+        for (octave_idx_type j = 0; j < n; j++)                         \
+          {                                                             \
+            allnan = true;                                              \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              if (! octave::math::isnan (v[i]))                         \
+                {                                                       \
+                    OP(r[i], v[i]);                                     \
+                    allnan = false;                                     \
+                }                                                       \
+            if (allnan)                                                 \
+              for (octave_idx_type i = 0; i < m; i++)                   \
+                r[i] = NAN;                                             \
+            v += m;                                                     \
+          }                                                             \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        for (octave_idx_type j = 0; j < n; j++)                         \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              OP(r[i], v[i]);                                           \
+            v += m;                                                     \
+          }                                                             \
+      }                                                                 \
+  }
+
+OP_RED_NAN_FCN2 (mx_inline_sum, T, T, OP_RED_SUM, 0)
+OP_RED_NAN_FCN2 (mx_inline_dsum, T, PROMOTE_DOUBLE(T), op_dble_sum, 0.0)
+OP_RED_NAN_FCN2 (mx_inline_prod, T, T, OP_RED_PROD, 1)
+OP_RED_NAN_FCN2 (mx_inline_dprod, T, PROMOTE_DOUBLE(T), op_dble_prod, 1.0)
+OP_RED_NAN_FCN2 (mx_inline_sumsq, T, T, OP_RED_SUMSQ, 0)
+OP_RED_NAN_FCN2 (mx_inline_sumsq, std::complex<T>, T, OP_RED_SUMSQC, 0)
+OP_RED_NAN_FCN2 (mx_inline_dsumsq, T, PROMOTE_DOUBLE(T), OP_RED_SUMSQ, 0.0)
+OP_RED_NAN_FCN2 (mx_inline_dsumsq, std::complex<T>, PROMOTE_DOUBLE(T), OP_RED_SUMSQC, 0.0)
 
 #define OP_RED_ANYR(ac, el) ac |= xis_true (el)
 #define OP_RED_ALLR(ac, el) ac &= xis_true (el)
@@ -873,6 +1124,40 @@ OP_RED_FCNN (mx_inline_dsumsq, std::complex<T>,  PROMOTE_DOUBLE(T))
 OP_RED_FCNN (mx_inline_any, T, bool)
 OP_RED_FCNN (mx_inline_all, T, bool)
 
+#define OP_RED_NAN_FCNN(F, TSRC, TRES)                   \
+  template <typename T>                                  \
+  inline void                                            \
+  F (const TSRC *v, TRES *r, octave_idx_type l,          \
+     octave_idx_type n, octave_idx_type u, bool nanflag) \
+  {                                                      \
+    if (l == 1)                                          \
+      {                                                  \
+        for (octave_idx_type i = 0; i < u; i++)          \
+          {                                              \
+            r[i] = F<T> (v, n, nanflag);                 \
+            v += n;                                      \
+          }                                              \
+      }                                                  \
+    else                                                 \
+      {                                                  \
+        for (octave_idx_type i = 0; i < u; i++)          \
+          {                                              \
+            F (v, r, l, n, nanflag);                     \
+            v += l*n;                                    \
+            r += l;                                      \
+          }                                              \
+      }                                                  \
+  }
+
+OP_RED_NAN_FCNN (mx_inline_sum, T, T)
+OP_RED_NAN_FCNN (mx_inline_dsum, T, PROMOTE_DOUBLE(T))
+OP_RED_NAN_FCNN (mx_inline_prod, T, T)
+OP_RED_NAN_FCNN (mx_inline_dprod, T, PROMOTE_DOUBLE(T))
+OP_RED_NAN_FCNN (mx_inline_sumsq, T, T)
+OP_RED_NAN_FCNN (mx_inline_sumsq, std::complex<T>, T)
+OP_RED_NAN_FCNN (mx_inline_dsumsq, T,  PROMOTE_DOUBLE(T))
+OP_RED_NAN_FCNN (mx_inline_dsumsq, std::complex<T>,  PROMOTE_DOUBLE(T))
+
 #define OP_CUM_FCN(F, TSRC, TRES, OP)           \
   template <typename T>                         \
   inline void                                   \
@@ -889,6 +1174,41 @@ OP_RED_FCNN (mx_inline_all, T, bool)
 OP_CUM_FCN (mx_inline_cumsum, T, T, +)
 OP_CUM_FCN (mx_inline_cumprod, T, T, *)
 OP_CUM_FCN (mx_inline_cumcount, bool, T, +)
+
+#define OP_CUM_NAN_FCN(F, TSRC, TRES, OP, ZERO)               \
+  template <typename T>                                       \
+  inline void                                                 \
+  F (const TSRC *v, TRES *r, octave_idx_type n, bool nanflag) \
+  {                                                           \
+    if (n)                                                    \
+      {                                                       \
+        if (nanflag)                                          \
+          {                                                   \
+            TRES z = ZERO;                                    \
+            TRES t;                                           \
+            if (octave::math::isnan (v[0]))                   \
+              t = r[0] = z;                                   \
+            else                                              \
+              t = r[0] = v[0];                                \
+            for (octave_idx_type i = 1; i < n; i++)           \
+              {                                               \
+                if (octave::math::isnan (v[i]))               \
+                  r[i] = t = t OP z;                          \
+                else                                          \
+                  r[i] = t = t OP v[i];                       \
+              }                                               \
+          }                                                   \
+        else                                                  \
+          {                                                   \
+            TRES t = r[0] = v[0];                             \
+            for (octave_idx_type i = 1; i < n; i++)           \
+              r[i] = t = t OP v[i];                           \
+          }                                                   \
+      }                                                       \
+  }
+
+OP_CUM_NAN_FCN (mx_inline_cumsum, T, T, +, 0.0)
+OP_CUM_NAN_FCN (mx_inline_cumprod, T, T, *, 1.0)
 
 #define OP_CUM_FCN2(F, TSRC, TRES, OP)                                  \
   template <typename T>                                                 \
@@ -913,6 +1233,57 @@ OP_CUM_FCN (mx_inline_cumcount, bool, T, +)
 OP_CUM_FCN2 (mx_inline_cumsum, T, T, +)
 OP_CUM_FCN2 (mx_inline_cumprod, T, T, *)
 OP_CUM_FCN2 (mx_inline_cumcount, bool, T, +)
+
+#define OP_CUM_NAN_FCN2(F, TSRC, TRES, OP, ZERO)                        \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const TSRC *v, TRES *r, octave_idx_type m, octave_idx_type n,      \
+     bool nanflag)                                                      \
+  {                                                                     \
+    if (n)                                                              \
+      {                                                                 \
+        if (nanflag)                                                    \
+          {                                                             \
+            TRES z = ZERO;                                              \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if (octave::math::isnan (v[i]))                         \
+                  r[i] = z;                                             \
+                else                                                    \
+                  r[i] = v[i];                                          \
+              }                                                         \
+            const T *r0 = r;                                            \
+            for (octave_idx_type j = 1; j < n; j++)                     \
+              {                                                         \
+                r += m; v += m;                                         \
+                for (octave_idx_type i = 0; i < m; i++)                 \
+                  {                                                     \
+                    if (octave::math::isnan (v[i]))                     \
+                      r[i] = r0[i] OP z;                                \
+                    else                                                \
+                      r[i] = r0[i] OP v[i];                             \
+                  }                                                     \
+                r0 += m;                                                \
+              }                                                         \
+          }                                                             \
+        else                                                            \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              r[i] = v[i];                                              \
+            const T *r0 = r;                                            \
+            for (octave_idx_type j = 1; j < n; j++)                     \
+              {                                                         \
+                r += m; v += m;                                         \
+                for (octave_idx_type i = 0; i < m; i++)                 \
+                  r[i] = r0[i] OP v[i];                                 \
+                r0 += m;                                                \
+              }                                                         \
+          }                                                             \
+      }                                                                 \
+  }
+
+OP_CUM_NAN_FCN2 (mx_inline_cumsum, T, T, +, 0.0)
+OP_CUM_NAN_FCN2 (mx_inline_cumprod, T, T, *, 1.0)
 
 #define OP_CUM_FCNN(F, TSRC, TRES)              \
   template <typename T>                         \
@@ -943,6 +1314,35 @@ OP_CUM_FCN2 (mx_inline_cumcount, bool, T, +)
 OP_CUM_FCNN (mx_inline_cumsum, T, T)
 OP_CUM_FCNN (mx_inline_cumprod, T, T)
 OP_CUM_FCNN (mx_inline_cumcount, bool, T)
+
+#define OP_CUM_NAN_FCNN(F, TSRC, TRES)                   \
+  template <typename T>                                  \
+  inline void                                            \
+  F (const TSRC *v, TRES *r, octave_idx_type l,          \
+     octave_idx_type n, octave_idx_type u, bool nanflag) \
+  {                                                      \
+    if (l == 1)                                          \
+      {                                                  \
+        for (octave_idx_type i = 0; i < u; i++)          \
+          {                                              \
+            F (v, r, n, nanflag);                        \
+            v += n;                                      \
+            r += n;                                      \
+          }                                              \
+      }                                                  \
+    else                                                 \
+      {                                                  \
+        for (octave_idx_type i = 0; i < u; i++)          \
+          {                                              \
+            F (v, r, l, n, nanflag);                     \
+            v += l*n;                                    \
+            r += l*n;                                    \
+          }                                              \
+      }                                                  \
+  }
+
+OP_CUM_NAN_FCNN (mx_inline_cumsum, T, T)
+OP_CUM_NAN_FCNN (mx_inline_cumprod, T, T)
 
 template <typename T>
 inline void
@@ -996,10 +1396,20 @@ mx_inline_flip (const T *v, T *r, octave_idx_type l,
 
 #define OP_MINMAX_FCN(F, OP)                                            \
   template <typename T>                                                 \
-  void F (const T *v, T *r, octave_idx_type n)                          \
+  void F (const T *v, T *r, octave_idx_type n, const bool nanflag,      \
+          const bool realabs)                                           \
   {                                                                     \
     if (! n)                                                            \
       return;                                                           \
+    if (! nanflag)                                                      \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < n; i++)                         \
+          if (octave::math::isnan (v[i]))                               \
+            {                                                           \
+              *r = NAN;                                                 \
+              return;                                                   \
+            }                                                           \
+      }                                                                 \
     T tmp = v[0];                                                       \
     octave_idx_type i = 1;                                              \
     if (octave::math::isnan (tmp))                                      \
@@ -1008,16 +1418,40 @@ mx_inline_flip (const T *v, T *r, octave_idx_type l,
         if (i < n)                                                      \
           tmp = v[i];                                                   \
       }                                                                 \
-    for (; i < n; i++)                                                  \
-      if (v[i] OP tmp)                                                  \
-        tmp = v[i];                                                     \
+    if (realabs)                                                        \
+      {                                                                 \
+        for (; i < n; i++)                                              \
+          if (v[i] OP tmp)                                              \
+            tmp = v[i];                                                 \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        for (; i < n; i++)                                              \
+          {                                                             \
+            if (abs (v[i]) OP abs (tmp))                                \
+              tmp = v[i];                                               \
+            else if (abs (v[i]) == abs (tmp) && v[i] OP tmp)            \
+              tmp = v[i];                                               \
+          }                                                             \
+      }                                                                 \
     *r = tmp;                                                           \
   }                                                                     \
   template <typename T>                                                 \
-  void F (const T *v, T *r, octave_idx_type *ri, octave_idx_type n)     \
+  void F (const T *v, T *r, octave_idx_type *ri, octave_idx_type n,     \
+          const bool nanflag, const bool realabs)                       \
   {                                                                     \
     if (! n)                                                            \
       return;                                                           \
+    if (! nanflag)                                                      \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < n; i++)                         \
+          if (octave::math::isnan (v[i]))                               \
+            {                                                           \
+              *r = NAN;                                                 \
+              *ri = i;                                                  \
+              return;                                                   \
+            }                                                           \
+      }                                                                 \
     T tmp = v[0];                                                       \
     octave_idx_type tmpi = 0;                                           \
     octave_idx_type i = 1;                                              \
@@ -1030,12 +1464,31 @@ mx_inline_flip (const T *v, T *r, octave_idx_type l,
             tmpi = i;                                                   \
           }                                                             \
       }                                                                 \
-    for (; i < n; i++)                                                  \
-      if (v[i] OP tmp)                                                  \
-        {                                                               \
-          tmp = v[i];                                                   \
-          tmpi = i;                                                     \
-        }                                                               \
+    if (realabs)                                                        \
+      {                                                                 \
+        for (; i < n; i++)                                              \
+          if (v[i] OP tmp)                                              \
+            {                                                           \
+              tmp = v[i];                                               \
+              tmpi = i;                                                 \
+            }                                                           \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        for (; i < n; i++)                                              \
+          {                                                             \
+            if (abs (v[i]) OP abs (tmp))                                \
+              {                                                         \
+                tmp = v[i];                                             \
+                tmpi = i;                                               \
+              }                                                         \
+            else if (abs (v[i]) == abs (tmp) && v[i] OP tmp)            \
+              {                                                         \
+                tmp = v[i];                                             \
+                tmpi = i;                                               \
+              }                                                         \
+          }                                                             \
+      }                                                                 \
     *r = tmp;                                                           \
     *ri = tmpi;                                                         \
   }
@@ -1050,7 +1503,8 @@ OP_MINMAX_FCN (mx_inline_max, >)
 #define OP_MINMAX_FCN2(F, OP)                                           \
   template <typename T>                                                 \
   inline void                                                           \
-  F (const T *v, T *r, octave_idx_type m, octave_idx_type n)            \
+  F (const T *v, T *r, octave_idx_type m, octave_idx_type n,            \
+     const bool nanflag, const bool realabs)                            \
   {                                                                     \
     if (! n)                                                            \
       return;                                                           \
@@ -1064,19 +1518,700 @@ OP_MINMAX_FCN (mx_inline_max, >)
       }                                                                 \
     j++;                                                                \
     v += m;                                                             \
-    while (nan && j < n)                                                \
+    if (realabs)                                                        \
       {                                                                 \
-        nan = false;                                                    \
-        for (octave_idx_type i = 0; i < m; i++)                         \
+        while (nan && j < n)                                            \
           {                                                             \
-            if (octave::math::isnan (v[i]))                             \
-              nan = true;                                               \
-            else if (octave::math::isnan (r[i]) || v[i] OP r[i])        \
-              r[i] = v[i];                                              \
+            nan = false;                                                \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if ((octave::math::isnan (v[i]) ||                      \
+                     octave::math::isnan (r[i])) && ! nanflag)          \
+                  {                                                     \
+                    r[i] = NAN;                                         \
+                    nan = true;                                         \
+                  }                                                     \
+                else if (octave::math::isnan (v[i]))                    \
+                  nan = true;                                           \
+                else if (octave::math::isnan (r[i]) || v[i] OP r[i])    \
+                  r[i] = v[i];                                          \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
           }                                                             \
-        j++;                                                            \
-        v += m;                                                         \
+        while (j < n)                                                   \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              if (v[i] OP r[i])                                         \
+                r[i] = v[i];                                            \
+            j++;                                                        \
+            v += m;                                                     \
+          }                                                             \
       }                                                                 \
+    else                                                                \
+      {                                                                 \
+        while (nan && j < n)                                            \
+          {                                                             \
+            nan = false;                                                \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if ((octave::math::isnan (v[i]) ||                      \
+                     octave::math::isnan (r[i])) && ! nanflag)          \
+                  {                                                     \
+                    r[i] = NAN;                                         \
+                    nan = true;                                         \
+                  }                                                     \
+                else if (octave::math::isnan (v[i]))                    \
+                  nan = true;                                           \
+                else if (octave::math::isnan (r[i]) ||                  \
+                         abs (v[i]) OP abs (r[i]))                      \
+                  r[i] = v[i];                                          \
+                else if (abs (v[i]) == abs (r[i]) && v[i] OP r[i])      \
+                  r[i] = v[i];                                          \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+          }                                                             \
+        while (j < n)                                                   \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if (abs (v[i]) OP abs (r[i]))                           \
+                  r[i] = v[i];                                          \
+                else if (abs (v[i]) == abs (r[i]) && v[i] OP r[i])      \
+                  r[i] = v[i];                                          \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+          }                                                             \
+      }                                                                 \
+  }                                                                     \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const T *v, T *r, octave_idx_type *ri, octave_idx_type m,          \
+     octave_idx_type n, const bool nanflag, const bool realabs)         \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    bool nan = false;                                                   \
+    octave_idx_type j = 0;                                              \
+    for (octave_idx_type i = 0; i < m; i++)                             \
+      {                                                                 \
+        r[i] = v[i];                                                    \
+        ri[i] = j;                                                      \
+        if (octave::math::isnan (v[i]))                                 \
+          nan = true;                                                   \
+      }                                                                 \
+    j++;                                                                \
+    v += m;                                                             \
+    if (realabs)                                                        \
+      {                                                                 \
+        while (nan && j < n)                                            \
+          {                                                             \
+            nan = false;                                                \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if ((octave::math::isnan (v[i]) ||                      \
+                     octave::math::isnan (r[i])) && ! nanflag)          \
+                  {                                                     \
+                    r[i] = NAN;                                         \
+                    ri[i] = j;                                          \
+                    nan = true;                                         \
+                  }                                                     \
+                else if (octave::math::isnan (v[i]))                    \
+                  nan = true;                                           \
+                else if (octave::math::isnan (r[i]) || v[i] OP r[i])    \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+          }                                                             \
+        while (j < n)                                                   \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              if (v[i] OP r[i])                                         \
+                {                                                       \
+                  r[i] = v[i];                                          \
+                  ri[i] = j;                                            \
+                }                                                       \
+            j++;                                                        \
+            v += m;                                                     \
+          }                                                             \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        while (nan && j < n)                                            \
+          {                                                             \
+            nan = false;                                                \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if ((octave::math::isnan (v[i]) ||                      \
+                     octave::math::isnan (r[i])) && ! nanflag)          \
+                  {                                                     \
+                    r[i] = NAN;                                         \
+                    ri[i] = j;                                          \
+                    nan = true;                                         \
+                  }                                                     \
+                else if (octave::math::isnan (v[i]))                    \
+                  nan = true;                                           \
+                else if (octave::math::isnan (r[i]) ||                  \
+                         abs (v[i]) OP abs (r[i]))                      \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else if (abs (v[i]) == abs (r[i]) && v[i] OP r[i])      \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+          }                                                             \
+        while (j < n)                                                   \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if (abs (v[i]) OP abs (r[i]))                           \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                  else if (abs (v[i]) == abs (r[i]) && v[i] OP r[i])    \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+          }                                                             \
+      }                                                                 \
+  }
+
+OP_MINMAX_FCN2 (mx_inline_min, <)
+OP_MINMAX_FCN2 (mx_inline_max, >)
+
+#define OP_MINMAX_FCNN(F)                                               \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const T *v, T *r, octave_idx_type l, octave_idx_type n,            \
+     octave_idx_type u, const bool nanflag, const bool realabs)         \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    if (l == 1)                                                         \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < u; i++)                         \
+          {                                                             \
+            F (v, r, n, nanflag, realabs);                              \
+            v += n;                                                     \
+            r++;                                                        \
+          }                                                             \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < u; i++)                         \
+          {                                                             \
+            F (v, r, l, n, nanflag, realabs);                           \
+            v += l*n;                                                   \
+            r += l;                                                     \
+          }                                                             \
+      }                                                                 \
+  }                                                                     \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const T *v, T *r, octave_idx_type *ri, octave_idx_type l,          \
+     octave_idx_type n, octave_idx_type u, const bool nanflag,          \
+     const bool realabs)                                                \
+  {                                                                     \
+    if (! n) return;                                                    \
+    if (l == 1)                                                         \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < u; i++)                         \
+          {                                                             \
+            F (v, r, ri, n, nanflag, realabs);                          \
+            v += n;                                                     \
+            r++;                                                        \
+            ri++;                                                       \
+          }                                                             \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < u; i++)                         \
+          {                                                             \
+            F (v, r, ri, l, n, nanflag, realabs);                       \
+            v += l*n;                                                   \
+            r += l;                                                     \
+            ri += l;                                                    \
+          }                                                             \
+      }                                                                 \
+  }
+
+OP_MINMAX_FCNN (mx_inline_min)
+OP_MINMAX_FCNN (mx_inline_max)
+
+// Special implementation for complex arrays, since we need comparisons
+// in both real and imaginary parts for MATLAB compatibility.
+
+#define OP_CMINMAX_FCN(F, OP)                                                  \
+  template <typename T>                                                        \
+  void F (const std::complex<T> *v, std::complex<T> *r,                        \
+          octave_idx_type n, const bool nanflag, const bool realabs)           \
+  {                                                                            \
+    if (! n)                                                                   \
+      return;                                                                  \
+    if (! nanflag)                                                             \
+      {                                                                        \
+        for (octave_idx_type i = 0; i < n; i++)                                \
+          if (octave::math::isnan (v[i]))                                      \
+            {                                                                  \
+              *r = NAN;                                                        \
+              return;                                                          \
+            }                                                                  \
+      }                                                                        \
+    std::complex<T> tmp = v[0];                                                \
+    octave_idx_type i = 1;                                                     \
+    if (octave::math::isnan (tmp))                                             \
+      {                                                                        \
+        for (; i < n && octave::math::isnan (v[i]); i++) ;                     \
+        if (i < n)                                                             \
+          tmp = v[i];                                                          \
+      }                                                                        \
+    if (realabs)                                                               \
+      {                                                                        \
+        for (; i < n; i++)                                                     \
+          {                                                                    \
+            if (v[i].real () OP tmp.real ())                                   \
+              tmp = v[i];                                                      \
+            else if (v[i].real () == tmp.real () &&                            \
+                     v[i].imag () OP tmp.imag ())                              \
+              tmp = v[i];                                                      \
+          }                                                                    \
+      }                                                                        \
+    else                                                                       \
+      {                                                                        \
+        for (; i < n; i++)                                                     \
+          {                                                                    \
+            if (abs (v[i]) OP abs (tmp))                                       \
+              tmp = v[i];                                                      \
+            else if (abs (v[i]) == abs (tmp) &&                                \
+                     std::arg (v[i]) OP std::arg (tmp))                        \
+              tmp = v[i];                                                      \
+          }                                                                    \
+      }                                                                        \
+    *r = tmp;                                                                  \
+  }                                                                            \
+  template <typename T>                                                        \
+  void F (const std::complex<T> *v, std::complex<T> *r,                        \
+          octave_idx_type *ri, octave_idx_type n, const bool nanflag,          \
+          const bool realabs)                                                  \
+  {                                                                            \
+    if (! n)                                                                   \
+      return;                                                                  \
+    if (! nanflag)                                                             \
+      {                                                                        \
+        for (octave_idx_type i = 0; i < n; i++)                                \
+          if (octave::math::isnan (v[i]))                                      \
+            {                                                                  \
+              *r = NAN;                                                        \
+              *ri = i;                                                         \
+              return;                                                          \
+            }                                                                  \
+      }                                                                        \
+    std::complex<T> tmp = v[0];                                                \
+    octave_idx_type tmpi = 0;                                                  \
+    octave_idx_type i = 1;                                                     \
+    if (octave::math::isnan (tmp))                                             \
+      {                                                                        \
+        for (; i < n && octave::math::isnan (v[i]); i++) ;                     \
+        if (i < n)                                                             \
+          {                                                                    \
+            tmp = v[i];                                                        \
+            tmpi = i;                                                          \
+          }                                                                    \
+      }                                                                        \
+    if (realabs)                                                               \
+      {                                                                        \
+        for (; i < n; i++)                                                     \
+          {                                                                    \
+            if (v[i].real () OP tmp.real ())                                   \
+              {                                                                \
+                tmp = v[i];                                                    \
+                tmpi = i;                                                      \
+              }                                                                \
+            else if (v[i].real () == tmp.real () &&                            \
+                     v[i].imag () OP tmp.imag ())                              \
+              {                                                                \
+                tmp = v[i];                                                    \
+                tmpi = i;                                                      \
+              }                                                                \
+          }                                                                    \
+      }                                                                        \
+    else                                                                       \
+      {                                                                        \
+        for (; i < n; i++)                                                     \
+          {                                                                    \
+            if (abs (v[i]) OP abs (tmp))                                       \
+              {                                                                \
+                tmp = v[i];                                                    \
+                tmpi = i;                                                      \
+              }                                                                \
+            else if (abs (v[i]) == abs (tmp) &&                                \
+                     std::arg (v[i]) OP std::arg (tmp))                        \
+              {                                                                \
+                tmp = v[i];                                                    \
+                tmpi = i;                                                      \
+              }                                                                \
+          }                                                                    \
+      }                                                                        \
+    *r = tmp;                                                                  \
+    *ri = tmpi;                                                                \
+  }
+
+OP_CMINMAX_FCN (mx_inline_cmin, <)
+OP_CMINMAX_FCN (mx_inline_cmax, >)
+
+// Row reductions will be slightly complicated.  We will proceed with checks
+// for NaNs until we detect that no row will yield a NaN, in which case we
+// proceed to a faster code.
+
+#define OP_CMINMAX_FCN2(F, OP)                                                 \
+  template <typename T>                                                        \
+  inline void                                                                  \
+  F (const std::complex<T> *v, std::complex<T> *r, octave_idx_type m,          \
+     octave_idx_type n, const bool nanflag, const bool realabs)                \
+  {                                                                            \
+    if (! n)                                                                   \
+      return;                                                                  \
+    bool nan = false;                                                          \
+    octave_idx_type j = 0;                                                     \
+    for (octave_idx_type i = 0; i < m; i++)                                    \
+      {                                                                        \
+        r[i] = v[i];                                                           \
+        if (octave::math::isnan (v[i]))                                        \
+          nan = true;                                                          \
+      }                                                                        \
+    j++;                                                                       \
+    v += m;                                                                    \
+    if (realabs)                                                               \
+      {                                                                        \
+        while (nan && j < n)                                                   \
+          {                                                                    \
+            nan = false;                                                       \
+            for (octave_idx_type i = 0; i < m; i++)                            \
+              {                                                                \
+                if ((octave::math::isnan (v[i]) ||                             \
+                     octave::math::isnan (r[i])) && ! nanflag)                 \
+                  {                                                            \
+                    r[i] = NAN;                                                \
+                    nan = true;                                                \
+                  }                                                            \
+                else if (octave::math::isnan (v[i]))                           \
+                  nan = true;                                                  \
+                else if (octave::math::isnan (r[i]) ||                         \
+                         v[i].real () OP r[i].real ())                         \
+                  r[i] = v[i];                                                 \
+                else if (v[i].real () == r[i].real () &&                       \
+                         v[i].imag () OP r[i].imag ())                         \
+                  r[i] = v[i];                                                 \
+              }                                                                \
+            j++;                                                               \
+            v += m;                                                            \
+          }                                                                    \
+        while (j < n)                                                          \
+          {                                                                    \
+            for (octave_idx_type i = 0; i < m; i++)                            \
+              {                                                                \
+                if (v[i].real () OP r[i].real ())                              \
+                  r[i] = v[i];                                                 \
+                else if (v[i].real () == r[i].real ()  &&                      \
+                         v[i].imag () OP r[i].imag ())                         \
+                  r[i] = v[i];                                                 \
+              }                                                                \
+            j++;                                                               \
+            v += m;                                                            \
+          }                                                                    \
+      }                                                                        \
+    else                                                                       \
+      {                                                                        \
+        while (nan && j < n)                                                   \
+          {                                                                    \
+            nan = false;                                                       \
+            for (octave_idx_type i = 0; i < m; i++)                            \
+              {                                                                \
+                if ((octave::math::isnan (v[i]) ||                             \
+                     octave::math::isnan (r[i])) && ! nanflag)                 \
+                  {                                                            \
+                    r[i] = NAN;                                                \
+                    nan = true;                                                \
+                  }                                                            \
+                else if (octave::math::isnan (v[i]))                           \
+                  nan = true;                                                  \
+                else if (octave::math::isnan (r[i]) ||                         \
+                         abs (v[i]) OP abs (r[i]))                             \
+                  r[i] = v[i];                                                 \
+                else if (abs (v[i]) == abs (r[i]) &&                           \
+                         std::arg (v[i]) OP std::arg (r[i]))                   \
+                  r[i] = v[i];                                                 \
+              }                                                                \
+            j++;                                                               \
+            v += m;                                                            \
+          }                                                                    \
+        while (j < n)                                                          \
+          {                                                                    \
+            for (octave_idx_type i = 0; i < m; i++)                            \
+              {                                                                \
+                if (abs (v[i]) OP abs (r[i]))                                  \
+                  r[i] = v[i];                                                 \
+                else if (abs (v[i]) == abs (r[i]) &&                           \
+                         std::arg (v[i]) OP std::arg (r[i]))                   \
+                  r[i] = v[i];                                                 \
+              }                                                                \
+            j++;                                                               \
+            v += m;                                                            \
+          }                                                                    \
+      }                                                                        \
+  }                                                                            \
+  template <typename T>                                                        \
+  inline void                                                                  \
+  F (const std::complex<T> *v, std::complex<T> *r, octave_idx_type *ri,        \
+     octave_idx_type m, octave_idx_type n, const bool nanflag,                 \
+     const bool realabs)                                                       \
+  {                                                                            \
+    if (! n)                                                                   \
+      return;                                                                  \
+    bool nan = false;                                                          \
+    octave_idx_type j = 0;                                                     \
+    for (octave_idx_type i = 0; i < m; i++)                                    \
+      {                                                                        \
+        r[i] = v[i];                                                           \
+        ri[i] = j;                                                             \
+        if (octave::math::isnan (v[i]))                                        \
+          nan = true;                                                          \
+      }                                                                        \
+    j++;                                                                       \
+    v += m;                                                                    \
+    if (realabs)                                                               \
+      {                                                                        \
+        while (nan && j < n)                                                   \
+          {                                                                    \
+            nan = false;                                                       \
+            for (octave_idx_type i = 0; i < m; i++)                            \
+              {                                                                \
+                if ((octave::math::isnan (v[i]) ||                             \
+                     octave::math::isnan (r[i])) && ! nanflag)                 \
+                  {                                                            \
+                    r[i] = NAN;                                                \
+                    ri[i] = j;                                                 \
+                    nan = true;                                                \
+                  }                                                            \
+                else if (octave::math::isnan (v[i]))                           \
+                  nan = true;                                                  \
+                else if (octave::math::isnan (r[i]) ||                         \
+                         v[i].real () OP r[i].real ())                         \
+                  {                                                            \
+                    r[i] = v[i];                                               \
+                    ri[i] = j;                                                 \
+                  }                                                            \
+                else if (v[i].real () == r[i].real () &&                       \
+                         v[i].imag () OP r[i].imag ())                         \
+                  {                                                            \
+                    r[i] = v[i];                                               \
+                    ri[i] = j;                                                 \
+                  }                                                            \
+              }                                                                \
+            j++;                                                               \
+            v += m;                                                            \
+          }                                                                    \
+        while (j < n)                                                          \
+          {                                                                    \
+            for (octave_idx_type i = 0; i < m; i++)                            \
+              {                                                                \
+                if (v[i].real () OP r[i].real ())                              \
+                  {                                                            \
+                    r[i] = v[i];                                               \
+                    ri[i] = j;                                                 \
+                  }                                                            \
+                else if (v[i].real () == r[i].real ()  &&                      \
+                         v[i].imag () OP r[i].imag ())                         \
+                  {                                                            \
+                    r[i] = v[i];                                               \
+                    ri[i] = j;                                                 \
+                  }                                                            \
+              }                                                                \
+            j++;                                                               \
+            v += m;                                                            \
+          }                                                                    \
+      }                                                                        \
+    else                                                                       \
+      {                                                                        \
+        while (nan && j < n)                                                   \
+          {                                                                    \
+            nan = false;                                                       \
+            for (octave_idx_type i = 0; i < m; i++)                            \
+              {                                                                \
+                if ((octave::math::isnan (v[i]) ||                             \
+                     octave::math::isnan (r[i])) && ! nanflag)                 \
+                  {                                                            \
+                    r[i] = NAN;                                                \
+                    ri[i] = j;                                                 \
+                    nan = true;                                                \
+                  }                                                            \
+                else if (octave::math::isnan (v[i]))                           \
+                  nan = true;                                                  \
+                else if (octave::math::isnan (r[i]) ||                         \
+                         abs (v[i]) OP abs (r[i]))                             \
+                  {                                                            \
+                    r[i] = v[i];                                               \
+                    ri[i] = j;                                                 \
+                  }                                                            \
+                else if (abs (v[i]) == abs (r[i]) &&                           \
+                         std::arg (v[i]) OP std::arg (r[i]))                   \
+                  {                                                            \
+                    r[i] = v[i];                                               \
+                    ri[i] = j;                                                 \
+                  }                                                            \
+              }                                                                \
+            j++;                                                               \
+            v += m;                                                            \
+          }                                                                    \
+        while (j < n)                                                          \
+          {                                                                    \
+            for (octave_idx_type i = 0; i < m; i++)                            \
+              {                                                                \
+                if (abs (v[i]) OP abs (r[i]))                                  \
+                  {                                                            \
+                    r[i] = v[i];                                               \
+                    ri[i] = j;                                                 \
+                  }                                                            \
+                  r[i] = v[i];                                                 \
+                if (abs (v[i]) == abs (r[i]) &&                                \
+                    std::arg (v[i]) OP std::arg (r[i]))                        \
+                  {                                                            \
+                    r[i] = v[i];                                               \
+                    ri[i] = j;                                                 \
+                  }                                                            \
+              }                                                                \
+            j++;                                                               \
+            v += m;                                                            \
+          }                                                                    \
+      }                                                                        \
+  }
+
+OP_CMINMAX_FCN2 (mx_inline_cmin, <)
+OP_CMINMAX_FCN2 (mx_inline_cmax, >)
+
+#define OP_CMINMAX_FCNN(F)                                                     \
+  template <typename T>                                                        \
+  inline void                                                                  \
+  F (const T *v, T *r, octave_idx_type l, octave_idx_type n,                   \
+     octave_idx_type u, const bool nanflag, const bool realabs)                \
+  {                                                                            \
+    if (! n)                                                                   \
+      return;                                                                  \
+    if (l == 1)                                                                \
+      {                                                                        \
+        for (octave_idx_type i = 0; i < u; i++)                                \
+          {                                                                    \
+            F (v, r, n, nanflag, realabs);                                     \
+            v += n;                                                            \
+            r++;                                                               \
+          }                                                                    \
+      }                                                                        \
+    else                                                                       \
+      {                                                                        \
+        for (octave_idx_type i = 0; i < u; i++)                                \
+          {                                                                    \
+            F (v, r, l, n, nanflag, realabs);                                  \
+            v += l*n;                                                          \
+            r += l;                                                            \
+          }                                                                    \
+      }                                                                        \
+  }                                                                            \
+  template <typename T>                                                        \
+  inline void                                                                  \
+  F (const T *v, T *r, octave_idx_type *ri, octave_idx_type l,                 \
+     octave_idx_type n, octave_idx_type u, bool nanflag, bool realabs)         \
+  {                                                                            \
+    if (! n) return;                                                           \
+    if (l == 1)                                                                \
+      {                                                                        \
+        for (octave_idx_type i = 0; i < u; i++)                                \
+          {                                                                    \
+            F (v, r, ri, n, nanflag, realabs);                                 \
+            v += n;                                                            \
+            r++;                                                               \
+            ri++;                                                              \
+          }                                                                    \
+      }                                                                        \
+    else                                                                       \
+      {                                                                        \
+        for (octave_idx_type i = 0; i < u; i++)                                \
+          {                                                                    \
+            F (v, r, ri, l, n, nanflag, realabs);                              \
+            v += l*n;                                                          \
+            r += l;                                                            \
+            ri += l;                                                           \
+          }                                                                    \
+      }                                                                        \
+  }
+
+OP_CMINMAX_FCNN (mx_inline_cmin)
+OP_CMINMAX_FCNN (mx_inline_cmax)
+
+// Faster implementation for char arrays, since they do not support
+// NaN values and real/abs comparison methods do apply either.
+
+#define OP_CHMINMAX_FCN(F, OP)                                          \
+  template <typename T>                                                 \
+  void F (const T *v, T *r, octave_idx_type n)                          \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    T tmp = v[0];                                                       \
+    octave_idx_type i = 1;                                              \
+    for (; i < n; i++)                                                  \
+      if (v[i] OP tmp)                                                  \
+        tmp = v[i];                                                     \
+    *r = tmp;                                                           \
+  }                                                                     \
+  template <typename T>                                                 \
+  void F (const T *v, T *r, octave_idx_type *ri, octave_idx_type n)     \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    T tmp = v[0];                                                       \
+    octave_idx_type tmpi = 0;                                           \
+    octave_idx_type i = 1;                                              \
+    for (; i < n; i++)                                                  \
+      if (v[i] OP tmp)                                                  \
+        {                                                               \
+          tmp = v[i];                                                   \
+          tmpi = i;                                                     \
+        }                                                               \
+    *r = tmp;                                                           \
+    *ri = tmpi;                                                         \
+  }
+
+OP_CHMINMAX_FCN (mx_inline_chmin, <)
+OP_CHMINMAX_FCN (mx_inline_chmax, >)
+
+#define OP_CHMINMAX_FCN2(F, OP)                                         \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const T *v, T *r, octave_idx_type m, octave_idx_type n)            \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    octave_idx_type j = 1;                                              \
+    for (octave_idx_type i = 0; i < m; i++)                             \
+      r[i] = v[i];                                                      \
+    v += m;                                                             \
     while (j < n)                                                       \
       {                                                                 \
         for (octave_idx_type i = 0; i < m; i++)                         \
@@ -1093,33 +2228,13 @@ OP_MINMAX_FCN (mx_inline_max, >)
   {                                                                     \
     if (! n)                                                            \
       return;                                                           \
-    bool nan = false;                                                   \
-    octave_idx_type j = 0;                                              \
+    octave_idx_type j = 1;                                              \
     for (octave_idx_type i = 0; i < m; i++)                             \
       {                                                                 \
         r[i] = v[i];                                                    \
         ri[i] = j;                                                      \
-        if (octave::math::isnan (v[i]))                                 \
-          nan = true;                                                   \
       }                                                                 \
-    j++;                                                                \
     v += m;                                                             \
-    while (nan && j < n)                                                \
-      {                                                                 \
-        nan = false;                                                    \
-        for (octave_idx_type i = 0; i < m; i++)                         \
-          {                                                             \
-            if (octave::math::isnan (v[i]))                             \
-              nan = true;                                               \
-            else if (octave::math::isnan (r[i]) || v[i] OP r[i])        \
-              {                                                         \
-                r[i] = v[i];                                            \
-                ri[i] = j;                                              \
-              }                                                         \
-          }                                                             \
-        j++;                                                            \
-        v += m;                                                         \
-      }                                                                 \
     while (j < n)                                                       \
       {                                                                 \
         for (octave_idx_type i = 0; i < m; i++)                         \
@@ -1133,73 +2248,83 @@ OP_MINMAX_FCN (mx_inline_max, >)
       }                                                                 \
   }
 
-OP_MINMAX_FCN2 (mx_inline_min, <)
-OP_MINMAX_FCN2 (mx_inline_max, >)
+OP_CHMINMAX_FCN2 (mx_inline_chmin, <)
+OP_CHMINMAX_FCN2 (mx_inline_chmax, >)
 
-#define OP_MINMAX_FCNN(F)                                       \
-  template <typename T>                                         \
-  inline void                                                   \
-  F (const T *v, T *r, octave_idx_type l,                       \
-     octave_idx_type n, octave_idx_type u)                      \
-  {                                                             \
-    if (! n)                                                    \
-      return;                                                   \
-    if (l == 1)                                                 \
-      {                                                         \
-        for (octave_idx_type i = 0; i < u; i++)                 \
-          {                                                     \
-            F (v, r, n);                                        \
-            v += n;                                             \
-            r++;                                                \
-          }                                                     \
-      }                                                         \
-    else                                                        \
-      {                                                         \
-        for (octave_idx_type i = 0; i < u; i++)                 \
-          {                                                     \
-            F (v, r, l, n);                                     \
-            v += l*n;                                           \
-            r += l;                                             \
-          }                                                     \
-      }                                                         \
-  }                                                             \
-  template <typename T>                                         \
-  inline void                                                   \
-  F (const T *v, T *r, octave_idx_type *ri,                     \
-     octave_idx_type l, octave_idx_type n, octave_idx_type u)   \
-  {                                                             \
-    if (! n) return;                                            \
-    if (l == 1)                                                 \
-      {                                                         \
-        for (octave_idx_type i = 0; i < u; i++)                 \
-          {                                                     \
-            F (v, r, ri, n);                                    \
-            v += n;                                             \
-            r++;                                                \
-            ri++;                                               \
-          }                                                     \
-      }                                                         \
-    else                                                        \
-      {                                                         \
-        for (octave_idx_type i = 0; i < u; i++)                 \
-          {                                                     \
-            F (v, r, ri, l, n);                                 \
-            v += l*n;                                           \
-            r += l;                                             \
-            ri += l;                                            \
-          }                                                     \
-      }                                                         \
-  }
-
-OP_MINMAX_FCNN (mx_inline_min)
-OP_MINMAX_FCNN (mx_inline_max)
-
-#define OP_CUMMINMAX_FCN(F, OP)                                         \
+#define OP_CHMINMAX_FCNN(F)                                             \
   template <typename T>                                                 \
-  void F (const T *v, T *r, octave_idx_type n)                          \
+  inline void                                                           \
+  F (const T *v, T *r, octave_idx_type l,                               \
+     octave_idx_type n,octave_idx_type u)                               \
   {                                                                     \
     if (! n)                                                            \
       return;                                                           \
+    if (l == 1)                                                         \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < u; i++)                         \
+          {                                                             \
+            F (v, r, n);                                                \
+            v += n;                                                     \
+            r++;                                                        \
+          }                                                             \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < u; i++)                         \
+          {                                                             \
+            F (v, r, l, n);                                             \
+            v += l*n;                                                   \
+            r += l;                                                     \
+          }                                                             \
+      }                                                                 \
+  }                                                                     \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const T *v, T *r, octave_idx_type *ri, octave_idx_type l,          \
+     octave_idx_type n, octave_idx_type u)                              \
+  {                                                                     \
+    if (! n) return;                                                    \
+    if (l == 1)                                                         \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < u; i++)                         \
+          {                                                             \
+            F (v, r, ri, n);                                            \
+            v += n;                                                     \
+            r++;                                                        \
+            ri++;                                                       \
+          }                                                             \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < u; i++)                         \
+          {                                                             \
+            F (v, r, ri, l, n);                                         \
+            v += l*n;                                                   \
+            r += l;                                                     \
+            ri += l;                                                    \
+          }                                                             \
+      }                                                                 \
+  }
+
+OP_CHMINMAX_FCNN (mx_inline_chmin)
+OP_CHMINMAX_FCNN (mx_inline_chmax)
+
+#define OP_CUMMINMAX_FCN(F, OP)                                         \
+  template <typename T>                                                 \
+  void F (const T *v, T *r, octave_idx_type n, const bool nanflag,      \
+          const bool realabs)                                           \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    if (! nanflag)                                                      \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < n; i++)                         \
+          if (octave::math::isnan (v[i]))                               \
+            {                                                           \
+              *r = NAN;                                                 \
+              return;                                                   \
+            }                                                           \
+      }                                                                 \
     T tmp = v[0];                                                       \
     octave_idx_type i = 1;                                              \
     octave_idx_type j = 0;                                              \
@@ -1211,21 +2336,53 @@ OP_MINMAX_FCNN (mx_inline_max)
         if (i < n)                                                      \
           tmp = v[i];                                                   \
       }                                                                 \
-    for (; i < n; i++)                                                  \
-      if (v[i] OP tmp)                                                  \
-        {                                                               \
-          for (; j < i; j++)                                            \
-            r[j] = tmp;                                                 \
-          tmp = v[i];                                                   \
-        }                                                               \
+    if (realabs)                                                        \
+      {                                                                 \
+        for (; i < n; i++)                                              \
+          if (v[i] OP tmp)                                              \
+            {                                                           \
+              for (; j < i; j++)                                        \
+                r[j] = tmp;                                             \
+              tmp = v[i];                                               \
+            }                                                           \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        for (; i < n; i++)                                              \
+          {                                                             \
+            if (abs (v[i]) OP abs (tmp))                                \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  r[j] = tmp;                                           \
+                tmp = v[i];                                             \
+              }                                                         \
+            else if (abs (v[i]) == abs (tmp) && v[i] OP tmp)            \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  r[j] = tmp;                                           \
+                tmp = v[i];                                             \
+              }                                                         \
+          }                                                             \
+      }                                                                 \
     for (; j < i; j++)                                                  \
       r[j] = tmp;                                                       \
   }                                                                     \
   template <typename T>                                                 \
-  void F (const T *v, T *r, octave_idx_type *ri, octave_idx_type n)     \
+  void F (const T *v, T *r, octave_idx_type *ri, octave_idx_type n,     \
+          const bool nanflag, const bool realabs)                       \
   {                                                                     \
     if (! n)                                                            \
       return;                                                           \
+    if (! nanflag)                                                      \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < n; i++)                         \
+          if (octave::math::isnan (v[i]))                               \
+            {                                                           \
+              *r = NAN;                                                 \
+              *ri = i;                                                  \
+              return;                                                   \
+            }                                                           \
+      }                                                                 \
     T tmp = v[0];                                                       \
     octave_idx_type tmpi = 0;                                           \
     octave_idx_type i = 1;                                              \
@@ -1244,17 +2401,46 @@ OP_MINMAX_FCNN (mx_inline_max)
             tmpi = i;                                                   \
           }                                                             \
       }                                                                 \
-    for (; i < n; i++)                                                  \
-      if (v[i] OP tmp)                                                  \
-        {                                                               \
-          for (; j < i; j++)                                            \
+    if (realabs)                                                        \
+      {                                                                 \
+        for (; i < n; i++)                                              \
+          if (v[i] OP tmp)                                              \
             {                                                           \
-              r[j] = tmp;                                               \
-              ri[j] = tmpi;                                             \
+              for (; j < i; j++)                                        \
+                {                                                       \
+                  r[j] = tmp;                                           \
+                  ri[j] = tmpi;                                         \
+                }                                                       \
+              tmp = v[i];                                               \
+              tmpi = i;                                                 \
             }                                                           \
-          tmp = v[i];                                                   \
-          tmpi = i;                                                     \
-        }                                                               \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        for (; i < n; i++)                                              \
+          {                                                             \
+            if (abs (v[i]) OP abs (tmp))                                \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  {                                                     \
+                    r[j] = tmp;                                         \
+                    ri[j] = tmpi;                                       \
+                  }                                                     \
+                tmp = v[i];                                             \
+                tmpi = i;                                               \
+              }                                                         \
+            else if (abs (v[i]) == abs (tmp) && v[i] OP tmp)            \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  {                                                     \
+                    r[j] = tmp;                                         \
+                    ri[j] = tmpi;                                       \
+                  }                                                     \
+                tmp = v[i];                                             \
+                tmpi = i;                                               \
+              }                                                         \
+          }                                                             \
+      }                                                                 \
     for (; j < i; j++)                                                  \
       {                                                                 \
         r[j] = tmp;                                                     \
@@ -1272,7 +2458,8 @@ OP_CUMMINMAX_FCN (mx_inline_cummax, >)
 #define OP_CUMMINMAX_FCN2(F, OP)                                        \
   template <typename T>                                                 \
   inline void                                                           \
-  F (const T *v, T *r, octave_idx_type m, octave_idx_type n)            \
+  F (const T *v, T *r, octave_idx_type m, octave_idx_type n,            \
+     const bool nanflag, const bool realabs)                            \
   {                                                                     \
     if (! n)                                                            \
       return;                                                           \
@@ -1289,43 +2476,102 @@ OP_CUMMINMAX_FCN (mx_inline_cummax, >)
     v += m;                                                             \
     r0 = r;                                                             \
     r += m;                                                             \
-    while (nan && j < n)                                                \
+    if (realabs)                                                        \
       {                                                                 \
-        nan = false;                                                    \
-        for (octave_idx_type i = 0; i < m; i++)                         \
+        while (nan && j < n)                                            \
           {                                                             \
-            if (octave::math::isnan (v[i]))                             \
+            nan = false;                                                \
+            for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                r[i] = r0[i];                                           \
-                nan = true;                                             \
+                if ((octave::math::isnan (v[i]) ||                      \
+                     octave::math::isnan (r0[i])) && ! nanflag)         \
+                  {                                                     \
+                    r[i] = NAN;                                         \
+                    nan = true;                                         \
+                  }                                                     \
+                else if (octave::math::isnan (v[i]))                    \
+                  {                                                     \
+                    r[i] = r0[i];                                       \
+                    nan = true;                                         \
+                  }                                                     \
+                else if (octave::math::isnan (r0[i]) || v[i] OP r0[i])  \
+                  r[i] = v[i];                                          \
+                else                                                    \
+                  r[i] = r0[i];                                         \
               }                                                         \
-            else if (octave::math::isnan (r0[i]) || v[i] OP r0[i])      \
-              r[i] = v[i];                                              \
-            else                                                        \
-              r[i] = r0[i];                                             \
+            j++;                                                        \
+            v += m;                                                     \
+            r0 = r;                                                     \
+            r += m;                                                     \
           }                                                             \
-        j++;                                                            \
-        v += m;                                                         \
-        r0 = r;                                                         \
-        r += m;                                                         \
+        while (j < n)                                                   \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if (v[i] OP r0[i])                                      \
+                  r[i] = v[i];                                          \
+                else                                                    \
+                  r[i] = r0[i];                                         \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+            r0 = r;                                                     \
+            r += m;                                                     \
+          }                                                             \
       }                                                                 \
-    while (j < n)                                                       \
+    else                                                                \
       {                                                                 \
-        for (octave_idx_type i = 0; i < m; i++)                         \
-          if (v[i] OP r0[i])                                            \
-            r[i] = v[i];                                                \
-          else                                                          \
-            r[i] = r0[i];                                               \
-        j++;                                                            \
-        v += m;                                                         \
-        r0 = r;                                                         \
-        r += m;                                                         \
+        while (nan && j < n)                                            \
+          {                                                             \
+            nan = false;                                                \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if ((octave::math::isnan (v[i]) ||                      \
+                     octave::math::isnan (r0[i])) && ! nanflag)         \
+                  {                                                     \
+                    r[i] = NAN;                                         \
+                    nan = true;                                         \
+                  }                                                     \
+                else if (octave::math::isnan (v[i]))                    \
+                  {                                                     \
+                    r[i] = r0[i];                                       \
+                    nan = true;                                         \
+                  }                                                     \
+                else if (octave::math::isnan (r0[i]) ||                 \
+                         abs (v[i]) OP abs (r0[i]))                     \
+                  r[i] = v[i];                                          \
+                else if (abs (v[i]) == abs (r0[i]) && v[i] OP r0[i])    \
+                  r[i] = v[i];                                          \
+                else                                                    \
+                  r[i] = r0[i];                                         \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+            r0 = r;                                                     \
+            r += m;                                                     \
+          }                                                             \
+        while (j < n)                                                   \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if (abs (v[i]) OP abs (r0[i]))                          \
+                  r[i] = v[i];                                          \
+                else if (abs (v[i]) == abs (r0[i]) && v[i] OP r0[i])    \
+                  r[i] = v[i];                                          \
+                else                                                    \
+                  r[i] = r0[i];                                         \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+            r0 = r;                                                     \
+            r += m;                                                     \
+          }                                                             \
       }                                                                 \
   }                                                                     \
   template <typename T>                                                 \
   inline void                                                           \
-  F (const T *v, T *r, octave_idx_type *ri,                             \
-     octave_idx_type m, octave_idx_type n)                              \
+  F (const T *v, T *r, octave_idx_type *ri, octave_idx_type m,          \
+     octave_idx_type n, const bool nanflag, const bool realabs)         \
   {                                                                     \
     if (! n)                                                            \
       return;                                                           \
@@ -1345,54 +2591,138 @@ OP_CUMMINMAX_FCN (mx_inline_cummax, >)
     r += m;                                                             \
     r0i = ri;                                                           \
     ri += m;                                                            \
-    while (nan && j < n)                                                \
+    if (realabs)                                                        \
       {                                                                 \
-        nan = false;                                                    \
-        for (octave_idx_type i = 0; i < m; i++)                         \
+        while (nan && j < n)                                            \
           {                                                             \
-            if (octave::math::isnan (v[i]))                             \
+            nan = false;                                                \
+            for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                r[i] = r0[i];                                           \
-                ri[i] = r0i[i];                                         \
-                nan = true;                                             \
+                if ((octave::math::isnan (v[i]) ||                      \
+                     octave::math::isnan (r0[i])) && ! nanflag)         \
+                  {                                                     \
+                    r[i] = NAN;                                         \
+                    ri[i] = j;                                          \
+                    nan = true;                                         \
+                  }                                                     \
+                else if (octave::math::isnan (v[i]))                    \
+                  {                                                     \
+                    r[i] = r0[i];                                       \
+                    ri[i] = r0i[i];                                     \
+                    nan = true;                                         \
+                  }                                                     \
+                else if (octave::math::isnan (r0[i]) || v[i] OP r0[i])  \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else                                                    \
+                  {                                                     \
+                    r[i] = r0[i];                                       \
+                    ri[i] = r0i[i];                                     \
+                  }                                                     \
               }                                                         \
-            else if (octave::math::isnan (r0[i]) || v[i] OP r0[i])      \
-              {                                                         \
-                r[i] = v[i];                                            \
-                ri[i] = j;                                              \
-              }                                                         \
-            else                                                        \
-              {                                                         \
-                r[i] = r0[i];                                           \
-                ri[i] = r0i[i];                                         \
-              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+            r0 = r;                                                     \
+            r += m;                                                     \
+            r0i = ri;                                                   \
+            ri += m;                                                    \
           }                                                             \
-        j++;                                                            \
-        v += m;                                                         \
-        r0 = r;                                                         \
-        r += m;                                                         \
-        r0i = ri;                                                       \
-        ri += m;                                                        \
+        while (j < n)                                                   \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if (v[i] OP r0[i])                                      \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else                                                    \
+                  {                                                     \
+                    r[i] = r0[i];                                       \
+                    ri[i] = r0i[i];                                     \
+                  }                                                     \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+            r0 = r;                                                     \
+            r += m;                                                     \
+            r0i = ri;                                                   \
+            ri += m;                                                    \
+          }                                                             \
       }                                                                 \
-    while (j < n)                                                       \
+    else                                                                \
       {                                                                 \
-        for (octave_idx_type i = 0; i < m; i++)                         \
-          if (v[i] OP r0[i])                                            \
-            {                                                           \
-              r[i] = v[i];                                              \
-              ri[i] = j;                                                \
-            }                                                           \
-          else                                                          \
-            {                                                           \
-              r[i] = r0[i];                                             \
-              ri[i] = r0i[i];                                           \
-            }                                                           \
-        j++;                                                            \
-        v += m;                                                         \
-        r0 = r;                                                         \
-        r += m;                                                         \
-        r0i = ri;                                                       \
-        ri += m;                                                        \
+        while (nan && j < n)                                            \
+          {                                                             \
+            nan = false;                                                \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if ((octave::math::isnan (v[i]) ||                      \
+                     octave::math::isnan (r0[i])) && ! nanflag)         \
+                  {                                                     \
+                    r[i] = NAN;                                         \
+                    ri[i] = j;                                          \
+                    nan = true;                                         \
+                  }                                                     \
+                else if (octave::math::isnan (v[i]))                    \
+                  {                                                     \
+                    r[i] = r0[i];                                       \
+                    ri[i] = r0i[i];                                     \
+                    nan = true;                                         \
+                  }                                                     \
+                else if (octave::math::isnan (r0[i]) ||                 \
+                         abs (v[i]) OP abs (r0[i]))                     \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else if (abs (v[i]) == abs (r0[i]) && v[i] OP r0[i])    \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else                                                    \
+                  {                                                     \
+                    r[i] = r0[i];                                       \
+                    ri[i] = r0i[i];                                     \
+                  }                                                     \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+            r0 = r;                                                     \
+            r += m;                                                     \
+            r0i = ri;                                                   \
+            ri += m;                                                    \
+          }                                                             \
+        while (j < n)                                                   \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if (abs (v[i]) OP abs (r0[i]))                          \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else if (abs (v[i]) == abs (r0[i]) && v[i] OP r0[i])    \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else                                                    \
+                  {                                                     \
+                    r[i] = r0[i];                                       \
+                    ri[i] = r0i[i];                                     \
+                  }                                                     \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+            r0 = r;                                                     \
+            r += m;                                                     \
+            r0i = ri;                                                   \
+            ri += m;                                                    \
+          }                                                             \
       }                                                                 \
   }
 
@@ -1402,8 +2732,8 @@ OP_CUMMINMAX_FCN2 (mx_inline_cummax, >)
 #define OP_CUMMINMAX_FCNN(F)                                    \
   template <typename T>                                         \
   inline void                                                   \
-  F (const T *v, T *r, octave_idx_type l,                       \
-     octave_idx_type n, octave_idx_type u)                      \
+  F (const T *v, T *r, octave_idx_type l, octave_idx_type n,    \
+     octave_idx_type u, const bool nanflag, const bool realabs) \
   {                                                             \
     if (! n)                                                    \
       return;                                                   \
@@ -1411,7 +2741,7 @@ OP_CUMMINMAX_FCN2 (mx_inline_cummax, >)
       {                                                         \
         for (octave_idx_type i = 0; i < u; i++)                 \
           {                                                     \
-            F (v, r, n);                                        \
+            F (v, r, n, nanflag, realabs);                      \
             v += n;                                             \
             r += n;                                             \
           }                                                     \
@@ -1420,7 +2750,7 @@ OP_CUMMINMAX_FCN2 (mx_inline_cummax, >)
       {                                                         \
         for (octave_idx_type i = 0; i < u; i++)                 \
           {                                                     \
-            F (v, r, l, n);                                     \
+            F (v, r, l, n, nanflag, realabs);                   \
             v += l*n;                                           \
             r += l*n;                                           \
           }                                                     \
@@ -1428,8 +2758,9 @@ OP_CUMMINMAX_FCN2 (mx_inline_cummax, >)
   }                                                             \
   template <typename T>                                         \
   inline void                                                   \
-  F (const T *v, T *r, octave_idx_type *ri,                     \
-     octave_idx_type l, octave_idx_type n, octave_idx_type u)   \
+  F (const T *v, T *r, octave_idx_type *ri, octave_idx_type l,  \
+     octave_idx_type n, octave_idx_type u, const bool nanflag,  \
+     const bool realabs)                                        \
   {                                                             \
     if (! n)                                                    \
       return;                                                   \
@@ -1437,7 +2768,7 @@ OP_CUMMINMAX_FCN2 (mx_inline_cummax, >)
       {                                                         \
         for (octave_idx_type i = 0; i < u; i++)                 \
           {                                                     \
-            F (v, r, ri, n);                                    \
+            F (v, r, ri, n, nanflag, realabs);                  \
             v += n;                                             \
             r += n;                                             \
             ri += n;                                            \
@@ -1447,7 +2778,7 @@ OP_CUMMINMAX_FCN2 (mx_inline_cummax, >)
       {                                                         \
         for (octave_idx_type i = 0; i < u; i++)                 \
           {                                                     \
-            F (v, r, ri, l, n);                                 \
+            F (v, r, ri, l, n, nanflag, realabs);               \
             v += l*n;                                           \
             r += l*n;                                           \
             ri += l*n;                                          \
@@ -1457,6 +2788,539 @@ OP_CUMMINMAX_FCN2 (mx_inline_cummax, >)
 
 OP_CUMMINMAX_FCNN (mx_inline_cummin)
 OP_CUMMINMAX_FCNN (mx_inline_cummax)
+
+// Special implementation for complex arrays, since we need comparisons
+// in both real and imaginary parts for MATLAB compatibility.
+
+#define OP_CCUMMINMAX_FCN(F, OP)                                        \
+  template <typename T>                                                 \
+  void F (const std::complex<T> *v, std::complex<T> *r,                 \
+          octave_idx_type n, const bool nanflag, const bool realabs)    \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    if (! nanflag)                                                      \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < n; i++)                         \
+          if (octave::math::isnan (v[i]))                               \
+            {                                                           \
+              *r = NAN;                                                 \
+              return;                                                   \
+            }                                                           \
+      }                                                                 \
+    std::complex<T> tmp = v[0];                                         \
+    octave_idx_type i = 1;                                              \
+    octave_idx_type j = 0;                                              \
+    if (octave::math::isnan (tmp))                                      \
+      {                                                                 \
+        for (; i < n && octave::math::isnan (v[i]); i++) ;              \
+        for (; j < i; j++)                                              \
+          r[j] = tmp;                                                   \
+        if (i < n)                                                      \
+          tmp = v[i];                                                   \
+      }                                                                 \
+    if (realabs)                                                        \
+      {                                                                 \
+        for (; i < n; i++)                                              \
+          {                                                             \
+            if (v[i].real () OP tmp.real ())                            \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  r[j] = tmp;                                           \
+                tmp = v[i];                                             \
+              }                                                         \
+            else if (v[i].real () == tmp.real () &&                     \
+                     v[i].imag () OP tmp.imag ())                       \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  r[j] = tmp;                                           \
+                tmp = v[i];                                             \
+              }                                                         \
+          }                                                             \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        for (; i < n; i++)                                              \
+          {                                                             \
+            if (abs (v[i]) OP abs (tmp))                                \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  r[j] = tmp;                                           \
+                tmp = v[i];                                             \
+              }                                                         \
+            else if (abs (v[i]) == abs (tmp) &&                         \
+                     std::arg (v[i]) OP std::arg (tmp))                 \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  r[j] = tmp;                                           \
+                tmp = v[i];                                             \
+              }                                                         \
+          }                                                             \
+      }                                                                 \
+    for (; j < i; j++)                                                  \
+      r[j] = tmp;                                                       \
+  }                                                                     \
+  template <typename T>                                                 \
+  void F (const std::complex<T> *v, std::complex<T> *r,                 \
+          octave_idx_type *ri, octave_idx_type n, const bool nanflag,   \
+          const bool realabs)                                           \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    if (! nanflag)                                                      \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < n; i++)                         \
+          if (octave::math::isnan (v[i]))                               \
+            {                                                           \
+              *r = NAN;                                                 \
+              *ri = i;                                                  \
+              return;                                                   \
+            }                                                           \
+      }                                                                 \
+    std::complex<T> tmp = v[0];                                         \
+    octave_idx_type tmpi = 0;                                           \
+    octave_idx_type i = 1;                                              \
+    octave_idx_type j = 0;                                              \
+    if (octave::math::isnan (tmp))                                      \
+      {                                                                 \
+        for (; i < n && octave::math::isnan (v[i]); i++) ;              \
+        for (; j < i; j++)                                              \
+          {                                                             \
+            r[j] = tmp;                                                 \
+            ri[j] = tmpi;                                               \
+          }                                                             \
+        if (i < n)                                                      \
+          {                                                             \
+            tmp = v[i];                                                 \
+            tmpi = i;                                                   \
+          }                                                             \
+      }                                                                 \
+    if (realabs)                                                        \
+      {                                                                 \
+        for (; i < n; i++)                                              \
+          {                                                             \
+            if (v[i].real () OP tmp.real ())                            \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  {                                                     \
+                    r[j] = tmp;                                         \
+                    ri[j] = tmpi;                                       \
+                  }                                                     \
+                tmp = v[i];                                             \
+                tmpi = i;                                               \
+              }                                                         \
+            else if (v[i].real () == tmp.real () &&                     \
+                     v[i].imag () OP tmp.imag ())                       \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  {                                                     \
+                    r[j] = tmp;                                         \
+                    ri[j] = tmpi;                                       \
+                  }                                                     \
+                tmp = v[i];                                             \
+                tmpi = i;                                               \
+              }                                                         \
+          }                                                             \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        for (; i < n; i++)                                              \
+          {                                                             \
+            if (abs (v[i]) OP abs (tmp))                                \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  {                                                     \
+                    r[j] = tmp;                                         \
+                    ri[j] = tmpi;                                       \
+                  }                                                     \
+                tmp = v[i];                                             \
+                tmpi = i;                                               \
+              }                                                         \
+            else if (abs (v[i]) == abs (tmp) &&                         \
+                     std::arg (v[i]) OP std::arg (tmp))                 \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  {                                                     \
+                    r[j] = tmp;                                         \
+                    ri[j] = tmpi;                                       \
+                  }                                                     \
+                tmp = v[i];                                             \
+                tmpi = i;                                               \
+              }                                                         \
+          }                                                             \
+      }                                                                 \
+    for (; j < i; j++)                                                  \
+      {                                                                 \
+        r[j] = tmp;                                                     \
+        ri[j] = tmpi;                                                   \
+      }                                                                 \
+  }
+
+OP_CCUMMINMAX_FCN (mx_inline_ccummin, <)
+OP_CCUMMINMAX_FCN (mx_inline_ccummax, >)
+
+// Row reductions will be slightly complicated.  We will proceed with checks
+// for NaNs until we detect that no row will yield a NaN, in which case we
+// proceed to a faster code.
+
+#define OP_CCUMMINMAX_FCN2(F, OP)                                       \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const std::complex<T> *v, std::complex<T> *r, octave_idx_type m,   \
+     octave_idx_type n, const bool nanflag, const bool realabs)         \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    bool nan = false;                                                   \
+    const std::complex<T> *r0;                                          \
+    octave_idx_type j = 0;                                              \
+    for (octave_idx_type i = 0; i < m; i++)                             \
+      {                                                                 \
+        r[i] = v[i];                                                    \
+        if (octave::math::isnan (v[i]))                                 \
+          nan = true;                                                   \
+      }                                                                 \
+    j++;                                                                \
+    v += m;                                                             \
+    r0 = r;                                                             \
+    r += m;                                                             \
+    if (realabs)                                                        \
+      {                                                                 \
+        while (nan && j < n)                                            \
+          {                                                             \
+            nan = false;                                                \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if ((octave::math::isnan (v[i]) ||                      \
+                     octave::math::isnan (r0[i])) && ! nanflag)         \
+                  {                                                     \
+                    r[i] = NAN;                                         \
+                    nan = true;                                         \
+                  }                                                     \
+                else if (octave::math::isnan (v[i]))                    \
+                  {                                                     \
+                    r[i] = r0[i];                                       \
+                    nan = true;                                         \
+                  }                                                     \
+                else if (octave::math::isnan (r0[i]) ||                 \
+                         v[i].real () OP r0[i].real ())                 \
+                  r[i] = v[i];                                          \
+                else if (v[i].real () == r0[i].real () &&               \
+                         v[i].imag () OP r0[i].imag ())                 \
+                  r[i] = v[i];                                          \
+                else                                                    \
+                  r[i] = r0[i];                                         \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+            r0 = r;                                                     \
+            r += m;                                                     \
+          }                                                             \
+        while (j < n)                                                   \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if (v[i].real () OP r0[i].real ())                      \
+                  r[i] = v[i];                                          \
+                else if (v[i].real () == r0[i].real () &&               \
+                         v[i].imag () OP r0[i].imag ())                 \
+                  r[i] = v[i];                                          \
+                else                                                    \
+                  r[i] = r0[i];                                         \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+            r0 = r;                                                     \
+            r += m;                                                     \
+          }                                                             \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        while (nan && j < n)                                            \
+          {                                                             \
+            nan = false;                                                \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if ((octave::math::isnan (v[i]) ||                      \
+                     octave::math::isnan (r0[i])) && ! nanflag)         \
+                  {                                                     \
+                    r[i] = NAN;                                         \
+                    nan = true;                                         \
+                  }                                                     \
+                else if (octave::math::isnan (v[i]))                    \
+                  {                                                     \
+                    r[i] = r0[i];                                       \
+                    nan = true;                                         \
+                  }                                                     \
+                else if (octave::math::isnan (r0[i]) ||                 \
+                         abs (v[i]) OP abs (r0[i]))                     \
+                  r[i] = v[i];                                          \
+                else if (abs (v[i]) == abs (r0[i]) &&                   \
+                         std::arg (v[i]) OP std::arg (r0[i]))           \
+                  r[i] = v[i];                                          \
+                else                                                    \
+                  r[i] = r0[i];                                         \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+            r0 = r;                                                     \
+            r += m;                                                     \
+          }                                                             \
+        while (j < n)                                                   \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if (abs (v[i]) OP abs (r0[i]))                          \
+                  r[i] = v[i];                                          \
+                else if (abs (v[i]) == abs (r0[i])  &&                  \
+                         std::arg (v[i]) OP std::arg (r0[i]))           \
+                  r[i] = v[i];                                          \
+                else                                                    \
+                  r[i] = r0[i];                                         \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+            r0 = r;                                                     \
+            r += m;                                                     \
+          }                                                             \
+      }                                                                 \
+  }                                                                     \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const std::complex<T> *v, std::complex<T> *r, octave_idx_type *ri, \
+     octave_idx_type m, octave_idx_type n, const bool nanflag,          \
+     const bool realabs)                                                \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    bool nan = false;                                                   \
+    const std::complex<T> *r0;                                          \
+    const octave_idx_type *r0i;                                         \
+    octave_idx_type j = 0;                                              \
+    for (octave_idx_type i = 0; i < m; i++)                             \
+      {                                                                 \
+        r[i] = v[i]; ri[i] = 0;                                         \
+        if (octave::math::isnan (v[i]))                                 \
+          nan = true;                                                   \
+      }                                                                 \
+    j++;                                                                \
+    v += m;                                                             \
+    r0 = r;                                                             \
+    r += m;                                                             \
+    r0i = ri;                                                           \
+    ri += m;                                                            \
+    if (realabs)                                                        \
+      {                                                                 \
+        while (nan && j < n)                                            \
+          {                                                             \
+            nan = false;                                                \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if ((octave::math::isnan (v[i]) ||                      \
+                     octave::math::isnan (r0[i])) && ! nanflag)         \
+                  {                                                     \
+                    r[i] = NAN;                                         \
+                    ri[i] = j;                                          \
+                    nan = true;                                         \
+                  }                                                     \
+                else if (octave::math::isnan (v[i]))                    \
+                  {                                                     \
+                    r[i] = r0[i];                                       \
+                    ri[i] = r0i[i];                                     \
+                    nan = true;                                         \
+                  }                                                     \
+                else if (octave::math::isnan (r0[i]) ||                 \
+                         v[i].real () OP r0[i].real ())                 \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else if (v[i].real () == r0[i].real () &&               \
+                         v[i].imag () OP r0[i].imag ())                 \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else                                                    \
+                  {                                                     \
+                    r[i] = r0[i];                                       \
+                    ri[i] = r0i[i];                                     \
+                  }                                                     \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+            r0 = r;                                                     \
+            r += m;                                                     \
+            r0i = ri;                                                   \
+            ri += m;                                                    \
+          }                                                             \
+        while (j < n)                                                   \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if (v[i].real () OP r0[i].real ())                      \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else if (v[i].real () == r0[i].real () &&               \
+                         v[i].imag () OP r0[i].imag ())                 \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else                                                    \
+                  {                                                     \
+                    r[i] = r0[i];                                       \
+                    ri[i] = r0i[i];                                     \
+                  }                                                     \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+            r0 = r;                                                     \
+            r += m;                                                     \
+            r0i = ri;                                                   \
+            ri += m;                                                    \
+          }                                                             \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        while (nan && j < n)                                            \
+          {                                                             \
+            nan = false;                                                \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if ((octave::math::isnan (v[i]) ||                      \
+                     octave::math::isnan (r0[i])) && ! nanflag)         \
+                  {                                                     \
+                    r[i] = NAN;                                         \
+                    ri[i] = j;                                          \
+                    nan = true;                                         \
+                  }                                                     \
+                else if (octave::math::isnan (v[i]))                    \
+                  {                                                     \
+                    r[i] = r0[i];                                       \
+                    ri[i] = r0i[i];                                     \
+                    nan = true;                                         \
+                  }                                                     \
+                else if (octave::math::isnan (r0[i]) ||                 \
+                         abs (v[i]) OP abs (r0[i]))                     \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else if (abs (v[i]) == abs (r0[i]) &&                   \
+                         std::arg (v[i]) OP std::arg (r0[i]))           \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else                                                    \
+                  {                                                     \
+                    r[i] = r0[i];                                       \
+                    ri[i] = r0i[i];                                     \
+                  }                                                     \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+            r0 = r;                                                     \
+            r += m;                                                     \
+            r0i = ri;                                                   \
+            ri += m;                                                    \
+          }                                                             \
+        while (j < n)                                                   \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if (abs (v[i]) OP abs (r0[i]))                          \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else if (abs (v[i]) == abs (r0[i]) &&                   \
+                         std::arg (v[i]) OP std::arg (r0[i]))           \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else                                                    \
+                  {                                                     \
+                    r[i] = r0[i];                                       \
+                    ri[i] = r0i[i];                                     \
+                  }                                                     \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+            r0 = r;                                                     \
+            r += m;                                                     \
+            r0i = ri;                                                   \
+            ri += m;                                                    \
+          }                                                             \
+      }                                                                 \
+  }
+
+OP_CCUMMINMAX_FCN2 (mx_inline_ccummin, <)
+OP_CCUMMINMAX_FCN2 (mx_inline_ccummax, >)
+
+#define OP_CCUMMINMAX_FCNN(F)                                   \
+  template <typename T>                                         \
+  inline void                                                   \
+  F (const T *v, T *r, octave_idx_type l, octave_idx_type n,    \
+     octave_idx_type u, const bool nanflag, const bool realabs) \
+  {                                                             \
+    if (! n)                                                    \
+      return;                                                   \
+    if (l == 1)                                                 \
+      {                                                         \
+        for (octave_idx_type i = 0; i < u; i++)                 \
+          {                                                     \
+            F (v, r, n, nanflag, realabs);                      \
+            v += n;                                             \
+            r += n;                                             \
+          }                                                     \
+      }                                                         \
+    else                                                        \
+      {                                                         \
+        for (octave_idx_type i = 0; i < u; i++)                 \
+          {                                                     \
+            F (v, r, l, n, nanflag, realabs);                   \
+            v += l*n;                                           \
+            r += l*n;                                           \
+          }                                                     \
+      }                                                         \
+  }                                                             \
+  template <typename T>                                         \
+  inline void                                                   \
+  F (const T *v, T *r, octave_idx_type *ri, octave_idx_type l,  \
+     octave_idx_type n, octave_idx_type u, const bool nanflag,  \
+     const bool realabs)                                        \
+  {                                                             \
+    if (! n)                                                    \
+      return;                                                   \
+    if (l == 1)                                                 \
+      {                                                         \
+        for (octave_idx_type i = 0; i < u; i++)                 \
+          {                                                     \
+            F (v, r, ri, n, nanflag, realabs);                  \
+            v += n;                                             \
+            r += n;                                             \
+            ri += n;                                            \
+          }                                                     \
+      }                                                         \
+    else                                                        \
+      {                                                         \
+        for (octave_idx_type i = 0; i < u; i++)                 \
+          {                                                     \
+            F (v, r, ri, l, n, nanflag, realabs);               \
+            v += l*n;                                           \
+            r += l*n;                                           \
+            ri += l*n;                                          \
+          }                                                     \
+      }                                                         \
+  }
+
+OP_CCUMMINMAX_FCNN (mx_inline_ccummin)
+OP_CCUMMINMAX_FCNN (mx_inline_ccummax)
 
 template <typename T>
 void mx_inline_diff (const T *v, T *r, octave_idx_type n,
@@ -1624,6 +3488,30 @@ do_mx_red_op (const Array<T>& src, int dim,
 
 template <typename R, typename T>
 inline Array<R>
+do_mx_red_op (const Array<T>& src, int dim, bool nanflag,
+              void (*mx_red_op) (const T *, R *, octave_idx_type,
+                                 octave_idx_type, octave_idx_type, bool))
+{
+  octave_idx_type l, n, u;
+  dim_vector dims = src.dims ();
+  // M*b inconsistency: sum ([]) = 0 etc.
+  if (dims.ndims () == 2 && dims(0) == 0 && dims(1) == 0)
+    dims(1) = 1;
+
+  get_extent_triplet (dims, dim, l, n, u);
+
+  // Reduction operation reduces the array size.
+  if (dim < dims.ndims ()) dims(dim) = 1;
+  dims.chop_trailing_singletons ();
+
+  Array<R> ret (dims);
+  mx_red_op (src.data (), ret.rwdata (), l, n, u, nanflag);
+
+  return ret;
+}
+
+template <typename R, typename T>
+inline Array<R>
 do_mx_flip_op (const Array<T>& src, int dim,
                void (*mx_flip_op) (const T *, R *, octave_idx_type,
                                    octave_idx_type, octave_idx_type))
@@ -1656,6 +3544,69 @@ do_mx_cum_op (const Array<T>& src, int dim,
   return ret;
 }
 
+template <typename R, typename T>
+inline Array<R>
+do_mx_cum_op (const Array<T>& src, int dim, bool nanflag,
+              void (*mx_cum_op) (const T *, R *, octave_idx_type,
+                                 octave_idx_type, octave_idx_type, bool))
+{
+  octave_idx_type l, n, u;
+  const dim_vector& dims = src.dims ();
+  get_extent_triplet (dims, dim, l, n, u);
+
+  // Cumulative operation doesn't reduce the array size.
+  Array<R> ret (dims);
+  mx_cum_op (src.data (), ret.rwdata (), l, n, u, nanflag);
+
+  return ret;
+}
+
+template <typename R>
+inline Array<R>
+do_mx_minmax_op (const Array<R>& src, int dim, bool nanflag, bool realabs,
+                 void (*mx_minmax_op) (const R *, R *, octave_idx_type,
+                                       octave_idx_type, octave_idx_type,
+                                       bool, bool))
+{
+  octave_idx_type l, n, u;
+  dim_vector dims = src.dims ();
+  get_extent_triplet (dims, dim, l, n, u);
+
+  // If the dimension is zero, we don't do anything.
+  if (dim < dims.ndims () && dims(dim) != 0) dims(dim) = 1;
+  dims.chop_trailing_singletons ();
+
+  Array<R> ret (dims);
+  mx_minmax_op (src.data (), ret.rwdata (), l, n, u, nanflag, realabs);
+
+  return ret;
+}
+
+template <typename R>
+inline Array<R>
+do_mx_minmax_op (const Array<R>& src, Array<octave_idx_type>& idx, int dim,
+                 bool nanflag, bool realabs,
+                 void (*mx_minmax_op) (const R *, R *, octave_idx_type *,
+                                       octave_idx_type, octave_idx_type,
+                                       octave_idx_type, bool, bool))
+{
+  octave_idx_type l, n, u;
+  dim_vector dims = src.dims ();
+  get_extent_triplet (dims, dim, l, n, u);
+
+  // If the dimension is zero, we don't do anything.
+  if (dim < dims.ndims () && dims(dim) != 0) dims(dim) = 1;
+  dims.chop_trailing_singletons ();
+
+  Array<R> ret (dims);
+  if (idx.dims () != dims) idx = Array<octave_idx_type> (dims);
+
+  mx_minmax_op (src.data (), ret.rwdata (), idx.rwdata (),
+                l, n, u, nanflag, realabs);
+
+  return ret;
+}
+
 template <typename R>
 inline Array<R>
 do_mx_minmax_op (const Array<R>& src, int dim,
@@ -1680,7 +3631,8 @@ template <typename R>
 inline Array<R>
 do_mx_minmax_op (const Array<R>& src, Array<octave_idx_type>& idx, int dim,
                  void (*mx_minmax_op) (const R *, R *, octave_idx_type *,
-                                       octave_idx_type, octave_idx_type, octave_idx_type))
+                                       octave_idx_type, octave_idx_type,
+                                       octave_idx_type))
 {
   octave_idx_type l, n, u;
   dim_vector dims = src.dims ();
@@ -1693,24 +3645,24 @@ do_mx_minmax_op (const Array<R>& src, Array<octave_idx_type>& idx, int dim,
   Array<R> ret (dims);
   if (idx.dims () != dims) idx = Array<octave_idx_type> (dims);
 
-  mx_minmax_op (src.data (), ret.rwdata (), idx.rwdata (),
-                l, n, u);
+  mx_minmax_op (src.data (), ret.rwdata (), idx.rwdata (), l, n, u);
 
   return ret;
 }
 
 template <typename R>
 inline Array<R>
-do_mx_cumminmax_op (const Array<R>& src, int dim,
+do_mx_cumminmax_op (const Array<R>& src, int dim, bool nanflag, bool realabs,
                     void (*mx_cumminmax_op) (const R *, R *, octave_idx_type,
-                                             octave_idx_type, octave_idx_type))
+                                             octave_idx_type, octave_idx_type,
+                                             bool, bool))
 {
   octave_idx_type l, n, u;
   const dim_vector& dims = src.dims ();
   get_extent_triplet (dims, dim, l, n, u);
 
   Array<R> ret (dims);
-  mx_cumminmax_op (src.data (), ret.rwdata (), l, n, u);
+  mx_cumminmax_op (src.data (), ret.rwdata (), l, n, u, nanflag, realabs);
 
   return ret;
 }
@@ -1718,8 +3670,10 @@ do_mx_cumminmax_op (const Array<R>& src, int dim,
 template <typename R>
 inline Array<R>
 do_mx_cumminmax_op (const Array<R>& src, Array<octave_idx_type>& idx, int dim,
+                    bool nanflag, bool realabs,
                     void (*mx_cumminmax_op) (const R *, R *, octave_idx_type *,
-                                             octave_idx_type, octave_idx_type, octave_idx_type))
+                                             octave_idx_type, octave_idx_type,
+                                             octave_idx_type, bool, bool))
 {
   octave_idx_type l, n, u;
   const dim_vector& dims = src.dims ();
@@ -1729,7 +3683,7 @@ do_mx_cumminmax_op (const Array<R>& src, Array<octave_idx_type>& idx, int dim,
   if (idx.dims () != dims) idx = Array<octave_idx_type> (dims);
 
   mx_cumminmax_op (src.data (), ret.rwdata (), idx.rwdata (),
-                   l, n, u);
+                   l, n, u, nanflag, realabs);
 
   return ret;
 }
@@ -1797,6 +3751,27 @@ mx_inline_xsum (const T *v, octave_idx_type n)
 }
 
 template <typename T>
+inline T
+mx_inline_xsum (const T *v, octave_idx_type n, bool nanflag)
+{
+  T s, e;
+  s = e = 0;
+  if (nanflag)
+    {
+      for (octave_idx_type i = 0; i < n; i++)
+        if (! octave::math::isnan (v[i]))
+          twosum_accum (s, e, v[i]);
+    }
+  else
+    {
+      for (octave_idx_type i = 0; i < n; i++)
+        twosum_accum (s, e, v[i]);
+    }
+
+  return s + e;
+}
+
+template <typename T>
 inline void
 mx_inline_xsum (const T *v, T *r,
                 octave_idx_type m, octave_idx_type n)
@@ -1817,6 +3792,41 @@ mx_inline_xsum (const T *v, T *r,
     r[i] += e[i];
 }
 
+template <typename T>
+inline void
+mx_inline_xsum (const T *v, T *r,
+                octave_idx_type m, octave_idx_type n, bool nanflag)
+{
+  OCTAVE_LOCAL_BUFFER (T, e, m);
+  for (octave_idx_type i = 0; i < m; i++)
+    e[i] = r[i] = T ();
+
+  if (nanflag)
+    {
+      for (octave_idx_type j = 0; j < n; j++)
+        {
+          for (octave_idx_type i = 0; i < m; i++)
+            if (! octave::math::isnan (v[i]))
+              twosum_accum (r[i], e[i], v[i]);
+
+          v += m;
+        }
+    }
+  else
+    {
+      for (octave_idx_type j = 0; j < n; j++)
+        {
+          for (octave_idx_type i = 0; i < m; i++)
+            twosum_accum (r[i], e[i], v[i]);
+
+          v += m;
+        }
+    }
+  for (octave_idx_type i = 0; i < m; i++)
+    r[i] += e[i];
+}
+
 OP_RED_FCNN (mx_inline_xsum, T, T)
+OP_RED_NAN_FCNN (mx_inline_xsum, T, T)
 
 #endif

@@ -1468,267 +1468,315 @@
 
 // Avoid some code duplication.  Maybe we should use templates.
 
-#define SPARSE_CUMSUM(RET_TYPE, ELT_TYPE, FCN)                          \
-                                                                        \
-  octave_idx_type nr = rows ();                                         \
-  octave_idx_type nc = cols ();                                         \
-                                                                        \
-  RET_TYPE retval;                                                      \
-                                                                        \
-  if (nr > 0 && nc > 0)                                                 \
-    {                                                                   \
-      if ((nr == 1 && dim == -1) || dim == 1)                           \
-        /* Ugly!! Is there a better way? */                             \
-        retval = transpose (). FCN (0) .transpose ();                   \
-      else                                                              \
-        {                                                               \
-          octave_idx_type nel = 0;                                      \
-          for (octave_idx_type i = 0; i < nc; i++)                      \
-            {                                                           \
-              ELT_TYPE t = ELT_TYPE ();                                 \
-              for (octave_idx_type j = cidx (i); j < cidx (i+1); j++)   \
-                {                                                       \
-                  t += data (j);                                        \
-                  if (t != ELT_TYPE ())                                 \
-                    {                                                   \
-                      if (j == cidx (i+1) - 1)                          \
-                        nel += nr - ridx (j);                           \
-                      else                                              \
-                        nel += ridx (j+1) - ridx (j);                   \
-                    }                                                   \
-                }                                                       \
-            }                                                           \
-          retval = RET_TYPE (nr, nc, nel);                              \
-          retval.cidx (0) = 0;                                          \
-          octave_idx_type ii = 0;                                       \
-          for (octave_idx_type i = 0; i < nc; i++)                      \
-            {                                                           \
-              ELT_TYPE t = ELT_TYPE ();                                 \
-              for (octave_idx_type j = cidx (i); j < cidx (i+1); j++)   \
-                {                                                       \
-                  t += data (j);                                        \
-                  if (t != ELT_TYPE ())                                 \
-                    {                                                   \
-                      if (j == cidx (i+1) - 1)                          \
-                        {                                               \
-                          for (octave_idx_type k = ridx (j); k < nr; k++) \
-                            {                                           \
-                              retval.data (ii) = t;                     \
-                              retval.ridx (ii++) = k;                   \
-                            }                                           \
-                        }                                               \
-                      else                                              \
-                        {                                               \
-                          for (octave_idx_type k = ridx (j); k < ridx (j+1); k++) \
-                            {                                           \
-                              retval.data (ii) = t;                     \
-                              retval.ridx (ii++) = k;                   \
-                            }                                           \
-                        }                                               \
-                    }                                                   \
-                }                                                       \
-              retval.cidx (i+1) = ii;                                   \
-            }                                                           \
-        }                                                               \
-    }                                                                   \
-  else                                                                  \
-    retval = RET_TYPE (nr,nc);                                          \
-                                                                        \
+#define SPARSE_CUMSUM(RET_TYPE, ELT_TYPE, FCN, NAN_EXPR, EXPR)                \
+                                                                              \
+  octave_idx_type nr = rows ();                                               \
+  octave_idx_type nc = cols ();                                               \
+                                                                              \
+  RET_TYPE retval;                                                            \
+                                                                              \
+  if (nr > 0 && nc > 0)                                                       \
+    {                                                                         \
+      if ((nr == 1 && dim == -1) || dim == 1)                                 \
+        /* Ugly!! Is there a better way? */                                   \
+        retval = transpose (). FCN (0, nanflag) .transpose ();                \
+      else                                                                    \
+        {                                                                     \
+          octave_idx_type nel = 0;                                            \
+          for (octave_idx_type i = 0; i < nc; i++)                            \
+            {                                                                 \
+              ELT_TYPE t = ELT_TYPE ();                                       \
+              for (octave_idx_type j = cidx (i); j < cidx (i+1); j++)         \
+                {                                                             \
+                  t += data (j);                                              \
+                  if (t != ELT_TYPE ())                                       \
+                    {                                                         \
+                      if (j == cidx (i+1) - 1)                                \
+                        nel += nr - ridx (j);                                 \
+                      else                                                    \
+                        nel += ridx (j+1) - ridx (j);                         \
+                    }                                                         \
+                }                                                             \
+            }                                                                 \
+          retval = RET_TYPE (nr, nc, nel);                                    \
+          retval.cidx (0) = 0;                                                \
+          octave_idx_type ii = 0;                                             \
+          if (nanflag)                                                        \
+            {                                                                 \
+              for (octave_idx_type i = 0; i < nc; i++)                        \
+                {                                                             \
+                  ELT_TYPE t = ELT_TYPE ();                                   \
+                  for (octave_idx_type j = cidx (i); j < cidx (i+1); j++)     \
+                    {                                                         \
+                      NAN_EXPR;                                               \
+                      if (t != ELT_TYPE ())                                   \
+                        {                                                     \
+                          if (j == cidx (i+1) - 1)                            \
+                            {                                                 \
+                              for (octave_idx_type k = ridx (j); k < nr; k++) \
+                                {                                             \
+                                  retval.data (ii) = t;                       \
+                                  retval.ridx (ii++) = k;                     \
+                                }                                             \
+                            }                                                 \
+                          else                                                \
+                            {                                                 \
+                              for (octave_idx_type k = ridx (j);              \
+                                   k < ridx (j+1); k++)                       \
+                                {                                             \
+                                  retval.data (ii) = t;                       \
+                                  retval.ridx (ii++) = k;                     \
+                                }                                             \
+                            }                                                 \
+                        }                                                     \
+                    }                                                         \
+                  retval.cidx (i+1) = ii;                                     \
+                }                                                             \
+            }                                                                 \
+          else                                                                \
+            {                                                                 \
+              for (octave_idx_type i = 0; i < nc; i++)                        \
+                {                                                             \
+                  ELT_TYPE t = ELT_TYPE ();                                   \
+                  for (octave_idx_type j = cidx (i); j < cidx (i+1); j++)     \
+                    {                                                         \
+                      EXPR;                                                   \
+                      if (t != ELT_TYPE ())                                   \
+                        {                                                     \
+                          if (j == cidx (i+1) - 1)                            \
+                            {                                                 \
+                              for (octave_idx_type k = ridx (j); k < nr; k++) \
+                                {                                             \
+                                  retval.data (ii) = t;                       \
+                                  retval.ridx (ii++) = k;                     \
+                                }                                             \
+                            }                                                 \
+                          else                                                \
+                            {                                                 \
+                              for (octave_idx_type k = ridx (j);              \
+                                   k < ridx (j+1); k++)                       \
+                                {                                             \
+                                  retval.data (ii) = t;                       \
+                                  retval.ridx (ii++) = k;                     \
+                                }                                             \
+                            }                                                 \
+                        }                                                     \
+                    }                                                         \
+                  retval.cidx (i+1) = ii;                                     \
+                }                                                             \
+            }                                                                 \
+        }                                                                     \
+    }                                                                         \
+  else                                                                        \
+    retval = RET_TYPE (nr,nc);                                                \
+                                                                              \
   return retval
 
-#define SPARSE_CUMPROD(RET_TYPE, ELT_TYPE, FCN)                         \
-                                                                        \
-  octave_idx_type nr = rows ();                                         \
-  octave_idx_type nc = cols ();                                         \
-                                                                        \
-  RET_TYPE retval;                                                      \
-                                                                        \
-  if (nr > 0 && nc > 0)                                                 \
-    {                                                                   \
-      if ((nr == 1 && dim == -1) || dim == 1)                           \
-        /* Ugly!! Is there a better way? */                             \
-        retval = transpose (). FCN (0) .transpose ();                   \
-      else                                                              \
-        {                                                               \
-          octave_idx_type nel = 0;                                      \
-          for (octave_idx_type i = 0; i < nc; i++)                      \
-            {                                                           \
-              octave_idx_type jj = 0;                                   \
-              for (octave_idx_type j = cidx (i); j < cidx (i+1); j++)   \
-                {                                                       \
-                  if (jj == ridx (j))                                   \
-                    {                                                   \
-                      nel++;                                            \
-                      jj++;                                             \
-                    }                                                   \
-                  else                                                  \
-                    break;                                              \
-                }                                                       \
-            }                                                           \
-          retval = RET_TYPE (nr, nc, nel);                              \
-          retval.cidx (0) = 0;                                          \
-          octave_idx_type ii = 0;                                       \
-          for (octave_idx_type i = 0; i < nc; i++)                      \
-            {                                                           \
-              ELT_TYPE t = ELT_TYPE (1.);                               \
-              octave_idx_type jj = 0;                                   \
-              for (octave_idx_type j = cidx (i); j < cidx (i+1); j++)   \
-                {                                                       \
-                  if (jj == ridx (j))                                   \
-                    {                                                   \
-                      t *= data (j);                                    \
-                      retval.data (ii) = t;                             \
-                      retval.ridx (ii++) = jj++;                        \
-                    }                                                   \
-                  else                                                  \
-                    break;                                              \
-                }                                                       \
-              retval.cidx (i+1) = ii;                                   \
-            }                                                           \
-        }                                                               \
-    }                                                                   \
-  else                                                                  \
-    retval = RET_TYPE (nr,nc);                                          \
-                                                                        \
+#define SPARSE_CUMPROD(RET_TYPE, ELT_TYPE, FCN)                             \
+                                                                            \
+  octave_idx_type nr = rows ();                                             \
+  octave_idx_type nc = cols ();                                             \
+                                                                            \
+  RET_TYPE retval;                                                          \
+                                                                            \
+  if (nr > 0 && nc > 0)                                                     \
+    {                                                                       \
+      if ((nr == 1 && dim == -1) || dim == 1)                               \
+        /* Ugly!! Is there a better way? */                                 \
+        retval = transpose (). FCN (0, nanflag) .transpose ();              \
+      else                                                                  \
+        {                                                                   \
+          octave_idx_type nel = 0;                                          \
+          for (octave_idx_type i = 0; i < nc; i++)                          \
+            {                                                               \
+              octave_idx_type jj = 0;                                       \
+              for (octave_idx_type j = cidx (i); j < cidx (i+1); j++)       \
+                {                                                           \
+                  if (jj == ridx (j))                                       \
+                    {                                                       \
+                      nel++;                                                \
+                      jj++;                                                 \
+                    }                                                       \
+                  else                                                      \
+                    break;                                                  \
+                }                                                           \
+            }                                                               \
+          retval = RET_TYPE (nr, nc, nel);                                  \
+          retval.cidx (0) = 0;                                              \
+          octave_idx_type ii = 0;                                           \
+          if (nanflag)                                                      \
+            {                                                               \
+              for (octave_idx_type i = 0; i < nc; i++)                      \
+                {                                                           \
+                  ELT_TYPE t = ELT_TYPE (1.);                               \
+                  octave_idx_type jj = 0;                                   \
+                  for (octave_idx_type j = cidx (i); j < cidx (i+1); j++)   \
+                    {                                                       \
+                      if (jj == ridx (j))                                   \
+                        {                                                   \
+                          if (! octave::math::isnan (data (j)))             \
+                            t *= data (j);                                  \
+                          retval.data (ii) = t;                             \
+                          retval.ridx (ii++) = jj++;                        \
+                        }                                                   \
+                      else                                                  \
+                        break;                                              \
+                    }                                                       \
+                  retval.cidx (i+1) = ii;                                   \
+                }                                                           \
+            }                                                               \
+          else                                                              \
+            {                                                               \
+              for (octave_idx_type i = 0; i < nc; i++)                      \
+                {                                                           \
+                  ELT_TYPE t = ELT_TYPE (1.);                               \
+                  octave_idx_type jj = 0;                                   \
+                  for (octave_idx_type j = cidx (i); j < cidx (i+1); j++)   \
+                    {                                                       \
+                      if (jj == ridx (j))                                   \
+                        {                                                   \
+                          t *= data (j);                                    \
+                          retval.data (ii) = t;                             \
+                          retval.ridx (ii++) = jj++;                        \
+                        }                                                   \
+                      else                                                  \
+                        break;                                              \
+                    }                                                       \
+                  retval.cidx (i+1) = ii;                                   \
+                }                                                           \
+            }                                                               \
+        }                                                                   \
+    }                                                                       \
+  else                                                                      \
+    retval = RET_TYPE (nr,nc);                                              \
+                                                                            \
   return retval
 
-#define SPARSE_BASE_REDUCTION_OP(RET_TYPE, EL_TYPE, ROW_EXPR, COL_EXPR, \
-                                 INIT_VAL, MT_RESULT)                   \
-                                                                        \
-  octave_idx_type nr = rows ();                                         \
-  octave_idx_type nc = cols ();                                         \
-                                                                        \
-  RET_TYPE retval;                                                      \
-                                                                        \
-  if (nr > 0 && nc > 0)                                                 \
-    {                                                                   \
-      if ((nr == 1 && dim == -1) || dim == 1)                           \
-        {                                                               \
-          /* Define j here to allow fancy definition for prod method */ \
-          octave_idx_type j = 0;                                        \
-          OCTAVE_LOCAL_BUFFER (EL_TYPE, tmp, nr);                       \
-                                                                        \
-          for (octave_idx_type i = 0; i < nr; i++)                      \
-            tmp[i] = INIT_VAL;                                          \
-          for (j = 0; j < nc; j++)                                      \
-            {                                                           \
-              for (octave_idx_type i = cidx (j); i < cidx (j + 1); i++) \
-                {                                                       \
-                  ROW_EXPR;                                             \
-                }                                                       \
-            }                                                           \
-          octave_idx_type nel = 0;                                      \
-          for (octave_idx_type i = 0; i < nr; i++)                      \
-            if (tmp[i] != EL_TYPE ())                                   \
-              nel++;                                                    \
+#define SPARSE_BASE_REDUCTION_OP(RET_TYPE, EL_TYPE, ROW_EXPR, COL_EXPR,  \
+                                 INIT_VAL, MT_RESULT)                    \
+                                                                         \
+  octave_idx_type nr = rows ();                                          \
+  octave_idx_type nc = cols ();                                          \
+                                                                         \
+  RET_TYPE retval;                                                       \
+                                                                         \
+  if (nr > 0 && nc > 0)                                                  \
+    {                                                                    \
+      if ((nr == 1 && dim == -1) || dim == 1)                            \
+        {                                                                \
+          /* Define j here to allow fancy definition for prod method */  \
+          octave_idx_type j = 0;                                         \
+          OCTAVE_LOCAL_BUFFER (EL_TYPE, tmp, nr);                        \
+                                                                         \
+          for (octave_idx_type i = 0; i < nr; i++)                       \
+            tmp[i] = INIT_VAL;                                           \
+          for (j = 0; j < nc; j++)                                       \
+            {                                                            \
+              for (octave_idx_type i = cidx (j); i < cidx (j + 1); i++)  \
+                {                                                        \
+                  ROW_EXPR;                                              \
+                }                                                        \
+            }                                                            \
+          octave_idx_type nel = 0;                                       \
+          for (octave_idx_type i = 0; i < nr; i++)                       \
+            if (tmp[i] != EL_TYPE ())                                    \
+              nel++;                                                     \
           retval = RET_TYPE (nr, static_cast<octave_idx_type> (1), nel); \
-          retval.cidx (0) = 0;                                          \
-          retval.cidx (1) = nel;                                        \
-          nel = 0;                                                      \
-          for (octave_idx_type i = 0; i < nr; i++)                      \
-            if (tmp[i] != EL_TYPE ())                                   \
-              {                                                         \
-                retval.data (nel) = tmp[i];                             \
-                retval.ridx (nel++) = i;                                \
-              }                                                         \
-        }                                                               \
-      else                                                              \
-        {                                                               \
-          OCTAVE_LOCAL_BUFFER (EL_TYPE, tmp, nc);                       \
-                                                                        \
-          for (octave_idx_type j = 0; j < nc; j++)                      \
-            {                                                           \
-              tmp[j] = INIT_VAL;                                        \
-              for (octave_idx_type i = cidx (j); i < cidx (j + 1); i++) \
-                {                                                       \
-                  COL_EXPR;                                             \
-                }                                                       \
-            }                                                           \
-          octave_idx_type nel = 0;                                      \
-          for (octave_idx_type i = 0; i < nc; i++)                      \
-            if (tmp[i] != EL_TYPE ())                                   \
-              nel++;                                                    \
+          retval.cidx (0) = 0;                                           \
+          retval.cidx (1) = nel;                                         \
+          nel = 0;                                                       \
+          for (octave_idx_type i = 0; i < nr; i++)                       \
+            if (tmp[i] != EL_TYPE ())                                    \
+              {                                                          \
+                retval.data (nel) = tmp[i];                              \
+                retval.ridx (nel++) = i;                                 \
+              }                                                          \
+        }                                                                \
+      else                                                               \
+        {                                                                \
+          OCTAVE_LOCAL_BUFFER (EL_TYPE, tmp, nc);                        \
+                                                                         \
+          for (octave_idx_type j = 0; j < nc; j++)                       \
+            {                                                            \
+              tmp[j] = INIT_VAL;                                         \
+              for (octave_idx_type i = cidx (j); i < cidx (j + 1); i++)  \
+                {                                                        \
+                  COL_EXPR;                                              \
+                }                                                        \
+            }                                                            \
+          octave_idx_type nel = 0;                                       \
+          for (octave_idx_type i = 0; i < nc; i++)                       \
+            if (tmp[i] != EL_TYPE ())                                    \
+              nel++;                                                     \
           retval = RET_TYPE (static_cast<octave_idx_type> (1), nc, nel); \
-          retval.cidx (0) = 0;                                          \
-          nel = 0;                                                      \
-          for (octave_idx_type i = 0; i < nc; i++)                      \
-            if (tmp[i] != EL_TYPE ())                                   \
-              {                                                         \
-                retval.data (nel) = tmp[i];                             \
-                retval.ridx (nel++) = 0;                                \
-                retval.cidx (i+1) = retval.cidx (i) + 1;                \
-              }                                                         \
-            else                                                        \
-              retval.cidx (i+1) = retval.cidx (i);                      \
-        }                                                               \
-    }                                                                   \
-  else if (nc == 0 && (nr == 0 || (nr == 1 && dim == -1)))              \
-    {                                                                   \
-      if (MT_RESULT)                                                    \
-        {                                                               \
-          retval = RET_TYPE (static_cast<octave_idx_type> (1),          \
-                             static_cast<octave_idx_type> (1),          \
-                             static_cast<octave_idx_type> (1));         \
-          retval.cidx (0) = 0;                                          \
-          retval.cidx (1) = 1;                                          \
-          retval.ridx (0) = 0;                                          \
-          retval.data (0) = MT_RESULT;                                  \
-        }                                                               \
-      else                                                              \
-        retval = RET_TYPE (static_cast<octave_idx_type> (1),            \
-                           static_cast<octave_idx_type> (1),            \
-                           static_cast<octave_idx_type> (0));           \
-    }                                                                   \
-  else if (nr == 0 && (dim == 0 || dim == -1))                          \
-    {                                                                   \
-      if (MT_RESULT)                                                    \
-        {                                                               \
-          retval = RET_TYPE (static_cast<octave_idx_type> (1), nc, nc); \
-          retval.cidx (0) = 0;                                          \
-          for (octave_idx_type i = 0; i < nc ; i++)                     \
-            {                                                           \
-              retval.ridx (i) = 0;                                      \
-              retval.cidx (i+1) = i+1;                                  \
-              retval.data (i) = MT_RESULT;                              \
-            }                                                           \
-        }                                                               \
-      else                                                              \
-        retval = RET_TYPE (static_cast<octave_idx_type> (1), nc,        \
-                           static_cast<octave_idx_type> (0));           \
-    }                                                                   \
-  else if (nc == 0 && dim == 1)                                         \
-    {                                                                   \
-      if (MT_RESULT)                                                    \
-        {                                                               \
-          retval = RET_TYPE (nr, static_cast<octave_idx_type> (1), nr); \
-          retval.cidx (0) = 0;                                          \
-          retval.cidx (1) = nr;                                         \
-          for (octave_idx_type i = 0; i < nr; i++)                      \
-            {                                                           \
-              retval.ridx (i) = i;                                      \
-              retval.data (i) = MT_RESULT;                              \
-            }                                                           \
-        }                                                               \
-      else                                                              \
-        retval = RET_TYPE (nr, static_cast<octave_idx_type> (1),        \
-                           static_cast<octave_idx_type> (0));           \
-    }                                                                   \
-  else                                                                  \
-    retval.resize (nr > 0, nc > 0);                                     \
-                                                                        \
+          retval.cidx (0) = 0;                                           \
+          nel = 0;                                                       \
+          for (octave_idx_type i = 0; i < nc; i++)                       \
+            if (tmp[i] != EL_TYPE ())                                    \
+              {                                                          \
+                retval.data (nel) = tmp[i];                              \
+                retval.ridx (nel++) = 0;                                 \
+                retval.cidx (i+1) = retval.cidx (i) + 1;                 \
+              }                                                          \
+            else                                                         \
+              retval.cidx (i+1) = retval.cidx (i);                       \
+        }                                                                \
+    }                                                                    \
+  else if (nc == 0 && (nr == 0 || (nr == 1 && dim == -1)))               \
+    {                                                                    \
+      if (MT_RESULT)                                                     \
+        {                                                                \
+          retval = RET_TYPE (static_cast<octave_idx_type> (1),           \
+                             static_cast<octave_idx_type> (1),           \
+                             static_cast<octave_idx_type> (1));          \
+          retval.cidx (0) = 0;                                           \
+          retval.cidx (1) = 1;                                           \
+          retval.ridx (0) = 0;                                           \
+          retval.data (0) = MT_RESULT;                                   \
+        }                                                                \
+      else                                                               \
+        retval = RET_TYPE (static_cast<octave_idx_type> (1),             \
+                           static_cast<octave_idx_type> (1),             \
+                           static_cast<octave_idx_type> (0));            \
+    }                                                                    \
+  else if (nr == 0 && (dim == 0 || dim == -1))                           \
+    {                                                                    \
+      if (MT_RESULT)                                                     \
+        {                                                                \
+          retval = RET_TYPE (static_cast<octave_idx_type> (1), nc, nc);  \
+          retval.cidx (0) = 0;                                           \
+          for (octave_idx_type i = 0; i < nc ; i++)                      \
+            {                                                            \
+              retval.ridx (i) = 0;                                       \
+              retval.cidx (i+1) = i+1;                                   \
+              retval.data (i) = MT_RESULT;                               \
+            }                                                            \
+        }                                                                \
+      else                                                               \
+        retval = RET_TYPE (static_cast<octave_idx_type> (1), nc,         \
+                           static_cast<octave_idx_type> (0));            \
+    }                                                                    \
+  else if (nc == 0 && dim == 1)                                          \
+    {                                                                    \
+      if (MT_RESULT)                                                     \
+        {                                                                \
+          retval = RET_TYPE (nr, static_cast<octave_idx_type> (1), nr);  \
+          retval.cidx (0) = 0;                                           \
+          retval.cidx (1) = nr;                                          \
+          for (octave_idx_type i = 0; i < nr; i++)                       \
+            {                                                            \
+              retval.ridx (i) = i;                                       \
+              retval.data (i) = MT_RESULT;                               \
+            }                                                            \
+        }                                                                \
+      else                                                               \
+        retval = RET_TYPE (nr, static_cast<octave_idx_type> (1),         \
+                           static_cast<octave_idx_type> (0));            \
+    }                                                                    \
+  else                                                                   \
+    retval.resize (nr > 0, nc > 0);                                      \
+                                                                         \
   return retval
-
-#define SPARSE_REDUCTION_OP_ROW_EXPR(OP)        \
-  tmp[ridx (i)] OP data (i)
-
-#define SPARSE_REDUCTION_OP_COL_EXPR(OP)        \
-  tmp[j] OP data (i)
-
-#define SPARSE_REDUCTION_OP(RET_TYPE, EL_TYPE, OP, INIT_VAL, MT_RESULT) \
-  SPARSE_BASE_REDUCTION_OP (RET_TYPE, EL_TYPE,                          \
-                            SPARSE_REDUCTION_OP_ROW_EXPR (OP),          \
-                            SPARSE_REDUCTION_OP_COL_EXPR (OP),          \
-                            INIT_VAL, MT_RESULT)
 
 // Don't break from this loop if the test succeeds because
 // we are looping over the rows and not the columns in the inner loop.
@@ -1743,19 +1791,19 @@
       break;                                                    \
     }
 
-#define SPARSE_ANY_ALL_OP(DIM, INIT_VAL, MT_RESULT, TEST_OP, TEST_TRUE_VAL) \
-  SPARSE_BASE_REDUCTION_OP (SparseBoolMatrix, char,                     \
+#define SPARSE_ANY_ALL_OP(DIM, INIT_VAL, MT_RESULT, TEST_OP, TEST_TRUE_VAL)      \
+  SPARSE_BASE_REDUCTION_OP (SparseBoolMatrix, char,                              \
                             SPARSE_ANY_ALL_OP_ROW_CODE (TEST_OP, TEST_TRUE_VAL), \
                             SPARSE_ANY_ALL_OP_COL_CODE (TEST_OP, TEST_TRUE_VAL), \
                             INIT_VAL, MT_RESULT)
 
-#define SPARSE_ALL_OP(DIM)                                              \
-  if ((rows () == 1 && dim == -1) || dim == 1)                          \
-    return transpose (). all (0). transpose ();                         \
-  else                                                                  \
-    {                                                                   \
+#define SPARSE_ALL_OP(DIM)                                                 \
+  if ((rows () == 1 && dim == -1) || dim == 1)                             \
+    return transpose (). all (0). transpose ();                            \
+  else                                                                     \
+    {                                                                      \
       SPARSE_ANY_ALL_OP (DIM, (cidx (j+1) - cidx (j) < nr ? false : true), \
-                         true, ==, false);                              \
+                         true, ==, false);                                 \
     }
 
 #define SPARSE_ANY_OP(DIM) SPARSE_ANY_ALL_OP (DIM, false, false, !=, true)

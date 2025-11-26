@@ -29,6 +29,13 @@
 #define BSXFUN_OP_DECL(OP, ARRAY, API)                          \
   extern API ARRAY bsxfun_ ## OP (const ARRAY&, const ARRAY&);
 
+#define BSXFUN1_OP_DECL(OP, ARRAY, API)                          \
+  extern API ARRAY bsxfun_ ## OP (const ARRAY&, const ARRAY&, const bool);
+
+#define BSXFUN2_OP_DECL(OP, ARRAY, API)                          \
+  extern API ARRAY bsxfun_ ## OP (const ARRAY&, const ARRAY&,    \
+                                  const bool, const bool);
+
 #define BSXFUN_OP2_DECL(OP, ARRAY, ARRAY1, ARRAY2, API)                 \
   extern API ARRAY bsxfun_ ## OP (const ARRAY1&, const ARRAY2&);
 
@@ -42,7 +49,11 @@
   BSXFUN_OP_DECL (div, ARRAY, API)              \
   BSXFUN_OP_DECL (pow, ARRAY, API)              \
   BSXFUN_OP_DECL (min, ARRAY, API)              \
-  BSXFUN_OP_DECL (max, ARRAY, API)
+  BSXFUN_OP_DECL (max, ARRAY, API)              \
+  BSXFUN1_OP_DECL (min, ARRAY, API)             \
+  BSXFUN1_OP_DECL (max, ARRAY, API)             \
+  BSXFUN2_OP_DECL (min, ARRAY, API)             \
+  BSXFUN2_OP_DECL (max, ARRAY, API)
 
 #define BSXFUN_MIXED_INT_DECLS(INT_TYPE, API)                   \
   BSXFUN_OP2_DECL (pow, INT_TYPE, INT_TYPE, NDArray, API)       \

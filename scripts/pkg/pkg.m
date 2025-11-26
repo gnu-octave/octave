@@ -525,16 +525,23 @@ function [local_packages, global_packages] = pkg (varargin)
         error ("pkg: search action requires at least one search term or '-all'");
       endif
 
+      ## Pre-load package database (respecting force_refresh flag)
+      get_validated_pkg_list (force_refresh, verbose);
+
       if (nargout)
-        local_packages = search_packages (files, want_all_packages, force_refresh, verbose);
+        local_packages = search_packages (files, want_all_packages, verbose);
       else
-        search_packages (files, want_all_packages, force_refresh, verbose);
+        search_packages (files, want_all_packages, verbose);
       endif
 
     case "install"
       if (isempty (files))
         error ("pkg: install action requires at least one filename");
       endif
+
+      ## Pre-load package database once (respecting force_refresh flag)
+      ## This ensures package name lookups don't trigger repeated downloads
+      get_validated_pkg_list (force_refresh, verbose);
 
       local_files = {};
       tmp_dir = tempname ();
@@ -577,7 +584,7 @@ function [local_packages, global_packages] = pkg (varargin)
             ## manually, just in case the package author chooses zip
             ## or any other archive format? Or will all packages always
             ## be required to give .tar.gz?
-            [v, url] = get_pkg_info (file, force_refresh, verbose);
+            [v, url] = get_pkg_info (file, verbose);
             tmp_file = tempname (tmp_dir, [file "-" v "-"]);
             tmp_file = [tmp_file, ".tar.gz"];
             local_files{end+1} = tmp_file;  # so that it gets cleaned up
@@ -777,18 +784,25 @@ function [local_packages, global_packages] = pkg (varargin)
         installed_pkgs_lst = update_lst;
       endif
 
+      ## Pre-load package database once (respecting force_refresh flag)
+      ## This prevents repeated downloads in the loop below
+      get_validated_pkg_list (force_refresh, verbose);
+
       for i = 1:numel (installed_pkgs_lst)
         installed_pkg_name = installed_pkgs_lst{i}.name;
         installed_pkg_version = installed_pkgs_lst{i}.version;
         try
-          online_pkg_version = get_pkg_info (installed_pkg_name, force_refresh, verbose);
+          ## Use already-loaded package database
+          online_pkg_version = get_pkg_info (installed_pkg_name, verbose);
         catch
           warning ("pkg: package %s not found on Octave Packages - skipping update\n",
                    installed_pkg_name);
           online_pkg_version = "0";
         end_try_catch
         if (compare_versions (online_pkg_version, installed_pkg_version, ">"))
+          ## Pass options but exclude -refresh (we already refreshed once above)
           options_to_pass = varargin (strncmp (varargin, "-", 1));
+          options_to_pass(strcmp (options_to_pass, "-refresh")) = [];
           feval (@pkg, "install", options_to_pass{:}, installed_pkg_name);
         endif
       endfor

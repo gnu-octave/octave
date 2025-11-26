@@ -25,8 +25,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{retval} =} search_packages (@var{searchterms}, @var{allpackages})
-## @deftypefnx {} {@var{retval} =} search_packages (@var{searchterms}, @var{allpackages}, @var{force_refresh})
-## @deftypefnx {} {@var{retval} =} search_packages (@var{searchterms}, @var{allpackages}, @var{force_refresh}, @var{verbose})
+## @deftypefnx {} {@var{retval} =} search_packages (@var{searchterms}, @var{allpackages}, @var{verbose})
 ## Search for all packages on the Octave Packages repository whose
 ## descriptions include @var{searchterms}, then either display the search
 ## results with brief descriptions, or return the list of matching packages
@@ -36,14 +35,12 @@
 ## If @var{allpackages} is true, then return / display all packages,
 ## with no filtering for @var{searchterms}.
 ##
-## If @var{force_refresh} is true, always download fresh data from the server.
-##
 ## If @var{verbose} is true, print diagnostic messages.
 ## @end deftypefn
 
-function retval = search_packages (searchterms, allpackages, force_refresh = false, verbose = false)
+function retval = search_packages (searchterms, allpackages, verbose = false)
 
-  __pkg__ = get_validated_pkg_list (force_refresh, verbose);
+  __pkg__ = get_validated_pkg_list (false, verbose);
 
   pkgnames = fieldnames (__pkg__);
 

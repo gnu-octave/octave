@@ -22,8 +22,8 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
     now gives a warning and then executes `pkg search -all`.  The warning can
     be silenced with the ID `"Octave:pkg:list-forge"`.
   * Package metadata is now cached on the local computer for speed and
-    reliability.  Previously, it used to be downloaded afresh for operations
-    such as `install` or `update` or `search`.  Metadata updates can also be
+    reliability.  Previously, it was downloaded every time for an operation
+    such as `install`, `update`, or `search`.  Metadata updates can also be
     done on demand with the new option `-refresh` for those three actions.
 
 - Convolution of short and wide arrays (especially row vectors) is now faster
@@ -142,12 +142,12 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   Octave scripts.  The graphics properties `AxisLocation`, `Direction`, and
   `TickLabels` have been implemented.
 
-- The `weboptions` has been re-written internally.  Support for non-integer
-  Timeout values, and the special value `Inf`, has been added.
+- The `weboptions` function has been re-written internally.  Support for
+  non-integer Timeout values, and the special value `Inf`, has been added.
 
 - The `urlread` and `urlwrite` functions now make use of the various
   `weboptions` such as timeouts and user credentials.  The old calling form
-  with passing a cell array is still supported for backward compatibility.
+  of passing a cell array is still supported for backward compatibility.
 
 - The `newplot` function has been re-written to remove functionality that was
   possibly never used in Octave, and has been removed from Matlab.  The

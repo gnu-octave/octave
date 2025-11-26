@@ -441,7 +441,7 @@ min (double x, double y, const bool nanflag, const bool realabs)
     out = isnan (y) ? x : (x <= y ? x : y);
   else
     out = isnan (y) ? x :
-          (abs (x) < abs (y) ? x : (abs (x) == abs (y) && x <= y ? x : y));
+          (std::abs (x) < std::abs (y) ? x : (std::abs (x) == std::abs (y) && x <= y ? x : y));
   return out;
 }
 
@@ -455,7 +455,7 @@ max (double x, double y, const bool nanflag, const bool realabs)
     out = isnan (y) ? x : (x >= y ? x : y);
   else
     out = isnan (y) ? x :
-          (abs (x) > abs (y) ? x : (abs (x) == abs (y) && x >= y ? x : y));
+          (std::abs (x) > std::abs (y) ? x : (std::abs (x) == std::abs (y) && x >= y ? x : y));
   return out;
 }
 
@@ -503,7 +503,7 @@ min (float x, float y, const bool nanflag, const bool realabs)
     out = isnan (y) ? x : (x <= y ? x : y);
   else
     out = isnan (y) ? x :
-          (abs (x) < abs (y) ? x : (abs (x) == abs (y) && x <= y ? x : y));
+          (std::abs (x) < std::abs (y) ? x : (std::abs (x) == std::abs (y) && x <= y ? x : y));
   return out;
 }
 
@@ -517,7 +517,7 @@ max (float x, float y, const bool nanflag, const bool realabs)
     out = isnan (y) ? x : (x >= y ? x : y);
   else
     out = isnan (y) ? x :
-          (abs (x) > abs (y) ? x : (abs (x) == abs (y) && x >= y ? x : y));
+          (std::abs (x) > std::abs (y) ? x : (std::abs (x) == std::abs (y) && x >= y ? x : y));
   return out;
 }
 

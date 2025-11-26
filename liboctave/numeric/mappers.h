@@ -36,6 +36,27 @@
 #include "oct-cmplx.h"
 #include "oct-inttypes-fwd.h"
 
+// Provides some commonly repeated, basic loop templates.
+
+template <typename T>
+inline auto mappers_abs (const T& x)
+{
+    if constexpr (std::is_unsigned_v<T>)
+        return x;  // abs doesn't make sense for unsigned types
+    else
+        return std::abs(x);
+}
+// Specialization for octave_int types
+template <typename T>
+inline auto mappers_abs (const octave_int<T>& x)
+{
+    if constexpr (std::is_unsigned_v<T>)
+        return x;  // abs doesn't make sense for unsigned types
+    else
+        return abs(x.value());
+}
+
+
 OCTAVE_BEGIN_NAMESPACE(octave)
 OCTAVE_BEGIN_NAMESPACE(math)
 
@@ -262,7 +283,7 @@ template <typename T>
 std::complex<T>
 signum (const std::complex<T>& x)
 {
-  T tmp = abs (x);
+  T tmp = mappers_abs (x);
 
   return tmp == 0 ? 0.0 : x / tmp;
 }
@@ -524,15 +545,15 @@ max (float x, float y, const bool nanflag, const bool realabs)
 inline std::complex<double>
 min (const std::complex<double>& x, const std::complex<double>& y)
 {
-  return isnan (y) ? x : (abs (x) < abs (y) ? x :
-         (abs (x) == abs (y) && std::arg (x) <= std::arg (y) ? x : y));
+  return isnan (y) ? x : (mappers_abs (x) < mappers_abs (y) ? x :
+         (mappers_abs (x) == mappers_abs (y) && std::arg (x) <= std::arg (y) ? x : y));
 }
 
 inline std::complex<double>
 max (const std::complex<double>& x, const std::complex<double>& y)
 {
-  return isnan (y) ? x : (abs (x) > abs (y) ? x :
-         (abs (x) == abs (y) && std::arg (x) >= std::arg (y) ? x : y));
+  return isnan (y) ? x : (mappers_abs (x) > mappers_abs (y) ? x :
+         (mappers_abs (x) == mappers_abs (y) && std::arg (x) >= std::arg (y) ? x : y));
 }
 
 inline std::complex<double>
@@ -543,8 +564,8 @@ min (const std::complex<double>& x, const std::complex<double>& y,
   if (! nanflag && (isnan (x) || isnan (y)))
     out = NAN;
   else
-    out = isnan (y) ? x : (abs (x) < abs (y) ? x :
-          (abs (x) == abs (y) && std::arg (x) <= std::arg (y) ? x : y));
+    out = isnan (y) ? x : (mappers_abs (x) < mappers_abs (y) ? x :
+          (mappers_abs (x) == mappers_abs (y) && std::arg (x) <= std::arg (y) ? x : y));
   return out;
 }
 
@@ -556,8 +577,8 @@ max (const std::complex<double>& x, const std::complex<double>& y,
   if (! nanflag && (isnan (x) || isnan (y)))
     out = NAN;
   else
-    out = isnan (y) ? x : (abs (x) > abs (y) ? x :
-          (abs (x) == abs (y) && std::arg (x) >= std::arg (y) ? x : y));
+    out = isnan (y) ? x : (mappers_abs (x) > mappers_abs (y) ? x :
+          (mappers_abs (x) == mappers_abs (y) && std::arg (x) >= std::arg (y) ? x : y));
   return out;
 }
 
@@ -573,8 +594,8 @@ min (const std::complex<double>& x, const std::complex<double>& y,
           (std::real (x) == std::real (y) &&
            std::imag (x) <= std::imag (y) ? x : y));
   else
-    out = isnan (y) ? x : (abs (x) < abs (y) ? x :
-          (abs (x) == abs (y) && std::arg (x) <= std::arg (y) ? x : y));
+    out = isnan (y) ? x : (mappers_abs (x) < mappers_abs (y) ? x :
+          (mappers_abs (x) == mappers_abs (y) && std::arg (x) <= std::arg (y) ? x : y));
   return out;
 }
 
@@ -590,8 +611,8 @@ max (const std::complex<double>& x, const std::complex<double>& y,
           (std::real (x) == std::real (y) &&
            std::imag (x) >= std::imag (y) ? x : y));
   else
-    out = isnan (y) ? x : (abs (x) > abs (y) ? x :
-          (abs (x) == abs (y) && std::arg (x) >= std::arg (y) ? x : y));
+    out = isnan (y) ? x : (mappers_abs (x) > mappers_abs (y) ? x :
+          (mappers_abs (x) == mappers_abs (y) && std::arg (x) >= std::arg (y) ? x : y));
   return out;
 }
 
@@ -599,14 +620,14 @@ inline std::complex<float>
 min (const std::complex<float>& x, const std::complex<float>& y)
 {
   return isnan (y) ? x : (abs (x) < abs (y) ? x :
-         (abs (x) == abs (y) && std::arg (x) <= std::arg (y) ? x : y));
+         (mappers_abs (x) == mappers_abs (y) && std::arg (x) <= std::arg (y) ? x : y));
 }
 
 inline std::complex<float>
 max (const std::complex<float>& x, const std::complex<float>& y)
 {
   return isnan (y) ? x : (abs (x) > abs (y) ? x :
-         (abs (x) == abs (y) && std::arg (x) >= std::arg (y) ? x : y));
+         (mappers_abs (x) == mappers_abs (y) && std::arg (x) >= std::arg (y) ? x : y));
 }
 
 inline std::complex<float>
@@ -617,8 +638,8 @@ min (const std::complex<float>& x, const std::complex<float>& y,
   if (! nanflag && (isnan (x) || isnan (y)))
     out = NAN;
   else
-    out = isnan (y) ? x : (abs (x) < abs (y) ? x :
-          (abs (x) == abs (y) && std::arg (x) <= std::arg (y) ? x : y));
+    out = isnan (y) ? x : (mappers_abs (x) < mappers_abs (y) ? x :
+          (mappers_abs (x) == mappers_abs (y) && std::arg (x) <= std::arg (y) ? x : y));
   return out;
 }
 
@@ -630,8 +651,8 @@ max (const std::complex<float>& x, const std::complex<float>& y,
   if (! nanflag && (isnan (x) || isnan (y)))
     out = NAN;
   else
-    out = isnan (y) ? x : (abs (x) > abs (y) ? x :
-          (abs (x) == abs (y) && std::arg (x) >= std::arg (y) ? x : y));
+    out = isnan (y) ? x : (mappers_abs (x) > mappers_abs (y) ? x :
+          (mappers_abs (x) == mappers_abs (y) && std::arg (x) >= std::arg (y) ? x : y));
   return out;
 }
 
@@ -647,8 +668,8 @@ min (const std::complex<float>& x, const std::complex<float>& y,
           (std::real (x) == std::real (y) &&
            std::imag (x) <= std::imag (y) ? x : y));
   else
-    out = isnan (y) ? x : (abs (x) < abs (y) ? x :
-          (abs (x) == abs (y) && std::arg (x) <= std::arg (y) ? x : y));
+    out = isnan (y) ? x : (mappers_abs (x) < mappers_abs (y) ? x :
+          (mappers_abs (x) == mappers_abs (y) && std::arg (x) <= std::arg (y) ? x : y));
   return out;
 }
 
@@ -664,8 +685,8 @@ max (const std::complex<float>& x, const std::complex<float>& y,
           (std::real (x) == std::real (y) &&
            std::imag (x) >= std::imag (y) ? x : y));
   else
-    out = isnan (y) ? x : (abs (x) > abs (y) ? x :
-          (abs (x) == abs (y) && std::arg (x) >= std::arg (y) ? x : y));
+    out = isnan (y) ? x : (mappers_abs (x) > mappers_abs (y) ? x :
+          (mappers_abs (x) == mappers_abs (y) && std::arg (x) >= std::arg (y) ? x : y));
   return out;
 }
 
@@ -708,8 +729,8 @@ min (const octave_int<T>& x, const octave_int<T>& y,
   if (realabs)
     out = x.value () <= y.value () ? x : y;
   else
-    out = abs (x.value ()) < abs (y.value ()) ? x :
-          (abs (x.value ()) == abs (y.value ()) &&
+    out = mappers_abs (x.value ()) < mappers_abs (y.value ()) ? x :
+          (mappers_abs (x.value ()) == mappers_abs (y.value ()) &&
            x.value () <= y.value () ? x : y);
   return out;
 }
@@ -723,8 +744,8 @@ max (const octave_int<T>& x, const octave_int<T>& y,
   if (realabs)
     out = x.value () >= y.value () ? x : y;
   else
-    out = abs (x.value ()) > abs (y.value ()) ? x :
-          (abs (x.value ()) == abs (y.value ()) &&
+    out = mappers_abs (x.value ()) > mappers_abs (y.value ()) ? x :
+          (mappers_abs (x.value ()) == mappers_abs (y.value ()) &&
            x.value () >= y.value () ? x : y);
   return out;
 }

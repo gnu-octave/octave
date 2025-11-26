@@ -1428,9 +1428,9 @@ mx_inline_flip (const T *v, T *r, octave_idx_type l,
       {                                                                 \
         for (; i < n; i++)                                              \
           {                                                             \
-            if (abs (v[i]) OP abs (tmp))                                \
+            if (mappers_abs (v[i]) OP mappers_abs (tmp))                \
               tmp = v[i];                                               \
-            else if (abs (v[i]) == abs (tmp) && v[i] OP tmp)            \
+            else if (mappers_abs (v[i]) == mappers_abs (tmp) && v[i] OP tmp) \
               tmp = v[i];                                               \
           }                                                             \
       }                                                                 \
@@ -1477,12 +1477,12 @@ mx_inline_flip (const T *v, T *r, octave_idx_type l,
       {                                                                 \
         for (; i < n; i++)                                              \
           {                                                             \
-            if (abs (v[i]) OP abs (tmp))                                \
+            if (mappers_abs (v[i]) OP mappers_abs (tmp))                \
               {                                                         \
                 tmp = v[i];                                             \
                 tmpi = i;                                               \
               }                                                         \
-            else if (abs (v[i]) == abs (tmp) && v[i] OP tmp)            \
+            else if (mappers_abs (v[i]) == mappers_abs (tmp) && v[i] OP tmp) \
               {                                                         \
                 tmp = v[i];                                             \
                 tmpi = i;                                               \
@@ -1564,9 +1564,9 @@ OP_MINMAX_FCN (mx_inline_max, >)
                 else if (octave::math::isnan (v[i]))                    \
                   nan = true;                                           \
                 else if (octave::math::isnan (r[i]) ||                  \
-                         abs (v[i]) OP abs (r[i]))                      \
+                         mappers_abs (v[i]) OP mappers_abs (r[i]))      \
                   r[i] = v[i];                                          \
-                else if (abs (v[i]) == abs (r[i]) && v[i] OP r[i])      \
+                else if (mappers_abs (v[i]) == mappers_abs (r[i]) && v[i] OP r[i]) \
                   r[i] = v[i];                                          \
               }                                                         \
             j++;                                                        \
@@ -1576,9 +1576,9 @@ OP_MINMAX_FCN (mx_inline_max, >)
           {                                                             \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if (abs (v[i]) OP abs (r[i]))                           \
+                if (mappers_abs (v[i]) OP mappers_abs (r[i]))           \
                   r[i] = v[i];                                          \
-                else if (abs (v[i]) == abs (r[i]) && v[i] OP r[i])      \
+                else if (mappers_abs (v[i]) == mappers_abs (r[i]) && v[i] OP r[i]) \
                   r[i] = v[i];                                          \
               }                                                         \
             j++;                                                        \
@@ -1658,12 +1658,12 @@ OP_MINMAX_FCN (mx_inline_max, >)
                 else if (octave::math::isnan (v[i]))                    \
                   nan = true;                                           \
                 else if (octave::math::isnan (r[i]) ||                  \
-                         abs (v[i]) OP abs (r[i]))                      \
+                         mappers_abs (v[i]) OP mappers_abs (r[i]))      \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
                   }                                                     \
-                else if (abs (v[i]) == abs (r[i]) && v[i] OP r[i])      \
+                else if (mappers_abs (v[i]) == mappers_abs (r[i]) && v[i] OP r[i]) \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
@@ -1676,12 +1676,12 @@ OP_MINMAX_FCN (mx_inline_max, >)
           {                                                             \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if (abs (v[i]) OP abs (r[i]))                           \
+                if (mappers_abs (v[i]) OP mappers_abs (r[i]))           \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
                   }                                                     \
-                  else if (abs (v[i]) == abs (r[i]) && v[i] OP r[i])    \
+                  else if (mappers_abs (v[i]) == mappers_abs (r[i]) && v[i] OP r[i]) \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
@@ -1797,9 +1797,9 @@ OP_MINMAX_FCNN (mx_inline_max)
       {                                                                        \
         for (; i < n; i++)                                                     \
           {                                                                    \
-            if (abs (v[i]) OP abs (tmp))                                       \
+            if (mappers_abs (v[i]) OP mappers_abs (tmp))                       \
               tmp = v[i];                                                      \
-            else if (abs (v[i]) == abs (tmp) &&                                \
+            else if (mappers_abs (v[i]) == mappers_abs (tmp) &&                \
                      std::arg (v[i]) OP std::arg (tmp))                        \
               tmp = v[i];                                                      \
           }                                                                    \
@@ -1856,12 +1856,12 @@ OP_MINMAX_FCNN (mx_inline_max)
       {                                                                        \
         for (; i < n; i++)                                                     \
           {                                                                    \
-            if (abs (v[i]) OP abs (tmp))                                       \
+            if (mappers_abs (v[i]) OP mappers_abs (tmp))                       \
               {                                                                \
                 tmp = v[i];                                                    \
                 tmpi = i;                                                      \
               }                                                                \
-            else if (abs (v[i]) == abs (tmp) &&                                \
+            else if (mappers_abs (v[i]) == mappers_abs (tmp) &&                \
                      std::arg (v[i]) OP std::arg (tmp))                        \
               {                                                                \
                 tmp = v[i];                                                    \
@@ -1953,9 +1953,9 @@ OP_CMINMAX_FCN (mx_inline_cmax, >)
                 else if (octave::math::isnan (v[i]))                           \
                   nan = true;                                                  \
                 else if (octave::math::isnan (r[i]) ||                         \
-                         abs (v[i]) OP abs (r[i]))                             \
+                         mappers_abs (v[i]) OP mappers_abs (r[i]))             \
                   r[i] = v[i];                                                 \
-                else if (abs (v[i]) == abs (r[i]) &&                           \
+                else if (mappers_abs (v[i]) == mappers_abs (r[i]) &&           \
                          std::arg (v[i]) OP std::arg (r[i]))                   \
                   r[i] = v[i];                                                 \
               }                                                                \
@@ -1966,9 +1966,9 @@ OP_CMINMAX_FCN (mx_inline_cmax, >)
           {                                                                    \
             for (octave_idx_type i = 0; i < m; i++)                            \
               {                                                                \
-                if (abs (v[i]) OP abs (r[i]))                                  \
+                if (mappers_abs (v[i]) OP mappers_abs (r[i]))                  \
                   r[i] = v[i];                                                 \
-                else if (abs (v[i]) == abs (r[i]) &&                           \
+                else if (mappers_abs (v[i]) == mappers_abs (r[i]) &&           \
                          std::arg (v[i]) OP std::arg (r[i]))                   \
                   r[i] = v[i];                                                 \
               }                                                                \
@@ -2065,12 +2065,12 @@ OP_CMINMAX_FCN (mx_inline_cmax, >)
                 else if (octave::math::isnan (v[i]))                           \
                   nan = true;                                                  \
                 else if (octave::math::isnan (r[i]) ||                         \
-                         abs (v[i]) OP abs (r[i]))                             \
+                         mappers_abs (v[i]) OP mappers_abs (r[i]))             \
                   {                                                            \
                     r[i] = v[i];                                               \
                     ri[i] = j;                                                 \
                   }                                                            \
-                else if (abs (v[i]) == abs (r[i]) &&                           \
+                else if (mappers_abs (v[i]) == mappers_abs (r[i]) &&           \
                          std::arg (v[i]) OP std::arg (r[i]))                   \
                   {                                                            \
                     r[i] = v[i];                                               \
@@ -2084,13 +2084,13 @@ OP_CMINMAX_FCN (mx_inline_cmax, >)
           {                                                                    \
             for (octave_idx_type i = 0; i < m; i++)                            \
               {                                                                \
-                if (abs (v[i]) OP abs (r[i]))                                  \
+                if (mappers_abs (v[i]) OP mappers_abs (r[i]))                  \
                   {                                                            \
                     r[i] = v[i];                                               \
                     ri[i] = j;                                                 \
                   }                                                            \
                   r[i] = v[i];                                                 \
-                if (abs (v[i]) == abs (r[i]) &&                                \
+                if (mappers_abs (v[i]) == mappers_abs (r[i]) &&                \
                     std::arg (v[i]) OP std::arg (r[i]))                        \
                   {                                                            \
                     r[i] = v[i];                                               \
@@ -2350,13 +2350,13 @@ OP_CHMINMAX_FCNN (mx_inline_chmax)
       {                                                                 \
         for (; i < n; i++)                                              \
           {                                                             \
-            if (abs (v[i]) OP abs (tmp))                                \
+            if (mappers_abs (v[i]) OP mappers_abs (tmp))                \
               {                                                         \
                 for (; j < i; j++)                                      \
                   r[j] = tmp;                                           \
                 tmp = v[i];                                             \
               }                                                         \
-            else if (abs (v[i]) == abs (tmp) && v[i] OP tmp)            \
+            else if (mappers_abs (v[i]) == mappers_abs (tmp) && v[i] OP tmp) \
               {                                                         \
                 for (; j < i; j++)                                      \
                   r[j] = tmp;                                           \
@@ -2419,7 +2419,7 @@ OP_CHMINMAX_FCNN (mx_inline_chmax)
       {                                                                 \
         for (; i < n; i++)                                              \
           {                                                             \
-            if (abs (v[i]) OP abs (tmp))                                \
+            if (mappers_abs (v[i]) OP mappers_abs (tmp))                \
               {                                                         \
                 for (; j < i; j++)                                      \
                   {                                                     \
@@ -2429,7 +2429,7 @@ OP_CHMINMAX_FCNN (mx_inline_chmax)
                 tmp = v[i];                                             \
                 tmpi = i;                                               \
               }                                                         \
-            else if (abs (v[i]) == abs (tmp) && v[i] OP tmp)            \
+            else if (mappers_abs (v[i]) == mappers_abs (tmp) && v[i] OP tmp) \
               {                                                         \
                 for (; j < i; j++)                                      \
                   {                                                     \
@@ -2538,9 +2538,9 @@ OP_CUMMINMAX_FCN (mx_inline_cummax, >)
                     nan = true;                                         \
                   }                                                     \
                 else if (octave::math::isnan (r0[i]) ||                 \
-                         abs (v[i]) OP abs (r0[i]))                     \
+                         mappers_abs (v[i]) OP mappers_abs (r0[i]))     \
                   r[i] = v[i];                                          \
-                else if (abs (v[i]) == abs (r0[i]) && v[i] OP r0[i])    \
+                else if (mappers_abs (v[i]) == mappers_abs (r0[i]) && v[i] OP r0[i]) \
                   r[i] = v[i];                                          \
                 else                                                    \
                   r[i] = r0[i];                                         \
@@ -2554,9 +2554,9 @@ OP_CUMMINMAX_FCN (mx_inline_cummax, >)
           {                                                             \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if (abs (v[i]) OP abs (r0[i]))                          \
+                if (mappers_abs (v[i]) OP mappers_abs (r0[i]))          \
                   r[i] = v[i];                                          \
-                else if (abs (v[i]) == abs (r0[i]) && v[i] OP r0[i])    \
+                else if (mappers_abs (v[i]) == mappers_abs (r0[i]) && v[i] OP r0[i]) \
                   r[i] = v[i];                                          \
                 else                                                    \
                   r[i] = r0[i];                                         \
@@ -2673,12 +2673,12 @@ OP_CUMMINMAX_FCN (mx_inline_cummax, >)
                     nan = true;                                         \
                   }                                                     \
                 else if (octave::math::isnan (r0[i]) ||                 \
-                         abs (v[i]) OP abs (r0[i]))                     \
+                         mappers_abs (v[i]) OP mappers_abs (r0[i]))     \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
                   }                                                     \
-                else if (abs (v[i]) == abs (r0[i]) && v[i] OP r0[i])    \
+                else if (mappers_abs (v[i]) == mappers_abs (r0[i]) && v[i] OP r0[i]) \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
@@ -2700,12 +2700,12 @@ OP_CUMMINMAX_FCN (mx_inline_cummax, >)
           {                                                             \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if (abs (v[i]) OP abs (r0[i]))                          \
+                if (mappers_abs (v[i]) OP mappers_abs (r0[i]))          \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
                   }                                                     \
-                else if (abs (v[i]) == abs (r0[i]) && v[i] OP r0[i])    \
+                else if (mappers_abs (v[i]) == mappers_abs (r0[i]) && v[i] OP r0[i]) \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
@@ -2842,13 +2842,13 @@ OP_CUMMINMAX_FCNN (mx_inline_cummax)
       {                                                                 \
         for (; i < n; i++)                                              \
           {                                                             \
-            if (abs (v[i]) OP abs (tmp))                                \
+            if (mappers_abs (v[i]) OP mappers_abs (tmp))                \
               {                                                         \
                 for (; j < i; j++)                                      \
                   r[j] = tmp;                                           \
                 tmp = v[i];                                             \
               }                                                         \
-            else if (abs (v[i]) == abs (tmp) &&                         \
+            else if (mappers_abs (v[i]) == mappers_abs (tmp) &&         \
                      std::arg (v[i]) OP std::arg (tmp))                 \
               {                                                         \
                 for (; j < i; j++)                                      \
@@ -2926,7 +2926,7 @@ OP_CUMMINMAX_FCNN (mx_inline_cummax)
       {                                                                 \
         for (; i < n; i++)                                              \
           {                                                             \
-            if (abs (v[i]) OP abs (tmp))                                \
+            if (mappers_abs (v[i]) OP mappers_abs (tmp))                \
               {                                                         \
                 for (; j < i; j++)                                      \
                   {                                                     \
@@ -2936,7 +2936,7 @@ OP_CUMMINMAX_FCNN (mx_inline_cummax)
                 tmp = v[i];                                             \
                 tmpi = i;                                               \
               }                                                         \
-            else if (abs (v[i]) == abs (tmp) &&                         \
+            else if (mappers_abs (v[i]) == mappers_abs (tmp) &&         \
                      std::arg (v[i]) OP std::arg (tmp))                 \
               {                                                         \
                 for (; j < i; j++)                                      \
@@ -3053,9 +3053,9 @@ OP_CCUMMINMAX_FCN (mx_inline_ccummax, >)
                     nan = true;                                         \
                   }                                                     \
                 else if (octave::math::isnan (r0[i]) ||                 \
-                         abs (v[i]) OP abs (r0[i]))                     \
+                         mappers_abs (v[i]) OP mappers_abs (r0[i]))     \
                   r[i] = v[i];                                          \
-                else if (abs (v[i]) == abs (r0[i]) &&                   \
+                else if (mappers_abs (v[i]) == mappers_abs (r0[i]) &&   \
                          std::arg (v[i]) OP std::arg (r0[i]))           \
                   r[i] = v[i];                                          \
                 else                                                    \
@@ -3070,9 +3070,9 @@ OP_CCUMMINMAX_FCN (mx_inline_ccummax, >)
           {                                                             \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if (abs (v[i]) OP abs (r0[i]))                          \
+                if (mappers_abs (v[i]) OP mappers_abs (r0[i]))          \
                   r[i] = v[i];                                          \
-                else if (abs (v[i]) == abs (r0[i])  &&                  \
+                else if (mappers_abs (v[i]) == mappers_abs (r0[i])  &&  \
                          std::arg (v[i]) OP std::arg (r0[i]))           \
                   r[i] = v[i];                                          \
                 else                                                    \
@@ -3204,12 +3204,12 @@ OP_CCUMMINMAX_FCN (mx_inline_ccummax, >)
                     nan = true;                                         \
                   }                                                     \
                 else if (octave::math::isnan (r0[i]) ||                 \
-                         abs (v[i]) OP abs (r0[i]))                     \
+                         mappers_abs (v[i]) OP mappers_abs (r0[i]))     \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
                   }                                                     \
-                else if (abs (v[i]) == abs (r0[i]) &&                   \
+                else if (mappers_abs (v[i]) == mappers_abs (r0[i]) &&   \
                          std::arg (v[i]) OP std::arg (r0[i]))           \
                   {                                                     \
                     r[i] = v[i];                                        \
@@ -3232,12 +3232,12 @@ OP_CCUMMINMAX_FCN (mx_inline_ccummax, >)
           {                                                             \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if (abs (v[i]) OP abs (r0[i]))                          \
+                if (mappers_abs (v[i]) OP mappers_abs (r0[i]))          \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
                   }                                                     \
-                else if (abs (v[i]) == abs (r0[i]) &&                   \
+                else if (mappers_abs (v[i]) == mappers_abs (r0[i]) &&   \
                          std::arg (v[i]) OP std::arg (r0[i]))           \
                   {                                                     \
                     r[i] = v[i];                                        \

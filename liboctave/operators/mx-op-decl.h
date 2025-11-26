@@ -283,15 +283,29 @@
 #define DMDM_OP_DECLS(R, DM1, DM2, API)         \
   DMDM_BIN_OP_DECLS (R, DM1, DM2, API)
 
-// scalar by N-D array min/max ops
+// scalar by N-D array min/max ops with optional nanflag and method arguments
 
-#define MINMAX_DECLS(T, S, API)                 \
-  extern API T min (S d, const T& m);           \
-  extern API T min (const T& m, S d);           \
-  extern API T min (const T& a, const T& b);    \
-  extern API T max (S d, const T& m);           \
-  extern API T max (const T& m, S d);           \
-  extern API T max (const T& a, const T& b);
+#define MINMAX_DECLS(T, S, API)                                               \
+  extern API T min (S d, const T& m);                                         \
+  extern API T min (const T& m, S d);                                         \
+  extern API T min (const T& a, const T& b);                                  \
+  extern API T max (S d, const T& m);                                         \
+  extern API T max (const T& m, S d);                                         \
+  extern API T max (const T& a, const T& b);                                  \
+  extern API T min (S d, const T& m, const bool nanflag);                     \
+  extern API T min (const T& m, S d, const bool nanflag);                     \
+  extern API T min (const T& a, const T& b, const bool nanflag);              \
+  extern API T max (S d, const T& m, const bool nanflag);                     \
+  extern API T max (const T& m, S d, const bool nanflag);                     \
+  extern API T max (const T& a, const T& b, const bool nanflag);              \
+  extern API T min (S d, const T& m, const bool nanflag, const bool realabs); \
+  extern API T min (const T& m, S d, const bool nanflag, const bool realabs); \
+  extern API T min (const T& a, const T& b, const bool nanflag,               \
+                    const bool realabs);                                      \
+  extern API T max (S d, const T& m, const bool nanflag, const bool realabs); \
+  extern API T max (const T& m, S d, const bool nanflag, const bool realabs); \
+  extern API T max (const T& a, const T& b, const bool nanflag,               \
+                    const bool realabs);
 
 // permutation matrix by matrix ops and vice versa
 

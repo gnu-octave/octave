@@ -2368,33 +2368,39 @@ Matrix::any (int dim) const
 }
 
 Matrix
-Matrix::cumprod (int dim) const
+Matrix::flip (int dim) const
 {
-  return NDArray::cumprod (dim);
+  return NDArray::flip (dim);
 }
 
 Matrix
-Matrix::cumsum (int dim) const
+Matrix::cumprod (int dim, bool nanflag) const
 {
-  return NDArray::cumsum (dim);
+  return NDArray::cumprod (dim, nanflag);
 }
 
 Matrix
-Matrix::prod (int dim) const
+Matrix::cumsum (int dim, bool nanflag) const
 {
-  return NDArray::prod (dim);
+  return NDArray::cumsum (dim, nanflag);
 }
 
 Matrix
-Matrix::sum (int dim) const
+Matrix::prod (int dim, bool nanflag) const
 {
-  return NDArray::sum (dim);
+  return NDArray::prod (dim, nanflag);
 }
 
 Matrix
-Matrix::sumsq (int dim) const
+Matrix::sum (int dim, bool nanflag) const
 {
-  return NDArray::sumsq (dim);
+  return NDArray::sum (dim, nanflag);
+}
+
+Matrix
+Matrix::sumsq (int dim, bool nanflag) const
+{
+  return NDArray::sumsq (dim, nanflag);
 }
 
 Matrix
@@ -2883,25 +2889,20 @@ operator * (const Matrix& a, const Matrix& b)
 Matrix
 min (double d, const Matrix& m)
 {
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  EMPTY_RETURN_CHECK (Matrix);
-
-  Matrix result (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      {
-        octave_quit ();
-        result(i, j) = octave::math::min (d, m(i, j));
-      }
-
-  return result;
+  const bool nanflag = true;
+  const bool realabs = true;
+  return min (d, m, nanflag, realabs);
 }
 
 Matrix
-min (const Matrix& m, double d)
+min (double d, const Matrix& m, const bool nanflag)
+{
+  const bool realabs = true;
+  return min (d, m, nanflag, realabs);
+}
+
+Matrix
+min (double d, const Matrix& m, const bool nanflag, const bool realabs)
 {
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
@@ -2914,14 +2915,50 @@ min (const Matrix& m, double d)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = octave::math::min (m(i, j), d);
+        result(i, j) = octave::math::min (d, m(i, j), nanflag, realabs);
       }
 
   return result;
 }
 
 Matrix
+min (const Matrix& m, double d)
+{
+  const bool nanflag = true;
+  const bool realabs = true;
+  return min (d, m, nanflag, realabs);
+}
+
+Matrix
+min (const Matrix& m, double d, const bool nanflag)
+{
+  const bool realabs = true;
+  return min (d, m, nanflag, realabs);
+}
+
+Matrix
+min (const Matrix& m, double d, const bool nanflag, const bool realabs)
+{
+  return min (d, m, nanflag, realabs);
+}
+
+Matrix
 min (const Matrix& a, const Matrix& b)
+{
+  const bool nanflag = true;
+  const bool realabs = true;
+  return min (a, b, nanflag, realabs);
+}
+
+Matrix
+min (const Matrix& a, const Matrix& b, const bool nanflag)
+{
+  const bool realabs = true;
+  return min (a, b, nanflag, realabs);
+}
+
+Matrix
+min (const Matrix& a, const Matrix& b, const bool nanflag, const bool realabs)
 {
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.columns ();
@@ -2938,7 +2975,7 @@ min (const Matrix& a, const Matrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = octave::math::min (a(i, j), b(i, j));
+        result(i, j) = octave::math::min (a(i, j), b(i, j), nanflag, realabs);
       }
 
   return result;
@@ -2947,25 +2984,20 @@ min (const Matrix& a, const Matrix& b)
 Matrix
 max (double d, const Matrix& m)
 {
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  EMPTY_RETURN_CHECK (Matrix);
-
-  Matrix result (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      {
-        octave_quit ();
-        result(i, j) = octave::math::max (d, m(i, j));
-      }
-
-  return result;
+  const bool nanflag = true;
+  const bool realabs = true;
+  return max (d, m, nanflag, realabs);
 }
 
 Matrix
-max (const Matrix& m, double d)
+max (double d, const Matrix& m, const bool nanflag)
+{
+  const bool realabs = true;
+  return max (d, m, nanflag, realabs);
+}
+
+Matrix
+max (double d, const Matrix& m, const bool nanflag, const bool realabs)
 {
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
@@ -2978,14 +3010,50 @@ max (const Matrix& m, double d)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = octave::math::max (m(i, j), d);
+        result(i, j) = octave::math::max (d, m(i, j), nanflag, realabs);
       }
 
   return result;
 }
 
 Matrix
+max (const Matrix& m, double d)
+{
+  const bool nanflag = true;
+  const bool realabs = true;
+  return max (d, m, nanflag, realabs);
+}
+
+Matrix
+max (const Matrix& m, double d, const bool nanflag)
+{
+  const bool realabs = true;
+  return max (d, m, nanflag, realabs);
+}
+
+Matrix
+max (const Matrix& m, double d, const bool nanflag, const bool realabs)
+{
+  return max (d, m, nanflag, realabs);
+}
+
+Matrix
 max (const Matrix& a, const Matrix& b)
+{
+  const bool nanflag = true;
+  const bool realabs = true;
+  return max (a, b, nanflag, realabs);
+}
+
+Matrix
+max (const Matrix& a, const Matrix& b, const bool nanflag)
+{
+  const bool realabs = true;
+  return max (a, b, nanflag, realabs);
+}
+
+Matrix
+max (const Matrix& a, const Matrix& b, const bool nanflag, const bool realabs)
 {
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.columns ();
@@ -3002,7 +3070,7 @@ max (const Matrix& a, const Matrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = octave::math::max (a(i, j), b(i, j));
+        result(i, j) = octave::math::max (a(i, j), b(i, j), nanflag, realabs);
       }
 
   return result;

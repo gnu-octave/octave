@@ -46,6 +46,88 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
+static void
+get_dim_vecdim_all (const octave_value& dimarg, octave_value& arg,
+                    int& dim, Array<int>& perm_vec, bool& do_perm,
+                    bool& allflag, const char *fcn)
+{
+  if (dimarg.is_scalar_type ())
+    {
+      dim = dimarg.int_value () - 1;
+      if (dim < 0)
+        error ("%s: invalid dimension DIM = %d", fcn, dim + 1);
+    }
+  else
+    {
+      Array<int> vec = dimarg.int_vector_value ();
+      std::vector<int> vecdim;
+      dim_vector sz = arg.dims ();
+      int ndims = arg.ndims ();
+      // Check for invalid dims and ignore any dims larger than actual ndims
+      for (int i = 0; i < vec.numel (); i++)
+        {
+          vec(i)--;
+          if (vec(i) < 0)
+            error ("%s: invalid dimension in VECDIM = %d", fcn, vec(i)+1);
+          if (vec(i) < ndims)
+            vecdim.push_back (vec(i));
+        }
+      int n = vecdim.size ();
+      // If no dimensions left, set DIM = ndims to return input as is
+      if (n == 0)
+        {
+          dim = ndims;
+          return;
+        }
+      octave_idx_type szvecdim = 1;
+      // Check for duplicate dims and add VECDIM to permutation vector
+      perm_vec.resize (dim_vector (1, ndims));
+      std::sort (vecdim.begin (), vecdim.end ());
+      // Check for duplicates FIRST before any array writes
+      auto dup = std::adjacent_find (vecdim.begin (), vecdim.end ());
+      if (dup != vecdim.end ())
+        error ("%s: duplicate dimension in VECDIM = %d", fcn, *dup + 1);
+
+       // Verified vecdim has unique entries in [0, ndims-1], hence n <= ndims
+       int out_pos = ndims - n;
+       for (int d : vecdim)
+         {
+           szvecdim *= sz (d);
+           perm_vec(out_pos++) = d;
+         }
+
+      // Parse vecdim
+      if (n == 1)
+        // Only one dimension given, treat as if dim were specified instead
+        dim = vecdim[0];
+      else if (ndims == n)
+        // vecdim contains all dimensions, treat as if "all" flag given.
+        allflag = true;
+      else
+        {
+          dim_vector new_sz;
+          new_sz.resize (ndims - n + 1);
+          int idx = 0;
+          // Add remaining dims to permutation vector
+          for (int i = 0; i < ndims; i++)
+            {
+              if (std::find (vecdim.begin (), vecdim.end (), i)
+                  == vecdim.end ())
+                {
+                  perm_vec(idx) = i;
+                  new_sz(idx) = sz(i);
+                  idx++;
+                }
+            }
+          new_sz(idx) = szvecdim;
+          arg = arg.permute (perm_vec, false);
+          arg = arg.reshape (new_sz);
+          do_perm = true;
+          dim = idx;
+        }
+    }
+}
+
 template <typename ArrayType>
 static octave_value_list
 do_minmax_red_op (const octave_value& arg,
@@ -68,6 +150,64 @@ do_minmax_red_op (const octave_value& arg,
         retval(0) = array.min (idx, dim);
       else
         retval(0) = array.max (idx, dim);
+
+      retval(1) = octave_value (idx, true, true);
+    }
+
+  return retval;
+}
+
+template <typename ArrayType>
+static octave_value_list
+do_minmax_red_op (const octave_value& arg, int nargout,
+                  int dim, bool nanflag, bool ismin)
+{
+  octave_value_list retval (nargout > 1 ? 2 : 1);
+  ArrayType array = octave_value_extract<ArrayType> (arg);
+
+  if (nargout <= 1)
+    {
+      if (ismin)
+        retval(0) = array.min (dim, nanflag);
+      else
+        retval(0) = array.max (dim, nanflag);
+    }
+  else
+    {
+      Array<octave_idx_type> idx;
+      if (ismin)
+        retval(0) = array.min (idx, dim, nanflag);
+      else
+        retval(0) = array.max (idx, dim, nanflag);
+
+      retval(1) = octave_value (idx, true, true);
+    }
+
+  return retval;
+}
+
+template <typename ArrayType>
+static octave_value_list
+do_minmax_red_op (const octave_value& arg, int nargout,
+                  int dim, bool nanflag, bool realabs, bool ismin)
+{
+  octave_value_list retval (nargout > 1 ? 2 : 1);
+  ArrayType array = octave_value_extract<ArrayType> (arg);
+
+  if (nargout <= 1)
+    {
+      if (ismin)
+        retval(0) = array.min (dim, nanflag, realabs);
+      else
+        retval(0) = array.max (dim, nanflag, realabs);
+    }
+  else
+    {
+      Array<octave_idx_type> idx;
+      if (ismin)
+        retval(0) = array.min (idx, dim, nanflag, realabs);
+      else
+        retval(0) = array.max (idx, dim, nanflag, realabs);
 
       retval(1) = octave_value (idx, true, true);
     }
@@ -197,6 +337,92 @@ do_minmax_bin_op (const octave_value& argx, const octave_value& argy,
   return retval;
 }
 
+template <typename ArrayType>
+static octave_value
+do_minmax_bin_op (const octave_value& argx, const octave_value& argy,
+                  bool nanflag, bool ismin)
+{
+  typedef typename ArrayType::element_type ScalarType;
+
+  octave_value retval;
+
+  if (argx.is_scalar_type ())
+    {
+      ScalarType x = octave_value_extract<ScalarType> (argx);
+      ArrayType y = octave_value_extract<ArrayType> (argy);
+
+      if (ismin)
+        retval = min (x, y, nanflag);
+      else
+        retval = max (x, y, nanflag);
+    }
+  else if (argy.is_scalar_type ())
+    {
+      ArrayType x = octave_value_extract<ArrayType> (argx);
+      ScalarType y = octave_value_extract<ScalarType> (argy);
+
+      if (ismin)
+        retval = min (x, y, nanflag);
+      else
+        retval = max (x, y, nanflag);
+    }
+  else
+    {
+      ArrayType x = octave_value_extract<ArrayType> (argx);
+      ArrayType y = octave_value_extract<ArrayType> (argy);
+
+      if (ismin)
+        retval = min (x, y, nanflag);
+      else
+        retval = max (x, y, nanflag);
+    }
+
+  return retval;
+}
+
+template <typename ArrayType>
+static octave_value
+do_minmax_bin_op (const octave_value& argx, const octave_value& argy,
+                  bool nanflag, bool realabs, bool ismin)
+{
+  typedef typename ArrayType::element_type ScalarType;
+
+  octave_value retval;
+
+  if (argx.is_scalar_type ())
+    {
+      ScalarType x = octave_value_extract<ScalarType> (argx);
+      ArrayType y = octave_value_extract<ArrayType> (argy);
+
+      if (ismin)
+        retval = min (x, y, nanflag, realabs);
+      else
+        retval = max (x, y, nanflag, realabs);
+    }
+  else if (argy.is_scalar_type ())
+    {
+      ArrayType x = octave_value_extract<ArrayType> (argx);
+      ScalarType y = octave_value_extract<ScalarType> (argy);
+
+      if (ismin)
+        retval = min (x, y, nanflag, realabs);
+      else
+        retval = max (x, y, nanflag, realabs);
+    }
+  else
+    {
+      ArrayType x = octave_value_extract<ArrayType> (argx);
+      ArrayType y = octave_value_extract<ArrayType> (argy);
+
+      if (ismin)
+        retval = min (x, y, nanflag, realabs);
+      else
+        retval = max (x, y, nanflag, realabs);
+    }
+
+  return retval;
+}
+
 // Matlab returns double arrays for min/max operations on character
 // arrays, so we specialize here to get that behavior.  Other possible
 // solutions are to convert the arguments to double here and call the
@@ -243,26 +469,97 @@ do_minmax_body (const octave_value_list& args,
 {
   int nargin = args.length ();
 
+  const char *fcn = (ismin ? "min" : "max");
+
+  bool do_perm = false;
+  bool allflag = false;
+  bool nanflag = true; // NaNs are ignored by default
+  bool cmethod = true; // resolves to "auto"
+  bool realabs = true;
+  bool red_op = false;
+  bool linear = false;
+
+  // Get "ComparisonMethod" optional argument first
+  if (nargin > 2 && args(nargin - 1).is_string () && args(nargin - 2).is_string ())
+    {
+      std::string name = args(nargin - 2).string_value ();
+      std::string sval = args(nargin - 1).string_value ();
+      if (name == "ComparisonMethod" || name == "comparisonmethod")
+        {
+          if (sval == "auto")
+            cmethod = true;
+          else if (sval == "real")
+            cmethod = false;
+          else if (sval == "abs")
+            {
+              cmethod = false;
+              realabs = false;
+            }
+          else
+            error ("%s: invalid comparison method '%s'", fcn, sval.c_str ());
+
+          nargin -= 2;
+        }
+    }
+
+  while (nargin > 2 && args(nargin - 1).is_string ())
+    {
+      std::string str = args(nargin - 1).string_value ();
+
+      if (str == "all")
+        allflag = true;
+      else if (str == "omitnan" || str == "omitmissing")
+        {
+          if (args(0).is_double_type () || args(0).is_single_type ())
+            nanflag = true;
+        }
+      else if (str == "includenan" || str == "includemissing")
+        nanflag = false;
+      else if (str == "linear")
+        linear = true;
+      else
+        error ("%s: unrecognized optional argument '%s'", fcn, str.c_str ());
+
+      nargin--;
+    }
+
   if (nargin < 1 || nargin > 3)
     print_usage ();
+  if (allflag && nargin > 2)
+    error ("%s: cannot set DIM or VECDIM with 'all' flag", fcn);
+  if (nargin > 2)
+    red_op = true;
+  else if (nargin > 1)
+    if (args(1).isempty ())
+      red_op = true;
 
   octave_value_list retval (nargout > 1 ? 2 : 1);
 
-  const char *fcn = (ismin ? "min" : "max");
-
-  if (nargin == 3 || nargin == 1)
+  if (nargin == 1 || red_op)
     {
       octave_value arg = args(0);
+      // Handle DIM, VECDIM
       int dim = -1;
+      Array<int> perm_vec;
       if (nargin == 3)
         {
-          dim = args(2).int_value (true) - 1;
-
-          if (dim < 0)
-            error ("%s: DIM must be a valid dimension", fcn);
+          octave_value dimarg = args(2);
+          get_dim_vecdim_all (dimarg, arg, dim, perm_vec, do_perm, allflag, fcn);
 
           if (! args(1).isempty ())
             warning ("%s: second argument is ignored", fcn);
+        }
+
+      // Handle allflag
+      if (allflag)
+        {
+          octave_idx_type szvecdim = 1;
+          dim_vector sz = arg.dims ();
+          for (int i = 0; i < arg.ndims (); i++)
+          {
+            szvecdim = szvecdim * sz(i);
+          }
+          arg = arg.reshape (dim_vector (szvecdim, 1));
         }
 
       switch (arg.builtin_type ())
@@ -295,41 +592,85 @@ do_minmax_body (const octave_value_list& args,
                   }
               }
             else if (arg.issparse ())
-              retval = do_minmax_red_op<SparseMatrix> (arg, nargout, dim,
-                       ismin);
+              {
+                if (cmethod)
+                  retval = do_minmax_red_op<SparseMatrix>
+                           (arg, nargout, dim, nanflag, ismin);
+                else
+                  retval = do_minmax_red_op<SparseMatrix>
+                           (arg, nargout, dim, nanflag, realabs, ismin);
+              }
             else
-              retval = do_minmax_red_op<NDArray> (arg, nargout, dim, ismin);
-
+              {
+                if (cmethod)
+                  retval = do_minmax_red_op<NDArray>
+                           (arg, nargout, dim, nanflag, ismin);
+                else
+                  retval = do_minmax_red_op<NDArray>
+                           (arg, nargout, dim, nanflag, realabs, ismin);
+              }
           }
           break;
 
         case btyp_complex:
           {
             if (arg.issparse ())
-              retval = do_minmax_red_op<SparseComplexMatrix> (arg, nargout, dim,
-                       ismin);
+              {
+                if (cmethod)
+                  retval = do_minmax_red_op<SparseComplexMatrix>
+                           (arg, nargout, dim, nanflag, ismin);
+                else
+                  retval = do_minmax_red_op<SparseComplexMatrix>
+                           (arg, nargout, dim, nanflag, realabs, ismin);
+              }
             else
-              retval = do_minmax_red_op<ComplexNDArray> (arg, nargout, dim,
-                       ismin);
+              {
+                if (cmethod)
+                  retval = do_minmax_red_op<ComplexNDArray>
+                           (arg, nargout, dim, nanflag, ismin);
+                else
+                  retval = do_minmax_red_op<ComplexNDArray>
+                           (arg, nargout, dim, nanflag, realabs, ismin);
+              }
           }
           break;
 
         case btyp_float:
-          retval = do_minmax_red_op<FloatNDArray> (arg, nargout, dim, ismin);
+          {
+            if (cmethod)
+              retval = do_minmax_red_op<FloatNDArray>
+                       (arg, nargout, dim, nanflag, ismin);
+            else
+              retval = do_minmax_red_op<FloatNDArray>
+                       (arg, nargout, dim, nanflag, realabs, ismin);
+          }
           break;
 
         case btyp_float_complex:
-          retval = do_minmax_red_op<FloatComplexNDArray> (arg, nargout, dim,
-                   ismin);
+          {
+            if (cmethod)
+              retval = do_minmax_red_op<FloatComplexNDArray>
+                       (arg, nargout, dim, nanflag, ismin);
+            else
+              retval = do_minmax_red_op<FloatComplexNDArray>
+                       (arg, nargout, dim, nanflag, realabs, ismin);
+          }
           break;
 
         case btyp_char:
           retval = do_minmax_red_op<charNDArray> (arg, nargout, dim, ismin);
           break;
 
-#define MAKE_INT_BRANCH(X)                                                    \
-        case btyp_ ## X:                                                      \
-          retval = do_minmax_red_op<X ## NDArray> (arg, nargout, dim, ismin); \
+#define MAKE_INT_BRANCH(X)                                        \
+        case btyp_ ## X:                                          \
+          {                                                       \
+            if (cmethod)                                          \
+              retval = do_minmax_red_op<X ## NDArray> (arg,       \
+                       nargout, dim, ismin);                      \
+            else                                                  \
+              retval = do_minmax_red_op<X ## NDArray> (arg,       \
+                       nargout, dim, nanflag, realabs, ismin);    \
+          }                                                       \
           break;
 
           MAKE_INT_BRANCH (int8);
@@ -350,6 +691,9 @@ do_minmax_body (const octave_value_list& args,
         default:
           err_wrong_type_arg (fcn, arg);
         }
+
+      if (do_perm)
+        retval(0) = retval(0).permute (perm_vec, true);
     }
   else
     {
@@ -373,9 +717,23 @@ do_minmax_body (const octave_value_list& args,
             if ((argx.issparse ()
                  && (argy.issparse () || argy.is_scalar_type ()))
                 || (argy.issparse () && argx.is_scalar_type ()))
-              retval = do_minmax_bin_op<SparseMatrix> (argx, argy, ismin);
+              {
+                if (cmethod)
+                  retval = do_minmax_bin_op<SparseMatrix>
+                           (argx, argy, nanflag, ismin);
+                else
+                  retval = do_minmax_bin_op<SparseMatrix>
+                           (argx, argy, nanflag, realabs, ismin);
+              }
             else
-              retval = do_minmax_bin_op<NDArray> (argx, argy, ismin);
+              {
+                if (cmethod)
+                  retval = do_minmax_bin_op<NDArray>
+                           (argx, argy, nanflag, ismin);
+                else
+                  retval = do_minmax_bin_op<NDArray>
+                           (argx, argy, nanflag, realabs, ismin);
+              }
           }
           break;
 
@@ -384,28 +742,62 @@ do_minmax_body (const octave_value_list& args,
             if ((argx.issparse ()
                  && (argy.issparse () || argy.is_scalar_type ()))
                 || (argy.issparse () && argx.is_scalar_type ()))
-              retval = do_minmax_bin_op<SparseComplexMatrix> (argx, argy,
-                       ismin);
+              {
+                if (cmethod)
+                  retval = do_minmax_bin_op<SparseComplexMatrix>
+                           (argx, argy, nanflag, ismin);
+                else
+                  retval = do_minmax_bin_op<SparseComplexMatrix>
+                           (argx, argy, nanflag, realabs, ismin);
+              }
             else
-              retval = do_minmax_bin_op<ComplexNDArray> (argx, argy, ismin);
+              {
+                if (cmethod)
+                  retval = do_minmax_bin_op<ComplexNDArray>
+                           (argx, argy, nanflag, ismin);
+                else
+                  retval = do_minmax_bin_op<ComplexNDArray>
+                           (argx, argy, nanflag, realabs, ismin);
+              }
           }
           break;
 
         case btyp_float:
-          retval = do_minmax_bin_op<FloatNDArray> (argx, argy, ismin);
+          {
+            if (cmethod)
+              retval = do_minmax_bin_op<FloatNDArray>
+                       (argx, argy, nanflag, ismin);
+            else
+              retval = do_minmax_bin_op<FloatNDArray>
+                       (argx, argy, nanflag, realabs, ismin);
+          }
           break;
 
         case btyp_float_complex:
-          retval = do_minmax_bin_op<FloatComplexNDArray> (argx, argy, ismin);
+          {
+            if (cmethod)
+              retval = do_minmax_bin_op<FloatComplexNDArray>
+                       (argx, argy, nanflag, ismin);
+            else
+              retval = do_minmax_bin_op<FloatComplexNDArray>
+                       (argx, argy, nanflag, realabs, ismin);
+          }
           break;
 
         case btyp_char:
           retval = do_minmax_bin_op<charNDArray> (argx, argy, ismin);
           break;
 
-#define MAKE_INT_BRANCH(X)                                             \
-        case btyp_ ## X:                                               \
-          retval = do_minmax_bin_op<X ## NDArray> (argx, argy, ismin); \
+#define MAKE_INT_BRANCH(X)                                      \
+        case btyp_ ## X:                                        \
+          {                                                     \
+            if (cmethod)                                        \
+              retval = do_minmax_bin_op<X ## NDArray>           \
+                       (argx, argy, ismin);                     \
+            else                                                \
+              retval = do_minmax_bin_op<X ## NDArray>           \
+                       (argx, argy, nanflag, realabs, ismin);   \
+          }                                                     \
           break;
 
           MAKE_INT_BRANCH (int8);
@@ -435,6 +827,11 @@ do_minmax_body (const octave_value_list& args,
 
     }
 
+  // FIXME: We need a static function to convert indices into linear
+  // indices based on returning size and vecdim
+  if (linear)
+    warning ("%s: 'linear' argument is ignored", fcn);
+
   return retval;
 }
 
@@ -442,67 +839,71 @@ DEFUN (min, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{m} =} min (@var{x})
 @deftypefnx {} {@var{m} =} min (@var{x}, [], @var{dim})
-@deftypefnx {} {[@var{m}, @var{im}] =} min (@var{x})
+@deftypefnx {} {@var{m} =} min (@var{x}, [], @var{vecdim})
+@deftypefnx {} {@var{m} =} min (@var{x}, [], "all")
+@deftypefnx {} {@var{m} =} min (@var{x}, [], @var{nanflag})
+@deftypefnx {} {[@var{m}, @var{im}] =} min (@dots{})
+@deftypefnx {} {[@var{m}, @var{im}] =} min (@dots{}, "linear")
 @deftypefnx {} {@var{m} =} min (@var{x}, @var{y})
+@deftypefnx {} {@var{m} =} min (@var{x}, @var{y}, @var{nanflag})
+@deftypefnx {} {@dots{} =} min (@dots{}, "ComparisonMethod", @var{method})
 Find minimum values in the array @var{x}.
 
-For a vector argument, return the minimum value.  For a matrix argument,
-return a row vector with the minimum value of each column.  For a
-multi-dimensional array, @code{min} operates along the first non-singleton
-dimension.
+If @var{x} is a vector, then @code{min (@var{x})} returns the minimum value of
+the elements in @var{x}.
 
-If the optional third argument @var{dim} is present then operate along
-this dimension.  In this case the second argument is ignored and should be
-set to the empty matrix.
+If @var{x} is a matrix, then @code{min (@var{x})} returns a row vector with each
+element containing the minimum value of the corresponding column in @var{x}.
 
-For two inputs (@var{x} and @var{y}), return the pairwise minimum according to
-the rules for @ref{Broadcasting}.
+If @var{x} is an array, then @code{min (@var{x})} computes the minimum value
+along the first non-singleton dimension of @var{x}.
 
-Thus,
+The optional input @var{dim} specifies the dimension to operate on and must be
+a positive integer.  Specifying any singleton dimension of @var{x}, including
+any dimension exceeding @code{ndims (@var{x})}, will return @var{x}.
 
-@example
-min (min (@var{x}))
-@end example
+Specifying the dimensions as @var{vecdim}, a vector of non-repeating dimensions,
+will return the minimum value over the array slice defined by @var{vecdim}.  If
+@var{vecdim} indexes all dimensions of @var{x}, then it is equivalent to the
+option @qcode{"all"}.  Any dimension in @var{vecdim} greater than
+@code{ndims (@var{x})} is ignored.
 
-@noindent
-returns the smallest element of the 2-D matrix @var{x}, and
+Specifying the dimension as @qcode{"all"} will cause @code{min} to operate on
+on all elements of @var{x}, and is equivalent to @code{min (@var{x}(:))}.
 
-@example
-@group
-min (2:5, pi)
-    @xresult{}  2.0000  3.0000  3.1416  3.1416
-@end group
-@end example
+If called with two output arguments, @code{min} also returns the first index of
+the minimum value(s) in @var{x}.  The second output argument is only valid when
+@code{min} operates on a single input array.  Setting the @qcode{"linear"} flag
+returns the linear index into @var{x} corresponding the minimum values.
 
-@noindent
-compares each element of the range @code{2:5} with @code{pi}, and returns a
-row vector of the minimum values.
+If called with two input arrays (@var{x} and @var{y}), @code{min} return the
+pairwise minimum according to the rules for @ref{Broadcasting}.
 
-For complex arguments, the magnitude of the elements are used for
-comparison.  If the magnitudes are identical, then the results are ordered
-by phase angle in the range (-pi, pi].  Hence,
+The optional variable @var{nanflag} specifies whether to include or exclude
+@code{NaN} values from the calculation using any of the previously specified
+input argument combinations.  The default value for @var{nanflag} is
+@qcode{"omitnan"} which ignores @code{NaN} values in the calculation.  To
+include @code{NaN} values, set the value of @var{nanflag} to
+@qcode{"includenan"}, in which case @code{min} will return @code{NaN}, if any
+element along the operating dimension is @code{NaN}.
 
-@example
-@group
-min ([-1 i 1 -i])
-    @xresult{} -i
-@end group
-@end example
+The optional "ComparisonMethod" paired argument specifies the comparison method
+for numeric input and it applies to both one input and two input arrays.
+@var{method} can take any of the following values:
 
-@noindent
-because all entries have magnitude 1, but -i has the smallest phase angle
-with value -pi/2.
+@table @asis
+@item @qcode{'auto'} : This is the default method, which compares elements by
+@code{real (@var{x})} when @var{x} is real, and by @code{abs (@var{x})} when
+@var{x} is complex.
 
-If called with one input and two output arguments, @code{min} also returns
-the first index of the minimum value(s).  Thus,
+@item @qcode{'real'} : Compares elements by @code{real (@var{x})} when @var{x}
+is real or complex.  For elements with equal real parts, a second comparison by
+@code{imag (@var{x})} is performed.
 
-@example
-@group
-[x, ix] = min ([1, 3, 0, 2, 0])
-    @xresult{}  x = 0
-        ix = 3
-@end group
-@end example
+@item @qcode{'abs'} : Compares elements by @code{abs (@var{x})} when @var{x}
+is real or complex.  For elements with equal magnitude, a second comparison by
+@code{angle (@var{x})} in the interval [-pi,pi] is performed.
+@end table
 @seealso{max, cummin, cummax}
 @end deftypefn */)
 {
@@ -545,9 +946,14 @@ the first index of the minimum value(s).  Thus,
 ## Sparse double values
 %!assert (min (sparse ([1, 4, 2, 3])), sparse (1))
 %!assert (min (sparse ([1; -10; 5; -2])), sparse(-10))
-## FIXME: sparse doesn't order complex values by phase angle
-%!test <51307>
+## Order sparse complex values by phase angle
+%!test <*51307>
 %! assert (min (sparse ([4, 2i 4.999; -2, 2, 3+4i])), sparse ([-2, 2, 4.999]));
+%! assert (min (sparse ([4, -2i 4.99; -2, 2, 3+4i])), sparse ([-2, -2i, 4.99]));
+%!assert (min (sparse ([4, 2i 4.999]), sparse ([-2, 2, 3+4i])),
+%!        sparse ([-2, 2, 4.999]))
+%!assert (min (sparse ([4, -2i 4.999]), sparse ([-2, 2, 3+4i])),
+%!        sparse ([-2, -2i, 4.999]))
 
 ## Test dimension argument
 %!test
@@ -559,6 +965,14 @@ the first index of the minimum value(s).  Thus,
 %! assert (y, [1, 3; 2, 4]);
 %! assert (ndims (i), 2);
 %! assert (i, [1, 1; 1, 1]);
+
+## Test vecdim argument
+%!test
+%! x = reshape (1:8, [2,2,2]);
+%! assert (min (x, [], [1, 3]), [1, 3]);
+%! assert (min (x, [], [2, 3]), [1; 2]);
+%! assert (min (x, [], [1, 2]), reshape ([1, 5], [1,1,2]));
+%! assert (min (x, [], [1, 2, 3]), min (x, [], "all"));
 
 ## Test 2-output forms for various arg types
 ## Special routines for char arrays
@@ -591,12 +1005,11 @@ the first index of the minimum value(s).  Thus,
 %! assert (min (x, 3), [1 2 3 3]);
 %! assert (min (2, x), [1 2 2 2]);
 %! assert (min (x, 2.1i), [1 2 2.1i 2.1i]);
-## FIXME: Ordering of complex results with equal magnitude is not by phase
-##        angle in the 2-input form.  Instead, it is in the order in which it
-##        appears in the argument list.
-%!test <51307>
-%! x = [1, 2, 3, 4];  y = fliplr (x);
-%! assert (min (x, 2i), [2i 2i 3 4]);
+## Test ordering of complex results with equal magnitude
+%!test <*51307>
+%! x = [1, 2, 3, 4];
+%! assert (min (x, 2i), [1 2 2i 2i]);
+%! assert (min (x, -2i), [1 -2i -2i -2i]);
 ## Special routines for char arrays
 %!assert (min ("abc", "b"), [97 98 98])
 %!assert (min ("b", "cba"), [98 98 97])
@@ -651,80 +1064,136 @@ the first index of the minimum value(s).  Thus,
 %! assert (min (x, 3), sparse ([1 2 3 3]));
 %! assert (min (2, x), sparse ([1 2 2 2]));
 %! assert (min (x, 2.1i), sparse ([1 2 2.1i 2.1i]));
+%!assert (min (sparse ([4, 2i, 4.999; -2, 2, 3+4i])), sparse ([-2, 2, 4.999]))
+%!assert (min (sparse ([4, 2+i, 4.999; -2, 2, 3+4i])), sparse ([-2, 2, 4.999]))
+%!assert (min (sparse ([4, 2i, 4.999; -2, 2-i, 3+4i])), sparse ([-2, 2i, 4.999]))
 
+## Sparse with NaNs
+%!assert (min (sparse ([NaN, 1, 2, 1])), sparse (1))
+%!assert (min (sparse ([NaN; 1; 2; 1])), sparse (1))
+%!assert (min (sparse ([0, NaN, 1, 2, 1])), sparse (0))
+%!assert (min (sparse ([0; NaN; 1; 2; 1])), sparse (0))
+%!assert (min (sparse ([0; NaN; 1; 2; 1]), [], "includenan"), sparse (NaN))
+%!assert (min (sparse ([NaN, 1i, 2, 1])), sparse (1))
+%!assert (min (sparse ([NaN, 1i, 2, 1]), "ComparisonMethod", "real"), sparse (1i))
+%!assert (min (sparse (single ([NaN, 1, 2, 1]))), sparse (1))
+%!assert (min (sparse (single ([NaN; 1; 2; 1]))), sparse (1))
+%!assert (min (sparse (single ([0, NaN, 1, 2, 1]))), sparse (0))
+%!assert (min (sparse (single ([0; NaN; 1; 2; 1]))), sparse (0))
+%!assert (min (sparse (single ([0; NaN; 1; 2; 1])), [], "includenan"), sparse (NaN))
+%!assert (min (sparse (single ([NaN, 1i, 2, 1]))), sparse (1))
+%!assert (min (sparse (single ([NaN, 1i, 2, 1])), "ComparisonMethod", "real"), sparse (1i))
+%!assert (min (sparse (single ([NaN, 1i, 2, 1]))), sparse (1))
+
+## NaNs and complex numbers
+%!assert (min (NaN, 0), 0)
+%!assert (min (NaN+1i, 0), 0)
+%!assert (min (2+2i, 2-2i), 2-2i)
+%!assert (min (2-2i, 2+2i), 2-2i)
+%!test
+%! [M1, I1] = min ([2+2i, 2-2i]);
+%! [M2, I2] = min ([2-2i, 2+2i]);
+%! assert (M1, M2);
+%! assert (I1, 2);
+%! assert (I2, 1);
+%!assert (min (NaN, 0, "ComparisonMethod", "real"),
+%!        min (NaN+1i, 0, "ComparisonMethod", "real"))
+%!assert (min (2+i, 1+10i), 2+1i)
+%!assert (min (2+i, 1+10i, "ComparisonMethod", "real"), 1+10i)
+%!assert (min (2+i, 1+10i, "ComparisonMethod", "abs"), 2+1i)
+%!assert (min (2+i, -1+10i, "ComparisonMethod", "abs"), 2+1i)
+%!assert (min (2+i, -2+i, "ComparisonMethod", "abs"), 2+1i)
+%!assert (min (2+i, 2-i, "ComparisonMethod", "abs"), 2-1i)
+%!assert (min (2+i, 2-i, "ComparisonMethod", "real"), 2-1i)
+%!assert (min ([1i 2 -3 4]), 1i)
+%!assert (min ([-2+i, 2-i]), 2-1i)
+
+## Test input validation
 %!error min ()
 %!error min (1, 2, 3, 4)
-%!error <DIM must be a valid dimension> min ([1 2; 3 4], [], -3)
+%!error <unrecognized optional argument 'foobar'> min (1, [], "foobar")
+%!error <min: cannot set DIM or VECDIM with 'all' flag> min (ones (3,3), [], 1, "all")
+%!error <min: cannot set DIM or VECDIM with 'all' flag> min (ones (3,3), [], [1, 2], "all")
+%!error <min: invalid dimension DIM = 0> min (ones (3,3), [], 0)
+%!error <min: invalid dimension DIM = -1> min (ones (3,3), [], -1)
+%!error <min: invalid dimension in VECDIM = -2> min (ones (3,3), [], [1 -2])
+%!error <min: duplicate dimension in VECDIM = 2> min (ones (3,3), [], [1 2 2])
+%!error <min: duplicate dimension in VECDIM = 1> min (ones (3,3), [], [1 1 2])
 %!warning <second argument is ignored> min ([1 2 3 4], 2, 2);
 %!error <wrong type argument 'cell'> min ({1 2 3 4})
 %!error <cannot compute min \(cell, scalar\)> min ({1, 2, 3}, 2)
+%!warning <min: 'linear' argument is ignored> min ([1 2 3 4], [], "linear");
 */
 
 DEFUN (max, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{m} =} max (@var{x})
 @deftypefnx {} {@var{m} =} max (@var{x}, [], @var{dim})
-@deftypefnx {} {[@var{m}, @var{im}] =} max (@var{x})
+@deftypefnx {} {@var{m} =} max (@var{x}, [], @var{vecdim})
+@deftypefnx {} {@var{m} =} max (@var{x}, [], "all")
+@deftypefnx {} {@var{m} =} max (@var{x}, [], @var{nanflag})
+@deftypefnx {} {[@var{m}, @var{im}] =} max (@dots{})
+@deftypefnx {} {[@var{m}, @var{im}] =} max (@dots{}, "linear")
 @deftypefnx {} {@var{m} =} max (@var{x}, @var{y})
+@deftypefnx {} {@var{m} =} max (@var{x}, @var{y}, @var{nanflag})
+@deftypefnx {} {@dots{} =} max (@dots{}, "ComparisonMethod", @var{method})
 Find maximum values in the array @var{x}.
 
-For a vector argument, return the maximum value.  For a matrix argument,
-return a row vector with the maximum value of each column.  For a
-multi-dimensional array, @code{max} operates along the first non-singleton
-dimension.
+If @var{x} is a vector, then @code{max (@var{x})} returns the maximum value of
+the elements in @var{x}.
 
-If the optional third argument @var{dim} is present then operate along
-this dimension.  In this case the second argument is ignored and should be
-set to the empty matrix.
+If @var{x} is a matrix, then @code{max (@var{x})} returns a row vector with each
+element containing the maximum value of the corresponding column in @var{x}.
 
-For two inputs (@var{x} and @var{y}), return the pairwise maximum according to
-the rules for @ref{Broadcasting}.
+If @var{x} is an array, then @code{max (@var{x})} computes the maximum value
+along the first non-singleton dimension of @var{x}.
 
-Thus,
+The optional input @var{dim} specifies the dimension to operate on and must be
+a positive integer.  Specifying any singleton dimension of @var{x}, including
+any dimension exceeding @code{ndims (@var{x})}, will return @var{x}.
 
-@example
-max (max (@var{x}))
-@end example
+Specifying the dimensions as @var{vecdim}, a vector of non-repeating dimensions,
+will return the maximum value over the array slice defined by @var{vecdim}.  If
+@var{vecdim} indexes all dimensions of @var{x}, then it is equivalent to the
+option @qcode{"all"}.  Any dimension in @var{vecdim} greater than
+@code{ndims (@var{x})} is ignored.
 
-@noindent
-returns the largest element of the 2-D matrix @var{x}, and
+Specifying the dimension as @qcode{"all"} will cause @code{max} to operate on
+on all elements of @var{x}, and is equivalent to @code{max (@var{x}(:))}.
 
-@example
-@group
-max (2:5, pi)
-    @xresult{}  3.1416  3.1416  4.0000  5.0000
-@end group
-@end example
+If called with two output arguments, @code{max} also returns the first index of
+the maximum value(s) in @var{x}.  The second output argument is only valid when
+@code{max} operates on a single input array.  Setting the @qcode{"linear"} flag
+returns the linear index into @var{x} corresponding the minimum values.
 
-@noindent
-compares each element of the range @code{2:5} with @code{pi}, and returns a
-row vector of the maximum values.
+If called with two input arrays (@var{x} and @var{y}), @code{max} return the
+pairwise maximum according to the rules for @ref{Broadcasting}.
 
-For complex arguments, the magnitude of the elements are used for
-comparison.  If the magnitudes are identical, then the results are ordered
-by phase angle in the range (-pi, pi].  Hence,
+The optional variable @var{nanflag} specifies whether to include or exclude
+@code{NaN} values from the calculation using any of the previously specified
+input argument combinations.  The default value for @var{nanflag} is
+@qcode{"omitnan"} which ignores @code{NaN} values in the calculation.  To
+include @code{NaN} values, set the value of @var{nanflag} to
+@qcode{"includenan"}, in which case @code{max} will return @code{NaN}, if any
+element along the operating dimension is @code{NaN}.
 
-@example
-@group
-max ([-1 i 1 -i])
-    @xresult{} -1
-@end group
-@end example
+The optional "ComparisonMethod" paired argument specifies the comparison method
+for numeric input and it applies to both one input and two input arrays.
+@var{method} can take any of the following values:
 
-@noindent
-because all entries have magnitude 1, but -1 has the largest phase angle
-with value pi.
+@table @asis
+@item @qcode{'auto'} : This is the default method, which compares elements by
+@code{real (@var{x})} when @var{x} is real, and by @code{abs (@var{x})} when
+@var{x} is complex.
 
-If called with one input and two output arguments, @code{max} also returns
-the first index of the maximum value(s).  Thus,
+@item @qcode{'real'} : Compares elements by @code{real (@var{x})} when @var{x}
+is real or complex.  For elements with equal real parts, a second comparison by
+@code{imag (@var{x})} is performed.
 
-@example
-@group
-[x, ix] = max ([1, 3, 5, 2, 5])
-    @xresult{}  x = 5
-        ix = 3
-@end group
-@end example
+@item @qcode{'abs'} : Compares elements by @code{abs (@var{x})} when @var{x}
+is real or complex.  For elements with equal magnitude, a second comparison by
+@code{angle (@var{x})} in the interval [-pi,pi] is performed.
+@end table
 @seealso{min, cummax, cummin}
 @end deftypefn */)
 {
@@ -767,18 +1236,33 @@ the first index of the maximum value(s).  Thus,
 ## Sparse double values
 %!assert (max (sparse ([1, 4, 2, 3])), sparse (4))
 %!assert (max (sparse ([1; -10; 5; -2])), sparse(5))
-%!assert (max (sparse ([4, 2i 4.999; -2, 2, 3+4i])), sparse ([4, 2i, 3+4i]))
+## Order sparse complex values by phase angle
+%!test <*51307>
+%! assert (max (sparse ([4, 2i 4.999; -2, 2, 3+4i])), sparse ([4, 2i, 3+4i]))
+%! assert (max (sparse ([4, -2i 4.999; -2, 2, 3+4i])), sparse ([4, 2, 3+4i]))
+%!assert (max (sparse ([4, 2i 4.999]), sparse ([-2, 2, 3+4i])),
+%!        sparse ([4, 2i, 3+4i]))
+%!assert (max (sparse ([4, -2i 4.999]), sparse ([-2, 2, 3+4i])),
+%!        sparse ([4, 2, 3+4i]))
 
 ## Test dimension argument
 %!test
 %! x = reshape (1:8, [2,2,2]);
-%! assert (min (x, [], 1), reshape ([1, 3, 5, 7], [1,2,2]));
-%! assert (min (x, [], 2), reshape ([1, 2, 5, 6], [2,1,2]));
-%! [y, i] = min (x, [], 3);
+%! assert (max (x, [], 1), reshape ([2, 4, 6, 8], [1,2,2]));
+%! assert (max (x, [], 2), reshape ([3, 4, 7, 8], [2,1,2]));
+%! [y, i] = max (x, [], 3);
 %! assert (ndims (y), 2);
-%! assert (y, [1, 3; 2, 4]);
+%! assert (y, [5, 7; 6, 8]);
 %! assert (ndims (i), 2);
-%! assert (i, [1, 1; 1, 1]);
+%! assert (i, [2, 2; 2, 2]);
+
+## Test vecdim argument
+%!test
+%! x = reshape (1:8, [2,2,2]);
+%! assert (max (x, [], [1, 3]), [6, 8]);
+%! assert (max (x, [], [2, 3]), [7; 8]);
+%! assert (max (x, [], [1, 2]), reshape ([4, 8], [1,1,2]));
+%! assert (max (x, [], [1, 2, 3]), max (x, [], "all"));
 
 ## Test 2-output forms for various arg types
 ## Special routines for char arrays
@@ -811,12 +1295,11 @@ the first index of the maximum value(s).  Thus,
 %! assert (max (x, 3), [3 3 3 4]);
 %! assert (max (2, x), [2 2 3 4]);
 %! assert (max (x, 2.1i), [2.1i 2.1i 3 4]);
-## FIXME: Ordering of complex results with equal magnitude is not by phase
-##        angle in the 2-input form.  Instead, it is in the order in which it
-##        appears in the argument list.
-%!test <51307>
-%! x = [1, 2, 3, 4];  y = fliplr (x);
+## Test ordering of complex results with equal magnitude
+%!test <*51307>
+%! x = [1, 2, 3, 4];
 %! assert (max (x, 2i), [2i 2i 3 4]);
+%! assert (max (x, -2i), [-2i 2 3 4]);
 ## Special routines for char arrays
 %!assert (max ("abc", "b"), [98 98 99])
 %!assert (max ("b", "cba"), [99 98 98])
@@ -871,25 +1354,76 @@ the first index of the maximum value(s).  Thus,
 %! assert (max (x, 3), sparse ([3 3 3 4]));
 %! assert (max (2, x), sparse ([2 2 3 4]));
 %! assert (max (x, 2.1i), sparse ([2.1i 2.1i 3 4]));
+%!assert (max (sparse ([4, 2i, 4.999; -2, 2, 3+4i])), sparse ([4, 2i, 3+4i]))
+%!assert (max (sparse ([4, 2+i, 4.999; -2, 2, 3+4i])), sparse ([4, 2+i, 3+4i]))
+%!assert (max (sparse ([4, 2i, 4.999; -2, 2-i, 3+4i])), sparse ([4, 2-i, 3+4i]))
 
 ## Test for bug #40743
 %!assert <*40743> (max (zeros (1,0), ones (1,1)), zeros (1,0))
 %!assert <*40743> (max (sparse (zeros (1,0)), sparse (ones (1,1))),
 %!                sparse (zeros (1,0)))
 
+## Sparse with NaNs
+%!assert (max (sparse ([NaN, 1, 2, 1])), sparse (2))
+%!assert (max (sparse ([NaN; 1; 2; 1])), sparse (2))
+%!assert (max (sparse ([0, NaN, 1, 2, 1])), sparse (2))
+%!assert (max (sparse ([0; NaN; 1; 2; 1])), sparse (2))
+%!assert (max (sparse ([0; NaN; 1; 2; 1]), [], "includenan"), sparse (NaN))
+%!assert (max (sparse ([NaN, 1i, 2, 1])), sparse (2))
+%!assert (max (sparse ([NaN, 1i, 2, 1]), "ComparisonMethod", "real"), sparse (2))
+%!assert (max (sparse (single ([NaN, 1, 2, 1]))), sparse (2))
+%!assert (max (sparse (single ([NaN; 1; 2; 1]))), sparse (2))
+%!assert (max (sparse (single ([0, NaN, 1, 2, 1]))), sparse (2))
+%!assert (max (sparse (single ([0; NaN; 1; 2; 1]))), sparse (2))
+%!assert (max (sparse (single ([0; NaN; 1; 2; 1])), [], "includenan"), sparse (NaN))
+%!assert (max (sparse (single ([NaN, 1i, 2, 1]))), sparse (2))
+%!assert (max (sparse (single ([NaN, 1i, 2, 1])), "ComparisonMethod", "real"), sparse (2))
+%!assert (max (sparse (single ([NaN, 1i, 1]))), sparse (1i))
+
+## NaNs and complex numbers
+%!assert (min (NaN, 0), 0)
+%!assert (min (NaN+1i, 0), 0)
+%!assert (min (2+2i, 2-2i), 2-2i)
+%!assert (min (2-2i, 2+2i), 2-2i)
+%!test
+%! [M1, I1] = min ([2+2i, 2-2i]);
+%! [M2, I2] = min ([2-2i, 2+2i]);
+%! assert (M1, M2);
+%! assert (I1, 2);
+%! assert (I2, 1);
+%!assert (min (NaN, 0, "ComparisonMethod", "real"),
+%!        min (NaN+1i, 0, "ComparisonMethod", "real"))
+%!assert (min (2+i, 1+10i), 2+1i)
+%!assert (min (2+i, 1+10i, "ComparisonMethod", "real"), 1+10i)
+%!assert (min (2+i, 1+10i, "ComparisonMethod", "abs"), 2+1i)
+%!assert (min (2+i, -1+10i, "ComparisonMethod", "abs"), 2+1i)
+%!assert (min (2+i, -2+i, "ComparisonMethod", "abs"), 2+1i)
+%!assert (min (2+i, 2-i, "ComparisonMethod", "abs"), 2-1i)
+%!assert (min (2+i, 2-i, "ComparisonMethod", "real"), 2-1i)
+%!assert (min ([1i 2 -3 4]), 1i)
+%!assert (min ([-2+i, 2-i]), 2-1i)
+
+## Test input validation
 %!error max ()
 %!error max (1, 2, 3, 4)
-%!error <DIM must be a valid dimension> max ([1 2; 3 4], [], -3)
+%!error <unrecognized optional argument 'foobar'> max (1, [], "foobar")
+%!error <max: cannot set DIM or VECDIM with 'all' flag> max (ones (3,3), [], 1, "all")
+%!error <max: cannot set DIM or VECDIM with 'all' flag> max (ones (3,3), [], [1, 2], "all")
+%!error <max: invalid dimension DIM = 0> max (ones (3,3), [], 0)
+%!error <max: invalid dimension DIM = -1> max (ones (3,3), [], -1)
+%!error <max: invalid dimension in VECDIM = -2> max (ones (3,3), [], [1 -2])
+%!error <max: duplicate dimension in VECDIM = 2> max (ones (3,3), [], [1 2 2])
+%!error <max: duplicate dimension in VECDIM = 1> max (ones (3,3), [], [1 1 2])
 %!warning <second argument is ignored> max ([1 2 3 4], 2, 2);
 %!error <wrong type argument 'cell'> max ({1 2 3 4})
 %!error <cannot compute max \(cell, scalar\)> max ({1, 2, 3}, 2)
-
+%!warning <max: 'linear' argument is ignored> max ([1 2 3 4], [], "linear");
 */
 
 template <typename ArrayType>
 static octave_value_list
-do_cumminmax_red_op (const octave_value& arg,
-                     int nargout, int dim, bool ismin)
+do_cumminmax_red_op (const octave_value& arg, int nargout, int dim,
+                     bool nanflag, bool ismin, bool direction)
 {
   octave_value_list retval (nargout > 1 ? 2 : 1);
   ArrayType array = octave_value_extract<ArrayType> (arg);
@@ -897,18 +1431,116 @@ do_cumminmax_red_op (const octave_value& arg,
   if (nargout <= 1)
     {
       if (ismin)
-        retval(0) = array.cummin (dim);
+        {
+          if (direction)
+            retval(0) = array.flip (dim).cummin (dim, nanflag).flip (dim);
+          else
+            retval(0) = array.cummin (dim, nanflag);
+        }
       else
-        retval(0) = array.cummax (dim);
+        {
+          if (direction)
+            retval(0) = array.flip (dim).cummax (dim, nanflag).flip (dim);
+          else
+            retval(0) = array.cummax (dim, nanflag);
+        }
     }
   else
     {
       retval.resize (2);
       Array<octave_idx_type> idx;
       if (ismin)
-        retval(0) = array.cummin (idx, dim);
+        {
+          if (direction)
+            {
+              retval(0) = array.flip (dim).cummin (idx, dim, nanflag).flip (dim);
+              octave_idx_type n = idx.numel ();
+              Array<octave_idx_type> new_idx = idx;
+              for (octave_idx_type i = 0; i < n; i++)
+                new_idx(n-1-i) = n - idx(i) - 1;
+              idx = new_idx;
+            }
+          else
+            retval(0) = array.cummin (idx, dim, nanflag);
+        }
       else
-        retval(0) = array.cummax (idx, dim);
+        {
+          if (direction)
+            {
+              retval(0) = array.flip (dim).cummax (idx, dim, nanflag).flip (dim);
+              octave_idx_type n = idx.numel ();
+              Array<octave_idx_type> new_idx = idx;
+              for (octave_idx_type i = 0; i < n; i++)
+                new_idx(n-1-i) = n - idx(i) - 1;
+              idx = new_idx;
+            }
+          else
+            retval(0) = array.cummax (idx, dim, nanflag);
+        }
+
+      retval(1) = octave_value (idx, true, true);
+    }
+
+  return retval;
+}
+
+template <typename ArrayType>
+static octave_value_list
+do_cumminmax_red_op (const octave_value& arg, int nargout, int dim,
+                     bool nanflag, bool realabs, bool ismin, bool direction)
+{
+  octave_value_list retval (nargout > 1 ? 2 : 1);
+  ArrayType array = octave_value_extract<ArrayType> (arg);
+
+  if (nargout <= 1)
+    {
+      if (ismin)
+        {
+          if (direction)
+            retval(0) = array.flip (dim).cummin (dim, nanflag, realabs).flip (dim);
+          else
+            retval(0) = array.cummin (dim, nanflag, realabs);
+        }
+      else
+        {
+          if (direction)
+            retval(0) = array.flip (dim).cummax (dim, nanflag, realabs).flip (dim);
+          else
+            retval(0) = array.cummax (dim, nanflag, realabs);
+        }
+    }
+  else
+    {
+      retval.resize (2);
+      Array<octave_idx_type> idx;
+      if (ismin)
+        {
+          if (direction)
+            {
+              retval(0) = array.flip (dim).cummin (idx, dim, nanflag, realabs).flip (dim);
+              octave_idx_type n = idx.numel ();
+              Array<octave_idx_type> new_idx = idx;
+              for (octave_idx_type i = 0; i < n; i++)
+                new_idx(n-1-i) = n - idx(i) - 1;
+              idx = new_idx;
+            }
+          else
+            retval(0) = array.cummin (idx, dim, nanflag, realabs);
+        }
+      else
+        {
+          if (direction)
+            {
+              retval(0) = array.flip (dim).cummax (idx, dim, nanflag, realabs).flip (dim);
+              octave_idx_type n = idx.numel ();
+              Array<octave_idx_type> new_idx = idx;
+              for (octave_idx_type i = 0; i < n; i++)
+                new_idx(n-1-i) = n - idx(i) - 1;
+              idx = new_idx;
+            }
+          else
+            retval(0) = array.cummax (idx, dim, nanflag, realabs);
+        }
 
       retval(1) = octave_value (idx, true, true);
     }
@@ -922,19 +1554,90 @@ do_cumminmax_body (const octave_value_list& args,
 {
   int nargin = args.length ();
 
-  if (nargin < 1 || nargin > 2)
-    print_usage ();
-
   const char *fcn = (ismin ? "cummin" : "cummax");
 
+  bool direction = false;
+  bool do_perm = false;
+  bool allflag = false;
+  bool nanflag = true; // NaNs are ignored by default
+  bool cmethod = true; // resolves to "auto"
+  bool realabs = true;
+  bool linear = false;
+
+  // Get "ComparisonMethod" optional argument first
+  if (nargin > 2 && args(nargin - 1).is_string () && args(nargin - 2).is_string ())
+    {
+      std::string name = args(nargin - 2).string_value ();
+      std::string sval = args(nargin - 1).string_value ();
+      if (name == "ComparisonMethod" || name == "comparisonmethod")
+        {
+          if (sval == "auto")
+            cmethod = true;
+          else if (sval == "real")
+            cmethod = false;
+          else if (sval == "abs")
+            {
+              cmethod = false;
+              realabs = false;
+            }
+          else
+            error ("%s: invalid comparison method '%s'", fcn, sval.c_str ());
+
+          nargin -= 2;
+        }
+    }
+
+  while (nargin > 1 && args(nargin - 1).is_string ())
+    {
+      std::string str = args(nargin - 1).string_value ();
+
+      if (str == "forward")
+        direction = false;
+      else if (str == "reverse")
+        direction = true;
+      else if (str == "all")
+        allflag = true;
+      else if (str == "omitnan" || str == "omitmissing")
+        {
+          if (args(0).is_double_type () || args(0).is_single_type ())
+            nanflag = true;
+        }
+      else if (str == "includenan" || str == "includemissing")
+        nanflag = false;
+      else if (str == "linear")
+        linear = true;
+      else
+        error ("%s: unrecognized optional argument '%s'", fcn, str.c_str ());
+
+      nargin--;
+    }
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  if (allflag && nargin > 1)
+    error ("%s: cannot set DIM or VECDIM with 'all' flag", fcn);
+
   octave_value arg = args(0);
+
+  // Handle DIM, VECDIM
   int dim = -1;
+  Array<int> perm_vec;
   if (nargin == 2)
     {
-      dim = args(1).int_value (true) - 1;
+      octave_value dimarg = args(1);
+      get_dim_vecdim_all (dimarg, arg, dim, perm_vec, do_perm, allflag, fcn);
+    }
 
-      if (dim < 0)
-        error ("%s: DIM must be a valid dimension", fcn);
+  // Handle allflag
+  if (allflag)
+    {
+      octave_idx_type szvecdim = 1;
+      dim_vector sz = arg.dims ();
+      for (int i = 0; i < arg.ndims (); i++)
+      {
+        szvecdim = szvecdim * sz(i);
+      }
+      arg = arg.reshape (dim_vector (szvecdim, 1));
     }
 
   octave_value_list retval;
@@ -942,26 +1645,59 @@ do_cumminmax_body (const octave_value_list& args,
   switch (arg.builtin_type ())
     {
     case btyp_double:
-      retval = do_cumminmax_red_op<NDArray> (arg, nargout, dim, ismin);
+      {
+        if (cmethod)
+          retval = do_cumminmax_red_op<NDArray>
+                   (arg, nargout, dim, nanflag, ismin, direction);
+        else
+          retval = do_cumminmax_red_op<NDArray>
+                   (arg, nargout, dim, nanflag, realabs, ismin, direction);
+      }
       break;
 
     case btyp_complex:
-      retval = do_cumminmax_red_op<ComplexNDArray> (arg, nargout, dim,
-               ismin);
+      {
+        if (cmethod)
+          retval = do_cumminmax_red_op<ComplexNDArray>
+                   (arg, nargout, dim, nanflag, ismin, direction);
+        else
+          retval = do_cumminmax_red_op<ComplexNDArray>
+                   (arg, nargout, dim, nanflag, realabs, ismin, direction);
+      }
       break;
 
     case btyp_float:
-      retval = do_cumminmax_red_op<FloatNDArray> (arg, nargout, dim, ismin);
+      {
+        if (cmethod)
+          retval = do_cumminmax_red_op<FloatNDArray>
+                   (arg, nargout, dim, nanflag, ismin, direction);
+        else
+          retval = do_cumminmax_red_op<FloatNDArray>
+                   (arg, nargout, dim, nanflag, realabs, ismin, direction);
+      }
       break;
 
     case btyp_float_complex:
-      retval = do_cumminmax_red_op<FloatComplexNDArray> (arg, nargout, dim,
-               ismin);
+      {
+        if (cmethod)
+          retval = do_cumminmax_red_op<FloatComplexNDArray>
+                   (arg, nargout, dim, nanflag, ismin, direction);
+        else
+          retval = do_cumminmax_red_op<FloatComplexNDArray>
+                   (arg, nargout, dim, nanflag, realabs, ismin, direction);
+      }
       break;
 
-#define MAKE_INT_BRANCH(X)                                                   \
-    case btyp_ ## X:                                                         \
-      retval = do_cumminmax_red_op<X ## NDArray> (arg, nargout, dim, ismin); \
+#define MAKE_INT_BRANCH(X)                                            \
+    case btyp_ ## X:                                                  \
+      {                                                               \
+        if (cmethod)                                                  \
+          retval = do_cumminmax_red_op<X ## NDArray> (arg, nargout,   \
+                   dim, nanflag, ismin, direction);                   \
+        else                                                          \
+          retval = do_cumminmax_red_op<X ## NDArray> (arg, nargout,   \
+                   dim, nanflag, realabs, ismin, direction);          \
+      }                                                               \
       break;
 
       MAKE_INT_BRANCH (int8);
@@ -977,8 +1713,12 @@ do_cumminmax_body (const octave_value_list& args,
 
     case btyp_bool:
       {
-        retval = do_cumminmax_red_op<int8NDArray> (arg, nargout, dim,
-                 ismin);
+        if (cmethod)
+          retval = do_cumminmax_red_op<int8NDArray>
+                   (arg, nargout, dim, nanflag, ismin, direction);
+        else
+          retval = do_cumminmax_red_op<int8NDArray>
+                   (arg, nargout, dim, nanflag, realabs, ismin, direction);
         if (retval.length () > 0)
           retval(0) = retval(0).bool_array_value ();
       }
@@ -988,38 +1728,100 @@ do_cumminmax_body (const octave_value_list& args,
       err_wrong_type_arg (fcn, arg);
     }
 
+  if (do_perm)
+    retval(0) = retval(0).permute (perm_vec, true);
+
+  // FIXME: We need a static function to convert indices into linear
+  // indices based on returning size and vecdim
+  if (linear)
+    warning ("%s: 'linear' argument is ignored", fcn);
+
   return retval;
 }
 
 DEFUN (cummin, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{M} =} cummin (@var{x})
-@deftypefnx {} {@var{M} =} cummin (@var{x}, @var{dim})
-@deftypefnx {} {[@var{M}, @var{IM}] =} cummin (@var{x})
-Return the cumulative minimum values along dimension @var{dim}.
+@deftypefnx {} {@var{m} =} cummin (@var{x}, @var{dim})
+@deftypefnx {} {@var{m} =} cummin (@var{x}, @var{vecdim})
+@deftypefnx {} {@var{m} =} cummin (@var{x}, "all")
+@deftypefnx {} {@var{m} =} cummin (@dots{}, @var{direction})
+@deftypefnx {} {@var{m} =} cummin (@var{x}, @var{nanflag})
+@deftypefnx {} {[@var{m}, @var{im}] =} cummin (@dots{})
+@deftypefnx {} {[@var{m}, @var{im}] =} cummin (@dots{}, "linear")
+@deftypefnx {} {@dots{} =} cummin (@dots{}, "ComparisonMethod", @var{method})
+Return the cumulative minimum values from the array @var{x}.
 
-If @var{dim} is unspecified it defaults to column-wise operation.  For
-example:
+If @var{x} is a vector, then @code{cummin (@var{x})} returns a vector of the
+same size with the cumulative minimum values of @var{x}.
 
-@example
-@group
-cummin ([5 4 6 2 3 1])
-   @xresult{}  5  4  4  2  2  1
-@end group
-@end example
+If @var{x} is a matrix, then @code{cummin (@var{x})} returns a matrix of the
+same size with the cumulative minimum values along each column of @var{x}.
 
-If called with two output arguments the index of the minimum value is also
-returned.
+If @var{x} is an array, then @code{cummin(@var{x})} returns an array of the
+same size with the cumulative product along the first non-singleton dimension
+of @var{x}.
 
-@example
-@group
-[M, IM] = cummin ([5 4 6 2 3 1])
-@xresult{}
-M =  5  4  4  2  2  1
-IM = 1  2  2  4  4  6
-@end group
-@end example
+The class of output @var{y} is the same as the class of input @var{x}, unless
+@var{x} is logical, in which case @var{y} is double.
 
+The optional input @var{dim} specifies the dimension to operate on and must be
+a positive integer.  Specifying any singleton dimension in @var{x}, including
+any dimension exceeding @code{ndims (@var{x})}, will return @var{x}.
+
+Specifying multiple dimensions with input @var{vecdim}, a vector of
+non-repeating dimensions, will operate along the array slice defined by
+@var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim} greater
+than @code{ndims (@var{x})} is ignored.
+
+Specifying the dimension as @qcode{"all"} will cause @code{cummin} to operate
+on all elements of @var{x}, and is equivalent to @code{cummin (@var{x}(:))}.
+
+The optional input @var{direction} specifies how the operating dimension is
+traversed and can take the following values:
+
+@table @asis
+@item @qcode{"forward"} (default)
+
+The cumulative minimum values are computed from beginning (index 1) to end along
+the operating dimension.
+
+@item @qcode{"reverse"}
+
+The cumulative minimum values are computed from end to beginning along the
+operating dimension.
+@end table
+
+The optional variable @var{nanflag} specifies whether to include or exclude
+@code{NaN} values from the calculation using any of the previously specified
+input argument combinations.  The default value for @var{nanflag} is
+@qcode{"omitnan"} which ignores @code{NaN} values in the calculation.  To
+include @code{NaN} values, set the value of @var{nanflag} to
+@qcode{"includenan"}, in which case @code{max} will return @code{NaN}, if any
+element along the operating dimension is @code{NaN}.
+
+If called with two output arguments, @code{cummin} also returns the first index
+of the minimum value(s) in @var{x}.  Setting the @qcode{"linear"} flag returns
+the linear index into @var{x} corresponding the minimum values.
+
+The optional "ComparisonMethod" paired argument specifies the comparison method
+for numeric input and it applies to both one input and two input arrays.
+@var{method} can take any of the following values:
+
+@table @asis
+@item @qcode{'auto'} : This is the default method, which compares elements by
+@code{real (@var{x})} when @var{x} is real, and by @code{abs (@var{x})} when
+@var{x} is complex.
+
+@item @qcode{'real'} : Compares elements by @code{real (@var{x})} when @var{x}
+is real or complex.  For elements with equal real parts, a second comparison by
+@code{imag (@var{x})} is performed.
+
+@item @qcode{'abs'} : Compares elements by @code{abs (@var{x})} when @var{x}
+is real or complex.  For elements with equal magnitude, a second comparison by
+@code{angle (@var{x})} in the interval [-pi,pi] is performed.
+@end table
 @seealso{cummax, min, max}
 @end deftypefn */)
 {
@@ -1044,37 +1846,101 @@ IM = 1  2  2  4  4  6
 
 %!error cummin ()
 %!error cummin (1, 2, 3)
+%!error <unrecognized optional argument 'foobar'> cummin (1, "foobar")
+%!error <cummin: cannot set DIM or VECDIM with 'all' flag> cummin (ones (3,3), 1, "all")
+%!error <cummin: cannot set DIM or VECDIM with 'all' flag> cummin (ones (3,3), [1, 2], "all")
+%!error <cummin: invalid dimension DIM = 0> cummin (ones (3,3), 0)
+%!error <cummin: invalid dimension DIM = -1> cummin (ones (3,3), -1)
+%!error <cummin: invalid dimension in VECDIM = -2> cummin (ones (3,3), [1 -2])
+%!error <cummin: duplicate dimension in VECDIM = 2> cummin (ones (3,3), [1 2 2])
+%!error <cummin: duplicate dimension in VECDIM = 1> cummin (ones (3,3), [1 1 2])
+%!error <wrong type argument 'cell'> cummin ({1 2 3 4})
+%!warning <cummin: 'linear' argument is ignored> cummin ([1 2 3 4], "linear");
 */
 
 DEFUN (cummax, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{M} =} cummax (@var{x})
-@deftypefnx {} {@var{M} =} cummax (@var{x}, @var{dim})
-@deftypefnx {} {[@var{M}, @var{IM}] =} cummax (@dots{})
-Return the cumulative maximum values along dimension @var{dim}.
+@deftypefnx {} {@var{m} =} cummax (@var{x}, @var{dim})
+@deftypefnx {} {@var{m} =} cummax (@var{x}, @var{vecdim})
+@deftypefnx {} {@var{m} =} cummax (@var{x}, "all")
+@deftypefnx {} {@var{m} =} cummax (@dots{}, @var{direction})
+@deftypefnx {} {@var{m} =} cummax (@var{x}, @var{nanflag})
+@deftypefnx {} {[@var{m}, @var{im}] =} cummax (@dots{})
+@deftypefnx {} {[@var{m}, @var{im}] =} cummax (@dots{}, "linear")
+@deftypefnx {} {@dots{} =} cummax (@dots{}, "ComparisonMethod", @var{method})
+Return the cumulative maximum values from the array @var{x}.
 
-If @var{dim} is unspecified it defaults to column-wise operation.  For
-example:
+If @var{x} is a vector, then @code{cummax (@var{x})} returns a vector of the
+same size with the cumulative maximum values of @var{x}.
 
-@example
-@group
-cummax ([1 3 2 6 4 5])
-   @xresult{}  1  3  3  6  6  6
-@end group
-@end example
+If @var{x} is a matrix, then @code{cummax (@var{x})} returns a matrix of the
+same size with the cumulative maximum values along each column of @var{x}.
 
-If called with two output arguments the index of the maximum value is also
-returned.
+If @var{x} is an array, then @code{cummax(@var{x})} returns an array of the
+same size with the cumulative product along the first non-singleton dimension
+of @var{x}.
 
-@example
-@group
-[w, iw] = cummax ([1 3 2 6 4 5])
-@xresult{}
-M =  1  3  3  6  6  6
-IM = 1  2  2  4  4  4
-@end group
-@end example
+The class of output @var{y} is the same as the class of input @var{x}, unless
+@var{x} is logical, in which case @var{y} is double.
 
+The optional input @var{dim} specifies the dimension to operate on and must be
+a positive integer.  Specifying any singleton dimension in @var{x}, including
+any dimension exceeding @code{ndims (@var{x})}, will return @var{x}.
+
+Specifying multiple dimensions with input @var{vecdim}, a vector of
+non-repeating dimensions, will operate along the array slice defined by
+@var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim} greater
+than @code{ndims (@var{x})} is ignored.
+
+Specifying the dimension as @qcode{"all"} will cause @code{cummax} to operate
+on all elements of @var{x}, and is equivalent to @code{cummax (@var{x}(:))}.
+
+The optional input @var{direction} specifies how the operating dimension is
+traversed and can take the following values:
+
+@table @asis
+@item @qcode{"forward"} (default)
+
+The cumulative maximum values are computed from beginning (index 1) to end along
+the operating dimension.
+
+@item @qcode{"reverse"}
+
+The cumulative maximum values are computed from end to beginning along the
+operating dimension.
+@end table
+
+The optional variable @var{nanflag} specifies whether to include or exclude
+@code{NaN} values from the calculation using any of the previously specified
+input argument combinations.  The default value for @var{nanflag} is
+@qcode{"omitnan"} which ignores @code{NaN} values in the calculation.  To
+include @code{NaN} values, set the value of @var{nanflag} to
+@qcode{"includenan"}, in which case @code{max} will return @code{NaN}, if any
+element along the operating dimension is @code{NaN}.
+
+If called with two output arguments, @code{cummax} also returns the first index
+of the maximum value(s) in @var{x}.  Setting the @qcode{"linear"} flag returns
+the linear index into @var{x} corresponding the maximum values.
+
+The optional "ComparisonMethod" paired argument specifies the comparison method
+for numeric input and it applies to both one input and two input arrays.
+@var{method} can take any of the following values:
+
+@table @asis
+@item @qcode{'auto'} : This is the default method, which compares elements by
+@code{real (@var{x})} when @var{x} is real, and by @code{abs (@var{x})} when
+@var{x} is complex.
+
+@item @qcode{'real'} : Compares elements by @code{real (@var{x})} when @var{x}
+is real or complex.  For elements with equal real parts, a second comparison by
+@code{imag (@var{x})} is performed.
+
+@item @qcode{'abs'} : Compares elements by @code{abs (@var{x})} when @var{x}
+is real or complex.  For elements with equal magnitude, a second comparison by
+@code{angle (@var{x})} in the interval [-pi,pi] is performed.
+@end table
 @seealso{cummin, max, min}
 @end deftypefn */)
 {
@@ -1099,6 +1965,16 @@ IM = 1  2  2  4  4  4
 
 %!error cummax ()
 %!error cummax (1, 2, 3)
+%!error <unrecognized optional argument 'foobar'> cummax (1, "foobar")
+%!error <cummax: cannot set DIM or VECDIM with 'all' flag> cummax (ones (3,3), 1, "all")
+%!error <cummax: cannot set DIM or VECDIM with 'all' flag> cummax (ones (3,3), [1, 2], "all")
+%!error <cummax: invalid dimension DIM = 0> cummax (ones (3,3), 0)
+%!error <cummax: invalid dimension DIM = -1> cummax (ones (3,3), -1)
+%!error <cummax: invalid dimension in VECDIM = -2> cummax (ones (3,3), [1 -2])
+%!error <cummax: duplicate dimension in VECDIM = 2> cummax (ones (3,3), [1 2 2])
+%!error <cummax: duplicate dimension in VECDIM = 1> cummax (ones (3,3), [1 1 2])
+%!error <wrong type argument 'cell'> cummax ({1 2 3 4})
+%!warning <cummax: 'linear' argument is ignored> cummax ([1 2 3 4], "linear");
 */
 
 OCTAVE_END_NAMESPACE(octave)

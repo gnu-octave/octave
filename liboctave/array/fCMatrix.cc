@@ -2806,7 +2806,7 @@ FloatComplexMatrix::operator -= (const FloatMatrix& a)
   return *this;
 }
 
-// unary operations
+// other operations
 
 boolMatrix
 FloatComplexMatrix::all (int dim) const
@@ -2821,33 +2821,57 @@ FloatComplexMatrix::any (int dim) const
 }
 
 FloatComplexMatrix
-FloatComplexMatrix::cumprod (int dim) const
+FloatComplexMatrix::flip (int dim) const
 {
-  return FloatComplexNDArray::cumprod (dim);
+  return FloatComplexNDArray::flip (dim);
 }
 
 FloatComplexMatrix
-FloatComplexMatrix::cumsum (int dim) const
+FloatComplexMatrix::cumprod (int dim, bool nanflag) const
 {
-  return FloatComplexNDArray::cumsum (dim);
+  return FloatComplexNDArray::cumprod (dim, nanflag);
 }
 
 FloatComplexMatrix
-FloatComplexMatrix::prod (int dim) const
+FloatComplexMatrix::cumsum (int dim, bool nanflag) const
 {
-  return FloatComplexNDArray::prod (dim);
+  return FloatComplexNDArray::cumsum (dim, nanflag);
 }
 
 FloatComplexMatrix
-FloatComplexMatrix::sum (int dim) const
+FloatComplexMatrix::prod (int dim, bool nanflag) const
 {
-  return FloatComplexNDArray::sum (dim);
+  return FloatComplexNDArray::prod (dim, nanflag);
+}
+
+ComplexMatrix
+FloatComplexMatrix::dprod (int dim, bool nanflag) const
+{
+  return FloatComplexNDArray::dprod (dim, nanflag);
 }
 
 FloatComplexMatrix
-FloatComplexMatrix::sumsq (int dim) const
+FloatComplexMatrix::sum (int dim, bool nanflag) const
 {
-  return FloatComplexNDArray::sumsq (dim);
+  return FloatComplexNDArray::sum (dim, nanflag);
+}
+
+ComplexMatrix
+FloatComplexMatrix::dsum (int dim, bool nanflag) const
+{
+  return FloatComplexNDArray::dsum (dim, nanflag);
+}
+
+FloatComplexMatrix
+FloatComplexMatrix::sumsq (int dim, bool nanflag) const
+{
+  return FloatComplexNDArray::sumsq (dim, nanflag);
+}
+
+ComplexMatrix
+FloatComplexMatrix::dsumsq (int dim, bool nanflag) const
+{
+  return FloatComplexNDArray::dsumsq (dim, nanflag);
 }
 
 FloatMatrix
@@ -3511,7 +3535,23 @@ operator * (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
     return T (nr, nc);
 
 FloatComplexMatrix
-min (const FloatComplex& c, const FloatComplexMatrix& m)
+min (FloatComplex& c, const FloatComplexMatrix& m)
+{
+  const bool nanflag = true;
+  const bool realabs = false;
+  return min (c, m, nanflag, realabs);
+}
+
+FloatComplexMatrix
+min (FloatComplex& c, const FloatComplexMatrix& m, const bool nanflag)
+{
+  const bool realabs = false;
+  return min (c, m, nanflag, realabs);
+}
+
+FloatComplexMatrix
+min (FloatComplex& c, const FloatComplexMatrix& m,
+     const bool nanflag, const bool realabs)
 {
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
@@ -3524,20 +3564,54 @@ min (const FloatComplex& c, const FloatComplexMatrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = octave::math::min (c, m(i, j));
+        result(i, j) = octave::math::min (c, m(i, j), nanflag, realabs);
       }
 
   return result;
 }
 
 FloatComplexMatrix
-min (const FloatComplexMatrix& m, const FloatComplex& c)
+min (const FloatComplexMatrix& m, FloatComplex& c)
 {
-  return min (c, m);
+  const bool nanflag = true;
+  const bool realabs = false;
+  return min (c, m, nanflag, realabs);
+}
+
+FloatComplexMatrix
+min (const FloatComplexMatrix& m, FloatComplex& c, const bool nanflag)
+{
+  const bool realabs = false;
+  return min (c, m, nanflag, realabs);
+}
+
+
+FloatComplexMatrix
+min (const FloatComplexMatrix& m, FloatComplex& c,
+     const bool nanflag, const bool realabs)
+{
+  return min (c, m, nanflag, realabs);
 }
 
 FloatComplexMatrix
 min (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
+{
+  const bool nanflag = true;
+  const bool realabs = false;
+  return min (a, b, nanflag, realabs);
+}
+
+FloatComplexMatrix
+min (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
+     const bool nanflag)
+{
+  const bool realabs = false;
+  return min (a, b, nanflag, realabs);
+}
+
+FloatComplexMatrix
+min (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
+     const bool nanflag, const bool realabs)
 {
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.columns ();
@@ -3551,39 +3625,33 @@ min (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
   FloatComplexMatrix result (nr, nc);
 
   for (octave_idx_type j = 0; j < nc; j++)
-    {
-      bool columns_are_real_only = true;
-      for (octave_idx_type i = 0; i < nr; i++)
-        {
-          octave_quit ();
-          if (std::imag (a(i, j)) != 0.0 || std::imag (b(i, j)) != 0.0)
-            {
-              columns_are_real_only = false;
-              break;
-            }
-        }
-
-      if (columns_are_real_only)
-        {
-          for (octave_idx_type i = 0; i < nr; i++)
-            result(i, j) = octave::math::min (std::real (a(i, j)),
-                                              std::real (b(i, j)));
-        }
-      else
-        {
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              octave_quit ();
-              result(i, j) = octave::math::min (a(i, j), b(i, j));
-            }
-        }
-    }
+    for (octave_idx_type i = 0; i < nr; i++)
+      {
+        octave_quit ();
+        result(i, j) = octave::math::min (a(i, j), b(i, j), nanflag, realabs);
+      }
 
   return result;
 }
 
 FloatComplexMatrix
-max (const FloatComplex& c, const FloatComplexMatrix& m)
+max (FloatComplex& c, const FloatComplexMatrix& m)
+{
+  const bool nanflag = true;
+  const bool realabs = false;
+  return max (c, m, nanflag, realabs);
+}
+
+FloatComplexMatrix
+max (FloatComplex& c, const FloatComplexMatrix& m, const bool nanflag)
+{
+  const bool realabs = false;
+  return max (c, m, nanflag, realabs);
+}
+
+FloatComplexMatrix
+max (FloatComplex& c, const FloatComplexMatrix& m,
+     const bool nanflag, const bool realabs)
 {
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
@@ -3596,20 +3664,53 @@ max (const FloatComplex& c, const FloatComplexMatrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = octave::math::max (c, m(i, j));
+        result(i, j) = octave::math::max (c, m(i, j), nanflag, realabs);
       }
 
   return result;
 }
 
 FloatComplexMatrix
-max (const FloatComplexMatrix& m, const FloatComplex& c)
+max (const FloatComplexMatrix& m, FloatComplex& c)
 {
-  return max (c, m);
+  const bool nanflag = true;
+  const bool realabs = false;
+  return max (c, m, nanflag, realabs);
+}
+
+FloatComplexMatrix
+max (const FloatComplexMatrix& m, FloatComplex& c, const bool nanflag)
+{
+  const bool realabs = false;
+  return max (c, m, nanflag, realabs);
+}
+
+FloatComplexMatrix
+max (const FloatComplexMatrix& m, const FloatComplex& c,
+     const bool nanflag, const bool realabs)
+{
+  return max (c, m, nanflag, realabs);
 }
 
 FloatComplexMatrix
 max (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
+{
+  const bool nanflag = true;
+  const bool realabs = false;
+  return max (a, b, nanflag, realabs);
+}
+
+FloatComplexMatrix
+max (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
+     const bool nanflag)
+{
+  const bool realabs = false;
+  return max (a, b, nanflag, realabs);
+}
+
+FloatComplexMatrix
+max (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
+     const bool nanflag, const bool realabs)
 {
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.columns ();
@@ -3623,36 +3724,11 @@ max (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
   FloatComplexMatrix result (nr, nc);
 
   for (octave_idx_type j = 0; j < nc; j++)
-    {
-      bool columns_are_real_only = true;
-      for (octave_idx_type i = 0; i < nr; i++)
-        {
-          octave_quit ();
-          if (std::imag (a(i, j)) != 0.0 || std::imag (b(i, j)) != 0.0)
-            {
-              columns_are_real_only = false;
-              break;
-            }
-        }
-
-      if (columns_are_real_only)
-        {
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              octave_quit ();
-              result(i, j) = octave::math::max (std::real (a(i, j)),
-                                                std::real (b(i, j)));
-            }
-        }
-      else
-        {
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              octave_quit ();
-              result(i, j) = octave::math::max (a(i, j), b(i, j));
-            }
-        }
-    }
+    for (octave_idx_type i = 0; i < nr; i++)
+      {
+        octave_quit ();
+        result(i, j) = octave::math::max (a(i, j), b(i, j), nanflag, realabs);
+      }
 
   return result;
 }

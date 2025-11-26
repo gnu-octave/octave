@@ -110,12 +110,16 @@ public:
 
   OCTAVE_API bool ishermitian () const;
 
-  OCTAVE_API SparseComplexMatrix max (int dim = -1) const;
   OCTAVE_API SparseComplexMatrix
-  max (Array<octave_idx_type>& index, int dim = -1) const;
-  OCTAVE_API SparseComplexMatrix min (int dim = -1) const;
+  max (int dim = -1, bool nanflag = true, bool realabs = false) const;
   OCTAVE_API SparseComplexMatrix
-  min (Array<octave_idx_type>& index, int dim = -1) const;
+  max (Array<octave_idx_type>& index, int dim = -1,
+       bool nanflag = true, bool realabs = false) const;
+  OCTAVE_API SparseComplexMatrix
+  min (int dim = -1, bool nanflag = true, bool realabs = false) const;
+  OCTAVE_API SparseComplexMatrix
+  min (Array<octave_idx_type>& index, int dim = -1,
+       bool nanflag = true, bool realabs = false) const;
 
   OCTAVE_API SparseComplexMatrix&
   insert (const SparseComplexMatrix& a, octave_idx_type r, octave_idx_type c);
@@ -458,11 +462,11 @@ public:
   OCTAVE_API SparseBoolMatrix all (int dim = -1) const;
   OCTAVE_API SparseBoolMatrix any (int dim = -1) const;
 
-  OCTAVE_API SparseComplexMatrix cumprod (int dim = -1) const;
-  OCTAVE_API SparseComplexMatrix cumsum (int dim = -1) const;
-  OCTAVE_API SparseComplexMatrix prod (int dim = -1) const;
-  OCTAVE_API SparseComplexMatrix sum (int dim = -1) const;
-  OCTAVE_API SparseComplexMatrix sumsq (int dim = -1) const;
+  OCTAVE_API SparseComplexMatrix cumprod (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API SparseComplexMatrix cumsum (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API SparseComplexMatrix prod (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API SparseComplexMatrix sum (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API SparseComplexMatrix sumsq (int dim = -1, bool nanflag = false) const;
   OCTAVE_API SparseMatrix abs () const;
 
   OCTAVE_API SparseComplexMatrix diag (octave_idx_type k = 0) const;
@@ -552,16 +556,48 @@ operator * (const SparseComplexMatrix&, const PermMatrix&);
 extern OCTAVE_API SparseComplexMatrix
 min (const Complex& c, const SparseComplexMatrix& m);
 extern OCTAVE_API SparseComplexMatrix
+min (const Complex& c, const SparseComplexMatrix& m, const bool nanflag);
+extern OCTAVE_API SparseComplexMatrix
+min (const Complex& c, const SparseComplexMatrix& m, const bool nanflag,
+     const bool realabs);
+extern OCTAVE_API SparseComplexMatrix
 min (const SparseComplexMatrix& m, const Complex& c);
 extern OCTAVE_API SparseComplexMatrix
+min (const SparseComplexMatrix& m, const Complex& c, const bool nanflag);
+extern OCTAVE_API SparseComplexMatrix
+min (const SparseComplexMatrix& m, const Complex& c, const bool nanflag,
+     const bool realabs);
+extern OCTAVE_API SparseComplexMatrix
 min (const SparseComplexMatrix& a, const SparseComplexMatrix& b);
+extern OCTAVE_API SparseComplexMatrix
+min (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
+     const bool nanflag);
+extern OCTAVE_API SparseComplexMatrix
+min (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
+     const bool nanflag, const bool realabs);
 
 extern OCTAVE_API SparseComplexMatrix
 max (const Complex& c, const SparseComplexMatrix& m);
 extern OCTAVE_API SparseComplexMatrix
+max (const Complex& c, const SparseComplexMatrix& m, const bool nanflag);
+extern OCTAVE_API SparseComplexMatrix
+max (const Complex& c, const SparseComplexMatrix& m, const bool nanflag,
+     const bool realabs);
+extern OCTAVE_API SparseComplexMatrix
 max (const SparseComplexMatrix& m, const Complex& c);
 extern OCTAVE_API SparseComplexMatrix
+max (const SparseComplexMatrix& m, const Complex& c, const bool nanflag);
+extern OCTAVE_API SparseComplexMatrix
+max (const SparseComplexMatrix& m, const Complex& c, const bool nanflag,
+     const bool realabs);
+extern OCTAVE_API SparseComplexMatrix
 max (const SparseComplexMatrix& a, const SparseComplexMatrix& b);
+extern OCTAVE_API SparseComplexMatrix
+max (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
+     const bool nanflag);
+extern OCTAVE_API SparseComplexMatrix
+max (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
+     const bool nanflag, const bool realabs);
 
 SPARSE_SMS_CMP_OP_DECLS (SparseComplexMatrix, Complex, OCTAVE_API)
 SPARSE_SMS_BOOL_OP_DECLS (SparseComplexMatrix, Complex, OCTAVE_API)

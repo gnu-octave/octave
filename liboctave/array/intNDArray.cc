@@ -212,34 +212,6 @@ intNDArray<T>::signum () const
 
 template <typename T>
 intNDArray<T>
-intNDArray<T>::prod (int dim) const
-{
-  return do_mx_red_op<T, T> (*this, dim, mx_inline_prod);
-}
-
-template <typename T>
-intNDArray<T>
-intNDArray<T>::sum (int dim) const
-{
-  return do_mx_red_op<T, T> (*this, dim, mx_inline_sum);
-}
-
-template <typename T>
-intNDArray<T>
-intNDArray<T>::sumsq (int dim) const
-{
-  return do_mx_red_op<T, T> (*this, dim, mx_inline_sumsq);
-}
-
-template <typename T>
-NDArray
-intNDArray<T>::dsum (int dim) const
-{
-  return do_mx_red_op<double, T> (*this, dim, mx_inline_dsum);
-}
-
-template <typename T>
-intNDArray<T>
 intNDArray<T>::flip (int dim) const
 {
   return do_mx_flip_op<T, T> (*this, dim, mx_inline_flip);
@@ -261,58 +233,94 @@ intNDArray<T>::cumsum (int dim) const
 
 template <typename T>
 intNDArray<T>
-intNDArray<T>::max (int dim) const
+intNDArray<T>::prod (int dim) const
 {
-  return do_mx_minmax_op<T> (*this, dim, mx_inline_max);
+  return do_mx_red_op<T, T> (*this, dim, mx_inline_prod);
 }
 
 template <typename T>
 intNDArray<T>
-intNDArray<T>::max (Array<octave_idx_type>& idx_arg, int dim) const
+intNDArray<T>::sum (int dim) const
 {
-  return do_mx_minmax_op<T> (*this, idx_arg, dim, mx_inline_max);
+  return do_mx_red_op<T, T> (*this, dim, mx_inline_sum);
+}
+
+template <typename T>
+NDArray
+intNDArray<T>::dsum (int dim) const
+{
+  return do_mx_red_op<double, T> (*this, dim, mx_inline_dsum);
 }
 
 template <typename T>
 intNDArray<T>
-intNDArray<T>::min (int dim) const
+intNDArray<T>::sumsq (int dim) const
 {
-  return do_mx_minmax_op<T> (*this, dim, mx_inline_min);
+  return do_mx_red_op<T, T> (*this, dim, mx_inline_sumsq);
 }
 
 template <typename T>
 intNDArray<T>
-intNDArray<T>::min (Array<octave_idx_type>& idx_arg, int dim) const
+intNDArray<T>::max (int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_minmax_op<T> (*this, idx_arg, dim, mx_inline_min);
+  return do_mx_minmax_op<T> (*this, dim, nanflag, realabs, mx_inline_max);
 }
 
 template <typename T>
 intNDArray<T>
-intNDArray<T>::cummax (int dim) const
+intNDArray<T>::max (Array<octave_idx_type>& idx_arg,
+                    int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<T> (*this, dim, mx_inline_cummax);
+  return do_mx_minmax_op<T> (*this, idx_arg, dim,
+                             nanflag, realabs, mx_inline_max);
 }
 
 template <typename T>
 intNDArray<T>
-intNDArray<T>::cummax (Array<octave_idx_type>& idx_arg, int dim) const
+intNDArray<T>::min (int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<T> (*this, idx_arg, dim, mx_inline_cummax);
+  return do_mx_minmax_op<T> (*this, dim, nanflag, realabs, mx_inline_min);
 }
 
 template <typename T>
 intNDArray<T>
-intNDArray<T>::cummin (int dim) const
+intNDArray<T>::min (Array<octave_idx_type>& idx_arg,
+                    int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<T> (*this, dim, mx_inline_cummin);
+  return do_mx_minmax_op<T> (*this, idx_arg, dim,
+                             nanflag, realabs, mx_inline_min);
 }
 
 template <typename T>
 intNDArray<T>
-intNDArray<T>::cummin (Array<octave_idx_type>& idx_arg, int dim) const
+intNDArray<T>::cummax (int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<T> (*this, idx_arg, dim, mx_inline_cummin);
+  return do_mx_cumminmax_op<T> (*this, dim, nanflag, realabs, mx_inline_cummax);
+}
+
+template <typename T>
+intNDArray<T>
+intNDArray<T>::cummax (Array<octave_idx_type>& idx_arg,
+                       int dim, bool nanflag, bool realabs) const
+{
+  return do_mx_cumminmax_op<T> (*this, idx_arg, dim, nanflag,
+                                realabs, mx_inline_cummax);
+}
+
+template <typename T>
+intNDArray<T>
+intNDArray<T>::cummin (int dim, bool nanflag, bool realabs) const
+{
+  return do_mx_cumminmax_op<T> (*this, dim, nanflag, realabs, mx_inline_cummin);
+}
+
+template <typename T>
+intNDArray<T>
+intNDArray<T>::cummin (Array<octave_idx_type>& idx_arg,
+                       int dim, bool nanflag, bool realabs) const
+{
+  return do_mx_cumminmax_op<T> (*this, idx_arg, dim, nanflag,
+                                realabs, mx_inline_cummin);
 }
 
 template <typename T>

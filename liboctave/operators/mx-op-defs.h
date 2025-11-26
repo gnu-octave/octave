@@ -565,34 +565,92 @@
 
 // scalar by N-D array min/max ops
 
-#define SND_MINMAX_FCN(FCN, OP, T, S)                                   \
+#define SND_MINMAX_FCN(FCN, T, S)                                       \
   T                                                                     \
   FCN (S d, const T& m)                                                 \
   {                                                                     \
     return do_sm_binary_op<T::element_type, S, T::element_type> (d, m, mx_inline_x##FCN); \
   }
 
-#define NDS_MINMAX_FCN(FCN, OP, T, S)                                   \
+#define NDS_MINMAX_FCN(FCN, T, S)                                       \
   T                                                                     \
   FCN (const T& m, S d)                                                 \
   {                                                                     \
     return do_ms_binary_op<T::element_type, T::element_type, S> (m, d, mx_inline_x##FCN); \
   }
 
-#define NDND_MINMAX_FCN(FCN, OP, T, S)                                  \
+#define NDND_MINMAX_FCN(FCN, T, S)                                      \
   T                                                                     \
   FCN (const T& a, const T& b)                                          \
   {                                                                     \
     return do_mm_binary_op<T::element_type, T::element_type, T::element_type> (a, b, mx_inline_x##FCN, mx_inline_x##FCN, mx_inline_x##FCN, #FCN); \
   }
 
-#define MINMAX_FCNS(T, S)                       \
-  SND_MINMAX_FCN (min, <, T, S)                 \
-  NDS_MINMAX_FCN (min, <, T, S)                 \
-  NDND_MINMAX_FCN (min, <, T, S)                \
-  SND_MINMAX_FCN (max, >, T, S)                 \
-  NDS_MINMAX_FCN (max, >, T, S)                 \
-  NDND_MINMAX_FCN (max, >, T, S)
+// scalar by N-D array min/max ops with nanflag
+
+#define SND_MINMAX1_FCN(FCN, T, S)                                      \
+  T                                                                     \
+  FCN (S d, const T& m, const bool nanflag)                             \
+  {                                                                     \
+    return do_sm_binary_op<T::element_type, S, T::element_type> (d, m, nanflag, mx_inline_x##FCN); \
+  }
+
+#define NDS_MINMAX1_FCN(FCN, T, S)                                      \
+  T                                                                     \
+  FCN (const T& m, S d, const bool nanflag)                             \
+  {                                                                     \
+    return do_ms_binary_op<T::element_type, T::element_type, S> (m, d, nanflag, mx_inline_x##FCN); \
+  }
+
+#define NDND_MINMAX1_FCN(FCN, T, S)                                     \
+  T                                                                     \
+  FCN (const T& a, const T& b, const bool nanflag)                      \
+  {                                                                     \
+    return do_mm_binary_op<T::element_type, T::element_type, T::element_type> (a, b, nanflag, mx_inline_x##FCN, mx_inline_x##FCN, mx_inline_x##FCN, #FCN); \
+  }
+
+// scalar by N-D array min/max ops with nanflag and realabs
+
+#define SND_MINMAX2_FCN(FCN, T, S)                                      \
+  T                                                                     \
+  FCN (S d, const T& m, const bool nanflag, const bool realabs)         \
+  {                                                                     \
+    return do_sm_binary_op<T::element_type, S, T::element_type> (d, m, nanflag, realabs, mx_inline_x##FCN); \
+  }
+
+#define NDS_MINMAX2_FCN(FCN, T, S)                                      \
+  T                                                                     \
+  FCN (const T& m, S d, const bool nanflag, const bool realabs)         \
+  {                                                                     \
+    return do_ms_binary_op<T::element_type, T::element_type, S> (m, d, nanflag, realabs,  mx_inline_x##FCN); \
+  }
+
+#define NDND_MINMAX2_FCN(FCN, T, S)                                     \
+  T                                                                     \
+  FCN (const T& a, const T& b, const bool nanflag, const bool realabs)  \
+  {                                                                     \
+    return do_mm_binary_op<T::element_type, T::element_type, T::element_type> (a, b, nanflag, realabs, mx_inline_x##FCN, mx_inline_x##FCN, mx_inline_x##FCN, #FCN); \
+  }
+
+#define MINMAX_FCNS(T, S)                    \
+  SND_MINMAX_FCN (min, T, S)                 \
+  NDS_MINMAX_FCN (min, T, S)                 \
+  NDND_MINMAX_FCN (min, T, S)                \
+  SND_MINMAX_FCN (max, T, S)                 \
+  NDS_MINMAX_FCN (max, T, S)                 \
+  NDND_MINMAX_FCN (max, T, S)                \
+  SND_MINMAX1_FCN (min, T, S)                \
+  NDS_MINMAX1_FCN (min, T, S)                \
+  NDND_MINMAX1_FCN (min, T, S)               \
+  SND_MINMAX1_FCN (max, T, S)                \
+  NDS_MINMAX1_FCN (max, T, S)                \
+  NDND_MINMAX1_FCN (max, T, S)               \
+  SND_MINMAX2_FCN (min, T, S)                \
+  NDS_MINMAX2_FCN (min, T, S)                \
+  NDND_MINMAX2_FCN (min, T, S)               \
+  SND_MINMAX2_FCN (max, T, S)                \
+  NDS_MINMAX2_FCN (max, T, S)                \
+  NDND_MINMAX2_FCN (max, T, S)
 
 // permutation matrix by matrix ops and vice versa
 

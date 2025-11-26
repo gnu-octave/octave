@@ -361,53 +361,59 @@ FloatComplexNDArray::flip (int dim) const
 }
 
 FloatComplexNDArray
-FloatComplexNDArray::cumprod (int dim) const
+FloatComplexNDArray::cumprod (int dim, bool nanflag) const
 {
-  return do_mx_cum_op<FloatComplex, FloatComplex> (*this, dim,
+  return do_mx_cum_op<FloatComplex, FloatComplex> (*this, dim, nanflag,
                                                    mx_inline_cumprod);
 }
 
 FloatComplexNDArray
-FloatComplexNDArray::cumsum (int dim) const
+FloatComplexNDArray::cumsum (int dim, bool nanflag) const
 {
-  return do_mx_cum_op<FloatComplex, FloatComplex> (*this, dim,
+  return do_mx_cum_op<FloatComplex, FloatComplex> (*this, dim, nanflag,
                                                    mx_inline_cumsum);
 }
 
 FloatComplexNDArray
-FloatComplexNDArray::prod (int dim) const
+FloatComplexNDArray::prod (int dim, bool nanflag) const
 {
-  return do_mx_red_op<FloatComplex, FloatComplex> (*this, dim, mx_inline_prod);
+  return do_mx_red_op<FloatComplex, FloatComplex> (*this, dim, nanflag,
+                                                   mx_inline_prod);
 }
 
 ComplexNDArray
-FloatComplexNDArray::dprod (int dim) const
+FloatComplexNDArray::dprod (int dim, bool nanflag) const
 {
-  return do_mx_red_op<Complex, FloatComplex> (*this, dim, mx_inline_dprod);
+  return do_mx_red_op<Complex, FloatComplex> (*this, dim, nanflag,
+                                              mx_inline_dprod);
 }
 
 FloatComplexNDArray
-FloatComplexNDArray::sum (int dim) const
+FloatComplexNDArray::sum (int dim, bool nanflag) const
 {
-  return do_mx_red_op<FloatComplex, FloatComplex> (*this, dim, mx_inline_sum);
+  return do_mx_red_op<FloatComplex, FloatComplex> (*this, dim, nanflag,
+                                                   mx_inline_sum);
 }
 
 ComplexNDArray
-FloatComplexNDArray::dsum (int dim) const
+FloatComplexNDArray::dsum (int dim, bool nanflag) const
 {
-  return do_mx_red_op<Complex, FloatComplex> (*this, dim, mx_inline_dsum);
+  return do_mx_red_op<Complex, FloatComplex> (*this, dim, nanflag,
+                                              mx_inline_dsum);
 }
 
 FloatComplexNDArray
-FloatComplexNDArray::sumsq (int dim) const
+FloatComplexNDArray::sumsq (int dim, bool nanflag) const
 {
-  return do_mx_red_op<float, FloatComplex> (*this, dim, mx_inline_sumsq);
+  return do_mx_red_op<float, FloatComplex> (*this, dim, nanflag,
+                                            mx_inline_sumsq);
 }
 
 ComplexNDArray
-FloatComplexNDArray::dsumsq (int dim) const
+FloatComplexNDArray::dsumsq (int dim, bool nanflag) const
 {
-  return do_mx_red_op<double, FloatComplex> (*this, dim, mx_inline_dsumsq);
+  return do_mx_red_op<double, FloatComplex> (*this, dim, nanflag,
+                                             mx_inline_dsumsq);
 }
 
 FloatComplexNDArray
@@ -449,53 +455,63 @@ static const FloatComplex FloatComplex_NaN_result (octave::numeric_limits<float>
                                                    octave::numeric_limits<float>::NaN ());
 
 FloatComplexNDArray
-FloatComplexNDArray::max (int dim) const
+FloatComplexNDArray::max (int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_minmax_op<FloatComplex> (*this, dim, mx_inline_max);
+  return do_mx_minmax_op<FloatComplex> (*this, dim, nanflag,
+                                        realabs, mx_inline_cmax);
 }
 
 FloatComplexNDArray
-FloatComplexNDArray::max (Array<octave_idx_type>& idx_arg, int dim) const
+FloatComplexNDArray::max (Array<octave_idx_type>& idx_arg,
+                          int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_minmax_op<FloatComplex> (*this, idx_arg, dim, mx_inline_max);
+  return do_mx_minmax_op<FloatComplex> (*this, idx_arg, dim,
+                                        nanflag, realabs, mx_inline_cmax);
 }
 
 FloatComplexNDArray
-FloatComplexNDArray::min (int dim) const
+FloatComplexNDArray::min (int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_minmax_op<FloatComplex> (*this, dim, mx_inline_min);
+  return do_mx_minmax_op<FloatComplex> (*this, dim, nanflag,
+                                        realabs, mx_inline_cmin);
 }
 
 FloatComplexNDArray
-FloatComplexNDArray::min (Array<octave_idx_type>& idx_arg, int dim) const
+FloatComplexNDArray::min (Array<octave_idx_type>& idx_arg,
+                          int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_minmax_op<FloatComplex> (*this, idx_arg, dim, mx_inline_min);
+  return do_mx_minmax_op<FloatComplex> (*this, idx_arg, dim,
+                                        nanflag, realabs, mx_inline_cmin);
 }
 
 FloatComplexNDArray
-FloatComplexNDArray::cummax (int dim) const
+FloatComplexNDArray::cummax (int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<FloatComplex> (*this, dim, mx_inline_cummax);
+  return do_mx_cumminmax_op<FloatComplex> (*this, dim, nanflag,
+                                           realabs, mx_inline_ccummax);
 }
 
 FloatComplexNDArray
-FloatComplexNDArray::cummax (Array<octave_idx_type>& idx_arg, int dim) const
+FloatComplexNDArray::cummax (Array<octave_idx_type>& idx_arg,
+                             int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<FloatComplex> (*this, idx_arg, dim,
-                                           mx_inline_cummax);
+  return do_mx_cumminmax_op<FloatComplex> (*this, idx_arg, dim, nanflag,
+                                           realabs, mx_inline_ccummax);
 }
 
 FloatComplexNDArray
-FloatComplexNDArray::cummin (int dim) const
+FloatComplexNDArray::cummin (int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<FloatComplex> (*this, dim, mx_inline_cummin);
+  return do_mx_cumminmax_op<FloatComplex> (*this, dim, nanflag,
+                                           realabs, mx_inline_ccummin);
 }
 
 FloatComplexNDArray
-FloatComplexNDArray::cummin (Array<octave_idx_type>& idx_arg, int dim) const
+FloatComplexNDArray::cummin (Array<octave_idx_type>& idx_arg,
+                             int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<FloatComplex> (*this, idx_arg, dim,
-                                           mx_inline_cummin);
+  return do_mx_cumminmax_op<FloatComplex> (*this, idx_arg, dim, nanflag,
+                                           realabs, mx_inline_ccummin);
 }
 
 FloatNDArray

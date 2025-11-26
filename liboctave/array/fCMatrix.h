@@ -431,11 +431,15 @@ public:
   OCTAVE_API boolMatrix all (int dim = -1) const;
   OCTAVE_API boolMatrix any (int dim = -1) const;
 
-  OCTAVE_API FloatComplexMatrix cumprod (int dim = -1) const;
-  OCTAVE_API FloatComplexMatrix cumsum (int dim = -1) const;
-  OCTAVE_API FloatComplexMatrix prod (int dim = -1) const;
-  OCTAVE_API FloatComplexMatrix sum (int dim = -1) const;
-  OCTAVE_API FloatComplexMatrix sumsq (int dim = -1) const;
+  OCTAVE_API FloatComplexMatrix flip (int dim = -1) const;
+  OCTAVE_API FloatComplexMatrix cumprod (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API FloatComplexMatrix cumsum (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API FloatComplexMatrix prod (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API ComplexMatrix dprod (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API FloatComplexMatrix sum (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API ComplexMatrix dsum (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API FloatComplexMatrix sumsq (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API ComplexMatrix dsumsq (int dim = -1, bool nanflag = false) const;
   OCTAVE_API FloatMatrix abs () const;
 
   OCTAVE_API FloatComplexMatrix diag (octave_idx_type k = 0) const;
@@ -502,19 +506,51 @@ extern OCTAVE_API FloatComplexMatrix operator * (const FloatComplexMatrix&,
 extern OCTAVE_API FloatComplexMatrix operator * (const FloatComplexMatrix&,
                                                  const FloatComplexMatrix&);
 
-extern OCTAVE_API FloatComplexMatrix min (const FloatComplex& c,
-                                          const FloatComplexMatrix& m);
-extern OCTAVE_API FloatComplexMatrix min (const FloatComplexMatrix& m,
-                                          const FloatComplex& c);
-extern OCTAVE_API FloatComplexMatrix min (const FloatComplexMatrix& a,
-                                          const FloatComplexMatrix& b);
+extern OCTAVE_API FloatComplexMatrix
+min (FloatComplex& c, const FloatComplexMatrix& m);
+extern OCTAVE_API FloatComplexMatrix
+min (FloatComplex& c, const FloatComplexMatrix& m, const bool nanflag);
+extern OCTAVE_API FloatComplexMatrix
+min (FloatComplex& c, const FloatComplexMatrix& m, const bool nanflag,
+     const bool realabs);
+extern OCTAVE_API FloatComplexMatrix
+min (const FloatComplexMatrix& m, FloatComplex& c);
+extern OCTAVE_API FloatComplexMatrix
+min (const FloatComplexMatrix& m, FloatComplex& c, const bool nanflag);
+extern OCTAVE_API FloatComplexMatrix
+min (const FloatComplexMatrix& m, FloatComplex& c, const bool nanflag,
+     const bool realabs);
+extern OCTAVE_API FloatComplexMatrix
+min (const FloatComplexMatrix& a, const FloatComplexMatrix& b);
+extern OCTAVE_API FloatComplexMatrix
+min (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
+     const bool nanflag);
+extern OCTAVE_API FloatComplexMatrix
+min (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
+     const bool nanflag, const bool realabs);
 
-extern OCTAVE_API FloatComplexMatrix max (const FloatComplex& c,
-                                          const FloatComplexMatrix& m);
-extern OCTAVE_API FloatComplexMatrix max (const FloatComplexMatrix& m,
-                                          const FloatComplex& c);
-extern OCTAVE_API FloatComplexMatrix max (const FloatComplexMatrix& a,
-                                          const FloatComplexMatrix& b);
+extern OCTAVE_API FloatComplexMatrix
+max (FloatComplex& c, const FloatComplexMatrix& m);
+extern OCTAVE_API FloatComplexMatrix
+max (FloatComplex& c, const FloatComplexMatrix& m, const bool nanflag);
+extern OCTAVE_API FloatComplexMatrix
+max (FloatComplex& c, const FloatComplexMatrix& m, const bool nanflag,
+     const bool realabs);
+extern OCTAVE_API FloatComplexMatrix
+max (const FloatComplexMatrix& m, FloatComplex& c);
+extern OCTAVE_API FloatComplexMatrix
+max (const FloatComplexMatrix& m, FloatComplex& c, const bool nanflag);
+extern OCTAVE_API FloatComplexMatrix
+max (const FloatComplexMatrix& m, FloatComplex& c, const bool nanflag,
+     const bool realabs);
+extern OCTAVE_API FloatComplexMatrix
+max (const FloatComplexMatrix& a, const FloatComplexMatrix& b);
+extern OCTAVE_API FloatComplexMatrix
+max (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
+     const bool nanflag);
+extern OCTAVE_API FloatComplexMatrix
+max (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
+     const bool nanflag, const bool realabs);
 
 extern OCTAVE_API FloatComplexMatrix
 linspace (const FloatComplexColumnVector& x1,

@@ -87,14 +87,14 @@ public:
   OCTAVE_API boolNDArray any (int dim = -1) const;
 
   OCTAVE_API FloatNDArray flip (int dim = -1) const;
-  OCTAVE_API FloatNDArray cumprod (int dim = -1) const;
-  OCTAVE_API FloatNDArray cumsum (int dim = -1) const;
-  OCTAVE_API FloatNDArray prod (int dim = -1) const;
-  OCTAVE_API NDArray dprod (int dim = -1) const;
-  OCTAVE_API FloatNDArray sum (int dim = -1) const;
-  OCTAVE_API NDArray dsum (int dim = -1) const;
-  OCTAVE_API FloatNDArray sumsq (int dim = -1) const;
-  OCTAVE_API NDArray dsumsq (int dim = -1) const;
+  OCTAVE_API FloatNDArray cumprod (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API FloatNDArray cumsum (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API FloatNDArray prod (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API NDArray dprod (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API FloatNDArray sum (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API NDArray dsum (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API FloatNDArray sumsq (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API NDArray dsumsq (int dim = -1, bool nanflag = false) const;
   OCTAVE_API FloatNDArray
   concat (const FloatNDArray& rb, const Array<octave_idx_type>& ra_idx);
   OCTAVE_API FloatComplexNDArray
@@ -102,19 +102,23 @@ public:
   OCTAVE_API charNDArray
   concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx);
 
-  OCTAVE_API FloatNDArray max (int dim = -1) const;
   OCTAVE_API FloatNDArray
-  max (Array<octave_idx_type>& index, int dim = -1) const;
-  OCTAVE_API FloatNDArray min (int dim = -1) const;
+  max (int dim = -1, bool nanflag = true, bool realabs = true) const;
+  OCTAVE_API FloatNDArray max (Array<octave_idx_type>& index, int dim = -1,
+                               bool nanflag = true, bool realabs = true) const;
   OCTAVE_API FloatNDArray
-  min (Array<octave_idx_type>& index, int dim = -1) const;
+  min (int dim = -1, bool nanflag = true, bool realabs = true) const;
+  OCTAVE_API FloatNDArray min (Array<octave_idx_type>& index, int dim = -1,
+                               bool nanflag = true, bool realabs = true) const;
 
-  OCTAVE_API FloatNDArray cummax (int dim = -1) const;
   OCTAVE_API FloatNDArray
-  cummax (Array<octave_idx_type>& index, int dim = -1) const;
-  OCTAVE_API FloatNDArray cummin (int dim = -1) const;
+  cummax (int dim = -1, bool nanflag = true, bool realabs = true) const;
+  OCTAVE_API FloatNDArray cummax (Array<octave_idx_type>& index, int dim = -1,
+                                  bool nanflag = true, bool realabs = true) const;
   OCTAVE_API FloatNDArray
-  cummin (Array<octave_idx_type>& index, int dim = -1) const;
+  cummin (int dim = -1, bool nanflag = true, bool realabs = true) const;
+  OCTAVE_API FloatNDArray cummin (Array<octave_idx_type>& index, int dim = -1,
+                                  bool nanflag = true, bool realabs = true) const;
 
   OCTAVE_API FloatNDArray diff (octave_idx_type order = 1, int dim = -1) const;
 

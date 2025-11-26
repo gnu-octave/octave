@@ -2792,33 +2792,39 @@ ComplexMatrix::any (int dim) const
 }
 
 ComplexMatrix
-ComplexMatrix::cumprod (int dim) const
+ComplexMatrix::flip (int dim) const
 {
-  return ComplexNDArray::cumprod (dim);
+  return ComplexNDArray::flip (dim);
 }
 
 ComplexMatrix
-ComplexMatrix::cumsum (int dim) const
+ComplexMatrix::cumprod (int dim, bool nanflag) const
 {
-  return ComplexNDArray::cumsum (dim);
+  return ComplexNDArray::cumprod (dim, nanflag);
 }
 
 ComplexMatrix
-ComplexMatrix::prod (int dim) const
+ComplexMatrix::cumsum (int dim, bool nanflag) const
 {
-  return ComplexNDArray::prod (dim);
+  return ComplexNDArray::cumsum (dim, nanflag);
 }
 
 ComplexMatrix
-ComplexMatrix::sum (int dim) const
+ComplexMatrix::prod (int dim, bool nanflag) const
 {
-  return ComplexNDArray::sum (dim);
+  return ComplexNDArray::prod (dim, nanflag);
 }
 
 ComplexMatrix
-ComplexMatrix::sumsq (int dim) const
+ComplexMatrix::sum (int dim, bool nanflag) const
 {
-  return ComplexNDArray::sumsq (dim);
+  return ComplexNDArray::sum (dim, nanflag);
+}
+
+ComplexMatrix
+ComplexMatrix::sumsq (int dim, bool nanflag) const
+{
+  return ComplexNDArray::sumsq (dim, nanflag);
 }
 
 Matrix
@@ -3481,6 +3487,22 @@ operator * (const ComplexMatrix& a, const ComplexMatrix& b)
 ComplexMatrix
 min (const Complex& c, const ComplexMatrix& m)
 {
+  const bool nanflag = true;
+  const bool realabs = false;
+  return min (c, m, nanflag, realabs);
+}
+
+ComplexMatrix
+min (const Complex& c, const ComplexMatrix& m, const bool nanflag)
+{
+  const bool realabs = false;
+  return min (c, m, nanflag, realabs);
+}
+
+ComplexMatrix
+min (const Complex& c, const ComplexMatrix& m,
+     const bool nanflag, const bool realabs)
+{
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
 
@@ -3492,7 +3514,7 @@ min (const Complex& c, const ComplexMatrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = octave::math::min (c, m(i, j));
+        result(i, j) = octave::math::min (c, m(i, j), nanflag, realabs);
       }
 
   return result;
@@ -3501,11 +3523,43 @@ min (const Complex& c, const ComplexMatrix& m)
 ComplexMatrix
 min (const ComplexMatrix& m, const Complex& c)
 {
-  return min (c, m);
+  const bool nanflag = true;
+  const bool realabs = false;
+  return min (c, m, nanflag, realabs);
+}
+
+ComplexMatrix
+min (const ComplexMatrix& m, const Complex& c, const bool nanflag)
+{
+  const bool realabs = false;
+  return min (c, m, nanflag, realabs);
+}
+
+ComplexMatrix
+min (const ComplexMatrix& m, const Complex& c,
+     const bool nanflag, const bool realabs)
+{
+  return min (c, m, nanflag, realabs);
 }
 
 ComplexMatrix
 min (const ComplexMatrix& a, const ComplexMatrix& b)
+{
+  const bool nanflag = true;
+  const bool realabs = false;
+  return min (a, b, nanflag, realabs);
+}
+
+ComplexMatrix
+min (const ComplexMatrix& a, const ComplexMatrix& b, const bool nanflag)
+{
+  const bool realabs = false;
+  return min (a, b, nanflag, realabs);
+}
+
+ComplexMatrix
+min (const ComplexMatrix& a, const ComplexMatrix& b,
+     const bool nanflag, const bool realabs)
 {
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.columns ();
@@ -3519,39 +3573,33 @@ min (const ComplexMatrix& a, const ComplexMatrix& b)
   ComplexMatrix result (nr, nc);
 
   for (octave_idx_type j = 0; j < nc; j++)
-    {
-      bool columns_are_real_only = true;
-      for (octave_idx_type i = 0; i < nr; i++)
-        {
-          octave_quit ();
-          if (std::imag (a(i, j)) != 0.0 || std::imag (b(i, j)) != 0.0)
-            {
-              columns_are_real_only = false;
-              break;
-            }
-        }
-
-      if (columns_are_real_only)
-        {
-          for (octave_idx_type i = 0; i < nr; i++)
-            result(i, j) = octave::math::min (std::real (a(i, j)),
-                                              std::real (b(i, j)));
-        }
-      else
-        {
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              octave_quit ();
-              result(i, j) = octave::math::min (a(i, j), b(i, j));
-            }
-        }
-    }
+    for (octave_idx_type i = 0; i < nr; i++)
+      {
+        octave_quit ();
+        result(i, j) = octave::math::min (a(i, j), b(i, j), nanflag, realabs);
+      }
 
   return result;
 }
 
 ComplexMatrix
 max (const Complex& c, const ComplexMatrix& m)
+{
+  const bool nanflag = true;
+  const bool realabs = false;
+  return max (c, m, nanflag, realabs);
+}
+
+ComplexMatrix
+max (const Complex& c, const ComplexMatrix& m, const bool nanflag)
+{
+  const bool realabs = false;
+  return max (c, m, nanflag, realabs);
+}
+
+ComplexMatrix
+max (const Complex& c, const ComplexMatrix& m,
+     const bool nanflag, const bool realabs)
 {
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
@@ -3564,7 +3612,7 @@ max (const Complex& c, const ComplexMatrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result(i, j) = octave::math::max (c, m(i, j));
+        result(i, j) = octave::math::max (c, m(i, j), nanflag, realabs);
       }
 
   return result;
@@ -3573,11 +3621,43 @@ max (const Complex& c, const ComplexMatrix& m)
 ComplexMatrix
 max (const ComplexMatrix& m, const Complex& c)
 {
-  return max (c, m);
+  const bool nanflag = true;
+  const bool realabs = false;
+  return max (c, m, nanflag, realabs);
+}
+
+ComplexMatrix
+max (const ComplexMatrix& m, const Complex& c, const bool nanflag)
+{
+  const bool realabs = false;
+  return max (c, m, nanflag, realabs);
+}
+
+ComplexMatrix
+max (const ComplexMatrix& m, const Complex& c,
+     const bool nanflag, const bool realabs)
+{
+  return max (c, m, nanflag, realabs);
 }
 
 ComplexMatrix
 max (const ComplexMatrix& a, const ComplexMatrix& b)
+{
+  const bool nanflag = true;
+  const bool realabs = false;
+  return max (a, b, nanflag, realabs);
+}
+
+ComplexMatrix
+max (const ComplexMatrix& a, const ComplexMatrix& b, const bool nanflag)
+{
+  const bool realabs = false;
+  return max (a, b, nanflag, realabs);
+}
+
+ComplexMatrix
+max (const ComplexMatrix& a, const ComplexMatrix& b,
+     const bool nanflag, const bool realabs)
 {
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.columns ();
@@ -3591,37 +3671,11 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
   ComplexMatrix result (nr, nc);
 
   for (octave_idx_type j = 0; j < nc; j++)
-    {
-      bool columns_are_real_only = true;
-      for (octave_idx_type i = 0; i < nr; i++)
-        {
-          octave_quit ();
-          if (std::imag (a(i, j)) != 0.0 || std::imag (b(i, j)) != 0.0)
-            {
-              columns_are_real_only = false;
-              break;
-            }
-        }
-
-      // FIXME: is it so much faster?
-      if (columns_are_real_only)
-        {
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              octave_quit ();
-              result(i, j) = octave::math::max (std::real (a(i, j)),
-                                                std::real (b(i, j)));
-            }
-        }
-      else
-        {
-          for (octave_idx_type i = 0; i < nr; i++)
-            {
-              octave_quit ();
-              result(i, j) = octave::math::max (a(i, j), b(i, j));
-            }
-        }
-    }
+    for (octave_idx_type i = 0; i < nr; i++)
+      {
+        octave_quit ();
+        result(i, j) = octave::math::max (a(i, j), b(i, j), nanflag, realabs);
+      }
 
   return result;
 }

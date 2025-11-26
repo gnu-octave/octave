@@ -367,99 +367,109 @@ FloatNDArray::flip (int dim) const
 }
 
 FloatNDArray
-FloatNDArray::cumprod (int dim) const
+FloatNDArray::cumprod (int dim, bool nanflag) const
 {
-  return do_mx_cum_op<float, float> (*this, dim, mx_inline_cumprod);
+  return do_mx_cum_op<float, float> (*this, dim, nanflag, mx_inline_cumprod);
 }
 
 FloatNDArray
-FloatNDArray::cumsum (int dim) const
+FloatNDArray::cumsum (int dim, bool nanflag) const
 {
-  return do_mx_cum_op<float, float> (*this, dim, mx_inline_cumsum);
+  return do_mx_cum_op<float, float> (*this, dim, nanflag, mx_inline_cumsum);
 }
 
 FloatNDArray
-FloatNDArray::prod (int dim) const
+FloatNDArray::prod (int dim, bool nanflag) const
 {
-  return do_mx_red_op<float, float> (*this, dim, mx_inline_prod);
+  return do_mx_red_op<float, float> (*this, dim, nanflag, mx_inline_prod);
 }
 
 NDArray
-FloatNDArray::dprod (int dim) const
+FloatNDArray::dprod (int dim, bool nanflag) const
 {
-  return do_mx_red_op<double, float> (*this, dim, mx_inline_dprod);
+  return do_mx_red_op<double, float> (*this, dim, nanflag, mx_inline_dprod);
 }
 
 FloatNDArray
-FloatNDArray::sum (int dim) const
+FloatNDArray::sum (int dim, bool nanflag) const
 {
-  return do_mx_red_op<float, float> (*this, dim, mx_inline_sum);
+  return do_mx_red_op<float, float> (*this, dim, nanflag, mx_inline_sum);
 }
 
 NDArray
-FloatNDArray::dsum (int dim) const
+FloatNDArray::dsum (int dim, bool nanflag) const
 {
-  return do_mx_red_op<double, float> (*this, dim, mx_inline_dsum);
+  return do_mx_red_op<double, float> (*this, dim, nanflag, mx_inline_dsum);
 }
 
 FloatNDArray
-FloatNDArray::sumsq (int dim) const
+FloatNDArray::sumsq (int dim, bool nanflag) const
 {
-  return do_mx_red_op<float, float> (*this, dim, mx_inline_sumsq);
+  return do_mx_red_op<float, float> (*this, dim, nanflag, mx_inline_sumsq);
 }
 
 NDArray
-FloatNDArray::dsumsq (int dim) const
+FloatNDArray::dsumsq (int dim, bool nanflag) const
 {
-  return do_mx_red_op<double, float> (*this, dim, mx_inline_dsumsq);
+  return do_mx_red_op<double, float> (*this, dim, nanflag, mx_inline_dsumsq);
 }
 
 FloatNDArray
-FloatNDArray::max (int dim) const
+FloatNDArray::max (int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_minmax_op<float> (*this, dim, mx_inline_max);
+  return do_mx_minmax_op<float> (*this, dim, nanflag, realabs, mx_inline_max);
 }
 
 FloatNDArray
-FloatNDArray::max (Array<octave_idx_type>& idx_arg, int dim) const
+FloatNDArray::max (Array<octave_idx_type>& idx_arg,
+                   int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_minmax_op<float> (*this, idx_arg, dim, mx_inline_max);
+  return do_mx_minmax_op<float> (*this, idx_arg, dim,
+                                 nanflag, realabs, mx_inline_max);
 }
 
 FloatNDArray
-FloatNDArray::min (int dim) const
+FloatNDArray::min (int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_minmax_op<float> (*this, dim, mx_inline_min);
+  return do_mx_minmax_op<float> (*this, dim, nanflag, realabs, mx_inline_min);
 }
 
 FloatNDArray
-FloatNDArray::min (Array<octave_idx_type>& idx_arg, int dim) const
+FloatNDArray::min (Array<octave_idx_type>& idx_arg,
+                   int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_minmax_op<float> (*this, idx_arg, dim, mx_inline_min);
+  return do_mx_minmax_op<float> (*this, idx_arg, dim,
+                                 nanflag, realabs, mx_inline_min);
 }
 
 FloatNDArray
-FloatNDArray::cummax (int dim) const
+FloatNDArray::cummax (int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<float> (*this, dim, mx_inline_cummax);
+  return do_mx_cumminmax_op<float> (*this, dim, nanflag,
+                                    realabs, mx_inline_cummax);
 }
 
 FloatNDArray
-FloatNDArray::cummax (Array<octave_idx_type>& idx_arg, int dim) const
+FloatNDArray::cummax (Array<octave_idx_type>& idx_arg,
+                      int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<float> (*this, idx_arg, dim, mx_inline_cummax);
+  return do_mx_cumminmax_op<float> (*this, idx_arg, dim, nanflag,
+                                    realabs, mx_inline_cummax);
 }
 
 FloatNDArray
-FloatNDArray::cummin (int dim) const
+FloatNDArray::cummin (int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<float> (*this, dim, mx_inline_cummin);
+  return do_mx_cumminmax_op<float> (*this, dim, nanflag,
+                                    realabs, mx_inline_cummin);
 }
 
 FloatNDArray
-FloatNDArray::cummin (Array<octave_idx_type>& idx_arg, int dim) const
+FloatNDArray::cummin (Array<octave_idx_type>& idx_arg,
+                      int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<float> (*this, idx_arg, dim, mx_inline_cummin);
+  return do_mx_cumminmax_op<float> (*this, idx_arg, dim, nanflag,
+                                    realabs, mx_inline_cummin);
 }
 
 FloatNDArray

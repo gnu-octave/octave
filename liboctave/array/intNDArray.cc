@@ -261,66 +261,62 @@ intNDArray<T>::sumsq (int dim) const
 
 template <typename T>
 intNDArray<T>
-intNDArray<T>::max (int dim, bool nanflag, bool realabs) const
+intNDArray<T>::max (int dim, [[maybe_unused]] bool nanflag, bool realabs) const
 {
-  return do_mx_minmax_op<T> (*this, dim, nanflag, realabs, mx_inline_max);
+  return do_mx_minmax_op<T> (*this, dim, realabs, mx_inline_intmax);
 }
 
 template <typename T>
 intNDArray<T>
 intNDArray<T>::max (Array<octave_idx_type>& idx_arg,
-                    int dim, bool nanflag, bool realabs) const
+                    int dim, [[maybe_unused]] bool nanflag, bool realabs) const
 {
-  return do_mx_minmax_op<T> (*this, idx_arg, dim,
-                             nanflag, realabs, mx_inline_max);
+  return do_mx_minmax_op<T> (*this, idx_arg, dim, realabs, mx_inline_intmax);
 }
 
 template <typename T>
 intNDArray<T>
-intNDArray<T>::min (int dim, bool nanflag, bool realabs) const
+intNDArray<T>::min (int dim, [[maybe_unused]] bool nanflag, bool realabs) const
 {
-  return do_mx_minmax_op<T> (*this, dim, nanflag, realabs, mx_inline_min);
+  return do_mx_minmax_op<T> (*this, dim, realabs, mx_inline_intmin);
 }
 
 template <typename T>
 intNDArray<T>
 intNDArray<T>::min (Array<octave_idx_type>& idx_arg,
-                    int dim, bool nanflag, bool realabs) const
+                    int dim, [[maybe_unused]] bool nanflag, bool realabs) const
 {
-  return do_mx_minmax_op<T> (*this, idx_arg, dim,
-                             nanflag, realabs, mx_inline_min);
+  return do_mx_minmax_op<T> (*this, idx_arg, dim, realabs, mx_inline_intmin);
 }
 
 template <typename T>
 intNDArray<T>
-intNDArray<T>::cummax (int dim, bool nanflag, bool realabs) const
+intNDArray<T>::cummax (int dim, [[maybe_unused]] bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<T> (*this, dim, nanflag, realabs, mx_inline_cummax);
+  return do_mx_cumminmax_op<T> (*this, dim, realabs, mx_inline_intcummax);
 }
 
 template <typename T>
 intNDArray<T>
 intNDArray<T>::cummax (Array<octave_idx_type>& idx_arg,
-                       int dim, bool nanflag, bool realabs) const
+                       int dim, [[maybe_unused]] bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<T> (*this, idx_arg, dim, nanflag,
-                                realabs, mx_inline_cummax);
+  return do_mx_cumminmax_op<T> (*this, idx_arg, dim, realabs, mx_inline_intcummax);
 }
 
 template <typename T>
 intNDArray<T>
-intNDArray<T>::cummin (int dim, bool nanflag, bool realabs) const
+intNDArray<T>::cummin (int dim, [[maybe_unused]] bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<T> (*this, dim, nanflag, realabs, mx_inline_cummin);
+  return do_mx_cumminmax_op<T> (*this, dim, realabs, mx_inline_intcummin);
 }
 
 template <typename T>
 intNDArray<T>
 intNDArray<T>::cummin (Array<octave_idx_type>& idx_arg,
-                       int dim, bool nanflag, bool realabs) const
+                       int dim, [[maybe_unused]] bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<T> (*this, idx_arg, dim, nanflag,
-                                realabs, mx_inline_cummin);
+  return do_mx_cumminmax_op<T> (*this, idx_arg, dim, realabs, mx_inline_intcummin);
 }
 
 template <typename T>

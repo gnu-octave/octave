@@ -1428,9 +1428,9 @@ mx_inline_flip (const T *v, T *r, octave_idx_type l,
       {                                                                 \
         for (; i < n; i++)                                              \
           {                                                             \
-            if (mappers_abs (v[i]) OP mappers_abs (tmp))                \
+            if (std::abs (v[i]) OP std::abs (tmp))                      \
               tmp = v[i];                                               \
-            else if (mappers_abs (v[i]) == mappers_abs (tmp) && v[i] OP tmp) \
+            else if (std::abs (v[i]) == std::abs (tmp) && v[i] OP tmp)  \
               tmp = v[i];                                               \
           }                                                             \
       }                                                                 \
@@ -1477,12 +1477,12 @@ mx_inline_flip (const T *v, T *r, octave_idx_type l,
       {                                                                 \
         for (; i < n; i++)                                              \
           {                                                             \
-            if (mappers_abs (v[i]) OP mappers_abs (tmp))                \
+            if (std::abs (v[i]) OP std::abs (tmp))                      \
               {                                                         \
                 tmp = v[i];                                             \
                 tmpi = i;                                               \
               }                                                         \
-            else if (mappers_abs (v[i]) == mappers_abs (tmp) && v[i] OP tmp) \
+            else if (std::abs (v[i]) == std::abs (tmp) && v[i] OP tmp)  \
               {                                                         \
                 tmp = v[i];                                             \
                 tmpi = i;                                               \
@@ -1564,9 +1564,10 @@ OP_MINMAX_FCN (mx_inline_max, >)
                 else if (octave::math::isnan (v[i]))                    \
                   nan = true;                                           \
                 else if (octave::math::isnan (r[i]) ||                  \
-                         mappers_abs (v[i]) OP mappers_abs (r[i]))      \
+                         std::abs (v[i]) OP std::abs (r[i]))            \
                   r[i] = v[i];                                          \
-                else if (mappers_abs (v[i]) == mappers_abs (r[i]) && v[i] OP r[i]) \
+                else if (std::abs (v[i]) == std::abs (r[i]) &&          \
+                         v[i] OP r[i])                                  \
                   r[i] = v[i];                                          \
               }                                                         \
             j++;                                                        \
@@ -1576,9 +1577,10 @@ OP_MINMAX_FCN (mx_inline_max, >)
           {                                                             \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if (mappers_abs (v[i]) OP mappers_abs (r[i]))           \
+                if (std::abs (v[i]) OP std::abs (r[i]))                 \
                   r[i] = v[i];                                          \
-                else if (mappers_abs (v[i]) == mappers_abs (r[i]) && v[i] OP r[i]) \
+                else if (std::abs (v[i]) == std::abs (r[i]) &&          \
+                         v[i] OP r[i])                                  \
                   r[i] = v[i];                                          \
               }                                                         \
             j++;                                                        \
@@ -1658,12 +1660,13 @@ OP_MINMAX_FCN (mx_inline_max, >)
                 else if (octave::math::isnan (v[i]))                    \
                   nan = true;                                           \
                 else if (octave::math::isnan (r[i]) ||                  \
-                         mappers_abs (v[i]) OP mappers_abs (r[i]))      \
+                         std::abs (v[i]) OP std::abs (r[i]))            \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
                   }                                                     \
-                else if (mappers_abs (v[i]) == mappers_abs (r[i]) && v[i] OP r[i]) \
+                else if (std::abs (v[i]) == std::abs (r[i]) &&          \
+                         v[i] OP r[i])                                  \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
@@ -1676,12 +1679,13 @@ OP_MINMAX_FCN (mx_inline_max, >)
           {                                                             \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if (mappers_abs (v[i]) OP mappers_abs (r[i]))           \
+                if (std::abs (v[i]) OP std::abs (r[i]))                 \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
                   }                                                     \
-                  else if (mappers_abs (v[i]) == mappers_abs (r[i]) && v[i] OP r[i]) \
+                  else if (std::abs (v[i]) == std::abs (r[i]) &&        \
+                           v[i] OP r[i])                                \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
@@ -1797,9 +1801,9 @@ OP_MINMAX_FCNN (mx_inline_max)
       {                                                                        \
         for (; i < n; i++)                                                     \
           {                                                                    \
-            if (mappers_abs (v[i]) OP mappers_abs (tmp))                       \
+            if (std::abs (v[i]) OP std::abs (tmp))                             \
               tmp = v[i];                                                      \
-            else if (mappers_abs (v[i]) == mappers_abs (tmp) &&                \
+            else if (std::abs (v[i]) == std::abs (tmp) &&                      \
                      std::arg (v[i]) OP std::arg (tmp))                        \
               tmp = v[i];                                                      \
           }                                                                    \
@@ -1856,12 +1860,12 @@ OP_MINMAX_FCNN (mx_inline_max)
       {                                                                        \
         for (; i < n; i++)                                                     \
           {                                                                    \
-            if (mappers_abs (v[i]) OP mappers_abs (tmp))                       \
+            if (std::abs (v[i]) OP std::abs (tmp))                             \
               {                                                                \
                 tmp = v[i];                                                    \
                 tmpi = i;                                                      \
               }                                                                \
-            else if (mappers_abs (v[i]) == mappers_abs (tmp) &&                \
+            else if (std::abs (v[i]) == std::abs (tmp) &&                      \
                      std::arg (v[i]) OP std::arg (tmp))                        \
               {                                                                \
                 tmp = v[i];                                                    \
@@ -1953,9 +1957,9 @@ OP_CMINMAX_FCN (mx_inline_cmax, >)
                 else if (octave::math::isnan (v[i]))                           \
                   nan = true;                                                  \
                 else if (octave::math::isnan (r[i]) ||                         \
-                         mappers_abs (v[i]) OP mappers_abs (r[i]))             \
+                         std::abs (v[i]) OP std::abs (r[i]))                   \
                   r[i] = v[i];                                                 \
-                else if (mappers_abs (v[i]) == mappers_abs (r[i]) &&           \
+                else if (std::abs (v[i]) == std::abs (r[i]) &&                 \
                          std::arg (v[i]) OP std::arg (r[i]))                   \
                   r[i] = v[i];                                                 \
               }                                                                \
@@ -1966,9 +1970,9 @@ OP_CMINMAX_FCN (mx_inline_cmax, >)
           {                                                                    \
             for (octave_idx_type i = 0; i < m; i++)                            \
               {                                                                \
-                if (mappers_abs (v[i]) OP mappers_abs (r[i]))                  \
+                if (std::abs (v[i]) OP std::abs (r[i]))                        \
                   r[i] = v[i];                                                 \
-                else if (mappers_abs (v[i]) == mappers_abs (r[i]) &&           \
+                else if (std::abs (v[i]) == std::abs (r[i]) &&                 \
                          std::arg (v[i]) OP std::arg (r[i]))                   \
                   r[i] = v[i];                                                 \
               }                                                                \
@@ -2065,12 +2069,12 @@ OP_CMINMAX_FCN (mx_inline_cmax, >)
                 else if (octave::math::isnan (v[i]))                           \
                   nan = true;                                                  \
                 else if (octave::math::isnan (r[i]) ||                         \
-                         mappers_abs (v[i]) OP mappers_abs (r[i]))             \
+                         std::abs (v[i]) OP std::abs (r[i]))                   \
                   {                                                            \
                     r[i] = v[i];                                               \
                     ri[i] = j;                                                 \
                   }                                                            \
-                else if (mappers_abs (v[i]) == mappers_abs (r[i]) &&           \
+                else if (std::abs (v[i]) == std::abs (r[i]) &&                 \
                          std::arg (v[i]) OP std::arg (r[i]))                   \
                   {                                                            \
                     r[i] = v[i];                                               \
@@ -2084,13 +2088,13 @@ OP_CMINMAX_FCN (mx_inline_cmax, >)
           {                                                                    \
             for (octave_idx_type i = 0; i < m; i++)                            \
               {                                                                \
-                if (mappers_abs (v[i]) OP mappers_abs (r[i]))                  \
+                if (std::abs (v[i]) OP std::abs (r[i]))                        \
                   {                                                            \
                     r[i] = v[i];                                               \
                     ri[i] = j;                                                 \
                   }                                                            \
                   r[i] = v[i];                                                 \
-                if (mappers_abs (v[i]) == mappers_abs (r[i]) &&                \
+                if (std::abs (v[i]) == std::abs (r[i]) &&                      \
                     std::arg (v[i]) OP std::arg (r[i]))                        \
                   {                                                            \
                     r[i] = v[i];                                               \
@@ -2163,6 +2167,235 @@ OP_CMINMAX_FCN2 (mx_inline_cmax, >)
 
 OP_CMINMAX_FCNN (mx_inline_cmin)
 OP_CMINMAX_FCNN (mx_inline_cmax)
+
+// Faster implementation for int arrays, since they do not support
+// NaN values and real/abs comparison methods require specialized mapper.
+
+#define OP_INT_MINMAX_FCN(F, OP)                                        \
+  template <typename T>                                                 \
+  void F (const T *v, T *r, octave_idx_type n, const bool realabs)      \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    T tmp = v[0];                                                       \
+    octave_idx_type i = 1;                                              \
+    if (realabs)                                                        \
+      {                                                                 \
+        for (; i < n; i++)                                              \
+          if (v[i] OP tmp)                                              \
+            tmp = v[i];                                                 \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        for (; i < n; i++)                                              \
+          {                                                             \
+            if (mappers_abs (v[i]) OP mappers_abs (tmp))                \
+              tmp = v[i];                                               \
+            else if (mappers_abs (v[i]) == mappers_abs (tmp) &&         \
+                     v[i] OP tmp)                                       \
+              tmp = v[i];                                               \
+          }                                                             \
+      }                                                                 \
+    *r = tmp;                                                           \
+  }                                                                     \
+  template <typename T>                                                 \
+  void F (const T *v, T *r, octave_idx_type *ri, octave_idx_type n,     \
+          const bool realabs)                                           \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    T tmp = v[0];                                                       \
+    octave_idx_type tmpi = 0;                                           \
+    octave_idx_type i = 1;                                              \
+    if (realabs)                                                        \
+      {                                                                 \
+        for (; i < n; i++)                                              \
+          if (v[i] OP tmp)                                              \
+            {                                                           \
+              tmp = v[i];                                               \
+              tmpi = i;                                                 \
+            }                                                           \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        for (; i < n; i++)                                              \
+          {                                                             \
+            if (mappers_abs (v[i]) OP mappers_abs (tmp))                \
+              {                                                         \
+                tmp = v[i];                                             \
+                tmpi = i;                                               \
+              }                                                         \
+            else if (mappers_abs (v[i]) == mappers_abs (tmp) &&         \
+                     v[i] OP tmp)                                       \
+              {                                                         \
+                tmp = v[i];                                             \
+                tmpi = i;                                               \
+              }                                                         \
+          }                                                             \
+      }                                                                 \
+    *r = tmp;                                                           \
+    *ri = tmpi;                                                         \
+  }
+
+OP_INT_MINMAX_FCN (mx_inline_intmin, <)
+OP_INT_MINMAX_FCN (mx_inline_intmax, >)
+
+#define OP_INT_MINMAX_FCN2(F, OP)                                       \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const T *v, T *r, octave_idx_type m, octave_idx_type n,            \
+     const bool realabs)                                                \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    octave_idx_type j = 0;                                              \
+    for (octave_idx_type i = 0; i < m; i++)                             \
+      {                                                                 \
+        r[i] = v[i];                                                    \
+      }                                                                 \
+    j++;                                                                \
+    v += m;                                                             \
+    if (realabs)                                                        \
+      {                                                                 \
+        while (j < n)                                                   \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              if (v[i] OP r[i])                                         \
+                r[i] = v[i];                                            \
+            j++;                                                        \
+            v += m;                                                     \
+          }                                                             \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        while (j < n)                                                   \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if (mappers_abs (v[i]) OP mappers_abs (r[i]))           \
+                  r[i] = v[i];                                          \
+                else if (mappers_abs (v[i]) == mappers_abs (r[i]) &&    \
+                         v[i] OP r[i])                                  \
+                  r[i] = v[i];                                          \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+          }                                                             \
+      }                                                                 \
+  }                                                                     \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const T *v, T *r, octave_idx_type *ri, octave_idx_type m,          \
+     octave_idx_type n, const bool realabs)                             \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    octave_idx_type j = 0;                                              \
+    for (octave_idx_type i = 0; i < m; i++)                             \
+      {                                                                 \
+        r[i] = v[i];                                                    \
+        ri[i] = j;                                                      \
+      }                                                                 \
+    j++;                                                                \
+    v += m;                                                             \
+    if (realabs)                                                        \
+      {                                                                 \
+        while (j < n)                                                   \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              if (v[i] OP r[i])                                         \
+                {                                                       \
+                  r[i] = v[i];                                          \
+                  ri[i] = j;                                            \
+                }                                                       \
+            j++;                                                        \
+            v += m;                                                     \
+          }                                                             \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        while (j < n)                                                   \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if (mappers_abs (v[i]) OP mappers_abs (r[i]))           \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                  else if (mappers_abs (v[i]) == mappers_abs (r[i]) &&  \
+                           v[i] OP r[i])                                \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+          }                                                             \
+      }                                                                 \
+  }
+
+OP_INT_MINMAX_FCN2 (mx_inline_intmin, <)
+OP_INT_MINMAX_FCN2 (mx_inline_intmax, >)
+
+#define OP_INT_MINMAX_FCNN(F)                                           \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const T *v, T *r, octave_idx_type l, octave_idx_type n,            \
+     octave_idx_type u, const bool realabs)                             \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    if (l == 1)                                                         \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < u; i++)                         \
+          {                                                             \
+            F (v, r, n, realabs);                                       \
+            v += n;                                                     \
+            r++;                                                        \
+          }                                                             \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < u; i++)                         \
+          {                                                             \
+            F (v, r, l, n, realabs);                                    \
+            v += l*n;                                                   \
+            r += l;                                                     \
+          }                                                             \
+      }                                                                 \
+  }                                                                     \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const T *v, T *r, octave_idx_type *ri, octave_idx_type l,          \
+     octave_idx_type n, octave_idx_type u, const bool realabs)          \
+  {                                                                     \
+    if (! n) return;                                                    \
+    if (l == 1)                                                         \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < u; i++)                         \
+          {                                                             \
+            F (v, r, ri, n, realabs);                                   \
+            v += n;                                                     \
+            r++;                                                        \
+            ri++;                                                       \
+          }                                                             \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        for (octave_idx_type i = 0; i < u; i++)                         \
+          {                                                             \
+            F (v, r, ri, l, n, realabs);                                \
+            v += l*n;                                                   \
+            r += l;                                                     \
+            ri += l;                                                    \
+          }                                                             \
+      }                                                                 \
+  }
+
+OP_INT_MINMAX_FCNN (mx_inline_intmin)
+OP_INT_MINMAX_FCNN (mx_inline_intmax)
 
 // Faster implementation for char arrays, since they do not support
 // NaN values and real/abs comparison methods do apply either.
@@ -2350,13 +2583,13 @@ OP_CHMINMAX_FCNN (mx_inline_chmax)
       {                                                                 \
         for (; i < n; i++)                                              \
           {                                                             \
-            if (mappers_abs (v[i]) OP mappers_abs (tmp))                \
+            if (std::abs (v[i]) OP std::abs (tmp))                      \
               {                                                         \
                 for (; j < i; j++)                                      \
                   r[j] = tmp;                                           \
                 tmp = v[i];                                             \
               }                                                         \
-            else if (mappers_abs (v[i]) == mappers_abs (tmp) && v[i] OP tmp) \
+            else if (std::abs (v[i]) == std::abs (tmp) && v[i] OP tmp)  \
               {                                                         \
                 for (; j < i; j++)                                      \
                   r[j] = tmp;                                           \
@@ -2419,7 +2652,7 @@ OP_CHMINMAX_FCNN (mx_inline_chmax)
       {                                                                 \
         for (; i < n; i++)                                              \
           {                                                             \
-            if (mappers_abs (v[i]) OP mappers_abs (tmp))                \
+            if (std::abs (v[i]) OP std::abs (tmp))                      \
               {                                                         \
                 for (; j < i; j++)                                      \
                   {                                                     \
@@ -2429,7 +2662,7 @@ OP_CHMINMAX_FCNN (mx_inline_chmax)
                 tmp = v[i];                                             \
                 tmpi = i;                                               \
               }                                                         \
-            else if (mappers_abs (v[i]) == mappers_abs (tmp) && v[i] OP tmp) \
+            else if (std::abs (v[i]) == std::abs (tmp) && v[i] OP tmp)  \
               {                                                         \
                 for (; j < i; j++)                                      \
                   {                                                     \
@@ -2538,9 +2771,10 @@ OP_CUMMINMAX_FCN (mx_inline_cummax, >)
                     nan = true;                                         \
                   }                                                     \
                 else if (octave::math::isnan (r0[i]) ||                 \
-                         mappers_abs (v[i]) OP mappers_abs (r0[i]))     \
+                         std::abs (v[i]) OP std::abs (r0[i]))           \
                   r[i] = v[i];                                          \
-                else if (mappers_abs (v[i]) == mappers_abs (r0[i]) && v[i] OP r0[i]) \
+                else if (std::abs (v[i]) == std::abs (r0[i]) &&         \
+                         v[i] OP r0[i])                                 \
                   r[i] = v[i];                                          \
                 else                                                    \
                   r[i] = r0[i];                                         \
@@ -2554,9 +2788,10 @@ OP_CUMMINMAX_FCN (mx_inline_cummax, >)
           {                                                             \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if (mappers_abs (v[i]) OP mappers_abs (r0[i]))          \
+                if (std::abs (v[i]) OP std::abs (r0[i]))                \
                   r[i] = v[i];                                          \
-                else if (mappers_abs (v[i]) == mappers_abs (r0[i]) && v[i] OP r0[i]) \
+                else if (std::abs (v[i]) == std::abs (r0[i]) &&         \
+                         v[i] OP r0[i])                                 \
                   r[i] = v[i];                                          \
                 else                                                    \
                   r[i] = r0[i];                                         \
@@ -2673,12 +2908,13 @@ OP_CUMMINMAX_FCN (mx_inline_cummax, >)
                     nan = true;                                         \
                   }                                                     \
                 else if (octave::math::isnan (r0[i]) ||                 \
-                         mappers_abs (v[i]) OP mappers_abs (r0[i]))     \
+                         std::abs (v[i]) OP std::abs (r0[i]))           \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
                   }                                                     \
-                else if (mappers_abs (v[i]) == mappers_abs (r0[i]) && v[i] OP r0[i]) \
+                else if (std::abs (v[i]) == std::abs (r0[i]) &&         \
+                         v[i] OP r0[i])                                 \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
@@ -2700,12 +2936,13 @@ OP_CUMMINMAX_FCN (mx_inline_cummax, >)
           {                                                             \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if (mappers_abs (v[i]) OP mappers_abs (r0[i]))          \
+                if (std::abs (v[i]) OP std::abs (r0[i]))                \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
                   }                                                     \
-                else if (mappers_abs (v[i]) == mappers_abs (r0[i]) && v[i] OP r0[i]) \
+                else if (std::abs (v[i]) == std::abs (r0[i]) &&         \
+                         v[i] OP r0[i])                                 \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
@@ -2842,13 +3079,13 @@ OP_CUMMINMAX_FCNN (mx_inline_cummax)
       {                                                                 \
         for (; i < n; i++)                                              \
           {                                                             \
-            if (mappers_abs (v[i]) OP mappers_abs (tmp))                \
+            if (std::abs (v[i]) OP std::abs (tmp))                      \
               {                                                         \
                 for (; j < i; j++)                                      \
                   r[j] = tmp;                                           \
                 tmp = v[i];                                             \
               }                                                         \
-            else if (mappers_abs (v[i]) == mappers_abs (tmp) &&         \
+            else if (std::abs (v[i]) == std::abs (tmp) &&               \
                      std::arg (v[i]) OP std::arg (tmp))                 \
               {                                                         \
                 for (; j < i; j++)                                      \
@@ -2926,7 +3163,7 @@ OP_CUMMINMAX_FCNN (mx_inline_cummax)
       {                                                                 \
         for (; i < n; i++)                                              \
           {                                                             \
-            if (mappers_abs (v[i]) OP mappers_abs (tmp))                \
+            if (std::abs (v[i]) OP std::abs (tmp))                      \
               {                                                         \
                 for (; j < i; j++)                                      \
                   {                                                     \
@@ -2936,7 +3173,7 @@ OP_CUMMINMAX_FCNN (mx_inline_cummax)
                 tmp = v[i];                                             \
                 tmpi = i;                                               \
               }                                                         \
-            else if (mappers_abs (v[i]) == mappers_abs (tmp) &&         \
+            else if (std::abs (v[i]) == std::abs (tmp) &&               \
                      std::arg (v[i]) OP std::arg (tmp))                 \
               {                                                         \
                 for (; j < i; j++)                                      \
@@ -3053,9 +3290,9 @@ OP_CCUMMINMAX_FCN (mx_inline_ccummax, >)
                     nan = true;                                         \
                   }                                                     \
                 else if (octave::math::isnan (r0[i]) ||                 \
-                         mappers_abs (v[i]) OP mappers_abs (r0[i]))     \
+                         std::abs (v[i]) OP std::abs (r0[i]))           \
                   r[i] = v[i];                                          \
-                else if (mappers_abs (v[i]) == mappers_abs (r0[i]) &&   \
+                else if (std::abs (v[i]) == std::abs (r0[i]) &&         \
                          std::arg (v[i]) OP std::arg (r0[i]))           \
                   r[i] = v[i];                                          \
                 else                                                    \
@@ -3070,9 +3307,9 @@ OP_CCUMMINMAX_FCN (mx_inline_ccummax, >)
           {                                                             \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if (mappers_abs (v[i]) OP mappers_abs (r0[i]))          \
+                if (std::abs (v[i]) OP std::abs (r0[i]))                \
                   r[i] = v[i];                                          \
-                else if (mappers_abs (v[i]) == mappers_abs (r0[i])  &&  \
+                else if (std::abs (v[i]) == std::abs (r0[i])  &&        \
                          std::arg (v[i]) OP std::arg (r0[i]))           \
                   r[i] = v[i];                                          \
                 else                                                    \
@@ -3204,12 +3441,12 @@ OP_CCUMMINMAX_FCN (mx_inline_ccummax, >)
                     nan = true;                                         \
                   }                                                     \
                 else if (octave::math::isnan (r0[i]) ||                 \
-                         mappers_abs (v[i]) OP mappers_abs (r0[i]))     \
+                         std::abs (v[i]) OP std::abs (r0[i]))           \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
                   }                                                     \
-                else if (mappers_abs (v[i]) == mappers_abs (r0[i]) &&   \
+                else if (std::abs (v[i]) == std::abs (r0[i]) &&         \
                          std::arg (v[i]) OP std::arg (r0[i]))           \
                   {                                                     \
                     r[i] = v[i];                                        \
@@ -3232,12 +3469,12 @@ OP_CCUMMINMAX_FCN (mx_inline_ccummax, >)
           {                                                             \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if (mappers_abs (v[i]) OP mappers_abs (r0[i]))          \
+                if (std::abs (v[i]) OP std::abs (r0[i]))                \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
                   }                                                     \
-                else if (mappers_abs (v[i]) == mappers_abs (r0[i]) &&   \
+                else if (std::abs (v[i]) == std::abs (r0[i]) &&         \
                          std::arg (v[i]) OP std::arg (r0[i]))           \
                   {                                                     \
                     r[i] = v[i];                                        \
@@ -3321,6 +3558,307 @@ OP_CCUMMINMAX_FCN2 (mx_inline_ccummax, >)
 
 OP_CCUMMINMAX_FCNN (mx_inline_ccummin)
 OP_CCUMMINMAX_FCNN (mx_inline_ccummax)
+
+// Faster implementation for int arrays, since they do not support
+// NaN values and real/abs comparison methods require specialized mapper.
+
+#define OP_INT_CUMMINMAX_FCN(F, OP)                                     \
+  template <typename T>                                                 \
+  void F (const T *v, T *r, octave_idx_type n, const bool realabs)      \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    T tmp = v[0];                                                       \
+    octave_idx_type i = 1;                                              \
+    octave_idx_type j = 0;                                              \
+    if (realabs)                                                        \
+      {                                                                 \
+        for (; i < n; i++)                                              \
+          if (v[i] OP tmp)                                              \
+            {                                                           \
+              for (; j < i; j++)                                        \
+                r[j] = tmp;                                             \
+              tmp = v[i];                                               \
+            }                                                           \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        for (; i < n; i++)                                              \
+          {                                                             \
+            if (mappers_abs (v[i]) OP mappers_abs (tmp))                \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  r[j] = tmp;                                           \
+                tmp = v[i];                                             \
+              }                                                         \
+            else if (mappers_abs (v[i]) == mappers_abs (tmp) &&         \
+                     v[i] OP tmp)                                       \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  r[j] = tmp;                                           \
+                tmp = v[i];                                             \
+              }                                                         \
+          }                                                             \
+      }                                                                 \
+    for (; j < i; j++)                                                  \
+      r[j] = tmp;                                                       \
+  }                                                                     \
+  template <typename T>                                                 \
+  void F (const T *v, T *r, octave_idx_type *ri, octave_idx_type n,     \
+          const bool realabs)                                           \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    T tmp = v[0];                                                       \
+    octave_idx_type tmpi = 0;                                           \
+    octave_idx_type i = 1;                                              \
+    octave_idx_type j = 0;                                              \
+    if (realabs)                                                        \
+      {                                                                 \
+        for (; i < n; i++)                                              \
+          if (v[i] OP tmp)                                              \
+            {                                                           \
+              for (; j < i; j++)                                        \
+                {                                                       \
+                  r[j] = tmp;                                           \
+                  ri[j] = tmpi;                                         \
+                }                                                       \
+              tmp = v[i];                                               \
+              tmpi = i;                                                 \
+            }                                                           \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        for (; i < n; i++)                                              \
+          {                                                             \
+            if (mappers_abs (v[i]) OP mappers_abs (tmp))                \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  {                                                     \
+                    r[j] = tmp;                                         \
+                    ri[j] = tmpi;                                       \
+                  }                                                     \
+                tmp = v[i];                                             \
+                tmpi = i;                                               \
+              }                                                         \
+            else if (mappers_abs (v[i]) == mappers_abs (tmp) &&         \
+                     v[i] OP tmp)                                       \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  {                                                     \
+                    r[j] = tmp;                                         \
+                    ri[j] = tmpi;                                       \
+                  }                                                     \
+                tmp = v[i];                                             \
+                tmpi = i;                                               \
+              }                                                         \
+          }                                                             \
+      }                                                                 \
+    for (; j < i; j++)                                                  \
+      {                                                                 \
+        r[j] = tmp;                                                     \
+        ri[j] = tmpi;                                                   \
+      }                                                                 \
+  }
+
+OP_INT_CUMMINMAX_FCN (mx_inline_intcummin, <)
+OP_INT_CUMMINMAX_FCN (mx_inline_intcummax, >)
+
+#define OP_INT_CUMMINMAX_FCN2(F, OP)                                    \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const T *v, T *r, octave_idx_type m, octave_idx_type n,            \
+     const bool realabs)                                                \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    const T *r0;                                                        \
+    octave_idx_type j = 0;                                              \
+    for (octave_idx_type i = 0; i < m; i++)                             \
+      {                                                                 \
+        r[i] = v[i];                                                    \
+      }                                                                 \
+    j++;                                                                \
+    v += m;                                                             \
+    r0 = r;                                                             \
+    r += m;                                                             \
+    if (realabs)                                                        \
+      {                                                                 \
+        while (j < n)                                                   \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if (v[i] OP r0[i])                                      \
+                  r[i] = v[i];                                          \
+                else                                                    \
+                  r[i] = r0[i];                                         \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+            r0 = r;                                                     \
+            r += m;                                                     \
+          }                                                             \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        while (j < n)                                                   \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if (mappers_abs (v[i]) OP mappers_abs (r0[i]))          \
+                  r[i] = v[i];                                          \
+                else if (mappers_abs (v[i]) == mappers_abs (r0[i]) &&   \
+                         v[i] OP r0[i])                                 \
+                  r[i] = v[i];                                          \
+                else                                                    \
+                  r[i] = r0[i];                                         \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+            r0 = r;                                                     \
+            r += m;                                                     \
+          }                                                             \
+      }                                                                 \
+  }                                                                     \
+  template <typename T>                                                 \
+  inline void                                                           \
+  F (const T *v, T *r, octave_idx_type *ri, octave_idx_type m,          \
+     octave_idx_type n, const bool realabs)                             \
+  {                                                                     \
+    if (! n)                                                            \
+      return;                                                           \
+    const T *r0;                                                        \
+    const octave_idx_type *r0i;                                         \
+    octave_idx_type j = 0;                                              \
+    for (octave_idx_type i = 0; i < m; i++)                             \
+      {                                                                 \
+        r[i] = v[i]; ri[i] = 0;                                         \
+      }                                                                 \
+    j++;                                                                \
+    v += m;                                                             \
+    r0 = r;                                                             \
+    r += m;                                                             \
+    r0i = ri;                                                           \
+    ri += m;                                                            \
+    if (realabs)                                                        \
+      {                                                                 \
+        while (j < n)                                                   \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if (v[i] OP r0[i])                                      \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else                                                    \
+                  {                                                     \
+                    r[i] = r0[i];                                       \
+                    ri[i] = r0i[i];                                     \
+                  }                                                     \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+            r0 = r;                                                     \
+            r += m;                                                     \
+            r0i = ri;                                                   \
+            ri += m;                                                    \
+          }                                                             \
+      }                                                                 \
+    else                                                                \
+      {                                                                 \
+        while (j < n)                                                   \
+          {                                                             \
+            for (octave_idx_type i = 0; i < m; i++)                     \
+              {                                                         \
+                if (mappers_abs (v[i]) OP mappers_abs (r0[i]))          \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else if (mappers_abs (v[i]) == mappers_abs (r0[i])      \
+                         && v[i] OP r0[i])                              \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else                                                    \
+                  {                                                     \
+                    r[i] = r0[i];                                       \
+                    ri[i] = r0i[i];                                     \
+                  }                                                     \
+              }                                                         \
+            j++;                                                        \
+            v += m;                                                     \
+            r0 = r;                                                     \
+            r += m;                                                     \
+            r0i = ri;                                                   \
+            ri += m;                                                    \
+          }                                                             \
+      }                                                                 \
+  }
+
+OP_INT_CUMMINMAX_FCN2 (mx_inline_intcummin, <)
+OP_INT_CUMMINMAX_FCN2 (mx_inline_intcummax, >)
+
+#define OP_INT_CUMMINMAX_FCNN(F)                                \
+  template <typename T>                                         \
+  inline void                                                   \
+  F (const T *v, T *r, octave_idx_type l, octave_idx_type n,    \
+     octave_idx_type u, const bool realabs)                     \
+  {                                                             \
+    if (! n)                                                    \
+      return;                                                   \
+    if (l == 1)                                                 \
+      {                                                         \
+        for (octave_idx_type i = 0; i < u; i++)                 \
+          {                                                     \
+            F (v, r, n, realabs);                               \
+            v += n;                                             \
+            r += n;                                             \
+          }                                                     \
+      }                                                         \
+    else                                                        \
+      {                                                         \
+        for (octave_idx_type i = 0; i < u; i++)                 \
+          {                                                     \
+            F (v, r, l, n, realabs);                            \
+            v += l*n;                                           \
+            r += l*n;                                           \
+          }                                                     \
+      }                                                         \
+  }                                                             \
+  template <typename T>                                         \
+  inline void                                                   \
+  F (const T *v, T *r, octave_idx_type *ri, octave_idx_type l,  \
+     octave_idx_type n, octave_idx_type u, const bool realabs)  \
+  {                                                             \
+    if (! n)                                                    \
+      return;                                                   \
+    if (l == 1)                                                 \
+      {                                                         \
+        for (octave_idx_type i = 0; i < u; i++)                 \
+          {                                                     \
+            F (v, r, ri, n, realabs);                           \
+            v += n;                                             \
+            r += n;                                             \
+            ri += n;                                            \
+          }                                                     \
+      }                                                         \
+    else                                                        \
+      {                                                         \
+        for (octave_idx_type i = 0; i < u; i++)                 \
+          {                                                     \
+            F (v, r, ri, l, n, realabs);                        \
+            v += l*n;                                           \
+            r += l*n;                                           \
+            ri += l*n;                                          \
+          }                                                     \
+      }                                                         \
+  }
+
+OP_INT_CUMMINMAX_FCNN (mx_inline_intcummin)
+OP_INT_CUMMINMAX_FCNN (mx_inline_intcummax)
 
 template <typename T>
 void mx_inline_diff (const T *v, T *r, octave_idx_type n,
@@ -3458,9 +3996,7 @@ get_extent_triplet (const dim_vector& dims, int& dim,
     }
 }
 
-// Appliers.
-// FIXME: is this the best design? C++ gives a lot of options here...
-// maybe it can be done without an explicit parameter?
+// For char and octave_int arrays
 
 template <typename R, typename T>
 inline Array<R>
@@ -3485,6 +4021,8 @@ do_mx_red_op (const Array<T>& src, int dim,
 
   return ret;
 }
+
+// For double, float, and complex arrays
 
 template <typename R, typename T>
 inline Array<R>
@@ -3561,6 +4099,8 @@ do_mx_cum_op (const Array<T>& src, int dim, bool nanflag,
   return ret;
 }
 
+// For double, float, and complex arrays
+
 template <typename R>
 inline Array<R>
 do_mx_minmax_op (const Array<R>& src, int dim, bool nanflag, bool realabs,
@@ -3607,6 +4147,54 @@ do_mx_minmax_op (const Array<R>& src, Array<octave_idx_type>& idx, int dim,
   return ret;
 }
 
+// For octave_int arrays
+
+template <typename R>
+inline Array<R>
+do_mx_minmax_op (const Array<R>& src, int dim, bool realabs,
+                 void (*mx_minmax_op) (const R *, R *, octave_idx_type,
+                                       octave_idx_type, octave_idx_type, bool))
+{
+  octave_idx_type l, n, u;
+  dim_vector dims = src.dims ();
+  get_extent_triplet (dims, dim, l, n, u);
+
+  // If the dimension is zero, we don't do anything.
+  if (dim < dims.ndims () && dims(dim) != 0) dims(dim) = 1;
+  dims.chop_trailing_singletons ();
+
+  Array<R> ret (dims);
+  mx_minmax_op (src.data (), ret.rwdata (), l, n, u, realabs);
+
+  return ret;
+}
+
+template <typename R>
+inline Array<R>
+do_mx_minmax_op (const Array<R>& src, Array<octave_idx_type>& idx, int dim,
+                 bool realabs,
+                 void (*mx_minmax_op) (const R *, R *, octave_idx_type *,
+                                       octave_idx_type, octave_idx_type,
+                                       octave_idx_type, bool))
+{
+  octave_idx_type l, n, u;
+  dim_vector dims = src.dims ();
+  get_extent_triplet (dims, dim, l, n, u);
+
+  // If the dimension is zero, we don't do anything.
+  if (dim < dims.ndims () && dims(dim) != 0) dims(dim) = 1;
+  dims.chop_trailing_singletons ();
+
+  Array<R> ret (dims);
+  if (idx.dims () != dims) idx = Array<octave_idx_type> (dims);
+
+  mx_minmax_op (src.data (), ret.rwdata (), idx.rwdata (), l, n, u, realabs);
+
+  return ret;
+}
+
+// For char arrays
+
 template <typename R>
 inline Array<R>
 do_mx_minmax_op (const Array<R>& src, int dim,
@@ -3650,6 +4238,8 @@ do_mx_minmax_op (const Array<R>& src, Array<octave_idx_type>& idx, int dim,
   return ret;
 }
 
+// For double, float, and complex arrays
+
 template <typename R>
 inline Array<R>
 do_mx_cumminmax_op (const Array<R>& src, int dim, bool nanflag, bool realabs,
@@ -3684,6 +4274,46 @@ do_mx_cumminmax_op (const Array<R>& src, Array<octave_idx_type>& idx, int dim,
 
   mx_cumminmax_op (src.data (), ret.rwdata (), idx.rwdata (),
                    l, n, u, nanflag, realabs);
+
+  return ret;
+}
+
+// For octave_int arrays
+
+template <typename R>
+inline Array<R>
+do_mx_cumminmax_op (const Array<R>& src, int dim, bool realabs,
+                    void (*mx_cumminmax_op) (const R *, R *, octave_idx_type,
+                                             octave_idx_type, octave_idx_type,
+                                             bool))
+{
+  octave_idx_type l, n, u;
+  const dim_vector& dims = src.dims ();
+  get_extent_triplet (dims, dim, l, n, u);
+
+  Array<R> ret (dims);
+  mx_cumminmax_op (src.data (), ret.rwdata (), l, n, u, realabs);
+
+  return ret;
+}
+
+template <typename R>
+inline Array<R>
+do_mx_cumminmax_op (const Array<R>& src, Array<octave_idx_type>& idx, int dim,
+                    bool realabs,
+                    void (*mx_cumminmax_op) (const R *, R *, octave_idx_type *,
+                                             octave_idx_type, octave_idx_type,
+                                             octave_idx_type, bool))
+{
+  octave_idx_type l, n, u;
+  const dim_vector& dims = src.dims ();
+  get_extent_triplet (dims, dim, l, n, u);
+
+  Array<R> ret (dims);
+  if (idx.dims () != dims) idx = Array<octave_idx_type> (dims);
+
+  mx_cumminmax_op (src.data (), ret.rwdata (), idx.rwdata (),
+                   l, n, u, realabs);
 
   return ret;
 }

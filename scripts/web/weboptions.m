@@ -179,58 +179,13 @@ classdef weboptions < handle
         error ("weboptions: invalid number of arguments");
       endif
 
-      h = cell2struct (varargin(2:2:end), varargin(1:2:end), 2);
-
-      for fieldname = fieldnames (h)'
-
-        switch (fieldname{1})
-
-          case "CharacterEncoding"
-            f.CharacterEncoding = h.CharacterEncoding;
-
-          case "UserAgent"
-            f.UserAgent = h.UserAgent;
-
-          case "Timeout"
-            f.Timeout = h.Timeout;
-
-          case "Username"
-            f.Username = h.Username;
-
-          case "Password"
-            f.Password = h.Password;
-
-          case "KeyName"
-            f.KeyName = h.KeyName;
-
-          case "KeyValue"
-            f.KeyValue = h.KeyValue;
-
-          case "HeaderFields"
-            f.HeaderFields = h.HeaderFields;
-
-          case "ContentType"
-            f.ContentType = h.ContentType;
-
-          case "ContentReader"
-            f.ContentReader = h.ContentReader;
-
-          case "MediaType"
-            f.MediaType = h.MediaType;
-
-          case "RequestMethod"
-            f.RequestMethod = h.RequestMethod;
-
-          case "ArrayFormat"
-            f.ArrayFormat = h.ArrayFormat;
-
-          case "CertificateFilename"
-            f.CertificateFilename = h.CertificateFilename;
-
-          otherwise
-            error ("weboptions: Undefined field '%s'", field);
-
-        endswitch
+      propnames = properties (f);
+      for i = 1:2:numel (varargin)
+        idx = find (strcmpi (varargin{i}, propnames), 1);
+        if (isempty (idx))
+          error ("weboptions: Undefined field '%s'", varargin{i});
+        endif
+        f.(propnames{idx}) = varargin{i+1};
       endfor
 
     endfunction

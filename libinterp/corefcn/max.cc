@@ -1108,6 +1108,19 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!assert (min ([1i 2 -3 4]), 1i)
 %!assert (min ([-2+i, 2-i]), 2-1i)
 
+## Test nanflag with dense arrays
+%!test
+%! [m,i] = min ([1,2,3;4,3,NaN;4,5,6], [], 2, "includenan");
+%! assert (m, [1; NaN; 4]);
+%! assert (i, [1; 3; 1]);
+%! [m,i] = min ([1,2,3;4,NaN,NaN;4,5,6], [], 2, "includenan");
+%! assert (m, [1; NaN; 4]);
+%! assert (i, [1; 2; 1]);
+%!test
+%! x = magic (3);
+%! x(2, 3) = NaN;
+%! assert (min (x, [], 2, "includenan"), [1; NaN; 2]);
+
 ## Test input validation
 %!error min ()
 %!error min (1, 2, 3, 4)
@@ -1402,6 +1415,19 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!assert (min (2+i, 2-i, "ComparisonMethod", "real"), 2-1i)
 %!assert (min ([1i 2 -3 4]), 1i)
 %!assert (min ([-2+i, 2-i]), 2-1i)
+
+## Test nanflag with dense arrays
+%!test
+%! [m,i] = max ([1,2,3;4,3,NaN;4,5,6], [], 2, "includenan");
+%! assert (m, [3; NaN; 6]);
+%! assert (i, [3; 3; 3]);
+%! [m,i] = max ([1,2,3;4,NaN,NaN;4,5,6], [], 2, "includenan");
+%! assert (m, [3; NaN; 6]);
+%! assert (i, [3; 2; 3]);
+%!test
+%! x = magic (3);
+%! x(2, 3) = NaN;
+%! assert (max (x, [], 2, "includenan"), [8; NaN; 9]);
 
 ## Test input validation
 %!error max ()

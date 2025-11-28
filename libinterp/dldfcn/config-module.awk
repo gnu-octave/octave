@@ -96,7 +96,6 @@ BEGIN {
   print "";
   print "%reldir%/PKG_ADD: $(DLDFCN_DEFUN_FILES) $(srcdir)/build-aux/mk-pkg-add.sh | %reldir%/$(octave_dirstamp)";
   print "	$(AM_V_GEN)rm -f $@-t && \\"
-  print "	([ -z $@-t.__DIR__ ] || mkdir -p $@-t.__DIR__) && \\"
   print "	$(SHELL) $(srcdir)/build-aux/mk-pkg-add.sh \"$(srcdir)\" $(DLDFCN_DEFUN_FILES) > $@-t && \\";
   print "	mv $@-t $@";
   print "";

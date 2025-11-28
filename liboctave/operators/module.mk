@@ -73,7 +73,6 @@ OP_SRCDIR = $(srcdir)/%reldir%
 
 define run-mk-ops
   rm -f $@-t $@ && \
-  ([ -z $@-t.__DIR__ ] || mkdir -p $@-t.__DIR__) && \
   $(AWK) -f $(OP_SRCDIR)/mk-ops.awk -v build_file=$(notdir $@) $< > $@-t && \
   mv $@-t $@
 endef

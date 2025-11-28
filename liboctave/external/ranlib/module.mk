@@ -45,7 +45,6 @@ noinst_LTLIBRARIES += %reldir%/libranlib.la
 ## ranlib directory may not exist in VPATH build; create it if necessary.
 %reldir%/ranlib.def: $(RANLIB_SRC) %reldir%/../mk-f77-def.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	([ -z $@-t.__DIR__ ] || mkdir -p $@-t.__DIR__) && \
 	$(SHELL) %reldir%/../mk-f77-def.sh $(srcdir) $(RANLIB_SRC) > $@-t && \
 	mv $@-t $@
 

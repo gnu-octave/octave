@@ -23,7 +23,6 @@ include %reldir%/slatec-fn/module.mk
 
 %reldir%/external.def: $(%canon_reldir%_libexternal_la_SOURCES) %reldir%/mk-f77-def.sh
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	([ -z $@-t.__DIR__ ] || mkdir -p $@-t.__DIR__) && \
 	$(SHELL) %reldir%/mk-f77-def.sh $(srcdir) $(%canon_reldir%_libexternal_la_SOURCES) > $@-t && \
 	mv $@-t $@
 

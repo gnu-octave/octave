@@ -105,7 +105,6 @@ PARSE_TREE_SRC = \
 ## oct-gperf.h file.
 %reldir%/oct-gperf.h: %reldir%/octave.gperf
 	$(AM_V_GEN)rm -f $@-t $@t1 $@ && \
-	([ -z $@-t.__DIR__ ] || mkdir -p $@-t.__DIR__) && \
 	$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash $< > $@-t1 && \
 	$(SED) -e 's,lookup\[,gperf_lookup[,' -e 's,register ,,g' < $@-t1 > $@-t && \
 	mv $@-t $@ && \

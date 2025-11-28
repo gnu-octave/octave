@@ -141,6 +141,5 @@ libinterp_EXTRA_DIST += \
 ## Special rules for sources which must be built before rest of compilation.
 %reldir%/ops.cc: $(LIBINTERP_OPERATORS_SRC) %reldir%/mk-ops.sh
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	([ -z $@-t.__DIR__ ] || mkdir -p $@-t.__DIR__) && \
 	$(SHELL) $(srcdir)/%reldir%/mk-ops.sh $(LIBINTERP_OPERATORS_SRC) > $@-t && \
 	mv $@-t $@

@@ -207,7 +207,6 @@ nobase_libinterptests_DATA = $(LIBINTERP_TST_FILES)
 
 %reldir%/build-env-features.cc: config.h %reldir%/mk-build-env-features.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
-	([ -z $@-t.__DIR__ ] || mkdir -p $@-t.__DIR__) && \
 	$(SHELL) $(srcdir)/%reldir%/mk-build-env-features.sh $< > $@-t && \
 	mv $@-t $@
 
@@ -218,13 +217,11 @@ mkbuiltins_dld_opt =
 
 %reldir%/builtins.cc: $(LIBINTERP_DEFUN_FILES) %reldir%/mk-builtins.pl | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
-	([ -z $@-t.__DIR__ ] || mkdir -p $@-t.__DIR__) && \
 	$(PERL) $(srcdir)/%reldir%/mk-builtins.pl --source $(mkbuiltins_dld_opt) "$(srcdir)" -- $(LIBINTERP_DEFUN_FILES) > $@-t && \
 	mv $@-t $@
 
 %reldir%/builtin-defun-decls.h: $(LIBINTERP_DEFUN_FILES) %reldir%/mk-builtins.pl | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
-	([ -z $@-t.__DIR__ ] || mkdir -p $@-t.__DIR__) && \
 	$(PERL) $(srcdir)/%reldir%/mk-builtins.pl --header $(mkbuiltins_dld_opt) "$(srcdir)" -- $(LIBINTERP_DEFUN_FILES) > $@-t && \
 	$(simple_move_if_change_rule)
 

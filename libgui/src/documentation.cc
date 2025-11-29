@@ -704,6 +704,12 @@ documentation::load_ref (const QString& ref_name)
 #if defined (HAVE_QHELPENGINE_DOCUMENTSFORIDENTIFIER)
   QList<QHelpLink> found_links
     = m_help_engine->documentsForIdentifier (ref_name);
+  // Depending on how the qch-file was generated, searching for an Id
+  // might not be successful and the full text search would be started
+  // next. In order to still find an exisiting index entry, try searching
+  // for the keyword as well.
+  if (found_links.count () == 0)
+    found_links = m_help_engine->documentsForKeyword (ref_name);
 #else
   QMap<QString, QUrl> found_links
     = m_help_engine->linksForIdentifier (ref_name);

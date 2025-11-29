@@ -1878,7 +1878,6 @@ main_window::handle_octave_ready ()
           if (this_mw.isNull ())
             return;
 
-          interp.PS1 (">> ");
           std::string prompt = interp.PS1 ();
 
           std::string decoded_prompt

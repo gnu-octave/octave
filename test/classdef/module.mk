@@ -4,6 +4,7 @@ classdef_TEST_FILES = \
   %reldir%/@class_bug67362/class_bug67362.m \
   %reldir%/@class_bug67362/shared_name.m \
   %reldir%/bug_60763.m \
+  %reldir%/cdef_array_break_cycles.m \
   %reldir%/class_bug50011_1.m \
   %reldir%/class_bug50011_1A.m \
   %reldir%/class_bug50011_1B.m \

@@ -542,6 +542,13 @@ cdef_object_array::fill_empty_values (Array<cdef_object>& arr)
 }
 
 void
+cdef_object_array::break_closure_cycles (const std::shared_ptr<stack_frame>& frame)
+{
+  for (octave_idx_type i = 0; i < m_array.numel (); i++)
+    m_array(i).break_closure_cycles (frame);
+}
+
+void
 cdef_object_scalar::break_closure_cycles (const std::shared_ptr<stack_frame>& frame)
 {
   for (octave_idx_type i = 0; i < m_map.nfields (); i++)

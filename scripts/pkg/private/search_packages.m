@@ -86,22 +86,25 @@ function retval = search_packages (searchterms, allpackages, verbose = false)
       v = convert_possible_cell_to_struct (__pkg__.(this).versions(1)).id;
       vers(i, 1:numel (v)) = v;
 
-      ## Add description, favoring the parts with the search terms.
+      ## Add description
       str = __pkg__.(this).description;
-      idx = cell2mat (regexpi (str, searchterms));
-      sp = find (isspace (str));
-      splo = max (sp(sp < min (idx) - 5));
-      if (! isempty (splo))
-        str(1:splo) = [];
-        str = ["...", str];
-      endif
 
-      idx = cell2mat (regexpi (str, searchterms));
-      sp = find (isspace (str));
-      sphi = min (sp(sp > max (idx) + 60));
-      if (! isempty (sphi))
-        str(sphi:end) = [];
-        str = [str, "..."];
+      if (! allpackages)  # search terms provided, so favor those parts
+        idx = cell2mat (regexpi (str, searchterms));
+        sp = find (isspace (str));
+        splo = max (sp(sp < min (idx) - 5));
+        if (! isempty (splo))
+          str(1:splo) = [];
+          str = ["...", str];
+        endif
+
+        idx = cell2mat (regexpi (str, searchterms));
+        sp = find (isspace (str));
+        sphi = min (sp(sp > max (idx) + 60));
+        if (! isempty (sphi))
+          str(sphi:end) = [];
+          str = [str, "..."];
+        endif
       endif
 
       if (numel (str) > 80)
@@ -135,7 +138,7 @@ function retval = search_packages (searchterms, allpackages, verbose = false)
     special = false;
 
     printf ("Search found %d results\n", nnz (has_search_terms));
-    printf ("              Package Name | Version | Search terms\n");
+    printf ("              Package Name | Version | Description\n");
     printf ("---------------------------+---------+------------------------------------\n");
 
     for i = find (has_search_terms)  # restrict attention to search results only

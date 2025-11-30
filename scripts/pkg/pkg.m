@@ -584,7 +584,7 @@ function [local_packages, global_packages] = pkg (varargin)
             ## manually, just in case the package author chooses zip
             ## or any other archive format? Or will all packages always
             ## be required to give .tar.gz?
-            [v, url] = get_pkg_info (file, verbose);
+            [v, url, sha256_online] = get_pkg_info (file);
             tmp_file = tempname (tmp_dir, [file "-" v "-"]);
             tmp_file = [tmp_file, ".tar.gz"];
             local_files{end+1} = tmp_file;  # so that it gets cleaned up
@@ -597,6 +597,22 @@ function [local_packages, global_packages] = pkg (varargin)
             [~, success, msg] = urlwrite (url, tmp_file);
             if (! success)
               error ("pkg: failed to download '%s': %s", url, msg);
+            endif
+
+            ## Check sha256 checksum, unless it is a 'dev' version
+            if (! strcmp (v, "dev"))
+              if (verbose)
+                printf ("comparing hash...\n");
+              endif
+
+              sha256_local = hash ("sha256", fileread (tmp_file));
+
+              if (! strcmp (sha256_online, sha256_local))
+                error ("pkg: downloaded package is corrupt:\n- sha256: %s", ...
+                       sha256_local);
+              elseif (verbose)
+                printf ("hash verified!\n");
+              endif
             endif
 
             ## Replace the URL provided with the file we just downloaded.

@@ -31,7 +31,7 @@
 ## If @var{verbose} is true, print diagnostic messages.
 ## @end deftypefn
 
-function [ver, url] = get_pkg_info (name, verbose = false)
+function [ver, url, sha256] = get_pkg_info (name, verbose = false)
 
   ## Verify that name is valid.
   if (! (ischar (name) && rows (name) == 1 && ndims (name) == 2))
@@ -51,6 +51,7 @@ function [ver, url] = get_pkg_info (name, verbose = false)
     tmp = convert_possible_cell_to_struct (__pkg__.(name).versions(1));
     ver = tmp.id;
     url = tmp.url;
+    sha256 = tmp.sha256;
 
   else  # no such package in list; offer suggestions with error message.
 

@@ -2649,10 +2649,7 @@ dnl enabled.
 dnl
 AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
   ## Including <sunlinsol/sunlinsol_klu.h> may depend on including klu.h
-  ## first.  So perform the check as follows using several different
-  ## possible locations for klu.h instead of using OCTAVE_CHECK_LIB to
-  ## check for sunlinsol_klu.h.
-  AC_CHECK_HEADERS([klu.h klu/klu.h suitesparse/klu.h ufsparse/klu.h])
+  ## first.  The check for "klu.h" needs to have been performed before here.
   AC_CHECK_HEADERS([sunlinsol/sunlinsol_klu.h], [], [],
     [#if defined (HAVE_KLU_H)
      #  include <klu.h>
@@ -2660,8 +2657,6 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
      #  include <klu/klu.h>
      #elif  defined (HAVE_SUITESPARSE_KLU_H)
      #  include <suitesparse/klu.h>
-     #elif  defined (HAVE_UFSPARSE_KLU_H)
-     #  include <ufsparse/klu.h>
      #endif
     ])
   ## Check for library that exports SUNContext_Create
@@ -2693,9 +2688,6 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
          #endif
          #if defined (HAVE_SUITESPARSE_KLU_H)
          #include <suitesparse/klu.h>
-         #endif
-         #if defined (HAVE_UFPARSE_KLU_H)
-         #include <ufsparse/klu.h>
          #endif
          #if defined (HAVE_SUNLINSOL_SUNLINSOL_KLU_H)
          #include <sunlinsol/sunlinsol_klu.h>
@@ -2739,9 +2731,6 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
            #endif
            #if defined (HAVE_SUITESPARSE_KLU_H)
            #include <suitesparse/klu.h>
-           #endif
-           #if defined (HAVE_UFPARSE_KLU_H)
-           #include <ufsparse/klu.h>
            #endif
            #if defined (HAVE_SUNLINSOL_SUNLINSOL_KLU_H)
            #include <sunlinsol/sunlinsol_klu.h>

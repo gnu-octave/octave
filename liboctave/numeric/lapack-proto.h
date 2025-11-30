@@ -1913,6 +1913,60 @@ extern "C"
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
+  // TREXC
+
+  // Real versions
+  F77_RET_T
+  F77_FUNC (dtrexc, DTREXC) (F77_CONST_CHAR_ARG_DECL,
+                            const F77_INT&,
+                            F77_DBLE *,
+                            const F77_INT&,
+                            F77_DBLE *,
+                            const F77_INT&,
+                            F77_INT&,
+                            F77_INT&,
+                            F77_DBLE *,
+                            F77_INT&
+                            F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (strexc, STREXC) (F77_CONST_CHAR_ARG_DECL,
+                            const F77_INT&,
+                            F77_REAL *,
+                            const F77_INT&,
+                            F77_REAL *,
+                            const F77_INT&,
+                            F77_INT&,
+                            F77_INT&,
+                            F77_REAL *,
+                            F77_INT&
+                            F77_CHAR_ARG_LEN_DECL);
+
+  // Complex versions
+  F77_RET_T
+  F77_FUNC (ztrexc, ZTREXC) (F77_CONST_CHAR_ARG_DECL,
+                            const F77_INT&,
+                            F77_DBLE_CMPLX *,
+                            const F77_INT&,
+                            F77_DBLE_CMPLX *,
+                            const F77_INT&,
+                            const F77_INT&,
+                            F77_INT&,
+                            F77_INT&
+                            F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (ctrexc, CTREXC) (F77_CONST_CHAR_ARG_DECL,
+                            const F77_INT&,
+                            F77_CMPLX *,
+                            const F77_INT&,
+                            F77_CMPLX *,
+                            const F77_INT&,
+                            const F77_INT&,
+                            F77_INT&,
+                            F77_INT&
+                            F77_CHAR_ARG_LEN_DECL);
+
   // TRSEN
 
   F77_RET_T

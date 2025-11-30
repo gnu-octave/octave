@@ -75,9 +75,6 @@
 #    if defined (HAVE_SUITESPARSE_KLU_H)
 #      include <suitesparse/klu.h>
 #    endif
-#    if defined (HAVE_UFPARSE_KLU_H)
-#      include <ufsparse/klu.h>
-#    endif
 #    include <sunlinsol/sunlinsol_klu.h>
 #  endif
 

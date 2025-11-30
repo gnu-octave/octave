@@ -308,6 +308,8 @@ Copyright:
 - 2010  Qianqian Fang
 - 2010-2012  Iain Murray
 - 2010-2017  Jordi Gutiérrez Hermoso
+- 2010  Nicholas J. Higham
+- 2010  Awad H. Al-Mohy
 - 2011  Alexander Klein
 - 2011  Andriy Shinkarchuck
 - 2011  Andy Buckle
@@ -457,6 +459,7 @@ Copyright:
 - 2015-2017  Avinoam Kalma
 - 2015-2017  Lachlan Andrew
 - 2015-2025  Nicholas R. Jankowski
+- 2015  Mudit Sharma
 - 2016  Abhinav Tripathi
 - 2016  Andrew Thornton
 - 2016  Atri Bhattacharya

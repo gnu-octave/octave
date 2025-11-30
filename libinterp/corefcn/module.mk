@@ -276,6 +276,7 @@ COREFCN_SRC = \
   %reldir%/text-renderer.cc \
   %reldir%/time.cc \
   %reldir%/toplev.cc \
+  %reldir%/trexc.cc \
   %reldir%/tril.cc \
   %reldir%/tsearch.cc \
   %reldir%/typecast.cc \

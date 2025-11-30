@@ -40,13 +40,33 @@ plus_or_minus (MSparse<T>& a, const MSparse<T>& b, OP op, const char *op_name)
   octave_idx_type b_nc = b.cols ();
 
   if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
-    r.resize (a_nr, std::max (a_nc, b_nc));
+    {
+      if (a_nc == 1 || b_nc == 1 || a_nc == b_nc)
+        r.resize (a_nr, std::max (a_nc, b_nc));
+      else
+        octave::err_nonconformant (op_name, a_nr, a_nc, b_nr, b_nc);
+    }
   else if (a_nc == 0 && (b_nc == 0 || b_nc == 1))
-    r.resize (std::max (a_nr, b_nr), a_nc);
+    {
+      if (a_nr == 1 || b_nr == 1 || a_nr == b_nr)
+        r.resize (std::max (a_nr, b_nr), a_nc);
+      else
+        octave::err_nonconformant (op_name, a_nr, a_nc, b_nr, b_nc);
+    }
   else if (b_nr == 0 && (a_nr == 0 || a_nr == 1))
-    r.resize (b_nr, std::max (a_nc, b_nc));
+    {
+      if (b_nc == 1 || a_nc == 1 || b_nc == a_nc)
+        r.resize (b_nr, std::max (a_nc, b_nc));
+      else
+        octave::err_nonconformant (op_name, a_nr, a_nc, b_nr, b_nc);
+    }
   else if (b_nc == 0 && (a_nc == 0 || a_nc == 1))
-    r.resize (std::max (a_nr, b_nr), b_nc);
+    {
+      if (b_nr == 1 || a_nr == 1 || b_nr == a_nr)
+        r.resize (std::max (a_nr, b_nr), b_nc);
+      else
+        octave::err_nonconformant (op_name, a_nr, a_nc, b_nr, b_nc);
+    }
   else if (a_nr != b_nr || a_nc != b_nc)
     octave::err_nonconformant (op_name, a_nr, a_nc, b_nr, b_nc);
   else
@@ -312,13 +332,33 @@ plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
         }
     }
   if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
-    r.resize (a_nr, std::max (a_nc, b_nc));
+    {
+      if (a_nc == 1 || b_nc == 1 || a_nc == b_nc)
+        r.resize (a_nr, std::max (a_nc, b_nc));
+      else
+        octave::err_nonconformant (op_name, a_nr, a_nc, b_nr, b_nc);
+    }
   else if (a_nc == 0 && (b_nc == 0 || b_nc == 1))
-    r.resize (std::max (a_nr, b_nr), a_nc);
+    {
+      if (a_nr == 1 || b_nr == 1 || a_nr == b_nr)
+        r.resize (std::max (a_nr, b_nr), a_nc);
+      else
+        octave::err_nonconformant (op_name, a_nr, a_nc, b_nr, b_nc);
+    }
   else if (b_nr == 0 && (a_nr == 0 || a_nr == 1))
-    r.resize (b_nr, std::max (a_nc, b_nc));
+    {
+      if (b_nc == 1 || a_nc == 1 || b_nc == a_nc)
+        r.resize (b_nr, std::max (a_nc, b_nc));
+      else
+        octave::err_nonconformant (op_name, a_nr, a_nc, b_nr, b_nc);
+    }
   else if (b_nc == 0 && (a_nc == 0 || a_nc == 1))
-    r.resize (std::max (a_nr, b_nr), b_nc);
+    {
+      if (b_nr == 1 || a_nr == 1 || b_nr == a_nr)
+        r.resize (std::max (a_nr, b_nr), b_nc);
+      else
+        octave::err_nonconformant (op_name, a_nr, a_nc, b_nr, b_nc);
+    }
   else if (a_nr != b_nr || a_nc != b_nc)
     octave::err_nonconformant (op_name, a_nr, a_nc, b_nr, b_nc);
   else
@@ -441,13 +481,33 @@ product (const MSparse<T>& a, const MSparse<T>& b)
         }
     }
   if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
-    r.resize (a_nr, std::max (a_nc, b_nc));
+    {
+      if (a_nc == 1 || b_nc == 1 || a_nc == b_nc)
+        r.resize (a_nr, std::max (a_nc, b_nc));
+      else
+        octave::err_nonconformant ("product", a_nr, a_nc, b_nr, b_nc);
+    }
   else if (a_nc == 0 && (b_nc == 0 || b_nc == 1))
-    r.resize (std::max (a_nr, b_nr), a_nc);
+    {
+      if (a_nr == 1 || b_nr == 1 || a_nr == b_nr)
+        r.resize (std::max (a_nr, b_nr), a_nc);
+      else
+        octave::err_nonconformant ("product", a_nr, a_nc, b_nr, b_nc);
+    }
   else if (b_nr == 0 && (a_nr == 0 || a_nr == 1))
-    r.resize (b_nr, std::max (a_nc, b_nc));
+    {
+      if (b_nc == 1 || a_nc == 1 || b_nc == a_nc)
+        r.resize (b_nr, std::max (a_nc, b_nc));
+      else
+        octave::err_nonconformant ("product", a_nr, a_nc, b_nr, b_nc);
+    }
   else if (b_nc == 0 && (a_nc == 0 || a_nc == 1))
-    r.resize (std::max (a_nr, b_nr), b_nc);
+    {
+      if (b_nr == 1 || a_nr == 1 || b_nr == a_nr)
+        r.resize (std::max (a_nr, b_nr), b_nc);
+      else
+        octave::err_nonconformant ("product", a_nr, a_nc, b_nr, b_nc);
+    }
   else if (a_nr != b_nr || a_nc != b_nc)
     octave::err_nonconformant ("product", a_nr, a_nc, b_nr, b_nc);
   else
@@ -569,13 +629,33 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
         }
     }
   if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
-    r.resize (a_nr, std::max (a_nc, b_nc));
+    {
+      if (a_nc == 1 || b_nc == 1 || a_nc == b_nc)
+        r.resize (a_nr, std::max (a_nc, b_nc));
+      else
+        octave::err_nonconformant ("quotient", a_nr, a_nc, b_nr, b_nc);
+    }
   else if (a_nc == 0 && (b_nc == 0 || b_nc == 1))
-    r.resize (std::max (a_nr, b_nr), a_nc);
+    {
+      if (a_nr == 1 || b_nr == 1 || a_nr == b_nr)
+        r.resize (std::max (a_nr, b_nr), a_nc);
+      else
+        octave::err_nonconformant ("quotient", a_nr, a_nc, b_nr, b_nc);
+    }
   else if (b_nr == 0 && (a_nr == 0 || a_nr == 1))
-    r.resize (b_nr, std::max (a_nc, b_nc));
+    {
+      if (b_nc == 1 || a_nc == 1 || b_nc == a_nc)
+        r.resize (b_nr, std::max (a_nc, b_nc));
+      else
+        octave::err_nonconformant ("quotient", a_nr, a_nc, b_nr, b_nc);
+    }
   else if (b_nc == 0 && (a_nc == 0 || a_nc == 1))
-    r.resize (std::max (a_nr, b_nr), b_nc);
+    {
+      if (b_nr == 1 || a_nr == 1 || b_nr == a_nr)
+        r.resize (std::max (a_nr, b_nr), b_nc);
+      else
+        octave::err_nonconformant ("quotient", a_nr, a_nc, b_nr, b_nc);
+    }
   else if (a_nr != b_nr || a_nc != b_nc)
     octave::err_nonconformant ("quotient", a_nr, a_nc, b_nr, b_nc);
   else

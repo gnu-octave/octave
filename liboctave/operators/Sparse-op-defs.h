@@ -434,8 +434,16 @@
             r.maybe_compress ();                                        \
           }                                                             \
       }                                                                 \
+    else if (m1_nr == 0 && (m2_nr == 0 || m2_nr == 1))                  \
+      r.resize (m1_nr, std::max (m1_nc, m2_nc));                        \
+    else if (m1_nc == 0 && (m2_nc == 0 || m2_nc == 1))                  \
+      r.resize (std::max (m1_nr, m2_nr), m1_nc);                        \
+    else if (m2_nr == 0 && (m1_nr == 0 || m1_nr == 1))                  \
+      r.resize (m2_nr, std::max (m1_nc, m2_nc));                        \
+    else if (m2_nc == 0 && (m1_nc == 0 || m1_nc == 1))                  \
+      r.resize (std::max (m1_nr, m2_nr), m2_nc);                        \
     else if (m1_nr != m2_nr || m1_nc != m2_nc)                          \
-      octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);               \
+      octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);       \
     else                                                                \
       {                                                                 \
         r = R (m1_nr, m1_nc, (m1.nnz () + m2.nnz ()));                  \
@@ -542,8 +550,16 @@
             r.maybe_compress ();                                        \
           }                                                             \
       }                                                                 \
+    else if (m1_nr == 0 && (m2_nr == 0 || m2_nr == 1))                  \
+      r.resize (m1_nr, std::max (m1_nc, m2_nc));                        \
+    else if (m1_nc == 0 && (m2_nc == 0 || m2_nc == 1))                  \
+      r.resize (std::max (m1_nr, m2_nr), m1_nc);                        \
+    else if (m2_nr == 0 && (m1_nr == 0 || m1_nr == 1))                  \
+      r.resize (m2_nr, std::max (m1_nc, m2_nc));                        \
+    else if (m2_nc == 0 && (m1_nc == 0 || m1_nc == 1))                  \
+      r.resize (std::max (m1_nr, m2_nr), m2_nc);                        \
     else if (m1_nr != m2_nr || m1_nc != m2_nc)                          \
-      octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);               \
+      octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);       \
     else                                                                \
       {                                                                 \
         r = R (m1_nr, m1_nc, (m1.nnz () > m2.nnz () ? m1.nnz () : m2.nnz ())); \
@@ -658,8 +674,16 @@
             r.maybe_compress ();                                        \
           }                                                             \
       }                                                                 \
+    else if (m1_nr == 0 && (m2_nr == 0 || m2_nr == 1))                  \
+      r.resize (m1_nr, std::max (m1_nc, m2_nc));                        \
+    else if (m1_nc == 0 && (m2_nc == 0 || m2_nc == 1))                  \
+      r.resize (std::max (m1_nr, m2_nr), m1_nc);                        \
+    else if (m2_nr == 0 && (m1_nr == 0 || m1_nr == 1))                  \
+      r.resize (m2_nr, std::max (m1_nc, m2_nc));                        \
+    else if (m2_nc == 0 && (m1_nc == 0 || m1_nc == 1))                  \
+      r.resize (std::max (m1_nr, m2_nr), m2_nc);                        \
     else if (m1_nr != m2_nr || m1_nc != m2_nc)                          \
-      octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);               \
+      octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);       \
     else                                                                \
       {                                                                 \
                                                                         \

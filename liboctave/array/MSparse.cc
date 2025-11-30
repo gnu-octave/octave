@@ -39,61 +39,69 @@ plus_or_minus (MSparse<T>& a, const MSparse<T>& b, OP op, const char *op_name)
   octave_idx_type b_nr = b.rows ();
   octave_idx_type b_nc = b.cols ();
 
-  if (a_nr != b_nr || a_nc != b_nc)
+  if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
+    r.resize (a_nr, std::max (a_nc, b_nc));
+  else if (a_nc == 0 && (b_nc == 0 || b_nc == 1))
+    r.resize (std::max (a_nr, b_nr), a_nc);
+  else if (b_nr == 0 && (a_nr == 0 || a_nr == 1))
+    r.resize (b_nr, std::max (a_nc, b_nc));
+  else if (b_nc == 0 && (a_nc == 0 || a_nc == 1))
+    r.resize (std::max (a_nr, b_nr), b_nc);
+  else if (a_nr != b_nr || a_nc != b_nc)
     octave::err_nonconformant (op_name, a_nr, a_nc, b_nr, b_nc);
-
-  r = MSparse<T> (a_nr, a_nc, (a.nnz () + b.nnz ()));
-
-  octave_idx_type jx = 0;
-  for (octave_idx_type i = 0 ; i < a_nc ; i++)
+  else
     {
-      octave_idx_type ja = a.cidx (i);
-      octave_idx_type ja_max = a.cidx (i+1);
-      bool ja_lt_max = ja < ja_max;
+      r = MSparse<T> (a_nr, a_nc, (a.nnz () + b.nnz ()));
 
-      octave_idx_type jb = b.cidx (i);
-      octave_idx_type jb_max = b.cidx (i+1);
-      bool jb_lt_max = jb < jb_max;
-
-      while (ja_lt_max || jb_lt_max)
+      octave_idx_type jx = 0;
+      for (octave_idx_type i = 0 ; i < a_nc ; i++)
         {
-          octave_quit ();
-          if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
+          octave_idx_type ja = a.cidx (i);
+          octave_idx_type ja_max = a.cidx (i+1);
+          bool ja_lt_max = ja < ja_max;
+
+          octave_idx_type jb = b.cidx (i);
+          octave_idx_type jb_max = b.cidx (i+1);
+          bool jb_lt_max = jb < jb_max;
+
+          while (ja_lt_max || jb_lt_max)
             {
-              r.ridx (jx) = a.ridx (ja);
-              r.data (jx) = op (a.data (ja), 0.);
-              jx++;
-              ja++;
-              ja_lt_max= ja < ja_max;
-            }
-          else if ((! ja_lt_max)
-                   || (b.ridx (jb) < a.ridx (ja)))
-            {
-              r.ridx (jx) = b.ridx (jb);
-              r.data (jx) = op (0., b.data (jb));
-              jx++;
-              jb++;
-              jb_lt_max= jb < jb_max;
-            }
-          else
-            {
-              if (op (a.data (ja), b.data (jb)) != 0.)
+              octave_quit ();
+              if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
                 {
-                  r.data (jx) = op (a.data (ja), b.data (jb));
                   r.ridx (jx) = a.ridx (ja);
+                  r.data (jx) = op (a.data (ja), 0.);
                   jx++;
+                  ja++;
+                  ja_lt_max= ja < ja_max;
                 }
-              ja++;
-              ja_lt_max= ja < ja_max;
-              jb++;
-              jb_lt_max= jb < jb_max;
+              else if ((! ja_lt_max)
+                       || (b.ridx (jb) < a.ridx (ja)))
+                {
+                  r.ridx (jx) = b.ridx (jb);
+                  r.data (jx) = op (0., b.data (jb));
+                  jx++;
+                  jb++;
+                  jb_lt_max= jb < jb_max;
+                }
+              else
+                {
+                  if (op (a.data (ja), b.data (jb)) != 0.)
+                    {
+                      r.data (jx) = op (a.data (ja), b.data (jb));
+                      r.ridx (jx) = a.ridx (ja);
+                      jx++;
+                    }
+                  ja++;
+                  ja_lt_max= ja < ja_max;
+                  jb++;
+                  jb_lt_max= jb < jb_max;
+                }
             }
+          r.cidx (i+1) = jx;
         }
-      r.cidx (i+1) = jx;
     }
-
   a = r.maybe_compress ();
-
   return a;
 }
 
@@ -303,6 +311,14 @@ plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
           r.maybe_compress ();
         }
     }
+  if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
+    r.resize (a_nr, std::max (a_nc, b_nc));
+  else if (a_nc == 0 && (b_nc == 0 || b_nc == 1))
+    r.resize (std::max (a_nr, b_nr), a_nc);
+  else if (b_nr == 0 && (a_nr == 0 || a_nr == 1))
+    r.resize (b_nr, std::max (a_nc, b_nc));
+  else if (b_nc == 0 && (a_nc == 0 || a_nc == 1))
+    r.resize (std::max (a_nr, b_nr), b_nc);
   else if (a_nr != b_nr || a_nc != b_nc)
     octave::err_nonconformant (op_name, a_nr, a_nc, b_nr, b_nc);
   else
@@ -424,6 +440,14 @@ product (const MSparse<T>& a, const MSparse<T>& b)
           r.maybe_compress ();
         }
     }
+  if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
+    r.resize (a_nr, std::max (a_nc, b_nc));
+  else if (a_nc == 0 && (b_nc == 0 || b_nc == 1))
+    r.resize (std::max (a_nr, b_nr), a_nc);
+  else if (b_nr == 0 && (a_nr == 0 || a_nr == 1))
+    r.resize (b_nr, std::max (a_nc, b_nc));
+  else if (b_nc == 0 && (a_nc == 0 || a_nc == 1))
+    r.resize (std::max (a_nr, b_nr), b_nc);
   else if (a_nr != b_nr || a_nc != b_nc)
     octave::err_nonconformant ("product", a_nr, a_nc, b_nr, b_nc);
   else
@@ -544,6 +568,14 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
           r.maybe_compress ();
         }
     }
+  if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
+    r.resize (a_nr, std::max (a_nc, b_nc));
+  else if (a_nc == 0 && (b_nc == 0 || b_nc == 1))
+    r.resize (std::max (a_nr, b_nr), a_nc);
+  else if (b_nr == 0 && (a_nr == 0 || a_nr == 1))
+    r.resize (b_nr, std::max (a_nc, b_nc));
+  else if (b_nc == 0 && (a_nc == 0 || a_nc == 1))
+    r.resize (std::max (a_nr, b_nr), b_nc);
   else if (a_nr != b_nr || a_nc != b_nc)
     octave::err_nonconformant ("quotient", a_nr, a_nc, b_nr, b_nc);
   else

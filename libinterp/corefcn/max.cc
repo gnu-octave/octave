@@ -468,6 +468,7 @@ do_minmax_body (const octave_value_list& args,
                 int nargout, bool ismin)
 {
   int nargin = args.length ();
+  int orig_nargin = nargin;
 
   const char *fcn = (ismin ? "min" : "max");
 
@@ -507,7 +508,10 @@ do_minmax_body (const octave_value_list& args,
       std::string str = args(nargin - 1).string_value ();
 
       if (str == "all")
-        allflag = true;
+        {
+          allflag = true;
+          red_op = true;
+        }
       else if (str == "omitnan" || str == "omitmissing")
         {
           if (args(0).is_double_type () || args(0).is_single_type ())
@@ -529,8 +533,8 @@ do_minmax_body (const octave_value_list& args,
     error ("%s: cannot set DIM or VECDIM with 'all' flag", fcn);
   if (nargin > 2)
     red_op = true;
-  else if (nargin > 1)
-    if (args(1).isempty ())
+  if (nargin > 1)
+    if (orig_nargin > 2 && args(1).rows () == 0 && args(1). columns () == 0)
       red_op = true;
 
   octave_value_list retval (nargout > 1 ? 2 : 1);
@@ -697,6 +701,10 @@ do_minmax_body (const octave_value_list& args,
     }
   else
     {
+      if (nargout > 1)
+        error ("%s: two output arguments are not supported for two input arrays", fcn);
+      if (linear)
+        error ("%s: 'linear' is not supported for two input arrays", fcn);
       octave_value argx = args(0);
       octave_value argy = args(1);
       builtin_type_t xtyp = argx.builtin_type ();
@@ -829,7 +837,7 @@ do_minmax_body (const octave_value_list& args,
 
   // FIXME: We need a static function to convert indices into linear
   // indices based on returning size and vecdim
-  if (linear)
+  if (linear && nargout > 1)
     warning ("%s: 'linear' argument is ignored", fcn);
 
   return retval;
@@ -1074,6 +1082,8 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!assert (min (sparse ([0, NaN, 1, 2, 1])), sparse (0))
 %!assert (min (sparse ([0; NaN; 1; 2; 1])), sparse (0))
 %!assert (min (sparse ([0; NaN; 1; 2; 1]), [], "includenan"), sparse (NaN))
+%!assert (min (sparse ([0; NaN; 1; 2; 1]), [], 1, "includenan"), sparse (NaN))
+%!assert (min (sparse ([0; NaN; 1; 2; 1]), [], 2, "includenan"), sparse ([0; NaN; 1; 2; 1]))
 %!assert (min (sparse ([NaN, 1i, 2, 1])), sparse (1))
 %!assert (min (sparse ([NaN, 1i, 2, 1]), "ComparisonMethod", "real"), sparse (1i))
 %!assert (min (sparse (single ([NaN, 1, 2, 1]))), sparse (1))
@@ -1081,6 +1091,7 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!assert (min (sparse (single ([0, NaN, 1, 2, 1]))), sparse (0))
 %!assert (min (sparse (single ([0; NaN; 1; 2; 1]))), sparse (0))
 %!assert (min (sparse (single ([0; NaN; 1; 2; 1])), [], "includenan"), sparse (NaN))
+%!assert (min (sparse (single ([0; NaN; 1; 2; 1])), [], 1, "includenan"), sparse (NaN))
 %!assert (min (sparse (single ([NaN, 1i, 2, 1]))), sparse (1))
 %!assert (min (sparse (single ([NaN, 1i, 2, 1])), "ComparisonMethod", "real"), sparse (1i))
 %!assert (min (sparse (single ([NaN, 1i, 2, 1]))), sparse (1))
@@ -1121,6 +1132,30 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %! x(2, 3) = NaN;
 %! assert (min (x, [], 2, "includenan"), [1; NaN; 2]);
 
+## Test empty matrices and matrices with 0 dimensions (including catching errors)
+%!assert (size (min (0, zeros (0, 1))), [0, 1])
+%!assert (size (min ([], zeros (0, 1))), [0, 0])
+%!assert (size (min (zeros (0, 1), [])), [0, 0])
+%!assert (size (min ([], zeros (1, 0))), [0, 0])
+%!assert (size (min (zeros (1, 0), [])), [0, 0])
+%!error min ([1, 2, 3, 4], zeros (1, 0))
+%!assert (size (min ([1, 2, 3, 4], zeros (0, 1))), [0, 4])
+%!assert (min (0, sparse (zeros (1,0))), sparse (zeros (1, 0)))
+%!assert (min (sparse (zeros (1,0)), 0), sparse (zeros (1, 0)))
+%!error min (sparse (zeros (1,0)), sparse ([1, 2, 3, 4]))
+%!error min ([1, 2, NaN, 4], zeros (1, 0), 'includenan')
+%!assert (min ([1, 2, NaN, 4], zeros (0, 1), 'includenan'), zeros (0, 4))
+%!error min (sparse (zeros (1,0)), sparse ([1, 2, NaN 4]), 'includenan')
+%!assert (min (sparse (zeros (1,0)), sparse ([1; 2; 3; 4])), sparse (zeros (4, 0)))
+%!assert (min (zeros(0,3), zeros (0, 1)), zeros (0, 3))
+%!error min (zeros(3, 0), zeros (0, 1))
+%!assert (min (zeros(3, 0), zeros (1, 0)), zeros (3, 0))
+%!error min (zeros(3, 0), zeros (0, 0))
+%!error min (zeros(3, 0), [])
+%!error min ([], zeros(3, 0))
+%!error min (zeros(0,1), zeros(3, 0))
+%!assert (min (zeros(1,0), zeros(3, 0)), zeros (3, 0))
+
 ## Test input validation
 %!error min ()
 %!error min (1, 2, 3, 4)
@@ -1135,7 +1170,9 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!warning <second argument is ignored> min ([1 2 3 4], 2, 2);
 %!error <wrong type argument 'cell'> min ({1 2 3 4})
 %!error <cannot compute min \(cell, scalar\)> min ({1, 2, 3}, 2)
-%!warning <min: 'linear' argument is ignored> min ([1 2 3 4], [], "linear");
+%!error <min: two output arguments are not supported for two input arrays> [m, i] = min ([], [])
+%!error <min: 'linear' is not supported for two input arrays> min ([1 2 3 4], 1,  "linear")
+%!warning <min: 'linear' argument is ignored> [m, i] = min ([1 2 3 4], [], "linear");
 */
 
 DEFUN (max, args, nargout,
@@ -1382,6 +1419,8 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!assert (max (sparse ([0, NaN, 1, 2, 1])), sparse (2))
 %!assert (max (sparse ([0; NaN; 1; 2; 1])), sparse (2))
 %!assert (max (sparse ([0; NaN; 1; 2; 1]), [], "includenan"), sparse (NaN))
+%!assert (max (sparse ([0; NaN; 1; 2; 1]), [], 1, "includenan"), sparse (NaN))
+%!assert (max (sparse ([0; NaN; 1; 2; 1]), [], 2, "includenan"), sparse ([0; NaN; 1; 2; 1]))
 %!assert (max (sparse ([NaN, 1i, 2, 1])), sparse (2))
 %!assert (max (sparse ([NaN, 1i, 2, 1]), "ComparisonMethod", "real"), sparse (2))
 %!assert (max (sparse (single ([NaN, 1, 2, 1]))), sparse (2))
@@ -1389,32 +1428,33 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!assert (max (sparse (single ([0, NaN, 1, 2, 1]))), sparse (2))
 %!assert (max (sparse (single ([0; NaN; 1; 2; 1]))), sparse (2))
 %!assert (max (sparse (single ([0; NaN; 1; 2; 1])), [], "includenan"), sparse (NaN))
+%!assert (max (sparse (single ([0; NaN; 1; 2; 1])), [], 1, "includenan"), sparse (NaN))
 %!assert (max (sparse (single ([NaN, 1i, 2, 1]))), sparse (2))
 %!assert (max (sparse (single ([NaN, 1i, 2, 1])), "ComparisonMethod", "real"), sparse (2))
 %!assert (max (sparse (single ([NaN, 1i, 1]))), sparse (1i))
 
 ## NaNs and complex numbers
-%!assert (min (NaN, 0), 0)
-%!assert (min (NaN+1i, 0), 0)
-%!assert (min (2+2i, 2-2i), 2-2i)
-%!assert (min (2-2i, 2+2i), 2-2i)
+%!assert (max (NaN, 0), 0)
+%!assert (max (NaN+1i, 0), 0)
+%!assert (max (2+2i, 2-2i), 2+2i)
+%!assert (max (2-2i, 2+2i), 2+2i)
 %!test
-%! [M1, I1] = min ([2+2i, 2-2i]);
-%! [M2, I2] = min ([2-2i, 2+2i]);
+%! [M1, I1] = max ([2+2i, 2-2i]);
+%! [M2, I2] = max ([2-2i, 2+2i]);
 %! assert (M1, M2);
-%! assert (I1, 2);
-%! assert (I2, 1);
-%!assert (min (NaN, 0, "ComparisonMethod", "real"),
-%!        min (NaN+1i, 0, "ComparisonMethod", "real"))
-%!assert (min (2+i, 1+10i), 2+1i)
-%!assert (min (2+i, 1+10i, "ComparisonMethod", "real"), 1+10i)
-%!assert (min (2+i, 1+10i, "ComparisonMethod", "abs"), 2+1i)
-%!assert (min (2+i, -1+10i, "ComparisonMethod", "abs"), 2+1i)
-%!assert (min (2+i, -2+i, "ComparisonMethod", "abs"), 2+1i)
-%!assert (min (2+i, 2-i, "ComparisonMethod", "abs"), 2-1i)
-%!assert (min (2+i, 2-i, "ComparisonMethod", "real"), 2-1i)
-%!assert (min ([1i 2 -3 4]), 1i)
-%!assert (min ([-2+i, 2-i]), 2-1i)
+%! assert (I1, 1);
+%! assert (I2, 2);
+%!assert (max (NaN, 0, "ComparisonMethod", "real"),
+%!        max (NaN+1i, 0, "ComparisonMethod", "real"))
+%!assert (max (2+i, 1+10i), 1+10i)
+%!assert (max (2+i, 1+10i, "ComparisonMethod", "real"), 2+i)
+%!assert (max (2+i, 1+10i, "ComparisonMethod", "abs"), 1+10i)
+%!assert (max (2+i, -1+10i, "ComparisonMethod", "abs"), -1+10i)
+%!assert (max (2+i, -2+i, "ComparisonMethod", "abs"), -2+1i)
+%!assert (max (2+i, 2-i, "ComparisonMethod", "abs"), 2+1i)
+%!assert (max (2+i, 2-i, "ComparisonMethod", "real"), 2+1i)
+%!assert (max ([1i 2 -3 4]), 4)
+%!assert (max ([-2+i, 2-i]), -2+1i)
 
 ## Test nanflag with dense arrays
 %!test
@@ -1428,6 +1468,30 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %! x = magic (3);
 %! x(2, 3) = NaN;
 %! assert (max (x, [], 2, "includenan"), [8; NaN; 9]);
+
+## Test empty matrices and matrices with 0 dimensions (including catching errors)
+%!assert (size (max (0, zeros (0, 1))), [0, 1])
+%!assert (size (max ([], zeros (0, 1))), [0, 0])
+%!assert (size (max (zeros (0, 1), [])), [0, 0])
+%!assert (size (max ([], zeros (1, 0))), [0, 0])
+%!assert (size (max (zeros (1, 0), [])), [0, 0])
+%!error max ([1, 2, 3, 4], zeros (1, 0))
+%!assert (size (max ([1, 2, 3, 4], zeros (0, 1))), [0, 4])
+%!assert (max (0, sparse (zeros (1,0))), sparse (zeros (1, 0)))
+%!assert (max (sparse (zeros (1,0)), 0), sparse (zeros (1, 0)))
+%!error max (sparse (zeros (1,0)), sparse ([1, 2, 3, 4]))
+%!error max ([1, 2, NaN, 4], zeros (1, 0), 'includenan')
+%!assert (max ([1, 2, NaN, 4], zeros (0, 1), 'includenan'), zeros (0, 4))
+%!error max (sparse (zeros (1,0)), sparse ([1, 2, NaN 4]), 'includenan')
+%!assert (max (sparse (zeros (1,0)), sparse ([1; 2; 3; 4])), sparse (zeros (4, 0)))
+%!assert (max (zeros(0,3), zeros (0, 1)), zeros (0, 3))
+%!error max (zeros(3, 0), zeros (0, 1))
+%!assert (max (zeros(3, 0), zeros (1, 0)), zeros (3, 0))
+%!error max (zeros(3, 0), zeros (0, 0))
+%!error max (zeros(3, 0), [])
+%!error max ([], zeros(3, 0))
+%!error max (zeros(0,1), zeros(3, 0))
+%!assert (max (zeros(1,0), zeros(3, 0)), zeros (3, 0))
 
 ## Test input validation
 %!error max ()
@@ -1443,7 +1507,9 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!warning <second argument is ignored> max ([1 2 3 4], 2, 2);
 %!error <wrong type argument 'cell'> max ({1 2 3 4})
 %!error <cannot compute max \(cell, scalar\)> max ({1, 2, 3}, 2)
-%!warning <max: 'linear' argument is ignored> max ([1 2 3 4], [], "linear");
+%!error <max: two output arguments are not supported for two input arrays> [m, i] = max ([], [])
+%!error <min: 'linear' is not supported for two input arrays> min ([1 2 3 4], 1,  "linear")
+%!warning <max: 'linear' argument is ignored> [m ,i] = max ([1 2 3 4], [], "linear");
 */
 
 template <typename ArrayType>

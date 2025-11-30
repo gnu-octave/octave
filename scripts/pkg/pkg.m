@@ -106,11 +106,6 @@
 ## Online access requires an internet connection and the cURL library.
 ##
 ## @noindent
-## @emph{Security risk}: no verification of the package is performed
-## before the installation.  It has the same security issues as manually
-## downloading the package from the given URL and installing it.
-##
-## @noindent
 ## @emph{No support}: the GNU Octave community is not responsible for
 ## packages installed from foreign sites.  For support or for
 ## reporting bugs you need to contact the maintainers of the installed
@@ -133,10 +128,6 @@
 ## Force a global installation (package available to all users), even if
 ## Octave is not being run with administrative privileges.  The user must have
 ## write access to the global package store.
-##
-## @emph{Security risk}: no verification of the package is performed before the
-## installation.  It has the same security issues as manually downloading the
-## package from the Octave Packages repository and installing it.
 ##
 ## @item -verbose
 ## Print the output of all commands as they are performed.

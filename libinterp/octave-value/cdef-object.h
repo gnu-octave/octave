@@ -403,6 +403,9 @@ public:
 
   dim_vector dims () const { return m_array.dims (); }
 
+  OCTINTERP_API void
+  break_closure_cycles (const std::shared_ptr<stack_frame>& frame);
+
   bool is_valid () const { return true; }
 
   bool is_array () const { return true; }

@@ -218,3 +218,10 @@
 ## This is bug #66930.
 %!error <duplicate method>   A = class_bug66930A ([1 2 3], 3);
 %!error <duplicate property> B = class_bug66930B ([1 2 3], 3);
+
+## break closure cycles for classdef arrays
+%!test <*67749>
+%! fcn = cdef_array_break_cycles ();
+%! result = fcn ([]);
+%! assert (numel (result), 2);
+%! assert (class (result), "foo_value_class");

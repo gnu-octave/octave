@@ -2,6 +2,7 @@ classdef_TEST_FILES = \
   %reldir%/@class_bug62802/amethod.m \
   %reldir%/@class_bug62802/class_bug62802.m \
   %reldir%/bug_60763.m \
+  %reldir%/cdef_array_break_cycles.m \
   %reldir%/class_bug52614A.m \
   %reldir%/class_bug52614B.m \
   %reldir%/class_bug55766.m \

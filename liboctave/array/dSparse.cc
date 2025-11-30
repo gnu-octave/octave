@@ -8012,13 +8012,33 @@ min (const SparseMatrix& a, const SparseMatrix& b, const bool nanflag,
   else
     {
       if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
-        r.resize (a_nr, std::max (a_nc, b_nc));
+        {
+          if (a_nc == 1 || b_nc == 1 || a_nc == b_nc)
+            r.resize (a_nr, std::max (a_nc, b_nc));
+          else
+            octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
+        }
       else if (a_nc == 0 && (b_nc == 0 || b_nc == 1))
-        r.resize (std::max (a_nr, b_nr), a_nc);
+        {
+          if (a_nr == 1 || b_nr == 1 || a_nr == b_nr)
+            r.resize (std::max (a_nr, b_nr), a_nc);
+          else
+            octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
+        }
       else if (b_nr == 0 && (a_nr == 0 || a_nr == 1))
-        r.resize (b_nr, std::max (a_nc, b_nc));
+        {
+          if (b_nc == 1 || a_nc == 1 || b_nc == a_nc)
+            r.resize (b_nr, std::max (a_nc, b_nc));
+          else
+            octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
+        }
       else if (b_nc == 0 && (a_nc == 0 || a_nc == 1))
-        r.resize (std::max (a_nr, b_nr), b_nc);
+        {
+          if (b_nr == 1 || a_nr == 1 || b_nr == a_nr)
+            r.resize (std::max (a_nr, b_nr), b_nc);
+          else
+            octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
+        }
       else
         octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
     }
@@ -8215,13 +8235,33 @@ max (const SparseMatrix& a, const SparseMatrix& b, const bool nanflag,
   else
     {
       if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
-        r.resize (a_nr, std::max (a_nc, b_nc));
+        {
+          if (a_nc == 1 || b_nc == 1 || a_nc == b_nc)
+            r.resize (a_nr, std::max (a_nc, b_nc));
+          else
+            octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
+        }
       else if (a_nc == 0 && (b_nc == 0 || b_nc == 1))
-        r.resize (std::max (a_nr, b_nr), a_nc);
+        {
+          if (a_nr == 1 || b_nr == 1 || a_nr == b_nr)
+            r.resize (std::max (a_nr, b_nr), a_nc);
+          else
+            octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
+        }
       else if (b_nr == 0 && (a_nr == 0 || a_nr == 1))
-        r.resize (b_nr, std::max (a_nc, b_nc));
+        {
+          if (b_nc == 1 || a_nc == 1 || b_nc == a_nc)
+            r.resize (b_nr, std::max (a_nc, b_nc));
+          else
+            octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
+        }
       else if (b_nc == 0 && (a_nc == 0 || a_nc == 1))
-        r.resize (std::max (a_nr, b_nr), b_nc);
+        {
+          if (b_nr == 1 || a_nr == 1 || b_nr == a_nr)
+            r.resize (std::max (a_nr, b_nr), b_nc);
+          else
+            octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
+        }
       else
         octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
     }
@@ -8231,16 +8271,58 @@ max (const SparseMatrix& a, const SparseMatrix& b, const bool nanflag,
 
 /*
 
+## Testing broadcasting of empty matrices with min/max functions
+%!assert (min (sparse (zeros (0,1)), sparse ([1, 2, 3, 4])), sparse (zeros (0,4)))
+%!error min (sparse (zeros (0,2)), sparse ([1, 2, 3, 4]))
+%!assert (max (sparse (zeros (0,1)), sparse ([1, 2, 3, 4])), sparse (zeros (0,4)))
+%!error max (sparse (zeros (0,2)), sparse ([1, 2, 3, 4]))
+%!assert (min (sparse (zeros (1,0)), sparse ([1; 2; 3; 4])), sparse (zeros (4,0)))
+%!error min (sparse (zeros (2,0)), sparse ([1; 2; 3; 4]))
+%!assert (max (sparse (zeros (1,0)), sparse ([1; 2; 3; 4])), sparse (zeros (4,0)))
+%!error max (sparse (zeros (2,0)), sparse ([1; 2; 3; 4]))
+
 ## Testing broadcasting of empty matrices with math operators.
 ## This has been fixed in MSparse.cc and Sparse-op-defs.h
 %!assert (sparse (zeros (0,1)) + sparse ([1, 2, 3, 4]), sparse (zeros (0,4)))
+%!error <operator \+: nonconformant arguments \(op1 is 0x2, op2 is 1x4\)> ...
+%!       sparse (zeros (0,2)) + sparse ([1, 2, 3, 4])
 %!assert (sparse (zeros (0,1)) - sparse ([1, 2, 3, 4]), sparse (zeros (0,4)))
+%!error <operator -: nonconformant arguments \(op1 is 0x2, op2 is 1x4\)> ...
+%!       sparse (zeros (0,2)) - sparse ([1, 2, 3, 4])
 %!assert (sparse (zeros (0,1)) * sparse ([1, 2, 3, 4]), sparse (zeros (0,4)))
+%!error <operator \*: nonconformant arguments \(op1 is 0x2, op2 is 1x4\)> ...
+%!       sparse (zeros (0,2)) * sparse ([1, 2, 3, 4])
+%!assert (sparse (zeros (0,1)) .* sparse ([1, 2, 3, 4]), sparse (zeros (0,4)))
+%!error <product: nonconformant arguments \(op1 is 0x2, op2 is 1x4\)> ...
+%!       sparse (zeros (0,2)) .* sparse ([1, 2, 3, 4])
 %!assert (sparse (zeros (0,1)) ./ sparse ([1, 2, 3, 4]), sparse (zeros (0,4)))
+%!error <quotient: nonconformant arguments \(op1 is 0x2, op2 is 1x4\)> ...
+%!       sparse (zeros (0,2)) ./ sparse ([1, 2, 3, 4])
 %!test
 %! a = sparse (zeros (0,1));
 %! assert (a += sparse ([1, 2, 3, 4]), sparse (zeros (0,4)))
 %! assert (a -= sparse ([1, 2, 3, 4]), sparse (zeros (0,4)))
+
+%!assert (sparse (zeros (1,0)) + sparse ([1; 2; 3; 4]), sparse (zeros (4,0)))
+%!error <operator \+: nonconformant arguments \(op1 is 2x0, op2 is 4x1\)> ...
+%!       sparse (zeros (2,0)) + sparse ([1; 2; 3; 4])
+%!assert (sparse (zeros (1,0)) - sparse ([1; 2; 3; 4]), sparse (zeros (4,0)))
+%!error <operator -: nonconformant arguments \(op1 is 2x0, op2 is 4x1\)> ...
+%!       sparse (zeros (2,0)) - sparse ([1; 2; 3; 4])
+%!error <operator \*: nonconformant arguments \(op1 is 1x0, op2 is 4x1\)>
+%!       sparse (zeros (1,0)) * sparse ([1; 2; 3; 4])
+%!error <operator \*: nonconformant arguments \(op1 is 2x0, op2 is 4x1\)> ...
+%!       sparse (zeros (2,0)) * sparse ([1; 2; 3; 4])
+%!assert (sparse (zeros (1,0)) .* sparse ([1; 2; 3; 4]), sparse (zeros (4,0)))
+%!error <product: nonconformant arguments \(op1 is 2x0, op2 is 4x1\)> ...
+%!       sparse (zeros (2,0)) .* sparse ([1; 2; 3; 4])
+%!assert (sparse (zeros (1,0)) ./ sparse ([1; 2; 3; 4]), sparse (zeros (4,0)));
+%!error <quotient: nonconformant arguments \(op1 is 2x0, op2 is 4x1\)> ...
+%!       sparse (zeros (2,0)) ./ sparse ([1; 2; 3; 4])
+%!test
+%! a = sparse (zeros (1,0));
+%! assert (a += sparse ([1; 2; 3; 4]), sparse (zeros (4,0)))
+%! assert (a -= sparse ([1; 2; 3; 4]), sparse (zeros (4,0)))
 
 */
 

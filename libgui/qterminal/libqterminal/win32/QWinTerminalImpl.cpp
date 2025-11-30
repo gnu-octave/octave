@@ -61,6 +61,8 @@ see <https://www.gnu.org/licenses/>.
 #include "QWinTerminalImpl.h"
 #include "QTerminalColors.h"
 
+#include "oct-shlib.h"
+
 // Uncomment to log activity to LOGFILENAME
 // #define DEBUG_QCONSOLE
 #define LOGFILENAME "QConsole.log"
@@ -282,6 +284,43 @@ static void maybeSwapPoints (QPoint& begin, QPoint& end)
 
 //////////////////////////////////////////////////////////////////////////////
 
+#ifdef HIDDEN_CONSOLE
+
+#  if ! defined (NTDDI_VERSION) || ! defined (NTDDI_WIN11_GE) \
+      || (NTDDI_VERSION < NTDDI_WIN11_GE)
+
+// The necessary types are only defined when targeting Windows 11 24H2 or
+// later and in sufficiently recent versions of mingw-w64.
+// Copy the definition from the mingw-w64 headers here for these cases.
+
+typedef enum ALLOC_CONSOLE_MODE
+{
+  ALLOC_CONSOLE_MODE_DEFAULT = 0,
+  ALLOC_CONSOLE_MODE_NEW_WINDOW = 1,
+  ALLOC_CONSOLE_MODE_NO_WINDOW = 2
+} ALLOC_CONSOLE_MODE;
+
+typedef struct ALLOC_CONSOLE_OPTIONS
+{
+  ALLOC_CONSOLE_MODE mode;
+  WINBOOL useShowWindow;
+  WORD showWindow;
+} ALLOC_CONSOLE_OPTIONS, *PALLOC_CONSOLE_OPTIONS;
+
+typedef enum ALLOC_CONSOLE_RESULT
+{
+  ALLOC_CONSOLE_RESULT_NO_CONSOLE = 0,
+  ALLOC_CONSOLE_RESULT_NEW_CONSOLE = 1,
+  ALLOC_CONSOLE_RESULT_EXISTING_CONSOLE = 2
+} ALLOC_CONSOLE_RESULT, *PALLOC_CONSOLE_RESULT;
+
+#  endif
+
+typedef HRESULT (WINAPI *AllocConsoleWithOptions_t)
+    (ALLOC_CONSOLE_OPTIONS *allocOptions, ALLOC_CONSOLE_RESULT *result);
+#endif
+
+
 QConsolePrivate::QConsolePrivate (QWinTerminalImpl *parent, const QString& cmd)
   : q (parent), m_command (cmd), m_auto_scroll (true), m_cursorBlinking (false),
     m_hasBlinkingCursor (true), m_cursorType (BlockCursor),
@@ -299,23 +338,47 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl *parent, const QString& cmd)
   closeStandardIO (2, STD_ERROR_HANDLE, "STDERR");
 
 #ifdef HIDDEN_CONSOLE
-  HWINSTA hOrigSta, hNewSta;
+  octave::dynamic_library krnl32 ("kernel32.dll");
+  AllocConsoleWithOptions_t acwo = nullptr;
+  if (krnl32)
+    acwo = reinterpret_cast<AllocConsoleWithOptions_t>
+             (krnl32.search ("AllocConsoleWithOptions"));
 
-  // Create new (hidden) console
-  hOrigSta = GetProcessWindowStation ();
-  hNewSta = CreateWindowStation (nullptr, 0, GENERIC_ALL, nullptr);
-  log ("Current Windows station: %p.\nNew Windows station: %p.\n", hOrigSta,
-       hNewSta);
-  if (! SetProcessWindowStation (hNewSta))
-    log ("Failed to switch to new Windows station.\n");
+  if (acwo)
+    {
+      // Windows 11 24H2 and later provides this function
+      ALLOC_CONSOLE_OPTIONS options = { ALLOC_CONSOLE_MODE_NO_WINDOW, FALSE, 0 };
+      ALLOC_CONSOLE_RESULT res;
+      if (! acwo (&options, &res))
+        log ("Failed to create new invisible console.\n");
+    }
+  else
+    {
+      // fallback for older versions of Windows
+
+      // This does not work properly if the Windows Terminal is set as the
+      // default console.
+
+      HWINSTA hOrigSta, hNewSta;
+
+      // Create new (hidden) console
+      hOrigSta = GetProcessWindowStation ();
+      hNewSta = CreateWindowStation (nullptr, 0, GENERIC_ALL, nullptr);
+      log ("Current Windows station: %p.\nNew Windows station: %p.\n",
+           hOrigSta, hNewSta);
+      if (! SetProcessWindowStation (hNewSta))
+        log ("Failed to switch to new Windows station.\n");
 #endif
-  if (! AllocConsole ())
-    log ("Failed to create new console.\n");
+
+      if (! AllocConsole ())
+        log ("Failed to create new console.\n");
+
 #ifdef HIDDEN_CONSOLE
-  if (! SetProcessWindowStation (hOrigSta))
-    log ("Failed to restore original Windows station.\n");
-  if (! CloseWindowStation (hNewSta))
-    log ("Failed to close new Windows station.\n");
+      if (! SetProcessWindowStation (hOrigSta))
+        log ("Failed to restore original Windows station.\n");
+      if (! CloseWindowStation (hNewSta))
+        log ("Failed to close new Windows station.\n");
+    }
 #endif
 
   log ("New (hidden) console created.\n");

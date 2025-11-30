@@ -8096,10 +8096,14 @@ min (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
     }
   else
     {
-      if (a_nr == 0 || a_nc == 0)
-        r.resize (a_nr, a_nc);
-      else if (b_nr == 0 || b_nc == 0)
-        r.resize (b_nr, b_nc);
+      if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
+        r.resize (a_nr, std::max (a_nc, b_nc));
+      else if (a_nc == 0 && (b_nc == 0 || b_nc == 1))
+        r.resize (std::max (a_nr, b_nr), a_nc);
+      else if (b_nr == 0 && (a_nr == 0 || a_nr == 1))
+        r.resize (b_nr, std::max (a_nc, b_nc));
+      else if (b_nc == 0 && (a_nc == 0 || a_nc == 1))
+        r.resize (std::max (a_nr, b_nr), b_nc);
       else
         octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
     }
@@ -8266,16 +8270,35 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
     }
   else
     {
-      if (a_nr == 0 || a_nc == 0)
-        r.resize (a_nr, a_nc);
-      else if (b_nr == 0 || b_nc == 0)
-        r.resize (b_nr, b_nc);
+      if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
+        r.resize (a_nr, std::max (a_nc, b_nc));
+      else if (a_nc == 0 && (b_nc == 0 || b_nc == 1))
+        r.resize (std::max (a_nr, b_nr), a_nc);
+      else if (b_nr == 0 && (a_nr == 0 || a_nr == 1))
+        r.resize (b_nr, std::max (a_nc, b_nc));
+      else if (b_nc == 0 && (a_nc == 0 || a_nc == 1))
+        r.resize (std::max (a_nr, b_nr), b_nc);
       else
         octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
     }
 
   return r;
 }
+
+/*
+
+## Testing broadcasting of empty matrices with math operators.
+## This has been fixed in MSparse.cc and Sparse-op-defs.h
+%!assert (sparse (zeros (0,1)) + sparse ([1, 2, 3, 4i]), sparse (zeros (0,4)))
+%!assert (sparse (zeros (0,1)) - sparse ([1, 2, 3, 4i]), sparse (zeros (0,4)))
+%!assert (sparse (zeros (0,1)) * sparse ([1, 2, 3, 4i]), sparse (zeros (0,4)))
+%!assert (sparse (zeros (0,1)) ./ sparse ([1, 2, 3, 4i]), sparse (zeros (0,4)))
+%!test
+%! a = sparse (zeros (0,1));
+%! assert (a += sparse ([1, 2, 3, 4i]), sparse (zeros (0,4)))
+%! assert (a -= sparse ([1, 2, 3, 4i]), sparse (zeros (0,4)))
+
+*/
 
 SPARSE_SMS_CMP_OPS (SparseComplexMatrix, Complex)
 SPARSE_SMS_BOOL_OPS (SparseComplexMatrix, Complex)

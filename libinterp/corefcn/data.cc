@@ -2171,7 +2171,7 @@ NaN values from the calculation using any of the previously specified input
 argument combinations.  The default value for @var{nanflag} is
 @qcode{"includenan"} which keeps NaN values in the calculation.  To exclude
 NaN values set the value of @var{nanflag} to @qcode{"omitnan"}.  The output
-will still contain NaN values if @var{x} consists of all NaN values in the
+will be @var{1}, if @var{x} consists of all NaN values in the
 operating dimension.
 @seealso{cumprod, sum}
 @end deftypefn */)
@@ -2422,11 +2422,26 @@ operating dimension.
 %! assert (prod (x, "omitmissing")(:,:,1), [1, 1, 1, 1]);
 %! assert (prod (x, [2 3]), [NaN; 1; 1]);
 %! assert (prod (x, [2 3], "omitnan"), [1; 1; 1]);
+
+## Test cases for "omitnan"
 %!test
-%! x = ones (3,4,5);
-%! x(:,1,1) = NaN;
-%! assert (prod (x, "includenan")(:,:,1), prod (x, "omitnan")(:,:,1));
-%! assert (prod (x, "includemissing")(:,:,1), prod (x, "omitmissing")(:,:,1));
+%! A = [2, NaN; 3, NaN; 4, NaN];
+%! assert (prod (A, 2, "omitnan"), [2; 3; 4]);
+%!test
+%! A = [NaN, NaN, NaN];
+%! assert (prod (A, "omitnan"), 1);
+%!test
+%! A = [2, 3, NaN; 4, 5, NaN; 1, 2, NaN];
+%! assert (prod (A, 2, "omitnan"), [6; 20; 2]);
+%!test
+%! A = [2, NaN, 3; 3, NaN, 2; 2, NaN, 4];
+%! assert (prod (A, 1, "omitnan"), [12, 1, 24]);
+%!test
+%! A = [1+i, NaN; 2+2i, NaN];
+%! assert (prod (A, 2, "omitnan"), [1+i; 2+2i]);
+%!test
+%! A = single ([NaN, NaN, NaN]);
+%! assert (prod (A, "omitnan"), single (1));
 
 ## Test sparse matrices
 %!assert (prod (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN])),
@@ -4050,7 +4065,7 @@ NaN values from the calculation using any of the previously specified input
 argument combinations.  The default value for @var{nanflag} is
 @qcode{"includenan"} which keeps NaN values in the calculation.  To exclude
 NaN values set the value of @var{nanflag} to @qcode{"omitnan"}.  The output
-will still contain NaN values if @var{x} consists of all NaN values in the
+will be @var{0}, if @var{x} consists of all NaN values in the
 operating dimension.
 @seealso{cumsum, sumsq, prod}
 @end deftypefn */)
@@ -4323,11 +4338,6 @@ operating dimension.
 %! assert (sum (x, "omitmissing")(:,:,1), [2, 3, 3, 3]);
 %! assert (sum (x, [2 3]), [NaN; 20; 20]);
 %! assert (sum (x, [2 3], "omitnan"), [19; 20; 20]);
-%!test
-%! x = ones (3,4,5);
-%! x(:,1,1) = NaN;
-%! assert (sum (x, "includenan")(:,:,1), sum (x, "omitnan")(:,:,1))
-%! assert (sum (x, "includemissing")(:,:,1), sum (x, "omitmissing")(:,:,1))
 
 ## Test sparse matrices
 %!assert (sum (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN])),
@@ -4346,6 +4356,38 @@ operating dimension.
 %!        sparse ([7+2i; 6]))
 %!assert (sum (sparse ([NaN, NaN, NaN]), "omitnan"), sparse (0))
 %!assert (sum (sparse ([0, 0, 0, NaN, NaN, NaN]), "omitnan"), sparse (0))
+
+## Test cases for "omitnan"
+%!test
+%! A = [1, NaN; 2, NaN; 3, NaN];
+%! assert (sum (A, 2, "omitnan"), [1; 2; 3]);
+%!test
+%! A = [1, 2, 3; NaN, NaN, NaN];
+%! assert (sum (A, 1, "omitnan"), [1, 2, 3]);
+%!test
+%! A = [NaN, NaN, NaN];
+%! assert (sum (A, "omitnan"), 0);
+%!test
+%! A = [1, NaN, 3; 2, NaN, 4; 5, NaN, 6];
+%! assert (sum (A, 1, "omitnan"), [8, 0, 13]);
+%!test
+%! A = [1, 2, NaN; 3, 4, NaN; 5, 6, NaN];
+%! assert (sum (A, 2, "omitnan"), [3; 7; 11]);
+%!test
+%! A = [2, NaN, NaN, 3; 4, NaN, NaN, 5; 1, NaN, NaN, 6];
+%! assert (sum (A, 1, "omitnan"), [7, 0, 0, 14]);
+%!test
+%! A = [1, NaN, 3, NaN, 5; 2, NaN, 4, NaN, 6; 3, NaN, 5, NaN, 7];
+%! assert (sum (A, 1, "omitnan"), [6, 0, 12, 0, 18]);
+%!test
+%! A = [1+2i, NaN; 3+4i, NaN; 5+6i, NaN];
+%! assert (sum (A, 2, "omitnan"), [1+2i; 3+4i; 5+6i]);
+%!test
+%! A = single ([1, NaN; 2, NaN; 3, NaN]);
+%! assert (sum (A, 2, "omitnan"), single ([1; 2; 3]));
+%!test
+%! A = single ([NaN, NaN, NaN]);
+%! assert (sum (A, "omitnan"), single (0));
 
 ## Test input validation
 %!error sum ()
@@ -4429,7 +4471,7 @@ NaN values from the calculation using any of the previously specified input
 argument combinations.  The default value for @var{nanflag} is
 @qcode{"includenan"} which keeps NaN values in the calculation.  To exclude
 NaN values set the value of @var{nanflag} to @qcode{"omitnan"}.  The output
-will still contain NaN values if @var{x} consists of all NaN values in the
+will be @var{0}, if @var{x} consists of all NaN values in the
 operating dimension.
 @seealso{sum, prod}
 @end deftypefn */)
@@ -4616,11 +4658,26 @@ operating dimension.
 %! assert (sumsq (x, "omitmissing")(:,:,1), [2, 3, 3, 3]);
 %! assert (sumsq (x, [2 3]), [NaN; 20; 20]);
 %! assert (sumsq (x, [2 3], "omitnan"), [19; 20; 20]);
+
+## Test cases for "omitnan"
 %!test
-%! x = ones (3,4,5);
-%! x(:,1,1) = NaN;
-%! assert (sumsq (x, "includenan")(:,:,1), sumsq (x, "omitnan")(:,:,1));
-%! assert (sumsq (x, "includemissing")(:,:,1), sumsq (x, "omitmissing")(:,:,1));
+%! A = [1, NaN; 2, NaN; 3, NaN];
+%! assert (sumsq (A, 2, "omitnan"), [1; 4; 9]);
+%!test
+%! A = [NaN, NaN, NaN];
+%! assert (sumsq (A, "omitnan"), 0);
+%!test
+%! A = [2, 3, NaN; 4, 5, NaN; 1, 2, NaN];
+%! assert (sumsq (A, 2, "omitnan"), [13; 41; 5]);
+%!test
+%! A = [2, NaN, 3; 3, NaN, 4; 1, NaN, 2];
+%! assert (sumsq (A, 1, "omitnan"), [14, 0, 29]);
+%!test
+%! A = [1+2i, NaN; 3+4i, NaN];
+%! assert (sumsq (A, 2, "omitnan"), [5; 25]);
+%!test
+%! A = single ([NaN, NaN, NaN]);
+%! assert (sumsq (A, "omitnan"), single (0));
 
 ## Test sparse matrices
 %!assert (sumsq (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN])),

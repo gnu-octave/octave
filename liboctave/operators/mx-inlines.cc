@@ -947,15 +947,9 @@ OP_RED_FCN (mx_inline_all, T, bool, OP_RED_ALLC, true)
     TRES ac = ZERO;                                   \
     if (nanflag)                                      \
       {                                               \
-        bool allnan = true;                           \
         for (octave_idx_type i = 0; i < n; i++)       \
           if (! octave::math::isnan (v[i]))           \
-            {                                         \
               OP(ac, v[i]);                           \
-              allnan = false;                         \
-            }                                         \
-        if (allnan)                                   \
-          ac = NAN;                                   \
       }                                               \
     else                                              \
       {                                               \
@@ -1007,26 +1001,21 @@ OP_RED_FCN2 (mx_inline_dsumsq, std::complex<T>, PROMOTE_DOUBLE(T), OP_RED_SUMSQC
   {                                                                     \
     for (octave_idx_type i = 0; i < m; i++)                             \
       r[i] = ZERO;                                                      \
+                                                                        \
     if (nanflag)                                                        \
       {                                                                 \
-        bool allnan = true;                                             \
+        /* omitnan: skip NaN, result stays at identity if all NaN */    \
         for (octave_idx_type j = 0; j < n; j++)                         \
           {                                                             \
-            allnan = true;                                              \
             for (octave_idx_type i = 0; i < m; i++)                     \
               if (! octave::math::isnan (v[i]))                         \
-                {                                                       \
-                    OP(r[i], v[i]);                                     \
-                    allnan = false;                                     \
-                }                                                       \
-            if (allnan)                                                 \
-              for (octave_idx_type i = 0; i < m; i++)                   \
-                r[i] = NAN;                                             \
+                OP(r[i], v[i]);                                         \
             v += m;                                                     \
           }                                                             \
       }                                                                 \
     else                                                                \
       {                                                                 \
+        /* includenan: NaN propagates naturally */                      \
         for (octave_idx_type j = 0; j < n; j++)                         \
           {                                                             \
             for (octave_idx_type i = 0; i < m; i++)                     \

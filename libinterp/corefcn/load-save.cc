@@ -923,7 +923,7 @@ load_save_system::write_header (std::ostream& os,
 
         std::size_t len = std::min (comment_string.length (),
                                     static_cast<std::size_t> (124));
-        memset (headertext, ' ', 124);
+        memset (headertext, '\0', 124);
         memcpy (headertext, comment_string.data (), len);
 
         // The first pair of bytes give the version of the MAT file

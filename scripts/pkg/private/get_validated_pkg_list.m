@@ -173,47 +173,37 @@ function retval = get_validated_pkg_list (force_refresh = false, verbose = false
     end_try_catch
   endif
 
-  ## If cache is old, ask user whether to update (unless already forced)
+  ## If cache is old, warn user to update (unless already forced)
   if (need_update && ! force_refresh)
-    ## Interactive prompt - ask user
-    response = input (sprintf ([ ...
-      "The package database cache is more than %d days old.\n", ...
-      "Would you like to update it now? (Y/n): "], max_cache_age), "s");
+    warning ("Octave:pkg:old-refresh", "The package database cache is more than %d days old. Please update it the '-refresh' option.\n", max_cache_age);
 
-    if (isempty (response) || any (strcmpi (response, {"y", "yes"})))
-      force_refresh = true;
-    else
-      ## User declined to update
-      if (! isempty (cache_file))
-        ## Use old cache anyway
-        warning ("pkg: using outdated cache, package information may be stale");
-        if (verbose)
-          printf ("pkg: reading from outdated cache file...\n");
-        endif
-        try
-          fid = fopen (cache_file, "rt");
-          if (fid >= 0)
-            unwind_protect
-              list = fread (fid, Inf, "*char")';
-            unwind_protect_cleanup
-              fclose (fid);
-            end_unwind_protect
-
-            __pkg__ = jsondecode (list, "makeValidName", false);
-
-            if (isstruct (__pkg__))
-              if (verbose)
-                printf ("pkg: loaded %d packages from outdated cache\n",
-                        numel (fieldnames (__pkg__)));
-              endif
-              retval = __pkg__;
-              return;
-            endif
-          endif
-        catch
-          ## Fall through to online fetch
-        end_try_catch
+    if (! isempty (cache_file))
+      if (verbose)
+        printf ("pkg: reading from outdated cache file...\n");
       endif
+      try
+        fid = fopen (cache_file, "rt");
+        if (fid >= 0)
+          unwind_protect
+            list = fread (fid, Inf, "*char")';
+          unwind_protect_cleanup
+            fclose (fid);
+          end_unwind_protect
+
+          __pkg__ = jsondecode (list, "makeValidName", false);
+
+          if (isstruct (__pkg__))
+            if (verbose)
+              printf ("pkg: loaded %d packages from outdated cache\n",
+                      numel (fieldnames (__pkg__)));
+            endif
+            retval = __pkg__;
+            return;
+          endif
+        endif
+      catch
+        ## Fall through to online fetch
+      end_try_catch
     endif
   endif
 

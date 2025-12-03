@@ -175,7 +175,7 @@ function retval = get_validated_pkg_list (force_refresh = false, verbose = false
 
   ## If cache is old, warn user to update (unless already forced)
   if (need_update && ! force_refresh)
-    warning ("Octave:pkg:old-refresh", "The package database cache is more than %d days old. Please update it the '-refresh' option.\n", max_cache_age);
+    warning ("Octave:pkg:old-refresh", "The package database cache is more than %d days old; you can update with '-refresh'.\n", max_cache_age);
 
     if (! isempty (cache_file))
       if (verbose)

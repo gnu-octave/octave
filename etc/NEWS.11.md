@@ -35,6 +35,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   or permutation of the inputs for performance.  Now Octave automatically picks
   the fastest calculation order irrespective of the input orientation.
 
+- The functions `sum`, `cumsum`, `sumsq` now have special code for logical
+  inputs resulting in performance improvements of up to 6X.
+
 - New function `_Exit` has been added which makes it possible to use
   `fork`/`_Exit` sequence to perform work in parallel child processes for
   potential performance gains.

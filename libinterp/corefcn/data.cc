@@ -1789,10 +1789,76 @@ operating dimension.
         }
       else
         {
+          // OPTIMIZED: Direct boolean cumulative count
+          boolNDArray m = arg.bool_array_value ();
+
+          if (dim < 0)
+            dim = m.dims ().first_non_singleton ();
+
+          if (dim >= m.ndims ())
+            {
+              retval = NDArray (m);
+              break;
+            }
+
+          // Calculate extent triplet (l, n, u) for column-major indexing
+          dim_vector dv = m.dims ();
+          octave_idx_type l = 1;
+          for (int i = 0; i < dim; i++)
+            l *= dv(i);
+
+          octave_idx_type n = dv(dim);
+
+          octave_idx_type u = 1;
+          for (int i = dim + 1; i < dv.ndims (); i++)
+            u *= dv(i);
+
+          NDArray result (dv);
+          const bool *data = m.data ();
+          double *r = result.rwdata ();
+
           if (direction)
-            retval = arg.array_value ().flip (dim).cumsum (dim).flip (dim);
+            {
+              // Reverse direction
+              for (octave_idx_type outer = 0; outer < u; outer++)
+                {
+                  const octave_idx_type outer_base = outer * n * l;
+                  for (octave_idx_type inner = 0; inner < l; inner++)
+                    {
+                      double cumval = 0.0;
+                      octave_idx_type base = outer_base + inner;
+
+                      // walk from last to first
+                      for (octave_idx_type j = n - 1; j >= 0; j--)
+                        {
+                          octave_idx_type idx = base + j * l;
+                          cumval += data[idx];
+                          r[idx] = cumval;
+                        }
+                    }
+                }
+            }
           else
-            retval = arg.array_value ().cumsum (dim);
+            {
+              // Forward direction
+              for (octave_idx_type outer = 0; outer < u; outer++)
+                {
+                  const octave_idx_type outer_base = outer * n * l;
+                  for (octave_idx_type inner = 0; inner < l; inner++)
+                    {
+                      double cumval = 0.0;
+                      octave_idx_type base = outer_base + inner;
+                      for (octave_idx_type j = 0; j < n; j++)
+                        {
+                          octave_idx_type idx = base + j * l;
+                          cumval += data[idx];
+                          r[idx] = cumval;
+                        }
+                    }
+                }
+            }
+
+          retval = result;
         }
       break;
 
@@ -1960,6 +2026,17 @@ operating dimension.
 %!error <cumsum: duplicate dimension in VECDIM = 1> cumsum (ones (3), [1 1 2])
 %!error <cumsum: DIRECTION is not supported for sparse matrices> ...
 %!      cumsum (sparse (ones (3,3)), "reverse")
+*/
+
+/* Additional cumsum boolean tests
+%!test
+%! x = [true, false, true; false, true, false];
+%! assert (cumsum (x, 1), [1, 0, 1; 1, 1, 1]);
+%! assert (cumsum (x, 2), [1, 1, 2; 0, 1, 1]);
+
+%!test
+%! x = rand (100, 100) > 0.5;
+%! assert (cumsum (x, 2), cumsum (double (x), 2));
 */
 
 DEFUN (diag, args, ,
@@ -2311,6 +2388,7 @@ operating dimension.
 
   if (do_perm)
     retval = retval.permute (perm_vec, true);
+
   return retval;
 }
 
@@ -4222,7 +4300,10 @@ operating dimension.
       else if (isnative)
         retval = arg.bool_array_value ().any (dim);
       else
-        retval = arg.array_value ().sum (dim);
+        {
+          boolNDArray m = arg.bool_array_value ();
+          retval = do_mx_red_op<double, bool> (m, dim, mx_inline_count);
+         }
       break;
 
     default:
@@ -4388,6 +4469,21 @@ operating dimension.
 %!test
 %! A = single ([NaN, NaN, NaN]);
 %! assert (sum (A, "omitnan"), single (0));
+
+## Test boolean sum optimization
+%!test
+%! x = [true, false, true; false, true, false];
+%! assert (sum (x, 1), [1, 1, 1]);
+%! assert (sum (x, 2), [2; 1]);
+
+%!test
+%! x = rand (100, 100) > 0.5;
+%! assert (sum (x), sum (double (x)));
+%! assert (sum (x, 2), sum (double (x), 2));
+
+%!assert (sum (true), 1)
+%!assert (sum (false), 0)
+%!assert (class (sum ([true, false])), "double")
 
 ## Test input validation
 %!error sum ()
@@ -4602,7 +4698,11 @@ operating dimension.
       else if (isnative)
         retval = arg.bool_array_value ().all (dim);
       else
-        retval = NDArray (arg.bool_array_value ().all (dim));
+        {
+          // For booleans: sumsq (x) = sum (x), since 0^2=0, 1^2=1
+          boolNDArray m = arg.bool_array_value ();
+          retval = do_mx_red_op<double, bool> (m, dim, mx_inline_count);
+        }
       break;
 
     default:
@@ -4696,6 +4796,21 @@ operating dimension.
 %!        sparse ([23; 10]))
 %!assert (sumsq (sparse ([NaN, NaN, NaN]), "omitnan"), sparse (0))
 %!assert (sumsq (sparse ([0, 0, 0, NaN, NaN, NaN]), "omitnan"), sparse (0))
+
+## Test boolean sumsq (must be equal to sum)
+%!test
+%! x = [true, false, true; false, true, false];
+%! assert (sumsq (x), sum (x));
+%! assert (sumsq (x, 1), [1, 1, 1]);
+%! assert (sumsq (x, 2), [2; 1]);
+
+%!test
+%! x = rand (100, 100) > 0.5;
+%! assert (sumsq (x), sum (x));
+
+%!assert (sumsq (true), 1)
+%!assert (sumsq (false), 0)
+%!assert (class (sumsq ([true, false])), "double")
 
 ## Test input validation
 %!error sumsq ()

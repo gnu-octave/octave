@@ -249,7 +249,7 @@
   SPARSE_SSM_BIN_OP_1 (R1, operator +, +, S, M) \
   SPARSE_SSM_BIN_OP_1 (R1, operator -, -, S, M) \
   SPARSE_SSM_BIN_OP_2 (R2, operator *, *, S, M) \
-  SPARSE_SSM_BIN_OP_2 (R2, operator /, /, S, M)
+  SPARSE_SSM_BIN_OP_1 (R1, operator /, /, S, M)
 
 #define SPARSE_SSM_CMP_OP(F, OP, S, M)                                  \
   SparseBoolMatrix                                                      \
@@ -407,7 +407,7 @@
                 for (octave_idx_type i = m2.cidx (j) ; i < m2.cidx (j+1) ; i++) \
                   {                                                     \
                     octave_quit ();                                     \
-                    r.data (idxj + m2.ridx (i)) = m1.data (0) OP m2.data (i); \
+                    r.data (idxj + m2.ridx (i)) = m1.data (0) OP m2.data (i);   \
                   }                                                     \
               }                                                         \
             r.maybe_compress ();                                        \
@@ -428,7 +428,7 @@
                 for (octave_idx_type i = m1.cidx (j) ; i < m1.cidx (j+1) ; i++) \
                   {                                                     \
                     octave_quit ();                                     \
-                    r.data (idxj + m1.ridx (i)) = m1.data (i) OP m2.data (0); \
+                    r.data (idxj + m1.ridx (i)) = m1.data (i) OP m2.data (0);   \
                   }                                                     \
               }                                                         \
             r.maybe_compress ();                                        \
@@ -462,9 +462,7 @@
         else                                                            \
           octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);   \
       }                                                                 \
-    else if (m1_nr != m2_nr || m1_nc != m2_nc)                          \
-      octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);       \
-    else                                                                \
+    else if (m1_nr == m2_nr && m1_nc == m2_nc)                          \
       {                                                                 \
         r = R (m1_nr, m1_nc, (m1.nnz () + m2.nnz ()));                  \
                                                                         \
@@ -520,6 +518,104 @@
                                                                         \
         r.maybe_compress ();                                            \
       }                                                                 \
+    else if (m1_nr == m2_nr && (m1_nc == 1 || m2_nc == 1))              \
+      {                                                                 \
+        octave_idx_type r_nc = (m1_nc < m2_nc ? m2_nc : m1_nc);         \
+        octave_idx_type rnnz = (m1_nc < m2_nc ? m1.nnz () * m2_nc + m2.nnz () : \
+                                                m1.nnz () + m1_nc * m2.nnz ()); \
+        r = R (m1_nr, r_nc, rnnz);                                      \
+                                                                        \
+        octave_idx_type jx = 0;                                         \
+        r.cidx (0) = 0;                                                 \
+        for (octave_idx_type i = 0 ; i < r_nc ; i++)                    \
+          {                                                             \
+            octave_idx_type ja;                                         \
+            octave_idx_type ja_max;                                     \
+            octave_idx_type jb;                                         \
+            octave_idx_type jb_max;                                     \
+            if (m1_nc == 1)                                             \
+              {                                                         \
+                ja = m1.cidx(0);                                        \
+                ja_max = m1.cidx(1);                                    \
+                jb = m2.cidx (i);                                       \
+                jb_max = m2.cidx (i+1);                                 \
+              }                                                         \
+            else                                                        \
+              {                                                         \
+                ja = m1.cidx(i);                                        \
+                ja_max = m1.cidx(i+1);                                  \
+                jb = m2.cidx (0);                                       \
+                jb_max = m2.cidx (1);                                   \
+              }                                                         \
+            bool ja_lt_max = ja < ja_max;                               \
+            bool jb_lt_max = jb < jb_max;                               \
+                                                                        \
+            while (ja_lt_max || jb_lt_max)                              \
+              {                                                         \
+                octave_quit ();                                         \
+                if ((! jb_lt_max) ||                                    \
+                    (ja_lt_max && (m1.ridx (ja) < m2.ridx (jb))))       \
+                  {                                                     \
+                    r.ridx (jx) = m1.ridx (ja);                         \
+                    r.data (jx) = m1.data (ja) OP 0.;                   \
+                    jx++;                                               \
+                    ja++;                                               \
+                    ja_lt_max = ja < ja_max;                            \
+                  }                                                     \
+                else if ((! ja_lt_max) ||                               \
+                         (m2.ridx (jb) < m1.ridx (ja)))                 \
+                  {                                                     \
+                    r.ridx (jx) = m2.ridx (jb);                         \
+                    r.data (jx) = 0. OP  m2.data (jb);                  \
+                    jx++;                                               \
+                    jb++;                                               \
+                    jb_lt_max = jb < jb_max;                            \
+                  }                                                     \
+                else                                                    \
+                  {                                                     \
+                    if (m1.data (ja) OP m2.data (jb) != 0.)             \
+                      {                                                 \
+                        r.data (jx) = m1.data (ja) OP m2.data (jb);     \
+                        r.ridx (jx) = m1.ridx (ja);                     \
+                        jx++;                                           \
+                      }                                                 \
+                    ja++;                                               \
+                    ja_lt_max = ja < ja_max;                            \
+                    jb++;                                               \
+                    jb_lt_max = jb < jb_max;                            \
+                  }                                                     \
+              }                                                         \
+            r.cidx (i+1) = jx;                                          \
+          }                                                             \
+        r.maybe_compress ();                                            \
+      }                                                                 \
+    else if (m1_nc == m2_nc && (m1_nr == 1 || m2_nr == 1))              \
+      r = F (m1.transpose (), m2.transpose ()).transpose ();            \
+    else if (m1_nr == 1 && m2_nc == 1)                                  \
+      {                                                                 \
+        r = R (m2_nr, m1_nc, (m1.nnz () * m2_nr + m2.nnz () * m1_nc));  \
+                                                                        \
+        for (octave_idx_type j = 0; j < m1_nc; j++)                     \
+          {                                                             \
+            const Complex a_val = m1.elem (0, j);                       \
+                                                                        \
+            for (octave_idx_type i = 0; i < m2_nr; i++)                 \
+              {                                                         \
+                octave_quit ();                                         \
+                                                                        \
+                const Complex b_val = m2.elem (i, 0);                   \
+                const Complex val = a_val OP b_val;                     \
+                                                                        \
+                if (val != Complex ())                                  \
+                  r.elem (i, j) = val;                                  \
+              }                                                         \
+          }                                                             \
+        r.maybe_compress ();                                            \
+      }                                                                 \
+    else if (m1_nc == 1 && m2_nr == 1)                                  \
+      r = F (m1.transpose (), m2.transpose ()).transpose ();            \
+    else                                                                \
+      octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);       \
                                                                         \
     return r;                                                           \
   }
@@ -598,9 +694,7 @@
         else                                                            \
           octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);   \
       }                                                                 \
-    else if (m1_nr != m2_nr || m1_nc != m2_nc)                          \
-      octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);       \
-    else                                                                \
+    else if (m1_nr == m2_nr && m1_nc == m2_nc)                          \
       {                                                                 \
         r = R (m1_nr, m1_nc, (m1.nnz () > m2.nnz () ? m1.nnz () : m2.nnz ())); \
                                                                         \
@@ -646,6 +740,122 @@
                                                                         \
         r.maybe_compress ();                                            \
       }                                                                 \
+    else if (m1_nr == m2_nr && (m1_nc == 1 || m2_nc == 1))              \
+      {                                                                 \
+        octave_idx_type r_nc = (m1_nc < m2_nc ? m2_nc : m1_nc);         \
+        octave_idx_type rnnz = (m1_nc < m2_nc ? m1.nnz () * m2_nc + m2.nnz () : \
+                                                m1.nnz () + m1_nc * m2.nnz ()); \
+        r = R (m1_nr, r_nc, rnnz);                                      \
+                                                                        \
+        octave_idx_type jx = 0;                                         \
+        r.cidx (0) = 0;                                                 \
+        for (octave_idx_type i = 0 ; i < r_nc ; i++)                    \
+          {                                                             \
+            octave_idx_type ja;                                         \
+            octave_idx_type ja_max;                                     \
+            octave_idx_type jb;                                         \
+            octave_idx_type jb_max;                                     \
+            if (m1_nc == 1)                                             \
+              {                                                         \
+                ja = m1.cidx(0);                                        \
+                ja_max = m1.cidx(1);                                    \
+                jb = m2.cidx (i);                                       \
+                jb_max = m2.cidx (i+1);                                 \
+              }                                                         \
+            else                                                        \
+              {                                                         \
+                ja = m1.cidx(i);                                        \
+                ja_max = m1.cidx(i+1);                                  \
+                jb = m2.cidx (0);                                       \
+                jb_max = m2.cidx (1);                                   \
+              }                                                         \
+            bool ja_lt_max = ja < ja_max;                               \
+            bool jb_lt_max = jb < jb_max;                               \
+                                                                        \
+            while (ja_lt_max || jb_lt_max)                              \
+              {                                                         \
+                octave_quit ();                                         \
+                if ((! jb_lt_max) ||                                    \
+                    (ja_lt_max && (m1.ridx (ja) < m2.ridx (jb))))       \
+                  {                                                     \
+                    ja++;                                               \
+                    ja_lt_max = ja < ja_max;                            \
+                  }                                                     \
+                else if ((! ja_lt_max) ||                               \
+                         (m2.ridx (jb) < m1.ridx (ja)))                 \
+                  {                                                     \
+                    jb++;                                               \
+                    jb_lt_max = jb < jb_max;                            \
+                  }                                                     \
+                else                                                    \
+                  {                                                     \
+                    if (m1.data (ja) OP m2.data (jb) != 0.)             \
+                      {                                                 \
+                        r.data (jx) = m1.data (ja) OP m2.data (jb);     \
+                        r.ridx (jx) = m1.ridx (ja);                     \
+                        jx++;                                           \
+                      }                                                 \
+                    ja++;                                               \
+                    ja_lt_max = ja < ja_max;                            \
+                    jb++;                                               \
+                    jb_lt_max = jb < jb_max;                            \
+                  }                                                     \
+              }                                                         \
+            r.cidx (i+1) = jx;                                          \
+          }                                                             \
+        r.maybe_compress ();                                            \
+      }                                                                 \
+    else if (m1_nc == m2_nc && (m1_nr == 1 || m2_nr == 1))              \
+      r = F (m1.transpose (), m2.transpose ()).transpose ();            \
+    else if (m1_nr == 1 && m2_nc == 1)                                  \
+      {                                                                 \
+        r = R (m2_nr, m1_nc, (m1.nnz () * m2_nr + m2.nnz () * m1_nc));  \
+                                                                        \
+        octave_idx_type jx = 0;                                         \
+        r.cidx (0) = 0;                                                 \
+        for (octave_idx_type i = 0 ; i < m1_nc ; i++)                   \
+          {                                                             \
+            octave_idx_type ja = m1.cidx (i);                           \
+            octave_idx_type ja_max = m1.cidx (i+1);                     \
+            bool ja_lt_max = ja < ja_max;                               \
+                                                                        \
+            octave_idx_type jb = m2.cidx (0);                           \
+            octave_idx_type jb_max = m2.cidx (1);                       \
+            bool jb_lt_max = jb < jb_max;                               \
+                                                                        \
+            while (ja_lt_max || jb_lt_max)                              \
+              {                                                         \
+                octave_quit ();                                         \
+                if (! ja_lt_max && jb_lt_max)                           \
+                  {                                                     \
+                    jb++;                                               \
+                    jb_lt_max = jb < jb_max;                            \
+                  }                                                     \
+                else if (ja_lt_max && ! jb_lt_max)                      \
+                  {                                                     \
+                    ja_lt_max = false;                                  \
+                  }                                                     \
+                else if (ja_lt_max && jb_lt_max)                        \
+                  {                                                     \
+                    if ((m1.data (ja) OP m2.data (jb)) != 0.)           \
+                      {                                                 \
+                        r.data (jx) = m1.data (ja) OP m2.data (jb);     \
+                        r.ridx (jx) = m2.ridx (jb);                     \
+                        jx++;                                           \
+                      }                                                 \
+                    jb++;                                               \
+                    jb_lt_max = jb < jb_max;                            \
+                    ja_lt_max = jb_lt_max;                              \
+                  }                                                     \
+              }                                                         \
+            r.cidx (i+1) = jx;                                          \
+          }                                                             \
+        r.maybe_compress ();                                            \
+      }                                                                 \
+    else if (m1_nc == 1 && m2_nr == 1)                                  \
+      r = F (m1.transpose (), m2.transpose ()).transpose ();            \
+    else                                                                \
+      octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);       \
                                                                         \
     return r;                                                           \
   }
@@ -655,6 +865,7 @@
   F (const M1& m1, const M2& m2)                                        \
   {                                                                     \
     R r;                                                                \
+    Complex Zero = Complex ();                                          \
                                                                         \
     octave_idx_type m1_nr = m1.rows ();                                 \
     octave_idx_type m1_nc = m1.cols ();                                 \
@@ -664,7 +875,7 @@
                                                                         \
     if (m1_nr == 1 && m1_nc == 1)                                       \
       {                                                                 \
-        if ((m1.elem (0,0) OP Complex ()) == Complex ())                \
+        if ((m1.elem (0,0) OP Zero) == Zero)                            \
           {                                                             \
             octave_idx_type m2_nnz = m2.nnz ();                         \
             r = R (m2);                                                 \
@@ -674,7 +885,7 @@
           }                                                             \
         else                                                            \
           {                                                             \
-            r = R (m2_nr, m2_nc, m1.elem (0,0) OP Complex ());          \
+            r = R (m2_nr, m2_nc, m1.elem (0,0) OP Zero);                \
             for (octave_idx_type j = 0 ; j < m2_nc ; j++)               \
               {                                                         \
                 octave_quit ();                                         \
@@ -690,7 +901,7 @@
       }                                                                 \
     else if (m2_nr == 1 && m2_nc == 1)                                  \
       {                                                                 \
-        if ((Complex () OP m1.elem (0,0)) == Complex ())                \
+        if ((Zero OP m1.elem (0,0)) == Zero)                            \
           {                                                             \
             octave_idx_type m1_nnz = m1.nnz ();                         \
             r = R (m1);                                                 \
@@ -700,7 +911,7 @@
           }                                                             \
         else                                                            \
           {                                                             \
-            r = R (m1_nr, m1_nc, Complex () OP m2.elem (0,0));          \
+            r = R (m1_nr, m1_nc, Zero OP m2.elem (0,0));                \
             for (octave_idx_type j = 0 ; j < m1_nc ; j++)               \
               {                                                         \
                 octave_quit ();                                         \
@@ -742,13 +953,11 @@
         else                                                            \
           octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);   \
       }                                                                 \
-    else if (m1_nr != m2_nr || m1_nc != m2_nc)                          \
-      octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);       \
-    else                                                                \
+    else if (m1_nr == m2_nr && m1_nc == m2_nc)                          \
       {                                                                 \
                                                                         \
         /* FIXME: Kludge... Always double/Complex, so Complex () */     \
-        r = R (m1_nr, m1_nc, (Complex () OP Complex ()));               \
+        r = R (m1_nr, m1_nc, (Zero OP Zero));                           \
                                                                         \
         for (octave_idx_type i = 0 ; i < m1_nc ; i++)                   \
           {                                                             \
@@ -767,7 +976,7 @@
                     (ja_lt_max && (m1.ridx (ja) < m2.ridx (jb))))       \
                   {                                                     \
                     /* keep those kludges coming */                     \
-                    r.elem (m1.ridx (ja),i) = m1.data (ja) OP Complex (); \
+                    r.elem (m1.ridx (ja),i) = m1.data (ja) OP Zero;     \
                     ja++;                                               \
                     ja_lt_max= ja < ja_max;                             \
                   }                                                     \
@@ -775,13 +984,14 @@
                          (jb_lt_max && (m2.ridx (jb) < m1.ridx (ja))))  \
                   {                                                     \
                     /* keep those kludges coming */                     \
-                    r.elem (m2.ridx (jb),i) = Complex () OP m2.data (jb); \
+                    r.elem (m2.ridx (jb),i) = Zero OP m2.data (jb);     \
                     jb++;                                               \
                     jb_lt_max= jb < jb_max;                             \
                   }                                                     \
                 else                                                    \
                   {                                                     \
-                    r.elem (m1.ridx (ja),i) = m1.data (ja) OP m2.data (jb); \
+                    r.elem (m1.ridx (ja),i) = m1.data (ja) OP           \
+                                              m2.data (jb);             \
                     ja++;                                               \
                     ja_lt_max= ja < ja_max;                             \
                     jb++;                                               \
@@ -791,6 +1001,91 @@
           }                                                             \
         r.maybe_compress (true);                                        \
       }                                                                 \
+    else if (m1_nr == m2_nr && (m1_nc == 1 || m2_nc == 1))              \
+      {                                                                 \
+        octave_idx_type r_nc = (m1_nc < m2_nc ? m2_nc : m1_nc);         \
+        r = R (m1_nr, r_nc, (Zero / Zero));                             \
+                                                                        \
+        for (octave_idx_type i = 0 ; i < r_nc ; i++)                    \
+          {                                                             \
+            octave_idx_type ja;                                         \
+            octave_idx_type ja_max;                                     \
+            octave_idx_type jb;                                         \
+            octave_idx_type jb_max;                                     \
+            if (m1_nc == 1)                                             \
+              {                                                         \
+                ja = m1.cidx(0);                                        \
+                ja_max = m1.cidx(1);                                    \
+                jb = m2.cidx (i);                                       \
+                jb_max = m2.cidx (i+1);                                 \
+              }                                                         \
+            else                                                        \
+              {                                                         \
+                ja = m1.cidx(i);                                        \
+                ja_max = m1.cidx(i+1);                                  \
+                jb = m2.cidx (0);                                       \
+                jb_max = m2.cidx (1);                                   \
+              }                                                         \
+            bool ja_lt_max = ja < ja_max;                               \
+            bool jb_lt_max = jb < jb_max;                               \
+                                                                        \
+            while (ja_lt_max || jb_lt_max)                              \
+              {                                                         \
+                octave_quit ();                                         \
+                if ((! jb_lt_max) ||                                    \
+                     (ja_lt_max && (m1.ridx (ja) < m2.ridx (jb))))      \
+                  {                                                     \
+                    r.elem (m1.ridx (ja), i) = m1.data (ja) OP Zero;    \
+                    ja++;                                               \
+                    ja_lt_max = ja < ja_max;                            \
+                  }                                                     \
+                else if ((! ja_lt_max) ||                               \
+                         (m2.ridx (jb) < m1.ridx (ja)))                 \
+                  {                                                     \
+                    r.elem (m2.ridx (jb), i) = Zero OP m2.data (jb);    \
+                    jb++;                                               \
+                    jb_lt_max = jb < jb_max;                            \
+                  }                                                     \
+                else                                                    \
+                  {                                                     \
+                    r.elem (m1.ridx (ja), i) = m1.data (ja) OP          \
+                                               m2.data (jb);            \
+                    ja++;                                               \
+                    ja_lt_max = ja < ja_max;                            \
+                    jb++;                                               \
+                    jb_lt_max = jb < jb_max;                            \
+                  }                                                     \
+              }                                                         \
+          }                                                             \
+        r.maybe_compress (true);                                        \
+      }                                                                 \
+    else if (m1_nc == m2_nc && (m1_nr == 1 || m2_nr == 1))              \
+      r = quotient (m1.transpose (), m2.transpose ()).transpose ();     \
+    else if (m1_nr == 1 && m2_nc == 1)                                  \
+      {                                                                 \
+        r = R (m2_nr, m1_nc, (m1_nc * m2_nr));                          \
+                                                                        \
+        for (octave_idx_type j = 0; j < m1_nc; j++)                     \
+          {                                                             \
+            const Complex m1_val = m1.elem (0, j);                      \
+                                                                        \
+            for (octave_idx_type i = 0; i < m2_nr; i++)                 \
+              {                                                         \
+                octave_quit ();                                         \
+                                                                        \
+                const Complex m2_val = m2.elem (i, 0);                  \
+                const Complex val = m1_val OP m2_val;                   \
+                                                                        \
+                if (val != Zero || val != val)                          \
+                  r.elem (i, j) = val;                                  \
+              }                                                         \
+          }                                                             \
+        r.maybe_compress (true);                                        \
+      }                                                                 \
+    else if (m1_nc == 1 && m2_nr == 1)                                  \
+      r = quotient (m1.transpose (), m2.transpose ()).transpose ();     \
+    else                                                                \
+      octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);       \
                                                                         \
     return r;                                                           \
   }
@@ -969,7 +1264,7 @@
     else                                                                \
       {                                                                 \
         if ((m1_nr != 0 || m1_nc != 0) && (m2_nr != 0 || m2_nc != 0))   \
-          octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);           \
+          octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);   \
       }                                                                 \
     return r;                                                           \
   }
@@ -1134,83 +1429,37 @@
 
 // matrix by sparse matrix operations.
 
-#define SPARSE_MSM_BIN_OP_1(R, F, OP, M1, M2)                   \
-  R                                                             \
-  F (const M1& m1, const M2& m2)                                \
-  {                                                             \
-    R r;                                                        \
-                                                                \
-    octave_idx_type m1_nr = m1.rows ();                         \
-    octave_idx_type m1_nc = m1.cols ();                         \
-                                                                \
-    octave_idx_type m2_nr = m2.rows ();                         \
-    octave_idx_type m2_nc = m2.cols ();                         \
-                                                                \
-    if (m2_nr == 1 && m2_nc == 1)                               \
-      r = R (m1 OP m2.elem (0,0));                              \
-    else if (m1_nr != m2_nr || m1_nc != m2_nc)                  \
-      octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);       \
-    else                                                        \
-      {                                                         \
-        r = R (F (m1, m2.matrix_value ()));                     \
-      }                                                         \
-    return r;                                                   \
+#define SPARSE_MSM_BIN_OP(R, F, OP, M1, M2)                           \
+  R                                                                   \
+  F (const M1& m1, const M2& m2)                                      \
+  {                                                                   \
+    R r;                                                              \
+                                                                      \
+    octave_idx_type m1_nr = m1.rows ();                               \
+    octave_idx_type m1_nc = m1.cols ();                               \
+                                                                      \
+    octave_idx_type m2_nr = m2.rows ();                               \
+    octave_idx_type m2_nc = m2.cols ();                               \
+                                                                      \
+    if (m2_nr == 1 && m2_nc == 1)                                     \
+      r = R (m1 OP m2.elem (0,0));                                    \
+    else if ((m1_nr == m2_nr && m1_nc == m2_nc) ||                    \
+             (m1_nr == m2_nr && (m1_nc == 1 || m2_nc == 1)) ||        \
+             (m1_nc == m2_nc && (m1_nr == 1 || m2_nr == 1)) ||        \
+             (m1_nr == 1 && m2_nc == 1)                     ||        \
+             (m1_nc == 1 && m2_nr == 1))                              \
+      r = R (F (m1, m2.matrix_value ()));                             \
+    else                                                              \
+      octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);     \
+                                                                      \
+    return r;                                                         \
   }
 
-#define SPARSE_MSM_BIN_OP_2(R, F, OP, M1, M2)                           \
-  R                                                                     \
-  F (const M1& m1, const M2& m2)                                        \
-  {                                                                     \
-    R r;                                                                \
-                                                                        \
-    octave_idx_type m1_nr = m1.rows ();                                 \
-    octave_idx_type m1_nc = m1.cols ();                                 \
-                                                                        \
-    octave_idx_type m2_nr = m2.rows ();                                 \
-    octave_idx_type m2_nc = m2.cols ();                                 \
-                                                                        \
-    if (m2_nr == 1 && m2_nc == 1)                                       \
-      r = R (m1 OP m2.elem (0,0));                                      \
-    else if (m1_nr != m2_nr || m1_nc != m2_nc)                          \
-      octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);               \
-    else                                                                \
-      {                                                                 \
-        if (do_mx_check (m1, mx_inline_all_finite<M1::element_type>))   \
-          {                                                             \
-            /* Sparsity pattern is preserved. */                        \
-            octave_idx_type m2_nz = m2.nnz ();                          \
-            r = R (m2_nr, m2_nc, m2_nz);                                \
-            for (octave_idx_type j = 0, k = 0; j < m2_nc; j++)          \
-              {                                                         \
-                octave_quit ();                                         \
-                for (octave_idx_type i = m2.cidx (j); i < m2.cidx (j+1); i++) \
-                  {                                                     \
-                    octave_idx_type mri = m2.ridx (i);                  \
-                    R::element_type x = m1(mri, j) OP m2.data (i);      \
-                    if (x != 0.0)                                       \
-                      {                                                 \
-                        r.xdata (k) = x;                                \
-                        r.xridx (k) = m2.ridx (i);                      \
-                        k++;                                            \
-                      }                                                 \
-                  }                                                     \
-                r.xcidx (j+1) = k;                                      \
-              }                                                         \
-            r.maybe_compress (false);                                   \
-            return r;                                                   \
-          }                                                             \
-        else                                                            \
-          r = R (F (m1, m2.matrix_value ()));                           \
-      }                                                                 \
-                                                                        \
-    return r;                                                           \
-  }
-
-#define SPARSE_MSM_BIN_OPS(R1, R2, M1, M2)              \
-  SPARSE_MSM_BIN_OP_1 (R1, operator +,  +, M1, M2)      \
-  SPARSE_MSM_BIN_OP_1 (R1, operator -,  -, M1, M2)      \
-  SPARSE_MSM_BIN_OP_2 (R2, product,     *, M1, M2)      \
-  SPARSE_MSM_BIN_OP_1 (R2, quotient,    /, M1, M2)
+#define SPARSE_MSM_BIN_OPS(R1, R2, M1, M2)            \
+  SPARSE_MSM_BIN_OP (R1, operator +,  +, M1, M2)      \
+  SPARSE_MSM_BIN_OP (R1, operator -,  -, M1, M2)      \
+  SPARSE_MSM_BIN_OP (R2, product,     *, M1, M2)      \
+  SPARSE_MSM_BIN_OP (R1, quotient,    /, M1, M2)
 
 #define SPARSE_MSM_CMP_OP(F, OP, M1, M2)                                \
   SparseBoolMatrix                                                      \
@@ -1259,7 +1508,7 @@
     else                                                                \
       {                                                                 \
         if ((m1_nr != 0 || m1_nc != 0) && (m2_nr != 0 || m2_nc != 0))   \
-          octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);           \
+          octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);   \
       }                                                                 \
     return r;                                                           \
   }
@@ -1328,7 +1577,7 @@
     else                                                                \
       {                                                                 \
         if ((m1_nr != 0 || m1_nc != 0) && (m2_nr != 0 || m2_nc != 0))   \
-          octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);           \
+          octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);   \
       }                                                                 \
     return r;                                                           \
   }
@@ -1339,91 +1588,37 @@
 
 // sparse matrix by matrix operations.
 
-#define SPARSE_SMM_BIN_OP_1(R, F, OP, M1, M2)                   \
-  R                                                             \
-  F (const M1& m1, const M2& m2)                                \
-  {                                                             \
-    R r;                                                        \
-                                                                \
-    octave_idx_type m1_nr = m1.rows ();                         \
-    octave_idx_type m1_nc = m1.cols ();                         \
-                                                                \
-    octave_idx_type m2_nr = m2.rows ();                         \
-    octave_idx_type m2_nc = m2.cols ();                         \
-                                                                \
-    if (m1_nr == 1 && m1_nc == 1)                               \
-      r = R (m1.elem (0,0) OP m2);                              \
-    else if (m1_nr != m2_nr || m1_nc != m2_nc)                  \
-      octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);       \
-    else                                                        \
-      {                                                         \
-        r = R (m1.matrix_value () OP m2);                       \
-      }                                                         \
-    return r;                                                   \
+#define SPARSE_SMM_BIN_OP(R, F, OP, M1, M2)                           \
+  R                                                                   \
+  F (const M1& m1, const M2& m2)                                      \
+  {                                                                   \
+    R r;                                                              \
+                                                                      \
+    octave_idx_type m1_nr = m1.rows ();                               \
+    octave_idx_type m1_nc = m1.cols ();                               \
+                                                                      \
+    octave_idx_type m2_nr = m2.rows ();                               \
+    octave_idx_type m2_nc = m2.cols ();                               \
+                                                                      \
+    if (m1_nr == 1 && m1_nc == 1)                                     \
+      r = R (m1.elem (0,0) OP m2);                                    \
+    else if ((m1_nr == m2_nr && m1_nc == m2_nc) ||                    \
+             (m1_nr == m2_nr && (m1_nc == 1 || m2_nc == 1)) ||        \
+             (m1_nc == m2_nc && (m1_nr == 1 || m2_nr == 1)) ||        \
+             (m1_nr == 1 && m2_nc == 1)                     ||        \
+             (m1_nc == 1 && m2_nr == 1))                              \
+      r = R (F (m1.matrix_value (), m2));                             \
+    else                                                              \
+      octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);     \
+                                                                      \
+    return r;                                                         \
   }
 
-// sm .* m preserves sparsity if m contains no Infs nor Nans.
-#define SPARSE_SMM_BIN_OP_2_CHECK_product(ET)   \
-  do_mx_check (m2, mx_inline_all_finite<ET>)
-
-// sm ./ m preserves sparsity if m contains no NaNs or zeros.
-#define SPARSE_SMM_BIN_OP_2_CHECK_quotient(ET)                          \
-  ! do_mx_check (m2, mx_inline_any_nan<ET>) && m2.nnz () == m2.numel ()
-
-#define SPARSE_SMM_BIN_OP_2(R, F, OP, M1, M2)                           \
-  R                                                                     \
-  F (const M1& m1, const M2& m2)                                        \
-  {                                                                     \
-    R r;                                                                \
-                                                                        \
-    octave_idx_type m1_nr = m1.rows ();                                 \
-    octave_idx_type m1_nc = m1.cols ();                                 \
-                                                                        \
-    octave_idx_type m2_nr = m2.rows ();                                 \
-    octave_idx_type m2_nc = m2.cols ();                                 \
-                                                                        \
-    if (m1_nr == 1 && m1_nc == 1)                                       \
-      r = R (m1.elem (0,0) OP m2);                                      \
-    else if (m1_nr != m2_nr || m1_nc != m2_nc)                          \
-      octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);               \
-    else                                                                \
-      {                                                                 \
-        if (SPARSE_SMM_BIN_OP_2_CHECK_ ## F(M2::element_type))          \
-          {                                                             \
-            /* Sparsity pattern is preserved. */                        \
-            octave_idx_type m1_nz = m1.nnz ();                          \
-            r = R (m1_nr, m1_nc, m1_nz);                                \
-            for (octave_idx_type j = 0, k = 0; j < m1_nc; j++)          \
-              {                                                         \
-                octave_quit ();                                         \
-                for (octave_idx_type i = m1.cidx (j); i < m1.cidx (j+1); i++) \
-                  {                                                     \
-                    octave_idx_type mri = m1.ridx (i);                  \
-                    R::element_type x = m1.data (i) OP m2 (mri, j);     \
-                    if (x != 0.0)                                       \
-                      {                                                 \
-                        r.xdata (k) = x;                                \
-                        r.xridx (k) = m1.ridx (i);                      \
-                        k++;                                            \
-                      }                                                 \
-                  }                                                     \
-                r.xcidx (j+1) = k;                                      \
-              }                                                         \
-            r.maybe_compress (false);                                   \
-            return r;                                                   \
-          }                                                             \
-        else                                                            \
-          r = R (F (m1.matrix_value (), m2));                           \
-      }                                                                 \
-                                                                        \
-    return r;                                                           \
-  }
-
-#define SPARSE_SMM_BIN_OPS(R1, R2, M1, M2)              \
-  SPARSE_SMM_BIN_OP_1 (R1, operator +,  +, M1, M2)      \
-  SPARSE_SMM_BIN_OP_1 (R1, operator -,  -, M1, M2)      \
-  SPARSE_SMM_BIN_OP_2 (R2, product,     *, M1, M2)      \
-  SPARSE_SMM_BIN_OP_2 (R2, quotient,    /, M1, M2)
+#define SPARSE_SMM_BIN_OPS(R1, R2, M1, M2)            \
+  SPARSE_SMM_BIN_OP (R1, operator +,  +, M1, M2)      \
+  SPARSE_SMM_BIN_OP (R1, operator -,  -, M1, M2)      \
+  SPARSE_SMM_BIN_OP (R2, product,     *, M1, M2)      \
+  SPARSE_SMM_BIN_OP (R2, quotient,    /, M1, M2)
 
 #define SPARSE_SMM_CMP_OP(F, OP, M1, M2)                                \
   SparseBoolMatrix                                                      \
@@ -1472,7 +1667,7 @@
     else                                                                \
       {                                                                 \
         if ((m1_nr != 0 || m1_nc != 0) && (m2_nr != 0 || m2_nc != 0))   \
-          octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);           \
+          octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);   \
       }                                                                 \
     return r;                                                           \
   }
@@ -1541,7 +1736,7 @@
     else                                                                \
       {                                                                 \
         if ((m1_nr != 0 || m1_nc != 0) && (m2_nr != 0 || m2_nc != 0))   \
-          octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);           \
+          octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);   \
       }                                                                 \
     return r;                                                           \
   }
@@ -1942,7 +2137,7 @@
       return r;                                                         \
     }                                                                   \
   else if (nc != a_nr)                                                  \
-    octave::err_nonconformant ("operator *", nr, nc, a_nr, a_nc);               \
+    octave::err_nonconformant ("operator *", nr, nc, a_nr, a_nc);       \
   else                                                                  \
     {                                                                   \
       OCTAVE_LOCAL_BUFFER (octave_idx_type, w, nr);                     \
@@ -2071,7 +2266,7 @@
       return retval;                                                    \
     }                                                                   \
   else if (nc != a_nr)                                                  \
-    octave::err_nonconformant ("operator *", nr, nc, a_nr, a_nc);               \
+    octave::err_nonconformant ("operator *", nr, nc, a_nr, a_nc);       \
   else                                                                  \
     {                                                                   \
       RET_TYPE::element_type zero = RET_TYPE::element_type ();          \
@@ -2105,7 +2300,7 @@
       return retval;                                                    \
     }                                                                   \
   else if (nr != a_nr)                                                  \
-    octave::err_nonconformant ("operator *", nc, nr, a_nr, a_nc);               \
+    octave::err_nonconformant ("operator *", nc, nr, a_nr, a_nc);       \
   else                                                                  \
     {                                                                   \
       RET_TYPE retval (nc, a_nc);                                       \
@@ -2138,7 +2333,7 @@
       return retval;                                                    \
     }                                                                   \
   else if (nc != a_nr)                                                  \
-    octave::err_nonconformant ("operator *", nr, nc, a_nr, a_nc);               \
+    octave::err_nonconformant ("operator *", nr, nc, a_nr, a_nc);       \
   else                                                                  \
     {                                                                   \
       RET_TYPE::element_type zero = RET_TYPE::element_type ();          \
@@ -2173,7 +2368,7 @@
       return retval;                                                    \
     }                                                                   \
   else if (nc != a_nc)                                                  \
-    octave::err_nonconformant ("operator *", nr, nc, a_nc, a_nr);               \
+    octave::err_nonconformant ("operator *", nr, nc, a_nc, a_nr);       \
   else                                                                  \
     {                                                                   \
       RET_TYPE::element_type zero = RET_TYPE::element_type ();          \

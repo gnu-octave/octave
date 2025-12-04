@@ -8380,6 +8380,324 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
 %! assert (a += sparse ([1; 2; 3; 4i]), sparse (zeros (4,0)))
 %! assert (a -= sparse ([1; 2; 3; 4i]), sparse (zeros (4,0)))
 
+## Test broadcasting of sparse matrices with math operators
+%!assert (full (sparse ([1, 2i, 3]) + sparse ([1, 2i, 3; 4i, 5, 6])),
+%!        [1, 2i, 3] + [1, 2i, 3; 4i, 5, 6])
+%!assert (full (sparse ([1; 2; 3i]) + sparse ([1, 2; 1, 2i; 1, 2i])),
+%!        [1; 2; 3i] + [1, 2; 1, 2i; 1, 2i])
+%!assert (full (sparse ([1i, 2, 3]) + sparse ([1i; 2; 3; 4])),
+%!        [1i, 2, 3] + [1i; 2; 3; 4])
+%!assert (full (sparse ([1; 2i; 3]) + sparse ([1i, 2i, 3, 4, 5])),
+%!        [1; 2i; 3] + [1i, 2i, 3, 4, 5])
+%!assert (full (sparse ([1, 0, 3i]) + sparse ([1, 0, 3i; 0i, 5, 6])),
+%!        [1, 0, 3i] + [1, 0, 3i; 0i, 5, 6])
+%!assert (full (sparse ([1; 2i; 0]) + sparse ([1i, 2i; 1, 0; 0, 0])),
+%!        [1; 2i; 0] + [1i, 2i; 1, 0; 0, 0])
+%!assert (full (sparse ([0, 0, 3i]) + sparse ([1; 2i; 3i; 4])),
+%!        [0, 0, 3i] + [1; 2i; 3i; 4])
+%!assert (full (sparse ([1; 2; 3i]) + sparse ([1, 0, 0, 0i, 5i])),
+%!        [1; 2; 3i] + [1, 0, 0, 0i, 5i])
+%!assert (full (sparse ([1, 2i, 3; 4, 5, 6]) + sparse ([1, 2, 3])),
+%!        [1, 2i, 3; 4, 5, 6] + [1, 2, 3])
+%!assert (full (sparse ([1, 2; 1, 2i; 1, 2]) + sparse ([1; 2i; 3])),
+%!        [1, 2; 1, 2i; 1, 2] + [1; 2i; 3])
+%!assert (full (sparse ([1; 2; 3; 4]) + sparse ([1, 2, 3i])),
+%!        [1; 2; 3; 4] + [1, 2, 3i])
+%!assert (full (sparse ([1, 2, 3, 4, 5i]) + sparse ([1; 2; 3])),
+%!        [1, 2, 3, 4, 5i] + [1; 2; 3])
+%!assert (full (sparse ([1i, 0, 3; 0, 5, 6]) + sparse ([1, 0, 3])),
+%!        [1i, 0, 3; 0, 5, 6] + [1, 0, 3])
+%!assert (full (sparse ([1i, 2; 1, 0; 0, 0]) + sparse ([1; 2; 0])),
+%!        [1i, 2; 1, 0; 0, 0] + [1; 2; 0])
+%!assert (full (sparse ([1; 2i; 3i; 4]) + sparse ([0, 0, 3])),
+%!        [1; 2i; 3i; 4] + [0, 0, 3])
+%!assert (full (sparse ([1, 0, 0, 0, 5i]) + sparse ([1; 2; 3i])),
+%!        [1, 0, 0, 0, 5i] + [1; 2; 3i])
+
+%!assert (sparse (1) + sparse ([1, 2i, 3]), sparse ([2, 1+2i, 4]))
+%!assert (sparse (1) + sparse ([1, 2i; 3, 4]), sparse ([2, 1+2i; 4, 5]))
+%!assert (sparse ([1, 2, 3i]) + sparse (1), sparse ([2, 3, 1+3i]))
+%!assert (sparse ([1, 2; 3, 4]) + sparse (1i), sparse ([1+i, 2+i; 3+i, 4+i]))
+%!assert (full (sparse ([1i; 2]) + sparse ([1, 0, 2, 0, 4])),
+%!        [1i; 2] + [1, 0, 2, 0, 4])
+%!assert (full (sparse ([1i, 0, 2, 0, 4]) + sparse ([1i; 2])),
+%!        [1i, 0, 2, 0, 4] + [1i; 2])
+%!assert (full (sparse ([1, 2i]) + sparse ([1; 0; 2; 0; 4])),
+%!        [1, 2i] + [1; 0; 2; 0; 4])
+%!assert (full (sparse ([1; 0; 2; 0i; 4i]) + sparse ([1, 2i])),
+%!        [1; 0; 2; 0i; 4i] + [1, 2i])
+%!assert (full (sparse ([1, 0, 3i]) + sparse ([1, 2, 3; 4, 0, 0i])),
+%!        [1, 0, 3i] + [1, 2, 3; 4, 0, 0i])
+%!assert (full (sparse ([10i, 0, 3; 4, 5, 0]) + sparse ([1, 0, 3])),
+%!        [10i, 0, 3; 4, 5, 0] + [1, 0, 3])
+%!assert (full (sparse ([1; 2i; 0]) + sparse ([0, 2; 3, 4; 5i, 0])),
+%!        [1; 2i; 0] + [0, 2; 3, 4; 5i, 0])
+%!assert (full (sparse ([1i, 2; 0, 0; 0, 6]) + sparse ([0; 2i; 3])),
+%!        [1i, 2; 0, 0; 0, 6] + [0; 2i; 3])
+
+%!assert (full (sparse ([1, 2, 3i]) - sparse ([1, 2, 3; 4i, 5, 6])),
+%!        [1, 2, 3i] - [1, 2, 3; 4i, 5, 6])
+%!assert (full (sparse ([1; 2; 3i]) - sparse ([1, 2; 1i, 2; 1, 2])),
+%!        [1; 2; 3i] - [1, 2; 1i, 2; 1, 2])
+%!assert (full (sparse ([1, 2, 3i]) - sparse ([1; 2; 3; 4])),
+%!        [1, 2, 3i] - [1; 2; 3; 4])
+%!assert (full (sparse ([1i; 2; 3]) - sparse ([1i, 2, 3i, 4, 5])),
+%!        [1i; 2; 3] - [1i, 2, 3i, 4, 5])
+%!assert (full (sparse ([1, 0, 3i]) - sparse ([1, 0i, 3; 0, 5, 6])),
+%!        [1, 0, 3i] - [1, 0i, 3; 0, 5, 6])
+%!assert (full (sparse ([1i; 2; 0]) - sparse ([1, 2; 1, 0; 0, 0])),
+%!        [1i; 2; 0] - [1, 2; 1, 0; 0, 0])
+%!assert (full (sparse ([0, 0, 3]) - sparse ([1; 2i; 3i; 4])),
+%!        [0, 0, 3] - [1; 2i; 3i; 4])
+%!assert (full (sparse ([1; 2; 3]) - sparse ([1, 0, 0, 0, 5i])),
+%!        [1; 2; 3] - [1, 0, 0, 0, 5i])
+%!assert (full (sparse ([1, 2, 3; 4, 5i, 6i]) - sparse ([1i, 2, 3])),
+%!        [1, 2, 3; 4, 5i, 6i] - [1i, 2, 3])
+%!assert (full (sparse ([1i, 2; 1, 2; 1, 2]) - sparse ([1; 2; 3])),
+%!        [1i, 2; 1, 2; 1, 2] - [1; 2; 3])
+%!assert (full (sparse ([1; 2; 3i; 4]) - sparse ([1, 2, 3i])),
+%!        [1; 2; 3i; 4] - [1, 2, 3i])
+%!assert (full (sparse ([1, 2, 3, 4, 5]) - sparse ([1; 2; 3i])),
+%!        [1, 2, 3, 4, 5] - [1; 2; 3i])
+%!assert (full (sparse ([1, 0, 3; 0, 5, 6i]) - sparse ([1, 0, 3])),
+%!        [1, 0, 3; 0, 5, 6i] - [1, 0, 3])
+%!assert (full (sparse ([1i, 2; 1, 0; 0, 0]) - sparse ([1i; 2; 0])),
+%!        [1i, 2; 1, 0; 0, 0] - [1i; 2; 0])
+%!assert (full (sparse ([1; 2i; 3; 4]) - sparse ([0, 0i, 3])),
+%!        [1; 2i; 3; 4] - [0, 0i, 3])
+%!assert (full (sparse ([1, 0, 0, 0, 5i]) - sparse ([1i; 2; 3])),
+%!        [1, 0, 0, 0, 5i] - [1i; 2; 3])
+
+%!assert (sparse (1) - sparse ([1, 2, 3i]), sparse ([0, -1, 1-3i]))
+%!assert (sparse (1) - sparse ([1i, 2; 3, 4]), sparse ([1-1i, -1; -2, -3]))
+%!assert (sparse ([1, 2i, 3]) - sparse (1), sparse ([0, -1+2i, 2]))
+%!assert (sparse ([1, 2; 3, 4i]) - sparse (1), sparse ([0, 1; 2, -1+4i]))
+%!assert (full (sparse ([1; 2i]) - sparse ([1, 0, 2, 0, 4])),
+%!        [1; 2i] - [1, 0, 2, 0, 4])
+%!assert (full (sparse ([1, 0, 2i, 0, 4]) - sparse ([1i; 2])),
+%!        [1, 0, 2i, 0, 4] - [1i; 2])
+%!assert (full (sparse ([1, 2i]) - sparse ([1; 0; 2; 0i; 4i])),
+%!        [1, 2i] - [1; 0; 2; 0i; 4i])
+%!assert (full (sparse ([1; 0; 2; 0; 4]) - sparse ([1, 2i])),
+%!        [1; 0; 2; 0; 4] - [1, 2i])
+%!assert (full (sparse ([1i, 0, 3]) - sparse ([1, 2, 3; 4, 0, 0])),
+%!        [1i, 0, 3] - [1, 2, 3; 4, 0, 0])
+%!assert (full (sparse ([10, 0, 3; 4i, 5i, 0]) - sparse ([1, 0, 3i])),
+%!        [10, 0, 3; 4i, 5i, 0] - [1, 0, 3i])
+%!assert (full (sparse ([1; 2i; 0]) - sparse ([0, 2; 3i, 4i; 5, 0])),
+%!        [1; 2i; 0] - [0, 2; 3i, 4i; 5, 0])
+%!assert (full (sparse ([1, 2; 0, 0; 0, 6i]) - sparse ([0; 2; 3i])),
+%!        [1, 2; 0, 0; 0, 6i] - [0; 2; 3i])
+
+%!assert (full (sparse ([1, 2i, 3]) .* sparse ([1, 2, 3; 4, 5, 6])),
+%!        [1, 2i, 3] .* [1, 2, 3; 4, 5, 6])
+%!assert (full (sparse ([1; 2; 3i]) .* sparse ([1, 2; 1i, 2; 1, 2])),
+%!        [1; 2; 3i] .* [1, 2; 1i, 2; 1, 2])
+%!assert (full (sparse ([1, 2, 3]) .* sparse ([1; 2; 3; 4i])),
+%!        [1, 2, 3] .* [1; 2; 3; 4i])
+%!assert (full (sparse ([1; 2i; 3i]) .* sparse ([1, 2, 3, 4, 5])),
+%!        [1; 2i; 3i] .* [1, 2, 3, 4, 5])
+%!assert (full (sparse ([1, 0, 3i]) .* sparse ([1i, 0, 3; 0, 5, 6])),
+%!        [1, 0, 3i] .* [1i, 0, 3; 0, 5, 6])
+%!assert (full (sparse ([1; 2i; 0]) .* sparse ([1, 2i; 1i, 0; 0, 0])),
+%!        [1; 2i; 0] .* [1, 2i; 1i, 0; 0, 0])
+%!assert (full (sparse ([0, 0i, 3i]) .* sparse ([1; 2; 3; 4])),
+%!        [0, 0i, 3i] .* [1; 2; 3; 4])
+%!assert (full (sparse ([1; 2; 3i]) .* sparse ([1, 0, 0i, 0, 5])),
+%!        [1; 2; 3i] .* [1, 0, 0i, 0, 5])
+%!assert (full (sparse ([1, 2, 3i; 4, 5, 6]) .* sparse ([1, 2, 3])),
+%!        [1, 2, 3i; 4, 5, 6] .* [1, 2, 3])
+%!assert (full (sparse ([1, 2; 1i, 2; 1, 2]) .* sparse ([1i; 2; 3])),
+%!        [1, 2; 1i, 2; 1, 2] .* [1i; 2; 3])
+%!assert (full (sparse ([1; 2; 3; 4]) .* sparse ([1, 2i, 3])),
+%!        [1; 2; 3; 4] .* [1, 2i, 3])
+%!assert (full (sparse ([1, 2i, 3, 4, 5]) .* sparse ([1i; 2; 3])),
+%!        [1, 2i, 3, 4, 5] .* [1i; 2; 3])
+%!assert (full (sparse ([1, 0, 3; 0, 5, 6]) .* sparse ([1, 0, 3i])),
+%!        [1, 0, 3; 0, 5, 6] .* [1, 0, 3i])
+%!assert (full (sparse ([1, 2i; 1, 0; 0i, 0]) .* sparse ([1; 2; 0])),
+%!        [1, 2i; 1, 0; 0i, 0] .* [1; 2; 0])
+%!assert (full (sparse ([1; 2i; 3; 4]) .* sparse ([0, 0, 3])),
+%!        [1; 2i; 3; 4] .* [0, 0, 3])
+%!assert (full (sparse ([1, 0, 0, 0, 5i]) .* sparse ([1; 2i; 3i])),
+%!        [1, 0, 0, 0, 5i] .* [1; 2i; 3i])
+
+%!assert (sparse (1) .* sparse ([1, 2i, 3]), sparse ([1, 2i, 3]))
+%!assert (sparse (1) .* sparse ([1, 2; 3i, 4]), sparse ([1, 2; 3i, 4]))
+%!assert (sparse ([1 2 3]) .* sparse (1i), sparse ([1i, 2i, 3i]))
+%!assert (sparse ([1, 2; 3i, 4i]) .* sparse (1), sparse ([1, 2; 3i, 4i]))
+%!assert (full (sparse ([1; 2]) .* sparse ([1, 0, 2i, 0, 4])),
+%!        [1; 2] .* [1, 0, 2i, 0, 4])
+%!assert (full (sparse ([1i, 0, 2, 0, 4]) .* sparse ([1; 2])),
+%!        [1i, 0, 2, 0, 4] .* [1; 2])
+%!assert (full (sparse ([1, 2i]) .* sparse ([1; 0; 2i; 0i; 4])),
+%!        [1, 2i] .* [1; 0; 2i; 0i; 4])
+%!assert (full (sparse ([1i; 0; 2; 0; 4]) .* sparse ([1, 2])),
+%!        [1i; 0; 2; 0; 4] .* [1, 2])
+%!assert (full (sparse ([1, 0, 3i]) .* sparse ([1i, 2i, 3; 4, 0, 0])),
+%!        [1, 0, 3i] .* [1i, 2i, 3; 4, 0, 0])
+%!assert (full (sparse ([10, 0, 3; 4, 5, 0]) .* sparse ([1i, 0, 3])),
+%!        [10, 0, 3; 4, 5, 0] .* [1i, 0, 3])
+%!assert (full (sparse ([1; 2i; 0]) .* sparse ([0, 2i; 3i, 4; 5, 0])),
+%!        [1; 2i; 0] .* [0, 2i; 3i, 4; 5, 0])
+%!assert (full (sparse ([1, 2i; 0, 0; 0, 6]) .* sparse ([0; 2; 3])),
+%!        [1, 2i; 0, 0; 0, 6] .* [0; 2; 3])
+
+%!assert (full (sparse ([1, 2, 3i]) ./ sparse ([1, 2, 3; 4, 5, 6])),
+%!        [1, 2, 3i] ./ [1, 2, 3; 4, 5, 6])
+%!assert (full (sparse ([1; 2; 3i]) ./ sparse ([1, 2; 1i, 2; 1, 2])),
+%!        [1; 2; 3i] ./ [1, 2; 1i, 2; 1, 2])
+%!assert (full (sparse ([1, 2, 3]) ./ sparse ([1; 2i; 3i; 4])),
+%!        [1, 2, 3] ./ [1; 2i; 3i; 4])
+%!assert (full (sparse ([1; 2i; 3]) ./ sparse ([1, 2, 3, 4, 5])),
+%!        [1; 2i; 3] ./ [1, 2, 3, 4, 5])
+%!assert (full (sparse ([1, 0, 3i]) ./ sparse ([1, 0, 3i; 0, 5, 6])),
+%!        [1, 0, 3i] ./ [1, 0, 3i; 0, 5, 6])
+%!assert (full (sparse ([1; 2; 0]) ./ sparse ([1, 2; 1i, 0; 0i, 0i])),
+%!        [1; 2; 0] ./ [1, 2; 1i, 0; 0i, 0i])
+%!assert (full (sparse ([0, 0, 3i]) ./ sparse ([1; 2; 3; 4])),
+%!        [0, 0, 3i] ./ [1; 2; 3; 4])
+%!assert (full (sparse ([1i; 2; 3]) ./ sparse ([1i, 0, 0, 0, 5])),
+%!        [1i; 2; 3] ./ [1i, 0, 0, 0, 5])
+%!assert (full (sparse ([1, 2, 3i; 4i, 5i, 6]) ./ sparse ([1, 2, 3])),
+%!        [1, 2, 3i; 4i, 5i, 6] ./ [1, 2, 3])
+%!assert (full (sparse ([1i, 2; 1, 2; 1, 2]) ./ sparse ([1i; 2; 3])),
+%!        [1i, 2; 1, 2; 1, 2] ./ [1i; 2; 3])
+%!assert (full (sparse ([1; 2; 3; 4]) ./ sparse ([1, 2i, 3])),
+%!        [1; 2; 3; 4] ./ [1, 2i, 3])
+%!assert (full (sparse ([1, 2i, 3, 4, 5]) ./ sparse ([1; 2; 3])),
+%!        [1, 2i, 3, 4, 5] ./ [1; 2; 3])
+%!assert (full (sparse ([1, 0, 3i; 0, 5i, 6]) ./ sparse ([1, 0, 3i])),
+%!        [1, 0, 3i; 0, 5i, 6] ./ [1, 0, 3i])
+%!assert (full (sparse ([1, 2; 1, 0; 0, 0]) ./ sparse ([1i; 2; 0])),
+%!        [1, 2; 1, 0; 0, 0] ./ [1i; 2; 0])
+%!assert (full (sparse ([1; 2i; 3; 4]) ./ sparse ([0, 0, 3])),
+%!        [1; 2i; 3; 4] ./ [0, 0, 3])
+%!assert (full (sparse ([1i, 0, 0, 0, 5i]) ./ sparse ([1; 2i; 3])),
+%!        [1i, 0, 0, 0, 5i] ./ [1; 2i; 3])
+
+%!assert (sparse (1) ./ sparse ([1, 2i, 3]), sparse ([1, -0.5i, 1/3]))
+%!assert (sparse (1) ./ sparse ([1i, 2; 3, 4]), sparse ([-1i, 0.5; 1/3, 0.25]))
+%!assert (sparse ([1 2 3i]) ./ sparse (1), sparse ([1, 2, 3i]))
+%!assert (sparse ([1, 2; 3i, 4]) ./ sparse (1), sparse ([1, 2; 3i, 4]))
+%!assert (full (sparse ([1; 2i]) ./ sparse ([1, 0, 2i, 0, 4])),
+%!        [1; 2i] ./ [1, 0, 2i, 0, 4])
+%!assert (full (sparse ([1, 0, 2, 0, 4i]) ./ sparse ([1; 2])),
+%!        [1, 0, 2, 0, 4i] ./ [1; 2])
+%!assert (full (sparse ([1i, 2]) ./ sparse ([1; 0; 2; 0i; 4i])),
+%!        [1i, 2] ./ [1; 0; 2; 0i; 4i])
+%!assert (full (sparse ([1i; 0; 2; 0; 4]) ./ sparse ([1, 2])),
+%!        [1i; 0; 2; 0; 4] ./ [1, 2])
+%!assert (full (sparse ([1, 0, 3i]) ./ sparse ([1, 2, 3; 4, 0, 0])),
+%!        [1, 0, 3i] ./ [1, 2, 3; 4, 0, 0])
+%!assert (full (sparse ([10i, 0, 3; 4, 5, 0]) ./ sparse ([1, 0, 3])),
+%!        [10i, 0, 3; 4, 5, 0] ./ [1, 0, 3])
+%!assert (full (sparse ([1; 2i; 0]) ./ sparse ([0, 2; 3, 4; 5, 0])),
+%!        [1; 2i; 0] ./ [0, 2; 3, 4; 5, 0])
+%!assert (full (sparse ([1i, 2i; 0, 0; 0, 6]) ./ sparse ([0; 2; 3])),
+%!        [1i, 2i; 0, 0; 0, 6] ./ [0; 2; 3])
+
+## Testing broadcasting for math operations with scalar and sparse matrix
+%!assert (sparse ([1, 2i]) + 1, [2, 1+2i])
+%!assert (1 + sparse ([1, 2i]), [2, 1+2i])
+%!assert (sparse ([1, 2]) - 1i, [1-1i, 2-1i])
+%!assert (1i - sparse ([1, 2]), [-1+1i, -2+1i])
+%!assert (sparse ([1, 2]) .* 1i, sparse ([1i, 2i]))
+%!assert (1 .* sparse ([1i, 2]), sparse ([1i, 2]))
+%!assert (sparse ([1, 2i]) ./ 1, sparse ([1, 2i]))
+%!assert (1 ./ sparse ([1i, 2]), [-1i, 0.5])
+%!error <operator /: nonconformant arguments \(op1 is 1x1, op2 is 1x2\)> ...
+%!       1 / sparse ([1i, 2])
+
+## Testing broadcasting for math operations with matrix and sparse matrix
+%!assert (sparse ([1, 2]) + [1, 1i], [2, 2+1i])
+%!assert ([1, 1] + sparse ([1i, 2]), [1+1i, 3])
+%!assert (sparse ([1; 2i]) + [1; 1], [2; 1+2i])
+%!assert ([1; 1i] + sparse ([1; 2]), [2; 2+1i])
+%!assert (sparse ([1, 2, 3i]) + ones (3), repmat ([2, 3, 1+3i], 3, 1))
+%!assert (sparse ([1; 2; 3]) + ones (3)*i, repmat ([1; 2; 3]+i, 1, 3))
+%!assert (ones (3)*i + sparse ([1, 2, 3]), repmat ([1, 2, 3]+i, 3, 1))
+%!assert (ones (3) + sparse ([1; 2i; 3]), repmat ([2; 1+2i; 4], 1, 3))
+%!assert (sparse ([1, 2]) + [1; 2i], [2, 3; 1+2i, 2+2i])
+%!assert ([1; 2] + sparse ([1, 2i]), [2, 1+2i; 3, 2+2i])
+%!assert (sparse ([1; 2]) + [1, 2i], [2, 1+2i; 3, 2+2i])
+%!assert ([1, 2i] + sparse ([1; 2i]), [2, 1+2i; 1+2i, 4i])
+%!error <operator \+: nonconformant arguments \(op1 is 1x2, op2 is 1x3\)> ...
+%!       sparse ([1, 2i]) + [1, 1i, 1]
+%!error <operator \+: nonconformant arguments \(op1 is 1x3, op2 is 4x4\)> ...
+%!       sparse ([1, 2i, 3]) + ones (4)
+%!error <operator \+: nonconformant arguments \(op1 is 3x1, op2 is 4x3\)> ...
+%!       sparse ([1; 2; 3]) + ones (4, 3)*i
+
+%!assert (sparse ([1, 2i]) - [1, 1], [0, -1+2i])
+%!assert ([1, 1] - sparse ([1, 2i]), [0, 1-2i])
+%!assert (sparse ([1; 2]) - [1; 1i], [0; 2-1i])
+%!assert ([1; 1i] - sparse ([1; 2]), [0; -2+1i])
+%!assert (sparse ([1, 2, 3]) - ones (3)*i, repmat ([1:3]-i, 3, 1))
+%!assert (sparse ([1; 2; 3i]) - ones (3), repmat ([0; 1; -1+3i], 1, 3))
+%!assert (ones (3) - sparse ([1i, 2, 3]), repmat ([1-1i, -1, -2], 3, 1))
+%!assert (ones (3)*i - sparse ([1; 2; 3]), repmat ([-1; -2; -3]+i, 1, 3))
+%!assert (sparse ([1, 2]) - [1; 2i], [1, 2] - [1; 2i])
+%!assert ([1; 2i] - sparse ([1i, 2]), [1; 2i] - [1i, 2])
+%!assert (sparse ([1; 2i]) - [1, 2], [1; 2i] - [1, 2])
+%!assert ([1i, 2] - sparse ([1; 2i]), [1i, 2] - [1; 2i])
+%!error <operator -: nonconformant arguments \(op1 is 1x2, op2 is 1x3\)> ...
+%!       sparse ([1, 2i]) - [1, 1i, 1]
+%!error <operator -: nonconformant arguments \(op1 is 1x3, op2 is 4x4\)> ...
+%!       sparse ([1, 2, 3i]) - ones (4)
+%!error <operator -: nonconformant arguments \(op1 is 3x1, op2 is 4x3\)> ...
+%!       sparse ([1; 2; 3i]) - ones (4, 3)
+
+%!assert (sparse ([1, 2i]) .* [1, 1], sparse ([1, 2i]))
+%!assert ([1, 1i] .* sparse ([1, 2]), sparse ([1, 2i]))
+%!assert (sparse ([1i; 2]) .* [1; 1], sparse ([1i; 2]))
+%!assert ([1i; 1] .* sparse ([1; 2i]), sparse ([1i; 2i]))
+%!assert (sparse ([1, 2, 3i]) .* ones (3), sparse (repmat ([1, 2, 3i], 3, 1)))
+%!assert (sparse ([1; 2; 3]) .* ones (3)*i, sparse (repmat ([1:3]'*i, 1, 3)))
+%!assert (ones (3) .* sparse ([1, 2, 3i]), sparse (repmat ([1, 2, 3i], 3, 1)))
+%!assert (ones (3) .* sparse ([1i; 2i; 3i]), sparse (repmat ([1:3]'*i, 1, 3)))
+%!assert (sparse ([1i, 2]) .* [1; 2], sparse ([1i, 2] .* [1; 2]))
+%!assert ([1; 2i] .* sparse ([1, 2]), sparse ([1; 2i] .* [1, 2]))
+%!assert (sparse ([1; 2i]) .* [1, 2i], sparse ([1; 2i] .* [1, 2i]))
+%!assert ([1i, 2i] .* sparse ([1i; 2]), sparse ([1i, 2i] .* [1i; 2]))
+%!error <product: nonconformant arguments \(op1 is 1x2, op2 is 1x3\)> ...
+%!       sparse ([1, 2i]) .* [1, 1, 1]
+%!error <product: nonconformant arguments \(op1 is 1x3, op2 is 4x4\)> ...
+%!       sparse ([1, 2, 3i]) .* ones (4)
+%!error <product: nonconformant arguments \(op1 is 3x1, op2 is 4x3\)> ...
+%!       sparse ([1; 2i; 3]) .* ones (4, 3)
+%!error <operator \*: nonconformant arguments \(op1 is 1x2, op2 is 1x3\)> ...
+%!       sparse ([1, 2]) * [1, 1i, 1]
+%!error <operator \*: nonconformant arguments \(op1 is 1x3, op2 is 4x4\)> ...
+%!       sparse ([1, 2, 3i]) * ones (4)
+%!error <operator \*: nonconformant arguments \(op1 is 3x1, op2 is 4x3\)> ...
+%!       sparse ([1; 2; 3i]) * ones (4, 3)
+
+%!assert (sparse ([1, 2i]) ./ [1, 1], sparse ([1, 2i]))
+%!assert ([1, 1i] ./ sparse ([1, 2]), [1, 0.5i])
+%!assert (sparse ([1; 2]) ./ [1; 1i], sparse ([1; -2i]))
+%!assert ([1i; 1] ./ sparse ([1; 2i]), [1i; -0.5i])
+%!assert (sparse ([1, 2i, 3]) ./ ones (3), sparse (repmat ([1, 2i, 3], 3, 1)))
+%!assert (sparse ([1; 2; 3]) ./ (ones (3)*i), sparse (repmat (-[1i; 2i; 3i], 1, 3)))
+%!assert (ones (3) ./ sparse ([1, 2i, 3]), repmat ([1, -0.5i, 1/3], 3, 1))
+%!assert ((ones (3)*(-i)) ./ sparse ([1; 2; 3]), repmat (-[1; 0.5; 1/3]*i, 1, 3))
+%!assert (sparse ([1, 2i]) ./ [1; 2], sparse ([1, 2i] ./ [1; 2]))
+%!assert ([1i; 2] ./ sparse ([1i, 2i]), [1i; 2] ./ [1i, 2i])
+%!assert (sparse ([1; 2i]) ./ [1, 2], sparse ([1; 2i] ./ [1, 2]))
+%!assert ([1i, 2i] ./ sparse ([1; 2i]), [1i, 2i] ./ [1; 2i])
+%!error <quotient: nonconformant arguments \(op1 is 1x2, op2 is 1x3\)> ...
+%!       sparse ([1, 2i]) ./ [1, 1, 1]
+%!error <quotient: nonconformant arguments \(op1 is 1x3, op2 is 4x4\)> ...
+%!       sparse ([1, 2, 3i]) ./ ones (4)
+%!error <quotient: nonconformant arguments \(op1 is 3x1, op2 is 4x3\)> ...
+%!       sparse ([1; 2i; 3]) ./ ones (4, 3)
+%!error <operator /: nonconformant arguments \(op1 is 1x2, op2 is 1x3\)> ...
+%!       sparse ([1, 2i]) / [1, 1i, 1]
+%!error <operator /: nonconformant arguments \(op1 is 1x3, op2 is 4x4\)> ...
+%!       sparse ([1, 2, 3i]) / ones (4)
+%!error <operator /: nonconformant arguments \(op1 is 3x1, op2 is 4x3\)> ...
+%!       sparse ([1i; 2i; 3i]) / ones (4, 3)
+
 */
 
 SPARSE_SMS_CMP_OPS (SparseComplexMatrix, Complex)

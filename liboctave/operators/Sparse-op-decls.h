@@ -74,7 +74,7 @@
   SPARSE_BIN_OP_DECL (R1, operator +, S, M, API);       \
   SPARSE_BIN_OP_DECL (R1, operator -, S, M, API);       \
   SPARSE_BIN_OP_DECL (R2, operator *, S, M, API);       \
-  SPARSE_BIN_OP_DECL (R2, operator /, S, M, API);
+  SPARSE_BIN_OP_DECL (R1, operator /, S, M, API);
 
 #define SPARSE_SSM_CMP_OP_DECLS(S, M, API)      \
   SPARSE_CMP_OP_DECL (mx_el_lt, S, M, API);     \
@@ -132,7 +132,7 @@
   SPARSE_BIN_OP_DECL (R1, operator +, M1, M2, API);     \
   SPARSE_BIN_OP_DECL (R1, operator -, M1, M2, API);     \
   SPARSE_BIN_OP_DECL (R2, product,    M1, M2, API);     \
-  SPARSE_BIN_OP_DECL (R2, quotient,   M1, M2, API);
+  SPARSE_BIN_OP_DECL (R1, quotient,   M1, M2, API);
 
 #define SPARSE_MSM_CMP_OP_DECLS(M1, M2, API)    \
   SPARSE_CMP_OP_DECL (mx_el_lt, M1, M2, API);   \

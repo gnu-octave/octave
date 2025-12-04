@@ -96,6 +96,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The warning `"Octave:language-extension"` is no longer emitted for automatic
   broadcasting which Matlab has supported since version 2016B.
 
+- Broadcasting now works on sparse matrix operations as well as mixed operations
+  between sparse and full matrices.
+
 - The function `zscore` now accepts the optional arguments `"all"` or `vecdim`,
   and `nanflag`.
 

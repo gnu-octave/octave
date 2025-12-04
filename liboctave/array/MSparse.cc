@@ -24,7 +24,7 @@
 ////////////////////////////////////////////////////////////////////////
 
 // sparse array with math ops.
-
+#include<iostream>
 // Element by element MSparse by MSparse ops.
 
 template <typename T, typename OP>
@@ -331,7 +331,7 @@ plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
           r.maybe_compress ();
         }
     }
-  if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
+  else if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
     {
       if (a_nc == 1 || b_nc == 1 || a_nc == b_nc)
         r.resize (a_nr, std::max (a_nc, b_nc));
@@ -359,9 +359,7 @@ plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
       else
         octave::err_nonconformant (op_name, a_nr, a_nc, b_nr, b_nc);
     }
-  else if (a_nr != b_nr || a_nc != b_nc)
-    octave::err_nonconformant (op_name, a_nr, a_nc, b_nr, b_nc);
-  else
+  else if (a_nr == b_nr && a_nc == b_nc)
     {
       r = MSparse<T> (a_nr, a_nc, (a.nnz () + b.nnz ()));
 
@@ -386,16 +384,15 @@ plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
                   r.data (jx) = op (a.data (ja), 0.);
                   jx++;
                   ja++;
-                  ja_lt_max= ja < ja_max;
+                  ja_lt_max = ja < ja_max;
                 }
-              else if ((! ja_lt_max)
-                       || (b.ridx (jb) < a.ridx (ja)))
+              else if ((! ja_lt_max) || (b.ridx (jb) < a.ridx (ja)))
                 {
                   r.ridx (jx) = b.ridx (jb);
                   r.data (jx) = op (0.,  b.data (jb));
                   jx++;
                   jb++;
-                  jb_lt_max= jb < jb_max;
+                  jb_lt_max = jb < jb_max;
                 }
               else
                 {
@@ -406,16 +403,117 @@ plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
                       jx++;
                     }
                   ja++;
-                  ja_lt_max= ja < ja_max;
+                  ja_lt_max = ja < ja_max;
                   jb++;
-                  jb_lt_max= jb < jb_max;
+                  jb_lt_max = jb < jb_max;
                 }
             }
           r.cidx (i+1) = jx;
         }
-
       r.maybe_compress ();
     }
+  else if (a_nr == b_nr && (a_nc == 1 || b_nc == 1))
+    // (a_nc == b_nc && (a_nr == 1 || b_nr == 1)) is handled
+    // by double transpose in the caller functions
+    {
+      octave_idx_type r_nc = (a_nc < b_nc ? b_nc : a_nc);
+      octave_idx_type rnnz = (a_nc < b_nc ? a.nnz () * b_nc + b.nnz () :
+                                            a.nnz () + a_nc * b.nnz ());
+      r = MSparse<T> (a_nr, r_nc, rnnz);
+
+      octave_idx_type jx = 0;
+      r.cidx (0) = 0;
+      for (octave_idx_type i = 0 ; i < r_nc ; i++)
+        {
+          octave_idx_type ja;
+          octave_idx_type ja_max;
+          octave_idx_type jb;
+          octave_idx_type jb_max;
+          if (a_nc == 1)
+            {
+              ja = a.cidx(0);
+              ja_max = a.cidx(1);
+              jb = b.cidx (i);
+              jb_max = b.cidx (i+1);
+            }
+          else
+            {
+              ja = a.cidx(i);
+              ja_max = a.cidx(i+1);
+              jb = b.cidx (0);
+              jb_max = b.cidx (1);
+            }
+          bool ja_lt_max = ja < ja_max;
+          bool jb_lt_max = jb < jb_max;
+
+          while (ja_lt_max || jb_lt_max)
+            {
+              octave_quit ();
+              if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
+                {
+                  r.ridx (jx) = a.ridx (ja);
+                  r.data (jx) = op (a.data (ja), 0.);
+                  jx++;
+                  ja++;
+                  ja_lt_max = ja < ja_max;
+                }
+              else if ((! ja_lt_max) || (b.ridx (jb) < a.ridx (ja)))
+                {
+                  r.ridx (jx) = b.ridx (jb);
+                  r.data (jx) = op (0.,  b.data (jb));
+                  jx++;
+                  jb++;
+                  jb_lt_max = jb < jb_max;
+                }
+              else
+                {
+                  if (op (a.data (ja), b.data (jb)) != 0.)
+                    {
+                      r.data (jx) = op (a.data (ja), b.data (jb));
+                      r.ridx (jx) = a.ridx (ja);
+                      jx++;
+                    }
+                  ja++;
+                  ja_lt_max = ja < ja_max;
+                  jb++;
+                  jb_lt_max = jb < jb_max;
+                }
+            }
+          r.cidx (i+1) = jx;
+        }
+      r.maybe_compress ();
+    }
+  else if (a_nr == 1 && b_nc == 1)
+    // (a_nc == 1 && b_nr == 1) is handled
+    // by double transpose in the caller functions
+    {
+      // a: 1 x a_nc (row vector)
+      // b: b_nr x 1 (column vector)
+      //
+      // Result: outer broadcast
+      //   r(i,j) = op(a(0,j), b(i,0))
+
+      r = MSparse<T> (b_nr, a_nc, (a.nnz () * b_nr + b.nnz () * a_nc));
+
+      for (octave_idx_type j = 0; j < a_nc; j++)
+        {
+          const T a_val = a.elem (0, j);
+
+          for (octave_idx_type i = 0; i < b_nr; i++)
+            {
+              octave_quit ();
+
+              const T b_val = b.elem (i, 0);
+              const T val = op (a_val, b_val);
+
+              if (val != T ())
+                r.elem (i, j) = val;
+            }
+        }
+      r.maybe_compress ();
+    }
+  else
+    octave::err_nonconformant (op_name, a_nr, a_nc, b_nr, b_nc);
 
   return r;
 }
@@ -424,14 +522,26 @@ template <typename T>
 MSparse<T>
 operator + (const MSparse<T>& a, const MSparse<T>& b)
 {
-  return plus_or_minus (a, b, std::plus<T> (), "operator +", false);
+  if ((a.cols () != 1 && a.cols () == b.cols () &&
+       (a.rows () == 1 || b.rows () == 1)) ||
+      (a.cols () == 1 && b.rows () == 1 && a.rows () > 1 && b.cols () > 1))
+    return plus_or_minus (a.transpose (), b.transpose (), std::plus<T> (),
+                          "operator +", false).transpose ();
+  else
+    return plus_or_minus (a, b, std::plus<T> (), "operator +", false);
 }
 
 template <typename T>
 MSparse<T>
 operator - (const MSparse<T>& a, const MSparse<T>& b)
 {
-  return plus_or_minus (a, b, std::minus<T> (), "operator -", true);
+  if ((a.cols () != 1 && a.cols () == b.cols () &&
+       (a.rows () == 1 || b.rows () == 1)) ||
+      (a.cols () == 1 && b.rows () == 1 && a.rows () > 1 && b.cols () > 1))
+    return plus_or_minus (a.transpose (), b.transpose (), std::minus<T> (),
+                          "operator -", true).transpose ();
+  else
+    return plus_or_minus (a, b, std::minus<T> (), "operator -", true);
 }
 
 template <typename T>
@@ -480,7 +590,7 @@ product (const MSparse<T>& a, const MSparse<T>& b)
           r.maybe_compress ();
         }
     }
-  if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
+  else if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
     {
       if (a_nc == 1 || b_nc == 1 || a_nc == b_nc)
         r.resize (a_nr, std::max (a_nc, b_nc));
@@ -508,9 +618,7 @@ product (const MSparse<T>& a, const MSparse<T>& b)
       else
         octave::err_nonconformant ("product", a_nr, a_nc, b_nr, b_nc);
     }
-  else if (a_nr != b_nr || a_nc != b_nc)
-    octave::err_nonconformant ("product", a_nr, a_nc, b_nr, b_nc);
-  else
+  else if (a_nr == b_nr && a_nc == b_nc)
     {
       r = MSparse<T> (a_nr, a_nc, (a.nnz () > b.nnz () ? a.nnz () : b.nnz ()));
 
@@ -531,12 +639,13 @@ product (const MSparse<T>& a, const MSparse<T>& b)
               octave_quit ();
               if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
                 {
-                  ja++; ja_lt_max= ja < ja_max;
+                  ja++;
+                  ja_lt_max = ja < ja_max;
                 }
-              else if ((! ja_lt_max)
-                       || (b.ridx (jb) < a.ridx (ja)))
+              else if ((! ja_lt_max) || (b.ridx (jb) < a.ridx (ja)))
                 {
-                  jb++; jb_lt_max= jb < jb_max;
+                  jb++;
+                  jb_lt_max = jb < jb_max;
                 }
               else
                 {
@@ -546,15 +655,130 @@ product (const MSparse<T>& a, const MSparse<T>& b)
                       r.ridx (jx) = a.ridx (ja);
                       jx++;
                     }
-                  ja++; ja_lt_max= ja < ja_max;
-                  jb++; jb_lt_max= jb < jb_max;
+                  ja++;
+                  ja_lt_max = ja < ja_max;
+                  jb++;
+                  jb_lt_max = jb < jb_max;
                 }
             }
           r.cidx (i+1) = jx;
         }
-
       r.maybe_compress ();
     }
+  else if (a_nr == b_nr && (a_nc == 1 || b_nc == 1))
+    {
+      octave_idx_type r_nc = (a_nc < b_nc ? b_nc : a_nc);
+      octave_idx_type rnnz = (a_nc < b_nc ? a.nnz () * b_nc + b.nnz () :
+                                            a.nnz () + a_nc * b.nnz ());
+      r = MSparse<T> (a_nr, r_nc, rnnz);
+
+      octave_idx_type jx = 0;
+      r.cidx (0) = 0;
+      for (octave_idx_type i = 0 ; i < r_nc ; i++)
+        {
+          octave_idx_type ja;
+          octave_idx_type ja_max;
+          octave_idx_type jb;
+          octave_idx_type jb_max;
+          if (a_nc == 1)
+            {
+              ja = a.cidx(0);
+              ja_max = a.cidx(1);
+              jb = b.cidx (i);
+              jb_max = b.cidx (i+1);
+            }
+          else
+            {
+              ja = a.cidx(i);
+              ja_max = a.cidx(i+1);
+              jb = b.cidx (0);
+              jb_max = b.cidx (1);
+            }
+          bool ja_lt_max = ja < ja_max;
+          bool jb_lt_max = jb < jb_max;
+
+          while (ja_lt_max || jb_lt_max)
+            {
+              octave_quit ();
+              if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
+                {
+                  ja++;
+                  ja_lt_max = ja < ja_max;
+                }
+              else if ((! ja_lt_max) || (b.ridx (jb) < a.ridx (ja)))
+                {
+                  jb++;
+                  jb_lt_max = jb < jb_max;
+                }
+              else
+                {
+                  if ((a.data (ja) * b.data (jb)) != 0.)
+                    {
+                      r.data (jx) = a.data (ja) * b.data (jb);
+                      r.ridx (jx) = a.ridx (ja);
+                      jx++;
+                    }
+                  ja++;
+                  ja_lt_max = ja < ja_max;
+                  jb++;
+                  jb_lt_max = jb < jb_max;
+                }
+            }
+          r.cidx (i+1) = jx;
+        }
+      r.maybe_compress ();
+    }
+  else if (a_nc == b_nc && (a_nr == 1 || b_nr == 1))
+    r = product (a.transpose (), b.transpose ()).transpose ();
+  else if (a_nr == 1 && b_nc == 1)
+    {
+      r = MSparse<T> (b_nr, a_nc, (a.nnz () * b_nr + b.nnz () * a_nc));
+
+      octave_idx_type jx = 0;
+      r.cidx (0) = 0;
+      for (octave_idx_type i = 0 ; i < a_nc ; i++)
+        {
+          octave_idx_type ja = a.cidx (i);
+          octave_idx_type ja_max = a.cidx (i+1);
+          bool ja_lt_max = ja < ja_max;
+
+          octave_idx_type jb = b.cidx (0);
+          octave_idx_type jb_max = b.cidx (1);
+          bool jb_lt_max = jb < jb_max;
+
+          while (ja_lt_max || jb_lt_max)
+            {
+              octave_quit ();
+              if (! ja_lt_max && jb_lt_max)
+                {
+                  jb++;
+                  jb_lt_max = jb < jb_max;
+                }
+              else if (ja_lt_max && ! jb_lt_max)
+                {
+                  ja_lt_max = false;
+                }
+              else // (ja_lt_max && jb_lt_max)
+                {
+                  if ((a.data (ja) * b.data (jb)) != 0.)
+                    {
+                      r.data (jx) = a.data (ja) * b.data (jb);
+                      r.ridx (jx) = b.ridx (jb);
+                      jx++;
+                    }
+                  jb++;
+                  jb_lt_max = jb < jb_max;
+                  ja_lt_max = jb_lt_max;
+                }
+            }
+          r.cidx (i+1) = jx;
+        }
+      r.maybe_compress ();
+    }
+  else if (a_nc == 1 && b_nr == 1)
+    r = product (a.transpose (), b.transpose ()).transpose ();
+  else
+    octave::err_nonconformant ("product", a_nr, a_nc, b_nr, b_nc);
 
   return r;
 }
@@ -582,7 +806,7 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
           r = MSparse<T> (b);
           for (octave_idx_type i = 0 ; i < b_nnz ; i++)
             r.data (i) = val / r.data (i);
-          r.maybe_compress ();
+          r.maybe_compress (true);
         }
       else
         {
@@ -597,7 +821,7 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
                   r.data (idxj + b.ridx (i)) = val / b.data (i);
                 }
             }
-          r.maybe_compress ();
+          r.maybe_compress (true);
         }
     }
   else if (b_nr == 1 && b_nc == 1)
@@ -610,7 +834,7 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
           r = MSparse<T> (a);
           for (octave_idx_type i = 0 ; i < a_nnz ; i++)
             r.data (i) = r.data (i) / val;
-          r.maybe_compress ();
+          r.maybe_compress (true);
         }
       else
         {
@@ -625,10 +849,10 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
                   r.data (idxj + a.ridx (i)) = a.data (i) / val;
                 }
             }
-          r.maybe_compress ();
+          r.maybe_compress (true);
         }
     }
-  if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
+  else if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
     {
       if (a_nc == 1 || b_nc == 1 || a_nc == b_nc)
         r.resize (a_nr, std::max (a_nc, b_nc));
@@ -656,9 +880,7 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
       else
         octave::err_nonconformant ("quotient", a_nr, a_nc, b_nr, b_nc);
     }
-  else if (a_nr != b_nr || a_nc != b_nc)
-    octave::err_nonconformant ("quotient", a_nr, a_nc, b_nr, b_nc);
-  else
+  else if (a_nr == b_nr && a_nc == b_nc)
     {
       r = MSparse<T> (a_nr, a_nc, (Zero / Zero));
 
@@ -678,25 +900,109 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
               if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
                 {
                   r.elem (a.ridx (ja), i) = a.data (ja) / Zero;
-                  ja++; ja_lt_max= ja < ja_max;
+                  ja++;
+                  ja_lt_max = ja < ja_max;
                 }
-              else if ((! ja_lt_max)
-                       || (b.ridx (jb) < a.ridx (ja)))
+              else if ((! ja_lt_max) || (b.ridx (jb) < a.ridx (ja)))
                 {
                   r.elem (b.ridx (jb), i) = Zero / b.data (jb);
-                  jb++; jb_lt_max= jb < jb_max;
+                  jb++;
+                  jb_lt_max = jb < jb_max;
                 }
               else
                 {
                   r.elem (a.ridx (ja), i) = a.data (ja) / b.data (jb);
-                  ja++; ja_lt_max= ja < ja_max;
-                  jb++; jb_lt_max= jb < jb_max;
+                  ja++;
+                  ja_lt_max = ja < ja_max;
+                  jb++;
+                  jb_lt_max = jb < jb_max;
                 }
             }
         }
-
       r.maybe_compress (true);
     }
+  else if (a_nr == b_nr && (a_nc == 1 || b_nc == 1))
+    {
+      octave_idx_type r_nc = (a_nc < b_nc ? b_nc : a_nc);
+      r = MSparse<T> (a_nr, r_nc, (Zero / Zero));
+
+      for (octave_idx_type i = 0 ; i < r_nc ; i++)
+        {
+          octave_idx_type ja;
+          octave_idx_type ja_max;
+          octave_idx_type jb;
+          octave_idx_type jb_max;
+          if (a_nc == 1)
+            {
+              ja = a.cidx(0);
+              ja_max = a.cidx(1);
+              jb = b.cidx (i);
+              jb_max = b.cidx (i+1);
+            }
+          else
+            {
+              ja = a.cidx(i);
+              ja_max = a.cidx(i+1);
+              jb = b.cidx (0);
+              jb_max = b.cidx (1);
+            }
+          bool ja_lt_max = ja < ja_max;
+          bool jb_lt_max = jb < jb_max;
+
+          while (ja_lt_max || jb_lt_max)
+            {
+              octave_quit ();
+              if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
+                {
+                  r.elem (a.ridx (ja), i) = a.data (ja) / Zero;
+                  ja++;
+                  ja_lt_max = ja < ja_max;
+                }
+              else if ((! ja_lt_max) || (b.ridx (jb) < a.ridx (ja)))
+                {
+                  r.elem (b.ridx (jb), i) = Zero / b.data (jb);
+                  jb++;
+                  jb_lt_max = jb < jb_max;
+                }
+              else
+                {
+                  r.elem (a.ridx (ja), i) = a.data (ja) / b.data (jb);
+                  ja++;
+                  ja_lt_max = ja < ja_max;
+                  jb++;
+                  jb_lt_max = jb < jb_max;
+                }
+            }
+        }
+      r.maybe_compress (true);
+    }
+  else if (a_nc == b_nc && (a_nr == 1 || b_nr == 1))
+    r = quotient (a.transpose (), b.transpose ()).transpose ();
+  else if (a_nr == 1 && b_nc == 1)
+    {
+      r = MSparse<T> (b_nr, a_nc, (a_nc * b_nr));
+
+      for (octave_idx_type j = 0; j < a_nc; j++)
+        {
+          const T a_val = a.elem (0, j);
+
+          for (octave_idx_type i = 0; i < b_nr; i++)
+            {
+              octave_quit ();
+
+              const T b_val = b.elem (i, 0);
+              const T val = a_val / b_val;
+
+              if (val != Zero || val != val)
+                r.elem (i, j) = val;
+            }
+        }
+      r.maybe_compress (true);
+    }
+  else if (a_nc == 1 && b_nr == 1)
+    r = quotient (a.transpose (), b.transpose ()).transpose ();
+  else
+    octave::err_nonconformant ("quotient", a_nr, a_nc, b_nr, b_nc);
 
   return r;
 }

@@ -1252,7 +1252,10 @@ likely.
       // entries in the map
       for (octave_idx_type i = 0; i < m; i++)
         {
-          octave_idx_type k = i + std::floor (rvec[i] * (n - i));
+          // rand() gives u in [0,1). For non-negative values, truncation is
+          // equivalent to floor, so static_cast<octave_idx_type> (u * span)
+          // is safe and avoids the cost of std::floor.
+          octave_idx_type k = i + static_cast<octave_idx_type> (rvec[i] * (n - i));
 
           // For shuffling first m entries, no need to use extra storage
           if (k < m)
@@ -1273,7 +1276,10 @@ likely.
       // Perform the Knuth shuffle of the first m entries
       for (octave_idx_type i = 0; i < m; i++)
         {
-          octave_idx_type k = i + std::floor (rvec[i] * (n - i));
+          // rand() gives u in [0,1). For non-negative values, truncation is
+          // equivalent to floor, so static_cast<octave_idx_type> (u * span)
+          // is safe and avoids the cost of std::floor.
+          octave_idx_type k = i + static_cast<octave_idx_type> (rvec[i] * (n - i));
           std::swap (ivec[i], ivec[k]);
         }
     }

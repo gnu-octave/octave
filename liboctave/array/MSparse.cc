@@ -24,7 +24,6 @@
 ////////////////////////////////////////////////////////////////////////
 
 // sparse array with math ops.
-#include<iostream>
 // Element by element MSparse by MSparse ops.
 
 template <typename T, typename OP>

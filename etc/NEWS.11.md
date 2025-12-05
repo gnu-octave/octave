@@ -44,6 +44,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 
 - The `fzero` function is now more accurate (1-2 eps when TolX is eps).
 
+- The `randi` function has been completely rewritten and is now 4.5X faster
+  while using some 3.5X less memory than before.
+
 - The `roots` function now accepts only a numeric argument.  Convert any
   non-numeric input to a numeric value with `double()`.
 

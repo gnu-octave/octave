@@ -59,7 +59,6 @@ FCN_FILE_DIRS += \
   %reldir%/quadl.m \
   %reldir%/quadv.m \
   %reldir%/rad2deg.m \
-  %reldir%/randi.m \
   %reldir%/rat.m \
   %reldir%/repelem.m \
   %reldir%/repmat.m \

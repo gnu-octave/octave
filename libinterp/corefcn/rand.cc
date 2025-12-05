@@ -27,11 +27,21 @@
 #  include "config.h"
 #endif
 
+#include <cmath>
+#include <complex>
+#include <cstdint>
+#include <functional>
+#include <limits>
+#include <string_view>
 #include <unordered_map>
 #include <string>
 
+#include "boolNDArray.h"
+#include "CNDArray.h"
+#include "fNDArray.h"
 #include "f77-fcn.h"
 #include "mappers.h"
+#include "oct-inttypes.h"
 #include "oct-rand.h"
 #include "quit.h"
 
@@ -1308,6 +1318,573 @@ likely.
 %!   p = randperm (305, 30);
 %!   assert (length (unique (p)), 30);
 %! endfor
+*/
+
+// ================== port of randi.m ========================
+
+// flintmax: largest consecutive integer representable in floating point
+// For IEEE 754 double: 2^53, for float: 2^24
+template <typename F>
+inline constexpr F flintmax_v
+  = static_cast<F> (std::uint64_t{1} << std::numeric_limits<F>::digits);
+
+// Template function to fill array with random integers and cast to target type
+// Uses rejection sampling to ensure unbiased results.
+template <typename T>
+static Array<T>
+do_randi_array (const dim_vector& dims, double imin, double imax)
+{
+  constexpr double flintmax_val = flintmax_v<double>;
+
+  const double rng = (imax - imin) + 1.0;
+  const double K = std::floor (flintmax_val / rng);
+  const double K_rng = K * rng;
+
+  const octave_idx_type n = dims.numel ();
+
+  NDArray rand_vals = rand::nd_array (dims);
+  const double *rdata = rand_vals.data ();
+
+  Array<T> result (dims);
+  T *data = result.rwdata ();
+
+  for (octave_idx_type i = 0; i < n; i++)
+    {
+      double r_prim = std::floor (rdata[i] * flintmax_val);
+
+      // Rejection loop - rarely needed since K_rng is very close to flintmax
+      while (r_prim >= K_rng)
+        r_prim = std::floor (rand::scalar () * flintmax_val);
+
+      data[i] = static_cast<T> (imin + std::floor (r_prim / K));
+    }
+
+  return result;
+}
+
+// Specialization for double: work in-place to avoid extra allocation
+template <>
+Array<double>
+do_randi_array<double> (const dim_vector& dims, double imin, double imax)
+{
+  constexpr double flintmax_val = flintmax_v<double>;
+
+  const double rng = (imax - imin) + 1.0;
+  const double K = std::floor (flintmax_val / rng);
+  const double K_rng = K * rng;
+
+  const octave_idx_type n = dims.numel ();
+
+  // Generate random values and transform in-place
+  NDArray result = rand::nd_array (dims);
+  double *data = result.rwdata ();
+
+  for (octave_idx_type i = 0; i < n; i++)
+    {
+      double r_prim = std::floor (data[i] * flintmax_val);
+
+      // Rejection loop - rarely needed since K_rng is very close to flintmax
+      while (r_prim >= K_rng)
+        r_prim = std::floor (rand::scalar () * flintmax_val);
+
+      data[i] = imin + std::floor (r_prim / K);
+    }
+
+  return result;
+}
+
+// Specialization for float: work in-place to avoid extra allocation
+template <>
+Array<float>
+do_randi_array<float> (const dim_vector& dims, double imin, double imax)
+{
+  constexpr double flintmax_val = flintmax_v<double>;
+
+  const double rng = (imax - imin) + 1.0;
+  const double K = std::floor (flintmax_val / rng);
+  const double K_rng = K * rng;
+
+  const octave_idx_type n = dims.numel ();
+
+  // Generate random values in bulk, then transform
+  // Use double precision for intermediate calculations to maintain accuracy
+  NDArray rand_vals = rand::nd_array (dims);
+  const double *rdata = rand_vals.data ();
+
+  FloatNDArray result (dims);
+  float *data = result.rwdata ();
+
+  for (octave_idx_type i = 0; i < n; i++)
+    {
+      double r_prim = std::floor (rdata[i] * flintmax_val);
+
+      // Rejection loop - rarely needed since K_rng is very close to flintmax
+      while (r_prim >= K_rng)
+        r_prim = std::floor (rand::scalar () * flintmax_val);
+
+      data[i] = static_cast<float> (imin + std::floor (r_prim / K));
+    }
+
+  return result;
+}
+
+// Specialization for bool (logical): MATLAB uses value > 0, not value != 0
+// so calls like randi ([-1, 0], 3, 3, 'logical') return all zeros.
+template <>
+Array<bool>
+do_randi_array<bool> (const dim_vector& dims, double imin, double imax)
+{
+  constexpr double flintmax_val = flintmax_v<double>;
+
+  const double rng = (imax - imin) + 1.0;
+  const double K = std::floor (flintmax_val / rng);
+  const double K_rng = K * rng;
+
+  const octave_idx_type n = dims.numel ();
+
+  NDArray rand_vals = rand::nd_array (dims);
+  const double *rdata = rand_vals.data ();
+
+  boolNDArray result (dims);
+  bool *data = result.rwdata ();
+
+  for (octave_idx_type i = 0; i < n; i++)
+    {
+      double r_prim = std::floor (rdata[i] * flintmax_val);
+
+      while (r_prim >= K_rng)
+        r_prim = std::floor (rand::scalar () * flintmax_val);
+
+      // MATLAB logical: value > 0 gives true, otherwise false
+      double value = imin + std::floor (r_prim / K);
+      data[i] = value > 0.0;
+    }
+
+  return result;
+}
+
+DEFUN (randi, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{R} =} randi (@var{imax})
+@deftypefnx {} {@var{R} =} randi (@var{imax}, @var{n})
+@deftypefnx {} {@var{R} =} randi (@var{imax}, @var{m}, @var{n}, @dots{})
+@deftypefnx {} {@var{R} =} randi (@var{imax}, [@var{m}, @var{n}, @dots{}])
+@deftypefnx {} {@var{R} =} randi ([@var{imin}, @var{imax}], @dots{})
+@deftypefnx {} {@var{R} =} randi (@dots{}, "@var{class}")
+Return a scalar, matrix, or N-dimensional array whose elements are random
+integers in the range 1:@var{imax}.
+
+If called with no size arguments, return a scalar random value.
+
+If invoked with a single scalar size argument @var{n}, return a square
+@nospell{NxN} matrix.
+
+If invoked with two or more scalar integer size arguments, or a vector of
+integer values, return an array with the given dimensions.
+
+The integer range may optionally be described by a two-element matrix with a
+lower and upper bound in which case the returned integers will be on the
+interval @w{[@var{imin}, @var{imax}]}.
+
+The optional argument @var{class} will return a matrix of the requested
+type.  The default is @qcode{"double"}.  Supported classes are:
+@qcode{"double"}, @qcode{"single"}, @qcode{"int8"}, @qcode{"int16"},
+@qcode{"int32"}, @qcode{"uint8"}, @qcode{"uint16"}, @qcode{"uint32"},
+and @qcode{"logical"}.
+
+Programming Note: @code{randi} relies internally on @code{rand} which
+uses class @qcode{"double"} to represent numbers.  This limits the maximum
+integer (@var{imax}) and range (@var{imax} - @var{imin}) to the value
+returned by the @code{flintmax} function.  For IEEE@tie{}754 floating point
+numbers this value is @w{@math{2^{53} - 1}}.
+
+Example: 150 integers in the range 1--10.
+
+@example
+ri = randi (10, 150, 1)
+@end example
+
+@seealso{rand, randn, rande, randg, randp}
+@end deftypefn */)
+{
+  int nargin = args.length ();
+
+  if (nargin < 1)
+    print_usage ();
+
+  constexpr double flintmax_dbl = flintmax_v<double>;
+
+  // Parse bounds argument
+  octave_value bounds_arg = args(0);
+
+  if (! bounds_arg.isnumeric ())
+    error ("randi: IMIN and IMAX must be integer bounds");
+
+  NDArray bounds_array = bounds_arg.array_value ();
+
+  // Check that all bounds are integers
+  for (octave_idx_type i = 0; i < bounds_array.numel (); i++)
+    {
+      double val = bounds_array(i);
+      if (val != std::floor (val))
+        error ("randi: IMIN and IMAX must be integer bounds");
+    }
+
+  double imin, imax;
+
+  if (bounds_array.numel () == 1)
+    {
+      imin = 1.0;
+      imax = bounds_array(0);
+      // Use real part if complex
+      if (bounds_arg.iscomplex ())
+        imax = std::real (bounds_arg.complex_value ());
+      else
+        imax = bounds_arg.double_value ();
+
+      if (imax != std::floor (imax))
+        error ("randi: IMIN and IMAX must be integer bounds");
+
+      if (imax < 1.0)
+        error ("randi: require IMAX >= 1");
+    }
+  else if (bounds_array.numel () >= 2)
+    {
+      if (bounds_arg.iscomplex ())
+        {
+          ComplexNDArray cplx = bounds_arg.complex_array_value ();
+          imin = std::real (cplx(0));
+          imax = std::real (cplx(1));
+        }
+      else
+        {
+          imin = bounds_array(0);
+          imax = bounds_array(1);
+        }
+
+      if (imin != std::floor (imin) || imax != std::floor (imax))
+        error ("randi: IMIN and IMAX must be integer bounds");
+
+      if (imax < imin)
+        error ("randi: require IMIN <= IMAX");
+    }
+  else
+    error ("randi: IMIN and IMAX must be integer bounds");
+
+  // Check bounds against flintmax
+  if (std::abs (imax) >= flintmax_dbl || std::abs (imin) >= flintmax_dbl)
+    error ("randi: IMIN and IMAX must be smaller than flintmax()");
+
+  if ((imax - imin) >= (flintmax_dbl - 1.0))
+    error ("randi: integer range must be smaller than flintmax()-1");
+
+  // Parse optional class argument (must be last if present)
+  std::string rclass = "double";
+  int size_args_end = nargin;
+
+  if (nargin > 1 && args(nargin - 1).is_string ())
+    {
+      rclass = args(nargin - 1).string_value ();
+      size_args_end = nargin - 1;
+    }
+
+  // Parse size arguments
+  dim_vector dims;
+  int size_args_start = 1;
+
+  if (size_args_end == size_args_start)
+    {
+      // No size arguments - return scalar
+      dims.resize (2);
+      dims(0) = 1;
+      dims(1) = 1;
+    }
+  else if (size_args_end == size_args_start + 1)
+    {
+      // Single size argument
+      octave_value size_arg = args(size_args_start);
+
+      if (size_arg.is_scalar_type ())
+        {
+          octave_idx_type n = size_arg.idx_type_value (true);
+          dims.resize (2);
+          dims(0) = (n >= 0 ? n : 0);
+          dims(1) = (n >= 0 ? n : 0);
+        }
+      else if (size_arg.is_matrix_type () || size_arg.is_range ())
+        {
+          Array<octave_idx_type> size_vec;
+          try
+            {
+              size_vec = size_arg.octave_idx_type_vector_value (true);
+            }
+          catch (execution_exception& ee)
+            {
+              error (ee, "randi: dimensions must be a scalar or array of integers");
+            }
+
+          octave_idx_type len = size_vec.numel ();
+          dims.resize (len);
+
+          for (octave_idx_type i = 0; i < len; i++)
+            {
+              octave_idx_type d = size_vec(i);
+              dims(i) = (d >= 0 ? d : 0);
+            }
+        }
+      else
+        error ("randi: dimensions must be a scalar or array of integers");
+    }
+  else
+    {
+      // Multiple size arguments
+      int ndims = size_args_end - size_args_start;
+      dims.resize (ndims);
+
+      for (int i = 0; i < ndims; i++)
+        {
+          octave_idx_type d = args(size_args_start + i).idx_type_value (true);
+          dims(i) = (d >= 0 ? d : 0);
+        }
+    }
+
+  dims.chop_trailing_singletons ();
+
+  // Validate class and check for range warnings using numeric_limits
+  constexpr double flintmax_sgl = flintmax_v<float>;
+
+  double maxval, minval;
+  std::string_view rclass_sv = rclass;
+
+  // Dispatch table using lambdas for type-specific generation
+  using generator_fn = std::function<octave_value (const dim_vector&, double, double)>;
+  generator_fn generator;
+
+  if (rclass_sv == "double")
+    {
+      maxval = flintmax_dbl;
+      minval = -flintmax_dbl;
+      generator = do_randi_array<double>;
+    }
+  else if (rclass_sv == "single")
+    {
+      maxval = flintmax_sgl;
+      minval = -flintmax_sgl;
+      generator = do_randi_array<float>;
+    }
+  else if (rclass_sv == "int8")
+    {
+      maxval = std::numeric_limits<int8_t>::max ();
+      minval = std::numeric_limits<int8_t>::min ();
+      generator = do_randi_array<octave_int8>;
+    }
+  else if (rclass_sv == "int16")
+    {
+      maxval = std::numeric_limits<int16_t>::max ();
+      minval = std::numeric_limits<int16_t>::min ();
+      generator = do_randi_array<octave_int16>;
+    }
+  else if (rclass_sv == "int32")
+    {
+      maxval = std::numeric_limits<int32_t>::max ();
+      minval = std::numeric_limits<int32_t>::min ();
+      generator = do_randi_array<octave_int32>;
+    }
+  else if (rclass_sv == "uint8")
+    {
+      maxval = std::numeric_limits<uint8_t>::max ();
+      minval = std::numeric_limits<uint8_t>::min ();
+      generator = do_randi_array<octave_uint8>;
+    }
+  else if (rclass_sv == "uint16")
+    {
+      maxval = std::numeric_limits<uint16_t>::max ();
+      minval = std::numeric_limits<uint16_t>::min ();
+      generator = do_randi_array<octave_uint16>;
+    }
+  else if (rclass_sv == "uint32")
+    {
+      maxval = std::numeric_limits<uint32_t>::max ();
+      minval = std::numeric_limits<uint32_t>::min ();
+      generator = do_randi_array<octave_uint32>;
+    }
+  else if (rclass_sv == "logical")
+    {
+      // No range warnings for logical - any value maps to true (>0) or false (<=0)
+      maxval = flintmax_dbl;
+      minval = -flintmax_dbl;
+      generator = do_randi_array<bool>;
+    }
+  else
+    error ("randi: unknown requested output CLASS '%s'", rclass.c_str ());
+
+  if (imax > maxval)
+    warning ("randi: integer IMAX exceeds requested type.  "
+             "Values might be truncated to requested type.");
+
+  if (imin < minval)
+    warning ("randi: integer IMIN exceeds requested type.  "
+             "Values might be truncated to requested type.");
+
+  return generator (dims, imin, imax);
+}
+
+/*
+%!test
+%! ri = randi (10, 1000, 1);
+%! assert (ri, fix (ri));
+%! assert (min (ri), 1);
+%! assert (max (ri), 10);
+%! assert (rows (ri), 1000);
+%! assert (columns (ri), 1);
+%! assert (class (ri), "double");
+
+%!test
+%! ri = randi (int64 (100), 1, 1000);
+%! assert (ri, fix (ri));
+%! assert (min (ri), 1);
+%! assert (max (ri), 100);
+%! assert (rows (ri), 1);
+%! assert (columns (ri), 1000);
+%! assert (class (ri), "double");
+
+%!test
+%! ri = randi ([-100, 100], 1000, 1);
+%! assert (ri, fix (ri));
+%! assert (min (ri) >= -100);
+%! assert (max (ri) <= 100);
+%! assert (class (ri), "double");
+
+%!test
+%! ri = randi ([-5, 10], 1000, 1, "int8");
+%! assert (ri, fix (ri));
+%! assert (min (ri), int8 (-5));
+%! assert (max (ri), int8 (10));
+%! assert (class (ri), "int8");
+
+%!test
+%! ri = randi ([-1000, 1000], 1000, 1, "int16");
+%! assert (min (ri) >= int16 (-1000));
+%! assert (max (ri) <= int16 (1000));
+%! assert (class (ri), "int16");
+
+%!test
+%! ri = randi ([-1e6, 1e6], 1000, 1, "int32");
+%! assert (min (ri) >= int32 (-1e6));
+%! assert (max (ri) <= int32 (1e6));
+%! assert (class (ri), "int32");
+
+%!test
+%! ri = randi ([0, 200], 1000, 1, "uint8");
+%! assert (min (ri) >= uint8 (0));
+%! assert (max (ri) <= uint8 (200));
+%! assert (class (ri), "uint8");
+
+%!test
+%! ri = randi ([100, 1000], 1000, 1, "uint16");
+%! assert (min (ri) >= uint16 (100));
+%! assert (max (ri) <= uint16 (1000));
+%! assert (class (ri), "uint16");
+
+%!test
+%! ri = randi ([1e5, 1e6], 1000, 1, "uint32");
+%! assert (min (ri) >= uint32 (1e5));
+%! assert (max (ri) <= uint32 (1e6));
+%! assert (class (ri), "uint32");
+
+%!test
+%! ri = randi ([-5; 10], 1000, 1, "single");
+%! assert (ri, fix (ri));
+%! assert (min (ri), single (-5));
+%! assert (max (ri), single (10));
+%! assert (class (ri), "single");
+
+## logical: MATLAB uses value > 0 for true, not value != 0
+%!test
+%! ri = randi ([0, 1], 1000, 1, "logical");
+%! assert (islogical (ri));
+%! assert (any (ri));        # at least one true (from 1s)
+%! assert (! all (ri));      # at least one false (from 0s)
+
+%!test
+%! ## [-1, 0] should give all false since neither > 0
+%! ri = randi ([-1, 0], 1000, 1, "logical");
+%! assert (islogical (ri));
+%! assert (! any (ri));      # all false
+
+%!test
+%! ## [-1, 1] gives ~1/3 true (only 1 > 0)
+%! ri = randi ([-1, 1], 10000, 1, "logical");
+%! assert (islogical (ri));
+%! assert (any (ri));        # some true
+%! assert (! all (ri));      # some false
+%! assert (mean (ri), 1/3, 0.05);  # approximately 1/3 true
+
+%!test
+%! ## imax >= 1 always returns all true
+%! ri = randi (10, 3, 3, "logical");
+%! assert (islogical (ri));
+%! assert (all (ri(:)));
+%! assert (size (ri), [3, 3]);
+
+%!assert (size (randi (10, 3, 1, 2)), [3, 1, 2])
+%!assert (size (randi (10, [3, 1, 2])), [3, 1, 2])
+%!assert (size (randi ([1, 10], [3, 4])), [3, 4])
+%!assert (size (randi ([1, 10], [3, 4], "int8")), [3, 4])
+%!assert (class (randi ([1, 10], [3, 4], "int16")), "int16")
+
+%!shared max_int8, min_int8, max_uint8, min_uint8, max_single
+%! max_int8 = double (intmax ("int8"));
+%! min_int8 = double (intmin ("int8"));
+%! max_uint8 = double (intmax ("uint8"));
+%! min_uint8 = double (intmin ("uint8"));
+%! max_single = double (flintmax ("single"));
+
+## Test that no warning thrown if IMAX is exactly on the limits of the range
+%!function test_no_warning (fcn, varargin)
+%!  lastwarn ("");
+%!  fcn (varargin{:});
+%!  assert (lastwarn (), "");
+%!endfunction
+
+%!test test_no_warning (@randi, max_int8, "int8");
+%!test test_no_warning (@randi, max_uint8, "uint8");
+%!test test_no_warning (@randi, max_single, "single");
+%!test test_no_warning (@randi, [min_int8, max_int8], "int8");
+%!test test_no_warning (@randi, [min_uint8, max_uint8], "uint8");
+%!test test_no_warning (@randi, [-max_single, max_single], "single");
+
+## Test exceeding range
+%!warning <exceeds requested type>
+%! randi ([min_int8-1, max_int8], "int8");
+%!warning <exceeds requested type>
+%! randi ([min_uint8-1, max_uint8], "uint8");
+%!warning <exceeds requested type>
+%! randi ([min_int8, max_int8 + 1], "int8");
+%!warning <exceeds requested type>
+%! randi ([min_uint8, max_uint8 + 1], "uint8");
+%!warning <exceeds requested type>
+%! randi ([0, max_single + 1], "single");
+%!warning <exceeds requested type>
+%! ri = randi ([-5, 10], 1000, 1, "uint8");
+%! assert (ri, fix (ri));
+%! assert (min (ri), uint8 (-5));
+%! assert (max (ri), uint8 (10));
+%! assert (class (ri), "uint8");
+
+## Test input validation
+%!error <Invalid call> randi ()
+%!error <must be integer bounds> randi ("test")
+%!error <must be integer bounds> randi (struct ("a", 1))
+%!error <must be integer bounds> randi (1.5)
+%!error <must be integer bounds> randi ([1.5, 2.5])
+%!error <must be integer bounds> randi ([1, 2.5])
+%!error <must be integer bounds> randi ([1.5, 2])
+%!error <require IMAX .= 1> randi (0)
+%!error <require IMIN <= IMAX> randi ([10, 1])
+%!error <IMIN and IMAX must be smaller than flintmax\(\)> randi (flintmax ())
+%!error <range must be smaller than flintmax\(\)-1> randi ([-1, flintmax() - 1])
+%!error <unknown requested output CLASS 'foo'> randi (10, "foo")
 */
 
 OCTAVE_END_NAMESPACE(octave)

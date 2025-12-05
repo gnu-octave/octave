@@ -25,8 +25,8 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
     reliability.  Previously, it was downloaded every time for an operation
     such as `install`, `update`, or `search`.  Metadata updates can also be
     done on demand with the new option `-refresh` for those three actions.
-  * Packages are now verified using SHA256 at the time of `pkg install` and
-    `pkg update`.
+  * Package tarballs are now verified using SHA256 if they are downloaded
+    during `pkg install` or `pkg update`.
 
 - Convolution of short and wide arrays (especially row vectors) is now faster
   by anywhere from 10% to 150X, depending on the array size and shape.
@@ -181,6 +181,8 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 * `_Exit`
 * `corrcov`
 * `dither`
+* `funm`
+* `trexc`
 
 ### Deprecated functions, properties, and operators
 

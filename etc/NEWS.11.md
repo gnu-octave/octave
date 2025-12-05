@@ -181,6 +181,8 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 * `_Exit`
 * `corrcov`
 * `dither`
+* `funm`
+* `trexc`
 
 ### Deprecated functions, properties, and operators
 

@@ -125,7 +125,7 @@ Unordered.  No particular ordering of eigenvalues (default).
 
 The leading @var{k} columns of @var{U} always span the @var{A}-invariant
 subspace corresponding to the @var{k} leading eigenvalues of @var{S}.
-@seealso{rsf2csf, ordschur, ordeig, lu, chol, hess, qr, qz, svd, eig}
+@seealso{rsf2csf, ordschur, trexc, ordeig, lu, chol, hess, qr, qz, svd, eig}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -285,7 +285,7 @@ $U^{\dagger} U$ is the identity matrix I.
 @end ifnottex
 
 Note also that @var{U} and @var{T} are not unique.
-@seealso{schur}
+@seealso{schur, ordschur, trexc}
 @end deftypefn */)
 {
   if (args.length () != 2 || nargout > 2)

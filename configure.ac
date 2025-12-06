@@ -2736,6 +2736,13 @@ do
         JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/darwin"
       fi
     ;;
+    freebsd*)
+      if test -n "$JAVA_CPPFLAGS"; then
+        JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS} -I${JAVA_CPPFLAGS}/freebsd"
+      else
+        JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/freebsd"
+      fi
+    ;;
     solaris2*)
       if test -n "$JAVA_CPPFLAGS"; then
         JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS} -I${JAVA_CPPFLAGS}/solaris"

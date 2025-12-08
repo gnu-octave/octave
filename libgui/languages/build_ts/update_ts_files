@@ -25,8 +25,8 @@ cp -a ../qterminal $OCTAVE_TEMP/
 cp -a ../src $OCTAVE_TEMP/
 
 find $OCTAVE_TEMP -type f -exec \
-      sed -i -e 's/OCTAVE_BEGIN_NAMESPACE(\([^)]\+\))/namespace \1 \{/g'\
-             -e 's/OCTAVE_END_NAMESPACE(\([^)]\+\))/\}/g' {} \;
+      sed -i -e 's/OCTAVE_BEGIN_NAMESPACE\s*(\([^)]\+\))/namespace \1 \{/g'\
+             -e 's/OCTAVE_END_NAMESPACE\s*(\([^)]\+\))/\}/g' {} \;
 
 echo "done"
 
@@ -43,11 +43,15 @@ SEARCH_PATH_QSCI="build_ts/octave-qsci"
 # The directory with translations provided by Qt and QScintilla
 # First test qt above qt5 which provides QT_INSTALL_TRANSLATIONS
 # by "qtpaths --query"
-QT_LANG_DIR=`qtpaths --query 2>/dev/null | grep QT_INSTALL_TRANSLATIONS | sed -e 's/QT_INSTALL_TRANSLATIONS://'`
+QT_LANG_DIR=`qtpaths6 --query 2>/dev/null | grep QT_INSTALL_TRANSLATIONS | sed -e 's/QT_INSTALL_TRANSLATIONS://'`
 if [[ -z $QT_LANG_DIR ]]; then
-  # No qt6 or no qt6 translations: test qt5 with "qtdiag" ("qtpaths"
-  # does not provide "--query" here)
-  QT_LANG_DIR=`qtdiag 2>/dev/null | grep TranslationsPath | sed -e 's/  TranslationsPath: //'`
+  # No "qtpaths6", try "qtpaths" instead (might be qt5 though)
+  QT_LANG_DIR=`qtpaths --query 2>/dev/null | grep QT_INSTALL_TRANSLATIONS | sed -e 's/QT_INSTALL_TRANSLATIONS://'`
+  if [[ -z $QT_LANG_DIR ]]; then
+    # No qt6 or no qt6 translations found: "qtpaths" does not provide
+    # "--query" for qt5, therefore test qt5 with "qtdiag"
+    QT_LANG_DIR=`qtdiag 2>/dev/null | grep TranslationsPath | sed -e 's/  TranslationsPath: //'`
+  fi
 fi
 
 echo "Qt translations: $QT_LANG_DIR"

@@ -1149,13 +1149,7 @@ load_save_system::install_loaded_variable (const std::string& name,
 std::string
 load_save_system::init_save_header_format ()
 {
-  return
-    (std::string ("# Created by Octave " OCTAVE_VERSION
-                  ", %a %b %d %H:%M:%S %Y %Z <")
-     + sys::env::get_user_name ()
-     + '@'
-     + sys::env::get_host_name ()
-     + '>');
+  return "# Created by Octave " OCTAVE_VERSION ", %a %b %d %H:%M:%S %Y %Z";
 }
 
 load_save_format
@@ -2257,7 +2251,7 @@ omitted from text-format data files.  The default value is
 @c Set example in small font to prevent overfull line
 
 @smallexample
-"# Created by Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>"
+"# Created by Octave VERSION, %a %b %d %H:%M:%S %Y %Z"
 @end smallexample
 
 When called from inside a function with the @qcode{"local"} option, the

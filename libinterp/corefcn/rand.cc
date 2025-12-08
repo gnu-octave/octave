@@ -1472,7 +1472,7 @@ DEFUN (randi, args, ,
 @deftypefnx {} {@var{R} =} randi ([@var{imin}, @var{imax}], @dots{})
 @deftypefnx {} {@var{R} =} randi (@dots{}, "@var{class}")
 Return a scalar, matrix, or N-dimensional array whose elements are random
-integers in the range 1:@var{imax}.
+integers in the range @w{[1, @var{imax}]}.
 
 If called with no size arguments, return a scalar random value.
 
@@ -1486,17 +1486,22 @@ The integer range may optionally be described by a two-element matrix with a
 lower and upper bound in which case the returned integers will be on the
 interval @w{[@var{imin}, @var{imax}]}.
 
-The optional argument @var{class} will return a matrix of the requested
-type.  The default is @qcode{"double"}.  Supported classes are:
-@qcode{"double"}, @qcode{"single"}, @qcode{"int8"}, @qcode{"int16"},
-@qcode{"int32"}, @qcode{"uint8"}, @qcode{"uint16"}, @qcode{"uint32"},
-and @qcode{"logical"}.
+The optional argument @var{class} will return a matrix of the requested type.
+The default is @qcode{"double"}.  Supported classes are: @qcode{"double"},
+@qcode{"single"}, @qcode{"int8"}, @qcode{"int16"}, @qcode{"int32"},
+@qcode{"uint8"}, @qcode{"uint16"}, @qcode{"uint32"}, and @qcode{"logical"}.
 
-Programming Note: @code{randi} relies internally on @code{rand} which
-uses class @qcode{"double"} to represent numbers.  This limits the maximum
-integer (@var{imax}) and range (@var{imax} - @var{imin}) to the value
-returned by the @code{flintmax} function.  For IEEE@tie{}754 floating point
-numbers this value is @w{@math{2^{53} - 1}}.
+Programming Notes: @code{randi} relies internally on @code{rand} which uses
+class @qcode{"double"} to represent numbers.  This limits the maximum integer
+(@var{imax}) and range (@var{imax} - @var{imin}) to the value returned by the
+@code{flintmax} function.  For IEEE@tie{}754 floating point numbers this value
+is @w{@math{2^{53} - 1}}.
+
+When the output class is @qcode{"logical"} the function constructs an array of
+random integers as specified and then applies the test @w{@code{@var{x} > 0}}
+to determine which elements will be true.  Because the one-input form of the
+function uses @code{1} for @var{imin} @code{randi} will always return a matrix
+of all ones.
 
 Example: 150 integers in the range 1--10.
 
@@ -1520,13 +1525,16 @@ ri = randi (10, 150, 1)
   if (! bounds_arg.isnumeric ())
     error ("randi: IMIN and IMAX must be integer bounds");
 
+  if (bounds_arg.numel () < 1 || bounds_arg.numel () > 2)
+    error ("randi: first argument must be scalar IMIN or 2-element vector [IMIN, IMAX]");
+
   NDArray bounds_array = bounds_arg.array_value ();
 
   // Check that all bounds are integers
   for (octave_idx_type i = 0; i < bounds_array.numel (); i++)
     {
       double val = bounds_array(i);
-      if (val != std::floor (val))
+      if (val != std::trunc (val))
         error ("randi: IMIN and IMAX must be integer bounds");
     }
 
@@ -1536,47 +1544,23 @@ ri = randi (10, 150, 1)
     {
       imin = 1.0;
       imax = bounds_array(0);
-      // Use real part if complex
-      if (bounds_arg.iscomplex ())
-        imax = std::real (bounds_arg.complex_value ());
-      else
-        imax = bounds_arg.double_value ();
-
-      if (imax != std::floor (imax))
-        error ("randi: IMIN and IMAX must be integer bounds");
-
-      if (imax < 1.0)
-        error ("randi: require IMAX >= 1");
-    }
-  else if (bounds_array.numel () >= 2)
-    {
-      if (bounds_arg.iscomplex ())
-        {
-          ComplexNDArray cplx = bounds_arg.complex_array_value ();
-          imin = std::real (cplx(0));
-          imax = std::real (cplx(1));
-        }
-      else
-        {
-          imin = bounds_array(0);
-          imax = bounds_array(1);
-        }
-
-      if (imin != std::floor (imin) || imax != std::floor (imax))
-        error ("randi: IMIN and IMAX must be integer bounds");
-
-      if (imax < imin)
-        error ("randi: require IMIN <= IMAX");
+      if (imax < 1)
+        error ("randi: IMAX must be >= 1");
     }
   else
-    error ("randi: IMIN and IMAX must be integer bounds");
+    {
+      imin = bounds_array(0);
+      imax = bounds_array(1);
+      if (imax < imin)
+        error ("randi: IMIN must be <= IMAX");
+    }
 
   // Check bounds against flintmax
   if (std::abs (imax) >= flintmax_dbl || std::abs (imin) >= flintmax_dbl)
-    error ("randi: IMIN and IMAX must be smaller than flintmax()");
+    error ("randi: IMIN and IMAX must be smaller than flintmax");
 
   if ((imax - imin) >= (flintmax_dbl - 1.0))
-    error ("randi: integer range must be smaller than flintmax()-1");
+    error ("randi: integer range must be smaller than flintmax-1");
 
   // Parse optional class argument (must be last if present)
   std::string rclass = "double";
@@ -1606,6 +1590,10 @@ ri = randi (10, 150, 1)
 
       if (size_arg.is_scalar_type ())
         {
+          // FIXME: idx_type_value () produces a generic error
+          //        "conversion of XX to int64_t value failed".
+          // It might be nicer at some point to use try/catch block to map
+          // this to a nicer error message about dimensions must be integers.
           octave_idx_type n = size_arg.idx_type_value (true);
           dims.resize (2);
           dims(0) = (n >= 0 ? n : 0);
@@ -1657,8 +1645,7 @@ ri = randi (10, 150, 1)
   std::string_view rclass_sv = rclass;
 
   // Dispatch table using lambdas for type-specific generation
-  using generator_fn = std::function<octave_value (const dim_vector&, double, double)>;
-  generator_fn generator;
+  std::function<octave_value (const dim_vector&, double, double)> generator;
 
   if (rclass_sv == "double")
     {
@@ -1710,7 +1697,8 @@ ri = randi (10, 150, 1)
     }
   else if (rclass_sv == "logical")
     {
-      // No range warnings for logical - any value maps to true (>0) or false (<=0)
+      // No range warnings for logical.
+      // Any value can be mapped to true (>0) or false (<=0)
       maxval = flintmax_dbl;
       minval = -flintmax_dbl;
       generator = do_randi_array<bool>;
@@ -1824,8 +1812,8 @@ ri = randi (10, 150, 1)
 %! ## imax >= 1 always returns all true
 %! ri = randi (10, 3, 3, "logical");
 %! assert (islogical (ri));
-%! assert (all (ri(:)));
 %! assert (size (ri), [3, 3]);
+%! assert (all (ri(:)));
 
 %!assert (size (randi (10, 3, 1, 2)), [3, 1, 2])
 %!assert (size (randi (10, [3, 1, 2])), [3, 1, 2])
@@ -1876,14 +1864,21 @@ ri = randi (10, 150, 1)
 %!error <Invalid call> randi ()
 %!error <must be integer bounds> randi ("test")
 %!error <must be integer bounds> randi (struct ("a", 1))
+%!error <first argument must be scalar IMIN> randi ([])
+%!error <first argument must be .* 2-element vector> randi ([1,2,3])
 %!error <must be integer bounds> randi (1.5)
-%!error <must be integer bounds> randi ([1.5, 2.5])
-%!error <must be integer bounds> randi ([1, 2.5])
 %!error <must be integer bounds> randi ([1.5, 2])
-%!error <require IMAX .= 1> randi (0)
-%!error <require IMIN <= IMAX> randi ([10, 1])
-%!error <IMIN and IMAX must be smaller than flintmax\(\)> randi (flintmax ())
-%!error <range must be smaller than flintmax\(\)-1> randi ([-1, flintmax() - 1])
+%!error <must be integer bounds> randi ([1, 2.5])
+%!error <must be integer bounds> randi ([1.5, 2.5])
+%!error <IMAX must be .= 1> randi (0)
+%!error <IMIN must be <= IMAX> randi ([10, 1])
+%!error <IMIN and IMAX must be smaller than flintmax> randi (flintmax ())
+%!error <range must be smaller than flintmax-1> randi ([-1, flintmax() - 1])
+%!error randi (10, 1.5)
+%!error <dimensions must be .* array of integers> randi (10, [1.5, 2])
+%!error <dimensions must be .* array of integers> randi (10, 1.5:0.5:3)
+%!error <dimensions must be a scalar or array of integers> randi (10, {1, 2})
+%!error randi (10, 1.5, 2)
 %!error <unknown requested output CLASS 'foo'> randi (10, "foo")
 */
 

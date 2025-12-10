@@ -83,6 +83,8 @@ measuring dispersion.
 
 @DOCSTRING(meansq)
 
+@DOCSTRING(rms)
+
 @DOCSTRING(std)
 
 In addition to knowing the size of a dispersion it is useful to know the shape

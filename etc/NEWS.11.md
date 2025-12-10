@@ -53,6 +53,8 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The `mean` function no longer accepts character array inputs.  Convert any
   character input to a numeric value (e.g., use `double()` or `single()`).
 
+- All core statistics functions now strictly operate on numerical arrays.
+
 - On dot-indexing of `classdef` objects, `subsref` now resolves to looking for
   a property first, and if a property is not found, then it looks for a method.
 
@@ -121,7 +123,19 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 
 - The function `iqr` now calculates an optional second output `q` which
   contains the 25th and 75th quantiles used to calculate the interquartile
-  range.
+  range.  It also now accepts the optional arguments `"all"` or `vecdim`.
+
+- The functions `kurtosis` and `skewness` now accept the optional arguments
+  `"all"` or `vecdim`.
+
+- The functions `bounds`, `center`, `meansq`, `range`, and `statistics` now
+  accept the optional arguments `"all"` or `vecdim`, and `nanflag`.
+
+- The functions `mode`, `moment`, `prctile`, and `quantile` now accept the
+   optional arguments `"all"` or `vecdim`.
+
+- The function `quantile` now also accepts a positive integer as the second
+  input argument specifying evenly spaced cumulative probabilities.
 
 - The function `polyfit` now returns the highest powers possible and the
   constant term when there is insufficient data to create all N terms of the
@@ -185,6 +199,7 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 * `corrcov`
 * `dither`
 * `funm`
+* `rms`
 * `trexc`
 
 ### Deprecated functions, properties, and operators

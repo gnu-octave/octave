@@ -26,25 +26,61 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{q} =} quantile (@var{x})
 ## @deftypefnx {} {@var{q} =} quantile (@var{x}, @var{p})
-## @deftypefnx {} {@var{q} =} quantile (@var{x}, @var{p}, @var{dim})
-## @deftypefnx {} {@var{q} =} quantile (@var{x}, @var{p}, @var{dim}, @var{method})
-## For a sample, @var{x}, calculate the quantiles, @var{q}, corresponding to
-## the cumulative probability values in @var{p}.  All non-numeric values (NaNs)
-## of @var{x} are ignored.
+## @deftypefnx {} {@var{q} =} quantile (@var{x}, @var{n})
+## @deftypefnx {} {@var{q} =} quantile (@var{x}, @dots{}, @var{dim})
+## @deftypefnx {} {@var{q} =} quantile (@var{x}, @dots{}, @var{vecdim})
+## @deftypefnx {} {@var{q} =} quantile (@var{x}, @dots{}, "all")
+## @deftypefnx {} {@var{q} =} quantile (@var{x}, @var{p}, @dots{}, @var{method})
+## @deftypefnx {} {@var{q} =} quantile (@var{x}, @var{n}, @dots{}, @var{method})
+## Compute the quantiles of the input data @var{x}.
 ##
-## If @var{x} is a matrix, compute the quantiles for each column and
-## return them in a matrix, such that the i-th row of @var{q} contains
-## the @var{p}(i)th quantiles of each column of @var{x}.
+## If @var{x} is a vector, then @code{prctile (@var{x})} computes the quantiles
+## specified by @var{p} of the data in @var{x}.
 ##
-## If @var{p} is unspecified, return the quantiles for
-## @code{[0.00 0.25 0.50 0.75 1.00]}.
-## The optional argument @var{dim} determines the dimension along which
-## the quantiles are calculated.  If @var{dim} is omitted it defaults to
-## the first non-singleton dimension.
+## If @var{x} is a matrix, then @code{prctile (@var{x})} returns a matrix such
+## that the i-th row of @var{q} contains the @var{p}(i)th quantiles of each
+## column of @var{x}.
 ##
-## The methods available to calculate sample quantiles are the nine methods
-## used by R (@url{https://www.r-project.org/}).  The default value is
-## @w{@var{method} = 5}.
+## If @var{x} is an array, then @code{prctile (@var{x})} computes the quantiles
+## specified by @var{p} along the first non-singleton dimension of @var{x}.
+##
+## The data in @var{x} must be numeric and any NaN values are ignored.  The size
+## of @var{q} is equal to the size of @var{x} except for the operating
+## dimension, which equals to the number of quantiles specified by @var{p} or
+## @var{n}.
+##
+## @var{p} is a numeric vector specifying the percentiles to be computed, which
+## correspond to the cumulative probabilities of the data .  All elements of
+## @var{p} must be in the range from 0 to 1.  If @var{p} is unspecified, return
+## the percentiles for @code{[0.00 0.25 0.50 0.75 1.00]}.  Alternatively, the
+## second input argument may be specified as a positive integer value @var{n},
+## in which case @code{quantile} returns the quantiles for @var{n} evenly spaced
+## cumulative probabilities computed as
+## (1/(@var{n} + 1), 2/(@var{n} + 1), ..., @var{n}/(@var{n} + 1)) for
+## @code{@var{n} > 1}.
+##
+## The optional input @var{dim} specifies the dimension to operate on and must
+## be a positive integer.  Specifying any singleton dimension of @var{x},
+## including any dimension exceeding @code{ndims (@var{x})}, will return N
+## copies of @var{x} along the operating dimension, where N is the number of
+## specified quantiles.
+##
+## Specifying multiple dimensions with input @var{vecdim}, a vector of
+## non-repeating dimensions, will operate along the array slice defined by
+## @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+## equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
+## greater than @code{ndims (@var{x})} is ignored.  If all dimensions in
+## @var{vecdim} are greater than @code{ndims (@var{x})}, then @code{quantile}
+## will return N copies of @var{x} along the smallest dimension in @var{vecdim}.
+##
+## Specifying the dimension as @qcode{"all"} will cause @code{iqr} to operate
+## on all elements of @var{x}, and is equivalent to @code{iqr (@var{x}(:))}.
+##
+## The fourth input argument, @var{methods}, determines the method to calculate
+## the quantiles specified by @var{p} or @var{n}.  The methods available to
+## calculate sample quantiles are the nine methods used by R
+## (@url{https://www.r-project.org/}) and can be specified by the corresponding
+## integer value.  The default value is @w{@var{method} = 5}.
 ##
 ## Discontinuous sample quantile methods 1, 2, and 3
 ##
@@ -160,40 +196,190 @@ function q = quantile (x, p = [], dim, method = 5)
     print_usage ();
   endif
 
-  if (! (isnumeric (x) || islogical (x)) || isempty (x))
-    error ("quantile: X must be a non-empty numeric or logical array");
+  if (! (isnumeric (x)))
+    error ("quantile: X must be a numeric array");
   endif
 
   if (isempty (p))
-    p = [0.00 0.25, 0.50, 0.75, 1.00];
+    p = [0.00, 0.25, 0.50, 0.75, 1.00];
   endif
 
   if (! (isnumeric (p) && isvector (p)))
     error ("quantile: P must be a numeric vector");
   endif
 
+  if (isscalar (p) && fix (p) == p && p > 1)
+    p = [1:p] ./ (p + 1);
+  elseif (any (p < 0 | p > 1))
+    error (strcat ("quantile: P values must range from 0 to 1, unless", ...
+                   " specifying N evenly spaced cumulative probabilities"));
+  endif
+
+  do_perm = false;
+  nd = ndims (x);
+  sz = size (x);
+  empty_x = isempty (x);
+
   if (nargin < 3)
     ## Find the first non-singleton dimension.
     (dim = find (size (x) > 1, 1)) || (dim = 1);
-  else
-    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
-      error ("quantile: DIM must be a positive integer");
+
+    ## Return immediately for an empty matrix.
+    if (empty_x)
+      if (nd == 2 && max (sz) <= 1)
+        ## Return the size of vector P
+        sz = size (p);
+      else
+        ## Reduce operating DIM to length of P
+        sz(dim) = numel (p);
+      endif
+      q = NaN (sz);
+      return;
     endif
   endif
 
-  ## Set the permutation vector.
-  perm = 1:(max (ndims (x), dim));
-  perm(1) = dim;
-  perm(dim) = 1;
+  if (isnumeric (dim))
 
-  ## Permute dim to the 1st index.
-  x = permute (x, perm);
+    ## Check for DIM argument
+    if (isscalar (dim))
+      if (! (dim == fix (dim) && dim > 0))
+        error ("quantile: DIM must be a positive integer");
+      endif
 
-  ## Save the size of the permuted x N-D array.
-  sx = size (x);
+      ## Return immediately for an empty matrix.
+      if (empty_x)
+        ## Reduce operating DIM to length of P
+        sz(dim) = numel (p);
+        ## Mask existing dims, new zero-dims must be 1
+        mask = ones (1, dim);
+        mask(1:nd) = 0;
+        sz(mask & sz == 0) = 1;
+        q = NaN (sz);
+        return;
+      endif
 
-  ## Reshape to a 2-D array.
-  x = reshape (x, sx(1), []);
+      ## Return numel (p) copies of X if DIM > nd
+      if (dim > nd)
+        sz = ones (1, dim);
+        sz(dim) = numel (p);
+        q = repmat (x, sz);
+        return;
+      endif
+
+      ## Set the permutation vector.
+      perm = 1:(max (ndims (x), dim));
+      perm(1) = dim;
+      perm(dim) = 1;
+      do_perm = true;
+
+      ## Permute dim to the 1st index.
+      x = permute (x, perm);
+
+      ## Save the size of the permuted x N-D array.
+      sx = size (x);
+
+      ## Reshape to a 2-D array.
+      x = reshape (x, sx(1), []);
+
+    ## Check for proper VECDIM (more than 1 dim, no repeats)
+    elseif (isvector (dim) && isindex (dim) && all (diff (sort (dim))))
+
+      ## Discard exceeding dims, unless all dims > nd so keep smallest
+      vecdim = dim(dim <= nd);
+      if (isempty (vecdim))
+        dim = min (dim);
+      else
+        dim = vecdim;
+      endif
+
+      ## Return immediately for an empty matrix.
+      if (empty_x)
+        sz(dim(1)) = numel (p);   # reduce first operating VECDIM to P
+        sz(dim(2:end)) = 1;       # reduce other operating VECDIM to 1
+        ## Mask existing dims, new zero-dims must be 1
+        mask = ones (1, max (dim));
+        mask(1:nd) = 0;
+        sz(mask & sz == 0) = 1;
+        q = NaN (sz);
+        return;
+      endif
+
+      ## Return numel (p) copies of X if remaining DIM > nd
+      if (dim > nd)
+        sz = ones (1, dim);
+        sz(dim) = numel (p);
+        q = repmat (x, sz);
+        return;
+      endif
+
+      ## Return X with X(dim(1)) expanded to P, if all DIM == 1
+      if (all (sz(dim) == 1))
+        sz = ones (1, nd);
+        sz(dim(1)) = numel (p);   # reduce first operating VECDIM to P
+        sz(dim(2:end)) = 1;       # reduce other operating VECDIM to 1
+        q = repmat (x, sz);
+        return;
+      endif
+
+      ## Detect trivial case of DIM being all dimensions (same as "all").
+      vecdims = numel (dim);
+      max_dim = max (nd, max (dim));
+      if (vecdims == nd && max_dim == nd)
+        x = x(:);
+        sx = size (x);
+        dim = 1;
+      else
+        ## Algorithm: Move dimensions for operation to the front, keeping the
+        ## order of the remaining dimensions.  Reshape the moved dims into a
+        ## single dimension (row).  Calculate with __quantile__ along dim1 of
+        ## X, then reshape to correct dimensions.
+
+        dim = dim(:).';  # Force row vector
+
+        ## Permutation vector with DIM at front
+        perm = [1:max_dim];
+        perm(dim) = [];
+        perm = [dim, perm];
+        do_perm = true;
+
+        ## Reshape X to put dims to process at front.
+        x = permute (x, perm);
+        sx = size (x);
+
+        ## Preserve trailing singletons when dim > ndims (x).
+        sx = [sx, ones(1, max_dim - numel (sx))];
+        sx = [prod(sx(1:vecdims)), ones(1, (vecdims-1)), sx((vecdims+1):end)];
+
+        ## Size must always have 2 dimensions.
+        if (isscalar (sx))
+          sx = [sx, 1];
+        endif
+
+        ## Collapse dimensions to be processsed into single column.
+        x = reshape (x, sx);
+      endif
+
+    else
+      error ("quantile: VECDIM must be a vector of non-repeating positive integers");
+    endif
+
+  elseif (strcmpi (dim, "all"))
+
+    ## Return immediately for an empty matrix
+    if (empty_x)
+      ## Always return a column vector.
+      q = NaN (numel (p), 1);
+      return;
+    endif
+
+    ## "all" simplifies to collapsing all elements to single vector.
+    x = x(:);
+    sx = size (x);
+    dim = 1;
+
+  else
+    error ("quantile: DIM must be a positive integer scalar, vector, or 'all'");
+  endif
 
   ## Calculate the quantiles.
   q = __quantile__ (x, p, method);
@@ -202,7 +388,9 @@ function q = quantile (x, p = [], dim, method = 5)
   q = reshape (q, [numel(p), sx(2:end)]);
 
   ## Permute the 1st index back to dim.
-  q = ipermute (q, perm);
+  if (do_perm)
+    q = ipermute (q, perm);
+  endif
 
   ## For Matlab compatibility, return vectors with the same orientation as p
   if (isvector (q) && ! isscalar (q) && ! isscalar (p))
@@ -386,13 +574,87 @@ endfunction
 %!assert <*54421> (quantile ([1:10], [0.25, 0.75]'), [3; 8])
 %!assert (quantile ([1:10], 1, 3), [1:10])
 
+## Test empty input arrays
+%!assert (quantile ([], [0.2, 0.5, 0.7]), NaN (1, 3))
+%!assert (quantile (ones (1, 0), [0.2, 0.5, 0.7]), NaN (1, 3))
+%!assert (quantile ([], [0.2, 0.5, 0.7, 0.9]), NaN (1, 4))
+%!assert (quantile (ones (1, 0), [0.2, 0.5, 0.7, 0.9]), NaN (1, 4))
+%!assert (quantile ([], [0.2, 0.5, 0.7], 2), NaN (0, 3))
+%!assert (quantile (ones (1, 0), [0.2, 0.5, 0.7], 2), NaN (1, 3))
+%!assert (quantile (ones (0, 1), [0.2, 0.5, 0.7], 2), NaN (0, 3))
+%!assert (quantile (ones (1, 0), [0.2, 0.5, 0.7], 1), NaN (3, 0))
+%!assert (quantile (ones (1, 0), [0.2, 0.5, 0.7], 3), NaN (1, 0, 3))
+%!assert (quantile (ones (1, 0, 1), [0.2, 0.5, 0.7], 3), NaN (1, 0, 3))
+%!assert (quantile (ones (3, 0, 1, 2), [0.2, 0.5, 0.7]), NaN (3, 0, 1, 2))
+%!assert (quantile (ones (3, 0, 1, 2), [0.2, 0.5, 0.7], 2), NaN (3, 3, 1, 2))
+%!assert (quantile (ones (3, 0, 1, 2), [0.2; 0.5; 0.7]), NaN (3, 0, 1, 2))
+%!assert (quantile (ones (3, 0, 1, 2), [0.2; 0.5; 0.7], 2), NaN (3, 3, 1, 2))
+%!assert (quantile (ones (1, 0), [0.2; 0.5; 0.7]), NaN (3, 1))
+%!assert (quantile (ones (0, 1), [0.2, 0.5, 0.7]), NaN (1, 3))
+%!assert (quantile (ones (5, 0, 1, 2), [0.2, 0.5, 0.7]), NaN (3, 0, 1, 2))
+%!assert (quantile (ones (5, 0), [0.2, 0.5, 0.7]), NaN (3, 0))
+%!assert (quantile (ones (1, 0), [0.2, 0.5, 0.7], 4), NaN (1, 0, 1, 3))
+%!assert (quantile (ones (1, 0), [0.2, 0.5, 0.7], 5), NaN (1, 0, 1, 1, 3))
+%!assert (quantile (ones (5, 0, 1), [0.2, 0.5, 0.7], [4:6]), NaN (5, 0, 1, 3))
+%!assert (quantile (ones (5, 0, 1), [0.2, 0.5, 0.7], [3, 4]), NaN (5, 0, 3))
+%!assert (quantile (ones (5, 0, 2, 2), [0.2, 0.5, 0.7], [2, 3]), NaN (5, 3, 1, 2))
+%!assert (quantile (ones (5, 0, 2, 2), [0.2, 0.5, 0.7], [1, 3]), NaN (3, 0, 1, 2))
+%!assert (quantile (ones (5, 0, 2, 2), [0.2, 0.5, 0.7], 'all'), NaN (3, 1))
+%!assert (quantile (ones (5, 0, 2, 2), [0.2; 0.5; 0.7], 'all'), NaN (3, 1))
+%!assert (quantile (ones (0, 1), [0.2, 0.5, 0.7], 'all'), NaN (3, 1))
+%!assert (quantile (ones (0, 1), [0.2; 0.5; 0.7], 'all'), NaN (3, 1))
+%!assert (quantile (ones (1, 0), [0.2, 0.5, 0.7], 'all'), NaN (3, 1))
+%!assert (quantile (ones (1, 0), [0.2; 0.5; 0.7], 'all'), NaN (3, 1))
+
+## Test DIM and VECDIM with exceeding dimensions
+%!assert (quantile (repmat ([1:10], 5, 1), [0.2, 0.5, 0.7], 2), ...
+%!        repmat ([2.5, 5.5, 7.5], 5, 1))
+%!assert (quantile (repmat ([1:10], 5, 1), [0.2, 0.5, 0.7], 3), ...
+%!        repmat ([1:10], 5, 1, 3))
+%!assert (quantile (repmat ([1:10], 5, 1), [0.2, 0.5, 0.7], 4), ...
+%!        repmat ([1:10], 5, 1, 1, 3))
+%!assert (quantile (repmat ([1:10], 5, 1), [0.2, 0.5, 0.7], [2, 4]), ...
+%!        repmat ([2.5, 5.5, 7.5], 5, 1))
+%!assert (quantile (repmat ([1:10], 5, 1), [0.2, 0.5, 0.7], [3, 5]), ...
+%!        repmat ([1:10], 5, 1, 3))
+%!assert (quantile (repmat ([1:10], 5, 1), [0.2, 0.5, 0.7], [4, 6]), ...
+%!        repmat ([1:10], 5, 1, 1, 3))
+
+## Test DIM and VECCDIM with dimensions of length 1
+%!assert (quantile (ones (5, 1, 2, 2), [0.2, 0.5, 0.7], 2), ones (5, 3, 2, 2))
+%!assert (quantile (ones (5, 1, 1, 2), [0.2, 0.5, 0.7], [2, 3]), ones (5, 3, 1, 2))
+
+## Test direction of P vector
+%!assert (quantile ([1:10], [0.2; 0.5; 0.7]), [2.5; 5.5; 7.5])
+%!assert (quantile ([1:10]', [0.2; 0.5; 0.7]), [2.5; 5.5; 7.5])
+%!assert (quantile ([1:10], [0.2, 0.5, 0.7]), [2.5, 5.5, 7.5])
+%!assert (quantile ([1:10]', [0.2, 0.5, 0.7]), [2.5, 5.5, 7.5])
+
+## Test N evenly spaced cummulative probabilities
+%!assert (quantile ([1:10], 3), [3, 5.5, 8])
+%!assert (quantile ([1:10]', 3), [3, 5.5, 8])
+%!assert (quantile ([1:10], 9), [1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5])
+%!assert (quantile ([1:10]', 9), [1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5])
+
 ## Test input validation
 %!error <Invalid call> quantile ()
-%!error <must be .* numeric or logical> quantile (['A'; 'B'], 10)
+%!error <quantile: X must be a numeric array> quantile (['A'; 'B'], 10)
+%!error <quantile: X must be a numeric array> quantile ([true; false], 10)
+%!error <quantile: X must be a numeric array> quantile ({1, 2}, [0.2, 0.5, 0.8])
 %!error <P must be a numeric vector> quantile (1:10, [true, false])
 %!error <P must be a numeric vector> quantile (1:10, ones (2,2))
-%!error quantile (1, 1, 1.5)
-%!error quantile (1, 1, 0)
+%!error <quantile: P values must range from 0 to 1, unless specifying N evenly spaced cumulative probabilities> ...
+%!       quantile (1:10, -1)
+%!error <quantile: P values must range from 0 to 1, unless specifying N evenly spaced cumulative probabilities> ...
+%!       quantile (1:10, [0.2, 0.5, -0.8])
+%!error <quantile: DIM must be a positive integer> quantile (1, 1, 1.5)
+%!error <quantile: DIM must be a positive integer> quantile (1, 1, 0)
+%!error <quantile: VECDIM must be a vector of non-repeating positive integers> ...
+%!       quantile (1, 1, [1, 2, 2])
+%!error <quantile: VECDIM must be a vector of non-repeating positive integers> ...
+%!       quantile (1, 1, [1, 2, 0])
+%!error <quantile: DIM must be a positive integer scalar, vector, or 'all'> ...
+%!       quantile (1, 1, "some")
 %!error quantile ((1:5)', 0.5, 1, 0)
 %!error quantile ((1:5)', 0.5, 1, 10)
 

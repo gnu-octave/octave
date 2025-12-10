@@ -27,7 +27,9 @@
 ## @deftypefn  {} {@var{y} =} skewness (@var{x})
 ## @deftypefnx {} {@var{y} =} skewness (@var{x}, @var{flag})
 ## @deftypefnx {} {@var{y} =} skewness (@var{x}, @var{flag}, @var{dim})
-## Compute the sample skewness of the elements of @var{x}.
+## @deftypefnx {} {@var{y} =} skewness (@var{x}, @var{flag}, @var{vecdim})
+## @deftypefnx {} {@var{y} =} skewness (@var{x}, @var{flag}, "all")
+## Compute the sample skewness of the input data @var{x}.
 ##
 ## The sample skewness is defined as
 ## @tex
@@ -78,10 +80,33 @@
 ## The adjusted skewness coefficient is obtained by replacing the sample second
 ## and third central moments by their bias-corrected versions.
 ##
-## If @var{x} is a matrix, or more generally a multi-dimensional array, return
-## the skewness along the first non-singleton dimension.  If the optional
-## @var{dim} argument is given, operate along this dimension.
+## If @var{x} is a vector, then @code{skewness (@var{x})} computes the skewness
+## of the data in @var{x}.
 ##
+## If @var{x} is a matrix, then @code{skewness (@var{x})} returns a row vector
+## with each element containing the skewness of the data of the corresponding
+## column in @var{x}.
+##
+## If @var{x} is an array, then @code{skewness (@var{x})} computes the skewness
+## of the data along the first non-singleton dimension of @var{x}.
+##
+## The data in @var{x} must be numeric and any NaN values are ignored.
+## The size of @var{y} is equal to the size of @var{x} except for the operating
+## dimension, which becomes 1.
+##
+## The optional input @var{dim} specifies the dimension to operate on and must
+## be a positive integer.  Specifying any singleton dimension of @var{x},
+## including any dimension exceeding @code{ndims (@var{x})}, will return
+## @code{@var{x}}.
+##
+## Specifying the dimensions as @var{vecdim}, a vector of non-repeating
+## dimensions, will return the mean square over the array slice defined by
+## @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+## equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
+## greater than @code{ndims (@var{x})} is ignored.
+##
+## Specifying the dimension as @qcode{"all"} will cause @code{meansq} to operate
+## on all elements of @var{x}, and is equivalent to @code{meansq (@var{x}(:))}.
 ## @seealso{var, kurtosis, moment}
 ## @end deftypefn
 
@@ -91,8 +116,8 @@ function y = skewness (x, flag, dim)
     print_usage ();
   endif
 
-  if (! (isnumeric (x) || islogical (x)))
-    error ("skewness: X must be a numeric or logical array");
+  if (! (isnumeric (x)))
+    error ("skewness: X must be a numeric array");
   endif
 
   if (nargin < 2 || isempty (flag))
@@ -101,34 +126,25 @@ function y = skewness (x, flag, dim)
     error ("skewness: FLAG must be 0 or 1");
   endif
 
-  nd = ndims (x);
-  sz = size (x);
   if (nargin < 3)
-    ## Find the first non-singleton dimension.
-    (dim = find (sz > 1, 1)) || (dim = 1);
-  else
-    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
-      error ("skewness: DIM must be an integer and a valid dimension");
-    endif
+    (dim = find (size (x) != 1, 1)) || (dim = 1);
   endif
 
-  n = size (x, dim);
-  sz(dim) = 1;
+  n = sum (x == x, dim, "omitnan");
 
-  x = center (x, dim);   # center also promotes integer, logical to double
-  s = std (x, 1, dim);   # Normalize with 1/N
-  y = sum (x .^ 3, dim);
+  x = center (x, dim, "omitnan");
+  s = std (x, 1, dim, "omitnan");   # normalize with 1/N
+  y = sum (x .^ 3, dim, "omitnan");
+  y = y ./ (n .* s .^ 3);
   idx = (s != 0);
-  y(idx) ./= (n * s(idx) .^ 3);
   y(! idx) = NaN;
 
   ## Apply bias correction to the second and third central sample moment
   if (flag == 0)
-    if (n > 2)
-      y *= sqrt (n * (n - 1)) / (n - 2);
-    else
-      y(:) = NaN;
-    endif
+    idx = n > 2;
+    nn = n(idx);
+    y(idx) = y(idx) .* sqrt (nn .* (nn - 1)) ./ (nn - 2);
+    y(! idx) = NaN;
   endif
 
 endfunction
@@ -154,6 +170,35 @@ endfunction
 %!assert (skewness (single ([1:5 10])), single (1.0513283), eps ("single"))
 %!assert (skewness (single ([1 2]), 0), single (NaN))
 
+## Test dim
+%!test
+%! x(:,:,1) = [0.5377, 0.3188, 3.5784; 1.8339, -1.3077, 2.7694; ...
+%!             -2.2588, -0.4336, -1.3499; 0.8622, 0.3426, 3.0349];
+%! x(:,:,2) = [0.7254, -0.1241, 0.6715; -0.0631, 1.4897, -1.2075; ...
+%!             0.7147 1.4090 0.7172; -0.2050, 1.4172, 1.6302];
+%! y = skewness (x);
+%! assert (y(:,:,1), [-0.8084, -0.5578, -1.0772], 1e-4);
+%! assert (y(:,:,2), [-0.0403, -1.1472, -0.6632], 1e-4);
+%! y = skewness (x, 1, 2);
+%! assert (y(:,:,1), [0.6956; -0.5575; 0.0049; 0.6033], 1e-4);
+%! assert (y(:,:,2), [-0.6969; 0.1828; 0.7071; -0.6714], 1e-4);
+%! y = skewness (x, 1, 3);
+%! assert (y, zeros (4, 3), 8 * eps);
+
+## Test "all" and vecdim
+%!test
+%! x(:,:,1) = [0.5377, 0.3188, 3.5784; 1.8339, -1.3077, 2.7694; ...
+%!             -2.2588, -0.4336, -1.3499; 0.8622, 0.3426, 3.0349];
+%! x(:,:,2) = [0.7254, -0.1241, 0.6715; -0.0631, 1.4897, -1.2075; ...
+%!             0.7147 1.4090 0.7172; -0.2050, 1.4172, 1.6302];
+%! y = skewness (x, 1, "all");
+%! assert (y, 0.0916, 1e-4);
+%! y = skewness (x, 1, [1, 2]);
+%! assert (y(:,:,1), 0.1070, 1e-4);
+%! assert (y(:,:,2), -0.6263, 1e-4);
+%! y = skewness (x, 1, [1, 3]);
+%! assert (y, [-1.0755, -0.3108, -0.2209], 1e-4);
+
 ## Verify no warnings
 %!test
 %! lastwarn ("");  # clear last warning
@@ -162,9 +207,8 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> skewness ()
-%!error <X must be a numeric or logical> skewness (['A'; 'B'])
-%!error <FLAG must be 0 or 1> skewness (1, 2)
-%!error <FLAG must be 0 or 1> skewness (1, [1 0])
-%!error <DIM must be an integer> skewness (1, [], ones (2,2))
-%!error <DIM must be an integer> skewness (1, [], 1.5)
-%!error <DIM must be .* a valid dimension> skewness (1, [], 0)
+%!error <skewness: X must be a numeric array> skewness (['A'; 'B'])
+%!error <skewness: X must be a numeric array> skewness ([true; false])
+%!error <skewness: X must be a numeric array> skewness ({1, 2, 3})
+%!error <skewness: FLAG must be 0 or 1> skewness (1, 2)
+%!error <skewness: FLAG must be 0 or 1> skewness (1, [1 0])

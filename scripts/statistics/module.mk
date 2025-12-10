@@ -40,6 +40,7 @@ FCN_FILE_DIRS += %reldir%
   %reldir%/quantile.m \
   %reldir%/range.m \
   %reldir%/ranks.m \
+  %reldir%/rms.m \
   %reldir%/run_count.m \
   %reldir%/runlength.m \
   %reldir%/skewness.m \

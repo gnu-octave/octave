@@ -29,7 +29,7 @@
 ## @deftypefnx {} {@var{r} =} iqr (@var{x}, @var{vecdim})
 ## @deftypefnx {} {@var{r} =} iqr (@var{x}, @qcode{"all"})
 ## @deftypefnx {} {[@var{r}, @var{q}] =} iqr (@dots{})
-## Compute the interquartile range of @var{x}.
+## Compute the interquartile range of the input data @var{x}.
 ##
 ## The interquartile range is defined as the difference between the 75th and
 ## 25th percentile values of @var{x} calculated using
@@ -38,7 +38,7 @@
 ## quantile (x, [0.25 , 0.75])
 ## @end example
 ##
-## If @var{x} is a vector, then @code{iqr (@var{x})} returns the interquartile
+## If @var{x} is a vector, then @code{iqr (@var{x})} computes the interquartile
 ## range of the elements in @var{x}.
 ##
 ## If @var{x} is a matrix, then @code{iqr (@var{x})} returns a row vector with
@@ -47,6 +47,10 @@
 ##
 ## If @var{x} is an array, then @code{iqr (@var{x})} computes the interquartile
 ## range along the first non-singleton dimension of @var{x}.
+##
+## The data in @var{x} must be numeric and any NaN values are ignored.  The size
+## of @var{r} is equal to the size of @var{x} except for the operating
+## dimension, which becomes 1.
 ##
 ## The optional input @var{dim} specifies the dimension to operate on and must
 ## be a positive integer.  Specifying any singleton dimension of @var{x},
@@ -72,10 +76,7 @@
 ## @seealso{bounds, mad, range, std, prctile, quantile}
 ## @end deftypefn
 
-## TODO:  When Probability Distribution Objects are implemented, enable
-##        handling for those object types.
-
-function [r, q] = iqr (x, dim = [])
+function [r, q] = iqr (x, dim)
 
   if (nargin < 1)
     print_usage ();
@@ -86,13 +87,11 @@ function [r, q] = iqr (x, dim = [])
   sz = size (x);
   empty_x = isempty (x);
 
-  ## FIXME: Matlab only works on real floating point inputs (single, double).
-  ##        Should octave operate on integer or logical arrays?
-  if (! (isnumeric (x) || islogical (x)))
-    error ("iqr: X must be numeric or logical");
+  if (! (isnumeric (x)))
+    error ("iqr: X must be a numeric array");
   endif
 
-  if (isempty (dim))
+  if (nargin < 2)
     ## Find first non-singleton dimension.
     (dim = find (sz != 1, 1)) || (dim = 1);
 
@@ -375,8 +374,10 @@ endfunction
 
 ## input validation
 %!error <Invalid call> iqr ()
-%!error <X must be numeric or logical> iqr (['A'; 'B'])
-%!error <X must be numeric or logical> iqr ({1, 2})
+%!error <iqr: function called with too many inputs> iqr (1, 2, 3)
+%!error <iqr: X must be a numeric array> iqr (['A'; 'B'])
+%!error <iqr: X must be a numeric array> iqr ([true; false])
+%!error <iqr: X must be a numeric array> iqr ({1, 2})
 %!error <VECDIM must contain non-repeating> iqr ([1, 2, 3], [1, 2, 1])
 %!error <DIM must be a positive integer> iqr (1, 'A')
 %!error <DIM must be a positive integer> iqr (1, 0)

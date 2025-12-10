@@ -27,31 +27,141 @@
 ## @deftypefn  {} {@var{q} =} prctile (@var{x})
 ## @deftypefnx {} {@var{q} =} prctile (@var{x}, @var{p})
 ## @deftypefnx {} {@var{q} =} prctile (@var{x}, @var{p}, @var{dim})
-## For a sample @var{x}, compute the quantiles, @var{q}, corresponding
-## to the cumulative probability values, @var{p}, in percent.
+## @deftypefnx {} {@var{q} =} prctile (@var{x}, @var{p}, @var{vecdim})
+## @deftypefnx {} {@var{q} =} prctile (@var{x}, @var{p}, "all")
+## @deftypefnx {} {@var{q} =} prctile (@var{x}, @var{p}, @dots{}, @var{method})
+## Compute the percentiles of the input data @var{x}.
 ##
-## If @var{x} is a matrix, compute the percentiles for each column and return
-## them in a matrix, such that the i-th row of @var{q} contains the
-## @var{p}(i)th percentiles of each column of @var{x}.
+## If @var{x} is a vector, then @code{prctile (@var{x})} computes the
+## percentiles specified by @var{p} of the data in @var{x}.
 ##
-## If @var{p} is unspecified, return the quantiles for @code{[0 25 50 75 100]}.
+## If @var{x} is a matrix, then @code{prctile (@var{x})} returns a matrix such
+## that the i-th row of @var{q} contains the @var{p}(i)th percentiles of each
+## column of @var{x}.
 ##
-## The optional argument @var{dim} determines the dimension along which the
-## percentiles are calculated.  If @var{dim} is omitted it defaults to the
-## first non-singleton dimension.
+## If @var{x} is an array, then @code{prctile (@var{x})} computes the
+## percentiles specified by @var{p} along the first non-singleton dimension of
+## @var{x}.
 ##
-## Programming Note: All non-numeric values (NaNs) of @var{x} are ignored.
+## The data in @var{x} must be numeric and any NaN values are ignored.  The size
+## of @var{q} is equal to the size of @var{x} except for the operating
+## dimension, which equals to the number of quantiles specified by @var{p}.
+##
+## @var{p} is a numeric vector specifying the percentiles to be computed.  All
+## elements of @var{p} must be in the range from 0 to 100.  If @var{p} is
+## unspecified, return the percentiles for @code{[0 25 50 75 100]}.
+##
+## The optional input @var{dim} specifies the dimension to operate on and must
+## be a positive integer.  Specifying any singleton dimension of @var{x},
+## including any dimension exceeding @code{ndims (@var{x})}, will return N
+## copies of @var{x} along the operating dimension, where N is the number of
+## specified percentiles.
+##
+## Specifying multiple dimensions with input @var{vecdim}, a vector of
+## non-repeating dimensions, will operate along the array slice defined by
+## @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+## equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
+## greater than @code{ndims (@var{x})} is ignored.  If all dimensions in
+## @var{vecdim} are greater than @code{ndims (@var{x})}, then @code{quantile}
+## will return N copies of @var{x} along the smallest dimension in @var{vecdim}.
+##
+## Specifying the dimension as @qcode{"all"} will cause @code{iqr} to operate
+## on all elements of @var{x}, and is equivalent to @code{iqr (@var{x}(:))}.
+##
+## The fourth input argument, @var{methods}, determines the method to calculate
+## the percentiles specified by @var{p}.  The methods available to calculate
+## sample percentiles are the nine methods used by R
+## (@url{https://www.r-project.org/}) and can be specified by the corresponding
+## integer value.  The default value is @w{@var{method} = 5}.
+##
+## Discontinuous sample quantile methods 1, 2, and 3
+##
+## @enumerate 1
+## @item Method 1: Inverse of empirical distribution function.
+##
+## @item Method 2: Similar to method 1 but with averaging at discontinuities.
+##
+## @item Method 3: SAS definition: nearest even order statistic.
+## @end enumerate
+##
+## Continuous sample quantile methods 4 through 9, where
+## @tex
+## $p(k)$
+## @end tex
+## @ifnottex
+## @var{p}(k)
+## @end ifnottex
+## is the linear
+## interpolation function respecting each method's representative cdf.
+##
+## @enumerate 4
+## @item Method 4:
+## @tex
+## $p(k) = k / N$.
+## @end tex
+## @ifnottex
+## @var{p}(k) = k / N.
+## @end ifnottex
+## That is, linear interpolation of the empirical cdf, where @math{N} is the
+## length of @var{P}.
+##
+## @item Method 5:
+## @tex
+## $p(k) = (k - 0.5) / N$.
+## @end tex
+## @ifnottex
+## @var{p}(k) = (k - 0.5) / N.
+## @end ifnottex
+## That is, a piecewise linear function where the knots are the values midway
+## through the steps of the empirical cdf.
+##
+## @item Method 6:
+## @tex
+## $p(k) = k / (N + 1)$.
+## @end tex
+## @ifnottex
+## @var{p}(k) = k / (N + 1).
+## @end ifnottex
+##
+## @item Method 7:
+## @tex
+## $p(k) = (k - 1) / (N - 1)$.
+## @end tex
+## @ifnottex
+## @var{p}(k) = (k - 1) / (N - 1).
+## @end ifnottex
+##
+## @item Method 8:
+## @tex
+## $p(k) = (k - 1/3) / (N + 1/3)$.
+## @end tex
+## @ifnottex
+## @var{p}(k) = (k - 1/3) / (N + 1/3).
+## @end ifnottex
+## The resulting quantile estimates are approximately median-unbiased
+## regardless of the distribution of @var{x}.
+##
+## @item Method 9:
+## @tex
+## $p(k) = (k - 3/8) / (N + 1/4)$.
+## @end tex
+## @ifnottex
+## @var{p}(k) = (k - 3/8) / (N + 1/4).
+## @end ifnottex
+## The resulting quantile estimates are approximately unbiased for the
+## expected order statistics if @var{x} is normally distributed.
+## @end enumerate
 ## @seealso{quantile}
 ## @end deftypefn
 
-function q = prctile (x, p = [], dim)
+function q = prctile (x, p = [], dim, method)
 
   if (nargin < 1)
     print_usage ();
   endif
 
-  if (! (isnumeric (x) || islogical (x)))
-    error ("prctile: X must be a numeric or logical array");
+  if (! (isnumeric (x)))
+    error ("prctile: X must be a numeric array");
   endif
 
   if (isempty (p))
@@ -62,21 +172,20 @@ function q = prctile (x, p = [], dim)
     error ("prctile: P must be a numeric vector");
   endif
 
-  nd = ndims (x);
-  sz = size (x);
-  if (nargin < 3)
-    ## Find the first non-singleton dimension.
-    (dim = find (sz > 1, 1)) || (dim = 1);
-  else
-    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
-      error ("quantile: DIM must be a positive integer");
-    endif
+  if (any (p < 0 | p > 100))
+    error ("prctile: P values must range from 0 to 100");
   endif
 
   ## Convert from percent to decimal.
   p /= 100;
 
-  q = quantile (x, p, dim);
+  if (nargin < 3)
+    q = quantile (x, p);
+  elseif (nargin < 4)
+    q = quantile (x, p, dim);
+  elseif (nargin < 5)
+    q = quantile (x, p, dim, method);
+  endif
 
 endfunction
 
@@ -182,8 +291,9 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> prctile ()
-%!error <must be a numeric or logical> prctile (['A'; 'B'], 10)
-%!error prctile (1:10, [true, false])
-%!error prctile (1:10, ones (2,2))
-%!error prctile (1, 1, 1.5)
-%!error prctile (1, 1, 0)
+%!error <prctile: X must be a numeric array> prctile (['A'; 'B'], 10)
+%!error <prctile: X must be a numeric array> prctile ([true; false], 10)
+%!error <prctile: X must be a numeric array> prctile ({1, 2, 3}, 10)
+%!error <prctile: P must be a numeric vector> prctile (1:10, [true, false])
+%!error <prctile: P must be a numeric vector> prctile (1:10, ones (2, 3))
+%!error <prctile: P values must range from 0 to 100> prctile (1:10, -20)

@@ -27,7 +27,9 @@
 ## @deftypefn  {} {@var{y} =} kurtosis (@var{x})
 ## @deftypefnx {} {@var{y} =} kurtosis (@var{x}, @var{flag})
 ## @deftypefnx {} {@var{y} =} kurtosis (@var{x}, @var{flag}, @var{dim})
-## Compute the sample kurtosis of the elements of @var{x}.
+## @deftypefnx {} {@var{y} =} kurtosis (@var{x}, @var{flag}, @var{vecdim})
+## @deftypefnx {} {@var{y} =} kurtosis (@var{x}, @var{flag}, "all")
+## Compute the sample kurtosis of the input data @var{x}.
 ##
 ## The sample kurtosis is defined as
 ## @tex
@@ -79,9 +81,33 @@
 ## second and fourth central moments by their unbiased versions.  It is an
 ## unbiased estimate of the population kurtosis for normal populations.
 ##
-## If @var{x} is a matrix, or more generally a multi-dimensional array, return
-## the kurtosis along the first non-singleton dimension.  If the optional
-## @var{dim} argument is given, operate along this dimension.
+## If @var{x} is a vector, then @code{kurtosis (@var{x})} computes the kurtosis
+## of the data in @var{x}.
+##
+## If @var{x} is a matrix, then @code{kurtosis (@var{x})} returns a row vector
+## with each element containing the kurtosis of the data of the corresponding
+## column in @var{x}.
+##
+## If @var{x} is an array, then @code{kurtosis (@var{x})} computes the kurtosis
+## of the data along the first non-singleton dimension of @var{x}.
+##
+## The data in @var{x} must be numeric and any NaN values are ignored.
+## The size of @var{y} is equal to the size of @var{x} except for the operating
+## dimension, which becomes 1.
+##
+## The optional input @var{dim} specifies the dimension to operate on and must
+## be a positive integer.  Specifying any singleton dimension of @var{x},
+## including any dimension exceeding @code{ndims (@var{x})}, will return
+## @code{@var{x}}.
+##
+## Specifying the dimensions as @var{vecdim}, a vector of non-repeating
+## dimensions, will return the mean square over the array slice defined by
+## @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+## equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
+## greater than @code{ndims (@var{x})} is ignored.
+##
+## Specifying the dimension as @qcode{"all"} will cause @code{meansq} to operate
+## on all elements of @var{x}, and is equivalent to @code{meansq (@var{x}(:))}.
 ##
 ## @seealso{var, skewness, moment}
 ## @end deftypefn
@@ -92,8 +118,8 @@ function y = kurtosis (x, flag, dim)
     print_usage ();
   endif
 
-  if (! (isnumeric (x) || islogical (x)))
-    error ("kurtosis: X must be a numeric or logical array");
+  if (! (isnumeric (x)))
+    error ("kurtosis: X must be a numeric array");
   endif
 
   if (nargin < 2 || isempty (flag))
@@ -104,35 +130,26 @@ function y = kurtosis (x, flag, dim)
     endif
   endif
 
-  nd = ndims (x);
-  sz = size (x);
   if (nargin < 3)
-    ## Find the first non-singleton dimension.
-    (dim = find (sz > 1, 1)) || (dim = 1);
-  else
-    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
-      error ("kurtosis: DIM must be an integer and a valid dimension");
-    endif
+    (dim = find (size (x) != 1, 1)) || (dim = 1);
   endif
 
-  n = size (x, dim);
-  sz(dim) = 1;
+  n = sum (x == x, dim, "omitnan");
 
-  x = center (x, dim);   # center also promotes integer, logical to double
-  v = var (x, 1, dim);   # normalize with 1/N
-  y = sum (x .^ 4, dim);
+  x = center (x, dim, "omitnan");
+  v = var (x, 1, dim, "omitnan");   # normalize with 1/N
+  y = sum (x .^ 4, dim, "omitnan");
+  y = y ./ (n .* v .^ 2);
   idx = (v != 0);
-  y(idx) = y(idx) ./ (n * v(idx) .^ 2);
   y(! idx) = NaN;
 
   ## Apply bias correction to the second and fourth central sample moment
   if (flag == 0)
-    if (n > 3)
-      C = (n - 1) / ((n - 2) * (n - 3));
-      y = 3 + C * ((n + 1) * y - 3 * (n - 1));
-    else
-      y(:) = NaN;
-    endif
+    idx = n > 3;
+    nn = n(idx);
+    C = (nn - 1) ./ ((nn - 2) .* (nn - 3));
+    y(idx) = 3 + C .* ((nn + 1) .* y(idx) - 3 .* (nn - 1));
+    y(! idx) = NaN;
   endif
 
 endfunction
@@ -158,6 +175,35 @@ endfunction
 %!assert (kurtosis (single ([1:5 10])), single (2.9786513), eps ("single"))
 %!assert (kurtosis (single ([1 2]), 0), single (NaN))
 
+## Test dim
+%!test
+%! x(:,:,1) = [0.5377, 0.3188, 3.5784; 1.8339, -1.3077, 2.7694; ...
+%!             -2.2588, -0.4336, -1.3499; 0.8622, 0.3426, 3.0349];
+%! x(:,:,2) = [0.7254, -0.1241, 0.6715; -0.0631, 1.4897, -1.2075; ...
+%!             0.7147 1.4090 0.7172; -0.2050, 1.4172, 1.6302];
+%! y = kurtosis (x);
+%! assert (y(:,:,1), [2.1350, 1.7060, 2.2789], 1e-4);
+%! assert (y(:,:,2), [1.0542, 2.3278, 2.0996], 1e-4);
+%! y = kurtosis (x, 1, 2);
+%! assert (y(:,:,1), [1.5; 1.5; 1.5; 1.5], 8 * eps);
+%! assert (y(:,:,2), [1.5; 1.5; 1.5; 1.5], 8 * eps);
+%! y = kurtosis (x, 1, 3);
+%! assert (y, ones (4, 3), 8 * eps);
+
+## Test "all" and vecdim
+%!test
+%! x(:,:,1) = [0.5377, 0.3188, 3.5784; 1.8339, -1.3077, 2.7694; ...
+%!             -2.2588, -0.4336, -1.3499; 0.8622, 0.3426, 3.0349];
+%! x(:,:,2) = [0.7254, -0.1241, 0.6715; -0.0631, 1.4897, -1.2075; ...
+%!             0.7147 1.4090 0.7172; -0.2050, 1.4172, 1.6302];
+%! y = kurtosis (x, 1, "all");
+%! assert (y, 2.8029, 1e-4);
+%! y = kurtosis (x, 1, [1, 2]);
+%! assert (y(:,:,1), 1.9345, 1e-4);
+%! assert (y(:,:,2), 2.5877, 1e-4);
+%! y = kurtosis (x, 1, [2, 3]);
+%! assert (y, [3.8457; 1.4306; 1.7094; 2.3378], 1e-4);
+
 ## Verify no warnings
 %!test
 %! lastwarn ("");  # clear last warning
@@ -166,9 +212,9 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> kurtosis ()
-%!error <X must be a numeric or logical array> kurtosis (['A'; 'B'])
+%!error <kurtosis: function called with too many inputs> kurtosis (1, 2, 3, 4)
+%!error <kurtosis: X must be a numeric array> kurtosis (['A'; 'B'])
+%!error <kurtosis: X must be a numeric array> kurtosis ([true; false])
+%!error <kurtosis: X must be a numeric array> kurtosis ({1, 2})
 %!error <FLAG must be 0 or 1> kurtosis (1, 2)
 %!error <FLAG must be 0 or 1> kurtosis (1, [1 0])
-%!error <DIM must be an integer> kurtosis (1, [], ones (2,2))
-%!error <DIM must be an integer> kurtosis (1, [], 1.5)
-%!error <DIM must be .* a valid dimension> kurtosis (1, [], 0)

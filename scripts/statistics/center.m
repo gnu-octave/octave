@@ -26,13 +26,45 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{y} =} center (@var{x})
 ## @deftypefnx {} {@var{y} =} center (@var{x}, @var{dim})
+## @deftypefnx {} {@var{y} =} center (@var{x}, @var{vecdim})
+## @deftypefnx {} {@var{y} =} center (@var{x}, "all")
+## @deftypefnx {} {@var{y} =} center (@dots{}, @var{nanflag})
 ## Center data by subtracting its mean.
 ##
-## If @var{x} is a vector, subtract its mean.
+## If @var{x} is a vector, then @code{center (@var{x})} computes the centered
+## data by subtracting the mean of @var{x} from each element of @var{x}.
 ##
-## If @var{x} is a matrix, do the above for each column.
+## If @var{x} is a matrix, then @code{center (@var{x})} returns a row vector
+## with each element containing the centered data for each column of @var{x}.
 ##
-## If the optional argument @var{dim} is given, operate along this dimension.
+## If @var{x} is an array, then @code{center (@var{x})} centers the data alonng
+## the first non-singleton dimension of @var{x}.
+##
+## The data in @var{x} must be numeric.  The size of @var{y} is equal to the
+## size of @var{x}.
+##
+## The optional input @var{dim} specifies the dimension to operate on and must
+## be a positive integer.  Specifying any singleton dimension of @var{x},
+## including any dimension exceeding @code{ndims (@var{x})}, will return
+## @code{@var{x}}.
+##
+## Specifying the dimensions as @var{vecdim}, a vector of non-repeating
+## dimensions, will return the centered data by calculating the mean over the
+## array slice defined by @var{vecdim}.  If @var{vecdim} indexes all dimensions
+## of @var{x}, then it is equivalent to the option @qcode{"all"}.  Any dimension
+## in @var{vecdim} greater than @code{ndims (@var{x})} is ignored.
+##
+## Specifying the dimension as @qcode{"all"} will cause @code{center} to compute
+## the mean of all elements of @var{x}, and is equivalent to
+## @code{center (@var{x}(:))}.
+##
+## The optional variable @var{nanflag} specifies whether to include or exclude
+## NaN values from the calculation of the mean using any of the previously
+## specified input argument combinations.  The default value for @var{nanflag}
+## is @qcode{"includenan"} which keeps NaN values in the calculation.  To
+## exclude NaN values set the value of @var{nanflag} to @qcode{"omitnan"}.  Any
+## NaN value along the operating dimensions will result to all corresponding
+## element in @var{y} being NaN.
 ##
 ## Programming Note: @code{center} has obvious application for normalizing
 ## statistical data.  It is also useful for improving the precision of general
@@ -42,58 +74,63 @@
 ## @seealso{zscore}
 ## @end deftypefn
 
-function y = center (x, dim)
+function y = center (x, varargin)
 
-  if (nargin < 1)
+  if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
-  if (! (isnumeric (x) || islogical (x)))
-    error ("center: X must be a numeric or logical array");
+  if (! (isnumeric (x)))
+    error ("center: X must be a numeric array");
   endif
 
-  if (isinteger (x))
-    x = double (x);
-  endif
-
-  nd = ndims (x);
-  sz = size (x);
-  if (nargin != 2)
+  if (nargin < 2)
     ## Find the first non-singleton dimension.
-    (dim = find (sz > 1, 1)) || (dim = 1);
+    (dim = find (size (x) != 1, 1)) || (dim = 1);
+    nanflag = "includenan";
   else
-    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
-      error ("center: DIM must be an integer and a valid dimension");
+    if (any (strcmpi (varargin{1}, {"omitnan", "includenan"})))
+      (dim = find (size (x) != 1, 1)) || (dim = 1);
+      nanflag = varargin{1};
+    else
+      dim = varargin{1};
+      if (nargin > 2)
+        nanflag = varargin{2};
+        if (! any (strcmpi (nanflag, {"omitnan", "includenan"})))
+          error ("center: NANFLAG must be either 'omitnan' or 'includenan'");
+        endif
+      else
+        nanflag = "includenan";
+      endif
     endif
   endif
 
-  n = size (x, dim);
-
-  if (n == 0)
-    y = x;
-  else
-    ## FIXME: Use bsxfun, rather than broadcasting, until broadcasting
-    ##        supports diagonal and sparse matrices (Bugs #41441, #35787).
-    y = bsxfun (@minus, x, mean (x, dim));
-    ## y = x - mean (x, dim);   # automatic broadcasting
+  ## Expand diagonal to full matrix before computation, since broadcasting
+  ## is not supported for diagonal matrices (Bug #35787).
+  if (! issparse (x) && isdiag (x))
+    x = full (x);
   endif
+
+  y = x - mean (x, dim, nanflag);
 
 endfunction
 
 
 %!assert (center ([1,2,3]), [-1,0,1])
 %!assert (center (single ([1,2,3])), single ([-1,0,1]))
-%!assert (center (int8 ([1,2,3])), [-1,0,1])
-%!assert (center (logical ([1, 0, 0, 1])), [0.5, -0.5, -0.5, 0.5])
+%!assert (center (int8 ([1,2,3])), int8([-1,0,1]))
 %!assert (center (ones (3,2,0,2)), zeros (3,2,0,2))
 %!assert (center (ones (3,2,0,2, "single")), zeros (3,2,0,2, "single"))
 %!assert (center (magic (3)), [3,-4,1;-2,0,2;-1,4,-3])
 %!assert (center ([1 2 3; 6 5 4], 2), [-1 0 1; 1 0 -1])
 %!assert (center (1, 3), 0)
 
+%!assert (center (repmat ([1, 2, 3], 5, 1)), zeros (5, 3))
+%!assert (center (repmat ([1, 2, 3], 5, 1), 2), repmat ([-1, 0, 1], 5, 1))
+
 ## Test input validation
 %!error <Invalid call> center ()
-%!error <X must be a numeric or logical> center ('foo')
-%!error <DIM must be an integer> center (1, ones (2,2))
-%!error <DIM must be an integer> center (1, 1.5)
-%!error <DIM must be .* a valid dimension> center (1, 0)
+%!error <Invalid call> center (1, 2, 3, 4)
+%!error <center: X must be a numeric array> center (['A'; 'B'])
+%!error <center: X must be a numeric array> center ([true; false])
+%!error <center: X must be a numeric array> center ({1, 2})

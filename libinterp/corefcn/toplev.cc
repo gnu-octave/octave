@@ -269,12 +269,6 @@ Windows systems.
 
   std::string cmd_str = args(0).xstring_value ("system: first argument must be a string");
 
-#if defined (OCTAVE_USE_WINDOWS_API)
-  // Work around weird double-quote handling on Windows systems.
-  if (type == et_sync)
-    cmd_str = '"' + cmd_str + '"';
-#endif
-
   unwind_action restore_mask
   ([] (void *mask) { restore_signal_mask (mask); }, get_signal_mask ());
 

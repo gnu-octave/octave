@@ -31,6 +31,13 @@
 #include <locale>
 #include <codecvt>
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  include <iostream>
+
+#  include <windows.h>
+#  include <wchar.h>
+#endif
+
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
@@ -43,9 +50,6 @@
 #include "unsetenv-wrapper.h"
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-#  include <windows.h>
-#  include <wchar.h>
-
 #  include "filepos-wrappers.h"
 #  include "oct-hash.h"
 #  include "oct-locbuf.h"
@@ -59,9 +63,68 @@ int
 system (const std::string& cmd_str)
 {
 #if defined (OCTAVE_USE_WINDOWS_API)
-  const std::wstring wcmd_str =  u8_to_wstring (cmd_str);
 
-  return _wsystem (wcmd_str.c_str ());
+  // On Windows (non-Cygwin), child processes need to be created with a new
+  // console to avoid desynchronization of the console that is used by the
+  // command window widget of the GUI.
+
+  // Capture output using pipe.
+  HANDLE h_read;
+  HANDLE h_write;
+  SECURITY_ATTRIBUTES sa {};
+  sa.nLength = sizeof (sa);
+  sa.bInheritHandle = TRUE;  // child can inherit
+  sa.lpSecurityDescriptor = nullptr;
+
+  if (! CreatePipe (&h_read, &h_write, &sa, 0))
+    return GetLastError ();
+
+  // avoid inheriting read end of the pipe
+  SetHandleInformation (h_read, HANDLE_FLAG_INHERIT, 0);
+
+  // Create process with new console.
+  std::wstring wcmd_str =  u8_to_wstring (cmd_str);
+  STARTUPINFOW si {};
+  si.cb = sizeof (si);
+  si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
+  si.wShowWindow = SW_HIDE;  // avoid flashing black window
+  si.hStdOutput = h_write;
+  si.hStdError = h_write;
+  si.hStdInput = GetStdHandle (STD_INPUT_HANDLE);
+  PROCESS_INFORMATION pi {};
+
+  BOOL ok = CreateProcessW (nullptr, &wcmd_str[0], nullptr, nullptr, TRUE,
+                            CREATE_NEW_CONSOLE, nullptr, nullptr, &si, &pi);
+
+  CloseHandle (h_write);
+
+  if (! ok)
+    {
+      CloseHandle (h_read);
+      return GetLastError ();
+    }
+
+  // read from pipe (in chunks)
+  char buffer[4096];
+  DWORD bytes_read;
+  while (ReadFile (h_read, buffer, sizeof (buffer)-1, &bytes_read, nullptr)
+         && bytes_read > 0)
+    {
+      buffer[bytes_read] = '\0';
+      std::cout << buffer;
+    }
+
+  WaitForSingleObject (pi.hProcess, INFINITE);
+
+  DWORD ret = 0;
+  GetExitCodeProcess (pi.hProcess, &ret);
+
+  CloseHandle (pi.hProcess);
+  CloseHandle (pi.hThread);
+  CloseHandle (h_read);
+
+  return ret;
+
 #else
   return ::system (cmd_str.c_str ());
 #endif

@@ -430,13 +430,13 @@ and have been removed from Octave 5.
 
 ### Old release news
 
-- [Octave 4.4.x](etc/NEWS.4)
-- [Octave 4.2.x](etc/NEWS.4)
-- [Octave 4.0.x](etc/NEWS.4)
-- [Octave 3.8.x](etc/NEWS.3)
-- [Octave 3.6.x](etc/NEWS.3)
-- [Octave 3.4.x](etc/NEWS.3)
-- [Octave 3.2.x](etc/NEWS.3)
-- [Octave 3.0.x](etc/NEWS.3)
-- [Octave 2.x](etc/NEWS.2)
-- [Octave 1.x](etc/NEWS.1)
+- [Octave 4.4.x](NEWS.4)
+- [Octave 4.2.x](NEWS.4)
+- [Octave 4.0.x](NEWS.4)
+- [Octave 3.8.x](NEWS.3)
+- [Octave 3.6.x](NEWS.3)
+- [Octave 3.4.x](NEWS.3)
+- [Octave 3.2.x](NEWS.3)
+- [Octave 3.0.x](NEWS.3)
+- [Octave 2.x](NEWS.2)
+- [Octave 1.x](NEWS.1)

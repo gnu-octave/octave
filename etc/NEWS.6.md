@@ -535,8 +535,8 @@ and have been removed from Octave 6.
 
 ### Old release news
 
-- [Octave 5.x](etc/NEWS.5.md)
-- [Octave 4.x](etc/NEWS.4)
-- [Octave 3.x](etc/NEWS.3)
-- [Octave 2.x](etc/NEWS.2)
-- [Octave 1.x](etc/NEWS.1)
+- [Octave 5.x](NEWS.5.md)
+- [Octave 4.x](NEWS.4)
+- [Octave 3.x](NEWS.3)
+- [Octave 2.x](NEWS.2)
+- [Octave 1.x](NEWS.1)

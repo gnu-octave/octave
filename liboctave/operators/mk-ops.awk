@@ -579,14 +579,22 @@ function emit_bool_op_decls_3 (result_type, lhs_type, rhs_type)
   emit_bin_op_decl(result_type, "mx_el_or_not", lhs_type, rhs_type);
 }
 
+function emit_bool_op_decls_4 (result_type_1, result_type_2, lhs_type, rhs_type)
+{
+  emit_bin_op_decl(result_type_1, "mx_el_and", lhs_type, rhs_type);
+  emit_bin_op_decl(result_type_2, "mx_el_or", lhs_type, rhs_type);
+}
+
 function emit_bool_op_decls (sparse, lhs_class, rhs_class, lhs_type, rhs_type)
 {
   if (sparse)
     {
-      if ((lhs_class == "M" && rhs_class == "SM") \
-          || (lhs_class == "SM" && (rhs_class == "M" || rhs_class == "S" || rhs_class == "SM")) \
-          || (lhs_class == "S" && rhs_class == "SM"))
+      if (lhs_class == "SM" && rhs_class == "SM")
         emit_bool_op_decls_1("SparseBoolMatrix", lhs_type, rhs_type);
+
+      else if ((lhs_class == "SM" && (rhs_class == "S" || rhs_class == "M")) \
+               || ((lhs_class == "S" || lhs_class == "M") && rhs_class == "SM"))
+        emit_bool_op_decls_4("SparseBoolMatrix", "boolMatrix", lhs_type, rhs_type);
     }
   else
     {

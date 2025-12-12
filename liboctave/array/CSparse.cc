@@ -8698,6 +8698,221 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
 %!error <operator /: nonconformant arguments \(op1 is 3x1, op2 is 4x3\)> ...
 %!       sparse ([1i; 2i; 3i]) / ones (4, 3)
 
+## Testing broadcasting for comparison and boolean operators
+## for sparse matrix to matrix and matrix to sparse matrix
+%!assert (sparse ([1, 1i, 0]) == [0, 1, 1]*i, sparse (logical ([0, 1, 0])))
+%!assert (sparse ([1; 1i; 0]) == [0, 1, 1]*i, sparse ([1; 1i; 0] == [0, 1, 1]*i))
+%!assert (sparse ([1, 1i, 0]) == [0; 1; 1; 0]*i, sparse ([1, 1i, 0] == [0; 1; 1; 0]*i))
+%!assert (sparse ([1, 1i, 0]) == [0, 1, 1; 0, 1, 1]*i, ...
+%!        sparse (logical ([0, 1, 0; 0, 1, 0])))
+%!assert (sparse ([1; 1i; 0]) == [0, 1; 1, 1; 0, 1]*i, ...
+%!        sparse (logical ([0, 0; 1, 1; 1, 0])))
+%!assert ([1i, 0, 1] == sparse ([1, 1, 0]*i), sparse (logical ([1, 0, 0])))
+%!assert ([0, 1, 1i] == sparse ([1; 1; 0]*i), sparse ([0, 1, 1i] == [1; 1; 0]*i))
+%!assert ([0; 1; 1i; 0] == sparse ([1, 1, 0]*i), sparse ([0; 1; 1i; 0] == [1, 1, 0]*i))
+%!assert ([0, 1, 1i; 0+i, 1, 1] == sparse ([1, 1, 0]+i), ...
+%!        sparse (logical ([0, 0, 1; 0, 0, 0])))
+%!assert ([0, 1; 1, 1; 0, 1]+i == sparse ([1; 1; 0]+i), ...
+%!        sparse (logical ([0, 1; 1, 1; 1, 0])))
+
+%!assert (sparse ([1, 1i, 0]) != [0, 1, 1]*i, sparse (logical ([1, 0, 1])))
+%!assert (sparse ([1; 1i; 0]) != [0, 1, 1]*i, sparse ([1; 1i; 0] != [0, 1, 1]*i))
+%!assert (sparse ([1, 1i, 0]) != [0; 1; 1; 0]*i, sparse ([1, 1i, 0] != [0; 1; 1; 0]*i))
+%!assert (sparse ([1, 1i, 0]) != [0, 1, 1; 0, 1, 1]*i, ...
+%!        sparse (logical ([1, 0, 1; 1, 0, 1])))
+%!assert (sparse ([1; 1i; 0]) != [0, 1; 1, 1; 0, 1]*i, ...
+%!        sparse (logical ([1, 1; 0, 0; 0, 1])))
+%!assert ([1i, 0, 1] != sparse ([1, 1, 0]*i), sparse (logical ([0, 1, 1])))
+%!assert ([0, 1, 1i] != sparse ([1; 1; 0]*i), sparse ([0, 1, 1i] != [1; 1; 0]*i))
+%!assert ([0; 1; 1i; 0] != sparse ([1, 1, 0]*i), sparse ([0; 1; 1i; 0] != [1, 1, 0]*i))
+%!assert ([0, 1, 1i; 0+i, 1, 1] != sparse ([1, 1, 0]+i), ...
+%!        sparse (logical ([1, 1, 0; 1, 1, 1])))
+%!assert ([0, 1; 1, 1; 0, 1]+i != sparse ([1; 1; 0]+i), ...
+%!        sparse (logical ([1, 0; 0, 0; 0, 1])))
+
+%!assert (sparse ([1, 1i, 0]) <= [0, 1, 1]*i, sparse (logical ([0, 1, 1])))
+%!assert (sparse ([1; 1i; 0]) <= [0, 1, 1]*i, sparse ([1; 1; 0] <= [0, 1, 1]))
+%!assert (sparse ([1, 1i, 0]) <= [0; 1; 1; 0]*i, sparse ([1, 1i, 0] <= [0; 1; 1; 0]*i))
+%!assert (sparse ([1, 1i, 0]) <= [0, 1, 1; 0, 1, 1]*i, ...
+%!        sparse (logical ([0, 1, 1; 0, 1, 1])))
+%!assert (sparse ([1; 1i; 0]) <= [0, 1; 1, 1; 0, 1]*i, ...
+%!        sparse (logical ([0, 1; 1, 1; 1, 1])))
+%!assert ([1i, 0, 1] <= sparse ([1, 1, 0]*i), sparse (logical ([1, 1, 0])))
+%!assert ([0, 1, 1i] <= sparse ([1; 1; 0]*i), sparse ([0, 1i, 1] <= [1; 1; 0]*i))
+%!assert ([0; 1; 1i; 0] <= sparse ([1, 1, 0]*i), sparse ([0; 1; 1i; 0] <= [1, 1, 0]*i))
+%!assert ([0, 1, 1i; 0+i, 1, 1] <= sparse ([1, 1, 0]+i), ...
+%!        sparse (logical ([1, 1, 1; 1, 1, 1])))
+%!assert ([0, 1; 1, 1; 0, 1]+i <= sparse ([1; 1; 0]+i), ...
+%!        sparse (logical ([1, 1; 1, 1; 1, 0])))
+
+%!assert (sparse ([1, 1i, 0]) >= [0, 1, 1]*i, sparse (logical ([1, 1, 0])))
+%!assert (sparse ([1; 1i; 0]) >= [0, 1, 1]*i, sparse ([1; 1i; 0] >= [0, 1, 1]*i))
+%!assert (sparse ([1, 1i, 0]) >= [0; 1; 1; 0]*i, sparse ([1, 1i, 0] >= [0; 1; 1; 0]*i))
+%!assert (sparse ([1, 1i, 0]) >= [0, 1, 1; 0, 1, 1]*i, ...
+%!        sparse (logical ([1, 1, 0; 1, 1, 0])))
+%!assert (sparse ([1; 1i; 0]) >= [0, 1; 1, 1; 0, 1]*i, ...
+%!        sparse (logical ([1, 0; 1, 1; 1, 0])))
+%!assert ([1i, 0, 1] >= sparse ([1, 1, 0]*i), sparse (logical ([1, 0, 1])))
+%!assert ([0, 1, 1i] >= sparse ([1; 1; 0]*i), sparse ([0, 1, 1i] >= [1; 1; 0]*i))
+%!assert ([0; 1; 1i; 0] >= sparse ([1, 1, 0]*i), sparse ([0; 1; 1i; 0] >= [1, 1, 0]*i))
+%!assert ([0, 1, 1i; 0+i, 1, 1] >= sparse ([1, 1, 0]+i), ...
+%!        sparse (logical ([0, 0, 1; 0, 0, 0])))
+%!assert ([0, 1; 1, 1; 0, 1]+i >= sparse ([1; 1; 0]+i), ...
+%!        sparse (logical ([0, 1; 1, 1; 1, 1])))
+
+%!assert (sparse ([1, 1i, 0]) < [0, 1, 1]*i, sparse (logical ([0, 0, 1])))
+%!assert (sparse ([1; 1i; 0]) < [0, 1, 1]*i, sparse ([1; 1i; 0] < [0, 1, 1]*i))
+%!assert (sparse ([1, 1i, 0]) < [0; 1; 1; 0]*i, sparse ([1, 1i, 0] < [0; 1; 1; 0]*i))
+%!assert (sparse ([1, 1i, 0]) < [0, 1, 1; 0, 1, 1]*i, ...
+%!        sparse (logical ([0, 0, 1; 0, 0, 1])))
+%!assert (sparse ([1; 1i; 0]) < [0, 1; 1, 1; 0, 1]*i, ...
+%!        sparse (logical ([0, 1; 0, 0; 0, 1])))
+%!assert ([1i, 0, 1] < sparse ([1, 1, 0]*i), sparse (logical ([0, 1, 0])))
+%!assert ([0, 1, 1i] < sparse ([1; 1; 0]*i), sparse ([0, 1, 1i] < [1; 1; 0]*i))
+%!assert ([0; 1; 1i; 0] < sparse ([1, 1, 0]*i), sparse ([0; 1; 1i; 0] < [1, 1, 0]*i))
+%!assert ([0, 1, 1i; 0+i, 1, 1] < sparse ([1, 1, 0]+i), ...
+%!        sparse (logical ([1, 1, 0; 1, 1, 1])))
+%!assert ([0, 1; 1, 1; 0, 1]+i < sparse ([1; 1; 0]+i), ...
+%!        sparse (logical ([1, 0; 0, 0; 0, 0])))
+
+%!assert (sparse ([1, 1i, 0]) > [0, 1, 1]*i, sparse (logical ([1, 0, 0])))
+%!assert (sparse ([1; 1i; 0]) > [0, 1, 1]*i, sparse ([1; 1i; 0] > [0, 1, 1]*i))
+%!assert (sparse ([1, 1i, 0]) > [0; 1; 1; 0]*i, sparse ([1, 1i, 0] > [0; 1; 1; 0]*i))
+%!assert (sparse ([1, 1i, 0]) > [0, 1, 1; 0, 1, 1]*i, ...
+%!        sparse (logical ([1, 0, 0; 1, 0, 0])))
+%!assert (sparse ([1; 1i; 0]) > [0, 1; 1, 1; 0, 1]*i, ...
+%!        sparse (logical ([1, 0; 0, 0; 0, 0])))
+%!assert ([1i, 0, 1] > sparse ([1, 1, 0]*i), sparse (logical ([0, 0, 1])))
+%!assert ([0, 1, 1i] > sparse ([1; 1; 0]*i), sparse ([0, 1, 1i] > [1; 1; 0]*i))
+%!assert ([0; 1; 1i; 0] > sparse ([1, 1, 0]*i), sparse ([0; 1; 1i; 0] > [1, 1, 0]*i))
+%!assert ([0, 1, 1i; 0+i, 1, 1] > sparse ([1, 1, 0]+i), ...
+%!        sparse (logical ([0, 0, 0; 0, 0, 0])))
+%!assert ([0, 1; 1, 1; 0, 1]+i > sparse ([1; 1; 0]+i), ...
+%!        sparse (logical ([0, 0; 0, 0; 0, 1])))
+
+%!assert (sparse ([1, 1i, 0]) & [0, 1, 1]*i, sparse (logical ([0, 1, 0])))
+%!assert (sparse ([1; 1i; 0]) & [0, 1, 1]*i, sparse ([1; 1i; 0] & [0, 1, 1]*i))
+%!assert (sparse ([1, 1i, 0]) & [0; 1; 1; 0]*i, sparse ([1, 1i, 0] & [0; 1; 1; 0]*i))
+%!assert (sparse ([1, 1i, 0]) & [0, 1, 1; 0, 1, 1]*i, ...
+%!        sparse (logical ([0, 1, 0; 0, 1, 0])))
+%!assert (sparse ([1; 1i; 0]) & [0, 1; 1, 1; 0, 1]*i, ...
+%!        sparse (logical ([0, 1; 1, 1; 0, 0])))
+%!assert ([1i, 0, 1] & sparse ([1, 1, 0]*i), sparse (logical ([1, 0, 0])))
+%!assert ([0, 1, 1i] & sparse ([1; 1; 0]*i), sparse ([0, 1, 1i] & [1; 1; 0]*i))
+%!assert ([0; 1; 1i; 0] & sparse ([1, 1, 0]*i), sparse ([0; 1; 1i; 0] & [1, 1, 0]*i))
+%!assert ([0, 1, 1i; 0+i, 1, 1] & sparse ([1, 1, 0]+i), ...
+%!        sparse (logical ([0, 1, 1; 1, 1, 1])))
+%!assert ([0, 1; 1, 1; 0, 1]+i & sparse ([1; 1; 0]+i), ...
+%!        sparse (logical ([1, 1; 1, 1; 1, 1])))
+
+## Boolean OR operations should return dense logical arrays
+%!assert (sparse ([1, 1i, 0]) | [0, 1, 1]*i, logical ([1, 1, 1]))
+%!assert (sparse ([1; 1i; 0]) | [0, 1, 1]*i, [1; 1i; 0] | [0, 1, 1]*i)
+%!assert (sparse ([1, 1i, 0]) | [0; 1; 1; 0]*i, [1, 1i, 0] | [0; 1; 1; 0]*i)
+%!assert (sparse ([1, 1i, 0]) | [0, 1, 1; 0, 1, 1]*i, logical ([1, 1, 1; 1, 1, 1]))
+%!assert (sparse ([1; 1i; 0]) | [0, 1; 1, 1; 0, 1]*i, logical ([1, 1; 1, 1; 0, 1]))
+%!assert ([1i, 0, 1] | sparse ([1, 1, 0]*i), logical ([1, 1, 1]))
+%!assert ([0, 1, 1i] | sparse ([1; 1; 0]*i), [0, 1, 1i] | [1; 1; 0]*i)
+%!assert ([0; 1; 1i; 0] | sparse ([1, 1, 0]*i), [0; 1; 1i; 0] | [1, 1, 0]*i)
+%!assert ([0, 1, 1i; 0+i, 1, 1] | sparse ([1, 1, 0]+i), logical ([1, 1, 1; 1, 1, 1]))
+%!assert ([0, 1; 1, 1; 0, 1]+i | sparse ([1; 1; 0]+i), logical ([1, 1; 1, 1; 1, 1]))
+
+## Testing broadcasting for comparison and boolean operators
+## for sparse matrix to scalar and scalar to sparse matrix
+%!assert (sparse ([1, 1, 0]*i) == 1i, sparse (logical ([1, 1, 0])))
+%!assert (sparse ([1, 1, 0]*i) != 1i, sparse (logical ([0, 0, 1])))
+%!assert (sparse ([1, 1, 0]*i) <= 1i, sparse (logical ([1, 1, 1])))
+%!assert (sparse ([1, 1, 0]*i) >= 1i, sparse (logical ([1, 1, 0])))
+%!assert (sparse ([1, 1, 0]*i) < 1i, sparse (logical ([0, 0, 1])))
+%!assert (sparse ([1, 1, 0]*i) > 0i, sparse (logical ([1, 1, 0])))
+%!assert (sparse ([1, 1, 0]*i) & 1i, sparse (logical ([1, 1, 0])))
+%!assert (sparse ([1, 1, 0]*i) | 1i, logical ([1, 1, 1]))
+%!assert (sparse ([1, 1, 0]+i) == 1+i, 1+i == sparse ([1, 1, 0]+i))
+%!assert (sparse ([1, 1, 0]+i) != 1+i, 1+i != sparse ([1, 1, 0]+i))
+%!assert (sparse ([1, 1, 0]+i) <= 1+i, 1+i >= sparse ([1, 1, 0]+i))
+%!assert (sparse ([1, 1, 0]+i) >= 1+i, 1+i <= sparse ([1, 1, 0]+i))
+%!assert (sparse ([1, 1, 0]+i) < 1+i, 1+i > sparse ([1, 1, 0]+i))
+%!assert (sparse ([1, 1, 0]+i) > 0+i, 0+i < sparse ([1, 1, 0]+i))
+%!assert (sparse ([1, 1, 0]+i) & 1+i, 1+i & sparse ([1, 1, 0]+i))
+%!assert (sparse ([1, 1, 0]+i) | 1+i, 1+i | sparse ([1, 1, 0]+i))
+
+## Test some empty edge cases
+%!assert (sparse (1i) | sparse (ones(0,1)), sparse (logical (ones (0, 1))))
+%!assert (1i | sparse (ones(0,1)), logical (ones (0, 1)))
+%!assert (sparse (1i) & sparse (ones(0,1)), sparse (logical (ones (0, 1))))
+%!assert (1i & sparse (ones(0,1)), sparse (logical (ones (0, 1))))
+%!assert (sparse (1i) | sparse (ones(2,0)), sparse (logical (ones (2, 0))))
+%!assert (1i | sparse (ones(2, 0)), logical (ones (2, 0)))
+%!assert (sparse (1i) & sparse (ones(2,0)), sparse (logical (ones (2, 0))))
+%!assert (1i & sparse (ones(2, 0)), sparse (logical (ones (2, 0))))
+%!assert (sparse (1i) == sparse (ones(0,1)), sparse (logical (ones (0, 1))))
+%!assert (1i != sparse (ones(0,1)), sparse (logical (ones (0, 1))))
+%!assert (sparse (1i) <= sparse (ones(0,1)), sparse (logical (ones (0, 1))))
+%!assert (1i >= sparse (ones(0,1)), sparse (logical (ones (0, 1))))
+%!assert (sparse (1i) < sparse (ones(2,0)), sparse (logical (ones (2, 0))))
+%!assert (1i > sparse (ones(2, 0)), sparse (logical (ones (2, 0))))
+
+## Test errors
+%!error <mx_el_eq: nonconformant arguments \(op1 is 0x2, op2 is 2x2\)> ...
+%!       sparse (ones (0,2)) == ones (2,2)*i
+%!error <mx_el_ne: nonconformant arguments \(op1 is 0x2, op2 is 2x2\)> ...
+%!       sparse (ones (0,2)) != ones (2,2)*i
+%!error <mx_el_le: nonconformant arguments \(op1 is 0x2, op2 is 2x2\)> ...
+%!       sparse (ones (0,2)) <= ones (2,2)*i
+%!error <mx_el_ge: nonconformant arguments \(op1 is 0x2, op2 is 2x2\)> ...
+%!       sparse (ones (0,2)) >= ones (2,2)*i
+%!error <mx_el_lt: nonconformant arguments \(op1 is 0x2, op2 is 2x2\)> ...
+%!       sparse (ones (0,2)) < ones (2,2)*i
+%!error <mx_el_gt: nonconformant arguments \(op1 is 0x2, op2 is 2x2\)> ...
+%!       sparse (ones (0,2)) > ones (2,2)*i
+%!error <mx_el_and: nonconformant arguments \(op1 is 0x2, op2 is 2x2\)> ...
+%!       sparse (ones (0,2)) & ones (2,2)*i
+%!error <mx_el_or: nonconformant arguments \(op1 is 0x2, op2 is 2x2\)> ...
+%!       sparse (ones (0,2)) | ones (2,2)*i
+
+## Testing broadcasting for comparison and boolean operators
+## for sparse matrix to sparse matrix
+%!assert (sparse([1i, 1, 0]) == sparse([0, 1, 1]+i), sparse ([1i, 1, 0] == [0, 1, 1]+i))
+%!assert (sparse([1i; 1; 0]) == sparse([0, 1, 1]+i), sparse ([1i; 1; 0] == [0, 1, 1]+i))
+%!assert (sparse([1i, 1, 0]) == sparse([0; 1; 1; 0]+i), sparse ([1i, 1, 0] == [0; 1; 1; 0]+i))
+%!assert (sparse([1i, 1, 0]) == sparse([0, 1, 1; 0, 1, 1]+i), sparse ([1i, 1, 0] == [0, 1, 1; 0, 1, 1]+i))
+%!assert (sparse([1i; 1; 0]) == sparse([0, 1; 1, 1; 0, 1]+i), sparse ([1i; 1; 0] == [0, 1; 1, 1; 0, 1]+i))
+%!assert (sparse([1i, 1, 0]) != sparse([0, 1, 1]+i), sparse ([1i, 1, 0] != [0, 1, 1]+i))
+%!assert (sparse([1i; 1; 0]) != sparse([0, 1, 1]+i), sparse ([1i; 1; 0] != [0, 1, 1]+i))
+%!assert (sparse([1i, 1, 0]) != sparse([0; 1; 1; 0]+i), sparse ([1i, 1, 0] != [0; 1; 1; 0]+i))
+%!assert (sparse([1i, 1, 0]) != sparse([0, 1, 1; 0, 1, 1]+i), sparse ([1i, 1, 0] != [0, 1, 1; 0, 1, 1]+i))
+%!assert (sparse([1i; 1; 0]) != sparse([0, 1; 1, 1; 0, 1]+i), sparse ([1i; 1; 0] != [0, 1; 1, 1; 0, 1]+i))
+%!assert (sparse([1i, 1, 0]) <= sparse([0, 1, 1]+i), sparse ([1i, 1, 0] <= [0, 1, 1]+i))
+%!assert (sparse([1i; 1; 0]) <= sparse([0, 1, 1]+i), sparse ([1i; 1; 0] <= [0, 1, 1]+i))
+%!assert (sparse([1i, 1, 0]) <= sparse([0; 1; 1; 0]+i), sparse ([1i, 1, 0] <= [0; 1; 1; 0]+i))
+%!assert (sparse([1i, 1, 0]) <= sparse([0, 1, 1; 0, 1, 1]+i), sparse ([1i, 1, 0] <= [0, 1, 1; 0, 1, 1]+i))
+%!assert (sparse([1i; 1; 0]) <= sparse([0, 1; 1, 1; 0, 1]+i), sparse ([1i; 1; 0] <= [0, 1; 1, 1; 0, 1]+i))
+%!assert (sparse([1i, 1, 0]) >= sparse([0, 1, 1]+i), sparse ([1i, 1, 0] >= [0, 1, 1]+i))
+%!assert (sparse([1i; 1; 0]) >= sparse([0, 1, 1]+i), sparse ([1i; 1; 0] >= [0, 1, 1]+i))
+%!assert (sparse([1i, 1, 0]) >= sparse([0; 1; 1; 0]+i), sparse ([1i, 1, 0] >= [0; 1; 1; 0]+i))
+%!assert (sparse([1i, 1, 0]) >= sparse([0, 1, 1; 0, 1, 1]+i), sparse ([1i, 1, 0] >= [0, 1, 1; 0, 1, 1]+i))
+%!assert (sparse([1i; 1; 0]) >= sparse([0, 1; 1, 1; 0, 1]+i), sparse ([1i; 1; 0] >= [0, 1; 1, 1; 0, 1]+i))
+%!assert (sparse([1i, 1, 0]) < sparse([0, 1, 1]+i), sparse ([1i, 1, 0] < [0, 1, 1]+i))
+%!assert (sparse([1i; 1; 0]) < sparse([0, 1, 1]+i), sparse ([1i; 1; 0] < [0, 1, 1]+i))
+%!assert (sparse([1i, 1, 0]) < sparse([0; 1; 1; 0]+i), sparse ([1i, 1, 0] < [0; 1; 1; 0]+i))
+%!assert (sparse([1i, 1, 0]) < sparse([0, 1, 1; 0, 1, 1]+i), sparse ([1i, 1, 0] < [0, 1, 1; 0, 1, 1]+i))
+%!assert (sparse([1i; 1; 0]) < sparse([0, 1; 1, 1; 0, 1]+i), sparse ([1i; 1; 0] < [0, 1; 1, 1; 0, 1]+i))
+%!assert (sparse([1i, 1, 0]) > sparse([0, 1, 1]+i), sparse ([1i, 1, 0] > [0, 1, 1]+i))
+%!assert (sparse([1i; 1; 0]) > sparse([0, 1, 1]+i), sparse ([1i; 1; 0] > [0, 1, 1]+i))
+%!assert (sparse([1i, 1, 0]) > sparse([0; 1; 1; 0]+i), sparse ([1i, 1, 0] > [0; 1; 1; 0]+i))
+%!assert (sparse([1i, 1, 0]) > sparse([0, 1, 1; 0, 1, 1]+i), sparse ([1i, 1, 0] > [0, 1, 1; 0, 1, 1]+i))
+%!assert (sparse([1i; 1; 0]) > sparse([0, 1; 1, 1; 0, 1]+i), sparse ([1i; 1; 0] > [0, 1; 1, 1; 0, 1]+i))
+%!assert (sparse([1i, 1, 0]) & sparse([0, 1, 1]+i), sparse ([1i, 1, 0] & [0, 1, 1]+i))
+%!assert (sparse([1i; 1; 0]) & sparse([0, 1, 1]+i), sparse ([1i; 1; 0] & [0, 1, 1]+i))
+%!assert (sparse([1i, 1, 0]) & sparse([0; 1; 1; 0]+i), sparse ([1i, 1, 0] & [0; 1; 1; 0]+i))
+%!assert (sparse([1i, 1, 0]) & sparse([0, 1, 1; 0, 1, 1]+i), sparse ([1i, 1, 0] & [0, 1, 1; 0, 1, 1]+i))
+%!assert (sparse([1i; 1; 0]) & sparse([0, 1; 1, 1; 0, 1]+i), sparse ([1i; 1; 0] & [0, 1; 1, 1; 0, 1]+i))
+%!assert (sparse([1i, 1, 0]) | sparse([0, 1, 1]+i), sparse ([1i, 1, 0] | [0, 1, 1]+i))
+%!assert (sparse([1i; 1; 0]) | sparse([0, 1, 1]+i), sparse ([1i; 1; 0] | [0, 1, 1]+i))
+%!assert (sparse([1i, 1, 0]) | sparse([0; 1; 1; 0]+i), sparse ([1i, 1, 0] | [0; 1; 1; 0]+i))
+%!assert (sparse([1i, 1, 0]) | sparse([0, 1, 1; 0, 1, 1]+i), sparse ([1i, 1, 0] | [0, 1, 1; 0, 1, 1]+i))
+%!assert (sparse([1i; 1; 0]) | sparse([0, 1; 1, 1; 0, 1]+i), sparse ([1i; 1; 0] | [0, 1; 1, 1; 0, 1]+i))
+
 */
 
 SPARSE_SMS_CMP_OPS (SparseComplexMatrix, Complex)

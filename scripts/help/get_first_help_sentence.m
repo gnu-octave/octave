@@ -89,6 +89,11 @@ function [text, status] = get_first_help_sentence (name, max_len = 80)
 
 endfunction
 
+# This function extracts a snippet of an UTF-8 encoded string
+function out_text = extract_first_codepoints (in_text, count)
+  out_text = in_text(1 : find (unicode_idx (in_text) == count, 1, 'last'));
+endfunction
+
 ## This function extracts the first sentence from a plain text help text
 function [text, status] = first_sentence_plain_text (help_text, max_len)
 
@@ -101,13 +106,13 @@ function [text, status] = first_sentence_plain_text (help_text, max_len)
   help_len = length (help_text);
   min_idx = min ([period_idx, line_end_idx, help_len]);
   if (min_idx < max_len)
-    text = help_text(1:min_idx);
+    text = extract_first_codepoints (help_text, min_idx);
   else
     if (max_len > 3)
-      text = help_text(1:(max_len-3));
+      text = extract_first_codepoints (help_text, max_len-3);
       text = [text, "..."];
     else
-      text = help_text(1:max_len);
+      text = extract_first_codepoints (help_text, max_len);
     endif
   endif
 

@@ -132,6 +132,7 @@ jobs:
       - name: build gl2ps
         # gl2ps is currently not distributed by Alpine Linux.
         # We need it for printing.
+        # As of 2025/12/14, gl2ps is in the Alpine Linux testing repository.
         run: |
           mkdir -p gl2ps && cd gl2ps
           printf "::group::\033[0;32m==>\033[0m Download tarball\n"
@@ -142,7 +143,10 @@ jobs:
           echo "::endgroup::"
           printf "::group::\033[0;32m==>\033[0m Configure\n"
           mkdir -p build && cd build
-          cmake -DCMAKE_BUILD_TYPE=Release ../gl2ps-1.4.2
+          cmake \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+            ../gl2ps-1.4.2
           echo "::endgroup::"
           printf "::group::\033[0;32m==>\033[0m Build\n"
           cmake --build .

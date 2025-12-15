@@ -593,16 +593,19 @@ function [local_packages, global_packages] = pkg (varargin)
             ## Check sha256 checksum, unless it is a 'dev' version
             if (! strcmp (v, "dev"))
               if (verbose)
-                printf ("comparing hash...\n");
+                printf ("comparing hash... ");
               endif
 
               sha256_local = hash ("sha256", fileread (tmp_file));
 
               if (! strcmp (sha256_online, sha256_local))
+                if (verbose)
+                  printf ("FAILED!\n");
+                endif
                 error ("pkg: downloaded package is corrupt:\n- sha256: %s", ...
                        sha256_local);
               elseif (verbose)
-                printf ("hash verified!\n");
+                printf ("verified!\n");
               endif
             endif
 

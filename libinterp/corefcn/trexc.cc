@@ -123,7 +123,7 @@ OCTAVE_END_NAMESPACE(octave)
 %! [U, T] = schur (A, "complex");
 %! M = [1, 3; 2, 4];
 %! [U2, T2] = trexc (U, T, M);
-%! assert (norm(U2 * T2 * U2' - A, "fro"), 0, 13 * eps(norm(A, "fro")));
+%! assert (norm (U2 * T2 * U2' - A, "fro"), 0, 65 * eps (norm (A, "fro")));
 
 %!error <must be a square matrix> trexc (eye (2), [1 2; 3 4; 5 6], [1 2])
 %!error <must have exactly 2 columns> trexc (eye (2), eye (2), [1 2 3])

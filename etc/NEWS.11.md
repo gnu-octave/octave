@@ -14,8 +14,8 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
     name in that order, and installs it as appropriate.  The `-forge` option is
     no longer required but is still accepted.  Octave will issue a warning
     which can be silenced with the warning ID `"Octave:pkg:install-forge"`.
-  * There is a new `pkg search` functionality.  Running `pkg search foo bar
-    baz` searches Octave Packages online for packages having all those keywords
+  * There is a new search command for packages: `pkg search foo bar baz`
+    searches Octave Packages online for packages having all those keywords
     in their descriptions.  Search terms can also be regular expressions.
   * The old command `pkg list -forge`, which returned a list of packages found
     online, has been replaced by `pkg search -all`.  Calling `pkg list -forge`

@@ -7545,18 +7545,22 @@ SparseMatrix::operator ! () const
 SparseBoolMatrix
 SparseMatrix::all (int dim) const
 {
+  SPARSE_ANY_ALL_HEADER
   SPARSE_ALL_OP (dim);
 }
 
 SparseBoolMatrix
 SparseMatrix::any (int dim) const
 {
+  SPARSE_ANY_ALL_HEADER
   SPARSE_ANY_OP (dim);
 }
 
 SparseMatrix
 SparseMatrix::cumprod (int dim, bool nanflag) const
 {
+  if (dim > 1)
+    return *this;
   SPARSE_CUMPROD (SparseMatrix, double, cumprod);
 }
 
@@ -7572,6 +7576,8 @@ SparseMatrix::cumsum (int dim, bool nanflag) const
 #define EXPR                               \
   t += data (j)
 
+  if (dim > 1)
+    return *this;
   SPARSE_CUMSUM (SparseMatrix, double, cumsum, NAN_EXPR, EXPR);
 
 #undef NAN_EXPR
@@ -7581,7 +7587,9 @@ SparseMatrix::cumsum (int dim, bool nanflag) const
 SparseMatrix
 SparseMatrix::prod (int dim, bool nanflag) const
 {
-  if ((rows () == 1 && dim == -1) || dim == 1)
+  if (dim > 1)
+    return *this;
+  else if ((rows () == 1 && dim == -1) || dim == 1)
     return transpose ().prod (0, nanflag).transpose ();
   else
     {
@@ -7624,11 +7632,21 @@ SparseMatrix::sum (int dim, bool nanflag) const
   else                                     \
     tmp[j] += d
 
+  if (dim > 1)
+    return *this;
   SPARSE_BASE_REDUCTION_OP (SparseMatrix, double, ROW_EXPR, COL_EXPR,
                             0.0, 0.0);
 
 #undef ROW_EXPR
 #undef COL_EXPR
+}
+
+SparseMatrix
+SparseMatrix::xsum (int dim, bool nanflag) const
+{
+  if (dim > 1)
+    return *this;
+  SPARSE_XSUM_REDUCTION_OP (SparseMatrix, double);
 }
 
 SparseMatrix
@@ -7648,6 +7666,7 @@ SparseMatrix::sumsq (int dim, bool nanflag) const
   else                                     \
     tmp[j] += d * d
 
+  SPARSE_SUMSQ_HEADER (SparseMatrix)
   SPARSE_BASE_REDUCTION_OP (SparseMatrix, double, ROW_EXPR, COL_EXPR,
                             0.0, 0.0);
 
@@ -8271,7 +8290,15 @@ max (const SparseMatrix& a, const SparseMatrix& b, const bool nanflag,
 
 /*
 
-## Testing broadcasting of empty matrices with min/max functions
+## Test exceeding dimensions
+%!assert (cumprod (sparse ([1, 2; 3, 4]), 3), sparse ([1, 2; 3, 4]))
+%!assert (cumsum (sparse ([1, 2; 3, 4]), 3), sparse ([1, 2; 3, 4]))
+%!assert (prod (sparse ([1, 2; 3, 4]), 3), sparse ([1, 2; 3, 4]))
+%!assert (sum (sparse ([1, 2; 3, 4]), 3), sparse ([1, 2; 3, 4]))
+%!assert (sum (sparse ([1, 2; 3, 4]), 3, 'extra'), sparse ([1, 2; 3, 4]))
+%!assert (sumsq (sparse ([1, 2; 3, 4]), 3), sparse ([1, 2; 3, 4].^2))
+
+## Test broadcasting of empty matrices with min/max functions
 %!assert (min (sparse (zeros (0,1)), sparse ([1, 2, 3, 4])), sparse (zeros (0,4)))
 %!error min (sparse (zeros (0,2)), sparse ([1, 2, 3, 4]))
 %!assert (max (sparse (zeros (0,1)), sparse ([1, 2, 3, 4])), sparse (zeros (0,4)))
@@ -8281,7 +8308,7 @@ max (const SparseMatrix& a, const SparseMatrix& b, const bool nanflag,
 %!assert (max (sparse (zeros (1,0)), sparse ([1; 2; 3; 4])), sparse (zeros (4,0)))
 %!error max (sparse (zeros (2,0)), sparse ([1; 2; 3; 4]))
 
-## Testing broadcasting of empty matrices with math operators.
+## Test broadcasting of empty matrices with math operators.
 ## This has been fixed in MSparse.cc and Sparse-op-defs.h
 %!assert (sparse (zeros (0,1)) + sparse ([1, 2, 3, 4]), sparse (zeros (0,4)))
 %!error <operator \+: nonconformant arguments \(op1 is 0x2, op2 is 1x4\)> ...
@@ -8541,7 +8568,7 @@ max (const SparseMatrix& a, const SparseMatrix& b, const bool nanflag,
 %!assert (full (sparse ([1, 2; 0, 0; 0, 6]) ./ sparse ([0; 2; 3])),
 %!        [1, 2; 0, 0; 0, 6] ./ [0; 2; 3])
 
-## Testing broadcasting for math operations with scalar and sparse matrix
+## Test broadcasting for math operations with scalar and sparse matrix
 %!assert (sparse ([1, 2]) + 1, [2, 3])
 %!assert (1 + sparse ([1, 2]), [2, 3])
 %!assert (sparse ([1, 2]) - 1, [0, 1])
@@ -8553,7 +8580,7 @@ max (const SparseMatrix& a, const SparseMatrix& b, const bool nanflag,
 %!error <operator /: nonconformant arguments \(op1 is 1x1, op2 is 1x2\)> ...
 %!       1 / sparse ([1, 2])
 
-## Testing broadcasting for math operations with matrix and sparse matrix
+## Test broadcasting for math operations with matrix and sparse matrix
 %!assert (sparse ([1, 2]) + [1, 1], [2, 3])
 %!assert ([1, 1] + sparse ([1, 2]), [2, 3])
 %!assert (sparse ([1; 2]) + [1; 1], [2; 3])
@@ -8642,7 +8669,7 @@ max (const SparseMatrix& a, const SparseMatrix& b, const bool nanflag,
 %!error <operator /: nonconformant arguments \(op1 is 3x1, op2 is 4x3\)> ...
 %!       sparse ([1; 2; 3]) / ones (4, 3)
 
-## Testing broadcasting for comparison and boolean operators
+## Test broadcasting for comparison and boolean operators
 ## for sparse matrix to matrix and matrix to sparse matrix
 %!assert (sparse ([1, 1, 0]) == [0, 1, 1], sparse (logical ([0, 1, 0])))
 %!assert (sparse ([1; 1; 0]) == [0, 1, 1], sparse ([1; 1; 0] == [0, 1, 1]))
@@ -8749,7 +8776,7 @@ max (const SparseMatrix& a, const SparseMatrix& b, const bool nanflag,
 %!assert ([0, 1; 1, 1; 0, 1] & sparse ([1; 1; 0]), ...
 %!        sparse (logical ([0, 1; 1, 1; 0, 0])))
 
-## Boolean OR operations should return dense logical arrays
+## Test boolean OR operations should return dense logical arrays
 %!assert (sparse ([1, 1, 0]) | [0, 1, 1], logical ([1, 1, 1]))
 %!assert (sparse ([1; 1; 0]) | [0, 1, 1], [1; 1; 0] | [0, 1, 1])
 %!assert (sparse ([1, 1, 0]) | [0; 1; 1; 0], [1, 1, 0] | [0; 1; 1; 0])
@@ -8761,7 +8788,7 @@ max (const SparseMatrix& a, const SparseMatrix& b, const bool nanflag,
 %!assert ([0, 1, 1; 0, 1, 1] | sparse ([1, 1, 0]), logical ([1, 1, 1; 1, 1, 1]))
 %!assert ([0, 1; 1, 1; 0, 1] | sparse ([1; 1; 0]), logical ([1, 1; 1, 1; 0, 1]))
 
-## Testing broadcasting for comparison and boolean operators
+## Test broadcasting for comparison and boolean operators
 ## for sparse matrix to scalar and scalar to sparse matrix
 %!assert (sparse ([1, 1, 0]) == 1, sparse (logical ([1, 1, 0])))
 %!assert (sparse ([1, 1, 0]) != 1, sparse (logical ([0, 0, 1])))
@@ -8814,7 +8841,7 @@ max (const SparseMatrix& a, const SparseMatrix& b, const bool nanflag,
 %!error <mx_el_or: nonconformant arguments \(op1 is 0x2, op2 is 2x0\)> ...
 %!       sparse (ones (0,2)) | ones (2,0)
 
-## Testing broadcasting for comparison and boolean operators
+## Test broadcasting for comparison and boolean operators
 ## for sparse matrix to sparse matrix
 %!assert (sparse([1, 1, 0]) == sparse([0, 1, 1]), sparse ([1, 1, 0] == [0, 1, 1]))
 %!assert (sparse([1; 1; 0]) == sparse([0, 1, 1]), sparse ([1; 1; 0] == [0, 1, 1]))

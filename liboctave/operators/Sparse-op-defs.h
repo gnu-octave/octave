@@ -3006,7 +3006,7 @@
         }                                                                     \
     }                                                                         \
   else                                                                        \
-    retval = RET_TYPE (nr,nc);                                                \
+    retval = RET_TYPE (nr, nc);                                               \
                                                                               \
   return retval
 
@@ -3086,11 +3086,33 @@
         }                                                                   \
     }                                                                       \
   else                                                                      \
-    retval = RET_TYPE (nr,nc);                                              \
+    retval = RET_TYPE (nr, nc);                                             \
                                                                             \
   return retval
 
 // Reduction operations for sparse matrices ('prod', 'sum', and 'sumsq')
+
+#define SPARSE_SUMSQ_HEADER(RET_TYPE)                                    \
+  if (rows () > 0 && cols () > 0 && dim > 1)                             \
+    {                                                                    \
+      RET_TYPE r = RET_TYPE (rows (), cols (), nnz ());                  \
+      r.cidx (0) = static_cast<octave_idx_type> (0);                     \
+      octave_idx_type nel = 0;                                           \
+      for (octave_idx_type j = 0; j < cols (); j++)                      \
+        {                                                                \
+          for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)        \
+            if (data (i) != 0.0)                                         \
+              {                                                          \
+                r.ridx (nel) = ridx (i);                                 \
+                r.data (nel++) = data (i) * data (i);                    \
+              }                                                          \
+          r.cidx (j + 1) = nel;                                          \
+        }                                                                \
+      r.maybe_compress (false);                                          \
+      return r;                                                          \
+    }                                                                    \
+  if (dim > 1)                                                           \
+    return *this;
 
 #define SPARSE_BASE_REDUCTION_OP(RET_TYPE, EL_TYPE, ROW_EXPR, COL_EXPR,  \
                                  INIT_VAL, MT_RESULT)                    \
@@ -3162,7 +3184,7 @@
               retval.cidx (i+1) = retval.cidx (i);                       \
         }                                                                \
     }                                                                    \
-  else if (nc == 0 && (nr == 0 || (nr == 1 && dim == -1)))               \
+  else if (nc == 0 && nr == 0 && dim == -1)                              \
     {                                                                    \
       if (MT_RESULT)                                                     \
         {                                                                \
@@ -3179,6 +3201,14 @@
                            static_cast<octave_idx_type> (1),             \
                            static_cast<octave_idx_type> (0));            \
     }                                                                    \
+  else if (nc == 0 && nr == 0 && dim == 0)                               \
+        retval = RET_TYPE (static_cast<octave_idx_type> (1),             \
+                           static_cast<octave_idx_type> (0),             \
+                           static_cast<octave_idx_type> (0));            \
+  else if (nc == 0 && nr == 0 && dim == 1)                               \
+        retval = RET_TYPE (static_cast<octave_idx_type> (0),             \
+                           static_cast<octave_idx_type> (1),             \
+                           static_cast<octave_idx_type> (0));            \
   else if (nr == 0 && (dim == 0 || dim == -1))                           \
     {                                                                    \
       if (MT_RESULT)                                                     \
@@ -3196,7 +3226,7 @@
         retval = RET_TYPE (static_cast<octave_idx_type> (1), nc,         \
                            static_cast<octave_idx_type> (0));            \
     }                                                                    \
-  else if (nc == 0 && dim == 1)                                          \
+  else if (nc == 0 && (dim == 1 || dim == -1))                           \
     {                                                                    \
       if (MT_RESULT)                                                     \
         {                                                                \
@@ -3217,6 +3247,161 @@
     retval.resize (nr > 0, nc > 0);                                      \
                                                                          \
   return retval
+
+// High accuracy accumulator for sparse matrices ('xsum')
+
+#define SPARSE_XSUM_REDUCTION_OP(RET_TYPE, EL_TYPE)                      \
+                                                                         \
+  octave_idx_type nr = rows ();                                          \
+  octave_idx_type nc = cols ();                                          \
+                                                                         \
+  EL_TYPE inf = std::numeric_limits<EL_TYPE>::infinity ();               \
+                                                                         \
+  RET_TYPE retval;                                                       \
+                                                                         \
+  if (nr > 0 && nc > 0)                                                  \
+    {                                                                    \
+      if ((nr == 1 && dim == -1) || dim == 1)                            \
+        {                                                                \
+          OCTAVE_LOCAL_BUFFER (EL_TYPE, tmp, nr);                        \
+                                                                         \
+          for (octave_idx_type i = 0; i < nr; i++)                       \
+            tmp[i] = 0.0;                                                \
+          for (octave_idx_type i = 0; i < nr; i++)                       \
+            {                                                            \
+              EL_TYPE acc = 0.0;                                         \
+              EL_TYPE err = 0.0;                                         \
+              bool posinf = false;                                       \
+              bool neginf = false;                                       \
+              for (octave_idx_type j = 0; j < nc; j++)                   \
+                {                                                        \
+                  EL_TYPE d = elem (i, j);                               \
+                  if (d == EL_TYPE ());                                  \
+                  else if (nanflag && octave::math::isnan (d));          \
+                  else if (! octave::math::isinf (d))                    \
+                    twosum_accum (acc, err, d);                          \
+                  else if (d > 0.0)                                      \
+                    posinf = true;                                       \
+                  else                                                   \
+                    neginf = true;                                       \
+                }                                                        \
+              if (posinf && neginf)                                      \
+                tmp[i] = NAN;                                            \
+              else if (posinf)                                           \
+                tmp[i] = acc + err + inf;                                \
+              else if (neginf)                                           \
+                tmp[i] = acc + err - inf;                                \
+              else                                                       \
+                tmp[i] = acc + err;                                      \
+            }                                                            \
+          octave_idx_type nel = 0;                                       \
+          for (octave_idx_type i = 0; i < nr; i++)                       \
+            if (tmp[i] != EL_TYPE ())                                    \
+              nel++;                                                     \
+          retval = RET_TYPE (nr, static_cast<octave_idx_type> (1), nel); \
+          retval.cidx (0) = 0;                                           \
+          retval.cidx (1) = nel;                                         \
+          nel = 0;                                                       \
+          for (octave_idx_type i = 0; i < nr; i++)                       \
+            if (tmp[i] != EL_TYPE ())                                    \
+              {                                                          \
+                retval.data (nel) = tmp[i];                              \
+                retval.ridx (nel++) = i;                                 \
+              }                                                          \
+        }                                                                \
+      else                                                               \
+        {                                                                \
+          OCTAVE_LOCAL_BUFFER (EL_TYPE, tmp, nc);                        \
+                                                                         \
+          for (octave_idx_type j = 0; j < nc; j++)                       \
+            {                                                            \
+              EL_TYPE acc = 0.0;                                         \
+              EL_TYPE err = 0.0;                                         \
+              bool posinf = false;                                       \
+              bool neginf = false;                                       \
+              for (octave_idx_type i = cidx (j); i < cidx (j + 1); i++)  \
+                {                                                        \
+                  EL_TYPE d = elem (i, j);                               \
+                  if (d == EL_TYPE ());                                  \
+                  else if (nanflag && octave::math::isnan (d));          \
+                  else if (! octave::math::isinf (d))                    \
+                    twosum_accum (acc, err, d);                          \
+                  else if (d > 0.0)                                      \
+                    posinf = true;                                       \
+                  else                                                   \
+                    neginf = true;                                       \
+                }                                                        \
+              if (posinf && neginf)                                      \
+                tmp[j] = NAN;                                            \
+              else if (posinf)                                           \
+                tmp[j] = acc + err + inf;                                \
+              else if (neginf)                                           \
+                tmp[j] = acc + err - inf;                                \
+              else                                                       \
+                tmp[j] = acc + err;                                      \
+            }                                                            \
+          octave_idx_type nel = 0;                                       \
+          for (octave_idx_type i = 0; i < nc; i++)                       \
+            if (tmp[i] != EL_TYPE ())                                    \
+              nel++;                                                     \
+          retval = RET_TYPE (static_cast<octave_idx_type> (1), nc, nel); \
+          retval.cidx (0) = 0;                                           \
+          nel = 0;                                                       \
+          for (octave_idx_type i = 0; i < nc; i++)                       \
+            if (tmp[i] != EL_TYPE ())                                    \
+              {                                                          \
+                retval.data (nel) = tmp[i];                              \
+                retval.ridx (nel++) = 0;                                 \
+                retval.cidx (i+1) = retval.cidx (i) + 1;                 \
+              }                                                          \
+            else                                                         \
+              retval.cidx (i+1) = retval.cidx (i);                       \
+        }                                                                \
+    }                                                                    \
+  else if (nc == 0 && nr == 0 && dim == -1)                              \
+    retval = RET_TYPE (static_cast<octave_idx_type> (1),                 \
+                       static_cast<octave_idx_type> (1),                 \
+                       static_cast<octave_idx_type> (0));                \
+  else if (nc == 0 && nr == 0 && dim == 0)                               \
+        retval = RET_TYPE (static_cast<octave_idx_type> (1),             \
+                           static_cast<octave_idx_type> (0),             \
+                           static_cast<octave_idx_type> (0));            \
+  else if (nc == 0 && nr == 0 && dim == 1)                               \
+        retval = RET_TYPE (static_cast<octave_idx_type> (0),             \
+                           static_cast<octave_idx_type> (1),             \
+                           static_cast<octave_idx_type> (0));            \
+  else if (nr == 0 && (dim == 0 || dim == -1))                           \
+    retval = RET_TYPE (static_cast<octave_idx_type> (1), nc,             \
+                       static_cast<octave_idx_type> (0));                \
+  else if (nc == 0 && (dim == 1 || dim == -1))                           \
+    retval = RET_TYPE (nr, static_cast<octave_idx_type> (1),             \
+                       static_cast<octave_idx_type> (0));                \
+  else                                                                   \
+    retval.resize (nr > 0, nc > 0);                                      \
+                                                                         \
+  return retval
+
+// Specializations for 'any' and 'all' functions
+
+#define SPARSE_ANY_ALL_HEADER                                            \
+  if (rows () > 0 && cols () > 0 && dim > 1)                             \
+    {                                                                    \
+      SparseBoolMatrix r = SparseBoolMatrix (rows (), cols (), nnz ());  \
+      r.cidx (0) = static_cast<octave_idx_type> (0);                     \
+      octave_idx_type nel = 0;                                           \
+      for (octave_idx_type j = 0; j < cols (); j++)                      \
+        {                                                                \
+          for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)        \
+            if (data (i) != 0.0)                                         \
+              {                                                          \
+                r.ridx (nel) = ridx (i);                                 \
+                r.data (nel++) = true;                                   \
+              }                                                          \
+          r.cidx (j + 1) = nel;                                          \
+        }                                                                \
+      r.maybe_compress (false);                                          \
+      return r;                                                          \
+    }
 
 // Don't break from this loop if the test succeeds because
 // we are looping over the rows and not the columns in the inner loop.

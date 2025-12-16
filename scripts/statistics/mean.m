@@ -30,9 +30,10 @@
 ## @deftypefnx {} {@var{m} =} mean (@var{x}, "all")
 ## @deftypefnx {} {@var{m} =} mean (@dots{}, @var{nanflag})
 ## @deftypefnx {} {@var{m} =} mean (@dots{}, @var{outtype})
+## @deftypefnx {} {@var{m} =} mean (@dots{}, @qcode{'Weights'}, @var{w})
 ## Compute the mean of the elements of @var{x}.
 ##
-## The mean is defined as 
+## The mean is defined as
 ## @tex
 ## $$ {\rm mean}(x) = \bar{x} = {1\over N} \sum_{i=1}^N x_i $$
 ## where $N$ is the number of elements of @var{x}.
@@ -48,12 +49,28 @@
 ##
 ## @end ifnottex
 ##
+## The weighted mean is defined as
+## @tex
+## $$ {\rm mean_w}(x) = \bar{x}_w = {\sum_{i=1}^N w_i x_i \over \sum_{i=1}^N w_i} $$
+## where $N$ is the number of elements of @var{x}.
+## @end tex
+## @ifnottex
+##
+## @example
+## weighted_mean (@var{x}) = SUM_i (@var{w}(i) * @var{x}(i)) / SUM_i (@var{w}(i)
+## @end example
+##
+## @noindent
+## where @math{N} is the number of elements in @var{x}.
+##
+## @end ifnottex
+##
 ## If @var{x} is a vector, then @code{mean (@var{x})} returns the mean of the
 ## elements in @var{x}.
 ##
 ## If @var{x} is a matrix, then @code{mean (@var{x})} returns a row vector with
 ## each element containing the mean of the corresponding column in @var{x}.
-## 
+##
 ## If @var{x} is an array, then @code{mean (@var{x})} computes the mean along
 ## the first non-singleton dimension of @var{x}.
 ##
@@ -93,12 +110,21 @@
 ## will still contain NaN values if @var{x} consists of all NaN values in the
 ## operating dimension.
 ##
+## The optional paired argument @code{@dots{}, "Weights", @var{w}} specifies a
+## weighting scheme @var{w}, which is applied on input @var{x}, so that
+## @code{meam} computes the weighted mean.  When operating along a single
+## dimension, @var{w} must be a vector of the same length as the operating
+## dimension or it must have the same size as @var{x}.  When operating over an
+## array slice defined by @var{vecdim}, @var{w} have the same size as the
+## operating array slice, i.e. @code{size (w) == size (x)(@var{vecdim})}, or the
+## same size as @var{x}.
+##
 ## @seealso{median, mode, movmean}
 ## @end deftypefn
 
 function m = mean (x, varargin)
 
-  if (nargin < 1 || nargin > 4)
+  if (nargin < 1 || nargin > 6)
     print_usage ();
   endif
 
@@ -110,6 +136,25 @@ function m = mean (x, varargin)
   all_flag = false;
   omitnan  = false;
   out_flag = false;
+  weighted = false;
+
+  ## Process paired argument for Weights
+  w_idx = find (cellfun (@(x) strcmpi (x, "weights"), varargin));
+  if (! isempty (w_idx))
+    if (numel (varargin) > w_idx)
+      w = varargin{w_idx+1};
+      if (! (isnumeric (w) && any (isa (w, {'double', 'single'}))))
+        error ("mean: WEIGHTS must be single or double");
+      endif
+      if (any (w(:) < 0))
+        error ("mean: WEIGHTS must be nonnegative");
+      endif
+    else
+      error ("mean: paired input argument for 'Weights' is missing");
+    endif
+    weighted = true;
+    varargin([w_idx, w_idx+1]) = [];
+  endif
 
   nvarg = numel (varargin);
   varg_chars = cellfun ("ischar", varargin);
@@ -191,31 +236,91 @@ function m = mean (x, varargin)
     ## Single numeric input argument, no dimensions given.
     if (all_flag)
       x = x(:);
+      n = numel (x);
+
+      ## Process weights
+      if (weighted)
+        if (isvector (w))
+          if (numel (w) != n)
+            error (strcat ("mean: WEIGHTS vector must have the same", ...
+                           " length as the operating dimension"));
+          endif
+        elseif (! isequal (size (w), szx))
+          error ("mean: WEIGHTS array must have the same dimensions with X");
+        endif
+        w = w(:);
+        x = w .* double (x);
+        n = sum (w);
+      endif
 
       if (omitnan)
-        x = x(! isnan (x));
+        nanx = isnan (x);
+        x(nanx) = [];
+        if (weighted)
+          w(nanx) = [];
+          n = sum (w);
+        else
+          n = numel (x);
+        endif
       endif
 
       if (any (isa (x, {"int64", "uint64"})))
-        m = int64_mean (x, 1, numel (x), outtype);
+        m = int64_mean (x, 1, n, outtype);
       else
-        m = sum (x, "double") ./ numel (x);
+        m = sum (x, "double") ./ n;
       endif
 
     else
+      ## Handle 0x0 empty input, no dimensions given
+      if (ndx == 2 && isempty (x) && szx == [0,0])
+        if (isa (x, "single"))
+          m = NaN ("single");
+        else
+          m = NaN;
+        endif
+        return;
+      endif
+
       ## Find the first non-singleton dimension.
       (dim = find (szx != 1, 1)) || (dim = 1);
       n = szx(dim);
+
+      ## Process weights
+      if (weighted)
+        if (isvector (w))
+          if (numel (w) != n)
+            error (strcat ("mean: WEIGHTS vector must have the same", ...
+                           " length as the operating dimension"));
+          endif
+          szw = ones (1, ndx);
+          szw(dim) = n;
+          w = reshape (w, szw);
+          ## Force x to doubles to avoid integer path
+          x = w .* double (x);
+        elseif (! isequal (size (w), szx))
+          error ("mean: WEIGHTS array must have the same dimensions with X");
+        else
+          x = w .* double (x);
+        endif
+        n = sum (w, dim);
+      endif
+
+      ## Process omitnan
       if (omitnan)
         nanx = isnan (x);
-        n = sum (! nanx, dim);
         x(nanx) = 0;
+        if (weighted)
+          w(nanx) = 0;
+          n = sum (w, dim);
+        else
+          n = sum (! nanx, dim);
+        endif
       endif
 
       if (any (isa (x, {"int64", "uint64"})))
         m = int64_mean (x, dim, n, outtype);
       else
-        m = sum (x, dim, "double") ./ n;
+        m = sum (x, dim, "extra") ./ n;
       endif
 
     endif
@@ -227,93 +332,166 @@ function m = mean (x, varargin)
       error ("mean: DIM must be a positive integer scalar or vector");
     endif
 
-    if (ndx == 2 && isempty (x) && szx == [0,0])
-      ## FIXME: This special case handling could be removed once sum
-      ##        compatibly handles all sizes of empty inputs.
-      sz_out = szx;
-      sz_out (vecdim(vecdim <= ndx)) = 1;
-      m = NaN (sz_out);
-    else
+    if (isscalar (vecdim))
+      dim = vecdim;  # alias for code readability
+      if (dim > ndx)
+        m = x;
+      else
+        n = szx(dim);
 
-      if (isscalar (vecdim))
-        dim = vecdim;  # alias for code readability
-        if (dim > ndx)
-          m = x;
+        ## Process weights
+        if (weighted)
+          if (isvector (w))
+            if (numel (w) != n)
+              error (strcat ("mean: WEIGHTS vector must have the same", ...
+                             " length as the operating dimension"));
+            endif
+            szw = ones (1, ndx);
+            szw(dim) = n;
+            w = reshape (w, szw);
+            ## Force x to doubles to avoid integer path
+            x = w .* double (x);
+          elseif (! isequal (size (w), szx))
+            error ("mean: WEIGHTS array must have the same dimensions with X");
+          else
+            x = w .* double (x);
+          endif
+          n = sum (w, dim);
+        endif
+
+        ## Process omitnan
+        if (omitnan)
+          nanx = isnan (x);
+          x(nanx) = 0;
+          if (weighted)
+            w(nanx) = 0;
+            n = sum (w, dim);
+          else
+            n = sum (! nanx, dim);
+          endif
+        endif
+
+        if (any (isa (x, {"int64", "uint64"})))
+          m = int64_mean (x, dim, n, outtype);
         else
-          n = szx(dim);
+          m = sum (x, dim, "extra") ./ n;
+        endif
+
+      endif
+
+    else
+      vecdim = sort (vecdim);
+      if (! all (diff (vecdim)))
+         error ("mean: VECDIM must contain non-repeating positive integers");
+      endif
+      ## Ignore dimensions in VECDIM larger than actual array.
+      vecdim(vecdim > ndx) = [];
+
+      if (isempty (vecdim))
+        m = x;
+      else
+
+        ## Calculate permutation vector
+        remdims = 1:ndx;       # All dimensions
+        remdims(vecdim) = [];  # Delete dimensions specified by vecdim
+        nremd = numel (remdims);
+
+        ## If all dimensions are given, it is equivalent to 'all' flag
+        if (nremd == 0)
+          x = x(:);
+          n = numel (x);
+
+          ## Process weights
+          if (weighted)
+            if (isvector (w))
+              if (numel (w) != n)
+                error (strcat ("mean: WEIGHTS vector must have the same", ...
+                               " length as the operating dimension"));
+              endif
+            elseif (! isequal (size (w), szx))
+              error ("mean: WEIGHTS array must have the same dimensions with X");
+            endif
+            w = w(:);
+            x = w .* double (x);
+            n = sum (w);
+          endif
+
           if (omitnan)
             nanx = isnan (x);
-            n = sum (! nanx, dim);
+            x(nanx) = [];
+            if (weighted)
+              w(nanx) = [];
+              n = sum (w);
+            else
+              n = numel (x);
+            endif
+          endif
+
+          if (any (isa (x, {"int64", "uint64"})))
+            m = int64_mean (x, 1, n, outtype);
+          else
+            m = sum (x, "extra") ./ n;
+          endif
+
+        else
+          ## Weights must either match vecdim page size or the size of input X
+          if (weighted)
+            page_szw = size (w);
+            if (isequal (page_szw, szx(vecdim)))
+              szw = ones (1, ndx);
+              szw(vecdim) = page_szw;
+              w = reshape (w, szw);
+              ## Force x to doubles to avoid integer path
+              x = w .* double (x);
+            elseif (! isequal (size (w), szx))
+              error (strcat ("mean: WEIGHTS array must have the same", ...
+                             " dimensions as input X or its operating", ...
+                             " page specified by VECDIM"));
+            else
+              x = w .* double (x);
+            endif
+          endif
+
+          ## Permute to push vecdims to back
+          perm = [remdims, vecdim];
+          x = permute (x, perm);
+
+          ## Reshape to squash all vecdims in final dimension
+          sznew = [szx(remdims), prod(szx(vecdim))];
+          x = reshape (x, sznew);
+          if (weighted)
+            sznew = [ones(1, numel (szx(remdims))), prod(szx(vecdim))];
+            w = reshape (w, sznew);
+          endif
+
+          ## Calculate mean on final dimension
+          dim = nremd + 1;
+          if (omitnan)
+            nanx = isnan (x);
             x(nanx) = 0;
+            if (weighted)
+              w(nanx) = 0;
+              n = sum (w, dim);
+            else
+              n = sum (! nanx, dim);
+            endif
+          else
+            if (weighted)
+              n = sum (w, dim);
+            else
+              n = sznew(dim);
+            endif
           endif
 
           if (any (isa (x, {"int64", "uint64"})))
             m = int64_mean (x, dim, n, outtype);
           else
-            m = sum (x, dim, "double") ./ n;
+            m = sum (x, dim, "extra") ./ n;
           endif
 
-        endif
+          ## Inverse permute back to correct dimensions
+          m = ipermute (m, perm);
 
-      else
-        vecdim = sort (vecdim);
-        if (! all (diff (vecdim)))
-           error ("mean: VECDIM must contain non-repeating positive integers");
-        endif
-        ## Ignore dimensions in VECDIM larger than actual array.
-        vecdim(vecdim > ndx) = [];
-
-        if (isempty (vecdim))
-          m = x;
-        else
-
-          ## Calculate permutation vector
-          remdims = 1:ndx;       # All dimensions
-          remdims(vecdim) = [];  # Delete dimensions specified by vecdim
-          nremd = numel (remdims);
-
-          ## If all dimensions are given, it is equivalent to 'all' flag
-          if (nremd == 0)
-            x = x(:);
-            if (omitnan)
-              x = x(! isnan (x));
-            endif
-
-            if (any (isa (x, {"int64", "uint64"})))
-              m = int64_mean (x, 1, numel (x), outtype);
-            else
-              m = sum (x, "double") ./ numel (x);
-            endif
-
-          else
-            ## Permute to push vecdims to back
-            perm = [remdims, vecdim];
-            x = permute (x, perm);
-
-            ## Reshape to squash all vecdims in final dimension
-            sznew = [szx(remdims), prod(szx(vecdim))];
-            x = reshape (x, sznew);
-
-            ## Calculate mean on final dimension
-            dim = nremd + 1;
-            if (omitnan)
-              nanx = isnan (x);
-              x(nanx) = 0;
-              n = sum (! nanx, dim);
-            else
-              n = sznew(dim);
-            endif
-
-            if (any (isa (x, {"int64", "uint64"})))
-              m = int64_mean (x, dim, n, outtype);
-            else
-              m = sum (x, dim, "double") ./ n;
-            endif
-
-            ## Inverse permute back to correct dimensions
-            m = ipermute (m, perm);
-
-          endif
         endif
       endif
     endif
@@ -543,11 +721,11 @@ endfunction
 %! assert (mean (x, 3, 'omitnan'), x, eps);
 
 ## Test empty inputs
-%!assert (mean ([]), NaN (1,1))
-%!assert (mean (single([])), NaN(1,1,"single"))
-%!assert (mean ([], 1), NaN(1,0))
-%!assert (mean ([], 2), NaN(0,1))
-%!assert (mean ([], 3), NaN(0,0))
+%!assert (mean ([]), NaN (1, 1))
+%!assert (mean (single ([])), NaN (1, 1, "single"))
+%!assert (mean ([], 1), NaN (1, 0))
+%!assert (mean ([], 2), NaN (0, 1))
+%!assert (mean ([], 3), NaN (0, 0))
 %!assert (mean (ones (1,0)), NaN (1,1))
 %!assert (mean (ones (1,0), 1), NaN (1,0))
 %!assert (mean (ones (1,0), 2), NaN (1,1))
@@ -559,7 +737,7 @@ endfunction
 %!assert (mean (ones (0,1,0)), NaN (1,1,0))
 %!assert (mean (ones (0,1,0), 1), NaN (1,1,0))
 %!assert (mean (ones (0,1,0), 2), NaN (0,1,0))
-%!assert (mean (ones (0,1,0), 3), NaN (0,1,1))
+%!assert (mean (ones (0,1,0), 3), NaN (0,1))
 %!assert (mean (ones (0,0,1,0)), NaN (1,0,1,0))
 %!assert (mean (ones (0,0,1,0), 1), NaN (1,0,1,0))
 %!assert (mean (ones (0,0,1,0), 2), NaN (0,1,1,0))
@@ -604,20 +782,89 @@ endfunction
 %!assert <*63848> (mean (ones (80e6, 1, "single"), [1 2]), 1, eps)
 %!assert <*63848> (mean (ones (80e6, 1, "single"), [1 3]), 1, eps)
 
+## Test 'Weights' with DIM, VECDIM, and "all" options
+%!test
+%! x = [1, 1; 7, 9; 1, 9; 1, 9; 6, 2];
+%! w = [1; 2; 1; 2; 3];
+%! assert (mean (x, 'Weights', w), [4, 5.7778], 1e-4);
+%! assert (mean (x, 'Weights', w'), [4, 5.7778], 1e-4);
+%! assert (mean (x, 1, 'Weights', w), [4, 5.7778], 1e-4);
+%! assert (mean (x, 1, 'Weights', w'), [4, 5.7778], 1e-4);
+%! assert (mean (x', 2, 'Weights', w), [4; 5.7778], 1e-4);
+%! assert (mean (x', 2, 'Weights', w'), [4; 5.7778], 1e-4);
+%!test
+%! x = [1, 1; 7, 9; 1, 9; 1, 9; 6, 2];
+%! x = reshape (x', [1, 2, 5]);
+%! w = [1, 2, 1, 2, 3];
+%! assert (size (x)([1, 3]), size (w));
+%! assert (mean (x, [1, 3], 'Weights', w), [4, 5.7778], 1e-4);
+%!test
+%! x = [1, 1; 7, 9; 1, 9; 1, 9; 6, 2];
+%! x = reshape (x', [1, 2, 5]);
+%! w = ones (1, 2, 5);
+%! assert (size (x), size (w));
+%! assert (mean (x, 'all', 'Weights', w), mean (x, 'all'), 1e-4);
+%! assert (mean (x, [1, 2, 3], 'Weights', w), mean (x, [1, 2, 3]), 1e-4);
+
+## Test 'Weights' with 'omitnan' and outtype options
+%!test
+%! x = [1, 1; 7, 9; 1, 9; 1, 9; 6, 2];
+%! w = [1; 2; 1; 2; 3];
+%! assert (mean (x, 'omitnan', 'Weights', w), [4, 5.7778], 1e-4);
+%! assert (mean (x, 1, 'omitnan', 'Weights', w), [4, 5.7778], 1e-4);
+%! assert (mean (x', 2,'omitnan',  'Weights', w), [4; 5.7778], 1e-4);
+%!test
+%! x = [1, 1; 7, NaN; 1, 9; 1, 9; 6, 2];
+%! x = reshape (x', [1, 2, 5]);
+%! w = ones (1, 2, 5);
+%! assert (size (x), size (w));
+%! assert (mean (x, 'all', 'omitnan', 'Weights', w), mean (x, 'all', 'omitnan'), 1e-4);
+%! assert (mean (x, [1, 2, 3], 'omitnan', 'Weights', w), mean (x, [1, 2, 3], 'omitnan'), 1e-4);
+%!test
+%! x = single ([1, 1; 7, 9; 1, 9; 1, 9; 6, 2]);
+%! w = [1; 2; 1; 2; 3];
+%! assert (class (mean (x, 'Weights', w)), "single");
+%!test
+%! x = int32 ([1, 1; 7, 9; 1, 9; 1, 9; 6, 2]);
+%! w = [1; 2; 1; 2; 3];
+%! assert (class (mean (x, 'native', 'Weights', w)), "int32");
+
 ## Test limits of double precision summation
 %!assert <63848> (mean ([flintmax("double"), ones(1, 2^8-1, "double")]), ...
 %!                35184372088833-1/(2^8), eps (35184372088833))
+%!assert (mean (sparse ([flintmax("double"), ones(1, 2^8-1, "double")])), ...
+%!        sparse (35184372088833-1/(2^8)), eps (35184372088833))
 
 ## Test input validation
 %!error <Invalid call> mean ()
 %!error <Invalid call> mean (1, 2, 3, 4, 5)
 %!error <X must be a numeric or logical array> mean ({1:5})
+%!error <WEIGHTS must be single or double> mean (1, 'Weights', 'double')
+%!error <WEIGHTS must be single or double> mean (1, 'Weights', uint8 (1))
+%!error <WEIGHTS must be nonnegative> mean (1, 'Weights', -1)
+%!error <paired input argument for 'Weights' is missing> mean (1, 'Weights')
 %!error <Invalid call> mean (1, 2, 3)
 %!error <Invalid call> mean (1, "all", 3)
 %!error <only one OUTTYPE> mean (1, 'native', 'default')
 %!error <only one OUTTYPE> mean (1, 'default', 'native')
 %!error <only one OUTTYPE> mean (1, 'default', 'double')
 %!error <Invalid call> mean (1, 'foobar')
+%!error <WEIGHTS vector must have the same length as the operating dimension> ...
+%! mean ([1:5]', "all", 'Weights', [1, 2, 3])
+%!error <WEIGHTS array must have the same dimensions with X> ...
+%! mean (ones (5, 3), "all", 'Weights', ones (3, 5))
+%!error <WEIGHTS vector must have the same length as the operating dimension> ...
+%! mean ([1:5]', 'Weights', [1, 2, 3])
+%!error <WEIGHTS vector must have the same length as the operating dimension> ...
+%! mean (ones (5, 3), 'Weights', [1, 2, 3])
+%!error <WEIGHTS array must have the same dimensions with X> ...
+%! mean (ones (5, 3), 'Weights', ones (3, 5))
+%!error <WEIGHTS vector must have the same length as the operating dimension> ...
+%! mean ([1:5]', [1, 2], 'Weights', [1, 2, 3])
+%!error <WEIGHTS array must have the same dimensions with X> ...
+%! mean (ones (5, 3), [1, 2], 'Weights', ones (3, 5))
+%!error <WEIGHTS array must have the same dimensions as input X or its> ...
+%! mean (ones (5, 3, 2), [1, 2], 'Weights', ones (3, 5))
 %!error <DIM must be a positive integer> mean (1, ones (2,2))
 %!error <DIM must be a positive integer> mean (1, 1.5)
 %!error <DIM must be a positive integer> mean (1, 0)

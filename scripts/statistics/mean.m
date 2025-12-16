@@ -267,7 +267,7 @@ function m = mean (x, varargin)
       if (any (isa (x, {"int64", "uint64"})))
         m = int64_mean (x, 1, n, outtype);
       else
-        m = sum (x, "double") ./ n;
+        m = sum (x, "extra") ./ n;
       endif
 
     else
@@ -834,6 +834,18 @@ endfunction
 %!                35184372088833-1/(2^8), eps (35184372088833))
 %!assert (mean (sparse ([flintmax("double"), ones(1, 2^8-1, "double")])), ...
 %!        sparse (35184372088833-1/(2^8)), eps (35184372088833))
+## Test limits of double precision summation with "all", DIM, and VECDIM options
+%!assert (mean ([flintmax("double"), ones(1, 2^8-1, "double")], "all"), ...
+%!                35184372088833-1/(2^8), eps (35184372088833))
+%!assert (mean (sparse ([flintmax("double"), ones(1, 2^8-1, "double")]), "all"), ...
+%!        sparse (35184372088833-1/(2^8)), eps (35184372088833))
+%!assert (mean ([flintmax("double"), ones(1, 2^8-1, "double")], 2), ...
+%!                35184372088833-1/(2^8), eps (35184372088833))
+%!assert (mean (sparse ([flintmax("double"), ones(1, 2^8-1, "double")]), 2), ...
+%!        sparse (35184372088833-1/(2^8)), eps (35184372088833))
+%!assert (mean (reshape ([flintmax("double"), ones(1, 2^8-1, "double")], ...
+%!                       1, 2, (2^8)/2), [2, 3]), ...
+%!        35184372088833-1/(2^8), eps (35184372088833))
 
 ## Test input validation
 %!error <Invalid call> mean ()

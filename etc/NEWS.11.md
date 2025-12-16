@@ -38,6 +38,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The functions `sum`, `cumsum`, `sumsq` now have special code for logical
   inputs resulting in performance improvements of up to 6X.
 
+- The function `sum` now fully supports increased precision throught the "extra"
+  optional argument, which is also available for sparse arrays.
+
 - New function `_Exit` has been added which makes it possible to use
   `fork`/`_Exit` sequence to perform work in parallel child processes for
   potential performance gains.
@@ -53,7 +56,8 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The `mean` function no longer accepts character array inputs.  Convert any
   character input to a numeric value (e.g., use `double()` or `single()`).
 
-- All core statistics functions now strictly operate on numerical arrays.
+- All core statistics functions now strictly operate on numerical arrays.  The
+  `mean` function continues to accept logical arrays as input.
 
 - On dot-indexing of `classdef` objects, `subsref` now resolves to looking for
   a property first, and if a property is not found, then it looks for a method.
@@ -104,6 +108,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - Broadcasting now works on sparse matrix operations as well as mixed operations
   between sparse and full matrices.
 
+- All basic operations functions now properly handle empty inputs and return
+  correctly sized output arguments for both dense arrays and sparse matrices.
+
 - The function `zscore` now accepts the optional arguments `"all"` or `vecdim`,
   and `nanflag`.
 
@@ -112,6 +119,14 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 
 - The functions `cumprod` and `cumsum` now accept the optional arguments
   `"all"` or `vecdim`, `direction`, and `nanflag`.
+
+- The functions `min` and `max` now support the optional arguments `"all"` or
+  `vecdim`, `nanflag`, and the paired argument `"ComparisonMethod"` with options
+  `"real"`, `"abs"`, and `"auto"`.
+
+- The functions `cummin`, and `cummax` now support the optional arguments
+  `"all"` or `vecdim`, `nanflag`, `direction`, and the paired argument
+   `"ComparisonMethod"` with options `"real"`, `"abs"`, and `"auto"`.
 
 - The functions `prod`, `sum`, and `sumsq` now accept the optional arguments
  `"all"` or `vecdim`, `nanflag`, and `"default"` in `outtype`.  `prod` and
@@ -133,6 +148,8 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 
 - The functions `mode`, `moment`, `prctile`, and `quantile` now accept the
    optional arguments `"all"` or `vecdim`.
+
+- The function `mean` now accepts the optional paired argument `"Weights"`.
 
 - The function `quantile` now also accepts a positive integer as the second
   input argument specifying evenly spaced cumulative probabilities.

@@ -466,6 +466,7 @@ public:
   OCTAVE_API SparseComplexMatrix cumsum (int dim = -1, bool nanflag = false) const;
   OCTAVE_API SparseComplexMatrix prod (int dim = -1, bool nanflag = false) const;
   OCTAVE_API SparseComplexMatrix sum (int dim = -1, bool nanflag = false) const;
+  OCTAVE_API SparseComplexMatrix xsum (int dim = -1, bool nanflag = false) const;
   OCTAVE_API SparseComplexMatrix sumsq (int dim = -1, bool nanflag = false) const;
   OCTAVE_API SparseMatrix abs () const;
 

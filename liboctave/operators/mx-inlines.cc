@@ -3835,8 +3835,9 @@ do_mx_red_op (const Array<T>& src, int dim,
 {
   octave_idx_type l, n, u;
   dim_vector dims = src.dims ();
-  // M*b inconsistency: sum ([]) = 0 etc.
-  if (dims.ndims () == 2 && dims(0) == 0 && dims(1) == 0)
+
+  // Handle 0x0 empty array
+  if (dims.ndims () == 2 && dims(0) == 0 && dims(1) == 0 && dim == -1)
     dims(1) = 1;
 
   get_extent_triplet (dims, dim, l, n, u);
@@ -3861,8 +3862,9 @@ do_mx_red_op (const Array<T>& src, int dim, bool nanflag,
 {
   octave_idx_type l, n, u;
   dim_vector dims = src.dims ();
-  // M*b inconsistency: sum ([]) = 0 etc.
-  if (dims.ndims () == 2 && dims(0) == 0 && dims(1) == 0)
+
+  // Handle 0x0 empty array
+  if (dims.ndims () == 2 && dims(0) == 0 && dims(1) == 0 && dim == -1)
     dims(1) = 1;
 
   get_extent_triplet (dims, dim, l, n, u);
@@ -4201,10 +4203,26 @@ template <typename T>
 inline T
 mx_inline_xsum (const T *v, octave_idx_type n)
 {
-  T s, e;
-  s = e = 0;
+  bool posinf, neginf;
+  posinf = neginf = false;
+  T s, e, zero;
+  s = e = zero = 0;
   for (octave_idx_type i = 0; i < n; i++)
-    twosum_accum (s, e, v[i]);
+    {
+      if (! octave::math::isinf (v[i]))
+        twosum_accum (s, e, v[i]);
+      else if (v[i] > zero)
+        posinf = true;
+      else
+        neginf = true;
+    }
+
+  if (posinf && neginf)
+    return NAN;
+  else if (posinf)
+    return s + e + std::numeric_limits<T>::infinity ();
+  else if (neginf)
+    return s + e - std::numeric_limits<T>::infinity ();
 
   return s + e;
 }
@@ -4213,19 +4231,42 @@ template <typename T>
 inline T
 mx_inline_xsum (const T *v, octave_idx_type n, bool nanflag)
 {
-  T s, e;
-  s = e = 0;
+  bool posinf, neginf;
+  posinf = neginf = false;
+  T s, e, zero;
+  s = e = zero = 0;
   if (nanflag)
     {
       for (octave_idx_type i = 0; i < n; i++)
         if (! octave::math::isnan (v[i]))
-          twosum_accum (s, e, v[i]);
+          {
+            if (! octave::math::isinf (v[i]))
+              twosum_accum (s, e, v[i]);
+            else if (v[i] > zero)
+              posinf = true;
+            else
+              neginf = true;
+          }
     }
   else
     {
       for (octave_idx_type i = 0; i < n; i++)
-        twosum_accum (s, e, v[i]);
+        {
+          if (! octave::math::isinf (v[i]))
+            twosum_accum (s, e, v[i]);
+          else if (v[i] > zero)
+            posinf = true;
+          else
+            neginf = true;
+        }
     }
+
+  if (posinf && neginf)
+    return NAN;
+  else if (posinf)
+    return s + e + std::numeric_limits<T>::infinity ();
+  else if (neginf)
+    return s + e - std::numeric_limits<T>::infinity ();
 
   return s + e;
 }
@@ -4235,6 +4276,7 @@ inline void
 mx_inline_xsum (const T *v, T *r,
                 octave_idx_type m, octave_idx_type n)
 {
+  T zero = 0.0;
   OCTAVE_LOCAL_BUFFER (T, e, m);
   for (octave_idx_type i = 0; i < m; i++)
     e[i] = r[i] = T ();
@@ -4242,7 +4284,14 @@ mx_inline_xsum (const T *v, T *r,
   for (octave_idx_type j = 0; j < n; j++)
     {
       for (octave_idx_type i = 0; i < m; i++)
-        twosum_accum (r[i], e[i], v[i]);
+        {
+          if (! octave::math::isinf (v[i]))
+            twosum_accum (r[i], e[i], v[i]);
+          else if (v[i] > zero)
+            r[i] = e[i] = std::numeric_limits<T>::infinity ();
+          else
+            r[i] = e[i] = -std::numeric_limits<T>::infinity ();
+        }
 
       v += m;
     }
@@ -4256,6 +4305,7 @@ inline void
 mx_inline_xsum (const T *v, T *r,
                 octave_idx_type m, octave_idx_type n, bool nanflag)
 {
+  T zero = 0.0;
   OCTAVE_LOCAL_BUFFER (T, e, m);
   for (octave_idx_type i = 0; i < m; i++)
     e[i] = r[i] = T ();
@@ -4266,7 +4316,14 @@ mx_inline_xsum (const T *v, T *r,
         {
           for (octave_idx_type i = 0; i < m; i++)
             if (! octave::math::isnan (v[i]))
-              twosum_accum (r[i], e[i], v[i]);
+              {
+                if (! octave::math::isinf (v[i]))
+                  twosum_accum (r[i], e[i], v[i]);
+                else if (v[i] > zero)
+                  r[i] = e[i] = std::numeric_limits<T>::infinity ();
+                else
+                  r[i] = e[i] = -std::numeric_limits<T>::infinity ();
+              }
 
           v += m;
         }
@@ -4276,7 +4333,14 @@ mx_inline_xsum (const T *v, T *r,
       for (octave_idx_type j = 0; j < n; j++)
         {
           for (octave_idx_type i = 0; i < m; i++)
-            twosum_accum (r[i], e[i], v[i]);
+            {
+              if (! octave::math::isinf (v[i]))
+                twosum_accum (r[i], e[i], v[i]);
+              else if (v[i] > zero)
+                r[i] = e[i] = std::numeric_limits<T>::infinity ();
+              else
+                r[i] = e[i] = -std::numeric_limits<T>::infinity ();
+            }
 
           v += m;
         }

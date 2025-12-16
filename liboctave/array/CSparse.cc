@@ -7578,18 +7578,22 @@ SparseComplexMatrix::too_large_for_float () const
 SparseBoolMatrix
 SparseComplexMatrix::all (int dim) const
 {
+  SPARSE_ANY_ALL_HEADER
   SPARSE_ALL_OP (dim);
 }
 
 SparseBoolMatrix
 SparseComplexMatrix::any (int dim) const
 {
+  SPARSE_ANY_ALL_HEADER
   SPARSE_ANY_OP (dim);
 }
 
 SparseComplexMatrix
 SparseComplexMatrix::cumprod (int dim, bool nanflag) const
 {
+  if (dim > 1)
+    return *this;
   SPARSE_CUMPROD (SparseComplexMatrix, Complex, cumprod);
 }
 
@@ -7605,6 +7609,8 @@ SparseComplexMatrix::cumsum (int dim, bool nanflag) const
 #define EXPR                               \
   t += data (j)
 
+  if (dim > 1)
+    return *this;
   SPARSE_CUMSUM (SparseComplexMatrix, Complex, cumsum, NAN_EXPR, EXPR);
 
 #undef NAN_EXPR
@@ -7614,7 +7620,9 @@ SparseComplexMatrix::cumsum (int dim, bool nanflag) const
 SparseComplexMatrix
 SparseComplexMatrix::prod (int dim, bool nanflag) const
 {
-  if ((rows () == 1 && dim == -1) || dim == 1)
+  if (dim > 1)
+    return *this;
+  else if ((rows () == 1 && dim == -1) || dim == 1)
     return transpose ().prod (0, nanflag).transpose ();
   else
     {
@@ -7658,11 +7666,21 @@ SparseComplexMatrix::sum (int dim, bool nanflag) const
   else                                     \
     tmp[j] += d
 
+  if (dim > 1)
+    return *this;
   SPARSE_BASE_REDUCTION_OP (SparseComplexMatrix, Complex, ROW_EXPR,
                             COL_EXPR, 0.0, 0.0);
 
 #undef ROW_EXPR
 #undef COL_EXPR
+}
+
+SparseComplexMatrix
+SparseComplexMatrix::xsum (int dim, bool nanflag) const
+{
+  if (dim > 1)
+    return *this;
+  SPARSE_XSUM_REDUCTION_OP (SparseComplexMatrix, Complex);
 }
 
 SparseComplexMatrix
@@ -7682,6 +7700,7 @@ SparseComplexMatrix::sumsq (int dim, bool nanflag) const
   else                                     \
     tmp[j] += d * conj (d)
 
+  SPARSE_SUMSQ_HEADER (SparseComplexMatrix)
   SPARSE_BASE_REDUCTION_OP (SparseComplexMatrix, Complex, ROW_EXPR,
                             COL_EXPR, 0.0, 0.0);
 
@@ -8327,7 +8346,15 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
 
 /*
 
-## Testing broadcasting of empty matrices with min/max functions
+## Test exceeding dimensions
+%!assert (cumprod (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 2i; 3, 4]))
+%!assert (cumsum (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 2i; 3, 4]))
+%!assert (prod (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 2i; 3, 4]))
+%!assert (sum (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 2i; 3, 4]))
+%!assert (sum (sparse ([1, 2i; 3, 4]), 3, 'extra'), sparse ([1, 2i; 3, 4]))
+%!assert (sumsq (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 2i; 3, 4].^2))
+
+## Test broadcasting of empty matrices with min/max functions
 %!assert (min (sparse (zeros (0,1)), sparse ([1, 2, 3, 4i])), sparse (zeros (0,4)))
 %!error min (sparse (zeros (0,2)), sparse ([1, 2, 3, 4i]))
 %!assert (max (sparse (zeros (0,1)), sparse ([1, 2, 3, 4i])), sparse (zeros (0,4)))
@@ -8337,7 +8364,7 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
 %!assert (max (sparse (zeros (1,0)), sparse ([1; 2; 3; 4i])), sparse (zeros (4,0)))
 %!error max (sparse (zeros (2,0)), sparse ([1; 2; 3; 4i]))
 
-## Testing broadcasting of empty matrices with math operators.
+## Test broadcasting of empty matrices with math operators.
 ## This has been fixed in MSparse.cc and Sparse-op-defs.h
 %!assert (sparse (zeros (0,1)) + sparse ([1, 2, 3, 4i]), sparse (zeros (0,4)))
 %!error <operator \+: nonconformant arguments \(op1 is 0x2, op2 is 1x4\)> ...
@@ -8597,7 +8624,7 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
 %!assert (full (sparse ([1i, 2i; 0, 0; 0, 6]) ./ sparse ([0; 2; 3])),
 %!        [1i, 2i; 0, 0; 0, 6] ./ [0; 2; 3])
 
-## Testing broadcasting for math operations with scalar and sparse matrix
+## Test broadcasting for math operations with scalar and sparse matrix
 %!assert (sparse ([1, 2i]) + 1, [2, 1+2i])
 %!assert (1 + sparse ([1, 2i]), [2, 1+2i])
 %!assert (sparse ([1, 2]) - 1i, [1-1i, 2-1i])
@@ -8609,7 +8636,7 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
 %!error <operator /: nonconformant arguments \(op1 is 1x1, op2 is 1x2\)> ...
 %!       1 / sparse ([1i, 2])
 
-## Testing broadcasting for math operations with matrix and sparse matrix
+## Test broadcasting for math operations with matrix and sparse matrix
 %!assert (sparse ([1, 2]) + [1, 1i], [2, 2+1i])
 %!assert ([1, 1] + sparse ([1i, 2]), [1+1i, 3])
 %!assert (sparse ([1; 2i]) + [1; 1], [2; 1+2i])
@@ -8698,7 +8725,7 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
 %!error <operator /: nonconformant arguments \(op1 is 3x1, op2 is 4x3\)> ...
 %!       sparse ([1i; 2i; 3i]) / ones (4, 3)
 
-## Testing broadcasting for comparison and boolean operators
+## Test broadcasting for comparison and boolean operators
 ## for sparse matrix to matrix and matrix to sparse matrix
 %!assert (sparse ([1, 1i, 0]) == [0, 1, 1]*i, sparse (logical ([0, 1, 0])))
 %!assert (sparse ([1; 1i; 0]) == [0, 1, 1]*i, sparse ([1; 1i; 0] == [0, 1, 1]*i))
@@ -8805,7 +8832,7 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
 %!assert ([0, 1; 1, 1; 0, 1]+i & sparse ([1; 1; 0]+i), ...
 %!        sparse (logical ([1, 1; 1, 1; 1, 1])))
 
-## Boolean OR operations should return dense logical arrays
+## Test boolean OR operations should return dense logical arrays
 %!assert (sparse ([1, 1i, 0]) | [0, 1, 1]*i, logical ([1, 1, 1]))
 %!assert (sparse ([1; 1i; 0]) | [0, 1, 1]*i, [1; 1i; 0] | [0, 1, 1]*i)
 %!assert (sparse ([1, 1i, 0]) | [0; 1; 1; 0]*i, [1, 1i, 0] | [0; 1; 1; 0]*i)
@@ -8817,7 +8844,7 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
 %!assert ([0, 1, 1i; 0+i, 1, 1] | sparse ([1, 1, 0]+i), logical ([1, 1, 1; 1, 1, 1]))
 %!assert ([0, 1; 1, 1; 0, 1]+i | sparse ([1; 1; 0]+i), logical ([1, 1; 1, 1; 1, 1]))
 
-## Testing broadcasting for comparison and boolean operators
+## Test broadcasting for comparison and boolean operators
 ## for sparse matrix to scalar and scalar to sparse matrix
 %!assert (sparse ([1, 1, 0]*i) == 1i, sparse (logical ([1, 1, 0])))
 %!assert (sparse ([1, 1, 0]*i) != 1i, sparse (logical ([0, 0, 1])))
@@ -8870,7 +8897,7 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
 %!error <mx_el_or: nonconformant arguments \(op1 is 0x2, op2 is 2x2\)> ...
 %!       sparse (ones (0,2)) | ones (2,2)*i
 
-## Testing broadcasting for comparison and boolean operators
+## Test broadcasting for comparison and boolean operators
 ## for sparse matrix to sparse matrix
 %!assert (sparse([1i, 1, 0]) == sparse([0, 1, 1]+i), sparse ([1i, 1, 0] == [0, 1, 1]+i))
 %!assert (sparse([1i; 1; 0]) == sparse([0, 1, 1]+i), sparse ([1i; 1; 0] == [0, 1, 1]+i))

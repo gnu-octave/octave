@@ -270,11 +270,42 @@ all elements of @var{x}, and is equivalent to @code{all (@var{x}(:))}.
 %! assert (all (x, [2, 3]), logical ([1; 1; 0]));
 %! assert (all (x, "all"), false);
 
+%!assert (all (ones (2), 3), logical (ones (2)))
+%!assert (all (ones (2), [3, 5]), logical (ones (2)))
+
+## Test empty matrices
+%!assert (all ([]), true)
+%!assert (all ([], 1), true (1, 0))
+%!assert (all ([], 2), true (0, 1))
+%!assert (all ([], 3), true (0, 0))
+%!assert (all (ones (1,0)), true)
+%!assert (all (ones (1,0), 1), true (1, 0))
+%!assert (all (ones (1,0), 2), true)
+%!assert (all (ones (1,0), 3), true (1, 0))
+%!assert (all (ones (0,1)), true)
+%!assert (all (ones (0,1), 1), true)
+%!assert (all (ones (0,1), 2), true (0, 1))
+%!assert (all (ones (0,1), 3), true (0, 1))
+
 ## Test sparse matrices
 %!assert (all (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 0, NaN]), 2),
 %!        sparse ([true; false]))
 %!assert (all (sparse ([NaN, 0, 1, 4, 2; 1, 2, 1, 2, NaN]), 2),
 %!        sparse ([false; true]))
+
+## Test empty sparse matrices
+%!assert (all (sparse ([])), sparse (true))
+%!assert (all (sparse ([]), 1), sparse (true (1, 0)))
+%!assert (all (sparse ([]), 2), sparse (true (0, 1)))
+%!assert (all (sparse ([]), 3), sparse (true (0, 0)))
+%!assert (all (sparse (ones (1,0))), sparse (true))
+%!assert (all (sparse (ones (1,0)), 1), sparse (true (1, 0)))
+%!assert (all (sparse (ones (1,0)), 2), sparse (true))
+%!assert (all (sparse (ones (1,0)), 3), sparse (true (1, 0)))
+%!assert (all (sparse (ones (0,1))), sparse (true))
+%!assert (all (sparse (ones (0,1)), 1), sparse (true))
+%!assert (all (sparse (ones (0,1)), 2), sparse (true (0, 1)))
+%!assert (all (sparse (ones (0,1)), 3), sparse (true (0, 1)))
 
 ## Test input validation
 %!error all ()
@@ -409,8 +440,19 @@ all elements of @var{x}, and is equivalent to @code{any (@var{x}(:))}.
 %! assert (any (x, [2, 3]), logical ([0; 0; 1]));
 %! assert (any (x, "all"), true);
 
-%!assert (all (ones (2), 3), logical (ones (2)))
-%!assert (all (ones (2), [3, 5]), logical (ones (2)))
+## Test empty matrices
+%!assert (any ([]), false)
+%!assert (any ([], 1), false (1, 0))
+%!assert (any ([], 2), false (0, 1))
+%!assert (any ([], 3), false (0, 0))
+%!assert (any (ones (1,0)), false)
+%!assert (any (ones (1,0), 1), false (1, 0))
+%!assert (any (ones (1,0), 2), false)
+%!assert (any (ones (1,0), 3), false (1, 0))
+%!assert (any (ones (0,1)), false)
+%!assert (any (ones (0,1), 1), false)
+%!assert (any (ones (0,1), 2), false (0, 1))
+%!assert (any (ones (0,1), 3), false (0, 1))
 
 ## Test sparse matrices
 %!assert (any (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 0, NaN]), 2),
@@ -421,6 +463,20 @@ all elements of @var{x}, and is equivalent to @code{any (@var{x}(:))}.
 %!        sparse ([false; true]))
 %!assert (any (sparse ([0, 0, 0, 0+i, 0; 1, 2, 1, 2, NaN]), 2),
 %!        sparse ([true; true]))
+
+## Test empty sparse matrices
+%!assert (any (sparse ([])), sparse (false))
+%!assert (any (sparse ([]), 1), sparse (false (1, 0)))
+%!assert (any (sparse ([]), 2), sparse (false (0, 1)))
+%!assert (any (sparse ([]), 3), sparse (false (0, 0)))
+%!assert (any (sparse (ones (1,0))), sparse (false))
+%!assert (any (sparse (ones (1,0)), 1), sparse (false (1, 0)))
+%!assert (any (sparse (ones (1,0)), 2), sparse (false))
+%!assert (any (sparse (ones (1,0)), 3), sparse (false (1, 0)))
+%!assert (any (sparse (ones (0,1))), sparse (false))
+%!assert (any (sparse (ones (0,1)), 1), sparse (false))
+%!assert (any (sparse (ones (0,1)), 2), sparse (false (0, 1)))
+%!assert (any (sparse (ones (0,1)), 3), sparse (false (0, 1)))
 
 ## Test input validation
 %!error any ()
@@ -2414,6 +2470,14 @@ operating dimension.
 
 %!assert (prod ([1, 2; 3, 4], 1), [3, 8])
 %!assert (prod ([1, 2; 3, 4], 2), [2; 12])
+%!assert (prod (single ([1, 2; 3, 4]), 1), single ([3, 8]))
+%!assert (prod (single ([1, 2; 3, 4]), 2), single ([2; 12]))
+
+## Test empty matrices
+%!assert (prod ([]), 1)
+%!assert (prod ([], 1), zeros (1, 0))
+%!assert (prod ([], 2), zeros (0, 1))
+%!assert (prod ([], 3), zeros (0, 0))
 %!assert (prod (zeros (1, 0)), 1)
 %!assert (prod (zeros (1, 0), 1), zeros (1, 0))
 %!assert (prod (zeros (1, 0), 2), 1)
@@ -2427,8 +2491,10 @@ operating dimension.
 %!assert (prod (zeros (0, 2), 1), [1, 1])
 %!assert (prod (zeros (0, 2), 2), zeros (0, 1))
 
-%!assert (prod (single ([1, 2; 3, 4]), 1), single ([3, 8]))
-%!assert (prod (single ([1, 2; 3, 4]), 2), single ([2; 12]))
+%!assert (prod (single ([])), single (1))
+%!assert (prod (single ([]), 1), single (zeros (1, 0)))
+%!assert (prod (single ([]), 2), single (zeros (0, 1)))
+%!assert (prod (single ([]), 3), single (zeros (0, 0)))
 %!assert (prod (zeros (1, 0, "single")), single (1))
 %!assert (prod (zeros (1, 0, "single"), 1), zeros (1, 0, "single"))
 %!assert (prod (zeros (1, 0, "single"), 2), single (1))
@@ -2540,6 +2606,19 @@ operating dimension.
 %!assert (prod (sparse ([0, 0, 0, NaN, NaN, NaN])), sparse (NaN))
 %!assert (prod (sparse ([NaN, NaN, NaN]), "omitnan"), sparse (1))
 %!assert (prod (sparse ([0, 0, 0, NaN, NaN, NaN]), "omitnan"), sparse (0))
+
+## Test empty sparse matrices
+%!assert (prod (sparse (ones(1, 0))), sparse (1))
+%!assert (size (prod (sparse (ones(1, 0)), 1)), [1, 0])
+%!assert (size (prod (sparse (ones(1, 0)), 2)), [1, 1])
+%!assert (prod (sparse (ones(0, 1))), sparse (1))
+%!assert (size (prod (sparse (ones(0, 1)), 1)), [1, 1])
+%!assert (size (prod (sparse (ones(0, 1)), 1)), [1, 1])
+%!assert (size (prod (sparse (ones(0, 1)), 2)), [0, 1])
+%!assert (prod (sparse (ones(0, 0))), sparse (1))
+%!assert (size (prod (sparse (ones(0, 0)), 1)), [1, 0])
+%!assert (size (prod (sparse (ones(0, 0)), 2)), [0, 1])
+%!assert (size (prod (sparse (ones(0, 0)), 3)), [0, 0])
 
 ## Test input validation
 %!error prod ()
@@ -4218,9 +4297,9 @@ operating dimension.
       if (arg.issparse ())
         {
           if (isextra)
-            warning ("sum: 'extra' not yet implemented for sparse matrices");
-
-          retval = arg.sparse_matrix_value ().sum (dim, nanflag);
+            retval = arg.sparse_matrix_value ().xsum (dim, nanflag);
+          else
+            retval = arg.sparse_matrix_value ().sum (dim, nanflag);
         }
       else
         {
@@ -4235,9 +4314,9 @@ operating dimension.
       if (arg.issparse ())
         {
           if (isextra)
-            warning ("sum: 'extra' not yet implemented for sparse matrices");
-
-          retval = arg.sparse_complex_matrix_value ().sum (dim, nanflag);
+            retval = arg.sparse_complex_matrix_value ().xsum (dim, nanflag);
+          else
+            retval = arg.sparse_complex_matrix_value ().sum (dim, nanflag);
         }
       else
         {
@@ -4329,6 +4408,14 @@ operating dimension.
 
 %!assert (sum ([1, 2; 3, 4], 1), [4, 6])
 %!assert (sum ([1, 2; 3, 4], 2), [3; 7])
+%!assert (sum (single ([1, 2; 3, 4]), 1), single ([4, 6]))
+%!assert (sum (single ([1, 2; 3, 4]), 2), single ([3; 7]))
+
+## Test empty matrices
+%!assert (sum ([]), 0)
+%!assert (sum ([], 1), zeros (1, 0))
+%!assert (sum ([], 2), zeros (0, 1))
+%!assert (sum ([], 3), zeros (0, 0))
 %!assert (sum (zeros (1, 0)), 0)
 %!assert (sum (zeros (1, 0), 1), zeros (1, 0))
 %!assert (sum (zeros (1, 0), 2), 0)
@@ -4347,8 +4434,10 @@ operating dimension.
 %!assert (sum (zeros (2, 2, 0, 3), 4), zeros (2, 2, 0))
 %!assert (sum (zeros (2, 2, 0, 3), 7), zeros (2, 2, 0, 3))
 
-%!assert (sum (single ([1, 2; 3, 4]), 1), single ([4, 6]))
-%!assert (sum (single ([1, 2; 3, 4]), 2), single ([3; 7]))
+%!assert (sum (single ([])), single (0))
+%!assert (sum (single ([]), 1), single (zeros (1, 0)))
+%!assert (sum (single ([]), 2), single (zeros (0, 1)))
+%!assert (sum (single ([]), 3), single (zeros (0, 0)))
 %!assert (sum (zeros (1, 0, "single")), single (0))
 %!assert (sum (zeros (1, 0, "single"), 1), zeros (1, 0, "single"))
 %!assert (sum (zeros (1, 0, "single"), 2), single (0))
@@ -4437,6 +4526,48 @@ operating dimension.
 %!        sparse ([7+2i; 6]))
 %!assert (sum (sparse ([NaN, NaN, NaN]), "omitnan"), sparse (0))
 %!assert (sum (sparse ([0, 0, 0, NaN, NaN, NaN]), "omitnan"), sparse (0))
+
+## Test empty sparse matrices
+%!assert (sum (sparse (ones(1, 0))), sparse (0))
+%!assert (size (sum (sparse (ones(1, 0)), 1)), [1, 0])
+%!assert (size (sum (sparse (ones(1, 0)), 2)), [1, 1])
+%!assert (sum (sparse (ones(0, 1))), sparse (0))
+%!assert (size (sum (sparse (ones(0, 1)), 1)), [1, 1])
+%!assert (size (sum (sparse (ones(0, 1)), 1)), [1, 1])
+%!assert (size (sum (sparse (ones(0, 1)), 2)), [0, 1])
+%!assert (sum (sparse (ones(0, 0))), sparse (0))
+%!assert (size (sum (sparse (ones(0, 0)), 1)), [1, 0])
+%!assert (size (sum (sparse (ones(0, 0)), 2)), [0, 1])
+%!assert (size (sum (sparse (ones(0, 0)), 3)), [0, 0])
+
+## Test empty sparse matrices with 'extra' option
+%!assert (sum (sparse (ones(1, 0)), 'extra'), sparse (0))
+%!assert (size (sum (sparse (ones(1, 0)), 1, 'extra')), [1, 0])
+%!assert (size (sum (sparse (ones(1, 0)), 2, 'extra')), [1, 1])
+%!assert (sum (sparse (ones(0, 1)), 'extra'), sparse (0))
+%!assert (size (sum (sparse (ones(0, 1)), 1, 'extra')), [1, 1])
+%!assert (size (sum (sparse (ones(0, 1)), 1, 'extra')), [1, 1])
+%!assert (size (sum (sparse (ones(0, 1)), 2, 'extra')), [0, 1])
+%!assert (sum (sparse (ones(0, 0)), 'extra'), sparse (0))
+%!assert (size (sum (sparse (ones(0, 0)), 1, 'extra')), [1, 0])
+%!assert (size (sum (sparse (ones(0, 0)), 2, 'extra')), [0, 1])
+%!assert (size (sum (sparse (ones(0, 0)), 3, 'extra')), [0, 0])
+
+## Test 'extra' option
+%!assert (sum ([1, Inf], "extra"), Inf)
+%!assert (sum ([1, -Inf], "extra"), -Inf)
+%!assert (sum ([Inf, -Inf], "extra"), NaN)
+%!assert (sum (sparse ([1, Inf]), "extra"), sparse (Inf))
+%!assert (sum (sparse ([1, -Inf]), "extra"), sparse (-Inf))
+%!assert (sum (sparse ([Inf, -Inf]), "extra"), sparse (NaN))
+%!test
+%! x = [flintmax("double"), 1, -1];
+%! assert ((sum (x, "extra")) == flintmax ("double"), true);
+%! assert ((sum (x)) == flintmax ("double"), false);
+%!test
+%! x = sparse ([flintmax("double"), 1, -1]);
+%! assert ((sum (x, "extra")) == flintmax ("double"), sparse (true));
+%! assert ((sum (x)) == flintmax ("double"), sparse (false));
 
 ## Test cases for "omitnan"
 %!test
@@ -4729,6 +4860,51 @@ operating dimension.
 %!assert (sumsq (single ([1, 2; 3, 4]), 1), single ([10, 20]))
 %!assert (sumsq (single ([1, 2; 3, 4]), 2), single ([5; 25]))
 
+## Test empty matrices
+%!assert (sumsq ([]), 0)
+%!assert (sumsq ([], 1), zeros (1, 0))
+%!assert (sumsq ([], 2), zeros (0, 1))
+%!assert (sumsq ([], 3), zeros (0, 0))
+%!assert (sumsq (zeros (1, 0)), 0)
+%!assert (sumsq (zeros (1, 0), 1), zeros (1, 0))
+%!assert (sumsq (zeros (1, 0), 2), 0)
+%!assert (sumsq (zeros (0, 1)), 0)
+%!assert (sumsq (zeros (0, 1), 1), 0)
+%!assert (sumsq (zeros (0, 1), 2), zeros (0, 1))
+%!assert (sumsq (zeros (2, 0)),  zeros (1, 0))
+%!assert (sumsq (zeros (2, 0), 1), zeros (1, 0))
+%!assert (sumsq (zeros (2, 0), 2),  [0; 0])
+%!assert (sumsq (zeros (0, 2)), [0, 0])
+%!assert (sumsq (zeros (0, 2), 1), [0, 0])
+%!assert (sumsq (zeros (0, 2), 2), zeros (0, 1))
+%!assert (sumsq (zeros (2, 2, 0, 3)), zeros (1, 2, 0, 3))
+%!assert (sumsq (zeros (2, 2, 0, 3), 2), zeros (2, 1, 0, 3))
+%!assert (sumsq (zeros (2, 2, 0, 3), 3), zeros (2, 2, 1, 3))
+%!assert (sumsq (zeros (2, 2, 0, 3), 4), zeros (2, 2, 0))
+%!assert (sumsq (zeros (2, 2, 0, 3), 7), zeros (2, 2, 0, 3))
+
+%!assert (sumsq (single ([])), single (0))
+%!assert (sumsq (single ([]), 1), single (zeros (1, 0)))
+%!assert (sumsq (single ([]), 2), single (zeros (0, 1)))
+%!assert (sumsq (single ([]), 3), single (zeros (0, 0)))
+%!assert (sumsq (zeros (1, 0, "single")), single (0))
+%!assert (sumsq (zeros (1, 0, "single"), 1), zeros (1, 0, "single"))
+%!assert (sumsq (zeros (1, 0, "single"), 2), single (0))
+%!assert (sumsq (zeros (0, 1, "single")), single (0))
+%!assert (sumsq (zeros (0, 1, "single"), 1), single (0))
+%!assert (sumsq (zeros (0, 1, "single"), 2), zeros (0, 1, "single"))
+%!assert (sumsq (zeros (2, 0, "single")),  zeros (1, 0, "single"))
+%!assert (sumsq (zeros (2, 0, "single"), 1), zeros (1, 0, "single"))
+%!assert (sumsq (zeros (2, 0, "single"), 2),  single ([0; 0]))
+%!assert (sumsq (zeros (0, 2, "single")), single ([0, 0]))
+%!assert (sumsq (zeros (0, 2, "single"), 1), single ([0, 0]))
+%!assert (sumsq (zeros (0, 2, "single"), 2), zeros (0, 1, "single"))
+%!assert (sumsq (zeros (2, 2, 0, 3, "single")), zeros (1, 2, 0, 3, "single"))
+%!assert (sumsq (zeros (2, 2, 0, 3, "single"), 2), zeros (2, 1, 0, 3, "single"))
+%!assert (sumsq (zeros (2, 2, 0, 3, "single"), 3), zeros (2, 2, 1, 3, "single"))
+%!assert (sumsq (zeros (2, 2, 0, 3, "single"), 4), zeros (2, 2, 0, "single"))
+%!assert (sumsq (zeros (2, 2, 0, 3, "single"), 7), zeros (2, 2, 0, 3, "single"))
+
 ## Test dimension indexing with vecdim in N-dimensional arrays
 %!test
 %! x = repmat ([1:20;6:25], [5 2 6 3]);
@@ -4796,6 +4972,19 @@ operating dimension.
 %!        sparse ([23; 10]))
 %!assert (sumsq (sparse ([NaN, NaN, NaN]), "omitnan"), sparse (0))
 %!assert (sumsq (sparse ([0, 0, 0, NaN, NaN, NaN]), "omitnan"), sparse (0))
+
+## Test empty sparse matrices
+%!assert (sumsq (sparse (ones(1, 0))), sparse (0))
+%!assert (size (sumsq (sparse (ones(1, 0)), 1)), [1, 0])
+%!assert (size (sumsq (sparse (ones(1, 0)), 2)), [1, 1])
+%!assert (sumsq (sparse (ones(0, 1))), sparse (0))
+%!assert (size (sumsq (sparse (ones(0, 1)), 1)), [1, 1])
+%!assert (size (sumsq (sparse (ones(0, 1)), 1)), [1, 1])
+%!assert (size (sumsq (sparse (ones(0, 1)), 2)), [0, 1])
+%!assert (sumsq (sparse (ones(0, 0))), sparse (0))
+%!assert (size (sumsq (sparse (ones(0, 0)), 1)), [1, 0])
+%!assert (size (sumsq (sparse (ones(0, 0)), 2)), [0, 1])
+%!assert (size (sumsq (sparse (ones(0, 0)), 3)), [0, 0])
 
 ## Test boolean sumsq (must be equal to sum)
 %!test

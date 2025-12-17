@@ -162,26 +162,25 @@ If @var{x} is a vector, then @code{all (@var{x})} returns true (logical 1) if
 all elements of the vector are nonzero.
 
 If @var{x} is a matrix, then @code{all (@var{x})} returns a row vector of
-logical ones and zeros with each element indicating whether all of the elements
+logical ones and zeros where each element indicates whether all of the elements
 of the corresponding column of the matrix are nonzero.
 
 If @var{x} is an array, then @code{all(@var{x})} operates along the first
 non-singleton dimension of @var{x} and returns a logical array, whose size is
-equal to @var{x} except the operating dimension which becomes 1.
+equal to @var{x} except for the operating dimension which becomes 1.
 
-The optional variable @var{dim} forces @code{all} to operate over the specified
-dimension, which must be a positive integer-valued number.  Specifying any
-singleton dimension in @var{x}, including any dimension exceeding
-@code{ndims (@var{x})}, will return @var{x}.
+The optional input @var{dim} specifies the dimension to operate on and must be
+a positive integer.  Specifying any singleton dimension in @var{x}, including
+any dimension exceeding @code{ndims (@var{x})}, will return @var{x}.
 
-Specifying the dimensions as @var{vecdim}, a vector of non-repeating dimensions,
-will operate along the array slice defined by @var{vecdim}.  If @var{vecdim}
-indexes all dimensions of @var{x}, then it is equivalent to the option
-@qcode{"all"}.  Any dimension in @var{vecdim} greater than
-@code{ndims (@var{x})} is ignored.  The size of the dimensions specified by
-@var{vecdim} become 1 in the returned logical array.
+Specifying multiple dimensions with input @var{vecdim}, a vector of
+non-repeating dimensions, will operate along the array slice defined by
+@var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim} greater
+than @code{ndims (@var{x})} is ignored.  The size of the dimensions specified
+by @var{vecdim} become 1 in the returned logical array.
 
-Specifying the dimension as @qcode{"all"} will force @code{all} to operate on
+Specifying the dimension as @qcode{"all"} will cause @code{all} to operate on
 all elements of @var{x}, and is equivalent to @code{all (@var{x}(:))}.
 @seealso{any}
 @end deftypefn */)
@@ -221,20 +220,13 @@ all elements of @var{x}, and is equivalent to @code{all (@var{x}(:))}.
 
   // Handle allflag
   if (allflag)
-    {
-      octave_idx_type szvecdim = 1;
-      dim_vector sz = arg.dims ();
-      for (int i = 0; i < arg.ndims (); i++)
-      {
-        szvecdim = szvecdim * sz(i);
-      }
-      arg = arg.reshape (dim_vector (szvecdim, 1));
-    }
+    arg = arg.reshape (dim_vector (arg.numel (), 1));
 
   octave_value retval = arg.all (dim);
 
   if (do_perm)
     retval = retval.permute (perm_vec, true);
+
   return retval;
 }
 
@@ -308,11 +300,13 @@ all elements of @var{x}, and is equivalent to @code{all (@var{x}(:))}.
 %!assert (all (sparse (ones (0,1)), 3), sparse (true (0, 1)))
 
 ## Test input validation
-%!error all ()
-%!error all (1,2,3)
+%!error <Invalid call> all ()
+%!error <Invalid call> all (1,2,3)
 %!error <unrecognized optional argument 'foobar'> all (1, "foobar")
-%!error <all: cannot set DIM or VECDIM with 'all' flag> all (ones (3,3), 1, "all")
-%!error <all: cannot set DIM or VECDIM with 'all' flag> all (ones (3,3), [1, 2], "all")
+%!error <all: cannot set DIM or VECDIM with 'all' flag>
+%! all (ones (3,3), 1, "all");
+%!error <all: cannot set DIM or VECDIM with 'all' flag>
+%! all (ones (3,3), [1, 2], "all");
 %!error <all: invalid dimension DIM = 0> all (ones (3,3), 0)
 %!error <all: invalid dimension DIM = -1> all (ones (3,3), -1)
 %!error <all: invalid dimension in VECDIM = -2> all (ones (3,3), [1 -2])
@@ -332,26 +326,25 @@ If @var{x} is a vector, then @code{any (@var{x})} returns true (logical 1) if
 any elements of the vector are nonzero.
 
 If @var{x} is a matrix, then @code{any (@var{x})} returns a row vector of
-logical ones and zeros with each element indicating whether any of the elements
+logical ones and zeros where each element indicates whether any of the elements
 of the corresponding column of the matrix are nonzero.
 
 If @var{x} is an array, then @code{any(@var{x})} operates along the first
 non-singleton dimension of @var{x} and returns a logical array, whose size is
-equal to @var{x} except the operating dimension which becomes 1.
+equal to @var{x} except for the operating dimension which becomes 1.
 
-The optional variable @var{dim} forces @code{any} to operate over the specified
-dimension, which must be a positive integer-valued number.  Specifying any
-singleton dimension in @var{x}, including any dimension exceeding
-@code{ndims (@var{x})}, will return @var{x}.
+The optional input @var{dim} specifies the dimension to operate on and must be
+a positive integer.  Specifying any singleton dimension in @var{x}, including
+any dimension exceeding @code{ndims (@var{x})}, will return @var{x}.
 
-Specifying the dimensions as @var{vecdim}, a vector of non-repeating dimensions,
-will operate along the array slice defined by @var{vecdim}.  If @var{vecdim}
-indexes all dimensions of @var{x}, then it is equivalent to the option
-@qcode{"all"}.  Any dimension in @var{vecdim} greater than
-@code{ndims (@var{x})} is ignored.  The size of the dimensions specified by
-@var{vecdim} become 1 in the returned logical array.
+Specifying multiple dimensions with input @var{vecdim}, a vector of
+non-repeating dimensions, will operate along the array slice defined by
+@var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim} greater
+than @code{ndims (@var{x})} is ignored.  The size of the dimensions specified
+by @var{vecdim} become 1 in the returned logical array.
 
-Specifying the dimension as @qcode{"all"} will force @code{any} to operate on
+Specifying the dimension as @qcode{"all"} will cause @code{any} to operate on
 all elements of @var{x}, and is equivalent to @code{any (@var{x}(:))}.
 @seealso{all}
 @end deftypefn */)
@@ -391,20 +384,13 @@ all elements of @var{x}, and is equivalent to @code{any (@var{x}(:))}.
 
   // Handle allflag
   if (allflag)
-    {
-      octave_idx_type szvecdim = 1;
-      dim_vector sz = arg.dims ();
-      for (int i = 0; i < arg.ndims (); i++)
-      {
-        szvecdim = szvecdim * sz(i);
-      }
-      arg = arg.reshape (dim_vector (szvecdim, 1));
-    }
+    arg = arg.reshape (dim_vector (arg.numel (), 1));
 
   octave_value retval = arg.any (dim);
 
   if (do_perm)
     retval = retval.permute (perm_vec, true);
+
   return retval;
 }
 
@@ -479,11 +465,13 @@ all elements of @var{x}, and is equivalent to @code{any (@var{x}(:))}.
 %!assert (any (sparse (ones (0,1)), 3), sparse (false (0, 1)))
 
 ## Test input validation
-%!error any ()
-%!error any (1,2,3)
+%!error <Invalid call> any ()
+%!error <Invalid call> any (1,2,3)
 %!error <unrecognized optional argument 'foobar'> any (1, "foobar")
-%!error <any: cannot set DIM or VECDIM with 'all' flag> any (ones (3,3), 1, "all")
-%!error <any: cannot set DIM or VECDIM with 'all' flag> any (ones (3,3), [1, 2], "all")
+%!error <any: cannot set DIM or VECDIM with 'all' flag>
+%! any (ones (3,3), 1, "all");
+%!error <any: cannot set DIM or VECDIM with 'all' flag>
+%! any (ones (3,3), [1, 2], "all");
 %!error <any: invalid dimension DIM = 0> any (ones (3,3), 0)
 %!error <any: invalid dimension DIM = -1> any (ones (3,3), -1)
 %!error <any: invalid dimension in VECDIM = -2> any (ones (3,3), [1 -2])
@@ -1294,37 +1282,38 @@ If @var{x} is a matrix, then @code{cumprod (@var{x})} returns a matrix of the
 same size with the cumulative product along each column of @var{x}.
 
 If @var{x} is an array, then @code{cumprod(@var{x})} returns an array of the
-same size with the cumulative product along the first non-singleton dimension of
-@var{x}.
+same size with the cumulative product along the first non-singleton dimension
+of @var{x}.
 
 The class of output @var{y} is the same as the class of input @var{x}, unless
 @var{x} is logical, in which case @var{y} is double.
 
-The optional variable @var{dim} forces @code{cumprod} to operate along the
-specified dimension, which must be a positive integer-valued number.  Specifying
-any singleton dimension in @var{x}, including any dimension exceeding
-@code{ndims (@var{x})}, will result in a cumulative product equal to @var{x}.
+The optional input @var{dim} specifies the dimension to operate on and must be
+a positive integer.  Specifying any singleton dimension in @var{x}, including
+any dimension exceeding @code{ndims (@var{x})}, will return @var{x}.
 
-Specifying the dimensions as @var{vecdim}, a vector of non-repeating dimensions,
-will return the cumulative product over the array slice defined by @var{vecdim}.
-If @var{vecdim} indexes all dimensions of @var{x}, then it is equivalent to the
-option @qcode{"all"}.  Any dimension in @var{vecdim} greater than
-@code{ndims (@var{x})} is ignored.
+Specifying multiple dimensions with input @var{vecdim}, a vector of
+non-repeating dimensions, will operate along the array slice defined by
+@var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim} greater
+than @code{ndims (@var{x})} is ignored.
 
-Specifying the dimension as @qcode{"all"} will force @code{cumprod} to operate
-along all elements of @var{x}, and is equivalent to @code{cumprod (@var{x}(:))}.
+Specifying the dimension as @qcode{"all"} will cause @code{cumprod} to operate
+on all elements of @var{x}, and is equivalent to @code{cumprod (@var{x}(:))}.
 
-The optional variable @var{direction} specifies the direction to compute the
-cumulative product along the operating dimension using any of the previously
-specified input argument combinations.  @var{outtype} can take the following
-values:
+The optional input @var{direction} specifies how the operating dimension is
+traversed and can take the following values:
 
 @table @asis
-@item @qcode{"forward"} : By default, the cumulative product is computed from
-beginning to end along the operating dimension.
+@item @qcode{"forward"} (default)
 
-@item @qcode{"reverse"} : The cumulative product is computed from end to
-beginning along the operating dimension.
+The cumulative product is computed from beginning (index 1) to end along the
+operating dimension.
+
+@item @qcode{"reverse"}
+
+The cumulative product is computed from end to beginning along the operating
+dimension.
 @end table
 
 The optional variable @var{nanflag} specifies whether to include or exclude
@@ -1385,15 +1374,7 @@ operating dimension.
 
   // Handle allflag
   if (allflag)
-    {
-      octave_idx_type szvecdim = 1;
-      dim_vector sz = arg.dims ();
-      for (int i = 0; i < arg.ndims (); i++)
-      {
-        szvecdim = szvecdim * sz(i);
-      }
-      arg = arg.reshape (dim_vector (szvecdim, 1));
-    }
+    arg = arg.reshape (dim_vector (arg.numel (), 1));
 
   octave_value retval;
 
@@ -1488,6 +1469,7 @@ operating dimension.
 
   if (do_perm)
     retval = retval.permute (perm_vec, true);
+
   return retval;
 }
 
@@ -1572,7 +1554,7 @@ operating dimension.
 %! assert (y(:,2), [1; 4; 28; 224]);
 %! y = cumprod (x, [1, 3], "omitnan", "reverse");
 %! assert (y(:,1), [60; 60; 30; 6]);
-%! assert (y(:,2), [224; 224; 56; 8])
+%! assert (y(:,2), [224; 224; 56; 8]);
 %! y = cumprod (x, [2, 3], "omitnan");
 %! assert (y(1,:), [1, 1, 5, 35]);
 %! y = cumprod (x, [2, 3], "omitnan", "reverse");
@@ -1631,20 +1613,20 @@ operating dimension.
 %!        sparse ([1, 0, 0, 0, 0; 1, 2, 2, 4, 4]))
 
 ## Test input validation
-%!error cumprod ()
-%!error cumprod (1,2,3)
+%!error <Invalid call> cumprod ()
+%!error <Invalid call> cumprod (1,2,3)
 %!error <unrecognized optional argument 'foobar'> cumprod (1, "foobar")
-%!error <cumprod: cannot set DIM or VECDIM with 'all' flag> ...
-%!      cumprod (ones (3,3), 1, "all")
-%!error <cumprod: cannot set DIM or VECDIM with 'all' flag> ...
-%!      cumprod (ones (3,3), [1, 2], "all")
+%!error <cumprod: cannot set DIM or VECDIM with 'all' flag>
+%! cumprod (ones (3,3), 1, "all");
+%!error <cumprod: cannot set DIM or VECDIM with 'all' flag>
+%! cumprod (ones (3,3), [1, 2], "all");
 %!error <cumprod: invalid dimension DIM = 0> cumprod (ones (3,3), 0)
 %!error <cumprod: invalid dimension DIM = -1> cumprod (ones (3,3), -1)
 %!error <cumprod: invalid dimension in VECDIM = -2> cumprod (ones (3), [1 -2])
 %!error <cumprod: duplicate dimension in VECDIM = 2> cumprod (ones (3), [1 2 2])
 %!error <cumprod: duplicate dimension in VECDIM = 1> cumprod (ones (3), [1 1 2])
-%!error <cumprod: DIRECTION is not supported for sparse matrices> ...
-%!      cumprod (sparse (ones (3,3)), "reverse")
+%!error <cumprod: DIRECTION is not supported for sparse matrices>
+%! cumprod (sparse (ones (3,3)), "reverse");
 */
 
 DEFUN (cumsum, args, ,
@@ -1663,38 +1645,39 @@ same size with the cumulative sum of @var{x}.
 If @var{x} is a matrix, then @code{cumsum (@var{x})} returns a matrix of the
 same size with the cumulative sum along each column of @var{x}.
 
-If @var{x} is an array, then @code{cumsum(@var{x})} returns an array of the same
-size with the cumulative sum along the first non-singleton dimension of
+If @var{x} is an array, then @code{cumsum(@var{x})} returns an array of the
+same size with the cumulative sum along the first non-singleton dimension of
 @var{x}.
 
 The class of output @var{y} is the same as the class of input @var{x}, unless
 @var{x} is logical, in which case @var{y} is double.
 
-The optional variable @var{dim} forces @code{cumsum} to operate along the
-specified dimension, which must be a positive integer-valued number.  Specifying
-any singleton dimension in @var{x}, including any dimension exceeding
-@code{ndims (@var{x})}, will result in a cumulative sum equal to @var{x}.
+The optional input @var{dim} specifies the dimension to operate on and must be
+a positive integer.  Specifying any singleton dimension in @var{x}, including
+any dimension exceeding @code{ndims (@var{x})}, will return @var{x}.
 
-Specifying the dimensions as @var{vecdim}, a vector of non-repeating dimensions,
-will return the cumulative sum over the array slice defined by @var{vecdim}.
-If @var{vecdim} indexes all dimensions of @var{x}, then it is equivalent to the
-option @qcode{"all"}.  Any dimension in @var{vecdim} greater than
-@code{ndims (@var{x})} is ignored.
+Specifying multiple dimensions with input @var{vecdim}, a vector of
+non-repeating dimensions, will operate along the array slice defined by
+@var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim} greater
+than @code{ndims (@var{x})} is ignored.
 
-Specifying the dimension as @qcode{"all"} will force @code{cumsum} to operate
-along all elements of @var{x}, and is equivalent to @code{cumsum (@var{x}(:))}.
+Specifying the dimension as @qcode{"all"} will cause @code{cumsum} to operate
+on all elements of @var{x}, and is equivalent to @code{cumsum (@var{x}(:))}.
 
-The optional variable @var{direction} specifies the direction to compute the
-cumulative sum along the operating dimension using any of the previously
-specified input argument combinations.  @var{outtype} can take the following
-values:
+The optional input @var{direction} specifies how the operating dimension is
+traversed and can take the following values:
 
 @table @asis
-@item @qcode{"forward"} : By default, the cumulative sum is computed from
-beginning to end along the operating dimension.
+@item @qcode{"forward"} (default)
 
-@item @qcode{"reverse"} : The cumulative sum is computed from end to beginning
-along the operating dimension.
+The cumulative sum is computed from beginning (index 1) to end along the
+operating dimension.
+
+@item @qcode{"reverse"}
+
+The cumulative sum is computed from end to beginning along the operating
+dimension.
 @end table
 
 The optional variable @var{nanflag} specifies whether to include or exclude
@@ -1755,15 +1738,7 @@ operating dimension.
 
   // Handle allflag
   if (allflag)
-    {
-      octave_idx_type szvecdim = 1;
-      dim_vector sz = arg.dims ();
-      for (int i = 0; i < arg.ndims (); i++)
-      {
-        szvecdim = szvecdim * sz(i);
-      }
-      arg = arg.reshape (dim_vector (szvecdim, 1));
-    }
+    arg = arg.reshape (dim_vector (arg.numel (), 1));
 
   octave_value retval;
 
@@ -1924,6 +1899,7 @@ operating dimension.
 
   if (do_perm)
     retval = retval.permute (perm_vec, true);
+
   return retval;
 }
 
@@ -2015,7 +1991,7 @@ operating dimension.
 %! y = cumsum (x, [2, 3], "omitnan", "reverse");
 %! assert (y(1,:), [13, 12, 12, 7]);
 %! assert (y(2,:), [20, 18, 14, 8]);
-%! assert (cumsum (x, [1, 2, 3]), cumsum (x, "all"))
+%! assert (cumsum (x, [1, 2, 3]), cumsum (x, "all"));
 
 %!test
 %! x = reshape ([1:8], 2, 2, 2);
@@ -2068,8 +2044,8 @@ operating dimension.
 %!        sparse ([0, 0, 1, 5, 7; 1, 3, 4, 6, 6]))
 
 ## Test input validation
-%!error cumsum ()
-%!error cumsum (1,2,3)
+%!error <Invalid call> cumsum ()
+%!error <Invalid call> cumsum (1,2,3)
 %!error <unrecognized optional argument 'foobar'> cumsum (1, "foobar")
 %!error <cumsum: cannot set DIM or VECDIM with 'all' flag> ...
 %!      cumsum (ones (3,3), 1, "all")
@@ -2262,41 +2238,40 @@ elements in @var{x}.
 If @var{x} is a matrix, then @code{prod (@var{x})} returns a row vector with
 each element containing the product of the corresponding column in @var{x}.
 
-If @var{x} is an array, then @code{prod(@var{x})} computes the product along the
-first non-singleton dimension of @var{x}.
+If @var{x} is an array, then @code{prod(@var{x})} computes the product along
+the first non-singleton dimension of @var{x}.
 
-The optional variable @var{dim} forces @code{prod} to operate over the specified
-dimension, which must be a positive integer-valued number.  Specifying any
-singleton dimension in @var{x}, including any dimension exceeding
-@code{ndims (@var{x})}, will result in a product equal to @var{x}.
+The optional input @var{dim} specifies the dimension to operate on and must be
+a positive integer.  Specifying any singleton dimension in @var{x}, including
+any dimension exceeding @code{ndims (@var{x})}, will return @var{x}.
 
-Specifying the dimensions as @var{vecdim}, a vector of non-repeating dimensions,
-will return the product over the array slice defined by @var{vecdim}.  If
-@var{vecdim} indexes all dimensions of @var{x}, then it is equivalent to the
-option @qcode{"all"}.  Any dimension in @var{vecdim} greater than
-@code{ndims (@var{x})} is ignored.
+Specifying multiple dimensions with input @var{vecdim}, a vector of
+non-repeating dimensions, will operate along the array slice defined by
+@var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim} greater
+than @code{ndims (@var{x})} is ignored.
 
-Specifying the dimension as @qcode{"all"} will force @code{prod} to operate on
+Specifying the dimension as @qcode{"all"} will cause @code{prod} to operate on
 all elements of @var{x}, and is equivalent to @code{prod (@var{x}(:))}.
 
 The optional input @var{outtype} specifies the data type that is returned as
-well as it determines the class of the variable used for callculations.
+well as the class of the variable used for calculations.
 @var{outtype} can take the following values:
 
 @table @asis
-@item @qcode{"default"} : By default, operations on floating point inputs
-(double or single) are performed in their native data type, while operations on
-integer, logical, and character data types are performed using doubles.  Output
-is of type double, unless the input is single in which case the output is of
-type single.
+@item @qcode{"default"} : Operations on floating point inputs (double or
+single) are performed in their native data type, while operations on integer,
+logical, and character data types are performed using doubles.  Output is of
+type double, unless the input is single in which case the output is of type
+single.
 
 @item @qcode{"double"} : Operations are performed in double precision even for
 single precision inputs.  Output is of type double.
 
 @item @qcode{"native"} : Operations are performed in their native datatypes and
-output is of the same type as the input as reported by (@code{class (@var{x})}).
-When the input is logical, @code{prod (@var{x}, "native")} is equivalent to
-@code{all (@var{x})}.
+output is of the same type as the input as reported by
+(@code{class (@var{x})}).  When the input is logical,
+@code{prod (@var{x}, "native")} is equivalent to @code{all (@var{x})}.
 @end table
 
 The optional variable @var{nanflag} specifies whether to include or exclude
@@ -2358,15 +2333,7 @@ operating dimension.
 
   // Handle allflag
   if (allflag)
-    {
-      octave_idx_type szvecdim = 1;
-      dim_vector sz = arg.dims ();
-      for (int i = 0; i < arg.ndims (); i++)
-      {
-        szvecdim = szvecdim * sz(i);
-      }
-      arg = arg.reshape (dim_vector (szvecdim, 1));
-    }
+    arg = arg.reshape (dim_vector (arg.numel (), 1));
 
   octave_value retval;
 
@@ -2621,11 +2588,13 @@ operating dimension.
 %!assert (size (prod (sparse (ones(0, 0)), 3)), [0, 0])
 
 ## Test input validation
-%!error prod ()
-%!error prod (1,2,3)
+%!error <Invalid call> prod ()
+%!error <Invalid call> prod (1,2,3)
 %!error <unrecognized optional argument 'foobar'> prod (1, "foobar")
-%!error <prod: cannot set DIM or VECDIM with 'all' flag> prod (ones (3,3), 1, "all")
-%!error <prod: cannot set DIM or VECDIM with 'all' flag> prod (ones (3,3), [1, 2], "all")
+%!error <prod: cannot set DIM or VECDIM with 'all' flag>
+%! prod (ones (3,3), 1, "all");
+%!error <prod: cannot set DIM or VECDIM with 'all' flag>
+%! prod (ones (3,3), [1, 2], "all");
 %!error <prod: invalid dimension DIM = 0> prod (ones (3,3), 0)
 %!error <prod: invalid dimension DIM = -1> prod (ones (3,3), -1)
 %!error <prod: invalid dimension in VECDIM = -2> prod (ones (3,3), [1 -2])
@@ -3935,13 +3904,13 @@ sz4 = size (ones (2, 3), 4)
 
 %!test
 %! [nr, nc] = size ([1, 2; 3, 4; 5, 6]);
-%! assert (nr, 3)
-%! assert (nc, 2)
+%! assert (nr, 3);
+%! assert (nc, 2);
 
 %!test
 %! [nr, remainder] = size (ones (2, 3, 4, 5));
-%! assert (nr, 2)
-%! assert (remainder, 60)
+%! assert (nr, 2);
+%! assert (remainder, 60);
 
 ## Call for single existing dimension
 
@@ -3957,10 +3926,10 @@ sz4 = size (ones (2, 3), 4)
 
 %!test
 %! [nr, nc, e1, e2] = size ([1, 2; 3, 4; 5, 6]);
-%! assert (nr, 3)
-%! assert (nc, 2)
-%! assert (e1, 1)
-%! assert (e2, 1)
+%! assert (nr, 3);
+%! assert (nc, 2);
+%! assert (e1, 1);
+%! assert (e2, 1);
 
 ## Call for two arbitrary dimensions
 
@@ -3968,8 +3937,8 @@ sz4 = size (ones (2, 3), 4)
 %! dim = [3, 2, 1, 1, 1];
 %! for i = 1:5
 %!   for j = 1:5
-%!     assert (size ([1, 2; 3, 4; 5, 6], i, j), [dim(i), dim(j)])
-%!     assert (size ([1, 2; 3, 4; 5, 6], [i, j]), [dim(i), dim(j)])
+%!     assert (size ([1, 2; 3, 4; 5, 6], i, j), [dim(i), dim(j)]);
+%!     assert (size ([1, 2; 3, 4; 5, 6], [i, j]), [dim(i), dim(j)]);
 %!     [a, b] = size ([1, 2; 3, 4; 5, 6], i, j);
 %!     assert (a, dim(i));
 %!     assert (b, dim(j));
@@ -3986,8 +3955,8 @@ sz4 = size (ones (2, 3), 4)
 %! for i = 1:5
 %!   for j = 1:5
 %!     for k = 1:5
-%!       assert (size ([1, 2; 3, 4; 5, 6], i, j, k), [dim(i), dim(j), dim(k)])
-%!       assert (size ([1, 2; 3, 4; 5, 6], [i, j, k]), [dim(i), dim(j), dim(k)])
+%!       assert (size ([1, 2; 3, 4; 5, 6], i, j, k), [dim(i), dim(j), dim(k)]);
+%!       assert (size ([1, 2; 3, 4; 5, 6], [i, j, k]), [dim(i), dim(j), dim(k)]);
 %!       [a, b, c] = size ([1, 2; 3, 4; 5, 6], i, j, k);
 %!       assert (a, dim(i));
 %!       assert (b, dim(j));
@@ -4172,36 +4141,35 @@ Compute the sum of the elements of @var{x}.
 If @var{x} is a vector, then @code{sum (@var{x})} returns the sum of the
 elements in @var{x}.
 
-If @var{x} is a matrix, then @code{sum (@var{x})} returns a row vector with each
-element containing the sum of the corresponding column in @var{x}.
+If @var{x} is a matrix, then @code{sum (@var{x})} returns a row vector with
+each element containing the sum of the corresponding column in @var{x}.
 
 If @var{x} is an array, then @code{sum(@var{x})} computes the sum along the
 first non-singleton dimension of @var{x}.
 
-The optional variable @var{dim} forces @code{sum} to operate over the specified
-dimension, which must be a positive integer-valued number.  Specifying any
-singleton dimension in @var{x}, including any dimension exceeding
-@code{ndims (@var{x})}, will result in a sum equal to @var{x}.
+The optional input @var{dim} specifies the dimension to operate on and must be
+a positive integer.  Specifying any singleton dimension in @var{x}, including
+any dimension exceeding @code{ndims (@var{x})}, will return @var{x}.
 
-Specifying the dimensions as @var{vecdim}, a vector of non-repeating dimensions,
-will return the sum over the array slice defined by @var{vecdim}.  If
-@var{vecdim} indexes all dimensions of @var{x}, then it is equivalent to the
-option @qcode{"all"}.  Any dimension in @var{vecdim} greater than
-@code{ndims (@var{x})} is ignored.
+Specifying multiple dimensions with input @var{vecdim}, a vector of
+non-repeating dimensions, will operate along the array slice defined by
+@var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim} greater
+than @code{ndims (@var{x})} is ignored.
 
-Specifying the dimension as @qcode{"all"} will force @code{sum} to operate on
-all elements of @var{x}, and is equivalent to @code{sum (@var{x}(:))}.
+Specifying the dimension as @qcode{"all"} will cause @code{sum} to operate
+on all elements of @var{x}, and is equivalent to @code{cumsum (@var{x}(:))}.
 
 The optional input @var{outtype} specifies the data type that is returned as
-well as it determines the class of the variable used for callculations.
+well as the class of the variable used for calculations.
 @var{outtype} can take the following values:
 
 @table @asis
-@item @qcode{"default"} : By default, operations on floating point inputs
-(double or single) are performed in their native data type, while operations on
-integer, logical, and character data types are performed using doubles.  Output
-is of type double, unless the input is single in which case the output is of
-type single.
+@item @qcode{"default"} : Operations on floating point inputs (double or
+single) are performed in their native data type, while operations on integer,
+logical, and character data types are performed using doubles.  Output is of
+type double, unless the input is single in which case the output is of type
+single.
 
 @item @qcode{"double"} : Operations are performed in double precision even for
 single precision inputs.  Output is of type double.
@@ -4212,9 +4180,9 @@ inputs, @qcode{"extra"} is the same as @qcode{"double"}.  For all other data
 type @qcode{"extra"} has no effect.
 
 @item @qcode{"native"} : Operations are performed in their native datatypes and
-output is of the same type as the input as reported by (@code{class (@var{x})}).
-When the input is logical, @code{sum (@var{x}, "native")} is equivalent to
-@code{any (@var{x})}.
+output is of the same type as the input as reported by
+(@code{class (@var{x})}).  When the input is logical,
+@code{sum (@var{x}, "native")} is equivalent to @code{any (@var{x})}.
 @end table
 
 The optional variable @var{nanflag} specifies whether to include or exclude
@@ -4391,6 +4359,7 @@ operating dimension.
 
   if (do_perm)
     retval = retval.permute (perm_vec, true);
+
   return retval;
 }
 
@@ -4617,11 +4586,13 @@ operating dimension.
 %!assert (class (sum ([true, false])), "double")
 
 ## Test input validation
-%!error sum ()
-%!error sum (1,2,3)
+%!error <Invalid call> sum ()
+%!error <Invalid call> sum (1,2,3)
 %!error <unrecognized optional argument 'foobar'> sum (1, "foobar")
-%!error <sum: cannot set DIM or VECDIM with 'all' flag> sum (ones (3,3), 1, "all")
-%!error <sum: cannot set DIM or VECDIM with 'all' flag> sum (ones (3,3), [1, 2], "all")
+%!error <sum: cannot set DIM or VECDIM with 'all' flag>
+%! sum (ones (3,3), 1, "all");
+%!error <sum: cannot set DIM or VECDIM with 'all' flag> 
+%! sum (ones (3,3), [1, 2], "all");
 %!error <sum: invalid dimension DIM = 0> sum (ones (3,3), 0)
 %!error <sum: invalid dimension DIM = -1> sum (ones (3,3), -1)
 %!error <sum: invalid dimension in VECDIM = -2> sum (ones (3,3), [1 -2])
@@ -4639,8 +4610,8 @@ DEFUN (sumsq, args, ,
 @deftypefnx {} {@var{y} =} sumsq (@dots{}, @var{nanflag})
 Compute the sum of squares of the elements of @var{x}.
 
-If @var{x} is a vector, then @code{sumsq (@var{x})} returns the product of the
-elements in @var{x}.
+If @var{x} is a vector, then @code{sumsq (@var{x})} returns the sum of the
+squares of the elements in @var{x}.
 
 If @var{x} is a matrix, then @code{sumsq (@var{x})} returns a row vector with
 each element containing the sum of squares of the corresponding column in
@@ -4658,39 +4629,38 @@ sum (x .* conj (x))
 @noindent
 but it uses less memory and avoids calling @code{conj} if @var{x} is real.
 
-The optional variable @var{dim} forces @code{sumsq} to operate over the
-specified dimension, which must be a positive integer-valued number.  Specifying
-any singleton dimension in @var{x}, including any dimension exceeding
-@code{ndims (@var{x})}, will result in a sum of squares equal to
-@code{@var{x}.^2}.
+The optional input @var{dim} specifies the dimension to operate on and must be
+a positive integer.  Specifying any singleton dimension in @var{x}, including
+any dimension exceeding @code{ndims (@var{x})}, will return a sum of squares
+equal to @code{@var{x}.^2}.
 
-Specifying the dimensions as @var{vecdim}, a vector of non-repeating dimensions,
-will return the sum of squares over the array slice defined by @var{vecdim}.  If
-@var{vecdim} indexes all dimensions of @var{x}, then it is equivalent to the
-option @qcode{"all"}.  Any dimension in @var{vecdim} greater than
-@code{ndims (@var{x})} is ignored.
+Specifying multiple dimensions with input @var{vecdim}, a vector of
+non-repeating dimensions, will operate along the array slice defined by
+@var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim} greater
+than @code{ndims (@var{x})} is ignored.
 
-Specifying the dimension as @qcode{"all"} will force @code{sumsq} to operate on
+Specifying the dimension as @qcode{"all"} will cause @code{prod} to operate on
 all elements of @var{x}, and is equivalent to @code{sumsq (@var{x}(:))}.
 
 The optional input @var{outtype} specifies the data type that is returned as
-well as it determines the class of the variable used for callculations.
+well as the class of the variable used for calculations.
 @var{outtype} can take the following values:
 
 @table @asis
-@item @qcode{"default"} : By default, operations on floating point inputs
-(double or single) are performed in their native data type, while operations on
-integer, logical, and character data types are performed using doubles.  Output
-is of type double, unless the input is single in which case the output is of
-type single.
+@item @qcode{"default"} : Operations on floating point inputs (double or
+single) are performed in their native data type, while operations on integer,
+logical, and character data types are performed using doubles.  Output is of
+type double, unless the input is single in which case the output is of type
+single.
 
 @item @qcode{"double"} : Operations are performed in double precision even for
 single precision inputs.  Output is of type double.
 
 @item @qcode{"native"} : Operations are performed in their native datatypes and
-output is of the same type as the input as reported by (@code{class (@var{x})}).
-When the input is logical, @code{sumsq (@var{x}, "native")} is equivalent to
-@code{all (@var{x})}.
+output is of the same type as the input as reported by
+(@code{class (@var{x})}).  When the input is logical,
+@code{sumsq (@var{x}, "native")} is equivalent to @code{all (@var{x})}.
 @end table
 
 The optional variable @var{nanflag} specifies whether to include or exclude
@@ -4752,15 +4722,7 @@ operating dimension.
 
   // Handle allflag
   if (allflag)
-    {
-      octave_idx_type szvecdim = 1;
-      dim_vector sz = arg.dims ();
-      for (int i = 0; i < arg.ndims (); i++)
-      {
-        szvecdim = szvecdim * sz(i);
-      }
-      arg = arg.reshape (dim_vector (szvecdim, 1));
-    }
+    arg = arg.reshape (dim_vector (arg.numel (), 1));
 
   octave_value retval;
 
@@ -4842,6 +4804,7 @@ operating dimension.
 
   if (do_perm)
     retval = retval.permute (perm_vec, true);
+
   return retval;
 }
 
@@ -5002,11 +4965,13 @@ operating dimension.
 %!assert (class (sumsq ([true, false])), "double")
 
 ## Test input validation
-%!error sumsq ()
-%!error sumsq (1,2,3)
+%!error <Invalid call> sumsq ()
+%!error <Invalid call> sumsq (1,2,3)
 %!error <unrecognized optional argument 'foobar'> sumsq (1, "foobar")
-%!error <sumsq: cannot set DIM or VECDIM with 'all' flag> sumsq (ones (3,3), 1, "all")
-%!error <sumsq: cannot set DIM or VECDIM with 'all' flag> sumsq (ones (3,3), [1, 2], "all")
+%!error <sumsq: cannot set DIM or VECDIM with 'all' flag>
+%! sumsq (ones (3,3), 1, "all");
+%!error <sumsq: cannot set DIM or VECDIM with 'all' flag>
+%! sumsq (ones (3,3), [1, 2], "all");
 %!error <sumsq: invalid dimension DIM = 0> sumsq (ones (3,3), 0)
 %!error <sumsq: invalid dimension DIM = -1> sumsq (ones (3,3), -1)
 %!error <sumsq: invalid dimension in VECDIM = -2> sumsq (ones (3,3), [1 -2])
@@ -5426,42 +5391,42 @@ complex ([1, 2], [3, 4])
 %!error <undefined> 1+Infi
 
 %!test <31974>
-%! assert (Inf + Inf*i, complex (Inf, Inf))
+%! assert (Inf + Inf*i, complex (Inf, Inf));
 %!
-%! assert (1 + Inf*i, complex (1, Inf))
-%! assert (1 + Inf*j, complex (1, Inf))
+%! assert (1 + Inf*i, complex (1, Inf));
+%! assert (1 + Inf*j, complex (1, Inf));
 %!
 %! ## whitespace should not affect parsing
-%! assert (1+Inf*i, complex (1, Inf))
-%! assert (1+Inf*j, complex (1, Inf))
+%! assert (1+Inf*i, complex (1, Inf));
+%! assert (1+Inf*j, complex (1, Inf));
 %!
-%! assert (NaN*j, complex (0, NaN))
+%! assert (NaN*j, complex (0, NaN));
 %!
-%! assert (Inf * 4j, complex (0, Inf))
+%! assert (Inf * 4j, complex (0, Inf));
 
 %!test <31974>
 %! x = Inf;
-%! assert (x * j, complex (0, Inf))
+%! assert (x * j, complex (0, Inf));
 %! j = complex (0, 1);
-%! assert (Inf * j, complex (0, Inf))
+%! assert (Inf * j, complex (0, Inf));
 
 %!test <31974>
 %! exp = complex (zeros (2, 2), Inf (2, 2));
-%! assert (Inf (2, 2) * j, exp)
-%! assert (Inf (2, 2) .* j, exp)
-%! assert (Inf * (ones (2, 2) * j), exp)
-%! assert (Inf (2, 2) .* (ones (2, 2) * j), exp)
+%! assert (Inf (2, 2) * j, exp);
+%! assert (Inf (2, 2) .* j, exp);
+%! assert (Inf * (ones (2, 2) * j), exp);
+%! assert (Inf (2, 2) .* (ones (2, 2) * j), exp);
 
 %!test <31974>
-%! assert ([Inf; 0] * [i, 0], complex ([NaN NaN; 0 0], [Inf NaN; 0 0]))
-%! assert ([Inf, 0] * [i; 0], complex (NaN, Inf))
-%! assert ([Inf, 0] .* [i, 0], complex ([0 0], [Inf 0]))
+%! assert ([Inf; 0] * [i, 0], complex ([NaN NaN; 0 0], [Inf NaN; 0 0]));
+%! assert ([Inf, 0] * [i; 0], complex (NaN, Inf));
+%! assert ([Inf, 0] .* [i, 0], complex ([0 0], [Inf 0]));
 
 %!test <31974>
 %! m = @(x, y) x * y;
 %! d = @(x, y) x / y;
-%! assert (m (Inf, i), complex (0, +Inf))
-%! assert (d (Inf, i), complex (0, -Inf))
+%! assert (m (Inf, i), complex (0, +Inf));
+%! assert (d (Inf, i), complex (0, -Inf));
 */
 
 DEFUN (isreal, args, ,
@@ -6996,14 +6961,14 @@ replaced by @code{NaN}.  @xref{Missing Data}.
 
 /*
 %!testif HAVE_QNAN_WITH_PAYLOAD
-%! assert (single (NA ("double")), NA ("single"))
+%! assert (single (NA ("double")), NA ("single"));
 %!testif HAVE_QNAN_WITH_PAYLOAD
-%! assert (double (NA ("single")), NA ("double"))
+%! assert (double (NA ("single")), NA ("double"));
 // Duplicate from above.  Only for test statistics
 %!testif ; ! __have_feature__ ("QNAN_WITH_PAYLOAD") <59830>
-%! assert (single (NA ("double")), NA ("single"))
+%! assert (single (NA ("double")), NA ("single"));
 %!testif ; ! __have_feature__ ("QNAN_WITH_PAYLOAD") <59830>
-%! assert (double (NA ("single")), NA ("double"))
+%! assert (double (NA ("single")), NA ("double"));
 */
 
 DEFUN (false, args, ,
@@ -7605,9 +7570,9 @@ but is performed more efficiently.
 
 If only @var{m} is supplied, and it is a scalar, the dimension of the result is
 @var{m}-by-@var{m}.  If @var{m}, @var{n}, @dots{} are all scalars, then the
-dimensions of the result are @var{m}-by-@var{n}-by-@enddots{}  If given a vector
-as input, then the dimensions of the result are given by the elements of that
-vector.
+dimensions of the result are @var{m}-by-@var{n}-by-@enddots{}  If given a
+vector as input, then the dimensions of the result are given by the elements of
+that vector.
 
 An object can be resized to more dimensions than it has; in such case the
 missing dimensions are assumed to be 1.  Resizing an object to fewer dimensions
@@ -9108,14 +9073,14 @@ ordered lists.
 ## Test sort dimension being very large
 %!test <*65712>
 %! A = [1 2; 3 4];
-%! assert (sort (A, 100), A)
-%! assert (sort (A, inf), A)
+%! assert (sort (A, 100), A);
+%! assert (sort (A, inf), A);
 %! [B, idx] = sort (A, 100);
 %! assert (B, A);
-%! assert (idx, ones (2))
+%! assert (idx, ones (2));
 %! [B, idx] = sort (A, inf);
 %! assert (B, A);
-%! assert (idx, ones (2))
+%! assert (idx, ones (2));
 
 %!error <Invalid call> sort ()
 %!error <Invalid call> sort (1, 2, 3, 4)

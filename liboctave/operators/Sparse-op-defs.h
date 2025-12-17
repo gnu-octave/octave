@@ -3092,7 +3092,7 @@
 
 // Reduction operations for sparse matrices ('prod', 'sum', and 'sumsq')
 
-#define SPARSE_SUMSQ_HEADER(RET_TYPE)                                    \
+#define SPARSE_SUMSQ_HEADER(RET_TYPE, EXPR)                              \
   if (rows () > 0 && cols () > 0 && dim > 1)                             \
     {                                                                    \
       RET_TYPE r = RET_TYPE (rows (), cols (), nnz ());                  \
@@ -3104,7 +3104,7 @@
             if (data (i) != 0.0)                                         \
               {                                                          \
                 r.ridx (nel) = ridx (i);                                 \
-                r.data (nel++) = data (i) * data (i);                    \
+                EXPR                                                     \
               }                                                          \
           r.cidx (j + 1) = nel;                                          \
         }                                                                \

@@ -7652,6 +7652,8 @@ SparseMatrix::xsum (int dim, bool nanflag) const
 SparseMatrix
 SparseMatrix::sumsq (int dim, bool nanflag) const
 {
+#define EXPR r.data (nel++) = data (i) * data (i);
+
 #define ROW_EXPR                           \
   double d = data (i);                     \
   if (nanflag && octave::math::isnan (d))  \
@@ -7666,10 +7668,11 @@ SparseMatrix::sumsq (int dim, bool nanflag) const
   else                                     \
     tmp[j] += d * d
 
-  SPARSE_SUMSQ_HEADER (SparseMatrix)
+  SPARSE_SUMSQ_HEADER (SparseMatrix, EXPR)
   SPARSE_BASE_REDUCTION_OP (SparseMatrix, double, ROW_EXPR, COL_EXPR,
                             0.0, 0.0);
 
+#undef EXPR
 #undef ROW_EXPR
 #undef COL_EXPR
 }

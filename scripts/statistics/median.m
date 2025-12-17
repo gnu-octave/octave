@@ -61,7 +61,7 @@
 ## If @var{x} is a matrix, then @code{median (@var{x})} returns a row vector
 ## with each element containing the median of the corresponding column in
 ## @var{x}.
-## 
+##
 ## If @var{x} is an array, then @code{median (@var{x})} computes the median
 ## along the first non-singleton dimension of @var{x}.
 ##
@@ -266,6 +266,9 @@ function m = median (x, varargin)
     switch (outtype)
       case {"double", "single"}
         m = NaN (sz_out, outtype);
+        if (issparse (x))
+          m = sparse (m);
+        endif
       case ("logical")
         m = false (sz_out);
       otherwise
@@ -277,6 +280,9 @@ function m = median (x, varargin)
   if (all (isnan (x(:))))
     ## all NaN input, output single or double NaNs in pre-determined size
     m = NaN (sz_out, outtype);
+    if (issparse (x))
+      m = sparse (m);
+    endif
     return;
   endif
 
@@ -357,6 +363,9 @@ function m = median (x, varargin)
       m_idx_even = (! m_idx_odd) & n;
 
       m = NaN ([1, szx(2 : end)]);
+      if (issparse (x))
+        m = sparse (m);
+      endif
 
       if (ndims (x) > 2)
         szx = [szx(1), prod(szx(2 : end))];
@@ -380,6 +389,9 @@ function m = median (x, varargin)
     ## All types without a NaN value will use this path.
     if (all (! nanfree))
       m = NaN (sz_out);
+      if (issparse (x))
+        m = sparse (m);
+      endif
 
     else
       if (isvector (x))
@@ -413,6 +425,9 @@ function m = median (x, varargin)
 
         if (isfloat (x))
           m = NaN ([1, szx(2 : end)]);
+          if (issparse (x))
+            m = sparse (m);
+          endif
         else
           m = zeros ([1, szx(2 : end)], outtype);
         endif
@@ -748,6 +763,26 @@ endfunction
 %!assert (median ([1 2 3], "aLL"), 2)
 %!assert (median ([1 2 3], "OmitNan"), 2)
 %!assert (median ([1 2 3], "DOUBle"), 2)
+
+## Test sparse matrix input
+%!assert (median (sparse (magic (3))), sparse ([4, 5, 6]))
+%!assert (median (sparse (magic (3)), 1), sparse ([4, 5, 6]))
+%!assert (median (sparse (magic (3)), 1, "omitnan"), sparse ([4, 5, 6]))
+%!assert (median (sparse (magic (3)), 2), sparse ([6; 5; 4]))
+%!assert (median (sparse (magic (3)), 2, "omitnan"), sparse ([6; 5; 4]))
+%!assert (median (sparse (magic (3)), "all"), sparse (5))
+%!assert (median (sparse (magic (3)), "all", "omitnan"), sparse (5))
+%!assert (median (sparse (magic (3)), [1, 2]), sparse (5))
+%!assert (median (sparse (magic (3)), [1, 2], "omitnan"), sparse (5))
+%!assert (median (sparse (magic (3)), 3), sparse (magic (3)))
+%!assert (median (sparse (magic (3)), 3, "omitnan"), sparse (magic (3)))
+%!assert (median (sparse ([NaN, NaN])), sparse (NaN))
+%!assert (median (sparse ([NaN, NaN]), 1), sparse ([NaN, NaN]))
+%!assert (median (sparse ([NaN, NaN]), 2), sparse (NaN))
+%!assert (median (sparse ([])), sparse (NaN))
+%!assert (median (sparse ([]), 1), sparse (NaN (1, 0)))
+%!assert (median (sparse ([]), 2), sparse (NaN (0, 1)))
+%!assert (median (sparse ([]), 3), sparse ([]))
 
 ## Test input validation
 %!error <Invalid call> median ()

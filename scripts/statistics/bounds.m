@@ -31,13 +31,13 @@
 ## @deftypefnx {} {[@var{s}, @var{l}] =} bounds (@dots{}, @var{nanflag})
 ## Return the smallest and largest values of the input data @var{x}.
 ##
-## If @var{x} is a vector, then @code{bounds (@var{x})} returns the smallest and
-## largest values of the elements in @var{x} in @var{s} and @var{l},
+## If @var{x} is a vector, then @code{bounds (@var{x})} returns the smallest
+## and largest values of the elements in @var{x} in @var{s} and @var{l},
 ## respectively.
 ##
-## If @var{x} is a matrix, then @code{bounds (@var{x})} returns the smallest and
-## largest values for each column of @var{x} as row vectors @var{s} and @var{l},
-## respectively.
+## If @var{x} is a matrix, then @code{bounds (@var{x})} returns the smallest
+## and largest values for each column of @var{x} as row vectors @var{s} and
+## @var{l}, respectively.
 ##
 ## If @var{x} is an array, then @code{bounds (@var{x})} computes the smallest
 ## and largest values along the first non-singleton dimension of @var{x}.
@@ -51,14 +51,15 @@
 ## including any dimension exceeding @code{ndims (@var{x})}, will return
 ## @code{@var{x}}.
 ##
-## Specifying the dimensions as @var{vecdim}, a vector of non-repeating
-## dimensions, will return the lower and upper bounds over the array slice
-## defined by @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x},
-## then it is equivalent to the option @qcode{"all"}.  Any dimension in
-## @var{vecdim} greater than @code{ndims (@var{x})} is ignored.
+## Specifying multiple dimensions with input @var{vecdim}, a vector of
+## non-repeating dimensions, will operate along the array slice defined by
+## @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+## equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
+## greater than @code{ndims (@var{x})} is ignored.
 ##
-## Specifying the dimension as @qcode{"all"} will cause @code{bounds} to operate
-## on all elements of @var{x}, and is equivalent to @code{bounds (@var{x}(:))}.
+## Specifying the dimension as @qcode{"all"} will cause @code{bounds} to
+## operate on all elements of @var{x}, and is equivalent to
+## @code{bounds (@var{x}(:))}.
 ##
 ## The optional variable @var{nanflag} specifies whether to include or exclude
 ## NaN values from the calculation using any of the previously specified input
@@ -68,8 +69,9 @@
 ## result for both smallest (@var{s}) and largest (@var{l}) elements will be
 ## NaN.
 ##
-## The bounds are a quickly computed measure of the dispersion of a data set,
-## but are less accurate than @code{iqr} if there are outlying data points.
+## Usage Note: The bounds are a quickly computed measure of the dispersion of a
+## data set, but are less accurate than @code{iqr} if there are outlying data
+## points.
 ## @seealso{range, iqr, mad, std}
 ## @end deftypefn
 

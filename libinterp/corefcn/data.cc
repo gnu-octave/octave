@@ -4247,15 +4247,7 @@ operating dimension.
 
   // Handle allflag
   if (allflag)
-    {
-      octave_idx_type szvecdim = 1;
-      dim_vector sz = arg.dims ();
-      for (int i = 0; i < arg.ndims (); i++)
-      {
-        szvecdim = szvecdim * sz(i);
-      }
-      arg = arg.reshape (dim_vector (szvecdim, 1));
-    }
+    arg = arg.reshape (dim_vector (arg.numel (), 1));
 
   octave_value retval;
 

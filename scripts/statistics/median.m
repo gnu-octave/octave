@@ -70,15 +70,15 @@
 ## including any dimension exceeding @code{ndims (@var{x})}, will return
 ## @var{x}.
 ##
-## Specifying the dimensions as @var{vecdim}, a vector of non-repeating
-## dimensions, will return the median over the array slice defined by
+## Specifying multiple dimensions with input @var{vecdim}, a vector of
+## non-repeating dimensions, will operate along the array slice defined by
 ## @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
 ## equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
 ## greater than @code{ndims (@var{x})} is ignored.
 ##
 ## Specifying the dimension as @qcode{"all"} will cause @code{median} to
-## operate on all elements of @var{x}, and is equivalent to @code{median
-## (@var{x}(:))}.
+## operate on all elements of @var{x}, and is equivalent to
+## @code{median (@var{x}(:))}.
 ##
 ## @code{median (@dots{}, @var{outtype})} returns the median with a specified
 ## data type, using any of the input arguments in the previous syntaxes.

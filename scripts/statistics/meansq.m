@@ -69,14 +69,15 @@
 ## including any dimension exceeding @code{ndims (@var{x})}, will return
 ## @code{@var{x}.^2}.
 ##
-## Specifying the dimensions as @var{vecdim}, a vector of non-repeating
-## dimensions, will return the mean square over the array slice defined by
+## Specifying multiple dimensions with input @var{vecdim}, a vector of
+## non-repeating dimensions, will operate along the array slice defined by
 ## @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
 ## equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
 ## greater than @code{ndims (@var{x})} is ignored.
 ##
-## Specifying the dimension as @qcode{"all"} will cause @code{meansq} to operate
-## on all elements of @var{x}, and is equivalent to @code{meansq (@var{x}(:))}.
+## Specifying the dimension as @qcode{"all"} will cause @code{meansq} to
+## operate on all elements of @var{x}, and is equivalent to
+## @code{meansq (@var{x}(:))}.
 ##
 ## The optional variable @var{nanflag} specifies whether to include or exclude
 ## NaN values from the calculation using any of the previously specified input

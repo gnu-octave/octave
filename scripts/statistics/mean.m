@@ -79,8 +79,8 @@
 ## including any dimension exceeding @code{ndims (@var{x})}, will return
 ## @var{x}.
 ##
-## Specifying the dimensions as @var{vecdim}, a vector of non-repeating
-## dimensions, will return the mean over the array slice defined by
+## Specifying multiple dimensions with input @var{vecdim}, a vector of
+## non-repeating dimensions, will operate along the array slice defined by
 ## @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
 ## equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
 ## greater than @code{ndims (@var{x})} is ignored.
@@ -110,14 +110,14 @@
 ## will still contain NaN values if @var{x} consists of all NaN values in the
 ## operating dimension.
 ##
-## The optional paired argument @code{@dots{}, "Weights", @var{w}} specifies a
-## weighting scheme @var{w}, which is applied on input @var{x}, so that
-## @code{meam} computes the weighted mean.  When operating along a single
-## dimension, @var{w} must be a vector of the same length as the operating
-## dimension or it must have the same size as @var{x}.  When operating over an
-## array slice defined by @var{vecdim}, @var{w} have the same size as the
-## operating array slice, i.e. @code{size (w) == size (x)(@var{vecdim})}, or the
-## same size as @var{x}.
+## The optional argument pair @code{"Weights", @var{w}} specifies a weighting
+## scheme @var{w}, which is applied to input @var{x}, so that @code{mean}
+## computes the weighted mean.  When operating along a single dimension,
+## @var{w} must be a vector of the same length as the operating dimension or it
+## must have the same size as @var{x}.  When operating over an array slice
+## defined by @var{vecdim}, @var{w} must have the same size as the operating
+## array slice, i.e., @code{size (w) == size (x)(@var{vecdim})}, or the same
+## size as @var{x}.
 ##
 ## @seealso{median, mode, movmean}
 ## @end deftypefn

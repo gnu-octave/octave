@@ -464,8 +464,7 @@ do_minmax_bin_op<charNDArray> (const octave_value& argx,
 }
 
 static octave_value_list
-do_minmax_body (const octave_value_list& args,
-                int nargout, bool ismin)
+do_minmax_body (const octave_value_list& args, int nargout, bool ismin)
 {
   int nargin = args.length ();
   int orig_nargin = nargin;
@@ -556,15 +555,7 @@ do_minmax_body (const octave_value_list& args,
 
       // Handle allflag
       if (allflag)
-        {
-          octave_idx_type szvecdim = 1;
-          dim_vector sz = arg.dims ();
-          for (int i = 0; i < arg.ndims (); i++)
-          {
-            szvecdim = szvecdim * sz(i);
-          }
-          arg = arg.reshape (dim_vector (szvecdim, 1));
-        }
+        arg = arg.reshape (dim_vector (arg.numel (), 1));
 
       switch (arg.builtin_type ())
         {
@@ -1202,11 +1193,11 @@ The optional input @var{dim} specifies the dimension to operate on and must be
 a positive integer.  Specifying any singleton dimension of @var{x}, including
 any dimension exceeding @code{ndims (@var{x})}, will return @var{x}.
 
-Specifying the dimensions as @var{vecdim}, a vector of non-repeating dimensions,
-will return the maximum value over the array slice defined by @var{vecdim}.  If
-@var{vecdim} indexes all dimensions of @var{x}, then it is equivalent to the
-option @qcode{"all"}.  Any dimension in @var{vecdim} greater than
-@code{ndims (@var{x})} is ignored.
+Specifying multiple dimensions with input @var{vecdim}, a vector of
+non-repeating dimensions, will operate along the array slice defined by
+@var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim} greater
+than @code{ndims (@var{x})} is ignored.
 
 Specifying the dimension as @qcode{"all"} will cause @code{max} to operate on
 on all elements of @var{x}, and is equivalent to @code{max (@var{x}(:))}.
@@ -1722,15 +1713,7 @@ do_cumminmax_body (const octave_value_list& args,
 
   // Handle allflag
   if (allflag)
-    {
-      octave_idx_type szvecdim = 1;
-      dim_vector sz = arg.dims ();
-      for (int i = 0; i < arg.ndims (); i++)
-      {
-        szvecdim = szvecdim * sz(i);
-      }
-      arg = arg.reshape (dim_vector (szvecdim, 1));
-    }
+    arg = arg.reshape (dim_vector (arg.numel (), 1));
 
   octave_value_list retval;
 

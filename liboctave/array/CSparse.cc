@@ -8346,6 +8346,16 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
 
 /*
 
+## Test `xsum` function
+%!assert (sum (sparse ([2; 3; 4; 5; 6] * i), "extra"), sparse (20i))
+%!assert (sum (sparse ([2; 3; 0; 5; 6] * i), "extra"), sparse (16i))
+%!assert (sum (sparse ([2; 3; 4; 5; 6]' * i), "extra"), sparse (20i))
+%!assert (sum (sparse ([2; 3; 0; 5; 6]' * i), "extra"), sparse (16i))
+%!assert (sum (speye (3) * i, "extra"), sparse ([1, 1, 1]*i))
+%!assert (sum (speye (3) * i, 1, "extra"), sparse ([1, 1, 1]*i))
+%!assert (sum (speye (3) * i, 2, "extra"), sparse ([1; 1; 1]*i))
+%!assert (sum (speye (3) * i, 3, "extra"), speye (3) * i)
+
 ## Test exceeding dimensions
 %!assert (cumprod (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 2i; 3, 4]))
 %!assert (cumsum (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 2i; 3, 4]))

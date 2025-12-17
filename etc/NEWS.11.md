@@ -15,8 +15,8 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
     no longer required but is still accepted.  Octave will issue a warning
     which can be silenced with the warning ID `"Octave:pkg:install-forge"`.
   * There is a new search command for packages: `pkg search foo bar baz`
-    searches Octave Packages online for packages having all those keywords
-    in their descriptions.  Search terms can also be regular expressions.
+    searches Octave Packages online for packages having all the listed keywords
+    in their description.  Search terms can also be regular expressions.
   * The old command `pkg list -forge`, which returned a list of packages found
     online, has been replaced by `pkg search -all`.  Calling `pkg list -forge`
     now gives a warning and then executes `pkg search -all`.  The warning can
@@ -38,14 +38,14 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The functions `sum`, `cumsum`, `sumsq` now have special code for logical
   inputs resulting in performance improvements of up to 6X.
 
-- The function `sum` now fully supports increased precision throught the "extra"
-  optional argument, which is also available for sparse arrays.
+- The function `sum` now fully supports increased precision through the
+  `"extra"` optional argument, which is also available for sparse arrays.
 
 - New function `_Exit` has been added which makes it possible to use
   `fork`/`_Exit` sequence to perform work in parallel child processes for
   potential performance gains.
 
-- The `fzero` function is now more accurate (1-2 eps when TolX is eps).
+- The `fzero` function is now more accurate (1-2 eps when `TolX` is eps).
 
 - The `randi` function has been completely rewritten and is now 4.5X faster
   while using some 3.5X less memory than before.
@@ -59,24 +59,24 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - All core statistics functions now strictly operate on numerical arrays.  The
   `mean` function continues to accept logical arrays as input.
 
-- On dot-indexing of `classdef` objects, `subsref` now resolves to looking for
-  a property first, and if a property is not found, then it looks for a method.
+- On dot-indexing of `classdef` objects, `subsref` now tries to resolve the
+  symbol name to a property first, and if a property is not found then it will
+  look for a method.
 
 ### Graphical User Interface
 
-- The File Browser now has two tabs: the first for browsing the file system
-  as usual, and the second for viewing and managing all open editor files.
+- The File Browser now has two tabs: the first for browsing the file system as
+  usual, and the second for viewing and managing all open editor files.
 
-- The Find File dialog now offers most recently used lists for input
-  fields and the ability to search for/in several file patterns at the
-  same time.
+- The Find File dialog now offers most recently used lists for input fields and
+  the ability to search for/in several file patterns at the same time.
 
 - The GUI now uses scalable SVG icons for beautiful display at any size.
 
 - The GUI now uses the default Octave command prompt.  This prompt is
   completely customizable by calling `PS1` in an initialization file such as
-  `.octaverc`.  To recover the former behavior of the GUI use `PS1 ('>> '); PS2
-  ('')`.
+  `.octaverc`.  To recover the former behavior of the GUI use
+  `PS1 ('>> '); PS2 ('')`.
 
 - The GUI has two new user preferences: one for showing a small splash screen
   at startup, and one for using the directory of the currently focused editor
@@ -96,7 +96,7 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   ticklabels (bug #67302).  This makes it possible to use a monospaced font to
   align labels as the user intends.  This change is Matlab-compatible.
 
-- The `xminortickvalues`, `yminortickvalues`, `zminortickvalues` axes
+- The `XMinorTickValues`, `YMinorTickValues`, `ZMinorTickValues` axes
   properties that were previously hidden have been made visible to allow users
   to control the position of minor ticks (bug #67394).
 
@@ -105,14 +105,11 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The warning `"Octave:language-extension"` is no longer emitted for automatic
   broadcasting which Matlab has supported since version 2016B.
 
-- Broadcasting now works on sparse matrix operations as well as mixed operations
-  between sparse and full matrices.
+- Broadcasting now works on sparse matrix operations as well as mixed
+  operations between sparse and full matrices.
 
 - All basic operations functions now properly handle empty inputs and return
   correctly sized output arguments for both dense arrays and sparse matrices.
-
-- The function `zscore` now accepts the optional arguments `"all"` or `vecdim`,
-  and `nanflag`.
 
 - The functions `all` and `any` now accept the optional arguments `"all"` or
   `vecdim`.
@@ -121,8 +118,8 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   `"all"` or `vecdim`, `direction`, and `nanflag`.
 
 - The functions `min` and `max` now support the optional arguments `"all"` or
-  `vecdim`, `nanflag`, and the paired argument `"ComparisonMethod"` with options
-  `"real"`, `"abs"`, and `"auto"`.
+  `vecdim`, `nanflag`, and the paired argument `"ComparisonMethod"` with
+  options `"real"`, `"abs"`, and `"auto"`.
 
 - The functions `cummin`, and `cummax` now support the optional arguments
   `"all"` or `vecdim`, `nanflag`, `direction`, and the paired argument
@@ -131,31 +128,29 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The functions `prod`, `sum`, and `sumsq` now accept the optional arguments
  `"all"` or `vecdim`, `nanflag`, and `"default"` in `outtype`.  `prod` and
  `sumsq` functions now retain the class of the input argument by default.
- 'sumsq' now also accepts an outtype argument.
+ 'sumsq' now also accepts an `outtype` argument.
 
-- The function `gradient` with a numeric input now only accepts type double
-  or single.
+- The functions `bounds`, `center`, `meansq`, `range`, `statistics`, and
+  `zscore` now accept the optional arguments `"all"` or `vecdim`, and
+  `nanflag`.
+
+- The functions `kurtosis`, `mode`, `moment`, `prctile`, `quantile`, and
+  `skewness` now accept the optional arguments `"all"` or `vecdim`.
+
+- The function `mean` now accepts the optional paired argument `"Weights"`.
 
 - The function `iqr` now calculates an optional second output `q` which
   contains the 25th and 75th quantiles used to calculate the interquartile
   range.  It also now accepts the optional arguments `"all"` or `vecdim`.
 
-- The functions `kurtosis` and `skewness` now accept the optional arguments
-  `"all"` or `vecdim`.
-
-- The functions `bounds`, `center`, `meansq`, `range`, and `statistics` now
-  accept the optional arguments `"all"` or `vecdim`, and `nanflag`.
-
-- The functions `mode`, `moment`, `prctile`, and `quantile` now accept the
-   optional arguments `"all"` or `vecdim`.
-
-- The function `mean` now accepts the optional paired argument `"Weights"`.
-
 - The function `quantile` now also accepts a positive integer as the second
   input argument specifying evenly spaced cumulative probabilities.
 
+- The function `gradient` with a numeric input now only accepts type `double`
+  or `single`.
+
 - The function `polyfit` now returns the highest powers possible and the
-  constant term when there is insufficient data to create all N terms of the
+  constant term when there is insufficient data to create all `N` terms of the
   polynomial.  The output structure has a new field `rsquared` which is the
   coefficient of determination describing how well the polynomial fits the
   data.
@@ -164,32 +159,35 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   invocations for each cell element.  In earlier versions, the elements were
   converted to a compatible type if possible.
 
-- The function `qr` for a dense matrix input `A` and a single output now
-  returns just the matrix `R`, rather than an augmented version from
-  @sc{lapack} with additional information in the lower-triangular portion of
-  the matrix.  This resolves the output incompatibility with the sparse calling
-  syntax for this function, as well as the incompatibility with @sc{matlab}.
+- The function `speye` can now be called with zero arguments for compatibility
+  with the full-matrix function `eye` and Matlab-compatibility.
 
-- The functions `fill` and `fill3 now handle all input combinations of vector
+- The function `qr` for a dense matrix input `A` and a single output now
+  returns just the matrix `R`, rather than an augmented version from LAPACK
+  with additional information in the lower-triangular portion of the matrix.
+  This resolves the output incompatibility with the sparse calling syntax for
+  this function, as well as the incompatibility with Matlab.
+
+- The `weboptions` function has been re-written internally.  Support for
+  non-integer `Timeout` values, and the special value `Inf`, has been added.
+
+- The `urlread` and `urlwrite` functions now make use of the various
+  `weboptions` such as timeouts and user credentials.  The old calling form
+  of passing a cell array is still supported for backward compatibility.
+
+- The functions `fill` and `fill3` now handle all input combinations of vector
   and matrix vertex data and color data in a Matlab-compatible way.
 
 - The `image` function now validates that `x` and `y` inputs are vectors, and
   accepts and processes 1-element vectors for compatibility.
 
 - The `ind2rgb` and `ind2gray` functions now clip exceptional values such as
-  `NaN` or `Inf` to the last value in the colormap for for compatibility.
+  `NaN` or `Inf` to the last value in the colormap for compatibility.
 
 - The function `colorbar` now requires the `location` input to be the first
   argument rather than the last argument.  This may require updating existing
   Octave scripts.  The graphics properties `AxisLocation`, `Direction`, and
   `TickLabels` have been implemented.
-
-- The `weboptions` function has been re-written internally.  Support for
-  non-integer Timeout values, and the special value `Inf`, has been added.
-
-- The `urlread` and `urlwrite` functions now make use of the various
-  `weboptions` such as timeouts and user credentials.  The old calling form
-  of passing a cell array is still supported for backward compatibility.
 
 - The `newplot` function has been re-written to remove functionality that was
   possibly never used in Octave, and has been removed from Matlab.  The

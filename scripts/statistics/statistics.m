@@ -73,11 +73,11 @@
 ## including any dimension exceeding @code{ndims (@var{x})}, will return
 ## @code{@var{x}}.
 ##
-## Specifying the dimensions as @var{vecdim}, a vector of non-repeating
-## dimensions, will return the statistical parameters over the array slice
-## defined by @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x},
-## then it is equivalent to the option @qcode{"all"}.  Any dimension in
-## @var{vecdim} greater than @code{ndims (@var{x})} is ignored.
+## Specifying multiple dimensions with input @var{vecdim}, a vector of
+## non-repeating dimensions, will operate along the array slice defined by
+## @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+## equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
+## greater than @code{ndims (@var{x})} is ignored.
 ##
 ## Specifying the dimension as @qcode{"all"} will cause @code{statistics} to
 ## operate on all elements of @var{x}, and is equivalent to

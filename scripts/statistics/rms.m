@@ -55,8 +55,8 @@
 ## square of the elements in @var{x}.
 ##
 ## If @var{x} is a matrix, then @code{rms (@var{x})} returns a row vector
-## with each element containing the root mean square of the corresponding column
-## in @var{x}.
+## with each element containing the root mean square of the corresponding
+## column in @var{x}.
 ##
 ## If @var{x} is an array, then @code{rms (@var{x})} computes the root mean
 ## square along the first non-singleton dimension of @var{x}.
@@ -67,10 +67,10 @@
 ## The optional input @var{dim} specifies the dimension to operate on and must
 ## be a positive integer.  Specifying any singleton dimension of @var{x},
 ## including any dimension exceeding @code{ndims (@var{x})}, will return
-## @code{@var{x}.^2}.
+## @code{@var{x}}.
 ##
-## Specifying the dimensions as @var{vecdim}, a vector of non-repeating
-## dimensions, will return the root mean square over the array slice defined by
+## Specifying multiple dimensions with input @var{vecdim}, a vector of
+## non-repeating dimensions, will operate along the array slice defined by
 ## @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
 ## equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
 ## greater than @code{ndims (@var{x})} is ignored.
@@ -95,42 +95,8 @@ function y = rms (x, varargin)
     print_usage ();
   endif
 
-  if (! (isnumeric (x)))
-    error ("rms: X must be a numeric array");
-  endif
-
-  ## Calculate sum of squares and run input validation on varargin.
-  y = sumsq (x, varargin{:});
-
-  ## Normalize
-  omitnan = strcmpi (varargin, 'omitnan');
-  if (any (omitnan))
-    ## Only call isnan() when necessary because it is slow.
-    varargin(omitnan) = [];
-    y ./= sum (! isnan (x), varargin{:});
-
-  else
-    if (isempty (varargin))
-      ## Find the first non-singleton dimension.
-      (dim = find (size (x) != 1, 1)) || (dim = 1);
-      norm = size (x, dim);
-    elseif (isnumeric (varargin{1}))
-      dim = varargin{1};
-      norm = prod (size (x, dim));
-    elseif (any (strcmpi (varargin, 'all')))
-      norm = numel (x);
-    else
-      ## String option such as 'includenan' given, but no dimension.
-      ## Find the first non-singleton dimension.
-      (dim = find (size (x) != 1, 1)) || (dim = 1);
-      norm = size (x, dim);
-    endif
-
-    y ./= norm;
-
-  endif
-
-  y = sqrt (y);
+  ## Piggyback on existing code 
+  y = sqrt (meansq (x, varargin{:}));
 
 endfunction
 
@@ -189,6 +155,6 @@ endfunction
 ## Test input validation
 %!error <Invalid call> rms ()
 %!error <Invalid call> rms (1,2,3,4)
-%!error <rms: X must be a numeric array> rms (['A'; 'B'])
-%!error <rms: X must be a numeric array> rms ([true, false])
-%!error <rms: X must be a numeric array> rms ({1, 2})
+%!error <X must be a numeric array> rms (['A'; 'B'])
+%!error <X must be a numeric array> rms ([true, false])
+%!error <X must be a numeric array> rms ({1, 2})

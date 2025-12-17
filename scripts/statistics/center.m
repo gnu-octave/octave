@@ -48,14 +48,14 @@
 ## including any dimension exceeding @code{ndims (@var{x})}, will return
 ## @code{@var{x}}.
 ##
-## Specifying the dimensions as @var{vecdim}, a vector of non-repeating
-## dimensions, will return the centered data by calculating the mean over the
-## array slice defined by @var{vecdim}.  If @var{vecdim} indexes all dimensions
-## of @var{x}, then it is equivalent to the option @qcode{"all"}.  Any dimension
-## in @var{vecdim} greater than @code{ndims (@var{x})} is ignored.
+## Specifying multiple dimensions with input @var{vecdim}, a vector of
+## non-repeating dimensions, will operate along the array slice defined by
+## @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+## equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
+## greater than @code{ndims (@var{x})} is ignored.
 ##
-## Specifying the dimension as @qcode{"all"} will cause @code{center} to compute
-## the mean of all elements of @var{x}, and is equivalent to
+## Specifying the dimension as @qcode{"all"} will cause @code{center} to
+## compute the center of all elements of @var{x}, and is equivalent to
 ## @code{center (@var{x}(:))}.
 ##
 ## The optional variable @var{nanflag} specifies whether to include or exclude
@@ -63,7 +63,7 @@
 ## specified input argument combinations.  The default value for @var{nanflag}
 ## is @qcode{"includenan"} which keeps NaN values in the calculation.  To
 ## exclude NaN values set the value of @var{nanflag} to @qcode{"omitnan"}.  Any
-## NaN value along the operating dimensions will result to all corresponding
+## NaN value along the operating dimensions will result in all corresponding
 ## element in @var{y} being NaN.
 ##
 ## Programming Note: @code{center} has obvious application for normalizing

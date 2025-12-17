@@ -58,6 +58,8 @@ if [ $# -eq 2 ] && [ x"$2" = x--disable ]; then
   echo "hg-id-disabled"
 elif [ -d "$srcdir/.hg" ]; then
   ( cd "$srcdir" && hg_safe identify --id || echo "unknown-hg-id" )
+elif [ -d "$srcdir/.git" ]; then
+  ( cd "$srcdir" && echo "git:"$(git rev-parse --short HEAD) || echo "unknown-hg-id" )
 elif [ ! -f "$srcdir/$hg_id" ]; then
   echo "WARNING: $srcdir/$hg_id is missing!" 1>&2
   echo "unknown-hg-id"

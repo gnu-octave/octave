@@ -164,6 +164,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   invocations for each cell element.  In earlier versions, the elements were
   converted to a compatible type if possible.
 
+- The function `speye` can now be called with zero arguments for compatibility
+  with the full-matrix function `eye` and Matlab-compatibility.
+
 - The function `qr` for a dense matrix input `A` and a single output now
   returns just the matrix `R`, rather than an augmented version from
   @sc{lapack} with additional information in the lower-triangular portion of

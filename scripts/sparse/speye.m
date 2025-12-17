@@ -24,23 +24,31 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{s} =} speye (@var{m}, @var{n})
-## @deftypefnx {} {@var{s} =} speye (@var{m})
+## @deftypefn  {} {@var{s} =} speye ()
+## @deftypefnx {} {@var{s} =} speye (@var{n})
+## @deftypefnx {} {@var{s} =} speye (@var{m}, @var{n})
 ## @deftypefnx {} {@var{s} =} speye ([@var{m}, @var{n}])
 ## Return a sparse identity matrix of size @var{m}x@var{n}.
 ##
-## The implementation is significantly more efficient than
-## @w{@code{sparse (eye (@var{m}))}}@ as the full matrix is not constructed.
+## If called with no arguments, return the sparse scalar value @code{1}.
 ##
-## When called with a single argument, a square matrix of size
-## @var{m}-by-@var{m} is created.  If called with a single vector argument,
-## this argument is taken to be the size of the matrix to create.
+## If invoked with a single scalar argument @var{n}, return a sparse square
+## @nospell{NxN} identity matrix.
+##
+## If supplied two scalar arguments (@var{m}, @var{n}), or a 2-element vector
+## @w{@code{[@var{m}, @var{n}]}}, return a sparse @nospell{MxN} identity matrix
+## with @var{m} rows and @var{n} columns.
+##
+## Programming Note: The implementation is significantly more efficient than
+## @w{@code{sparse (eye (@dots{}))}}@ as the full matrix is not constructed.
 ## @seealso{sparse, spdiags, eye}
 ## @end deftypefn
 
 function s = speye (m, n)
 
-  if (nargin == 1)
+  if (nargin == 0)
+    m = n = 1;
+  elseif (nargin == 1)
     if (! isvector (m) || numel (m) > 2)
       print_usage ();
     endif
@@ -66,7 +74,7 @@ function s = speye (m, n)
 endfunction
 
 
-%!assert (issparse (speye (4)))
+%!assert (speye (), sparse (1))
 %!assert (speye (4), sparse (1:4,1:4,1))
 %!assert (speye (2,4), sparse (1:2,1:2,1,2,4))
 %!assert (speye (4,2), sparse (1:2,1:2,1,4,2))

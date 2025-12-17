@@ -847,6 +847,16 @@ endfunction
 %!                       1, 2, (2^8)/2), [2, 3]), ...
 %!        35184372088833-1/(2^8), eps (35184372088833))
 
+## Test sparse input
+%!test
+%! x = speye (3);
+%! assert (mean (x(:)), sparse (1/3));
+%! assert (mean (x, "all"), sparse (1/3));
+%! assert (mean (x, [1, 2]), sparse (1/3));
+%! assert (mean (x), sparse ([1/3, 1/3, 1/3]));
+%! assert (mean (x, 2), sparse ([1/3; 1/3; 1/3]));
+%! assert (mean (x, 3), x);
+
 ## Test input validation
 %!error <Invalid call> mean ()
 %!error <Invalid call> mean (1, 2, 3, 4, 5)

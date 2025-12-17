@@ -3319,7 +3319,7 @@
               EL_TYPE err = 0.0;                                         \
               bool posinf = false;                                       \
               bool neginf = false;                                       \
-              for (octave_idx_type i = cidx (j); i < cidx (j + 1); i++)  \
+              for (octave_idx_type i = 0; i < nr; i++)                   \
                 {                                                        \
                   EL_TYPE d = elem (i, j);                               \
                   if (d == EL_TYPE ());                                  \

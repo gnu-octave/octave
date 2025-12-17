@@ -8290,6 +8290,16 @@ max (const SparseMatrix& a, const SparseMatrix& b, const bool nanflag,
 
 /*
 
+## Test `xsum` function
+%!assert (sum (sparse ([2; 3; 4; 5; 6]), "extra"), sparse (20))
+%!assert (sum (sparse ([2; 3; 0; 5; 6]), "extra"), sparse (16))
+%!assert (sum (sparse ([2; 3; 4; 5; 6]'), "extra"), sparse (20))
+%!assert (sum (sparse ([2; 3; 0; 5; 6]'), "extra"), sparse (16))
+%!assert (sum (speye (3), "extra"), sparse ([1, 1, 1]))
+%!assert (sum (speye (3), 1, "extra"), sparse ([1, 1, 1]))
+%!assert (sum (speye (3), 2, "extra"), sparse ([1; 1; 1]))
+%!assert (sum (speye (3), 3, "extra"), speye (3))
+
 ## Test exceeding dimensions
 %!assert (cumprod (sparse ([1, 2; 3, 4]), 3), sparse ([1, 2; 3, 4]))
 %!assert (cumsum (sparse ([1, 2; 3, 4]), 3), sparse ([1, 2; 3, 4]))

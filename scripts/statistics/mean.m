@@ -35,7 +35,7 @@
 ##
 ## The mean is defined as
 ## @tex
-## $$ {\rm mean}(x) = \bar{x} = {1\over N} \sum_{i=1}^N x_i $$
+## $$ {\rm mean}(x) \equiv \bar{x} = {1\over N} \sum_{i=1}^N x_i $$
 ## where $N$ is the number of elements of @var{x}.
 ## @end tex
 ## @ifnottex
@@ -51,7 +51,7 @@
 ##
 ## The weighted mean is defined as
 ## @tex
-## $$ {\rm mean_w}(x) = \bar{x}_w = {\sum_{i=1}^N w_i x_i \over \sum_{i=1}^N w_i} $$
+## $$ {\rm mean_w}(x) \equiv \bar{x}_w = {\sum_{i=1}^N w_i x_i \over \sum_{i=1}^N w_i} $$
 ## where $N$ is the number of elements of @var{x}.
 ## @end tex
 ## @ifnottex

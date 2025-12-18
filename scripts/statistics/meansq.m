@@ -34,7 +34,7 @@
 ## The mean square is defined as
 ## @tex
 ## $$
-## {\rm meansq} (x) = {\sum_{i=1}^N {x_i}^2 \over N}
+## {\rm meansq} (x) = {{1 \over N} \sum_{i=1}^N {|x_i|}^2}
 ## $$
 ## where $N$ is the number of elements of @var{x}.
 ##

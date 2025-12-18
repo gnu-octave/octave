@@ -34,9 +34,10 @@
 ## The @var{p}-th central moment of @var{x} is defined as:
 ## @tex
 ## $$
-## {\sum_{i=1}^N (x_i - \bar{x})^p \over N}
+## {{1 \over N} \sum_{i=1}^N (x_i - \bar{x})^p}
 ## $$
-## where $\bar{x}$ is the mean value of @var{x} and $N$ is the number of elements of @var{x}.
+## where $\bar{x}$ is the mean value of @var{x} and $N$ is the number of
+## elements of @var{x}.
 ##
 ## @end tex
 ## @ifnottex
@@ -89,15 +90,15 @@
 ##
 ## @table @asis
 ## @item @qcode{"c"}
-##   Central Moment (default).
+## Central Moment (default).
 ##
 ## @item  @qcode{"a"}
 ## @itemx @qcode{"ac"}
-##   Absolute Central Moment.  The moment about the mean ignoring sign
+## Absolute Central Moment.  The moment about the mean ignoring sign
 ## defined as
 ## @tex
 ## $$
-## {\sum_{i=1}^N {\left| x_i - \bar{x} \right|}^p \over N}
+## {{1 \over N} \sum_{i=1}^N {| x_i - \bar{x} |}^p}
 ## $$
 ## @end tex
 ## @ifnottex
@@ -111,10 +112,10 @@
 ## @end ifnottex
 ##
 ## @item @qcode{"r"}
-##   Raw Moment.  The moment about zero defined as
+## Raw Moment.  The moment about zero defined as
 ## @tex
 ## $$
-## {\rm moment} (x) = { \sum_{i=1}^N {x_i}^p \over N }
+## {{1 \over N} \sum_{i=1}^N {x_i}^p}
 ## $$
 ## @end tex
 ## @ifnottex
@@ -128,10 +129,10 @@
 ## @end ifnottex
 ##
 ## @item @nospell{@qcode{"ar"}}
-##   Absolute Raw Moment.  The moment about zero ignoring sign defined as
+## Absolute Raw Moment.  The moment about zero ignoring sign defined as
 ## @tex
 ## $$
-## {\sum_{i=1}^N {\left| x_i \right|}^p \over N}
+## {{1 \over N} \sum_{i=1}^N {|x_i|}^p}
 ## $$
 ## @end tex
 ## @ifnottex

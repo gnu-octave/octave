@@ -171,57 +171,132 @@ RT inner_do_add_sm_dm (const SM& a, const DM& d, OpA opa, OpD opd)
   return r;
 }
 
-template <typename RT, typename DM, typename SM>
-RT do_commutative_add_dm_sm (const DM& d, const SM& a)
+template <typename RT, typename SM, typename DM, typename OpA, typename OpD>
+RT inner_do_add_row_sm_dm (const SM& a, const DM& d, OpA opa, OpD opd)
 {
-  // Extra function to ensure this is only emitted once.
-  return inner_do_add_sm_dm<RT> (a, d,
-                                 identity_val<typename SM::element_type> (),
-                                 identity_val<typename DM::element_type> ());
+  const octave_idx_type nr = d.rows ();
+  const octave_idx_type nc = d.cols ();
+
+  const octave_idx_type nz = nr * nc;
+  RT r (nr, nc, nz);
+
+  for (octave_idx_type j = 0; j < nc; j++)
+    {
+      octave_quit ();
+      for (octave_idx_type i = 0; i < nr; i++)
+        {
+          r.elem (i, j) = opa (a.elem (0, j));
+          if (i == j)
+            r.elem (i, j) = opa (a.elem (0, j)) + opd (d.dgelem (j));
+        }
+    }
+
+  r.maybe_compress (true);
+  return r;
+}
+
+template <typename RT, typename SM, typename DM, typename OpA, typename OpD>
+RT inner_do_add_col_sm_dm (const SM& a, const DM& d, OpA opa, OpD opd)
+{
+  const octave_idx_type nr = d.rows ();
+  const octave_idx_type nc = d.cols ();
+
+  const octave_idx_type nz = nr * nc;
+  RT r (nr, nc, nz);
+
+  for (octave_idx_type j = 0; j < nc; j++)
+    {
+      octave_quit ();
+      for (octave_idx_type i = 0; i < nr; i++)
+        {
+          r.elem (i, j) = opa (a.elem (i, 0));
+          if (i == j)
+            r.elem (i, j) = opa (a.elem (i, 0)) + opd (d.dgelem (j));
+        }
+    }
+
+  r.maybe_compress (true);
+  return r;
 }
 
 template <typename RT, typename DM, typename SM>
 RT do_add_dm_sm (const DM& d, const SM& a)
 {
-  if (a.rows () != d.rows () || a.cols () != d.cols ())
+  if (a.rows () == d.rows () && a.cols () == d.cols ())
+    return inner_do_add_sm_dm<RT> (a, d,
+                                   identity_val<typename SM::element_type> (),
+                                   identity_val<typename DM::element_type> ());
+  else if (a.rows () == d.rows () && a.cols () == 1)
+    return inner_do_add_col_sm_dm<RT> (a, d,
+                                   identity_val<typename SM::element_type> (),
+                                   identity_val<typename DM::element_type> ());
+  else if (a.cols () == d.cols () && a.rows () == 1)
+    return inner_do_add_row_sm_dm<RT> (a, d,
+                                   identity_val<typename SM::element_type> (),
+                                   identity_val<typename DM::element_type> ());
+  else
     octave::err_nonconformant ("operator +",
                                d.rows (), d.cols (), a.rows (), a.cols ());
-  else
-    return do_commutative_add_dm_sm<RT> (d, a);
 }
 
 template <typename RT, typename DM, typename SM>
 RT do_sub_dm_sm (const DM& d, const SM& a)
 {
-  if (a.rows () != d.rows () || a.cols () != d.cols ())
+  if (a.rows () == d.rows () && a.cols () == d.cols ())
+    return inner_do_add_sm_dm<RT> (a, d,
+                                   std::negate<typename SM::element_type> (),
+                                   identity_val<typename DM::element_type> ());
+  else if (a.rows () == d.rows () && a.cols () == 1)
+    return inner_do_add_col_sm_dm<RT> (a, d,
+                                   std::negate<typename SM::element_type> (),
+                                   identity_val<typename DM::element_type> ());
+  else if (a.cols () == d.cols () && a.rows () == 1)
+    return inner_do_add_row_sm_dm<RT> (a, d,
+                                   std::negate<typename SM::element_type> (),
+                                   identity_val<typename DM::element_type> ());
+  else
     octave::err_nonconformant ("operator -",
                                d.rows (), d.cols (), a.rows (), a.cols ());
-
-  return inner_do_add_sm_dm<RT> (a, d,
-                                 std::negate<typename SM::element_type> (),
-                                 identity_val<typename DM::element_type> ());
 }
 
 template <typename RT, typename SM, typename DM>
 RT do_add_sm_dm (const SM& a, const DM& d)
 {
-  if (a.rows () != d.rows () || a.cols () != d.cols ())
+  if (a.rows () == d.rows () && a.cols () == d.cols ())
+    return inner_do_add_sm_dm<RT> (a, d,
+                                   identity_val<typename SM::element_type> (),
+                                   identity_val<typename DM::element_type> ());
+  else if (a.rows () == d.rows () && a.cols () == 1)
+    return inner_do_add_col_sm_dm<RT> (a, d,
+                                   identity_val<typename SM::element_type> (),
+                                   identity_val<typename DM::element_type> ());
+  else if (a.cols () == d.cols () && a.rows () == 1)
+    return inner_do_add_row_sm_dm<RT> (a, d,
+                                   identity_val<typename SM::element_type> (),
+                                   identity_val<typename DM::element_type> ());
+  else
     octave::err_nonconformant ("operator +",
-                               a.rows (), a.cols (), d.rows (), d.cols ());
-
-  return do_commutative_add_dm_sm<RT> (d, a);
+                               d.rows (), d.cols (), a.rows (), a.cols ());
 }
 
 template <typename RT, typename SM, typename DM>
 RT do_sub_sm_dm (const SM& a, const DM& d)
 {
-  if (a.rows () != d.rows () || a.cols () != d.cols ())
+  if (a.rows () == d.rows () && a.cols () == d.cols ())
+    return inner_do_add_sm_dm<RT> (a, d,
+                                   identity_val<typename SM::element_type> (),
+                                   std::negate<typename DM::element_type> ());
+  else if (a.rows () == d.rows () && a.cols () == 1)
+    return inner_do_add_col_sm_dm<RT> (a, d,
+                                   identity_val<typename SM::element_type> (),
+                                   std::negate<typename DM::element_type> ());
+  else if (a.cols () == d.cols () && a.rows () == 1)
+    return inner_do_add_row_sm_dm<RT> (a, d,
+                                   identity_val<typename SM::element_type> (),
+                                   std::negate<typename DM::element_type> ());
+  else
     octave::err_nonconformant ("operator -",
-                               a.rows (), a.cols (), d.rows (), d.cols ());
-
-  return inner_do_add_sm_dm<RT> (a, d,
-                                 identity_val<typename SM::element_type> (),
-                                 std::negate<typename DM::element_type> ());
+                               d.rows (), d.cols (), a.rows (), a.cols ());
 }
 
 #endif

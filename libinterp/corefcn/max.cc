@@ -480,7 +480,8 @@ do_minmax_body (const octave_value_list& args, int nargout, bool ismin)
   bool linear = false;
 
   // Get "ComparisonMethod" optional argument first
-  if (nargin > 2 && args(nargin - 1).is_string () && args(nargin - 2).is_string ())
+  if (nargin > 2
+      && args(nargin - 1).is_string () && args(nargin - 2).is_string ())
     {
       std::string name = args(nargin - 2).string_value ();
       std::string sval = args(nargin - 1).string_value ();
@@ -851,8 +852,9 @@ Find minimum values in the array @var{x}.
 If @var{x} is a vector, then @code{min (@var{x})} returns the minimum value of
 the elements in @var{x}.
 
-If @var{x} is a matrix, then @code{min (@var{x})} returns a row vector with each
-element containing the minimum value of the corresponding column in @var{x}.
+If @var{x} is a matrix, then @code{min (@var{x})} returns a row vector with
+each element containing the minimum value of the corresponding column in
+@var{x}.
 
 If @var{x} is an array, then @code{min (@var{x})} computes the minimum value
 along the first non-singleton dimension of @var{x}.
@@ -1065,7 +1067,8 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %! assert (min (x, 2.1i), sparse ([1 2 2.1i 2.1i]));
 %!assert (min (sparse ([4, 2i, 4.999; -2, 2, 3+4i])), sparse ([-2, 2, 4.999]))
 %!assert (min (sparse ([4, 2+i, 4.999; -2, 2, 3+4i])), sparse ([-2, 2, 4.999]))
-%!assert (min (sparse ([4, 2i, 4.999; -2, 2-i, 3+4i])), sparse ([-2, 2i, 4.999]))
+%!assert (min (sparse ([4, 2i, 4.999; -2, 2-i, 3+4i])),
+%!        sparse ([-2, 2i, 4.999]))
 
 ## Sparse with NaNs
 %!assert (min (sparse ([NaN, 1, 2, 1])), sparse (1))
@@ -1074,18 +1077,37 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!assert (min (sparse ([0; NaN; 1; 2; 1])), sparse (0))
 %!assert (min (sparse ([0; NaN; 1; 2; 1]), [], "includenan"), sparse (NaN))
 %!assert (min (sparse ([0; NaN; 1; 2; 1]), [], 1, "includenan"), sparse (NaN))
-%!assert (min (sparse ([0; NaN; 1; 2; 1]), [], 2, "includenan"), sparse ([0; NaN; 1; 2; 1]))
+%!assert (min (sparse ([0; NaN; 1; 2; 1]), [], 2, "includenan"),
+%!        sparse ([0; NaN; 1; 2; 1]))
 %!assert (min (sparse ([NaN, 1i, 2, 1])), sparse (1))
-%!assert (min (sparse ([NaN, 1i, 2, 1]), "ComparisonMethod", "real"), sparse (1i))
+%!assert (min (sparse ([NaN, 1i, 2, 1]), "ComparisonMethod", "real"),
+%!        sparse (1i))
 %!assert (min (sparse (single ([NaN, 1, 2, 1]))), sparse (1))
 %!assert (min (sparse (single ([NaN; 1; 2; 1]))), sparse (1))
 %!assert (min (sparse (single ([0, NaN, 1, 2, 1]))), sparse (0))
 %!assert (min (sparse (single ([0; NaN; 1; 2; 1]))), sparse (0))
-%!assert (min (sparse (single ([0; NaN; 1; 2; 1])), [], "includenan"), sparse (NaN))
-%!assert (min (sparse (single ([0; NaN; 1; 2; 1])), [], 1, "includenan"), sparse (NaN))
+%!assert (min (sparse (single ([0; NaN; 1; 2; 1])), [], "includenan"),
+%!        sparse (NaN))
+%!assert (min (sparse (single ([0; NaN; 1; 2; 1])), [], 1, "includenan"),
+%!        sparse (NaN))
 %!assert (min (sparse (single ([NaN, 1i, 2, 1]))), sparse (1))
-%!assert (min (sparse (single ([NaN, 1i, 2, 1])), "ComparisonMethod", "real"), sparse (1i))
+%!assert (min (sparse (single ([NaN, 1i, 2, 1])), "ComparisonMethod", "real"),
+%!        sparse (1i))
 %!assert (min (sparse (single ([NaN, 1i, 2, 1]))), sparse (1))
+
+## Test broadcasting of empty matrices with min/max functions
+%!assert (min (sparse (zeros (0,1)), sparse ([1, 2, 3, 4])),
+%!        sparse (zeros (0,4)))
+%!error min (sparse (zeros (0,2)), sparse ([1, 2, 3, 4]))
+%!assert (min (sparse (zeros (1,0)), sparse ([1; 2; 3; 4])),
+%!        sparse (zeros (4,0)))
+%!error min (sparse (zeros (2,0)), sparse ([1; 2; 3; 4]))
+%!assert (min (sparse (zeros (0,1)), sparse ([1, 2, 3, 4i])),
+%!        sparse (zeros (0,4)))
+%!error min (sparse (zeros (0,2)), sparse ([1, 2, 3, 4i]))
+%!assert (min (sparse (zeros (1,0)), sparse ([1; 2; 3; 4i])),
+%!        sparse (zeros (4,0)))
+%!error min (sparse (zeros (2,0)), sparse ([1; 2; 3; 4i]))
 
 ## NaNs and complex numbers
 %!assert (min (NaN, 0), 0)
@@ -1123,7 +1145,7 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %! x(2, 3) = NaN;
 %! assert (min (x, [], 2, "includenan"), [1; NaN; 2]);
 
-## Test empty matrices and matrices with 0 dimensions (including catching errors)
+## Test empty matrices and those with 0 dimensions (including catching errors)
 %!assert (size (min (0, zeros (0, 1))), [0, 1])
 %!assert (size (min ([], zeros (0, 1))), [0, 0])
 %!assert (size (min (zeros (0, 1), [])), [0, 0])
@@ -1137,7 +1159,8 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!error min ([1, 2, NaN, 4], zeros (1, 0), 'includenan')
 %!assert (min ([1, 2, NaN, 4], zeros (0, 1), 'includenan'), zeros (0, 4))
 %!error min (sparse (zeros (1,0)), sparse ([1, 2, NaN 4]), 'includenan')
-%!assert (min (sparse (zeros (1,0)), sparse ([1; 2; 3; 4])), sparse (zeros (4, 0)))
+%!assert (min (sparse (zeros (1,0)), sparse ([1; 2; 3; 4])),
+%!        sparse (zeros (4, 0)))
 %!assert (min (zeros(0,3), zeros (0, 1)), zeros (0, 3))
 %!error min (zeros(3, 0), zeros (0, 1))
 %!assert (min (zeros(3, 0), zeros (1, 0)), zeros (3, 0))
@@ -1151,8 +1174,10 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!error min ()
 %!error min (1, 2, 3, 4)
 %!error <unrecognized optional argument 'foobar'> min (1, [], "foobar")
-%!error <min: cannot set DIM or VECDIM with 'all' flag> min (ones (3,3), [], 1, "all")
-%!error <min: cannot set DIM or VECDIM with 'all' flag> min (ones (3,3), [], [1, 2], "all")
+%!error <min: cannot set DIM or VECDIM with 'all' flag>
+%! min (ones (3,3), [], 1, "all")
+%!error <min: cannot set DIM or VECDIM with 'all' flag>
+%! min (ones (3,3), [], [1, 2], "all")
 %!error <min: invalid dimension DIM = 0> min (ones (3,3), [], 0)
 %!error <min: invalid dimension DIM = -1> min (ones (3,3), [], -1)
 %!error <min: invalid dimension in VECDIM = -2> min (ones (3,3), [], [1 -2])
@@ -1161,9 +1186,12 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!warning <second argument is ignored> min ([1 2 3 4], 2, 2);
 %!error <wrong type argument 'cell'> min ({1 2 3 4})
 %!error <cannot compute min \(cell, scalar\)> min ({1, 2, 3}, 2)
-%!error <min: two output arguments are not supported for two input arrays> [m, i] = min ([], [])
-%!error <min: 'linear' is not supported for two input arrays> min ([1 2 3 4], 1,  "linear")
-%!warning <min: 'linear' argument is ignored> [m, i] = min ([1 2 3 4], [], "linear");
+%!error <min: two output arguments are not supported for two input arrays>
+%! [m, i] = min ([], [])
+%!error <min: 'linear' is not supported for two input arrays>
+%! min ([1 2 3 4], 1,  "linear")
+%!warning <min: 'linear' argument is ignored>
+%! [m, i] = min ([1 2 3 4], [], "linear");
 */
 
 DEFUN (max, args, nargout,
@@ -1411,17 +1439,22 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!assert (max (sparse ([0; NaN; 1; 2; 1])), sparse (2))
 %!assert (max (sparse ([0; NaN; 1; 2; 1]), [], "includenan"), sparse (NaN))
 %!assert (max (sparse ([0; NaN; 1; 2; 1]), [], 1, "includenan"), sparse (NaN))
-%!assert (max (sparse ([0; NaN; 1; 2; 1]), [], 2, "includenan"), sparse ([0; NaN; 1; 2; 1]))
+%!assert (max (sparse ([0; NaN; 1; 2; 1]), [], 2, "includenan"),
+%!        sparse ([0; NaN; 1; 2; 1]))
 %!assert (max (sparse ([NaN, 1i, 2, 1])), sparse (2))
-%!assert (max (sparse ([NaN, 1i, 2, 1]), "ComparisonMethod", "real"), sparse (2))
+%!assert (max (sparse ([NaN, 1i, 2, 1]), "ComparisonMethod", "real"),
+%!        sparse (2))
 %!assert (max (sparse (single ([NaN, 1, 2, 1]))), sparse (2))
 %!assert (max (sparse (single ([NaN; 1; 2; 1]))), sparse (2))
 %!assert (max (sparse (single ([0, NaN, 1, 2, 1]))), sparse (2))
 %!assert (max (sparse (single ([0; NaN; 1; 2; 1]))), sparse (2))
-%!assert (max (sparse (single ([0; NaN; 1; 2; 1])), [], "includenan"), sparse (NaN))
-%!assert (max (sparse (single ([0; NaN; 1; 2; 1])), [], 1, "includenan"), sparse (NaN))
+%!assert (max (sparse (single ([0; NaN; 1; 2; 1])), [], "includenan"),
+%!        sparse (NaN))
+%!assert (max (sparse (single ([0; NaN; 1; 2; 1])), [], 1, "includenan"),
+%!        sparse (NaN))
 %!assert (max (sparse (single ([NaN, 1i, 2, 1]))), sparse (2))
-%!assert (max (sparse (single ([NaN, 1i, 2, 1])), "ComparisonMethod", "real"), sparse (2))
+%!assert (max (sparse (single ([NaN, 1i, 2, 1])), "ComparisonMethod", "real"),
+%!        sparse (2))
 %!assert (max (sparse (single ([NaN, 1i, 1]))), sparse (1i))
 
 ## NaNs and complex numbers
@@ -1460,7 +1493,7 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %! x(2, 3) = NaN;
 %! assert (max (x, [], 2, "includenan"), [8; NaN; 9]);
 
-## Test empty matrices and matrices with 0 dimensions (including catching errors)
+## Test empty matrices and those with 0 dimensions (including catching errors)
 %!assert (size (max (0, zeros (0, 1))), [0, 1])
 %!assert (size (max ([], zeros (0, 1))), [0, 0])
 %!assert (size (max (zeros (0, 1), [])), [0, 0])
@@ -1474,7 +1507,8 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!error max ([1, 2, NaN, 4], zeros (1, 0), 'includenan')
 %!assert (max ([1, 2, NaN, 4], zeros (0, 1), 'includenan'), zeros (0, 4))
 %!error max (sparse (zeros (1,0)), sparse ([1, 2, NaN 4]), 'includenan')
-%!assert (max (sparse (zeros (1,0)), sparse ([1; 2; 3; 4])), sparse (zeros (4, 0)))
+%!assert (max (sparse (zeros (1,0)), sparse ([1; 2; 3; 4])),
+%!        sparse (zeros (4, 0)))
 %!assert (max (zeros(0,3), zeros (0, 1)), zeros (0, 3))
 %!error max (zeros(3, 0), zeros (0, 1))
 %!assert (max (zeros(3, 0), zeros (1, 0)), zeros (3, 0))
@@ -1488,8 +1522,10 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!error max ()
 %!error max (1, 2, 3, 4)
 %!error <unrecognized optional argument 'foobar'> max (1, [], "foobar")
-%!error <max: cannot set DIM or VECDIM with 'all' flag> max (ones (3,3), [], 1, "all")
-%!error <max: cannot set DIM or VECDIM with 'all' flag> max (ones (3,3), [], [1, 2], "all")
+%!error <max: cannot set DIM or VECDIM with 'all' flag>
+%! max (ones (3,3), [], 1, "all")
+%!error <max: cannot set DIM or VECDIM with 'all' flag>
+%! max (ones (3,3), [], [1, 2], "all")
 %!error <max: invalid dimension DIM = 0> max (ones (3,3), [], 0)
 %!error <max: invalid dimension DIM = -1> max (ones (3,3), [], -1)
 %!error <max: invalid dimension in VECDIM = -2> max (ones (3,3), [], [1 -2])
@@ -1498,9 +1534,12 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!warning <second argument is ignored> max ([1 2 3 4], 2, 2);
 %!error <wrong type argument 'cell'> max ({1 2 3 4})
 %!error <cannot compute max \(cell, scalar\)> max ({1, 2, 3}, 2)
-%!error <max: two output arguments are not supported for two input arrays> [m, i] = max ([], [])
-%!error <min: 'linear' is not supported for two input arrays> min ([1 2 3 4], 1,  "linear")
-%!warning <max: 'linear' argument is ignored> [m ,i] = max ([1 2 3 4], [], "linear");
+%!error <max: two output arguments are not supported for two input arrays>
+%! [m, i] = max ([], [])
+%!error <min: 'linear' is not supported for two input arrays>
+%! min ([1 2 3 4], 1,  "linear")
+%!warning <max: 'linear' argument is ignored>
+%! [m ,i] = max ([1 2 3 4], [], "linear");
 */
 
 template <typename ArrayType>
@@ -1648,7 +1687,8 @@ do_cumminmax_body (const octave_value_list& args,
   bool linear = false;
 
   // Get "ComparisonMethod" optional argument first
-  if (nargin > 2 && args(nargin - 1).is_string () && args(nargin - 2).is_string ())
+  if (nargin > 2
+      && args(nargin - 1).is_string () && args(nargin - 2).is_string ())
     {
       std::string name = args(nargin - 2).string_value ();
       std::string sval = args(nargin - 1).string_value ();
@@ -1922,8 +1962,10 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!error cummin ()
 %!error cummin (1, 2, 3)
 %!error <unrecognized optional argument 'foobar'> cummin (1, "foobar")
-%!error <cummin: cannot set DIM or VECDIM with 'all' flag> cummin (ones (3,3), 1, "all")
-%!error <cummin: cannot set DIM or VECDIM with 'all' flag> cummin (ones (3,3), [1, 2], "all")
+%!error <cummin: cannot set DIM or VECDIM with 'all' flag>
+%! cummin (ones (3,3), 1, "all")
+%!error <cummin: cannot set DIM or VECDIM with 'all' flag>
+%! cummin (ones (3,3), [1, 2], "all")
 %!error <cummin: invalid dimension DIM = 0> cummin (ones (3,3), 0)
 %!error <cummin: invalid dimension DIM = -1> cummin (ones (3,3), -1)
 %!error <cummin: invalid dimension in VECDIM = -2> cummin (ones (3,3), [1 -2])
@@ -2041,8 +2083,10 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!error cummax ()
 %!error cummax (1, 2, 3)
 %!error <unrecognized optional argument 'foobar'> cummax (1, "foobar")
-%!error <cummax: cannot set DIM or VECDIM with 'all' flag> cummax (ones (3,3), 1, "all")
-%!error <cummax: cannot set DIM or VECDIM with 'all' flag> cummax (ones (3,3), [1, 2], "all")
+%!error <cummax: cannot set DIM or VECDIM with 'all' flag>
+%! cummax (ones (3,3), 1, "all")
+%!error <cummax: cannot set DIM or VECDIM with 'all' flag>
+%! cummax (ones (3,3), [1, 2], "all")
 %!error <cummax: invalid dimension DIM = 0> cummax (ones (3,3), 0)
 %!error <cummax: invalid dimension DIM = -1> cummax (ones (3,3), -1)
 %!error <cummax: invalid dimension in VECDIM = -2> cummax (ones (3,3), [1 -2])

@@ -305,15 +305,15 @@ all elements of @var{x}, and is equivalent to @code{all (@var{x}(:))}.
 %!error <Invalid call> all ()
 %!error <Invalid call> all (1,2,3)
 %!error <unrecognized optional argument 'foobar'> all (1, "foobar")
-%!error <all: cannot set DIM or VECDIM with 'all' flag>
-%! all (ones (3,3), 1, "all");
-%!error <all: cannot set DIM or VECDIM with 'all' flag>
-%! all (ones (3,3), [1, 2], "all");
-%!error <all: invalid dimension DIM = 0> all (ones (3,3), 0)
-%!error <all: invalid dimension DIM = -1> all (ones (3,3), -1)
-%!error <all: invalid dimension in VECDIM = -2> all (ones (3,3), [1 -2])
-%!error <all: duplicate dimension in VECDIM = 2> all (ones (3,3), [1 2 2])
-%!error <all: duplicate dimension in VECDIM = 1> all (ones (3,3), [1 1 2])
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! all (o3,3), 1, "all");
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! all (o3,3), [1, 2], "all");
+%!error <invalid dimension DIM = 0> all (ones (3,3), 0)
+%!error <invalid dimension DIM = -1> all (ones (3,3), -1)
+%!error <invalid dimension in VECDIM = -2> all (ones (3,3), [1 -2])
+%!error <duplicate dimension in VECDIM = 2> all (ones (3,3), [1 2 2])
+%!error <duplicate dimension in VECDIM = 1> all (ones (3,3), [1 1 2])
 */
 
 DEFUN (any, args, ,
@@ -470,15 +470,15 @@ all elements of @var{x}, and is equivalent to @code{any (@var{x}(:))}.
 %!error <Invalid call> any ()
 %!error <Invalid call> any (1,2,3)
 %!error <unrecognized optional argument 'foobar'> any (1, "foobar")
-%!error <any: cannot set DIM or VECDIM with 'all' flag>
-%! any (ones (3,3), 1, "all");
-%!error <any: cannot set DIM or VECDIM with 'all' flag>
-%! any (ones (3,3), [1, 2], "all");
-%!error <any: invalid dimension DIM = 0> any (ones (3,3), 0)
-%!error <any: invalid dimension DIM = -1> any (ones (3,3), -1)
-%!error <any: invalid dimension in VECDIM = -2> any (ones (3,3), [1 -2])
-%!error <any: duplicate dimension in VECDIM = 2> any (ones (3,3), [1 2 2])
-%!error <any: duplicate dimension in VECDIM = 1> any (ones (3,3), [1 1 2])
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! any (o3,3), 1, "all");
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! any (o3,3), [1, 2], "all");
+%!error <invalid dimension DIM = 0> any (ones (3,3), 0)
+%!error <invalid dimension DIM = -1> any (ones (3,3), -1)
+%!error <invalid dimension in VECDIM = -2> any (ones (3,3), [1 -2])
+%!error <duplicate dimension in VECDIM = 2> any (ones (3,3), [1 2 2])
+%!error <duplicate dimension in VECDIM = 1> any (ones (3,3), [1 1 2])
 */
 
 // These mapping functions may also be useful in other places, eh?
@@ -1564,6 +1564,7 @@ operating dimension.
 %! assert (y(2,:), [384, 192, 48, 8]);
 %! assert (cumprod (x, [1, 2, 3]), cumprod (x, "all"));
 
+## Test exceeding dimensions
 %!test
 %! x = reshape ([1:8], 2, 2, 2);
 %! assert (cumprod (x, 4), x);
@@ -1577,6 +1578,8 @@ operating dimension.
 %! assert (cumprod (x, 2, "omitnan"), cumprod (x, [2, 4], "omitnan"));
 %! assert (cumprod (x, 2, "reverse", "omitnan"),
 %!         cumprod (x, [2, 4], "reverse", "omitnan"));
+%!assert (cumprod (sparse ([1, 2; 3, 4]), 3), sparse ([1, 2; 3, 4]))
+%!assert (cumprod (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 2i; 3, 4]))
 
 %!test
 %! x = ones (3);
@@ -1618,16 +1621,16 @@ operating dimension.
 %!error <Invalid call> cumprod ()
 %!error <Invalid call> cumprod (1,2,3)
 %!error <unrecognized optional argument 'foobar'> cumprod (1, "foobar")
-%!error <cumprod: cannot set DIM or VECDIM with 'all' flag>
-%! cumprod (ones (3,3), 1, "all");
-%!error <cumprod: cannot set DIM or VECDIM with 'all' flag>
-%! cumprod (ones (3,3), [1, 2], "all");
-%!error <cumprod: invalid dimension DIM = 0> cumprod (ones (3,3), 0)
-%!error <cumprod: invalid dimension DIM = -1> cumprod (ones (3,3), -1)
-%!error <cumprod: invalid dimension in VECDIM = -2> cumprod (ones (3), [1 -2])
-%!error <cumprod: duplicate dimension in VECDIM = 2> cumprod (ones (3), [1 2 2])
-%!error <cumprod: duplicate dimension in VECDIM = 1> cumprod (ones (3), [1 1 2])
-%!error <cumprod: DIRECTION is not supported for sparse matrices>
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! cumpro3,3), 1, "all");
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! cumpro3,3), [1, 2], "all");
+%!error <invalid dimension DIM = 0> cumprod (ones (3,3), 0)
+%!error <invalid dimension DIM = -1> cumprod (ones (3,3), -1)
+%!error <invalid dimension in VECDIM = -2> cumprod (ones (3), [1 -2])
+%!error <duplicate dimension in VECDIM = 2> cumprod (ones (3), [1 2 2])
+%!error <duplicate dimension in VECDIM = 1> cumprod (ones (3), [1 1 2])
+%!error <DIRECTION is not supported for sparse matrices>
 %! cumprod (sparse (ones (3,3)), "reverse");
 */
 
@@ -1995,6 +1998,7 @@ operating dimension.
 %! assert (y(2,:), [20, 18, 14, 8]);
 %! assert (cumsum (x, [1, 2, 3]), cumsum (x, "all"));
 
+## Test exceeding dimensions
 %!test
 %! x = reshape ([1:8], 2, 2, 2);
 %! assert (cumsum (x, 4), x);
@@ -2008,6 +2012,8 @@ operating dimension.
 %! assert (cumsum (x, 2, "omitnan"), cumsum (x, [2, 4], "omitnan"));
 %! assert (cumsum (x, 2, "reverse", "omitnan"),
 %!         cumsum (x, [2, 4], "reverse", "omitnan"));
+%!assert (cumsum (sparse ([1, 2; 3, 4]), 3), sparse ([1, 2; 3, 4]))
+%!assert (cumsum (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 2i; 3, 4]))
 
 %!test
 %! x = ones (3);
@@ -2049,16 +2055,16 @@ operating dimension.
 %!error <Invalid call> cumsum ()
 %!error <Invalid call> cumsum (1,2,3)
 %!error <unrecognized optional argument 'foobar'> cumsum (1, "foobar")
-%!error <cumsum: cannot set DIM or VECDIM with 'all' flag> ...
-%!      cumsum (ones (3,3), 1, "all")
-%!error <cumsum: cannot set DIM or VECDIM with 'all' flag> ...
-%!      cumsum (ones (3,3), [1, 2], "all")
-%!error <cumsum: invalid dimension DIM = 0> cumsum (ones (3,3), 0)
-%!error <cumsum: invalid dimension DIM = -1> cumsum (ones (3,3), -1)
-%!error <cumsum: invalid dimension in VECDIM = -2> cumsum (ones (3), [1 -2])
-%!error <cumsum: duplicate dimension in VECDIM = 2> cumsum (ones (3), [1 2 2])
-%!error <cumsum: duplicate dimension in VECDIM = 1> cumsum (ones (3), [1 1 2])
-%!error <cumsum: DIRECTION is not supported for sparse matrices> ...
+%!error <cannot set DIM or VECDIM with 'all' flag> ...
+%!      cnes (3,3), 1, "all")
+%!error <cannot set DIM or VECDIM with 'all' flag> ...
+%!      cnes (3,3), [1, 2], "all")
+%!error <invalid dimension DIM = 0> cumsum (ones (3,3), 0)
+%!error <invalid dimension DIM = -1> cumsum (ones (3,3), -1)
+%!error <invalid dimension in VECDIM = -2> cumsum (ones (3), [1 -2])
+%!error <duplicate dimension in VECDIM = 2> cumsum (ones (3), [1 2 2])
+%!error <duplicate dimension in VECDIM = 1> cumsum (ones (3), [1 1 2])
+%!error <DIRECTION is not supported for sparse matrices> ...
 %!      cumsum (sparse (ones (3,3)), "reverse")
 */
 
@@ -2140,7 +2146,8 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the
 /*
 
 %!assert (full (diag ([1; 2; 3])), [1, 0, 0; 0, 2, 0; 0, 0, 3])
-%!assert (diag ([1; 2; 3], 1), [0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0])
+%!assert (diag ([1; 2; 3], 1),
+%!        [0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0])
 %!assert (diag ([1; 2; 3], 2),
 %!        [0 0 1 0 0; 0 0 0 2 0; 0 0 0 0 3; 0 0 0 0 0; 0 0 0 0 0])
 %!assert (diag ([1; 2; 3],-1),
@@ -2524,6 +2531,8 @@ operating dimension.
 %!assert (prod (ones (2), [4, 5]), ones (2))
 %!assert (prod (single (ones (2)), 4),single (ones (2)))
 %!assert (prod (single (ones (2)), [4, 5]),single (ones (2)))
+%!assert (prod (sparse ([1, 2; 3, 4]), 3), sparse ([1, 2; 3, 4]))
+%!assert (prod (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 2i; 3, 4]))
 
 ## Test nanflag
 %!test
@@ -2593,15 +2602,15 @@ operating dimension.
 %!error <Invalid call> prod ()
 %!error <Invalid call> prod (1,2,3)
 %!error <unrecognized optional argument 'foobar'> prod (1, "foobar")
-%!error <prod: cannot set DIM or VECDIM with 'all' flag>
-%! prod (ones (3,3), 1, "all");
-%!error <prod: cannot set DIM or VECDIM with 'all' flag>
-%! prod (ones (3,3), [1, 2], "all");
-%!error <prod: invalid dimension DIM = 0> prod (ones (3,3), 0)
-%!error <prod: invalid dimension DIM = -1> prod (ones (3,3), -1)
-%!error <prod: invalid dimension in VECDIM = -2> prod (ones (3,3), [1 -2])
-%!error <prod: duplicate dimension in VECDIM = 2> prod (ones (3,3), [1 2 2])
-%!error <prod: duplicate dimension in VECDIM = 1> prod (ones (3,3), [1 1 2])
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! prod (3,3), 1, "all");
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! prod (3,3), [1, 2], "all");
+%!error <invalid dimension DIM = 0> prod (ones (3,3), 0)
+%!error <invalid dimension DIM = -1> prod (ones (3,3), -1)
+%!error <invalid dimension in VECDIM = -2> prod (ones (3,3), [1 -2])
+%!error <duplicate dimension in VECDIM = 2> prod (ones (3,3), [1 2 2])
+%!error <duplicate dimension in VECDIM = 1> prod (ones (3,3), [1 1 2])
 */
 
 static bool
@@ -2827,8 +2836,8 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
       octave_value_list result;
 
-      // The following code looks fairly ugly because we have to handle old-style
-      // classes and classdef constructors separately
+      // The following code looks fairly ugly because we have to handle
+      // old-style classes and classdef constructors separately
       if (ctor.is_defined () && ctor.is_function ())
         {
           octave_function *ctor_fcn = ctor.function_value ();
@@ -3759,8 +3768,8 @@ DEFUN (ndims, args, ,
 Return the number of dimensions of @var{A}.
 
 For any array, the result will always be greater than or equal to 2.
-Trailing singleton dimensions are not counted, i.e., trailing dimensions @var{d}
-greater than 2 for which @code{size (@var{A}, @var{d}) = 1}.
+Trailing singleton dimensions are not counted, i.e., trailing dimensions
+@var{d} greater than 2 for which @code{size (@var{A}, @var{d}) = 1}.
 
 @example
 @group
@@ -4058,7 +4067,8 @@ sz4 = size (ones (2, 3), 4)
 %!   for j = 1:5
 %!     for k = 1:5
 %!       assert (size ([1, 2; 3, 4; 5, 6], i, j, k), [dim(i), dim(j), dim(k)]);
-%!       assert (size ([1, 2; 3, 4; 5, 6], [i, j, k]), [dim(i), dim(j), dim(k)]);
+%!       assert (size ([1, 2; 3, 4; 5, 6], [i, j, k]),
+%!               [dim(i), dim(j), dim(k)]);
 %!       [a, b, c] = size ([1, 2; 3, 4; 5, 6], i, j, k);
 %!       assert (a, dim(i));
 %!       assert (b, dim(j));
@@ -4560,6 +4570,10 @@ operating dimension.
 %!assert (sum (ones (2), [4, 5]), ones (2))
 %!assert (sum (single (ones (2)), 4),single (ones (2)))
 %!assert (sum (single (ones (2)), [4, 5]),single (ones (2)))
+%!assert (sum (sparse ([1, 2; 3, 4]), 3), sparse ([1, 2; 3, 4]))
+%!assert (sum (sparse ([1, 2; 3, 4]), 3, 'extra'), sparse ([1, 2; 3, 4]))
+%!assert (sum (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 2i; 3, 4]))
+%!assert (sum (sparse ([1, 2i; 3, 4]), 3, 'extra'), sparse ([1, 2i; 3, 4]))
 
 ## Test nanflag
 %!test
@@ -4632,6 +4646,24 @@ operating dimension.
 %! assert ((sum (x, "extra")) == flintmax ("double"), sparse (true));
 %! assert ((sum (x)) == flintmax ("double"), sparse (false));
 
+## Test 'extra' option with sparse matrices
+%!assert (sum (sparse ([2; 3; 4; 5; 6]), "extra"), sparse (20))
+%!assert (sum (sparse ([2; 3; 0; 5; 6]), "extra"), sparse (16))
+%!assert (sum (sparse ([2; 3; 4; 5; 6]'), "extra"), sparse (20))
+%!assert (sum (sparse ([2; 3; 0; 5; 6]'), "extra"), sparse (16))
+%!assert (sum (speye (3), "extra"), sparse ([1, 1, 1]))
+%!assert (sum (speye (3), 1, "extra"), sparse ([1, 1, 1]))
+%!assert (sum (speye (3), 2, "extra"), sparse ([1; 1; 1]))
+%!assert (sum (speye (3), 3, "extra"), speye (3))
+%!assert (sum (sparse ([2; 3; 4; 5; 6] * i), "extra"), sparse (20i))
+%!assert (sum (sparse ([2; 3; 0; 5; 6] * i), "extra"), sparse (16i))
+%!assert (sum (sparse ([2; 3; 4; 5; 6]' * i), "extra"), sparse (20i))
+%!assert (sum (sparse ([2; 3; 0; 5; 6]' * i), "extra"), sparse (16i))
+%!assert (sum (speye (3) * i, "extra"), sparse ([1, 1, 1]*i))
+%!assert (sum (speye (3) * i, 1, "extra"), sparse ([1, 1, 1]*i))
+%!assert (sum (speye (3) * i, 2, "extra"), sparse ([1; 1; 1]*i))
+%!assert (sum (speye (3) * i, 3, "extra"), speye (3) * i)
+
 ## Test cases for "omitnan"
 %!test
 %! A = [1, NaN; 2, NaN; 3, NaN];
@@ -4683,15 +4715,15 @@ operating dimension.
 %!error <Invalid call> sum ()
 %!error <Invalid call> sum (1,2,3)
 %!error <unrecognized optional argument 'foobar'> sum (1, "foobar")
-%!error <sum: cannot set DIM or VECDIM with 'all' flag>
-%! sum (ones (3,3), 1, "all");
-%!error <sum: cannot set DIM or VECDIM with 'all' flag>
-%! sum (ones (3,3), [1, 2], "all");
-%!error <sum: invalid dimension DIM = 0> sum (ones (3,3), 0)
-%!error <sum: invalid dimension DIM = -1> sum (ones (3,3), -1)
-%!error <sum: invalid dimension in VECDIM = -2> sum (ones (3,3), [1 -2])
-%!error <sum: duplicate dimension in VECDIM = 2> sum (ones (3,3), [1 2 2])
-%!error <sum: duplicate dimension in VECDIM = 1> sum (ones (3,3), [1 1 2])
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! sum (o3,3), 1, "all");
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! sum (o3,3), [1, 2], "all");
+%!error <invalid dimension DIM = 0> sum (ones (3,3), 0)
+%!error <invalid dimension DIM = -1> sum (ones (3,3), -1)
+%!error <invalid dimension in VECDIM = -2> sum (ones (3,3), [1 -2])
+%!error <duplicate dimension in VECDIM = 2> sum (ones (3,3), [1 2 2])
+%!error <duplicate dimension in VECDIM = 1> sum (ones (3,3), [1 1 2])
 */
 
 DEFUN (sumsq, args, ,
@@ -4909,7 +4941,8 @@ operating dimension.
 
 %!assert (sumsq (single ([1, 2, 3])), single (14))
 %!assert (sumsq (single ([-1; -2; 4i])), single (21))
-%!assert (sumsq (single ([1, 2, 3; 2, 3, 4; 4i, 6i, 2])), single ([21, 49, 29]))
+%!assert (sumsq (single ([1, 2, 3; 2, 3, 4; 4i, 6i, 2])),
+%!        single ([21, 49, 29]))
 
 %!assert (sumsq ([1, 2; 3, 4], 1), [10, 20])
 %!assert (sumsq ([1, 2; 3, 4], 2), [5; 25])
@@ -4980,6 +5013,22 @@ operating dimension.
 %!assert (sumsq (magic (3), [2 99]), sum (magic (3) .^ 2, 2))
 %!assert (sumsq (single (ones (2)), 4),single (ones (2)))
 %!assert (sumsq (single (ones (2)), [4, 5]),single (ones (2)))
+%!assert (sumsq (sparse ([1, 2; 3, 4]), 3), sparse ([1, 2; 3, 4].^2))
+%!assert (sumsq (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 4; 9, 16]))
+
+## Test broadcasting of empty matrices with min/max functions
+%!assert (max (sparse (zeros (0,1)), sparse ([1, 2, 3, 4])),
+%!        sparse (zeros (0,4)))
+%!error max (sparse (zeros (0,2)), sparse ([1, 2, 3, 4]))
+%!assert (max (sparse (zeros (1,0)), sparse ([1; 2; 3; 4])),
+%!        sparse (zeros (4,0)))
+%!error max (sparse (zeros (2,0)), sparse ([1; 2; 3; 4]))
+%!assert (max (sparse (zeros (0,1)), sparse ([1, 2, 3, 4i])),
+%!        sparse (zeros (0,4)))
+%!error max (sparse (zeros (0,2)), sparse ([1, 2, 3, 4i]))
+%!assert (max (sparse (zeros (1,0)), sparse ([1; 2; 3; 4i])),
+%!        sparse (zeros (4,0)))
+%!error max (sparse (zeros (2,0)), sparse ([1; 2; 3; 4i]))
 
 ## Test nanflag
 %!test
@@ -5062,15 +5111,15 @@ operating dimension.
 %!error <Invalid call> sumsq ()
 %!error <Invalid call> sumsq (1,2,3)
 %!error <unrecognized optional argument 'foobar'> sumsq (1, "foobar")
-%!error <sumsq: cannot set DIM or VECDIM with 'all' flag>
-%! sumsq (ones (3,3), 1, "all");
-%!error <sumsq: cannot set DIM or VECDIM with 'all' flag>
-%! sumsq (ones (3,3), [1, 2], "all");
-%!error <sumsq: invalid dimension DIM = 0> sumsq (ones (3,3), 0)
-%!error <sumsq: invalid dimension DIM = -1> sumsq (ones (3,3), -1)
-%!error <sumsq: invalid dimension in VECDIM = -2> sumsq (ones (3,3), [1 -2])
-%!error <sumsq: duplicate dimension in VECDIM = 2> sumsq (ones (3,3), [1 2 2])
-%!error <sumsq: duplicate dimension in VECDIM = 1> sumsq (ones (3,3), [1 1 2])
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! sumsq 3,3), 1, "all");
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! sumsq 3,3), [1, 2], "all");
+%!error <invalid dimension DIM = 0> sumsq (ones (3,3), 0)
+%!error <invalid dimension DIM = -1> sumsq (ones (3,3), -1)
+%!error <invalid dimension in VECDIM = -2> sumsq (ones (3,3), [1 -2])
+%!error <duplicate dimension in VECDIM = 2> sumsq (ones (3,3), [1 2 2])
+%!error <duplicate dimension in VECDIM = 1> sumsq (ones (3,3), [1 1 2])
 */
 
 DEFUN (islogical, args, ,
@@ -7601,7 +7650,7 @@ is returned.
 %!assert (linspace (complex (-1, -Inf), complex (2, Inf), 3),
 %!          [complex(-1, -Inf), complex(0.5, NaN), complex(2, Inf)])
 %!assert (linspace (complex (-3, -Inf), complex (0, Inf), 4),
-%!        [complex(-3, -Inf), complex(-2, NaN), complex(-1, NaN), complex(0, Inf)])
+%!        [complex(-3, -Inf) complex(-2, NaN) complex(-1, NaN) complex(0, Inf)])
 
 ## FIXME: Octave is not fully Matlab-compatible for some combinations of
 ##        Inf/-Inf endpoints.  See bug #56933.  This was dubbed "Won't Fix"
@@ -8142,7 +8191,8 @@ compute the norms of each column and return a row vector.
 %!assert (norm (x,"fro"), single (10), -eps ("single"))
 %!assert (norm (x), single (10))
 %!assert (norm (single ([1e38, 1])), single (1e38))
-%!assert (norm (single ([3+4i, 3-4i, sqrt(31)])), single (9), -4* eps ("single"))
+%!assert (norm (single ([3+4i, 3-4i, sqrt(31)])),
+%!        single (9), -4* eps ("single"))
 %!shared m
 %! m = single (magic (4));
 %!assert (norm (m,1), single (34))
@@ -9014,7 +9064,8 @@ ordered lists.
 %! assert (i, [3, 2, 5, 4, 1]);
 
 ## Single Complex
-%!assert (sort (single ([NaN, 1i, -1, 2, Inf])), single ([1i, -1, 2, Inf, NaN]))
+%!assert (sort (single ([NaN, 1i, -1, 2, Inf])),
+%!        single ([1i, -1, 2, Inf, NaN]))
 %!assert (sort (single ([NaN, 1i, -1, 2, Inf]), 1),
 %!        single ([NaN, 1i, -1, 2, Inf]))
 %!assert (sort (single ([NaN, 1i, -1, 2, Inf]), 2),

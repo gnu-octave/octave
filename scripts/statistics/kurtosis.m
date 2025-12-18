@@ -34,11 +34,10 @@
 ## The sample kurtosis is defined as
 ## @tex
 ## $$
-## \kappa_1 = {{{1\over N}\,
-##          \sum_{i=1}^N (x_i - \bar{x})^4} \over \sigma^4},
+## \kappa_1 = {{{1 \over N} \sum_{i=1}^N (x_i - \bar{x})^4} \over \sigma^4},
 ## $$
-## where $N$ is the length of @var{x}, $\bar{x}$ its mean, and $\sigma$
-## its (uncorrected) standard deviation.
+## where $N$ is the length of @var{x}, $\bar{x}$ its mean, and $\sigma$ its
+## (uncorrected) standard deviation.
 ## @end tex
 ## @ifnottex
 ##

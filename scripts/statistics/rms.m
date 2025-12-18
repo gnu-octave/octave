@@ -34,7 +34,7 @@
 ## The root mean square is defined as
 ## @tex
 ## $$
-## {\rm rms} (x) = {\sqrt{\sum_{i=1}^N {x_i}^2 \over N}}
+## {\rm rms} (x) = {\sqrt{{1 \over N} \sum_{i=1}^N {|x_i|}^2}}
 ## $$
 ## where $N$ is the number of elements of @var{x}.
 ##

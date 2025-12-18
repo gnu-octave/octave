@@ -621,32 +621,32 @@ no es un fichero XBEL versión 1.0 válido.</translation>
     <message>
         <location filename="../src/files-dock-widget.cc" line="+1214"/>
         <source>Open Editor Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir el editor de archivos</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Click to focus file in editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Hacer clic para poner el foco en el editor</translation>
     </message>
     <message>
         <location line="+92"/>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Cerrar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Close &amp;All</source>
-        <translation type="unfinished">Cerrar &amp;todo</translation>
+        <translation>Cerrar &amp;todo</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Run</source>
-        <translation type="unfinished">Ejecutar</translation>
+        <translation>Ejecutar</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Set Current &amp;Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Asignar el &amp;directorio actual</translation>
     </message>
 </context>
 <context>
@@ -1393,208 +1393,208 @@ ha sido eliminado o renombrado. ¿Desea guardarlo ahora?%2</translation>
     <message>
         <location filename="../src/files-dock-widget.cc" line="-1165"/>
         <source>File size</source>
-        <translation type="unfinished">Tamaño del archivo</translation>
+        <translation>Tamaño del archivo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>File type</source>
-        <translation type="unfinished">Tipo de archivo</translation>
+        <translation>Tipo de archivo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Date modified</source>
-        <translation type="unfinished">Fecha de modificación</translation>
+        <translation>Fecha de modificación</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show hidden</source>
-        <translation type="unfinished">Mostrar ocultos</translation>
+        <translation>Mostrar ocultos</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Alternating row colors</source>
-        <translation type="unfinished">Alternar colores de filas</translation>
+        <translation>Alternar colores de filas</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Enter the path or filename</source>
-        <translation type="unfinished">Introduzca la ruta o el nombre del archivo</translation>
+        <translation>Introduzca la ruta o el nombre del archivo</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>One directory up</source>
-        <translation type="unfinished">Directorio superior</translation>
+        <translation>Directorio superior</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Octave directory</source>
-        <translation type="unfinished">Mostrar el directorio de Octave</translation>
+        <translation>Mostrar el directorio de Octave</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Go to current Octave directory</source>
-        <translation type="unfinished">Ir al directorio actual de Octave</translation>
+        <translation>Ir al directorio actual de Octave</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Set Octave directory</source>
-        <translation type="unfinished">Seleccionar el directorio de Octave</translation>
+        <translation>Seleccionar el directorio de Octave</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Set Octave directory to current browser directory</source>
-        <translation type="unfinished">Asignar el directorio actual del navegador como directorio de Octave</translation>
+        <translation>Asignar el directorio actual del navegador como directorio de Octave</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Actions on current directory</source>
-        <translation type="unfinished">Acciones en el directorio actual</translation>
+        <translation>Acciones en el directorio actual</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Home Directory</source>
-        <translation type="unfinished">Mostrar el directorio de inicio</translation>
+        <translation>Mostrar el directorio de inicio</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Set Browser Directory...</source>
-        <translation type="unfinished">Asignar directorio del navegador...</translation>
+        <translation>Asignar directorio del navegador...</translation>
     </message>
     <message>
         <location line="+4"/>
         <location line="+433"/>
         <source>Find Files...</source>
-        <translation type="unfinished">Buscar archivos...</translation>
+        <translation>Buscar archivos...</translation>
     </message>
     <message>
         <location line="-429"/>
         <location line="+441"/>
         <source>New File...</source>
-        <translation type="unfinished">Nuevo archivo...</translation>
+        <translation>Nuevo archivo...</translation>
     </message>
     <message>
         <location line="-438"/>
         <location line="+440"/>
         <source>New Directory...</source>
-        <translation type="unfinished">Nuevo directorio...</translation>
+        <translation>Nuevo directorio...</translation>
     </message>
     <message>
         <location line="-385"/>
         <source>Double-click to open file/folder, right click for alternatives</source>
-        <translation type="unfinished">Doble clic para abrir el archivo o la carpeta; clic en el botón derecho para ver las alternativas</translation>
+        <translation>Doble clic para abrir el archivo o la carpeta; clic en el botón derecho para ver las alternativas</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Rename...</source>
-        <translation type="unfinished">Renombrar...</translation>
+        <translation>Renombrar...</translation>
     </message>
     <message>
         <location line="+312"/>
         <source>Open</source>
-        <translation type="unfinished">Abrir</translation>
+        <translation>Abrir</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open in System File Explorer</source>
-        <translation type="unfinished">Abrir en explorador de archivos del sistema</translation>
+        <translation>Abrir en explorador de archivos del sistema</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open in Text Editor</source>
-        <translation type="unfinished">Abrir en el editor de texto</translation>
+        <translation>Abrir en el editor de texto</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Copy Selection to Clipboard</source>
-        <translation type="unfinished">Copiar selección al portapapeles</translation>
+        <translation>Copiar selección al portapapeles</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Run</source>
-        <translation type="unfinished">Ejecutar</translation>
+        <translation>Ejecutar</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Load Data</source>
-        <translation type="unfinished">Cargar datos</translation>
+        <translation>Cargar datos</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Set Current Directory</source>
-        <translation type="unfinished">Asignar directorio actual</translation>
+        <translation>Asignar directorio actual</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add to Path</source>
-        <translation type="unfinished">Añadir a la ruta de trabajo (path)</translation>
+        <translation>Añadir a la ruta de trabajo (path)</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+7"/>
         <source>Selected Directories</source>
-        <translation type="unfinished">Directorios seleccionados</translation>
+        <translation>Directorios seleccionados</translation>
     </message>
     <message>
         <location line="-5"/>
         <location line="+7"/>
         <source>Selected Directories and Subdirectories</source>
-        <translation type="unfinished">Directorios y subdirectorios seleccionados</translation>
+        <translation>Directorios y subdirectorios seleccionados</translation>
     </message>
     <message>
         <location line="-4"/>
         <source>Remove from Path</source>
-        <translation type="unfinished">Eliminar de la ruta de trabajo (path)</translation>
+        <translation>Eliminar de la ruta de trabajo (path)</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Delete...</source>
-        <translation type="unfinished">Eliminar...</translation>
+        <translation>Eliminar...</translation>
     </message>
     <message>
         <location line="+140"/>
         <location line="+11"/>
         <location line="+17"/>
         <source>Delete file/directory</source>
-        <translation type="unfinished">Eliminar archivo/directorio</translation>
+        <translation>Eliminar archivo/directorio</translation>
     </message>
     <message>
         <location line="-27"/>
         <source>Are you sure you want to delete all %1 selected files?
 </source>
-        <translation type="unfinished">¿Está seguro de que quiere eliminar los %1 ficheros seleccionados?
+        <translation>¿Está seguro de que quiere eliminar los %1 ficheros seleccionados?
 </translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Are you sure you want to delete
 </source>
-        <translation type="unfinished">¿Está seguro de que quiere eliminar
+        <translation>¿Está seguro de que quiere eliminar
 </translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Can not delete a directory that is not empty</source>
-        <translation type="unfinished">No se puede eliminar un directorio que no esté vacío</translation>
+        <translation>No se puede eliminar un directorio que no esté vacío</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Deletion error</source>
-        <translation type="unfinished">Error al borrar</translation>
+        <translation>Error al borrar</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not delete file &quot;%1&quot;.</source>
-        <translation type="unfinished">No se pudo eliminar el fichero &quot;%1&quot;.</translation>
+        <translation>No se pudo eliminar el fichero &quot;%1&quot;.</translation>
     </message>
     <message>
         <location line="+216"/>
         <source>Set directory of file browser</source>
-        <translation type="unfinished">Seleccionar el directorio del explorador de archivos</translation>
+        <translation>Seleccionar el directorio del explorador de archivos</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Create File</source>
-        <translation type="unfinished">Crear archivo</translation>
+        <translation>Crear archivo</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1602,18 +1602,18 @@ ha sido eliminado o renombrado. ¿Desea guardarlo ahora?%2</translation>
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">¡Crear archivo en
+        <translation>¡Crear archivo en
 </translation>
     </message>
     <message>
         <location line="+2"/>
         <source>New File.txt</source>
-        <translation type="unfinished">Nuevo archivo.txt</translation>
+        <translation>Nuevo archivo.txt</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Create Directory</source>
-        <translation type="unfinished">Crear directorio</translation>
+        <translation>Crear directorio</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1621,13 +1621,13 @@ ha sido eliminado o renombrado. ¿Desea guardarlo ahora?%2</translation>
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">Crear carpeta en
+        <translation>Crear carpeta en
 </translation>
     </message>
     <message>
         <location line="+2"/>
         <source>New Directory</source>
-        <translation type="unfinished">Nuevo directorio</translation>
+        <translation>Nuevo directorio</translation>
     </message>
 </context>
 <context>
@@ -1650,12 +1650,12 @@ ha sido eliminado o renombrado. ¿Desea guardarlo ahora?%2</translation>
     <message>
         <location line="+10"/>
         <source>File System</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistema de archivos</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Editor Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor de archivos</translation>
     </message>
 </context>
 <context>
@@ -3283,12 +3283,12 @@ esta actualmente en uso para la acción
     <message>
         <location filename="../src/welcome-wizard.cc" line="+135"/>
         <source>Welcome to GNU Octave</source>
-        <translation type="unfinished">Bienvenido a GNU Octave</translation>
+        <translation>Bienvenido a GNU Octave</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Welcome to Octave!</source>
-        <translation type="unfinished">¡Bienvenido a Octave!</translation>
+        <translation>¡Bienvenido a Octave!</translation>
     </message>
 </context>
 <context>
@@ -3663,7 +3663,7 @@ para crear la tubería fd = %2: %3</translation>
         <location line="+17"/>
         <source>Error reading from redirected stream fd = %1.</source>
         <oldsource>Error reading from redirected strem fd = %1.</oldsource>
-        <translation type="unfinished">Error en la lectura del flujo redirigido fd = %1.</translation>
+        <translation>Error en la lectura del flujo redirigido fd = %1.</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -3917,7 +3917,7 @@ Error: </translation>
         <location line="+19"/>
         <source>3-D</source>
         <oldsource>3D</oldsource>
-        <translation type="unfinished">3D</translation>
+        <translation>3D</translation>
     </message>
     <message>
         <location line="+206"/>
@@ -4010,7 +4010,7 @@ Error: </translation>
     <message>
         <location line="+37"/>
         <source>Show splash screen at startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar la pantalla de bienvenida al inicio</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -4270,7 +4270,7 @@ Error: </translation>
     <message>
         <location line="+871"/>
         <source>Directory of open file dialog follows current editor file instead of current Octave directory </source>
-        <translation type="unfinished"></translation>
+        <translation>El directorio del diálogo de apertura de fichero es el del fichero actual en lugar del directorio de trabajo de Octave </translation>
     </message>
     <message>
         <location line="+98"/>

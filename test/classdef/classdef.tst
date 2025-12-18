@@ -668,22 +668,22 @@
 
 ## Test classdef permutation
 
-## Test scalar permute - should return scalar unchanged
+## scalar permute - should return scalar unchanged
 %!test <*65179>
 %! obj = foo_value_class (4, 48, 50000);
 %! result = permute (obj, [1, 2]);  # permute ignores out-of-bounds dims on scalars
-%! assert (isequal (obj.rate, result.rate));
-%! assert (isequal (obj.term, result.term));
-%! assert (isequal (obj.principle, result.principle));
+%! assert (obj.rate, result.rate);
+%! assert (obj.term, result.term);
+%! assert (obj.principle, result.principle);
 
 %!test <*65179>
 %! obj = foo_value_class (3, 36, 25000);
 %! result = permute (obj, [2, 1, 3]);  # permute ignores extra ndims on scalars
-%! assert (isequal (obj.rate, result.rate));
-%! assert (isequal (obj.term, result.term));
-%! assert (isequal (obj.principle, result.principle));
+%! assert (obj.rate, result.rate);
+%! assert (obj.term, result.term);
+%! assert (obj.principle, result.principle);
 
-## Test array permute - 2D transpose
+## array permute - 2-D transpose
 %!test <*65179>
 %! obj1 = foo_value_class (4, 48, 50000);
 %! obj2 = foo_value_class (3, 36, 25000);
@@ -692,12 +692,12 @@
 %! arr = [obj1, obj2; obj3, obj4];
 %! result = permute (arr, [2, 1]);
 %! assert (size (result), [2, 2]);
-%! assert (isequal (result(1,1).rate, arr(1,1).rate));
-%! assert (isequal (result(1,2).rate, arr(2,1).rate));
-%! assert (isequal (result(2,1).rate, arr(1,2).rate));
-%! assert (isequal (result(2,2).rate, arr(2,2).rate));
+%! assert (result(1,1).rate, arr(1,1).rate);
+%! assert (result(1,2).rate, arr(2,1).rate);
+%! assert (result(2,1).rate, arr(1,2).rate);
+%! assert (result(2,2).rate, arr(2,2).rate);
 
-## Test 3D array permute
+## 3-D array permute
 %!test <*65179>
 %! obj1 = foo_value_class (4, 48, 50000);
 %! obj2 = foo_value_class (3, 36, 25000);
@@ -706,7 +706,7 @@
 %! arr = cat (3, [obj1; obj2], [obj3; obj4]);  # 2x1x2 array
 %! result = permute (arr, [2, 1, 3]);  # 1x2x2 array
 %! assert (size (result), [1, 2, 2]);
-%! assert (isequal (result(1,1,1).rate, arr(1,1,1).rate));
-%! assert (isequal (result(1,2,1).rate, arr(2,1,1).rate));
-%! assert (isequal (result(1,1,2).rate, arr(1,1,2).rate));
-%! assert (isequal (result(1,2,2).rate, arr(2,1,2).rate));
+%! assert (result(1,1,1).rate, arr(1,1,1).rate);
+%! assert (result(1,2,1).rate, arr(2,1,1).rate);
+%! assert (result(1,1,2).rate, arr(1,1,2).rate);
+%! assert (result(1,2,2).rate, arr(2,1,2).rate);

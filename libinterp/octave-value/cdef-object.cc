@@ -233,6 +233,16 @@ cdef_object_array::clone () const
   return retval;
 }
 
+cdef_object_rep *
+cdef_object_array::permute (const Array<int>& vec, bool inv) const
+{
+  Array<cdef_object> cpy_array = m_array.permute (vec, inv);
+
+  cdef_object_array *retval = new cdef_object_array (cpy_array);
+  retval->set_class (get_class ());
+  return retval;
+}
+
 octave_value_list
 cdef_object_array::subsref (const std::string& type,
                             const std::list<octave_value_list>& idx,

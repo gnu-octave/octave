@@ -4,7 +4,7 @@
 <context>
     <name>QFileSystemModel</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/files-dock-widget.cc" line="+141"/>
+        <location filename="../src/files-dock-widget.cc" line="+141"/>
         <source>Invalid filename</source>
         <translatorcomment>Ye nun porque va delantre d&apos;una forma verbal</translatorcomment>
         <translation>Nome de ficheru nun válidu</translation>
@@ -13,7 +13,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/settings-dialog.cc" line="+1045"/>
+        <location filename="../src/settings-dialog.cc" line="+1045"/>
         <source>Difference to the default size</source>
         <translation>Diferencia col tamañu predetermináu</translation>
     </message>
@@ -47,7 +47,7 @@
 <context>
     <name>QTerminal</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/qterminal/libqterminal/QTerminal.cc" line="+119"/>
+        <location filename="../qterminal/libqterminal/QTerminal.cc" line="+119"/>
         <source>Edit &quot;%1&quot;</source>
         <translation>Editar &quot;%1&quot;</translation>
     </message>
@@ -110,7 +110,7 @@
 <context>
     <name>QWinTerminalImpl</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1859"/>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1859"/>
         <source>copied selection to clipboard</source>
         <translation>seleición copiada al portapapeles</translation>
     </message>
@@ -118,7 +118,7 @@
 <context>
     <name>UrlFilter</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/qterminal/libqterminal/unix/Filter.cpp" line="+630"/>
+        <location filename="../qterminal/libqterminal/unix/Filter.cpp" line="+630"/>
         <source>Open Link</source>
         <translation>Abrir enllace</translation>
     </message>
@@ -147,7 +147,7 @@
 <context>
     <name>annotation_dialog</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/graphics/annotation-dialog.ui" line="+17"/>
+        <location filename="../graphics/annotation-dialog.ui" line="+17"/>
         <source>Annotation</source>
         <translation>Anotación</translation>
     </message>
@@ -305,7 +305,7 @@
 <context>
     <name>octave::ListDialog</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/dialog.cc" line="+454"/>
+        <location filename="../src/dialog.cc" line="+454"/>
         <source>Select All</source>
         <translation>Seleicionar too</translation>
     </message>
@@ -313,7 +313,7 @@
 <context>
     <name>octave::command_widget</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/command-widget.cc" line="+76"/>
+        <location filename="../src/command-widget.cc" line="+76"/>
         <source>Pause</source>
         <translation>Pausa</translation>
     </message>
@@ -336,7 +336,7 @@
 <context>
     <name>octave::community_news</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/community-news.cc" line="+70"/>
+        <location filename="../src/community-news.cc" line="+70"/>
         <source>Octave Community News</source>
         <translation>Noticies de la comunidá d&apos;Octave</translation>
     </message>
@@ -344,7 +344,7 @@
 <context>
     <name>octave::console_lexer</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/console-lexer.cc" line="+48"/>
+        <location filename="../src/console-lexer.cc" line="+48"/>
         <source>Default</source>
         <translation>Valor predetermináu</translation>
     </message>
@@ -362,7 +362,7 @@
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/documentation.cc" line="+135"/>
+        <location filename="../src/documentation.cc" line="+135"/>
         <location line="+14"/>
         <location line="+715"/>
         <source>Octave Documentation</source>
@@ -474,7 +474,7 @@ L&apos;ayuda tará disponible namás na ventana de comandos.</translation>
 <context>
     <name>octave::documentation_bookmarks</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/documentation-bookmarks.cc" line="+102"/>
+        <location filename="../src/documentation-bookmarks.cc" line="+102"/>
         <source>
 No documentation bookmarks loaded!</source>
         <translation>
@@ -580,7 +580,7 @@ nun ye un ficheru XBEL versión 1.0 válidu.</translation>
 <context>
     <name>octave::documentation_dock_widget</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/documentation-dock-widget.cc" line="+40"/>
+        <location filename="../src/documentation-dock-widget.cc" line="+40"/>
         <source>Documentation</source>
         <translation>Documentación</translation>
     </message>
@@ -593,7 +593,7 @@ nun ye un ficheru XBEL versión 1.0 válidu.</translation>
 <context>
     <name>octave::dw_main_window</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/dw-main-window.cc" line="+53"/>
+        <location filename="../src/dw-main-window.cc" line="+53"/>
         <source>&amp;Close</source>
         <translation>&amp;Zarrar</translation>
     </message>
@@ -621,7 +621,7 @@ nun ye un ficheru XBEL versión 1.0 válidu.</translation>
 <context>
     <name>octave::external_editor_interface</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/external-editor-interface.cc" line="+68"/>
+        <location filename="../src/external-editor-interface.cc" line="+68"/>
         <location line="+50"/>
         <source>Octave Editor</source>
         <translation>Editor d&apos;Octave</translation>
@@ -644,7 +644,7 @@ Do you want to open the preferences?</source>
 <context>
     <name>octave::file_editor</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/m-editor/file-editor.cc" line="+194"/>
+        <location filename="../src/m-editor/file-editor.cc" line="+194"/>
         <source>Continue</source>
         <translation>Siguir</translation>
     </message>
@@ -1106,7 +1106,7 @@ pa escribir: %2.</translation>
 <context>
     <name>octave::file_editor_tab</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/m-editor/file-editor-tab.cc" line="+161"/>
+        <location filename="../src/m-editor/file-editor-tab.cc" line="+161"/>
         <source>line:</source>
         <translation>Llinia:</translation>
     </message>
@@ -1360,7 +1360,7 @@ foi elimináu o renomáu. ¿Quier guardalu agora?%2</translation>
 <context>
     <name>octave::files_dock_widget</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/files-dock-widget.cc" line="-4"/>
+        <location filename="../src/files-dock-widget.cc" line="-4"/>
         <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
         <translation>Nun se pue renomar l&apos;archivu &quot;%1&quot; a &quot;%2&quot;.</translation>
     </message>
@@ -1617,7 +1617,7 @@ foi elimináu o renomáu. ¿Quier guardalu agora?%2</translation>
 <context>
     <name>octave::final_page</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/welcome-wizard.cc" line="+318"/>
+        <location filename="../src/welcome-wizard.cc" line="+318"/>
         <source>Enjoy!</source>
         <translation>¡Disfrútelo!</translation>
     </message>
@@ -1674,7 +1674,7 @@ Pue atopar más información al respeutu visitando &lt;a href=&quot;https://octa
 <context>
     <name>octave::find_dialog</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/m-editor/find-dialog.cc" line="+93"/>
+        <location filename="../src/m-editor/find-dialog.cc" line="+93"/>
         <source>Editor: Find and Replace</source>
         <translation>Editor: buscar y reemplazar</translation>
     </message>
@@ -1792,7 +1792,7 @@ Pue atopar más información al respeutu visitando &lt;a href=&quot;https://octa
 <context>
     <name>octave::find_files_dialog</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/find-files-dialog.cc" line="+61"/>
+        <location filename="../src/find-files-dialog.cc" line="+61"/>
         <source>Find Files</source>
         <translation>Buscar archivos</translation>
     </message>
@@ -1951,7 +1951,7 @@ Por exemplu, &apos;*.cc; *.h&apos;</translation>
 <context>
     <name>octave::find_files_model</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/find-files-model.cc" line="+96"/>
+        <location filename="../src/find-files-model.cc" line="+96"/>
         <source>Filename</source>
         <translation>Nome de l&apos;archivu</translation>
     </message>
@@ -1974,7 +1974,7 @@ Por exemplu, &apos;*.cc; *.h&apos;</translation>
 <context>
     <name>octave::find_widget</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/find-widget.cc" line="+48"/>
+        <location filename="../src/find-widget.cc" line="+48"/>
         <source>Find:</source>
         <translation>Buscar:</translation>
     </message>
@@ -2004,7 +2004,7 @@ Por exemplu, &apos;*.cc; *.h&apos;</translation>
 <context>
     <name>octave::gui_settings</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/gui-settings.cc" line="+824"/>
+        <location filename="../src/gui-settings.cc" line="+824"/>
         <source>Error %1 creating the settings file
 %2
 Make sure you have read and write permissions to
@@ -2027,7 +2027,7 @@ L&apos;entornu gráficu d&apos;Octave zarrarase.</translation>
 <context>
     <name>octave::history_dock_widget</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/history-dock-widget.cc" line="+54"/>
+        <location filename="../src/history-dock-widget.cc" line="+54"/>
         <source>Browse and search the command history.</source>
         <translation>Esplorar y buscar nel historial de comandos.</translation>
     </message>
@@ -2080,7 +2080,7 @@ L&apos;entornu gráficu d&apos;Octave zarrarase.</translation>
 <context>
     <name>octave::initial_page</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/welcome-wizard.cc" line="-190"/>
+        <location filename="../src/welcome-wizard.cc" line="-190"/>
         <source>Welcome to Octave!</source>
         <translation>¡Bienveníu a Octave!</translation>
     </message>
@@ -2111,7 +2111,7 @@ Pulse &apos;Siguiente&apos; pa crear un archivu de configuración e iniciar Octa
 <context>
     <name>octave::label_dock_widget</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/octave-dock-widget.cc" line="+82"/>
+        <location filename="../src/octave-dock-widget.cc" line="+82"/>
         <source>Undock Widget</source>
         <translation>Desacoplar widget</translation>
     </message>
@@ -2124,7 +2124,7 @@ Pulse &apos;Siguiente&apos; pa crear un archivu de configuración e iniciar Octa
 <context>
     <name>octave::main_window</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/main-window.cc" line="+155"/>
+        <location filename="../src/main-window.cc" line="+155"/>
         <source>Profiler</source>
         <translation>Perfiláu</translation>
     </message>
@@ -2519,7 +2519,7 @@ polo que nun se pue editar.</translation>
 <context>
     <name>octave::news_reader</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/news-reader.cc" line="+106"/>
+        <location filename="../src/news-reader.cc" line="+106"/>
         <source>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;
@@ -2578,7 +2578,7 @@ o active na ventana de configuración la opción para veles.
 <context>
     <name>octave::octave_dock_widget</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/octave-dock-widget.cc" line="+144"/>
+        <location filename="../src/octave-dock-widget.cc" line="+144"/>
         <source>Hide Widget</source>
         <translation>Ocultar widget</translation>
     </message>
@@ -2596,7 +2596,7 @@ o active na ventana de configuración la opción para veles.
 <context>
     <name>octave::octave_qscintilla</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/m-editor/octave-qscintilla.cc" line="+302"/>
+        <location filename="../src/m-editor/octave-qscintilla.cc" line="+302"/>
         <source>Help on</source>
         <translation>Ayuda sobre</translation>
     </message>
@@ -2642,7 +2642,7 @@ Asegúrese de que tien permisu d&apos;escritura nel direutoriu
 <context>
     <name>octave::octave_txt_lexer</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/m-editor/octave-txt-lexer.cc" line="+41"/>
+        <location filename="../src/m-editor/octave-txt-lexer.cc" line="+41"/>
         <source>Default</source>
         <translation>Valor predetermináu</translation>
     </message>
@@ -2650,7 +2650,7 @@ Asegúrese de que tien permisu d&apos;escritura nel direutoriu
 <context>
     <name>octave::qt_interpreter_events</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/qt-interpreter-events.cc" line="+357"/>
+        <location filename="../src/qt-interpreter-events.cc" line="+357"/>
         <location line="+5"/>
         <location line="+2"/>
         <source>Create</source>
@@ -2705,7 +2705,7 @@ nun esiste. ¿Quier crealu?</translation>
 <context>
     <name>octave::release_notes</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/release-notes.cc" line="+84"/>
+        <location filename="../src/release-notes.cc" line="+84"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation>L&apos;archivu de notes de la versión %1 ta vacíu.</translation>
     </message>
@@ -2723,7 +2723,7 @@ nun esiste. ¿Quier crealu?</translation>
 <context>
     <name>octave::set_path_dialog</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/set-path-dialog.cc" line="+64"/>
+        <location filename="../src/set-path-dialog.cc" line="+64"/>
         <source>Set Path</source>
         <translation>Asignar rutes de trabayu (path)</translation>
     </message>
@@ -2806,7 +2806,7 @@ nun esiste. ¿Quier crealu?</translation>
 <context>
     <name>octave::settings_dialog</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/gui-preferences-ed.h" line="+161"/>
+        <location filename="../src/gui-preferences-ed.h" line="+161"/>
         <source>Top</source>
         <translation>Primeru</translation>
     </message>
@@ -2826,14 +2826,14 @@ nun esiste. ¿Quier crealu?</translation>
         <translation>Derecha</translation>
     </message>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/gui-preferences-cs.h" line="+61"/>
-        <location filename="__octave_temp_gui_sources__/src/gui-preferences-ve.h" line="+56"/>
+        <location filename="../src/gui-preferences-cs.h" line="+61"/>
+        <location filename="../src/gui-preferences-ve.h" line="+56"/>
         <source>Foreground</source>
         <translation>Primer planu</translation>
     </message>
     <message>
         <location line="+1"/>
-        <location filename="__octave_temp_gui_sources__/src/gui-preferences-ve.h" line="+1"/>
+        <location filename="../src/gui-preferences-ve.h" line="+1"/>
         <source>Background</source>
         <translation>Segundu planu</translation>
     </message>
@@ -2848,7 +2848,7 @@ nun esiste. ¿Quier crealu?</translation>
         <translation>Cursor</translation>
     </message>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/gui-preferences-ve.h" line="+1"/>
+        <location filename="../src/gui-preferences-ve.h" line="+1"/>
         <source>Selected Foreground</source>
         <translation>Primer planu seleicionáu</translation>
     </message>
@@ -2863,7 +2863,7 @@ nun esiste. ¿Quier crealu?</translation>
         <translation>Fondu alternativu</translation>
     </message>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/gui-preferences-ws.h" line="+70"/>
+        <location filename="../src/gui-preferences-ws.h" line="+70"/>
         <source>argument</source>
         <translation>argumentu</translation>
     </message>
@@ -2878,12 +2878,12 @@ nun esiste. ¿Quier crealu?</translation>
         <translation>persistente</translation>
     </message>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/gui-preferences-global.h" line="+193"/>
+        <location filename="../src/gui-preferences-global.h" line="+193"/>
         <source>Environment Variables</source>
         <translation>Variables d&apos;entornu</translation>
     </message>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/gui-preferences-sd.h" line="+41"/>
+        <location filename="../src/gui-preferences-sd.h" line="+41"/>
         <source>Second color mode (light/dark)</source>
         <translation>Mou de color secundariu (claru/escuru)</translation>
     </message>
@@ -2921,7 +2921,7 @@ depende del mou seleicionáu actual.</translation>
         <translation>&amp;Recarga l&apos;estilu por defeutu</translation>
     </message>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/settings-dialog.cc" line="-972"/>
+        <location filename="../src/settings-dialog.cc" line="-972"/>
         <source>Loading current preferences ... </source>
         <translation>Cargando les preferencies actuales... </translation>
     </message>
@@ -3026,7 +3026,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
 <context>
     <name>octave::setup_community_news</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/welcome-wizard.cc" line="+45"/>
+        <location filename="../src/welcome-wizard.cc" line="+45"/>
         <source>Community News</source>
         <translation>Noticies de la comunidad</translation>
     </message>
@@ -3075,7 +3075,7 @@ Esto ocurrirá como máximo una vegada al día y les noticies desplegaranse nam�
 <context>
     <name>octave::shortcut_edit_dialog</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/shortcuts-tree-widget.cc" line="+172"/>
+        <location filename="../src/shortcuts-tree-widget.cc" line="+172"/>
         <source>Enter New Shortcut</source>
         <translation>Introduzca nuevu atayu de tecláu</translation>
     </message>
@@ -3237,7 +3237,7 @@ ta agora n&apos;usu pa la aición
 <context>
     <name>octave::terminal_dock_widget</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/terminal-dock-widget.cc" line="+106"/>
+        <location filename="../src/terminal-dock-widget.cc" line="+106"/>
         <source>Command Window</source>
         <translation>Ventana de comandos</translation>
     </message>
@@ -3245,7 +3245,7 @@ ta agora n&apos;usu pa la aición
 <context>
     <name>octave::variable_dock_widget</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/variable-editor.cc" line="+177"/>
+        <location filename="../src/variable-editor.cc" line="+177"/>
         <source>Dock Widget</source>
         <translation>Apegar widget</translation>
     </message>
@@ -3436,7 +3436,7 @@ ta agora n&apos;usu pa la aición
 <context>
     <name>octave::welcome_wizard</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/welcome-wizard.cc" line="-196"/>
+        <location filename="../src/welcome-wizard.cc" line="-196"/>
         <source>Welcome to GNU Octave</source>
         <translation>Bienveníu a GNU Octave</translation>
     </message>
@@ -3444,7 +3444,7 @@ ta agora n&apos;usu pa la aición
 <context>
     <name>octave::workspace_model</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/workspace-model.cc" line="+49"/>
+        <location filename="../src/workspace-model.cc" line="+49"/>
         <source>Name</source>
         <translation>Nome</translation>
     </message>
@@ -3483,7 +3483,7 @@ ta agora n&apos;usu pa la aición
 <context>
     <name>octave::workspace_view</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/gui-preferences-ws.h" line="-21"/>
+        <location filename="../src/gui-preferences-ws.h" line="-21"/>
         <source>Class</source>
         <translation>Clase</translation>
     </message>
@@ -3503,7 +3503,7 @@ ta agora n&apos;usu pa la aición
         <translation>Atributu</translation>
     </message>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/workspace-view.cc" line="+60"/>
+        <location filename="../src/workspace-view.cc" line="+60"/>
         <source>Workspace</source>
         <translation>Espaciu de trabayu</translation>
     </message>
@@ -3571,7 +3571,7 @@ ta agora n&apos;usu pa la aición
 <context>
     <name>self_listener</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/self-listener.cc" line="+82"/>
+        <location filename="../src/self-listener.cc" line="+82"/>
         <source>Can not open redirected stream with fd = %1.</source>
         <translation>Nun se pue abrir el fluxu redirixíu fd = %1.</translation>
     </message>
@@ -3635,7 +3635,7 @@ Error: </translation>
 <context>
     <name>settings_dialog</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/settings-dialog.ui" line="+45"/>
+        <location filename="../src/settings-dialog.ui" line="+45"/>
         <location line="+834"/>
         <location line="+1909"/>
         <source>General</source>
@@ -4401,7 +4401,7 @@ coles combinaciones de tecles de readline.</translation>
 <context>
     <name>shortcuts</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/gui-preferences-sc.cc" line="+227"/>
+        <location filename="../src/gui-preferences-sc.cc" line="+227"/>
         <source>Undock/Dock Widget</source>
         <translation>Desaperar/apegar widget</translation>
     </message>

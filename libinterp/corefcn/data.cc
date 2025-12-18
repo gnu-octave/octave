@@ -43,6 +43,7 @@
 #include "oct-time.h"
 #include "quit.h"
 
+#include "cdef-utils.h"
 #include "Cell.h"
 #include "data.h"
 #include "defun.h"
@@ -52,6 +53,7 @@
 #include "interpreter.h"
 #include "oct-map.h"
 #include "ov-class.h"
+#include "ov-classdef.h"
 #include "ov-complex.h"
 #include "ov-cx-mat.h"
 #include "ov-cx-sparse.h"
@@ -2720,6 +2722,58 @@ do_single_type_concat_map (const octave_value_list& args,
 }
 
 static octave_value
+do_single_type_concat_cdef (const octave_value_list& args, int dim)
+{
+  // Concatenate a list of octave_classdef values of the same
+  // class along dimension dim
+
+  Array<cdef_object> arr;
+  int n_args = args.length ();
+
+  if (all_scalar_1x1 (args))
+    {
+      // Optimize all scalars case.
+      dim_vector dv (1, 1);
+      if (dim == -1 || dim == -2)
+        dim = -dim - 1;
+      else if (dim >= 2)
+        dv.resize (dim+1, 1);
+      dv(dim) = n_args;
+
+      arr.clear (dv);
+
+      for (int j = 0; j < n_args; j++)
+        {
+          octave_quit ();
+
+          arr(j) = args(j).classdef_object_value ()->get_object ();
+        }
+    }
+  else
+    {
+      OCTAVE_LOCAL_BUFFER (Array<cdef_object>, array_list, n_args);
+
+      for (int j = 0; j < n_args; j++)
+        {
+          octave_quit ();
+
+          cdef_object obj = args(j).classdef_object_value ()->get_object ();
+          if (obj.is_array ())
+            array_list[j] = obj.array_value ();
+          else
+            array_list[j] = Array<cdef_object> (dim_vector (1,1), obj);
+        }
+
+      arr = Array<cdef_object>::cat (dim, n_args, array_list);
+    }
+
+  cdef_object obj_result = cdef_object (new cdef_object_array (arr));
+  obj_result.set_class (arr(0).get_class ());
+
+  return to_ov (obj_result);
+}
+
+static octave_value
 attempt_type_conversion (const octave_value& ov, std::string dtype)
 {
   octave_value retval;
@@ -2734,7 +2788,11 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
   symbol_table& symtab = interp.get_symbol_table ();
 
-  octave_value fcn = symtab.find_method (dtype, cname);
+  cdef_manager& cdef_mgr = interp.get_cdef_manager ();
+
+  auto fcn = cdef_mgr.find_method_symbol (dtype, cname);
+  if (! fcn.is_defined ())
+    fcn = symtab.find_method (dtype, cname);
 
   if (fcn.is_defined ())
     {
@@ -2760,29 +2818,56 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
     {
       // No conversion function available.  Try the constructor for the
       // dispatch type.
+      // We can't go purely through the symbol table here, we have to
+      // check the classdef manager as well for classdef methods
+      auto ctor = cdef_mgr.find_method_symbol (dtype, dtype);
 
-      fcn = symtab.find_method (dtype, dtype);
-
-      if (! fcn.is_defined ())
-        error ("no constructor for %s!", dtype.c_str ());
+      if (! ctor.is_defined ())
+        ctor = symtab.find_method (dtype, dtype);
 
       octave_value_list result;
 
-      try
+      // The following code looks fairly ugly because we have to handle old-style
+      // classes and classdef constructors separately
+      if (ctor.is_defined () && ctor.is_function ())
         {
-          result = interp.feval (fcn, ovl (ov), 1);
-        }
-      catch (execution_exception& ee)
-        {
-          error (ee, "%s constructor failed for %s argument", dtype.c_str (),
-                 cname.c_str ());
+          octave_function *ctor_fcn = ctor.function_value ();
+
+            if (ctor_fcn->is_legacy_constructor ())
+              {
+                // Old-style class constructor
+                octave::unwind_protect frame;
+
+                octave::interpreter_try (frame);
+
+                try
+                  {
+                   result = interp.feval (ctor, ovl (ov), 1);
+                  }
+                catch (const octave::execution_exception&)
+                  {
+                    interp.recover_from_exception ();
+                  }
+              }
+            else
+              // Classdef constructor
+              {
+                auto cls = lookup_class (dtype, false, false);
+
+                try
+                  {
+                    result = to_ov (cls.construct_object (ovl (ov)));
+                  }
+                catch (execution_exception& ee)
+                  {
+                    error (ee, "%s constructor failed for %s argument",
+                           dtype.c_str (), cname.c_str ());
+                  }
+
+              }
         }
 
-      if (result.empty ())
-        error ("%s constructor failed for %s argument", dtype.c_str (),
-               cname.c_str ());
-
-      retval = result(0);
+       retval = result(0);
     }
 
   return retval;
@@ -2800,11 +2885,13 @@ do_class_concat (const octave_value_list& ovl,
 
   interpreter& interp = __get_interpreter__ ();
 
+  cdef_manager& cdef_mgr = __get_cdef_manager__ ();
+
   symbol_table& symtab = interp.get_symbol_table ();
 
-  octave_value fcn = symtab.find_method (cattype, dtype);
+  octave_value ov_fcn = symtab.find_method (cattype, dtype);
 
-  if (fcn.is_defined ())
+  if (ov_fcn.is_defined ())
     {
       // Have method for dominant type.  Call it and let it handle conversions.
 
@@ -2812,15 +2899,15 @@ do_class_concat (const octave_value_list& ovl,
 
       try
         {
-          tmp2 = interp.feval (fcn, ovl, 1);
+          tmp2 = interp.feval (ov_fcn, ovl, 1);
         }
       catch (execution_exception& ee)
         {
-          error (ee, "%s/%s method failed", dtype.c_str (), cattype.c_str ());
+          error (ee, "cat: %s/%s method failed", dtype.c_str (), cattype.c_str ());
         }
 
       if (tmp2.empty ())
-        error ("%s/%s method did not return a value", dtype.c_str (),
+        error ("cat: %s/%s method did not return a value", dtype.c_str (),
                cattype.c_str ());
 
       retval = tmp2(0);
@@ -2843,17 +2930,34 @@ do_class_concat (const octave_value_list& ovl,
           if (t1_type == dtype)
             tmp(j++) = elt;
           else if (elt.isobject () || ! elt.isempty ())
-            tmp(j++) = attempt_type_conversion (elt, dtype);
+            {
+              auto ov = attempt_type_conversion (elt, dtype);
+              // Abort concatenation if type cannot be converted
+              if ( ! ov.is_defined ())
+                error ("cat: cannot convert from type \"%s\" to type \"%s\"",
+                       t1_type.c_str (), dtype.c_str ());
+              tmp(j++) = ov;
+            }
         }
 
       tmp.resize (j);
 
-      octave_map m = do_single_type_concat_map (tmp, dim);
+      // See if dominant type is a classdef
+      cdef_class cdef = cdef_mgr.find_class (dtype, false);
 
-      std::string cname = tmp(0).class_name ();
-      std::list<std::string> parents = tmp(0).parent_class_name_list ();
+      if (cdef.ok ())
+        // Default classdef concat
+        retval = do_single_type_concat_cdef (tmp, dim);
+      else
+        {
+          // Default struct-based class concat
+          octave_map m = do_single_type_concat_map (tmp, dim);
 
-      retval = octave_value (new octave_class (m, cname, parents));
+          std::string cname = tmp(0).class_name ();
+          std::list<std::string> parents = tmp(0).parent_class_name_list ();
+
+          retval = octave_value (new octave_class (m, cname, parents));
+        }
     }
 
   return retval;
@@ -2940,9 +3044,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
         }
 
       if (any_class_p)
-        {
-          retval = do_class_concat (args, fname, dim);
-        }
+        retval = do_class_concat (args, fname, dim);
       else if (result_type == "double")
         {
           if (any_sparse_p)
@@ -4583,7 +4685,7 @@ operating dimension.
 %!error <unrecognized optional argument 'foobar'> sum (1, "foobar")
 %!error <sum: cannot set DIM or VECDIM with 'all' flag>
 %! sum (ones (3,3), 1, "all");
-%!error <sum: cannot set DIM or VECDIM with 'all' flag> 
+%!error <sum: cannot set DIM or VECDIM with 'all' flag>
 %! sum (ones (3,3), [1, 2], "all");
 %!error <sum: invalid dimension DIM = 0> sum (ones (3,3), 0)
 %!error <sum: invalid dimension DIM = -1> sum (ones (3,3), -1)

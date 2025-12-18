@@ -155,6 +155,12 @@ public:
 
   OCTINTERP_API bool load_ascii (std::istream& is);
 
+  octave_value
+  permute (const Array<int>& vec, bool inv = false) const
+  {
+    return new octave_classdef (m_object.permute (vec, inv));
+  }
+
 public:
 
   int type_id () const { return s_t_id; }

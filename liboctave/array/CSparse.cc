@@ -7686,6 +7686,8 @@ SparseComplexMatrix::xsum (int dim, bool nanflag) const
 SparseComplexMatrix
 SparseComplexMatrix::sumsq (int dim, bool nanflag) const
 {
+#define EXPR r.data (nel++) = data (i) * conj (data (i));
+
 #define ROW_EXPR                           \
   Complex d = data (i);                    \
   if (nanflag && octave::math::isnan (d))  \
@@ -7700,10 +7702,11 @@ SparseComplexMatrix::sumsq (int dim, bool nanflag) const
   else                                     \
     tmp[j] += d * conj (d)
 
-  SPARSE_SUMSQ_HEADER (SparseComplexMatrix)
+  SPARSE_SUMSQ_HEADER (SparseComplexMatrix, EXPR)
   SPARSE_BASE_REDUCTION_OP (SparseComplexMatrix, Complex, ROW_EXPR,
                             COL_EXPR, 0.0, 0.0);
 
+#undef EXPR
 #undef ROW_EXPR
 #undef COL_EXPR
 }
@@ -8362,7 +8365,7 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
 %!assert (prod (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 2i; 3, 4]))
 %!assert (sum (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 2i; 3, 4]))
 %!assert (sum (sparse ([1, 2i; 3, 4]), 3, 'extra'), sparse ([1, 2i; 3, 4]))
-%!assert (sumsq (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 2i; 3, 4].^2))
+%!assert (sumsq (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 4; 9, 16]))
 
 ## Test broadcasting of empty matrices with min/max functions
 %!assert (min (sparse (zeros (0,1)), sparse ([1, 2, 3, 4i])), sparse (zeros (0,4)))

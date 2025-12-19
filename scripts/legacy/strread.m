@@ -5,8 +5,6 @@
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## or <https://octave.org/copyright/>.
 ##
-## Parts Copyright (C) 2012-2019 Philip Nienhuis
-##
 ## This file is part of Octave.
 ##
 ## Octave is free software: you can redistribute it and/or modify it

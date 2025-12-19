@@ -269,6 +269,16 @@
 %!error <cannot reshape scalar .* to .* array>
 %! reshape (value_class (), [3, 2]);
 
+## subsasgn of classdef array with fewer ()-indices than array dimensions
+%!test <*65179>
+%! obj(2,3,2) = value_class ();
+%! obj(12).a = 42;
+%! assert (size (obj), [2, 3, 2]);
+%! assert (obj(2,3,2).a, 42);
+%! obj(2,4).a = 33;
+%! assert (size (obj), [2, 3, 2]);
+%! assert (obj(2,1,2).a, 33);
+
 ## properties take precedence over methods with the same name
 %!test <*67362>
 %! obj = class_bug67362 ();

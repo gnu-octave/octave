@@ -306,9 +306,9 @@ all elements of @var{x}, and is equivalent to @code{all (@var{x}(:))}.
 %!error <Invalid call> all (1,2,3)
 %!error <unrecognized optional argument 'foobar'> all (1, "foobar")
 %!error <cannot set DIM or VECDIM with 'all' flag>
-%! all (o3,3), 1, "all");
+%! all (ones (3,3), 1, "all");
 %!error <cannot set DIM or VECDIM with 'all' flag>
-%! all (o3,3), [1, 2], "all");
+%! all (ones (3,3), [1, 2], "all");
 %!error <invalid dimension DIM = 0> all (ones (3,3), 0)
 %!error <invalid dimension DIM = -1> all (ones (3,3), -1)
 %!error <invalid dimension in VECDIM = -2> all (ones (3,3), [1 -2])
@@ -471,9 +471,9 @@ all elements of @var{x}, and is equivalent to @code{any (@var{x}(:))}.
 %!error <Invalid call> any (1,2,3)
 %!error <unrecognized optional argument 'foobar'> any (1, "foobar")
 %!error <cannot set DIM or VECDIM with 'all' flag>
-%! any (o3,3), 1, "all");
+%! any (ones (3,3), 1, "all");
 %!error <cannot set DIM or VECDIM with 'all' flag>
-%! any (o3,3), [1, 2], "all");
+%! any (ones (3,3), [1, 2], "all");
 %!error <invalid dimension DIM = 0> any (ones (3,3), 0)
 %!error <invalid dimension DIM = -1> any (ones (3,3), -1)
 %!error <invalid dimension in VECDIM = -2> any (ones (3,3), [1 -2])
@@ -1519,6 +1519,7 @@ operating dimension.
 %! assert (y(2,:), [2, 8, 48, 384]);
 %! assert (cumprod (x, [1, 2, 3]), cumprod (x, "all"));
 
+## Test exceeding dimensions
 %!test
 %! x = reshape ([1:8], 2, 2, 2);
 %! x(3) = NaN;
@@ -1622,9 +1623,9 @@ operating dimension.
 %!error <Invalid call> cumprod (1,2,3)
 %!error <unrecognized optional argument 'foobar'> cumprod (1, "foobar")
 %!error <cannot set DIM or VECDIM with 'all' flag>
-%! cumpro3,3), 1, "all");
+%! cumprod (ones (3,3), 1, "all");
 %!error <cannot set DIM or VECDIM with 'all' flag>
-%! cumpro3,3), [1, 2], "all");
+%! cumprod (ones (3,3), [1, 2], "all");
 %!error <invalid dimension DIM = 0> cumprod (ones (3,3), 0)
 %!error <invalid dimension DIM = -1> cumprod (ones (3,3), -1)
 %!error <invalid dimension in VECDIM = -2> cumprod (ones (3), [1 -2])
@@ -1952,6 +1953,7 @@ operating dimension.
 %! assert (y(2,:), [2, 6, 12, 20]);
 %! assert (cumsum (x, [1, 2, 3]), cumsum (x, "all"));
 
+## Test exceeding dimensions
 %!test
 %! x = reshape ([1:8], 2, 2, 2);
 %! x(3) = NaN;
@@ -2056,9 +2058,9 @@ operating dimension.
 %!error <Invalid call> cumsum (1,2,3)
 %!error <unrecognized optional argument 'foobar'> cumsum (1, "foobar")
 %!error <cannot set DIM or VECDIM with 'all' flag> ...
-%!      cnes (3,3), 1, "all")
+%!      cumsum (ones (3,3), 1, "all")
 %!error <cannot set DIM or VECDIM with 'all' flag> ...
-%!      cnes (3,3), [1, 2], "all")
+%!      cumsum (ones (3,3), [1, 2], "all")
 %!error <invalid dimension DIM = 0> cumsum (ones (3,3), 0)
 %!error <invalid dimension DIM = -1> cumsum (ones (3,3), -1)
 %!error <invalid dimension in VECDIM = -2> cumsum (ones (3), [1 -2])
@@ -2603,9 +2605,9 @@ operating dimension.
 %!error <Invalid call> prod (1,2,3)
 %!error <unrecognized optional argument 'foobar'> prod (1, "foobar")
 %!error <cannot set DIM or VECDIM with 'all' flag>
-%! prod (3,3), 1, "all");
+%! prod (ones (3,3), 1, "all");
 %!error <cannot set DIM or VECDIM with 'all' flag>
-%! prod (3,3), [1, 2], "all");
+%! prod (ones (3,3), [1, 2], "all");
 %!error <invalid dimension DIM = 0> prod (ones (3,3), 0)
 %!error <invalid dimension DIM = -1> prod (ones (3,3), -1)
 %!error <invalid dimension in VECDIM = -2> prod (ones (3,3), [1 -2])
@@ -4664,6 +4666,24 @@ operating dimension.
 %!assert (sum (speye (3) * i, 2, "extra"), sparse ([1; 1; 1]*i))
 %!assert (sum (speye (3) * i, 3, "extra"), speye (3) * i)
 
+## Test 'extra' option with sparse matrices
+%!assert (sum (sparse ([2; 3; 4; 5; 6]), "extra"), sparse (20))
+%!assert (sum (sparse ([2; 3; 0; 5; 6]), "extra"), sparse (16))
+%!assert (sum (sparse ([2; 3; 4; 5; 6]'), "extra"), sparse (20))
+%!assert (sum (sparse ([2; 3; 0; 5; 6]'), "extra"), sparse (16))
+%!assert (sum (speye (3), "extra"), sparse ([1, 1, 1]))
+%!assert (sum (speye (3), 1, "extra"), sparse ([1, 1, 1]))
+%!assert (sum (speye (3), 2, "extra"), sparse ([1; 1; 1]))
+%!assert (sum (speye (3), 3, "extra"), speye (3))
+%!assert (sum (sparse ([2; 3; 4; 5; 6] * i), "extra"), sparse (20i))
+%!assert (sum (sparse ([2; 3; 0; 5; 6] * i), "extra"), sparse (16i))
+%!assert (sum (sparse ([2; 3; 4; 5; 6]' * i), "extra"), sparse (20i))
+%!assert (sum (sparse ([2; 3; 0; 5; 6]' * i), "extra"), sparse (16i))
+%!assert (sum (speye (3) * i, "extra"), sparse ([1, 1, 1]*i))
+%!assert (sum (speye (3) * i, 1, "extra"), sparse ([1, 1, 1]*i))
+%!assert (sum (speye (3) * i, 2, "extra"), sparse ([1; 1; 1]*i))
+%!assert (sum (speye (3) * i, 3, "extra"), speye (3) * i)
+
 ## Test cases for "omitnan"
 %!test
 %! A = [1, NaN; 2, NaN; 3, NaN];
@@ -4716,9 +4736,9 @@ operating dimension.
 %!error <Invalid call> sum (1,2,3)
 %!error <unrecognized optional argument 'foobar'> sum (1, "foobar")
 %!error <cannot set DIM or VECDIM with 'all' flag>
-%! sum (o3,3), 1, "all");
+%! sum (ones (3,3), 1, "all");
 %!error <cannot set DIM or VECDIM with 'all' flag>
-%! sum (o3,3), [1, 2], "all");
+%! sum (ones (3,3), [1, 2], "all");
 %!error <invalid dimension DIM = 0> sum (ones (3,3), 0)
 %!error <invalid dimension DIM = -1> sum (ones (3,3), -1)
 %!error <invalid dimension in VECDIM = -2> sum (ones (3,3), [1 -2])
@@ -5112,9 +5132,9 @@ operating dimension.
 %!error <Invalid call> sumsq (1,2,3)
 %!error <unrecognized optional argument 'foobar'> sumsq (1, "foobar")
 %!error <cannot set DIM or VECDIM with 'all' flag>
-%! sumsq 3,3), 1, "all");
+%! sumsq (ones (3,3), 1, "all");
 %!error <cannot set DIM or VECDIM with 'all' flag>
-%! sumsq 3,3), [1, 2], "all");
+%! sumsq (ones (3,3), [1, 2], "all");
 %!error <invalid dimension DIM = 0> sumsq (ones (3,3), 0)
 %!error <invalid dimension DIM = -1> sumsq (ones (3,3), -1)
 %!error <invalid dimension in VECDIM = -2> sumsq (ones (3,3), [1 -2])

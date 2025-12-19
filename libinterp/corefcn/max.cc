@@ -863,11 +863,11 @@ The optional input @var{dim} specifies the dimension to operate on and must be
 a positive integer.  Specifying any singleton dimension of @var{x}, including
 any dimension exceeding @code{ndims (@var{x})}, will return @var{x}.
 
-Specifying the dimensions as @var{vecdim}, a vector of non-repeating dimensions,
-will return the minimum value over the array slice defined by @var{vecdim}.  If
-@var{vecdim} indexes all dimensions of @var{x}, then it is equivalent to the
-option @qcode{"all"}.  Any dimension in @var{vecdim} greater than
-@code{ndims (@var{x})} is ignored.
+Specifying multiple dimensions with input @var{vecdim}, a vector of
+non-repeating dimensions, will operate along the array slice defined by
+@var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim} greater
+than @code{ndims (@var{x})} is ignored.
 
 Specifying the dimension as @qcode{"all"} will cause @code{min} to operate on
 on all elements of @var{x}, and is equivalent to @code{min (@var{x}(:))}.
@@ -1171,24 +1171,24 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!assert (min (zeros(1,0), zeros(3, 0)), zeros (3, 0))
 
 ## Test input validation
-%!error min ()
-%!error min (1, 2, 3, 4)
+%!error <Invalid call> min ()
+%!error <Invalid call> min (1, 2, 3, 4)
 %!error <unrecognized optional argument 'foobar'> min (1, [], "foobar")
-%!error <min: cannot set DIM or VECDIM with 'all' flag>
+%!error <cannot set DIM or VECDIM with 'all' flag>
 %! min (ones (3,3), [], 1, "all")
-%!error <min: cannot set DIM or VECDIM with 'all' flag>
+%!error <cannot set DIM or VECDIM with 'all' flag>
 %! min (ones (3,3), [], [1, 2], "all")
-%!error <min: invalid dimension DIM = 0> min (ones (3,3), [], 0)
-%!error <min: invalid dimension DIM = -1> min (ones (3,3), [], -1)
-%!error <min: invalid dimension in VECDIM = -2> min (ones (3,3), [], [1 -2])
-%!error <min: duplicate dimension in VECDIM = 2> min (ones (3,3), [], [1 2 2])
-%!error <min: duplicate dimension in VECDIM = 1> min (ones (3,3), [], [1 1 2])
+%!error <invalid dimension DIM = 0> min (ones (3,3), [], 0)
+%!error <invalid dimension DIM = -1> min (ones (3,3), [], -1)
+%!error <invalid dimension in VECDIM = -2> min (ones (3,3), [], [1 -2])
+%!error <duplicate dimension in VECDIM = 2> min (ones (3,3), [], [1 2 2])
+%!error <duplicate dimension in VECDIM = 1> min (ones (3,3), [], [1 1 2])
 %!warning <second argument is ignored> min ([1 2 3 4], 2, 2);
 %!error <wrong type argument 'cell'> min ({1 2 3 4})
 %!error <cannot compute min \(cell, scalar\)> min ({1, 2, 3}, 2)
-%!error <min: two output arguments are not supported for two input arrays>
+%!error <two output arguments are not supported for two input arrays>
 %! [m, i] = min ([], [])
-%!error <min: 'linear' is not supported for two input arrays>
+%!error <'linear' is not supported for two input arrays>
 %! min ([1 2 3 4], 1,  "linear")
 %!warning <min: 'linear' argument is ignored>
 %! [m, i] = min ([1 2 3 4], [], "linear");
@@ -1211,8 +1211,9 @@ Find maximum values in the array @var{x}.
 If @var{x} is a vector, then @code{max (@var{x})} returns the maximum value of
 the elements in @var{x}.
 
-If @var{x} is a matrix, then @code{max (@var{x})} returns a row vector with each
-element containing the maximum value of the corresponding column in @var{x}.
+If @var{x} is a matrix, then @code{max (@var{x})} returns a row vector with
+each element containing the maximum value of the corresponding column in
+@var{x}.
 
 If @var{x} is an array, then @code{max (@var{x})} computes the maximum value
 along the first non-singleton dimension of @var{x}.
@@ -1519,26 +1520,26 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!assert (max (zeros(1,0), zeros(3, 0)), zeros (3, 0))
 
 ## Test input validation
-%!error max ()
-%!error max (1, 2, 3, 4)
+%!error <Invalid call> max ()
+%!error <Invalid call> max (1, 2, 3, 4)
 %!error <unrecognized optional argument 'foobar'> max (1, [], "foobar")
-%!error <max: cannot set DIM or VECDIM with 'all' flag>
+%!error <cannot set DIM or VECDIM with 'all' flag>
 %! max (ones (3,3), [], 1, "all")
-%!error <max: cannot set DIM or VECDIM with 'all' flag>
+%!error <cannot set DIM or VECDIM with 'all' flag>
 %! max (ones (3,3), [], [1, 2], "all")
-%!error <max: invalid dimension DIM = 0> max (ones (3,3), [], 0)
-%!error <max: invalid dimension DIM = -1> max (ones (3,3), [], -1)
-%!error <max: invalid dimension in VECDIM = -2> max (ones (3,3), [], [1 -2])
-%!error <max: duplicate dimension in VECDIM = 2> max (ones (3,3), [], [1 2 2])
-%!error <max: duplicate dimension in VECDIM = 1> max (ones (3,3), [], [1 1 2])
+%!error <invalid dimension DIM = 0> max (ones (3,3), [], 0)
+%!error <invalid dimension DIM = -1> max (ones (3,3), [], -1)
+%!error <invalid dimension in VECDIM = -2> max (ones (3,3), [], [1 -2])
+%!error <duplicate dimension in VECDIM = 2> max (ones (3,3), [], [1 2 2])
+%!error <duplicate dimension in VECDIM = 1> max (ones (3,3), [], [1 1 2])
 %!warning <second argument is ignored> max ([1 2 3 4], 2, 2);
 %!error <wrong type argument 'cell'> max ({1 2 3 4})
 %!error <cannot compute max \(cell, scalar\)> max ({1, 2, 3}, 2)
-%!error <max: two output arguments are not supported for two input arrays>
+%!error <two output arguments are not supported for two input arrays>
 %! [m, i] = max ([], [])
-%!error <min: 'linear' is not supported for two input arrays>
-%! min ([1 2 3 4], 1,  "linear")
-%!warning <max: 'linear' argument is ignored>
+%!error <'linear' is not supported for two input arrays>
+%! max ([1 2 3 4], 1,  "linear")
+%!warning <'linear' argument is ignored>
 %! [m ,i] = max ([1 2 3 4], [], "linear");
 */
 
@@ -1899,8 +1900,8 @@ traversed and can take the following values:
 @table @asis
 @item @qcode{"forward"} (default)
 
-The cumulative minimum values are computed from beginning (index 1) to end along
-the operating dimension.
+The cumulative minimum values are computed from beginning (index 1) to end
+along the operating dimension.
 
 @item @qcode{"reverse"}
 
@@ -1959,18 +1960,18 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %! assert (ndims (iw), 3);
 %! assert (iw, ones (2,2,2));
 
-%!error cummin ()
-%!error cummin (1, 2, 3)
+%!error <Invalid call> cummin ()
+%!error <Invalid call> cummin (1, 2, 3)
 %!error <unrecognized optional argument 'foobar'> cummin (1, "foobar")
-%!error <cummin: cannot set DIM or VECDIM with 'all' flag>
+%!error <cannot set DIM or VECDIM with 'all' flag>
 %! cummin (ones (3,3), 1, "all")
-%!error <cummin: cannot set DIM or VECDIM with 'all' flag>
+%!error <cannot set DIM or VECDIM with 'all' flag>
 %! cummin (ones (3,3), [1, 2], "all")
-%!error <cummin: invalid dimension DIM = 0> cummin (ones (3,3), 0)
-%!error <cummin: invalid dimension DIM = -1> cummin (ones (3,3), -1)
-%!error <cummin: invalid dimension in VECDIM = -2> cummin (ones (3,3), [1 -2])
-%!error <cummin: duplicate dimension in VECDIM = 2> cummin (ones (3,3), [1 2 2])
-%!error <cummin: duplicate dimension in VECDIM = 1> cummin (ones (3,3), [1 1 2])
+%!error <invalid dimension DIM = 0> cummin (ones (3,3), 0)
+%!error <invalid dimension DIM = -1> cummin (ones (3,3), -1)
+%!error <invalid dimension in VECDIM = -2> cummin (ones (3,3), [1 -2])
+%!error <duplicate dimension in VECDIM = 2> cummin (ones (3,3), [1 2 2])
+%!error <duplicate dimension in VECDIM = 1> cummin (ones (3,3), [1 1 2])
 %!error <wrong type argument 'cell'> cummin ({1 2 3 4})
 %!warning <cummin: 'linear' argument is ignored> cummin ([1 2 3 4], "linear");
 */
@@ -2020,8 +2021,8 @@ traversed and can take the following values:
 @table @asis
 @item @qcode{"forward"} (default)
 
-The cumulative maximum values are computed from beginning (index 1) to end along
-the operating dimension.
+The cumulative maximum values are computed from beginning (index 1) to end
+along the operating dimension.
 
 @item @qcode{"reverse"}
 
@@ -2080,20 +2081,20 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %! assert (ndims (iw), 3);
 %! assert (iw, ones (2,2,2));
 
-%!error cummax ()
-%!error cummax (1, 2, 3)
+%!error <Invalid call> cummax ()
+%!error <Invalid call> cummax (1, 2, 3)
 %!error <unrecognized optional argument 'foobar'> cummax (1, "foobar")
-%!error <cummax: cannot set DIM or VECDIM with 'all' flag>
+%!error <cannot set DIM or VECDIM with 'all' flag>
 %! cummax (ones (3,3), 1, "all")
-%!error <cummax: cannot set DIM or VECDIM with 'all' flag>
+%!error <cannot set DIM or VECDIM with 'all' flag>
 %! cummax (ones (3,3), [1, 2], "all")
-%!error <cummax: invalid dimension DIM = 0> cummax (ones (3,3), 0)
-%!error <cummax: invalid dimension DIM = -1> cummax (ones (3,3), -1)
-%!error <cummax: invalid dimension in VECDIM = -2> cummax (ones (3,3), [1 -2])
-%!error <cummax: duplicate dimension in VECDIM = 2> cummax (ones (3,3), [1 2 2])
-%!error <cummax: duplicate dimension in VECDIM = 1> cummax (ones (3,3), [1 1 2])
+%!error <invalid dimension DIM = 0> cummax (ones (3,3), 0)
+%!error <invalid dimension DIM = -1> cummax (ones (3,3), -1)
+%!error <invalid dimension in VECDIM = -2> cummax (ones (3,3), [1 -2])
+%!error <duplicate dimension in VECDIM = 2> cummax (ones (3,3), [1 2 2])
+%!error <duplicate dimension in VECDIM = 1> cummax (ones (3,3), [1 1 2])
 %!error <wrong type argument 'cell'> cummax ({1 2 3 4})
-%!warning <cummax: 'linear' argument is ignored> cummax ([1 2 3 4], "linear");
+%!warning <'linear' argument is ignored> cummax ([1 2 3 4], "linear");
 */
 
 OCTAVE_END_NAMESPACE(octave)

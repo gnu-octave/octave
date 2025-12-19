@@ -392,67 +392,99 @@
 
 // matrix by diagonal matrix operations.
 
-#define MDM_BIN_OP(R, OP, M, DM, OPEQ)                          \
-  R                                                             \
-  OP (const M& m, const DM& dm)                                 \
-  {                                                             \
-    R r;                                                        \
-                                                                \
-    octave_idx_type m_nr = m.rows ();                           \
-    octave_idx_type m_nc = m.cols ();                           \
-                                                                \
-    octave_idx_type dm_nr = dm.rows ();                         \
-    octave_idx_type dm_nc = dm.cols ();                         \
-                                                                \
-    if (m_nr != dm_nr || m_nc != dm_nc)                         \
-      octave::err_nonconformant (#OP, m_nr, m_nc, dm_nr, dm_nc);        \
-                                                                \
-    r.resize (m_nr, m_nc);                                      \
-                                                                \
-    if (m_nr > 0 && m_nc > 0)                                   \
-      {                                                         \
-        r = R (m);                                              \
-                                                                \
-        octave_idx_type len = dm.length ();                     \
-                                                                \
-        for (octave_idx_type i = 0; i < len; i++)               \
-          r.elem (i, i) OPEQ dm.elem (i, i);                    \
-      }                                                         \
-                                                                \
-    return r;                                                   \
+#define MDM_BIN_OP(R, OP, M, DM, OPEQ)                               \
+  R                                                                  \
+  OP (const M& m, const DM& dm)                                      \
+  {                                                                  \
+    R r;                                                             \
+                                                                     \
+    octave_idx_type m_nr = m.rows ();                                \
+    octave_idx_type m_nc = m.cols ();                                \
+                                                                     \
+    octave_idx_type dm_nr = dm.rows ();                              \
+    octave_idx_type dm_nc = dm.cols ();                              \
+                                                                     \
+    r.resize (m_nr, m_nc);                                           \
+                                                                     \
+    if (m_nr > 0 && m_nc > 0)                                        \
+      {                                                              \
+        if (m_nr == dm_nr && m_nc == dm_nc)                          \
+          {                                                          \
+            r = R (m);                                               \
+                                                                     \
+            octave_idx_type len = dm.length ();                      \
+                                                                     \
+            for (octave_idx_type i = 0; i < len; i++)                \
+              r.elem (i, i) OPEQ dm.elem (i, i);                     \
+          }                                                          \
+        else if (m_nr == dm_nr && m_nc == 1)                         \
+          {                                                          \
+            r = R (dm_nr, dm_nc);                                    \
+                                                                     \
+            octave_idx_type len = dm.length ();                      \
+                                                                     \
+            for (octave_idx_type i = 0; i < len; i++)                \
+              for (octave_idx_type j = 0; j < len; j++)              \
+                {                                                    \
+                  r.elem (i, j) = m.elem (i, 0);                     \
+                  if (i == j)                                        \
+                    r.elem (i, j) OPEQ dm.elem (i, i);               \
+                }                                                    \
+          }                                                          \
+        else if (m_nc == dm_nc && m_nr == 1)                         \
+          {                                                          \
+            r = R (dm_nr, dm_nc);                                    \
+                                                                     \
+            octave_idx_type len = dm.length ();                      \
+                                                                     \
+            for (octave_idx_type i = 0; i < len; i++)                \
+              for (octave_idx_type j = 0; j < len; j++)              \
+                {                                                    \
+                  r.elem (i, j) = m.elem (0, j);                     \
+                  if (i == j)                                        \
+                    r.elem (i, j) OPEQ dm.elem (i, i);               \
+                }                                                    \
+          }                                                          \
+        else                                                         \
+          octave::err_nonconformant (#OP, m_nr, m_nc, dm_nr, dm_nc); \
+      }                                                              \
+    else if (m_nr != dm_nr || m_nc != dm_nc)                         \
+      octave::err_nonconformant (#OP, m_nr, m_nc, dm_nr, dm_nc);     \
+                                                                     \
+    return r;                                                        \
   }
 
-#define MDM_MULTIPLY_OP(R, M, DM)                                       \
-  R                                                                     \
-  operator * (const M& m, const DM& dm)                                 \
-  {                                                                     \
-    R r;                                                                \
-                                                                        \
-    R::element_type r_zero = R::element_type ();                        \
-                                                                        \
-    octave_idx_type m_nr = m.rows ();                                   \
-    octave_idx_type m_nc = m.cols ();                                   \
-                                                                        \
-    octave_idx_type dm_nr = dm.rows ();                                 \
-    octave_idx_type dm_nc = dm.cols ();                                 \
-                                                                        \
-    if (m_nc != dm_nr)                                                  \
-      octave::err_nonconformant ("operator *", m_nr, m_nc, dm_nr, dm_nc);       \
-                                                                        \
-    r = R (m_nr, dm_nc);                                                \
-    R::element_type *rd = r.rwdata ();                             \
-    const M::element_type *md = m.data ();                              \
-    const DM::element_type *dd = dm.data ();                            \
-                                                                        \
-    octave_idx_type len = dm.length ();                                 \
-    for (octave_idx_type i = 0; i < len; i++)                           \
-      {                                                                 \
-        mx_inline_mul (m_nr, rd, md, dd[i]);                            \
-        rd += m_nr; md += m_nr;                                         \
-      }                                                                 \
-    mx_inline_fill (m_nr * (dm_nc - len), rd, r_zero);                  \
-                                                                        \
-    return r;                                                           \
+#define MDM_MULTIPLY_OP(R, M, DM)                                          \
+  R                                                                        \
+  operator * (const M& m, const DM& dm)                                    \
+  {                                                                        \
+    R r;                                                                   \
+                                                                           \
+    R::element_type r_zero = R::element_type ();                           \
+                                                                           \
+    octave_idx_type m_nr = m.rows ();                                      \
+    octave_idx_type m_nc = m.cols ();                                      \
+                                                                           \
+    octave_idx_type dm_nr = dm.rows ();                                    \
+    octave_idx_type dm_nc = dm.cols ();                                    \
+                                                                           \
+    if (m_nc != dm_nr)                                                     \
+      octave::err_nonconformant ("operator *", m_nr, m_nc, dm_nr, dm_nc);  \
+                                                                           \
+    r = R (m_nr, dm_nc);                                                   \
+    R::element_type *rd = r.rwdata ();                                     \
+    const M::element_type *md = m.data ();                                 \
+    const DM::element_type *dd = dm.data ();                               \
+                                                                           \
+    octave_idx_type len = dm.length ();                                    \
+    for (octave_idx_type i = 0; i < len; i++)                              \
+      {                                                                    \
+        mx_inline_mul (m_nr, rd, md, dd[i]);                               \
+        rd += m_nr; md += m_nr;                                            \
+      }                                                                    \
+    mx_inline_fill (m_nr * (dm_nc - len), rd, r_zero);                     \
+                                                                           \
+    return r;                                                              \
   }
 
 #define MDM_BIN_OPS(R, M, DM)                   \
@@ -462,75 +494,105 @@
 
 // diagonal matrix by matrix operations.
 
-#define DMM_BIN_OP(R, OP, DM, M, OPEQ, PREOP)                   \
-  R                                                             \
-  OP (const DM& dm, const M& m)                                 \
-  {                                                             \
-    R r;                                                        \
-                                                                \
-    octave_idx_type dm_nr = dm.rows ();                         \
-    octave_idx_type dm_nc = dm.cols ();                         \
-                                                                \
-    octave_idx_type m_nr = m.rows ();                           \
-    octave_idx_type m_nc = m.cols ();                           \
-                                                                \
-    if (dm_nr != m_nr || dm_nc != m_nc)                         \
-      octave::err_nonconformant (#OP, dm_nr, dm_nc, m_nr, m_nc);        \
-    else                                                        \
-      {                                                         \
-        if (m_nr > 0 && m_nc > 0)                               \
-          {                                                     \
-            r = R (PREOP m);                                    \
-                                                                \
-            octave_idx_type len = dm.length ();                 \
-                                                                \
-            for (octave_idx_type i = 0; i < len; i++)           \
-              r.elem (i, i) OPEQ dm.elem (i, i);                \
-          }                                                     \
-        else                                                    \
-          r.resize (m_nr, m_nc);                                \
-      }                                                         \
-                                                                \
-    return r;                                                   \
+#define DMM_BIN_OP(R, OP, DM, M, PREOP)                              \
+  R                                                                  \
+  OP (const DM& dm, const M& m)                                      \
+  {                                                                  \
+    R r;                                                             \
+                                                                     \
+    octave_idx_type dm_nr = dm.rows ();                              \
+    octave_idx_type dm_nc = dm.cols ();                              \
+                                                                     \
+    octave_idx_type m_nr = m.rows ();                                \
+    octave_idx_type m_nc = m.cols ();                                \
+                                                                     \
+    r.resize (m_nr, m_nc);                                           \
+                                                                     \
+    if (m_nr > 0 && m_nc > 0)                                        \
+      {                                                              \
+        if (m_nr == dm_nr && m_nc == dm_nc)                          \
+          {                                                          \
+            r = R (PREOP m);                                         \
+                                                                     \
+            octave_idx_type len = dm.length ();                      \
+                                                                     \
+            for (octave_idx_type i = 0; i < len; i++)                \
+              r.elem (i, i) += dm.elem (i, i);                       \
+          }                                                          \
+        else if (m_nr == dm_nr && m_nc == 1)                         \
+          {                                                          \
+            r = R (dm_nr, dm_nc);                                    \
+                                                                     \
+            octave_idx_type len = dm.length ();                      \
+                                                                     \
+            for (octave_idx_type i = 0; i < len; i++)                \
+              for (octave_idx_type j = 0; j < len; j++)              \
+                {                                                    \
+                  r.elem (i, j) = PREOP m.elem (i, 0);               \
+                  if (i == j)                                        \
+                    r.elem (i, j) += dm.elem (i, i);                 \
+                }                                                    \
+          }                                                          \
+        else if (m_nc == dm_nc && m_nr == 1)                         \
+          {                                                          \
+            r = R (dm_nr, dm_nc);                                    \
+                                                                     \
+            octave_idx_type len = dm.length ();                      \
+                                                                     \
+            for (octave_idx_type i = 0; i < len; i++)                \
+              for (octave_idx_type j = 0; j < len; j++)              \
+                {                                                    \
+                  r.elem (i, j) = PREOP m.elem (0, j);               \
+                  if (i == j)                                        \
+                    r.elem (i, j) += dm.elem (i, i);                 \
+                }                                                    \
+          }                                                          \
+        else                                                         \
+          octave::err_nonconformant (#OP, m_nr, m_nc, dm_nr, dm_nc); \
+      }                                                              \
+    else if (m_nr != dm_nr || m_nc != dm_nc)                         \
+      octave::err_nonconformant (#OP, m_nr, m_nc, dm_nr, dm_nc);     \
+                                                                     \
+    return r;                                                        \
   }
 
-#define DMM_MULTIPLY_OP(R, DM, M)                                       \
-  R                                                                     \
-  operator * (const DM& dm, const M& m)                                 \
-  {                                                                     \
-    R r;                                                                \
-                                                                        \
-    R::element_type r_zero = R::element_type ();                        \
-                                                                        \
-    octave_idx_type dm_nr = dm.rows ();                                 \
-    octave_idx_type dm_nc = dm.cols ();                                 \
-                                                                        \
-    octave_idx_type m_nr = m.rows ();                                   \
-    octave_idx_type m_nc = m.cols ();                                   \
-                                                                        \
-    if (dm_nc != m_nr)                                                  \
-      octave::err_nonconformant ("operator *", dm_nr, dm_nc, m_nr, m_nc);       \
-                                                                        \
-    r = R (dm_nr, m_nc);                                                \
-    R::element_type *rd = r.rwdata ();                             \
-    const M::element_type *md = m.data ();                              \
-    const DM::element_type *dd = dm.data ();                            \
-                                                                        \
-    octave_idx_type len = dm.length ();                                 \
-    for (octave_idx_type i = 0; i < m_nc; i++)                          \
-      {                                                                 \
-        mx_inline_mul (len, rd, md, dd);                                \
-        rd += len; md += m_nr;                                          \
-        mx_inline_fill (dm_nr - len, rd, r_zero);                       \
-        rd += dm_nr - len;                                              \
-      }                                                                 \
-                                                                        \
-    return r;                                                           \
+#define DMM_MULTIPLY_OP(R, DM, M)                                          \
+  R                                                                        \
+  operator * (const DM& dm, const M& m)                                    \
+  {                                                                        \
+    R r;                                                                   \
+                                                                           \
+    R::element_type r_zero = R::element_type ();                           \
+                                                                           \
+    octave_idx_type dm_nr = dm.rows ();                                    \
+    octave_idx_type dm_nc = dm.cols ();                                    \
+                                                                           \
+    octave_idx_type m_nr = m.rows ();                                      \
+    octave_idx_type m_nc = m.cols ();                                      \
+                                                                           \
+    if (dm_nc != m_nr)                                                     \
+      octave::err_nonconformant ("operator *", dm_nr, dm_nc, m_nr, m_nc);  \
+                                                                           \
+    r = R (dm_nr, m_nc);                                                   \
+    R::element_type *rd = r.rwdata ();                                     \
+    const M::element_type *md = m.data ();                                 \
+    const DM::element_type *dd = dm.data ();                               \
+                                                                           \
+    octave_idx_type len = dm.length ();                                    \
+    for (octave_idx_type i = 0; i < m_nc; i++)                             \
+      {                                                                    \
+        mx_inline_mul (len, rd, md, dd);                                   \
+        rd += len; md += m_nr;                                             \
+        mx_inline_fill (dm_nr - len, rd, r_zero);                          \
+        rd += dm_nr - len;                                                 \
+      }                                                                    \
+                                                                           \
+    return r;                                                              \
   }
 
-#define DMM_BIN_OPS(R, DM, M)                   \
-  DMM_BIN_OP (R, operator +, DM, M, +=, )       \
-  DMM_BIN_OP (R, operator -, DM, M, +=, -)      \
+#define DMM_BIN_OPS(R, DM, M)               \
+  DMM_BIN_OP (R, operator +, DM, M,  )      \
+  DMM_BIN_OP (R, operator -, DM, M, -)      \
   DMM_MULTIPLY_OP (R, DM, M)
 
 // diagonal matrix by diagonal matrix operations.
@@ -548,12 +610,12 @@
     octave_idx_type dm2_nc = dm2.cols ();                               \
                                                                         \
     if (dm1_nr != dm2_nr || dm1_nc != dm2_nc)                           \
-      octave::err_nonconformant (#OP, dm1_nr, dm1_nc, dm2_nr, dm2_nc);          \
+      octave::err_nonconformant (#OP, dm1_nr, dm1_nc, dm2_nr, dm2_nc);  \
                                                                         \
     r.resize (dm1_nr, dm1_nc);                                          \
                                                                         \
     if (dm1_nr > 0 && dm1_nc > 0)                                       \
-      F (dm1.length (), r.rwdata (), dm1.data (), dm2.data ());    \
+      F (dm1.length (), r.rwdata (), dm1.data (), dm2.data ());         \
                                                                         \
     return r;                                                           \
   }

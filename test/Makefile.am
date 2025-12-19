@@ -62,6 +62,7 @@ TEST_FILES += \
   single-index.tst \
   slice.tst \
   sparse-assign.tst \
+  sparse-broadcasting.tst \
   struct.tst \
   switch.tst \
   system.tst \

@@ -243,6 +243,17 @@ cdef_object_array::permute (const Array<int>& vec, bool inv) const
   return retval;
 }
 
+
+cdef_object_rep *
+cdef_object_array::transpose () const
+{
+  if (m_array.ndims () > 2)
+    error ("transpose not defined for N-D objects");
+
+  auto perm_vec = Array<int> (std::vector<int> {1, 0}, dim_vector (1, 2));
+  return permute (perm_vec);
+}
+
 octave_value_list
 cdef_object_array::subsref (const std::string& type,
                             const std::list<octave_value_list>& idx,

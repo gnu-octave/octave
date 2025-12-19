@@ -710,3 +710,133 @@
 %! assert (result(1,2,1).rate, arr(2,1,1).rate);
 %! assert (result(1,1,2).rate, arr(1,1,2).rate);
 %! assert (result(1,2,2).rate, arr(2,1,2).rate);
+
+## Test classdef transpose and ctranspose
+
+## scalar transpose - should return scalar unchanged
+%!test
+%! obj = foo_value_class (4, 48, 50000);
+%! result = transpose (obj);
+%! assert (obj.rate, result.rate);
+%! assert (obj.term, result.term);
+%! assert (obj.principle, result.principle);
+%! assert (size (result), [1, 1]);
+
+%!test
+%! obj = foo_value_class (3, 36, 25000);
+%! result = obj.';  % Test .' operator
+%! assert (obj.rate, result.rate);
+%! assert (obj.term, result.term);
+%! assert (obj.principle, result.principle);
+%! assert (size (result), [1, 1]);
+
+## scalar ctranspose - should work same as transpose for classdef
+%!test
+%! obj = foo_value_class (2, 24, 30000);
+%! result = ctranspose (obj);
+%! assert (obj.rate, result.rate);
+%! assert (obj.term, result.term);
+%! assert (obj.principle, result.principle);
+%! assert (size (result), [1, 1]);
+
+%!test
+%! obj = foo_value_class (5, 60, 40000);
+%! result = obj';  % Test ' operator
+%! assert (obj.rate, result.rate);
+%! assert (obj.term, result.term);
+%! assert (obj.principle, result.principle);
+%! assert (size (result), [1, 1]);
+
+## 1-D array transpose
+%!test
+%! obj1 = foo_value_class (4, 48, 50000);
+%! obj2 = foo_value_class (3, 36, 25000);
+%! obj3 = foo_value_class (5, 60, 75000);
+%! arr = [obj1, obj2, obj3];  # 1x3 row vector
+%! result = transpose (arr);
+%! assert (size (result), [3, 1]);
+%! assert (result(1, 1).rate, arr(1,1).rate);
+%! assert (result(2, 1).rate, arr(1,2).rate);
+%! assert (result(3, 1).rate, arr(1,3).rate);
+
+%!test
+%! obj1 = foo_value_class (4, 48, 50000);
+%! obj2 = foo_value_class (3, 36, 25000);
+%! obj3 = foo_value_class (5, 60, 75000);
+%! arr = [obj1; obj2; obj3];  # 3x1 column vector
+%! result = arr.';
+%! assert (size (result), [1, 3]);
+%! assert (result(1).rate, obj1.rate);
+%! assert (result(2).rate, obj2.rate);
+%! assert (result(3).rate, obj3.rate);
+
+%% 2-D array transpose
+%!test
+%! obj1 = foo_value_class (4, 48, 50000);
+%! obj2 = foo_value_class (3, 36, 25000);
+%! obj3 = foo_value_class (5, 60, 75000);
+%! obj4 = foo_value_class (2, 24, 40000);
+%! arr = [obj1, obj2; obj3, obj4];  # 2x2 matrix
+%! result = transpose (arr);
+%! assert( size (result), [2, 2]);
+%! assert (result(1,1).rate, arr(1,1).rate);
+%! assert (result(1,2).rate, arr(2,1).rate);
+%! assert (result(2,1).rate, arr(1,2).rate);
+%! assert (result(2,2).rate, arr(2,2).rate);
+
+%!test
+%! obj1 = foo_value_class (1, 12, 10000);
+%! obj2 = foo_value_class (2, 24, 20000);
+%! obj3 = foo_value_class (3, 36, 30000);
+%! obj4 = foo_value_class (4, 48, 40000);
+%! obj5 = foo_value_class (5, 60, 50000);
+%! obj6 = foo_value_class (6, 72, 60000);
+%! arr = [obj1, obj2, obj3; obj4, obj5, obj6];  # 2x3 matrix
+%! result = arr';  # Using ' operator
+%! assert (size (result), [3, 2]);
+%! assert (result(1,1).rate, arr(1,1).rate);
+%! assert (result(1,2).rate, arr(2,1).rate);
+%! assert (result(2,1).rate, arr(1,2).rate);
+%! assert (result(2,2).rate, arr(2,2).rate);
+%! assert (result(3,1).rate, arr(1,3).rate);
+%! assert (result(3,2).rate, arr(2,3).rate);
+
+## ctranspose on arrays - should work same as transpose
+%!test
+%! obj1 = foo_value_class (4, 48, 50000);
+%! obj2 = foo_value_class (3, 36, 25000);
+%! arr = [obj1, obj2];
+%! result1 = transpose (arr);
+%! result2 = ctranspose (arr);
+%! assert (size (result1), size (result2));
+%! assert (result1(1).rate, result2(1).rate);
+%! assert (result1(2).rate, result2(2).rate);
+
+## double transpose returns original
+%!test
+%! obj1 = foo_value_class (4, 48, 50000);
+%! obj2 = foo_value_class (3, 36, 25000);
+%! obj3 = foo_value_class (5, 60, 75000);
+%! obj4 = foo_value_class (2, 24, 40000);
+%! arr = [obj1, obj2; obj3, obj4];
+%! result = transpose (transpose (arr));
+%! assert (size (result), size (arr));
+%! assert (result(1,1).rate, arr(1,1).rate);
+%! assert (result(1,2).rate, arr(1,2).rate);
+%! assert (result(2,1).rate, arr(2,1).rate);
+%! assert (result(2,2).rate, arr(2,2).rate);
+
+## transpose preserves object identity for scalars
+%!test
+%! obj = foo_value_class (4, 48, 50000);
+%! result = transpose (obj);
+%! result.rate = 5;
+%! result.term = 60;
+%! result.principle = 75000;
+%! ## Objects should have same values but be different instances
+%! assert (obj.rate, 4);
+%! assert (obj.term, 48);
+%! assert (obj.principle, 50000);
+%! assert (result.rate, 5);
+%! assert (result.term, 60);
+%! assert (result.principle, 75000);

@@ -1109,16 +1109,6 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!        sparse (zeros (4,0)))
 %!error min (sparse (zeros (2,0)), sparse ([1; 2; 3; 4i]))
 
-## Test broadcasting of empty matrices with min/max functions
-%!assert (min (sparse (zeros (0,1)), sparse ([1, 2, 3, 4])), sparse (zeros (0,4)))
-%!error min (sparse (zeros (0,2)), sparse ([1, 2, 3, 4]))
-%!assert (min (sparse (zeros (1,0)), sparse ([1; 2; 3; 4])), sparse (zeros (4,0)))
-%!error min (sparse (zeros (2,0)), sparse ([1; 2; 3; 4]))
-%!assert (min (sparse (zeros (0,1)), sparse ([1, 2, 3, 4i])), sparse (zeros (0,4)))
-%!error min (sparse (zeros (0,2)), sparse ([1, 2, 3, 4i]))
-%!assert (min (sparse (zeros (1,0)), sparse ([1; 2; 3; 4i])), sparse (zeros (4,0)))
-%!error min (sparse (zeros (2,0)), sparse ([1; 2; 3; 4i]))
-
 ## NaNs and complex numbers
 %!assert (min (NaN, 0), 0)
 %!assert (min (NaN+1i, 0), 0)
@@ -1467,6 +1457,20 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!assert (max (sparse (single ([NaN, 1i, 2, 1])), "ComparisonMethod", "real"),
 %!        sparse (2))
 %!assert (max (sparse (single ([NaN, 1i, 1]))), sparse (1i))
+
+## Test broadcasting of empty matrices with min/max functions
+%!assert (max (sparse (zeros (0,1)), sparse ([1, 2, 3, 4])),
+%!        sparse (zeros (0,4)))
+%!error max (sparse (zeros (0,2)), sparse ([1, 2, 3, 4]))
+%!assert (max (sparse (zeros (1,0)), sparse ([1; 2; 3; 4])),
+%!        sparse (zeros (4,0)))
+%!error max (sparse (zeros (2,0)), sparse ([1; 2; 3; 4]))
+%!assert (max (sparse (zeros (0,1)), sparse ([1, 2, 3, 4i])),
+%!        sparse (zeros (0,4)))
+%!error max (sparse (zeros (0,2)), sparse ([1, 2, 3, 4i]))
+%!assert (max (sparse (zeros (1,0)), sparse ([1; 2; 3; 4i])),
+%!        sparse (zeros (4,0)))
+%!error max (sparse (zeros (2,0)), sparse ([1; 2; 3; 4i]))
 
 ## NaNs and complex numbers
 %!assert (max (NaN, 0), 0)

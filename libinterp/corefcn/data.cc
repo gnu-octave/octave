@@ -5036,20 +5036,6 @@ operating dimension.
 %!assert (sumsq (sparse ([1, 2; 3, 4]), 3), sparse ([1, 2; 3, 4].^2))
 %!assert (sumsq (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 4; 9, 16]))
 
-## Test broadcasting of empty matrices with min/max functions
-%!assert (max (sparse (zeros (0,1)), sparse ([1, 2, 3, 4])),
-%!        sparse (zeros (0,4)))
-%!error max (sparse (zeros (0,2)), sparse ([1, 2, 3, 4]))
-%!assert (max (sparse (zeros (1,0)), sparse ([1; 2; 3; 4])),
-%!        sparse (zeros (4,0)))
-%!error max (sparse (zeros (2,0)), sparse ([1; 2; 3; 4]))
-%!assert (max (sparse (zeros (0,1)), sparse ([1, 2, 3, 4i])),
-%!        sparse (zeros (0,4)))
-%!error max (sparse (zeros (0,2)), sparse ([1, 2, 3, 4i]))
-%!assert (max (sparse (zeros (1,0)), sparse ([1; 2; 3; 4i])),
-%!        sparse (zeros (4,0)))
-%!error max (sparse (zeros (2,0)), sparse ([1; 2; 3; 4i]))
-
 ## Test nanflag
 %!test
 %! x = ones (3,4,5);

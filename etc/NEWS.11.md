@@ -108,6 +108,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - Broadcasting now works on sparse matrix operations as well as mixed
   operations between sparse and full matrices.
 
+- Broadcasting now works on diagonal matrix operations as well as mixed
+  operations between diagonal matrices and vectors.
+
 - All basic operations functions now properly handle empty inputs and return
   correctly sized output arguments for both dense arrays and sparse matrices.
 

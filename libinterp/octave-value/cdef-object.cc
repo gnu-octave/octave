@@ -475,9 +475,8 @@ cdef_object_array::subsasgn (const std::string& type,
             // - 1 in "a"
             ignore_copies = 2;
 
-          std::list<octave_value_list> next_idx (idx);
-
-          next_idx.erase (next_idx.begin ());
+          std::list<octave_value_list> next_idx (std::next (idx.begin ()),
+                                                 idx.end ());
 
           octave_value tmp = obj.subsasgn (type.substr (1), next_idx,
                                            rhs, ignore_copies);
@@ -728,9 +727,8 @@ cdef_object_scalar::subsasgn (const std::string& type,
           {
             octave_value val = prop.get_value (obj, true, "subsasgn");
 
-            std::list<octave_value_list> args (idx);
-
-            args.erase (args.begin ());
+            std::list<octave_value_list> args (std::next (idx.begin ()),
+                                               idx.end ());
 
             val = val.assign (octave_value::op_asn_eq,
                               type.substr (1), args, rhs);

@@ -402,8 +402,7 @@ octave_class::subsref (const std::string& type,
           {
             if (type.length () > 1 && type[1] == '.')
               {
-                auto p = idx.begin ();
-                octave_value_list key_idx = *++p;
+                const octave_value_list& key_idx = *std::next (idx.begin ());
 
                 Cell tmp = dotref (key_idx);
 
@@ -685,10 +684,7 @@ octave_class::subsasgn_common (const octave_value& obj,
           {
             if (type.length () > 1 && type[1] == '.')
               {
-                auto p = idx.begin ();
-                octave_value_list t_idx = *p;
-
-                octave_value_list key_idx = *++p;
+                const octave_value_list& key_idx = *std::next (idx.begin ());
 
                 panic_if (key_idx.length () != 1);
 
@@ -707,13 +703,11 @@ octave_class::subsasgn_common (const octave_value& obj,
                     u = numeric_conv (map_elt, type.substr (2));
                   }
 
-                std::list<octave_value_list> next_idx (idx);
+                std::list<octave_value_list> next_idx (std::next (idx.begin (), 2),
+                                                       idx.end ());
 
                 // We handled two index elements, so subsasgn to
                 // needs to skip both of them.
-
-                next_idx.erase (next_idx.begin ());
-                next_idx.erase (next_idx.begin ());
 
                 u.make_unique ();
 
@@ -726,15 +720,14 @@ octave_class::subsasgn_common (const octave_value& obj,
 
         case '.':
           {
-            octave_value_list key_idx = idx.front ();
+            const octave_value_list& key_idx = idx.front ();
 
             panic_if (key_idx.length () != 1);
 
             std::string key = key_idx(0).string_value ();
 
-            std::list<octave_value_list> next_idx (idx);
-
-            next_idx.erase (next_idx.begin ());
+            std::list<octave_value_list> next_idx (std::next (idx.begin ()),
+                                                   idx.end ());
 
             std::string next_type = type.substr (1);
 
@@ -780,8 +773,7 @@ octave_class::subsasgn_common (const octave_value& obj,
       {
         if (n > 1 && type[1] == '.')
           {
-            auto p = idx.begin ();
-            octave_value_list key_idx = *++p;
+            const octave_value_list& key_idx = *std::next (idx.begin ());
 
             panic_if (key_idx.length () != 1);
 
@@ -819,7 +811,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 
     case '.':
       {
-        octave_value_list key_idx = idx.front ();
+        const octave_value_list& key_idx = idx.front ();
 
         panic_if (key_idx.length () != 1);
 

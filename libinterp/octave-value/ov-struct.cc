@@ -152,8 +152,7 @@ octave_struct::subsref (const std::string& type,
       {
         if (type.length () > 1 && type[1] == '.')
           {
-            auto p = idx.begin ();
-            octave_value_list key_idx = *++p;
+            const octave_value_list& key_idx = *std::next (idx.begin ());
 
             const Cell tmp = dotref (key_idx);
 
@@ -218,8 +217,7 @@ octave_struct::subsref (const std::string& type,
       {
         if (type.length () > 1 && type[1] == '.')
           {
-            auto p = idx.begin ();
-            octave_value_list key_idx = *++p;
+            const octave_value_list& key_idx = *std::next (idx.begin ());
 
             const Cell tmp = dotref (key_idx, auto_add);
 
@@ -317,10 +315,7 @@ octave_struct::subsasgn (const std::string& type,
           {
             if (type.length () > 1 && type[1] == '.')
               {
-                auto p = idx.begin ();
-                octave_value_list t_idx = *p;
-
-                octave_value_list key_idx = *++p;
+                const octave_value_list& key_idx = *std::next (idx.begin ());
 
                 if (key_idx.length () != 1)
                   error ("subsasgn: dynamic structure field names must be strings");
@@ -330,13 +325,11 @@ octave_struct::subsasgn (const std::string& type,
 
                 maybe_warn_invalid_field_name (key, "subsasgn");
 
-                std::list<octave_value_list> next_idx (idx);
+                std::list<octave_value_list> next_idx (std::next (idx.begin (), 2),
+                                                       idx.end ());
 
                 // We handled two index elements, so subsasgn to
                 // needs to skip both of them.
-
-                next_idx.erase (next_idx.begin ());
-                next_idx.erase (next_idx.begin ());
 
                 std::string next_type = type.substr (2);
 
@@ -378,7 +371,7 @@ octave_struct::subsasgn (const std::string& type,
 
         case '.':
           {
-            octave_value_list key_idx = idx.front ();
+            const octave_value_list& key_idx = idx.front ();
 
             if (key_idx.length () != 1)
               error ("subsasgn: dynamic structure field names must be strings");
@@ -388,9 +381,8 @@ octave_struct::subsasgn (const std::string& type,
 
             maybe_warn_invalid_field_name (key, "subsasgn");
 
-            std::list<octave_value_list> next_idx (idx);
-
-            next_idx.erase (next_idx.begin ());
+            std::list<octave_value_list> next_idx (std::next (idx.begin ()),
+                                                   idx.end ());
 
             std::string next_type = type.substr (1);
 
@@ -444,9 +436,8 @@ octave_struct::subsasgn (const std::string& type,
       {
         if (n > 1 && type[1] == '.')
           {
-            auto p = idx.begin ();
-            octave_value_list key_idx = *++p;
-            octave_value_list idxf = idx.front ();
+            const octave_value_list& key_idx = *std::next (idx.begin ());
+            const octave_value_list& idxf = idx.front ();
 
             if (key_idx.length () != 1)
               error ("subsasgn: dynamic structure field names must be strings");
@@ -519,7 +510,7 @@ octave_struct::subsasgn (const std::string& type,
 
     case '.':
       {
-        octave_value_list key_idx = idx.front ();
+        const octave_value_list& key_idx = idx.front ();
 
         if (key_idx.length () != 1)
           error ("subsasgn: dynamic structure field names must be strings");
@@ -1253,7 +1244,7 @@ octave_scalar_struct::subsasgn (const std::string& type,
 
       octave_value t_rhs = rhs;
 
-      octave_value_list key_idx = idx.front ();
+      const octave_value_list& key_idx = idx.front ();
 
       if (key_idx.length () != 1)
         error ("subsasgn: structure field names must be strings");
@@ -1265,9 +1256,8 @@ octave_scalar_struct::subsasgn (const std::string& type,
 
       if (n > 1)
         {
-          std::list<octave_value_list> next_idx (idx);
-
-          next_idx.erase (next_idx.begin ());
+          std::list<octave_value_list> next_idx (std::next (idx.begin ()),
+                                                 idx.end ());
 
           std::string next_type = type.substr (1);
 

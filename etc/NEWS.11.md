@@ -245,6 +245,23 @@ major release after 11):
     The environment variable `QTHANDLES_DEBUG` to enable debugging of the GUI
     has been renamed to `OCTAVE_QTHANDLES_DEBUG`.
 
+The following mapper function typedefs have been deprecated in Octave 11
+and will be removed from Octave 12 (or whatever version is the first
+major release after 11):
+
+- Function typedefs
+
+    * `b_d_Mapper`
+    * `b_c_Mapper`
+    * `d_d_Mapper`
+    * `d_c_Mapper`
+    * `c_c_Mapper`
+    * `b_f_Mapper`
+    * `b_fc_Mapper`
+    * `f_f_Mapper`
+    * `f_fc_Mapper`
+    * `fc_fc_Mapper`
+
 The following features were deprecated in Octave 9 and have been removed
 from Octave 11.
 

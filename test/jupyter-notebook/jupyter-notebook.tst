@@ -43,7 +43,7 @@
 %!
 %!   ## Test embedding images
 %!   n.run (2);
-%!   assert (n.notebook.cells{2}.outputs{1}.output_type, "display_data")
+%!   assert (n.notebook.cells{2}.outputs{1}.output_type, "display_data");
 %!   assert (isfield (n.notebook.cells{2}.outputs{1}.data, "image/png"));
 %!   assert (getfield (n.notebook.cells{2}.outputs{1}.data, "text/plain"),
 %!           {"<IPython.core.display.Image object>"});
@@ -77,7 +77,7 @@
 %!   n.run_all ();
 %!
 %!   ## Test embedding images
-%!   assert (n.notebook.cells{3}.outputs{1}.output_type, "display_data")
+%!   assert (n.notebook.cells{3}.outputs{1}.output_type, "display_data");
 %!   assert (isfield (n.notebook.cells{3}.outputs{1}.data, "image/png"));
 %!   assert (getfield (n.notebook.cells{3}.outputs{1}.data, "text/plain"),
 %!           {"<IPython.core.display.Image object>"});
@@ -88,7 +88,7 @@
 %!   assert (markdown_cell, n.notebook.cells{1});
 %!
 %!   ## Test embedding textual output
-%!   assert (n.notebook.cells{6}.outputs{1}.output_type, "stream")
+%!   assert (n.notebook.cells{6}.outputs{1}.output_type, "stream");
 %!   assert (n.notebook.cells{6}.outputs{1}.name, "stdout");
 %! unwind_protect_cleanup
 %!   set (0, "defaultfigurevisible", visibility);
@@ -115,21 +115,21 @@
 %!
 %!   ## PNG format
 %!   n.run (1);
-%!   assert (n.notebook.cells{1}.outputs{1}.output_type, "display_data")
+%!   assert (n.notebook.cells{1}.outputs{1}.output_type, "display_data");
 %!   assert (isfield (n.notebook.cells{1}.outputs{1}.data, "image/png"));
 %!   assert (getfield (n.notebook.cells{1}.outputs{1}.data, "text/plain"),
 %!           {"<IPython.core.display.Image object>"});
 %!
 %!   ## SVG format
 %!   n.run (2);
-%!   assert (n.notebook.cells{2}.outputs{1}.output_type, "display_data")
+%!   assert (n.notebook.cells{2}.outputs{1}.output_type, "display_data");
 %!   assert (isfield (n.notebook.cells{2}.outputs{1}.data, "image/svg+xml"));
 %!   assert (getfield (n.notebook.cells{2}.outputs{1}.data, "text/plain"),
 %!           {"<IPython.core.display.SVG object>"});
 %!
 %!   ## JPG format
 %!   n.run (3);
-%!   assert (n.notebook.cells{3}.outputs{1}.output_type, "display_data")
+%!   assert (n.notebook.cells{3}.outputs{1}.output_type, "display_data");
 %!   assert (isfield (n.notebook.cells{3}.outputs{1}.data, "image/jpeg"));
 %!   assert (getfield (n.notebook.cells{3}.outputs{1}.data, "text/plain"),
 %!           {"<IPython.core.display.Image object>"});
@@ -158,35 +158,35 @@
 %!
 %!   ## Wrong resolution
 %!   n.run (4);
-%!   assert (n.notebook.cells{4}.outputs{1}.output_type, "stream")
+%!   assert (n.notebook.cells{4}.outputs{1}.output_type, "stream");
 %!   assert (n.notebook.cells{4}.outputs{1}.name, "stderr");
 %!   assert (n.notebook.cells{4}.outputs{1}.text,
 %!           {"A number is required for resolution, not a string"});
 %!
 %!   ## Wrong width
 %!   n.run (5);
-%!   assert (n.notebook.cells{5}.outputs{1}.output_type, "stream")
+%!   assert (n.notebook.cells{5}.outputs{1}.output_type, "stream");
 %!   assert (n.notebook.cells{5}.outputs{1}.name, "stderr");
 %!   assert (n.notebook.cells{5}.outputs{1}.text,
 %!           {"A number is required for width, not a string"});
 %!
 %!   ## Wrong height
 %!   n.run (6);
-%!   assert (n.notebook.cells{6}.outputs{1}.output_type, "stream")
+%!   assert (n.notebook.cells{6}.outputs{1}.output_type, "stream");
 %!   assert (n.notebook.cells{6}.outputs{1}.name, "stderr");
 %!   assert (n.notebook.cells{6}.outputs{1}.text,
 %!           {"A number is required for height, not a string"});
 %!
 %!   ## Empty figure
 %!   n.run (7);
-%!   assert (n.notebook.cells{7}.outputs{1}.output_type, "stream")
+%!   assert (n.notebook.cells{7}.outputs{1}.output_type, "stream");
 %!   assert (n.notebook.cells{7}.outputs{1}.name, "stderr");
 %!   assert (n.notebook.cells{7}.outputs{1}.text,
 %!           {"The figure is empty!"});
 %!
 %!   ## Wrong format
 %!   n.run (8);
-%!   assert (n.notebook.cells{8}.outputs{1}.output_type, "stream")
+%!   assert (n.notebook.cells{8}.outputs{1}.output_type, "stream");
 %!   assert (n.notebook.cells{8}.outputs{1}.name, "stderr");
 %!   assert (n.notebook.cells{8}.outputs{1}.text,
 %!           {"Cannot embed the 'pdf' image format\n"});

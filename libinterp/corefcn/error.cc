@@ -2149,9 +2149,9 @@ fields are set to their default values.
 %!test
 %! lasterror ("reset");
 %! x = lasterror ();
-%! assert (x.identifier, "")
-%! assert (x.message, "")
-%! assert (isempty (x.stack))
+%! assert (x.identifier, "");
+%! assert (x.message, "");
+%! assert (isempty (x.stack));
 %! lasterror (x);
 %! y = lasterror ();
 %! assert (y, x);

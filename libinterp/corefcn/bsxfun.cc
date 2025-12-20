@@ -816,7 +816,7 @@ as the other array.
 %! a .*= b;
 %! assert (a, 2 * ones (2, 2, 2));
 
-%!assert (ones (2,2,2) .* ones (1,2), ones (2,2,2));
+%!assert (ones (2,2,2) .* ones (1,2), ones (2,2,2))
 
 */
 

@@ -303,7 +303,7 @@ endfunction
 ## Floating point number above flintmax
 %!test <*65495>
 %! warning ("off", "Octave:nchoosek:large-output-float", "local");
-%! assert (! isinf (nchoosek (1024, 512)))
+%! assert (! isinf (nchoosek (1024, 512)));
 
 ## Test combining rules for integers and floating point
 %!test

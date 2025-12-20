@@ -338,19 +338,19 @@ The eigenvalues returned by @code{eig} are not ordered.
 %!test
 %! [v, d] = eig ([1, 2; 2, 1]);
 %! x = 1 / sqrt (2);
-%! assert (d, [-1, 0; 0, 3], sqrt (eps))
-%! assert (v, [-x, x; x, x], sqrt (eps))
+%! assert (d, [-1, 0; 0, 3], sqrt (eps));
+%! assert (v, [-x, x; x, x], sqrt (eps));
 
 %!test
 %! [v, d, w] = eig ([1, 2; 2, 1]);
 %! x = 1 / sqrt (2);
-%! assert (w, [-x, x; x, x], sqrt (eps))
+%! assert (w, [-x, x; x, x], sqrt (eps));
 
 %!test
 %! [v, d] = eig ([1, 2; 2, 1], "balance");
 %! x = 1 / sqrt (2);
-%! assert (d, [-1, 0; 0, 3], sqrt (eps))
-%! assert (v, [-x, x; x, x], sqrt (eps))
+%! assert (d, [-1, 0; 0, 3], sqrt (eps));
+%! assert (v, [-x, x; x, x], sqrt (eps));
 
 %!test
 %! [v, d, w] = eig ([1, 2; 2, 1], "balance");
@@ -365,24 +365,24 @@ The eigenvalues returned by @code{eig} are not ordered.
 %!test
 %! [v, d] = eig (single ([1, 2; 2, 1]));
 %! x = single (1 / sqrt (2));
-%! assert (d, single ([-1, 0; 0, 3]), sqrt (eps ("single")))
-%! assert (v, [-x, x; x, x], sqrt (eps ("single")))
+%! assert (d, single ([-1, 0; 0, 3]), sqrt (eps ("single")));
+%! assert (v, [-x, x; x, x], sqrt (eps ("single")));
 
 %!test
 %! [v, d, w] = eig (single ([1, 2; 2, 1]));
 %! x = single (1 / sqrt (2));
-%! assert (w, [-x, x; x, x], sqrt (eps ("single")))
+%! assert (w, [-x, x; x, x], sqrt (eps ("single")));
 
 %!test
 %! [v, d] = eig (single ([1, 2; 2, 1]), "balance");
 %! x = single (1 / sqrt (2));
 %! assert (d, single ([-1, 0; 0, 3]), sqrt (eps ("single")));
-%! assert (v, [-x, x; x, x], sqrt (eps ("single")))
+%! assert (v, [-x, x; x, x], sqrt (eps ("single")));
 
 %!test
 %! [v, d, w] = eig (single ([1, 2; 2, 1]), "balance");
 %! x = single (1 / sqrt (2));
-%! assert (w, [-x, x; x, x], sqrt (eps ("single")))
+%! assert (w, [-x, x; x, x], sqrt (eps ("single")));
 
 
 ## If (at least one of) the matrices are non-symmetric,
@@ -393,12 +393,12 @@ The eigenvalues returned by @code{eig} are not ordered.
 %!  [v, d] = eig (A, B);
 %!  [v2, d2] = eig (A, B, "qz");
 %!  [v3, d3] = eig (A, B, "chol");
-%!  assert (A * v(:, 1), d(1, 1) * B * v(:, 1), res)
-%!  assert (A * v(:, 2), d(2, 2) * B * v(:, 2), res)
-%!  assert (v, v2)
-%!  assert (v, v3)
-%!  assert (d, d2)
-%!  assert (d, d3)
+%!  assert (A * v(:, 1), d(1, 1) * B * v(:, 1), res);
+%!  assert (A * v(:, 2), d(2, 2) * B * v(:, 2), res);
+%!  assert (v, v2);
+%!  assert (v, v3);
+%!  assert (d, d2);
+%!  assert (d, d3);
 %!endfunction
 
 %!test nonsym_chol_2_output ([1, 2; -1, 1], [3, 3; 1, 2])
@@ -416,14 +416,14 @@ The eigenvalues returned by @code{eig} are not ordered.
 %!  [v2, d2, w2] = eig (A, B, "qz");
 %!  [v3, d3, w3] = eig (A, B, "chol");
 %!  wt = w';
-%!  assert (wt(1, :)* A, d(1, 1) * wt(1, :) * B, res)
-%!  assert (wt(2, :)* A, d(2, 2) * wt(2, :) * B, res)
-%!  assert (v, v2)
-%!  assert (v, v3)
-%!  assert (d, d2)
-%!  assert (d, d3)
-%!  assert (w, w2)
-%!  assert (w, w3)
+%!  assert (wt(1, :)* A, d(1, 1) * wt(1, :) * B, res);
+%!  assert (wt(2, :)* A, d(2, 2) * wt(2, :) * B, res);
+%!  assert (v, v2);
+%!  assert (v, v3);
+%!  assert (d, d2);
+%!  assert (d, d3);
+%!  assert (w, w2);
+%!  assert (w, w3);
 %!endfunction
 
 %!test nonsym_chol_3_output ([1, 2; -1, 1], [3, 3; 1, 2])
@@ -442,10 +442,10 @@ The eigenvalues returned by @code{eig} are not ordered.
 %!function sym_chol_2_input (A, B, res = sqrt (eps))
 %!  [v, d] = eig (A, B);
 %!  [v2, d2] = eig (A, B, "chol");
-%!  assert (A * v(:, 1), d(1, 1) * B * v(:, 1), res)
-%!  assert (A * v(:, 2), d(2, 2) * B * v(:, 2), res)
-%!  assert (v, v2)
-%!  assert (d, d2)
+%!  assert (A * v(:, 1), d(1, 1) * B * v(:, 1), res);
+%!  assert (A * v(:, 2), d(2, 2) * B * v(:, 2), res);
+%!  assert (v, v2);
+%!  assert (d, d2);
 %!endfunction
 
 %!test sym_chol_2_input ([1, 2; 2, 1], [3, -2; -2, 3])
@@ -463,11 +463,11 @@ The eigenvalues returned by @code{eig} are not ordered.
 %!  [v, d, w] = eig (A, B);
 %!  [v2, d2, w2] = eig (A, B, "chol");
 %!  wt = w';
-%!  assert (wt(1, :)* A, d(1, 1) * wt(1, :) * B, res)
-%!  assert (wt(2, :)* A, d(2, 2) * wt(2, :) * B, res)
-%!  assert (v, v2)
-%!  assert (d, d2)
-%!  assert (w, w2)
+%!  assert (wt(1, :)* A, d(1, 1) * wt(1, :) * B, res);
+%!  assert (wt(2, :)* A, d(2, 2) * wt(2, :) * B, res);
+%!  assert (v, v2);
+%!  assert (d, d2);
+%!  assert (w, w2);
 %!endfunction
 
 %!test sym_chol_3_input ([1, 2; 2, 1], [3, -2; -2, 3])
@@ -489,9 +489,9 @@ The eigenvalues returned by @code{eig} are not ordered.
 %! [V1, D1] = eig (A);
 %! [V2, D2] = eig (A, "balance");
 %! [V3, D3] = eig (A, "nobalance");
-%! assert (V1, V2)
-%! assert (D1, D2)
-%! assert (isequal (V2, V3), false)
+%! assert (V1, V2);
+%! assert (D1, D2);
+%! assert (isequal (V2, V3), false);
 
 ## Testing the flags in all combination.
 ## If 2 flags are on, than the result should be the same regardless
@@ -502,11 +502,11 @@ The eigenvalues returned by @code{eig} are not ordered.
 %!function test_eig_args (args, options1, options2, testd = @() true)
 %!  [v, d, w] = eig (args{:}, options1{:});
 %!  [v2, d2, w2] = eig (args{:}, options2{:});
-%!  assert (testd (d))
-%!  assert (testd (d2))
-%!  assert (v, v2)
-%!  assert (d, d2)
-%!  assert (w, w2)
+%!  assert (testd (d));
+%!  assert (testd (d2));
+%!  assert (v, v2);
+%!  assert (d, d2);
+%!  assert (w, w2);
 %!endfunction
 
 %!function qz_chol_with_shapes (A, B)
@@ -534,22 +534,22 @@ The eigenvalues returned by @code{eig} are not ordered.
 ## column vector if 1 output is specified
 %!function test_shapes (args)
 %!  d = eig (args{:});
-%!  assert (isvector (d))
+%!  assert (isvector (d));
 %!  d2 = eig (args{:}, "vector");
-%!  assert (isvector (d2))
+%!  assert (isvector (d2));
 %!  [v, d3] = eig (args{:});
-%!  assert (isdiag (d3))
+%!  assert (isdiag (d3));
 %!  d4 = eig (args{:}, "matrix");
-%!  assert (isdiag (d4))
+%!  assert (isdiag (d4));
 %!  [v, d5, w] = eig (args{:});
-%!  assert (isdiag (d5))
+%!  assert (isdiag (d5));
 %!  d6 = eig (args{:}, "matrix");
-%!  assert (isdiag (d6))
-%!  assert (d, d2)
-%!  assert (d3, d4)
-%!  assert (d5, d6)
-%!  assert (d, diag (d3))
-%!  assert (d, diag (d5))
+%!  assert (isdiag (d6));
+%!  assert (d, d2);
+%!  assert (d3, d4);
+%!  assert (d5, d6);
+%!  assert (d, diag (d3));
+%!  assert (d, diag (d5));
 %!endfunction
 
 %!function shapes_AEP (A)
@@ -586,8 +586,8 @@ The eigenvalues returned by @code{eig} are not ordered.
 %!function chol_qz_accuracy (A, B, is_qz_accurate, is_chol_accurate)
 %!  [V1, D1] = eig (A, B, 'qz');
 %!  [V2, D2] = eig (A, B); #default is chol
-%!  assert (isequal (A*V1, A*V1*D1), is_qz_accurate)
-%!  assert (isequal (A*V2, A*V2*D2), is_chol_accurate)
+%!  assert (isequal (A*V1, A*V1*D1), is_qz_accurate);
+%!  assert (isequal (A*V2, A*V2*D2), is_chol_accurate);
 %!endfunction
 %!test
 %! minij_100 = gallery ('minij', 100);

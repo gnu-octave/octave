@@ -325,12 +325,12 @@ endfunction
 ## Test eval with complex inputs
 %!test <*55198>
 %! x = complex (0.5, pi);
-%! assert (eval (rat (x)), x, 1e-6 * norm (x, 1))
+%! assert (eval (rat (x)), x, 1e-6 * norm (x, 1));
 
 ## Test eval with inf*i
 %!test <*55198>
 %! x = complex (0, inf);
-%! assert (eval (rat (x)), x, 1e-6 * norm (x, 1))
+%! assert (eval (rat (x)), x, 1e-6 * norm (x, 1));
 
 %!assert <*43374> (eval (rat (0.75)), [0.75])
 

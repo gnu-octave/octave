@@ -111,74 +111,74 @@
 %!test <*54783>
 %! obj = foo_subsref_subsasgn (1);
 %! obj(2) = 3;
-%! assert (obj(2) == 3)
-%! assert (obj{2} == 3)
-%! assert (isequal (obj.x, [1 3 3 4]))
+%! assert (obj(2) == 3);
+%! assert (obj{2} == 3);
+%! assert (isequal (obj.x, [1 3 3 4]));
 %! obj{2} = 4;
-%! assert (obj(2) == 4)
-%! assert (obj{2} == 4)
-%! assert (isequal (obj.x, [1 4 3 4]))
+%! assert (obj(2) == 4);
+%! assert (obj{2} == 4);
+%! assert (isequal (obj.x, [1 4 3 4]));
 %! obj(end) = 6;
-%! assert (obj(end) == 6)
-%! assert (obj{end} == 6)
-%! assert (isequal (obj.x, [1 4 3 6]))
+%! assert (obj(end) == 6);
+%! assert (obj{end} == 6);
+%! assert (isequal (obj.x, [1 4 3 6]));
 %! obj{end} = 8;
-%! assert (obj(end) == 8)
-%! assert (obj{end} == 8)
-%! assert (isequal (obj.x, [1 4 3 8]))
+%! assert (obj(end) == 8);
+%! assert (obj{end} == 8);
+%! assert (isequal (obj.x, [1 4 3 8]));
 %! obj.x = 1:4;
-%! assert (isequal (obj.x, 1:4))
+%! assert (isequal (obj.x, 1:4));
 %! obj(1:3) = 7:9;
-%! assert (isequal (obj(1:3), 7:9))
-%! assert (isequal (obj.x, [7 8 9 4]))
+%! assert (isequal (obj(1:3), 7:9));
+%! assert (isequal (obj.x, [7 8 9 4]));
 %! obj(2:end) = 5:7;
-%! assert (isequal (obj(2:end), 5:7))
-%! assert (isequal (obj.x, [7 5 6 7]))
+%! assert (isequal (obj(2:end), 5:7));
+%! assert (isequal (obj.x, [7 5 6 7]));
 
 %!test <54966>
 %! obj = foo_subsref_subsasgn (1);
 %! obj{1:3} = 5:7;
-%! assert (isequal ([obj{1:3}], 5:7))
-%! assert (isequal (obj.x, [5 6 7 4]))
+%! assert (isequal ([obj{1:3}], 5:7));
+%! assert (isequal (obj.x, [5 6 7 4]));
 %! obj{2:end} = 7:9;
-%! assert (isequal ([obj{2:end}], 7:9))
-%! assert (isequal (obj.x, [5 7 8 9]))
+%! assert (isequal ([obj{2:end}], 7:9));
+%! assert (isequal (obj.x, [5 7 8 9]));
 
 %!test <*54783>
 %! obj = foo_subsref_subsasgn (1);
 %! obj.x(2) = 3;
-%! assert (obj.x(2) == 3)
-%! assert (obj.x{2} == 3)
-%! assert (isequal (obj.x, [1 3 3 4]))
+%! assert (obj.x(2) == 3);
+%! assert (obj.x{2} == 3);
+%! assert (isequal (obj.x, [1 3 3 4]));
 %! obj.x{2} = 4;
-%! assert (obj.x(2) == 4)
-%! assert (obj.x{2} == 4)
-%! assert (isequal (obj.x, [1 4 3 4]))
+%! assert (obj.x(2) == 4);
+%! assert (obj.x{2} == 4);
+%! assert (isequal (obj.x, [1 4 3 4]));
 %! obj.x(end) = 6;
-%! assert (obj.x(end) == 6)
-%! assert (obj.x{end} == 6)
-%! assert (isequal (obj.x, [1 4 3 6]))
+%! assert (obj.x(end) == 6);
+%! assert (obj.x{end} == 6);
+%! assert (isequal (obj.x, [1 4 3 6]));
 %! obj.x{end} = 8;
-%! assert (obj.x(end) == 8)
-%! assert (obj.x{end} == 8)
-%! assert (isequal (obj.x, [1 4 3 8]))
+%! assert (obj.x(end) == 8);
+%! assert (obj.x{end} == 8);
+%! assert (isequal (obj.x, [1 4 3 8]));
 %! obj.x = 1:4;
-%! assert (isequal (obj.x, 1:4))
+%! assert (isequal (obj.x, 1:4));
 %! obj.x(1:3) = 7:9;
-%! assert (isequal (obj.x(1:3), 7:9))
-%! assert (isequal (obj.x, [7 8 9 4]))
+%! assert (isequal (obj.x(1:3), 7:9));
+%! assert (isequal (obj.x, [7 8 9 4]));
 %! obj.x(2:end) = 5:7;
-%! assert (isequal (obj.x(2:end), 5:7))
-%! assert (isequal (obj.x, [7 5 6 7]))
+%! assert (isequal (obj.x(2:end), 5:7));
+%! assert (isequal (obj.x, [7 5 6 7]));
 
 %!test <54966>
 %! obj = foo_subsref_subsasgn (1);
 %! obj.x{1:3} = 5:7;
-%! assert (isequal ([obj.x{1:3}], 5:7))
-%! assert (isequal (obj.x, [5 6 7 4]))
+%! assert (isequal ([obj.x{1:3}], 5:7));
+%! assert (isequal (obj.x, [5 6 7 4]));
 %! obj.x{2:end} = 7:9;
-%! assert (isequal ([obj.x{2:end}], 7:9))
-%! assert (isequal (obj.x, [5 7 8 9]))
+%! assert (isequal ([obj.x{2:end}], 7:9));
+%! assert (isequal (obj.x, [5 7 8 9]));
 
 %!test <*55223>
 %! obj = foo_subsref_subsasgn (2);

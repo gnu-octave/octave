@@ -109,7 +109,7 @@ endfunction
 %!            5/9, 5/9, 2/9;
 %!            7/9, 7/9, 11/18;
 %!            1,   1,   1]);
-%! assert (pink (4), a, eps)
+%! assert (pink (4), a, eps);
 
 ## Input validation
 %!error <N must be a scalar integer> pink ("foo")

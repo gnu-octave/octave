@@ -2028,7 +2028,7 @@ operating dimension.
 %! assert (class (cumsum (int16 (x))), "int16");
 %! assert (class (cumsum (int32 (x))), "int32");
 %! assert (class (cumsum (int64 (x))), "int64");
-%!assert (class (cumsum ([true, false])), "double");
+%!assert (class (cumsum ([true, false])), "double")
 %!assert (cumsum ([true, false]), [1, 1])
 %!assert (cumsum ([true, false], "reverse"), [1, 0])
 

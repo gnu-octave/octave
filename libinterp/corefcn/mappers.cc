@@ -1491,17 +1491,17 @@ isna ([13, Inf, NA, NaN])
 %!assert (! isna (single (Inf)))
 %!assert (! isna (single (NaN)))
 %!testif HAVE_QNAN_WITH_PAYLOAD
-%! assert (isna (single (NA)))
+%! assert (isna (single (NA)));
 %!testif HAVE_QNAN_WITH_PAYLOAD
-%! assert (isna (single (rand (1,10))), false (1,10))
+%! assert (isna (single (rand (1,10))), false (1,10));
 %!testif HAVE_QNAN_WITH_PAYLOAD
 %! assert (isna (single ([NaN -Inf -1 0 1 Inf NA])),
 %!         [false, false, false, false, false, false, true])
 // Duplicate from above.  Only for test statistics
 %!testif ; ! __have_feature__ ("QNAN_WITH_PAYLOAD") <59830>
-%! assert (isna (single (NA)))
+%! assert (isna (single (NA)));
 %!testif ; ! __have_feature__ ("QNAN_WITH_PAYLOAD") <59830>
-%! assert (isna (single (rand (1,10))), false (1,10))
+%! assert (isna (single (rand (1,10))), false (1,10));
 %!testif ; ! __have_feature__ ("QNAN_WITH_PAYLOAD") <59830>
 %! assert (isna (single ([NaN -Inf -1 0 1 Inf NA])),
 %!         [false, false, false, false, false, false, true])

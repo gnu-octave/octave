@@ -490,7 +490,7 @@ endfunction
 %! lb = [0; 0];
 %! ub = [10; 10];
 %! [x, obj, info, lambda] = qp([], H, q, A, b, lb, ub, [], [], []);  # default value: semidefinite not allowed
-%! assert (info.info, 2)
+%! assert (info.info, 2);
 %! [x, obj, info, lambda] = qp([], H, q, A, b, lb, ub, [], [], [], optimset ("AllowSemidefinite", true));
-%! assert (info.info, 0)
-%! assert (x, [1/2; 1/2], eps)
+%! assert (info.info, 0);
+%! assert (x, [1/2; 1/2], eps);

@@ -119,7 +119,7 @@ endfunction
 %!      23/48,  9/16,  9/16;
 %!      71/96, 25/32, 25/32;
 %!          1,     1,     1];
-%! assert (bone (5), a, eps)
+%! assert (bone (5), a, eps);
 
 ## Input validation
 %!error <N must be a scalar integer> bone ("foo")

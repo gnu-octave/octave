@@ -404,20 +404,20 @@ endfunction
 
 %!test
 %! X = dither (0, [0 0 0; 1 1 1], 1, 1);
-%! assert (X, uint8 (0))
+%! assert (X, uint8 (0));
 
 %!test
 %! X = dither (1, [0 0 0; 1 1 1], 1, 1);
-%! assert (X, uint8 (1))
+%! assert (X, uint8 (1));
 
 %!test
 %! X = dither (repmat (ones (3)/2,1,1,3), [0 0 0; 1 1 1], 4, 4);
-%! assert (X, uint8 ([1 0 1; 0 1 0; 1 0 1]))
+%! assert (X, uint8 ([1 0 1; 0 1 0; 1 0 1]));
 
 %!test
 %! X = dither (repmat (ones (3)/4,1,1,3), [0 0 0; 1 1 1], 4, 4);
-%! assert (X, uint8 ([0 0 0; 0 1 0; 0 0 0]))
+%! assert (X, uint8 ([0 0 0; 0 1 0; 0 0 0]));
 
 %!test
 %! X = dither (repmat (ones (3)*3/4,1,1,3), [0 0 0; 1 1 1], 4, 4);
-%! assert (X, uint8 ([1 1 1; 1 0 1; 1 1 1]))
+%! assert (X, uint8 ([1 1 1; 1 0 1; 1 1 1]));

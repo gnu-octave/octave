@@ -5,7 +5,7 @@
 %! global cdef_alive_objects_cntr % Counts amount of alive cdef_counts_self handle objects
 %! cdef_alive_objects_cntr = 0;
 %! bug_64620_1;
-%! assert (cdef_alive_objects_cntr == 0)
+%! assert (cdef_alive_objects_cntr == 0);
 %!
 %! clear -global cdef_alive_objects_cntr
 

@@ -1308,8 +1308,8 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!assert (max (sparse ([1; -10; 5; -2])), sparse(5))
 ## Order sparse complex values by phase angle
 %!test <*51307>
-%! assert (max (sparse ([4, 2i 4.999; -2, 2, 3+4i])), sparse ([4, 2i, 3+4i]))
-%! assert (max (sparse ([4, -2i 4.999; -2, 2, 3+4i])), sparse ([4, 2, 3+4i]))
+%! assert (max (sparse ([4, 2i 4.999; -2, 2, 3+4i])), sparse ([4, 2i, 3+4i]));
+%! assert (max (sparse ([4, -2i 4.999; -2, 2, 3+4i])), sparse ([4, 2, 3+4i]));
 %!assert (max (sparse ([4, 2i 4.999]), sparse ([-2, 2, 3+4i])),
 %!        sparse ([4, 2i, 3+4i]))
 %!assert (max (sparse ([4, -2i 4.999]), sparse ([-2, 2, 3+4i])),

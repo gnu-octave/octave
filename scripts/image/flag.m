@@ -95,7 +95,7 @@ endfunction
 %!      1,   1,   1;
 %!      0,   0,   1;
 %!      0,   0,   0];
-%! assert (flag (12), a, eps)
+%! assert (flag (12), a, eps);
 
 ## Input validation
 %!error <N must be a scalar integer> flag ("foo")

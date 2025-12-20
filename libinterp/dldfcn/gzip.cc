@@ -737,13 +737,13 @@ The optional output @var{filelist} is a list of the compressed files.
 %!
 %!  z_file = [test_file z.ext];
 %!  z_filelist = z.zip (test_file);
-%!  assert (is_same_file (z_filelist, {z_file}))
+%!  assert (is_same_file (z_filelist, {z_file}));
 %!
 %!  unlink_or_error (test_file);
 %!  uz_filelist = z.unzip (z_file);
-%!  assert (is_same_file (uz_filelist, {test_file}))
+%!  assert (is_same_file (uz_filelist, {test_file}));
 %!
-%!  assert (hash ("md5", fileread (test_file)), md5)
+%!  assert (hash ("md5", fileread (test_file)), md5);
 %!endfunction
 %!test run_test_function (@test_large_file)
 
@@ -755,29 +755,29 @@ The optional output @var{filelist} is a list of the compressed files.
 %!
 %!  z_file = [ori_file z.ext];
 %!  z_filelist = z.zip (ori_file);
-%!  assert (is_same_file (z_filelist, {z_file})) # check output
-%!  assert (exist (z_file), 2) # confirm file exists
-%!  assert (exist (ori_file), 2) # and did not remove original file
+%!  assert (is_same_file (z_filelist, {z_file}));  # check output
+%!  assert (exist (z_file), 2);  # confirm file exists
+%!  assert (exist (ori_file), 2);  # and did not remove original file
 %!
 %!  unlink_or_error (ori_file);
 %!  uz_filelist = z.unzip (z_file);
-%!  assert (is_same_file (uz_filelist, {ori_file})) # bug #48598
-%!  assert (hash ("md5", fileread (ori_file)), md5_ori)
-%!  assert (exist (z_file), 2) # bug #48597
+%!  assert (is_same_file (uz_filelist, {ori_file}));  # bug #48598
+%!  assert (hash ("md5", fileread (ori_file)), md5_ori);
+%!  assert (exist (z_file), 2);  # bug #48597
 %!
 %!  ## xzip should preserve original files.
 %!  z_z_file = [z_file z.ext];
 %!  z_z_filelist = z.zip (z_file);
-%!  assert (is_same_file (z_z_filelist, {z_z_file})) # check output
-%!  assert (exist (z_z_file), 2) # confirm file exists
-%!  assert (exist (z_file), 2)
+%!  assert (is_same_file (z_z_filelist, {z_z_file}));  # check output
+%!  assert (exist (z_z_file), 2);  # confirm file exists
+%!  assert (exist (z_file), 2);
 %!
 %!  md5_z = hash ("md5", fileread (z_file));
 %!  unlink_or_error (z_file);
 %!  uz_z_filelist = z.unzip (z_z_file);
-%!  assert (is_same_file (uz_z_filelist, {z_file})) # bug #48598
-%!  assert (exist (z_z_file), 2) # bug #43206
-%!  assert (hash ("md5", fileread (z_file)), md5_z)
+%!  assert (is_same_file (uz_z_filelist, {z_file}));  # bug #48598
+%!  assert (exist (z_z_file), 2);  # bug #43206
+%!  assert (hash ("md5", fileread (z_file)), md5_z);
 %!endfunction
 %!test <43206> run_test_function (@test_z_z)
 
@@ -793,9 +793,9 @@ The optional output @var{filelist} is a list of the compressed files.
 %!
 %!  z_files = strcat (fpaths, z.ext);
 %!  z_filelist = z.zip (test_dir);
-%!  assert (sort (z_filelist), z_files(:))
+%!  assert (sort (z_filelist), z_files(:));
 %!  for idx = 1:numel (fpaths)
-%!    assert (exist (z_files{idx}), 2)
+%!    assert (exist (z_files{idx}), 2);
 %!    unlink_or_error (fpaths{idx});
 %!  endfor
 %!
@@ -810,9 +810,9 @@ The optional output @var{filelist} is a list of the compressed files.
 %!  endif
 %!  uz_filelist = sort (uz_filelist);
 %!  fpaths = sort (fpaths);
-%!  assert (is_same_file (uz_filelist(:), fpaths(:))) # bug #48598
+%!  assert (is_same_file (uz_filelist(:), fpaths(:)));  # bug #48598
 %!  for idx = 1:numel (fpaths)
-%!    assert (hash ("md5", fileread (fpaths{idx})), md5s{idx})
+%!    assert (hash ("md5", fileread (fpaths{idx})), md5s{idx});
 %!  endfor
 %!endfunction
 %!test <48598> run_test_function (@test_xzip_dir)
@@ -835,13 +835,13 @@ The optional output @var{filelist} is a list of the compressed files.
 %!      z_file = [uz_file z.ext];
 %!
 %!      z_filelist = z.zip (filepath, out_dir);
-%!      assert (z_filelist, {z_file})
-%!      assert (exist (z_file, "file"), 2)
+%!      assert (z_filelist, {z_file});
+%!      assert (exist (z_file, "file"), 2);
 %!
 %!      uz_filelist = z.unzip (z_file);
-%!      assert (is_same_file (uz_filelist, {uz_file})) # bug #48598
+%!      assert (is_same_file (uz_filelist, {uz_file}));  # bug #48598
 %!
-%!      assert (hash ("md5", fileread (uz_file)), md5)
+%!      assert (hash ("md5", fileread (uz_file)), md5);
 %!    endfor
 %!  unwind_protect_cleanup
 %!    confirm_recursive_rmdir (false, "local");

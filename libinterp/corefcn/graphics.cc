@@ -3485,8 +3485,8 @@ base_properties::update_handlevisibility ()
 %!   addlistener (hax, "color", fcn);
 %!   set (hf, "color", "b");
 %!   set (hax, "color", "b");
-%!   assert (getappdata (hf, "testdata"), hf)
-%!   assert (getappdata (hax, "testdata"), hax)
+%!   assert (getappdata (hf, "testdata"), hf);
+%!   assert (getappdata (hax, "testdata"), hax);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

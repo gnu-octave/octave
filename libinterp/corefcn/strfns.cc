@@ -883,9 +883,9 @@ efficient, and avoids the security risk of using @code{eval} on unknown data.
 %!testif HAVE_LLVM_LIBCXX  <47413>
 %! assert (str2double ({"abc", "4i"}), [NaN + 0i, 4i]);
 %!testif ; ! __have_feature__ ("LLVM_LIBCXX")
-%! assert (str2double ({2, "4i"}), [NaN + 0i, 4i])
+%! assert (str2double ({2, "4i"}), [NaN + 0i, 4i]);
 %!testif HAVE_LLVM_LIBCXX  <47413>
-%! assert (str2double ({2, "4i"}), [NaN + 0i, 4i])
+%! assert (str2double ({2, "4i"}), [NaN + 0i, 4i]);
 %!assert (str2double (zeros (3,1,2)), NaN)
 %!assert (str2double (''), NaN)
 %!assert (str2double ([]), NaN)

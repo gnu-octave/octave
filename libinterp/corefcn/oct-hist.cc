@@ -893,10 +893,10 @@ The original variable value is restored when exiting the function.
 /*
 %!test
 %! history_timestamp_format_string ("# Example history marker", "local");
-%! assert (history_timestamp_format_string (), "# Example history marker")
+%! assert (history_timestamp_format_string (), "# Example history marker");
 %!test <*57843>
 %! history_timestamp_format_string ("", "local");
-%! assert (history_timestamp_format_string (), "")
+%! assert (history_timestamp_format_string (), "");
 */
 
 DEFUN (history_save, args, nargout,

@@ -180,7 +180,7 @@ endfunction
 %! y = [1 2 3]';
 %! assert (corr (x, y), [1; 1]);
 %! assert (corr (y, x), [1, 1]);
-%! assert (corr (x, [y, y]), [1 1; 1 1])
+%! assert (corr (x, [y, y]), [1 1; 1 1]);
 
 %!test <*64395>
 %! x = [1, 2, 3];
@@ -196,13 +196,13 @@ endfunction
 %! assert (corr (x, x), single (NaN (3)));
 %! assert (corr (x', x'), 1, single (eps));
 
-%!assert <*64555> (corr (1, rand (1, 10)), NaN (1, 10));
-%!assert <*64555> (corr (rand (1, 10), 1), NaN (10, 1));
-%!assert <*64555> (corr (rand (1, 10), rand (1, 10)), NaN (10, 10));
-%!assert <*64555> (corr (rand (1, 5), rand (1, 10)), NaN (5, 10));
-%!assert <*64555> (corr (5, rand (1, 10, 5)), NaN (1, 10));
-%!assert <*64555> (corr (rand (1, 5, 5), rand (1, 10)), NaN (5, 10));
-%!assert <*64555> (corr (rand (1, 5, 5, 99), rand (1, 10)), NaN (5, 10));
+%!assert <*64555> (corr (1, rand (1, 10)), NaN (1, 10))
+%!assert <*64555> (corr (rand (1, 10), 1), NaN (10, 1))
+%!assert <*64555> (corr (rand (1, 10), rand (1, 10)), NaN (10, 10))
+%!assert <*64555> (corr (rand (1, 5), rand (1, 10)), NaN (5, 10))
+%!assert <*64555> (corr (5, rand (1, 10, 5)), NaN (1, 10))
+%!assert <*64555> (corr (rand (1, 5, 5), rand (1, 10)), NaN (5, 10))
+%!assert <*64555> (corr (rand (1, 5, 5, 99), rand (1, 10)), NaN (5, 10))
 
 ## Test input validation
 %!error <Invalid call> corr ()

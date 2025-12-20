@@ -480,7 +480,9 @@ function [local_packages, global_packages] = pkg (varargin)
 
   if (octave_forge)
     if (strcmp (action, "install"))
-      warning ("Octave:pkg:install-forge", "pkg: the '-forge' option is no longer needed for 'pkg install'\n");
+      ## Do nothing.
+      ## FIXME In future, we may want to issue a warning here that '-forge'
+      ## is no longer needed for 'pkg install'.
     elseif (strcmp (action, "list"))
       warning ("Octave:pkg:list-forge", "pkg: changing 'pkg list -forge' to 'pkg search -all'\n");
       action = "search";  # proceed as though user has invoked "pkg search -all"

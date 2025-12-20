@@ -12,8 +12,7 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   * The package installation command `pkg install foo` now automatically
     determines whether `foo` is a local file, a URL, or an unqualified package
     name in that order, and installs it as appropriate.  The `-forge` option is
-    no longer required but is still accepted.  Octave will issue a warning
-    which can be silenced with the warning ID `"Octave:pkg:install-forge"`.
+    no longer required but is still silently accepted.
   * There is a new search command for packages: `pkg search foo bar baz`
     searches Octave Packages online for packages having all the listed keywords
     in their description.  Search terms can also be regular expressions.

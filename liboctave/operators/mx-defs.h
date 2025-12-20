@@ -62,19 +62,19 @@ template <typename T> class qrp;
 #if ! defined (MAPPER_FCN_TYPEDEFS)
 #  define MAPPER_FCN_TYPEDEFS 1
 
-typedef bool (*b_d_Mapper)(double);
-typedef bool (*b_c_Mapper)(const Complex&);
-
-typedef double (*d_d_Mapper)(double);
-typedef double (*d_c_Mapper)(const Complex&);
-typedef Complex (*c_c_Mapper)(const Complex&);
-
-typedef bool (*b_f_Mapper)(float);
-typedef bool (*b_fc_Mapper)(const FloatComplex&);
-
-typedef float (*f_f_Mapper)(float);
-typedef float (*f_fc_Mapper)(const FloatComplex&);
-typedef FloatComplex (*fc_fc_Mapper)(const FloatComplex&);
+// The following function typedefs were determined to be unused remnants,
+// and are deprecated for only one year. They should be removed from Octave 12.
+// See https://octave.discourse.group/t/what-are-mapper-typedefs-used-for/7189
+OCTAVE_DEPRECATED (11, "")  typedef bool (*b_d_Mapper)(double);
+OCTAVE_DEPRECATED (11, "")  typedef bool (*b_c_Mapper)(const Complex&);
+OCTAVE_DEPRECATED (11, "")  typedef double (*d_d_Mapper)(double);
+OCTAVE_DEPRECATED (11, "")  typedef double (*d_c_Mapper)(const Complex&);
+OCTAVE_DEPRECATED (11, "")  typedef Complex (*c_c_Mapper)(const Complex&);
+OCTAVE_DEPRECATED (11, "")  typedef bool (*b_f_Mapper)(float);
+OCTAVE_DEPRECATED (11, "")  typedef bool (*b_fc_Mapper)(const FloatComplex&);
+OCTAVE_DEPRECATED (11, "")  typedef float (*f_f_Mapper)(float);
+OCTAVE_DEPRECATED (11, "")  typedef float (*f_fc_Mapper)(const FloatComplex&);
+OCTAVE_DEPRECATED (11, "")  typedef FloatComplex (*fc_fc_Mapper)(const FloatComplex&);
 
 enum blas_trans_type
 {

@@ -1595,9 +1595,9 @@ endfunction
 %! unwind_protect
 %!   warning ("off", "Octave:num-to-str");
 %!   assert (movfun (fcn, x, w, "endpoints", 121), "cdefghijyy");
-%!   assert (double (movfun (fcn, x, w, "endpoints", "fill")), [99:106, 0, 0])
-%!   assert (movfun (fcn, x, w, "samplepoints", sp, "endpoints", 121), "bcdefghijy")
-%!   assert (double (movfun (fcn, x, w, "samplepoints", sp, "endpoints", "fill")), [98:106, 0])
+%!   assert (double (movfun (fcn, x, w, "endpoints", "fill")), [99:106, 0, 0]);
+%!   assert (movfun (fcn, x, w, "samplepoints", sp, "endpoints", 121), "bcdefghijy");
+%!   assert (double (movfun (fcn, x, w, "samplepoints", sp, "endpoints", "fill")), [98:106, 0]);
 %! unwind_protect_cleanup
 %!   warning (warnstate);
 %! end_unwind_protect

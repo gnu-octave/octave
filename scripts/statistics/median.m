@@ -704,7 +704,7 @@ endfunction
 %!test
 %! x = ones (15, 1, 4);
 %! x([13,15], 1, :) = NaN;
-%! assert (median (x, 1, "omitnan"), ones (1, 1, 4))
+%! assert (median (x, 1, "omitnan"), ones (1, 1, 4));
 
 ## Test non-floating point types
 %!assert (median ([true, false]), true)

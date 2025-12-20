@@ -30,7 +30,7 @@
 ################################################################################
 
 %!test
-%! assert (recursive_nest (), 25)
+%! assert (recursive_nest (), 25);
 %! clear -global recursive_nest_inc;  # cleanup after test
 
 %!assert (recursive_nest2 (), 20)

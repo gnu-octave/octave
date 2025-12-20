@@ -518,7 +518,7 @@ endfunction
 %!test <*66025>
 %! [sl, c, cpre, cpost, win, wlen, sw] = movslice (10, 4, [1:9, 11]);
 %! assert (double(sl), [1, 1, 1:7, 9; 2:9, 9, 10]);
-%! assert (c, 3:10)
+%! assert (c, 3:10);
 %! assert (cpre, 1:2);
 %! assert (cpost, ones (1,0));
 %! assert (win, [1:9, 11] + [-2;2]);

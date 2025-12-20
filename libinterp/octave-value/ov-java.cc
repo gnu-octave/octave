@@ -3582,12 +3582,12 @@ Return true if @var{x} is a Java object.
 
 ## Test for automatic conversion of specific numeric classes
 %!testif HAVE_JAVA; usejava ("jvm") <*48013>
-%! assert (javaMethod ("valueOf", "java.lang.Byte",     int8 (1)), 1)
-%! assert (javaMethod ("valueOf", "java.lang.Short",   int16 (1)), 1)
-%! assert (javaMethod ("valueOf", "java.lang.Integer", int32 (1)), 1)
-%! assert (javaMethod ("valueOf", "java.lang.Long",    int64 (1)), 1)
-%! assert (javaMethod ("valueOf", "java.lang.Float",  single (1)), 1)
-%! assert (javaMethod ("valueOf", "java.lang.Double", double (1)), 1)
+%! assert (javaMethod ("valueOf", "java.lang.Byte",     int8 (1)), 1);
+%! assert (javaMethod ("valueOf", "java.lang.Short",   int16 (1)), 1);
+%! assert (javaMethod ("valueOf", "java.lang.Integer", int32 (1)), 1);
+%! assert (javaMethod ("valueOf", "java.lang.Long",    int64 (1)), 1);
+%! assert (javaMethod ("valueOf", "java.lang.Float",  single (1)), 1);
+%! assert (javaMethod ("valueOf", "java.lang.Double", double (1)), 1);
 %! assert (class (javaMethod ("valueOf", "java.math.BigDecimal", double (1))),
 %!         "java.math.BigDecimal")
 %! assert (class (javaMethod ("valueOf", "java.math.BigInteger",  int64 (1))),
@@ -3602,19 +3602,19 @@ Return true if @var{x} is a Java object.
 ## Test that Octave index syntax allows Java object method calls with args
 %!testif HAVE_JAVA; usejava ("jvm") <*51152>
 %! s = javaObject ("java.lang.String", "Octave");
-%! assert (s.length (), 6)
-%! assert (s.charAt (0), "O")
-%! assert (s.charAt (5), "e")
-%! assert (s.matches ("^Octave$"))
-%! assert (s.startsWith ("Oct"))
+%! assert (s.length (), 6);
+%! assert (s.charAt (0), "O");
+%! assert (s.charAt (5), "e");
+%! assert (s.matches ("^Octave$"));
+%! assert (s.startsWith ("Oct"));
 %! ## same tests with Java object as part of another indexing expression
 %! a(1).s = s;
-%! assert (! a(1).s.isEmpty ())
-%! assert (a(1).s.length (), 6)
-%! assert (a(1).s.charAt (0), "O")
-%! assert (a(1).s.charAt (5), "e")
-%! assert (a(1).s.matches ("^Octave$"))
-%! assert (a(1).s.startsWith ("Oct"))
+%! assert (! a(1).s.isEmpty ());
+%! assert (a(1).s.length (), 6);
+%! assert (a(1).s.charAt (0), "O");
+%! assert (a(1).s.charAt (5), "e");
+%! assert (a(1).s.matches ("^Octave$"));
+%! assert (a(1).s.startsWith ("Oct"));
 
 ## Check for basic usability of the java awt library
 ## FIXME: Removed runtime test to skip checking on Mac OS (22/08/2025).

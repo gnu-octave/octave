@@ -153,34 +153,34 @@ do_fft (const octave_value_list& args, const char *fcn, int type)
 
 /*
 %!testif HAVE_FFTW
-%! assert (fft ([]), [])
+%! assert (fft ([]), []);
 %!testif HAVE_FFTW
-%! assert (fft (zeros (10,0)), zeros (10,0))
+%! assert (fft (zeros (10,0)), zeros (10,0));
 %!testif HAVE_FFTW
-%! assert (fft (zeros (0,10)), zeros (0,10))
+%! assert (fft (zeros (0,10)), zeros (0,10));
 %!testif HAVE_FFTW
-%! assert (fft (0), 0)
+%! assert (fft (0), 0);
 %!testif HAVE_FFTW
-%! assert (fft (1), 1)
+%! assert (fft (1), 1);
 %!testif HAVE_FFTW
-%! assert (fft (ones (2,2)), [2,2; 0,0])
+%! assert (fft (ones (2,2)), [2,2; 0,0]);
 %!testif HAVE_FFTW
-%! assert (fft (eye (2,2)), [1,1; 1,-1])
+%! assert (fft (eye (2,2)), [1,1; 1,-1]);
 
 %!testif HAVE_FFTW
-%! assert (fft (single ([])), single ([]))
+%! assert (fft (single ([])), single ([]));
 %!testif HAVE_FFTW
-%! assert (fft (zeros (10,0,"single")), zeros (10,0,"single"))
+%! assert (fft (zeros (10,0,"single")), zeros (10,0,"single"));
 %!testif HAVE_FFTW
-%! assert (fft (zeros (0,10,"single")), zeros (0,10,"single"))
+%! assert (fft (zeros (0,10,"single")), zeros (0,10,"single"));
 %!testif HAVE_FFTW
-%! assert (fft (single (0)), single (0))
+%! assert (fft (single (0)), single (0));
 %!testif HAVE_FFTW
-%! assert (fft (single (1)), single (1))
+%! assert (fft (single (1)), single (1));
 %!testif HAVE_FFTW
-%! assert (fft (ones (2,2,"single")), single ([2,2; 0,0]))
+%! assert (fft (ones (2,2,"single")), single ([2,2; 0,0]));
 %!testif HAVE_FFTW
-%! assert (fft (eye (2,2,"single")), single ([1,1; 1,-1]))
+%! assert (fft (eye (2,2,"single")), single ([1,1; 1,-1]));
 
 %!error fft ()
 */

@@ -671,7 +671,7 @@ endfunction
 %! assert (mean (in, 2, "native"), int64 (-1));
 %! assert (mean (in, [1 2], "native"), int64 (-1));
 %! assert (mean (in, [2 3], "native"), int64 (-1));
-%! assert (mean ([intmin("int64"), in, intmax("int64")]), double (-0.5))
+%! assert (mean ([intmin("int64"), in, intmax("int64")]), double (-0.5));
 %! assert (mean ([in; int64([1 3])], 2, "native"), int64 ([-1; 2]));
 
 ## Test input and optional arguments "all", DIM, "omitnan".

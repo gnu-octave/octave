@@ -197,7 +197,7 @@ The author of the code itself is Timothy A. Davis
 %! assert(amd (A2, opts), [1:30]);
 
 %!testif HAVE_AMD
-%! assert (amd ([]), zeros (1,0))
+%! assert (amd ([]), zeros (1,0));
 
 %!error <S must be a square matrix|was unavailable or disabled> amd (A)
 %!error amd (A2, 2)

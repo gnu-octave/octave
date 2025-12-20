@@ -272,8 +272,8 @@ endfunction
 
 %!test <*64556>
 %! x = pi * [-Inf, 0.5, -1, NaN, Inf, -0.5, 1];
-%! assert (unwrap (x), pi * [-Inf, 0.5, 1, NaN, Inf, 1.5, 1], eps)
-%! assert (unwrap (x.'), pi * [-Inf, 0.5, 1, NaN, Inf, 1.5, 1].', eps)
+%! assert (unwrap (x), pi * [-Inf, 0.5, 1, NaN, Inf, 1.5, 1], eps);
+%! assert (unwrap (x.'), pi * [-Inf, 0.5, 1, NaN, Inf, 1.5, 1].', eps);
 
 %!test <*64556>
 %! x = pi * [-Inf, 0.5, -1, NaN, Inf, -0.5, 1];

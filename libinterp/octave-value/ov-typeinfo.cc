@@ -957,9 +957,9 @@ currently installed data types.
 
 %!test
 %! if (optimize_range ())
-%!   assert (typeinfo (1:2), "double_range")
+%!   assert (typeinfo (1:2), "double_range");
 %! else
-%!   assert (typeinfo (1:2), "matrix")
+%!   assert (typeinfo (1:2), "matrix");
 %! endif
 
 %!assert (typeinfo (false), "bool")

@@ -136,7 +136,7 @@ endfunction
 %!      0,   0,   0;
 %!      0.5, 0.5, 0.5;
 %!      1,   1,   1];
-%! assert (colorcube (12), a, eps)
+%! assert (colorcube (12), a, eps);
 
 ## Input validation
 %!error <N must be a scalar integer> colorcube ("foo")

@@ -796,14 +796,14 @@ of an orthogonal basis of @code{span (A)}.
 
 ## Empty matrices
 %!test
-%! assert (qr (zeros (0, 0)), zeros (0, 0))
-%! assert (qr (zeros (1, 0)), zeros (1, 0))
-%! assert (qr (zeros (0, 1)), zeros (0, 1))
+%! assert (qr (zeros (0, 0)), zeros (0, 0));
+%! assert (qr (zeros (1, 0)), zeros (1, 0));
+%! assert (qr (zeros (0, 1)), zeros (0, 1));
 
 %!testif ; (__have_feature__ ("SPQR") && __have_feature__ ("CHOLMOD")) || __have_feature__ ("CXSPARSE") <*63069>
-%! assert (qr (sparse (0, 0)), sparse (0, 0))
-%! assert (qr (sparse (1, 0)), sparse (1, 0))
-%! assert (qr (sparse (0, 1)), sparse (0, 1))
+%! assert (qr (sparse (0, 0)), sparse (0, 0));
+%! assert (qr (sparse (1, 0)), sparse (1, 0));
+%! assert (qr (sparse (0, 1)), sparse (0, 1));
 
 %!test <*66488>
 %! ## Orientation of 'p' output for dense matrices

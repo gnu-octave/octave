@@ -40,5 +40,5 @@
 %!test
 %! obj1 = child_from_base_1 ();
 %! obj2 = child_from_base_1_and_2 ();
-%! assert (class (obj1), 'child_from_base_1')
-%! assert (class (obj2), "child_from_base_1_and_2")
+%! assert (class (obj1), 'child_from_base_1');
+%! assert (class (obj2), "child_from_base_1_and_2");

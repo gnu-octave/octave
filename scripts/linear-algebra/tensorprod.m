@@ -342,10 +342,10 @@ endfunction
 %!        reshape ([1, 2, 2, 4], [1, 2, 1, 1, 2]));
 %!assert (tensorprod (v1, v1, [], [], "NumDimensionsA", 3),
 %!        reshape ([1, 2, 2, 4], [1, 2, 1, 1, 2]));
-%!assert (tensorprod (v1, v1, "all", "NumDimensionsA", 3), 5);
-%!assert (tensorprod (M1, v1, 2, "NumDimensionsA", 2), [5; 11]);
-%!assert (tensorprod (M1, v1, 2, "NumDimensionsA", 5), [5; 11]);
-%!assert (tensorprod (M1, v1, [2, 3], "NumDimensionsA", 5), [5; 11]);
+%!assert (tensorprod (v1, v1, "all", "NumDimensionsA", 3), 5)
+%!assert (tensorprod (M1, v1, 2, "NumDimensionsA", 2), [5; 11])
+%!assert (tensorprod (M1, v1, 2, "NumDimensionsA", 5), [5; 11])
+%!assert (tensorprod (M1, v1, [2, 3], "NumDimensionsA", 5), [5; 11])
 %!assert (tensorprod (M1, M2, "NumDimensionsA", 2), reshape ([1,3,2,4,3,9,6, ...
 %!        12,5,15,10,20,2,6,4,8,4,12,8,16,6,18,12,24], [2,2,3,2]))
 %!assert (tensorprod (M1, M2, "NumDimensionsA", 3), reshape ([1,3,2,4,3,9,6, ...

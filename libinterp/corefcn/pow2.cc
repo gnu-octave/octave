@@ -289,12 +289,12 @@ to C/C++ standard function @code{ldexp()}.
 %! assert (pow2 (f, e), z);
 
 ## Tests for sparsity.
-%!assert (pow2 (sparse (0), ones  (3)), sparse (3, 3));
-%!assert (pow2 (sparse (1), ones  (3)), 2 .* sparse (ones (3)));
-%!assert (pow2 (sparse (1), speye (3)), sparse (ones (3) + eye (3)));
-%!assert (pow2 (sparse (3, 3), ones (3)), sparse (3, 3));
-%!assert (pow2 (speye (3), ones (3)), 2 .* speye (3));
-%!assert (pow2 (speye (3), 1),        2 .* speye (3));
+%!assert (pow2 (sparse (0), ones  (3)), sparse (3, 3))
+%!assert (pow2 (sparse (1), ones  (3)), 2 .* sparse (ones (3)))
+%!assert (pow2 (sparse (1), speye (3)), sparse (ones (3) + eye (3)))
+%!assert (pow2 (sparse (3, 3), ones (3)), sparse (3, 3))
+%!assert (pow2 (speye (3), ones (3)), 2 .* speye (3))
+%!assert (pow2 (speye (3), 1),        2 .* speye (3))
 
 %!test
 %! f = speye (3);

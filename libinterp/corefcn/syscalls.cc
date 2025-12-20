@@ -1170,8 +1170,8 @@ system-dependent error message.
 %!test <*51869>
 %! [info, status, msg] = uname ();
 %! if (status == 0)
-%!   assert (isstruct (info))
-%!   assert (ischar (msg) && isempty (msg))
+%!   assert (isstruct (info));
+%!   assert (ischar (msg) && isempty (msg));
 %! endif
 */
 

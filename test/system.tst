@@ -290,22 +290,22 @@
 %!error <... getppid> getppid (1)
 
 %!testif HAVE_GETEUID
-%! assert (geteuid () >= 0)
+%! assert (geteuid () >= 0);
 
 %!error <... geteuid> geteuid (1)
 
 %!testif HAVE_GETUID
-%! assert (getuid () >= 0)
+%! assert (getuid () >= 0);
 
 %!error <... getuid> getuid (1)
 
 %!testif HAVE_GETEGID
-%! assert (getegid () >= 0)
+%! assert (getegid () >= 0);
 
 %!error <... getegid> getegid (1)
 
 %!testif HAVE_GETGID
-%! assert (getgid () >= 0)
+%! assert (getgid () >= 0);
 
 %!error <... getgid> getgid (1)
 

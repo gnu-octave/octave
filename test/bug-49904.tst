@@ -9,9 +9,9 @@
 %!test <*49904>
 %! [Ainv, rcond] = inv (A);
 %! assert (ishermitian (Ainv));
-%! assert (A * Ainv, eye (4, 'double'), eps ('double') / rcond)
+%! assert (A * Ainv, eye (4, 'double'), eps ('double') / rcond);
 
 %!test <*49904>
 %! [Ainv, rcond] = inv (single (A));
 %! assert (ishermitian (Ainv));
-%! assert (A * Ainv, eye (4, 'single'), eps ('single') / rcond)
+%! assert (A * Ainv, eye (4, 'single'), eps ('single') / rcond);

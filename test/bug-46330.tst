@@ -42,4 +42,4 @@
 %! ## This statement caused an error in LAPACK and eventually caused
 %! ## a segmentation fault.
 %! ## Triggers "warning: matrix singular to machine precision"
-%! assert (c / (i * Inf * eye (4) - a) * b, zeros (2, 2))
+%! assert (c / (i * Inf * eye (4) - a) * b, zeros (2, 2));

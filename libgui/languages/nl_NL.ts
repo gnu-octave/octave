@@ -1372,32 +1372,32 @@ is geen geldig XBEL versie 1.0 bestand.</translation>
     <message>
         <location filename="../src/files-dock-widget.cc" line="+1214"/>
         <source>Open Editor Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestanden open in editor</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Click to focus file in editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Klik voor focus op bestand in editor</translation>
     </message>
     <message>
         <location line="+92"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Sluit bestand</translation>
+        <translation>&amp;Sluit bestand</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Close &amp;All</source>
-        <translation type="unfinished">Sluit &amp;Alle</translation>
+        <translation>Sluit &amp;Alle</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Run</source>
-        <translation type="unfinished">Voer uit</translation>
+        <translation>Voer uit</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Set Current &amp;Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Kies huidige &amp; map</translation>
     </message>
 </context>
 <context>
@@ -2146,208 +2146,208 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
     <message>
         <location filename="../src/files-dock-widget.cc" line="-1165"/>
         <source>File size</source>
-        <translation type="unfinished">Bestandsgrootte</translation>
+        <translation>Bestandsgrootte</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>File type</source>
-        <translation type="unfinished">Bestandstype</translation>
+        <translation>Bestandstype</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Date modified</source>
-        <translation type="unfinished">Laatst gewijzigd</translation>
+        <translation>Laatst gewijzigd</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show hidden</source>
-        <translation type="unfinished">Toon verborgen bestanden</translation>
+        <translation>Toon verborgen bestanden</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Alternating row colors</source>
-        <translation type="unfinished">Alternerende regelkleuren</translation>
+        <translation>Alternerende regelkleuren</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Enter the path or filename</source>
-        <translation type="unfinished">Voer pad- of bestandsnaam in</translation>
+        <translation>Voer pad- of bestandsnaam in</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>One directory up</source>
-        <translation type="unfinished">Eén mapniveau omhoog</translation>
+        <translation>Eén mapniveau omhoog</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Octave directory</source>
-        <translation type="unfinished">Toon Octave werkmap</translation>
+        <translation>Toon Octave werkmap</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Go to current Octave directory</source>
-        <translation type="unfinished">Ga naar huidige Octave map</translation>
+        <translation>Ga naar huidige Octave map</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Set Octave directory</source>
-        <translation type="unfinished">Stel Octave map in</translation>
+        <translation>Stel Octave map in</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Set Octave directory to current browser directory</source>
-        <translation type="unfinished">Stel huidige browsermap in als Octave map</translation>
+        <translation>Stel huidige browsermap in als Octave map</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Actions on current directory</source>
-        <translation type="unfinished">Bewerkingen op huidige map</translation>
+        <translation>Bewerkingen op huidige map</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Home Directory</source>
-        <translation type="unfinished">Toon home directory</translation>
+        <translation>Toon home directory</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Set Browser Directory...</source>
-        <translation type="unfinished">Stel browser map in...</translation>
+        <translation>Stel browser map in...</translation>
     </message>
     <message>
         <location line="+4"/>
         <location line="+433"/>
         <source>Find Files...</source>
-        <translation type="unfinished">Zoek bestanden...</translation>
+        <translation>Zoek bestanden...</translation>
     </message>
     <message>
         <location line="-429"/>
         <location line="+441"/>
         <source>New File...</source>
-        <translation type="unfinished">Nieuw bestand...</translation>
+        <translation>Nieuw bestand...</translation>
     </message>
     <message>
         <location line="-438"/>
         <location line="+440"/>
         <source>New Directory...</source>
-        <translation type="unfinished">Nieuwe map...</translation>
+        <translation>Nieuwe map...</translation>
     </message>
     <message>
         <location line="-385"/>
         <source>Double-click to open file/folder, right click for alternatives</source>
-        <translation type="unfinished">Dubbelklik om map te openen, rechts-klik voor andere opties</translation>
+        <translation>Dubbelklik om map te openen, rechts-klik voor andere opties</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Rename...</source>
-        <translation type="unfinished">Hernoemen...</translation>
+        <translation>Hernoemen...</translation>
     </message>
     <message>
         <location line="+312"/>
         <source>Open</source>
-        <translation type="unfinished">Open</translation>
+        <translation>Open</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open in System File Explorer</source>
-        <translation type="unfinished">Openen in Systeem Bestandsverkenner</translation>
+        <translation>Openen in Systeem Bestandsverkenner</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open in Text Editor</source>
-        <translation type="unfinished">Openen in Tekstverwerker</translation>
+        <translation>Openen in Tekstverwerker</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Copy Selection to Clipboard</source>
-        <translation type="unfinished">Kopieer selectie naar klembord</translation>
+        <translation>Kopieer selectie naar klembord</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Run</source>
-        <translation type="unfinished">Voer uit</translation>
+        <translation>Voer uit</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Load Data</source>
-        <translation type="unfinished">Lees data in</translation>
+        <translation>Lees data in</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Set Current Directory</source>
-        <translation type="unfinished">Stel huidige map in</translation>
+        <translation>Stel huidige map in</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add to Path</source>
-        <translation type="unfinished">Aan zoekpad toevoegen</translation>
+        <translation>Aan zoekpad toevoegen</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+7"/>
         <source>Selected Directories</source>
-        <translation type="unfinished">Gekozen directories</translation>
+        <translation>Gekozen directories</translation>
     </message>
     <message>
         <location line="-5"/>
         <location line="+7"/>
         <source>Selected Directories and Subdirectories</source>
-        <translation type="unfinished">Gekozen directories en subdirectories</translation>
+        <translation>Gekozen directories en subdirectories</translation>
     </message>
     <message>
         <location line="-4"/>
         <source>Remove from Path</source>
-        <translation type="unfinished">Uit zoekpad verwijderen</translation>
+        <translation>Uit zoekpad verwijderen</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Delete...</source>
-        <translation type="unfinished">Weggooien...</translation>
+        <translation>Weggooien...</translation>
     </message>
     <message>
         <location line="+140"/>
         <location line="+11"/>
         <location line="+17"/>
         <source>Delete file/directory</source>
-        <translation type="unfinished">Wis bestand/map</translation>
+        <translation>Wis bestand/map</translation>
     </message>
     <message>
         <location line="-27"/>
         <source>Are you sure you want to delete all %1 selected files?
 </source>
-        <translation type="unfinished">Weet je zeker dat je alle %1 bestanden wil wissen?
+        <translation>Weet je zeker dat je alle %1 bestanden wil wissen?
 </translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Are you sure you want to delete
 </source>
-        <translation type="unfinished">Weet u zeker dat u dit wilt verwijderen
+        <translation>Weet u zeker dat u dit wilt verwijderen
 </translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Can not delete a directory that is not empty</source>
-        <translation type="unfinished">Kan een niet-lege map niet wissen</translation>
+        <translation>Kan een niet-lege map niet wissen</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Deletion error</source>
-        <translation type="unfinished">Fout bij verwijderen</translation>
+        <translation>Fout bij verwijderen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not delete file &quot;%1&quot;.</source>
-        <translation type="unfinished">Kon bestand &quot;%1&quot; niet verwijderen.</translation>
+        <translation>Kon bestand &quot;%1&quot; niet verwijderen.</translation>
     </message>
     <message>
         <location line="+216"/>
         <source>Set directory of file browser</source>
-        <translation type="unfinished">Stel file browser map in</translation>
+        <translation>Stel file browser map in</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Create File</source>
-        <translation type="unfinished">Maak nieuw bestand</translation>
+        <translation>Maak nieuw bestand</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2355,18 +2355,18 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">Maak nieuw bestand in
+        <translation>Maak nieuw bestand in
 </translation>
     </message>
     <message>
         <location line="+2"/>
         <source>New File.txt</source>
-        <translation type="unfinished">Nieiw bestand.txt</translation>
+        <translation>Nieuw bestand.txt</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Create Directory</source>
-        <translation type="unfinished">Maak nieuwe map</translation>
+        <translation>Maak nieuwe map</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2374,13 +2374,13 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">Maak nieuwe map in
+        <translation>Maak nieuwe map in
 </translation>
     </message>
     <message>
         <location line="+2"/>
         <source>New Directory</source>
-        <translation type="unfinished">Nieuwe map</translation>
+        <translation>Nieuwe map</translation>
     </message>
 </context>
 <context>
@@ -2403,12 +2403,12 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
     <message>
         <location line="+10"/>
         <source>File System</source>
-        <translation type="unfinished"></translation>
+        <translation>bestands systeem</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Editor Files</source>
-        <translation type="unfinished"></translation>
+        <translation>editor bestanden</translation>
     </message>
 </context>
 <context>
@@ -4035,12 +4035,12 @@ Wil je de sneltoets toch gebruiken en loskoppelen van de vorige actie?</translat
     <message>
         <location filename="../src/welcome-wizard.cc" line="+135"/>
         <source>Welcome to GNU Octave</source>
-        <translation type="unfinished">Welkom bij GNU Octave</translation>
+        <translation>Welkom bij GNU Octave</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Welcome to Octave!</source>
-        <translation type="unfinished">Welkom bij Octave!</translation>
+        <translation>Welkom bij Octave!</translation>
     </message>
 </context>
 <context>
@@ -4669,7 +4669,7 @@ Fout: </translation>
         <location line="+19"/>
         <source>3-D</source>
         <oldsource>3D</oldsource>
-        <translation type="unfinished">3D</translation>
+        <translation>3D</translation>
     </message>
     <message>
         <location line="+206"/>
@@ -4761,7 +4761,7 @@ Fout: </translation>
     <message>
         <location line="+37"/>
         <source>Show splash screen at startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon welkomst scherm bij opstarten</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -5021,7 +5021,7 @@ Fout: </translation>
     <message>
         <location line="+871"/>
         <source>Directory of open file dialog follows current editor file instead of current Octave directory </source>
-        <translation type="unfinished"></translation>
+        <translation>Bestand openen dialoog gebaseerd op map huidig te editen bestand in plaats van huidige Octave map></translation>
     </message>
     <message>
         <location line="+98"/>

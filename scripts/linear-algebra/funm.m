@@ -35,15 +35,16 @@
 ## Evaluate a general matrix function.
 ##
 ## @code{funm (@var{A}, @var{fun})} evaluates the function @var{fun} at the
-## square matrix @var{A}.  @var{fun}(@var{x}, @var{k}) must return the
-## @var{k}'th derivative of the function represented by @var{fun} evaluated
-## at the vector @var{x}.
+## square matrix @var{A}.  The input @var{fun}(@var{x}, @var{k}) must return
+## the @var{k}'th derivative of the function represented by @var{fun} evaluated
+## at the vector @var{x}.  The function @var{fun} must have a Taylor series
+## representation with an infinite radius of convergence.
 ##
-## The standard MATLAB/Octave functions @code{cos}, @code{sin}, @code{exp},
-## @code{log}, @code{cosh}, and @code{sinh} can be passed as @var{fun}, i.e.,
-## @code{funm (@var{A}, @@cos)}, @code{funm (@var{A}, @@sin)}, etc.
+## The special functions @code{exp}, @code{log}, @code{sin}, @code{cos},
+## @code{sinh}, and @code{cosh} can be passed by function handle; for example
+## @code{funm (@var{A}, @@cos)}.
 ##
-## For matrix square roots use @code{sqrtm} instead.  For matrix exponentials,
+## For matrix square roots, use @code{sqrtm} instead.  For matrix exponentials,
 ## either @code{expm} or @code{funm (@var{A}, @@exp)} may be faster or more
 ## accurate, depending on @var{A}.
 ##
@@ -74,8 +75,8 @@
 ## @itemize
 ## @item 0 --- The algorithm was successful.
 ##
-## @item 1 --- One or more Taylor series evaluations did not converge, but
-## the computed value of @var{F} might still be accurate.
+## @item 1 --- One or more Taylor series evaluations did not converge, but the
+## computed value of @var{F} might still be accurate.
 ## @end itemize
 ##
 ## @item output
@@ -83,10 +84,9 @@
 ##
 ## @table @code
 ## @item terms
-## Vector for which @code{output.terms(i)} is the number of Taylor series
-## terms used when evaluating the i'th block, or, in the case of the
-## logarithm, the number of square roots of matrices of dimension greater
-## than 2.
+## Vector for which @code{output.terms(i)} is the number of Taylor series terms
+## used when evaluating the i'th block, or, in the case of the logarithm, the
+## number of square roots of matrices of dimension greater than 2.
 ##
 ## @item ind
 ## Cell array for which the (i,j) block of the reordered Schur factor @var{T}
@@ -151,41 +151,37 @@ function [F, exitflag, output] = funm (A, fun, delta = 0.1, tol = eps, prnt = 0,
     error ("funm: TOL must be a numeric scalar");
   endif
 
-  ## We do all calculations in double.
-  ## If input A is single --> return single.
-  ## Integer --> return double.
+  ## Algorithm performs all calculations in double.
+  ## Return class single if A is single, otherwise double.
 
-  ## Remember input class.
-  input_is_single = isa (A, "single");
+  ## Convert to double
+  input_is_single = isa (A, "single");  # Remember input class.
+  A = double (A);
 
-  ## Convert to double.
-  if (! isa (A, "double"))
-    A = double (A);
-  endif
-
+  ## Check for special functions
   switch (fun)
-    case {@cos, "cos"}
-      fun = @fun_cos;
-    case {@sin, "sin"}
-      fun = @fun_sin;
     case {@exp, "exp"}
       fun = @fun_exp;
-    case {@cosh, "cosh"}
-      fun = @fun_cosh;
-    case {@sinh, "sinh"}
-      fun = @fun_sinh;
     case {@log, "log"}
       fun = @fun_log;
+    case {@sin, "sin"}
+      fun = @fun_sin;
+    case {@cos, "cos"}
+      fun = @fun_cos;
+    case {@sinh, "sinh"}
+      fun = @fun_sinh;
+    case {@cosh, "cosh"}
+      fun = @fun_cosh;
   endswitch
 
   n = rows (A);
-  exitflag = 0;    ## Initialize exitflag: 0 = success, 1 = convergence issues
+  exitflag = 0;  # Initialize exitflag: 0 = success, 1 = convergence issues
 
-  ## First form complex Schur form (if A not already upper triangular).
+  ## Form complex Schur form (if A not already upper triangular).
   T_upper = triu (A);
   if (norm (A - T_upper, "fro") <= 10 * n * eps * norm (A, "fro"))
-    T = T_upper;
     U = eye (n);
+    T = T_upper;
   else
     [U, T] = schur (A, "complex");
   endif
@@ -196,10 +192,11 @@ function [F, exitflag, output] = funm (A, fun, delta = 0.1, tol = eps, prnt = 0,
     F = U * diag (feval (fun, D)) * U';
 
     if (nargout > 2)
-      output = struct ("terms", ones (n, 1), "ind", {{1:n}}, "ord", [], "T", T);
+      output = struct ("terms", ones (n, 1), "ind", {{1:n}},
+                       "ord", [], "T", T);
     endif
 
-    ## Only convert back to single, not to integer/logical.
+    ## Return single output class if necessary.
     if (input_is_single)
       F = single (F);
       if (nargout > 2)
@@ -220,7 +217,8 @@ function [F, exitflag, output] = funm (A, fun, delta = 0.1, tol = eps, prnt = 0,
   endif
 
   [M, ind, n_swaps, ord] = swapping (m);
-  if (n_swaps > 0)                        ## If reordering is needed...
+  if (n_swaps > 0)
+    ## Reordering is needed.
     [U, T] = trexc (U, T, M);
   endif
 
@@ -231,7 +229,8 @@ function [F, exitflag, output] = funm (A, fun, delta = 0.1, tol = eps, prnt = 0,
 
   for col = 1:m
     j = ind{col};
-    [F(j, j), n_terms] = funm_atom (T(j, j), fun, tol, abs (prnt) * (prnt != 1));
+    [F(j, j), n_terms] = funm_atom (T(j, j), fun, tol, ...
+                                    abs (prnt) * (prnt != 1));
     terms(col) = n_terms;
 
     ## Check for convergence failure.
@@ -244,7 +243,9 @@ function [F, exitflag, output] = funm (A, fun, delta = 0.1, tol = eps, prnt = 0,
       if (numel (i) == 1 && numel (j) == 1)
         ## Scalar case.
         k = i + 1 : j - 1;
-        temp = T(i, j) * (F(i, i) - F(j, j)) + F(i, k) * T(k, j) - T(i, k) * F(k, j);
+        temp =   T(i, j) * (F(i, i) - F(j, j))  ...
+               + F(i, k) * T(k, j)              ...
+               - T(i, k) * F(k, j);
         F(i, j) = temp / (T(i, i) - T(j, j));
       else
         k = cat (2, ind{row + 1 : col - 1});
@@ -267,7 +268,7 @@ function [F, exitflag, output] = funm (A, fun, delta = 0.1, tol = eps, prnt = 0,
     output = struct ("terms", terms, "ind", {ind}, "ord", ord, "T", T);
   endif
 
-  ## Only convert back to single, not to integer/logical.
+  ## Return single output class if necessary.
   if (input_is_single)
     F = single (F);
     if (nargout > 2)
@@ -351,20 +352,25 @@ function f = fun_sin (x, k)
 endfunction
 
 
-## BLOCKING  Produce blocking pattern for block Parlett recurrence.
-##           M = BLOCKING(A, DELTA, SHOWPLOT) accepts an upper triangular matrix
-##           A and produces a blocking pattern, specified by the vector M,
-##           for the block Parlett recurrence.
-##           M(i) is the index of the block into which A(i,i) should be placed.
-##           DELTA is a gap parameter used to determine the blocking.
-##           Setting SHOWPLOT nonzero produces a plot of the eigenvalues
-##           that indicates the blocking:
-##            - Black circles show a set of 1 eigenvalue.
-##            - Blue circles show a set of >1 eigenvalues.
-##              The lines connect eigenvalues in the same set.
+## BLOCKING function
+## Produce blocking pattern for block Parlett recurrence.
 ##
-##          For A coming from a real matrix it should be possible to take
-##          advantage of the symmetry about the real axis.  This code does not.
+## M = blocking (A, DELTA, SHOWPLOT) accepts an upper triangular matrix A and
+## produces a blocking pattern, specified by the vector M, for the block
+## Parlett recurrence.
+##
+## M(i) is the index of the block into which A(i,i) should be placed.
+##
+## DELTA is a gap parameter used to determine the blocking.
+##
+## Setting SHOWPLOT nonzero produces a plot of the eigenvalues
+## that indicates the blocking:
+##  - Black circles show a set of 1 eigenvalue.
+##  - Blue circles show a set of >1 eigenvalues.
+##    The lines connect eigenvalues in the same set.
+##
+## For A coming from a real matrix it should be possible to take
+## advantage of the symmetry about the real axis.  This code does not.
 function m = blocking (A, delta, showplot)
 
   a = diag (A);
@@ -379,13 +385,13 @@ function m = blocking (A, delta, showplot)
 
   ## Pre-compute distance matrix.
   a_col = a(:);
-  a_row = transpose (a_col);
+  a_row = a_col.';
   dist_matrix = abs (a_col - a_row);
 
   for i = 1:n
     if (m(i) == 0)
-      m(i) = maxM + 1;                  ## If a(i) hasn't been assigned to a set
-      maxM = maxM + 1;                  ## then make a new set and assign a(i) to it.
+      m(i) = maxM + 1;             # If a(i) hasn't been assigned to a set
+      maxM = maxM + 1;             # then make a new set and assign a(i) to it.
     endif
 
     for j = i + 1 : n
@@ -395,20 +401,18 @@ function m = blocking (A, delta, showplot)
         endif
 
         if (m(j) == 0)
-          m(j) = m(i);                  ## If a(j) hasn't been assigned to a
-                                        ## set, assign it to the same set as a(i).
+          m(j) = m(i);             # If a(j) hasn't been assigned to a set,
+                                   # assign it to the same set as a(i).
         else
           p = max (m(i), m(j));
           q = min (m(i), m(j));
-          m(m == p) = q;                ## If a(j) has been assigned to a set
-                                        ## place all the elements in the set
-                                        ## containing a(j) into the set
-                                        ## containing a(i) (or vice versa).
-          m(m > p) = m(m > p) - 1;
-          maxM = maxM - 1;
-                                        ## Tidying up. As we have deleted set
-                                        ## p we reduce the index of the sets
-                                        ## > p by 1.
+          m(m == p) = q;           # If a(j) has been assigned to a set
+                                   # place all the elements in the set
+                                   # containing a(j) into the set
+                                   # containing a(i) (or vice versa).
+
+          m(m > p) = m(m > p) - 1; # Tidying up.  As we have deleted set p,
+          maxM = maxM - 1;         # we reduce the index of the sets > p by 1.
         endif
       endif
     endfor
@@ -422,32 +426,36 @@ function m = blocking (A, delta, showplot)
       endif
     endfor
     grid on;
-    hold off;
     box on;
+    hold off;
   endif
 
 endfunction
 
 
-## SWAPPING  Confluent permutation by swapping adjacent elements.
-##           [M, IND, N_SWAPS, ORD] = SWAPPING(M) takes a vector M containing
-##           block indices and constructs a swapping scheme that produces
-##           a confluent permutation, with elements ordered by ascending
-##           average position.  The confluent permutation is obtained by using
-##           the LAPACK routine ZTREXC to move m(M(i,2)) to m(M(i,1))
-##           by swapping adjacent elements, for i = 1:SIZE(M,1).
-##           The cell array vector IND defines the resulting block form:
-##           IND{i} contains the indices of the i'th block in the permuted form.
-##           N_SWAPS is the total number of swaps required.
-##           ORD is the cluster ordering vector suitable for use with ordschur.
+## SWAPPING function
+## Confluent permutation by swapping adjacent elements.
+##
+## [M, IND, N_SWAPS, ORD] = swapping (M) takes a vector M containing block
+## indices and constructs a swapping scheme that produces a confluent
+## permutation, with elements ordered by ascending average position.  The
+## confluent permutation is obtained by using the LAPACK routine ZTREXC to move
+## m(M(i,2)) to m(M(i,1)) by swapping adjacent elements, for i = 1:SIZE(M,1).
+##
+## The cell array vector IND defines the resulting block form: IND{i} contains
+## the indices of the i'th block in the permuted form.
+##
+## N_SWAPS is the total number of swaps required.
+
+## ORD is the cluster ordering vector suitable for use with ordschur.
 function [M, ind, n_swaps, ord] = swapping (m)
 
   n = numel (m);
   mmax = max (m);
-  M   = [];
+  M = [];
   ind = {};
-  h   = zeros (1, mmax);
-  g   = zeros (1, mmax);
+  h = zeros (1, mmax);
+  g = zeros (1, mmax);
 
   for i = 1 : mmax
     p = find (m == i);
@@ -492,21 +500,28 @@ function [M, ind, n_swaps, ord] = swapping (m)
 endfunction
 
 
-## FUNM_ATOM  Function of triangular matrix with nearly constant diagonal.
-##            [F, N_TERMS] = FUNM_ATOM(T, FUN, TOL, PRNT) evaluates function
-##            FUN at the upper triangular matrix T, where T has nearly constant
-##            diagonal.  A Taylor series is used.
-##            FUN(X,K) must return the K'th derivative of
-##            the function represented by FUN evaluated at the vector X.
-##            TOL is a convergence tolerance for the Taylor series.
-##            If PRNT != 0 trace information is printed.
-##            N_TERMS is the number of terms taken in the Taylor series.
-##            N_TERMS  = -1 signals lack of convergence.
+## FUNM_ATOM functions
+## Function of triangular matrix with nearly constant diagonal.
+##
+## [F, N_TERMS] = funm_atom (T, FUN, TOL, PRNT) evaluates function FUN at the
+## upper triangular matrix T, where T has nearly constant diagonal.  A Taylor
+## series is used.
+##
+## FUN(X,K) must return the K'th derivative of the function represented by FUN
+## evaluated at the vector X.
+##
+## TOL is a convergence tolerance for the Taylor series.
+##
+## If PRNT != 0 trace information is printed.
+##
+## N_TERMS is the number of terms taken in the Taylor series.
+##
+## N_TERMS = -1 signals lack of convergence.
 function [F, n_terms] = funm_atom (T, fun, tol, prnt)
 
-  if (isequal (fun, @fun_log))          ## LOG is special case.
+  if (isequal (fun, @fun_log))        # LOG is special case.
     [F, iter] = logm_isst (T, prnt);
-    n_terms = iter;    ## iter = -1 signals convergence failure
+    n_terms = iter;                   # iter = -1 signals convergence failure
     return;
   endif
 
@@ -553,26 +568,28 @@ function [F, n_terms] = funm_atom (T, fun, tol, prnt)
         omega = max (omega, f_deriv_max(k + j) / factorial (j));
       endfor
 
-      trunc = norm (P, "fro") * mu * omega;  ## norm(F) moved to RHS to avoid / 0.
+      trunc = norm (P, "fro") * mu * omega; # norm(F) moved to RHS to avoid / 0
       if (prnt)
-        printf ("  [trunc, test] = [%5.0e %5.0e]\n", trunc, tol * norm (F, "fro"));
+        printf ("  [trunc, test] = [%5.0e %5.0e]\n", ...
+                                    trunc, tol * norm (F, "fro"));
       endif
       if (prnt == 5)
         trunc = 0;
-      endif                               ## Force simple stopping test.
-      if (trunc <= tol * norm (F, "fro"))
+      endif
+      if (trunc <= tol * norm (F, "fro"))  # Force simple stopping test.
         n_terms = k + 1;
         return;
       endif
     endif
 
   endfor
-  n_terms = -1;
+
+  n_terms = -1;  # Algorithm did not converge
 
 endfunction
 
 
-## FUN_LOG
+## FUN_LOG function
 ## Only to be called for plain log evaluation.
 function f = fun_log (x)
 
@@ -581,14 +598,17 @@ function f = fun_log (x)
 endfunction
 
 
-## LOGM_ISST   Log of triangular matrix by Schur-Pade method with scaling.
-##             X = LOGM_ISST(A, PRNT) computes the logarithm of an upper
-##             triangular matrix A, for a matrix with no nonpositive real
-##             eigenvalues, using the inverse scaling and squaring method
-##             with Pade approximation.
-##             [X, ITER] = LOGM_ISST(A, PRNT) returns the number ITER of square
-##             roots computed and prints this information if PRNT is nonzero.
-##             ITER = -1 signals that too many square roots were needed.
+## LOGM_ISST function
+## Log of triangular matrix by Schur-Pade method with scaling.
+##
+## X = LOGM_ISST(A, PRNT) computes the logarithm of an upper triangular matrix
+## A, for a matrix with no nonpositive real eigenvalues, using the inverse
+## scaling and squaring method with Pade approximation.
+##
+## [X, ITER] = LOGM_ISST(A, PRNT) returns the number ITER of square roots
+## computed and prints this information if PRNT is nonzero.
+##
+## ITER = -1 signals that too many square roots were needed.
 ##
 ## References:
 ## S. H. Cheng, N. J. Higham, C. S. Kenney, and A. J. Laub, Approximating the
@@ -625,7 +645,7 @@ function [X, iter] = logm_isst (T, prnt)
       ## Signal convergence failure instead of error.
       warning ("funm: too many square roots in LOGM_ISST");
       X = 2 ^ (iter) * logm_pf (T - eye (n), 8);
-      iter = -1;    ## Signal failure
+      iter = -1;    # Signal failure
       return;
     endif
 
@@ -645,9 +665,11 @@ function [X, iter] = logm_isst (T, prnt)
 endfunction
 
 
-## LOGM_PF   Pade approximation to matrix log by partial fraction expansion.
-##           S = LOGM_PF(A, M) approximates LOG(I+A) using M-point
-##           Gauss-Legendre quadrature.
+## LOGM_PF
+## Pade approximation to matrix log by partial fraction expansion.
+##
+## S = LOGM_PF(A, M) approximates LOG(I+A) using M-point Gauss-Legendre
+## quadrature.
 function S = logm_pf (A, m)
 
   [nodes, wts] = gauss_legendre (m);
@@ -665,13 +687,15 @@ function S = logm_pf (A, m)
 endfunction
 
 
-## GAUSS_LEGENDRE  Nodes and weights for Gauss-Legendre quadrature.
-##                 [X, W] = GAUSS_LEGENDRE(N) returns the N-point Gauss-Legendre
-##                 nodes X and weights W for integration on [-1, 1].
+## GAUSS_LEGENDRE function
+## Nodes and weights for Gauss-Legendre quadrature.
+##
+## [X, W] = GAUSS_LEGENDRE(N) returns the N-point Gauss-Legendre nodes X and
+## weights W for integration on [-1, 1].
 ##
 ## Reference:
-## G. H. Golub and J. H. Welsch, Calculation of Gauss quadrature
-## rules, Math. Comp., 23(106):221-230, 1969.
+## G. H. Golub and J. H. Welsch, Calculation of Gauss quadrature rules,
+## Math. Comp., 23(106):221-230, 1969.
 function [x, w] = gauss_legendre (n)
 
   i = 1 : n - 1;
@@ -685,15 +709,15 @@ endfunction
 
 %!demo
 %! ## Create some ugly matrix.
-%! B1 = [  1  -2;   2   1 ];    ## eigenvalues:  1 +/- 2i
-%! B2 = [ -1  -1.5; 1.5 -1 ];   ## eigenvalues: -1 +/- 1.5i
-%! B3 = [  0.5 -3;  3  0.5 ];   ## eigenvalues:  0.5 +/- 3i
-%! B4 = [  2  -0.7; 0.7  2 ];   ## eigenvalues:  2 +/- 0.7i
+%! B1 = [  1  -2;   2   1 ];     # eigenvalues:  1 +/- 2i
+%! B2 = [ -1  -1.5; 1.5 -1 ];    # eigenvalues: -1 +/- 1.5i
+%! B3 = [  0.5 -3;  3  0.5 ];    # eigenvalues:  0.5 +/- 3i
+%! B4 = [  2  -0.7; 0.7  2 ];    # eigenvalues:  2 +/- 0.7i
 %! A = blkdiag (B1, B2, B3, B4);
-%! ## Add some noise to make A less structured but with the same eigenvalues.
+%! ## Add some noise to make A less structured, but with the same eigenvalues.
 %! Q = orth (randn (size (A)));
 %! A = Q' * A * Q;
-%! [F, exitflag] = funm (A, @sin, 0.1, eps, 4);  ## "4" means "make a plot"
+%! [F, exitflag] = funm (A, @sin, 0.1, eps, 4);  # "4" means "make a plot"
 %! disp ("Eigenvalues of A:");
 %! disp (eig (A));
 
@@ -702,7 +726,9 @@ endfunction
 %!assert (funm ([1 2;3 4], @sin), [-0.4656 -0.1484;-0.2226 -0.6882], 4e-5)
 %!assert (funm ([1 2;3 4], @cos), [0.8554 -0.1109;-0.1663 0.6891], 3e-5)
 %!assert (funm ([1 2;3 4], @exp), [51.9690 74.7366;112.1048 164.0738], 5e-5)
-%!assert (funm ([1 2;3 4], @logm), [-0.35044+2.39112i 0.92935-1.09376i; 1.39403-1.64064i 1.04359+0.75047i], 1e-5)
+%!assert (funm ([1 2;3 4], @logm), ...
+%!        [-0.35044+2.39112i 0.92935-1.09376i;
+%!         1.39403-1.64064i 1.04359+0.75047i], 1e-5)
 %!assert (funm ([1 2;3 4], @sinh), [25.4317 37.6201;56.4301 81.8618], 4e-5)
 %!assert (funm ([1 2;3 4], @cosh), [26.5372 37.1165;55.6747 82.2120], 5e-5)
 
@@ -741,7 +767,6 @@ endfunction
 %! A = single (magic (5));
 %! F = funm (A, @exp);
 %! assert (isa (F, "single"));
-%! assert (isa (A, "single"));  ## Input unchanged
 
 %!test
 %! ## Double precision input should return double precision output
@@ -774,7 +799,7 @@ endfunction
 
 %!test
 %! ## Single complex should remain single
-%! A = single (randn (5) + 1i*randn (5));
+%! A = single (complex (randn (5), randn (5)));
 %! F = funm (A, @exp);
 %! assert (isa (F, "single"));
 
@@ -833,9 +858,13 @@ endfunction
 %! assert (F, expm (A), 1e-10);
 
 ## Test error handling for invalid inputs
-%!error <funm: A must be a numeric square matrix> funm ("not a matrix", @exp)
-%!error <funm: A must be a numeric square matrix> funm ({1, 2; 3, 4}, @exp)
-%!error <funm: A must be a numeric square matrix> funm (ones (5, 2), @exp)
-%!error <funm: A must be a numeric square matrix> funm ([1 2 3; 0 4 5], @exp)
-%!error <funm: FUN must be a function handle or function name> funm (eye (3), 123)
-%!error <funm: FUN must be a function handle or function name> funm (eye (3), [1 2 3])
+%!error <A must be a numeric square matrix> funm ("not a matrix", @exp)
+%!error <A must be a numeric square matrix> funm ({1, 2; 3, 4}, @exp)
+%!error <A must be a numeric square matrix> funm (ones (5, 2), @exp)
+%!error <A must be a numeric square matrix> funm ([1 2 3; 0 4 5], @exp)
+%!error <FUN must be a function handle or function name> funm (eye (3), 123)
+%!error <FUN must be a function handle or function name> funm (eye (3), [1 2 3])
+%!error <DELTA must be a numeric scalar> funm (eye (3), @exp, "A")
+%!error <DELTA must be a numeric scalar> funm (eye (3), @exp, [1, 2])
+%!error <TOL must be a numeric scalar> funm (eye (3), @exp, eps, "A")
+%!error <TOL must be a numeric scalar> funm (eye (3), @exp, eps, [1, 2])

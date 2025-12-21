@@ -1,19 +1,439 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="ast_ES">
+<TS version="2.1" language="es">
+<context>
+    <name>QApplication</name>
+    <message>
+        <location filename="build_ts/octave-qt/qmessagebox.cpp" line="+2902"/>
+        <source>Application &quot;%1&quot; requires Qt %2, found Qt %3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Incompatible Qt Library Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QColorDialog</name>
+    <message>
+        <location filename="build_ts/octave-qt/qcolordialog.cpp" line="+1473"/>
+        <source>Hu&amp;e:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Sat:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Val:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Red:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Green:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Bl&amp;ue:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A&amp;lpha channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;HTML:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+184"/>
+        <source>Cursor at %1, %2
+Press ESC to cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+28"/>
+        <source>Select Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+204"/>
+        <source>&amp;Basic colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Custom colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Add to Custom Colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>&amp;Pick Screen Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QDialog</name>
+    <message>
+        <location filename="build_ts/octave-qt/qdialog.cpp" line="+677"/>
+        <source>What&apos;s This?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QDialogButtonBox</name>
+    <message>
+        <location filename="build_ts/octave-qt/qmessagebox.cpp" line="-793"/>
+        <location line="+452"/>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QErrorMessage</name>
+    <message>
+        <location filename="build_ts/octave-qt/qerrormessage.cpp" line="+86"/>
+        <source>An error occurred</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+91"/>
+        <source>Debug Message:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Warning:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Critical Error:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Fatal Error:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Information:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+256"/>
+        <source>&amp;Show this message again</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QFileDialog</name>
+    <message>
+        <location filename="build_ts/octave-qt/qfiledialog.cpp" line="+582"/>
+        <location filename="build_ts/octave-qt/qfiledialog_symbian.cpp" line="+192"/>
+        <source>Find Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Open</source>
+        <translation type="unfinished">Abri</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Save As</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+23"/>
+        <source>Directory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>File &amp;name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <location line="+12"/>
+        <source>&amp;Open</source>
+        <translation type="unfinished">&amp;Abrir</translation>
+    </message>
+    <message>
+        <location line="-5"/>
+        <source>&amp;Choose</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>&amp;Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+29"/>
+        <source>Show </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>&amp;Rename</source>
+        <translation type="unfinished">&amp;Renomar</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show &amp;hidden files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;New Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+859"/>
+        <source>All files (*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+171"/>
+        <source>Directories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+973"/>
+        <source>%1 already exists.
+Do you want to replace it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <location line="+1120"/>
+        <source>%1
+Directory not found.
+Please verify the correct directory name was given.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-1118"/>
+        <source>%1
+File not found.
+Please verify the correct file name was given.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+762"/>
+        <source>New Folder</source>
+        <translation type="unfinished">Nueva carpeta</translation>
+    </message>
+    <message>
+        <location line="+130"/>
+        <location line="+5"/>
+        <source>Delete</source>
+        <translation type="unfinished">Eliminar</translation>
+    </message>
+    <message>
+        <location line="-4"/>
+        <source>&apos;%1&apos; is write protected.
+Do you want to delete it anyway?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Are you sure you want to delete &apos;%1&apos;?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+18"/>
+        <source>Could not delete directory.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+441"/>
+        <source>Recent Places</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="build_ts/octave-qt/qfiledialog_win.cpp" line="+131"/>
+        <source>All Files (*.*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 <context>
     <name>QFileSystemModel</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="+141"/>
+        <location filename="../src/files-dock-widget.cc" line="+149"/>
         <source>Invalid filename</source>
         <translatorcomment>Ye nun porque va delantre d&apos;una forma verbal</translatorcomment>
         <translation>Nome de ficheru nun válidu</translation>
+    </message>
+    <message>
+        <location filename="build_ts/octave-qt/qfilesystemmodel.cpp" line="+964"/>
+        <source>Name</source>
+        <translation type="unfinished">Nome</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Kind</source>
+        <comment>Match OS X Finder</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Type</source>
+        <comment>All other platforms</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Date Modified</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QFontDialog</name>
+    <message>
+        <location filename="build_ts/octave-qt/qfontdialog.cpp" line="+141"/>
+        <source>Select Font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+600"/>
+        <source>&amp;Font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Font st&amp;yle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Effects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Stri&amp;keout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Underline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Sample</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Wr&amp;iting System</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QHelpSearchQueryWidget</name>
+    <message>
+        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+62"/>
+        <source>Search for:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Search</source>
+        <translation type="unfinished">Buscar</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Previous search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Next search</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInputDialog</name>
+    <message>
+        <location filename="build_ts/octave-qt/qinputdialog.cpp" line="+209"/>
+        <source>Enter a value:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QMessageBox</name>
+    <message>
+        <location filename="build_ts/octave-qt/qmessagebox.cpp" line="-2404"/>
+        <source>Show Details...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Hide Details...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1815"/>
+        <source>&lt;h3&gt;About Qt&lt;/h3&gt;&lt;p&gt;This program uses Qt version %1.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>&lt;p&gt;Qt is a C++ toolkit for cross-platform application development.&lt;/p&gt;&lt;p&gt;Qt provides single-source portability across all major desktop operating systems. It is also available for embedded Linux and other embedded and mobile operating systems.&lt;/p&gt;&lt;p&gt;Qt is available under multiple licensing options designed to accommodate the needs of our various users.&lt;/p&gt;&lt;p&gt;Qt licensed under our commercial license agreement is appropriate for development of proprietary/commercial software where you do not want to share any source code with third parties or otherwise cannot comply with the terms of GNU (L)GPL.&lt;/p&gt;&lt;p&gt;Qt licensed under GNU (L)GPL is appropriate for the development of Qt&amp;nbsp;applications provided you can comply with the terms and conditions of the respective licenses.&lt;/p&gt;&lt;p&gt;Please see &lt;a href=&quot;https://%2/&quot;&gt;%2&lt;/a&gt; for an overview of Qt licensing.&lt;/p&gt;&lt;p&gt;Copyright (C) The Qt Company Ltd. and other contributors.&lt;/p&gt;&lt;p&gt;Qt and the Qt logo are trademarks of The Qt Company Ltd.&lt;/p&gt;&lt;p&gt;Qt is The Qt Company Ltd. product developed as an open source project. See &lt;a href=&quot;https://%3/&quot;&gt;%3&lt;/a&gt; for more information.&lt;/p&gt;</source>
+        <extracomment>Leave this text untranslated or include a verbatim copy of it below and note that it is the authoritative version in case of doubt.</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+26"/>
+        <source>About Qt</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+1045"/>
+        <location filename="../src/settings-dialog.cc" line="+1049"/>
         <source>Difference to the default size</source>
         <translation>Diferencia col tamañu predetermináu</translation>
     </message>
@@ -42,6 +462,580 @@
         <comment>short form for underlined</comment>
         <translatorcomment>Abreviatura pa caracteres subrayados</translatorcomment>
         <translation>s</translation>
+    </message>
+</context>
+<context>
+    <name>QPageSetupWidget</name>
+    <message>
+        <location filename="build_ts/octave-qt/qpagesetupdialog_unix.cpp" line="+260"/>
+        <source>Millimeters (mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Inches (in)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Points (pt)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Pica (P̸)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Didot (DD)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Cicero (CC)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+68"/>
+        <location line="+17"/>
+        <source>Custom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+60"/>
+        <source>mm</source>
+        <extracomment>Unit &apos;Millimeter&apos;</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>pt</source>
+        <extracomment>Unit &apos;Points&apos;</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>in</source>
+        <extracomment>Unit &apos;Inch&apos;</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>P̸</source>
+        <extracomment>Unit &apos;Pica&apos;</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>DD</source>
+        <extracomment>Unit &apos;Didot&apos;</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>CC</source>
+        <extracomment>Unit &apos;Cicero&apos;</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QPlatformTheme</name>
+    <message>
+        <location filename="build_ts/octave-qt/qplatformtheme.cpp" line="+793"/>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Save</source>
+        <translation type="unfinished">Guardar</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Save All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Open</source>
+        <translation type="unfinished">Abri</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&amp;Yes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Yes to &amp;All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&amp;No</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>N&amp;o to All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Abort</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Retry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Ignore</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Close</source>
+        <translation type="unfinished">Zarrar</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Cancelar</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Discard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Apply</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Reset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Restore Defaults</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QPrintDialog</name>
+    <message>
+        <location filename="build_ts/octave-qt/qabstractprintdialog.cpp" line="+61"/>
+        <location line="+16"/>
+        <location filename="build_ts/octave-qt/qprintdialog_win.cpp" line="+239"/>
+        <source>Print</source>
+        <translation type="unfinished">Imprimir</translation>
+    </message>
+    <message>
+        <location filename="build_ts/octave-qt/qpagesetupdialog_unix.cpp" line="-155"/>
+        <source>Left to Right, Top to Bottom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Left to Right, Bottom to Top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Right to Left, Bottom to Top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Right to Left, Top to Bottom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Bottom to Top, Left to Right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Bottom to Top, Right to Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Top to Bottom, Left to Right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Top to Bottom, Right to Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>1 (1x1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>2 (2x1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>4 (2x2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>6 (2x3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>9 (3x3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>16 (4x4)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="build_ts/octave-qt/qprintdialog_qws.cpp" line="+148"/>
+        <source>File exists</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&lt;qt&gt;Do you want to overwrite it?&lt;/qt&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+184"/>
+        <source>A0 (841 x 1189 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A1 (594 x 841 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A2 (420 x 594 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A3 (297 x 420 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A4 (210 x 297 mm, 8.26 x 11.7 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A5 (148 x 210 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A6 (105 x 148 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A7 (74 x 105 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A8 (52 x 74 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>A9 (37 x 52 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B0 (1000 x 1414 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B1 (707 x 1000 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B2 (500 x 707 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B3 (353 x 500 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B4 (250 x 353 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B5 (176 x 250 mm, 6.93 x 9.84 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B6 (125 x 176 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B7 (88 x 125 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B8 (62 x 88 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B9 (44 x 62 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>B10 (31 x 44 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>C5E (163 x 229 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>DLE (110 x 220 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Executive (7.5 x 10 inches, 191 x 254 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Folio (210 x 330 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Ledger (432 x 279 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Legal (8.5 x 14 inches, 216 x 356 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Letter (8.5 x 11 inches, 216 x 279 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Tabloid (279 x 432 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>US Common #10 Envelope (105 x 241 mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Print all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Print selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Print range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Print current page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="build_ts/octave-qt/qprintdialog_unix.cpp" line="+608"/>
+        <source>All Pages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Odd Pages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Even Pages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <location line="+224"/>
+        <source>&amp;Options &gt;&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-219"/>
+        <source>&amp;Print</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+223"/>
+        <source>&amp;Options &lt;&lt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+148"/>
+        <source>Invalid Pages Definition</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>%1 does not follow the correct syntax. Please use &apos;,&apos; to separate ranges and pages, &apos;-&apos; to define ranges and make sure ranges do not intersect with each other.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Duplex Settings Conflicts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>There are conflicts in duplex settings. Do you want to fix them?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+76"/>
+        <source>Print to File (PDF)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+54"/>
+        <source>Local file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Write PDF file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+47"/>
+        <source>Print To File ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <source>%1 is a directory.
+Please choose a different file name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>File %1 is not writable.
+Please choose a different file name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>%1 already exists.
+Do you want to overwrite it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+23"/>
+        <source>Options &apos;Pages Per Sheet&apos; and &apos;Page Set&apos; cannot be used together.
+Please turn one of those options off.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="build_ts/octave-qt/qprintdialog_win.cpp" line="+1"/>
+        <source>The &apos;From&apos; value cannot be greater than the &apos;To&apos; value.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QPrintPreviewDialog</name>
+    <message>
+        <location filename="build_ts/octave-qt/qabstractpagesetupdialog.cpp" line="+68"/>
+        <location line="+12"/>
+        <location filename="build_ts/octave-qt/qpagesetupdialog_unix.cpp" line="+389"/>
+        <location line="+8"/>
+        <location filename="build_ts/octave-qt/qpagesetupdialog_win.cpp" line="+18"/>
+        <location line="+7"/>
+        <source>Page Setup</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QPrintPropertiesDialog</name>
+    <message>
+        <location filename="build_ts/octave-qt/qprintdialog_unix.cpp" line="-987"/>
+        <source>Printer Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Job Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+62"/>
+        <source>Page Setup Conflicts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>There are conflicts in page setup options. Do you want to fix them?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Advanced Option Conflicts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>There are conflicts in some advanced options. Do you want to fix them?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -110,9 +1104,765 @@
 <context>
     <name>QWinTerminalImpl</name>
     <message>
-        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1859"/>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1923"/>
         <source>copied selection to clipboard</source>
         <translation>seleición copiada al portapapeles</translation>
+    </message>
+</context>
+<context>
+    <name>QsciLexerBash</name>
+    <message>
+        <location filename="build_ts/octave-qsci/qscilexerbash.cpp" line="+203"/>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Error</source>
+        <translation type="unfinished">Error</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Scalar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Parameter expansion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Backticks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Here document delimiter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted here document</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciLexerBatch</name>
+    <message>
+        <location filename="build_ts/octave-qsci/qscilexerbatch.cpp" line="+174"/>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Hide command character</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>External command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Variable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciLexerCPP</name>
+    <message>
+        <location filename="build_ts/octave-qsci/qscilexercpp.cpp" line="+364"/>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>C comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive C comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>C++ comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive C++ comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaDoc style C comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaDoc style C comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>IDL UUID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive IDL UUID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Pre-processor block</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive pre-processor block</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Unclosed string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive unclosed string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>C# verbatim string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive C# verbatim string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaScript regular expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaScript regular expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaDoc style C++ comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaDoc style C++ comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Secondary keywords and identifiers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive secondary keywords and identifiers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaDoc keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaDoc keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaDoc keyword error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaDoc keyword error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Global classes and typedefs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive global classes and typedefs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>C++ raw string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive C++ raw string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Vala triple-quoted verbatim string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive Vala triple-quoted verbatim string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Pike hash-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive Pike hash-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Pre-processor C comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive pre-processor C comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaDoc style pre-processor comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaDoc style pre-processor comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>User-defined literal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive user-defined literal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Task marker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive task marker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Escape sequence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive escape sequence</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciLexerDiff</name>
+    <message>
+        <location filename="build_ts/octave-qsci/qscilexerdiff.cpp" line="+106"/>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Command</source>
+        <translation type="unfinished">Comandos</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Header</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Position</source>
+        <translation type="unfinished">Posición</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Removed line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Added line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Changed line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Added adding patch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Removed adding patch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Added removing patch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Removed removing patch</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciLexerMatlab</name>
+    <message>
+        <location filename="build_ts/octave-qsci/qscilexermatlab.cpp" line="+133"/>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Command</source>
+        <translation type="unfinished">Comandos</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciLexerPerl</name>
+    <message>
+        <location filename="build_ts/octave-qsci/qscilexerperl.cpp" line="+328"/>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Error</source>
+        <translation type="unfinished">Error</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>POD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Scalar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Array</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Hash</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Symbol table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Regular expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Substitution</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Backticks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Data section</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Here document delimiter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted here document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted here document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Backtick here document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (q)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qq)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qx)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qr)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qw)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>POD verbatim</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Subroutine prototype</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Format identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Format body</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted string (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Translation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Regular expression (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Substitution (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Backticks (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted here document (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Backtick here document (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qq, interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qx, interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qr, interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciScintilla</name>
+    <message>
+        <location filename="build_ts/octave-qsci/qsciscintilla.cpp" line="+4478"/>
+        <source>&amp;Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>&amp;Redo</source>
+        <translation type="unfinished">&amp;Refacer</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Cu&amp;t</source>
+        <translation type="unfinished">Cor&amp;tar</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>&amp;Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>&amp;Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Delete</source>
+        <translation type="unfinished">Eliminar</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Select All</source>
+        <translation type="unfinished">Seleicionar too</translation>
     </message>
 </context>
 <context>
@@ -305,7 +2055,7 @@
 <context>
     <name>octave::ListDialog</name>
     <message>
-        <location filename="../src/dialog.cc" line="+454"/>
+        <location filename="../src/dialog.cc" line="+458"/>
         <source>Select All</source>
         <translation>Seleicionar too</translation>
     </message>
@@ -336,7 +2086,7 @@
 <context>
     <name>octave::community_news</name>
     <message>
-        <location filename="../src/community-news.cc" line="+70"/>
+        <location filename="../src/community-news.cc" line="+71"/>
         <source>Octave Community News</source>
         <translation>Noticies de la comunidá d&apos;Octave</translation>
     </message>
@@ -364,12 +2114,12 @@
     <message>
         <location filename="../src/documentation.cc" line="+135"/>
         <location line="+14"/>
-        <location line="+715"/>
+        <location line="+721"/>
         <source>Octave Documentation</source>
         <translation>Documentación d&apos;Octave</translation>
     </message>
     <message>
-        <location line="-728"/>
+        <location line="-734"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
@@ -466,7 +2216,7 @@ L&apos;ayuda tará disponible namás na ventana de comandos.</translation>
         <translation>Marcar la páxina actual como favoritu</translation>
     </message>
     <message>
-        <location line="+424"/>
+        <location line="+430"/>
         <source>Unable to register help file %1.</source>
         <translation>Imposible amosar el ficheru d&apos;ayuda %1.</translation>
     </message>
@@ -619,6 +2369,39 @@ nun ye un ficheru XBEL versión 1.0 válidu.</translation>
     </message>
 </context>
 <context>
+    <name>octave::editor_files_browser</name>
+    <message>
+        <location filename="../src/files-dock-widget.cc" line="+1214"/>
+        <source>Open Editor Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Click to focus file in editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+92"/>
+        <source>&amp;Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Close &amp;All</source>
+        <translation type="unfinished">Zarrar &amp;too</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Run</source>
+        <translation type="unfinished">Executar</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Set Current &amp;Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>octave::external_editor_interface</name>
     <message>
         <location filename="../src/external-editor-interface.cc" line="+68"/>
@@ -644,7 +2427,7 @@ Do you want to open the preferences?</source>
 <context>
     <name>octave::file_editor</name>
     <message>
-        <location filename="../src/m-editor/file-editor.cc" line="+194"/>
+        <location filename="../src/m-editor/file-editor.cc" line="+203"/>
         <source>Continue</source>
         <translation>Siguir</translation>
     </message>
@@ -654,16 +2437,16 @@ Do you want to open the preferences?</source>
         <translation>Guardar archivu y executar</translation>
     </message>
     <message>
-        <location line="+1002"/>
+        <location line="+1018"/>
         <location line="+29"/>
-        <location line="+565"/>
+        <location line="+566"/>
         <location line="+18"/>
         <location line="+25"/>
         <source>Octave Editor</source>
         <translation>Editor d&apos;Octave</translation>
     </message>
     <message>
-        <location line="-636"/>
+        <location line="-637"/>
         <source>File not saved! A file with the selected name
 %1
 is already open in the editor.</source>
@@ -676,7 +2459,7 @@ is already open in the editor.</source>
         <translation>La pestaña asociada de l&apos;editor de testu desapaeció.</translation>
     </message>
     <message>
-        <location line="+565"/>
+        <location line="+566"/>
         <source>Could not open file
 %1
 for reading: %2.</source>
@@ -1106,7 +2889,7 @@ pa escribir: %2.</translation>
 <context>
     <name>octave::file_editor_tab</name>
     <message>
-        <location filename="../src/m-editor/file-editor-tab.cc" line="+161"/>
+        <location filename="../src/m-editor/file-editor-tab.cc" line="+162"/>
         <source>line:</source>
         <translation>Llinia:</translation>
     </message>
@@ -1136,7 +2919,7 @@ pa escribir: %2.</translation>
         <translation>ERROR: </translation>
     </message>
     <message>
-        <location line="+77"/>
+        <location line="+78"/>
         <location line="+1260"/>
         <location line="+152"/>
         <location line="+20"/>
@@ -1358,14 +3141,256 @@ foi elimináu o renomáu. ¿Quier guardalu agora?%2</translation>
     </message>
 </context>
 <context>
+    <name>octave::file_system_browser</name>
+    <message>
+        <location filename="../src/files-dock-widget.cc" line="-1165"/>
+        <source>File size</source>
+        <translation type="unfinished">Tamañu de l&apos;archivu</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>File type</source>
+        <translation type="unfinished">Tipu d&apos;archivu</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Date modified</source>
+        <translation type="unfinished">Fecha de modificación</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show hidden</source>
+        <translation type="unfinished">Amosar ocultos</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Alternating row colors</source>
+        <translation type="unfinished">Alternar colores de files</translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <source>Enter the path or filename</source>
+        <translation type="unfinished">Introduzca la ruta o&apos;l nome de l&apos;archivu</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>One directory up</source>
+        <translation type="unfinished">Direutoriu superior</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Show Octave directory</source>
+        <translation type="unfinished">Amosar el direutoriu d&apos;Octave</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Go to current Octave directory</source>
+        <translation type="unfinished">Dir al direutoriu actual d&apos;Octave</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Set Octave directory</source>
+        <translation type="unfinished">Seleicionar el direutoriu d&apos;Octave</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Set Octave directory to current browser directory</source>
+        <translation type="unfinished">Asignar el direutoriu actual del navegador como direutoriu d&apos;Octave</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Actions on current directory</source>
+        <translation type="unfinished">Acciones nel direutoriu actual</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Show Home Directory</source>
+        <translation type="unfinished">Amosar el direutoriu d&apos;iniciu</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Set Browser Directory...</source>
+        <translation type="unfinished">Asignar direutoriu del navegador...</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <location line="+433"/>
+        <source>Find Files...</source>
+        <translation type="unfinished">Buscar archivos...</translation>
+    </message>
+    <message>
+        <location line="-429"/>
+        <location line="+441"/>
+        <source>New File...</source>
+        <translation type="unfinished">Nuevu archivu...</translation>
+    </message>
+    <message>
+        <location line="-438"/>
+        <location line="+440"/>
+        <source>New Directory...</source>
+        <translation type="unfinished">Nuevu direutoriu...</translation>
+    </message>
+    <message>
+        <location line="-385"/>
+        <source>Double-click to open file/folder, right click for alternatives</source>
+        <translation type="unfinished">Doble clic pa abrir l&apos;archivu o la carpeta; clic nel botón derechu pa ver les alternatives</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Rename...</source>
+        <translation type="unfinished">Renomar...</translation>
+    </message>
+    <message>
+        <location line="+312"/>
+        <source>Open</source>
+        <translation type="unfinished">Abri</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Open in System File Explorer</source>
+        <translation type="unfinished">Abrir nel esplorador d&apos;archivos del sistema</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Open in Text Editor</source>
+        <translation type="unfinished">Abrir nel editor de testu</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Copy Selection to Clipboard</source>
+        <translation type="unfinished">Copiar seleición al portapapeles</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Run</source>
+        <translation type="unfinished">Executar</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Load Data</source>
+        <translation type="unfinished">Cargar datos</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Set Current Directory</source>
+        <translation type="unfinished">Asignar direutoriu actual</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Add to Path</source>
+        <translation type="unfinished">Añadir a la ruta de trabayu (path)</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <location line="+7"/>
+        <source>Selected Directories</source>
+        <translation type="unfinished">Direutorios seleicionaos</translation>
+    </message>
+    <message>
+        <location line="-5"/>
+        <location line="+7"/>
+        <source>Selected Directories and Subdirectories</source>
+        <translation type="unfinished">Direutorios y subdireutorios seleicionaos</translation>
+    </message>
+    <message>
+        <location line="-4"/>
+        <source>Remove from Path</source>
+        <translation type="unfinished">Eliminar de la ruta de trabayu (path)</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Delete...</source>
+        <translation type="unfinished">Eliminar...</translation>
+    </message>
+    <message>
+        <location line="+140"/>
+        <location line="+11"/>
+        <location line="+17"/>
+        <source>Delete file/directory</source>
+        <translation type="unfinished">Eliminar archivu/direutoriu</translation>
+    </message>
+    <message>
+        <location line="-27"/>
+        <source>Are you sure you want to delete all %1 selected files?
+</source>
+        <translation type="unfinished">¿Ta seguru de que quier eliminar los %1 ficheros seleicionaos?
+</translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Are you sure you want to delete
+</source>
+        <translation type="unfinished">¿Ta seguru de que quier eliminar
+</translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Can not delete a directory that is not empty</source>
+        <translation type="unfinished">Nun se pue eliminar un direutoriu que nun te vacíu</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Deletion error</source>
+        <translation type="unfinished">Error al borrar</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Could not delete file &quot;%1&quot;.</source>
+        <translation type="unfinished">No se pudo eliminar el ficheru &quot;%1&quot;.</translation>
+    </message>
+    <message>
+        <location line="+216"/>
+        <source>Set directory of file browser</source>
+        <translation type="unfinished">Seleicionar el direutoriu de l&apos;esplorador d&apos;archivos</translation>
+    </message>
+    <message>
+        <location line="+29"/>
+        <source>Create File</source>
+        <translation type="unfinished">Crear archivu</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Create file in
+</source>
+        <comment>String ends with 
+!</comment>
+        <translation type="unfinished">¡Crear archivu en
+</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>New File.txt</source>
+        <translation type="unfinished">Nuevu archivu.txt</translation>
+    </message>
+    <message>
+        <location line="+16"/>
+        <source>Create Directory</source>
+        <translation type="unfinished">Crear direutoriu</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Create folder in
+</source>
+        <comment>String ends with 
+!</comment>
+        <translation type="unfinished">Crear carpeta en
+</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>New Directory</source>
+        <translation type="unfinished">Nuevu direutoriu</translation>
+    </message>
+</context>
+<context>
     <name>octave::files_dock_widget</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="-4"/>
+        <location line="-1142"/>
         <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
         <translation>Nun se pue renomar l&apos;archivu &quot;%1&quot; a &quot;%2&quot;.</translation>
     </message>
     <message>
-        <location line="+101"/>
+        <location line="+107"/>
         <source>File Browser</source>
         <translation>Esplorador d&apos;archivos</translation>
     </message>
@@ -1375,249 +3400,20 @@ foi elimináu o renomáu. ¿Quier guardalu agora?%2</translation>
         <translation>Esplorar los sos archivos</translation>
     </message>
     <message>
-        <location line="+5"/>
-        <source>File size</source>
-        <translation>Tamañu de l&apos;archivu</translation>
+        <location line="+10"/>
+        <source>File System</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>File type</source>
-        <translation>Tipu d&apos;archivu</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Date modified</source>
-        <translation>Fecha de modificación</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Show hidden</source>
-        <translation>Amosar ocultos</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Alternating row colors</source>
-        <translation>Alternar colores de files</translation>
-    </message>
-    <message>
-        <location line="+26"/>
-        <source>Enter the path or filename</source>
-        <translation>Introduzca la ruta o&apos;l nome de l&apos;archivu</translation>
-    </message>
-    <message>
-        <location line="+13"/>
-        <source>One directory up</source>
-        <translation>Direutoriu superior</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Show Octave directory</source>
-        <translation>Amosar el direutoriu d&apos;Octave</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Go to current Octave directory</source>
-        <translation>Dir al direutoriu actual d&apos;Octave</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Set Octave directory</source>
-        <translation>Seleicionar el direutoriu d&apos;Octave</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Set Octave directory to current browser directory</source>
-        <translation>Asignar el direutoriu actual del navegador como direutoriu d&apos;Octave</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Actions on current directory</source>
-        <translation>Acciones nel direutoriu actual</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Show Home Directory</source>
-        <translation>Amosar el direutoriu d&apos;iniciu</translation>
-    </message>
-    <message>
-        <location line="+13"/>
-        <source>Set Browser Directory...</source>
-        <translation>Asignar direutoriu del navegador...</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <location line="+438"/>
-        <source>Find Files...</source>
-        <translation>Buscar archivos...</translation>
-    </message>
-    <message>
-        <location line="-434"/>
-        <location line="+446"/>
-        <source>New File...</source>
-        <translation>Nuevu archivu...</translation>
-    </message>
-    <message>
-        <location line="-443"/>
-        <location line="+445"/>
-        <source>New Directory...</source>
-        <translation>Nuevu direutoriu...</translation>
-    </message>
-    <message>
-        <location line="-390"/>
-        <source>Double-click to open file/folder, right click for alternatives</source>
-        <translation>Doble clic pa abrir l&apos;archivu o la carpeta; clic nel botón derechu pa ver les alternatives</translation>
-    </message>
-    <message>
-        <location line="+13"/>
-        <source>Rename...</source>
-        <translation>Renomar...</translation>
-    </message>
-    <message>
-        <location line="+317"/>
-        <source>Open</source>
-        <translation>Abri</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Open in System File Explorer</source>
-        <translation>Abrir nel esplorador d&apos;archivos del sistema</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Open in Text Editor</source>
-        <translation>Abrir nel editor de testu</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Copy Selection to Clipboard</source>
-        <translation>Copiar seleición al portapapeles</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Run</source>
-        <translation>Executar</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Load Data</source>
-        <translation>Cargar datos</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Set Current Directory</source>
-        <translation>Asignar direutoriu actual</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Add to Path</source>
-        <translation>Añadir a la ruta de trabayu (path)</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <location line="+7"/>
-        <source>Selected Directories</source>
-        <translation>Direutorios seleicionaos</translation>
-    </message>
-    <message>
-        <location line="-5"/>
-        <location line="+7"/>
-        <source>Selected Directories and Subdirectories</source>
-        <translation>Direutorios y subdireutorios seleicionaos</translation>
-    </message>
-    <message>
-        <location line="-4"/>
-        <source>Remove from Path</source>
-        <translation>Eliminar de la ruta de trabayu (path)</translation>
-    </message>
-    <message>
-        <location line="+15"/>
-        <source>Delete...</source>
-        <translation>Eliminar...</translation>
-    </message>
-    <message>
-        <location line="+140"/>
-        <location line="+11"/>
-        <location line="+17"/>
-        <source>Delete file/directory</source>
-        <translation>Eliminar archivu/direutoriu</translation>
-    </message>
-    <message>
-        <location line="-27"/>
-        <source>Are you sure you want to delete all %1 selected files?
-</source>
-        <translation>¿Ta seguru de que quier eliminar los %1 ficheros seleicionaos?
-</translation>
-    </message>
-    <message>
-        <location line="+11"/>
-        <source>Are you sure you want to delete
-</source>
-        <translation>¿Ta seguru de que quier eliminar
-</translation>
-    </message>
-    <message>
-        <location line="+17"/>
-        <source>Can not delete a directory that is not empty</source>
-        <translation>Nun se pue eliminar un direutoriu que nun te vacíu</translation>
-    </message>
-    <message>
-        <location line="+12"/>
-        <source>Deletion error</source>
-        <translation>Error al borrar</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Could not delete file &quot;%1&quot;.</source>
-        <translation>No se pudo eliminar el ficheru &quot;%1&quot;.</translation>
-    </message>
-    <message>
-        <location line="+216"/>
-        <source>Set directory of file browser</source>
-        <translation>Seleicionar el direutoriu de l&apos;esplorador d&apos;archivos</translation>
-    </message>
-    <message>
-        <location line="+29"/>
-        <source>Create File</source>
-        <translation>Crear archivu</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Create file in
-</source>
-        <comment>String ends with
-!</comment>
-        <translation>¡Crear archivu en
-</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>New File.txt</source>
-        <translation>Nuevu archivu.txt</translation>
-    </message>
-    <message>
-        <location line="+16"/>
-        <source>Create Directory</source>
-        <translation>Crear direutoriu</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Create folder in
-</source>
-        <comment>String ends with
-!</comment>
-        <translation>Crear carpeta en
-</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>New Directory</source>
-        <translation>Nuevu direutoriu</translation>
+        <source>Editor Files</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>octave::final_page</name>
     <message>
-        <location filename="../src/welcome-wizard.cc" line="+318"/>
+        <location filename="../src/welcome-wizard.cc" line="+319"/>
         <source>Enjoy!</source>
         <translation>¡Disfrútelo!</translation>
     </message>
@@ -2004,7 +3800,7 @@ Por exemplu, &apos;*.cc; *.h&apos;</translation>
 <context>
     <name>octave::gui_settings</name>
     <message>
-        <location filename="../src/gui-settings.cc" line="+824"/>
+        <location filename="../src/gui-settings.cc" line="+827"/>
         <source>Error %1 creating the settings file
 %2
 Make sure you have read and write permissions to
@@ -2124,12 +3920,12 @@ Pulse &apos;Siguiente&apos; pa crear un archivu de configuración e iniciar Octa
 <context>
     <name>octave::main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="+155"/>
+        <location filename="../src/main-window.cc" line="+169"/>
         <source>Profiler</source>
         <translation>Perfiláu</translation>
     </message>
     <message>
-        <location line="+361"/>
+        <location line="+381"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
@@ -2150,23 +3946,23 @@ Pulse &apos;Siguiente&apos; pa crear un archivu de configuración e iniciar Octa
     </message>
     <message>
         <location line="+214"/>
-        <location line="+1747"/>
+        <location line="+1704"/>
         <source>About Octave</source>
         <translation>Acerca d&apos;Octave</translation>
     </message>
     <message>
-        <location line="-1560"/>
-        <location line="+1635"/>
+        <location line="-1570"/>
+        <location line="+1645"/>
         <source>Browse directories</source>
         <translation>Esplorar direutorios</translation>
     </message>
     <message>
-        <location line="-1330"/>
+        <location line="-1340"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Archivos d&apos;Octave (*.m);;Tolos archivos (*)</translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+48"/>
         <source>New Function</source>
         <translation>Nueva función</translation>
     </message>
@@ -2195,7 +3991,7 @@ polo que nun se pue editar.</translation>
         <translation>Editor d&apos;Octave</translation>
     </message>
     <message>
-        <location line="+736"/>
+        <location line="+735"/>
         <source>&amp;File</source>
         <translation>&amp;Archivu</translation>
     </message>
@@ -2583,7 +4379,7 @@ o active na ventana de configuración la opción para veles.
         <translation>Ocultar widget</translation>
     </message>
     <message>
-        <location line="+81"/>
+        <location line="+83"/>
         <source>Dock Widget</source>
         <translation>Acoplar widget</translation>
     </message>
@@ -2616,7 +4412,7 @@ o active na ventana de configuración la opción para veles.
         <translation>dbstop en casu de...</translation>
     </message>
     <message>
-        <location line="+544"/>
+        <location line="+545"/>
         <source>Octave Editor</source>
         <translation>Editor d&apos;Octave</translation>
     </message>
@@ -2705,7 +4501,7 @@ nun esiste. ¿Quier crealu?</translation>
 <context>
     <name>octave::release_notes</name>
     <message>
-        <location filename="../src/release-notes.cc" line="+84"/>
+        <location filename="../src/release-notes.cc" line="+85"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation>L&apos;archivu de notes de la versión %1 ta vacíu.</translation>
     </message>
@@ -2878,7 +4674,7 @@ nun esiste. ¿Quier crealu?</translation>
         <translation>persistente</translation>
     </message>
     <message>
-        <location filename="../src/gui-preferences-global.h" line="+193"/>
+        <location filename="../src/gui-preferences-global.h" line="+192"/>
         <source>Environment Variables</source>
         <translation>Variables d&apos;entornu</translation>
     </message>
@@ -2921,14 +4717,14 @@ depende del mou seleicionáu actual.</translation>
         <translation>&amp;Recarga l&apos;estilu por defeutu</translation>
     </message>
     <message>
-        <location filename="../src/settings-dialog.cc" line="-972"/>
+        <location filename="../src/settings-dialog.cc" line="-976"/>
         <source>Loading current preferences ... </source>
         <translation>Cargando les preferencies actuales... </translation>
     </message>
     <message>
         <location line="+44"/>
         <location line="+6"/>
-        <location line="+1088"/>
+        <location line="+1092"/>
         <source>System setting</source>
         <translation>Configuración del sistema</translation>
     </message>
@@ -2970,7 +4766,7 @@ depende del mou seleicionáu actual.</translation>
     <message>
         <location line="+89"/>
         <location line="+22"/>
-        <location line="+1120"/>
+        <location line="+1124"/>
         <source>Failed to open %1 as Octave shortcut file</source>
         <translation>Fallo al abrir %1 como archivu d&apos;atayos de tecláu d&apos;Octave</translation>
     </message>
@@ -3235,9 +5031,22 @@ ta agora n&apos;usu pa la aición
     </message>
 </context>
 <context>
+    <name>octave::splash_screen</name>
+    <message>
+        <location filename="../src/welcome-wizard.cc" line="+135"/>
+        <source>Welcome to GNU Octave</source>
+        <translation type="unfinished">Bienveníu a GNU Octave</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Welcome to Octave!</source>
+        <translation type="unfinished">¡Bienveníu a Octave!</translation>
+    </message>
+</context>
+<context>
     <name>octave::terminal_dock_widget</name>
     <message>
-        <location filename="../src/terminal-dock-widget.cc" line="+106"/>
+        <location filename="../src/terminal-dock-widget.cc" line="+108"/>
         <source>Command Window</source>
         <translation>Ventana de comandos</translation>
     </message>
@@ -3436,7 +5245,7 @@ ta agora n&apos;usu pa la aición
 <context>
     <name>octave::welcome_wizard</name>
     <message>
-        <location filename="../src/welcome-wizard.cc" line="-196"/>
+        <location filename="../src/welcome-wizard.cc" line="-335"/>
         <source>Welcome to GNU Octave</source>
         <translation>Bienveníu a GNU Octave</translation>
     </message>
@@ -3523,7 +5332,7 @@ ta agora n&apos;usu pa la aición
         <translation>Filtriar</translation>
     </message>
     <message>
-        <location line="+137"/>
+        <location line="+138"/>
         <source>View the variables in the active workspace.&lt;br&gt;</source>
         <translation>Ver les variables de l&apos;espaciu de trabayu activu.&lt;br&gt;</translation>
     </message>
@@ -3604,8 +5413,8 @@ pa crear la tubería fd = %2: %3</translation>
     </message>
     <message>
         <location line="+17"/>
-        <source>Error reading from redirected strem fd = %1.</source>
-        <translation>Error na llectura del fluxu redirixíu fd = %1.</translation>
+        <source>Error reading from redirected stream fd = %1.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+27"/>
@@ -3636,13 +5445,13 @@ Error: </translation>
     <name>settings_dialog</name>
     <message>
         <location filename="../src/settings-dialog.ui" line="+45"/>
-        <location line="+834"/>
-        <location line="+1909"/>
+        <location line="+841"/>
+        <location line="+1916"/>
         <source>General</source>
         <translation>Xeneral</translation>
     </message>
     <message>
-        <location line="-2390"/>
+        <location line="-2404"/>
         <source>Octave logo only</source>
         <translation>Sólo logo d&apos;Octave</translation>
     </message>
@@ -3677,7 +5486,7 @@ Error: </translation>
         <translation>Estilu personalizáu</translation>
     </message>
     <message>
-        <location line="+237"/>
+        <location line="+244"/>
         <source>These preferences are applied after any .octaverc startup files.</source>
         <translation>Estes configuraciones aplicaranse dempués de la carga de cualquier archivu d&apos;iniciu .octaverc.</translation>
     </message>
@@ -3697,12 +5506,12 @@ Error: </translation>
         <translation>Axustar les llinies demasiao llargues al tamañu de la ventana</translation>
     </message>
     <message>
-        <location line="+501"/>
+        <location line="+558"/>
         <source>Default EOL mode</source>
         <translation>Caráuter de fin de llinia por defeutu</translation>
     </message>
     <message>
-        <location line="-446"/>
+        <location line="-503"/>
         <source>Indent width</source>
         <translation>Anchor de sangría</translation>
     </message>
@@ -3757,18 +5566,18 @@ Error: </translation>
         <translation>Utilizar editor d&apos;archivos personalizáu</translation>
     </message>
     <message>
-        <location line="+1002"/>
+        <location line="+1009"/>
         <source>Editor Styles</source>
         <translation>Estilos de l&apos;editor</translation>
     </message>
     <message>
-        <location line="-1478"/>
-        <location line="+1863"/>
+        <location line="-1485"/>
+        <location line="+1870"/>
         <source>Font</source>
         <translation>Tipu de fonte</translation>
     </message>
     <message>
-        <location line="-1573"/>
+        <location line="-1580"/>
         <source>Show line numbers</source>
         <translation>Amosar númberos de llinia</translation>
     </message>
@@ -3788,12 +5597,12 @@ Error: </translation>
         <translation>Númberu de carauteres a escribir antes d&apos;amosar la llista: </translation>
     </message>
     <message>
-        <location line="+150"/>
+        <location line="+190"/>
         <source>Create nonexistent files without prompting</source>
         <translation>Crear archivos non existentes ensin consultar</translation>
     </message>
     <message>
-        <location line="-857"/>
+        <location line="-897"/>
         <source>command line (%f=file, %l=line):</source>
         <translation>llinia de comandos (%f=archivu, %l=llinia):</translation>
     </message>
@@ -3809,7 +5618,7 @@ Error: </translation>
     </message>
     <message>
         <location line="+52"/>
-        <location line="+1753"/>
+        <location line="+1760"/>
         <source>Font size</source>
         <translation>Tamañu de fonte</translation>
     </message>
@@ -3819,7 +5628,7 @@ Error: </translation>
         <translation>Esplorador d&apos;archivos</translation>
     </message>
     <message>
-        <location line="-2104"/>
+        <location line="-2118"/>
         <source>Interface</source>
         <translation>Interfaz</translation>
     </message>
@@ -3830,12 +5639,12 @@ Error: </translation>
     </message>
     <message>
         <location line="-20"/>
-        <location line="+439"/>
+        <location line="+446"/>
         <source>Show status bar</source>
         <translation>Amosar barra d&apos;estáu</translation>
     </message>
     <message>
-        <location line="-677"/>
+        <location line="-684"/>
         <source>Text inactive</source>
         <translation>Testu inactivu</translation>
     </message>
@@ -3856,23 +5665,18 @@ Error: </translation>
         <translation>Fondu inactivu</translation>
     </message>
     <message>
-        <location line="+19"/>
-        <source>3D</source>
-        <translation>3D</translation>
-    </message>
-    <message>
-        <location line="+199"/>
+        <location line="+225"/>
         <source>Octave Startup</source>
         <translation>Iniciu d&apos;Octave</translation>
     </message>
     <message>
         <location line="+46"/>
-        <location line="+1691"/>
+        <location line="+1698"/>
         <source>Browse</source>
         <translation>Esplorar</translation>
     </message>
     <message>
-        <location line="-890"/>
+        <location line="-897"/>
         <location line="+140"/>
         <source>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</source>
         <translation>Esto funciona correutamente con fontes con espaciáu fixo. Dibúxase la llinia n&apos;una posición basada nel anchor d&apos;un caráuter de la fonte por defeutu. Esto podría nun funcionar correutamente si los estilos utilicen fontes proporcionales o si se utilicen fontes de varios tamaños, negrita, cursiva y testos normales.</translation>
@@ -3883,7 +5687,7 @@ Error: </translation>
         <translation>Activar plegao de códigu</translation>
     </message>
     <message>
-        <location line="+1059"/>
+        <location line="+1116"/>
         <source>Windows (CRLF)</source>
         <translation>Windows (CR+LF)</translation>
     </message>
@@ -3899,12 +5703,12 @@ Error: </translation>
         <translation>Unix (LF)</translation>
     </message>
     <message>
-        <location line="-1034"/>
+        <location line="-1091"/>
         <source>Show horizontal scroll bar</source>
         <translation>Amosar barra de desplazamientu horizontal</translation>
     </message>
     <message>
-        <location line="-963"/>
+        <location line="-970"/>
         <source>Preferences</source>
         <translation>Preferencies</translation>
     </message>
@@ -3944,12 +5748,22 @@ Error: </translation>
         <translation>Tema pa los iconos (requier reiniciu)</translation>
     </message>
     <message>
-        <location line="+323"/>
+        <location line="+166"/>
+        <source>3-D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+157"/>
         <source>Blinking cursor</source>
         <translation>Cursor parpadiante</translation>
     </message>
     <message>
-        <location line="+57"/>
+        <location line="+37"/>
+        <source>Show splash screen at startup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+27"/>
         <source>Initial working directory of Octave interpreter</source>
         <translation>Direutoriu de trabayu d&apos;inicio de l&apos;intérprete d&apos;Octave</translation>
     </message>
@@ -4124,37 +5938,37 @@ Error: </translation>
         <translation>Manexu d&apos;archivos</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+102"/>
         <source>Reload externally changed files without prompt</source>
         <translation>Recargar los archivos modificaos esternamente ensin consultar</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="-50"/>
         <source>Restore editor tabs from previous session on startup or when editor is shown again after closing</source>
         <translation>Restaurar pestañes de l&apos;editor de sesión anterior nel iniciu o cuando l&apos;editor se muestra de nuevo dempués del cierre</translation>
     </message>
     <message>
-        <location line="+80"/>
+        <location line="-31"/>
         <source>Text encoding used for loading and saving</source>
         <translation>Codificación de testu usada pa cargar y guardar</translation>
     </message>
     <message>
-        <location line="+25"/>
+        <location line="+71"/>
         <source>Close all files when the editor widget is closed/hidden</source>
         <translation>Zarrar tolos archivos cuando&apos;l widget de l&apos;editor te zarráu/ocultu</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="-23"/>
         <source>Force newline at end when saving file</source>
         <translation>Forzar nueva llinia al final del ficheru al guardalu</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="-10"/>
         <source>Remove trailing spaces when saving file</source>
         <translation>Eliminar espacios extra al final de les llinies del archivu al guardalu</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+144"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color, and background color (for the latter, the color magenta (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Seleición de fonte, tamañu (como diferencia con respeuto al grandor por defeutu), estilu (&lt;b&gt;n&lt;/b&gt;egrita, &lt;b&gt;c&lt;/b&gt;ursiva, &lt;b&gt;s&lt;/b&gt;ubrayao), color y color de fondu (pa l&apos;últimu casu, el maxenta (255,0,255) ye un sustitutu pa&apos;l color de fondu por defeutu).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -4164,12 +5978,12 @@ Error: </translation>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Ok&lt;/span&gt; - zarrar el cuadru de diálogu y aplicar la configuración&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Aplicar - &lt;/span&gt;aplicar la configuración y mantener el cuadru de diálogu abiertu&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Cancelar - &lt;/span&gt;zarrar el cuadru de diálogu y descartar los cambios que nun s&apos;hayan aplicao previamente&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Reset -&lt;/span&gt; recargar la configutación descartando los cambios que tovía nun s&apos;hayan aplicao&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location line="-2247"/>
+        <location line="-2254"/>
         <source>(Changing buffer size clears history)</source>
         <translation>(Cambiar el tamañu del buffer elimina l&apos;historial)</translation>
     </message>
     <message>
-        <location line="-253"/>
+        <location line="-260"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If set, the focus of the widgets that are docked to the main window follows the mouse cursor. This is intended for having the same behavior within the main window when &amp;quot;focus follows mouse&amp;quot; is used for the desktop environment.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Si se seleiciona, el focu nos widgets anclaos na ventana principal actívase según la posición del ratu. Esto persigue un comportamientu igual al de l&apos;entornu d&apos;escritoriu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -4179,7 +5993,7 @@ Error: </translation>
         <translation>El focu nos widgets anclaos na ventana principal actívase según la posición del ratu</translation>
     </message>
     <message>
-        <location line="+278"/>
+        <location line="+285"/>
         <source>History buffer Size</source>
         <translation>Tamañu del buffer pa l&apos;historial</translation>
     </message>
@@ -4204,7 +6018,12 @@ Error: </translation>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Anchor máximu de les pestañes, en carauteres. Útil especialmente pa pestañes rotaes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location line="+962"/>
+        <location line="+871"/>
+        <source>Directory of open file dialog follows current editor file instead of current Octave directory </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+98"/>
         <source>Behavior</source>
         <translation>Comportamientu</translation>
     </message>

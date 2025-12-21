@@ -2297,9 +2297,8 @@ octave_java::subsasgn (const std::string& type,
           new_idx.push_back (*it++);
           octave_value_list u = subsref (type.substr (0, 2), new_idx, 1);
 
-          std::list<octave_value_list> next_idx (idx);
-          next_idx.erase (next_idx.begin ());
-          next_idx.erase (next_idx.begin ());
+          std::list<octave_value_list> next_idx (std::next (idx.begin (), 2),
+                                                 idx.end ());
           u(0).subsasgn (type.substr (2), next_idx, rhs);
 
           m_count++;
@@ -2309,8 +2308,8 @@ octave_java::subsasgn (const std::string& type,
         {
           octave_value_list u = subsref (type.substr (0, 1), idx, 1);
 
-          std::list<octave_value_list> next_idx (idx);
-          next_idx.erase (next_idx.begin ());
+          std::list<octave_value_list> next_idx (std::next (idx.begin ()),
+                                                 idx.end ());
           u(0).subsasgn (type.substr (1), next_idx, rhs);
 
           m_count++;

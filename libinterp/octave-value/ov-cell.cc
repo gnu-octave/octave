@@ -32,6 +32,7 @@
 #include <sstream>
 #include <vector>
 #include <queue>
+#include <iterator>
 
 #include "Array-util.h"
 #include "byte-swap.h"
@@ -257,9 +258,7 @@ octave_cell::subsasgn (const std::string& type,
                 if (! tmp.is_defined ())
                   tmp = octave_value::empty_conv (type.substr (1), rhs);
 
-                std::list<octave_value_list> next_idx (idx);
-
-                next_idx.erase (next_idx.begin ());
+                std::list<octave_value_list> next_idx (std::next (idx.begin ()), idx.end ());
 
                 tmp.make_unique ();
 
@@ -273,9 +272,7 @@ octave_cell::subsasgn (const std::string& type,
             m_matrix.make_unique ();
             Cell tmpc = m_matrix.index (idx.front (), true);
 
-            std::list<octave_value_list> next_idx (idx);
-
-            next_idx.erase (next_idx.begin ());
+            std::list<octave_value_list> next_idx (std::next (idx.begin ()), idx.end ());
 
             std::string next_type = type.substr (1);
 

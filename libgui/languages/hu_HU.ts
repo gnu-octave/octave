@@ -1371,32 +1371,32 @@ nem érvényes XBEL-fájl 1.0-s verziója.</translation>
     <message>
         <location filename="../src/files-dock-widget.cc" line="+1214"/>
         <source>Open Editor Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Szerkesztőfájlok megnyitása</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Click to focus file in editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Kattintson a fájl fókuszba helyezéséhez a szerkesztőben</translation>
     </message>
     <message>
         <location line="+92"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Bezárás</translation>
+        <translation>&amp;Bezárás</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Close &amp;All</source>
-        <translation type="unfinished">Az összes be&amp;zárása</translation>
+        <translation>Az összes be&amp;zárása</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Run</source>
-        <translation type="unfinished">Futtatás</translation>
+        <translation>Futtatás</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Set Current &amp;Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Jelenlegi &amp;könyvtár beállítása</translation>
     </message>
 </context>
 <context>
@@ -2143,208 +2143,208 @@ törölve vagy átnevezve. Szeretné most menteni? %2</translation>
     <message>
         <location filename="../src/files-dock-widget.cc" line="-1165"/>
         <source>File size</source>
-        <translation type="unfinished">Fájlméret</translation>
+        <translation>Fájlméret</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>File type</source>
-        <translation type="unfinished">Fájltípus</translation>
+        <translation>Fájltípus</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Date modified</source>
-        <translation type="unfinished">Módosítás dátuma</translation>
+        <translation>Módosítás dátuma</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show hidden</source>
-        <translation type="unfinished">Rejtettek megjelenítése</translation>
+        <translation>Rejtettek megjelenítése</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Alternating row colors</source>
-        <translation type="unfinished">Változó sorszínek</translation>
+        <translation>Változó sorszínek</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Enter the path or filename</source>
-        <translation type="unfinished">Elérési ut vagy fájlneve megadása</translation>
+        <translation>Elérési út vagy fájlnév megadása</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>One directory up</source>
-        <translation type="unfinished">Egy könyvtárral feljebb</translation>
+        <translation>Egy könyvtárral feljebb</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Octave directory</source>
-        <translation type="unfinished">Oktáv-könyvtár megjelenítése</translation>
+        <translation>Oktáv-könyvtár megjelenítése</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Go to current Octave directory</source>
-        <translation type="unfinished">Ugrás a jelenlegi Oktáv-könyvtárba</translation>
+        <translation>Ugrás a jelenlegi Oktáv-könyvtárba</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Set Octave directory</source>
-        <translation type="unfinished">Oktáv-könyvtár beállítása</translation>
+        <translation>Oktáv-könyvtár beállítása</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Set Octave directory to current browser directory</source>
-        <translation type="unfinished">Oktáv-könyvtár beállítása a jelenlegi könyvtártallózóra</translation>
+        <translation>Oktáv-könyvtár beállítása a jelenlegi könyvtártallózóra</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Actions on current directory</source>
-        <translation type="unfinished">Műveletek a jelenlegi könyvtárban</translation>
+        <translation>Műveletek a jelenlegi könyvtárban</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Home Directory</source>
-        <translation type="unfinished">Kezdőkönyvtár megjelenítése</translation>
+        <translation>Kezdőkönyvtár megjelenítése</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Set Browser Directory...</source>
-        <translation type="unfinished">Könyvtártallózó beállítása…</translation>
+        <translation>Könyvtártallózó beállítása…</translation>
     </message>
     <message>
         <location line="+4"/>
         <location line="+433"/>
         <source>Find Files...</source>
-        <translation type="unfinished">Fájlok keresése…</translation>
+        <translation>Fájlok találása…</translation>
     </message>
     <message>
         <location line="-429"/>
         <location line="+441"/>
         <source>New File...</source>
-        <translation type="unfinished">Új fájl…</translation>
+        <translation>Új fájl…</translation>
     </message>
     <message>
         <location line="-438"/>
         <location line="+440"/>
         <source>New Directory...</source>
-        <translation type="unfinished">Új könyvtár…</translation>
+        <translation>Új könyvtár…</translation>
     </message>
     <message>
         <location line="-385"/>
         <source>Double-click to open file/folder, right click for alternatives</source>
-        <translation type="unfinished">Kattintson duplán a fájl/mappa megnyitásához, jobb gombbal kattintson az egyéb lehetőségekért</translation>
+        <translation>Kattintson duplán a fájl/mappa megnyitásához, jobb gombbal kattintson az egyéb lehetőségekért</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Rename...</source>
-        <translation type="unfinished">Átnevezés…</translation>
+        <translation>Átnevezés…</translation>
     </message>
     <message>
         <location line="+312"/>
         <source>Open</source>
-        <translation type="unfinished">Megnyitás</translation>
+        <translation>Megnyitás</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open in System File Explorer</source>
-        <translation type="unfinished">Megnyitás a rendszerfájlkezelőben</translation>
+        <translation>Megnyitás a rendszerfájlkezelőben</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open in Text Editor</source>
-        <translation type="unfinished">Megnyitás a szövegszerkesztőben</translation>
+        <translation>Megnyitás a szövegszerkesztőben</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Copy Selection to Clipboard</source>
-        <translation type="unfinished">Kijelölés másolása a vágólapra</translation>
+        <translation>Kijelölés másolása a vágólapra</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Run</source>
-        <translation type="unfinished">Futtatás</translation>
+        <translation>Futtatás</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Load Data</source>
-        <translation type="unfinished">Adatok betöltése</translation>
+        <translation>Adatok betöltése</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Set Current Directory</source>
-        <translation type="unfinished">Jelenlegi könyvtár beállítása</translation>
+        <translation>Jelenlegi könyvtár beállítása</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add to Path</source>
-        <translation type="unfinished">Elérési úthoz hozzáadása</translation>
+        <translation>Hozzáadás az elérési úthoz</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+7"/>
         <source>Selected Directories</source>
-        <translation type="unfinished">Kijelölt könyvtárak</translation>
+        <translation>Kijelölt könyvtárak</translation>
     </message>
     <message>
         <location line="-5"/>
         <location line="+7"/>
         <source>Selected Directories and Subdirectories</source>
-        <translation type="unfinished">Kijelölt könyvtárak és alkönyvtárak</translation>
+        <translation>Kijelölt könyvtárak és alkönyvtárak</translation>
     </message>
     <message>
         <location line="-4"/>
         <source>Remove from Path</source>
-        <translation type="unfinished">Eltávolítás az elérési útról</translation>
+        <translation>Eltávolítás az elérési útról</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Delete...</source>
-        <translation type="unfinished">Törlés…</translation>
+        <translation>Törlés…</translation>
     </message>
     <message>
         <location line="+140"/>
         <location line="+11"/>
         <location line="+17"/>
         <source>Delete file/directory</source>
-        <translation type="unfinished">Fájl/könyvtár törlése</translation>
+        <translation>Fájl/könyvtár törlése</translation>
     </message>
     <message>
         <location line="-27"/>
         <source>Are you sure you want to delete all %1 selected files?
 </source>
-        <translation type="unfinished">Biztosan törli az összes %1 kijelölt fájlt?
+        <translation>Biztosan törölni szeretné az összes (%1) kijelölt fájlt?
 </translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Are you sure you want to delete
 </source>
-        <translation type="unfinished">Biztosan törölni szeretné
+        <translation>Biztosan törölni szeretné
 </translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Can not delete a directory that is not empty</source>
-        <translation type="unfinished">Nem törölhető a nem üres könyvtár</translation>
+        <translation>Nem törölhető a nem üres könyvtár</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Deletion error</source>
-        <translation type="unfinished">Törlési hiba</translation>
+        <translation>Törlési hiba</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not delete file &quot;%1&quot;.</source>
-        <translation type="unfinished">Nem sikerült törölni a(z) „%1” fájlt.</translation>
+        <translation>Nem sikerült törölni a(z) „%1” fájlt.</translation>
     </message>
     <message>
         <location line="+216"/>
         <source>Set directory of file browser</source>
-        <translation type="unfinished">Fájlböngésző könyvtárbeállítása</translation>
+        <translation>Fájlböngésző könyvtárbeállítása</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Create File</source>
-        <translation type="unfinished">Fájl létrehozása</translation>
+        <translation>Fájl létrehozása</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2352,18 +2352,18 @@ törölve vagy átnevezve. Szeretné most menteni? %2</translation>
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">Fájl létrehozása a következő helyen:
+        <translation>Fájl létrehozása a következő helyen:
 </translation>
     </message>
     <message>
         <location line="+2"/>
         <source>New File.txt</source>
-        <translation type="unfinished">Új fájl.txt</translation>
+        <translation>Új fájl.txt</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Create Directory</source>
-        <translation type="unfinished">Könyvtár létrehozása</translation>
+        <translation>Könyvtár létrehozása</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2371,13 +2371,13 @@ törölve vagy átnevezve. Szeretné most menteni? %2</translation>
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">Mappa létrehozása a következő helyen:
+        <translation>Mappa létrehozása a következő helyen:
 </translation>
     </message>
     <message>
         <location line="+2"/>
         <source>New Directory</source>
-        <translation type="unfinished">Új könyvtár</translation>
+        <translation>Új könyvtár</translation>
     </message>
 </context>
 <context>
@@ -2400,12 +2400,12 @@ törölve vagy átnevezve. Szeretné most menteni? %2</translation>
     <message>
         <location line="+10"/>
         <source>File System</source>
-        <translation type="unfinished"></translation>
+        <translation>Fájlrendszer</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Editor Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Szerkesztőfájlok</translation>
     </message>
 </context>
 <context>
@@ -4032,12 +4032,12 @@ Szeretné használni a gyorsítóparancsot, és eltávolítani az előző művel
     <message>
         <location filename="../src/welcome-wizard.cc" line="+135"/>
         <source>Welcome to GNU Octave</source>
-        <translation type="unfinished">Isten hozott a GNU Oktávnál!</translation>
+        <translation>Isten hozott a GNU Oktávnál</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Welcome to Octave!</source>
-        <translation type="unfinished">Isten hozott az Oktávnál!</translation>
+        <translation>Isten hozott az Oktávnál!</translation>
     </message>
 </context>
 <context>
@@ -4411,7 +4411,7 @@ to pipe with fd = %2: %3</source>
         <location line="+17"/>
         <source>Error reading from redirected stream fd = %1.</source>
         <oldsource>Error reading from redirected strem fd = %1.</oldsource>
-        <translation type="unfinished">Hiba történt az átirányított fd = %1 adatfolyam olvasása közben.</translation>
+        <translation>Hiba történt az átirányított fd = %1 adatfolyam olvasása közben.</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -4481,7 +4481,7 @@ Hiba: </translation>
         <location line="+32"/>
         <source>3-D</source>
         <oldsource>3D</oldsource>
-        <translation type="unfinished">3D</translation>
+        <translation>Térhatás</translation>
     </message>
     <message>
         <location line="+565"/>
@@ -4842,7 +4842,7 @@ Hiba: </translation>
     <message>
         <location line="+37"/>
         <source>Show splash screen at startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Indításkor kezdőkép megjelenítése</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -5007,7 +5007,7 @@ Hiba: </translation>
     <message>
         <location line="+108"/>
         <source>Directory of open file dialog follows current editor file instead of current Octave directory </source>
-        <translation type="unfinished"></translation>
+        <translation>A megnyitott fájl párbeszédablak könyvtára a jelenlegi szerkesztőfájlt követi a jelenlegi Oktáv könyvtár helyett </translation>
     </message>
     <message>
         <location line="+36"/>

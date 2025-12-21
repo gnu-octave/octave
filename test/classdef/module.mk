@@ -27,11 +27,18 @@ classdef_TEST_FILES = \
   %reldir%/foo_static_method_constant_property.m \
   %reldir%/foo_subsref_subsasgn.m \
   %reldir%/foo_value_class.m \
+  %reldir%/foo_handle_class.m \
   %reldir%/handle_class.m \
   %reldir%/overloaded_cat_class.m \
   %reldir%/overloaded_cat_class_handle.m \
+  %reldir%/overloaded_ctranspose_class.m \
+  %reldir%/overloaded_ctranspose_class_handle.m \
   %reldir%/overloaded_horzcat_vertcat_class.m \
   %reldir%/overloaded_horzcat_vertcat_class_handle.m \
+  %reldir%/overloaded_permute_class.m \
+  %reldir%/overloaded_permute_class_handle.m \
+  %reldir%/overloaded_transpose_class.m \
+  %reldir%/overloaded_transpose_class_handle.m \
   %reldir%/plist_t1.m \
   %reldir%/plist_t2.m \
   %reldir%/plist_t3.m \

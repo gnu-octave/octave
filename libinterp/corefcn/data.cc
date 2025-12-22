@@ -4647,6 +4647,60 @@ operating dimension.
 %! x = sparse ([flintmax("double"), 1, -1]);
 %! assert ((sum (x, "extra")) == flintmax ("double"), sparse (true));
 %! assert ((sum (x)) == flintmax ("double"), sparse (false));
+%!test
+%! F(:,:,1) = [3, 5; -1, 2];
+%! F(:,:,2) = [4, -2; Inf, -4];
+%! s = sum (F, 1, "extra");
+%! assert (s(:,:,1), [2, 7]);
+%! assert (s(:,:,2), [Inf, -6]);
+%! s = sum (F, 2, "extra");
+%! assert (s(:,:,1), [8; 1]);
+%! assert (s(:,:,2), [2; Inf]);
+%! s = sum (F, 3, "extra");
+%! assert (s, [7, 3; Inf, -2]);
+%!test
+%! F(:,:,1) = [NaN, 5; -1, 2];
+%! F(:,:,2) = [4, -2; Inf, -4];
+%! s = sum (F, 1, "extra");
+%! assert (s(:,:,1), [NaN, 7]);
+%! assert (s(:,:,2), [Inf, -6]);
+%! s = sum (F, 2, "extra");
+%! assert (s(:,:,1), [NaN; 1]);
+%! assert (s(:,:,2), [2; Inf]);
+%! s = sum (F, 3, "extra");
+%! assert (s, [NaN, 3; Inf, -2]);
+%!test
+%! F(:,:,1) = [NaN, 5; -1, 2];
+%! F(:,:,2) = [4, -2; -Inf, -4];
+%! s = sum (F, 1, "extra");
+%! assert (s(:,:,1), [NaN, 7]);
+%! assert (s(:,:,2), [-Inf, -6]);
+%! s = sum (F, 2, "extra");
+%! assert (s(:,:,1), [NaN; 1]);
+%! assert (s(:,:,2), [2; -Inf]);
+%! s = sum (F, 3, "extra");
+%! assert (s, [NaN, 3; -Inf, -2]);
+%!test
+%! F(:,:,1) = [NaN, 5; -1, 2];
+%! F(:,:,2) = [Inf, -2; -Inf, -4];
+%! s = sum (F, 1, "extra");
+%! assert (s(:,:,1), [NaN, 7]);
+%! assert (s(:,:,2), [NaN, -6]);
+%! s = sum (F, 2, "extra");
+%! assert (s(:,:,1), [NaN; 1]);
+%! assert (s(:,:,2), [Inf; -Inf]);
+%! s = sum (F, 3, "extra");
+%! assert (s, [NaN, 3; -Inf, -2]);
+%!test
+%! F(:,:,1) = [NaN, 5; -1, 2];
+%! F(:,:,2) = [4, -2; Inf, -4];
+%! assert (sum (F, 1, "omitnan", "extra"), sum (F, 1, "omitnan"));
+%! assert (sum (F, 2, "omitnan", "extra"), sum (F, 2, "omitnan"));
+%! assert (sum (F, 3, "omitnan", "extra"), sum (F, 3, "omitnan"));
+%! assert (sum (F, [1, 2], "omitnan", "extra"), sum (F, [1, 2], "omitnan"));
+%! assert (sum (F, [1, 3], "omitnan", "extra"), sum (F, [1, 3], "omitnan"));
+%! assert (sum (F, [2, 3], "omitnan", "extra"), sum (F, [2, 3], "omitnan"));
+%! assert (sum (F, "all", "omitnan", "extra"), sum (F, [1, 2, 3], "omitnan"));
 
 ## Test 'extra' option with sparse matrices
 %!assert (sum (sparse ([2; 3; 4; 5; 6]), "extra"), sparse (20))

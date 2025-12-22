@@ -1369,3 +1369,132 @@
 %! arr = [obj1, obj2, obj3];
 %! result = arr';
 %! assert (size (result), [3, 1]);  # regular ctranspose
+
+## arr(i) = [] deletion syntax tests (bug #55983).
+
+## test arr(i) = [] deletion syntax on single index positions
+%!test <*55983>
+%! arr(5) = value_class ();
+%! arr(1).a = 1;
+%! arr(2).a = 2;
+%! arr(3).a = 3;
+%! arr(4).a = 4;
+%! arr(5).a = 5;
+%! arr(4) = [];
+%! assert (size (arr), [1, 4]);
+%! assert ([arr.a], [1, 2, 3, 5]);
+%! arr(1:2) = [];
+%! assert (size (arr), [1, 2]);
+%! assert ([arr.a], [3, 5]);
+
+## previous test, but with handle classes
+%!test <*55983>
+%! arr(5) = handle_class ();
+%! arr(1).a = 1;
+%! arr(2).a = 2;
+%! arr(3).a = 3;
+%! arr(4).a = 4;
+%! arr(5).a = 5;
+%! arr(4) = [];
+%! assert (size (arr), [1, 4]);
+%! assert ([arr.a], [1, 2, 3, 5]);
+%! arr(1:2) = [];
+%! assert (size (arr), [1, 2]);
+%! assert ([arr.a], [3, 5]);
+
+## test arr(i) = [] deletion syntax on multiple index positions
+%!test <*55983>
+%! arr(5,5) = value_class ();
+%! for i = 1:numel (arr)
+%!   arr(i).a = i;
+%! endfor
+%! arr(:,4) = [];
+%! assert (size (arr), [5, 4]);
+%! assert ([arr(:,1).a], [1, 2, 3, 4, 5]);
+%! assert ([arr(:,2).a], [6, 7, 8, 9, 10]);
+%! assert ([arr(:,3).a], [11, 12, 13, 14, 15]);
+%! assert ([arr(:,4).a], [21, 22, 23, 24, 25]);
+%! arr(3:4,:) = [];
+%! assert (size (arr), [3, 4]);
+%! assert ([arr(:,1).a], [1, 2, 5]);
+%! assert ([arr(:,2).a], [6, 7, 10]);
+%! assert ([arr(:,3).a], [11, 12, 15]);
+%! assert ([arr(:,4).a], [21, 22, 25]);
+
+## previous test, but with handle classes
+%!test <*55983>
+%! arr(5,5) = handle_class ();
+%! for i = 1:numel (arr)
+%!   arr(i).a = i;
+%! endfor
+%! arr(:,4) = [];
+%! assert (size (arr), [5, 4]);
+%! assert ([arr(:,1).a], [1, 2, 3, 4, 5]);
+%! assert ([arr(:,2).a], [6, 7, 8, 9, 10]);
+%! assert ([arr(:,3).a], [11, 12, 13, 14, 15]);
+%! assert ([arr(:,4).a], [21, 22, 23, 24, 25]);
+%! arr(3:4,:) = [];
+%! assert (size (arr), [3, 4]);
+%! assert ([arr(:,1).a], [1, 2, 5]);
+%! assert ([arr(:,2).a], [6, 7, 10]);
+%! assert ([arr(:,3).a], [11, 12, 15]);
+%! assert ([arr(:,4).a], [21, 22, 25]);
+
+## test arr(i) = [] fails if more than one non-colon index is supplied
+%!error <a null assignment can only have one non-colon index>
+%! arr(2,2) = value_class ();
+%! arr(2,2) = [];
+
+## previous test, but for handle classes
+%!error <a null assignment can only have one non-colon index>
+%! arr(2,2) = value_class ();
+%! arr(2,2) = [];
+
+## test that array deletion syntax on entire array returns a 0x0 object,
+## value classes
+%!test <*55983>
+%! arr(2) = value_class ();
+%! arr(:) = [];
+%! assert (size (arr), [0, 0]);
+%! assert (class (arr), 'value_class');
+
+## previous test, but with handle classes
+%!test <*55983>
+%! arr(2) = handle_class ();
+%! arr(:) = [];
+%! assert (size (arr), [0, 0]);
+%! assert (class (arr), 'handle_class');
+
+## test that array deletion syntax on row vector returns a 1x0 object,
+## value classes
+%!test <*55983>
+%! arr(2) = value_class ();
+%! arr(2) = [];
+%! arr(1) = [];
+%! assert (size (arr), [1, 0]);
+%! assert (class (arr), 'value_class');
+
+## previous test, but with handle classes
+%!test <*55983>
+%! arr(2) = handle_class ();
+%! arr(2) = [];
+%! arr(1) = [];
+%! assert (size (arr), [1, 0]);
+%! assert (class (arr), 'handle_class');
+
+## test that array deletion syntax on column vector returns a 0x1 object,
+## value classes
+%!test <*55983>
+%! arr(2,1) = value_class ();
+%! arr(2,:) = [];
+%! arr(1,:) = [];
+%! assert (size (arr), [0, 1]);
+%! assert (class (arr), 'value_class');
+
+## previous test, but with handle classes
+%!test <*55983>
+%! arr(2,1) = handle_class ();
+%! arr(2,:) = [];
+%! arr(1,:) = [];
+%! assert (size (arr), [0, 1]);
+%! assert (class (arr), 'handle_class');

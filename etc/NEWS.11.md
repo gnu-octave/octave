@@ -216,7 +216,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 * `corrcov`
 * `dither`
 * `funm`
+* `mape`
 * `rms`
+* `rmse`
 * `trexc`
 
 ### Deprecated functions, properties, and operators

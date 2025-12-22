@@ -111,13 +111,13 @@
 ## operating dimension.
 ##
 ## The optional argument pair @code{"Weights", @var{w}} specifies a weighting
-## scheme @var{w}, which is applied to input @var{x}, so that @code{mean}
+## scheme @var{w}, which is applied on input @var{x}, so that @code{mean}
 ## computes the weighted mean.  When operating along a single dimension,
 ## @var{w} must be a vector of the same length as the operating dimension or it
 ## must have the same size as @var{x}.  When operating over an array slice
 ## defined by @var{vecdim}, @var{w} must have the same size as the operating
-## array slice, i.e., @code{size (w) == size (x)(@var{vecdim})}, or the same
-## size as @var{x}.
+## array slice, i.e., @code{size (w) == size (@var{x})(@var{vecdim})}, or the
+## same size as @var{x}.
 ##
 ## @seealso{median, mode, movmean}
 ## @end deftypefn
@@ -246,13 +246,14 @@ function m = mean (x, varargin)
                            " length as the operating dimension"));
           endif
         elseif (! isequal (size (w), szx))
-          error ("mean: WEIGHTS array must have the same dimensions with X");
+          error ("mean: WEIGHTS array must have the same size as X");
         endif
         w = w(:);
         x = w .* double (x);
         n = sum (w);
       endif
 
+      ## Process omitnan
       if (omitnan)
         nanx = isnan (x);
         x(nanx) = [];
@@ -287,20 +288,26 @@ function m = mean (x, varargin)
 
       ## Process weights
       if (weighted)
-        if (isvector (w))
+        if (isequal (size (w), szx))
+          x = w .* double (x);
+        elseif (isvector (w))
           if (numel (w) != n)
             error (strcat ("mean: WEIGHTS vector must have the same", ...
                            " length as the operating dimension"));
           endif
+          #if (isvector (x))
           szw = ones (1, ndx);
           szw(dim) = n;
           w = reshape (w, szw);
+          if (! isvector (x))
+            szw = szx;
+            szw(dim) = 1;
+            w = repmat (w, szw);
+          endif
           ## Force x to doubles to avoid integer path
           x = w .* double (x);
-        elseif (! isequal (size (w), szx))
-          error ("mean: WEIGHTS array must have the same dimensions with X");
         else
-          x = w .* double (x);
+          error ("mean: WEIGHTS array must have the same size as X");
         endif
         n = sum (w, dim);
       endif
@@ -334,27 +341,44 @@ function m = mean (x, varargin)
 
     if (isscalar (vecdim))
       dim = vecdim;  # alias for code readability
+
       if (dim > ndx)
+
+        ## Process weights
+        if (weighted)
+          if (! isequal (size (w), szx))
+             error (strcat ("mean: WEIGHTS array must have the same size", ...
+                            " as X, when 'DIM > ndims (X)'"));
+          endif
+        endif
+
         m = x;
+
       else
         n = szx(dim);
 
         ## Process weights
         if (weighted)
-          if (isvector (w))
+          if (isequal (size (w), szx))
+            x = w .* double (x);
+          elseif (isvector (w))
             if (numel (w) != n)
               error (strcat ("mean: WEIGHTS vector must have the same", ...
                              " length as the operating dimension"));
             endif
+            #if (isvector (x))
             szw = ones (1, ndx);
             szw(dim) = n;
             w = reshape (w, szw);
+            if (! isvector (x))
+              szw = szx;
+              szw(dim) = 1;
+              w = repmat (w, szw);
+            endif
             ## Force x to doubles to avoid integer path
             x = w .* double (x);
-          elseif (! isequal (size (w), szx))
-            error ("mean: WEIGHTS array must have the same dimensions with X");
           else
-            x = w .* double (x);
+            error ("mean: WEIGHTS array must have the same dimensions with X");
           endif
           n = sum (w, dim);
         endif
@@ -388,7 +412,17 @@ function m = mean (x, varargin)
       vecdim(vecdim > ndx) = [];
 
       if (isempty (vecdim))
+
+        ## Process weights
+        if (weighted)
+          if (! isequal (size (w), szx))
+             error (strcat ("mean: WEIGHTS array must have the same size", ...
+                            " as X, when 'all (VECDIM > ndims (X))'"));
+          endif
+        endif
+
         m = x;
+
       else
 
         ## Calculate permutation vector
@@ -409,13 +443,14 @@ function m = mean (x, varargin)
                                " length as the operating dimension"));
               endif
             elseif (! isequal (size (w), szx))
-              error ("mean: WEIGHTS array must have the same dimensions with X");
+              error ("mean: WEIGHTS array must have the same size as X");
             endif
             w = w(:);
             x = w .* double (x);
             n = sum (w);
           endif
 
+          ## Process omitnan
           if (omitnan)
             nanx = isnan (x);
             x(nanx) = [];
@@ -434,38 +469,44 @@ function m = mean (x, varargin)
           endif
 
         else
-          ## Weights must either match vecdim page size or the size of input X
+          ## Weights must either match vecdim page size or the size of X
           if (weighted)
             page_szw = size (w);
-            if (isequal (page_szw, szx(vecdim)))
-              szw = ones (1, ndx);
-              szw(vecdim) = page_szw;
-              w = reshape (w, szw);
+            if (isequal (size (w), szx))
+              x = w .* double (x);
+            elseif (isequal (page_szw, szx(vecdim)))
+              ## Make W to be compatible with X
+              tmp = ones (1, ndx);
+              tmp(vecdim) = page_szw;
+              w = reshape (w, tmp);
+              w = w .* ones (szx);
               ## Force x to doubles to avoid integer path
               x = w .* double (x);
-            elseif (! isequal (size (w), szx))
-              error (strcat ("mean: WEIGHTS array must have the same", ...
-                             " dimensions as input X or its operating", ...
-                             " page specified by VECDIM"));
             else
-              x = w .* double (x);
+              error (strcat ("mean: WEIGHTS array must have the same size", ...
+                             " as the operating page specified by VECDIM", ...
+                             " or the input array X"));
             endif
           endif
 
           ## Permute to push vecdims to back
           perm = [remdims, vecdim];
           x = permute (x, perm);
+          if (weighted)
+            w = permute (w, perm);
+          endif
 
           ## Reshape to squash all vecdims in final dimension
           sznew = [szx(remdims), prod(szx(vecdim))];
           x = reshape (x, sznew);
           if (weighted)
-            sznew = [ones(1, numel (szx(remdims))), prod(szx(vecdim))];
             w = reshape (w, sznew);
           endif
 
           ## Calculate mean on final dimension
           dim = nremd + 1;
+
+          ## Process omitnan
           if (omitnan)
             nanx = isnan (x);
             x(nanx) = 0;
@@ -873,19 +914,19 @@ endfunction
 %!error <Invalid call> mean (1, 'foobar')
 %!error <WEIGHTS vector must have the same length as the operating dimension> ...
 %! mean ([1:5]', "all", 'Weights', [1, 2, 3])
-%!error <WEIGHTS array must have the same dimensions with X> ...
+%!error <WEIGHTS array must have the same size as X> ...
 %! mean (ones (5, 3), "all", 'Weights', ones (3, 5))
 %!error <WEIGHTS vector must have the same length as the operating dimension> ...
 %! mean ([1:5]', 'Weights', [1, 2, 3])
 %!error <WEIGHTS vector must have the same length as the operating dimension> ...
 %! mean (ones (5, 3), 'Weights', [1, 2, 3])
-%!error <WEIGHTS array must have the same dimensions with X> ...
+%!error <WEIGHTS array must have the same size as X> ...
 %! mean (ones (5, 3), 'Weights', ones (3, 5))
 %!error <WEIGHTS vector must have the same length as the operating dimension> ...
 %! mean ([1:5]', [1, 2], 'Weights', [1, 2, 3])
-%!error <WEIGHTS array must have the same dimensions with X> ...
+%!error <WEIGHTS array must have the same size as X> ...
 %! mean (ones (5, 3), [1, 2], 'Weights', ones (3, 5))
-%!error <WEIGHTS array must have the same dimensions as input X or its> ...
+%!error <WEIGHTS array must have the same size as the operating page> ...
 %! mean (ones (5, 3, 2), [1, 2], 'Weights', ones (3, 5))
 %!error <DIM must be a positive integer> mean (1, ones (2,2))
 %!error <DIM must be a positive integer> mean (1, 1.5)

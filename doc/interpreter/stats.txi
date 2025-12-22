@@ -49,6 +49,7 @@ See @ref{XREFisnan,,isnan}, @ref{XREFisna,,isna}, @ref{XREFisinf,,isinf},
 * Descriptive Statistics::
 * Statistics on Sliding Windows of Data::
 * Basic Statistical Functions::
+* Forecasting Metrics::
 * Correlation and Regression Analysis::
 * Distributions::
 * Random Number Generation::
@@ -170,6 +171,15 @@ useful for statistics.
 @DOCSTRING(run_count)
 
 @DOCSTRING(runlength)
+
+@node Forecasting Metrics
+@section Forecasting Metrics
+
+Octave supports the following functions for calculating forecasting metrics.
+
+@DOCSTRING(mape)
+
+@DOCSTRING(rmse)
 
 @node Correlation and Regression Analysis
 @section Correlation and Regression Analysis

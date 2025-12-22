@@ -21,6 +21,7 @@ FCN_FILE_DIRS += %reldir%
   %reldir%/kendall.m \
   %reldir%/kurtosis.m \
   %reldir%/mad.m \
+  %reldir%/mape.m \
   %reldir%/mean.m \
   %reldir%/meansq.m \
   %reldir%/median.m \
@@ -41,6 +42,7 @@ FCN_FILE_DIRS += %reldir%
   %reldir%/range.m \
   %reldir%/ranks.m \
   %reldir%/rms.m \
+  %reldir%/rmse.m \
   %reldir%/run_count.m \
   %reldir%/runlength.m \
   %reldir%/skewness.m \

@@ -56,6 +56,20 @@ fi
 
 echo "Qt translations: $QT_LANG_DIR"
 
+LUPDATE="/usr/bin/lupdate-qt6"
+if [[ ! -f $LUPDATE ]]; then
+  LUPDATE="/usr/lib/qt6/bin/lupdate"
+  if [[ ! -f $LUPDATE ]]; then
+    LUPDATE="/usr/bin/lupdate"
+    if [[ ! -f $LUPDATE ]]; then
+      echo "No lupdate tool found, no update of ts-files possible."
+      exit 1
+    fi
+  fi
+fi
+
+echo "lupdate tool: $LUPDATE"
+
 # Update all ts files
 for file in $(ls -b1 *.ts)
 do
@@ -108,7 +122,7 @@ do
 
   if [ "$ANS" = "y" ]; then
     echo
-    lupdate -no-obsolete -locations relative $SEARCH_PATH -ts $file
+    $LUPDATE -no-obsolete -locations relative $SEARCH_PATH -ts $file
     sed -i -e "s/$OCTAVE_TEMP/../g" $file   # fix path to sources
   fi
 

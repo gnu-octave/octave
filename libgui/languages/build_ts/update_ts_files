@@ -60,8 +60,8 @@ echo "Qt translations: $QT_LANG_DIR"
 for file in $(ls -b1 *.ts)
 do
 
-  xx=${file:0:2}
-  xx_yy=${file:0:5}
+  xx=${file/_*/}
+  xx_yy=${file/.*/}
 
   # Set the search path to the minimal one used for each ts file
   SEARCH_PATH=$SEARCH_PATH_COMMON

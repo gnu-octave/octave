@@ -1065,7 +1065,7 @@ tree_evaluator::eval_string (const std::string& eval_str, bool silent,
                   else
                     do_bind_ans = ! expr->is_assignment_expression ();
 
-                  if (do_bind_ans && ! retval.empty ())
+                  if (nargout == 0 && do_bind_ans && ! retval.empty ())
                     bind_ans (retval(0), expr->print_result ());
 
                   if (nargout == 0)

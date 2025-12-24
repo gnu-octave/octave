@@ -1271,7 +1271,7 @@ file_system_browser::process_new_file (const QString& parent_dir)
       name = parent_dir + '/' + name;
 
       QFile file (name);
-      file.open (QIODevice::WriteOnly);
+      file.open (QIODevice::ReadWrite);
       m_file_system_model->revert ();
     }
 }

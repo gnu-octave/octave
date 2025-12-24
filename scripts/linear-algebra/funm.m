@@ -419,15 +419,18 @@ function m = blocking (A, delta, showplot)
   endfor
 
   if (showplot)
-    for i = 1 : max (m)
-      a_ind = a(m == i);
-      if (numel (a_ind) == 1)
-        plot (real (a_ind), imag (a_ind), "ok");
+    for i = 1 : max (m)            # for each cluster
+      a_ind = a(m == i);           # get eigv in cluster i
+      if (numel (a_ind) == 1)      # if only one eigv in cluster
+        plot (real (a_ind), imag (a_ind), "ok");  # plot it alone
       endif
     endfor
+    hold off;
     grid on;
     box on;
-    hold off;
+    xlabel ('Re(\lambda)');
+    ylabel ('Im(\lambda)');
+    title (sprintf ('Eigenvalue clustering (\\delta = %g)', delta));
   endif
 
 endfunction
@@ -708,16 +711,17 @@ endfunction
 
 
 %!demo
-%! ## Create some ugly matrix.
-%! B1 = [  1  -2;   2   1 ];     # eigenvalues:  1 +/- 2i
-%! B2 = [ -1  -1.5; 1.5 -1 ];    # eigenvalues: -1 +/- 1.5i
-%! B3 = [  0.5 -3;  3  0.5 ];    # eigenvalues:  0.5 +/- 3i
-%! B4 = [  2  -0.7; 0.7  2 ];    # eigenvalues:  2 +/- 0.7i
+%! ## Create a non-normal matrix with clustered complex eigenvalues.
+%! ## Use non-symmetric 2x2 blocks to ensure non-normality.
+%! B1 = [  1.1  3;  -2   1.1 ];  # eigenvalues: 1.1 +/- sqrt(6)i
+%! B2 = [  1.4  2;  -2   1.4 ];  # eigenvalues: 1.5 +/- 2i (close, will cluster)
+%! B3 = [ -0.3  1;   0   0.3 ];  # eigenvalues: -0.3, 0.3 (real1)
+%! B4 = [  2.4  2;  -1   2.4 ];  # eigenvalues: 2.4 +/- sqrt(2)i
 %! A = blkdiag (B1, B2, B3, B4);
 %! ## Add some noise to make A less structured, but with the same eigenvalues.
 %! Q = orth (randn (size (A)));
 %! A = Q' * A * Q;
-%! [F, exitflag] = funm (A, @sin, 0.1, eps, 4);  # "4" means "make a plot"
+%! [F, exitflag] = funm (A, @sin, 0.8, eps, 4);  # prnt=4 triggers plot
 %! disp ("Eigenvalues of A:");
 %! disp (eig (A));
 

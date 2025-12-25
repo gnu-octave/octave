@@ -347,10 +347,11 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl *parent, const QString& cmd)
   if (acwo)
     {
       // Windows 11 24H2 and later provides this function
-      ALLOC_CONSOLE_OPTIONS options = { ALLOC_CONSOLE_MODE_NO_WINDOW, FALSE, 0 };
+      ALLOC_CONSOLE_OPTIONS options { ALLOC_CONSOLE_MODE_NEW_WINDOW, TRUE,
+                                      SW_HIDE };
       ALLOC_CONSOLE_RESULT res;
-      if (! acwo (&options, &res))
-        log ("Failed to create new invisible console.\n");
+      if (acwo (&options, &res) != S_OK)
+        log ("Failed to create new invisible console with result %u.\n", res);
     }
   else
     {

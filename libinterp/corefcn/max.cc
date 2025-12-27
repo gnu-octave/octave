@@ -128,6 +128,179 @@ get_dim_vecdim_all (const octave_value& dimarg, octave_value& arg,
     }
 }
 
+static dim_vector
+custom_ind2sub (const dim_vector szx, octave_idx_type idx, int ndims)
+{
+  Array<octave_idx_type> szc;
+  szc.resize (dim_vector (1, ndims));
+  for (int i = 0; i < ndims; i++)
+    szc(i) = szx(i);
+  if (ndims > 1)
+    for (int i = 1; i < ndims; i++)
+      szc(i) *= szc(i-1);
+
+  dim_vector sub;
+  sub.resize (ndims);
+  for (int i = 0; i < ndims; i++)
+    sub(i) = 1;
+
+  for (octave_idx_type i = ndims - 1; i >= 0; i--)
+    {
+      int dsz = szc(i);
+      if (idx > dsz)
+        {
+          int tmp = idx / dsz; // dzc is never 0 at this point
+          if (idx % dsz > 0)
+            {
+              sub(i+1) = tmp + 1;
+              idx -= tmp * dsz;
+            }
+          else
+            {
+              sub(i+1) = tmp;
+              idx -= (tmp - 1) * dsz;
+            }
+        }
+      if (i == 0)
+        sub(i) = idx;
+    }
+  return sub;
+}
+
+static octave_idx_type
+custom_sub2ind (const dim_vector& szx, const dim_vector& dims, int ndims)
+{
+  octave_idx_type ind = 1;
+  Array<octave_idx_type> szc;
+  szc.resize (dim_vector (1, ndims));
+  for (int i = 0; i < ndims; i++)
+    szc(i) = szx(i);
+  for (octave_idx_type i = 1; i < ndims; i++)
+    szc(i) *= szc(i-1);
+
+  Array<octave_idx_type> szce;
+  szce.resize (dim_vector (1, ndims + 1));
+  szce(0) = 1;
+  for (octave_idx_type i = 0; i < ndims; i++)
+    szce(i+1) = szc(i);
+
+  for (octave_idx_type i = 0; i < ndims; i++)
+    if (szx(i) > 1)
+      ind += szce(i) * (dims(i) - 1);
+
+  return ind;
+}
+
+static octave_value
+get_linear_index (const octave_value& index, const octave_value& arg,
+                  const Array<int>& vecdim, bool cumop)
+{
+  // Get index values and original index size
+  Array<octave_idx_type> idx = index.int_vector_value ();
+  dim_vector sz_idx = index.dims ();
+
+  // Get size and number of dimensions of input argument
+  dim_vector sz_arg = arg.dims ();
+  int nd_arg = arg.ndims ();
+
+  // Invalid input in VECDIM has already been ruled out
+  // Ignore any exceeding dimensions and get usable dimensions in VECDIM
+  std::vector<int> dim_page;
+  for (octave_idx_type i = 0; i < vecdim.numel (); i++)
+    if (vecdim(i) <= nd_arg)
+      dim_page.push_back (vecdim(i));
+  int nd_page = dim_page.size ();
+
+  // If no dimensions left, return linear index as [1:numel(x)]
+  if (nd_page == 0)
+    for (octave_idx_type i = 0; i < idx.numel (); i++)
+      idx(i) += i;
+  else
+    {
+      // Sort VECDIM
+      std::sort (dim_page.begin (), dim_page.end ());
+
+      // Calculate page size
+      dim_vector sz_page;
+      sz_page.resize (nd_page);
+      for (int i = 0; i < nd_page; i++)
+        sz_page(i) = sz_arg(dim_page[i]-1);
+
+      // Calculate operating index vector and reduced index dimensions
+      std::vector<int> dim_index;
+      dim_vector dim_vec;
+      dim_vec.resize (nd_arg);
+      for (int i = 0; i < nd_arg; i++)
+        {
+          dim_vec(i) = 1;
+          bool addindex = true;
+          for (int j = 0; j < nd_page; j++)
+            if (i+1 == dim_page[j])
+              addindex = false;
+          // Ignore singleton indexing dimensions
+          if (addindex && sz_arg(i) > 1)
+            dim_index.push_back (i + 1);
+        }
+      // Calculate reduced indexing size
+      int nd_index = dim_index.size ();
+      dim_vector sz_index;
+      sz_index.resize (nd_index);
+      for (int i = 0; i < nd_index; i++)
+        sz_index(i) = sz_arg(dim_index[i]-1);
+
+      // In cumulative operations, the first dimension of the operating page is
+      // expanded to 'prod (vecdim)'.  If the first dimension of the operating
+      // page is less than the first dimension in dim_index, every prod_vecdim
+      // number of index elements reuse the corresponding index of the first
+      // element.  Otherwise, they get reused after indexing the elements whose
+      // dim_index is less than first_vecdim.
+      octave_idx_type prod_vecdim = 1;
+      octave_idx_type group_index = 1;
+      if (cumop)
+        {
+          for (octave_idx_type i = 0; i < nd_page; i++)
+            prod_vecdim *= sz_page(i);
+          if (dim_page[0] > dim_index[0])
+            for (int i = 0; i < nd_index; i++)
+              if (dim_page[0] > dim_index[i])
+                group_index *= sz_index(i);
+        }
+
+      // Process each index value
+      dim_vector tmp;
+      octave_idx_type ii;
+      for (octave_idx_type i = 0; i < idx.numel (); i++)
+        {
+          if (cumop)
+            {
+              if (group_index == 1)
+                ii = i / prod_vecdim;
+              else
+                {
+                  octave_idx_type igm = i % group_index;
+                  octave_idx_type igf = i / group_index;
+                  ii = igm + ((igf / prod_vecdim) * group_index);
+                }
+            }
+          else
+            ii = i;
+          // Get index position and add it to corresponding dimensions
+          tmp = custom_ind2sub (sz_index, ii+1, nd_index);
+          for (octave_idx_type j = 0; j < nd_index; j++)
+            dim_vec(dim_index[j]-1) = tmp(j);
+
+          // Get page position and add it to corresponding dimensions
+          tmp = custom_ind2sub (sz_page, idx(i), nd_page);
+          for (octave_idx_type j = 0; j < nd_page; j++)
+            dim_vec(dim_page[j]-1) = tmp(j);
+
+          // Calculate linear index
+          idx(i) = custom_sub2ind (sz_arg, dim_vec, nd_arg);
+        }
+    }
+  return octave_value (idx).reshape (sz_idx);
+}
+
 template <typename ArrayType>
 static octave_value_list
 do_minmax_red_op (const octave_value& arg,
@@ -538,6 +711,7 @@ do_minmax_body (const octave_value_list& args, int nargout, bool ismin)
       red_op = true;
 
   octave_value_list retval (nargout > 1 ? 2 : 1);
+  Array<int> vecdim;
 
   if (nargin == 1 || red_op)
     {
@@ -549,11 +723,17 @@ do_minmax_body (const octave_value_list& args, int nargout, bool ismin)
         {
           octave_value dimarg = args(2);
           get_dim_vecdim_all (dimarg, arg, dim, perm_vec, do_perm, allflag, fcn);
+          vecdim = dimarg.int_vector_value ();
 
           if (! args(1).isempty ())
             warning ("%s: second argument is ignored", fcn);
         }
-
+      else
+        {
+          dim_vector dims = arg.dims ();
+          vecdim.resize (dim_vector (1, 1));
+          vecdim(0) = dims.first_non_singleton () + 1;
+        }
       // Handle allflag
       if (allflag)
         arg = arg.reshape (dim_vector (arg.numel (), 1));
@@ -689,7 +869,11 @@ do_minmax_body (const octave_value_list& args, int nargout, bool ismin)
         }
 
       if (do_perm)
-        retval(0) = retval(0).permute (perm_vec, true);
+        {
+          retval(0) = retval(0).permute (perm_vec, true);
+          if (nargout > 1)
+            retval(1) = retval(1).permute (perm_vec, true);
+        }
     }
   else
     {
@@ -827,10 +1011,9 @@ do_minmax_body (const octave_value_list& args, int nargout, bool ismin)
 
     }
 
-  // FIXME: We need a static function to convert indices into linear
-  // indices based on returning size and vecdim
-  if (linear && nargout > 1)
-    warning ("%s: 'linear' argument is ignored", fcn);
+  // Process "linear" option
+  if (linear && nargout > 1 && ! allflag && ! args(0).isempty ())
+    retval(1) = get_linear_index (retval(1), args(0), vecdim, false);
 
   return retval;
 }
@@ -875,7 +1058,7 @@ on all elements of @var{x}, and is equivalent to @code{min (@var{x}(:))}.
 If called with two output arguments, @code{min} also returns the first index of
 the minimum value(s) in @var{x}.  The second output argument is only valid when
 @code{min} operates on a single input array.  Setting the @qcode{"linear"} flag
-returns the linear index into @var{x} corresponding the minimum values.
+returns the linear index to the corresponding minimum values in @var{x}.
 
 If called with two input arrays (@var{x} and @var{y}), @code{min} return the
 pairwise minimum according to the rules for @ref{Broadcasting}.
@@ -1170,6 +1353,53 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!error min (zeros(0,1), zeros(3, 0))
 %!assert (min (zeros(1,0), zeros(3, 0)), zeros (3, 0))
 
+## Test "linear" option
+%!shared x
+%! x = repmat ([4,3,2,4,1,5,3,2], 3, 2, 5, 2);
+%!test
+%! [m, i] = min (x, [], [2, 3], 'linear');
+%! assert (m, ones (3, 1, 1, 2));
+%! assert (i(:,:,1,1), [13; 14; 15]);
+%! assert (i(:,:,1,2), [253; 254; 255]);
+%!test
+%! [m, i] = min (x, [], [1, 3], 'linear');
+%! assert (m, x(1,:,1,:));
+%! assert (i(:,:,1,1), [1:3:46]);
+%! assert (i(:,:,1,2), [241:3:286]);
+%!test
+%! [m, i] = min (x, [], [2, 4], 'linear');
+%! assert (m, ones (3, 1, 5));
+%! assert (i(:,:,1), [13; 14; 15]);
+%! assert (i(:,:,2), [61; 62; 63]);
+%! assert (i(:,:,3), [109; 110; 111]);
+%! assert (i(:,:,4), [157; 158; 159]);
+%! assert (i(:,:,5), [205; 206; 207]);
+%!test
+%! [m, i] = min (x, [], [1, 4], 'linear');
+%! assert (m, x(1, :,:,1));
+%! assert (i(:,:,1), [1:3:46]);
+%! assert (i(:,:,2), [49:3:94]);
+%! assert (i(:,:,3), [97:3:142]);
+%! assert (i(:,:,4), [145:3:190]);
+%! assert (i(:,:,5), [193:3:238]);
+%!test
+%! [m, i] = min (x, [], [1, 2, 3], 'linear');
+%! assert (m, ones (1, 1, 1, 2));
+%! assert (i(:,:,1,1), 13);
+%! assert (i(:,:,1,2), 253);
+%!test
+%! [m, i] = min (x, [], [2, 3, 4], 'linear');
+%! assert (m, [1; 1; 1]);
+%! assert (i, [13; 14; 15]);
+%!test
+%! [m, i] = min ([1, 2, 3; 4, 5, 6], [], 1, 'linear');
+%! assert (m, [1, 2, 3]);
+%! assert (i, [1, 3, 5]);
+%!test
+%! [m, i] = min ([1, 2, 3; 4, 5, 6], [], 2, 'linear');
+%! assert (m, [1; 4]);
+%! assert (i, [1; 2]);
+
 ## Test input validation
 %!error <Invalid call> min ()
 %!error <Invalid call> min (1, 2, 3, 4)
@@ -1190,7 +1420,6 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %! [m, i] = min ([], [])
 %!error <'linear' is not supported for two input arrays>
 %! min ([1 2 3 4], 1,  "linear")
-%!warning <min: 'linear' argument is ignored>
 %! [m, i] = min ([1 2 3 4], [], "linear");
 */
 
@@ -1234,7 +1463,7 @@ on all elements of @var{x}, and is equivalent to @code{max (@var{x}(:))}.
 If called with two output arguments, @code{max} also returns the first index of
 the maximum value(s) in @var{x}.  The second output argument is only valid when
 @code{max} operates on a single input array.  Setting the @qcode{"linear"} flag
-returns the linear index into @var{x} corresponding the minimum values.
+returns the linear index to the corresponding minimum values in @var{x}.
 
 If called with two input arrays (@var{x} and @var{y}), @code{max} return the
 pairwise maximum according to the rules for @ref{Broadcasting}.
@@ -1533,6 +1762,53 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!error max (zeros(0,1), zeros(3, 0))
 %!assert (max (zeros(1,0), zeros(3, 0)), zeros (3, 0))
 
+## Test "linear" option
+%!shared x
+%! x = repmat ([4,3,2,4,1,5,3,2], 3, 2, 5, 2);
+%!test
+%! [m, i] = max (x, [], [2, 3], 'linear');
+%! assert (m, 5 * ones (3, 1, 1, 2));
+%! assert (i(:,:,1,1), [16; 17; 18]);
+%! assert (i(:,:,1,2), [256; 257; 258]);
+%!test
+%! [m, i] = max (x, [], [1, 3], 'linear');
+%! assert (m, x(1,:,1,:));
+%! assert (i(:,:,1,1), [1:3:46]);
+%! assert (i(:,:,1,2), [241:3:286]);
+%!test
+%! [m, i] = max (x, [], [2, 4], 'linear');
+%! assert (m, 5 * ones (3, 1, 5));
+%! assert (i(:,:,1), [16; 17; 18]);
+%! assert (i(:,:,2), [64; 65; 66]);
+%! assert (i(:,:,3), [112; 113; 114]);
+%! assert (i(:,:,4), [160; 161; 162]);
+%! assert (i(:,:,5), [208; 209; 210]);
+%!test
+%! [m, i] = max (x, [], [1, 4], 'linear');
+%! assert (m, x(1, :,:,1));
+%! assert (i(:,:,1), [1:3:46]);
+%! assert (i(:,:,2), [49:3:94]);
+%! assert (i(:,:,3), [97:3:142]);
+%! assert (i(:,:,4), [145:3:190]);
+%! assert (i(:,:,5), [193:3:238]);
+%!test
+%! [m, i] = max (x, [], [1, 2, 3], 'linear');
+%! assert (m, 5 * ones (1, 1, 1, 2));
+%! assert (i(:,:,1,1), 16);
+%! assert (i(:,:,1,2), 256);
+%!test
+%! [m, i] = max (x, [], [2, 3, 4], 'linear');
+%! assert (m, [5; 5; 5]);
+%! assert (i, [16; 17; 18]);
+%!test
+%! [m, i] = max ([1, 2, 3; 4, 5, 6], [], 1, 'linear');
+%! assert (m, [4, 5, 6]);
+%! assert (i, [2, 4, 6]);
+%!test
+%! [m, i] = max ([1, 2, 3; 4, 5, 6], [], 2, 'linear');
+%! assert (m, [3; 6]);
+%! assert (i, [5; 6]);
+
 ## Test input validation
 %!error <Invalid call> max ()
 %!error <Invalid call> max (1, 2, 3, 4)
@@ -1553,7 +1829,6 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %! [m, i] = max ([], [])
 %!error <'linear' is not supported for two input arrays>
 %! max ([1 2 3 4], 1,  "linear")
-%!warning <'linear' argument is ignored>
 %! [m ,i] = max ([1 2 3 4], [], "linear");
 */
 
@@ -1756,6 +2031,7 @@ do_cumminmax_body (const octave_value_list& args,
     error ("%s: cannot set DIM or VECDIM with 'all' flag", fcn);
 
   octave_value arg = args(0);
+  Array<int> vecdim;
 
   // Handle DIM, VECDIM
   int dim = -1;
@@ -1764,6 +2040,13 @@ do_cumminmax_body (const octave_value_list& args,
     {
       octave_value dimarg = args(1);
       get_dim_vecdim_all (dimarg, arg, dim, perm_vec, do_perm, allflag, fcn);
+      vecdim = dimarg.int_vector_value ();
+    }
+  else
+    {
+      dim_vector dims = arg.dims ();
+      vecdim.resize (dim_vector (1, 1));
+      vecdim(0) = dims.first_non_singleton () + 1;
     }
 
   // Handle allflag
@@ -1859,12 +2142,15 @@ do_cumminmax_body (const octave_value_list& args,
     }
 
   if (do_perm)
-    retval(0) = retval(0).permute (perm_vec, true);
+    {
+      retval(0) = retval(0).permute (perm_vec, true);
+      if (nargout > 1)
+        retval(1) = retval(1).permute (perm_vec, true);
+    }
 
-  // FIXME: We need a static function to convert indices into linear
-  // indices based on returning size and vecdim
-  if (linear)
-    warning ("%s: 'linear' argument is ignored", fcn);
+  // Process "linear" option
+  if (linear && nargout > 1 && ! allflag && ! args(0).isempty ())
+    retval(1) = get_linear_index (retval(1), args(0), vecdim, true);
 
   return retval;
 }
@@ -1933,7 +2219,7 @@ element along the operating dimension is @code{NaN}.
 
 If called with two output arguments, @code{cummin} also returns the first index
 of the minimum value(s) in @var{x}.  Setting the @qcode{"linear"} flag returns
-the linear index into @var{x} corresponding the minimum values.
+the linear index to the corresponding minimum values in @var{x}.
 
 The optional "ComparisonMethod" paired argument specifies the comparison method
 for numeric input and it applies to both one input and two input arrays.
@@ -1974,6 +2260,44 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %! assert (ndims (iw), 3);
 %! assert (iw, ones (2,2,2));
 
+## Test "linear" option
+%!shared x
+%! x = randi ([-10, 10], 3, 4, 5, 2);
+%!test
+%! [m, i] = cummin (x, [2, 3], 'linear');
+%! assert (m, x(i));
+%!test
+%! [m, i] = cummin (x, [1, 3], 'linear');
+%! assert (m, x(i));
+%!test
+%! [m, i] = cummin (x, [2, 4], 'linear');
+%! assert (m, x(i));
+%!test
+%! [m, i] = cummin (x, [1, 4], 'linear');
+%! assert (m, x(i));
+%!test
+%! [m, i] = cummin (x, [1, 2, 3], 'linear');
+%! assert (m, x(i));
+%!test
+%! [m, i] = cummin (x, [2, 3, 4], 'linear');
+%! assert (m, x(i));
+%!test
+%! [m, i] = cummin ([1, 2, 3; 4, 5, 6], 1, 'linear');
+%! assert (m, [1, 2, 3; 1, 2, 3]);
+%! assert (i, [1, 3, 5; 1, 3, 5]);
+%!test
+%! [m, i] = cummin ([1, 2, 3; 4, 5, 6], 2, 'linear');
+%! assert (m, [1, 1, 1; 4, 4, 4]);
+%! assert (i, [1, 1, 1; 2, 2, 2]);
+%!test
+%! [m, i] = cummin ([1, 2, 3; 4, 5, 6], 1, 'linear', 'reverse');
+%! assert (m, [1, 2, 3; 4, 5, 6]);
+%! assert (i, [1, 3, 5; 2, 4, 6]);
+%!test
+%! [m, i] = cummin ([1, 2, 3; 4, 5, 6], 2, 'linear', 'reverse');
+%! assert (m, [1, 2, 3; 4, 5, 6]);
+%! assert (i, [1, 3, 5; 2, 4, 6]);
+
 %!error <Invalid call> cummin ()
 %!error <Invalid call> cummin (1, 2, 3)
 %!error <unrecognized optional argument 'foobar'> cummin (1, "foobar")
@@ -1987,7 +2311,6 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!error <duplicate dimension in VECDIM = 2> cummin (ones (3,3), [1 2 2])
 %!error <duplicate dimension in VECDIM = 1> cummin (ones (3,3), [1 1 2])
 %!error <wrong type argument 'cell'> cummin ({1 2 3 4})
-%!warning <cummin: 'linear' argument is ignored> cummin ([1 2 3 4], "linear");
 */
 
 DEFUN (cummax, args, nargout,
@@ -2054,7 +2377,7 @@ element along the operating dimension is @code{NaN}.
 
 If called with two output arguments, @code{cummax} also returns the first index
 of the maximum value(s) in @var{x}.  Setting the @qcode{"linear"} flag returns
-the linear index into @var{x} corresponding the maximum values.
+the linear index to the corresponding minimum values in @var{x}.
 
 The optional "ComparisonMethod" paired argument specifies the comparison method
 for numeric input and it applies to both one input and two input arrays.
@@ -2095,6 +2418,44 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %! assert (ndims (iw), 3);
 %! assert (iw, ones (2,2,2));
 
+## Test "linear" option
+%!shared x
+%! x = randi ([-10, 10], 3, 4, 5, 2);
+%!test
+%! [m, i] = cummax (x, [2, 3], 'linear');
+%! assert (m, x(i));
+%!test
+%! [m, i] = cummax (x, [1, 3], 'linear');
+%! assert (m, x(i));
+%!test
+%! [m, i] = cummax (x, [2, 4], 'linear');
+%! assert (m, x(i));
+%!test
+%! [m, i] = cummax (x, [1, 4], 'linear');
+%! assert (m, x(i));
+%!test
+%! [m, i] = cummax (x, [1, 2, 3], 'linear');
+%! assert (m, x(i));
+%!test
+%! [m, i] = cummax (x, [2, 3, 4], 'linear');
+%! assert (m, x(i));
+%!test
+%! [m, i] = cummax ([1, 2, 3; 4, 5, 6], 1, 'linear');
+%! assert (m, [1, 2, 3; 4, 5, 6]);
+%! assert (i, [1, 3, 5; 2, 4, 6]);
+%!test
+%! [m, i] = cummax ([1, 2, 3; 4, 5, 6], 2, 'linear');
+%! assert (m, [1, 2, 3; 4, 5, 6]);
+%! assert (i, [1, 3, 5; 2, 4, 6]);
+%!test
+%! [m, i] = cummax ([1, 2, 3; 4, 5, 6], 1, 'linear', 'reverse');
+%! assert (m, [4, 5, 6; 4, 5, 6]);
+%! assert (i, [2, 4, 6; 2, 4, 6]);
+%!test
+%! [m, i] = cummax ([1, 2, 3; 4, 5, 6], 2, 'linear', 'reverse');
+%! assert (m, [3, 3, 3; 6, 6, 6]);
+%! assert (i, [5, 5, 5; 6, 6, 6]);
+
 %!error <Invalid call> cummax ()
 %!error <Invalid call> cummax (1, 2, 3)
 %!error <unrecognized optional argument 'foobar'> cummax (1, "foobar")
@@ -2108,7 +2469,6 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!error <duplicate dimension in VECDIM = 2> cummax (ones (3,3), [1 2 2])
 %!error <duplicate dimension in VECDIM = 1> cummax (ones (3,3), [1 1 2])
 %!error <wrong type argument 'cell'> cummax ({1 2 3 4})
-%!warning <'linear' argument is ignored> cummax ([1 2 3 4], "linear");
 */
 
 OCTAVE_END_NAMESPACE(octave)

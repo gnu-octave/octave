@@ -110,7 +110,7 @@ jobs:
 
       - name: restore ccache
         # setup the github cache used to maintain the ccache from one job to the next
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           # location of the ccache of the chroot in the root file system
           path: /home/runner/rootfs/alpine-latest-x86/home/runner/.ccache
@@ -204,7 +204,7 @@ jobs:
 
       - name: save ccache
         # Save the cache after we are done (successfully) building
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: /home/runner/rootfs/alpine-latest-x86/home/runner/.ccache
           key: ${{ steps.ccache-prepare.outputs.key }}

@@ -20,10 +20,11 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
     online, has been replaced by `pkg search -all`.  Calling `pkg list -forge`
     now gives a warning and then executes `pkg search -all`.  The warning can
     be silenced with the ID `"Octave:pkg:list-forge"`.
-  * Package metadata is now cached on the local computer for speed and
-    reliability.  Previously, it was downloaded every time for an operation
-    such as `install`, `update`, or `search`.  Metadata updates can also be
-    done on demand with the new option `-refresh` for those three actions.
+  * Package metadata is now cached locally on the computer as a backup for
+    reliability.  It is updated automatically when an operation that needs the
+    current package index such as `install`, `update`, or `search` is run the
+    first time in an Octave session.  Metadata updates can also be done on
+    demand with the new option `-refresh` for those three actions.
   * Package tarballs are now verified using SHA256 if they are downloaded
     during `pkg install` or `pkg update`.
 

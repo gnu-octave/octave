@@ -58,15 +58,11 @@ function retval = get_validated_pkg_list (force_refresh = false, verbose = false
   ## This makes age visible and provides natural history/rollback
   cache_pattern = "packages_*.json";
 
-  ## Maximum age of cache in days (7 days)
-  max_cache_age = 7;
-
   ## Maximum number of old cache files to keep (for history/rollback)
   max_cache_files = 3;
 
   ## Find most recent cache file
   cache_file = "";
-  cache_age_days = Inf;
 
   if (exist (cache_dir, "dir"))
     cache_files = dir (fullfile (cache_dir, cache_pattern));
@@ -113,100 +109,6 @@ function retval = get_validated_pkg_list (force_refresh = false, verbose = false
     endif
   endif
 
-  use_cache = false;
-  need_update = false;
-
-  if (! force_refresh && ! isempty (cache_file))
-    ## Cache file exists, check its age
-    if (cache_age_days < max_cache_age)
-      ## Cache is fresh enough, use it
-      use_cache = true;
-      if (verbose)
-        printf ("pkg: cache is fresh (< %d days old), using cached data\n",
-                max_cache_age);
-      endif
-    else
-      ## Cache is too old
-      need_update = true;
-      if (verbose)
-        printf ("pkg: cache is stale (>= %d days old), update recommended\n",
-                max_cache_age);
-      endif
-    endif
-  endif
-
-  ## Try to use cache if available and fresh
-  if (use_cache)
-    if (verbose)
-      printf ("pkg: reading package database from cache file...\n");
-    endif
-    try
-      fid = fopen (cache_file, "rt");
-      if (fid < 0)
-        error ("pkg: could not open cache file for reading");
-      endif
-      unwind_protect
-        list = fread (fid, Inf, "*char")';
-      unwind_protect_cleanup
-        fclose (fid);
-      end_unwind_protect
-
-      __pkg__ = jsondecode (list, "makeValidName", false);
-
-      if (! isstruct (__pkg__))
-        warning ("pkg: cached data has unexpected format, will try to refresh");
-        use_cache = false;
-        need_update = true;
-      else
-        if (verbose)
-          printf ("pkg: successfully loaded %d packages from cache\n",
-                  numel (fieldnames (__pkg__)));
-        endif
-        retval = __pkg__;
-        return;
-      endif
-    catch
-      warning ("pkg: error reading cache file, will try to refresh: %s", ...
-               lasterr ());
-      use_cache = false;
-      need_update = true;
-    end_try_catch
-  endif
-
-  ## If cache is old, warn user to update (unless already forced)
-  if (need_update && ! force_refresh)
-    warning ("Octave:pkg:old-refresh", "The package database cache is more than %d days old; you can update with '-refresh'.\n", max_cache_age);
-
-    if (! isempty (cache_file))
-      if (verbose)
-        printf ("pkg: reading from outdated cache file...\n");
-      endif
-      try
-        fid = fopen (cache_file, "rt");
-        if (fid >= 0)
-          unwind_protect
-            list = fread (fid, Inf, "*char")';
-          unwind_protect_cleanup
-            fclose (fid);
-          end_unwind_protect
-
-          __pkg__ = jsondecode (list, "makeValidName", false);
-
-          if (isstruct (__pkg__))
-            if (verbose)
-              printf ("pkg: loaded %d packages from outdated cache\n",
-                      numel (fieldnames (__pkg__)));
-            endif
-            retval = __pkg__;
-            return;
-          endif
-        endif
-      catch
-        ## Fall through to online fetch
-      end_try_catch
-    endif
-  endif
-
   ## Download fresh data from server
   downloaded_fresh_data = false;
 
@@ -217,18 +119,18 @@ function retval = get_validated_pkg_list (force_refresh = false, verbose = false
     endif
   endif
 
-  ## Try primary URL first, then backup
+  ## Try primary URL first, then fallback
   primary_url = "https://packages.octave.org/packages.json";
-  backup_url = "https://gnu-octave.github.io/packages/packages.json";
+  fallback_url = "https://gnu-octave.github.io/packages/packages.json";
 
   [list, succ] = urlread (primary_url);
 
   if (! succ)
-    ## Primary failed, try backup
+    ## Primary failed, try fallback
     if (verbose)
-      printf ("pkg: primary repository unavailable, trying backup from gnu-octave.github.io...\n");
+      printf ("pkg: primary repository unavailable, trying gnu-octave.github.io/packages...\n");
     endif
-    [list, succ] = urlread (backup_url);
+    [list, succ] = urlread (fallback_url);
   endif
 
   if (! succ)
@@ -236,8 +138,10 @@ function retval = get_validated_pkg_list (force_refresh = false, verbose = false
     if (verbose)
       warning ("pkg: download failed, attempting to use cached data");
     endif
+
     if (! isempty (cache_file))
-      warning ("pkg: could not download package list, using cached version");
+      warning ("pkg: could not download package list, using cached package index (%.1f days old)\n", ...
+               cache_age_days);
       try
         fid = fopen (cache_file, "rt");
         if (fid >= 0)
@@ -251,18 +155,18 @@ function retval = get_validated_pkg_list (force_refresh = false, verbose = false
 
           if (isstruct (__pkg__))
             if (verbose)
-              printf ("pkg: successfully fell back to cached data (%d packages)\n",
-                      numel (fieldnames (__pkg__)));
+              printf ("pkg: successfully fell back to cached data (%d packages) from %s\n",
+                      numel (fieldnames (__pkg__)), cache_file);
             endif
             retval = __pkg__;
             return;
           endif
         endif
       catch
-        error ("pkg: could not read URL and cache is unavailable, please verify internet connection");
+        error ("pkg: could not read URL and cached package index is unreadable, please verify internet connection");
       end_try_catch
     else
-      error ("pkg: could not read URL and no cache available, please verify internet connection");
+      error ("pkg: could not read URL and no cached package index available, please verify internet connection");
     endif
   else
     ## Download succeeded - capture timestamp
@@ -300,51 +204,51 @@ function retval = get_validated_pkg_list (force_refresh = false, verbose = false
         endif
       endif
 
-    ## Generate timestamped filename using datestr
-    ## Format: packages_yyyymmddHHMM.json
-    ## Use download_time, not current time, so timestamp reflects data age
-    timestamp_str = datestr (download_time, "yyyymmddHHMM");
-    new_cache_file = fullfile (cache_dir, ["packages_" timestamp_str ".json"]);
-
-    if (verbose)
-      printf ("pkg: saving package database to cache: %s\n", new_cache_file);
-    endif
-
-    ## Write new cache
-    fid = fopen (new_cache_file, "wt");
-    if (fid >= 0)
-      unwind_protect
-        fwrite (fid, list);
-      unwind_protect_cleanup
-        fclose (fid);
-      end_unwind_protect
+      ## Generate timestamped filename using datestr
+      ## Format: packages_yyyymmddHHMM.json
+      ## Use download_time, not current time, so timestamp reflects data age
+      timestamp_str = datestr (download_time, "yyyymmddHHMM");
+      new_cache_file = fullfile (cache_dir, ["packages_" timestamp_str ".json"]);
 
       if (verbose)
-        printf ("pkg: cache file saved successfully\n");
+        printf ("pkg: saving package database to cache: %s\n", new_cache_file);
       endif
 
-      ## Clean up old cache files (keep only max_cache_files most recent)
-      cache_files = dir (fullfile (cache_dir, cache_pattern));
-      if (numel (cache_files) > max_cache_files)
+      ## Write new cache
+      fid = fopen (new_cache_file, "wt");
+      if (fid >= 0)
+        unwind_protect
+          fwrite (fid, list);
+        unwind_protect_cleanup
+          fclose (fid);
+        end_unwind_protect
+
         if (verbose)
-          printf ("pkg: cleaning up old cache files (keeping %d most recent)...\n",
-                  max_cache_files);
+          printf ("pkg: cache file saved successfully\n");
         endif
-        ## Sort by modification time
-        [~, idx] = sort ([cache_files.datenum], "descend");
-        ## Remove oldest files
-        for i = (max_cache_files + 1):numel (idx)
-          old_file = fullfile (cache_dir, cache_files(idx(i)).name);
-          try
-            unlink (old_file);
-            if (verbose)
-              printf ("pkg: deleted old cache file: %s\n", cache_files(idx(i)).name);
-            endif
-          catch
-            warning ("pkg: could not delete old cache file: %s", old_file);
-          end_try_catch
-        endfor
-      endif
+
+        ## Clean up old cache files (keep only max_cache_files most recent)
+        cache_files = dir (fullfile (cache_dir, cache_pattern));
+        if (numel (cache_files) > max_cache_files)
+          if (verbose)
+            printf ("pkg: cleaning up old cache files (keeping %d most recent)...\n",
+                    max_cache_files);
+          endif
+          ## Sort by modification time
+          [~, idx] = sort ([cache_files.datenum], "descend");
+          ## Remove oldest files
+          for i = (max_cache_files + 1):numel (idx)
+            old_file = fullfile (cache_dir, cache_files(idx(i)).name);
+            try
+              unlink (old_file);
+              if (verbose)
+                printf ("pkg: deleted old cache file: %s\n", cache_files(idx(i)).name);
+              endif
+            catch
+              warning ("pkg: could not delete old cache file: %s", old_file);
+            end_try_catch
+          endfor
+        endif
       else
         warning ("pkg: could not write to cache file");
       endif

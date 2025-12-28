@@ -140,6 +140,13 @@
 ## @code{install}, @code{search}, and @code{update} commands.
 ## @end table
 ##
+## If the package tarball contains a @file{configure} script, it is run during
+## the installation of the package.  If it contains a @file{Makefile}, the
+## command @command{make} is used by default.  It is possible to override the
+## default command with the environment variable @env{MAKE}.  Some Octave
+## packages might require GNU @command{make} which may be present under a
+## different name such as @command{gmake}.
+##
 ## @item update
 ## Check installed Octave packages against their repositories and update any
 ## outdated items.  Updated packages are installed either globally or locally

@@ -6,12 +6,12 @@
     <message>
         <location filename="build_ts/octave-qt/qmessagebox.cpp" line="+2902"/>
         <source>Application &quot;%1&quot; requires Qt %2, found Qt %3.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;aplicación %1 requier Qt %2, topose Qt %3.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Incompatible Qt Library Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de compatibilidá de la biblioteca Qt</translation>
     </message>
 </context>
 <context>
@@ -19,73 +19,74 @@
     <message>
         <location filename="build_ts/octave-qt/qcolordialog.cpp" line="+1473"/>
         <source>Hu&amp;e:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tonu:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Sat:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Saturación:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Val:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Valor:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Red:</source>
-        <translation type="unfinished"></translation>
+        <translation>Collo&amp;ráu:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Green:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Verde:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Bl&amp;ue:</source>
-        <translation type="unfinished"></translation>
+        <translation>Az&amp;ul:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A&amp;lpha channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Canal a&amp;lfa:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;HTML:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;HTML:</translation>
     </message>
     <message>
         <location line="+184"/>
         <source>Cursor at %1, %2
 Press ESC to cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Cursor en %1, %2
+Calcar ESC pa cancelar</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>Select Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleicionar color</translation>
     </message>
     <message>
         <location line="+204"/>
         <source>&amp;Basic colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Colores &amp;básicos</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Custom colors</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Colores personalizáos</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Add to Custom Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Amestar a los colores personalizáos</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Pick Screen Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Escoyer color de &amp;pantalla</translation>
     </message>
 </context>
 <context>
@@ -93,7 +94,7 @@ Press ESC to cancel</source>
     <message>
         <location filename="build_ts/octave-qt/qdialog.cpp" line="+677"/>
         <source>What&apos;s This?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Qué ye esto?</translation>
     </message>
 </context>
 <context>
@@ -102,7 +103,7 @@ Press ESC to cancel</source>
         <location filename="build_ts/octave-qt/qmessagebox.cpp" line="-793"/>
         <location line="+452"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -110,42 +111,42 @@ Press ESC to cancel</source>
     <message>
         <location filename="build_ts/octave-qt/qerrormessage.cpp" line="+86"/>
         <source>An error occurred</source>
-        <translation type="unfinished"></translation>
+        <translation>Ocurrió un error</translation>
     </message>
     <message>
         <location line="+91"/>
         <source>Debug Message:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mensaxe de depuración:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Warning:</source>
-        <translation type="unfinished"></translation>
+        <translation>Avisu:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Critical Error:</source>
-        <translation type="unfinished"></translation>
+        <translation>Error críticu:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Fatal Error:</source>
-        <translation type="unfinished"></translation>
+        <translation>Error fatal:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Information:</source>
-        <translation type="unfinished"></translation>
+        <translation>Información:</translation>
     </message>
     <message>
         <location line="+256"/>
         <source>&amp;Show this message again</source>
-        <translation type="unfinished"></translation>
+        <translation>Amo&amp;sar esti mensaxe otra vez</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;OK</translation>
     </message>
 </context>
 <context>
@@ -154,84 +155,85 @@ Press ESC to cancel</source>
         <location filename="build_ts/octave-qt/qfiledialog.cpp" line="+582"/>
         <location filename="build_ts/octave-qt/qfiledialog_symbian.cpp" line="+192"/>
         <source>Find Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Direutoriu atopáu</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Open</source>
-        <translation type="unfinished">Abri</translation>
+        <translation>Abrir</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Save As</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar como</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Direutoriu:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>File &amp;name:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nome del ficheru:</translation>
     </message>
     <message>
         <location line="+17"/>
         <location line="+12"/>
         <source>&amp;Open</source>
-        <translation type="unfinished">&amp;Abrir</translation>
+        <translation>&amp;Abrir</translation>
     </message>
     <message>
         <location line="-5"/>
         <source>&amp;Choose</source>
-        <translation type="unfinished"></translation>
+        <translation>Es&amp;coyer</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Guardar</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Show </source>
-        <translation type="unfinished"></translation>
+        <translation>Ver </translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Rename</source>
-        <translation type="unfinished">&amp;Renomar</translation>
+        <translation>&amp;Renomar</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Borrar</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show &amp;hidden files</source>
-        <translation type="unfinished"></translation>
+        <translation>Ver ficheros &amp;ocultos</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;New Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nuevu direutoriu</translation>
     </message>
     <message>
         <location line="+859"/>
         <source>All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Toos los ficheros (*)</translation>
     </message>
     <message>
         <location line="+171"/>
         <source>Directories</source>
-        <translation type="unfinished"></translation>
+        <translation>Direutorios</translation>
     </message>
     <message>
         <location line="+973"/>
         <source>%1 already exists.
 Do you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ya esiste.
+¿Quier reemplazalu?</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -239,51 +241,56 @@ Do you want to replace it?</source>
         <source>%1
 Directory not found.
 Please verify the correct directory name was given.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1
+Direutoriu nun atopáu.
+Por favor, verifique qu&apos;indicó&apos;l nome correutu.</translation>
     </message>
     <message>
         <location line="-1118"/>
         <source>%1
 File not found.
 Please verify the correct file name was given.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1
+Ficheru nun atopáu.
+Por favor, verifique qu&apos;indicó&apos;l nome correutu.</translation>
     </message>
     <message>
         <location line="+762"/>
         <source>New Folder</source>
-        <translation type="unfinished">Nueva carpeta</translation>
+        <translation>Nueva carpeta</translation>
     </message>
     <message>
         <location line="+130"/>
         <location line="+5"/>
         <source>Delete</source>
-        <translation type="unfinished">Eliminar</translation>
+        <translation>Eliminar</translation>
     </message>
     <message>
         <location line="-4"/>
         <source>&apos;%1&apos; is write protected.
 Do you want to delete it anyway?</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; ta protexío contra escritura.
+¿Quier borralo igualmente?</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Are you sure you want to delete &apos;%1&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Ta seguru de que quier borrar &apos;%1&apos;?</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Could not delete directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nun se pudo borrar el direutoriu.</translation>
     </message>
     <message>
         <location line="+441"/>
         <source>Recent Places</source>
-        <translation type="unfinished"></translation>
+        <translation>Llugares recientes</translation>
     </message>
     <message>
         <location filename="build_ts/octave-qt/qfiledialog_win.cpp" line="+131"/>
         <source>All Files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Toos los ficheros (*.*)</translation>
     </message>
 </context>
 <context>
@@ -297,29 +304,29 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="build_ts/octave-qt/qfilesystemmodel.cpp" line="+964"/>
         <source>Name</source>
-        <translation type="unfinished">Nome</translation>
+        <translation>Nome</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamañu</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Kind</source>
         <comment>Match OS X Finder</comment>
-        <translation type="unfinished"></translation>
+        <translation>Tipu</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Type</source>
         <comment>All other platforms</comment>
-        <translation type="unfinished"></translation>
+        <translation>Tipu</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Date Modified</source>
-        <translation type="unfinished"></translation>
+        <translation>Fecha de modificación</translation>
     </message>
 </context>
 <context>
@@ -327,47 +334,47 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="build_ts/octave-qt/qfontdialog.cpp" line="+141"/>
         <source>Select Font</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleicionar fonte</translation>
     </message>
     <message>
         <location line="+600"/>
         <source>&amp;Font</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fonte</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Font st&amp;yle</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Estilu de fonte</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Size</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tamañu</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Effects</source>
-        <translation type="unfinished"></translation>
+        <translation>Efeutos</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Stri&amp;keout</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tachar</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Underline</source>
-        <translation type="unfinished"></translation>
+        <translation>S&amp;ubrayar</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Sample</source>
-        <translation type="unfinished"></translation>
+        <translation>Exemplu</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Wr&amp;iting System</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistema de cod&amp;ificación</translation>
     </message>
 </context>
 <context>
@@ -375,22 +382,22 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+62"/>
         <source>Search for:</source>
-        <translation type="unfinished"></translation>
+        <translation>Buscar:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Search</source>
-        <translation type="unfinished">Buscar</translation>
+        <translation>Buscar</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Previous search</source>
-        <translation type="unfinished"></translation>
+        <translation>Búsqueda previa</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Next search</source>
-        <translation type="unfinished"></translation>
+        <translation>Búsqueda siguiente</translation>
     </message>
 </context>
 <context>
@@ -398,7 +405,7 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="build_ts/octave-qt/qinputdialog.cpp" line="+209"/>
         <source>Enter a value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Introduzca un valor:</translation>
     </message>
 </context>
 <context>
@@ -406,28 +413,28 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="build_ts/octave-qt/qmessagebox.cpp" line="-2404"/>
         <source>Show Details...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ver detalles...</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Hide Details...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ancultar detalles...</translation>
     </message>
     <message>
         <location line="+1815"/>
         <source>&lt;h3&gt;About Qt&lt;/h3&gt;&lt;p&gt;This program uses Qt version %1.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Sobre Qt&lt;/h3&gt;&lt;p&gt;Esti programa usa Qt versión %1.&lt;/p&gt;</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&lt;p&gt;Qt is a C++ toolkit for cross-platform application development.&lt;/p&gt;&lt;p&gt;Qt provides single-source portability across all major desktop operating systems. It is also available for embedded Linux and other embedded and mobile operating systems.&lt;/p&gt;&lt;p&gt;Qt is available under multiple licensing options designed to accommodate the needs of our various users.&lt;/p&gt;&lt;p&gt;Qt licensed under our commercial license agreement is appropriate for development of proprietary/commercial software where you do not want to share any source code with third parties or otherwise cannot comply with the terms of GNU (L)GPL.&lt;/p&gt;&lt;p&gt;Qt licensed under GNU (L)GPL is appropriate for the development of Qt&amp;nbsp;applications provided you can comply with the terms and conditions of the respective licenses.&lt;/p&gt;&lt;p&gt;Please see &lt;a href=&quot;https://%2/&quot;&gt;%2&lt;/a&gt; for an overview of Qt licensing.&lt;/p&gt;&lt;p&gt;Copyright (C) The Qt Company Ltd. and other contributors.&lt;/p&gt;&lt;p&gt;Qt and the Qt logo are trademarks of The Qt Company Ltd.&lt;/p&gt;&lt;p&gt;Qt is The Qt Company Ltd. product developed as an open source project. See &lt;a href=&quot;https://%3/&quot;&gt;%3&lt;/a&gt; for more information.&lt;/p&gt;</source>
         <extracomment>Leave this text untranslated or include a verbatim copy of it below and note that it is the authoritative version in case of doubt.</extracomment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+26"/>
         <source>About Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Sobre Qt</translation>
     </message>
 </context>
 <context>
@@ -469,74 +476,74 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="build_ts/octave-qt/qpagesetupdialog_unix.cpp" line="+260"/>
         <source>Millimeters (mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Milímetros (mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Inches (in)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pulgaes (in)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Points (pt)</source>
-        <translation type="unfinished"></translation>
+        <translation>Puntos (pt)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Pica (P̸)</source>
-        <translation type="unfinished"></translation>
+        <translation>Piques (P̸)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Didot (DD)</source>
-        <translation type="unfinished"></translation>
+        <translation>Didots (DD)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cicero (CC)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ciceros (CC)</translation>
     </message>
     <message>
         <location line="+68"/>
         <location line="+17"/>
         <source>Custom</source>
-        <translation type="unfinished"></translation>
+        <translation>Personalizáo</translation>
     </message>
     <message>
         <location line="+60"/>
         <source>mm</source>
         <extracomment>Unit &apos;Millimeter&apos;</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>pt</source>
         <extracomment>Unit &apos;Points&apos;</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>pt</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>in</source>
         <extracomment>Unit &apos;Inch&apos;</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>in</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>P̸</source>
         <extracomment>Unit &apos;Pica&apos;</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>P̸</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>DD</source>
         <extracomment>Unit &apos;Didot&apos;</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>DD</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>CC</source>
         <extracomment>Unit &apos;Cicero&apos;</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>CC</translation>
     </message>
 </context>
 <context>
@@ -544,92 +551,92 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="build_ts/octave-qt/qplatformtheme.cpp" line="+793"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Save</source>
-        <translation type="unfinished">Guardar</translation>
+        <translation>Guardar</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Save All</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar too</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Open</source>
-        <translation type="unfinished">Abri</translation>
+        <translation>Abrir</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sí</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Yes to &amp;All</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sí a too</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Non</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>N&amp;o to All</source>
-        <translation type="unfinished"></translation>
+        <translation>N&amp;on a too</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Abort</source>
-        <translation type="unfinished"></translation>
+        <translation>Abortar</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Retry</source>
-        <translation type="unfinished"></translation>
+        <translation>Raintenar</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Ignore</source>
-        <translation type="unfinished"></translation>
+        <translation>Inorar</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Close</source>
-        <translation type="unfinished">Zarrar</translation>
+        <translation>Zarrar</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Cancel</source>
-        <translation type="unfinished">Cancelar</translation>
+        <translation>Cancelar</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Discard</source>
-        <translation type="unfinished"></translation>
+        <translation>Descartar</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Ayuda</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplicar</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Reiniciar</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Restore Defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Restaurar a valores por defeutu</translation>
     </message>
 </context>
 <context>
@@ -639,357 +646,361 @@ Do you want to delete it anyway?</source>
         <location line="+16"/>
         <location filename="build_ts/octave-qt/qprintdialog_win.cpp" line="+239"/>
         <source>Print</source>
-        <translation type="unfinished">Imprimir</translation>
+        <translation>Imprimir</translation>
     </message>
     <message>
         <location filename="build_ts/octave-qt/qpagesetupdialog_unix.cpp" line="-155"/>
         <source>Left to Right, Top to Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Izquierda a derecha, arriba a abaxo</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Left to Right, Bottom to Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Izquierda a derecha, abaxo a arriba</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Right to Left, Bottom to Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Derecha a izquierda, abaxo a arriba</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Right to Left, Top to Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Derecha a izquierda, arriba a abaxo</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Bottom to Top, Left to Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Abaxo a arriba, izquierda a derecha</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Bottom to Top, Right to Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Abaxo a arriba, derecha a izquierda</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Top to Bottom, Left to Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Arriba a abaxo, izquierda a derecha</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Top to Bottom, Right to Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Arriba a abaxo, derecha a izquierda</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>1 (1x1)</source>
-        <translation type="unfinished"></translation>
+        <translation>1 (1x1)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>2 (2x1)</source>
-        <translation type="unfinished"></translation>
+        <translation>2 (2x1)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>4 (2x2)</source>
-        <translation type="unfinished"></translation>
+        <translation>4 (2x2)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>6 (2x3)</source>
-        <translation type="unfinished"></translation>
+        <translation>6 (2x3)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>9 (3x3)</source>
-        <translation type="unfinished"></translation>
+        <translation>9 (3x3)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>16 (4x4)</source>
-        <translation type="unfinished"></translation>
+        <translation>16 (4x4)</translation>
     </message>
     <message>
         <location filename="build_ts/octave-qt/qprintdialog_qws.cpp" line="+148"/>
         <source>File exists</source>
-        <translation type="unfinished"></translation>
+        <translation>El ficheru esiste</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&lt;qt&gt;Do you want to overwrite it?&lt;/qt&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;qt&gt;¿Quier reescribilu?&lt;/qt&gt;</translation>
     </message>
     <message>
         <location line="+184"/>
         <source>A0 (841 x 1189 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A0 (841 x 1189 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A1 (594 x 841 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A1 (594 x 841 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A2 (420 x 594 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A2 (420 x 594 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A3 (297 x 420 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A3 (297 x 420 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A4 (210 x 297 mm, 8.26 x 11.7 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation>A4 (210 x 297 mm, 8.26 x 11.7 in)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A5 (148 x 210 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A5 (148 x 210 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A6 (105 x 148 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A6 (105 x 148 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A7 (74 x 105 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A7 (74 x 105 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A8 (52 x 74 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A8 (52 x 74 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A9 (37 x 52 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A9 (37 x 52 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B0 (1000 x 1414 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B0 (1000 x 1414 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B1 (707 x 1000 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B1 (707 x 1000 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B2 (500 x 707 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B2 (500 x 707 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B3 (353 x 500 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B3 (353 x 500 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B4 (250 x 353 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B4 (250 x 353 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B5 (176 x 250 mm, 6.93 x 9.84 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation>B5 (176 x 250 mm, 6.93 x 9.84 in)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B6 (125 x 176 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B6 (125 x 176 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B7 (88 x 125 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B7 (88 x 125 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B8 (62 x 88 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B8 (62 x 88 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B9 (44 x 62 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B9 (44 x 62 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B10 (31 x 44 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B10 (31 x 44 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>C5E (163 x 229 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>C5E (163 x 229 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>DLE (110 x 220 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>DLE (110 x 220 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Executive (7.5 x 10 inches, 191 x 254 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Executivu (191 x 254 mm, 7.5 x 10 in)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Folio (210 x 330 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Foliu (210 x 330 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Ledger (432 x 279 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Llibru de contabilidá (432 x 279 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Legal (8.5 x 14 inches, 216 x 356 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Llegal (216 x 356 mm, 8.5 x 14 in)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Letter (8.5 x 11 inches, 216 x 279 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Carta (216 x 279 mm, 8.5 x 11 in)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tabloid (279 x 432 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabloide (279 x 432 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>US Common #10 Envelope (105 x 241 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sobre #10 de EEUU (105 x 241 mm)</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Print all</source>
-        <translation type="unfinished"></translation>
+        <translation>Imprimir too</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Print selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Imprimir seleición</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Print range</source>
-        <translation type="unfinished"></translation>
+        <translation>Imprimir rangu</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Print current page</source>
-        <translation type="unfinished"></translation>
+        <translation>Imprimir la páxina actual</translation>
     </message>
     <message>
         <location filename="build_ts/octave-qt/qprintdialog_unix.cpp" line="+608"/>
         <source>All Pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Toes les páxines</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Odd Pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Páxines impares</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Even Pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Páxines pares</translation>
     </message>
     <message>
         <location line="+11"/>
         <location line="+224"/>
         <source>&amp;Options &gt;&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Opciones &gt;&gt;</translation>
     </message>
     <message>
         <location line="-219"/>
         <source>&amp;Print</source>
-        <translation type="unfinished"></translation>
+        <translation>Im&amp;primir</translation>
     </message>
     <message>
         <location line="+223"/>
         <source>&amp;Options &lt;&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Opciones &lt;&lt;</translation>
     </message>
     <message>
         <location line="+148"/>
         <source>Invalid Pages Definition</source>
-        <translation type="unfinished"></translation>
+        <translation>Definición inválida de páxines</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>%1 does not follow the correct syntax. Please use &apos;,&apos; to separate ranges and pages, &apos;-&apos; to define ranges and make sure ranges do not intersect with each other.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 nun sigue la sintaxis correuta. Por favor, emplegue &apos;,&apos; pa separar rangos y páxines, &apos;-&apos; pa definir rangos y asegúrese de que los rangos nun se cruzan unos con otros.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Duplex Settings Conflicts</source>
-        <translation type="unfinished"></translation>
+        <translation>Conflictos cola configuración de la impresión a doble cara</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>There are conflicts in duplex settings. Do you want to fix them?</source>
-        <translation type="unfinished"></translation>
+        <translation>Hay conflictos cola configuración de la impresión a doble cara. ¿Quier arreglalos?</translation>
     </message>
     <message>
         <location line="+76"/>
         <source>Print to File (PDF)</source>
-        <translation type="unfinished"></translation>
+        <translation>Imprimir a ficheru (PDF)</translation>
     </message>
     <message>
         <location line="+54"/>
         <source>Local file</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheru local</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Write PDF file</source>
-        <translation type="unfinished"></translation>
+        <translation>Escribir fichero PDF</translation>
     </message>
     <message>
         <location line="+47"/>
         <source>Print To File ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Imprimir a ficheru...</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>%1 is a directory.
 Please choose a different file name.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ye un direutoriu.
+Por favor, escoya otru nome diferente.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>File %1 is not writable.
 Please choose a different file name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nun se pue escribir nel ficheru %1.
+Por favor, escoya otru nome diferente.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>%1 already exists.
 Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ya esiste.
+¿Quier sobreescribilu?</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Options &apos;Pages Per Sheet&apos; and &apos;Page Set&apos; cannot be used together.
 Please turn one of those options off.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les opciones &apos;páxines per fueya&apos; y &apos;asignar páxina&apos; nun se puen usar xuntes.
+Por favor, escoya una sola de les dos.</translation>
     </message>
     <message>
         <location filename="build_ts/octave-qt/qprintdialog_win.cpp" line="+1"/>
         <source>The &apos;From&apos; value cannot be greater than the &apos;To&apos; value.</source>
-        <translation type="unfinished"></translation>
+        <translation>El valor &apos;desde&apos; nun pue ser mayor que &apos;hasta&apos;.</translation>
     </message>
 </context>
 <context>
@@ -1002,7 +1013,7 @@ Please turn one of those options off.</source>
         <location filename="build_ts/octave-qt/qpagesetupdialog_win.cpp" line="+18"/>
         <location line="+7"/>
         <source>Page Setup</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuración de páxina</translation>
     </message>
 </context>
 <context>
@@ -1010,32 +1021,32 @@ Please turn one of those options off.</source>
     <message>
         <location filename="build_ts/octave-qt/qprintdialog_unix.cpp" line="-987"/>
         <source>Printer Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propiedaes de la impresora</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Job Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opciones del trabayu</translation>
     </message>
     <message>
         <location line="+62"/>
         <source>Page Setup Conflicts</source>
-        <translation type="unfinished"></translation>
+        <translation>Conflictos de la configuración de páxina</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>There are conflicts in page setup options. Do you want to fix them?</source>
-        <translation type="unfinished"></translation>
+        <translation>Hay conflictos coles opciones de configuración de páxina. ¿Quier arreglalos?</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Advanced Option Conflicts</source>
-        <translation type="unfinished"></translation>
+        <translation>Conflictos con opciones avanzaes</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>There are conflicts in some advanced options. Do you want to fix them?</source>
-        <translation type="unfinished"></translation>
+        <translation>Hay conflictos en dalgunes opciones avanzaes. ¿Quier arreglalos?</translation>
     </message>
 </context>
 <context>
@@ -1114,72 +1125,72 @@ Please turn one of those options off.</source>
     <message>
         <location filename="build_ts/octave-qsci/qscilexerbash.cpp" line="+203"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Por defeutu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentariu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Númberu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Pallabra clave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena con comilles dobles</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena con comilles simples</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Operador</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificador</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Scalar</source>
-        <translation type="unfinished"></translation>
+        <translation>Escalar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Parameter expansion</source>
-        <translation type="unfinished"></translation>
+        <translation>Expansión de parámetros</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backticks</source>
-        <translation type="unfinished"></translation>
+        <translation>Acentos graves</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Here document delimiter</source>
-        <translation type="unfinished"></translation>
+        <translation>Delimitador de documentu equí</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted here document</source>
-        <translation type="unfinished"></translation>
+        <translation>Documentu ente comilles simples equí</translation>
     </message>
 </context>
 <context>
@@ -1187,42 +1198,42 @@ Please turn one of those options off.</source>
     <message>
         <location filename="build_ts/octave-qsci/qscilexerbatch.cpp" line="+174"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Por defeutu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentariu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Pallabra clave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiqueta</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hide command character</source>
-        <translation type="unfinished"></translation>
+        <translation>Ancultar caráuter de comandu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>External command</source>
-        <translation type="unfinished"></translation>
+        <translation>Comandu esternu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Variable</source>
-        <translation type="unfinished"></translation>
+        <translation>Variable</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Operador</translation>
     </message>
 </context>
 <context>
@@ -1230,282 +1241,282 @@ Please turn one of those options off.</source>
     <message>
         <location filename="build_ts/octave-qsci/qscilexercpp.cpp" line="+364"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Por defeutu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive default</source>
-        <translation type="unfinished"></translation>
+        <translation>Inactivu por defeutu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentariu de C</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentariu de C inactivu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentariu de C++</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentariu de C++ inactivu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc style C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentariu de JavaDoc al estilu de C</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc style C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentariu de JavaDoc al estilu de C inactivu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Númberu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive number</source>
-        <translation type="unfinished"></translation>
+        <translation>Númberu inactivu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Pallabra clave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Pallabra clave inactiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena de testu con comilles dobles</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena de testu con comilles dobles inactiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena de testu con comilles simples</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena de testu con comilles simples inactiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>IDL UUID</source>
-        <translation type="unfinished"></translation>
+        <translation>IDL UUID</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive IDL UUID</source>
-        <translation type="unfinished"></translation>
+        <translation>IDL UUID inactivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Pre-processor block</source>
-        <translation type="unfinished"></translation>
+        <translation>Bloque de preprocesador</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive pre-processor block</source>
-        <translation type="unfinished"></translation>
+        <translation>Bloque de preprocesador inactivu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Operador</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Operador inactivu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificador</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificador inactivu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Unclosed string</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena en sin zarrar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive unclosed string</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena en sin zarrar inactiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C# verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena C# literal</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C# verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena C# literal inactiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaScript regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Espresión regular de JavaScript</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaScript regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Espresión regular de JavaScript inactiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc style C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentario de JavaDoc en estilo C++</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc style C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentario de JavaDoc en estilo C++ inactivu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Secondary keywords and identifiers</source>
-        <translation type="unfinished"></translation>
+        <translation>Pallabres clave e identificadores secundarios</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive secondary keywords and identifiers</source>
-        <translation type="unfinished"></translation>
+        <translation>Pallabres clave e identificadores secundarios inactivos</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Pallabra clave de JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Pallabra clave de JavaDoc inactiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc keyword error</source>
-        <translation type="unfinished"></translation>
+        <translation>Pallabra clave de error de JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc keyword error</source>
-        <translation type="unfinished"></translation>
+        <translation>Pallabra clave de error de JavaDoc inactiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Global classes and typedefs</source>
-        <translation type="unfinished"></translation>
+        <translation>Clases globales y typedefs</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive global classes and typedefs</source>
-        <translation type="unfinished"></translation>
+        <translation>Clases globales y typedefs inactivos</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C++ raw string</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena de C++ bruta</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C++ raw string</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena de C++ bruta inactiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Vala triple-quoted verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena con comillas triples de Vala</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive Vala triple-quoted verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena con comillas triples de Vala inactiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Pike hash-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena hash-quoted de Pike</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive Pike hash-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena hash-quoted de Pike inactiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Pre-processor C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentariu del preprocesador de C</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive pre-processor C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentariu del preprocesador de C inactivu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc style pre-processor comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentariu del preprocesador en estilu JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc style pre-processor comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentariu del preprocesador en estilu JavaDoc inactivu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>User-defined literal</source>
-        <translation type="unfinished"></translation>
+        <translation>Literal definiu pol usuariu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive user-defined literal</source>
-        <translation type="unfinished"></translation>
+        <translation>Literal definiu pol usuariu inactivu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Task marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Marcador de tarea</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive task marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Marcador de tarea inactivu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Escape sequence</source>
-        <translation type="unfinished"></translation>
+        <translation>Secuencia d&apos;escape</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive escape sequence</source>
-        <translation type="unfinished"></translation>
+        <translation>Secuencia d&apos;escape inactiva</translation>
     </message>
 </context>
 <context>
@@ -1513,62 +1524,62 @@ Please turn one of those options off.</source>
     <message>
         <location filename="build_ts/octave-qsci/qscilexerdiff.cpp" line="+106"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Por defeutu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentariu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Command</source>
-        <translation type="unfinished">Comandos</translation>
+        <translation>Comandu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Header</source>
-        <translation type="unfinished"></translation>
+        <translation>Cabecera</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Position</source>
-        <translation type="unfinished">Posición</translation>
+        <translation>Posición</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Removed line</source>
-        <translation type="unfinished"></translation>
+        <translation>Llína borrada</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Added line</source>
-        <translation type="unfinished"></translation>
+        <translation>Llínia añadía</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Changed line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linia cambiada</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Added adding patch</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadíu parche d&apos;adición</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Removed adding patch</source>
-        <translation type="unfinished"></translation>
+        <translation>Elimináu parche d&apos;adición</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Added removing patch</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadíu parche d&apos;eliminación</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Removed removing patch</source>
-        <translation type="unfinished"></translation>
+        <translation>Elimináu parche d&apos;eliminación</translation>
     </message>
 </context>
 <context>
@@ -1576,47 +1587,47 @@ Please turn one of those options off.</source>
     <message>
         <location filename="build_ts/octave-qsci/qscilexermatlab.cpp" line="+133"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Por defeutu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentariu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Command</source>
-        <translation type="unfinished">Comandos</translation>
+        <translation>Comandu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Númberu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Pallabra clave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena con comilles simples</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Operador</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificador</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena con comilles dobles</translation>
     </message>
 </context>
 <context>
@@ -1624,207 +1635,207 @@ Please turn one of those options off.</source>
     <message>
         <location filename="build_ts/octave-qsci/qscilexerperl.cpp" line="+328"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Por defeutu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentariu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>POD</source>
-        <translation type="unfinished"></translation>
+        <translation>POD</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Númberu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Pallabra clave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena con comilles dobles</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena con comilles simples</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Operador</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificador</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Scalar</source>
-        <translation type="unfinished"></translation>
+        <translation>Escalar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Array</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hash</source>
-        <translation type="unfinished"></translation>
+        <translation>Hash</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Symbol table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabla de símbolos</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Espresión regular</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Substitution</source>
-        <translation type="unfinished"></translation>
+        <translation>Sustitución</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backticks</source>
-        <translation type="unfinished"></translation>
+        <translation>Acentos graves</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Data section</source>
-        <translation type="unfinished"></translation>
+        <translation>Seición de datos</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Here document delimiter</source>
-        <translation type="unfinished"></translation>
+        <translation>Delimitador de documentu equí</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted here document</source>
-        <translation type="unfinished"></translation>
+        <translation>Documentu ente comilles simples equí</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted here document</source>
-        <translation type="unfinished"></translation>
+        <translation>Documentu ente comilles dobles equí</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backtick here document</source>
-        <translation type="unfinished"></translation>
+        <translation>Documentu ente acentos graves equí</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (q)</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena entrecomillada (q)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qq)</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena entrecomillada (qq)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena entrecomillada (qx)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qr)</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena entrecomillada (qr)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qw)</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena entrecomillada (qw)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>POD verbatim</source>
-        <translation type="unfinished"></translation>
+        <translation>POD literal</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Subroutine prototype</source>
-        <translation type="unfinished"></translation>
+        <translation>Prototipu de subrutina</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Format identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificador de formatu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Format body</source>
-        <translation type="unfinished"></translation>
+        <translation>Cuerpu del formatu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena con comilles dobles (variable interpolada)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Translation</source>
-        <translation type="unfinished"></translation>
+        <translation>Traducción</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Regular expression (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Espresión regular (variable interpolada)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Substitution (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sustitución (variable interpolada)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backticks (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Acentos graves (variable interpolada)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted here document (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Documentu ente comilles dobles equí (variable interpolada)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backtick here document (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Documentu ente acentos graves equí (variable interpolada)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qq, interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena entrecomillada (qq, variable interpolada)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qx, interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena entrecomillada (qx, variable interpolada)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qr, interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena entrecomillada (qr, variable interpolada)</translation>
     </message>
 </context>
 <context>
@@ -1832,37 +1843,37 @@ Please turn one of those options off.</source>
     <message>
         <location filename="build_ts/octave-qsci/qsciscintilla.cpp" line="+4478"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Desfacer</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished">&amp;Refacer</translation>
+        <translation>&amp;Refacer</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">Cor&amp;tar</translation>
+        <translation>Cor&amp;tar</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Copiar</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pegar</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Delete</source>
-        <translation type="unfinished">Eliminar</translation>
+        <translation>Eliminar</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Select All</source>
-        <translation type="unfinished">Seleicionar too</translation>
+        <translation>Seleicionar too</translation>
     </message>
 </context>
 <context>
@@ -1914,7 +1925,7 @@ Please turn one of those options off.</source>
     <message>
         <location line="+13"/>
         <source>Font</source>
-        <translation>Tipu de fonte (tipográfica)</translation>
+        <translation>Tipu de fonte</translation>
     </message>
     <message>
         <location line="+42"/>
@@ -2373,32 +2384,32 @@ nun ye un ficheru XBEL versión 1.0 válidu.</translation>
     <message>
         <location filename="../src/files-dock-widget.cc" line="+1214"/>
         <source>Open Editor Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir l&apos;editor de fichero</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Click to focus file in editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Facer clicl pa poner el focu nel editor</translation>
     </message>
     <message>
         <location line="+92"/>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zarrar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Close &amp;All</source>
-        <translation type="unfinished">Zarrar &amp;too</translation>
+        <translation>Zarrar &amp;too</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Run</source>
-        <translation type="unfinished">Executar</translation>
+        <translation>Executar</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Set Current &amp;Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Asignar el &amp;direutoriu actual</translation>
     </message>
 </context>
 <context>
@@ -2451,7 +2462,7 @@ Do you want to open the preferences?</source>
 %1
 is already open in the editor.</source>
         <translation>Archivu nun guardáu. Hay abiertu nel editor un archivu col nome seleicionáu
-%1</translation>
+%1.</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -2683,7 +2694,7 @@ pa escribir: %2.</translation>
     <message>
         <location line="+5"/>
         <source>Convert Line Endings to Legacy &amp;Mac (CR)</source>
-        <translation>Convertir caracteres de fin de llinia a Legacy &amp;Mac (CR)</translation>
+        <translation>Convertir caracteres de fin de llinia a &amp;Mac antiguo (CR)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2758,7 +2769,7 @@ pa escribir: %2.</translation>
     <message>
         <location line="+5"/>
         <source>Show Line &amp;Endings</source>
-        <translation>Amosar caracteres de &amp;fin de llinia</translation>
+        <translation>Amosar carauteres de &amp;fin de llinia</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3145,208 +3156,208 @@ foi elimináu o renomáu. ¿Quier guardalu agora?%2</translation>
     <message>
         <location filename="../src/files-dock-widget.cc" line="-1165"/>
         <source>File size</source>
-        <translation type="unfinished">Tamañu de l&apos;archivu</translation>
+        <translation>Tamañu de l&apos;archivu</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>File type</source>
-        <translation type="unfinished">Tipu d&apos;archivu</translation>
+        <translation>Tipu d&apos;archivu</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Date modified</source>
-        <translation type="unfinished">Fecha de modificación</translation>
+        <translation>Fecha de modificación</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show hidden</source>
-        <translation type="unfinished">Amosar ocultos</translation>
+        <translation>Amosar ocultos</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Alternating row colors</source>
-        <translation type="unfinished">Alternar colores de files</translation>
+        <translation>Alternar colores de files</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Enter the path or filename</source>
-        <translation type="unfinished">Introduzca la ruta o&apos;l nome de l&apos;archivu</translation>
+        <translation>Introduzca la ruta o&apos;l nome de l&apos;archivu</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>One directory up</source>
-        <translation type="unfinished">Direutoriu superior</translation>
+        <translation>Direutoriu superior</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Octave directory</source>
-        <translation type="unfinished">Amosar el direutoriu d&apos;Octave</translation>
+        <translation>Amosar el direutoriu d&apos;Octave</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Go to current Octave directory</source>
-        <translation type="unfinished">Dir al direutoriu actual d&apos;Octave</translation>
+        <translation>Dir al direutoriu actual d&apos;Octave</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Set Octave directory</source>
-        <translation type="unfinished">Seleicionar el direutoriu d&apos;Octave</translation>
+        <translation>Seleicionar el direutoriu d&apos;Octave</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Set Octave directory to current browser directory</source>
-        <translation type="unfinished">Asignar el direutoriu actual del navegador como direutoriu d&apos;Octave</translation>
+        <translation>Asignar el direutoriu actual del navegador como direutoriu d&apos;Octave</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Actions on current directory</source>
-        <translation type="unfinished">Acciones nel direutoriu actual</translation>
+        <translation>Acciones nel direutoriu actual</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Home Directory</source>
-        <translation type="unfinished">Amosar el direutoriu d&apos;iniciu</translation>
+        <translation>Amosar el direutoriu d&apos;iniciu</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Set Browser Directory...</source>
-        <translation type="unfinished">Asignar direutoriu del navegador...</translation>
+        <translation>Asignar direutoriu del navegador...</translation>
     </message>
     <message>
         <location line="+4"/>
         <location line="+433"/>
         <source>Find Files...</source>
-        <translation type="unfinished">Buscar archivos...</translation>
+        <translation>Buscar archivos...</translation>
     </message>
     <message>
         <location line="-429"/>
         <location line="+441"/>
         <source>New File...</source>
-        <translation type="unfinished">Nuevu archivu...</translation>
+        <translation>Nuevu archivu...</translation>
     </message>
     <message>
         <location line="-438"/>
         <location line="+440"/>
         <source>New Directory...</source>
-        <translation type="unfinished">Nuevu direutoriu...</translation>
+        <translation>Nuevu direutoriu...</translation>
     </message>
     <message>
         <location line="-385"/>
         <source>Double-click to open file/folder, right click for alternatives</source>
-        <translation type="unfinished">Doble clic pa abrir l&apos;archivu o la carpeta; clic nel botón derechu pa ver les alternatives</translation>
+        <translation>Doble clic pa abrir l&apos;archivu o la carpeta; clic nel botón derechu pa ver les alternatives</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Rename...</source>
-        <translation type="unfinished">Renomar...</translation>
+        <translation>Renomar...</translation>
     </message>
     <message>
         <location line="+312"/>
         <source>Open</source>
-        <translation type="unfinished">Abri</translation>
+        <translation>Abrir</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open in System File Explorer</source>
-        <translation type="unfinished">Abrir nel esplorador d&apos;archivos del sistema</translation>
+        <translation>Abrir nel esplorador d&apos;archivos del sistema</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open in Text Editor</source>
-        <translation type="unfinished">Abrir nel editor de testu</translation>
+        <translation>Abrir nel editor de testu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Copy Selection to Clipboard</source>
-        <translation type="unfinished">Copiar seleición al portapapeles</translation>
+        <translation>Copiar seleición al portapapeles</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Run</source>
-        <translation type="unfinished">Executar</translation>
+        <translation>Executar</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Load Data</source>
-        <translation type="unfinished">Cargar datos</translation>
+        <translation>Cargar datos</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Set Current Directory</source>
-        <translation type="unfinished">Asignar direutoriu actual</translation>
+        <translation>Asignar direutoriu actual</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add to Path</source>
-        <translation type="unfinished">Añadir a la ruta de trabayu (path)</translation>
+        <translation>Añadir a la ruta de trabayu (path)</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+7"/>
         <source>Selected Directories</source>
-        <translation type="unfinished">Direutorios seleicionaos</translation>
+        <translation>Direutorios seleicionaos</translation>
     </message>
     <message>
         <location line="-5"/>
         <location line="+7"/>
         <source>Selected Directories and Subdirectories</source>
-        <translation type="unfinished">Direutorios y subdireutorios seleicionaos</translation>
+        <translation>Direutorios y subdireutorios seleicionaos</translation>
     </message>
     <message>
         <location line="-4"/>
         <source>Remove from Path</source>
-        <translation type="unfinished">Eliminar de la ruta de trabayu (path)</translation>
+        <translation>Eliminar de la ruta de trabayu (path)</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Delete...</source>
-        <translation type="unfinished">Eliminar...</translation>
+        <translation>Eliminar...</translation>
     </message>
     <message>
         <location line="+140"/>
         <location line="+11"/>
         <location line="+17"/>
         <source>Delete file/directory</source>
-        <translation type="unfinished">Eliminar archivu/direutoriu</translation>
+        <translation>Eliminar archivu/direutoriu</translation>
     </message>
     <message>
         <location line="-27"/>
         <source>Are you sure you want to delete all %1 selected files?
 </source>
-        <translation type="unfinished">¿Ta seguru de que quier eliminar los %1 ficheros seleicionaos?
+        <translation>¿Ta seguru de que quier eliminar los %1 ficheros seleicionaos?
 </translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Are you sure you want to delete
 </source>
-        <translation type="unfinished">¿Ta seguru de que quier eliminar
+        <translation>¿Ta seguru de que quier eliminar
 </translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Can not delete a directory that is not empty</source>
-        <translation type="unfinished">Nun se pue eliminar un direutoriu que nun te vacíu</translation>
+        <translation>Nun se pue eliminar un direutoriu que nun te vacíu</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Deletion error</source>
-        <translation type="unfinished">Error al borrar</translation>
+        <translation>Error al borrar</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not delete file &quot;%1&quot;.</source>
-        <translation type="unfinished">No se pudo eliminar el ficheru &quot;%1&quot;.</translation>
+        <translation>No se pudo eliminar el ficheru &quot;%1&quot;.</translation>
     </message>
     <message>
         <location line="+216"/>
         <source>Set directory of file browser</source>
-        <translation type="unfinished">Seleicionar el direutoriu de l&apos;esplorador d&apos;archivos</translation>
+        <translation>Seleicionar el direutoriu de l&apos;esplorador d&apos;archivos</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Create File</source>
-        <translation type="unfinished">Crear archivu</translation>
+        <translation>Crear archivu</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3354,18 +3365,18 @@ foi elimináu o renomáu. ¿Quier guardalu agora?%2</translation>
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">¡Crear archivu en
+        <translation>¡Crear archivu en
 </translation>
     </message>
     <message>
         <location line="+2"/>
         <source>New File.txt</source>
-        <translation type="unfinished">Nuevu archivu.txt</translation>
+        <translation>Nuevu archivu.txt</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Create Directory</source>
-        <translation type="unfinished">Crear direutoriu</translation>
+        <translation>Crear direutoriu</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3373,13 +3384,13 @@ foi elimináu o renomáu. ¿Quier guardalu agora?%2</translation>
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">Crear carpeta en
+        <translation>¡Crear carpeta en
 </translation>
     </message>
     <message>
         <location line="+2"/>
         <source>New Directory</source>
-        <translation type="unfinished">Nuevu direutoriu</translation>
+        <translation>Nuevu direutoriu</translation>
     </message>
 </context>
 <context>
@@ -3387,7 +3398,7 @@ foi elimináu o renomáu. ¿Quier guardalu agora?%2</translation>
     <message>
         <location line="-1142"/>
         <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
-        <translation>Nun se pue renomar l&apos;archivu &quot;%1&quot; a &quot;%2&quot;.</translation>
+        <translation>Nun se pudo renomar l&apos;archivu &quot;%1&quot; a &quot;%2&quot;.</translation>
     </message>
     <message>
         <location line="+107"/>
@@ -3402,12 +3413,12 @@ foi elimináu o renomáu. ¿Quier guardalu agora?%2</translation>
     <message>
         <location line="+10"/>
         <source>File System</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistema de ficheros</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Editor Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor d&apos;archivos</translation>
     </message>
 </context>
 <context>
@@ -3415,7 +3426,7 @@ foi elimináu o renomáu. ¿Quier guardalu agora?%2</translation>
     <message>
         <location filename="../src/welcome-wizard.cc" line="+319"/>
         <source>Enjoy!</source>
-        <translation>¡Disfrútelo!</translation>
+        <translation>¡Disfrútelu!</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -3482,17 +3493,17 @@ Pue atopar más información al respeutu visitando &lt;a href=&quot;https://octa
     <message>
         <location line="+2"/>
         <source>Enter search text</source>
-        <translation>Introduzca el testu a buscar</translation>
+        <translation>Introduzca&apos;l testu a buscar</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Re&amp;place:</source>
-        <translation>R&amp;eemplazar:</translation>
+        <translation>Reem&amp;plazar:</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Enter replacement text</source>
-        <translation>Introduzca el testu de reemplazu</translation>
+        <translation>Introduzca&apos;l testu de reemplazu</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -3764,7 +3775,7 @@ Por exemplu, &apos;*.cc; *.h&apos;</translation>
     <message>
         <location line="+4"/>
         <source>Double click to set the directory</source>
-        <translation>Haga doble clic pa asignar el direutoriu</translation>
+        <translation>Faga doble clic pa asignar el direutoriu</translation>
     </message>
 </context>
 <context>
@@ -3845,7 +3856,7 @@ L&apos;entornu gráficu d&apos;Octave zarrarase.</translation>
     <message>
         <location line="+5"/>
         <source>Hide filter</source>
-        <translation>Ocultar la ventana de filtráu</translation>
+        <translation>Ancultar la ventana de filtráu</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4376,7 +4387,7 @@ o active na ventana de configuración la opción para veles.
     <message>
         <location filename="../src/octave-dock-widget.cc" line="+144"/>
         <source>Hide Widget</source>
-        <translation>Ocultar widget</translation>
+        <translation>Ancultar widget</translation>
     </message>
     <message>
         <location line="+83"/>
@@ -4463,7 +4474,7 @@ Asegúrese de que tien permisu d&apos;escritura nel direutoriu
         <source>File
 %1
 does not exist. Do you want to create it?</source>
-        <translation>El archivu
+        <translation>L&apos;archivu
 %1
 nun esiste. ¿Quier crealu?</translation>
     </message>
@@ -4778,7 +4789,7 @@ depende del mou seleicionáu actual.</translation>
     <message>
         <location line="+3"/>
         <source>Hide tool tips</source>
-        <translation>Ocultar conseyos d&apos;usu</translation>
+        <translation>Ancultar conseyos d&apos;usu</translation>
     </message>
     <message>
         <location line="+384"/>
@@ -4824,7 +4835,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location filename="../src/welcome-wizard.cc" line="+45"/>
         <source>Community News</source>
-        <translation>Noticies de la comunidad</translation>
+        <translation>Noticies de la comunidá</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5035,12 +5046,12 @@ ta agora n&apos;usu pa la aición
     <message>
         <location filename="../src/welcome-wizard.cc" line="+135"/>
         <source>Welcome to GNU Octave</source>
-        <translation type="unfinished">Bienveníu a GNU Octave</translation>
+        <translation>Bienveníu a GNU Octave</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Welcome to Octave!</source>
-        <translation type="unfinished">¡Bienveníu a Octave!</translation>
+        <translation>¡Bienveníu a Octave!</translation>
     </message>
 </context>
 <context>
@@ -5369,7 +5380,7 @@ ta agora n&apos;usu pa la aición
     <message>
         <location line="+22"/>
         <source>Hide filter</source>
-        <translation>Ocultar la ventana de filtriar</translation>
+        <translation>Ancultar la ventana de filtriar</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -5414,7 +5425,7 @@ pa crear la tubería fd = %2: %3</translation>
     <message>
         <location line="+17"/>
         <source>Error reading from redirected stream fd = %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Error lliendo del fluxu redirixíu fd = %1.</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -5679,7 +5690,7 @@ Error: </translation>
         <location line="-897"/>
         <location line="+140"/>
         <source>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</source>
-        <translation>Esto funciona correutamente con fontes con espaciáu fixo. Dibúxase la llinia n&apos;una posición basada nel anchor d&apos;un caráuter de la fonte por defeutu. Esto podría nun funcionar correutamente si los estilos utilicen fontes proporcionales o si se utilicen fontes de varios tamaños, negrita, cursiva y testos normales.</translation>
+        <translation>Esto funciona correutamente con fontes con espaciáu fixo. Dibúxase la llinia n&apos;una posición basada nel anchor d&apos;un caráuter de la fonte por defeutu. Esto podría nun funcionar correutamente si los estilos utilicen fontes proporcionales o si s&apos;utilicen fontes de varios tamaños, negrita, cursiva y testos normales.</translation>
     </message>
     <message>
         <location line="-535"/>
@@ -5695,7 +5706,7 @@ Error: </translation>
         <location line="+5"/>
         <source>Legacy Mac (CR)</source>
         <translatorcomment>No sé cómo traducirlo exactamente</translatorcomment>
-        <translation>Legacy Mac (CR)</translation>
+        <translation>Mac antiguo (CR)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5750,7 +5761,7 @@ Error: </translation>
     <message>
         <location line="+166"/>
         <source>3-D</source>
-        <translation type="unfinished"></translation>
+        <translation>3D</translation>
     </message>
     <message>
         <location line="+157"/>
@@ -5760,12 +5771,12 @@ Error: </translation>
     <message>
         <location line="+37"/>
         <source>Show splash screen at startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Amosar pantalla d&apos;iniciu</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Initial working directory of Octave interpreter</source>
-        <translation>Direutoriu de trabayu d&apos;inicio de l&apos;intérprete d&apos;Octave</translation>
+        <translation>Direutoriu de trabayu inicial de l&apos;intérprete d&apos;Octave</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -5875,12 +5886,12 @@ Error: </translation>
     <message>
         <location line="+53"/>
         <source>Indentation</source>
-        <translation>Sangrado</translation>
+        <translation>Sangrao</translation>
     </message>
     <message>
         <location line="+127"/>
         <source>Indentation uses tabs</source>
-        <translation>Sangrado con tabulador</translation>
+        <translation>Sangrao con tabulador</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -5890,7 +5901,7 @@ Error: </translation>
     <message>
         <location line="+20"/>
         <source>Nothing</source>
-        <translation>na</translation>
+        <translation>Na</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5905,7 +5916,7 @@ Error: </translation>
     <message>
         <location line="+29"/>
         <source>Auto completion</source>
-        <translation>Completáu automáticu</translation>
+        <translation>Completáo automático</translation>
     </message>
     <message>
         <location line="+101"/>
@@ -5925,7 +5936,7 @@ Error: </translation>
     <message>
         <location line="+34"/>
         <source>Debugging</source>
-        <translation>Depurado</translation>
+        <translation>Depurao</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -5985,7 +5996,7 @@ Error: </translation>
     <message>
         <location line="-260"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If set, the focus of the widgets that are docked to the main window follows the mouse cursor. This is intended for having the same behavior within the main window when &amp;quot;focus follows mouse&amp;quot; is used for the desktop environment.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Si se seleiciona, el focu nos widgets anclaos na ventana principal actívase según la posición del ratu. Esto persigue un comportamientu igual al de l&apos;entornu d&apos;escritoriu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Si se seleiciona, actívase&apos;l focu nos widgets anclaos na ventana principal según la posición del ratu. Esto persigue un comportamientu igual al de l&apos;entornu d&apos;escritoriu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -6020,7 +6031,7 @@ Error: </translation>
     <message>
         <location line="+871"/>
         <source>Directory of open file dialog follows current editor file instead of current Octave directory </source>
-        <translation type="unfinished"></translation>
+        <translation>El direutoriu del cuadru abiertu siguela ruta del ficheru de l&apos;editor en vez del direutoriu actual d&apos;Octave </translation>
     </message>
     <message>
         <location line="+98"/>
@@ -6189,7 +6200,7 @@ coles combinaciones de tecles de readline.</translation>
     <message>
         <location line="+61"/>
         <source>Action</source>
-        <translation>Acción</translation>
+        <translation>Aición</translation>
     </message>
     <message>
         <location line="+82"/>

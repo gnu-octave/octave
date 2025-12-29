@@ -645,6 +645,11 @@ subsystem_handler::process_object_properties (const std::vector<std::tuple<octav
                                               const std::vector<bool>& is_new,
                                               uint32_t class_id)
 {
+  // Save positions for insertion at the end
+  size_t object_id_refs_pos = m_object_id_refs.size ();
+  size_t object_prop_fields_pos = m_object_prop_fields.size ();
+  size_t saveobj_prop_fields_pos = m_saveobj_prop_fields.size ();
+
   // local storage for this batch of objects
   std::vector<uint32_t> local_object_id_refs;
   std::vector<uint32_t> local_object_prop_fields;
@@ -710,14 +715,14 @@ subsystem_handler::process_object_properties (const std::vector<std::tuple<octav
         }
     }
 
-  // FIXME: Consider using std::list::append_range when we allow C++23.
-  m_object_id_refs.insert (m_object_id_refs.end (),
+  // Insert at saved positions instead of appending to end
+  m_object_id_refs.insert (m_object_id_refs.begin () + object_id_refs_pos,
                            local_object_id_refs.begin (),
                            local_object_id_refs.end ());
-  m_object_prop_fields.insert (m_object_prop_fields.end (),
+  m_object_prop_fields.insert (m_object_prop_fields.begin () + object_prop_fields_pos,
                                local_object_prop_fields.begin (),
                                local_object_prop_fields.end ());
-  m_saveobj_prop_fields.insert (m_saveobj_prop_fields.end (),
+  m_saveobj_prop_fields.insert (m_saveobj_prop_fields.begin () + saveobj_prop_fields_pos,
                                 local_saveobj_prop_fields.begin (),
                                 local_saveobj_prop_fields.end ());
   m_dynamic_prop_refs.insert (m_dynamic_prop_refs.end (),

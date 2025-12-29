@@ -520,25 +520,20 @@ octave_struct::subsasgn (const std::string& type,
 
         maybe_warn_invalid_field_name (key, "subsasgn");
 
-        if (t_rhs.is_cs_list ())
-          {
-            Cell tmp_cell = Cell (t_rhs.list_value ());
+        // assigning to a field of a struct array requires a cs-list on the RHS
+        if (! t_rhs.is_cs_list ())
+          err_nonbraced_cs_list_assignment ();
 
-            // The shape of the RHS is irrelevant, we just want
-            // the number of elements to agree and to preserve the
-            // shape of the left hand side of the assignment.
+        Cell tmp_cell = Cell (t_rhs.list_value ());
 
-            if (numel () == tmp_cell.numel ())
-              tmp_cell = tmp_cell.reshape (dims ());
+        // The shape of the RHS is irrelevant, we just want
+        // the number of elements to agree and to preserve the
+        // shape of the left hand side of the assignment.
 
-            m_map.setfield (key, tmp_cell);
-          }
-        else
-          {
-            Cell tmp_cell(1, 1);
-            tmp_cell(0) = t_rhs.storable_value ();
-            m_map.setfield (key, tmp_cell);
-          }
+        if (numel () == tmp_cell.numel ())
+          tmp_cell = tmp_cell.reshape (dims ());
+
+        m_map.setfield (key, tmp_cell);
 
         m_count++;
         retval = octave_value (this);

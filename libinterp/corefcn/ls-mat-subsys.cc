@@ -43,7 +43,7 @@ is_valid_mcos_object (const octave_value& metadata)
   // Metadata must be N X 1 uint32 array, N>=3
   if (! metadata.is_uint32_type ())
     {
-      if (metadata.isstruct ())
+      if (metadata.isstruct () && metadata.is_scalar_type ())
         {
           // Metadata for enumeration class objects are stored as structs
           // with a field "EnumerationInstanceTag" set to 0xDD000000.
@@ -84,6 +84,69 @@ is_valid_mcos_object (const octave_value& metadata)
 }
 
 OCTAVE_BEGIN_NAMESPACE(octave)
+
+static octave_value
+search_mcos_classdef_objects (const octave_value& val, bool save_mode)
+{
+  if (save_mode && val.is_classdef_object ())
+    {
+      subsystem_handler *sh = octave::__get_load_save_system__ ().get_subsystem_handler ();
+      return octave_value (sh->set_mcos_object_metadata (val));
+    }
+  else if (! save_mode && is_valid_mcos_object (val))
+    {
+      return load_mcos_object (val);
+    }
+
+  // iterate through cell arrays
+  if (val.iscell ())
+    {
+      Cell cv = val.cell_value ();
+      for (octave_idx_type i = 0; i < cv.numel (); i++)
+        cv(i) = search_mcos_classdef_objects (cv(i), save_mode);
+
+      return cv;
+    }
+
+  // iterate through struct arrays
+  if (val.isstruct ())
+    {
+      if (val.is_scalar_type ())
+        {
+          octave_scalar_map mv = val.scalar_map_value ();
+          for (auto it = mv.begin (); it != mv.end (); ++it)
+            {
+              std::string field_name = mv.key (it);
+              octave_value field_val = mv.contents (it);
+              mv.assign (field_name,
+                         search_mcos_classdef_objects (field_val, save_mode));
+            }
+          return octave_value (mv);
+        }
+      else
+        {
+          octave_map mv = val.map_value ();
+          string_vector field_names = mv.fieldnames ();
+
+          for (octave_idx_type field_idx = 0; field_idx < field_names.numel ();
+               field_idx++)
+            {
+              std::string field_name = field_names[field_idx];
+              Cell field_values = mv.contents (field_name);
+
+              for (octave_idx_type i = 0; i < field_values.numel (); i++)
+                field_values(i) = search_mcos_classdef_objects (field_values(i),
+                                                                save_mode);
+
+              mv.assign (field_name, field_values);
+            }
+
+          return octave_value (mv);
+        }
+    }
+
+  return val;
+}
 
 octave_value
 load_mcos_object (const octave_value& objmetadata)
@@ -391,7 +454,9 @@ subsystem_handler::get_object_properties (const uint32_t obj_type_id,
     }
 
   uint32_t nprops = *ptr++;
-  octave_map prop_vals = m_fwrap_default_vals(class_id).map_value ();
+  octave_value& default_vals = m_fwrap_default_vals(class_id);
+  default_vals = search_mcos_classdef_objects (default_vals, false);
+  octave_map prop_vals = default_vals.map_value ();
 
   for (octave_idx_type i = 0; i < nprops && ptr + 2 < end_ptr; i++)
     {
@@ -418,14 +483,9 @@ subsystem_handler::get_object_properties (const uint32_t obj_type_id,
         case 1:
           // Property value points to a cell in m_fwrap_prop_vals
           {
-            // FIXME: If the property value contains an object within a
-            //        container like struct/cell
-            //        Need to decode recursively?
-            const octave_value& prop_val = m_fwrap_prop_vals[prop_val_idx];
-            if (is_valid_mcos_object (prop_val))
-              prop_vals.assign (prop_name, load_mcos_object (prop_val));
-            else
-              prop_vals.assign (prop_name, prop_val);
+            octave_value& prop_val = m_fwrap_prop_vals[prop_val_idx];
+            prop_val = search_mcos_classdef_objects (prop_val, false);
+            prop_vals.assign (prop_name, prop_val);
           }
           break;
 
@@ -627,11 +687,7 @@ subsystem_handler::process_object_properties (const std::vector<std::tuple<octav
               std::string prop_name = prop_names[prop_idx];
               octave_value prop_value = (prop_map.contents (prop_name))(0);
 
-              // FIXME: If the property value contains an object within a
-              //        container like struct/cell
-              //        Need to decode recursively?
-              if (prop_value.is_classdef_object ())
-                prop_value = set_mcos_object_metadata (prop_value);
+              prop_value = search_mcos_classdef_objects (prop_value, true);
 
               uint32_t field_name_idx = get_name_index (prop_name);
               uint32_t cell_number_idx = m_fwrap_prop_vals.size ();

@@ -135,7 +135,7 @@
 %! assert (isequal (obj(2:end), 5:7));
 %! assert (isequal (obj.x, [7 5 6 7]));
 
-%!test <54966>
+%!test <*54966>
 %! obj = foo_subsref_subsasgn (1);
 %! obj{1:3} = 5:7;
 %! assert (isequal ([obj{1:3}], 5:7));
@@ -143,6 +143,7 @@
 %! obj{2:end} = 7:9;
 %! assert (isequal ([obj{2:end}], 7:9));
 %! assert (isequal (obj.x, [5 7 8 9]));
+%! fail ("[obj{1:3}] = 5:7;", "invalid number of output arguments");
 
 %!test <*54783>
 %! obj = foo_subsref_subsasgn (1);
@@ -171,7 +172,7 @@
 %! assert (isequal (obj.x(2:end), 5:7));
 %! assert (isequal (obj.x, [7 5 6 7]));
 
-%!test <54966>
+%!test <*54966>
 %! obj = foo_subsref_subsasgn (1);
 %! obj.x{1:3} = 5:7;
 %! assert (isequal ([obj.x{1:3}], 5:7));
@@ -179,6 +180,25 @@
 %! obj.x{2:end} = 7:9;
 %! assert (isequal ([obj.x{2:end}], 7:9));
 %! assert (isequal (obj.x, [5 7 8 9]));
+%! fail ("[obj.x{1:3}] = 5:7;", "invalid number of output arguments");
+
+%!test <*60723>
+%! # Check that numel is not called in subsasgn, simple assignment
+%! obj = class_bug60723A;
+%! obj.c = 20;
+%! assert (obj.c, 20);
+
+%!test <60723>
+%! # Check that numel is not called in subsasgn, multi-assignment
+%! obj = class_bug60723A;
+%! [obj.c] = 20;
+%! assert (obj.c, 20);
+
+%!test <60723>
+%! # Check that numel is not called in subsref
+%! obj = class_bug60723B;
+%! assert ([obj{1:5}], repelem (5, 5));
+%! assert ([obj(1:5).a], repelem (5, 5));
 
 %!test <*55223>
 %! obj = foo_subsref_subsasgn (2);
@@ -187,7 +207,7 @@
 %! obj{2}{2} = 4;
 %! assert (obj{2}{2} == 4);
 
-%!test <54966>
+%!test <*54966>
 %! obj = foo_subsref_subsasgn (2);
 %! obj{1:2}(1:2) = ones (2);
 %! assert (isequal (obj{1:2}(1:2), ones (2)));

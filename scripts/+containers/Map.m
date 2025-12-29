@@ -398,7 +398,7 @@ classdef Map < handle
       count = uint64 (numfields (this.map));
     endfunction
 
-    function sref = subsref (this, s)
+    function varargout = subsref (this, s)
 
       switch (s(1).type)
         case "."
@@ -460,7 +460,9 @@ classdef Map < handle
           error ("containers.Map: only '()' indexing is supported");
       endswitch
       if (numel (s) > 1)
-        sref = subsref (sref, s(2:end));
+        [varargout{1:nargout}] = subsref (sref, s(2:end));
+      else
+        varargout = {sref};
       endif
 
     endfunction
@@ -910,6 +912,20 @@ endclassdef
 %! M = containers.Map (months, vals);
 %! keys = {'Jan', 'FooBar', 'Feb'};
 %! assert (M.isKey (keys)(2:end), [false, true]);
+
+## Test subsref calls will multiple outputs
+%!test <*67426>
+%! M = containers.Map ('first', struct ('dat', {111, 222}));
+%! [a, b] = M('first').dat;
+%! assert ([a, b], [111, 222])
+%!test <*67426>
+%! M = containers.Map ('first', {{111, 222}});
+%! [a, b] = M('first') {:};
+%! assert ([a, b], [111, 222])
+%!test <*67426>
+%! M = containers.Map ({'first', 'second'}, {111, 222});
+%! [a,b] = M.values () {:};
+%! assert ([a, b], [111, 222])
 
 ## Test input validation
 %!error containers.Map (1,2,3)

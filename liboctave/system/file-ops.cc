@@ -36,6 +36,7 @@
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 #  include <cctype>
+#  include <system_error>
 
 #  include <windows.h>
 #  include "unwind-prot.h"
@@ -604,7 +605,11 @@ rename (const std::string& from, const std::string& to,
   if (file_exists (to))
     {
       if (file_exists (to, false) && file_exists (from, false))
-        unlink (to);
+        {
+#if ! defined (OCTAVE_USE_WINDOWS_API)
+          unlink (to);
+#endif
+        }
       else
         {
           msg = "Target already exists.";
@@ -615,13 +620,35 @@ rename (const std::string& from, const std::string& to,
 #if defined (OCTAVE_USE_WINDOWS_API)
   std::wstring wfrom = u8_to_wstring (from);
   std::wstring wto = u8_to_wstring (to);
-  status = _wrename (wfrom.c_str (), wto.c_str ());
+
+  // On Windows, use the atomic ReplaceFileW instead of a combination of
+  // unlink and rename because that might fail intermittently (bug #67729).
+  if (ReplaceFileW (wto.c_str (), wfrom.c_str (), nullptr, 0, nullptr, nullptr))
+    return 0;
+
+  // ReplaceFileW fails if the file that is to be replaced does not exist or
+  // does not reside on the same volume as the source file.  Use MoveFileExW as
+  // a fallback (not guaranteed to be atomic).
+  // MoveFileEx works if the source file is a directory without any flags, but
+  // fails with MOVEFILE_REPLACE_EXISTING.  So try without flags first.
+  if (MoveFileExW (wfrom.c_str (), wto.c_str (), 0))
+    return 0;
+
+  DWORD last_error = GetLastError ();
+  if ((last_error == ERROR_FILE_EXISTS || last_error == ERROR_ALREADY_EXISTS)
+      && MoveFileExW (wfrom.c_str (), wto.c_str (), MOVEFILE_REPLACE_EXISTING))
+    return 0;
+
+  const std::error_condition econd
+    = std::system_category ().default_error_condition (GetLastError ());
+  msg = econd.message ();
+
 #else
   status = std::rename (from.c_str (), to.c_str ());
-#endif
 
   if (status < 0)
     msg = std::strerror (errno);
+#endif
 
   return status;
 }

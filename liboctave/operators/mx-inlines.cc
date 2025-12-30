@@ -1383,6 +1383,8 @@ mx_inline_flip (const T *v, T *r, octave_idx_type l,
     }
 }
 
+// Templated functions for Fmin and Fmax
+
 #define OP_MINMAX_FCN(F, OP)                                            \
   template <typename T>                                                 \
   void F (const T *v, T *r, octave_idx_type n, const bool nanflag,      \
@@ -2371,6 +2373,8 @@ OP_CHMINMAX_FCN2 (mx_inline_chmax, >)
 OP_CHMINMAX_FCNN (mx_inline_chmin)
 OP_CHMINMAX_FCNN (mx_inline_chmax)
 
+// Templated functions for Fcummin and Fcummax
+
 #define OP_CUMMINMAX_FCN(F, OP)                                         \
   template <typename T>                                                 \
   void F (const T *v, T *r, octave_idx_type n, const bool nanflag,      \
@@ -2378,19 +2382,16 @@ OP_CHMINMAX_FCNN (mx_inline_chmax)
   {                                                                     \
     if (! n)                                                            \
       return;                                                           \
-    if (! nanflag)                                                      \
-      {                                                                 \
-        for (octave_idx_type i = 0; i < n; i++)                         \
-          if (octave::math::isnan (v[i]))                               \
-            {                                                           \
-              *r = NAN;                                                 \
-              return;                                                   \
-            }                                                           \
-      }                                                                 \
     T tmp = v[0];                                                       \
     octave_idx_type i = 1;                                              \
     octave_idx_type j = 0;                                              \
-    if (octave::math::isnan (tmp))                                      \
+    if (octave::math::isnan (tmp) && ! nanflag)                         \
+      {                                                                 \
+        for (; j < n; j++)                                              \
+          r[j] = NAN;                                                   \
+        return;                                                         \
+      }                                                                 \
+    else if (octave::math::isnan (tmp))                                 \
       {                                                                 \
         for (; i < n && octave::math::isnan (v[i]); i++) ;              \
         for (; j < i; j++)                                              \
@@ -2401,17 +2402,35 @@ OP_CHMINMAX_FCNN (mx_inline_chmax)
     if (realabs)                                                        \
       {                                                                 \
         for (; i < n; i++)                                              \
-          if (v[i] OP tmp)                                              \
-            {                                                           \
-              for (; j < i; j++)                                        \
-                r[j] = tmp;                                             \
-              tmp = v[i];                                               \
-            }                                                           \
+          {                                                             \
+            if (octave::math::isnan (v[i]) && ! nanflag)                \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  r[j] = tmp;                                           \
+                for (; j < n; j++)                                      \
+                  r[j] = NAN;                                           \
+                return;                                                 \
+              }                                                         \
+            if (v[i] OP tmp)                                            \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  r[j] = tmp;                                           \
+                tmp = v[i];                                             \
+              }                                                         \
+          }                                                             \
       }                                                                 \
     else                                                                \
       {                                                                 \
         for (; i < n; i++)                                              \
           {                                                             \
+            if (octave::math::isnan (v[i]) && ! nanflag)                \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  r[j] = tmp;                                           \
+                for (; j < n; j++)                                      \
+                  r[j] = NAN;                                           \
+                return;                                                 \
+              }                                                         \
             if (std::abs (v[i]) OP std::abs (tmp))                      \
               {                                                         \
                 for (; j < i; j++)                                      \
@@ -2435,21 +2454,20 @@ OP_CHMINMAX_FCNN (mx_inline_chmax)
   {                                                                     \
     if (! n)                                                            \
       return;                                                           \
-    if (! nanflag)                                                      \
-      {                                                                 \
-        for (octave_idx_type i = 0; i < n; i++)                         \
-          if (octave::math::isnan (v[i]))                               \
-            {                                                           \
-              *r = NAN;                                                 \
-              *ri = i;                                                  \
-              return;                                                   \
-            }                                                           \
-      }                                                                 \
     T tmp = v[0];                                                       \
     octave_idx_type tmpi = 0;                                           \
     octave_idx_type i = 1;                                              \
     octave_idx_type j = 0;                                              \
-    if (octave::math::isnan (tmp))                                      \
+    if (octave::math::isnan (tmp) && ! nanflag)                         \
+      {                                                                 \
+        for (; j < n; j++)                                              \
+          {                                                             \
+            r[j] = NAN;                                                 \
+            ri[j] = tmpi;                                               \
+          }                                                             \
+        return;                                                         \
+      }                                                                 \
+    else if (octave::math::isnan (tmp))                                 \
       {                                                                 \
         for (; i < n && octave::math::isnan (v[i]); i++) ;              \
         for (; j < i; j++)                                              \
@@ -2466,21 +2484,51 @@ OP_CHMINMAX_FCNN (mx_inline_chmax)
     if (realabs)                                                        \
       {                                                                 \
         for (; i < n; i++)                                              \
-          if (v[i] OP tmp)                                              \
-            {                                                           \
-              for (; j < i; j++)                                        \
-                {                                                       \
-                  r[j] = tmp;                                           \
-                  ri[j] = tmpi;                                         \
-                }                                                       \
-              tmp = v[i];                                               \
-              tmpi = i;                                                 \
-            }                                                           \
+          {                                                             \
+            if (octave::math::isnan (v[i]) && ! nanflag)                \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  {                                                     \
+                    r[j] = tmp;                                         \
+                    ri[j] = tmpi;                                       \
+                  }                                                     \
+                for (; j < n; j++)                                      \
+                  {                                                     \
+                    r[j] = NAN;                                         \
+                    ri[j] = i;                                          \
+                  }                                                     \
+                return;                                                 \
+              }                                                         \
+            if (v[i] OP tmp)                                            \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  {                                                     \
+                    r[j] = tmp;                                         \
+                    ri[j] = tmpi;                                       \
+                  }                                                     \
+                tmp = v[i];                                             \
+                tmpi = i;                                               \
+              }                                                         \
+          }                                                             \
       }                                                                 \
     else                                                                \
       {                                                                 \
         for (; i < n; i++)                                              \
           {                                                             \
+            if (octave::math::isnan (v[i]) && ! nanflag)                \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  {                                                     \
+                    r[j] = tmp;                                         \
+                    ri[j] = tmpi;                                       \
+                  }                                                     \
+                for (; j < n; j++)                                      \
+                  {                                                     \
+                    r[j] = NAN;                                         \
+                    ri[j] = i;                                          \
+                  }                                                     \
+                return;                                                 \
+              }                                                         \
             if (std::abs (v[i]) OP std::abs (tmp))                      \
               {                                                         \
                 for (; j < i; j++)                                      \
@@ -2513,10 +2561,6 @@ OP_CHMINMAX_FCNN (mx_inline_chmax)
 OP_CUMMINMAX_FCN (mx_inline_cummin, <)
 OP_CUMMINMAX_FCN (mx_inline_cummax, >)
 
-// Row reductions will be slightly complicated.  We will proceed with checks
-// for NaNs until we detect that no row will yield a NaN, in which case we
-// proceed to a faster code.
-
 #define OP_CUMMINMAX_FCN2(F, OP)                                        \
   template <typename T>                                                 \
   inline void                                                           \
@@ -2525,38 +2569,24 @@ OP_CUMMINMAX_FCN (mx_inline_cummax, >)
   {                                                                     \
     if (! n)                                                            \
       return;                                                           \
-    bool nan = false;                                                   \
     const T *r0;                                                        \
     octave_idx_type j = 0;                                              \
     for (octave_idx_type i = 0; i < m; i++)                             \
-      {                                                                 \
-        r[i] = v[i];                                                    \
-        if (octave::math::isnan (v[i]))                                 \
-          nan = true;                                                   \
-      }                                                                 \
+      r[i] = v[i];                                                      \
     j++;                                                                \
     v += m;                                                             \
     r0 = r;                                                             \
     r += m;                                                             \
     if (realabs)                                                        \
       {                                                                 \
-        while (nan && j < n)                                            \
+        while (! nanflag && j < n)                                      \
           {                                                             \
-            nan = false;                                                \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if ((octave::math::isnan (v[i]) ||                      \
-                     octave::math::isnan (r0[i])) && ! nanflag)         \
-                  {                                                     \
-                    r[i] = NAN;                                         \
-                    nan = true;                                         \
-                  }                                                     \
-                else if (octave::math::isnan (v[i]))                    \
-                  {                                                     \
-                    r[i] = r0[i];                                       \
-                    nan = true;                                         \
-                  }                                                     \
-                else if (octave::math::isnan (r0[i]) || v[i] OP r0[i])  \
+                if (octave::math::isnan (v[i]) ||                       \
+                    octave::math::isnan (r0[i]))                        \
+                  r[i] = NAN;                                           \
+                else if (v[i] OP r0[i])                                 \
                   r[i] = v[i];                                          \
                 else                                                    \
                   r[i] = r0[i];                                         \
@@ -2566,11 +2596,11 @@ OP_CUMMINMAX_FCN (mx_inline_cummax, >)
             r0 = r;                                                     \
             r += m;                                                     \
           }                                                             \
-        while (j < n)                                                   \
+        while (nanflag && j < n)                                        \
           {                                                             \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if (v[i] OP r0[i])                                      \
+                if (octave::math::isnan (r0[i]) || v[i] OP r0[i])       \
                   r[i] = v[i];                                          \
                 else                                                    \
                   r[i] = r0[i];                                         \
@@ -2583,24 +2613,14 @@ OP_CUMMINMAX_FCN (mx_inline_cummax, >)
       }                                                                 \
     else                                                                \
       {                                                                 \
-        while (nan && j < n)                                            \
+        while (! nanflag && j < n)                                      \
           {                                                             \
-            nan = false;                                                \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if ((octave::math::isnan (v[i]) ||                      \
-                     octave::math::isnan (r0[i])) && ! nanflag)         \
-                  {                                                     \
-                    r[i] = NAN;                                         \
-                    nan = true;                                         \
-                  }                                                     \
-                else if (octave::math::isnan (v[i]))                    \
-                  {                                                     \
-                    r[i] = r0[i];                                       \
-                    nan = true;                                         \
-                  }                                                     \
-                else if (octave::math::isnan (r0[i]) ||                 \
-                         std::abs (v[i]) OP std::abs (r0[i]))           \
+                if (octave::math::isnan (v[i]) ||                       \
+                    octave::math::isnan (r0[i]))                        \
+                  r[i] = NAN;                                           \
+                else if (std::abs (v[i]) OP std::abs (r0[i]))           \
                   r[i] = v[i];                                          \
                 else if (std::abs (v[i]) == std::abs (r0[i]) &&         \
                          v[i] OP r0[i])                                 \
@@ -2613,11 +2633,13 @@ OP_CUMMINMAX_FCN (mx_inline_cummax, >)
             r0 = r;                                                     \
             r += m;                                                     \
           }                                                             \
-        while (j < n)                                                   \
+        while (nanflag && j < n)                                        \
           {                                                             \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if (std::abs (v[i]) OP std::abs (r0[i]))                \
+                if (octave::math::isnan (r0[i]))                        \
+                  r[i] = v[i];                                          \
+                else if (std::abs (v[i]) OP std::abs (r0[i]))           \
                   r[i] = v[i];                                          \
                 else if (std::abs (v[i]) == std::abs (r0[i]) &&         \
                          v[i] OP r0[i])                                 \
@@ -2639,15 +2661,13 @@ OP_CUMMINMAX_FCN (mx_inline_cummax, >)
   {                                                                     \
     if (! n)                                                            \
       return;                                                           \
-    bool nan = false;                                                   \
     const T *r0;                                                        \
     const octave_idx_type *r0i;                                         \
     octave_idx_type j = 0;                                              \
     for (octave_idx_type i = 0; i < m; i++)                             \
       {                                                                 \
-        r[i] = v[i]; ri[i] = 0;                                         \
-        if (octave::math::isnan (v[i]))                                 \
-          nan = true;                                                   \
+        r[i] = v[i];                                                    \
+        ri[i] = 0;                                                      \
       }                                                                 \
     j++;                                                                \
     v += m;                                                             \
@@ -2657,25 +2677,22 @@ OP_CUMMINMAX_FCN (mx_inline_cummax, >)
     ri += m;                                                            \
     if (realabs)                                                        \
       {                                                                 \
-        while (nan && j < n)                                            \
+        while (! nanflag && j < n)                                      \
           {                                                             \
-            nan = false;                                                \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if ((octave::math::isnan (v[i]) ||                      \
-                     octave::math::isnan (r0[i])) && ! nanflag)         \
-                  {                                                     \
-                    r[i] = NAN;                                         \
-                    ri[i] = j;                                          \
-                    nan = true;                                         \
-                  }                                                     \
-                else if (octave::math::isnan (v[i]))                    \
+                if (octave::math::isnan (v[i]) &&                       \
+                    octave::math::isnan (r0[i]))                        \
                   {                                                     \
                     r[i] = r0[i];                                       \
                     ri[i] = r0i[i];                                     \
-                    nan = true;                                         \
                   }                                                     \
-                else if (octave::math::isnan (r0[i]) || v[i] OP r0[i])  \
+                else if (octave::math::isnan (v[i]))                    \
+                  {                                                     \
+                    r[i] = NAN;                                         \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else if (v[i] OP r0[i])                                 \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
@@ -2693,11 +2710,17 @@ OP_CUMMINMAX_FCN (mx_inline_cummax, >)
             r0i = ri;                                                   \
             ri += m;                                                    \
           }                                                             \
-        while (j < n)                                                   \
+        while (nanflag && j < n)                                        \
           {                                                             \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if (v[i] OP r0[i])                                      \
+                if (octave::math::isnan (r0[i]) &&                      \
+                    octave::math::isnan (v[i]))                         \
+                  {                                                     \
+                    r[i] = NAN;                                         \
+                    ri[i] = r0i[i];                                     \
+                  }                                                     \
+                else if (octave::math::isnan (r0[i]) || v[i] OP r0[i])  \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
@@ -2718,26 +2741,22 @@ OP_CUMMINMAX_FCN (mx_inline_cummax, >)
       }                                                                 \
     else                                                                \
       {                                                                 \
-        while (nan && j < n)                                            \
+        while (! nanflag && j < n)                                      \
           {                                                             \
-            nan = false;                                                \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if ((octave::math::isnan (v[i]) ||                      \
-                     octave::math::isnan (r0[i])) && ! nanflag)         \
-                  {                                                     \
-                    r[i] = NAN;                                         \
-                    ri[i] = j;                                          \
-                    nan = true;                                         \
-                  }                                                     \
-                else if (octave::math::isnan (v[i]))                    \
+                if (octave::math::isnan (v[i]) &&                       \
+                    octave::math::isnan (r0[i]))                        \
                   {                                                     \
                     r[i] = r0[i];                                       \
                     ri[i] = r0i[i];                                     \
-                    nan = true;                                         \
                   }                                                     \
-                else if (octave::math::isnan (r0[i]) ||                 \
-                         std::abs (v[i]) OP std::abs (r0[i]))           \
+                else if (octave::math::isnan (v[i]))                    \
+                  {                                                     \
+                    r[i] = NAN;                                         \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else if (std::abs (v[i]) OP std::abs (r0[i]))           \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
@@ -2761,11 +2780,22 @@ OP_CUMMINMAX_FCN (mx_inline_cummax, >)
             r0i = ri;                                                   \
             ri += m;                                                    \
           }                                                             \
-        while (j < n)                                                   \
+        while (nanflag && j < n)                                        \
           {                                                             \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if (std::abs (v[i]) OP std::abs (r0[i]))                \
+                if (octave::math::isnan (r0[i]) &&                      \
+                    octave::math::isnan (v[i]))                         \
+                  {                                                     \
+                    r[i] = NAN;                                         \
+                    ri[i] = r0i[i];                                     \
+                  }                                                     \
+                if (octave::math::isnan (r0[i]))                        \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else if (std::abs (v[i]) OP std::abs (r0[i]))           \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
@@ -2865,19 +2895,16 @@ OP_CUMMINMAX_FCNN (mx_inline_cummax)
   {                                                                     \
     if (! n)                                                            \
       return;                                                           \
-    if (! nanflag)                                                      \
-      {                                                                 \
-        for (octave_idx_type i = 0; i < n; i++)                         \
-          if (octave::math::isnan (v[i]))                               \
-            {                                                           \
-              *r = NAN;                                                 \
-              return;                                                   \
-            }                                                           \
-      }                                                                 \
     std::complex<T> tmp = v[0];                                         \
     octave_idx_type i = 1;                                              \
     octave_idx_type j = 0;                                              \
-    if (octave::math::isnan (tmp))                                      \
+    if (octave::math::isnan (tmp) && ! nanflag)                         \
+      {                                                                 \
+        for (; j < n; j++)                                              \
+          r[j] = NAN;                                                   \
+        return;                                                         \
+      }                                                                 \
+    else if (octave::math::isnan (tmp))                                 \
       {                                                                 \
         for (; i < n && octave::math::isnan (v[i]); i++) ;              \
         for (; j < i; j++)                                              \
@@ -2889,6 +2916,14 @@ OP_CUMMINMAX_FCNN (mx_inline_cummax)
       {                                                                 \
         for (; i < n; i++)                                              \
           {                                                             \
+            if (octave::math::isnan (v[i]) && ! nanflag)                \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  r[j] = tmp;                                           \
+                for (; j < n; j++)                                      \
+                  r[j] = NAN;                                           \
+                return;                                                 \
+              }                                                         \
             if (v[i].real () OP tmp.real ())                            \
               {                                                         \
                 for (; j < i; j++)                                      \
@@ -2908,6 +2943,14 @@ OP_CUMMINMAX_FCNN (mx_inline_cummax)
       {                                                                 \
         for (; i < n; i++)                                              \
           {                                                             \
+            if (octave::math::isnan (v[i]) && ! nanflag)                \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  r[j] = tmp;                                           \
+                for (; j < n; j++)                                      \
+                  r[j] = NAN;                                           \
+                return;                                                 \
+              }                                                         \
             if (std::abs (v[i]) OP std::abs (tmp))                      \
               {                                                         \
                 for (; j < i; j++)                                      \
@@ -2933,21 +2976,20 @@ OP_CUMMINMAX_FCNN (mx_inline_cummax)
   {                                                                     \
     if (! n)                                                            \
       return;                                                           \
-    if (! nanflag)                                                      \
-      {                                                                 \
-        for (octave_idx_type i = 0; i < n; i++)                         \
-          if (octave::math::isnan (v[i]))                               \
-            {                                                           \
-              *r = NAN;                                                 \
-              *ri = i;                                                  \
-              return;                                                   \
-            }                                                           \
-      }                                                                 \
     std::complex<T> tmp = v[0];                                         \
     octave_idx_type tmpi = 0;                                           \
     octave_idx_type i = 1;                                              \
     octave_idx_type j = 0;                                              \
-    if (octave::math::isnan (tmp))                                      \
+    if (octave::math::isnan (tmp) && ! nanflag)                         \
+      {                                                                 \
+        for (; j < n; j++)                                              \
+          {                                                             \
+            r[j] = NAN;                                                 \
+            ri[j] = tmpi;                                               \
+          }                                                             \
+        return;                                                         \
+      }                                                                 \
+    else if (octave::math::isnan (tmp))                                 \
       {                                                                 \
         for (; i < n && octave::math::isnan (v[i]); i++) ;              \
         for (; j < i; j++)                                              \
@@ -2965,6 +3007,20 @@ OP_CUMMINMAX_FCNN (mx_inline_cummax)
       {                                                                 \
         for (; i < n; i++)                                              \
           {                                                             \
+            if (octave::math::isnan (v[i]) && ! nanflag)                \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  {                                                     \
+                    r[j] = tmp;                                         \
+                    ri[j] = tmpi;                                       \
+                  }                                                     \
+                for (; j < n; j++)                                      \
+                  {                                                     \
+                    r[j] = NAN;                                         \
+                    ri[j] = i;                                          \
+                  }                                                     \
+                return;                                                 \
+              }                                                         \
             if (v[i].real () OP tmp.real ())                            \
               {                                                         \
                 for (; j < i; j++)                                      \
@@ -2992,6 +3048,20 @@ OP_CUMMINMAX_FCNN (mx_inline_cummax)
       {                                                                 \
         for (; i < n; i++)                                              \
           {                                                             \
+            if (octave::math::isnan (v[i]) && ! nanflag)                \
+              {                                                         \
+                for (; j < i; j++)                                      \
+                  {                                                     \
+                    r[j] = tmp;                                         \
+                    ri[j] = tmpi;                                       \
+                  }                                                     \
+                for (; j < n; j++)                                      \
+                  {                                                     \
+                    r[j] = NAN;                                         \
+                    ri[j] = i;                                          \
+                  }                                                     \
+                return;                                                 \
+              }                                                         \
             if (std::abs (v[i]) OP std::abs (tmp))                      \
               {                                                         \
                 for (; j < i; j++)                                      \
@@ -3025,10 +3095,6 @@ OP_CUMMINMAX_FCNN (mx_inline_cummax)
 OP_CCUMMINMAX_FCN (mx_inline_ccummin, <)
 OP_CCUMMINMAX_FCN (mx_inline_ccummax, >)
 
-// Row reductions will be slightly complicated.  We will proceed with checks
-// for NaNs until we detect that no row will yield a NaN, in which case we
-// proceed to a faster code.
-
 #define OP_CCUMMINMAX_FCN2(F, OP)                                       \
   template <typename T>                                                 \
   inline void                                                           \
@@ -3037,39 +3103,24 @@ OP_CCUMMINMAX_FCN (mx_inline_ccummax, >)
   {                                                                     \
     if (! n)                                                            \
       return;                                                           \
-    bool nan = false;                                                   \
     const std::complex<T> *r0;                                          \
     octave_idx_type j = 0;                                              \
     for (octave_idx_type i = 0; i < m; i++)                             \
-      {                                                                 \
-        r[i] = v[i];                                                    \
-        if (octave::math::isnan (v[i]))                                 \
-          nan = true;                                                   \
-      }                                                                 \
+      r[i] = v[i];                                                      \
     j++;                                                                \
     v += m;                                                             \
     r0 = r;                                                             \
     r += m;                                                             \
     if (realabs)                                                        \
       {                                                                 \
-        while (nan && j < n)                                            \
+        while (! nanflag && j < n)                                      \
           {                                                             \
-            nan = false;                                                \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if ((octave::math::isnan (v[i]) ||                      \
-                     octave::math::isnan (r0[i])) && ! nanflag)         \
-                  {                                                     \
-                    r[i] = NAN;                                         \
-                    nan = true;                                         \
-                  }                                                     \
-                else if (octave::math::isnan (v[i]))                    \
-                  {                                                     \
-                    r[i] = r0[i];                                       \
-                    nan = true;                                         \
-                  }                                                     \
-                else if (octave::math::isnan (r0[i]) ||                 \
-                         v[i].real () OP r0[i].real ())                 \
+                if (octave::math::isnan (v[i]) ||                       \
+                    octave::math::isnan (r0[i]))                        \
+                  r[i] = NAN;                                           \
+                else if (v[i].real () OP r0[i].real ())                 \
                   r[i] = v[i];                                          \
                 else if (v[i].real () == r0[i].real () &&               \
                          v[i].imag () OP r0[i].imag ())                 \
@@ -3082,11 +3133,13 @@ OP_CCUMMINMAX_FCN (mx_inline_ccummax, >)
             r0 = r;                                                     \
             r += m;                                                     \
           }                                                             \
-        while (j < n)                                                   \
+        while (nanflag && j < n)                                        \
           {                                                             \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if (v[i].real () OP r0[i].real ())                      \
+                if (octave::math::isnan (r0[i]))                        \
+                  r[i] = v[i];                                          \
+                else if (v[i].real () OP r0[i].real ())                 \
                   r[i] = v[i];                                          \
                 else if (v[i].real () == r0[i].real () &&               \
                          v[i].imag () OP r0[i].imag ())                 \
@@ -3102,24 +3155,14 @@ OP_CCUMMINMAX_FCN (mx_inline_ccummax, >)
       }                                                                 \
     else                                                                \
       {                                                                 \
-        while (nan && j < n)                                            \
+        while (! nanflag && j < n)                                      \
           {                                                             \
-            nan = false;                                                \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if ((octave::math::isnan (v[i]) ||                      \
-                     octave::math::isnan (r0[i])) && ! nanflag)         \
-                  {                                                     \
-                    r[i] = NAN;                                         \
-                    nan = true;                                         \
-                  }                                                     \
-                else if (octave::math::isnan (v[i]))                    \
-                  {                                                     \
-                    r[i] = r0[i];                                       \
-                    nan = true;                                         \
-                  }                                                     \
-                else if (octave::math::isnan (r0[i]) ||                 \
-                         std::abs (v[i]) OP std::abs (r0[i]))           \
+                if (octave::math::isnan (v[i]) ||                       \
+                    octave::math::isnan (r0[i]))                        \
+                  r[i] = NAN;                                           \
+                else if (std::abs (v[i]) OP std::abs (r0[i]))           \
                   r[i] = v[i];                                          \
                 else if (std::abs (v[i]) == std::abs (r0[i]) &&         \
                          std::arg (v[i]) OP std::arg (r0[i]))           \
@@ -3132,11 +3175,13 @@ OP_CCUMMINMAX_FCN (mx_inline_ccummax, >)
             r0 = r;                                                     \
             r += m;                                                     \
           }                                                             \
-        while (j < n)                                                   \
+        while (nanflag && j < n)                                        \
           {                                                             \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if (std::abs (v[i]) OP std::abs (r0[i]))                \
+                if (octave::math::isnan (r0[i]))                        \
+                  r[i] = v[i];                                          \
+                else if (std::abs (v[i]) OP std::abs (r0[i]))           \
                   r[i] = v[i];                                          \
                 else if (std::abs (v[i]) == std::abs (r0[i])  &&        \
                          std::arg (v[i]) OP std::arg (r0[i]))           \
@@ -3159,15 +3204,13 @@ OP_CCUMMINMAX_FCN (mx_inline_ccummax, >)
   {                                                                     \
     if (! n)                                                            \
       return;                                                           \
-    bool nan = false;                                                   \
     const std::complex<T> *r0;                                          \
     const octave_idx_type *r0i;                                         \
     octave_idx_type j = 0;                                              \
     for (octave_idx_type i = 0; i < m; i++)                             \
       {                                                                 \
-        r[i] = v[i]; ri[i] = 0;                                         \
-        if (octave::math::isnan (v[i]))                                 \
-          nan = true;                                                   \
+        r[i] = v[i];                                                    \
+        ri[i] = 0;                                                      \
       }                                                                 \
     j++;                                                                \
     v += m;                                                             \
@@ -3177,26 +3220,22 @@ OP_CCUMMINMAX_FCN (mx_inline_ccummax, >)
     ri += m;                                                            \
     if (realabs)                                                        \
       {                                                                 \
-        while (nan && j < n)                                            \
+        while (! nanflag && j < n)                                      \
           {                                                             \
-            nan = false;                                                \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if ((octave::math::isnan (v[i]) ||                      \
-                     octave::math::isnan (r0[i])) && ! nanflag)         \
-                  {                                                     \
-                    r[i] = NAN;                                         \
-                    ri[i] = j;                                          \
-                    nan = true;                                         \
-                  }                                                     \
-                else if (octave::math::isnan (v[i]))                    \
+                if (octave::math::isnan (v[i]) &&                       \
+                    octave::math::isnan (r0[i]))                        \
                   {                                                     \
                     r[i] = r0[i];                                       \
                     ri[i] = r0i[i];                                     \
-                    nan = true;                                         \
                   }                                                     \
-                else if (octave::math::isnan (r0[i]) ||                 \
-                         v[i].real () OP r0[i].real ())                 \
+                else if (octave::math::isnan (v[i]))                    \
+                  {                                                     \
+                    r[i] = NAN;                                         \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else if (v[i].real () OP r0[i].real ())                 \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
@@ -3220,11 +3259,22 @@ OP_CCUMMINMAX_FCN (mx_inline_ccummax, >)
             r0i = ri;                                                   \
             ri += m;                                                    \
           }                                                             \
-        while (j < n)                                                   \
+        while (nanflag && j < n)                                        \
           {                                                             \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if (v[i].real () OP r0[i].real ())                      \
+                if (octave::math::isnan (r0[i]) &&                      \
+                    octave::math::isnan (v[i]))                         \
+                  {                                                     \
+                    r[i] = NAN;                                         \
+                    ri[i] = r0i[i];                                     \
+                  }                                                     \
+                else if (octave::math::isnan (r0[i]))                   \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else if (v[i].real () OP r0[i].real ())                 \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
@@ -3251,26 +3301,22 @@ OP_CCUMMINMAX_FCN (mx_inline_ccummax, >)
       }                                                                 \
     else                                                                \
       {                                                                 \
-        while (nan && j < n)                                            \
+        while (! nanflag && j < n)                                      \
           {                                                             \
-            nan = false;                                                \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if ((octave::math::isnan (v[i]) ||                      \
-                     octave::math::isnan (r0[i])) && ! nanflag)         \
-                  {                                                     \
-                    r[i] = NAN;                                         \
-                    ri[i] = j;                                          \
-                    nan = true;                                         \
-                  }                                                     \
-                else if (octave::math::isnan (v[i]))                    \
+                if (octave::math::isnan (v[i]) &&                       \
+                    octave::math::isnan (r0[i]))                        \
                   {                                                     \
                     r[i] = r0[i];                                       \
                     ri[i] = r0i[i];                                     \
-                    nan = true;                                         \
                   }                                                     \
-                else if (octave::math::isnan (r0[i]) ||                 \
-                         std::abs (v[i]) OP std::abs (r0[i]))           \
+                else if (octave::math::isnan (v[i]))                    \
+                  {                                                     \
+                    r[i] = NAN;                                         \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else if (std::abs (v[i]) OP std::abs (r0[i]))           \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \
@@ -3294,11 +3340,22 @@ OP_CCUMMINMAX_FCN (mx_inline_ccummax, >)
             r0i = ri;                                                   \
             ri += m;                                                    \
           }                                                             \
-        while (j < n)                                                   \
+        while (nanflag && j < n)                                        \
           {                                                             \
             for (octave_idx_type i = 0; i < m; i++)                     \
               {                                                         \
-                if (std::abs (v[i]) OP std::abs (r0[i]))                \
+                if (octave::math::isnan (r0[i]) &&                      \
+                    octave::math::isnan (v[i]))                         \
+                  {                                                     \
+                    r[i] = NAN;                                         \
+                    ri[i] = r0i[i];                                     \
+                  }                                                     \
+                else if (octave::math::isnan (r0[i]))                   \
+                  {                                                     \
+                    r[i] = v[i];                                        \
+                    ri[i] = j;                                          \
+                  }                                                     \
+                else if (std::abs (v[i]) OP std::abs (r0[i]))           \
                   {                                                     \
                     r[i] = v[i];                                        \
                     ri[i] = j;                                          \

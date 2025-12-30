@@ -121,12 +121,15 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   `"all"` or `vecdim`, `direction`, and `nanflag`.
 
 - The functions `min` and `max` now support the optional arguments `"all"` or
-  `vecdim`, `nanflag`, and the paired argument `"ComparisonMethod"` with
-  options `"real"`, `"abs"`, and `"auto"`.
+  `vecdim`, `nanflag`, and the paired argument `"ComparisonMethod"` with options
+  `"real"`, `"abs"`, and `"auto"`.  The `"linear"` indexing flag is now also
+  supported, when a second output argument is requested.
 
 - The functions `cummin`, and `cummax` now support the optional arguments
   `"all"` or `vecdim`, `nanflag`, `direction`, and the paired argument
-   `"ComparisonMethod"` with options `"real"`, `"abs"`, and `"auto"`.
+  `"ComparisonMethod"` with options `"real"`, `"abs"`, and `"auto"`.  The
+  `"linear"` indexing flag is now also supported, when a second output argument
+  is requested.
 
 - The functions `prod`, `sum`, and `sumsq` now accept the optional arguments
  `"all"` or `vecdim`, `nanflag`, and `"default"` in `outtype`.  `prod` and

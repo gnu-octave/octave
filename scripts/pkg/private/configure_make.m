@@ -110,8 +110,12 @@ function configure_make (desc, packdir, verbose)
     endif
 
     if (exist (fullfile (src, "Makefile"), "file"))
-      [status, output] = shell (sprintf ("%s make --jobs %i --directory '%s'",
-                                         scenv, jobs, src), verbose);
+      make_cmd = getenv ("MAKE");
+      if (isempty (make_cmd))
+        make_cmd = "make";
+      endif
+      [status, output] = shell (sprintf ("%s %s -j %i -C '%s'",
+                                         scenv, make_cmd, jobs, src), verbose);
       if (status != 0)
         disp (output);
         error ("pkg: error running 'make' for the %s package", desc.name);

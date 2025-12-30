@@ -1832,6 +1832,18 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %! [m ,i] = max ([1 2 3 4], [], "linear");
 */
 
+static Array<octave_idx_type>
+reverse_index (Array<octave_idx_type> idx, const dim_vector array_size, int dim)
+{
+  octave_idx_type n = idx.numel ();
+  if (dim == -1)
+    dim = array_size.first_non_singleton ();
+  octave_idx_type dim_size = array_size(dim);
+  for (octave_idx_type i = 0; i < n; i++)
+    idx(i) = dim_size - idx(i) - 1;
+  return idx;
+}
+
 template <typename ArrayType>
 static octave_value_list
 do_cumminmax_red_op (const octave_value& arg, int nargout, int dim,
@@ -1866,11 +1878,7 @@ do_cumminmax_red_op (const octave_value& arg, int nargout, int dim,
           if (direction)
             {
               retval(0) = array.flip (dim).cummin (idx, dim, nanflag).flip (dim);
-              octave_idx_type n = idx.numel ();
-              Array<octave_idx_type> new_idx = idx;
-              for (octave_idx_type i = 0; i < n; i++)
-                new_idx(n-1-i) = n - idx(i) - 1;
-              idx = new_idx;
+              idx = reverse_index (idx, array.dims (), dim);
             }
           else
             retval(0) = array.cummin (idx, dim, nanflag);
@@ -1880,17 +1888,15 @@ do_cumminmax_red_op (const octave_value& arg, int nargout, int dim,
           if (direction)
             {
               retval(0) = array.flip (dim).cummax (idx, dim, nanflag).flip (dim);
-              octave_idx_type n = idx.numel ();
-              Array<octave_idx_type> new_idx = idx;
-              for (octave_idx_type i = 0; i < n; i++)
-                new_idx(n-1-i) = n - idx(i) - 1;
-              idx = new_idx;
+              idx = reverse_index (idx, array.dims (), dim);
             }
           else
             retval(0) = array.cummax (idx, dim, nanflag);
         }
 
       retval(1) = octave_value (idx, true, true);
+      if (direction)
+        retval(1) = retval(1).array_value ().flip (dim);
     }
 
   return retval;
@@ -1930,11 +1936,7 @@ do_cumminmax_red_op (const octave_value& arg, int nargout, int dim,
           if (direction)
             {
               retval(0) = array.flip (dim).cummin (idx, dim, nanflag, realabs).flip (dim);
-              octave_idx_type n = idx.numel ();
-              Array<octave_idx_type> new_idx = idx;
-              for (octave_idx_type i = 0; i < n; i++)
-                new_idx(n-1-i) = n - idx(i) - 1;
-              idx = new_idx;
+              idx = reverse_index (idx, array.dims (), dim);
             }
           else
             retval(0) = array.cummin (idx, dim, nanflag, realabs);
@@ -1944,17 +1946,15 @@ do_cumminmax_red_op (const octave_value& arg, int nargout, int dim,
           if (direction)
             {
               retval(0) = array.flip (dim).cummax (idx, dim, nanflag, realabs).flip (dim);
-              octave_idx_type n = idx.numel ();
-              Array<octave_idx_type> new_idx = idx;
-              for (octave_idx_type i = 0; i < n; i++)
-                new_idx(n-1-i) = n - idx(i) - 1;
-              idx = new_idx;
+              idx = reverse_index (idx, array.dims (), dim);
             }
           else
             retval(0) = array.cummax (idx, dim, nanflag, realabs);
         }
 
       retval(1) = octave_value (idx, true, true);
+      if (direction)
+        retval(1) = retval(1).array_value ().flip (dim);
     }
 
   return retval;
@@ -2248,7 +2248,7 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %!assert (cummin ([1, 4, 2, 3]), [1 1 1 1])
 %!assert (cummin ([1; -10; 5; -2]), [1; -10; -10; -10])
 %!assert (cummin ([4, i; -2, 2]), [4, i; -2, i])
-%!assert (cummin ([1 2; NaN 1], 2), [1 1; NaN 1])
+%!assert (cummin ([1, 2; NaN, 1], 2), [1, 1; NaN, 1])
 
 %!test
 %! x = reshape (1:8, [2,2,2]);
@@ -2260,7 +2260,168 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %! assert (ndims (iw), 3);
 %! assert (iw, ones (2,2,2));
 
-## Test "linear" option
+## Test "includenan" and "reverse" options
+%!assert (cummin ([1; -10; NaN; -2], 'includenan'), [1; -10; NaN; NaN])
+%!assert (cummin ([1; -10; NaN; -2], 'reverse', 'includenan'), [NaN(3,1); -2])
+%!assert (cummin ([1, -10, NaN, -2], 'includenan'), [1, -10, NaN, NaN])
+%!assert (cummin ([1, -10, NaN, -2], 'reverse', 'includenan'), [NaN(1,3), -2])
+%!shared A, C
+%! A = [3, 5, NaN, 4, 2; 2, 6, 2, 9, 4; 1, 3, 0, NaN, 1; 5, 3, 4, 2, 0];
+%! C = [3+2i, 5i, NaN, 4+i, 2i; 2, 6i, 2, 9+2i, 4i; ...
+%!      1, 2+3i, 0, NaN, 1i; 5, 3i, 4, 2i, 0+i];
+%!test
+%! [m, i] = cummin (A, 'includenan');
+%! m_exp = [3, 5, NaN, 4, 2; 2, 5, NaN, 4, 2; ...
+%!          1, 3, NaN, NaN, 1; 1, 3, NaN, NaN, 0];
+%! i_exp = [1, 1, 1, 1, 1; 2, 1, 1, 1, 1; 3, 3, 1, 3, 3; 3, 3, 1, 3, 4];
+%! assert (m, m_exp);
+%! assert (i, i_exp);
+%!test
+%! [m, i] = cummin (A, 'includenan', 'reverse');
+%! m_exp = [1, 3, NaN, NaN, 0; 1, 3, 0, NaN, 0; ...
+%!          1, 3, 0, NaN, 0; 5, 3, 4, 2, 0];
+%! i_exp = [3, 4, 1, 3, 4; 3, 4, 3, 3, 4; 3, 4, 3, 3, 4; 4, 4, 4, 4, 4];
+%! assert (m, m_exp);
+%! assert (i, i_exp);
+%!test
+%! [m, i] = cummin (A, 'reverse');
+%! m_exp = [1, 3, 0, 2, 0; 1, 3, 0, 2, 0; 1, 3, 0, 2, 0; 5, 3, 4, 2, 0];
+%! i_exp = [3, 4, 3, 4, 4; 3, 4, 3, 4, 4; 3, 4, 3, 4, 4; 4, 4, 4, 4, 4];
+%! assert (m, m_exp);
+%! assert (i, i_exp);
+%!test
+%! [m, i] = cummin (A);
+%! m_exp = [3, 5, NaN, 4, 2; 2, 5, 2, 4, 2; 1, 3, 0, 4, 1; 1, 3, 0, 2, 0];
+%! i_exp = [1, 1, 1, 1, 1; 2, 1, 2, 1, 1; 3, 3, 3, 1, 3; 3, 3, 3, 4, 4];
+%! assert (m, m_exp);
+%! assert (i, i_exp);
+%!test
+%! [m, i] = cummin (A, 2, 'includenan');
+%! m_exp = [3, 3, NaN, NaN, NaN; 2, 2, 2, 2, 2; 1, 1, 0, NaN, NaN; 5, 3, 3, 2, 0];
+%! i_exp = [1, 1, 3, 3, 3; 1, 1, 1, 1, 1; 1, 1, 3, 4, 4; 1, 2, 2, 4, 5];
+%! assert (m, m_exp);
+%! assert (i, i_exp);
+%!test
+%! [m, i] = cummin (A, 2, 'includenan', 'reverse');
+%! m_exp = [NaN, NaN, NaN, 2, 2; 2, 2, 2, 4, 4; ...
+%!          NaN, NaN, NaN, NaN, 1; 0, 0, 0, 0, 0];
+%! i_exp = [3, 3, 3, 5, 5; 3, 3, 3, 5, 5; 4, 4, 4, 4, 5; 5, 5, 5, 5, 5];
+%! assert (m, m_exp);
+%! assert (i, i_exp);
+%!test
+%! [m, i] = cummin (A, 2, 'reverse');
+%! m_exp = [2, 2, 2, 2, 2; 2, 2, 2, 4, 4; 0, 0, 0, 1, 1; 0, 0, 0, 0, 0];
+%! i_exp = [5, 5, 5, 5, 5; 3, 3, 3, 5, 5; 3, 3, 3, 5, 5; 5, 5, 5, 5, 5];
+%! assert (m, m_exp);
+%! assert (i, i_exp);
+%!test
+%! [m, i] = cummin (A, 2);
+%! m_exp = [3, 3, 3, 3, 2; 2, 2, 2, 2, 2; 1, 1, 0, 0, 0; 5, 3, 3, 2, 0];
+%! i_exp = [1, 1, 1, 1, 5; 1, 1, 1, 1, 1; 1, 1, 3, 3, 3; 1, 2, 2, 4, 5];
+%! assert (m, m_exp);
+%! assert (i, i_exp);
+
+## Test single output against linear option with previous examples
+%!test
+%! [~, i_lin] = cummin (A, 'includenan', 'linear');
+%! assert (cummin (A, 'includenan'), A(i_lin));
+%!test
+%! [~, i_lin] = cummin (A, 'includenan', 'reverse', 'linear');
+%! assert (cummin (A, 'includenan', 'reverse'), A(i_lin));
+%!test
+%! [~, i_lin] = cummin (A, 'reverse', 'linear');
+%! assert (cummin (A, 'reverse'), A(i_lin));
+%!test
+%! [~, i_lin] = cummin (A, 'linear');
+%! assert (cummin (A), A(i_lin));
+%!test
+%! [~, i_lin] = cummin (A, 2, 'includenan', 'linear');
+%! assert (cummin (A, 2, 'includenan'), A(i_lin));
+%!test
+%! [~, i_lin] = cummin (A, 2, 'includenan', 'reverse', 'linear');
+%! assert (cummin (A, 2, 'includenan', 'reverse'), A(i_lin));
+%!test
+%! [~, i_lin] = cummin (A, 2, 'reverse', 'linear');
+%! assert (cummin (A, 2, 'reverse'), A(i_lin));
+%!test
+%! [~, i_lin] = cummin (A, 2, 'linear');
+%! assert (cummin (A, 2), A(i_lin));
+
+## Test "includenan" and "reverse" options with complex input
+%!test
+%! [m, idx] = cummin (C, 'includenan');
+%! m_exp = [3+2i, 5i, NaN, 4+i, 2i; 2, 5i, NaN, 4+i, 2i; ...
+%!          1, 2+3i, NaN, NaN, 1i; 1, 3i, NaN, NaN, 1i];
+%! i_exp = [1, 1, 1, 1, 1; 2, 1, 1, 1, 1; 3, 3, 1, 3, 3; 3, 4, 1, 3, 3];
+%! assert (m, m_exp);
+%! assert (idx, i_exp);
+%!test
+%! [m, idx] = cummin (C, 'includenan', 'reverse');
+%! m_exp = [1, 3i, NaN, NaN, 1i; 1, 3i, 0, NaN, 1i; ...
+%!          1, 3i, 0, NaN, 1i; 5, 3i, 4, 2i, 1i];
+%! i_exp = [3, 4, 1, 3, 4; 3, 4, 3, 3, 4; 3, 4, 3, 3, 4; 4, 4, 4, 4, 4];
+%! assert (m, m_exp);
+%! assert (idx, i_exp);
+%!test
+%! [m, idx] = cummin (C, 'reverse');
+%! m_exp = [1, 3i, 0, 2i, 1i; 1, 3i, 0, 2i, 1i; ...
+%!          1, 3i, 0, 2i, 1i; 5, 3i, 4, 2i, 1i];
+%! i_exp = [3, 4, 3, 4, 4; 3, 4, 3, 4, 4; 3, 4, 3, 4, 4; 4, 4, 4, 4, 4];
+%! assert (m, m_exp);
+%! assert (idx, i_exp);
+%!test
+%! [m, idx] = cummin (C);
+%! m_exp = [3+2i, 5i, NaN, 4+i, 2i; 2, 5i, 2, 4+i, 2i; ...
+%!          1, 2+3i, 0, 4+i, 1i; 1, 3i, 0, 2i, 1i];
+%! i_exp = [1, 1, 1, 1, 1; 2, 1, 2, 1, 1; 3, 3, 3, 1, 3; 3, 4, 3, 4, 3];
+%! assert (m, m_exp);
+%! assert (idx, i_exp);
+%!test
+%! [m, idx] = cummin (C, 2, 'includenan');
+%! m_exp = [3+2i, 3+2i, NaN, NaN, NaN; 2, 2, 2, 2, 2; ...
+%!          1, 1, 0, NaN, NaN; 5, 3i, 3i, 2i, 1i];
+%! i_exp = [1, 1, 3, 3, 3; 1, 1, 1, 1, 1; 1, 1, 3, 4, 4; 1, 2, 2, 4, 5];
+%! assert (m, m_exp);
+%! assert (idx, i_exp);
+%!test
+%! [m, idx] = cummin (C, 2, 'includenan', 'reverse');
+%! m_exp = [NaN, NaN, NaN, 2i, 2i; 2, 2, 2, 4i, 4i; ...
+%!          NaN, NaN, NaN, NaN, 1i; 1i, 1i, 1i, 1i, 1i];
+%! i_exp = [3, 3, 3, 5, 5; 3, 3, 3, 5, 5; 4, 4, 4, 4, 5; 5, 5, 5, 5, 5];
+%! assert (m, m_exp);
+%! assert (idx, i_exp);
+%!test
+%! [m, idx] = cummin (C, 2, 'reverse');
+%! m_exp = [2i, 2i, 2i, 2i, 2i; 2, 2, 2, 4i, 4i; ...
+%!          0, 0, 0, 1i, 1i; 1i, 1i, 1i, 1i, 1i];
+%! i_exp = [5, 5, 5, 5, 5; 3, 3, 3, 5, 5; 3, 3, 3, 5, 5; 5, 5, 5, 5, 5];
+%! assert (m, m_exp);
+%! assert (idx, i_exp);
+%!test
+%! [m, idx] = cummin (C, 2);
+%! m_exp = [3+2i, 3+2i, 3+2i, 3+2i, 2i; 2, 2, 2, 2, 2; ...
+%!          1, 1, 0, 0, 0; 5, 3i, 3i, 2i, 1i];
+%! i_exp = [1, 1, 1, 1, 5; 1, 1, 1, 1, 1; 1, 1, 3, 3, 3; 1, 2, 2, 4, 5];
+%! assert (m, m_exp);
+%! assert (idx, i_exp);
+
+## Test 'ComparisonMethod' with complex input
+%!test
+%! [m, idx] = cummin (C, 2, 'ComparisonMethod', 'real');
+%! m_exp = [3+2i, 5i, 5i, 5i, 2i; 2, 6i, 6i, 6i, 4i; ...
+%!          1, 1, 0, 0, 0; 5, 3i, 3i, 2i, 1i];
+%! i_exp = [1, 2, 2, 2, 5; 1, 2, 2, 2, 5; 1, 1, 3, 3, 3; 1, 2, 2, 4, 5];
+%! assert (m, m_exp);
+%! assert (idx, i_exp);
+%!test
+%! [m, idx] = cummin (C, 'includenan', 'ComparisonMethod', 'real');
+%! m_exp = [3+2i, 5i, NaN, 4+i, 2i; 2, 5i, NaN, 4+i, 2i; ...
+%!          1, 5i, NaN, NaN, 1i; 1, 3i, NaN, NaN, 1i];
+%! i_exp = [1, 1, 1, 1, 1; 2, 1, 1, 1, 1; 3, 1, 1, 3, 3; 3, 4, 1, 3, 3];
+%! assert (m, m_exp);
+%! assert (idx, i_exp);
+
+## Test "linear" option with ND array
 %!shared x
 %! x = randi ([-10, 10], 3, 4, 5, 2);
 %!test
@@ -2403,10 +2564,10 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 }
 
 /*
-%!assert (cummax ([1, 4, 2, 3]), [1 4 4 4])
+%!assert (cummax ([1, 4, 2, 3]), [1, 4, 4, 4])
 %!assert (cummax ([1; -10; 5; -2]), [1; 1; 5; 5])
-%!assert (cummax ([4, i 4.9, -2, 2, 3+4i]), [4, 4, 4.9, 4.9, 4.9, 3+4i])
-%!assert (cummax ([1 NaN 0; NaN NaN 1], 2), [1 1 1; NaN NaN 1])
+%!assert (cummax ([4, i, 4.9, -2, 2, 3+4i]), [4, 4, 4.9, 4.9, 4.9, 3+4i])
+%!assert (cummax ([1, NaN, 0; NaN, NaN, 1], 2), [1, 1, 1; NaN, NaN, 1])
 
 %!test
 %! x = reshape (8:-1:1, [2,2,2]);
@@ -2418,7 +2579,168 @@ is real or complex.  For elements with equal magnitude, a second comparison by
 %! assert (ndims (iw), 3);
 %! assert (iw, ones (2,2,2));
 
-## Test "linear" option
+## Test "includenan" and "reverse" options
+%!assert (cummax ([1; -10; NaN; -2], 'includenan'), [1; 1; NaN; NaN])
+%!assert (cummax ([1; -10; NaN; -2], 'reverse', 'includenan'), [NaN(3,1); -2])
+%!assert (cummax ([1, -10, NaN, -2], 'includenan'), [1, 1, NaN, NaN])
+%!assert (cummax ([1, -10, NaN, -2], 'reverse', 'includenan'), [NaN(1,3), -2])
+%!shared A, C
+%! A = [3, 5, NaN, 4, 2; 2, 6, 2, 9, 4; 1, 3, 0, NaN, 1; 5, 3, 4, 2, 0];
+%! C = [3+2i, 5i, NaN, 4+i, 2i; 2, 6i, 2, 9+2i, 4i; ...
+%!      1, 2+3i, 0, NaN, 1i; 5, 3i, 4, 2i, 0+i];
+%!test
+%! [m, i] = cummax (A, 'includenan');
+%! m_exp = [3, 5, NaN, 4, 2; 3, 6, NaN, 9, 4; ...
+%!          3, 6, NaN, NaN, 4; 5, 6, NaN, NaN, 4];
+%! i_exp = [1, 1, 1, 1, 1; 1, 2, 1, 2, 2; 1, 2, 1, 3, 2; 4, 2, 1, 3, 2];
+%! assert (m, m_exp);
+%! assert (i, i_exp);
+%!test
+%! [m, i] = cummax (A, 'includenan', 'reverse');
+%! m_exp = [5, 6, NaN, NaN, 4; 5, 6, 4, NaN, 4; ...
+%!          5, 3, 4, NaN, 1; 5, 3, 4, 2, 0];
+%! i_exp = [4, 2, 1, 3, 2; 4, 2, 4, 3, 2; 4, 4, 4, 3, 3; 4, 4, 4, 4, 4];
+%! assert (m, m_exp);
+%! assert (i, i_exp);
+%!test
+%! [m, i] = cummax (A, 'reverse');
+%! m_exp = [5, 6, 4, 9, 4; 5, 6, 4, 9, 4; 5, 3, 4, 2, 1; 5, 3, 4, 2, 0];
+%! i_exp = [4, 2, 4, 2, 2; 4, 2, 4, 2, 2; 4, 4, 4, 4, 3; 4, 4, 4, 4, 4];
+%! assert (m, m_exp);
+%! assert (i, i_exp);
+%!test
+%! [m, i] = cummax (A);
+%! m_exp = [3, 5, NaN, 4, 2; 3, 6, 2, 9, 4; 3, 6, 2, 9, 4; 5, 6, 4, 9, 4];
+%! i_exp = [1, 1, 1, 1, 1; 1, 2, 2, 2, 2; 1, 2, 2, 2, 2; 4, 2, 4, 2, 2];
+%! assert (m, m_exp);
+%! assert (i, i_exp);
+%!test
+%! [m, i] = cummax (A, 2, 'includenan');
+%! m_exp = [3, 5, NaN, NaN, NaN; 2, 6, 6, 9, 9; 1, 3, 3, NaN, NaN; 5, 5, 5, 5, 5];
+%! i_exp = [1, 2, 3, 3, 3; 1, 2, 2, 4, 4; 1, 2, 2, 4, 4; 1, 1, 1, 1, 1];
+%! assert (m, m_exp);
+%! assert (i, i_exp);
+%!test
+%! [m, i] = cummax (A, 2, 'includenan', 'reverse');
+%! m_exp = [NaN, NaN, NaN, 4, 2; 9, 9, 9, 9, 4; ...
+%!          NaN, NaN, NaN, NaN, 1; 5, 4, 4, 2, 0];
+%! i_exp = [3, 3, 3, 4, 5; 4, 4, 4, 4, 5; 4, 4, 4, 4, 5; 1, 3, 3, 4, 5];
+%! assert (m, m_exp);
+%! assert (i, i_exp);
+%!test
+%! [m, i] = cummax (A, 2, 'reverse');
+%! m_exp = [5, 5, 4, 4, 2; 9, 9, 9, 9, 4; 3, 3, 1, 1, 1; 5, 4, 4, 2, 0];
+%! i_exp = [2, 2, 4, 4, 5; 4, 4, 4, 4, 5; 2, 2, 5, 5, 5; 1, 3, 3, 4, 5];
+%! assert (m, m_exp);
+%! assert (i, i_exp);
+%!test
+%! [m, i] = cummax (A, 2);
+%! m_exp = [3, 5, 5, 5, 5; 2, 6, 6, 9, 9; 1, 3, 3, 3, 3; 5, 5, 5, 5, 5];
+%! i_exp = [1, 2, 2, 2, 2; 1, 2, 2, 4, 4; 1, 2, 2, 2, 2; 1, 1, 1, 1, 1];
+%! assert (m, m_exp);
+%! assert (i, i_exp);
+
+## Test single output against linear option with previous examples
+%!test
+%! [~, i_lin] = cummax (A, 'includenan', 'linear');
+%! assert (cummax (A, 'includenan'), A(i_lin));
+%!test
+%! [~, i_lin] = cummax (A, 'includenan', 'reverse', 'linear');
+%! assert (cummax (A, 'includenan', 'reverse'), A(i_lin));
+%!test
+%! [~, i_lin] = cummax (A, 'reverse', 'linear');
+%! assert (cummax (A, 'reverse'), A(i_lin));
+%!test
+%! [~, i_lin] = cummax (A, 'linear');
+%! assert (cummax (A), A(i_lin));
+%!test
+%! [~, i_lin] = cummax (A, 2, 'includenan', 'linear');
+%! assert (cummax (A, 2, 'includenan'), A(i_lin));
+%!test
+%! [~, i_lin] = cummax (A, 2, 'includenan', 'reverse', 'linear');
+%! assert (cummax (A, 2, 'includenan', 'reverse'), A(i_lin));
+%!test
+%! [~, i_lin] = cummax (A, 2, 'reverse', 'linear');
+%! assert (cummax (A, 2, 'reverse'), A(i_lin));
+%!test
+%! [~, i_lin] = cummax (A, 2, 'linear');
+%! assert (cummax (A, 2), A(i_lin));
+
+## Test "includenan" and "reverse" options with complex input
+%!test
+%! [m, idx] = cummax (C, 'includenan');
+%! m_exp = [3+2i, 5i, NaN, 4+i, 2i; 3+2i, 6i, NaN, 9+2i, 4i; ...
+%!          3+2i, 6i, NaN, NaN, 4i; 5, 6i, NaN, NaN, 4i];
+%! i_exp = [1, 1, 1, 1, 1; 1, 2, 1, 2, 2; 1, 2, 1, 3, 2; 4, 2, 1, 3, 2];
+%! assert (m, m_exp);
+%! assert (idx, i_exp);
+%!test
+%! [m, idx] = cummax (C, 'includenan', 'reverse');
+%! m_exp = [5, 6i, NaN, NaN, 4i; 5, 6i, 4, NaN, 4i; ...
+%!          5, 2+3i, 4, NaN, 1i; 5, 3i, 4, 2i, 1i];
+%! i_exp = [4, 2, 1, 3, 2; 4, 2, 4, 3, 2; 4, 3, 4, 3, 4; 4, 4, 4, 4, 4];
+%! assert (m, m_exp);
+%! assert (idx, i_exp);
+%!test
+%! [m, idx] = cummax (C, 'reverse');
+%! m_exp = [5, 6i, 4, 9+2i, 4i; 5, 6i, 4, 9+2i, 4i; ...
+%!          5, 2+3i, 4, 2i, 1i; 5, 3i, 4, 2i, 1i];
+%! i_exp = [4, 2, 4, 2, 2; 4, 2, 4, 2, 2; 4, 3, 4, 4, 4; 4, 4, 4, 4, 4];
+%! assert (m, m_exp);
+%! assert (idx, i_exp);
+%!test
+%! [m, idx] = cummax (C);
+%! m_exp = [3+2i, 5i, NaN, 4+i, 2i; 3+2i, 6i, 2, 9+2i, 4i; ...
+%!          3+2i, 6i, 2, 9+2i, 4i; 5, 6i, 4, 9+2i, 4i];
+%! i_exp = [1, 1, 1, 1, 1; 1, 2, 2, 2, 2; 1, 2, 2, 2, 2; 4, 2, 4, 2, 2];
+%! assert (m, m_exp);
+%! assert (idx, i_exp);
+%!test
+%! [m, idx] = cummax (C, 2, 'includenan');
+%! m_exp = [3+2i, 5i, NaN, NaN, NaN; 2, 6i, 6i, 9+2i, 9+2i; ...
+%!          1, 2+3i, 2+3i, NaN, NaN; 5, 5, 5, 5, 5];
+%! i_exp = [1, 2, 3, 3, 3; 1, 2, 2, 4, 4; 1, 2, 2, 4, 4; 1, 1, 1, 1, 1];
+%! assert (m, m_exp);
+%! assert (idx, i_exp);
+%!test
+%! [m, idx] = cummax (C, 2, 'includenan', 'reverse');
+%! m_exp = [NaN, NaN, NaN, 4+i, 2i; 9+2i, 9+2i, 9+2i, 9+2i, 4i; ...
+%!          NaN, NaN, NaN, NaN, 1i; 5, 4, 4, 2i, 1i];
+%! i_exp = [3, 3, 3, 4, 5; 4, 4, 4, 4, 5; 4, 4, 4, 4, 5; 1, 3, 3, 4, 5];
+%! assert (m, m_exp);
+%! assert (idx, i_exp);
+%!test
+%! [m, idx] = cummax (C, 2, 'reverse');
+%! m_exp = [5i, 5i, 4+i, 4+i, 2i; 9+2i, 9+2i, 9+2i, 9+2i, 4i; ...
+%!          2+3i, 2+3i, 1i, 1i, 1i; 5, 4, 4, 2i, 1i];
+%! i_exp = [2, 2, 4, 4, 5; 4, 4, 4, 4, 5; 2, 2, 5, 5, 5; 1, 3, 3, 4, 5];
+%! assert (m, m_exp);
+%! assert (idx, i_exp);
+%!test
+%! [m, idx] = cummax (C, 2);
+%! m_exp = [3+2i, 5i, 5i, 5i, 5i; 2, 6i, 6i, 9+2i, 9+2i; ...
+%!          1, 2+3i, 2+3i, 2+3i, 2+3i; 5, 5, 5, 5, 5];
+%! i_exp = [1, 2, 2, 2, 2; 1, 2, 2, 4, 4; 1, 2, 2, 2, 2; 1, 1, 1, 1, 1];
+%! assert (m, m_exp);
+%! assert (idx, i_exp);
+
+## Test 'ComparisonMethod' with complex input
+%!test
+%! [m, idx] = cummax (C, 2, 'ComparisonMethod', 'real');
+%! m_exp = [3+2i, 3+2i, 3+2i, 4+i, 4+i; 2, 2, 2, 9+2i, 9+2i; ...
+%!          1, 2+3i, 2+3i, 2+3i, 2+3i; 5, 5, 5, 5, 5];
+%! i_exp = [1, 1, 1, 4, 4; 1, 1, 1, 4, 4; 1, 2, 2, 2, 2; 1, 1, 1, 1, 1];
+%! assert (m, m_exp);
+%! assert (idx, i_exp);
+%!test
+%! [m, idx] = cummax (C, 'includenan', 'reverse', 'ComparisonMethod', 'real');
+%! m_exp = [5, 2+3i, NaN, NaN, 4i; 5, 2+3i, 4, NaN, 4i; ...
+%!          5, 2+3i, 4, NaN, 1i; 5, 3i, 4, 2i, 1i];
+%! i_exp = [4, 3, 1, 3, 2; 4, 3, 4, 3, 2; 4, 3, 4, 3, 4; 4, 4, 4, 4, 4];
+%! assert (m, m_exp);
+%! assert (idx, i_exp);
+
+## Test "linear" option with ND array
 %!shared x
 %! x = randi ([-10, 10], 3, 4, 5, 2);
 %!test

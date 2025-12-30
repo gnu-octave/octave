@@ -217,6 +217,7 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 ### Alphabetical list of new functions added in Octave 11
 
 * `_Exit`
+* `assert_equal`
 * `corrcov`
 * `dither`
 * `funm`

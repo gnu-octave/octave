@@ -16,6 +16,7 @@ FCN_FILE_DIRS += \
   %reldir%/__prog_output_assert__.m \
   %reldir%/__run_test_suite__.m \
   %reldir%/assert.m \
+  %reldir%/assert_equal.m \
   %reldir%/demo.m \
   %reldir%/example.m \
   %reldir%/fail.m \

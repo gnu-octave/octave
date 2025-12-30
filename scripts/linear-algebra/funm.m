@@ -26,69 +26,68 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{F} =} funm (@var{A}, @var{fun})
 ## @deftypefnx {} {@var{F} =} funm (@var{A}, @var{fun}, @var{options})
-## @deftypefnx {} {@var{F} =} funm (@var{A}, @var{fun}, @var{options}, @dots{})
+## @deftypefnx {} {@var{F} =} funm (@var{A}, @var{fun}, @var{options}, @var{p1}, @dots{})
 ## @deftypefnx {} {[@var{F}, @var{exitflag}] =} funm (@dots{})
 ## @deftypefnx {} {[@var{F}, @var{exitflag}, @var{output}] =} funm (@dots{})
 ##
 ## Evaluate a general matrix function.
 ##
 ## @code{funm (@var{A}, @var{fun})} evaluates the function @var{fun} at the
-## square matrix @var{A}.  The input @var{fun}(@var{x}, @var{k}) must return
-## the @var{k}'th derivative of the function represented by @var{fun} evaluated
-## at the vector @var{x}.  The function @var{fun} must have a Taylor series
-## representation with an infinite radius of convergence.
+## square matrix @var{A}.  The input @w{@code{@var{fun} (@var{x}, @var{k})}}
+## must return the @var{k}'th derivative of the function represented by
+## @var{fun} evaluated at the vector @var{x}.  The function @var{fun} must have
+## a Taylor series representation with an infinite radius of convergence.
 ##
 ## The special functions @code{exp}, @code{log}, @code{sin}, @code{cos},
 ## @code{sinh}, and @code{cosh} can be passed by function handle; for example
-## @code{funm (@var{A}, @@cos)}.
+## @w{@code{funm (@var{A}, @@cos)}}.
 ##
 ## For matrix square roots, use @code{sqrtm} instead.  For matrix exponentials,
-## either @code{expm} or @code{funm (@var{A}, @@exp)} may be faster or more
+## either @code{expm} or @w{@code{funm (@var{A}, @@exp)}} may be faster or more
 ## accurate, depending on @var{A}.
 ##
-## Optional inputs:
-## An optional third input in the form of an options struct @var{options}, can
-## details be used to specify verbosity of the function and to influence
-## certain of the algorithms.  See the references below for more details on the
-## latter.
-##
-## All inputs beyond @var{options} will be passed as positional arguments to
-## the function @var{fun} that is specified as second argument.
+## An optional third input in the form of an options struct @var{options} can
+## be used to specify verbosity of the function and to influence certain of the
+## algorithms.  See the references below for more details on the latter.
 ##
 ## @var{options} can have the following fields:
 ##
-## @itemize @bullet{}
-## @item
-## TolBlk - tolerance used in determining the blocking (default: a scalar value
-## of 0.1).
+## @table @code
+## @item Display
+## Specify what information will be printed to the screen during the course of
+## calculations.  It can be either a string value of @qcode{"off"} (no info,
+## the default), @qcode{"on"} (some info), @qcode{"verbose"} (maximum info); or
+## a scalar value between @code{0} (no info, the default) and @code{5} (maximum
+## info).  When @code{Display} is @qcode{"verbose"} or a scalar value @geq{}
+## @code{3}, a plot of the eigenvalues and groups will also be shown.
 ##
-## @item
-## TolTay - tolerance used in the convergence test for evaluating the Taylor
-## series in the form of a scalar value (default: @code{eps}).
+## @item TolBlk
+## Tolerance used in determining the blocking (positive scalar, default:
+## @code{0.1}).
 ##
-## @item
-## Display - used to specify what information about the course of the
-## calculations will be prined to the screen.  It can be either a char values
-## of "off" (no info, the default), "on" (some info printed to the screen) or
-## "verbose" (maximum amount of info), or a scalar value between 0 (no info,
-## the default) and 5 (maximum info echoed to the screen).  In case of
-## "verbose" or a scalar value greater or equal to 4, also a plot of the
-## eigenvalues and groups will be shown.
+## @item TolTay
+## Tolerance used in the convergence test for evaluating the Taylor series
+## (positive scalar, default: @code{eps}).
 ##
-## @item
-## Ord - defines a custom blocking pattern in the form of a vector whose length
-## equals he order of the matrix @var{a}.
+## @item MaxTerms
+## The maximum number of Taylor series terms (positive integer, default:
+## @code{250}).
 ##
-## @item
-## MaxTerms - the maximum number of Taylor expansions, input as a scalar value
-## (default: 250).
+## @item MaxSqrt
+## The maximum number of square roots evaluated in the course of inverse
+## scaling and squaring (positive integer, default: @code{100}).  This option
+## is only used when computing a logarithm where it functions similarly to
+## @code{MaxTerms}.
 ##
-## @item
-## MaxSqrt -  the maximum number of square roots evaluated in the course of
-## inverse scaling and squaring, only in case of computing a logarithm.
+## @item Ord
+## Define a custom blocking pattern in the form of a vector whose length equals
+## the order of the matrix @var{A}.
 ##
+## @end table
 ## Octave accepts any case for these fieldnames.
-## @end itemize
+##
+## All inputs beyond @var{options} will be passed as positional arguments to
+## the function @var{fun}.
 ##
 ## Optional outputs:
 ##
@@ -96,11 +95,11 @@
 ## @item exitflag
 ## Scalar exit flag that describes the exit condition:
 ##
-## @itemize
-## @item 0 --- The algorithm was successful.
+## @itemize @w{}
+## @item @code{0} --- The algorithm was successful.
 ##
-## @item 1 --- One or more Taylor series evaluations did not converge, but the
-## computed value of @var{F} might still be accurate.
+## @item @code{1} --- One or more Taylor series evaluations did not converge,
+## but the computed value of @var{F} might still be accurate.
 ## @end itemize
 ##
 ## @item output
@@ -160,14 +159,15 @@
 ## @end group
 ## @end example
 ##
-## Background and descriptions of the mathematical algorithms are here:
+## References:
 ##
-## Philip I. Davies and Nicholas J. Higham (2004) A Schur-Parlett algorithm for
-## computing matrix functions. SIAM Journal on Matrix Analysis and Applications,
-## vol. 25(2), 464-485
+## @nospell{Philip I. Davies and Nicholas J. Higham},
+## "A Schur-Parlett algorithm for computing matrix functions",
+## @cite{SIAM Journal on Matrix Analysis and Applications}, vol.@: 25(2),
+## 464--485, 2003.
 ##
-## Nicholas J. Higham (2008) Functions of Matrices: Theory and Computation.
-## SIAM, 2008, 425pp. ISBN 978-0-898716-46-7
+## @nospell{Nicholas J. Higham}, @cite{Functions of Matrices: Theory and
+## Computation}, SIAM, pp.@: 425, 2008, ISBN 978-0-898716-46-7.
 ##
 ## @seealso{expm, logm, sqrtm}
 ## @end deftypefn
@@ -180,84 +180,83 @@ function [F, exitflag, output] = funm (A, fun, varargin)
     error ("funm: A must be a numeric square matrix");
   elseif (! (isa (fun, "function_handle") || ischar (fun)))
     error ("funm: FUN must be a function handle or function name");
-  elseif (nargin > 2 && (! isstruct (varargin{1})))
-    error ("funm: OPTS must be a scalar struct");
+  elseif (nargin > 2 && ! (isstruct (varargin{1}) && isscalar (varargin{1})))
+    error ("funm: OPTIONS must be a scalar struct");
   endif
 
-  ## Check options.
   ## Default values:
-  delta   = 0.1;                      # Tolerance for blocking
-  tol     = eps;                      # Convergence tolerance for Taylor exp.
-  prnt    = 0;                        # Print no info to screen
-  maxtrms = 250;                      # max nr of Taylor series terms
-  maxsqrt = 100;                      # i.c.o. logarithm, max nr of sq_roots
-                                      # computed in inv. scaling
-  m       = [];                       # blocking order
+  tolblk    = 0.1;   # Tolerance for blocking
+  taytol   = eps;   # Convergence tolerance for Taylor expansion
+  prnt     = 0;     # Disable display of algorithm progress
+  maxterms = 250;   # max # of Taylor series terms
+  maxsqrt  = 100;   # i.c.o. logarithm,
+                    # max # of sq_roots computed in inv. scaling
+  m        = [];    # blocking order
+
+  ## Check options if present.
   if (nargin > 2)
-    opts = varargin{1};
+    options = varargin{1};
     varargin(1) = [];
-    presflds = fieldnames (opts);
-    for ii=1 : numel (presflds)
-      tmpval = opts.(presflds{ii});
-      switch (lower (presflds{ii}))
+
+    for opt = (fieldnames (options)).'
+      val = options.(opt{1});
+      switch (lower (opt{1}))
+
         case "display"
-          ## FIXME? The competition seems to support just 1 or 2 verbosity
-          ##        settings, but in the code below we have up to 5.
-          ##        So provisionally we set "on" = 4, "verbose" = 1.
-          ##        AND, we will also support the more fine-grained existing
-          ##        numerical verbosity setting next to just Matlab's string
-          ##        values.
-          if (ischar (tmpval))
-            if (strcmpi (tmpval, "off"))
-              prnt = 0;
-            elseif (strcmpi (tmpval, "verbose"))
+          ## Matlab seems to support just two verbosity settings, but in the
+          ## code below we use [0, 1, 2, 3, 5].  We use 1 for "on" and 4 for
+          ## "verbose".  AND, we will still support the more fine-grained
+          ## existing numerical verbosity setting next to Matlab's string
+          ## values.
+          if (ischar (val))
+            if (strcmpi (val, "on"))
               prnt = 1;
-            elseif (strcmpi (tmpval, "on"))
+            elseif (strcmpi (val, "verbose"))
               prnt = 4;
+            elseif (strcmpi (val, "off"))
+              prnt = 0;
             else
-              error ("funm: unknown char value specified for options field", ...
-                     " 'Display'");
+              error ("funm: invalid string value specified for options field Display: %s", val);
             endif
-          elseif (isnumeric (tmpval) && isscalar (tmpval) && tmpval > 0)
-            prnt = tmpval;
+          elseif (isnumeric (val) && isscalar (val) && val >= 0)
+            prnt = val;
           else
-            error ("funm: char or positive scalar value expected for", ...
-                   " options.Display");
+            error ("funm: options.Display must be a string or scalar value >= 0");
           endif
+
         case "tolblk"
-          if (isnumeric (tmpval) && isscalar (tmpval) && tmpval > 0)
-            delta = tmpval;
-          else
+          if (! (isnumeric (val) && isscalar (val) && val > 0))
             error ("funm: options.TolBlk must be a positive scalar value");
           endif
+          tolblk = val;
+
         case "toltay"
-          if (isnumeric (tmpval) && isscalar (tmpval) && tmpval > 0)
-            delta = tmpval;
-          else
+          if (! (isnumeric (val) && isscalar (val) && val > 0))
             error ("funm: options.TolTay must be a positive scalar value");
           endif
+          taytol = val;
+
         case "maxterms"
-          if (isnumeric (tmpval) && isscalar (tmpval) && tmpval > 0)
-            maxtrms = tmpval;
-          else
-            error ("funm: options.MaxTerms must be a positive scalar value");
+          if (! (isnumeric (val) && isscalar (val) && val > 0))
+            error ("funm: options.MaxTerms must be a positive integer value");
           endif
+          maxterms = ceil (val);
+
         case "maxsqrt"
-          if (isnumeric (tmpval) && isscalar (tmpval) && tmpval > 0)
-            maxsqrt = tmpval;
-          else
-            error ("funm: options.MaxSqrt must be a positive scalar value");
+          if (! (isnumeric (val) && isscalar (val) && val > 0))
+            error ("funm: options.MaxSqrt must be a positive integer value");
           endif
+          maxsqrt = ceil (val);
+
         case "ord"
-          if ((isnumeric (tmpval) || islogical (tmpval)) && ...
-               isvector (tmpval) && numel (tmpval) == rows (A))
-            m = tmpval;
-          else
-            error ("funm: options.Ord must be a numeric or logical vector", ...
-                   " with a length equal to order (A)");
+          if (! (isindex (val) && isvector (val) && numel (val) == rows (A)))
+            error ("funm: options.Ord must be a numeric or logical vector with a length equal to order (A)");
           endif
+          m = val;
+
         otherwise
-          warning ("funm: unknown options field '%s' ignored.", presfields{ii});
+          warning ("funm: ignoring unknown options field '%s'", opt{1});
+
       endswitch
     endfor
   endif
@@ -286,8 +285,7 @@ function [F, exitflag, output] = funm (A, fun, varargin)
   endswitch
 
   n = rows (A);
-  exitflag = 0;                    # Initialize exitflag: 0 = success,
-                                   #                      1 = convergence issues
+  exitflag = 0;  # Initialize exitflag: 0 = success, 1 = convergence issues
 
   ## Form complex Schur form (if A not already upper triangular).
   T_upper = triu (A);
@@ -321,11 +319,11 @@ function [F, exitflag, output] = funm (A, fun, varargin)
 
   ## Determine reordering of Schur form into block form.
   if (isempty (m))
-    m = blocking (T, delta, abs (prnt) >= 3);
+    m = blocking (T, tolblk, (prnt >= 3));
   endif
 
   if (prnt)
-    printf ("Delta (blocking) = %9.2e, tol (TS) = %9.2e\n", delta, tol);
+    printf ("TolBlk (blocking) = %9.2e, TayTol (TS) = %9.2e\n", tolblk, taytol);
   endif
 
   [M, ind, n_swaps, ord] = swapping (m);
@@ -341,8 +339,8 @@ function [F, exitflag, output] = funm (A, fun, varargin)
 
   for col = 1:m
     j = ind{col};
-    [F(j, j), n_terms] = funm_atom (T(j, j), fun, tol, ...
-                                    abs (prnt) * (prnt != 1), maxtrms, maxsqrt);
+    [F(j, j), n_terms] = funm_atom (T(j, j), fun, taytol, ...
+                                    (prnt >= 2), maxterms, maxsqrt);
     terms(col) = n_terms;
 
     ## Check for convergence failure.
@@ -540,9 +538,9 @@ function m = blocking (A, delta, showplot)
     hold off;
     grid on;
     box on;
-    xlabel ("Re(\lambda)");
-    ylabel ("Im(\lambda)");
-    title (sprintf ("Eigenvalue clustering (\\delta = %g)", delta));
+    xlabel ('Re(\lambda)');
+    ylabel ('Im(\lambda)');
+    title (sprintf ('Eigenvalue clustering (\\delta = %g)', delta));
   endif
 
 endfunction
@@ -632,7 +630,7 @@ endfunction
 ## N_TERMS is the number of terms taken in the Taylor series.
 ##
 ## N_TERMS = -1 signals lack of convergence.
-function [F, n_terms] = funm_atom (T, fun, tol, prnt, maxtrms, maxsqrt, ...
+function [F, n_terms] = funm_atom (T, fun, tol, prnt, maxterms, maxsqrt, ...
                                    varargin)
 
   if (isequal (fun, @fun_log))        # LOG is special case.
@@ -640,8 +638,6 @@ function [F, n_terms] = funm_atom (T, fun, tol, prnt, maxtrms, maxsqrt, ...
     n_terms = iter;                   # iter = -1 signals convergence failure
     return;
   endif
-
-  itmax = maxtrms;
 
   n = rows (T);
   if (n == 1)
@@ -652,14 +648,14 @@ function [F, n_terms] = funm_atom (T, fun, tol, prnt, maxtrms, maxsqrt, ...
 
   lambda = sum (diag (T)) / n;
   F = eye (n) * feval (fun, lambda, 0, varargin{:});
-  f_deriv_max = zeros (itmax + n - 1, 1);
+  f_deriv_max = zeros (maxterms + n - 1, 1);
   N = T - lambda * eye (n);
   mu = norm ((eye (n) - abs (triu (T, 1))) \ ones (n, 1), "fro");
 
   P = N;
   max_d = 1;
 
-  for k = 1 : itmax
+  for k = 1 : maxterms
     f = feval (fun, lambda, k, varargin{:});
     F_old = F;
     F = F + P * f;
@@ -690,9 +686,9 @@ function [F, n_terms] = funm_atom (T, fun, tol, prnt, maxtrms, maxsqrt, ...
                                     trunc, tol * norm (F, "fro"));
       endif
       if (prnt == 5)
-        trunc = 0;
+        trunc = 0;  # Force algorithm to stop in test below.
       endif
-      if (trunc <= tol * norm (F, "fro"))  # Force simple stopping test.
+      if (trunc <= tol * norm (F, "fro"))  # stopping test.
         n_terms = k + 1;
         return;
       endif
@@ -849,20 +845,20 @@ endfunction
 %!assert (funm ([1 2;3 4], @sinh), [25.4317 37.6201;56.4301 81.8618], 4e-5)
 %!assert (funm ([1 2;3 4], @cosh), [26.5372 37.1165;55.6747 82.2120], 5e-5)
 
-## Matrix with algebraic multiplicity for L=3 = 2 and geometric multiplicity = 1
+## Matrix with algebraic multiplicity for L=3 = 2, geometric multiplicity = 1
 %!test
 %! [a, b, c] = funm ([3 0 0 0; -6 4 1 5; 2 1 4 -1; 4 0 0 -3], @cos);
 %! assert (a, [-0.9900, 0, 0, 0; -0.3546, -0.3532, 0.6368, 0.3184; ...
 %!             -0.9191, 0.6368, -0.3532, 0.3184; 0, 0, 0, -0.9900], 5e-5)
 %! assert (b, 0);
-%! assert (c.terms, [1 3 1])
-%! assert (c.ind, {1, [2 3], 4})
-%! assert (c.ord, [1 2 3 2])
+%! assert (c.terms, [1 3 1]);
+%! assert (c.ind, {1, [2 3], 4});
+%! assert (c.ord, [1 2 3 2]);
 
-## Another matrix w. algebraic mult. = 3, geometric multipl. = 2
+## Another matrix with algebraic mult. = 3, geometric multipl. = 2
 %!test
 %! a = funm ([2, 0, 0; 4, 2, 0; 6, 0, 2], @sin);
-%! assert (a, [0.9093, 0, 0; -1.6646, 0.9093, 0; -2.4969, 0, 0.9093], 3e-5)
+%! assert (a, [0.9093, 0, 0; -1.6646, 0.9093, 0; -2.4969, 0, 0.9093], 3e-5);
 
 ## Test output format [F, exitflag]
 %!test
@@ -989,36 +985,40 @@ endfunction
 %! F = funm (A, @exp);
 %! assert (F, expm (A), 1e-10);
 
-## Test error handling for invalid inputs
+## Test input validation
+%!error <Invalid call> funm ()
+%!error <Invalid call> funm (eye (3))
 %!error <A must be a numeric square matrix> funm ("not a matrix", @exp)
 %!error <A must be a numeric square matrix> funm ({1, 2; 3, 4}, @exp)
 %!error <A must be a numeric square matrix> funm (ones (5, 2), @exp)
 %!error <A must be a numeric square matrix> funm ([1 2 3; 0 4 5], @exp)
 %!error <FUN must be a function handle or function name> funm (eye (3), 123)
 %!error <FUN must be a function handle or function name> funm (eye (3), [1 2 3])
-## Test options struct entries - as parsing most of them follows the same
-## algorithm we just sample a few cases:
-%!error <TolBlk must be a positive scalar> funm (eye (3), @exp, ...
-%!                                               struct ("TolBlk", "a"))
-%!error <TolTay must be a positive scalar> funm (eye (3), @exp, ...
-%!                                               struct ("TolTay", [1, 2]))
-%!error <MaxTerms must be a positive scalar> funm (eye (3), @exp, ...
-%!                                               struct ("MaxTerms", -1))
-%!error <Ord must be a numeric or logical vector> ...
-%!      funm (eye (3), @exp, struct ("Ord", 1))
-%!error <Ord must be a numeric or logical vector> ...
-%!      funm (eye (3), @exp, struct ("Ord", "A"))
-%!error <Ord must be a numeric or logical vector> ...
-%!      funm (eye (3), @exp, struct ("Ord", {"a", "1"}))
-%!error <Ord must be a numeric or logical vector> ...
-%!      funm (eye (3), @exp, struct ("Ord", [true false true false]))
-%!error <unknown char value specified> funm (eye (3), @exp, ...
-%!                                           struct ("Display", "Hello!"))
-%!error <char or positive scalar value expected> funm (eye (3), @exp, ...
-%!                                               struct ("Display", -1))
-%!error <char or positive scalar value expected> funm (eye (3), @exp, ...
-%!                                               struct ("Display", [0 1]))
-%!error <char or positive scalar value expected> funm (eye (3), @exp, ...
-%!                                               struct ("Display", {0 1}))
-
-
+## Test options struct entries
+## Parsing follows mostly the same algorithm so just sample a few cases.
+%!error <OPTIONS must be a .* struct>
+%! funm (eye (3), @exp, "Not a struct");
+%!error <OPTIONS must be a scalar struct>
+%! funm (eye (3), @exp, struct ("Display", {0; 1}));
+%!error <TolBlk must be a positive scalar>
+%! funm (eye (3), @exp, struct ("TolBlk", "a"));
+%!error <TolTay must be a positive scalar>
+%! funm (eye (3), @exp, struct ("TolTay", [1, 2]));
+%!error <MaxTerms must be a positive integer>
+%! funm (eye (3), @exp, struct ("MaxTerms", -1));
+%!error <Ord must be a numeric or logical vector>
+%! funm (eye (3), @exp, struct ("Ord", 1));
+%!error <Ord must be a numeric or logical vector>
+%! funm (eye (3), @exp, struct ("Ord", "A"));
+%!error <Ord must be a numeric or logical vector>
+%! funm (eye (3), @exp, struct ("Ord", { {"a", "1"} }));
+%!error <Ord must be a numeric or logical vector>
+%! funm (eye (3), @exp, struct ("Ord", [true false true false]));
+%!error <invalid string value specified>
+%! funm (eye (3), @exp, struct ("Display", "Hello!"));
+%!error <string or scalar value .= 0>
+%! funm (eye (3), @exp, struct ("Display", -1));
+%!error <string or scalar value>
+%! funm (eye (3), @exp, struct ("Display", [0 1]));
+%!error <string or scalar value>
+%! funm (eye (3), @exp, struct ("Display", { {0 1} }));

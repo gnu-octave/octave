@@ -1271,7 +1271,13 @@ file_system_browser::process_new_file (const QString& parent_dir)
       name = parent_dir + '/' + name;
 
       QFile file (name);
-      file.open (QIODevice::ReadWrite);
+      if (! file.open (QIODevice::ReadWrite))
+        {
+          QMessageBox::warning (this, tr ("Create File error"),
+                                tr ("Could not create file\n\"%1\".").
+                                arg (name));
+        }
+
       m_file_system_model->revert ();
     }
 }

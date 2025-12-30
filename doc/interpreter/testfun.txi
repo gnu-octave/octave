@@ -478,6 +478,8 @@ path and the user will have to remember to type
 
 @DOCSTRING(assert)
 
+@DOCSTRING(assert_equal)
+
 @DOCSTRING(fail)
 
 @node Demonstration Functions

@@ -106,7 +106,7 @@
 <context>
     <name>QWinTerminalImpl</name>
     <message>
-        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1923"/>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1924"/>
         <source>copied selection to clipboard</source>
         <translation>Kijelölés vágólapra másolva</translation>
     </message>
@@ -1369,7 +1369,7 @@ nem érvényes XBEL-fájl 1.0-s verziója.</translation>
 <context>
     <name>octave::editor_files_browser</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="+1214"/>
+        <location filename="../src/files-dock-widget.cc" line="+1220"/>
         <source>Open Editor Files</source>
         <translation>Szerkesztőfájlok megnyitása</translation>
     </message>
@@ -2141,7 +2141,7 @@ törölve vagy átnevezve. Szeretné most menteni? %2</translation>
 <context>
     <name>octave::file_system_browser</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="-1165"/>
+        <location filename="../src/files-dock-widget.cc" line="-1171"/>
         <source>File size</source>
         <translation>Fájlméret</translation>
     </message>
@@ -2361,7 +2361,19 @@ törölve vagy átnevezve. Szeretné most menteni? %2</translation>
         <translation>Új fájl.txt</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+8"/>
+        <source>Create File error</source>
+        <translation>Fájl létrehozása hiba</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Could not create file
+&quot;%1&quot;.</source>
+        <translation>Nem sikerült létrehozni a fájlt
+&quot;%1&quot;.</translation>
+    </message>
+    <message>
+        <location line="+13"/>
         <source>Create Directory</source>
         <translation>Könyvtár létrehozása</translation>
     </message>
@@ -2383,7 +2395,7 @@ törölve vagy átnevezve. Szeretné most menteni? %2</translation>
 <context>
     <name>octave::files_dock_widget</name>
     <message>
-        <location line="-1142"/>
+        <location line="-1148"/>
         <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
         <translation>Nem sikerült átnevezni a(z) „%1” fájlt a következőre: „%2”.</translation>
     </message>

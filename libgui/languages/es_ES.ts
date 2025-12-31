@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="es">
+<TS version="2.1" language="es_ES">
 <context>
     <name>QFileSystemModel</name>
     <message>
@@ -109,7 +109,7 @@
 <context>
     <name>QWinTerminalImpl</name>
     <message>
-        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1923"/>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1924"/>
         <source>copied selection to clipboard</source>
         <translation>selección copiada al portapapeles</translation>
     </message>
@@ -619,7 +619,7 @@ no es un fichero XBEL versión 1.0 válido.</translation>
 <context>
     <name>octave::editor_files_browser</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="+1214"/>
+        <location filename="../src/files-dock-widget.cc" line="+1220"/>
         <source>Open Editor Files</source>
         <translation>Abrir el editor de archivos</translation>
     </message>
@@ -1391,7 +1391,7 @@ ha sido eliminado o renombrado. ¿Desea guardarlo ahora?%2</translation>
 <context>
     <name>octave::file_system_browser</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="-1165"/>
+        <location filename="../src/files-dock-widget.cc" line="-1171"/>
         <source>File size</source>
         <translation>Tamaño del archivo</translation>
     </message>
@@ -1611,7 +1611,19 @@ ha sido eliminado o renombrado. ¿Desea guardarlo ahora?%2</translation>
         <translation>Nuevo archivo.txt</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+8"/>
+        <source>Create File error</source>
+        <translation>Error al crear el archivo</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Could not create file
+&quot;%1&quot;.</source>
+        <translation type="unfinished">No se pudo crear el archivo
+&quot;%1&quot;.</translation>
+    </message>
+    <message>
+        <location line="+13"/>
         <source>Create Directory</source>
         <translation>Crear directorio</translation>
     </message>
@@ -1633,7 +1645,7 @@ ha sido eliminado o renombrado. ¿Desea guardarlo ahora?%2</translation>
 <context>
     <name>octave::files_dock_widget</name>
     <message>
-        <location line="-1142"/>
+        <location line="-1148"/>
         <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
         <translation>No se puede renombrar el archivo &quot;%1&quot; a &quot;%2&quot;.</translation>
     </message>

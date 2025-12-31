@@ -109,7 +109,7 @@
 <context>
     <name>QWinTerminalImpl</name>
     <message>
-        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1923"/>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1924"/>
         <source>copied selection to clipboard</source>
         <translation>selezione copiata negli appunti</translation>
     </message>
@@ -1374,14 +1374,14 @@ non è una versione 1.0 di file XBEL</translation>
 <context>
     <name>octave::editor_files_browser</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="+1214"/>
+        <location filename="../src/files-dock-widget.cc" line="+1220"/>
         <source>Open Editor Files</source>
         <translation>Apri Editor File</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Click to focus file in editor</source>
-        <translation>Clicca per selezionare un file nell'editor</translation>
+        <translation>Clicca per selezionare un file nell&apos;editor</translation>
     </message>
     <message>
         <location line="+92"/>
@@ -2146,7 +2146,7 @@ sia stato rinominato o rimosso. Si desidera salvarlo ora?%2</translation>
 <context>
     <name>octave::file_system_browser</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="-1165"/>
+        <location filename="../src/files-dock-widget.cc" line="-1171"/>
         <source>File size</source>
         <translation>Dimensione file</translation>
     </message>
@@ -2365,7 +2365,19 @@ sia stato rinominato o rimosso. Si desidera salvarlo ora?%2</translation>
         <translation>Nuovo File.txt</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+8"/>
+        <source>Create File error</source>
+        <translation>Errore durante la creazione del file</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Could not create file
+&quot;%1&quot;.</source>
+        <translation type="unfinished">Impossibile creare il file
+&quot;%1&quot;.</translation>
+    </message>
+    <message>
+        <location line="+13"/>
         <source>Create Directory</source>
         <translation>Crea Cartella</translation>
     </message>
@@ -2387,7 +2399,7 @@ sia stato rinominato o rimosso. Si desidera salvarlo ora?%2</translation>
 <context>
     <name>octave::files_dock_widget</name>
     <message>
-        <location line="-1142"/>
+        <location line="-1148"/>
         <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
         <translation>Impossibile rinominare il file &quot;%1&quot; in &quot;%2&quot;</translation>
     </message>
@@ -4779,7 +4791,7 @@ Error: </source>
     <message>
         <location line="+37"/>
         <source>Show splash screen at startup</source>
-        <translation>Mostra schermata di benvenuto all'avvio</translation>
+        <translation>Mostra schermata di benvenuto all&apos;avvio</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -5024,7 +5036,7 @@ Error: </source>
     <message>
         <location line="+871"/>
         <source>Directory of open file dialog follows current editor file instead of current Octave directory </source>
-        <translation>Apertura file nella cartella del file corrente nell'editor invece che nella cartella corrente di Octave</translation>
+        <translation>Apertura file nella cartella del file corrente nell&apos;editor invece che nella cartella corrente di Octave</translation>
     </message>
     <message>
         <location line="+98"/>

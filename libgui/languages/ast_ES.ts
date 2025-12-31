@@ -962,7 +962,7 @@ Do you want to delete it anyway?</source>
     <message>
         <location line="+1"/>
         <source>Write PDF file</source>
-        <translation>Escribir fichero PDF</translation>
+        <translation>Escribir ficheru PDF</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -2384,7 +2384,7 @@ nun ye un ficheru XBEL versión 1.0 válidu.</translation>
     <message>
         <location filename="../src/files-dock-widget.cc" line="+1220"/>
         <source>Open Editor Files</source>
-        <translation>Abrir l&apos;editor de fichero</translation>
+        <translation>Abrir l&apos;editor de ficheros</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -3376,13 +3376,14 @@ foi elimináu o renomáu. ¿Quier guardalu agora?%2</translation>
     <message>
         <location line="+8"/>
         <source>Create File error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error al crear l&apos;archivu</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not create file
 &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nun se pudo crear l&apos;archivu
+&quot;%1&quot;.</translation>
     </message>
     <message>
         <location line="+13"/>

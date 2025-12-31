@@ -168,6 +168,10 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The function `speye` can now be called with zero arguments for compatibility
   with the full-matrix function `eye` and Matlab-compatibility.
 
+- The function `qp` now has a new input option `"AllowSemidefinite"` for
+  problem instances where the Hessian matrix is positive semidefinite instead
+  of positive definite.  The default value is `false`.
+
 - The function `qr` for a dense matrix input `A` and a single output now
   returns just the matrix `R`, rather than an augmented version from LAPACK
   with additional information in the lower-triangular portion of the matrix.

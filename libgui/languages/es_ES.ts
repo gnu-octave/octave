@@ -1619,7 +1619,7 @@ ha sido eliminado o renombrado. ¿Desea guardarlo ahora?%2</translation>
         <location line="+1"/>
         <source>Could not create file
 &quot;%1&quot;.</source>
-        <translation type="unfinished">No se pudo crear el archivo
+        <translation>No se pudo crear el archivo
 &quot;%1&quot;.</translation>
     </message>
     <message>

@@ -683,7 +683,7 @@ documentation::load_index ()
   // Show index if no other page is required.
   if (m_current_ref_name.isEmpty ())
     m_doc_browser->setSource
-      (QUrl ("qthelp://org.octave.interpreter-1.0/doc/octave.html/index.html"));
+      (QUrl ("qthelp://org.octave.interpreter-1.0/doc/octave.qdoc.html/index.html"));
   else
     load_ref (m_current_ref_name);
 

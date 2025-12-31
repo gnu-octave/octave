@@ -106,7 +106,7 @@
 <context>
     <name>QWinTerminalImpl</name>
     <message>
-        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1923"/>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1924"/>
         <source>copied selection to clipboard</source>
         <translation>選択範囲をクリップボードにコピー</translation>
     </message>
@@ -1357,7 +1357,7 @@ is not a valid XBEL file version 1.0.</source>
 <context>
     <name>octave::editor_files_browser</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="+1214"/>
+        <location filename="../src/files-dock-widget.cc" line="+1220"/>
         <source>Open Editor Files</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2109,7 +2109,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 <context>
     <name>octave::file_system_browser</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="-1165"/>
+        <location filename="../src/files-dock-widget.cc" line="-1171"/>
         <source>File size</source>
         <translation type="unfinished">ファイルのサイズ</translation>
     </message>
@@ -2328,7 +2328,18 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+8"/>
+        <source>Create File error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Could not create file
+&quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
         <source>Create Directory</source>
         <translation type="unfinished">ディレクトリの作成</translation>
     </message>
@@ -2350,7 +2361,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 <context>
     <name>octave::files_dock_widget</name>
     <message>
-        <location line="-1142"/>
+        <location line="-1148"/>
         <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
         <translation type="unfinished"></translation>
     </message>

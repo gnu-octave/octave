@@ -106,7 +106,7 @@
 <context>
     <name>QWinTerminalImpl</name>
     <message>
-        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1923"/>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1924"/>
         <source>copied selection to clipboard</source>
         <translation>sélection copiée vers le presse-papiers</translation>
     </message>
@@ -615,7 +615,7 @@ n&apos;est pas un fichier XBEL version 1 valide.</translation>
 <context>
     <name>octave::editor_files_browser</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="+1214"/>
+        <location filename="../src/files-dock-widget.cc" line="+1220"/>
         <source>Open Editor Files</source>
         <translation>Fichiers Ouverts</translation>
     </message>
@@ -1388,7 +1388,7 @@ a été supprimé ou renommé. Voulez vous l&apos;enregistrer maintenant ?%2</tr
 <context>
     <name>octave::file_system_browser</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="-1165"/>
+        <location filename="../src/files-dock-widget.cc" line="-1171"/>
         <source>File size</source>
         <translation>Taille du fichier</translation>
     </message>
@@ -1608,7 +1608,19 @@ a été supprimé ou renommé. Voulez vous l&apos;enregistrer maintenant ?%2</tr
         <translation>Nouveau Fichier.txt</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+8"/>
+        <source>Create File error</source>
+        <translation type="unfinished">Erreur lors de la création du fichier</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Could not create file
+&quot;%1&quot;.</source>
+        <translation>Impossible de créer le fichier
+&quot;%1&quot;.</translation>
+    </message>
+    <message>
+        <location line="+13"/>
         <source>Create Directory</source>
         <translation>Créer un Répertoire</translation>
     </message>
@@ -1630,7 +1642,7 @@ a été supprimé ou renommé. Voulez vous l&apos;enregistrer maintenant ?%2</tr
 <context>
     <name>octave::files_dock_widget</name>
     <message>
-        <location line="-1142"/>
+        <location line="-1148"/>
         <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
         <translation>Impossible de renommer le fichier &quot;%1&quot; en &quot;%2&quot;.</translation>
     </message>

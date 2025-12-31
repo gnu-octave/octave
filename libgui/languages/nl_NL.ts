@@ -106,7 +106,7 @@
 <context>
     <name>QWinTerminalImpl</name>
     <message>
-        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1923"/>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1924"/>
         <source>copied selection to clipboard</source>
         <translation>selectie is naar klembord gekopieerd</translation>
     </message>
@@ -1370,7 +1370,7 @@ is geen geldig XBEL versie 1.0 bestand.</translation>
 <context>
     <name>octave::editor_files_browser</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="+1214"/>
+        <location filename="../src/files-dock-widget.cc" line="+1220"/>
         <source>Open Editor Files</source>
         <translation>Bestanden open in editor</translation>
     </message>
@@ -2144,7 +2144,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 <context>
     <name>octave::file_system_browser</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="-1165"/>
+        <location filename="../src/files-dock-widget.cc" line="-1171"/>
         <source>File size</source>
         <translation>Bestandsgrootte</translation>
     </message>
@@ -2364,7 +2364,20 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Nieuw bestand.txt</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+8"/>
+        <source>Create File error</source>
+        <translation>Fout bij het aanmaken van bestand</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Could not create file
+&quot;%1&quot;.</source>
+        <translation>Kan bestand
+“%1”
+niet maken.</translation>
+    </message>
+    <message>
+        <location line="+13"/>
         <source>Create Directory</source>
         <translation>Maak nieuwe map</translation>
     </message>
@@ -2386,7 +2399,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 <context>
     <name>octave::files_dock_widget</name>
     <message>
-        <location line="-1142"/>
+        <location line="-1148"/>
         <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
         <translation>Kon bestand &quot;%1&quot; niet hernoemen naar &quot;%2&quot;.</translation>
     </message>
@@ -5021,7 +5034,7 @@ Fout: </translation>
     <message>
         <location line="+871"/>
         <source>Directory of open file dialog follows current editor file instead of current Octave directory </source>
-        <translation>Bestand openen dialoog gebaseerd op map huidig te editen bestand in plaats van huidige Octave map></translation>
+        <translation>Bestand openen dialoog gebaseerd op map huidig te editen bestand in plaats van huidige Octave map&gt;</translation>
     </message>
     <message>
         <location line="+98"/>

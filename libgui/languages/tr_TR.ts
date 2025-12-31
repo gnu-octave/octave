@@ -109,7 +109,7 @@
 <context>
     <name>QWinTerminalImpl</name>
     <message>
-        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1923"/>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1924"/>
         <source>copied selection to clipboard</source>
         <translation>seçim panoya kopyalandı</translation>
     </message>
@@ -1377,34 +1377,34 @@ geçerli bir XBEL dosyası sürüm 1.0 değil.</translation>
 <context>
     <name>octave::editor_files_browser</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="+1214"/>
+        <location filename="../src/files-dock-widget.cc" line="+1220"/>
         <source>Open Editor Files</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Click to focus file in editor</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+92"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Kapat</translation>
+        <translation>&amp;Kapat</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Close &amp;All</source>
-        <translation type="unfinished">&amp;Tümünü Kapat</translation>
+        <translation>&amp;Tümünü Kapat</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Run</source>
-        <translation type="unfinished">Çalıştır</translation>
+        <translation>Çalıştır</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Set Current &amp;Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Geçerli &amp;Dizini Ayarla</translation>
     </message>
 </context>
 <context>
@@ -2150,210 +2150,210 @@ silindi veya yeniden adlandırıldı. Şimdi kaydetmek istiyor musunuz?%2</trans
 <context>
     <name>octave::file_system_browser</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="-1165"/>
+        <location filename="../src/files-dock-widget.cc" line="-1171"/>
         <source>File size</source>
-        <translation type="unfinished">Dosya boyutu</translation>
+        <translation>Dosya boyutu</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>File type</source>
-        <translation type="unfinished">Dosya türü</translation>
+        <translation>Dosya türü</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Date modified</source>
-        <translation type="unfinished">Değiştirilme tarihi</translation>
+        <translation>Değiştirilme tarihi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show hidden</source>
-        <translation type="unfinished">Gizlileri göster</translation>
+        <translation>Gizlileri göster</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Alternating row colors</source>
-        <translation type="unfinished">Alternatif satır renkleri</translation>
+        <translation>Alternatif satır renkleri</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Enter the path or filename</source>
-        <translation type="unfinished">Yolu veya dosya adını girin</translation>
+        <translation>Yolu veya dosya adını girin</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>One directory up</source>
-        <translation type="unfinished">Bir dizin yukarı</translation>
+        <translation>Bir dizin yukarı</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Octave directory</source>
-        <translation type="unfinished">Octave dizinini göster</translation>
+        <translation>Octave dizinini göster</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Go to current Octave directory</source>
-        <translation type="unfinished">Mevcut Octave dizinine git</translation>
+        <translation>Mevcut Octave dizinine git</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Set Octave directory</source>
-        <translation type="unfinished">Octave dizinini ayarla</translation>
+        <translation>Octave dizinini ayarla</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Set Octave directory to current browser directory</source>
-        <translation type="unfinished">Octave dizinini mevcut tarayıcı dizinine ayarlayın</translation>
+        <translation>Octave dizinini mevcut tarayıcı dizinine ayarlayın</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Actions on current directory</source>
-        <translation type="unfinished">Mevcut dizindeki eylemler</translation>
+        <translation>Mevcut dizindeki eylemler</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Home Directory</source>
-        <translation type="unfinished">Ana Dizini Göster</translation>
+        <translation>Ana Dizini Göster</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Set Browser Directory...</source>
-        <translation type="unfinished">Tarayıcı Dizini Ayarla...</translation>
+        <translation>Tarayıcı Dizini Ayarla...</translation>
     </message>
     <message>
         <location line="+4"/>
         <location line="+433"/>
         <source>Find Files...</source>
-        <translation type="unfinished">Dosyaları Bul...</translation>
+        <translation>Dosyaları Bul...</translation>
     </message>
     <message>
         <location line="-429"/>
         <location line="+441"/>
         <source>New File...</source>
-        <translation type="unfinished">Yeni Dosya...</translation>
+        <translation>Yeni Dosya...</translation>
     </message>
     <message>
         <location line="-438"/>
         <location line="+440"/>
         <source>New Directory...</source>
-        <translation type="unfinished">Yeni Dizin...</translation>
+        <translation>Yeni Dizin...</translation>
     </message>
     <message>
         <location line="-385"/>
         <source>Double-click to open file/folder, right click for alternatives</source>
-        <translation type="unfinished">Dosya/klasörü açmak için çift tıklayın, alternatifler için sağ tıklayın</translation>
+        <translation>Dosya/klasörü açmak için çift tıklayın, alternatifler için sağ tıklayın</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Rename...</source>
-        <translation type="unfinished">Yeniden adlandır...</translation>
+        <translation>Yeniden adlandır...</translation>
     </message>
     <message>
         <location line="+312"/>
         <source>Open</source>
-        <translation type="unfinished">Aç</translation>
+        <translation>Aç</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open in System File Explorer</source>
-        <translation type="unfinished">Sistem Dosya Gezgini&apos;nde Aç</translation>
+        <translation>Sistem Dosya Gezgini&apos;nde Aç</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open in Text Editor</source>
-        <translation type="unfinished">Metin düzenleyicide aç</translation>
+        <translation>Metin düzenleyicide aç</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Copy Selection to Clipboard</source>
-        <translation type="unfinished">Seçimi Panoya Kopyala</translation>
+        <translation>Seçimi Panoya Kopyala</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Run</source>
-        <translation type="unfinished">Çalıştır</translation>
+        <translation>Çalıştır</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Load Data</source>
-        <translation type="unfinished">Veri Yükle</translation>
+        <translation>Veri Yükle</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Set Current Directory</source>
-        <translation type="unfinished">Mevcut Dizini Ayarla</translation>
+        <translation>Mevcut Dizini Ayarla</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add to Path</source>
-        <translation type="unfinished">Yola Ekle</translation>
+        <translation>Yola Ekle</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+7"/>
         <source>Selected Directories</source>
-        <translation type="unfinished">Seçilen Dizinler</translation>
+        <translation>Seçilen Dizinler</translation>
     </message>
     <message>
         <location line="-5"/>
         <location line="+7"/>
         <source>Selected Directories and Subdirectories</source>
-        <translation type="unfinished">Seçilen Dizinler ve Alt Dizinler</translation>
+        <translation>Seçilen Dizinler ve Alt Dizinler</translation>
     </message>
     <message>
         <location line="-4"/>
         <source>Remove from Path</source>
-        <translation type="unfinished">Yoldan Kaldır</translation>
+        <translation>Yoldan Kaldır</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Delete...</source>
-        <translation type="unfinished">Sil...</translation>
+        <translation>Sil...</translation>
     </message>
     <message>
         <location line="+140"/>
         <location line="+11"/>
         <location line="+17"/>
         <source>Delete file/directory</source>
-        <translation type="unfinished">Dosyayı/dizini sil</translation>
+        <translation>Dosyayı/dizini sil</translation>
     </message>
     <message>
         <location line="-27"/>
         <source>Are you sure you want to delete all %1 selected files?
 </source>
-        <translation type="unfinished">Seçilen %1 dosyanın tümünü silmek istediğinizden emin misiniz?
+        <translation>Seçilen %1 dosyanın tümünü silmek istediğinizden emin misiniz?
 </translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Are you sure you want to delete
 </source>
-        <translation type="unfinished">Silmek istediğine emin misin
+        <translation>Silmek istediğine emin misin
 </translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Can not delete a directory that is not empty</source>
-        <translation type="unfinished">Boş olmayan bir dizin silinemez</translation>
+        <translation>Boş olmayan bir dizin silinemez</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Deletion error</source>
-        <translation type="unfinished">Silme hatası</translation>
+        <translation>Silme hatası</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not delete file &quot;%1&quot;.</source>
-        <translation type="unfinished">&quot;%1&quot; dosyası silinemedi.</translation>
+        <translation>&quot;%1&quot; dosyası silinemedi.</translation>
     </message>
     <message>
         <location line="+216"/>
         <source>Set directory of file browser</source>
-        <translation type="unfinished">Dosya tarayıcısının dizinini ayarlayın</translation>
+        <translation>Dosya tarayıcısının dizinini ayarlayın</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Create File</source>
-        <translation type="unfinished">Dosya Oluştur</translation>
+        <translation>Dosya Oluştur</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2361,18 +2361,30 @@ silindi veya yeniden adlandırıldı. Şimdi kaydetmek istiyor musunuz?%2</trans
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">İçinde dosya oluştur
+        <translation>İçinde dosya oluştur
 </translation>
     </message>
     <message>
         <location line="+2"/>
         <source>New File.txt</source>
-        <translation type="unfinished">Yeni Dosya.txt</translation>
+        <translation>Yeni Dosya.txt</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+8"/>
+        <source>Create File error</source>
+        <translation>Dosya oluşturma hatası</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Could not create file
+&quot;%1&quot;.</source>
+        <translation>Dosya oluşturulamadı
+&quot;%1&quot;.</translation>
+    </message>
+    <message>
+        <location line="+13"/>
         <source>Create Directory</source>
-        <translation type="unfinished">Dizin Oluşturun</translation>
+        <translation>Dizin Oluşturun</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2380,19 +2392,19 @@ silindi veya yeniden adlandırıldı. Şimdi kaydetmek istiyor musunuz?%2</trans
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">İçinde klasör oluştur
+        <translation>İçinde klasör oluştur
 </translation>
     </message>
     <message>
         <location line="+2"/>
         <source>New Directory</source>
-        <translation type="unfinished">Yeni Dizin</translation>
+        <translation>Yeni Dizin</translation>
     </message>
 </context>
 <context>
     <name>octave::files_dock_widget</name>
     <message>
-        <location line="-1142"/>
+        <location line="-1148"/>
         <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
         <translation>&quot;%1&quot; dosyası &quot;%2&quot; olarak yeniden adlandırılamadı.</translation>
     </message>
@@ -2409,12 +2421,12 @@ silindi veya yeniden adlandırıldı. Şimdi kaydetmek istiyor musunuz?%2</trans
     <message>
         <location line="+10"/>
         <source>File System</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya sistemi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Editor Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Editör dosyaları</translation>
     </message>
 </context>
 <context>
@@ -4042,12 +4054,12 @@ Kısayolu kullanmak ve onu önceki eylemden kaldırmak istiyor musunuz?</transla
     <message>
         <location filename="../src/welcome-wizard.cc" line="+135"/>
         <source>Welcome to GNU Octave</source>
-        <translation type="unfinished">GNU Octave&apos;e Hoş geldiniz</translation>
+        <translation>GNU Octave&apos;e Hoş geldiniz</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Welcome to Octave!</source>
-        <translation type="unfinished">Octave&apos;e hoş geldiniz!</translation>
+        <translation>Octave&apos;e hoş geldiniz!</translation>
     </message>
 </context>
 <context>
@@ -4422,7 +4434,7 @@ fd = %2 ile borulamak için: %3</translation>
         <location line="+17"/>
         <source>Error reading from redirected stream fd = %1.</source>
         <oldsource>Error reading from redirected strem fd = %1.</oldsource>
-        <translation type="unfinished">Yönlendirilen strem&apos;den okuma hatası fd = %1.</translation>
+        <translation>Yönlendirilen strem&apos;den okuma hatası fd = %1.</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -4492,7 +4504,7 @@ Hata: </translation>
         <location line="+32"/>
         <source>3-D</source>
         <oldsource>3D</oldsource>
-        <translation type="unfinished">3B</translation>
+        <translation>3B</translation>
     </message>
     <message>
         <location line="+565"/>
@@ -4853,7 +4865,7 @@ Hata: </translation>
     <message>
         <location line="+37"/>
         <source>Show splash screen at startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Başlangıçta açılış ekranını göster</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -5018,7 +5030,7 @@ Hata: </translation>
     <message>
         <location line="+108"/>
         <source>Directory of open file dialog follows current editor file instead of current Octave directory </source>
-        <translation type="unfinished"></translation>
+        <translation>Açık dosya iletişim kutusu dizini, geçerli Octave dizini yerine geçerli düzenleyici dosyasını takip eder </translation>
     </message>
     <message>
         <location line="+36"/>

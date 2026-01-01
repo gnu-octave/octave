@@ -38,6 +38,7 @@
 #include "oct-error.h"
 #include "oct-sysdep.h"
 #include "setenv-wrapper.h"
+#include "uniconv-wrappers.h"
 #include "unistd-wrappers.h"
 #include "unsetenv-wrapper.h"
 
@@ -48,7 +49,6 @@
 #  include "filepos-wrappers.h"
 #  include "oct-hash.h"
 #  include "oct-locbuf.h"
-#  include "uniconv-wrappers.h"
 #  include "unwind-prot.h"
 #endif
 
@@ -726,20 +726,18 @@ std::wstring
 u8_to_wstring (const std::string& utf8_string)
 {
   // convert multibyte UTF-8 string to wide character string
-  static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>
-  wchar_conv;
+  size_t srclen = utf8_string.length ();
+  const uint8_t *src = reinterpret_cast<const uint8_t *> (utf8_string.c_str ());
+
+  size_t length = 0;
+  wchar_t *wchar = reinterpret_cast<wchar_t *>
+                   (octave_u8_conv_to_encoding ("wchar_t", src, srclen, &length));
 
   std::wstring retval = L"";
-
-  try
+  if (wchar != nullptr)
     {
-      retval = wchar_conv.from_bytes (utf8_string);
-    }
-  catch (const std::range_error& e)
-    {
-      // What to do in case of error?
-      // error ("u8_to_wstring: converting from UTF-8 to wchar_t: %s",
-      //        e.what ());
+      retval = std::wstring (wchar, length / sizeof (wchar_t));
+      free (static_cast<void *> (wchar));
     }
 
   return retval;
@@ -749,20 +747,18 @@ std::string
 u8_from_wstring (const std::wstring& wchar_string)
 {
   // convert wide character string to multibyte UTF-8 string
-  static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>
-  wchar_conv;
+  size_t srclen = wchar_string.length () * sizeof (wchar_t);
+  const char *src = reinterpret_cast<const char *> (wchar_string.c_str ());
+
+  size_t length = 0;
+  char *mbchar = reinterpret_cast<char *>
+                 (octave_u8_conv_from_encoding ("wchar_t", src, srclen, &length));
 
   std::string retval = "";
-
-  try
+  if (mbchar != nullptr)
     {
-      retval = wchar_conv.to_bytes (wchar_string);
-    }
-  catch (const std::range_error& e)
-    {
-      // What to do in case of error?
-      // error ("u8_from_wstring: converting from wchar_t to UTF-8: %s",
-      //        e.what ());
+      retval = std::string (mbchar, length);
+      free (static_cast<void *> (mbchar));
     }
 
   return retval;

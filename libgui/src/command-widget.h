@@ -61,6 +61,8 @@ public:
 
 Q_SIGNALS:
 
+  void finished_input_from_terminal_signal (const QString& input);
+
   void interpreter_event (const fcn_callback& fcn);
   void interpreter_event (const meth_callback& meth);
 
@@ -75,6 +77,9 @@ public Q_SLOTS:
   void new_command_line (const QString& command = QString ());
 
   void execute_command (const QString& command);
+
+  void get_input_from_terminal (const QString& prompt);
+  void finish_input_from_terminal ();
 
   void find_incremental (const QString&);
 
@@ -96,6 +101,8 @@ private:
   bool m_find_result_available;
   bool m_find_direction;
   QString m_last_find_inc_result;
+  bool m_process_command;
+  QString m_input_prompt;
 };
 
 class command_widget : public QWidget

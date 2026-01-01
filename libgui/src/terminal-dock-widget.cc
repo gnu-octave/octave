@@ -75,6 +75,12 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p,
       connect (this, &terminal_dock_widget::execute_command_signal,
                con, &console::execute_command);
 
+      connect (this, &terminal_dock_widget::get_input_from_terminal_signal,
+               con, &console::get_input_from_terminal);
+
+      connect (con, &console::finished_input_from_terminal_signal,
+               this, &terminal_dock_widget::finished_input_from_terminal_signal);
+
       connect (this, &terminal_dock_widget::new_command_line_signal,
                con, &console::new_command_line);
 

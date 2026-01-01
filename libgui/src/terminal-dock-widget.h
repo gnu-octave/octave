@@ -78,6 +78,9 @@ Q_SIGNALS:
 
   void execute_command_signal (const QString&);
 
+  void get_input_from_terminal_signal (const QString& prompt);
+  void finished_input_from_terminal_signal (const QString& input);
+
   void interpreter_event (const fcn_callback& fcn);
   void interpreter_event (const meth_callback& meth);
 

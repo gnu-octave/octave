@@ -280,6 +280,13 @@ main_window::adopt_terminal_widget ()
     {
       connect (this, &main_window::execute_command_signal,
                m_command_window, &terminal_dock_widget::execute_command_signal);
+
+      connect (this, &main_window::get_input_from_terminal_signal,
+               m_command_window, &terminal_dock_widget::get_input_from_terminal_signal);
+
+      connect (m_command_window, &terminal_dock_widget::finished_input_from_terminal_signal,
+               this, &main_window::finished_input_from_terminal_signal);
+
     }
 }
 
@@ -1231,6 +1238,38 @@ main_window::run_file_in_terminal (const QFileInfo& info, int opts)
          }
      });
 
+  focus_console_after_command ();
+}
+
+void
+main_window::get_input_from_terminal (const QString& prompt)
+{
+  if (m_octave_qobj.experimental_terminal_widget ())
+    {
+      // move focus to command window widget for user input
+      focus_console_after_command ();
+
+      Q_EMIT get_input_from_terminal_signal (prompt);
+    }
+  else
+    {
+      // FIXME: Currently only implemented for experimental terminal widget.
+/*
+      Q_EMIT interpreter_event
+        ([prompt] ()
+         {
+           // INTERPRETER THREAD
+
+           std::string pending_input = command_editor::get_current_line ();
+
+           command_editor::set_initial_input (pending_input);
+           command_editor::replace_line (prompt.toStdString ());
+           command_editor::redisplay ();
+           command_editor::interrupt_event_loop ();
+           // command_editor::accept_line ();
+         });
+*/
+    }
   focus_console_after_command ();
 }
 
@@ -2194,6 +2233,12 @@ main_window::construct_octave_qt_link ()
 
   connect (qt_link, &qt_interpreter_events::execute_command_in_terminal_signal,
            this, &main_window::execute_command_in_terminal);
+
+  connect (qt_link, &qt_interpreter_events::get_input_from_terminal_signal,
+           this, &main_window::get_input_from_terminal);
+
+  connect (this, &main_window::finished_input_from_terminal_signal,
+           qt_link, &qt_interpreter_events::finished_input_from_terminal);
 
   connect (qt_link, &qt_interpreter_events::enter_debugger_signal,
            this, &main_window::handle_enter_debugger);

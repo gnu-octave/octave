@@ -63,7 +63,7 @@ public:
 
   void update_breakpoints ();
   void set_file_name (const QString& fileName);
-  void enable_file_watcher (bool do_enable);
+  void enable_file_watcher (bool do_enable, const QString& fname = QString ());
 
   QString file_name () const { return m_file_name; }
   QString encoding () const { return m_encoding; }

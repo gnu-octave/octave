@@ -539,9 +539,19 @@ function [local_packages, global_packages] = pkg (varargin)
         error ("pkg: install action requires at least one filename");
       endif
 
-      ## Pre-load package database once (respecting force_refresh flag)
-      ## This ensures package name lookups don't trigger repeated downloads
-      get_validated_pkg_list (force_refresh, verbose);
+      ## Pre-load package database only if needed for package name lookups.
+      ## Check if any files require online lookup (not local files or URLs).
+      needs_pkg_lookup = false;
+      for file = files
+        file = char (file);
+        if (! isfile (file) && isempty (regexp (file, '^\w+://')))
+          needs_pkg_lookup = true;
+          break;
+        endif
+      endfor
+      if (needs_pkg_lookup)
+        get_validated_pkg_list (force_refresh, verbose);
+      endif
 
       local_files = {};
       tmp_dir = tempname ();

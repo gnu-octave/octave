@@ -1916,22 +1916,22 @@ for writing: %2.</source>
         <translation>错误： </translation>
     </message>
     <message>
-        <location line="+78"/>
+        <location line="+87"/>
         <location line="+1260"/>
         <location line="+152"/>
         <location line="+20"/>
-        <location line="+447"/>
-        <location line="+111"/>
+        <location line="+444"/>
+        <location line="+110"/>
         <location line="+103"/>
         <location line="+38"/>
         <location line="+60"/>
-        <location line="+57"/>
+        <location line="+59"/>
         <location line="+36"/>
         <source>Octave Editor</source>
         <translation>Octave 编辑器</translation>
     </message>
     <message>
-        <location line="-2283"/>
+        <location line="-2281"/>
         <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
         <translation>无法将断点添加到已修改或未命名的文件。
@@ -2051,14 +2051,14 @@ Quit debugging and save?</source>
 是否退出调试并保存?</translation>
     </message>
     <message>
-        <location line="+214"/>
+        <location line="+211"/>
         <source>Could not open file %1 for writing:
 %2.</source>
         <translation>无法打开文件 %1 以进行写入：
 %2。</translation>
     </message>
     <message>
-        <location line="+111"/>
+        <location line="+110"/>
         <source>The changes could not be saved to the file
 %1</source>
         <translation>改动无法保存到文件
@@ -2113,12 +2113,8 @@ Do you want to overwrite it?</source>
 您确定要覆盖它吗?</translation>
     </message>
     <message>
-        <location line="+155"/>
-        <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
-        <translation>看起来 &apos;%1&apos; 已经被其他应用修改。您希望重新载入这个文件吗？</translation>
-    </message>
-    <message>
-        <location line="+29"/>
+        <location line="+152"/>
+        <location line="+34"/>
         <source>
 
 Warning: The contents in the editor is modified!</source>
@@ -2127,7 +2123,12 @@ Warning: The contents in the editor is modified!</source>
 警告: 编辑器中内容已经被修改！</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="-29"/>
+        <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?%2</source>
+        <translation type="unfinished">看起来 &apos;%1&apos; 已经被其他应用修改。您希望重新载入这个文件吗？%2</translation>
+    </message>
+    <message>
+        <location line="+36"/>
         <source>It seems that the file
 %1
 has been deleted or renamed. Do you want to save it now?%2</source>

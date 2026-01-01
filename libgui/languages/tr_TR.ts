@@ -1926,22 +1926,22 @@ yazmak için: %2.</translation>
         <translation>HATA: </translation>
     </message>
     <message>
-        <location line="+78"/>
+        <location line="+87"/>
         <location line="+1260"/>
         <location line="+152"/>
         <location line="+20"/>
-        <location line="+447"/>
-        <location line="+111"/>
+        <location line="+444"/>
+        <location line="+110"/>
         <location line="+103"/>
         <location line="+38"/>
         <location line="+60"/>
-        <location line="+57"/>
+        <location line="+59"/>
         <location line="+36"/>
         <source>Octave Editor</source>
         <translation>Octave Düzenleyici</translation>
     </message>
     <message>
-        <location line="-2283"/>
+        <location line="-2281"/>
         <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
         <translation>Değiştirilmiş veya adlandırılmamış dosyaya kesme noktası eklenemez.
@@ -2061,14 +2061,14 @@ Quit debugging and save?</source>
 Hata ayıklamadan çıkılsın ve kaydedilsin mi?</translation>
     </message>
     <message>
-        <location line="+214"/>
+        <location line="+211"/>
         <source>Could not open file %1 for writing:
 %2.</source>
         <translation>%1 dosyası yazmak için açılamadı:
 %2.</translation>
     </message>
     <message>
-        <location line="+111"/>
+        <location line="+110"/>
         <source>The changes could not be saved to the file
 %1</source>
         <translation>Değişiklikler dosyaya kaydedilemedi
@@ -2124,12 +2124,8 @@ Do you want to overwrite it?</source>
 Üzerine yazmak istiyor musunuz?</translation>
     </message>
     <message>
-        <location line="+155"/>
-        <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
-        <translation>Görünüşe göre &apos;%1&apos; başka bir uygulama tarafından değiştirilmiş. Yeniden yüklemek ister misin?</translation>
-    </message>
-    <message>
-        <location line="+29"/>
+        <location line="+152"/>
+        <location line="+34"/>
         <source>
 
 Warning: The contents in the editor is modified!</source>
@@ -2138,7 +2134,12 @@ Warning: The contents in the editor is modified!</source>
 Uyarı: Düzenleyicideki içerik değiştirildi!</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="-29"/>
+        <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?%2</source>
+        <translation>Görünüşe göre &apos;%1&apos; başka bir uygulama tarafından değiştirilmiş. Yeniden yüklemek ister misin?%2</translation>
+    </message>
+    <message>
+        <location line="+36"/>
         <source>It seems that the file
 %1
 has been deleted or renamed. Do you want to save it now?%2</source>

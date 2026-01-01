@@ -1172,22 +1172,22 @@ konnte nicht zum Schreiben geöffnet werden:
         <translation>FEHLER: </translation>
     </message>
     <message>
-        <location line="+78"/>
+        <location line="+87"/>
         <location line="+1260"/>
         <location line="+152"/>
         <location line="+20"/>
-        <location line="+447"/>
-        <location line="+111"/>
+        <location line="+444"/>
+        <location line="+110"/>
         <location line="+103"/>
         <location line="+38"/>
         <location line="+60"/>
-        <location line="+57"/>
+        <location line="+59"/>
         <location line="+36"/>
         <source>Octave Editor</source>
         <translation>Octave Editor</translation>
     </message>
     <message>
-        <location line="-2283"/>
+        <location line="-2281"/>
         <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
         <translation>Haltepunkte können nicht in geänderten oder unbenannten Dateien gesetzt werden.
@@ -1310,7 +1310,7 @@ Quit debugging and save?</source>
 Debuggen abbrechen und speichern?</translation>
     </message>
     <message>
-        <location line="+214"/>
+        <location line="+211"/>
         <source>Could not open file %1 for writing:
 %2.</source>
         <translation>Die Datei
@@ -1319,7 +1319,7 @@ kann nicht zum Schreiben geöffnet werden:
 %2.</translation>
     </message>
     <message>
-        <location line="+111"/>
+        <location line="+110"/>
         <source>The changes could not be saved to the file
 %1</source>
         <translation>Die Änderungen konnten nicht in der Datei
@@ -1376,12 +1376,8 @@ existiert bereits.
 Überschreiben?</translation>
     </message>
     <message>
-        <location line="+155"/>
-        <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
-        <translation>Die Datei &apos;%1&apos; wurde von einer anderen Anwendung verändert. Soll der neue Inhalt geladen werden?</translation>
-    </message>
-    <message>
-        <location line="+29"/>
+        <location line="+152"/>
+        <location line="+34"/>
         <source>
 
 Warning: The contents in the editor is modified!</source>
@@ -1390,7 +1386,12 @@ Warning: The contents in the editor is modified!</source>
 Achtung: Der Inhalt des Editors wurde verändert!</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="-29"/>
+        <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?%2</source>
+        <translation>Die Datei &apos;%1&apos; wurde von einer anderen Anwendung verändert. Soll der neue Inhalt geladen werden?%2</translation>
+    </message>
+    <message>
+        <location line="+36"/>
         <source>It seems that the file
 %1
 has been deleted or renamed. Do you want to save it now?%2</source>

@@ -26,7 +26,7 @@ major release after 12):
 
         Function               | Replacement
         -----------------------|------------------
-        
+
 
 - Core
 
@@ -36,11 +36,28 @@ major release after 12):
 The following features were deprecated in Octave 10 and have been removed
 from Octave 12.
 
+- Functions
+
+        Function    | Replacement
+        ------------|------------
+        dsearch     | dsearchn
+
 - Core
 
-        Function                  | Replacement
-        --------------------------|--------------------------
-
+        Function                                     | Replacement
+        ---------------------------------------------|-----------------------------------
+        symbol_record_rep::mark_as_variable          | symbol_record_rep::mark_variable
+        symbol_record_rep::unmark_as_variable        | symbol_record_rep::unmark_variable
+        symbol_record::mark_as_variable              | symbol_record::mark_variable
+        symbol_record::unmark_as_variable            | symbol_record::unmark_variable
+        interpreter::verbose                         | interpreter::init_trace
+        cmdline_options::verbose                     | cmdline_options::init_trace
+        interpreter::read_init_files                 | interpreter::read_user_files
+        cmdline_options::read_init_files             | cmdline_options::read_user_files
+        __lo_ieee_isnan,    __lo_ieee_float_isnan    | std::isnan     or  isnan
+        __lo_ieee_isfinite, __lo_ieee_float_isfinite | std::isfinite  or  isfinite
+        __lo_ieee_isinf,    __lo_ieee_float_isinf    | std::isinf     or  isinf
+        __lo_ieee_signbit,  __lo_ieee_float_signbit  | std::signbit   or  signbit
 
 ### Old release news
 

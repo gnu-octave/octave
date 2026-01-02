@@ -72,14 +72,10 @@ public:
   bool read_history_file () const { return m_read_history_file; }
   bool read_site_files () const { return m_read_site_files; }
   bool read_user_files () const { return m_read_user_files; }
-  OCTAVE_DEPRECATED (10, "cmdline_options::read_init_files is deprecated, use read_user_files")
-  bool read_init_files () const { return m_read_user_files; }
   bool server () const { return m_server; }
   bool set_initial_path () const { return m_set_initial_path; }
   bool traditional () const { return m_traditional; }
 
-  OCTAVE_DEPRECATED (10, "cmdline_options::verbose is deprecated, use init_trace")
-  bool verbose () const { return m_init_trace; }
   bool init_trace () const { return m_init_trace; }
   std::string code_to_eval () const { return m_code_to_eval; }
   std::list<std::string> command_line_path () const
@@ -112,13 +108,9 @@ public:
   // Remove at some point in the future.
   void read_site_files (bool arg) { m_read_site_files = arg; }
   void read_user_files (bool arg) { m_read_user_files = arg; }
-  OCTAVE_DEPRECATED (10, "cmdline_options::read_init_files is deprecated, use read_user_files")
-  void read_init_files (bool arg) { read_user_files (arg); }
   void server (bool arg) { m_server = arg; }
   void set_initial_path (bool arg) { m_set_initial_path = arg; }
   void traditional (bool arg) { m_traditional = arg; }
-  OCTAVE_DEPRECATED (10, "cmdline_options::verbose is deprecated, use init_trace")
-  void verbose (bool arg) { m_init_trace = arg; }
   void init_trace (bool arg) { m_init_trace = arg; }
   void code_to_eval (const std::string& arg) { m_code_to_eval = arg; }
   void command_line_path (const std::list<std::string>& arg)

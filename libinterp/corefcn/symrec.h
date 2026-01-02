@@ -128,13 +128,6 @@ private:
       m_storage_class = static_cast<symrec_t> (m_storage_class | VARIABLE);
     }
 
-    OCTAVE_DEPRECATED (10, "symbol_record_rep::mark_as_variable is obsolete, use mark_variable")
-    void mark_as_variable ()
-    {
-      m_storage_class = static_cast<symrec_t> (m_storage_class | VARIABLE);
-    }
-
-
     void unmark_local ()
     {
       m_storage_class = static_cast<symrec_t> (m_storage_class & ~LOCAL);
@@ -152,12 +145,6 @@ private:
     }
 
     void unmark_variable ()
-    {
-      m_storage_class = static_cast<symrec_t> (m_storage_class & ~VARIABLE);
-    }
-
-    OCTAVE_DEPRECATED (10, "symbol_record_rep::unmark_as_variable is obsolete, use unmark_variable")
-    void unmark_as_variable ()
     {
       m_storage_class = static_cast<symrec_t> (m_storage_class & ~VARIABLE);
     }
@@ -228,15 +215,11 @@ public:
   void mark_formal () { m_rep->mark_formal (); }
   void mark_added_static () { m_rep->mark_added_static (); }
   void mark_variable () { m_rep->mark_variable (); }
-  OCTAVE_DEPRECATED (10, "symbol_record::mark_as_variable is obsolete, use mark_variable")
-  void mark_as_variable () { m_rep->mark_variable (); }
 
   void unmark_local () { m_rep->unmark_local (); }
   void unmark_formal () { m_rep->unmark_formal (); }
   void unmark_added_static () { m_rep->unmark_added_static (); }
   void unmark_variable () { m_rep->unmark_variable (); }
-  OCTAVE_DEPRECATED (10, "symbol_record::unmark_as_variable is obsolete, use unmark_variable")
-  void unmark_as_variable () { m_rep->unmark_variable (); }
 
   unsigned int storage_class () const { return m_rep->storage_class (); }
 

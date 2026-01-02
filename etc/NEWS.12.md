@@ -59,6 +59,23 @@ from Octave 12.
         __lo_ieee_isinf,    __lo_ieee_float_isinf    | std::isinf     or  isinf
         __lo_ieee_signbit,  __lo_ieee_float_signbit  | std::signbit   or  signbit
 
+
+The following features were deprecated in Octave 11 and have been removed
+from Octave 12.
+
+- Function typedefs
+
+    * `b_d_Mapper`
+    * `b_c_Mapper`
+    * `d_d_Mapper`
+    * `d_c_Mapper`
+    * `c_c_Mapper`
+    * `b_f_Mapper`
+    * `b_fc_Mapper`
+    * `f_f_Mapper`
+    * `f_fc_Mapper`
+    * `fc_fc_Mapper`
+
 ### Old release news
 
 - [Octave 11.x](etc/NEWS.11.md)

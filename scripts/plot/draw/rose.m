@@ -121,10 +121,6 @@ function [thout, rout] = rose (varargin)
   if (isrow (counts))
     counts = counts(:);
   endif
-  ## FIXME: Remove in Octave 12 if no bug reports filed
-  if (any (counts(end,:)))
-    error ("rose: internal error, histc returned count for theta == 2*pi, please file a bug report");
-  endif
   counts(end,:) = [];              # remove overflow bin
 
   if (custom_bins)

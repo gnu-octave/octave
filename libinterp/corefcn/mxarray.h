@@ -53,13 +53,6 @@ SUCH DAMAGE.
 
 #include "mxtypes.h"
 
-#if defined (MXARRAY_TYPEDEFS_ONLY)
-#  warning "MXARRAY_TYPEDEFS_ONLY has been deprecated and will be removed in \
-Octave 12.  Include "mxtypes.h" instead of "mxarray.h"."
-#endif
-
-#if ! defined (MXARRAY_TYPEDEFS_ONLY)
-
 #include <cstring>
 #include <set>
 
@@ -901,5 +894,4 @@ mexPutVariable_impl (const char *space, const char *name, const mxArray *ptr);
 OCTINTERP_API int
 mexSet_impl (double handle, const char *property, mxArray *val);
 
-#endif
 #endif

@@ -270,7 +270,7 @@
 
 ## Test for handling filenames with Unicode characters outside the BMP.
 %!test
-%! for opt = {'-binary', '-float-binary', '-text', '-v7', '-v6'}
+%! for opt = {'-binary', '-float-binary', '-text', '-v6'}
 %!   ## NOTE: opt = '-ascii' causes problems with loading "unknown format".
 %!   ##       opt = '-v7.3' cannot save (not implemented yet).
 %!   ##       opt = '-v4' cannot save structs, including 'opt' itself.

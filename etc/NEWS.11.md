@@ -287,7 +287,7 @@ from Octave 11.
         octave_value (const Array<octave_value>& a)  | octave_value (const Cell&)
 
   - The `octave_value (const Array<octave_value>& a)` constructor was
-    deprecated in Octave 10 and is removed after only one major version.
+    deprecated in Octave 10 and was removed after only one major version.
 
 ### Old release news
 

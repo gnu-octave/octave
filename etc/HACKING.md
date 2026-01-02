@@ -527,7 +527,7 @@ FIXME: Instructions needed by someone who can document the MXE build process.
 
 \################################################################################
 
-Copyright (C) 2009-2025 The Octave Project Developers
+Copyright (C) 2009-2026 The Octave Project Developers
 
 See the file COPYRIGHT.md in the top-level directory of this
 distribution or <https://octave.org/copyright/>.

@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 dnl
 ########################################################################
 ##
-## Copyright (C) 1993-2025 The Octave Project Developers
+## Copyright (C) 1993-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -27,7 +27,7 @@ dnl
 
 ### Initialize Autoconf
 AC_PREREQ([2.65])
-AC_INIT([GNU Octave], [11.0.0],
+AC_INIT([GNU Octave], [12.0.0],
         [https://bugs.octave.org], [octave], [https://www.octave.org])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -41,16 +41,16 @@ dnl AC_INIT requires it to be static, not computed from shell variables.
 ## explains how to update these numbers for release and development
 ## versions.
 
-OCTAVE_MAJOR_VERSION=11
+OCTAVE_MAJOR_VERSION=12
 OCTAVE_MINOR_VERSION=0
 OCTAVE_PATCH_VERSION=0
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION argument.
 OCTAVE_VERSION="$PACKAGE_VERSION"
 
-OCTAVE_COPYRIGHT="Copyright (C) 1993-2025 The Octave Project Developers."
+OCTAVE_COPYRIGHT="Copyright (C) 1993-2026 The Octave Project Developers."
 
-OCTAVE_RELEASE_DATE="2025-09-23"
+OCTAVE_RELEASE_DATE="2026-01-02"
 
 ## The "API version" is used as a way of checking that interfaces in the
 ## liboctave and libinterp libraries haven't changed in a backwardly

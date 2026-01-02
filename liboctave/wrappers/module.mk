@@ -1,4 +1,5 @@
 NOINSTALL_WRAPPERS_INC = \
+  %reldir%/_Exit-wrapper.h \
   %reldir%/areadlink-wrapper.h \
   %reldir%/async-system-wrapper.h \
   %reldir%/base64-wrappers.h \
@@ -20,10 +21,10 @@ NOINSTALL_WRAPPERS_INC = \
   %reldir%/nanosleep-wrapper.h \
   %reldir%/nproc-wrapper.h \
   %reldir%/octave-popen2.h \
-  %reldir%/putenv-wrapper.h \
   %reldir%/pwd-wrappers.h \
   %reldir%/select-wrappers.h \
   %reldir%/set-program-name-wrapper.h \
+  %reldir%/setenv-wrapper.h \
   %reldir%/signal-wrappers.h \
   %reldir%/stat-wrappers.h \
   %reldir%/strcase-wrappers.h \
@@ -44,6 +45,7 @@ NOINSTALL_WRAPPERS_INC = \
   %reldir%/wait-wrappers.h
 
 WRAPPERS_SRC = \
+  %reldir%/_Exit-wrapper.c \
   %reldir%/areadlink-wrapper.c \
   %reldir%/async-system-wrapper.c \
   %reldir%/base64-wrappers.c \
@@ -66,10 +68,10 @@ WRAPPERS_SRC = \
   %reldir%/nanosleep-wrapper.c \
   %reldir%/nproc-wrapper.c \
   %reldir%/octave-popen2.c \
-  %reldir%/putenv-wrapper.c \
   %reldir%/pwd-wrappers.c \
   %reldir%/select-wrappers.c \
   %reldir%/set-program-name-wrapper.c \
+  %reldir%/setenv-wrapper.c \
   %reldir%/signal-wrappers.c \
   %reldir%/stat-wrappers.c \
   %reldir%/strcase-wrappers.c \
@@ -100,3 +102,5 @@ noinst_LTLIBRARIES += %reldir%/libwrappers.la
   -Ilibgnu -I$(srcdir)/libgnu
 
 liboctave_liboctave_la_LIBADD += %reldir%/libwrappers.la
+
+liboctave_liboctave_la_LDFLAGS += $(GNULIB_LINK_DEPS)

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2011-2025 The Octave Project Developers
+// Copyright (C) 2011-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -156,7 +156,8 @@ template <typename T>
 QIcon
 ToolBarButton<T>::get_icon (const std::string& name)
 {
-  return QIcon (global_icon_paths.at (ICON_THEME_OCTAVE) + QString::fromStdString (name) + ".png");
+  return QIcon (global_icon_paths.at (ICON_THEME_OCTAVE)
+                + QString::fromStdString (name) + global_icon_extension);
 }
 
 OCTAVE_END_NAMESPACE(octave)

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1998-2025 The Octave Project Developers
+// Copyright (C) 1998-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -31,9 +31,9 @@
 #include <ostream>
 #include <vector>
 
-#include "quit.h"
 #include "lo-ieee.h"
-#include "lo-mappers.h"
+#include "mappers.h"
+#include "quit.h"
 
 #include "boolSparse.h"
 #include "dSparse.h"

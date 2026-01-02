@@ -10,6 +10,7 @@ FCN_FILE_DIRS += %reldir%
   %reldir%/cross.m \
   %reldir%/duplication_matrix.m \
   %reldir%/expm.m \
+  %reldir%/funm.m \
   %reldir%/gls.m \
   %reldir%/housh.m \
   %reldir%/isbanded.m \

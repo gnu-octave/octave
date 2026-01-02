@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2024-2025 The Octave Project Developers
+// Copyright (C) 2024-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -87,6 +87,8 @@ public:
     const element_type& elt = m_delimiters.top ();
     return elt.second.trailing_comments ();
   }
+
+  std::stack<element_type> delims () const { return m_delimiters; }
 
 private:
 

@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2010-2025 The Octave Project Developers
+## Copyright (C) 2010-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -256,7 +256,7 @@ function arg_st = __print_parse_opts__ (varargin)
   ## By default, use the "opengl" renderer for all raster outputs
   ## supported by "imwrite".
   fmts = imformats ();
-  persistent gl_devlist = [fmts(! cellfun (@isempty, {fmts.write})).ext, ...
+  persistent gl_devlist = [fmts(! cellfun ('isempty', {fmts.write})).ext, ...
                            "tiffn"];
   opengl_ok = any (strcmp (gl_devlist, arg_st.devopt));
 

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2006-2025 The Octave Project Developers
+// Copyright (C) 2006-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -34,8 +34,8 @@
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
-#include "lo-sysdep.h"
 #include "oct-env.h"
+#include "oct-sysdep.h"
 #include "unwind-prot.h"
 #include "url-transfer.h"
 #include "version.h"

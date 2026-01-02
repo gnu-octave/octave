@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -73,7 +73,7 @@ template <typename T>
 static inline bool
 xisint (T x)
 {
-  return (octave::math::x_nint (x) == x
+  return (octave::math::is_integer (x)
           && x <= std::numeric_limits<int>::max ()
           && x >= std::numeric_limits<int>::min ());
 }
@@ -84,7 +84,15 @@ xisint (float x)
   static constexpr float out_of_range_top
     = static_cast<float> (std::numeric_limits<int>::max ()) + 1.0;
 
-  return (octave::math::x_nint (x) == x
+  // FIXME: If we return *only* octave::math::is_integer (x)
+  // and delete the lines with numeric_limits<int>,
+  // then that works on MacOS but not on Linux.
+  // A simple test is:    Complex (realmin, realmin) .^ realmax.
+  // On MacOS it gives zero. On Linux it gives Inf - Nani.
+  // If we can make both platforms work without the extra check with
+  // numeric_limits<int>, then we should do so.
+
+  return (octave::math::is_integer (x)
           && x < out_of_range_top
           && x >= std::numeric_limits<int>::min ());
 }
@@ -1263,7 +1271,7 @@ elem_xpow (const NDArray& a, const NDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+      if (! is_valid_bsxfun (a_dims, b_dims))
         octave::err_nonconformant ("operator .^", a_dims, b_dims);
 
       // Potentially complex results
@@ -1346,7 +1354,7 @@ elem_xpow (const NDArray& a, const ComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+      if (! is_valid_bsxfun (a_dims, b_dims))
         octave::err_nonconformant ("operator .^", a_dims, b_dims);
 
       return bsxfun_pow (a, b);
@@ -1441,7 +1449,7 @@ elem_xpow (const ComplexNDArray& a, const NDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+      if (! is_valid_bsxfun (a_dims, b_dims))
         octave::err_nonconformant ("operator .^", a_dims, b_dims);
 
       return bsxfun_pow (a, b);
@@ -1486,7 +1494,7 @@ elem_xpow (const ComplexNDArray& a, const ComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+      if (! is_valid_bsxfun (a_dims, b_dims))
         octave::err_nonconformant ("operator .^", a_dims, b_dims);
 
       return bsxfun_pow (a, b);
@@ -2583,7 +2591,7 @@ elem_xpow (const FloatNDArray& a, const FloatNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+      if (! is_valid_bsxfun (a_dims, b_dims))
         octave::err_nonconformant ("operator .^", a_dims, b_dims);
 
       // Potentially complex results
@@ -2666,7 +2674,7 @@ elem_xpow (const FloatNDArray& a, const FloatComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+      if (! is_valid_bsxfun (a_dims, b_dims))
         octave::err_nonconformant ("operator .^", a_dims, b_dims);
 
       return bsxfun_pow (a, b);
@@ -2761,7 +2769,7 @@ elem_xpow (const FloatComplexNDArray& a, const FloatNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+      if (! is_valid_bsxfun (a_dims, b_dims))
         octave::err_nonconformant ("operator .^", a_dims, b_dims);
 
       return bsxfun_pow (a, b);
@@ -2806,7 +2814,7 @@ elem_xpow (const FloatComplexNDArray& a, const FloatComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))
+      if (! is_valid_bsxfun (a_dims, b_dims))
         octave::err_nonconformant ("operator .^", a_dims, b_dims);
 
       return bsxfun_pow (a, b);

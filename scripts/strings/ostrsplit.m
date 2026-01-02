@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2009-2025 The Octave Project Developers
+## Copyright (C) 2009-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -41,7 +41,7 @@
 ## @example
 ## @group
 ## ostrsplit ("a,b,c", ",")
-##       @result{}
+##       @xresult{}
 ##           @{
 ##             [1,1] = a
 ##             [1,2] = b
@@ -49,7 +49,7 @@
 ##           @}
 ##
 ## ostrsplit (["a,b" ; "cde"], ",")
-##       @result{}
+##       @xresult{}
 ##           @{
 ##             [1,1] = a
 ##             [1,2] = b

@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1996-2025 The Octave Project Developers
+## Copyright (C) 1996-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -32,8 +32,8 @@
 ## @deftypefnx {} {@var{m} =} median (@dots{}, @var{outtype})
 ## Compute the median value of the elements of @var{x}.
 ##
-## When the elements of @var{x} are sorted, say
-## @code{@var{s} = sort (@var{x})}, the median is defined as
+## The median is defined on the sorted data @var{s}
+## (@w{@code{@var{s} = sort (@var{x})}}) as
 ## @tex
 ## $$
 ## {\rm median} (x) =
@@ -55,21 +55,28 @@
 ##
 ## @end ifnottex
 ##
-## If @var{x} is an array, then @code{median (@var{x})} operates along the
-## first non-singleton dimension of @var{x}.
+## If @var{x} is a vector, then @code{median (@var{x})} returns the median of
+## the elements in @var{x}.
 ##
-## The optional variable @var{dim} forces @code{median} to operate over the
-## specified dimension, which must be a positive integer-valued number.
-## Specifying any singleton dimension in @var{x}, including any dimension
-## exceeding @code{ndims (@var{x})}, will result in a median equal to @var{x}.
+## If @var{x} is a matrix, then @code{median (@var{x})} returns a row vector
+## with each element containing the median of the corresponding column in
+## @var{x}.
 ##
-## Specifying the dimensions as  @var{vecdim}, a vector of non-repeating
-## dimensions, will return the median over the array slice defined by
+## If @var{x} is an array, then @code{median (@var{x})} computes the median
+## along the first non-singleton dimension of @var{x}.
+##
+## The optional input @var{dim} specifies the dimension to operate on and must
+## be a positive integer.  Specifying any singleton dimension of @var{x},
+## including any dimension exceeding @code{ndims (@var{x})}, will return
+## @var{x}.
+##
+## Specifying multiple dimensions with input @var{vecdim}, a vector of
+## non-repeating dimensions, will operate along the array slice defined by
 ## @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
 ## equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
 ## greater than @code{ndims (@var{x})} is ignored.
 ##
-## Specifying the dimension as @qcode{"all"} will force @code{median} to
+## Specifying the dimension as @qcode{"all"} will cause @code{median} to
 ## operate on all elements of @var{x}, and is equivalent to
 ## @code{median (@var{x}(:))}.
 ##
@@ -259,6 +266,9 @@ function m = median (x, varargin)
     switch (outtype)
       case {"double", "single"}
         m = NaN (sz_out, outtype);
+        if (issparse (x))
+          m = sparse (m);
+        endif
       case ("logical")
         m = false (sz_out);
       otherwise
@@ -270,6 +280,9 @@ function m = median (x, varargin)
   if (all (isnan (x(:))))
     ## all NaN input, output single or double NaNs in pre-determined size
     m = NaN (sz_out, outtype);
+    if (issparse (x))
+      m = sparse (m);
+    endif
     return;
   endif
 
@@ -341,7 +354,7 @@ function m = median (x, varargin)
 
     else
       ## Each column may have a different n and k.  Force index column vector
-      ## for consistent orientation for 2D and nD inputs, then use sub2ind to
+      ## for consistent orientation for 2-D and N-D inputs, then use sub2ind to
       ## get correct element(s) for each column.
 
       n = sum (! isnan (x), 1)(:);
@@ -350,6 +363,9 @@ function m = median (x, varargin)
       m_idx_even = (! m_idx_odd) & n;
 
       m = NaN ([1, szx(2 : end)]);
+      if (issparse (x))
+        m = sparse (m);
+      endif
 
       if (ndims (x) > 2)
         szx = [szx(1), prod(szx(2 : end))];
@@ -373,6 +389,9 @@ function m = median (x, varargin)
     ## All types without a NaN value will use this path.
     if (all (! nanfree))
       m = NaN (sz_out);
+      if (issparse (x))
+        m = sparse (m);
+      endif
 
     else
       if (isvector (x))
@@ -406,6 +425,9 @@ function m = median (x, varargin)
 
         if (isfloat (x))
           m = NaN ([1, szx(2 : end)]);
+          if (issparse (x))
+            m = sparse (m);
+          endif
         else
           m = zeros ([1, szx(2 : end)], outtype);
         endif
@@ -526,7 +548,7 @@ endfunction
 %! assert (median ([true, false, NaN], 2, "omitnan"), 0.5);
 %! assert (median ([true, false, NaN], 2, "omitnan", "native"), double (0.5));
 
-## Test dimension indexing with vecdim in n-dimensional arrays
+## Test dimension indexing with vecdim in N-dimensional arrays
 %!test
 %! x = repmat ([1:20; 6:25], [5, 2, 6, 3]);
 %! assert (size (median (x, [3, 2])), [10, 1, 1, 3]);
@@ -609,7 +631,7 @@ endfunction
 %!assert (median (single ([NaN, 2 ; NaN, 4]), "omitnan"), single ([NaN 3]))
 %!assert (median (single ([NaN, 2 ; NaN, 4]), "omitnan", "double"), double ([NaN 3]))
 
-## Test omitnan with 2D & 3D inputs to confirm correct sub2ind orientation
+## Test omitnan with 2-D & 3-D inputs to confirm correct sub2ind orientation
 %!test <*64011>
 %! x = [magic(3), magic(3)];
 %! x([3, 7, 11, 12, 16, 17]) = NaN;
@@ -682,7 +704,7 @@ endfunction
 %!test
 %! x = ones (15, 1, 4);
 %! x([13,15], 1, :) = NaN;
-%! assert (median (x, 1, "omitnan"), ones (1, 1, 4))
+%! assert (median (x, 1, "omitnan"), ones (1, 1, 4));
 
 ## Test non-floating point types
 %!assert (median ([true, false]), true)
@@ -741,6 +763,26 @@ endfunction
 %!assert (median ([1 2 3], "aLL"), 2)
 %!assert (median ([1 2 3], "OmitNan"), 2)
 %!assert (median ([1 2 3], "DOUBle"), 2)
+
+## Test sparse matrix input
+%!assert (median (sparse (magic (3))), sparse ([4, 5, 6]))
+%!assert (median (sparse (magic (3)), 1), sparse ([4, 5, 6]))
+%!assert (median (sparse (magic (3)), 1, "omitnan"), sparse ([4, 5, 6]))
+%!assert (median (sparse (magic (3)), 2), sparse ([6; 5; 4]))
+%!assert (median (sparse (magic (3)), 2, "omitnan"), sparse ([6; 5; 4]))
+%!assert (median (sparse (magic (3)), "all"), sparse (5))
+%!assert (median (sparse (magic (3)), "all", "omitnan"), sparse (5))
+%!assert (median (sparse (magic (3)), [1, 2]), sparse (5))
+%!assert (median (sparse (magic (3)), [1, 2], "omitnan"), sparse (5))
+%!assert (median (sparse (magic (3)), 3), sparse (magic (3)))
+%!assert (median (sparse (magic (3)), 3, "omitnan"), sparse (magic (3)))
+%!assert (median (sparse ([NaN, NaN])), sparse (NaN))
+%!assert (median (sparse ([NaN, NaN]), 1), sparse ([NaN, NaN]))
+%!assert (median (sparse ([NaN, NaN]), 2), sparse (NaN))
+%!assert (median (sparse ([])), sparse (NaN))
+%!assert (median (sparse ([]), 1), sparse (NaN (1, 0)))
+%!assert (median (sparse ([]), 2), sparse (NaN (0, 1)))
+%!assert (median (sparse ([]), 3), sparse ([]))
 
 ## Test input validation
 %!error <Invalid call> median ()

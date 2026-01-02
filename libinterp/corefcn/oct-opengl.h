@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2016-2025 The Octave Project Developers
+// Copyright (C) 2016-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -96,6 +96,14 @@ public:
   {
     ::glBlendFunc (sfactor, dfactor);
   }
+
+#if defined (HAVE_GLBLENDFUNCSEPARATE)
+  virtual void glBlendFuncSeparate (GLenum sfactor, GLenum dfactor,
+                                    GLenum salpha, GLenum dalpha)
+  {
+    ::glBlendFuncSeparate (sfactor, dfactor, salpha, dalpha);
+  }
+#endif
 
   virtual void glCallList (GLuint list)
   {

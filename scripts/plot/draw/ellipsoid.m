@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2007-2025 The Octave Project Developers
+## Copyright (C) 2007-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -83,19 +83,9 @@ function [x, y, z] = ellipsoid (varargin)
     y = yy;
     z = zz;
   else
-    oldfig = [];
-    if (! isempty (hax))
-      oldfig = get (0, "currentfigure");
-    endif
-    unwind_protect
-      hax = newplot (hax);
+    hax = newplot (hax);
 
-      surf (xx, yy, zz);
-    unwind_protect_cleanup
-      if (! isempty (oldfig))
-        set (0, "currentfigure", oldfig);
-      endif
-    end_unwind_protect
+    surf (hax, xx, yy, zz);
   endif
 
 endfunction

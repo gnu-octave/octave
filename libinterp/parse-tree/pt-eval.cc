@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2009-2025 The Octave Project Developers
+// Copyright (C) 2009-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -337,6 +337,8 @@ debugger::repl (const std::string& prompt_arg)
 
               if (! line_buf.empty ())
                 buf << curr_debug_line << ": " << line_buf;
+              else
+                buf << "[End of function]";
             }
         }
     }
@@ -1078,7 +1080,7 @@ tree_evaluator::eval_string (const std::string& eval_str, bool silent,
                   else
                     do_bind_ans = ! expr->is_assignment_expression ();
 
-                  if (do_bind_ans && ! retval.empty ())
+                  if (nargout == 0 && do_bind_ans && ! retval.empty ())
                     bind_ans (retval(0), expr->print_result ());
 
                   if (nargout == 0)
@@ -2304,11 +2306,11 @@ Example:
 @group
 @var{x} = [ 1 2 3; 4 5 6 ];
 @var{x}(1,end)
- @result{} 3
+ @xresult{} 3
 @var{x}(end,1)
- @result{} 4
+ @xresult{} 4
 @var{x}(end,end)
- @result{} 6
+ @xresult{} 6
 @end group
 @end example
 
@@ -5564,7 +5566,7 @@ single space).  For example:
 @group
 string_fill_char ("X");
 [ "these"; "are"; "strings" ]
-    @result{}  "theseXX"
+    @xresult{}  "theseXX"
         "areXXXX"
         "strings"
 @end group

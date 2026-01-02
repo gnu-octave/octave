@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2013-2025 The Octave Project Developers
+// Copyright (C) 2013-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -799,7 +799,7 @@ public:
   }
 };
 
-// 2-d struct array.  Rows and columns index individual scalar structs.
+// 2-D struct array.  Rows and columns index individual scalar structs.
 
 class struct_model : public base_ve_model
 {

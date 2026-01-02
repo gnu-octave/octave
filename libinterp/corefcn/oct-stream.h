@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -44,7 +44,7 @@ class octave_value;
 class octave_value_list;
 class string_vector;
 
-#include "Array-fwd.h"
+#include "Array.h"
 #include "data-conv.h"
 #include "mach-info.h"
 

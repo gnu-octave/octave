@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -39,7 +39,7 @@
 #include "oct-env.h"
 #include "file-ops.h"
 #include "glob-match.h"
-#include "lo-regexp.h"
+#include "oct-regexp.h"
 #include "str-vec.h"
 
 #include "Cell.h"
@@ -131,7 +131,7 @@ For example:
 @group
 global x
 isglobal ("x")
-   @result{} 1
+   @xresult{} 1
 @end group
 @end example
 @seealso{isvarname, exist}

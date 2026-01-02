@@ -1,6 +1,6 @@
 @c ---------------------------------------------------------------------
 @c
-@c Copyright (C) 2012-2025 The Octave Project Developers
+@c Copyright (C) 2012-2026 The Octave Project Developers
 @c
 @c See the file COPYRIGHT.md in the top-level directory of this
 @c or <https://octave.org/copyright/>.
@@ -71,8 +71,8 @@
 @c
 @c Implementation Note:
 @c For TeX, @vskip produces a nice separation.
-@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
-@c for HTML.  We use a simple blank line to produce the correct behavior.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results.
+@c For HTML, a simple blank line produces the correct behavior.
 @c
 @c The macro is named @xseealso now because Texinfo introduced its own @seealso
 @c command.  But, instead of modifying all source files, the build system uses
@@ -95,32 +95,17 @@ See also: \args\.
 @end ifinfo
 @end macro
 
-@c ------------------------------------------------------------
-@c non-macro items
-@c ------------------------------------------------------------
+@c The following macro works around the HTML expansion of @result{} which is
+@c a single glyph (right arrow "&rarr").  All other formats expand to a
+@c sequence that is 2-characters wide.  The resulting one-character difference
+@c throws off alignment of columns in the documentation.  Only for HTML,
+@c expand @xresult to "right arrow" + "SPACE".
 
-@c These may be useful for all, not just for octave.texi.
-@tex
-  \ifx\rgbDarkRed\thisisundefined
-    \def\rgbDarkRed{0.50 0.09 0.12}
-  \fi
-  \ifx\linkcolor\thisisundefined
-    \relax
-  \else
-    \global\def\linkcolor{\rgbDarkRed}
-  \fi
-  \ifx\urlcolor\thisisundefined
-    \relax
-  \else
-    \global\def\urlcolor{\rgbDarkRed}
-  \fi
-  \ifx\urefurlonlylinktrue\thisisundefined
-    \relax
-  \else
-    \global\urefurlonlylinktrue
-  \fi
-@end tex
-
-@c Make the apostrophe in code examples cut-and-paste friendly so programmers
-@c can take examples from the Octave manual and directly run them in Octave.
-@codequoteundirected on
+@ifhtml
+@macro xresult
+@result{} 
+@end macro
+@end ifhtml
+@ifnothtml
+@alias xresult=result
+@end ifnothtml

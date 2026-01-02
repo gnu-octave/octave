@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2011-2025 The Octave Project Developers
+// Copyright (C) 2011-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -64,13 +64,6 @@ interpreter_qobject::execute ()
       // Final initialization.
 
       interp.initialize ();
-
-      if (app_context.start_gui_p ()
-          && ! m_octave_qobj.experimental_terminal_widget ())
-        {
-          interp.PS1 (">> ");
-          interp.PS2 ("");
-        }
 
       if (interp.is_initialized ())
         {

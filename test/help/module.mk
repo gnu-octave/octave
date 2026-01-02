@@ -1,4 +1,5 @@
 help_TEST_FILES = \
+  %reldir%/function_with_utf_8_doc_string.m \
   %reldir%/help.tst \
   %reldir%/undoc_fcn.m \
   %reldir%/cdefdir/cdef_help1.m \

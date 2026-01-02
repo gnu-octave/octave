@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2003-2025 The Octave Project Developers
+// Copyright (C) 2003-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -31,11 +31,10 @@
 
 #include <limits>
 
-#include "lo-error.h"
 #include "lo-ieee.h"
-#include "lo-mappers.h"
-#include "lo-ranlib-proto.h"
 #include "mach-info.h"
+#include "mappers.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
 #include "oct-rand.h"
 #include "oct-time.h"
@@ -43,6 +42,7 @@
 #include "randgamma.h"
 #include "randmtzig.h"
 #include "randpoisson.h"
+#include "ranlib-proto.h"
 #include "singleton-cleanup.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -664,7 +664,7 @@ rand::set_internal_state (const uint32NDArray& s)
 {
   octave_idx_type len = s.numel ();
 
-  const uint32_t *sdata = reinterpret_cast <const uint32_t *> (s.data ());
+  const uint32_t *sdata = reinterpret_cast<const uint32_t *> (s.data ());
 
   if (len == MT_N + 1 && sdata[MT_N] <= MT_N && sdata[MT_N] > 0)
     set_mersenne_twister_state (sdata);

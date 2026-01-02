@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2011-2025 The Octave Project Developers
+// Copyright (C) 2011-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -38,6 +38,7 @@
 
 #include "release-notes.h"
 #include "gui-utils.h"
+#include "gui-preferences-global.h"
 #include "gui-preferences-dw.h"
 #include "gui-preferences-nr.h"
 #include "gui-settings.h"
@@ -58,7 +59,7 @@ release_notes::release_notes ()
 
   if (icon_set != "NONE")
     m_release_notes_icon = dw_icon_set_names[icon_set]
-                           + "ReleaseWidget.png";
+                             + "ReleaseWidget" + global_icon_extension;
   else
     m_release_notes_icon = dw_icon_set_names[icon_set];
 

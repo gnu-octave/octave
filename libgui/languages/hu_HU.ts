@@ -4,7 +4,7 @@
 <context>
     <name>QFileSystemModel</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/files-dock-widget.cc" line="+141"/>
+        <location filename="../src/files-dock-widget.cc" line="+149"/>
         <source>Invalid filename</source>
         <translation>Érvénytelen fáljnév</translation>
     </message>
@@ -12,7 +12,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/settings-dialog.cc" line="+1045"/>
+        <location filename="../src/settings-dialog.cc" line="+1049"/>
         <source>Difference to the default size</source>
         <translation>Különbség az alapértelmezett mérethez képest</translation>
     </message>
@@ -43,7 +43,7 @@
 <context>
     <name>QTerminal</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/qterminal/libqterminal/QTerminal.cc" line="+119"/>
+        <location filename="../qterminal/libqterminal/QTerminal.cc" line="+119"/>
         <source>Edit &quot;%1&quot;</source>
         <translation>„%1” szerkesztése</translation>
     </message>
@@ -106,7 +106,7 @@
 <context>
     <name>QWinTerminalImpl</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1859"/>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1924"/>
         <source>copied selection to clipboard</source>
         <translation>Kijelölés vágólapra másolva</translation>
     </message>
@@ -870,7 +870,7 @@
 <context>
     <name>UrlFilter</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/qterminal/libqterminal/unix/Filter.cpp" line="+630"/>
+        <location filename="../qterminal/libqterminal/unix/Filter.cpp" line="+630"/>
         <source>Open Link</source>
         <translation>Hivatkozás megnyitása</translation>
     </message>
@@ -899,7 +899,7 @@
 <context>
     <name>annotation_dialog</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/graphics/annotation-dialog.ui" line="+17"/>
+        <location filename="../graphics/annotation-dialog.ui" line="+17"/>
         <source>Annotation</source>
         <translation>Megjegyzés</translation>
     </message>
@@ -1053,7 +1053,7 @@
 <context>
     <name>octave::ListDialog</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/dialog.cc" line="+454"/>
+        <location filename="../src/dialog.cc" line="+458"/>
         <source>Select All</source>
         <translation>Összes kijelölése</translation>
     </message>
@@ -1061,7 +1061,7 @@
 <context>
     <name>octave::command_widget</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/command-widget.cc" line="+76"/>
+        <location filename="../src/command-widget.cc" line="+76"/>
         <source>Pause</source>
         <translation>Szüneteltetés</translation>
     </message>
@@ -1084,7 +1084,7 @@
 <context>
     <name>octave::community_news</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/community-news.cc" line="+70"/>
+        <location filename="../src/community-news.cc" line="+71"/>
         <source>Octave Community News</source>
         <translation>Oktáv közösségi hírek</translation>
     </message>
@@ -1092,7 +1092,7 @@
 <context>
     <name>octave::console_lexer</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/console-lexer.cc" line="+48"/>
+        <location filename="../src/console-lexer.cc" line="+48"/>
         <source>Default</source>
         <translation>Alapértelmezett</translation>
     </message>
@@ -1110,14 +1110,14 @@
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/documentation.cc" line="+135"/>
+        <location filename="../src/documentation.cc" line="+135"/>
         <location line="+14"/>
-        <location line="+715"/>
+        <location line="+721"/>
         <source>Octave Documentation</source>
         <translation>Oktáv-dokumentáció</translation>
     </message>
     <message>
-        <location line="-728"/>
+        <location line="-734"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
@@ -1214,7 +1214,7 @@ Csak a parancsablak súgószövege lesz elérhető.</translation>
         <translation>A jelenlegi oldal megjelölése könyvjelzővel</translation>
     </message>
     <message>
-        <location line="+424"/>
+        <location line="+430"/>
         <source>Unable to register help file %1.</source>
         <translation>Nem sikerült regisztrálni a(z) %1 súgófájlt.</translation>
     </message>
@@ -1222,7 +1222,7 @@ Csak a parancsablak súgószövege lesz elérhető.</translation>
 <context>
     <name>octave::documentation_bookmarks</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/documentation-bookmarks.cc" line="+102"/>
+        <location filename="../src/documentation-bookmarks.cc" line="+102"/>
         <source>
 No documentation bookmarks loaded!</source>
         <translation>
@@ -1328,7 +1328,7 @@ nem érvényes XBEL-fájl 1.0-s verziója.</translation>
 <context>
     <name>octave::documentation_dock_widget</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/documentation-dock-widget.cc" line="+40"/>
+        <location filename="../src/documentation-dock-widget.cc" line="+40"/>
         <source>Documentation</source>
         <translation>Dokumentáció</translation>
     </message>
@@ -1341,7 +1341,7 @@ nem érvényes XBEL-fájl 1.0-s verziója.</translation>
 <context>
     <name>octave::dw_main_window</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/dw-main-window.cc" line="+53"/>
+        <location filename="../src/dw-main-window.cc" line="+53"/>
         <source>&amp;Close</source>
         <translation>&amp;Bezárás</translation>
     </message>
@@ -1367,9 +1367,42 @@ nem érvényes XBEL-fájl 1.0-s verziója.</translation>
     </message>
 </context>
 <context>
+    <name>octave::editor_files_browser</name>
+    <message>
+        <location filename="../src/files-dock-widget.cc" line="+1220"/>
+        <source>Open Editor Files</source>
+        <translation>Szerkesztőfájlok megnyitása</translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Click to focus file in editor</source>
+        <translation>Kattintson a fájl fókuszba helyezéséhez a szerkesztőben</translation>
+    </message>
+    <message>
+        <location line="+92"/>
+        <source>&amp;Close</source>
+        <translation>&amp;Bezárás</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Close &amp;All</source>
+        <translation>Az összes be&amp;zárása</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Run</source>
+        <translation>Futtatás</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Set Current &amp;Directory</source>
+        <translation>Jelenlegi &amp;könyvtár beállítása</translation>
+    </message>
+</context>
+<context>
     <name>octave::external_editor_interface</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/external-editor-interface.cc" line="+68"/>
+        <location filename="../src/external-editor-interface.cc" line="+68"/>
         <location line="+50"/>
         <source>Octave Editor</source>
         <translation>Oktáv-szerkesztő</translation>
@@ -1392,7 +1425,7 @@ Szeretné megnyitni a beállításokat?</translation>
 <context>
     <name>octave::file_editor</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/m-editor/file-editor.cc" line="+194"/>
+        <location filename="../src/m-editor/file-editor.cc" line="+203"/>
         <source>Continue</source>
         <translation>Folytatás</translation>
     </message>
@@ -1402,16 +1435,16 @@ Szeretné megnyitni a beállításokat?</translation>
         <translation>Fájl mentése és futtatása</translation>
     </message>
     <message>
-        <location line="+1002"/>
+        <location line="+1018"/>
         <location line="+29"/>
-        <location line="+565"/>
+        <location line="+566"/>
         <location line="+18"/>
         <location line="+25"/>
         <source>Octave Editor</source>
         <translation>Oktáv-szerkesztő</translation>
     </message>
     <message>
-        <location line="-636"/>
+        <location line="-637"/>
         <source>File not saved! A file with the selected name
 %1
 is already open in the editor.</source>
@@ -1425,7 +1458,7 @@ már meg van nyitva a szerkesztőben.</translation>
         <translation>A hozzátartozó fájlszerkesztő lap eltűnt.</translation>
     </message>
     <message>
-        <location line="+565"/>
+        <location line="+566"/>
         <source>Could not open file
 %1
 for reading: %2.</source>
@@ -1855,7 +1888,7 @@ for writing: %2.</source>
 <context>
     <name>octave::file_editor_tab</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/m-editor/file-editor-tab.cc" line="+161"/>
+        <location filename="../src/m-editor/file-editor-tab.cc" line="+162"/>
         <source>line:</source>
         <translation>sor:</translation>
     </message>
@@ -1885,22 +1918,22 @@ for writing: %2.</source>
         <translation>HIBA: </translation>
     </message>
     <message>
-        <location line="+77"/>
+        <location line="+87"/>
         <location line="+1260"/>
         <location line="+152"/>
         <location line="+20"/>
-        <location line="+447"/>
-        <location line="+111"/>
+        <location line="+444"/>
+        <location line="+110"/>
         <location line="+103"/>
         <location line="+38"/>
         <location line="+60"/>
-        <location line="+57"/>
+        <location line="+59"/>
         <location line="+36"/>
         <source>Octave Editor</source>
         <translation>Oktáv-szerkesztő</translation>
     </message>
     <message>
-        <location line="-2283"/>
+        <location line="-2281"/>
         <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
         <translation>Nem lehet töréspontot hozzáadni a módosított vagy névtelen fájlhoz.
@@ -2020,14 +2053,14 @@ Quit debugging and save?</source>
 Kilép a hibakeresésből és menti?</translation>
     </message>
     <message>
-        <location line="+214"/>
+        <location line="+211"/>
         <source>Could not open file %1 for writing:
 %2.</source>
         <translation>Nem sikerült megnyitni a(z) %1 fájlt írásra:
 %2.</translation>
     </message>
     <message>
-        <location line="+111"/>
+        <location line="+110"/>
         <source>The changes could not be saved to the file
 %1</source>
         <translation>A módosításokat nem sikerült elmenteni a fájlba
@@ -2082,12 +2115,8 @@ Használata adatvesztéshez vezet!
 Kérjük, válasszon másikat!</translation>
     </message>
     <message>
-        <location line="+57"/>
-        <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
-        <translation>Úgy tűnik, hogy a(z) „%1” fájlt egy másik alkalmazás módosította. Szeretné újratölteni?</translation>
-    </message>
-    <message>
-        <location line="+29"/>
+        <location line="+54"/>
+        <location line="+34"/>
         <source>
 
 Warning: The contents in the editor is modified!</source>
@@ -2096,7 +2125,12 @@ Warning: The contents in the editor is modified!</source>
 Figyelmeztetés: A szerkesztő tartalma módosult!</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="-29"/>
+        <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?%2</source>
+        <translation>Úgy tűnik, hogy a(z) &apos;%1&apos; fájlt egy másik alkalmazás módosította. Szeretné újratölteni?%2</translation>
+    </message>
+    <message>
+        <location line="+36"/>
         <source>It seems that the file
 %1
 has been deleted or renamed. Do you want to save it now?%2</source>
@@ -2106,24 +2140,9 @@ törölve vagy átnevezve. Szeretné most menteni? %2</translation>
     </message>
 </context>
 <context>
-    <name>octave::files_dock_widget</name>
+    <name>octave::file_system_browser</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/files-dock-widget.cc" line="-4"/>
-        <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
-        <translation>Nem sikerült átnevezni a(z) „%1” fájlt a következőre: „%2”.</translation>
-    </message>
-    <message>
-        <location line="+101"/>
-        <source>File Browser</source>
-        <translation>Fájltallózó</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Browse your files</source>
-        <translation>Fájlok tallózása</translation>
-    </message>
-    <message>
-        <location line="+5"/>
+        <location filename="../src/files-dock-widget.cc" line="-1171"/>
         <source>File size</source>
         <translation>Fájlméret</translation>
     </message>
@@ -2148,9 +2167,9 @@ törölve vagy átnevezve. Szeretné most menteni? %2</translation>
         <translation>Változó sorszínek</translation>
     </message>
     <message>
-        <location line="+26"/>
+        <location line="+22"/>
         <source>Enter the path or filename</source>
-        <translation>Elérési ut vagy fájlneve megadása</translation>
+        <translation>Elérési út vagy fájlnév megadása</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -2194,24 +2213,24 @@ törölve vagy átnevezve. Szeretné most menteni? %2</translation>
     </message>
     <message>
         <location line="+4"/>
-        <location line="+438"/>
+        <location line="+433"/>
         <source>Find Files...</source>
-        <translation>Fájlok keresése…</translation>
+        <translation>Fájlok találása…</translation>
     </message>
     <message>
-        <location line="-434"/>
-        <location line="+446"/>
+        <location line="-429"/>
+        <location line="+441"/>
         <source>New File...</source>
         <translation>Új fájl…</translation>
     </message>
     <message>
-        <location line="-443"/>
-        <location line="+445"/>
+        <location line="-438"/>
+        <location line="+440"/>
         <source>New Directory...</source>
         <translation>Új könyvtár…</translation>
     </message>
     <message>
-        <location line="-390"/>
+        <location line="-385"/>
         <source>Double-click to open file/folder, right click for alternatives</source>
         <translation>Kattintson duplán a fájl/mappa megnyitásához, jobb gombbal kattintson az egyéb lehetőségekért</translation>
     </message>
@@ -2221,7 +2240,7 @@ törölve vagy átnevezve. Szeretné most menteni? %2</translation>
         <translation>Átnevezés…</translation>
     </message>
     <message>
-        <location line="+317"/>
+        <location line="+312"/>
         <source>Open</source>
         <translation>Megnyitás</translation>
     </message>
@@ -2258,7 +2277,7 @@ törölve vagy átnevezve. Szeretné most menteni? %2</translation>
     <message>
         <location line="+3"/>
         <source>Add to Path</source>
-        <translation>Elérési úthoz hozzáadása</translation>
+        <translation>Hozzáadás az elérési úthoz</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2293,7 +2312,7 @@ törölve vagy átnevezve. Szeretné most menteni? %2</translation>
         <location line="-27"/>
         <source>Are you sure you want to delete all %1 selected files?
 </source>
-        <translation>Biztosan törli az összes %1 kijelölt fájlt?
+        <translation>Biztosan törölni szeretné az összes (%1) kijelölt fájlt?
 </translation>
     </message>
     <message>
@@ -2343,7 +2362,19 @@ törölve vagy átnevezve. Szeretné most menteni? %2</translation>
         <translation>Új fájl.txt</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+8"/>
+        <source>Create File error</source>
+        <translation>Fájl létrehozása hiba</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Could not create file
+&quot;%1&quot;.</source>
+        <translation>Nem sikerült létrehozni a fájlt
+&quot;%1&quot;.</translation>
+    </message>
+    <message>
+        <location line="+13"/>
         <source>Create Directory</source>
         <translation>Könyvtár létrehozása</translation>
     </message>
@@ -2363,9 +2394,37 @@ törölve vagy átnevezve. Szeretné most menteni? %2</translation>
     </message>
 </context>
 <context>
+    <name>octave::files_dock_widget</name>
+    <message>
+        <location line="-1148"/>
+        <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
+        <translation>Nem sikerült átnevezni a(z) „%1” fájlt a következőre: „%2”.</translation>
+    </message>
+    <message>
+        <location line="+107"/>
+        <source>File Browser</source>
+        <translation>Fájltallózó</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Browse your files</source>
+        <translation>Fájlok tallózása</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>File System</source>
+        <translation>Fájlrendszer</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Editor Files</source>
+        <translation>Szerkesztőfájlok</translation>
+    </message>
+</context>
+<context>
     <name>octave::final_page</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/welcome-wizard.cc" line="+318"/>
+        <location filename="../src/welcome-wizard.cc" line="+319"/>
         <source>Enjoy!</source>
         <translation>Készen áll a használatra!</translation>
     </message>
@@ -2422,7 +2481,7 @@ Ezekről további információkat találhat a &lt;a href=&quot;https://octave.or
 <context>
     <name>octave::find_dialog</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/m-editor/find-dialog.cc" line="+93"/>
+        <location filename="../src/m-editor/find-dialog.cc" line="+93"/>
         <source>Editor: Find and Replace</source>
         <translation>Szerkesztő: Keresés és csere</translation>
     </message>
@@ -2540,7 +2599,7 @@ Ezekről további információkat találhat a &lt;a href=&quot;https://octave.or
 <context>
     <name>octave::find_files_dialog</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/find-files-dialog.cc" line="+61"/>
+        <location filename="../src/find-files-dialog.cc" line="+61"/>
         <source>Find Files</source>
         <translation>Fájlok keresése</translation>
     </message>
@@ -2699,7 +2758,7 @@ Többféle minta lehet
 <context>
     <name>octave::find_files_model</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/find-files-model.cc" line="+96"/>
+        <location filename="../src/find-files-model.cc" line="+96"/>
         <source>Filename</source>
         <translation>Fájlnév</translation>
     </message>
@@ -2722,7 +2781,7 @@ Többféle minta lehet
 <context>
     <name>octave::find_widget</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/find-widget.cc" line="+48"/>
+        <location filename="../src/find-widget.cc" line="+48"/>
         <source>Find:</source>
         <translation>Keresés:</translation>
     </message>
@@ -2752,7 +2811,7 @@ Többféle minta lehet
 <context>
     <name>octave::gui_settings</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/gui-settings.cc" line="+824"/>
+        <location filename="../src/gui-settings.cc" line="+827"/>
         <source>Error %1 creating the settings file
 %2
 Make sure you have read and write permissions to
@@ -2775,7 +2834,7 @@ Az Oktáv grafikus felhasználói felületét most be kell zárni.</translation>
 <context>
     <name>octave::history_dock_widget</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/history-dock-widget.cc" line="+54"/>
+        <location filename="../src/history-dock-widget.cc" line="+54"/>
         <source>Browse and search the command history.</source>
         <translation>Parancselőzmények tallózása és keresése.</translation>
     </message>
@@ -2828,7 +2887,7 @@ Az Oktáv grafikus felhasználói felületét most be kell zárni.</translation>
 <context>
     <name>octave::initial_page</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/welcome-wizard.cc" line="-190"/>
+        <location filename="../src/welcome-wizard.cc" line="-190"/>
         <source>Welcome to Octave!</source>
         <translation>Isten hozott az Oktávnál!</translation>
     </message>
@@ -2859,7 +2918,7 @@ Kattintson a „Tovább” gombra a beállítási fájl létrehozásához és az
 <context>
     <name>octave::label_dock_widget</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/octave-dock-widget.cc" line="+82"/>
+        <location filename="../src/octave-dock-widget.cc" line="+82"/>
         <source>Undock Widget</source>
         <translation>Vezérlő rögzítésének feloldása</translation>
     </message>
@@ -2872,12 +2931,12 @@ Kattintson a „Tovább” gombra a beállítási fájl létrehozásához és az
 <context>
     <name>octave::main_window</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/main-window.cc" line="+155"/>
+        <location filename="../src/main-window.cc" line="+169"/>
         <source>Profiler</source>
         <translation>Profilkészítő</translation>
     </message>
     <message>
-        <location line="+361"/>
+        <location line="+381"/>
         <source>Octave</source>
         <translation>Oktáv</translation>
     </message>
@@ -2898,23 +2957,23 @@ Kattintson a „Tovább” gombra a beállítási fájl létrehozásához és az
     </message>
     <message>
         <location line="+214"/>
-        <location line="+1747"/>
+        <location line="+1704"/>
         <source>About Octave</source>
         <translation>Az Oktáv névjegye</translation>
     </message>
     <message>
-        <location line="-1560"/>
-        <location line="+1635"/>
+        <location line="-1570"/>
+        <location line="+1645"/>
         <source>Browse directories</source>
         <translation>Könyvtárak tallózása</translation>
     </message>
     <message>
-        <location line="-1330"/>
+        <location line="-1340"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Oktáv-fájlok (*.m);;Minden fájl (*)</translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+48"/>
         <source>New Function</source>
         <translation>Új függvény</translation>
     </message>
@@ -2943,7 +3002,7 @@ függvény, és nem szerkeszthető.</translation>
         <translation>Oktáv-szerkesztő</translation>
     </message>
     <message>
-        <location line="+736"/>
+        <location line="+735"/>
         <source>&amp;File</source>
         <translation>&amp;Fájl</translation>
     </message>
@@ -3267,7 +3326,7 @@ függvény, és nem szerkeszthető.</translation>
 <context>
     <name>octave::news_reader</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/news-reader.cc" line="+106"/>
+        <location filename="../src/news-reader.cc" line="+106"/>
         <source>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;
@@ -3326,12 +3385,12 @@ vagy engedélyezze a webkapcsolatokat a hírekhez az Oktáv hálózati beállít
 <context>
     <name>octave::octave_dock_widget</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/octave-dock-widget.cc" line="+144"/>
+        <location filename="../src/octave-dock-widget.cc" line="+144"/>
         <source>Hide Widget</source>
         <translation>Vezérlő elrejtése</translation>
     </message>
     <message>
-        <location line="+81"/>
+        <location line="+83"/>
         <source>Dock Widget</source>
         <translation>Vezérlő rögzítése</translation>
     </message>
@@ -3344,7 +3403,7 @@ vagy engedélyezze a webkapcsolatokat a hírekhez az Oktáv hálózati beállít
 <context>
     <name>octave::octave_qscintilla</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/m-editor/octave-qscintilla.cc" line="+302"/>
+        <location filename="../src/m-editor/octave-qscintilla.cc" line="+302"/>
         <source>Help on</source>
         <translation>Segítség keresése a következőhöz:</translation>
     </message>
@@ -3364,7 +3423,7 @@ vagy engedélyezze a webkapcsolatokat a hírekhez az Oktáv hálózati beállít
         <translation>dbstop ha…</translation>
     </message>
     <message>
-        <location line="+544"/>
+        <location line="+545"/>
         <source>Octave Editor</source>
         <translation>Oktáv-szerkesztő</translation>
     </message>
@@ -3389,7 +3448,7 @@ A „Kijelölés futtatása” ideiglenes fájlokat igényel.</translation>
 <context>
     <name>octave::octave_txt_lexer</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/m-editor/octave-txt-lexer.cc" line="+41"/>
+        <location filename="../src/m-editor/octave-txt-lexer.cc" line="+41"/>
         <source>Default</source>
         <translation>Alapértelmezett</translation>
     </message>
@@ -3397,7 +3456,7 @@ A „Kijelölés futtatása” ideiglenes fájlokat igényel.</translation>
 <context>
     <name>octave::qt_interpreter_events</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/qt-interpreter-events.cc" line="+357"/>
+        <location filename="../src/qt-interpreter-events.cc" line="+357"/>
         <location line="+5"/>
         <location line="+2"/>
         <source>Create</source>
@@ -3452,7 +3511,7 @@ nem létezik. Szeretné létrehozni?</translation>
 <context>
     <name>octave::release_notes</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/release-notes.cc" line="+84"/>
+        <location filename="../src/release-notes.cc" line="+85"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation>A kiadási megjegyzések fájlja „%1” üres.</translation>
     </message>
@@ -3470,7 +3529,7 @@ nem létezik. Szeretné létrehozni?</translation>
 <context>
     <name>octave::set_path_dialog</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/set-path-dialog.cc" line="+64"/>
+        <location filename="../src/set-path-dialog.cc" line="+64"/>
         <source>Set Path</source>
         <translation>Elérési útvonal beállítása</translation>
     </message>
@@ -3553,7 +3612,7 @@ nem létezik. Szeretné létrehozni?</translation>
 <context>
     <name>octave::settings_dialog</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/gui-preferences-ed.h" line="+161"/>
+        <location filename="../src/gui-preferences-ed.h" line="+161"/>
         <source>Top</source>
         <translation>Fel</translation>
     </message>
@@ -3573,14 +3632,14 @@ nem létezik. Szeretné létrehozni?</translation>
         <translation>Jobbra</translation>
     </message>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/gui-preferences-cs.h" line="+61"/>
-        <location filename="__octave_temp_gui_sources__/src/gui-preferences-ve.h" line="+56"/>
+        <location filename="../src/gui-preferences-cs.h" line="+61"/>
+        <location filename="../src/gui-preferences-ve.h" line="+56"/>
         <source>Foreground</source>
         <translation>Előtér</translation>
     </message>
     <message>
         <location line="+1"/>
-        <location filename="__octave_temp_gui_sources__/src/gui-preferences-ve.h" line="+1"/>
+        <location filename="../src/gui-preferences-ve.h" line="+1"/>
         <source>Background</source>
         <translation>Háttér</translation>
     </message>
@@ -3595,7 +3654,7 @@ nem létezik. Szeretné létrehozni?</translation>
         <translation>Jelölő</translation>
     </message>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/gui-preferences-ve.h" line="+1"/>
+        <location filename="../src/gui-preferences-ve.h" line="+1"/>
         <source>Selected Foreground</source>
         <translation>Kijelölt előtér</translation>
     </message>
@@ -3610,7 +3669,7 @@ nem létezik. Szeretné létrehozni?</translation>
         <translation>Változó háttér</translation>
     </message>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/gui-preferences-ws.h" line="+70"/>
+        <location filename="../src/gui-preferences-ws.h" line="+70"/>
         <source>argument</source>
         <translation>Argumentum</translation>
     </message>
@@ -3625,12 +3684,12 @@ nem létezik. Szeretné létrehozni?</translation>
         <translation>tartós</translation>
     </message>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/gui-preferences-global.h" line="+193"/>
+        <location filename="../src/gui-preferences-global.h" line="+192"/>
         <source>Environment Variables</source>
         <translation>Környezeti változók</translation>
     </message>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/gui-preferences-sd.h" line="+41"/>
+        <location filename="../src/gui-preferences-sd.h" line="+41"/>
         <source>Second color mode (light/dark)</source>
         <translation>Második színmód (világos/sötét)</translation>
     </message>
@@ -3668,14 +3727,14 @@ a jelenleg kijelölt módtól függ.</translation>
         <translation>Alapértelmezett stílusok új&amp;ratöltése</translation>
     </message>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/settings-dialog.cc" line="-972"/>
+        <location filename="../src/settings-dialog.cc" line="-976"/>
         <source>Loading current preferences ... </source>
         <translation>Jelenlegi beállítások betöltése … </translation>
     </message>
     <message>
         <location line="+44"/>
         <location line="+6"/>
-        <location line="+1088"/>
+        <location line="+1092"/>
         <source>System setting</source>
         <translation>Rendszerbeállítás</translation>
     </message>
@@ -3717,7 +3776,7 @@ a jelenleg kijelölt módtól függ.</translation>
     <message>
         <location line="+89"/>
         <location line="+22"/>
-        <location line="+1120"/>
+        <location line="+1124"/>
         <source>Failed to open %1 as Octave shortcut file</source>
         <translation>Nem sikerült megnyitni a(z) „%1” fájlt Oktáv gyorsítóparancsfájlként</translation>
     </message>
@@ -3773,7 +3832,7 @@ Menteni szeretné a jelenlegi gyorsítóparancs-készletet, vagy törölni szere
 <context>
     <name>octave::setup_community_news</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/welcome-wizard.cc" line="+45"/>
+        <location filename="../src/welcome-wizard.cc" line="+45"/>
         <source>Community News</source>
         <translation>Közösségi hírek</translation>
     </message>
@@ -3822,7 +3881,7 @@ Naponta legfeljebb egyszer jelentkezik be, és a hírek csak akkor jelennek meg,
 <context>
     <name>octave::shortcut_edit_dialog</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/shortcuts-tree-widget.cc" line="+172"/>
+        <location filename="../src/shortcuts-tree-widget.cc" line="+172"/>
         <source>Enter New Shortcut</source>
         <translation>Új gyorsítóparancs megadása</translation>
     </message>
@@ -3982,9 +4041,22 @@ Szeretné használni a gyorsítóparancsot, és eltávolítani az előző művel
     </message>
 </context>
 <context>
+    <name>octave::splash_screen</name>
+    <message>
+        <location filename="../src/welcome-wizard.cc" line="+135"/>
+        <source>Welcome to GNU Octave</source>
+        <translation>Isten hozott a GNU Oktávnál</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Welcome to Octave!</source>
+        <translation>Isten hozott az Oktávnál!</translation>
+    </message>
+</context>
+<context>
     <name>octave::terminal_dock_widget</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/terminal-dock-widget.cc" line="+106"/>
+        <location filename="../src/terminal-dock-widget.cc" line="+108"/>
         <source>Command Window</source>
         <translation>Parancsablak</translation>
     </message>
@@ -3992,7 +4064,7 @@ Szeretné használni a gyorsítóparancsot, és eltávolítani az előző művel
 <context>
     <name>octave::variable_dock_widget</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/variable-editor.cc" line="+177"/>
+        <location filename="../src/variable-editor.cc" line="+177"/>
         <source>Dock Widget</source>
         <translation>Vezérlő rögzítése</translation>
     </message>
@@ -4183,7 +4255,7 @@ Szeretné használni a gyorsítóparancsot, és eltávolítani az előző művel
 <context>
     <name>octave::welcome_wizard</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/welcome-wizard.cc" line="-196"/>
+        <location filename="../src/welcome-wizard.cc" line="-335"/>
         <source>Welcome to GNU Octave</source>
         <translation>Isten hozott a GNU Oktávnál!</translation>
     </message>
@@ -4191,7 +4263,7 @@ Szeretné használni a gyorsítóparancsot, és eltávolítani az előző művel
 <context>
     <name>octave::workspace_model</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/workspace-model.cc" line="+49"/>
+        <location filename="../src/workspace-model.cc" line="+49"/>
         <source>Name</source>
         <translation>Név</translation>
     </message>
@@ -4230,7 +4302,7 @@ Szeretné használni a gyorsítóparancsot, és eltávolítani az előző művel
 <context>
     <name>octave::workspace_view</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/gui-preferences-ws.h" line="-21"/>
+        <location filename="../src/gui-preferences-ws.h" line="-21"/>
         <source>Class</source>
         <translation>Osztály</translation>
     </message>
@@ -4250,7 +4322,7 @@ Szeretné használni a gyorsítóparancsot, és eltávolítani az előző művel
         <translation>Tulajdonság</translation>
     </message>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/workspace-view.cc" line="+60"/>
+        <location filename="../src/workspace-view.cc" line="+60"/>
         <source>Workspace</source>
         <translation>Munkaterület</translation>
     </message>
@@ -4270,7 +4342,7 @@ Szeretné használni a gyorsítóparancsot, és eltávolítani az előző művel
         <translation>Szűrő</translation>
     </message>
     <message>
-        <location line="+137"/>
+        <location line="+138"/>
         <source>View the variables in the active workspace.&lt;br&gt;</source>
         <translation>Változók megtekintése a jelenlegi munkaterületen.&lt;br&gt;</translation>
     </message>
@@ -4318,7 +4390,7 @@ Szeretné használni a gyorsítóparancsot, és eltávolítani az előző művel
 <context>
     <name>self_listener</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/self-listener.cc" line="+82"/>
+        <location filename="../src/self-listener.cc" line="+82"/>
         <source>Can not open redirected stream with fd = %1.</source>
         <translation>Nem sikerült megnyitni az fd = %1 adatfolyam átirányítását.</translation>
     </message>
@@ -4350,7 +4422,8 @@ to pipe with fd = %2: %3</source>
     </message>
     <message>
         <location line="+17"/>
-        <source>Error reading from redirected strem fd = %1.</source>
+        <source>Error reading from redirected stream fd = %1.</source>
+        <oldsource>Error reading from redirected strem fd = %1.</oldsource>
         <translation>Hiba történt az átirányított fd = %1 adatfolyam olvasása közben.</translation>
     </message>
     <message>
@@ -4381,14 +4454,14 @@ Hiba: </translation>
 <context>
     <name>settings_dialog</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/settings-dialog.ui" line="+45"/>
-        <location line="+834"/>
-        <location line="+1909"/>
+        <location filename="../src/settings-dialog.ui" line="+45"/>
+        <location line="+841"/>
+        <location line="+1916"/>
         <source>General</source>
         <translation>Általános</translation>
     </message>
     <message>
-        <location line="-2390"/>
+        <location line="-2404"/>
         <source>Octave logo only</source>
         <translation>Kizárólag oktáv embléma</translation>
     </message>
@@ -4419,11 +4492,12 @@ Hiba: </translation>
     </message>
     <message>
         <location line="+32"/>
-        <source>3D</source>
-        <translation>3D</translation>
+        <source>3-D</source>
+        <oldsource>3D</oldsource>
+        <translation>Térhatás</translation>
     </message>
     <message>
-        <location line="+558"/>
+        <location line="+565"/>
         <source>Editor</source>
         <translation>Szerkesztő</translation>
     </message>
@@ -4439,7 +4513,7 @@ Hiba: </translation>
         <translation>Kódrészletek bezárásai engedélyezése</translation>
     </message>
     <message>
-        <location line="+1059"/>
+        <location line="+1116"/>
         <source>Windows (CRLF)</source>
         <translation>Windows (CR LF karakterpár)</translation>
     </message>
@@ -4454,12 +4528,12 @@ Hiba: </translation>
         <translation>Unix (LF karakter)</translation>
     </message>
     <message>
-        <location line="-1034"/>
+        <location line="-1091"/>
         <source>Show horizontal scroll bar</source>
         <translation>Vízszintes görgetősáv megjelenítése</translation>
     </message>
     <message>
-        <location line="-509"/>
+        <location line="-516"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If set, the focus of the widgets that are docked to the main window follows the mouse cursor. This is intended for having the same behavior within the main window when &amp;quot;focus follows mouse&amp;quot; is used for the desktop environment.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ha be van állítva, a főablakhoz rögzített vezérlők fókusza az egérkurzort követi. Ennek célja ugyanaz a viselkedés a főablakon belül, amikor az asztali környezetben a „Fókusz követi az egeret” funkciót használjuk.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -4469,7 +4543,7 @@ Hiba: </translation>
         <translation>Fókusz követi az egeret a vezérlők rögzítve a főablakba</translation>
     </message>
     <message>
-        <location line="+487"/>
+        <location line="+494"/>
         <source>Show tool bar</source>
         <translation>Eszköztár megjelenítése</translation>
     </message>
@@ -4579,27 +4653,27 @@ Hiba: </translation>
         <translation>Befejezési lista automatikus megjelenítése</translation>
     </message>
     <message>
-        <location line="+76"/>
+        <location line="+159"/>
         <source>Reload externally changed files without prompt</source>
         <translation>A külsőleg módosított fájlok újratöltése felszólítás nélkül</translation>
     </message>
     <message>
-        <location line="-841"/>
+        <location line="-924"/>
         <source>Use custom file editor</source>
         <translation>Egyéni fájlszerkesztő használata</translation>
     </message>
     <message>
-        <location line="+934"/>
+        <location line="+843"/>
         <source>Text encoding used for loading and saving</source>
         <translation>Betöltéshez és mentéshez használt szövegkódolás</translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+166"/>
         <source>Editor Styles</source>
         <translation>Szerkesztő stílusai</translation>
     </message>
     <message>
-        <location line="-1383"/>
+        <location line="-1390"/>
         <source>(Changing buffer size clears history)</source>
         <translation>(A puffer méretének megváltoztatása törli az előzményeket)</translation>
     </message>
@@ -4610,17 +4684,17 @@ Hiba: </translation>
     </message>
     <message>
         <location line="-123"/>
-        <location line="+1863"/>
+        <location line="+1870"/>
         <source>Font</source>
         <translation>Betűkészlet</translation>
     </message>
     <message>
-        <location line="-1573"/>
+        <location line="-1580"/>
         <source>Show line numbers</source>
         <translation>Sorok számának megjelenítése</translation>
     </message>
     <message>
-        <location line="-859"/>
+        <location line="-866"/>
         <source>Interface</source>
         <translation>Felület</translation>
     </message>
@@ -4636,12 +4710,12 @@ Hiba: </translation>
     </message>
     <message>
         <location line="+52"/>
-        <location line="+439"/>
+        <location line="+446"/>
         <source>Show status bar</source>
         <translation>Állapotsor megjelenítése</translation>
     </message>
     <message>
-        <location line="-677"/>
+        <location line="-684"/>
         <source>Text inactive</source>
         <translation>Tétlen szöveg</translation>
     </message>
@@ -4657,18 +4731,18 @@ Hiba: </translation>
         <translation>Tétlen háttér</translation>
     </message>
     <message>
-        <location line="+218"/>
+        <location line="+225"/>
         <source>Octave Startup</source>
         <translation>Oktáv indítás</translation>
     </message>
     <message>
         <location line="+46"/>
-        <location line="+1691"/>
+        <location line="+1698"/>
         <source>Browse</source>
         <translation>Tallózás</translation>
     </message>
     <message>
-        <location line="-1298"/>
+        <location line="-1305"/>
         <source>Show whitespace</source>
         <translation>Elválasztó karakterek megjelenítése</translation>
     </message>
@@ -4678,12 +4752,12 @@ Hiba: </translation>
         <translation>Ne jelenjen meg elválasztó karakterek használt behúzáshoz</translation>
     </message>
     <message>
-        <location line="+1085"/>
+        <location line="+1125"/>
         <source>Create nonexistent files without prompting</source>
         <translation>Hozzon létre nem létező fájlokat kérés nélkül</translation>
     </message>
     <message>
-        <location line="-857"/>
+        <location line="-897"/>
         <source>command line (%f=file, %l=line):</source>
         <translation>Parancssor (%f=fájl, %l=sor):</translation>
     </message>
@@ -4699,7 +4773,7 @@ Hiba: </translation>
     </message>
     <message>
         <location line="+52"/>
-        <location line="+1753"/>
+        <location line="+1760"/>
         <source>Font size</source>
         <translation>Betűméret</translation>
     </message>
@@ -4709,12 +4783,12 @@ Hiba: </translation>
         <translation>Fájltallózó</translation>
     </message>
     <message>
-        <location line="-2017"/>
+        <location line="-2031"/>
         <source>Normal</source>
         <translation>Normál</translation>
     </message>
     <message>
-        <location line="+352"/>
+        <location line="+359"/>
         <source>These preferences are applied after any .octaverc startup files.</source>
         <translation>Ezeket a beállításokat minden .octaverc indítási fájl után alkalmazza.</translation>
     </message>
@@ -4724,17 +4798,17 @@ Hiba: </translation>
         <translation>Sorvég (EOL) karakterek megjelenítése</translation>
     </message>
     <message>
-        <location line="+945"/>
+        <location line="+1002"/>
         <source>Default EOL mode</source>
         <translation>Alapértelmezett sorvég (EOL) üzemmód</translation>
     </message>
     <message>
-        <location line="-162"/>
+        <location line="-219"/>
         <source>Number of characters before list is shown: </source>
         <translation>Karakterek száma a lista megjelenítése előtt: </translation>
     </message>
     <message>
-        <location line="-1805"/>
+        <location line="-1812"/>
         <source>Preferences</source>
         <translation>Beállítások</translation>
     </message>
@@ -4779,7 +4853,12 @@ Hiba: </translation>
         <translation>Villogó jelölő</translation>
     </message>
     <message>
-        <location line="+57"/>
+        <location line="+37"/>
+        <source>Show splash screen at startup</source>
+        <translation>Indításkor kezdőkép megjelenítése</translation>
+    </message>
+    <message>
+        <location line="+27"/>
         <source>Initial working directory of Octave interpreter</source>
         <translation>Oktáv-tolmács kezdeti munkakönyvtára</translation>
     </message>
@@ -4919,27 +4998,32 @@ Hiba: </translation>
         <translation>Fájlkezelés</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+52"/>
         <source>Restore editor tabs from previous session on startup or when editor is shown again after closing</source>
         <translation>A szerkesztő lapok visszaállítása az előző munkamenetből indításkor, vagy amikor a szerkesztő újra megjelenik a bezárás után</translation>
     </message>
     <message>
-        <location line="+105"/>
+        <location line="+40"/>
         <source>Close all files when the editor widget is closed/hidden</source>
         <translation>Minden fájl bezárása, amikor a szerkesztővezérlő bezárásakor/elrejtésekor</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="-23"/>
         <source>Force newline at end when saving file</source>
         <translation>Újsor kényszerítése a végére a fájl mentésekor</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="-10"/>
         <source>Remove trailing spaces when saving file</source>
         <translation>A fájl mentésekor távolítsa el a záró szóközöket</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+108"/>
+        <source>Directory of open file dialog follows current editor file instead of current Octave directory </source>
+        <translation>A megnyitott fájl párbeszédablak könyvtára a jelenlegi szerkesztőfájlt követi a jelenlegi Oktáv könyvtár helyett </translation>
+    </message>
+    <message>
+        <location line="+36"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color, and background color (for the latter, the color magenta (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Betűkészlet, betűméret (eltérés az alapértelmezett mérettől), betűstílus kijelölése (&lt;b&gt;f&lt;/b&gt;élkövér, &lt;b&gt;d&lt;/b&gt;őlt, &lt;b&gt;a&lt;/b&gt;láhúzott), szövegszín, and háttérszín (utóbbi esetében a bíbor szín (255,0,255) az alapértelmezett háttérszín helyőrzője).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -5146,7 +5230,7 @@ ReadLine billentyűleütésekkel való zavar elkerülése érdekében.</translat
 <context>
     <name>shortcuts</name>
     <message>
-        <location filename="__octave_temp_gui_sources__/src/gui-preferences-sc.cc" line="+227"/>
+        <location filename="../src/gui-preferences-sc.cc" line="+227"/>
         <source>Undock/Dock Widget</source>
         <translation>Vezérlő rögzítése/rögzítésének feloldása</translation>
     </message>

@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2017-2025 The Octave Project Developers
+## Copyright (C) 2017-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -107,7 +107,7 @@ function [uniqstr, ismodified] = makeUniqueStrings (str, ex = {}, maxlength = In
   ismodified = false (size (uniqstr));
   if (chk_length)
     ## Truncate output strings
-    ismodified = (cellfun (@length, uniqstr) > maxlength);
+    ismodified = (cellfun ('length', uniqstr) > maxlength);
     uniqstr(ismodified) = cellindexmat (uniqstr(ismodified), 1:maxlength);
   endif
 

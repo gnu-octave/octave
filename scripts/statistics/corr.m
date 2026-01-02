@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1996-2025 The Octave Project Developers
+## Copyright (C) 1996-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -64,7 +64,7 @@ function r = corr (x, y = [])
   endif
 
   if (! (isnumeric (x) || islogical (x)))
-    error ("corr: X must be a numeric vector or matrix");
+    error ("corr: X must be a numeric or logical vector or matrix");
   endif
 
   ## No check for division by zero error, which happens only when
@@ -84,7 +84,7 @@ function r = corr (x, y = [])
     ##        input validation will need to be coded back into this function.
 
     if (! (isnumeric (y) || islogical (y)))
-      error ("corr: Y must be a numeric vector or matrix");
+      error ("corr: Y must be a numeric or logical vector or matrix");
     endif
 
     ## Check for equal number of rows before concatenating inputs for cov.
@@ -98,7 +98,7 @@ function r = corr (x, y = [])
     rowy = isrow (y);
 
     if ((! rowy && ndims (x) > 2) || (! rowx && ndims (y) > 2))
-      ## For compatibility 3D is permitted only if other input is row vector
+      ## For compatibility 3-D is permitted only if other input is row vector
       ## which results in NaNs.
         error (["corr: X and Y must be two dimensional unless the other ", ...
                 "input is a scalar or row vector"]);
@@ -180,7 +180,7 @@ endfunction
 %! y = [1 2 3]';
 %! assert (corr (x, y), [1; 1]);
 %! assert (corr (y, x), [1, 1]);
-%! assert (corr (x, [y, y]), [1 1; 1 1])
+%! assert (corr (x, [y, y]), [1 1; 1 1]);
 
 %!test <*64395>
 %! x = [1, 2, 3];
@@ -196,24 +196,22 @@ endfunction
 %! assert (corr (x, x), single (NaN (3)));
 %! assert (corr (x', x'), 1, single (eps));
 
-%!assert <*64555> (corr (1, rand (1, 10)), NaN (1, 10));
-%!assert <*64555> (corr (rand (1, 10), 1), NaN (10, 1));
-%!assert <*64555> (corr (rand (1, 10), rand (1, 10)), NaN (10, 10));
-%!assert <*64555> (corr (rand (1, 5), rand (1, 10)), NaN (5, 10));
-%!assert <*64555> (corr (5, rand (1, 10, 5)), NaN (1, 10));
-%!assert <*64555> (corr (rand (1, 5, 5), rand (1, 10)), NaN (5, 10));
-%!assert <*64555> (corr (rand (1, 5, 5, 99), rand (1, 10)), NaN (5, 10));
+%!assert <*64555> (corr (1, rand (1, 10)), NaN (1, 10))
+%!assert <*64555> (corr (rand (1, 10), 1), NaN (10, 1))
+%!assert <*64555> (corr (rand (1, 10), rand (1, 10)), NaN (10, 10))
+%!assert <*64555> (corr (rand (1, 5), rand (1, 10)), NaN (5, 10))
+%!assert <*64555> (corr (5, rand (1, 10, 5)), NaN (1, 10))
+%!assert <*64555> (corr (rand (1, 5, 5), rand (1, 10)), NaN (5, 10))
+%!assert <*64555> (corr (rand (1, 5, 5, 99), rand (1, 10)), NaN (5, 10))
 
 ## Test input validation
 %!error <Invalid call> corr ()
 %!error corr (1, 2, 3)
-%!error <X must be a> corr ("foo")
-%!error <X must be a> corr ({123})
-%!error <X must be a> corr (struct())
-%!error <Y must be a> corr (1, "foo")
-%!error <Y must be a> corr (1, {123})
-%!error <Y must be a> corr (1, struct())
-%!error <Y must be a> corr ([1; 2], ["A"; "B"])
+%!error <X must be a numeric or logical> corr ("foo")
+%!error <X must be a numeric or logical> corr ({123})
+%!error <Y must be a numeric or logical> corr (1, "foo")
+%!error <Y must be a numeric or logical> corr (1, {123})
+%!error <Y must be a numeric or logical> corr ([1; 2], ["A"; "B"])
 %!error <X and Y must have the same number of rows> corr (ones (2,2), ones (3,2))
 %!error <X and Y must have the same number of rows> corr ([1,2,3], [1,2,3]')
 %!error <X and Y must have the same number of rows> corr ([1,2,3]', [1,2,3])

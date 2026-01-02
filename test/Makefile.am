@@ -62,6 +62,7 @@ TEST_FILES += \
   single-index.tst \
   slice.tst \
   sparse-assign.tst \
+  sparse-broadcasting.tst \
   struct.tst \
   switch.tst \
   system.tst \
@@ -118,6 +119,7 @@ include bug-65037/module.mk
 include class-concat/module.mk
 include classdef/module.mk
 include classdef-debug/module.mk
+include classdef-load-save/module.mk
 include classdef-multiple-inheritance/module.mk
 include classes/module.mk
 include colon-op/module.mk

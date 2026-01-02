@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2008-2025 The Octave Project Developers
+// Copyright (C) 2008-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -27,8 +27,8 @@
 #  include "config.h"
 #endif
 
+#include "oct-error.h"
 #include "oct-mutex.h"
-#include "lo-error.h"
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 #  include <windows.h>

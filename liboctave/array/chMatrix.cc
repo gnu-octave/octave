@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1995-2025 The Octave Project Developers
+// Copyright (C) 1995-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -32,11 +32,11 @@
 #include <ostream>
 #include <string>
 
-#include "lo-error.h"
-#include "str-vec.h"
 #include "mx-base.h"
 #include "mx-inlines.cc"
 #include "mx-op-defs.h"
+#include "oct-error.h"
+#include "str-vec.h"
 
 // charMatrix class.
 

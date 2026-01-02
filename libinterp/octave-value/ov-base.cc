@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -32,7 +32,7 @@
 #include <ostream>
 
 #include "lo-ieee.h"
-#include "lo-mappers.h"
+#include "mappers.h"
 
 #include "defun.h"
 #include "errwarn.h"
@@ -108,7 +108,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value,
 #  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
 
-octave_base_value::octave_base_value () : m_count (1), count (m_count) { }
+octave_base_value::octave_base_value () : m_count (1) { }
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
 #  pragma GCC diagnostic pop
@@ -531,7 +531,7 @@ octave_base_value::print_info (std::ostream& os,
                                                                         \
     static constexpr double out_of_range_top                            \
       = static_cast<double> (std::numeric_limits<T>::max ()) + 1.0;     \
-    if (require_int && octave::math::x_nint (d) != d)                   \
+    if (require_int && octave::math::round (d) != d)                    \
       error_with_cfn ("conversion of %g to " #T " value failed", d);    \
     else if (d < std::numeric_limits<T>::min ())                        \
       retval = std::numeric_limits<T>::min ();                          \

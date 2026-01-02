@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2016-2025 The Octave Project Developers
+## Copyright (C) 2016-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -22,8 +22,6 @@
 ## <https://www.gnu.org/licenses/>.
 ##
 ########################################################################
-
-## Undocumented internal function.
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{isoval} =} __calc_isovalue_from_data__ (@var{data})
@@ -64,3 +62,6 @@ function isoval = __calc_isovalue_from_data__ (data)
   isoval = bin_centers(floor (numel (bin_centers) / 2));
 
 endfunction
+
+
+%!assert (__calc_isovalue_from_data__ (1:5), 3.02)

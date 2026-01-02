@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2012-2025 The Octave Project Developers
+## Copyright (C) 2012-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -44,7 +44,7 @@
 ## @var{m} = magic (5);
 ## cell2mat (nthargout ([1, 2], @@ind2sub, size (@var{m}),
 ##                      nthargout (2, @@max, @var{m}(:))))
-## @result{} 5   3
+## @xresult{} 5   3
 ## @end group
 ## @end example
 ##
@@ -57,7 +57,7 @@
 ## [~, idx] = max (@var{M}(:));
 ## [i, j] = ind2sub (size (@var{m}), idx);
 ## [i, j]
-## @result{} 5   3
+## @xresult{} 5   3
 ## @end group
 ## @end example
 ##

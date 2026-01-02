@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -40,8 +40,8 @@
 #include "Range.h"
 #include "cmd-edit.h"
 #include "dMatrix.h"
-#include "lo-mappers.h"
 #include "mach-info.h"
+#include "mappers.h"
 #include "oct-cmplx.h"
 #include "oct-string.h"
 #include "quit.h"
@@ -299,7 +299,7 @@ template <typename T>
 static inline T
 pr_max_internal (const MArray<T>& m)
 {
-  // We expect a 2-d array.
+  // We expect a 2-D array.
   panic_unless (m.ndims () == 2);
 
   octave_idx_type nr = m.rows ();
@@ -511,7 +511,7 @@ make_scalar_format (const T& val)
 
   bool inf_or_nan = (octave::math::isinf (val) || octave::math::isnan (val));
 
-  bool int_only = (! inf_or_nan && octave::math::x_nint (val) == val);
+  bool int_only = (! inf_or_nan && octave::math::is_integer (val));
 
   T val_abs = (val < 0 ? -val : val);
 
@@ -680,7 +680,7 @@ template <typename MT>
 static inline float_display_format
 make_matrix_format (const MT& m)
 {
-  // We expect a 2-d array.
+  // We expect a 2-D array.
   panic_unless (m.ndims () == 2);
 
   if (free_format)
@@ -901,8 +901,8 @@ make_complex_scalar_format (const std::complex<T>& c)
   bool i_inf_or_nan = (octave::math::isinf (ip) || octave::math::isnan (ip));
   bool inf_or_nan = r_inf_or_nan || i_inf_or_nan;
 
-  bool int_only = ((r_inf_or_nan || octave::math::x_nint (rp) == rp)
-                   && (i_inf_or_nan || octave::math::x_nint (ip) == ip));
+  bool int_only = ((r_inf_or_nan || octave::math::is_integer (rp))
+                   && (i_inf_or_nan || octave::math::is_integer (ip)));
 
   T r_abs = (rp < 0 ? -rp : rp);
   T i_abs = (ip < 0 ? -ip : ip);
@@ -2213,7 +2213,7 @@ octave_print_internal (std::ostream& os, const NDArray& nda,
       break;
 
     default:
-      print_nd_array <NDArray, double, Matrix> (os, nda, pr_as_read_syntax);
+      print_nd_array<NDArray, double, Matrix> (os, nda, pr_as_read_syntax);
       break;
     }
 }
@@ -2231,7 +2231,7 @@ octave_print_internal (std::ostream& os, const FloatNDArray& nda,
       break;
 
     default:
-      print_nd_array <FloatNDArray, float, FloatMatrix> (os, nda, pr_as_read_syntax);
+      print_nd_array<FloatNDArray, float, FloatMatrix> (os, nda, pr_as_read_syntax);
       break;
     }
 }
@@ -2417,7 +2417,7 @@ octave_print_internal (std::ostream& os, const ComplexNDArray& nda,
       break;
 
     default:
-      print_nd_array <ComplexNDArray, Complex, ComplexMatrix>
+      print_nd_array<ComplexNDArray, Complex, ComplexMatrix>
       (os, nda, pr_as_read_syntax);
       break;
     }
@@ -2436,7 +2436,7 @@ octave_print_internal (std::ostream& os, const FloatComplexNDArray& nda,
       break;
 
     default:
-      print_nd_array <FloatComplexNDArray, FloatComplex, FloatComplexMatrix>
+      print_nd_array<FloatComplexNDArray, FloatComplex, FloatComplexMatrix>
       (os, nda, pr_as_read_syntax);
       break;
     }
@@ -2693,8 +2693,8 @@ octave_print_internal (std::ostream& os, const charNDArray& nda,
       break;
 
     default:
-      print_nd_array <charNDArray, char, charMatrix> (os, nda,
-          pr_as_read_syntax);
+      print_nd_array<charNDArray, char, charMatrix> (os, nda,
+                                                     pr_as_read_syntax);
       break;
     }
 }
@@ -3486,7 +3486,7 @@ avoid the default output:
 @example
 @group
 myobj = myclass (@dots{})
-  @result{} myobj =
+  @xresult{} myobj =
 
   <class myclass>
 @end group

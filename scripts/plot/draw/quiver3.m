@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2007-2025 The Octave Project Developers
+## Copyright (C) 2007-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -85,22 +85,12 @@ function h = quiver3 (varargin)
     print_usage ();
   endif
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
-  endif
-  unwind_protect
-    [hax, htmp] = __quiver__ (hax, true, varargin{:});
+  [hax, htmp] = __quiver__ (hax, true, varargin{:});
 
-    if (! ishold ())
-      set (hax, "view", [-37.5, 30],
-                "xgrid", "on", "ygrid", "on", "zgrid", "on");
-    endif
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
+  if (! ishold (hax))
+    set (hax, "view", [-37.5, 30],
+              "xgrid", "on", "ygrid", "on", "zgrid", "on");
+  endif
 
   if (nargout > 0)
     h = htmp;
@@ -146,8 +136,8 @@ endfunction
 %!   childxdata = get (children, "xdata");
 %!   childydata = get (children, "ydata");
 %!   childzdata = get (children, "zdata");
-%!   stemchild = find (cellfun (@numel, childxdata) == 3);
-%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   stemchild = find (cellfun ('numel', childxdata) == 3);
+%!   arrowheadchild = find (cellfun ('numel', childxdata) == 4);
 %!   assert (childxdata{stemchild}(1), 1, eps);
 %!   assert (childxdata{stemchild}(2), 1 + 1*0.9, eps);
 %!   assert (isnan (childxdata{stemchild}(3)));
@@ -169,8 +159,8 @@ endfunction
 %!   childxdata = get (children, "xdata");
 %!   childydata = get (children, "ydata");
 %!   childzdata = get (children, "zdata");
-%!   stemchild = find (cellfun (@numel, childxdata) == 3);
-%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   stemchild = find (cellfun ('numel', childxdata) == 3);
+%!   arrowheadchild = find (cellfun ('numel', childxdata) == 4);
 %!   assert (childxdata{stemchild}(1), 1, eps);
 %!   assert (childxdata{stemchild}(2), 1 + 1*0.9, eps);
 %!   assert (isnan (childxdata{stemchild}(3)));
@@ -208,9 +198,9 @@ endfunction
 %!   childxdata = get (children, "xdata");
 %!   childydata = get (children, "ydata");
 %!   childzdata = get (children, "zdata");
-%!   basechild = find (cellfun (@numel, childxdata) == numpts);
-%!   stemchild = find (cellfun (@numel, childxdata) == numpts*3);
-%!   arrowheadchild = find (cellfun (@numel, childxdata) == numpts*4);
+%!   basechild = find (cellfun ('numel', childxdata) == numpts);
+%!   stemchild = find (cellfun ('numel', childxdata) == numpts*3);
+%!   arrowheadchild = find (cellfun ('numel', childxdata) == numpts*4);
 %!   ## Check all bases.
 %!   assert (childxdata{basechild}, [1, 1, 2, 2, 3, 3, 1, 1, 2, 2, 3, 3]);
 %!   assert (childydata{basechild}, [1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2]);
@@ -253,9 +243,9 @@ endfunction
 %!   childxdata = get (children, "xdata");
 %!   childydata = get (children, "ydata");
 %!   childzdata = get (children, "zdata");
-%!   basechild = find (cellfun (@numel, childxdata) == numpts);
-%!   stemchild = find (cellfun (@numel, childxdata) == numpts*3);
-%!   arrowheadchild = find (cellfun (@numel, childxdata) == numpts*4);
+%!   basechild = find (cellfun ('numel', childxdata) == numpts);
+%!   stemchild = find (cellfun ('numel', childxdata) == numpts*3);
+%!   arrowheadchild = find (cellfun ('numel', childxdata) == numpts*4);
 %!   ## Check all bases.
 %!   assert (childxdata{basechild}, [1, 1, 2, 2, 3, 3, 1, 1, 2, 2, 3, 3]);
 %!   assert (childydata{basechild}, [1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2]);
@@ -298,9 +288,9 @@ endfunction
 %!   childxdata = get (children, "xdata");
 %!   childydata = get (children, "ydata");
 %!   childzdata = get (children, "zdata");
-%!   basechild = find (cellfun (@numel, childxdata) == numpts);
-%!   stemchild = find (cellfun (@numel, childxdata) == numpts*3);
-%!   arrowheadchild = find (cellfun (@numel, childxdata) == numpts*4);
+%!   basechild = find (cellfun ('numel', childxdata) == numpts);
+%!   stemchild = find (cellfun ('numel', childxdata) == numpts*3);
+%!   arrowheadchild = find (cellfun ('numel', childxdata) == numpts*4);
 %!   ## Check all bases.
 %!   assert (childxdata{basechild}, [1, 1, 2, 2, 3, 3, 1, 1, 2, 2, 3, 3]);
 %!   assert (childydata{basechild}, [1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2]);

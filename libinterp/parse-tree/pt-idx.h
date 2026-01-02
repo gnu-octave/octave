@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -85,6 +85,8 @@ public:
 
   std::string type_tags () { return m_type; }
 
+  std::list<token> dot_tokens () const { return m_dot_tok; }
+
   std::list<string_vector> arg_names () { return m_arg_nm; }
 
   std::list<tree_expression *> dyn_fields () { return m_dyn_field; }
@@ -122,6 +124,12 @@ public:
 
 private:
 
+  tree_index_expression () = default;
+
+  octave_map make_arg_struct () const;
+
+  //--------
+
   // The LHS of this index expression.
   tree_expression *m_expr {nullptr};
 
@@ -146,10 +154,6 @@ private:
 
   // TRUE if this expression was parsed as a word list command.
   bool m_word_list_cmd {false};
-
-  tree_index_expression () = default;
-
-  octave_map make_arg_struct () const;
 };
 
 OCTAVE_END_NAMESPACE(octave)

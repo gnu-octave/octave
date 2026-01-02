@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1999-2025 The Octave Project Developers
+## Copyright (C) 1999-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -218,7 +218,7 @@ function eps_drawnow (opts, epsfile, gp_opts)
 
   [h, fontsize] = get_figure_text_objs (opts);
   unwind_protect
-    fontsize_2x = cellfun (@times, {2}, fontsize, "uniformoutput", false);
+    fontsize_2x = cellfun ('times', {2}, fontsize, "uniformoutput", false);
     set (h, {"fontsize"}, fontsize_2x);
     local_drawnow (["postscript eps " gp_opts], epsfile, opts);
   unwind_protect_cleanup

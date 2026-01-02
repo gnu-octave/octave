@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1993-2025 The Octave Project Developers
+## Copyright (C) 1993-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -33,7 +33,7 @@
 ## @example
 ## @group
 ## flipud ([1, 2; 3, 4])
-##      @result{}  3  4
+##      @xresult{}  3  4
 ##          1  2
 ## @end group
 ## @end example

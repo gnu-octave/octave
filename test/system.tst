@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2006-2025 The Octave Project Developers
+## Copyright (C) 2006-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -155,7 +155,7 @@
 
 %!test
 %! ## Test makes no sense on Windows systems
-%! if (isunix () || ismac ())
+%! if (isunix ())
 %!   orig_umask = umask (0);
 %!   nm = tempname ();
 %!   id = fopen (nm, "wb");
@@ -290,22 +290,22 @@
 %!error <... getppid> getppid (1)
 
 %!testif HAVE_GETEUID
-%! assert (geteuid () >= 0)
+%! assert (geteuid () >= 0);
 
 %!error <... geteuid> geteuid (1)
 
 %!testif HAVE_GETUID
-%! assert (getuid () >= 0)
+%! assert (getuid () >= 0);
 
 %!error <... getuid> getuid (1)
 
 %!testif HAVE_GETEGID
-%! assert (getegid () >= 0)
+%! assert (getegid () >= 0);
 
 %!error <... getegid> getegid (1)
 
 %!testif HAVE_GETGID
-%! assert (getgid () >= 0)
+%! assert (getgid () >= 0);
 
 %!error <... getgid> getgid (1)
 
@@ -350,8 +350,8 @@
 
 %!assert (ischar (pwd ()))
 
-%!testif HAVE_GETPWENT
-%! endpwent ();
+%!testif HAVE_GETPWENT, HAVE_SETPWENT, HAVE_ENDPWENT
+%! setpwent ();
 %! s = getpwent ();
 %! endpwent ();
 %! assert (isstruct (s)
@@ -365,9 +365,10 @@
 
 %!error <Invalid call to getpwent> getpwent (1)
 
-%!testif HAVE_GETPWUID
-%! endpwent ();
+%!testif HAVE_GETPWUID, HAVE_GETPWENT, HAVE_SETPWENT, HAVE_ENDPWENT
+%! setpwent ();
 %! x = getpwent ();
+%! setpwent ();
 %! y = getpwuid (x.uid);
 %! endpwent ();
 %! assert (strcmp (x.name, y.name) && x.uid == y.uid && x.gid == y.gid);
@@ -375,8 +376,8 @@
 %!error <Invalid call to getpwuid> getpwuid ()
 %!error <Invalid call to getpwuid> getpwuid (1, 2)
 
-%!testif HAVE_GETPWNAM
-%! endpwent ();
+%!testif HAVE_GETPWNAM, HAVE_SETPWENT, HAVE_GETPWENT
+%! setpwent ();
 %! x = getpwent ();
 %! y = getpwnam (x.name);
 %! endpwent ();
@@ -385,8 +386,8 @@
 %!error <Invalid call to getpwnam> getpwnam ()
 %!error <Invalid call to getpwnam> getpwnam ("foo", 1)
 
-%!testif HAVE_SETPWENT
-%! endpwent ();
+%!testif HAVE_SETPWENT, HAVE_GETPWENT, HAVE_ENDPWENT
+%! setpwent ();
 %! x = getpwent ();
 %! setpwent ();
 %! y = getpwent ();

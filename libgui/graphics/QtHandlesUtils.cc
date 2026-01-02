@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2011-2025 The Octave Project Developers
+// Copyright (C) 2011-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -373,7 +373,6 @@ namespace Utils
   {
     octave_scalar_map retval;
 
-    retval.setfield ("Key", KeyMap::qKeyToKeyString (event->key ()));
     retval.setfield ("Character", toStdString (event->text ()));
 
     std::list<std::string> modList;
@@ -395,6 +394,8 @@ namespace Utils
 #endif
 
     retval.setfield ("Modifier", Cell (modList));
+
+    retval.setfield ("Key", KeyMap::qKeyToKeyString (event->key ()));
 
     return retval;
   }

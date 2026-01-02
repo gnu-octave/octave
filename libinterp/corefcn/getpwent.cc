@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -104,7 +104,7 @@ If the user ID does not exist in the database, @code{getpwuid} returns 0.
 
   double dval = args(0).double_value ();
 
-  if (math::x_nint (dval) != dval)
+  if (math::round (dval) != dval)
     error ("getpwuid: UID must be an integer");
 
   uid_t uid = static_cast<uid_t> (dval);

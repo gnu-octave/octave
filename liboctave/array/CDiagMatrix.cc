@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1994-2025 The Octave Project Developers
+// Copyright (C) 1994-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -30,11 +30,11 @@
 #include <ostream>
 
 #include "Array-util.h"
-#include "lo-error.h"
 #include "lo-ieee.h"
 #include "mx-base.h"
 #include "mx-inlines.cc"
 #include "oct-cmplx.h"
+#include "oct-error.h"
 
 // Complex Diagonal Matrix class
 
@@ -417,7 +417,7 @@ operator * (const ComplexDiagMatrix& a, const DiagMatrix& b)
   ComplexDiagMatrix c (a_nr, b_nc);
 
   octave_idx_type len = c.length ();
-  octave_idx_type lenm = (len < a_nc ? len : a_nc);
+  octave_idx_type lenm = std::min (len, a_nc);
 
   for (octave_idx_type i = 0; i < lenm; i++)
     c.dgxelem (i) = a.dgelem (i) * b.dgelem (i);
@@ -444,7 +444,7 @@ operator * (const DiagMatrix& a, const ComplexDiagMatrix& b)
 
   ComplexDiagMatrix c (a_nr, b_nc);
 
-  octave_idx_type len = (a_nr < b_nc ? a_nr : b_nc);
+  octave_idx_type len = std::min (a_nr, b_nc);
 
   for (octave_idx_type i = 0; i < len; i++)
     {
@@ -474,7 +474,7 @@ operator * (const ComplexDiagMatrix& a, const ComplexDiagMatrix& b)
 
   ComplexDiagMatrix c (a_nr, b_nc);
 
-  octave_idx_type len = (a_nr < b_nc ? a_nr : b_nc);
+  octave_idx_type len = std::min (a_nr, b_nc);
 
   for (octave_idx_type i = 0; i < len; i++)
     {

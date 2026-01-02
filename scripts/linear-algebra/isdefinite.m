@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2003-2025 The Octave Project Developers
+## Copyright (C) 2003-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -40,8 +40,8 @@
 ##
 ## @example
 ## @group
-## isdefinite (@var{A}) @result{} 0
-## isdefinite (@var{A} + 5*@var{tol}, @var{tol}) @result{} 1
+## isdefinite (@var{A}) @xresult{} 0
+## isdefinite (@var{A} + 5*@var{tol}, @var{tol}) @xresult{} 1
 ## @end group
 ## @end example
 ## @seealso{issymmetric, ishermitian}

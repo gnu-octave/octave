@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2000-2025 The Octave Project Developers
+## Copyright (C) 2000-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -42,7 +42,7 @@
 ##       8, 3, 5;
 ##       9, 3, 6 ];
 ## sortrows (x, [-2, 3])
-##    @result{} 8  3  5
+##    @xresult{} 8  3  5
 ##       9  3  6
 ##       7  1  4
 ## @end group

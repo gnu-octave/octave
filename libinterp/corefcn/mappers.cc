@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -30,8 +30,8 @@
 #include <cctype>
 
 #include "lo-ieee.h"
-#include "lo-specfun.h"
-#include "lo-mappers.h"
+#include "mappers.h"
+#include "oct-specfun.h"
 
 #include "defun.h"
 #include "error.h"
@@ -57,7 +57,7 @@ For example:
 @example
 @group
 abs (3 + 4i)
-     @result{} 5
+     @xresult{} 5
 @end group
 @end example
 @seealso{arg}
@@ -135,9 +135,10 @@ Compute the inverse cosine in radians for each element of @var{x}.
 %! v = [0, pi, pi/2, pi/2];
 %! assert (real (acos (x)), v);
 
-%!testif ; __have_feature__ ("LLVM_LIBCXX")  <52627>
+%!testif HAVE_LLVM_LIBCXX  <52627>
 %! ## Same test code as above, but intended for test statistics with libc++.
 %! ## Their trig/hyperbolic functions have huge tolerances.
+%! ## LLVM libc++ returns 0 for x(2) and x(4).
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [0, pi, pi/2, pi/2];
 %! assert (real (acos (x)), v);
@@ -160,36 +161,39 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 }
 
 /*
-%!testif ; ! ismac ()
+%!testif ; ! __have_feature__ ("BSD_LIBC")
 %! x = [1, 0, -1, 0];
 %! v = [0, pi/2*i, pi*i, pi/2*i];
 %! assert (acosh (x), v, sqrt (eps));
 
-%!testif ; ismac ()   <52627>
-%! ## Same test code as above, but intended only for test statistics on Mac.
-%! ## Mac trig/hyperbolic functions have huge tolerances.
+%!testif HAVE_BSD_LIBC   <52627>
+%! ## Same test code as above, but intended only for test statistics with BSD
+%! ## libc.  The trig/hyperbolic functions in that C library used to have huge
+%! ## tolerances.
 %! x = [1, 0, -1, 0];
 %! v = [0, pi/2*i, pi*i, pi/2*i];
 %! assert (acosh (x), v, sqrt (eps));
 
-## FIXME: std::acosh on Windows platforms, returns a result that differs
-## by 1 in the last significant digit.  This is ~30*eps which is quite large.
+## FIXME: std::acosh on Windows platforms and with LLVM libc++, returns a
+## result that differs by 1 in the last significant digit.  This is ~30*eps
+## which is quite large.
 ## The decision now (9/15/2016) is to mark the test with a bug number so
-## it is understood why it is failing, and wait for MinGw to improve their
-## std library.
+## it is understood why it is failing, and wait for MinGW and LLVM to improve
+## their std library.
 %!test <49091>
 %! re = 2.99822295029797;
 %! im = pi/2;
 %! assert (acosh (-10i), re - i*im);
 
-%!testif ; ! ismac ()
+%!testif ; ! __have_feature__ ("BSD_LIBC")
 %! x = single ([1, 0, -1, 0]);
 %! v = single ([0, pi/2*i, pi*i, pi/2*i]);
 %! assert (acosh (x), v, sqrt (eps ("single")));
 
-%!testif ; ismac ()   <52627>
-%! ## Same test code as above, but intended only for test statistics on Mac.
-%! ## Mac trig/hyperbolic functions have huge tolerances.
+%!testif HAVE_BSD_LIBC  <52627>
+%! ## Same test code as above, but intended only for test statistics with BSD
+%! ## libc.  The trig/hyperbolic functions in that C library used to have huge
+%! ## tolerances.
 %! x = single ([1, 0, -1, 0]);
 %! v = single ([0, pi/2*i, pi*i, pi/2*i]);
 %! assert (acosh (x), v, sqrt (eps ("single")));
@@ -207,9 +211,10 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.
 %! v = [0, pi, pi/2, -pi/2];
 %! assert (imag (acosh (x)), v);
 
-%!testif ; __have_feature__ ("LLVM_LIBCXX")  <52627>
+%!testif HAVE_LLVM_LIBCXX  <52627>
 %! ## Same test code as above, but intended for test statistics with libc++.
 %! ## Their trig/hyperbolic functions have huge tolerances.
+%! ## LLVM libc++ returns 0 for x(2) and x(4).
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [0, pi, pi/2, -pi/2];
 %! assert (imag (acosh (x)), v);
@@ -251,7 +256,7 @@ For example:
 @example
 @group
 arg (3 + 4i)
-     @result{} 0.92730
+     @xresult{} 0.92730
 @end group
 @end example
 @seealso{abs}
@@ -274,7 +279,7 @@ arg (3 + 4i)
 %!assert (arg (single (i)), single (pi/2))
 %!test
 %! if (ismac ())
-%!   ## Avoid failing for a MacOS feature
+%!   ## Avoid failing on a MacOS feature or bug, depending on your view
 %!   assert (arg (single (-1)), single (pi), 2* eps (single (1)));
 %! else
 %!   assert (arg (single (-1)), single (pi));
@@ -321,8 +326,8 @@ Compute the inverse sine in radians for each element of @var{x}.
 %! ival = 1.31695789692481635;
 %! obs = asin ([2, 2-i*eps, 2+i*eps]);
 %! exp = [rval - ival*i, rval - ival*i, rval + ival*i];
-%! if (ismac ())
-%!   ## Math libraries on macOS seem to implement asin with less accuracy.
+%! if (__have_feature__ ("BSD_LIBC"))
+%!   ## BSD libc seems to implement asin with less accuracy.
 %!   tol = 6*eps;
 %! else
 %!   tol = 2*eps;
@@ -341,9 +346,10 @@ Compute the inverse sine in radians for each element of @var{x}.
 %! v = [pi/2, -pi/2, 0, -0];
 %! assert (real (asin (x)), v);
 
-%!testif ; __have_feature__ ("LLVM_LIBCXX")  <52627>
+%!testif HAVE_LLVM_LIBCXX  <52627>
 %! ## Same test code as above, but intended for test statistics with libc++.
 %! ## Their trig/hyperbolic functions have huge tolerances.
+%! ## LLVM libc++ returns 0 for x(1) and x(2).
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [pi/2, -pi/2, 0, -0];
 %! assert (real (asin (x)), v);
@@ -383,9 +389,10 @@ Compute the inverse hyperbolic sine for each element of @var{x}.
 %! v = [0, 0, pi/2, -pi/2];
 %! assert (imag (asinh (x)), v);
 
-%!testif ; __have_feature__ ("LLVM_LIBCXX")  <52627>
+%!testif HAVE_LLVM_LIBCXX  <52627>
 %! ## Same test code as above, but intended for test statistics with libc++.
 %! ## Their trig/hyperbolic functions have huge tolerances.
+%! ## LLVM libc++ returns 0 for x(4).
 %! x = [1, -1, i, -i] .* 1e150;
 %! v = [0, 0, pi/2, -pi/2];
 %! assert (imag (asinh (x)), v);
@@ -513,7 +520,7 @@ If @var{x} is complex, return
 @example
 @group
 ceil ([-2.7, 2.7])
-    @result{} -2    3
+    @xresult{} -2    3
 @end group
 @end example
 @seealso{floor, round, fix}
@@ -1028,7 +1035,7 @@ For example:
 @example
 @group
 isfinite ([13, Inf, NA, NaN])
-     @result{} [ 1, 0, 0, 0 ]
+     @xresult{} [ 1, 0, 0, 0 ]
 @end group
 @end example
 @seealso{isinf, isnan, isna}
@@ -1065,7 +1072,7 @@ This is equivalent to rounding towards zero.  If @var{x} is complex, return
 @example
 @group
 fix ([-2.7, 2.7])
-   @result{} -2    2
+   @xresult{} -2    2
 @end group
 @end example
 @seealso{ceil, floor, round}
@@ -1099,7 +1106,7 @@ complex, return @code{floor (real (@var{x})) + floor (imag (@var{x})) * I}.
 @example
 @group
 floor ([-2.7, 2.7])
-     @result{} -3    2
+     @xresult{} -3    2
 @end group
 @end example
 @seealso{ceil, round, fix}
@@ -1365,7 +1372,7 @@ For example:
 @example
 @group
 isinf ([13, Inf, NA, NaN])
-      @result{} [ 0, 1, 0, 0 ]
+      @xresult{} [ 0, 1, 0, 0 ]
 @end group
 @end example
 @seealso{isfinite, isnan, isna}
@@ -1461,7 +1468,7 @@ For example:
 @example
 @group
 isna ([13, Inf, NA, NaN])
-     @result{} [ 0, 0, 1, 0 ]
+     @xresult{} [ 0, 0, 1, 0 ]
 @end group
 @end example
 @seealso{isnan, isinf, isfinite}
@@ -1483,10 +1490,21 @@ isna ([13, Inf, NA, NaN])
 
 %!assert (! isna (single (Inf)))
 %!assert (! isna (single (NaN)))
-%!assert (isna (single (NA)))
-%!assert (isna (single (rand (1,10))), false (1,10))
-%!assert (isna (single ([NaN -Inf -1 0 1 Inf NA])),
-%!        [false, false, false, false, false, false, true])
+%!testif HAVE_QNAN_WITH_PAYLOAD
+%! assert (isna (single (NA)));
+%!testif HAVE_QNAN_WITH_PAYLOAD
+%! assert (isna (single (rand (1,10))), false (1,10));
+%!testif HAVE_QNAN_WITH_PAYLOAD
+%! assert (isna (single ([NaN -Inf -1 0 1 Inf NA])),
+%!         [false, false, false, false, false, false, true])
+// Duplicate from above.  Only for test statistics
+%!testif ; ! __have_feature__ ("QNAN_WITH_PAYLOAD") <59830>
+%! assert (isna (single (NA)));
+%!testif ; ! __have_feature__ ("QNAN_WITH_PAYLOAD") <59830>
+%! assert (isna (single (rand (1,10))), false (1,10));
+%!testif ; ! __have_feature__ ("QNAN_WITH_PAYLOAD") <59830>
+%! assert (isna (single ([NaN -Inf -1 0 1 Inf NA])),
+%!         [false, false, false, false, false, false, true])
 
 %!error isna ()
 %!error isna (1, 2)
@@ -1503,7 +1521,7 @@ NA values are also considered NaN values.  For example:
 @example
 @group
 isnan ([13, Inf, NA, NaN])
-      @result{} [ 0, 0, 1, 1 ]
+      @xresult{} [ 0, 0, 1, 1 ]
 @end group
 @end example
 @seealso{isna, isinf, isfinite}
@@ -1849,7 +1867,7 @@ are two nearest integers, return the one further away from zero.
 @example
 @group
 round ([-2.7, 2.7])
-     @result{} -3    3
+     @xresult{} -3    3
 @end group
 @end example
 @seealso{ceil, floor, fix, roundb}
@@ -2182,7 +2200,7 @@ For example:
 @example
 @group
 lower ("MiXeD cAsE 123")
-    @result{} "mixed case 123"
+    @xresult{} "mixed case 123"
 @end group
 @end example
 
@@ -2254,7 +2272,7 @@ For example:
 @example
 @group
 upper ("MiXeD cAsE 123")
-    @result{} "MIXED CASE 123"
+    @xresult{} "MIXED CASE 123"
 @end group
 @end example
 

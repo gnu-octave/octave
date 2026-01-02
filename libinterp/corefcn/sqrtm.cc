@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2001-2025 The Octave Project Developers
+// Copyright (C) 2001-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -27,10 +27,10 @@
 #  include "config.h"
 #endif
 
-#include "schur.h"
 #include "lo-ieee.h"
-#include "lo-mappers.h"
+#include "mappers.h"
 #include "oct-norm.h"
+#include "schur.h"
 
 #include "defun.h"
 #include "error.h"

@@ -12,6 +12,7 @@ DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
   -I$(srcdir)/libinterp/octave-value \
   -I$(srcdir)/libinterp/parse-tree \
+  -I$(srcdir)/libinterp/template-inst \
   -I$(srcdir)/liboctave/array \
   -I$(srcdir)/liboctave/numeric \
   -Iliboctave/operators -I$(srcdir)/liboctave/operators \
@@ -55,7 +56,7 @@ nodist_%canon_reldir%_liboctmex_la_SOURCES = \
 
 ## Initialize variable used to verify that this version of Octave can run
 ## a dynamically loaded MEX file (checked against SOVERSION embedded in file).
-OCTAVE_LIBOCTMEX_SOVERSION_MAJOR = $(%canon_reldir%_liboctmex_current)
+OCTAVE_LIBOCTMEX_SOVERSION_MAJOR = $(%canon_reldir%_liboctmex_current)-$(%canon_reldir%_liboctmex_age)
 
 %canon_reldir%_liboctmex_version_info = $(%canon_reldir%_liboctmex_current):$(%canon_reldir%_liboctmex_revision):$(%canon_reldir%_liboctmex_age)
 

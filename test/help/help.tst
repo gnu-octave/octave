@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2024-2025 The Octave Project Developers
+## Copyright (C) 2024-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -252,3 +252,7 @@
 %! end_unwind_protect
 
 %!assert <*65258> (regexp (help ('undoc_fcn'), 'undocumented function: \[x, y, z\] = undoc_fcn \(a, b, ~, c = 3\)'))
+
+## patch #10541
+%!assert (get_first_help_sentence ('function_with_utf_8_doc_string', 21), ...
+%!        'This is a very naï...')

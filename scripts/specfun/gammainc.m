@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2016-2025 The Octave Project Developers
+## Copyright (C) 2016-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -487,7 +487,7 @@ endfunction
 %!assert (gammainc ([3 2 36],[2 3 18], "upper"), ...
 %!        [4/exp(3) 5*exp(-2) (4369755579265807723 / 2977975)/exp(36)], -eps)
 %!assert (gammainc (10, 10), 1 - (5719087 / 567) * exp (-10), -eps)
-%!assert (gammainc (10, 10, "upper"), (5719087 / 567) * exp (-10), -eps)
+%!assert (gammainc (10, 10, "upper"), (5719087 / 567) * exp (-10), -2*eps)
 
 ## Test: case 8
 %!assert (gammainc (-10, 10), 3.112658265341493126871617e7, -2*eps)

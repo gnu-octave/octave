@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1996-2025 The Octave Project Developers
+## Copyright (C) 1996-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -33,10 +33,10 @@
 ## @example
 ## @group
 ## str2num ("3.141596")
-##       @result{} 3.141596
+##       @xresult{} 3.141596
 ##
 ## str2num (["1, 2, 3"; "4, 5, 6"])
-##       @result{} 1  2  3
+##       @xresult{} 1  2  3
 ##          4  5  6
 ## @end group
 ## @end example
@@ -82,6 +82,10 @@ endfunction
 
 %!assert (str2num ("-1.3e2"), -130)
 %!assert (str2num ("[1, 2; 3, 4]"), [1, 2; 3, 4])
+%!assert (str2num ("1.000444"), 1.000444)
+
+%!assert (str2num ("1e999"), Inf)
+%!assert (str2num ("-1e999"), -Inf)
 
 %!test
 %! [x, state] = str2num ("pi");

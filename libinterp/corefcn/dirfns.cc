@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1994-2025 The Octave Project Developers
+// Copyright (C) 1994-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -39,9 +39,9 @@
 #include "file-ops.h"
 #include "file-stat.h"
 #include "glob-match.h"
-#include "lo-sysdep.h"
 #include "oct-env.h"
 #include "oct-glob.h"
+#include "oct-sysdep.h"
 #include "pathsearch.h"
 #include "str-vec.h"
 
@@ -496,21 +496,21 @@ matching filenames.  For example:
 
 @example
 ls
-   @result{}
+   @xresult{}
       file1  file2  file3  myfile1 myfile1b
 glob ("*file1")
-   @result{}
+   @xresult{}
       @{
         [1,1] = file1
         [2,1] = myfile1
       @}
 glob ("myfile?")
-   @result{}
+   @xresult{}
       @{
         [1,1] = myfile1
       @}
 glob ("file[12]")
-   @result{}
+   @xresult{}
       @{
         [1,1] = file1
         [2,1] = file2
@@ -605,21 +605,21 @@ matching filenames.  For example:
 
 @example
 ls
-   @result{}
+   @xresult{}
       file1  file2  file3  myfile1 myfile1b
 glob ("*file1")
-   @result{}
+   @xresult{}
       @{
         [1,1] = file1
         [2,1] = myfile1
       @}
 glob ("myfile?")
-   @result{}
+   @xresult{}
       @{
         [1,1] = myfile1
       @}
 glob ("*.*")
-   @result{}
+   @xresult{}
       @{
         [1,1] = file1
         [2,1] = file2
@@ -700,7 +700,7 @@ For example:
 @example
 @group
 fnmatch ("a*b", @{"ab"; "axyzb"; "xyzab"@})
-     @result{} [ 1; 1; 0 ]
+     @xresult{} [ 1; 1; 0 ]
 @end group
 @end example
 @seealso{glob, regexp}

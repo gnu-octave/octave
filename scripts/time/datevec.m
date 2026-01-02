@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2000-2025 The Octave Project Developers
+## Copyright (C) 2000-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -439,10 +439,10 @@ endfunction
 %!        [2015,6,1,15,7,12.12])
 
 ## Test ISO 8601 conform formats
-%!assert (datevec ("1998"), [1998, 1, 0, 0, 0, 0]);
-%!assert (datevec ("1998-07"), [1998, 7, 1, 0, 0, 0]);
-%!assert (datevec ("1998-07-19T15:03:47Z"), [1998, 7, 19, 15, 3, 47]);
-%!assert (datevec ("1998-07-19T15:03:47.219Z"), [1998, 7, 19, 15, 3, 47.219]);
+%!assert (datevec ("1998"), [1998, 1, 0, 0, 0, 0])
+%!assert (datevec ("1998-07"), [1998, 7, 1, 0, 0, 0])
+%!assert (datevec ("1998-07-19T15:03:47Z"), [1998, 7, 19, 15, 3, 47])
+%!assert (datevec ("1998-07-19T15:03:47.219Z"), [1998, 7, 19, 15, 3, 47.219])
 
 ## Test structure of return value
 %!test <*42334>

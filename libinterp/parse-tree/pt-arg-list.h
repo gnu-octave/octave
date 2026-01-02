@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -148,6 +148,8 @@ public:
   void mark_as_simple_assign_lhs () { m_simple_assign_lhs = true; }
 
   bool is_simple_assign_lhs () { return m_simple_assign_lhs; }
+
+  tree_delimiter_list delims () const { return m_delims; }
 
   bool all_elements_are_constant () const;
 

@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1993-2025 The Octave Project Developers
+## Copyright (C) 1993-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -36,16 +36,16 @@
 ## @example
 ## @group
 ## [aa, bb, q, z] = qzhess ([1, 2; 3, 4], [5, 6; 7, 8])
-##   @result{} aa =
+##   @xresult{} aa =
 ##       -3.02244  -4.41741
 ##        0.92998   0.69749
-##   @result{} bb =
+##   @xresult{} bb =
 ##       -8.60233  -9.99730
 ##        0.00000  -0.23250
-##   @result{} q =
+##   @xresult{} q =
 ##       -0.58124  -0.81373
 ##       -0.81373   0.58124
-##   @result{} z =
+##   @xresult{} z =
 ##      Diagonal Matrix
 ##        1   0
 ##        0   1

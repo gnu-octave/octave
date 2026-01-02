@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -437,7 +437,7 @@ input_system::initialize (bool line_editing)
 
   command_editor::set_basic_quote_characters (R"(")");
 
-  command_editor::set_filename_quote_characters (" \t\n\\\"'@<>=;|&()#$`?*[!:{");
+  command_editor::set_filename_quote_characters (" \t\n\\\"'<>=;|&()#$`?*[!:{");
 
   command_editor::set_completer_quote_characters (R"('")");
 
@@ -1265,7 +1265,7 @@ controlling Octave and handling user input.  For example:
 @example
 @group
 completion_matches ("sine")
-@result{}
+@xresult{}
 sinetone
 sinewave
 @end group

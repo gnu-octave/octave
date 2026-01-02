@@ -22,17 +22,21 @@ UTIL_INC = \
   %reldir%/oct-base64.h \
   %reldir%/oct-binmap.h \
   %reldir%/oct-cmplx.h \
+  %reldir%/oct-error.h \
   %reldir%/oct-glob.h \
+  %reldir%/oct-hash.h \
   %reldir%/oct-inttypes-fwd.h \
   %reldir%/oct-inttypes.h \
   %reldir%/oct-locbuf.h \
   %reldir%/oct-mutex.h \
+  %reldir%/oct-regexp.h \
   %reldir%/oct-refcount.h \
   %reldir%/oct-rl-edit.h \
   %reldir%/oct-rl-hist.h \
   %reldir%/oct-shlib.h \
   %reldir%/oct-sort.h \
   %reldir%/oct-string.h \
+  %reldir%/oct-traits.h \
   %reldir%/pathsearch.h \
   %reldir%/singleton-cleanup.h \
   %reldir%/sparse-util.h \
@@ -66,17 +70,17 @@ UTIL_SRC = \
   %reldir%/glob-match.cc \
   %reldir%/kpse.cc \
   %reldir%/lo-array-errwarn.cc \
-  %reldir%/lo-hash.cc \
   %reldir%/lo-ieee.cc \
-  %reldir%/lo-regexp.cc \
   %reldir%/lo-utils.cc \
   %reldir%/quit.cc \
   %reldir%/oct-atomic.c \
   %reldir%/oct-base64.cc \
   %reldir%/oct-cmplx.cc \
   %reldir%/oct-glob.cc \
+  %reldir%/oct-hash.cc \
   %reldir%/oct-inttypes.cc \
   %reldir%/oct-mutex.cc \
+  %reldir%/oct-regexp.cc \
   %reldir%/oct-shlib.cc \
   %reldir%/oct-sparse.cc \
   %reldir%/oct-string.cc \

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "lo-error.h"
+#include "oct-error.h"
 
 /* Having this file in this directory is a kluge to avoid unresolved
    symbol errors when creating shared versions of liboctave. */
@@ -108,7 +108,7 @@ liboctave_fatal (const char *fmt, ...)
   verror ("fatal", fmt, args);
   va_end (args);
 
-  exit (1);
+  exit (EXIT_FAILURE);
 }
 
 void
@@ -121,7 +121,7 @@ liboctave_fatal_with_id (const char *id, const char *fmt, ...)
   verror ("fatal", fmt, args);
   va_end (args);
 
-  exit (1);
+  exit (EXIT_FAILURE);
 }
 
 void

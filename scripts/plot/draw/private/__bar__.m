@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1996-2025 The Octave Project Developers
+## Copyright (C) 1996-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -218,23 +218,13 @@ function varargout = __bar__ (fcn, vertical, varargin)
   yb = reshape (yb, [4, ngrp, nbars]);
 
   if (nargout < 2)
-    oldfig = [];
-    if (! isempty (hax))
-      oldfig = get (0, "currentfigure");
+    hax = newplot (hax);
+    htmp = bars (hax, ishist, vertical, x, y, xb, yb, gwidth, group,
+                 have_line_spec, bv, newargs{:});
+    if (! ishold (hax))
+      update_axes_limits (hax, x, vertical, ishist && histc);
     endif
-    unwind_protect
-      hax = newplot (hax);
-      htmp = bars (hax, ishist, vertical, x, y, xb, yb, gwidth, group,
-                   have_line_spec, bv, newargs{:});
-      if (! ishold ())
-        update_axes_limits (hax, x, vertical, ishist && histc);
-      endif
 
-    unwind_protect_cleanup
-      if (! isempty (oldfig))
-        set (0, "currentfigure", oldfig);
-      endif
-    end_unwind_protect
     if (nargout == 1)
       varargout{1} = htmp;
     endif
@@ -280,23 +270,21 @@ function hglist = bars (hax, ishist, vertical, x, y, xb, yb, width, group,
 
   ## Code to create hggroup Bar object
   for i = 1:nbars
-    hg = hggroup ();
+    hg = hggroup (hax);
     hglist = [hglist; hg];
     args = __add_datasource__ ("bar", hg, {"x", "y"}, varargin{:});
 
     if (vertical)
       if (! have_color_spec)
-        color = __next_line_color__ ();
-        h = patch (hax, xb(:,:,i), yb(:,:,i), "FaceColor", color, ...
-                   "parent", hg);
+        color = __next_line_color__ (hax);
+        h = patch (hax, xb(:,:,i), yb(:,:,i), "FaceColor", color, "parent", hg);
       else
         h = patch (hax, xb(:,:,i), yb(:,:,i), "cdata", i, "parent", hg);
       endif
     else
       if (! have_color_spec)
-        color = __next_line_color__ ();
-        h = patch (hax, yb(:,:,i), xb(:,:,i), "FaceColor", color, ...
-                  "parent", hg);
+        color = __next_line_color__ (hax);
+        h = patch (hax, yb(:,:,i), xb(:,:,i), "FaceColor", color, "parent", hg);
       else
         h = patch (hax, yb(:,:,i), xb(:,:,i), "cdata", i, "parent", hg);
       endif
@@ -309,18 +297,16 @@ function hglist = bars (hax, ishist, vertical, x, y, xb, yb, width, group,
       ## direction must be sensitive to baseline position.
       if (vertical)
         x_axis_range = get (hax, "xlim");
-        baseline = __go_line__ (hax, "xdata", x_axis_range,
-                                       "ydata", [base_value, base_value],
-                                       "color", [0, 0, 0]);
-        set (baseline, "handlevisibility", "off", "xliminclude", "off",
-                         "parent", hax);
+        baseline = __go_line__ (hg, "xdata", x_axis_range,
+                                    "ydata", [base_value, base_value],
+                                    "color", [0, 0, 0]);
+        set (baseline, "handlevisibility", "off", "xliminclude", "off");
       else
         y_axis_range = get (hax, "ylim");
-        baseline = __go_line__ (hax, "ydata", y_axis_range,
-                                       "xdata", [base_value, base_value],
-                                       "color", [0, 0, 0]);
-        set (baseline, "handlevisibility", "off", "yliminclude", "off",
-                         "parent", hax);
+        baseline = __go_line__ (hg, "ydata", y_axis_range,
+                                    "xdata", [base_value, base_value],
+                                    "color", [0, 0, 0]);
+        set (baseline, "handlevisibility", "off", "yliminclude", "off");
       endif
     endif
 
@@ -377,29 +363,29 @@ function hglist = bars (hax, ishist, vertical, x, y, xb, yb, width, group,
     endif
   endfor
 
-  update_baseline_lim (hax, []);
+  update_baseline_lim (hax, [], hglist(1));
 
   ## Add listeners outside of for loop to prevent constant updating during
   ## creation of plot when patch objects are added.
-  ubll = @update_baseline_lim;
-  ubvls = {@update_basevalue_logscale, hg};
+  ubll = {@update_baseline_lim, hglist(1)};
+  ubvls = {@update_basevalue_logscale, hglist(1)};
   ## Add delete function on baseline to remove all listeners from axes
   ## properties when the bar plot is cleared.
   set (baseline, "deletefcn", {@rm_axes_listeners, hax, ubll, ubvls});
   addlistener (hax, "xlim", ubll);
   addlistener (hax, "yscale", ubvls);
-  addlistener (baseline, "ydata", @update_baseline);
+  addlistener (baseline, "ydata", {@update_baseline, hglist(1)});
 
   addlistener (hax, "ylim", ubll);
   addlistener (hax, "xscale", ubvls);
-  addlistener (baseline, "xdata", @update_baseline);
+  addlistener (baseline, "xdata", {@update_baseline, hglist(1)});
 
-  addlistener (baseline, "visible", @update_baseline);
+  addlistener (baseline, "visible", {@update_baseline, hglist(1)});
 
 endfunction
 
-## Good practice to remove listeners when object is deleted.
-## In this case, required to avoid error in update_baseline_lim callback (bug #67004).
+## Good practice to remove listeners to external objects when deleted.
+## Required to avoid error in update_baseline_lim callback (bug #67004).
 function rm_axes_listeners (~, ~, hax, ubll, ubvls)
   dellistener (hax, "xlim", ubll);
   dellistener (hax, "yscale", ubvls);
@@ -407,28 +393,22 @@ function rm_axes_listeners (~, ~, hax, ubll, ubvls)
   dellistener (hax, "xscale", ubvls);
 endfunction
 
-function update_baseline_lim (hax, ~)
+function update_baseline_lim (hax, ~, hg)
 
   ## set baseline extents to match current axes limits
-  [kids, xlim, ylim] = get (hax, {"children", "xlim", "ylim"}){:};
+  [xlim, ylim] = get (hax, {"xlim", "ylim"}){:};
+  vertical = strcmp (get (hg, "horizontal"), "off");
+  hl = get (hg, "baseline");
 
-  for i = 1 : length (kids)
-    obj = get (kids(i));
-
-    if (strcmp (obj.type, "hggroup") && isfield (obj, "baseline"))
-
-      if (strcmp (obj.horizontal, "off"))  # if (vertical)
-        if (any (get (obj.baseline, "xdata") != xlim))
-          set (obj.baseline, "xdata", xlim);
-        endif
-      else
-        if (any (get (obj.baseline, "ydata") != ylim))
-          set (obj.baseline, "ydata", ylim);
-        endif
-      endif
-
+  if (vertical)
+    if (any (get (hl, "xdata") != xlim))
+      set (hl, "xdata", xlim);
     endif
-  endfor
+  else
+    if (any (get (hl, "ydata") != ylim))
+      set (hl, "ydata", ylim);
+    endif
+  endif
 
 endfunction
 
@@ -455,33 +435,22 @@ function update_basevalue_logscale (hax, ~, hg)
 endfunction
 
 
-function update_baseline (hl, ~)
+function update_baseline (hl, ~, hg)
 
   visible = get (hl, "visible");
 
-  ## Search axis for a bargroup that contains this baseline handle
-  kids = get (get (hl, "parent"), "children");
-  for i = 1 : length (kids)
-    obj = get (kids(i));
-    if (strcmp (obj.type, "hggroup") && isfield (obj, "baseline")
-        && obj.baseline == hl)
+  if (strcmp (get (hg, "horizontal"), "off"))
+    data = get (hl, "ydata")(1);
+  else
+    data = get (hl, "xdata")(1);
+  endif
 
-      if (strcmp (obj.horizontal, "off"))
-        data = get (hl, "ydata")(1);
-      else
-        data = get (hl, "xdata")(1);
-      endif
-
-      set (obj.bargroup, "showbaseline", visible, "basevalue", data);
-      break;
-
-    endif
-  endfor
+  set (hg, "showbaseline", visible, "basevalue", data);
 
 endfunction
 
 
-function show_baseline (hg, ~, prop = "")
+function show_baseline (hg, ~, prop)
 
   persistent recursion = false;
 
@@ -564,9 +533,9 @@ function update_data (hg, ~)
         y = ydat;
       endif
 
-      [b0, bl, bw, blo, horiz, hax] = get (hg, ...
-                                   {"basevalue", "baseline", "barwidth", ...
-                                   "barlayout",  "horizontal", "parent"}){:};
+      [b0, bl, bw, blo, horiz, hax] = ...
+        get (hg, {"basevalue", "baseline", "barwidth", "barlayout", ...
+                  "horizontal", "parent"}){:};
       [xb, yb] = bar (x, y, bw, blo, "basevalue", b0);
 
       vertical = strcmp (horiz, "off");
@@ -588,7 +557,7 @@ function update_data (hg, ~)
         set (bl, "xdata", [b0, b0]);
       endif
 
-      if (! ishold ())
+      if (! ishold (hax))
         update_axes_limits (hax, x, vertical, strcmpi (blo, "histc"));
       endif
 

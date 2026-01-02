@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2013-2025 The Octave Project Developers
+## Copyright (C) 2013-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -175,9 +175,9 @@
 
 %!shared evalin_value
 %! evalin_value = "this is the caller";
-%!assert <*59847> (f_eval_fun (), "this is the caller");
-%!assert <*59847> (g_eval_fun (), "this is the caller");
-%!assert <*59847> (h_eval_fun (), "this is h_eval_fun");
+%!assert <*59847> (f_eval_fun (), "this is the caller")
+%!assert <*59847> (g_eval_fun (), "this is the caller")
+%!assert <*59847> (h_eval_fun (), "this is h_eval_fun")
 
 %!function r = f_asgn_fun ()
 %!  asgnin_value = "this is f_asgn_fun";

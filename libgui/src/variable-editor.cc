@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2013-2025 The Octave Project Developers
+// Copyright (C) 2013-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -173,7 +173,7 @@ variable_dock_widget::toplevel_change (bool toplevel)
   if (toplevel)
     {
       m_dock_action->setIcon (QIcon (global_icon_paths.at (ICON_THEME_OCTAVE)
-                                     + "widget-dock.png"));
+                                     + "widget-dock" + global_icon_extension));
       m_dock_action->setToolTip (tr ("Dock Widget"));
 
       setWindowFlags (Qt::Window);
@@ -191,7 +191,7 @@ variable_dock_widget::toplevel_change (bool toplevel)
   else
     {
       m_dock_action->setIcon (QIcon (global_icon_paths.at (ICON_THEME_OCTAVE)
-                                     + "widget-undock.png"));
+                                     + "widget-undock" + global_icon_extension));
       m_dock_action->setToolTip (tr ("Undock Widget"));
 
       setFocus ();

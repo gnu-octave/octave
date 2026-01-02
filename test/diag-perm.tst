@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2009-2025 The Octave Project Developers
+## Copyright (C) 2009-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -274,7 +274,7 @@
 %! D = D * I () + D;
 %! assert (full (D + A), D + full (A));
 %! A = A * I () + A;
-%! A(6, 4) = nan ();
+%! A(6, 4) = NaN ();
 %! assert (full (D - A), D - full (A));
 
 ## inverse preserves diagonal structure even for singular matrices (bug #46103)
@@ -299,3 +299,24 @@
 %! assert (typeinfo (x), "diagonal matrix");
 %! x(9) = -1;
 %! assert (typeinfo (x), "diagonal matrix");
+
+## diagonal broadcasting with dense vectors and matrices
+%!assert (diag (1:3) + ones (1, 3), full (diag (1:3)) + ones (1, 3))
+%!assert (diag (1:3) - ones (1, 3), full (diag (1:3)) - ones (1, 3))
+%!assert (eye (3) + ones (3, 1), full (eye (3)) + ones (3, 1))
+%!assert (eye (3) - ones (3, 1), full (eye (3)) - ones (3, 1))
+%!assert (eye (3) .* ones (1, 3), full (eye (3)))
+%!assert (ones (1, 4) + diag (1:4), diag (1:4) + ones (4, 1))
+%!assert (ones (1, 4) - diag (1:4), - diag (1:4) + ones (4, 1))
+%!assert (diag (1:3) + ones (3), ones (3) + diag (1:3))
+
+## diagonal broadcasting with sparse vectors and matrices
+%!assert (diag (1:3) + sparse ([1, 1, 1]), sparse (full (diag (1:3)) + ones (1, 3)))
+%!assert (diag (1:3) - sparse ([1, 1, 1]), sparse (full (diag (1:3)) - ones (1, 3)))
+%!assert (eye (3) + sparse ([1; 1; 1]), sparse (full (eye (3)) + sparse ([1; 1; 1])))
+%!assert (eye (3) - sparse ([1; 1; 1]), sparse (full (eye (3)) - sparse ([1; 1; 1])))
+%!assert (eye (3) .* sparse ([1, 1, 1]), eye (3) .* sparse ([1; 1; 1]))
+%!assert (sparse ([1, 1, 1, 1]) + diag (1:4), sparse (diag (1:4) + ones (4, 1)))
+%!assert (sparse ([1, 1, 1, 1]) - diag (1:4), sparse (-diag (1:4) + ones (4, 1)))
+%!assert (diag (1:3) + sparse (ones (3)), sparse (ones (3) + full (diag (1:3))))
+

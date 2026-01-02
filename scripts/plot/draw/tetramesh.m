@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2012-2025 The Octave Project Developers
+## Copyright (C) 2012-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -111,7 +111,7 @@ function h = tetramesh (varargin)
     endfor
   endif
 
-  if (! ishold ())
+  if (! ishold (hax))
     set (hax, "view", [-37.5, 30]);
   endif
 

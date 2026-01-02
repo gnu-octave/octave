@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2010-2025 The Octave Project Developers
+// Copyright (C) 2010-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -28,7 +28,7 @@
 
 #include "octave-config.h"
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "Sparse.h"
 #include "Array-util.h"
 
@@ -181,7 +181,7 @@ binmap (const Array<T>& xa, const Array<R>& ya, F fcn, const char *name)
     return binmap<U, T, R, F> (xa, ya(0), fcn);
   else if (xad != yad)
     {
-      if (! is_valid_bsxfun (name, xad, yad))
+      if (! is_valid_bsxfun (xad, yad))
         octave::err_nonconformant (name, xad, yad);
 
       bsxfun_wrapper<U, T, R, F>::set_f(fcn);

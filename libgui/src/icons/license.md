@@ -111,6 +111,7 @@ under the CC0 1.0 Universal license.
 - widget-close
 - widget-dock
 - widget-undock
+- window-close
 
 
 ## Cursor icons

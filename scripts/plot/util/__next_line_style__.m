@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2010-2025 The Octave Project Developers
+## Copyright (C) 2010-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -24,16 +24,20 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{style} =} __next_line_style__ (@var{reset})
+## @deftypefn {} {@var{style} =} __next_line_style__ (@var{hax})
 ## Undocumented internal function.
 ## @end deftypefn
 
 ## Return the next line style in the rotation.
 
 
-function [linestyle, marker] = __next_line_style__ ()
+function [linestyle, marker] = __next_line_style__ (hax)
 
-  ca = gca ();
+  if (nargin == 1)
+    ca = hax;
+  else
+    ca = gca ();
+  endif
 
   styleorder = get (ca, "linestyleorder");
   if (isempty (styleorder))

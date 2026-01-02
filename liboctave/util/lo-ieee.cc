@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -32,9 +32,9 @@
 
 #include <limits>
 
-#include "lo-error.h"
 #include "lo-ieee.h"
 #include "mach-info.h"
+#include "oct-error.h"
 
 static double lo_inf;
 static double lo_nan;
@@ -47,10 +47,10 @@ static float lo_float_na;
 static int lo_ieee_hw;
 static int lo_ieee_lw;
 
-#if defined (HAVE_MIPS_NAN)
-  #define LO_IEEE_NA_HW 0x7FF040F4
-#else
+#if defined (HAVE_IEEE754_QNAN)
   #define LO_IEEE_NA_HW 0x7FF840F4
+#else
+  #define LO_IEEE_NA_HW 0x7FF040F4
 #endif
 #define LO_IEEE_NA_LW 0x40000000
 #define LO_IEEE_NA_FLOAT 0x7FC207A2

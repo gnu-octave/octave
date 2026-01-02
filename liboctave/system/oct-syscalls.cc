@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -33,8 +33,8 @@
 
 #include "fcntl-wrappers.h"
 #include "lo-utils.h"
-#include "lo-sysdep.h"
 #include "oct-syscalls.h"
+#include "oct-sysdep.h"
 #include "octave-popen2.h"
 #include "signal-wrappers.h"
 #include "str-vec.h"
@@ -45,7 +45,6 @@
   nm ": not supported on this system"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 int
@@ -333,8 +332,7 @@ popen2 (const std::string& cmd, const string_vector& args,
   char **argv = args.c_str_vec ();
   const char *errmsg;
 
-  pid_t pid = octave_popen2 (cmd.c_str (), argv, sync_mode, fildes,
-                             &errmsg);
+  pid_t pid = octave_popen2 (cmd.c_str (), argv, sync_mode, fildes, &errmsg);
 
   string_vector::delete_c_str_vec (argv);
 

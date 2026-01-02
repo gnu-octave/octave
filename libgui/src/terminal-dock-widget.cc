@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2011-2025 The Octave Project Developers
+// Copyright (C) 2011-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -30,8 +30,8 @@
 #include <QGuiApplication>
 #include <QScreen>
 
-// This header is only needed for the new terminal widget, and only
-// can be included if Qscintilla is availbale
+// This header is only needed for the new terminal widget, and
+// can only be included if Qscintilla is available.
 #if defined (HAVE_QSCINTILLA)
 #  include "command-widget.h"
 #endif

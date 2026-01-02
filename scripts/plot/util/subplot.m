@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1995-2025 The Octave Project Developers
+## Copyright (C) 1995-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -458,7 +458,7 @@ function subplot_align (h, ~, rmupdate = false)
       pos = getappdata (children, "__subplotposition__");
 
       if (iscell (pos))
-        do_align = ! cellfun (@isempty, pos);
+        do_align = ! cellfun ('isempty', pos);
         pos = cell2mat (pos(do_align));
       else
         return;

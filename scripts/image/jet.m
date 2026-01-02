@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1999-2025 The Octave Project Developers
+## Copyright (C) 1999-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -130,7 +130,7 @@ endfunction
 %! a([3:13],2) = [0.25, 0.5, 0.75, 1, 1, 1, 1, 1, 0.75, 0.5, 0.25];
 %! a([7:15], 1) = a([3:11], 2);
 %! a(:,3) = flipud (a(:,1));
-%! assert (jet (15), a, eps)
+%! assert (jet (15), a, eps);
 
 ## Input validation
 %!error <N must be a scalar integer> jet ("foo")

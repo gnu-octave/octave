@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -33,7 +33,7 @@
 #  include <grp.h>
 #endif
 
-#include "lo-error.h"
+#include "oct-error.h"
 #include "oct-group.h"
 #include "str-vec.h"
 
@@ -48,7 +48,6 @@ err_invalid ()
 }
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 std::string
@@ -206,24 +205,7 @@ group::group (void *p, std::string& msg)
 
       m_gid = gr->gr_gid;
 
-      // FIXME: Maybe there should be a string_vector constructor
-      //        that takes a NUL terminated list of C strings?
-
-      const char *const *tmp = gr->gr_mem;
-
-      int k = 0;
-      while (*tmp++)
-        k++;
-
-      if (k > 0)
-        {
-          tmp = gr->gr_mem;
-
-          m_mem.resize (k);
-
-          for (int i = 0; i < k; i++)
-            m_mem[i] = tmp[i];
-        }
+      m_mem = string_vector (gr->gr_mem);
 
       m_valid = true;
     }

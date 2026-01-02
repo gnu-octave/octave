@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2004-2025 The Octave Project Developers
+## Copyright (C) 2004-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -40,9 +40,9 @@
 ## @example
 ## @group
 ## nthroot (-1, 3)
-## @result{} -1
+## @xresult{} -1
 ## (-1) ^ (1 / 3)
-## @result{} 0.50000 - 0.86603i
+## @xresult{} 0.50000 - 0.86603i
 ## @end group
 ## @end example
 ## @seealso{realsqrt, sqrt, cbrt}

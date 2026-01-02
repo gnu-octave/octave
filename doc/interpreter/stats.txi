@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2025 The Octave Project Developers
+@c Copyright (C) 1996-2026 The Octave Project Developers
 @c
 @c This file is part of Octave.
 @c
@@ -49,6 +49,7 @@ See @ref{XREFisnan,,isnan}, @ref{XREFisna,,isna}, @ref{XREFisinf,,isinf},
 * Descriptive Statistics::
 * Statistics on Sliding Windows of Data::
 * Basic Statistical Functions::
+* Forecasting Metrics::
 * Correlation and Regression Analysis::
 * Distributions::
 * Random Number Generation::
@@ -82,6 +83,8 @@ measuring dispersion.
 @DOCSTRING(mad)
 
 @DOCSTRING(meansq)
+
+@DOCSTRING(rms)
 
 @DOCSTRING(std)
 
@@ -169,16 +172,28 @@ useful for statistics.
 
 @DOCSTRING(runlength)
 
+@node Forecasting Metrics
+@section Forecasting Metrics
+
+Octave supports the following functions for calculating forecasting metrics.
+
+@DOCSTRING(mape)
+
+@DOCSTRING(rmse)
+
 @node Correlation and Regression Analysis
 @section Correlation and Regression Analysis
 
-@c FIXME: Need Intro Here
+Octave supports several functions for investigating the relationship between
+sets of quantitative variables.
 
 @DOCSTRING(cov)
 
 @DOCSTRING(corr)
 
 @DOCSTRING(corrcoef)
+
+@DOCSTRING(corrcov)
 
 @DOCSTRING(spearman)
 

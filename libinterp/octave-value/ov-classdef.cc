@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2012-2025 The Octave Project Developers
+// Copyright (C) 2012-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -39,6 +39,7 @@
 #include "errwarn.h"
 #include "interpreter-private.h"
 #include "load-path.h"
+#include "ls-oct-text.h"
 #include "ov-classdef.h"
 #include "ov-fcn-handle.h"
 #include "ov-typeinfo.h"
@@ -48,6 +49,403 @@
 #include "pt-eval.h"
 #include "pt-misc.h"
 #include "oct-lvalue.h"
+
+std::vector<std::tuple<octave_map, uint32_t, bool>>
+octave_classdef::saveobj (std::vector<bool>& is_new)
+{
+  octave::cdef_class cls = m_object.get_class ();
+  octave::cdef_method meth = cls.find_method ("saveobj");
+
+  // Vector with tuples consisting of a map with property values, the object id,
+  // and an indicator whether the object has a custom return type
+  std::vector<std::tuple<octave_map, uint32_t, bool>> m (numel ());
+
+  octave::load_save_system& lss = octave::__get_load_save_system__ ();
+
+  // The saveobj method needs to be called separately for each element of
+  // N-D arrays.
+  for (octave_idx_type n = 0; n < numel (); n++)
+    {
+      octave_value retval;
+
+      octave_value_list ovl_idx;
+      std::list<octave_value_list> idx_tmp;
+      ovl_idx(0) = n+1;
+      idx_tmp.push_back (ovl_idx);
+      octave_value elem = (subsref ("(", idx_tmp, 1))(0);
+
+      // Check if the element is already in the cache of objects that are
+      // stored in this file.
+      // Use the address of the cdef_object_rep as the key.
+      const octave::cdef_object co = elem.classdef_object_value ()->get_object_ref ();
+      bool is_new_elem;
+      std::get<uint32_t> (m[n])
+        = lss.get_mcos_object_cache_id (co.get_rep (), is_new_elem);
+      is_new[n] = is_new_elem;
+
+      if (is_new[n])
+        {
+          // Default behavior of 'loadobj' is to return this object's
+          // map_value, including all protected, private and hidden properties.
+          if (! meth.ok () || meth.is_static ())
+            // Default behaviour of saving is triggered if saveobj is static
+            std::get<octave_map> (m[n])
+              = elem.classdef_object_value ()->map_value (false, true);
+          else
+            {
+              retval = (meth.execute (elem.classdef_object_value ()->get_object_ref (),
+                                      octave_value_list (), 1))(0);
+
+              // default: no custom return type
+              std::get<bool> (m[n]) = false;
+
+              if (! retval.is_defined ())
+                {
+                  warning ("save: saveobj method does not return a value");
+                  return m;
+                }
+              else if (! retval.is_classdef_object ()
+                       || retval.class_name () != class_name ())
+                {
+                  // If retval is not an object of the matching class, we put
+                  // the value in a map and set the 'custom_saveobj_ret_type'
+                  // flag, which has to be encoded in the file metadata.
+                  // It's the caller's responsibility to check the flag.
+                  std::get<octave_map> (m[n]).setfield ("any", retval);
+                  std::get<bool> (m[n]) = true;
+                }
+
+              else if (retval.is_classdef_object ())
+                std::get<octave_map> (m[n])
+                  = retval.classdef_object_value ()->map_value (false, true);
+              else
+                std::get<octave_map> (m[n]) = retval.map_value ();
+            }
+        }
+    }
+
+  return m;
+}
+
+void
+octave_classdef::loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m,
+                          dim_vector& dv)
+{
+  octave::cdef_object scalar_obj = m_object.copy ();
+  octave::cdef_class cls = m_object.get_class ();
+  octave::cdef_method meth = cls.find_method ("loadobj");
+
+  octave::load_save_system& lss = octave::__get_load_save_system__ ();
+
+  // The loadobj method needs to be called separately for each element of
+  // N-D arrays.
+  for (octave_idx_type n = 0; static_cast<size_t> (n) < m.size (); n++)
+    {
+      octave_value ovc;
+
+      // Check if object is already loaded in cache
+      uint32_t id = std::get<uint32_t> (m[n]);
+      bool in_obj_cache = lss.is_mcos_object_cache_entry (id);
+      if (in_obj_cache)
+        ovc = lss.get_mcos_object_cache_entry (id);
+
+      octave_map& prop_map = std::get<octave_map> (m[n]);
+
+      if (! in_obj_cache || prop_map.nfields () > 0)
+        {
+          // Default behaviour of loading is triggered if loadobj is not static
+          if (meth.ok () && meth.is_static () && prop_map.nfields () > 0)
+            {
+              octave_value ov;
+              if (std::get<bool> (m[n]))
+                {
+                  octave_value any = prop_map.contents ("any").elem (0);
+                  ov = (meth.execute (octave_value_list (any), 1))(0);
+                }
+              else
+                {
+                  // create object from saved properties
+                  octave::cdef_object new_object;
+                  if (in_obj_cache)
+                    new_object = ovc.classdef_object_value ()->m_object;
+                  else
+                    new_object = scalar_obj.copy ();
+
+                  bool props_changed = false;
+                  string_vector fnames = prop_map.fieldnames ();
+                  string_vector sv = map_keys ();
+                  for (octave_idx_type i = 0; i < prop_map.nfields (); i++)
+                    {
+                      octave_idx_type j;
+                      for (j = 0; j < sv.numel (); j++)
+                        {
+                          if (sv[j] == fnames(i))
+                            {
+                              new_object.set_property (0, sv[j], prop_map.contents (fnames(i)).xelem (0));
+                              break;
+                            }
+                        }
+                      if (j == sv.numel ())
+                        {
+                          // properties have been renamed or deleted
+                          props_changed = true;
+                          break;
+                        }
+                    }
+
+                  if (props_changed)
+                    // attempting to create the object failed
+                    // call loadobj with struct
+                    ov = (meth.execute (octave_value_list (prop_map), 1))(0);
+                  else
+                    {
+                      if (! in_obj_cache)
+                        ovc = octave::to_ov (new_object);
+
+                      // pass object to loadobj
+                      ov = (meth.execute (octave_value_list (ovc), 1))(0);
+                    }
+                }
+
+              if (! ov.is_defined ())
+                {
+                  warning ("load: loadobj method does not return a value");
+                  return;
+                }
+
+              // FIXME: A loadobj method can return any type. If the return
+              //        type is not a classdef object of the correct class,
+              //        then the loaded object must be replaced by whatever the
+              //        return type and contents are.
+              if (! ov.is_classdef_object ())
+                {
+                  std::string type = ov.type_name ();
+                  warning ("load: loadobj method does not return correct type "
+                           "'%s'. This is currently not supported.",
+                           type.c_str ());
+                  return;
+                }
+              else if (ov.class_name () != class_name ())
+                {
+                  std::string class_nm = ov.class_name ();
+                  warning ("load: loadobj method does not return classdef object "
+                           "of correct class '%s'. This is currently not supported.",
+                           class_nm.c_str ());
+                  return;
+                }
+
+              if (in_obj_cache)
+                // Copy the results from the loadobj methods to the object in
+                // the cache.
+                ovc.classdef_object_value ()->m_object = ov.classdef_object_value ()->m_object;
+              else
+                ovc = ov;
+            }
+          else
+            {
+              if (std::get<bool> (m[n]))
+                {
+                  // If saveobj is overloaded by this classdef and it returned
+                  // anything other than a classdef object of the correct
+                  // class, then a variable named 'any' is meant to be passed
+                  // to loadobj, but if loadobj is not overloaded, it should
+                  // not fill in any property 'any' in the loaded object.
+                  if (! prop_map.isfield ("any") || prop_map.numel () != 1)
+                    {
+                      warning ("load: expected scalar value for custom type when loading object");
+                      return;
+                    }
+
+                  // FIXME: What should be done here?
+                  octave_value any_val = (prop_map.getfield ("any"))(0);
+                  std::string type = any_val.type_name ();
+                  if (type != type_name ())
+                    {
+                      warning ("load: cannot restore value of object that was saved as a different type (%s)",
+                               type.c_str ());
+                      return;
+                    }
+
+                  std::string cls_nm = any_val.class_name ();
+                  if (cls_nm != class_name ())
+                    {
+                      warning ("load: cannot restore value of object that was saved as a different class (%s)",
+                               cls_nm.c_str ());
+                      return;
+                    }
+
+                  // If the value in the "any" field has the correct type and
+                  // class, we can load it like it were saved "normally".
+                  // FIXME: Can this ever happen?
+                  prop_map = any_val.classdef_object_value ()->map_value (false, true);
+                }
+
+              octave::cdef_object new_object;
+              if (in_obj_cache)
+                new_object = ovc.classdef_object_value ()->m_object;
+              else
+                new_object = scalar_obj.copy ();
+
+              string_vector fnames = prop_map.fieldnames ();
+              string_vector sv = map_keys ();
+              for (octave_idx_type i = 0; i < prop_map.nfields (); i++)
+                for (octave_idx_type j = 0; j < sv.numel (); j++)
+                  if (sv[j] == fnames(i))
+                    {
+                      new_object.set_property (0, sv[j], prop_map.contents (fnames(i)).xelem (0));
+                      break;
+                    }
+
+              if (! in_obj_cache)
+                ovc = octave::to_ov (new_object);
+            }
+
+          lss.set_mcos_object_cache_entry (id, ovc);
+        }
+
+      if (m.size () == 1)
+        m_object = ovc.classdef_object_value ()->m_object;
+      else
+        {
+          octave_value_list ovl_idx;
+          std::list<octave_value_list> idx_tmp;
+          ovl_idx(0) = n+1;
+          idx_tmp.push_back (ovl_idx);
+          octave_value tmp = subsasgn ("(", idx_tmp, ovc);
+
+          // FIXME: Is this assignment only needed for value classes?
+          m_object = tmp.classdef_object_value ()->m_object;
+        }
+    }
+
+  // Reshape to the correct dimensions.
+  if (dv != dims ())
+    {
+      octave_value ov_reshaped = reshape (dv);
+      m_object = ov_reshaped.classdef_object_value ()->m_object;
+    }
+}
+
+bool
+octave_classdef::save_ascii (std::ostream& os)
+{
+  os << "# classname: " << class_name () << "\n";
+
+  const dim_vector dv = m_object.dims ();
+  os << "# ndims: " << dv.ndims () << "\n";
+
+  for (int i = 0; i < dv.ndims (); i++)
+    os << ' ' << dv(i);
+  os << "\n";
+
+  std::vector<bool> is_new (numel ());
+  std::vector<std::tuple<octave_map, uint32_t, bool>> m
+    = saveobj (is_new);
+
+  for (octave_idx_type n = 0; static_cast<size_t> (n) < m.size (); n++)
+    {
+      os << "# id: " << std::get<uint32_t> (m[n]) << "\n";
+
+      // Check if this is a reference to an already existing object
+      if (! is_new[n])
+        {
+          os << "# length: 0\n";
+          continue;
+        }
+
+      octave_idx_type nf = std::get<octave_map> (m[n]).nfields ();
+
+      os << "# length: " << nf << "\n";
+
+      os << "# metadata: ";
+      if (std::get<bool> (m[n]))
+        os << "saveobj_defined";
+      os << "\n";
+
+      string_vector keys = std::get<octave_map> (m[n]).fieldnames ();
+
+      for (octave_idx_type i = 0; i < nf; i++)
+        {
+          std::string key = keys(i);
+
+          // querying values from an octave_map returns 'Cell' objects
+          octave_value val = (std::get<octave_map> (m[n]).contents (key))(0);
+
+          bool b = save_text_data (os, val, key, false, 0);
+
+          if (! b)
+            return ! os.fail ();
+        }
+    }
+
+  return true;
+}
+
+bool
+octave_classdef::load_ascii (std::istream& is)
+{
+  octave_idx_type len = 0;
+  dim_vector dv (1, 1);
+
+  if (extract_keyword (is, "ndims", len, true))
+    {
+      int mdims = std::max (static_cast<int> (len), 2);
+      dv.resize (mdims);
+      for (int i = 0; i < mdims; i++)
+        is >> dv(i);
+    }
+  else
+    error ("load: failed to extract keyword 'ndims' for classdef object");
+
+  // vector for each element in the array containing:
+  // * a map with the values of the class properties
+  // * a unique identifier of the object in the file
+  // * an indicator whether the object has a custom return type
+  std::vector<std::tuple<octave_map, uint32_t, bool>> m (dv.numel ());
+
+  for (octave_idx_type i = 0; i < dv.numel (); i++)
+    {
+      if (! extract_keyword (is, "id", std::get<uint32_t> (m[i]), true))
+        error ("load: failed to extract keyword 'id' for classdef object");
+
+      if (! extract_keyword (is, "length", len, true))
+        error ("load: failed to extract keyword 'length' for classdef object");
+
+      if (len < 0)
+        error ("load: failed to extract number of properties for classdef object");
+
+      if (len == 0)
+        continue;
+
+      std::string metadata;
+      if (! extract_keyword (is, "metadata", metadata, true))
+        error ("load: failed to extract keyword 'metadata' for classdef object");
+
+      size_t pos = metadata.find ("saveobj_defined");
+      std::get<bool> (m[i]) = (pos != std::string::npos);
+
+      for (octave_idx_type j = 0; j < len; j++)
+        {
+          octave_value t2;
+          bool dummy;
+
+          std::string nm = read_text_data (is, "", dummy, t2, j, false);
+
+          if (! is)
+            break;
+
+          // Set the field in the octave_map
+          std::get<octave_map> (m[i]).setfield (nm, t2);
+        }
+
+      if (! is)
+        error ("load: failed to load classdef object");
+    }
+
+  loadobj (m, dv);
+
+  return true;
+}
 
 static bool
 in_class_method (const octave::cdef_class& cls)
@@ -91,46 +489,50 @@ octave_classdef::subsref (const std::string& type,
           m_count++;
           args(0) = octave_value (this);
 
-          octave::cdef_method meth_nargout
-            = cls.find_method ("numArgumentsFromSubscript");
-          if (meth_nargout.ok ())
+          if (nargout <= 0)
             {
-              octave_value_list args_nargout (3);
-
-              args_nargout(0) = args(0);
-              args_nargout(1) = args(1);
-              // FIXME: Third argument should be one of the possible values of
-              //        the matlab.mixin.util.IndexingContext enumeration class.
-              args_nargout(2) = octave_value (Matrix ());
-              retval = meth_nargout.execute (args_nargout, 1, true,
-                                             "numArgumentsFromSubscript");
-
-              nargout = retval(0).strict_int_value
-                ("subsref: return value of 'numArgumentsFromSubscript' must be integer");
-            }
-          else if (nargout <= 0)
-            {
-              // If the number of output arguments is unknown, attempt to set up
-              // a proper value for nargout at least in the simple case where the
-              // cs-list-type expression - i.e., {} or ().x, is the leading one.
-              bool maybe_cs_list_query = (type[0] == '.' || type[0] == '{'
-                                          || (type.length () > 1 && type[0] == '('
-                                              && type[1] == '.'));
-
-              if (maybe_cs_list_query)
+              // If the last index type is not '()', the final value of nargout is
+              // unknown. Try to get its value
+              if (type.back () != '(')
                 {
-                  // Set up a proper nargout for the subsref call by calling numel.
-                  octave_value_list tmp;
-                  int nout;
-                  if (type[0] != '.')
-                    tmp = idx.front ();
+                  // See if method numArgumentsFromSubscript is defined
+                  octave::cdef_method meth_nargout
+                    = cls.find_method ("numArgumentsFromSubscript");
 
-                  nout = xnumel (tmp);
-                  // Take nout as nargout for subsref, unless the index expression
-                  // is a whole sentence starting with the form id.member and id is
-                  // one element (in that case, nargout remains 0).
-                  if (type[0] != '.' || nout != 1 || nargout < 0)
-                    nargout = nout;
+                  if (meth_nargout.ok ())
+                    {
+                      octave_value_list args_nargout (3);
+
+                      args_nargout(0) = args(0);
+                      args_nargout(1) = args(1);
+                      // FIXME: Third argument should be one of the possible values of
+                      //        the matlab.mixin.util.IndexingContext enumeration class.
+                      args_nargout(2) = octave_value (Matrix ());
+                      retval = meth_nargout.execute (args_nargout, 1, true,
+                                                    "numArgumentsFromSubscript");
+
+                      nargout = retval(0).strict_int_value
+                        ("subsref: return value of 'numArgumentsFromSubscript' must be integer");
+                    }
+                  else
+                    {
+                      // Method numArgumentsFromSubscript undefined. Attempt to set up
+                      // a proper value for nargout at least in the simple case where the
+                      // cs-list-type expression - i.e., {} or ().x, is the leading one.
+
+                      // Set up a proper nargout for the subsref call by calling numel.
+                      octave_value_list tmp;
+                      int nout;
+                      if (type[0] != '.')
+                        tmp = idx.front ();
+
+                      nout = xnumel (tmp);
+                      // Take nout as nargout for subsref, unless the index expression
+                      // is a whole sentence starting with the form id.member and id is
+                      // one element (in that case, nargout remains 0).
+                      if (type[0] != '.' || nout != 1 || nargout < 0)
+                        nargout = nout;
+                    }
                 }
               else if (nargout < 0)
                 nargout = 1;
@@ -296,6 +698,15 @@ octave_classdef::xnumel (const octave_value_list& idx)
 {
   octave_idx_type retval = -1;
 
+  // FIXME: This method is only used in subsref and subsasgn operations, to find
+  // out the number of elements in the cs-list corresponding to the subsref
+  // output or the subsasgn lvalue.
+  // This method currently calls the classdef's numel method to do its task, but
+  // this is incompatible with Matlab. Matlab calls numArgumentsFromSubscript
+  // for that purpose. We cannot call numArgumentsFromSubscript here because that
+  // method needs all the information about the indices of the subsref/subsasgn
+  // operation (possibly multiple levels of indexing of different types)
+
   octave::cdef_class cls = m_object.get_class ();
 
   if (! in_class_method (cls) && ! called_from_builtin ())
@@ -334,6 +745,41 @@ octave_classdef::xnumel (const octave_value_list& idx)
     }
 
   retval = octave_base_value::xnumel (idx);
+
+  return retval;
+}
+
+octave_value
+octave_classdef::reshape (const dim_vector& new_dims) const
+{
+  octave_value retval;
+
+  octave::cdef_class cls = m_object.get_class ();
+
+  if (! in_class_method (cls) && ! called_from_builtin ())
+    {
+      octave::cdef_method meth = cls.find_method ("reshape");
+
+      if (meth.ok ())
+        {
+          octave_value_list args;
+
+          args(0) = octave::to_ov (m_object.clone ());
+          args(1) = new_dims.as_array ();
+
+          octave_value_list retlist;
+
+          retlist = meth.execute (args, 1, true, "reshape");
+
+          if (retlist.empty ())
+            error ("overloaded method 'reshape' did not return any value");
+
+          retval = retlist(0);
+        }
+    }
+
+  if (! retval.is_defined ())
+    retval = m_object.reshape (new_dims);
 
   return retval;
 }

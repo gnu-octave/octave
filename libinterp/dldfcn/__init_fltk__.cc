@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2007-2025 The Octave Project Developers
+// Copyright (C) 2007-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -1555,6 +1555,9 @@ private:
               const char *e_text = Fl::event_text ();
               int e_state = Fl::event_state ();
               octave_scalar_map evt = format_key_event (e_key, e_text, e_state);
+              // FIXME: This should return the graphics handle of the object
+              evt.assign ("Source", "");
+              evt.assign ("EventName", "KeyPress");
 
               m_fp.set_currentcharacter (std::string (e_text));
 
@@ -1631,6 +1634,9 @@ private:
                   const char *e_text = Fl::event_text ();
                   evt = format_key_event (e_key, e_text, e_state);
                 }
+              // FIXME: This should return the graphics handle of the object
+              evt.assign ("Source", "");
+              evt.assign ("EventName", "KeyRelease");
 
               if (! m_fp.get_keyreleasefcn ().isempty ()
                   && (evt.contents ("Key").length () > 0))
@@ -1800,7 +1806,7 @@ private:
                     pixel2pos (ax, Fl::event_x (), Fl::event_y () - menu_dy (),
                                x1, y1);
 
-                    // FIXME: should we only zoom about point for 2D plots?
+                    // FIXME: should we only zoom about point for 2-D plots?
 
                     ap.zoom_about_point ("both", x1, y1, factor, false);
                     mark_modified ();

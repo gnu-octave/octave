@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2007-2025 The Octave Project Developers
+// Copyright (C) 2007-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -22,23 +22,23 @@
 // <https://www.gnu.org/licenses/>.
 //
 ////////////////////////////////////////////////////////////////////////
-
 package org.octave;
+
+import java.lang.ref.Cleaner;
 
 public class OctaveReference
 {
+  private static final Cleaner CLEANER = Cleaner.create ();
+
   private int ID;
+
+  private native static void doFinalize (int ID);
 
   public OctaveReference (int ID)
   {
     this.ID = ID;
-  }
 
-  private native static void doFinalize (int ID);
-
-  protected void finalize () throws Throwable
-  {
-    doFinalize (this.ID);
+    CLEANER.register (this, () -> doFinalize (ID) );
   }
 
   public String toString ()

@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2020-2025 The Octave Project Developers
+## Copyright (C) 2020-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -39,11 +39,11 @@
 ## @example
 ## @group
 ## cos ([-3/2, -1/2, 1/2, 3/2] * pi)
-## @result{}
+## @xresult{}
 ##      -1.8370e-16   6.1232e-17   6.1232e-17  -1.8370e-16
 ##
 ## cospi ([-3/2, -1/2, 1/2, 3/2])
-## @result{}
+## @xresult{}
 ##        0   0   0   0
 ## @end group
 ## @end example

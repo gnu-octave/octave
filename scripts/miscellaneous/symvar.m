@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2008-2025 The Octave Project Developers
+## Copyright (C) 2008-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -38,7 +38,7 @@
 ## @example
 ## @group
 ## symvar ("x^2 + y^2 == 4")
-## @result{} @{
+## @xresult{} @{
 ##      [1,1] = x
 ##      [2,1] = y
 ##    @}

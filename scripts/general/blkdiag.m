@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2000-2025 The Octave Project Developers
+## Copyright (C) 2000-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -47,8 +47,8 @@ function M = blkdiag (varargin)
     error ("blkdiag: all arguments must be two-dimensional matrices");
   endif
 
-  ## size is an option for cellfun, but it's a bit different from
-  ## calling size directly.
+  ## 'size' is an option for cellfun, but it's a bit different from
+  ## calling size directly which is required here.
   tmp = cell2mat (cellfun (@size, varargin', "uniformoutput", false));
   csz = cumsum ([0 0; tmp], 1);
 

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -72,8 +72,6 @@ public:
     spmd_end,
     while_end,
   };
-
-public:
 
   token ()
     : m_type_tag (invalid_token)
@@ -160,17 +158,6 @@ public:
 
 private:
 
-  bool m_maybe_cmd {false};
-
-  bool m_tspc {false};
-
-  filepos m_beg_pos;
-  filepos m_end_pos;
-
-  int m_tok_id {-1};
-
-  token_type m_type_tag {generic_token};
-
   class superclass_info
   {
   public:
@@ -250,6 +237,19 @@ private:
 
     std::variant<std::string, octave_value, end_tok_type, superclass_info> m_value;
   };
+
+  //--------
+
+  bool m_maybe_cmd {false};
+
+  bool m_tspc {false};
+
+  filepos m_beg_pos;
+  filepos m_end_pos;
+
+  int m_tok_id {-1};
+
+  token_type m_type_tag {generic_token};
 
   tok_info m_tok_info;
 

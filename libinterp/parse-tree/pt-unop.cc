@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -37,7 +37,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 // Unary expressions.
 
 std::string
-tree_unary_expression::oper () const
+tree_unary_expression::op_str () const
 {
   return octave_value::unary_op_as_string (m_etype);
 }

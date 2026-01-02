@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -59,7 +59,7 @@ For example:
 @example
 @group
 sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])
-   @result{} [ 0.50000, 0.66667; 0.66667, 0.50000 ]
+   @xresult{} [ 0.50000, 0.66667; 0.66667, 0.50000 ]
 @end group
 @end example
 @end deftypefn */)

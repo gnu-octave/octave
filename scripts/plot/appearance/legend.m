@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2010-2025 The Octave Project Developers
+## Copyright (C) 2010-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -520,18 +520,19 @@ endfunction
 
 function addproperties (hl)
 
-  persistent default = {"north", "northoutside", ...
-                        "south", "southoutside", ...
-                        "east", "eastoutside", ...
-                        "west", "westoutside", ...
-                        "{northeast}", "northeastoutside", ...
-                        "northwest", "northwestoutside", ...
-                        "southeast", "southeastoutside", ...
-                        "southwest", "southwestoutside", ...
-                        "best", "bestoutside", ...
-                        "none"};
+  persistent default_locs = ...
+    strjoin ({"north", "northoutside", ...
+              "south", "southoutside", ...
+              "east", "eastoutside", ...
+              "west", "westoutside", ...
+              "{northeast}", "northeastoutside", ...
+              "northwest", "northwestoutside", ...
+              "southeast", "southeastoutside", ...
+              "southwest", "southwestoutside", ...
+              "best", "bestoutside", ...
+              "none"}, "|");
 
-  addproperty ("location", hl, "radio", strjoin (default(:), "|"));
+  addproperty ("location", hl, "radio", default_locs);
 
   addproperty ("orientation", hl, "radio", "{vertical}|horizontal");
 
@@ -549,7 +550,7 @@ function addproperties (hl)
 
   addproperty ("edgecolor", hl, "color", [.15 .15 .15]);
 
-  addproperty ("textcolor", hl, "color", "k");
+  addproperty ("textcolor", hl, "color", get (0, 'DefaultTextColor'));
 
   addproperty ("textposition", hl, "radio", "left|{right}");
 
@@ -802,7 +803,7 @@ function opts = parse_opts (varargin)
       obj_labels = cellstr (varargin{1});
       varargin(1) = [];
       nargs--;
-    elseif (all (cellfun (@ischar, varargin)))
+    elseif (all (cellfun ('ischar', varargin)))
       obj_labels = varargin;
       varargin = {};
       nargs = 0;
@@ -866,7 +867,7 @@ function [labels, next_idx] = displayname_or_default (hplots, hl = [])
   endif
 
   ## Fallback to automatic names for empty labels
-  empty_label_idx = cellfun (@isempty, labels);
+  empty_label_idx = cellfun ('isempty', labels);
 
   if (any (empty_label_idx) && ! isempty (hl))
     ## Empty strings must not be blindly replaced by data%d. If there exist
@@ -1242,8 +1243,16 @@ function safe_property_link (h1, h2, props)
     prop = props{ii};
     lsn = {h1, prop, @(h, ~) set (h2, prop, get (h, prop))};
     addlistener (lsn{:});
-    addlistener (h2, "beingdeleted", @(~, ~) dellistener (lsn{:}));
+    addlistener (h2, "beingdeleted", @(~, ~) safe_dellistener (lsn{:}));
   endfor
+
+endfunction
+
+function safe_dellistener (h, prop, fcn)
+
+  if (ishghandle (h))
+    dellistener (h, prop, fcn);
+  endif
 
 endfunction
 

@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2000-2025 The Octave Project Developers
+## Copyright (C) 2000-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -45,10 +45,10 @@
 ## @example
 ## @group
 ## strtok ("this is the life")
-##      @result{} "this"
+##      @xresult{} "this"
 ##
 ## [tok, rem] = strtok ("14*27+31", "+-*/")
-##      @result{}
+##      @xresult{}
 ##         tok = 14
 ##         rem = *27+31
 ## @end group

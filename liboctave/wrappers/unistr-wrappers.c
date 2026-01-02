@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2018-2025 The Octave Project Developers
+// Copyright (C) 2018-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -34,7 +34,15 @@
 const uint8_t *
 octave_u8_check_wrapper (const uint8_t *src, size_t n)
 {
+// Silence invalid warning in gnulib
+#ifdef HAVE_PRAGMA_GCC_DIAGNOSTIC
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wcast-qual"
+#endif
   return u8_check (src, n);
+#ifdef HAVE_PRAGMA_GCC_DIAGNOSTIC
+#  pragma GCC diagnostic pop
+#endif
 }
 
 int

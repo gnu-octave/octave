@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2002-2025 The Octave Project Developers
+// Copyright (C) 2002-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -260,7 +260,7 @@ For example:
 @example
 @group
 kron (1:4, ones (3, 1))
-     @result{}  1  2  3  4
+     @xresult{}  1  2  3  4
          1  2  3  4
          1  2  3  4
 @end group

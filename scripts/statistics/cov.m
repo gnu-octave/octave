@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1995-2025 The Octave Project Developers
+## Copyright (C) 1995-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -120,7 +120,7 @@ function c = cov (x, varargin)
   nanflag = "includenan";
 
   if (! (isnumeric (x) || islogical (x)))
-      error ("cov: X must be a numeric vector or matrix");
+      error ("cov: X must be a numeric or logical vector or matrix");
   endif
 
   if (isrow (x))
@@ -187,7 +187,7 @@ function c = cov (x, varargin)
 
     if (is_y)
       if (! (isnumeric (y) || islogical (y)))
-        error ("cov: Y must be a numeric vector or matrix");
+        error ("cov: Y must be a numeric or logical vector or matrix");
 
       elseif (numel (x) != numel (y))
         error ("cov: X and Y must have the same number of observations");
@@ -203,21 +203,21 @@ function c = cov (x, varargin)
     endif
 
     if ((opt != 0 && opt != 1) || ! isscalar (opt))
-      error ("cov: normalization paramter OPT must be 0 or 1");
+      error ("cov: normalization parameter OPT must be 0 or 1");
     endif
   endif
 
   if (ndims (x) > 2)
-    ## Note: Matlab requires 2D inputs even if providing a y input results in
+    ## Note: Matlab requires 2-D inputs even if providing a y input results in
     ##       reshaping for operation as cov (x(:), y(:)) (tested in 2022b).
     ##       Octave permits arbitrarily shaped inputs for the cov(x,y) case as
     ##       long as numel (x) == numel (y).  Only when no y is provided is X
-    ##       restricted to 2D for consistent 2D columnwise behavior of cov.
+    ##       restricted to 2-D for consistent 2-D columnwise behavior of cov.
     error ("cov: X must be a 2-D matrix or vector");
   endif
 
   ## Special case: empty inputs.  Output shape changes depends on number of
-  ## columns.  Inputs already verified as limited to 2D.
+  ## columns.  Inputs already verified as limited to 2-D.
   if (isempty (x))
     sx = size (x);
 
@@ -505,17 +505,16 @@ endfunction
 ## Test input validation
 %!error <Invalid call> cov ()
 %!error <Invalid call> cov (1, 2, 3, 4, 5)
-%!error <X must be a> cov ("foo")
-%!error <X must be a> cov ({123})
-%!error <X must be a> cov (struct())
+%!error <X must be a numeric or logical> cov ("foo")
+%!error <X must be a numeric or logical> cov ({123})
 %!error <X must be a 2-D> cov (ones (2, 2, 2))
 %!error <X must be a 2-D> cov (ones (1, 0, 2))
 %!error <only one NANFLAG> cov (1, "foo", 0, "includenan")
 %!error <only one NANFLAG> cov (1, 1, "foo", "includenan")
-%!error <normalization paramter OPT must be> cov (1, 2, [])
-%!error <normalization paramter OPT must be> cov (1, 2, 1.1)
-%!error <normalization paramter OPT must be> cov (1, 2, -1)
-%!error <normalization paramter OPT must be> cov (1, 2, [0 1])
+%!error <normalization parameter OPT must be> cov (1, 2, [])
+%!error <normalization parameter OPT must be> cov (1, 2, 1.1)
+%!error <normalization parameter OPT must be> cov (1, 2, -1)
+%!error <normalization parameter OPT must be> cov (1, 2, [0 1])
 %!error <Y must be a> cov (1, {123})
 %!error <Y must be a> cov (1, struct())
 %!error <X and Y must have the same number> cov (5,[1 2])

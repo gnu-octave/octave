@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2017-2025 The Octave Project Developers
+## Copyright (C) 2017-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -110,7 +110,7 @@ function labels = zticklabels (varargin)
     endif
 
     ## Convert any numeric elements to characters, make it a 1-D cell array.
-    arg = cellfun (@num2str, arg, "UniformOutput", false)(:);
+    arg = cellfun ('num2str', arg, "UniformOutput", false)(:);
 
     ## Pad with blank cell entries if needed.
     arg((numel (arg) + 1):(numel (get (hax, "ztick")))) = {""};

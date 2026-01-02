@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2000-2025 The Octave Project Developers
+// Copyright (C) 2000-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -28,7 +28,7 @@
 
 #include "octave-config.h"
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "lo-array-errwarn.h"
 
 extern OCTAVE_API bool index_in_bounds (const Array<octave_idx_type>& ra_idx,
@@ -76,9 +76,6 @@ freeze (Array<octave::idx_vector>& ra_idx, const dim_vector& dimensions,
         int resize_ok);
 
 extern OCTAVE_API bool vector_equivalent (const dim_vector& dv);
-
-OCTAVE_DEPRECATED (9, "all_ok (Array<octave::idx_vector>&) is obsolete and always returns true")
-extern OCTAVE_API bool all_ok (const Array<octave::idx_vector>& ra_idx);
 
 extern OCTAVE_API bool
 any_orig_empty (const Array<octave::idx_vector>& ra_idx);

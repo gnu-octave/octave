@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2012-2025 The Octave Project Developers
+// Copyright (C) 2012-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -54,9 +54,8 @@
 #include "pt-walk.h"
 #include "unwind-prot.h"
 
-// Define to 1 to enable debugging statements.
-#define DEBUG_TRACE 0
-#if DEBUG_TRACE
+#define OCTAVE_CDEF_CLASS_DEBUG 0
+#if OCTAVE_CDEF_CLASS_DEBUG
 #  include <iostream>
 #endif
 
@@ -112,6 +111,8 @@ cdef_class::cdef_class_rep::find_method (const std::string& nm, bool local)
       // Look into superclasses
 
       Cell super_classes = get ("SuperClasses").cell_value ();
+      cdef_class cls1;
+      int nfnd = 0;
 
       for (int i = 0; i < super_classes.numel (); i++)
         {
@@ -120,8 +121,22 @@ cdef_class::cdef_class_rep::find_method (const std::string& nm, bool local)
           cdef_method meth = cls.find_method (nm);
 
           if (meth.ok ())
-            return meth;
+            {
+              nfnd++;
+              if (nfnd == 1)
+                cls1 = cls;
+              else if (nfnd == 2)
+                // FIXME: This error is emitted when a method with conflicting
+                //        definitions is attempted to be used. Ideally, this
+                //        error would be emitted on construction of the object.
+                error ("method %s: conflicting definitions in classes '%s' and '%s'",
+                       nm.c_str (), cls1.get_name ().c_str (),
+                       cls.get_name ().c_str ());
+            }
         }
+
+      if (nfnd == 1)
+        return cls1.find_method (nm);
     }
 
   return cdef_method ();
@@ -275,7 +290,7 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
 
               for (const auto& cdef_cls : explicit_ctor_list)
                 {
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
                   std::cerr << "explicit superclass constructor: "
                             << cdef_cls.get_name () << std::endl;
 #endif
@@ -379,6 +394,8 @@ cdef_class::cdef_class_rep::find_property (const std::string& nm)
   // Look into superclasses
 
   Cell super_classes = get ("SuperClasses").cell_value ();
+  cdef_class cls1;
+  int nfnd = 0;
 
   for (int i = 0; i < super_classes.numel (); i++)
     {
@@ -387,8 +404,22 @@ cdef_class::cdef_class_rep::find_property (const std::string& nm)
       cdef_property prop = cls.find_property (nm);
 
       if (prop.ok ())
-        return prop;
-    }
+        {
+          nfnd++;
+          if (nfnd == 1)
+            cls1 = cls;
+          else if (nfnd == 2)
+            // FIXME: This error is emitted when a property with conflicting
+            //        definitions is attempted to be used. Ideally, this
+            //        error would be emitted on construction of the object.
+            error ("property %s: conflicting definitions in classes '%s' and '%s'",
+                   nm.c_str (), cls1.get_name ().c_str (),
+                   cls.get_name ().c_str ());
+        }
+     }
+
+  if (nfnd == 1)
+    return cls1.find_property (nm);
 
   return cdef_property ();
 }
@@ -610,7 +641,7 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
     case '(':
       // Constructor call
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
       std::cerr << "constructor" << std::endl;
 #endif
 
@@ -621,7 +652,7 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
       {
         // Static method, constant (or property?)
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
         std::cerr << "static method/property" << std::endl;
 #endif
 
@@ -842,9 +873,10 @@ cdef_class::cdef_class_rep::get_method (int line) const
 }
 
 octave_value
-cdef_class::cdef_class_rep::construct (const octave_value_list& args)
+cdef_class::cdef_class_rep::construct (const octave_value_list& args,
+                                       const bool default_initialize)
 {
-  cdef_object obj = construct_object (args);
+  cdef_object obj = construct_object (args, default_initialize);
 
   if (obj.ok ())
     return to_ov (obj);
@@ -853,7 +885,8 @@ cdef_class::cdef_class_rep::construct (const octave_value_list& args)
 }
 
 cdef_object
-cdef_class::cdef_class_rep::construct_object (const octave_value_list& args)
+cdef_class::cdef_class_rep::construct_object (const octave_value_list& args,
+                                              const bool default_initialize)
 {
   if (is_abstract ())
     error ("cannot instantiate object for abstract class '%s'",
@@ -921,7 +954,8 @@ cdef_class::cdef_class_rep::construct_object (const octave_value_list& args)
 
       initialize_object (obj);
 
-      run_constructor (obj, args);
+      if (! default_initialize)
+        run_constructor (obj, args);
 
       return obj;
     }
@@ -980,7 +1014,7 @@ cdef_class::make_meta_class (interpreter& interp,
   if (! t->package_name ().empty ())
     full_class_name = t->package_name () + '.' + full_class_name;
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
   std::cerr << "class: " << full_class_name << std::endl;
 #endif
 
@@ -1002,7 +1036,7 @@ cdef_class::make_meta_class (interpreter& interp,
         {
           std::string sclass_name = (scls)->class_name ();
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
           std::cerr << "superclass: " << sclass_name << std::endl;
 #endif
 
@@ -1047,7 +1081,7 @@ cdef_class::make_meta_class (interpreter& interp,
           std::string aname = attr->ident ()->name ();
           octave_value avalue = compute_attribute_value (tw, attr);
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
           std::cerr << "class attribute: " << aname << " = "
                     << attribute_value_to_string (attr, avalue) << std::endl;
 #endif
@@ -1076,7 +1110,7 @@ cdef_class::make_meta_class (interpreter& interp,
         {
           std::map<std::string, octave_value> amap;
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
           std::cerr << "method block" << std::endl;
 #endif
 
@@ -1089,7 +1123,7 @@ cdef_class::make_meta_class (interpreter& interp,
                   std::string aname = attr_p->ident ()->name ();
                   octave_value avalue = compute_attribute_value (tw, attr_p);
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
                   std::cerr << "method attribute: " << aname << " = "
                             << attribute_value_to_string (attr_p, avalue)
                             << std::endl;
@@ -1118,9 +1152,9 @@ cdef_class::make_meta_class (interpreter& interp,
                     {
                       cdef_method meth = cdm.make_method (retval, mname, mtd);
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
                       std::cerr << (mname == class_name ? "constructor"
-                                    : "method")
+                                                        : "method")
                                 << ": " << mname << std::endl;
 #endif
 
@@ -1188,7 +1222,7 @@ cdef_class::make_meta_class (interpreter& interp,
         {
           std::map<std::string, octave_value> amap;
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
           std::cerr << "property block" << std::endl;
 #endif
 
@@ -1201,7 +1235,7 @@ cdef_class::make_meta_class (interpreter& interp,
                   std::string aname = attr_p->ident ()->name ();
                   octave_value avalue = compute_attribute_value (tw, attr_p);
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
                   std::cerr << "property attribute: " << aname << " = "
                             << attribute_value_to_string (attr_p, avalue)
                             << std::endl;
@@ -1229,7 +1263,7 @@ cdef_class::make_meta_class (interpreter& interp,
 
                   prop.doc_string (prop_p->doc_string ());
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
                   std::cerr << "property: " << prop_p->ident ()->name ()
                             << std::endl;
 #endif
@@ -1239,7 +1273,7 @@ cdef_class::make_meta_class (interpreter& interp,
                     {
                       octave_value pvalue = expr->evaluate (tw);
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_CLASS_DEBUG
                       std::cerr << "property default: "
                                 << attribute_value_to_string (prop_p, pvalue)
                                 << std::endl;

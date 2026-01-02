@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1994-2025 The Octave Project Developers
+## Copyright (C) 1994-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -40,15 +40,7 @@ function y = asech (x)
 endfunction
 
 
-%!testif ; ! ismac ()
-%! v = [0, pi*i];
-%! x = [1, -1];
-%! assert (asech (x), v, sqrt (eps));
-
-%!test <*52627>
-%! ## Same test code as above, but intended only for test statistics on Mac.
-%! ## Mac trig/hyperbolic functions have huge tolerances.
-%! if (! ismac ()), return; endif
+%!test
 %! v = [0, pi*i];
 %! x = [1, -1];
 %! assert (asech (x), v, sqrt (eps));

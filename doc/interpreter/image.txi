@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2025 The Octave Project Developers
+@c Copyright (C) 1996-2026 The Octave Project Developers
 @c
 @c This file is part of Octave.
 @c
@@ -152,6 +152,10 @@ formats.
 @DOCSTRING(rgb2ind)
 
 @DOCSTRING(ind2rgb)
+
+The following function allows processing an existing image.
+
+@DOCSTRING(dither)
 
 Octave also provides tools to produce and work with movie frame structures.
 Those structures encapsulate the image data (@qcode{"cdata"} field) together

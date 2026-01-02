@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2022-2025 The Octave Project Developers
+## Copyright (C) 2022-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -198,7 +198,7 @@ function C = tensorprod (A, B, varargin)
   remainDimA = [1:ndimsA];
   remainDimA(dimA) = [];   # Dimensions of A to keep
   newDimOrderA = [remainDimA, dimA];  # New dim order [to_keep, to_contract]
-  newSizeA = [prod(sizeA(remainDimA)), prod(sizeA(dimA))]; # Temp. 2D size for A
+  newSizeA = [prod(sizeA(remainDimA)), prod(sizeA(dimA))]; # tmp 2-D size for A
 
   ## Prepare for B (See comments for A.
   ## FIXME: Note that in principle, prod (sizeB (dimB)) should always be equal
@@ -208,7 +208,7 @@ function C = tensorprod (A, B, varargin)
   newDimOrderB = [remainDimB, dimB];
   newSizeB = [prod(sizeB(remainDimB)), prod(sizeB(dimB))];
 
-  ## Do reshaping into 2D array
+  ## Do reshaping into 2-D array
   newA = reshape (permute (A, newDimOrderA), newSizeA);
   newB = reshape (permute (B, newDimOrderB), newSizeB);
 
@@ -342,10 +342,10 @@ endfunction
 %!        reshape ([1, 2, 2, 4], [1, 2, 1, 1, 2]));
 %!assert (tensorprod (v1, v1, [], [], "NumDimensionsA", 3),
 %!        reshape ([1, 2, 2, 4], [1, 2, 1, 1, 2]));
-%!assert (tensorprod (v1, v1, "all", "NumDimensionsA", 3), 5);
-%!assert (tensorprod (M1, v1, 2, "NumDimensionsA", 2), [5; 11]);
-%!assert (tensorprod (M1, v1, 2, "NumDimensionsA", 5), [5; 11]);
-%!assert (tensorprod (M1, v1, [2, 3], "NumDimensionsA", 5), [5; 11]);
+%!assert (tensorprod (v1, v1, "all", "NumDimensionsA", 3), 5)
+%!assert (tensorprod (M1, v1, 2, "NumDimensionsA", 2), [5; 11])
+%!assert (tensorprod (M1, v1, 2, "NumDimensionsA", 5), [5; 11])
+%!assert (tensorprod (M1, v1, [2, 3], "NumDimensionsA", 5), [5; 11])
 %!assert (tensorprod (M1, M2, "NumDimensionsA", 2), reshape ([1,3,2,4,3,9,6, ...
 %!        12,5,15,10,20,2,6,4,8,4,12,8,16,6,18,12,24], [2,2,3,2]))
 %!assert (tensorprod (M1, M2, "NumDimensionsA", 3), reshape ([1,3,2,4,3,9,6, ...

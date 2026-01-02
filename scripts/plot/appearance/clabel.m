@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2008-2025 The Octave Project Developers
+## Copyright (C) 2008-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -77,7 +77,9 @@ function hlabels = clabel (c, varargin)
 
   if (nargin < 1)
     print_usage ();
-  elseif (nargin == 1)
+  endif
+
+  if (nargin == 1)
     hparent = gca ();
   else
     arg = varargin{1};
@@ -95,7 +97,7 @@ function hlabels = clabel (c, varargin)
     endif
   endif
 
-  if (length (varargin) > 0 && isnumeric (varargin{1}))
+  if (numel (varargin) > 0 && isnumeric (varargin{1}))
     v = varargin{1}(:);
     varargin(1) = [];
   else

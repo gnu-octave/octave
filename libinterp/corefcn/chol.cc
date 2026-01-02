@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -332,17 +332,17 @@ cholinsert, choldelete, cholshift}
 %! r = sparse ([sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)]);
 %! [rd, pd, qd] = chol (a);
 %! [rv, pv, qv] = chol (a, "vector");
-%! assert (r, rd, eps)
-%! assert (r, rv, eps)
-%! assert (pd, 0)
-%! assert (pd, pv)
-%! assert (qd, sparse (eye (2)))
-%! assert (qv, [1 2])
+%! assert (r, rd, eps);
+%! assert (r, rv, eps);
+%! assert (pd, 0);
+%! assert (pd, pv);
+%! assert (qd, sparse (eye (2)));
+%! assert (qv, [1 2]);
 %!
 %! [rv, pv, qv] = chol (a, "Vector"); # check case sensitivity
-%! assert (r, rv, eps)
-%! assert (pd, pv)
-%! assert (qv, [1 2])
+%! assert (r, rv, eps);
+%! assert (pd, pv);
+%! assert (qv, [1 2]);
 
 %!testif HAVE_CHOLMOD <*42587>
 %! A = sparse ([1 0 8;0 1 8;8 8 1]);

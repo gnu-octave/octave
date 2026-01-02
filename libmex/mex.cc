@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2006-2025 The Octave Project Developers
+// Copyright (C) 2006-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -27,9 +27,9 @@
 #  include "config.h"
 #endif
 
-// #define DEBUG 1
+// #define OCTAVE_MEX_DEBUG 1
 
-#if defined (DEBUG)
+#if defined (OCTAVE_MEX_DEBUG)
 #  include <iostream>
 #endif
 
@@ -243,7 +243,7 @@ xmalloc (size_t n)
 {
   void *ptr = std::malloc (n);
 
-#if defined (DEBUG)
+#if defined (OCTAVE_MEX_DEBUG)
   std::cerr << "xmalloc (" << n << ") = " << ptr << std::endl;
 #endif
 
@@ -255,9 +255,8 @@ xrealloc (void *ptr, size_t n)
 {
   void *newptr = std::realloc (ptr, n);
 
-#if defined (DEBUG)
-  std::cerr << "xrealloc (" << ptr << ", " << n << ") = " << newptr
-            << std::endl;
+#if defined (OCTAVE_MEX_DEBUG)
+  std::cerr << "xrealloc (" << ptr << ", " << n << ") = " << newptr << std::endl;
 #endif
 
   return newptr;
@@ -266,7 +265,7 @@ xrealloc (void *ptr, size_t n)
 static void
 xfree (void *ptr)
 {
-#if defined (DEBUG)
+#if defined (OCTAVE_MEX_DEBUG)
   std::cerr << "xfree (" << ptr << ")" << std::endl;
 #endif
 
@@ -290,7 +289,7 @@ public:
 };
 
 template <>
-class fp_type_traits <FloatComplex>
+class fp_type_traits<FloatComplex>
 {
 public:
   static const bool is_complex = true;

@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2000-2025 The Octave Project Developers
+## Copyright (C) 2000-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -44,13 +44,13 @@
 ## @example
 ## @group
 ## strmatch ("apple", "apple juice")
-##      @result{} 1
+##      @xresult{} 1
 ##
 ## strmatch ("apple", ["apple  "; "apple juice"; "an apple"])
-##      @result{} [1; 2]
+##      @xresult{} [1; 2]
 ##
 ## strmatch ("apple", ["apple  "; "apple juice"; "an apple"], "exact")
-##      @result{} [1]
+##      @xresult{} [1]
 ## @end group
 ## @end example
 ##

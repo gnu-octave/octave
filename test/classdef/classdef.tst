@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2013-2025 The Octave Project Developers
+## Copyright (C) 2013-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -111,74 +111,94 @@
 %!test <*54783>
 %! obj = foo_subsref_subsasgn (1);
 %! obj(2) = 3;
-%! assert (obj(2) == 3)
-%! assert (obj{2} == 3)
-%! assert (isequal (obj.x, [1 3 3 4]))
+%! assert (obj(2) == 3);
+%! assert (obj{2} == 3);
+%! assert (isequal (obj.x, [1 3 3 4]));
 %! obj{2} = 4;
-%! assert (obj(2) == 4)
-%! assert (obj{2} == 4)
-%! assert (isequal (obj.x, [1 4 3 4]))
+%! assert (obj(2) == 4);
+%! assert (obj{2} == 4);
+%! assert (isequal (obj.x, [1 4 3 4]));
 %! obj(end) = 6;
-%! assert (obj(end) == 6)
-%! assert (obj{end} == 6)
-%! assert (isequal (obj.x, [1 4 3 6]))
+%! assert (obj(end) == 6);
+%! assert (obj{end} == 6);
+%! assert (isequal (obj.x, [1 4 3 6]));
 %! obj{end} = 8;
-%! assert (obj(end) == 8)
-%! assert (obj{end} == 8)
-%! assert (isequal (obj.x, [1 4 3 8]))
+%! assert (obj(end) == 8);
+%! assert (obj{end} == 8);
+%! assert (isequal (obj.x, [1 4 3 8]));
 %! obj.x = 1:4;
-%! assert (isequal (obj.x, 1:4))
+%! assert (isequal (obj.x, 1:4));
 %! obj(1:3) = 7:9;
-%! assert (isequal (obj(1:3), 7:9))
-%! assert (isequal (obj.x, [7 8 9 4]))
+%! assert (isequal (obj(1:3), 7:9));
+%! assert (isequal (obj.x, [7 8 9 4]));
 %! obj(2:end) = 5:7;
-%! assert (isequal (obj(2:end), 5:7))
-%! assert (isequal (obj.x, [7 5 6 7]))
+%! assert (isequal (obj(2:end), 5:7));
+%! assert (isequal (obj.x, [7 5 6 7]));
 
-%!test <54966>
+%!test <*54966>
 %! obj = foo_subsref_subsasgn (1);
 %! obj{1:3} = 5:7;
-%! assert (isequal ([obj{1:3}], 5:7))
-%! assert (isequal (obj.x, [5 6 7 4]))
+%! assert (isequal ([obj{1:3}], 5:7));
+%! assert (isequal (obj.x, [5 6 7 4]));
 %! obj{2:end} = 7:9;
-%! assert (isequal ([obj{2:end}], 7:9))
-%! assert (isequal (obj.x, [5 7 8 9]))
+%! assert (isequal ([obj{2:end}], 7:9));
+%! assert (isequal (obj.x, [5 7 8 9]));
+%! fail ("[obj{1:3}] = 5:7;", "invalid number of output arguments");
 
 %!test <*54783>
 %! obj = foo_subsref_subsasgn (1);
 %! obj.x(2) = 3;
-%! assert (obj.x(2) == 3)
-%! assert (obj.x{2} == 3)
-%! assert (isequal (obj.x, [1 3 3 4]))
+%! assert (obj.x(2) == 3);
+%! assert (obj.x{2} == 3);
+%! assert (isequal (obj.x, [1 3 3 4]));
 %! obj.x{2} = 4;
-%! assert (obj.x(2) == 4)
-%! assert (obj.x{2} == 4)
-%! assert (isequal (obj.x, [1 4 3 4]))
+%! assert (obj.x(2) == 4);
+%! assert (obj.x{2} == 4);
+%! assert (isequal (obj.x, [1 4 3 4]));
 %! obj.x(end) = 6;
-%! assert (obj.x(end) == 6)
-%! assert (obj.x{end} == 6)
-%! assert (isequal (obj.x, [1 4 3 6]))
+%! assert (obj.x(end) == 6);
+%! assert (obj.x{end} == 6);
+%! assert (isequal (obj.x, [1 4 3 6]));
 %! obj.x{end} = 8;
-%! assert (obj.x(end) == 8)
-%! assert (obj.x{end} == 8)
-%! assert (isequal (obj.x, [1 4 3 8]))
+%! assert (obj.x(end) == 8);
+%! assert (obj.x{end} == 8);
+%! assert (isequal (obj.x, [1 4 3 8]));
 %! obj.x = 1:4;
-%! assert (isequal (obj.x, 1:4))
+%! assert (isequal (obj.x, 1:4));
 %! obj.x(1:3) = 7:9;
-%! assert (isequal (obj.x(1:3), 7:9))
-%! assert (isequal (obj.x, [7 8 9 4]))
+%! assert (isequal (obj.x(1:3), 7:9));
+%! assert (isequal (obj.x, [7 8 9 4]));
 %! obj.x(2:end) = 5:7;
-%! assert (isequal (obj.x(2:end), 5:7))
-%! assert (isequal (obj.x, [7 5 6 7]))
+%! assert (isequal (obj.x(2:end), 5:7));
+%! assert (isequal (obj.x, [7 5 6 7]));
 
-%!test <54966>
+%!test <*54966>
 %! obj = foo_subsref_subsasgn (1);
 %! obj.x{1:3} = 5:7;
-%! assert (isequal ([obj.x{1:3}], 5:7))
-%! assert (isequal (obj.x, [5 6 7 4]))
+%! assert (isequal ([obj.x{1:3}], 5:7));
+%! assert (isequal (obj.x, [5 6 7 4]));
 %! obj.x{2:end} = 7:9;
-%! assert (isequal ([obj.x{2:end}], 7:9))
-%! assert (isequal (obj.x, [5 7 8 9]))
+%! assert (isequal ([obj.x{2:end}], 7:9));
+%! assert (isequal (obj.x, [5 7 8 9]));
+%! fail ("[obj.x{1:3}] = 5:7;", "invalid number of output arguments");
+
+%!test <*60723>
+%! # Check that numel is not called in subsasgn, simple assignment
+%! obj = class_bug60723A;
+%! obj.c = 20;
+%! assert (obj.c, 20);
+
+%!test <60723>
+%! # Check that numel is not called in subsasgn, multi-assignment
+%! obj = class_bug60723A;
+%! [obj.c] = 20;
+%! assert (obj.c, 20);
+
+%!test <60723>
+%! # Check that numel is not called in subsref
+%! obj = class_bug60723B;
+%! assert ([obj{1:5}], repelem (5, 5));
+%! assert ([obj(1:5).a], repelem (5, 5));
 
 %!test <*55223>
 %! obj = foo_subsref_subsasgn (2);
@@ -187,7 +207,7 @@
 %! obj{2}{2} = 4;
 %! assert (obj{2}{2} == 4);
 
-%!test <54966>
+%!test <*54966>
 %! obj = foo_subsref_subsasgn (2);
 %! obj{1:2}(1:2) = ones (2);
 %! assert (isequal (obj{1:2}(1:2), ones (2)));
@@ -225,3 +245,1122 @@
 %! result = fcn ([]);
 %! assert (numel (result), 2);
 %! assert (class (result), "foo_value_class");
+
+## duplicate definitions of methods in parent classes (bug #50011)
+%!error <method .* conflicting>
+%! cls_50011 = class_bug50011_1 ();
+%! cls_50011.m_c ();
+
+## duplicate definitions of properties in parent classes (bug #50011)
+%!error <property .* conflicting>
+%! cls_50011 = class_bug50011_2 ();
+%! cls_50011.m_c ();
+
+## reshape array of value class objects
+%!test <*65179>
+%! obj(1,1) = value_class ();
+%! obj(2,3) = value_class ();
+%! assert (size (obj), [2, 3]);
+%! assert (size (reshape (obj, [3, 2])), [3, 2]);
+
+## reshape array of handle class objects
+%!test <*65179>
+%! obj1(1,1) = handle_class ();
+%! obj1(2,3) = handle_class ();
+%! assert (size (obj1), [2, 3]);
+%! obj2 = reshape (obj1, [3, 2]);
+%! assert (size (obj2), [3, 2]);
+%! obj1(2,3).a = 42;
+%! assert (obj2(3,2).a, 42);
+
+## reshape array of value class objects with overloaded reshape function
+%!test <*65179>
+%! obj1(1,1) = value_class_reshape ();
+%! obj1(2,3) = value_class_reshape ();
+%! assert (size (obj1), [2, 3]);
+%! obj2 = reshape (obj1, [3, 2]);
+%! assert (size (obj2), [2, 3]);
+%! assert (obj2(end).a, [3, 2]);
+
+## reshape on scalar objects only works for all-one dimensions
+%!test <*65179>
+%! assert (size (reshape (value_class (), [1, 1])), [1, 1]);
+
+%!error <cannot reshape scalar .* to .* array>
+%! reshape (value_class (), [3, 2]);
+
+## subsasgn of classdef array with fewer ()-indices than array dimensions
+%!test <*65179>
+%! obj(2,3,2) = value_class ();
+%! obj(12).a = 42;
+%! assert (size (obj), [2, 3, 2]);
+%! assert (obj(2,3,2).a, 42);
+%! obj(2,4).a = 33;
+%! assert (size (obj), [2, 3, 2]);
+%! assert (obj(2,1,2).a, 33);
+
+## properties take precedence over methods with the same name
+%!test <*67362>
+%! obj = class_bug67362 ();
+%! assert (obj.shared_name, 42);
+
+## concatenation of value classes without conversion
+%!test <*44665>
+%! p = class_pair (3, 5);
+%! p2 = class_pair (7, 4);
+%! y = [p, [p2, p]];
+%! assert (size (y), [1, 3]);
+%! assert ([y.first; y.second], [3, 7, 3; 5, 4, 5]);
+%! z = [y; p2, [p2, p]];
+%! assert (size (z), [2, 3]);
+%! assert ([z.first; z.second], [3, 7, 7, 7, 3, 3; 5, 4, 4, 4, 5, 5]);
+%! v = [z, z; y, p, [p2, p]];
+%! assert (size (v), [3, 6]);
+
+## concatenation of value classes using functions
+%!test <*44665>
+%! p = class_pair (3, 5);
+%! p2 = class_pair (7, 4);
+%! assert( size (horzcat (p, p2, p)), [1, 3]);
+%! assert( size (vertcat (p, p2, p)), [3, 1]);
+%! assert( size (cat (4, p, p2)), [1, 1, 1, 2]);
+
+## concatenation with handle class
+%!test <*44665>
+%! h = handle_class ();
+%! h.a = 1;
+%! h2 = handle_class ();
+%! h2.a = 2;
+%! arr = [h, h2, h];
+%! assert (size (arr), [1, 3]);
+%! assert ([arr(:).a], [1, 2, 1]);
+%! h(1).a = 3;
+%! assert ([arr(:).a], [3, 2, 3]);
+
+## error message when concatenating incompatible classdefs, no constructors
+%!error <cat: cannot convert from type "handle_class" to type "value_class">
+%! v = value_class ();
+%! h = handle_class ();
+%! [ v, h ];
+
+## previous test, but try type converting value class to handle class
+%!error <cat: cannot convert from type "value_class" to type "handle_class">
+%! v = value_class ();
+%! h = handle_class ();
+%! [ h, v ];
+
+## error message when concatenating classdef and builtin-type, no constructor
+%!error <cat: cannot convert from type "double" to type "value_class">
+%! v = value_class ();
+%! [ v, 3 ];
+
+## previous test, but try type converting value class to handle class
+%!error <cat: cannot convert from type "double" to type "handle_class">
+%! h = handle_class ();
+%! [ h, 3 ];
+
+## concatenation of empty object with value class
+%!test <*44665>
+%! v = value_class ();
+%! arr = [ [] v [] ];
+%! arr = [ [] arr [] ];
+%! assert (size(arr), [1 1]);
+
+## previous test, but with handle class
+%!test <*44665>
+%! h = handle_class ();
+%! arr = [ [] h [] ];
+%! arr = [ [] arr [] ];
+%! assert (size(arr), [1 1]);
+
+## error message when concatenating incompatible classdefs, failed constructor
+## FIXME: May change this error in the future to indicate that the type
+## conversion was tried explicitly during a concatenation. Right now, this
+## error is thrown in the function "attempt_type_conversion" in data.cc, which
+## may not necessarily be called by only "cat".
+%!error <foo_value_class constructor failed for class_pair_elem argument>
+%! f = foo_value_class (4, 12, 20000);
+%! p = class_pair_elem (5);
+%! [ f, p ];
+
+## classdef concatenation of value classes using conversion method of
+## non-dominant class.
+## Since neither class in this example has a defined dominance relation, the
+## dominant class is the left-most class in the concatenation.
+%!test <*44665>
+%! y = [class_pair_elem(7), class_pair(3, 5)];
+%! assert (class (y), 'class_pair_elem');
+%! assert (size (y), [1, 2]);
+%! assert ([y.value], [7, 3]);
+
+## previous test, but with handle classes
+%!test <*44665>
+%! y = [class_pair_elem_handle(7), class_pair_handle(3, 5)];
+%! assert (class (y), 'class_pair_elem_handle');
+%! assert (size (y), [1, 2]);
+%! assert ([y.value], [7, 3]);
+
+## classdef concatenation using constructor of dominant class to convert other
+## classdefs
+%!test <*44665>
+%! y = [class_pair(3, 5), class_pair_elem(7)];
+%! assert (class (y), 'class_pair');
+%! assert ([y.first; y.second], [3, 7; 5, 0]);
+
+## pprevious test, but with handle classes
+%!test <*44665>
+%! y = [class_pair_handle(3, 5), class_pair_elem_handle(7)];
+%! assert (class (y), 'class_pair_handle');
+%! assert ([y.first; y.second], [3, 7; 5, 0]);
+
+## classdef concatenation of value classes using constructor of dominant class
+## to convert built-in types
+%!test <*44665>
+%! y = class_pair_elem (1);
+%! y = [y, double(2)];
+%! y = [y, single(3)];
+%! y = [y, int8(4)];
+%! y = [y, uint8(5)];
+%! y = [y, int16(6)];
+%! y = [y, uint16(7)];
+%! y = [y, int32(8)];
+%! y = [y, uint32(9)];
+%! y = [y, 'a'];
+%! y = [y, true];
+%! ## Have to declare func handle separately to check equality
+%! f = @(x) x + 1;
+%! y = [y, f];
+%! y = [y, struct("foo", 1)];
+%! y = [y, {1, 2, 3}];
+%! assert (class (y), 'class_pair_elem');
+%! assert (size (y), [1, 14]);
+%! assert (y(2).value, double (2));
+%! assert (y(3).value, single (3));
+%! assert (y(4).value, int8 (4));
+%! assert (y(5).value, uint8 (5));
+%! assert (y(6).value, int16 (6));
+%! assert (y(7).value, uint16 (7));
+%! assert (y(8).value, int32 (8));
+%! assert (y(9).value, uint32 (9));
+%! assert (y(10).value, 'a');
+%! assert (y(11).value, true);
+%! assert (y(12).value, f);
+%! assert (y(13).value, struct ("foo", 1));
+%! assert (y(14).value, {1, 2, 3});
+
+## previous test, but with handle classes
+%!test <*44665>
+%! y = class_pair_elem_handle (1);
+%! y = [y, double(2)];
+%! y = [y, single(3)];
+%! y = [y, int8(4)];
+%! y = [y, uint8(5)];
+%! y = [y, int16(6)];
+%! y = [y, uint16(7)];
+%! y = [y, int32(8)];
+%! y = [y, uint32(9)];
+%! y = [y, 'a'];
+%! y = [y, true];
+%! ## Have to declare func handle separately to check equality
+%! f = @(x) x + 1;
+%! y = [y, f];
+%! y = [y, struct("foo", 1)];
+%! y = [y, {1, 2, 3}];
+%! assert (class (y), 'class_pair_elem_handle');
+%! assert (size (y), [1, 14]);
+%! assert (y(2).value, double (2));
+%! assert (y(3).value, single (3));
+%! assert (y(4).value, int8 (4));
+%! assert (y(5).value, uint8 (5));
+%! assert (y(6).value, int16 (6));
+%! assert (y(7).value, uint16 (7));
+%! assert (y(8).value, int32 (8));
+%! assert (y(9).value, uint32 (9));
+%! assert (y(10).value, 'a');
+%! assert (y(11).value, true);
+%! assert (y(12).value, f);
+%! assert (y(13).value, struct ("foo", 1));
+%! assert (y(14).value, {1, 2, 3});
+
+## concatenation of value classdef (dominant arg) and old-style classes
+%!test <*44665>
+%! p = class_pair_elem (1);
+%! o = osc (2);
+%! arr = [ p, o ];
+%! assert (class (arr), 'class_pair_elem');
+%! assert (size (arr), [1 2]);
+
+## concatenation of value classdef (dominant arg) and old-style classes
+%!test <*44665>
+%! p = class_pair_elem_handle (1);
+%! o = osc (2);
+%! arr = [ p, o ];
+%! assert (class (arr), 'class_pair_elem_handle');
+%! assert (size (arr), [1 2]);
+
+## concatenation of old-style class (dominant arg) and value classdef
+%!test <*44665>
+%! p = class_pair_elem (1);
+%! o = osc (2);
+%! arr = [ o, p ];
+%! assert (class (arr), 'osc');
+%! assert (size (arr), [1 2]);
+
+## concatenation of old-style class (dominant arg) and handle classdef
+%!test <*44665>
+%! p = class_pair_elem_handle (1);
+%! o = osc (2);
+%! arr = [ o, p ];
+%! assert (class (arr), 'osc');
+%! assert (size (arr), [1 2]);
+
+## classdef array concatenation of value classes has value semantics
+%!test <*44665>
+%! p1 = class_pair_elem (1);
+%! p2 = class_pair_elem (2);
+%! arr = [p1, p2];
+%! p1.value = 3;
+%! ## Array elements should be independent copies (value semantics)
+%! assert (arr(1).value, 1);
+%! assert (arr(2).value, 2);
+%! assert (p1.value, 3);
+
+## classdef array concatenation of handle classes has handle semantics
+%!test <*44665>
+%! p1 = class_pair_elem_handle (1);
+%! p2 = class_pair_elem_handle (2);
+%! arr = [p1, p2];
+%! p1.value = 3;
+%! ## Array elements should be pointers to the same underlying object
+%! assert (arr(1).value, 3);
+%! assert (arr(2).value, 2);
+%! assert (p1.value, 3);
+
+## concatenation edge cases - single object operations
+%!test <*44665>
+%! p1 = class_pair (1, 2);
+%! ## Concatenating single object should preserve dimensions
+%! result = [p1];
+%! assert (size (result), [1, 1]);
+%! assert (result.first, 1);
+%! ## Test assignment with a 1x1 object -- should work the same as a scalar
+%! result.first = 2;
+%! assert (result.first, 2);
+%! ## Using cat with single object
+%! result2 = cat (1, p1);
+%! assert (size (result2), [1, 1]);
+%! assert (result2.first, 1);
+
+## previous test, but with handle classes
+%!test <*44665>
+%! h = class_pair_handle (1, 2);
+%! ## Concatenating single object should preserve dimensions
+%! result = [h];
+%! assert (size (result), [1, 1]);
+%! assert (result.first, 1);
+%! ## Test assignment with a 1x1 object -- should work the same as a scalar
+%! result.first = 2;
+%! assert (result.first, 2);
+%! ## Using cat with single object
+%! result2 = cat (1, h);
+%! assert (size (result2), [1, 1]);
+%! assert (result2.first, 2);
+
+## Concatenation with overloaded "cat" method, value class
+%!test <*44665>
+%! o1 = overloaded_cat_class ();
+%! o1.data = 1;
+%! o2 = overloaded_cat_class ();
+%! o2.data = 2;
+%! arr = horzcat(o1, o2);
+%! # See "overloaded_cat_class.m" for specifics how cat is implemented
+%! assert (size (arr), [1, 1]);
+%! assert (numel ({arr.data}), 1);
+%! assert (arr.data, [1, 2]);
+%! arr = vertcat (arr, arr);
+%! assert (size (arr), [1, 1]);
+%! assert (numel ({arr.data}), 1);
+%! assert (arr.data, [1, 2; 1, 2]);
+%! arr = cat (3, arr, arr);
+%! assert (numel ({arr.data}), 1);
+%! assert (arr.data, cat (3, [1, 2; 1, 2], [1, 2; 1, 2]));
+
+## previous test, but with handle classes
+%!test <*44665>
+%! o1 = overloaded_cat_class_handle ();
+%! o1.data = 1;
+%! o2 = overloaded_cat_class_handle ();
+%! o2.data = 2;
+%! arr = horzcat (o1, o2);
+%! # See "overloaded_cat_class.m" for specifics how cat is implemented
+%! assert (size (arr), [1, 1]);
+%! assert (numel ({arr.data}), 1);
+%! assert (arr.data, [1, 2]);
+%! arr = vertcat (arr, arr);
+%! assert (size (arr), [1, 1]);
+%! assert (numel ({arr.data}), 1);
+%! assert (arr.data, [1, 2; 1, 2]);
+%! arr = cat (3, arr, arr);
+%! assert (numel ({arr.data}), 1);
+%! assert (arr.data, cat (3, [1, 2; 1, 2], [1, 2; 1, 2]));
+
+## Test concatenation of classdef that overloads horzcat and vertcat, but not cat
+## See "overloaded_horzcat_vertcat_class.m" for more specifics
+%!test <*44665>
+%! o1 = overloaded_horzcat_vertcat_class ();
+%! o1.data = 1;
+%! o2 = overloaded_horzcat_vertcat_class ();
+%! o2.data = 2;
+%! arr = horzcat(o1, o2);
+%! assert (size (arr), [1, 1]);
+%! assert (numel ({arr.data}), 1);
+%! assert (arr.data, [1, 2]);
+%! o1.data = 1;
+%! o2.data = 2;
+%! arr = vertcat (o1, o2);
+%! assert (size (arr), [1, 1]);
+%! assert (numel ({arr.data}), 1);
+%! assert (arr.data, [1; 2]);
+%! o1.data = 1;
+%! o2.data = 2;
+%! arr = [o1, o2; o1, o2];
+%! assert (size (arr), [1, 1]);
+%! assert (numel ({arr.data}), 1);
+%! assert (arr.data, [1, 2; 1, 2]);
+%! o1.data = 1;
+%! o2.data = 2;
+%! arr = cat (3, o1, o2);
+%! assert (size (arr), [1, 1, 2]);
+%! assert (numel ({arr.data}), 2);
+%! assert (cat (3, arr.data), cat (3, 1, 2));
+
+## previous test, but with handle classes
+%!test <*44665>
+%! o1 = overloaded_horzcat_vertcat_class_handle ();
+%! o1.data = 1;
+%! o2 = overloaded_horzcat_vertcat_class_handle ();
+%! o2.data = 2;
+%! arr_horzcat = horzcat (o1, o2);
+%! assert (size (arr_horzcat), [1, 1]);
+%! assert (numel ({arr_horzcat.data}), 1);
+%! assert (arr_horzcat.data, [1, 2]);
+%! o1.data = 1;
+%! o2.data = 2;
+%! arr_vertcat = vertcat (o1, o2);
+%! assert (size (arr_vertcat), [1, 1]);
+%! assert (numel ({arr_vertcat.data}), 1);
+%! assert (arr_vertcat.data, [1; 2]);
+%! o1.data = 1;
+%! o2.data = 2;
+%! arr_matrix = [o1, o2; o1, o2];
+%! assert (size (arr_matrix), [1, 1]);
+%! assert (numel ({arr_matrix.data}), 1);
+%! assert (arr_matrix.data, [1, 2, 2; 1, 2, 2]);
+%! o1.data = 1;
+%! o2.data = 2;
+%! arr = cat (3, o1, o2);
+%! assert (size (arr), [1, 1, 2]);
+%! assert (numel ({arr.data}), 2);
+%! assert (cat (3, arr.data), cat (3, 1, 2));
+
+# selection of dominant class when concatenating classdefs
+# FIXME: This relies on the "InferiorClasses" attribute being supported.
+%!test <44665>
+%! p1 = class_pair_elem (1);
+%! p2 = class_pair_elem_dominant (2);
+%! arr = [ p1, p2 ];
+%! assert (class (arr), 'class_pair_elem_dominant');
+
+## previous test, but with handle classes
+%!test <44665>
+%! p1 = class_pair_elem_handle (1);
+%! p2 = class_pair_elem_dominant_handle (2);
+%! arr = [ p1, p2 ];
+%! assert (class (arr), 'class_pair_elem_dominant_handle');
+
+## deep copy (on write) of value class arrays
+%!test <*54028>
+%! arr1 = value_class ();
+%! arr1.a = 1;
+%! arr1(2) = arr1;
+%! arr2 = arr1;
+%! arr2(1).a = 2;
+%! assert (arr1(1).a, 1);
+
+## same thing with handle class arrays
+%!test
+%! arr1 = handle_class ();
+%! arr1.a = 1;
+%! arr1(2) = arr1;
+%! arr2 = arr1;
+%! arr2(1).a = 2;
+%! assert (arr1(1).a, 2);
+
+## Test classdef permutation
+
+## scalar permute with value class - should return scalar unchanged
+%!test <*65179>
+%! obj = foo_value_class (4, 48, 50000);
+%! result = permute (obj, [1, 2]);  # permute ignores out-of-bounds dims on scalars
+%! assert (obj.rate, result.rate);
+%! assert (obj.term, result.term);
+%! assert (obj.principle, result.principle);
+
+## previous test, but with handle classes
+%!test <*65179>
+%! obj = foo_handle_class (4, 48, 50000);
+%! result = permute (obj, [1, 2]);  # permute ignores out-of-bounds dims on scalars
+%! assert (isequal (obj.rate, result.rate));
+%! obj.rate = 5;  # stress test handle semantics
+%! assert (isequal (obj.rate, result.rate));
+%! assert (isequal (obj.term, result.term));
+%! assert (isequal (obj.principle, result.principle));
+
+## scalar permute with value class and extra dim - should return scalar unchanged
+%!test <*65179>
+%! obj = foo_value_class (3, 36, 25000);
+%! result = permute (obj, [2, 1, 3]);  # permute ignores extra ndims on scalars
+%! assert (obj.rate, result.rate);
+%! assert (obj.term, result.term);
+%! assert (obj.principle, result.principle);
+
+## previous test, but with handle classes
+%!test <*65179>
+%! obj = foo_handle_class (3, 36, 25000);
+%! result = permute (obj, [2, 1, 3]);  # permute ignores extra ndims on scalars
+%! assert (isequal (obj.rate, result.rate));
+%! obj.rate = 4;  # stress test handle semantics
+%! assert (isequal (obj.rate, result.rate));
+%! assert (isequal (obj.term, result.term));
+%! assert (isequal (obj.principle, result.principle));
+
+## array permute - 2-D transpose
+%!test <*65179>
+%! obj1 = foo_value_class (4, 48, 50000);
+%! obj2 = foo_value_class (3, 36, 25000);
+%! obj3 = foo_value_class (5, 60, 75000);
+%! obj4 = foo_value_class (6, 72, 10000);
+%! arr = [obj1, obj2; obj3, obj4];
+%! result = permute (arr, [2, 1]);
+%! assert (size (result), [2, 2]);
+%! assert (result(1,1).rate, arr(1,1).rate);
+%! assert (result(1,2).rate, arr(2,1).rate);
+%! assert (result(2,1).rate, arr(1,2).rate);
+%! assert (result(2,2).rate, arr(2,2).rate);
+
+## previous test, but with handle classes
+%!test <*65179>
+%! obj1 = foo_handle_class (4, 48, 50000);
+%! obj2 = foo_handle_class (3, 36, 25000);
+%! obj3 = foo_handle_class (5, 60, 75000);
+%! obj4 = foo_handle_class (6, 72, 10000);
+%! arr = [obj1, obj2; obj3, obj4];
+%! result = permute (arr, [2, 1]);
+%! assert (size (result), [2, 2]);
+%! assert (result(1,1).rate, arr(1,1).rate);
+%! assert (result(1,2).rate, arr(2,1).rate);
+%! assert (result(2,1).rate, arr(1,2).rate);
+%! assert (result(2,2).rate, arr(2,2).rate);
+%! arr(1,1).rate = 7;  # stress test handle semantics
+%! assert (result(1,1).rate, arr(1,1).rate);
+
+## 3-D array permute
+%!test <*65179>
+%! obj1 = foo_value_class (4, 48, 50000);
+%! obj2 = foo_value_class (3, 36, 25000);
+%! obj3 = foo_value_class (5, 60, 75000);
+%! obj4 = foo_value_class (6, 72, 10000);
+%! arr = cat (3, [obj1; obj2], [obj3; obj4]);  # 2x1x2 array
+%! result = permute (arr, [2, 1, 3]);  # 1x2x2 array
+%! assert (size (result), [1, 2, 2]);
+%! assert (result(1,1,1).rate, arr(1,1,1).rate);
+%! assert (result(1,2,1).rate, arr(2,1,1).rate);
+%! assert (result(1,1,2).rate, arr(1,1,2).rate);
+%! assert (result(1,2,2).rate, arr(2,1,2).rate);
+
+## previous test, but with handle classes
+%!test <*65179>
+%! obj1 = foo_handle_class (4, 48, 50000);
+%! obj2 = foo_handle_class (3, 36, 25000);
+%! obj3 = foo_handle_class (5, 60, 75000);
+%! obj4 = foo_handle_class (6, 72, 10000);
+%! arr = cat (3, [obj1; obj2], [obj3; obj4]);  # 2x1x2 array
+%! result = permute (arr, [2, 1, 3]);  # 1x2x2 array
+%! assert (size (result), [1, 2, 2]);
+%! assert (result(1,1,1).rate, arr(1,1,1).rate);
+%! assert (result(1,2,1).rate, arr(2,1,1).rate);
+%! assert (result(1,1,2).rate, arr(1,1,2).rate);
+%! assert (result(1,2,2).rate, arr(2,1,2).rate);
+%! arr(1,1,1).rate = 7;  # stress test handle semantics
+%! assert (result(1,1,1).rate, arr(1,1,1).rate);
+
+## test overloaded "permute" method
+## see "overloaded_permute_class.m" for more specifics
+%!test <*65179>
+%! obj1 = overloaded_permute_class;
+%! obj2 = overloaded_permute_class;
+%! obj3 = overloaded_permute_class;
+%! obj4 = overloaded_permute_class;
+%! arr = [obj1, obj2, obj3, obj4];
+%! result = permute (arr, [2, 1]);
+%! assert (size (result), [1, 4]);  # unchanged
+%! result(1).data = 5;
+%! assert (obj1.data, []);  # stress test value semantics
+%! ## Make it into a 3D array
+%! arr = cat (3, arr, arr);
+%! result = permute (arr, [1, 2, 3]);
+%! assert (size (result), [2, 1, 4]);  # [1, 4, 2] -> [2, 1, 4]
+
+## previous test, but with handle classes
+%!test <*65179>
+%! obj1 = overloaded_permute_class_handle;
+%! obj2 = overloaded_permute_class_handle;
+%! obj3 = overloaded_permute_class_handle;
+%! obj4 = overloaded_permute_class_handle;
+%! arr = [obj1, obj2, obj3, obj4];
+%! result = permute (arr, [2, 1]);
+%! assert (size (result), [1, 4])  # unchanged
+%! result(1).data = 5;
+%! assert (obj1.data, 5);  # stress test handle semantics
+%! ## Make it into a 3D array
+%! arr = cat (3, arr, arr);
+%! result = permute (arr, [1, 2, 3]);
+%! assert (size (result), [2, 1, 4]);  # [1, 4, 2] -> [2, 1, 4]
+
+## Test classdef transpose and ctranspose
+
+## scalar transpose - should return scalar unchanged
+%!test
+%! obj = foo_value_class (4, 48, 50000);
+%! result = transpose (obj);
+%! assert (obj.rate, result.rate);
+%! assert (obj.term, result.term);
+%! assert (obj.principle, result.principle);
+%! assert (size (result), [1, 1]);
+%! obj.rate = 2;
+%! assert (result.rate, 4);  # stress test value semantics
+
+## previous test, but with handle classes
+%!test
+%! obj = foo_handle_class (4, 48, 50000);
+%! result = transpose (obj);
+%! assert (obj.rate, result.rate);
+%! assert (obj.term, result.term);
+%! assert (obj.principle, result.principle);
+%! assert (size (result), [1, 1]);
+%! obj.rate = 2;
+%! assert (result.rate, 2);  # stress test handle semantics
+
+## scalar transpose operator - should return scalar unchanged
+%!test
+%! obj = foo_value_class (4, 48, 50000);
+%! result = obj.';  # Test .' operator
+%! assert (obj.rate, result.rate);
+%! assert (obj.term, result.term);
+%! assert (obj.principle, result.principle);
+%! assert (size (result), [1, 1]);
+%! obj.rate = 2;
+%! assert (result.rate, 4);  # stress test value semantics
+
+## previous test, but with handle classes
+%!test
+%! obj = foo_handle_class (4, 48, 50000);
+%! result = obj.';  # Test .' operator
+%! assert (obj.rate, result.rate);
+%! assert (obj.term, result.term);
+%! assert (obj.principle, result.principle);
+%! assert (size (result), [1, 1]);
+%! obj.rate = 2;
+%! assert (result.rate, 2);  # stress test handle semantics
+
+## scalar ctranspose - should work same as transpose for classdef
+%!test
+%! obj = foo_value_class (4, 48, 50000);
+%! result = ctranspose (obj);
+%! assert (obj.rate, result.rate);
+%! assert (obj.term, result.term);
+%! assert (obj.principle, result.principle);
+%! assert (size (result), [1, 1]);
+%! obj.rate = 2;
+%! assert (result.rate, 4);  # stress test value semantics
+
+## previous test, but with handle classes
+%!test
+%! obj = foo_handle_class (4, 48, 50000);
+%! result = ctranspose (obj);
+%! assert (obj.rate, result.rate);
+%! assert (obj.term, result.term);
+%! assert (obj.principle, result.principle);
+%! assert (size (result), [1, 1]);
+%! obj.rate = 2;
+%! assert (result.rate, 2);  # stress test handle semantics
+
+## scalar ctranspose operator - should work same as transpose for classdef
+%!test
+%! obj = foo_value_class (4, 48, 50000);
+%! result = obj';  # Test ' operator
+%! assert (obj.rate, result.rate);
+%! assert (obj.term, result.term);
+%! assert (obj.principle, result.principle);
+%! assert (size (result), [1, 1]);
+%! obj.rate = 2;
+%! assert (result.rate, 4);  # stress test value semantics
+
+## previous test, but with handle classes
+%!test
+%! obj = foo_handle_class (4, 48, 50000);
+%! result = obj';  # Test ' operator
+%! assert (obj.rate, result.rate);
+%! assert (obj.term, result.term);
+%! assert (obj.principle, result.principle);
+%! assert (size (result), [1, 1]);
+%! obj.rate = 2;
+%! assert (result.rate, 2);  # stress test handle semantics
+
+## 1-D array transpose, dims [1 3] -> dims[3 1], value classes
+%!test
+%! obj1 = foo_value_class (4, 48, 50000);
+%! obj2 = foo_value_class (3, 36, 25000);
+%! obj3 = foo_value_class (5, 60, 75000);
+%! arr = [obj1, obj2, obj3];  # 1x3 row vector
+%! result = transpose (arr);
+%! assert (size (result), [3, 1]);
+%! assert (result(1,1).rate, arr(1,1).rate);
+%! assert (result(2,1).rate, arr(1,2).rate);
+%! assert (result(3,1).rate, arr(1,3).rate);
+
+## previous test, but with handle classes
+%!test
+%! obj1 = foo_handle_class (4, 48, 50000);
+%! obj2 = foo_handle_class (3, 36, 25000);
+%! obj3 = foo_handle_class (5, 60, 75000);
+%! arr = [obj1, obj2, obj3];  # 1x3 row vector
+%! result = transpose (arr);
+%! assert (size (result), [3, 1]);
+%! assert (result(1,1).rate, arr(1,1).rate);
+%! assert (result(2,1).rate, arr(1,2).rate);
+%! assert (result(3,1).rate, arr(1,3).rate);
+%! arr(1,1).rate = 6;  # stress test handle semantics
+%! assert (result(1,1).rate, arr(1,1).rate);
+
+## 1-D array transpose, dims [3 1] -> [1 3], value classes
+%!test
+%! obj1 = foo_value_class (4, 48, 50000);
+%! obj2 = foo_value_class (3, 36, 25000);
+%! obj3 = foo_value_class (5, 60, 75000);
+%! arr = [obj1; obj2; obj3];  # 3x1 column vector
+%! result = arr.';
+%! assert (size (result), [1, 3]);
+%! assert (result(1).rate, obj1.rate);
+%! assert (result(2).rate, obj2.rate);
+%! assert (result(3).rate, obj3.rate);
+
+## previous test, but with handle classes
+%!test
+%! obj1 = foo_handle_class (4, 48, 50000);
+%! obj2 = foo_handle_class (3, 36, 25000);
+%! obj3 = foo_handle_class (5, 60, 75000);
+%! arr = [obj1; obj2; obj3];  # 3x1 column vector
+%! result = arr.';
+%! assert (size (result), [1, 3]);
+%! assert (result(1).rate, obj1.rate);
+%! assert (result(2).rate, obj2.rate);
+%! assert (result(3).rate, obj3.rate);
+%! arr(1).rate = 6;  # stress test handle semantics
+%! assert (result(1).rate, obj1.rate);
+
+## 2-D array transpose, dims [2 2] -> [2 2]
+%!test
+%! obj1 = foo_value_class (4, 48, 50000);
+%! obj2 = foo_value_class (3, 36, 25000);
+%! obj3 = foo_value_class (5, 60, 75000);
+%! obj4 = foo_value_class (2, 24, 40000);
+%! arr = [obj1, obj2; obj3, obj4];  # 2x2 matrix
+%! result = transpose (arr);
+%! assert( size (result), [2, 2]);
+%! assert (result(1,1).rate, arr(1,1).rate);
+%! assert (result(1,2).rate, arr(2,1).rate);
+%! assert (result(2,1).rate, arr(1,2).rate);
+%! assert (result(2,2).rate, arr(2,2).rate);
+
+## previous test, but with handle classes
+%!test
+%! obj1 = foo_handle_class (4, 48, 50000);
+%! obj2 = foo_handle_class (3, 36, 25000);
+%! obj3 = foo_handle_class (5, 60, 75000);
+%! obj4 = foo_handle_class (2, 24, 40000);
+%! arr = [obj1, obj2; obj3, obj4];  # 2x2 matrix
+%! result = transpose (arr);
+%! assert( size (result), [2, 2]);
+%! assert (result(1,1).rate, arr(1,1).rate);
+%! assert (result(1,2).rate, arr(2,1).rate);
+%! assert (result(2,1).rate, arr(1,2).rate);
+%! assert (result(2,2).rate, arr(2,2).rate);
+%! arr(1,1).rate = 6;  # stress test handle semantics
+%! assert (result(1,1).rate, obj1.rate);
+
+## 2-D array transpose, dims [2 3] -> [3 2]
+%!test
+%! obj1 = foo_value_class (1, 12, 10000);
+%! obj2 = foo_value_class (2, 24, 20000);
+%! obj3 = foo_value_class (3, 36, 30000);
+%! obj4 = foo_value_class (4, 48, 40000);
+%! obj5 = foo_value_class (5, 60, 50000);
+%! obj6 = foo_value_class (6, 72, 60000);
+%! arr = [obj1, obj2, obj3; obj4, obj5, obj6];  # 2x3 matrix
+%! result = arr';
+%! assert (size (result), [3, 2]);
+%! assert (result(1,1).rate, arr(1,1).rate);
+%! assert (result(1,2).rate, arr(2,1).rate);
+%! assert (result(2,1).rate, arr(1,2).rate);
+%! assert (result(2,2).rate, arr(2,2).rate);
+%! assert (result(3,1).rate, arr(1,3).rate);
+%! assert (result(3,2).rate, arr(2,3).rate);
+
+## previous test, but with handle classes
+%!test
+%! obj1 = foo_handle_class (1, 12, 10000);
+%! obj2 = foo_handle_class (2, 24, 20000);
+%! obj3 = foo_handle_class (3, 36, 30000);
+%! obj4 = foo_handle_class (4, 48, 40000);
+%! obj5 = foo_handle_class (5, 60, 50000);
+%! obj6 = foo_handle_class (6, 72, 60000);
+%! arr = [obj1, obj2, obj3; obj4, obj5, obj6];  # 2x3 matrix
+%! result = arr';
+%! assert (size (result), [3, 2]);
+%! assert (result(1,1).rate, arr(1,1).rate);
+%! assert (result(1,2).rate, arr(2,1).rate);
+%! assert (result(2,1).rate, arr(1,2).rate);
+%! assert (result(2,2).rate, arr(2,2).rate);
+%! assert (result(3,1).rate, arr(1,3).rate);
+%! assert (result(3,2).rate, arr(2,3).rate);
+%! arr(1,1).rate = 6;  # stress test handle semantics
+%! assert (result(1,1).rate, obj1.rate);
+
+## ctranspose on arrays - should work same as transpose
+%!test
+%! obj1 = foo_value_class (4, 48, 50000);
+%! obj2 = foo_value_class (3, 36, 25000);
+%! arr = [obj1, obj2];
+%! result1 = transpose (arr);
+%! result2 = ctranspose (arr);
+%! assert (size (result1), size (result2));
+%! assert (result1(1).rate, result2(1).rate);
+%! assert (result1(2).rate, result2(2).rate);
+
+## previous test, but with handle classes
+%!test
+%! obj1 = foo_handle_class (4, 48, 50000);
+%! obj2 = foo_handle_class (3, 36, 25000);
+%! arr = [obj1, obj2];
+%! result1 = transpose (arr);
+%! result2 = ctranspose (arr);
+%! assert (size (result1), size (result2));
+%! assert (result1(1).rate, result2(1).rate);
+%! assert (result1(2).rate, result2(2).rate);
+
+## double transpose returns original
+%!test
+%! obj1 = foo_value_class (4, 48, 50000);
+%! obj2 = foo_value_class (3, 36, 25000);
+%! obj3 = foo_value_class (5, 60, 75000);
+%! obj4 = foo_value_class (2, 24, 40000);
+%! arr = [obj1, obj2; obj3, obj4];
+%! result = transpose (transpose (arr));
+%! assert (size (result), size (arr));
+%! assert ([result.rate], [arr.rate])
+
+## previous test, but with handle classes
+%!test
+%! obj1 = foo_handle_class (4, 48, 50000);
+%! obj2 = foo_handle_class (3, 36, 25000);
+%! obj3 = foo_handle_class (5, 60, 75000);
+%! obj4 = foo_handle_class (2, 24, 40000);
+%! arr = [obj1, obj2; obj3, obj4];
+%! result = transpose (transpose (arr));
+%! assert (size (result), size (arr));
+%! assert ([result.rate], [arr.rate])
+
+## test if transpose/ctranspose throws an error for classdef arrays of dim >2
+##
+## this test has four parts to it
+## *.1) (value classes) show that direct function call throws an error
+## *.2) (handle classes) show that direct function call throws an error
+## *.3) (value classes) show that operator usage throws an error
+## *.4) (handle classes) show that operator usage throws an error
+
+## 1.1) (value classes) show that direct function call "transpose" throws an error
+%!error <transpose not defined for N-D objects of value_class class>
+%! arr(1,1,3) = value_class ();
+%! result = transpose (arr);
+
+## 1.2) (handle classes) show that direct function call "transpose" throws an error
+%!error <transpose not defined for N-D objects of handle_class class>
+%! arr(1,1,3) = handle_class ();
+%! result = transpose (arr);
+
+## 1.3) (value classes) show that operator "transpose" usage throws an error
+%!error <transpose not defined for N-D objects of value_class class>
+%! arr(1,1,3) = value_class ();
+%! result = arr.';
+
+## 1.4) (handle classes) show that operator "transpose" usage throws an error
+%!error <transpose not defined for N-D objects of handle_class class>
+%! arr(1,1,3) = handle_class ();
+%! result = arr.';
+
+## 2.1) (value classes) show that direct function call "ctranspose" throws an error
+%!error <ctranspose not defined for N-D objects of value_class class>
+%! arr(1,1,3) = value_class ();
+%! result = ctranspose (arr);
+
+## 2.2) (handle classes) show that direct function call "ctranspose" throws an error
+%!error <ctranspose not defined for N-D objects of handle_class class>
+%! arr(1,1,3) = handle_class ();
+%! result = ctranspose (arr);
+
+## 2.3) (value classes) show that operator "ctranspose" usage throws an error
+%!error <ctranspose not defined for N-D objects of value_class class>
+%! arr(1,1,3) = value_class ();
+%! result = arr';
+
+## 2.4) (handle classes) show that operator "ctranspose" usage throws an error
+%!error <ctranspose not defined for N-D objects of handle_class class>
+%! arr(1,1,3) = handle_class ();
+%! result = arr';
+
+## test overloaded "transpose" method for value classes
+##
+## see "overloaded_transpose_class.m" for more specifics
+##
+## NOTE: "overloaded_transpose_class" does not overload "ctranspose"
+## likewise with the handle class version
+##
+## this test has three parts to it
+## 1.1) test direct call to "transpose", value classes
+%!test
+%! obj1 = overloaded_transpose_class ();
+%! obj2 = overloaded_transpose_class ();
+%! obj3 = overloaded_transpose_class ();
+%! obj1.data = [1, 2, 3];
+%! obj2.data = [4, 5, 6];
+%! obj3.data = [7, 8, 9];
+%! arr = [obj1, obj2, obj3];
+%! result = transpose (arr);
+%! assert (size (result), [1, 3]);  # unchanged
+%! assert (result(1,1).data, [1; 2; 3]);
+%! assert (result(1,2).data, [4; 5; 6]);
+%! assert (result(1,3).data, [7; 8; 9]);
+
+## 1.2) test direct call to "transpose", handle classes
+%!test
+%! obj1 = overloaded_transpose_class_handle ();
+%! obj2 = overloaded_transpose_class_handle ();
+%! obj3 = overloaded_transpose_class_handle ();
+%! obj1.data = [1, 2, 3];
+%! obj2.data = [4, 5, 6];
+%! obj3.data = [7, 8, 9];
+%! arr = [obj1, obj2, obj3];
+%! result = transpose (arr);
+%! assert (size (result), [1, 3]);  # unchanged
+%! assert (result(1,1).data, [1; 2; 3]);
+%! assert (result(1,2).data, [4; 5; 6]);
+%! assert (result(1,3).data, [7; 8; 9]);
+
+## 2.1) test that the .' operator calls the overloaded method, value classes
+%!test
+%! obj1 = overloaded_transpose_class ();
+%! obj2 = overloaded_transpose_class ();
+%! obj3 = overloaded_transpose_class ();
+%! obj1.data = [1, 2, 3];
+%! obj2.data = [4, 5, 6];
+%! obj3.data = [7, 8, 9];
+%! arr = [obj1, obj2, obj3];
+%! result = arr.';
+%! assert (size (result), [1, 3]);  # unchanged
+%! assert (result(1,1).data, [1; 2; 3]);
+%! assert (result(1,2).data, [4; 5; 6]);
+%! assert (result(1,3).data, [7; 8; 9]);
+
+## 2.2) test that the .' operator calls the overloaded method, handle classes
+%!test
+%! obj1 = overloaded_transpose_class_handle ();
+%! obj2 = overloaded_transpose_class_handle ();
+%! obj3 = overloaded_transpose_class_handle ();
+%! obj1.data = [1, 2, 3];
+%! obj2.data = [4, 5, 6];
+%! obj3.data = [7, 8, 9];
+%! arr = [obj1, obj2, obj3];
+%! result = arr.';
+%! assert (size (result), [1, 3]);  # unchanged
+%! assert (result(1,1).data, [1; 2; 3]);
+%! assert (result(1,2).data, [4; 5; 6]);
+%! assert (result(1,3).data, [7; 8; 9]);
+
+## 3.1) test that the ' operator does NOT call the overloaded method, value classes
+%!test
+%! obj1 = overloaded_transpose_class ();
+%! obj2 = overloaded_transpose_class ();
+%! obj3 = overloaded_transpose_class ();
+%! obj1.data = [1, 2, 3];
+%! obj2.data = [4, 5, 6];
+%! obj3.data = [7, 8, 9];
+%! arr = [obj1, obj2, obj3];
+%! result = arr';
+%! assert (size (result), [3, 1]);  # regular ctranspose
+%! assert (result(1,1).data, [1, 2, 3]);
+%! assert (result(2,1).data, [4, 5, 6]);
+%! assert (result(3,1).data, [7, 8, 9]);
+
+## 3.2) test that the ' operator does NOT call the overloaded method, handle classes
+%!test
+%! obj1 = overloaded_transpose_class_handle ();
+%! obj2 = overloaded_transpose_class_handle ();
+%! obj3 = overloaded_transpose_class_handle ();
+%! obj1.data = [1, 2, 3];
+%! obj2.data = [4, 5, 6];
+%! obj3.data = [7, 8, 9];
+%! arr = [obj1, obj2, obj3];
+%! result = arr';
+%! assert (size (result), [3, 1]);  # regular ctranspose
+%! assert (result(1,1).data, [1, 2, 3]);
+%! assert (result(2,1).data, [4, 5, 6]);
+%! assert (result(3,1).data, [7, 8, 9]);
+
+## test overloaded "ctranspose" method for value classes
+##
+## see "overloaded_ctranspose_class.m" for more specifics
+##
+## NOTE: "overloaded_ctranspose_class" does not overload "transpose"
+## likewise with the handle class version
+##
+## this test has three parts to it
+## 1.1) test direct call to "ctranspose", value classes
+%!test
+%! obj1 = overloaded_ctranspose_class ();
+%! obj2 = overloaded_ctranspose_class ();
+%! obj3 = overloaded_ctranspose_class ();
+%! obj1.data = [1, 2, 3];
+%! obj2.data = [4, 5, 6];
+%! obj3.data = [7, 8, 9];
+%! arr = [obj1, obj2, obj3];
+%! result = ctranspose (arr);
+%! assert (size (result), [1, 3]);  # unchanged
+%! assert (result(1,1).data, [1; 2; 3]);
+%! assert (result(1,2).data, [4; 5; 6]);
+%! assert (result(1,3).data, [7; 8; 9]);
+
+## 1.2) test direct call to "ctranspose", handle classes
+%!test
+%! obj1 = overloaded_ctranspose_class_handle ();
+%! obj2 = overloaded_ctranspose_class_handle ();
+%! obj3 = overloaded_ctranspose_class_handle ();
+%! obj1.data = [1, 2, 3];
+%! obj2.data = [4, 5, 6];
+%! obj3.data = [7, 8, 9];
+%! arr = [obj1, obj2, obj3];
+%! result = ctranspose (arr);
+%! assert (size (result), [1, 3]);  # unchanged
+%! assert (result(1,1).data, [1; 2; 3]);
+%! assert (result(1,2).data, [4; 5; 6]);
+%! assert (result(1,3).data, [7; 8; 9]);
+
+## 2.1) test that the .' operator calls the overloaded method, value classes
+%!test
+%! obj1 = overloaded_ctranspose_class ();
+%! obj2 = overloaded_ctranspose_class ();
+%! obj3 = overloaded_ctranspose_class ();
+%! obj1.data = [1, 2, 3];
+%! obj2.data = [4, 5, 6];
+%! obj3.data = [7, 8, 9];
+%! arr = [obj1, obj2, obj3];
+%! result = arr';
+%! assert (size (result), [1, 3]);  # unchanged
+%! assert (result(1,1).data, [1; 2; 3]);
+%! assert (result(1,2).data, [4; 5; 6]);
+%! assert (result(1,3).data, [7; 8; 9]);
+
+## 2.2) test that the .' operator calls the overloaded method, handle classes
+%!test
+%! obj1 = overloaded_ctranspose_class_handle ();
+%! obj2 = overloaded_ctranspose_class_handle ();
+%! obj3 = overloaded_ctranspose_class_handle ();
+%! obj1.data = [1, 2, 3];
+%! obj2.data = [4, 5, 6];
+%! obj3.data = [7, 8, 9];
+%! arr = [obj1, obj2, obj3];
+%! result = ctranspose (arr);
+%! assert (size (result), [1, 3]);  # unchanged
+%! assert (result(1,1).data, [1; 2; 3]);
+%! assert (result(1,2).data, [4; 5; 6]);
+%! assert (result(1,3).data, [7; 8; 9]);
+
+## 3.1) test that the .' operator does NOT call the overloaded method, value classes
+%!test
+%! obj1 = overloaded_ctranspose_class ();
+%! obj2 = overloaded_ctranspose_class ();
+%! obj3 = overloaded_ctranspose_class ();
+%! obj1.data = [1, 2, 3];
+%! obj2.data = [4, 5, 6];
+%! obj3.data = [7, 8, 9];
+%! arr = [obj1, obj2, obj3];
+%! result = arr.';
+%! assert (size (result), [3, 1]);  # regular transpose
+%! assert (result(1,1).data, [1, 2, 3]);
+%! assert (result(2,1).data, [4, 5, 6]);
+%! assert (result(3,1).data, [7, 8, 9]);
+
+## 3.2) test that the .' operator does NOT call the overloaded method, handle classes
+%!test
+%! obj1 = overloaded_ctranspose_class_handle ();
+%! obj2 = overloaded_ctranspose_class_handle ();
+%! obj3 = overloaded_ctranspose_class_handle ();
+%! obj1.data = [1, 2, 3];
+%! obj2.data = [4, 5, 6];
+%! obj3.data = [7, 8, 9];
+%! arr = [obj1, obj2, obj3];
+%! result = arr.';
+%! assert (size (result), [3, 1]);  # regular transpose
+%! assert (result(1,1).data, [1, 2, 3]);
+%! assert (result(2,1).data, [4, 5, 6]);
+%! assert (result(3,1).data, [7, 8, 9]);
+
+## make sure that default transpose doesn't call overridden permute
+##
+## Default transpose is essentially the same thing as "permute(A, [2, 1])".
+## We want to make sure that default transpose does not call to this overrided
+## permute function (which will essentially run "permute(A, [1, 2])").
+%!test
+%! obj1 = overloaded_permute_class ();
+%! obj2 = overloaded_permute_class ();
+%! obj3 = overloaded_permute_class ();
+%! arr = [obj1, obj2, obj3];
+%! result = arr.';
+%! assert (size (result), [3, 1]);  # regular transpose
+
+# same as previous test, but for handle classes
+%!test
+%! obj1 = overloaded_permute_class_handle ();
+%! obj2 = overloaded_permute_class_handle ();
+%! obj3 = overloaded_permute_class_handle ();
+%! arr = [obj1, obj2, obj3];
+%! result = arr.';
+%! assert (size (result), [3, 1]);  # regular transpose
+
+## same as last two tests, but testing "ctranspose"
+%!test
+%! obj1 = overloaded_permute_class ();
+%! obj2 = overloaded_permute_class ();
+%! obj3 = overloaded_permute_class ();
+%! arr = [obj1, obj2, obj3];
+%! result = arr';
+%! assert (size (result), [3, 1]);  # regular ctranspose
+
+## same as previous test, but for handle classes
+%!test
+%! obj1 = overloaded_permute_class_handle ();
+%! obj2 = overloaded_permute_class_handle ();
+%! obj3 = overloaded_permute_class_handle ();
+%! arr = [obj1, obj2, obj3];
+%! result = arr';
+%! assert (size (result), [3, 1]);  # regular ctranspose

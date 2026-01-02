@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2025 The Octave Project Developers
+@c Copyright (C) 1996-2026 The Octave Project Developers
 @c
 @c This file is part of Octave.
 @c
@@ -183,6 +183,8 @@ detect a non-Hermitian matrix.
 
 @DOCSTRING(ordschur)
 
+@DOCSTRING(trexc)
+
 @DOCSTRING(ordqz)
 
 @DOCSTRING(ordeig)
@@ -208,6 +210,8 @@ detect a non-Hermitian matrix.
 @DOCSTRING(logm)
 
 @DOCSTRING(sqrtm)
+
+@DOCSTRING(funm)
 
 @DOCSTRING(kron)
 

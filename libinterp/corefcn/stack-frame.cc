@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1995-2025 The Octave Project Developers
+// Copyright (C) 1995-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -29,8 +29,8 @@
 
 #include <iostream>
 
-#include "lo-regexp.h"
-#include "lo-sysdep.h"
+#include "oct-regexp.h"
+#include "oct-sysdep.h"
 #include "str-vec.h"
 
 #include "defun.h"

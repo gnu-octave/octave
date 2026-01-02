@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2001-2025 The Octave Project Developers
+## Copyright (C) 2001-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -45,14 +45,14 @@
 ## @example
 ## @group
 ## s = rat (pi)
-## @result{} s = 3 + 1/(7 + 1/16)
+## @xresult{} s = 3 + 1/(7 + 1/16)
 ##
 ## [n, d] = rat (pi)
-## @result{} n =  355
-## @result{} d =  113
+## @xresult{} n =  355
+## @xresult{} d =  113
 ##
 ## n / d - pi
-## @result{} 2.6676e-07
+## @xresult{} 2.6676e-07
 ## @end group
 ## @end example
 ##
@@ -61,14 +61,14 @@
 ## @example
 ## @group
 ## s = rat (0.5 + i * pi)
-## @result{} s = complex (1 + 1/(-2), 3 + 1/(7 + 1/16))
+## @xresult{} s = complex (1 + 1/(-2), 3 + 1/(7 + 1/16))
 ##
 ## [n, d] = rat (0.5 + i * pi)
-## @result{} n =  113 + 710i
-## @result{} d =  226
+## @xresult{} n =  113 + 710i
+## @xresult{} d =  226
 ##
 ## n / d - (0.5 + i * pi)
-## @result{} 0 + 2.6676e-07i
+## @xresult{} 0 + 2.6676e-07i
 ## @end group
 ## @end example
 ##
@@ -315,22 +315,22 @@ endfunction
 %! [n, d] = rat (complex (0, -inf));
 %! assert (n, complex (0, -inf));
 %! assert (d, 1);
-%! [n, d] = rat (complex (nan, 0));
-%! assert (n, complex (nan, 0));
+%! [n, d] = rat (complex (NaN, 0));
+%! assert (n, complex (NaN, 0));
 %! assert (d, 1);
-%! [n, d] = rat (complex (0, nan));
-%! assert (n, complex (0, nan));
+%! [n, d] = rat (complex (0, NaN));
+%! assert (n, complex (0, NaN));
 %! assert (d, 1);
 
 ## Test eval with complex inputs
 %!test <*55198>
 %! x = complex (0.5, pi);
-%! assert (eval (rat (x)), x, 1e-6 * norm (x, 1))
+%! assert (eval (rat (x)), x, 1e-6 * norm (x, 1));
 
 ## Test eval with inf*i
 %!test <*55198>
 %! x = complex (0, inf);
-%! assert (eval (rat (x)), x, 1e-6 * norm (x, 1))
+%! assert (eval (rat (x)), x, 1e-6 * norm (x, 1));
 
 %!assert <*43374> (eval (rat (0.75)), [0.75])
 

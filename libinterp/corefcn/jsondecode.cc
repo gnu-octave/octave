@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2020-2025 The Octave Project Developers
+// Copyright (C) 2020-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -531,7 +531,7 @@ Examples:
 @example
 @group
 jsondecode ('[1, 2, null, 3]')
-    @result{} ans =
+    @xresult{} ans =
 
       1
       2
@@ -541,7 +541,7 @@ jsondecode ('[1, 2, null, 3]')
 
 @group
 jsondecode ('["foo", "bar", ["foo", "bar"]]')
-    @result{} ans =
+    @xresult{} ans =
        @{
          [1,1] = foo
          [2,1] = bar
@@ -557,7 +557,7 @@ jsondecode ('["foo", "bar", ["foo", "bar"]]')
 @group
 jsondecode ('@{"nu#m#ber": 7, "s#tr#ing": "hi"@}', ...
             'ReplacementStyle', 'delete')
-    @result{} scalar structure containing the fields:
+    @xresult{} scalar structure containing the fields:
 
          number = 7
          string = hi
@@ -566,7 +566,7 @@ jsondecode ('@{"nu#m#ber": 7, "s#tr#ing": "hi"@}', ...
 @group
 jsondecode ('@{"nu#m#ber": 7, "s#tr#ing": "hi"@}', ...
             'makeValidName', false)
-    @result{} scalar structure containing the fields:
+    @xresult{} scalar structure containing the fields:
 
          nu#m#ber = 7
          s#tr#ing = hi
@@ -574,7 +574,7 @@ jsondecode ('@{"nu#m#ber": 7, "s#tr#ing": "hi"@}', ...
 
 @group
 jsondecode ('@{"1": "one", "2": "two"@}', 'Prefix', 'm_')
-    @result{} scalar structure containing the fields:
+    @xresult{} scalar structure containing the fields:
 
          m_1 = one
          m_2 = two
@@ -624,7 +624,7 @@ jsondecode ('@{"1": "one", "2": "two"@}', 'Prefix', 'm_')
   // problem in decoding JSON arrays as the output may be an array or a cell
   // and that doesn't only depend on the event (startArray) but also on the
   // types of the elements inside the array.
-  d.Parse <rapidjson::kParseNanAndInfFlag> (json.c_str ());
+  d.Parse<rapidjson::kParseNanAndInfFlag> (json.c_str ());
 
   if (d.HasParseError ())
     error ("jsondecode: parse error at offset %u: %s\n",

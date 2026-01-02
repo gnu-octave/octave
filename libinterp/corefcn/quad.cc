@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -30,16 +30,16 @@
 #include <string>
 
 #include "Quad.h"
-#include "lo-mappers.h"
+#include "mappers.h"
 
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
-#include "pager.h"
 #include "ov.h"
 #include "ovl.h"
+#include "pager.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"

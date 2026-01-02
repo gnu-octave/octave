@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2011-2025 The Octave Project Developers
+// Copyright (C) 2011-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -63,7 +63,7 @@ public:
 
   void update_breakpoints ();
   void set_file_name (const QString& fileName);
-  void enable_file_watcher (bool do_enable);
+  void enable_file_watcher (bool do_enable, const QString& fname = QString ());
 
   QString file_name () const { return m_file_name; }
   QString encoding () const { return m_encoding; }
@@ -78,7 +78,7 @@ Q_SIGNALS:
                              bool is_modified);
   void set_focus_editor_signal (QWidget *);
   void edit_area_changed (octave_qscintilla *edit_area);
-  void tab_remove_request ();
+  void tab_remove_request (const QString& file_name);
   void mru_add_file (const QString& file_name, const QString& encoding);
   void editor_check_conflict_save (const QString& saveFileName,
                                    bool remove_on_success);
@@ -121,6 +121,10 @@ Q_SIGNALS:
                                        const QString& base_name,
                                        bool remove_on_success,
                                        bool restore_breakpoints);
+
+  void remove_editor_file_in_browser_signal (const QString& file);
+  void rename_editor_file_in_browser_signal (const QString& old_file,
+                                             const QString& new_file);
 
   // FIXME: The following is similar to "process_octave_code" signal.
   // However, currently that signal is connected to something that simply

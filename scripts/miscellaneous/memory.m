@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2020-2025 The Octave Project Developers
+## Copyright (C) 2020-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -92,7 +92,7 @@
 ## @example
 ## @group
 ## memory ()
-## @result{}
+## @xresult{}
 ## System    RAM: 3934008 KiB,  swap: 4087804 KiB
 ## Octave    RAM:  170596 KiB,  virt: 1347944 KiB
 ## Free      RAM: 1954940 KiB,  swap: 4087804 KiB
@@ -104,7 +104,7 @@
 ##
 ## @example
 ## [userdata, systemdata] = memory ()
-## @result{}
+## @xresult{}
 ##  userdata =
 ##
 ##    scalar structure containing the fields:

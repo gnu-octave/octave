@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2005-2025 The Octave Project Developers
+## Copyright (C) 2005-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -71,7 +71,7 @@ function [status, errmsg] = license (cmd, feature, toggle)
 
   if (nargin == 0)
     ## then only give information about Octave core
-    status = "GNU General Public License";
+    status = "GNU General Public License v3+";
     return;
   endif
 
@@ -113,7 +113,6 @@ function [status, errmsg] = license (cmd, feature, toggle)
       ## I guess we could have the checkout command load packages but it's not
       ## really the same thing.  The closest we have is simply to check if
       ## there is a package with the feature name, and give an error if not.
-
       if (nargin != 2)
         print_usage ();
       endif
@@ -150,7 +149,7 @@ function [features, loaded] = get_all_features ()
 endfunction
 
 
-%!assert (license (), "GNU General Public License")
+%!assert (license (), "GNU General Public License v3+")
 %!assert ((license ("inuse", "octave")).feature, "octave")
 
 %!shared list

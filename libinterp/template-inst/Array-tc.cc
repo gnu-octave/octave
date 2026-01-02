@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -29,6 +29,7 @@
 #  include "config.h"
 #endif
 
+#define OCTINTERP_EXTERN_TEMPLATE_ARRAY
 #include "Array-oct.cc"
 
 #include "ov.h"
@@ -36,12 +37,6 @@
 #include "cdef-object.h"
 
 #include "oct-sort.cc"
-
-#if defined (HAVE_PRAGMA_GCC_VISIBILITY)
-// Visibility attributes are ignored on template instantiation.
-// As a work-around, set visibility to default overriding compiler options.
-#  pragma GCC visibility push(default)
-#endif
 
 NO_INSTANTIATE_ARRAY_SORT_API (octave_value, OCTINTERP_API);
 INSTANTIATE_ARRAY (octave_value, OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API);
@@ -51,7 +46,3 @@ INSTANTIATE_ARRAY (octave_value *, OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API);
 
 NO_INSTANTIATE_ARRAY_SORT_API (octave::cdef_object, OCTINTERP_API);
 INSTANTIATE_ARRAY (octave::cdef_object, OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API);
-
-#if defined (HAVE_PRAGMA_GCC_VISIBILITY)
-#  pragma GCC visibility pop
-#endif

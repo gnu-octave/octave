@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1994-2025 The Octave Project Developers
+// Copyright (C) 1994-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -30,6 +30,7 @@
 
 #include <iosfwd>
 #include <string>
+#include <unordered_map>
 
 #include "mach-info.h"
 
@@ -40,6 +41,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 class interpreter;
 class load_save_format;
 class symbol_info;
+class subsystem_handler;
 
 class load_save_system
 {
@@ -194,7 +196,29 @@ public:
   save (const octave_value_list& args = octave_value_list (),
         int nargout = 0);
 
+  // MCOS object cache management for loading classdef objects
+  OCTINTERP_API void clear_mcos_object_cache ();
+
+  OCTINTERP_API void
+  set_mcos_object_cache_entry (uint32_t object_id, octave_value& obj);
+
+  OCTINTERP_API octave_value& get_mcos_object_cache_entry (uint32_t object_id);
+
+  OCTINTERP_API bool is_mcos_object_cache_entry (uint32_t object_id);
+
+  OCTINTERP_API uint32_t
+  get_mcos_object_cache_id (const void *obj, bool& new_entry);
+
+  OCTINTERP_API void create_subsystem_handler ();
+
+  OCTINTERP_API subsystem_handler * get_subsystem_handler ();
+
+  OCTINTERP_API void clear_subsystem_handler ();
+
 private:
+
+  // Subsystem handler is used to read and write MCOS objects in MAT-files
+  std::unique_ptr<subsystem_handler> m_subsystem_handler;
 
   interpreter& m_interpreter;
 
@@ -220,6 +244,12 @@ private:
   // text-format save files.  Passed to strftime.  Should begin with
   // '#' and contain no newline characters.
   std::string m_save_header_format_string;
+
+  // Cache for constructed MCOS objects and their object IDs during loading
+  std::unordered_map<uint32_t, octave_value> m_mcos_object_load_cache;
+
+  // Cache for constructed MCOS objects and their object IDs during saving
+  std::unordered_map<const void *, uint32_t> m_mcos_object_save_cache;
 
   OCTINTERP_API void
   write_header (std::ostream& os, const load_save_format& fmt);

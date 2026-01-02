@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -344,6 +344,8 @@ public:
 
   void mark_as_variable (const std::string& nm);
   void mark_as_variables (const std::list<std::string>& lst);
+
+  //--------
 
   interpreter& m_interpreter;
 
@@ -703,7 +705,7 @@ public:
 
   bool maybe_unput_comma_before_unary_op (int tok_id);
 
-  int handle_op (int tok_id, bool bos = false, bool compat = true);
+  int handle_op (int tok_id, const std::string& tok_txt, int tok_len, bool bos = false, bool compat = true);
 
   int finish_command_arg ();
 
@@ -773,6 +775,8 @@ public:
   }
 
   int fill_flex_buffer (char *buf, unsigned int max_size);
+
+  //--------
 
   input_reader m_reader;
 

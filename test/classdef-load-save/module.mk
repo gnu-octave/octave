@@ -1,0 +1,19 @@
+classdef_load_save_TEST_FILES = \
+  %reldir%/changed-class/loadobj_changed_class.m \
+  %reldir%/classdef-load-save-text.tst \
+  %reldir%/classdef-load-save-v6.tst \
+  %reldir%/classdef-load-save-v7.tst \
+  %reldir%/custom_saveobj.m \
+  %reldir%/invalid_saveobj_class.m \
+  %reldir%/loadobj_changed_class.m \
+  %reldir%/loadobj_class.m \
+  %reldir%/loadobj_saveobj_class.m \
+  %reldir%/regular_class.m \
+  %reldir%/regular_class_construct_on_load.m \
+  %reldir%/regular_class_with_constructor.m \
+  %reldir%/regular_handle_class.m \
+  %reldir%/saveobj_obj_class.m \
+  %reldir%/saveobj_struct_class.m \
+  %reldir%/transient_property_class.m
+
+TEST_FILES += $(classdef_load_save_TEST_FILES)

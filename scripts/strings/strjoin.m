@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2007-2025 The Octave Project Developers
+## Copyright (C) 2007-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -43,7 +43,7 @@
 ## @example
 ## @group
 ## strjoin (@{'Octave','Scilab','Lush','Yorick'@}, '*')
-##       @result{} 'Octave*Scilab*Lush*Yorick'
+##       @xresult{} 'Octave*Scilab*Lush*Yorick'
 ## @end group
 ## @end example
 ## @seealso{strsplit}

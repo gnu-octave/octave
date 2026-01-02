@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1993-2025 The Octave Project Developers
+## Copyright (C) 1993-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -67,96 +67,86 @@ function h = polar (varargin)
     print_usage ();
   endif
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
-  endif
-  unwind_protect
-    hax = newplot (hax);
+  hax = newplot (hax);
 
-    if (nargs == 3)
-      if (! ischar (varargin{3}))
-        error ("polar: FMT argument must be a string");
-      endif
-      htmp = __plr2__ (hax, varargin{:});
-      maxr = max (abs (varargin{2}(:)));
-    elseif (nargs == 2)
-      if (ischar (varargin{2}))
-        htmp = __plr1__ (hax, varargin{:});
-        if (iscomplex (varargin{1}))
-          maxr = max (abs (imag (varargin{1})(:)));
-        else
-          maxr = max (abs (varargin{1}(:)));
-        endif
-      else
-        fmt = "";
-        htmp = __plr2__ (hax, varargin{:}, fmt);
-        maxr = max (abs (varargin{2}(:)));
-      endif
-    elseif (nargs == 1)
-      fmt = "";
-      htmp = __plr1__ (hax, varargin{:}, fmt);
+  if (nargs == 3)
+    if (! ischar (varargin{3}))
+      error ("polar: FMT argument must be a string");
+    endif
+    htmp = __plr2__ (hax, varargin{:});
+    maxr = max (abs (varargin{2}(:)));
+  elseif (nargs == 2)
+    if (ischar (varargin{2}))
+      htmp = __plr1__ (hax, varargin{:});
       if (iscomplex (varargin{1}))
         maxr = max (abs (imag (varargin{1})(:)));
       else
         maxr = max (abs (varargin{1}(:)));
       endif
     else
-      print_usage ();
+      fmt = "";
+      htmp = __plr2__ (hax, varargin{:}, fmt);
+      maxr = max (abs (varargin{2}(:)));
     endif
-
-    if (! ishold ())
-      hg = hggroup (hax, "tag", "polar_grid", "handlevisibility", "off");
-
-      set (hax, "visible", "off", "plotboxaspectratio", [1, 1, 1],
-                "zlim", [-1 1], "tag", "polaraxes");
-
-      if (! isprop (hax, "rtick"))
-        addproperty ("rtick", hax, "data");
-      endif
-
-      set (hax, "rtick", __calc_rtick__ (hax, maxr));
-
-      ## add t(heta)tick
-      if (! isprop (hax, "ttick"))
-        addproperty ("ttick", hax, "data");
-      endif
-
-      ## theta(angular) ticks in degrees
-      set (hax, "ttick", 0:30:330);
-
-      __update_polar_grid__ (hax, [], hg);
-
-      set (hg, "deletefcn", {@resetaxis, hax});
-
-      addlistener (hax, "rtick", {@__update_polar_grid__, hg});
-      addlistener (hax, "ttick", {@__update_polar_grid__, hg});
-      addlistener (hax, "color", {@__update_patch__, hg});
-      addlistener (hax, "fontangle", {@__update_text__, hg, "fontangle"});
-      addlistener (hax, "fontname", {@__update_text__, hg, "fontname"});
-      addlistener (hax, "fontsize", {@__update_text__, hg, "fontsize"});
-      addlistener (hax, "fontunits", {@__update_text__, hg, "fontunits"});
-      addlistener (hax, "fontweight", {@__update_text__, hg, "fontweight"});
-      addlistener (hax, "ticklabelinterpreter",
-                   {@__update_text__, hg, "interpreter"});
-      addlistener (hax, "layer", {@__update_layer__, hg});
-      addlistener (hax, "gridlinestyle",{@__update_lines__,hg,"gridlinestyle"});
-      addlistener (hax, "linewidth", {@__update_lines__, hg, "linewidth"});
+  elseif (nargs == 1)
+    fmt = "";
+    htmp = __plr1__ (hax, varargin{:}, fmt);
+    if (iscomplex (varargin{1}))
+      maxr = max (abs (imag (varargin{1})(:)));
     else
-      hg = findall (hax, "tag", "polar_grid");
-      if (! isempty (hg))
-        oldrtick = max (get (hax, "rtick"));
-        if (maxr > oldrtick)
-          set (hax, "rtick", __calc_rtick__ (hax, maxr));
-        endif
-      endif
+      maxr = max (abs (varargin{1}(:)));
+    endif
+  else
+    print_usage ();
+  endif
+
+  if (! ishold (hax))
+    hg = hggroup (hax, "tag", "polar_grid", "handlevisibility", "off");
+
+    set (hax, "visible", "off", "plotboxaspectratio", [1, 1, 1],
+              "zlim", [-1 1], "tag", "polaraxes");
+
+    if (! isprop (hax, "rtick"))
+      addproperty ("rtick", hax, "data");
     endif
 
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
+    set (hax, "rtick", __calc_rtick__ (hax, maxr));
+
+    ## add t(heta)tick
+    if (! isprop (hax, "ttick"))
+      addproperty ("ttick", hax, "data");
     endif
-  end_unwind_protect
+
+    ## theta(angular) ticks in degrees
+    set (hax, "ttick", 0:30:330);
+
+    __update_polar_grid__ (hax, [], hg);
+
+    set (hg, "deletefcn", {@resetaxis, hax});
+
+    addlistener (hax, "rtick", {@__update_polar_grid__, hg});
+    addlistener (hax, "ttick", {@__update_polar_grid__, hg});
+    addlistener (hax, "color", {@__update_patch__, hg});
+    addlistener (hax, "fontangle", {@__update_text__, hg, "fontangle"});
+    addlistener (hax, "fontname", {@__update_text__, hg, "fontname"});
+    addlistener (hax, "fontsize", {@__update_text__, hg, "fontsize"});
+    addlistener (hax, "fontunits", {@__update_text__, hg, "fontunits"});
+    addlistener (hax, "fontweight", {@__update_text__, hg, "fontweight"});
+    addlistener (hax, "ticklabelinterpreter",
+                 {@__update_text__, hg, "interpreter", ...
+                  "ticklabelinterpreter"});
+    addlistener (hax, "layer", {@__update_layer__, hg});
+    addlistener (hax, "gridlinestyle",{@__update_lines__,hg,"gridlinestyle"});
+    addlistener (hax, "linewidth", {@__update_lines__, hg, "linewidth"});
+  else
+    hg = findall (hax, "tag", "polar_grid");
+    if (! isempty (hg))
+      oldrtick = max (get (hax, "rtick"));
+      if (maxr > oldrtick)
+        set (hax, "rtick", __calc_rtick__ (hax, maxr));
+      endif
+    endif
+  endif
 
   if (nargout > 0)
     h = htmp;
@@ -280,11 +270,15 @@ endfunction
 
 ## Callback functions for listeners
 
-function __update_text__ (hax, ~, hg, prop)
+function __update_text__ (hax, ~, hg, prop, axprop = "")
+
+  if (isempty (axprop))
+    axprop = prop;
+  endif
 
   kids = get (hg, "children");
   idx = strcmp (get (kids, "type"), "text");
-  set (kids(idx).', prop, get (hax, prop));
+  set (kids(idx).', prop, get (hax, axprop));
 
 endfunction
 
@@ -360,8 +354,11 @@ function __update_polar_grid__ (hax, ~, hg)
   x = kron (cos (t), rtick);
   y = kron (sin (t), rtick);
 
-  ## Draw colored disk under axes at Z-depth = -1
-  patch (x(:,end), y(:,end), -ones (circle_points, 1),
+  ## Draw colored disk in the Z=0 plane for solid background and border.
+  ## FIXME: Patch solid border is not visible through polar plot lines.  If
+  ##        solid border visibility is needed without obscuring other plot
+  ##        features additional line objects may be needed.
+  patch (x(:,end), y(:,end), zeros (circle_points, 1),
          get (hax, "color"), "parent", hg);
 
   ## Plot grid circles
@@ -456,6 +453,13 @@ endfunction
 %! set (gca, "rtick", 0.2:0.2:1);
 %! title ("polar() plot");
 
+%!demo
+%! clf;
+%! theta = linspace (0,8*pi,1000);
+%! rho = sin (5/4*theta);
+%! polar (theta, rho);
+%! view (90, -90);
+%! title ("polar() plot with modified axis orientation");
 
 ## Test correct handle type (line) returned by polar.
 %!test

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -79,7 +79,11 @@ public:
 
   tree_expression * base () { return m_base; }
 
+  token first_colon_token () const { return m_colon_1_tok; }
+
   tree_expression * limit () { return m_limit; }
+
+  token second_colon_token () const { return m_colon_2_tok; }
 
   tree_expression * increment () { return m_increment; }
 
@@ -103,9 +107,13 @@ private:
 
   // The components of the expression.
   tree_expression *m_base;
+
   token m_colon_1_tok;
+
   tree_expression *m_increment {nullptr};
+
   token m_colon_2_tok;
+
   tree_expression *m_limit;
 
   bool m_save_base {false};

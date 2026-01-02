@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -31,7 +31,7 @@
 
 #include "DiagArray2.h"
 
-#include "lo-error.h"
+#include "oct-error.h"
 
 template <typename T>
 DiagArray2<T>::DiagArray2 (const Array<T>& a, octave_idx_type r,

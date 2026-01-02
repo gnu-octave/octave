@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -46,9 +46,9 @@ Software Foundation, Inc.
 
 #include "cmd-hist.h"
 #include "file-ops.h"
-#include "lo-mappers.h"
-#include "lo-sysdep.h"
+#include "mappers.h"
 #include "oct-env.h"
+#include "oct-sysdep.h"
 #include "oct-time.h"
 #include "str-vec.h"
 #include "unistd-wrappers.h"
@@ -305,7 +305,7 @@ history_system::input_from_tmp_file (const octave_value_list& args,
 
 octave_value
 history_system::timestamp_format_string (const octave_value_list& args,
-    int nargout)
+                                         int nargout)
 {
   return set_internal_variable (m_timestamp_format_string, args, nargout,
                                 "timestamp_format_string");
@@ -576,12 +576,7 @@ history_system::default_size ()
 std::string
 history_system::default_timestamp_format ()
 {
-  return
-    "# Octave " OCTAVE_VERSION ", %a %b %d %H:%M:%S %Y %Z <"
-    + sys::env::get_user_name ()
-    + '@'
-    + sys::env::get_host_name ()
-    + '>';
+  return "# Octave " OCTAVE_VERSION ", %a %b %d %H:%M:%S %Y %Z";
 }
 
 DEFMETHOD (edit_history, interp, args, ,
@@ -726,7 +721,7 @@ For example:
 disp (1)
 disp (2)
 run_history -1 -2
-@result{}
+@xresult{}
  2
  1
 @end group
@@ -881,7 +876,7 @@ exits.
 The format string is passed to @code{strftime}.  The default value is
 
 @example
-"# Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>"
+"# Octave VERSION, %a %b %d %H:%M:%S %Y %Z"
 @end example
 
 When called from inside a function with the @qcode{"local"} option, the
@@ -898,10 +893,10 @@ The original variable value is restored when exiting the function.
 /*
 %!test
 %! history_timestamp_format_string ("# Example history marker", "local");
-%! assert (history_timestamp_format_string (), "# Example history marker")
+%! assert (history_timestamp_format_string (), "# Example history marker");
 %!test <*57843>
 %! history_timestamp_format_string ("", "local");
-%! assert (history_timestamp_format_string (), "")
+%! assert (history_timestamp_format_string (), "");
 */
 
 DEFUN (history_save, args, nargout,

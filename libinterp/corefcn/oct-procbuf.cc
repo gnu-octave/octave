@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -28,6 +28,7 @@
 #endif
 
 #include <cerrno>
+#include <cstdlib>
 
 #include <iomanip>
 
@@ -43,8 +44,8 @@
 #  include <unistd.h>
 #endif
 
-#include "lo-mappers.h"
 #include "lo-utils.h"
+#include "mappers.h"
 #include "oct-procbuf.h"
 #include "oct-syscalls.h"
 #include "sysdep.h"
@@ -151,7 +152,7 @@ procbuf::open (const char *command, int mode)
 
       execl (SHELL_PATH, "sh", "-c", command, static_cast<void *> (nullptr));
 
-      exit (127);
+      std::exit (127);
     }
 
   octave_close_wrapper (child_end);

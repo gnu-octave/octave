@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2017-2025 The Octave Project Developers
+// Copyright (C) 2017-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -33,6 +33,9 @@
 
 gui_pref
 global_skip_welcome_wizard ("global_skip_welcome_wizard", false);
+
+gui_pref
+global_show_splash_screen ("global_show_splash_screen", false);
 
 gui_pref
 global_mono_font ("monospace_font", global_font_family);

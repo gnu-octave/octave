@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2017-2025 The Octave Project Developers
+## Copyright (C) 2017-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -142,7 +142,7 @@ classdef Map < handle
         endif
 
         ## Determine KeyType
-        kt = unique (cellfun (@class, keys, "UniformOutput", false));
+        kt = unique (cellfun ('class', keys, "UniformOutput", false));
         if (numel (kt) == 1)
           ## Single key type--most common case
           if (strcmp (kt{1}, "char"))
@@ -171,11 +171,11 @@ classdef Map < handle
         endif
 
         ## Determine ValueType
-        vt = unique (cellfun (@class, vals, "UniformOutput", false));
+        vt = unique (cellfun ('class', vals, "UniformOutput", false));
         if (numel (vt) == 1
             && (ischar (vals{1})
                 || ((isnumeric (vals{1}) || islogical (vals{1}))
-                    && all (cellfun (@numel, vals) == 1))))
+                    && all (cellfun ('numel', vals) == 1))))
           this.ValueType = vt{1};
         else
           this.ValueType = "any";
@@ -201,6 +201,11 @@ classdef Map < handle
 
         ## Check type of keys and values, and define numeric_keys
         check_types (this);
+
+        ## Flatten char keys
+        if (! this.numeric_keys)
+          keys = cellfun (@(x) x(:).', keys, 'UniformOutput', false);
+        endif
 
         ## Sort keys (faster than call to sort_keys once encoded)
         if (this.numeric_keys)
@@ -261,6 +266,10 @@ classdef Map < handle
         if (! iscell (keySet))
           error ("containers.Map: input argument 'keySet' must be a cell");
         endif
+        if (! this.numeric_keys)
+          ## Flatten char keys
+          keySet = cellfun (@(x) x(:).', keySet, 'UniformOutput', false);
+        endif
         enckeySet = encode_keys (this, keySet);
         valueSet = cell (size (keySet));
         for i = 1:numel (valueSet)
@@ -298,6 +307,8 @@ classdef Map < handle
       in = cellfun ("isnumeric", keySet) | cellfun ("islogical", keySet);
       if (! this.numeric_keys)
         in = ! in;
+        ## Flatten char keys
+        keySet = cellfun (@(x) x(:).', keySet, 'UniformOutput', false);
       endif
       keySet = encode_keys (this, keySet(in));
       tf(in) = isfield (this.map, keySet);
@@ -326,6 +337,8 @@ classdef Map < handle
       in = cellfun ("isnumeric", keySet) | cellfun ("islogical", keySet);
       if (! this.numeric_keys)
         in = ! in;
+        ## Flatten char keys
+        keySet = cellfun (@(x) x(:).', keySet, 'UniformOutput', false);
       endif
       keySet = encode_keys (this, keySet(in));
       in = isfield (this.map, keySet);
@@ -385,7 +398,7 @@ classdef Map < handle
       count = uint64 (numfields (this.map));
     endfunction
 
-    function sref = subsref (this, s)
+    function varargout = subsref (this, s)
 
       switch (s(1).type)
         case "."
@@ -434,6 +447,9 @@ classdef Map < handle
                                         || ! isscalar (key))))
             error ("containers.Map: specified key type does not match the type of this container");
           endif
+          if (ischar (key))
+            key = key(:).';
+          endif
           enckey = encode_keys (this, key);
           if (! isfield (this.map, enckey))
             error ("containers.Map: specified key <%s> does not exist",
@@ -444,7 +460,9 @@ classdef Map < handle
           error ("containers.Map: only '()' indexing is supported");
       endswitch
       if (numel (s) > 1)
-        sref = subsref (sref, s(2:end));
+        [varargout{1:nargout}] = subsref (sref, s(2:end));
+      else
+        varargout = {sref};
       endif
 
     endfunction
@@ -472,6 +490,9 @@ classdef Map < handle
               error ("containers.Map: specified value type does not match the type of this container");
             endif
             val = feval (this.ValueType, val);
+          endif
+          if (ischar (key))
+            key = key(:).';
           endif
           key = encode_keys (this, key);
           if (isfield (this.map, key))
@@ -651,6 +672,19 @@ endclassdef
 %!test <*67255>
 %! m = containers.Map ('', 3);
 %! assert (m(''), 3);
+
+## Test multi-row char array keys
+%!test <*67283>
+%! k1 = char ("key", "one");
+%! k2 = char ("key", "two");
+%! k3 = char ("key", "three");
+%! m = containers.Map ({k1, k2}, {1, 2});
+%! m(k3) = 3;
+%! assert (m(k1), 1);
+%! assert (m.values ({k1, k3}), {1, 3});
+%! m.remove ({k1, k3});
+%! assert (m(k2), 2);
+%! assert (m.isKey ({k1, k2, k3}), [false, true, false]);
 
 ## Test numeric keys
 %!test
@@ -877,7 +911,21 @@ endclassdef
 %! vals = [10, 11, 12, 13];
 %! M = containers.Map (months, vals);
 %! keys = {'Jan', 'FooBar', 'Feb'};
-%! assert (M.isKey (keys)(2:end), logical ([0, 1]));
+%! assert (M.isKey (keys)(2:end), [false, true]);
+
+## Test subsref calls will multiple outputs
+%!test <*67426>
+%! M = containers.Map ('first', struct ('dat', {111, 222}));
+%! [a, b] = M('first').dat;
+%! assert ([a, b], [111, 222])
+%!test <*67426>
+%! M = containers.Map ('first', {{111, 222}});
+%! [a, b] = M('first') {:};
+%! assert ([a, b], [111, 222])
+%!test <*67426>
+%! M = containers.Map ({'first', 'second'}, {111, 222});
+%! [a,b] = M.values () {:};
+%! assert ([a, b], [111, 222])
 
 ## Test input validation
 %!error containers.Map (1,2,3)

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -956,11 +956,6 @@ protected:
   // it is well possible to have more than MAX_INT copies of a single value
   // (think of an empty cell array with >2G elements).
   octave::refcount<octave_idx_type> m_count;
-
-  // FIXME: Create an alias "count" to the real member variable m_count.
-  // This name is deprecated in Octave 9 and will be removed in Octave 11.
-  OCTAVE_DEPRECATED (9, "use octave_base_value::m_count instead")
-  octave::refcount<octave_idx_type>& count;
 
   OCTINTERP_API static const char * get_umap_name (unary_mapper_t);
 

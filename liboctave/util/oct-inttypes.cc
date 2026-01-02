@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2004-2025 The Octave Project Developers
+// Copyright (C) 2004-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -28,7 +28,7 @@
 #endif
 
 #include "fpucw-wrappers.h"
-#include "lo-error.h"
+#include "oct-error.h"
 #include "oct-inttypes.h"
 
 template <typename T>

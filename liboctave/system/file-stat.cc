@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -37,12 +37,11 @@
 #include "strmode-wrapper.h"
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-#  include "lo-regexp.h"
 #  include "oct-env.h"
+#  include "oct-regexp.h"
 #endif
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 // FIXME: the is_* and mode_as_string functions are only valid

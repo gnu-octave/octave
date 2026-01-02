@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2005-2025 The Octave Project Developers
+## Copyright (C) 2005-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -99,11 +99,11 @@
 ## @example
 ## @group
 ## test sind
-## @result{}
+## @xresult{}
 ## PASSES 5 out of 5 tests
 ##
 ## [n, nmax] = test ("sind")
-## @result{}
+## @xresult{}
 ## n =  5
 ## nmax =  5
 ## @end group

@@ -1,6 +1,6 @@
 # A library of shell functions for autopull.sh, autogen.sh, and bootstrap.
 
-scriptlibversion=2024-11-25.15; # UTC
+scriptlibversion=2025-11-12.14; # UTC
 
 # Copyright (C) 2003-2025 Free Software Foundation, Inc.
 #
@@ -35,7 +35,7 @@ export LC_ALL
 # Honor $PERL, but work even if there is none.
 PERL="${PERL-perl}"
 
-default_gnulib_url=https://git.savannah.gnu.org/git/gnulib.git
+default_gnulib_url=https://https.git.savannah.gnu.org/git/gnulib.git
 
 # Copyright year, for the --version output.
 copyright_year=`echo "$scriptlibversion" | sed -e 's/[^0-9].*//'`
@@ -115,7 +115,8 @@ po_download_command_format=\
 "wget --mirror --level=1 -nd -nv -A.po -P '%s' \
  https://translationproject.org/latest/%s/"
 
-# Prefer a non-empty tarname (4th argument of AC_INIT if given), else
+# When extracting the package name from an AC_INIT invocation,
+# prefer a non-empty tarname (4th argument of AC_INIT if given), else
 # fall back to the package name (1st argument with munging).
 extract_package_name='
   /^AC_INIT(\[*/{
@@ -127,17 +128,20 @@ extract_package_name='
        q
      }
      s/[],)].*//
-     s/^GNU //
-     y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/
-     s/[^abcdefghijklmnopqrstuvwxyz0123456789_]/-/g
      p
   }
 '
-package=$(${AUTOCONF:-autoconf} --trace AC_INIT:\$4 configure.ac 2>/dev/null)
+normalize_package_name='
+  s/^GNU //
+  y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/
+  s/[^abcdefghijklmnopqrstuvwxyz0123456789_]/-/g
+'
+package=$(${AUTOCONF:-autoconf} --trace 'AC_INIT:$4' configure.ac 2>/dev/null)
 if test -z "$package"; then
   package=$(sed -n "$extract_package_name" configure.ac) \
       || die 'cannot find package name in configure.ac'
 fi
+package=$(echo "$package" | sed "$normalize_package_name")
 gnulib_name=lib$package
 
 build_aux=build-aux
@@ -539,18 +543,11 @@ prepare_GNULIB_SRCDIR ()
           || cleanup_gnulib
         else
           # GNULIB_REFDIR is not set or not usable. Ignore it.
-          shallow=
+          shallow='--depth 2'
           if test -z "$GNULIB_REVISION"; then
-            if git clone -h 2>&1 | grep -- --depth > /dev/null; then
-              shallow='--depth 2'
-            fi
             git clone $shallow "$gnulib_url" "$gnulib_path" \
               || cleanup_gnulib
           else
-            if git fetch -h 2>&1 | grep -- --depth > /dev/null; then
-              shallow='--depth 2'
-            fi
-            mkdir -p "$gnulib_path"
             # Only want a shallow checkout of $GNULIB_REVISION, but git does not
             # support cloning by commit hash. So attempt a shallow fetch by
             # commit hash to minimize the amount of data downloaded and changes
@@ -559,13 +556,34 @@ prepare_GNULIB_SRCDIR ()
             # shallow fetch cannot be performed because we do not know what the
             # depth of the commit is without fetching all commits. So fall back
             # to fetching all commits.
-            git -C "$gnulib_path" init
+            # $GNULIB_REVISION can be a commit id, a tag name, or a branch name.
+            mkdir -p "$gnulib_path"
+            # Use a -c option to silence an annoying message
+            # "hint: Using 'master' as the name for the initial branch."
+            # (cf. <https://stackoverflow.com/questions/65524512/>).
+            git -C "$gnulib_path" -c init.defaultBranch=master init
             git -C "$gnulib_path" remote add origin "$gnulib_url"
-            git -C "$gnulib_path" fetch $shallow origin "$GNULIB_REVISION" \
-              || git -C "$gnulib_path" fetch origin \
-              || cleanup_gnulib
-            git -C "$gnulib_path" reset --hard FETCH_HEAD
-            git -C "$gnulib_path" checkout "$GNULIB_REVISION" || cleanup_gnulib
+            if git -C "$gnulib_path" fetch $shallow origin "$GNULIB_REVISION"
+            then
+              # "git fetch" of the specific commit succeeded.
+              git -C "$gnulib_path" reset --hard FETCH_HEAD \
+                || cleanup_gnulib
+              # "git fetch" does not fetch tags (at least in git version 2.43).
+              # If $GNULIB_REVISION is a tag (not a commit id or branch name),
+              # add the tag explicitly.
+              revision=`git -C "$gnulib_path" log -1 --pretty=format:%H`
+              branch=`LC_ALL=C git -C "$gnulib_path" remote show origin \
+                      | sed -n -e 's/^    \([^ ]*\) * tracked$/\1/p'`
+              test "$revision" = "$GNULIB_REVISION" \
+                || test "$branch" = "$GNULIB_REVISION" \
+                || git -C "$gnulib_path" tag "$GNULIB_REVISION"
+            else
+              # Fetch the entire repository.
+              git -C "$gnulib_path" fetch origin \
+                || cleanup_gnulib
+              git -C "$gnulib_path" checkout "$GNULIB_REVISION" \
+                || cleanup_gnulib
+            fi
           fi
         fi
         trap - HUP INT PIPE TERM
@@ -806,7 +824,7 @@ autopull()
     elif check_exists git-merge-changelog; then
       echo "$0: initializing git-merge-changelog driver"
       git config merge.merge-changelog.name 'GNU-style ChangeLog merge driver'
-      git config merge.merge-changelog.driver 'git-merge-changelog %O %A %B'
+      git config merge.merge-changelog.driver 'git-merge-changelog %O %A %B "%Y"'
     else
       echo "$0: consider installing git-merge-changelog from gnulib"
     fi
@@ -1282,7 +1300,7 @@ autogen()
 
   # Invoke autoreconf with --force --install to ensure upgrades of tools
   # such as ylwrap.
-  AUTORECONFFLAGS="--verbose --install --force -I $m4_base $ACLOCAL_FLAGS"
+  AUTORECONFFLAGS="--verbose --install --force $ACLOCAL_FLAGS"
   AUTORECONFFLAGS="$AUTORECONFFLAGS --no-recursive"
 
   # Tell autoreconf not to invoke autopoint or libtoolize; they were run above.
@@ -1358,7 +1376,7 @@ autogen()
 # Local Variables:
 # eval: (add-hook 'before-save-hook 'time-stamp nil t)
 # time-stamp-start: "scriptlibversion="
-# time-stamp-format: "%:y-%02m-%02d.%02H"
+# time-stamp-format: "%Y-%02m-%02d.%02H"
 # time-stamp-time-zone: "UTC0"
 # time-stamp-end: "; # UTC"
 # End:

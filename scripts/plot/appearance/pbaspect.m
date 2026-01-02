@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2010-2025 The Octave Project Developers
+## Copyright (C) 2010-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -80,7 +80,7 @@ function pbratio = pbaspect (varargin)
       elseif (numel (arg) == 3)
         set (hax, "plotboxaspectratio", arg);
       else
-        error ("pbaspect: PLOT_BOX_ASPECT_RATIO must be a 2 or 3 element vector");
+        error ("pbaspect: PLOT_BOX_ASPECT_RATIO must be a 2- or 3-element vector");
       endif
     elseif (ischar (arg))
       arg = lower (arg);

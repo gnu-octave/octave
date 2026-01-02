@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2007-2025 The Octave Project Developers
+// Copyright (C) 2007-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -38,30 +38,30 @@
 
 #include <algorithm>
 #include <array>
+#include <clocale>
 #include <fstream>
 #include <map>
 #include <string>
 #include <vector>
 
-#include <clocale>
+#include "cmd-edit.h"
+#include "file-ops.h"
+#include "file-stat.h"
+#include "fpucw-wrappers.h"
+#include "oct-env.h"
+#include "oct-shlib.h"
+#include "oct-sysdep.h"
 
 #include "Cell.h"
 #include "builtin-defun-decls.h"
-#include "cmd-edit.h"
 #include "defaults.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
-#include "file-ops.h"
-#include "file-stat.h"
-#include "fpucw-wrappers.h"
-#include "interpreter.h"
 #include "interpreter-private.h"
+#include "interpreter.h"
 #include "load-path.h"
-#include "lo-sysdep.h"
-#include "oct-env.h"
 #include "oct-process.h"
-#include "oct-shlib.h"
 #include "ov-java.h"
 #include "variables.h"
 
@@ -2297,9 +2297,8 @@ octave_java::subsasgn (const std::string& type,
           new_idx.push_back (*it++);
           octave_value_list u = subsref (type.substr (0, 2), new_idx, 1);
 
-          std::list<octave_value_list> next_idx (idx);
-          next_idx.erase (next_idx.begin ());
-          next_idx.erase (next_idx.begin ());
+          std::list<octave_value_list> next_idx (std::next (idx.begin (), 2),
+                                                 idx.end ());
           u(0).subsasgn (type.substr (2), next_idx, rhs);
 
           m_count++;
@@ -2309,8 +2308,8 @@ octave_java::subsasgn (const std::string& type,
         {
           octave_value_list u = subsref (type.substr (0, 1), idx, 1);
 
-          std::list<octave_value_list> next_idx (idx);
-          next_idx.erase (next_idx.begin ());
+          std::list<octave_value_list> next_idx (std::next (idx.begin ()),
+                                                 idx.end ());
           u(0).subsasgn (type.substr (1), next_idx, rhs);
 
           m_count++;
@@ -3582,12 +3581,12 @@ Return true if @var{x} is a Java object.
 
 ## Test for automatic conversion of specific numeric classes
 %!testif HAVE_JAVA; usejava ("jvm") <*48013>
-%! assert (javaMethod ("valueOf", "java.lang.Byte",     int8 (1)), 1)
-%! assert (javaMethod ("valueOf", "java.lang.Short",   int16 (1)), 1)
-%! assert (javaMethod ("valueOf", "java.lang.Integer", int32 (1)), 1)
-%! assert (javaMethod ("valueOf", "java.lang.Long",    int64 (1)), 1)
-%! assert (javaMethod ("valueOf", "java.lang.Float",  single (1)), 1)
-%! assert (javaMethod ("valueOf", "java.lang.Double", double (1)), 1)
+%! assert (javaMethod ("valueOf", "java.lang.Byte",     int8 (1)), 1);
+%! assert (javaMethod ("valueOf", "java.lang.Short",   int16 (1)), 1);
+%! assert (javaMethod ("valueOf", "java.lang.Integer", int32 (1)), 1);
+%! assert (javaMethod ("valueOf", "java.lang.Long",    int64 (1)), 1);
+%! assert (javaMethod ("valueOf", "java.lang.Float",  single (1)), 1);
+%! assert (javaMethod ("valueOf", "java.lang.Double", double (1)), 1);
 %! assert (class (javaMethod ("valueOf", "java.math.BigDecimal", double (1))),
 %!         "java.math.BigDecimal")
 %! assert (class (javaMethod ("valueOf", "java.math.BigInteger",  int64 (1))),
@@ -3602,25 +3601,24 @@ Return true if @var{x} is a Java object.
 ## Test that Octave index syntax allows Java object method calls with args
 %!testif HAVE_JAVA; usejava ("jvm") <*51152>
 %! s = javaObject ("java.lang.String", "Octave");
-%! assert (s.length (), 6)
-%! assert (s.charAt (0), "O")
-%! assert (s.charAt (5), "e")
-%! assert (s.matches ("^Octave$"))
-%! assert (s.startsWith ("Oct"))
+%! assert (s.length (), 6);
+%! assert (s.charAt (0), "O");
+%! assert (s.charAt (5), "e");
+%! assert (s.matches ("^Octave$"));
+%! assert (s.startsWith ("Oct"));
 %! ## same tests with Java object as part of another indexing expression
 %! a(1).s = s;
-%! assert (! a(1).s.isEmpty ())
-%! assert (a(1).s.length (), 6)
-%! assert (a(1).s.charAt (0), "O")
-%! assert (a(1).s.charAt (5), "e")
-%! assert (a(1).s.matches ("^Octave$"))
-%! assert (a(1).s.startsWith ("Oct"))
+%! assert (! a(1).s.isEmpty ());
+%! assert (a(1).s.length (), 6);
+%! assert (a(1).s.charAt (0), "O");
+%! assert (a(1).s.charAt (5), "e");
+%! assert (a(1).s.matches ("^Octave$"));
+%! assert (a(1).s.startsWith ("Oct"));
 
 ## Check for basic usability of the java awt library
-## Skip the test on OS X where we currently have Java 9 and attempting
-## to use awt causes Octave to exit with a message about Java not being
-## installed (it is) instead of returning false.
-%!testif HAVE_JAVA; ! ismac () && usejava ("jvm") && usejava ("awt") && have_window_system ()
+## FIXME: Removed runtime test to skip checking on Mac OS (22/08/2025).
+## IF problems are reported the "! ismac ()" runtime test can be re-instated.
+%!testif HAVE_JAVA; usejava ("jvm") && usejava ("awt") && have_window_system ()
 %! frame = javaObject ("java.awt.Frame");
 %! frame.setResizable (true);
 %! assert (frame.isResizable ());

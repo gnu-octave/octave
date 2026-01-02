@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2000-2025 The Octave Project Developers
+## Copyright (C) 2000-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -69,7 +69,7 @@
 ## @group
 ## @var{s} = struct ("baz", 42);
 ## setfield (@var{s}, @{1@}, "foo", @{1@}, "bar", 54)
-## @result{}
+## @xresult{}
 ##   ans =
 ##     scalar structure containing the fields:
 ##       baz =  42
@@ -92,7 +92,7 @@
 ## @var{sa}.foo = 1;
 ## @var{sa} = setfield (@var{sa}, @{2@}, "bar", @{3@}, "baz", @{1, 4@}, 5);
 ## @var{sa}(2).bar(3)
-## @result{}
+## @xresult{}
 ##   ans =
 ##     scalar structure containing the fields:
 ##       baz =  0   0   0   5

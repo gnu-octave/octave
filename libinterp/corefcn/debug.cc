@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2001-2025 The Octave Project Developers
+// Copyright (C) 2001-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -46,7 +46,7 @@
 #include "input.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
-#include "lo-sysdep.h"
+#include "oct-sysdep.h"
 #include "octave-preserve-stream-state.h"
 #include "ov-usr-fcn.h"
 #include "ov.h"
@@ -596,15 +596,12 @@ is stopped.
 static bool
 parse_start_end (const std::string& arg, int& start, int& end, const char *who)
 {
-  start = 0;
-  end = 0;
+  std::size_t idx = arg.find (':');
 
-  std::size_t ind = arg.find (':');
-
-  if (ind != std::string::npos)  // (start:end)
+  if (idx != std::string::npos)  // (start:end)
     {
-      std::string start_str = arg.substr (0, ind);
-      std::string end_str = arg.substr (ind+1);
+      std::string start_str = arg.substr (0, idx);
+      std::string end_str = arg.substr (idx+1);
 
       try
         {
@@ -639,8 +636,7 @@ parse_start_end (const std::string& arg, int& start, int& end, const char *who)
           if (line <= 0)
             error ("%s: start and end lines must be >= 1\n", who);
 
-          start = line;
-          end = line;
+          start = end = line;
         }
       catch (const std::invalid_argument&)
         {

@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2007-2025 The Octave Project Developers
+## Copyright (C) 2007-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -153,18 +153,8 @@ function [thout, rout] = rose (varargin)
       warning ("rose: bin sizes >= pi will not plot correctly");
     endif
 
-    oldfig = [];
-    if (! isempty (hax))
-      oldfig = get (0, "currentfigure");
-    endif
-    unwind_protect
-      hax = newplot (hax);
-      htmp = polar (th, r);
-    unwind_protect_cleanup
-      if (! isempty (oldfig))
-        set (0, "currentfigure", oldfig);
-      endif
-    end_unwind_protect
+    hax = newplot (hax);
+    htmp = polar (hax, th, r);
 
     if (nargout > 0)
       thout = htmp;
@@ -230,13 +220,13 @@ endfunction
 
 %!test <*67280>
 %! d = deg2rad (0:359) + 4*eps;  # uniformly spaced data around unit circle
-%! d = [d, repmat(deg2rad(4), [1,30])];  # Add 30 data points at 4 degrees 
-%! [t,r] = rose (d, 30);   
+%! d = [d, repmat(deg2rad(4), [1,30])];  # Add 30 data points at 4 degrees
+%! [t,r] = rose (d, 30);
 %! assert (r(2), 42);   # All 30 data points went into bin 1.
-%! assert (t(2:3), [0; .2094], 1e-4);  # bin 1 starts at 0 
+%! assert (t(2:3), [0; .2094], 1e-4);  # bin 1 starts at 0
 %! [t,r] = rose (d, deg2rad (0:12:348));
 %! assert (r(end-2), 42);   # All 30 data points went into last bin.
-%! assert (t(end-([2,1])), [6.1785; 6.3879], 1e-4);  # last bin centered at 0 
+%! assert (t(end-([2,1])), [6.1785; 6.3879], 1e-4);  # last bin centered at 0
 
 ## Test input validation8
 %!error <Invalid call> rose ()

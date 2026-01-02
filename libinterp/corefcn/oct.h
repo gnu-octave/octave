@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -30,6 +30,7 @@
 
 // Things that are often included to create .oct files.
 
+#include "Array.h"
 #include "Matrix.h"
 #include "oct-locbuf.h"
 #include "defun-dld.h"

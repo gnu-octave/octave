@@ -19,6 +19,7 @@ LIBINTERP_DEFUN_FILES =
   -Ilibinterp -I$(srcdir)/libinterp \
   -I$(srcdir)/%reldir%/operators \
   -I%reldir%/parse-tree -I$(srcdir)/%reldir%/parse-tree \
+  -I$(srcdir)/%reldir%/template-inst \
   -I%reldir%/corefcn -I$(srcdir)/%reldir%/corefcn \
   -I$(srcdir)/liboctave/wrappers \
   $(HDF5_CPPFLAGS) \
@@ -157,7 +158,7 @@ endif
 ## to the rules in the etc/HACKING.md file:
 
 %canon_reldir%_liboctinterp_current = 14
-%canon_reldir%_liboctinterp_revision = 1
+%canon_reldir%_liboctinterp_revision = 0
 %canon_reldir%_liboctinterp_age = 1
 
 %canon_reldir%_liboctinterp_version_info = $(%canon_reldir%_liboctinterp_current):$(%canon_reldir%_liboctinterp_revision):$(%canon_reldir%_liboctinterp_age)

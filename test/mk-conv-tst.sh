@@ -2,7 +2,7 @@
 
 ########################################################################
 ##
-## Copyright (C) 2016-2025 The Octave Project Developers
+## Copyright (C) 2016-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -73,9 +73,9 @@ cat <<EOF
 %!
 %!test
 %! if (optimize_range ())
-%!   assert (typeinfo (r), "double_range")
+%!   assert (typeinfo (r), "double_range");
 %! else
-%!   assert (typeinfo (r), "matrix")
+%!   assert (typeinfo (r), "matrix");
 %! endif
 %!assert (typeinfo (dq), "string")
 %!assert (typeinfo (sq), "sq_string")

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -27,10 +27,10 @@
 #  include "config.h"
 #endif
 
-#include <atomic>
 #include <csignal>
 #include <cstdlib>
 
+#include <atomic>
 #include <iostream>
 #include <new>
 
@@ -292,7 +292,7 @@ generic_sig_handler (int sig)
       || (have_sigbreak && sig == sigbreak))
     {
       if (! octave_initialized)
-        exit (1);
+        std::exit (EXIT_FAILURE);
 
       if (can_interrupt)
         {

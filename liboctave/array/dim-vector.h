@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2003-2025 The Octave Project Developers
+// Copyright (C) 2003-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // or <https://octave.org/copyright/>.
@@ -32,9 +32,11 @@
 
 #include <algorithm>
 #include <initializer_list>
+#include <limits>
 #include <string>
 
 #include "Array-fwd.h"
+#include "lo-utils.h"
 #include "oct-atomic.h"
 #include "oct-refcount.h"
 
@@ -175,7 +177,15 @@ private:
 
 public:
 
-  static OCTAVE_API octave_idx_type dim_max ();
+  // The maximum allowed value for a dimension extent.  This will
+  // normally be a tiny bit off the maximum value of octave_idx_type.
+  // Currently, 1 is subtracted to allow safe conversion of any 2-D Array
+  // into Sparse but this offset may change in the future.
+
+  static constexpr octave_idx_type dim_max ()
+  {
+    return std::numeric_limits<octave_idx_type>::max () - 1;
+  }
 
   explicit dim_vector ()
     : m_num_dims (2), m_dims (new octave_idx_type [m_num_dims])
@@ -348,7 +358,38 @@ public:
   //! function that is iterating over an array using octave_idx_type
   //! indices.
 
-  OCTAVE_API octave_idx_type safe_numel () const;
+  // IF we ever require C++26 we can use ckd_mul in the following
+  // function and not have to check for or explicitly call
+  // __builtin_mul_overflow.
+  octave_idx_type safe_numel () const
+  {
+    octave_idx_type n = xelem(0);
+
+    if (n > dim_max ())
+      throw std::bad_alloc ();
+
+    if (n == 0)
+      return 0;
+
+    for (int i = 1; i < ndims (); i++)
+      {
+#if defined (__has_builtin) && __has_builtin (__builtin_mul_overflow)
+        bool overflow = __builtin_mul_overflow (n, xelem(i), &n);
+#else
+        // Function call overhead, much less efficient than using the
+        // built-in function or ckd_mul (C23 / C++26)
+        bool overflow = octave::math::int_multiply_overflow (n, xelem(i), &n);
+#endif
+
+        if (overflow || n > dim_max ())
+          throw std::bad_alloc ();
+
+        if (n == 0)
+          return 0;
+      }
+
+    return n;
+  }
 
   bool any_neg () const
   {
@@ -367,8 +408,8 @@ public:
 
   //! Force certain dimensionality, preserving numel ().  Missing
   //! dimensions are set to 1, redundant are folded into the trailing
-  //! one.  If n = 1, the result is 2d and the second dim is 1
-  //! (dim_vectors are always at least 2D).
+  //! one.  If n = 1, the result is 2-D and the second dim is 1
+  //! (dim_vectors are always at least 2-D).
 
   OCTAVE_API dim_vector redim (int n) const;
 

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -532,12 +532,6 @@ octave_value::octave_value (const Cell& c, bool is_csl)
   : m_rep (is_csl
            ? dynamic_cast<octave_base_value *> (new octave_cs_list (c))
            : dynamic_cast<octave_base_value *> (new octave_cell (c)))
-{ }
-
-octave_value::octave_value (const Array<octave_value>& a, bool is_csl)
-  : m_rep (is_csl
-           ? dynamic_cast<octave_base_value *> (new octave_cs_list (Cell (a)))
-           : dynamic_cast<octave_base_value *> (new octave_cell (Cell (a))))
 { }
 
 octave_value::octave_value (const Matrix& m, const MatrixType& t)
@@ -1466,9 +1460,8 @@ octave_value::next_subsref (const std::string& type,
 {
   if (idx.size () > skip)
     {
-      std::list<octave_value_list> new_idx (idx);
-      for (std::size_t i = 0; i < skip; i++)
-        new_idx.erase (new_idx.begin ());
+      std::list<octave_value_list> new_idx (std::next (idx.begin (), skip),
+                                            idx.end ());
       return subsref (type.substr (skip), new_idx);
     }
   else
@@ -1482,9 +1475,8 @@ octave_value::next_subsref (int nargout, const std::string& type,
 {
   if (idx.size () > skip)
     {
-      std::list<octave_value_list> new_idx (idx);
-      for (std::size_t i = 0; i < skip; i++)
-        new_idx.erase (new_idx.begin ());
+      std::list<octave_value_list> new_idx (std::next (idx.begin (), skip),
+                                            idx.end ());
       return subsref (type.substr (skip), new_idx, nargout);
     }
   else
@@ -1498,9 +1490,8 @@ octave_value::next_subsref (bool auto_add, const std::string& type,
 {
   if (idx.size () > skip)
     {
-      std::list<octave_value_list> new_idx (idx);
-      for (std::size_t i = 0; i < skip; i++)
-        new_idx.erase (new_idx.begin ());
+      std::list<octave_value_list> new_idx (std::next (idx.begin (), skip),
+                                            idx.end ());
       return subsref (type.substr (skip), new_idx, auto_add);
     }
   else
@@ -3711,13 +3702,13 @@ The following example shows how to extract the first two columns of a matrix
 @example
 @group
 val = magic (3)
-    @result{} val = [ 8   1   6
+    @xresult{} val = [ 8   1   6
                3   5   7
                4   9   2 ]
 idx.type = "()";
 idx.subs = @{":", 1:2@};
 subsref (val, idx)
-     @result{} [ 8   1
+     @xresult{} [ 8   1
           3   5
           4   9 ]
 @end group
@@ -3770,7 +3761,7 @@ val = magic (3);
 idx.type = "()";
 idx.subs = @{":", 1:2@};
 val = subsasgn (val, idx, 0)
-     @result{}  [ 0   0   6
+     @xresult{}  [ 0   0   6
            0   0   7
            0   0   2 ]
 @end group

@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2017-2025 The Octave Project Developers
+## Copyright (C) 2017-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -40,5 +40,5 @@
 %!test
 %! obj1 = child_from_base_1 ();
 %! obj2 = child_from_base_1_and_2 ();
-%! assert (class (obj1), 'child_from_base_1')
-%! assert (class (obj2), "child_from_base_1_and_2")
+%! assert (class (obj1), 'child_from_base_1');
+%! assert (class (obj2), "child_from_base_1_and_2");

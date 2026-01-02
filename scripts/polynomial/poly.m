@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1994-2025 The Octave Project Developers
+## Copyright (C) 1994-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -36,7 +36,7 @@
 ## @example
 ## @group
 ## roots (poly (eye (3)))
-##     @result{} 1.00001 + 0.00001i
+##     @xresult{} 1.00001 + 0.00001i
 ##        1.00001 - 0.00001i
 ##        0.99999 + 0.00000i
 ## @end group

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1994-2025 The Octave Project Developers
+// Copyright (C) 1994-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -42,11 +42,11 @@
 #include "file-ops.h"
 #include "file-stat.h"
 #include "glob-match.h"
-#include "lo-mappers.h"
-#include "lo-sysdep.h"
 #include "mach-info.h"
+#include "mappers.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
+#include "oct-sysdep.h"
 #include "oct-time.h"
 #include "quit.h"
 #include "str-vec.h"
@@ -78,6 +78,7 @@
 #include "ls-mat5.h"
 #include "ls-oct-text.h"
 #include "ls-oct-binary.h"
+#include "ls-mat-subsys.h"
 
 // Remove gnulib definitions, if any.
 #if defined (close)
@@ -680,6 +681,15 @@ load_save_system::save_vars (const string_vector& argv, int argv_idx,
   if (write_header_info)
     write_header (os, fmt);
 
+  create_subsystem_handler ();  // for MAT file formats
+
+  octave::unwind_action
+  clear_obj_cache ([this] ()
+    {
+      clear_mcos_object_cache ();
+      clear_subsystem_handler ();
+    });
+
   if (argv_idx == argc)
     {
       save_vars (os, "*", fmt, save_as_floats);
@@ -726,6 +736,62 @@ load_save_system::save_vars (const string_vector& argv, int argv_idx,
             continue;  // Skip empty vars for Matlab compatibility
           if (! save_vars (os, argv[i], fmt, save_as_floats))
             warning ("save: no such variable '%s'", argv[i].c_str ());
+        }
+    }
+
+  // write subsystem data
+  if (fmt.type() == MAT5_BINARY || fmt.type() == MAT7_BINARY)  // any other formats?
+    {
+      subsystem_handler *sh = get_subsystem_handler ();
+      sh->serialize_to_cell_array ();
+      // serialized data needs to be saved first to calculate nbytes during save
+
+      if (sh->has_serialized_data ())
+        {
+          // create new output stream for subsystem data
+          std::ostringstream subsys_stream;
+
+          const char *header;
+          if (mach_info::words_big_endian ())
+            header = "\x01\x00\x4d\x49\x00\x00\x00\x00";
+          else
+            header = "\x00\x01\x49\x4d\x00\x00\x00\x00";
+          subsys_stream.write (header, 8);
+
+          // create FileWrapper__ object to register as MAT_FILE_WORKSPACE_CLASS
+          octave::cdef_manager& cdm = octave::__get_cdef_manager__ ();
+          octave::cdef_class filewrapper_class
+            = cdm.make_class ("FileWrapper__", std::list<octave::cdef_class> ());
+          octave_value filewrapper_obj
+            = filewrapper_class.construct (octave_value_list (), true);
+
+          octave_scalar_map subsys_map;
+          subsys_map.assign ("MCOS", filewrapper_obj);
+          // TODO: include other type systems "java" and "handle"
+
+          std::string help;
+          do_save (subsys_stream, subsys_map, "", help, false, MAT5_BINARY,
+                   save_as_floats);
+          // don't use zlib compression on subsys_stream
+
+          // convert stream to uint8NDArray
+          // FIXME: How to optimize?
+          const std::string& stream_data = subsys_stream.str();
+          octave_idx_type data_size = stream_data.size ();
+          uint8NDArray subsys_data (dim_vector (1, data_size));
+          std::memcpy (subsys_data.rwdata(), stream_data.data(), data_size);
+
+          // save the uint8NDArray to original stream without variable name
+          octave_value subsys_value (subsys_data);
+          std::streampos subsys_offset = os.tellp ();
+          do_save (os, subsys_value, "", help, false, fmt, save_as_floats);
+
+          // update subsystem offset in MAT-file header
+          std::streampos current_pos = os.tellp ();
+          os.seekp (116);
+          uint64_t offset_val = static_cast<uint64_t> (subsys_offset);
+          os.write (reinterpret_cast<const char*> (&offset_val), 8);
+          os.seekp (current_pos);
         }
     }
 }
@@ -857,7 +923,7 @@ load_save_system::write_header (std::ostream& os,
 
         std::size_t len = std::min (comment_string.length (),
                                     static_cast<std::size_t> (124));
-        memset (headertext, ' ', 124);
+        memset (headertext, '\0', 124);
         memcpy (headertext, comment_string.data (), len);
 
         // The first pair of bytes give the version of the MAT file
@@ -1083,13 +1149,7 @@ load_save_system::install_loaded_variable (const std::string& name,
 std::string
 load_save_system::init_save_header_format ()
 {
-  return
-    (std::string ("# Created by Octave " OCTAVE_VERSION
-                  ", %a %b %d %H:%M:%S %Y %Z <")
-     + sys::env::get_user_name ()
-     + '@'
-     + sys::env::get_host_name ()
-     + '>');
+  return "# Created by Octave " OCTAVE_VERSION ", %a %b %d %H:%M:%S %Y %Z";
 }
 
 load_save_format
@@ -1190,6 +1250,15 @@ load_save_system::load (const octave_value_list& args, int nargout)
 
   bool list_only = false;
   bool verbose = false;
+
+  create_subsystem_handler ();  // for MAT file formats
+
+  octave::unwind_action
+  clear_obj_cache ([this] ()
+    {
+      clear_mcos_object_cache ();
+      clear_subsystem_handler ();
+    });
 
   for (; i < argc; i++)
     {
@@ -1566,6 +1635,72 @@ load_save_system::save (const octave_value_list& args, int nargout)
     }
 
   return retval;
+}
+
+void
+load_save_system::clear_mcos_object_cache ()
+{
+  m_mcos_object_load_cache.clear ();
+  m_mcos_object_save_cache.clear ();
+}
+
+void
+load_save_system::set_mcos_object_cache_entry (uint32_t object_id,
+                                               octave_value& obj)
+{
+  m_mcos_object_load_cache[object_id] = obj;
+}
+
+octave_value&
+load_save_system::get_mcos_object_cache_entry (uint32_t object_id)
+{
+  return m_mcos_object_load_cache[object_id];
+}
+
+bool
+load_save_system::is_mcos_object_cache_entry (uint32_t object_id)
+{
+  // FIXME: Consider replacing this with std::unordered_map<>::contains when we
+  //        allow C++20.
+  return m_mcos_object_load_cache.find (object_id)
+           !=  m_mcos_object_load_cache.end ();
+}
+
+uint32_t
+load_save_system::get_mcos_object_cache_id (const void *obj, bool& new_entry)
+{
+  // identify objects by their address in memory
+  uint32_t id = m_mcos_object_save_cache[obj];
+  if (id == 0)
+    {
+      // The object hasn't been present in the cache yet.
+      // Assign and return a new id (starting at 1).
+      id = m_mcos_object_save_cache.size ();
+      m_mcos_object_save_cache[obj] = id;
+      new_entry = true;
+    }
+  else
+    new_entry = false;
+
+  return id;
+}
+
+void
+load_save_system::create_subsystem_handler ()
+{
+  m_subsystem_handler = std::make_unique<subsystem_handler> ();
+}
+
+subsystem_handler*
+load_save_system::get_subsystem_handler ()
+{
+  return m_subsystem_handler.get ();
+}
+
+void
+load_save_system::clear_subsystem_handler ()
+{
+  m_subsystem_handler.reset ();
 }
 
 DEFMETHOD (load, interp, args, nargout,
@@ -2116,7 +2251,7 @@ omitted from text-format data files.  The default value is
 @c Set example in small font to prevent overfull line
 
 @smallexample
-"# Created by Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>"
+"# Created by Octave VERSION, %a %b %d %H:%M:%S %Y %Z"
 @end smallexample
 
 When called from inside a function with the @qcode{"local"} option, the

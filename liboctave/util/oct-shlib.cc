@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1999-2025 The Octave Project Developers
+// Copyright (C) 1999-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -50,12 +50,12 @@ extern "C"
 
 #include "file-ops.h"
 #include "file-stat.h"
-#include "lo-error.h"
+#include "oct-error.h"
 #include "oct-shlib.h"
 #include "str-vec.h"
 
 #if defined (HAVE_LOADLIBRARY_API)
-#  include "lo-sysdep.h"
+#  include "oct-sysdep.h"
 #endif
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -329,7 +329,7 @@ octave_w32_shlib::octave_w32_shlib (const std::string& f)
                       FORMAT_MESSAGE_IGNORE_INSERTS,
                       nullptr, last_error,
                       MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT),
-                      reinterpret_cast <wchar_t *> (&error_text), 0, nullptr);
+                      reinterpret_cast<wchar_t *> (&error_text), 0, nullptr);
 
       std::ostringstream err_str;
       err_str << "opening the library '" << m_file << "' failed (error "

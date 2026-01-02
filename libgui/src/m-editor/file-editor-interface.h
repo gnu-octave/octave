@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2011-2025 The Octave Project Developers
+// Copyright (C) 2011-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -74,6 +74,8 @@ public:
   virtual void restore_session (bool) = 0;
 
   virtual void enable_menu_shortcuts (bool enable) = 0;
+
+  virtual const QString get_current_filename () = 0;
 
 Q_SIGNALS:
 

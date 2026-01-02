@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1994-2025 The Octave Project Developers
+## Copyright (C) 1994-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -39,7 +39,7 @@
 ## @example
 ## @group
 ## lcm (5:8, 9:12)
-##    @result{}  45  30  77  24
+##    @xresult{}  45  30  77  24
 ## @end group
 ## @end example
 ##
@@ -50,7 +50,7 @@
 ## @group
 ## x = 1:10;    # vector or array of inputs
 ## lcm (num2cell (x) @{:@})
-##    @result{}     2520
+##    @xresult{}     2520
 ## @end group
 ## @end example
 ## @seealso{factor, gcd, isprime}

@@ -89,6 +89,7 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/128x128/widget-dock.png \
   %reldir%/icons/octave/128x128/widget-undock-light.png \
   %reldir%/icons/octave/128x128/widget-undock.png \
+  %reldir%/icons/octave/128x128/window-close.png \
   %reldir%/icons/octave/scalable/applications-system.svg \
   %reldir%/icons/octave/scalable/bookmark-new.svg \
   %reldir%/icons/octave/scalable/bp-next.svg \
@@ -152,6 +153,7 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/scalable/letter_logo_TerminalDockWidget.svg \
   %reldir%/icons/octave/scalable/letter_logo_VariableEditor.svg \
   %reldir%/icons/octave/scalable/letter_logo_WorkspaceView.svg \
+  %reldir%/icons/octave/scalable/logo.svg \
   %reldir%/icons/octave/scalable/plot-xy-curve.svg \
   %reldir%/icons/octave/scalable/system-run.svg \
   %reldir%/icons/octave/scalable/user-home.svg \
@@ -164,6 +166,7 @@ octave_gui_ICONS = \
   %reldir%/icons/octave/scalable/widget-dock.svg \
   %reldir%/icons/octave/scalable/widget-undock-light.svg \
   %reldir%/icons/octave/scalable/widget-undock.svg \
+  %reldir%/icons/octave/scalable/window-close.svg \
   %reldir%/icons/tango/index.theme \
   %reldir%/icons/tango/128x128/applications-system.png \
   %reldir%/icons/tango/128x128/bookmark-new.png \
@@ -490,6 +493,7 @@ octave_gui_MOC_H = $(octave_gui_MOC:.cc=.h)
   -I$(srcdir)/liboctave/system \
   -I$(srcdir)/liboctave/util \
   -Ilibinterp -I$(srcdir)/libinterp \
+  -I$(srcdir)/libinterp/template-inst \
   -Ilibinterp/parse-tree -I$(srcdir)/libinterp/parse-tree \
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
   -I$(srcdir)/libinterp/octave-value \

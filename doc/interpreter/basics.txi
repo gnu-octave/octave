@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2025 The Octave Project Developers
+@c Copyright (C) 1996-2026 The Octave Project Developers
 @c
 @c This file is part of Octave.
 @c
@@ -259,7 +259,6 @@ optimize_permutation_matrix     = false
 optimize_range                  = false
 fixed_point_format              = true
 history_timestamp_format_string = "%%-- %D %I:%M %p --%%"
-print_empty_dimensions          = false
 print_struct_array_contents     = true
 save_default_options            = "-mat-binary"
 struct_levels_to_print          = 0
@@ -290,7 +289,7 @@ that works in Octave but not @sc{matlab} (@pxref{XREFwarning,,warning},
 @itemx -v
 @cindex @sortas{options, Octave command --version} @ @ @code{--version}
 @cindex @sortas{options, Octave command -v} @ @ @code{-v}
-Print the program version number and exit.
+Print program version information and exit.
 
 @item @var{file}
 Execute commands from @var{file}.  Exit when done unless @option{--persist} is

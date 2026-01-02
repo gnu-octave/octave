@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2007-2025 The Octave Project Developers
+## Copyright (C) 2007-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -36,7 +36,7 @@
 ## @group
 ## c = @{1, 2, @{31, 32@}@};
 ## celldisp (c, "b")
-##    @result{}
+##    @xresult{}
 ##       b@{1@} =
 ##        1
 ##       b@{2@} =

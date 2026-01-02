@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2013-2025 The Octave Project Developers
+## Copyright (C) 2013-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -147,12 +147,12 @@ function clearvars (varargin)
     idx_clear = true (numel (varlist), 1);
   else
     ptn = strjoin ({ vars(! [vars.except]).var_name }, '|');
-    idx_clear = ! cellfun (@isempty, regexp (varlist, ptn));
+    idx_clear = ! cellfun ('isempty', regexp (varlist, ptn));
   endif
 
   if (numvar > 0 && any ([vars.except]))
     ptn = strjoin ({ vars([vars.except]).var_name }, '|');
-    idx_except = ! cellfun (@isempty, regexp (varlist, ptn));
+    idx_except = ! cellfun ('isempty', regexp (varlist, ptn));
     idx_clear(idx_except) = false;
   endif
 

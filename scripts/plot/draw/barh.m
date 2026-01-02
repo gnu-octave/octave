@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1996-2025 The Octave Project Developers
+## Copyright (C) 1996-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -429,7 +429,7 @@ endfunction
 %!   assert ([bardata.ydata], [1, 2, 3; 4, 5, 6]);
 %!
 %!   assert (all (strcmp ({patchdata.type}, "patch")));
-%!   assert (all (cellfun (@isequal, {patchdata.ydata}, ...
+%!   assert (all (cellfun ('isequal', {patchdata.ydata}, ...
 %!                        {[0.6, 1.6; 0.6, 1.6; 1.4, 2.4; 1.4, 2.4]})));
 %!   assert (patchdata(1).xdata, [0, 0; 1, 4; 1, 4; 0, 0]);
 %!   assert (patchdata(2).xdata, [1, 4; 3, 9; 3, 9; 1, 4]);
@@ -466,7 +466,7 @@ endfunction
 %!   assert ([bardata.ydata], [-2, 1, 3; 4, -5, 6]);
 %!
 %!   assert (all (strcmp ({patchdata.type}, "patch")));
-%!   assert (all (cellfun (@isequal, {patchdata.ydata}, ...
+%!   assert (all (cellfun ('isequal', {patchdata.ydata}, ...
 %!                        {[0.6, 1.6; 0.6, 1.6; 1.4, 2.4; 1.4, 2.4]})));
 %!   assert (patchdata(1).xdata, [0, 0; -2, 4; -2, 4; 0, 0]);
 %!   assert (patchdata(2).xdata, [0, 0; 1, -5; 1, -5; 0, 0]);
@@ -511,7 +511,7 @@ endfunction
 %!   assert (all (strcmp ({bardata.barlayout}, "stacked")));
 %!   assert ([bardata.xdata], [1, 1, 1; 2, 2, 2]);
 %!   assert ([bardata.ydata], [1, 2, 3; 4, 5, 6]);
-%!   assert (all (cellfun (@isequal, {patchdata.ydata}, ...
+%!   assert (all (cellfun ('isequal', {patchdata.ydata}, ...
 %!                        {[0.6, 1.6; 0.6, 1.6; 1.4, 2.4; 1.4, 2.4]})));
 %!   assert (patchdata(1).xdata, [0, 0; 1, 4; 1, 4; 0, 0]);
 %!   assert (patchdata(2).xdata, [1, 4; 3, 9; 3, 9; 1, 4]);

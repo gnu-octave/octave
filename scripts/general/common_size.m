@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1995-2025 The Octave Project Developers
+## Copyright (C) 1995-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -35,9 +35,9 @@
 ## @example
 ## @group
 ## [err, a, b] = common_size ([1 2; 3 4], 5)
-##      @result{} err = 0
-##      @result{} a = [ 1, 2; 3, 4 ]
-##      @result{} b = [ 5, 5; 5, 5 ]
+##      @xresult{} err = 0
+##      @xresult{} a = [ 1, 2; 3, 4 ]
+##      @xresult{} b = [ 5, 5; 5, 5 ]
 ## @end group
 ## @end example
 ##

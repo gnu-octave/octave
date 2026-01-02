@@ -9,12 +9,12 @@
 
 %!test <*53599>
 %! global gval;
-%! assert (isempty (gval))
+%! assert (isempty (gval));
 %! sggval (13);
 %! assert (sggval (), 13);
 %! assert (gval, 13);
 %! clear global gval
-%! assert (sggval (), [])
+%! assert (sggval (), []);
 %! gval = 42;
 %! assert (sggval (), []);
 %! clear gval

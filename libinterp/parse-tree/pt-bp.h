@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2001-2025 The Octave Project Developers
+// Copyright (C) 2001-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -154,6 +154,8 @@ private:
   void take_action (tree& tr);
 
   void take_action (tree_statement& stmt);
+
+  //--------
 
   // Statement line number we are looking for.
   int m_line;

@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2007-2025 The Octave Project Developers
+## Copyright (C) 2007-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -82,16 +82,14 @@ function h = compass (varargin)
 
   if (have_line_spec)
     arg = varargin{end};
-    if (ischar (arg) || iscellstr (arg))
-      [~, valid] = __pltopt__ ("compass", arg, false);
-      if (valid)
-        line_spec = arg;
-      else
-        error ("compass: invalid linestyle STYLE");
-      endif
-    else
+    if (! (ischar (arg) || iscellstr (arg)))
       error ("compass: invalid linestyle STYLE");
     endif
+    [~, valid] = __pltopt__ ("compass", arg, false);
+    if (! valid)
+      error ("compass: invalid linestyle STYLE");
+    endif
+    line_spec = arg;
   endif
 
   ## Matlab draws compass plots with the arrow head as one continuous line,
@@ -108,18 +106,8 @@ function h = compass (varargin)
        ytmp - u * arrowsize / 3];
   [r, p] = cart2pol (x, y);
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
-  endif
-  unwind_protect
-    hax = newplot (hax);
-    htmp = polar (r, p, line_spec);
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
+  hax = newplot (hax);
+  htmp = polar (hax, r, p, line_spec);
 
   if (nargout > 0)
     h = htmp;

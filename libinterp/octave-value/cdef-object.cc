@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2012-2025 The Octave Project Developers
+// Copyright (C) 2012-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -35,8 +35,10 @@
 #include "interpreter-private.h"
 #include "ov-classdef.h"
 
-// Define to 1 to enable debugging statements.
-#define DEBUG_TRACE 0
+#define OCTAVE_CDEF_OBJECT_DEBUG 0
+#if OCTAVE_CDEF_OBJECT_DEBUG
+#  include <iostream>
+#endif
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -134,15 +136,16 @@ cdef_object_rep::map_keys () const
 }
 
 octave_map
-cdef_object::map_value () const
+cdef_object::map_value (bool warn, bool for_save) const
 {
   octave_map retval;
 
-  warning_with_id ("Octave:classdef-to-struct",
-                   "struct: converting a classdef object into a struct "
-                   "overrides the access restrictions defined for properties. "
-                   "All properties are returned, including private and "
-                   "protected ones.");
+  if (warn)
+    warning_with_id ("Octave:classdef-to-struct",
+                     "struct: converting a classdef object into a struct "
+                     "overrides the access restrictions defined for "
+                     "properties. All properties are returned, including "
+                     "private and protected ones.");
 
   cdef_class cls = get_class ();
 
@@ -155,6 +158,11 @@ cdef_object::map_value () const
       // FIXME: Why not const here?
       for (auto& prop_val : props)
         {
+          // Do not include properties that have the "Transient" attribute
+          // when creating the map for saving the object to a file.
+          if (for_save && prop_val.second.get ("Transient").bool_value ())
+            continue;
+
           if (is_array ())
             {
               Array<cdef_object> a_obj = array_value ();
@@ -210,6 +218,40 @@ cdef_object_base::make_array () const
   r->set_class (get_class ());
 
   return r;
+}
+
+cdef_object_rep *
+cdef_object_array::clone () const
+{
+  Array<cdef_object> new_array (m_array.dims ());
+
+  for (octave_idx_type i = 0; i < m_array.numel (); i++)
+    new_array(i) = m_array(i).clone ();
+
+  cdef_object_array *retval = new cdef_object_array (new_array);
+  retval->set_class (get_class ());
+  return retval;
+}
+
+cdef_object_rep *
+cdef_object_array::permute (const Array<int>& vec, bool inv) const
+{
+  Array<cdef_object> cpy_array = m_array.permute (vec, inv);
+
+  cdef_object_array *retval = new cdef_object_array (cpy_array);
+  retval->set_class (get_class ());
+  return retval;
+}
+
+
+cdef_object_rep *
+cdef_object_array::transpose () const
+{
+  if (m_array.ndims () > 2)
+    error ("transpose not defined for N-D objects");
+
+  auto perm_vec = Array<int> (std::vector<int> {1, 0}, dim_vector (1, 2));
+  return permute (perm_vec);
 }
 
 octave_value_list
@@ -277,7 +319,20 @@ cdef_object_array::subsref (const std::string& type,
       break;
 
     case '.':
-      if (type.size () == 1 && idx.size () == 1)
+      if (m_array.numel () == 1)
+        {
+          // If there is only one element in the array, implicitly index the
+          // first element. In this case, also allow indexing with more than
+          // one level.
+
+          // dummy variables
+          std::size_t dummy_skip;
+          cdef_class dummy_cls;
+          retval = m_array(0).subsref (type, idx, 1, dummy_skip, dummy_cls);
+
+          break;
+        }
+      else if (type.size () == 1 && idx.size () == 1)
         {
           Cell c (dims ());
 
@@ -372,15 +427,7 @@ cdef_object_array::subsasgn (const std::string& type,
         }
       else
         {
-          const octave_value_list& ivl = idx.front ();
-
-          // Fill in trailing singleton dimensions so that
-          // array.index doesn't create a new blank entry (bug #46660).
-          const octave_idx_type one = static_cast<octave_idx_type> (1);
-          const octave_value_list& ival = ivl.length () >= 2
-                                          ? ivl : ((m_array.dims ()(0) == 1)
-                                              ? ovl (one, ivl(0))
-                                              : ovl (ivl(0), one));
+          const octave_value_list& ival = idx.front ();
 
           bool is_scalar = true;
 
@@ -428,9 +475,8 @@ cdef_object_array::subsasgn (const std::string& type,
             // - 1 in "a"
             ignore_copies = 2;
 
-          std::list<octave_value_list> next_idx (idx);
-
-          next_idx.erase (next_idx.begin ());
+          std::list<octave_value_list> next_idx (std::next (idx.begin ()),
+                                                 idx.end ());
 
           octave_value tmp = obj.subsasgn (type.substr (1), next_idx,
                                            rhs, ignore_copies);
@@ -466,6 +512,18 @@ cdef_object_array::subsasgn (const std::string& type,
         }
       break;
 
+    case '.':
+      if (m_array.numel () == 1)
+        {
+          // If there is only one element in the array, implicitly index the
+          // first element.
+
+          retval = m_array(0).subsasgn (type, idx, rhs);
+
+          break;
+        }
+      OCTAVE_FALLTHROUGH;
+
     default:
       error ("can't perform indexing operation on array of %s objects",
              class_name ().c_str ());
@@ -473,6 +531,14 @@ cdef_object_array::subsasgn (const std::string& type,
     }
 
   return retval;
+}
+
+octave_value
+cdef_object_array::reshape (const dim_vector& new_dims) const
+{
+  cdef_object_array retval = cdef_object_array (*this);
+  retval.m_array = Array<cdef_object> (m_array, new_dims);
+  return to_ov (cdef_object (new cdef_object_array (retval)));
 }
 
 void
@@ -535,11 +601,34 @@ cdef_object_scalar::subsref (const std::string& type,
       {
         std::string name = (idx.front ())(0).string_value ();
 
-        cdef_method meth = cls.find_method (name);
+        cdef_property prop = cls.find_property (name);
 
-        if (meth.ok ())
+        if (prop.ok ())
           {
-            int _nargout = (type.length () > 2 ? 1 : nargout);
+            if (prop.is_constant ())
+              retval(0) = prop.get_value (true, "subsref");
+            else
+              {
+                m_count++;
+                retval(0) = prop.get_value (cdef_object (this),
+                                            true, "subsref");
+              }
+
+            skip = 1;
+          }
+
+        if (skip == 0)
+          {
+            cdef_method meth = cls.find_method (name);
+
+            if (! meth.ok ())
+              error ("subsref: unknown method or property: %s", name.c_str ());
+
+            // If the method call is followed by another index operation,
+            // the number of outputs of the call will be 1.
+            int nargout_mtd = (type.length () > 2
+                               || (type.length () == 2 && type[1] != '(')
+                               ? 1 : nargout);
 
             octave_value_list args;
 
@@ -555,33 +644,15 @@ cdef_object_scalar::subsref (const std::string& type,
               }
 
             if (meth.is_static ())
-              retval = meth.execute (args, _nargout, true, "subsref");
+              retval = meth.execute (args, nargout_mtd, true, "subsref");
             else
               {
                 m_count++;
-                retval = meth.execute (cdef_object (this), args, _nargout,
+                retval = meth.execute (cdef_object (this), args, nargout_mtd,
                                        true, "subsref");
               }
           }
 
-        if (skip == 0)
-          {
-            cdef_property prop = cls.find_property (name);
-
-            if (! prop.ok ())
-              error ("subsref: unknown method or property: %s", name.c_str ());
-
-            if (prop.is_constant ())
-              retval(0) = prop.get_value (true, "subsref");
-            else
-              {
-                m_count++;
-                retval(0) = prop.get_value (cdef_object (this),
-                                            true, "subsref");
-              }
-
-            skip = 1;
-          }
         break;
       }
 
@@ -656,9 +727,8 @@ cdef_object_scalar::subsasgn (const std::string& type,
           {
             octave_value val = prop.get_value (obj, true, "subsasgn");
 
-            std::list<octave_value_list> args (idx);
-
-            args.erase (args.begin ());
+            std::list<octave_value_list> args (std::next (idx.begin ()),
+                                               idx.end ());
 
             val = val.assign (octave_value::op_asn_eq,
                               type.substr (1), args, rhs);
@@ -696,6 +766,19 @@ cdef_object_scalar::subsasgn (const std::string& type,
     }
 
   return retval;
+}
+
+octave_value
+cdef_object_scalar::reshape (const dim_vector& new_dims) const
+{
+  if (new_dims.numel () != 1)
+    {
+      std::string new_dims_str = new_dims.str ();
+      error ("reshape: cannot reshape scalar classdef object to %s array",
+             new_dims_str.c_str ());
+    }
+
+  return to_ov (cdef_object (clone()));
 }
 
 void
@@ -744,7 +827,7 @@ cdef_object_scalar::mark_as_constructed (const cdef_class& cls)
 
 handle_cdef_object::~handle_cdef_object ()
 {
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_OBJECT_DEBUG
   std::cerr << "deleting " << get_class ().get_name ()
             << " object (handle)" << std::endl;
 #endif
@@ -752,7 +835,7 @@ handle_cdef_object::~handle_cdef_object ()
 
 value_cdef_object::~value_cdef_object ()
 {
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_OBJECT_DEBUG
   std::cerr << "deleting " << get_class ().get_name ()
             << " object (value)" << std::endl;
 #endif

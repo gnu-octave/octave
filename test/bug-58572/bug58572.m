@@ -1,7 +1,7 @@
 classdef bug58572
   methods
     function rslt = use_num (obj)
-      rslt = cellfun (@isnumeric, {'a_name'});
+      rslt = cellfun ('isnumeric', {'a_name'});
     endfunction
     function rslt = isnumeric (obj)
       if (! isa (obj, 'bug58572'))

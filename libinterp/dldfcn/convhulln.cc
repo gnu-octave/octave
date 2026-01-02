@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2000-2025 The Octave Project Developers
+// Copyright (C) 2000-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -108,9 +108,9 @@ documentation for the Qhull library for details
 The default options depend on the dimension of the input:
 
 @itemize
-@item 2D, 3D, 4D: @var{options} = @code{@{"Qt"@}}
+@item 2-D, 3-D, 4-D: @var{options} = @code{@{"Qt"@}}
 
-@item 5D and higher: @var{options} = @code{@{"Qt", "Qx"@}}
+@item 5-D and higher: @var{options} = @code{@{"Qt", "Qx"@}}
 @end itemize
 
 If @var{options} is not present or @code{[]} then the default arguments are

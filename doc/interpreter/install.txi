@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2025 The Octave Project Developers
+@c Copyright (C) 1996-2026 The Octave Project Developers
 @c
 @c This file is part of Octave.
 @c
@@ -1051,11 +1051,11 @@ form @code{NaN * 0}.
 @example
 @group
 [NaN, 1; 0, 0] * [0; 1]
-@result{}
+@xresult{}
 [ 1
   0 ]
 
-correct result @result{}
+correct result @xresult{}
 [ NaN
   0   ]
 @end group

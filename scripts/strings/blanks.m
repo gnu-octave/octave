@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1996-2025 The Octave Project Developers
+## Copyright (C) 1996-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -33,7 +33,7 @@
 ## @group
 ## blanks (10);
 ## whos ans
-##      @result{}
+##      @xresult{}
 ##       Attr Name        Size                     Bytes  Class
 ##       ==== ====        ====                     =====  =====
 ##            ans         1x10                        10  char

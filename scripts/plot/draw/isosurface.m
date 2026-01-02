@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2009-2025 The Octave Project Developers
+## Copyright (C) 2009-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -203,10 +203,10 @@ function varargout = isosurface (varargin)
                   "FaceVertexCData", fc,
                   "FaceColor", "flat", "EdgeColor", ec,
                   "FaceLighting", "gouraud");
-      if (! ishold ())
+      if (! ishold (hax))
         set (hax, "View", [-37.5, 30]);
       endif
-      isonormals (x, y, z, v, pa);
+      isonormals (hax, x, y, z, v, pa);
       lights = findobj (hax, "Type", "light");
       if (isempty (lights))
         camlight ();
@@ -598,8 +598,3 @@ endfunction
 %!error <COL must be passed to return C> [f, v, c] = isosurface (val, iso)
 %!warning <colors will be calculated, but no output argument to receive it>
 %! [f, v] = isosurface (val, iso, yy);
-
-## test for __calc_isovalue_from_data__
-## FIXME: private function cannot be tested, unless bug #38776 is resolved.
-%!test <38776>
-%! assert (__calc_isovalue_from_data__ (1:5), 3.02);

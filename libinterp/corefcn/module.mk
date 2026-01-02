@@ -54,6 +54,7 @@ COREFCN_INC = \
   %reldir%/ls-ascii-helper.h \
   %reldir%/ls-hdf5.h \
   %reldir%/ls-mat-ascii.h \
+  %reldir%/ls-mat-subsys.h \
   %reldir%/ls-mat4.h \
   %reldir%/ls-mat5.h \
   %reldir%/ls-oct-text.h \
@@ -81,7 +82,6 @@ COREFCN_INC = \
   %reldir%/pr-flt-fmt.h \
   %reldir%/pr-output.h \
   %reldir%/procstream.h \
-  %reldir%/settings.h \
   %reldir%/sighandlers.h \
   %reldir%/sparse-xdiv.h \
   %reldir%/sparse-xpow.h \
@@ -205,6 +205,7 @@ COREFCN_SRC = \
   %reldir%/ls-ascii-helper.cc \
   %reldir%/ls-hdf5.cc \
   %reldir%/ls-mat-ascii.cc \
+  %reldir%/ls-mat-subsys.cc \
   %reldir%/ls-mat4.cc \
   %reldir%/ls-mat5.cc \
   %reldir%/ls-oct-binary.cc \
@@ -250,7 +251,6 @@ COREFCN_SRC = \
   %reldir%/rcond.cc \
   %reldir%/regexp.cc \
   %reldir%/schur.cc \
-  %reldir%/settings.cc \
   %reldir%/sighandlers.cc \
   %reldir%/sparse-xdiv.cc \
   %reldir%/sparse-xpow.cc \
@@ -276,6 +276,7 @@ COREFCN_SRC = \
   %reldir%/text-renderer.cc \
   %reldir%/time.cc \
   %reldir%/toplev.cc \
+  %reldir%/trexc.cc \
   %reldir%/tril.cc \
   %reldir%/tsearch.cc \
   %reldir%/typecast.cc \

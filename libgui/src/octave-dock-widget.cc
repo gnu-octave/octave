@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2012-2025 The Octave Project Developers
+// Copyright (C) 2012-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -234,9 +234,11 @@ octave_dock_widget::octave_dock_widget (const QString& obj_name, QWidget *p)
   m_close_action->setToolTip (tr ("Hide Widget"));
 
   setStyleSheet (qdockwidget_css
-                 (global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-close.png",
+                 (global_icon_paths.at (ICON_THEME_OCTAVE)
+                    + "widget-close" + global_icon_extension,
                   QString ("Close Widget"),
-                  global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-undock.png",
+                  global_icon_paths.at (ICON_THEME_OCTAVE)
+                    + "widget-undock" + global_icon_extension,
                   QString ("Undock Widget"), m_icon_size, "", ""));
 
   if (widget ())
@@ -553,11 +555,11 @@ octave_dock_widget::handle_settings ()
   set_style (false);
 
   // Compacter design
-  QToolBar *toolbar = findChild <QToolBar *> ();
+  QToolBar *toolbar = findChild<QToolBar *> ();
   if (toolbar)
     toolbar->setStyleSheet (toolbar->styleSheet () + global_toolbar_style);
 
-  QMenuBar *menubar = findChild <QMenuBar *> ();
+  QMenuBar *menubar = findChild<QMenuBar *> ();
   if (menubar)
     menubar->setStyleSheet (menubar->styleSheet () + global_menubar_style);
 
@@ -816,9 +818,11 @@ octave_dock_widget::set_style (bool active)
     }
   else
     {
-      setStyleSheet (qdockwidget_css (global_icon_paths.at (ICON_THEME_OCTAVE) + full_close_icon + ".png",
+      setStyleSheet (qdockwidget_css (global_icon_paths.at (ICON_THEME_OCTAVE)
+                                        + full_close_icon + global_icon_extension,
                                       close_tooltip,
-                                      global_icon_paths.at (ICON_THEME_OCTAVE) + full_dock_icon + ".png",
+                                      global_icon_paths.at (ICON_THEME_OCTAVE)
+                                        + full_dock_icon + global_icon_extension,
                                       dock_tooltip,
                                       m_icon_size,
                                       css_foreground,

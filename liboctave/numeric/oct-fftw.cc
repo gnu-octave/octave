@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2001-2025 The Octave Project Developers
+// Copyright (C) 2001-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -31,7 +31,7 @@
 #  include <fftw3.h>
 #endif
 
-#include "lo-error.h"
+#include "oct-error.h"
 #include "oct-fftw.h"
 #include "oct-locbuf.h"
 #include "quit.h"
@@ -47,8 +47,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 fftw_planner *fftw_planner::s_instance = nullptr;
 
-// Helper class to create and cache FFTW plans for both 1D and
-// 2D.  This implementation defaults to using FFTW_ESTIMATE to create
+// Helper class to create and cache FFTW plans for both 1-D and
+// 2-D.  This implementation defaults to using FFTW_ESTIMATE to create
 // the plans, which in theory is suboptimal, but provides quite
 // reasonable performance in practice.
 

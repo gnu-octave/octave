@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1995-2025 The Octave Project Developers
+// Copyright (C) 1995-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -29,6 +29,7 @@
 
 // Instantiate MArrays of short int values.
 
+#define OCTAVE_EXTERN_TEMPLATE_MARRAY
 #include "MArray.h"
 #include "MArray.cc"
 

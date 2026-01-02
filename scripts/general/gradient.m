@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2000-2025 The Octave Project Developers
+## Copyright (C) 2000-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -76,9 +76,9 @@
 ## @example
 ## @group
 ## gradient (@@cos, pi/2, .1)
-## @result{} -0.9983
+## @xresult{} -0.9983
 ## -sin (pi/2)
-## @result{} -1
+## @xresult{} -1
 ## @end group
 ## @end example
 ##
@@ -107,6 +107,9 @@ function varargout = gradient (m, varargin)
 
   nargout_with_ans = max (1,nargout);
   if (isnumeric (m))
+    if (! isfloat (m))
+      error ("gradient: M must be a floating point vector or array");
+    endif
     [varargout{1:nargout_with_ans}] = matrix_gradient (m, varargin{:});
   elseif (is_function_handle (m))
     [varargout{1:nargout_with_ans}] = handle_gradient (m, varargin{:});
@@ -342,3 +345,7 @@ endfunction
 %! [dx, dy] = gradient (f, xy);
 %! assert (dx, df_dx (xy (:, 1), xy (:, 2)), 0.1);
 %! assert (dy, df_dy (xy (:, 1), xy (:, 2)), 0.1);
+
+## Test input validation
+%!error <Invalid call> gradient ()
+%!error <M must be a floating point vector or array> gradient (int8 ([1 2 3]))

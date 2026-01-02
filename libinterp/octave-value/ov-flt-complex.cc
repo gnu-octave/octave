@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -31,8 +31,8 @@
 #include <ostream>
 
 #include "lo-ieee.h"
-#include "lo-specfun.h"
-#include "lo-mappers.h"
+#include "mappers.h"
+#include "oct-specfun.h"
 
 #include "mxarray.h"
 #include "ovl.h"

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1998-2025 The Octave Project Developers
+// Copyright (C) 1998-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -30,15 +30,14 @@
 #include "CSparse.h"
 #include "PermMatrix.h"
 #include "dSparse.h"
-#include "lo-error.h"
-#include "lo-mappers.h"
+#include "mappers.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
 #include "oct-sparse.h"
 #include "oct-spparms.h"
 #include "sparse-lu.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(math)
 
 // Wrappers for SuiteSparse (formerly UMFPACK) functions that have
@@ -397,7 +396,7 @@ umfpack_report_status<Complex> (double *Control, octave_idx_type status)
 
 template <>
 inline OCTAVE_API void
-umfpack_report_symbolic <Complex> (void *Symbolic, const double *Control)
+umfpack_report_symbolic<Complex> (void *Symbolic, const double *Control)
 {
   UMFPACK_ZNAME (report_symbolic) (Symbolic, Control);
 }

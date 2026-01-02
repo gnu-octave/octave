@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1999-2025 The Octave Project Developers
+## Copyright (C) 1999-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -95,7 +95,7 @@ endfunction
 %!      1,   1,   1;
 %!      0,   0,   1;
 %!      0,   0,   0];
-%! assert (flag (12), a, eps)
+%! assert (flag (12), a, eps);
 
 ## Input validation
 %!error <N must be a scalar integer> flag ("foo")

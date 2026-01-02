@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1994-2025 The Octave Project Developers
+// Copyright (C) 1994-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -160,9 +160,11 @@ public:
 
 private:
 
-  octave_value m_fcn;
-
   tree_function_def (const octave_value& v) : m_fcn (v) { }
+
+  //--------
+
+  octave_value m_fcn;
 };
 
 OCTAVE_END_NAMESPACE(octave)

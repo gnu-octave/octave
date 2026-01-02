@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1995-2025 The Octave Project Developers
+## Copyright (C) 1995-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -32,7 +32,7 @@
 ## @example
 ## @group
 ## date ()
-##   @result{} 20-Aug-1993
+##   @xresult{} 20-Aug-1993
 ## @end group
 ## @end example
 ## @seealso{now, clock, datestr, localtime}

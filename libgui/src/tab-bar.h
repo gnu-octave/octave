@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2018-2025 The Octave Project Developers
+// Copyright (C) 2018-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -81,7 +81,7 @@ private:
   void switch_tab (int direction, bool movetab = false);
 
   QMenu *m_context_menu;
-  QList <QAction *> m_ctx_actions;
+  QList<QAction *> m_ctx_actions;
   int m_rotated;
 };
 

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2008-2025 The Octave Project Developers
+// Copyright (C) 2008-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -33,7 +33,7 @@
 #include <limits>
 #include <vector>
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "CColVector.h"
 #include "CMatrix.h"
 #include "CRowVector.h"
@@ -51,14 +51,14 @@
 #include "fDiagMatrix.h"
 #include "fMatrix.h"
 #include "fRowVector.h"
-#include "lo-error.h"
 #include "lo-ieee.h"
-#include "lo-mappers.h"
+#include "mappers.h"
 #include "mx-cm-s.h"
 #include "mx-fcm-fs.h"
 #include "mx-fs-fcm.h"
 #include "mx-s-cm.h"
 #include "oct-cmplx.h"
+#include "oct-error.h"
 #include "oct-norm.h"
 #include "quit.h"
 #include "svd.h"

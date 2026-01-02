@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2008-2025 The Octave Project Developers
+## Copyright (C) 2008-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -40,7 +40,7 @@
 ## @example
 ## @group
 ## regexptranslate ("wildcard", "*.m")
-##      @result{} '.*\.m'
+##      @xresult{} '.*\.m'
 ## @end group
 ## @end example
 ##
@@ -51,7 +51,7 @@
 ## @example
 ## @group
 ## regexptranslate ("escape", "12.5")
-##      @result{} '12\.5'
+##      @xresult{} '12\.5'
 ## @end group
 ## @end example
 ##

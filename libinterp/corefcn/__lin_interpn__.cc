@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2007-2025 The Octave Project Developers
+// Copyright (C) 2007-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -127,7 +127,7 @@ lookup (const T *x, octave_idx_type n, T y)
     }
 }
 
-// n-dimensional linear interpolation
+// N-dimensional linear interpolation
 
 template <typename T, typename DT>
 void

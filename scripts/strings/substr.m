@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1996-2025 The Octave Project Developers
+## Copyright (C) 1996-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -41,11 +41,11 @@
 ## @example
 ## @group
 ## substr ("This is a test string", 6, 9)
-##      @result{} "is a test"
+##      @xresult{} "is a test"
 ## substr ("This is a test string", -11)
-##      @result{} "test string"
+##      @xresult{} "test string"
 ## substr ("This is a test string", -11, -7)
-##      @result{} "test"
+##      @xresult{} "test"
 ## @end group
 ## @end example
 ##

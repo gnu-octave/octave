@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2006-2025 The Octave Project Developers
+## Copyright (C) 2006-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -125,7 +125,7 @@
 %! c(3, 3, 3, 3).value = 1;
 %! assert (c(2,2,2,2), struct ("name", [], "value", []));
 
-## assign to subrange of field in 4D struct array
+## assign to subrange of field in 4-D struct array
 %!test
 %! c(4, 4, 4, 4).name  = "a";
 %! c(3, 3, 3, 3).value = 1;
@@ -175,7 +175,7 @@
 %! a = struct ("value", {1, 2, 3, 4, 5});
 %! [a(2:4).value] = 1;
 
-%!error <invalid dot name structure assignment>
+%!error <invalid assignment to cs-list outside multiple assignment>
 %! c(4, 4, 4, 4).name  = "a";
 %! c(3, 3, 3, 3).value = 1;
 %! c([1, 3], 2, :, [3, 4]).value = 1;

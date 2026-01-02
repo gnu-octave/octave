@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2019-2025 The Octave Project Developers
+## Copyright (C) 2019-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -32,5 +32,5 @@
 %! assert (fh (), "pkg f1");
 
 ## Also test without function handle.
-%!assert <*55975> (pkga.pkgb.f1 (), "pkg f1");
+%!assert <*55975> (pkga.pkgb.f1 (), "pkg f1")
 %!assert (pkga.pkgb.f2 (), "pkg f2")

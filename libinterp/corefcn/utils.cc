@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -38,14 +38,14 @@
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
-#include "lo-mappers.h"
-#include "lo-sysdep.h"
 #include "lo-utils.h"
+#include "mappers.h"
 #include "nanosleep-wrapper.h"
 #include "oct-cmplx.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
 #include "oct-string.h"
+#include "oct-sysdep.h"
 #include "pathsearch.h"
 #include "quit.h"
 #include "str-vec.h"
@@ -634,7 +634,7 @@ character string.  For example:
 @example
 @group
 file_in_path (EXEC_PATH, "sh")
-     @result{} "/bin/sh"
+     @xresult{} "/bin/sh"
 @end group
 @end example
 

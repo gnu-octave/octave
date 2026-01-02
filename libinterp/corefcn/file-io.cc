@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -55,11 +55,11 @@
 #include "file-stat.h"
 #include "iconv-wrappers.h"
 #include "lo-ieee.h"
-#include "lo-sysdep.h"
 #include "localcharset-wrapper.h"
 #include "mkostemp-wrapper.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
+#include "oct-sysdep.h"
 #include "unistd-wrappers.h"
 
 #include "builtin-defun-decls.h"
@@ -961,7 +961,7 @@ encountered.
 %!   else
 %!     eol = double ("\n");
 %!   endif
-%!   assert (fb.', [encoded eol encoded eol encoded])
+%!   assert (fb.', [encoded eol encoded eol encoded]);
 %! unwind_protect_cleanup
 %!   unlink (fname);
 %! end_unwind_protect
@@ -2028,7 +2028,7 @@ as the name of the function when reporting errors.
 %! unlink (f);
 %! assert (msg1, lasterr);
 
-%!assert <*41824> (textscan ("123", "", "whitespace", " "){:}, 123);
+%!assert <*41824> (textscan ("123", "", "whitespace", " "){:}, 123)
 
 ## just test supplied emptyvalue
 %!assert <*42343> (textscan (",NaN", "", "delimiter", "," ,"emptyValue" ,Inf),
@@ -2182,7 +2182,7 @@ as the name of the function when reporting errors.
 %! assert (C{1}, {"ab cd efg"; "a ce g"; "   "});
 %! assert (C{2}, {"1Any"; "2Trailing"; "3Junk"});
 
-%!assert <*36464> (textscan ("1 2 3 4 5 6", "%*n%n%*[^\n]"){1}, 2);
+%!assert <*36464> (textscan ("1 2 3 4 5 6", "%*n%n%*[^\n]"){1}, 2)
 
 ## test %[]] and %[^]]
 %!test
@@ -2393,7 +2393,7 @@ as the name of the function when reporting errors.
 %! C = textscan ('5973459727478852968', '%u64');
 %! assert (C{1}, uint64 (5973459727478852968));
 
-%!assert <*60711> (textscan('1,.,2', '%f', 'Delimiter', ','), {1});
+%!assert <*60711> (textscan('1,.,2', '%f', 'Delimiter', ','), {1})
 
 */
 

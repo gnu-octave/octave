@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2007-2025 The Octave Project Developers
+// Copyright (C) 2007-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -31,7 +31,7 @@
 #include <string>
 #include <vector>
 
-#include "lo-mappers.h"
+#include "mappers.h"
 
 #include "defun.h"
 #include "interpreter.h"
@@ -816,7 +816,7 @@ as the other array.
 %! a .*= b;
 %! assert (a, 2 * ones (2, 2, 2));
 
-%!assert (ones (2,2,2) .* ones (1,2), ones (2,2,2));
+%!assert (ones (2,2,2) .* ones (1,2), ones (2,2,2))
 
 */
 

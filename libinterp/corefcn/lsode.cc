@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -31,16 +31,16 @@
 #include <string>
 
 #include "LSODE.h"
-#include "lo-mappers.h"
+#include "mappers.h"
 
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
-#include "ovl.h"
-#include "ov-fcn.h"
 #include "ov-cell.h"
+#include "ov-fcn.h"
+#include "ovl.h"
 #include "pager.h"
 #include "pr-output.h"
 #include "unwind-prot.h"

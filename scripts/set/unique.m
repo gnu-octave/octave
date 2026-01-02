@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2000-2025 The Octave Project Developers
+## Copyright (C) 2000-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -61,9 +61,9 @@
 ## @example
 ## @group
 ## unique ([3, 1, 1, 2])
-## @result{} [1, 2, 3]
+## @xresult{} [1, 2, 3]
 ## unique ([3, 1, 1, 2], "stable")
-## @result{} [3, 1, 2]
+## @xresult{} [3, 1, 2]
 ## @end group
 ## @end example
 ##
@@ -72,9 +72,9 @@
 ## @example
 ## @group
 ## [~, @var{i}] = unique ([3, 1, 1, 2], "first")
-## @result{} @var{i} = [2; 4; 1]
+## @xresult{} @var{i} = [2; 4; 1]
 ## [~, @var{i}] = unique ([3, 1, 1, 2], "last")
-## @result{} @var{i} = [3; 4; 1]
+## @xresult{} @var{i} = [3; 4; 1]
 ## @end group
 ## @end example
 ##
@@ -384,14 +384,14 @@ endfunction
 %! [o1, o2, o3] = unique (a);
 %! assert ({o1, o2, o3}, {[1;2;3], [2;3;1], [3;1;2;2;1;2;2;1]});
 %! [o1, o2, o3] = unique (a, "stable");
-%! assert ({o1, o2, o3}, {[3;1;2], [1;2;3], [1;2;3;3;2;3;3;2]})
+%! assert ({o1, o2, o3}, {[3;1;2], [1;2;3], [1;2;3;3;2;3;3;2]});
 
 %!test <*65176>
 %! a = [4,2,4,2,2,3,1];
 %! [o1, o2, o3] = unique (a);
 %! assert ({o1, o2, o3}, {[1,2,3,4], [7;2;6;1], [4;2;4;2;2;3;1]});
 %! [o1, o2, o3] = unique (a, "stable");
-%! assert ({o1, o2, o3}, {[4,2,3,1], [1;2;6;7], [1;2;1;2;2;3;4]})
+%! assert ({o1, o2, o3}, {[4,2,3,1], [1;2;6;7], [1;2;1;2;2;3;4]});
 
 %!test <*65176>
 %! a = [3 2 1 2; 2 1 2 1];

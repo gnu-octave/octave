@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2014-2025 The Octave Project Developers
+## Copyright (C) 2014-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -40,7 +40,7 @@
 ## @example
 ## @group
 ## fullfile ("/home/username", "data", @{"f1.csv", "f2.csv", "f3.csv"@})
-##   @result{}
+##   @xresult{}
 ##       @{
 ##         [1,1] = /home/username/data/f1.csv
 ##         [1,2] = /home/username/data/f2.csv
@@ -70,8 +70,8 @@ function filename = fullfile (varargin)
   endif
 
   ## check input type
-  is_cellstr = cellfun (@iscellstr, varargin);
-  if (! all (is_cellstr | cellfun (@ischar, varargin)))
+  is_cellstr = cellfun ('iscellstr', varargin);
+  if (! all (is_cellstr | cellfun ('ischar', varargin)))
     error ("fullfile: input must either be strings or cell strings");
   endif
 

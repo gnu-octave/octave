@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1999-2025 The Octave Project Developers
+## Copyright (C) 1999-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -90,7 +90,7 @@ endfunction
 %!test
 %! a = [0.25, 0.15624, 0.0995] .* [0:5]';
 %! a(6) = 1;
-%! assert (copper (6), a, eps)
+%! assert (copper (6), a, eps);
 
 ## Input validation
 %!error <N must be a scalar integer> copper ("foo")

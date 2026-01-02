@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2005-2025 The Octave Project Developers
+## Copyright (C) 2005-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -118,7 +118,7 @@ function [out1, out2] = installed_packages (local_list, global_list, pkgname = {
     h1 = "Package Name";
     h2 = "Version";
     h3 = "Installation directory";
-    max_name_length = max ([length(h1), cellfun(@length, installed_names)]);
+    max_name_length = max ([length(h1), cellfun('length', installed_names)]);
     version_lengths = cellfun (@(x) length (x.version), installed_pkgs_lst);
     max_version_length = max ([length(h2), version_lengths]);
     ncols = terminal_size ()(2);
@@ -161,6 +161,7 @@ function [out1, out2] = installed_packages (local_list, global_list, pkgname = {
       endif
       printf (format, cur_name, cur_loaded, cur_version, cur_dir);
     endfor
+    printf ("%d packages installed\n", num_packages);
   endif
 
 endfunction

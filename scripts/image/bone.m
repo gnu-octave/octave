@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1999-2025 The Octave Project Developers
+## Copyright (C) 1999-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -119,7 +119,7 @@ endfunction
 %!      23/48,  9/16,  9/16;
 %!      71/96, 25/32, 25/32;
 %!          1,     1,     1];
-%! assert (bone (5), a, eps)
+%! assert (bone (5), a, eps);
 
 ## Input validation
 %!error <N must be a scalar integer> bone ("foo")

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2022-2025 The Octave Project Developers
+// Copyright (C) 2022-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -32,6 +32,10 @@
 #include "ov.h"
 #include "cdef-fwd.h"
 
+#if ! defined (OCTINTERP_EXTERN_TEMPLATE_ARRAY)
+// guard against double extern template declarations
+#define OCTINTERP_EXTERN_TEMPLATE_ARRAY
+
 // "Protect" Array<T> instantiations that are exported by liboctinterp from
 // being implicitly instantiated in compilation units including this file.
 
@@ -39,3 +43,5 @@
 extern template class OCTINTERP_EXTERN_TEMPLATE_API Array<octave_value>;
 extern template class OCTINTERP_EXTERN_TEMPLATE_API Array<octave_value *>;
 extern template class OCTINTERP_EXTERN_TEMPLATE_API Array<octave::cdef_object>;
+
+#endif  // OCTINTERP_EXTERN_TEMPLATE_ARRAY

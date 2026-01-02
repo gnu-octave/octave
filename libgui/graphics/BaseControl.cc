@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2011-2025 The Octave Project Developers
+// Copyright (C) 2011-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -318,13 +318,17 @@ BaseControl::eventFilter (QObject *watched, QEvent *xevent)
         {
           octave::autolock guard (gh_mgr.graphics_lock ());
 
-          octave_scalar_map keyData =
+          octave_scalar_map keyEvent =
             Utils::makeKeyEventStruct (dynamic_cast<QKeyEvent *> (xevent));
+          keyEvent.setfield ("Source",
+                             object ().get_handle ().as_octave_value ());
+          keyEvent.setfield ("EventName", "KeyPress");
+
           graphics_object fig = object ().get_ancestor ("figure");
 
           Q_EMIT gh_set_event (fig.get_handle (), "currentcharacter",
-                               keyData.getfield ("Character"), false);
-          Q_EMIT gh_callback_event (m_handle, "keypressfcn", keyData);
+                               keyEvent.getfield ("Character"), false);
+          Q_EMIT gh_callback_event (m_handle, "keypressfcn", keyEvent);
         }
       break;
 

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2017-2025 The Octave Project Developers
+// Copyright (C) 2017-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -44,13 +44,13 @@ extern gui_pref dw_title_bg_color_active;
 
 extern gui_pref dw_icon_set;
 
-const QHash <QString, QString> dw_icon_set_names
+const QHash<QString, QString> dw_icon_set_names
   = {
       // array of possible icon sets (name, path (complete for NONE))
       // the first entry here is the default!
-      {"NONE",    ":/icons/octave/128x128/logo.png"},
-      {"GRAPHIC", ":/icons/octave/128x128/graphic_logo_"},
-      {"LETTER",  ":/icons/octave/128x128/letter_logo_"}
+      {"NONE",    ":/icons/octave/scalable/logo.svg"},
+      {"GRAPHIC", ":/icons/octave/scalable/graphic_logo_"},
+      {"LETTER",  ":/icons/octave/scalable/letter_logo_"}
     };
 
 // The following keys have to be used with .arg (objectName ())

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1998-2025 The Octave Project Developers
+// Copyright (C) 1998-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -39,6 +39,9 @@
 #define SPARSE_BOOL_OP_DECL(OP, X, Y, API)              \
   extern API SparseBoolMatrix OP (const X&, const Y&)
 
+#define SPARSE_BOOL_OP1_DECL(OP, X, Y, API)             \
+  extern API boolMatrix OP (const X&, const Y&)
+
 // sparse matrix by scalar operations.
 
 #define SPARSE_SMS_BIN_OP_DECLS(R1, R2, M, S, API)      \
@@ -61,7 +64,7 @@
 
 #define SPARSE_SMS_BOOL_OP_DECLS(M, S, API)     \
   SPARSE_BOOL_OP_DECL (mx_el_and, M, S, API);   \
-  SPARSE_BOOL_OP_DECL (mx_el_or,  M, S, API);
+  SPARSE_BOOL_OP1_DECL (mx_el_or,  M, S, API);
 
 #define SPARSE_SMS_OP_DECLS(R1, R2, M, S, API)  \
   SPARSE_SMS_BIN_OP_DECLS (R1, R2, M, S, API)   \
@@ -74,7 +77,7 @@
   SPARSE_BIN_OP_DECL (R1, operator +, S, M, API);       \
   SPARSE_BIN_OP_DECL (R1, operator -, S, M, API);       \
   SPARSE_BIN_OP_DECL (R2, operator *, S, M, API);       \
-  SPARSE_BIN_OP_DECL (R2, operator /, S, M, API);
+  SPARSE_BIN_OP_DECL (R1, operator /, S, M, API);
 
 #define SPARSE_SSM_CMP_OP_DECLS(S, M, API)      \
   SPARSE_CMP_OP_DECL (mx_el_lt, S, M, API);     \
@@ -90,7 +93,7 @@
 
 #define SPARSE_SSM_BOOL_OP_DECLS(S, M, API)     \
   SPARSE_BOOL_OP_DECL (mx_el_and, S, M, API);   \
-  SPARSE_BOOL_OP_DECL (mx_el_or,  S, M, API);   \
+  SPARSE_BOOL_OP1_DECL (mx_el_or,  S, M, API);
 
 #define SPARSE_SSM_OP_DECLS(R1, R2, S, M, API)  \
   SPARSE_SSM_BIN_OP_DECLS (R1, R2, S, M, API)   \
@@ -132,7 +135,7 @@
   SPARSE_BIN_OP_DECL (R1, operator +, M1, M2, API);     \
   SPARSE_BIN_OP_DECL (R1, operator -, M1, M2, API);     \
   SPARSE_BIN_OP_DECL (R2, product,    M1, M2, API);     \
-  SPARSE_BIN_OP_DECL (R2, quotient,   M1, M2, API);
+  SPARSE_BIN_OP_DECL (R1, quotient,   M1, M2, API);
 
 #define SPARSE_MSM_CMP_OP_DECLS(M1, M2, API)    \
   SPARSE_CMP_OP_DECL (mx_el_lt, M1, M2, API);   \
@@ -148,7 +151,7 @@
 
 #define SPARSE_MSM_BOOL_OP_DECLS(M1, M2, API)   \
   SPARSE_BOOL_OP_DECL (mx_el_and, M1, M2, API); \
-  SPARSE_BOOL_OP_DECL (mx_el_or,  M1, M2, API);
+  SPARSE_BOOL_OP1_DECL (mx_el_or,  M1, M2, API);
 
 #define SPARSE_MSM_OP_DECLS(R1, R2, M1, M2, API)        \
   SPARSE_MSM_BIN_OP_DECLS (R1, R2, M1, M2, API)         \
@@ -177,7 +180,7 @@
 
 #define SPARSE_SMM_BOOL_OP_DECLS(M1, M2, API)   \
   SPARSE_BOOL_OP_DECL (mx_el_and, M1, M2, API); \
-  SPARSE_BOOL_OP_DECL (mx_el_or,  M1, M2, API);
+  SPARSE_BOOL_OP1_DECL (mx_el_or,  M1, M2, API);
 
 #define SPARSE_SMM_OP_DECLS(R1, R2, M1, M2, API)        \
   SPARSE_SMM_BIN_OP_DECLS (R1, R2, M1, M2, API)         \

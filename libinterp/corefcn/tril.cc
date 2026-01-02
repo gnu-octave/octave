@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2004-2025 The Octave Project Developers
+// Copyright (C) 2004-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -356,7 +356,7 @@ Example 1 : exclude main diagonal
 @example
 @group
 tril (ones (3), -1)
-     @result{}  0  0  0
+     @xresult{}  0  0  0
          1  0  0
          1  1  0
 @end group
@@ -369,7 +369,7 @@ Example 2 : include first superdiagonal
 @example
 @group
 tril (ones (3), 1)
-     @result{}  1  1  0
+     @xresult{}  1  1  0
          1  1  1
          1  1  1
 @end group
@@ -405,7 +405,7 @@ Example 1 : exclude main diagonal
 @example
 @group
 triu (ones (3), 1)
-     @result{}  0  1  1
+     @xresult{}  0  1  1
          0  0  1
          0  0  0
 @end group
@@ -418,7 +418,7 @@ Example 2 : include first subdiagonal
 @example
 @group
 triu (ones (3), -1)
-     @result{}  1  1  1
+     @xresult{}  1  1  1
          1  1  1
          0  1  1
 @end group

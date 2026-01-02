@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2017-2025 The Octave Project Developers
+## Copyright (C) 2017-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -177,7 +177,7 @@ endfunction
 %!assert (cosint (inf), 0)
 %!assert (cosint (-inf), 1i * pi)
 %!assert (cosint (complex (-inf, -0)), -1i * pi)
-%!assert (isnan (cosint (nan)))
+%!assert (isnan (cosint (NaN)))
 
 %!assert (class (cosint (single (1))), "single")
 

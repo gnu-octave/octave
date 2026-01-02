@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1995-2025 The Octave Project Developers
+## Copyright (C) 1995-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -35,7 +35,7 @@
 ## @example
 ## @group
 ## ctime (time ())
-##    @result{} "Mon Feb 17 01:15:06 1997@backslashchar{}n"
+##    @xresult{} "Mon Feb 17 01:15:06 1997@backslashchar{}n"
 ## @end group
 ## @end example
 ## @seealso{asctime, time, localtime}

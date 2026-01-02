@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -36,11 +36,11 @@
 #include "cmd-hist.h"
 #include "file-ops.h"
 #include "file-stat.h"
-#include "lo-error.h"
-#include "lo-sysdep.h"
 #include "lo-utils.h"
 #include "oct-env.h"
+#include "oct-error.h"
 #include "oct-mutex.h"
+#include "oct-sysdep.h"
 #include "oct-time.h"
 #include "quit.h"
 #include "singleton-cleanup.h"

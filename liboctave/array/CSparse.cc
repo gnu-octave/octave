@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1998-2025 The Octave Project Developers
+// Copyright (C) 1998-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -33,20 +33,20 @@
 #include <limits>
 #include <ostream>
 
-#include "quit.h"
-#include "lo-error.h"
-#include "lo-ieee.h"
-#include "lo-mappers.h"
-#include "f77-fcn.h"
 #include "dRowVector.h"
-#include "lo-lapack-proto.h"
-#include "mx-m-cs.h"
-#include "mx-cs-m.h"
+#include "f77-fcn.h"
+#include "lapack-proto.h"
+#include "lo-ieee.h"
+#include "mappers.h"
 #include "mx-cm-s.h"
+#include "mx-cs-m.h"
 #include "mx-fcm-fs.h"
-#include "mx-s-cm.h"
 #include "mx-fs-fcm.h"
+#include "mx-m-cs.h"
+#include "mx-s-cm.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
+#include "quit.h"
 
 #include "dDiagMatrix.h"
 #include "CDiagMatrix.h"
@@ -181,14 +181,15 @@ Complex_NaN_result (octave::numeric_limits<double>::NaN (),
                     octave::numeric_limits<double>::NaN ());
 
 SparseComplexMatrix
-SparseComplexMatrix::max (int dim) const
+SparseComplexMatrix::max (int dim, bool nanflag, bool realabs) const
 {
   Array<octave_idx_type> dummy_idx;
-  return max (dummy_idx, dim);
+  return max (dummy_idx, dim, nanflag, realabs);
 }
 
 SparseComplexMatrix
-SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
+SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim,
+                          bool nanflag, bool realabs) const
 {
   SparseComplexMatrix result;
   const dim_vector& dv = dims ();
@@ -212,45 +213,130 @@ SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
         return SparseComplexMatrix (nr == 0 ? 0 : 1, nc);
 
       octave_idx_type nel = 0;
-      for (octave_idx_type j = 0; j < nc; j++)
+      if (realabs)
         {
-          Complex tmp_max;
-          double abs_max = octave::numeric_limits<double>::NaN ();
-          octave_idx_type idx_j = 0;
-          for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+          for (octave_idx_type j = 0; j < nc; j++)
             {
-              if (ridx (i) != idx_j)
-                break;
-              else
-                idx_j++;
-            }
-
-          if (idx_j != nr)
-            {
-              tmp_max = 0.;
-              abs_max = 0.;
-            }
-
-          for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
-            {
-              Complex tmp = data (i);
-
-              if (octave::math::isnan (tmp))
-                continue;
-
-              double abs_tmp = std::abs (tmp);
-
-              if (octave::math::isnan (abs_max) || abs_tmp > abs_max)
+              Complex tmp_max;
+              double real_max = octave::numeric_limits<double>::NaN ();
+              double imag_max = octave::numeric_limits<double>::NaN ();
+              //double neg_inf = std::numeric_limits<double>::infinity () * -1;
+              octave_idx_type idx_j = 0;
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
                 {
-                  idx_j = ridx (i);
-                  tmp_max = tmp;
-                  abs_max = abs_tmp;
+                  if (ridx (i) != idx_j)
+                    break;
+                  else
+                    idx_j++;
                 }
-            }
 
-          idx_arg.elem (j) = (octave::math::isnan (tmp_max) ? 0 : idx_j);
-          if (abs_max != 0.)
-            nel++;
+              if (idx_j != nr)
+                {
+                  real_max = 0.;
+                  imag_max = 0.;
+                }
+
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                {
+                  Complex tmp = data (i);
+
+                  if (octave::math::isnan (tmp) && ! nanflag)
+                    {
+                      idx_j = ridx (i);
+                      tmp_max = tmp;
+                      break;
+                    }
+                  else if (octave::math::isnan (tmp))
+                    continue;
+
+                  double real_tmp = tmp.real ();
+                  double imag_tmp = tmp.imag ();
+
+                  if (octave::math::isnan (real_max) || real_tmp > real_max)
+                    {
+                      idx_j = ridx (i);
+                      tmp_max = tmp;
+                      real_max = real_tmp;
+                      imag_max = imag_tmp;
+                    }
+                  else if (real_tmp == real_max && imag_tmp > imag_max)
+                    {
+                      idx_j = ridx (i);
+                      tmp_max = tmp;
+                      real_max = real_tmp;
+                      imag_max = imag_tmp;
+                    }
+                }
+
+              if (octave::math::isnan (tmp_max) && ! nanflag)
+                idx_arg.elem (j) = idx_j;
+              else
+                idx_arg.elem (j) = (octave::math::isnan (tmp_max) ? 0 : idx_j);
+              if (real_max != 0. || imag_max != 0.)
+                nel++;
+            }
+        }
+      else
+        {
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              Complex tmp_max;
+              double abs_max = octave::numeric_limits<double>::NaN ();
+              double arg_max = octave::numeric_limits<double>::NaN ();
+              octave_idx_type idx_j = 0;
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                {
+                  if (ridx (i) != idx_j)
+                    break;
+                  else
+                    idx_j++;
+                }
+
+              if (idx_j != nr)
+                {
+                  abs_max = 0.;
+                  arg_max = 0.; //-3.141592653589793238463;
+                }
+
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                {
+                  Complex tmp = data (i);
+
+                  if (octave::math::isnan (tmp) && ! nanflag)
+                    {
+                      idx_j = ridx (i);
+                      tmp_max = tmp;
+                      break;
+                    }
+                  else if (octave::math::isnan (tmp))
+                    continue;
+
+                  double abs_tmp = std::abs (tmp);
+                  double arg_tmp = std::arg (tmp);
+
+                  if (octave::math::isnan (abs_max) || abs_tmp > abs_max)
+                    {
+                      idx_j = ridx (i);
+                      tmp_max = tmp;
+                      abs_max = abs_tmp;
+                      arg_max = arg_tmp;
+                    }
+                  else if (abs_tmp == abs_max && arg_tmp > arg_max)
+                    {
+                      idx_j = ridx (i);
+                      tmp_max = tmp;
+                      abs_max = abs_tmp;
+                      arg_max = arg_tmp;
+                    }
+                }
+
+              if (octave::math::isnan (tmp_max) && ! nanflag)
+                idx_arg.elem (j) = idx_j;
+              else
+                idx_arg.elem (j) = (octave::math::isnan (tmp_max) ? 0 : idx_j);
+              if (abs_max != 0. || arg_max != 0.)
+                nel++;
+            }
         }
 
       result = SparseComplexMatrix (1, nc, nel);
@@ -289,18 +375,56 @@ SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
         if (found[i] > -nc && found[i] < 0)
           idx_arg.elem (i) = -found[i];
 
-      for (octave_idx_type j = 0; j < nc; j++)
+      if (realabs)
         {
-          for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+          for (octave_idx_type j = 0; j < nc; j++)
             {
-              octave_idx_type ir = ridx (i);
-              octave_idx_type ix = idx_arg.elem (ir);
-              Complex tmp = data (i);
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                {
+                  octave_idx_type ir = ridx (i);
+                  octave_idx_type ix = idx_arg.elem (ir);
+                  Complex tmp = data (i);
 
-              if (octave::math::isnan (tmp))
-                continue;
-              else if (ix == -1 || std::abs (tmp) > std::abs (elem (ir, ix)))
-                idx_arg.elem (ir) = j;
+                  if (octave::math::isnan (tmp) && ! nanflag)
+                    {
+                      idx_arg.elem (ir) = j;
+                      break;
+                    }
+                  else if (octave::math::isnan (tmp))
+                    continue;
+                  else if (ix == -1 || octave::math::isnan (elem (ir, ix)) ||
+                           tmp.real () > elem (ir, ix).real ())
+                    idx_arg.elem (ir) = j;
+                  else if (tmp.real () == elem (ir, ix).real () &&
+                           tmp.imag () > elem (ir, ix).imag ())
+                    idx_arg.elem (ir) = j;
+                }
+            }
+        }
+      else
+        {
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                {
+                  octave_idx_type ir = ridx (i);
+                  octave_idx_type ix = idx_arg.elem (ir);
+                  Complex tmp = data (i);
+
+                  if (octave::math::isnan (tmp) && ! nanflag)
+                    {
+                      idx_arg.elem (ir) = j;
+                      break;
+                    }
+                  else if (octave::math::isnan (tmp))
+                    continue;
+                  else if (ix == -1 || octave::math::isnan (elem (ir, ix)) ||
+                           std::abs (tmp) > std::abs (elem (ir, ix)))
+                    idx_arg.elem (ir) = j;
+                  else if (std::abs (tmp) == std::abs (elem (ir, ix)) &&
+                           std::arg (tmp) > std::arg (elem (ir, ix)))
+                    idx_arg.elem (ir) = j;
+                }
             }
         }
 
@@ -338,14 +462,15 @@ SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
 }
 
 SparseComplexMatrix
-SparseComplexMatrix::min (int dim) const
+SparseComplexMatrix::min (int dim, bool nanflag, bool realabs) const
 {
   Array<octave_idx_type> dummy_idx;
-  return min (dummy_idx, dim);
+  return min (dummy_idx, dim, nanflag, realabs);
 }
 
 SparseComplexMatrix
-SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
+SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim,
+                          bool nanflag, bool realabs) const
 {
   SparseComplexMatrix result;
   const dim_vector& dv = dims ();
@@ -369,45 +494,131 @@ SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
         return SparseComplexMatrix (nr == 0 ? 0 : 1, nc);
 
       octave_idx_type nel = 0;
-      for (octave_idx_type j = 0; j < nc; j++)
+      if (realabs)
         {
-          Complex tmp_min;
-          double abs_min = octave::numeric_limits<double>::NaN ();
-          octave_idx_type idx_j = 0;
-          for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+          for (octave_idx_type j = 0; j < nc; j++)
             {
-              if (ridx (i) != idx_j)
-                break;
-              else
-                idx_j++;
-            }
-
-          if (idx_j != nr)
-            {
-              tmp_min = 0.;
-              abs_min = 0.;
-            }
-
-          for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
-            {
-              Complex tmp = data (i);
-
-              if (octave::math::isnan (tmp))
-                continue;
-
-              double abs_tmp = std::abs (tmp);
-
-              if (octave::math::isnan (abs_min) || abs_tmp < abs_min)
+              Complex tmp_min;
+              double real_min = octave::numeric_limits<double>::NaN ();
+              double imag_min = octave::numeric_limits<double>::NaN ();
+              //double pos_inf = std::numeric_limits<double>::infinity ();
+              octave_idx_type idx_j = 0;
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
                 {
-                  idx_j = ridx (i);
-                  tmp_min = tmp;
-                  abs_min = abs_tmp;
+                  if (ridx (i) != idx_j)
+                    break;
+                  else
+                    idx_j++;
                 }
-            }
 
-          idx_arg.elem (j) = (octave::math::isnan (tmp_min) ? 0 : idx_j);
-          if (abs_min != 0.)
-            nel++;
+              if (idx_j != nr)
+                {
+                  real_min = 0.;
+                  imag_min = 0.;
+                }
+
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                {
+                  Complex tmp = data (i);
+
+                  if (octave::math::isnan (tmp) && ! nanflag)
+                    {
+                      idx_j = ridx (i);
+                      tmp_min = tmp;
+                      break;
+                    }
+                  else if (octave::math::isnan (tmp))
+                    continue;
+
+                  double real_tmp = tmp.real ();
+                  double imag_tmp = tmp.imag ();
+
+                  if (octave::math::isnan (real_min) || real_tmp < real_min)
+                    {
+                      idx_j = ridx (i);
+                      tmp_min = tmp;
+                      real_min = real_tmp;
+                      imag_min = imag_tmp;
+                    }
+                  else if (real_tmp == real_min && imag_tmp < imag_min)
+                    {
+                      idx_j = ridx (i);
+                      tmp_min = tmp;
+                      real_min = real_tmp;
+                      imag_min = imag_tmp;
+                    }
+                }
+
+              if (octave::math::isnan (tmp_min) && ! nanflag)
+                idx_arg.elem (j) = idx_j;
+              else
+                idx_arg.elem (j) = (octave::math::isnan (tmp_min) ? 0 : idx_j);
+              if (real_min != 0. || imag_min != 0.)
+                nel++;
+            }
+        }
+      else
+        {
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              Complex tmp_min;
+              double abs_min = octave::numeric_limits<double>::NaN ();
+              double arg_min = octave::numeric_limits<double>::NaN ();
+              //double pos_inf = std::numeric_limits<double>::infinity ();
+              octave_idx_type idx_j = 0;
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                {
+                  if (ridx (i) != idx_j)
+                    break;
+                  else
+                    idx_j++;
+                }
+
+              if (idx_j != nr)
+                {
+                  abs_min = 0.;
+                  arg_min = 0.; //3.141592653589793238463;
+                }
+
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                {
+                  Complex tmp = data (i);
+
+                  if (octave::math::isnan (tmp) && ! nanflag)
+                    {
+                      idx_j = ridx (i);
+                      tmp_min = tmp;
+                      break;
+                    }
+                  else if (octave::math::isnan (tmp))
+                    continue;
+
+                  double abs_tmp = std::abs (tmp);
+                  double arg_tmp = std::arg (tmp);
+
+                  if (octave::math::isnan (abs_min) || abs_tmp < abs_min)
+                    {
+                      idx_j = ridx (i);
+                      tmp_min = tmp;
+                      abs_min = abs_tmp;
+                      arg_min = arg_tmp;
+                    }
+                  else if (abs_tmp == abs_min && arg_tmp < arg_min)
+                    {
+                      idx_j = ridx (i);
+                      tmp_min = tmp;
+                      abs_min = abs_tmp;
+                      arg_min = arg_tmp;
+                    }
+                }
+
+              if (octave::math::isnan (tmp_min) && ! nanflag)
+                idx_arg.elem (j) = idx_j;
+              else
+                idx_arg.elem (j) = (octave::math::isnan (tmp_min) ? 0 : idx_j);
+              if (abs_min != 0. || arg_min != 0.)
+                nel++;
+            }
         }
 
       result = SparseComplexMatrix (1, nc, nel);
@@ -446,18 +657,56 @@ SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
         if (found[i] > -nc && found[i] < 0)
           idx_arg.elem (i) = -found[i];
 
-      for (octave_idx_type j = 0; j < nc; j++)
+      if (realabs)
         {
-          for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+          for (octave_idx_type j = 0; j < nc; j++)
             {
-              octave_idx_type ir = ridx (i);
-              octave_idx_type ix = idx_arg.elem (ir);
-              Complex tmp = data (i);
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                {
+                  octave_idx_type ir = ridx (i);
+                  octave_idx_type ix = idx_arg.elem (ir);
+                  Complex tmp = data (i);
 
-              if (octave::math::isnan (tmp))
-                continue;
-              else if (ix == -1 || std::abs (tmp) < std::abs (elem (ir, ix)))
-                idx_arg.elem (ir) = j;
+                  if (octave::math::isnan (tmp) && ! nanflag)
+                    {
+                      idx_arg.elem (ir) = j;
+                      break;
+                    }
+                  else if (octave::math::isnan (tmp))
+                    continue;
+                  else if (ix == -1 || octave::math::isnan (elem (ir, ix)) ||
+                           tmp.real () < elem (ir, ix).real ())
+                    idx_arg.elem (ir) = j;
+                  else if (tmp.real () == elem (ir, ix).real () &&
+                           tmp.imag () < elem (ir, ix).imag ())
+                    idx_arg.elem (ir) = j;
+                }
+            }
+        }
+      else
+        {
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+                {
+                  octave_idx_type ir = ridx (i);
+                  octave_idx_type ix = idx_arg.elem (ir);
+                  Complex tmp = data (i);
+
+                  if (octave::math::isnan (tmp) && ! nanflag)
+                    {
+                      idx_arg.elem (ir) = j;
+                      break;
+                    }
+                  else if (octave::math::isnan (tmp))
+                    continue;
+                  else if (ix == -1 || octave::math::isnan (elem (ir, ix)) ||
+                           std::abs (tmp) < std::abs (elem (ir, ix)))
+                    idx_arg.elem (ir) = j;
+                  else if (std::abs (tmp) == std::abs (elem (ir, ix)) &&
+                           std::arg (tmp) < std::arg (elem (ir, ix)))
+                    idx_arg.elem (ir) = j;
+                }
             }
         }
 
@@ -1533,7 +1782,7 @@ SparseComplexMatrix::utsolve (MatrixType& mattype, const Matrix& b,
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nm = (nc > nr ? nc : nr);
+  octave_idx_type nm = std::max (nc, nr);
   err = 0;
 
   if (nr != b.rows ())
@@ -1761,7 +2010,7 @@ SparseComplexMatrix::utsolve (MatrixType& mattype, const SparseMatrix& b,
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nm = (nc > nr ? nc : nr);
+  octave_idx_type nm = std::max (nc, nr);
   err = 0;
 
   if (nr != b.rows ())
@@ -2040,7 +2289,7 @@ SparseComplexMatrix::utsolve (MatrixType& mattype, const ComplexMatrix& b,
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nm = (nc > nr ? nc : nr);
+  octave_idx_type nm = std::max (nc, nr);
   err = 0;
 
   if (nr != b.rows ())
@@ -2268,7 +2517,7 @@ SparseComplexMatrix::utsolve (MatrixType& mattype, const SparseComplexMatrix& b,
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nm = (nc > nr ? nc : nr);
+  octave_idx_type nm = std::max (nc, nr);
   err = 0;
 
   if (nr != b.rows ())
@@ -2548,7 +2797,7 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const Matrix& b,
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nm = (nc > nr ? nc : nr);
+  octave_idx_type nm = std::max (nc, nr);
   err = 0;
 
   if (nr != b.rows ())
@@ -2800,7 +3049,7 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const SparseMatrix& b,
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nm = (nc > nr ? nc : nr);
+  octave_idx_type nm = std::max (nc, nr);
 
   err = 0;
 
@@ -3104,7 +3353,7 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const ComplexMatrix& b,
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nm = (nc > nr ? nc : nr);
+  octave_idx_type nm = std::max (nc, nr);
   err = 0;
 
   if (nr != b.rows ())
@@ -3358,7 +3607,7 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const SparseComplexMatrix& b,
 
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nm = (nc > nr ? nc : nr);
+  octave_idx_type nm = std::max (nc, nr);
   err = 0;
 
   if (nr != b.rows ())
@@ -7310,8 +7559,8 @@ SparseComplexMatrix::all_integers (double& max_val, double& min_val) const
       if (i_val < min_val)
         min_val = i_val;
 
-      if (octave::math::x_nint (r_val) != r_val
-          || octave::math::x_nint (i_val) != i_val)
+      if (octave::math::round (r_val) != r_val
+          || octave::math::round (i_val) != i_val)
         return false;
     }
 
@@ -7329,59 +7578,135 @@ SparseComplexMatrix::too_large_for_float () const
 SparseBoolMatrix
 SparseComplexMatrix::all (int dim) const
 {
+  SPARSE_ANY_ALL_HEADER
   SPARSE_ALL_OP (dim);
 }
 
 SparseBoolMatrix
 SparseComplexMatrix::any (int dim) const
 {
+  SPARSE_ANY_ALL_HEADER
   SPARSE_ANY_OP (dim);
 }
 
 SparseComplexMatrix
-SparseComplexMatrix::cumprod (int dim) const
+SparseComplexMatrix::cumprod (int dim, bool nanflag) const
 {
+  if (dim > 1)
+    return *this;
   SPARSE_CUMPROD (SparseComplexMatrix, Complex, cumprod);
 }
 
 SparseComplexMatrix
-SparseComplexMatrix::cumsum (int dim) const
+SparseComplexMatrix::cumsum (int dim, bool nanflag) const
 {
-  SPARSE_CUMSUM (SparseComplexMatrix, Complex, cumsum);
+#define NAN_EXPR                           \
+  if (! octave::math::isnan (data (j)))    \
+    t += data (j);                         \
+  else                                     \
+    t += 0.0
+
+#define EXPR                               \
+  t += data (j)
+
+  if (dim > 1)
+    return *this;
+  SPARSE_CUMSUM (SparseComplexMatrix, Complex, cumsum, NAN_EXPR, EXPR);
+
+#undef NAN_EXPR
+#undef EXPR
 }
 
 SparseComplexMatrix
-SparseComplexMatrix::prod (int dim) const
+SparseComplexMatrix::prod (int dim, bool nanflag) const
 {
-  if ((rows () == 1 && dim == -1) || dim == 1)
-    return transpose ().prod (0).transpose ();
+  if (dim > 1)
+    return *this;
+  else if ((rows () == 1 && dim == -1) || dim == 1)
+    return transpose ().prod (0, nanflag).transpose ();
   else
     {
-      SPARSE_REDUCTION_OP (SparseComplexMatrix, Complex, *=,
-                           (cidx (j+1) - cidx (j) < nr ? 0.0 : 1.0), 1.0);
+    #define ROW_EXPR                           \
+      Complex d = data (i);                    \
+      if (nanflag && octave::math::isnan (d))  \
+        tmp[ridx (i)] *= 1.0;                  \
+      else                                     \
+        tmp[ridx (i)] *= d
+
+    #define COL_EXPR                           \
+      Complex d = data (i);                    \
+      if (nanflag && octave::math::isnan (d))  \
+        tmp[j] *= 1.0;                         \
+      else                                     \
+        tmp[j] *= d
+
+      SPARSE_BASE_REDUCTION_OP (SparseComplexMatrix, Complex, ROW_EXPR,
+                                COL_EXPR,
+                                (cidx (j+1) - cidx (j) < nr ? 0.0 : 1.0), 1.0);
+
+    #undef ROW_EXPR
+    #undef COL_EXPR
     }
 }
 
 SparseComplexMatrix
-SparseComplexMatrix::sum (int dim) const
+SparseComplexMatrix::sum (int dim, bool nanflag) const
 {
-  SPARSE_REDUCTION_OP (SparseComplexMatrix, Complex, +=, 0.0, 0.0);
-}
+#define ROW_EXPR                           \
+  Complex d = data (i);                    \
+  if (nanflag && octave::math::isnan (d))  \
+    tmp[ridx (i)] += 0.0;                  \
+  else                                     \
+    tmp[ridx (i)] += d
 
-SparseComplexMatrix
-SparseComplexMatrix::sumsq (int dim) const
-{
-#define ROW_EXPR                                \
-  Complex d = data (i);                         \
-  tmp[ridx (i)] += d * conj (d)
+#define COL_EXPR                           \
+  Complex d = data (i);                    \
+  if (nanflag && octave::math::isnan (d))  \
+    tmp[j] += 0.0;                         \
+  else                                     \
+    tmp[j] += d
 
-#define COL_EXPR                                \
-  Complex d = data (i);                         \
-  tmp[j] += d * conj (d)
-
+  if (dim > 1)
+    return *this;
   SPARSE_BASE_REDUCTION_OP (SparseComplexMatrix, Complex, ROW_EXPR,
                             COL_EXPR, 0.0, 0.0);
 
+#undef ROW_EXPR
+#undef COL_EXPR
+}
+
+SparseComplexMatrix
+SparseComplexMatrix::xsum (int dim, bool nanflag) const
+{
+  if (dim > 1)
+    return *this;
+  SPARSE_XSUM_REDUCTION_OP (SparseComplexMatrix, Complex);
+}
+
+SparseComplexMatrix
+SparseComplexMatrix::sumsq (int dim, bool nanflag) const
+{
+#define EXPR r.data (nel++) = data (i) * conj (data (i));
+
+#define ROW_EXPR                           \
+  Complex d = data (i);                    \
+  if (nanflag && octave::math::isnan (d))  \
+    tmp[ridx (i)] += 0.0;                  \
+  else                                     \
+    tmp[ridx (i)] += d * conj (d)
+
+#define COL_EXPR                           \
+  Complex d = data (i);                    \
+  if (nanflag && octave::math::isnan (d))  \
+    tmp[j] += 0.0;                         \
+  else                                     \
+    tmp[j] += d * conj (d)
+
+  SPARSE_SUMSQ_HEADER (SparseComplexMatrix, EXPR)
+  SPARSE_BASE_REDUCTION_OP (SparseComplexMatrix, Complex, ROW_EXPR,
+                            COL_EXPR, 0.0, 0.0);
+
+#undef EXPR
 #undef ROW_EXPR
 #undef COL_EXPR
 }
@@ -7638,6 +7963,22 @@ operator * (const SparseComplexMatrix& a, const PermMatrix& p)
 SparseComplexMatrix
 min (const Complex& c, const SparseComplexMatrix& m)
 {
+  const bool nanflag = true;
+  const bool realabs = false;
+  return min (c, m, nanflag, realabs);
+}
+
+SparseComplexMatrix
+min (const Complex& c, const SparseComplexMatrix& m, const bool nanflag)
+{
+  const bool realabs = false;
+  return min (c, m, nanflag, realabs);
+}
+
+SparseComplexMatrix
+min (const Complex& c, const SparseComplexMatrix& m,
+     const bool nanflag, const bool realabs)
+{
   SparseComplexMatrix result;
 
   octave_idx_type nr = m.rows ();
@@ -7653,7 +7994,7 @@ min (const Complex& c, const SparseComplexMatrix& m)
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
-          result.data (i) = octave::math::min (c, m.data (i));
+          result.data (i) = octave::math::min (c, m.data (i), nanflag, realabs);
     }
 
   return result;
@@ -7662,11 +8003,44 @@ min (const Complex& c, const SparseComplexMatrix& m)
 SparseComplexMatrix
 min (const SparseComplexMatrix& m, const Complex& c)
 {
-  return min (c, m);
+  const bool nanflag = true;
+  const bool realabs = false;
+  return min (c, m, nanflag, realabs);
+}
+
+SparseComplexMatrix
+min (const SparseComplexMatrix& m, const Complex& c, const bool nanflag)
+{
+  const bool realabs = false;
+  return min (c, m, nanflag, realabs);
+}
+
+SparseComplexMatrix
+min (const SparseComplexMatrix& m, const Complex& c,
+     const bool nanflag, const bool realabs)
+{
+  return min (c, m, nanflag, realabs);
 }
 
 SparseComplexMatrix
 min (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
+{
+  const bool nanflag = true;
+  const bool realabs = false;
+  return min (a, b, nanflag, realabs);
+}
+
+SparseComplexMatrix
+min (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
+     const bool nanflag)
+{
+  const bool realabs = false;
+  return min (a, b, nanflag, realabs);
+}
+
+SparseComplexMatrix
+min (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
+     const bool nanflag, const bool realabs)
 {
   SparseComplexMatrix r;
 
@@ -7696,7 +8070,8 @@ min (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
               octave_quit ();
               if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
                 {
-                  Complex tmp = octave::math::min (a.data (ja), 0.);
+                  Complex tmp = octave::math::min (a.data (ja), 0.,
+                                                   nanflag, realabs);
                   if (tmp != 0.)
                     {
                       r.ridx (jx) = a.ridx (ja);
@@ -7709,7 +8084,8 @@ min (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
               else if ((! ja_lt_max)
                        || (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
                 {
-                  Complex tmp = octave::math::min (0., b.data (jb));
+                  Complex tmp = octave::math::min (0., b.data (jb),
+                                                   nanflag, realabs);
                   if (tmp != 0.)
                     {
                       r.ridx (jx) = b.ridx (jb);
@@ -7721,7 +8097,8 @@ min (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
                 }
               else
                 {
-                  Complex tmp = octave::math::min (a.data (ja), b.data (jb));
+                  Complex tmp = octave::math::min (a.data (ja), b.data (jb),
+                                                   nanflag, realabs);
                   if (tmp != 0.)
                     {
                       r.data (jx) = tmp;
@@ -7741,10 +8118,34 @@ min (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
     }
   else
     {
-      if (a_nr == 0 || a_nc == 0)
-        r.resize (a_nr, a_nc);
-      else if (b_nr == 0 || b_nc == 0)
-        r.resize (b_nr, b_nc);
+      if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
+        {
+          if (a_nc == 1 || b_nc == 1 || a_nc == b_nc)
+            r.resize (a_nr, std::max (a_nc, b_nc));
+          else
+            octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
+        }
+      else if (a_nc == 0 && (b_nc == 0 || b_nc == 1))
+        {
+          if (a_nr == 1 || b_nr == 1 || a_nr == b_nr)
+            r.resize (std::max (a_nr, b_nr), a_nc);
+          else
+            octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
+        }
+      else if (b_nr == 0 && (a_nr == 0 || a_nr == 1))
+        {
+          if (b_nc == 1 || a_nc == 1 || b_nc == a_nc)
+            r.resize (b_nr, std::max (a_nc, b_nc));
+          else
+            octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
+        }
+      else if (b_nc == 0 && (a_nc == 0 || a_nc == 1))
+        {
+          if (b_nr == 1 || a_nr == 1 || b_nr == a_nr)
+            r.resize (std::max (a_nr, b_nr), b_nc);
+          else
+            octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
+        }
       else
         octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
     }
@@ -7755,6 +8156,22 @@ min (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
 SparseComplexMatrix
 max (const Complex& c, const SparseComplexMatrix& m)
 {
+  const bool nanflag = true;
+  const bool realabs = false;
+  return max (c, m, nanflag, realabs);
+}
+
+SparseComplexMatrix
+max (const Complex& c, const SparseComplexMatrix& m, const bool nanflag)
+{
+  const bool realabs = false;
+  return max (c, m, nanflag, realabs);
+}
+
+SparseComplexMatrix
+max (const Complex& c, const SparseComplexMatrix& m, const bool nanflag,
+     const bool realabs)
+{
   SparseComplexMatrix result;
 
   octave_idx_type nr = m.rows ();
@@ -7763,12 +8180,13 @@ max (const Complex& c, const SparseComplexMatrix& m)
   EMPTY_RETURN_CHECK (SparseComplexMatrix);
 
   // Count the number of nonzero elements
-  if (octave::math::max (c, 0.) != 0.)
+  if (octave::math::max (c, 0., nanflag, realabs) != 0.)
     {
       result = SparseComplexMatrix (nr, nc, c);
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
-          result.xdata (m.ridx (i) + j * nr) = octave::math::max (c, m.data (i));
+          result.xdata (m.ridx (i) + j * nr) = octave::math::max
+                                               (c, m.data (i), nanflag, realabs);
     }
   else
     result = SparseComplexMatrix (m);
@@ -7779,11 +8197,44 @@ max (const Complex& c, const SparseComplexMatrix& m)
 SparseComplexMatrix
 max (const SparseComplexMatrix& m, const Complex& c)
 {
-  return max (c, m);
+  const bool nanflag = true;
+  const bool realabs = false;
+  return max (c, m, nanflag, realabs);
+}
+
+SparseComplexMatrix
+max (const SparseComplexMatrix& m, const Complex& c, const bool nanflag)
+{
+  const bool realabs = false;
+  return max (c, m, nanflag, realabs);
+}
+
+SparseComplexMatrix
+max (const SparseComplexMatrix& m, const Complex& c, const bool nanflag,
+     const bool realabs)
+{
+  return max (c, m, nanflag, realabs);
 }
 
 SparseComplexMatrix
 max (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
+{
+  const bool nanflag = true;
+  const bool realabs = false;
+  return max (a, b, nanflag, realabs);
+}
+
+SparseComplexMatrix
+max (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
+     const bool nanflag)
+{
+  const bool realabs = false;
+  return max (a, b, nanflag, realabs);
+}
+
+SparseComplexMatrix
+max (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
+     const bool nanflag, const bool realabs)
 {
   SparseComplexMatrix r;
 
@@ -7813,7 +8264,8 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
               octave_quit ();
               if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
                 {
-                  Complex tmp = octave::math::max (a.data (ja), 0.);
+                  Complex tmp = octave::math::max (a.data (ja), 0.,
+                                                   nanflag, realabs);
                   if (tmp != 0.)
                     {
                       r.ridx (jx) = a.ridx (ja);
@@ -7826,7 +8278,8 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
               else if ((! ja_lt_max)
                        || (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
                 {
-                  Complex tmp = octave::math::max (0., b.data (jb));
+                  Complex tmp = octave::math::max (0., b.data (jb),
+                                                   nanflag, realabs);
                   if (tmp != 0.)
                     {
                       r.ridx (jx) = b.ridx (jb);
@@ -7838,7 +8291,8 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
                 }
               else
                 {
-                  Complex tmp = octave::math::max (a.data (ja), b.data (jb));
+                  Complex tmp = octave::math::max (a.data (ja), b.data (jb),
+                                                   nanflag, realabs);
                   if (tmp != 0.)
                     {
                       r.data (jx) = tmp;
@@ -7858,10 +8312,34 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
     }
   else
     {
-      if (a_nr == 0 || a_nc == 0)
-        r.resize (a_nr, a_nc);
-      else if (b_nr == 0 || b_nc == 0)
-        r.resize (b_nr, b_nc);
+      if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
+        {
+          if (a_nc == 1 || b_nc == 1 || a_nc == b_nc)
+            r.resize (a_nr, std::max (a_nc, b_nc));
+          else
+            octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
+        }
+      else if (a_nc == 0 && (b_nc == 0 || b_nc == 1))
+        {
+          if (a_nr == 1 || b_nr == 1 || a_nr == b_nr)
+            r.resize (std::max (a_nr, b_nr), a_nc);
+          else
+            octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
+        }
+      else if (b_nr == 0 && (a_nr == 0 || a_nr == 1))
+        {
+          if (b_nc == 1 || a_nc == 1 || b_nc == a_nc)
+            r.resize (b_nr, std::max (a_nc, b_nc));
+          else
+            octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
+        }
+      else if (b_nc == 0 && (a_nc == 0 || a_nc == 1))
+        {
+          if (b_nr == 1 || a_nr == 1 || b_nr == a_nr)
+            r.resize (std::max (a_nr, b_nr), b_nc);
+          else
+            octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
+        }
       else
         octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
     }

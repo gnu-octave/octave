@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2009-2025 The Octave Project Developers
+// Copyright (C) 2009-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -41,9 +41,9 @@
 
 #include "file-ops.h"
 #include "filepos-wrappers.h"
-#include "lo-mappers.h"
-#include "oct-locbuf.h"
+#include "mappers.h"
 #include "oct-env.h"
+#include "oct-locbuf.h"
 #include "unistd-wrappers.h"
 #include "unistr-wrappers.h"
 #include "unwind-prot.h"
@@ -389,11 +389,11 @@ gl2ps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
       if (plot_title.empty ())
         plot_title = "Octave plot";
 
-      // Default sort order optimizes for 3D plots
+      // Default sort order optimizes for 3-D plots
       GLint gl2ps_sort = GL2PS_BSP_SORT;
 
       // FIXME: gl2ps does not provide a way to change the sorting algorithm
-      // on a viewport basis, we thus disable sorting only if all axes are 2D
+      // on a viewport basis, we thus disable sorting only if all axes are 2-D
       if (has_2D_axes (myhandle))
         gl2ps_sort = GL2PS_NO_SORT;
 
@@ -1322,8 +1322,8 @@ gl2ps_renderer::draw_image (const image::properties& props)
   Matrix vp = get_viewport_scaled ();
 
   ColumnVector vp_lim_min
-    = m_xform.untransform (std::numeric_limits <float>::epsilon (),
-                           std::numeric_limits <float>::epsilon ());
+    = m_xform.untransform (std::numeric_limits<float>::epsilon (),
+                           std::numeric_limits<float>::epsilon ());
   ColumnVector vp_lim_max = m_xform.untransform (vp(2), vp(3));
 
   if (vp_lim_min(0) > vp_lim_max(0))

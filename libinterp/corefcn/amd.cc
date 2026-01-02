@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2008-2025 The Octave Project Developers
+// Copyright (C) 2008-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -197,7 +197,7 @@ The author of the code itself is Timothy A. Davis
 %! assert(amd (A2, opts), [1:30]);
 
 %!testif HAVE_AMD
-%! assert (amd ([]), zeros (1,0))
+%! assert (amd ([]), zeros (1,0));
 
 %!error <S must be a square matrix|was unavailable or disabled> amd (A)
 %!error amd (A2, 2)

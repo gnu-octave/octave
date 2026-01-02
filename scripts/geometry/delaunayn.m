@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2007-2025 The Octave Project Developers
+## Copyright (C) 2007-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -159,7 +159,7 @@ function T = delaunayn (pts, varargin)
     else
       ## 1-D and >= 4-D: simplex 'volume' proportional to det|edge_vecs|
 
-      ## FIXME: Vectorize this for n-D inputs without excessive memory impact
+      ## FIXME: Vectorize this for N-D inputs without excessive memory impact
       ## over __delaunayn__ itself, or move simplex checking into __delaunayn__;
       ## perhaps with an optimized page-wise determinant.
       ## See bug #60818 for speed/memory improvement attempts and concerns.

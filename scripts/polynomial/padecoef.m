@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2014-2025 The Octave Project Developers
+## Copyright (C) 2014-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -77,11 +77,11 @@
 ## t = 0.1;
 ## n = 4;
 ## [num, den] = padecoef (t, n)
-## @result{} num =
+## @xresult{} num =
 ##
 ##       1.0000e-04  -2.0000e-02   1.8000e+00  -8.4000e+01   1.6800e+03
 ##
-## @result{} den =
+## @xresult{} den =
 ##
 ##       1.0000e-04   2.0000e-02   1.8000e+00   8.4000e+01   1.6800e+03
 ## @end group
@@ -102,7 +102,7 @@ function [num, den] = padecoef (T, N = 1)
 
   N = round (N);
   k = N : -1 : 0;
-  num = prod (linspace ((N - k + 1), (2 * N - k), N)', ones (1, N)) ...
+  num = prod (linspace ((N - k + 1), (2 * N - k), N)', 1) ...
         / prod (N + 1 : 2 * N) ./ factorial (k);
   num /= num(1);
   den = num .* (T .^ k);

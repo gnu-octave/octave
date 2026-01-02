@@ -2,7 +2,7 @@
 
 ########################################################################
 ##
-## Copyright (C) 1993-2025 The Octave Project Developers
+## Copyright (C) 1993-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -38,7 +38,7 @@ export TAR_OPTIONS
 version := ${OCTAVE_VERSION}
 api_version := ${OCTAVE_API_VERSION}
 
-## AM_LIBTOOLFLAGS = --silent
+# Lex flags
 
 AM_LFLAGS = @LFLAGS@
 
@@ -86,6 +86,8 @@ FFTW_XLIBS = @FFTW_XLIBS@
 SPARSE_XCPPFLAGS = @SPARSE_XCPPFLAGS@
 SPARSE_XLDFLAGS = @SPARSE_XLDFLAGS@
 SPARSE_XLIBS = @SPARSE_XLIBS@
+
+# Linker flags and dependencies
 
 if AMCOND_CLANG_PTHREAD_WARNING
   AM_LDFLAGS = -Wc,-Qunused-arguments
@@ -151,6 +153,22 @@ BUILT_DISTFILES += \
   HG-ID \
   INSTALL.OCTAVE \
   NEWS
+
+if AMCOND_ENABLE_HG_ID
+DISABLE_HG_ID_OPTION :=
+else
+DISABLE_HG_ID_OPTION := --disable
+endif
+
+## The mk-hg-id.sh script will be executed each time Make runs to
+## update the HG-ID file in the build tree if it is out of date.
+
+HG-ID:
+	$(AM_V_GEN)$(SHELL) $(top_srcdir)/build-aux/mk-hg-id.sh "$(srcdir)" $(DISABLE_HG_ID_OPTION) > $@-t && \
+	$(simple_move_if_change_rule)
+.PHONY: HG-ID
+
+HG_ID_VAR = $(shell cat ${top_builddir}/HG-ID)
 
 EXTRA_DIST += \
   CITATION \
@@ -400,18 +418,6 @@ endef
 ChangeLog:
 	$(AM_V_GEN)$(changelog-from-hg-log)
 .PHONY: ChangeLog
-
-## The mk-hg-id.sh script will be executed each time Make runs.  It will
-## update the HG-ID file in the build tree if it is out of date.  As a side
-## effect, HG_ID_VAR is assigned the contents of the file.
-
-if AMCOND_ENABLE_HG_ID
-HG_ID_VAR := \
-  $(shell $(SHELL) $(top_srcdir)/build-aux/mk-hg-id.sh "$(srcdir)")
-else
-HG_ID_VAR := \
-  $(shell $(SHELL) $(top_srcdir)/build-aux/mk-hg-id.sh "$(srcdir)" --disable)
-endif
 
 octetc_DATA += \
   CITATION \

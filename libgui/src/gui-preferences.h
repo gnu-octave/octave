@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2017-2025 The Octave Project Developers
+// Copyright (C) 2017-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -100,7 +100,7 @@ public:
 private:
 
   // Map from shortcut identifier (settings key) to gui_pref object.
-  QHash <QString, gui_pref> m_hash;
+  QHash<QString, gui_pref> m_hash;
 
   void do_insert (const QString& settings_key, const gui_pref& pref);
 
@@ -195,7 +195,7 @@ public:
 private:
 
   // Map from shortcut identifier (settings key) to sc_pref object.
-  QHash <QString, sc_pref> m_hash;
+  QHash<QString, sc_pref> m_hash;
 
   void do_insert (const QString& settings_key, const sc_pref& scpref);
 

@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2018-2025 The Octave Project Developers
+## Copyright (C) 2018-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -79,7 +79,7 @@
 %!   pkg ("uninstall", mfile_pkg_name{i});
 %! endfor
 %!
-%!error pkg ("install", "nonexistent.zip")
+%!error pkg ("install", "./nonexistent.zip")
 
 ## -local
 %!testif HAVE_Z

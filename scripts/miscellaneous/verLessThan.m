@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2019-2025 The Octave Project Developers
+## Copyright (C) 2019-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -42,10 +42,10 @@
 ## @example
 ## @group
 ## tf = verLessThan ("Octave", "5")
-## @result{} tf = 0
+## @xresult{} tf = 0
 ##
 ## tf = verLessThan ("io", "2.4.12")
-## @result{} ...
+## @xresult{} ...
 ##
 ## if (! verLessThan ("Octave", "5"))
 ##   ## ... use new Octave 5 features ...

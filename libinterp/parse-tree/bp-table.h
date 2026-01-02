@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2001-2025 The Octave Project Developers
+// Copyright (C) 2001-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -44,6 +44,7 @@ class tree_evaluator;
 struct bp_type
 {
 public:
+
   bp_type (int l, const std::string& c) : line (l), cond (c) { }
 
   //--------
@@ -72,12 +73,12 @@ public:
   typedef bp_lines::const_iterator const_bp_lines_iterator;
   typedef bp_lines::iterator bp_lines_iterator;
 
-  typedef std::map <std::string, bp_lines> fname_line_map;
+  typedef std::map<std::string, bp_lines> fname_line_map;
 
   typedef fname_line_map::const_iterator const_fname_line_map_iterator;
   typedef fname_line_map::iterator fname_line_map_iterator;
 
-  typedef std::map <std::string, std::list<bp_type>> fname_bp_map;
+  typedef std::map<std::string, std::list<bp_type>> fname_bp_map;
   typedef fname_bp_map::const_iterator const_fname_bp_map_iterator;
   typedef fname_bp_map::iterator fname_bp_map_iterator;
 
@@ -172,21 +173,6 @@ public:
 
 private:
 
-  typedef std::set<std::string>::const_iterator const_bp_set_iterator;
-  typedef std::set<std::string>::iterator bp_set_iterator;
-
-  tree_evaluator& m_evaluator;
-
-  // Set of function (.m file) names containing at least one breakpoint.
-  std::set<std::string> m_bp_set;
-
-  // Set of error and warning message IDs that cause us to stop
-  // *if* Vdebug_on_error / Vdebug_on_caught / Vdebug_on_warning is set.
-  // Empty means stop on any error / caught error / warning.
-  std::set<std::string> m_errors_that_stop;
-  std::set<std::string> m_caught_that_stop;
-  std::set<std::string> m_warnings_that_stop;
-
   void set_stop_flag (const char *who, const std::string& condition,
                       bool on_off);
 
@@ -204,6 +190,23 @@ private:
 
   bp_lines remove_all_breakpoints_in_file_1 (octave_user_code *fcn,
                                              const std::string& fname);
+
+  //--------
+
+  typedef std::set<std::string>::const_iterator const_bp_set_iterator;
+  typedef std::set<std::string>::iterator bp_set_iterator;
+
+  tree_evaluator& m_evaluator;
+
+  // Set of function (.m file) names containing at least one breakpoint.
+  std::set<std::string> m_bp_set;
+
+  // Set of error and warning message IDs that cause us to stop
+  // *if* Vdebug_on_error / Vdebug_on_caught / Vdebug_on_warning is set.
+  // Empty means stop on any error / caught error / warning.
+  std::set<std::string> m_errors_that_stop;
+  std::set<std::string> m_caught_that_stop;
+  std::set<std::string> m_warnings_that_stop;
 };
 
 OCTAVE_END_NAMESPACE(octave)

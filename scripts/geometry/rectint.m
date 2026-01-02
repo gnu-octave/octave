@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2016-2025 The Octave Project Developers
+## Copyright (C) 2016-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -52,7 +52,7 @@ function dists = rectint (a, b)
   elseif (columns (a) != columns (b))
     error ("rectint: A and B must have same number of columns");
   elseif (ndims (a) > 2)
-    error ("rectint: A and B must be 2-d arrays");
+    error ("rectint: A and B must be 2-D arrays");
   elseif (mod (columns (a), 2))
     error ("rectint: number of columns of A and B must be a multiple of two");
   endif
@@ -73,7 +73,7 @@ function dists = rectint (a, b)
   a_end   = reshape (a_end,   [na 1 nd]);
   b_end   = reshape (b_end,   [1 nb nd]);
 
-  ## We get a 3d matrix where each dimension is in the 3rd dimension
+  ## We get a 3-D matrix where each dimension is in the 3rd dimension
   dists = bsxfun (@min , a_end, b_end) - bsxfun (@max, a_start, b_start);
   dists(dists < 0) = 0;
   dists = prod (dists, 3);

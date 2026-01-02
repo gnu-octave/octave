@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -673,8 +673,8 @@ command-line editing.
       if (m.numel () != 2)
         error ("terminal_size: argument must be a 2-element array");
 
-      int rows = math::x_nint (m(0));
-      int cols = math::x_nint (m(1));
+      int rows = math::round (m(0));
+      int cols = math::round (m(1));
 
       if (rows <= 0 || cols <= 0)
         error ("terminal_size: rows and columns must be positive integers");

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -41,13 +41,14 @@
 #include "data-conv.h"
 #include "file-ops.h"
 #include "glob-match.h"
-#include "lo-mappers.h"
 #include "mach-info.h"
+#include "mappers.h"
 #include "oct-env.h"
 #include "oct-time.h"
 #include "quit.h"
 #include "str-vec.h"
 
+#include "cdef-utils.h"
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
@@ -288,7 +289,6 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
                 const bool do_name_validation)
 {
   // Read name for this entry or break on EOF.
-
   std::string name = extract_keyword (is, "name");
 
   if (name.empty ())
@@ -324,6 +324,7 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
   else
     typ = tag;
 
+
   // Special case for backward compatibility.  A small bit of cruft
   if (SUBSTRING_COMPARE_EQ (typ, 0, 12, "string array"))
     tc = charMatrix ();
@@ -332,6 +333,23 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
       // Special case for loading old octave_inline_fcn objects.
       tc = load_inline_fcn (is, filename);
       return name;
+    }
+  else if (SUBSTRING_COMPARE_EQ (typ, 0, 6, "object"))
+    {
+      // classdef object
+      std::string class_nm = extract_keyword (is, "classname");
+
+      if (class_nm.empty ())
+        error ("load: failed to extract keyword specifying classdef class");
+
+      octave::cdef_class cls = octave::lookup_class (class_nm, false, true);
+
+      if (! cls.ok () || (cls.get_name () != class_nm))
+        error ("load: no definition for classdef '%s' available",
+               class_nm.c_str ());
+
+      bool skip_constructor = ! cls.get ("ConstructOnLoad").bool_value ();
+      tc = cls.construct (octave_value_list (), skip_constructor);
     }
   else
     {
@@ -368,9 +386,11 @@ save_text_data (std::ostream& os, const octave_value& val_arg,
   octave_value val = val_arg;
 
   if (mark_global)
-    os << "# type: global " << val.type_name () << "\n";
+    os << "# type: global ";
   else
-    os << "# type: " << val.type_name () << "\n";
+    os << "# type: ";
+
+  os << val.type_name () << "\n";
 
   if (! precision)
     precision = Vsave_precision;

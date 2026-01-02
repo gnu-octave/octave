@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1995-2025 The Octave Project Developers
+// Copyright (C) 1995-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -41,7 +41,7 @@
 
 #include "async-system-wrapper.h"
 #include "child-list.h"
-#include "lo-error.h"
+#include "oct-error.h"
 #include "oct-fftw.h"
 #include "oct-locbuf.h"
 #include "oct-syscalls.h"
@@ -82,7 +82,7 @@ DEFUN (warranty, , ,
 Describe the conditions for copying and distributing Octave.
 @end deftypefn */)
 {
-  octave_stdout << "\n" << octave_name_version_and_copyright () << "\n\
+  octave_stdout << "\n" << octave_name_version_copyright () << "\n\
 \n\
 GNU Octave is free software: you can redistribute it and/or modify it\n\
 under the terms of the GNU General Public License as published by\n\
@@ -96,7 +96,7 @@ GNU General Public License for more details.\n\
 \n\
 You should have received a copy of the GNU General Public License\n\
 along with GNU Octave; see the file COPYING.  If not, see\n\
-<https://www.gnu.org/licenses/>.\n\
+<https://gnu.org/licenses/gpl.html>.\n\
 \n";
 
   return ovl ();
@@ -586,6 +586,9 @@ specified option.
       config.assign ("words_little_endian",
                      octave_value (mach_info::words_little_endian ()));
 
+      config.assign ("nan_with_payload",
+                     octave_value (mach_info::nan_with_payload ()));
+
       config.assign ("build_environment", octave_value (build_env));
 
       config.assign ("build_features", octave_value (build_features));
@@ -636,42 +639,3 @@ specified option.
 */
 
 OCTAVE_END_NAMESPACE(octave)
-
-#if defined (__GNUG__) && defined (DEBUG_NEW_DELETE)
-
-int debug_new_delete = 0;
-
-typedef void (*vfp)();
-extern vfp __new_handler;
-
-void *
-__builtin_new (std::size_t sz)
-{
-  void *p;
-
-  // malloc (0) is unpredictable; avoid it.
-  if (sz == 0)
-    sz = 1;
-  p = std::malloc (sz);
-  while (p == 0)
-    {
-      (*__new_handler) ();
-      p = std::malloc (sz);
-    }
-
-  if (debug_new_delete)
-    std::cerr << "__builtin_new: " << p << std::endl;
-
-  return p;
-}
-
-void
-__builtin_delete (void *ptr)
-{
-  if (debug_new_delete)
-    std::cerr << "__builtin_delete: " << ptr << std::endl;
-
-  free (ptr);
-}
-
-#endif

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -32,15 +32,15 @@
 
 #include <ostream>
 
-#include "idx-vector.h"
-#include "Array.h"
+#include "Array-oct.h"
 #include "Array-util.h"
-#include "Sparse.h"
 #include "Range.h"
+#include "Sparse.h"
+#include "idx-vector.h"
 
+#include "mappers.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
-#include "lo-error.h"
-#include "lo-mappers.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 

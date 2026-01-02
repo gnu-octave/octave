@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2017-2025 The Octave Project Developers
+// Copyright (C) 2017-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -193,6 +193,8 @@ extern gui_pref ed_run_selection_tmp_file;
 extern gui_pref ed_mru_file_list;
 
 extern gui_pref ed_mru_file_encodings;
+
+extern gui_pref ed_open_dlg_follows_file;
 
 // The find dialog
 

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2020-2025 The Octave Project Developers
+// Copyright (C) 2020-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -56,7 +56,11 @@ public:
   comment_list leading_comments () const { return m_spmd_tok.leading_comments (); }
   comment_list trailing_comments () const { return m_end_tok.trailing_comments (); }
 
+  token spmd_token () { return m_spmd_tok; }
+
   tree_statement_list * body () { return m_body; }
+
+  token end_token () { return m_end_tok; }
 
   void accept (tree_walker& tw)
   {

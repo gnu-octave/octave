@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1995-2025 The Octave Project Developers
+## Copyright (C) 1995-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -40,7 +40,7 @@
 ## @example
 ## @group
 ## fix (clock ())
-##   @result{}   1993      8     20      4     56      1
+##   @xresult{}   1993      8     20      4     56      1
 ## @end group
 ## @end example
 ##

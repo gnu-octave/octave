@@ -16,6 +16,7 @@ MOC_OCTAVE_CPPFLAGS = $(filter -I% -D% -U%, $(AM_CPPFLAGS) $(CPPFLAGS))
 octlib_LTLIBRARIES += %reldir%/liboctgui.la
 
 TRANSLATIONS = \
+  %reldir%/languages/ast_ES.ts \
   %reldir%/languages/be_BY.ts \
   %reldir%/languages/ca_ES.ts \
   %reldir%/languages/de_DE.ts \
@@ -65,7 +66,7 @@ nodist_%canon_reldir%_liboctgui_la_SOURCES = \
 ## to the rules in the etc/HACKING.md file:
 
 %canon_reldir%_liboctgui_current = 13
-%canon_reldir%_liboctgui_revision = 2
+%canon_reldir%_liboctgui_revision = 1
 %canon_reldir%_liboctgui_age = 0
 
 %canon_reldir%_liboctgui_version_info = $(%canon_reldir%_liboctgui_current):$(%canon_reldir%_liboctgui_revision):$(%canon_reldir%_liboctgui_age)

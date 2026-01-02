@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -100,9 +100,6 @@ class tree_switch_command;
 OCTAVE_END_NAMESPACE(octave)
 
 #include "ovl.h"
-
-// Nonzero means print parser debugging info (-d).
-extern int octave_debug;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -737,7 +734,7 @@ protected:
   std::shared_ptr<tree_classdef> m_classdef_object;
 
   // Result of parsing input.
-  std::shared_ptr <tree_statement_list> m_stmt_list;
+  std::shared_ptr<tree_statement_list> m_stmt_list;
 
   // State of the lexer.
   base_lexer& m_lexer;

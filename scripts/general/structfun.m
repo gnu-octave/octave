@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2007-2025 The Octave Project Developers
+## Copyright (C) 2007-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -51,7 +51,7 @@
 ## s.name2 = "Jill Jones";
 ## structfun (@@(x) regexp (x, '(\w+)$', "matches")@{1@}, s,
 ##            "UniformOutput", false)
-##   @result{} scalar structure containing the fields:
+##   @xresult{} scalar structure containing the fields:
 ##        name1 = Smith
 ##        name2 = Jones
 ## @end group

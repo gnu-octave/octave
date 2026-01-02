@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1997-2025 The Octave Project Developers
+// Copyright (C) 1997-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -37,8 +37,8 @@
 #include "fDiagMatrix.h"
 #include "fMatrix.h"
 #include "gsvd.h"
-#include "lo-error.h"
-#include "lo-lapack-proto.h"
+#include "lapack-proto.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
 #include "oct-shlib.h"
 

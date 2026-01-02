@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2007-2025 The Octave Project Developers
+## Copyright (C) 2007-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -80,27 +80,16 @@ function h = pcolor (varargin)
     print_usage ();
   endif
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
+  hax = newplot (hax);
+  htmp = surface (hax, x, y, z, c);
+
+  set (htmp, "facecolor", "flat");
+  if (! ishold (hax))
+    set (hax, "view", [0, 90], "box", "on");
+    set (hax, "xlimmode", "auto", "ylimmode", "auto", "zlimmode", "auto",
+              "xlimitmethod", "tight", "ylimitmethod", "tight",
+              "zlimitmethod", "tight");
   endif
-  unwind_protect
-    hax = newplot (hax);
-    htmp = surface (x, y, z, c);
-
-    set (htmp, "facecolor", "flat");
-    if (! ishold ())
-      set (hax, "view", [0, 90], "box", "on");
-      set (hax, "xlimmode", "auto", "ylimmode", "auto", "zlimmode", "auto",
-                "xlimitmethod", "tight", "ylimitmethod", "tight",
-                "zlimitmethod", "tight");
-    endif
-
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
 
   if (nargout > 0)
     h = htmp;

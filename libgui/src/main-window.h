@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2011-2025 The Octave Project Developers
+// Copyright (C) 2011-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -75,8 +75,8 @@ class main_window : public QMainWindow
 
 public:
 
-  typedef std::pair <std::string, std::string> name_pair;
-  typedef std::pair <int, int> int_pair;
+  typedef std::pair<std::string, std::string> name_pair;
+  typedef std::pair<int, int> int_pair;
 
   main_window (base_qobject& oct_qobj);
 
@@ -120,7 +120,7 @@ Q_SIGNALS:
   void selectAll_signal ();
   void undo_signal ();
 
-  void add_actions_signal (QList <QAction *> action_list);
+  void add_actions_signal (QList<QAction *> action_list);
 
   void warning_function_not_found_signal (const QString& message);
 
@@ -158,7 +158,6 @@ public Q_SLOTS:
                                         = QString ());
   void show_about_octave ();
   void notice_settings (bool update_by_worker = false);
-  QPalette getFusionDarkPalette ();
   void prepare_to_exit ();
   void go_to_previous_widget ();
   void reset_windows ();
@@ -310,9 +309,6 @@ private:
 
   QString m_default_encoding;
 
-  QString m_default_style;
-  QPalette m_default_palette;
-
   //! Toolbar.
 
   QStatusBar *m_status_bar;
@@ -328,6 +324,9 @@ private:
   QPointer<workspace_view> m_workspace_window;
   QPointer<variable_editor> m_variable_editor_window;
   //!@}
+
+  file_system_browser *m_file_browser;
+  editor_files_browser *m_editor_files;
 
   external_editor_interface *m_external_editor;
   QWidget *m_active_editor;

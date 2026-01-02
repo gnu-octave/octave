@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1995-2025 The Octave Project Developers
+## Copyright (C) 1995-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -91,8 +91,8 @@ endfunction
 %!assert (xor ([1, 1, 0, 0], [0, 1, 0, 1]), logical ([1, 0, 0, 1]))
 %!assert (xor ([i, i, 0, 0], [1, 0, 1, 0]), logical ([0, 1, 1, 0]))
 
-%!assert (xor (eye (2), fliplr (eye (2))), logical (ones (2)))
-%!assert (xor (speye (2), fliplr (speye (2))), sparse (logical (ones (2))))
+%!assert (xor (eye (2), fliplr (eye (2))), true (2))
+%!assert (xor (speye (2), fliplr (speye (2))), sparse (true (2)))
 
 ## Test XOR reduction
 %!assert (xor ([1 0], [1 1], [0 0]), logical ([0 1]))

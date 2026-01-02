@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2002-2025 The Octave Project Developers
+// Copyright (C) 2002-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -32,7 +32,7 @@
 
 #include "oct-locbuf.h"
 #include "quit.h"
-#include "lo-regexp.h"
+#include "oct-regexp.h"
 #include "str-vec.h"
 
 #include "defun.h"
@@ -280,7 +280,7 @@ do_regexp_rep_string_escapes (const std::string& s)
             // Both dollar sign (for capture buffer) and backslash are
             // passed through with their escape backslash.  The processing
             // for these must occur during the actual replacement operation
-            // in lo-regexp.cc.
+            // in oct-regexp.cc.
             case '$':  // pass dollar sign through with escape
               retval[i] = '\\'; retval[++i] = '$';
               break;

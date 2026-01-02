@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2017-2025 The Octave Project Developers
+// Copyright (C) 2017-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -35,7 +35,7 @@
 #include <map>
 #include <set>
 
-#include "lo-mappers.h"
+#include "mappers.h"
 
 #include "oct-handle.h"
 #include "url-transfer.h"

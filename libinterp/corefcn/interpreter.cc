@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -35,19 +35,19 @@
 #include <string>
 #include <thread>
 
+#include "blas-proto.h"
 #include "cmd-edit.h"
 #include "cmd-hist.h"
 #include "file-ops.h"
-#include "file-stat.h"
 #include "file-ops.h"
+#include "file-stat.h"
 #include "fpucw-wrappers.h"
-#include "lo-blas-proto.h"
-#include "lo-error.h"
-#include "lo-sysdep.h"
 #include "oct-env.h"
+#include "oct-error.h"
+#include "oct-sysdep.h"
 #include "quit.h"
-#include "str-vec.h"
 #include "signal-wrappers.h"
+#include "str-vec.h"
 #include "unistd-wrappers.h"
 
 #include "builtin-defun-decls.h"
@@ -76,7 +76,6 @@
 #include "pt-eval.h"
 #include "pt-jump.h"
 #include "pt-stmt.h"
-#include "settings.h"
 #include "sighandlers.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
@@ -434,9 +433,7 @@ interpreter::interpreter (application *app_context)
     m_atexit_fcns (),
     m_display_info (),
     m_environment (),
-    m_settings (),
     m_evaluator (*this),
-    m_error_system (*this),
     m_help_system (*this),
     m_input_system (*this),
     m_output_system (*this),
@@ -489,6 +486,11 @@ interpreter::interpreter (application *app_context)
   std::setlocale (LC_TIME, "C");
   sys::env::putenv ("LC_NUMERIC", "C");
   sys::env::putenv ("LC_TIME", "C");
+
+  // Perform system-dependent initialization here in case it has not
+  // already been executed (for example, by the application
+  // constructor).
+  sysdep_init ();
 
   // Initialize the default floating point unit control state.
   octave_set_default_fpucw ();
@@ -602,6 +604,9 @@ interpreter::interpreter (application *app_context)
       if (! texi_macros_file.empty ())
         Ftexi_macros_file (*this, ovl (texi_macros_file));
     }
+  else
+    // No arguments for embedded interpreters
+    intern_nargin (0);
 
   // FIXME: we defer creation of the gh_manager object because it
   // creates a root_figure object that requires the display_info
@@ -764,6 +769,8 @@ interpreter::initialize ()
   octave_initialized = true;
 
   m_initialized = true;
+
+  run_startup_tests ();
 }
 
 // Note: this function is currently only used with the new
@@ -926,16 +933,17 @@ interpreter::execute ()
     {                                                                   \
       try                                                               \
         {                                                               \
+          error_system& es = get_error_system ();                       \
           unwind_action restore_debug_on_error                          \
-            (&error_system::set_debug_on_error, &m_error_system,        \
-             m_error_system.debug_on_error ());                        \
+            (&error_system::set_debug_on_error, &es,                    \
+             es.debug_on_error ());                                     \
                                                                         \
           unwind_action restore_debug_on_warning                        \
-            (&error_system::set_debug_on_warning, &m_error_system,      \
-             m_error_system.debug_on_warning ());                       \
+            (&error_system::set_debug_on_warning, &es,                  \
+             es.debug_on_warning ());                                   \
                                                                         \
-          m_error_system.debug_on_error (false);                        \
-          m_error_system.debug_on_warning (false);                      \
+          es.debug_on_error (false);                                    \
+          es.debug_on_warning (false);                                  \
                                                                         \
           F ARGS;                                                       \
         }                                                               \
@@ -1072,6 +1080,36 @@ interpreter::execute_atexit_fcns ()
       OCTAVE_SAFE_CALL (feval, (fcn, octave_value_list (), 0));
 
       OCTAVE_SAFE_CALL (flush_stdout, ());
+    }
+}
+
+void
+interpreter::run_startup_tests ()
+{
+  bool inhibit_startup_tests = false;
+
+  if (m_app_context)
+    {
+      const cmdline_options& options = m_app_context->options ();
+
+      inhibit_startup_tests = options.inhibit_startup_tests ();
+    }
+
+  if (! inhibit_startup_tests)
+    {
+      // Check if BLAS implementation returns single precision values
+      F77_REAL retval = 0.0;
+      F77_INT n = 2;
+      F77_REAL x[2] = {1.0, 2.0};
+      F77_REAL y[2] = {3.0, 4.0};
+      F77_FUNC (xsdot, XSDOT) (n, x, 1, y, 1, retval);
+
+      if (retval != 11.0f)
+        {
+          std::cerr << "BLAS implementation returns incorrect single "
+                       "precision floating-point type" << std::endl;
+          quit (1, true, false);
+        }
     }
 }
 
@@ -2074,12 +2112,14 @@ interpreter::debug_watch_expressions () const
 void
 interpreter::handle_exception (const execution_exception& ee)
 {
-  m_error_system.save_exception (ee);
+  error_system& es = get_error_system ();
+
+  es.save_exception (ee);
 
   // FIXME: use a separate stream instead of std::cerr directly so that
   // error messages can be redirected more easily?  Pass the message
   // to an event manager function?
-  m_error_system.display_exception (ee);
+  es.display_exception (ee);
 
   recover_from_exception ();
 }
@@ -2188,29 +2228,25 @@ interpreter::maximum_braindamage ()
   PS1 (">> ");
   PS2 ("");
   PS4 ("");
-
-  m_load_save_system.crash_dumps_octave_core (false);
-  m_load_save_system.save_default_options ("-mat-binary");
-
-  m_history_system.timestamp_format_string ("%%-- %D %I:%M %p --%%");
-
-  m_error_system.beep_on_error (true);
-
+  error_system& es = get_error_system ();
+  es.beep_on_error (true);
   Fconfirm_recursive_rmdir (ovl (false));
+  m_load_save_system.crash_dumps_octave_core (false);
   Foptimize_diagonal_matrix (ovl (false));
   Foptimize_permutation_matrix (ovl (false));
   Foptimize_range (ovl (false));
   Ffixed_point_format (ovl (true));
-  Fprint_empty_dimensions (ovl (false));
+  m_history_system.timestamp_format_string ("%%-- %D %I:%M %p --%%");
   Fprint_struct_array_contents (ovl (true));
+  m_load_save_system.save_default_options ("-mat-binary");
   Fstruct_levels_to_print (ovl (0));
 
-  m_error_system.disable_warning ("Octave:abbreviated-property-match");
-  m_error_system.disable_warning ("Octave:colon-nonscalar-argument");
-  m_error_system.disable_warning ("Octave:data-file-in-path");
-  m_error_system.disable_warning ("Octave:empty-index");
-  m_error_system.disable_warning ("Octave:function-name-clash");
-  m_error_system.disable_warning ("Octave:possible-matlab-short-circuit-operator");
+  es.disable_warning ("Octave:abbreviated-property-match");
+  es.disable_warning ("Octave:colon-nonscalar-argument");
+  es.disable_warning ("Octave:data-file-in-path");
+  es.disable_warning ("Octave:empty-index");
+  es.disable_warning ("Octave:function-name-clash");
+  es.disable_warning ("Octave:possible-matlab-short-circuit-operator");
 }
 
 void

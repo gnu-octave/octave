@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2005-2025 The Octave Project Developers
+## Copyright (C) 2005-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -110,8 +110,12 @@ function configure_make (desc, packdir, verbose)
     endif
 
     if (exist (fullfile (src, "Makefile"), "file"))
-      [status, output] = shell (sprintf ("%s make --jobs %i --directory '%s'",
-                                         scenv, jobs, src), verbose);
+      make_cmd = getenv ("MAKE");
+      if (isempty (make_cmd))
+        make_cmd = "make";
+      endif
+      [status, output] = shell (sprintf ("%s %s -j %i -C '%s'",
+                                         scenv, make_cmd, jobs, src), verbose);
       if (status != 0)
         disp (output);
         error ("pkg: error running 'make' for the %s package", desc.name);

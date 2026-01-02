@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1998-2025 The Octave Project Developers
+## Copyright (C) 1998-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -72,7 +72,7 @@
 ## @group
 ## c = @{[1 2], "Three", 4@};
 ## [x, y, z] = c@{:@}
-## @result{}
+## @xresult{}
 ##    x =
 ##
 ##       1   2

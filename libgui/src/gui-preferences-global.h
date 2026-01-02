@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2017-2025 The Octave Project Developers
+// Copyright (C) 2017-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -38,6 +38,8 @@ const QString gui_obj_name_main_window = "MainWindow";
 
 extern gui_pref global_skip_welcome_wizard;
 
+extern gui_pref global_show_splash_screen;
+
 // Get the default monospaced font
 #if defined (Q_OS_WIN)
 const QString global_font_family = "Courier";
@@ -72,7 +74,6 @@ global_menubar_style ("QMenuBar {"
                       "}");
 
 // Icon size (in preferences: values -1, 0, 1)
-
 const QStyle::PixelMetric global_icon_sizes[3] =
 {
   QStyle::PM_SmallIconSize,
@@ -83,6 +84,8 @@ const QStyle::PixelMetric global_icon_sizes[3] =
 extern gui_pref global_icon_size;
 
 extern gui_pref global_icon_theme;
+
+const QString global_icon_extension (".svg");
 
 enum
 {
@@ -96,8 +99,8 @@ const QStringList
 global_icon_paths =
 {
   "",
-  ":/icons/octave/128x128/",
-  ":/icons/tango/128x128/",
+  ":/icons/octave/scalable/",
+  ":/icons/tango/scalable/",
   ":/icons/cursors/"
 };
 
@@ -163,11 +166,7 @@ extern gui_pref global_restore_ov_dir;
 
 extern gui_pref global_use_custom_editor;
 
-#if defined (Q_OS_WIN32)
 extern gui_pref global_custom_editor;
-#else
-extern gui_pref global_custom_editor;
-#endif
 
 extern gui_pref global_prompt_to_exit;
 

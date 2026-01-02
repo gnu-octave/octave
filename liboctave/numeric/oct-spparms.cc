@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1998-2025 The Octave Project Developers
+// Copyright (C) 1998-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -29,9 +29,9 @@
 
 #include <ostream>
 
-#include "Array.h"
-#include "lo-error.h"
+#include "Array-oct.h"
 #include "lo-ieee.h"
+#include "oct-error.h"
 #include "oct-spparms.h"
 #include "singleton-cleanup.h"
 

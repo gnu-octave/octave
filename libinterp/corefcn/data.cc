@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1994-2025 The Octave Project Developers
+// Copyright (C) 1994-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -43,6 +43,7 @@
 #include "oct-time.h"
 #include "quit.h"
 
+#include "cdef-utils.h"
 #include "Cell.h"
 #include "data.h"
 #include "defun.h"
@@ -52,6 +53,7 @@
 #include "interpreter.h"
 #include "oct-map.h"
 #include "ov-class.h"
+#include "ov-classdef.h"
 #include "ov-complex.h"
 #include "ov-cx-mat.h"
 #include "ov-cx-sparse.h"
@@ -68,40 +70,166 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
+static void
+get_dim_vecdim_all (const octave_value& dimarg, octave_value& arg,
+                    int& dim, Array<int>& perm_vec, bool& do_perm,
+                    bool& allflag, const char *fcn)
+{
+  if (dimarg.is_scalar_type ())
+    {
+      dim = dimarg.int_value () - 1;
+      if (dim < 0)
+        error ("%s: invalid dimension DIM = %d", fcn, dim + 1);
+    }
+  else
+    {
+      Array<int> vec = dimarg.int_vector_value ();
+      std::vector<int> vecdim;
+      dim_vector sz = arg.dims ();
+      int ndims = arg.ndims ();
+      // Check for invalid dims and ignore any dims larger than actual ndims
+      for (int i = 0; i < vec.numel (); i++)
+        {
+          vec(i)--;
+          if (vec(i) < 0)
+            error ("%s: invalid dimension in VECDIM = %d", fcn, vec(i)+1);
+          if (vec(i) < ndims)
+            vecdim.push_back (vec(i));
+        }
+      int n = vecdim.size ();
+      // If no dimensions left, set DIM = ndims to return input as is
+      if (n == 0)
+        {
+          dim = ndims;
+          return;
+        }
+      octave_idx_type szvecdim = 1;
+      // Check for duplicate dims and add VECDIM to permutation vector
+      perm_vec.resize (dim_vector (1, ndims));
+      std::sort (vecdim.begin (), vecdim.end ());
+      // Check for duplicates FIRST before any array writes
+      auto dup = std::adjacent_find (vecdim.begin (), vecdim.end ());
+      if (dup != vecdim.end ())
+        error ("%s: duplicate dimension in VECDIM = %d", fcn, *dup + 1);
+
+       // Verified vecdim has unique entries in [0, ndims-1], hence n <= ndims
+       int out_pos = ndims - n;
+       for (int d : vecdim)
+         {
+           szvecdim *= sz (d);
+           perm_vec(out_pos++) = d;
+         }
+
+      // Parse vecdim
+      if (n == 1)
+        // Only one dimension given, treat as if dim were specified instead
+        dim = vecdim[0];
+      else if (ndims == n)
+        // vecdim contains all dimensions, treat as if "all" flag given.
+        allflag = true;
+      else
+        {
+          dim_vector new_sz;
+          new_sz.resize (ndims - n + 1);
+          int idx = 0;
+          // Add remaining dims to permutation vector
+          for (int i = 0; i < ndims; i++)
+            {
+              if (std::find (vecdim.begin (), vecdim.end (), i)
+                  == vecdim.end ())
+                {
+                  perm_vec(idx) = i;
+                  new_sz(idx) = sz(i);
+                  idx++;
+                }
+            }
+          new_sz(idx) = szvecdim;
+          arg = arg.permute (perm_vec, false);
+          arg = arg.reshape (new_sz);
+          do_perm = true;
+          dim = idx;
+        }
+    }
+}
+
 DEFUN (all, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{tf} =} all (@var{x})
 @deftypefnx {} {@var{tf} =} all (@var{x}, @var{dim})
-For a vector argument, return true (logical 1) if all elements of the vector
-are nonzero.
+@deftypefnx {} {@var{tf} =} all (@var{x}, @var{vecdim})
+@deftypefnx {} {@var{tf} =} all (@var{x}, "all")
+Return true (logical 1) if all elements are nonzero or true.
 
-For a matrix argument, return a row vector of logical ones and zeros with each
-element indicating whether all of the elements of the corresponding column of
-the matrix are nonzero.  For example:
+If @var{x} is a vector, then @code{all (@var{x})} returns true (logical 1) if
+all elements of the vector are nonzero.
 
-@example
-@group
-all ([2, 3; 1, 0])
-    @result{} [ 1, 0 ]
-@end group
-@end example
+If @var{x} is a matrix, then @code{all (@var{x})} returns a row vector of
+logical ones and zeros where each element indicates whether all of the elements
+of the corresponding column of the matrix are nonzero.
 
-If the optional argument @var{dim} is supplied, work along dimension @var{dim}.
+If @var{x} is an array, then @code{all(@var{x})} operates along the first
+non-singleton dimension of @var{x} and returns a logical array, whose size is
+equal to @var{x} except for the operating dimension which becomes 1.
+
+The optional input @var{dim} specifies the dimension to operate on and must be
+a positive integer.  Specifying any singleton dimension in @var{x}, including
+any dimension exceeding @code{ndims (@var{x})}, will return @var{x}.
+
+Specifying multiple dimensions with input @var{vecdim}, a vector of
+non-repeating dimensions, will operate along the array slice defined by
+@var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim} greater
+than @code{ndims (@var{x})} is ignored.  The size of the dimensions specified
+by @var{vecdim} become 1 in the returned logical array.
+
+Specifying the dimension as @qcode{"all"} will cause @code{all} to operate on
+all elements of @var{x}, and is equivalent to @code{all (@var{x}(:))}.
 @seealso{any}
 @end deftypefn */)
 {
   int nargin = args.length ();
 
+  bool do_perm = false;
+  bool allflag = false;
+
+  while (nargin > 1 && args(nargin - 1).is_string ())
+    {
+      std::string str = args(nargin - 1).string_value ();
+
+      if (str == "all")
+        allflag = true;
+      else
+        error ("all: unrecognized optional argument '%s'", str.c_str ());
+
+      nargin--;
+    }
+
   if (nargin < 1 || nargin > 2)
     print_usage ();
+  if (allflag && nargin > 1)
+    error ("all: cannot set DIM or VECDIM with 'all' flag");
 
-  int dim = (nargin == 1 ? -1
-             : args(1).strict_int_value ("all: DIM must be an integer")-1);
+  octave_value arg = args(0);
 
-  if (dim < -1)
-    error ("all: invalid dimension argument = %d", dim + 1);
+  // Handle DIM, VECDIM
+  int dim = -1;
+  Array<int> perm_vec;
+  if (nargin == 2)
+    {
+      octave_value dimarg = args(1);
+      get_dim_vecdim_all (dimarg, arg, dim, perm_vec, do_perm, allflag, "all");
+    }
 
-  return ovl (args(0).all (dim));
+  // Handle allflag
+  if (allflag)
+    arg = arg.reshape (dim_vector (arg.numel (), 1));
+
+  octave_value retval = arg.all (dim);
+
+  if (do_perm)
+    retval = retval.permute (perm_vec, true);
+
+  return retval;
 }
 
 /*
@@ -121,52 +249,151 @@ If the optional argument @var{dim} is supplied, work along dimension @var{dim}.
 %! assert (all (x, 1) == [0, 1, 1]);
 %! assert (all (x, 2) == [0; 1; 1]);
 
-%!error all ()
-%!error all (1, 2, 3)
+%!test
+%! x = ones (3, 3, 3);
+%! x(3) = 0;
+%! y = all (x);
+%! assert (y(:,:,1), logical ([0, 1, 1]));
+%! assert (y(:,:,2), logical ([1, 1, 1]));
+%! assert (y(:,:,3), logical ([1, 1, 1]));
+%! y = all (x, [1, 2]);
+%! assert (y(:,:,1), false);
+%! assert (y(:,:,2), true);
+%! assert (y(:,:,3), true);
+%! assert (all (x, [1, 3]), logical ([0, 1, 1]));
+%! assert (all (x, [2, 3]), logical ([1; 1; 0]));
+%! assert (all (x, "all"), false);
+
+%!assert (all (ones (2), 3), logical (ones (2)))
+%!assert (all (ones (2), [3, 5]), logical (ones (2)))
+
+## Test empty matrices
+%!assert (all ([]), true)
+%!assert (all ([], 1), true (1, 0))
+%!assert (all ([], 2), true (0, 1))
+%!assert (all ([], 3), true (0, 0))
+%!assert (all (ones (1,0)), true)
+%!assert (all (ones (1,0), 1), true (1, 0))
+%!assert (all (ones (1,0), 2), true)
+%!assert (all (ones (1,0), 3), true (1, 0))
+%!assert (all (ones (0,1)), true)
+%!assert (all (ones (0,1), 1), true)
+%!assert (all (ones (0,1), 2), true (0, 1))
+%!assert (all (ones (0,1), 3), true (0, 1))
+
+## Test sparse matrices
+%!assert (all (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 0, NaN]), 2),
+%!        sparse ([true; false]))
+%!assert (all (sparse ([NaN, 0, 1, 4, 2; 1, 2, 1, 2, NaN]), 2),
+%!        sparse ([false; true]))
+
+## Test empty sparse matrices
+%!assert (all (sparse ([])), sparse (true))
+%!assert (all (sparse ([]), 1), sparse (true (1, 0)))
+%!assert (all (sparse ([]), 2), sparse (true (0, 1)))
+%!assert (all (sparse ([]), 3), sparse (true (0, 0)))
+%!assert (all (sparse (ones (1,0))), sparse (true))
+%!assert (all (sparse (ones (1,0)), 1), sparse (true (1, 0)))
+%!assert (all (sparse (ones (1,0)), 2), sparse (true))
+%!assert (all (sparse (ones (1,0)), 3), sparse (true (1, 0)))
+%!assert (all (sparse (ones (0,1))), sparse (true))
+%!assert (all (sparse (ones (0,1)), 1), sparse (true))
+%!assert (all (sparse (ones (0,1)), 2), sparse (true (0, 1)))
+%!assert (all (sparse (ones (0,1)), 3), sparse (true (0, 1)))
+
+## Test input validation
+%!error <Invalid call> all ()
+%!error <Invalid call> all (1,2,3)
+%!error <unrecognized optional argument 'foobar'> all (1, "foobar")
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! all (ones (3,3), 1, "all");
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! all (ones (3,3), [1, 2], "all");
+%!error <invalid dimension DIM = 0> all (ones (3,3), 0)
+%!error <invalid dimension DIM = -1> all (ones (3,3), -1)
+%!error <invalid dimension in VECDIM = -2> all (ones (3,3), [1 -2])
+%!error <duplicate dimension in VECDIM = 2> all (ones (3,3), [1 2 2])
+%!error <duplicate dimension in VECDIM = 1> all (ones (3,3), [1 1 2])
 */
 
 DEFUN (any, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{tf} =} any (@var{x})
 @deftypefnx {} {@var{tf} =} any (@var{x}, @var{dim})
-For a vector argument, return true (logical 1) if any element of the vector
-is nonzero.
+@deftypefnx {} {@var{tf} =} any (@var{x}, @var{vecdim})
+@deftypefnx {} {@var{tf} =} any (@var{x}, "all")
+Return true (logical 1) if any elements are nonzero or true.
 
-For a matrix argument, return a row vector of logical ones and zeros with each
-element indicating whether any of the elements of the corresponding column of
-the matrix are nonzero.  For example:
+If @var{x} is a vector, then @code{any (@var{x})} returns true (logical 1) if
+any elements of the vector are nonzero.
 
-@example
-@group
-any (eye (2, 4))
- @result{} [ 1, 1, 0, 0 ]
-@end group
-@end example
+If @var{x} is a matrix, then @code{any (@var{x})} returns a row vector of
+logical ones and zeros where each element indicates whether any of the elements
+of the corresponding column of the matrix are nonzero.
 
-If the optional argument @var{dim} is supplied, work along dimension @var{dim}.
-For example:
+If @var{x} is an array, then @code{any(@var{x})} operates along the first
+non-singleton dimension of @var{x} and returns a logical array, whose size is
+equal to @var{x} except for the operating dimension which becomes 1.
 
-@example
-@group
-any (eye (2, 4), 2)
- @result{} [ 1; 1 ]
-@end group
-@end example
+The optional input @var{dim} specifies the dimension to operate on and must be
+a positive integer.  Specifying any singleton dimension in @var{x}, including
+any dimension exceeding @code{ndims (@var{x})}, will return @var{x}.
+
+Specifying multiple dimensions with input @var{vecdim}, a vector of
+non-repeating dimensions, will operate along the array slice defined by
+@var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim} greater
+than @code{ndims (@var{x})} is ignored.  The size of the dimensions specified
+by @var{vecdim} become 1 in the returned logical array.
+
+Specifying the dimension as @qcode{"all"} will cause @code{any} to operate on
+all elements of @var{x}, and is equivalent to @code{any (@var{x}(:))}.
 @seealso{all}
 @end deftypefn */)
 {
   int nargin = args.length ();
 
+  bool do_perm = false;
+  bool allflag = false;
+
+  while (nargin > 1 && args(nargin - 1).is_string ())
+    {
+      std::string str = args(nargin - 1).string_value ();
+
+      if (str == "all")
+        allflag = true;
+      else
+        error ("any: unrecognized optional argument '%s'", str.c_str ());
+
+      nargin--;
+    }
+
   if (nargin < 1 || nargin > 2)
     print_usage ();
+  if (allflag && nargin > 1)
+    error ("any: cannot set DIM or VECDIM with 'all' flag");
 
-  int dim = (nargin == 1 ? -1
-             : args(1).strict_int_value ("any: DIM must be an integer")-1);
+  octave_value arg = args(0);
 
-  if (dim < -1)
-    error ("any: invalid dimension argument = %d", dim + 1);
+  // Handle DIM, VECDIM
+  int dim = -1;
+  Array<int> perm_vec;
+  if (nargin == 2)
+    {
+      octave_value dimarg = args(1);
+      get_dim_vecdim_all (dimarg, arg, dim, perm_vec, do_perm, allflag, "any");
+    }
 
-  return ovl (args(0).any (dim));
+  // Handle allflag
+  if (allflag)
+    arg = arg.reshape (dim_vector (arg.numel (), 1));
+
+  octave_value retval = arg.any (dim);
+
+  if (do_perm)
+    retval = retval.permute (perm_vec, true);
+
+  return retval;
 }
 
 /*
@@ -186,8 +413,72 @@ any (eye (2, 4), 2)
 %! assert (any (x, 1) == [0, 0, 1]);
 %! assert (any (x, 2) == [0; 0; 1]);
 
-%!error any ()
-%!error any (1, 2, 3)
+%!test
+%! x = zeros (3, 3, 3);
+%! x(3) = 1;
+%! y = any (x);
+%! assert (y(:,:,1), logical ([1, 0, 0]));
+%! assert (y(:,:,2), logical ([0, 0, 0]));
+%! assert (y(:,:,3), logical ([0, 0, 0]));
+%! y = any (x, [1, 2]);
+%! assert (y(:,:,1), true);
+%! assert (y(:,:,2), false);
+%! assert (y(:,:,3), false);
+%! assert (any (x, [1, 3]), logical ([1, 0, 0]));
+%! assert (any (x, [2, 3]), logical ([0; 0; 1]));
+%! assert (any (x, "all"), true);
+
+## Test empty matrices
+%!assert (any ([]), false)
+%!assert (any ([], 1), false (1, 0))
+%!assert (any ([], 2), false (0, 1))
+%!assert (any ([], 3), false (0, 0))
+%!assert (any (ones (1,0)), false)
+%!assert (any (ones (1,0), 1), false (1, 0))
+%!assert (any (ones (1,0), 2), false)
+%!assert (any (ones (1,0), 3), false (1, 0))
+%!assert (any (ones (0,1)), false)
+%!assert (any (ones (0,1), 1), false)
+%!assert (any (ones (0,1), 2), false (0, 1))
+%!assert (any (ones (0,1), 3), false (0, 1))
+
+## Test sparse matrices
+%!assert (any (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 0, NaN]), 2),
+%!        sparse ([true; true]))
+%!assert (any (sparse ([0, 0, 0, 0, 0; 1, 2, 1, 2, NaN]), 2),
+%!        sparse ([false; true]))
+%!assert (any (sparse ([0, 0, 0, 0i, 0; 1, 2, 1, 2, NaN]), 2),
+%!        sparse ([false; true]))
+%!assert (any (sparse ([0, 0, 0, 0+i, 0; 1, 2, 1, 2, NaN]), 2),
+%!        sparse ([true; true]))
+
+## Test empty sparse matrices
+%!assert (any (sparse ([])), sparse (false))
+%!assert (any (sparse ([]), 1), sparse (false (1, 0)))
+%!assert (any (sparse ([]), 2), sparse (false (0, 1)))
+%!assert (any (sparse ([]), 3), sparse (false (0, 0)))
+%!assert (any (sparse (ones (1,0))), sparse (false))
+%!assert (any (sparse (ones (1,0)), 1), sparse (false (1, 0)))
+%!assert (any (sparse (ones (1,0)), 2), sparse (false))
+%!assert (any (sparse (ones (1,0)), 3), sparse (false (1, 0)))
+%!assert (any (sparse (ones (0,1))), sparse (false))
+%!assert (any (sparse (ones (0,1)), 1), sparse (false))
+%!assert (any (sparse (ones (0,1)), 2), sparse (false (0, 1)))
+%!assert (any (sparse (ones (0,1)), 3), sparse (false (0, 1)))
+
+## Test input validation
+%!error <Invalid call> any ()
+%!error <Invalid call> any (1,2,3)
+%!error <unrecognized optional argument 'foobar'> any (1, "foobar")
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! any (ones (3,3), 1, "all");
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! any (ones (3,3), [1, 2], "all");
+%!error <invalid dimension DIM = 0> any (ones (3,3), 0)
+%!error <invalid dimension DIM = -1> any (ones (3,3), -1)
+%!error <invalid dimension in VECDIM = -2> any (ones (3,3), [1 -2])
+%!error <duplicate dimension in VECDIM = 2> any (ones (3,3), [1 2 2])
+%!error <duplicate dimension in VECDIM = 1> any (ones (3,3), [1 1 2])
 */
 
 // These mapping functions may also be useful in other places, eh?
@@ -274,6 +565,9 @@ This function is equivalent to @code{arg (complex (@var{x}, @var{y}))}.
 %! y = single ([0, rt3, 1, rt3, -rt3, -1, -rt3, 0]);
 %! x = single ([1, 3, 1, 1, 1, 1, 3, 1]);
 %! assert (atan2 (y, x), v, sqrt (eps ("single")));
+
+%!assert (any (ones (2), 3), logical (ones (2)))
+%!assert (any (ones (2), [3, 5]), logical (ones (2)))
 
 ## Test sparse implementations
 %!shared xs
@@ -971,94 +1265,214 @@ negative numbers or when the values are periodic.
 %! assert (mod (x-1, x), x-1);
 %! x = flintmax ("single") - (10:-1:1);
 %! assert (mod (x-1, x), x-1);
-
 */
-
-#define DATA_REDUCTION(FCN)                                             \
-                                                                        \
-  int nargin = args.length ();                                          \
-                                                                        \
-  if (nargin < 1 || nargin > 2)                                         \
-    print_usage ();                                                     \
-                                                                        \
-  octave_value retval;                                                  \
-                                                                        \
-  octave_value arg = args(0);                                           \
-                                                                        \
-  int dim = (nargin == 1 ? -1 : args(1).int_value (true) - 1);          \
-                                                                        \
-  if (dim < -1)                                                         \
-    error (#FCN ": invalid dimension argument = %d", dim + 1);          \
-                                                                        \
-  if (arg.isreal ())                                              \
-    {                                                                   \
-      if (arg.issparse ())                                        \
-        {                                                               \
-          SparseMatrix tmp = arg.sparse_matrix_value ();                \
-                                                                        \
-          retval = tmp.FCN (dim);                                       \
-        }                                                               \
-      else if (arg.is_single_type ())                                   \
-        {                                                               \
-          FloatNDArray tmp = arg.float_array_value ();                  \
-                                                                        \
-          retval = tmp.FCN (dim);                                       \
-        }                                                               \
-      else                                                              \
-        {                                                               \
-          NDArray tmp = arg.array_value ();                             \
-                                                                        \
-          retval = tmp.FCN (dim);                                       \
-        }                                                               \
-    }                                                                   \
-  else if (arg.iscomplex ())                                      \
-    {                                                                   \
-      if (arg.issparse ())                                        \
-        {                                                               \
-          SparseComplexMatrix tmp = arg.sparse_complex_matrix_value (); \
-                                                                        \
-          retval = tmp.FCN (dim);                                       \
-        }                                                               \
-      else if (arg.is_single_type ())                                   \
-        {                                                               \
-          FloatComplexNDArray tmp                                       \
-            = arg.float_complex_array_value ();                         \
-                                                                        \
-          retval = tmp.FCN (dim);                                       \
-        }                                                               \
-      else                                                              \
-        {                                                               \
-          ComplexNDArray tmp = arg.complex_array_value ();              \
-                                                                        \
-          retval = tmp.FCN (dim);                                       \
-        }                                                               \
-    }                                                                   \
-  else                                                                  \
-    err_wrong_type_arg (#FCN, arg);                                     \
-                                                                        \
-  return retval
 
 DEFUN (cumprod, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{y} =} cumprod (@var{x})
 @deftypefnx {} {@var{y} =} cumprod (@var{x}, @var{dim})
-Cumulative product of elements along dimension @var{dim}.
+@deftypefnx {} {@var{y} =} cumprod (@var{x}, @var{vecdim})
+@deftypefnx {} {@var{y} =} cumprod (@dots{}, "all")
+@deftypefnx {} {@var{y} =} cumprod (@dots{}, @var{direction})
+@deftypefnx {} {@var{y} =} cumprod (@dots{}, @var{nanflag})
+Compute the cumulative product of elements in @var{x}.
 
-If @var{dim} is omitted, it defaults to the first non-singleton dimension.
-For example:
+If @var{x} is a vector, then @code{cumprod (@var{x})} returns a vector of the
+same size with the cumulative product of @var{x}.
 
-@example
-@group
-cumprod ([1, 2; 3, 4; 5, 6])
-   @result{}  1   2
-       3   8
-      15  48
-@end group
-@end example
+If @var{x} is a matrix, then @code{cumprod (@var{x})} returns a matrix of the
+same size with the cumulative product along each column of @var{x}.
+
+If @var{x} is an array, then @code{cumprod(@var{x})} returns an array of the
+same size with the cumulative product along the first non-singleton dimension
+of @var{x}.
+
+The class of output @var{y} is the same as the class of input @var{x}, unless
+@var{x} is logical, in which case @var{y} is double.
+
+The optional input @var{dim} specifies the dimension to operate on and must be
+a positive integer.  Specifying any singleton dimension in @var{x}, including
+any dimension exceeding @code{ndims (@var{x})}, will return @var{x}.
+
+Specifying multiple dimensions with input @var{vecdim}, a vector of
+non-repeating dimensions, will operate along the array slice defined by
+@var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim} greater
+than @code{ndims (@var{x})} is ignored.
+
+Specifying the dimension as @qcode{"all"} will cause @code{cumprod} to operate
+on all elements of @var{x}, and is equivalent to @code{cumprod (@var{x}(:))}.
+
+The optional input @var{direction} specifies how the operating dimension is
+traversed and can take the following values:
+
+@table @asis
+@item @qcode{"forward"} (default)
+
+The cumulative product is computed from beginning (index 1) to end along the
+operating dimension.
+
+@item @qcode{"reverse"}
+
+The cumulative product is computed from end to beginning along the operating
+dimension.
+@end table
+
+The optional variable @var{nanflag} specifies whether to include or exclude
+NaN values from the calculation using any of the previously specified input
+argument combinations.  The default value for @var{nanflag} is
+@qcode{"includenan"} which keeps NaN values in the calculation.  To exclude
+NaN values set the value of @var{nanflag} to @qcode{"omitnan"}.  The output
+will still contain NaN values if @var{x} consists of all NaN values in the
+operating dimension.
 @seealso{prod, cumsum}
 @end deftypefn */)
 {
-  DATA_REDUCTION (cumprod);
+  int nargin = args.length ();
+
+  bool direction = false;
+  bool do_perm = false;
+  bool allflag = false;
+  bool nanflag = false;
+
+  while (nargin > 1 && args(nargin - 1).is_string ())
+    {
+      std::string str = args(nargin - 1).string_value ();
+
+      if (str == "forward")
+        direction = false;
+      else if (str == "reverse")
+        direction = true;
+      else if (str == "all")
+        allflag = true;
+      else if (str == "omitnan" || str == "omitmissing")
+        {
+          if (args(0).is_double_type () || args(0).is_single_type ())
+            nanflag = true;
+        }
+      else if (str == "includenan" || str == "includemissing")
+        nanflag = false;
+      else
+        error ("cumprod: unrecognized optional argument '%s'", str.c_str ());
+
+      nargin--;
+    }
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  if (allflag && nargin > 1)
+    error ("cumprod: cannot set DIM or VECDIM with 'all' flag");
+
+  octave_value arg = args(0);
+
+  // Handle DIM, VECDIM
+  int dim = -1;
+  Array<int> perm_vec;
+  if (nargin == 2)
+    {
+      octave_value dimarg = args(1);
+      get_dim_vecdim_all (dimarg, arg, dim, perm_vec, do_perm, allflag, "cumprod");
+    }
+
+  // Handle allflag
+  if (allflag)
+    arg = arg.reshape (dim_vector (arg.numel (), 1));
+
+  octave_value retval;
+
+  switch (arg.builtin_type ())
+    {
+    case btyp_double:
+      if (arg.issparse ())
+        {
+          if (direction)
+            error ("cumprod: DIRECTION is not supported for sparse matrices");
+          else
+            retval = arg.sparse_matrix_value ().cumprod (dim, nanflag);
+        }
+      else
+        {
+          if (direction)
+            retval = arg.array_value ().flip (dim).cumprod (dim, nanflag).flip (dim);
+          else
+            retval = arg.array_value ().cumprod (dim, nanflag);
+        }
+      break;
+
+    case btyp_complex:
+      if (arg.issparse ())
+        {
+          if (direction)
+            error ("cumprod: DIRECTION is not supported for sparse matrices");
+          else
+            retval = arg.sparse_complex_matrix_value ().cumprod (dim, nanflag);
+        }
+      else
+        {
+          if (direction)
+            retval = arg.complex_array_value ().flip (dim).cumprod (dim, nanflag).flip (dim);
+          else
+            retval = arg.complex_array_value ().cumprod (dim, nanflag);
+        }
+      break;
+
+    case btyp_float:
+      if (direction)
+        retval = arg.float_array_value ().flip (dim).cumprod (dim, nanflag).flip (dim);
+      else
+        retval = arg.float_array_value ().cumprod (dim, nanflag);
+      break;
+
+    case btyp_float_complex:
+      if (direction)
+        retval = arg.float_complex_array_value ().flip (dim).cumprod (dim, nanflag).flip (dim);
+      else
+        retval = arg.float_complex_array_value ().cumprod (dim, nanflag);
+      break;
+
+#define MAKE_INT_BRANCH(X)                                            \
+      case btyp_ ## X:                                                \
+        if (direction)                                                \
+          retval = arg.X ## _array_value ().flip (dim).cumprod (dim).flip (dim);  \
+        else                                                          \
+          retval = arg.X ## _array_value ().cumprod (dim);            \
+        break;
+
+      MAKE_INT_BRANCH (int8);
+      MAKE_INT_BRANCH (int16);
+      MAKE_INT_BRANCH (int32);
+      MAKE_INT_BRANCH (int64);
+      MAKE_INT_BRANCH (uint8);
+      MAKE_INT_BRANCH (uint16);
+      MAKE_INT_BRANCH (uint32);
+      MAKE_INT_BRANCH (uint64);
+
+#undef MAKE_INT_BRANCH
+
+    case btyp_bool:
+      if (arg.issparse ())
+        {
+          if (direction)
+            error ("cumprod: DIRECTION is not supported for sparse matrices");
+          retval = arg.sparse_matrix_value ().cumprod (dim);
+        }
+      else
+        {
+          if (direction)
+            retval = arg.array_value ().flip (dim).cumprod (dim).flip (dim);
+          else
+            retval = arg.array_value ().cumprod (dim);
+        }
+      break;
+
+    default:
+      err_wrong_type_arg ("cumprod", arg);
+    }
+
+  if (do_perm)
+    retval = retval.permute (perm_vec, true);
+
+  return retval;
 }
 
 /*
@@ -1081,100 +1495,315 @@ cumprod ([1, 2; 3, 4; 5, 6])
 %!assert (cumprod (single ([2, 3; 4, 5]), 1), single ([2, 3; 8, 15]))
 %!assert (cumprod (single ([2, 3; 4, 5]), 2), single ([2, 6; 4, 20]))
 
-%!error cumprod ()
+%!test
+%! x = reshape ([1:8], 2, 2, 2);
+%! y = cumprod (x);
+%! assert (y(:,:,1), [1, 3; 2, 12]);
+%! assert (y(:,:,2), [5, 7; 30, 56]);
+%! assert (flip (cumprod (flip (x))), cumprod (x, "reverse"));
+%! y = cumprod (x, 2);
+%! assert (y(:,:,1), [1, 3; 2, 8]);
+%! assert (y(:,:,2), [5, 35; 6, 48]);
+%! y = cumprod (x, 2, "reverse");
+%! assert (y(:,:,1), [3, 3; 8, 4]);
+%! assert (y(:,:,2), [35, 7; 48, 8]);
+%! assert (flip (cumprod (flip (x, 2), 2), 2), cumprod (x, 2, "reverse"));
+%! y = cumprod (x, [1, 2]);
+%! assert (y(:,:,1), [1; 2; 6; 24]);
+%! assert (y(:,:,2), [5; 30; 210; 1680]);
+%! y = cumprod (x, [1, 3]);
+%! assert (y(:,1), [1; 2; 10; 60]);
+%! assert (y(:,2), [3; 12; 84; 672]);
+%! y = cumprod (x, [2, 3]);
+%! assert (y(1,:), [1, 3, 15, 105]);
+%! assert (y(2,:), [2, 8, 48, 384]);
+%! assert (cumprod (x, [1, 2, 3]), cumprod (x, "all"));
+
+## Test exceeding dimensions
+%!test
+%! x = reshape ([1:8], 2, 2, 2);
+%! x(3) = NaN;
+%! y = cumprod (x);
+%! assert (y(:,:,1), [1, NaN; 2, NaN]);
+%! y = cumprod (x, "omitnan");
+%! assert (y(:,:,1), [1, 1; 2, 4]);
+%! assert (flip (cumprod (flip (x))), cumprod (x, "reverse"));
+%! assert (flip (cumprod (flip (x), "omitnan")),
+%!         cumprod (x, "reverse", "omitnan"));
+%! y = cumprod (x, 2);
+%! assert (y(:,:,1), [1, NaN; 2, 8]);
+%! y = cumprod (x, 2, "omitnan");
+%! assert (y(:,:,1), [1, 1; 2, 8]);
+%! y = cumprod (x, 2, "reverse");
+%! assert (y(:,:,1), [NaN, NaN; 8, 4]);
+%! y = cumprod (x, 2, "reverse", "omitnan");
+%! assert (y(:,:,1), [1, 1; 8, 4]);
+%! assert (flip (cumprod (flip (x, 3), 3), 3), cumprod (x, 3, "reverse"));
+%! assert (flip (cumprod (flip (x, 3), 3, "omitnan"), 3),
+%!         cumprod (x, 3, "reverse", "omitnan"));
+%! y = cumprod (x, [1, 2]);
+%! assert (y(:,:,1), [1; 2; NaN; NaN]);
+%! y = cumprod (x, [1, 2], "omitnan");
+%! assert (y(:,:,1), [1; 2; 2; 8]);
+%! y = cumprod (x, [1, 2], "reverse");
+%! assert (y(:,:,1), [NaN; NaN; NaN; 4]);
+%! assert (y(:,:,2), [1680; 336; 56; 8]);
+%! y = cumprod (x, [1, 2], "reverse", "omitnan");
+%! assert (y(:,:,1), [8; 8; 4; 4]);
+%! y = cumprod (x, [1, 3]);
+%! assert (y(:,1), [1; 2; 10; 60]);
+%! assert (y(:,2), nan (4, 1));
+%! y = cumprod (x, [1, 3], "omitnan");
+%! assert (y(:,2), [1; 4; 28; 224]);
+%! y = cumprod (x, [1, 3], "omitnan", "reverse");
+%! assert (y(:,1), [60; 60; 30; 6]);
+%! assert (y(:,2), [224; 224; 56; 8]);
+%! y = cumprod (x, [2, 3], "omitnan");
+%! assert (y(1,:), [1, 1, 5, 35]);
+%! y = cumprod (x, [2, 3], "omitnan", "reverse");
+%! assert (y(1,:), [35, 35, 35, 7]);
+%! assert (y(2,:), [384, 192, 48, 8]);
+%! assert (cumprod (x, [1, 2, 3]), cumprod (x, "all"));
+
+## Test exceeding dimensions
+%!test
+%! x = reshape ([1:8], 2, 2, 2);
+%! assert (cumprod (x, 4), x);
+%! assert (cumprod (x, 2), cumprod (x, [2, 4]));
+%! assert (cumprod (x, 2, "reverse"), cumprod (x, [2, 4], "reverse"));
+%! x(3) = NaN;
+%! assert (cumprod (x, 4), x);
+%! y = x;
+%! y(3) = 1;
+%! assert (cumprod (x, 4, "omitnan"), y);
+%! assert (cumprod (x, 2, "omitnan"), cumprod (x, [2, 4], "omitnan"));
+%! assert (cumprod (x, 2, "reverse", "omitnan"),
+%!         cumprod (x, [2, 4], "reverse", "omitnan"));
+%!assert (cumprod (sparse ([1, 2; 3, 4]), 3), sparse ([1, 2; 3, 4]))
+%!assert (cumprod (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 2i; 3, 4]))
+
+%!test
+%! x = ones (3);
+%! assert (class (cumprod (uint8 (x))), "uint8");
+%! assert (cumprod (x), cumprod (x, "omitnan"));
+%! assert (class (cumprod (uint16 (x))), "uint16");
+%! assert (class (cumprod (uint32 (x))), "uint32");
+%! assert (class (cumprod (uint64 (x))), "uint64");
+%! assert (class (cumprod (int8 (x))), "int8");
+%! assert (class (cumprod (int16 (x))), "int16");
+%! assert (class (cumprod (int32 (x))), "int32");
+%! assert (class (cumprod (int64 (x))), "int64");
+%!assert (class (cumprod ([true, false])), "double")
+%!assert (cumprod ([true, false]), [1, 0])
+%!assert (cumprod ([true, false], "reverse"), [0, 0])
+
+%!assert (cumprod (ones (2), 4), ones (2))
+%!assert (cumprod (ones (2), [4, 5]), ones (2))
+%!assert (cumprod (single (ones (2)), 4),single (ones (2)))
+%!assert (cumprod (single (ones (2)), [4, 5]),single (ones (2)))
+
+%!assert (cumprod ([NaN, NaN], "omitnan"), [1, 1])
+
+## Test sparse matrices
+%!assert (cumprod (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN])),
+%!        sparse ([NaN, NaN, 1, 4, 2; NaN, NaN, 1, 8, NaN]))
+%!assert (cumprod (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN]), "omitnan"),
+%!        sparse ([1, 1, 1, 4, 2; 1, 2, 1, 8, 2]))
+%!assert (cumprod (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN]), 2),
+%!        sparse ([NaN, NaN, NaN, NaN, NaN; 1, 2, 2, 4, NaN]))
+%!assert (cumprod (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN]), 2, "omitnan"),
+%!        sparse ([1, 1, 1, 4, 8; 1, 2, 2, 4, 4]))
+%!assert (cumprod (sparse ([NaN, NaN, 1i, 4, 2; 1, 2, 1, 2, NaN]), 2, "omitnan"),
+%!        sparse ([1, 1, 1i, 4i, 8i; 1, 2, 2, 4, 4]))
+%!assert (cumprod (sparse ([NaN, 0i, 1, 4, 2; 1, 2, 1, 2, NaN]), 2, "omitnan"),
+%!        sparse ([1, 0, 0, 0, 0; 1, 2, 2, 4, 4]))
+
+## Test input validation
+%!error <Invalid call> cumprod ()
+%!error <Invalid call> cumprod (1,2,3)
+%!error <unrecognized optional argument 'foobar'> cumprod (1, "foobar")
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! cumprod (ones (3,3), 1, "all");
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! cumprod (ones (3,3), [1, 2], "all");
+%!error <invalid dimension DIM = 0> cumprod (ones (3,3), 0)
+%!error <invalid dimension DIM = -1> cumprod (ones (3,3), -1)
+%!error <invalid dimension in VECDIM = -2> cumprod (ones (3), [1 -2])
+%!error <duplicate dimension in VECDIM = 2> cumprod (ones (3), [1 2 2])
+%!error <duplicate dimension in VECDIM = 1> cumprod (ones (3), [1 1 2])
+%!error <DIRECTION is not supported for sparse matrices>
+%! cumprod (sparse (ones (3,3)), "reverse");
 */
 
 DEFUN (cumsum, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{y} =} cumsum (@var{x})
 @deftypefnx {} {@var{y} =} cumsum (@var{x}, @var{dim})
-@deftypefnx {} {@var{y} =} cumsum (@dots{}, "native")
-@deftypefnx {} {@var{y} =} cumsum (@dots{}, "double")
-Cumulative sum of elements along dimension @var{dim}.
+@deftypefnx {} {@var{y} =} cumsum (@var{x}, @var{vecdim})
+@deftypefnx {} {@var{y} =} cumsum (@dots{}, "all")
+@deftypefnx {} {@var{y} =} cumsum (@dots{}, @var{direction})
+@deftypefnx {} {@var{y} =} cumsum (@dots{}, @var{nanflag})
+Compute the cumulative sum of elements in @var{x}.
 
-If @var{dim} is omitted, it defaults to the first non-singleton dimension.
-For example:
+If @var{x} is a vector, then @code{cumsum (@var{x})} returns a vector of the
+same size with the cumulative sum of @var{x}.
 
-@example
-@group
-cumsum ([1, 2; 3, 4; 5, 6])
-   @result{}  1   2
-       4   6
-       9  12
-@end group
-@end example
+If @var{x} is a matrix, then @code{cumsum (@var{x})} returns a matrix of the
+same size with the cumulative sum along each column of @var{x}.
 
-For an explanation of the optional parameters @qcode{"native"} and
-@qcode{"double"}, @pxref{XREFsum,,@code{sum}}.
+If @var{x} is an array, then @code{cumsum(@var{x})} returns an array of the
+same size with the cumulative sum along the first non-singleton dimension of
+@var{x}.
+
+The class of output @var{y} is the same as the class of input @var{x}, unless
+@var{x} is logical, in which case @var{y} is double.
+
+The optional input @var{dim} specifies the dimension to operate on and must be
+a positive integer.  Specifying any singleton dimension in @var{x}, including
+any dimension exceeding @code{ndims (@var{x})}, will return @var{x}.
+
+Specifying multiple dimensions with input @var{vecdim}, a vector of
+non-repeating dimensions, will operate along the array slice defined by
+@var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim} greater
+than @code{ndims (@var{x})} is ignored.
+
+Specifying the dimension as @qcode{"all"} will cause @code{cumsum} to operate
+on all elements of @var{x}, and is equivalent to @code{cumsum (@var{x}(:))}.
+
+The optional input @var{direction} specifies how the operating dimension is
+traversed and can take the following values:
+
+@table @asis
+@item @qcode{"forward"} (default)
+
+The cumulative sum is computed from beginning (index 1) to end along the
+operating dimension.
+
+@item @qcode{"reverse"}
+
+The cumulative sum is computed from end to beginning along the operating
+dimension.
+@end table
+
+The optional variable @var{nanflag} specifies whether to include or exclude
+NaN values from the calculation using any of the previously specified input
+argument combinations.  The default value for @var{nanflag} is
+@qcode{"includenan"} which keeps NaN values in the calculation.  To exclude
+NaN values set the value of @var{nanflag} to @qcode{"omitnan"}.  The output
+will still contain NaN values if @var{x} consists of all NaN values in the
+operating dimension.
 @seealso{sum, cumprod}
 @end deftypefn */)
 {
   int nargin = args.length ();
 
-  bool isnative = false;
-  bool isdouble = false;
+  bool direction = false;
+  bool do_perm = false;
+  bool allflag = false;
+  bool nanflag = false;
 
-  if (nargin > 1 && args(nargin - 1).is_string ())
+  while (nargin > 1 && args(nargin - 1).is_string ())
     {
       std::string str = args(nargin - 1).string_value ();
 
-      if (str == "native")
-        isnative = true;
-      else if (str == "double")
-        isdouble = true;
+      if (str == "forward")
+        direction = false;
+      else if (str == "reverse")
+        direction = true;
+      else if (str == "all")
+        allflag = true;
+      else if (str == "omitnan" || str == "omitmissing")
+        {
+          if (args(0).is_double_type () || args(0).is_single_type ())
+            nanflag = true;
+        }
+      else if (str == "includenan" || str == "includemissing")
+        nanflag = false;
       else
-        error ("cumsum: unrecognized string argument");
+        error ("cumsum: unrecognized optional argument '%s'", str.c_str ());
 
       nargin--;
     }
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
+  if (allflag && nargin > 1)
+    error ("cumsum: cannot set DIM or VECDIM with 'all' flag");
 
+  octave_value arg = args(0);
+
+  // Handle DIM, VECDIM
   int dim = -1;
+  Array<int> perm_vec;
   if (nargin == 2)
     {
-      dim = args(1).int_value () - 1;
-      if (dim < 0)
-        error ("cumsum: invalid dimension argument = %d", dim + 1);
+      octave_value dimarg = args(1);
+      get_dim_vecdim_all (dimarg, arg, dim, perm_vec, do_perm, allflag, "cumsum");
     }
 
+  // Handle allflag
+  if (allflag)
+    arg = arg.reshape (dim_vector (arg.numel (), 1));
+
   octave_value retval;
-  octave_value arg = args(0);
 
   switch (arg.builtin_type ())
     {
     case btyp_double:
       if (arg.issparse ())
-        retval = arg.sparse_matrix_value ().cumsum (dim);
+        {
+          if (direction)
+            error ("cumsum: DIRECTION is not supported for sparse matrices");
+          else
+            retval = arg.sparse_matrix_value ().cumsum (dim, nanflag);
+        }
       else
-        retval = arg.array_value ().cumsum (dim);
-      break;
-    case btyp_complex:
-      if (arg.issparse ())
-        retval = arg.sparse_complex_matrix_value ().cumsum (dim);
-      else
-        retval = arg.complex_array_value ().cumsum (dim);
-      break;
-    case btyp_float:
-      if (isdouble)
-        retval = arg.array_value ().cumsum (dim);
-      else
-        retval = arg.float_array_value ().cumsum (dim);
-      break;
-    case btyp_float_complex:
-      if (isdouble)
-        retval = arg.complex_array_value ().cumsum (dim);
-      else
-        retval = arg.float_complex_array_value ().cumsum (dim);
+        {
+          if (direction)
+            retval = arg.array_value ().flip (dim).cumsum (dim, nanflag).flip (dim);
+          else
+            retval = arg.array_value ().cumsum (dim, nanflag);
+        }
       break;
 
-#define MAKE_INT_BRANCH(X)                                      \
-      case btyp_ ## X:                                          \
-        if (isnative)                                           \
-          retval = arg.X ## _array_value ().cumsum (dim);       \
-        else                                                    \
-          retval = arg.array_value ().cumsum (dim);             \
+    case btyp_complex:
+      if (arg.issparse ())
+        {
+          if (direction)
+            error ("cumsum: DIRECTION is not supported for sparse matrices");
+          else
+            retval = arg.sparse_complex_matrix_value ().cumsum (dim, nanflag);
+        }
+      else
+        {
+          if (direction)
+            retval = arg.complex_array_value ().flip (dim).cumsum (dim, nanflag).flip (dim);
+          else
+            retval = arg.complex_array_value ().cumsum (dim, nanflag);
+        }
+      break;
+
+    case btyp_float:
+      if (direction)
+        retval = arg.float_array_value ().flip (dim).cumsum (dim, nanflag).flip (dim);
+      else
+        retval = arg.float_array_value ().cumsum (dim, nanflag);
+      break;
+
+    case btyp_float_complex:
+      if (direction)
+        retval = arg.float_complex_array_value ().flip (dim).cumsum (dim, nanflag).flip (dim);
+      else
+        retval = arg.float_complex_array_value ().cumsum (dim, nanflag);
+      break;
+
+#define MAKE_INT_BRANCH(X)                                            \
+      case btyp_ ## X:                                                \
+        if (direction)                                                \
+          retval = arg.X ## _array_value ().flip (dim).cumsum (dim).flip (dim);  \
+        else                                                          \
+          retval = arg.X ## _array_value ().cumsum (dim);             \
         break;
 
       MAKE_INT_BRANCH (int8);
@@ -1191,25 +1820,91 @@ For an explanation of the optional parameters @qcode{"native"} and
     case btyp_bool:
       if (arg.issparse ())
         {
-          SparseMatrix cs = arg.sparse_matrix_value ().cumsum (dim);
-          if (isnative)
-            retval = (cs != 0.0);
-          else
-            retval = cs;
+          if (direction)
+            error ("cumsum: DIRECTION is not supported for sparse matrices");
+          retval = arg.sparse_matrix_value ().cumsum (dim);
         }
       else
         {
-          NDArray cs = arg.array_value ().cumsum (dim);
-          if (isnative)
-            retval = (cs != 0.0);
+          // OPTIMIZED: Direct boolean cumulative count
+          boolNDArray m = arg.bool_array_value ();
+
+          if (dim < 0)
+            dim = m.dims ().first_non_singleton ();
+
+          if (dim >= m.ndims ())
+            {
+              retval = NDArray (m);
+              break;
+            }
+
+          // Calculate extent triplet (l, n, u) for column-major indexing
+          dim_vector dv = m.dims ();
+          octave_idx_type l = 1;
+          for (int i = 0; i < dim; i++)
+            l *= dv(i);
+
+          octave_idx_type n = dv(dim);
+
+          octave_idx_type u = 1;
+          for (int i = dim + 1; i < dv.ndims (); i++)
+            u *= dv(i);
+
+          NDArray result (dv);
+          const bool *data = m.data ();
+          double *r = result.rwdata ();
+
+          if (direction)
+            {
+              // Reverse direction
+              for (octave_idx_type outer = 0; outer < u; outer++)
+                {
+                  const octave_idx_type outer_base = outer * n * l;
+                  for (octave_idx_type inner = 0; inner < l; inner++)
+                    {
+                      double cumval = 0.0;
+                      octave_idx_type base = outer_base + inner;
+
+                      // walk from last to first
+                      for (octave_idx_type j = n - 1; j >= 0; j--)
+                        {
+                          octave_idx_type idx = base + j * l;
+                          cumval += data[idx];
+                          r[idx] = cumval;
+                        }
+                    }
+                }
+            }
           else
-            retval = cs;
+            {
+              // Forward direction
+              for (octave_idx_type outer = 0; outer < u; outer++)
+                {
+                  const octave_idx_type outer_base = outer * n * l;
+                  for (octave_idx_type inner = 0; inner < l; inner++)
+                    {
+                      double cumval = 0.0;
+                      octave_idx_type base = outer_base + inner;
+                      for (octave_idx_type j = 0; j < n; j++)
+                        {
+                          octave_idx_type idx = base + j * l;
+                          cumval += data[idx];
+                          r[idx] = cumval;
+                        }
+                    }
+                }
+            }
+
+          retval = result;
         }
       break;
 
     default:
       err_wrong_type_arg ("cumsum", arg);
     }
+
+  if (do_perm)
+    retval = retval.permute (perm_vec, true);
 
   return retval;
 }
@@ -1234,7 +1929,156 @@ For an explanation of the optional parameters @qcode{"native"} and
 %!assert (cumsum (single ([1, 2; 3, 4]), 1), single ([1, 2; 4, 6]))
 %!assert (cumsum (single ([1, 2; 3, 4]), 2), single ([1, 3; 3, 7]))
 
-%!error cumsum ()
+%!test
+%! x = reshape ([1:8], 2, 2, 2);
+%! y = cumsum (x);
+%! assert (y(:,:,1), [1, 3; 3, 7]);
+%! assert (y(:,:,2), [5, 7; 11, 15]);
+%! assert (flip (cumsum (flip (x))), cumsum (x, "reverse"));
+%! y = cumsum (x, 2);
+%! assert (y(:,:,1), [1, 4; 2, 6]);
+%! assert (y(:,:,2), [5, 12; 6, 14]);
+%! y = cumsum (x, 2, "reverse");
+%! assert (y(:,:,1), [4, 3; 6, 4]);
+%! assert (y(:,:,2), [12, 7; 14, 8]);
+%! assert (flip (cumsum (flip (x, 2), 2), 2), cumsum (x, 2, "reverse"));
+%! y = cumsum (x, [1, 2]);
+%! assert (y(:,:,1), [1; 3; 6; 10]);
+%! assert (y(:,:,2), [5; 11; 18; 26]);
+%! y = cumsum (x, [1, 3]);
+%! assert (y(:,1), [1; 3; 8; 14]);
+%! assert (y(:,2), [3; 7; 14; 22]);
+%! y = cumsum (x, [2, 3]);
+%! assert (y(1,:), [1, 4, 9, 16]);
+%! assert (y(2,:), [2, 6, 12, 20]);
+%! assert (cumsum (x, [1, 2, 3]), cumsum (x, "all"));
+
+## Test exceeding dimensions
+%!test
+%! x = reshape ([1:8], 2, 2, 2);
+%! x(3) = NaN;
+%! y = cumsum (x);
+%! assert (y(:,:,1), [1, NaN; 3, NaN]);
+%! y = cumsum (x, "omitnan");
+%! assert (y(:,:,1), [1, 0; 3, 4]);
+%! assert (flip (cumsum (flip (x))), cumsum (x, "reverse"));
+%! assert (flip (cumsum (flip (x), "omitnan")),
+%!         cumsum (x, "reverse", "omitnan"));
+%! y = cumsum (x, 2);
+%! assert (y(:,:,1), [1, NaN; 2, 6]);
+%! y = cumsum (x, 2, "omitnan");
+%! assert (y(:,:,1), [1, 1; 2, 6]);
+%! y = cumsum (x, 2, "reverse");
+%! assert (y(:,:,1), [NaN, NaN; 6, 4]);
+%! y = cumsum (x, 2, "reverse", "omitnan");
+%! assert (y(:,:,1), [1, 0; 6, 4]);
+%! assert (flip (cumsum (flip (x, 3), 3), 3), cumsum (x, 3, "reverse"));
+%! assert (flip (cumsum (flip (x, 3), 3, "omitnan"), 3),
+%!         cumsum (x, 3, "reverse", "omitnan"));
+%! y = cumsum (x, [1, 2]);
+%! assert (y(:,:,1), [1; 3; NaN; NaN]);
+%! y = cumsum (x, [1, 2], "omitnan");
+%! assert (y(:,:,1), [1; 3; 3; 7]);
+%! y = cumsum (x, [1, 2], "reverse");
+%! assert (y(:,:,1), [NaN; NaN; NaN; 4]);
+%! assert (y(:,:,2), [26; 21; 15; 8]);
+%! y = cumsum (x, [1, 2], "reverse", "omitnan");
+%! assert (y(:,:,1), [7; 6; 4; 4]);
+%! assert (y(:,:,2), [26; 21; 15; 8]);
+%! y = cumsum (x, [1, 3]);
+%! assert (y(:,1), [1; 3; 8; 14]);
+%! assert (y(:,2), nan (4, 1));
+%! y = cumsum (x, [1, 3], "omitnan");
+%! assert (y(:,2), [0; 4; 11; 19]);
+%! y = cumsum (x, [1, 3], "omitnan", "reverse");
+%! assert (y(:,1), [14; 13; 11; 6]);
+%! assert (y(:,2), [19; 19; 15; 8]);
+%! y = cumsum (x, [2, 3], "omitnan");
+%! assert (y(1,:), [1, 1, 6, 13]);
+%! y = cumsum (x, [2, 3], "omitnan", "reverse");
+%! assert (y(1,:), [13, 12, 12, 7]);
+%! assert (y(2,:), [20, 18, 14, 8]);
+%! assert (cumsum (x, [1, 2, 3]), cumsum (x, "all"));
+
+## Test exceeding dimensions
+%!test
+%! x = reshape ([1:8], 2, 2, 2);
+%! assert (cumsum (x, 4), x);
+%! assert (cumsum (x, 2), cumsum (x, [2, 4]));
+%! assert (cumsum (x, 2, "reverse"), cumsum (x, [2, 4], "reverse"));
+%! x(3) = NaN;
+%! assert (cumsum (x, 4), x);
+%! y = x;
+%! y(3) = 0;
+%! assert (cumsum (x, 4, "omitnan"), y);
+%! assert (cumsum (x, 2, "omitnan"), cumsum (x, [2, 4], "omitnan"));
+%! assert (cumsum (x, 2, "reverse", "omitnan"),
+%!         cumsum (x, [2, 4], "reverse", "omitnan"));
+%!assert (cumsum (sparse ([1, 2; 3, 4]), 3), sparse ([1, 2; 3, 4]))
+%!assert (cumsum (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 2i; 3, 4]))
+
+%!test
+%! x = ones (3);
+%! assert (class (cumsum (uint8 (x))), "uint8");
+%! assert (cumsum (x), cumsum (x, "omitnan"));
+%! assert (class (cumsum (uint16 (x))), "uint16");
+%! assert (class (cumsum (uint32 (x))), "uint32");
+%! assert (class (cumsum (uint64 (x))), "uint64");
+%! assert (class (cumsum (int8 (x))), "int8");
+%! assert (class (cumsum (int16 (x))), "int16");
+%! assert (class (cumsum (int32 (x))), "int32");
+%! assert (class (cumsum (int64 (x))), "int64");
+%!assert (class (cumsum ([true, false])), "double")
+%!assert (cumsum ([true, false]), [1, 1])
+%!assert (cumsum ([true, false], "reverse"), [1, 0])
+
+%!assert (cumsum (ones (2), 4), ones (2))
+%!assert (cumsum (ones (2), [4, 5]), ones (2))
+%!assert (cumsum (single (ones (2)), 4),single (ones (2)))
+%!assert (cumsum (single (ones (2)), [4, 5]),single (ones (2)))
+
+%!assert (cumsum ([NaN, NaN], "omitnan"), [0, 0])
+
+## Test sparse matrices
+%!assert (cumsum (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN])),
+%!        sparse ([NaN, NaN, 1, 4, 2; NaN, NaN, 2, 6, NaN]))
+%!assert (cumsum (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN]), "omitnan"),
+%!        sparse ([0, 0, 1, 4, 2; 1, 2, 2, 6, 2]))
+%!assert (cumsum (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN]), 2),
+%!        sparse ([NaN, NaN, NaN, NaN, NaN; 1, 3, 4, 6, NaN]))
+%!assert (cumsum (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN]), 2, "omitnan"),
+%!        sparse ([0, 0, 1, 5, 7; 1, 3, 4, 6, 6]))
+%!assert (cumsum (sparse ([NaN, NaN, 1i, 4, 2; 1, 2, 1, 2, NaN]), 2, "omitnan"),
+%!        sparse ([0, 0, 1i, 4+i, 6+i; 1, 3, 4, 6, 6]))
+%!assert (cumsum (sparse ([NaN, 0i, 1, 4, 2; 1, 2, 1, 2, NaN]), 2, "omitnan"),
+%!        sparse ([0, 0, 1, 5, 7; 1, 3, 4, 6, 6]))
+
+## Test input validation
+%!error <Invalid call> cumsum ()
+%!error <Invalid call> cumsum (1,2,3)
+%!error <unrecognized optional argument 'foobar'> cumsum (1, "foobar")
+%!error <cannot set DIM or VECDIM with 'all' flag> ...
+%!      cumsum (ones (3,3), 1, "all")
+%!error <cannot set DIM or VECDIM with 'all' flag> ...
+%!      cumsum (ones (3,3), [1, 2], "all")
+%!error <invalid dimension DIM = 0> cumsum (ones (3,3), 0)
+%!error <invalid dimension DIM = -1> cumsum (ones (3,3), -1)
+%!error <invalid dimension in VECDIM = -2> cumsum (ones (3), [1 -2])
+%!error <duplicate dimension in VECDIM = 2> cumsum (ones (3), [1 2 2])
+%!error <duplicate dimension in VECDIM = 1> cumsum (ones (3), [1 1 2])
+%!error <DIRECTION is not supported for sparse matrices> ...
+%!      cumsum (sparse (ones (3,3)), "reverse")
+*/
+
+/* Additional cumsum boolean tests
+%!test
+%! x = [true, false, true; false, true, false];
+%! assert (cumsum (x, 1), [1, 0, 1; 1, 1, 1]);
+%! assert (cumsum (x, 2), [1, 1, 2; 0, 1, 1]);
+
+%!test
+%! x = rand (100, 100) > 0.5;
+%! assert (cumsum (x, 2), cumsum (double (x), 2));
 */
 
 DEFUN (diag, args, ,
@@ -1254,7 +2098,7 @@ is placed on the main diagonal.  For example:
 @example
 @group
 diag ([1, 2, 3], 1)
-   @result{}  0  1  0  0
+   @xresult{}  0  1  0  0
        0  0  2  0
        0  0  0  3
        0  0  0  0
@@ -1304,7 +2148,8 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the
 /*
 
 %!assert (full (diag ([1; 2; 3])), [1, 0, 0; 0, 2, 0; 0, 0, 3])
-%!assert (diag ([1; 2; 3], 1), [0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0])
+%!assert (diag ([1; 2; 3], 1),
+%!        [0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0])
 %!assert (diag ([1; 2; 3], 2),
 %!        [0 0 1 0 0; 0 0 0 2 0; 0 0 0 0 3; 0 0 0 0 0; 0 0 0 0 0])
 %!assert (diag ([1; 2; 3],-1),
@@ -1392,30 +2237,61 @@ DEFUN (prod, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{y} =} prod (@var{x})
 @deftypefnx {} {@var{y} =} prod (@var{x}, @var{dim})
-@deftypefnx {} {@var{y} =} prod (@dots{}, "native")
-@deftypefnx {} {@var{y} =} prod (@dots{}, "double")
-Product of elements along dimension @var{dim}.
+@deftypefnx {} {@var{y} =} prod (@var{x}, @var{vecdim})
+@deftypefnx {} {@var{y} =} prod (@var{x}, "all")
+@deftypefnx {} {@var{y} =} prod (@dots{}, @var{outtype})
+@deftypefnx {} {@var{y} =} prod (@dots{}, @var{nanflag})
+Compute the product of the elements of @var{x}.
 
-If @var{dim} is omitted, it defaults to the first non-singleton dimension.
+If @var{x} is a vector, then @code{prod (@var{x})} returns the product of the
+elements in @var{x}.
 
-The optional @qcode{"type"} input determines the class of the variable
-used for calculations.  If the argument @qcode{"native"} is given, then
-the operation is performed in the same type as the original argument, rather
-than the default double type.
+If @var{x} is a matrix, then @code{prod (@var{x})} returns a row vector with
+each element containing the product of the corresponding column in @var{x}.
 
-For example:
+If @var{x} is an array, then @code{prod(@var{x})} computes the product along
+the first non-singleton dimension of @var{x}.
 
-@example
-@group
-prod ([true, true])
-   @result{} 1
-prod ([true, true], "native")
-   @result{} true
-@end group
-@end example
+The optional input @var{dim} specifies the dimension to operate on and must be
+a positive integer.  Specifying any singleton dimension in @var{x}, including
+any dimension exceeding @code{ndims (@var{x})}, will return @var{x}.
 
-On the contrary, if @qcode{"double"} is given, the operation is performed
-in double precision even for single precision inputs.
+Specifying multiple dimensions with input @var{vecdim}, a vector of
+non-repeating dimensions, will operate along the array slice defined by
+@var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim} greater
+than @code{ndims (@var{x})} is ignored.
+
+Specifying the dimension as @qcode{"all"} will cause @code{prod} to operate on
+all elements of @var{x}, and is equivalent to @code{prod (@var{x}(:))}.
+
+The optional input @var{outtype} specifies the data type that is returned as
+well as the class of the variable used for calculations.
+@var{outtype} can take the following values:
+
+@table @asis
+@item @qcode{"default"} : Operations on floating point inputs (double or
+single) are performed in their native data type, while operations on integer,
+logical, and character data types are performed using doubles.  Output is of
+type double, unless the input is single in which case the output is of type
+single.
+
+@item @qcode{"double"} : Operations are performed in double precision even for
+single precision inputs.  Output is of type double.
+
+@item @qcode{"native"} : Operations are performed in their native datatypes and
+output is of the same type as the input as reported by
+(@code{class (@var{x})}).  When the input is logical,
+@code{prod (@var{x}, "native")} is equivalent to @code{all (@var{x})}.
+@end table
+
+The optional variable @var{nanflag} specifies whether to include or exclude
+NaN values from the calculation using any of the previously specified input
+argument combinations.  The default value for @var{nanflag} is
+@qcode{"includenan"} which keeps NaN values in the calculation.  To exclude
+NaN values set the value of @var{nanflag} to @qcode{"omitnan"}.  The output
+will be @var{1}, if @var{x} consists of all NaN values in the
+operating dimension.
 @seealso{cumprod, sum}
 @end deftypefn */)
 {
@@ -1423,8 +2299,11 @@ in double precision even for single precision inputs.
 
   bool isnative = false;
   bool isdouble = false;
+  bool do_perm = false;
+  bool allflag = false;
+  bool nanflag = false;
 
-  if (nargin > 1 && args(nargin - 1).is_string ())
+  while (nargin > 1 && args(nargin - 1).is_string ())
     {
       std::string str = args(nargin - 1).string_value ();
 
@@ -1432,52 +2311,71 @@ in double precision even for single precision inputs.
         isnative = true;
       else if (str == "double")
         isdouble = true;
-      else
-        error ("prod: unrecognized type argument '%s'", str.c_str ());
+      else if (str == "all")
+        allflag = true;
+      else if (str == "omitnan" || str == "omitmissing")
+        {
+          if (args(0).is_double_type () || args(0).is_single_type ())
+            nanflag = true;
+        }
+      else if (str == "includenan" || str == "includemissing")
+        nanflag = false;
+      else if (str != "default")
+        error ("prod: unrecognized optional argument '%s'", str.c_str ());
 
       nargin--;
     }
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
-
-  octave_value retval;
+  if (allflag && nargin > 1)
+    error ("prod: cannot set DIM or VECDIM with 'all' flag");
 
   octave_value arg = args(0);
 
+  // Handle DIM, VECDIM
   int dim = -1;
+  Array<int> perm_vec;
   if (nargin == 2)
     {
-      dim = args(1).int_value () - 1;
-      if (dim < 0)
-        error ("prod: invalid dimension DIM = %d", dim + 1);
+      octave_value dimarg = args(1);
+      get_dim_vecdim_all (dimarg, arg, dim, perm_vec, do_perm, allflag, "prod");
     }
+
+  // Handle allflag
+  if (allflag)
+    arg = arg.reshape (dim_vector (arg.numel (), 1));
+
+  octave_value retval;
 
   switch (arg.builtin_type ())
     {
     case btyp_double:
       if (arg.issparse ())
-        retval = arg.sparse_matrix_value ().prod (dim);
+        retval = arg.sparse_matrix_value ().prod (dim, nanflag);
       else
-        retval = arg.array_value ().prod (dim);
+        retval = arg.array_value ().prod (dim, nanflag);
       break;
+
     case btyp_complex:
       if (arg.issparse ())
-        retval = arg.sparse_complex_matrix_value ().prod (dim);
+        retval = arg.sparse_complex_matrix_value ().prod (dim, nanflag);
       else
-        retval = arg.complex_array_value ().prod (dim);
+        retval = arg.complex_array_value ().prod (dim, nanflag);
       break;
+
     case btyp_float:
       if (isdouble)
-        retval = arg.float_array_value ().dprod (dim);
+        retval = arg.float_array_value ().dprod (dim, nanflag);
       else
-        retval = arg.float_array_value ().prod (dim);
+        retval = arg.float_array_value ().prod (dim, nanflag);
       break;
+
     case btyp_float_complex:
       if (isdouble)
-        retval = arg.float_complex_array_value ().dprod (dim);
+        retval = arg.float_complex_array_value ().dprod (dim, nanflag);
       else
-        retval = arg.float_complex_array_value ().prod (dim);
+        retval = arg.float_complex_array_value ().prod (dim, nanflag);
       break;
 
 #define MAKE_INT_BRANCH(X)                              \
@@ -1522,6 +2420,9 @@ in double precision even for single precision inputs.
       err_wrong_type_arg ("prod", arg);
     }
 
+  if (do_perm)
+    retval = retval.permute (perm_vec, true);
+
   return retval;
 }
 
@@ -1547,6 +2448,14 @@ in double precision even for single precision inputs.
 
 %!assert (prod ([1, 2; 3, 4], 1), [3, 8])
 %!assert (prod ([1, 2; 3, 4], 2), [2; 12])
+%!assert (prod (single ([1, 2; 3, 4]), 1), single ([3, 8]))
+%!assert (prod (single ([1, 2; 3, 4]), 2), single ([2; 12]))
+
+## Test empty matrices
+%!assert (prod ([]), 1)
+%!assert (prod ([], 1), zeros (1, 0))
+%!assert (prod ([], 2), zeros (0, 1))
+%!assert (prod ([], 3), zeros (0, 0))
 %!assert (prod (zeros (1, 0)), 1)
 %!assert (prod (zeros (1, 0), 1), zeros (1, 0))
 %!assert (prod (zeros (1, 0), 2), 1)
@@ -1560,8 +2469,10 @@ in double precision even for single precision inputs.
 %!assert (prod (zeros (0, 2), 1), [1, 1])
 %!assert (prod (zeros (0, 2), 2), zeros (0, 1))
 
-%!assert (prod (single ([1, 2; 3, 4]), 1), single ([3, 8]))
-%!assert (prod (single ([1, 2; 3, 4]), 2), single ([2; 12]))
+%!assert (prod (single ([])), single (1))
+%!assert (prod (single ([]), 1), single (zeros (1, 0)))
+%!assert (prod (single ([]), 2), single (zeros (0, 1)))
+%!assert (prod (single ([]), 3), single (zeros (0, 0)))
 %!assert (prod (zeros (1, 0, "single")), single (1))
 %!assert (prod (zeros (1, 0, "single"), 1), zeros (1, 0, "single"))
 %!assert (prod (zeros (1, 0, "single"), 2), single (1))
@@ -1590,10 +2501,118 @@ in double precision even for single precision inputs.
 %!assert (prod ([true false; true true], "native"), [true false])
 %!assert (prod ([true false; true true], 2, "native"), [false; true])
 
+## Test "default"
+%!assert (prod (single (1)), prod (single (1), "default"))
+%!assert (prod ([true true], "default"), double (1))
+%!assert (prod (uint8 (1), "default"), double (1))
+
+## Test character arrays
+%!assert (prod (["aa";"aa"])', prod (["aa";"aa"], 2))
+%!assert (prod ("aa"), sum ("a") * sum ("a"))
+%!assert (prod ("a", 3), 97)
+%!assert (prod (["a";"a"], 3), [97; 97])
+%!assert (prod (["a";"a"], [1, 3]), sum ("a") * sum ("a"))
+%!assert (prod (["a";"a"], [2, 3]), [97; 97])
+
+## Test dimension indexing with vecdim in N-dimensional arrays
+%!test
+%! x = repmat ([1:20;6:25], [5 2 6 3]);
+%! assert (size (prod (x, [3 2])), [10 1 1 3]);
+%! assert (size (prod (x, [1 2])), [1 1 6 3]);
+%! assert (size (prod (x, [1 2 4])), [1 1 6]);
+%! assert (size (prod (x, [1 4 3])), [1 40]);
+%! assert (size (prod (x, [1 2 3 4])), [1 1]);
+
+## Test exceeding dimensions
+%!assert (prod (ones (2,2), 3), ones (2,2))
+%!assert (prod (ones (2,2,2), 99), ones (2,2,2))
+%!assert (prod (magic (3), 3), magic (3))
+%!assert (prod (magic (3), [1 3]), prod (magic (3)))
+%!assert (prod (magic (3), [2 99]), prod (magic (3), 2))
+%!assert (prod (ones (2), 4), ones (2))
+%!assert (prod (ones (2), [4, 5]), ones (2))
+%!assert (prod (single (ones (2)), 4),single (ones (2)))
+%!assert (prod (single (ones (2)), [4, 5]),single (ones (2)))
+%!assert (prod (sparse ([1, 2; 3, 4]), 3), sparse ([1, 2; 3, 4]))
+%!assert (prod (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 2i; 3, 4]))
+
+## Test nanflag
+%!test
+%! x = ones (3,4,5);
+%! x(1) = NaN;
+%! assert (prod (x)(:,:,1), [NaN, 1, 1, 1]);
+%! assert (prod (x, "includenan")(:,:,1), [NaN, 1, 1, 1]);
+%! assert (prod (x, "omitnan")(:,:,1), [1, 1, 1, 1]);
+%! assert (prod (x, "omitmissing")(:,:,1), [1, 1, 1, 1]);
+%! assert (prod (x, [2 3]), [NaN; 1; 1]);
+%! assert (prod (x, [2 3], "omitnan"), [1; 1; 1]);
+
+## Test cases for "omitnan"
+%!test
+%! A = [2, NaN; 3, NaN; 4, NaN];
+%! assert (prod (A, 2, "omitnan"), [2; 3; 4]);
+%!test
+%! A = [NaN, NaN, NaN];
+%! assert (prod (A, "omitnan"), 1);
+%!test
+%! A = [2, 3, NaN; 4, 5, NaN; 1, 2, NaN];
+%! assert (prod (A, 2, "omitnan"), [6; 20; 2]);
+%!test
+%! A = [2, NaN, 3; 3, NaN, 2; 2, NaN, 4];
+%! assert (prod (A, 1, "omitnan"), [12, 1, 24]);
+%!test
+%! A = [1+i, NaN; 2+2i, NaN];
+%! assert (prod (A, 2, "omitnan"), [1+i; 2+2i]);
+%!test
+%! A = single ([NaN, NaN, NaN]);
+%! assert (prod (A, "omitnan"), single (1));
+
+## Test sparse matrices
+%!assert (prod (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN])),
+%!        sparse ([NaN, NaN, 1, 8, NaN]))
+%!assert (prod (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN]), "omitnan"),
+%!        sparse ([1, 2, 1, 8, 2]))
+%!assert (prod (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN]), 2),
+%!        sparse ([NaN; NaN]))
+%!assert (prod (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN]), 2, "omitnan"),
+%!        sparse ([8; 4]))
+%!assert (prod (sparse ([NaN, NaN, 1i, 4, 2; 1, 2, 1, 2, NaN]), 2, "omitnan"),
+%!        sparse ([8i; 4]))
+%!assert (prod (sparse ([NaN, 0i, 1i, 4, 2; 1, 2, 1, 2, NaN]), 2, "omitnan"),
+%!        sparse ([0; 4]))
+%!assert (prod (sparse ([NaN, 1+i, 1i, 4, 2; 1, 2, 1, 2, NaN]), 2, "omitnan"),
+%!        sparse ([-8+8i; 4]))
+%!assert (prod (sparse ([NaN, NaN, NaN])), sparse (NaN))
+%!assert (prod (sparse ([0, 0, 0, NaN, NaN, NaN])), sparse (NaN))
+%!assert (prod (sparse ([NaN, NaN, NaN]), "omitnan"), sparse (1))
+%!assert (prod (sparse ([0, 0, 0, NaN, NaN, NaN]), "omitnan"), sparse (0))
+
+## Test empty sparse matrices
+%!assert (prod (sparse (ones(1, 0))), sparse (1))
+%!assert (size (prod (sparse (ones(1, 0)), 1)), [1, 0])
+%!assert (size (prod (sparse (ones(1, 0)), 2)), [1, 1])
+%!assert (prod (sparse (ones(0, 1))), sparse (1))
+%!assert (size (prod (sparse (ones(0, 1)), 1)), [1, 1])
+%!assert (size (prod (sparse (ones(0, 1)), 1)), [1, 1])
+%!assert (size (prod (sparse (ones(0, 1)), 2)), [0, 1])
+%!assert (prod (sparse (ones(0, 0))), sparse (1))
+%!assert (size (prod (sparse (ones(0, 0)), 1)), [1, 0])
+%!assert (size (prod (sparse (ones(0, 0)), 2)), [0, 1])
+%!assert (size (prod (sparse (ones(0, 0)), 3)), [0, 0])
+
 ## Test input validation
-%!error prod ()
-%!error prod (1,2,3)
-%!error <unrecognized type argument 'foobar'> prod (1, "foobar")
+%!error <Invalid call> prod ()
+%!error <Invalid call> prod (1,2,3)
+%!error <unrecognized optional argument 'foobar'> prod (1, "foobar")
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! prod (ones (3,3), 1, "all");
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! prod (ones (3,3), [1, 2], "all");
+%!error <invalid dimension DIM = 0> prod (ones (3,3), 0)
+%!error <invalid dimension DIM = -1> prod (ones (3,3), -1)
+%!error <invalid dimension in VECDIM = -2> prod (ones (3,3), [1 -2])
+%!error <duplicate dimension in VECDIM = 2> prod (ones (3,3), [1 2 2])
+%!error <duplicate dimension in VECDIM = 1> prod (ones (3,3), [1 1 2])
 */
 
 static bool
@@ -1714,6 +2733,58 @@ do_single_type_concat_map (const octave_value_list& args,
 }
 
 static octave_value
+do_single_type_concat_cdef (const octave_value_list& args, int dim)
+{
+  // Concatenate a list of octave_classdef values of the same
+  // class along dimension dim
+
+  Array<cdef_object> arr;
+  int n_args = args.length ();
+
+  if (all_scalar_1x1 (args))
+    {
+      // Optimize all scalars case.
+      dim_vector dv (1, 1);
+      if (dim == -1 || dim == -2)
+        dim = -dim - 1;
+      else if (dim >= 2)
+        dv.resize (dim+1, 1);
+      dv(dim) = n_args;
+
+      arr.clear (dv);
+
+      for (int j = 0; j < n_args; j++)
+        {
+          octave_quit ();
+
+          arr(j) = args(j).classdef_object_value ()->get_object ();
+        }
+    }
+  else
+    {
+      OCTAVE_LOCAL_BUFFER (Array<cdef_object>, array_list, n_args);
+
+      for (int j = 0; j < n_args; j++)
+        {
+          octave_quit ();
+
+          cdef_object obj = args(j).classdef_object_value ()->get_object ();
+          if (obj.is_array ())
+            array_list[j] = obj.array_value ();
+          else
+            array_list[j] = Array<cdef_object> (dim_vector (1,1), obj);
+        }
+
+      arr = Array<cdef_object>::cat (dim, n_args, array_list);
+    }
+
+  cdef_object obj_result = cdef_object (new cdef_object_array (arr));
+  obj_result.set_class (arr(0).get_class ());
+
+  return to_ov (obj_result);
+}
+
+static octave_value
 attempt_type_conversion (const octave_value& ov, std::string dtype)
 {
   octave_value retval;
@@ -1728,7 +2799,11 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
   symbol_table& symtab = interp.get_symbol_table ();
 
-  octave_value fcn = symtab.find_method (dtype, cname);
+  cdef_manager& cdef_mgr = interp.get_cdef_manager ();
+
+  auto fcn = cdef_mgr.find_method_symbol (dtype, cname);
+  if (! fcn.is_defined ())
+    fcn = symtab.find_method (dtype, cname);
 
   if (fcn.is_defined ())
     {
@@ -1754,29 +2829,56 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
     {
       // No conversion function available.  Try the constructor for the
       // dispatch type.
+      // We can't go purely through the symbol table here, we have to
+      // check the classdef manager as well for classdef methods
+      auto ctor = cdef_mgr.find_method_symbol (dtype, dtype);
 
-      fcn = symtab.find_method (dtype, dtype);
-
-      if (! fcn.is_defined ())
-        error ("no constructor for %s!", dtype.c_str ());
+      if (! ctor.is_defined ())
+        ctor = symtab.find_method (dtype, dtype);
 
       octave_value_list result;
 
-      try
+      // The following code looks fairly ugly because we have to handle
+      // old-style classes and classdef constructors separately
+      if (ctor.is_defined () && ctor.is_function ())
         {
-          result = interp.feval (fcn, ovl (ov), 1);
-        }
-      catch (execution_exception& ee)
-        {
-          error (ee, "%s constructor failed for %s argument", dtype.c_str (),
-                 cname.c_str ());
+          octave_function *ctor_fcn = ctor.function_value ();
+
+            if (ctor_fcn->is_legacy_constructor ())
+              {
+                // Old-style class constructor
+                octave::unwind_protect frame;
+
+                octave::interpreter_try (frame);
+
+                try
+                  {
+                   result = interp.feval (ctor, ovl (ov), 1);
+                  }
+                catch (const octave::execution_exception&)
+                  {
+                    interp.recover_from_exception ();
+                  }
+              }
+            else
+              // Classdef constructor
+              {
+                auto cls = lookup_class (dtype, false, false);
+
+                try
+                  {
+                    result = to_ov (cls.construct_object (ovl (ov)));
+                  }
+                catch (execution_exception& ee)
+                  {
+                    error (ee, "%s constructor failed for %s argument",
+                           dtype.c_str (), cname.c_str ());
+                  }
+
+              }
         }
 
-      if (result.empty ())
-        error ("%s constructor failed for %s argument", dtype.c_str (),
-               cname.c_str ());
-
-      retval = result(0);
+       retval = result(0);
     }
 
   return retval;
@@ -1794,11 +2896,13 @@ do_class_concat (const octave_value_list& ovl,
 
   interpreter& interp = __get_interpreter__ ();
 
+  cdef_manager& cdef_mgr = __get_cdef_manager__ ();
+
   symbol_table& symtab = interp.get_symbol_table ();
 
-  octave_value fcn = symtab.find_method (cattype, dtype);
+  octave_value ov_fcn = symtab.find_method (cattype, dtype);
 
-  if (fcn.is_defined ())
+  if (ov_fcn.is_defined ())
     {
       // Have method for dominant type.  Call it and let it handle conversions.
 
@@ -1806,15 +2910,15 @@ do_class_concat (const octave_value_list& ovl,
 
       try
         {
-          tmp2 = interp.feval (fcn, ovl, 1);
+          tmp2 = interp.feval (ov_fcn, ovl, 1);
         }
       catch (execution_exception& ee)
         {
-          error (ee, "%s/%s method failed", dtype.c_str (), cattype.c_str ());
+          error (ee, "cat: %s/%s method failed", dtype.c_str (), cattype.c_str ());
         }
 
       if (tmp2.empty ())
-        error ("%s/%s method did not return a value", dtype.c_str (),
+        error ("cat: %s/%s method did not return a value", dtype.c_str (),
                cattype.c_str ());
 
       retval = tmp2(0);
@@ -1837,17 +2941,34 @@ do_class_concat (const octave_value_list& ovl,
           if (t1_type == dtype)
             tmp(j++) = elt;
           else if (elt.isobject () || ! elt.isempty ())
-            tmp(j++) = attempt_type_conversion (elt, dtype);
+            {
+              auto ov = attempt_type_conversion (elt, dtype);
+              // Abort concatenation if type cannot be converted
+              if ( ! ov.is_defined ())
+                error ("cat: cannot convert from type \"%s\" to type \"%s\"",
+                       t1_type.c_str (), dtype.c_str ());
+              tmp(j++) = ov;
+            }
         }
 
       tmp.resize (j);
 
-      octave_map m = do_single_type_concat_map (tmp, dim);
+      // See if dominant type is a classdef
+      cdef_class cdef = cdef_mgr.find_class (dtype, false);
 
-      std::string cname = tmp(0).class_name ();
-      std::list<std::string> parents = tmp(0).parent_class_name_list ();
+      if (cdef.ok ())
+        // Default classdef concat
+        retval = do_single_type_concat_cdef (tmp, dim);
+      else
+        {
+          // Default struct-based class concat
+          octave_map m = do_single_type_concat_map (tmp, dim);
 
-      retval = octave_value (new octave_class (m, cname, parents));
+          std::string cname = tmp(0).class_name ();
+          std::list<std::string> parents = tmp(0).parent_class_name_list ();
+
+          retval = octave_value (new octave_class (m, cname, parents));
+        }
     }
 
   return retval;
@@ -1934,9 +3055,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
         }
 
       if (any_class_p)
-        {
-          retval = do_class_concat (args, fname, dim);
-        }
+        retval = do_class_concat (args, fname, dim);
       else if (result_type == "double")
         {
           if (any_sparse_p)
@@ -2352,7 +3471,7 @@ Return the concatenation of N-D array objects, @var{array1}, @var{array2},
 A = ones (2, 2);
 B = zeros (2, 2);
 cat (2, A, B)
-  @result{} 1 1 0 0
+  @xresult{} 1 1 0 0
      1 1 0 0
 @end group
 @end example
@@ -2372,7 +3491,7 @@ result will thus have @var{dim} dimensions as the following example shows:
 @example
 @group
 cat (4, ones (2, 2), zeros (2, 2))
-  @result{} ans(:,:,1,1) =
+  @xresult{} ans(:,:,1,1) =
 
        1 1
        1 1
@@ -2589,17 +3708,17 @@ once).  The @var{N}th dimension of @var{A} gets remapped to dimension
 @group
 @var{x} = zeros ([2, 3, 5, 7]);
 size (@var{x})
-   @result{}  2   3   5   7
+   @xresult{}  2   3   5   7
 
 size (permute (@var{x}, [2, 1, 3, 4]))
-   @result{}  3   2   5   7
+   @xresult{}  3   2   5   7
 
 size (permute (@var{x}, [1, 3, 4, 2]))
-   @result{}  2   5   7   3
+   @xresult{}  2   5   7   3
 
 ## The identity permutation
 size (permute (@var{x}, [1, 2, 3, 4]))
-   @result{}  2   3   5   7
+   @xresult{}  2   3   5   7
 @end group
 @end example
 @seealso{ipermute}
@@ -2651,13 +3770,13 @@ DEFUN (ndims, args, ,
 Return the number of dimensions of @var{A}.
 
 For any array, the result will always be greater than or equal to 2.
-Trailing singleton dimensions are not counted, i.e., trailing dimensions @var{d}
-greater than 2 for which @code{size (@var{A}, @var{d}) = 1}.
+Trailing singleton dimensions are not counted, i.e., trailing dimensions
+@var{d} greater than 2 for which @code{size (@var{A}, @var{d}) = 1}.
 
 @example
 @group
 ndims (ones (4, 1, 2, 1))
-    @result{} 3
+    @xresult{} 3
 @end group
 @end example
 @seealso{size}
@@ -2775,7 +3894,7 @@ Example 1: single row vector output
 @example
 @group
 size ([1, 2; 3, 4; 5, 6])
-   @result{} [ 3, 2 ]
+   @xresult{} [ 3, 2 ]
 @end group
 @end example
 
@@ -2784,7 +3903,7 @@ Example 2: number of elements in 2nd dimension (columns)
 @example
 @group
 size ([1, 2; 3, 4; 5, 6], 2)
-    @result{} 2
+    @xresult{} 2
 @end group
 @end example
 
@@ -2793,8 +3912,8 @@ Example 3: number of output arguments == number of dimensions
 @example
 @group
 [nr, nc] = size ([1, 2; 3, 4; 5, 6])
-    @result{} nr = 3
-    @result{} nc = 2
+    @xresult{} nr = 3
+    @xresult{} nc = 2
 @end group
 @end example
 
@@ -2803,8 +3922,8 @@ Example 4: number of output arguments < number of dimensions
 @example
 @group
 [nr, remainder] = size (ones (2, 3, 4, 5))
-    @result{} nr = 2
-    @result{} remainder = 60
+    @xresult{} nr = 2
+    @xresult{} remainder = 60
 @end group
 @end example
 
@@ -2813,7 +3932,7 @@ Example 5: number of elements in dimension > number of actual dimensions
 @example
 @group
 sz4 = size (ones (2, 3), 4)
-    @result{} sz4 = 1
+    @xresult{} sz4 = 1
 @end group
 @end example
 
@@ -2898,13 +4017,13 @@ sz4 = size (ones (2, 3), 4)
 
 %!test
 %! [nr, nc] = size ([1, 2; 3, 4; 5, 6]);
-%! assert (nr, 3)
-%! assert (nc, 2)
+%! assert (nr, 3);
+%! assert (nc, 2);
 
 %!test
 %! [nr, remainder] = size (ones (2, 3, 4, 5));
-%! assert (nr, 2)
-%! assert (remainder, 60)
+%! assert (nr, 2);
+%! assert (remainder, 60);
 
 ## Call for single existing dimension
 
@@ -2920,10 +4039,10 @@ sz4 = size (ones (2, 3), 4)
 
 %!test
 %! [nr, nc, e1, e2] = size ([1, 2; 3, 4; 5, 6]);
-%! assert (nr, 3)
-%! assert (nc, 2)
-%! assert (e1, 1)
-%! assert (e2, 1)
+%! assert (nr, 3);
+%! assert (nc, 2);
+%! assert (e1, 1);
+%! assert (e2, 1);
 
 ## Call for two arbitrary dimensions
 
@@ -2931,8 +4050,8 @@ sz4 = size (ones (2, 3), 4)
 %! dim = [3, 2, 1, 1, 1];
 %! for i = 1:5
 %!   for j = 1:5
-%!     assert (size ([1, 2; 3, 4; 5, 6], i, j), [dim(i), dim(j)])
-%!     assert (size ([1, 2; 3, 4; 5, 6], [i, j]), [dim(i), dim(j)])
+%!     assert (size ([1, 2; 3, 4; 5, 6], i, j), [dim(i), dim(j)]);
+%!     assert (size ([1, 2; 3, 4; 5, 6], [i, j]), [dim(i), dim(j)]);
 %!     [a, b] = size ([1, 2; 3, 4; 5, 6], i, j);
 %!     assert (a, dim(i));
 %!     assert (b, dim(j));
@@ -2949,8 +4068,9 @@ sz4 = size (ones (2, 3), 4)
 %! for i = 1:5
 %!   for j = 1:5
 %!     for k = 1:5
-%!       assert (size ([1, 2; 3, 4; 5, 6], i, j, k), [dim(i), dim(j), dim(k)])
-%!       assert (size ([1, 2; 3, 4; 5, 6], [i, j, k]), [dim(i), dim(j), dim(k)])
+%!       assert (size ([1, 2; 3, 4; 5, 6], i, j, k), [dim(i), dim(j), dim(k)]);
+%!       assert (size ([1, 2; 3, 4; 5, 6], [i, j, k]),
+%!               [dim(i), dim(j), dim(k)]);
 %!       [a, b, c] = size ([1, 2; 3, 4; 5, 6], i, j, k);
 %!       assert (a, dim(i));
 %!       assert (b, dim(j));
@@ -3126,38 +4246,66 @@ DEFUN (sum, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{y} =} sum (@var{x})
 @deftypefnx {} {@var{y} =} sum (@var{x}, @var{dim})
-@deftypefnx {} {@var{y} =} sum (@dots{}, "native")
-@deftypefnx {} {@var{y} =} sum (@dots{}, "double")
-@deftypefnx {} {@var{y} =} sum (@dots{}, "extra")
-Sum of elements along dimension @var{dim}.
+@deftypefnx {} {@var{y} =} sum (@var{x}, @var{vecdim})
+@deftypefnx {} {@var{y} =} sum (@var{x}, "all")
+@deftypefnx {} {@var{y} =} sum (@dots{}, @var{outtype})
+@deftypefnx {} {@var{y} =} sum (@dots{}, @var{nanflag})
+Compute the sum of the elements of @var{x}.
 
-If @var{dim} is omitted, it defaults to the first non-singleton dimension.
+If @var{x} is a vector, then @code{sum (@var{x})} returns the sum of the
+elements in @var{x}.
 
-The optional @qcode{"type"} input determines the class of the variable
-used for calculations.  By default, operations on floating point inputs (double
-or single) are performed in their native data type, while operations on
-integer, logical, and character data types are performed using doubles.  If the
-argument @qcode{"native"} is given, then the operation is performed in the same
-type as the original argument.
+If @var{x} is a matrix, then @code{sum (@var{x})} returns a row vector with
+each element containing the sum of the corresponding column in @var{x}.
 
-For example:
+If @var{x} is an array, then @code{sum(@var{x})} computes the sum along the
+first non-singleton dimension of @var{x}.
 
-@example
-@group
-sum ([true, true])
-   @result{} 2
-sum ([true, true], "native")
-   @result{} true
-@end group
-@end example
+The optional input @var{dim} specifies the dimension to operate on and must be
+a positive integer.  Specifying any singleton dimension in @var{x}, including
+any dimension exceeding @code{ndims (@var{x})}, will return @var{x}.
 
-If @qcode{"double"} is given the sum is performed in double precision even for
-single precision inputs.
+Specifying multiple dimensions with input @var{vecdim}, a vector of
+non-repeating dimensions, will operate along the array slice defined by
+@var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim} greater
+than @code{ndims (@var{x})} is ignored.
 
-For double precision inputs, the @qcode{"extra"} option will use a more
+Specifying the dimension as @qcode{"all"} will cause @code{sum} to operate
+on all elements of @var{x}, and is equivalent to @code{cumsum (@var{x}(:))}.
+
+The optional input @var{outtype} specifies the data type that is returned as
+well as the class of the variable used for calculations.
+@var{outtype} can take the following values:
+
+@table @asis
+@item @qcode{"default"} : Operations on floating point inputs (double or
+single) are performed in their native data type, while operations on integer,
+logical, and character data types are performed using doubles.  Output is of
+type double, unless the input is single in which case the output is of type
+single.
+
+@item @qcode{"double"} : Operations are performed in double precision even for
+single precision inputs.  Output is of type double.
+
+@item @qcode{"extra"} : For double precision inputs, @code{sum} will use a more
 accurate algorithm than straightforward summation.  For single precision
 inputs, @qcode{"extra"} is the same as @qcode{"double"}.  For all other data
 type @qcode{"extra"} has no effect.
+
+@item @qcode{"native"} : Operations are performed in their native datatypes and
+output is of the same type as the input as reported by
+(@code{class (@var{x})}).  When the input is logical,
+@code{sum (@var{x}, "native")} is equivalent to @code{any (@var{x})}.
+@end table
+
+The optional variable @var{nanflag} specifies whether to include or exclude
+NaN values from the calculation using any of the previously specified input
+argument combinations.  The default value for @var{nanflag} is
+@qcode{"includenan"} which keeps NaN values in the calculation.  To exclude
+NaN values set the value of @var{nanflag} to @qcode{"omitnan"}.  The output
+will be @var{0}, if @var{x} consists of all NaN values in the
+operating dimension.
 @seealso{cumsum, sumsq, prod}
 @end deftypefn */)
 {
@@ -3166,8 +4314,11 @@ type @qcode{"extra"} has no effect.
   bool isnative = false;
   bool isdouble = false;
   bool isextra = false;
+  bool do_perm = false;
+  bool allflag = false;
+  bool nanflag = false;
 
-  if (nargin > 1 && args(nargin - 1).is_string ())
+  while (nargin > 1 && args(nargin - 1).is_string ())
     {
       std::string str = args(nargin - 1).string_value ();
 
@@ -3177,25 +4328,42 @@ type @qcode{"extra"} has no effect.
         isdouble = true;
       else if (str == "extra")
         isextra = true;
-      else
-        error ("sum: unrecognized type argument '%s'", str.c_str ());
+      else if (str == "all")
+        allflag = true;
+      else if (str == "omitnan" || str == "omitmissing")
+        {
+          if (args(0).is_double_type () || args(0).is_single_type ())
+            nanflag = true;
+        }
+      else if (str == "includenan" || str == "includemissing")
+        nanflag = false;
+      else if (str != "default")
+        error ("sum: unrecognized optional argument '%s'", str.c_str ());
 
       nargin--;
     }
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
+  if (allflag && nargin > 1)
+    error ("sum: cannot set DIM or VECDIM with 'all' flag");
 
+  octave_value arg = args(0);
+
+  // Handle DIM, VECDIM
   int dim = -1;
+  Array<int> perm_vec;
   if (nargin == 2)
     {
-      dim = args(1).int_value () - 1;
-      if (dim < 0)
-        error ("sum: invalid dimension DIM = %d", dim + 1);
+      octave_value dimarg = args(1);
+      get_dim_vecdim_all (dimarg, arg, dim, perm_vec, do_perm, allflag, "sum");
     }
 
+  // Handle allflag
+  if (allflag)
+    arg = arg.reshape (dim_vector (arg.numel (), 1));
+
   octave_value retval;
-  octave_value arg = args(0);
 
   switch (arg.builtin_type ())
     {
@@ -3203,40 +4371,48 @@ type @qcode{"extra"} has no effect.
       if (arg.issparse ())
         {
           if (isextra)
-            warning ("sum: 'extra' not yet implemented for sparse matrices");
-          retval = arg.sparse_matrix_value ().sum (dim);
+            retval = arg.sparse_matrix_value ().xsum (dim, nanflag);
+          else
+            retval = arg.sparse_matrix_value ().sum (dim, nanflag);
         }
-      else if (isextra)
-        retval = arg.array_value ().xsum (dim);
       else
-        retval = arg.array_value ().sum (dim);
+        {
+          if (isextra)
+            retval = arg.array_value ().xsum (dim, nanflag);
+          else
+            retval = arg.array_value ().sum (dim, nanflag);
+        }
       break;
 
     case btyp_complex:
       if (arg.issparse ())
         {
           if (isextra)
-            warning ("sum: 'extra' not yet implemented for sparse matrices");
-          retval = arg.sparse_complex_matrix_value ().sum (dim);
+            retval = arg.sparse_complex_matrix_value ().xsum (dim, nanflag);
+          else
+            retval = arg.sparse_complex_matrix_value ().sum (dim, nanflag);
         }
-      else if (isextra)
-        retval = arg.complex_array_value ().xsum (dim);
       else
-        retval = arg.complex_array_value ().sum (dim);
+        {
+          if (isextra)
+            retval = arg.complex_array_value ().xsum (dim, nanflag);
+          else
+            retval = arg.complex_array_value ().sum (dim, nanflag);
+        }
       break;
 
     case btyp_float:
       if (isdouble || isextra)
-        retval = arg.float_array_value ().dsum (dim);
+        retval = arg.float_array_value ().dsum (dim, nanflag);
       else
-        retval = arg.float_array_value ().sum (dim);
+        retval = arg.float_array_value ().sum (dim, nanflag);
       break;
 
     case btyp_float_complex:
       if (isdouble || isextra)
-        retval = arg.float_complex_array_value ().dsum (dim);
+        retval = arg.float_complex_array_value ().dsum (dim, nanflag);
       else
-        retval = arg.float_complex_array_value ().sum (dim);
+        retval = arg.float_complex_array_value ().sum (dim, nanflag);
       break;
 
 #define MAKE_INT_BRANCH(X)                              \
@@ -3277,12 +4453,18 @@ type @qcode{"extra"} has no effect.
       else if (isnative)
         retval = arg.bool_array_value ().any (dim);
       else
-        retval = arg.array_value ().sum (dim);
+        {
+          boolNDArray m = arg.bool_array_value ();
+          retval = do_mx_red_op<double, bool> (m, dim, mx_inline_count);
+         }
       break;
 
     default:
       err_wrong_type_arg ("sum", arg);
     }
+
+  if (do_perm)
+    retval = retval.permute (perm_vec, true);
 
   return retval;
 }
@@ -3301,6 +4483,14 @@ type @qcode{"extra"} has no effect.
 
 %!assert (sum ([1, 2; 3, 4], 1), [4, 6])
 %!assert (sum ([1, 2; 3, 4], 2), [3; 7])
+%!assert (sum (single ([1, 2; 3, 4]), 1), single ([4, 6]))
+%!assert (sum (single ([1, 2; 3, 4]), 2), single ([3; 7]))
+
+## Test empty matrices
+%!assert (sum ([]), 0)
+%!assert (sum ([], 1), zeros (1, 0))
+%!assert (sum ([], 2), zeros (0, 1))
+%!assert (sum ([], 3), zeros (0, 0))
 %!assert (sum (zeros (1, 0)), 0)
 %!assert (sum (zeros (1, 0), 1), zeros (1, 0))
 %!assert (sum (zeros (1, 0), 2), 0)
@@ -3319,8 +4509,10 @@ type @qcode{"extra"} has no effect.
 %!assert (sum (zeros (2, 2, 0, 3), 4), zeros (2, 2, 0))
 %!assert (sum (zeros (2, 2, 0, 3), 7), zeros (2, 2, 0, 3))
 
-%!assert (sum (single ([1, 2; 3, 4]), 1), single ([4, 6]))
-%!assert (sum (single ([1, 2; 3, 4]), 2), single ([3; 7]))
+%!assert (sum (single ([])), single (0))
+%!assert (sum (single ([]), 1), single (zeros (1, 0)))
+%!assert (sum (single ([]), 2), single (zeros (0, 1)))
+%!assert (sum (single ([]), 3), single (zeros (0, 0)))
 %!assert (sum (zeros (1, 0, "single")), single (0))
 %!assert (sum (zeros (1, 0, "single"), 1), zeros (1, 0, "single"))
 %!assert (sum (zeros (1, 0, "single"), 2), single (0))
@@ -3339,40 +4531,481 @@ type @qcode{"extra"} has no effect.
 %!assert (sum (zeros (2, 2, 0, 3, "single"), 4), zeros (2, 2, 0, "single"))
 %!assert (sum (zeros (2, 2, 0, 3, "single"), 7), zeros (2, 2, 0, 3, "single"))
 
+## Test "default"
+%!assert (sum (single (1)), sum (single (1), "default"))
+%!assert (sum ([true true], "default"), double (2))
+%!assert (sum (uint8 (1), "default"), double (1))
+
+## Test "double" and "extra"
+%!assert (sum (single ([1 2 3]), "double"), double (6))
+%!assert (sum (single ([1 2 3]), "extra"), double (6))
+%!assert (sum ([true,true], "double"), double (2))
+
 ## Test "native"
 %!assert (sum ([true,true]), 2)
 %!assert (sum ([true,true], "native"), true)
 %!assert (sum (int8 ([127,10,-20])), 117)
 %!assert (sum (int8 ([127,10,-20]), "native"), int8 (107))
 
-;-)
+## Test character arrays
 %!assert (sum ("Octave") + "8", sumsq (primes (17)))
+%!assert (sum (repmat ("Octave", [2,1,3]), [1, 3]), [474 594 696 582 708 606])
+%!assert (sum (repmat ("Octave", [2,1,3]), [1, 2, 3]), 3660)
+%!assert (sum (repmat ("Octave", [2,1,3]), 'all'), 3660)
 
-%!error sum ()
-%!error sum (1,2,3)
-%!error <unrecognized type argument 'foobar'> sum (1, "foobar")
+## Test dimension indexing with vecdim in N-dimensional arrays
+%!test
+%! x = repmat ([1:20;6:25], [5 2 6 3]);
+%! assert (size (sum (x, [3 2])), [10 1 1 3]);
+%! assert (size (sum (x, [1 2])), [1 1 6 3]);
+%! assert (size (sum (x, [1 2 4])), [1 1 6]);
+%! assert (size (sum (x, [1 4 3])), [1 40]);
+%! assert (size (sum (x, [1 2 3 4])), [1 1]);
+
+## Test exceeding dimensions
+%!assert (sum (ones (2,2), 3), ones (2,2))
+%!assert (sum (ones (2,2,2), 99), ones (2,2,2))
+%!assert (sum (magic (3), 3), magic (3))
+%!assert (sum (magic (3), [1 3]), [15, 15, 15])
+%!assert (sum (magic (3), [1 99]), [15, 15, 15])
+%!assert (sum (ones (2), 4), ones (2))
+%!assert (sum (ones (2), [4, 5]), ones (2))
+%!assert (sum (single (ones (2)), 4),single (ones (2)))
+%!assert (sum (single (ones (2)), [4, 5]),single (ones (2)))
+%!assert (sum (sparse ([1, 2; 3, 4]), 3), sparse ([1, 2; 3, 4]))
+%!assert (sum (sparse ([1, 2; 3, 4]), 3, 'extra'), sparse ([1, 2; 3, 4]))
+%!assert (sum (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 2i; 3, 4]))
+%!assert (sum (sparse ([1, 2i; 3, 4]), 3, 'extra'), sparse ([1, 2i; 3, 4]))
+
+## Test nanflag
+%!test
+%! x = ones (3,4,5);
+%! x(1) = NaN;
+%! assert (sum (x)(:,:,1), [NaN, 3, 3, 3]);
+%! assert (sum (x, "includenan")(:,:,1), [NaN, 3, 3, 3]);
+%! assert (sum (x, "omitnan")(:,:,1), [2, 3, 3, 3]);
+%! assert (sum (x, "omitmissing")(:,:,1), [2, 3, 3, 3]);
+%! assert (sum (x, [2 3]), [NaN; 20; 20]);
+%! assert (sum (x, [2 3], "omitnan"), [19; 20; 20]);
+
+## Test sparse matrices
+%!assert (sum (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN])),
+%!        sparse ([NaN, NaN, 2, 6, NaN]))
+%!assert (sum (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN]), "omitnan"),
+%!        sparse ([1, 2, 2, 6, 2]))
+%!assert (sum (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN]), 2),
+%!        sparse ([NaN; NaN]))
+%!assert (sum (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN]), 2, "omitnan"),
+%!        sparse ([7; 6]))
+%!assert (sum (sparse ([NaN, NaN, 1i, 4, 2; 1, 2, 1, 2, NaN]), 2, "omitnan"),
+%!        sparse ([6+i; 6]))
+%!assert (sum (sparse ([NaN, 0i, 1i, 4, 2; 1, 2, 1, 2, NaN]), 2, "omitnan"),
+%!        sparse ([6+i; 6]))
+%!assert (sum (sparse ([NaN, 1+i, 1i, 4, 2; 1, 2, 1, 2, NaN]), 2, "omitnan"),
+%!        sparse ([7+2i; 6]))
+%!assert (sum (sparse ([NaN, NaN, NaN]), "omitnan"), sparse (0))
+%!assert (sum (sparse ([0, 0, 0, NaN, NaN, NaN]), "omitnan"), sparse (0))
+
+## Test empty sparse matrices
+%!assert (sum (sparse (ones(1, 0))), sparse (0))
+%!assert (size (sum (sparse (ones(1, 0)), 1)), [1, 0])
+%!assert (size (sum (sparse (ones(1, 0)), 2)), [1, 1])
+%!assert (sum (sparse (ones(0, 1))), sparse (0))
+%!assert (size (sum (sparse (ones(0, 1)), 1)), [1, 1])
+%!assert (size (sum (sparse (ones(0, 1)), 1)), [1, 1])
+%!assert (size (sum (sparse (ones(0, 1)), 2)), [0, 1])
+%!assert (sum (sparse (ones(0, 0))), sparse (0))
+%!assert (size (sum (sparse (ones(0, 0)), 1)), [1, 0])
+%!assert (size (sum (sparse (ones(0, 0)), 2)), [0, 1])
+%!assert (size (sum (sparse (ones(0, 0)), 3)), [0, 0])
+
+## Test empty sparse matrices with 'extra' option
+%!assert (sum (sparse (ones(1, 0)), 'extra'), sparse (0))
+%!assert (size (sum (sparse (ones(1, 0)), 1, 'extra')), [1, 0])
+%!assert (size (sum (sparse (ones(1, 0)), 2, 'extra')), [1, 1])
+%!assert (sum (sparse (ones(0, 1)), 'extra'), sparse (0))
+%!assert (size (sum (sparse (ones(0, 1)), 1, 'extra')), [1, 1])
+%!assert (size (sum (sparse (ones(0, 1)), 1, 'extra')), [1, 1])
+%!assert (size (sum (sparse (ones(0, 1)), 2, 'extra')), [0, 1])
+%!assert (sum (sparse (ones(0, 0)), 'extra'), sparse (0))
+%!assert (size (sum (sparse (ones(0, 0)), 1, 'extra')), [1, 0])
+%!assert (size (sum (sparse (ones(0, 0)), 2, 'extra')), [0, 1])
+%!assert (size (sum (sparse (ones(0, 0)), 3, 'extra')), [0, 0])
+
+## Test 'extra' option
+%!assert (sum ([1, Inf], "extra"), Inf)
+%!assert (sum ([1, -Inf], "extra"), -Inf)
+%!assert (sum ([Inf, -Inf], "extra"), NaN)
+%!assert (sum (sparse ([1, Inf]), "extra"), sparse (Inf))
+%!assert (sum (sparse ([1, -Inf]), "extra"), sparse (-Inf))
+%!assert (sum (sparse ([Inf, -Inf]), "extra"), sparse (NaN))
+%!test
+%! x = [flintmax("double"), 1, -1];
+%! assert ((sum (x, "extra")) == flintmax ("double"), true);
+%! assert ((sum (x)) == flintmax ("double"), false);
+%!test
+%! x = sparse ([flintmax("double"), 1, -1]);
+%! assert ((sum (x, "extra")) == flintmax ("double"), sparse (true));
+%! assert ((sum (x)) == flintmax ("double"), sparse (false));
+%!test
+%! F(:,:,1) = [3, 5; -1, 2];
+%! F(:,:,2) = [4, -2; Inf, -4];
+%! s = sum (F, 1, "extra");
+%! assert (s(:,:,1), [2, 7]);
+%! assert (s(:,:,2), [Inf, -6]);
+%! s = sum (F, 2, "extra");
+%! assert (s(:,:,1), [8; 1]);
+%! assert (s(:,:,2), [2; Inf]);
+%! s = sum (F, 3, "extra");
+%! assert (s, [7, 3; Inf, -2]);
+%!test
+%! F(:,:,1) = [NaN, 5; -1, 2];
+%! F(:,:,2) = [4, -2; Inf, -4];
+%! s = sum (F, 1, "extra");
+%! assert (s(:,:,1), [NaN, 7]);
+%! assert (s(:,:,2), [Inf, -6]);
+%! s = sum (F, 2, "extra");
+%! assert (s(:,:,1), [NaN; 1]);
+%! assert (s(:,:,2), [2; Inf]);
+%! s = sum (F, 3, "extra");
+%! assert (s, [NaN, 3; Inf, -2]);
+%!test
+%! F(:,:,1) = [NaN, 5; -1, 2];
+%! F(:,:,2) = [4, -2; -Inf, -4];
+%! s = sum (F, 1, "extra");
+%! assert (s(:,:,1), [NaN, 7]);
+%! assert (s(:,:,2), [-Inf, -6]);
+%! s = sum (F, 2, "extra");
+%! assert (s(:,:,1), [NaN; 1]);
+%! assert (s(:,:,2), [2; -Inf]);
+%! s = sum (F, 3, "extra");
+%! assert (s, [NaN, 3; -Inf, -2]);
+%!test
+%! F(:,:,1) = [NaN, 5; -1, 2];
+%! F(:,:,2) = [Inf, -2; -Inf, -4];
+%! s = sum (F, 1, "extra");
+%! assert (s(:,:,1), [NaN, 7]);
+%! assert (s(:,:,2), [NaN, -6]);
+%! s = sum (F, 2, "extra");
+%! assert (s(:,:,1), [NaN; 1]);
+%! assert (s(:,:,2), [Inf; -Inf]);
+%! s = sum (F, 3, "extra");
+%! assert (s, [NaN, 3; -Inf, -2]);
+%!test
+%! F(:,:,1) = [NaN, 5; -1, 2];
+%! F(:,:,2) = [4, -2; Inf, -4];
+%! assert (sum (F, 1, "omitnan", "extra"), sum (F, 1, "omitnan"));
+%! assert (sum (F, 2, "omitnan", "extra"), sum (F, 2, "omitnan"));
+%! assert (sum (F, 3, "omitnan", "extra"), sum (F, 3, "omitnan"));
+%! assert (sum (F, [1, 2], "omitnan", "extra"), sum (F, [1, 2], "omitnan"));
+%! assert (sum (F, [1, 3], "omitnan", "extra"), sum (F, [1, 3], "omitnan"));
+%! assert (sum (F, [2, 3], "omitnan", "extra"), sum (F, [2, 3], "omitnan"));
+%! assert (sum (F, "all", "omitnan", "extra"), sum (F, [1, 2, 3], "omitnan"));
+
+## Test 'extra' option with sparse matrices
+%!assert (sum (sparse ([2; 3; 4; 5; 6]), "extra"), sparse (20))
+%!assert (sum (sparse ([2; 3; 0; 5; 6]), "extra"), sparse (16))
+%!assert (sum (sparse ([2; 3; 4; 5; 6]'), "extra"), sparse (20))
+%!assert (sum (sparse ([2; 3; 0; 5; 6]'), "extra"), sparse (16))
+%!assert (sum (speye (3), "extra"), sparse ([1, 1, 1]))
+%!assert (sum (speye (3), 1, "extra"), sparse ([1, 1, 1]))
+%!assert (sum (speye (3), 2, "extra"), sparse ([1; 1; 1]))
+%!assert (sum (speye (3), 3, "extra"), speye (3))
+%!assert (sum (sparse ([2; 3; 4; 5; 6] * i), "extra"), sparse (20i))
+%!assert (sum (sparse ([2; 3; 0; 5; 6] * i), "extra"), sparse (16i))
+%!assert (sum (sparse ([2; 3; 4; 5; 6]' * i), "extra"), sparse (20i))
+%!assert (sum (sparse ([2; 3; 0; 5; 6]' * i), "extra"), sparse (16i))
+%!assert (sum (speye (3) * i, "extra"), sparse ([1, 1, 1]*i))
+%!assert (sum (speye (3) * i, 1, "extra"), sparse ([1, 1, 1]*i))
+%!assert (sum (speye (3) * i, 2, "extra"), sparse ([1; 1; 1]*i))
+%!assert (sum (speye (3) * i, 3, "extra"), speye (3) * i)
+
+## Test 'extra' option with sparse matrices
+%!assert (sum (sparse ([2; 3; 4; 5; 6]), "extra"), sparse (20))
+%!assert (sum (sparse ([2; 3; 0; 5; 6]), "extra"), sparse (16))
+%!assert (sum (sparse ([2; 3; 4; 5; 6]'), "extra"), sparse (20))
+%!assert (sum (sparse ([2; 3; 0; 5; 6]'), "extra"), sparse (16))
+%!assert (sum (speye (3), "extra"), sparse ([1, 1, 1]))
+%!assert (sum (speye (3), 1, "extra"), sparse ([1, 1, 1]))
+%!assert (sum (speye (3), 2, "extra"), sparse ([1; 1; 1]))
+%!assert (sum (speye (3), 3, "extra"), speye (3))
+%!assert (sum (sparse ([2; 3; 4; 5; 6] * i), "extra"), sparse (20i))
+%!assert (sum (sparse ([2; 3; 0; 5; 6] * i), "extra"), sparse (16i))
+%!assert (sum (sparse ([2; 3; 4; 5; 6]' * i), "extra"), sparse (20i))
+%!assert (sum (sparse ([2; 3; 0; 5; 6]' * i), "extra"), sparse (16i))
+%!assert (sum (speye (3) * i, "extra"), sparse ([1, 1, 1]*i))
+%!assert (sum (speye (3) * i, 1, "extra"), sparse ([1, 1, 1]*i))
+%!assert (sum (speye (3) * i, 2, "extra"), sparse ([1; 1; 1]*i))
+%!assert (sum (speye (3) * i, 3, "extra"), speye (3) * i)
+
+## Test cases for "omitnan"
+%!test
+%! A = [1, NaN; 2, NaN; 3, NaN];
+%! assert (sum (A, 2, "omitnan"), [1; 2; 3]);
+%!test
+%! A = [1, 2, 3; NaN, NaN, NaN];
+%! assert (sum (A, 1, "omitnan"), [1, 2, 3]);
+%!test
+%! A = [NaN, NaN, NaN];
+%! assert (sum (A, "omitnan"), 0);
+%!test
+%! A = [1, NaN, 3; 2, NaN, 4; 5, NaN, 6];
+%! assert (sum (A, 1, "omitnan"), [8, 0, 13]);
+%!test
+%! A = [1, 2, NaN; 3, 4, NaN; 5, 6, NaN];
+%! assert (sum (A, 2, "omitnan"), [3; 7; 11]);
+%!test
+%! A = [2, NaN, NaN, 3; 4, NaN, NaN, 5; 1, NaN, NaN, 6];
+%! assert (sum (A, 1, "omitnan"), [7, 0, 0, 14]);
+%!test
+%! A = [1, NaN, 3, NaN, 5; 2, NaN, 4, NaN, 6; 3, NaN, 5, NaN, 7];
+%! assert (sum (A, 1, "omitnan"), [6, 0, 12, 0, 18]);
+%!test
+%! A = [1+2i, NaN; 3+4i, NaN; 5+6i, NaN];
+%! assert (sum (A, 2, "omitnan"), [1+2i; 3+4i; 5+6i]);
+%!test
+%! A = single ([1, NaN; 2, NaN; 3, NaN]);
+%! assert (sum (A, 2, "omitnan"), single ([1; 2; 3]));
+%!test
+%! A = single ([NaN, NaN, NaN]);
+%! assert (sum (A, "omitnan"), single (0));
+
+## Test boolean sum optimization
+%!test
+%! x = [true, false, true; false, true, false];
+%! assert (sum (x, 1), [1, 1, 1]);
+%! assert (sum (x, 2), [2; 1]);
+
+%!test
+%! x = rand (100, 100) > 0.5;
+%! assert (sum (x), sum (double (x)));
+%! assert (sum (x, 2), sum (double (x), 2));
+
+%!assert (sum (true), 1)
+%!assert (sum (false), 0)
+%!assert (class (sum ([true, false])), "double")
+
+## Test input validation
+%!error <Invalid call> sum ()
+%!error <Invalid call> sum (1,2,3)
+%!error <unrecognized optional argument 'foobar'> sum (1, "foobar")
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! sum (ones (3,3), 1, "all");
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! sum (ones (3,3), [1, 2], "all");
+%!error <invalid dimension DIM = 0> sum (ones (3,3), 0)
+%!error <invalid dimension DIM = -1> sum (ones (3,3), -1)
+%!error <invalid dimension in VECDIM = -2> sum (ones (3,3), [1 -2])
+%!error <duplicate dimension in VECDIM = 2> sum (ones (3,3), [1 2 2])
+%!error <duplicate dimension in VECDIM = 1> sum (ones (3,3), [1 1 2])
 */
 
 DEFUN (sumsq, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{y} =} sumsq (@var{x})
 @deftypefnx {} {@var{y} =} sumsq (@var{x}, @var{dim})
-Sum of squares of elements along dimension @var{dim}.
+@deftypefnx {} {@var{y} =} sumsq (@var{x}, @var{vecdim})
+@deftypefnx {} {@var{y} =} sumsq (@var{x}, "all")
+@deftypefnx {} {@var{y} =} sumsq (@dots{}, @var{outtype})
+@deftypefnx {} {@var{y} =} sumsq (@dots{}, @var{nanflag})
+Compute the sum of squares of the elements of @var{x}.
 
-If @var{dim} is omitted, it defaults to the first non-singleton dimension.
+If @var{x} is a vector, then @code{sumsq (@var{x})} returns the sum of the
+squares of the elements in @var{x}.
+
+If @var{x} is a matrix, then @code{sumsq (@var{x})} returns a row vector with
+each element containing the sum of squares of the corresponding column in
+@var{x}.
+
+If @var{x} is an array, then @code{sumsq(@var{x})} computes the sum of squares
+along the first non-singleton dimension of @var{x}.
 
 This function is conceptually equivalent to computing
 
 @example
-sum (x .* conj (x), dim)
+sum (x .* conj (x))
 @end example
 
 @noindent
 but it uses less memory and avoids calling @code{conj} if @var{x} is real.
+
+The optional input @var{dim} specifies the dimension to operate on and must be
+a positive integer.  Specifying any singleton dimension in @var{x}, including
+any dimension exceeding @code{ndims (@var{x})}, will return a sum of squares
+equal to @code{@var{x}.^2}.
+
+Specifying multiple dimensions with input @var{vecdim}, a vector of
+non-repeating dimensions, will operate along the array slice defined by
+@var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim} greater
+than @code{ndims (@var{x})} is ignored.
+
+Specifying the dimension as @qcode{"all"} will cause @code{prod} to operate on
+all elements of @var{x}, and is equivalent to @code{sumsq (@var{x}(:))}.
+
+The optional input @var{outtype} specifies the data type that is returned as
+well as the class of the variable used for calculations.
+@var{outtype} can take the following values:
+
+@table @asis
+@item @qcode{"default"} : Operations on floating point inputs (double or
+single) are performed in their native data type, while operations on integer,
+logical, and character data types are performed using doubles.  Output is of
+type double, unless the input is single in which case the output is of type
+single.
+
+@item @qcode{"double"} : Operations are performed in double precision even for
+single precision inputs.  Output is of type double.
+
+@item @qcode{"native"} : Operations are performed in their native datatypes and
+output is of the same type as the input as reported by
+(@code{class (@var{x})}).  When the input is logical,
+@code{sumsq (@var{x}, "native")} is equivalent to @code{all (@var{x})}.
+@end table
+
+The optional variable @var{nanflag} specifies whether to include or exclude
+NaN values from the calculation using any of the previously specified input
+argument combinations.  The default value for @var{nanflag} is
+@qcode{"includenan"} which keeps NaN values in the calculation.  To exclude
+NaN values set the value of @var{nanflag} to @qcode{"omitnan"}.  The output
+will be @var{0}, if @var{x} consists of all NaN values in the
+operating dimension.
 @seealso{sum, prod}
 @end deftypefn */)
 {
-  DATA_REDUCTION (sumsq);
+  int nargin = args.length ();
+
+  bool isnative = false;
+  bool isdouble = false;
+  bool do_perm = false;
+  bool allflag = false;
+  bool nanflag = false;
+
+  while (nargin > 1 && args(nargin - 1).is_string ())
+    {
+      std::string str = args(nargin - 1).string_value ();
+
+      if (str == "native")
+        isnative = true;
+      else if (str == "double")
+        isdouble = true;
+      else if (str == "all")
+        allflag = true;
+      else if (str == "omitnan" || str == "omitmissing")
+        {
+          if (args(0).is_double_type () || args(0).is_single_type ())
+            nanflag = true;
+        }
+      else if (str == "includenan" || str == "includemissing")
+        nanflag = false;
+      else if (str != "default")
+        error ("sumsq: unrecognized optional argument '%s'", str.c_str ());
+
+      nargin--;
+    }
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  if (allflag && nargin > 1)
+    error ("sumsq: cannot set DIM or VECDIM with 'all' flag");
+
+  octave_value arg = args(0);
+
+  // Handle DIM, VECDIM
+  int dim = -1;
+  Array<int> perm_vec;
+  if (nargin == 2)
+    {
+      octave_value dimarg = args(1);
+      get_dim_vecdim_all (dimarg, arg, dim, perm_vec, do_perm, allflag, "sumsq");
+    }
+
+  // Handle allflag
+  if (allflag)
+    arg = arg.reshape (dim_vector (arg.numel (), 1));
+
+  octave_value retval;
+
+  switch (arg.builtin_type ())
+    {
+    case btyp_double:
+      if (arg.issparse ())
+        retval = arg.sparse_matrix_value ().sumsq (dim, nanflag);
+      else
+        retval = arg.array_value ().sumsq (dim, nanflag);
+      break;
+
+    case btyp_complex:
+      if (arg.issparse ())
+        retval = arg.sparse_complex_matrix_value ().sumsq (dim, nanflag);
+      else
+        retval = arg.complex_array_value ().sumsq (dim, nanflag);
+      break;
+
+    case btyp_float:
+      if (isdouble)
+        retval = arg.float_array_value ().dsumsq (dim, nanflag);
+      else
+        retval = arg.float_array_value ().sumsq (dim, nanflag);
+      break;
+
+    case btyp_float_complex:
+      if (isdouble)
+        retval = arg.float_complex_array_value ().dsumsq (dim, nanflag);
+      else
+        retval = arg.float_complex_array_value ().sumsq (dim, nanflag);
+      break;
+
+#define MAKE_INT_BRANCH(X)                               \
+      case btyp_ ## X:                                   \
+        if (isnative)                                    \
+          retval = arg.X ## _array_value ().sumsq (dim); \
+        else                                             \
+          retval = arg.array_value ().sumsq (dim);       \
+        break;
+
+      MAKE_INT_BRANCH (int8);
+      MAKE_INT_BRANCH (int16);
+      MAKE_INT_BRANCH (int32);
+      MAKE_INT_BRANCH (int64);
+      MAKE_INT_BRANCH (uint8);
+      MAKE_INT_BRANCH (uint16);
+      MAKE_INT_BRANCH (uint32);
+      MAKE_INT_BRANCH (uint64);
+
+#undef MAKE_INT_BRANCH
+
+    // GAGME: Accursed Matlab compatibility...
+    case btyp_char:
+      retval = arg.array_value (true).sumsq (dim);
+      break;
+
+    case btyp_bool:
+      if (arg.issparse ())
+        {
+          if (isnative)
+            retval = arg.sparse_bool_matrix_value ().all (dim);
+          else
+            retval = arg.sparse_matrix_value ().sumsq (dim);
+        }
+      else if (isnative)
+        retval = arg.bool_array_value ().all (dim);
+      else
+        {
+          // For booleans: sumsq (x) = sum (x), since 0^2=0, 1^2=1
+          boolNDArray m = arg.bool_array_value ();
+          retval = do_mx_red_op<double, bool> (m, dim, mx_inline_count);
+        }
+      break;
+
+    default:
+      err_wrong_type_arg ("sumsq", arg);
+    }
+
+  if (do_perm)
+    retval = retval.permute (perm_vec, true);
+
+  return retval;
 }
 
 /*
@@ -3382,7 +5015,8 @@ but it uses less memory and avoids calling @code{conj} if @var{x} is real.
 
 %!assert (sumsq (single ([1, 2, 3])), single (14))
 %!assert (sumsq (single ([-1; -2; 4i])), single (21))
-%!assert (sumsq (single ([1, 2, 3; 2, 3, 4; 4i, 6i, 2])), single ([21, 49, 29]))
+%!assert (sumsq (single ([1, 2, 3; 2, 3, 4; 4i, 6i, 2])),
+%!        single ([21, 49, 29]))
 
 %!assert (sumsq ([1, 2; 3, 4], 1), [10, 20])
 %!assert (sumsq ([1, 2; 3, 4], 2), [5; 25])
@@ -3390,7 +5024,162 @@ but it uses less memory and avoids calling @code{conj} if @var{x} is real.
 %!assert (sumsq (single ([1, 2; 3, 4]), 1), single ([10, 20]))
 %!assert (sumsq (single ([1, 2; 3, 4]), 2), single ([5; 25]))
 
-%!error sumsq ()
+## Test empty matrices
+%!assert (sumsq ([]), 0)
+%!assert (sumsq ([], 1), zeros (1, 0))
+%!assert (sumsq ([], 2), zeros (0, 1))
+%!assert (sumsq ([], 3), zeros (0, 0))
+%!assert (sumsq (zeros (1, 0)), 0)
+%!assert (sumsq (zeros (1, 0), 1), zeros (1, 0))
+%!assert (sumsq (zeros (1, 0), 2), 0)
+%!assert (sumsq (zeros (0, 1)), 0)
+%!assert (sumsq (zeros (0, 1), 1), 0)
+%!assert (sumsq (zeros (0, 1), 2), zeros (0, 1))
+%!assert (sumsq (zeros (2, 0)),  zeros (1, 0))
+%!assert (sumsq (zeros (2, 0), 1), zeros (1, 0))
+%!assert (sumsq (zeros (2, 0), 2),  [0; 0])
+%!assert (sumsq (zeros (0, 2)), [0, 0])
+%!assert (sumsq (zeros (0, 2), 1), [0, 0])
+%!assert (sumsq (zeros (0, 2), 2), zeros (0, 1))
+%!assert (sumsq (zeros (2, 2, 0, 3)), zeros (1, 2, 0, 3))
+%!assert (sumsq (zeros (2, 2, 0, 3), 2), zeros (2, 1, 0, 3))
+%!assert (sumsq (zeros (2, 2, 0, 3), 3), zeros (2, 2, 1, 3))
+%!assert (sumsq (zeros (2, 2, 0, 3), 4), zeros (2, 2, 0))
+%!assert (sumsq (zeros (2, 2, 0, 3), 7), zeros (2, 2, 0, 3))
+
+%!assert (sumsq (single ([])), single (0))
+%!assert (sumsq (single ([]), 1), single (zeros (1, 0)))
+%!assert (sumsq (single ([]), 2), single (zeros (0, 1)))
+%!assert (sumsq (single ([]), 3), single (zeros (0, 0)))
+%!assert (sumsq (zeros (1, 0, "single")), single (0))
+%!assert (sumsq (zeros (1, 0, "single"), 1), zeros (1, 0, "single"))
+%!assert (sumsq (zeros (1, 0, "single"), 2), single (0))
+%!assert (sumsq (zeros (0, 1, "single")), single (0))
+%!assert (sumsq (zeros (0, 1, "single"), 1), single (0))
+%!assert (sumsq (zeros (0, 1, "single"), 2), zeros (0, 1, "single"))
+%!assert (sumsq (zeros (2, 0, "single")),  zeros (1, 0, "single"))
+%!assert (sumsq (zeros (2, 0, "single"), 1), zeros (1, 0, "single"))
+%!assert (sumsq (zeros (2, 0, "single"), 2),  single ([0; 0]))
+%!assert (sumsq (zeros (0, 2, "single")), single ([0, 0]))
+%!assert (sumsq (zeros (0, 2, "single"), 1), single ([0, 0]))
+%!assert (sumsq (zeros (0, 2, "single"), 2), zeros (0, 1, "single"))
+%!assert (sumsq (zeros (2, 2, 0, 3, "single")), zeros (1, 2, 0, 3, "single"))
+%!assert (sumsq (zeros (2, 2, 0, 3, "single"), 2), zeros (2, 1, 0, 3, "single"))
+%!assert (sumsq (zeros (2, 2, 0, 3, "single"), 3), zeros (2, 2, 1, 3, "single"))
+%!assert (sumsq (zeros (2, 2, 0, 3, "single"), 4), zeros (2, 2, 0, "single"))
+%!assert (sumsq (zeros (2, 2, 0, 3, "single"), 7), zeros (2, 2, 0, 3, "single"))
+
+## Test dimension indexing with vecdim in N-dimensional arrays
+%!test
+%! x = repmat ([1:20;6:25], [5 2 6 3]);
+%! assert (size (sumsq (x, [3 2])), [10 1 1 3]);
+%! assert (size (sumsq (x, [1 2])), [1 1 6 3]);
+%! assert (size (sumsq (x, [1 2 4])), [1 1 6]);
+%! assert (size (sumsq (x, [1 4 3])), [1 40]);
+%! assert (size (sumsq (x, [1 2 3 4])), [1 1]);
+
+## Test exceeding dimensions
+%!assert (sumsq (ones (2), 3), ones (2))
+%!assert (sumsq (ones (2, 2, 2), 99), ones (2, 2, 2))
+%!assert (sumsq (magic (3), 3), magic (3) .^ 2)
+%!assert (sumsq (magic (3), [3, 5]), magic (3) .^ 2)
+%!assert (sumsq (magic (3), [1 3]), sum (magic (3) .^ 2))
+%!assert (sumsq (magic (3), [2 99]), sum (magic (3) .^ 2, 2))
+%!assert (sumsq (single (ones (2)), 4),single (ones (2)))
+%!assert (sumsq (single (ones (2)), [4, 5]),single (ones (2)))
+%!assert (sumsq (sparse ([1, 2; 3, 4]), 3), sparse ([1, 2; 3, 4].^2))
+%!assert (sumsq (sparse ([1, 2i; 3, 4]), 3), sparse ([1, 4; 9, 16]))
+
+## Test nanflag
+%!test
+%! x = ones (3,4,5);
+%! x(1) = NaN;
+%! assert (sumsq (x)(:,:,1), [NaN, 3, 3, 3]);
+%! assert (sumsq (x, "includenan")(:,:,1), [NaN, 3, 3, 3]);
+%! assert (sumsq (x, "omitnan")(:,:,1), [2, 3, 3, 3]);
+%! assert (sumsq (x, "omitmissing")(:,:,1), [2, 3, 3, 3]);
+%! assert (sumsq (x, [2 3]), [NaN; 20; 20]);
+%! assert (sumsq (x, [2 3], "omitnan"), [19; 20; 20]);
+
+## Test cases for "omitnan"
+%!test
+%! A = [1, NaN; 2, NaN; 3, NaN];
+%! assert (sumsq (A, 2, "omitnan"), [1; 4; 9]);
+%!test
+%! A = [NaN, NaN, NaN];
+%! assert (sumsq (A, "omitnan"), 0);
+%!test
+%! A = [2, 3, NaN; 4, 5, NaN; 1, 2, NaN];
+%! assert (sumsq (A, 2, "omitnan"), [13; 41; 5]);
+%!test
+%! A = [2, NaN, 3; 3, NaN, 4; 1, NaN, 2];
+%! assert (sumsq (A, 1, "omitnan"), [14, 0, 29]);
+%!test
+%! A = [1+2i, NaN; 3+4i, NaN];
+%! assert (sumsq (A, 2, "omitnan"), [5; 25]);
+%!test
+%! A = single ([NaN, NaN, NaN]);
+%! assert (sumsq (A, "omitnan"), single (0));
+
+## Test sparse matrices
+%!assert (sumsq (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN])),
+%!        sparse ([NaN, NaN, 2, 20, NaN]))
+%!assert (sumsq (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN]), "omitnan"),
+%!        sparse ([1, 4, 2, 20, 4]))
+%!assert (sumsq (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN]), 2),
+%!        sparse ([NaN; NaN]))
+%!assert (sumsq (sparse ([NaN, NaN, 1, 4, 2; 1, 2, 1, 2, NaN]), 2, "omitnan"),
+%!        sparse ([21; 10]))
+%!assert (sumsq (sparse ([NaN, NaN, 1i, 4, 2; 1, 2, 1, 2, NaN]), 2, "omitnan"),
+%!        sparse ([21; 10]))
+%!assert (sumsq (sparse ([NaN, 0i, 1i, 4, 2; 1, 2, 1, 2, NaN]), 2, "omitnan"),
+%!        sparse ([21; 10]))
+%!assert (sumsq (sparse ([NaN, 1+i, 1i, 4, 2; 1, 2, 1, 2, NaN]), 2, "omitnan"),
+%!        sparse ([23; 10]))
+%!assert (sumsq (sparse ([NaN, NaN, NaN]), "omitnan"), sparse (0))
+%!assert (sumsq (sparse ([0, 0, 0, NaN, NaN, NaN]), "omitnan"), sparse (0))
+
+## Test empty sparse matrices
+%!assert (sumsq (sparse (ones(1, 0))), sparse (0))
+%!assert (size (sumsq (sparse (ones(1, 0)), 1)), [1, 0])
+%!assert (size (sumsq (sparse (ones(1, 0)), 2)), [1, 1])
+%!assert (sumsq (sparse (ones(0, 1))), sparse (0))
+%!assert (size (sumsq (sparse (ones(0, 1)), 1)), [1, 1])
+%!assert (size (sumsq (sparse (ones(0, 1)), 1)), [1, 1])
+%!assert (size (sumsq (sparse (ones(0, 1)), 2)), [0, 1])
+%!assert (sumsq (sparse (ones(0, 0))), sparse (0))
+%!assert (size (sumsq (sparse (ones(0, 0)), 1)), [1, 0])
+%!assert (size (sumsq (sparse (ones(0, 0)), 2)), [0, 1])
+%!assert (size (sumsq (sparse (ones(0, 0)), 3)), [0, 0])
+
+## Test boolean sumsq (must be equal to sum)
+%!test
+%! x = [true, false, true; false, true, false];
+%! assert (sumsq (x), sum (x));
+%! assert (sumsq (x, 1), [1, 1, 1]);
+%! assert (sumsq (x, 2), [2; 1]);
+
+%!test
+%! x = rand (100, 100) > 0.5;
+%! assert (sumsq (x), sum (x));
+
+%!assert (sumsq (true), 1)
+%!assert (sumsq (false), 0)
+%!assert (class (sumsq ([true, false])), "double")
+
+## Test input validation
+%!error <Invalid call> sumsq ()
+%!error <Invalid call> sumsq (1,2,3)
+%!error <unrecognized optional argument 'foobar'> sumsq (1, "foobar")
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! sumsq (ones (3,3), 1, "all");
+%!error <cannot set DIM or VECDIM with 'all' flag>
+%! sumsq (ones (3,3), [1, 2], "all");
+%!error <invalid dimension DIM = 0> sumsq (ones (3,3), 0)
+%!error <invalid dimension DIM = -1> sumsq (ones (3,3), -1)
+%!error <invalid dimension in VECDIM = -2> sumsq (ones (3,3), [1 -2])
+%!error <duplicate dimension in VECDIM = 2> sumsq (ones (3,3), [1 2 2])
+%!error <duplicate dimension in VECDIM = 1> sumsq (ones (3,3), [1 1 2])
 */
 
 DEFUN (islogical, args, ,
@@ -3550,7 +5339,7 @@ For example:
 @example
 @group
 complex ([1, 2], [3, 4])
-  @result{} [ 1 + 3i   2 + 4i ]
+  @xresult{} [ 1 + 3i   2 + 4i ]
 @end group
 @end example
 @seealso{real, imag, iscomplex, abs, arg}
@@ -3805,42 +5594,42 @@ complex ([1, 2], [3, 4])
 %!error <undefined> 1+Infi
 
 %!test <31974>
-%! assert (Inf + Inf*i, complex (Inf, Inf))
+%! assert (Inf + Inf*i, complex (Inf, Inf));
 %!
-%! assert (1 + Inf*i, complex (1, Inf))
-%! assert (1 + Inf*j, complex (1, Inf))
+%! assert (1 + Inf*i, complex (1, Inf));
+%! assert (1 + Inf*j, complex (1, Inf));
 %!
 %! ## whitespace should not affect parsing
-%! assert (1+Inf*i, complex (1, Inf))
-%! assert (1+Inf*j, complex (1, Inf))
+%! assert (1+Inf*i, complex (1, Inf));
+%! assert (1+Inf*j, complex (1, Inf));
 %!
-%! assert (NaN*j, complex (0, NaN))
+%! assert (NaN*j, complex (0, NaN));
 %!
-%! assert (Inf * 4j, complex (0, Inf))
+%! assert (Inf * 4j, complex (0, Inf));
 
 %!test <31974>
 %! x = Inf;
-%! assert (x * j, complex (0, Inf))
+%! assert (x * j, complex (0, Inf));
 %! j = complex (0, 1);
-%! assert (Inf * j, complex (0, Inf))
+%! assert (Inf * j, complex (0, Inf));
 
 %!test <31974>
 %! exp = complex (zeros (2, 2), Inf (2, 2));
-%! assert (Inf (2, 2) * j, exp)
-%! assert (Inf (2, 2) .* j, exp)
-%! assert (Inf * (ones (2, 2) * j), exp)
-%! assert (Inf (2, 2) .* (ones (2, 2) * j), exp)
+%! assert (Inf (2, 2) * j, exp);
+%! assert (Inf (2, 2) .* j, exp);
+%! assert (Inf * (ones (2, 2) * j), exp);
+%! assert (Inf (2, 2) .* (ones (2, 2) * j), exp);
 
 %!test <31974>
-%! assert ([Inf; 0] * [i, 0], complex ([NaN NaN; 0 0], [Inf NaN; 0 0]))
-%! assert ([Inf, 0] * [i; 0], complex (NaN, Inf))
-%! assert ([Inf, 0] .* [i, 0], complex ([0 0], [Inf 0]))
+%! assert ([Inf; 0] * [i, 0], complex ([NaN NaN; 0 0], [Inf NaN; 0 0]));
+%! assert ([Inf, 0] * [i; 0], complex (NaN, Inf));
+%! assert ([Inf, 0] .* [i, 0], complex ([0 0], [Inf 0]));
 
 %!test <31974>
 %! m = @(x, y) x * y;
 %! d = @(x, y) x / y;
-%! assert (m (Inf, i), complex (0, +Inf))
-%! assert (d (Inf, i), complex (0, -Inf))
+%! assert (m (Inf, i), complex (0, +Inf));
+%! assert (d (Inf, i), complex (0, -Inf));
 */
 
 DEFUN (isreal, args, ,
@@ -4854,7 +6643,7 @@ produce infinity are division by zero and overflow.
 @example
 @group
 [ 1/0 e^800 ]
-@result{} Inf   Inf
+@xresult{} Inf   Inf
 @end group
 @end example
 
@@ -5179,7 +6968,7 @@ diameter($\pi$).
 diameter.
 @end ifnottex
 
-If called with no arguments, return the scalar value 
+If called with no arguments, return the scalar value
 @tex
 $\pi$.
 @end tex
@@ -5316,7 +7105,7 @@ $\sqrt{-1}$.
 so any of the names may be reused for other purposes (such as @code{i} for a
 counter variable).
 
-If called with no arguments, return the scalar value @code{complex (0, 1)}. 
+If called with no arguments, return the scalar value @code{complex (0, 1)}.
 
 If invoked with a single scalar integer argument @var{n}, return a square
 @nospell{NxN} matrix.
@@ -5374,8 +7163,15 @@ replaced by @code{NaN}.  @xref{Missing Data}.
 }
 
 /*
-%!assert (single (NA ("double")), NA ("single"))
-%!assert (double (NA ("single")), NA ("double"))
+%!testif HAVE_QNAN_WITH_PAYLOAD
+%! assert (single (NA ("double")), NA ("single"));
+%!testif HAVE_QNAN_WITH_PAYLOAD
+%! assert (double (NA ("single")), NA ("double"));
+// Duplicate from above.  Only for test statistics
+%!testif ; ! __have_feature__ ("QNAN_WITH_PAYLOAD") <59830>
+%! assert (single (NA ("double")), NA ("single"));
+%!testif ; ! __have_feature__ ("QNAN_WITH_PAYLOAD") <59830>
+%! assert (double (NA ("single")), NA ("double"));
 */
 
 DEFUN (false, args, ,
@@ -5616,7 +7412,7 @@ Example 1 : 1-input, square identity matrix
 @example
 @group
 eye (3)
- @result{}  1  0  0
+ @xresult{}  1  0  0
      0  1  0
      0  0  1
 @end group
@@ -5627,7 +7423,7 @@ Example 2 : following expressions all produce 2x2 identity matrix
 @example
 @group
 eye (2) @equiv{} eye (2, 2) @equiv{} eye (size ([1, 2; 3, 4]))
- @result{}  1  0
+ @xresult{}  1  0
      0  1
 @end group
 @end example
@@ -5914,7 +7710,7 @@ is returned.
 %!assert (linspace (complex (-1, -Inf), complex (2, Inf), 3),
 %!          [complex(-1, -Inf), complex(0.5, NaN), complex(2, Inf)])
 %!assert (linspace (complex (-3, -Inf), complex (0, Inf), 4),
-%!        [complex(-3, -Inf), complex(-2, NaN), complex(-1, NaN), complex(0, Inf)])
+%!        [complex(-3, -Inf) complex(-2, NaN) complex(-1, NaN) complex(0, Inf)])
 
 ## FIXME: Octave is not fully Matlab-compatible for some combinations of
 ##        Inf/-Inf endpoints.  See bug #56933.  This was dubbed "Won't Fix"
@@ -5977,9 +7773,9 @@ but is performed more efficiently.
 
 If only @var{m} is supplied, and it is a scalar, the dimension of the result is
 @var{m}-by-@var{m}.  If @var{m}, @var{n}, @dots{} are all scalars, then the
-dimensions of the result are @var{m}-by-@var{n}-by-@enddots{}  If given a vector
-as input, then the dimensions of the result are given by the elements of that
-vector.
+dimensions of the result are @var{m}-by-@var{n}-by-@enddots{}  If given a
+vector as input, then the dimensions of the result are given by the elements of
+that vector.
 
 An object can be resized to more dimensions than it has; in such case the
 missing dimensions are assumed to be 1.  Resizing an object to fewer dimensions
@@ -6048,7 +7844,7 @@ matrix.
 @example
 @group
 reshape ([1, 2, 3, 4], 2, 2)
-      @result{}  1  3
+      @xresult{}  1  3
           2  4
 @end group
 @end example
@@ -6455,7 +8251,8 @@ compute the norms of each column and return a row vector.
 %!assert (norm (x,"fro"), single (10), -eps ("single"))
 %!assert (norm (x), single (10))
 %!assert (norm (single ([1e38, 1])), single (1e38))
-%!assert (norm (single ([3+4i, 3-4i, sqrt(31)])), single (9), -4* eps ("single"))
+%!assert (norm (single ([3+4i, 3-4i, sqrt(31)])),
+%!        single (9), -4* eps ("single"))
 %!shared m
 %! m = single (magic (4));
 %!assert (norm (m,1), single (34))
@@ -6731,6 +8528,9 @@ This function and @w{@tcode{@var{A} ^ @var{B}}}@ are equivalent.
 {
   return binary_op_defun_body (octave_value::op_pow, args);
 }
+/*
+%!assert (complex (realmin, realmin) ^ realmax, 0)
+*/
 
 DEFUN (mldivide, args, ,
        doc: /* -*- texinfo -*-
@@ -6861,6 +8661,9 @@ non-negative argument (angle).  Use @code{realpow}, @code{realsqrt},
 {
   return binary_op_defun_body (octave_value::op_el_pow, args);
 }
+/*
+%!assert (complex (realmin, realmin) .^ realmax, 0)
+*/
 
 DEFUN (ldivide, args, ,
        doc: /* -*- texinfo -*-
@@ -6974,11 +8777,11 @@ Example 2 : mixed timer id and internal timer
 tic;
 pause (1);
 toc
-@result{} Elapsed time is 1.0089 seconds.
+@xresult{} Elapsed time is 1.0089 seconds.
 id = tic;
 pause (2);
 toc (id)
-@result{} Elapsed time is 2.01142 seconds.
+@xresult{} Elapsed time is 2.01142 seconds.
 toc
 Elapsed time is 3.02308 seconds.
 @end group
@@ -7123,7 +8926,7 @@ For example:
 @example
 @group
 sort ([1, 2; 2, 3; 3, 1])
-   @result{}  1  1
+   @xresult{}  1  1
        2  2
        3  3
 @end group
@@ -7141,10 +8944,10 @@ matrix.  For example:
 @example
 @group
 [s, i] = sort ([1, 2; 2, 3; 3, 1])
-  @result{} s = 1  1
+  @xresult{} s = 1  1
          2  2
          3  3
-  @result{} i = 1  3
+  @xresult{} i = 1  3
          2  1
          3  2
 @end group
@@ -7160,7 +8963,7 @@ Sorting of complex entries is done first by magnitude
 @example
 @group
 sort ([1+i; 1; 1-i])
-    @result{} 1 + 0i
+    @xresult{} 1 + 0i
        1 - 1i
        1 + 1i
 @end group
@@ -7208,7 +9011,7 @@ ordered lists.
               || args(1).double_value () <= 0)
             error ("sort: DIM must be a positive scalar integer");
 
-          // Forbid fractional value input, also nan input.
+          // Forbid fractional value input, also NaN input.
           dim = args(1).strict_int_value ("sort: DIM must be a positive scalar integer") - 1;
         }
     }
@@ -7321,7 +9124,8 @@ ordered lists.
 %! assert (i, [3, 2, 5, 4, 1]);
 
 ## Single Complex
-%!assert (sort (single ([NaN, 1i, -1, 2, Inf])), single ([1i, -1, 2, Inf, NaN]))
+%!assert (sort (single ([NaN, 1i, -1, 2, Inf])),
+%!        single ([1i, -1, 2, Inf, NaN]))
 %!assert (sort (single ([NaN, 1i, -1, 2, Inf]), 1),
 %!        single ([NaN, 1i, -1, 2, Inf]))
 %!assert (sort (single ([NaN, 1i, -1, 2, Inf]), 2),
@@ -7474,14 +9278,14 @@ ordered lists.
 ## Test sort dimension being very large
 %!test <*65712>
 %! A = [1 2; 3 4];
-%! assert (sort (A, 100), A)
-%! assert (sort (A, inf), A)
+%! assert (sort (A, 100), A);
+%! assert (sort (A, inf), A);
 %! [B, idx] = sort (A, 100);
 %! assert (B, A);
-%! assert (idx, ones (2))
+%! assert (idx, ones (2));
 %! [B, idx] = sort (A, inf);
 %! assert (B, A);
-%! assert (idx, ones (2))
+%! assert (idx, ones (2));
 
 %!error <Invalid call> sort ()
 %!error <Invalid call> sort (1, 2, 3, 4)
@@ -7491,7 +9295,7 @@ ordered lists.
 %!error <DIM must be a positive scalar integer> sort ([1 2; 3 4], 0)
 %!error <DIM must be a positive scalar integer> sort ([1 2; 3 4], 1+i)
 %!error <DIM must be a positive scalar integer> sort ([1 2; 3 4], 1.234)
-%!error <DIM must be a positive scalar integer> sort ([1 2; 3 4], nan)
+%!error <DIM must be a positive scalar integer> sort ([1 2; 3 4], NaN)
 %!error <DIM argument must precede MODE argument> sort (1, "ascend", 1)
 %!error <MODE must be a string> sort (1, 1, 1)
 %!error <MODE must be either "ascend" or "descend"> sort (1, 1, "foobar")

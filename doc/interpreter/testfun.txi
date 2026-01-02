@@ -1,4 +1,4 @@
-@c Copyright (C) 2002-2025 The Octave Project Developers
+@c Copyright (C) 2002-2026 The Octave Project Developers
 @c
 @c This file is part of Octave.
 @c
@@ -321,7 +321,7 @@ When putting this in a file @file{must_be_zero.m}, and running the test, we see
 @group
 test must_be_zero verbose
 
-@result{}
+@xresult{}
 >>>>> /path/to/must_be_zero.m
 ***** fail ("must_be_zero (1)")
 ***** assert (must_be_zero (0), 0)
@@ -477,6 +477,8 @@ path and the user will have to remember to type
 @code{test ("funcname.cc")}.
 
 @DOCSTRING(assert)
+
+@DOCSTRING(assert_equal)
 
 @DOCSTRING(fail)
 

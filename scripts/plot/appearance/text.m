@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2007-2025 The Octave Project Developers
+## Copyright (C) 2007-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -92,10 +92,9 @@ function h = text (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("text", varargin{:});
 
-  nargs = nargin;
   offset = 0;
 
-  if (nargs > 2 && isnumeric (varargin{1}) && isnumeric (varargin{2}))
+  if (nargin > 2 && isnumeric (varargin{1}) && isnumeric (varargin{2}))
     x = varargin{1};
     y = varargin{2};
 
@@ -234,7 +233,7 @@ endfunction
 ## Helper function converts any numeric entries to strings
 function cstr = cell2cellstr (c)
   cstr = c;
-  idx = cellfun (@isnumeric, c);
+  idx = cellfun ('isnumeric', c);
   cstr(idx) = cellfun (@(x) sprintf ("%g", x), c(idx), "uniformoutput", false);
 endfunction
 

@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1993-2025 The Octave Project Developers
+## Copyright (C) 1993-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -70,24 +70,13 @@ function [c, h] = contour (varargin)
 
   [hax, varargin] = __plt_get_axis_arg__ ("contour", varargin{:});
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
+  hax = newplot (hax);
+
+  [ctmp, htmp] = __contour__ (hax, "none", varargin{:});
+
+  if (! ishold (hax))
+    set (hax, "box", "on");
   endif
-  unwind_protect
-    hax = newplot (hax);
-
-    [ctmp, htmp] = __contour__ (hax, "none", varargin{:});
-
-    if (! ishold ())
-      set (hax, "box", "on");
-    endif
-
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
 
   if (nargout > 0)
     c = ctmp;

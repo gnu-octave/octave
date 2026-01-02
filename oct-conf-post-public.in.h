@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -210,72 +210,6 @@ octave_unused_parameter (const T&)
 #  define OCTINTERP_OVERRIDABLE_FUNC_API
 #endif
 
-/* API macros for the Array class in liboctave and liboctinterp */
-#if (defined (OCTAVE_DLL) || defined (OCTINTERP_DLL))
-#  define OCTARRAY_API OCTAVE_EXPORT
-#  define OCTARRAY_EXCEPTION_API OCTAVE_EXPORT
-#  if defined (_WIN32) || defined (__CYGWIN__)
-#    define OCTARRAY_TEMPLATE_API
-#    if defined (__MINGW32__)
-#      define OCTARRAY_EXTERN_TEMPLATE_API OCTAVE_EXPORT
-#      define OCTARRAY_CLASS_TEMPLATE_INSTANTIATION_API
-#    else
-#      define OCTARRAY_EXTERN_TEMPLATE_API
-#      define OCTARRAY_CLASS_TEMPLATE_INSTANTIATION_API OCTAVE_EXPORT
-#    endif
-#    define OCTARRAY_OVERRIDABLE_FUNC_API OCTAVE_EXPORT
-#  else
-#    define OCTARRAY_TEMPLATE_API OCTAVE_EXPORT
-#    define OCTARRAY_EXTERN_TEMPLATE_API OCTAVE_EXPORT
-#    define OCTARRAY_CLASS_TEMPLATE_INSTANTIATION_API
-#    define OCTARRAY_OVERRIDABLE_FUNC_API
-#  endif
-#else
-#  define OCTARRAY_API OCTAVE_IMPORT
-#  if defined (_WIN32) || defined (__CYGWIN__)
-#    define OCTARRAY_EXCEPTION_API OCTAVE_IMPORT
-#  else
-#    define OCTARRAY_EXCEPTION_API OCTAVE_EXPORT
-#  endif
-#  define OCTARRAY_TEMPLATE_API
-#  define OCTARRAY_EXTERN_TEMPLATE_API OCTAVE_IMPORT
-#  define OCTARRAY_CLASS_TEMPLATE_INSTANTIATION_API
-#  define OCTARRAY_OVERRIDABLE_FUNC_API
-#endif
-
-/* API macros for libinterp/graphics */
-#if defined (OCTGRAPHICS_DLL)
-#  define OCTGRAPHICS_API OCTAVE_EXPORT
-#  define OCTGRAPHICS_EXCEPTION_API OCTAVE_EXPORT
-#  if defined (_WIN32) || defined (__CYGWIN__)
-#    define OCTGRAPHICS_TEMPLATE_API
-#    if defined (__MINGW32__)
-#      define OCTGRAPHICS_EXTERN_TEMPLATE_API OCTAVE_EXPORT
-#      define OCTGRAPHICS_CLASS_TEMPLATE_INSTANTIATION_API
-#    else
-#      define OCTGRAPHICS_EXTERN_TEMPLATE_API
-#      define OCTGRAPHICS_CLASS_TEMPLATE_INSTANTIATION_API OCTAVE_EXPORT
-#    endif
-#    define OCTGRAPHICS_OVERRIDABLE_FUNC_API OCTAVE_EXPORT
-#  else
-#    define OCTGRAPHICS_TEMPLATE_API OCTAVE_EXPORT
-#    define OCTGRAPHICS_EXTERN_TEMPLATE_API OCTAVE_EXPORT
-#    define OCTGRAPHICS_CLASS_TEMPLATE_INSTANTIATION_API
-#    define OCTGRAPHICS_OVERRIDABLE_FUNC_API
-#  endif
-#else
-#  define OCTGRAPHICS_API OCTAVE_IMPORT
-#  if defined (_WIN32) || defined (__CYGWIN__)
-#    define OCTGRAPHICS_EXCEPTION_API OCTAVE_IMPORT
-#  else
-#    define OCTGRAPHICS_EXCEPTION_API OCTAVE_EXPORT
-#  endif
-#  define OCTGRAPHICS_TEMPLATE_API
-#  define OCTGRAPHICS_EXTERN_TEMPLATE_API OCTAVE_IMPORT
-#  define OCTGRAPHICS_CLASS_TEMPLATE_INSTANTIATION_API
-#  define OCTGRAPHICS_OVERRIDABLE_FUNC_API
-#endif
-
 /* API macros for liboctmex */
 #if defined (OCTMEX_DLL)
 #  define OCTMEX_API OCTAVE_EXPORT
@@ -340,6 +274,29 @@ octave_unused_parameter (const T&)
 #  define OCTGUI_EXTERN_TEMPLATE_API OCTAVE_IMPORT
 #  define OCTGUI_CLASS_TEMPLATE_INSTANTIATION_API
 #  define OCTGUI_OVERRIDABLE_FUNC_API
+#endif
+
+/* API macros for the Array<T> template class */
+#if (defined (OCTAVE_DLL) || defined (OCTINTERP_DLL))
+   /* export symbols when building liboctave or liboctinterp */
+#  define OCTARRAY_API OCTAVE_EXPORT
+#else
+   /* Allow downstream projects to set visibility attributes when
+      instantiating the Array<T> template class with new types.
+      For that, OCTARRAY_API must be defined to the appropriate attribute
+      before including "octave/oct.h" in translation units that instantiate
+      the Array<T> template with a new type. */
+#  if ! defined (OCTARRAY_API)
+     /* default is no visibility attributes */
+#    define OCTARRAY_API
+#  endif
+#endif
+#if defined (_WIN32) || defined (__CYGWIN__)
+#  define OCTARRAY_TEMPLATE_API
+#  define OCTARRAY_OVERRIDABLE_FUNC_API OCTARRAY_API
+#else
+#  define OCTARRAY_TEMPLATE_API OCTARRAY_API
+#  define OCTARRAY_OVERRIDABLE_FUNC_API
 #endif
 
 #if defined (OCTAVE_ENABLE_64)

@@ -50,6 +50,7 @@ nodist_%canon_reldir%_libqterminal_la_SOURCES = $(%canon_reldir%_libqterminal_la
   -I$(srcdir)/liboctave/system \
   -I$(srcdir)/liboctave/util \
   -Ilibinterp -I$(srcdir)/libinterp \
+  -I$(srcdir)/libinterp/template-inst \
   -Ilibinterp/parse-tree -I$(srcdir)/libinterp/parse-tree \
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
   -I$(srcdir)/libinterp/octave-value \

@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2003-2025 The Octave Project Developers
+## Copyright (C) 2003-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -68,7 +68,7 @@
 ## y = x;
 ## z = x' * y;
 ## c = contourc (x, y, z, 2:3)
-##   @result{} c =
+##   @xresult{} c =
 ##         2.0000   1.0000   1.0000   2.0000   2.0000   3.0000   1.5000   2.0000
 ##         4.0000   2.0000   2.0000   1.0000   1.0000   2.0000   2.0000   1.5000
 ## @end group

@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1999-2025 The Octave Project Developers
+## Copyright (C) 1999-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -42,13 +42,13 @@
 ## @example
 ## @group
 ## >> hsv2rgb ([0.5 1 1])
-## @result{} ans = 0 1 1
+## @xresult{} ans = 0 1 1
 ##
 ## >> hsv2rgb ([2.5 1 1])
-## @result{} ans = 0 1 1
+## @xresult{} ans = 0 1 1
 ##
 ## >> hsv2rgb ([3.5 1 1])
-## @result{} ans = 0 1 1
+## @xresult{} ans = 0 1 1
 ## @end group
 ## @end example
 ##

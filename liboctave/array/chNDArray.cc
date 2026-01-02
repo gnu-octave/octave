@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2003-2025 The Octave Project Developers
+// Copyright (C) 2003-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -31,9 +31,9 @@
 
 #include "Array-util.h"
 #include "chNDArray.h"
-#include "mx-base.h"
 #include "lo-ieee.h"
-#include "lo-mappers.h"
+#include "mappers.h"
+#include "mx-base.h"
 #include "mx-op-defs.h"
 #include "str-vec.h"
 
@@ -141,25 +141,25 @@ charNDArray::concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx)
 charNDArray
 charNDArray::max (int dim) const
 {
-  return do_mx_minmax_op<char> (*this, dim, mx_inline_max);
+  return do_mx_minmax_op<char> (*this, dim, mx_inline_chmax);
 }
 
 charNDArray
 charNDArray::max (Array<octave_idx_type>& idx_arg, int dim) const
 {
-  return do_mx_minmax_op<char> (*this, idx_arg, dim, mx_inline_max);
+  return do_mx_minmax_op<char> (*this, idx_arg, dim, mx_inline_chmax);
 }
 
 charNDArray
 charNDArray::min (int dim) const
 {
-  return do_mx_minmax_op<char> (*this, dim, mx_inline_min);
+  return do_mx_minmax_op<char> (*this, dim, mx_inline_chmin);
 }
 
 charNDArray
 charNDArray::min (Array<octave_idx_type>& idx_arg, int dim) const
 {
-  return do_mx_minmax_op<char> (*this, idx_arg, dim, mx_inline_min);
+  return do_mx_minmax_op<char> (*this, idx_arg, dim, mx_inline_chmin);
 }
 
 charNDArray&

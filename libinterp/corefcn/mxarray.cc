@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2006-2025 The Octave Project Developers
+// Copyright (C) 2006-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -27,11 +27,7 @@
 #  include "config.h"
 #endif
 
-// #define DEBUG 1
-
-#if defined (DEBUG)
-#  include <iostream>
-#endif
+// #define OCTAVE_MXARRAY_DEBUG 1
 
 #include <cstdarg>
 #include <cstdlib>
@@ -45,6 +41,10 @@
 #endif
 #include <set>
 #include <string>
+
+#if defined (OCTAVE_MXARRAY_DEBUG)
+#  include <iostream>
+#endif
 
 #include "f77-fcn.h"
 #include "oct-locbuf.h"
@@ -78,7 +78,7 @@ xmalloc (size_t n)
 {
   void *ptr = std::malloc (n);
 
-#if defined (DEBUG)
+#if defined (OCTAVE_MXARRAY_DEBUG)
   std::cerr << "xmalloc (" << n << ") = " << ptr << std::endl;
 #endif
 
@@ -90,9 +90,8 @@ xrealloc (void *ptr, size_t n)
 {
   void *newptr = std::realloc (ptr, n);
 
-#if defined (DEBUG)
-  std::cerr << "xrealloc (" << ptr << ", " << n << ") = " << newptr
-            << std::endl;
+#if defined (OCTAVE_MXARRAY_DEBUG)
+  std::cerr << "xrealloc (" << ptr << ", " << n << ") = " << newptr << std::endl;
 #endif
 
   return newptr;
@@ -101,7 +100,7 @@ xrealloc (void *ptr, size_t n)
 static void
 xfree (void *ptr)
 {
-#if defined (DEBUG)
+#if defined (OCTAVE_MXARRAY_DEBUG)
   std::cerr << "xfree (" << ptr << ")" << std::endl;
 #endif
 
@@ -145,7 +144,7 @@ public:
 };
 
 template <>
-class fp_type_traits <FloatComplex>
+class fp_type_traits<FloatComplex>
 {
 public:
   static const bool is_complex = true;
@@ -3344,7 +3343,7 @@ void mex::free (void *ptr)
 
           if (p != m_foreign_memlist.end ())
             m_foreign_memlist.erase (p);
-#if defined (DEBUG)
+#if defined (OCTAVE_MXARRAY_DEBUG)
           else
             warning ("mxFree: skipping memory not allocated by mxMalloc, mxCalloc, or mxRealloc");
 #endif
@@ -3452,8 +3451,6 @@ mxArray_cell::set_cell (mwIndex idx, mxArray *val)
 extern "C" {
   typedef void (*cmex_fptr) (int nlhs, mxArray *plhs[],
                              int nrhs, const mxArray *prhs[]);
-  typedef F77_RET_T (*fmex_fptr) (F77_INT& nlhs, mxArray **plhs,
-                                  F77_INT& nrhs, mxArray **prhs);
 }
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -3489,23 +3486,9 @@ call_mex (octave_mex_function& mex_fcn, const octave_value_list& args,
 
   mex_context = &context;
 
-  void *mex_fcn_ptr = mex_fcn.mex_fcn_ptr ();
+  cmex_fptr fcn = reinterpret_cast<cmex_fptr> (mex_fcn.mex_fcn_ptr ());
 
-  if (mex_fcn.is_fmex ())
-    {
-      fmex_fptr fcn = reinterpret_cast<fmex_fptr> (mex_fcn_ptr);
-
-      F77_INT tmp_nargout = nargout;
-      F77_INT tmp_nargin = nargin;
-
-      fcn (tmp_nargout, argout, tmp_nargin, argin);
-    }
-  else
-    {
-      cmex_fptr fcn = reinterpret_cast<cmex_fptr> (mex_fcn_ptr);
-
-      fcn (nargout, argout, nargin, const_cast<const mxArray **> (argin));
-    }
+  fcn (nargout, argout, nargin, const_cast<const mxArray **> (argin));
 
   // Convert returned array entries back into octave values.
 

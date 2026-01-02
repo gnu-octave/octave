@@ -137,6 +137,7 @@ nodist_%canon_reldir%_libgraphics_la_SOURCES = $(libgraphics_MOC)
   -I$(srcdir)/liboctave/system \
   -I$(srcdir)/liboctave/util \
   -Ilibinterp -I$(srcdir)/libinterp \
+  -I$(srcdir)/libinterp/template-inst \
   -Ilibinterp/parse-tree -I$(srcdir)/libinterp/parse-tree \
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
   -I$(srcdir)/libinterp/octave-value

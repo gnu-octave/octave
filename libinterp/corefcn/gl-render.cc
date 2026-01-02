@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2008-2025 The Octave Project Developers
+// Copyright (C) 2008-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -36,7 +36,7 @@
 #  include <windows.h>
 #endif
 
-#include "lo-mappers.h"
+#include "mappers.h"
 #include "oct-locbuf.h"
 
 #include "errwarn.h"
@@ -845,7 +845,15 @@ opengl_renderer::init_gl_context (bool enhanced, const Matrix& c)
 
   m_glfcns.glEnable (GL_DEPTH_TEST);
   m_glfcns.glDepthFunc (GL_LEQUAL);
+#if defined (HAVE_GLBLENDFUNCSEPARATE)
+  std::string gl_version = get_string (GL_VERSION);
+  if (gl_version.size() >= 3 && gl_version.substr(0, 3) >= "1.4")
+    m_glfcns.glBlendFuncSeparate (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,
+                                  GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+  else
+#endif
   m_glfcns.glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   m_glfcns.glAlphaFunc (GL_GREATER, 0.0f);
   m_glfcns.glEnable (GL_NORMALIZE);
   m_glfcns.glEnable (GL_BLEND);
@@ -1055,6 +1063,7 @@ opengl_renderer::render_tickmarks (const Matrix& ticks,
   octave_unused_parameter (dz);
   octave_unused_parameter (xyz);
   octave_unused_parameter (mirror);
+  octave_unused_parameter (tickdir_both);
 
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
@@ -1089,8 +1098,6 @@ opengl_renderer::render_ticktexts (const Matrix& ticks,
           Matrix b;
 
           std::string label (ticklabels(i % nlabels));
-          label.erase (0, label.find_first_not_of (' '));
-          label = label.substr (0, label.find_last_not_of (' ')+1);
 
           // FIXME: As tick text is transparent, shouldn't it be
           //        drawn after axes object, for correct rendering?
@@ -2353,7 +2360,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
 
   setup_opengl_transformation (props);
 
-  // For 2D axes with only 2D primitives, draw from back to front without
+  // For 2-D axes with only 2-D primitives, draw from back to front without
   // depth sorting
   bool is2D = props.get_is2D (true);
   if (is2D)

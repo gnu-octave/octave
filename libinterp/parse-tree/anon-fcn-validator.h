@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2019-2025 The Octave Project Developers
+// Copyright (C) 2019-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -67,12 +67,14 @@ public:
 
 private:
 
+  void error (tree_expression& expr);
+
+  //--------
+
   bool m_ok {true};
   filepos m_beg_pos;
   filepos m_end_pos;
   std::string m_message;
-
-  void error (tree_expression& expr);
 };
 
 OCTAVE_END_NAMESPACE(octave)

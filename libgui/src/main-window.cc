@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2011-2025 The Octave Project Developers
+// Copyright (C) 2011-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -26,6 +26,8 @@
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
+
+#include <cstdlib>
 
 #include <utility>
 
@@ -117,7 +119,7 @@ main_window::main_window (base_qobject& oct_qobj)
       welcome_wizard welcomeWizard;
 
       if (welcomeWizard.exec () == QDialog::Rejected)
-        exit (1);
+        std::exit (EXIT_FAILURE);
 
       settings.setValue (global_skip_welcome_wizard.settings_key (), QVariant (true));
 
@@ -131,6 +133,18 @@ main_window::main_window (base_qobject& oct_qobj)
 
       // After settings.
       m_octave_qobj.config_translators ();
+
+      if (settings.bool_value (global_show_splash_screen))
+        {
+          splash_screen *splash = new splash_screen ();
+          splash->setWindowFlags(Qt::SplashScreen);
+          QTimer::singleShot (1000, this, [splash] () { splash->close (); });
+          // FIXME: exec() stops execiton for 1s (see timer above)
+          //        show() or open() should be used instead, but then the
+          //        splash screen is empty until the main window shows up,
+          //        despite using repaint() and qApp::processEvents().
+          splash->exec ();
+        }
     }
 
   setObjectName (gui_obj_name_main_window);
@@ -159,11 +173,6 @@ main_window::main_window (base_qobject& oct_qobj)
   adopt_dock_widgets ();
 
   QGuiApplication::setDesktopFileName ("org.octave.Octave.desktop");
-
-  QApplication *qapp = m_octave_qobj.qapplication ();
-
-  m_default_style = qapp->style ()->objectName ();
-  m_default_palette = qapp->palette ();
 
   bool connect_to_web = true;
   QDateTime last_checked;
@@ -287,28 +296,38 @@ main_window::adopt_file_browser_widget ()
 {
   m_file_browser_window = m_octave_qobj.file_browser_widget (this);
 
+  m_file_browser = m_file_browser_window->get_file_system_browser ();
+  m_editor_files = m_file_browser_window->get_editor_files_browser ();
+
   make_dock_widget_connections (m_file_browser_window);
 
-  connect (m_file_browser_window, &files_dock_widget::open_file,
+  connect (m_file_browser, &file_system_browser::open_file,
            this, qOverload<const QString&> (&main_window::open_file_signal));
-  connect (m_file_browser_window,
-           &files_dock_widget::displayed_directory_changed,
+  connect (m_file_browser,
+           &file_system_browser::displayed_directory_changed,
            this, &main_window::set_current_working_directory);
 
-  connect (m_file_browser_window, &files_dock_widget::modify_path_signal,
+  connect (m_file_browser, &file_system_browser::modify_path_signal,
            this, &main_window::modify_path);
 
-  connect (m_file_browser_window, &files_dock_widget::run_file_signal,
+  connect (m_file_browser, &file_system_browser::run_file_signal,
            this, &main_window::run_file_in_terminal);
 
-  connect (m_file_browser_window, &files_dock_widget::load_file_signal,
+  connect (m_file_browser, &file_system_browser::load_file_signal,
            this, &main_window::handle_load_workspace_request);
 
-  connect (m_file_browser_window, &files_dock_widget::open_any_signal,
+  connect (m_file_browser, &file_system_browser::open_any_signal,
            this, &main_window::handle_open_any_request);
 
-  connect (m_file_browser_window, &files_dock_widget::find_files_signal,
+  connect (m_file_browser, &file_system_browser::find_files_signal,
            this, &main_window::find_files);
+
+  connect (m_editor_files,
+           &editor_files_browser::displayed_directory_changed,
+           this, &main_window::set_current_working_directory);
+
+  connect (m_editor_files, &editor_files_browser::run_file_signal,
+           this, &main_window::run_file_in_terminal);
 }
 
 void
@@ -405,11 +424,11 @@ main_window::adopt_editor_widget ()
   connect (this, &main_window::update_breakpoint_marker_signal,
            editor, &file_editor::handle_update_breakpoint_marker_request);
 
-  // Signals for removing/renaming files/dirs in the file browser
-  connect (m_file_browser_window, &files_dock_widget::file_remove_signal,
+  // Signals for removing/renaming/open files/dirs in the file browser
+  connect (m_file_browser, &file_system_browser::file_remove_signal,
            editor, &file_editor::handle_file_remove);
 
-  connect (m_file_browser_window, &files_dock_widget::file_renamed_signal,
+  connect (m_file_browser, &file_system_browser::file_renamed_signal,
            editor, &file_editor::handle_file_renamed);
 
   // Signals for removing/renaming files/dirs in the terminal window
@@ -425,6 +444,21 @@ main_window::adopt_editor_widget ()
 
   connect (qt_link, &qt_interpreter_events::directory_changed_signal,
            editor, &file_editor::update_octave_directory);
+
+  // signal from/to the editor files browser
+  editor_files_browser *feb = m_file_browser_window->get_editor_files_browser ();
+
+  connect (editor, &file_editor::remove_editor_file_in_browser_signal,
+           feb, &editor_files_browser::remove_editor_file);
+
+  connect (editor, &file_editor::rename_editor_file_in_browser_signal,
+           feb, &editor_files_browser::rename_editor_file);
+
+  connect (feb, &editor_files_browser::focus_editor_file_signal,
+           editor, &file_editor::handle_edit_file_request);
+
+  connect (feb, &editor_files_browser::close_editor_file_signal,
+           editor, &file_editor::handle_close_file_request);
 
   m_editor_window = editor;
 
@@ -911,7 +945,7 @@ void
 main_window::show_about_octave ()
 {
   std::string message
-    = octave_name_version_copyright_copying_warranty_and_bugs (true);
+    = octave_name_version_copyright_license_copying_warranty_bugs (true);
 
   QMessageBox::about (this, tr ("About Octave"),
                       QString::fromStdString (message));
@@ -920,34 +954,9 @@ main_window::show_about_octave ()
 void
 main_window::notice_settings (bool update_by_worker)
 {
+  m_octave_qobj.set_gui_style (true);
+
   gui_settings settings;
-
-  // Get desired style from preferences or take the default one if
-  // the desired one is not found
-  QString preferred_style = settings.string_value (global_style);
-
-  if (preferred_style == global_style.def ().toString ())
-    preferred_style = m_default_style;
-
-  QApplication *qapp = m_octave_qobj.qapplication ();
-
-  if (preferred_style == global_extra_styles.at (EXTRA_STYLE_FUSION_DARK))
-    {
-      QStyle *new_style = QStyleFactory::create (QStringLiteral ("Fusion"));
-      if (new_style)
-        qapp->setStyle (new_style);
-      qapp->setPalette (getFusionDarkPalette ());
-      qapp->setStyleSheet ("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
-    }
-  else
-    {
-      QStyle *new_style = QStyleFactory::create (preferred_style);
-      if (new_style)
-        {
-          qapp->setPalette (m_default_palette);
-          qapp->setStyle (new_style);
-        }
-    }
 
   // the widget's icons (when floating)
   QString icon_set = settings.string_value (dw_icon_set);
@@ -961,7 +970,7 @@ main_window::notice_settings (bool update_by_worker)
           // if child has a name
           icon = dw_icon_set_names[icon_set];
           if (icon_set != "NONE")
-            icon += name + ".png"; // add widget name and ext.
+            icon += name + global_icon_extension; // add widget name and ext.
           widget->setWindowIcon (QIcon (icon));
         }
     }
@@ -1024,34 +1033,6 @@ main_window::notice_settings (bool update_by_worker)
   else
     QApplication::setCursorFlashTime (0);  // no flashing
 
-}
-
-QPalette
-main_window::getFusionDarkPalette ()
-{
-  QPalette darkPalette;
-  darkPalette.setColor (QPalette::Window, QColor (53, 53, 53));
-  darkPalette.setColor (QPalette::WindowText, Qt::white);
-  darkPalette.setColor (QPalette::Disabled, QPalette::WindowText, QColor (127, 127, 127));
-  darkPalette.setColor (QPalette::Base, QColor (42, 42, 42));
-  darkPalette.setColor (QPalette::AlternateBase, QColor (66, 66, 66));
-  darkPalette.setColor (QPalette::ToolTipBase, Qt::white);
-  darkPalette.setColor (QPalette::ToolTipText, Qt::white);
-  darkPalette.setColor (QPalette::Text, Qt::white);
-  darkPalette.setColor (QPalette::Disabled, QPalette::Text, QColor (127, 127, 127));
-  darkPalette.setColor (QPalette::Dark, QColor (35, 35, 35));
-  darkPalette.setColor (QPalette::Shadow, QColor (20, 20, 20));
-  darkPalette.setColor (QPalette::Button, QColor (53, 53, 53));
-  darkPalette.setColor (QPalette::ButtonText, Qt::white);
-  darkPalette.setColor (QPalette::Disabled, QPalette::ButtonText, QColor (127, 127, 127));
-  darkPalette.setColor (QPalette::BrightText, Qt::red);
-  darkPalette.setColor (QPalette::Link, QColor (42, 130, 218));
-  darkPalette.setColor (QPalette::Highlight, QColor (42, 130, 218));
-  darkPalette.setColor (QPalette::Disabled, QPalette::Highlight, QColor (80, 80, 80));
-  darkPalette.setColor (QPalette::HighlightedText, Qt::white);
-  darkPalette.setColor (QPalette::Disabled, QPalette::HighlightedText, QColor (127, 127, 127));
-
-  return darkPalette;
 }
 
 void
@@ -1410,7 +1391,18 @@ main_window::request_open_file ()
   fileDialog.setAcceptMode (QFileDialog::AcceptOpen);
   fileDialog.setViewMode (QFileDialog::Detail);
   fileDialog.setFileMode (QFileDialog::ExistingFiles);
-  fileDialog.setDirectory (m_current_directory_combo_box->itemText (0));
+
+  QString directory = m_current_directory_combo_box->itemText (0);
+  if (is_internal &&
+      settings.bool_value (ed_open_dlg_follows_file))
+    {
+      // Get directory of current editor file. If it is still empty (new
+      // editor tab), the last directory is selected by the file dialog.
+      QFileInfo file_info (m_editor_window->get_current_filename ());
+      directory = file_info.canonicalPath ();
+    }
+
+  fileDialog.setDirectory (directory);
 
   if (fileDialog.exec ())
     {
@@ -1886,7 +1878,6 @@ main_window::handle_octave_ready ()
           if (this_mw.isNull ())
             return;
 
-          interp.PS1 (">> ");
           std::string prompt = interp.PS1 ();
 
           std::string decoded_prompt
@@ -1948,7 +1939,7 @@ main_window::find_files (const QString& start_dir)
                this, &main_window::find_files_finished);
 
       connect (m_find_files_dlg, &find_files_dialog::dir_selected,
-               m_file_browser_window, &files_dock_widget::set_current_directory);
+               m_file_browser, &file_system_browser::set_current_directory);
 
       connect (m_find_files_dlg, &find_files_dialog::file_selected,
                this, qOverload<const QString&> (&main_window::open_file_signal));

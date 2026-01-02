@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2014-2025 The Octave Project Developers
+## Copyright (C) 2014-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -502,27 +502,44 @@ printing.";
         s.category = "Printing/Saving";
 
       case "keypressfcn"
-        s.doc = "Callback function executed when a keystroke event \
-happens while the figure has focus.  The actual key that was pressed \
-can be retrieved using the second argument 'evt' of the function.\
+        s.doc = "Callback function executed when a key is pressed while the \
+figure has focus.  The first argument to the function is the handle of the \
+calling figure.  The second argument holds an event structure which has the \
+following members:\n\
+@table @code\n\
+@item Character:\n\
+The ASCII value of the key\n\
+@item Modifier:\n\
+A cell array containing strings representing the modifiers pressed with the \
+key.\n\
+@item Key:\n\
+Lowercase description of the key\n\
+@item Source:\n\
+Graphics handle of the object executing the callback function\n\
+@item EventName:\n\
+\"KeyPress\"\n\
+@end table\
 \n\n__fcnmsg__";
         s.valid = valid_fcn;
         s.category = "Keyboard Interaction";
 
       case "keyreleasefcn"
-        s.doc = "With @code{keypressfcn}, the keyboard callback functions.  \
-These callback functions are called when a key is pressed/released \
-respectively.  The functions are called with two input arguments.  The first \
-argument holds the handle of the calling figure.  The second argument holds \
-an event structure which has the following members:\n\
+        s.doc = "Callback function executed when a key is release while the \
+figure has focus.  The first argument to the function is the handle of the \
+calling figure.  The second argument holds an event structure which has the \
+following members:\n\
 @table @code\n\
 @item Character:\n\
 The ASCII value of the key\n\
-@item Key:\n\
-Lowercase value of the key\n\
 @item Modifier:\n\
 A cell array containing strings representing the modifiers pressed with the \
 key.\n\
+@item Key:\n\
+Lowercase description of the key\n\
+@item Source:\n\
+Graphics handle of the object executing the callback function\n\
+@item EventName:\n\
+\"KeyRelease\"\n\
 @end table\
 \n\n__fcnmsg__";
         s.valid = valid_fcn;
@@ -1305,6 +1322,16 @@ or automatically set to span the plotted data according to the \
         s.doc = "Control whether minor x tick marks are displayed.";
         s.category = "Axes Box Appearance";
 
+      case "xminortickvalues"
+        s.doc = "Position of minor tick marks.  __modemsg__";
+        s.category = "Axes Box Appearance";
+
+      case "xminortickvaluesmode"
+        s.doc = "Setting to determine whether the xminortick locations and \
+spacing are set automatically by Octave or manually using the \
+@ref{XREFaxesxminortickvalues, , @w{@qcode{\"xminortickvalues\"} property}}.";
+        s.category = "Axes Box Appearance";
+
       case "xscale"
         s.doc = "Set the x-axis to a linear or logarithmic scale.";
         s.category = "Axes Grid Appearance";
@@ -1404,6 +1431,16 @@ or automatically set to span the plotted data according to the \
         s.doc = "Control whether minor y tick marks are displayed.";
         s.category = "Axes Grid Appearance";
 
+      case "yminortickvalues"
+        s.doc = "Position of minor tick marks.  __modemsg__";
+        s.category = "Axes Box Appearance";
+
+      case "yminortickvaluesmode"
+        s.doc = "Setting to determine whether the yminortick locations and \
+spacing are set automatically by Octave or manually using the \
+@ref{XREFaxesyminortickvalues, , @w{@qcode{\"yminortickvalues\"} property}}.";
+        s.category = "Axes Box Appearance";
+
       case "yscale"
         s.doc = "Set the y-axis to a linear or logarithmic scale.";
         s.category = "Axes Grid Appearance";
@@ -1497,6 +1534,16 @@ or automatically set to span the plotted data according to the \
 
       case "zminortick"
         s.doc = "Control whether minor z tick marks are displayed.";
+        s.category = "Axes Box Appearance";
+
+      case "zminortickvalues"
+        s.doc = "Position of minor tick marks.  __modemsg__";
+        s.category = "Axes Box Appearance";
+
+      case "zminortickvaluesmode"
+        s.doc = "Setting to determine whether the zminortick locations and \
+spacing are set automatically by Octave or manually using the \
+@ref{XREFaxeszminortickvalues, , @w{@qcode{\"zminortickvalues\"} property}}.";
         s.category = "Axes Box Appearance";
 
       case "zscale"
@@ -2618,7 +2665,7 @@ transferred into @qcode{\"ydata\"} using the \
         s.category = "Coordinate Data";
 
       case "zdata"
-        s.doc = "For 3D data, vector with the y coordinates of the scatter \
+        s.doc = "For 3-D data, vector with the y coordinates of the scatter \
 object.";
         s.valid = packopt ({"[]", "vector"});
         s.category = "Coordinate Data";
@@ -3011,8 +3058,24 @@ the uicontrol object.";
         s.category = "Text Appearance";
 
       case "keypressfcn"
-        s.doc = "Function that is executed when a key is pressed and \
-the control object has focus.\n\n__fcnmsg__";
+        s.doc = "Callback function executed when a key is pressed while the \
+uicontrol object has focus.  The first argument to the function is the handle \
+of the calling uicontrol.  The second argument holds an event structure which \
+has the following members:\n\
+@table @code\n\
+@item Character:\n\
+The ASCII value of the key\n\
+@item Modifier:\n\
+A cell array containing strings representing the modifiers pressed with the \
+key.\n\
+@item Key:\n\
+Lowercase description of the key\n\
+@item Source:\n\
+Graphics handle of the object executing the callback function\n\
+@item EventName:\n\
+\"KeyPress\"\n\
+@end table\
+\n\n__fcnmsg__";
         s.valid = valid_fcn;
         s.category = "Callback Execution";
 
@@ -3149,10 +3212,11 @@ heading.";
 
       case "columnwidth"
         s.doc = "Setting for determining width of each column, valid \
-options include:  @qcode{\"auto\"}, @qcode{\"fit\"}, evenly divided \
+options include: @qcode{\"auto\"}, @qcode{\"fit\"}, evenly divided \
 multiples specified as @qcode{\"1x\"}, @qcode{\"2x\"}, etc., or a 1 x N cell \
 vector where each element corresponds to one of N table columns, and \
-containing any of the above options or a fixed width specified in pixels.";
+contains any of the above string options or a fixed width specified in pixels.\
+  The @qcode{\"1x\"} property is not yet implemented.";
         s.category = "Table Data";
 
       case "data"
@@ -3166,7 +3230,7 @@ containing any of the above options or a fixed width specified in pixels.";
         s.category = "Table Operation";
 
       case "extent"
-        s.doc = "A for element vector indicating the size of the table.  \
+        s.doc = "A four-element vector indicating the size of the table.  \
 The first two elements of the array are always zero, while the third and \
 fourth elements contain the height and width of the table.";
         s.valid = valid_4elvec;
@@ -3202,14 +3266,47 @@ fourth elements contain the height and width of the table.";
         s.category = "Appearance";
 
       case "keypressfcn"
-        s.doc = "A string consisting of a valid Octave expression that will \
-be executed whenever a key is pressed in this table object.";
-        s.valid = "string";
+        s.doc = "Callback function executed when a key is pressed while the \
+table object has focus.  The first argument to the function is the handle of \
+the calling table.  The second argument holds an event structure which has the \
+following members:\n\
+@table @code\n\
+@item Character:\n\
+The ASCII value of the key\n\
+@item Modifier:\n\
+A cell array containing strings representing the modifiers pressed with the \
+key.\n\
+@item Key:\n\
+Lowercase description of the key\n\
+@item Source:\n\
+Graphics handle of the object executing the callback function\n\
+@item EventName:\n\
+\"KeyPress\"\n\
+@end table\
+\n\n__fcnmsg__";
+        s.valid = valid_fcn;
         s.category = "Callback Execution";
 
       case "keyreleasefcn"
-        s.doc = "A string consisting of a valid Octave expression that will \
-be executed whenever a key is released in this table object.";
+        s.doc = "Callback function executed when a key is released while the \
+table object has focus.  The first argument to the function is the handle of \
+the calling table.  The second argument holds an event structure which has the \
+following members:\n\
+@table @code\n\
+@item Character:\n\
+The ASCII value of the key\n\
+@item Modifier:\n\
+A cell array containing strings representing the modifiers pressed with the \
+key.\n\
+@item Key:\n\
+Lowercase description of the key\n\
+@item Source:\n\
+Graphics handle of the object executing the callback function\n\
+@item EventName:\n\
+\"KeyRelease\"\n\
+@end table\
+\n\n__fcnmsg__";
+        s.valid = valid_fcn;
         s.category = "Callback Execution";
 
       case "position"
@@ -3604,7 +3701,7 @@ endfunction
 function str = warn_autogen ()
   str = "@c DO NOT EDIT!  Generated automatically by genpropdoc.m.\n\
 \n\
-@c Copyright (C) 2014-2025 The Octave Project Developers\n\
+@c Copyright (C) 2014-2026 The Octave Project Developers\n\
 @c\n\
 @c See the file COPYRIGHT.md in the top-level directory of this\n\
 @c distribution or <https://octave.org/copyright/>.\n\

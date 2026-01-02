@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1994-2025 The Octave Project Developers
+// Copyright (C) 1994-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -76,7 +76,7 @@ converted through @code{char} can mostly be converted back with
 @example
 @group
 char ([97, 98, 99], "", @{"98", "99", 100@}, "str1", ["ha", "lf"])
-   @result{} ["abc "
+   @xresult{} ["abc "
        "    "
        "98  "
        "99  "
@@ -202,7 +202,7 @@ converted through @code{strvcat} can mostly be converted back with
 @example
 @group
 strvcat ([97, 98, 99], "", @{"98", "99", 100@}, "str1", ["ha", "lf"])
-      @result{} ["abc "
+      @xresult{} ["abc "
           "98  "
           "99  "
           "d   "
@@ -624,7 +624,7 @@ are the same, and 0 otherwise.
 @example
 @group
 strncmp ("abce", "abcd", 3)
-      @result{} 1
+      @xresult{} 1
 @end group
 @end example
 
@@ -637,7 +637,7 @@ or character string.
 @example
 @group
 strncmp ("abce", @{"abcd", "bca", "abc"@}, 3)
-     @result{} [1, 0, 1]
+     @xresult{} [1, 0, 1]
 @end group
 @end example
 
@@ -883,13 +883,16 @@ efficient, and avoids the security risk of using @code{eval} on unknown data.
 %!testif HAVE_LLVM_LIBCXX  <47413>
 %! assert (str2double ({"abc", "4i"}), [NaN + 0i, 4i]);
 %!testif ; ! __have_feature__ ("LLVM_LIBCXX")
-%! assert (str2double ({2, "4i"}), [NaN + 0i, 4i])
+%! assert (str2double ({2, "4i"}), [NaN + 0i, 4i]);
 %!testif HAVE_LLVM_LIBCXX  <47413>
-%! assert (str2double ({2, "4i"}), [NaN + 0i, 4i])
+%! assert (str2double ({2, "4i"}), [NaN + 0i, 4i]);
 %!assert (str2double (zeros (3,1,2)), NaN)
 %!assert (str2double (''), NaN)
 %!assert (str2double ([]), NaN)
 %!assert (str2double (char (zeros (3,0))), NaN)
+%!assert (str2double ("1.000444"), 1.000444)
+%!assert (str2double ("1e999"), Inf)
+%!assert (str2double ("-1e999"), -Inf)
 */
 
 DEFUN (__native2unicode__, args, ,
@@ -1004,7 +1007,7 @@ Return an array with the indices for each UTF-8 encoded character in @var{str}.
 @example
 @group
 unicode_idx ("aäbc")
-     @result{} [1, 2, 2, 3, 4]
+     @xresult{} [1, 2, 2, 3, 4]
 @end group
 @end example
 
@@ -1058,9 +1061,9 @@ The input @var{str} must be a UTF-8 encoded character vector or cell string.
 @example
 @group
 length ("aäbc")
-     @result{} 5
+     @xresult{} 5
 __unicode_length__ ("aäbc")
-     @result{} 4
+     @xresult{} 4
 @end group
 @end example
 
@@ -1168,7 +1171,7 @@ Example Code
 @example
 @group
 joined_string = [newline "line1" newline "line2"]
-@result{}
+@xresult{}
 line1
 line2
 @end group
@@ -1211,12 +1214,12 @@ used to break the lines in the output string.  For example:
 @smallexample
 @group
 list_in_columns (@{"abc", "def", "ghijkl", "mnop", "qrs", "tuv"@}, 20)
-     @result{} abc     mnop
+     @xresult{} abc     mnop
         def     qrs
         ghijkl  tuv
 
 whos ans
-     @result{}
+     @xresult{}
      Variables in the current scope:
 
        Attr Name        Size                     Bytes  Class

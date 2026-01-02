@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2012-2025 The Octave Project Developers
+// Copyright (C) 2012-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -135,6 +135,11 @@ public:
     err_invalid_object ("subsasgn");
   }
 
+  virtual octave_value reshape (const dim_vector&) const
+  {
+    err_invalid_object ("reshape");
+  }
+
   virtual string_vector map_keys () const;
 
   virtual bool is_valid () const { return false; }
@@ -178,6 +183,16 @@ public:
   OCTINTERP_API void release (const cdef_object& obj);
 
   virtual dim_vector dims () const { return dim_vector (); }
+
+  virtual cdef_object_rep * permute (const Array<int>&, bool = false) const
+  {
+    err_invalid_object ("permute");
+  }
+
+  virtual cdef_object_rep * transpose () const
+  {
+    err_invalid_object ("transpose");
+  }
 
 protected:
 
@@ -299,9 +314,15 @@ public:
     return m_rep->subsasgn (type, idx, rhs);
   }
 
+  octave_value reshape (const dim_vector& new_dims) const
+  {
+    return m_rep->reshape (new_dims);
+  }
+
   string_vector map_keys () const { return m_rep->map_keys (); }
 
-  OCTINTERP_API octave_map map_value () const;
+  OCTINTERP_API octave_map
+  map_value (bool warn = true, bool for_save = false) const;
 
   const cdef_object_rep * get_rep () const { return m_rep; }
 
@@ -330,6 +351,12 @@ public:
   { m_rep->mark_as_constructed (cls); }
 
   bool is (const cdef_object& obj) const { return m_rep == obj.m_rep; }
+
+  cdef_object permute (const Array<int>& vec, bool inv = false) const
+  { return cdef_object (m_rep->permute (vec, inv)); }
+
+  cdef_object transpose () const
+  { return cdef_object (m_rep->transpose ()); }
 
 protected:
 
@@ -396,10 +423,7 @@ public:
 
   ~cdef_object_array () = default;
 
-  cdef_object_rep * clone () const
-  {
-    return new cdef_object_array (*this);
-  }
+  OCTINTERP_API cdef_object_rep * clone () const;
 
   dim_vector dims () const { return m_array.dims (); }
 
@@ -421,6 +445,8 @@ public:
   subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
             const octave_value& rhs);
 
+  OCTINTERP_API octave_value reshape (const dim_vector& new_dims) const;
+
   void set_property (octave_idx_type idx, const std::string& pname,
                      const octave_value& pval)
   {
@@ -436,6 +462,11 @@ public:
 
     return tmp.get (pname);
   }
+
+  OCTINTERP_API cdef_object_rep *
+  permute (const Array<int>& vec, bool inv = false) const;
+
+  cdef_object_rep * transpose () const;
 
 private:
 
@@ -506,6 +537,20 @@ public:
   OCTINTERP_API octave_value
   subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
             const octave_value& rhs);
+
+  octave_value reshape (const dim_vector& new_dims) const;
+
+  cdef_object_rep *
+  permute ([[maybe_unused]] const Array<int>& vec,
+           [[maybe_unused]] bool inv = false) const
+  {
+    return clone ();
+  }
+
+  cdef_object_rep * transpose () const
+  {
+    return clone ();
+  }
 
   OCTINTERP_API void mark_for_construction (const cdef_class&);
 

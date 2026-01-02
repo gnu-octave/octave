@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -43,16 +43,17 @@
 #include "file-ops.h"
 #include "file-stat.h"
 #include "glob-match.h"
-#include "lo-mappers.h"
-#include "lo-sysdep.h"
 #include "mach-info.h"
+#include "mappers.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
+#include "oct-sysdep.h"
 #include "oct-time.h"
 #include "quit.h"
 #include "str-vec.h"
 #include "unistr-wrappers.h"
 
+#include "cdef-utils.h"
 #include "Cell.h"
 #include "defaults.h"
 #include "defun.h"
@@ -63,6 +64,7 @@
 #include "load-path.h"
 #include "load-save.h"
 #include "ls-mat5.h"
+#include "ls-mat-subsys.h"
 #include "ls-utils.h"
 #include "oct-map.h"
 #include "ov-cell.h"
@@ -86,10 +88,6 @@
 #define READ_PAD(is_small_data_element, l) ((is_small_data_element) ? 4 : (((l)+7)/8)*8)
 #define PAD(l) (((l) > 0 && (l) <= 4) ? 4 : (((l)+7)/8)*8)
 #define INT8(l) ((l) == miINT8 || (l) == miUINT8 || (l) == miUTF8)
-
-
-// The subsystem data block
-static octave_value subsys_ov;
 
 // FIXME: the following enum values should be the same as the
 // mxClassID values in mexproto.h, but it seems they have also changed
@@ -681,16 +679,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       is.seekg (tmp_pos + static_cast<std::streamoff>
                 (READ_PAD (is_small_data_element, dim_len) - dim_len));
     }
-  else
-    {
-      // Why did mathworks decide to not have dims for a workspace!!!
-      dims.resize (2);
-      dims(0) = 1;
-      dims(1) = 1;
-    }
 
   if (read_mat5_tag (is, swap, type, len, is_small_data_element)
-      || ! INT8(type))
+      || ! INT8 (type))
     error ("load: invalid array name subelement");
 
   {
@@ -985,12 +976,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
           {
             octave_scalar_map m2
               = m1.contents ("workspace").scalar_map_value ();
-            uint32NDArray MCOS = m2.contents ("MCOS").uint32_array_value ();
-            octave_idx_type off
-              = static_cast<octave_idx_type> (MCOS(4).double_value ());
-            m2 = subsys_ov.scalar_map_value ();
-            m2 = m2.contents ("MCOS").scalar_map_value ();
-            tc2 = m2.contents ("MCOS").cell_value ()(1 + off).cell_value ()(1);
+
+            // FIXME: Check
+            tc2 = octave::load_mcos_object (m2);
 
             octave::stack_frame::local_vars_map local_vars;
 
@@ -1052,67 +1040,92 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
     case MAT_FILE_WORKSPACE_CLASS:
       {
-        octave_map m (dim_vector (1, 1));
-        int n_fields = 2;
-        string_vector field (n_fields);
 
-        for (int i = 0; i < n_fields; i++)
+        std::string type_system;
+        if (read_mat5_tag (is, swap, type, len, is_small_data_element)
+            || ! INT8 (type))
+          error ("load: invalid type system");
+
+        {
+          // Type System
+          OCTAVE_LOCAL_BUFFER (char, name, len+1);
+
+          std::streampos tmp_pos = is.tellg ();
+
+          if (len)
+            {
+              if (! is.read (name, len))
+                goto data_read_error;
+
+              is.seekg (tmp_pos + static_cast<std::streamoff>
+                        (READ_PAD (is_small_data_element, len)));
+            }
+
+          name[len] = '\0';
+          type_system = name;
+        }
+
+
+        if (read_mat5_tag (is, swap, type, len, is_small_data_element)
+            || ! INT8 (type))
+          error ("load: invalid class name");
+
+        {
+          // Class Name
+          OCTAVE_LOCAL_BUFFER (char, name, len+1);
+
+          std::streampos tmp_pos = is.tellg ();
+
+          if (len)
+            {
+              if (! is.read (name, len))
+                goto data_read_error;
+
+              is.seekg (tmp_pos + static_cast<std::streamoff>
+                        (READ_PAD (is_small_data_element, len)));
+            }
+
+          name[len] = '\0';
+          classname = name;
+        }
+
+        octave_value objmetadata;
+        read_mat5_binary_element (is, filename, swap, global,
+                                            objmetadata);
+        if (! is)
+          goto data_read_error;
+
+        if (type_system != "MCOS")
           {
-            int32_t fn_type;
-            int32_t fn_len;
-            if (read_mat5_tag (is, swap, fn_type, fn_len, is_small_data_element)
-                || ! INT8(fn_type))
-              error ("load: invalid field name subelement");
-
-            OCTAVE_LOCAL_BUFFER (char, elname, fn_len + 1);
-
-            std::streampos tmp_pos = is.tellg ();
-
-            if (fn_len)
-              {
-                if (! is.read (elname, fn_len))
-                  goto data_read_error;
-
-                is.seekg (tmp_pos + static_cast<std::streamoff>
-                          (READ_PAD (is_small_data_element, fn_len)));
-              }
-
-            elname[fn_len] = '\0';
-
-            field(i) = elname;
+            // Other type systems known are "java" and "handle"
+            // java is used for java objects
+            // handle is used for certain COM objects
+            warning_with_id ("Octave:load:classdef-not-supported",
+                             "load: MATLAB class object with type system '%s' "
+                             "not supported. Loading as %s",
+                              type_system.c_str (),
+                              objmetadata.class_name ().c_str ());
+            tc = objmetadata;
           }
-
-        std::vector<Cell> elt (n_fields);
-
-        for (octave_idx_type i = 0; i < n_fields; i++)
-          elt[i] = Cell (dims);
-
-        octave_idx_type n = dims.numel ();
-
-        // fields subelements
-        for (octave_idx_type j = 0; j < n; j++)
+        else if (classname == "FileWrapper__")
           {
-            for (octave_idx_type i = 0; i < n_fields; i++)
-              {
-                if (field(i) == "MCOS")
-                  {
-                    octave_value fieldtc;
-                    read_mat5_binary_element (is, filename, swap, global,
-                                              fieldtc);
-                    if (! is)
-                      goto data_read_error;
-
-                    elt[i](j) = fieldtc;
-                  }
-                else
-                  elt[i](j) = octave_value ();
-              }
+            // FileWrapper__ object contains serialized object data as a cell array
+            // In MATLAB, this is an MCOS class with a constructor and no properties
+            // Return the serialized data for this case
+            tc = objmetadata;
           }
-
-        for (octave_idx_type i = 0; i < n_fields; i++)
-          m.assign (field (i), elt[i]);
-        tc = m;
+        else if (objmetadata.isstruct ())
+          {
+            warning_with_id ("Octave:load:classdef-not-supported",
+                             "load: MATLAB enumeration classes are not "
+                             "supported. Loading as %s",
+                             objmetadata.class_name ().c_str ());
+            tc = objmetadata;
+          }
+        else
+          tc = octave::load_mcos_object (objmetadata);
       }
+
       break;
 
     case MAT_FILE_OBJECT_CLASS:
@@ -1120,7 +1133,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         isclass = true;
 
         if (read_mat5_tag (is, swap, type, len, is_small_data_element)
-            || ! INT8(type))
+            || ! INT8 (type))
           error ("load: invalid class name");
 
         {
@@ -1167,7 +1180,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         // field name subelement.  The length of this subelement tells
         // us how many fields there are.
         if (read_mat5_tag (is, swap, fn_type, fn_len, is_small_data_element)
-            || ! INT8(fn_type))
+            || ! INT8 (fn_type))
           error ("load: invalid field name subelement");
 
         octave_idx_type n_fields = fn_len/field_name_length;
@@ -1594,8 +1607,12 @@ read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet,
             ctmp[j-8] = itmp(j).char_value ();
 
           std::istringstream fh_ws (outbuf);
-
+          octave_value subsys_ov;
           read_mat5_binary_element (fh_ws, filename, swap, global, subsys_ov);
+
+          octave::subsystem_handler *sh = octave::__get_load_save_system__ ().get_subsystem_handler ();
+          if (! sh->read_mat_subsystem (subsys_ov, swap))
+            error ("load: unable to read subsystem data from MAT-file '%s'", filename.c_str ());
 
           if (! is)
             return -1;
@@ -1983,7 +2000,7 @@ save_mat5_array_length (const double *val, octave_idx_type nel,
       //     if (val < min_val)
       //       min_val = val;
       //
-      //     if (octave::math::x_nint (val) != val)
+      //     if (octave::math::round (val) != val)
       //       {
       //         all_integers = false;
       //         break;
@@ -2037,7 +2054,7 @@ save_mat5_array_length (const float * /* val */, octave_idx_type nel, bool)
       //     if (val < min_val)
       //       min_val = val;
       //
-      //     if (octave::math::x_nint (val) != val)
+      //     if (octave::math::round (val) != val)
       //       {
       //         all_integers = false;
       //         break;
@@ -2135,12 +2152,17 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
   std::size_t max_namelen = 63;
   std::size_t len = name.length ();
   std::string cname = tc.class_name ();
-  int ret = 32;
+  int ret = 24;
 
   if (len > 4)
     ret += PAD (len > max_namelen ? max_namelen : len);
 
-  ret += PAD (4 * tc.ndims ());
+  if (! tc.is_classdef_object ())
+    {
+      // dimensions flag
+      ret += 8;
+      ret += PAD (4 * tc.ndims ());
+    }
 
   if (tc.is_string ())
     {
@@ -2203,90 +2225,119 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
 
   else if (cname == "int8")
     INT_LEN (tc.int8_array_value ().numel (), 1)
-    else if (cname == "int16")
-      INT_LEN (tc.int16_array_value ().numel (), 2)
-      else if (cname == "int32")
-        INT_LEN (tc.int32_array_value ().numel (), 4)
-        else if (cname == "int64")
-          INT_LEN (tc.int64_array_value ().numel (), 8)
-          else if (cname == "uint8")
-            INT_LEN (tc.uint8_array_value ().numel (), 1)
-            else if (cname == "uint16")
-              INT_LEN (tc.uint16_array_value ().numel (), 2)
-              else if (cname == "uint32")
-                INT_LEN (tc.uint32_array_value ().numel (), 4)
-                else if (cname == "uint64")
-                  INT_LEN (tc.uint64_array_value ().numel (), 8)
-                  else if (tc.islogical ())
-                    INT_LEN (tc.bool_array_value ().numel (), 1)
-                    else if (tc.is_real_scalar () || tc.is_real_matrix () || tc.is_range ())
-                      {
-                        if (tc.is_single_type ())
-                          {
-                            const FloatNDArray m = tc.float_array_value ();
-                            ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
-                          }
-                        else
-                          {
-                            const NDArray m = tc.array_value ();
-                            ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
-                          }
-                      }
-                    else if (tc.iscell ())
-                      {
-                        Cell cell = tc.cell_value ();
-                        octave_idx_type nel = cell.numel ();
+  else if (cname == "int16")
+    INT_LEN (tc.int16_array_value ().numel (), 2)
+  else if (cname == "int32")
+    INT_LEN (tc.int32_array_value ().numel (), 4)
+  else if (cname == "int64")
+    INT_LEN (tc.int64_array_value ().numel (), 8)
+  else if (cname == "uint8")
+    INT_LEN (tc.uint8_array_value ().numel (), 1)
+  else if (cname == "uint16")
+    INT_LEN (tc.uint16_array_value ().numel (), 2)
+  else if (cname == "uint32")
+    INT_LEN (tc.uint32_array_value ().numel (), 4)
+  else if (cname == "uint64")
+    INT_LEN (tc.uint64_array_value ().numel (), 8)
+  else if (tc.islogical ())
+    INT_LEN (tc.bool_array_value ().numel (), 1)
+  else if (tc.is_real_scalar () || tc.is_real_matrix () || tc.is_range ())
+    {
+      if (tc.is_single_type ())
+        {
+          const FloatNDArray m = tc.float_array_value ();
+          ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
+        }
+      else
+        {
+          const NDArray m = tc.array_value ();
+          ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
+        }
+    }
+  else if (tc.iscell ())
+    {
+      Cell cell = tc.cell_value ();
+      octave_idx_type nel = cell.numel ();
 
-                        for (int i = 0; i < nel; i++)
-                          ret += 8 +
-                                 save_mat5_element_length (cell (i), "", save_as_floats, mat7_format);
-                      }
-                    else if (tc.is_complex_scalar () || tc.is_complex_matrix ())
-                      {
-                        if (tc.is_single_type ())
-                          {
-                            const FloatComplexNDArray m = tc.float_complex_array_value ();
-                            ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
-                          }
-                        else
-                          {
-                            const ComplexNDArray m = tc.complex_array_value ();
-                            ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
-                          }
-                      }
-                    else if (tc.isstruct () || tc.is_inline_function () || tc.isobject ())
-                      {
-                        int fieldcnt = 0;
-                        const octave_map m = tc.map_value ();
-                        octave_idx_type nel = m.numel ();
+      for (int i = 0; i < nel; i++)
+        ret += 8 +
+               save_mat5_element_length (cell (i), "", save_as_floats, mat7_format);
+    }
+  else if (tc.is_complex_scalar () || tc.is_complex_matrix ())
+    {
+      if (tc.is_single_type ())
+        {
+          const FloatComplexNDArray m = tc.float_complex_array_value ();
+          ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
+        }
+      else
+        {
+          const ComplexNDArray m = tc.complex_array_value ();
+          ret += save_mat5_array_length (m.data (), m.numel (), save_as_floats);
+        }
+    }
+  else if (tc.is_classdef_object ())
+    {
+      // assuming MCOS objects only
+      ret +=  8;  // for type system - MCOS uses small element format
 
-                        if (tc.is_inline_function ())
-                          ret += 8 + PAD (6);  // length of "inline" is 6
-                        else if (tc.isobject ())
-                          {
-                            std::size_t classlen = tc.class_name ().length ();
+      std::size_t classlen = cname.length ();
+      ret += 8;
+      if (classlen > 4)
+        ret += PAD (classlen > max_namelen ? max_namelen : classlen);
 
-                            ret += 8 + PAD (classlen > max_namelen ? max_namelen : classlen);
-                          }
+      const dim_vector& dv = tc.dims ();
+      int ndims = dv.ndims ();
+      int nobjs = dv.numel ();
 
-                        for (auto i = m.begin (); i != m.end (); i++)
-                          fieldcnt++;
+      if (cname == "FileWrapper__")
+        {
+          octave::load_save_system& lss = octave::__get_load_save_system__ ();
+          const octave_value& fwrap_data
+            = lss.get_subsystem_handler ()->get_serialized_data ();
+          ret += 8 + save_mat5_element_length (fwrap_data, "", save_as_floats, false);
+        }
+      else
+        {
+          //! Does not work for enumerations
+          uint32NDArray mcos_metadata_arr (dim_vector (ndims + nobjs + 3, 1));
+          ret += 8 + save_mat5_element_length (mcos_metadata_arr, "",
+                                               save_as_floats, mat7_format);
+        }
+    }
+  else if (tc.isstruct () || tc.is_inline_function () || tc.isobject ())
+    {
+      int fieldcnt = 0;
+      const octave_map m = tc.map_value ();
+      octave_idx_type nel = m.numel ();
 
-                        ret += 16 + fieldcnt * (max_namelen + 1);
+      if (tc.is_inline_function ())
+        ret += 8 + PAD (6);  // length of "inline" is 6
+      else if (tc.isobject ())
+        {
+          std::size_t classlen = tc.class_name ().length ();
 
-                        for (octave_idx_type j = 0; j < nel; j++)
-                          {
-                            for (auto i = m.begin (); i != m.end (); i++)
-                              {
-                                const Cell elts = m.contents (i);
+          ret += 8 + PAD (classlen > max_namelen ? max_namelen : classlen);
+        }
 
-                                ret += 8 + save_mat5_element_length (elts(j), "", save_as_floats,
-                                                                     mat7_format);
-                              }
-                          }
-                      }
-                    else
-                      ret = -1;
+      for (auto i = m.begin (); i != m.end (); i++)
+        fieldcnt++;
+
+      ret += 16 + fieldcnt * (max_namelen + 1);
+
+      for (octave_idx_type j = 0; j < nel; j++)
+        {
+          for (auto i = m.begin (); i != m.end (); i++)
+            {
+              const Cell elts = m.contents (i);
+
+              ret += 8 + save_mat5_element_length (elts(j), "", save_as_floats,
+                                                   mat7_format);
+            }
+        }
+    }
+  else
+    ret = -1;
 
   return ret;
 }
@@ -2334,12 +2385,38 @@ save_mat5_binary_element (std::ostream& os,
 
   static octave_idx_type max_dim_val = std::numeric_limits<int32_t>::max ();
 
-  for (int i = 0; i < nd; i++)
+  // Strings need to be converted here (or dim-vector will be off).
+  charNDArray chm;
+  uint16_t *u16_str;
+  std::size_t n16_str;
+  bool conv_u16 = false;
+  if (tc.is_string ())
     {
-      if (dv(i) > max_dim_val)
+      chm = tc.char_array_value ();
+      u16_str = maybe_convert_to_u16 (chm, n16_str);
+
+      if (u16_str)
+        conv_u16 = true;
+    }
+
+
+  if (conv_u16)
+    {
+      if (n16_str > static_cast<std::size_t> (max_dim_val))
         {
           warn_dim_too_large (name);
           return true;  // skip to next
+        }
+    }
+  else
+    {
+      for (int i = 0; i < nd; i++)
+        {
+          if (dv(i) > max_dim_val)
+            {
+              warn_dim_too_large (name);
+              return true;  // skip to next
+            }
         }
     }
 
@@ -2465,6 +2542,8 @@ save_mat5_binary_element (std::ostream& os,
     flags |= MAT_FILE_STRUCT_CLASS;
   else if (tc.iscell ())
     flags |= MAT_FILE_CELL_CLASS;
+  else if (tc.is_classdef_object ())
+    flags |= MAT_FILE_WORKSPACE_CLASS;
   else if (tc.is_inline_function () || tc.isobject ())
     flags |= MAT_FILE_OBJECT_CLASS;
   else
@@ -2481,39 +2560,28 @@ save_mat5_binary_element (std::ostream& os,
     nnz_32 = 1;
   os.write (reinterpret_cast<char *> (&nnz_32), 4);
 
-  write_mat5_tag (os, miINT32, dim_len);
-
-  // Strings need to be converted here (or dim-vector will be off).
-  charNDArray chm;
-  uint16_t *u16_str;
-  std::size_t n16_str;
-  bool conv_u16 = false;
-  if (tc.is_string ())
+  if (! tc.is_classdef_object ())
     {
-      chm = tc.char_array_value ();
-      u16_str = maybe_convert_to_u16 (chm, n16_str);
+      // classdef objects don't have dims subelement
+      write_mat5_tag (os, miINT32, dim_len);
 
-      if (u16_str)
-        conv_u16 = true;
-    }
+      if (conv_u16)
+        {
+          int32_t n[2] = {1, static_cast<int32_t> (n16_str)};
+          os.write (reinterpret_cast<char *> (&n), 8);
+        }
+      else
+        for (int i = 0; i < nd; i++)
+          {
+            int32_t n = dv(i);
+            os.write (reinterpret_cast<char *> (&n), 4);
+          }
 
-  if (conv_u16)
-    {
-      int32_t n = 1;
-      os.write (reinterpret_cast<char *> (&n), 4);
-      os.write (reinterpret_cast<char *> (&n16_str), 4);
-    }
-  else
-    for (int i = 0; i < nd; i++)
-      {
-        int32_t n = dv(i);
-        os.write (reinterpret_cast<char *> (&n), 4);
-      }
-
-  if (PAD (dim_len) > dim_len)
-    {
-      static char buf[9] = "\x00\x00\x00\x00\x00\x00\x00\x00";
-      os.write (buf, PAD (dim_len) - dim_len);
+      if (PAD (dim_len) > dim_len)
+        {
+          static char buf[9] = "\x00\x00\x00\x00\x00\x00\x00\x00";
+          os.write (buf, PAD (dim_len) - dim_len);
+        }
     }
 
   // array name subelement
@@ -2531,6 +2599,30 @@ save_mat5_binary_element (std::ostream& os,
     strncpy (paddedname, name.c_str (), namelen);
     os.write (paddedname, paddedlength);
   }
+
+  if (tc.is_classdef_object ())
+    {
+      // type system
+      std::string type_system;
+      if (tc.type_name () == "object")
+        type_system = "MCOS";
+      std::size_t type_sys_len = type_system.length ();
+      int paddedlength = PAD (type_sys_len);
+      write_mat5_tag (os, miINT8, type_sys_len);
+      OCTAVE_LOCAL_BUFFER (char, paddedtype, paddedlength);
+      memset (paddedtype, 0, paddedlength);
+      strncpy (paddedtype, type_system.c_str (), type_sys_len);
+      os.write (paddedtype, paddedlength);
+
+      // class name
+      std::size_t class_name_len = cname.length ();
+      paddedlength = PAD (class_name_len);
+      write_mat5_tag (os, miINT8, class_name_len);
+      OCTAVE_LOCAL_BUFFER (char, paddedclass, paddedlength);
+      memset (paddedclass, 0, paddedlength);
+      strncpy (paddedclass, cname.c_str (), class_name_len);
+      os.write (paddedclass, paddedlength);
+    }
 
   // data element
   if (tc.is_string ())
@@ -2702,6 +2794,37 @@ save_mat5_binary_element (std::ostream& os,
           write_mat5_array (os, ::imag (m_cmplx), save_as_floats);
         }
     }
+  else if (tc.is_classdef_object ())
+    {
+      octave::subsystem_handler *sh
+        = octave::__get_load_save_system__ ().get_subsystem_handler ();
+      octave_value objmetadata;
+
+      if (cname == "FileWrapper__")
+        objmetadata = sh->get_serialized_data ();
+      else if (sh->has_serialized_data ())
+        {
+          // MAT-files write metadata without MAT_FILE_WORKSPACE_CLASS header
+          // in subsystem.
+          // Current version writes header for these objects, which involves
+          // modifying subsystem.
+          // Workaround to prevent invalid memory access
+          warning_with_id ("MATLAB:save:",
+                           "Object of class %s cannot be loaded in Octave due "
+                           "to issues with MAT-compatibility and is returned "
+                           "as a Cell",
+                           cname.c_str ());
+          objmetadata = Cell (dim_vector (0, 0));
+        }
+      else
+        objmetadata = sh->set_mcos_object_metadata (tc);
+
+      bool retval2 = save_mat5_binary_element (os, objmetadata, "", false,
+                                               false, save_as_floats);
+      if (! retval2)
+        error ("save: error while writing '%s' to MAT file",
+               name.c_str ());
+    }
   else if (tc.isstruct () || tc.is_inline_function () || tc.isobject ())
     {
       if (tc.is_inline_function () || tc.isobject ())
@@ -2790,9 +2913,8 @@ save_mat5_binary_element (std::ostream& os,
             for (octave_idx_type i = 0; i < nf; i++)
               {
                 bool retval2 = save_mat5_binary_element (os, elts[i][j], "",
-                               mark_global,
-                               false,
-                               save_as_floats);
+                                                         mark_global, false,
+                                                         save_as_floats);
                 if (! retval2)
                   error ("save: error while writing '%s' to MAT file",
                          name.c_str ());

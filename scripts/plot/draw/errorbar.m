@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2000-2025 The Octave Project Developers
+## Copyright (C) 2000-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -174,23 +174,13 @@ function h = errorbar (varargin)
 
   [hax, varargin] = __plt_get_axis_arg__ ("errorbar", varargin{:});
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
+  hax = newplot (hax);
+
+  htmp = __errplot__ ("errorbar", hax, varargin{:});
+
+  if (! ishold (hax))
+    set (hax, "box", "on");
   endif
-  unwind_protect
-    hax = newplot (hax);
-
-    htmp = __errplot__ ("errorbar", hax, varargin{:});
-
-    if (! ishold ())
-      set (hax, "box", "on");
-    endif
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
 
   if (nargout > 0)
     h = htmp;

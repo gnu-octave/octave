@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2004-2025 The Octave Project Developers
+## Copyright (C) 2004-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -41,7 +41,7 @@
 ##    @print{} x86_64-pc-linux-gnu
 ##
 ## mycomp = computer ()
-##    @result{} mycomp = x86_64-pc-linux-gnu
+##    @xresult{} mycomp = x86_64-pc-linux-gnu
 ## @end group
 ## @end example
 ##

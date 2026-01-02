@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2000-2025 The Octave Project Developers
+## Copyright (C) 2000-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -47,14 +47,14 @@
 ## @example
 ## @group
 ## isprime (1:6)
-##   @result{}  0  1  1  0  1  0
+##   @xresult{}  0  1  1  0  1  0
 ## @end group
 ## @end example
 ##
 ## @example
 ## @group
 ## isprime ([i, 2, 3, 5])
-##   @result{}  0  0  1  0
+##   @xresult{}  0  0  1  0
 ## @end group
 ## @end example
 ##
@@ -74,7 +74,7 @@
 ## @example
 ## @group
 ## isprime (sym ('58745389709258902525390450') + (0:4))
-##    @result{}  0  1  0  0  0
+##    @xresult{}  0  1  0  0  0
 ## @end group
 ## @end example
 ##

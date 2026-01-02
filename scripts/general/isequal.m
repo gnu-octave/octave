@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2000-2025 The Octave Project Developers
+## Copyright (C) 2000-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -277,7 +277,7 @@ function tf = isequal (x, varargin)
           endif
         endif
 
-      elseif (iscellstr (x) && all (cellfun (@iscellstr, varargin)))
+      elseif (iscellstr (x) && all (cellfun ('iscellstr', varargin)))
         ## cellstr type.  Optimization over cell type by using strcmp.
         ## FIXME: It would be faster to use strcmp on whole cellstr arrays,
         ## but bug #51412 needs to be fixed.  Instead, time/space trade-off.

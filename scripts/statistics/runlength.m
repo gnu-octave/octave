@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2005-2025 The Octave Project Developers
+## Copyright (C) 2005-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -36,7 +36,7 @@
 ## @example
 ## @group
 ## runlength ([2, 2, 0, 4, 4, 4, 0, 1, 1, 1, 1])
-## @result{}   2   1   3   1   4
+## @xresult{}   2   1   3   1   4
 ## @end group
 ## @end example
 ## @seealso{run_count}
@@ -49,7 +49,7 @@ function [count, value] = runlength (x)
   endif
 
   if (! (isnumeric (x) || islogical (x)) || ! isvector (x))
-    error ("runlength: X must be a numeric vector");
+    error ("runlength: X must be a numeric or logical vector");
   endif
 
   if (iscolumn (x))
@@ -74,5 +74,5 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> runlength ()
-%!error runlength (['A'; 'B'])
-%!error runlength (ones (2,2))
+%!error <must be a numeric or logical> runlength (['A'; 'B'])
+%!error <must be a .* vector> runlength (ones (2,2))

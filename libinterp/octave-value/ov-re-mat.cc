@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -35,24 +35,24 @@
 
 #include "dNDArray.h"
 #include "fNDArray.h"
-#include "int8NDArray.h"
 #include "int16NDArray.h"
 #include "int32NDArray.h"
 #include "int64NDArray.h"
-#include "uint8NDArray.h"
+#include "int8NDArray.h"
 #include "uint16NDArray.h"
 #include "uint32NDArray.h"
 #include "uint64NDArray.h"
+#include "uint8NDArray.h"
 
 #include "data-conv.h"
 #include "lo-ieee.h"
 #include "lo-utils.h"
-#include "lo-specfun.h"
-#include "lo-mappers.h"
 #include "mach-info.h"
+#include "mappers.h"
 #include "mx-base.h"
-#include "quit.h"
 #include "oct-locbuf.h"
+#include "oct-specfun.h"
+#include "quit.h"
 
 #include "defun.h"
 #include "errwarn.h"
@@ -225,7 +225,10 @@ octave_matrix::char_array_value (bool) const
   octave_idx_type nel = numel ();
 
   for (octave_idx_type i = 0; i < nel; i++)
-    retval.elem (i) = static_cast<char> (m_matrix.elem (i));
+    if (octave::math::isnan (m_matrix.elem (i)))
+      retval.elem (i) = 0;
+    else
+      retval.elem (i) = static_cast<char> (m_matrix.elem (i));
 
   return retval;
 }

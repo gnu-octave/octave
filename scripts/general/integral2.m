@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2017-2025 The Octave Project Developers
+## Copyright (C) 2017-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -98,7 +98,7 @@
 ## @group
 ## @var{f} = @@(@var{x},@var{y}) 2*ones (size (@var{x}));
 ## @var{q} = integral2 (@var{f}, 0, 1, 0, 1)
-##   @result{} @var{q} =  2
+##   @xresult{} @var{q} =  2
 ## @end group
 ## @end example
 ##
@@ -112,7 +112,7 @@
 ## @var{f} = @@(@var{x},@var{y}) 2*ones (size (@var{x}));
 ## @var{ymax} = @@(@var{x}) 1 - @var{x};
 ## @var{q} = integral2 (@var{f}, 0, 1, 0, @var{ymax})
-##   @result{} @var{q} =  1
+##   @xresult{} @var{q} =  1
 ## @end group
 ## @end example
 ##
@@ -126,12 +126,12 @@
 ## @group
 ## @var{f} = @@(@var{x},@var{y}) sinc (@var{x}) * sinc (@var{y}));
 ## @var{q} = integral2 (@var{f}, -1, 1, -1, 1)
-##   @result{} @var{q} =  12.328  (incorrect)
+##   @xresult{} @var{q} =  12.328  (incorrect)
 ## @var{q} = integral2 (@var{f}, -1, 1, -1, 1, "Vectorized", false)
-##   @result{} @var{q} =  1.390 (correct)
+##   @xresult{} @var{q} =  1.390 (correct)
 ## @var{f} = @@(@var{x},@var{y}) sinc (@var{x}) .* sinc (@var{y});
 ## @var{q} = integral2 (@var{f}, -1, 1, -1, 1)
-##   @result{} @var{q} =  1.390  (correct)
+##   @xresult{} @var{q} =  1.390  (correct)
 ## @end group
 ## @end example
 ##

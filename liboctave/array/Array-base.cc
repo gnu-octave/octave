@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -33,10 +33,10 @@
 
 #include <ostream>
 
+#include "Array-oct.h"
 #include "Array-util.h"
-#include "Array.h"
-#include "lo-error.h"
-#include "lo-mappers.h"
+#include "mappers.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
 
 // One dimensional array class.  Handles the reference counting for
@@ -1111,6 +1111,9 @@ Array<T, Alloc>::index (const Array<octave::idx_vector>& ia,
       int ial = ia.numel ();
       const dim_vector& dv = m_dimensions.redim (ial);
       dim_vector dvx = dim_vector::alloc (ial);
+      // Set initial number of columns to 1.  Necessary if ial is 1 because all
+      // Octave arrays (including column vectors) have at least two dimensions.
+      dvx(1) = 1;
       for (int i = 0; i < ial; i++)
         dvx(i) = ia(i).extent (dv(i));
       if (! (dvx == dv))
@@ -2780,7 +2783,7 @@ Array<T, Alloc>::print_info (std::ostream& os, const std::string& prefix) const
      << prefix << "m_slice_data:    " << static_cast<void *> (m_slice_data) << '\n'
      << prefix << "m_slice_len:     " << m_slice_len << '\n';
 
-  // 2D info:
+  // 2-D info:
   //
   //     << pefix << "rows: " << rows () << "\n"
   //     << prefix << "cols: " << cols () << "\n";
@@ -2835,7 +2838,7 @@ operator << (std::ostream& os, const Array<T, Alloc>& a)
 
       Array<octave_idx_type> ra_idx (dim_vector (n_dims, 1), 0);
 
-      // Number of times the first 2d-array is to be displayed.
+      // Number of times the first 2-D array is to be displayed.
 
       octave_idx_type m = 1;
       for (int i = 2; i < n_dims; i++)

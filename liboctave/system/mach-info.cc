@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -28,8 +28,8 @@
 #endif
 
 #include "f77-fcn.h"
-#include "lo-error.h"
 #include "mach-info.h"
+#include "oct-error.h"
 
 extern "C"
 {
@@ -39,7 +39,6 @@ extern "C"
 }
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(mach_info)
 
 static float_format get_float_format ()
@@ -85,6 +84,16 @@ words_little_endian ()
   static bool little_endian = ! is_big_endian ();
 
   return little_endian;
+}
+
+bool
+nan_with_payload ()
+{
+#if defined (HAVE_QNAN_WITH_PAYLOAD)
+  return 1;
+#else
+  return 0;
+#endif
 }
 
 float_format

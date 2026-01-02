@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2001-2025 The Octave Project Developers
+// Copyright (C) 2001-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -76,10 +76,7 @@ oct_assignop_conv_and_assign (octave_base_value& a1,
 {
   OCTAVE_CAST_BASE_VALUE (octave_bool_matrix&, v1, a1);
 
-  // FIXME: perhaps add a warning for this conversion
-  //        if the values are not all 0 or 1?
-
-  boolNDArray v2 = a2.bool_array_value (true);
+  boolNDArray v2 = a2.bool_array_value ();
 
   v1.assign (idx, v2);
 

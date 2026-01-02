@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2007-2025 The Octave Project Developers
+// Copyright (C) 2007-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -155,7 +155,7 @@ An example of the use of typecast on a little-endian machine is
 @group
 @var{x} = uint16 ([1, 65535]);
 typecast (@var{x}, "uint8")
-@result{} [   1,   0, 255, 255]
+@xresult{} [   1,   0, 255, 255]
 @end group
 @end example
 @seealso{cast, bitpack, bitunpack, swapbytes}
@@ -299,7 +299,7 @@ typecast (@var{x}, "uint8")
 %!assert (typecast (0,    "double"), 0)
 %!assert (typecast (inf,  "double"), inf)
 %!assert (typecast (-inf, "double"), -inf)
-%!assert (typecast (nan,  "double"), nan)
+%!assert (typecast (NaN,  "double"), NaN)
 
 %!error typecast ()
 %!error typecast (1)

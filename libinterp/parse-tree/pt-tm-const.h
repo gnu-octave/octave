@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -175,13 +175,17 @@ public:
 
   void cellify ();
 
-private:
+  std::list<octave_value> values () const { return m_values; }
 
-  std::list<octave_value> m_values;
+private:
 
   void init_element (const octave_value&, bool&);
 
   void init (const tree_argument_list&, tree_evaluator& tw);
+
+  //--------
+
+  std::list<octave_value> m_values;
 };
 
 class OCTINTERP_API tm_const : public tm_info
@@ -205,15 +209,9 @@ public:
 
   octave_value concat (char string_fill_char) const;
 
+  std::list<tm_row_const> tm_rows () const { return m_tm_rows; }
+
 private:
-
-  tree_evaluator& m_evaluator;
-
-  // The list of lists of octave_value objects that contain the
-  // values of elements in each row of the tree_matrix object we are
-  // evaluating.
-
-  std::list<tm_row_const> m_tm_rows;
 
   void init (const tree_matrix& tm);
 
@@ -234,6 +232,16 @@ private:
 
   template <typename MAP>
   octave_map map_concat () const;
+
+  //--------
+
+  tree_evaluator& m_evaluator;
+
+  // The list of lists of octave_value objects that contain the
+  // values of elements in each row of the tree_matrix object we are
+  // evaluating.
+
+  std::list<tm_row_const> m_tm_rows;
 };
 
 OCTAVE_END_NAMESPACE(octave)

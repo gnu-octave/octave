@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2007-2025 The Octave Project Developers
+## Copyright (C) 2007-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -62,9 +62,9 @@
 ## @example
 ## @group
 ## cast (-5, "uint8")
-##    @result{} 0
+##    @xresult{} 0
 ## cast (300, "int8")
-##    @result{} 127
+##    @xresult{} 127
 ## @end group
 ## @end example
 ##

@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2003-2025 The Octave Project Developers
+## Copyright (C) 2003-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -421,9 +421,19 @@ function emit_bin_op_decls_1 (result_type, lhs_type, rhs_type,
   emit_bin_op_decl(result_type, div_op, lhs_type, rhs_type);
 }
 
-function emit_sparse_bin_op_decls (result_type_1, result_type_2,
-                                   lhs_type, rhs_type,
-                                   add_op, sub_op, mul_op, div_op)
+function emit_sparse_bin_op_decls_1 (result_type_1, result_type_2,
+                                     lhs_type, rhs_type,
+                                     add_op, sub_op, mul_op, div_op)
+{
+  emit_bin_op_decl(result_type_1, add_op, lhs_type, rhs_type);
+  emit_bin_op_decl(result_type_1, sub_op, lhs_type, rhs_type);
+  emit_bin_op_decl(result_type_2, mul_op, lhs_type, rhs_type);
+  emit_bin_op_decl(result_type_1, div_op, lhs_type, rhs_type);
+}
+
+function emit_sparse_bin_op_decls_2 (result_type_1, result_type_2,
+                                     lhs_type, rhs_type,
+                                     add_op, sub_op, mul_op, div_op)
 {
   emit_bin_op_decl(result_type_1, add_op, lhs_type, rhs_type);
   emit_bin_op_decl(result_type_1, sub_op, lhs_type, rhs_type);
@@ -437,20 +447,30 @@ function emit_bin_op_decls (sparse, lhs_class, rhs_class,
 {
   if (sparse)
     {
-      if ((lhs_class == "SM" && rhs_class == "S") \
-          || (lhs_class == "S" && rhs_class == "SM"))
-        emit_sparse_bin_op_decls(result_type_1, result_type_2,
-                                 lhs_type, rhs_type,
-                                 "operator +", "operator -",
-                                 "operator *", "operator /");
+      if (lhs_class == "S" && rhs_class == "SM")
+        emit_sparse_bin_op_decls_1(result_type_1, result_type_2,
+                                   lhs_type, rhs_type,
+                                   "operator +", "operator -",
+                                   "operator *", "operator /");
 
-      else if ((lhs_class == "M" && rhs_class == "SM")    \
-               || (lhs_class == "SM" && rhs_class == "M") \
+      else if (lhs_class == "SM" && rhs_class == "S")
+        emit_sparse_bin_op_decls_2(result_type_1, result_type_2,
+                                   lhs_type, rhs_type,
+                                   "operator +", "operator -",
+                                   "operator *", "operator /");
+
+      else if (lhs_class == "M" && rhs_class == "SM")
+        emit_sparse_bin_op_decls_1(result_type_1, result_type_2,
+                                   lhs_type, rhs_type,
+                                   "operator +", "operator -",
+                                   "product", "quotient");
+
+      else if ((lhs_class == "SM" && rhs_class == "M") \
                || (lhs_class == "SM" && rhs_class == "SM"))
-        emit_sparse_bin_op_decls(result_type_1, result_type_2,
-                                 lhs_type, rhs_type,
-                                 "operator +", "operator -",
-                                 "product", "quotient");
+        emit_sparse_bin_op_decls_2(result_type_1, result_type_2,
+                                   lhs_type, rhs_type,
+                                   "operator +", "operator -",
+                                   "product", "quotient");
     }
   else
     {
@@ -559,14 +579,22 @@ function emit_bool_op_decls_3 (result_type, lhs_type, rhs_type)
   emit_bin_op_decl(result_type, "mx_el_or_not", lhs_type, rhs_type);
 }
 
+function emit_bool_op_decls_4 (result_type_1, result_type_2, lhs_type, rhs_type)
+{
+  emit_bin_op_decl(result_type_1, "mx_el_and", lhs_type, rhs_type);
+  emit_bin_op_decl(result_type_2, "mx_el_or", lhs_type, rhs_type);
+}
+
 function emit_bool_op_decls (sparse, lhs_class, rhs_class, lhs_type, rhs_type)
 {
   if (sparse)
     {
-      if ((lhs_class == "M" && rhs_class == "SM") \
-          || (lhs_class == "SM" && (rhs_class == "M" || rhs_class == "S" || rhs_class == "SM")) \
-          || (lhs_class == "S" && rhs_class == "SM"))
+      if (lhs_class == "SM" && rhs_class == "SM")
         emit_bool_op_decls_1("SparseBoolMatrix", lhs_type, rhs_type);
+
+      else if ((lhs_class == "SM" && (rhs_class == "S" || rhs_class == "M")) \
+               || ((lhs_class == "S" || lhs_class == "M") && rhs_class == "SM"))
+        emit_bool_op_decls_4("SparseBoolMatrix", "boolMatrix", lhs_type, rhs_type);
     }
   else
     {

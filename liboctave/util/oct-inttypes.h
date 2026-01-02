@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2004-2025 The Octave Project Developers
+// Copyright (C) 2004-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -34,14 +34,13 @@
 #include <iosfwd>
 #include <limits>
 
-#include "lo-mappers.h"
-#include "lo-traits.h"
+#include "mappers.h"
 #include "oct-inttypes-fwd.h"
+#include "oct-traits.h"
 
 #if defined (OCTAVE_INT_USE_LONG_DOUBLE)
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(math)
 
 inline long double round (long double x)
@@ -404,7 +403,7 @@ private:
 
     // If val is even, but orig_val is odd, we're one unit off.
 
-    if (orig_val % 2 && val / 2 == octave::math::round (val / 2))
+    if (orig_val % 2 && octave::math::is_integer (val / 2))
       // FIXME: is this always correct?
       val *= (static_cast<S> (1) - (std::numeric_limits<S>::epsilon () / 2));
 
@@ -927,7 +926,6 @@ mod (const octave_int<T>& x, const octave_int<T>& y)
 // No mixed integer binary operations!
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(math)
 
 template <typename T>

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2006-2025 The Octave Project Developers
+// Copyright (C) 2006-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -35,7 +35,7 @@
 #include "MSparse.h"
 #include "MatrixType.h"
 #include "dSparse.h"
-#include "lo-error.h"
+#include "oct-error.h"
 #include "oct-inttypes-fwd.h"
 #include "oct-locbuf.h"
 #include "oct-sort.h"

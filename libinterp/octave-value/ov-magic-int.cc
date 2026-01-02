@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2020-2025 The Octave Project Developers
+// Copyright (C) 2020-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -33,9 +33,9 @@
 #include "oct-inttypes-fwd.h"
 
 #include "data-conv.h"
+#include "mappers.h"
 #include "mach-info.h"
-#include "lo-specfun.h"
-#include "lo-mappers.h"
+#include "oct-specfun.h"
 
 #include "defun.h"
 #include "errwarn.h"

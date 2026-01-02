@@ -474,11 +474,11 @@ Summary of bugs fixed for version 9.1.0 (2024-03-12):
 
 ### Old release news
 
-- [Octave 8.x](etc/NEWS.8.md)
-- [Octave 7.x](etc/NEWS.7.md)
-- [Octave 6.x](etc/NEWS.6.md)
-- [Octave 5.x](etc/NEWS.5.md)
-- [Octave 4.x](etc/NEWS.4)
-- [Octave 3.x](etc/NEWS.3)
-- [Octave 2.x](etc/NEWS.2)
-- [Octave 1.x](etc/NEWS.1)
+- [Octave 8.x](NEWS.8.md)
+- [Octave 7.x](NEWS.7.md)
+- [Octave 6.x](NEWS.6.md)
+- [Octave 5.x](NEWS.5.md)
+- [Octave 4.x](NEWS.4)
+- [Octave 3.x](NEWS.3)
+- [Octave 2.x](NEWS.2)
+- [Octave 1.x](NEWS.1)

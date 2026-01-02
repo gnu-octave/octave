@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2013-2025 The Octave Project Developers
+## Copyright (C) 2013-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -298,13 +298,13 @@ function pretty_print_formats (formats)
 
   ## define header names (none should be shorter than 3 characters)
   headers = {"Extension", "isa", "Info", "Read", "Write", "Alpha", "Description"};
-  cols_length = cellfun (@numel, headers);
+  cols_length = cellfun ('numel', headers);
 
   ## Adjust the maximal length of the extensions column
-  extensions = cellfun (@strjoin, {formats.ext}, {", "},
+  extensions = cellfun ('strjoin', {formats.ext}, {", "},
                         "UniformOutput", false);
   if (! isempty (extensions))
-    cols_length(1) = max (max (cellfun (@numel, extensions)), cols_length(1));
+    cols_length(1) = max (max (cellfun ('numel', extensions)), cols_length(1));
   endif
   headers{1} = postpad (headers{1}, cols_length(1), " ");
 
@@ -321,7 +321,7 @@ function pretty_print_formats (formats)
   ## instead we replace them with "yes" or "no", based on the support it has.
   yes_no_cols = cat (2, {formats.isa}(:), {formats.info}(:), {formats.read}(:),
                      {formats.write}(:), {formats.alpha}(:));
-  empty = cellfun (@isempty, yes_no_cols);
+  empty = cellfun ('isempty', yes_no_cols);
   yes_no_cols(empty) = "no";
   yes_no_cols(! empty) = "yes";
 

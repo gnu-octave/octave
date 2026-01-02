@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2000-2025 The Octave Project Developers
+## Copyright (C) 2000-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -33,7 +33,7 @@
 ## @example
 ## @group
 ## dec2base (123, 3)
-##    @result{} "11120"
+##    @xresult{} "11120"
 ## @end group
 ## @end example
 ##
@@ -52,7 +52,7 @@
 ## @example
 ## @group
 ## dec2base (123, "aei")
-##    @result{} "eeeia"
+##    @xresult{} "eeeia"
 ## @end group
 ## @end example
 ##
@@ -68,17 +68,17 @@
 ## @example
 ## @group
 ## dec2base (100*pi, 16)
-## @result{} "13A"
+## @xresult{} "13A"
 ## dec2base (100*pi, 16, 4)
-## @result{} "013A"
+## @xresult{} "013A"
 ## dec2base (100*pi, 16, 4, 6)
-## @result{} "013A.28C59D"
+## @xresult{} "013A.28C59D"
 ## dec2base (-100*pi, 16)
-## @result{} "EC6"
+## @xresult{} "EC6"
 ## dec2base (-100*pi, 16, 4)
-## @result{} "FEC6"
+## @xresult{} "FEC6"
 ## dec2base (-100*pi, 16, 4, 6)
-## @result{} "FEC5.D73A63"
+## @xresult{} "FEC5.D73A63"
 ## @end group
 ## @end example
 ##

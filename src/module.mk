@@ -15,6 +15,8 @@ SRC_DIR_CPPFLAGS = \
   -Iliboctave/wrappers -I$(srcdir)/liboctave/wrappers \
   -Ilibinterp -I$(srcdir)/libinterp \
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
+  -I$(srcdir)/libinterp/octave-value \
+  -I$(srcdir)/libinterp/template-inst \
   -Ilibmex -I$(srcdir)/libmex \
   -I$(srcdir)/src
 
@@ -70,6 +72,7 @@ nodist_%canon_reldir%_octave_SOURCES = %reldir%/main.cc
   liboctave/wrappers/libwrappers.la \
   libgnu/libgnu.la \
   $(X11_LIBS) \
+  $(WAYLAND_CLIENT_LIBS) \
   $(CARBON_LIBS) \
   $(GNULIB_LINK_DEPS)
 
@@ -78,7 +81,9 @@ nodist_%canon_reldir%_octave_SOURCES = %reldir%/main.cc
   $(NO_UNDEFINED_LDFLAG) \
   $(OCTAVE_LINK_OPTS) \
   $(WARN_LDFLAGS) \
-  $(OCTAVE_UNICODE_EXE_LDFLAGS)
+  $(OCTAVE_UNICODE_EXE_LDFLAGS) \
+  $(WAYLAND_CLIENT_LDFLAGS)
+
 
 if AMCOND_BUILD_QT_GUI
   OCTAVE_CPPFLAGS = -DHAVE_OCTAVE_QT_GUI
@@ -86,7 +91,8 @@ endif
 
 %canon_reldir%_octave_CPPFLAGS = \
   $(SRC_DIR_CPPFLAGS) \
-  $(OCTAVE_CPPFLAGS)
+  $(OCTAVE_CPPFLAGS) \
+  $(WAYLAND_CLIENT_CPPFLAGS)
 
 %canon_reldir%_octave_cli_SOURCES = %reldir%/main-cli.cc
 nodist_%canon_reldir%_octave_cli_SOURCES = %reldir%/octave-build-info.cc

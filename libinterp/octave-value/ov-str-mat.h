@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -123,6 +123,9 @@ public:
   Matrix matrix_value (bool = false) const;
 
   NDArray array_value (bool = false) const;
+
+  boolNDArray bool_array_value (bool = false) const
+  { return boolNDArray (m_matrix); }
 
   Complex complex_value (bool = false) const;
 

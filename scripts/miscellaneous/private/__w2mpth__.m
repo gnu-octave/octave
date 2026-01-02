@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2016-2025 The Octave Project Developers
+## Copyright (C) 2016-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -34,14 +34,14 @@
 ## @example
 ## @group
 ##   mpth = __w2mpth__ ('D:\full\path\to\file.dat')
-##   @result{} '/D/full/path/to/file.dat'
+##   @xresult{} '/D/full/path/to/file.dat'
 ## @end group
 ## @end example
 ##
 ## @example
 ## @group
 ##   mpth = __w2mpth__ ('relative\path\to\file.dat')
-##   @result{} 'relative/path/to/file.dat'
+##   @xresult{} 'relative/path/to/file.dat'
 ## @end group
 ## @end example
 ##

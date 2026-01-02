@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2016-2025 The Octave Project Developers
+// Copyright (C) 2016-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -465,6 +465,9 @@ Table::Table (octave::interpreter& interp,
                               octave::math::round (bb(3)));
   m_tableWidget->setFont (Utils::computeFont<uitable> (tp)) ;
   m_tableWidget->setSelectionBehavior (QAbstractItemView::SelectItems);
+  // Workaround Qt behavior which stops setColumnWidth from working for small
+  // column widths (see bug #63422).
+  m_tableWidget->horizontalHeader()->setMinimumSectionSize (1);
   updatePalette ();
   m_keyPressHandlerDefined = ! tp.get_keypressfcn ().isempty ();
   m_keyReleaseHandlerDefined = ! tp.get_keyreleasefcn ().isempty ();
@@ -1010,22 +1013,24 @@ Table::updateColumnname ()
     {
       octave_idx_type n = columnname.numel ();
       Cell cell_value = columnname.cell_value ();
+      octave_idx_type i = 0;
 
-      for (octave_idx_type i = 0; i < n; i++)
+      for (; i < n; i++)
         {
-          octave_value v = cell_value (i);
+          octave_value v = cell_value(i);
           if (v.is_string ())
             l << Utils::fromStdString (v.string_value (true));
           else if (v.is_matrix_type ())
             {
               Matrix data = v.matrix_value ();
 
+              if (data.isempty ())
+                l << "";
               /* Now Matlab does something very strange here:
                * If data is a row or column matrix,
                * then each datapoint is added.
-               * Otherwise, nothing is set.
-               */
-              if (data.rows () > 1 && data.cols () > 1)
+               * Otherwise, nothing is set.  */
+              else if (data.rows () > 1 && data.cols () > 1)
                 l << "";
               else
                 for (octave_idx_type j = 0; j < data.numel (); j++)
@@ -1033,20 +1038,28 @@ Table::updateColumnname ()
             }
           else if (v.isnumeric ())
             l << QString::number (v.double_value ());
+          // FIXME: Should this just be an error?  struct or cell at this point.
           else
             l << QString::number (v.double_value ());
         }
+      // Any remaining columns are unlabeled
+      for (; i < m_tableWidget->columnCount (); i++)
+        l << "";
     }
-  else if (columnname.is_matrix_type ())
+  else if (columnname.is_matrix_type () || columnname.is_scalar_type ())
     {
       octave_idx_type n = columnname.numel ();
       Matrix matrix_value = columnname.matrix_value ();
+      octave_idx_type i = 0;
 
-      for (octave_idx_type i = 0; i < n; i++)
+      for (; i < n; i++)
         l << QString::number (matrix_value(i));
+      for (; i < m_tableWidget->columnCount (); i++)
+        l << "";
     }
   else
     {
+      // FIXME: Would it be better to error here when unknown value found?
       for (int i = 0; i < m_tableWidget->columnCount (); i++)
         l << "";
       visible = false;
@@ -1079,23 +1092,33 @@ Table::updateColumnwidth ()
   uitable::properties& tp = properties<uitable> ();
 
   octave_value columnwidth = tp.get_columnwidth ();
-  if (columnwidth.isempty ()
-      || (columnwidth.is_string ()
-          && columnwidth.string_value (false) == "auto"))
-    for (int i = 0; i < m_tableWidget->columnCount (); i++)
-      m_tableWidget->setColumnWidth (i, AUTO_WIDTH);
-  else if (columnwidth.is_string ()
-           && columnwidth.string_value (false) == "preferred")
-    for (int i = 0; i < m_tableWidget->columnCount (); i++)
-      {
-        int column_size =
-          (qobject_cast<QAbstractItemView *> (m_tableWidget))->sizeHintForColumn (i);
-        int header_size = m_tableWidget->horizontalHeader ()->sectionSizeHint (i);
+  if (columnwidth.isempty ())
+    {
+      for (int i = 0; i < m_tableWidget->columnCount (); i++)
+        m_tableWidget->setColumnWidth (i, AUTO_WIDTH);
+    }
+  else if (columnwidth.is_string ())
+    {
+      std::string option = columnwidth.string_value (false);
+      if (option == "auto")
+        {
+          for (int i = 0; i < m_tableWidget->columnCount (); i++)
+            m_tableWidget->setColumnWidth (i, AUTO_WIDTH);
+        }
+      else if (option == "fit")
+        {
+          for (int i = 0; i < m_tableWidget->columnCount (); i++)
+            {
+              int column_size = (qobject_cast<QAbstractItemView *> (m_tableWidget))->sizeHintForColumn (i);
+              int header_size = m_tableWidget->horizontalHeader ()->sectionSizeHint (i);
 
-        if (column_size > header_size)
-          header_size = column_size;
-        m_tableWidget->setColumnWidth (i, header_size);
-      }
+              if (column_size > header_size)
+                m_tableWidget->setColumnWidth (i, column_size);
+              else
+                m_tableWidget->setColumnWidth (i, header_size);
+            }
+        }
+    }
   else if (columnwidth.iscell ())
     {
       Cell cell_value = columnwidth.cell_value ();
@@ -1103,17 +1126,21 @@ Table::updateColumnwidth ()
       for (; i < m_tableWidget->columnCount () && i < cell_value.numel (); i++)
         {
           octave_value v = cell_value (i);
-          if (v.is_string ()  && v.string_value (false) == "auto")
-            m_tableWidget->setColumnWidth (i, AUTO_WIDTH);
-          else if (v.is_string () && v.string_value (false) == "preferred")
+          if (v.is_string ())
             {
-              int column_size =
-                (qobject_cast<QAbstractItemView *> (m_tableWidget))->sizeHintForColumn (i);
-              int header_size = m_tableWidget->horizontalHeader ()->sectionSizeHint (i);
+              std::string option = v.string_value (false);
+              if (option == "auto")
+                m_tableWidget->setColumnWidth (i, AUTO_WIDTH);
+              else if (option == "fit")
+                {
+                  int column_size = (qobject_cast<QAbstractItemView *> (m_tableWidget))->sizeHintForColumn (i);
+                  int header_size = m_tableWidget->horizontalHeader ()->sectionSizeHint (i);
 
-              if (column_size > header_size)
-                header_size = column_size;
-              m_tableWidget->setColumnWidth (i, header_size);
+                  if (column_size > header_size)
+                    m_tableWidget->setColumnWidth (i, column_size);
+                  else
+                    m_tableWidget->setColumnWidth (i, header_size);
+                }
             }
           else
             {
@@ -1121,29 +1148,15 @@ Table::updateColumnwidth ()
               m_tableWidget->setColumnWidth (i, w);
             }
         }
+      // Remaining columns use "auto" width for Matlab compatibility.
       for (; i < m_tableWidget->columnCount (); i++)
-        {
-          int column_size =
-            (qobject_cast<QAbstractItemView *> (m_tableWidget))->sizeHintForColumn (i);
-          int header_size = m_tableWidget->horizontalHeader ()->sectionSizeHint (i);
-
-          if (column_size > header_size)
-            header_size = column_size;
-          m_tableWidget->setColumnWidth (i, header_size);
-        }
+        m_tableWidget->setColumnWidth (i, AUTO_WIDTH);
     }
   else if (columnwidth.is_matrix_type ())
     {
-      Matrix matrix_value = columnwidth.matrix_value ();
-      int i = 0;
-      for (; i < m_tableWidget->columnCount () && i < matrix_value.numel (); i++)
-        {
-          octave_value v = matrix_value(i);
-          int w = int (v.double_value ());
-          m_tableWidget->setColumnWidth (i, w);
-        }
-      for (; i < m_tableWidget->columnCount (); i++)
-        m_tableWidget->setColumnWidth (i, AUTO_WIDTH);
+      // FIXME: 2025/10/27: Added call to error_impossible().
+      //        If no bug reports for 2 years, remove code entirely.
+      error_impossible ();
     }
 }
 
@@ -1288,14 +1301,11 @@ Table::updateData ()
 
   octave_value data = tp.get_data ();
 
-  if (data.iscell () || data.is_matrix_type ())
-    {
-      m_tableWidget->setRowCount (data.rows ());
-      m_tableWidget->setColumnCount (data.columns ());
+  m_tableWidget->setRowCount (data.rows ());
+  m_tableWidget->setColumnCount (data.columns ());
 
-      for (octave_idx_type col = 0; col < data.columns (); col++)
-        updateDataColumn (col);
-    }
+  for (octave_idx_type col = 0; col < data.columns (); col++)
+    updateDataColumn (col);
 
   for (octave_idx_type row = 0; row < m_tableWidget->rowCount (); row++)
     m_tableWidget->setRowHeight (row, AUTO_HEIGHT);
@@ -1421,22 +1431,24 @@ Table::updateRowname ()
     {
       octave_idx_type n = rowname.numel ();
       Cell cell_value = rowname.cell_value ();
+      octave_idx_type i = 0;
 
-      for (octave_idx_type i = 0; i < n; i++)
+      for (; i < n; i++)
         {
-          octave_value v = cell_value (i);
+          octave_value v = cell_value(i);
           if (v.is_string ())
             l << Utils::fromStdString (v.string_value (true));
           else if (v.is_matrix_type ())
             {
               Matrix data = v.matrix_value ();
 
+              if (data.isempty ())
+                l << "";
               /* Now Matlab does something very strange here:
                * If data is a row or column matrix,
                * then each datapoint is added.
-               * Otherwise, nothing is set.
-               */
-              if (data.rows () > 1 && data.cols () > 1)
+               * Otherwise, nothing is set.  */
+              else if (data.rows () > 1 && data.cols () > 1)
                 l << "";
               else
                 for (octave_idx_type j = 0; j < data.numel (); j++)
@@ -1444,20 +1456,28 @@ Table::updateRowname ()
             }
           else if (v.isnumeric ())
             l << QString::number (v.double_value (true));
+          // FIXME: Should this just be an error?  struct or cell at this point.
           else
             l << QString::number (v.double_value (true));
         }
+      // Any remaining rows are unlabeled
+      for (; i < m_tableWidget->rowCount (); i++)
+        l << "";
     }
-  else if (rowname.is_matrix_type ())
+  else if (rowname.is_matrix_type () || rowname.is_scalar_type ())
     {
       octave_idx_type n = rowname.numel ();
       Matrix matrix_value = rowname.matrix_value ();
+      octave_idx_type i = 0;
 
-      for (octave_idx_type i = 0; i < n; i++)
+      for (; i < n; i++)
         l << QString::number (matrix_value(i));
+      for (; i < m_tableWidget->rowCount (); i++)
+        l << "";
     }
   else
     {
+      // FIXME: Would it be better to error here when unknown value found?
       for (int i = 0; i < m_tableWidget->columnCount (); i++)
         l << "";
       visible = false;
@@ -1569,12 +1589,16 @@ Table::eventFilter (QObject *watched, QEvent *xevent)
               {
                 octave::autolock guard (gh_mgr.graphics_lock ());
 
-                octave_scalar_map keyData = Utils::makeKeyEventStruct (k);
+                octave_scalar_map keyEvent = Utils::makeKeyEventStruct (k);
+                keyEvent.setfield ("Source",
+                                   object ().get_handle ().as_octave_value ());
+                keyEvent.setfield ("EventName", "KeyPress");
+
                 graphics_object fig = object ().get_ancestor ("figure");
 
                 Q_EMIT gh_set_event (fig.get_handle (), "currentcharacter",
-                                     keyData.getfield ("Character"), false);
-                Q_EMIT gh_callback_event (m_handle, "keypressfcn", keyData);
+                                     keyEvent.getfield ("Character"), false);
+                Q_EMIT gh_callback_event (m_handle, "keypressfcn", keyEvent);
               }
             int row = m_tableWidget->currentRow ();
             int col = m_tableWidget->currentColumn ();
@@ -1655,12 +1679,16 @@ Table::eventFilter (QObject *watched, QEvent *xevent)
 
                 QKeyEvent *k = dynamic_cast<QKeyEvent *> (xevent);
 
-                octave_scalar_map keyData = Utils::makeKeyEventStruct (k);
+                octave_scalar_map keyEvent = Utils::makeKeyEventStruct (k);
+                keyEvent.setfield ("Source",
+                                   object ().get_handle ().as_octave_value ());
+                keyEvent.setfield ("EventName", "KeyRelease");
+
                 graphics_object fig = object ().get_ancestor ("figure");
 
                 Q_EMIT gh_set_event (fig.get_handle (), "currentcharacter",
-                                     keyData.getfield ("Character"), false);
-                Q_EMIT gh_callback_event (m_handle, "keyreleasefcn", keyData);
+                                     keyEvent.getfield ("Character"), false);
+                Q_EMIT gh_callback_event (m_handle, "keyreleasefcn", keyEvent);
               }
           }
           break;

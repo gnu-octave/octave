@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2006-2025 The Octave Project Developers
+// Copyright (C) 2006-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -49,6 +49,7 @@ struct weboptions
   std::string RequestMethod;
   std::string ArrayFormat;
   std::string CertificateFilename;
+  std::string CharacterEncoding;
 };
 
 class OCTAVE_API base_url_transfer

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2012-2025 The Octave Project Developers
+// Copyright (C) 2012-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -47,8 +47,10 @@
 #include "pt-misc.h"
 #include "pt-stmt.h"
 
-// Define to 1 to enable debugging statements.
-#define DEBUG_TRACE 0
+#define OCTAVE_CDEF_PACKAGE_DEBUG 0
+#if OCTAVE_CDEF_PACKAGE_DEBUG
+#  include <iostream>
+#endif
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -134,7 +136,7 @@ cdef_package::cdef_package_rep::meta_subsref
 
         std::string nm = idx.front ()(0).xstring_value ("invalid meta.package indexing, expected a symbol name");
 
-#if DEBUG_TRACE
+#if OCTAVE_CDEF_PACKAGE_DEBUG
         std::cerr << "meta.package query: " << nm << std::endl;
 #endif
 

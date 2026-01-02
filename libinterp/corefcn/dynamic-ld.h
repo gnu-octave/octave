@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -119,10 +119,7 @@ private:
 
   static std::string mex_uscore_mangler (const std::string& name);
 
-  static std::string mex_f77_mangler (const std::string& name);
-
-  static void * try_load_mex (dynamic_library& mex_file,
-                             const std::string& fcn_name, bool& have_fmex);
+  static void * try_load_mex (dynamic_library& mex_file, const std::string& fcn_name);
 };
 
 OCTAVE_END_NAMESPACE(octave)

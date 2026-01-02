@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2003-2025 The Octave Project Developers
+// Copyright (C) 2003-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -28,7 +28,7 @@
 
 #include "octave-config.h"
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "bsxfun-decl.h"
 #include "mx-defs.h"
 #include "mx-op-decl.h"
@@ -78,11 +78,9 @@ public:
   concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx);
 
   OCTAVE_API charNDArray max (int dim = -1) const;
-  OCTAVE_API charNDArray
-  max (Array<octave_idx_type>& index, int dim = -1) const;
+  OCTAVE_API charNDArray max (Array<octave_idx_type>& index, int dim = -1) const;
   OCTAVE_API charNDArray min (int dim = -1) const;
-  OCTAVE_API charNDArray
-  min (Array<octave_idx_type>& index, int dim = -1) const;
+  OCTAVE_API charNDArray min (Array<octave_idx_type>& index, int dim = -1) const;
 
   OCTAVE_API charNDArray&
   insert (const charNDArray& a, octave_idx_type r, octave_idx_type c);

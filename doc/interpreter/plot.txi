@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2025 The Octave Project Developers
+@c Copyright (C) 1996-2026 The Octave Project Developers
 @c
 @c This file is part of Octave.
 @c
@@ -1092,14 +1092,14 @@ See, for example, @url{https://www.latex-project.org/help/documentation/} for
 documentation about @LaTeX{} typesetting.
 
 For debugging purpose, a convenience environment variable,
-@w{@env{OCTAVE_LATEX_DEBUG_FLAG}}, can be set to trigger more verbose output
-when Octave fails to have a given text compiled by an external @LaTeX{} engine.
-For example, @qcode{"x^2"} is not a valid @LaTeX{} string and the following
-example should fail
+@w{@env{OCTAVE_LATEX_DEBUG}}, can be set to trigger more verbose output when
+Octave fails to have a given text compiled by an external @LaTeX{} engine.  For
+example, @qcode{"x^2"} is not a valid @LaTeX{} string and the following example
+should fail
 
 @example
 @group
-setenv ("OCTAVE_LATEX_DEBUG_FLAG", "1")
+setenv ("OCTAVE_LATEX_DEBUG", "1")
 x = 1:10;
 plot (x, x.^2)
 title ("x^2", "interpreter", "latex")
@@ -1350,9 +1350,9 @@ Thus, for example:
 @example
 h = figure ();
 get (h, "type")
-@result{} ans = figure
+@xresult{} ans = figure
 set (h)
-@result{}
+@xresult{}
         alphamap:
         beingdeleted:  [ @{off@} | on ]
         busyaction:  [ cancel | @{queue@} ]
@@ -1508,7 +1508,7 @@ properties for graphics objects.  For example,
 @example
 @group
 get (groot)
-    @result{} ans =
+    @xresult{} ans =
        @{
          type = root
          currentfigure = [](0x0)
@@ -1533,7 +1533,7 @@ property.  For example,
 @example
 @group
 get (gca (), "xlim")
-    @result{} [ 0 1 ]
+    @xresult{} [ 0 1 ]
 @end group
 @end example
 
@@ -2270,9 +2270,9 @@ example
 @group
 h = stem (1:4)
 get (h, "xdata")
-@result{} [  1   2   3   4]'
+@xresult{} [  1   2   3   4]'
 get (get (h, "children")(1), "xdata")
-@result{} [  1   1 NaN   2   2 NaN   3   3 NaN   4   4 NaN]'
+@xresult{} [  1   1 NaN   2   2 NaN   3   3 NaN   4   4 NaN]'
 @end group
 @end example
 

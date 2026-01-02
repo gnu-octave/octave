@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1994-2025 The Octave Project Developers
+// Copyright (C) 1994-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -27,12 +27,12 @@
 #  include "config.h"
 #endif
 
-#include "Array.h"
-#include "fEIG.h"
+#include "Array-oct.h"
 #include "fColVector.h"
+#include "fEIG.h"
 #include "fMatrix.h"
-#include "lo-error.h"
-#include "lo-lapack-proto.h"
+#include "lapack-proto.h"
+#include "oct-error.h"
 
 octave_idx_type
 FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,

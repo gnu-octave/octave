@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2000-2025 The Octave Project Developers
+## Copyright (C) 2000-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -31,7 +31,7 @@
 ## @example
 ## @group
 ## base2dec ("11120", 3)
-##    @result{} 123
+##    @xresult{} 123
 ## @end group
 ## @end example
 ##
@@ -49,7 +49,7 @@
 ## @example
 ## @group
 ## base2dec ("yyyzx", "xyz")
-##    @result{} 123
+##    @xresult{} 123
 ## @end group
 ## @end example
 ## @seealso{dec2base, bin2dec, hex2dec}

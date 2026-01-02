@@ -1,11 +1,9 @@
 ########################################################################
 ##
-## Copyright (C) 2009-2025 The Octave Project Developers
+## Copyright (C) 2009-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## or <https://octave.org/copyright/>.
-##
-## Parts Copyright (C) 2012-2019 Philip Nienhuis
 ##
 ## This file is part of Octave.
 ##
@@ -658,8 +656,7 @@ function varargout = strread (str, format = "%f", varargin)
               ## Leading literal.
               ## Assign literal to icol, paste rest in icol + 1
               ## Apply only to those cells that do have something beyond literal
-              jptr = find (cellfun ("length", words(icol+1, jptr), ...
-                                    "UniformOutput", false) > e(1));
+              jptr = find (cellfun ("length", words(icol+1, jptr)) > e(1));
               words(icol+1, :) = {""};
               words(icol+1, jptr) = cellfun (
                 @(x) substr (x, e(1)+1, length (x) - e(1)), words(icol, jptr),

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2002-2025 The Octave Project Developers
+// Copyright (C) 2002-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -28,19 +28,12 @@
 
 #include "octave-config.h"
 
-/* The signal header is just needed for the sig_atomic_t type.  */
 #if defined (__cplusplus)
 #  include <atomic>
-#  include <csignal>
 #  include <iosfwd>
 #  include <list>
 #  include <stdexcept>
 #  include <string>
-#else
-#  include <signal.h>
-#endif
-
-#if defined (__cplusplus)
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 

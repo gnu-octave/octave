@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -35,6 +35,9 @@
 #  include "config.h"
 #endif
 
+#include <cmath>
+#include <type_traits>
+
 #include "quit.h"
 
 #include "defun.h"
@@ -43,16 +46,26 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
+// Helper functions for fused multiply-add (FMA) operations
+// Use std::fma for real types, regular operations for complex types
+
+template <typename T>
+inline T
+fma_or_mul_add (const T& a, const T& b, const T& c)
+{
+  if constexpr (std::is_floating_point_v<T>)
+    return std::fma (a, b, c);
+  else
+    return a * b + c;
+}
+
 template <typename T>
 MArray<T>
 filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
         int dim = 0)
 {
-  MArray<T> y;
-
   octave_idx_type a_len = a.numel ();
   octave_idx_type b_len = b.numel ();
-
   octave_idx_type ab_len = (a_len > b_len ? a_len : b_len);
 
   // FIXME: The two lines below should be unnecessary because
@@ -64,8 +77,9 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
     a.resize (dim_vector (ab_len, 1), 0.0);
 
   T norm = a (0);
+  const T zero = static_cast<T> (0);
 
-  if (norm == static_cast<T> (0.0))
+  if (norm == zero)
     error ("filter: the first element of A must be nonzero");
 
   const dim_vector& x_dims = x.dims ();
@@ -108,6 +122,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
 
   // Here onwards, either a_len > 1 or si_len >= 1 or both.
 
+  MArray<T> y;
   y.resize (x_dims, 0.0);
 
   octave_idx_type x_stride = 1;
@@ -125,45 +140,10 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
 
       octave_idx_type si_offset = num * si_len;
 
-      // Try to achieve a balance between speed and interruptibility.
-      //
-      // One extreme is to not check for interruptions at all, which gives
-      // good speed but the user cannot use Ctrl-C for the whole duration.
-      // The other end is to check frequently from inside an inner loop,
-      // which slows down performance by 5X or 6X.
-      //
-      // Putting any sort of check in an inner loop seems to prevent the
-      // compiler from optimizing the loop, so we cannot say "check for
-      // interruptions every M iterations" using an if-statement.
-      //
-      // This is a compromise approach to split the total numer of loop
-      // executions into num_outer and num_inner, to provide periodic checks
-      // for interruptions without writing a conditional inside a tight loop.
-      //
-      // To make it more interruptible and run more slowly, reduce num_inner.
-      // To speed it up but make it less interruptible, increase it.
-      // May need to increase it slowly over time as computers get faster.
-      // The aim is to not lose Ctrl-C ability for longer than about 2 seconds.
-      //
-      // In December 2021, num_inner = 100000 is acceptable.
-
       octave_idx_type num_execs = si_len-1; // 0 to num_execs-1
-      octave_idx_type num_inner = 100000;
-      octave_idx_type num_outer = num_execs / num_inner;
 
-      // The following if-else block depends on a_len and si_len,
-      // both of which are loop invariants in this 0 <= num < x_num loop.
-      // But x_num is so small in practice that using the if-else inside
-      // the loop has more benefits than duplicating the outer for-loop,
-      // even though the checks are on loop invariants.
-
-      // We cannot have a_len <= 1 AND si_len <= 0 because that case already
-      // returned above. This means exactly one of the following blocks
-      // inside the if-conditional will be obeyed: it is not possible for the
-      // if-block and the else-block to *both* skip. Therefore any code that
-      // is common to both branches can be pulled out here without affecting
-      // correctness or speed.
-
+      // Define variables here that are common to both the if-block and
+      // the else-block.
       T *py = y.rwdata ();
       T *psi = si.rwdata ();
       const T *pb = b.data ();
@@ -183,23 +163,57 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
                i < x_len;
                i++, idx += x_stride)
             {
-              py[idx] = psi[0] + pb[0] * px[idx];
+              // Use FMA for the output calculation: y = si[0] + b[0]*x
+              py[idx] = fma_or_mul_add (pb[0], px[idx], psi[0]);
+              const T px_val = px[idx];
+              const T py_val = py[idx];
+              const bool px_nonzero = (px_val != zero);
+              const bool py_nonzero = (py_val != zero);
 
-              // Outer and inner loops for interruption management
-              for (octave_idx_type u = 0; u <= num_outer; u++)
+              // Split into cases based on zero/nonzero to avoid a long
+              // sequence of multiplying by zero values. See bug #67653.
+              // FIXME: Currently the loop is duplicated for performance.
+              // Can this be made fast without duplication? It was reported
+              // in bug #67653 that BLAS axpy is not as fast as these loops.
+              // Maybe test std::transform in future?
+              if (py_nonzero)
                 {
-                  octave_idx_type lo = u * num_inner;
-                  octave_idx_type hi = (lo + num_inner < num_execs-1)
-                                       ? lo + num_inner : num_execs-1;
-
-                  // Inner loop, no interruption
-                  for (octave_idx_type j = lo; j <= hi; j++)
-                    psi[j] = psi[j+1] - pa[j+1] * py[idx] + pb[j+1] * px[idx];
-
-                  octave_quit();  // Check for interruptions
+                  if (px_nonzero)
+                    {
+                      // Compute: psi[j] = psi[j+1] - pa[j+1]*py + pb[j+1]*px
+                      // Use two FMAs: temp = psi[j+1] - pa*py, then result = temp + pb*px
+                      for (octave_idx_type j = 0; j < num_execs; j++)
+                        {
+                          T temp = fma_or_mul_add (-pa[j+1], py_val, psi[j+1]);
+                          psi[j] = fma_or_mul_add (pb[j+1], px_val, temp);
+                        }
+                    }
+                  else
+                    {
+                      // Compute: psi[j] = psi[j+1] - pa[j+1]*py
+                      for (octave_idx_type j = 0; j < num_execs; j++)
+                        psi[j] = fma_or_mul_add (-pa[j+1], py_val, psi[j+1]);
+                    }
+                }
+              else
+                {
+                  if (px_nonzero)
+                    {
+                      // Compute: psi[j] = psi[j+1] + pb[j+1]*px
+                      for (octave_idx_type j = 0; j < num_execs; j++)
+                        psi[j] = fma_or_mul_add (pb[j+1], px_val, psi[j+1]);
+                    }
+                  else
+                    for (octave_idx_type j = 0; j < num_execs; j++)
+                      psi[j] = psi[j+1];
                 }
 
-              psi[iidx] = pb[si_len] * px[idx] - pa[si_len] * py[idx];
+              // Compute: psi[iidx] = pb[si_len]*px - pa[si_len]*py
+              T temp = fma_or_mul_add (-pa[si_len], py_val, zero);
+              psi[iidx] = fma_or_mul_add (pb[si_len], px_val, temp);
+
+              if ((i & 4095) == 0)  // Check for interruptions every 4096 samples
+                octave_quit();
             }
         }
       else // a_len <= 1 ==> si_len MUST be > 0
@@ -211,23 +225,28 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
                i < x_len;
                i++, idx += x_stride)
             {
-              py[idx] = psi[0] + pb[0] * px[idx];
+              const T px_val = px[idx];
+              const bool px_nonzero = (px_val != zero);
 
-              // Outer and inner loops for interruption management
-              for (octave_idx_type u = 0; u <= num_outer; u++)
+              // Use FMA for: y = si[0] + b[0]*x
+              py[idx] = fma_or_mul_add (pb[0], px_val, psi[0]);
+
+              if (px_nonzero)
                 {
-                  octave_idx_type lo = u * num_inner;
-                  octave_idx_type hi = (lo + num_inner < num_execs-1)
-                                       ? lo + num_inner : num_execs-1;
-
-                  // Inner loop, no interruption
-                  for (octave_idx_type j = lo; j <= hi; j++)
-                    psi[j] = psi[j+1] + pb[j+1] * px[idx];
-
-                  octave_quit();  // Check for interruptions
+                  // Use FMA to compute: psi[j] = psi[j+1] + pb[j+1]*px
+                  for (octave_idx_type j = 0; j < num_execs; j++)
+                    psi[j] = fma_or_mul_add (pb[j+1], px_val, psi[j+1]);
+                }
+              else
+                {
+                  for (octave_idx_type j = 0; j < num_execs; j++)
+                    psi[j] = psi[j+1];
                 }
 
-              psi[si_len-1] = pb[si_len] * px[idx];
+              psi[si_len-1] = pb[si_len] * px_val;
+
+              if ((i & 4095) == 0)  // Check for interruptions every 4096 samples
+                octave_quit();
             }
         }
     }
@@ -260,7 +279,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
   return filter (b, a, x, si, dim);
 }
 
-DEFUN (filter, args, ,
+DEFUN (filter, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{y} =} filter (@var{b}, @var{a}, @var{x})
 @deftypefnx {} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si})
@@ -365,7 +384,7 @@ H(z) = ---------------------
 {
   int nargin = args.length ();
 
-  if (nargin < 3 || nargin > 5)
+  if (nargin < 3 || nargin > 5 || nargout > 2)
     print_usage ();
 
   int dim;
@@ -380,7 +399,7 @@ H(z) = ---------------------
   else
     dim = x_dims.first_non_singleton ();
 
-  octave_value_list retval;
+  octave_value_list retval ((nargout <= 1) ? 1 : 2);
 
   const char *a_b_errmsg = "filter: A and B must be vectors";
   const char *x_si_errmsg = "filter: X and SI must be arrays";
@@ -427,7 +446,9 @@ H(z) = ---------------------
 
           FloatComplexNDArray y (filter (b, a, x, si, dim));
 
-          retval = ovl (y, si);
+          retval(0) = y;
+          if (nargout > 1)
+            retval(1) = si;
         }
       else
         {
@@ -462,7 +483,9 @@ H(z) = ---------------------
 
           ComplexNDArray y (filter (b, a, x, si, dim));
 
-          retval = ovl (y, si);
+          retval(0) = y;
+          if (nargout > 1)
+            retval(1) = si;
         }
     }
   else
@@ -500,7 +523,9 @@ H(z) = ---------------------
 
           FloatNDArray y (filter (b, a, x, si, dim));
 
-          retval = ovl (y, si);
+          retval(0) = y;
+          if (nargout > 1)
+            retval(1) = si;
         }
       else
         {
@@ -535,7 +560,9 @@ H(z) = ---------------------
 
           NDArray y (filter (b, a, x, si, dim));
 
-          retval = ovl (y, si);
+          retval(0) = y;
+          if (nargout > 1)
+            retval(1) = si;
         }
     }
 

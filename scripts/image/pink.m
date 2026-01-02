@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2000-2025 The Octave Project Developers
+## Copyright (C) 2000-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -109,7 +109,7 @@ endfunction
 %!            5/9, 5/9, 2/9;
 %!            7/9, 7/9, 11/18;
 %!            1,   1,   1]);
-%! assert (pink (4), a, eps)
+%! assert (pink (4), a, eps);
 
 ## Input validation
 %!error <N must be a scalar integer> pink ("foo")

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -35,7 +35,7 @@
 #include "CNDArray.h"
 #include "f77-fcn.h"
 #include "lo-ieee.h"
-#include "lo-mappers.h"
+#include "mappers.h"
 #include "mx-base.h"
 #include "mx-cnda-s.h"
 #include "mx-op-defs.h"
@@ -69,7 +69,7 @@ ComplexNDArray::fourier (int dim) const
     stride *= dv(i);
 
   octave_idx_type howmany = numel () / dv(dim);
-  howmany = (stride == 1 ? howmany : (howmany > stride ? stride : howmany));
+  howmany = (stride == 1) ? howmany : std::min (howmany, stride);
   octave_idx_type nloop = (stride == 1 ? 1 : numel () / dv(dim) / stride);
   octave_idx_type dist = (stride == 1 ? n : 1);
 
@@ -100,7 +100,7 @@ ComplexNDArray::ifourier (int dim) const
     stride *= dv(i);
 
   octave_idx_type howmany = numel () / dv(dim);
-  howmany = (stride == 1 ? howmany : (howmany > stride ? stride : howmany));
+  howmany = (stride == 1) ? howmany : std::min (howmany, stride);
   octave_idx_type nloop = (stride == 1 ? 1 : numel () / dv(dim) / stride);
   octave_idx_type dist = (stride == 1 ? n : 1);
 
@@ -328,8 +328,8 @@ ComplexNDArray::all_integers (double& max_val, double& min_val) const
       if (i_val < min_val)
         min_val = i_val;
 
-      if (octave::math::x_nint (r_val) != r_val
-          || octave::math::x_nint (i_val) != i_val)
+      if (octave::math::round (r_val) != r_val
+          || octave::math::round (i_val) != i_val)
         return false;
     }
 
@@ -355,39 +355,45 @@ ComplexNDArray::any (int dim) const
 }
 
 ComplexNDArray
-ComplexNDArray::cumprod (int dim) const
+ComplexNDArray::flip (int dim) const
 {
-  return do_mx_cum_op<Complex, Complex> (*this, dim, mx_inline_cumprod);
+  return do_mx_flip_op<Complex, Complex> (*this, dim, mx_inline_flip);
 }
 
 ComplexNDArray
-ComplexNDArray::cumsum (int dim) const
+ComplexNDArray::cumprod (int dim, bool nanflag) const
 {
-  return do_mx_cum_op<Complex, Complex> (*this, dim, mx_inline_cumsum);
+  return do_mx_cum_op<Complex, Complex> (*this, dim, nanflag, mx_inline_cumprod);
 }
 
 ComplexNDArray
-ComplexNDArray::prod (int dim) const
+ComplexNDArray::cumsum (int dim, bool nanflag) const
 {
-  return do_mx_red_op<Complex, Complex> (*this, dim, mx_inline_prod);
+  return do_mx_cum_op<Complex, Complex> (*this, dim, nanflag, mx_inline_cumsum);
 }
 
 ComplexNDArray
-ComplexNDArray::sum (int dim) const
+ComplexNDArray::prod (int dim, bool nanflag) const
 {
-  return do_mx_red_op<Complex, Complex> (*this, dim, mx_inline_sum);
+  return do_mx_red_op<Complex, Complex> (*this, dim, nanflag, mx_inline_prod);
 }
 
 ComplexNDArray
-ComplexNDArray::xsum (int dim) const
+ComplexNDArray::sum (int dim, bool nanflag) const
 {
-  return do_mx_red_op<Complex, Complex> (*this, dim, mx_inline_xsum);
+  return do_mx_red_op<Complex, Complex> (*this, dim, nanflag, mx_inline_sum);
 }
 
 ComplexNDArray
-ComplexNDArray::sumsq (int dim) const
+ComplexNDArray::xsum (int dim, bool nanflag) const
 {
-  return do_mx_red_op<double, Complex> (*this, dim, mx_inline_sumsq);
+  return do_mx_red_op<Complex, Complex> (*this, dim, nanflag, mx_inline_xsum);
+}
+
+ComplexNDArray
+ComplexNDArray::sumsq (int dim, bool nanflag) const
+{
+  return do_mx_red_op<double, Complex> (*this, dim, nanflag, mx_inline_sumsq);
 }
 
 ComplexNDArray
@@ -427,51 +433,61 @@ static const Complex Complex_NaN_result (octave::numeric_limits<double>::NaN (),
                                          octave::numeric_limits<double>::NaN ());
 
 ComplexNDArray
-ComplexNDArray::max (int dim) const
+ComplexNDArray::max (int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_minmax_op<Complex> (*this, dim, mx_inline_max);
+  return do_mx_minmax_op<Complex> (*this, dim, nanflag, realabs, mx_inline_cmax);
 }
 
 ComplexNDArray
-ComplexNDArray::max (Array<octave_idx_type>& idx_arg, int dim) const
+ComplexNDArray::max (Array<octave_idx_type>& idx_arg,
+                     int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_minmax_op<Complex> (*this, idx_arg, dim, mx_inline_max);
+  return do_mx_minmax_op<Complex> (*this, idx_arg, dim, nanflag,
+                                   realabs, mx_inline_cmax);
 }
 
 ComplexNDArray
-ComplexNDArray::min (int dim) const
+ComplexNDArray::min (int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_minmax_op<Complex> (*this, dim, mx_inline_min);
+  return do_mx_minmax_op<Complex> (*this, dim, nanflag, realabs, mx_inline_cmin);
 }
 
 ComplexNDArray
-ComplexNDArray::min (Array<octave_idx_type>& idx_arg, int dim) const
+ComplexNDArray::min (Array<octave_idx_type>& idx_arg,
+                     int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_minmax_op<Complex> (*this, idx_arg, dim, mx_inline_min);
+  return do_mx_minmax_op<Complex> (*this, idx_arg, dim, nanflag,
+                                   realabs, mx_inline_cmin);
 }
 
 ComplexNDArray
-ComplexNDArray::cummax (int dim) const
+ComplexNDArray::cummax (int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<Complex> (*this, dim, mx_inline_cummax);
+  return do_mx_cumminmax_op<Complex> (*this, dim, nanflag,
+                                      realabs, mx_inline_ccummax);
 }
 
 ComplexNDArray
-ComplexNDArray::cummax (Array<octave_idx_type>& idx_arg, int dim) const
+ComplexNDArray::cummax (Array<octave_idx_type>& idx_arg,
+                        int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<Complex> (*this, idx_arg, dim, mx_inline_cummax);
+  return do_mx_cumminmax_op<Complex> (*this, idx_arg, dim, nanflag,
+                                      realabs, mx_inline_ccummax);
 }
 
 ComplexNDArray
-ComplexNDArray::cummin (int dim) const
+ComplexNDArray::cummin (int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<Complex> (*this, dim, mx_inline_cummin);
+  return do_mx_cumminmax_op<Complex> (*this, dim, nanflag,
+                                      realabs, mx_inline_ccummin);
 }
 
 ComplexNDArray
-ComplexNDArray::cummin (Array<octave_idx_type>& idx_arg, int dim) const
+ComplexNDArray::cummin (Array<octave_idx_type>& idx_arg,
+                        int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<Complex> (*this, idx_arg, dim, mx_inline_cummin);
+  return do_mx_cumminmax_op<Complex> (*this, idx_arg, dim, nanflag,
+                                      realabs, mx_inline_ccummin);
 }
 
 NDArray

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -28,26 +28,27 @@
 
 #include "octave-config.h"
 
+#include <cstdlib>
+
 #include <iosfwd>
 
 #include "version.h"
 
-// Usage message
+// Usage message for terse output.
 static const char *usage_string =
   "octave [-GHVWefghiqvx] [--echo-commands] [--eval CODE]\n\
        [--experimental-terminal-widget] [--gui] [--help] [--interactive]\n\
        [--line-editing] [--no-gui] [--no-history] [--no-init-all]\n\
        [--no-init-path] [--no-init-site] [--no-init-user]\n\
-       [--no-line-editing] [--no-window-system] [--path path] [--persist]\n\
-       [--quiet] [--server] [--traditional] [--version] [file]";
+       [--no-line-editing] [--no-startup-tests] [--no-window-system]\n\
+       [--path path] [--persist] [--quiet] [--server] [--traditional]\n\
+       [--version] [file]";
 
-// Usage message with extra help.
-
+// Usage message for --help argument.
 static void
 octave_print_verbose_usage_and_exit ()
 {
-  std::cout << octave_name_version_copyright_copying_and_warranty ()
-            << "\n\
+  std::cout << octave_name_version_copyright_license_copying_warranty () << "\n\
 \n\
 Usage: octave [options] [FILE]\n\
 \n\
@@ -74,43 +75,41 @@ Options:\n\
   --no-init-site          Don't read the site-wide octaverc files.\n\
   --no-init-user          Don't read the ~/.octaverc or .octaverc files.\n\
   --no-line-editing       Don't use readline for command-line editing.\n\
+  --no-startup-tests      Don't run compatibility tests on startup.\n\
   --no-window-system, -W  Disable window system, including graphics.\n\
   --path PATH, -p PATH    Add PATH to head of function search path.\n\
   --persist               Go interactive after --eval or reading from FILE.\n\
   --server                Enter server mode at startup.\n\
   --quiet, --silent, -q   Don't print message at startup.\n\
   --traditional           Set variables for closer MATLAB compatibility.\n\
-  --version, -v           Print version number and exit.\n\
+  --version, -v           Print version information and exit.\n\
 \n\
   FILE                    Execute commands from FILE.  Exit when done\n\
                           unless --persist is also specified.\n\
 \n"
-            << octave_www_statement ()
-            << "\n\n"
-            << octave_contrib_statement ()
-            << "\n\n"
-            << octave_bugs_statement ()
-            << "\n";
+            << octave_www_statement () << "\n"
+            << octave_bugs_statement () << "\n"
+            << octave_contrib_statement () << "\n";
 
-  exit (0);
+  std::exit (EXIT_SUCCESS);
 }
 
-// Terse usage message.
-
+// Terse usage message when argument is not recognized.
 static void
 octave_print_terse_usage_and_exit ()
 {
   std::cerr << "\nusage: " << usage_string << "\n\n";
 
-  exit (1);
+  std::exit (EXIT_FAILURE);
 }
 
+// Version message for --version argument.
 static void
 octave_print_version_and_exit ()
 {
-  std::cout << octave_name_version_copyright_copying_warranty_and_bugs ()
+  std::cout << octave_name_version_copyright_license_copying_warranty_bugs ()
             << "\n";
-  exit (0);
+  std::exit (EXIT_SUCCESS);
 }
 
 #endif

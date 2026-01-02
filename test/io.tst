@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2006-2025 The Octave Project Developers
+## Copyright (C) 2006-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -267,6 +267,56 @@
 %!         STR.struct_fld.y == 1);
 %!
 %! delete (struct_dat);
+
+## Test for handling filenames with Unicode characters outside the BMP.
+%!test
+%! unwind_protect
+%!   olddir = pwd ();
+%!   tmpdir = tempname ();
+%!   mkdir (tmpdir);
+%!   cd (tmpdir);
+%!   foo = 123;
+%!   foostr = "123";
+%!   save -binary "𝕋𝘌𝙎𝐓1.𝑚𝖆𝚝";
+%!   clear foo foostr;
+%!   newfile = ls (tmpdir);  # get filename recorded by file system
+%!   assert (rows (newfile), 1);  # ensure only one file was created in tmpdir
+%!   ## Check if the filename recorded by the file system matches expectations.
+%!   assert (newfile, "𝕋𝘌𝙎𝐓1.𝑚𝖆𝚝");
+%!   load "𝕋𝘌𝙎𝐓1.𝑚𝖆𝚝";
+%!   assert (foo, 123);
+%!   assert (foostr, "123");
+%! unwind_protect_cleanup
+%!   cd (tmpdir);
+%!   unlink ("𝕋𝘌𝙎𝐓1.𝑚𝖆𝚝");
+%!   cd (olddir);
+%!   rmdir (tmpdir);
+%! end_unwind_protect
+
+## Repeat test without quotes around the filename
+%!test
+%! unwind_protect
+%!   olddir = pwd ();
+%!   tmpdir = tempname ();
+%!   mkdir (tmpdir);
+%!   cd (tmpdir);
+%!   foo = 456;
+%!   foostr = "456";
+%!   save -binary 𝕋𝘌𝙎𝐓2.𝑚𝖆𝚝;
+%!   clear foo foostr;
+%!   newfile = ls (tmpdir);  # get filename recorded by file system
+%!   assert (rows (newfile), 1);  # ensure only one file was created in tmpdir
+%!   ## Check if the filename recorded by the file system matches expectations.
+%!   assert (newfile, "𝕋𝘌𝙎𝐓2.𝑚𝖆𝚝");
+%!   load 𝕋𝘌𝙎𝐓2.𝑚𝖆𝚝;
+%!   assert (foo, 456);
+%!   assert (foostr, "456");
+%! unwind_protect_cleanup
+%!   cd (tmpdir);
+%!   unlink 𝕋𝘌𝙎𝐓2.𝑚𝖆𝚝;
+%!   cd (olddir);
+%!   rmdir (tmpdir);
+%! end_unwind_protect
 
 %!test
 %! matrix1 = rand (100, 2);

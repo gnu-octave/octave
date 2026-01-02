@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2025 The Octave Project Developers
+@c Copyright (C) 1996-2026 The Octave Project Developers
 @c
 @c This file is part of Octave.
 @c
@@ -305,7 +305,7 @@ to the result.
 @group
 a = 1/0
      @print{} warning: division by zero
-     @result{} a = Inf
+     @xresult{} a = Inf
 @end group
 @end example
 

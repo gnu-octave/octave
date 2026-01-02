@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2006-2025 The Octave Project Developers
+## Copyright (C) 2006-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -30,7 +30,7 @@
 ################################################################################
 
 %!test
-%! assert (recursive_nest (), 25)
+%! assert (recursive_nest (), 25);
 %! clear -global recursive_nest_inc;  # cleanup after test
 
 %!assert (recursive_nest2 (), 20)

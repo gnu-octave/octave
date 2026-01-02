@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1996-2025 The Octave Project Developers
+## Copyright (C) 1996-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -62,7 +62,7 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
         varargin(parent:parent+1) = [];
       else
         ## "parent" property for some other type like hggroup
-        h = [ancestor(htmp, "axes"), htmp];
+        h = ancestor (htmp, "axes");
       endif
     endif
   endif

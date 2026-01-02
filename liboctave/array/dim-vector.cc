@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2003-2025 The Octave Project Developers
+// Copyright (C) 2003-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // or <https://octave.org/copyright/>.
@@ -33,18 +33,8 @@
 #include <new>
 #include <sstream>
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "dim-vector.h"
-
-// The maximum allowed value for a dimension extent.  This will normally be a
-// tiny bit off the maximum value of octave_idx_type.
-// Currently 1 is subtracted to allow safe conversion of any 2D Array into
-// Sparse, but this offset may change in the future.
-octave_idx_type
-dim_vector::dim_max ()
-{
-  return std::numeric_limits<octave_idx_type>::max () - 1;
-}
 
 void
 dim_vector::chop_all_singletons ()
@@ -92,25 +82,6 @@ dim_vector::num_ones () const
       retval++;
 
   return retval;
-}
-
-octave_idx_type
-dim_vector::safe_numel () const
-{
-  octave_idx_type idx_max = dim_max ();
-  octave_idx_type n = 1;
-  int n_dims = ndims ();
-
-  for (int i = 0; i < n_dims; i++)
-    {
-      n *= xelem(i);
-      if (xelem(i) != 0)
-        idx_max /= xelem(i);
-      if (idx_max <= 0)
-        throw std::bad_alloc ();
-    }
-
-  return n;
 }
 
 dim_vector
@@ -193,7 +164,7 @@ dim_vector::concat (const dim_vector& dvb, int dim)
 //
 // 1. cat (dim, A, B) works
 //
-// 2. A, B are 2D and one of them is an empty vector, in which
+// 2. A, B are 2-D and one of them is an empty vector, in which
 // case the result is the other one except if both of them
 // are empty vectors, in which case the result is 0x0.
 

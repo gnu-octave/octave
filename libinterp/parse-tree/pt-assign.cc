@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -53,7 +53,7 @@ tree_simple_assignment::~tree_simple_assignment ()
 }
 
 std::string
-tree_simple_assignment::oper () const
+tree_simple_assignment::op_str () const
 {
   return octave_value::assign_op_as_string (m_etype);
 }
@@ -90,9 +90,6 @@ tree_simple_assignment::evaluate (tree_evaluator& tw, int)
             tw.set_lvalue_list (lvl);
           }, tw.lvalue_list ());
           tw.set_lvalue_list (&lvalue_list);
-
-          if (ult.numel () != 1)
-            err_invalid_structure_assignment ();
 
           octave_value rhs_val = m_rhs->evaluate (tw);
 
@@ -162,7 +159,7 @@ tree_multi_assignment::~tree_multi_assignment ()
 }
 
 std::string
-tree_multi_assignment::oper () const
+tree_multi_assignment::op_str () const
 {
   return octave_value::assign_op_as_string (op_type ());
 }

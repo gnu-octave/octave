@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -82,6 +82,8 @@ public:
   bool rvalue_ok () const { return true; }
 
   octave_value value () { return m_value; }
+
+  token const_token () const { return m_token; }
 
   tree_expression * dup (symbol_scope& scope) const;
 

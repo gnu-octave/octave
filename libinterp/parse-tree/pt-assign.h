@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -69,7 +69,10 @@ public:
 
   bool is_assignment_expression () const { return true; }
 
-  std::string oper () const;
+  OCTAVE_DEPRECATED (11, "use tree_simple_assignment::op_str instead")
+  std::string oper () const { return op_str (); }
+
+  std::string op_str () const;
 
   tree_expression * left_hand_side () { return m_lhs; }
 
@@ -140,7 +143,10 @@ public:
 
   bool rvalue_ok () const { return true; }
 
-  std::string oper () const;
+  OCTAVE_DEPRECATED (11, "use tree_multi_assignment::op_str instead")
+  std::string oper () const { return op_str (); }
+
+  std::string op_str () const;
 
   tree_argument_list * left_hand_side () { return m_lhs; }
 

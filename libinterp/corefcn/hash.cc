@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2007-2025 The Octave Project Developers
+// Copyright (C) 2007-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -42,7 +42,7 @@ for now.
 
 #include <string>
 
-#include "lo-hash.h"
+#include "oct-hash.h"
 
 #include "defun.h"
 #include "error.h"

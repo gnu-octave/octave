@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1994-2025 The Octave Project Developers
+// Copyright (C) 1994-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -107,6 +107,9 @@ public:
   {
     return m_in_or_out == in ? "varargin" : "varargout";
   }
+
+  token open_delim () const { return m_open_delim; }
+  token close_delim () const { return m_close_delim; }
 
   tree_parameter_list * dup (symbol_scope& scope) const;
 

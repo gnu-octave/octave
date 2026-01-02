@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2007-2025 The Octave Project Developers
+## Copyright (C) 2007-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -94,7 +94,7 @@ function h = trimesh (tri, x, y, z, varargin)
                   "FaceLighting", "none", "EdgeLighting", "flat",
                   "Tag", "trimesh", varargin{:});
 
-    if (! ishold ())
+    if (! ishold (hax))
       set (hax, "view", [-37.5, 30],
                 "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif

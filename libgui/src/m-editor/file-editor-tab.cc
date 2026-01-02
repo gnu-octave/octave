@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2011-2025 The Octave Project Developers
+// Copyright (C) 2011-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -322,7 +322,7 @@ file_editor_tab::closeEvent (QCloseEvent *e)
   else
     {
       e->accept ();
-      Q_EMIT tab_remove_request ();
+      Q_EMIT tab_remove_request (m_file_name);
     }
 }
 
@@ -519,18 +519,17 @@ void
 file_editor_tab::set_file_name (const QString& fileName)
 {
   // update tracked file if we really have a file on disk
-  QStringList trackedFiles = m_file_system_watcher.files ();
-  if (! trackedFiles.isEmpty ())
-    m_file_system_watcher.removePath (m_file_name);
+  enable_file_watcher (false, m_file_name);
   if (! fileName.isEmpty () && QFile::exists (fileName))
     {
-      m_file_system_watcher.addPath (fileName);
+      enable_file_watcher (true, fileName);
       m_last_modified =  QFileInfo (fileName).lastModified ().toUTC ();
     }
 
   // update lexer and file name variable if file name changes
   if (m_file_name != fileName)
     {
+      Q_EMIT rename_editor_file_in_browser_signal (m_file_name, fileName);
       m_file_name = fileName;
       update_lexer ();
     }
@@ -563,12 +562,23 @@ file_editor_tab::valid_file_name (const QString& file)
 }
 
 void
-file_editor_tab::enable_file_watcher (bool do_enable)
+file_editor_tab::enable_file_watcher (bool do_enable, const QString& fname)
 {
+  QString file_name = fname;
+  if (file_name.isEmpty ())
+    file_name = m_file_name;
+
+  QStringList trackedFiles = m_file_system_watcher.files ();
   if (do_enable)
-    m_file_system_watcher.addPath (m_file_name);
+    {
+      if (! trackedFiles.contains (file_name))
+        m_file_system_watcher.addPath (file_name);
+    }
   else
-    m_file_system_watcher.removePath (m_file_name);
+    {
+      if (trackedFiles.contains (file_name))
+        m_file_system_watcher.removePath (file_name);
+    }
 }
 
 // We cannot create a breakpoint when the file is modified
@@ -2430,9 +2440,7 @@ file_editor_tab::do_save_file (const QString& file_to_save,
   QSaveFile file (file_to_save);
 
   // stop watching file
-  QStringList trackedFiles = m_file_system_watcher.files ();
-  if (trackedFiles.contains (file_to_save))
-    m_file_system_watcher.removePath (file_to_save);
+  enable_file_watcher (false, file_to_save);
 
   // Remove trailing white spaces if desired
 
@@ -2455,8 +2463,7 @@ file_editor_tab::do_save_file (const QString& file_to_save,
     {
       // Unsuccessful, begin watching file again if it was being
       // watched previously.
-      if (trackedFiles.contains (file_to_save))
-        m_file_system_watcher.addPath (file_to_save);
+      enable_file_watcher (true, file_to_save);
 
       // Create a NonModal message about error.
       QMessageBox *msgBox
@@ -2479,8 +2486,7 @@ file_editor_tab::do_save_file (const QString& file_to_save,
   if (! check_valid_codec ())
     {
       // begin watching file again if it was being watched previously
-      if (trackedFiles.contains (file_to_save))
-        m_file_system_watcher.addPath (file_to_save);
+      enable_file_watcher (true, file_to_save);
 
       return;  // no valid codec
     }
@@ -2559,7 +2565,7 @@ file_editor_tab::do_save_file (const QString& file_to_save,
 
       if (remove_on_success)
         {
-          Q_EMIT tab_remove_request ();
+          Q_EMIT tab_remove_request (m_file_name);
           return;  // Don't touch member variables after removal
         }
 
@@ -2808,15 +2814,13 @@ file_editor_tab::file_has_changed (const QString&, bool do_close)
   // Prevent popping up multiple message boxes when the file has
   // been changed multiple times by temporarily removing from the
   // file watcher.
-  QStringList trackedFiles = m_file_system_watcher.files ();
-  if (! trackedFiles.isEmpty ())
-    m_file_system_watcher.removePath (m_file_name);
+  enable_file_watcher (false, m_file_name);
 
   if (file_exists && ! do_close)
     {
 
-      // The file is modified
-      if (m_always_reload_changed_files)
+      // The file is modified outside of octave
+      if (m_always_reload_changed_files && ! m_edit_area->isModified ())
         load_file (m_file_name);
 
       else
@@ -2828,11 +2832,15 @@ file_editor_tab::file_has_changed (const QString&, bool do_close)
 
           // Create a WindowModal message that blocks the edit area
           // by making m_edit_area parent.
+          QString modified = "";
+          if (m_edit_area->isModified ())
+            modified = tr ("\n\nWarning: The contents in the editor is modified!");
+
           QMessageBox *msgBox
             = new QMessageBox (QMessageBox::Warning,
                                tr ("Octave Editor"),
-                               tr ("It seems that \'%1\' has been modified by another application. Do you want to reload it?").
-                               arg (m_file_name),
+                               tr ("It seems that \'%1\' has been modified by another application. Do you want to reload it?%2").
+                               arg (m_file_name).arg (modified),
                                QMessageBox::Yes | QMessageBox::No, this);
 
           connect (msgBox, &QMessageBox::finished,
@@ -3092,7 +3100,7 @@ file_editor_tab::handle_file_reload_answer (int decision)
   else
     {
       // do not reload: readd to the file watcher
-      m_file_system_watcher.addPath (m_file_name);
+      enable_file_watcher (true, m_file_name);
     }
 }
 

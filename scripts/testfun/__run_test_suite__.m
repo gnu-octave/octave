@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2005-2025 The Octave Project Developers
+## Copyright (C) 2005-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -71,8 +71,8 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
       tot_cpu_tm = cputime ();
       tot_tic_tag = tic ();
       test ("", "explain", fid);
-      puts ("\nIntegrated test scripts:\n\n");
-      printf ("%101s\n", "[ CPU    /  CLOCK ]");
+      puts ("\nIntegrated test scripts:\n");
+      printf ("%101s\n", "[ CPU    |  CLOCK ]");
       for i = 1:length (fcndirs)
         [p, n, xf, xb, sk, rtsk, rgrs] = run_test_dir (fid, fcndirs{i}, false);
         dp += p;
@@ -96,7 +96,7 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
       endfor
       tot_clock_tm = toc (tot_tic_tag);
       tot_cpu_tm = cputime () - tot_cpu_tm;
-      printf ("%80s  [%6.1fs / %6.1fs]", "total time (CPU / CLOCK)", tot_cpu_tm, tot_clock_tm);
+      printf ("%80s  [%6.1fs | %6.1fs]", "total time (CPU | CLOCK)", tot_cpu_tm, tot_clock_tm);
       if (! isempty (summary_failure_info))
         puts ("\nFailure Summary:\n\n");
         for i = 1:numel (summary_failure_info)
@@ -142,9 +142,9 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
       endif
 
       ## Weed out deprecated, legacy, and private functions
-      weed_idx = cellfun (@isempty, regexp (files_with_tests, '\<deprecated\>|\<legacy\>|\<private\>', 'once'));
+      weed_idx = cellfun ('isempty', regexp (files_with_tests, '\<deprecated\>|\<legacy\>|\<private\>', 'once'));
       files_with_tests = files_with_tests(weed_idx);
-      weed_idx = cellfun (@isempty, regexp (files_with_no_tests, '\<deprecated\>|\<legacy\>|\<private\>', 'once'));
+      weed_idx = cellfun ('isempty', regexp (files_with_no_tests, '\<deprecated\>|\<legacy\>|\<private\>', 'once'));
       files_with_no_tests = files_with_no_tests(weed_idx);
 
       report_files_with_no_tests (files_with_tests, files_with_no_tests, ".m");
@@ -286,7 +286,7 @@ function fail_info = print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs, cpu_tm, cloc
   if ((n + sk + rtsk + rgrs) > 0)
     printf (" pass %4d/%-4d", p, n);
     if (cpu_tm != 0 || clock_tm != 0)
-      printf (" [%6.3fs / %6.3fs]", cpu_tm, clock_tm);
+      printf (" [%6.3fs | %6.3fs]", cpu_tm, clock_tm);
     endif
     nfail = n - p - xf - xb - rgrs;
     if (nfail > 0)

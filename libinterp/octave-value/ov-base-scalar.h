@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -33,10 +33,10 @@
 #include <iosfwd>
 #include <string>
 
-#include "lo-mappers.h"
-#include "lo-utils.h"
-#include "str-vec.h"
 #include "MatrixType.h"
+#include "lo-utils.h"
+#include "mappers.h"
+#include "str-vec.h"
 
 #include "ov-base.h"
 #include "ov-typeinfo.h"

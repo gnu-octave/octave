@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2007-2025 The Octave Project Developers
+## Copyright (C) 2007-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -37,7 +37,7 @@ function h = __patch__ (p, varargin)
   h = NaN;
   nargin = nargin - 1;
 
-  is_numeric_arg = cellfun (@isnumeric, varargin);
+  is_numeric_arg = cellfun ('isnumeric', varargin);
 
   if (isempty (varargin))
     args = {};

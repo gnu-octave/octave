@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1999-2025 The Octave Project Developers
+// Copyright (C) 1999-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -40,10 +40,10 @@
 #  include "file-stat.h"
 #endif
 
-#include "lo-error.h"
 #include "lo-utils.h"
-#include "lo-sysdep.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
+#include "oct-sysdep.h"
 #include "oct-time.h"
 #include "octave-preserve-stream-state.h"
 #include "strftime-wrapper.h"
@@ -51,7 +51,6 @@
 #include "time-wrappers.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 time::time (double d)

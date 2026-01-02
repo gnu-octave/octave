@@ -2,7 +2,7 @@
 
 ########################################################################
 ##
-## Copyright (C) 2013-2025 The Octave Project Developers
+## Copyright (C) 2013-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -44,7 +44,6 @@ cat << EOF
 #include "ov.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(build_env)
 
     octave_scalar_map

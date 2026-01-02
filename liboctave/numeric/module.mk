@@ -18,7 +18,6 @@ NUMERIC_INC = \
   %reldir%/DASSL.h \
   %reldir%/DET.h \
   %reldir%/EIG.h \
-  %reldir%/gsvd.h \
   %reldir%/LSODE.h \
   %reldir%/ODE.h \
   %reldir%/ODEFunc.h \
@@ -26,15 +25,20 @@ NUMERIC_INC = \
   %reldir%/ODESFunc.h \
   %reldir%/Quad.h \
   %reldir%/aepbalance.h \
+  %reldir%/amos-proto.h \
+  %reldir%/arpack-proto.h \
   %reldir%/base-dae.h \
   %reldir%/base-de.h \
+  %reldir%/blas-proto.h \
   %reldir%/bsxfun-decl.h \
   %reldir%/bsxfun.h \
   %reldir%/chol.h \
   %reldir%/eigs-base.h \
   %reldir%/fEIG.h \
   %reldir%/gepbalance.h \
+  %reldir%/gsvd.h \
   %reldir%/hess.h \
+  %reldir%/lapack-proto.h \
   %reldir%/lo-amos-proto.h \
   %reldir%/lo-arpack-proto.h \
   %reldir%/lo-blas-proto.h \
@@ -45,17 +49,22 @@ NUMERIC_INC = \
   %reldir%/lo-slatec-proto.h \
   %reldir%/lo-specfun.h \
   %reldir%/lu.h \
+  %reldir%/mappers.h \
   %reldir%/oct-convn.h \
   %reldir%/oct-fftw.h \
   %reldir%/oct-norm.h \
   %reldir%/oct-rand.h \
+  %reldir%/oct-specfun.h \
   %reldir%/oct-spparms.h \
   %reldir%/qr.h \
   %reldir%/qrp.h \
+  %reldir%/qrupdate-proto.h \
   %reldir%/randgamma.h \
   %reldir%/randmtzig.h \
   %reldir%/randpoisson.h \
+  %reldir%/ranlib-proto.h \
   %reldir%/schur.h \
+  %reldir%/slatec-proto.h \
   %reldir%/sparse-chol.h \
   %reldir%/sparse-dmsolve.h \
   %reldir%/sparse-lu.h \
@@ -78,13 +87,13 @@ NUMERIC_SRC = \
   %reldir%/fEIG.cc \
   %reldir%/gepbalance.cc \
   %reldir%/hess.cc \
-  %reldir%/lo-mappers.cc \
-  %reldir%/lo-specfun.cc \
   %reldir%/lu.cc \
+  %reldir%/mappers.cc \
   %reldir%/oct-convn.cc \
   %reldir%/oct-fftw.cc \
   %reldir%/oct-norm.cc \
   %reldir%/oct-rand.cc \
+  %reldir%/oct-specfun.cc \
   %reldir%/oct-spparms.cc \
   %reldir%/qr.cc \
   %reldir%/qrp.cc \

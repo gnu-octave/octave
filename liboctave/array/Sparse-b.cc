@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1998-2025 The Octave Project Developers
+// Copyright (C) 1998-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -29,7 +29,7 @@
 
 // Instantiate Sparse matrix of double values.
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "Sparse.h"
 #include "Sparse.cc"
 

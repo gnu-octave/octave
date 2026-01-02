@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -33,8 +33,8 @@
 #include <iosfwd>
 #include <string>
 
-#include "lo-mappers.h"
 #include "lo-utils.h"
+#include "mappers.h"
 #include "mx-base.h"
 #include "str-vec.h"
 
@@ -198,7 +198,10 @@ public:
   char_array_value (bool = false) const
   {
     charNDArray retval (dim_vector (1, 1));
-    retval(0) = static_cast<char> (scalar);
+    if (octave::math::isnan (scalar))
+      retval(0) = 0;
+    else
+      retval(0) = static_cast<char> (scalar);
     return retval;
   }
 

@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2012-2025 The Octave Project Developers
+## Copyright (C) 2012-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -111,7 +111,7 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
   ## Place the "*mode" properties at the end to avoid having the updaters
   ## change the mode to "manual" when the value is "auto".
   names = fieldnames (s.properties);
-  n = strncmp (cellfun (@fliplr, names, "uniformoutput", false), "edom", 4);
+  n = strncmp (cellfun ('fliplr', names, "uniformoutput", false), "edom", 4);
   n = (n | strcmp (names, "positionconstraint"));
   names = [names(! n); names(n)];
   n_pos = find (strcmp (names, "position") | strcmp (names, "outerposition"));

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -203,7 +203,8 @@ maybe_extract_message_id (const std::string& caller,
 
   if (nargin > 0)
     {
-      std::string arg1 = args(0).string_value ();
+      std::string arg1 = args(0).xstring_value ("%s: MESSAGE must be a string",
+                                                caller.c_str ());
 
       // For compatibility with Matlab, an identifier must contain ':',
       // but not at the beginning or the end, and it must not contain '%'
@@ -395,8 +396,8 @@ error_system::make_stack_map (const std::list<frame_info>& frames)
   return retval;
 }
 
-std::list<frame_info>
-error_system::make_stack_frame_list (const octave_map& stack)
+static std::list<frame_info>
+make_stack_frame_list_intern (const octave_map& stack)
 {
   std::list<frame_info> frames;
 
@@ -414,6 +415,25 @@ error_system::make_stack_frame_list (const octave_map& stack)
                                   column(i).int_value ()));
 
   return frames;
+}
+
+std::list<frame_info>
+error_system::make_stack_frame_list (const octave_map& stack,
+                                     const std::string& who)
+{
+  if (! (stack.contains ("file") && stack.contains ("name")
+         && stack.contains ("line")))
+    error ("%s: STACK struct must contain the fields 'file', 'name', and 'line'",
+           who.c_str ());
+
+  if (! stack.contains ("column"))
+    {
+      octave_map stack1 (stack);  // copy before modification
+      stack1.setfield ("column", Cell (octave_value (-1)));
+      return make_stack_frame_list_intern (stack1);
+    }
+  else
+    return make_stack_frame_list_intern (stack);
 }
 
 // For given warning ID, return 0 if warnings are disabled, 1 if
@@ -622,22 +642,7 @@ error_system::rethrow_error (const std::string& id,
   execution_exception ee ("error", id, msg, stack_info);
 
   if (! stack.isempty ())
-    {
-      if (! (stack.contains ("file") && stack.contains ("name")
-             && stack.contains ("line")))
-        error ("rethrow: STACK struct must contain the fields 'file', 'name', and 'line'");
-
-      if (! stack.contains ("column"))
-        {
-          octave_map new_stack = stack;
-
-          new_stack.setfield ("column", Cell (octave_value (-1)));
-
-          ee.set_stack_info (make_stack_frame_list (new_stack));
-        }
-      else
-        ee.set_stack_info (make_stack_frame_list (stack));
-    }
+    ee.set_stack_info (make_stack_frame_list (stack, "rethrow"));
 
   throw_error (ee);
 }
@@ -1306,44 +1311,43 @@ disable escape sequence expansion use a second backslash before the sequence
       if (args(0).isempty ())
         return retval;
 
-      octave_scalar_map m = args(0).scalar_map_value ();
+      octave_scalar_map m = args(0).xscalar_map_value ("ERRSTRUCT must be a scalar structure with fields 'message' and 'identifier'");
 
       // empty struct is not an error.  return and resume calling function.
       if (m.nfields () == 0)
         return retval;
 
-      if (m.contains ("message"))
+      if (! m.contains ("message"))
+        error_with_id ("Octave:invalid-input-arg",
+                       "error: ERRSTRUCT must have field 'message'");
+      else
         {
           octave_value c = m.getfield ("message");
 
-          if (c.is_string ())
-            message = c.string_value ();
+          if (! c.isempty ())
+            message = c.xstring_value ("error: MESSAGE must be a string");
         }
 
-      if (m.contains ("identifier"))
+      if (! m.contains ("identifier"))
+        error_with_id ("Octave:invalid-input-arg",
+                       "error: ERRSTRUCT must have field 'identifier'");
+      else
         {
           octave_value c = m.getfield ("identifier");
 
-          if (c.is_string ())
-            id = c.string_value ();
+          if (! c.isempty ())
+            id = c.xstring_value ("error: IDENTIFIER must be a string");
         }
 
       if (m.contains ("stack"))
         {
           octave_value c = m.getfield ("stack");
 
-          if (c.isstruct ())
+          if (! c.isempty ())
             {
-              octave_map err_stack = c.map_value ();
-
-              if (! (err_stack.contains ("file") && err_stack.contains ("name")
-                     && err_stack.contains ("line")))
-                error ("error: STACK struct must contain the fields 'file', 'name', and 'line'");
-
-              if (! err_stack.contains ("column"))
-                err_stack.setfield ("column", Cell (octave_value (-1)));
-
-              stack_info = error_system::make_stack_frame_list (err_stack);
+              octave_map stack = c.xmap_value ("error: STACK must be a structure");
+              stack_info = error_system::make_stack_frame_list (stack,
+                                                                "error");
             }
         }
     }
@@ -1388,44 +1392,93 @@ disable escape sequence expansion use a second backslash before the sequence
 }
 
 /*
-%!error <some message>
-%! error ('some message');
+%!error <error message 1>
+%! error ('error message 1');
 
-%!error <some message>
-%! error ('my:err', 'some message');
+%!error <error message 2>
+%! error ('my:error_id_2', 'error message 2');
 
-%!error id=my:err
-%! error ('my:err', 'some message');
+%!error id=my:error_id_3
+%! error ('my:error_id_3', 'error message 3');
 
-%!error <some message>
-%! err.identifier = 'my:err';
-%! err.message = 'some message';
-%! error (err);
+%!error <error message 4>
+%! serr.message = 'error message 4';
+%! serr.identifier = 'my:error_id_4';
+%! error (serr);
 
-%!error id=my:err
-%! err.identifier = 'my:err';
-%! err.message = 'some message';
-%! error (err);
+%!error id=my:error_id_5
+%! serr.message = 'error message 5';
+%! serr.identifier = 'my:error_id_5';
+%! error (serr);
 
 ## bug #67143
-%!error <some message>
-%! err.identifier = 'my:err';
-%! err.message = 'some message';
-%! err.stack = struct ('file', '', 'name', 'my function', 'line', 0);
-%! error (err);
+%!error <error message 6>
+%! serr.identifier = 'my:error_id_6';
+%! serr.message = 'error message 6';
+%! serr.stack = struct ('file', 'myfile', 'name', 'myfcn', 'line', 0);
+%! error (serr);
 
-%!error id=my:err
-%! err.identifier = 'my:err';
-%! err.message = 'some message';
-%! err.stack = struct ('file', '', 'name', 'my function', 'line', 0, ...
-%!                     'column', 0);
-%! error (err);
+%!error id=my:error_id_7
+%! serr.identifier = 'my:error_id_7';
+%! serr.message = 'error message 7';
+%! serr.stack = struct ('file', 'myfile', 'name', 'myfcn', 'line', 0, ...
+%!                      'column', 0);
+%! error (serr);
 
-%!error <must contain .*file>
-%! err.identifier = 'my:err';
-%! err.message = 'some message';
-%! err.stack = struct ('name', 'my function', 'line', 0);
-%! error (err);
+## Test input validation
+############################################################
+%!error <Invalid call> error ()
+
+%!error <ERRSTRUCT must be a scalar structure>
+%! serr(1).message = 'msg1';
+%! serr(1).identifier = 'id1';
+%! serr(2).message = 'msg2';
+%! serr(2).identifier = 'id2';
+%! error (serr);
+
+%!error <ERRSTRUCT must have field 'message'>
+%! serr.identifier = 'id';
+%! error (serr);
+
+%!error <MESSAGE must be a string>
+%! serr.message = {1};
+%! error (serr);
+
+%!error <ERRSTRUCT must have field 'identifier'>
+%! serr.message = 'msg';
+%! error (serr);
+
+%!error <IDENTIFIER must be a string>
+%! serr.message = 'msg';
+%! serr.identifier = {1};
+%! error (serr);
+
+%!error <STACK must be a structure>
+%! serr.message = 'msg';
+%! serr.identifier = 'id';
+%! serr.stack = 5;
+%! error (serr);
+
+%!error <STACK struct must contain the fields 'file'>
+%! serr.message = 'msg';
+%! serr.identifier = 'id';
+%! serr.stack = struct ('name', 'myfcn', 'line', 0);
+%! error (serr);
+
+%!error <STACK struct must contain the fields .* 'name'>
+%! serr.message = 'msg';
+%! serr.identifier = 'id';
+%! serr.stack = struct ('file', 'myfile', 'line', 0);
+%! error (serr);
+
+%!error <STACK struct must contain the fields .* 'line'>
+%! serr.message = 'msg';
+%! serr.identifier = 'id';
+%! serr.stack = struct ('file', 'myfile', 'name', 'myfcn');
+%! error (serr);
+
+%!error <MESSAGE must be a string> error ({1});
+
 */
 
 DEFMETHOD (warning, interp, args, nargout,
@@ -2096,9 +2149,9 @@ fields are set to their default values.
 %!test
 %! lasterror ("reset");
 %! x = lasterror ();
-%! assert (x.identifier, "")
-%! assert (x.message, "")
-%! assert (isempty (x.stack))
+%! assert (x.identifier, "");
+%! assert (x.message, "");
+%! assert (isempty (x.stack));
 %! lasterror (x);
 %! y = lasterror ();
 %! assert (y, x);

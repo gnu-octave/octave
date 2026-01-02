@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2020-2025 The Octave Project Developers
+// Copyright (C) 2020-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -27,7 +27,7 @@
 
 // Originally written by M. Koehler <koehlerm(AT)mpi-magdeburg.mpg.de>
 
-#undef DEBUG
+#undef OCTAVE_ORDQZ_DEBUG
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -37,7 +37,7 @@
 #include <cmath>
 
 #include "f77-fcn.h"
-#include "lo-lapack-proto.h"
+#include "lapack-proto.h"
 #include "qr.h"
 #include "quit.h"
 
@@ -46,8 +46,7 @@
 #include "errwarn.h"
 #include "ovl.h"
 
-
-#if defined (DEBUG)
+#if defined (OCTAVE_ORDQZ_DEBUG)
 #  include "pager.h"
 #  include "pr-output.h"
 #endif
@@ -377,7 +376,7 @@ Note: The keywords are compatible with the ones from @code{qr}.
       k = 0;
       while (k < nn)
         {
-#if defined (DEBUG)
+#if defined (OCTAVE_ORDQZ_DEBUG)
           octave_stdout << "ordqz: k = " << k  << " nn = " << nn << " \n";
 #endif
           if ((k < nn-1 && aa(k+1, k) == 0.0) || k == nn-1)

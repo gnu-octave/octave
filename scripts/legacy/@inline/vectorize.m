@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2020-2025 The Octave Project Developers
+## Copyright (C) 2020-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -36,9 +36,9 @@
 ## @example
 ## @group
 ## fobj = vectorize (inline ("x^2 - 1"))
-##    @result{} fobj = f(x) = x.^2 - 1
+##    @xresult{} fobj = f(x) = x.^2 - 1
 ## quadv (fobj, 0, 3)
-##    @result{} 6
+##    @xresult{} 6
 ## @end group
 ## @end example
 ## @seealso{inline, formula, argnames}

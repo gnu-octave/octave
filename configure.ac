@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 dnl
 ########################################################################
 ##
-## Copyright (C) 1993-2025 The Octave Project Developers
+## Copyright (C) 1993-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -27,8 +27,10 @@ dnl
 
 ### Initialize Autoconf
 AC_PREREQ([2.65])
-AC_INIT([GNU Octave], [10.3.1], [https://bugs.octave.org], [octave],
-        [https://www.octave.org])
+AC_INIT([GNU Octave], [11.0.0],
+        [https://bugs.octave.org], [octave], [https://www.octave.org])
+AC_CONFIG_MACRO_DIRS([m4])
+AC_CONFIG_AUX_DIR([build-aux])
 
 ### Declare version numbers
 
@@ -39,14 +41,14 @@ dnl AC_INIT requires it to be static, not computed from shell variables.
 ## explains how to update these numbers for release and development
 ## versions.
 
-OCTAVE_MAJOR_VERSION=10
-OCTAVE_MINOR_VERSION=3
-OCTAVE_PATCH_VERSION=1
+OCTAVE_MAJOR_VERSION=11
+OCTAVE_MINOR_VERSION=0
+OCTAVE_PATCH_VERSION=0
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION argument.
 OCTAVE_VERSION="$PACKAGE_VERSION"
 
-OCTAVE_COPYRIGHT="Copyright (C) 1993-2025 The Octave Project Developers."
+OCTAVE_COPYRIGHT="Copyright (C) 1993-2026 The Octave Project Developers."
 
 OCTAVE_RELEASE_DATE="2025-09-23"
 
@@ -78,8 +80,6 @@ dnl        AC_REVISION field whenever configure.ac is modified.
 dnl AC_REVISION($Revision: 1.603 $)
 AC_CONFIG_SRCDIR([libinterp/octave.cc])
 AC_CONFIG_HEADERS([config.h:config.in.h])
-AC_CONFIG_AUX_DIR([build-aux])
-AC_CONFIG_MACRO_DIR([m4])
 
 ### Initialize Automake
 AM_INIT_AUTOMAKE([1.14 -Wno-portability -Wno-override tar-ustar subdir-objects dist-lzip dist-xz])
@@ -546,6 +546,10 @@ AC_DEFINE_UNQUOTED(OCTAVE_IDX_TYPE, [$OCTAVE_IDX_TYPE],
 ### Check for LLVM or Apple libc++ library.
 
 OCTAVE_LLVM_LIBCXX
+
+### Check for BSD or Apple libc library.
+
+OCTAVE_BSD_LIBC
 
 ### Check for pthread library.
 
@@ -1227,8 +1231,56 @@ if test $octave_cv_overload_char_int8_t = yes; then
     [Define to 1 if C++ allows overload of char, int8_t, and uint8_t types.])
 fi
 
-## Check for MIPS-specific non-standard encoding of NaN value
-OCTAVE_MIPS_NAN
+## Check whether encoding of quiet NaN value is conformant to IEEE 754-2008
+OCTAVE_IEEE754_QNAN
+
+## Check whether quiet NaN values retain their payload on arithmetic operations
+OCTAVE_QNAN_WITH_PAYLOAD
+
+## Check whether the C++ STL supports std::from_chars for double precision
+## floating-point
+AC_CACHE_CHECK([whether C++ STL supports std::from_chars for double precision floating-point],
+  [octave_cv_std_from_chars_double],
+  [AC_LANG_PUSH(C++)
+  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+    #include <charconv>
+    #include <string>
+
+    void test_from_chars_double ()
+    {
+      double num = 0.0;
+      std::string str = "3.14";
+      const char *chars_start = str.data ();
+      const char *chars_end = chars_start + str.size ();
+      auto [ptr, ec] = std::from_chars (chars_start, chars_end, num);
+    }
+    ]], [[
+    test_from_chars_double ();
+    ]])],
+    octave_cv_std_from_chars_double=yes,
+    octave_cv_std_from_chars_double=no)
+  AC_LANG_POP(C++)
+  ])
+
+if test $octave_cv_std_from_chars_double = yes; then
+  AC_DEFINE(OCTAVE_HAVE_STD_FROM_CHARS_DOUBLE, 1,
+    [Define to 1 if C++ STL supports std::from_chars for double precision floating-point.])
+else
+  ## Check whether fast-float header-only library is available
+  AC_LANG_PUSH(C++)
+  AC_CHECK_HEADER([fast_float/fast_float.h],
+                  [have_fast_float=yes],
+                  [have_fast_float=no])
+  AC_LANG_POP(C++)
+
+  if test $have_fast_float = yes; then
+    AC_DEFINE(OCTAVE_HAVE_FAST_FLOAT, 1,
+      [Define to 1 if fast-float header-only library is available.])
+  else
+    AC_MSG_ERROR([If the C++ STL does not support std::from_chars for double precision floating-point, the fast-float header-only library needs to be installed.])
+  fi
+fi
+
 
 ### Checks for functions and variables.
 
@@ -1794,6 +1846,12 @@ if test "$have_x" = yes; then
   AC_SUBST(X11_LIBS)
 fi
 
+### Check for Wayland client library
+
+OCTAVE_CHECK_LIB(wayland-client, Wayland client,
+  [Wayland client library not found.],
+  [wayland-client.h], [wl_display_connect])
+
 ### Check for the Carbon framework on macOS systems.
 
 OCTAVE_HAVE_FRAMEWORK([Carbon],
@@ -2298,6 +2356,10 @@ AC_SUBST(SPARSE_XCPPFLAGS)
 AC_SUBST(SPARSE_XLDFLAGS)
 AC_SUBST(SPARSE_XLIBS)
 
+### Check sizes of integer types that are used for indexing for SuiteSparse.
+
+OCTAVE_CHECK_SUITESPARSE_SIZEOF_IDX_TYPES
+
 ## Check for UMFPACK separately split complex matrix and RHS.
 if test -n "$UMFPACK_LIBS"; then
   save_CPPFLAGS="$CPPFLAGS"
@@ -2515,9 +2577,9 @@ do
 
   if test -z "$JAVA_HOME"; then
     ## Find JAVA_HOME for JRE by running java and querying properties.
-    JAVA_TMP_HOME=`"$JAVA" -classpath ${srcdir}/build-aux OctJavaQry JAVA_HOME`
+    java_tmp_home=`"$JAVA" -classpath ${srcdir}/build-aux OctJavaQry JAVA_HOME`
     ## Strip directory back to top-level installation dir (JAVA_HOME for JDK).
-    JAVA_HOME=`echo $JAVA_TMP_HOME | $SED -e 's|[[/\\]]bin[[/\\]]\?$||' | $SED -e 's|[[/\\]]jre[[/\\]]\?$||'`
+    JAVA_HOME=`echo $java_tmp_home | $SED -e 's|[[/\\]]bin[[/\\]]\?$||' | $SED -e 's|[[/\\]]jre[[/\\]]\?$||'`
   fi
 
   case $build_os in
@@ -2556,10 +2618,10 @@ do
   java_major=[`echo $octave_cv_java_version | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\1/'`]
   java_minor=[`echo $octave_cv_java_version | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\2/'`]
 
-  if test $java_major -gt 1 || (test $java_major -eq 1 && test $java_minor -ge 5); then
+  if test $java_major -gt 1 || (test $java_major -eq 1 && test $java_minor -ge 9); then
     :  # Version is OK.  Do nothing.
   else
-    warn_java="Java version is too old (< 1.5).  Octave will not be able to call Java methods."
+    warn_java="Java version is too old (< 1.9).  Octave will not be able to call Java methods."
     break
   fi
 
@@ -2674,6 +2736,13 @@ do
         JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/darwin"
       fi
     ;;
+    freebsd*)
+      if test -n "$JAVA_CPPFLAGS"; then
+        JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS} -I${JAVA_CPPFLAGS}/freebsd"
+      else
+        JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/freebsd"
+      fi
+    ;;
     solaris2*)
       if test -n "$JAVA_CPPFLAGS"; then
         JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS} -I${JAVA_CPPFLAGS}/solaris"
@@ -2710,6 +2779,16 @@ do
     break
   fi
 
+  ## Test if jar supports --date for reproducible builds
+  AC_CACHE_CHECK([whether jar supports '--date' option],
+    [octave_cv_jar_has_date_option],
+    [octave_cv_jar_has_date_option=no
+    if $JAR --help | $GREP -- '--date=' >/dev/null 2>&1; then
+      octave_cv_jar_has_date_option=yes
+    fi
+  ])
+  JAR_SUPPORTS_DATE=$octave_cv_jar_has_date_option
+
   ## Passed all configuration tests.  A workable Java installation was found.
   build_java=yes
   AC_DEFINE(HAVE_JAVA, 1,
@@ -2724,6 +2803,7 @@ AM_CONDITIONAL([AMCOND_HAVE_JAVA], [test $build_java = yes])
 AC_SUBST(JAVA)
 AC_SUBST(JAVAC)
 AC_SUBST(JAR)
+AC_SUBST(JAR_SUPPORTS_DATE)
 AC_SUBST(JAVA_CPPFLAGS)
 AC_SUBST(JAVA_LIBS)
 AC_DEFINE_UNQUOTED([JAVA_HOME], ["$JAVA_HOME"], [Java home (top-level installation dir)])
@@ -2816,10 +2896,10 @@ AM_CONDITIONAL([AMCOND_INSTALL_BUILD_LOGS], [test $install_build_logs = yes])
 
 ### Determine whether libraries should be linked with visibility attributes.
 
-ENABLE_LIB_VISIBILITY_FLAGS=no
+ENABLE_LIB_VISIBILITY_FLAGS=yes
 AC_ARG_ENABLE(lib-visibility-flags,
-  [AS_HELP_STRING([--enable-lib-visibility-flags],
-    [build libraries with visibility flags (export only symbols from API)])],
+  [AS_HELP_STRING([--disable-lib-visibility-flags],
+    [don't build libraries with visibility flags (export all symbols)])],
   [case $enableval in
      yes) ENABLE_LIB_VISIBILITY_FLAGS=yes ;;
      no) ENABLE_LIB_VISIBILITY_FLAGS=no ;;
@@ -2860,28 +2940,24 @@ if test $ENABLE_LIB_VISIBILITY_FLAGS = yes; then
   OCTINTERP_DLL_DEFS="-DOCTINTERP_DLL"
   OCTMEX_DLL_DEFS="-DOCTMEX_DLL"
   OCTGUI_DLL_DEFS="-DOCTGUI_DLL"
-  OCTGRAPHICS_DLL_DEFS="-DOCTGRAPHICS_DLL"
 else
   EXTERNAL_DLL_DEFS=
   OCTAVE_DLL_DEFS=
   OCTINTERP_DLL_DEFS=
   OCTMEX_DLL_DEFS=
   OCTGUI_DLL_DEFS=
-  OCTGRAPHICS_DLL_DEFS=
 fi
 AC_MSG_NOTICE([defining EXTERNAL_DLL_DEFS to be $EXTERNAL_DLL_DEFS])
 AC_MSG_NOTICE([defining OCTAVE_DLL_DEFS to be $OCTAVE_DLL_DEFS])
 AC_MSG_NOTICE([defining OCTINTERP_DLL_DEFS to be $OCTINTERP_DLL_DEFS])
 AC_MSG_NOTICE([defining OCTMEX_DLL_DEFS to be $OCTMEX_DLL_DEFS])
 AC_MSG_NOTICE([defining OCTGUI_DLL_DEFS to be $OCTGUI_DLL_DEFS])
-AC_MSG_NOTICE([defining OCTGRAPHICS_DLL_DEFS to be $OCTGRAPHICS_DLL_DEFS])
 
 AC_SUBST(EXTERNAL_DLL_DEFS)
 AC_SUBST(OCTAVE_DLL_DEFS)
 AC_SUBST(OCTINTERP_DLL_DEFS)
 AC_SUBST(OCTMEX_DLL_DEFS)
 AC_SUBST(OCTGUI_DLL_DEFS)
-AC_SUBST(OCTGRAPHICS_DLL_DEFS)
 
 ### Add extra compiler flags now that feature testing is complete.
 
@@ -3032,7 +3108,7 @@ fi
 
 ### Recommendations from the gnulib bootstrap script.
 
-GNULIB_LINK_DEPS="$CLOCK_TIME_LIB $FREXPF_LIBM $FREXP_LIBM $GETHOSTNAME_LIB $GETHRXTIME_LIB $GETLOGIN_LIB $GETRANDOM_LIB $HARD_LOCALE_LIB $LIBPMULTITHREAD $LIBPTHREAD $LIBSOCKET $LIBTHREAD $LIB_CRYPTO $LTLIBC32CONV $LTLIBICONV $LTLIBINTL $LTLIBREADLINE $LTLIBUNISTRING $MBRTOWC_LIB $NANOSLEEP_LIB $PTHREAD_SIGMASK_LIB $SELECT_LIB $SETLOCALE_LIB $SETLOCALE_NULL_LIB $INTL_MACOSX_LIBS"
+GNULIB_LINK_DEPS="$CLOCK_TIME_LIB $FREXPF_LIBM $FREXP_LIBM $GETHOSTNAME_LIB $GETHRXTIME_LIB $GETLOCALENAME_L_LIB $GETLOGIN_LIB $GETRANDOM_LIB $HARD_LOCALE_LIB $LIBPTHREAD $LIBSOCKET $LIBTHREAD $LIB_CRYPTO $LTLIBC32CONV $LTLIBICONV $LTLIBINTL $LTLIBREADLINE $LTLIBUNISTRING $MBRTOWC_LIB $NANOSLEEP_LIB $PTHREAD_ONCE_LIB $PTHREAD_SIGMASK_LIB $SELECT_LIB $SETLOCALE_LIB $SETLOCALE_NULL_LIB $INTL_MACOSX_LIBS"
 
 ## FIXME: This is a kluge to transform $libdir/libiconv.dll.a to -liconv.
 ## It would probably be better to fix gnulib to not give us an absolute
@@ -3418,6 +3494,9 @@ Octave is now configured for $canonical_host_type
   UMFPACK CPPFLAGS:              $UMFPACK_CPPFLAGS
   UMFPACK LDFLAGS:               $UMFPACK_LDFLAGS
   UMFPACK libraries:             $UMFPACK_LIBS
+  Wayland client CPPFLAGS:       $WAYLAND_CLIENT_CPPFLAGS
+  Wayland client LDFLAGS:        $WAYLAND_CLIENT_LDFLAGS
+  Wayland client libraries:      $WAYLAND_CLIENT_LIBS
   X11 include flags:             $X11_INCFLAGS
   X11 libraries:                 $X11_LIBS
   Z CPPFLAGS:                    $Z_CPPFLAGS

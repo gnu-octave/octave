@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2007-2025 The Octave Project Developers
+// Copyright (C) 2007-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -44,8 +44,8 @@
 #include "cmd-edit.h"
 #include "file-ops.h"
 #include "file-stat.h"
-#include "lo-sysdep.h"
 #include "oct-locbuf.h"
+#include "oct-sysdep.h"
 #include "oct-time.h"
 
 #include "builtin-defun-decls.h"
@@ -1863,7 +1863,7 @@ array_property::validate (const octave_value& v)
         {
           for (octave_idx_type i = 0; i < v_mat.numel (); i++)
             if (octave::math::isnan (v_mat(i)))
-              error (R"(set: "%s" must not be nan)", get_name ().c_str ());
+              error (R"(set: "%s" must not be NaN)", get_name ().c_str ());
         }
       else if (m_finite_constraint == NOT_INF)
         {
@@ -2086,6 +2086,10 @@ children_property::do_get_children (bool return_hidden) const
       for (const auto& hchild : m_children_list)
         retval(k++) = hchild;
     }
+
+  // Return a 0x0 empty array, not 0x1.
+  if (retval.isempty ())
+    retval.resize (0,0);
 
   return retval;
 }
@@ -3481,8 +3485,8 @@ base_properties::update_handlevisibility ()
 %!   addlistener (hax, "color", fcn);
 %!   set (hf, "color", "b");
 %!   set (hax, "color", "b");
-%!   assert (getappdata (hf, "testdata"), hf)
-%!   assert (getappdata (hax, "testdata"), hax)
+%!   assert (getappdata (hf, "testdata"), hf);
+%!   assert (getappdata (hax, "testdata"), hax);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -5441,6 +5445,8 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   m_xlimitmethod = "tickaligned";
   m_xminorgrid = "off";
   m_xminortick = "off";
+  m_xminortickvalues = Matrix ();
+  m_xminortickvaluesmode = "auto";
   m_xscale = "linear";
   m_xtick = Matrix ();
   m_xticklabel = "";
@@ -5457,6 +5463,8 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   m_ylimitmethod = "tickaligned";
   m_yminorgrid = "off";
   m_yminortick = "off";
+  m_yminortickvalues = Matrix ();
+  m_yminortickvaluesmode = "auto";
   m_yscale = "linear";
   m_ytick = Matrix ();
   m_yticklabel = "";
@@ -5471,6 +5479,8 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   m_zlimitmethod = "tickaligned";
   m_zminorgrid = "off";
   m_zminortick = "off";
+  m_zminortickvalues = Matrix ();
+  m_zminortickvaluesmode = "auto";
   m_zscale = "linear";
   m_ztick = Matrix ();
   m_zticklabel = "";
@@ -6166,7 +6176,7 @@ axes::properties::update_axes_layout ()
   m_ypTickN = (m_zSign ? m_yPlane : m_yPlaneN);
   m_zpTickN = (m_zSign ? m_zPlaneN : m_zPlane);
 
-  // 2D mode
+  // 2-D mode
   m_x2Dtop = false;
   m_y2Dright = false;
   m_layer2Dtop = false;
@@ -7986,6 +7996,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
                                        array_property& mticks,
                                        bool limmode_is_auto,
                                        bool tickmode_is_auto,
+                                       bool minortickvaluesmode_is_auto,
                                        bool is_logscale,
                                        bool method_is_padded,
                                        bool method_is_tight)
@@ -8111,42 +8122,48 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
     return;
 
   // minor ticks between, above, and below min and max ticks
-  const int MAX_MINOR_TICKS = 1000;
-  int n = (is_logscale ? 8 : 4);
-  double mult_below = (is_logscale ? tmp_ticks(1) / tmp_ticks(0) : 1);
-  double mult_above = (is_logscale ? tmp_ticks(n_ticks-1) / tmp_ticks(n_ticks-2)
-                       : 1);
-
-  double d_below = (tmp_ticks(1) - tmp_ticks(0)) / mult_below / (n+1);
-  int n_below = static_cast<int> (std::floor ((tmp_ticks(0)-lo_lim) / d_below));
-  if (n_below < 0)
-    n_below = 0;
-  else if (n_below > MAX_MINOR_TICKS)
-    n_below = MAX_MINOR_TICKS;
-
-  int n_between = n * (n_ticks - 1);
-  double d_above = (tmp_ticks(n_ticks-1) - tmp_ticks(n_ticks-2)) * mult_above
-                   / (n+1);
-  int n_above = static_cast<int> (std::floor ((hi_lim-tmp_ticks(n_ticks-1))
-                                  / d_above));
-  if (n_above < 0)
-    n_above = 0;
-  else if (n_above > MAX_MINOR_TICKS)
-    n_above = MAX_MINOR_TICKS;
-
-  Matrix tmp_mticks (1, n_below + n_between + n_above);
-  for (int i = 0; i < n_below; i++)
-    tmp_mticks(i) = tmp_ticks(0) - (n_below-i) * d_below;
-  for (int i = 0; i < n_ticks-1; i++)
+  if (minortickvaluesmode_is_auto)
     {
-      double d = (tmp_ticks(i+1) - tmp_ticks(i)) / (n + 1);
-      for (int j = 0; j < n; j++)
-        tmp_mticks(n_below+n*i+j) = tmp_ticks(i) + d * (j+1);
-    }
-  for (int i = 0; i < n_above; i++)
-    tmp_mticks(n_below+n_between+i) = tmp_ticks(n_ticks-1) + (i + 1) * d_above;
+      const int MAX_MINOR_TICKS = 1000;
+      int n = (is_logscale ? 8 : 4);
+      double mult_below = (is_logscale ? tmp_ticks(1) / tmp_ticks(0) : 1);
+      double mult_above = (is_logscale ?
+                           tmp_ticks(n_ticks-1) / tmp_ticks(n_ticks-2) : 1);
 
-  mticks = tmp_mticks;
+      double d_below = (tmp_ticks(1) - tmp_ticks(0)) / mult_below / (n+1);
+      int n_below = static_cast<int> (std::floor ((tmp_ticks(0)-lo_lim)
+                                                  / d_below));
+      if (n_below < 0)
+        n_below = 0;
+      else if (n_below > MAX_MINOR_TICKS)
+        n_below = MAX_MINOR_TICKS;
+
+      int n_between = n * (n_ticks - 1);
+      double d_above = (tmp_ticks(n_ticks-1) - tmp_ticks(n_ticks-2))
+        * mult_above
+        / (n+1);
+      int n_above = static_cast<int> (std::floor ((hi_lim-tmp_ticks(n_ticks-1))
+                                                  / d_above));
+      if (n_above < 0)
+        n_above = 0;
+      else if (n_above > MAX_MINOR_TICKS)
+        n_above = MAX_MINOR_TICKS;
+
+      Matrix tmp_mticks (1, n_below + n_between + n_above);
+      for (int i = 0; i < n_below; i++)
+        tmp_mticks(i) = tmp_ticks(0) - (n_below-i) * d_below;
+      for (int i = 0; i < n_ticks-1; i++)
+        {
+          double d = (tmp_ticks(i+1) - tmp_ticks(i)) / (n + 1);
+          for (int j = 0; j < n; j++)
+            tmp_mticks(n_below+n*i+j) = tmp_ticks(i) + d * (j+1);
+        }
+      for (int i = 0; i < n_above; i++)
+        tmp_mticks(n_below+n_between+i) = tmp_ticks(n_ticks-1) + (i + 1)
+          * d_above;
+
+      mticks = tmp_mticks;
+    }
 }
 
 /*
@@ -8518,7 +8535,7 @@ axes::update_axis_limits (const std::string& axis_type,
       else
         {
           // FIXME: get_children_limits is only needed here in order to know
-          // if there are 3D children.  Is there a way to avoid this call?
+          // if there are 3-D children.  Is there a way to avoid this call?
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'z');
 
           m_properties.set_has3Dkids ((max_val - min_val) >
@@ -8734,7 +8751,7 @@ axes::update_axis_limits (const std::string& axis_type)
       else
         {
           // FIXME: get_children_limits is only needed here in order to know
-          // if there are 3D children.  Is there a way to avoid this call?
+          // if there are 3-D children.  Is there a way to avoid this call?
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'z');
 
           m_properties.set_has3Dkids ((max_val - min_val) >
@@ -9414,7 +9431,7 @@ text::properties::get_extent_matrix (bool rotated) const
 octave_value
 text::properties::get_extent () const
 {
-  // FIXME: This doesn't work right for 3D plots.
+  // FIXME: This doesn't work right for 3-D plots.
   // (It doesn't in Matlab either, at least not in version 6.5.)
   Matrix m = get_extent_matrix (true);
   Matrix pos = get_position ().matrix_value ();
@@ -9557,7 +9574,7 @@ text::properties::update_units ()
 
   pos = convert_text_position (pos, *this, m_cached_units, get_units ());
 
-  // FIXME: if the current axes view is 2D, then one should probably drop
+  // FIXME: if the current axes view is 2-D, then one should probably drop
   // the z-component of "pos" and leave "zliminclude" to "off".
 
   bool autopos = positionmode_is ("auto");
@@ -9923,7 +9940,7 @@ patch::properties::update_data ()
         }
     }
 
-  // check coplanarity for 3D-faces with more than 3 corners
+  // check coplanarity for 3-D-faces with more than 3 corners
   int fcmax = idx.rows ();
   if (fcmax > 3 && vert.columns () > 2
       && ! (facecolor_is ("none") && edgecolor_is ("none")))
@@ -10040,7 +10057,7 @@ patch::properties::calc_face_normals (Matrix& fn)
   Matrix v = get_vertices ().matrix_value ();
   Matrix f = get_faces ().matrix_value ();
 
-  bool is_3D = (v.columns () == 3);   // 2D or 3D patches
+  bool is_3D = (v.columns () == 3);   // 2-D or 3-D patches
   octave_idx_type num_f = f.rows ();  // number of faces
   octave_idx_type max_nc = f.columns ();  // max. number of polygon corners
 
@@ -10087,7 +10104,7 @@ patch::properties::calc_face_normals (Matrix& fn)
             {
               nz = (v(i2, 0) - v(i1, 0)) * (v(i3, 1) - v(i1, 1)) -
                    (v(i2, 1) - v(i1, 1)) * (v(i3, 0) - v(i1, 0));
-              // 2-d vertices always point towards +z
+              // 2-D vertices always point towards +z
               nz = (nz < 0) ? -nz : nz;
             }
         }
@@ -10641,13 +10658,13 @@ Update FaceNormals and VertexNormals of the patch or surface referred to by
   if (go.isa ("surface"))
     {
       surface::properties& props
-        = dynamic_cast <surface::properties&> (go.get_properties ());
+        = dynamic_cast<surface::properties&> (go.get_properties ());
       props.update_normals (false, true);
     }
   else if (go.isa ("patch"))
     {
       patch::properties& props
-        = dynamic_cast <patch::properties&> (go.get_properties ());
+        = dynamic_cast<patch::properties&> (go.get_properties ());
       props.update_normals (false, true);
     }
   else
@@ -11658,10 +11675,14 @@ uitable::properties::set_columnformat (const octave_value& val)
 void
 uitable::properties::set_columnwidth (const octave_value& val)
 {
-  bool error_exists = false;
+  bool isvalid = true;
 
-  if (val.is_string () && val.string_value (false) == "auto")
-    error_exists = false;
+  if (val.is_string ())
+    {
+      std::string option = val.string_value (false);
+      if (option != "auto" && option != "fit")
+        isvalid = false;
+    }
   else if (val.iscell ())
     {
       Cell cell_value = val.cell_value ();
@@ -11670,29 +11691,35 @@ uitable::properties::set_columnwidth (const octave_value& val)
           octave_value v = cell_value(i);
           if (v.is_string ())
             {
-              if (v.string_value (false) != "auto")
-                error_exists = true;
+              std::string option = v.string_value (false);
+              if (option != "auto" && option != "fit")
+                isvalid = false;
             }
-          else if (v.iscell ())
+          else if (! (v.isreal () && v.is_scalar_type ()))
             {
-              error_exists = true;
-            }
-          else if (! v.is_scalar_type ())
-            {
-              error_exists = true;
+              isvalid = false;
             }
         }
     }
   else
-    error_exists = true;
+    isvalid = false;
 
-  if (error_exists)
-    error ("set: expecting either 'auto' or a cell of pixel values or auto");
-  else
-    {
-      if (m_columnwidth.set (val, true))
-        mark_modified ();
-    }
+  if (! isvalid)
+    error ("set: expecting either 'auto', 'fit', or a cell array of pixel values, 'auto', or 'fit'");
+
+  if (m_columnwidth.set (val, true))
+    mark_modified ();
+}
+
+void
+uitable::properties::set_data (const octave_value& val)
+{
+  if (! (val.iscell () || val.is_matrix_type () || val.is_scalar_type ()
+         || val.is_range ()))
+    error ("set: 'Data' must be an array or cell array");
+
+  if (m_data.set (val, true))
+    mark_modified ();
 }
 
 void
@@ -12445,7 +12472,7 @@ Example Query
 @group
 hf = figure ();
 set (hf, "paperorientation")
-@result{}  [ landscape | @{portrait@} ]
+@xresult{}  [ landscape | @{portrait@} ]
 @end group
 @end example
 
@@ -12954,7 +12981,7 @@ Undocumented internal function.
               go.get_properties ().init_integerhandle ("off");
             }
         }
-      else if (val > 0 && octave::math::x_nint (val) == val)
+      else if (val > 0 && octave::math::is_integer (val))
         h = gh_mgr.make_figure_handle (val, false);
 
       if (! h.ok ())

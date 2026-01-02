@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -34,11 +34,11 @@
 #include "Array-util.h"
 #include "dNDArray.h"
 #include "f77-fcn.h"
-#include "lo-error.h"
 #include "lo-ieee.h"
-#include "lo-mappers.h"
+#include "mappers.h"
 #include "mx-base.h"
 #include "mx-op-defs.h"
+#include "oct-error.h"
 #include "oct-fftw.h"
 #include "oct-locbuf.h"
 
@@ -370,7 +370,7 @@ NDArray::all_integers (double& max_val, double& min_val) const
       if (val < min_val)
         min_val = val;
 
-      if (! octave::math::isinteger (val))
+      if (! octave::math::is_integer (val))
         return false;
     }
 
@@ -380,7 +380,7 @@ NDArray::all_integers (double& max_val, double& min_val) const
 bool
 NDArray::all_integers () const
 {
-  return test_all (octave::math::isinteger);
+  return test_all (octave::math::is_integer);
 }
 
 bool
@@ -388,8 +388,6 @@ NDArray::too_large_for_float () const
 {
   return test_any (octave::too_large_for_float);
 }
-
-// FIXME: this is not quite the right thing.
 
 boolNDArray
 NDArray::all (int dim) const
@@ -404,87 +402,102 @@ NDArray::any (int dim) const
 }
 
 NDArray
-NDArray::cumprod (int dim) const
+NDArray::flip (int dim) const
 {
-  return do_mx_cum_op<double, double> (*this, dim, mx_inline_cumprod);
+  return do_mx_flip_op<double, double> (*this, dim, mx_inline_flip);
 }
 
 NDArray
-NDArray::cumsum (int dim) const
+NDArray::cumprod (int dim, bool nanflag) const
 {
-  return do_mx_cum_op<double, double> (*this, dim, mx_inline_cumsum);
+  return do_mx_cum_op<double, double> (*this, dim, nanflag, mx_inline_cumprod);
 }
 
 NDArray
-NDArray::prod (int dim) const
+NDArray::cumsum (int dim, bool nanflag) const
 {
-  return do_mx_red_op<double, double> (*this, dim, mx_inline_prod);
+  return do_mx_cum_op<double, double> (*this, dim, nanflag, mx_inline_cumsum);
+}
+NDArray
+NDArray::prod (int dim, bool nanflag) const
+{
+  return do_mx_red_op<double, double> (*this, dim, nanflag, mx_inline_prod);
 }
 
 NDArray
-NDArray::sum (int dim) const
+NDArray::sum (int dim, bool nanflag) const
 {
-  return do_mx_red_op<double, double> (*this, dim, mx_inline_sum);
+  return do_mx_red_op<double, double> (*this, dim, nanflag, mx_inline_sum);
 }
 
 NDArray
-NDArray::xsum (int dim) const
+NDArray::xsum (int dim, bool nanflag) const
 {
-  return do_mx_red_op<double, double> (*this, dim, mx_inline_xsum);
+  return do_mx_red_op<double, double> (*this, dim, nanflag, mx_inline_xsum);
 }
 
 NDArray
-NDArray::sumsq (int dim) const
+NDArray::sumsq (int dim, bool nanflag) const
 {
-  return do_mx_red_op<double, double> (*this, dim, mx_inline_sumsq);
+  return do_mx_red_op<double, double> (*this, dim, nanflag, mx_inline_sumsq);
 }
 
 NDArray
-NDArray::max (int dim) const
+NDArray::max (int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_minmax_op<double> (*this, dim, mx_inline_max);
+  return do_mx_minmax_op<double> (*this, dim, nanflag, realabs, mx_inline_max);
 }
 
 NDArray
-NDArray::max (Array<octave_idx_type>& idx_arg, int dim) const
+NDArray::max (Array<octave_idx_type>& idx_arg, int dim,
+              bool nanflag, bool realabs) const
 {
-  return do_mx_minmax_op<double> (*this, idx_arg, dim, mx_inline_max);
+  return do_mx_minmax_op<double> (*this, idx_arg, dim, nanflag,
+                                  realabs, mx_inline_max);
 }
 
 NDArray
-NDArray::min (int dim) const
+NDArray::min (int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_minmax_op<double> (*this, dim, mx_inline_min);
+  return do_mx_minmax_op<double> (*this, dim, nanflag, realabs, mx_inline_min);
 }
 
 NDArray
-NDArray::min (Array<octave_idx_type>& idx_arg, int dim) const
+NDArray::min (Array<octave_idx_type>& idx_arg, int dim,
+              bool nanflag, bool realabs) const
 {
-  return do_mx_minmax_op<double> (*this, idx_arg, dim, mx_inline_min);
+  return do_mx_minmax_op<double> (*this, idx_arg, dim, nanflag,
+                                  realabs, mx_inline_min);
 }
 
 NDArray
-NDArray::cummax (int dim) const
+NDArray::cummax (int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<double> (*this, dim, mx_inline_cummax);
+  return do_mx_cumminmax_op<double> (*this, dim, nanflag,
+                                     realabs, mx_inline_cummax);
 }
 
 NDArray
-NDArray::cummax (Array<octave_idx_type>& idx_arg, int dim) const
+NDArray::cummax (Array<octave_idx_type>& idx_arg,
+                 int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<double> (*this, idx_arg, dim, mx_inline_cummax);
+  return do_mx_cumminmax_op<double> (*this, idx_arg, dim, nanflag,
+                                     realabs, mx_inline_cummax);
 }
 
 NDArray
-NDArray::cummin (int dim) const
+NDArray::cummin (int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<double> (*this, dim, mx_inline_cummin);
+  return do_mx_cumminmax_op<double> (*this, dim, nanflag,
+                                     realabs, mx_inline_cummin);
 }
 
 NDArray
-NDArray::cummin (Array<octave_idx_type>& idx_arg, int dim) const
+NDArray::cummin (Array<octave_idx_type>& idx_arg,
+                 int dim, bool nanflag, bool realabs) const
 {
-  return do_mx_cumminmax_op<double> (*this, idx_arg, dim, mx_inline_cummin);
+  return do_mx_cumminmax_op<double> (*this, idx_arg, dim, nanflag,
+                                     realabs, mx_inline_cummin);
 }
 
 NDArray

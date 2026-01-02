@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2020-2025 The Octave Project Developers
+## Copyright (C) 2020-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -42,12 +42,13 @@
 ## Programming Notes:
 ## @enumerate
 ## @item
-## The @qcode{"ZTickLabelRotation"} property is currently unimplemented in
-## Octave.  The property can be set and queried, but has no effect on the plot.
+## The @qcode{"ZTickLabelRotation"} property is @emph{not} currently
+## implemented in Octave.  The property can be set and queried, but has no
+## effect on the plot.
 ##
 ## @item
-## Requesting a return value while also setting a specified
-## rotation will result in an error.
+## Requesting a return value while also setting a specified rotation will
+## result in an error.
 ## @end enumerate
 ##
 ## @seealso{xtickangle, ytickangle, get, set}

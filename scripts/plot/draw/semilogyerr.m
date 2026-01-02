@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2000-2025 The Octave Project Developers
+## Copyright (C) 2000-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -60,25 +60,14 @@ function h = semilogyerr (varargin)
 
   [hax, varargin] = __plt_get_axis_arg__ ("semilogyerr", varargin{:});
 
-  oldfig = [];
-  if (! isempty (hax))
-    oldfig = get (0, "currentfigure");
+  hax = newplot (hax);
+
+  set (hax, "yscale", "log");
+  if (! ishold (hax))
+    set (hax, "yminortick", "on");
   endif
-  unwind_protect
-    hax = newplot (hax);
 
-    set (hax, "yscale", "log");
-    if (! ishold ())
-      set (hax, "yminortick", "on");
-    endif
-
-    htmp = __errplot__ ("semilogyerr", hax, varargin{:});
-
-  unwind_protect_cleanup
-    if (! isempty (oldfig))
-      set (0, "currentfigure", oldfig);
-    endif
-  end_unwind_protect
+  htmp = __errplot__ ("semilogyerr", hax, varargin{:});
 
   if (nargout > 0)
     h = htmp;

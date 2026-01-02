@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -29,7 +29,12 @@
 
 %{
 
-#define YYDEBUG 1
+// Uncomment to enable parser debugging
+// #define OCTAVE_PARSER_DEBUG 1
+#if defined (OCTAVE_PARSER_DEBUG)
+  // Magic variable used by Bison
+  #define OCTAVE_DEBUG 1
+#endif
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -62,7 +67,7 @@
 #include "interpreter.h"
 #include "lex.h"
 #include "load-path.h"
-#include "lo-sysdep.h"
+#include "oct-sysdep.h"
 #include "oct-hist.h"
 #include "oct-map.h"
 #include "ov-classdef.h"
@@ -2931,7 +2936,7 @@ base_parser::maybe_convert_to_braindead_shortcircuit (tree_expression*& expr)
     {
       tree_binary_expression *binexp = dynamic_cast<tree_binary_expression *> (expr);
 
-      token op_tok = binexp->operator_token ();
+      token op_tok = binexp->op_token ();
 
       tree_expression *lhs = binexp->lhs ();
       tree_expression *rhs = binexp->rhs ();
@@ -5837,7 +5842,7 @@ named function.  For example,
 @example
 @group
 feval ("acos", -1)
-     @result{} 3.1416
+     @xresult{} 3.1416
 @end group
 @end example
 
@@ -5853,9 +5858,9 @@ due to the cleaner syntax they offer.  For example,
 @group
 @var{f} = @@exp;
 feval (@var{f}, 1)
-    @result{} 2.7183
+    @xresult{} 2.7183
 @var{f} (1)
-    @result{} 2.7183
+    @xresult{} 2.7183
 @end group
 @end example
 
@@ -5888,12 +5893,12 @@ A trivial example which redefines the @code{sin} function to be the
 @example
 @group
 sin (0)
-  @result{} 0
+  @xresult{} 0
 function y = sin (x), y = cos (x); endfunction
 sin (0)
-  @result{} 1
+  @xresult{} 1
 builtin ("sin", 0)
-  @result{} 0
+  @xresult{} 0
 @end group
 @end example
 @end deftypefn */)
@@ -6118,9 +6123,9 @@ Example 1:
 @example
 @group
 s = evalc ("t = 42"), t
-  @result{} s = t =  42
+  @xresult{} s = t =  42
 
-  @result{} t =  42
+  @xresult{} t =  42
 @end group
 @end example
 
@@ -6129,7 +6134,7 @@ Example 2:
 @example
 @group
 [~, p] = evalc ("pi")
-  @result{} p = 3.1416
+  @xresult{} p = 3.1416
 @end group
 @end example
 
@@ -6278,6 +6283,7 @@ prints debug information as it processes an expression.
 @seealso{__lexer_debug_flag__}
 @end deftypefn */)
 {
+#if defined (OCTAVE_PARSER_DEBUG)
   octave_value retval;
 
   bool debug_flag = octave_debug;
@@ -6288,6 +6294,14 @@ prints debug information as it processes an expression.
   octave_debug = debug_flag;
 
   return retval;
+#else
+
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+
+  error ("__parser_debug_flag__: support for debugging the parser was disabled when Octave was built");
+
+#endif
 }
 
 DEFMETHOD (__parse_file__, interp, args, ,

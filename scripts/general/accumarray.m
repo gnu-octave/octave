@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2007-2025 The Octave Project Developers
+## Copyright (C) 2007-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -78,7 +78,7 @@
 ## @var{x} = [91, 92, 90, 92, 90, 89, 91, 89, 90, 100, 100, 100];
 ## [@var{u}, ~, @var{j}] = unique (@var{x});
 ## [accumarray(@var{j}', 1), @var{u}']
-##   @result{}  2    89
+##   @xresult{}  2    89
 ##       3    90
 ##       2    91
 ##       2    92
@@ -96,8 +96,8 @@
 ##              2, 3, 2;
 ##              2, 1, 2;
 ##              2, 3, 2], 101:105)
-## @result{} ans(:,:,1) = [101, 0, 0; 0, 0, 0]
-## @result{} ans(:,:,2) = [0, 0, 0; 206, 0, 208]
+## @xresult{} ans(:,:,1) = [101, 0, 0; 0, 0, 0]
+## @xresult{} ans(:,:,2) = [0, 0, 0; 206, 0, 208]
 ## @end group
 ## @end example
 ##
@@ -144,13 +144,13 @@ function A = accumarray (subs, vals, sz = [], fcn = [], fillval = [], issparse =
   lenvals = length (vals);
 
   if (iscell (subs))
-    subs = cellfun (@vec, subs, "uniformoutput", false);
+    subs = cellfun ('vec', subs, "uniformoutput", false);
     ndims = numel (subs);
     if (ndims == 1)
       subs = subs{1};
     endif
 
-    lensubs = cellfun (@length, subs);
+    lensubs = cellfun ('length', subs);
 
     if (any (lensubs != lensubs(1)) || (lenvals > 1 && lenvals != lensubs(1)))
       error ("accumarray: dimension mismatch");

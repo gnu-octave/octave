@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -34,7 +34,7 @@
 #include "Array-fwd.h"
 #include "dMatrix.h"
 #include "dim-vector.h"
-#include "lo-error.h"
+#include "oct-error.h"
 #include "oct-sort.h"
 #include "range-fwd.h"
 

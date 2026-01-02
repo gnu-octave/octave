@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2019-2025 The Octave Project Developers
+## Copyright (C) 2019-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -32,5 +32,5 @@
 %! assert (fh (), "pkg bug51709_b");
 
 ## Also test without function handle.
-%!assert <*55975> (pkga.pkgb.bug51709_a.smeth (), "pkg bug51709_a");
+%!assert <*55975> (pkga.pkgb.bug51709_a.smeth (), "pkg bug51709_a")
 %!assert (pkga.pkgb.bug51709_b.smeth (), "pkg bug51709_b")

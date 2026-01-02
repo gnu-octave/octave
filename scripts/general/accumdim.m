@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2010-2025 The Octave Project Developers
+## Copyright (C) 2010-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -62,7 +62,7 @@
 ##                            -12,   2,   8;
 ##                            -10,   9,  -3;
 ##                             -5,  -3, -13])
-## @result{} [-10,-11,-1;-15,-3,5]
+## @xresult{} [-10,-11,-1;-15,-3,5]
 ## @end group
 ## @end example
 ##

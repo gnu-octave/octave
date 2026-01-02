@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2004-2025 The Octave Project Developers
+## Copyright (C) 2004-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -33,7 +33,7 @@
 #   S:  scalar
 #   M:  matrix
 #   DM: diagonal matrix
-#   ND: N-d array
+#   ND: N-D array
 #   SM: sparse matrix
 #
 sm SparseMatrix SM dSparse.h YES

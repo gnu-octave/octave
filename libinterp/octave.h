@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2002-2025 The Octave Project Developers
+// Copyright (C) 2002-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -32,6 +32,7 @@
 #include <memory>
 #include <string>
 
+#include "Array.h"
 #include "str-vec.h"
 
 class octave_value;
@@ -60,6 +61,8 @@ public:
   bool forced_interactive () const { return m_forced_interactive; }
   bool forced_line_editing () const { return m_forced_line_editing; }
   bool gui () const { return m_gui; }
+  bool inhibit_startup_tests () const
+  { return m_inhibit_startup_tests; }
   bool inhibit_startup_message () const
   { return m_inhibit_startup_message; }
   bool line_editing () const { return m_line_editing; }
@@ -98,6 +101,7 @@ public:
   void forced_line_editing (bool arg) { m_forced_line_editing = arg; }
   void forced_interactive (bool arg) { m_forced_interactive = arg; }
   void gui (bool arg) { m_gui = arg; }
+  void inhibit_startup_tests (bool arg) { m_inhibit_startup_tests = arg; }
   void inhibit_startup_message (bool arg) { m_inhibit_startup_message = arg; }
   void line_editing (bool arg) { m_line_editing = arg; }
 
@@ -152,6 +156,10 @@ private:
   // If TRUE, force readline command line editing.
   // (--line-editing)
   bool m_forced_line_editing = false;
+
+  // TRUE means we don't check for incompatibilites on startup.
+  // (--no-startup-tests)
+  bool m_inhibit_startup_tests = false;
 
   // TRUE means we don't print the usual startup message.
   // (--quiet; --silent; -q)
@@ -279,12 +287,6 @@ public:
   bool is_octave_program () const { return m_is_octave_program; }
 
   bool interpreter_is_initialized () const;
-
-  OCTAVE_DEPRECATED (9, "use octave::interpreter_is_initialized instead")
-  bool interpreter_initialized ()
-  {
-    return interpreter_is_initialized ();
-  }
 
   virtual interpreter& create_interpreter ();
 

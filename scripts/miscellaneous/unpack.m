@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2006-2025 The Octave Project Developers
+## Copyright (C) 2006-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -401,19 +401,19 @@ endfunction
 %!error <FILE "_%NOT_A_FILENAME%_" not found> unpack ({"_%NOT_A_FILENAME%_"})
 %!error <FILE "_%NOT_A_FILENAME%_" not found> unpack ({"_%NOT_A_FILENAME%_", "2nd_filename"})
 %!error <FILETYPE must be a string>
-%! if (isunix || ismac)
+%! if (isunix)
 %!   unpack ("/", [], 1)
 %! else
 %!   unpack ('C:\', [], 1)
 %! endif
 %!error <FILETYPE must be given for a directory>
-%! if (isunix || ismac)
+%! if (isunix)
 %!   unpack ("/");
 %! else
 %!   unpack ('C:\');
 %! endif
 %!error <FILETYPE must be "gz" for a directory>
-%! if (isunix || ismac)
+%! if (isunix)
 %!   unpack ("/", [], "foobar");
 %! else
 %!   unpack ('C:\', [], "foobar");

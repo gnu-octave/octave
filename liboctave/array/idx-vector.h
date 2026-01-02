@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -35,11 +35,11 @@
 #include <memory>
 
 #include "Array-fwd.h"
+#include "Sparse-fwd.h"
 #include "dim-vector.h"
-#include "lo-error.h"
+#include "oct-error.h"
 #include "oct-inttypes.h"
 #include "oct-refcount.h"
-#include "Sparse-fwd.h"
 #include "range-fwd.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -529,11 +529,6 @@ public:
 
   octave_idx_type operator () (octave_idx_type n) const
   { return m_rep->xelem (n); }
-
-  // FIXME: idx_vector objects are either created successfully or an
-  // error is thrown, so this method no longer makes sense.
-  OCTAVE_DEPRECATED (9, "idx_vector::bool () is obsolete and always returns true")
-  operator bool () const { return true; }
 
   bool is_colon () const
   { return m_rep->idx_class () == class_colon; }

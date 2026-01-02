@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1993-2025 The Octave Project Developers
+## Copyright (C) 1993-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -48,17 +48,17 @@ function h = xlabel (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("xlabel", varargin{:});
 
-  if (isempty (hax))
-    hax = gca ();
-  endif
-
   if (rem (nargin, 2) != 1)
     print_usage ();
   endif
 
+  if (isempty (hax))
+    hax = gca ();
+  endif
+
   htmp = __axis_label__ (hax, "xlabel", varargin{1},
-                         "color", get (hax, "xcolor"),
-                         varargin{2:end});
+                              "color", get (hax, "xcolor"),
+                              varargin{2:end});
 
   if (nargout > 0)
     h = htmp;

@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2005-2025 The Octave Project Developers
+## Copyright (C) 2005-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -1718,7 +1718,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
     fputs (plot_stream, ";\n");
     for i = 1:data_idx
       if (have_3d_patch (i))
-        ## Can't write 3d patch data as binary as can't plot more than
+        ## Can't write 3-D patch data as binary as can't plot more than
         ## a single patch at a time and have to plot all patches together
         ## so that the gnuplot depth ordering is done correctly
         for j = 1 : 4 : columns (data{i})

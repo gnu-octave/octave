@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -29,7 +29,7 @@
 
 #include <sys/types.h>
 
-#include "lo-error.h"
+#include "oct-error.h"
 #include "oct-password.h"
 #include "pwd-wrappers.h"
 
@@ -44,7 +44,6 @@ err_invalid ()
 }
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 std::string

@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2004-2025 The Octave Project Developers
+## Copyright (C) 2004-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -33,7 +33,7 @@
 ## @example
 ## @group
 ## bitget (100, 8:-1:1)
-## @result{} 0  1  1  0  0  1  0  0
+## @xresult{} 0  1  1  0  0  1  0  0
 ## @end group
 ## @end example
 ## @seealso{bitand, bitor, bitxor, bitset, bitcmp, bitshift, intmax, flintmax}

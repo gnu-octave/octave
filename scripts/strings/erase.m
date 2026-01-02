@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2017-2025 The Octave Project Developers
+## Copyright (C) 2017-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -36,21 +36,21 @@
 ## @group
 ## ## string, single pattern
 ## erase ("Hello World!", " World")
-##     @result{} "Hello!"
+##     @xresult{} "Hello!"
 ##
 ## ## cellstr, single pattern
 ## erase (@{"Hello", "World!"@}, "World")
-##     @result{} @{"Hello", "!"@}
+##     @xresult{} @{"Hello", "!"@}
 ##
 ## ## string, multiple patterns
 ## erase ("The Octave interpreter is fabulous", ...
 ##        @{"interpreter ", "The "@})
-##     @result{} "Octave is fabulous"
+##     @xresult{} "Octave is fabulous"
 ##
 ## ## cellstr, multiple patterns
 ## erase (@{"The ", "Octave interpreter ", "is fabulous"@}, ...
 ##        @{"interpreter ", "The "@})
-##     @result{} @{"", "Octave ", "is fabulous"@}
+##     @xresult{} @{"", "Octave ", "is fabulous"@}
 ## @end group
 ## @end example
 ##
@@ -60,7 +60,7 @@
 ## @example
 ## @group
 ## erase ("abababa", "aba")
-##     @result{} "b"
+##     @xresult{} "b"
 ## @end group
 ## @end example
 ##

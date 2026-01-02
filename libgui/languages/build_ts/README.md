@@ -29,8 +29,15 @@ The following steps are required in order to update the language files
 `libgui/languages/*.ts`:
 
 1. Change into `libgui/languages`
-2. Start the update by calling `build_ts/update_ts_files`
-3. Select the language files that should be updated
+2. Start the update by calling `./build_ts/update_ts_files`
+3. Select the language files that should be updated.
+
+As `lupdate` is not able to expand the macros for the octave namespace,
+the script `update_ts_files` first copies the GUI sources into a temporary
+directory where all namespace macros are replaced with their expansions.
+Therefore, do **not** abort the script with `<Ctrl+C>` but only by typing
+`q` at a prompt for translating a language ot not. Otherwise, the temporary
+copies of the sources are not removed.
 
 ## Updating Qt and Qsci used for the language files
 
@@ -40,14 +47,14 @@ source files in
 - `libgui/build_ts/octave-qt` and
 - `libgui/build_ts/octave-qsci`
 
-should also be updated.  These sources are scanned for strings for language
+should also be updated.  These sources are scanned for strings for languages
 where no translation is provided by Qt and/or QScintilla.  The sources are
 updated with the following steps:
 
 1. Download the Qt sources (example for Qt6):
     1. `git clone git://code.qt.io/qt/qt5.git qt6`
     2. `cd qt6`
-    3. `git switch 6.6`
+    3. `git switch 6.X` where X is the current minor version
     4. `perl init-repository`
 2. [Download the latest QScintilla](https://riverbankcomputing.com/software/qscintilla/download) and unpack the archive to the desired location
 3. Change into `libgui/languages/build_ts`

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2016-2025 The Octave Project Developers
+// Copyright (C) 2016-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -27,9 +27,10 @@
 #  include "config.h"
 #endif
 
+#include "lapack-proto.h"
+
 #include "defun.h"
 #include "error.h"
-#include "lo-lapack-proto.h"
 #include "ovl.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -76,7 +77,7 @@ is in the upper left corner, by doing:
 [@var{U}, @var{S}] = ordschur (@var{U}, @var{S}, [0,1])
 @end example
 
-@seealso{schur, ordeig, ordqz}
+@seealso{schur, trexc, ordeig, ordqz}
 @end deftypefn */)
 {
   if (args.length () != 3)

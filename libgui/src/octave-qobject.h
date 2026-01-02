@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2011-2025 The Octave Project Developers
+// Copyright (C) 2011-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -245,6 +245,9 @@ public Q_SLOTS:
 
   void copy_image_to_clipboard (const QString& file, bool remove_file);
 
+  QPalette getFusionDarkPalette ();
+  void set_gui_style (bool called_from_main_window = false);
+
 protected:
 
   qt_application& m_app_context;
@@ -298,6 +301,8 @@ protected:
   QPointer<release_notes> m_release_notes;
 
   main_window *m_main_window;
+
+  bool m_style_set;
 };
 
 OCTAVE_END_NAMESPACE(octave)

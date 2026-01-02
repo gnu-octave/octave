@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -957,9 +957,9 @@ currently installed data types.
 
 %!test
 %! if (optimize_range ())
-%!   assert (typeinfo (1:2), "double_range")
+%!   assert (typeinfo (1:2), "double_range");
 %! else
-%!   assert (typeinfo (1:2), "matrix")
+%!   assert (typeinfo (1:2), "matrix");
 %! endif
 
 %!assert (typeinfo (false), "bool")

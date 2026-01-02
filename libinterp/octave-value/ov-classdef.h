@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2012-2025 The Octave Project Developers
+// Copyright (C) 2012-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -119,11 +119,18 @@ public:
 
   OCTINTERP_API Matrix size ();
 
+  OCTINTERP_API octave_value reshape (const dim_vector& new_dims) const;
+
   OCTINTERP_API octave_idx_type xnumel (const octave_value_list&);
 
   string_vector map_keys () const { return m_object.map_keys (); }
 
-  octave_map map_value () const { return m_object.map_value (); }
+  octave_map map_value () const { return m_object.map_value (true); }
+
+  octave_map map_value (bool warn) const { return m_object.map_value (warn); }
+
+  octave_map map_value (bool warn, bool for_save) const
+  { return m_object.map_value (warn, for_save); }
 
   dim_vector dims () const { return m_object.dims (); }
 
@@ -144,6 +151,16 @@ public:
 
   static OCTINTERP_API octave_value metaclass_query (const std::string& cls);
 
+  OCTINTERP_API bool save_ascii (std::ostream& os);
+
+  OCTINTERP_API bool load_ascii (std::istream& is);
+
+  octave_value
+  permute (const Array<int>& vec, bool inv = false) const
+  {
+    return new octave_classdef (m_object.permute (vec, inv));
+  }
+
 public:
 
   int type_id () const { return s_t_id; }
@@ -154,6 +171,21 @@ public:
   static std::string static_type_name () { return s_t_name; }
   static std::string static_class_name () { return "<unknown>"; }
   static OCTINTERP_API void register_type (octave::type_info&);
+
+  // Load an array of the size dv using a vector with
+  // * a map with the values of the class properties
+  // * a unique identifier of the object in the file
+  // * an indicator whether the object has a custom return type
+  OCTINTERP_API void
+  loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m,
+           dim_vector& dv);
+
+  // Return a vector for each element in the array containing:
+  // * a map with the values of the class properties
+  // * a unique identifier of the object in the file
+  // * an indicator whether the object has a custom return type
+  OCTINTERP_API std::vector<std::tuple<octave_map, uint32_t, bool>>
+  saveobj (std::vector<bool>& is_new);
 
 private:
 

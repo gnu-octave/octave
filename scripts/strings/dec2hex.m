@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1996-2025 The Octave Project Developers
+## Copyright (C) 1996-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -43,10 +43,10 @@
 ## @example
 ## @group
 ## dec2hex (2748)
-##      @result{} "ABC"
+##      @xresult{} "ABC"
 ##
 ## dec2hex (-2)
-##      @result{} "FE"
+##      @xresult{} "FE"
 ## @end group
 ## @end example
 ##

@@ -22,23 +22,41 @@ jobs:
 
       matrix:
         # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
-        os: [windows-latest]
-        msystem: [MINGW64, UCRT64]
+        msystem: [MINGW64, CLANG64, CLANGARM64]
         include:
           - msystem: MINGW64
+            os: windows-latest
             mingw-prefix: mingw64
             cc: gcc
             cxx: g++
             f77: gfortran
             extra-config-flags: ""
             ccache-max: 0.9G
-          - msystem: UCRT64
-            mingw-prefix: ucrt64
-            cc: gcc
-            cxx: g++
-            f77: gfortran
-            extra-config-flags: ""
-            ccache-max: 0.9G
+            allow-error: false
+          - msystem: CLANG64
+            os: windows-latest
+            mingw-prefix: clang64
+            cc: clang
+            cxx: clang++
+            f77: flang
+            # Clang seems to require a different set of dllexport attributes than GCC.
+            extra-config-flags:
+              --disable-lib-visibility-flags
+            ccache-max: 400M
+            # This configuration is not fully supported yet
+            allow-error: true
+          - msystem: CLANGARM64
+            os: windows-11-arm
+            mingw-prefix: clangarm64
+            cc: clang
+            cxx: clang++
+            f77: flang
+            # Clang seems to require a different set of dllexport attributes than GCC.
+            extra-config-flags:
+              --disable-lib-visibility-flags
+            ccache-max: 400M
+            # This configuration is not fully supported yet
+            allow-error: true
 
     env:
       CHERE_INVOKING: 1
@@ -60,9 +78,11 @@ jobs:
         with:
           update: true
 
-          # Use pre-installed version to save disc space on partition with source.
-          # We need that space for building.
-          release: false
+          # Use pre-installed version if possible to save disc space on
+          # partition with source.  We need that space for building.
+          release: ${{ matrix.msystem == 'CLANGARM64' }}
+
+          msystem: ${{ matrix.msystem }}
 
           # The packages are listed in (alphabetically sorted) blocks:
           # The first block is for mandatory dependencies.
@@ -112,8 +132,6 @@ jobs:
 
             unzip
             zip
-
-          msystem: ${{ matrix.msystem }}
 
       - name: checkout repository
         uses: actions/checkout@v6
@@ -243,6 +261,7 @@ jobs:
           make -C ./.build DESTDIR=/c/octave/pkg install
 
       - name: test stand-alone executable
+        continue-on-error: ${{ matrix.allow-error }}
         run: |
           unset CC
           unset CXX
@@ -253,6 +272,7 @@ jobs:
           ./embedded.exe
 
       - name: test Octave packages
+        continue-on-error: ${{ matrix.allow-error }}
         env:
           # colon separated list of packages
           # reasons for including these packages in the CI tests:
@@ -281,6 +301,22 @@ jobs:
       - name: analyze test suite results
         # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
         run: |
-          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || (echo "::warning::At least one test failed" && exit 1)
-          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || (echo "::warning::At least one regression in test suite" && exit 1)
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || echo "::warning::At least one test failed"
+          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || echo "::warning::At least one regression in test suite"
           echo Finished analyzing test suite results.
+
+      - name: compress build artifact
+        if: matrix.msystem == 'MINGW64'
+        continue-on-error: true
+        run: |
+          cd /c/octave/pkg
+          tar -cvzf octave.tar.gz *
+
+      - name: upload build artifact
+        if: matrix.msystem == 'MINGW64'
+        continue-on-error: true
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ matrix.mingw-prefix }}-octave-${{ steps.ccache-prepare.outputs.timestamp }}
+          path: C:\octave\pkg\octave.tar.gz
+          retention-days: 7

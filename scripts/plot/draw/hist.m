@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1994-2025 The Octave Project Developers
+## Copyright (C) 1994-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -57,7 +57,7 @@
 ## @group
 ## [nn, xx] = hist (rand (10, 3), 5, [1 2 3]);
 ## sum (nn, 1)
-## @result{} ans =
+## @xresult{} ans =
 ##       1   2   3
 ## @end group
 ## @end example

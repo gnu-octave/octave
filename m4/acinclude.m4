@@ -2,7 +2,7 @@ dnl acinclude.m4 -- extra macros for configuring Octave
 dnl
 dnl --------------------------------------------------------------------
 dnl
-dnl Copyright (C) 1995-2025 The Octave Project Developers
+dnl Copyright (C) 1995-2026 The Octave Project Developers
 dnl
 dnl See the file COPYRIGHT.md in the top-level directory of this
 dnl distribution or <https://octave.org/copyright/>.
@@ -164,6 +164,24 @@ static void * threadfunc(void *arg)
   if test $octave_cv_broken_pthread_stacksize = yes; then
     AC_DEFINE(HAVE_BROKEN_PTHREAD_STACKSIZE, 1,
       [Define to 1 if pthread stack size does not account for thread-local storage.])
+  fi
+])
+dnl
+dnl Check for BSD or Apple libc library.
+dnl
+AC_DEFUN([OCTAVE_BSD_LIBC], [
+  AC_CACHE_CHECK([whether using C library from BSD or Apple],
+    [octave_cv_bsd_libc], [
+    AC_PREPROC_IFELSE([AC_LANG_SOURCE([[#include <sys/sysctl.h>]])], [
+      AC_PREPROC_IFELSE([AC_LANG_SOURCE([[#include <linux/sysctl.h>]])],
+        octave_cv_bsd_libc=no,
+        octave_cv_bsd_libc=yes)
+      ],
+      octave_cv_bsd_libc=no)
+  ])
+  if test $octave_cv_bsd_libc = yes; then
+    AC_DEFINE(HAVE_BSD_LIBC, 1,
+      [Define to 1 if BSD or Apple libc is used])
   fi
 ])
 dnl
@@ -914,14 +932,14 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
   AC_ARG_WITH([m4_tolower($1)-includedir],
     [AS_HELP_STRING([--with-m4_tolower($1)-includedir=DIR],
       [look for $2 include files in DIR])],
-    [m4_toupper([$1])_CPPFLAGS="-I$withval"])
-  AC_SUBST(m4_toupper([$1])_CPPFLAGS)
+    [m4_toupper(patsubst([$1], [-], [_]))_CPPFLAGS="-I$withval"])
+  AC_SUBST(m4_toupper(patsubst([$1], [-], [_]))_CPPFLAGS)
 
   AC_ARG_WITH([m4_tolower($1)-libdir],
     [AS_HELP_STRING([--with-m4_tolower($1)-libdir=DIR],
       [look for $2 libraries in DIR])],
-    [m4_toupper([$1])_LDFLAGS="-L$withval"])
-  AC_SUBST(m4_toupper([$1])_LDFLAGS)
+    [m4_toupper(patsubst([$1], [-], [_]))_LDFLAGS="-L$withval"])
+  AC_SUBST(m4_toupper(patsubst([$1], [-], [_]))_LDFLAGS)
 
   AC_ARG_WITH([m4_tolower($1)],
     [ifelse([$#], 10,
@@ -931,86 +949,86 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
        [m4_ifblank([$7],
          [AS_HELP_STRING([--without-m4_tolower($1)], [don't use $2 library])],
          [AS_HELP_STRING([--without-m4_tolower($1)], [$7])])])],
-    with_$1=$withval, with_$1=yes)
+    [with_]patsubst([$1], [-], [_])=$withval, [with_]patsubst([$1], [-], [_])=yes)
 
-  ac_octave_$1_pkg_check=no
-  m4_toupper([$1])_LIBS=
-  warn_$1="$3"
-  case $with_$1 in
+  [ac_octave_]patsubst([$1], [-], [_])_pkg_check=no
+  m4_toupper(patsubst([$1], [-], [_]))_LIBS=
+  [warn_]patsubst([$1], [-], [_])="$3"
+  case $[with_]patsubst([$1], [-], [_]) in
     no)
       ifelse([$#], 10,
         [AC_MSG_ERROR([--without-m4_tolower($1) specified but $2 is required.])],
-        [warn_$1=""
-         m4_toupper([$1])_LIBS=])
+        [[warn_]patsubst([$1], [-], [_])=""
+         m4_toupper(patsubst([$1], [-], [_]))_LIBS=])
     ;;
     yes | "")
-      ac_octave_$1_pkg_check=yes
-      m4_toupper([$1])_LIBS="-l$1"
+      [ac_octave_]patsubst([$1], [-], [_])_pkg_check=yes
+      m4_toupper(patsubst([$1], [-], [_]))_LIBS="-l$1"
     ;;
     -* | */* | *.a | *.so | *.so.* | *.o)
-      m4_toupper([$1])_LIBS="$with_$1"
+      m4_toupper(patsubst([$1], [-], [_]))_LIBS="$[with_]patsubst([$1], [-], [_])"
     ;;
     *)
-      m4_toupper([$1])_LIBS="-l$with_$1"
+      m4_toupper(patsubst([$1], [-], [_]))_LIBS="-l$[with_]patsubst([$1], [-], [_])"
     ;;
   esac
 
-  if test $ac_octave_$1_pkg_check = yes; then
+  if test $[ac_octave_]patsubst([$1], [-], [_])_pkg_check = yes; then
     PKG_CHECK_EXISTS(m4_default([$9], [$1]), [
-      if test -z "$m4_toupper([$1])_CPPFLAGS"; then
-        m4_toupper([$1])_CPPFLAGS="$($PKG_CONFIG --cflags-only-I m4_default([$9], [$1]) | $SED -e 's/^ *$//')"
+      if test -z "$m4_toupper(patsubst([$1], [-], [_]))_CPPFLAGS"; then
+        m4_toupper(patsubst([$1], [-], [_]))_CPPFLAGS="$($PKG_CONFIG --cflags m4_default([$9], [$1]) | $SED -e 's/^ *$//')"
       fi
-      if test -z "$m4_toupper([$1])_LDFLAGS"; then
-        m4_toupper([$1])_LDFLAGS="$($PKG_CONFIG --libs-only-L m4_default([$9], [$1]) | $SED -e 's/^ *$//')"
+      if test -z "$m4_toupper(patsubst([$1], [-], [_]))_LDFLAGS"; then
+        m4_toupper(patsubst([$1], [-], [_]))_LDFLAGS="$($PKG_CONFIG --libs-only-L m4_default([$9], [$1]) | $SED -e 's/^ *$//')"
       fi
-      m4_toupper([$1])_LIBS="$($PKG_CONFIG --libs-only-l m4_default([$9], [$1]) | $SED -e 's/^ *$//')"
+      m4_toupper(patsubst([$1], [-], [_]))_LIBS="$($PKG_CONFIG --libs-only-l --libs-only-other m4_default([$9], [$1]) | $SED -e 's/^ *$//')"
     ])
   fi
 
-  if test -n "$m4_toupper([$1])_LIBS"; then
+  if test -n "$m4_toupper(patsubst([$1], [-], [_]))_LIBS"; then
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
     ac_octave_save_LDFLAGS="$LDFLAGS"
     ac_octave_save_LIBS="$LIBS"
-    CPPFLAGS="$m4_toupper([$1])_CPPFLAGS $CPPFLAGS"
-    LDFLAGS="$m4_toupper([$1])_LDFLAGS $LDFLAGS"
-    LIBS="$m4_toupper([$1])_LIBS $LIBS"
+    CPPFLAGS="$m4_toupper(patsubst([$1], [-], [_]))_CPPFLAGS $CPPFLAGS"
+    LDFLAGS="$m4_toupper(patsubst([$1], [-], [_]))_LDFLAGS $LDFLAGS"
+    LIBS="$m4_toupper(patsubst([$1], [-], [_]))_LIBS $LIBS"
     m4_ifnblank([$6], [AC_LANG_PUSH($6)])
-    ac_octave_$1_check_for_lib=no
-    m4_ifblank([$4], [ac_octave_$1_check_for_lib=yes],
-               [AC_CHECK_HEADERS([$4], [ac_octave_$1_check_for_lib=yes; break])])
-    if test $ac_octave_$1_check_for_lib = yes; then
-      AC_CACHE_CHECK([for $5 in $m4_toupper([$1])_LIBS],
-        [octave_cv_lib_$1],
+    [ac_octave_]patsubst([$1], [-], [_])_check_for_lib=no
+    m4_ifblank([$4], [[ac_octave_]patsubst([$1], [-], [_])_check_for_lib=yes],
+               [AC_CHECK_HEADERS([$4], [[ac_octave_]patsubst([$1], [-], [_])_check_for_lib=yes; break])])
+    if test $[ac_octave_]patsubst([$1], [-], [_])_check_for_lib = yes; then
+      AC_CACHE_CHECK([for $5 in $m4_toupper(patsubst([$1], [-], [_]))_LIBS],
+        [[octave_cv_lib_]patsubst([$1], [-], [_])],
         [AC_LINK_IFELSE([AC_LANG_CALL([], [$5])],
-          [octave_cv_lib_$1=yes], [octave_cv_lib_$1=no])
+          [[octave_cv_lib_]patsubst([$1], [-], [_])=yes], [[octave_cv_lib_]patsubst([$1], [-], [_])=no])
       ])
-      if test "$octave_cv_lib_$1" = yes; then
+      if test "$[octave_cv_lib_]patsubst([$1], [-], [_])" = yes; then
         m4_ifblank([$8], [
-          warn_$1=
-          AC_DEFINE([HAVE_]m4_toupper([$1]), 1,
+          [warn_]patsubst([$1], [-], [_])=
+          AC_DEFINE([HAVE_]m4_toupper(patsubst([$1], [-], [_])), 1,
             [Define to 1 if $2 is available.])], [$8])
       else
-        m4_toupper([$1])_LIBS=
+        m4_toupper(patsubst([$1], [-], [_]))_LIBS=
       fi
     else
-      octave_cv_lib_$1=no
-      m4_toupper([$1])_LIBS=
+      [octave_cv_lib_]patsubst([$1], [-], [_])=no
+      m4_toupper(patsubst([$1], [-], [_]))_LIBS=
     fi
     m4_ifnblank([$6], [AC_LANG_POP($6)])
     CPPFLAGS="$ac_octave_save_CPPFLAGS"
     LDFLAGS="$ac_octave_save_LDFLAGS"
     LIBS="$ac_octave_save_LIBS"
   else
-    octave_cv_lib_$1=no
+    [octave_cv_lib_]patsubst([$1], [-], [_])=no
   fi
 
   ifelse([$#], 10, [
-    if test $octave_cv_lib_$1 = no; then
+    if test $[octave_cv_lib_]patsubst([$1], [-], [_]) = no; then
       AC_MSG_ERROR([to build Octave, you must have the $2 library and header files installed])
     fi])
-  AC_SUBST(m4_toupper([$1])_LIBS)
-  if test -n "$warn_$1"; then
-    OCTAVE_CONFIGURE_WARNING([warn_$1])
+  AC_SUBST(m4_toupper(patsubst([$1], [-], [_]))_LIBS)
+  if test -n "$[warn_]patsubst([$1], [-], [_])"; then
+    OCTAVE_CONFIGURE_WARNING([[warn_]patsubst([$1], [-], [_])])
   fi
 ])
 dnl
@@ -1583,6 +1601,74 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
   AC_SUBST(OPENGL_LIBS)
   if test -n "$OPENGL_LIBS"; then
     AC_DEFINE(HAVE_OPENGL, 1, [Define to 1 if OpenGL is available.])
+
+    save_LIBS="$LIBS"
+    LIBS="$LIBS $OPENGL_LIBS"
+    AC_CACHE_CHECK([for glBlendFuncSeparate],
+      [octave_cv_func_glblendfuncseparate],[
+      AC_LANG_PUSH(C++)
+      AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+#if defined (HAVE_WINDOWS_H)
+# include <windows.h>
+#endif
+#if defined (HAVE_GL_GL_H)
+# include <GL/gl.h>
+#elif defined (HAVE_OPENGL_GL_H)
+# include <OpenGL/gl.h>
+#endif
+#if defined (HAVE_GL_GLEXT_H)
+#  include <GL/glext.h>
+#elif defined (HAVE_OPENGL_GLEXT_H) || defined (HAVE_FRAMEWORK_OPENGL)
+#  include <OpenGL/glext.h>
+#endif
+        ]], [[
+        GLenum sfactor=0;
+        GLenum dfactor=0;
+        GLenum salpha=0;
+        GLenum dalpha=0;
+        glBlendFuncSeparate (sfactor, dfactor, salpha, dalpha);
+        ]])],
+        octave_cv_func_glblendfuncseparate=yes,
+        octave_cv_func_glblendfuncseparate=no)
+      AC_LANG_POP(C++)
+      ])
+    if test $octave_cv_func_glblendfuncseparate = yes; then
+      AC_DEFINE(HAVE_GLBLENDFUNCSEPARATE, 1, [Define to 1 if glBlendFuncSeparate can be used directly.])
+    else
+      AC_CACHE_CHECK([for glBlendFuncSeparate with GL_GLEXT_PROTOTYPES],
+        [octave_cv_func_glblendfuncseparate_as_ext],[
+        AC_LANG_PUSH(C++)
+        AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+#define GL_GLEXT_PROTOTYPES 1
+#if defined (HAVE_WINDOWS_H)
+# include <windows.h>
+#endif
+#if defined (HAVE_GL_GL_H)
+# include <GL/gl.h>
+#elif defined (HAVE_OPENGL_GL_H)
+# include <OpenGL/gl.h>
+#endif
+#if defined (HAVE_GL_GLEXT_H)
+#  include <GL/glext.h>
+#elif defined (HAVE_OPENGL_GLEXT_H) || defined (HAVE_FRAMEWORK_OPENGL)
+#  include <OpenGL/glext.h>
+#endif
+          ]], [[
+          GLenum sfactor=0;
+          GLenum dfactor=0;
+          GLenum salpha=0;
+          GLenum dalpha=0;
+          glBlendFuncSeparate (sfactor, dfactor, salpha, dalpha);
+          ]])],
+          octave_cv_func_glblendfuncseparate_as_ext=yes,
+          octave_cv_func_glblendfuncseparate_as_ext=no)
+        ])
+      if test $octave_cv_func_glblendfuncseparate_as_ext = yes; then
+        AC_DEFINE(HAVE_GLBLENDFUNCSEPARATE, 1, [Define to 1 if glBlendFuncSeparate can be used directly.])
+        AC_DEFINE(GL_GLEXT_PROTOTYPES, 1, [Define to 1 to enable OpenGL extensions in headers.])
+      fi
+    fi
+    LIBS="$save_LIBS"
   fi
 ])
 dnl
@@ -2192,14 +2278,15 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
 
     if test $build_qt_gui = yes; then
       ## Retrieve Qt compilation and linker flags
-      QT_CPPFLAGS="$($PKG_CONFIG --cflags-only-I $QT_MODULES | $SED -e 's/^ *$//')"
+      QT_CPPFLAGS="$($PKG_CONFIG --cflags $QT_MODULES | $SED -e 's/^ *$//')"
       QT_LDFLAGS="$($PKG_CONFIG --libs-only-L $QT_MODULES | $SED -e 's/^ *$//')"
-      QT_LIBS="$($PKG_CONFIG --libs-only-l $QT_MODULES | $SED -e 's/^ *$//')"
+      QT_LIBS="$($PKG_CONFIG --libs-only-l --libs-only-other $QT_MODULES | $SED -e 's/^ *$//')"
 
       case $host_os in
         *darwin*)
           ## Qt might be installed in framework
-          if test -z "$QT_LIBS"; then
+          ac_octave_QT_LIBS_only_l="$($PKG_CONFIG --libs-only-l $QT_MODULES | $SED -e 's/^ *$//')"
+          if test -z "$ac_octave_QT_LIBS_only_l"; then
             QT_LDFLAGS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -e '-F' | uniq | tr '\n' ' '`"
             QT_LIBS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -v -e '-F' | uniq | tr '\n' ' '`"
           fi
@@ -2562,10 +2649,7 @@ dnl enabled.
 dnl
 AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
   ## Including <sunlinsol/sunlinsol_klu.h> may depend on including klu.h
-  ## first.  So perform the check as follows using several different
-  ## possible locations for klu.h instead of using OCTAVE_CHECK_LIB to
-  ## check for sunlinsol_klu.h.
-  AC_CHECK_HEADERS([klu.h klu/klu.h suitesparse/klu.h ufsparse/klu.h])
+  ## first.  The check for "klu.h" needs to have been performed before here.
   AC_CHECK_HEADERS([sunlinsol/sunlinsol_klu.h], [], [],
     [#if defined (HAVE_KLU_H)
      #  include <klu.h>
@@ -2573,8 +2657,6 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
      #  include <klu/klu.h>
      #elif  defined (HAVE_SUITESPARSE_KLU_H)
      #  include <suitesparse/klu.h>
-     #elif  defined (HAVE_UFSPARSE_KLU_H)
-     #  include <ufsparse/klu.h>
      #endif
     ])
   ## Check for library that exports SUNContext_Create
@@ -2606,9 +2688,6 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
          #endif
          #if defined (HAVE_SUITESPARSE_KLU_H)
          #include <suitesparse/klu.h>
-         #endif
-         #if defined (HAVE_UFPARSE_KLU_H)
-         #include <ufsparse/klu.h>
          #endif
          #if defined (HAVE_SUNLINSOL_SUNLINSOL_KLU_H)
          #include <sunlinsol/sunlinsol_klu.h>
@@ -2652,9 +2731,6 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
            #endif
            #if defined (HAVE_SUITESPARSE_KLU_H)
            #include <suitesparse/klu.h>
-           #endif
-           #if defined (HAVE_UFPARSE_KLU_H)
-           #include <ufsparse/klu.h>
            #endif
            #if defined (HAVE_SUNLINSOL_SUNLINSOL_KLU_H)
            #include <sunlinsol/sunlinsol_klu.h>
@@ -3159,35 +3235,130 @@ dnl
 dnl Check if MIPS processor is target and quiet signalling NaN value is
 dnl opposite of IEEE 754-2008 standard used by all other architectures.
 dnl
-AC_DEFUN([OCTAVE_MIPS_NAN], [
-  AC_CACHE_CHECK([whether MIPS processor is using non-standard NaN encoding],
-    [octave_cv_mips_nan],
-    [AC_LANG_PUSH(C++)
+AC_DEFUN([OCTAVE_IEEE754_QNAN], [
+  AC_CACHE_CHECK([whether quiet NaN values are conformant to IEEE 754-2008],
+    [octave_cv_ieee754_qnan],
+    [AC_LANG_PUSH(C)
     AC_RUN_IFELSE([AC_LANG_PROGRAM([[
-        #include <cmath>
-        #include <limits>
+        #include <math.h>
+        #include <stdint.h>
+        #include <string.h>
         ]], [[
-        /* FIXME: Only test is that MIPS is the target architecture.
-         * This should be AND'ed with a test for whether the actual NaN
-         * value for the high word (LO_IEEE_NA_HW) has the value
-         * 0x7FF840F4 (normal) or 0x7FF040F4 (non-standard).  Template code
-         * that could work is in liboctave/utils/lo-ieee.cc but it also
-         * depends on knowing whether the architecture is big-endian or
-         * little-endian.  */
-        #if defined (__mips__)
-          return (0);
-        #else
-          return (1);
-        #endif
+        /* The MSB of the mantissa of quiet NaN values is set to 1 according
+         * to IEEE 754-2008.  That is not the case for some architectures,
+         * e.g., MIPS.  */
+        double qNaN = NAN;  // quiet NaN
+        uint64_t bits;
+        memcpy (&bits, &qNaN, sizeof (qNaN));
+        if (bits & (1ULL << 51))
+          /* quiet NaN conformant to IEEE 754-2008 */
+          return 0;
+        else
+          /* quiet NaN not conformant to IEEE 754-2008 */
+          return 1;
       ]])],
-      octave_cv_mips_nan=yes,
-      octave_cv_mips_nan=no,
-      octave_cv_mips_nan=no)
-    AC_LANG_POP(C++)
+      octave_cv_ieee754_qnan=yes,
+      octave_cv_ieee754_qnan=no,
+      [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+          ]], [[
+          /* When cross-compiling, only test whether MIPS is the target
+           * architecture.
+           * FIXME: Add more conditions as needed.  */
+          #if defined (__mips__) || defined (mips) || defined (__mips) || defined (__MIPS__)
+          #  error "quiet NaN on MIPS is not conformant to IEEE 754-2008"
+          #endif
+        ]])],
+        octave_cv_ieee754_qnan=yes,
+        octave_cv_ieee754_qnan=no)
+    ])
+    AC_LANG_POP(C)
   ])
-  if test $octave_cv_mips_nan = yes; then
-    AC_DEFINE(HAVE_MIPS_NAN, 1,
-      [Define to 1 if MIPS processor is using non-standard NaN encoding.])
+  if test $octave_cv_ieee754_qnan = yes; then
+    AC_DEFINE(HAVE_IEEE754_QNAN, 1,
+      [Define to 1 if quiet NaN values are encoded according to IEEE 754-2008.])
+  fi
+])
+dnl
+dnl Check if the payload of quiet NaN values is retained on arithmetic
+dnl operations.  That is needed for consistent NA handling.
+dnl
+AC_DEFUN([OCTAVE_QNAN_WITH_PAYLOAD], [
+  AC_CACHE_CHECK([whether quiet NaN values retain payload on arithmetic operations],
+    [octave_cv_qnan_with_payload],
+    [AC_LANG_PUSH(C)
+    AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+        #include <math.h>
+        #include <stdint.h>
+        #include <string.h>
+        ]], [[
+        /* Quiet NaNs retain the "payload" (i.e., the value of the mantissa)
+         * when performing arithmetic operations.  That is not the case for
+         * some architectures, e.g., RISC-V.  */
+
+        #if defined (HAVE_IEEE754_QNAN)
+        #  define LO_IEEE_NA_HW 0x7FF840F4
+        #else
+        #  define LO_IEEE_NA_HW 0x7FF040F4
+        #endif
+        #define LO_IEEE_NA_LW 0x40000000
+        uint32_t word_NA[2];
+        volatile double oct_NA;
+        uint64_t bits_NA;
+        uint64_t bits_NA_1;
+
+        /* Check whether platform is Big Endian */
+        union
+        {
+          long l;
+          char c[sizeof (long)];
+        } u;
+        u.l = 1;
+
+        /* value used as NA in Octave */
+        if (u.c[sizeof (long) - 1] == 1)
+          {
+            /* Big Endian */
+            word_NA[0] = LO_IEEE_NA_HW;
+            word_NA[1] = LO_IEEE_NA_LW;
+          }
+        else
+          {
+            /* Little Endian */
+            word_NA[1] = LO_IEEE_NA_HW;
+            word_NA[0] = LO_IEEE_NA_LW;
+          }
+
+        memcpy ((void *) &oct_NA, &word_NA, sizeof (oct_NA));
+
+        memcpy (&bits_NA, (const void *) &oct_NA, sizeof (oct_NA));
+        oct_NA += 1.0;
+        memcpy (&bits_NA_1, (const void *) &oct_NA, sizeof (oct_NA));
+        if (bits_NA == bits_NA_1)
+          /* payload of quiet NaN was retained */
+          return 0;
+        else
+          /* payload of quiet NaN was not retained */
+          return 1;
+      ]])],
+      octave_cv_qnan_with_payload=yes,
+      octave_cv_qnan_with_payload=no,
+      [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+          ]], [[
+          /* When cross-compiling, only test whether the target architecture is
+           * RISC-V.
+           * FIXME: Add more conditions as needed.  */
+          #if defined(__riscv)
+          #  error "quiet NaN values do not retain the payload on arithmetic operations"
+          #endif
+        ]])],
+        octave_cv_qnan_with_payload=yes,
+        octave_cv_qnan_with_payload=no)
+    ])
+    AC_LANG_POP(C)
+  ])
+  if test $octave_cv_qnan_with_payload = yes; then
+    AC_DEFINE(HAVE_QNAN_WITH_PAYLOAD, 1,
+      [Define to 1 if quiet NaN values retain their payload on arithmetic operations.])
   fi
 ])
 dnl
@@ -3638,8 +3809,8 @@ dnl
 dnl Check for options that can be passed to tar to make archives reproducible.
 dnl
 AC_DEFUN([OCTAVE_PROG_TAR_REPRODUCIBLE], [
-  AC_MSG_CHECKING([for options to make reproducible archives with GNU tar])
-  AC_CACHE_VAL([octave_cv_tar_flags],
+  AC_CACHE_CHECK([for options to make reproducible archives with GNU tar],
+    [octave_cv_tar_flags],
     [octave_cv_tar_flags=
     dnl This uses Automake's logic for finding GNU tar under various names
     for octave_tar in tar gnutar gtar :; do
@@ -3657,10 +3828,8 @@ AC_DEFUN([OCTAVE_PROG_TAR_REPRODUCIBLE], [
       rm -f conftest.tar conftest.txt
     fi
   ])
-
   REPRODUCIBLE_TAR_FLAGS="$octave_cv_tar_flags"
   AC_SUBST(REPRODUCIBLE_TAR_FLAGS)
-  AC_MSG_RESULT([$REPRODUCIBLE_TAR_FLAGS])
 ])
 dnl
 dnl Check for texi2dvi.
@@ -3712,6 +3881,70 @@ AC_DEFUN([OCTAVE_SET_DEFAULT], [
 ])dnl
   AC_MSG_RESULT([defining $1 to be $$1])
   AC_SUBST($1)
+])
+dnl
+dnl Check whether integer types that are used for indexing in SuiteSparse match.
+dnl
+AC_DEFUN([OCTAVE_CHECK_SUITESPARSE_SIZEOF_IDX_TYPES], [
+  if test -n "$SPQR_LIBS" && test -n "$CHOLMOD_LIBS"; then
+    save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$CHOLMOD_CPPFLAGS $CPPFLAGS"
+
+    AC_CACHE_CHECK([whether SuiteSparse_long and octave_idx_type have same size],
+      [octave_cv_suitesparse_long_match],
+      [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+          #if defined (HAVE_SUITESPARSE_CHOLMOD_H)
+          #  include <suitesparse/cholmod.h>
+          #elif defined (HAVE_CHOLMOD_CHOLMOD_H)
+          #  include <cholmod/cholmod.h>
+          #elif defined (HAVE_CHOLMOD_H)
+          #  include <cholmod.h>
+          #endif
+          #include <assert.h>
+          ]], [[
+          static_assert (sizeof (SuiteSparse_long) == sizeof (OCTAVE_IDX_TYPE),
+                         "SuiteSparse_long does not match size of octave_idx_type");
+        ]])],
+        octave_cv_suitesparse_long_match=yes,
+        octave_cv_suitesparse_long_match=no)
+    ])
+    if test $octave_cv_suitesparse_long_match = yes; then
+      AC_DEFINE(OCTAVE_SUITESPARSE_LONG_MATCH, 1,
+        [Define to 1 if SuiteSparse_long and octave_idx_type have same size.])
+    fi
+
+    if test -n "$CXSPARSE_LIBS"; then
+      AC_CACHE_CHECK([whether SuiteSparse_long and suitesparse_integer have same size],
+        [octave_cv_suitesparse_integer_match],
+        [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+            #if defined (HAVE_SUITESPARSE_CHOLMOD_H)
+            #  include <suitesparse/cholmod.h>
+            #elif defined (HAVE_CHOLMOD_CHOLMOD_H)
+            #  include <cholmod/cholmod.h>
+            #elif defined (HAVE_CHOLMOD_H)
+            #  include <cholmod.h>
+            #endif
+            #include <assert.h>
+            ]], [[
+            #  if defined (OCTAVE_ENABLE_64)
+            typedef SuiteSparse_long suitesparse_integer;
+            #  else
+            typedef int suitesparse_integer;
+            #  endif
+            static_assert (sizeof (SuiteSparse_long) == sizeof (suitesparse_integer),
+                           "SuiteSparse_long does not match size of suitesparse_integer");
+          ]])],
+          octave_cv_suitesparse_integer_match=yes,
+          octave_cv_suitesparse_integer_match=no)
+      ])
+      if test $octave_cv_suitesparse_integer_match = yes; then
+        AC_DEFINE(OCTAVE_SUITESPARSE_INTEGER_MATCH, 1,
+          [Define to 1 if SuiteSparse_long and suitesparse_integer have same size.])
+      fi
+    fi
+
+    CPPFLAGS="$save_CPPFLAGS"
+  fi
 ])
 dnl
 dnl Check for UMFPACK separately split complex matrix and RHS.

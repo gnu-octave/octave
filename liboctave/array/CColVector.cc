@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1994-2025 The Octave Project Developers
+// Copyright (C) 1994-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -31,11 +31,11 @@
 #include <ostream>
 
 #include "Array-util.h"
-#include "lo-blas-proto.h"
-#include "lo-error.h"
+#include "blas-proto.h"
 #include "mx-base.h"
 #include "mx-inlines.cc"
 #include "oct-cmplx.h"
+#include "oct-error.h"
 
 // Complex Column Vector class
 

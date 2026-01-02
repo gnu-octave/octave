@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1994-2025 The Octave Project Developers
+## Copyright (C) 1994-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -33,7 +33,7 @@
 ## @example
 ## @group
 ## cstrcat ("ab   ", "cd")
-##       @result{} "ab   cd"
+##       @xresult{} "ab   cd"
 ## @end group
 ## @end example
 ##
@@ -41,7 +41,7 @@
 ## @group
 ## s = [ "ab"; "cde" ];
 ## cstrcat (s, s, s)
-##       @result{} "ab ab ab "
+##       @xresult{} "ab ab ab "
 ##          "cdecdecde"
 ## @end group
 ## @end example

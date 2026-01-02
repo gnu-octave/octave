@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -35,8 +35,8 @@
 #include <string>
 
 #include "glob-match.h"
-#include "lo-regexp.h"
 #include "oct-refcount.h"
+#include "oct-regexp.h"
 
 class tree_argument_list;
 class octave_user_function;

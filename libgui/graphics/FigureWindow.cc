@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2011-2025 The Octave Project Developers
+// Copyright (C) 2011-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -30,7 +30,7 @@
 #include <QMenu>
 
 #include "FigureWindow.h"
-#include "gui-preferences-global.h"
+#include "gui-preferences-dw.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -40,7 +40,7 @@ FigureWindow::FigureWindow (QWidget *xparent)
   // Set icon from application resources. Since FigureWindow is also used by
   // msgbox (in turn used by helpdlg, warndlg, ...), the logo should be the
   // neutral Octave icon:
-  setWindowIcon (QIcon (global_icon_paths.at (ICON_THEME_OCTAVE) + "logo.png"));
+  setWindowIcon (QIcon (dw_icon_set_names["NONE"]));
 }
 
 FigureWindow::~FigureWindow ()

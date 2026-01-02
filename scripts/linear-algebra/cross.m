@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1995-2025 The Octave Project Developers
+## Copyright (C) 1995-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -54,7 +54,7 @@
 ## @example
 ## @group
 ## cross ([1, 1, 0], [0, 1, 1])
-##   @result{}
+##   @xresult{}
 ##        1  -1   1
 ## @end group
 ## @end example
@@ -62,7 +62,7 @@
 ## @example
 ## @group
 ## cross (magic (3), eye (3), 2)
-##   @result{}
+##   @xresult{}
 ##        0   6  -1
 ##       -7   0   3
 ##        9  -4   0

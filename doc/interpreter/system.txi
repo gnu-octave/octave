@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2025 The Octave Project Developers
+@c Copyright (C) 1996-2026 The Octave Project Developers
 @c
 @c This file is part of Octave.
 @c
@@ -366,6 +366,8 @@ make the corresponding Unix system calls.  For a complete example of how
 they can be used, look at the definition of the function @code{popen2}.
 
 @DOCSTRING(fork)
+
+@DOCSTRING(_Exit)
 
 @DOCSTRING(exec)
 

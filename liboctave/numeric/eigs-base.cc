@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2005-2025 The Octave Project Developers
+// Copyright (C) 2005-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -31,19 +31,20 @@
 
 #include <ostream>
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "CSparse.h"
 #include "MatrixType.h"
 #include "PermMatrix.h"
+#include "arpack-proto.h"
+#include "blas-proto.h"
 #include "chol.h"
 #include "dSparse.h"
 #include "eigs-base.h"
-#include "lo-arpack-proto.h"
-#include "lo-blas-proto.h"
-#include "lo-error.h"
 #include "lo-ieee.h"
+#include "lo-utils.h"
 #include "lu.h"
 #include "mx-ops.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
 #include "oct-rand.h"
 #include "sparse-chol.h"
@@ -857,8 +858,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n
-              || octave::math::x_nint (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -916,9 +916,17 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
 
   F77_INT ido = 0;
   int iter = 0;
-  F77_INT lwork = p * (p + 8);
+  F77_INT elems;
+  F77_INT lwork;
 
-  OCTAVE_LOCAL_BUFFER (double, v, n * p);
+  if (octave::math::int_multiply_overflow (n, p, &elems))
+    (*current_liboctave_error_handler)
+      ("eigs: array too large for Fortran integers");
+  if (octave::math::int_multiply_overflow (p, p + 8, &lwork))
+    (*current_liboctave_error_handler)
+      ("eigs: array too large for Fortran integers");
+
+  OCTAVE_LOCAL_BUFFER (double, v, elems);
   OCTAVE_LOCAL_BUFFER (double, workl, lwork);
   OCTAVE_LOCAL_BUFFER (double, workd, 3 * n);
   double *presid = resid.rwdata ();
@@ -1152,8 +1160,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n
-              || octave::math::x_nint (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -1192,9 +1199,17 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
   if (! LuAminusSigmaB (m, b, cholB, permB, sigma, L, U, P, Q, r))
     return -1;
 
-  F77_INT lwork = p * (p + 8);
+  F77_INT elems;
+  F77_INT lwork;
 
-  OCTAVE_LOCAL_BUFFER (double, v, n * p);
+  if (octave::math::int_multiply_overflow (n, p, &elems))
+    (*current_liboctave_error_handler)
+      ("eigs: array too large for Fortran integers");
+  if (octave::math::int_multiply_overflow (p, p + 8, &lwork))
+    (*current_liboctave_error_handler)
+      ("eigs: array too large for Fortran integers");
+
+  OCTAVE_LOCAL_BUFFER (double, v, elems);
   OCTAVE_LOCAL_BUFFER (double, workl, lwork);
   OCTAVE_LOCAL_BUFFER (double, workd, 3 * n);
   double *presid = resid.rwdata ();
@@ -1449,8 +1464,7 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n
-              || octave::math::x_nint (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -1536,9 +1550,17 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
 
   F77_INT ido = 0;
   int iter = 0;
-  F77_INT lwork = p * (p + 8);
+  F77_INT elems;
+  F77_INT lwork;
 
-  OCTAVE_LOCAL_BUFFER (double, v, n * p);
+  if (octave::math::int_multiply_overflow (n, p, &elems))
+    (*current_liboctave_error_handler)
+      ("eigs: array too large for Fortran integers");
+  if (octave::math::int_multiply_overflow (p, p + 8, &lwork))
+    (*current_liboctave_error_handler)
+      ("eigs: array too large for Fortran integers");
+
+  OCTAVE_LOCAL_BUFFER (double, v, elems);
   OCTAVE_LOCAL_BUFFER (double, workl, lwork);
   OCTAVE_LOCAL_BUFFER (double, workd, 3 * n);
   double *presid = resid.rwdata ();
@@ -1834,8 +1856,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n
-              || octave::math::x_nint (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -1893,9 +1914,17 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
 
   F77_INT ido = 0;
   int iter = 0;
-  F77_INT lwork = 3 * p * (p + 2);
+  F77_INT elems;
+  F77_INT lwork;
 
-  OCTAVE_LOCAL_BUFFER (double, v, n * (p + 1));
+  if (octave::math::int_multiply_overflow (n, p + 1, &elems))
+    (*current_liboctave_error_handler)
+      ("eigs: array too large for Fortran integers");
+  if (octave::math::int_multiply_overflow (3 * p, p + 2, &lwork))
+    (*current_liboctave_error_handler)
+      ("eigs: array too large for Fortran integers");
+
+  OCTAVE_LOCAL_BUFFER (double, v, elems);
   OCTAVE_LOCAL_BUFFER (double, workl, lwork + 1);
   OCTAVE_LOCAL_BUFFER (double, workd, 3 * n + 1);
   double *presid = resid.rwdata ();
@@ -2189,8 +2218,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n
-              || octave::math::x_nint (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -2229,9 +2257,17 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   if (! LuAminusSigmaB (m, b, cholB, permB, sigmar, L, U, P, Q, r))
     return -1;
 
-  F77_INT lwork = 3 * p * (p + 2);
+  F77_INT elems;
+  F77_INT lwork;
 
-  OCTAVE_LOCAL_BUFFER (double, v, n * (p + 1));
+  if (octave::math::int_multiply_overflow (n, p + 1, &elems))
+    (*current_liboctave_error_handler)
+      ("eigs: array too large for Fortran integers");
+  if (octave::math::int_multiply_overflow (3 * p, p + 2, &lwork))
+    (*current_liboctave_error_handler)
+      ("eigs: array too large for Fortran integers");
+
+  OCTAVE_LOCAL_BUFFER (double, v, elems);
   OCTAVE_LOCAL_BUFFER (double, workl, lwork + 1);
   OCTAVE_LOCAL_BUFFER (double, workd, 3 * n + 1);
   double *presid = resid.rwdata ();
@@ -2554,8 +2590,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n
-              || octave::math::x_nint (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -2641,11 +2676,20 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
 
   F77_INT ido = 0;
   int iter = 0;
-  F77_INT lwork = 3 * p * (p + 2);
+  F77_INT elems;
+  F77_INT lwork;
 
-  OCTAVE_LOCAL_BUFFER (double, v, n * (p + 1));
+  if (octave::math::int_multiply_overflow (n, p + 1, &elems))
+    (*current_liboctave_error_handler)
+      ("eigs: array too large for Fortran integers");
+  if (octave::math::int_multiply_overflow (3 * p, p + 2, &lwork))
+    (*current_liboctave_error_handler)
+      ("eigs: array too large for Fortran integers");
+
+  OCTAVE_LOCAL_BUFFER (double, v, elems);
   OCTAVE_LOCAL_BUFFER (double, workl, lwork + 1);
   OCTAVE_LOCAL_BUFFER (double, workd, 3 * n + 1);
+
   double *presid = resid.rwdata ();
 
   do
@@ -3003,8 +3047,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n
-              || octave::math::x_nint (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -3062,9 +3105,17 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
 
   F77_INT ido = 0;
   int iter = 0;
-  F77_INT lwork = p * (3 * p + 5);
+  F77_INT elems;
+  F77_INT lwork;
 
-  OCTAVE_LOCAL_BUFFER (Complex, v, n * p);
+  if (octave::math::int_multiply_overflow (n, p, &elems))
+    (*current_liboctave_error_handler)
+      ("eigs: array too large for Fortran integers");
+  if (octave::math::int_multiply_overflow (p, 3 * p + 5, &lwork))
+    (*current_liboctave_error_handler)
+      ("eigs: array too large for Fortran integers");
+
+  OCTAVE_LOCAL_BUFFER (Complex, v, elems);
   OCTAVE_LOCAL_BUFFER (Complex, workl, lwork);
   OCTAVE_LOCAL_BUFFER (Complex, workd, 3 * n);
   OCTAVE_LOCAL_BUFFER (double, rwork, p);
@@ -3310,8 +3361,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n
-              || octave::math::x_nint (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -3350,9 +3400,17 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
   if (! LuAminusSigmaB (m, b, cholB, permB, sigma, L, U, P, Q, r))
     return -1;
 
-  F77_INT lwork = p * (3 * p + 5);
+  F77_INT elems;
+  F77_INT lwork;
 
-  OCTAVE_LOCAL_BUFFER (Complex, v, n * p);
+  if (octave::math::int_multiply_overflow (n, p, &elems))
+    (*current_liboctave_error_handler)
+      ("eigs: array too large for Fortran integers");
+  if (octave::math::int_multiply_overflow (p, 3 * p + 5, &lwork))
+    (*current_liboctave_error_handler)
+      ("eigs: array too large for Fortran integers");
+
+  OCTAVE_LOCAL_BUFFER (Complex, v, elems);
   OCTAVE_LOCAL_BUFFER (Complex, workl, lwork);
   OCTAVE_LOCAL_BUFFER (Complex, workd, 3 * n);
   OCTAVE_LOCAL_BUFFER (double, rwork, p);
@@ -3625,8 +3683,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n
-              || octave::math::x_nint (bidx) != bidx)
+          if (checked(bidx) || bidx < 0 || bidx >= n)
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
         }
     }
@@ -3712,9 +3769,17 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
 
   F77_INT ido = 0;
   int iter = 0;
-  F77_INT lwork = p * (3 * p + 5);
+  F77_INT elems;
+  F77_INT lwork;
 
-  OCTAVE_LOCAL_BUFFER (Complex, v, n * p);
+  if (octave::math::int_multiply_overflow (n, p, &elems))
+    (*current_liboctave_error_handler)
+      ("eigs: array too large for Fortran integers");
+  if (octave::math::int_multiply_overflow (p, 3 * p + 5, &lwork))
+    (*current_liboctave_error_handler)
+      ("eigs: array too large for Fortran integers");
+
+  OCTAVE_LOCAL_BUFFER (Complex, v, elems);
   OCTAVE_LOCAL_BUFFER (Complex, workl, lwork);
   OCTAVE_LOCAL_BUFFER (Complex, workd, 3 * n);
   OCTAVE_LOCAL_BUFFER (double, rwork, p);

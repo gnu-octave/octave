@@ -5,7 +5,7 @@
 %! dc = d + i * rand (3, 4, "double");
 %!
 %! [sx, scx, dx, dcx] = mexnumtst (s, sc, d, dc);
-%! assert (s, sx)
-%! assert (sc, scx)
-%! assert (d, dx)
-%! assert (dc, dcx)
+%! assert (s, sx);
+%! assert (sc, scx);
+%! assert (d, dx);
+%! assert (dc, dcx);

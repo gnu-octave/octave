@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2016-2025 The Octave Project Developers
+// Copyright (C) 2016-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -27,13 +27,13 @@
 #  include "config.h"
 #endif
 
+#include "oct-specfun.h"
+
 #include "ov.h"
 #include "defun.h"
 #include "error.h"
 #include "dNDArray.h"
 #include "fNDArray.h"
-
-#include "lo-specfun.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 

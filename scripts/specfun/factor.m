@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2000-2025 The Octave Project Developers
+## Copyright (C) 2000-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -43,7 +43,7 @@
 ## @example
 ## @group
 ## factor (uint64 (18446744073709011493))
-##    @result{}     571111    761213  42431951
+##    @xresult{}     571111    761213  42431951
 ## @end group
 ## @end example
 ##
@@ -53,7 +53,7 @@
 ## @example
 ## @group
 ## factor (sym ('9444733049654361449941'))
-##    @result{} (sym)
+##    @xresult{} (sym)
 ##               1           1
 ##  1099511627689 ⋅8589934669
 ## @end group

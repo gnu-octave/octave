@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2012-2025 The Octave Project Developers
+// Copyright (C) 2012-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -99,7 +99,7 @@ check_hg_versions ()
     }
 
   if (! ok)
-    exit (1);
+    std::exit (EXIT_FAILURE);
 }
 
 #if defined (OCTAVE_USE_WINDOWS_API) && defined (_UNICODE)

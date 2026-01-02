@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2001-2025 The Octave Project Developers
+## Copyright (C) 2001-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -67,7 +67,7 @@
 ## @example
 ## @group
 ## nchoosek (3, 2)
-##    @result{} 3
+##    @xresult{} 3
 ## @end group
 ## @end example
 ##
@@ -76,7 +76,7 @@
 ## @example
 ## @group
 ## nchoosek (1:3, 2)
-##    @result{}  1   2
+##    @xresult{}  1   2
 ##        1   3
 ##        2   3
 ## @end group
@@ -303,7 +303,7 @@ endfunction
 ## Floating point number above flintmax
 %!test <*65495>
 %! warning ("off", "Octave:nchoosek:large-output-float", "local");
-%! assert (! isinf (nchoosek (1024, 512)))
+%! assert (! isinf (nchoosek (1024, 512)));
 
 ## Test combining rules for integers and floating point
 %!test

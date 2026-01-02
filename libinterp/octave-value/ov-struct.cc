@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -152,8 +152,7 @@ octave_struct::subsref (const std::string& type,
       {
         if (type.length () > 1 && type[1] == '.')
           {
-            auto p = idx.begin ();
-            octave_value_list key_idx = *++p;
+            const octave_value_list& key_idx = *std::next (idx.begin ());
 
             const Cell tmp = dotref (key_idx);
 
@@ -218,8 +217,7 @@ octave_struct::subsref (const std::string& type,
       {
         if (type.length () > 1 && type[1] == '.')
           {
-            auto p = idx.begin ();
-            octave_value_list key_idx = *++p;
+            const octave_value_list& key_idx = *std::next (idx.begin ());
 
             const Cell tmp = dotref (key_idx, auto_add);
 
@@ -317,10 +315,7 @@ octave_struct::subsasgn (const std::string& type,
           {
             if (type.length () > 1 && type[1] == '.')
               {
-                auto p = idx.begin ();
-                octave_value_list t_idx = *p;
-
-                octave_value_list key_idx = *++p;
+                const octave_value_list& key_idx = *std::next (idx.begin ());
 
                 if (key_idx.length () != 1)
                   error ("subsasgn: dynamic structure field names must be strings");
@@ -330,13 +325,11 @@ octave_struct::subsasgn (const std::string& type,
 
                 maybe_warn_invalid_field_name (key, "subsasgn");
 
-                std::list<octave_value_list> next_idx (idx);
+                std::list<octave_value_list> next_idx (std::next (idx.begin (), 2),
+                                                       idx.end ());
 
                 // We handled two index elements, so subsasgn to
                 // needs to skip both of them.
-
-                next_idx.erase (next_idx.begin ());
-                next_idx.erase (next_idx.begin ());
 
                 std::string next_type = type.substr (2);
 
@@ -378,7 +371,7 @@ octave_struct::subsasgn (const std::string& type,
 
         case '.':
           {
-            octave_value_list key_idx = idx.front ();
+            const octave_value_list& key_idx = idx.front ();
 
             if (key_idx.length () != 1)
               error ("subsasgn: dynamic structure field names must be strings");
@@ -388,9 +381,8 @@ octave_struct::subsasgn (const std::string& type,
 
             maybe_warn_invalid_field_name (key, "subsasgn");
 
-            std::list<octave_value_list> next_idx (idx);
-
-            next_idx.erase (next_idx.begin ());
+            std::list<octave_value_list> next_idx (std::next (idx.begin ()),
+                                                   idx.end ());
 
             std::string next_type = type.substr (1);
 
@@ -444,9 +436,8 @@ octave_struct::subsasgn (const std::string& type,
       {
         if (n > 1 && type[1] == '.')
           {
-            auto p = idx.begin ();
-            octave_value_list key_idx = *++p;
-            octave_value_list idxf = idx.front ();
+            const octave_value_list& key_idx = *std::next (idx.begin ());
+            const octave_value_list& idxf = idx.front ();
 
             if (key_idx.length () != 1)
               error ("subsasgn: dynamic structure field names must be strings");
@@ -519,7 +510,7 @@ octave_struct::subsasgn (const std::string& type,
 
     case '.':
       {
-        octave_value_list key_idx = idx.front ();
+        const octave_value_list& key_idx = idx.front ();
 
         if (key_idx.length () != 1)
           error ("subsasgn: dynamic structure field names must be strings");
@@ -529,25 +520,20 @@ octave_struct::subsasgn (const std::string& type,
 
         maybe_warn_invalid_field_name (key, "subsasgn");
 
-        if (t_rhs.is_cs_list ())
-          {
-            Cell tmp_cell = Cell (t_rhs.list_value ());
+        // assigning to a field of a struct array requires a cs-list on the RHS
+        if (! t_rhs.is_cs_list ())
+          err_nonbraced_cs_list_assignment ();
 
-            // The shape of the RHS is irrelevant, we just want
-            // the number of elements to agree and to preserve the
-            // shape of the left hand side of the assignment.
+        Cell tmp_cell = Cell (t_rhs.list_value ());
 
-            if (numel () == tmp_cell.numel ())
-              tmp_cell = tmp_cell.reshape (dims ());
+        // The shape of the RHS is irrelevant, we just want
+        // the number of elements to agree and to preserve the
+        // shape of the left hand side of the assignment.
 
-            m_map.setfield (key, tmp_cell);
-          }
-        else
-          {
-            Cell tmp_cell(1, 1);
-            tmp_cell(0) = t_rhs.storable_value ();
-            m_map.setfield (key, tmp_cell);
-          }
+        if (numel () == tmp_cell.numel ())
+          tmp_cell = tmp_cell.reshape (dims ());
+
+        m_map.setfield (key, tmp_cell);
 
         m_count++;
         retval = octave_value (this);
@@ -720,7 +706,7 @@ octave_struct::edit_display (const float_display_format&,
     }
   else
     {
-      // 2-d struct array.  Rows and columns index individual
+      // 2-D struct array.  Rows and columns index individual
       // scalar structs.
 
       val = m_map(r, c);
@@ -1253,7 +1239,7 @@ octave_scalar_struct::subsasgn (const std::string& type,
 
       octave_value t_rhs = rhs;
 
-      octave_value_list key_idx = idx.front ();
+      const octave_value_list& key_idx = idx.front ();
 
       if (key_idx.length () != 1)
         error ("subsasgn: structure field names must be strings");
@@ -1265,9 +1251,8 @@ octave_scalar_struct::subsasgn (const std::string& type,
 
       if (n > 1)
         {
-          std::list<octave_value_list> next_idx (idx);
-
-          next_idx.erase (next_idx.begin ());
+          std::list<octave_value_list> next_idx (std::next (idx.begin ()),
+                                                 idx.end ());
 
           std::string next_type = type.substr (1);
 
@@ -1781,19 +1766,19 @@ the following examples:
 @example
 @group
 struct ("foo", 1)
-  @result{} scalar structure containing the fields:
+  @xresult{} scalar structure containing the fields:
     foo =  1
 
 struct ("foo", @{@})
-  @result{} 0x0 struct array containing the fields:
+  @xresult{} 0x0 struct array containing the fields:
     foo
 
 struct ("foo", @{ @{@} @})
-  @result{} scalar structure containing the fields:
+  @xresult{} scalar structure containing the fields:
     foo = @{@}(0x0)
 
 struct ("foo", @{1, 2, 3@})
-  @result{} 1x3 struct array containing the fields:
+  @xresult{} 1x3 struct array containing the fields:
     foo
 
 @end group
@@ -2119,7 +2104,7 @@ S = cell2struct (@{"Peter", "Hannah", "Robert";
                    185, 170, 168@},
                  @{"Name","Height"@}, 1);
 S(1)
-   @result{}
+   @xresult{}
       @{
         Name   = Peter
         Height = 185

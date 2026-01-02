@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1994-2025 The Octave Project Developers
+// Copyright (C) 1994-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -29,7 +29,7 @@
 
 #include <algorithm>
 
-#include "Array.h"
+#include "Array-oct.h"
 #include "CColVector.h"
 #include "CMatrix.h"
 #include "CRowVector.h"
@@ -42,16 +42,15 @@
 #include "fColVector.h"
 #include "fMatrix.h"
 #include "fRowVector.h"
-#include "lo-error.h"
-#include "lo-lapack-proto.h"
-#include "lo-qrupdate-proto.h"
+#include "lapack-proto.h"
 #include "oct-cmplx.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
 #include "oct-sort.h"
 #include "qr.h"
+#include "qrupdate-proto.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
 OCTAVE_BEGIN_NAMESPACE(math)
 
 template <typename T>

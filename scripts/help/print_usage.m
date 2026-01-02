@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2009-2025 The Octave Project Developers
+## Copyright (C) 2009-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -205,7 +205,7 @@ function [retval, status] = __makeinfo_restricted__ (buffer)
   ## But a line like this:
   ##   A = cellfun (@@FCN, C)
   ## should become:
-  ##   A = cellfun (@FCN, C)
+  ##   A = cellfun ('FCN', C)
   ## and not this:
   ##   A = cellfun ({}FCN, C)
   ## Currently the code uses a guard string to protect the @@,

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2008-2025 The Octave Project Developers
+// Copyright (C) 2008-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -131,9 +131,9 @@ behavior when @code{isnull} is used correctly.
 str = "Hello World";
 nm = "Wally";
 str(7:end) = nm                # indexed assignment
-  @result{} str = Hello Wally
+  @xresult{} str = Hello Wally
 str(7:end) = ""                # indexed deletion
-  @result{} str = Hello
+  @xresult{} str = Hello
 @end group
 @end example
 @seealso{isempty, isindex}

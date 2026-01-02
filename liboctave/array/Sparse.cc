@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1998-2025 The Octave Project Developers
+// Copyright (C) 1998-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -35,19 +35,19 @@
 #include <sstream>
 #include <vector>
 
-#include "Array.h"
-#include "MArray.h"
+#include "Array-oct.h"
 #include "Array-util.h"
+#include "MArray.h"
 #include "Range.h"
 #include "idx-vector.h"
-#include "lo-error.h"
-#include "quit.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
+#include "quit.h"
 
 #include "Sparse.h"
-#include "sparse-util.h"
-#include "oct-spparms.h"
 #include "mx-inlines.cc"
+#include "oct-spparms.h"
+#include "sparse-util.h"
 
 #include "PermMatrix.h"
 
@@ -338,13 +338,13 @@ Sparse<T, Alloc>::Sparse (const Array<T>& a,
     (*current_liboctave_error_handler) ("sparse: dimension mismatch");
 
   // Only create m_rep after input validation to avoid memory leak.
-  m_rep = new typename Sparse<T, Alloc>::SparseRep (nr, nc, (nzm > 0 ? nzm : 0));
+  m_rep = new typename Sparse<T, Alloc>::SparseRep (nr, nc, std::max<octave_idx_type> (nzm, 0));
 
   if (rl <= 1 && cl <= 1)
     {
       if (n == 1 && a(0) != T ())
         {
-          change_capacity (nzm > 1 ? nzm : 1);
+          change_capacity (std::max<octave_idx_type> (nzm, 1));
           xridx (0) = r(0);
           xdata (0) = a(0);
           std::fill_n (xcidx () + c(0) + 1, nc - c(0), 1);
@@ -372,7 +372,7 @@ Sparse<T, Alloc>::Sparse (const Array<T>& a,
             new_nz += rd[i-1] != rd[i];
 
           // Allocate result.
-          change_capacity (nzm > new_nz ? nzm : new_nz);
+          change_capacity (std::max (nzm, new_nz));
           std::fill_n (xcidx () + c(0) + 1, nc - c(0), new_nz);
 
           octave_idx_type *rri = ridx ();
@@ -463,7 +463,7 @@ Sparse<T, Alloc>::Sparse (const Array<T>& a,
               xcidx (j+1) = xcidx (j) + nzj;
             }
 
-          change_capacity (nzm > xcidx (nc) ? nzm : xcidx (nc));
+          change_capacity (std::max (nzm, xcidx (nc)));
           octave_idx_type *rri = ridx ();
           T *rrd = data ();
 
@@ -521,7 +521,7 @@ Sparse<T, Alloc>::Sparse (const Array<T>& a,
         new_nz += rd[i-1] != rd[i];
 
       // Allocate result.
-      change_capacity (nzm > new_nz ? nzm : new_nz);
+      change_capacity (std::max (nzm, new_nz));
       std::fill_n (xcidx () + c(0) + 1, nc - c(0), new_nz);
 
       octave_idx_type *rri = ridx ();
@@ -615,7 +615,7 @@ Sparse<T, Alloc>::Sparse (const Array<T>& a,
           xcidx (j+1) = xcidx (j) + nzj;
         }
 
-      change_capacity (nzm > xcidx (nc) ? nzm : xcidx (nc));
+      change_capacity (std::max (nzm, xcidx (nc)));
       octave_idx_type *rri = ridx ();
       T *rrd = data ();
 
@@ -1714,7 +1714,7 @@ Sparse<T, Alloc>::index (const octave::idx_vector& idx_i,
     }
   else if (nc == 1 && idx_j.is_colon_equiv (nc) && idx_i.isvector ())
     {
-      // It's actually vector indexing.  The 1D index is specialized for that.
+      // It's actually vector indexing.  The 1-D index is specialized for that.
       retval = index (idx_i);
 
       // If nr == 1 then the vector indexing will return a column vector!!
@@ -2231,7 +2231,7 @@ Sparse<T, Alloc>::assign (const octave::idx_vector& idx_i,
         }
       else if (nc == 1 && idx_j.is_colon_equiv (nc) && idx_i.isvector ())
         {
-          // It's just vector indexing.  The 1D assign is specialized for that.
+          // It's just vector indexing.  The 1-D assign is specialized for that.
           assign (idx_i, rhs);
         }
       else if (idx_j.is_colon ())
@@ -2506,7 +2506,7 @@ Sparse<T, Alloc>::diag (octave_idx_type k) const
 
       if (nnr > 0 && nnc > 0)
         {
-          octave_idx_type ndiag = (nnr < nnc) ? nnr : nnc;
+          octave_idx_type ndiag = std::min (nnr,  nnc);
 
           // Count the number of nonzero elements
           octave_idx_type nel = 0;
@@ -2932,7 +2932,7 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
 %!  assert (full (s), f);
 %!endfunction
 
-#### 1d indexing
+#### 1-D indexing
 
 ## size = [2 0]
 %!test test_sparse_slice ([2 0], 11, []);
@@ -2976,7 +2976,7 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
 %!error id=Octave:invalid-resize set_slice (sparse (ones ([2 2])), 11, 5)
 %!error id=Octave:invalid-resize set_slice (sparse (ones ([2 2])), 11, 6)
 
-#### 2d indexing
+#### 2-D indexing
 
 ## size = [2 0]
 %!test test_sparse_slice ([2 0], 21, []);

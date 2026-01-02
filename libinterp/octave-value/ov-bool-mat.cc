@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -601,6 +601,8 @@ issues an error.
       else
         retval = arg.bool_array_value ();
     }
+  else if (arg.is_sq_string ())
+    retval = arg.bool_array_value ();
   else
     err_wrong_type_arg ("logical", arg);
 
@@ -616,6 +618,12 @@ issues an error.
 %!   assert (logical (eye (2, c{i})), m);
 %!   assert (logical (eye (1, c{i})), s);
 %! endfor
+
+%!test <*63515>
+%! s = 'str';
+%! assert (logical (s), [true, true, true]);
+%! s = ['abc'; ['de' "\0"]];
+%! assert (logical (s), logical ([1 1 1; 1 1 0]));
 */
 
 OCTAVE_END_NAMESPACE(octave)

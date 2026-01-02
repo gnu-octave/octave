@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -31,8 +31,8 @@
 #include <string.h>
 
 #include "f77-fcn.h"
+#include "oct-error.h"
 #include "quit.h"
-#include "lo-error.h"
 
 /* All the STOP statements in the Fortran routines have been replaced
    with a call to XSTOPX.

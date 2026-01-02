@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -63,11 +63,13 @@ public:
 
 private:
 
+  OCTAVE_NORETURN void errmsg (const std::string& msg, int line);
+
+  //--------
+
   bool m_do_lvalue_check;
 
   std::string m_file_name;
-
-  OCTAVE_NORETURN void errmsg (const std::string& msg, int line);
 };
 
 OCTAVE_END_NAMESPACE(octave)

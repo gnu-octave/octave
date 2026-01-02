@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -80,7 +80,7 @@ For example:
 @example
 @group
 givens (1, 1)
-   @result{}   0.70711   0.70711
+   @xresult{}   0.70711   0.70711
        -0.70711   0.70711
 @end group
 @end example

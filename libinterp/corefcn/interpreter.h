@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2002-2025 The Octave Project Developers
+// Copyright (C) 2002-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -57,7 +57,6 @@
 #include "ov-typeinfo.h"
 #include "pager.h"
 #include "pt-eval.h"
-#include "settings.h"
 #include "symtab.h"
 #include "url-handle-manager.h"
 
@@ -224,12 +223,6 @@ public:
     return m_initialized;
   }
 
-  OCTAVE_DEPRECATED (9, "use octave::is_initialized instead")
-  bool initialized () const
-  {
-    return is_initialized ();
-  }
-
   void interrupt_all_in_process_group (bool b)
   {
     m_interrupt_all_in_process_group = b;
@@ -255,14 +248,9 @@ public:
     return m_environment;
   }
 
-  settings& get_settings ()
-  {
-    return m_settings;
-  }
-
   error_system& get_error_system ()
   {
-    return m_error_system;
+    return m_evaluator.get_error_system ();
   }
 
   tree_evaluator& get_evaluator ();
@@ -577,6 +565,8 @@ private:
 
   int execute_command_line_file ();
 
+  void run_startup_tests ();
+
   int main_loop ();
 
   int server_loop ();
@@ -615,11 +605,7 @@ private:
 
   environment m_environment;
 
-  settings m_settings;
-
   tree_evaluator m_evaluator;
-
-  error_system m_error_system;
 
   help_system m_help_system;
 

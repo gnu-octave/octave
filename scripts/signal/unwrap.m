@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2000-2025 The Octave Project Developers
+## Copyright (C) 2000-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -109,7 +109,7 @@ function retval = unwrap (x, tol, dim)
       retval(xfin_idx) = xfin + cumsum (p, dim);
 
     else
-      ## For n-dimensional arrays with a possibly unequal number of non-finite
+      ## For N-dimensional arrays with a possibly unequal number of non-finite
       ## values, mask entries with values that do not impact calcualation.
 
             ## Locate nonfinite values.
@@ -272,8 +272,8 @@ endfunction
 
 %!test <*64556>
 %! x = pi * [-Inf, 0.5, -1, NaN, Inf, -0.5, 1];
-%! assert (unwrap (x), pi * [-Inf, 0.5, 1, NaN, Inf, 1.5, 1], eps)
-%! assert (unwrap (x.'), pi * [-Inf, 0.5, 1, NaN, Inf, 1.5, 1].', eps)
+%! assert (unwrap (x), pi * [-Inf, 0.5, 1, NaN, Inf, 1.5, 1], eps);
+%! assert (unwrap (x.'), pi * [-Inf, 0.5, 1, NaN, Inf, 1.5, 1].', eps);
 
 %!test <*64556>
 %! x = pi * [-Inf, 0.5, -1, NaN, Inf, -0.5, 1];

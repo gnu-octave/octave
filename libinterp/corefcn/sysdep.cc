@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -63,10 +63,10 @@
 
 #include "cmd-edit.h"
 #include "file-ops.h"
-#include "lo-mappers.h"
-#include "lo-sysinfo.h"
 #include "mach-info.h"
+#include "mappers.h"
 #include "oct-env.h"
+#include "oct-sysinfo.h"
 #include "uniconv-wrappers.h"
 #include "unistd-wrappers.h"
 
@@ -436,6 +436,11 @@ drive_or_unc_share (const std::string& name)
 void
 sysdep_init ()
 {
+  static bool initialized = false;
+
+  if (initialized)
+    return;
+
   // Use a function from libgomp to force loading of OpenMP library.
   // Otherwise, a dynamically loaded library making use of OpenMP such
   // as GraphicsMagick will segfault on exit (bug #41699).
@@ -450,6 +455,8 @@ sysdep_init ()
 #elif defined (_MSC_VER)
   MSVC_init ();
 #endif
+
+  initialized = true;
 }
 
 void
@@ -1393,9 +1400,9 @@ Examples:
 @example
 @group
 tilde_expand ("~joeuser/bin")
-     @result{} "/home/joeuser/bin"
+     @xresult{} "/home/joeuser/bin"
 tilde_expand ("~/bin")
-     @result{} "/home/jwe/bin"
+     @xresult{} "/home/jwe/bin"
 @end group
 @end example
 @end deftypefn */)

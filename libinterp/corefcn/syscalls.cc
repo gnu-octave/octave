@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -33,8 +33,10 @@
 #endif
 
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 
+#include "_Exit-wrapper.h"
 #include "cmd-hist.h"
 #include "fcntl-wrappers.h"
 #include "file-ops.h"
@@ -320,7 +322,7 @@ exit status, it will linger until Octave exits.
 /*
 
 %!test  # UNIX-style test
-%! if (isunix () || ismac ())
+%! if (isunix ())
 %!   [in, out, pid] = popen2 ("sort", "-r");
 %!   EAGAIN = errno ("EAGAIN");
 %!   fputs (in, "these\nare\nsome\nstrings\n");
@@ -330,9 +332,6 @@ exit status, it will linger until Octave exits.
 %!   idx = 0;
 %!   errs = 0;
 %!   do
-%!     if (ismac ())  # FIXME: Is this necessary?
-%!       errno (0);
-%!     endif
 %!     s = fgets (out);
 %!     if (ischar (s))
 %!       idx++;
@@ -499,17 +498,19 @@ Fork can return one of the following values:
 @table @asis
 @item > 0
 You are in the parent process.  The value returned from @code{fork} is the
-process id of the child process.  You should probably arrange to wait for
-any child processes to exit.
+process id of the child process.  You should probably arrange to wait for any
+child processes to exit by using @code{waitpid}.
 
 @item 0
 You are in the child process.  You can call @code{exec} to start another
-process.  If that fails, you should probably call @code{exit}.
+process.  If that fails, you should probably call @code{_Exit} to terminate the
+child.
 
 @item < 0
-The call to @code{fork} failed for some reason.  You must take evasive
-action.  A system dependent error message will be waiting in @var{msg}.
+The call to @code{fork} failed for some reason.  You must take evasive action.
+A system-dependent error message will be waiting in @var{msg}.
 @end table
+@seealso{exec, _Exit}
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -523,6 +524,38 @@ action.  A system dependent error message will be waiting in @var{msg}.
   pid_t pid = sys::fork (msg);
 
   return ovl (pid, msg);
+}
+
+DEFUNX ("_Exit", F_Exit, args, ,
+        doc: /* -*- texinfo -*-
+@deftypefn  {} {} _Exit ()
+@deftypefnx {} {} _Exit (@var{status})
+Exit the currently running process with exit code @var{status}.
+
+If called with no arguments, exit with status @code{0} indicating success.
+
+The optional integer argument @var{status} specifies the exit code.
+
+Programming Note: This function maps to the C++ function @code{quick_exit}.
+The calling process is stopped and any open file descriptors are closed.  This
+is the correct function to call to end a child process started from Octave.
+The ordinary C library function `exit` will not work.
+@seealso{fork}
+@end deftypefn */)
+{
+  int nargin = args.length ();
+  if (nargin > 1)
+    print_usage ();
+
+  int status = EXIT_SUCCESS;
+
+  if (nargin == 1)
+    status = args(0).xint_value ("_Exit: STATUS must be an integer");
+
+  octave__Exit_wrapper (status);
+
+  // This function never returns.  Silent compiler warning.
+  return ovl ();
 }
 
 DEFUNX ("getpgrp", Fgetpgrp, args, ,
@@ -892,7 +925,7 @@ For example:
 
 @example
 [info, err, msg] = stat ("/vmlinuz")
-  @result{} info =
+  @xresult{} info =
      @{
        atime = 855399756
        rdev = 0
@@ -909,8 +942,8 @@ For example:
        ino = 9316
        dev = 2049
      @}
-  @result{} err = 0
-  @result{} msg =
+  @xresult{} err = 0
+  @xresult{} msg =
 @end example
 @seealso{lstat, ls, dir, isfile, isfolder}
 @end deftypefn */)
@@ -1102,7 +1135,7 @@ For example:
 @example
 @group
 uname ()
-   @result{} @{
+   @xresult{} @{
          sysname = x86_64
          nodename = segfault
          release = 2.6.15-1-amd64-k8-smp
@@ -1137,8 +1170,8 @@ system-dependent error message.
 %!test <*51869>
 %! [info, status, msg] = uname ();
 %! if (status == 0)
-%!   assert (isstruct (info))
-%!   assert (ischar (msg) && isempty (msg))
+%!   assert (isstruct (info));
+%!   assert (ischar (msg) && isempty (msg));
 %! endif
 */
 

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2017-2025 The Octave Project Developers
+// Copyright (C) 2017-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -251,6 +251,10 @@ ed_mru_file_list ("editor/mru_file_list", QVariant ());
 
 gui_pref
 ed_mru_file_encodings ("editor/mru_file_encodings", QVariant ());
+
+gui_pref
+ed_open_dlg_follows_file ("open_dlg_follows_file", QVariant (false));
+
 
 // The find dialog
 

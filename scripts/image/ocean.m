@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1994-2025 The Octave Project Developers
+## Copyright (C) 1994-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -100,7 +100,7 @@ endfunction
 %! a([9:11],1) = [1/3, 2/3, 1];
 %! a([6:11], 2) = 1/6:1/6:1;
 %! a(:, 3) = 0:.1:1;
-%! assert (ocean (11), a, eps)
+%! assert (ocean (11), a, eps);
 
 ## Input validation
 %!error <N must be a scalar integer> ocean ("foo")

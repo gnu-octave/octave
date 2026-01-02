@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2011-2025 The Octave Project Developers
+// Copyright (C) 2011-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -53,8 +53,8 @@
 #include "gui-settings.h"
 #include "main-window.h"
 
-#include "lo-sysdep.h"
 #include "oct-env.h"
+#include "oct-sysdep.h"
 
 #include "event-manager.h"
 #include "interpreter.h"
@@ -117,6 +117,7 @@ file_editor::file_editor (QWidget *p)
   m_closed = true;
   m_no_focus = false;
   m_editor_ready = false;
+  m_is_octave_file = true;
 
   m_copy_action_enabled = false;
   m_undo_action_enabled = false;
@@ -178,6 +179,14 @@ file_editor::insert_global_actions (QList<QAction *> shared_actions)
   // find files
   m_find_files_action = shared_actions.at (FIND_FILES_ACTION);
   m_edit_menu->insertAction (m_find_action, m_find_files_action);
+}
+
+const QString
+file_editor::get_current_filename ()
+{
+  file_editor_tab *editor_tab
+    = static_cast<file_editor_tab *> (m_tab_widget->currentWidget ());
+  return editor_tab->file_name ();
 }
 
 void
@@ -661,7 +670,7 @@ file_editor::request_mru_open_file (QAction *action)
       show ();  // Make sure, the editor is shown. In case the previous
                 // session has to be restored, all previous files are
                 // opened before the selected file from the mru list is
-                // opended.
+                // opened.
       request_open_file (action->data ().toStringList ().at (0),
                          action->data ().toStringList ().at (1));
     }
@@ -1104,6 +1113,17 @@ file_editor::handle_file_name_changed (const QString& fname,
 }
 
 void
+file_editor::handle_close_file_request (const QStringList& files_to_close)
+{
+  for (int i = 0; i < files_to_close.length (); i++)
+    {
+      file_editor_tab *tab = find_tab_widget (files_to_close.at (i));
+      if (tab)
+        tab->conditional_close ();
+    }
+}
+
+void
 file_editor::handle_tab_close_request (int index)
 {
   file_editor_tab *editor_tab
@@ -1112,7 +1132,7 @@ file_editor::handle_tab_close_request (int index)
 }
 
 void
-file_editor::handle_tab_remove_request ()
+file_editor::handle_tab_remove_request (const QString& file_name)
 {
   QObject *fileEditorTab = sender ();
   if (fileEditorTab)
@@ -1122,6 +1142,7 @@ file_editor::handle_tab_remove_request ()
           if (m_tab_widget->widget (i) == fileEditorTab)
             {
               m_tab_widget->removeTab (i);
+              Q_EMIT remove_editor_file_in_browser_signal (file_name);
 
               // Deleting the sender (even with deleteLater) seems a
               // bit strange.  Is there a better way?
@@ -1455,7 +1476,8 @@ file_editor::notice_settings ()
   // in several Qt versions (https://bugreports.qt.io/browse/QTBUG-61092)
   if (! rotated)
     {
-      QString icon = global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-close.png";
+      QString icon = global_icon_paths.at (ICON_THEME_OCTAVE)
+                     + "widget-close" + global_icon_extension;
 
       QString close_button_css_mac
       ("QTabBar::close-button"
@@ -2795,6 +2817,9 @@ file_editor::make_file_editor_tab (const QString& directory)
 
   connect (f, &file_editor_tab::debug_quit_signal,
            this, &file_editor::debug_quit_signal);
+
+  connect (f, &file_editor_tab::rename_editor_file_in_browser_signal,
+           this, &file_editor::rename_editor_file_in_browser_signal);
 
   // Any interpreter_event signal from a file_editor_tab_widget is
   // handled the same as for the parent main_window object.

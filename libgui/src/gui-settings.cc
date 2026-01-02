@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2019-2025 The Octave Project Developers
+// Copyright (C) 2019-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -27,11 +27,12 @@
 #  include "config.h"
 #endif
 
+#include <cmath>
+#include <cstdlib>
+
 #include <algorithm>
 #include <array>
 #include <string>
-
-#include <cmath>
 
 #include <QAction>
 #include <QApplication>
@@ -288,7 +289,8 @@ gui_settings::icon (const QString& icon_name, bool octave_only,
                     const QString& icon_alt_name)
 {
   if (octave_only)
-    return QIcon (global_icon_paths.at (ICON_THEME_OCTAVE) + icon_name + ".png");
+    return QIcon (global_icon_paths.at (ICON_THEME_OCTAVE)
+                  + icon_name + global_icon_extension);
 
   if (QIcon::hasThemeIcon (icon_name))
     return QIcon (QIcon::fromTheme (icon_name));
@@ -300,7 +302,8 @@ gui_settings::icon (const QString& icon_name, bool octave_only,
 
   for (int i = 0; i < icon_fallbacks.length (); i++ )
     {
-      QString icon_file (icon_fallbacks.at (i) + icon_name + ".png");
+      QString icon_file (icon_fallbacks.at (i)
+                         + icon_name + global_icon_extension);
       if (QFile (icon_file).exists ())
         return QIcon (icon_file);
     }
@@ -379,7 +382,7 @@ gui_settings::get_default_font ()
 
   int font_size = font.pointSize ();
   if (font_size == -1)
-    font_size = static_cast <int> (std::floor (font.pointSizeF ()));
+    font_size = static_cast<int> (std::floor (font.pointSizeF ()));
 
   // check for valid font size, otherwise take default 10
   QString default_font_size = "10";
@@ -831,7 +834,7 @@ gui_settings::check ()
                              .arg (file_name ())
                              .arg (directory_name ()));
 
-      exit (1);
+      std::exit (EXIT_FAILURE);
     }
   else
     remove ("dummy");  // Remove test entry

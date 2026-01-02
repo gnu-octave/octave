@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2020-2025 The Octave Project Developers
+## Copyright (C) 2020-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -90,9 +90,9 @@
 ## ## Inverse_Function (Function (x)) should return exactly x
 ## y = exp (log (x));
 ## D = unique ([x, y])
-## @result{} [1   2   3   3   4   5   5]
+## @xresult{} [1   2   3   3   4   5   5]
 ## C = uniquetol ([x, y])
-## @result{} [1   2   3   4   5]
+## @xresult{} [1   2   3   4   5]
 ## @end group
 ## @end example
 ##
@@ -322,7 +322,7 @@ endfunction
 %!assert (uniquetol (single ([1,2,2,3,2,4].'), "byrows", true),
 %!        single ([1;2;3;4]))
 
-## Test 2D array sorting
+## Test 2-D array sorting
 %!test
 %! a = [magic(3); 2 * magic(3)];
 %! assert (uniquetol (a), [1:10,12,14,16,18]');

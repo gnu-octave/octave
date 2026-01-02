@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2008-2025 The Octave Project Developers
+## Copyright (C) 2008-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -60,7 +60,7 @@
 ## a = myclass (1:4);
 ## b = 1:10;
 ## b(a)
-## @result{} 1  2  3  4
+## @xresult{} 1  2  3  4
 ## @end group
 ## @end example
 ##

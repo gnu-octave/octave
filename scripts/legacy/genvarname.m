@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2008-2025 The Octave Project Developers
+## Copyright (C) 2008-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -38,7 +38,7 @@
 ## @example
 ## @group
 ## genvarname (@{"foo", "foo"@})
-##   @result{}
+##   @xresult{}
 ##      @{
 ##        [1,1] = foo
 ##        [1,2] = foo1
@@ -54,7 +54,7 @@
 ## @group
 ## x = 3.141;
 ## genvarname ("x", who ())
-##   @result{} x1
+##   @xresult{} x1
 ## @end group
 ## @end example
 ##
@@ -66,7 +66,7 @@
 ## @group
 ## name = genvarname ("x");
 ## eval ([name " = 42"]);
-##   @result{} x =  42
+##   @xresult{} x =  42
 ## @end group
 ## @end example
 ##
@@ -78,7 +78,7 @@
 ## for i = 1:3
 ##   x.(genvarname ("a", fieldnames (x))) = i;
 ## endfor
-##   @result{} x =
+##   @xresult{} x =
 ##      @{
 ##        a =  1
 ##        a1 =  2

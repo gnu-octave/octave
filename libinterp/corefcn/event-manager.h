@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2011-2025 The Octave Project Developers
+// Copyright (C) 2011-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -769,7 +769,7 @@ protected:
   // (dbcont or dbstep, for example) we pop the queue and return to
   // the previous point of execution.
 
-  std::stack<std::shared_ptr <event_queue>> m_gui_event_queue;
+  std::stack<std::shared_ptr<event_queue>> m_gui_event_queue;
 
   bool m_debugging;
   bool m_link_enabled;

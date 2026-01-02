@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2003-2025 The Octave Project Developers
+// Copyright (C) 2003-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -111,11 +111,11 @@
 #include <cstring>
 #include <stack>
 
-#include "lo-error.h"
-#include "lo-mappers.h"
-#include "quit.h"
-#include "oct-sort.h"
+#include "mappers.h"
+#include "oct-error.h"
 #include "oct-locbuf.h"
+#include "oct-sort.h"
+#include "quit.h"
 
 template <typename T>
 octave_sort<T>::octave_sort () :

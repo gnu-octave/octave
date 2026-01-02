@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1998-2025 The Octave Project Developers
+// Copyright (C) 1998-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -31,7 +31,7 @@
 #include "Array-util.h"
 #include "MArray.h"
 #include "Sparse.h"
-#include "lo-error.h"
+#include "oct-error.h"
 #include "quit.h"
 
 

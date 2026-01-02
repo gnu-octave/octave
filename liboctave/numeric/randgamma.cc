@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2006-2025 The Octave Project Developers
+// Copyright (C) 2006-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -87,7 +87,7 @@ Dirichlet(a1,...,ak) for ai > 0
 #include <cmath>
 
 #include "lo-ieee.h"
-#include "lo-mappers.h"
+#include "mappers.h"
 #include "randgamma.h"
 #include "randmtzig.h"
 

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2016-2025 The Octave Project Developers
+// Copyright (C) 2016-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -74,9 +74,6 @@
 #    endif
 #    if defined (HAVE_SUITESPARSE_KLU_H)
 #      include <suitesparse/klu.h>
-#    endif
-#    if defined (HAVE_UFPARSE_KLU_H)
-#      include <ufsparse/klu.h>
 #    endif
 #    include <sunlinsol/sunlinsol_klu.h>
 #  endif
@@ -286,7 +283,7 @@ public:
             N_Vector yyp, N_Vector, SUNMatrix JJ, void *user_data, N_Vector,
             N_Vector, N_Vector)
   {
-    IDA *self = static_cast <IDA *> (user_data);
+    IDA *self = static_cast<IDA *> (user_data);
     self->jacdense_impl (t, cj, yy, yyp, JJ);
     return 0;
   }
@@ -301,7 +298,7 @@ public:
              N_Vector yyp, N_Vector, SUNMatrix Jac, void *user_data, N_Vector,
              N_Vector, N_Vector)
   {
-    IDA *self = static_cast <IDA *> (user_data);
+    IDA *self = static_cast<IDA *> (user_data);
     self->jacsparse_impl (t, cj, yy, yyp, Jac);
     return 0;
   }
@@ -388,7 +385,7 @@ int
 IDA::resfun (OCTAVE_SUNREALTYPE t, N_Vector yy, N_Vector yyp, N_Vector rr,
              void *user_data)
 {
-  IDA *self = static_cast <IDA *> (user_data);
+  IDA *self = static_cast<IDA *> (user_data);
   self->resfun_impl (t, yy, yyp, rr);
   return 0;
 }

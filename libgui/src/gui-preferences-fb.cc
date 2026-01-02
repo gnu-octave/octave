@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2017-2025 The Octave Project Developers
+// Copyright (C) 2017-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -30,6 +30,9 @@
 #include "gui-preferences-fb.h"
 
 // Files dock widget
+
+gui_pref
+fb_active_tab ("filesdockwidget/active_tab", QVariant (0));
 
 gui_pref
 fb_column_state ("filesdockwidget/column_state", QVariant ());

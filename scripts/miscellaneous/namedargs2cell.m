@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2019-2025 The Octave Project Developers
+## Copyright (C) 2019-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -37,7 +37,7 @@
 ## s.Age = 42;
 ##
 ## c = namedargs2cell (s)
-##   @result{} @{ "Name", "Peter", "Height", 185, "Age", 42 @}
+##   @xresult{} @{ "Name", "Peter", "Height", 185, "Age", 42 @}
 ## @end group
 ## @end example
 ##

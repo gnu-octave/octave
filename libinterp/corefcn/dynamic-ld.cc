@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -197,12 +197,10 @@ dynamic_loader::load_oct (const std::string& fcn_name,
 
 void *
 dynamic_loader::try_load_mex (dynamic_library& mex_file,
-                              const std::string& fcn_name, bool& have_fmex)
+                              const std::string& fcn_name)
 {
   // FCN_NAME is not used here, the mangler functions always return
   // some form of "mexFunction".
-
-  have_fmex = false;
 
   void *function = mex_file.search (fcn_name, mex_mangler);
 
@@ -212,14 +210,6 @@ dynamic_loader::try_load_mex (dynamic_library& mex_file,
       //        automatically at run time or configure time?
 
       function = mex_file.search (fcn_name, mex_uscore_mangler);
-
-      if (! function)
-        {
-          function = mex_file.search (fcn_name, mex_f77_mangler);
-
-          if (function)
-            have_fmex = true;
-        }
     }
 
   return function;
@@ -248,9 +238,7 @@ dynamic_loader::load_mex (const std::string& fcn_name,
   if (! mex_file)
     error ("%s is not a valid shared library", file_name.c_str ());
 
-  bool have_fmex = false;
-
-  void *function = try_load_mex (mex_file, fcn_name, have_fmex);
+  void *function = try_load_mex (mex_file, fcn_name);
 
   if (! function)
     error ("failed to install .mex file function '%s'", fcn_name.c_str ());
@@ -281,8 +269,7 @@ dynamic_loader::load_mex (const std::string& fcn_name,
            "       You can fix this problem by recompiling this .mex file",
            fcn_name.c_str ());
 
-  return new octave_mex_function (function, interleaved, have_fmex,
-                                  mex_file, fcn_name);
+  return new octave_mex_function (function, interleaved, mex_file, fcn_name);
 }
 
 bool
@@ -335,12 +322,6 @@ std::string
 dynamic_loader::mex_uscore_mangler (const std::string&)
 {
   return "_mexFunction";
-}
-
-std::string
-dynamic_loader::mex_f77_mangler (const std::string&)
-{
-  return STRINGIFY (F77_FUNC (mexfunction, MEXFUNCTION));
 }
 
 OCTAVE_END_NAMESPACE(octave)

@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1994-2025 The Octave Project Developers
+## Copyright (C) 1994-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -64,7 +64,8 @@ function y = conv (a, b, shape = "full")
     error ('conv: SHAPE argument must be "full", "same", or "valid"');
   endif
 
-  y = conv2 (a(:), b(:), shape);
+  ## Column vectors perform best in Fortran code.
+  y = convn (a(:), b(:), shape);
 
   if (strcmpi (shape, "full"))
     ## Adapt the shape to the longest input argument, if necessary.

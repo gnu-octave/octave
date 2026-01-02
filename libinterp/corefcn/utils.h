@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1993-2025 The Octave Project Developers
+// Copyright (C) 1993-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -102,10 +102,6 @@ private:
 
 extern OCTINTERP_API bool
 make_valid_name (std::string& str, const make_valid_name_options& options);
-
-OCTAVE_DEPRECATED (9, "octave::same_file is obsolete, use octave::sys::same_file")
-extern OCTINTERP_API bool
-same_file (const std::string& f, const std::string& g);
 
 extern OCTINTERP_API int almost_match (const std::string& std,
                                        const std::string& s,

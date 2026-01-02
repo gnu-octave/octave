@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1993-2025 The Octave Project Developers
+## Copyright (C) 1993-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -64,7 +64,7 @@
 ##      4 5 6
 ##      7 8 9];
 ## rank (A)
-##   @result{} 2
+##   @xresult{} 2
 ## @end group
 ## @end example
 ##

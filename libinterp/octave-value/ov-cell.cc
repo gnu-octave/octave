@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1999-2025 The Octave Project Developers
+// Copyright (C) 1999-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -32,6 +32,7 @@
 #include <sstream>
 #include <vector>
 #include <queue>
+#include <iterator>
 
 #include "Array-util.h"
 #include "byte-swap.h"
@@ -257,9 +258,7 @@ octave_cell::subsasgn (const std::string& type,
                 if (! tmp.is_defined ())
                   tmp = octave_value::empty_conv (type.substr (1), rhs);
 
-                std::list<octave_value_list> next_idx (idx);
-
-                next_idx.erase (next_idx.begin ());
+                std::list<octave_value_list> next_idx (std::next (idx.begin ()), idx.end ());
 
                 tmp.make_unique ();
 
@@ -273,9 +272,7 @@ octave_cell::subsasgn (const std::string& type,
             m_matrix.make_unique ();
             Cell tmpc = m_matrix.index (idx.front (), true);
 
-            std::list<octave_value_list> next_idx (idx);
-
-            next_idx.erase (next_idx.begin ());
+            std::list<octave_value_list> next_idx (std::next (idx.begin ()), idx.end ());
 
             std::string next_type = type.substr (1);
 
@@ -1326,16 +1323,16 @@ array will have a dimension vector corresponding to
 s = struct ("name", @{"Peter", "Hannah", "Robert"@},
            "age", @{23, 16, 3@});
 c = struct2cell (s)
-   @result{} c = @{2x1x3 Cell Array@}
+   @xresult{} c = @{2x1x3 Cell Array@}
 c(1,1,:)(:)
-   @result{}
+   @xresult{}
       @{
         [1,1] = Peter
         [2,1] = Hannah
         [3,1] = Robert
       @}
 c(2,1,:)(:)
-   @result{}
+   @xresult{}
       @{
         [1,1] = 23
         [2,1] = 16

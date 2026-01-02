@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1998-2025 The Octave Project Developers
+// Copyright (C) 1998-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -48,7 +48,16 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 static inline bool
 xisint (double x)
 {
-  return (octave::math::x_nint (x) == x
+  // FIXME: If we return *only* octave::math::is_integer (x)
+  // and delete the lines with numeric_limits<int>,
+  // then that works on MacOS but not on Linux.
+  // It fails a test in sparse.tst that requires this calculation:
+  // Complex (realmin, realmin) .^ realmax.
+  // On MacOS it correctly gives zero, matching Matlab.
+  // On Linux it gives Inf + Nani.
+  // If we can make both platforms work without the extra check with
+  // numeric_limits<int>, then we should do so.
+  return (octave::math::is_integer (x)
           && ((x >= 0 && x < std::numeric_limits<int>::max ())
               || (x <= 0 && x > std::numeric_limits<int>::min ())));
 }
@@ -56,8 +65,9 @@ xisint (double x)
 // Safer pow functions.  Only two make sense for sparse matrices, the
 // others should all promote to full matrices.
 
-octave_value
-xpow (const SparseMatrix& a, double b)
+template<typename T>
+static octave_value
+xpow_private (const T& a, double b)
 {
   octave_value retval;
 
@@ -65,7 +75,7 @@ xpow (const SparseMatrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0)
-    return SparseMatrix ();
+    return T ();
 
   // If we are here, A is not empty ==> A needs to be square.
   if (nr != nc)
@@ -77,6 +87,8 @@ xpow (const SparseMatrix& a, double b)
   int btmp = static_cast<int> (b);
   if (btmp == 0)
     {
+      // Return sparse identity matrix, so it's always type SparseMatrix
+      // and does not have to be templated by typename T.
       SparseMatrix tmp = SparseMatrix (nr, nr, nr);
       for (octave_idx_type i = 0; i < nr; i++)
         {
@@ -90,7 +102,7 @@ xpow (const SparseMatrix& a, double b)
     }
   else
     {
-      SparseMatrix atmp;
+      T atmp;
       if (btmp < 0)
         {
           btmp = -btmp;
@@ -113,7 +125,7 @@ xpow (const SparseMatrix& a, double b)
       if (atmp.nnz () == 0)  // Fast return for all-zeros matrix
         return atmp;
 
-      SparseMatrix result (atmp);
+      T result (atmp);
 
       btmp--;
 
@@ -171,97 +183,15 @@ xpow (const SparseMatrix& a, double b)
 }
 
 octave_value
+xpow (const SparseMatrix& a, double b)
+{
+  return xpow_private<SparseMatrix> (a, b);
+}
+
+octave_value
 xpow (const SparseComplexMatrix& a, double b)
 {
-  octave_value retval;
-
-  octave_idx_type nr = a.rows ();
-  octave_idx_type nc = a.cols ();
-
-  if (nr == 0 || nc == 0)
-    return SparseMatrix ();
-
-  // If we are here, A is not empty ==> A needs to be square.
-  if (nr != nc)
-    error ("for A^b, A must be a square matrix.  Use .^ for elementwise power.");
-
-  if (! xisint (b))
-    error ("use full(a) ^ full(b)");
-
-  int btmp = static_cast<int> (b);
-  if (btmp == 0)
-    {
-      SparseMatrix tmp = SparseMatrix (nr, nr, nr);
-      for (octave_idx_type i = 0; i < nr; i++)
-        {
-          tmp.data (i) = 1.0;
-          tmp.ridx (i) = i;
-        }
-      for (octave_idx_type i = 0; i < nr + 1; i++)
-        tmp.cidx (i) = i;
-
-      retval = tmp;
-    }
-  else
-    {
-      SparseComplexMatrix atmp;
-      if (btmp < 0)
-        {
-          btmp = -btmp;
-
-          octave_idx_type info;
-          double rcond = 0.0;
-          MatrixType mattyp (a);
-
-          atmp = a.inverse (mattyp, info, rcond, 1);
-
-          if (info == -1)
-            warning ("inverse: matrix singular to machine precision, rcond = %g", rcond);
-        }
-      else
-        atmp = a;
-
-      if (atmp.nnz () == 0)  // Fast return for all-zeros matrix
-        return atmp;
-
-      SparseComplexMatrix result (atmp);
-
-      btmp--;
-
-      // Select multiplication sequence based on sparsity of atmp.
-      // See the long comment in xpow (const SparseMatrix& a, double b)
-      // for more details.
-      //
-      // FIXME: Improve this threshold calculation.
-
-      uint64_t sparsity = atmp.numel () / atmp.nnz (); // reciprocal of density
-      int threshold = (sparsity >= 1000) ? 40
-                      : (sparsity >=  100) ? 20
-                      : 3;
-
-      if (btmp > threshold) // use squaring technique
-        {
-          while (btmp > 0)
-            {
-              if (btmp & 1)
-                result = result * atmp;
-
-              btmp >>= 1;
-
-              if (btmp > 0)
-                atmp = atmp * atmp;
-            }
-        }
-      else // use linear multiplication
-        {
-          for (int i = 0; i < btmp; i++)
-            result = result * atmp;
-        }
-
-      retval = result;
-    }
-
-  return retval;
+  return xpow_private<SparseComplexMatrix> (a, b);
 }
 
 // Safer pow functions that work elementwise for matrices.
@@ -429,18 +359,11 @@ elem_xpow (const SparseMatrix& a, double b)
         {
           ComplexMatrix result (nr, nc, Complex (std::pow (0.0, b)));
 
-          // FIXME: avoid apparent GNU libm bug by
-          // converting A and B to complex instead of just A.
-          Complex btmp (b);
-
           for (octave_idx_type j = 0; j < nc; j++)
             for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
               {
                 octave_quit ();
-
-                Complex atmp (a.data (i));
-
-                result(a.ridx (i), j) = std::pow (atmp, btmp);
+                result(a.ridx (i), j) = std::pow (a.data (i), b);
               }
 
           retval = octave_value (result);
@@ -466,14 +389,7 @@ elem_xpow (const SparseMatrix& a, double b)
       for (octave_idx_type i = 0; i < nz; i++)
         {
           octave_quit ();
-
-          // FIXME: avoid apparent GNU libm bug by
-          // converting A and B to complex instead of just A.
-
-          Complex atmp (a.data (i));
-          Complex btmp (b);
-
-          result.data (i) = std::pow (atmp, btmp);
+          result.data (i) = std::pow (a.data (i), b);
         }
 
       result.maybe_compress (true);

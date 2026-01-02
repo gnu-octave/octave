@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2025 The Octave Project Developers
+// Copyright (C) 1996-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -39,17 +39,17 @@
 #include "quit.h"
 
 #include "intprops-wrappers.h"
-#include "lo-error.h"
 #include "lo-ieee.h"
-#include "lo-mappers.h"
 #include "lo-utils.h"
+#include "mappers.h"
+#include "oct-error.h"
 #include "oct-inttypes.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 bool is_int_or_inf_or_nan (double x)
 {
-  return math::isnan (x) || math::x_nint (x) == x;
+  return math::isnan (x) || math::is_integer (x);
 }
 
 bool
@@ -69,7 +69,7 @@ too_large_for_float (const Complex& x)
 bool
 is_int_or_inf_or_nan (float x)
 {
-  return math::isnan (x) || math::x_nint (x) == x;
+  return math::isnan (x) || math::is_integer (x);
 }
 
 // Save a string.

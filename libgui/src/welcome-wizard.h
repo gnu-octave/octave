@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2011-2025 The Octave Project Developers
+// Copyright (C) 2011-2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -144,6 +144,19 @@ private:
   QPushButton *m_previous;
   QPushButton *m_finish;
   QPushButton *m_cancel;
+};
+
+
+
+class splash_screen : public QDialog
+{
+  Q_OBJECT
+
+public:
+
+  splash_screen (QWidget *parent = nullptr);
+
+  ~splash_screen () = default;
 };
 
 OCTAVE_END_NAMESPACE(octave)

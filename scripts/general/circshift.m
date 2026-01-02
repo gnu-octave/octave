@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2004-2025 The Octave Project Developers
+## Copyright (C) 2004-2026 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -46,25 +46,25 @@
 ##      7, 8, 9];
 ## ## positive shift on rows (1st non-singular dim)
 ## circshift (x, 1)
-##   @result{}
+##   @xresult{}
 ##        7   8   9
 ##        1   2   3
 ##        4   5   6
 ## ## negative shift on rows (1st non-singular dim)
 ## circshift (x, -2)
-##   @result{}
+##   @xresult{}
 ##        7   8   9
 ##        1   2   3
 ##        4   5   6
 ## ## no shift of rows, shift columns by 1 (2nd dimension)
 ## circshift (x, [0,1])
-##   @result{}
+##   @xresult{}
 ##        3   1   2
 ##        6   4   5
 ##        9   7   8
 ## ## shift columns (2nd dimension)
 ## circshift (x, 1, 2)
-##   @result{}
+##   @xresult{}
 ##        3   1   2
 ##        6   4   5
 ##        9   7   8

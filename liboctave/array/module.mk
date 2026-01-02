@@ -1,7 +1,8 @@
 ARRAY_INC = \
+  %reldir%/Array-base.h \
   %reldir%/Array-fwd.h \
+  %reldir%/Array-oct.h \
   %reldir%/Array-util.h \
-  %reldir%/Array.h \
   %reldir%/CColVector.h \
   %reldir%/CDiagMatrix.h \
   %reldir%/CMatrix.h \

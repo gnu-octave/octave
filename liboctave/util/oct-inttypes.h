@@ -33,10 +33,10 @@
 
 #include <iosfwd>
 #include <limits>
+#include <type_traits>
 
 #include "mappers.h"
 #include "oct-inttypes-fwd.h"
-#include "oct-traits.h"
 
 #if defined (OCTAVE_INT_USE_LONG_DOUBLE)
 
@@ -375,8 +375,8 @@ public:
     typedef octave_int_cmp_op::cf cf;
     typedef octave_int_cmp_op::lt lt;
     typedef octave_int_cmp_op::gt gt;
-    typedef typename if_then_else<omit_chk_min, cf, lt>::result chk_min;
-    typedef typename if_then_else<omit_chk_max, cf, gt>::result chk_max;
+    typedef typename std::conditional_t<omit_chk_min, cf, lt> chk_min;
+    typedef typename std::conditional_t<omit_chk_max, cf, gt> chk_max;
 
     // Efficiency of the following depends on inlining and dead code
     // elimination, but that should be a piece of cake for most
@@ -784,68 +784,76 @@ public:
 
   typedef T val_type;
 
-  octave_int () : m_ival () { }
+  OCTAVE_OVERRIDABLE_FUNC_API octave_int () : m_ival () { }
 
-  octave_int (T i) : m_ival (i) { }
+  OCTAVE_OVERRIDABLE_FUNC_API octave_int (T i) : m_ival (i) { }
 
 #if defined (OCTAVE_HAVE_OVERLOAD_CHAR_INT8_TYPES)
 
   // Always treat characters as unsigned.
-  octave_int (char c)
+  OCTAVE_OVERRIDABLE_FUNC_API octave_int (char c)
     : m_ival (octave_int_base<T>::truncate_int (static_cast<unsigned char> (c)))
   { }
 
 #endif
 
-  octave_int (double d)
+  OCTAVE_OVERRIDABLE_FUNC_API octave_int (double d)
     : m_ival (octave_int_base<T>::convert_real (d)) { }
 
-  octave_int (float d)
+  OCTAVE_OVERRIDABLE_FUNC_API octave_int (float d)
     : m_ival (octave_int_base<T>::convert_real (d)) { }
 
 #if defined (OCTAVE_INT_USE_LONG_DOUBLE)
 
-  octave_int (long double d)
+  OCTAVE_OVERRIDABLE_FUNC_API octave_int (long double d)
     : m_ival (octave_int_base<T>::convert_real (d)) { }
 
 #endif
 
-  octave_int (bool b) : m_ival (b) { }
+  OCTAVE_OVERRIDABLE_FUNC_API octave_int (bool b) : m_ival (b) { }
 
   template <typename U>
+  OCTAVE_OVERRIDABLE_FUNC_API
   octave_int (const U& i)
     : m_ival(octave_int_base<T>::truncate_int (i)) { }
 
   template <typename U>
+  OCTAVE_OVERRIDABLE_FUNC_API
   octave_int (const octave_int<U>& i)
     : m_ival (octave_int_base<T>::truncate_int (i.value ())) { }
 
-  octave_int (const octave_int<T>&) = default;
+  OCTAVE_OVERRIDABLE_FUNC_API octave_int (const octave_int<T>&) = default;
 
-  octave_int& operator = (const octave_int<T>&) = default;
+  OCTAVE_OVERRIDABLE_FUNC_API octave_int&
+  operator = (const octave_int<T>&) = default;
 
-  ~octave_int () = default;
+  OCTAVE_OVERRIDABLE_FUNC_API ~octave_int () = default;
 
-  T value () const { return m_ival; }
+  OCTAVE_OVERRIDABLE_FUNC_API T value () const { return m_ival; }
 
-  const unsigned char * iptr () const
+  OCTAVE_OVERRIDABLE_FUNC_API const unsigned char * iptr () const
   {
     return reinterpret_cast<const unsigned char *> (& m_ival);
   }
 
-  bool operator ! () const { return ! m_ival; }
+  OCTAVE_OVERRIDABLE_FUNC_API bool operator ! () const { return ! m_ival; }
 
-  bool bool_value () const { return static_cast<bool> (value ()); }
+  OCTAVE_OVERRIDABLE_FUNC_API bool bool_value () const
+  { return static_cast<bool> (value ()); }
 
-  char char_value () const { return static_cast<char> (value ()); }
+  OCTAVE_OVERRIDABLE_FUNC_API char char_value () const
+  { return static_cast<char> (value ()); }
 
-  double double_value () const { return static_cast<double> (value ()); }
+  OCTAVE_OVERRIDABLE_FUNC_API double double_value () const
+  { return static_cast<double> (value ()); }
 
-  float float_value () const { return static_cast<float> (value ()); }
+  OCTAVE_OVERRIDABLE_FUNC_API float float_value () const
+  { return static_cast<float> (value ()); }
 
-  operator T () const { return value (); }
+  OCTAVE_OVERRIDABLE_FUNC_API operator T () const { return value (); }
 
-  octave_int<T> operator + () const { return *this; }
+  OCTAVE_OVERRIDABLE_FUNC_API octave_int<T> operator + () const
+  { return *this; }
 
   // unary operators & mappers
 #define OCTAVE_INT_UN_OP(OPNAME, NAME)          \
@@ -861,7 +869,7 @@ public:
 
 #undef OCTAVE_INT_UN_OP
 
-  octave_int<T> operator ~ () const
+  OCTAVE_OVERRIDABLE_FUNC_API octave_int<T> operator ~ () const
   {
     T bitinv = ~ m_ival;
     return bitinv;
@@ -892,14 +900,17 @@ public:
 
 #undef OCTAVE_INT_BIN_OP
 
-  static octave_int<T> min () { return std::numeric_limits<T>::min (); }
-  static octave_int<T> max () { return std::numeric_limits<T>::max (); }
+  OCTAVE_OVERRIDABLE_FUNC_API static octave_int<T> min ()
+  { return std::numeric_limits<T>::min (); }
+  OCTAVE_OVERRIDABLE_FUNC_API static octave_int<T> max ()
+  { return std::numeric_limits<T>::max (); }
 
-  static int nbits () { return std::numeric_limits<T>::digits; }
+  OCTAVE_OVERRIDABLE_FUNC_API static int nbits ()
+  { return std::numeric_limits<T>::digits; }
 
-  static int byte_size () { return sizeof (T); }
+  OCTAVE_OVERRIDABLE_FUNC_API static int byte_size () { return sizeof (T); }
 
-  static const OCTAVE_API char * type_name ();
+  OCTAVE_OVERRIDABLE_FUNC_API static const OCTAVE_API char * type_name ();
 
   // The following are provided for convenience.
   static const octave_int s_zero, s_one;

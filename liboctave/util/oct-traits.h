@@ -37,7 +37,9 @@
 // Select a type based on the value of a constant expression.
 
 template <bool cond, typename T1, typename T2>
-class if_then_else
+class
+OCTAVE_DEPRECATED (12, "if_then_else<cond, T1, T2>::result is obsolete, use std::conditional_t<cond, T1, T2>")
+if_then_else
 {
 public:
 
@@ -89,7 +91,7 @@ class ref_param
 {
 public:
 
-  typedef typename if_then_else<is_class_type<T>::no, T, T const&>::result type;
+  typedef typename std::conditional_t<is_class_type<T>::no, T, T const&> type;
 };
 
 // Will turn TemplatedClass<T> to T, leave T otherwise.

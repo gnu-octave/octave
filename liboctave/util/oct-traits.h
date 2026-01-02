@@ -28,6 +28,8 @@
 
 #include "octave-config.h"
 
+#include <type_traits>
+
 // Ideas for these classes taken from C++ Templates, The Complete
 // Guide by David Vandevoorde and Nicolai M. Josuttis, Addison-Wesley
 // (2003).
@@ -35,58 +37,29 @@
 // Select a type based on the value of a constant expression.
 
 template <bool cond, typename T1, typename T2>
-class if_then_else;
-
-template <typename T1, typename T2>
-class if_then_else<true, T1, T2>
+class
+OCTAVE_DEPRECATED (12, "if_then_else<cond, T1, T2>::result is obsolete, use std::conditional_t<cond, T1, T2>")
+if_then_else
 {
 public:
 
-  typedef T1 result;
-};
-
-template <typename T1, typename T2>
-class if_then_else<false, T1, T2>
-{
-public:
-
-  typedef T2 result;
+  typedef std::conditional_t<cond, T1, T2> result;
 };
 
 // Determine whether two types are equal.
 template <typename T1, typename T2>
-class equal_types
-{
-public:
-
-  static const bool value = false;
-};
+struct equal_types : std::false_type {};
 
 template <typename T>
-class equal_types<T, T>
-{
-public:
-
-  static const bool value = true;
-};
+struct equal_types<T, T> : std::true_type {};
 
 // Determine whether a type is an instance of a template.
 
 template <template <typename> class Template, typename T>
-class is_instance
-{
-public:
-
-  static const bool value = false;
-};
+struct is_instance : std::false_type {};
 
 template <template <typename> class Template, typename T>
-class is_instance<Template, Template<T>>
-{
-public:
-
-  static const bool value = true;
-};
+struct is_instance<Template, Template<T>> : std::true_type {};
 
 // Determine whether a template parameter is a class type.
 
@@ -118,7 +91,7 @@ class ref_param
 {
 public:
 
-  typedef typename if_then_else<is_class_type<T>::no, T, T const&>::result type;
+  typedef typename std::conditional_t<is_class_type<T>::no, T, T const&> type;
 };
 
 // Will turn TemplatedClass<T> to T, leave T otherwise.

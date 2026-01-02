@@ -270,53 +270,46 @@
 
 ## Test for handling filenames with Unicode characters outside the BMP.
 %!test
-%! unwind_protect
-%!   olddir = pwd ();
-%!   tmpdir = tempname ();
-%!   mkdir (tmpdir);
-%!   cd (tmpdir);
-%!   foo = 123;
-%!   foostr = "123";
-%!   save -binary "𝕋𝘌𝙎𝐓1.𝑚𝖆𝚝";
-%!   clear foo foostr;
-%!   newfile = ls (tmpdir);  # get filename recorded by file system
-%!   assert (rows (newfile), 1);  # ensure only one file was created in tmpdir
-%!   ## Check if the filename recorded by the file system matches expectations.
-%!   assert (newfile, "𝕋𝘌𝙎𝐓1.𝑚𝖆𝚝");
-%!   load "𝕋𝘌𝙎𝐓1.𝑚𝖆𝚝";
-%!   assert (foo, 123);
-%!   assert (foostr, "123");
-%! unwind_protect_cleanup
-%!   cd (tmpdir);
-%!   unlink ("𝕋𝘌𝙎𝐓1.𝑚𝖆𝚝");
-%!   cd (olddir);
-%!   rmdir (tmpdir);
-%! end_unwind_protect
-
-## Repeat test without quotes around the filename
-%!test
-%! unwind_protect
-%!   olddir = pwd ();
-%!   tmpdir = tempname ();
-%!   mkdir (tmpdir);
-%!   cd (tmpdir);
-%!   foo = 456;
-%!   foostr = "456";
-%!   save -binary 𝕋𝘌𝙎𝐓2.𝑚𝖆𝚝;
-%!   clear foo foostr;
-%!   newfile = ls (tmpdir);  # get filename recorded by file system
-%!   assert (rows (newfile), 1);  # ensure only one file was created in tmpdir
-%!   ## Check if the filename recorded by the file system matches expectations.
-%!   assert (newfile, "𝕋𝘌𝙎𝐓2.𝑚𝖆𝚝");
-%!   load 𝕋𝘌𝙎𝐓2.𝑚𝖆𝚝;
-%!   assert (foo, 456);
-%!   assert (foostr, "456");
-%! unwind_protect_cleanup
-%!   cd (tmpdir);
-%!   unlink 𝕋𝘌𝙎𝐓2.𝑚𝖆𝚝;
-%!   cd (olddir);
-%!   rmdir (tmpdir);
-%! end_unwind_protect
+%! for opt = {'-binary', '-float-binary', '-hdf5', '-float-hdf5', '-text',...
+%!            '-zip', '-v7', '-v6'}
+%!   ## NOTE: opt = '-ascii' causes problems with loading "unknown format".
+%!   ##       opt = '-v7.3' cannot save (not implemented yet).
+%!   ##       opt = '-v4' cannot save structs, including 'opt' itself.
+%!   ## The other opts listed above *should* work properly.
+%!   unwind_protect
+%!     olddir = pwd ();
+%!     tmpdir = tempname ();
+%!     mkdir (tmpdir);
+%!     cd (tmpdir);
+%!
+%!     foo = 123;
+%!     foostr = "123";
+%!     foostruct.a = 1;
+%!     foostruct.b = "23";
+%!     foocell = {"12", 3};
+%!     ## TODO In future, add variables for classdef and other kinds.
+%!
+%!     filename = sprintf ("𝕋𝘌𝙎𝐓_%s.𝑚𝖆𝚝", char (opt)(2:end));
+%!     save (char (opt), filename);
+%!     clear foo foostr foostruct foocell;
+%!
+%!     newfile = ls (tmpdir);  # get filename recorded by file system
+%!     assert (rows (newfile), 1);  # ensure only one file was created
+%!     assert (newfile, filename);  # check file name (trap encoding errors)
+%!
+%!     load (filename);
+%!     assert (foo, 123);
+%!     assert (foostr, "123");
+%!     assert (foostruct.a, 1);
+%!     assert (foostruct.b, "23");
+%!     assert (foocell, {"12", 3});
+%!   unwind_protect_cleanup
+%!     cd (tmpdir);
+%!     unlink (filename);
+%!     cd (olddir);
+%!     rmdir (tmpdir);
+%!   end_unwind_protect
+%! endfor
 
 %!test
 %! matrix1 = rand (100, 2);

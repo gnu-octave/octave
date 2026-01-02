@@ -270,8 +270,7 @@
 
 ## Test for handling filenames with Unicode characters outside the BMP.
 %!test
-%! for opt = {'-binary', '-float-binary', '-hdf5', '-float-hdf5', '-text',...
-%!            '-zip', '-v7', '-v6'}
+%! for opt = {'-binary', '-float-binary', '-text', '-v7', '-v6'}
 %!   ## NOTE: opt = '-ascii' causes problems with loading "unknown format".
 %!   ##       opt = '-v7.3' cannot save (not implemented yet).
 %!   ##       opt = '-v4' cannot save structs, including 'opt' itself.
@@ -290,7 +289,118 @@
 %!     ## TODO In future, add variables for classdef and other kinds.
 %!
 %!     filename = sprintf ("𝕋𝘌𝙎𝐓_%s.𝑚𝖆𝚝", char (opt)(2:end));
-%!     save (char (opt), filename);
+%!     save (char (opt), filename, "foo*");
+%!     clear foo foostr foostruct foocell;
+%!
+%!     newfile = ls (tmpdir);  # get filename recorded by file system
+%!     assert (rows (newfile), 1);  # ensure only one file was created
+%!     assert (newfile, filename);  # check file name (trap encoding errors)
+%!
+%!     load (filename);
+%!     assert (foo, 123);
+%!     assert (foostr, "123");
+%!     assert (foostruct.a, 1);
+%!     assert (foostruct.b, "23");
+%!     assert (foocell, {"12", 3});
+%!   unwind_protect_cleanup
+%!     cd (tmpdir);
+%!     unlink (filename);
+%!     cd (olddir);
+%!     rmdir (tmpdir);
+%!   end_unwind_protect
+%! endfor
+
+%!testif HAVE_HDF5
+%! for opt = {'-hdf5', '-float-hdf5'}
+%!   unwind_protect
+%!     olddir = pwd ();
+%!     tmpdir = tempname ();
+%!     mkdir (tmpdir);
+%!     cd (tmpdir);
+%!
+%!     foo = 123;
+%!     foostr = "123";
+%!     foostruct.a = 1;
+%!     foostruct.b = "23";
+%!     foocell = {"12", 3};
+%!     ## TODO In future, add variables for classdef and other kinds.
+%!
+%!     filename = sprintf ("𝕋𝘌𝙎𝐓_%s.𝑚𝖆𝚝", char (opt)(2:end));
+%!     save (char (opt), filename, "foo*");
+%!     clear foo foostr foostruct foocell;
+%!
+%!     newfile = ls (tmpdir);  # get filename recorded by file system
+%!     assert (rows (newfile), 1);  # ensure only one file was created
+%!     assert (newfile, filename);  # check file name (trap encoding errors)
+%!
+%!     load (filename);
+%!     assert (foo, 123);
+%!     assert (foostr, "123");
+%!     assert (foostruct.a, 1);
+%!     assert (foostruct.b, "23");
+%!     assert (foocell, {"12", 3});
+%!   unwind_protect_cleanup
+%!     cd (tmpdir);
+%!     unlink (filename);
+%!     cd (olddir);
+%!     rmdir (tmpdir);
+%!   end_unwind_protect
+%! endfor
+
+%!testif HAVE_ZLIB
+%! for opt = {'-binary', '-float-binary', '-text', '-v7', '-v6'}
+%!   unwind_protect
+%!     olddir = pwd ();
+%!     tmpdir = tempname ();
+%!     mkdir (tmpdir);
+%!     cd (tmpdir);
+%!
+%!     foo = 123;
+%!     foostr = "123";
+%!     foostruct.a = 1;
+%!     foostruct.b = "23";
+%!     foocell = {"12", 3};
+%!     ## TODO In future, add variables for classdef and other kinds.
+%!
+%!     filename = sprintf ("𝕋𝘌𝙎𝐓_%s.𝑚𝖆𝚝", char (opt)(2:end));
+%!     save (char (opt), "-zip", filename, "foo*");
+%!     clear foo foostr foostruct foocell;
+%!
+%!     newfile = ls (tmpdir);  # get filename recorded by file system
+%!     assert (rows (newfile), 1);  # ensure only one file was created
+%!     assert (newfile, filename);  # check file name (trap encoding errors)
+%!
+%!     load (filename);
+%!     assert (foo, 123);
+%!     assert (foostr, "123");
+%!     assert (foostruct.a, 1);
+%!     assert (foostruct.b, "23");
+%!     assert (foocell, {"12", 3});
+%!   unwind_protect_cleanup
+%!     cd (tmpdir);
+%!     unlink (filename);
+%!     cd (olddir);
+%!     rmdir (tmpdir);
+%!   end_unwind_protect
+%! endfor
+
+%!testif HAVE_ZLIB, HAVE_HDF5
+%! for opt = {'-hdf5', '-float-hdf5'}
+%!   unwind_protect
+%!     olddir = pwd ();
+%!     tmpdir = tempname ();
+%!     mkdir (tmpdir);
+%!     cd (tmpdir);
+%!
+%!     foo = 123;
+%!     foostr = "123";
+%!     foostruct.a = 1;
+%!     foostruct.b = "23";
+%!     foocell = {"12", 3};
+%!     ## TODO In future, add variables for classdef and other kinds.
+%!
+%!     filename = sprintf ("𝕋𝘌𝙎𝐓_%s.𝑚𝖆𝚝", char (opt)(2:end));
+%!     save (char (opt), "-zip", filename, "foo*");
 %!     clear foo foostr foostruct foocell;
 %!
 %!     newfile = ls (tmpdir);  # get filename recorded by file system

@@ -81,8 +81,9 @@
 ## @var{vecdim} are greater than @code{ndims (@var{x})}, then @code{moment}
 ## will return @var{x}.
 ##
-## Specifying the dimension as @qcode{"all"} will cause @code{moment} to operate
-## on all elements of @var{x}, and is equivalent to @code{moment (@var{x}(:))}.
+## Specifying the dimension as @qcode{"all"} will cause @code{moment} to
+## operate on all elements of @var{x}, and is equivalent to
+## @code{moment (@var{x}(:))}.
 ##
 ## The optional fourth input argument, @var{type}, is a string specifying the
 ## type of moment to be computed.

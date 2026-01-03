@@ -105,16 +105,16 @@
 ## argument combinations.  The default value for @var{nanflag} is
 ## @qcode{"includenan"} which keeps NaN values in the calculation.  To exclude
 ## NaN values set the value of @var{nanflag} to @qcode{"omitnan"}.  The output
-## will still contain NaN values if @code{@var{A} - @var{F}} consists of all NaN
-## values in the operating dimension.
+## will still contain NaN values if @code{@var{A} - @var{F}} consists of all
+## NaN values in the operating dimension.
 ##
 ## The optional paired argument @code{@dots{}, "Weights", @var{W}} specifies a
 ## weighting scheme @var{W}, which is applied on the difference of the input
 ## arrays @var{F} and @var{A}, so that @code{rmse} computes the weighted RMSE.
-## When operating along a single dimension, @var{W} must be a vector of the same
-## length as the operating dimension or it must have the same size as @var{x}.
-## When operating over an array slice defined by @var{vecdim}, @var{W} must have
-## the same size as the operating array slice, i.e.
+## When operating along a single dimension, @var{W} must be a vector of the
+## same length as the operating dimension or it must have the same size as
+## @var{x}.  When operating over an array slice defined by @var{vecdim},
+## @var{W} must have the same size as the operating array slice, i.e.
 ## @code{size (@var{A} - @var{F})(@var{vecdim})}, or the same size as
 ## @code{@var{A} - @var{F}}.
 ##

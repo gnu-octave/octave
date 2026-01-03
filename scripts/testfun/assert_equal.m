@@ -35,7 +35,7 @@
 ## and compared for equality according to the following rules.
 ##
 ## @itemize
-## @item Numeric inputs that support exceptional values (i.e. Inf, -Inf, NaN,
+## @item Numeric inputs that support exceptional values (i.e., Inf, -Inf, NaN,
 ## NA) are treated under the additional assumption that they are eqaul.  They
 ## are also tested for sparsity and complexity.
 ##

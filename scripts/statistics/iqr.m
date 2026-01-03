@@ -48,8 +48,8 @@
 ## If @var{x} is an array, then @code{iqr (@var{x})} computes the interquartile
 ## range along the first non-singleton dimension of @var{x}.
 ##
-## The data in @var{x} must be numeric and any NaN values are ignored.  The size
-## of @var{r} is equal to the size of @var{x} except for the operating
+## The data in @var{x} must be numeric and any NaN values are ignored.  The
+## size of @var{r} is equal to the size of @var{x} except for the operating
 ## dimension, which becomes 1.
 ##
 ## The optional input @var{dim} specifies the dimension to operate on and must

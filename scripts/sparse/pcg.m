@@ -249,11 +249,11 @@
 ## @item
 ## @nospell{C.T. Kelley},
 ## @cite{Iterative Methods for Linear and Nonlinear Equations},
-## SIAM, 1995. (the base PCG algorithm)
+## SIAM, 1995.  (the base PCG algorithm)
 ##
 ## @item
 ## @nospell{Y. Saad}, @cite{Iterative Methods for Sparse Linear Systems},
-## @nospell{PWS}, 1996. (condition number estimate from PCG)
+## @nospell{PWS}, 1996.  (condition number estimate from PCG)
 ## Revised version of this book is available online at
 ## @url{https://www-users.cs.umn.edu/~saad/books.html}
 ## @end enumerate

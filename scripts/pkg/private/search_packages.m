@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{retval} =} search_packages (@var{searchterms}, @var{allpackages})
+## @deftypefn  {} {@var{retval} =} search_packages (@var{searchterms}, @var{allpackages})
 ## @deftypefnx {} {@var{retval} =} search_packages (@var{searchterms}, @var{allpackages}, @var{verbose})
 ## Search for all packages on the Octave Packages repository whose
 ## descriptions include @var{searchterms}, then either display the search

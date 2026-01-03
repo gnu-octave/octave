@@ -87,7 +87,7 @@
 ## @var{x}.  The default is @code{sqrt (eps)} or approximately 1e-8.
 ##
 ## @qcode{"AllowSemidefinite"} is a boolean flag: @code{true} allows positive
-## semidefinite problems (one or more eigenvalues of the Hessian are zero).
+## semi-definite problems (one or more eigenvalues of the Hessian are zero).
 ## @code{false} requires positive definiteness (all eigenvalues positive).
 ## The default is @code{false}.
 ##

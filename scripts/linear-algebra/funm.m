@@ -84,6 +84,7 @@
 ## the order of the matrix @var{A}.
 ##
 ## @end table
+##
 ## Octave accepts any case for these fieldnames.
 ##
 ## All inputs beyond @var{options} will be passed as positional arguments to

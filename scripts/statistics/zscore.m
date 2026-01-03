@@ -40,11 +40,11 @@
 ##
 ## If @var{x} is a vector, then @code{zscore (@var{x})} returns the z-score
 ## of the elements in @var{x}.
-## 
+##
 ## If @var{x} is a matrix, then @code{zscore (@var{x})} returns a row vector
 ## with each element containing the z-score of the corresponding column in
 ## @var{x}.
-## 
+##
 ## If @var{x} is an array, then @code{zscore (@var{x})} computes the z-score
 ## along the first non-singleton dimension of @var{x}.
 ##

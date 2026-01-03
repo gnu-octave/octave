@@ -58,7 +58,7 @@
 ## @noindent
 ## shows all packages whose descriptions have four or more consecutive vowels.
 ##
-## The option @code{-all} as in
+## The option @option{-all} as in
 ##
 ## @example
 ## pkg search -all
@@ -73,6 +73,7 @@
 ## mypackages = pkg ("search", "foo")
 ## @end example
 ##
+## @noindent
 ## then @code{pkg search} returns only those package names matching the search
 ## term(s) @emph{and} which can be installed with @code{pkg install}.
 ##
@@ -134,10 +135,10 @@
 ##
 ## @item -refresh
 ## Force an update of the cached package database from the online repository.
-## By default, Octave uses a local cache of the package database that is updated
-## automatically when older than 7 days.  This option forces an immediate update
-## regardless of cache age.  The @option{-refresh} option applies to
-## @code{install}, @code{search}, and @code{update} commands.
+## By default, Octave uses a local cache of the package database that is
+## updated automatically when older than 7 days.  This option forces an
+## immediate update regardless of cache age.  The @option{-refresh} option
+## applies to @code{install}, @code{search}, and @code{update} commands.
 ## @end table
 ##
 ## If the package tarball contains a @file{configure} script, it is run during
@@ -197,7 +198,7 @@
 ## uninstallation can be forced by using the @option{-nodeps} option.
 ##
 ## Depending on whether Octave is being run with administrative privileges
-## only global or local packages are removed by default. See @option{-global}
+## only global or local packages are removed by default.  See @option{-global}
 ## or @option{-local} to override that default behavior.
 ##
 ## @item load

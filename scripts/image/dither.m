@@ -22,7 +22,8 @@
 ##
 ## @code{@var{X} = dither (@var{RGB},@var{map})} creates an indexed image
 ## approximation.  It uses the color provided in the colormap, and uses
-## dithering to increase apparent color resolution.  The Floyd-Steinberg error
+## dithering to increase apparent color resolution.  The
+## @nospell{Floyd-Steinberg} error
 ## filter is:
 ## @tex
 ## $$
@@ -62,12 +63,12 @@
 ## each color axis (R, G, B).  @var{Qm} defines the precision of the color
 ## space discretization used to map input RGB values to those colors
 ## available in the colormap.  @var{Qe} is the number of quantization bits
-## for the color space error calculations in the Floyd-Steinberg error
-## diffusion algorithm.  It controls the precision of the error values that
-## are calculated and propagated during dithering.  If @var{Qe} < @var{Qm},
-## the error diffusion process may lose precision.  Therefore dithering
-## cannot be performed, and the function returns an undithered indexed
-## image.
+## for the color space error calculations in the @nospell{Floyd-Steinberg}
+## error diffusion algorithm.  It controls the precision of the error values
+## that are calculated and propagated during dithering.  If @var{Qe} <
+## @var{Qm}, the error diffusion process may lose precision.  Therefore
+## dithering cannot be performed, and the function returns an undithered
+## indexed image.
 ##
 ## @code{@var{BW} = dither (@var{I})} converts the grayscale input image
 ## @var{I} into binary applying dithering in the process.  The output image

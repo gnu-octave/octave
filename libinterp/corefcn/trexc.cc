@@ -38,7 +38,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 DEFUN (trexc, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{U}, @var{T}] =} trexc (@var{U}, @var{T}, @var{M})
-Reorder the Schur factorization using LAPACK's ZTREXC.
+Reorder the Schur factorization using @sc{LAPACK} function @code{ZTREXC}.
 
 Given a unitary matrix @var{U} and an upper triangular Schur form @var{T}
 from the Schur decomposition @code{A = U*T*U'}, this function reorders

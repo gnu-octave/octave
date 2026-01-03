@@ -48,7 +48,7 @@
 ## Requesting a return value when calling @code{thetaticklabels} to set a
 ## property value will result in an error.
 ##
-## Compatability Note: The @qcode{'mode'} property for thetaticklabels has not
+## Compatibility Note: The @qcode{'mode'} property for thetaticklabels has not
 ## yet been implemented.
 ##
 ## @seealso{polar, thetaticks, rticklabels, xticklabels, yticklabels,

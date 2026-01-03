@@ -95,7 +95,7 @@
 ## @code{fzero} algorithm.  Fields in the structure are:
 ##
 ## @itemize
-## @item intervaliterations
+## @item @nospell{intervaliterations}
 ##  Number of iterations searching for a bracketing interval.
 ##
 ## @item iterations

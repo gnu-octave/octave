@@ -70,7 +70,7 @@ Packages might depend on external software and/or other packages.  To be able
 to install such packages, these dependencies should be installed beforehand.
 A package that depends on other package(s) can still be installed using the
 @option{-nodeps} flag.  The effects of unsatisfied dependencies on external
-software---like libraries---depends on theindividual package.
+software---like libraries---depends on the individual package.
 
 Packages must be loaded before they can be used.  When loading a package,
 Octave performs the following tasks:

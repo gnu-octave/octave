@@ -36,14 +36,14 @@
 ##
 ## @itemize
 ## @item Numeric inputs that support exceptional values (i.e., Inf, -Inf, NaN,
-## NA) are treated under the additional assumption that they are eqaul.  They
+## NA) are treated under the additional assumption that they are equal.  They
 ## are also tested for sparsity and complexity.
 ##
-## @item Logical inputs are additonally tested for sparsity.
+## @item Logical inputs are additionally tested for sparsity.
 ##
 ## @item Character arrays are compared with the @code{strcmp} function.
 ##
-## @item Structures are additonally checked against having the same unordered
+## @item Structures are additionally checked against having the same unordered
 ## fieldnames.
 ##
 ## @item Cell arrays are recursively tested on an element by element basis.

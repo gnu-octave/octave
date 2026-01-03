@@ -587,7 +587,7 @@ DEFUN (randn, args, ,
 @deftypefnx {} {} randn ("seed", @var{v})
 @deftypefnx {} {} randn ("seed", "reset")
 Return a scalar, matrix, or N-dimensional array whose elements are random
-numbers from the stdnormal distribution having a mean of @code{0} and a
+numbers from the standard normal distribution having a mean of @code{0} and a
 variance of @code{1}.
 
 If called with no arguments, return a scalar random value.

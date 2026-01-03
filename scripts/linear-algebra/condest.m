@@ -102,7 +102,7 @@
 ## @nospell{N.J. Higham and F. Tisseur}, "A Block Algorithm for Matrix 1-Norm
 ## Estimation, with an Application to 1-Norm Pseudospectra",
 ## @cite{SIAM Journal on Matrix Analysis and Applications}, @w{Vol.@: 21},
-## @w{Iss.@: 4}, @w{pp.@: 1185}--1201, 2000,
+## @nospell{@w{Iss.@: 4}}, @w{pp.@: 1185}--1201, 2000,
 ## @url{https://dx.doi.org/10.1137/S0895479899356080}.
 ##
 ## @item

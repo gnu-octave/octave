@@ -83,7 +83,7 @@ if @var{S} is m-by-n, rows with more than
 columns with more than
 @code{max (16, @var{knobs}(3) * sqrt (min (@var{m}, @var{n})))} entries are
 ignored and ordered last in the output permutation
-(subject to the cmember constraints).
+(subject to the @var{cmember} constraints).
 
 @item @var{knobs}(4)
 if nonzero, aggressive absorption is performed.

@@ -2279,8 +2279,8 @@ single.
 @item @qcode{"double"} : Operations are performed in double precision even for
 single precision inputs.  Output is of type double.
 
-@item @qcode{"native"} : Operations are performed in their native datatypes and
-output is of the same type as the input as reported by
+@item @qcode{"native"} : Operations are performed in their native data types
+and output is of the same type as the input as reported by
 (@code{class (@var{x})}).  When the input is logical,
 @code{prod (@var{x}, "native")} is equivalent to @code{all (@var{x})}.
 @end table
@@ -4293,8 +4293,8 @@ accurate algorithm than straightforward summation.  For single precision
 inputs, @qcode{"extra"} is the same as @qcode{"double"}.  For all other data
 type @qcode{"extra"} has no effect.
 
-@item @qcode{"native"} : Operations are performed in their native datatypes and
-output is of the same type as the input as reported by
+@item @qcode{"native"} : Operations are performed in their native data types
+and output is of the same type as the input as reported by
 (@code{class (@var{x})}).  When the input is logical,
 @code{sum (@var{x}, "native")} is equivalent to @code{any (@var{x})}.
 @end table
@@ -4857,8 +4857,8 @@ single.
 @item @qcode{"double"} : Operations are performed in double precision even for
 single precision inputs.  Output is of type double.
 
-@item @qcode{"native"} : Operations are performed in their native datatypes and
-output is of the same type as the input as reported by
+@item @qcode{"native"} : Operations are performed in their native data types
+and output is of the same type as the input as reported by
 (@code{class (@var{x})}).  When the input is logical,
 @code{sumsq (@var{x}, "native")} is equivalent to @code{all (@var{x})}.
 @end table
@@ -6463,13 +6463,13 @@ and defaults to @qcode{"double"}.
 If a variable @var{var} is specified after @qcode{"like"}, the output @var{val}
 will have the same data type, complexity, and sparsity as @var{var}.
 
-Example 1 : MxN matrix of constant value @var{val}
+Example 1 : @nospell{MxN} matrix of constant value @var{val}
 
 @example
 @var{C} = @var{val} * ones (@var{m}, @var{n})
 @end example
 
-Example 2 : MxN matrix of uint8
+Example 2 : @nospell{MxN} matrix of uint8
 
 @example
 @var{C} = ones (@var{m}, @var{n}, "uint8")
@@ -6569,7 +6569,7 @@ and defaults to @qcode{"double"}.
 If a variable @var{var} is specified after @qcode{"like"}, the output @var{val}
 will have the same data type, complexity, and sparsity as @var{var}.
 
-Example : MxN matrix of uint8
+Example : @nospell{MxN} matrix of uint8
 
 @example
 @var{C} = ones (@var{m}, @var{n}, "uint8")

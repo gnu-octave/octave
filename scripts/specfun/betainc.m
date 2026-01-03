@@ -67,7 +67,7 @@
 ##
 ## Reference: @nospell{A. Cuyt, V. Brevik Petersen, B. Verdonk, H. Waadeland,
 ## W.B. Jones}, @cite{Handbook of Continued Fractions for Special Functions},
-## ch.@: 18.
+## @w{ch.@: 18}.
 ##
 ## @seealso{beta, betaincinv, betaln}
 ## @end deftypefn

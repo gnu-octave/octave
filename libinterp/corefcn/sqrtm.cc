@@ -250,8 +250,8 @@ DEFUN (sqrtm, args, nargout,
 @deftypefnx {} {[@var{s}, @var{error_estimate}] =} sqrtm (@var{A})
 Compute the matrix square root of the square matrix @var{A}.
 
-Ref: @nospell{N.J. Higham}.  @cite{A New sqrtm for @sc{matlab}}.  Numerical
-Analysis Report No.@: 336, Manchester @nospell{Centre} for Computational
+Ref: @nospell{N.J. Higham}, @cite{A New sqrtm for @sc{matlab}}, Numerical
+Analysis Report @w{No.@: 336}, Manchester @nospell{Centre} for Computational
 Mathematics, Manchester, England, January 1999.
 @seealso{expm, logm}
 @end deftypefn */)

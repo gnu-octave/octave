@@ -163,11 +163,11 @@
 ##
 ## @nospell{Philip I. Davies and Nicholas J. Higham},
 ## "A Schur-Parlett algorithm for computing matrix functions",
-## @cite{SIAM Journal on Matrix Analysis and Applications}, vol.@: 25(2),
-## 464--485, 2003.
+## @cite{SIAM Journal on Matrix Analysis and Applications}, @w{Vol.@: 25(2)},
+## @w{pp.@: 464}--485, 2003.
 ##
 ## @nospell{Nicholas J. Higham}, @cite{Functions of Matrices: Theory and
-## Computation}, SIAM, pp.@: 425, 2008, ISBN 978-0-898716-46-7.
+## Computation}, SIAM, @w{pp.@: 425}, 2008, ISBN 978-0-898716-46-7.
 ##
 ## @seealso{expm, logm, sqrtm}
 ## @end deftypefn

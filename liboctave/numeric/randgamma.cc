@@ -33,8 +33,9 @@ void fill_randg (a,n,x)
 
 Generate a series of standard gamma distributions.
 
-See: Marsaglia G and Tsang W (2000), "A simple method for generating
-gamma variables", ACM Transactions on Mathematical Software 26(3) 363-372
+See: G. Marsaglia and W. Tsang, "A simple method for generating gamma
+variables", ACM Transactions on Mathematical Software, 26(3), pp. 363-372,
+2000.
 
 Needs the following defines:
 * NAN: value to return for Not-A-Number

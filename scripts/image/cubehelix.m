@@ -43,9 +43,10 @@
 ## If @var{n} is not specified the length of the current colormap is used.  If
 ## there is no current colormap the default value of 256 is used.
 ##
-## Reference: Green, D. A., 2011,
-## @cite{A @nospell{colour} scheme for the display of astronomical intensity
-## images}, Bulletin of the Astronomical Society of India, 39, 289.
+## Reference: @nospell{D.A Green},
+## "A @nospell{colour} scheme for the display of astronomical intensity
+## images", @cite{Bulletin of the Astronomical Society of India}, 39,
+## @w{p.@: 289}, 2011.
 ##
 ## @seealso{colormap}
 ## @end deftypefn

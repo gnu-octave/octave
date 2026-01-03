@@ -58,9 +58,10 @@
 ## If the optional parameter @var{pflg} is nonzero, row pivoting is used to
 ## improve numerical behavior.  The default value is 0.
 ##
-## Reference: @nospell{A. Hodel, P. Misra}, @cite{Partial Pivoting in the
-## Computation of Krylov Subspaces of Large Sparse Systems}, Proceedings of
-## the 42nd IEEE Conference on Decision and Control, December 2003.
+## Reference: @nospell{A. Hodel, P. Misra}, "Partial Pivoting in the
+## Computation of Krylov Subspaces of Large Sparse Systems",
+## @cite{Proceedings of the 42nd IEEE Conference on Decision and Control},
+## December 2003.
 ## @end deftypefn
 
 function [Uret, H, nu] = krylov (A, V, k, eps1, pflg)

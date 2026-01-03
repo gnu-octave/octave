@@ -150,11 +150,12 @@
 ##
 ## References for implemented algorithms:
 ##
-## [1] @nospell{Y. Saad}. "Preconditioning Techniques." @cite{Iterative
-## Methods for Sparse Linear Systems}, @nospell{PWS} Publishing Company, 1996.
+## [1] @nospell{Y. Saad}, "Preconditioning Techniques",
+## @cite{Iterative Methods for Sparse Linear Systems}, @nospell{PWS} Publishing
+## Company, 1996.
 ##
-## [2] @nospell{M. Jones, P. Plassmann}: @cite{An Improved Incomplete
-## Cholesky Factorization}, 1992.
+## [2] @nospell{M. Jones, P. Plassmann},
+## @cite{An Improved Incomplete Cholesky Factorization}, 1992.
 ## @seealso{chol, ilu, pcg}
 ## @end deftypefn
 

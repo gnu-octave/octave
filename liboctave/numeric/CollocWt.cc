@@ -38,9 +38,9 @@
 #include "oct-error.h"
 
 // The following routines jcobi, dif, and dfopr are based on the code
-// found in Villadsen, J. and M. L. Michelsen, Solution of Differential
-// Equation Models by Polynomial Approximation, Prentice-Hall (1978)
-// pages 418-420.
+// found in J. Villadsen and M. L. Michelsen, Solution of Differential
+// Equation Models by Polynomial Approximation, Prentice-Hall, 1978,
+// pp. 418-420.
 //
 // Translated to C++ by jwe.
 

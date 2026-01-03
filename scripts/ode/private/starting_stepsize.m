@@ -35,7 +35,7 @@
 ## tolerance on the ODE integration taken from an ode options structure.
 ##
 ## Reference:
-## E. Hairer, S.P. Norsett and G. Wanner,
+## @nospell{E. Hairer, S.P. Norsett and G. Wanner},
 ## @cite{Solving Ordinary Differential Equations I: Nonstiff Problems},
 ## Springer.
 ##

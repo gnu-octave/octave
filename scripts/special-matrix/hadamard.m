@@ -62,7 +62,7 @@
 ## this function for additional p.
 ##
 ## Reference:
-## [1] A Library of Hadamard Matrices, N. J. A. Sloane
+## [1] N. J. A. Sloane, "A Library of Hadamard Matrices",
 ##     http://www.research.att.com/~njas/hadamard/
 
 function h = hadamard (n)

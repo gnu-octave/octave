@@ -43,9 +43,8 @@
 ## @seealso{expm, sqrtm}
 ## @end deftypefn
 
-## Reference: N. J. Higham, Functions of Matrices: Theory and Computation
-##            (SIAM, 2008.)
-##
+## Reference: N. J. Higham, Functions of Matrices: Theory and Computation,
+##            SIAM, 2008.
 
 ## Author: N. J. Higham
 ## Author: Richard T. Guy <guyrt7@wfu.edu>
@@ -139,8 +138,8 @@ endfunction
 ################## ANCILLARY FUNCTIONS ################################
 ######  Taken from the mfttoolbox (GPL 3) by D. Higham.
 ######  Reference:
-######      D. Higham, Functions of Matrices: Theory and Computation
-######      (SIAM, 2008.).
+######    D. Higham, Functions of Matrices: Theory and Computation,
+######    SIAM, 2008.
 #######################################################################
 
 ## LOGM_PADE_PF   Evaluate Pade approximant to matrix log by partial fractions.

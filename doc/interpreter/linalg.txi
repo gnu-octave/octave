@@ -25,11 +25,11 @@ Reference material for many of these functions may be found in
 @nospell{Golub and Van Loan}, @cite{Matrix Computations, 2nd Ed.},
 Johns Hopkins, 1989, and in the @cite{@sc{lapack} Users' Guide}, SIAM, 1992.
 The @cite{@sc{lapack} Users' Guide} is available at:
-@cite{http://www.netlib.org/lapack/lug/}
+@cite{http://www.netlib.org/lapack/lug/}.
 
 A common text for engineering courses is @nospell{G. Strang},
-@cite{Linear Algebra and Its Applications, 4th Edition}. It has become a
-widespread reference for linear algebra.  An alternative is P. Lax
+@cite{Linear Algebra and Its Applications, 4th Edition}.  It has become a
+widespread reference for linear algebra.  An alternative is @nospell{P. Lax},
 @cite{Linear Algebra and Its Applications}, and also is a good choice.  It
 claims to be suitable for high school students with substantial mathematical
 interests as well as first-year undergraduates.

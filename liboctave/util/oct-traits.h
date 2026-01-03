@@ -31,8 +31,8 @@
 #include <type_traits>
 
 // Ideas for these classes taken from C++ Templates, The Complete
-// Guide by David Vandevoorde and Nicolai M. Josuttis, Addison-Wesley
-// (2003).
+// Guide by David Vandevoorde and Nicolai M. Josuttis, Addison-Wesley, 
+// 2003.
 
 // Select a type based on the value of a constant expression.
 

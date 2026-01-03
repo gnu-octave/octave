@@ -237,7 +237,14 @@ gen_specific_tests() {
 %!assert (nnz (sparse (1,1,0)), 0)
 %!assert (nnz (sparse (eye (3))*0), 0)
 %!assert (nnz (sparse (eye (3))-sparse (eye (3))), 0)
-%!assert (full (sparse (eye (3))/0), full (eye (3)/0))
+
+## Make sure scalar v==0 and v==NaN does not ignore zero elements (bug #36562)
+%!assert (full (sparse (eye (3)) / 0), full (eye (3)) / 0)
+%!assert (full (0 \ sparse (eye (3))), 0 \ full (eye (3)))
+%!assert (full (sparse (eye (3)) / NaN), full (eye (3)) / NaN)
+%!assert (full (NaN \ sparse (eye (3))), NaN \ full (eye (3)))
+%!assert (0 \ sparse ([1, 2i]), sparse (complex ([Inf, NaN], [-NaN, Inf])))
+%!assert (sparse ([1, 2i]) / 0, sparse (complex ([Inf, NaN], [-NaN, Inf])))
 
 EOF
 }

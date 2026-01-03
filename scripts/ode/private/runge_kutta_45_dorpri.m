@@ -72,9 +72,9 @@ function [t_next, x_next, x_est, k] = runge_kutta_45_dorpri (fcn, t, x, dt,
                                                              k_vals = [],
                                                              t_next = t + dt)
 
-  ## Reference: Hairer, Ernst; Nørsett, Syvert Paul; Wanner, Gerhard (2008),
+  ## Reference: Ernst Hairer, Syvert Paul Nørsett, Gerhard Wanner,
   ## Solving ordinary differential equations I: Nonstiff problems,
-  ## Berlin, New York: Springer-Verlag, ISBN 978-3-540-56670-0
+  ## Springer-Verlag: Berlin, New York, 2008, ISBN 978-3-540-56670-0.
   persistent a = [0           0          0           0        0          0;
                   1/5         0          0           0        0          0;
                   3/40        9/40       0           0        0          0;

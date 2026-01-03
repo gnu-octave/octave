@@ -147,11 +147,18 @@ plus_or_minus (const MSparse<T>& a, const T& s, OP op)
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
 
-  MArray<T> r (dim_vector (nr, nc), op (0.0, s));
+  MArray<T> r;
 
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
-      r.elem (a.ridx (i), j) = op (a.data (i), s);
+  if (octave::math::isnan (s))
+    r = MArray<T> (dim_vector (nr, nc), octave::numeric_limits<T>::NaN ());
+  else
+    {
+      r = MArray<T> (dim_vector (nr, nc), op (0.0, s));
+
+      for (octave_idx_type j = 0; j < nc; j++)
+        for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
+          r.elem (a.ridx (i), j) = op (a.data (i), s);
+    }
   return r;
 }
 
@@ -177,16 +184,36 @@ times_or_divide (const MSparse<T>& a, const T& s, OP op)
   octave_idx_type nc = a.cols ();
   octave_idx_type nz = a.nnz ();
 
-  MSparse<T> r (nr, nc, nz);
+  MSparse<T> r;
 
-  for (octave_idx_type i = 0; i < nz; i++)
+  // Handle scalars that affect zero elements in sparse array
+  bool non_zero = op (0.0, s) != 0.0;
+
+  if (non_zero)
     {
-      r.data (i) = op (a.data (i), s);
-      r.ridx (i) = a.ridx (i);
+      r = MSparse<T> (nr, nc, nr * nc);
+      for (octave_idx_type j = 0; j < nc; j++)
+        for (octave_idx_type i = 0; i < nr; i++)
+          r.elem (i, j) = op (0.0, s);
+
+      for (octave_idx_type j = 0; j < nc; j++)
+        for (octave_idx_type i = a.cidx(j); i < a.cidx (j+1); i++)
+          r.elem (a.ridx (i), j) = op (a.data (i), s);
+      r.maybe_compress (true);
     }
-  for (octave_idx_type i = 0; i < nc + 1; i++)
-    r.cidx (i) = a.cidx (i);
-  r.maybe_compress (true);
+  else
+    {
+      r = MSparse<T> (nr, nc, nz);
+
+      for (octave_idx_type i = 0; i < nz; i++)
+        {
+          r.data (i) = op (a.data (i), s);
+          r.ridx (i) = a.ridx (i);
+        }
+      for (octave_idx_type i = 0; i < nc + 1; i++)
+        r.cidx (i) = a.cidx (i);
+      r.maybe_compress (true);
+    }
   return r;
 }
 
@@ -213,11 +240,18 @@ plus_or_minus (const T& s, const MSparse<T>& a, OP op)
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
 
-  MArray<T> r (dim_vector (nr, nc), op (s, 0.0));
+  MArray<T> r;
 
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
-      r.elem (a.ridx (i), j) = op (s, a.data (i));
+  if (octave::math::isnan (s))
+    r = MArray<T> (dim_vector (nr, nc), octave::numeric_limits<T>::NaN ());
+  else
+    {
+      r = MArray<T> (dim_vector (nr, nc), op (s, 0.0));
+
+      for (octave_idx_type j = 0; j < nc; j++)
+        for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
+          r.elem (a.ridx (i), j) = op (s, a.data (i));
+    }
   return r;
 }
 
@@ -237,22 +271,42 @@ operator - (const T& s, const MSparse<T>& a)
 
 template <typename T, typename OP>
 MSparse<T>
-times_or_divides (const T& s, const MSparse<T>& a, OP op)
+times_or_divide (const T& s, const MSparse<T>& a, OP op)
 {
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
   octave_idx_type nz = a.nnz ();
 
-  MSparse<T> r (nr, nc, nz);
+  MSparse<T> r;
 
-  for (octave_idx_type i = 0; i < nz; i++)
+  // Handle scalars that affect zero elements in sparse array
+  bool non_zero = op (s, 0.0) != 0.0;
+
+  if (non_zero)
     {
-      r.data (i) = op (s, a.data (i));
-      r.ridx (i) = a.ridx (i);
+      r = MSparse<T> (nr, nc, nr * nc);
+      for (octave_idx_type j = 0; j < nc; j++)
+        for (octave_idx_type i = 0; i < nr; i++)
+          r.elem (i, j) = op (s, 0.0);
+
+      for (octave_idx_type j = 0; j < nc; j++)
+        for (octave_idx_type i = a.cidx(j); i < a.cidx (j+1); i++)
+          r.elem (a.ridx (i), j) = op (s, a.data (i));
+      r.maybe_compress (true);
     }
-  for (octave_idx_type i = 0; i < nc + 1; i++)
-    r.cidx (i) = a.cidx (i);
-  r.maybe_compress (true);
+  else
+    {
+      r = MSparse<T> (nr, nc, nz);
+
+      for (octave_idx_type i = 0; i < nz; i++)
+        {
+          r.data (i) = op (s, a.data (i));
+          r.ridx (i) = a.ridx (i);
+        }
+      for (octave_idx_type i = 0; i < nc + 1; i++)
+        r.cidx (i) = a.cidx (i);
+      r.maybe_compress (true);
+    }
   return r;
 }
 
@@ -260,14 +314,14 @@ template <typename T>
 MSparse<T>
 operator * (const T& s, const MSparse<T>& a)
 {
-  return times_or_divides (s, a, std::multiplies<T> ());
+  return times_or_divide (s, a, std::multiplies<T> ());
 }
 
 template <typename T>
 MSparse<T>
 operator / (const T& s, const MSparse<T>& a)
 {
-  return times_or_divides (s, a, std::divides<T> ());
+  return times_or_divide (s, a, std::divides<T> ());
 }
 
 // Element by element MSparse by MSparse ops.
@@ -559,6 +613,12 @@ product (const MSparse<T>& a, const MSparse<T>& b)
     {
       if (a.elem (0, 0) == 0.)
         r = MSparse<T> (b_nr, b_nc);
+      else if (octave::math::isnan (a.elem (0, 0)))
+        {
+          r = MSparse<T> (b_nr, b_nc, b_nr * b_nc);
+          for (octave_idx_type i = 0 ; i < r.numel () ; i++)
+            r.elem(i) = octave::numeric_limits<T>::NaN ();
+        }
       else
         {
           r = MSparse<T> (b);
@@ -576,6 +636,12 @@ product (const MSparse<T>& a, const MSparse<T>& b)
     {
       if (b.elem (0, 0) == 0.)
         r = MSparse<T> (a_nr, a_nc);
+      else if (octave::math::isnan (b.elem (0, 0)))
+        {
+          r = MSparse<T> (a_nr, a_nc, a_nr * a_nc);
+          for (octave_idx_type i = 0 ; i < r.numel () ; i++)
+            r.elem(i) = octave::numeric_limits<T>::NaN ();
+        }
       else
         {
           r = MSparse<T> (a);
@@ -616,6 +682,19 @@ product (const MSparse<T>& a, const MSparse<T>& b)
         r.resize (std::max (a_nr, b_nr), b_nc);
       else
         octave::err_nonconformant ("product", a_nr, a_nc, b_nr, b_nc);
+    }
+  else if (a_nr == b_nr && a_nc == b_nc &&
+           (a.any_element_is_nan () || b.any_element_is_nan ()))
+    {
+      r = MSparse<T> (a_nr, a_nc, a_nr * a_nc);
+
+      for (octave_idx_type j = 0 ; j < a_nc ; j++)
+        {
+          octave_quit ();
+          for (octave_idx_type i = 0 ; i < a_nr ; i++)
+            r.elem (i, j) = a.elem (i, j) * b.elem (i, j);
+        }
+      r.maybe_compress (true);
     }
   else if (a_nr == b_nr && a_nc == b_nc)
     {
@@ -663,6 +742,32 @@ product (const MSparse<T>& a, const MSparse<T>& b)
           r.cidx (i+1) = jx;
         }
       r.maybe_compress ();
+    }
+  else if (a_nr == b_nr && (a_nc == 1 || b_nc == 1) &&
+           (a.any_element_is_nan () || b.any_element_is_nan ()))
+    {
+      octave_idx_type r_nc = (a_nc < b_nc ? b_nc : a_nc);
+      r = MSparse<T> (a_nr, r_nc, a_nr * r_nc);
+
+      if (a_nc == 1)
+        {
+          for (octave_idx_type j = 0 ; j < r_nc ; j++)
+            {
+              octave_quit ();
+              for (octave_idx_type i = 0 ; i < a_nr ; i++)
+                r.elem (i, j) = a.elem (i, 0) * b.elem (i, j);
+            }
+        }
+      else
+        {
+          for (octave_idx_type j = 0 ; j < r_nc ; j++)
+            {
+              octave_quit ();
+              for (octave_idx_type i = 0 ; i < a_nr ; i++)
+                r.elem (i, j) = a.elem (i, j) * b.elem (i, 0);
+            }
+        }
+      r.maybe_compress (true);
     }
   else if (a_nr == b_nr && (a_nc == 1 || b_nc == 1))
     {
@@ -729,6 +834,19 @@ product (const MSparse<T>& a, const MSparse<T>& b)
     }
   else if (a_nc == b_nc && (a_nr == 1 || b_nr == 1))
     r = product (a.transpose (), b.transpose ()).transpose ();
+  else if (a_nr == 1 && b_nc == 1 &&
+           (a.any_element_is_nan () || b.any_element_is_nan ()))
+    {
+      r = MSparse<T> (b_nr, a_nc, b_nr * a_nc);
+
+      for (octave_idx_type j = 0 ; j < a_nc ; j++)
+        {
+          octave_quit ();
+          for (octave_idx_type i = 0 ; i < b_nr ; i++)
+            r.elem (i, j) = a.elem (0, j) * b.elem (i, 0);
+        }
+      r.maybe_compress (true);
+    }
   else if (a_nr == 1 && b_nc == 1)
     {
       r = MSparse<T> (b_nr, a_nc, (a.nnz () * b_nr + b.nnz () * a_nc));

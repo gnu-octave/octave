@@ -109,8 +109,9 @@
 ## @table @code
 ## @item terms
 ## Vector for which @code{output.terms(i)} is the number of Taylor series terms
-## used when evaluating the i'th block, or, in the case of the logarithm, the
-## number of square roots of matrices of dimension greater than 2.
+## used when evaluating the @nospell{i'th} block, or, in the case of the
+## logarithm, the number of square roots of matrices of dimension greater than
+## 2.
 ##
 ## @item ind
 ## Cell array for which the (i,j) block of the reordered Schur factor @var{T}
@@ -150,7 +151,7 @@
 ## @end example
 ##
 ## @noindent
-## will produce the same results (within possible roundoff error) as
+## will produce the same results (within possible rounding error) as
 ##
 ## @example
 ## @group
@@ -163,7 +164,7 @@
 ## References:
 ##
 ## @nospell{Philip I. Davies and Nicholas J. Higham},
-## "A Schur-Parlett algorithm for computing matrix functions",
+## "A @nospell{Schur-Parlett} algorithm for computing matrix functions",
 ## @cite{SIAM Journal on Matrix Analysis and Applications}, @w{Vol.@: 25(2)},
 ## @w{pp.@: 464}--485, 2003.
 ##

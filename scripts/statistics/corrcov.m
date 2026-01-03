@@ -57,7 +57,7 @@
 ## If the optional output @var{s} is requested, it will contain a column vector
 ## of the standard deviations of the variables that produced the covariance
 ## matrix @var{c}.  Noting that the variances of the variables are contained in
-## the main daigonal of @var{c}, this is equivalent output to
+## the main diagonal of @var{c}, this is equivalent output to
 ## @w{@code{sqrt (diag ( @var{c}))}}.
 ##
 ## Implementation Note: A proper covariance matrix as produced by @code{cov} is

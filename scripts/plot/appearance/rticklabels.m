@@ -36,7 +36,7 @@
 ## a cell array of strings and/or numbers, the labels will be changed to
 ## match these new values.  Note that the center point of the plots made by
 ## @code{polar} are never labeled, so the first specified label will be
-## applied to the second rtick location and subesquent labels will progress
+## applied to the second rtick location and subsequent labels will progress
 ## outward.
 ##
 ## If fewer labels are specified than the current number of tick marks, those
@@ -50,7 +50,7 @@
 ## Requesting a return value when calling @code{rticklabels} to set a property
 ## value will result in an error.
 ##
-## Compatability Note: The @qcode{'mode'} property for rticklabels has not yet
+## Compatibility Note: The @qcode{'mode'} property for rticklabels has not yet
 ## been implemented.
 ##
 ## @seealso{polar, rticks, thetaticklabels, xticklabels, yticklabels,

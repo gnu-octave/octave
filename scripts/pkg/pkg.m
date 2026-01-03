@@ -195,7 +195,7 @@
 ## @noindent
 ## removes the @code{image} package from the system.  If another installed
 ## package depends on the @code{image} package an error is issued.  The package
-## uninstallation can be forced by using the @option{-nodeps} option.
+## removal can be forced by using the @option{-nodeps} option.
 ##
 ## Depending on whether Octave is being run with administrative privileges
 ## only global or local packages are removed by default.  See @option{-global}

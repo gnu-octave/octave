@@ -53,11 +53,11 @@
 ##
 ## If @var{x} is a vector, then @code{std (@var{x})} returns the standard
 ## deviation of the elements in @var{x}.
-## 
+##
 ## If @var{x} is a matrix, then @code{std (@var{x})} returns a row vector with
 ## each element containing the standard deviation of the corresponding column
 ## in @var{x}.
-## 
+##
 ## If @var{x} is an array, then @code{std (@var{x})} computes the standard
 ## deviation along the first non-singleton dimension of @var{x}.
 ##

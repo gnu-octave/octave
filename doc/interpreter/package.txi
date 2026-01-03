@@ -363,7 +363,7 @@ of the installed package for future reference.
 
 If the Octave GUI is running, the optional Qt help file
 @file{package/doc/pkg-name.qch} is added to the documentation browser
-while loading the package. The help file is removed from the documentation
+while loading the package.  The help file is removed from the documentation
 browser when the package is unloaded.
 
 @item package/bin

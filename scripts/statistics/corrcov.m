@@ -29,7 +29,7 @@
 ## Convert matrix of covariance coefficients to a matrix of correlation
 ## coefficients.
 ##
-## Given a numeric, square, symmetric, and positive semidefinite matrix of
+## Given a numeric, square, symmetric, and positive semi-definite matrix of
 ## covariance coefficients, @var{c}, calculate the corresponding linear
 ## correlation coefficient matrix, @var{r}, that would be produced from the
 ## same variables that produced @var{c}.

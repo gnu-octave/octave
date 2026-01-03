@@ -28,7 +28,8 @@
 ## Workaround for a complication that happens with some packages, where a part
 ## of the package metadata returned by the server contains a cell array instead
 ## of a struct for reasons internal to the server, so this private function
-## is used to work around that unavoidable inconsistency in the metadata format.
+## is used to work around that unavoidable inconsistency in the metadata
+## format.
 ## @end deftypefn
 
 function retval = convert_possible_cell_to_struct (obj)

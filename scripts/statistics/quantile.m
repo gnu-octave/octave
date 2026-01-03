@@ -44,20 +44,19 @@
 ## If @var{x} is an array, then @code{prctile (@var{x})} computes the quantiles
 ## specified by @var{p} along the first non-singleton dimension of @var{x}.
 ##
-## The data in @var{x} must be numeric and any NaN values are ignored.  The size
-## of @var{q} is equal to the size of @var{x} except for the operating
-## dimension, which equals to the number of quantiles specified by @var{p} or
-## @var{n}.
+## The data in @var{x} must be numeric and any NaN values are ignored.  The
+## size of @var{q} is equal to the size of @var{x} except for the operating
+## dimension, which equals to the number of quantiles specified by @var{p}
+## or @var{n}.
 ##
 ## @var{p} is a numeric vector specifying the percentiles to be computed, which
 ## correspond to the cumulative probabilities of the data .  All elements of
 ## @var{p} must be in the range from 0 to 1.  If @var{p} is unspecified, return
 ## the percentiles for @code{[0.00 0.25 0.50 0.75 1.00]}.  Alternatively, the
 ## second input argument may be specified as a positive integer value @var{n},
-## in which case @code{quantile} returns the quantiles for @var{n} evenly spaced
-## cumulative probabilities computed as
-## (1/(@var{n} + 1), 2/(@var{n} + 1), ..., @var{n}/(@var{n} + 1)) for
-## @code{@var{n} > 1}.
+## in which case @code{quantile} returns the quantiles for @var{n} evenly
+## spaced cumulative probabilities computed as (1/(@var{n} + 1), 2/(@var{n}
+## + 1), @dots{}, @var{n}/(@var{n} + 1)) for @code{@var{n} > 1}.
 ##
 ## The optional input @var{dim} specifies the dimension to operate on and must
 ## be a positive integer.  Specifying any singleton dimension of @var{x},
@@ -71,7 +70,8 @@
 ## equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
 ## greater than @code{ndims (@var{x})} is ignored.  If all dimensions in
 ## @var{vecdim} are greater than @code{ndims (@var{x})}, then @code{quantile}
-## will return N copies of @var{x} along the smallest dimension in @var{vecdim}.
+## will return N copies of @var{x} along the smallest dimension in
+## @var{vecdim}.
 ##
 ## Specifying the dimension as @qcode{"all"} will cause @code{iqr} to operate
 ## on all elements of @var{x}, and is equivalent to @code{iqr (@var{x}(:))}.

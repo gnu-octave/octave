@@ -38,15 +38,21 @@
 ##
 ## In the case of a complex output, orthogonality of the output with respect
 ## to the inputs is also satisfied, and the condition
+##
 ## @example
 ## @code{dot (conj (@var{z}), @var{x}) @equiv{} dot (conj (@var{z}), @var{y}) = 0}
 ## @end example
+##
+## @noindent
 ## is met.  @code{dot (@var{z}, @var{x}) = 0} and
 ## @code{dot (@var{z}, @var{y}) = 0} will not hold.  Also note that instead of
 ## using the @code{dot} function, the inner product
+##
 ## @example
 ## @code{@var{z}(:).' * @var{x}(:) @equiv{} @var{z}(:).' * @var{y}(:) = 0}
 ## @end example
+##
+## @noindent
 ## will meet the orthogonality condition for vector input.
 ##
 ## Example Code:

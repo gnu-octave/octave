@@ -15,9 +15,9 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{X} = } dither (@var{RGB}, @var{map})
-## @deftypefnx {} {@var{X} = } dither (@var{RGB}, @var{map}, @var{Qm}, @var{Qe})
-## @deftypefnx {} {@var{BW} = } dither (@var{I})
+## @deftypefn  {} {@var{X} =} dither (@var{RGB}, @var{map})
+## @deftypefnx {} {@var{X} =} dither (@var{RGB}, @var{map}, @var{Qm}, @var{Qe})
+## @deftypefnx {} {@var{BW} =} dither (@var{I})
 ## Quantize an image using dithering to increase the apparent color resolution.
 ##
 ## @code{@var{X} = dither (@var{RGB},@var{map})} creates an indexed image
@@ -31,6 +31,7 @@
 ## $$
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ## @group
 ##      x    7/16
@@ -53,24 +54,25 @@
 ## @var{Qe} is the number of quantization bits for error diffusion (default: 8,
 ## max 16).
 ##
-## @var{X} is a MxN indexed image (uint8 if c<=256, else uint16) for the
+## @var{X} is a MxN indexed image (uint8 if c@leq{}256, else uint16) for the
 ## colormap @var{map} provided.
 ##
 ## @var{Qm} is the number of quantization bits along each color axis for the
-## inverse colormap.  @var{Qm} determines the resolution of this grid along each
-## color axis (R, G, B).  @var{Qm} defines the precision of the color space
-## discretization used to map input RGB values to those colors available in the
-## colormap.  @var{Qe} is the number of quantization bits for the color space
-## error calculations in the Floyd-Steinberg error diffusion algorithm.
-## It controls the precision of the error values that are calculated and
-## propagated during dithering.  If @var{Qe} < @var{Qm}, the error diffusion
-## process may lose precision.  Therefore dithering cannot be performed, and the
-## function returns an undithered indexed image.
+## inverse colormap.  @var{Qm} determines the resolution of this grid along
+## each color axis (R, G, B).  @var{Qm} defines the precision of the color
+## space discretization used to map input RGB values to those colors
+## available in the colormap.  @var{Qe} is the number of quantization bits
+## for the color space error calculations in the Floyd-Steinberg error
+## diffusion algorithm.  It controls the precision of the error values that
+## are calculated and propagated during dithering.  If @var{Qe} < @var{Qm},
+## the error diffusion process may lose precision.  Therefore dithering
+## cannot be performed, and the function returns an undithered indexed
+## image.
 ##
-## @code{@var{BW} = dither (@var{I})} converts the grayscale input image @var{I}
-## into binary applying dithering in the process.  The output image @var{BW}
-## is a black and white image where dithering creates the illusion of shades of
-## gray.
+## @code{@var{BW} = dither (@var{I})} converts the grayscale input image
+## @var{I} into binary applying dithering in the process.  The output image
+## @var{BW} is a black and white image where dithering creates the illusion
+## of shades of gray.
 ##
 ## References:
 ##
@@ -192,8 +194,8 @@ function X = dither (RGB, map, Qm = 5, Qe = 8)
 endfunction
 
 ## -*- texinfo -*-
-## @deftypefn  {Auxiliary Function} {@var{id} = } rgb2indLUT (@var{pixel}, @var{map})
-## @deftypefnx {Auxiliary Function} {@var{id} = } rgb2indLUT (@var{pixel}, @var{map}, @var{Qm})
+## @deftypefn  {} {@var{id} =} rgb2indLUT (@var{pixel}, @var{map})
+## @deftypefnx {} {@var{id} =} rgb2indLUT (@var{pixel}, @var{map}, @var{Qm})
 ## Map an RGB pixel to the nearest colormap index using a lookup table.
 ##
 ## @code{@var{id} = rgb2indLUT (@var{pixel}, @var{map})} returns the 1-based
@@ -220,11 +222,13 @@ endfunction
 ## scaled (pixel auto-scaled if needed).
 ##
 ## Example:
+##
 ## @example
 ## id = rgb2indLUT (pixel, map);
 ## @end example
 ##
 ## @end deftypefn
+
 function id = rgb2indLUT (pixel, map, Qm = 5)
   ## Validate inputs
   if (nargin < 2)

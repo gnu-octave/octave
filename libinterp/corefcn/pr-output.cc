@@ -3933,6 +3933,7 @@ ans =
 -.+
 @end group
 @end example
+
 @end table
 
 @table @code

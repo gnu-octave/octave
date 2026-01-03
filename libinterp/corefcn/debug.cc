@@ -923,10 +923,10 @@ Display or return current debugging function stack information.
 
 With optional argument @var{n}, omit the @var{n} innermost stack frames.
 
-Although accepted, the argument @code{-completenames} is silently ignored.
+Although accepted, the argument @option{-completenames} is silently ignored.
 Octave always returns absolute filenames.
 
-The arguments @var{n} and @code{-completenames} can both be specified and may
+The arguments @var{n} and @option{-completenames} can both be specified and may
 appear in any order.
 
 The optional return argument @var{stack} is a struct array with the

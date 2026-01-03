@@ -43,9 +43,9 @@
 ## between the maximum and minimum values along the first non-singleton
 ## dimension of @var{x}.
 ##
-## The data in @var{x} must be numeric.  By default, any NaN values are ignored.
-## The size of @var{r} is equal to the size of @var{x} except for the operating
-## dimension, which becomes 1.
+## The data in @var{x} must be numeric.  By default, any NaN values are
+## ignored.  The size of @var{r} is equal to the size of @var{x} except for
+## the operating dimension, which becomes 1.
 ##
 ## The optional input @var{dim} specifies the dimension to operate on and must
 ## be a positive integer.  Specifying any singleton dimension of @var{x},

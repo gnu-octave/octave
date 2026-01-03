@@ -320,11 +320,10 @@ misinterpreted.
 
 A matrix may have one or both dimensions zero, and operations on empty
 matrices are handled as described by @nospell{Carl de Boor} in
-"An Empty Exercise", @cite{SIGNUM}, @w{Vol.@: 25}, @w{pp.@: 2}--6, 1990 and
-@nospell{C. N. Nett and W. M. Haddad}, in
-"A System-Theoretic Appropriate Realization of the Empty Matrix Concept",
-@cite{IEEE Transactions on Automatic Control}, @w{Vol.@: 38}, @w{No.@: 5},
-@w{May 1993}.
+@qcode{"An Empty Exercise"}, @cite{SIGNUM}, @w{Vol.@: 25}, @w{pp.@: 2}--6, 1990
+and @nospell{C. N. Nett and W. M. Haddad}, in @qcode{"A System-Theoretic
+Appropriate Realization of the Empty Matrix Concept"}, @cite{IEEE Transactions
+on Automatic Control}, @w{Vol.@: 38}, @w{No.@: 5}, @w{May 1993}.
 @tex
 Briefly, given a scalar $s$, an $m\times n$ matrix $M_{m\times n}$,
 and an $m\times n$ empty matrix $[\,]_{m\times n}$ (with either one or

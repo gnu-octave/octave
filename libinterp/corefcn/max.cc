@@ -1071,9 +1071,9 @@ include @code{NaN} values, set the value of @var{nanflag} to
 @qcode{"includenan"}, in which case @code{min} will return @code{NaN}, if any
 element along the operating dimension is @code{NaN}.
 
-The optional "ComparisonMethod" paired argument specifies the comparison method
-for numeric input and it applies to both one input and two input arrays.
-@var{method} can take any of the following values:
+The optional @qcode{"ComparisonMethod"} paired argument specifies the
+comparison method for numeric input and it applies to both one input and two
+input arrays.  @var{method} can take any of the following values:
 
 @table @asis
 @item @qcode{'auto'} : This is the default method, which compares elements by
@@ -1476,9 +1476,9 @@ include @code{NaN} values, set the value of @var{nanflag} to
 @qcode{"includenan"}, in which case @code{max} will return @code{NaN}, if any
 element along the operating dimension is @code{NaN}.
 
-The optional "ComparisonMethod" paired argument specifies the comparison method
-for numeric input and it applies to both one input and two input arrays.
-@var{method} can take any of the following values:
+The optional @qcode{"ComparisonMethod"} paired argument specifies the
+comparison method for numeric input and it applies to both one input and two
+input arrays.  @var{method} can take any of the following values:
 
 @table @asis
 @item @qcode{'auto'} : This is the default method, which compares elements by
@@ -2221,9 +2221,9 @@ If called with two output arguments, @code{cummin} also returns the first index
 of the minimum value(s) in @var{x}.  Setting the @qcode{"linear"} flag returns
 the linear index to the corresponding minimum values in @var{x}.
 
-The optional "ComparisonMethod" paired argument specifies the comparison method
-for numeric input and it applies to both one input and two input arrays.
-@var{method} can take any of the following values:
+The optional @qcode{"ComparisonMethod"} paired argument specifies the
+comparison method for numeric input and it applies to both one input and two
+input arrays.  @var{method} can take any of the following values:
 
 @table @asis
 @item @qcode{'auto'} : This is the default method, which compares elements by
@@ -2540,9 +2540,9 @@ If called with two output arguments, @code{cummax} also returns the first index
 of the maximum value(s) in @var{x}.  Setting the @qcode{"linear"} flag returns
 the linear index to the corresponding minimum values in @var{x}.
 
-The optional "ComparisonMethod" paired argument specifies the comparison method
-for numeric input and it applies to both one input and two input arrays.
-@var{method} can take any of the following values:
+The optional @qcode{"ComparisonMethod"} paired argument specifies the
+comparison method for numeric input and it applies to both one input and two
+input arrays.  @var{method} can take any of the following values:
 
 @table @asis
 @item @qcode{'auto'} : This is the default method, which compares elements by

@@ -646,7 +646,7 @@ function returns true if the character strings are equal, and false
 otherwise.  This is just the opposite of the corresponding C library
 function.  In addition Octave's strncmp function returns true if N = 0.
 
-Matlab incompatibility : Octave's strncmp function produces an error if
+@sc{matlab} incompatibility : Octave's strncmp function produces an error if
 N < 0, while @sc{matlab} treats N < 0 the same as N = 0, always returning
 true.
 
@@ -735,7 +735,7 @@ function returns true if the character strings are equal, and false
 otherwise.  This is just the opposite of the corresponding C library
 function.  In addition Octave's strncmpi function returns true if N = 0.
 
-Matlab incompatibility : Octave's strncmpi function produces an error if
+@sc{matlab} incompatibility : Octave's strncmpi function produces an error if
 N < 0, while @sc{matlab} treats N < 0 the same as N = 0, always returning
 true.
 

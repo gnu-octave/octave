@@ -81,7 +81,7 @@
 ##
 ## @end ifnottex
 ##
-## Reference: Milton @nospell{Abramowitz} and Irene A. @nospell{Stegun},
+## Reference: @nospell{Milton Abramowitz and Irene A. Stegun},
 ## @cite{Handbook of Mathematical Functions}, Chapter 17, Dover, 1965.
 ## @seealso{ellipj}
 ## @end deftypefn

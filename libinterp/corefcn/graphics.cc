@@ -7604,9 +7604,9 @@ axes::properties::calc_tick_sep (double lo, double hi)
 {
   int ticint = 5;
 
-  // Reference: Lewart, C. R., "Algorithms SCALE1, SCALE2, and SCALE3 for
+  // Reference: C. R. Lewart, "Algorithms SCALE1, SCALE2, and SCALE3 for
   // Determination of Scales on Computer Generated Plots", Communications of
-  // the ACM, 10 (1973), 639-640.
+  // the ACM, 10, pp. 639-640, 1973.
   // Also cited as ACM Algorithm 463.
 
   double a;

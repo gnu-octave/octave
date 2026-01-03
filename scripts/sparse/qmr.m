@@ -78,13 +78,13 @@
 ##
 ## @enumerate
 ## @item
-## @nospell{R. Freund and N. Nachtigal}, @cite{QMR: a quasi-minimal residual
-## method for non-Hermitian linear systems}, @nospell{Numerische Mathematik},
-## 1991, 60, pp.@: 315--339.
+## @nospell{R. Freund and N. Nachtigal}, "QMR: a quasi-minimal residual method
+## for non-Hermitian linear systems", @cite{@nospell{Numerische Mathematik}},
+## 60, @w{pp.@: 315}--339, 1991.
 ##
 ## @item
-## @nospell{ R. Barrett, M. Berry, T. Chan, J. Demmel, J. Donato, J. Dongarra},
-## @nospell{ V. Eijkhour, R. Pozo, C. Romine, and H. van der Vorst},
+## @nospell{R. Barrett, M. Berry, T. Chan, J. Demmel, J. Donato, J. Dongarra},
+## @nospell{V. Eijkhour, R. Pozo, C. Romine, and H. van der Vorst},
 ## @cite{Templates for the solution of linear systems: Building blocks
 ## for iterative methods}, SIAM, 2nd ed., 1994.
 ## @end enumerate

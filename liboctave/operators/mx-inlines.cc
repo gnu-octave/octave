@@ -4239,9 +4239,9 @@ do_mx_diff_op (const Array<R>& src, int dim, octave_idx_type order,
   return ret;
 }
 
-// Fast extra-precise summation.  According to
-// T. Ogita, S. M. Rump, S. Oishi:
-// Accurate Sum And Dot Product,
+// Fast extra-precise summation.
+// Reference: T. Ogita, S. M. Rump, S. Oishi,
+// "Accurate Sum And Dot Product",
 // SIAM J. Sci. Computing, Vol. 26, 2005
 
 template <typename T>

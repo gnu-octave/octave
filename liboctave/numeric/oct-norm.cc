@@ -67,8 +67,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Theory: norm accumulator is an object that has an accum method able
 // to handle both real and complex element, and a cast operator
-// returning the intermediate norm.  Reference: Higham, N. "Estimating
-// the Matrix p-Norm." Numer. Math. 62, 539-555, 1992.
+// returning the intermediate norm.  Reference: N. Higham,
+// "Estimating the Matrix p-Norm", Numer. Math., 62, pp. 539-555, 1992.
 
 // norm accumulator for the p-norm
 template <typename R>

@@ -199,8 +199,8 @@
 ##
 ## Reference:
 ##
-## @nospell{Y. Saad}, @cite{Iterative Methods for Sparse Linear
-## Systems}, Second edition, 2003, SIAM
+## @nospell{Y. Saad}, @cite{Iterative Methods for Sparse Linear Systems},
+## 2nd edition, SIAM, 2003.
 ##
 ## @seealso{bicg, cgs, gmres, pcg, qmr, tfqmr}
 ##

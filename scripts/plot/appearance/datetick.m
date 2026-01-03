@@ -337,9 +337,9 @@ function sep = __calc_tick_sep__ (lo, hi)
 
   ticint = 5;
 
-  ## Reference: Lewart, C. R., "Algorithms SCALE1, SCALE2, and
+  ## Reference: C.R. Lewart, "Algorithms SCALE1, SCALE2, and
   ## SCALE3 for Determination of Scales on Computer Generated
-  ## Plots", Communications of the ACM, 10 (1973), 639-640.
+  ## Plots", Communications of the ACM, 10, pp. 639-640, 1973.
   ## Also cited as ACM Algorithm 463.
 
   [a, b] = __magform__ ((hi - lo) / ticint);

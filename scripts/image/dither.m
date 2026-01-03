@@ -76,12 +76,12 @@
 ##
 ## @itemize
 ## @item
-## @nospell{Floyd, R. W. and Steinberg, L.}, @cite{An Adaptive Algorithm for
-## Spatial Gray Scale}.  International Symposium Digest of Technical Papers,
-## Society for Information Displays, 1975, p. 36.
+## @nospell{R. W. Floyd and L. Steinberg}, "An Adaptive Algorithm for Spatial
+## Gray Scale", @cite{International Symposium Digest of Technical Papers},
+## Society for Information Displays, @w{p.@: 36}, 1975.
 ##
 ## @item
-## @nospell{Ulichney, R.}, @cite{Digital Halftoning}.  The MIT Press, 1987.
+## @nospell{R. Ulichney}, @cite{Digital Halftoning}, The MIT Press, 1987.
 ## @end itemize
 ##
 ## @seealso{rgb2ind, gray2ind}

@@ -63,10 +63,10 @@
 ## By default, and with the @qcode{"twister"} option, pseudo-random sequences
 ## are computed using the Mersenne Twister with a period of @math{2^{19937}-1}
 ## (See @nospell{M. Matsumoto and T. Nishimura},
-## @cite{Mersenne Twister: A 623-dimensionally equidistributed uniform
-## pseudorandom number generator},
-## @nospell{ACM} Trans.@: on Modeling and Computer Simulation Vol.@: 8, No.@: 1,
-## pp.@: 3--30, January 1998,
+## "Mersenne Twister: A 623-dimensionally equidistributed uniform pseudorandom
+## number generator",
+## @cite{@nospell{ACM Trans.@: on Modeling and Computer Simulation}},
+## @w{Vol.@: 8}, @w{No.@: 1}, @w{pp.@: 3}--30, January 1998,
 ## @url{http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html}).
 ## Do @strong{not} use for cryptography without securely hashing several
 ## returned values together, otherwise the generator state can be learned after

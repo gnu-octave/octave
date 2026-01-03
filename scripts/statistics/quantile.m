@@ -167,13 +167,13 @@
 ## References:
 ##
 ## @itemize @bullet
-## @item @nospell{Becker, R. A., Chambers, J. M. and Wilks, A. R.} (1988)
-## The New S Language.  @nospell{Wadsworth & Brooks/Cole}.
+## @item @nospell{R. A. Becker, J. M. Chambers, and A. R. Wilks},
+## @cite{The New S Language}, @nospell{Wadsworth & Brooks/Cole}, 1988.
 ##
-## @item @nospell{Hyndman, R. J. and Fan, Y.} (1996) Sample quantiles in
-## statistical packages, American Statistician, 50, 361--365.
+## @item @nospell{R. J. Hyndman, and Y. Fan}, "Sample quantiles in statistical
+## packages", @cite{American Statistician}, 50, @w{pp.@: 361}--365, 1996.
 ##
-## @item R: A Language and Environment for Statistical Computing;
+## @item @cite{R: A Language and Environment for Statistical Computing},
 ## @url{https://cran.r-project.org/doc/manuals/fullrefman.pdf}.
 ## @end itemize
 ##

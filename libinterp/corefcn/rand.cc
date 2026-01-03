@@ -430,10 +430,10 @@ Octave's startup files (@pxref{Startup Files}).
 
 Programming Notes: To compute the pseudo-random sequence, @code{rand} uses the
 Mersenne Twister with a period of @math{2^{19937}-1} (See
-@nospell{M. Matsumoto and T. Nishimura}, @cite{Mersenne Twister: A
-623-dimensionally equidistributed uniform pseudorandom number generator},
-@nospell{ACM} Trans.@: on Modeling and Computer Simulation Vol.@tie{}8,
-No.@tie{}1, pp.@tie{}3--30, January 1998,
+@nospell{M. Matsumoto and T. Nishimura}, "Mersenne Twister: A
+623-dimensionally equidistributed uniform pseudorandom number generator",
+@cite{@nospell{ACM Trans.@: on Modeling and Computer Simulation}},
+@w{Vol.@: 8}, @w{No.@: 1}, @w{pp.@: 3}--30, January 1998,
 @url{http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html}).
 Do @strong{not} use for cryptography without securely hashing several returned
 values together, otherwise the generator state can be learned after reading 624
@@ -614,8 +614,8 @@ Programming Note: By default, @code{randn} uses the
 uniform to a normal distribution.
 
 Reference: @nospell{G. Marsaglia and W.W. Tsang},
-@cite{Ziggurat Method for Generating Random Variables},
-J.@tie{}Statistical Software, vol@tie{}5, 2000,
+"Ziggurat Method for Generating Random Variables",
+@cite{J.@tie{}Statistical Software}, @w{Vol.@: 5}, 2000,
 @url{https://www.jstatsoft.org/v05/i08/}
 
 @seealso{rand, randi, rande, randg, randp}
@@ -697,8 +697,8 @@ Programming Note: By default, @code{rande} uses the
 uniform to an exponential distribution.
 
 Reference: @nospell{G. Marsaglia and W.W. Tsang},
-@cite{Ziggurat Method for Generating Random Variables},
-J.@tie{}Statistical Software, vol@tie{}5, 2000,
+"Ziggurat Method for Generating Random Variables",
+@cite{J.@tie{}Statistical Software}, @w{Vol@: 5}, 2000,
 @url{https://www.jstatsoft.org/v05/i08/}
 
 @seealso{rand, randi, randn, randg, randp}
@@ -1073,11 +1073,11 @@ Programming Notes: Five different algorithms are used depending on the range of
 
 @table @asis
 @item For scalar @var{l} @leq{} 12, use direct method.
-W.H.@tie{}Press, et@tie{}al., @cite{Numerical Recipes in C},
+@nospell{W.H.@tie{}Press}, et@tie{}al., @cite{Numerical Recipes in C},
 Cambridge University Press, 1992.
 
 @item For scalar @var{l} > 12, use rejection method.[1]
-W.H.@tie{}Press, et@tie{}al., @cite{Numerical Recipes in C},
+@nospell{W.H.@tie{}Press}, et@tie{}al., @cite{Numerical Recipes in C},
 Cambridge University Press, 1992.
 
 @item For matrix @var{l} @leq{} 10, use inversion method.[2]
@@ -1087,12 +1087,12 @@ FTP.
 @item For matrix @var{l} > 10, use patchwork rejection method.
 @nospell{E.@tie{}Stadlober, et@tie{}al., WinRand source code}, available via
 FTP, or @nospell{H.@tie{}Zechner}, @cite{Efficient sampling from continuous and
-discrete unimodal distributions}, Doctoral Dissertation, 156pp., Technical
-University @nospell{Graz}, Austria, 1994.
+discrete unimodal distributions}, Doctoral Dissertation, @w{pp.@: 156},
+Technical University @nospell{Graz}, Austria, 1994.
 
 @item For @var{l} > 1e8, use normal approximation.
-@nospell{L.@tie{}Montanet}, et@tie{}al., @cite{Review of Particle Properties},
-Physical Review@tie{}D 50 p1284, 1994.
+@nospell{L.@tie{}Montanet}, et@tie{}al., "Review of Particle Properties",
+@cite{Physical Review@tie{}D}, 50, @w{p.@: 1284}, 1994.
 @end table
 
 @seealso{rand, randi, randn, rande, randg}

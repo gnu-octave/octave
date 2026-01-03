@@ -33,9 +33,10 @@
 ##
 ## This function can be used to integrate a system of ODEs with a given initial
 ## condition @var{x} from @var{t} to @var{t+dt}, with a Rosenbrock method of
-## order (2,3).  All the mathematical formulas are from Shampine, L. F. and
-## M. W. Reichelt, "The MATLAB ODE Suite", SIAM Journal on Scientific
-## Computing, Vol. 18, 1997, pp. 1–22.
+## order (2,3).  All the mathematical formulas are from
+## @nospell{L. F. Shampine and M. W. Reichelt}, "The MATLAB ODE Suite",
+## @cite{SIAM Journal on Scientific Computing}, @w{Vol.@: 18}, @w{pp.@: 1}--22,
+## 1997.
 ##
 ## @var{f} is a function handle that defines the ODE: @code{y' = f(tau,y)}.
 ## The function must accept two inputs where the first is time @var{tau} and

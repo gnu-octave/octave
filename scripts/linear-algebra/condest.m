@@ -99,15 +99,16 @@
 ##
 ## @itemize
 ## @item
-## @nospell{N.J. Higham and F. Tisseur}, @cite{A Block Algorithm
-## for Matrix 1-Norm Estimation, with an Application to 1-Norm
-## Pseudospectra}.  SIMAX vol 21, no 4, pp 1185--1201.
-## @url{https://dx.doi.org/10.1137/S0895479899356080}
+## @nospell{N.J. Higham and F. Tisseur}, "A Block Algorithm for Matrix 1-Norm
+## Estimation, with an Application to 1-Norm Pseudospectra",
+## @cite{SIAM Journal on Matrix Analysis and Applications}, @w{Vol.@: 21},
+## @w{Iss.@: 4}, @w{pp.@: 1185}--1201, 2000,
+## @url{https://dx.doi.org/10.1137/S0895479899356080}.
 ##
 ## @item
-## @nospell{N.J. Higham and F. Tisseur}, @cite{A Block Algorithm
-## for Matrix 1-Norm Estimation, with an Application to 1-Norm
-## Pseudospectra}.  @url{https://citeseer.ist.psu.edu/223007.html}
+## @nospell{N.J. Higham and F. Tisseur}, @cite{A Block Algorithm for Matrix
+## 1-Norm Estimation, with an Application to 1-Norm Pseudospectra},
+## @url{https://citeseer.ist.psu.edu/223007.html}.
 ## @end itemize
 ##
 ## @seealso{cond, rcond, norm, normest1, normest}

@@ -34,8 +34,8 @@
 ## @seealso{vec}
 ## @end deftypefn
 
-## See Magnus and Neudecker (1988), Matrix differential calculus with
-## applications in statistics and econometrics.
+## See Magnus and Neudecker, Matrix differential calculus with applications in
+## statistics and econometrics, 1988.
 
 function v = vech (x)
 

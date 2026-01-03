@@ -52,8 +52,8 @@
 ## factors (@math{\sigma^2}); and @var{S} (p-by-p, or p-by-p-by-k if k > 1),
 ## the error covariance of @var{x}.
 ##
-## Reference: @nospell{Golub and Van Loan} (1996),
-## @cite{Matrix Computations (3rd Ed.)}, Johns Hopkins, Section 5.6.3
+## Reference: @nospell{Golub and Van Loan},
+## @cite{Matrix Computations (3rd Ed.)}, Johns Hopkins, Section 5.6.3, 1996.
 ##
 ## @seealso{ols, gls, lsqnonneg}
 ## @end deftypefn

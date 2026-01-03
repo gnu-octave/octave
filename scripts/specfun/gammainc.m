@@ -81,11 +81,12 @@
 ## @nospell{Dover publications, Inc.}, 1972.
 ##
 ## @nospell{W. Gautschi},
-## @cite{A computational procedure for incomplete gamma functions},
-## @nospell{ACM Trans.@: Math Software}, pp.@: 466--481, Vol 5, No.@: 4, 2012.
+## "A computational procedure for incomplete gamma functions",
+## @cite{@nospell{ACM Trans.@: Math Software}}, @w{Vol.@: 5}, @w{No.@: 4},
+## @w{pp.@: 466}--481, 2012.
 ##
 ## @nospell{W. H. Press, S. A. Teukolsky, W. T. Vetterling, and B. P. Flannery},
-## @cite{Numerical Recipes in Fortran 77}, ch.@: 6.2, Vol 1, 1992.
+## @cite{Numerical Recipes in Fortran 77}, @w{Vol.@: 1}, @w{ch.@: 6.2}, 1992.
 ##
 ## @seealso{gamma, gammaincinv, gammaln}
 ## @end deftypefn

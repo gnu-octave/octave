@@ -307,9 +307,15 @@ documentation for @code{svd_driver} for more information on choosing a driver.
 %!test
 %! [u, s, v] = svd ([1, 2; 2, 1]);
 %! x = 1 / sqrt (2);
-%! assert (u, [-x, -x; -x, x], sqrt (eps));
+%! ## Because values are accurate only up to a phase factor, tests must check
+%! ## separately for magnitude and for phase.
+%! assert (abs (u), abs ([-x, -x; -x, x]), sqrt (eps));
+%! phase = prod (sign (u));
+%! assert (phase == [1, -1] || phase == [-1, 1]); 
 %! assert (s, [3, 0; 0, 1], sqrt (eps));
-%! assert (v, [-x, x; -x, -x], sqrt (eps));
+%! assert (abs (v), abs ([-x, x; -x, -x]), sqrt (eps));
+%! phase = prod (sign (v));
+%! assert (phase == [1, -1] || phase == [-1, 1]); 
 
 %!test
 %! a = [1, 2, 3; 4, 5, 6];
@@ -336,9 +342,14 @@ documentation for @code{svd_driver} for more information on choosing a driver.
 %!test
 %! [u, s, v] = svd (single ([1, 2; 2, 1]));
 %! x = single (1 / sqrt (2));
-%! assert (u, [-x, -x; -x, x], sqrt (eps ("single")));
+
+%! assert (abs (u), abs ([-x, -x; -x, x]), sqrt (eps ("single")));
+%! phase = prod (sign (u));
+%! assert (phase == [1, -1] || phase == [-1, 1]); 
 %! assert (s, single ([3, 0; 0, 1]), sqrt (eps ("single")));
-%! assert (v, [-x, x; -x, -x], sqrt (eps ("single")));
+%! assert (abs (v), abs ([-x, x; -x, -x]), sqrt (eps ("single")));
+%! phase = prod (sign (v));
+%! assert (phase == [1, -1] || phase == [-1, 1]); 
 
 %!test
 %! a = single ([1, 2, 3; 4, 5, 6]);

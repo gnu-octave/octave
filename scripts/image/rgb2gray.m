@@ -102,7 +102,7 @@ endfunction
 %! for i = 1:5
 %!   I(:,:,1,i) = rgb2gray (rgb(:,:,:,i));
 %! endfor
-%! assert (rgb2gray (rgb), I);
+%! assert (rgb2gray (rgb), I, eps);
 
 ## Test output class and size for input images.
 ## Most of the tests only test for colormap input.

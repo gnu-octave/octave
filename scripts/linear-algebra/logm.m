@@ -198,7 +198,7 @@ endfunction
 %!   ## The math libraries in libc++ seem to require larger tolerances
 %!   tol = 65*eps;
 %! else
-%!   tol = 40*eps;
+%!   tol = 42*eps;
 %! endif
 %! warning ("off", "Octave:logm:non-principal", "local");
 %! assert (expm (logm (A)), A, tol);

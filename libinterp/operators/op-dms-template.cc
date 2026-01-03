@@ -83,12 +83,33 @@ DEFBINOP (dmsmul, DIAG_MATRIX, SCALAR)
   return dm_s_mul<> (v1, v2.SCALAR_VALUE ());
 }
 
+template <typename DM, typename S>
+octave_value
+dm_s_div (const DM& dm, const S& d)
+{
+  if constexpr (is_instance<std::complex, S>::value)
+    {
+      auto nd = std::norm (d);
+      if (nd == 0.0 || math::isnan (nd))
+        return octave_value (dm.MATRIX_VALUE () / d);
+      else
+        return octave_value (dm.DIAG_MATRIX_VALUE () / d);
+    }
+  else
+    {
+      if (d == 0.0 || math::isnan (d))
+        return octave_value (dm.MATRIX_VALUE () / d);
+      else
+        return octave_value (dm.DIAG_MATRIX_VALUE () / d);
+    }
+}
+
 DEFBINOP (dmsdiv, MATRIX, SCALAR)
 {
   OCTAVE_CAST_BASE_VALUE (const OCTAVE_DIAG_MATRIX&, v1, a1);
   OCTAVE_CAST_BASE_VALUE (const OCTAVE_SCALAR&, v2, a2);
 
-  return v1.DIAG_MATRIX_VALUE () / v2.SCALAR_VALUE ();
+  return dm_s_div<> (v1, v2.SCALAR_VALUE ());
 }
 
 template <typename S, typename DM>
@@ -119,12 +140,33 @@ DEFBINOP (sdmmul, SCALAR, DIAG_MATRIX)
   return s_dm_mul<> (v1.SCALAR_VALUE (), v2);
 }
 
+template <typename S, typename DM>
+octave_value
+s_dm_ldiv (const S& d, const DM& dm)
+{
+  if constexpr (is_instance<std::complex, S>::value)
+    {
+      auto nd = std::norm (d);
+      if (nd == 0.0 || math::isnan (nd))
+        return octave_value (dm.MATRIX_VALUE () / d);
+      else
+        return octave_value (dm.DIAG_MATRIX_VALUE () / d);
+    }
+  else
+    {
+      if (d == 0.0 || math::isnan (d))
+        return octave_value (dm.MATRIX_VALUE () / d);
+      else
+        return octave_value (dm.DIAG_MATRIX_VALUE () / d);
+    }
+}
+
 DEFBINOP (sdmldiv, SCALAR, MATRIX)
 {
   OCTAVE_CAST_BASE_VALUE (const OCTAVE_SCALAR&, v1, a1);
   OCTAVE_CAST_BASE_VALUE (const OCTAVE_DIAG_MATRIX&, v2, a2);
 
-  return v2.DIAG_MATRIX_VALUE () / v1.SCALAR_VALUE ();
+  return s_dm_ldiv<> (v1.SCALAR_VALUE (), v2);
 }
 
 DEFBINOP (dmspow, MATRIX, SCALAR)

@@ -50,8 +50,6 @@ MDiagArray2<T>::is_multiple_of_identity (T val) const
 
 // Two dimensional diagonal array with math ops.
 
-// Element by element MDiagArray2 by MDiagArray2 ops.
-
 // Element by element MDiagArray2 by scalar ops.
 
 #define MARRAY_DAS_OP(OP, FN)                                   \

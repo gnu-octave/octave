@@ -28,7 +28,8 @@
 
 #define SCALAR float_scalar
 #define SCALARV float_complex
-#define MATRIX float_complex_diag_matrix
+#define DIAG_MATRIX float_complex_diag_matrix
+#define MATRIX float_complex_matrix
 
 #define SSHORT fs
 #define MSHORT fcdm

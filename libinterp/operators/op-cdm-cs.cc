@@ -27,7 +27,8 @@
 #define MINCLUDE "ov-cx-diag.h"
 
 #define SCALAR complex
-#define MATRIX complex_diag_matrix
+#define DIAG_MATRIX complex_diag_matrix
+#define MATRIX complex_matrix
 
 #define SSHORT cs
 #define MSHORT cdm

@@ -175,16 +175,6 @@
 %! a = struct ("value", {1, 2, 3, 4, 5});
 %! [a(2:4).value] = 1;
 
-## FIXME See https://savannah.gnu.org/bugs/?60723
-## The following test is currently (2026-01-01) a known failure on the
-## bytecode-interpreter branch. The reason is that on the default branch,
-## it calls the function  err_nonbraced_cs_list_assignment()
-## in libinterp/corefcn/errwarn.cc, but on the bytecode-interpreter branch
-## it instead calls the err_invalid_structure_assignment() function in that
-## same file. This gives a different error message which does not match
-## what is expected. Instead of changing the error message, which would be
-## only a cosmetic change and not address the reason for the mismatch,
-## it is being left as a FIXME for now.
 %!error <invalid assignment to cs-list outside multiple assignment>
 %! c(4, 4, 4, 4).name  = "a";
 %! c(3, 3, 3, 3).value = 1;

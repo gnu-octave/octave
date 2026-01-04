@@ -75,7 +75,6 @@
 static bool ov_need_stepwise_subsrefs (octave_value &ov);
 static void copy_many_args_to_caller (octave::stack_element *sp, octave::stack_element *caller_stack_end,
                                       int n_args_to_move, int n_args_caller_expects);
-static int lhs_assign_numel (octave_value &ov, const std::string& type, const std::list<octave_value_list>& idx);
 static int pop_code_short (unsigned char *ip);
 
 #define TODO(msg) error("Not done yet %d: " msg, __LINE__)
@@ -3877,6 +3876,16 @@ eval:
     int tree_idx = POP_CODE_INT ();
     CHECK (tree_idx < 0); // Should always be negative to mark for eval. Otherwise it is debug data
 
+    // TODO: Kludge alert. Mirror the behaviour in ov_classdef::subsref
+    // where under certain conditions a magic number nargout of -1 is
+    // expected to  maybe return a cs-list.
+    int eval_nargout = nargout;
+    if (nargout == 255)
+      {
+        nargout = 1;
+        eval_nargout = -1;
+      }
+
     auto it = unwind_data->m_ip_to_tree.find (tree_idx);
     CHECK (it != unwind_data->m_ip_to_tree.end ());
 
@@ -3885,7 +3894,7 @@ eval:
     octave_value_list retval;
     try
     {
-      retval = te->evaluate_n (*m_tw, nargout);
+      retval = te->evaluate_n (*m_tw, eval_nargout);
     }
     CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION
@@ -6331,9 +6340,6 @@ subassign_chained:
 
     try
       {
-        if (type.size () && type.back () != '(' && lhs_assign_numel (lhs, type, idx) != 1)
-          err_invalid_structure_assignment ();
-
         if (slot)
           {
             octave_value &lhs_slot = bsp[slot].ov;
@@ -7630,6 +7636,14 @@ static void copy_many_args_to_caller (octave::stack_element *sp,
     PUSH_OV ();
 }
 
+// FIXME: See https://savannah.gnu.org/bugs/?60723
+// Functions lhs_assign_numel and xeval_for_numel were only used for simple 
+// assignments (as opposed to multi-assignments), but they are no longer needed.
+// We comment out the code to avoid a warning about unused function, but keep
+// the code because it might be useful in the future to deal with multi-
+// assignments, which are currently implemented by means of the eval opcode.
+
+/*
 static octave_value xeval_for_numel (octave_value &ov, const std::string& type, const std::list<octave_value_list>& idx);
 
 // This function reimplements octave_lvalue::numel()
@@ -7770,6 +7784,7 @@ static octave_value xeval_for_numel (octave_value &ov, const std::string& type, 
 
   return retval;
 }
+*/
 
 
 loc_entry vm::find_loc (int ip, std::vector<octave::loc_entry> &loc_entries)

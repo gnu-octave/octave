@@ -5108,7 +5108,10 @@ eval_visit_index_expression (tree_index_expression& expr)
   int nargout = NARGOUT ();
   MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
   PUSH_CODE (INSTR::EVAL);
-  PUSH_CODE (nargout);
+  if (m_unknown_nargout)
+    PUSH_CODE (-1);   // magic nargout
+  else
+    PUSH_CODE (nargout);
   PUSH_CODE_INT (tree_idx);
 
   maybe_emit_bind_ans_and_disp (expr);

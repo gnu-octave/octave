@@ -135,10 +135,7 @@
 %! assert (isequal (obj(2:end), 5:7));
 %! assert (isequal (obj.x, [7 5 6 7]));
 
-## FIXME See https://savannah.gnu.org/bugs/?60723
-## The following test works on the default branch
-## but not on the bytecode-interpreter branch.
-%!test <54966>
+%!test <*54966>
 %! obj = foo_subsref_subsasgn (1);
 %! obj{1:3} = 5:7;
 %! assert (isequal ([obj{1:3}], 5:7));
@@ -175,10 +172,7 @@
 %! assert (isequal (obj.x(2:end), 5:7));
 %! assert (isequal (obj.x, [7 5 6 7]));
 
-## FIXME See https://savannah.gnu.org/bugs/?60723
-## The following test works on the default branch
-## but not on the bytecode-interpreter branch.
-%!test <54966>
+%!test <*54966>
 %! obj = foo_subsref_subsasgn (1);
 %! obj.x{1:3} = 5:7;
 %! assert (isequal ([obj.x{1:3}], 5:7));

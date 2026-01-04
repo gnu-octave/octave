@@ -50,6 +50,12 @@
 // For BUFSIZ.
 #include <cstdio>
 
+#if defined (OCTAVE_USE_WINDOWS_API) && ! defined (OCTAVE_HAVE_WINDOWS_UTF8_LOCALE)
+#  include "oct-string.h"
+
+#  include "error.h"
+#endif
+
 // Internal buffer sizes (default and "unbuffered" versions)
 #define STASHED_CHARACTERS 16
 #define BIGBUFSIZE (256 * 1024 + STASHED_CHARACTERS)
@@ -98,6 +104,18 @@ gzfilebuf::open (const char *name, std::ios_base::openmode mode)
   char char_mode[6] = "\0\0\0\0\0";
   if (! this->open_mode (mode, char_mode))
     return nullptr;
+
+#if defined (OCTAVE_USE_WINDOWS_API) && ! defined (OCTAVE_HAVE_WINDOWS_UTF8_LOCALE)
+  // Check for any non-ASCII characters on Windows configurations that don't
+  // support UTF-8.
+  // FIXME: A potential (but brittle) work-around could be to open a stream to
+  //        a temporary file with only ASCII characters in its path and move
+  //        that temporary file to the actual file after it has been closed.
+  //        That would not work when appending to existing files though.
+  if (octave::string::any_non_ascii_chars (name))
+    error ("zlib: cannot open gzip-compressed file %s with non-ASCII characters in its name",
+           name);
+#endif
 
   // Attempt to open file
   if ((m_file = gzopen (name, char_mode)) == nullptr)

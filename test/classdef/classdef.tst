@@ -190,15 +190,20 @@
 
 %!test <60723>
 %! # Check that numel is not called in subsasgn, multi-assignment
-%! obj = class_bug60723A;
+%! obj = class_bug60723A ();
 %! [obj.c] = 20;
 %! assert (obj.c, 20);
 
 %!test <60723>
 %! # Check that numel is not called in subsref
-%! obj = class_bug60723B;
+%! obj = class_bug60723B ();
 %! assert ([obj{1:5}], repelem (5, 5));
 %! assert ([obj(1:5).a], repelem (5, 5));
+
+%!test <*60723>
+%! obj = class_bug60723C ();
+%! assert ([obj{1:end}], repelem (4, 4));
+%! [a, b] = obj.x{1:end};
 
 %!test <*55223>
 %! obj = foo_subsref_subsasgn (2);

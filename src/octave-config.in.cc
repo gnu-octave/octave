@@ -35,12 +35,6 @@
 #include <algorithm>
 #include <cstdlib>
 
-#if defined (OCTAVE_USE_WINDOWS_API)
-#  include <vector>
-#  include <locale>
-#  include <codecvt>
-#endif
-
 #if ! defined (OCTAVE_PREFIX)
 #  define OCTAVE_PREFIX %OCTAVE_PREFIX%
 #endif
@@ -151,18 +145,7 @@ extern "C"
 int
 wmain (int argc, wchar_t **wargv)
 {
-  static char **argv = new char * [argc + 1];
-  std::vector<std::string> argv_str;
-
-  // convert wide character strings to multibyte UTF-8 strings
-  std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wchar_conv;
-  for (int i_arg = 0; i_arg < argc; i_arg++)
-    argv_str.push_back (wchar_conv.to_bytes (wargv[i_arg]));
-
-  // Get pointers to C strings not before vector is stable.
-  for (int i_arg = 0; i_arg < argc; i_arg++)
-    argv[i_arg] = &argv_str[i_arg][0];
-  argv[argc] = nullptr;
+  char **argv = convert_wargv_to_utf8 (argc, wargv);
 
 #else
 int

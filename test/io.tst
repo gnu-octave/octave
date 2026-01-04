@@ -348,7 +348,7 @@
 %!   end_unwind_protect
 %! endfor
 
-%!testif HAVE_ZLIB
+%!testif HAVE_ZLIB ; ! ispc () || __have_feature__ ("WINDOWS_UTF8_LOCALE")
 %! olddir = pwd ();
 %! for opt = {'-binary', '-float-binary', '-text', '-v7'}
 %!   tmpdir = tempname ();

@@ -43,8 +43,8 @@
 ## percentiles specified by @var{p} along the first non-singleton dimension of
 ## @var{x}.
 ##
-## The data in @var{x} must be numeric and any NaN values are ignored.  The size
-## of @var{q} is equal to the size of @var{x} except for the operating
+## The data in @var{x} must be numeric and any NaN values are ignored.  The
+## size of @var{q} is equal to the size of @var{x} except for the operating
 ## dimension, which equals to the number of quantiles specified by @var{p}.
 ##
 ## @var{p} is a numeric vector specifying the percentiles to be computed.  All
@@ -63,7 +63,8 @@
 ## equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
 ## greater than @code{ndims (@var{x})} is ignored.  If all dimensions in
 ## @var{vecdim} are greater than @code{ndims (@var{x})}, then @code{quantile}
-## will return N copies of @var{x} along the smallest dimension in @var{vecdim}.
+## will return N copies of @var{x} along the smallest dimension in
+## @var{vecdim}.
 ##
 ## Specifying the dimension as @qcode{"all"} will cause @code{iqr} to operate
 ## on all elements of @var{x}, and is equivalent to @code{iqr (@var{x}(:))}.

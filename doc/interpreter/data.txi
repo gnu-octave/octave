@@ -124,8 +124,9 @@ numbers---no integer, logical, or char values.
 
 In general, use NA and the test @code{isna}, to describe the dataset or to
 reduce the dataset to only valid entries.  Numerical calculations with NA will
-generally "poison" the results and conclude with an output NA.  However, this
-can not be guaranteed on all platforms and NA may be replaced by NaN.
+generally @qcode{"poison"} the results and conclude with an output NA@.
+However, this can not be guaranteed on all platforms and NA may be replaced by
+NaN.
 
 Example 1 : Describing the dataset
 

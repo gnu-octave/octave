@@ -31,7 +31,7 @@ classdef weboptions < handle
   ##
   ## Specify parameters for RESTful web services.
   ##
-  ## When called with with no inputs return a default @code{weboptions} object
+  ## When called with no inputs return a default @code{weboptions} object
   ## to specify parameters for a request to a web service.  A @code{weboptions}
   ## object is an optional input argument to the @code{webread} and
   ## @code{webwrite} functions.

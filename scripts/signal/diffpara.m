@@ -40,8 +40,8 @@
 ##
 ## The value of @var{d} is simply the mean of @var{dd}.
 ##
-## Reference: @nospell{P.J. Brockwell & R.A. Davis}. @cite{Time Series:
-## Theory and Methods}. @nospell{Springer} 1987.
+## Reference: @nospell{P.J. Brockwell & R.A. Davis}, @cite{Time Series:
+## Theory and Methods}, @nospell{Springer}, 1987.
 ## @end deftypefn
 
 function [d, dd] = diffpara (x, a, b)

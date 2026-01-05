@@ -181,8 +181,9 @@ All other blocks of the form @code{C(r(i):r(i+1)-1,s(i):s(i+1)-1)} are diagonal
 blocks of @code{A23}, and are square with a zero-free diagonal.
 
 The method used is described in: @nospell{A. Pothen & C.-J. Fan.}
-@cite{Computing the Block Triangular Form of a Sparse Matrix}.
-@nospell{ACM} Trans.@: Math.@: Software, 16(4):303--324, 1990.
+"Computing the Block Triangular Form of a Sparse Matrix".
+@cite{@nospell{ACM Trans.@: Math.@: Software}}, 16(4), @w{pp.@: 303}--324,
+1990.
 @seealso{colamd, ccolamd}
 @end deftypefn */)
 {

@@ -3443,6 +3443,13 @@
   if (nr == 1 && nc == 1)                                               \
     {                                                                   \
       RET_EL_TYPE s = m.elem (0,0);                                     \
+      if (octave::math::isnan (s))                                      \
+        {                                                               \
+          RET_TYPE r (a_nr, a_nc, a_nr * a_nc);                         \
+          for (octave_idx_type i = 0 ; i < r.numel () ; i++)            \
+            r.elem(i) = octave::numeric_limits<EL_TYPE>::NaN ();        \
+          return r;                                                     \
+        }                                                               \
       octave_idx_type nz = a.nnz ();                                    \
       RET_TYPE r (a_nr, a_nc, nz);                                      \
                                                                         \
@@ -3464,6 +3471,13 @@
   else if (a_nr == 1 && a_nc == 1)                                      \
     {                                                                   \
       RET_EL_TYPE s = a.elem (0,0);                                     \
+      if (octave::math::isnan (s))                                      \
+        {                                                               \
+          RET_TYPE r (nr, nc, nr * nc);                                 \
+          for (octave_idx_type i = 0 ; i < r.numel () ; i++)            \
+            r.elem(i) = octave::numeric_limits<EL_TYPE>::NaN ();        \
+          return r;                                                     \
+        }                                                               \
       octave_idx_type nz = m.nnz ();                                    \
       RET_TYPE r (nr, nc, nz);                                          \
                                                                         \

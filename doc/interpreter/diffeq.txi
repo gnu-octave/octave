@@ -153,9 +153,9 @@ and @sc{dasrt}, which can be used to solve DAEs with constraints
 
 @DOCSTRING(dasrt_options)
 
-See @nospell{K. E. Brenan}, et al., @cite{Numerical Solution of Initial-Value
-Problems in Differential-Algebraic Equations}, North-Holland (1989),
-@nospell{DOI}: @url{https://doi.org/10.1137/1.9781611971224},
+See @nospell{K. E. Brenan}, @w{et al.}, @cite{Numerical Solution of
+Initial-Value Problems in Differential-Algebraic Equations}, North-Holland,
+1989, @nospell{DOI}: @url{https://doi.org/10.1137/1.9781611971224},
 for more information about the implementation of @sc{dassl}.
 
 
@@ -210,8 +210,8 @@ Currently implemented solvers are:
 @end itemize
 
 Detailed information on the solvers are given in @nospell{L. F. Shampine} and
-@nospell{M. W. Reichelt}, @cite{The MATLAB ODE Suite}, SIAM Journal on
-Scientific Computing, Vol. 18, 1997, pp. 1–22,
+@nospell{M. W. Reichelt}, "The MATLAB ODE Suite", @cite{SIAM Journal on
+Scientific Computing}, @w{Vol.@: 18}, @w{pp.@: 1}--22, 1997,
 @nospell{DOI}: @url{https://doi.org/10.1137/S1064827594276424}.
 
 @DOCSTRING(ode45)

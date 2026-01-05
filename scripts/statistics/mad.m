@@ -49,11 +49,11 @@
 ##
 ## If @var{x} is a vector, then @code{mad (@var{x})} returns the mean absolute
 ## deviation of the elements in @var{x}.
-## 
+##
 ## If @var{x} is a matrix, then @code{mad (@var{x})} returns a row vector with
 ## each element containing the mean absolute deviation of the corresponding
 ## column in @var{x}.
-## 
+##
 ## If @var{x} is an array, then @code{mad (@var{x})} computes the mean absolute
 ## deviation along the first non-singleton dimension of @var{x}.
 ##

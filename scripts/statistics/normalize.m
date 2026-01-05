@@ -158,8 +158,9 @@
 ## @enumerate
 ## @item
 ## The option @option{DataVariables} is only available when input @var{x} is a
-## table class, which is not yet implemented in core Octave.  See the datatypes
-## and tablicious Octave Packages for an available overloaded method.
+## table class, which is not yet implemented in core Octave.  See the
+## @nospell{datatypes} and @nospell{tablicious} Octave Packages for an
+## available overloaded method.
 ## @end enumerate
 ##
 ## @seealso{zscore, iqr, norm, rescale, std, median, mean, mad}

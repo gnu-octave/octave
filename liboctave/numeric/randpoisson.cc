@@ -105,10 +105,10 @@ flogfak (double k)
  *                                                                *
  * FUNCTION :   - pprsc samples a random number from the Poisson  *
  *                distribution with parameter my > 0.             *
- * REFERENCE :  - H. Zechner (1994): Efficient sampling from      *
+ * REFERENCE :  - H. Zechner : Efficient sampling from            *
  *                continuous and discrete unimodal distributions, *
- *                Doctoral Dissertation, 156 pp., Technical       *
- *                University Graz, Austria.                       *
+ *                Doctoral Dissertation, pp. 156, Technical       *
+ *                University Graz, Austria, 1994.                 *
  * SUBPROGRAM : - drand(seed) ... (0,1)-Uniform generator with    *
  *                unsigned long integer *seed.                    *
  *                                                                *
@@ -421,7 +421,7 @@ rand_poisson (T L_arg, octave_idx_type n, T *p)
     }
   else
     {
-      /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
+      /* normal approximation: from Phys. Rev. D, Vol. 50, p. 1284, 1994. */
       const double sqrtL = std::sqrt (L);
       for (i = 0; i < n; i++)
         {
@@ -470,7 +470,7 @@ rand_poisson (T L_arg)
     }
   else
     {
-      /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
+      /* normal approximation: from Phys. Rev. D, Vol. 50, p1284, 1994. */
       ret = std::floor (rand_normal<T> () * std::sqrt (L) + L + 0.5);
       if (ret < 0.0) ret = 0.0; /* will probably never happen */
     }

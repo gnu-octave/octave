@@ -84,6 +84,7 @@
 ## the order of the matrix @var{A}.
 ##
 ## @end table
+##
 ## Octave accepts any case for these fieldnames.
 ##
 ## All inputs beyond @var{options} will be passed as positional arguments to
@@ -108,8 +109,9 @@
 ## @table @code
 ## @item terms
 ## Vector for which @code{output.terms(i)} is the number of Taylor series terms
-## used when evaluating the i'th block, or, in the case of the logarithm, the
-## number of square roots of matrices of dimension greater than 2.
+## used when evaluating the @nospell{i'th} block, or, in the case of the
+## logarithm, the number of square roots of matrices of dimension greater than
+## 2.
 ##
 ## @item ind
 ## Cell array for which the (i,j) block of the reordered Schur factor @var{T}
@@ -149,7 +151,7 @@
 ## @end example
 ##
 ## @noindent
-## will produce the same results (within possible roundoff error) as
+## will produce the same results (within possible rounding error) as
 ##
 ## @example
 ## @group
@@ -162,12 +164,12 @@
 ## References:
 ##
 ## @nospell{Philip I. Davies and Nicholas J. Higham},
-## "A Schur-Parlett algorithm for computing matrix functions",
-## @cite{SIAM Journal on Matrix Analysis and Applications}, vol.@: 25(2),
-## 464--485, 2003.
+## "A @nospell{Schur-Parlett} algorithm for computing matrix functions",
+## @cite{SIAM Journal on Matrix Analysis and Applications}, @w{Vol.@: 25(2)},
+## @w{pp.@: 464}--485, 2003.
 ##
 ## @nospell{Nicholas J. Higham}, @cite{Functions of Matrices: Theory and
-## Computation}, SIAM, pp.@: 425, 2008, ISBN 978-0-898716-46-7.
+## Computation}, SIAM, @w{pp.@: 425}, 2008, ISBN 978-0-898716-46-7.
 ##
 ## @seealso{expm, logm, sqrtm}
 ## @end deftypefn

@@ -305,7 +305,8 @@ console::console (command_widget *p)
     m_last_key_string (QString ()),
     m_find_result_available (false),
     m_find_direction (false),
-    m_last_find_inc_result (QString ())
+    m_last_find_inc_result (QString ()),
+    m_process_command (true)
 {
   setMargins (0);
   setWrapMode (QsciScintilla::WrapWord);
@@ -373,7 +374,35 @@ console::execute_command (const QString& command)
   accept_command_line ();
 }
 
-// Append a string and update the curdor püosition
+// Get user input from command line
+void
+console::get_input_from_terminal (const QString& prompt)
+{
+  m_process_command = false;
+  m_input_prompt = prompt;
+
+  if (! text (lines () - 1).isEmpty ())
+    append ("\n");
+
+  append_string (prompt);
+}
+
+void
+console::finish_input_from_terminal ()
+{
+  QString input_line = text (lines () - 1);
+
+  if (input_line.startsWith (m_input_prompt))
+    input_line.remove (0, m_input_prompt.length ());
+
+  append_string ("\n");
+
+  m_process_command = true;
+
+  Q_EMIT finished_input_from_terminal_signal (input_line);
+}
+
+// Append a string and update the cursor position
 void
 console::append_string (const QString& string, int style)
 {
@@ -506,8 +535,14 @@ void
 console::keyPressEvent (QKeyEvent *e)
 {
   if (e->key () == Qt::Key_Return)
-    // On "return", accept the current command line
-    accept_command_line ();
+    {
+      if (m_process_command)
+        // On "return", accept the current command line
+        accept_command_line ();
+      else
+        // On "return", emit a signal that the input is finished
+        finish_input_from_terminal ();
+    }
   else
     {
       // Otherwise, store text process the expected event

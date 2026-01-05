@@ -501,10 +501,40 @@ qt_interpreter_events::focus_window (const std::string win_name)
   Q_EMIT focus_window_signal (QString::fromStdString (win_name));
 }
 
-void qt_interpreter_events::execute_command_in_terminal
-(const std::string& command)
+void
+qt_interpreter_events::execute_command_in_terminal (const std::string& command)
 {
   Q_EMIT execute_command_in_terminal_signal (QString::fromStdString (command));
+}
+
+std::string
+qt_interpreter_events::get_input_from_terminal (const std::string& prompt)
+{
+  std::string retval;
+
+  if (m_octave_qobj.experimental_terminal_widget ()
+      && m_octave_qobj.have_terminal_window ())
+    {
+      // currently only works with experimental terminal widget
+      QMutexLocker autolock (&m_mutex);
+
+      Q_EMIT get_input_from_terminal_signal (QString::fromStdString (prompt));
+
+      // Wait for user input
+      wait ();
+
+      QString input_line = m_result.toString ();
+
+      return input_line.toStdString ();
+    }
+
+  return retval;
+}
+
+void qt_interpreter_events::finished_input_from_terminal (const QString& input)
+{
+  m_result = input;
+  wake_all ();
 }
 
 void

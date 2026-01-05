@@ -29,7 +29,7 @@
 ## Convert matrix of covariance coefficients to a matrix of correlation
 ## coefficients.
 ##
-## Given a numeric, square, symmetric, and positive semidefinite matrix of
+## Given a numeric, square, symmetric, and positive semi-definite matrix of
 ## covariance coefficients, @var{c}, calculate the corresponding linear
 ## correlation coefficient matrix, @var{r}, that would be produced from the
 ## same variables that produced @var{c}.
@@ -57,7 +57,7 @@
 ## If the optional output @var{s} is requested, it will contain a column vector
 ## of the standard deviations of the variables that produced the covariance
 ## matrix @var{c}.  Noting that the variances of the variables are contained in
-## the main daigonal of @var{c}, this is equivalent output to
+## the main diagonal of @var{c}, this is equivalent output to
 ## @w{@code{sqrt (diag ( @var{c}))}}.
 ##
 ## Implementation Note: A proper covariance matrix as produced by @code{cov} is

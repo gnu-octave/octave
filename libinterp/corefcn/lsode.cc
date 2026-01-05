@@ -266,8 +266,8 @@ You can use the function @code{lsode_options} to set optional
 parameters for @code{lsode}.
 
 See @nospell{Alan C. Hindmarsh},
-@cite{ODEPACK, A Systematized Collection of ODE Solvers},
-in Scientific Computing, @nospell{R. S. Stepleman}, editor, (1983)
+"ODEPACK, A Systematized Collection of ODE Solvers",
+@cite{Scientific Computing}, @nospell{R. S. Stepleman}, editor, 1983.
 or @url{https://computing.llnl.gov/projects/odepack}
 for more information about the inner workings of @code{lsode}.
 

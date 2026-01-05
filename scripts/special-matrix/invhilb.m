@@ -71,11 +71,11 @@
 ## The validity of this formula can easily be checked by expanding the binomial
 ## coefficients in both formulas as factorials.  It can be derived more
 ## directly via the theory of Cauchy matrices.  See @nospell{J. W. Demmel},
-## @cite{Applied Numerical Linear Algebra}, p.@: 92.
+## @cite{Applied Numerical Linear Algebra}, @w{p.@: 92}.
 ##
-## Compare this with the numerical calculation of @code{inv (hilb (n))},
-## which suffers from the ill-conditioning of the Hilbert matrix, and the
-## finite precision of your computer's floating point arithmetic.
+## Compare this with the numerical calculation of @code{inv (hilb (n))}, which
+## suffers from the ill-conditioning of the Hilbert matrix, and the finite
+## precision of your computer's floating point arithmetic.
 ## @seealso{hilb}
 ## @end deftypefn
 

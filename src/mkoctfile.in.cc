@@ -41,11 +41,6 @@
 #include <cstdio>
 #include <cstdlib>
 
-#if defined (OCTAVE_USE_WINDOWS_API)
-#  include <locale>
-#  include <codecvt>
-#endif
-
 // Programming note:  The CROSS macro here refers to building a
 // cross-compiler aware version of mkoctfile that can be used to cross
 // compile .oct file for Windows builds of Octave, not that mkoctfile
@@ -707,26 +702,20 @@ clean_up_tmp_files (const std::list<std::string>& tmp_files)
 #if defined (OCTAVE_USE_WINDOWS_API) && defined (_UNICODE)
 extern "C"
 int
-wmain (int argc, wchar_t **sys_argv)
+wmain (int argc, wchar_t **wargv)
 {
-  std::vector<std::string> argv;
+  char **sys_argv = convert_wargv_to_utf8 (argc, wargv);
 
-  // Convert wide character strings to multibyte UTF-8 strings and save
-  // them in a vector of std::string objects for later processing.
-
-  std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wchar_conv;
-  for (int i_arg = 0; i_arg < argc; i_arg++)
-    argv.push_back (wchar_conv.to_bytes (sys_argv[i_arg]));
 #else
 int
 main (int argc, char **sys_argv)
 {
+#endif
   std::vector<std::string> argv;
 
   // Save args as vector of std::string objects for later processing.
   for (int i_arg = 0; i_arg < argc; i_arg++)
     argv.push_back (sys_argv[i_arg]);
-#endif
 
   if (argc == 1)
     {
@@ -1063,10 +1052,6 @@ main (int argc, char **sys_argv)
 
   if (depend)
     {
-#if defined (OCTAVE_USE_WINDOWS_API) && ! defined (_UNICODE)
-      std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wchar_conv;
-#endif
-
       for (const auto& f : cfiles)
         {
           std::string dfile = basename (f, true) + ".d", line;
@@ -1080,26 +1065,25 @@ main (int argc, char **sys_argv)
 
 #if defined (OCTAVE_USE_WINDOWS_API)
           FILE *fd;
-          try
+          int size16;
+          wchar_t *wcmd = convert_utf8_to_utf16 (cmd.c_str (), -1, size16);
+          if (wcmd)
             {
-              std::wstring wcmd = wchar_conv.from_bytes (cmd);
-              fd = ::_wpopen (wcmd.c_str (), L"r");
+              fd = ::_wpopen (wcmd, L"r");
+              free (reinterpret_cast<void *> (wcmd));
             }
-          catch (const std::range_error& e)
-            {
-              fd = ::popen (cmd.c_str (), "r");
-            }
+          else
+            fd = ::popen (cmd.c_str (), "r");
 
           std::ofstream fo;
-          try
+          wchar_t *wfile = convert_utf8_to_utf16 (dfile.c_str (), -1, size16);
+          if (wfile)
             {
-              std::wstring wfile = wchar_conv.from_bytes (dfile);
-              fo.open (wfile.c_str ());
+              fo.open (wfile);
+              free (reinterpret_cast<void *> (wfile));
             }
-          catch (const std::range_error& e)
-            {
-              fo.open (dfile.c_str ());
-            }
+          else
+            fo.open (dfile.c_str ());
 #else
           FILE *fd = popen (cmd.c_str (), "r");
 
@@ -1140,26 +1124,25 @@ main (int argc, char **sys_argv)
 
 #if defined (OCTAVE_USE_WINDOWS_API)
           FILE *fd;
-          try
+          int size16;
+          wchar_t *wcmd = convert_utf8_to_utf16 (cmd.c_str (), -1, size16);
+          if (wcmd)
             {
-              std::wstring wcmd = wchar_conv.from_bytes (cmd);
-              fd = ::_wpopen (wcmd.c_str (), L"r");
+              fd = ::_wpopen (wcmd, L"r");
+              free (reinterpret_cast<void *> (wcmd));
             }
-          catch (const std::range_error& e)
-            {
-              fd = ::popen (cmd.c_str (), "r");
-            }
+          else
+            fd = ::popen (cmd.c_str (), "r");
 
           std::ofstream fo;
-          try
+          wchar_t *wfile = convert_utf8_to_utf16 (dfile.c_str (), -1, size16);
+          if (wfile)
             {
-              std::wstring wfile = wchar_conv.from_bytes (dfile);
-              fo.open (wfile.c_str ());
+              fo.open (wfile);
+              free (reinterpret_cast<void *> (wfile));
             }
-          catch (const std::range_error& e)
-            {
-              fo.open (dfile.c_str ());
-            }
+          else
+            fo.open (dfile.c_str ());
 #else
           FILE *fd = popen (cmd.c_str (), "r");
 

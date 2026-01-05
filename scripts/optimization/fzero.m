@@ -95,7 +95,7 @@
 ## @code{fzero} algorithm.  Fields in the structure are:
 ##
 ## @itemize
-## @item intervaliterations
+## @item @nospell{intervaliterations}
 ##  Number of iterations searching for a bracketing interval.
 ##
 ## @item iterations
@@ -129,7 +129,8 @@
 
 ## This is essentially the @nospell{ACM} algorithm 748: Enclosing Zeros of
 ## Continuous Functions due to Alefeld, Potra and Shi, @nospell{ACM}
-## Transactions on Mathematical Software, Vol. 21, No. 3, September 1995.
+## Transactions on Mathematical Software, @w{Vol.@: 21}, @w{No.@: 3}, September
+## 1995.
 ## Although the workflow should be the same, the structure of the algorithm has
 ## been transformed non-trivially; instead of the authors' approach of
 ## sequentially calling building block subprograms we implement here an

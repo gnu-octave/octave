@@ -129,6 +129,9 @@ Q_SIGNALS:
 
   void execute_command_signal (const QString& command);
 
+  void get_input_from_terminal_signal (const QString& prompt);
+  void finished_input_from_terminal_signal (const QString& input);
+
   void update_prompt_signal (const QString& prompt);
 
 public Q_SLOTS:
@@ -170,8 +173,9 @@ public Q_SLOTS:
   void change_directory_up ();
   void accept_directory_line_edit ();
 
-  void execute_command_in_terminal (const QString& dir);
+  void execute_command_in_terminal (const QString& command);
   void run_file_in_terminal (const QFileInfo& info, int opts);
+  void get_input_from_terminal (const QString& prompt);
 
   void handle_new_figure_request ();
 

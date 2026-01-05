@@ -141,6 +141,10 @@ strncmpi (const T& str_a, const typename T::value_type *str_b,
 extern OCTAVE_API Complex
 str2double (const std::string& str_arg);
 
+//! True if any of the characters is outside the range of ASCII
+extern OCTAVE_API bool
+any_non_ascii_chars (const std::string &s);
+
 extern OCTAVE_API std::string
 u8_to_encoding (const std::string& who, const std::string& u8_string,
                 const std::string& encoding);

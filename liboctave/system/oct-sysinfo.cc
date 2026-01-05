@@ -142,9 +142,9 @@ std::string blas_version ()
 
   if (mkl_f_ptr)
     {
-      char buf[198];
-      int len = 198;
-      mkl_f_ptr (buf, len);
+      char buf[198] = {};
+      // MKL overwrites buffer.  Read (LENGTH-1) bytes to keep '\0' terminator.
+      mkl_f_ptr (buf, (198 - 1));
 
       if (! retval.empty ())
         retval += "\n";

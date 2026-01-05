@@ -193,6 +193,7 @@ Password for authentication.
 @end table
 
 Example with property/value pairs:
+
 @example
 @group
 urlwrite ("http://www.example.com/data.txt", "data.txt",
@@ -201,6 +202,7 @@ urlwrite ("http://www.example.com/data.txt", "data.txt",
 @end example
 
 For backward compatibility, the old calling form is also supported:
+
 @example
 @group
 urlwrite ("http://www.google.com/search", "search.html",
@@ -351,6 +353,7 @@ Character encoding (stored but not currently used).
 @end table
 
 Example with property/value pairs:
+
 @example
 @group
 s = urlread ("http://www.example.com/data",
@@ -359,6 +362,7 @@ s = urlread ("http://www.example.com/data",
 @end example
 
 For backward compatibility, the old calling form is also supported:
+
 @example
 @group
 s = urlread ("http://www.google.com/search",

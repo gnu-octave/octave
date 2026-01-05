@@ -53,10 +53,10 @@
 ##
 ## If @var{x} is a vector, then @code{var (@var{x})} returns the variance of
 ## the elements in @var{x}.
-## 
+##
 ## If @var{x} is a matrix, then @code{var (@var{x})} returns a row vector with
 ## each element containing the variance of the corresponding column in @var{x}.
-## 
+##
 ## If @var{x} is an array, then @code{var (@var{x})} computes the variance
 ## along the first non-singleton dimension of @var{x}.
 ##

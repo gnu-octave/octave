@@ -166,7 +166,8 @@ public:
 
   bool yes_or_no (const std::string& prompt);
 
-  std::string interactive_input (const std::string& s, bool& eof);
+  std::string interactive_input (const std::string& s, bool& eof,
+                                 bool interactive = false);
 
   octave_value_list
   get_user_input (const octave_value_list& args, int nargout);
@@ -216,7 +217,8 @@ private:
 
   bool m_initialized;
 
-  std::string gnu_readline (const std::string& s, bool& eof) const;
+  std::string gnu_readline (const std::string& s, bool& eof,
+                            bool interactive = false);
 };
 
 class base_reader

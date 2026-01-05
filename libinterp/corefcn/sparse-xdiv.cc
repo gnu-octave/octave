@@ -377,6 +377,11 @@ elem_xdiv (double a, const SparseMatrix& b)
   octave_idx_type nc = b.cols ();
 
   Matrix result;
+  if (octave::math::isnan (a))
+    {
+      result = Matrix (nr, nc, octave::numeric_limits<double>::NaN ());
+      return result;
+    }
   if (a == 0.)
     result = Matrix (nr, nc, octave::numeric_limits<double>::NaN ());
   else if (a > 0.)
@@ -400,8 +405,26 @@ elem_xdiv (double a, const SparseComplexMatrix& b)
   octave_idx_type nr = b.rows ();
   octave_idx_type nc = b.cols ();
 
-  ComplexMatrix result (nr, nc, Complex (octave::numeric_limits<double>::NaN (),
-                                         octave::numeric_limits<double>::NaN ()));
+  ComplexMatrix result;
+  if (octave::math::isnan (a))
+    {
+      result = ComplexMatrix (nr, nc,
+                              Complex (octave::numeric_limits<double>::NaN (),
+                                       octave::numeric_limits<double>::NaN ()));
+      return result;
+    }
+  if (a == 0.)
+    result = ComplexMatrix (nr, nc,
+                            Complex (octave::numeric_limits<double>::NaN (),
+                                     octave::numeric_limits<double>::NaN ()));
+  else if (a > 0.)
+    result = ComplexMatrix (nr, nc,
+                            Complex (octave::numeric_limits<double>::Inf (),
+                                     octave::numeric_limits<double>::Inf ()));
+  else
+    result = ComplexMatrix (nr, nc,
+                            Complex (-octave::numeric_limits<double>::Inf (),
+                                     -octave::numeric_limits<double>::Inf ()));
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)

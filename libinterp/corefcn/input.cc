@@ -642,7 +642,7 @@ input_system::yes_or_no (const std::string& prompt)
     {
       bool eof = false;
 
-      std::string input_buf = interactive_input (prompt_string, eof);
+      std::string input_buf = interactive_input (prompt_string, eof, true);
 
       if (input_buf == "yes")
         return true;
@@ -654,7 +654,8 @@ input_system::yes_or_no (const std::string& prompt)
 }
 
 std::string
-input_system::interactive_input (const std::string& s, bool& eof)
+input_system::interactive_input (const std::string& s, bool& eof,
+                                 bool interactive)
 {
   Vlast_prompt_time.stamp ();
 
@@ -684,7 +685,7 @@ input_system::interactive_input (const std::string& s, bool& eof)
         return "\n";
     }
 
-  return gnu_readline (s, eof);
+  return gnu_readline (s, eof, interactive);
 }
 
 // If the user simply hits return, this will produce an empty matrix.
@@ -715,7 +716,7 @@ input_system::get_user_input (const octave_value_list& args, int nargout)
 
   bool eof = false;
 
-  std::string input_buf = interactive_input (prompt.c_str (), eof);
+  std::string input_buf = interactive_input (prompt.c_str (), eof, true);
 
   if (input_buf.empty ())
     error ("input: reading user-input failed!");
@@ -789,13 +790,28 @@ input_system::run_input_event_hooks ()
 }
 
 std::string
-input_system::gnu_readline (const std::string& s, bool& eof) const
+input_system::gnu_readline (const std::string& s, bool& eof, bool interactive)
 {
   octave_quit ();
 
   eof = false;
 
-  std::string retval = command_editor::readline (s, eof);
+  application *app = nullptr;
+  if (interactive && application::is_gui_running ()) 
+    app = application::app ();
+
+  std::string retval;
+  if (app && app->experimental_terminal_widget ())
+    {
+      // With the experimental terminal widget, use signals to write to output
+      // and to read from input instead of using readline to avoid deadlocks
+      // between the GUI thread and readline.
+      event_manager& evmgr = m_interpreter.get_event_manager ();
+
+      retval = evmgr.get_input_from_terminal (s);
+    }
+  else
+    retval = command_editor::readline (s, eof);
 
   if (! eof && retval.empty ())
     retval = "\n";

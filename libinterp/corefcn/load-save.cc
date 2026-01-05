@@ -1549,6 +1549,14 @@ load_save_system::save (const octave_value_list& args, int nargout)
       if (format.type () == MAT7_BINARY)
         use_zlib = false;
 
+      // Matlab v6 and v4 files are never compressed
+      if (use_zlib && (format.type () == MAT5_BINARY
+                       || format.type () == MAT_BINARY))
+        {
+          use_zlib = false;
+          warning ("save: MATLAB compatible formats '-v4' and '-v6' are uncompressed");
+        }
+
       std::ios::openmode mode
         = (append ? (std::ios::app | std::ios::ate) : std::ios::out);
 

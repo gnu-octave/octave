@@ -158,9 +158,9 @@
 ## and determine whether the results are satisfactory.
 ##
 ## Reference: @nospell{L.F. Shampine},
-## @cite{"Vectorized adaptive quadrature in @sc{matlab}"}, Journal of
-## Computational and Applied Mathematics, pp.@: 131--140, Vol 211, Issue 2,
-## Feb 2008.
+## "Vectorized adaptive quadrature in @sc{matlab}",
+## @cite{Journal of Computational and Applied Mathematics}, @w{Vol.@: 211},
+## @w{Issue 2}, @w{pp.@: 131}--140, Feb 2008.
 ##
 ## @seealso{quad, quadv, quadl, quadcc, trapz, dblquad, triplequad, integral,
 ##          integral2, integral3}

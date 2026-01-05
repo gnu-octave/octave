@@ -1559,9 +1559,9 @@ error estimate is computed from the L2-norm of the difference between two
 successive interpolations of the integrand over the nodes of the respective
 quadrature rules.
 
-Reference: @nospell{P. Gonnet}, @cite{Increasing the Reliability of Adaptive
-Quadrature Using Explicit Interpolants}, @nospell{ACM} Transactions on
-Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
+Reference: @nospell{P. Gonnet}, "Increasing the Reliability of Adaptive
+Quadrature Using Explicit Interpolants", @cite{@nospell{ACM Transactions on
+Mathematical Software}}, @w{Vol.@: 37}, @w{Issue 3}, Article @w{No.@: 3}, 2010.
 @seealso{quad, quadv, quadl, quadgk, trapz, dblquad, triplequad}
 @end deftypefn */)
 {

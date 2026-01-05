@@ -21,7 +21,7 @@
 
 Octave has support for various statistical methods, emphasizing basic
 descriptive statistics.  More advanced functions for probability distributions,
-statistical tests, random number generation, etc. are provided by the add-on
+statistical tests, random number generation, etc.@: are provided by the add-on
 Statistics package from Octave Packages.
 
 The functions that analyze data all assume that multi-dimensional data is

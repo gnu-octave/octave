@@ -220,6 +220,12 @@ public:
   virtual void
   execute_command_in_terminal (const std::string& /*command*/) { }
 
+  virtual std::string
+  get_input_from_terminal (const std::string& /*prompt*/)
+  {
+    return "";
+  }
+
   virtual void register_documentation (const std::string& /*file*/) { }
 
   virtual void unregister_documentation (const std::string& /*file*/) { }
@@ -572,6 +578,14 @@ public:
   {
     if (enabled ())
       m_instance->execute_command_in_terminal (command);
+  }
+
+  std::string get_input_from_terminal (const std::string& prompt)
+  {
+    if (enabled ())
+      return m_instance->get_input_from_terminal (prompt);
+    else
+      return "";
   }
 
   bool register_documentation (const std::string& file)

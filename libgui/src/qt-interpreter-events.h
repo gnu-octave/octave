@@ -152,6 +152,10 @@ public:
 
   void execute_command_in_terminal (const std::string& command);
 
+  // Note: this function currently does nothing with the old terminal
+  // widget.
+  std::string get_input_from_terminal (const std::string& prompt);
+
   void register_documentation (const std::string& file);
 
   void unregister_documentation (const std::string& file);
@@ -217,6 +221,8 @@ public Q_SLOTS:
 
   void gui_preference_slot (const QString& key, const QString& value);
 
+  void finished_input_from_terminal (const QString& input);
+
 Q_SIGNALS:
 
   // Note: these signals are not currently used by the old terminal widget.
@@ -238,6 +244,8 @@ Q_SIGNALS:
   void file_renamed_signal (bool load_new);
 
   void execute_command_in_terminal_signal (const QString& command);
+
+  void get_input_from_terminal_signal (const QString& prompt);
 
   void set_workspace_signal (bool top_level, bool debug,
                              const symbol_info_list& syminfo);

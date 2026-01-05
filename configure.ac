@@ -1359,6 +1359,32 @@ esac
 
 AC_SUBST(OCTAVE_UNICODE_EXE_LDFLAGS)
 
+case $host_os in
+  msdosmsvc | mingw*)
+    AC_CACHE_CHECK([whether locale can be set to UTF-8],
+      [octave_cv_windows_utf8_locale],
+      [AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+        #if defined (__MINGW32__)
+          /* We need to include this header or __MSVCRT_VERSION__ might not be
+             defined to the correct value */
+        #  include <_mingw.h>
+        #endif
+        /* Windows supports UTF-8 locales when using UCRT */
+        #if ! ((defined (__MSVCRT_VERSION__) && __MSVCRT_VERSION__ == 0x0E00) \
+               || (defined (_MSC_VER) && _MSC_VER >= 1900))
+        #  error "UTF-8 locale is unsupported"
+        #endif
+        ]])],
+        octave_cv_windows_utf8_locale=yes,
+        octave_cv_windows_utf8_locale=no)
+      ])
+    if test $octave_cv_windows_utf8_locale = yes; then
+      AC_DEFINE(OCTAVE_HAVE_WINDOWS_UTF8_LOCALE, 1,
+        [Define to 1 if Windows supports UTF-8 locales.])
+    fi
+  ;;
+esac
+
 ## Windows-specific use of functions
 case $host_os in
   msdosmsvc | mingw*)

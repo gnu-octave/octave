@@ -1005,6 +1005,14 @@ load_save_system::do_save (std::ostream& os, const octave_value& tc,
                            bool global, const load_save_format& fmt,
                            bool save_as_floats)
 {
+  if (tc.is_classdef_object ())
+    {
+      warning_with_id ("Octave:save:classdef:unsupported",
+                       "Saving classdef objects is not supported. Skipping '%s'.",
+                       name.c_str ());
+      return;
+    }
+
   switch (fmt.type ())
     {
     case TEXT:

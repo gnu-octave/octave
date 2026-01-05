@@ -2367,7 +2367,6 @@ warn_dim_too_large (const std::string& name)
 
 // save the data from TC along with the corresponding NAME on stream
 // OS in the MatLab version 5 binary format.  Return true on success.
-
 bool
 save_mat5_binary_element (std::ostream& os,
                           const octave_value& tc, const std::string& name,
@@ -2387,7 +2386,7 @@ save_mat5_binary_element (std::ostream& os,
 
   // Strings need to be converted here (or dim-vector will be off).
   charNDArray chm;
-  uint16_t *u16_str;
+  uint16_t *u16_str = nullptr;
   std::size_t n16_str;
   bool conv_u16 = false;
   if (tc.is_string ())
@@ -2398,7 +2397,9 @@ save_mat5_binary_element (std::ostream& os,
       if (u16_str)
         conv_u16 = true;
     }
-
+  // Guarantee that memory is freed regardless of path through code.
+  octave::unwind_action free_memory ([u16_str] ()
+                                     { if (u16_str != nullptr) free (u16_str); }); 
 
   if (conv_u16)
     {
@@ -2639,8 +2640,6 @@ save_mat5_binary_element (std::ostream& os,
           write_mat5_tag (os, miUTF16, len);
 
           os.write (reinterpret_cast<char *> (u16_str), len);
-
-          free (u16_str);
         }
       else
         {

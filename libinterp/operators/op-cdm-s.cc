@@ -28,7 +28,8 @@
 
 #define SCALAR scalar
 #define SCALARV complex
-#define MATRIX complex_diag_matrix
+#define DIAG_MATRIX complex_diag_matrix
+#define MATRIX complex_matrix
 
 #define SSHORT s
 #define MSHORT cdm

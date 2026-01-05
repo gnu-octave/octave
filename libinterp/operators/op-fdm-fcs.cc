@@ -27,8 +27,10 @@
 #define MINCLUDE "ov-flt-re-diag.h"
 
 #define SCALAR float_complex
-#define MATRIX float_diag_matrix
-#define MATRIXV float_complex_diag_matrix
+#define DIAG_MATRIX float_diag_matrix
+#define DIAG_MATRIXV float_complex_diag_matrix
+#define MATRIX float_matrix
+#define MATRIXV float_complex_matrix
 
 #define SSHORT fcs
 #define MSHORT fdm

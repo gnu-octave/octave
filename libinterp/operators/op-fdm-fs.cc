@@ -27,7 +27,8 @@
 #define MINCLUDE "ov-flt-re-diag.h"
 
 #define SCALAR float_scalar
-#define MATRIX float_diag_matrix
+#define DIAG_MATRIX float_diag_matrix
+#define MATRIX float_matrix
 
 #define SSHORT fs
 #define MSHORT fdm

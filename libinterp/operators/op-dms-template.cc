@@ -38,42 +38,143 @@
 #  define SCALARV SCALAR
 #endif
 
+#if ! defined (DIAG_MATRIXV)
+#  define DIAG_MATRIXV DIAG_MATRIX
+#endif
+
 #if ! defined (MATRIXV)
 #  define MATRIXV MATRIX
 #endif
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-DEFNDBINOP_OP (sdmmul, SCALAR, MATRIX, SCALARV, MATRIXV, *)
-DEFNDBINOP_OP (dmsmul, MATRIX, SCALAR, MATRIXV, SCALARV, *)
-
+#define OCTAVE_DIAG_MATRIX CONCAT2(octave_, DIAG_MATRIX)
 #define OCTAVE_MATRIX CONCAT2(octave_, MATRIX)
 #define OCTAVE_SCALAR CONCAT2(octave_, SCALAR)
+#define DIAG_MATRIX_VALUE CONCAT2(DIAG_MATRIXV, _value)
 #define MATRIX_VALUE CONCAT2(MATRIXV, _value)
 #define SCALAR_VALUE CONCAT2(SCALARV, _value)
 
-DEFBINOP (dmsdiv, MATRIX, SCALAR)
+template <typename DM, typename S>
+octave_value
+dm_s_mul (const DM& dm, const S& d)
 {
-  OCTAVE_CAST_BASE_VALUE (const OCTAVE_MATRIX&, v1, a1);
+  if constexpr (is_instance<std::complex, S>::value)
+    {
+      if (math::isfinite (std::norm (d)))
+        return octave_value (dm.DIAG_MATRIX_VALUE () * d);
+      else
+        return octave_value (dm.MATRIX_VALUE () * d);
+    }
+  else
+    {
+      if (math::isfinite (d))
+        return octave_value (dm.DIAG_MATRIX_VALUE () * d);
+      else
+        return octave_value (dm.MATRIX_VALUE () * d);
+    }
+}
+
+DEFBINOP (dmsmul, DIAG_MATRIX, SCALAR)
+{
+  OCTAVE_CAST_BASE_VALUE (const OCTAVE_DIAG_MATRIX&, v1, a1);
   OCTAVE_CAST_BASE_VALUE (const OCTAVE_SCALAR&, v2, a2);
 
-  return v1.MATRIX_VALUE () / v2.SCALAR_VALUE ();
+  return dm_s_mul<> (v1, v2.SCALAR_VALUE ());
+}
+
+template <typename DM, typename S>
+octave_value
+dm_s_div (const DM& dm, const S& d)
+{
+  if constexpr (is_instance<std::complex, S>::value)
+    {
+      auto nd = std::norm (d);
+      if (nd == 0.0 || math::isnan (nd))
+        return octave_value (dm.MATRIX_VALUE () / d);
+      else
+        return octave_value (dm.DIAG_MATRIX_VALUE () / d);
+    }
+  else
+    {
+      if (d == 0.0 || math::isnan (d))
+        return octave_value (dm.MATRIX_VALUE () / d);
+      else
+        return octave_value (dm.DIAG_MATRIX_VALUE () / d);
+    }
+}
+
+DEFBINOP (dmsdiv, MATRIX, SCALAR)
+{
+  OCTAVE_CAST_BASE_VALUE (const OCTAVE_DIAG_MATRIX&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const OCTAVE_SCALAR&, v2, a2);
+
+  return dm_s_div<> (v1, v2.SCALAR_VALUE ());
+}
+
+template <typename S, typename DM>
+octave_value
+s_dm_mul (const S& d, const DM& dm)
+{
+  if constexpr (is_instance<std::complex, S>::value)
+    {
+      if (math::isfinite (std::norm (d)))
+        return octave_value (d * dm.DIAG_MATRIX_VALUE ());
+      else
+        return octave_value (d * dm.MATRIX_VALUE ());
+    }
+  else
+    {
+      if (math::isfinite (d))
+        return octave_value (d * dm.DIAG_MATRIX_VALUE ());
+      else
+        return octave_value (d * dm.MATRIX_VALUE ());
+    }
+}
+
+DEFBINOP (sdmmul, SCALAR, DIAG_MATRIX)
+{
+  OCTAVE_CAST_BASE_VALUE (const OCTAVE_SCALAR&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const OCTAVE_DIAG_MATRIX&, v2, a2);
+
+  return s_dm_mul<> (v1.SCALAR_VALUE (), v2);
+}
+
+template <typename S, typename DM>
+octave_value
+s_dm_ldiv (const S& d, const DM& dm)
+{
+  if constexpr (is_instance<std::complex, S>::value)
+    {
+      auto nd = std::norm (d);
+      if (nd == 0.0 || math::isnan (nd))
+        return octave_value (dm.MATRIX_VALUE () / d);
+      else
+        return octave_value (dm.DIAG_MATRIX_VALUE () / d);
+    }
+  else
+    {
+      if (d == 0.0 || math::isnan (d))
+        return octave_value (dm.MATRIX_VALUE () / d);
+      else
+        return octave_value (dm.DIAG_MATRIX_VALUE () / d);
+    }
 }
 
 DEFBINOP (sdmldiv, SCALAR, MATRIX)
 {
   OCTAVE_CAST_BASE_VALUE (const OCTAVE_SCALAR&, v1, a1);
-  OCTAVE_CAST_BASE_VALUE (const OCTAVE_MATRIX&, v2, a2);
+  OCTAVE_CAST_BASE_VALUE (const OCTAVE_DIAG_MATRIX&, v2, a2);
 
-  return v2.MATRIX_VALUE () / v1.SCALAR_VALUE ();
+  return s_dm_ldiv<> (v1.SCALAR_VALUE (), v2);
 }
 
 DEFBINOP (dmspow, MATRIX, SCALAR)
 {
-  OCTAVE_CAST_BASE_VALUE (const OCTAVE_MATRIX&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const OCTAVE_DIAG_MATRIX&, v1, a1);
   OCTAVE_CAST_BASE_VALUE (const OCTAVE_SCALAR&, v2, a2);
 
-  return xpow (v1.MATRIX_VALUE (), v2.SCALAR_VALUE ());
+  return xpow (v1.DIAG_MATRIX_VALUE (), v2.SCALAR_VALUE ());
 }
 
 #define SHORT_NAME CONCAT3(MSHORT, _, SSHORT)
@@ -82,11 +183,11 @@ DEFBINOP (dmspow, MATRIX, SCALAR)
 void
 INST_NAME (octave::type_info& ti)
 {
-  INSTALL_BINOP_TI (ti, op_mul, OCTAVE_MATRIX, OCTAVE_SCALAR, dmsmul);
-  INSTALL_BINOP_TI (ti, op_div, OCTAVE_MATRIX, OCTAVE_SCALAR, dmsdiv);
-  INSTALL_BINOP_TI (ti, op_mul, OCTAVE_SCALAR, OCTAVE_MATRIX, sdmmul);
-  INSTALL_BINOP_TI (ti, op_ldiv, OCTAVE_SCALAR, OCTAVE_MATRIX, sdmldiv);
-  INSTALL_BINOP_TI (ti, op_pow, OCTAVE_MATRIX, OCTAVE_SCALAR, dmspow);
+  INSTALL_BINOP_TI (ti, op_mul, OCTAVE_DIAG_MATRIX, OCTAVE_SCALAR, dmsmul);
+  INSTALL_BINOP_TI (ti, op_div, OCTAVE_DIAG_MATRIX, OCTAVE_SCALAR, dmsdiv);
+  INSTALL_BINOP_TI (ti, op_mul, OCTAVE_SCALAR, OCTAVE_DIAG_MATRIX, sdmmul);
+  INSTALL_BINOP_TI (ti, op_ldiv, OCTAVE_SCALAR, OCTAVE_DIAG_MATRIX, sdmldiv);
+  INSTALL_BINOP_TI (ti, op_pow, OCTAVE_DIAG_MATRIX, OCTAVE_SCALAR, dmspow);
 }
 
 OCTAVE_END_NAMESPACE(octave)

@@ -27,7 +27,8 @@
 #define MINCLUDE "ov-re-diag.h"
 
 #define SCALAR scalar
-#define MATRIX diag_matrix
+#define DIAG_MATRIX diag_matrix
+#define MATRIX matrix
 
 #define SSHORT s
 #define MSHORT dm

@@ -923,21 +923,6 @@ mod (const octave_int<T>& x, const octave_int<T>& y)
   return octave_int_arith<T>::mod (x.value (), y.value ());
 }
 
-// No mixed integer binary operations!
-
-OCTAVE_BEGIN_NAMESPACE(octave)
-OCTAVE_BEGIN_NAMESPACE(math)
-
-template <typename T>
-bool
-isnan (const octave_int<T>&)
-{
-  return false;
-}
-
-OCTAVE_END_NAMESPACE(math)
-OCTAVE_END_NAMESPACE(octave)
-
 // FIXME: can/should any of these be inline?
 
 template <typename T>

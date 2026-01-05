@@ -196,6 +196,20 @@ Sparse<T, Alloc>::SparseRep::any_element_is_nan () const
 
 template <typename T, typename Alloc>
 OCTAVE_API
+bool
+Sparse<T, Alloc>::SparseRep::any_element_is_inf_or_nan () const
+{
+  octave_idx_type nz = nnz ();
+
+  for (octave_idx_type i = 0; i < nz; i++)
+    if (octave::math::isinf (m_data[i]) || octave::math::isnan (m_data[i]))
+      return true;
+
+  return false;
+}
+
+template <typename T, typename Alloc>
+OCTAVE_API
 Sparse<T, Alloc>::Sparse (octave_idx_type nr, octave_idx_type nc, T val)
   : m_rep (nullptr), m_dimensions (dim_vector (nr, nc))
 {

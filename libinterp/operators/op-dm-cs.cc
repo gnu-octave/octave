@@ -27,8 +27,10 @@
 #define MINCLUDE "ov-re-diag.h"
 
 #define SCALAR complex
-#define MATRIX diag_matrix
-#define MATRIXV complex_diag_matrix
+#define DIAG_MATRIX diag_matrix
+#define DIAG_MATRIXV complex_diag_matrix
+#define MATRIX matrix
+#define MATRIXV complex_matrix
 
 #define SSHORT cs
 #define MSHORT dm

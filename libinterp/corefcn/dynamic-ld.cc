@@ -259,14 +259,15 @@ dynamic_loader::load_mex (const std::string& fcn_name,
            "       You can fix this problem by recompiling this .mex file",
            fcn_name.c_str ());
 
+  unwind_action unload_mex_soversion
+    ([&mex_file] () { mex_file.remove ("__octave_mex_soversion__"); });
+
   if (*mex_soversion != OCTAVE_MEX_SOVERSION)
     error ("SOVERSION %d found in .mex file function '%s'\n"
            "       does not match the running Octave (SOVERSION %d).\n"
            "       This can lead to incorrect results or other failures.\n"
            "       You can fix this problem by recompiling this .mex file",
            *mex_soversion, fcn_name.c_str (), OCTAVE_MEX_SOVERSION);
-
-  mex_file.remove ("__octave_mex_soversion__");
 
   return new octave_mex_function (function, interleaved, mex_file, fcn_name);
 }

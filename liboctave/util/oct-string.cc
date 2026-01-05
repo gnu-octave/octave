@@ -538,6 +538,16 @@ octave::string::str2double (const std::string& str_arg)
   return val;
 }
 
+bool
+octave::string::any_non_ascii_chars (const std::string &s)
+{
+  for (unsigned char c : s)
+    if (c & 0x80)
+      return true;
+
+  return false;
+}
+
 std::string
 octave::string::u8_to_encoding (const std::string& who,
                                 const std::string& u8_string,

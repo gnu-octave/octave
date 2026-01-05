@@ -270,25 +270,27 @@
 
 ## Test for handling filenames with Unicode characters outside the BMP.
 %!test
+%! olddir = pwd ();
 %! for opt = {'-binary', '-float-binary', '-text', '-v6'}
 %!   ## NOTE: opt = '-ascii' causes problems with loading "unknown format".
 %!   ##       opt = '-v7.3' cannot save (not implemented yet).
 %!   ##       opt = '-v4' cannot save structs, including 'opt' itself.
 %!   ## The other opts listed above *should* work properly.
+%!
+%!   tmpdir = tempname ();
+%!   mkdir (tmpdir);
+%!   cd (tmpdir);
+%!   protect_tmpdir = onCleanup (@() rmdir (tmpdir));
+%!   filename = sprintf ("𝕋𝘌𝙎𝐓_%s.𝑚𝖆𝚝", char (opt)(2:end));
+%!
+%!   foo = 123;
+%!   foostr = "123";
+%!   foostruct.a = 1;
+%!   foostruct.b = "23";
+%!   foocell = {"12", 3};
+%!   ## TODO In future, add variables for classdef and other kinds.
+%!
 %!   unwind_protect
-%!     olddir = pwd ();
-%!     tmpdir = tempname ();
-%!     mkdir (tmpdir);
-%!     cd (tmpdir);
-%!
-%!     foo = 123;
-%!     foostr = "123";
-%!     foostruct.a = 1;
-%!     foostruct.b = "23";
-%!     foocell = {"12", 3};
-%!     ## TODO In future, add variables for classdef and other kinds.
-%!
-%!     filename = sprintf ("𝕋𝘌𝙎𝐓_%s.𝑚𝖆𝚝", char (opt)(2:end));
 %!     save (char (opt), filename, "foo*");
 %!     clear foo foostr foostruct foocell;
 %!
@@ -303,29 +305,30 @@
 %!     assert (foostruct.b, "23");
 %!     assert (foocell, {"12", 3});
 %!   unwind_protect_cleanup
-%!     cd (tmpdir);
-%!     unlink (filename);
+%!     if isfile (filename)
+%!       unlink (filename);
+%!     endif
 %!     cd (olddir);
-%!     rmdir (tmpdir);
 %!   end_unwind_protect
 %! endfor
 
 %!testif HAVE_HDF5
+%! olddir = pwd ();
 %! for opt = {'-hdf5', '-float-hdf5'}
+%!   tmpdir = tempname ();
+%!   mkdir (tmpdir);
+%!   cd (tmpdir);
+%!   protect_tmpdir = onCleanup (@() rmdir (tmpdir));
+%!   filename = sprintf ("𝕋𝘌𝙎𝐓_%s.𝑚𝖆𝚝", char (opt)(2:end));
+%!
+%!   foo = 123;
+%!   foostr = "123";
+%!   foostruct.a = 1;
+%!   foostruct.b = "23";
+%!   foocell = {"12", 3};
+%!   ## TODO In future, add variables for classdef and other kinds.
+%!
 %!   unwind_protect
-%!     olddir = pwd ();
-%!     tmpdir = tempname ();
-%!     mkdir (tmpdir);
-%!     cd (tmpdir);
-%!
-%!     foo = 123;
-%!     foostr = "123";
-%!     foostruct.a = 1;
-%!     foostruct.b = "23";
-%!     foocell = {"12", 3};
-%!     ## TODO In future, add variables for classdef and other kinds.
-%!
-%!     filename = sprintf ("𝕋𝘌𝙎𝐓_%s.𝑚𝖆𝚝", char (opt)(2:end));
 %!     save (char (opt), filename, "foo*");
 %!     clear foo foostr foostruct foocell;
 %!
@@ -340,29 +343,28 @@
 %!     assert (foostruct.b, "23");
 %!     assert (foocell, {"12", 3});
 %!   unwind_protect_cleanup
-%!     cd (tmpdir);
 %!     unlink (filename);
 %!     cd (olddir);
-%!     rmdir (tmpdir);
 %!   end_unwind_protect
 %! endfor
 
 %!testif HAVE_ZLIB
-%! for opt = {'-binary', '-float-binary', '-text', '-v7', '-v6'}
+%! olddir = pwd ();
+%! for opt = {'-binary', '-float-binary', '-text', '-v7'}
+%!   tmpdir = tempname ();
+%!   mkdir (tmpdir);
+%!   cd (tmpdir);
+%!   protect_tmpdir = onCleanup (@() rmdir (tmpdir));
+%!   filename = sprintf ("𝕋𝘌𝙎𝐓_%s.𝑚𝖆𝚝", char (opt)(2:end));
+%!
+%!   foo = 123;
+%!   foostr = "123";
+%!   foostruct.a = 1;
+%!   foostruct.b = "23";
+%!   foocell = {"12", 3};
+%!   ## TODO In future, add variables for classdef and other kinds.
+%!
 %!   unwind_protect
-%!     olddir = pwd ();
-%!     tmpdir = tempname ();
-%!     mkdir (tmpdir);
-%!     cd (tmpdir);
-%!
-%!     foo = 123;
-%!     foostr = "123";
-%!     foostruct.a = 1;
-%!     foostruct.b = "23";
-%!     foocell = {"12", 3};
-%!     ## TODO In future, add variables for classdef and other kinds.
-%!
-%!     filename = sprintf ("𝕋𝘌𝙎𝐓_%s.𝑚𝖆𝚝", char (opt)(2:end));
 %!     save (char (opt), "-zip", filename, "foo*");
 %!     clear foo foostr foostruct foocell;
 %!
@@ -377,29 +379,30 @@
 %!     assert (foostruct.b, "23");
 %!     assert (foocell, {"12", 3});
 %!   unwind_protect_cleanup
-%!     cd (tmpdir);
-%!     unlink (filename);
+%!     if isfile (filename)
+%!       unlink (filename);
+%!     endif
 %!     cd (olddir);
-%!     rmdir (tmpdir);
 %!   end_unwind_protect
 %! endfor
 
 %!testif HAVE_ZLIB, HAVE_HDF5
 %! for opt = {'-hdf5', '-float-hdf5'}
+%!   olddir = pwd ();
+%!   tmpdir = tempname ();
+%!   mkdir (tmpdir);
+%!   cd (tmpdir);
+%!   protect_tmpdir = onCleanup (@() rmdir (tmpdir));
+%!   filename = sprintf ("𝕋𝘌𝙎𝐓_%s.𝑚𝖆𝚝", char (opt)(2:end));
+%!
+%!   foo = 123;
+%!   foostr = "123";
+%!   foostruct.a = 1;
+%!   foostruct.b = "23";
+%!   foocell = {"12", 3};
+%!   ## TODO In future, add variables for classdef and other kinds.
+%!
 %!   unwind_protect
-%!     olddir = pwd ();
-%!     tmpdir = tempname ();
-%!     mkdir (tmpdir);
-%!     cd (tmpdir);
-%!
-%!     foo = 123;
-%!     foostr = "123";
-%!     foostruct.a = 1;
-%!     foostruct.b = "23";
-%!     foocell = {"12", 3};
-%!     ## TODO In future, add variables for classdef and other kinds.
-%!
-%!     filename = sprintf ("𝕋𝘌𝙎𝐓_%s.𝑚𝖆𝚝", char (opt)(2:end));
 %!     save (char (opt), "-zip", filename, "foo*");
 %!     clear foo foostr foostruct foocell;
 %!
@@ -414,10 +417,10 @@
 %!     assert (foostruct.b, "23");
 %!     assert (foocell, {"12", 3});
 %!   unwind_protect_cleanup
-%!     cd (tmpdir);
-%!     unlink (filename);
+%!     if isfile (filename)
+%!       unlink (filename);
+%!     endif
 %!     cd (olddir);
-%!     rmdir (tmpdir);
 %!   end_unwind_protect
 %! endfor
 

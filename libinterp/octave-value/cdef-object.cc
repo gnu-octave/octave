@@ -379,13 +379,6 @@ cdef_object_array::subsasgn (const std::string& type,
     case '(':
       if (type.length () == 1)
         {
-          cdef_object rhs_obj = to_cdef (rhs);
-
-          if (rhs_obj.get_class () != get_class ())
-            error ("can't assign %s object into array of %s objects",
-                   rhs_obj.class_name ().c_str (),
-                   class_name ().c_str ());
-
           const octave_value_list& ival = idx.front ();
           bool is_scalar = true;
           Array<idx_vector> iv (dim_vector (1, ival.length ()));
@@ -405,22 +398,34 @@ cdef_object_array::subsasgn (const std::string& type,
               is_scalar = is_scalar && iv(i).is_scalar ();
             }
 
-          Array<cdef_object> rhs_mat;
-
-          if (! rhs_obj.is_array ())
-            {
-              rhs_mat = Array<cdef_object> (dim_vector (1, 1));
-              rhs_mat(0) = rhs_obj;
-            }
+          if (rhs.isempty ())
+            m_array.delete_elements (iv);
           else
-            rhs_mat = rhs_obj.array_value ();
+            {
+              cdef_object rhs_obj = to_cdef (rhs);
 
-          octave_idx_type n = m_array.numel ();
+              if (rhs_obj.get_class () != get_class ())
+                error ("can't assign %s object into array of %s objects",
+                       rhs_obj.class_name ().c_str (),
+                       class_name ().c_str ());
 
-          m_array.assign (iv, rhs_mat, cdef_object ());
+              Array<cdef_object> rhs_mat;
 
-          if (m_array.numel () > n)
-            fill_empty_values ();
+              if (! rhs_obj.is_array ())
+                {
+                  rhs_mat = Array<cdef_object> (dim_vector (1, 1));
+                  rhs_mat(0) = rhs_obj;
+                }
+              else
+                rhs_mat = rhs_obj.array_value ();
+
+              octave_idx_type n = m_array.numel ();
+
+              m_array.assign (iv, rhs_mat, cdef_object ());
+
+              if (m_array.numel () > n)
+                fill_empty_values ();
+            }
 
           m_count++;
           retval = to_ov (cdef_object (this));

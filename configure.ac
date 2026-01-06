@@ -1889,8 +1889,21 @@ fi
 
 ### Check for Wayland client library
 
+octave_cv_no_window_manager_warn=
+case $host_os in
+  msdosmsvc | mingw* | cygwin* | darwin*)
+    # do not warn about missing X11 or Wayland client on Windows or macOS
+  ;;
+  *)
+    if test "$have_x" != yes; then
+      # do not warn about Wayland client if the X11 libraries have been found
+      octave_cv_no_window_manager_warn="Neither X11 nor Wayland client libraries found."
+    fi
+  ;;
+esac
+
 OCTAVE_CHECK_LIB(wayland-client, Wayland client,
-  [Wayland client library not found.],
+  [$octave_cv_no_window_manager_warn],
   [wayland-client.h], [wl_display_connect])
 
 ### Check for the Carbon framework on macOS systems.
@@ -3184,9 +3197,9 @@ LIBOCTAVE_LINK_OPTS="$CURL_LDFLAGS $SPARSE_XLDFLAGS $ARPACK_LDFLAGS $QRUPDATE_LD
 AC_SUBST(LIBOCTAVE_LINK_DEPS)
 AC_SUBST(LIBOCTAVE_LINK_OPTS)
 
-LIBOCTINTERP_LINK_DEPS="$FT2_LIBS $HDF5_LIBS $MAGICK_LIBS $Z_LIBS $SPARSE_XLIBS $FFTW_XLIBS $OPENGL_LIBS $FONTCONFIG_LIBS $FREETYPE_LIBS $X11_LIBS $CARBON_LIBS $GL2PS_LIBS $JAVA_LIBS $LAPACK_LIBS"
+LIBOCTINTERP_LINK_DEPS="$FT2_LIBS $HDF5_LIBS $MAGICK_LIBS $Z_LIBS $SPARSE_XLIBS $FFTW_XLIBS $OPENGL_LIBS $FONTCONFIG_LIBS $FREETYPE_LIBS $WAYLAND_CLIENT_LIBS $X11_LIBS $CARBON_LIBS $GL2PS_LIBS $JAVA_LIBS $LAPACK_LIBS"
 
-LIBOCTINTERP_LINK_OPTS="$FT2_LDFLAGS $HDF5_LDFLAGS $MAGICK_LDFLAGS $Z_LDFLAGS $SPARSE_XLDFLAGS $FFTW_XLDFLAGS"
+LIBOCTINTERP_LINK_OPTS="$FT2_LDFLAGS $HDF5_LDFLAGS $MAGICK_LDFLAGS $WAYLAND_CLIENT_LDFLAGS $Z_LDFLAGS $SPARSE_XLDFLAGS $FFTW_XLDFLAGS"
 
 OCTAVE_LINK_DEPS=""
 OCTAVE_LINK_OPTS=""

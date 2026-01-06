@@ -66,18 +66,24 @@ function b = bitget (A, n)
     elseif (isa (A, "uint64"))
       Amax = 64;
       _conv = @uint64;
+    ## Temporary fix for bug #67592 for Octave 11.
+    ## Use unsigned integers in algorithm.
     elseif (isa (A, "int8"))
       Amax = 8;
-      _conv = @int8;
+      _conv = @uint8;
+      A = typecast (A, 'uint8');
     elseif (isa (A, "int16"))
       Amax = 16;
-      _conv = @int16;
+      _conv = @uint16;
+      A = typecast (A, 'uint16');
     elseif (isa (A, "int32"))
       Amax = 32;
-      _conv = @int32;
+      _conv = @uint32;
+      A = typecast (A, 'uint32');
     elseif (isa (A, "int64"))
       Amax = 64;
-      _conv = @int64;
+      _conv = @uint64;
+      A = typecast (A, 'uint64');
     else
       error ("bitget: invalid class %s", class (A));
     endif
@@ -103,6 +109,11 @@ endfunction
 %!     assert (bitget (fcn ([4, 14]), [3, 3]), logical ([1, 1]));
 %!   endfor
 %! endfor
+
+%!test <*67592>
+%! x = intmin ('int8');
+%! b = bitget (x, 8:-1:1);
+%! assert (b, logical ([1 0 0 0 0 0 0 0]));
 
 ## Test input validation
 %!error <Invalid call> bitget ()

@@ -65,10 +65,14 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-// Theory: norm accumulator is an object that has an accum method able
-// to handle both real and complex element, and a cast operator
-// returning the intermediate norm.  Reference: N. Higham,
-// "Estimating the Matrix p-Norm", Numer. Math., 62, pp. 539-555, 1992.
+// Theory: norm accumulator is an object that has an accum method able to
+// handle both real and complex element, and a cast operator returning the
+// intermediate norm.  Reference: N. Higham, "Estimating the Matrix p-Norm",
+// Numer. Math., 62, pp. 539-555, 1992.
+
+// The algorithm uses scaling (Hammarling approach) to avoid spurious overflows
+// and underflows when accumulating and employs the Kahan algorithm in order to
+// significantly reduce the average numerical accumulation error.
 
 // norm accumulator for the p-norm
 template <typename R>
@@ -76,7 +80,7 @@ class norm_accumulator_p
 {
 public:
 
-  norm_accumulator_p (R pp) : m_p(pp), m_scl(0), m_sum(1) { }
+  norm_accumulator_p (R pp) : m_p(pp), m_scl(0), m_comp(0), m_sum(1) { }
 
   OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (norm_accumulator_p)
 
@@ -94,13 +98,18 @@ public:
         m_scl = t;
       }
     else if (t != 0)
-      m_sum += std::pow (t/m_scl, m_p);
+      {
+        R y = std::pow (t/m_scl, m_p) - m_comp;
+        t = m_sum + y;
+        m_comp = (t - m_sum) - y;
+        m_sum = t;
+      }
   }
 
   operator R () { return m_scl * std::pow (m_sum, 1/m_p); }
 
 private:
-  R m_p, m_scl, m_sum;
+  R m_p, m_scl, m_comp, m_sum;
 };
 
 // norm accumulator for the minus p-pseudonorm
@@ -109,7 +118,7 @@ class norm_accumulator_mp
 {
 public:
 
-  norm_accumulator_mp (R pp) : m_p(pp), m_scl(0), m_sum(1) { }
+  norm_accumulator_mp (R pp) : m_p(pp), m_scl(0), m_comp(0), m_sum(1) { }
 
   OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (norm_accumulator_mp)
 
@@ -127,13 +136,18 @@ public:
         m_scl = t;
       }
     else if (t != 0)
-      m_sum += std::pow (t/m_scl, m_p);
+      {
+        R y = std::pow (t/m_scl, m_p) - m_comp;
+        t = m_sum + y;
+        m_comp = (t - m_sum) - y;
+        m_sum = t;
+      }
   }
 
   operator R () { return m_scl * std::pow (m_sum, -1/m_p); }
 
 private:
-  R m_p, m_scl, m_sum;
+  R m_p, m_scl, m_comp, m_sum;
 };
 
 // norm accumulator for the 2-norm (euclidean)
@@ -142,7 +156,7 @@ class norm_accumulator_2
 {
 public:
 
-  norm_accumulator_2 () : m_scl(0), m_sum(1) { }
+  norm_accumulator_2 () : m_scl(0), m_comp(0), m_sum(1) { }
 
   OCTAVE_DEFAULT_COPY_MOVE_DELETE (norm_accumulator_2)
 
@@ -158,7 +172,12 @@ public:
         m_scl = t;
       }
     else if (t != 0)
-      m_sum += pow2 (t/m_scl);
+      {
+        R y = pow2 (t/m_scl) - m_comp;
+        t = m_sum + y;
+        m_comp = (t - m_sum) - y;
+        m_sum = t;
+      }
   }
 
   void accum (std::complex<R> val)
@@ -174,7 +193,7 @@ private:
 
   //--------
 
-  R m_scl, m_sum;
+  R m_scl, m_comp, m_sum;
 };
 
 // norm accumulator for the 1-norm (city metric)

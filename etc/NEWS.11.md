@@ -50,14 +50,15 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The `randi` function has been completely rewritten and is now 4.5X faster
   while using some 3.5X less memory than before.
 
-- The `roots` function now accepts only a numeric argument.  Convert any
-  non-numeric input to a numeric value with `double()`.
+- The `roots` function now accepts only inputs of type `double` or `single`.
 
-- The `mean` function no longer accepts character array inputs.  Convert any
-  character input to a numeric value (e.g., use `double()` or `single()`).
+- The `mean` function no longer accepts character array inputs.  It does
+  continue to accept logical and integer types as input.  Convert any character
+  input to an accepted input type.
 
-- All core statistics functions now strictly operate on numerical arrays.  The
-  `mean` function continues to accept logical arrays as input.
+- All core statistics functions (other than `mean` as described above) now
+  accept only inputs of type `double` or `single`.  Convert other input data
+  types to `double` or `single`.
 
 - On dot-indexing of `classdef` objects, `subsref` now tries to resolve the
   symbol name to a property first, and if a property is not found then it will

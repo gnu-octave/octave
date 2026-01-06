@@ -25,6 +25,7 @@ classdef_TEST_FILES = \
   %reldir%/class_pair_elem_dominant.m \
   %reldir%/class_pair_elem_dominant_handle.m \
   %reldir%/class_pair_elem_handle.m \
+  %reldir%/class_pair_handle.m \
   %reldir%/classdef.tst \
   %reldir%/foo_method_changes_property_size.m \
   %reldir%/foo_static_method_constant_property.m \

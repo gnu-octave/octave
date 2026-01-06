@@ -41,6 +41,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The function `sum` now fully supports increased precision through the
   `"extra"` optional argument, which is also available for sparse arrays.
 
+- The function `norm` now uses Kahan summation resulting in more accurate
+  results (.02% for data of class `single`).
+
 - New function `_Exit` has been added which makes it possible to use
   `fork`/`_Exit` sequence to perform work in parallel child processes for
   potential performance gains.

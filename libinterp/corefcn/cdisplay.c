@@ -266,23 +266,23 @@ octave_get_display_info (const char *dpy_name, int *ht, int *wd, int *dp,
   if (*dpy_avail == 0)
     {
       // try to connect to Wayland display
-      struct wl_display *display = wl_display_connect (dpy_name);
+      struct wl_display *wldisplay = wl_display_connect (dpy_name);
 
-      if (display)
+      if (wldisplay)
         {
          struct s_display_info info = {0};
 
           // set up Wayland registry
-          struct wl_registry *registry = wl_display_get_registry (display);
+          struct wl_registry *registry = wl_display_get_registry (wldisplay);
           // add output listener
           wl_registry_add_listener (registry, &registry_listener, &info);
           // process display events
           // first roundtrip to get registry events
-          wl_display_roundtrip (display);
+          wl_display_roundtrip (wldisplay);
           // second roundtrip to get output events
-          wl_display_roundtrip (display);
+          wl_display_roundtrip (wldisplay);
           // disconnect display
-          wl_display_disconnect (display);
+          wl_display_disconnect (wldisplay);
 
           if (info.avail)
             {

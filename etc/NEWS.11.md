@@ -100,6 +100,10 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   properties that were previously hidden have been made visible to allow users
   to control the position of minor ticks (bug #67394).
 
+- Printing to PDF format is now ~25% faster.
+
+- Improvements to alpha blending with newer versions of OpenGL.
+
 ### Matlab compatibility
 
 - The warning `"Octave:language-extension"` is no longer emitted for automatic
@@ -152,6 +156,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The function `quantile` now also accepts a positive integer as the second
   input argument specifying evenly spaced cumulative probabilities.
 
+- The functions `strncmp` and `strncmpi` now return true for `N=0` for Matlab
+  compatibility.
+
 - The function `gradient` with a numeric input now only accepts type `double`
   or `single`.
 
@@ -168,8 +175,10 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The function `speye` can now be called with zero arguments for compatibility
   with the full-matrix function `eye` and Matlab-compatibility.
 
+- The function `containers.Map` now supports char N-D arrays as keys.
+
 - The function `qp` now has a new input option `"AllowSemidefinite"` for
-  problem instances where the Hessian matrix is positive semidefinite instead
+  problem instances where the Hessian matrix is positive semi-definite instead
   of positive definite.  The default value is `false`.
 
 - The function `qr` for a dense matrix input `A` and a single output now
@@ -181,9 +190,9 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 - The `weboptions` function has been re-written internally.  Support for
   non-integer `Timeout` values, and the special value `Inf`, has been added.
 
-- The `urlread` and `urlwrite` functions now make use of the various
-  `weboptions` such as timeouts and user credentials.  The old calling form
-  of passing a cell array is still supported for backward compatibility.
+- The `urlread` and `urlwrite` functions now make use of various `weboptions`
+  such as timeouts and user credentials.  The old calling form of passing a
+  cell array is still supported for backward compatibility.
 
 - The functions `fill` and `fill3` now handle all input combinations of vector
   and matrix vertex data and color data in a Matlab-compatible way.

@@ -5,11 +5,11 @@ classdef overloaded_subsref
   end
 
   methods
-    function B = subsref (~, s)
+    function B = subsref (A, s)
       if (strcmp (s(1).type, '()') && numel (s(1).subs) == 1 && s(1).subs{1} == 1)
         error ('unsupported syntax');
       else
-        B = 0;
+        B = builtin ('subsref', A, s);
       end
     end
   end

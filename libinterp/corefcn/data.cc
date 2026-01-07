@@ -8288,6 +8288,98 @@ compute the norms of each column and return a row vector.
 %! A(2,1) = 1;
 %! assert (norm (A), 1);
 
+## Tests for single precision norm calculations.
+## Verify that float norms accumulated in double do not overflow
+## near float maximum.
+##
+## We need values where val^2 overflows float (~3.4e38) but
+## the final norm sqrt(n*val^2) = sqrt(n)*val still fits in float.
+## Using val = 1e19: val^2 = 1e38 (near float max), sqrt(1000)*1e19 ~ 3.2e20 (OK)
+
+%!test <67610>
+%! ## Test 2-norm with values where val^2 would overflow float output
+%! ## val = 1e19, val^2 = 1e38 (would overflow float), but result fits
+%! x = single (1e19) * ones (1000, 1, "single");
+%! result = norm (x, 2);
+%! assert (isfinite (result));
+%! xd = double (x);
+%! expected = norm (xd, 2);
+%! assert (double (result), expected, eps ("single") * expected);
+
+%!test <67610>
+%! ## Test 1-norm - straightforward sum
+%! ## Use moderately large values
+%! x = single (1e30) * ones (1000, 1, "single");
+%! result = norm (x, 1);
+%! assert (isfinite (result));
+%! xd = double (x);
+%! expected = norm (xd, 1);
+%! assert (double (result), expected, eps ("single") * expected);
+
+%!test <67610>
+%! ## Test p-norm (p=1.5) with large values
+%! x = single (1e20) * ones (1000, 1, "single");
+%! result = norm (x, 1.5);
+%! assert (isfinite (result));
+%! xd = double (x);
+%! expected = norm (xd, 1.5);
+%! assert (double (result), expected, eps ("single") * expected);
+
+%!test <67610>
+%! ## Test p-norm (p=0.5) - terms are val^0.5, no overflow concern
+%! x = single (1e30) * ones (1000, 1, "single");
+%! result = norm (x, 0.5);
+%! assert (isfinite (result));
+%! xd = double (x);
+%! expected = norm (xd, 0.5);
+%! assert (double (result), expected, eps ("single") * expected);
+
+%!test <67610>
+%! ## Test p-norm (p=3) with values where val^3 overflows float
+%! ## val = 1e12, val^3 = 1e36 (near float max in accumulator)
+%! x = single (1e12) * ones (1000, 1, "single");
+%! result = norm (x, 3);
+%! assert (isfinite (result));
+%! xd = double (x);
+%! expected = norm (xd, 3);
+%! assert (double (result), expected, eps ("single") * expected);
+
+%!test <67610>
+%! ## Test complex single precision 2-norm
+%! ## |z|^2 = re^2 + im^2, use values where this would overflow float
+%! x = single (1e19) * complex (ones (1000, 1, "single"), ones (1000, 1, "single"));
+%! result = norm (x, 2);
+%! assert (isfinite (result));
+%! xd = double (x);
+%! expected = norm (xd, 2);
+%! assert (double (result), expected, eps ("single") * expected);
+
+%!test <67610>
+%! ## Test that single and double give consistent results for normal values
+%! x = single (randn (1000, 1));
+%! xd = double (x);
+%! for p = [0.5, 1, 1.5, 2, 3, Inf]
+%!   rs = norm (x, p);
+%!   rd = norm (xd, p);
+%!   assert (double (rs), rd, eps ("single") * rd);
+%! endfor
+
+%!test <67610>
+%! ## Test inf-norm (no accumulation, just max)
+%! fmax = realmax ("single");
+%! x = (fmax / 2) * ones (1000, 1, "single");
+%! x(500) = fmax - 1;
+%! result = norm (x, Inf);
+%! assert (result, fmax - 1);
+
+%!test <67610>
+%! ## Test -inf norm (min absolute value)
+%! x = single ([1, 2, 0.5, 3]);
+%! result = norm (x, -Inf);
+%! assert (result, single (0.5));
+*/
+
+/*
 ## Test input validation
 %!error norm ()
 %!error norm (1,2,3,4)

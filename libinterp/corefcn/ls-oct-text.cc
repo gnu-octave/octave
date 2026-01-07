@@ -61,6 +61,7 @@
 #include "ovl.h"
 #include "oct-map.h"
 #include "ov-cell.h"
+#include "ov-classdef.h"
 #include "pager.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -380,10 +381,20 @@ save_text_data (std::ostream& os, const octave_value& val_arg,
                 const std::string& name, bool mark_global,
                 int precision)
 {
+  octave_value val;
+  if (val_arg.is_classdef_object ())
+    {
+      warning_with_id ("Octave:save:classdef:unsupported",
+                       "Saving classdef objects is not supported. "
+                       "Attempting to save object as struct.");
+      val = val_arg.classdef_object_value ()->map_value (false, false);
+    }
+  else
+    val = val_arg;
+
   if (! name.empty ())
     os << "# name: " << name << "\n";
 
-  octave_value val = val_arg;
 
   if (mark_global)
     os << "# type: global ";

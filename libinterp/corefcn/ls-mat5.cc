@@ -69,6 +69,7 @@
 #include "oct-map.h"
 #include "ov-cell.h"
 #include "ov-class.h"
+#include "ov-classdef.h"
 #include "ov.h"
 #include "ovl.h"
 #include "pager.h"
@@ -2146,9 +2147,15 @@ maybe_convert_to_u16 (const charNDArray& chm, std::size_t& n16_str)
 }
 
 int
-save_mat5_element_length (const octave_value& tc, const std::string& name,
+save_mat5_element_length (const octave_value& tc_in, const std::string& name,
                           bool save_as_floats, bool mat7_format)
 {
+  octave_value tc;
+  if (tc_in.is_classdef_object ())
+    tc = tc_in.classdef_object_value ()->map_value (false, false);
+  else
+    tc = tc_in;
+
   std::size_t max_namelen = 63;
   std::size_t len = name.length ();
   std::string cname = tc.class_name ();
@@ -2369,10 +2376,21 @@ warn_dim_too_large (const std::string& name)
 // OS in the MatLab version 5 binary format.  Return true on success.
 bool
 save_mat5_binary_element (std::ostream& os,
-                          const octave_value& tc, const std::string& name,
+                          const octave_value& tc_in, const std::string& name,
                           bool mark_global, bool mat7_format,
                           bool save_as_floats, bool compressing)
 {
+  octave_value tc;
+  if (tc_in.is_classdef_object ())
+    {
+      warning_with_id ("Octave:save:classdef:unsupported",
+                       "Saving classdef objects is not supported. "
+                       "Attempting to save object as struct.");
+      tc = tc_in.classdef_object_value ()->map_value (false, false);
+    }
+  else
+    tc = tc_in;
+
   int32_t flags = 0;
   int32_t nnz_32 = 0;
   std::string cname = tc.class_name ();

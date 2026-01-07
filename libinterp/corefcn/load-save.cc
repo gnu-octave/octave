@@ -949,14 +949,6 @@ load_save_system::do_save (std::ostream& os, const octave_value& tc,
                            bool global, const load_save_format& fmt,
                            bool save_as_floats)
 {
-  if (tc.is_classdef_object ())
-    {
-      warning_with_id ("Octave:save:classdef:unsupported",
-                       "Saving classdef objects is not supported. Skipping '%s'.",
-                       name.c_str ());
-      return;
-    }
-
   switch (fmt.type ())
     {
     case TEXT:
@@ -1929,6 +1921,11 @@ When saving global variables the global status of the variable is also stored.
 If the variable is restored at a later time using @code{load}, it will be
 restored as a global variable.  Global status is @emph{not} preserved if
 using a @sc{matlab} binary data file format or the @option{-ascii} format.
+
+Note that @code{classdef} objects will be saved as @code{struct} in file
+formats that support saving @code{struct}.  That means they will not be loaded
+as @code{classdef} objects when loading the variables from the save file at a
+later point.
 
 Example:
 

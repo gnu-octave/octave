@@ -847,3 +847,26 @@
 %!   clear all
 %! end
 %!
+
+## Test incorrect multi-assignment with only one rhs value (bug #67885)
+%!function f_multiassig_cst
+%!  [a, b] = 7;
+%!endfunction
+%!function f_multiassig_binop
+%!  [a, b] = x + y;
+%!endfunction
+%!function f_multiassig_postfix
+%!  [a, b] = x++;
+%!endfunction
+%!function f_multiassig_prefix
+%!  [a, b] = ++x;
+%!endfunction
+%!testif ENABLE_BYTECODE_EVALUATOR <*67885>
+%! fail ("__vm_compile__ f_multiassig_cst", ...
+%!    "invalid number of output arguments for constant expression")
+%! fail ("__vm_compile__ f_multiassig_binop", ...
+%!    "invalid number of output arguments for binary operator")
+%! fail ("__vm_compile__ f_multiassig_postfix", ...
+%!    "invalid number of output arguments for postfix operator")
+%! fail ("__vm_compile__ f_multiassig_prefix", ...
+%!    "invalid number of output arguments for prefix operator")

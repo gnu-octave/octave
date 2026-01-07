@@ -1506,6 +1506,9 @@ visit_postfix_expression (tree_postfix_expression& expr)
   m_unknown_nargout++;
   INC_DEPTH();
 
+  if (NARGOUT () > 1)
+    error ("invalid number of output arguments for postfix operator");
+
   tree_expression *e = expr.operand ();
   CHECK_NONNULL (e);
 
@@ -1640,6 +1643,9 @@ visit_prefix_expression (tree_prefix_expression& expr)
 {
   m_unknown_nargout++;
   INC_DEPTH();
+
+  if (NARGOUT () > 1)
+    error ("invalid number of output arguments for prefix operator");
 
   tree_expression *e = expr.operand ();
   CHECK_NONNULL (e);
@@ -1933,6 +1939,10 @@ bytecode_walker::
 visit_binary_expression (tree_binary_expression& expr)
 {
   INC_DEPTH ();
+
+  if (NARGOUT () > 1)
+    error ("invalid number of output arguments for binary operator");
+
   PUSH_NARGOUT (1);
   m_unknown_nargout++;
 
@@ -2358,6 +2368,9 @@ bytecode_walker::
 visit_constant (tree_constant& cst)
 {
   INC_DEPTH();
+
+  if (NARGOUT () > 1)
+    error ("invalid number of output arguments for constant expression");
 
   octave_value ov_cst = cst.value ();
 
@@ -5141,7 +5154,9 @@ simple_visit_index_expression (tree_index_expression& expr)
 
   // Put the object to index on the stack
   INC_DEPTH ();
+  PUSH_NARGOUT (1);
   e->accept (*this);
+  POP_NARGOUT ();
   DEC_DEPTH ();
 
   // The Octave function inputname (i) needs to be able to know the name

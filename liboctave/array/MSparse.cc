@@ -619,6 +619,23 @@ product (const MSparse<T>& a, const MSparse<T>& b)
           for (octave_idx_type i = 0 ; i < r.numel () ; i++)
             r.elem(i) = octave::numeric_limits<T>::NaN ();
         }
+      else if (octave::math::isinf (a.elem (0, 0)))
+        {
+          r = MSparse<T> (b_nr, b_nc, b_nr * b_nc);
+
+          for (octave_idx_type j = 0 ; j < b_nc ; j++)
+            {
+              octave_quit ();
+              for (octave_idx_type i = 0 ; i < b_nr ; i++)
+                {
+                  if (b.elem (i, j) == 0.0)
+                    r.elem (i, j) = octave::numeric_limits<T>::NaN ();
+                  else
+                    r.elem (i, j) = a.elem (0, 0) * b.elem (i, j);
+                }
+            }
+          r.maybe_compress (true);
+        }
       else
         {
           r = MSparse<T> (b);
@@ -641,6 +658,23 @@ product (const MSparse<T>& a, const MSparse<T>& b)
           r = MSparse<T> (a_nr, a_nc, a_nr * a_nc);
           for (octave_idx_type i = 0 ; i < r.numel () ; i++)
             r.elem(i) = octave::numeric_limits<T>::NaN ();
+        }
+      else if (octave::math::isinf (b.elem (0, 0)))
+        {
+          r = MSparse<T> (a_nr, a_nc, a_nr * a_nc);
+
+          for (octave_idx_type j = 0 ; j < a_nc ; j++)
+            {
+              octave_quit ();
+              for (octave_idx_type i = 0 ; i < a_nr ; i++)
+                {
+                  if (a.elem (i, j) == 0.0)
+                    r.elem (i, j) = octave::numeric_limits<T>::NaN ();
+                  else
+                    r.elem (i, j) = a.elem (i, j) * b.elem (0, 0);
+                }
+            }
+          r.maybe_compress (true);
         }
       else
         {
@@ -684,7 +718,7 @@ product (const MSparse<T>& a, const MSparse<T>& b)
         octave::err_nonconformant ("product", a_nr, a_nc, b_nr, b_nc);
     }
   else if (a_nr == b_nr && a_nc == b_nc &&
-           (a.any_element_is_nan () || b.any_element_is_nan ()))
+           (a.any_element_is_inf_or_nan () || b.any_element_is_inf_or_nan ()))
     {
       r = MSparse<T> (a_nr, a_nc, a_nr * a_nc);
 
@@ -744,7 +778,7 @@ product (const MSparse<T>& a, const MSparse<T>& b)
       r.maybe_compress ();
     }
   else if (a_nr == b_nr && (a_nc == 1 || b_nc == 1) &&
-           (a.any_element_is_nan () || b.any_element_is_nan ()))
+           (a.any_element_is_inf_or_nan () || b.any_element_is_inf_or_nan ()))
     {
       octave_idx_type r_nc = (a_nc < b_nc ? b_nc : a_nc);
       r = MSparse<T> (a_nr, r_nc, a_nr * r_nc);
@@ -835,7 +869,7 @@ product (const MSparse<T>& a, const MSparse<T>& b)
   else if (a_nc == b_nc && (a_nr == 1 || b_nr == 1))
     r = product (a.transpose (), b.transpose ()).transpose ();
   else if (a_nr == 1 && b_nc == 1 &&
-           (a.any_element_is_nan () || b.any_element_is_nan ()))
+           (a.any_element_is_inf_or_nan () || b.any_element_is_inf_or_nan ()))
     {
       r = MSparse<T> (b_nr, a_nc, b_nr * a_nc);
 

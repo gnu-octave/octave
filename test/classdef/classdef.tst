@@ -1498,3 +1498,101 @@
 %! arr(1,:) = [];
 %! assert (size (arr), [0, 1]);
 %! assert (class (arr), 'handle_class');
+
+## save classdef object with overloaded subsref in struct
+%!test <67894>
+%! file_format = {'-binary', '-float-binary', '-text', '-v6'};
+%! for i_format = 1:numel (file_format)
+%!   S.obj = overloaded_subsref ();
+%!   S.obj.a = 1;
+%!   savefile = tempname ();
+%!   save (file_format{i_format}, savefile, 'S');
+%!   unwind_protect
+%!     clear S;
+%!     load (savefile);
+%!     assert (S.obj.a, 1);
+%!   unwind_protect_cleanup
+%!     delete (savefile);
+%!   end_unwind_protect
+%! endfor
+
+%!testif HAVE_HDF5 <67894>
+%! file_format = {'-hdf5', '-float-hdf5'};
+%! for i_format = 1:numel (file_format)
+%!   S.obj = overloaded_subsref ();
+%!   S.obj.a = 1;
+%!   savefile = tempname ();
+%!   save (file_format{i_format}, savefile, 'S');
+%!   unwind_protect
+%!     clear S;
+%!     load (savefile);
+%!     assert (S.obj.a, 1);
+%!   unwind_protect_cleanup
+%!     delete (savefile);
+%!   end_unwind_protect
+%! endfor
+
+%!testif HAVE_ZLIB <67894>
+%! file_format = {'-v7'};
+%! for i_format = 1:numel (file_format)
+%!   S.obj = overloaded_subsref ();
+%!   S.obj.a = 1;
+%!   savefile = tempname ();
+%!   save (file_format{i_format}, savefile, 'S');
+%!   unwind_protect
+%!     clear S;
+%!     load (savefile);
+%!     assert (S.obj.a, 1);
+%!   unwind_protect_cleanup
+%!     delete (savefile);
+%!   end_unwind_protect
+%! endfor
+
+## save classdef object with overloaded subsref in cell
+%!test <67894>
+%! file_format = {'-binary', '-float-binary', '-text', '-v6'};
+%! for i_format = 1:numel (file_format)
+%!   C{1} = overloaded_subsref ();
+%!   C{1}.a = 1;
+%!   savefile = tempname ();
+%!   save (file_format{i_format}, savefile, 'C');
+%!   unwind_protect
+%!     clear C;
+%!     load (savefile);
+%!     assert (C{1}.a, 1);
+%!   unwind_protect_cleanup
+%!     delete (savefile);
+%!   end_unwind_protect
+%! endfor
+
+%!testif HAVE_HDF5 <67894>
+%! file_format = {'-hdf5', '-float-hdf5'};
+%! for i_format = 1:numel (file_format)
+%!   C{1} = overloaded_subsref ();
+%!   C{1}.a = 1;
+%!   savefile = tempname ();
+%!   save (file_format{i_format}, savefile, 'C');
+%!   unwind_protect
+%!     clear C;
+%!     load (savefile);
+%!     assert (C{1}.a, 1);
+%!   unwind_protect_cleanup
+%!     delete (savefile);
+%!   end_unwind_protect
+%! endfor
+
+%!testif HAVE_ZLIB <67894>
+%! file_format = {'-v7'};
+%! for i_format = 1:numel (file_format)
+%!   C{1} = overloaded_subsref ();
+%!   C{1}.a = 1;
+%!   savefile = tempname ();
+%!   save (file_format{i_format}, savefile, 'C');
+%!   unwind_protect
+%!     clear C;
+%!     load (savefile);
+%!     assert (C{1}.a, 1);
+%!   unwind_protect_cleanup
+%!     delete (savefile);
+%!   end_unwind_protect
+%! endfor

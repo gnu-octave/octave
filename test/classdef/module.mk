@@ -41,6 +41,7 @@ classdef_TEST_FILES = \
   %reldir%/overloaded_horzcat_vertcat_class_handle.m \
   %reldir%/overloaded_permute_class.m \
   %reldir%/overloaded_permute_class_handle.m \
+  %reldir%/overloaded_subsref.m \
   %reldir%/overloaded_transpose_class.m \
   %reldir%/overloaded_transpose_class_handle.m \
   %reldir%/plist_t1.m \

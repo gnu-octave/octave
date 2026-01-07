@@ -738,62 +738,6 @@ load_save_system::save_vars (const string_vector& argv, int argv_idx,
             warning ("save: no such variable '%s'", argv[i].c_str ());
         }
     }
-
-  // write subsystem data
-  if (fmt.type() == MAT5_BINARY || fmt.type() == MAT7_BINARY)  // any other formats?
-    {
-      subsystem_handler *sh = get_subsystem_handler ();
-      sh->serialize_to_cell_array ();
-      // serialized data needs to be saved first to calculate nbytes during save
-
-      if (sh->has_serialized_data ())
-        {
-          // create new output stream for subsystem data
-          std::ostringstream subsys_stream;
-
-          const char *header;
-          if (mach_info::words_big_endian ())
-            header = "\x01\x00\x4d\x49\x00\x00\x00\x00";
-          else
-            header = "\x00\x01\x49\x4d\x00\x00\x00\x00";
-          subsys_stream.write (header, 8);
-
-          // create FileWrapper__ object to register as MAT_FILE_WORKSPACE_CLASS
-          octave::cdef_manager& cdm = octave::__get_cdef_manager__ ();
-          octave::cdef_class filewrapper_class
-            = cdm.make_class ("FileWrapper__", std::list<octave::cdef_class> ());
-          octave_value filewrapper_obj
-            = filewrapper_class.construct (octave_value_list (), true);
-
-          octave_scalar_map subsys_map;
-          subsys_map.assign ("MCOS", filewrapper_obj);
-          // TODO: include other type systems "java" and "handle"
-
-          std::string help;
-          do_save (subsys_stream, subsys_map, "", help, false, MAT5_BINARY,
-                   save_as_floats);
-          // don't use zlib compression on subsys_stream
-
-          // convert stream to uint8NDArray
-          // FIXME: How to optimize?
-          const std::string& stream_data = subsys_stream.str();
-          octave_idx_type data_size = stream_data.size ();
-          uint8NDArray subsys_data (dim_vector (1, data_size));
-          std::memcpy (subsys_data.rwdata(), stream_data.data(), data_size);
-
-          // save the uint8NDArray to original stream without variable name
-          octave_value subsys_value (subsys_data);
-          std::streampos subsys_offset = os.tellp ();
-          do_save (os, subsys_value, "", help, false, fmt, save_as_floats);
-
-          // update subsystem offset in MAT-file header
-          std::streampos current_pos = os.tellp ();
-          os.seekp (116);
-          uint64_t offset_val = static_cast<uint64_t> (subsys_offset);
-          os.write (reinterpret_cast<const char*> (&offset_val), 8);
-          os.seekp (current_pos);
-        }
-    }
 }
 
 void

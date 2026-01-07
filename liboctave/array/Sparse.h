@@ -176,6 +176,8 @@ protected:
 
     OCTAVE_API bool any_element_is_nan () const;
 
+    OCTAVE_API bool any_element_is_inf_or_nan () const;
+
     // Prefer nzmax.
     octave_idx_type length () const { return m_nzmax; }
 
@@ -747,6 +749,9 @@ public:
 
   bool any_element_is_nan () const
   { return m_rep->any_element_is_nan (); }
+
+  bool any_element_is_inf_or_nan () const
+  { return m_rep->any_element_is_inf_or_nan (); }
 };
 
 template <typename T>

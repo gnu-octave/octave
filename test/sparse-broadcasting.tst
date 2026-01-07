@@ -564,16 +564,37 @@
 %! out = rdivide (NaN, sparse ([1,3], [1,3], [1,3]));
 %! assert (out, nan (3));
 %!test<*36562>
-%! Mfull = [1 0; 0 3];
+%! Mfull = [1, 0; 0, 3];
 %! Msparse = sparse (Mfull);
 %! assert (NaN .* Mfull, full (NaN .* Msparse));
 %!test<*36562>
-%! Msparse = sparse ([1 0; 0 3]);
+%! Msparse = sparse ([1, 0; 0, 3]);
 %! assert (NaN .* Msparse, sparse ([NaN, NaN; NaN, NaN]));
 %!test<*36562>
-%! xs = sparse ([1 0; 0 2]);
-%! ys = sparse ([1 NaN; 0 0]);
+%! xs = sparse ([1, 0; 0, 2]);
+%! ys = sparse ([1, NaN; 0, 0]);
 %! assert (xs .* ys, sparse ([1, NaN; 0, 0]));
+
+## Tests for product operations involving Inf values
+%!test
+%! x = speye (3);
+%! y = sparse (3,3);
+%! y(1,3) = Inf;
+%! out = y;
+%! out(1,3) = NaN;
+%! assert (x .* y, out);
+%!test
+%! out = speye (3) .* sparse ([0, 0, Inf]);
+%! assert (out, sparse ([0, 0, NaN; 0, 0, NaN; 0, 0, Inf]));
+%!test
+%! out = speye (3) .* sparse ([0; 0; Inf]);
+%! assert (out, sparse ([0, 0, 0; 0, 0, 0; NaN, NaN, Inf]));
+%!test
+%! out = sparse (1, 3) .* sparse ([0; 0; Inf]);
+%! assert (out, sparse ([0, 0, 0; 0, 0, 0; NaN, NaN, NaN]));
+%!test
+%! out = sparse (3, 1) .* sparse ([0, 0, Inf]);
+%! assert (out, sparse ([0, 0, NaN; 0, 0, NaN; 0, 0, NaN]));
 
 ## Test broadcasting for comparison and boolean operators
 ## for sparse matrix to matrix and matrix to sparse matrix
@@ -1202,6 +1223,27 @@
 %! sparse ([1, 2, 3i]) / ones (4)
 %!error <operator /: nonconformant arguments \(op1 is 3x1, op2 is 4x3\)>
 %! sparse ([1i; 2i; 3i]) / ones (4, 3)
+
+## Tests for product operations involving Inf values
+%!test
+%! x = speye (3) * i;
+%! y = sparse (3,3);
+%! y(1,3) = Inf;
+%! out = y;
+%! out(1,3) = NaN*i;
+%! assert (x .* y, out);
+%!test
+%! out = speye (3)*i .* sparse ([0, 0, Inf]);
+%! assert (out, sparse ([0, 0, NaN*i; 0, 0, NaN*i; 0, 0, Inf*i]));
+%!test
+%! out = speye (3)*i .* sparse ([0; 0; Inf]);
+%! assert (out, sparse ([0, 0, 0; 0, 0, 0; NaN*i, NaN*i, Inf*i]));
+%!test
+%! out = sparse (1, 3) .* sparse ([i; 0; Inf]);
+%! assert (out, sparse ([0, 0, 0; 0, 0, 0; NaN, NaN, NaN]));
+%!test
+%! out = sparse (3, 1) .* sparse ([i, 0, Inf]);
+%! assert (out, sparse ([0, 0, NaN; 0, 0, NaN; 0, 0, NaN]));
 
 ## Test broadcasting for comparison and boolean operators
 ## for sparse matrix to matrix and matrix to sparse matrix

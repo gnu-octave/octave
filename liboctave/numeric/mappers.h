@@ -187,29 +187,26 @@ roundb (const std::complex<T>& x)
 extern OCTAVE_API double frexp (double x, int *expptr);
 extern OCTAVE_API float frexp (float x, int *expptr);
 
+// Functions testing for NaN, Inf, and finite elements
+
 inline bool isnan (bool) { return false; }
 inline bool isnan (char) { return false; }
 
 inline bool isnan (double x) { return std::isnan (x); }
 inline bool isnan (float x) { return std::isnan (x); }
 
-// FIXME: Do we need the isnan overload for complex?
+template <typename T>
+bool
+isnan (const octave_int<T>&)
+{
+  return false;
+}
+
 template <typename T>
 bool
 isnan (const std::complex<T>& x)
 {
-  return (isnan (std::real (x)) || isnan (std::imag (x)));
-}
-
-inline bool isfinite (double x) { return std::isfinite (x); }
-inline bool isfinite (float x) { return std::isfinite (x); }
-
-// FIXME: Do we need isfinite overload for complex?
-template <typename T>
-bool
-isfinite (const std::complex<T>& x)
-{
-  return (isfinite (std::real (x)) && isfinite (std::imag (x)));
+  return (std::isnan (std::real (x)) || std::isnan (std::imag (x)));
 }
 
 inline bool isinf (double x) { return std::isinf (x); }
@@ -222,12 +219,21 @@ isinf (const octave_int<T>&)
   return false;
 }
 
-// FIXME: Do we need isinf overload for complex?
 template <typename T>
 bool
 isinf (const std::complex<T>& x)
 {
-  return (isinf (std::real (x)) || isinf (std::imag (x)));
+  return (std::isinf (std::real (x)) || std::isinf (std::imag (x)));
+}
+
+inline bool isfinite (double x) { return std::isfinite (x); }
+inline bool isfinite (float x) { return std::isfinite (x); }
+
+template <typename T>
+bool
+isfinite (const std::complex<T>& x)
+{
+  return (isfinite (std::real (x)) && isfinite (std::imag (x)));
 }
 
 // Some useful tests, that are commonly repeated.

@@ -31,6 +31,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <type_traits>
 #include <vector>
 
 #include "Array-oct.h"
@@ -71,129 +72,213 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 // Numer. Math., 62, pp. 539-555, 1992.
 
 // The algorithm uses scaling (Hammarling approach) to avoid spurious overflows
-// and underflows when accumulating and employs the Kahan algorithm in order to
-// significantly reduce the average numerical accumulation error.
+// and underflows when accumulating.  For double precision, Kahan summation is
+// used to reduce numerical error.  For single precision, accumulation is done
+// in double precision which provides sufficient accuracy without the overhead
+// of compensated summation.
+
+// Accumulator type: float promotes to double for better precision
+template <typename R>
+using accum_type = std::conditional_t<std::is_same_v<R, float>, double, R>;
+
+// Whether to use Kahan compensated summation (only for double)
+template <typename R>
+inline constexpr bool use_kahan_v = std::is_same_v<R, double>;
 
 // norm accumulator for the p-norm
+// For float: use simple sum-of-powers in double.  This is safe for p values
+// where float_max^p doesn't overflow double (roughly p < 8).  For larger p,
+// results may overflow to Inf, but this is an extreme edge case.
+// For double: use Hammarling scaling with Kahan summation to avoid overflow.
 template <typename R>
 class norm_accumulator_p
 {
 public:
+  using AT = accum_type<R>;
 
-  norm_accumulator_p (R pp) : m_p(pp), m_scl(0), m_comp(0), m_sum(1) { }
+  norm_accumulator_p (R pp) : m_p (pp), m_scl (0), m_comp (0), m_sum (use_kahan_v<R> ? 1 : 0) { }
 
   OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (norm_accumulator_p)
 
   template <typename U>
   void accum (U val)
   {
-    octave_quit ();
-    R t = std::abs (val);
-    if (m_scl == t) // we need this to handle Infs properly
-      m_sum += 1;
-    else if (m_scl < t)
+    if constexpr (use_kahan_v<R>)
       {
-        m_sum *= std::pow (m_scl/t, m_p);
-        m_sum += 1;
-        m_scl = t;
+        // Hammarling scaling with Kahan summation for double
+        octave_quit ();
+        AT t = std::abs (val);
+        if (m_scl == t) // we need this to handle Infs properly
+          m_sum += 1;
+        else if (m_scl < t)
+          {
+            m_sum *= std::pow (m_scl/t, static_cast<AT> (m_p));
+            m_sum += 1;
+            m_scl = t;
+          }
+        else if (t != 0)
+          {
+            AT term = std::pow (t/m_scl, static_cast<AT> (m_p));
+            AT y = term - m_comp;
+            AT s = m_sum + y;
+            m_comp = (s - m_sum) - y;
+            m_sum = s;
+          }
       }
-    else if (t != 0)
+    else
       {
-        R y = std::pow (t/m_scl, m_p) - m_comp;
-        t = m_sum + y;
-        m_comp = (t - m_sum) - y;
-        m_sum = t;
+        // Simple sum-of-powers for float (accumulated in double)
+        m_sum += std::pow (static_cast<AT> (std::abs (val)),
+                          static_cast<AT> (m_p));
       }
   }
 
-  operator R () { return m_scl * std::pow (m_sum, 1/m_p); }
+  operator R ()
+  {
+    if constexpr (use_kahan_v<R>)
+      return static_cast<R> (m_scl * std::pow (m_sum, 1/static_cast<AT> (m_p)));
+    else
+      return static_cast<R> (std::pow (m_sum, 1/static_cast<AT> (m_p)));
+  }
 
 private:
-  R m_p, m_scl, m_comp, m_sum;
+  R m_p;
+  AT m_scl, m_comp, m_sum;
 };
 
 // norm accumulator for the minus p-pseudonorm
+// For float: use simple summation in double.
+// For double: use Hammarling scaling with Kahan summation to avoid overflow.
 template <typename R>
 class norm_accumulator_mp
 {
 public:
+  using AT = accum_type<R>;
 
-  norm_accumulator_mp (R pp) : m_p(pp), m_scl(0), m_comp(0), m_sum(1) { }
+  norm_accumulator_mp (R pp) : m_p (pp), m_scl (0), m_comp (0), m_sum (use_kahan_v<R> ? 1 : 0) { }
 
   OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (norm_accumulator_mp)
 
   template <typename U>
   void accum (U val)
   {
-    octave_quit ();
-    R t = 1 / std::abs (val);
-    if (m_scl == t)
-      m_sum += 1;
-    else if (m_scl < t)
+    if constexpr (use_kahan_v<R>)
       {
-        m_sum *= std::pow (m_scl/t, m_p);
-        m_sum += 1;
-        m_scl = t;
+        // Hammarling scaling with Kahan summation for double
+        octave_quit ();
+        AT t = 1 / std::abs (val);
+        if (m_scl == t)
+          m_sum += 1;
+        else if (m_scl < t)
+          {
+            m_sum *= std::pow (m_scl/t, static_cast<AT> (m_p));
+            m_sum += 1;
+            m_scl = t;
+          }
+        else if (t != 0)
+          {
+            AT term = std::pow (t/m_scl, static_cast<AT> (m_p));
+            AT y = term - m_comp;
+            AT s = m_sum + y;
+            m_comp = (s - m_sum) - y;
+            m_sum = s;
+          }
       }
-    else if (t != 0)
+    else
       {
-        R y = std::pow (t/m_scl, m_p) - m_comp;
-        t = m_sum + y;
-        m_comp = (t - m_sum) - y;
-        m_sum = t;
+        // Simple summation for float (accumulated in double)
+        m_sum += std::pow (1 / static_cast<AT> (std::abs (val)),
+                          static_cast<AT> (m_p));
       }
   }
 
-  operator R () { return m_scl * std::pow (m_sum, -1/m_p); }
+  operator R ()
+  {
+    if constexpr (use_kahan_v<R>)
+      return static_cast<R> (m_scl * std::pow (m_sum, -1/static_cast<AT> (m_p)));
+    else
+      return static_cast<R> (std::pow (m_sum, -1/static_cast<AT> (m_p)));
+  }
 
 private:
-  R m_p, m_scl, m_comp, m_sum;
+  R m_p;
+  AT m_scl, m_comp, m_sum;
 };
 
 // norm accumulator for the 2-norm (euclidean)
+// For float: use simple sum-of-squares in double (no overflow risk since
+// float_max^2 ~ 1e77 fits in double).
+// For double: use Hammarling scaling with Kahan summation to avoid overflow.
 template <typename R>
 class norm_accumulator_2
 {
 public:
+  using AT = accum_type<R>;  // Accumulator Type
 
-  norm_accumulator_2 () : m_scl(0), m_comp(0), m_sum(1) { }
+  norm_accumulator_2 () : m_scl (0), m_comp (0), m_sum (use_kahan_v<R> ? 1 : 0) { }
 
   OCTAVE_DEFAULT_COPY_MOVE_DELETE (norm_accumulator_2)
 
   void accum (R val)
   {
-    R t = std::abs (val);
-    if (m_scl == t)
-      m_sum += 1;
-    else if (m_scl < t)
+    if constexpr (use_kahan_v<R>)
       {
-        m_sum *= pow2 (m_scl/t);
-        m_sum += 1;
-        m_scl = t;
+        // Hammarling scaling with Kahan summation for double
+        AT t = std::abs (val);
+        if (m_scl == t)
+          m_sum += 1;
+        else if (m_scl < t)
+          {
+            m_sum *= pow2 (m_scl/t);
+            m_sum += 1;
+            m_scl = t;
+          }
+        else if (t != 0)
+          {
+            AT y = pow2 (t/m_scl) - m_comp;
+            AT s = m_sum + y;
+            m_comp = (s - m_sum) - y;
+            m_sum = s;
+          }
       }
-    else if (t != 0)
+    else
       {
-        R y = pow2 (t/m_scl) - m_comp;
-        t = m_sum + y;
-        m_comp = (t - m_sum) - y;
-        m_sum = t;
+        // Simple sum-of-squares for float (accumulated in double)
+        AT t = static_cast<AT> (val);
+        m_sum += t * t;
       }
   }
 
   void accum (std::complex<R> val)
   {
-    accum (val.real ());
-    accum (val.imag ());
+    if constexpr (use_kahan_v<R>)
+      {
+        accum (val.real ());
+        accum (val.imag ());
+      }
+    else
+      {
+        // Avoid sqrt in std::abs by accumulating re^2 + im^2 directly
+        AT re = static_cast<AT> (val.real ());
+        AT im = static_cast<AT> (val.imag ());
+        m_sum += re * re + im * im;
+      }
   }
 
-  operator R () { return m_scl * std::sqrt (m_sum); }
+  operator R ()
+  {
+    if constexpr (use_kahan_v<R>)
+      return static_cast<R> (m_scl * std::sqrt (m_sum));
+    else
+      return static_cast<R> (std::sqrt (m_sum));
+  }
 
 private:
-  static inline R pow2 (R x) { return x*x; }
+  static inline AT pow2 (AT x) { return x*x; }
 
   //--------
 
-  R m_scl, m_comp, m_sum;
+  AT m_scl, m_comp, m_sum;
 };
 
 // norm accumulator for the 1-norm (city metric)
@@ -201,6 +286,7 @@ template <typename R>
 class norm_accumulator_1
 {
 public:
+  using AT = accum_type<R>;
 
   norm_accumulator_1 () : m_sum (0) { }
 
@@ -212,10 +298,10 @@ public:
     m_sum += std::abs (val);
   }
 
-  operator R () { return m_sum; }
+  operator R () { return static_cast<R> (m_sum); }
 
 private:
-  R m_sum;
+  AT m_sum;
 };
 
 // norm accumulator for the inf-norm (max metric)

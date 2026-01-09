@@ -86,7 +86,7 @@ function h = fill (varargin)
   endif
 
   if (! all (cellfun (@(x) iscolorspec (x), varargin(iargs + 2))))
-    print_usage ();
+    error ("fill: invalid color specification C");
   endif
 
   hax = newplot (hax);

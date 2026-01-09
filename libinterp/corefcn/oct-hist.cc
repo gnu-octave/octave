@@ -631,8 +631,8 @@ DEFMETHOD (history, interp, args, nargout,
 @deftypefnx {} {} history @var{opt1} @dots{}
 @deftypefnx {} {@var{H} =} history ()
 @deftypefnx {} {@var{H} =} history (@var{opt1}, @dots{})
-If invoked with no arguments, @code{history} displays a list of commands
-that you have executed.
+If invoked with no arguments, @code{history} displays a list of commands that
+you have executed.
 
 Valid options are:
 
@@ -645,26 +645,25 @@ Display only the most recent @var{n} lines of history.
 Clear the history list.
 
 @item -q
-Don't number the displayed lines of history.  This is useful for cutting
-and pasting commands using the X Window System.
+Don't number the displayed lines of history.  This is useful for cutting and
+pasting commands using the X Window System.
 
 @item -r @var{file}
-Read the file @var{file}, appending its contents to the current
-history list.  If the name is omitted, use the default history file
-(normally @file{~/.octave_hist}).
+Read the file @var{file}, appending its contents to the current history list.
+If the name is omitted, use the default history file
+(@pxref{XREFhistory_file,,@code{history_file}}).
 
 @item -w @var{file}
-Write the current history to the file @var{file}.  If the name is
-omitted, use the default history file (normally @file{~/.octave_hist}).
+Write the current history to the file @var{file}.  If the name is omitted, use
+the default history file (@pxref{XREFhistory_file,,@code{history_file}}).
 @end table
 
-For example, to display the five most recent commands that you have
-typed without displaying line numbers, use the command
-@kbd{history -q 5}.
+For example, to display the five most recent commands that you have typed
+without displaying line numbers, use the command @kbd{history -q 5}.
 
 If invoked with a single output argument, the history will be saved to that
 argument as a cell string and will not be output to screen.
-@seealso{edit_history, run_history}
+@seealso{edit_history, run_history, history_file, history_save}
 @end deftypefn */)
 {
   // FIXME: should this be limited to the top-level context?

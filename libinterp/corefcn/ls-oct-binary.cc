@@ -50,6 +50,7 @@
 #include "ls-oct-binary.h"
 #include "ls-utils.h"
 #include "ov-cell.h"
+#include "ov-classdef.h"
 #include "ov.h"
 #include "pager.h"
 #include "sysdep.h"
@@ -337,10 +338,22 @@ read_binary_data (std::istream& is, bool swap,
 // binary format described above for read_binary_data.
 
 bool
-save_binary_data (std::ostream& os, const octave_value& tc,
+save_binary_data (std::ostream& os, const octave_value& tc_in,
                   const std::string& name, const std::string& doc,
                   bool mark_global, bool save_as_floats)
 {
+  octave_value tc;
+  if (tc_in.is_classdef_object ())
+    {
+      warning_with_id ("Octave:save:classdef:unsupported",
+                       "Saving classdef objects is not supported. "
+                       "Attempting to save '%s' as struct.",
+                       name.c_str ());
+      tc = tc_in.classdef_object_value ()->map_value (false, false);
+    }
+  else
+    tc = tc_in;
+
   constexpr octave_idx_type max_dim_val = std::numeric_limits<int32_t>::max () - 1;
 
   dim_vector dv = tc.dims ();

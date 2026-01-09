@@ -61,6 +61,7 @@
 #include "ovl.h"
 #include "oct-map.h"
 #include "ov-cell.h"
+#include "ov-classdef.h"
 #include "pager.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
@@ -1408,11 +1409,23 @@ save_type_to_hdf5 (save_type st)
 // (stored as HDF5 groups).
 
 bool
-add_hdf5_data (octave_hdf5_id loc_id, const octave_value& tc,
+add_hdf5_data (octave_hdf5_id loc_id, const octave_value& tc_in,
                const std::string& name, const std::string& doc,
                bool mark_global, bool save_as_floats)
 {
 #if defined (HAVE_HDF5)
+
+  octave_value tc;
+  if (tc_in.is_classdef_object ())
+    {
+      warning_with_id ("Octave:save:classdef:unsupported",
+                       "Saving classdef objects is not supported. "
+                       "Attempting to save '%s' as struct.",
+                       name.c_str ());
+      tc = tc_in.classdef_object_value ()->map_value (false, false);
+    }
+  else
+    tc = tc_in;
 
   hsize_t dims[3];
   hid_t type_id, space_id, data_id, data_type_id;

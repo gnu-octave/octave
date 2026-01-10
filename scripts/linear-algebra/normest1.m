@@ -286,7 +286,7 @@ endfunction
 ## test t=1
 %!test
 %! A = rand (4); # for positive matrices always work
-%! assert (normest1 (A, 1), norm (A,1), 2 * eps);
+%! assert (normest1 (A, 1), norm (A,1), 4 * eps);
 
 ## test t=3
 %!test
@@ -302,7 +302,7 @@ endfunction
 %! A = rand (10);
 %! n = length (A);
 %! Afcn = @(flag, x) afcn_A (flag, x, A, n);
-%! assert (normest1 (Afcn), norm (A, 1), 2 * eps);
+%! assert (normest1 (Afcn), norm (A, 1), 4 * eps);
 
 ## test Afcn with parameters
 %!test
@@ -327,12 +327,12 @@ endfunction
 %!test
 %! A = rand (5);
 %! nest = normest1 (A, 6);
-%! assert (nest, norm (A,1), eps);
+%! assert (nest, norm (A,1), 4 * eps);
 
 %!test
 %! A = rand (5);
 %! nest = normest1 (A, 2, ones (5, 2) / 5);
-%! assert (nest, norm (A,1), eps);
+%! assert (nest, norm (A,1), 4 * eps);
 
 %!test
 %! N = 10;

@@ -471,11 +471,17 @@ documentation::global_search ()
   if (match.hasMatch ())
     m_internal_search = match.captured (1);
   else
+    {
+      QStringList tmp;
 #if defined (HAVE_QT_SPLITBEHAVIOR_ENUM)
-    m_internal_search = query_string.split (" ", Qt::SkipEmptyParts).first ();
+      tmp = query_string.split (" ", Qt::SkipEmptyParts);
 #else
-    m_internal_search = query_string.split (" ", QString::SkipEmptyParts).first ();
+      tmp = query_string.split (" ", QString::SkipEmptyParts);
 #endif
+      if (tmp.isEmpty ())
+        return;
+      m_internal_search = tmp.first ();
+    }
 
   m_help_engine->searchEngine ()->search (queries);
 }

@@ -9789,6 +9789,9 @@ patch::properties::update_fvc ()
   m_faces.set (idx);
   m_vertices.set (vert);
   m_facevertexcdata.set (fvc);
+
+  updating_patch_data = false;
+  update_data ();
 }
 
 // core coplanar tester

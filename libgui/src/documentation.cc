@@ -65,6 +65,7 @@
 #include "defaults.h"
 #include "file-ops.h"
 #include "oct-env.h"
+#include "oct-sysdep.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -891,12 +892,14 @@ documentation::unregisterDoc (const QString& qch)
     return;
 
   QString ns = m_help_engine->namespaceName (qch);
-  if (m_help_engine
-      && m_help_engine->registeredDocumentations ().contains (ns)
-      && m_help_engine->documentationFileName (ns) == qch)
+  if (m_help_engine->registeredDocumentations ().contains (ns))
     {
-      m_help_engine->unregisterDocumentation (ns);
-      m_help_engine->setupData ();
+      std::string ns_file = m_help_engine->documentationFileName (ns).toStdString ();
+      if (sys::same_file (ns_file, qch.toStdString ()))
+        {
+          m_help_engine->unregisterDocumentation (ns);
+          m_help_engine->setupData ();
+        }
     }
 }
 

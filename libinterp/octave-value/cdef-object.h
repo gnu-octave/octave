@@ -189,6 +189,11 @@ public:
     err_invalid_object ("permute");
   }
 
+  virtual cdef_object_rep * resize (const dim_vector&, bool = false) const
+  {
+    err_invalid_object ("resize");
+  }
+
   virtual cdef_object_rep * transpose () const
   {
     err_invalid_object ("transpose");
@@ -355,6 +360,9 @@ public:
   cdef_object permute (const Array<int>& vec, bool inv = false) const
   { return cdef_object (m_rep->permute (vec, inv)); }
 
+  cdef_object resize (const dim_vector& dv, bool fill = false) const
+  { return cdef_object (m_rep->resize (dv, fill)); }
+
   cdef_object transpose () const
   { return cdef_object (m_rep->transpose ()); }
 
@@ -466,15 +474,18 @@ public:
   OCTINTERP_API cdef_object_rep *
   permute (const Array<int>& vec, bool inv = false) const;
 
+  OCTINTERP_API cdef_object_rep *
+  resize (const dim_vector& dv, bool fill = false) const;
+
   cdef_object_rep * transpose () const;
-
-private:
-
-  Array<cdef_object> m_array;
 
   void fill_empty_values () { fill_empty_values (m_array); }
 
   OCTINTERP_API void fill_empty_values (Array<cdef_object>& arr);
+
+private:
+
+  Array<cdef_object> m_array;
 
   // Private copying!
   cdef_object_array (const cdef_object_array& obj)
@@ -546,6 +557,9 @@ public:
   {
     return clone ();
   }
+
+  OCTINTERP_API cdef_object_rep *
+  resize (const dim_vector& dv, bool fill = false) const;
 
   cdef_object_rep * transpose () const
   {

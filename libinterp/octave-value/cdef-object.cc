@@ -243,6 +243,18 @@ cdef_object_array::permute (const Array<int>& vec, bool inv) const
   return retval;
 }
 
+cdef_object_rep *
+cdef_object_array::resize (const dim_vector& dv, bool fill) const
+{
+  cdef_object_array *retval = dynamic_cast<cdef_object_array *> (clone ());
+
+  retval->m_array.resize (dv, cdef_object ());
+
+  if (fill)
+    retval->fill_empty_values ();
+
+  return retval;
+}
 
 cdef_object_rep *
 cdef_object_array::transpose () const
@@ -784,6 +796,28 @@ cdef_object_scalar::reshape (const dim_vector& new_dims) const
     }
 
   return to_ov (cdef_object (clone()));
+}
+
+cdef_object_rep *
+cdef_object_scalar::resize (const dim_vector& dv, bool fill) const
+{
+  if (dv.numel () == 1)
+    return clone ();
+
+  Array<cdef_object> arr (dv);
+
+  // Need to guard against this statement being called when an empty array
+  // is generated
+  if (dv.numel () > 0)
+    arr(0) = cdef_object (const_cast<cdef_object_scalar *> (this)->clone ());
+
+  cdef_object_array *retval = new cdef_object_array (arr);
+  retval->set_class (get_class ());
+
+  if (fill)
+    retval->fill_empty_values ();
+
+  return retval;
 }
 
 void

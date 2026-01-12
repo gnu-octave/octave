@@ -161,6 +161,12 @@ public:
     return new octave_classdef (m_object.permute (vec, inv));
   }
 
+  octave_value
+  resize (const dim_vector& dv, bool fill = false) const
+  {
+    return new octave_classdef (m_object.resize (dv, fill));
+  }
+
 public:
 
   int type_id () const { return s_t_id; }

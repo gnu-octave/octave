@@ -1070,7 +1070,7 @@ main (int argc, char **sys_argv)
           if (wcmd)
             {
               fd = ::_wpopen (wcmd, L"r");
-              free (reinterpret_cast<void *> (wcmd));
+              delete[] wcmd;
             }
           else
             fd = ::popen (cmd.c_str (), "r");
@@ -1080,7 +1080,7 @@ main (int argc, char **sys_argv)
           if (wfile)
             {
               fo.open (wfile);
-              free (reinterpret_cast<void *> (wfile));
+              delete[] wfile;
             }
           else
             fo.open (dfile.c_str ());
@@ -1129,7 +1129,7 @@ main (int argc, char **sys_argv)
           if (wcmd)
             {
               fd = ::_wpopen (wcmd, L"r");
-              free (reinterpret_cast<void *> (wcmd));
+              delete[] wcmd;
             }
           else
             fd = ::popen (cmd.c_str (), "r");
@@ -1139,7 +1139,7 @@ main (int argc, char **sys_argv)
           if (wfile)
             {
               fo.open (wfile);
-              free (reinterpret_cast<void *> (wfile));
+              delete[] wfile;
             }
           else
             fo.open (dfile.c_str ());

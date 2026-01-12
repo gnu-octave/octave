@@ -121,7 +121,7 @@ w32_get_octave_home ()
       if (name_u8)
         {
           std::string exe_name (name_u8, size8);
-          free (reinterpret_cast<void *> (name_u8));
+          delete[] name_u8;
 
           std::size_t pos = exe_name.rfind ('\\');
 

@@ -1370,6 +1370,220 @@
 %! result = arr';
 %! assert (size (result), [3, 1]);  # regular ctranspose
 
+## Test classdef resize method
+
+## test resize method, scalar input and scalar output
+%!test
+%! obj = value_class ();
+%! obj.a = 1;
+%! result = resize (obj, 1);
+%! assert (size (result), [1, 1]);
+%! assert (obj.a, 1);
+%! result.a = 2;  # stress test value semantics
+%! assert (obj.a, 1);
+
+## previous test, but with handle classes
+%!test
+%! obj = handle_class ();
+%! obj.a = 1;
+%! result = resize (obj, 1);
+%! assert (size (result), [1, 1]);
+%! assert (obj.a, 1);
+%! result.a = 2;  # stress test handle semantics
+%! assert (obj.a, 2);
+
+## test resize method, scalar input with constructor that requires arguments
+##
+## Rationale: resizing an input array to be larger requires the classdef to
+## implement a default (no-argument) constructor. We want to ensure that the
+## default constructor is not required when the output array is smaller or
+## equal in size to the input array.
+##
+%!test
+%! obj = class_pair_elem (1);
+%! result = resize (obj, 1);
+%! assert (size (result), [1, 1]);
+%! assert (obj.value, 1);
+%! result.value = 2;  # stress test value semantics
+%! assert (obj.value, 1);
+
+## previous test, but with handle classes
+%!test
+%! obj = class_pair_elem_handle (1);
+%! result = resize (obj, 1);
+%! assert (size (result), [1, 1]);
+%! assert (obj.value, 1);
+%! result.value = 2;  # stress test handle semantics
+%! assert (obj.value, 2);
+
+## test resize method to make empty 0x0 arrays
+%!test
+%! obj = value_class ();
+%! result = resize (obj, 0);
+%! assert (size (result), [0, 0]);
+%! assert (class (result), 'value_class');
+
+## previous test, but with handle classes
+%!test
+%! obj = handle_class ();
+%! result = resize (obj, 0);
+%! assert (size (result), [0, 0]);
+%! assert (class (result), 'handle_class');
+
+## test resize method to make empty 0x1 arrays
+%!test
+%! obj = value_class ();
+%! result = resize (obj, 0, 1);
+%! assert (size (result), [0, 1]);
+%! assert (class (result), 'value_class');
+
+## previous test, but with handle classes
+%!test
+%! obj = handle_class ();
+%! result = resize (obj, 0, 1);
+%! assert (size (result), [0, 1]);
+%! assert (class (result), 'handle_class');
+
+## test resize method to make empty 1x0 arrays
+%!test
+%! obj = value_class ();
+%! result = resize (obj, 1, 0);
+%! assert (size (result), [1, 0]);
+%! assert (class (result), 'value_class');
+
+## previous test, but with handle classes
+%!test
+%! obj = handle_class ();
+%! result = resize (obj, 1, 0);
+%! assert (size (result), [1, 0]);
+%! assert (class (result), 'handle_class');
+
+## test resize method, scalar input and array 1x3 output, default constructor
+%!test
+%! obj = value_class ();
+%! obj.a = 1;
+%! result = resize (obj, 1, 3);
+%! assert (size (result), [1, 3]);
+%! assert (result(1).a, 1);
+%! assert (result(2).a, []);
+%! assert (result(3).a, []);
+
+## previous test, but with handle classes
+%!test
+%! obj = handle_class ();
+%! obj.a = 1;
+%! result = resize (obj, 1, 3);
+%! assert (size (result), [1, 3]);
+%! assert (result(1).a, 1);
+%! assert (result(2).a, []);
+%! assert (result(3).a, []);
+%! result(2).a = 2;  # each entry should be a unique handle object
+%! assert (result(1).a, 1);
+%! assert (result(2).a, 2);
+%! assert (result(3).a, []);
+
+## test resize method, scalar input and array 3x1 output, default constructor
+%!test
+%! obj = value_class ();
+%! obj.a = 1;
+%! result = resize (obj, 3, 1);
+%! assert (size (result), [3, 1]);
+%! assert (result(1).a, 1);
+%! assert (result(2).a, []);
+%! assert (result(3).a, []);
+
+## previous test, but with handle classes
+%!test
+%! obj = handle_class ();
+%! obj.a = 1;
+%! result = resize (obj, 3, 1);
+%! assert (size (result), [3, 1]);
+%! assert (result(1).a, 1);
+%! assert (result(2).a, []);
+%! assert (result(3).a, []);
+%! result(2).a = 2;  # each entry should be a unique handle object
+%! assert (result(1).a, 1);
+%! assert (result(2).a, 2);
+%! assert (result(3).a, []);
+
+## test resize method, scalar input and array 3x3 output, default constructor
+%!test
+%! obj = value_class ();
+%! obj.a = 1;
+%! result = resize (obj, 3, 3);
+%! assert (size (result), [3, 3]);
+%! assert (result(1,1).a, 1);
+%! assert (result(2,2).a, []);
+%! assert (result(3,3).a, []);
+
+## previous test, but with handle classes
+%!test
+%! obj = handle_class ();
+%! obj.a = 1;
+%! result = resize (obj, 3, 3);
+%! assert (size (result), [3, 3]);
+%! assert (result(1,1).a, 1);
+%! assert (result(2,2).a, []);
+%! assert (result(3,3).a, []);
+%! result(2,2).a = 2;  # each entry should be a unique handle object
+%! assert (result(1,1).a, 1);
+%! assert (result(2,2).a, 2);
+%! assert (result(3,3).a, []);
+
+## test resize method, array 2x2 input and array 4x4 output, default constructor
+%!test
+%! arr = [ value_class(), value_class() ; value_class(), value_class() ];
+%! arr(1,1).a = 1;
+%! arr(1,2).a = 2;
+%! arr(2,1).a = 3;
+%! arr(2,2).a = 4;
+%! result = resize (arr, 4, 4);
+%! assert (size (result), [4, 4]);
+%! assert (result(1,1).a, 1);
+%! assert (result(1,2).a, 2);
+%! assert (result(2,1).a, 3);
+%! assert (result(2,2).a, 4);
+%! assert (result(3,3).a, []);
+%! assert (result(4,4).a, []);
+
+## previous test, but with handle classes
+%!test
+%! arr = [ handle_class(), handle_class() ; handle_class(), handle_class() ];
+%! arr(1,1).a = 1;
+%! arr(1,2).a = 2;
+%! arr(2,1).a = 3;
+%! arr(2,2).a = 4;
+%! result = resize (arr, 4, 4);
+%! assert (size (result), [4, 4]);
+%! assert (result(1,1).a, 1);
+%! assert (result(1,2).a, 2);
+%! assert (result(2,1).a, 3);
+%! assert (result(2,2).a, 4);
+%! assert (result(3,3).a, []);
+%! assert (result(4,4).a, []);
+%! result(3,3).a = 10;
+%! assert (result(1,1).a, 1);
+%! assert (result(1,2).a, 2);
+%! assert (result(2,1).a, 3);
+%! assert (result(2,2).a, 4);
+%! assert (result(3,3).a, 10);
+%! assert (result(4,4).a, []);
+
+## test resize method, scalar input and array 1x3 output, no default constructor
+## FIXME: provide a proper error message when the default construction of a
+## classdef object fails. Right now, the error message is something like
+## <'value' undefined near line 7, column 20>, but that is the actual failure
+## point in the .m file code and not the general gist of what went wrong.
+%!error
+%! obj = class_pair_elem (1);
+%! result = resize (obj, 1, 3);
+
+## test resize method, array 1x2 input and array 1x3 output, no default constructor
+%!error
+%! obj = [ class_pair_elem(1);  class_pair_elem(2) ];
+%! result = resize (obj, 1, 3);
+
+
 ## arr(i) = [] deletion syntax tests (bug #55983).
 
 ## test arr(i) = [] deletion syntax on single index positions

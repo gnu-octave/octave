@@ -1569,6 +1569,41 @@
 %! assert (result(3,3).a, 10);
 %! assert (result(4,4).a, []);
 
+## Additional test resize of classdef objects
+## Using built-in classdef (inputParser()).
+
+%!test
+%! ## Test resize of scalar classdef object to array
+%! obj = inputParser ();  # use classdef with implementation in core Octave
+%! obj.KeepUnmatched = true;
+%! arr = resize (obj, [2, 3]);
+%! assert (size (arr), [2, 3]);
+%! assert (arr(1,1).KeepUnmatched, true);
+%! ## New elements should be default-constructed
+%! assert (arr(1,2).KeepUnmatched, false);
+
+%!test
+%! ## Resize to empty
+%! obj = inputParser ();
+%! arr = resize (obj, [0, 5]);
+%! assert (size (arr), [0, 5]);
+%! assert (numel (arr), 0);
+
+%!test
+%! ## Resize scalar to scalar
+%! obj = inputParser ();
+%! obj.CaseSensitive = true;
+%! obj2 = resize (obj, [1, 1]);
+%! assert (size (obj2), [1, 1]);
+%! assert (obj2.CaseSensitive, true);
+
+%!test
+%! ## Resize to 3D
+%! obj = inputParser ();
+%! arr = resize (obj, [2, 2, 2]);
+%! assert (size (arr), [2, 2, 2]);
+%! assert (numel (arr), 8);
+
 ## test resize method, scalar input and array 1x3 output, no default constructor
 ## FIXME: provide a proper error message when the default construction of a
 ## classdef object fails. Right now, the error message is something like
@@ -1582,7 +1617,6 @@
 %!error
 %! obj = [ class_pair_elem(1);  class_pair_elem(2) ];
 %! result = resize (obj, 1, 3);
-
 
 ## arr(i) = [] deletion syntax tests (bug #55983).
 

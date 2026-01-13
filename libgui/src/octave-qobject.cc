@@ -32,6 +32,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QFile>
+#include <QFontDatabase>
 #include <QStyleFactory>
 #if ! defined (Q_OS_WIN32)
 #  include <QTextCodec>
@@ -202,7 +203,6 @@ base_qobject::base_qobject (qt_application& app_context, bool gui_app)
   std::string show_gui_msgs = sys::env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
 
   // Installing our handler suppresses the messages.
-
   if (show_gui_msgs.empty ())
     qInstallMessageHandler (message_handler);
 
@@ -311,6 +311,9 @@ base_qobject::base_qobject (qt_application& app_context, bool gui_app)
         }
       else
         {
+          // Access font db first, otherwise gui widgets have a monospace font
+          QFontDatabase::systemFont (QFontDatabase::GeneralFont);
+
           // Get settings file.
           gui_settings settings;
 

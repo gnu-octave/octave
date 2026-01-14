@@ -802,7 +802,14 @@ octave_classdef::print_raw (std::ostream& os, bool) const
       increment_indent_level ();
 
       indent (os);
-      os << class_name () << " object";
+
+      dim_vector dv = dims ();
+      if (dv.ndims () > 4)
+        os << dv.ndims () << "-D";
+      else
+        os << dims().str();
+
+      os << " " << class_name () << " object";
       if (is_array)
         os << " array";
       os << " with properties:";

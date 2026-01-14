@@ -30,6 +30,7 @@
 #include <cmath>
 
 #include <algorithm>
+#include <iostream>
 #include <limits>
 #include <type_traits>
 #include <vector>
@@ -45,6 +46,7 @@
 #include "dMatrix.h"
 #include "dRowVector.h"
 #include "dSparse.h"
+#include "f77-fcn.h"
 #include "fCColVector.h"
 #include "fCMatrix.h"
 #include "fCRowVector.h"
@@ -64,221 +66,345 @@
 #include "quit.h"
 #include "svd.h"
 
+#if defined (HAVE_ARPACK)
+#  include "eigs-base.h"
+#endif
+
+// BLAS NRM2 declarations for vector 2-norm
+extern "C"
+{
+  F77_DBLE
+  F77_FUNC (dnrm2, DNRM2) (const F77_INT&,
+                           const F77_DBLE *,
+                           const F77_INT&);
+
+  F77_REAL
+  F77_FUNC (snrm2, SNRM2) (const F77_INT&,
+                           const F77_REAL *,
+                           const F77_INT&);
+
+  F77_DBLE
+  F77_FUNC (dznrm2, DZNRM2) (const F77_INT&,
+                             const F77_DBLE_CMPLX *,
+                             const F77_INT&);
+
+  F77_REAL
+  F77_FUNC (scnrm2, SCNRM2) (const F77_INT&,
+                             const F77_CMPLX *,
+                             const F77_INT&);
+}
+
+// LAPACK LANGE declarations for matrix norms
+extern "C"
+{
+  F77_DBLE
+  F77_FUNC (dlange, DLANGE) (F77_CONST_CHAR_ARG_DECL,
+                             const F77_INT&,
+                             const F77_INT&,
+                             const F77_DBLE *,
+                             const F77_INT&,
+                             F77_DBLE *
+                             F77_CHAR_ARG_LEN_DECL);
+
+  F77_REAL
+  F77_FUNC (slange, SLANGE) (F77_CONST_CHAR_ARG_DECL,
+                             const F77_INT&,
+                             const F77_INT&,
+                             const F77_REAL *,
+                             const F77_INT&,
+                             F77_REAL *
+                             F77_CHAR_ARG_LEN_DECL);
+
+  F77_DBLE
+  F77_FUNC (zlange, ZLANGE) (F77_CONST_CHAR_ARG_DECL,
+                             const F77_INT&,
+                             const F77_INT&,
+                             const F77_DBLE_CMPLX *,
+                             const F77_INT&,
+                             F77_DBLE *
+                             F77_CHAR_ARG_LEN_DECL);
+
+  F77_REAL
+  F77_FUNC (clange, CLANGE) (F77_CONST_CHAR_ARG_DECL,
+                             const F77_INT&,
+                             const F77_INT&,
+                             const F77_CMPLX *,
+                             const F77_INT&,
+                             F77_REAL *
+                             F77_CHAR_ARG_LEN_DECL);
+}
+
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-// Theory: norm accumulator is an object that has an accum method able to
-// handle both real and complex element, and a cast operator returning the
-// intermediate norm.  Reference: N. Higham, "Estimating the Matrix p-Norm",
-// Numer. Math., 62, pp. 539-555, 1992.
+// BLAS NRM2 wrappers for vector 2-norm
 
-// The algorithm uses scaling (Hammarling approach) to avoid spurious overflows
-// and underflows when accumulating.  For double precision, Kahan summation is
-// used to reduce numerical error.  For single precision, accumulation is done
-// in double precision which provides sufficient accuracy without the overhead
-// of compensated summation.
+inline double
+blas_nrm2 (octave_idx_type n, const double *x, octave_idx_type incx)
+{
+  F77_INT f77_n = to_f77_int (n);
+  F77_INT f77_incx = to_f77_int (incx);
+  return F77_FUNC (dnrm2, DNRM2) (f77_n, x, f77_incx);
+}
+
+inline float
+blas_nrm2 (octave_idx_type n, const float *x, octave_idx_type incx)
+{
+  F77_INT f77_n = to_f77_int (n);
+  F77_INT f77_incx = to_f77_int (incx);
+  return F77_FUNC (snrm2, SNRM2) (f77_n, x, f77_incx);
+}
+
+inline double
+blas_nrm2 (octave_idx_type n, const Complex *x, octave_idx_type incx)
+{
+  F77_INT f77_n = to_f77_int (n);
+  F77_INT f77_incx = to_f77_int (incx);
+  return F77_FUNC (dznrm2, DZNRM2)
+    (f77_n, reinterpret_cast<const F77_DBLE_CMPLX *> (x), f77_incx);
+}
+
+inline float
+blas_nrm2 (octave_idx_type n, const FloatComplex *x, octave_idx_type incx)
+{
+  F77_INT f77_n = to_f77_int (n);
+  F77_INT f77_incx = to_f77_int (incx);
+  return F77_FUNC (scnrm2, SCNRM2)
+    (f77_n, reinterpret_cast<const F77_CMPLX *> (x), f77_incx);
+}
+
+// LAPACK LANGE wrappers for dense matrix norms.
+// norm_type: 'O'/'1' = 1-norm, 'I' = inf-norm, 'F' = Frobenius
+//
+// Note: LANGE mishandles Inf due to internal scaling (Inf/Inf = NaN).
+// We fix this by checking for Inf when LANGE returns NaN.
+
+template <typename T, typename R>
+inline R
+lange_inf_fixup (R result, const T *data, octave_idx_type numel)
+{
+  // LANGE returned NaN - check if it should be Inf instead.
+  // If there's a genuine NaN in input, keep returning NaN.
+  // Only scan the matrix if LANGE returned NaN (no overhead otherwise).
+  if (math::isnan (result))
+    {
+      bool has_inf = false;
+      for (octave_idx_type i = 0; i < numel; i++)
+        {
+          if (math::isnan (data[i]))
+            return result;  // Genuine NaN takes precedence
+          if (math::isinf (data[i]))
+            has_inf = true;
+        }
+      if (has_inf)
+        return numeric_limits<R>::Inf ();
+    }
+  return result;
+}
+
+inline double
+lange (char norm_type, const Matrix& m)
+{
+  F77_INT mm = to_f77_int (m.rows ());
+  F77_INT nn = to_f77_int (m.cols ());
+  F77_INT lda = std::max (mm, static_cast<F77_INT> (1));
+
+  OCTAVE_LOCAL_BUFFER (double, work, mm);
+
+  double result = F77_FUNC (dlange, DLANGE) (F77_CONST_CHAR_ARG (&norm_type),
+                                             mm, nn, m.data (), lda, work
+                                             F77_CHAR_ARG_LEN (1));
+  return lange_inf_fixup (result, m.data (), m.numel ());
+}
+
+inline float
+lange (char norm_type, const FloatMatrix& m)
+{
+  F77_INT mm = to_f77_int (m.rows ());
+  F77_INT nn = to_f77_int (m.cols ());
+  F77_INT lda = std::max (mm, static_cast<F77_INT> (1));
+
+  OCTAVE_LOCAL_BUFFER (float, work, mm);
+
+  float result = F77_FUNC (slange, SLANGE) (F77_CONST_CHAR_ARG (&norm_type),
+                                            mm, nn, m.data (), lda, work
+                                            F77_CHAR_ARG_LEN (1));
+  return lange_inf_fixup (result, m.data (), m.numel ());
+}
+
+inline double
+lange (char norm_type, const ComplexMatrix& m)
+{
+  F77_INT mm = to_f77_int (m.rows ());
+  F77_INT nn = to_f77_int (m.cols ());
+  F77_INT lda = std::max (mm, static_cast<F77_INT> (1));
+
+  OCTAVE_LOCAL_BUFFER (double, work, mm);
+
+  double result = F77_FUNC (zlange, ZLANGE)
+    (F77_CONST_CHAR_ARG (&norm_type),
+     mm, nn,
+     reinterpret_cast<const F77_DBLE_CMPLX *> (m.data ()),
+     lda, work
+     F77_CHAR_ARG_LEN (1));
+  return lange_inf_fixup (result, m.data (), m.numel ());
+}
+
+inline float
+lange (char norm_type, const FloatComplexMatrix& m)
+{
+  F77_INT mm = to_f77_int (m.rows ());
+  F77_INT nn = to_f77_int (m.cols ());
+  F77_INT lda = std::max (mm, static_cast<F77_INT> (1));
+
+  OCTAVE_LOCAL_BUFFER (float, work, mm);
+
+  float result = F77_FUNC (clange, CLANGE)
+    (F77_CONST_CHAR_ARG (&norm_type),
+     mm, nn,
+     reinterpret_cast<const F77_CMPLX *> (m.data ()),
+     lda, work
+     F77_CHAR_ARG_LEN (1));
+  return lange_inf_fixup (result, m.data (), m.numel ());
+}
+
+// Norm accumulators for various norms.
+// Reference: N. Higham, "Estimating the Matrix p-Norm",
+// Numer. Math., 62, pp. 539-555, 1992.
+//
+// For float types, we accumulate in double for better precision.
+// For double types, we use Hammarling scaling to avoid overflow/underflow.
+// Kahan compensation is NOT used since these accumulators are primarily
+// used in iterative methods where sqrt(eps) precision is sufficient.
 
 // Accumulator type: float promotes to double for better precision
 template <typename R>
 using accum_type = std::conditional_t<std::is_same_v<R, float>, double, R>;
 
-// Whether to use Kahan compensated summation (only for double)
-template <typename R>
-inline constexpr bool use_kahan_v = std::is_same_v<R, double>;
-
 // norm accumulator for the p-norm
-// For float: use simple sum-of-powers in double.  This is safe for p values
-// where float_max^p doesn't overflow double (roughly p < 8).  For larger p,
-// results may overflow to Inf, but this is an extreme edge case.
-// For double: use Hammarling scaling with Kahan summation to avoid overflow.
+// Uses Hammarling scaling to avoid overflow.
 template <typename R>
 class norm_accumulator_p
 {
 public:
   using AT = accum_type<R>;
 
-  norm_accumulator_p (R pp) : m_p (pp), m_scl (0), m_comp (0), m_sum (use_kahan_v<R> ? 1 : 0) { }
+  norm_accumulator_p (R pp) : m_p (pp), m_scl (0), m_sum (1) { }
 
   OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (norm_accumulator_p)
 
   template <typename U>
   void accum (U val)
   {
-    if constexpr (use_kahan_v<R>)
+    AT t = std::abs (val);
+    if (t != 0)
       {
-        // Hammarling scaling with Kahan summation for double
-        octave_quit ();
-        AT t = std::abs (val);
-        if (m_scl == t) // we need this to handle Infs properly
+        if (m_scl == t)
           m_sum += 1;
         else if (m_scl < t)
           {
-            m_sum *= std::pow (m_scl/t, static_cast<AT> (m_p));
+            m_sum *= std::pow (m_scl / t, static_cast<AT> (m_p));
             m_sum += 1;
             m_scl = t;
           }
-        else if (t != 0)
-          {
-            AT term = std::pow (t/m_scl, static_cast<AT> (m_p));
-            AT y = term - m_comp;
-            AT s = m_sum + y;
-            m_comp = (s - m_sum) - y;
-            m_sum = s;
-          }
-      }
-    else
-      {
-        // Simple sum-of-powers for float (accumulated in double)
-        m_sum += std::pow (static_cast<AT> (std::abs (val)),
-                          static_cast<AT> (m_p));
+        else
+          m_sum += std::pow (t / m_scl, static_cast<AT> (m_p));
       }
   }
 
   operator R ()
   {
-    if constexpr (use_kahan_v<R>)
-      return static_cast<R> (m_scl * std::pow (m_sum, 1/static_cast<AT> (m_p)));
-    else
-      return static_cast<R> (std::pow (m_sum, 1/static_cast<AT> (m_p)));
+    return static_cast<R> (m_scl * std::pow (m_sum, 1 / static_cast<AT> (m_p)));
   }
 
 private:
   R m_p;
-  AT m_scl, m_comp, m_sum;
+  AT m_scl, m_sum;
 };
 
 // norm accumulator for the minus p-pseudonorm
-// For float: use simple summation in double.
-// For double: use Hammarling scaling with Kahan summation to avoid overflow.
 template <typename R>
 class norm_accumulator_mp
 {
 public:
   using AT = accum_type<R>;
 
-  norm_accumulator_mp (R pp) : m_p (pp), m_scl (0), m_comp (0), m_sum (use_kahan_v<R> ? 1 : 0) { }
+  norm_accumulator_mp (R pp) : m_p (pp), m_scl (0), m_sum (1) { }
 
   OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (norm_accumulator_mp)
 
   template <typename U>
   void accum (U val)
   {
-    if constexpr (use_kahan_v<R>)
+    AT t = 1 / std::abs (val);
+    if (m_scl == t)
+      m_sum += 1;
+    else if (m_scl < t)
       {
-        // Hammarling scaling with Kahan summation for double
-        octave_quit ();
-        AT t = 1 / std::abs (val);
-        if (m_scl == t)
-          m_sum += 1;
-        else if (m_scl < t)
-          {
-            m_sum *= std::pow (m_scl/t, static_cast<AT> (m_p));
-            m_sum += 1;
-            m_scl = t;
-          }
-        else if (t != 0)
-          {
-            AT term = std::pow (t/m_scl, static_cast<AT> (m_p));
-            AT y = term - m_comp;
-            AT s = m_sum + y;
-            m_comp = (s - m_sum) - y;
-            m_sum = s;
-          }
+        m_sum *= std::pow (m_scl / t, static_cast<AT> (m_p));
+        m_sum += 1;
+        m_scl = t;
       }
-    else
-      {
-        // Simple summation for float (accumulated in double)
-        m_sum += std::pow (1 / static_cast<AT> (std::abs (val)),
-                          static_cast<AT> (m_p));
-      }
+    else if (t != 0)
+      m_sum += std::pow (t / m_scl, static_cast<AT> (m_p));
   }
 
   operator R ()
   {
-    if constexpr (use_kahan_v<R>)
-      return static_cast<R> (m_scl * std::pow (m_sum, -1/static_cast<AT> (m_p)));
-    else
-      return static_cast<R> (std::pow (m_sum, -1/static_cast<AT> (m_p)));
+    return static_cast<R> (m_scl * std::pow (m_sum, -1 / static_cast<AT> (m_p)));
   }
 
 private:
   R m_p;
-  AT m_scl, m_comp, m_sum;
+  AT m_scl, m_sum;
 };
 
 // norm accumulator for the 2-norm (euclidean)
-// For float: use simple sum-of-squares in double (no overflow risk since
-// float_max^2 ~ 1e77 fits in double).
-// For double: use Hammarling scaling with Kahan summation to avoid overflow.
+// Uses Hammarling scaling to avoid overflow.
 template <typename R>
 class norm_accumulator_2
 {
 public:
-  using AT = accum_type<R>;  // Accumulator Type
+  using AT = accum_type<R>;
 
-  norm_accumulator_2 () : m_scl (0), m_comp (0), m_sum (use_kahan_v<R> ? 1 : 0) { }
+  norm_accumulator_2 () : m_scl (0), m_sum (0) { }
 
   OCTAVE_DEFAULT_COPY_MOVE_DELETE (norm_accumulator_2)
 
   void accum (R val)
   {
-    if constexpr (use_kahan_v<R>)
+    AT t = std::abs (val);
+    if (t != 0)
       {
-        // Hammarling scaling with Kahan summation for double
-        AT t = std::abs (val);
         if (m_scl == t)
           m_sum += 1;
         else if (m_scl < t)
           {
-            m_sum *= pow2 (m_scl/t);
+            AT r = m_scl / t;
+            m_sum *= r * r;
             m_sum += 1;
             m_scl = t;
           }
-        else if (t != 0)
+        else
           {
-            AT y = pow2 (t/m_scl) - m_comp;
-            AT s = m_sum + y;
-            m_comp = (s - m_sum) - y;
-            m_sum = s;
+            AT r = t / m_scl;
+            m_sum += r * r;
           }
-      }
-    else
-      {
-        // Simple sum-of-squares for float (accumulated in double)
-        AT t = static_cast<AT> (val);
-        m_sum += t * t;
       }
   }
 
   void accum (std::complex<R> val)
   {
-    if constexpr (use_kahan_v<R>)
-      {
-        accum (val.real ());
-        accum (val.imag ());
-      }
-    else
-      {
-        // Avoid sqrt in std::abs by accumulating re^2 + im^2 directly
-        AT re = static_cast<AT> (val.real ());
-        AT im = static_cast<AT> (val.imag ());
-        m_sum += re * re + im * im;
-      }
+    accum (val.real ());
+    accum (val.imag ());
   }
 
   operator R ()
   {
-    if constexpr (use_kahan_v<R>)
-      return static_cast<R> (m_scl * std::sqrt (m_sum));
-    else
-      return static_cast<R> (std::sqrt (m_sum));
+    return static_cast<R> (m_scl * std::sqrt (m_sum));
   }
 
 private:
-  static inline AT pow2 (AT x) { return x*x; }
-
-  //--------
-
-  AT m_scl, m_comp, m_sum;
+  AT m_scl, m_sum;
 };
 
 // norm accumulator for the 1-norm (city metric)
@@ -388,6 +514,18 @@ vector_norm (const Array<T>& v, R& res, ACC acc)
   res = acc;
 }
 
+// sparse version - only iterates over non-zero elements
+template <typename T, typename R, typename ACC>
+inline void
+vector_norm (const MSparse<T>& v, R& res, ACC acc)
+{
+  octave_idx_type nnz = v.nnz ();
+  for (octave_idx_type i = 0; i < nnz; i++)
+    acc.accum (v.data (i));
+
+  res = acc;
+}
+
 // dense versions
 template <typename T, typename R, typename ACC>
 void
@@ -452,37 +590,96 @@ row_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
     res.xelem (i) = acci[i];
 }
 
-// now the dispatchers
-#define DEFINE_DISPATCHER(FCN_NAME, ARG_TYPE, RES_TYPE)         \
-template <typename T, typename R>                             \
-RES_TYPE FCN_NAME (const ARG_TYPE& v, R p)                    \
-{                                                             \
-  RES_TYPE res;                                               \
-  if (p == 2)                                                 \
-    FCN_NAME (v, res, norm_accumulator_2<R> ());              \
-  else if (p == 1)                                            \
-    FCN_NAME (v, res, norm_accumulator_1<R> ());              \
-  else if (math::isinf (p))                                   \
-    {                                                         \
-      if (p > 0)                                              \
-        FCN_NAME (v, res, norm_accumulator_inf<R> ());        \
-      else                                                    \
-        FCN_NAME (v, res, norm_accumulator_minf<R> ());       \
-    }                                                         \
-  else if (p == 0)                                            \
-    FCN_NAME (v, res, norm_accumulator_0<R> ());              \
-  else if (p > 0)                                             \
-    FCN_NAME (v, res, norm_accumulator_p<R> (p));             \
-  else                                                        \
-    FCN_NAME (v, res, norm_accumulator_mp<R> (p));            \
-  return res;                                                 \
+// Dense vector 2-norm using BLAS NRM2
+template <typename T, typename R>
+inline R
+vector_norm_2_blas (const MArray<T>& v)
+{
+  return blas_nrm2 (v.numel (), v.data (), 1);
 }
 
-DEFINE_DISPATCHER (vector_norm, MArray<T>, R)
-DEFINE_DISPATCHER (column_norms, MArray<T>, MArray<R>)
-DEFINE_DISPATCHER (row_norms, MArray<T>, MArray<R>)
-DEFINE_DISPATCHER (column_norms, MSparse<T>, MArray<R>)
-DEFINE_DISPATCHER (row_norms, MSparse<T>, MArray<R>)
+// Dispatcher for dense arrays - use BLAS for 2-norm
+template <typename T, typename R>
+R
+vector_norm (const MArray<T>& v, R p)
+{
+  R res;
+  if (p == 2)
+    res = vector_norm_2_blas<T, R> (v);
+  else if (p == 1)
+    vector_norm (v, res, norm_accumulator_1<R> ());
+  else if (math::isinf (p))
+    {
+      if (p > 0)
+        vector_norm (v, res, norm_accumulator_inf<R> ());
+      else
+        vector_norm (v, res, norm_accumulator_minf<R> ());
+    }
+  else if (p == 0)
+    vector_norm (v, res, norm_accumulator_0<R> ());
+  else if (p > 0)
+    vector_norm (v, res, norm_accumulator_p<R> (p));
+  else
+    vector_norm (v, res, norm_accumulator_mp<R> (p));
+  return res;
+}
+
+// Dispatcher for sparse arrays - accumulators only (no BLAS)
+template <typename T, typename R>
+R
+vector_norm (const MSparse<T>& v, R p)
+{
+  R res;
+  if (p == 2)
+    vector_norm (v, res, norm_accumulator_2<R> ());
+  else if (p == 1)
+    vector_norm (v, res, norm_accumulator_1<R> ());
+  else if (math::isinf (p))
+    {
+      if (p > 0)
+        vector_norm (v, res, norm_accumulator_inf<R> ());
+      else
+        vector_norm (v, res, norm_accumulator_minf<R> ());
+    }
+  else if (p == 0)
+    vector_norm (v, res, norm_accumulator_0<R> ());
+  else if (p > 0)
+    vector_norm (v, res, norm_accumulator_p<R> (p));
+  else
+    vector_norm (v, res, norm_accumulator_mp<R> (p));
+  return res;
+}
+
+// Dispatchers for column/row norms (use accumulators)
+#define DEFINE_COLROW_DISPATCHER(FCN_NAME, ARG_TYPE, RES_TYPE)  \
+template <typename T, typename R>                               \
+RES_TYPE FCN_NAME (const ARG_TYPE& v, R p)                      \
+{                                                               \
+  RES_TYPE res;                                                 \
+  if (p == 2)                                                   \
+    FCN_NAME (v, res, norm_accumulator_2<R> ());                \
+  else if (p == 1)                                              \
+    FCN_NAME (v, res, norm_accumulator_1<R> ());                \
+  else if (math::isinf (p))                                     \
+    {                                                           \
+      if (p > 0)                                                \
+        FCN_NAME (v, res, norm_accumulator_inf<R> ());          \
+      else                                                      \
+        FCN_NAME (v, res, norm_accumulator_minf<R> ());         \
+    }                                                           \
+  else if (p == 0)                                              \
+    FCN_NAME (v, res, norm_accumulator_0<R> ());                \
+  else if (p > 0)                                               \
+    FCN_NAME (v, res, norm_accumulator_p<R> (p));               \
+  else                                                          \
+    FCN_NAME (v, res, norm_accumulator_mp<R> (p));              \
+  return res;                                                   \
+}
+
+DEFINE_COLROW_DISPATCHER (column_norms, MArray<T>, MArray<R>)
+DEFINE_COLROW_DISPATCHER (row_norms, MArray<T>, MArray<R>)
+DEFINE_COLROW_DISPATCHER (column_norms, MSparse<T>, MArray<R>)
+DEFINE_COLROW_DISPATCHER (row_norms, MSparse<T>, MArray<R>)
 
 // The approximate subproblem in Higham's method.  Find lambda and mu such
 // that norm ([lambda, mu], p) == 1 and norm (y*lambda + col*mu, p) is
@@ -500,8 +697,8 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
       R fi = i * static_cast<R> (M_PI) / nsamp;
       R lambda1 = cos (fi);
       R mu1 = sin (fi);
-      R lmnr = std::pow (std::pow (std::abs (lambda1), p) +
-                         std::pow (std::abs (mu1), p), 1/p);
+      R lmnr = std::pow (std::pow (std::abs (lambda1), p)
+                         + std::pow (std::abs (mu1), p), 1 / p);
       lambda1 /= lmnr; mu1 /= lmnr;
       R nrm1 = vector_norm (lambda1 * y + mu1 * col, p);
       if (nrm1 > nrm)
@@ -533,8 +730,8 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
       R fi = i * static_cast<R> (M_PI) / nsamp;
       R lambda1 = cos (fi);
       R mu1 = sin (fi);
-      R lmnr = std::pow (std::pow (std::abs (lambda1), p) +
-                         std::pow (std::abs (mu1), p), 1/p);
+      R lmnr = std::pow (std::pow (std::abs (lambda1), p)
+                         + std::pow (std::abs (mu1), p), 1 / p);
       lambda1 /= lmnr; mu1 /= lmnr;
       R nrm1 = vector_norm (lambda1 * lamcu * y + mu1 * col, p);
       if (nrm1 > nrm)
@@ -565,7 +762,7 @@ template <typename T, typename R>
 inline T
 elem_dual_p (T x, R p)
 {
-  return math::signum (x) * std::pow (std::abs (x), p-1);
+  return math::signum (x) * std::pow (std::abs (x), p - 1);
 }
 
 // the VectorT is used for vectors, but actually it has to be
@@ -590,7 +787,7 @@ higham (const MatrixT& m, R p, R tol, int maxiter,
 {
   x.resize (m.columns (), 1);
   // the OSE part
-  VectorT y(m.rows (), 1, 0), z(m.rows (), 1);
+  VectorT y (m.rows (), 1, 0), z (m.rows (), 1);
   typedef typename VectorT::element_type RR;
   RR lambda = 0;
   RR mu = 1;
@@ -608,14 +805,14 @@ higham (const MatrixT& m, R p, R tol, int maxiter,
 
   // the PM part
   x = x / vector_norm (x, p);
-  R q = p/(p-1);
+  R q = p / (p - 1);
 
   R gamma = 0, gamma1;
   int iter = 0;
   while (iter < maxiter)
     {
       octave_quit ();
-      y = m*x;
+      y = m * x;
       gamma1 = gamma;
       gamma = vector_norm (y, p);
       z = dual_p (y, p, q);
@@ -623,7 +820,7 @@ higham (const MatrixT& m, R p, R tol, int maxiter,
       z = z * m;
 
       if (iter > 0 && (vector_norm (z, q) <= gamma
-                       || (gamma - gamma1) <= tol*gamma))
+                       || (gamma - gamma1) <= tol * gamma))
         break;
 
       z = z.hermitian ();
@@ -636,14 +833,14 @@ higham (const MatrixT& m, R p, R tol, int maxiter,
 
 // derive column vector and SVD types
 
-static const char *p_less1_gripe = "xnorm: p must be >= 1";
+constexpr const char *p_less1_gripe = "xnorm: p must be >= 1";
 
-// Static constant to control the maximum number of iterations.  100 seems to
-// be a good value.  Eventually, we can provide a means to change this
-// constant from Octave.
-static int max_norm_iter = 100;
+// Maximum number of iterations for iterative norm algorithms.
+// 256 seems to be a good value.  Eventually, we can provide a means to change
+// this constant from Octave.
+constexpr int max_norm_iter = 256;
 
-// version with SVD for dense matrices
+// version with SVD for dense matrices, uses LAPACK LANGE for 1/Inf norms
 template <typename MatrixT, typename VectorT, typename R>
 R
 svd_matrix_norm (const MatrixT& m, R p, VectorT)
@@ -655,9 +852,9 @@ svd_matrix_norm (const MatrixT& m, R p, VectorT)
       res = fact.singular_values () (0, 0);
     }
   else if (p == 1)
-    res = xcolnorms (m, static_cast<R> (1)).max ();
+    res = lange ('O', m);
   else if (math::isinf (p) && p > 1)
-    res = xrownorms (m, static_cast<R> (1)).max ();
+    res = lange ('I', m);
   else if (p > 1)
     {
       VectorT x;
@@ -670,6 +867,209 @@ svd_matrix_norm (const MatrixT& m, R p, VectorT)
   return res;
 }
 
+// Helper for conjugate that works with real types (no-op for real)
+template <typename T>
+constexpr T safe_conj (T x)
+{
+  if constexpr (std::is_arithmetic_v<T>)
+    return x;
+  else
+    return std::conj (x);
+}
+
+// Helper for dot product (conjugate-linear in first argument)
+template <typename VectorT>
+auto
+vector_dot (const VectorT& x, const VectorT& y)
+{
+  using T = typename VectorT::element_type;
+  T sum = T (0);
+  for (octave_idx_type i = 0; i < x.numel (); i++)
+    sum += safe_conj (x(i)) * y(i);
+  return sum;
+}
+
+// Power iteration for largest singular value (sparse 2-norm)
+// Computes sigma_max = sqrt(lambda_max(A'*A)) via power method on A'*A
+// This avoids forming A'*A explicitly by using two sparse matvecs per iteration
+// Used as fallback when ARPACK is not available.
+template <typename MatrixT, typename VectorT, typename R>
+R
+sparse_2norm_power (const MatrixT& m, R tol, int maxiter, VectorT)
+{
+  octave_idx_type nc = m.columns ();
+  octave_idx_type nr = m.rows ();
+
+  if (nc == 0 || nr == 0)
+    return R (0);
+
+  // Work with smaller dimension for efficiency
+  const bool use_aat = (nr < nc);
+  octave_idx_type n = std::min (nr, nc);
+
+  // Initialize x = ones(n,1) normalized
+  VectorT x (n, 1, R (1) / std::sqrt (static_cast<R> (n)));
+  VectorT y (n, 1);
+
+  R lambda = 0, lambda_prev = 0;
+
+  for (int iter = 0; iter < maxiter; iter++)
+    {
+      octave_quit ();
+
+      // Compute y = (A'*A)*x or y = (A*A')*x via two sparse matvecs
+      if (use_aat)
+        {
+          // y = A * (A' * x) -- fewer ops when nr < nc
+          auto z = m.hermitian () * x;
+          y = m * z;
+        }
+      else
+        {
+          // y = A' * (A * x) -- fewer ops when nc <= nr
+          auto z = m * x;
+          y = m.hermitian () * z;
+        }
+
+      // Rayleigh quotient: lambda = x' * y
+      lambda_prev = lambda;
+      lambda = std::abs (vector_dot (x, y));
+
+      // Normalize y -> x for next iteration
+      const R norm_y = vector_norm (y, R (2));
+
+      if (norm_y == R (0))
+        return R (0);
+
+      x = y / norm_y;
+
+      // Check convergence
+      if (iter > 0 && std::abs (lambda - lambda_prev) <= tol * lambda)
+        break;
+    }
+
+  return std::sqrt (lambda);
+}
+
+#if defined (HAVE_ARPACK)
+
+// ARPACK-based sparse 2-norm using Implicitly Restarted Lanczos.
+// Builds augmented matrix [0, A; A', 0] whose eigenvalues are +-sigma_i.
+// More robust than power iteration for clustered singular values.
+double
+sparse_2norm_arpack (const SparseMatrix& m, double tol, int maxiter)
+{
+  octave_idx_type nc = m.cols ();
+  octave_idx_type nr = m.rows ();
+
+  if (nc == 0 || nr == 0)
+    return 0.0;
+
+  octave_quit ();
+
+  // Build augmented sparse matrix: [0, A; A', 0]
+  // Eigenvalues are +-sigma_i, so max |eigenvalue| = sigma_max
+  octave_idx_type n = nr + nc;
+  SparseMatrix aug (n, n);
+
+  // Insert A in upper-right block (rows 0..nr-1, cols nr..n-1)
+  aug = aug.insert (m, 0, nr);
+
+  octave_quit ();
+
+  // Insert A' in lower-left block (rows nr..n-1, cols 0..nr-1)
+  aug = aug.insert (m.transpose (), nr, 0);
+
+  octave_quit ();
+
+  // Use ARPACK to find largest magnitude eigenvalue
+  octave_idx_type k = 1;              // number of eigenvalues
+  octave_idx_type p = -1;             // auto-select basis size (will become max(2k,20))
+  octave_idx_type info = 0;           // start with random initial vector
+  Matrix eig_vec;
+  ColumnVector eig_val;
+  SparseMatrix B;                     // empty = standard eigenproblem
+  ColumnVector permB;
+  ColumnVector resid;                 // empty = random initial vector
+
+  EigsRealSymmetricMatrix (aug, std::string ("LM"), k, p, info,
+                           eig_vec, eig_val, B, permB, resid,
+                           std::cout, tol, false, false, 0, maxiter);
+
+  octave_quit ();
+
+  if (info < 0 || eig_val.numel () == 0)
+    return 0.0;  // ARPACK failed, caller should fall back
+
+  return std::abs (eig_val (0));
+}
+
+// Complex version
+double
+sparse_2norm_arpack (const SparseComplexMatrix& m, double tol, int maxiter)
+{
+  octave_idx_type nc = m.cols ();
+  octave_idx_type nr = m.rows ();
+
+  if (nc == 0 || nr == 0)
+    return 0.0;
+
+  octave_quit ();
+
+  // Build augmented sparse matrix: [0, A; A', 0] where A' is conjugate transpose
+  octave_idx_type n = nr + nc;
+  SparseComplexMatrix aug (n, n);
+
+  // Insert A in upper-right block
+  aug = aug.insert (m, 0, nr);
+
+  octave_quit ();
+
+  // Insert A' (hermitian = conjugate transpose) in lower-left block
+  aug = aug.insert (m.hermitian (), nr, 0);
+
+  octave_quit ();
+
+  // For complex matrices, the augmented matrix is Hermitian
+  octave_idx_type k = 1;
+  octave_idx_type p = -1;
+  octave_idx_type info = 0;
+  ComplexMatrix eig_vec;
+  ComplexColumnVector eig_val;
+  SparseComplexMatrix B;
+  ColumnVector permB;
+  ComplexColumnVector resid;
+
+  EigsComplexNonSymmetricMatrix (aug, std::string ("LM"), k, p, info,
+                                 eig_vec, eig_val, B, permB, resid,
+                                 std::cout, tol, false, false, 0, maxiter);
+
+  octave_quit ();
+
+  if (info < 0 || eig_val.numel () == 0)
+    return 0.0;
+
+  return std::abs (eig_val (0));
+}
+
+#endif  // HAVE_ARPACK
+
+// Unified sparse 2-norm: use ARPACK when available, fall back to power iteration
+template <typename MatrixT, typename VectorT, typename R>
+R
+sparse_2norm (const MatrixT& m, R tol, int maxiter, VectorT)
+{
+#if defined (HAVE_ARPACK)
+  // Use ARPACK (Lanczos) - more accurate than power iteration
+  R res = sparse_2norm_arpack (m, tol, maxiter);
+  if (res > R (0))
+    return res;
+  // Fall through to power iteration if ARPACK failed
+#endif
+
+  return sparse_2norm_power (m, tol, maxiter, VectorT ());
+}
+
 // SVD-free version for sparse matrices
 template <typename MatrixT, typename VectorT, typename R>
 R
@@ -680,6 +1080,12 @@ matrix_norm (const MatrixT& m, R p, VectorT)
     res = xcolnorms (m, static_cast<R> (1)).max ();
   else if (math::isinf (p) && p > 1)
     res = xrownorms (m, static_cast<R> (1)).max ();
+  else if (p == 2)
+    {
+      // Use ARPACK (Lanczos) or power iteration for 2-norm (spectral norm)
+      const R sqrteps = std::sqrt (std::numeric_limits<R>::epsilon ());
+      res = sparse_2norm (m, sqrteps, max_norm_iter, VectorT ());
+    }
   else if (p > 1)
     {
       VectorT x;
@@ -694,7 +1100,7 @@ matrix_norm (const MatrixT& m, R p, VectorT)
 
 // and finally, here's what we've promised in the header file
 
-#define DEFINE_XNORM_FCNS(PREFIX, RTYPE)                                \
+#define DEFINE_XNORM_FCNS(PREFIX, RTYPE)                              \
 RTYPE xnorm (const PREFIX##ColumnVector& x, RTYPE p)                  \
 {                                                                     \
   return vector_norm (x, p);                                          \
@@ -709,7 +1115,7 @@ RTYPE xnorm (const PREFIX##Matrix& x, RTYPE p)                        \
 }                                                                     \
 RTYPE xfrobnorm (const PREFIX##Matrix& x)                             \
 {                                                                     \
-  return vector_norm (x, static_cast<RTYPE> (2));                     \
+  return lange ('F', x);                                              \
 }
 
 DEFINE_XNORM_FCNS(, double)
@@ -717,7 +1123,7 @@ DEFINE_XNORM_FCNS(Complex, double)
 DEFINE_XNORM_FCNS(Float, float)
 DEFINE_XNORM_FCNS(FloatComplex, float)
 
-// this is needed to avoid copying the sparse matrix for xfrobnorm
+// Sparse Frobenius norm - use accumulator over non-zeros
 template <typename T, typename R>
 inline void array_norm_2 (const T *v, octave_idx_type n, R& res)
 {
@@ -728,7 +1134,7 @@ inline void array_norm_2 (const T *v, octave_idx_type n, R& res)
   res = acc;
 }
 
-#define DEFINE_XNORM_SPARSE_FCNS(PREFIX, RTYPE)                 \
+#define DEFINE_XNORM_SPARSE_FCNS(PREFIX, RTYPE)               \
 RTYPE xnorm (const Sparse##PREFIX##Matrix& x, RTYPE p)        \
 {                                                             \
   return matrix_norm (x, p, PREFIX##Matrix ());               \
@@ -743,7 +1149,7 @@ RTYPE xfrobnorm (const Sparse##PREFIX##Matrix& x)             \
 DEFINE_XNORM_SPARSE_FCNS(, double)
 DEFINE_XNORM_SPARSE_FCNS(Complex, double)
 
-#define DEFINE_COLROW_NORM_FCNS(PREFIX, RPREFIX, RTYPE)         \
+#define DEFINE_COLROW_NORM_FCNS(PREFIX, RPREFIX, RTYPE)       \
 RPREFIX##RowVector                                            \
 xcolnorms (const PREFIX##Matrix& m, RTYPE p)                  \
 {                                                             \

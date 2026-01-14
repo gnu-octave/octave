@@ -34,14 +34,14 @@
 ## @deftypefnx {} {@var{q} =} quantile (@var{x}, @var{n}, @dots{}, @var{method})
 ## Compute the quantiles of the input data @var{x}.
 ##
-## If @var{x} is a vector, then @code{prctile (@var{x})} computes the quantiles
+## If @var{x} is a vector, then @code{quantile (@var{x})} computes the quantiles
 ## specified by @var{p} of the data in @var{x}.
 ##
-## If @var{x} is a matrix, then @code{prctile (@var{x})} returns a matrix such
+## If @var{x} is a matrix, then @code{quantile (@var{x})} returns a matrix such
 ## that the i-th row of @var{q} contains the @var{p}(i)th quantiles of each
 ## column of @var{x}.
 ##
-## If @var{x} is an array, then @code{prctile (@var{x})} computes the quantiles
+## If @var{x} is an array, then @code{quantile (@var{x})} computes the quantiles
 ## specified by @var{p} along the first non-singleton dimension of @var{x}.
 ##
 ## The data in @var{x} must be numeric and any NaN values are ignored.  The
@@ -662,7 +662,7 @@ endfunction
 ## quantiles, @var{q} (the inverse of the cdf), for the sample, @var{x}.
 ##
 ## The optional input, @var{method}, refers to nine methods available in R
-## (https://www.r-project.org/).  The default is @var{method} = 7.
+## (https://www.r-project.org/).  The default is @var{method} = 5.
 ## @seealso{prctile, quantile, statistics}
 
 ## Description: Quantile function of empirical samples

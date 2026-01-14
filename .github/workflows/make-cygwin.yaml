@@ -181,7 +181,6 @@ jobs:
             --enable-shared \
             --disable-java \
             --disable-docs \
-            --disable-lib-visibility-flags \
             JAVA_HOME="" \
             EGREP="grep -E" \
             FLIBS="-lgfortran -lquadmath"

@@ -74,31 +74,9 @@ function n = vecnorm (A, p = 2, dim)
     error ("vecnorm: DIM must be a positive integer");
   endif
 
-  ## Calculate norm using the value of p to accelerate special cases
-  switch (p)
-    case {1}
-      n = sum (abs (A), dim);
-
-    case {2}
-      n = sqrt (sumsq (A, dim));
-
-    case {Inf}
-      n = max (abs (A), [], dim);
-
-    otherwise
-      if (rem (p,2) == 0)
-        ## Even index such as 2,4,6 are specifically accelerated in math
-        ## libraries.  Beyond 6, it doesn't matter which method is used.
-        if (iscomplex (A))
-          n = (sum ((real (A).^2 + imag (A).^2) .^ (p/2), dim)) .^ (1 / p);
-        else
-          n = (sum (A.^2 .^ (p/2), dim)) .^ (1 / p);
-        endif
-      else
-        n = (sum (abs (A) .^ p, dim)) .^ (1 / p);
-      endif
-
-  endswitch
+  ## Use norm() to calculate the p-norm along dimension dim.
+  C = num2cell (A, dim);
+  n = cellfun (@(x) norm (x(:), p), C);
 
 endfunction
 

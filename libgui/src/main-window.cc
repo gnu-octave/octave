@@ -172,7 +172,7 @@ main_window::main_window (base_qobject& oct_qobj)
 
   adopt_dock_widgets ();
 
-  QGuiApplication::setDesktopFileName ("org.octave.Octave.desktop");
+  QGuiApplication::setDesktopFileName ("org.octave.Octave");
 
   bool connect_to_web = true;
   QDateTime last_checked;

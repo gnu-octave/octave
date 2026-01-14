@@ -53,12 +53,12 @@ template class octave_sort<long>;
 template class octave_sort<long long>;
 #endif
 
-INSTANTIATE_ARRAY (signed char, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
-//INSTANTIATE_ARRAY (short, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
-INSTANTIATE_ARRAY (int, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
-INSTANTIATE_ARRAY (long, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
+INSTANTIATE_ARRAY (signed char, );
+//INSTANTIATE_ARRAY (short, );
+INSTANTIATE_ARRAY (int, );
+INSTANTIATE_ARRAY (long, );
 #if defined (OCTAVE_HAVE_LONG_LONG_INT)
-INSTANTIATE_ARRAY (long long, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
+INSTANTIATE_ARRAY (long long, );
 #endif
 
 template class octave_sort<unsigned char>;
@@ -69,12 +69,12 @@ template class octave_sort<unsigned long>;
 template class octave_sort<unsigned long long>;
 #endif
 
-INSTANTIATE_ARRAY (unsigned char, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
-INSTANTIATE_ARRAY (unsigned short, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
-INSTANTIATE_ARRAY (unsigned int, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
-INSTANTIATE_ARRAY (unsigned long, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
+INSTANTIATE_ARRAY (unsigned char, );
+INSTANTIATE_ARRAY (unsigned short, );
+INSTANTIATE_ARRAY (unsigned int, );
+INSTANTIATE_ARRAY (unsigned long, );
 #if defined (OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT)
-INSTANTIATE_ARRAY (unsigned long long, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
+INSTANTIATE_ARRAY (unsigned long long, );
 #endif
 
 template class octave_sort<octave_int8>;
@@ -82,20 +82,20 @@ template class octave_sort<octave_int16>;
 template class octave_sort<octave_int32>;
 template class octave_sort<octave_int64>;
 
-INSTANTIATE_ARRAY (octave_int8, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
-INSTANTIATE_ARRAY (octave_int16, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
-INSTANTIATE_ARRAY (octave_int32, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
-INSTANTIATE_ARRAY (octave_int64, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
+INSTANTIATE_ARRAY (octave_int8, );
+INSTANTIATE_ARRAY (octave_int16, );
+INSTANTIATE_ARRAY (octave_int32, );
+INSTANTIATE_ARRAY (octave_int64, );
 
 template class octave_sort<octave_uint8>;
 template class octave_sort<octave_uint16>;
 template class octave_sort<octave_uint32>;
 template class octave_sort<octave_uint64>;
 
-INSTANTIATE_ARRAY (octave_uint8, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
-INSTANTIATE_ARRAY (octave_uint16, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
-INSTANTIATE_ARRAY (octave_uint32, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
-INSTANTIATE_ARRAY (octave_uint64, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
+INSTANTIATE_ARRAY (octave_uint8, );
+INSTANTIATE_ARRAY (octave_uint16, );
+INSTANTIATE_ARRAY (octave_uint32, );
+INSTANTIATE_ARRAY (octave_uint64, );
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"

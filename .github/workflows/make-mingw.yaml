@@ -220,6 +220,7 @@ jobs:
 
         run: |
           export PATH=$(echo "$PATH" | sed -e "s|$MINGW_PREFIX/lib/ccache/bin:||g")
+          ./.build/run-octave --no-init-file --no-history --no-gui-libs --eval "version -blas, version -lapack"
           make -C ./.build check RUN_OCTAVE_OPTIONS="--no-gui-libs" | tee ./test-suite.log
 
       - name: display test suite log

@@ -242,6 +242,8 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
 * `rms`
 * `rmse`
 * `trexc`
+* `xline`
+* `yline`
 
 ### Deprecated functions, properties, and operators
 

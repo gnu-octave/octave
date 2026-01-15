@@ -112,6 +112,8 @@ FCN_FILE_DIRS += \
   %reldir%/trimesh.m \
   %reldir%/triplot.m \
   %reldir%/trisurf.m \
+  %reldir%/xline.m \
+  %reldir%/yline.m \
   %reldir%/waterfall.m
 
 %canon_reldir%dir = $(fcnfiledir)/plot/draw

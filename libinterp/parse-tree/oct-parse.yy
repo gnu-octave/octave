@@ -459,7 +459,13 @@ simple_list     : opt_sep_no_nl
                     $$ = nullptr;
                   }
                 | simple_list1 opt_sep_no_nl
-                  { $$ = parser.set_stmt_print_flag ($1, $2, false); }
+                  {
+                    $$ = parser.set_stmt_print_flag ($1, $2, false);
+
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
+                  }
                 ;
 
 simple_list1    : statement

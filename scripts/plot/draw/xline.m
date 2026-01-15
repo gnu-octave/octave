@@ -76,7 +76,7 @@
 ## @qcode{"bottom"}.
 ##
 ## @item LabelOrientation
-## Orientation of label text: @qcode{"aligned"} (rotated 90@degree{}, default)
+## Orientation of label text: @qcode{"aligned"} (rotated 90@textdegree{}, default)
 ## or @qcode{"horizontal"}.
 ## @end table
 ##

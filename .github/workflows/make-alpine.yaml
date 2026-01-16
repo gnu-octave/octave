@@ -217,6 +217,7 @@ jobs:
         id: run-test-suite
         timeout-minutes: 60
         run: |
+          ./.build/run-octave --no-init-file --no-history --eval "version -blas, version -lapack"
           XDG_RUNTIME_DIR=$RUNNER_TEMP \
             xvfb-run -a make -C ./.build check | tee ./test-suite.log
 

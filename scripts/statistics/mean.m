@@ -57,7 +57,7 @@
 ## @ifnottex
 ##
 ## @example
-## weighted_mean (@var{x}) = SUM_i (@var{w}(i) * @var{x}(i)) / SUM_i (@var{w}(i)
+## weighted_mean (@var{x}) = SUM_i (@var{w}(i) * @var{x}(i)) / SUM_i (@var{w}(i))
 ## @end example
 ##
 ## @noindent

@@ -203,6 +203,24 @@ extern "C"
                              const F77_DBLE_CMPLX *, const F77_DBLE_CMPLX *,
                              F77_DBLE_CMPLX *);
 
+  // NRM2 (liboctave/external/blas-xtra)
+
+  F77_RET_T
+  F77_FUNC (xdnrm2, XDNRM2) (const F77_INT&, const F77_DBLE *,
+                             const F77_INT&, F77_DBLE&);
+
+  F77_RET_T
+  F77_FUNC (xsnrm2, XSNRM2) (const F77_INT&, const F77_REAL *,
+                             const F77_INT&, F77_REAL&);
+
+  F77_RET_T
+  F77_FUNC (xdznrm2, XDZNRM2) (const F77_INT&, const F77_DBLE_CMPLX *,
+                             const F77_INT&, F77_DBLE&);
+
+  F77_RET_T
+  F77_FUNC (xscnrm2, XSCNRM2) (const F77_INT&, const F77_CMPLX *,
+                               const F77_INT&, F77_REAL&);
+
   // XERBLA
 
   OCTAVE_API

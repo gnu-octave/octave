@@ -635,7 +635,7 @@ endfunction
 %! assert (rmse (F, A, [2, 3]), E1);
 
 ## Test with very large values
-%!test <*67926>
+%!test <67918>
 %! A = zeros (1e8, 1);
 %! A(1) = realmax/2;
 %! A(2) = 2*(realmax/3);

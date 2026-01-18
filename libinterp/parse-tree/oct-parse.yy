@@ -335,15 +335,17 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %right PLUS_PLUS MINUS_MINUS
 %left '(' '.' '{'
 
-// How to clean up if there is a parse error.  We handle deleting tokens
-// and comments separately and separators are just characters.  The
-// remaining items are dynamically allocated parse tree objects that
-// must be deleted.  Use the wildcard case (<*>) to detect unhandled
-// cases (for example, a new semantic type is added but not handled
-// here).
+// How to clean up if there is a parse error.  We handle deleting
+// individual tokens and comments separately.  The remaining items are
+// dynamically allocated parse tree objects that must be deleted.  Use
+// the wildcard case (<*>) to detect unhandled cases (for example, to
+// guard against a new semantic type that has been added but not
+// explicitly handled here).
 
 %destructor { } <tok>
 %destructor { } <>
+
+%destructor { delete $$; } <sep_list_type>
 
 %destructor { delete $$; } <tree_type>
 %destructor { delete $$; } <tree_matrix_type>
@@ -1574,6 +1576,10 @@ function_body   : statement_list
                   }
                 | opt_sep arguments_block_list statement_list
                   {
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $1;
+
                     $$ = parser.append_function_body ($2, $3);
                   }
                 ;

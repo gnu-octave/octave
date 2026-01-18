@@ -249,7 +249,6 @@ function m = mean (x, varargin)
           error ("mean: WEIGHTS array must have the same size as X");
         endif
         w = w(:);
-        x = w .* double (x);
         n = sum (w);
       endif
 
@@ -268,7 +267,11 @@ function m = mean (x, varargin)
       if (any (isa (x, {"int64", "uint64"})))
         m = int64_mean (x, 1, n, outtype);
       else
-        m = sum (x, "extra") ./ n;
+        if (weighted)
+          m = robust_mean_sum (x, 1, n, w);
+        else
+          m = robust_mean_sum (x, 1, n);
+        endif
       endif
 
     else
@@ -289,13 +292,12 @@ function m = mean (x, varargin)
       ## Process weights
       if (weighted)
         if (isequal (size (w), szx))
-          x = w .* double (x);
+          ## w already has the right shape
         elseif (isvector (w))
           if (numel (w) != n)
             error (strcat ("mean: WEIGHTS vector must have the same", ...
                            " length as the operating dimension"));
           endif
-          #if (isvector (x))
           szw = ones (1, ndx);
           szw(dim) = n;
           w = reshape (w, szw);
@@ -304,8 +306,6 @@ function m = mean (x, varargin)
             szw(dim) = 1;
             w = repmat (w, szw);
           endif
-          ## Force x to doubles to avoid integer path
-          x = w .* double (x);
         else
           error ("mean: WEIGHTS array must have the same size as X");
         endif
@@ -327,7 +327,11 @@ function m = mean (x, varargin)
       if (any (isa (x, {"int64", "uint64"})))
         m = int64_mean (x, dim, n, outtype);
       else
-        m = sum (x, dim, "extra") ./ n;
+        if (weighted)
+          m = robust_mean_sum (x, dim, n, w);
+        else
+          m = robust_mean_sum (x, dim, n);
+        endif
       endif
 
     endif
@@ -360,13 +364,12 @@ function m = mean (x, varargin)
         ## Process weights
         if (weighted)
           if (isequal (size (w), szx))
-            x = w .* double (x);
+            ## w already has the right shape
           elseif (isvector (w))
             if (numel (w) != n)
               error (strcat ("mean: WEIGHTS vector must have the same", ...
                              " length as the operating dimension"));
             endif
-            #if (isvector (x))
             szw = ones (1, ndx);
             szw(dim) = n;
             w = reshape (w, szw);
@@ -375,8 +378,6 @@ function m = mean (x, varargin)
               szw(dim) = 1;
               w = repmat (w, szw);
             endif
-            ## Force x to doubles to avoid integer path
-            x = w .* double (x);
           else
             error ("mean: WEIGHTS array must have the same dimensions with X");
           endif
@@ -398,7 +399,11 @@ function m = mean (x, varargin)
         if (any (isa (x, {"int64", "uint64"})))
           m = int64_mean (x, dim, n, outtype);
         else
-          m = sum (x, dim, "extra") ./ n;
+          if (weighted)
+            m = robust_mean_sum (x, dim, n, w);
+          else
+            m = robust_mean_sum (x, dim, n);
+          endif
         endif
 
       endif
@@ -446,7 +451,6 @@ function m = mean (x, varargin)
               error ("mean: WEIGHTS array must have the same size as X");
             endif
             w = w(:);
-            x = w .* double (x);
             n = sum (w);
           endif
 
@@ -465,7 +469,11 @@ function m = mean (x, varargin)
           if (any (isa (x, {"int64", "uint64"})))
             m = int64_mean (x, 1, n, outtype);
           else
-            m = sum (x, "extra") ./ n;
+            if (weighted)
+              m = robust_mean_sum (x, 1, n, w);
+            else
+              m = robust_mean_sum (x, 1, n);
+            endif
           endif
 
         else
@@ -473,15 +481,13 @@ function m = mean (x, varargin)
           if (weighted)
             page_szw = size (w);
             if (isequal (size (w), szx))
-              x = w .* double (x);
+              ## w already has the right shape
             elseif (isequal (page_szw, szx(vecdim)))
               ## Make W to be compatible with X
               tmp = ones (1, ndx);
               tmp(vecdim) = page_szw;
               w = reshape (w, tmp);
               w = w .* ones (szx);
-              ## Force x to doubles to avoid integer path
-              x = w .* double (x);
             else
               error (strcat ("mean: WEIGHTS array must have the same size", ...
                              " as the operating page specified by VECDIM", ...
@@ -527,7 +533,11 @@ function m = mean (x, varargin)
           if (any (isa (x, {"int64", "uint64"})))
             m = int64_mean (x, dim, n, outtype);
           else
-            m = sum (x, dim, "extra") ./ n;
+            if (weighted)
+              m = robust_mean_sum (x, dim, n, w);
+            else
+              m = robust_mean_sum (x, dim, n);
+            endif
           endif
 
           ## Inverse permute back to correct dimensions
@@ -593,6 +603,80 @@ function m = int64_mean (x, dim, n, outtype)
 
 endfunction
 
+function m = robust_mean_sum (x, dim, n, w = [])
+  ## "Optimistic" mean calculation with optional weights.
+  ## 1. Fast Path: standard compensated sum.
+  ## 2. Recovery Path: if result is infinite, check if scaling is needed.
+  ##
+  ## When weights w are provided, computes: sum(w .* x) / n  where n = sum(w)
+  ## When weights w are empty, computes: sum(x) / n
+
+  weighted = ! isempty (w);
+
+  ## Single precision always uses double accumulator (safe from overflow).
+  if (isa (x, "single"))
+    if (weighted)
+      m = sum (w .* x, dim, "extra") ./ n;
+    else
+      m = sum (x, dim, "extra") ./ n;
+    endif
+    return;
+  endif
+
+  ## 1. Fast Path
+  if (weighted)
+    m = sum (w .* double (x), dim, "extra") ./ n;
+  else
+    m = sum (x, dim, "extra") ./ n;
+  endif
+
+  ## 2. Check for overflow
+  ## If result is finite, we are done.
+  ## If result contains Inf, we must investigate (could be overflow).
+  ## If result contains only NaN or Inf, we must investigate.
+  ## NaN can occur from overflow if summation algorithm internally 
+  ## computes Inf - Inf
+  if (! any (isfinite (m(:))))
+    ## Possible causes:
+    ## A. Input contained Inf/NaN (result is correct).
+    ## B. Input was finite, but sum overflowed (result needs scaling).
+
+    ## Scan x to see if inputs are the problem.
+    ## This is expensive (allocates bool array), but only happens on failure.
+    ## Use !isfinite (not isinf) because +Inf and -Inf in inputs sum to NaN.
+    if (weighted)
+      inputs_bad = any (! isfinite (x(:))) || any (! isfinite (w(:)));
+    else
+      inputs_bad = any (! isfinite (x(:)));
+    endif
+
+    if (inputs_bad)
+      ## Inputs are not finite. The naive m is the correct answer.
+      return;
+    endif
+
+    ## Inputs are finite, but result is Inf. This is overflow.
+    ## Re-calculate using scaling.
+
+    ## Calculate max magnitude along operating dimension.
+    ## vecnorm(x, inf, dim) computes max(abs(x)) without intermediate array.
+    max_val = vecnorm (x, inf, dim);
+
+    ## Scale x down before multiplication/summation
+    [~, e] = log2 (max_val);
+    e = e - 1;
+    scale = pow2 (e);
+    scale(max_val == 0) = 1;
+
+    ## Scale -> Sum -> Unscale
+    if (weighted)
+      m = sum (w .* (double (x) ./ scale), dim, "extra") .* (scale ./ n);
+    else
+      m = sum (x ./ scale, dim, "extra") .* (scale ./ n);
+    endif
+  endif
+
+endfunction
 
 %!test
 %! x = -10:10;
@@ -714,6 +798,20 @@ endfunction
 %! assert (mean (in, [2 3], "native"), int64 (-1));
 %! assert (mean ([intmin("int64"), in, intmax("int64")]), double (-0.5));
 %! assert (mean ([in; int64([1 3])], 2, "native"), int64 ([-1; 2]));
+
+## Test for overflow near REALMAX
+#! test <56884>
+#! a = realmax / 2;
+#! b = 2 * (realmax / 3);
+#! c = a + (b - a) / 2;
+#! assert (mean ([a,b]), c, eps (c));
+
+## Test for underflow
+#! test <56884>
+#! a = 1 / realmax;
+#! b = 1.5 / realmax;
+#! c = a + (b - a) / 2;
+#! assert (mean ([a,b]), c, eps (c));
 
 ## Test input and optional arguments "all", DIM, "omitnan".
 %!test

@@ -33,6 +33,7 @@
 #include <cmath>
 
 #include <algorithm>
+#include <limits>
 
 #include "Array-util.h"
 #include "Array-oct.h"
@@ -4244,120 +4245,140 @@ do_mx_diff_op (const Array<R>& src, int dim, octave_idx_type order,
 // "Accurate Sum And Dot Product",
 // SIAM J. Sci. Computing, Vol. 26, 2005
 
+// Safe implementation (Standard API).
+// Handles overflows to infinity correctly to prevent NaN pollution in error term.
 template <typename T>
 inline void
-twosum_accum (T& s, T& e,
-              const T& x)
+twosum_accum (T& s, T& e, const T& x)
 {
-  T s1 = s + x;
-  T t = s1 - s;
-  T e1 = (s - (s1 - t)) + (x - t);
+  const T s1 = s + x;
+
+  // If sum becomes non-finite (overflow to +/-Inf), do NOT update the
+  // compensation term (avoids Inf-Inf -> NaN in e).
+  if (! octave::math::isfinite (s1))
+    {
+      s = s1;
+      e = T (0);
+      return;
+    }
+
+  const T t  = s1 - s;
+  const T e1 = (s - (s1 - t)) + (x - t);
+
   s = s1;
   e += e1;
 }
 
+// Overload with three arguments for vectors (Contiguous / Vector)
+// Used for column sums or simple vector reductions.
 template <typename T>
 inline T
 mx_inline_xsum (const T *v, octave_idx_type n, bool nanflag)
 {
-  bool posinf, neginf;
-  posinf = neginf = false;
-  T s, e, zero;
-  s = e = zero = 0;
-  if (nanflag)
+  T s = 0, e = 0;
+  const T zero = 0;
+  bool posinf = false;
+  bool neginf = false;
+  bool seen_nan = false;
+
+  for (octave_idx_type i = 0; i < n; ++i)
     {
-      for (octave_idx_type i = 0; i < n; i++)
-        if (! octave::math::isnan (v[i]))
-          {
-            if (! octave::math::isinf (v[i]))
-              twosum_accum (s, e, v[i]);
-            else if (v[i] > zero)
-              posinf = true;
-            else
-              neginf = true;
-          }
-    }
-  else
-    {
-      for (octave_idx_type i = 0; i < n; i++)
+      const T val = v[i];
+
+      if (octave::math::isnan (val))
         {
-          if (! octave::math::isinf (v[i]))
-            twosum_accum (s, e, v[i]);
-          else if (v[i] > zero)
-            posinf = true;
-          else
-            neginf = true;
+          if (nanflag)           // omitnan
+            continue;
+          else                   // normal sum: NaN dominates everything
+            {
+              seen_nan = true;
+              break;
+            }
         }
+
+      if (! octave::math::isinf (val))
+        twosum_accum (s, e, val);
+      else if (val > zero)
+        posinf = true;
+      else
+        neginf = true;
     }
 
+  if (octave::math::isinf (s))
+    {
+      if (s > zero)
+        posinf = true;
+      else
+        neginf = true;
+    }
+
+  if (seen_nan)
+    return std::numeric_limits<T>::quiet_NaN ();
+
   if (posinf && neginf)
-    return NAN;
+    return std::numeric_limits<T>::quiet_NaN ();
   else if (posinf)
-    return s + e + std::numeric_limits<T>::infinity ();
+    return std::numeric_limits<T>::infinity ();
   else if (neginf)
-    return s + e - std::numeric_limits<T>::infinity ();
+    return -std::numeric_limits<T>::infinity ();
 
   return s + e;
 }
 
+// Overload with five arguments for matrices (strided)
 template <typename T>
 inline void
 mx_inline_xsum (const T *v, T *r,
-                octave_idx_type m, octave_idx_type n, bool nanflag)
+                octave_idx_type l, octave_idx_type n, bool nanflag)
 {
-  T zero = 0.0;
-  OCTAVE_LOCAL_BUFFER (T, e, m);
-  OCTAVE_LOCAL_BUFFER (bool, posinf, m);
-  OCTAVE_LOCAL_BUFFER (bool, neginf, m);
-  for (octave_idx_type i = 0; i < m; i++)
-    {
-      e[i] = r[i] = T ();
-      posinf[i] = neginf[i] = false;
-    }
+  const T zero = 0;
 
-  if (nanflag)
+  for (octave_idx_type i = 0; i < l; ++i)
     {
-      for (octave_idx_type j = 0; j < n; j++)
+      T s = 0, e = 0;
+      bool posinf = false;
+      bool neginf = false;
+      bool seen_nan = false;
+
+      for (octave_idx_type j = 0; j < n; ++j)
         {
-          for (octave_idx_type i = 0; i < m; i++)
-            if (! octave::math::isnan (v[i]))
-              {
-                if (! octave::math::isinf (v[i]))
-                  twosum_accum (r[i], e[i], v[i]);
-                else if (v[i] > zero)
-                  posinf[i] = true;
-                else
-                  neginf[i] = true;
-              }
-          v += m;
-        }
-    }
-  else
-    {
-      for (octave_idx_type j = 0; j < n; j++)
-        {
-          for (octave_idx_type i = 0; i < m; i++)
+          const T val = v[i + j*l];
+
+          if (octave::math::isnan (val))
             {
-              if (! octave::math::isinf (v[i]))
-                twosum_accum (r[i], e[i], v[i]);
-              else if (v[i] > zero)
-                posinf[i] = true;
+              if (nanflag)          // omitnan
+                continue;
               else
-                neginf[i] = true;
+                {
+                  seen_nan = true;
+                  break;
+                }
             }
-          v += m;
+
+          if (! octave::math::isinf (val))
+            twosum_accum (s, e, val);
+          else if (val > zero)
+            posinf = true;
+          else
+            neginf = true;
         }
-    }
-  for (octave_idx_type i = 0; i < m; i++)
-    {
-      if (posinf[i] && neginf[i])
-        r[i] = NAN;
-      else if (posinf[i])
-        r[i] += e[i] + std::numeric_limits<T>::infinity ();
-      else if (neginf[i])
-        r[i] += e[i] - std::numeric_limits<T>::infinity ();
+
+      if (octave::math::isinf (s))
+        {
+          if (s > zero)
+            posinf = true;
+          else
+            neginf = true;
+        }
+
+      if (seen_nan || (posinf && neginf))
+        r[i] = std::numeric_limits<T>::quiet_NaN ();
+      else if (posinf)
+        r[i] = std::numeric_limits<T>::infinity ();
+      else if (neginf)
+        r[i] = -std::numeric_limits<T>::infinity ();
       else
-        r[i] += e[i];
+        r[i] = s + e;
     }
 }
 

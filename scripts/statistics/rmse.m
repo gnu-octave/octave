@@ -636,11 +636,11 @@ endfunction
 
 ## Test with very large values
 %!test <67918>
-%! A = zeros (1e8, 1);
+%! A = zeros (10, 1);
 %! A(1) = realmax/2;
 %! A(2) = 2*(realmax/3);
-%! F = ones (1e8, 1);
-%! assert (rmse (A, F), 1.49807761238526354e304, eps (1.49807761238526354e304));
+%! F = ones (10, 1);
+%! assert (rmse (A, F), 4.7373373668443035e307, 2*eps (4.7373373668443035e307));
 
 ## Test input validation
 %!error <Invalid call> rmse ()

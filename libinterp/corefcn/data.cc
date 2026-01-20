@@ -4636,6 +4636,9 @@ operating dimension.
 %!assert (sum ([1, Inf], "extra"), Inf)
 %!assert (sum ([1, -Inf], "extra"), -Inf)
 %!assert (sum ([Inf, -Inf], "extra"), NaN)
+%!assert (sum ([realmax, 1e300], "extra"), Inf)
+%!assert (sum ([realmax/2, realmax/2, 1e300], "extra"), Inf)
+%!assert (sum ([realmax/2, (2 * (realmax/3))], "extra"), Inf)
 %!assert (sum (sparse ([1, Inf]), "extra"), sparse (Inf))
 %!assert (sum (sparse ([1, -Inf]), "extra"), sparse (-Inf))
 %!assert (sum (sparse ([Inf, -Inf]), "extra"), sparse (NaN))
@@ -8250,7 +8253,11 @@ compute the norms of each column and return a row vector.
 %!assert (norm (x,"-Inf"), single (1))
 %!assert (norm (x,"fro"), single (10), -eps ("single"))
 %!assert (norm (x), single (10))
-%!assert (norm (single ([1e38, 1])), single (1e38))
+
+%!test <67918>
+%! ## fails with reference BLAS 3.10.0
+%! assert (norm (single ([1e38, 1])), single (1e38));
+
 %!assert (norm (single ([3+4i, 3-4i, sqrt(31)])),
 %!        single (9), -4* eps ("single"))
 %!shared m

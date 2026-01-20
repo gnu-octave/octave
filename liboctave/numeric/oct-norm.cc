@@ -41,6 +41,7 @@
 #include "CRowVector.h"
 #include "CSparse.h"
 #include "MArray.h"
+#include "blas-proto.h"
 #include "dColVector.h"
 #include "dDiagMatrix.h"
 #include "dMatrix.h"
@@ -54,6 +55,7 @@
 #include "fDiagMatrix.h"
 #include "fMatrix.h"
 #include "fRowVector.h"
+#include "lapack-proto.h"
 #include "lo-ieee.h"
 #include "mappers.h"
 #include "mx-cm-s.h"
@@ -70,70 +72,6 @@
 #  include "eigs-base.h"
 #endif
 
-// BLAS NRM2 declarations for vector 2-norm
-extern "C"
-{
-  F77_DBLE
-  F77_FUNC (dnrm2, DNRM2) (const F77_INT&,
-                           const F77_DBLE *,
-                           const F77_INT&);
-
-  F77_REAL
-  F77_FUNC (snrm2, SNRM2) (const F77_INT&,
-                           const F77_REAL *,
-                           const F77_INT&);
-
-  F77_DBLE
-  F77_FUNC (dznrm2, DZNRM2) (const F77_INT&,
-                             const F77_DBLE_CMPLX *,
-                             const F77_INT&);
-
-  F77_REAL
-  F77_FUNC (scnrm2, SCNRM2) (const F77_INT&,
-                             const F77_CMPLX *,
-                             const F77_INT&);
-}
-
-// LAPACK LANGE declarations for matrix norms
-extern "C"
-{
-  F77_DBLE
-  F77_FUNC (dlange, DLANGE) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&,
-                             const F77_INT&,
-                             const F77_DBLE *,
-                             const F77_INT&,
-                             F77_DBLE *
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_REAL
-  F77_FUNC (slange, SLANGE) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&,
-                             const F77_INT&,
-                             const F77_REAL *,
-                             const F77_INT&,
-                             F77_REAL *
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_DBLE
-  F77_FUNC (zlange, ZLANGE) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&,
-                             const F77_INT&,
-                             const F77_DBLE_CMPLX *,
-                             const F77_INT&,
-                             F77_DBLE *
-                             F77_CHAR_ARG_LEN_DECL);
-
-  F77_REAL
-  F77_FUNC (clange, CLANGE) (F77_CONST_CHAR_ARG_DECL,
-                             const F77_INT&,
-                             const F77_INT&,
-                             const F77_CMPLX *,
-                             const F77_INT&,
-                             F77_REAL *
-                             F77_CHAR_ARG_LEN_DECL);
-}
-
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 // BLAS NRM2 wrappers for vector 2-norm
@@ -143,7 +81,9 @@ blas_nrm2 (octave_idx_type n, const double *x, octave_idx_type incx)
 {
   F77_INT f77_n = to_f77_int (n);
   F77_INT f77_incx = to_f77_int (incx);
-  return F77_FUNC (dnrm2, DNRM2) (f77_n, x, f77_incx);
+  F77_DBLE result;
+  F77_FUNC (xdnrm2, XDNRM2) (f77_n, x, f77_incx, result);
+  return result;
 }
 
 inline float
@@ -151,7 +91,9 @@ blas_nrm2 (octave_idx_type n, const float *x, octave_idx_type incx)
 {
   F77_INT f77_n = to_f77_int (n);
   F77_INT f77_incx = to_f77_int (incx);
-  return F77_FUNC (snrm2, SNRM2) (f77_n, x, f77_incx);
+  F77_REAL result;
+  F77_FUNC (xsnrm2, XSNRM2) (f77_n, x, f77_incx, result);
+  return result;
 }
 
 inline double
@@ -159,8 +101,9 @@ blas_nrm2 (octave_idx_type n, const Complex *x, octave_idx_type incx)
 {
   F77_INT f77_n = to_f77_int (n);
   F77_INT f77_incx = to_f77_int (incx);
-  return F77_FUNC (dznrm2, DZNRM2)
-    (f77_n, reinterpret_cast<const F77_DBLE_CMPLX *> (x), f77_incx);
+  F77_DBLE result;
+  F77_FUNC (xdznrm2, XDZNRM2) (f77_n, F77_CONST_DBLE_CMPLX_ARG (x), f77_incx, result);
+  return result;
 }
 
 inline float
@@ -168,8 +111,9 @@ blas_nrm2 (octave_idx_type n, const FloatComplex *x, octave_idx_type incx)
 {
   F77_INT f77_n = to_f77_int (n);
   F77_INT f77_incx = to_f77_int (incx);
-  return F77_FUNC (scnrm2, SCNRM2)
-    (f77_n, reinterpret_cast<const F77_CMPLX *> (x), f77_incx);
+  F77_REAL result;
+  F77_FUNC (xscnrm2, XSCNRM2) (f77_n, F77_CONST_CMPLX_ARG (x), f77_incx, result);
+  return result;
 }
 
 // LAPACK LANGE wrappers for dense matrix norms.
@@ -210,9 +154,10 @@ lange (char norm_type, const Matrix& m)
 
   OCTAVE_LOCAL_BUFFER (double, work, mm);
 
-  double result = F77_FUNC (dlange, DLANGE) (F77_CONST_CHAR_ARG (&norm_type),
-                                             mm, nn, m.data (), lda, work
-                                             F77_CHAR_ARG_LEN (1));
+  F77_DBLE result;
+  F77_FUNC (xdlange, XDLANGE) (F77_CONST_CHAR_ARG (&norm_type), mm, nn,
+                               m.data (), lda, work, result
+                               F77_CHAR_ARG_LEN (1));
   return lange_inf_fixup (result, m.data (), m.numel ());
 }
 
@@ -225,9 +170,10 @@ lange (char norm_type, const FloatMatrix& m)
 
   OCTAVE_LOCAL_BUFFER (float, work, mm);
 
-  float result = F77_FUNC (slange, SLANGE) (F77_CONST_CHAR_ARG (&norm_type),
-                                            mm, nn, m.data (), lda, work
-                                            F77_CHAR_ARG_LEN (1));
+  F77_REAL result;
+  F77_FUNC (xslange, XSLANGE) (F77_CONST_CHAR_ARG (&norm_type), mm, nn,
+                               m.data (), lda, work, result
+                               F77_CHAR_ARG_LEN (1));
   return lange_inf_fixup (result, m.data (), m.numel ());
 }
 
@@ -240,12 +186,11 @@ lange (char norm_type, const ComplexMatrix& m)
 
   OCTAVE_LOCAL_BUFFER (double, work, mm);
 
-  double result = F77_FUNC (zlange, ZLANGE)
-    (F77_CONST_CHAR_ARG (&norm_type),
-     mm, nn,
-     reinterpret_cast<const F77_DBLE_CMPLX *> (m.data ()),
-     lda, work
-     F77_CHAR_ARG_LEN (1));
+  F77_DBLE result;
+  F77_FUNC (xzlange, XZLANGE) (F77_CONST_CHAR_ARG (&norm_type), mm, nn,
+                               F77_CONST_DBLE_CMPLX_ARG (m.data ()),
+                               lda, work, result
+                               F77_CHAR_ARG_LEN (1));
   return lange_inf_fixup (result, m.data (), m.numel ());
 }
 
@@ -258,12 +203,11 @@ lange (char norm_type, const FloatComplexMatrix& m)
 
   OCTAVE_LOCAL_BUFFER (float, work, mm);
 
-  float result = F77_FUNC (clange, CLANGE)
-    (F77_CONST_CHAR_ARG (&norm_type),
-     mm, nn,
-     reinterpret_cast<const F77_CMPLX *> (m.data ()),
-     lda, work
-     F77_CHAR_ARG_LEN (1));
+  F77_REAL result;
+  F77_FUNC (xclange, XCLANGE) (F77_CONST_CHAR_ARG (&norm_type),
+                               mm, nn, F77_CONST_CMPLX_ARG (m.data ()),
+                               lda, work, result
+                               F77_CHAR_ARG_LEN (1));
   return lange_inf_fixup (result, m.data (), m.numel ());
 }
 

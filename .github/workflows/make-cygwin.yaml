@@ -230,6 +230,7 @@ jobs:
 
         run: |
           export PATH=$(echo "$PATH" | sed -e "s|/usr/lib/ccache/bin:||g")
+          ./.build/run-octave --no-init-file --no-history --eval "version -blas, version -lapack"
           EGREP="grep -E" make -C ./.build check | tee ./test-suite.log
 
       - name: display test suite log

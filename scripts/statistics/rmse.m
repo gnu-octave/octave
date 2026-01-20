@@ -179,10 +179,6 @@ function E = rmse (F, A, varargin)
   sz_AF = size (AF);
   nd_AF = ndims (AF);
 
-  ## Square the difference here (no reduction to AF)
-  ## sumsq will handle efficiently both real and complex numbers
-  AF = sumsq (AF, nd_AF + 1);
-
   if (nvarg > 1 && ! varg_chars(2:end))
     ## Only first varargin can be numeric
     print_usage ();
@@ -235,23 +231,26 @@ function E = rmse (F, A, varargin)
                          " the difference of the input arrays F and A"));
         endif
         W = W(:);
-        AF = W .* AF;
+        ## Apply sqrt(weights) to differences to prepare for vecnorm
+        AF = AF .* sqrt (W);
         n = sum (W);
       endif
 
       ## Process omitnan
       if (omitnan)
         nanAF = isnan (AF);
-        AF(nanAF) = [];
+        AF(nanAF) = 0;  # zero out NaNs so vecnorm ignores them in sum
         if (weighted)
-          W(nanAF) = [];
+          W(nanAF) = 0;
           n = sum (W);
         else
           n = numel (AF);
         endif
       endif
 
-      E = sqrt (sum (AF, "extra") ./ n);
+      ## Use vecnorm (2-norm) for robust, fast calculation.
+      ## rmse = norm (AF) / sqrt (N)
+      E = vecnorm (AF, 2, 1) ./ sqrt (n);
 
     else
       ## Handle 0x0 empty input, no dimensions given
@@ -271,7 +270,7 @@ function E = rmse (F, A, varargin)
       ## Process weights
       if (weighted)
         if (isequal (size (W), sz_AF))
-          AF = W .* AF;
+          AF = AF .* sqrt (W);
         elseif (isvector (W))
           if (numel (W) != n)
             error (strcat ("rmse: WEIGHTS vector must have the same", ...
@@ -285,7 +284,7 @@ function E = rmse (F, A, varargin)
             sz_W(dim) = 1;
             W = repmat (W, sz_W);
           endif
-          AF = W .* AF;
+          AF = AF .* sqrt (W);
         else
           error (strcat ("rmse: WEIGHTS array must have the same size as", ...
                          " the difference of the input arrays F and A"));
@@ -296,7 +295,7 @@ function E = rmse (F, A, varargin)
       ## Process omitnan
       if (omitnan)
         nanAF = isnan (AF);
-        AF(nanAF) = 0;
+        AF(nanAF) = 0;  # zero out NaNs so vecnorm ignores them in sum
         if (weighted)
           W(nanAF) = 0;
           n = sum (W, dim);
@@ -305,7 +304,7 @@ function E = rmse (F, A, varargin)
         endif
       endif
 
-      E = sqrt (sum (AF, dim, "extra") ./ n);
+      E = vecnorm (AF, 2, dim) ./ sqrt (n);
 
     endif
 
@@ -329,7 +328,8 @@ function E = rmse (F, A, varargin)
           endif
         endif
 
-        E = sqrt (AF);
+        ## If dim > ndims, rmse is just abs(AF) (conceptually norm of scalar)
+        E = abs (AF);
 
       else
         n = sz_AF(dim);
@@ -337,7 +337,7 @@ function E = rmse (F, A, varargin)
         ## Process weights
         if (weighted)
           if (isequal (size (W), sz_AF))
-            AF = W .* AF;
+            AF = AF .* sqrt (W);
           elseif (isvector (W))
             if (numel (W) != n)
               error (strcat ("rmse: WEIGHTS vector must have the same", ...
@@ -351,7 +351,7 @@ function E = rmse (F, A, varargin)
               sz_W(dim) = 1;
               W = repmat (W, sz_W);
             endif
-            AF = W .* AF;
+            AF = AF .* sqrt (W);
           else
           error (strcat ("rmse: WEIGHTS array must have the same size as", ...
                          " the difference of the input arrays F and A"));
@@ -371,7 +371,7 @@ function E = rmse (F, A, varargin)
           endif
         endif
 
-        E = sqrt (sum (AF, dim, "extra") ./ n);
+        E = vecnorm (AF, 2, dim) ./ sqrt (n);
 
       endif
 
@@ -393,7 +393,7 @@ function E = rmse (F, A, varargin)
           endif
         endif
 
-        E = sqrt (AF);
+        E = abs (AF);
 
       else
 
@@ -419,7 +419,7 @@ function E = rmse (F, A, varargin)
                              " as the difference of the input arrays F and A"));
             endif
             W = W(:);
-            AF = W .* AF;
+            AF = AF .* sqrt (W);
             n = sum (W);
           endif
 
@@ -435,21 +435,21 @@ function E = rmse (F, A, varargin)
             endif
           endif
 
-          E = sqrt (sum (AF, "extra") ./ n);
+          E = vecnorm (AF, 2, 1) ./ sqrt (n);
 
         else
           ## Weights must either match vecdim page size or the size of F - A
           if (weighted)
             page_szw = size (W);
             if (isequal (size (W), sz_AF))
-              AF = W .* AF;
+              AF = AF .* sqrt (W);
             elseif (isequal (page_szw, sz_AF(vecdim)))
               ## Make W to be compatible with AF
               tmp = ones (1, nd_AF);
               tmp(vecdim) = page_szw;
               W = reshape (W, tmp);
               W = W .* ones (sz_AF);
-              AF = W .* AF;
+              AF = AF .* sqrt (W);
             else
               error (strcat ("rmse: WEIGHTS array must have the same size", ...
                              " as the operating page specified by VECDIM", ...
@@ -492,7 +492,7 @@ function E = rmse (F, A, varargin)
             endif
           endif
 
-          E = sqrt (sum (AF, dim, "extra") ./ n);
+          E = vecnorm (AF, 2, dim) ./ sqrt (n);
 
           ## Inverse permute back to correct dimensions
           E = ipermute (E, perm);
@@ -513,11 +513,11 @@ endfunction
 %!test
 %! F = [2, 11, 6];
 %! A = [3, 10, 8];
-%! assert (rmse (F, A), sqrt (2));
-%! assert (rmse (F, A, 1), [1, 1, 2]);
-%! assert (rmse (F, A, 2), sqrt (2));
-%! assert (rmse (F, A, 3), [1, 1, 2]);
-%! assert (rmse (F, A, 'all'), sqrt (2));
+%! assert (rmse (F, A), sqrt (2), eps);
+%! assert (rmse (F, A, 1), [1, 1, 2], eps);
+%! assert (rmse (F, A, 2), sqrt (2), eps);
+%! assert (rmse (F, A, 3), [1, 1, 2], eps);
+%! assert (rmse (F, A, 'all'), sqrt (2), eps);
 %!test
 %! F = [3; 7; 4; NaN];
 %! A = [4; 0; 6; 4];
@@ -634,6 +634,13 @@ endfunction
 %! assert (rmse (F, A, [2, 3], 'Weights', W), E1w);
 %! assert (rmse (F, A, [2, 3]), E1);
 
+## Test with very large values
+%!test <67918>
+%! A = zeros (10, 1);
+%! A(1) = realmax/2;
+%! A(2) = 2*(realmax/3);
+%! F = ones (10, 1);
+%! assert (rmse (A, F), 4.7373373668443035e307, 2*eps (4.7373373668443035e307));
 
 ## Test input validation
 %!error <Invalid call> rmse ()

@@ -35,7 +35,7 @@
 #include "MArray.h"
 #include "MArray.cc"
 
-INSTANTIATE_MARRAY (FloatComplex, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
+INSTANTIATE_MARRAY (FloatComplex, );
 
 INSTANTIATE_MARRAY_FRIENDS (FloatComplex, OCTAVE_API)
 

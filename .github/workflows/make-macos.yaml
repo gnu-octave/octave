@@ -189,6 +189,7 @@ jobs:
         timeout-minutes: 60
         run: |
           echo 'makeinfo_program ("${HOMEBREW_PREFIX}/opt/texinfo/bin/makeinfo");' >> ./scripts/startup/site-rcfile
+          ./.build/run-octave --no-init-file --no-history --eval "version -blas, version -lapack"
           make -C ./.build check-tree-evaluator | tee ./test-suite.log
 
       - name: display test suite log

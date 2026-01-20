@@ -929,7 +929,7 @@ of an orthogonal basis of @code{span (A)}.
 %!
 %! assert (all (t));
 %! if (all (t))
-%!   assert (norm (q*r - a), 0, 5000*eps);
+%!   assert (norm (q*r - a), 0, eps (sum (size (a)) * norm (a)));
 %! endif
 
 %!test

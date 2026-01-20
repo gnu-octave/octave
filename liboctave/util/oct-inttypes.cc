@@ -827,7 +827,7 @@ powf (const octave_int<T>& a, const float& b)
 }
 
 #define INSTANTIATE_INTTYPE(T)                                          \
-  template class OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API octave_int<T>; \
+  template class octave_int<T>;                                         \
                                                                         \
   template OCTAVE_API octave_int<T>                                     \
   pow (const octave_int<T>&, const octave_int<T>&);                     \

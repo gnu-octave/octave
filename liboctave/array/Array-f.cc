@@ -167,7 +167,7 @@ Array<float>::issorted (sortmode mode) const
 
 template class octave_sort<float>;
 
-INSTANTIATE_ARRAY (float, OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API);
+INSTANTIATE_ARRAY (float, );
 
 template OCTAVE_API std::ostream& operator << (std::ostream&,
                                                const Array<float>&);

@@ -40,21 +40,21 @@
 
 // instantiate template class with types that need to be exported from library
 
-template class OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API octave_base_int_matrix<int8NDArray>;
-template class OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API octave_base_int_matrix<int16NDArray>;
-template class OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API octave_base_int_matrix<int32NDArray>;
-template class OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API octave_base_int_matrix<int64NDArray>;
-template class OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API octave_base_int_matrix<uint8NDArray>;
-template class OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API octave_base_int_matrix<uint16NDArray>;
-template class OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API octave_base_int_matrix<uint32NDArray>;
-template class OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API octave_base_int_matrix<uint64NDArray>;
+template class octave_base_int_matrix<int8NDArray>;
+template class octave_base_int_matrix<int16NDArray>;
+template class octave_base_int_matrix<int32NDArray>;
+template class octave_base_int_matrix<int64NDArray>;
+template class octave_base_int_matrix<uint8NDArray>;
+template class octave_base_int_matrix<uint16NDArray>;
+template class octave_base_int_matrix<uint32NDArray>;
+template class octave_base_int_matrix<uint64NDArray>;
 
-template class OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API octave_base_int_scalar<octave_int8>;
-template class OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API octave_base_int_scalar<octave_int16>;
-template class OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API octave_base_int_scalar<octave_int32>;
-template class OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API octave_base_int_scalar<octave_int64>;
-template class OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API octave_base_int_scalar<octave_uint8>;
-template class OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API octave_base_int_scalar<octave_uint16>;
-template class OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API octave_base_int_scalar<octave_uint32>;
-template class OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API octave_base_int_scalar<octave_uint64>;
+template class octave_base_int_scalar<octave_int8>;
+template class octave_base_int_scalar<octave_int16>;
+template class octave_base_int_scalar<octave_int32>;
+template class octave_base_int_scalar<octave_int64>;
+template class octave_base_int_scalar<octave_uint8>;
+template class octave_base_int_scalar<octave_uint16>;
+template class octave_base_int_scalar<octave_uint32>;
+template class octave_base_int_scalar<octave_uint64>;
 

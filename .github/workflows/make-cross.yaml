@@ -238,7 +238,10 @@ jobs:
         # Without "-cli", there are deadlocks or crashes while running some
         # tests that are related to graphics. This might be due to using qemu
         # or xvfb-run or a combination of the two or an actual issue in Octave.
-        run: XDG_RUNTIME_DIR=$RUNNER_TEMP RUN_OCTAVE_OPTIONS="-cli" make -C ./.build check | tee ./test-suite.log
+        run: |
+          ./.build/run-octave --no-init-file --no-history --eval "version -blas, version -lapack"
+          XDG_RUNTIME_DIR=$RUNNER_TEMP RUN_OCTAVE_OPTIONS="-cli" \
+            make -C ./.build check | tee ./test-suite.log
 
       - name: display test suite log
         if: always() && (steps.run-test-suite.outcome != 'skipped')

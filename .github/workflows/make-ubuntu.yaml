@@ -179,7 +179,10 @@ jobs:
       - name: check
         id: run-test-suite
         timeout-minutes: 60
-(??)        run: XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a make -C ./.build check | tee ./test-suite.log
+        run: |
+          ./.build/run-octave --no-init-file --no-history --no-gui-libs --eval "version -blas, version -lapack"
+          XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a \
+            make -C ./.build check-tree-evaluator | tee ./test-suite.log
 
       - name: display test suite log
         if: always() && (steps.run-test-suite.outcome != 'skipped')

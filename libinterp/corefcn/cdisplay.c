@@ -71,10 +71,10 @@ struct s_display_info {
 // set up Wayland output event listener to capture the relevant information
 
 static void
-oct_wl_geometry (void *data, struct wl_output * /* output */, int /* x */,
-                 int /* y */, int physical_width, int physical_height,
-                 int /* subpixel */, const char * /* make */,
-                 const char * /* model */, int /* transform */)
+oct_wl_geometry (void *data, struct wl_output *output, int x,
+                 int y, int physical_width, int physical_height,
+                 int subpixel, const char *make,
+                 const char *model, int transform)
 {
   struct s_display_info *info = data;
   info->ht_mm = physical_height;
@@ -82,8 +82,8 @@ oct_wl_geometry (void *data, struct wl_output * /* output */, int /* x */,
 }
 
 static void
-oct_wl_mode (void *data, struct wl_output * /* output */, unsigned int flags,
-             int width, int height, int /* refresh */)
+oct_wl_mode (void *data, struct wl_output *output, unsigned int flags,
+             int width, int height, int refresh)
 {
   struct s_display_info *info = data;
 
@@ -95,11 +95,11 @@ oct_wl_mode (void *data, struct wl_output * /* output */, unsigned int flags,
     }
 }
 
-static void oct_wl_done (void * /* data */, struct wl_output * /* output */)
+static void oct_wl_done (void *data, struct wl_output *output)
 { }
 
 static void
-oct_wl_scale (void *data, struct wl_output * /* output */, int32_t factor)
+oct_wl_scale (void *data, struct wl_output *output, int32_t factor)
 {
   struct s_display_info *info = data;
   info->scale = factor;
@@ -116,7 +116,7 @@ static const struct wl_output_listener output_listener = {
 
 static void
 oct_wl_global (void *data, struct wl_registry *registry, uint32_t name,
-               const char *interface, uint32_t /* version */)
+               const char *interface, uint32_t version)
 {
   struct s_display_info *info = data;
 
@@ -132,8 +132,8 @@ oct_wl_global (void *data, struct wl_registry *registry, uint32_t name,
 }
 
 static void
-oct_wl_global_remove (void * /* data */, struct wl_registry * /* registry */,
-                      uint32_t /* name */)
+oct_wl_global_remove (void *data, struct wl_registry *registry,
+                      uint32_t name)
 { }
 
 static const struct wl_registry_listener registry_listener = {

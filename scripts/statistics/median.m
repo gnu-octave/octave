@@ -339,6 +339,8 @@ function m = median (x, varargin)
 
   if (xsparse)
     ## Sparse code path: use sort (preserves historical behavior and sparsity)
+    ## By “historical behavior” I mean: the existing median implementation for sparse inputs is left unchanged
+    ## preserves sparsity of the output, preserves the exact NaN and zero handlinggit status
     x = sort (x, dim);
 
     if (omitnan)
@@ -582,8 +584,7 @@ function m = median (x, varargin)
                 m1 = vals(1, :);
                 m2 = vals(2, :);
                 samesign = prod (sign ([m1; m2]), 1) == 1;
-                m(nanfree) = samesign .* m1 + ...
-                              (m2 + ! samesign .* m1 - samesign .* m1) / 2;
+                m(nanfree) = samesign .* m1 + (m2 + ! samesign .* m1 - samesign .* m1) / 2;
               else
                 m(nanfree) = (vals(1, :) + vals(2, :)) / 2;
               endif

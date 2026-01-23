@@ -12,14 +12,13 @@ Summary of important user-visible changes for version 11 (yyyy-mm-dd):
   * The package installation command `pkg install foo` now automatically
     determines whether `foo` is a local file, a URL, or an unqualified package
     name in that order, and installs it as appropriate.  The `-forge` option is
-    no longer required but is still silently accepted.
+    no longer required.
   * There is a new search command for packages: `pkg search foo bar baz`
-    searches Octave Packages online for packages having all the listed keywords
-    in their description.  Search terms can also be regular expressions.
+    searches the Octave Packages index for packages having all the listed
+    keywords in their description.  Search terms can also be specified as
+    regular expressions.
   * The old command `pkg list -forge`, which returned a list of packages found
-    online, has been replaced by `pkg search -all`.  Calling `pkg list -forge`
-    now gives a warning and then executes `pkg search -all`.  The warning can
-    be silenced with the ID `"Octave:pkg:list-forge"`.
+    online, has been replaced by `pkg search -refresh -all`.
   * Package metadata is now cached locally on the computer as a backup for
     reliability.  It is updated automatically when an operation that needs the
     current package index such as `install`, `update`, or `search` is run the

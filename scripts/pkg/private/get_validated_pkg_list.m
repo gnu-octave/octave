@@ -123,14 +123,14 @@ function retval = get_validated_pkg_list (force_refresh = false, verbose = false
   primary_url = "https://packages.octave.org/packages.json";
   fallback_url = "https://gnu-octave.github.io/packages/packages.json";
 
-  [list, succ] = urlread (primary_url);
+  [list, succ] = urlread (primary_url, 'Timeout', 6);
 
   if (! succ)
     ## Primary failed, try fallback
     if (verbose)
       printf ("pkg: primary repository unavailable, trying gnu-octave.github.io/packages...\n");
     endif
-    [list, succ] = urlread (fallback_url);
+    [list, succ] = urlread (fallback_url, 'Timeout', 9);
   endif
 
   if (! succ)

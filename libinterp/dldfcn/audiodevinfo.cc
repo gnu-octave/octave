@@ -134,6 +134,9 @@ recording using those parameters.
   if (err != paNoError)
     error ("audiodevinfo: PortAudio initialization failed");
 
+  // Guarantee PortAudio cleanup code is executed
+  octave::unwind_action portaudio_cleanup ([] () { Pa_Terminate (); } );
+
   int num_devices = Pa_GetDeviceCount ();
 
   if (num_devices < 0)
@@ -894,6 +897,8 @@ audioplayer::~audioplayer ()
                        "interrupting audioplayer during playback");
       stop ();
     }
+
+  Pa_Terminate ();  // PortAudio required cleanup
 }
 
 void
@@ -1542,6 +1547,8 @@ audiorecorder::~audiorecorder ()
                        "interrupting audiorecorder during recording");
       stop ();
     }
+
+  Pa_Terminate ();  // PortAudio required cleanup
 }
 
 void

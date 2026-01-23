@@ -39,7 +39,7 @@
 ##
 ## @item search
 ## Search for packages having the specified search terms in the Octave Packages
-## repository.  This requires an internet connection and the cURL library.
+## index.  This may require an internet connection and the cURL library.
 ##
 ## @example
 ## pkg search foo bar baz
@@ -65,7 +65,17 @@
 ## @end example
 ##
 ## @noindent
-## shows @emph{all} packages available on Octave Packages.
+## shows @emph{all} packages available on the Octave Packages index (not only
+## those that can be installed with the @command{pkg} command).
+##
+## By default, the Octave Packages index is downloaded only once per Octave
+## session in order to improve performance and to reduce the load on the index
+## server during repeated searches.  An update of the index can be enforced
+## with the option @option{-refresh}:
+##
+## @example
+## pkg search -all -refresh foo
+## @end example
 ##
 ## If an output variable is provided, as in
 ##
@@ -89,7 +99,8 @@
 ## @end example
 ##
 ## @noindent
-## installs the package @code{pkgname}.  The sequence is:
+## might install the package @code{pkgname}.  The sequence for the resolution
+## of the arguments after @code{pkg install} is:
 ##
 ## @enumerate
 ## @item
@@ -100,26 +111,29 @@
 ## installs it.
 ##
 ## @item
-## Otherwise, Octave queries Octave Packages online for a package named
-## @code{pkgname}, and if found, downloads and installs its latest version.
+## Otherwise, Octave queries the Octave Packages index online for a package
+## named @code{pkgname}, and if found, downloads and installs its latest
+## version.  If the Octave Packages index cannot be reached, a locally cached
+## version of the index might be used.  The Octave Packages index is only
+## downloaded once per Octave session (unless an index refresh is requested
+## with the option @option{-refresh}).
 ## @end enumerate
 ##
 ## Online access requires an internet connection and the cURL library.
 ##
 ## @noindent
-## @emph{No support}: the GNU Octave community is not responsible for
-## packages installed from foreign sites.  For support or for
-## reporting bugs you need to contact the maintainers of the installed
-## package directly (run @code{pkg describe} on the package to get
-## information).
+## @emph{No support}: the GNU Octave community is not responsible for any
+## installed packages.  For support or for reporting bugs, you need to contact
+## the maintainers of the installed package directly (run @code{pkg describe}
+## on the package to get information).
 ##
 ## The following options are accepted for @code{pkg install}:
 ##
 ## @table @code
 ## @item -nodeps
-## Disable dependency checking.  With this option it is possible to install
-## a package even when it depends on another package which is not installed
-## on the system.  @strong{Use this option with care.}
+## Disable dependency checking.  With this option it is possible to install a
+## package even when it depends on another package which is not installed on
+## the system.  @strong{Use this option with care.}
 ##
 ## @item -local
 ## A local installation (package available only to current user) is forced,
@@ -134,11 +148,17 @@
 ## Print the output of all commands as they are performed.
 ##
 ## @item -refresh
-## Force an update of the cached package database from the online repository.
-## By default, Octave uses a local cache of the package database that is
-## updated automatically when older than 7 days.  This option forces an
-## immediate update regardless of cache age.  The @option{-refresh} option
-## applies to @code{install}, @code{search}, and @code{update} commands.
+## Force an update of the cached package database from the online index.  By
+## default, Octave tries to download the Octave Packages index only once per
+## Octave session.  This option forces refreshing the index even if it was
+## already downloaded in the current Octave session.  The option
+## @option{-refresh} applies to @code{install}, @code{search}, and
+## @code{update} commands.
+##
+## @item -forge
+## The option @option{-forge} forces an installation of a package from the
+## Octave Packages index.  It cannot be used to install packages from a URL or
+## a local file.  It implies @option{-refresh}.
 ## @end table
 ##
 ## If the package tarball contains a @file{configure} script, it is run during
@@ -149,14 +169,15 @@
 ## different name such as @command{gmake}.
 ##
 ## @item update
-## Check installed Octave packages against their repositories and update any
-## outdated items.  Updated packages are installed either globally or locally
-## depending on whether Octave is running with elevated privileges.  This
-## requires an internet connection and the cURL library.
+## Check installed Octave packages against the latest version on the Octave
+## Packages index and update any outdated items.  Updated packages are
+## installed either globally or locally depending on whether Octave is running
+## with elevated privileges.  This requires an internet connection and the cURL
+## library.
 ##
 ## Options for the install command and the names of individual packages to be
 ## checked for updates may be specified as a list following the update command.
-## If the @option{-local} or @option{-global} option is specified,
+## If the option @option{-local} or @option{-global} is specified,
 ## @code{pkg update} limits the update check to the local or global installed
 ## packages, and installs updates in that same context.  For example,
 ##
@@ -180,7 +201,7 @@
 ##
 ## @noindent
 ## Updates for multiple packages are sorted alphabetically and not checked
-## for dependencies affected by installation order.  If dependency order
+## for dependencies affected by installation order.  If a dependency order
 ## related @code{pkg update} failure occurs, use @code{pkg update -nodeps} to
 ## ignore dependencies, or @code{pkg install <package_name>} to update
 ## individual packages manually.
@@ -202,8 +223,8 @@
 ## or @option{-local} to override that default behavior.
 ##
 ## @item load
-## Add named packages to the path.  After loading a package it is
-## possible to use the functions provided by the package.  For example,
+## Add named packages to the path.  After loading a package it is possible to
+## use the functions provided by the package.  For example,
 ##
 ## @example
 ## pkg load image
@@ -212,9 +233,9 @@
 ## @noindent
 ## adds the @code{image} package to the path.
 ##
-## Note: When loading a package, @code{pkg} automatically tries to load
-## any unloaded dependencies as well, unless the @option{-nodeps} flag has
-## been specified.  For example,
+## Note: When loading a package, @code{pkg} automatically tries to load any
+## unloaded dependencies as well, unless the @option{-nodeps} flag has been
+## specified.  For example,
 ##
 ## @example
 ## pkg load signal
@@ -222,16 +243,16 @@
 ##
 ## @noindent
 ## adds the @code{signal} package and also tries to load its dependency: the
-## @code{control} package.  Be aware that use of the @option{-nodeps} can
-## adversely affect package functionality.
+## @code{control} package.  Be aware that use of the @option{-nodeps} option
+## can adversely affect package functionality.
 ##
 ## @item unload
-## Remove named packages from the path.  After unloading a package it is
-## no longer possible to use the functions provided by the package.  Trying
-## to unload a package that other loaded packages still depend on causes an
-## error; no packages are unloaded in this case.  A package can be forcibly
-## unloaded with the @option{-nodeps} flag, at the risk of breaking dependent
-## packages that are still loaded.
+## Remove named packages from the path.  After unloading a package it is no
+## longer possible to use the functions provided by the package.  Trying to
+## unload a package that other loaded packages still depend on causes an error;
+## no packages are unloaded in this case.  A package can be forcibly unloaded
+## with the @option{-nodeps} flag, at the risk of breaking dependent packages
+## that are still loaded.
 ##
 ## @item list
 ## Show the list of currently installed packages.  For example,
@@ -258,11 +279,28 @@
 ## @end example
 ##
 ## If two output arguments are requested @code{pkg} splits the list of
-## installed packages into those which were installed by the current user,
-## and those which were installed by the system administrator.
+## installed packages into those which were installed by the current user
+## (local packages), and those which were installed by the system administrator
+## (global packages).
 ##
 ## @example
 ## [user_packages, system_packages] = pkg ("list")
+## @end example
+##
+## The option @option{-forge} lists all packages available on the Octave
+## Packages index that can be installed with the @code{pkg} command.  This
+## requires an internet connection and the cURL library.  This also updates the
+## locally cached file of the Octave Packages index.  Calling
+##
+## @example
+## octave_packages = pkg ("list", "-forge")
+## @end example
+##
+## @noindent
+## is identical to calling
+##
+## @example
+## octave_packages = pkg ("search", "-refresh", "-all")
 ## @end example
 ##
 ## @item describe
@@ -276,7 +314,8 @@
 ##
 ## @noindent
 ## describes all installed packages and the functions they provide.
-## Display can be limited to a set of packages:
+##
+## The result can be limited to a set of packages:
 ##
 ## @example
 ## @group
@@ -303,8 +342,7 @@
 ##
 ## @noindent
 ## @var{flag} takes one of the values @qcode{"Not installed"},
-## @qcode{"Loaded"}, or
-## @qcode{"Not loaded"} for each of the named packages.
+## @qcode{"Loaded"}, or @qcode{"Not loaded"} for each of the named packages.
 ##
 ## @item prefix
 ## Set the installation prefix directory.  For example,
@@ -315,6 +353,7 @@
 ##
 ## @noindent
 ## sets the installation prefix to @file{~/my_octave_packages}.
+##
 ## Packages are installed in this directory.
 ##
 ## Giving an output argument returns the current installation prefix.
@@ -332,9 +371,9 @@
 ## @end example
 ##
 ## @item local_list
-## Set the file in which to look for information on locally
-## installed packages.  Locally installed packages are those that are
-## available only to the current user.  For example:
+## Set the file in which to look for information on locally installed
+## packages.  Locally installed packages are those that are typically available
+## only to the current user.  For example:
 ##
 ## @example
 ## pkg local_list ~/.octave_packages
@@ -347,8 +386,8 @@
 ## @end example
 ##
 ## @item global_list
-## Set the file in which to look for information on globally
-## installed packages.  Globally installed packages are those that are
+## Set the file in which to look for information on globally installed
+## packages.  Globally installed packages are those that are typically
 ## available to all users.  For example:
 ##
 ## @smallexample
@@ -376,8 +415,8 @@
 ## all other options are ignored.
 ##
 ## @item rebuild
-## Rebuild the package database from the installed directories.  This can
-## be used in cases where the package database has been corrupted.
+## Rebuild the package database from the installed global and local packages.
+## This can be used in cases where the package database has been corrupted.
 ##
 ## @item test
 ## Perform the built-in self tests contained in all functions provided by
@@ -461,6 +500,7 @@ function [local_packages, global_packages] = pkg (varargin)
           error ("pkg: can't download from Octave Packages without the cURL library");
         endif
         octave_forge = true;
+        force_refresh = true;
       case "-all"
         if (! __octave_config_info__ ("CURL_LIBS"))
           error ("pkg: can't download from Octave Packages without the cURL library");
@@ -489,11 +529,9 @@ function [local_packages, global_packages] = pkg (varargin)
   if (octave_forge)
     if (strcmp (action, "install"))
       ## Do nothing.
-      ## FIXME In future, we may want to issue a warning here that '-forge'
-      ## is no longer needed for 'pkg install'.
     elseif (strcmp (action, "list"))
-      warning ("Octave:pkg:list-forge", "pkg: changing 'pkg list -forge' to 'pkg search -all'\n");
-      action = "search";  # proceed as though user has invoked "pkg search -all"
+      ## Proceed as though user has invoked "pkg search -refresh -all"
+      action = "search";
       want_all_packages = true;
     else
       error ("pkg: action '%s' does not accept option '-forge'", action);
@@ -540,16 +578,21 @@ function [local_packages, global_packages] = pkg (varargin)
         error ("pkg: install action requires at least one filename");
       endif
 
-      ## Pre-load package database only if needed for package name lookups.
-      ## Check if any files require online lookup (not local files or URLs).
-      needs_pkg_lookup = false;
-      for file = files
-        file = char (file);
-        if (! isfile (file) && isempty (regexp (file, '^\w+://')))
-          needs_pkg_lookup = true;
-          break;
-        endif
-      endfor
+      if (octave_forge)
+        needs_pkg_lookup = true;
+      else
+        ## Pre-load package database only if needed for package name lookups.
+        ## Check if any files require online lookup (not local files nor URLs).
+        needs_pkg_lookup = false;
+        for file = files
+          file = char (file);
+          if (! isfile (file) && isempty (regexp (file, '^\w+://')))
+            needs_pkg_lookup = true;
+            break;
+          endif
+        endfor
+      endif
+
       if (needs_pkg_lookup)
         get_validated_pkg_list (force_refresh, verbose);
       endif
@@ -568,16 +611,17 @@ function [local_packages, global_packages] = pkg (varargin)
           file = char (file);  # convert cell to char string
 
           ## Sequence: local file, then URL, then package_name.
-          if (isfile (file))
+          if (! octave_forge && isfile (file))
 
             ## Do nothing extra; "files" does not need to change.
 
-          elseif (regexp (file, '^\w+://'))  # looks like a URL
+          elseif (! octave_forge && regexp (file, '^\w+://'))
+            ## looks like a URL
 
             ## Make a temp file from the URL.
             [~, fname, fext] = fileparts (file);
             tmp_file = fullfile (tmp_dir, [fname fext]);
-            local_files{end+1} = tmp_file;  # so that it gets cleaned up
+            local_files(end+1) = {tmp_file};  # so that it gets cleaned up
 
             ## Download the URL into the temp file we just created.
             [~, success, msg] = urlwrite (file, tmp_file);
@@ -586,9 +630,11 @@ function [local_packages, global_packages] = pkg (varargin)
             endif
 
             ## Replace the URL provided with the file we just downloaded.
-            files{strcmp (files, file)} = tmp_file;
+            files(strcmp (files, file)) = {tmp_file};
 
-          else  # not local file, not URL ==> try package name
+          else
+            ## either with option '-forge' or not a local file, not a URL
+            ## ==> try package name
 
             ## Get corresponding URL and make a temp file.
             ## FIXME: Automate filetype recognition instead of adding ".tar.gz"
@@ -598,7 +644,7 @@ function [local_packages, global_packages] = pkg (varargin)
             [v, url, sha256_online] = get_pkg_info (file);
             tmp_file = tempname (tmp_dir, [file "-" v "-"]);
             tmp_file = [tmp_file, ".tar.gz"];
-            local_files{end+1} = tmp_file;  # so that it gets cleaned up
+            local_files(end+1) = {tmp_file};  # so that it gets cleaned up
 
             if (verbose)
               printf ("downloading tarball from:\n- %s\n", url);
@@ -630,7 +676,7 @@ function [local_packages, global_packages] = pkg (varargin)
             endif
 
             ## Replace the URL provided with the file we just downloaded.
-            files{strcmp (files, file)} = tmp_file;
+            files(strcmp (files, file)) = {tmp_file};
 
           endif
         endfor

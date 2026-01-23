@@ -37,6 +37,7 @@ jobs:
     env:
       CC: ${{ matrix.cc }}
       CXX: ${{ matrix.cxx }}
+      F77: gfortran
 
     steps:
       - name: checkout repository
@@ -137,14 +138,12 @@ jobs:
           which $CXX
           echo $CXX --version
           $CXX --version
-          which gfortran
-          echo gfortran --version
-          gfortran --version
+          which $F77
+          echo $F77 --version
+          $F77 --version
           mkdir .build
           echo "::group::Run configure script"
           cd .build && ../configure \
-            CXX="${CXX} ${{ matrix.cxx-compiler-flags }}" \
-            F77="ccache gfortran" \
             CPPFLAGS="-I${HOMEBREW_PREFIX}/opt/gettext/include -I${HOMEBREW_PREFIX}/opt/icu4c/include -I${HOMEBREW_PREFIX}/opt/libiconv/include -I${HOMEBREW_PREFIX}/opt/qt@${{ matrix.qt }}/include -I${HOMEBREW_PREFIX}/opt/readline/include -I${HOMEBREW_PREFIX}/opt/sqlite/include $MY_CPPFLAGS -I${HOMEBREW_PREFIX}/include" \
             CXXFLAGS="-O2 -g" \
             LDFLAGS="-L${HOMEBREW_PREFIX}/opt/bison/lib -L${HOMEBREW_PREFIX}/opt/gettext/lib -L${HOMEBREW_PREFIX}/opt/icu4c/lib -L${HOMEBREW_PREFIX}/opt/libiconv/lib -L${HOMEBREW_PREFIX}/opt/readline/lib -L${HOMEBREW_PREFIX}/opt/sqlite/lib $MY_LDFLAGS -L${HOMEBREW_PREFIX}/lib" \

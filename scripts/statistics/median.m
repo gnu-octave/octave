@@ -297,7 +297,7 @@ function m = median (x, varargin)
     return;
   endif
 
-  ## Permute dim to simplify all operations along dim1.  At func. end ipermute.
+  ## Permute dim to simplify all operations along dim1
   if (numel (dim) > 1 || (dim != 1 && ! isvector (x)))
     perm = 1 : ndx;
 
@@ -338,9 +338,7 @@ function m = median (x, varargin)
   ## Dense inputs use nth_element for O(n) selection instead of O(n log n) sort.
 
   if (xsparse)
-    ## Sparse code path: use sort (preserves historical behavior and sparsity)
-    ## By “historical behavior” I mean: the existing median implementation for sparse inputs is left unchanged
-    ## preserves sparsity of the output, preserves the exact NaN and zero handlinggit status
+    # use sort for sparse matrices to retain sparsity of output
     x = sort (x, dim);
 
     if (omitnan)
@@ -358,11 +356,10 @@ function m = median (x, varargin)
       else
         n = sum (! isnan (x), 1)(:);
         k = floor ((n + 1) / 2);
-        m_idx_odd = mod (n, 2) & n;
-        m_idx_even = (! m_idx_odd) & n;
+        odd_cols = mod (n, 2) & n;
+        even_cols = ! odd_cols & n;
 
-        m = NaN ([1, szx(2 : end)]);
-        m = sparse (m);
+        m = sparse (NaN ([1, szx(2 : end)]));
 
         if (ndims (x) > 2)
           szx_flat = [szx(1), prod(szx(2 : end))];
@@ -370,15 +367,15 @@ function m = median (x, varargin)
           szx_flat = szx;
         endif
 
-        if (any (m_idx_odd))
-          x_idx_odd = sub2ind (szx_flat, k(m_idx_odd), find (m_idx_odd));
-          m(m_idx_odd) = x(x_idx_odd);
+        if (any (odd_cols))
+          idx = sub2ind (szx_flat, k(odd_cols), find (odd_cols));
+          m(odd_cols) = x(idx);
         endif
-        if (any (m_idx_even))
-          k_even = k(m_idx_even);
-          x_idx_even = sub2ind (szx_flat, [k_even, k_even + 1], ...
-                                  (find (m_idx_even))(:, [1, 1]));
-          m(m_idx_even) = sum (x(x_idx_even), 2) / 2;
+        if (any (even_cols))
+          k_even = k(even_cols);
+          idx = sub2ind (szx_flat, [k_even, k_even + 1], ...
+                         find (even_cols)(:, [1, 1]));
+          m(even_cols) = sum (x(idx), 2) / 2;
         endif
       endif
 
@@ -407,8 +404,7 @@ function m = median (x, varargin)
           n = szx(1);
           k = floor ((n + 1) / 2);
 
-          m = NaN ([1, szx(2 : end)]);
-          m = sparse (m);
+          m = sparse (NaN ([1, szx(2 : end)]));
 
           if (! mod (n, 2))
             m(nanfree) = (x(k, nanfree) + x(k + 1, nanfree)) / 2;
@@ -420,49 +416,28 @@ function m = median (x, varargin)
     endif
 
   else
-    ## Dense code path: use nth_element for O(n) selection
-
+    ## dense: use nth_element for O(n) selection
     if (omitnan)
-      ## Ignore any NaN's in data.  Each operating vector might have a
-      ## different number of non-NaN data points.
-
+      ## Ignore any NaN's in data. 
+      ## Each operating vector might have a different number of non-NaN data points.
       if (isvector (x))
         ## Checks above ensure either dim1 or dim2 vector
         x = x(! isnan (x));
         n = numel (x);
-
         if (n == 0)
           m = NaN (sz_out, outtype);
         else
           k = floor ((n + 1) / 2);
           if (mod (n, 2))
-            ## odd
             m = nth_element (x, k);
           else
-            ## even
             vals = nth_element (x, [k, k + 1]);
-            m = vals(1);
-            if (any (isinf (vals)))
-              ## If either center value is Inf, replace m by +/-Inf or NaN.
-              m = vals(1) + vals(2);
-            elseif (any (isa (x, "integer")))
-              ## avoid int overflow issues
-              m2 = vals(2);
-              if (sign (m) != sign (m2))
-                m += m2;
-                m /= 2;
-              else
-                m += (m2 - m) / 2;
-              endif
-            else
-              m += (vals(2) - m) / 2;
-            endif
+            m = mid_two_vals (vals(1), vals(2), isa (x, "integer"));
           endif
         endif
 
       else
-        ## Each column may have a different n and k.  Flatten higher dimensions
-        ## so nth_element works column-wise.
+        ## Columns may have different non-NaN counts; process individually.
         n = szx(1);
         rest_sz = szx(2 : end);
         ncols = prod (rest_sz);
@@ -493,20 +468,7 @@ function m = median (x, varargin)
             m(j) = nth_element (col, k);
           else
             vals = nth_element (col, [k, k + 1]);
-            m(j) = vals(1);
-            if (any (isinf (vals)))
-              m(j) = vals(1) + vals(2);
-            elseif (any (isa (x, "integer")))
-              m2 = vals(2);
-              if (sign (m(j)) != sign (m2))
-                m(j) += m2;
-                m(j) /= 2;
-              else
-                m(j) += (m2 - m(j)) / 2;
-              endif
-            else
-              m(j) += (vals(2) - m(j)) / 2;
-            endif
+            m(j) = mid_two_vals (vals(1), vals(2), isa (x, "integer"));
           endif
         endfor
 
@@ -516,8 +478,7 @@ function m = median (x, varargin)
       endif
 
     else
-      ## No "omitnan".  All 'vectors' uniform length.
-      ## All types without a NaN value will use this path.
+      ## No "omitnan". All types without a NaN value will use this path.
       if (all (! nanfree))
         m = NaN (sz_out);
 
@@ -535,20 +496,7 @@ function m = median (x, varargin)
             else
               ## Even
               vals = nth_element (x, [k, k + 1]);
-              m = vals(1);
-              if (any (isinf (vals)))
-                m = vals(1) + vals(2);
-              elseif (any (isa (x, "integer")))
-                m2 = vals(2);
-                if (sign (m) != sign (m2))
-                  m += m2;
-                  m /= 2;
-                else
-                  m += (m2 - m) / 2;
-                endif
-              else
-                m += (vals(2) - m) / 2;
-              endif
+              m = mid_two_vals (vals(1), vals(2), isa (x, "integer"));
             endif
           endif
 
@@ -580,14 +528,7 @@ function m = median (x, varargin)
             ## Even
             if (any (nanfree(:)))
               vals = nth_element (x(:, nanfree), [k, k + 1], 1);
-              if (any (isa (x, "integer")))
-                m1 = vals(1, :);
-                m2 = vals(2, :);
-                samesign = prod (sign ([m1; m2]), 1) == 1;
-                m(nanfree) = samesign .* m1 + (m2 + ! samesign .* m1 - samesign .* m1) / 2;
-              else
-                m(nanfree) = (vals(1, :) + vals(2, :)) / 2;
-              endif
+              m(nanfree) = mid_two_vals (vals(1, :), vals(2, :), isa (x, "integer"));
             endif
           endif
 
@@ -609,6 +550,21 @@ function m = median (x, varargin)
     m = feval (outtype, m);
   endif
 
+endfunction
+
+
+## Compute mean of two middle values, handling Inf and integer overflow.
+function m = mid_two_vals (m1, m2, is_int)
+  if (any (isinf ([m1; m2])(:)))
+    m = m1 + m2;
+  elseif (is_int)
+    ## same signs: m1 + (m2-m1)/2 avoids overflow in the sum.
+    ## opposite sign: (m1+m2)/2 is since magnitudes partially cancel.
+    samesign = sign (m2) == sign (m1);
+    m = samesign .* (m1 + (m2 - m1) / 2) + ! samesign .* ((m1 + m2) / 2);
+  else
+    m = (m1 + m2) / 2;
+  endif
 endfunction
 
 

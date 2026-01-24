@@ -30,6 +30,7 @@
 #include <cstdint>
 
 #include <algorithm>
+#include <memory>
 #include <ostream>
 #include <string>
 #include <vector>
@@ -1743,14 +1744,14 @@ audiorecorder::getaudiodata ()
 audioplayer *
 audiorecorder::getplayer ()
 {
-  audioplayer *player = new audioplayer ();
+  std::unique_ptr<audioplayer> player (new audioplayer ());
 
   player->set_y (getaudiodata ());
   player->set_fs (get_fs ());
   player->set_nbits (get_nbits ());
   player->init ();
 
-  return player;
+  return player.release ();
 }
 
 bool
@@ -1914,7 +1915,7 @@ Undocumented internal function.
 
   int nargin = args.length ();
 
-  audiorecorder *recorder = new audiorecorder ();
+  std::unique_ptr<audiorecorder> recorder (new audiorecorder ());
 
   if (nargin >= 3)
     {
@@ -1929,7 +1930,7 @@ Undocumented internal function.
     }
 
   recorder->init ();
-  retval = recorder;
+  retval = recorder.release ();
 
 #else
   octave_unused_parameter (args);
@@ -2319,37 +2320,35 @@ Undocumented internal function.
 
 #if defined (HAVE_PORTAUDIO)
 
-  audioplayer *recorder = new audioplayer ();
+  std::unique_ptr<audioplayer> player (new audioplayer ());
 
-  recorder->set_y (args(0));
-  recorder->set_fs (args(1).int_value ());
+  player->set_y (args(0));
+  player->set_fs (args(1).int_value ());
 
   if (args.length () > 2)
     {
       // FIXME: Should be able to support 32-bit streams (bug #57939)
       int m_nbits = args(2).int_value ();
       if (m_nbits != 8 && m_nbits != 16 && m_nbits != 24)
-        {
-          delete recorder;
-          error ("audioplayer: NBITS must be 8, 16, or 24");
-        }
+        error ("audioplayer: NBITS must be 8, 16, or 24");
 
       switch (args.length ())
         {
         case 3:
-          recorder->set_nbits (m_nbits);
+          player->set_nbits (m_nbits);
           break;
 
         case 4:
-          recorder->set_nbits (m_nbits);
-          recorder->set_id (args(3).int_value ());
+          player->set_nbits (m_nbits);
+          player->set_id (args(3).int_value ());
           break;
         }
     }
 
-  recorder->init ();
+  player->init ();
 
-  retval = recorder;
+  retval = player.release ();
+
 #else
   octave_unused_parameter (args);
 

@@ -247,13 +247,14 @@ cdef_object_rep *
 cdef_object_array::resize (const dim_vector& dv, bool fill) const
 {
   cdef_object_array *retval = dynamic_cast<cdef_object_array *> (clone ());
+  std::unique_ptr<cdef_object_array> guard (retval);
 
   retval->m_array.resize (dv, cdef_object ());
 
   if (fill)
     retval->fill_empty_values ();
 
-  return retval;
+  return guard.release ();
 }
 
 cdef_object_rep *
@@ -812,12 +813,14 @@ cdef_object_scalar::resize (const dim_vector& dv, bool fill) const
     arr(0) = cdef_object (const_cast<cdef_object_scalar *> (this)->clone ());
 
   cdef_object_array *retval = new cdef_object_array (arr);
+  std::unique_ptr<cdef_object_array> guard (retval);
+
   retval->set_class (get_class ());
 
   if (fill)
     retval->fill_empty_values ();
 
-  return retval;
+  return guard.release ();
 }
 
 void

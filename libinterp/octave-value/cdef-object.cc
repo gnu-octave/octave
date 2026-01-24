@@ -27,6 +27,8 @@
 #  include "config.h"
 #endif
 
+#include <memory>
+
 #include "cdef-class.h"
 #include "cdef-object.h"
 #include "cdef-property.h"

@@ -49,7 +49,8 @@
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
 
-extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_int_matrix<intNDArray<OCTAVE_INT_T>>;
+extern template class OCTINTERP_API
+octave_base_int_matrix<intNDArray<OCTAVE_INT_T>>;
 
 class OCTINTERP_API OCTAVE_VALUE_INT_MATRIX_T
   : public octave_base_int_matrix<intNDArray<OCTAVE_INT_T>>
@@ -386,7 +387,7 @@ private:
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA_API (OCTINTERP_API)
 };
 
-extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_int_scalar<OCTAVE_INT_T>;
+extern template class OCTINTERP_API octave_base_int_scalar<OCTAVE_INT_T>;
 
 class
 OCTINTERP_API

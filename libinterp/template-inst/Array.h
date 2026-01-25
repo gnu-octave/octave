@@ -49,9 +49,9 @@ class OCTINTERP_API octave_value;
 // being implicitly instantiated in compilation units including this file.
 
 // instantiated in Array-tc.cc
-extern template class OCTINTERP_EXTERN_TEMPLATE_API Array<octave_value>;
-extern template class OCTINTERP_EXTERN_TEMPLATE_API Array<octave_value *>;
-extern template class OCTINTERP_EXTERN_TEMPLATE_API Array<octave::cdef_object>;
+extern template class OCTINTERP_API Array<octave_value>;
+extern template class OCTINTERP_API Array<octave_value *>;
+extern template class OCTINTERP_API Array<octave::cdef_object>;
 
 #endif  // OCTINTERP_EXTERN_TEMPLATE_ARRAY
 

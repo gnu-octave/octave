@@ -47,10 +47,11 @@
 
 class octave_value_list;
 
-extern template class OCTINTERP_EXTERN_TEMPLATE_API
+extern template class OCTINTERP_API
 octave_base_sparse<SparseComplexMatrix>;
 
-class OCTINTERP_API octave_sparse_complex_matrix : public octave_base_sparse<SparseComplexMatrix>
+class OCTINTERP_API octave_sparse_complex_matrix
+  : public octave_base_sparse<SparseComplexMatrix>
 {
 public:
 

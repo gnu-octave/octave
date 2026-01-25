@@ -150,11 +150,9 @@ octave_unused_parameter (const T&)
 #  define OCTAVE_EXCEPTION_API OCTAVE_EXPORT
 #  if defined (_WIN32) || defined (__CYGWIN__)
 #    define OCTAVE_TEMPLATE_API
-#    define OCTAVE_EXTERN_TEMPLATE_API OCTAVE_EXPORT
 #    define OCTAVE_OVERRIDABLE_FUNC_API OCTAVE_EXPORT
 #  else
 #    define OCTAVE_TEMPLATE_API OCTAVE_EXPORT
-#    define OCTAVE_EXTERN_TEMPLATE_API OCTAVE_EXPORT
 #    define OCTAVE_OVERRIDABLE_FUNC_API
 #  endif
 #else
@@ -165,7 +163,6 @@ octave_unused_parameter (const T&)
 #    define OCTAVE_EXCEPTION_API OCTAVE_EXPORT
 #  endif
 #  define OCTAVE_TEMPLATE_API
-#  define OCTAVE_EXTERN_TEMPLATE_API OCTAVE_IMPORT
 #  define OCTAVE_OVERRIDABLE_FUNC_API
 #endif
 
@@ -175,11 +172,9 @@ octave_unused_parameter (const T&)
 #  define OCTINTERP_EXCEPTION_API OCTAVE_EXPORT
 #  if defined (_WIN32) || defined (__CYGWIN__)
 #    define OCTINTERP_TEMPLATE_API
-#    define OCTINTERP_EXTERN_TEMPLATE_API OCTAVE_EXPORT
 #    define OCTINTERP_OVERRIDABLE_FUNC_API OCTAVE_EXPORT
 #  else
 #    define OCTINTERP_TEMPLATE_API OCTAVE_EXPORT
-#    define OCTINTERP_EXTERN_TEMPLATE_API OCTAVE_EXPORT
 #    define OCTINTERP_OVERRIDABLE_FUNC_API
 #  endif
 #else
@@ -190,7 +185,6 @@ octave_unused_parameter (const T&)
 #    define OCTINTERP_EXCEPTION_API OCTAVE_EXPORT
 #  endif
 #  define OCTINTERP_TEMPLATE_API
-#  define OCTINTERP_EXTERN_TEMPLATE_API OCTAVE_IMPORT
 #  define OCTINTERP_OVERRIDABLE_FUNC_API
 #endif
 
@@ -200,11 +194,9 @@ octave_unused_parameter (const T&)
 #  define OCTMEX_EXCEPTION_API OCTAVE_EXPORT
 #  if defined (_WIN32) || defined (__CYGWIN__)
 #    define OCTMEX_TEMPLATE_API
-#    define OCTMEX_EXTERN_TEMPLATE_API OCTAVE_EXPORT
 #    define OCTMEX_OVERRIDABLE_FUNC_API OCTAVE_EXPORT
 #  else
 #    define OCTMEX_TEMPLATE_API OCTAVE_EXPORT
-#    define OCTMEX_EXTERN_TEMPLATE_API OCTAVE_EXPORT
 #    define OCTMEX_OVERRIDABLE_FUNC_API
 #  endif
 #else
@@ -215,7 +207,6 @@ octave_unused_parameter (const T&)
 #    define OCTMEX_EXCEPTION_API OCTAVE_EXPORT
 #  endif
 #  define OCTMEX_TEMPLATE_API
-#  define OCTMEX_EXTERN_TEMPLATE_API OCTAVE_IMPORT
 #  define OCTMEX_OVERRIDABLE_FUNC_API
 #endif
 
@@ -225,11 +216,9 @@ octave_unused_parameter (const T&)
 #  define OCTGUI_EXCEPTION_API OCTAVE_EXPORT
 #  if defined (_WIN32) || defined (__CYGWIN__)
 #    define OCTGUI_TEMPLATE_API
-#    define OCTGUI_EXTERN_TEMPLATE_API OCTAVE_EXPORT
 #    define OCTGUI_OVERRIDABLE_FUNC_API OCTAVE_EXPORT
 #  else
 #    define OCTGUI_TEMPLATE_API OCTAVE_EXPORT
-#    define OCTGUI_EXTERN_TEMPLATE_API OCTAVE_EXPORT
 #    define OCTGUI_OVERRIDABLE_FUNC_API
 #  endif
 #else
@@ -240,7 +229,6 @@ octave_unused_parameter (const T&)
 #    define OCTGUI_EXCEPTION_API OCTAVE_EXPORT
 #  endif
 #  define OCTGUI_TEMPLATE_API
-#  define OCTGUI_EXTERN_TEMPLATE_API OCTAVE_IMPORT
 #  define OCTGUI_OVERRIDABLE_FUNC_API
 #endif
 

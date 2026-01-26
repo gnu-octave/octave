@@ -51,7 +51,7 @@ nodist_%canon_reldir%_liboctmex_la_SOURCES = \
 ## to the rules in the etc/HACKING.md file.
 
 %canon_reldir%_liboctmex_current = 1
-%canon_reldir%_liboctmex_revision = 0
+%canon_reldir%_liboctmex_revision = 1
 %canon_reldir%_liboctmex_age = 0
 
 ## Initialize variable used to verify that this version of Octave can run

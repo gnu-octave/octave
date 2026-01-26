@@ -44,14 +44,14 @@
 
 // base int matrix values.
 
-extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_matrix<int8NDArray>;
-extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_matrix<int16NDArray>;
-extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_matrix<int32NDArray>;
-extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_matrix<int64NDArray>;
-extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_matrix<uint8NDArray>;
-extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_matrix<uint16NDArray>;
-extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_matrix<uint32NDArray>;
-extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_matrix<uint64NDArray>;
+extern template class OCTINTERP_API octave_base_matrix<int8NDArray>;
+extern template class OCTINTERP_API octave_base_matrix<int16NDArray>;
+extern template class OCTINTERP_API octave_base_matrix<int32NDArray>;
+extern template class OCTINTERP_API octave_base_matrix<int64NDArray>;
+extern template class OCTINTERP_API octave_base_matrix<uint8NDArray>;
+extern template class OCTINTERP_API octave_base_matrix<uint16NDArray>;
+extern template class OCTINTERP_API octave_base_matrix<uint32NDArray>;
+extern template class OCTINTERP_API octave_base_matrix<uint64NDArray>;
 
 template <typename T>
 class OCTINTERP_TEMPLATE_API octave_base_int_matrix : public octave_base_matrix<T>
@@ -127,14 +127,14 @@ protected:
 
 // base int scalar values.
 
-extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_scalar<octave_int8>;
-extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_scalar<octave_int16>;
-extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_scalar<octave_int32>;
-extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_scalar<octave_int64>;
-extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_scalar<octave_uint8>;
-extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_scalar<octave_uint16>;
-extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_scalar<octave_uint32>;
-extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_scalar<octave_uint64>;
+extern template class OCTINTERP_API octave_base_scalar<octave_int8>;
+extern template class OCTINTERP_API octave_base_scalar<octave_int16>;
+extern template class OCTINTERP_API octave_base_scalar<octave_int32>;
+extern template class OCTINTERP_API octave_base_scalar<octave_int64>;
+extern template class OCTINTERP_API octave_base_scalar<octave_uint8>;
+extern template class OCTINTERP_API octave_base_scalar<octave_uint16>;
+extern template class OCTINTERP_API octave_base_scalar<octave_uint32>;
+extern template class OCTINTERP_API octave_base_scalar<octave_uint64>;
 
 template <typename T>
 class OCTINTERP_TEMPLATE_API octave_base_int_scalar : public octave_base_scalar<T>

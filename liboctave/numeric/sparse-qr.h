@@ -114,9 +114,9 @@ private:
 
 // extern instantiations with set visibility/export/import attribute
 
-extern template class OCTAVE_EXTERN_TEMPLATE_API sparse_qr<SparseMatrix>;
+extern template class OCTAVE_API sparse_qr<SparseMatrix>;
 
-extern template class OCTAVE_EXTERN_TEMPLATE_API sparse_qr<SparseComplexMatrix>;
+extern template class OCTAVE_API sparse_qr<SparseComplexMatrix>;
 
 // Provide qrsolve for backward compatibility.
 

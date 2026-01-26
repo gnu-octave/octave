@@ -35,7 +35,7 @@
 
 // Real diagonal matrix values.
 
-extern template class OCTINTERP_EXTERN_TEMPLATE_API
+extern template class OCTINTERP_API
 octave_base_diag<FloatDiagMatrix, FloatMatrix>;
 
 class OCTINTERP_API octave_float_diag_matrix

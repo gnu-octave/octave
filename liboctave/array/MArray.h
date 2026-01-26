@@ -282,28 +282,28 @@ private:
 // being implicitly instantiated in compilation units including this file.
 
 // instantiated in MArray-C.cc
-extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<Complex>;
+extern template class OCTAVE_API MArray<Complex>;
 // instantiated in MArray-d.cc
-extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<double>;
+extern template class OCTAVE_API MArray<double>;
 // instantiated in MArray-f.cc
-extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<float>;
+extern template class OCTAVE_API MArray<float>;
 // instantiated in MArray-fC.cc
-extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<FloatComplex>;
+extern template class OCTAVE_API MArray<FloatComplex>;
 // instantiated in MArray-i.cc
-extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<int>;
+extern template class OCTAVE_API MArray<int>;
 #if defined (OCTAVE_ENABLE_64)
-extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<int64_t>;
+extern template class OCTAVE_API MArray<int64_t>;
 #endif
-extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<octave_int8>;
-extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<octave_int16>;
-extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<octave_int32>;
-extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<octave_int64>;
-extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<octave_uint8>;
-extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<octave_uint16>;
-extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<octave_uint32>;
-extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<octave_uint64>;
+extern template class OCTAVE_API MArray<octave_int8>;
+extern template class OCTAVE_API MArray<octave_int16>;
+extern template class OCTAVE_API MArray<octave_int32>;
+extern template class OCTAVE_API MArray<octave_int64>;
+extern template class OCTAVE_API MArray<octave_uint8>;
+extern template class OCTAVE_API MArray<octave_uint16>;
+extern template class OCTAVE_API MArray<octave_uint32>;
+extern template class OCTAVE_API MArray<octave_uint64>;
 // instantiated in MArray-s.cc
-extern template class OCTAVE_EXTERN_TEMPLATE_API MArray<short>;
+extern template class OCTAVE_API MArray<short>;
 
 #endif  // OCTAVE_EXTERN_TEMPLATE_MARRAY
 

@@ -27,6 +27,7 @@
 #define octave_gui_preferences_sc_h 1
 
 #include "gui-preferences.h"
+#include "octave-qt-features.h"
 
 // Define shortcuts
 
@@ -41,7 +42,7 @@
 // definition and value method for the settings class.
 
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (HAVE_QKEYCOMBINATION_CLASS)
 #  include <QKeyCombination>
 #  define OCTAVE_QT_KEYCOMBINATION(mod, key) \
      QKeyCombination (mod, key).toCombined ()

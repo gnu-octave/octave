@@ -37,6 +37,7 @@
 #include <QString>
 #include <QTableView>
 
+#include "octave-qt-features.h"
 #include "qt-interpreter-events.h"
 #include "variable-editor-model.h"
 
@@ -960,7 +961,7 @@ bool
 variable_editor_model::setData (const QModelIndex& idx,
                                 const QVariant& v_user_input, int role)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (QVARIANT_CANCONVERT_REQUIRES_QMETATYPE_ARGUMENT)
   if (role != Qt::EditRole || ! v_user_input.canConvert (QMetaType (QMetaType::QString))
       || ! idx.isValid ())
 #else

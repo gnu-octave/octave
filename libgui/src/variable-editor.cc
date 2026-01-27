@@ -58,6 +58,7 @@
 #include "gui-preferences-sc.h"
 #include "gui-preferences-ve.h"
 #include "gui-settings.h"
+#include "octave-qt-features.h"
 #include "ovl.h"
 #include "qt-utils.h"
 #include "variable-editor-model.h"
@@ -86,8 +87,7 @@ make_plot_mapper (QMenu *menu)
 
 variable_dock_widget::variable_dock_widget (QWidget *p)
   : label_dock_widget (p)
-// See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
-#if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
+#if defined (HAVE_FLOATING_QDOCKWIDGET_UNSELECTABLE_BUG)
     , m_waiting_for_mouse_move (false)
     , m_waiting_for_mouse_button_release (false)
 #endif
@@ -183,8 +183,7 @@ variable_dock_widget::toplevel_change (bool toplevel)
       activateWindow ();
       setFocus ();
 
-// See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
-#if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
+#if defined (HAVE_FLOATING_QDOCKWIDGET_UNSELECTABLE_BUG)
       m_waiting_for_mouse_move = true;
 #endif
     }
@@ -196,8 +195,7 @@ variable_dock_widget::toplevel_change (bool toplevel)
 
       setFocus ();
 
-// See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
-#if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
+#if defined (HAVE_FLOATING_QDOCKWIDGET_UNSELECTABLE_BUG)
       m_waiting_for_mouse_move = false;
       m_waiting_for_mouse_button_release = false;
 #endif
@@ -298,8 +296,7 @@ variable_dock_widget::resizeEvent (QResizeEvent *)
     m_frame->resize (size ());
 }
 
-// See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
-#if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
+#if defined (HAVE_FLOATING_QDOCKWIDGET_UNSELECTABLE_BUG)
 
 bool
 variable_dock_widget::event (QEvent *event)
@@ -706,7 +703,7 @@ variable_editor_view::createContextMenu (const QPoint& qpos)
 
           QSignalMapper *plot_mapper = make_plot_mapper (menu);
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (HAVE_QSIGNALMAPPER_MAPPEDSTRING)
           connect (plot_mapper, SIGNAL (mappedString (const QString&)),
                    this, SLOT (selected_command_requested (const QString&)));
 #else
@@ -759,7 +756,7 @@ variable_editor_view::createColumnMenu (const QPoint& pt)
 
   QSignalMapper *plot_mapper = make_plot_mapper (menu);
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (HAVE_QSIGNALMAPPER_MAPPEDSTRING)
   connect (plot_mapper, SIGNAL (mappedString (const QString&)),
            this, SLOT (selected_command_requested (const QString&)));
 #else
@@ -811,7 +808,7 @@ variable_editor_view::createRowMenu (const QPoint& pt)
 
   QSignalMapper *plot_mapper = make_plot_mapper (menu);
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (HAVE_QSIGNALMAPPER_MAPPEDSTRING)
   connect (plot_mapper, SIGNAL (mappedString (const QString&)),
            this, SLOT (selected_command_requested (const QString&)));
 #else
@@ -1144,8 +1141,7 @@ variable_editor::variable_editor (QWidget *p)
   setAttribute (Qt::WA_AlwaysShowToolTips);
 
   m_main->setParent (this);
-// See Octave bug #53409 and https://bugreports.qt.io/browse/QTBUG-55357
-#if (QT_VERSION < 0x050601) || (QT_VERSION >= 0x050701)
+#if defined (HAVE_QDOCKWIDGET_REORDERING_BUG)
   m_main->setDockOptions (QMainWindow::AnimatedDocks |
                           QMainWindow::AllowNestedDocks |
                           QMainWindow::VerticalTabs);
@@ -1281,8 +1277,7 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
   connect (page, &variable_dock_widget::variable_focused_signal,
            this, &variable_editor::variable_focused);
 
-  // See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
-#if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
+#if defined (HAVE_FLOATING_QDOCKWIDGET_UNSELECTABLE_BUG)
   connect (page, SIGNAL (queue_unfloat_float ()),
            page, SLOT (unfloat_float ()), Qt::QueuedConnection);
   connect (page, SIGNAL (queue_float ()),
@@ -1319,7 +1314,7 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
   edit_view->verticalHeader ()->setDefaultSectionSize (m_default_height
                                                        + m_add_font_height);
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (HAVE_QSIGNALMAPPER_MAPPEDSTRING)
   connect (m_plot_mapper, SIGNAL (mappedString (const QString&)),
            edit_view, SLOT (selected_command_requested (const QString&)));
   connect (m_save_mapper, SIGNAL (mappedString (const QString&)),

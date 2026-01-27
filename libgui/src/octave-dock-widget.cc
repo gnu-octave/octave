@@ -45,6 +45,7 @@
 #include "gui-utils.h"
 #include "main-window.h"
 #include "octave-dock-widget.h"
+#include "octave-qt-features.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -541,7 +542,7 @@ octave_dock_widget::handle_settings ()
   QVariant dock_geom
     = settings.value (dw_dock_geometry.settings_key ().arg (objectName ()) + key_ext,
                       default_dock_size);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (QVARIANT_CANCONVERT_REQUIRES_QMETATYPE_ARGUMENT)
   if (dock_geom.canConvert (QMetaType (QMetaType::QRect)))
 #else
   if (dock_geom.canConvert (QMetaType::QRect))

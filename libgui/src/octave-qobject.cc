@@ -231,14 +231,16 @@ base_qobject::base_qobject (qt_application& app_context, bool gui_app)
 
   // Make sure Qt picks a full OpenGL context (including deprecated
   // functions, see bug #67974)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
+#if defined (HAVE_QSURFACEFORMAT_SETDEFAULTFORMAT)
   QSurfaceFormat fmt;
+
   fmt.setRenderableType (QSurfaceFormat::OpenGL);
   fmt.setProfile (QSurfaceFormat::CompatibilityProfile);
   fmt.setOption (QSurfaceFormat::DeprecatedFunctions, true);
+
   QSurfaceFormat::setDefaultFormat (fmt);
 #endif
-  
+
   // Qt docs recommend using Qt::QueuedConnection when connecting to
   // the QCoreApplication::exit slot.
   connect (m_interpreter_qobj, &interpreter_qobject::shutdown_finished,

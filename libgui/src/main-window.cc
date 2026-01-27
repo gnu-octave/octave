@@ -75,6 +75,7 @@
 #include "main-window.h"
 #include "news-reader.h"
 #include "octave-qobject.h"
+#include "octave-qt-features.h"
 #include "settings-dialog.h"
 #include "welcome-wizard.h"
 
@@ -2773,7 +2774,7 @@ main_window::construct_tool_bar ()
     = m_main_tool_bar->addAction (settings.icon ("folder"),
                                   tr ("Browse directories"));
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (HAVE_QCOMBOBOX_TEXTACTIVATED)
   connect (m_current_directory_combo_box, &QComboBox::textActivated,
            this, &main_window::set_current_working_directory);
 #else
@@ -2971,8 +2972,7 @@ main_window::do_reset_windows (bool show, bool save, bool force_all)
   if (dockWidgetArea (m_command_window) != Qt::NoDockWidgetArea)
     resize_dock (m_command_window, 7*win_x/8, -1);
 
-  // See Octave bug #53409 and https://bugreports.qt.io/browse/QTBUG-55357
-#if (QT_VERSION < 0x050601) || (QT_VERSION >= 0x050701)
+#if defined (HAVE_QDOCKWIDGET_REORDERING_BUG)
   setDockOptions (QMainWindow::AnimatedDocks
                   | QMainWindow::AllowNestedDocks
                   | QMainWindow::AllowTabbedDocks);

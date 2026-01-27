@@ -36,6 +36,8 @@
 #include "ContextMenu.h"
 #include "QtHandlesUtils.h"
 
+#include "octave-qt-features.h"
+
 #include "graphics.h"
 #include "interpreter.h"
 
@@ -274,7 +276,7 @@ BaseControl::eventFilter (QObject *watched, QEvent *xevent)
 
                 if (m->button () == Qt::RightButton)
                   ContextMenu::executeAt (m_interpreter, up,
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (HAVE_QSINGLEPOINTEVENT_CLASS)
                                           m->globalPosition ().toPoint ());
 #else
                                           m->globalPos ());

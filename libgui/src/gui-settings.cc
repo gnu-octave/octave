@@ -62,6 +62,7 @@
 #include "gui-preferences-sc.h"
 #include "gui-preferences-global.h"
 #include "gui-settings.h"
+#include "octave-qt-features.h"
 
 #include "localcharset-wrapper.h"
 #include "oct-env.h"
@@ -139,7 +140,7 @@ gui_settings::get_color_value (const QVariant& def, int mode) const
 
   // Determine whether the default value in pref is given as
   // QPalette::ColorRole or as QColor
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (QVARIANT_CANCONVERT_REQUIRES_QMETATYPE_ARGUMENT)
   if (def.canConvert (QMetaType (QMetaType::QColor)))
 #else
   if (def.canConvert (QMetaType::QColor))
@@ -319,7 +320,7 @@ gui_settings::get_default_font_family ()
 
   QStringList fonts;
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (HAVE_QFONTDADTABASE_STATIC_MEMBER_FUNCTIONS)
   for (QString font : QFontDatabase::families ())
     {
       if (QFontDatabase::isFixedPitch (font))
@@ -432,7 +433,7 @@ gui_settings::config_translators (QTranslator *qt_tr,
                                   QTranslator *gui_tr)
 {
   QString qt_trans_dir
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (HAVE_QLIBRARYINFO_PATH)
     = QLibraryInfo::path (QLibraryInfo::TranslationsPath);
 #else
     = QLibraryInfo::location (QLibraryInfo::TranslationsPath);

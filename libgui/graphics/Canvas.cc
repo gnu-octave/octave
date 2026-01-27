@@ -44,6 +44,7 @@
 
 #include "annotation-dialog.h"
 #include "gui-settings.h"
+#include "octave-qt-features.h"
 #include "qt-interpreter-events.h"
 
 #include "builtin-defun-decls.h"
@@ -373,7 +374,7 @@ Canvas::select_object (graphics_object obj, QMouseEvent *event,
 
           r.adjust (-5, -5, 5, 5);
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (HAVE_QSINGLEPOINTEVENT_CLASS)
           QPointF mouse_pos = event->position ();
 #else
           QPointF mouse_pos = event->localPos ();
@@ -432,7 +433,7 @@ Canvas::select_object (graphics_object obj, QMouseEvent *event,
               // the axes and still select it.
               r.adjust (-20, -20, 20, 20);
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (HAVE_QSINGLEPOINTEVENT_CLASS)
               QPointF mouse_pos = event->position ();
 #else
               QPointF mouse_pos = event->localPos ();
@@ -693,7 +694,7 @@ Canvas::canvasMousePressEvent (QMouseEvent *event)
             if (currentObj && event->button () == Qt::RightButton)
               ContextMenu::executeAt (m_interpreter,
                                       currentObj.get_properties (),
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (HAVE_QSINGLEPOINTEVENT_CLASS)
                                       event->globalPosition ().toPoint ());
 #else
                                       event->globalPos ());

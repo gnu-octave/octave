@@ -43,6 +43,7 @@
 #include "ToggleButtonControl.h"
 #include "RadioButtonControl.h"
 #include "QtHandlesUtils.h"
+#include "octave-qt-features.h"
 #include "qt-graphics-toolkit.h"
 
 #include "interpreter.h"
@@ -233,7 +234,7 @@ ButtonGroup::eventFilter (QObject *watched, QEvent *xevent)
                     octave::autolock guard (gh_mgr.graphics_lock ());
 
                     ContextMenu::executeAt (m_interpreter, properties (),
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (HAVE_QSINGLEPOINTEVENT_CLASS)
                                             m->globalPosition ().toPoint ());
 #else
                                             m->globalPos ());

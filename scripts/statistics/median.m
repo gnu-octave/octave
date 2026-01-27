@@ -557,7 +557,9 @@ endfunction
 function m = mid_two_vals (m1, m2, is_int)
   if (is_int)
     samesign = sign (m1) == sign (m2);
-    m = samesign .* (m1 + (m2 - m1) / 2) + ! samesign .* ((m1 + m2) / 2);
+    m = zeros (size (m1), "like", m1);
+    m(samesign) = m1(samesign) + (m2(samesign) - m1(samesign)) / 2;
+    m(! samesign) = (m1(! samesign) + m2(! samesign)) / 2;
   else
     m = (m1 + m2) / 2;
   endif

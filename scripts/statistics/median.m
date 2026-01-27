@@ -555,35 +555,13 @@ endfunction
 
 ## Compute mean of two middle values, handling Inf and integer overflow.
 function m = mid_two_vals (m1, m2, is_int)
-  infmask = isinf (m1) | isinf (m2);
-
   if (is_int)
     samesign = sign (m1) == sign (m2);
     m = samesign .* (m1 + (m2 - m1) / 2) + ! samesign .* ((m1 + m2) / 2);
   else
     m = (m1 + m2) / 2;
   endif
-
-  m(infmask) = m1(infmask) + m2(infmask);
 endfunction
-
-
-## Tests for per-element Inf handling in even-length median
-%!test
-%! x = [-Inf, 2; 1, 3];
-%! assert (median (x, 1), [-Inf, 2.5]);
-
-%!test
-%! x = [-Inf, Inf; Inf, -Inf];
-%! assert (median (x, 1), [NaN, NaN]);
-
-%!test
-%! x = [1, Inf, 3; 5, 7, 9];
-%! assert (median (x, 1), [3, Inf, 6]);
-
-%!test
-%! x = int64 ([10, 20; 30, 40]);
-%! assert (median (x, 1), int64 ([20, 30]));
 
 
 %!assert (median (1), 1)

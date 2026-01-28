@@ -206,7 +206,7 @@ function varargout = isosurface (varargin)
       if (! ishold (hax))
         set (hax, "View", [-37.5, 30]);
       endif
-      isonormals (hax, x, y, z, v, pa);
+      isonormals (x, y, z, v, pa);
       lights = findobj (hax, "Type", "light");
       if (isempty (lights))
         camlight ();

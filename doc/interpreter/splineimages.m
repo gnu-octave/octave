@@ -224,9 +224,3 @@ function image_as_txt (d, nm)
   fputs (fid, "+---------------------------------+\n");
   fclose (fid);
 endfunction
-
-
-%!demo
-%! for s = 1:6
-%!   splineimages (sprintf ("splinefit##d", s), "pdf");
-%! endfor

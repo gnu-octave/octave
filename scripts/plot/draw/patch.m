@@ -297,7 +297,7 @@ endfunction
 %!   assert (get (h, "facelighting"), "flat");
 %!   assert (get (h, "facenormals"), [0 0 1], eps);
 %!   assert (get (h, "vertexnormals"), []);
-%!   set (h, "facelighting", "gouraud")
+%!   set (h, "facelighting", "gouraud");
 %!   assert (get (h, "vertexnormals"), [0 0 1; 0 0 1; 0 0 1], eps);
 %! unwind_protect_cleanup
 %!   close (hf);

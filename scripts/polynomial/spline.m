@@ -229,7 +229,8 @@ endfunction
 %! xspline = 0:0.1:10;  yspline = spline (x,y,xspline);
 %! title ("spline fit to points from sin (x)");
 %! plot (xspline,sin (xspline),"r", xspline,yspline,"g-", x,y,"b+");
-%! legend ("original", "interpolation", "interpolation points");
+%! legend ("original", "interpolation", "interpolation points", ...
+%!         "location", "north");
 %! %--------------------------------------------------------
 %! % confirm that interpolated function matches the original
 

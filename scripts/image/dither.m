@@ -323,7 +323,7 @@ endfunction
 %!
 %! I = ones (256)/2;
 %! X = dither (I);
-%! figure;
+%! clf;
 %! subplot (121); imshow (I); title ('original');
 %! subplot (122); imshow (double(X)); title ('dithered');
 
@@ -332,7 +332,7 @@ endfunction
 %!
 %! I = [ones(256,64)/4, ones(256,64)/2, ones(256,64)*3/4, ones(256,64)*7/8];
 %! X = dither (I);
-%! figure;
+%! clf;
 %! subplot (121); imshow (I); title ('original');
 %! subplot (122); imshow (double (X)); title ('dithered');
 
@@ -341,7 +341,7 @@ endfunction
 %!
 %! I = repmat ([0:255]./255,256,1);
 %! X = dither (I);
-%! figure;
+%! clf;
 %! subplot (121); imshow (I); title ('original');
 %! subplot (122); imshow (double (X)); title ('dithered');
 
@@ -378,7 +378,7 @@ endfunction
 %! X = dither (image, map);
 %!
 %! ## Display the results
-%! figure;
+%! clf;
 %! subplot (121); imshow (image); title ('original');
 %! subplot (122); imshow (reshape (map(X(:)+1,:), [size(X) 3]));
 %! title ('dithered');
@@ -392,7 +392,7 @@ endfunction
 %!        210 100 98; 132 50 81; 94 24 65; 149 97 139] / 255;
 %! X = dither (rgb_image, map);
 %! I = reshape (map(X(:)+1,:), [size(X) 3]);
-%! figure;
+%! clf;
 %! subplot (121); imshow (rgb_image); title ('original');
 %! subplot (122); imshow (I); title ('dithered');
 

@@ -330,7 +330,7 @@ endfunction
 %!
 %! ## Estimate order visually
 %! loglog (h, tol, "-ob",
-%!         h, err, "-b",
+%!         h, err, "-r",
 %!         h, (h/h(end)) .^ 2 .* tol(end), "k--",
 %!         h, (h/h(end)) .^ 3 .* tol(end), "k-");
 %! axis tight

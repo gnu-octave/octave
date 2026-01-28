@@ -1785,7 +1785,7 @@ endfunction
 %!demo
 %! clf;
 %! x = 0:1;
-%! hline = plot (x,x,";I am Blue;", x,2*x, x,3*x,";I am yellow;");
+%! hline = plot (x,x,";I am Blue;", x,2*x, x,3*x,";I am Yellow;");
 %! h = legend ();
 %! set (h, "location", "northeastoutside");
 %! ## Placing legend inside returns axes to original size

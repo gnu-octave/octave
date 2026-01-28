@@ -1269,7 +1269,7 @@ endfunction
 %! xlabel ("x")
 %! ylabel ("y")
 %! title ("movfun() with Format 1 output data");
-%! legend (h, {"noiseless", "noisy", "mean", "median"})
+%! legend (h(1:4), {"noiseless", "noisy", "mean", "median"})
 %! #-----------------------------------------------------------------
 %! # Moving window statistics.  The plot highlights mean and median.
 %! # Black lines how minimum, first quartile, third quartile, and maximum.

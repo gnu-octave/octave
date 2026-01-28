@@ -1381,6 +1381,7 @@ function cb_line_listener (h, ~, hlegend, linelength, update_name)
 endfunction
 
 
+## FIXME: demo blocks can not be run for files in private/ directories.
 %!demo
 %! clf;
 %! plot (rand (2));

@@ -849,6 +849,8 @@ function addbasemenu (hm, hpar, pname, vals, mainlabel = "", varargin)
     else
       val = vals(i);
       label = disp (val);
+      ## Delete newline character added by disp().  See bug #67976.
+      label(end) = [];
     endif
 
     fcn = @(~, ~) set (hpar, pname, val);
@@ -866,6 +868,8 @@ function handle_check (h, ~, hmenus, prop, is_numeric)
   current = get (h, prop);
   if (is_numeric)
     current = disp (current);
+    ## Delete newline character added by disp().  See bug #67976.
+    current(end) = [];
   endif
 
   idx = strcmp (vals, current);

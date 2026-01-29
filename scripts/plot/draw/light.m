@@ -169,6 +169,7 @@ endfunction
 %!       "FaceLighting", "gouraud");
 %! axis tight
 %! axis equal
+%! grid off
 %! view (2);
 %! light ("Position", [-1 1 1]);
 %! title ({"FaceLighting on surfaces", "none - flat - gouraud"});

@@ -74,10 +74,10 @@ endfunction
 
 %!demo
 %! clf ();
-%! hax = axes ("position", [0.25 0.25 0.5 0.5])
+%! hax = axes ("position", [0.25 0.25 0.5 0.5]);
 %! pos = getpixelposition (hax);
 %! han = annotation ("rectangle");
-%! set (han, "units", "pixels", "position", pos, "color", "r")
+%! set (han, "units", "pixels", "position", pos, "color", "r");
 
 %!demo
 %! hf = clf ();
@@ -92,7 +92,7 @@ endfunction
 %!                       "position", [0.01 0 0.98 0.5]);
 %! pos = getpixelposition (hbg);
 %! han = annotation ("rectangle");
-%! set (han, "units", "pixels", "position", pos, "color", "r")
+%! set (han, "units", "pixels", "position", pos, "color", "r");
 
 
 %!test

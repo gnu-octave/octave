@@ -1975,7 +1975,9 @@ extern "C"
                              F77_CMPLX *, const F77_INT&, F77_CMPLX *,
                              const F77_INT&, F77_CMPLX *, F77_INT&,
                              F77_REAL&, F77_REAL&, F77_CMPLX *,
-                             const F77_INT&, F77_INT&);
+                             const F77_INT&, F77_INT&
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (dtrsen, DTRSEN) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL,
@@ -1984,7 +1986,9 @@ extern "C"
                              const F77_INT&, F77_DBLE *, F77_DBLE *,
                              F77_INT&, F77_DBLE&, F77_DBLE&, F77_DBLE *,
                              const F77_INT&, F77_INT *,
-                             const F77_INT&, F77_INT&);
+                             const F77_INT&, F77_INT&
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (strsen, STRSEN) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL,
@@ -1993,7 +1997,9 @@ extern "C"
                              const F77_INT&, F77_REAL *, F77_REAL *,
                              F77_INT&, F77_REAL&, F77_REAL&, F77_REAL *,
                              const F77_INT&, F77_INT *,
-                             const F77_INT&, F77_INT&);
+                             const F77_INT&, F77_INT&
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (ztrsen, ZTRSEN) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL,
@@ -2002,7 +2008,9 @@ extern "C"
                              F77_DBLE_CMPLX *, const F77_INT&,
                              F77_DBLE_CMPLX *, F77_INT&, F77_DBLE&,
                              F77_DBLE&, F77_DBLE_CMPLX *,
-                             const F77_INT&, F77_INT&);
+                             const F77_INT&, F77_INT&
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL);
 
   // TRSYL
 

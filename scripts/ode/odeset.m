@@ -237,20 +237,20 @@ endfunction
 %!demo
 %! ## A new ODE options structure with default values is created.
 %!
-%! odeoptA = odeset ();
+%! odeoptA = odeset ()
 
 %!demo
 %! ## A new ODE options structure with manually set options
 %! ## for "AbsTol" and "RelTol" is created.
 %!
-%! odeoptB = odeset ("AbsTol", 1e-2, "RelTol", 1e-1);
+%! odeoptB = odeset ("AbsTol", 1e-2, "RelTol", 1e-1)
 
 %!demo
 %! ## A new ODE options structure is created from odeoptB with
 %! ## a modified value for option "NormControl".
 %!
-%! odeoptB = odeset ("AbsTol", 1e-2, "RelTol", 1e-1);
-%! odeoptC = odeset (odeoptB, "NormControl", "on");
+%! odeoptB = odeset ("AbsTol", 1e-2, "RelTol", 1e-1)
+%! odeoptC = odeset (odeoptB, "NormControl", "on")
 
 %!test
 %! odeoptA = odeset ();

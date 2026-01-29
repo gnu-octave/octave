@@ -156,7 +156,7 @@ endfunction
 %!  colormap (jet (64));
 %!  hold on;
 %!  sombrero ();
-%!  colorbar ("peer", gca, "NorthOutside");
+%!  colorbar ("NorthOutside", "peer", gca);
 %! subplot (2,2,4);
 %!  imagesc (rand (30, 30));
 %!  text (15, 15, "Rotated text", ...

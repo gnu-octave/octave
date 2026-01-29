@@ -134,8 +134,8 @@ is in the upper left corner, by doing:
                      sel.data (), n, F77_DBLE_CMPLX_ARG (S.rwdata ()), n,
                      F77_DBLE_CMPLX_ARG (U.rwdata ()), n,
                      F77_DBLE_CMPLX_ARG (w.rwdata ()), m, cond1, cond2,
-                     F77_DBLE_CMPLX_ARG (work.rwdata ()), n,
-                     info));
+                     F77_DBLE_CMPLX_ARG (work.rwdata ()), n, info
+                     F77_CHAR_ARG_LEN (1) F77_CHAR_ARG_LEN (1)));
 
           PREPARE_OUTPUT()
         }
@@ -149,7 +149,8 @@ is in the upper left corner, by doing:
                     (F77_CONST_CHAR_ARG ("N"), F77_CONST_CHAR_ARG ("V"),
                      sel.data (), n, S.rwdata (), n, U.rwdata (), n,
                      w.rwdata (), wi.rwdata (), m, cond1, cond2,
-                     work.rwdata (), n, iwork.rwdata (), n, info));
+                     work.rwdata (), n, iwork.rwdata (), n, info
+                     F77_CHAR_ARG_LEN (1) F77_CHAR_ARG_LEN (1)));
 
           PREPARE_OUTPUT ()
         }
@@ -165,8 +166,8 @@ is in the upper left corner, by doing:
                      sel.data (), n, F77_CMPLX_ARG (S.rwdata ()), n,
                      F77_CMPLX_ARG (U.rwdata ()), n,
                      F77_CMPLX_ARG (w.rwdata ()), m, cond1, cond2,
-                     F77_CMPLX_ARG (work.rwdata ()), n,
-                     info));
+                     F77_CMPLX_ARG (work.rwdata ()), n, info
+                     F77_CHAR_ARG_LEN (1) F77_CHAR_ARG_LEN (1)));
 
           PREPARE_OUTPUT ()
         }
@@ -180,7 +181,8 @@ is in the upper left corner, by doing:
                     (F77_CONST_CHAR_ARG ("N"), F77_CONST_CHAR_ARG ("V"),
                      sel.data (), n, S.rwdata (), n, U.rwdata (), n,
                      w.rwdata (), wi.rwdata (), m, cond1, cond2,
-                     work.rwdata (), n, iwork.rwdata (), n, info));
+                     work.rwdata (), n, iwork.rwdata (), n, info
+                     F77_CHAR_ARG_LEN (1) F77_CHAR_ARG_LEN (1)));
 
           PREPARE_OUTPUT ()
         }

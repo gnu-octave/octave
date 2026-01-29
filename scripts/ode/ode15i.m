@@ -293,7 +293,7 @@ endfunction
 %! opt = odeset ("RelTol", 1e-4, "AbsTol", [1e-8, 1e-14, 1e-6]);
 %! y0 = [1; 0; 0];
 %! yp0 = [-1e-4; 1e-4; 0];
-%! tspan = [0 4*logspace(-6, 6)];
+%! tspan = [eps 4*logspace(-6, 6)];
 %!
 %! [t, y] = ode15i (fcn, tspan, y0, yp0, opt);
 %!

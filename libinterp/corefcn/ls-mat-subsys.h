@@ -45,7 +45,7 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTINTERP_API octave_value
-load_mcos_object (const octave_value& objmetadata);
+load_mcos_object (const octave_value& objmetadata, bool as_struct = false);
 
 class subsystem_handler
 {
@@ -63,7 +63,7 @@ class subsystem_handler
 
     octave_map
     get_object_properties (const uint32_t obj_type_id, const uint32_t class_id,
-                           bool saveobj_type);
+                           const bool saveobj_type, bool as_struct = false);
 
     bool check_dyn_props (const uint32_t obj_dep_id);
 

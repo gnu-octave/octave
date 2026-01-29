@@ -115,7 +115,10 @@ include bug-60882/module.mk
 include bug-61105/module.mk
 include bug-61191/module.mk
 include bug-63841/module.mk
+include bug-64620/module.mk
 include bug-65037/module.mk
+include bug-67096/module.mk
+include bug-67403/module.mk
 include class-concat/module.mk
 include classdef/module.mk
 include classdef-debug/module.mk
@@ -133,9 +136,9 @@ include load-path/module.mk
 include local-functions/module.mk
 include mex/module.mk
 include nest/module.mk
+include pkg/module.mk
 include private-functions/module.mk
 include publish/module.mk
-include pkg/module.mk
 
 # run-octave (optional-prepare-commands)
 

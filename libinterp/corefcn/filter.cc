@@ -569,35 +569,6 @@ H(z) = ---------------------
   return retval;
 }
 
-template MArray<double>
-filter (MArray<double>&, MArray<double>&, MArray<double>&,
-        MArray<double>&, int dim);
-
-template MArray<double>
-filter (MArray<double>&, MArray<double>&, MArray<double>&, int dim);
-
-template MArray<Complex>
-filter (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&,
-        MArray<Complex>&, int dim);
-
-template MArray<Complex>
-filter (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&, int dim);
-
-template MArray<float>
-filter (MArray<float>&, MArray<float>&, MArray<float>&,
-        MArray<float>&, int dim);
-
-template MArray<float>
-filter (MArray<float>&, MArray<float>&, MArray<float>&, int dim);
-
-template MArray<FloatComplex>
-filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
-        MArray<FloatComplex>&, int dim);
-
-template MArray<FloatComplex>
-filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
-        int dim);
-
 /*
 %!shared a, b, x, r
 %!test
@@ -625,11 +596,11 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
 %! r = sqrt (1/2) * (1+i);
 %! a = a*r;
 %! b = b*r;
-%! assert (filter (b, [1], x   ), r*[1 1 0 0 0 0 0 0 0 0]   );
-%! assert (filter (b, [1], r*x ), r*r*[1 1 0 0 0 0 0 0 0 0] );
-%! assert (filter (b, [1], x.' ), r*[1 1 0 0 0 0 0 0 0 0].' );
-%! assert (filter (b, a,   x   ),   [1 0 0 0 0 0 0 0 0 0], eps);
-%! assert (filter (b, a,   r*x ), r*[1 0 0 0 0 0 0 0 0 0], eps);
+%! assert (filter (b, [1], x   ), r*[1 1 0 0 0 0 0 0 0 0]  , eps);
+%! assert (filter (b, [1], r*x ), r*r*[1 1 0 0 0 0 0 0 0 0], eps);
+%! assert (filter (b, [1], x.' ), r*[1 1 0 0 0 0 0 0 0 0].', eps);
+%! assert (filter (b, a,   x   ),   [1 0 0 0 0 0 0 0 0 0],   eps);
+%! assert (filter (b, a,   r*x ), r*[1 0 0 0 0 0 0 0 0 0],   eps);
 
 %!shared a, b, x, y, so
 %!test
@@ -676,5 +647,34 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
 %! y = filter ([1 1 1], 1, x, [], 3);
 %! assert (y, y0);
 */
+
+template MArray<double>
+filter (MArray<double>&, MArray<double>&, MArray<double>&,
+        MArray<double>&, int dim);
+
+template MArray<double>
+filter (MArray<double>&, MArray<double>&, MArray<double>&, int dim);
+
+template MArray<Complex>
+filter (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&,
+        MArray<Complex>&, int dim);
+
+template MArray<Complex>
+filter (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&, int dim);
+
+template MArray<float>
+filter (MArray<float>&, MArray<float>&, MArray<float>&,
+        MArray<float>&, int dim);
+
+template MArray<float>
+filter (MArray<float>&, MArray<float>&, MArray<float>&, int dim);
+
+template MArray<FloatComplex>
+filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
+        MArray<FloatComplex>&, int dim);
+
+template MArray<FloatComplex>
+filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
+        int dim);
 
 OCTAVE_END_NAMESPACE(octave)

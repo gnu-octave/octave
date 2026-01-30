@@ -1424,7 +1424,7 @@ tilde_expand ("~/bin")
 }
 
 /*
-%!test
+%!testif ; isfolder ("~")
 %! home = get_home_directory ();
 %! assert (tilde_expand ("~/foobar"), [home "/foobar"]);
 %! assert (tilde_expand ("/foo/bar"), "/foo/bar");
@@ -1448,9 +1448,17 @@ equivalent to
 
 /*
 %!test
-%! if (! ispc ())
+%! HOME = getenv ("HOME");
+%! unwind_protect
+%!   setenv ("HOME", P_tmpdir ());
 %!   assert (get_home_directory (), getenv ("HOME"));
-%! endif
+%! unwind_protect_cleanup
+%!   if (isempty (HOME))
+%!     unsetenv ("HOME");
+%!   else
+%!     setenv ("HOME", HOME);
+%!   endif
+%! end_unwind_protect
 */
 
 DEFUN (__blas_version__, , ,

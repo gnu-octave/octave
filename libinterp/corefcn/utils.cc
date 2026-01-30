@@ -391,7 +391,7 @@ return true.
 }
 
 /*
-%!testif ; ! ispc ()
+%!testif ; ! ispc () && isfolder ("~")
 %! assert (is_same_file ("~", tilde_expand ("~")));
 %!testif ; ispc ()
 %! assert (is_same_file (lower (tempdir ()), upper (tempdir ())), true);

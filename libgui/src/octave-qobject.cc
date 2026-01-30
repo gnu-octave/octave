@@ -472,7 +472,8 @@ base_qobject::start_main_thread ()
   // With the old terminal widget, we defer initializing and executing
   // the interpreter until after the main window and QApplication are
   // running to prevent race conditions.
-#if  QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+
+#if defined (QTIMER_SINGLESHOT_ACCEPTS_POINTER_TO_MEMBER_FUNCTION)
   QTimer::singleShot (0, m_interpreter_qobj, &interpreter_qobject::execute);
 #else
   QTimer::singleShot (0, m_interpreter_qobj, SLOT (execute ()));

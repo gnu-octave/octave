@@ -143,7 +143,7 @@
 ## Octave
 ##
 ## @item @samp{pdf} --- @samp{jpg} (default) or @samp{bmp}, note @sc{matlab}
-## uses  @samp{bmp} as default
+## uses @samp{bmp} as default
 ##
 ## @item @samp{doc} or @samp{ppt} --- @samp{png} (default), @samp{jpg},
 ## @samp{bmp}, or @samp{tiff}
@@ -771,9 +771,11 @@ function ofile = create_output (doc, options)
   if (strcmp (options.format, "pdf"))
     status = system ("pdflatex --version");
     if (status == 0)
+      ## FIXME: Why is the same command run twice?
       for i = 1:2
         ## FIXME: This looks very likely to break when switching OS
-        system (["cd ", options.outputDir," && pdflatex ", ofile_name]);
+        ## Wrap directory in sinqle quotes in case of spaces (bug #67991).
+        system (["cd '" options.outputDir "' && pdflatex " ofile_name]);
       endfor
     endif
   endif

@@ -118,7 +118,7 @@ endfunction
 %! end_unwind_protect
 
 ## Prepend test with two strings
-%!testif HAVE_JAVA; usejava ("jvm")
+%!testif HAVE_JAVA; usejava ("jvm") && isfolder ("~")
 %! pth1 = tempdir ();
 %! pth2 = tilde_expand ("~");
 %! unwind_protect
@@ -133,7 +133,7 @@ endfunction
 %! end_unwind_protect
 
 ## Prepend test with cell array of two strings
-%!testif HAVE_JAVA; usejava ("jvm")
+%!testif HAVE_JAVA; usejava ("jvm") && isfolder ("~")
 %! pth1 = tempdir ();
 %! pth2 = tilde_expand ("~");
 %! unwind_protect
@@ -148,7 +148,7 @@ endfunction
 %! end_unwind_protect
 
 ## Append test with two strings
-%!testif HAVE_JAVA; usejava ("jvm")
+%!testif HAVE_JAVA; usejava ("jvm") && isfolder ("~")
 %! pth1 = tempdir ();
 %! pth2 = tilde_expand ("~");
 %! unwind_protect
@@ -163,7 +163,7 @@ endfunction
 %! end_unwind_protect
 
 ## Append test with cell array of two strings
-%!testif HAVE_JAVA; usejava ("jvm")
+%!testif HAVE_JAVA; usejava ("jvm") && isfolder ("~")
 %! pth1 = tempdir ();
 %! pth2 = tilde_expand ("~");
 %! unwind_protect

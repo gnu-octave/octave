@@ -114,12 +114,12 @@ function tf = isprime (x)
   pr = [2 3 5 7 11 13 17 19 23 29 31 37];
   tf = lookup (pr, x, "b");  # quick search for table matches.
 
-  THRESHOLD = 17e9;
+  THRESHOLD = 18e9;
   ## FIXME: THRESHOLD is the input value at which Miller-Rabin
   ## becomes more efficient than direct division. For smaller numbers,
   ## use direct division. For larger numbers, use Miller-Rabin.
   ##
-  ## Last updated in Oct 2024, using this test code:
+  ## Last updated in Jan 2026, using this test code:
   ##   n = THRESHOLD - (1:1e7); tic; isprime(n); toc
   ##   n = THRESHOLD + (1:1e7); tic; isprime(n); toc
   ##
@@ -144,7 +144,7 @@ function tf = isprime (x)
     tf |= lookup (pr2, x, "b");
     for p = pr2
       m = m(rem (m, p) != 0);
-      if (numel (m) < numel (pr) / 10)
+      if (numel (m) < numel (pr2) / 10)
         break;
       endif
     endfor

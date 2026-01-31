@@ -54,6 +54,7 @@
 #include "oct-stream.h"
 #include "oct-string.h"
 #include "oct-strstrm.h"
+#include "octave-qt-features.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -1568,7 +1569,7 @@ Table::eventFilter (QObject *watched, QEvent *xevent)
 
                 if (m->button () == Qt::RightButton)
                   ContextMenu::executeAt (m_interpreter, properties (),
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (HAVE_QSINGLEPOINTEVENT_CLASS)
                                           m->globalPosition ().toPoint ());
 #else
                                           m->globalPos ());
@@ -1723,7 +1724,7 @@ Table::eventFilter (QObject *watched, QEvent *xevent)
 
                 if (m->button () == Qt::RightButton)
                   ContextMenu::executeAt (m_interpreter, tp,
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (HAVE_QSINGLEPOINTEVENT_CLASS)
                                           m->globalPosition ().toPoint ());
 #else
                                           m->globalPos ());

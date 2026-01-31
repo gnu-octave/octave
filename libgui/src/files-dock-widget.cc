@@ -55,6 +55,7 @@
 #include "gui-preferences-global.h"
 #include "gui-settings.h"
 #include "gui-utils.h"
+#include "octave-qt-features.h"
 #include "qt-interpreter-events.h"
 
 #include "oct-env.h"
@@ -526,7 +527,7 @@ file_system_browser::file_system_browser (QWidget *p)
   connect (m_current_directory->lineEdit (), &QLineEdit::returnPressed,
            this, &file_system_browser::accept_directory_line_edit);
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (HAVE_QCOMBOBOX_TEXTACTIVATED)
   connect (m_current_directory, &QComboBox::textActivated,
            this, &file_system_browser::set_current_directory);
 #else
@@ -744,7 +745,7 @@ file_system_browser::headercontextmenu_requested (const QPoint& mpos)
         }
     }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (HAVE_QSIGNALMAPPER_MAPPEDINT)
   connect (m_sig_mapper, &QSignalMapper::mappedInt,
            this, &file_system_browser::toggle_header);
 #else

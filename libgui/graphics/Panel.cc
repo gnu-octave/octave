@@ -41,6 +41,7 @@
 
 #include "graphics.h"
 #include "interpreter.h"
+#include "octave-qt-features.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -220,7 +221,7 @@ Panel::eventFilter (QObject *watched, QEvent *xevent)
                     if (go.valid_object ())
                       ContextMenu::executeAt (m_interpreter,
                                               go.get_properties (),
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (HAVE_QSINGLEPOINTEVENT_CLASS)
                                               m->globalPosition ().toPoint ());
 #else
                                               m->globalPos ());

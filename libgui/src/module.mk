@@ -384,6 +384,7 @@ noinst_HEADERS += \
   %reldir%/main-window.h \
   %reldir%/news-reader.h \
   %reldir%/octave-qobject.h \
+  %reldir%/octave-qt-features.h \
   %reldir%/qt-application.h \
   %reldir%/qt-interpreter-events.h \
   %reldir%/qt-utils.h \

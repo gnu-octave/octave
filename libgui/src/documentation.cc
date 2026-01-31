@@ -96,7 +96,7 @@ documentation::documentation (QWidget *p)
 
   // Mark help as readonly to avoid error if collection file is stored in a
   // readonly location
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (HAVE_QHELPENGINE_SETREADONLY)
   m_help_engine->setReadOnly (true);
 #else
   m_help_engine->setProperty ("_q_readonly",
@@ -109,7 +109,7 @@ documentation::documentation (QWidget *p)
                                             "oct-qhelp-"));
 
   bool copy_ok = false;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (HAVE_QHELPENGINE_COPYCOLLECTIONFILE_TRUNCATION_BUG)
   // FIXME: Qt6: copyCollectionFile truncates the collection file.
   // This workaround normally copies the file. Since the relativ
   // link to the qch file is not updated then, the namespace and
@@ -161,9 +161,9 @@ documentation::documentation (QWidget *p)
     }
   else
     {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-      // Qt6: un- and re-register qch-file for fixing not having
-      // used copyCollectionFile with automatic path update
+#if defined (HAVE_QCOPYCOLLECTIONFILE_TRUNCATION_BUG)
+      // Un- and re-register qch-file because copyCollectionFile with
+      // automatic path update was not used.
       if (! namespaces.isEmpty ())
         m_help_engine->unregisterDocumentation (namespaces.at (0));
       m_help_engine->registerDocumentation (qch_file);

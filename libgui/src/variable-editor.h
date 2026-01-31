@@ -35,6 +35,7 @@
 
 #include "dw-main-window.h"
 #include "octave-dock-widget.h"
+#include "octave-qt-features.h"
 #include "qt-interpreter-events.h"
 #include "tab-bar.h"
 
@@ -97,8 +98,6 @@ protected:
 
   QRect m_prev_geom;
 
-// See Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
-#define QTBUG_44813_FIX_VERSION 0x999999
 Q_SIGNALS:
 
   void queue_unfloat_float ();
@@ -111,7 +110,7 @@ protected Q_SLOTS:
 
   void refloat ();
 
-#if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
+#if defined (HAVE_FLOATING_QDOCKWIDGET_UNSELECTABLE_BUG)
 protected:
 
   bool event (QEvent *event);

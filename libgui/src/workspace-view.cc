@@ -45,6 +45,7 @@
 #include "gui-preferences-ws.h"
 #include "gui-settings.h"
 #include "gui-utils.h"
+#include "octave-qt-features.h"
 #include "workspace-view.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -318,7 +319,7 @@ workspace_view::header_contextmenu_requested (const QPoint& mpos)
       action->setChecked (! m_view->isColumnHidden (i+1));
     }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if defined (HAVE_QSIGNALMAPPER_MAPPEDINT)
   connect (&sig_mapper, &QSignalMapper::mappedInt,
            this, &workspace_view::toggle_header);
 #else

@@ -2427,7 +2427,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     AC_LANG_PUSH(C++)
     ac_octave_save_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
-    AC_CHECK_HEADERS([QStandardPaths])
+    AC_CHECK_HEADERS([QStandardPaths QtVersionChecks])
     CPPFLAGS="$ac_octave_save_CPPFLAGS"
     AC_LANG_POP(C++)
 

@@ -119,6 +119,7 @@ include bug-64620/module.mk
 include bug-65037/module.mk
 include bug-67096/module.mk
 include bug-67403/module.mk
+include bug-67964/module.mk
 include class-concat/module.mk
 include classdef/module.mk
 include classdef-debug/module.mk

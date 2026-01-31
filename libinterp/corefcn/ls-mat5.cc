@@ -974,22 +974,17 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
           }
         else if (ftype == "anonymous")
           {
-            octave_scalar_map m2
-              = m1.contents ("workspace").scalar_map_value ();
-
-            // FIXME: Check
-            tc2 = octave::load_mcos_object (m2);
+            // get workspace context of anonymous function handle
+            tc2 = m1.contents ("workspace");
 
             octave::stack_frame::local_vars_map local_vars;
 
             if (! tc2.isempty ())
               {
-                m2 = tc2.scalar_map_value ();
+                octave_scalar_map m2 = tc2.scalar_map_value ();
 
                 if (m2.nfields () > 0)
                   {
-                    octave_value tmp;
-
                     for (auto p0 = m2.begin (); p0 != m2.end (); p0++)
                       {
                         std::string key = m2.key (p0);
@@ -1031,7 +1026,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
             // XXX FCN_HANDLE: ANONYMOUS
             tc = octave_value (new octave_fcn_handle (fh->fcn_val (),
-                               local_vars));
+                                                      local_vars));
           }
         else
           error ("load: invalid function handle type");
@@ -1090,8 +1085,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         }
 
         octave_value objmetadata;
-        read_mat5_binary_element (is, filename, swap, global,
-                                            objmetadata);
+        read_mat5_binary_element (is, filename, swap, global, objmetadata);
         if (! is)
           goto data_read_error;
 
@@ -1109,9 +1103,10 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
           }
         else if (classname == "FileWrapper__")
           {
-            // FileWrapper__ object contains serialized object data as a cell array
-            // In MATLAB, this is an MCOS class with a constructor and no properties
-            // Return the serialized data for this case
+            // "FileWrapper__" objects contain serialized object data as a cell
+            // array. In MATLAB, this is an MCOS class with a constructor and
+            // no properties.
+            // Return the serialized data for these cases.
             tc = objmetadata;
           }
         else if (objmetadata.isstruct ())
@@ -1123,7 +1118,13 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             tc = objmetadata;
           }
         else
-          tc = octave::load_mcos_object (objmetadata);
+          {
+            // "function_handle_workspace" objects contain data of the
+            // workspace context of function handles.
+            // FIXME: Add compatible implementation of this class.
+            tc = octave::load_mcos_object (objmetadata,
+                                           classname == "function_handle_workspace");
+          }
       }
 
       break;

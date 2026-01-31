@@ -149,7 +149,7 @@ search_mcos_classdef_objects (const octave_value& val, bool save_mode)
 }
 
 octave_value
-load_mcos_object (const octave_value& objmetadata)
+load_mcos_object (const octave_value& objmetadata, bool as_struct)
 {
   // Object metadata is a Nx1 uint32 array with the following structure:
   // [0xDD000000, objdims, dim1, dim2, ..., dimN,
@@ -181,48 +181,103 @@ load_mcos_object (const octave_value& objmetadata)
     std::get<uint32_t> (m[i]) = dt[2 + objdims + i];
 
   uint32_t class_id = dt[2 + objdims + nobjects];
-  std::string classname = sh->get_class_name (class_id);
-  octave::cdef_class cls = octave::lookup_class (classname, false, true);
-  if (! cls.ok ())
+  bool skip_constructor = true;
+  octave::cdef_class cls;
+  if (! as_struct)
     {
-      warning_with_id ("Octave:load:classdef-not-found",
-                        "load: classdef not found. Element loaded as %s",
-                        objmetadata.class_name ().c_str ());
-      return objmetadata;
-    }
+      std::string classname = sh->get_class_name (class_id);
 
-  bool skip_constructor = ! cls.get ("ConstructOnLoad").bool_value ();
+      // "function_handle_workspace" objects contain data of the workspace
+      // context of function handles. Return it as structure.
+      // FIXME: Add compatible implementation of this class.
+      if (classname == "function_handle_workspace")
+        as_struct = true;
+      else
+        {
+          cls = octave::lookup_class (classname, false, true);
+          if (! cls.ok ())
+            {
+              warning_with_id ("Octave:load:classdef-not-found",
+                               "load: classdef not found. Element loaded as %s",
+                               objmetadata.class_name ().c_str ());
+
+              return objmetadata;
+            }
+
+          skip_constructor = ! cls.get ("ConstructOnLoad").bool_value ();
+        }
+    }
 
   for (octave_idx_type i = 0; i < nobjects; i++)
     {
       uint32_t obj_id = std::get<uint32_t> (m[i]);
       if (! lss.is_mcos_object_cache_entry (obj_id))
         {
-          // put (scalar) object in cache for this object ID
-          octave_value ovc
-            = cls.construct (octave_value_list (), skip_constructor);
-          lss.set_mcos_object_cache_entry (obj_id, ovc);
+          if (! as_struct)
+            {
+              // put (scalar) object in cache for this object ID
+              octave_value ovc
+                = cls.construct (octave_value_list (), skip_constructor);
+              lss.set_mcos_object_cache_entry (obj_id, ovc);
+            }
 
-          auto [saveobj_type, obj_type_id, obj_dep_id] =
-            sh->get_object_dependencies (obj_id);
+          auto [saveobj_type, obj_type_id, obj_dep_id]
+            = sh->get_object_dependencies (obj_id);
 
           std::get<octave_map> (m[i])
-            = sh->get_object_properties (obj_type_id, class_id, saveobj_type);
+            = sh->get_object_properties (obj_type_id, class_id, saveobj_type,
+                                         as_struct);
           std::get<bool> (m[i]) = saveobj_type;
 
-          if (sh->check_dyn_props (obj_dep_id))
+          if (! as_struct && sh->check_dyn_props (obj_dep_id))
             warning_with_id ("Octave:load:dynamic-properties-not-supported",
                              "load: dynamic properties cannot be loaded and "
                              "will be skipped ");
         }
     }
 
-  // create object with loaded data
-  octave_value obj = cls.construct (octave_value_list (), true);
-  octave_classdef *objdef = obj.classdef_object_value ();
-  objdef->loadobj (m, dv);
+  if (as_struct)
+    {
+      OCTAVE_LOCAL_BUFFER (octave_map, map_list, nobjects);
 
-  return obj;
+      octave_idx_type j = 0;
+      for (octave_idx_type i = 0; i < nobjects; i++)
+        {
+          if ((std::get<octave_map> (m[i])).isfield ("any"))
+            {
+              // object was saved with overloaded "saveobj" method that
+              // returns a different type
+              octave_value any_val
+                = ((std::get<octave_map> (m[i])).getfield ("any"))(0);
+              // FIXME: This is specifically for loading
+              //        "function_handle_workspace" objects saved with MATLAB.
+              //        Do we need to be more generic?
+              if (any_val.iscell () && any_val.numel () > 1)
+                {
+                  Cell any_cell = any_val.cell_value ();
+                  map_list[j] = any_cell(1).scalar_map_value ();
+                }
+            }
+          else
+            map_list[j] = std::get<octave_map> (m[i]);
+
+          j++;
+        }
+
+      if (j == 1)
+        return map_list[0];
+      else
+        return octave_map::cat (-1, nobjects, map_list);
+    }
+  else
+    {
+      // create object with loaded data
+      octave_value obj = cls.construct (octave_value_list (), true);
+      octave_classdef *objdef = obj.classdef_object_value ();
+      objdef->loadobj (m, dv);
+
+      return obj;
+    }
 }
 
 bool
@@ -432,7 +487,8 @@ subsystem_handler::get_object_dependencies (const uint32_t obj_id)
 octave_map
 subsystem_handler::get_object_properties (const uint32_t obj_type_id,
                                           const uint32_t class_id,
-                                          const bool saveobj_ret_type)
+                                          const bool saveobj_ret_type,
+                                          bool as_struct)
 {
   // (nprops, prop1_name_idx, prop1_val_type, prop1_val, prop2_name_idx ...)
   // ordered by object type ID
@@ -454,9 +510,13 @@ subsystem_handler::get_object_properties (const uint32_t obj_type_id,
     }
 
   uint32_t nprops = *ptr++;
-  octave_value& default_vals = m_fwrap_default_vals(class_id);
-  default_vals = search_mcos_classdef_objects (default_vals, false);
-  octave_map prop_vals = default_vals.map_value ();
+  octave_map prop_vals;
+  if (! as_struct)
+    {
+      octave_value& default_vals = m_fwrap_default_vals(class_id);
+      default_vals = search_mcos_classdef_objects (default_vals, false);
+      prop_vals = default_vals.map_value ();
+    }
 
   for (octave_idx_type i = 0; i < nprops && ptr + 2 < end_ptr; i++)
     {

@@ -98,6 +98,20 @@ Some examples of complex numeric constants that all represent the same value:
 
 @DOCSTRING(complex)
 
+Octave automatically "narrows" complex types to real types when the imaginary
+part is zero.  The interpreter performs this narrowing whenever it gets the
+opportunity, in order to save memory, and to emulate @sc{matlab} behavior.  For
+example, if a variable initially has the complex value @code{4 + 2i} and
+subsequently the value @code{2i} is subtracted from it, then it becomes the
+real type @code{4} and not the complex type @code{4 + 0i}.  Testing whether the
+resultant type is complex using the expression @code{iscomplex (4+2i - 2i)}
+returns false.
+
+To ensure that a value is of complex type even with a zero imaginary part,
+use @code{complex (4, 0)} instead of @code{4 + 0i}.  But even then, the
+interpreter will still narrow the type to real at the next change done to it
+(such as adding 1 to it), unless its imaginary part truly becomes nonzero.
+
 @menu
 * Matrices::
 * Ranges::

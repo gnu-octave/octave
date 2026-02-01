@@ -50,7 +50,7 @@ function [output, status] = python (scriptfile, varargin)
     print_usage ();
   endif
 
-  if (! ischar (scriptfile) || isempty (scriptfile))
+  if (! (ischar (scriptfile) && isrow (scriptfile)) || isempty (scriptfile))
     error ("python: SCRIPTFILE must be a non-empty string");
   endif
   if (nargin > 1 && ! iscellstr (varargin))
@@ -58,12 +58,15 @@ function [output, status] = python (scriptfile, varargin)
   endif
 
   if (numel (scriptfile) < 2 || ! strcmp (scriptfile(1:2), "-c"))
-      ## Attempt to find file in loadpath.  No effect for absolute filenames.
-      scriptfile = file_in_loadpath (scriptfile);
-    endif
+    ## Attempt to find file in loadpath.  No effect for absolute filenames.
+    fname = file_in_loadpath (scriptfile);
+  endif
 
-  [status, output] = system ([pyexec " " scriptfile, ...
-                              sprintf(" %s", varargin{:})]);
+  if (! exist (fname, 'file'))
+    error ("python: SCRIPTFILE <%s> not found", scriptfile);
+  endif
+
+  [status, output] = system ([pyexec " " fname sprintf(" %s", varargin{:})]);
 
 endfunction
 
@@ -86,5 +89,7 @@ endfunction
 ## Test input validation
 %!error <Invalid call> python ()
 %!error <SCRIPTFILE must be a non-empty string> python (123)
+%!error <SCRIPTFILE must be a non-empty string> python (['a';'b'])
 %!error <SCRIPTFILE must be a non-empty string> python ("")
 %!error <ARGUMENTS must be strings> python ("pythonfile", 123)
+%!error <SCRIPTFILE .* not found> python ("%%_not_a_name.XYZ")

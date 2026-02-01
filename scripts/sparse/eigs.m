@@ -1526,7 +1526,7 @@ endfunction
 %!testif HAVE_ARPACK
 %! A = 1i * magic (100) + eye (100);
 %! opts.v0 = (1:100)';
-%! opts.maxit = 7;
+%! opts.maxit = 14;
 %! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
 %! d = eigs (A, 10, "sm", opts);
 %! assert (d(9:10), [NaN+1i*NaN; NaN+1i*NaN]);

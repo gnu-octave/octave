@@ -25,8 +25,8 @@
 ##
 ########################################################################
 
-# Some tests are commented out because they are known to be broken!
-# Search for "# fails"
+# If any tests are known to be broken,
+# comment them out and tag them with "# fails".
 
 # ./mk-sparse-tst.sh preset
 #    creates sparse.tst with preset tests.
@@ -496,7 +496,7 @@ print_mapper_test isinf
 print_mapper_test isna
 print_mapper_test isnan
 print_mapper_test log
-#print_mapper_test log10   ## fails with different NaN, not a problem
+print_mapper_test log10
 print_mapper_test real
 print_mapper_test round
 print_mapper_test sign

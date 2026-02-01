@@ -873,7 +873,7 @@ subsystem_handler::create_filewrapper_metadata ()
   current_offset += 8;
   m_region_offsets[7] = current_offset;  // end of metadata
 
-  size_t& metadata_size = m_region_offsets[7];
+  uint32_t& metadata_size = m_region_offsets[7];
 
   // metadata format:
   // version, m_num_names, region offsets, names

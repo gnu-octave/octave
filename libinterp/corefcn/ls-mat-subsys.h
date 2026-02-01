@@ -121,7 +121,7 @@ class subsystem_handler
     uint32_t m_num_names;  // number of unique class and property names
     string_vector m_prop_class_names;
 
-    std::array<size_t, 8> m_region_offsets;
+    std::array<uint32_t, 8> m_region_offsets;
 
     std::vector<uint32_t> m_class_name_refs;
     std::vector<uint32_t> m_object_id_refs;

@@ -42,7 +42,7 @@ function [output, status] = perl (scriptfile, varargin)
     print_usage ();
   endif
 
-  if (! ischar (scriptfile) || isempty (scriptfile))
+  if (! (ischar (scriptfile) && isrow (scriptfile)) || isempty (scriptfile))
     error ("perl: SCRIPTFILE must be a non-empty string");
   endif
   if (nargin > 1 && ! iscellstr (varargin))
@@ -51,11 +51,14 @@ function [output, status] = perl (scriptfile, varargin)
 
   if (numel (scriptfile) < 2 || ! strcmp (scriptfile(1:2), "-e"))
     ## Attempt to find file in loadpath.  No effect for absolute filenames.
-    scriptfile = file_in_loadpath (scriptfile);
+    fname = file_in_loadpath (scriptfile);
   endif
 
-  [status, output] = system (["perl " scriptfile ...
-                              sprintf(" %s", varargin{:})]);
+  if (! exist (fname, 'file'))
+    error ("perl: SCRIPTFILE <%s> not found", scriptfile);
+  endif
+
+  [status, output] = system (["perl " fname sprintf(" %s", varargin{:})]);
 
 endfunction
 
@@ -63,5 +66,7 @@ endfunction
 ## Test input validation
 %!error <Invalid call> perl ()
 %!error <SCRIPTFILE must be a non-empty string> perl (123)
+%!error <SCRIPTFILE must be a non-empty string> perl (['a';'b'])
 %!error <SCRIPTFILE must be a non-empty string> perl ("")
 %!error <ARGUMENTS must be strings> perl ("perlfile", 123)
+%!error <SCRIPTFILE .* not found> perl ("%%_not_a_name.XYZ")

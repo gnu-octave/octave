@@ -130,7 +130,11 @@ Figure::Figure (octave::interpreter& interp,
 
   figure::properties& fp = properties<figure> ();
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+  fp.set___device_pixel_ratio__ (win->devicePixelRatioF ());
+#else
   fp.set___device_pixel_ratio__ (win->devicePixelRatio ());
+#endif
 
   // Adjust figure position
   m_innerRect = boundingBoxToRect (fp.get_boundingbox (true));
@@ -873,14 +877,20 @@ void
 Figure::figureWindowShown ()
 {
   QWindow *window = qWidget<QMainWindow> ()->windowHandle ();
-  QScreen *screen = window->screen ();
 
   gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
   octave::autolock guard (gh_mgr.graphics_lock ());
 
   figure::properties& fp = properties<figure> ();
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+  QMainWindow *main_win = qWidget<QMainWindow> ();
+  fp.set___device_pixel_ratio__ (main_win->devicePixelRatioF ());
+#else
+  QScreen *screen = window->screen ();
   fp.set___device_pixel_ratio__ (screen->devicePixelRatio ());
+#endif
 
   connect (window, &QWindow::screenChanged, this, &Figure::screenChanged);
 }
@@ -894,7 +904,16 @@ Figure::screenChanged (QScreen *screen)
 
   figure::properties& fp = properties<figure> ();
   double old_dpr = fp.get___device_pixel_ratio__ ();
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+  QMainWindow *main_win = qWidget<QMainWindow> ();
+  double new_dpr = main_win->devicePixelRatioF ();
+
+  octave_unused_parameter (screen);
+#else
   double new_dpr = screen->devicePixelRatio ();
+#endif
+
   if (old_dpr != new_dpr)
     {
       fp.set___device_pixel_ratio__ (new_dpr);

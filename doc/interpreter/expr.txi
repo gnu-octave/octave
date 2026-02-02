@@ -216,7 +216,7 @@ A(end:-1:1)       # reversal of A => [4, 3, 2, 1]
 @end group
 @end example
 
-For more information see the @ref{XREFend, , @qcode{"end" keyword}}.
+For more information see the @ref{XREFend,,@qcode{"end"} keyword}.
 
 @anchor{XREFLinearIndexing}
 @subheading Linear Indexing
@@ -550,7 +550,7 @@ endfor
 because Octave does not have to repeatedly resize the intermediate result.
 
 For more performance improvement suggestions see
-@ref{Vectorization and Faster Code Execution,,}.
+@ref{Vectorization and Faster Code Execution}.
 
 @node Calling Functions
 @section Calling Functions
@@ -613,7 +613,8 @@ assigns the three result matrices to @code{u}, @code{s}, and @code{v}.
 
 The left side of a multiple assignment expression is itself a list of
 expressions, that is, a list of variable names potentially qualified by
-index expressions.  See also @ref{Index Expressions}, and @ref{Assignment Ops}.
+index expressions.  See also @ref{Index Expressions}, and
+@ref{Assignment Ops,,Assignment Expressions}.
 
 @menu
 * Call by Value::
@@ -779,7 +780,7 @@ a callback function may be assigned, including, @code{buttondownfcn},
 Note that the @samp{@@} character also plays a role in defining class
 functions, i.e., methods, but not as a syntactical element.  Rather it begins a
 directory name containing methods for a class that shares the directory name
-sans the @samp{@@} character.  See @ref{Object Oriented Programming}.
+sans the @samp{@@} character.  @xref{Object Oriented Programming}.
 
 @node Arithmetic Ops
 @section Arithmetic Operators
@@ -940,7 +941,7 @@ useful in this case.
 
 Note also that some combinations of binary operators and whitespace can
 create apparent ambiguities with the Command Syntax form of calling
-functions.  See @ref{Command Syntax and Function Syntax} for a description
+functions.  @xref{Command Syntax and Function Syntax} for a description
 of how Octave treats that syntax.
 
 @opindex @code{'}

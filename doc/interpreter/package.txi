@@ -233,7 +233,7 @@ For system-wide installations, this can be changed in the same way
 using the @code{pkg global_list} command.  If these commands are called
 without a new path, the current path will be returned.  To retain these
 settings between sessions, they can be set in one of the startup files,
-see @ref{Startup Files}.
+@pxref{Startup Files}.
 
 @node Creating Packages
 @section Creating Packages

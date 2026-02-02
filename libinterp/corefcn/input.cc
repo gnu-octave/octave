@@ -1373,7 +1373,14 @@ Read the readline library initialization file @var{file}.
 If @var{file} is omitted, read the default initialization file
 (normally @file{~/.inputrc}).
 
+@c FIXME: Texinfo @xref works for Info and HTML output formats.
+@c        For PDF, replace with cross-reference in plain text.
+@ifnottex
 @xref{Readline Init File,,,readline, GNU Readline Library},
+@end ifnottex
+@iftex
+See Section "Readline Init File" in @cite{GNU Readline Library},
+@end iftex
 for details.
 @seealso{readline_re_read_init_file}
 @end deftypefn */)
@@ -1400,7 +1407,14 @@ DEFUN (readline_re_read_init_file, args, ,
 @deftypefn {} {} readline_re_read_init_file ()
 Re-read the last readline library initialization file that was read.
 
+@c FIXME: Texinfo @xref works for Info and HTML output formats.
+@c        For PDF, replace with cross-reference in plain text.
+@ifnottex
 @xref{Readline Init File,,,readline, GNU Readline Library},
+@end ifnottex
+@iftex
+See Section "Readline Init File" in @cite{GNU Readline Library},
+@end iftex
 for details.
 @seealso{readline_read_init_file}
 @end deftypefn */)

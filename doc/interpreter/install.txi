@@ -75,10 +75,9 @@ yourself.
 @subsection Obtaining the Dependencies Automatically
 
 On some systems you can obtain many of Octave's build dependencies
-automatically.  The commands for doing this vary by system.  Similarly,
-the names of pre-compiled packages vary by system and do not always
-match exactly the names listed in @ref{Build Tools} and @ref{External
-Packages}.
+automatically.  The commands for doing this vary by system.  Similarly, the
+names of pre-compiled packages vary by system and do not always match exactly
+the names listed in @ref{Build Tools} and @ref{External Packages}.
 
 You will usually need the development version of an external dependency
 so that you get the libraries and header files for building software,

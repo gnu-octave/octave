@@ -274,7 +274,7 @@
 ##     Portable Document Format.  The @code{pdf} device formats the figure for
 ## printing on paper.  The size of the surrounding page and the position of the
 ## figure inside the page are defined by the
-## @ref{XREFfigurepaperorientation,, paper* figure properties}.
+## @ref{XREFfigurepaperorientation,,paper* figure properties}.
 ##
 ## Use @code{pdfcrop} if you don't want the surrounding page.
 ##
@@ -297,7 +297,7 @@
 ##     Same as @code{eps} except that the figure is formatted for printing on
 ## paper.  The size of the surrounding page and position of the figure inside
 ## the page are defined by the
-## @ref{XREFfigurepaperorientation,, paper* figure properties}.
+## @ref{XREFfigurepaperorientation,,paper* figure properties}.
 ##
 ##   @item  pslatex
 ##   @itemx epslatex

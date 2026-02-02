@@ -31,7 +31,7 @@
 ##
 ## The list of folders that are saved in @var{file} does @emph{not} include
 ## the folders that are added for Octave's own functions, those that belong to
-## Octave packages (see @ref{XREFpkg,,pkg load}), and those added via command
+## Octave packages (@pxref{XREFpkg,,pkg load}), and those added via command
 ## line switches.
 ##
 ## If @var{file} is omitted, Octave looks in the current directory for a

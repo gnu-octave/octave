@@ -2334,8 +2334,7 @@ endfunction
 @end group
 @end example
 
-For more information see
-@ref{Object Oriented Programming, , Object Oriented Programming}.
+For more information, @pxref{Object Oriented Programming}.
 @end enumerate
 
 @seealso{for, parfor, if, do, while, function, switch, try, unwind_protect}

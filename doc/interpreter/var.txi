@@ -86,7 +86,7 @@ before they have been given a value.  Doing so results in an error.
 @cindex @code{global} statement
 @cindex variables, global
 
-See keyword:  @ref{XREFglobal, , global}
+See keyword: @ref{XREFglobal,,global}
 
 A @dfn{global} variable is one that may be accessed anywhere within Octave.
 This is in contrast to a local variable which can only be accessed outside
@@ -203,7 +203,7 @@ particular loop within a function, becomes difficult.
 @cindex @code{persistent} statement
 @cindex variables, persistent
 
-See keyword:  @ref{XREFpersistent, , persistent}
+See keyword: @ref{XREFpersistent,,persistent}
 
 A variable that has been declared @dfn{persistent} within a function
 will retain its contents in memory between subsequent calls to the

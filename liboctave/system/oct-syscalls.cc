@@ -30,6 +30,12 @@
 #include <cerrno>
 #include <cstring>
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  include <io.h>
+#else
+#  include <unistd.h>
+#endif
+
 #include "fcntl-wrappers.h"
 #include "lo-utils.h"
 #include "oct-syscalls.h"
@@ -45,6 +51,12 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 OCTAVE_BEGIN_NAMESPACE(sys)
+
+int
+dup (int old_fd)
+{
+  return octave_dup_wrapper (old_fd);
+}
 
 int
 dup2 (int old_fd, int new_fd)
@@ -199,6 +211,19 @@ pipe (int *fildes, std::string& msg)
     msg = std::strerror (errno);
 
   return status;
+}
+
+int read (int fd, void *buf, size_t count)
+{
+  // This function is defined in <unistd.h> for POSIX and in <io.h> on Windows.
+  // Use this wrapper to avoid having to include headers conditionally in
+  // installed sources.
+  return ::read (fd, buf, count);
+}
+
+int close (int fd)
+{
+  return octave_close_wrapper (fd);
 }
 
 pid_t

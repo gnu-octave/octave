@@ -30,6 +30,7 @@
 #include <cstdint>
 
 #include <algorithm>
+#include <iostream>
 #include <memory>
 #include <ostream>
 #include <string>
@@ -38,6 +39,7 @@
 #include "Matrix.h"
 #include "mach-info.h"
 #include "oct-locbuf.h"
+#include "oct-syscalls.h"
 #include "quit.h"
 #include "unwind-prot.h"
 
@@ -130,10 +132,14 @@ recording using those parameters.
   octave_value_list input;
   octave_value_list output;
 
-  PaError err = Pa_Initialize ();
+  std::string errstr;
+  PaError err = sys::capture_stderr ([] { return Pa_Initialize (); }, errstr);
 
   if (err != paNoError)
-    error ("audiodevinfo: PortAudio initialization failed");
+    {
+      std::cerr << errstr << std::endl;
+      error ("audiodevinfo: PortAudio initialization failed");
+    }
 
   // Guarantee PortAudio cleanup code is executed
   octave::unwind_action portaudio_cleanup ([] () { Pa_Terminate (); } );
@@ -924,8 +930,14 @@ audioplayer::init ()
   // int channels = y.rows ();
   // RowVector *sound_l = get_left ();
 
-  if (Pa_Initialize () != paNoError)
-    error ("audioplayer: initialization error");
+  std::string errstr;
+  PaError err = octave::sys::capture_stderr ([] { return Pa_Initialize (); },
+                                             errstr);
+  if (err != paNoError)
+    {
+      std::cerr << errstr << std::endl;
+      error ("audioplayer: initialization error");
+    }
 
   if (Pa_GetDeviceCount () < 1)
     error ("audioplayer: no audio devices found or available");
@@ -1568,8 +1580,14 @@ audiorecorder::print_raw (std::ostream& os, bool) const
 void
 audiorecorder::init ()
 {
-  if (Pa_Initialize () != paNoError)
-    error ("audiorecorder: initialization error");
+  std::string errstr;
+  PaError err = octave::sys::capture_stderr ([] { return Pa_Initialize (); },
+                                             errstr);
+  if (err != paNoError)
+    {
+      std::cerr << errstr << std::endl;
+      error ("audiorecorder: initialization error");
+    }
 
   if (Pa_GetDeviceCount () < 1)
     error ("audiorecorder: no audio devices found or available");

@@ -50,8 +50,8 @@ example, the expression
 @end example
 
 @noindent
-produces the string whose contents are @samp{foobarbaz}.  @xref{Numeric Data
-Types}, for more information about creating matrices.
+produces the string whose contents are @samp{foobarbaz}.
+@xref{Numeric Data Types}, for more information about creating matrices.
 
 While strings can in principle store arbitrary content, most functions expect
 them to be UTF-8 encoded Unicode strings.

@@ -186,9 +186,9 @@ identifier is reserved by Octave.
 
 @deftypefn {} {} properties
 Mark the beginning of a block of properties in a classdef definition.  Note
-that the @ref{XREFproperties, , function @qcode{"properties"}} is a function
+that the @ref{XREFproperties,,function @qcode{"properties"}} is a function
 that lists the properties of a classdef class or object.
-@seealso{@ref{XREFendproperties, , endproperties}}
+@seealso{@ref{XREFendproperties,,endproperties}}
 @end deftypefn
 
 @DOCSTRING(endproperties)
@@ -202,9 +202,9 @@ that lists the properties of a classdef class or object.
 
 @deftypefn {} {} methods
 Mark the beginning of a block of methods in a classdef definition.  Note that
-the @ref{XREFmethods, , function @qcode{"methods"}} is a function that lists
+the @ref{XREFmethods,,function @qcode{"methods"}} is a function that lists
 the methods of a class or object.
-@seealso{@ref{XREFendmethods, , endmethods}}
+@seealso{@ref{XREFendmethods,,endmethods}}
 @end deftypefn
 
 @DOCSTRING(endmethods)

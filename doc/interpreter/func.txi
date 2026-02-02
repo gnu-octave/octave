@@ -1262,7 +1262,7 @@ An overloaded function of a class as in chapter
 A function that has been defined on the command-line.
 
 @item Autoload function
-A function that is marked as autoloaded with @xref{XREFautoload,,autoload}.
+A function that is marked as autoloaded with @ref{XREFautoload,,autoload}.
 
 @item A Function on the Path
 A function that can be found on the users load-path.  There can also be

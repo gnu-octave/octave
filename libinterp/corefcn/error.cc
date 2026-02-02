@@ -1187,11 +1187,12 @@ Display an error message and stop m-file execution.
 The input @var{msg} is a simple string to which the text @samp{error: } is
 prepended.  The resulting message is printed on the @code{stderr} stream.
 Alternatively, the first input may be a template string @var{template} which
-uses the same rules as the @code{printf} family of functions (@pxref{Formatted
-Output}).  Formatting is only done for single-quoted character vectors if there
-are additional arguments following the template string.  If there are no
-additional arguments, the template string is used literally (i.e., without
-interpreting any escape sequences in single-quoted character vectors).
+uses the same rules as the @code{printf} family of functions
+(@pxref{Formatted Output}).  Formatting is only done for single-quoted
+character vectors if there are additional arguments following the template
+string.  If there are no additional arguments, the template string is used
+literally (i.e., without interpreting any escape sequences in single-quoted
+character vectors).
 
 The optional @var{id} argument allows programmers to tag an error
 with a specific identifier so that users can later retrieve it (using

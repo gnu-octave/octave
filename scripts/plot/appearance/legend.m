@@ -170,7 +170,7 @@
 ## @end table
 ##
 ## The full list of supported legend specific properties can be found at
-## @ref{Legend Properties, , Legend Properties}.
+## @ref{Legend Properties}.
 ##
 ## A legend is implemented as an additional axes object with the @code{tag}
 ## property set to @qcode{"legend"}.  Properties of the legend object may be

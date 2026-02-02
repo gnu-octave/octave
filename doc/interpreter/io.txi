@@ -582,23 +582,23 @@ Here is a table summarizing what all the different conversions do:
 
 @table @asis
 @item @samp{%d}, @samp{%i}
-Print an integer as a signed decimal number.  @xref{Integer
-Conversions}, for details.  @samp{%d} and @samp{%i} are synonymous for
+Print an integer as a signed decimal number.  @xref{Integer Conversions}, for
+details.  @samp{%d} and @samp{%i} are synonymous for
 output, but are different when used with @code{scanf} for input
 (@pxref{Table of Input Conversions}).
 
 @item @samp{%o}
-Print an integer as an unsigned octal number.  @xref{Integer
-Conversions}, for details.
+Print an integer as an unsigned octal number.  @xref{Integer Conversions}, for
+details.
 
 @item @samp{%u}
-Print an integer as an unsigned decimal number.  @xref{Integer
-Conversions}, for details.
+Print an integer as an unsigned decimal number.  @xref{Integer Conversions},
+for details.
 
 @item @samp{%x}, @samp{%X}
 Print an integer as an unsigned hexadecimal number.  @samp{%x} uses
-lowercase letters and @samp{%X} uses uppercase.  @xref{Integer
-Conversions}, for details.
+lowercase letters and @samp{%X} uses uppercase.  @xref{Integer Conversions},
+for details.
 
 @item @samp{%f}
 Print a floating-point number in normal (fixed-point) notation.
@@ -606,8 +606,8 @@ Print a floating-point number in normal (fixed-point) notation.
 
 @item @samp{%e}, @samp{%E}
 Print a floating-point number in exponential notation.  @samp{%e} uses
-lowercase letters and @samp{%E} uses uppercase.  @xref{Floating-Point
-Conversions}, for details.
+lowercase letters and @samp{%E} uses uppercase.
+@xref{Floating-Point Conversions}, for details.
 
 @item @samp{%g}, @samp{%G}
 Print a floating-point number in either normal (fixed-point) or
@@ -937,13 +937,13 @@ Here is a table that summarizes the various conversion specifications:
 
 @table @asis
 @item @samp{%d}
-Matches an optionally signed integer written in decimal.  @xref{Numeric
-Input Conversions}.
+Matches an optionally signed integer written in decimal.
+@xref{Numeric Input Conversions}.
 
 @item @samp{%i}
 Matches an optionally signed integer in any of the formats that the C
-language defines for specifying an integer constant.  @xref{Numeric
-Input Conversions}.
+language defines for specifying an integer constant.
+@xref{Numeric Input Conversions}.
 
 @item @samp{%o}
 Matches an unsigned integer written in octal radix.
@@ -958,8 +958,8 @@ Matches an unsigned integer written in hexadecimal radix.
 @xref{Numeric Input Conversions}.
 
 @item @samp{%e}, @samp{%f}, @samp{%g}, @samp{%E}, @samp{%G}
-Matches an optionally signed floating-point number.  @xref{Numeric Input
-Conversions}.
+Matches an optionally signed floating-point number.
+@xref{Numeric Input Conversions}.
 
 @item @samp{%s}
 Matches a string containing only non-whitespace characters.

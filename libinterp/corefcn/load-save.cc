@@ -1858,7 +1858,7 @@ Save the data in Octave's text data format.  The
 @ref{XREFsave_precision,,@code{save_precision}} function specifies the number
 of significant figures to use when saving data (default: 17).  The header of
 the text data file can be configure with
-@ref{XREFsave_header_format_string,,@code{save_header_format_string}}.
+@ref{XREFsave_header_format_string,,save_header_format_string}.
 
 @item  -v7.3
 @itemx -V7.3

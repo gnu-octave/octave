@@ -108,11 +108,10 @@ If @var{m} or @var{n} are not specified then their values are derived from the
 maximum index in the vectors @var{i} and @var{j} as given by
 @w{@code{@var{m} = max (@var{i})}}, @w{@code{@var{n} = max (@var{j})}}.
 
-@strong{Note}: If multiple values are specified with the same @var{i},
-@var{j} indices, the corresponding value in @var{S} will be the sum of the
-values at the repeated location.  @xref{XREFaccumarray,,@code{accumarray}}, for
-an example of how to produce different behavior such as taking the minimum
-instead.
+@strong{Note}: If multiple values are specified with the same @var{i}, @var{j}
+indices, the corresponding value in @var{S} will be the sum of the values at
+the repeated location.  @xref{XREFaccumarray,,accumarray}, for an example of
+how to produce different behavior such as taking the minimum instead.
 
 If the option @qcode{"unique"} is given, and more than one value is specified
 at the same @var{i}, @var{j} indices, then only the last specified value will
@@ -125,7 +124,7 @@ matrix and is equivalent to @code{sparse ([], [], [], @var{m}, @var{n})}
 The optional final argument reserves space for @var{nzmax} values in the sparse
 array and is useful if the eventual number of nonzero values will be greater
 than the number of values in @var{sv} used during the initial construction of
-the array.  @xref{XREFspalloc,,@code{spalloc}}, for more information and usage
+the array.  @xref{XREFspalloc,,spalloc}, for more information and usage
 instructions.
 
 Example 1 (convert full matrix to sparse to save memory):

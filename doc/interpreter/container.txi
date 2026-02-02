@@ -710,7 +710,7 @@ size (c1)
 @noindent
 As can be seen, the @ref{XREFsize,,size} function also works
 for cell arrays.  As do other functions describing the size of an
-object, such as @ref{XREFlength,,length}, @ref{XREFnumel,, numel},
+object, such as @ref{XREFlength,,length}, @ref{XREFnumel,,numel},
 @ref{XREFrows,,rows}, and @ref{XREFcolumns,,columns}.
 
 @DOCSTRING(cell)
@@ -911,14 +911,12 @@ strcmp ("hello", c)
 @end example
 
 @noindent
-The following string functions support cell arrays of strings:
-@code{char}, @code{strvcat}, @code{strcat} (@pxref{Concatenating
-Strings}), @code{strcmp}, @code{strncmp}, @code{strcmpi},
-@code{strncmpi} (@pxref{Searching in Strings}), @code{str2double},
-@code{deblank}, @code{strtrim}, @code{strtrunc}, @code{strfind},
-@code{strmatch}, , @code{regexp}, @code{regexpi}
-(@pxref{String Operations}) and @code{str2double}
-(@pxref{Converting Strings}).
+The following string functions support cell arrays of strings: @code{char},
+@code{strvcat}, @code{strcat} (@pxref{Concatenating Strings}), @code{strcmp},
+@code{strncmp}, @code{strcmpi}, @code{strncmpi} (@pxref{Searching in Strings}),
+@code{str2double}, @code{deblank}, @code{strtrim}, @code{strtrunc},
+@code{strfind}, @code{strmatch}, , @code{regexp}, @code{regexpi}
+(@pxref{String Operations}) and @code{str2double} (@pxref{Converting Strings}).
 
 The function @code{iscellstr} can be used to test if an object is a
 cell array of strings.

@@ -43,7 +43,7 @@
 ##
 ## The Beta function can grow quite large and it is often more useful to work
 ## with the logarithm of the output rather than the function directly.
-## @xref{XREFbetaln,,@code{betaln}}, for computing the logarithm of the Beta
+## @xref{XREFbetaln,,betaln}, for computing the logarithm of the Beta
 ## function in an efficient manner.
 ## @seealso{betaln, betainc, betaincinv}
 ## @end deftypefn

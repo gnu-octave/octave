@@ -125,7 +125,7 @@
 ## The legacy, undocumented syntax for passing parameters to @var{fcn} by
 ## appending them to the input argument list after @var{options} has been
 ## removed in Octave 10.  The cross-platform compatible method of passing
-## parameters to @var{fcn} is through use of @ref{Anonymous Functions}.  For
+## parameters to @var{fcn} is through the use of @ref{Anonymous Functions}.  For
 ## specific examples of doing so for @code{fminsearch} and other minimization
 ## functions see the @ref{Minimizers} section of the GNU Octave manual.
 ## @end enumerate

@@ -43,7 +43,7 @@ the default data arrangement, most functions support different arrangements.
 It should be noted that the statistics functions don't test for data containing
 NaN, NA, or Inf.  These values need to be detected and dealt with explicitly.
 See @ref{XREFisnan,,isnan}, @ref{XREFisna,,isna}, @ref{XREFisinf,,isinf},
-@ref{XREFisfinite,,isfinite}.
+and @ref{XREFisfinite,,isfinite}.
 
 @menu
 * Descriptive Statistics::

@@ -87,7 +87,7 @@ function s = getdoc (objname, field, base)
   ##   "__fcnmsg__"  : replaced by a message explaining where to find
   ##                   documentation on the form of a callback function.
   ##   You may also cross reference properties using the label format
-  ##   OBJNAMEPROPERTY, e.g., "@xref{XREFaxescolor, , axes color property}."
+  ##   OBJNAMEPROPERTY, e.g., "@xref{XREFaxescolor,,axes color property}."
   ##
   ## -"valid": string that describes valid values for the current property.
   ##   Use "packopt" function to join options with " | " separator
@@ -129,7 +129,7 @@ __prop__ is unused.";
 
   doc_fontangle = "Control whether the font is italic or normal.";
   doc_fontsize = "Size of the font used for text rendering.  \
-@xref{XREF__objname__fontunits, , fontunits property}.";
+@xref{XREF__objname__fontunits,,fontunits property}.";
   doc_fontname = "Name of font used for text rendering.  When setting \
 this property, the text rendering engine will search for a matching \
 font in your system.  If none is found then text is rendered using a \
@@ -170,7 +170,7 @@ callback object has its @code{interruptible} property set to \
 \@qcode{\"off\"}.  The __prop__ property of the interrupting callback object \
 indicates whether the interrupting callback is queued (@qcode{\"queue\"} \
 (default)) or discarded (@qcode{\"cancel\"}).\n\
-@xref{Callbacks, , @w{Callbacks section}}.";
+@xref{Callbacks,,@w{Callbacks section}}.";
         s.category = "Callback Execution";
 
       case "buttondownfcn"
@@ -220,7 +220,7 @@ respond to mouse clicks by evaluating the @qcode{\"buttondownfcn\"}, showing \
 the uicontextmenu, and eventually becoming the root \
 @qcode{\"currentobject\"}.  This property is only relevant when the object \
 can accept mouse clicks which is determined by the @qcode{\"pickableparts\"} \
-property.  @xref{XREF__objname__pickableparts, , @w{pickableparts property}}.";
+property.  @xref{XREF__objname__pickableparts,,@w{pickableparts property}}.";
         s.category = "Mouse Interaction";
 
       case "interruptible"
@@ -228,7 +228,7 @@ property.  @xref{XREF__objname__pickableparts, , @w{pickableparts property}}.";
 interrupted by other callbacks.  By default __prop__ is @qcode{\"on\"} \
 and callbacks that make use of @code{drawnow}, @code{figure}, @code{waitfor}, \
 @code{getframe} or @code{pause} functions are eventually interrupted.\n\
-@xref{Callbacks, , @w{Callbacks section}}.";
+@xref{Callbacks,,@w{Callbacks section}}.";
         s.category = "Callback Execution";
 
       case "parent"
@@ -245,7 +245,7 @@ mouse clicks.  When __prop__ is @qcode{\"none\"} mouse clicks on the object \
 are ignored and transmitted to any objects underneath this one.  When an \
 object is configured to accept mouse clicks the @qcode{\"hittest\"} property \
 will determine how they are processed.  \
-@xref{XREF__objname__hittest, , @w{hittest property}}.";
+@xref{XREF__objname__hittest,,@w{hittest property}}.";
         s.category = "Mouse Interaction";
 
       case "selected"
@@ -321,18 +321,18 @@ command window.";
 
       case "diary"
         s.doc = "If __prop__ is @qcode{\"on\"}, the Octave command window \
-session is saved to file.  @xref{XREFrootdiaryfile, , @w{diaryfile property}}.";
+session is saved to file.  @xref{XREFrootdiaryfile,,@w{diaryfile property}}.";
         s.category = "Command Logging";
 
       case "diaryfile"
         s.doc = "The name of the diary file.  \
-@xref{XREFdiary, , @w{diary function}}.";
+@xref{XREFdiary,,@w{diary function}}.";
         s.valid = valid_string;
         s.category = "Command Logging";
 
       case "echo"
         s.doc = "Control whether Octave displays commands executed from \
-scripts.  @xref{XREFecho, , @w{echo function}}.";
+scripts.  @xref{XREFecho,,@w{echo function}}.";
         s.category = "Command Window Display";
 
       case "fixedwidthfontname"
@@ -344,19 +344,19 @@ graphics objects when the @qcode{\"fontname\"} property is set to \
 
       case "format"
         s.doc = "This property is a wrapper around the @code{format} function.\
-  @xref{XREFformat, , @w{format function}}.";
+  @xref{XREFformat,,@w{format function}}.";
         s.category = "Command Window Display";
 
       case "formatspacing"
         s.doc = "This property is a wrapper around the @code{format} function.\
-  @xref{XREFformat, , @w{format function}}.";
+  @xref{XREFformat,,@w{format function}}.";
         s.category = "Command Window Display";
 
       case "monitorpositions"
         s.doc = "Reports the width and height of connected monitors.  Note: \
 Octave only partially implements __prop__.  Only information about the primary \
 monitor is stored in __prop__ which is the same information stored in the \
-@ref{XREFrootscreensize, , @w{@qcode{\"screensize\"} property}}.";
+@ref{XREFrootscreensize,,@w{@qcode{\"screensize\"} property}}.";
         s.printdefault = false;
         s.valid = valid_4elvec;
         s.category = "Screen Information";
@@ -402,9 +402,9 @@ are visible in their parents' children list, regardless of the value of their \
 
       case "units"
         s.doc = "The unit type used for the \
-@ref{XREFrootmonitorpositions, , @qcode{\"monitorpositions\"}}, \
-@ref{XREFrootpointerlocation, , @qcode{\"pointerlocation\"}}, and \
-@ref{XREFrootscreensize, , @qcode{\"screensize\"}} properties.";
+@ref{XREFrootmonitorpositions,,@qcode{\"monitorpositions\"}}, \
+@ref{XREFrootpointerlocation,,@qcode{\"pointerlocation\"}}, and \
+@ref{XREFrootscreensize,,@qcode{\"screensize\"}} properties.";
         s.category = "Screen Information";
 
     endswitch
@@ -424,13 +424,13 @@ are visible in their parents' children list, regardless of the value of their \
 
       case "closerequestfcn"
         s.doc = "Function that is executed when a figure is deleted.  \
-@xref{XREFclosereq, , closereq function}.\n\n__fcnmsg__";
+@xref{XREFclosereq,,closereq function}.\n\n__fcnmsg__";
         s.valid = valid_fcn;
         s.category = "Creation/Deletion";
 
       case "color"
         s.doc = "Color of the figure background.  \
-@xref{Colors, , colorspec}.";
+@xref{Colors,,colorspec}.";
         s.valid = valid_color;
         s.category = "Appearance";
 
@@ -488,7 +488,7 @@ lines.";
 
       case "innerposition"
         s.doc = "The @qcode{\"innerposition\"} property is the same as the \
-@ref{XREFfigureposition, , @w{@qcode{\"position\"} property}}.";
+@ref{XREFfigureposition,,@w{@qcode{\"position\"} property}}.";
         s.valid = valid_4elvec;
         s.category = "Object Position";
 
@@ -560,7 +560,7 @@ property.";
       case "nextplot"
         s.doc = "__prop__ is used by high level plotting functions to \
 decide what to do with axes already present in the figure.  \
-@xref{XREFnewplot, , @w{newplot function}}.";
+@xref{XREFnewplot,,@w{newplot function}}.";
         s.category = "Object Identification";
 
       case "number"
@@ -578,7 +578,7 @@ handle value in the figure title bar.";
 the top menubar and the bottom status bar.  \
 The four elements of the vector are the coordinates of the lower left corner \
 and width and height of the figure.  \
-@xref{XREFfigureunits, , @w{units property}}.";
+@xref{XREFfigureunits,,@w{units property}}.";
         s.valid = valid_4elvec;
         s.category = "Object Position";
 
@@ -660,7 +660,7 @@ location.";
         s.doc = "Specify the position and size of the figure canvas.  \
 The four elements of the vector are the coordinates of the lower left corner \
 and width and height of the figure.  \
-@xref{XREFfigureunits, , @w{units property}}.";
+@xref{XREFfigureunits,,@w{units property}}.";
         s.valid = valid_4elvec;
         s.category = "Object Position";
 
@@ -672,7 +672,7 @@ is @qcode{\"manual\"}.  __modemsg__";
       case "renderermode"
         s.doc = "Control whether the rendering engine used for printing is \
 chosen automatically or specified by the @code{renderer} property.  \
-@xref{XREFprint, , @w{print function}}.";
+@xref{XREFprint,,@w{print function}}.";
         s.category = "Printing/Saving";
 
       case "resize"
@@ -723,13 +723,13 @@ property.";
         s.category = "Object Position";
 
       case "windowbuttondownfcn"
-        s.doc = "@xref{XREFfigurewindowbuttonupfcn, , \
+        s.doc = "@xref{XREFfigurewindowbuttonupfcn,,\
 @w{windowbuttonupfcn property}}.";
         s.valid = valid_fcn;
         s.category = "Mouse Interaction";
 
       case "windowbuttonmotionfcn"
-        s.doc = "@xref{XREFfigurewindowbuttonupfcn, , \
+        s.doc = "@xref{XREFfigurewindowbuttonupfcn,,\
 @w{windowbuttonupfcn property}}.";
         s.valid = valid_fcn;
         s.category = "Mouse Interaction";
@@ -846,9 +846,9 @@ __objname__.  __modemsg__";
 
       case "camerapositionmode"
         s.doc = "Current state of the camera position property, whether \
-automatically set according to the @ref{XREFview, , view function}, or \
+automatically set according to the @ref{XREFview,,view function}, or \
 manually set with the \
-@ref{XREFaxescameraposition, , @w{@qcode{\"cameraposition\"} property}}.";
+@ref{XREFaxescameraposition,,@w{@qcode{\"cameraposition\"} property}}.";
         s.category = "Camera and View Controls";
 
       case "cameratarget"
@@ -860,7 +860,7 @@ aimed.  __modemsg__";
       case "cameratargetmode"
         s.doc = "Current state of camera target property, either manually \
 set with the \
-@ref{XREFaxescameratarget, , @w{@qcode{\"cameratarget\"} property}} or \
+@ref{XREFaxescameratarget,,@w{@qcode{\"cameratarget\"} property}} or \
 automatically positioned at the center of the axes plot area.";
         s.category = "Camera and View Controls";
 
@@ -874,7 +874,7 @@ current view.  Note that the default is [0 1 0] for 2-D plots and [0 0 1] for \
       case "cameraupvectormode"
         s.doc = "Current state of camera up vector property, set to manual \
 when the \
-@ref{XREFaxescameraupvector, , @w{@qcode{\"cameraupvector\"} property}} is \
+@ref{XREFaxescameraupvector,,@w{@qcode{\"cameraupvector\"} property}} is \
 used to change the vector from the 2-D or 3-D default values.";
         s.category = "Camera and View Controls";
 
@@ -887,7 +887,7 @@ and 180 degrees.  __modemsg__";
       case "cameraviewanglemode"
         s.doc = "Current state of the camera view angle property, either \
 manually set with the \
-@ref{XREFaxescameraviewangle, , @w{@qcode{\"cameraviewangle\"} property}} \
+@ref{XREFaxescameraviewangle,,@w{@qcode{\"cameraviewangle\"} property}} \
 or automatically set by Octave to include all visible objects.";
         s.category = "Camera and View Controls";
 
@@ -901,7 +901,7 @@ __modemsg__";
       case "climmode"
         s.doc = "Current state of the color limit mode, either \
 manually set by the \
-@ref{XREFaxesclim, , @w{@qcode{\"clim\"} property}} or automatically set by \
+@ref{XREFaxesclim,,@w{@qcode{\"clim\"} property}} or automatically set by \
 Octave to the minimum and maximum @code{cdata} values of __objname__'s \
 children.";
         s.category = "Color and Transparency";
@@ -912,7 +912,7 @@ children.";
 
       case "color"
         s.doc = "Color of the __objname__ background.  \
-@xref{Colors, , colorspec}.";
+@xref{Colors,,colorspec}.";
         s.valid = valid_color;
         if (strcmp (objname, "legend"))
           s.category = "Legend Appearance";
@@ -933,7 +933,7 @@ object.";
 
       case "colororderindex"
         s.doc = "Index of the next color from the \
-@ref{XREFaxescolororder, , @w{@qcode{\"colororder\"} property}} to be used \
+@ref{XREFaxescolororder,,@w{@qcode{\"colororder\"} property}} to be used \
 by Axes-child objects.";
         s.valid = "integer";
         s.category = "Automatic Child Properties";
@@ -959,14 +959,14 @@ perpendicular to the screen.";
 displayed in the axes.  Setting @code{dataaspectratio} to \
 @w{@code{[1, 2]}} causes the length of one unit as displayed on the x-axis \
 to be the same as the length of 2 units on the y-axis.  \
-@xref{XREFdaspect, , daspect function}.  __modemsg__";
+@xref{XREFdaspect,,daspect function}.  __modemsg__";
         s.valid = valid_3elvec;
         s.category = "Axes Box Appearance";
 
       case "dataaspectratiomode"
         s.doc = "Current state of the data aspect ratio mode, either \
 manually set by the \
-@ref{XREFaxesdataaspectratio, , @w{@qcode{\"dataaspectratio\"} property}} or \
+@ref{XREFaxesdataaspectratio,,@w{@qcode{\"dataaspectratio\"} property}} or \
 automatically set by Octave in combination with other display properties to \
 fit the data in the current view.";
         s.category = "Axes Box Appearance";
@@ -987,7 +987,7 @@ fit the data in the current view.";
 
       case "fontsizemode"
         s.doc = "Current state of the fontsize mode, either manually set by \
-the @ref{XREFaxesfontsize, , @w{@qcode{\"fontsize\"} property}} or \
+the @ref{XREFaxesfontsize,,@w{@qcode{\"fontsize\"} property}} or \
 automatically set by Octave to maintain readability.";
         s.category = "Text Appearance";
 
@@ -1014,13 +1014,13 @@ anti-aliased.";
 
       case "gridcolor"
         s.doc = "Color of the major grid lines.  \
-@xref{Colors, , colorspec}.  __modemsg__";
+@xref{Colors,,colorspec}.  __modemsg__";
         s.valid = packopt ({markdef(valid_color), "@qcode{\"none\"}"});
         s.category = "Axes Grid Appearance";
 
       case "gridcolormode"
         s.doc = "Current state of the gridcolor mode, either manually set by \
-the @ref{XREFaxesgridcolor, , @w{@qcode{\"gridcolor\"} property}} or \
+the @ref{XREFaxesgridcolor,,@w{@qcode{\"gridcolor\"} property}} or \
 automatically set by Octave to the default value.";
         s.category = "Axes Grid Appearance";
 
@@ -1030,7 +1030,7 @@ automatically set by Octave to the default value.";
 
       case "innerposition"
         s.doc = "The @qcode{\"innerposition\"} property is the same as the \
-@ref{XREFaxesposition, , @w{@qcode{\"position\"} property}}.";
+@ref{XREFaxesposition,,@w{@qcode{\"position\"} property}}.";
         s.valid = valid_4elvec;
         s.category = "Axes Grid Appearance";
 
@@ -1054,20 +1054,20 @@ objects (ticks, labels, etc.@: covered by plotted objects) or above.";
 
       case "legend"
         s.doc = [sprintf(doc_notimpl, "Legend property control"), "  Use \
-the @ref{XREFlegend, , legend function} to set legend properties."];
+the @ref{XREFlegend,,legend function} to set legend properties."];
         s.category = "Text Appearance";
 
       case "linestyleorder"
         s.doc = "List of linestyles to be used in order by axes child \
 objects, specified as a cell array of line specification strings.  Note that \
 the linestyle is only incremented after cycling through the full \
-@ref{XREFaxescolororder, , @qcode{\"colororder\"}} list.  \
+@ref{XREFaxescolororder,,@qcode{\"colororder\"}} list.  \
 @xref{Line Styles}.";
         s.category = "Automatic Child Properties";
 
       case "linestyleorderindex"
         s.doc = "Index of the next linestyle from the \
-@ref{XREFaxeslinestyleorder, , @w{@qcode{\"linestyleorder\"} property}} to \
+@ref{XREFaxeslinestyleorder,,@w{@qcode{\"linestyleorder\"} property}} to \
 be used by Axes-child objects.";
         s.valid = "whole number scalar";
         s.category = "Automatic Child Properties";
@@ -1087,14 +1087,14 @@ be used by Axes-child objects.";
 
       case "minorgridcolor"
         s.doc = "Color of the minor grid lines.  \
-@xref{Colors, , colorspec}.  __modemsg__";
+@xref{Colors,,colorspec}.  __modemsg__";
         s.valid = packopt ({markdef(valid_color), "@qcode{\"none\"}"});
         s.category = "Axes Grid Appearance";
 
       case "minorgridcolormode"
         s.doc = "Current state of the minorgridcolor mode, either manually \
 set by the \
-@ref{XREFaxesminorgridcolor, , @w{@qcode{\"minorgridcolor\"} property}} or \
+@ref{XREFaxesminorgridcolor,,@w{@qcode{\"minorgridcolor\"} property}} or \
 automatically set by Octave to the default value.";
         s.category = "Axes Grid Appearance";
 
@@ -1110,15 +1110,15 @@ automatically set by Octave to the default value.";
       case "nextplot"
         s.doc = "__prop__ is used by high level plotting functions to \
 decide what to do with graphics objects already present in the axes.  \
-@xref{XREFnewplot, , @w{newplot function}}.  The state of __prop__ \
+@xref{XREFnewplot,,@w{newplot function}}.  The state of __prop__ \
 is typically controlled using the @code{hold} function.  \
-@xref{XREFhold, , @w{hold function}}.";
+@xref{XREFhold,,@w{hold function}}.";
         s.category = "Object Identification";
 
       case "nextseriesindex"
         s.doc = "Current index value into the \
-@ref{XREFaxescolororder, , \"colororder\"} and \
-@ref{XREFaxeslinestyleorder, , \"linestyleorder\"} \
+@ref{XREFaxescolororder,,\"colororder\"} and \
+@ref{XREFaxeslinestyleorder,,\"linestyleorder\"} \
 properties, indicating the item that will be used by the next child object";
         s.valid = "whole number scalar";
         s.category = "Automatic Child Properties";
@@ -1131,18 +1131,18 @@ plot, in units normalized to the width and height of the plot \
 window.  For example, @code{[0.2, 0.3, 0.4, 0.5]} sets the lower \
 left corner of the axes at @math{(0.2, 0.3)} and the width and \
 height to be 0.4 and 0.5 respectively.  \
-@xref{XREFaxesposition, , @w{position property}}.";
+@xref{XREFaxesposition,,@w{position property}}.";
         s.valid = valid_4elvec;
         s.category = "Object Position";
 
       case "plotboxaspectratio"
-        s.doc = "@xref{XREFpbaspect, , pbaspect function}.  __modemsg__";
+        s.doc = "@xref{XREFpbaspect,,pbaspect function}.  __modemsg__";
         s.category = "Object Position";
 
       case "plotboxaspectratiomode"
         s.doc = "Current state of the plot box aspect ratio mode, either \
 manually set by the \
-@ref{XREFaxesdataaspectratio, , @w{@qcode{\"dataaspectratio\"} property}} or \
+@ref{XREFaxesdataaspectratio,,@w{@qcode{\"dataaspectratio\"} property}} or \
 automatically set by Octave in combination with other display properties to \
 fit the data in the current view.";
         s.category = "Object Position";
@@ -1163,7 +1163,7 @@ plot, in units normalized to the width and height of the plot \
 window.  For example, @code{[0.2, 0.3, 0.4, 0.5]} sets the lower \
 left corner of the axes at @math{(0.2, 0.3)} and the width and \
 height to be 0.4 and 0.5 respectively.  \
-@xref{XREFaxesouterposition, , @w{outerposition property}}.";
+@xref{XREFaxesouterposition,,@w{outerposition property}}.";
         endif
         s.valid = valid_4elvec;
         s.category = "Object Position";
@@ -1172,8 +1172,8 @@ height to be 0.4 and 0.5 respectively.  \
         s.doc = "Specify which of @qcode{\"innerposition\"} or \
 @qcode{\"outerposition\"} properties takes precedence when axes \
 annotations extent changes.  \
-@xref{XREFaxesinnerposition, , @w{@qcode{\"innerposition\"} property}}, \
-and @ref{XREFaxesouterposition, , @w{@qcode{\"outerposition\"} property}}.";
+@xref{XREFaxesinnerposition,,@w{\"innerposition\" property}}, \
+and @ref{XREFaxesouterposition,,@w{\"outerposition\" property}}.";
         s.category = "Object Position";
 
       case "projection"
@@ -1196,13 +1196,13 @@ plots.";
 
       case "tickdirmode"
         s.doc = "Current state of the tickdir mode, either manually set by \
-the @ref{XREFaxestickdir, , @w{@qcode{\"tickdir\"} property}} or \
+the @ref{XREFaxestickdir,,@w{@qcode{\"tickdir\"} property}} or \
 automatically set to the default for the current view.";
         s.category = "Axes Box Appearance";
 
       case "ticklabelinterpreter"
         s.doc = "Control the way x/y/zticklabel properties are interpreted.\n\
-@xref{Use of the \"interpreter\" Property, , @w{Use of the @qcode{\"interpreter\"} Property}}.";
+@xref{Use of the \"interpreter\" Property,,@w{Use of the @qcode{\"interpreter\"} Property}}.";
         s.category = "Text Appearance";
 
       case "ticklength"
@@ -1262,7 +1262,7 @@ the viewpoint for three-dimensional plots.";
         s.category = "Axes Box Appearance";
 
       case "xcolor"
-        s.doc = "Color of the x-axis.  @xref{Colors, , colorspec}.  \
+        s.doc = "Color of the x-axis.  @xref{Colors,,colorspec}.  \
 __modemsg__";
         s.valid = packopt ({markdef(valid_color), "@qcode{\"none\"}"});
         s.category = "Axes Box Appearance";
@@ -1270,11 +1270,11 @@ __modemsg__";
       case "xcolormode"
         s.doc = "Current state of the setting determining the color that is \
 applied to the x-axis grid lines.  If set to @qcode{\"auto\"} and/or the \
-@ref{XREFaxesgridcolormode, , @w{@qcode{\"gridcolormode\"} property}} is set \
+@ref{XREFaxesgridcolormode,,@w{@qcode{\"gridcolormode\"} property}} is set \
 to @qcode{\"manual\"}, the x-axis grid color will be defined by the \
-@ref{XREFaxesgridcolor, , @w{@qcode{\"gridcolor\"} property}}.  Otherwise \
+@ref{XREFaxesgridcolor,,@w{@qcode{\"gridcolor\"} property}}.  Otherwise \
 the x-axis grid color will be defined by the \
-@ref{XREFaxesxcolor, , @w{@qcode{\"xcolor\"} property}}.";
+@ref{XREFaxesxcolor,,@w{@qcode{\"xcolor\"} property}}.";
         s.category = "Axes Box Appearance";
 
       case "xdir"
@@ -1293,7 +1293,7 @@ right in default 2-D and 3-D views.";
 
       case "xlim"
         s.doc = "Two-element vector @code{[xmin xmax]} specifying the limits \
-for the x-axis.  __modemsg__   @xref{XREFxlim, , @w{xlim function}}.";
+for the x-axis.  __modemsg__   @xref{XREFxlim,,@w{xlim function}}.";
         s.valid = valid_2elvec;
         s.category = "Axes Box Appearance";
 
@@ -1304,14 +1304,14 @@ for the x-axis.  __modemsg__   @xref{XREFxlim, , @w{xlim function}}.";
 value @qcode{\"tight\"} the limits are adjusted to enclose all the graphics \
 objects in the axes, while with value @qcode{\"padded\"}, an additional \
 margin of about 7%% of the data extent is added around the objects.  \
-@xref{XREFaxis, , @w{axis function}}.";
+@xref{XREFaxis,,@w{axis function}}.";
         s.category = "Axes Box Appearance";
 
       case "xlimmode"
         s.doc = "Current state of the x-axis limit selection method, either \
-manually set with the @ref{XREFaxesxlim, , @w{@qcode{\"xlim\"} property}} \
+manually set with the @ref{XREFaxesxlim,,@w{@qcode{\"xlim\"} property}} \
 or automatically set to span the plotted data according to the \
-@ref{XREFaxesxlimitmethod, , @w{@qcode{\"xlimitmethod\"} property}}.";
+@ref{XREFaxesxlimitmethod,,@w{@qcode{\"xlimitmethod\"} property}}.";
         s.category = "Axes Box Appearance";
 
       case "xminorgrid"
@@ -1329,7 +1329,7 @@ or automatically set to span the plotted data according to the \
       case "xminortickvaluesmode"
         s.doc = "Setting to determine whether the xminortick locations and \
 spacing are set automatically by Octave or manually using the \
-@ref{XREFaxesxminortickvalues, , @w{@qcode{\"xminortickvalues\"} property}}.";
+@ref{XREFaxesxminortickvalues,,@w{@qcode{\"xminortickvalues\"} property}}.";
         s.category = "Axes Box Appearance";
 
       case "xscale"
@@ -1350,7 +1350,7 @@ spacing are set automatically by Octave or manually using the \
       case "xticklabelmode"
         s.doc = "Setting to determine whether the xtick labels are set \
 automatically by Octave or manually using the \
-@ref{XREFaxesxticklabel, , @w{@qcode{\"xticklabel\"} property}}.";
+@ref{XREFaxesxticklabel,,@w{@qcode{\"xticklabel\"} property}}.";
         s.category = "Text Appearance";
 
       case "xticklabelrotation"
@@ -1360,7 +1360,7 @@ automatically by Octave or manually using the \
       case "xtickmode"
         s.doc = "Setting to determine whether the xtick locations and \
 spacing are set automatically by Octave or manually using the \
-@ref{XREFaxesxtick, , @w{@qcode{\"xtick\"} property}}.";
+@ref{XREFaxesxtick,,@w{@qcode{\"xtick\"} property}}.";
         s.category = "Axes Box Appearance";
 
       case "yaxis"
@@ -1372,18 +1372,18 @@ spacing are set automatically by Octave or manually using the \
         s.category = "Axes Box Appearance";
 
       case "ycolor"
-        s.doc = "Color of the y-axis.  @xref{Colors, , colorspec}.";
+        s.doc = "Color of the y-axis.  @xref{Colors,,colorspec}.";
         s.valid = packopt ({markdef(valid_color), "@qcode{\"none\"}"});
         s.category = "Axes Box Appearance";
 
       case "ycolormode"
         s.doc = "Current state of the setting determining the color that is \
 applied to the y-axis grid lines.  If set to @qcode{\"auto\"} and/or the \
-@ref{XREFaxesgridcolormode, , @w{@qcode{\"gridcolormode\"} property}} is set \
+@ref{XREFaxesgridcolormode,,@w{@qcode{\"gridcolormode\"} property}} is set \
 to @qcode{\"manual\"}, the y-axis grid color will be defined by the \
-@ref{XREFaxesgridcolor, , @w{@qcode{\"gridcolor\"} property}}.  Otherwise \
+@ref{XREFaxesgridcolor,,@w{@qcode{\"gridcolor\"} property}}.  Otherwise \
 the y-axis grid color will be defined by the \
-@ref{XREFaxesycolor, , @w{@qcode{\"ycolor\"} property}}.";
+@ref{XREFaxesycolor,,@w{@qcode{\"ycolor\"} property}}.";
         s.category = "Axes Box Appearance";
 
       case "ydir"
@@ -1402,7 +1402,7 @@ to top in 2-D and front to back in 3-D default views.";
 
       case "ylim"
         s.doc = "Two-element vector @code{[ymin ymax]} specifying the limits \
-for the y-axis.  __modemsg__  @xref{XREFylim, , @w{ylim function}}.";
+for the y-axis.  __modemsg__  @xref{XREFylim,,@w{ylim function}}.";
         s.valid = valid_2elvec;
         s.category = "Axes Box Appearance";
 
@@ -1413,14 +1413,14 @@ for the y-axis.  __modemsg__  @xref{XREFylim, , @w{ylim function}}.";
 value @qcode{\"tight\"} the limits are adjusted to enclose all the graphics \
 objects in the axes, while with value @qcode{\"padded\"}, an additional \
 margin of about 7%% of the data extent is added around the objects.  \
-@xref{XREFaxis, , @w{axis function}}.";
+@xref{XREFaxis,,@w{axis function}}.";
         s.category = "Axes Box Appearance";
 
       case "ylimmode"
         s.doc = "Current state of the y-axis limit selection method, either \
-manually set with the @ref{XREFaxesylim, , @w{@qcode{\"ylim\"} property}} \
+manually set with the @ref{XREFaxesylim,,@w{@qcode{\"ylim\"} property}} \
 or automatically set to span the plotted data according to the \
-@ref{XREFaxesylimitmethod, , @w{@qcode{\"ylimitmethod\"} property}}.";
+@ref{XREFaxesylimitmethod,,@w{@qcode{\"ylimitmethod\"} property}}.";
         s.category = "Axes Box Appearance";
 
       case "yminorgrid"
@@ -1438,7 +1438,7 @@ or automatically set to span the plotted data according to the \
       case "yminortickvaluesmode"
         s.doc = "Setting to determine whether the yminortick locations and \
 spacing are set automatically by Octave or manually using the \
-@ref{XREFaxesyminortickvalues, , @w{@qcode{\"yminortickvalues\"} property}}.";
+@ref{XREFaxesyminortickvalues,,@w{@qcode{\"yminortickvalues\"} property}}.";
         s.category = "Axes Box Appearance";
 
       case "yscale"
@@ -1459,7 +1459,7 @@ spacing are set automatically by Octave or manually using the \
       case "yticklabelmode"
         s.doc = "Setting to determine whether the ytick labels are set \
 automatically by Octave or manually using the \
-@ref{XREFaxesyticklabel, , @w{@qcode{\"yticklabel\"} property}}.";
+@ref{XREFaxesyticklabel,,@w{@qcode{\"yticklabel\"} property}}.";
         s.category = "Text Appearance";
 
       case "yticklabelrotation"
@@ -1469,7 +1469,7 @@ automatically by Octave or manually using the \
       case "ytickmode"
         s.doc = "Setting to determine whether the ytick locations and \
 spacing are set automatically by Octave or manually using the \
-@ref{XREFaxesytick, , @w{@qcode{\"ytick\"} property}}.";
+@ref{XREFaxesytick,,@w{@qcode{\"ytick\"} property}}.";
         s.category = "Axes Box Appearance";
 
       case "zaxis"
@@ -1477,18 +1477,18 @@ spacing are set automatically by Octave or manually using the \
         s.category = "Axes Box Appearance";
 
       case "zcolor"
-        s.doc = "Color of the z-axis.  @xref{Colors, , colorspec}.";
+        s.doc = "Color of the z-axis.  @xref{Colors,,colorspec}.";
         s.valid = packopt ({markdef(valid_color), "@qcode{\"none\"}"});
         s.category = "Axes Box Appearance";
 
       case "zcolormode"
         s.doc = "Current state of the setting determining the color that is \
 applied to the z-axis grid lines.  If set to @qcode{\"auto\"} and/or the \
-@ref{XREFaxesgridcolormode, , @w{@qcode{\"gridcolormode\"} property}} is set \
+@ref{XREFaxesgridcolormode,,@w{@qcode{\"gridcolormode\"} property}} is set \
 to @qcode{\"manual\"}, the z-axis grid color will be defined by the \
-@ref{XREFaxesgridcolor, , @w{@qcode{\"gridcolor\"} property}}.  Otherwise \
+@ref{XREFaxesgridcolor,,@w{@qcode{\"gridcolor\"} property}}.  Otherwise \
 the z-axis grid color will be defined by the \
-@ref{XREFaxeszcolor, , @w{@qcode{\"zcolor\"} property}}.";
+@ref{XREFaxeszcolor,,@w{@qcode{\"zcolor\"} property}}.";
         s.category = "Axes Box Appearance";
 
       case "zdir"
@@ -1507,7 +1507,7 @@ to top in default 3-D views.";
 
       case "zlim"
         s.doc = "Two-element vector @code{[zmin zmax]} specifying the limits \
-for the z-axis.  __modemsg__  @xref{XREFzlim, , @w{zlim function}}.";
+for the z-axis.  __modemsg__  @xref{XREFzlim,,@w{zlim function}}.";
         s.valid = valid_2elvec;
         s.category = "Axes Box Appearance";
 
@@ -1518,14 +1518,14 @@ for the z-axis.  __modemsg__  @xref{XREFzlim, , @w{zlim function}}.";
 value @qcode{\"tight\"} the limits are adjusted to enclose all the graphics \
 objects in the axes, while with value @qcode{\"padded\"}, an additional \
 margin of about 7%% of the data extent is added around the objects.  \
-@xref{XREFaxis, , @w{axis function}}.";
+@xref{XREFaxis,,@w{axis function}}.";
         s.category = "Axes Box Appearance";
 
       case "zlimmode"
         s.doc = "Current state of the z-axis limit selection method, either \
-manually set with the @ref{XREFaxeszlim, , @w{@qcode{\"zlim\"} property}} \
+manually set with the @ref{XREFaxeszlim,,@w{@qcode{\"zlim\"} property}} \
 or automatically set to span the plotted data according to the \
-@ref{XREFaxeszlimitmethod, , @w{@qcode{\"zlimitmethod\"} property}}.";
+@ref{XREFaxeszlimitmethod,,@w{@qcode{\"zlimitmethod\"} property}}.";
         s.category = "Axes Box Appearance";
 
       case "zminorgrid"
@@ -1543,7 +1543,7 @@ or automatically set to span the plotted data according to the \
       case "zminortickvaluesmode"
         s.doc = "Setting to determine whether the zminortick locations and \
 spacing are set automatically by Octave or manually using the \
-@ref{XREFaxeszminortickvalues, , @w{@qcode{\"zminortickvalues\"} property}}.";
+@ref{XREFaxeszminortickvalues,,@w{@qcode{\"zminortickvalues\"} property}}.";
         s.category = "Axes Box Appearance";
 
       case "zscale"
@@ -1564,7 +1564,7 @@ spacing are set automatically by Octave or manually using the \
       case "zticklabelmode"
         s.doc = "Setting to determine whether the ztick labels are set \
 automatically by Octave or manually using the \
-@ref{XREFaxeszticklabel, , @w{@qcode{\"zticklabel\"} property}}.";
+@ref{XREFaxeszticklabel,,@w{@qcode{\"zticklabel\"} property}}.";
         s.category = "Text Appearance";
 
       case "zticklabelrotation"
@@ -1574,7 +1574,7 @@ automatically by Octave or manually using the \
       case "ztickmode"
         s.doc = "Setting to determine whether the ztick locations and \
 spacing are set automatically by Octave or manually using the \
-@ref{XREFaxesztick, , @w{@qcode{\"ztick\"} property}}.";
+@ref{XREFaxesztick,,@w{@qcode{\"ztick\"} property}}.";
         s.category = "Axes Box Appearance";
 
       ## Legend specific properties
@@ -1606,7 +1606,7 @@ plot ((1:10) * 3);\n\
 
       case "itemhitfcn"
         s.doc = "Callback function which is executed when a legend item \
-is clicked.  @xref{Callbacks, , @w{Callbacks section}}.\n\
+is clicked.  @xref{Callbacks,,@w{Callbacks section}}.\n\
 \n\
 The callback function must have the following prototype \
 @code{fcn (hlegend, evnt)}, where @code{hlegend} is the legend object handle \
@@ -1620,7 +1620,7 @@ the item is clicked.\n\
 @item SelectionType\n\
 One of @qcode{\"normal\"}, @qcode{\"extend\"}, @qcode{\"open\"}, or \
 @qcode{\"alt\"}.  \
-@xref{XREFfigureselectiontype, , @w{Figure @qcode{\"selectiontype\"}}}.\n\
+@xref{XREFfigureselectiontype,,@w{Figure @qcode{\"selectiontype\"}}}.\n\
 @item Source\n\
 Handle of the legend object.\n\
 @item EventName\n\
@@ -1692,7 +1692,7 @@ right of their corresponding icon.";
 
       ## Specific properties
       case "color"
-        s.doc = "Color of the line object.  @xref{Colors, , colorspec}.";
+        s.doc = "Color of the line object.  @xref{Colors,,colorspec}.";
         s.valid = valid_color;
         s.category = "Line Appearance";
 
@@ -1724,14 +1724,14 @@ This property currently only affects the printed output.";
         s.doc = "Color of the edge of the markers.  When set to \
 @qcode{\"auto\"}, the marker edges have the same color as the line.  If set \
 to @qcode{\"none\"}, no marker edges are displayed.  This property can also \
-be set to any color.  @xref{Colors, , colorspec}.";
+be set to any color.  @xref{Colors,,colorspec}.";
         s.category = "Marker Appearance";
 
       case "markerfacecolor"
         s.doc = "Color of the face of the markers.  When set to \
 @qcode{\"auto\"}, the marker faces have the same color as the line.  If set \
 to @qcode{\"none\"}, the marker faces are not displayed.  This property \
-can also be set to any color.  @xref{Colors, , colorspec}.";
+can also be set to any color.  @xref{Colors,,colorspec}.";
         s.category = "Marker Appearance";
 
       case "markersize"
@@ -1784,18 +1784,18 @@ z data.";
 
       ## Specific properties
       case "backgroundcolor"
-        s.doc = "Color of the background area.  @xref{Colors, , colorspec}.";
+        s.doc = "Color of the background area.  @xref{Colors,,colorspec}.";
         s.valid = valid_color;
         s.category = "Text Box Appearance";
 
       case "color"
-        s.doc = "Color of the text.  @xref{Colors, ,colorspec}.";
+        s.doc = "Color of the text.  @xref{Colors,,colorspec}.";
         s.valid = valid_color;
         s.category = "Text Appearance";
 
       case "edgecolor"
         s.doc = "Color of the outline of the background area.  \
-@xref{Colors, , colorspec}.";
+@xref{Colors,,colorspec}.";
         s.valid = valid_color;
         s.category = "Text Box Appearance";
 
@@ -1838,14 +1838,14 @@ location of the text string.";
 
       case "horizontalalignment"
         s.doc = "Specifies the horizontal location of the point set by the \
-@ref{XREFtextposition, , @w{@qcode{\"position\"} property}} relative to the \
+@ref{XREFtextposition,,@w{@qcode{\"position\"} property}} relative to the \
 text.";
         s.category = "Object Position";
 
       case "interpreter"
         s.doc = "Control the way the @qcode{\"string\"} property is \
 interpreted.\n\
-@xref{Use of the \"interpreter\" Property, , @w{Use of the @qcode{\"interpreter\"} Property}}.";
+@xref{Use of the \"interpreter\" Property,,@w{Use of the @qcode{\"interpreter\"} Property}}.";
         s.category = "Text Appearance";
 
       case "linestyle"
@@ -1884,8 +1884,8 @@ degrees.";
 
       case "units"
         s.doc = "Sets the measurement unit or method applied to the \
-@ref{XREFtextposition, , @qcode{\"position\"}} and \
-@ref{XREFtextextent, , @qcode{\"extent\"}} properties.  The default \
+@ref{XREFtextposition,,@qcode{\"position\"}} and \
+@ref{XREFtextextent,,@qcode{\"extent\"}} properties.  The default \
 option @qcode{\"data\"} uses the same units and limits as the data plotted in \
 the figure.  The @qcode{\"normalized\"} option applies a unitless 0 to 1 scale \
 to the limits along each axis of the displayed data.";
@@ -1893,7 +1893,7 @@ to the limits along each axis of the displayed data.";
 
       case "verticalalignment"
         s.doc = "Specifies the vertical location of the point set by the \
-@ref{XREFtextposition, , @w{@qcode{\"position\"} property}} relative to the \
+@ref{XREFtextposition,,@w{@qcode{\"position\"} property}} relative to the \
 text.  Note that @qcode{\"top\"} and @qcode{\"bottom\"} align to the edge of \
 the text box while @qcode{\"cap\"} and @qcode{\"baseline\"} refer to the edges \
 of the text itself.";
@@ -1933,11 +1933,11 @@ range from 0 to 1 while integer value range from @code{intmin} to \
 
       case "cdatamapping"
         s.doc = "Sets the method for mapping data from the \
-@ref{XREFimagecdata, , @w{@qcode{\"cdata\"} property}} to the current \
+@ref{XREFimagecdata,,@w{@qcode{\"cdata\"} property}} to the current \
 colormap.  @qcode{\"Direct\"} mapping selects the color using the \
 @qcode{\"cdata\"} value as an index to the current colormap.  \
 @qcode{\"Scaled\"} mapping scales the @qcode{\"cdata\"} values to the range \
-specified in the @ref{XREFaxesclim, , @w{@qcode{\"clim\"} axes property}}.";
+specified in the @ref{XREFaxesclim,,@w{@qcode{\"clim\"} axes property}}.";
         s.category = "Image Data";
 
       case "displayname"
@@ -1998,7 +1998,7 @@ view are unlit.";
       case "cdata"
         s.doc = "Color data values for __objname__ vertices. Data is stored \
 either as a 2-D matrix the same size as \
-@ref{XREFsurfacezdata, , @qcode{\"zdata\"}} where each element's value \
+@ref{XREFsurfacezdata,,@qcode{\"zdata\"}} where each element's value \
 determines that vertex's color according to the current colormap, or as a \
 3-D array where the third dimension contains separate red, blue, and green \
 components for each vertex.";
@@ -2007,19 +2007,19 @@ components for each vertex.";
 
       case "cdatamapping"
         s.doc = "Sets the method for mapping data from the \
-@ref{XREFsurfacecdata, , @w{@qcode{\"cdata\"} property}} to the current \
+@ref{XREFsurfacecdata,,@w{@qcode{\"cdata\"} property}} to the current \
 colormap.  @qcode{\"Direct\"} mapping selects the color using the \
 @qcode{\"cdata\"} value as an index to the current colormap.  \
 @qcode{\"Scale\"} mapping scales the @qcode{\"cdata\"} values to the range \
-specified in the @ref{XREFaxesclim, , @w{@qcode{\"clim\"} axes property}}.";
+specified in the @ref{XREFaxesclim,,@w{@qcode{\"clim\"} axes property}}.";
         s.category = "Color and Transparency";
 
       case "cdatasource"
         s.doc = "The name of a workspace variable that contains data that \
 will be used for the \
-@ref{XREFsurfacecdata, , @w{@qcode{\"cdata\"} property}}.  Data is \
+@ref{XREFsurfacecdata,,@w{@qcode{\"cdata\"} property}}.  Data is \
 transferred into @qcode{\"cdata\"} using the \
-@ref{XREFrefreshdata, , @w{refreshdata function}}.";
+@ref{XREFrefreshdata,,@w{refreshdata function}}.";
         s.valid = valid_string;
         s.category = "Color and Transparency";
 
@@ -2044,8 +2044,8 @@ either a valid color specification or one of @qcode{\"none\"}, \
 @qcode{\"flat\"}, or @qcode{\"interp\"}.  @qcode{\"flat\"} and \
 @qcode{\"interp\"} will set either a single color for each edge or a color \
 interpolated between two adjacent vertices using the color value data stored \
-in @ref{XREFsurfacecdata, , @qcode{\"cdata\"}}.  \
-@xref{Colors, , colorspec}.";
+in @ref{XREFsurfacecdata,,@qcode{\"cdata\"}}.  \
+@xref{Colors,,colorspec}.";
         s.valid = packopt ({valid_color, ...
                             "@qcode{\"none\"}", ...
                             "@qcode{\"flat\"}", ...
@@ -2081,8 +2081,8 @@ either a valid color specification or one of @qcode{\"none\"}, \
 @qcode{\"flat\"}, or @qcode{\"interp\"}.  @qcode{\"flat\"} and \
 @qcode{\"interp\"} will set either a single color for each face or a color \
 interpolated across the face's vertices using the color value data stored in \
-@ref{XREFsurfacecdata, , @qcode{\"cdata\"}}.  \
-@xref{Colors, , colorspec}.";
+@ref{XREFsurfacecdata,,@qcode{\"cdata\"}}.  \
+@xref{Colors,,colorspec}.";
         s.valid = packopt ({valid_color, ...
                             "@qcode{\"none\"}", ...
                             "@qcode{\"flat\"}", ...
@@ -2116,7 +2116,7 @@ the vertices).  @qcode{\"phong\"} is deprecated and has the same effect as \
         s.category = "Outline Appearance";
 
       case "linewidth"
-        s.doc = "@xref{XREFlinelinewidth, , @w{line linewidth property}}.";
+        s.doc = "@xref{XREFlinelinewidth,,@w{line linewidth property}}.";
         s.valid = "scalar";
         s.category = "Outline Appearance";
 
@@ -2125,17 +2125,17 @@ the vertices).  @qcode{\"phong\"} is deprecated and has the same effect as \
         s.category = "Marker Appearance";
 
       case "markeredgecolor"
-        s.doc = "@xref{XREFlinemarkeredgecolor, , \
+        s.doc = "@xref{XREFlinemarkeredgecolor,,\
 @w{line markeredgecolor property}}.";
         s.category = "Marker Appearance";
 
       case "markerfacecolor"
-        s.doc = "@xref{XREFlinemarkerfacecolor, , \
+        s.doc = "@xref{XREFlinemarkerfacecolor,,\
 @w{line markerfacecolor property}}.";
         s.category = "Marker Appearance";
 
       case "markersize"
-        s.doc = "@xref{XREFlinemarkersize, , \
+        s.doc = "@xref{XREFlinemarkersize,,\
 @w{line markersize property}}.";
         s.valid = "scalar";
         s.category = "Marker Appearance";
@@ -2184,9 +2184,9 @@ one @code{light} object is present and visible in the same axes.";
       case "xdatasource"
         s.doc = "The name of a workspace variable that contains data that \
 will be used for the \
-@ref{XREFsurfacexdata, , @w{@qcode{\"xdata\"} property}}.  Data is \
+@ref{XREFsurfacexdata,,@w{@qcode{\"xdata\"} property}}.  Data is \
 transferred into @qcode{\"xdata\"} using the \
-@ref{XREFrefreshdata, , @w{refreshdata function}}.";
+@ref{XREFrefreshdata,,@w{refreshdata function}}.";
         s.valid = valid_string;
         s.category = "Coordinate Data";
 
@@ -2198,9 +2198,9 @@ transferred into @qcode{\"xdata\"} using the \
       case "ydatasource"
         s.doc = "The name of a workspace variable that contains data that \
 will be used for the \
-@ref{XREFsurfaceydata, , @w{@qcode{\"ydata\"} property}}.  Data is \
+@ref{XREFsurfaceydata,,@w{@qcode{\"ydata\"} property}}.  Data is \
 transferred into @qcode{\"ydata\"} using the \
-@ref{XREFrefreshdata, , @w{refreshdata function}}.";
+@ref{XREFrefreshdata,,@w{refreshdata function}}.";
         s.valid = valid_string;
         s.category = "Coordinate Data";
 
@@ -2212,9 +2212,9 @@ transferred into @qcode{\"ydata\"} using the \
       case "zdatasource"
         s.doc = "The name of a workspace variable that contains data that \
 will be used for the \
-@ref{XREFsurfacezdata, , @w{@qcode{\"zdata\"} property}}.  Data is \
+@ref{XREFsurfacezdata,,@w{@qcode{\"zdata\"} property}}.  Data is \
 transferred into @qcode{\"zdata\"} using the \
-@ref{XREFrefreshdata, , @w{refreshdata function}}.";
+@ref{XREFrefreshdata,,@w{refreshdata function}}.";
         s.valid = valid_string;
         s.category = "Coordinate Data";
 
@@ -2271,13 +2271,13 @@ the color at each vertex. (The shape of @qcode{\"cdata\"} should match that of \
 
       case "cdatamapping"
         s.doc = "Sets the method for mapping data from the \
-@ref{XREFpatchcdata, , @qcode{\"cdata\"}} or \
-@ref{XREFpatchcdata, , @qcode{\"cdata\"}} property to the current \
+@ref{XREFpatchcdata,,@qcode{\"cdata\"}} or \
+@ref{XREFpatchcdata,,@qcode{\"cdata\"}} property to the current \
 colormap.  @qcode{\"Direct\"} mapping selects the color using the \
 @qcode{\"cdata\"} or @qcode{\"facevertexcdata\"} value as an index to the \
 current colormap.  @qcode{\"Scaled\"} mapping scales the @qcode{\"cdata\"} \
 or @qcode{\"facevertexcdata\"} values to the range \
-specified in the @ref{XREFaxesclim, , @w{@qcode{\"clim\"} axes property}}.";
+specified in the @ref{XREFaxesclim,,@w{@qcode{\"clim\"} axes property}}.";
         s.category = "Color and Transparency";
 
       case "diffusestrength"
@@ -2301,8 +2301,8 @@ either a valid color specification or one of @qcode{\"none\"}, \
 @qcode{\"flat\"}, or @qcode{\"interp\"}.  @qcode{\"flat\"} and \
 @qcode{\"interp\"} will set either a single color for each edge or a color \
 interpolated between edge's vertices using the color value data stored in \
-@ref{XREFpatchcdata, , @qcode{\"cdata\"}}.  \
-@xref{Colors, , colorspec}.";
+@ref{XREFpatchcdata,,@qcode{\"cdata\"}}.  \
+@xref{Colors,,colorspec}.";
         s.valid = packopt ({valid_color, ...
                             "@qcode{\"none\"}", ...
                             "@qcode{\"flat\"}", ...
@@ -2337,9 +2337,9 @@ either a valid color specification or one of @qcode{\"none\"}, \
 @qcode{\"flat\"}, or @qcode{\"interp\"}.  @qcode{\"flat\"} and \
 @qcode{\"interp\"} will set either a single color for each face or a color \
 interpolated across the face's vertices using the color value data stored in \
-either the @ref{XREFpatchcdata, , @qcode{\"cdata\"}} or \
-@ref{XREFpatchfacevertexcdata, , @qcode{\"facevertexcdata\"}} \
-properties.  @xref{Colors, , colorspec}.";
+either the @ref{XREFpatchcdata,,@qcode{\"cdata\"}} or \
+@ref{XREFpatchfacevertexcdata,,@qcode{\"facevertexcdata\"}} \
+properties.  @xref{Colors,,colorspec}.";
         ## Don't provide a default value, and mark colorspec with
         ## braces, this forces the default RGB triplet to be displayed
         s.valid = packopt ({markdef(valid_color), ...
@@ -2374,7 +2374,7 @@ the vertices).  @qcode{\"phong\"} is deprecated and has the same effect as \
         s.doc = "__objname__ faces connectivity list stored as an M x N \
 matrix, with each of the M faces defined by a row of up to N vertices, \
 and each element contains the row index of a vertex stored in the \
-@ref{XREFpatchvertices, , @w{vertices property}}.  Faces with fewer than N \
+@ref{XREFpatchvertices,,@w{vertices property}}.  Faces with fewer than N \
 vertices use NaN values to fill empty row elements.";
         s.valid = valid_vecmat;
         s.category = "Coordinate Data";
@@ -2409,26 +2409,26 @@ each vertex.";
         s.category = "Outline Appearance";
 
       case "linewidth"
-        s.doc = "@xref{XREFlinelinewidth, , @w{line linewidth property}}.";
+        s.doc = "@xref{XREFlinelinewidth,,@w{line linewidth property}}.";
         s.valid = "scalar";
         s.category = "Outline Appearance";
 
       case "marker"
-        s.doc = "@xref{XREFlinemarker, , @w{line marker property}}.";
+        s.doc = "@xref{XREFlinemarker,,@w{line marker property}}.";
         s.category = "Marker Appearance";
 
       case "markeredgecolor"
-        s.doc = "@xref{XREFlinemarkeredgecolor, , \
+        s.doc = "@xref{XREFlinemarkeredgecolor,,\
 @w{line markeredgecolor property}}.";
         s.category = "Marker Appearance";
 
       case "markerfacecolor"
-        s.doc = "@xref{XREFlinemarkerfacecolor, , \
+        s.doc = "@xref{XREFlinemarkerfacecolor,,\
 @w{line markerfacecolor property}}.";
         s.category = "Marker Appearance";
 
       case "markersize"
-        s.doc = "@xref{XREFlinemarkersize, , @w{line markersize property}}.";
+        s.doc = "@xref{XREFlinemarkersize,,@w{line markersize property}}.";
         s.valid = "scalar";
         s.category = "Marker Appearance";
 
@@ -2466,7 +2466,7 @@ one @code{light} object is present and visible in the same axes.";
       case "vertices"
         s.doc = "__objname__ vertex list stored as an N x 3 matrix, with \
 each row containing the x, y, and z coordinates of the vector, and used \
-with the @ref{XREFpatchfaces, , @w{faces property}} to define patch \
+with the @ref{XREFpatchfaces,,@w{faces property}} to define patch \
 structure.";
         s.valid = valid_vecmat;
         s.category = "Coordinate Data";
@@ -2522,9 +2522,9 @@ the @code{seriesindex}.";
       case "cdatasource"
         s.doc = "The name of a workspace variable that contains data that \
 will be used for the \
-@ref{XREFpatchcdata, , @w{@qcode{\"cdata\"} property}}.  Data is \
+@ref{XREFpatchcdata,,@w{@qcode{\"cdata\"} property}}.  Data is \
 transferred into @qcode{\"cdata\"} using the \
-@ref{XREFrefreshdata, , @w{refreshdata function}}.";
+@ref{XREFrefreshdata,,@w{refreshdata function}}.";
         s.valid = valid_string;
         s.category = "Color Data";
 
@@ -2559,7 +2559,7 @@ object.";
         s.category = "Coordinate Data";
 
       case "marker"
-        s.doc = "@xref{XREFlinemarker, , @w{line marker property}}.";
+        s.doc = "@xref{XREFlinemarker,,@w{line marker property}}.";
         s.category = "Marker Appearance";
 
       case "markeredgealpha"
@@ -2574,7 +2574,7 @@ transparent markers or in combination with other transparent objects.";
       case "markeredgecolor"
         s.doc = "Color of the edge of the markers.  @qcode{\"none\"} means \
 that the edges are transparent and @qcode{\"flat\"} means that the value \
-from @code{cdata} is used.  @xref{XREFlinemarkeredgecolor, , \
+from @code{cdata} is used.  @xref{XREFlinemarkeredgecolor,,\
 @w{line markeredgecolor property}}.";
         s.valid = packopt ({markdef("@qcode{\"none\"}"), ...
                             "@qcode{\"flat\"}", ...
@@ -2594,7 +2594,7 @@ transparent markers or in combination with other transparent objects.";
         s.doc = "Color of the face of the markers.  @qcode{\"none\"} means \
 that the faces are transparent, @qcode{\"flat\"} means that the value from \
 @code{cdata} is used, and @qcode{\"auto\"} uses the @code{color} property of \
-the ancestor axes.  @xref{XREFlinemarkerfacecolor, , \
+the ancestor axes.  @xref{XREFlinemarkerfacecolor,,\
 @w{line markerfacecolor property}}.";
         s.valid = packopt ({markdef("@qcode{\"none\"}"), ...
                             "@qcode{\"flat\"}", ...
@@ -2644,9 +2644,9 @@ each one of the N scatter markers.";
         case "xdatasource"
         s.doc = "The name of a workspace variable that contains data that \
 will be used for the \
-@ref{XREFscatterxdata, , @w{@qcode{\"xdata\"} property}}.  Data is \
+@ref{XREFscatterxdata,,@w{@qcode{\"xdata\"} property}}.  Data is \
 transferred into @qcode{\"xdata\"} using the \
-@ref{XREFrefreshdata, , @w{refreshdata function}}.";
+@ref{XREFrefreshdata,,@w{refreshdata function}}.";
         s.valid = valid_string;
         s.category = "Coordinate Data";
 
@@ -2658,9 +2658,9 @@ transferred into @qcode{\"xdata\"} using the \
       case "ydatasource"
         s.doc = "The name of a workspace variable that contains data that \
 will be used for the \
-@ref{XREFscatterydata, , @w{@qcode{\"ydata\"} property}}.  Data is \
+@ref{XREFscatterydata,,@w{@qcode{\"ydata\"} property}}.  Data is \
 transferred into @qcode{\"ydata\"} using the \
-@ref{XREFrefreshdata, , @w{refreshdata function}}.";
+@ref{XREFrefreshdata,,@w{refreshdata function}}.";
         s.valid = valid_string;
         s.category = "Coordinate Data";
 
@@ -2673,9 +2673,9 @@ object.";
       case "zdatasource"
         s.doc = "The name of a workspace variable that contains data that \
 will be used for the \
-@ref{XREFscatterzdata, , @w{@qcode{\"zdata\"} property}}.  Data is \
+@ref{XREFscatterzdata,,@w{@qcode{\"zdata\"} property}}.  Data is \
 transferred into @qcode{\"zdata\"} using the \
-@ref{XREFrefreshdata, , @w{refreshdata function}}.";
+@ref{XREFrefreshdata,,@w{refreshdata function}}.";
         s.valid = valid_string;
         s.category = "Coordinate Data";
 
@@ -2691,7 +2691,7 @@ transferred into @qcode{\"zdata\"} using the \
 
       ## Specific properties
       case "color"
-        s.doc = "Color of the light source.  @xref{Colors, ,colorspec}.";
+        s.doc = "Color of the light source.  @xref{Colors,,colorspec}.";
         s.valid = valid_color;
         s.category = "Lighting";
 
@@ -2761,7 +2761,7 @@ above the current menu position.";
       case "text"
         s.doc = "The text for this menu entry.  A @qcode{\"&\"} character \
 can be used to mark the \
-@ref{XREFuimenuaccelerator, , @w{@qcode{\"accelerator\"} key}}";
+@ref{XREFuimenuaccelerator,,@w{@qcode{\"accelerator\"} key}}";
         s.valid = "string";
         s.category = "Menu Options";
 
@@ -2854,7 +2854,7 @@ uicontextmenu to appear");
 
       case "shadowcolor"
         s.doc = "The color value of the line surrounding the border line \
-around this panel.  @xref{Colors, , colorspec}.";
+around this panel.  @xref{Colors,,colorspec}.";
         s.valid = valid_color;
 
         s.category = "Appearance";
@@ -3048,7 +3048,7 @@ indicate the size of the rectangle enclosing all lines.";
 
       case "foregroundcolor"
         s.doc = "The color value of the text for this control object.  \
-@xref{Colors, , colorspec}.";
+@xref{Colors,,colorspec}.";
         s.valid = valid_color;
         s.category = "Appearance";
 
@@ -3135,7 +3135,7 @@ step size for clicking within the slider bar.";
       case "style"
         s.doc = "The type of control object created.  For a complete \
 description of available control styles, see the \
-@ref{XREFuicontrol, , @w{@qcode{\"uicontrol\"} function}}";
+@ref{XREFuicontrol,,@w{@qcode{\"uicontrol\"} function}}";
         s.category = "Appearance";
 
       case "tooltipstring"
@@ -3173,7 +3173,7 @@ uicontrol object.";
         s.doc = "Color of the background of the table specified as a \
 3-element RBG vector.  If __prop__ has multiple rows, the colors cycle \
 repeatedly if the \
-@ref{XREFuitablerowstriping, , @qcode{\"rowstriping\"} property} is on.";
+@ref{XREFuitablerowstriping,,@qcode{\"rowstriping\"} property} is on.";
         s.valid = valid_color;
         s.category = "Appearance";
 
@@ -3201,7 +3201,7 @@ an empty logical array indicating that no column is editable.";
         s.doc = "The display format for numeric data in each column.  \
 Valid formats include @qcode{\"char\"}, @qcode{\"logical\"}, \
 @qcode{\"numeric\"}, or a valid format setting from the \
-@ref{XREFformat, , format function}";
+@ref{XREFformat,,format function}";
         s.category = "Table Data";
 
       case "columnname"
@@ -3261,7 +3261,7 @@ fourth elements contain the height and width of the table.";
 
       case "foregroundcolor"
         s.doc = "Color of the data text in this table.  \
-@xref{Colors, , colorspec}.";
+@xref{Colors,,colorspec}.";
         s.valid = valid_color;
         s.category = "Appearance";
 
@@ -3312,7 +3312,7 @@ Graphics handle of the object executing the callback function\n\
       case "position"
         s.doc = "The position and size of the table.  The four elements of \
 the vector are the coordinates of the lower left corner and width and height \
-of the figure.  @xref{XREFuitableunits, , @w{units property}}.";
+of the figure.  @xref{XREFuitableunits,,@w{units property}}.";
         s.valid = valid_4elvec;
         s.category = "Object Position";
 
@@ -3330,7 +3330,7 @@ heading.";
       case "rowstriping"
         s.doc = "Setting to indicate whether the table background color \
 will use different colors for each row.  Colors are drawn from the \
-@ref{XREFuitablebackgroundcolor, , @qcode{\"backgroundcolor\"} property} in \
+@ref{XREFuitablebackgroundcolor,,@qcode{\"backgroundcolor\"} property} in \
 a repeating pattern.";
         s.category = "Appearance";
 
@@ -3481,7 +3481,7 @@ property to be set to @qcode{\"manual\"}.";
   modemsg = sprintf (modemsg, field, field);
   strout = strrep (strout, "__modemsg__", modemsg);
   fcnmsg = "For information on how to write graphics listener \
-functions see @ref{Callbacks, , @w{Callbacks section}}.";
+functions, @pxref{Callbacks,,@w{Callbacks section}}.";
   strout = strrep (strout, "__fcnmsg__", fcnmsg);
 endfunction
 
@@ -3643,7 +3643,7 @@ function str = printdoc (objname, obj, is_prop_subset)
   str = sprintf ("%s\n\n@subsubheading Categories:\n\n", str);
 
   for ii = 1:numel (categories);
-    str = sprintf ("%s@ref{XREF%scategory%s, , @w{%s}}@: ", str, objname, strrep (categories{ii}, " ", ""), categories{ii});
+    str = sprintf ("%s@ref{XREF%scategory%s,,@w{%s}}@: ", str, objname, strrep (categories{ii}, " ", ""), categories{ii});
     if (ii < numel (categories))
       str = sprintf ("%s| ", str);
     endif

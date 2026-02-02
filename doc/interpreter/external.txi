@@ -193,7 +193,7 @@ version of the function.  It should be noted that it is perfectly acceptable to
 have more than one @w{@code{DEFUN_DLD}}@ function in a source file.  However,
 there must either be a symbolic link to the oct-file for each of the functions
 defined in the source code with the @w{@code{DEFUN_DLD}}@ macro or the
-@code{autoload} (@ref{Function Files}) function should be used.
+@code{autoload} (@pxref{Function Files}) function should be used.
 
 The rest of the function shows how to find the number of input arguments, how
 to print through the Octave pager, and how to return from the function.  After
@@ -1224,10 +1224,11 @@ deallocated.  Therefore, ideally Octave itself should allocate any memory that
 is needed by the foreign code, with either the @nospell{@code{rwdata}}
 method or the @w{@code{OCTAVE_LOCAL_BUFFER}}@ macro.
 
-The Octave @code{unwind_protect} mechanism (@ref{The unwind_protect Statement})
-can also be used in oct-files.  In conjunction with the exception handling of
-Octave, it ensures that certain recovery code is always run even if an
-exception occurs.  An example of the use of this mechanism is
+The Octave @code{unwind_protect} mechanism
+(@pxref{The unwind_protect Statement}) can also be used in oct-files.  In
+conjunction with the exception handling of Octave, it ensures that certain
+recovery code is always run even if an exception occurs.  An example of the use
+of this mechanism is
 
 @example
 @EXAMPLEFILE(unwinddemo.cc)
@@ -1993,9 +1994,9 @@ javaaddpath ("~/octave/myclasses.jar");
 @node How to use Java from within Octave
 @subsection How to use Java from within Octave
 
-The function @ref{XREFjavaObject,javaObject,javaObject} creates Java objects.
-In fact it invokes the public constructor of the class with the given name
-and with the given parameters.
+The function @ref{XREFjavaObject,,javaObject} creates Java objects.  In fact it
+invokes the public constructor of the class with the given name and with the
+given parameters.
 
 The following example shows how to invoke the constructors
 @code{BigDecimal(double)} and @code{BigDecimal(String)} of the builtin Java
@@ -2011,9 +2012,8 @@ javaObject ("java.math.BigDecimal", "1.001");
 Note that parameters of the Octave type @code{double} are implicitly converted
 into the Java type @code{double} and the Octave type (array of) @code{char} is
 converted into the java type @code{String}.  A Java object created by
-@ref{XREFjavaObject,javaObject,javaObject} is never automatically converted
-into an Octave type but remains a Java object.  It can be assigned to an
-Octave variable.
+@ref{XREFjavaObject,,javaObject} is never automatically converted into an Octave
+type but remains a Java object.  It can be assigned to an Octave variable.
 
 @example
 @group
@@ -2022,9 +2022,9 @@ b = javaObject ("java.math.BigDecimal", a);
 @end group
 @end example
 
-Using @ref{XREFisjava,isjava,isjava}, it is possible to check whether a
-variable is a Java object and its class can be determined as well.  In
-addition to the previous example:
+Using @ref{XREFisjava,,isjava}, it is possible to check whether a variable is a
+Java object and its class can be determined as well.  In addition to the
+previous example:
 
 @example
 @group
@@ -2058,15 +2058,13 @@ class (b)
 @end example
 
 One can see, that even a @code{java.lang.Double} is not converted to an Octave
-@code{double}, when created by @ref{XREFjavaObject,javaObject,javaObject}.
-But ambiguities might arise, if the Java classes @code{java.lang.Double} or
-@code{double} are parameters of a method (or a constructor).  In this case
-they can be converted into one another, depending on the context.
+@code{double}, when created by @ref{XREFjavaObject,,javaObject}.  But
+ambiguities might arise, if the Java classes @code{java.lang.Double} or
+@code{double} are parameters of a method (or a constructor).  In this case they
+can be converted into one another, depending on the context.
 
-
-Via @ref{XREFjavaObject,javaObject,javaObject} one may create all kinds of
-Java objects but arrays.  The latter are created through
-@ref{XREFjavaArray,javaArray,javaArray}.
+Via @ref{XREFjavaObject,,javaObject} one may create all kinds of Java objects
+but arrays.  The latter are created through @ref{XREFjavaArray,,javaArray}.
 
 It is possible to invoke public member methods on Java objects in Java syntax:
 
@@ -2086,7 +2084,7 @@ with and without parentheses @code{()}.
 
 Currently it is not possible to invoke static methods with a Java like syntax
 from within Octave.  Instead, one has to use the function
-@ref{XREFjavaMethod,javaMethod,javaMethod} as in the following example:
+@ref{XREFjavaMethod,,javaMethod} as in the following example:
 
 @example
 @group
@@ -2109,9 +2107,8 @@ java_get ("java.math.BigDecimal", "ONE");  # workaround
 @end group
 @end example
 
-Accordingly, with @ref{XREFjava_set,java_set,java_set} the value of a field
-can be set.  Note that only public Java fields are accessible from within
-Octave.
+Accordingly, with @ref{XREFjava_set,,java_set} the value of a field can be set.
+Note that only public Java fields are accessible from within Octave.
 
 The following example indicates that in Octave empty brackets @code{[]}
 represent Java's @code{null} value and how Java exceptions are represented.
@@ -2137,10 +2134,10 @@ methods (<Java object>)
 @end group
 @end example
 
-Finally, an examples is shown how to access the stack trace from within
-Octave, where the function @ref{XREFdebug_java,debug_java,debug_java} is used
-to set and to get the current debug state.  In debug mode, the Java error and
-the stack trace are displayed.
+Finally, an examples is shown how to access the stack trace from within Octave,
+where the function @ref{XREFdebug_java,,debug_java} is used to set and to get
+the current debug state.  In debug mode, the Java error and the stack trace are
+displayed.
 
 @example
 @group

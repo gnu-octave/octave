@@ -80,7 +80,7 @@ dynamic_library::dynlib_rep::dynlib_rep (const std::string& f)
   : m_count (1), m_fcn_names (), m_file (f), m_time_loaded (),
     m_search_all_loaded (false)
 {
-  s_instances[f] = this;
+  instances ()[f] = this;
 
   if (is_out_of_date ())
     (*current_liboctave_warning_with_id_handler)
@@ -114,8 +114,8 @@ dynamic_library::dynlib_rep *
 dynamic_library::dynlib_rep::get_instance (const std::string& f, bool fake)
 {
   dynlib_rep *retval = nullptr;
-  std::map<std::string, dynlib_rep *>::iterator p = s_instances.find (f);
-  if (p != s_instances.end ())
+  std::map<std::string, dynlib_rep *>::iterator p = instances ().find (f);
+  if (p != instances ().end ())
     {
       retval = p->second;
       retval->m_count++;
@@ -166,8 +166,25 @@ dynamic_library::dynlib_rep::remove_fcn_name (const std::string& fcn_name)
   return retval;
 }
 
-std::map<std::string, dynamic_library::dynlib_rep *>
-dynamic_library::dynlib_rep::s_instances;
+std::map<std::string, dynamic_library::dynlib_rep *>&
+dynamic_library::dynlib_rep::instances ()
+{
+  // FIXME: This map is intentionally heap-allocated and never deleted to avoid
+  // UBSAN issues.  Also see bug #53156 and the similar pattern in
+  // ov-typeinfo.cc.  This creates a small memory leak that is reclaimed by the
+  // OS at process exit.
+  //
+  // This "leaky singleton" pattern is necessary because:
+  // 1. s_nil_rep is a file-scope static whose destructor calls instances()
+  // 2. possibly_unreferenced_dynamic_libraries may hold dynamic_library
+  //    objects whose destructors also call instances()
+  // 3. We cannot guarantee the map outlives all these other statics
+  //
+  // By never destroying the map, we ensure it is always valid during shutdown.
+
+  static auto *s_instances = new std::map<std::string, dynlib_rep *> ();
+  return *s_instances;
+}
 
 dynamic_library::dynlib_rep dynamic_library::s_nil_rep;
 

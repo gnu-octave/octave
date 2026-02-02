@@ -64,7 +64,7 @@ public: // FIXME: make this class private?
 
     virtual ~dynlib_rep ()
     {
-      s_instances.erase (m_file);
+      instances ().erase (m_file);
     }
 
     virtual bool is_open () const
@@ -105,7 +105,10 @@ public: // FIXME: make this class private?
 
     OCTAVE_API void fake_reload ();
 
-    static OCTAVE_API std::map<std::string, dynlib_rep *> s_instances;
+    // Accessor for the instances map.  Uses a heap-allocated "leaky singleton"
+    // to avoid static destruction order issues at exit.  See bug #53156 and
+    // the similar pattern in ov-typeinfo.cc.
+    static OCTAVE_API std::map<std::string, dynlib_rep *>& instances ();
 
     // Set of hooked function names.
     typedef std::map<std::string, std::size_t>::iterator fcn_names_iterator;

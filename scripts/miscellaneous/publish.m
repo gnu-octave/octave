@@ -773,9 +773,8 @@ function ofile = create_output (doc, options)
     if (status == 0)
       ## FIXME: Why is the same command run twice?
       for i = 1:2
-        ## FIXME: This looks very likely to break when switching OS
-        ## Wrap directory in sinqle quotes in case of spaces (bug #67991).
-        system (["cd '" options.outputDir "' && pdflatex " ofile_name]);
+        ## Wrap directory in double quotes in case of spaces (bug #67991).
+        system (['cd "' options.outputDir '" && pdflatex ' ofile_name]);
       endfor
     endif
   endif

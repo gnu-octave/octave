@@ -48,8 +48,8 @@ function [status, text] = dos (command, echo_arg)
   status = 1;
   text = "";
 
-  ## FIXME: Should this be ispc ()?  There may be an issue with MinGW
-  if (! isunix ())
+  ## FIXME: Should this be just ispc()?  Weird workaround for Cygwin
+  if (ispc () && ! isunix ())
     [status, text] = system (command);
     if (nargin > 1 || nargout == 0)
       printf ("%s\n", text);

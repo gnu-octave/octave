@@ -70,6 +70,7 @@ function list = ls (varargin)
     args = tilde_expand (varargin);
 
     if (ispc () && ! isunix ())
+      ## Windows platform
       if (strncmp (ls_cmd, "ls", 2))
         ## Replace backslashes with forward slashes (unless they escape a
         ## wildcard character)
@@ -104,10 +105,10 @@ function list = ls (varargin)
   endif
 
   if (nargout > 0 && strncmp (ls_cmd, "ls", 2))
-    args = ["-1 ", args];
+    args = ["-1 " args];
   endif
 
-  cmd = [ls_cmd, " ", args];
+  cmd = [ls_cmd " " args];
 
   if (page_screen_output () || nargout > 0)
     [status, output] = system (cmd);

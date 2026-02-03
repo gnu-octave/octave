@@ -61,17 +61,17 @@ function filelist = tar (tarfile, files, rootdir = ".")
   tarfile = make_absolute_filename (tarfile);
 
   if (ispc)
-    ## Change tarfile into a mingw style acceptable for tar
+    ## Change tarfile into a MinGW style acceptable for tar
     tarfile = __w2mpth__ (tarfile);
   endif
 
   ## BSD tar emits progress on stderr
   if (tar_is_bsd ())
-    cmd = sprintf ("tar cvf %s -C %s %s 2>&1",
-                            tarfile, rootdir, sprintf (" '%s'", files{:}));
+    cmd = sprintf ('tar cvf "%s" -C "%s" %s 2>&1',
+                            tarfile, rootdir, sprintf (' "%s"', files{:}));
   else
-    cmd = sprintf ("tar cvf %s -C %s %s",
-                            tarfile, rootdir, sprintf (" %s", files{:}));
+    cmd = sprintf ('tar cvf "%s" -C "%s" %s',
+                            tarfile, rootdir, sprintf (' "%s"', files{:}));
   endif
 
   ## Save and restore the TAR_OPTIONS environment variable used by GNU tar.

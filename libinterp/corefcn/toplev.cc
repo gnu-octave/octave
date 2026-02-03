@@ -244,6 +244,12 @@ Windows systems.
   if (nargin == 0 || nargin > 3)
     print_usage ();
 
+  std::string cmd_str = args(0).xstring_value ("system: first argument must be a string");
+
+  bool return_output = (nargin == 1 && nargout > 1);
+  if (nargin > 1)
+    return_output = args(1).strict_bool_value ("system: RETURN_OUTPUT must be boolean value true or false");
+
   system_exec_type type = et_sync;
   if (nargin == 3)
     {
@@ -257,17 +263,10 @@ Windows systems.
         error (R"(system: TYPE must be "sync" or "async")");
     }
 
-  octave_value_list retval;
-
-  bool return_output = (nargin == 1 && nargout > 1);
-
-  if (nargin > 1)
-    return_output = args(1).strict_bool_value ("system: RETURN_OUTPUT must be boolean value true or false");
-
   if (return_output && type == et_async)
     error ("system: can't return output from commands run asynchronously");
 
-  std::string cmd_str = args(0).xstring_value ("system: first argument must be a string");
+  octave_value_list retval;
 
   unwind_action restore_mask
   ([] (void *mask) { restore_signal_mask (mask); }, get_signal_mask ());
@@ -283,10 +282,9 @@ Windows systems.
     {
       int status = sys::system (cmd_str);
 
-      // The value in status is as returned by waitpid.  If
-      // the process exited normally, extract the actual exit
-      // status of the command.  Otherwise, return 127 as a
-      // failure code.
+      // The value in status is as returned by waitpid.  If the process exited
+      // normally, extract the actual exit status of the command.  Otherwise,
+      // return 127 as a failure code.
 
       if (sys::wifexited (status))
         status = sys::wexitstatus (status);
@@ -305,10 +303,12 @@ Windows systems.
 %! assert (ischar (output));
 %! assert (! isempty (output));
 
-%!error system ()
-%!error system (1, 2, 3)
-%!error <RETURN_OUTPUT must be boolean value> system (ls_command (), "foo")
-%!error <TYPE must be .*sync.* or .*async> system (ls_command (), true, "foo")
+%!error <Invalid call> system ()
+%!error <Invalid call> system (1, 2, 3, 4)
+%!error <first argument must be a string> system (1)
+%!error <RETURN_OUTPUT must be boolean value> system ("cd", "foo")
+%!error <TYPE must be a string> system ("cd", true, 1)
+%!error <TYPE must be .*sync.* or .*async> system ("cd", true, "foo")
 %!warning <converted to logical 1> system (ls_command (), 0.5);
 */
 

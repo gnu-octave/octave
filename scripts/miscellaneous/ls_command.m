@@ -35,9 +35,9 @@ function old_val = ls_command (new_val)
   persistent __ls_command__;
 
   if (isempty (__ls_command__))
-    ## MinGW uses different ls_command
     if (ispc () && ! isunix ()
         && system ("where ls", true))
+      ## Windows uses different ls_command
       __ls_command__ = "dir /D";
     else
       __ls_command__ = "ls -C";

@@ -226,7 +226,7 @@ function filelist = unpack (file, dir = [], filetype = "")
   endif
 
   if (ispc && strcmp (nodotext, "tar"))
-    ## Change file pathname into a mingw style acceptable for tar
+    ## Change file pathname into a MinGW style acceptable for tar
     file = __w2mpth__ (file);
   endif
 

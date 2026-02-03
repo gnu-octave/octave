@@ -593,13 +593,13 @@ bp_table::parse_dbfunction_params (const char *who,
 %!   dbstop help;
 %!   dbstop in ls;
 %!   dbstop help at 105;  # 105 is a comment; code line is at 106
-%!   dbstop in ls 123;    # 123 is a comment; code line is at 126
+%!   dbstop in ls 124;    # 124 is a comment; code line is at 127
 %!   dbstop help 204 if a==5;
 %!   dbstop if error Octave:undefined-function;
 %!   s = dbstatus;
 %!   dbclear all;
 %!   assert ({s.bkpt(:).name}, {"help", "help", "help>do_contents", "ls", "ls"});
-%!   assert ([s.bkpt(:).line], [56, 106, 208, 63, 126]);
+%!   assert ([s.bkpt(:).line], [56, 106, 208, 63, 127]);
 %!   assert (s.errs, {"Octave:undefined-function"});
 %! unwind_protect_cleanup
 %!   if (isguirunning ())

@@ -52,17 +52,16 @@ function [status, msg, msgid] = copyfile (f1, f2, force)
     print_usage ();
   endif
 
-  max_cmd_line = 1024;
+  max_cmd_line = 8000;  # Windows cmd.exe is the most restrictive at 8,191.
   sts = true;
   msg = "";
   msgid = "";
 
+  is_windows = (ispc () && ! isunix () ...
+                && isempty (file_in_path (getenv ("PATH"), "cp.exe")));
   ## FIXME: Maybe use the same method as in ls to allow users control
   ##        over the command that is executed.
-
-  if (ispc () && ! isunix ()
-      && isempty (file_in_path (getenv ("PATH"), "cp.exe")))
-    ## Windows.
+  if (is_windows)
     cmd = "cmd /C xcopy /E";
     cmd_force_flag = "/Y";
   else
@@ -85,8 +84,8 @@ function [status, msg, msgid] = copyfile (f1, f2, force)
   endif
 
   ## If f1 has more than 1 element then f2 must be a directory
-  isdir = isfolder (f2);
-  if (numel (f1) > 1 && ! isdir)
+  isdir_f2 = isfolder (f2);
+  if (numel (f1) > 1 && ! isdir_f2)
     if (nargout == 0)
       error ("copyfile: when copying multiple files, F2 must be a directory");
     else
@@ -113,43 +112,45 @@ function [status, msg, msgid] = copyfile (f1, f2, force)
       return;
     endif
   endif
+  ## Protect possible whitespace in filenames with double quotes.
   p1 = sprintf ('"%s" ', f1{:});
   p2 = tilde_expand (f2);
 
-  if (isdir && length (p1) > max_cmd_line)
+  if (isdir_f2 && length (p1) > max_cmd_line)
+    ## Divide list of files and call shell with smaller command lines.
     l2 = length (p2) + length (cmd) + 6;
     while (! isempty (f1))
-      p1 = sprintf ('"%s" ', f1{1});
+      p1 = sprintf ('"%s"', f1{1});
       f1(1) = [];
       while (! isempty (f1)
              && (length (p1) + length (f1{1}) + l2 < max_cmd_line))
-        p1 = sprintf ('%s"%s" ', p1, f1{1});
+        p1 = sprintf ('%s "%s"', p1, f1{1});
         f1(1) = [];
       endwhile
 
-      if (ispc () && ! isunix ()
-          && ! isempty (file_in_path (getenv ("PATH"), "cp.exe")))
+      if (is_windows)
         p1 = strrep (p1, '\', '/');
         p2 = strrep (p2, '\', '/');
       endif
 
       ## Copy the files.
-      [err, msg] = system (sprintf ('%s %s"%s"', cmd, p1, p2));
+      [err, msg] = system (sprintf ('%s %s "%s"', cmd, p1, p2));
       if (err != 0)
         sts = false;
         msgid = "copyfile";
         break;
       endif
     endwhile
+
   else
-    if (ispc () && ! isunix ()
-        && ! isempty (file_in_path (getenv ("PATH"), "cp.exe")))
+    ## cmd is short enough to be executed in one call to shell.
+    if (is_windows)
       p1 = strrep (p1, '\', '/');
       p2 = strrep (p2, '\', '/');
     endif
 
     ## Copy the files.
-    [err, msg] = system (sprintf ('%s %s"%s"', cmd, p1, p2));
+    [err, msg] = system (sprintf ('%s %s "%s"', cmd, p1, p2));
     if (err != 0)
       sts = false;
       msgid = "copyfile";

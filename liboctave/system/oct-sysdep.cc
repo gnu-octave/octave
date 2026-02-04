@@ -82,8 +82,9 @@ system (const std::string& cmd_str)
   // avoid inheriting read end of the pipe
   SetHandleInformation (h_read, HANDLE_FLAG_INHERIT, 0);
 
-  // Create process with new console.
-  std::wstring wcmd_str =  u8_to_wstring (cmd_str);
+  // create process with new hidden console
+  std::wstring wcmd_str {L"cmd.exe /C "};
+  wcmd_str.append (u8_to_wstring (cmd_str));
   STARTUPINFOW si {};
   si.cb = sizeof (si);
   si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;

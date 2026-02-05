@@ -61,6 +61,10 @@ class scanf_format_list;
 class printf_format_elt;
 class printf_format_list;
 
+// This is a class that inherits from with std::wbuffer_convert which is
+// deprecated in C++17.
+class OCTINTERP_API wbuffer_u8_converter;
+
 // Provide an interface for Octave streams.
 
 class OCTINTERP_API base_stream
@@ -73,13 +77,13 @@ public:
                mach_info::float_format ff = mach_info::native_float_format (),
                const std::string& encoding = "utf-8")
     : m_mode (arg_md), m_flt_fmt (ff), m_encoding (encoding),
-      m_conv_ostream (nullptr), m_fail (false), m_open_state (true),
-      m_errmsg ()
+      m_converter (nullptr), m_conv_ostream (nullptr), m_fail (false),
+      m_open_state (true), m_errmsg ()
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (base_stream)
 
-  virtual ~base_stream () = default;
+  virtual OCTINTERP_API ~base_stream ();
 
   // The remaining functions are not specific to input or output only,
   // and must be provided by the derived classes.
@@ -123,39 +127,7 @@ public:
     if (m_conv_ostream)
       return m_conv_ostream.get ();
 
-    // wrap the output stream with encoding conversion facet
-    std::ostream *os = output_stream ();
-    if (os && *os)
-      {
-#ifdef HAVE_PRAGMA_GCC_DIAGNOSTIC
-#  pragma GCC diagnostic push
-#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#endif
-        // The std::wbuffer_convert template is deprecated in C++17.
-        // A deprecation warning is emitted when using STL headers from LLVM
-        // libc++ or GCC libstdc++ (for GCC 15 or newer).  This header is
-        // included in many compilation units which results in a torrent of
-        // deprecation warnings when building Octave with those implementations
-        // of the STL.
-        // Silence these deprecation warnings here to have a more digestable
-        // build output.
-        // FIXME: Implement alternative for stream encoding conversion that
-        //        does not rely on deprecated features.
-
-        // FIXME: Using std::make_unique could simplify the following
-        //        expressions once we require C++14.
-        m_converter
-          = std::unique_ptr<std::wbuffer_convert<convfacet_u8, char>>
-            (new std::wbuffer_convert<convfacet_u8, char>
-             (os->rdbuf (), new convfacet_u8 (m_encoding)));
-        m_conv_ostream = std::unique_ptr<std::ostream>
-                         (new std::ostream (m_converter.get ()));
-#ifdef HAVE_PRAGMA_GCC_DIAGNOSTIC
-#  pragma GCC diagnostic pop
-#endif
-      }
-
-    return (m_conv_ostream ? m_conv_ostream.get () : output_stream ());
+    return create_converter_stream ();
   }
 
   // Return TRUE if this stream is open.
@@ -227,16 +199,7 @@ private:
   std::string m_encoding;
 
   // encoding conversion facet
-  typedef string::deletable_facet<string::codecvt_u8> convfacet_u8;
-
-#ifdef HAVE_PRAGMA_GCC_DIAGNOSTIC
-#  pragma GCC diagnostic push
-#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#endif
-  std::unique_ptr<std::wbuffer_convert<convfacet_u8, char>> m_converter;
-#ifdef HAVE_PRAGMA_GCC_DIAGNOSTIC
-#  pragma GCC diagnostic pop
-#endif
+  wbuffer_u8_converter *m_converter;
 
   // wrappers for encoding conversion
   // std::unique_ptr<std::istream> m_conv_istream;
@@ -251,6 +214,8 @@ private:
 
   // Should contain error message if fail is TRUE.
   std::string m_errmsg;
+
+  OCTINTERP_API std::ostream * create_converter_stream ();
 
   // Functions that are defined for all input streams (input streams
   // are those that define is).

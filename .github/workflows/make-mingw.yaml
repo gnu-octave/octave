@@ -176,6 +176,7 @@ jobs:
             JAVA_HOME="" \
             --enable-relocate-all \
             --disable-docs \
+            --with-qt=5 \
             ${{ matrix.extra-config-flags }}
           echo "::endgroup::"
 

@@ -4017,6 +4017,58 @@ textscan::match_literal (delimited_stream& is,
   return true;
 }
 
+// The std::wbuffer_convert template is deprecated in C++17.
+// A deprecation warning is emitted when using STL headers from LLVM libc++ or
+// GCC libstdc++ (for GCC 15 or newer).  If we used it directly as the type of
+// "m_converter", it would be included in many compilation units which would
+// result in a torrent of deprecation warnings when building Octave or anything
+// else that includes the header with those implementations of the STL.
+// Mask the type by deriving a class and silence these deprecation warning here
+// to have a more digestable build output.
+// FIXME: Implement alternative for stream encoding conversion that does not
+//        rely on deprecated features.
+
+#ifdef HAVE_PRAGMA_GCC_DIAGNOSTIC
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+typedef string::deletable_facet<string::codecvt_u8> convfacet_u8;
+typedef std::wbuffer_convert<convfacet_u8, char> converter;
+
+class wbuffer_u8_converter : public converter
+{
+  public:
+    // inherit constructors
+    using converter::wbuffer_convert;
+};
+#ifdef HAVE_PRAGMA_GCC_DIAGNOSTIC
+#  pragma GCC diagnostic pop
+#endif
+
+base_stream::~base_stream ()
+{
+  delete m_converter;
+}
+
+std::ostream *
+base_stream::create_converter_stream ()
+{
+  // wrap the output stream with encoding conversion facet
+  std::ostream *os = output_stream ();
+  if (os && *os && ! m_converter)
+    {
+      m_converter
+        = new wbuffer_u8_converter
+           (os->rdbuf (), new convfacet_u8 (m_encoding));
+      // FIXME: Using std::make_unique could simplify the following
+      //        expression once we require C++14.
+      m_conv_ostream
+        = std::unique_ptr<std::ostream> (new std::ostream (m_converter));
+    }
+
+  return (m_conv_ostream ? m_conv_ostream.get () : output_stream ());
+}
+
 void
 base_stream::error (const std::string& msg)
 {

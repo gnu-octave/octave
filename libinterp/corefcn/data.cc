@@ -4644,12 +4644,12 @@ operating dimension.
 %!assert (sum (sparse ([Inf, -Inf]), "extra"), sparse (NaN))
 %!test
 %! x = [flintmax("double"), 1, -1];
-%! assert ((sum (x, "extra")) == flintmax ("double"), true);
-%! assert ((sum (x)) == flintmax ("double"), false);
+%! assert (sum (x, "extra") - flintmax ("double"), 0);
+%! assert (sum (x) - flintmax ("double"), -1);
 %!test
 %! x = sparse ([flintmax("double"), 1, -1]);
-%! assert ((sum (x, "extra")) == flintmax ("double"), sparse (true));
-%! assert ((sum (x)) == flintmax ("double"), sparse (false));
+%! assert (sum (x, "extra") - sparse (flintmax ("double")), sparse (0));
+%! assert (sum (x) - sparse (flintmax ("double")), sparse (-1));
 %!test
 %! F(:,:,1) = [3, 5; -1, 2];
 %! F(:,:,2) = [4, -2; Inf, -4];

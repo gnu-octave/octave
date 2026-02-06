@@ -91,13 +91,17 @@
 ## @item @var{flag} indicates the exit status:
 ##
 ## @table @asis
-## @item 0 : iteration converged to within the specified tolerance
+## @item 0
+## iteration converged to within the specified tolerance
 ##
-## @item 1 : maximum number of iterations exceeded
+## @item 1
+## maximum number of iterations exceeded
 ##
-## @item 2 : the preconditioner matrix is singular
+## @item 2
+## the preconditioner matrix is singular
 ##
-## @item 3 : algorithm reached stagnation (the relative difference between two
+## @item 3
+## algorithm reached stagnation (the relative difference between two
 ## consecutive iterations is less than eps)
 ## @end table
 ##

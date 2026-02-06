@@ -2270,19 +2270,20 @@ well as the class of the variable used for calculations.
 @var{outtype} can take the following values:
 
 @table @asis
-@item @qcode{"default"} : Operations on floating point inputs (double or
-single) are performed in their native data type, while operations on integer,
-logical, and character data types are performed using doubles.  Output is of
-type double, unless the input is single in which case the output is of type
-single.
+@item @qcode{"default"}
+Operations on floating point inputs (double or single) are performed in their
+native data type; while operations on integer, logical, and character data
+types are performed using doubles.  Output is of type double, unless the input
+is single in which case the output is of type single.
 
-@item @qcode{"double"} : Operations are performed in double precision even for
-single precision inputs.  Output is of type double.
+@item @qcode{"double"}
+Operations are performed in double precision even for single precision inputs.
+Output is of type double.
 
-@item @qcode{"native"} : Operations are performed in their native data types
-and output is of the same type as the input as reported by
-(@code{class (@var{x})}).  When the input is logical,
-@code{prod (@var{x}, "native")} is equivalent to @code{all (@var{x})}.
+@item @qcode{"native"}
+Operations are performed in their native data types and output is of the same
+type as the input as reported by (@code{class (@var{x})}).  When the input is
+logical, @code{prod (@var{x}, "native")} is equivalent to @code{all (@var{x})}.
 @end table
 
 The optional variable @var{nanflag} specifies whether to include or exclude
@@ -4279,24 +4280,26 @@ well as the class of the variable used for calculations.
 @var{outtype} can take the following values:
 
 @table @asis
-@item @qcode{"default"} : Operations on floating point inputs (double or
-single) are performed in their native data type, while operations on integer,
-logical, and character data types are performed using doubles.  Output is of
-type double, unless the input is single in which case the output is of type
-single.
+@item @qcode{"default"}
+Operations on floating point inputs (double or single) are performed in their
+native data type, while operations on integer, logical, and character data
+types are performed using doubles.  Output is of type double, unless the input
+is single in which case the output is of type single.
 
-@item @qcode{"double"} : Operations are performed in double precision even for
-single precision inputs.  Output is of type double.
+@item @qcode{"double"}
+Operations are performed in double precision even for single precision inputs.
+Output is of type double.
 
-@item @qcode{"extra"} : For double precision inputs, @code{sum} will use a more
-accurate algorithm than straightforward summation.  For single precision
-inputs, @qcode{"extra"} is the same as @qcode{"double"}.  For all other data
-type @qcode{"extra"} has no effect.
+@item @qcode{"extra"}
+For double precision inputs, @code{sum} will use a more accurate algorithm than
+straightforward summation.  For single precision inputs, @qcode{"extra"} is the
+same as @qcode{"double"}.  For all other data types, @qcode{"extra"} has no
+effect.
 
-@item @qcode{"native"} : Operations are performed in their native data types
-and output is of the same type as the input as reported by
-(@code{class (@var{x})}).  When the input is logical,
-@code{sum (@var{x}, "native")} is equivalent to @code{any (@var{x})}.
+@item @qcode{"native"}
+Operations are performed in their native data types and output is of the same
+type as the input as reported by (@code{class (@var{x})}).  When the input is
+logical, @code{sum (@var{x}, "native")} is equivalent to @code{any (@var{x})}.
 @end table
 
 The optional variable @var{nanflag} specifies whether to include or exclude
@@ -4851,19 +4854,21 @@ well as the class of the variable used for calculations.
 @var{outtype} can take the following values:
 
 @table @asis
-@item @qcode{"default"} : Operations on floating point inputs (double or
-single) are performed in their native data type, while operations on integer,
-logical, and character data types are performed using doubles.  Output is of
-type double, unless the input is single in which case the output is of type
-single.
+@item @qcode{"default"}
+Operations on floating point inputs (double or single) are performed in their
+native data type; while operations on integer, logical, and character data
+types are performed using doubles.  Output is of type double, unless the input
+is single in which case the output is of type single.
 
-@item @qcode{"double"} : Operations are performed in double precision even for
-single precision inputs.  Output is of type double.
+@item @qcode{"double"}
+Operations are performed in double precision even for single precision inputs.
+Output is of type double.
 
-@item @qcode{"native"} : Operations are performed in their native data types
-and output is of the same type as the input as reported by
-(@code{class (@var{x})}).  When the input is logical,
-@code{sumsq (@var{x}, "native")} is equivalent to @code{all (@var{x})}.
+@item @qcode{"native"}
+Operations are performed in their native data types and output is of the same
+type as the input as reported by (@code{class (@var{x})}).  When the input is
+logical, @code{sumsq (@var{x}, "native")} is equivalent to
+@code{all (@var{x})}.
 @end table
 
 The optional variable @var{nanflag} specifies whether to include or exclude

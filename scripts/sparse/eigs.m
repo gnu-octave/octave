@@ -1499,7 +1499,7 @@ endfunction
 %!testif HAVE_ARPACK
 %! A = magic (100) / 10 + eye (100);
 %! opts.v0 = (1:100)';
-%! opts.maxit = 10;
+%! opts.maxit = 19;
 %! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
 %! d = eigs (A, 10, "sm", opts);
 %! if (isreal (d))

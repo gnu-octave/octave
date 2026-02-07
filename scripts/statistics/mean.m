@@ -92,14 +92,17 @@
 ## @var{outtype} can take the following values:
 ##
 ## @table @asis
-## @item @qcode{'default'} : Output is of type double, unless the input is
-## single in which case the output is of type single.
+## @item @qcode{'default'}
+## Output is of type double, unless the input is single in which case the
+## output is of type single.
 ##
-## @item @qcode{'double'} : Output is of type double.
+## @item @qcode{'double'}
+## Output is of type double.
 ##
-## @item @qcode{'native'} : Output is of the same type as the input as reported
-## by (@code{class (@var{x})}), unless the input is logical in which case the
-## output is of type double.
+## @item @qcode{'native'}
+## Output is of the same type as the input as reported by
+## @code{class (@var{x})}, unless the input is logical in which case the output
+## is of type double.
 ## @end table
 ##
 ## The optional variable @var{nanflag} specifies whether to include or exclude

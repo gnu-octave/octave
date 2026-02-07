@@ -337,7 +337,7 @@
 %! cd /
 %! d1 = pwd ();
 %! cd (xdir);
-%! if (ispc () && ! isunix ())
+%! if (ispc ())
 %!   ## should be a drive letter
 %!   assert (length (d1), 3);
 %!   assert (d1(2), ":");

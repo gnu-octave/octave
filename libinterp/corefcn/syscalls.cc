@@ -321,66 +321,62 @@ exit status, it will linger until Octave exits.
 
 /*
 
-%!test  # UNIX-style test
-%! if (isunix ())
-%!   [in, out, pid] = popen2 ("sort", "-r");
-%!   EAGAIN = errno ("EAGAIN");
-%!   fputs (in, "these\nare\nsome\nstrings\n");
-%!   fclose (in);
-%!   done = false;
-%!   str = {};
-%!   idx = 0;
-%!   errs = 0;
-%!   do
-%!     s = fgets (out);
-%!     if (ischar (s))
-%!       idx++;
-%!       str{idx} = s;
-%!     elseif (errno () == EAGAIN)
-%!       fclear (out);
-%!       pause (0.1);
-%!       if (++errs == 100)
-%!         done = true;
-%!       endif
-%!     else
+%!testif ; isunix ()
+%! [in, out, pid] = popen2 ("sort", "-r");
+%! EAGAIN = errno ("EAGAIN");
+%! fputs (in, "these\nare\nsome\nstrings\n");
+%! fclose (in);
+%! done = false;
+%! str = {};
+%! idx = 0;
+%! errs = 0;
+%! do
+%!   s = fgets (out);
+%!   if (ischar (s))
+%!     idx++;
+%!     str{idx} = s;
+%!   elseif (errno () == EAGAIN)
+%!     fclear (out);
+%!     pause (0.1);
+%!     if (++errs == 100)
 %!       done = true;
 %!     endif
-%!   until (done)
-%!   fclose (out);
-%!   waitpid (pid);
-%!   assert (str, {"these\n","strings\n","some\n","are\n"});
-%! endif
+%!   else
+%!     done = true;
+%!   endif
+%! until (done)
+%! fclose (out);
+%! waitpid (pid);
+%! assert (str, {"these\n","strings\n","some\n","are\n"});
 
-%!test  # Windows-style test
-%! if (ispc () && ! isunix ())
-%!   [in, out, pid] = popen2 ('C:\Windows\system32\sort.exe', "/R");
-%!   EAGAIN = errno ("EINVAL");
-%!   fputs (in, "these\r\nare\r\nsome\r\nstrings\r\n");
-%!   fclose (in);
-%!   done = false;
-%!   str = {};
-%!   idx = 0;
-%!   errs = 0;
-%!   do
-%!     errno (0);
-%!     s = fgets (out);
-%!     if (ischar (s))
-%!       idx++;
-%!       str{idx} = s;
-%!     elseif (errno () == EAGAIN)
-%!       fclear (out);
-%!       pause (0.1);
-%!       if (++errs == 100)
-%!         done = true;
-%!       endif
-%!     else
+%!testif ; ispc ()
+%! [in, out, pid] = popen2 ('C:\Windows\system32\sort.exe', "/R");
+%! EAGAIN = errno ("EINVAL");
+%! fputs (in, "these\r\nare\r\nsome\r\nstrings\r\n");
+%! fclose (in);
+%! done = false;
+%! str = {};
+%! idx = 0;
+%! errs = 0;
+%! do
+%!   errno (0);
+%!   s = fgets (out);
+%!   if (ischar (s))
+%!     idx++;
+%!     str{idx} = s;
+%!   elseif (errno () == EAGAIN)
+%!     fclear (out);
+%!     pause (0.1);
+%!     if (++errs == 100)
 %!       done = true;
 %!     endif
-%!   until (done)
-%!   fclose (out);
-%!   waitpid (pid);
-%!   assert (str, {"these\r\n","strings\r\n","some\r\n","are\r\n"});
-%! endif
+%!   else
+%!     done = true;
+%!   endif
+%! until (done)
+%! fclose (out);
+%! waitpid (pid);
+%! assert (str, {"these\r\n","strings\r\n","some\r\n","are\r\n"});
 
 */
 

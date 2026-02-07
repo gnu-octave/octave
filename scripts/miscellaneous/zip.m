@@ -67,7 +67,7 @@ function filelist = zip (zipfile, files, rootdir = ".")
   files = sprintf (' %s', files{:});   # convert to space separated list
   zipfile = regexprep (zipfile, "'", "\\'");  # escape single quotes
   cmd = sprintf ("zip -r '%s' %s", zipfile, files);
-  if (ispc () && ! isunix ())
+  if (ispc ())
     cmd = strrep (cmd, '\', '/');
   endif
 

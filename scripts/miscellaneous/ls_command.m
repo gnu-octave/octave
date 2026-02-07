@@ -35,8 +35,7 @@ function old_val = ls_command (new_val)
   persistent __ls_command__;
 
   if (isempty (__ls_command__))
-    if (ispc () && ! isunix ()
-        && system ("where ls", true))
+    if (ispc () && system ("where ls", true))
       ## Windows uses different ls_command
       __ls_command__ = "dir /D";
     else
@@ -64,7 +63,7 @@ endfunction
 %!test
 %! cmd = ls_command ();
 %! assert (ischar (cmd));
-%! if (ispc () && ! isunix () && system ("where ls", true))
+%! if (ispc () && system ("where ls", true))
 %!   assert (cmd(1:3), "dir");
 %! else
 %!   assert (cmd(1:2), "ls");

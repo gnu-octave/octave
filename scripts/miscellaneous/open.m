@@ -119,11 +119,10 @@ function output = open (file)
   elseif (any (strcmpi (ext, {".mdl", ".slx", ".prj"})))
     error ("open: opening file type '%s' is not supported", ext);
   elseif (strcmpi (ext, ".exe"))
-    if (ispc ())
-      dos (file);
-    else
+    if (! ispc ())
       error ("open: executing .exe files is only supported on Windows systems");
     endif
+    dos (file);
   else
     __open_with_system_app__ (file);
   endif

@@ -444,7 +444,7 @@ function [local_packages, global_packages] = pkg (varargin)
 
   ## If user is superuser (posix) or the process has elevated rights (Windows),
   ## set global_install to true.
-  if (ispc () && ! isunix ())
+  if (ispc ())
     global_install = __is_elevated_process__ ();
   else
     global_install = (geteuid () == 0);

@@ -69,7 +69,7 @@ function list = ls (varargin)
   if (nargin > 0)
     args = tilde_expand (varargin);
 
-    if (ispc () && ! isunix ())
+    if (ispc ())
       ## Windows platform
       if (strncmp (ls_cmd, "ls", 2))
         ## Replace backslashes with forward slashes (unless they escape a

@@ -51,7 +51,7 @@ from a GNU mirror linked from the official Octave website.
 you downloaded, for example `octave-11.1.0.tar.xz.sig`.
 * Next, run the command
 ```
-  gpg --keyserver hkp://keys.gnupg.net --recv-keys 5D36644B
+  gpg --keyserver hkps://keys.openpgp.org --recv-keys 5D36644B
 ```
 to import a public key (this needs to be done only once).
 * Verify the integrity of the file you downloaded with a command like
@@ -72,12 +72,11 @@ If so, you should not install Octave from that file, but should start over.
 Installation
 ------------
 
-Octave requires approximately 475 MB of disk storage to unpack and
-compile from source (significantly more, 3.8 GB, if you compile with
-debugging symbols).  Once installed, Octave requires approximately
-75 MB of disk space (again, considerably more, 415 MB, if you don't
-build shared libraries or the binaries and libraries include
-debugging symbols).
+Building Octave from source requires ~475 MB of disk space 
+(or ~3.8 GB with debugging symbols). 
+Once installed, Octave uses ~75 MB of disk space 
+(or ~415 MB if shared libraries are not built or binaries include debugging symbols).
+
 
 To compile Octave, you will need a recent version of:
 
@@ -91,13 +90,13 @@ other versions of make.  If you use `f2c`, you will need a script
 like `fort77` that works like a normal Fortran compiler by combining
 `f2c` with your C compiler in a single script.
 
-See the file INSTALL.OCTAVE or the wiki at <https://wiki.octave.org/Building>
+ See the file `INSTALL.OCTAVE` or the wiki at <https://wiki.octave.org/Building>
 for more detailed installation instructions.
 
 Bugs and Patches
 ----------------
 
-The files BUGS and `doc/interpreter/bugs.txi` explain the recommended
+The files `BUGS` and `doc/interpreter/bugs.txi` explain the recommended
 procedure for reporting bugs on the [bug tracker](https://bugs.octave.org)
 or contributing patches; online resources are also available
 [here](https://octave.org/support).

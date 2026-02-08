@@ -600,7 +600,7 @@ function cmd = __quote_path__ (cmd)
   if (! isempty (cmd))
     is_quoted = all (cmd([1, end]) == "'");
     if (! is_quoted)
-      dos_shell = ! isunix () && ispc ();
+      dos_shell = ispc () && ! isunix ();
       if (dos_shell && any (cmd == "/"))
         cmd = strrep (cmd, '/', '\');
       endif

@@ -65,8 +65,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
   msg = "";
   msgid = "";
 
-  is_windows = (ispc () && ! isunix () ...
-                && isempty (file_in_path (getenv ("PATH"), "mv.exe")));
+  is_windows = (ispc () && isempty (file_in_path (getenv ("PATH"), "mv.exe")));
   ## FIXME: maybe use the same method as in ls to allow users control
   ##        over the command that is executed.
   if (is_windows)

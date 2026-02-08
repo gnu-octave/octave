@@ -48,8 +48,7 @@ function [status, text] = dos (command, echo_arg)
   status = 1;
   text = "";
 
-  ## FIXME: Should this be just ispc()?  Weird workaround for Cygwin
-  if (ispc () && ! isunix ())
+  if (ispc ())
     [status, text] = system (command);
     if (nargin > 1 || nargout == 0)
       printf ("%s\n", text);
@@ -63,7 +62,7 @@ endfunction
 %! cmd = ls_command ();
 %! [status, output] = dos (cmd);
 %!
-%! if (ispc () && ! isunix ())
+%! if (ispc ())
 %!   [status, output] = dos (cmd);
 %!   assert (status, 0);
 %!   assert (ischar (output));

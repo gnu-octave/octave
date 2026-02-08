@@ -1076,17 +1076,19 @@ comparison method for numeric input and it applies to both one input and two
 input arrays.  @var{method} can take any of the following values:
 
 @table @asis
-@item @qcode{'auto'} : This is the default method, which compares elements by
-@code{real (@var{x})} when @var{x} is real, and by @code{abs (@var{x})} when
-@var{x} is complex.
+@item @qcode{'auto'}
+This is the default method, which compares elements by @code{real (@var{x})}
+when @var{x} is real, and by @code{abs (@var{x})} when @var{x} is complex.
 
-@item @qcode{'real'} : Compares elements by @code{real (@var{x})} when @var{x}
-is real or complex.  For elements with equal real parts, a second comparison by
+@item @qcode{'real'}
+Compares elements by @code{real (@var{x})} when @var{x} is real or complex.
+For elements with equal real parts, a second comparison by
 @code{imag (@var{x})} is performed.
 
-@item @qcode{'abs'} : Compares elements by @code{abs (@var{x})} when @var{x}
-is real or complex.  For elements with equal magnitude, a second comparison by
-@code{angle (@var{x})} in the interval [-pi,pi] is performed.
+@item @qcode{'abs'}
+Compares elements by @code{abs (@var{x})} when @var{x} is real or complex.  For
+elements with equal magnitude, a second comparison by @code{angle (@var{x})} in
+the interval from @math{-\pi} to @math{\pi} is performed.
 @end table
 @seealso{max, cummin, cummax}
 @end deftypefn */)
@@ -1481,17 +1483,19 @@ comparison method for numeric input and it applies to both one input and two
 input arrays.  @var{method} can take any of the following values:
 
 @table @asis
-@item @qcode{'auto'} : This is the default method, which compares elements by
-@code{real (@var{x})} when @var{x} is real, and by @code{abs (@var{x})} when
-@var{x} is complex.
+@item @qcode{'auto'}
+This is the default method, which compares elements by @code{real (@var{x})}
+when @var{x} is real, and by @code{abs (@var{x})} when @var{x} is complex.
 
-@item @qcode{'real'} : Compares elements by @code{real (@var{x})} when @var{x}
-is real or complex.  For elements with equal real parts, a second comparison by
+@item @qcode{'real'}
+Compares elements by @code{real (@var{x})} when @var{x} is real or complex.
+For elements with equal real parts, a second comparison by
 @code{imag (@var{x})} is performed.
 
-@item @qcode{'abs'} : Compares elements by @code{abs (@var{x})} when @var{x}
-is real or complex.  For elements with equal magnitude, a second comparison by
-@code{angle (@var{x})} in the interval [-pi,pi] is performed.
+@item @qcode{'abs'}
+Compares elements by @code{abs (@var{x})} when @var{x} is real or complex.  For
+elements with equal magnitude, a second comparison by @code{angle (@var{x})} in
+the interval from @math{-\pi} to @math{\pi} is performed.
 @end table
 @seealso{min, cummax, cummin}
 @end deftypefn */)
@@ -2226,17 +2230,19 @@ comparison method for numeric input and it applies to both one input and two
 input arrays.  @var{method} can take any of the following values:
 
 @table @asis
-@item @qcode{'auto'} : This is the default method, which compares elements by
-@code{real (@var{x})} when @var{x} is real, and by @code{abs (@var{x})} when
-@var{x} is complex.
+@item @qcode{'auto'} (default)
+Compare elements by @code{real (@var{x})} when @var{x} is real, and by
+@code{abs (@var{x})} when @var{x} is complex.
 
-@item @qcode{'real'} : Compares elements by @code{real (@var{x})} when @var{x}
-is real or complex.  For elements with equal real parts, a second comparison by
-@code{imag (@var{x})} is performed.
+@item @qcode{'real'}
+Compare elements by @code{real (@var{x})} when @var{x} is real or complex.  For
+elements with equal real parts, a second comparison by @code{imag (@var{x})} is
+performed.
 
-@item @qcode{'abs'} : Compares elements by @code{abs (@var{x})} when @var{x}
-is real or complex.  For elements with equal magnitude, a second comparison by
-@code{angle (@var{x})} in the interval [-pi,pi] is performed.
+@item @qcode{'abs'}
+Compare elements by @code{abs (@var{x})} when @var{x} is real or complex.  For
+elements with equal magnitude, a second comparison by @code{angle (@var{x})} in
+the interval from @math{-\pi} to @math{\pi} is performed.
 @end table
 @seealso{cummax, min, max}
 @end deftypefn */)
@@ -2545,17 +2551,19 @@ comparison method for numeric input and it applies to both one input and two
 input arrays.  @var{method} can take any of the following values:
 
 @table @asis
-@item @qcode{'auto'} : This is the default method, which compares elements by
-@code{real (@var{x})} when @var{x} is real, and by @code{abs (@var{x})} when
-@var{x} is complex.
+@item @qcode{'auto'} (default)
+Compare elements by @code{real (@var{x})} when @var{x} is real, and by
+@code{abs (@var{x})} when @var{x} is complex.
 
-@item @qcode{'real'} : Compares elements by @code{real (@var{x})} when @var{x}
-is real or complex.  For elements with equal real parts, a second comparison by
-@code{imag (@var{x})} is performed.
+@item @qcode{'real'}
+Compare elements by @code{real (@var{x})} when @var{x} is real or complex.  For
+elements with equal real parts, a second comparison by @code{imag (@var{x})} is
+performed.
 
-@item @qcode{'abs'} : Compares elements by @code{abs (@var{x})} when @var{x}
-is real or complex.  For elements with equal magnitude, a second comparison by
-@code{angle (@var{x})} in the interval [-pi,pi] is performed.
+@item @qcode{'abs'}
+Compare elements by @code{abs (@var{x})} when @var{x} is real or complex.  For
+elements with equal magnitude, a second comparison by @code{angle (@var{x})}
+in the interval from @math{-\pi} to @math{\pi} is performed.
 @end table
 @seealso{cummin, max, min}
 @end deftypefn */)

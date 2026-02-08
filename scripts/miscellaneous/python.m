@@ -77,7 +77,7 @@ function pyexec = get_python_executable ()
     ## PEP394 says Python 3 installs should all provide this command
     pyexec = "python3";
 
-    if (ispc () && (! isunix ()))
+    if (ispc ())
       ## 2020-03: Python.org installer/Anaconda do not provide python3
       pyexec = "python";
     endif

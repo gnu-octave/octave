@@ -117,7 +117,7 @@ function opts = __opengl_print__ (opts)
                                 "pdf", tmp, tmp);
         tmp = [tempname(), ".fig"];
         opts.unlink = [opts.unlink tmp];
-        if (ispc () && ! isunix ())
+        if (ispc ())
           cmd = sprintf ('%s "%s" & %s "%s" "%s"', cmd_pstoedit, tmp, cmd_fig2dev, tmp, opts.name);
         else
           cmd = sprintf ('%s "%s" ; %s "%s" "%s"', cmd_pstoedit, tmp, cmd_fig2dev, tmp, opts.name);

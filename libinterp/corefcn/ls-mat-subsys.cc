@@ -167,7 +167,7 @@ load_mcos_object (const octave_value& objmetadata, bool as_struct)
                        objmetadata.class_name ().c_str ());
       return objmetadata;
     }
-  uint32_t objdims = dt[1];
+  int32_t objdims = dt[1];
 
   dim_vector dv;
   dv.resize (objdims);
@@ -323,7 +323,8 @@ subsystem_handler::read_filewrapper (const Cell& fwrap_data, bool swap)
   const uint8NDArray& fwrap_metadata_array = fwrap_metadata.uint8_array_value ();
 
   // check version compatibility
-  uint32_t version = reinterpret_cast<const uint32_t&> (fwrap_metadata_array(0));
+  uint32_t version;
+  std::memcpy (&version, fwrap_metadata_array.data (), sizeof (version));
   if (swap)
     swap_bytes<4> (&version, 1);
   if (version > m_filewrapper_version)
@@ -332,15 +333,17 @@ subsystem_handler::read_filewrapper (const Cell& fwrap_data, bool swap)
            version);
 
   // get number of unique property names and class names
-  m_num_names = reinterpret_cast<const uint32_t&> (fwrap_metadata_array(4));
+  std::memcpy (&m_num_names, fwrap_metadata_array.data () + 4,
+               sizeof (m_num_names));
   if (swap)
     swap_bytes<4> (&m_num_names, 1);
 
   // read region offsets
-  for (int i = 0; i < 8; i++)
+  for (octave_idx_type i = 0; i < 8; i++)
     {
-      m_region_offsets[i] = reinterpret_cast<const uint32_t&>
-                              (fwrap_metadata_array(8 + i * 4));
+      std::memcpy (m_region_offsets.data () + i,
+                   fwrap_metadata_array.data () + 8 + i * 4,
+                   sizeof (int32_t));
       if (swap)
         swap_bytes<4> (&m_region_offsets[i], 1);
     }
@@ -385,8 +388,10 @@ subsystem_handler::read_filewrapper (const Cell& fwrap_data, bool swap)
   m_class_name_refs.resize (class_name_size);
   for (size_t i = 0; i < class_name_size; i++)
     {
-      uint32_t val = reinterpret_cast<const uint32_t&>
-                       (fwrap_metadata_array(m_region_offsets[0] + i * 4));
+      uint32_t val;
+      std::memcpy (&val,
+                   fwrap_metadata_array.data () + m_region_offsets[0] + i * 4,
+                   sizeof (val));
       if (swap)
         swap_bytes<4> (&val, 1);
       m_class_name_refs[i] = val;
@@ -398,8 +403,10 @@ subsystem_handler::read_filewrapper (const Cell& fwrap_data, bool swap)
   m_object_id_refs.resize (object_id_size);
   for (size_t i = 0; i < object_id_size; i++)
     {
-      uint32_t val = reinterpret_cast<const uint32_t&>
-                       (fwrap_metadata_array(m_region_offsets[2] + i * 4));
+      uint32_t val;
+      std::memcpy (&val,
+                   fwrap_metadata_array.data () + m_region_offsets[2] + i * 4,
+                   sizeof (val));
       if (swap)
         swap_bytes<4> (&val, 1);
       m_object_id_refs[i] = val;
@@ -411,8 +418,10 @@ subsystem_handler::read_filewrapper (const Cell& fwrap_data, bool swap)
   m_object_prop_fields.resize (object_prop_size);
   for (size_t i = 0; i < object_prop_size; i++)
     {
-      uint32_t val = reinterpret_cast<const uint32_t&>
-                       (fwrap_metadata_array(m_region_offsets[3] + i * 4));
+      uint32_t val;
+      std::memcpy (&val,
+                   fwrap_metadata_array.data () + m_region_offsets[3] + i * 4,
+                   sizeof (val));
       if (swap)
         swap_bytes<4> (&val, 1);
       m_object_prop_fields[i] = val;
@@ -424,21 +433,25 @@ subsystem_handler::read_filewrapper (const Cell& fwrap_data, bool swap)
   m_saveobj_prop_fields.resize (saveobj_prop_size);
   for (size_t i = 0; i < saveobj_prop_size; i++)
     {
-      uint32_t val = reinterpret_cast<const uint32_t&>
-                       (fwrap_metadata_array(m_region_offsets[1] + i * 4));
+      uint32_t val;
+      std::memcpy (&val,
+                   fwrap_metadata_array.data () + m_region_offsets[1] + i * 4,
+                   sizeof (val));
       if (swap)
         swap_bytes<4> (&val, 1);
       m_saveobj_prop_fields[i] = val;
     }
 
   // read m_dynamic_prop_refs
-  //lists dynamic properties (if any) for each object dependency ID
+  // lists dynamic properties (if any) for each object dependency ID
   size_t dynamic_prop_size = (m_region_offsets[5] - m_region_offsets[4]) / 4;
   m_dynamic_prop_refs.resize (dynamic_prop_size);
   for (size_t i = 0; i < dynamic_prop_size; i++)
     {
-      uint32_t val = reinterpret_cast<const uint32_t&>
-                       (fwrap_metadata_array(m_region_offsets[4] + i * 4));
+      uint32_t val;
+      std::memcpy (&val,
+                   fwrap_metadata_array.data () + m_region_offsets[4] + i * 4,
+                   sizeof (val));
       if (swap)
         swap_bytes<4> (&val, 1);
       m_dynamic_prop_refs[i] = val;
@@ -509,7 +522,7 @@ subsystem_handler::get_object_properties (const uint32_t obj_type_id,
         error ("Could not load file");
     }
 
-  uint32_t nprops = *ptr++;
+  octave_idx_type nprops = *ptr++;
   octave_map prop_vals;
   if (! as_struct)
     {
@@ -619,7 +632,7 @@ subsystem_handler::parse_class_name (const std::string& full_class_name)
 uint32_t
 subsystem_handler::get_name_index (const std::string& name)
 {
-  for (uint32_t i = 0; i < m_prop_class_names.numel (); i++)
+  for (octave_idx_type i = 0; i < m_prop_class_names.numel (); i++)
     {
       if (m_prop_class_names[i] == name)
         return i + 1;  // names are 1-indexed
@@ -744,7 +757,7 @@ subsystem_handler::process_object_properties (const std::vector<std::tuple<octav
           local_object_id_refs.push_back (0);
 
           string_vector prop_names = prop_map.fieldnames ();
-          uint32_t num_props = prop_names.numel ();
+          octave_idx_type num_props = prop_names.numel ();
           target_prop_fields.push_back (num_props);
 
           for (octave_idx_type prop_idx = 0; prop_idx < num_props; prop_idx++)

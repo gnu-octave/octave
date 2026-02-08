@@ -621,23 +621,67 @@ rename (const std::string& from, const std::string& to,
   std::wstring wfrom = u8_to_wstring (from);
   std::wstring wto = u8_to_wstring (to);
 
-  // On Windows, use the atomic ReplaceFileW instead of a combination of
-  // unlink and rename because that might fail intermittently (bug #67729).
-  if (ReplaceFileW (wto.c_str (), wfrom.c_str (), nullptr, 0, nullptr, nullptr))
-    return 0;
+  DWORD from_attr = GetFileAttributesW (wfrom.c_str ());
+  DWORD to_attr = GetFileAttributesW (wto.c_str ());
 
-  // ReplaceFileW fails if the file that is to be replaced does not exist or
-  // does not reside on the same volume as the source file.  Use MoveFileExW as
-  // a fallback (not guaranteed to be atomic).
-  // MoveFileEx works if the source file is a directory without any flags, but
-  // fails with MOVEFILE_REPLACE_EXISTING.  So try without flags first.
-  if (MoveFileExW (wfrom.c_str (), wto.c_str (), 0))
-    return 0;
+  if (from_attr == INVALID_FILE_ATTRIBUTES)
+    {
+      // from does not exist
+      const std::error_condition econd
+        = std::system_category ().default_error_condition (ERROR_FILE_NOT_FOUND);
+      msg = econd.message ();
+      return status;
+    }
 
-  DWORD last_error = GetLastError ();
-  if ((last_error == ERROR_FILE_EXISTS || last_error == ERROR_ALREADY_EXISTS)
-      && MoveFileExW (wfrom.c_str (), wto.c_str (), MOVEFILE_REPLACE_EXISTING))
-    return 0;
+  if (from_attr & FILE_ATTRIBUTE_DIRECTORY)
+    {
+      // rename directory
+      if (to_attr != INVALID_FILE_ATTRIBUTES)
+        {
+          // target already exists
+          msg = "Cannot replace with directory";
+          return status;
+        }
+
+      if (MoveFileExW (wfrom.c_str (), wto.c_str (), 0))
+        return 0;
+
+      const std::error_condition econd
+        = std::system_category ().default_error_condition (GetLastError ());
+      msg = econd.message ();
+      return status;
+    }
+
+  // use MoveFileExW with MOVEFILE_REPLACE_EXISTING in a retry loop
+  // files might be locked by anti-virus, indexers, etc.
+
+  static const int max_retries = 10;
+
+  for (int attempt = 0; attempt < max_retries; ++attempt)
+    {
+      if (MoveFileExW (wfrom.c_str (), wto.c_str (), MOVEFILE_REPLACE_EXISTING))
+        return 0;
+
+      DWORD err = GetLastError ();
+
+      if (err != ERROR_SHARING_VIOLATION
+          && err != ERROR_ACCESS_DENIED
+          && err != ERROR_LOCK_VIOLATION
+          && err != ERROR_DRIVE_LOCKED)
+        {
+          // return if the error is not potentially transient
+          const std::error_condition econd
+            = std::system_category ().default_error_condition (err);
+          msg = econd.message ();
+          return status;
+        }
+
+      if (attempt + 1 < max_retries)
+        {
+          // wait before next try
+          Sleep (5);
+        }
+    }
 
   const std::error_condition econd
     = std::system_category ().default_error_condition (GetLastError ());

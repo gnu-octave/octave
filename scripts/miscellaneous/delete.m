@@ -89,7 +89,7 @@ endfunction
 %!   delete (file);
 %!   assert (! exist (file, "file"));
 %! unwind_protect_cleanup
-%!   sts = unlink (file);
+%!   delete ([file, '*']);
 %! end_unwind_protect
 
 %!test

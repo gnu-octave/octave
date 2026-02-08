@@ -26,7 +26,7 @@
 %!   assert (exist ("X"), 0);
 %! unwind_protect_cleanup
 %!   clear -global X
-%!   unlink (fname);  # remove temp file
+%!   delete ([fname, '*']);  # remove temp file
 %! end_unwind_protect
 
 %!test <*53027>

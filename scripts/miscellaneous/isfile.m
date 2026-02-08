@@ -71,7 +71,7 @@ endfunction
 %!   addpath (d);
 %!   assert (! isfile (n));
 %! unwind_protect_cleanup
-%!   try, unlink (tmp); end_try_catch
+%!   try, delete ([tmp, '*']); end_try_catch
 %!   try, rmpath (d); end_try_catch
 %! end_unwind_protect
 

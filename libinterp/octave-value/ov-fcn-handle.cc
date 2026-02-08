@@ -3379,7 +3379,7 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name_arg)
 %!     unlink (nm);
 %!     save (mode, nm, "f2", "g2", "hm2", "hdld2", "hbi2");
 %!   unwind_protect_cleanup
-%!     unlink (nm);
+%!     delete ([nm, '*']);
 %!   end_unwind_protect
 %! endfor
 */
@@ -3431,7 +3431,7 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name_arg)
 %!     unlink (nm);
 %!     fcn_handle_save_recurse (2, mode, nm, f2, g2, hm2, hdld2, hbi2);
 %!   unwind_protect_cleanup
-%!     unlink (nm);
+%!     delete ([nm, '*']);
 %!   end_unwind_protect
 %! endfor
 */

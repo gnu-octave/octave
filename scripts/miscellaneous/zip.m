@@ -126,7 +126,7 @@ endfunction
 %!     error ("unzipped file not equal to original file!");
 %!   endif
 %! unwind_protect_cleanup
-%!   sts = unlink (filename);
+%!   delete ([filename '*']);
 %!   sts = unlink ([dirname, filesep, basename, ext]);
 %!   sts = unlink (zipfile);
 %!   sts = unlink ([zipfile ".zip"]);

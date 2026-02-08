@@ -6,5 +6,5 @@
 %!   filevar = load (filename);
 %!   assert (filevar.s, s);
 %! unwind_protect_cleanup
-%!   sts = unlink (filename);
+%!   delete ([filename, '*']);
 %! end_unwind_protect

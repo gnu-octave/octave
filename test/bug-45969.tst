@@ -16,8 +16,8 @@
 %!   assert (f2 (f2_arg), text.f2 (f2_arg));
 %!   assert (f2 (f2_arg), binary.f2 (f2_arg));
 %! unwind_protect_cleanup
-%!   unlink (text_filename);
-%!   unlink (binary_filename);
+%!   delete ([text_filename, '*']);
+%!   delete ([binary_filename, '*']);
 %! end_unwind_protect
 
 %!testif HAVE_HDF5 <*45969>
@@ -34,5 +34,5 @@
 %!   hdf5 = load (hdf5_filename);
 %!   assert (f2 (f2_arg), hdf5.f2 (f2_arg));
 %! unwind_protect_cleanup
-%!   unlink (hdf5_filename);
+%!   delete ([hdf5_filename, '*']);
 %! end_unwind_protect

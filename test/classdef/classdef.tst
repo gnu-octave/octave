@@ -1760,7 +1760,7 @@
 %!     load (savefile);
 %!     assert (S.obj.a, 1);
 %!   unwind_protect_cleanup
-%!     delete (savefile);
+%!     delete ([savefile, '*']);
 %!   end_unwind_protect
 %! endfor
 
@@ -1776,7 +1776,7 @@
 %!     load (savefile);
 %!     assert (S.obj.a, 1);
 %!   unwind_protect_cleanup
-%!     delete (savefile);
+%!     delete ([savefile, '*']);
 %!   end_unwind_protect
 %! endfor
 
@@ -1792,7 +1792,7 @@
 %!     load (savefile);
 %!     assert (S.obj.a, 1);
 %!   unwind_protect_cleanup
-%!     delete (savefile);
+%!     delete ([savefile, '*']);
 %!   end_unwind_protect
 %! endfor
 
@@ -1809,7 +1809,7 @@
 %!     load (savefile);
 %!     assert (C{1}.a, 1);
 %!   unwind_protect_cleanup
-%!     delete (savefile);
+%!     delete ([savefile, '*']);
 %!   end_unwind_protect
 %! endfor
 
@@ -1825,7 +1825,7 @@
 %!     load (savefile);
 %!     assert (C{1}.a, 1);
 %!   unwind_protect_cleanup
-%!     delete (savefile);
+%!     delete ([savefile, '*']);
 %!   end_unwind_protect
 %! endfor
 
@@ -1841,6 +1841,6 @@
 %!     load (savefile);
 %!     assert (C{1}.a, 1);
 %!   unwind_protect_cleanup
-%!     delete (savefile);
+%!     delete ([savefile, '*']);
 %!   end_unwind_protect
 %! endfor

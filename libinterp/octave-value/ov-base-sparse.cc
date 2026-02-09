@@ -450,7 +450,7 @@ octave_base_sparse<T>::load_ascii (std::istream& is)
 %!   save ("-text", txt_file, "A", "B");
 %!   s = load (txt_file);
 %! unwind_protect_cleanup
-%!   unlink (txt_file);
+%!   delete ([txt_file, '*']);
 %! end_unwind_protect
 %! assert (s.A, A);
 %! assert (s.B, B);

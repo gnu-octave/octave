@@ -305,6 +305,40 @@ Windows systems.
 %! assert (ischar (output));
 %! assert (! isempty (output));
 
+%!shared octave_exe_path, nul_device
+%! exe_ext = __octave_config_info__ ("EXEEXT");
+%! octave_path = getenv ("OCTAVE_BINDIR");
+%! if (isempty (octave_path))
+%!   octave_path = EXEC_PATH;
+%! endif
+%! octave_exe_path = file_in_path (octave_path, ["octave", exe_ext]);
+%! if (ispc ())
+%!   nul_device = "nul";
+%! else
+%!   nul_device = "/dev/null";
+%! endif
+
+## Test double-quoted commands and redirecting output
+%!test <*68033>
+%! status = system (sprintf ('"%s" "--version" 2>&1 1>%s', octave_exe_path, ...
+%!                           nul_device));
+%! assert (status, 0);
+
+## Test double-quoted commands and redirecting output capturing output
+%!test <*68033>
+%! [status, output] = system (sprintf ('"%s" "--version" 2>&1 1>%s', ...
+%!                                     octave_exe_path, nul_device));
+%! assert (status, 0);
+%! assert (ischar (output));
+%! assert (isempty (output));
+
+## Test double-quoted commands capturing output
+%!test <*68033>
+%! [status, output] = system (sprintf ('"%s" "--version"', octave_exe_path));
+%! assert (status, 0);
+%! assert (ischar (output));
+%! assert (! isempty (output));
+
 %!error system ()
 %!error system (1, 2, 3)
 %!error <RETURN_OUTPUT must be boolean value> system (ls_command (), "foo")

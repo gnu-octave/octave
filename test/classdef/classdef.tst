@@ -1754,8 +1754,8 @@
 %!   S.obj = overloaded_subsref ();
 %!   S.obj.a = 1;
 %!   savefile = tempname ();
-%!   save (file_format{i_format}, savefile, 'S');
 %!   unwind_protect
+%!     save (file_format{i_format}, savefile, 'S');
 %!     clear S;
 %!     load (savefile);
 %!     assert (S.obj.a, 1);
@@ -1770,8 +1770,8 @@
 %!   S.obj = overloaded_subsref ();
 %!   S.obj.a = 1;
 %!   savefile = tempname ();
-%!   save (file_format{i_format}, savefile, 'S');
 %!   unwind_protect
+%!     save (file_format{i_format}, savefile, 'S');
 %!     clear S;
 %!     load (savefile);
 %!     assert (S.obj.a, 1);
@@ -1786,8 +1786,8 @@
 %!   S.obj = overloaded_subsref ();
 %!   S.obj.a = 1;
 %!   savefile = tempname ();
-%!   save (file_format{i_format}, savefile, 'S');
 %!   unwind_protect
+%!     save (file_format{i_format}, savefile, 'S');
 %!     clear S;
 %!     load (savefile);
 %!     assert (S.obj.a, 1);
@@ -1803,8 +1803,8 @@
 %!   C{1} = overloaded_subsref ();
 %!   C{1}.a = 1;
 %!   savefile = tempname ();
-%!   save (file_format{i_format}, savefile, 'C');
 %!   unwind_protect
+%!     save (file_format{i_format}, savefile, 'C');
 %!     clear C;
 %!     load (savefile);
 %!     assert (C{1}.a, 1);
@@ -1819,8 +1819,8 @@
 %!   C{1} = overloaded_subsref ();
 %!   C{1}.a = 1;
 %!   savefile = tempname ();
-%!   save (file_format{i_format}, savefile, 'C');
 %!   unwind_protect
+%!     save (file_format{i_format}, savefile, 'C');
 %!     clear C;
 %!     load (savefile);
 %!     assert (C{1}.a, 1);
@@ -1835,8 +1835,8 @@
 %!   C{1} = overloaded_subsref ();
 %!   C{1}.a = 1;
 %!   savefile = tempname ();
-%!   save (file_format{i_format}, savefile, 'C');
 %!   unwind_protect
+%!     save (file_format{i_format}, savefile, 'C');
 %!     clear C;
 %!     load (savefile);
 %!     assert (C{1}.a, 1);

@@ -563,20 +563,18 @@ template <typename T>
 void
 octave_sort<T>::MergeState::getmemi (octave_idx_type need)
 {
-  if (m_ia && need <= m_alloced)
+  // FIX: Check both m_a and m_ia, or always ensure both are allocated
+  if (m_a && m_ia && need <= m_alloced)
     return;
 
   need = roundupsize (need);
-  /* Don't realloc!  That can cost cycles to copy the old data, but
-   * we don't care what's in the block.
-   */
   delete [] m_a;
   delete [] m_ia;
-
   m_a = new T [need];
   m_ia = new octave_idx_type [need];
   m_alloced = need;
 }
+
 
 /* Merge the na elements starting at pa with the nb elements starting at pb
  * in a stable way, in-place.  na and nb must be > 0, and pa + na == pb.

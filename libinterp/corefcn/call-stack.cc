@@ -1434,7 +1434,7 @@ matching the given patterns.
 %!   assert (vars.class, "double");
 %!   assert (vars.bytes, 128);
 %! unwind_protect_cleanup
-%!   unlink (ftmp);
+%!   delete ([ftmp, '*']);
 %! end_unwind_protect
 */
 

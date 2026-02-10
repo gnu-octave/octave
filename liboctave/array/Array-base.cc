@@ -1391,18 +1391,18 @@ Array<T, Alloc>::assign (const Array<octave::idx_vector>& ia,
             }
         }
       else
-        {
-          // dimension mismatch, unless LHS and RHS both empty
-          bool lhsempty, rhsempty;
-          lhsempty = rhsempty = false;
-          dim_vector lhs_dv = dim_vector::alloc (ial);
-          for (int i = 0; i < ial; i++)
-            {
-              octave_idx_type l = ia(i).length (rdv(i));
-              lhs_dv(i) = l;
-              lhsempty = lhsempty || (l == 0);
-              rhsempty = rhsempty || (rhdv(j++) == 0);
-            }
+       {
+         bool lhsempty, rhsempty;
+         lhsempty = rhsempty = false;
+         dim_vector lhs_dv = dim_vector::alloc (ial);
+         j = 0;  // FIX: Reset j before reusing it
+         for (int i = 0; i < ial; i++)
+           {
+             octave_idx_type l = ia(i).length (rdv(i));
+             lhs_dv(i) = l;
+             lhsempty = lhsempty || (l == 0);
+             rhsempty = rhsempty || (j < rhdvl && rhdv(j++) == 0);
+           }
           if (! lhsempty || ! rhsempty)
             {
               lhs_dv.chop_trailing_singletons ();

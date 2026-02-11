@@ -83,8 +83,9 @@ system (const std::string& cmd_str)
   SetHandleInformation (h_read, HANDLE_FLAG_INHERIT, 0);
 
   // create process with new hidden console
-  std::wstring wcmd_str {L"cmd.exe /C "};
+  std::wstring wcmd_str {L"cmd.exe /C \""};
   wcmd_str.append (u8_to_wstring (cmd_str));
+  wcmd_str.append (L"\"");
   STARTUPINFOW si {};
   si.cb = sizeof (si);
   si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;

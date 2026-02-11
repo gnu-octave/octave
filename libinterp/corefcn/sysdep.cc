@@ -677,8 +677,9 @@ popen (const char *command, const char *mode)
     }
   PROCESS_INFORMATION pi {};
 
-  std::wstring wcommand {L"cmd.exe /C "};
+  std::wstring wcommand {L"cmd.exe /C \""};
   wcommand.append (sys::u8_to_wstring (command));
+  wcommand.append (L"\"");
   BOOL ok = CreateProcessW (nullptr, &wcommand[0], nullptr, nullptr, TRUE,
                             CREATE_NEW_CONSOLE, nullptr, nullptr, &si, &pi);
   if (! ok)

@@ -55,8 +55,6 @@ UTIL_F77_SRC = \
 
 UTIL_C_SRC = \
   %reldir%/blaswrap.c \
-  %reldir%/f77-fcn.c \
-  %reldir%/lo-error.c \
   %reldir%/oct-rl-edit.c \
   %reldir%/oct-rl-hist.c
 
@@ -66,6 +64,7 @@ UTIL_SRC = \
   %reldir%/cmd-hist.cc \
   %reldir%/data-conv.cc \
   %reldir%/f77-dummy-main.cc \
+  %reldir%/f77-fcn.cc \
   %reldir%/file-info.cc \
   %reldir%/glob-match.cc \
   %reldir%/kpse.cc \
@@ -76,6 +75,7 @@ UTIL_SRC = \
   %reldir%/oct-atomic.c \
   %reldir%/oct-base64.cc \
   %reldir%/oct-cmplx.cc \
+  %reldir%/oct-error.cc \
   %reldir%/oct-glob.cc \
   %reldir%/oct-hash.cc \
   %reldir%/oct-inttypes.cc \

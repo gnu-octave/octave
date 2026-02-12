@@ -549,9 +549,14 @@ octave_sort<T>::MergeState::getmem (octave_idx_type need)
     return;
 
   need = roundupsize (need);
-  /* Don't realloc!  That can cost cycles to copy the old data, but
-   * we don't care what's in the block.
-   */
+  /* Avoid using realloc here because this code uses C++ new[]/delete[].
+ * realloc is not appropriate for memory allocated with new[] and can
+ * lead to undefined behavior for non-trivial types. We do not need to
+ * preserve the previous contents, so we free both buffers and allocate
+ * fresh arrays. Deleting both m_a and m_ia before allocating prevents
+ * a partially-updated state that a subsequent getmemi call could observe.
+ */
+
   delete [] m_a;
   delete [] m_ia; // Must do this or fool possible next getmemi.
   m_a = new T [need];
@@ -563,7 +568,7 @@ template <typename T>
 void
 octave_sort<T>::MergeState::getmemi (octave_idx_type need)
 {
-  // FIX: Check both m_a and m_ia, or always ensure both are allocated
+  // Check both m_a and m_ia to ensure memory is allocated correctly
   if (m_a && m_ia && need <= m_alloced)
     return;
 

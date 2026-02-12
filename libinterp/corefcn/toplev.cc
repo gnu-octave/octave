@@ -350,7 +350,7 @@ Windows systems.
 ## Test double-quoted commands and redirecting output
 %!test <*68033>
 %! if (! is_frgn)
-%!   status = system (sprintf ('"%s" "--version" 2>&1 1>%s', ...
+%!   status = system (sprintf ('"%s" "--version" 1>%s 2>&1', ...
 %!                    octave_exe_path, nul_device));
 %!   assert (status, 0);
 %! endif
@@ -358,7 +358,7 @@ Windows systems.
 ## Test double-quoted commands and redirecting output capturing output
 %!test <*68033>
 %! if (! is_frgn)
-%!   [status, output] = system (sprintf ('"%s" "--version" 2>&1 1>%s', ...
+%!   [status, output] = system (sprintf ('"%s" "--version" 1>%s 2>&1', ...
 %!                                       octave_exe_path, nul_device));
 %!   assert (status, 0);
 %!   assert (ischar (output));
@@ -368,7 +368,8 @@ Windows systems.
 ## Test double-quoted commands capturing output
 %!test <*68033>
 %! if (! is_frgn)
-%!   [status, output] = system (sprintf ('"%s" "--version"', octave_exe_path));
+%!   [status, output] = system (sprintf ('"%s" "--version" 2>&1', ...
+%!                                       octave_exe_path));
 %!   assert (status, 0);
 %!   assert (ischar (output));
 %!   assert (! isempty (output));

@@ -513,7 +513,7 @@ subsystem_handler::get_object_properties (const uint32_t obj_type_id,
 
   // skip to the correct obj_type_id block
   constexpr int block_size = 3;
-  for (octave_idx_type current_id = 0; current_id < obj_type_id; current_id++)
+  for (uint32_t current_id = 0; current_id < obj_type_id; current_id++)
     {
       uint32_t nprops = *ptr++;
       ptr += nprops * block_size;

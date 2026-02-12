@@ -72,11 +72,11 @@ If so, you should not install Octave from that file, but should start over.
 Installation
 ------------
 
-Building Octave from source requires ~475 MB of disk space 
-(or ~3.8 GB with debugging symbols). 
-Once installed, Octave uses ~75 MB of disk space 
-(or ~415 MB if shared libraries are not built or binaries include debugging symbols).
-
+Building Octave from source requires ~475 MB of disk space
+(or ~3.8 GB with debugging symbols).
+Once installed, Octave uses ~75 MB of disk space
+(or ~415 MB if shared libraries are not built or binaries
+include debugging symbols).
 
 To compile Octave, you will need a recent version of:
 
@@ -90,7 +90,7 @@ other versions of make.  If you use `f2c`, you will need a script
 like `fort77` that works like a normal Fortran compiler by combining
 `f2c` with your C compiler in a single script.
 
- See the file `INSTALL.OCTAVE` or the wiki at <https://wiki.octave.org/Building>
+See the file `INSTALL.OCTAVE` or the wiki at <https://wiki.octave.org/Building>
 for more detailed installation instructions.
 
 Bugs and Patches

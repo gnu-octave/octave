@@ -32,7 +32,9 @@
 #include "cmach-info.h"
 #include "f77-fcn.h"
 
+extern "C" {
 extern double F77_FUNC (d1mach, D1MACH) (const F77_INT*);
+}
 
 typedef union
 {

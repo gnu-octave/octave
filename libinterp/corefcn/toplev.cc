@@ -362,7 +362,7 @@ Windows systems.
 %!                                       octave_exe_path, nul_device));
 %!   assert (status, 0);
 %!   assert (ischar (output));
-%!   assert (isempty (output));
+%!   assert (output, "");
 %! endif
 
 ## Test double-quoted commands capturing output

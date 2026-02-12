@@ -305,35 +305,7 @@ Windows systems.
 %! assert (ischar (output));
 %! assert (! isempty (output));
 
-%!function is_frgn = is_foreign_abi ()
-%!  ## Check if process is running with a foreign ABI (e.g., qemu-user)
-%!  ## This is a crutch to skip some tests because apparently stdout and stderr
-%!  ## are not correctly redirected if Octave is built for an ABI that is
-%!  ## foreign to the host.  It is very much tailored to the CI setup.
-%!
-%!  is_frgn = false;
-%!
-%!  if (ispc ())
-%!    return;
-%!  endif
-%!
-%!  ## check for qemu-user
-%!  if (strncmp (getenv ("driver"), "qemu", 4))
-%!    is_frgn = true;
-%!    return;
-%!  endif
-%!
-%!  ## check for armhf on aarch64
-%!  if (! isempty (strfind (computer (), "gnueabihf")))
-%!    [~, mach] = system ("uname -m");
-%!    if (strcmp (strtrim (mach), "aarch64"))
-%!      is_frgn = true;
-%!      return;
-%!    endif
-%!  endif
-%!endfunction
-
-%!shared octave_exe_path, nul_device, is_frgn
+%!shared octave_exe_path, nul_device
 %! exe_ext = __octave_config_info__ ("EXEEXT");
 %! octave_path = getenv ("OCTAVE_BINDIR");
 %! if (isempty (octave_path))
@@ -345,35 +317,28 @@ Windows systems.
 %! else
 %!   nul_device = "/dev/null";
 %! endif
-%! is_frgn = is_foreign_abi ();
 
 ## Test double-quoted commands and redirecting output
 %!test <*68033>
-%! if (! is_frgn)
-%!   status = system (sprintf ('"%s" "--version" 1>%s 2>&1', ...
-%!                    octave_exe_path, nul_device));
-%!   assert (status, 0);
-%! endif
+%! status = system (sprintf ('"%s" "--version" 1>%s 2>&1', ...
+%!                           octave_exe_path, nul_device));
+%! assert (status, 0);
 
 ## Test double-quoted commands and redirecting output capturing output
 %!test <*68033>
-%! if (! is_frgn)
-%!   [status, output] = system (sprintf ('"%s" "--version" 1>%s 2>&1', ...
-%!                                       octave_exe_path, nul_device));
-%!   assert (status, 0);
-%!   assert (ischar (output));
-%!   assert (output, "");
-%! endif
+%! [status, output] = system (sprintf ('"%s" "--version" 1>%s 2>&1', ...
+%!                                     octave_exe_path, nul_device));
+%! assert (status, 0);
+%! assert (ischar (output));
+%! assert (output, "");
 
 ## Test double-quoted commands capturing output
 %!test <*68033>
-%! if (! is_frgn)
-%!   [status, output] = system (sprintf ('"%s" "--version" 2>&1', ...
-%!                                       octave_exe_path));
-%!   assert (status, 0);
-%!   assert (ischar (output));
-%!   assert (! isempty (output));
-%! endif
+%! [status, output] = system (sprintf ('"%s" "--version" 2>&1', ...
+%!                                     octave_exe_path));
+%! assert (status, 0);
+%! assert (ischar (output));
+%! assert (! isempty (output));
 
 %!error system ()
 %!error system (1, 2, 3)

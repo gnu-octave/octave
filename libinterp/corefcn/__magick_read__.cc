@@ -364,7 +364,7 @@ read_indexed_images (const std::vector<Magick::Image>& imvec,
               // 1 for transparent and 0 for opaque so we fix that here.
               const octave_idx_type nPixels = alpha.numel ();
               for (octave_idx_type pix = 0; pix < nPixels; pix++)
-                alpha_fvec[pix] = 1 - amap_fvec[static_cast<int> (img_fvec[3])];
+                alpha_fvec[pix] = 1 - amap_fvec[static_cast<int> (img_fvec[pix])];
 
               retval(2) = alpha;
             }

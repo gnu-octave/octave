@@ -32,42 +32,20 @@
 #define OCTAVE_BEGIN_NAMESPACE(name) namespace name {
 #define OCTAVE_END_NAMESPACE(name) }
 
-/* The C++ standard is evolving to allow attribute hints in a
-   compiler-independent manner.  In C++ 2011 support for noreturn was
-   added.  In C++ 2014 support for deprecated was added.  The Octave
-   code base has been future-proofed by using macros of the form
-   OCTAVE_ATTRIBUTE_NAME in place of vendor specific attribute
-   mechanisms.  As compilers evolve, the underlying implementation can
-   be changed with the macro definitions below.  FIXME: Update macros
-   to use C++ standard attribute syntax when Octave moves to C++ 2014
-   standard.  */
+#define OCTAVE_DEPRECATED(ver, msg) [[deprecated("[" #ver "]: " msg)]]
+#define HAVE_OCTAVE_DEPRECATED_ATTR 1
 
-#if defined (__GNUC__)
-   /* The following attributes are used with gcc and clang compilers.  */
-#  if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5)
-#    define OCTAVE_DEPRECATED(ver, msg) __attribute__ ((__deprecated__ ("[" #ver "]: " msg)))
-#  else
-#    define OCTAVE_DEPRECATED(ver, msg) __attribute__ ((__deprecated__))
-#  endif
-#  define HAVE_OCTAVE_DEPRECATED_ATTR 1
+#define OCTAVE_NORETURN [[noreturn]]
+#define HAVE_OCTAVE_NORETURN_ATTR 1
 
-#  define OCTAVE_NORETURN __attribute__ ((__noreturn__))
-#  define HAVE_OCTAVE_NORETURN_ATTR 1
+#define OCTAVE_UNUSED [[maybe_unused]]
+#define HAVE_OCTAVE_UNUSED_ATTR 1
 
-#  define OCTAVE_UNUSED __attribute__ ((__unused__))
-#  define HAVE_OCTAVE_UNUSED_ATTR 1
-#else
-#  define OCTAVE_DEPRECATED(ver, msg)
-#  define OCTAVE_NORETURN
-#  define OCTAVE_UNUSED
-
-/* #  undef HAVE_OCTAVE_DEPRECATED_ATTR */
-/* #  undef HAVE_OCTAVE_NORETURN_ATTR */
-/* #  undef HAVE_OCTAVE_UNUSED_ATTR */
+#if ! defined (OCTAVE_FALLTHROUGH)
+#  define OCTAVE_FALLTHROUGH [[fallthrough]]
 #endif
 
-/* Branch hint macros for use in if condititions.
-   Returns logical value of x. */
+// Branch hint macros for use in if condititions.
 #if defined (__GNUC__)
 #  define OCTAVE_LIKELY(x) __builtin_expect (!!(x), 1)
 #  define OCTAVE_UNLIKELY(x) __builtin_expect (!!(x), 0)
@@ -102,16 +80,6 @@
 #  define OCTAVE_FORMAT_PRINTF(index, first)
 
 /* #  undef HAVE_OCTAVE_FORMAT_PRINTF_ATTR */
-#endif
-
-#if ! defined (OCTAVE_FALLTHROUGH)
-#  if defined (__cplusplus) && __cplusplus > 201402L
-#    define OCTAVE_FALLTHROUGH [[fallthrough]]
-#  elif defined (__GNUC__) && __GNUC__ < 7
-#    define OCTAVE_FALLTHROUGH ((void) 0)
-#  else
-#    define OCTAVE_FALLTHROUGH __attribute__ ((__fallthrough__))
-#  endif
 #endif
 
 #if defined (__cplusplus)

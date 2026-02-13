@@ -510,6 +510,8 @@ static std::string help_msg =
   "\n"
   "  -v, --verbose           Echo commands as they are executed.\n"
   "\n"
+  "  -V, --version           Print version information.\n"
+  "\n"
   "  --quiet                 Ignored.  Intended to suppress output from\n"
   "                          compiler steps.\n"
   "\n"
@@ -723,8 +725,7 @@ main (int argc, char **sys_argv)
       return 1;
     }
 
-  if (argc == 2 && (argv[1] == "-v" || argv[1] == "-version"
-                    || argv[1] == "--version"))
+  if (argc == 2 && (argv[1] == "-V" || argv[1] == "--version"))
     {
       std::cout << version_msg << std::endl;
       return 0;

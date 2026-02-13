@@ -202,7 +202,9 @@ base_tm::strftime (const std::string& fmt) const
       std::size_t bufsize = STRFTIME_BUF_INITIAL_SIZE;
       std::size_t chars_written = 0;
 
-      while (chars_written == 0)
+      // Limit retries to prevent infinite loop when output is empty
+      const std::size_t max_bufsize = STRFTIME_BUF_INITIAL_SIZE * 1024;
+      while (chars_written == 0 && bufsize <= max_bufsize)
         {
           delete [] buf;
           buf = new char [bufsize];

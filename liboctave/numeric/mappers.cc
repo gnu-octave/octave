@@ -164,8 +164,21 @@ Complex
 log2 (const Complex& x, int& exp)
 {
   double ax = std::abs (x);
+  // Handle zero case to avoid division by zero
+  if (ax == 0.0)
+    {
+      exp = 0;
+      return Complex (std::numeric_limits<double>::lowest (),
+                      std::numeric_limits<double>::lowest ());
+    }
+    
   double lax = log2 (ax, exp);
-  return (ax != lax) ? (x / ax) * lax : x;
+   
+  // Check for numerical stability
+  if (ax != lax && std::isfinite(lax))
+    return (x / ax) * lax;
+  else
+    return x;
 }
 
 FloatComplex
@@ -294,7 +307,7 @@ rc_log (double x)
   if (std::isnan (x))
     return Complex (x, x);  // NaN + NaN*i
 
-    
+
   return x < 0.0 ? Complex (std::log (-x), M_PI) : Complex (std::log (x));
 }
 

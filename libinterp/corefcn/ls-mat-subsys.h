@@ -110,7 +110,7 @@ class subsystem_handler
     octave_value m_type_handle;
 
     // save variables
-    uint32_t m_object_id_counter = 0;  // To manage dependency graphs; FIXME: unused?
+    // uint32_t m_object_id_counter = 0;  // To manage dependency graphs; FIXME: unused?
     uint32_t m_class_id_counter = 0;
     uint32_t m_saveobj_object_counter = 0;
     uint32_t m_normal_object_counter = 0;

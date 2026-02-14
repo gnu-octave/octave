@@ -37,6 +37,9 @@
 #include "ls-mat-subsys.h"
 #include "ov-classdef.h"
 
+static uint32_t MIN_FILEWRAPPER_VERSION = 2;
+static uint32_t MCOS_MAGIC_NUMBER = 0xDD000000;
+
 static inline bool
 is_valid_mcos_object (const octave_value& metadata)
 {
@@ -54,7 +57,7 @@ is_valid_mcos_object (const octave_value& metadata)
               const octave_value& enum_tag = md.contents ("EnumerationInstanceTag");
               if (enum_tag.is_uint32_type () && enum_tag.is_scalar_type ()
                   && static_cast<uint32_t> (enum_tag.uint32_scalar_value ())
-                       == 0xDD000000)
+                       == MCOS_MAGIC_NUMBER)
                 warning_with_id ("Octave:load:classdef-not-supported",
                     "load: MATLAB enumeration class object cannot be loaded. "
                     "Returning as %s",
@@ -77,7 +80,7 @@ is_valid_mcos_object (const octave_value& metadata)
     return false;
 
   // first value must be 0xDD000000
-  if (static_cast<uint32_t> (md(0, 0)) != 0xDD000000)
+  if (static_cast<uint32_t> (md(0, 0)) != MCOS_MAGIC_NUMBER)
     return false;
 
   return true;
@@ -160,7 +163,7 @@ load_mcos_object (const octave_value& objmetadata, bool as_struct)
   octave::subsystem_handler *sh = lss.get_subsystem_handler ();
 
   const octave_uint32 *dt = objmetadata.uint32_array_value ().data ();
-  if (static_cast<uint32_t>(dt[0]) != 0xDD000000)
+  if (static_cast<uint32_t>(dt[0]) != MCOS_MAGIC_NUMBER)
     {
       warning_with_id ("Octave:load:invalid-mcos-object",
                        "load: invalid MCOS object metadata. Returning as %s",
@@ -181,12 +184,12 @@ load_mcos_object (const octave_value& objmetadata, bool as_struct)
     std::get<uint32_t> (m[i]) = dt[2 + objdims + i];
 
   uint32_t class_id = dt[2 + objdims + nobjects];
+  std::string classname = sh->get_class_name (class_id);
+
   bool skip_constructor = true;
   octave::cdef_class cls;
   if (! as_struct)
     {
-      std::string classname = sh->get_class_name (class_id);
-
       // "function_handle_workspace" objects contain data of the workspace
       // context of function handles. Return it as structure.
       // FIXME: Add compatible implementation of this class.
@@ -211,6 +214,15 @@ load_mcos_object (const octave_value& objmetadata, bool as_struct)
   for (octave_idx_type i = 0; i < nobjects; i++)
     {
       uint32_t obj_id = std::get<uint32_t> (m[i]);
+      if (! obj_id)
+        {
+          // FIXME: Properly support deleted objects.
+          warning_with_id ("Octave:load:deleted-object",
+                           "load: object of class '%s' was deleted in MATLAB "
+                           "and cannot be loaded. Returning metadata",
+                           classname.c_str ());
+          return objmetadata;
+        }
       if (! lss.is_mcos_object_cache_entry (obj_id))
         {
           if (! as_struct)
@@ -327,9 +339,8 @@ subsystem_handler::read_filewrapper (const Cell& fwrap_data, bool swap)
   std::memcpy (&version, fwrap_metadata_array.data (), sizeof (version));
   if (swap)
     swap_bytes<4> (&version, 1);
-  if (version > m_filewrapper_version)
-    error ("load: filewrapper version %u is not supported. "
-           "This file was created with a newer version of MATLAB.",
+  if (version > m_filewrapper_version || version < MIN_FILEWRAPPER_VERSION)
+    error ("load: filewrapper version %u is not supported. MCOS objects cannot be loaded.",
            version);
 
   // get number of unique property names and class names
@@ -367,8 +378,11 @@ subsystem_handler::read_filewrapper (const Cell& fwrap_data, bool swap)
     }
 
   // read property values
-  // Property values are stored in fwrap_data(2:end-3).
-  octave_idx_type prop_vals_size = fwrap_data.numel () - 5;
+  // Property values are stored in fwrap_data(2:end-X) where:
+  // X = [1,2,3] for Filewrapper version [2,3,4]
+  int prop_vals_idx_end = version - 1;  // simple hack for above mapping
+  // ignore first 2 entries as well
+  octave_idx_type prop_vals_size = fwrap_data.numel () - prop_vals_idx_end - 2;
   if (prop_vals_size > 0)
     {
       m_fwrap_prop_vals.resize (prop_vals_size);
@@ -588,6 +602,11 @@ subsystem_handler::check_dyn_props (const uint32_t obj_dep_id)
   // FIXME: Actually implement support when Octave supports dynamicprops.
   //        For now, only check if exists.
 
+  // Newer filewrapper versions do not write metadata if no dynprops are present.
+  // However, older versions write blocks of zeros.
+  if (m_dynamic_prop_refs.empty () || (! obj_dep_id))
+    return false;  // no dynamic properties present
+
   const uint32_t *ptr = m_dynamic_prop_refs.data ();
   const uint32_t *end_ptr = ptr + m_dynamic_prop_refs.size ();
 
@@ -699,7 +718,7 @@ subsystem_handler::create_metadata_array (const dim_vector& obj_dims,
   //                   object_id1, object_id2, ..., object_idN, class_id]
   uint32NDArray metadata (dim_vector (3 + obj_ndims + nobjects, 1));
 
-  metadata(0) = 0xDD000000;  // magic number for MCOS objects
+  metadata(0) = MCOS_MAGIC_NUMBER;  // magic number for MCOS objects
   metadata(1) = obj_ndims;
 
   for (uint32_t i = 0; i < obj_ndims; i++)

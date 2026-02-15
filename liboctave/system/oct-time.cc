@@ -54,10 +54,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 time::time (double d)
-  : m_ot_unix_time (static_cast<OCTAVE_TIME_T> (d)), m_ot_usec (0)
+  : m_ot_unix_time (static_cast<OCTAVE_TIME_T> (std::floor (d))),
+    m_ot_usec (0)
 {
-  double ip;
-  m_ot_usec = static_cast<int> (std::modf (d, &ip) * 1e6);
+  m_ot_usec = static_cast<int> ((d - std::floor (d)) * 1e6);
 }
 
 time::time (const base_tm& tm)
@@ -201,7 +201,8 @@ base_tm::strftime (const std::string& fmt) const
       char *buf = nullptr;
       std::size_t bufsize = STRFTIME_BUF_INITIAL_SIZE;
       std::size_t chars_written = 0;
-
+      
+      constexpr std::size_t STRFTIME_BUF_MAX_SIZE = 65536;
       while (chars_written == 0)
         {
           delete [] buf;
@@ -210,7 +211,13 @@ base_tm::strftime (const std::string& fmt) const
 
           chars_written
             = octave_strftime_wrapper (buf, bufsize, fmt_str, &t);
-
+          // If the result is genuinely empty, break out.
+          if (chars_written == 0 && buf[0] == '\0' && bufsize > STRFTIME_BUF_INITIAL_SIZE)
+            break;
+      
+          if (bufsize >= STRFTIME_BUF_MAX_SIZE)
+           break;
+             
           bufsize *= 2;
         }
 

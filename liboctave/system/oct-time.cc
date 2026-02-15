@@ -201,7 +201,7 @@ base_tm::strftime (const std::string& fmt) const
       char *buf = nullptr;
       std::size_t bufsize = STRFTIME_BUF_INITIAL_SIZE;
       std::size_t chars_written = 0;
-      
+
       constexpr std::size_t STRFTIME_BUF_MAX_SIZE = 65536;
       while (chars_written == 0)
         {
@@ -216,7 +216,7 @@ base_tm::strftime (const std::string& fmt) const
             break;
       
           if (bufsize >= STRFTIME_BUF_MAX_SIZE)
-           break;
+            break;
              
           bufsize *= 2;
         }

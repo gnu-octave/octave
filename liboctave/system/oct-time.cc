@@ -211,13 +211,13 @@ base_tm::strftime (const std::string& fmt) const
 
           chars_written
             = octave_strftime_wrapper (buf, bufsize, fmt_str, &t);
-          // If the result is genuinely empty, break out.
-          if (chars_written == 0 && buf[0] == '\0' && bufsize > STRFTIME_BUF_INITIAL_SIZE)
-            break;
-      
-          if (bufsize >= STRFTIME_BUF_MAX_SIZE)
-            break;
-             
+          // If the result is genuinely empty OR buffer reached max size, break out.
+          if ((chars_written == 0 && buf[0] == '\0' && bufsize > STRFTIME_BUF_INITIAL_SIZE) ||
+              (bufsize >= STRFTIME_BUF_MAX_SIZE))
+            {
+              break;
+            }
+
           bufsize *= 2;
         }
 

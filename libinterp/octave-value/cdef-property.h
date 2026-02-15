@@ -97,7 +97,7 @@ private:
       return cdef_property (this);
     }
 
-    OCTINTERP_API OCTAVE_NORETURN
+    OCTAVE_NORETURN OCTINTERP_API
     void err_property_access (const std::string& from,
                               bool is_set = false) const;
   };

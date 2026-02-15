@@ -1127,6 +1127,7 @@ dnl search paths have been established, and at the same priority level as
 dnl system library function and header checks, but before checks for all
 dnl external library dependencies.
 
+gl_SET_CRYPTO_CHECK_DEFAULT([auto-gpl-compat])
 gl_INIT
 
 ### Checks for header files.

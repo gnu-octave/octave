@@ -50,7 +50,7 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Print the usage part of the doc string of FCN (user-defined or DEFUN).
-void
+OCTAVE_NORETURN void
 print_usage ()
 {
   tree_evaluator& tw = __get_evaluator__ ();
@@ -63,12 +63,16 @@ print_usage ()
     error ("print_usage: invalid function");
 }
 
-void
+OCTAVE_NORETURN void
 print_usage (const std::string& name)
 {
   interpreter& interp = __get_interpreter__ ();
 
   interp.feval ("print_usage", octave_value (name), 0);
+
+  // This code is unreachable as print_usage.m will never return.
+  // Let the compiler know that by using a call to error() which never returns.
+  error ("print_usage: Internal error, please report.");
 }
 
 void

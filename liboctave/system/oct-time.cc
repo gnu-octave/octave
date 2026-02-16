@@ -211,7 +211,8 @@ base_tm::strftime (const std::string& fmt) const
           buf = new char [bufsize];
           buf[0] = '\0';
 
-          chars_written = octave_strftime_wrapper (buf, bufsize, fmt_str, &t);
+          chars_written 
+            = octave_strftime_wrapper (buf, bufsize, fmt_str, &t);
 
           if (chars_written == 0)
             bufsize = std::min (bufsize * 2, STRFTIME_BUF_MAX_SIZE);

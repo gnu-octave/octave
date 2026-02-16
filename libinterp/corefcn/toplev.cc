@@ -28,8 +28,6 @@
 #endif
 
 #include <cerrno>
-#include <cstdlib>
-
 #include <new>
 #include <sstream>
 #include <string>

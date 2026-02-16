@@ -27,7 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <algorithm>
 #include <limits>
 #include <list>
 #include <map>

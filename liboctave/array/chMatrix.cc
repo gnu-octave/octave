@@ -29,7 +29,6 @@
 
 #include <cstring>
 
-#include <ostream>
 #include <string>
 
 #include "mx-base.h"

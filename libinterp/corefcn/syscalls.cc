@@ -34,7 +34,6 @@
 
 #include <cstdio>
 #include <cstdlib>
-#include <cstring>
 
 #include "_Exit-wrapper.h"
 #include "cmd-hist.h"

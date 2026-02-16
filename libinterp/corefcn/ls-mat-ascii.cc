@@ -29,7 +29,6 @@
 
 #include <cctype>
 
-#include <iomanip>
 #include <istream>
 #include <ostream>
 #include <sstream>

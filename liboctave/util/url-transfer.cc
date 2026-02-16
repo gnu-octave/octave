@@ -28,7 +28,6 @@
 #endif
 
 #include <fstream>
-#include <iomanip>
 #include <iostream>
 
 #include "dir-ops.h"
@@ -42,7 +41,6 @@
 
 #if defined (HAVE_CURL)
 #  include <curl/curl.h>
-#  include <curl/curlver.h>
 #  include <curl/easy.h>
 #endif
 

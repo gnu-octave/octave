@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <string>
-
 // Instantiate Arrays of void *.
 
 #define OCTAVE_EXTERN_TEMPLATE_ARRAY

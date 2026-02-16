@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <iomanip>
-
 #include "filepos-wrappers.h"
 
 #include "c-file-ptr-stream.h"

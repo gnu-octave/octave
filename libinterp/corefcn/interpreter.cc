@@ -27,7 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cstdio>
 #include <clocale>
 
 #include <iostream>

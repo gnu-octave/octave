@@ -31,7 +31,6 @@
 
 #include <algorithm>
 #include <limits>
-#include <string>
 
 #include "CColVector.h"
 #include "CMatrix.h"

@@ -29,7 +29,6 @@
 
 #include <istream>
 #include <ostream>
-#include <vector>
 
 #include "lo-ieee.h"
 #include "mappers.h"

@@ -27,14 +27,12 @@
 #  include "config.h"
 #endif
 
-#include <cinttypes>
 #include <sstream>
 
 #include "DASSL.h"
 #include "dMatrix.h"
 #include "f77-fcn.h"
 #include "oct-error.h"
-#include "quit.h"
 
 typedef F77_INT (*dassl_fcn_ptr) (const double&, const double *,
                                   const double *, double *, F77_INT&,

@@ -164,7 +164,6 @@
 
 #  include <cfloat>
 #  include <cmath>
-#  include <limits>
 
 // use std::numeric_limits, since 1./0. and 0./0. fail with some compilers (MS)
 #  define Inf octave::numeric_limits<double>::Inf ()

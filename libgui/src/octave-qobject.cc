@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <utility>
-
 #include <QApplication>
 #include <QClipboard>
 #include <QFile>

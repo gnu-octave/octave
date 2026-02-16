@@ -27,9 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <algorithm>
-#include <iomanip>
-
 #include "cdef-class.h"
 #include "cdef-manager.h"
 #include "cdef-utils.h"

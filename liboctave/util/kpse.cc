@@ -32,13 +32,9 @@
 #  include "config.h"
 #endif
 
-#include <cctype>
 #include <cerrno>
 #include <cstdlib>
 
-#include <map>
-#include <fstream>
-#include <iostream>
 #include <string>
 
 #include "dir-ops.h"

@@ -29,9 +29,7 @@
 
 #include <cmath>
 
-#include <istream>
 #include <limits>
-#include <ostream>
 
 #include "Array-util.h"
 #include "Range.h"

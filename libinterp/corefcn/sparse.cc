@@ -27,7 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cstdlib>
 #include <string>
 
 #include "variables.h"

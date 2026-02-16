@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <ostream>
-
 #include "Array-util.h"
 #include "boolMatrix.h"
 #include "mx-inlines.cc"

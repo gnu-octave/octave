@@ -30,7 +30,6 @@
 #include <istream>
 #include <limits>
 #include <ostream>
-#include <vector>
 
 #include "mappers.h"
 #include "oct-locbuf.h"

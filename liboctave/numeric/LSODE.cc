@@ -27,13 +27,11 @@
 #  include "config.h"
 #endif
 
-#include <cinttypes>
 #include <sstream>
 
 #include "LSODE.h"
 #include "f77-fcn.h"
 #include "oct-error.h"
-#include "quit.h"
 
 typedef F77_INT (*lsode_fcn_ptr) (const F77_INT&, const double&, double *,
                                   double *, F77_INT&);

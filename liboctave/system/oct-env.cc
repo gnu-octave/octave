@@ -43,7 +43,6 @@ Free Software Foundation, Inc.
 #  include "config.h"
 #endif
 
-#include <cctype>
 #include <cstdlib>
 #include <cstring>
 

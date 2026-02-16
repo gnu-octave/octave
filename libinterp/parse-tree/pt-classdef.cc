@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <iostream>
-
 #include "comment-list.h"
 #include "ov.h"
 #include "ov-classdef.h"

@@ -28,9 +28,7 @@
 #endif
 
 #include <list>
-#include <memory>
 #include <string>
-#include <vector>
 
 #include "mappers.h"
 #include "oct-locbuf.h"

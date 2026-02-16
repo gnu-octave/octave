@@ -33,7 +33,6 @@
 #include <istream>
 #include <limits>
 #include <ostream>
-#include <vector>
 
 #include "byte-swap.h"
 #include "data-conv.h"

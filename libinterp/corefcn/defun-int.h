@@ -40,9 +40,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 class interpreter;
 
-extern OCTINTERP_API void print_usage ();
+OCTAVE_NORETURN extern OCTINTERP_API void print_usage ();
 
-extern OCTINTERP_API void print_usage (const std::string&);
+OCTAVE_NORETURN extern OCTINTERP_API void print_usage (const std::string&);
 
 extern OCTINTERP_API void check_version (const std::string& version,
                                          const std::string& fcn);
@@ -69,12 +69,12 @@ OCTAVE_END_NAMESPACE(octave)
 // Some of these functions are widely used, so maybe we should avoid
 // deprecating them for now?
 
-inline void print_usage ()
+OCTAVE_NORETURN inline void print_usage ()
 {
   octave::print_usage ();
 }
 
-inline void print_usage (const std::string& name)
+OCTAVE_NORETURN inline void print_usage (const std::string& name)
 {
   octave::print_usage (name);
 }

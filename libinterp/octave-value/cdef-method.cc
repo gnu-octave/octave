@@ -27,9 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <algorithm>
-#include <iomanip>
-
 #include "cdef-class.h"
 #include "cdef-manager.h"
 #include "cdef-utils.h"
@@ -45,9 +42,7 @@
 #include "pt-assign.h"
 #include "pt-classdef.h"
 #include "pt-idx.h"
-#include "pt-misc.h"
 #include "pt-stmt.h"
-#include "pt-walk.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 

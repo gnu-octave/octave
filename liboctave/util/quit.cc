@@ -32,7 +32,6 @@
 
 #include <ostream>
 #include <sstream>
-#include <new>
 
 #include "quit.h"
 

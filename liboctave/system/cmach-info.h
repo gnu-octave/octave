@@ -26,16 +26,8 @@
 #if ! defined (octave_cmach_info_h)
 #define octave_cmach_info_h 1
 
-#if defined (__cplusplus)
-extern "C" {
-#endif
+#warning 'header file "cmach-info.h" is deprecated, use "mach-info.h" instead'
 
-extern int octave_get_float_format (void);
-
-extern int octave_is_big_endian (void);
-
-#if defined (__cplusplus)
-}
-#endif
+#include "mach-info.h"
 
 #endif

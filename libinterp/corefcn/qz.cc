@@ -34,13 +34,9 @@
 #  include "config.h"
 #endif
 
-#include <cctype>
-#include <cmath>
-
 #include "f77-fcn.h"
 #include "lapack-proto.h"
 #include "qr.h"
-#include "quit.h"
 
 #include "defun.h"
 #include "error.h"

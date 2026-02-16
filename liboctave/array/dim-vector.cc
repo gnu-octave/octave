@@ -29,8 +29,6 @@
 #  include "config.h"
 #endif
 
-#include <limits>
-#include <new>
 #include <sstream>
 
 #include "Array-oct.h"

@@ -601,7 +601,7 @@ ov_range<T>::load_ascii (std::istream& is)
 %!   load (sv_file);
 %!   assert (a, b);
 %! unwind_protect_cleanup
-%!   unlink (sv_file);
+%!   delete ([sv_file, '*']);
 %! end_unwind_protect
 
 %!test
@@ -613,7 +613,7 @@ ov_range<T>::load_ascii (std::istream& is)
 %!   load (sv_file);
 %!   assert (a, b);
 %! unwind_protect_cleanup
-%!   unlink (sv_file);
+%!   delete ([sv_file, '*']);
 %! end_unwind_protect
 */
 
@@ -711,7 +711,7 @@ ov_range<T>::load_binary (std::istream& is, bool swap,
 %!   load (sv_file);
 %!   assert (a, b);
 %! unwind_protect_cleanup
-%!   unlink (sv_file);
+%!   delete ([sv_file, '*']);
 %! end_unwind_protect
 
 %!test
@@ -723,7 +723,7 @@ ov_range<T>::load_binary (std::istream& is, bool swap,
 %!   load (sv_file);
 %!   assert (a, b);
 %! unwind_protect_cleanup
-%!   unlink (sv_file);
+%!   delete ([sv_file, '*']);
 %! end_unwind_protect
 */
 
@@ -939,7 +939,7 @@ ov_range<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 %!   load (sv_file);
 %!   assert (a, b);
 %! unwind_protect_cleanup
-%!   unlink (sv_file);
+%!   delete ([sv_file, '*']);
 %! end_unwind_protect
 
 %!testif HAVE_HDF5
@@ -951,7 +951,7 @@ ov_range<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 %!   load (sv_file);
 %!   assert (a, b);
 %! unwind_protect_cleanup
-%!   unlink (sv_file);
+%!   delete ([sv_file, '*']);
 %! end_unwind_protect
 */
 

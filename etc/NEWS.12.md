@@ -12,6 +12,10 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 
 ### Matlab compatibility
 
+* Sparse matrices can only be 2-dimensional.  Octave now throws an error if the
+  input to `sparse` is an N-dimensional array.  An error is also thrown if an
+  N-dimensional indexing operation of a sparse matrix is attempted.  Both
+  behaviors are Matlab-compatible.
 
 ### Alphabetical list of new functions added in Octave 12
 

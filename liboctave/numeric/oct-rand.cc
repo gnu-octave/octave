@@ -29,8 +29,6 @@
 
 #include <cstdint>
 
-#include <limits>
-
 #include "lo-ieee.h"
 #include "mach-info.h"
 #include "mappers.h"

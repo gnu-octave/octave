@@ -28,8 +28,6 @@
 #endif
 
 #include <istream>
-#include <ostream>
-#include <sstream>
 
 #include "Range.h"
 #include "lo-ieee.h"

@@ -30,11 +30,9 @@
 #include <cstdlib>
 #include <cstring>
 
-#include <algorithm>
 #include <fstream>
 #include <istream>
 #include <map>
-#include <sstream>
 #include <string>
 
 #include "cmd-edit.h"

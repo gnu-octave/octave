@@ -30,7 +30,6 @@
 #include <clocale>
 #include <istream>
 #include <ostream>
-#include <vector>
 
 #include "dNDArray.h"
 #include "fNDArray.h"

@@ -2014,7 +2014,7 @@ csvwrite, dlmwrite, fwrite}
 %!   clear ("A", "B", "C", "D", "E", "F");
 %!   load (mat_file);
 %! unwind_protect_cleanup
-%!   unlink (mat_file);
+%!   delete ([mat_file, '*']);
 %! end_unwind_protect
 %! assert (A, A2);
 %! assert (B, B2);
@@ -2037,7 +2037,7 @@ csvwrite, dlmwrite, fwrite}
 %!   clear ("A", "B", "C", "D", "E", "F");
 %!   load (mat_file);
 %! unwind_protect_cleanup
-%!   unlink (mat_file);
+%!   delete ([mat_file, '*']);
 %! end_unwind_protect
 %! assert (A, A2);
 %! assert (B, B2);
@@ -2063,7 +2063,7 @@ csvwrite, dlmwrite, fwrite}
 %!   clear ("struc");
 %!   load (mat_file);
 %! unwind_protect_cleanup
-%!   unlink (mat_file);
+%!   delete ([mat_file, '*']);
 %! end_unwind_protect
 %! assert (struc, struc2);
 
@@ -2084,7 +2084,7 @@ csvwrite, dlmwrite, fwrite}
 %!   clear ("struc");
 %!   load (mat_file);
 %! unwind_protect_cleanup
-%!   unlink (mat_file);
+%!   delete ([mat_file, '*']);
 %! end_unwind_protect
 %! assert (struc, struc2);
 
@@ -2098,7 +2098,7 @@ csvwrite, dlmwrite, fwrite}
 %!   clear ("x", "y");
 %!   load (mat_file);
 %! unwind_protect_cleanup
-%!   unlink (mat_file);
+%!   delete ([mat_file, '*']);
 %! end_unwind_protect
 %! assert (x, [1, 1+eps()]);
 %! assert (y, single ([1, 1+eps()]));
@@ -2113,7 +2113,7 @@ csvwrite, dlmwrite, fwrite}
 %!   clear ("x", "y");
 %!   load (mat_file);
 %! unwind_protect_cleanup
-%!   unlink (mat_file);
+%!   delete ([mat_file, '*']);
 %! end_unwind_protect
 %! assert (x, double (single ([1, 1+eps()])));
 %! assert (y, single ([1, 1+eps()]));

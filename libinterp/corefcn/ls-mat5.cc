@@ -29,7 +29,6 @@
 
 #include <cstring>
 
-#include <iomanip>
 #include <istream>
 #include <limits>
 #include <ostream>

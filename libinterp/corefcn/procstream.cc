@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <iomanip>
-
 #include "procstream.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)

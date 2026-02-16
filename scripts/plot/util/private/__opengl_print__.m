@@ -203,11 +203,7 @@ function opts = __opengl_print__ (opts)
     __check_rendering_capability__ ("print", opts.figure);
 
     ## Use toolkits "print_figure" method
-    if (ispc () && ! isunix ())
-      drawnow (gl2ps_device{n}, ['| "' pipeline{n} '"']);
-    else
-      drawnow (gl2ps_device{n}, ["| " pipeline{n}]);
-    endif
+    drawnow (gl2ps_device{n}, ["| " pipeline{n}]);
   endfor
 
   if (! isempty (strfind (opts.devopt, "standalone")))

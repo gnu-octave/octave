@@ -29,12 +29,9 @@
 
 // #define OCTAVE_MXARRAY_DEBUG 1
 
-#include <cstdarg>
 #include <cstdlib>
 #include <cstring>
-#include <cctype>
 
-#include <limits>
 #include <map>
 #if defined (OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR)
 #  include <memory_resource>

@@ -32,43 +32,36 @@
 #define OCTAVE_BEGIN_NAMESPACE(name) namespace name {
 #define OCTAVE_END_NAMESPACE(name) }
 
-/* The C++ standard is evolving to allow attribute hints in a
-   compiler-independent manner.  In C++ 2011 support for noreturn was
-   added.  In C++ 2014 support for deprecated was added.  The Octave
-   code base has been future-proofed by using macros of the form
-   OCTAVE_ATTRIBUTE_NAME in place of vendor specific attribute
-   mechanisms.  As compilers evolve, the underlying implementation can
-   be changed with the macro definitions below.  FIXME: Update macros
-   to use C++ standard attribute syntax when Octave moves to C++ 2014
-   standard.  */
+#define OCTAVE_DEPRECATED(ver, msg) [[deprecated("[" #ver "]: " msg)]]
+#define HAVE_OCTAVE_DEPRECATED_ATTR 1
 
+/* FIXME: Since C++17 the standard defines the attribute [[noreturn]].
+   However, g++ and clang++ differ on where the attribute should appear making
+   it impossible at the moment (2026-02-15) to support both compilers.
+   There may be similar issues with other compilers, but this has not been
+   tested.  Uncomment the following line and remove the specific test for
+   GCC/Clang compilers when and if a solution is found. */
+
+//#define OCTAVE_NORETURN [[noreturn]]
+
+// Use GCC/Clang specific attribute syntax rather than C++ standard
 #if defined (__GNUC__)
-   /* The following attributes are used with gcc and clang compilers.  */
-#  if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5)
-#    define OCTAVE_DEPRECATED(ver, msg) __attribute__ ((__deprecated__ ("[" #ver "]: " msg)))
-#  else
-#    define OCTAVE_DEPRECATED(ver, msg) __attribute__ ((__deprecated__))
-#  endif
-#  define HAVE_OCTAVE_DEPRECATED_ATTR 1
-
 #  define OCTAVE_NORETURN __attribute__ ((__noreturn__))
 #  define HAVE_OCTAVE_NORETURN_ATTR 1
-
-#  define OCTAVE_UNUSED __attribute__ ((__unused__))
-#  define HAVE_OCTAVE_UNUSED_ATTR 1
 #else
-#  define OCTAVE_DEPRECATED(ver, msg)
 #  define OCTAVE_NORETURN
-#  define OCTAVE_UNUSED
-
-/* #  undef HAVE_OCTAVE_DEPRECATED_ATTR */
-/* #  undef HAVE_OCTAVE_NORETURN_ATTR */
-/* #  undef HAVE_OCTAVE_UNUSED_ATTR */
 #endif
 
-/* Branch hint macros for use in if condititions.
-   Returns logical value of x. */
+#define OCTAVE_UNUSED [[maybe_unused]]
+#define HAVE_OCTAVE_UNUSED_ATTR 1
+
+#if ! defined (OCTAVE_FALLTHROUGH)
+#  define OCTAVE_FALLTHROUGH [[fallthrough]]
+#endif
+
+// Branch hint macros for use in if condititions.
 #if defined (__GNUC__)
+   // The following attributes are used with GCC/Clang compilers.
 #  define OCTAVE_LIKELY(x) __builtin_expect (!!(x), 1)
 #  define OCTAVE_UNLIKELY(x) __builtin_expect (!!(x), 0)
 #else
@@ -78,10 +71,10 @@
 
 #if defined (__MINGW32__)
   /* MinGW requires special handling due to different format specifiers
-   * on different platforms.  The macro __MINGW_PRINTF_FORMAT maps to
-   * either gnu_printf or ms_printf depending on where we are compiling
-   * to avoid warnings on format specifiers that are legal.
-   * See: https://bugzilla.mozilla.org/show_bug.cgi?id=1331349  */
+     on different platforms.  The macro __MINGW_PRINTF_FORMAT maps to
+     either gnu_printf or ms_printf depending on where we are compiling
+     to avoid warnings on format specifiers that are legal.
+     See: https://bugzilla.mozilla.org/show_bug.cgi?id=1331349 */
 #  if defined (__cplusplus)
 #    include <cstdio>
 #  else
@@ -93,7 +86,7 @@
 
 #  define HAVE_OCTAVE_FORMAT_PRINTF_ATTR 1
 #elif defined (__GNUC__)
-   /* The following attributes are used with gcc and clang compilers.  */
+   // The following attributes are used with GCC/Clang compilers.
 #  define OCTAVE_FORMAT_PRINTF(index, first) \
      __attribute__ ((__format__(printf, index, first)))
 
@@ -102,16 +95,6 @@
 #  define OCTAVE_FORMAT_PRINTF(index, first)
 
 /* #  undef HAVE_OCTAVE_FORMAT_PRINTF_ATTR */
-#endif
-
-#if ! defined (OCTAVE_FALLTHROUGH)
-#  if defined (__cplusplus) && __cplusplus > 201402L
-#    define OCTAVE_FALLTHROUGH [[fallthrough]]
-#  elif defined (__GNUC__) && __GNUC__ < 7
-#    define OCTAVE_FALLTHROUGH ((void) 0)
-#  else
-#    define OCTAVE_FALLTHROUGH __attribute__ ((__fallthrough__))
-#  endif
 #endif
 
 #if defined (__cplusplus)
@@ -126,16 +109,16 @@ octave_unused_parameter (const T&)
 #if defined (OCTAVE_ENABLE_LIB_VISIBILITY_FLAGS)
 #  if defined (_WIN32) || defined (__CYGWIN__)
 #    if defined (__GNUC__)
-       /* GCC */
+       // GCC
 #      define OCTAVE_EXPORT __attribute__ ((dllexport))
 #      define OCTAVE_IMPORT __attribute__ ((dllimport))
 #    else
-       /* MSVC */
+       // MSVC
 #      define OCTAVE_EXPORT __declspec(dllexport)
 #      define OCTAVE_IMPORT __declspec(dllimport)
 #    endif
 #  else
-     /* All other platforms. */
+     // All other platforms.
 #    define OCTAVE_EXPORT __attribute__ ((visibility ("default")))
 #    define OCTAVE_IMPORT
 #  endif
@@ -144,7 +127,7 @@ octave_unused_parameter (const T&)
 #  define OCTAVE_IMPORT
 #endif
 
-/* API macros for liboctave */
+// API macros for liboctave
 #if defined (OCTAVE_DLL)
 #  define OCTAVE_API OCTAVE_EXPORT
 #  define OCTAVE_EXCEPTION_API OCTAVE_EXPORT
@@ -166,7 +149,7 @@ octave_unused_parameter (const T&)
 #  define OCTAVE_OVERRIDABLE_FUNC_API
 #endif
 
-/* API macros for liboctinterp */
+// API macros for liboctinterp
 #if defined (OCTINTERP_DLL)
 #  define OCTINTERP_API OCTAVE_EXPORT
 #  define OCTINTERP_EXCEPTION_API OCTAVE_EXPORT
@@ -188,7 +171,7 @@ octave_unused_parameter (const T&)
 #  define OCTINTERP_OVERRIDABLE_FUNC_API
 #endif
 
-/* API macros for liboctmex */
+// API macros for liboctmex
 #if defined (OCTMEX_DLL)
 #  define OCTMEX_API OCTAVE_EXPORT
 #  define OCTMEX_EXCEPTION_API OCTAVE_EXPORT
@@ -210,7 +193,7 @@ octave_unused_parameter (const T&)
 #  define OCTMEX_OVERRIDABLE_FUNC_API
 #endif
 
-/* API macros for libgui */
+// API macros for libgui
 #if defined (OCTGUI_DLL)
 #  define OCTGUI_API OCTAVE_EXPORT
 #  define OCTGUI_EXCEPTION_API OCTAVE_EXPORT
@@ -232,9 +215,9 @@ octave_unused_parameter (const T&)
 #  define OCTGUI_OVERRIDABLE_FUNC_API
 #endif
 
-/* API macros for the Array<T> template class */
+// API macros for the Array<T> template class
 #if (defined (OCTAVE_DLL) || defined (OCTINTERP_DLL))
-   /* export symbols when building liboctave or liboctinterp */
+   // export symbols when building liboctave or liboctinterp
 #  define OCTARRAY_API OCTAVE_EXPORT
 #else
    /* Allow downstream projects to set visibility attributes when
@@ -243,7 +226,7 @@ octave_unused_parameter (const T&)
       before including "octave/oct.h" in translation units that instantiate
       the Array<T> template with a new type. */
 #  if ! defined (OCTARRAY_API)
-     /* default is no visibility attributes */
+     // default is no visibility attributes
 #    define OCTARRAY_API
 #  endif
 #endif
@@ -269,7 +252,7 @@ octave_unused_parameter (const T&)
 
 #define OCTAVE_HAVE_F77_INT_TYPE 1
 
-/* time type in API is always 64 bits wide */
+// time type in API is always 64 bits wide
 #define OCTAVE_TIME_T int64_t
 
 #if defined (__cplusplus) && ! defined (OCTAVE_THREAD_LOCAL)
@@ -356,7 +339,7 @@ octave_unused_parameter (const T&)
 typedef OCTAVE_IDX_TYPE octave_idx_type;
 typedef OCTAVE_F77_INT_TYPE octave_f77_int_type;
 
-/* Backward compatibility */
+// Backward compatibility
 
 #if defined (OCTAVE_ENABLE_64)
 #  define USE_64_BIT_IDX_T 1

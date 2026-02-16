@@ -27,11 +27,7 @@
 #  include "config.h"
 #endif
 
-#include <list>
-#include <sstream>
-
 #include "oct-locbuf.h"
-#include "quit.h"
 #include "oct-regexp.h"
 #include "str-vec.h"
 

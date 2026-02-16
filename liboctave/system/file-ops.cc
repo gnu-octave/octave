@@ -32,8 +32,6 @@
 #include <cstdlib>
 #include <cstring>
 
-#include <vector>
-
 #if defined (OCTAVE_USE_WINDOWS_API)
 #  include <cctype>
 #  include <system_error>

@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cctype>
-
 #include <queue>
 #include <sstream>
 

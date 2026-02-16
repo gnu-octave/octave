@@ -28,8 +28,6 @@
 #endif
 
 #include <cmath>
-#include <cstdlib>
-
 #include <limits>
 
 #include "lo-ieee.h"

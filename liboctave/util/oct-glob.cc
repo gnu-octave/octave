@@ -27,7 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <algorithm>
 #include <string>
 
 #include "glob-wrappers.h"

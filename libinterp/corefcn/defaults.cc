@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cstdlib>
-
 #include <algorithm>
 #include <string>
 

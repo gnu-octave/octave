@@ -31,7 +31,6 @@
 
 #include <cctype>
 
-#include <iomanip>
 #include <istream>
 #include <limits>
 #include <ostream>

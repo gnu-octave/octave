@@ -27,9 +27,7 @@
 #  include "config.h"
 #endif
 
-#include <list>
 #include <string>
-#include <vector>
 
 #include "mappers.h"
 

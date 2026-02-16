@@ -29,8 +29,6 @@
 
 #include <cmath>
 
-#include <string>
-
 #include "defun.h"
 #include "error.h"
 #include "ovl.h"

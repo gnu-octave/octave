@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cctype>
-
 #include "lo-ieee.h"
 #include "mappers.h"
 #include "oct-specfun.h"

@@ -27,13 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cerrno>
-#include <cstdio>
-#include <cstddef>
-#include <cstdlib>
-#include <cstring>
-
-#include <sstream>
 #include <string>
 
 #include "file-ops.h"

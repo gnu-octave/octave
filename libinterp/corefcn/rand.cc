@@ -28,7 +28,6 @@
 #endif
 
 #include <cmath>
-#include <complex>
 #include <cstdint>
 #include <functional>
 #include <limits>

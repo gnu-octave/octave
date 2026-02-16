@@ -30,8 +30,6 @@
 #include <cstring>
 #include <cctype>
 
-#include <fstream>
-#include <iomanip>
 #include <istream>
 #include <ostream>
 #include <sstream>
@@ -45,7 +43,6 @@
 #include "mappers.h"
 #include "oct-env.h"
 #include "oct-time.h"
-#include "quit.h"
 #include "str-vec.h"
 
 #include "cdef-utils.h"

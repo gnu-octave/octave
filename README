@@ -52,8 +52,9 @@ you downloaded, for example `octave-11.1.0.tar.xz.sig`.
 * Next, run the command
 ```
   gpg --keyserver hkps://keys.openpgp.org --recv-keys 5D36644B
+  gpg --keyserver hkps://keys.gnupg.net --recv-keys B05F05B75D36644B
 ```
-to import a public key (this needs to be done only once).
+to import John W. Eaton's public key (this needs to be done only once).
 * Verify the integrity of the file you downloaded with a command like
 ```
   gpg --verify octave-11.1.0.tar.xz.sig
@@ -77,13 +78,17 @@ Building Octave from source requires ~475 MB of disk space
 Once installed, Octave uses ~75 MB of disk space
 (or ~415 MB if shared libraries are not built or binaries
 include debugging symbols).
+Building Octave from source requires approximately 475 MB of disk space (or
+approximately 3.8 GB with debugging symbols).  Once installed, Octave uses
+approximately 75 MB of disk space (or approximately 415 MB if shared libraries
+are not built or binaries include debugging symbols).
 
 To compile Octave, you will need a recent version of:
 
 - [GNU Make](https://www.gnu.org/software/make/)
-- [GNU G++](https://gcc.gnu.org/) or another C++17 compiler
-- [GNU Fortran](https://gcc.gnu.org/fortran/), another Fortran 77
-  compiler, or [f2c](http://www.netlib.org/f2c/)
+- [GNU G++](https://gcc.gnu.org/) or a different C++17 compiler
+- [GNU Fortran](https://gcc.gnu.org/fortran/), a different Fortran 77 compiler,
+  or [f2c](http://www.netlib.org/f2c/)
 
 Octave's Makefiles use features of GNU Make that are not present in
 other versions of make.  If you use `f2c`, you will need a script

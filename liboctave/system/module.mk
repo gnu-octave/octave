@@ -17,7 +17,6 @@ SYSTEM_INC = \
 
 SYSTEM_SRC = \
   %reldir%/child-list.cc \
-  %reldir%/cmach-info.c \
   %reldir%/dir-ops.cc \
   %reldir%/file-ops.cc \
   %reldir%/file-stat.cc \

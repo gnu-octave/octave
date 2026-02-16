@@ -29,8 +29,6 @@
 
 #include <cstdlib>
 
-#include <utility>
-
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>

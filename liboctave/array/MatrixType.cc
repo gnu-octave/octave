@@ -27,7 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cinttypes>
 #include <vector>
 
 #include "MatrixType.h"

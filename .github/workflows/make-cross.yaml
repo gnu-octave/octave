@@ -25,18 +25,22 @@ jobs:
             target-triple: arm-linux-gnueabihf
             os: ubuntu-24.04-arm
             ccache-max: 1G
+            qemu-user:
           - arch: ppc64el
             target-triple: powerpc64le-linux-gnu
             os: ubuntu-24.04-arm
             ccache-max: 1G
+            qemu-user: qemu-ppc64le
           - arch: s390x
             target-triple: s390x-linux-gnu
             os: ubuntu-24.04
             ccache-max: 1G
+            qemu-user: qemu-s390x
           - arch: riscv64
             target-triple: riscv64-linux-gnu
             os: ubuntu-24.04-arm
             ccache-max: 1.4G
+            qemu-user: qemu-riscv64
 
     name: cross ${{ matrix.arch }}
 
@@ -61,7 +65,7 @@ jobs:
             autoconf automake bison ccache \
             dvipng epstool fig2dev flex gnuplot-x11 gperf gzip icoutils \
             libtool make perl pstoedit qt6-tools-dev-tools rsync tar texinfo \
-            qemu-user-binfmt
+            ${{ matrix.arch == 'armhf' && ' ' || 'qemu-user-binfmt' }}
 
       - name: add repositories for ${{ matrix.arch }} packages
         # deb822-style format:
@@ -200,8 +204,6 @@ jobs:
           which $F77
           echo $F77 --version
           $F77 --version
-          echo $CC --version
-          $CC --version
           mkdir .build
           echo "::group::Run configure script"
           cd .build && ../configure \
@@ -235,6 +237,8 @@ jobs:
       - name: check
         id: run-test-suite
         timeout-minutes: 60
+        env:
+          driver: ${{ matrix.qemu-user }}
         # Without "-cli", there are deadlocks or crashes while running some
         # tests that are related to graphics. This might be due to using qemu
         # or xvfb-run or a combination of the two or an actual issue in Octave.

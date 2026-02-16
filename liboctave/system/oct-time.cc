@@ -211,7 +211,7 @@ base_tm::strftime (const std::string& fmt) const
           buf = new char [bufsize];
           buf[0] = '\0';
 
-          chars_written 
+          chars_written
             = octave_strftime_wrapper (buf, bufsize, fmt_str, &t);
 
           if (chars_written == 0)

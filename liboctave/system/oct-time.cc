@@ -203,22 +203,18 @@ base_tm::strftime (const std::string& fmt) const
       std::size_t chars_written = 0;
 
       constexpr std::size_t STRFTIME_BUF_MAX_SIZE = 65536;
-      while (chars_written == 0)
+
+      // Loop while strftime fails AND buffer size is within limit
+      while (chars_written == 0 && bufsize <= STRFTIME_BUF_MAX_SIZE)
         {
           delete [] buf;
           buf = new char [bufsize];
           buf[0] = '\0';
 
-          chars_written
-            = octave_strftime_wrapper (buf, bufsize, fmt_str, &t);
-          // If the result is genuinely empty OR buffer reached max size, break out.
-          if ((chars_written == 0 && buf[0] == '\0' && bufsize > STRFTIME_BUF_INITIAL_SIZE) ||
-              (bufsize >= STRFTIME_BUF_MAX_SIZE))
-            {
-              break;
-            }
+          chars_written = octave_strftime_wrapper (buf, bufsize, fmt_str, &t);
 
-          bufsize *= 2;
+          if (chars_written == 0)
+            bufsize = std::min (bufsize * 2, STRFTIME_BUF_MAX_SIZE);
         }
 
 #if defined (HAVE_STRUCT_TM_TM_ZONE)

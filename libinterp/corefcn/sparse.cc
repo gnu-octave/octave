@@ -181,6 +181,8 @@ sprandsym, spconvert, spfun}
   if (nargin == 1)
     {
       octave_value arg = args(0);
+      if (arg.ndims () != 2)
+        error ("sparse: A must be a 2-D matrix");
       if (arg.isfloat ())
         {
           if (arg.is_single_type ())

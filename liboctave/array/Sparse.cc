@@ -1456,7 +1456,9 @@ Sparse<T, Alloc>::index (const octave::idx_vector& idx, bool resize_ok) const
 
   octave_idx_type nel = numel (); // Can throw.
 
-  const dim_vector idx_dims = idx.orig_dimensions ().redim (2);
+  const dim_vector idx_dims = idx.orig_dimensions ();
+  if (idx_dims.ndims () != 2)
+    (*current_liboctave_error_handler) ("only 2-D indexing is allowed for sparse arrays");
 
   if (idx.is_colon ())
     {

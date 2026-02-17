@@ -585,7 +585,11 @@
 %!error <abc\(-1\): subscripts>                abc(-1) = 1
 %!error <abc\(-1,_\): subscripts>              abc(-1,1)
 %!error <abc\(-1,_\): subscripts>              abc(-1,1) = 1
-%!error <sparse indexing needs 1 or 2 indices> abc(0,0,0,0)
+%!error <only 2-D indexing is allowed for sparse arrays> abc(1,1,1,1)
+%!error <only 2-D indexing is allowed for sparse arrays>
+%! ndidx(:,:,1) = [4, 9];
+%! ndidx(:,:,2) = [1, 6];
+%! abc(ndidx);
 %!error <abc\(4,_\): out of bound 3 \(dimensions are 3x3\)> abc(4,1)
 
 ##  Test ranges

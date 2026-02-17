@@ -29,7 +29,6 @@
 
 #include <istream>
 #include <ostream>
-#include <vector>
 
 #include "dim-vector.h"
 

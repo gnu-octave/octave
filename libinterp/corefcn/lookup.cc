@@ -28,7 +28,6 @@
 #endif
 
 #include <cctype>
-#include <functional>
 #include <algorithm>
 
 #include "dNDArray.h"

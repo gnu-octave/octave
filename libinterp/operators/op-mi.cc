@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <iostream>
-
 #include "errwarn.h"
 #include "ops.h"
 #include "ov-magic-int.h"

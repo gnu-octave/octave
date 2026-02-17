@@ -27,7 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <iomanip>
 #include <istream>
 #include <ostream>
 #include <string>

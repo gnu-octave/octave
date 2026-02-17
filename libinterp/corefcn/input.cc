@@ -34,9 +34,7 @@
 #include <cstring>
 
 #include <algorithm>
-#include <iostream>
 #include <queue>
-#include <sstream>
 #include <string>
 
 #include "cmd-edit.h"

@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cstdio>
-
 #include "oct-prcstrm.h"
 #include "sysdep.h"
 

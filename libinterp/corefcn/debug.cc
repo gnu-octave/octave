@@ -27,12 +27,9 @@
 #  include "config.h"
 #endif
 
-#include <deque>
-#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <limits>
-#include <set>
 #include <string>
 
 #include "dNDArray.h"

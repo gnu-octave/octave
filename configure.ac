@@ -1218,7 +1218,7 @@ AC_CACHE_CHECK([whether ${CXX-g++} allows overload of char, int8_t, and uint8_t]
   [octave_cv_overload_char_int8_t],
   [AC_LANG_PUSH(C++)
   AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
-    #include <stdint.h>
+    #include <cstdint>
     void somefunc(char x) {};
     void somefunc(int8_t x) {};
     void somefunc(uint8_t x) {};

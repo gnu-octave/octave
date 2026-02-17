@@ -27,11 +27,8 @@
 #  include "config.h"
 #endif
 
-#include <cctype>
-
 #include <istream>
 #include <ostream>
-#include <vector>
 
 #include "data-conv.h"
 #include "lo-ieee.h"

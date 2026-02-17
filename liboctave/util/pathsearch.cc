@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cstdlib>
-
 #include <string>
 
 #include "kpse.h"

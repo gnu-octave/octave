@@ -94,7 +94,7 @@ octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
           break;
 
         default:
-          error ("sparse indexing needs 1 or 2 indices");
+          error ("only 2-D indexing is allowed for sparse arrays");
         }
     }
   catch (octave::index_exception& ie)
@@ -218,7 +218,7 @@ octave_base_sparse<MT>::delete_elements (const octave_value_list& idx)
           }
 
         default:
-          error ("sparse indexing needs 1 or 2 indices");
+          error ("only 2-D indexing is allowed for sparse arrays");
         }
     }
   catch (octave::index_exception& ie)

@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <sstream>
-
 #include "file-ops.h"
 
 #include "fcn-info.h"

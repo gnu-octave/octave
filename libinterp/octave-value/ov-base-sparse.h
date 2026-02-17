@@ -156,7 +156,7 @@ public:
             }
 
           default:
-            error ("sparse indexing needs 1 or 2 indices");
+            error ("only 2-D indexing is allowed for sparse arrays");
           }
       }
     catch (octave::index_exception& ie)

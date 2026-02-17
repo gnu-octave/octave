@@ -27,13 +27,10 @@
 #  include "config.h"
 #endif
 
-#include <cmath>
-
 #include "lo-ieee.h"
 #include "mappers.h"
 #include "dNDArray.h"
 #include "CNDArray.h"
-#include "quit.h"
 
 #include "defun.h"
 #include "error.h"

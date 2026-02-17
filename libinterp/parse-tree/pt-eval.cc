@@ -27,14 +27,11 @@
 #  include "config.h"
 #endif
 
-#include <cctype>
-
 #include <condition_variable>
 #include <iostream>
 #include <list>
 #include <mutex>
 #include <string>
-#include <thread>
 
 #include "cmd-edit.h"
 #include "file-ops.h"

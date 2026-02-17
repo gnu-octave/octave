@@ -30,9 +30,7 @@
 #include <cstdio>
 #include <cstring>
 
-#include <iomanip>
 #include <list>
-#include <set>
 #include <string>
 
 #include "file-stat.h"

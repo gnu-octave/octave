@@ -32,7 +32,6 @@
 
 #include <algorithm>
 #include <deque>
-#include <fstream>
 #include <limits>
 #include <iomanip>
 #include <iostream>

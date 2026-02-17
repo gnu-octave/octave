@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cmath>
-
 #include "lo-ieee.h"
 
 #include "defun.h"

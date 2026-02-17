@@ -27,9 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cmath>
-#include <cstddef>
-
 #include <iostream>
 #include <string>
 

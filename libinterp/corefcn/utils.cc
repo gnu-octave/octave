@@ -27,11 +27,9 @@
 #  include "config.h"
 #endif
 
-#include <cerrno>
 #include <cstring>
 
 #include <fstream>
-#include <limits>
 #include <ostream>
 #include <string>
 

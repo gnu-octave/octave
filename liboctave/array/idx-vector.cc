@@ -27,9 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cinttypes>
-#include <cstdlib>
-
 #include <ostream>
 
 #include "Array-oct.h"

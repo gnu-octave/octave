@@ -30,8 +30,6 @@
 #include <cerrno>
 #include <cstdlib>
 
-#include <iomanip>
-
 // FIXME: we would prefer to avoid including these directly in Octave
 // sources, but eliminating them is complicated by the mingling of
 // octave_procbuf_list and the calls to system library functions like

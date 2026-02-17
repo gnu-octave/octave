@@ -28,9 +28,9 @@
 #endif
 
 #include <sys/types.h>
-#include <signal.h>
-#include <stdlib.h>
-#include <string.h>
+#include <csignal>
+#include <cstdlib>
+#include <cstring>
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
 #  include <windows.h>

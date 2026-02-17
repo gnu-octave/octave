@@ -1051,8 +1051,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_ARPACK_OK_1], [
     AC_RUN_IFELSE([AC_LANG_PROGRAM([[
 
 #include <cfloat>
-
-#include <stdint.h>
+#include <cstdint>
 
 typedef int F77_RET_T;
 
@@ -1679,7 +1678,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_PCRE_OK], [
     [octave_cv_lib_pcre_ok],
     [AC_LANG_PUSH(C++)
     AC_RUN_IFELSE([AC_LANG_PROGRAM([[
-        #include <stdio.h>
+        #include <cstdio>
         #if defined (HAVE_PCRE_H)
         #  include <pcre.h>
         #elif defined (HAVE_PCRE_PCRE_H)
@@ -1713,7 +1712,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_PCRE2_OK], [
     [octave_cv_lib_pcre2_ok],
     [AC_LANG_PUSH(C++)
     AC_RUN_IFELSE([AC_LANG_PROGRAM([[
-        #include <stdio.h>
+        #include <cstdio>
         #define PCRE2_CODE_UNIT_WIDTH 8
         #if defined (HAVE_PCRE2_H)
         #  include <pcre2.h>

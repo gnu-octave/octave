@@ -27,8 +27,8 @@
 #  include "config.h"
 #endif
 
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
 #include "f77-fcn.h"
 #include "oct-error.h"

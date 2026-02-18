@@ -1,4 +1,4 @@
-Summary of important user-visible changes for version 11 (yyyy-mm-dd):
+Summary of important user-visible changes for version 11 (2026-02-18):
 ---------------------------------------------------------------------
 
 ### General improvements

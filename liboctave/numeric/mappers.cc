@@ -164,8 +164,21 @@ Complex
 log2 (const Complex& x, int& exp)
 {
   double ax = std::abs (x);
-  double lax = log2 (ax, exp);
-  return (ax != lax) ? (x / ax) * lax : x;
+  
+  // Handle zero case
+  if (ax == 0.0)
+    {
+      exp = 0;
+      return Complex (0.0, 0.0);
+    }
+  
+  // Decompose magnitude: ax = mantissa × 2^exp, mantissa ∈ [0.5, 1)
+  double mantissa = frexp (ax, &exp);
+  
+  // Scale complex number to match mantissa range
+  // Result: |returned_value| = mantissa ∈ [0.5, 1)
+  // Preserves original phase/argument
+  return x / ax * mantissa;
 }
 
 FloatComplex

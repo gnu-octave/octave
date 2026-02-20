@@ -1396,12 +1396,18 @@ Array<T, Alloc>::assign (const Array<octave::idx_vector>& ia,
           bool lhsempty, rhsempty;
           lhsempty = rhsempty = false;
           dim_vector lhs_dv = dim_vector::alloc (ial);
+
+          j = 0;   // ←←← CRITICAL FIX: Reset j before second loop
+
           for (int i = 0; i < ial; i++)
             {
               octave_idx_type l = ia(i).length (rdv(i));
               lhs_dv(i) = l;
               lhsempty = lhsempty || (l == 0);
-              rhsempty = rhsempty || (rhdv(j++) == 0);
+              
+              // Check if corresponding RHS dimension is also empty
+              if (j < rhdvl)
+                rhsempty = rhsempty || (rhdv(j++) == 0);
             }
           if (! lhsempty || ! rhsempty)
             {

@@ -320,7 +320,7 @@ gui_settings::get_default_font_family ()
 
   QStringList fonts;
 
-#if defined (HAVE_QFONTDADTABASE_STATIC_MEMBER_FUNCTIONS)
+#if defined (HAVE_QFONTDATABASE_STATIC_MEMBER_FUNCTIONS)
   for (QString font : QFontDatabase::families ())
     {
       if (QFontDatabase::isFixedPitch (font))

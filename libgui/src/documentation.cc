@@ -66,6 +66,7 @@
 #include "file-ops.h"
 #include "oct-env.h"
 #include "oct-sysdep.h"
+#include "octave-qt-features.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -161,7 +162,7 @@ documentation::documentation (QWidget *p)
     }
   else
     {
-#if defined (HAVE_QCOPYCOLLECTIONFILE_TRUNCATION_BUG)
+#if defined (HAVE_QHELPENGINE_COPYCOLLECTIONFILE_TRUNCATION_BUG)
       // Un- and re-register qch-file because copyCollectionFile with
       // automatic path update was not used.
       if (! namespaces.isEmpty ())

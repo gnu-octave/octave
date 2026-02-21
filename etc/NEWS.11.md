@@ -1,4 +1,18 @@
-Summary of important user-visible changes for version 11 (yyyy-mm-dd):
+Summary of bugs fixed for version 11.2.0 (YYYY-MM-DD):
+-----------------------------------------------------
+
+For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
+
+### Improvements and fixes
+
+### GUI
+
+### Build system / Tests
+
+### Documentation
+
+
+Summary of important user-visible changes for version 11 (2026-02-18):
 ---------------------------------------------------------------------
 
 ### General improvements

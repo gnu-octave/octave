@@ -1406,15 +1406,7 @@ Array<T, Alloc>::assign (const Array<octave::idx_vector>& ia,
               lhsempty = lhsempty || (l == 0);
               
               // Check if corresponding RHS dimension is also empty 
-              if (j < rhdvl)
-                {
-                  rhs_is_empty = (rhdv(j) == 0);
-                  j++;  // increment outside condition
-                }
-              if (rhs_is_empty)
-                {
-                  rhsempty = true;
-                }
+              rhsempty = rhsempty || (rhdv(j++) == 0);
             }
           if (! lhsempty || ! rhsempty)
             {

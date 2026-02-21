@@ -1404,9 +1404,10 @@ Array<T, Alloc>::assign (const Array<octave::idx_vector>& ia,
               octave_idx_type l = ia(i).length (rdv(i));
               lhs_dv(i) = l;
               lhsempty = lhsempty || (l == 0);
-              
+
               // Check if corresponding RHS dimension is also empty 
-              rhsempty = rhsempty || (rhdv(j++) == 0);
+              rhsempty = rhsempty || ((j < rhdvl) && (rhdv(j) == 0));
+              j++ ;  // increment outside condition
             }
           if (! lhsempty || ! rhsempty)
             {

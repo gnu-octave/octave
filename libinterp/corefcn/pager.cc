@@ -478,29 +478,19 @@ output_system::do_sync (const char *msg, int len, bool bypass_pager)
         {
           start_external_pager ();
 
-          if (m_external_pager)
+          if (m_external_pager && m_external_pager->good ())
             {
-              if (m_external_pager->good ())
-                {
-                  m_external_pager->write (msg, len);
-
-                  m_external_pager->flush ();
+              m_external_pager->write (msg, len);
+              m_external_pager->flush ();
 
 #if defined (EPIPE)
-                  if (errno == EPIPE)
-                    m_external_pager->setstate (std::ios::failbit);
+              if (errno == EPIPE)
+                m_external_pager->setstate (std::ios::failbit);
 #endif
-                }
-              else
-                {
-                  // FIXME: something is not right with the
-                  // pager.  If it died then we should receive a
-                  // signal for that.  If there is some other problem,
-                  // then what?
-                }
             }
           else
             {
+              // Pager missing or not working properly
               std::cout.write (msg, len);
               std::cout.flush ();
             }

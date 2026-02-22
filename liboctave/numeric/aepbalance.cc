@@ -55,9 +55,18 @@ aepbalance<Matrix>::aepbalance (const Matrix& a, bool noperm, bool noscal)
 {
   F77_INT n = to_f77_int (a.cols ());
 
+  // Cache the handler locally
   if (a.rows () != n)
-    (*current_liboctave_error_handler)
-      ("aepbalance: requires square matrix");
+    {
+      // Capture a local copy of the handler pointer
+      auto error_handler = current_liboctave_error_handler;
+      if (error_handler)
+        (*error_handler)
+          ("aepbalance: requires square matrix");
+      else
+        throw std::runtime_error 
+          ("aepbalance: requires square matrix");
+    }  
 
   m_scale = ColumnVector (n);
 
@@ -107,9 +116,18 @@ aepbalance<FloatMatrix>::aepbalance (const FloatMatrix& a, bool noperm,
 {
   F77_INT n = to_f77_int (a.cols ());
 
+  // Cache the handler locally
   if (a.rows () != n)
-    (*current_liboctave_error_handler)
-      ("aepbalance: requires square matrix");
+    {
+      // Capture a local copy of the handler pointer
+      auto error_handler = current_liboctave_error_handler;
+      if (error_handler)
+        (*error_handler)
+          ("aepbalance: requires square matrix");
+      else
+        throw std::runtime_error 
+          ("aepbalance: requires square matrix");
+    } 
 
   m_scale = FloatColumnVector (n);
 
@@ -159,9 +177,18 @@ aepbalance<ComplexMatrix>::aepbalance (const ComplexMatrix& a, bool noperm,
 {
   F77_INT n = to_f77_int (a.cols ());
 
+  // Cache the handler locally
   if (a.rows () != n)
-    (*current_liboctave_error_handler)
-      ("aepbalance: requires square matrix");
+    {
+      // Capture a local copy of the handler pointer
+      auto error_handler = current_liboctave_error_handler;
+      if (error_handler)
+        (*error_handler)
+          ("aepbalance: requires square matrix");
+      else
+        throw std::runtime_error 
+          ("aepbalance: requires square matrix");
+    } 
 
   m_scale = ColumnVector (n);
 
@@ -214,9 +241,18 @@ aepbalance<FloatComplexMatrix>::aepbalance (const FloatComplexMatrix& a,
 {
   F77_INT n = to_f77_int (a.cols ());
 
+  // Cache the handler locally
   if (a.rows () != n)
-    (*current_liboctave_error_handler)
-      ("aepbalance: requires square matrix");
+    {
+      // Capture a local copy of the handler pointer
+      auto error_handler = current_liboctave_error_handler;
+      if (error_handler)
+        (*error_handler)
+          ("aepbalance: requires square matrix");
+      else
+        throw std::runtime_error 
+          ("aepbalance: requires square matrix");
+    } 
 
   m_scale = FloatColumnVector (n);
 

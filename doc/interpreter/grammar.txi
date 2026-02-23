@@ -50,6 +50,7 @@ or function names:
 
 @ref{XREF__FILE__,,__FILE__}@: |
 @ref{XREF__LINE__,,__LINE__}@: |
+@ref{XREFarguments,,arguments}@: |
 @ref{XREFbreak,,break}@: |
 @ref{XREFcase,,case}@: |
 @ref{XREFcatch,,catch}@: |
@@ -61,6 +62,7 @@ or function names:
 @ref{XREFend,,end}@: |
 @ref{XREFend_try_catch,,end_try_catch}@: |
 @ref{XREFend_unwind_protect,,end_unwind_protect}@: |
+@ref{XREFendarguments,,endarguments}@: |
 @ref{XREFendclassdef,,endclassdef}@: |
 @ref{XREFendenumeration,,endenumeration}@: |
 @ref{XREFendevents,,endevents}@: |
@@ -72,7 +74,7 @@ or function names:
 @ref{XREFendproperties,,endproperties}@: |
 @ref{XREFendswitch,,endswitch}@: |
 @ref{XREFendwhile,,endwhile}@: |
-@ref{XREFenumeration,,endenumeration}@: |
+@ref{XREFenumeration,,enumeration}@: |
 @ref{XREFevents,,events}@: |
 @ref{XREFfor,,for}@: |
 @ref{XREFfunction,,function}@: |
@@ -115,6 +117,10 @@ identifier is reserved by Octave.
 @DOCSTRING(end)
 
 @DOCSTRING(return)
+
+@DOCSTRING(arguments)
+
+@DOCSTRING(endarguments)
 
 @anchor{XREFkwcategoryControlStructures}
 @subheading Control Statements:

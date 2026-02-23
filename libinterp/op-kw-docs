@@ -447,6 +447,17 @@ executed.  @qcode{"__LINE__"} will return @code{1} if called from the command
 line.
 @seealso{__FILE__}
 @end deftypefn
+arguments
+@c libinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} arguments
+Begin a function arguments block.
+
+@strong{Warning:} Function arguments validation blocks are not yet implemented
+in Octave.  Use of the keyword @code{arguments} will cause the parser to emit a
+warning, and may throw an error depending on the contents of the code in the
+block.
+@end deftypefn
 break
 @c libinterp/parse-tree/oct-parse.yy
 -*- texinfo -*-
@@ -541,6 +552,18 @@ Mark the end of a @code{try-catch} block.
 @deftypefn {} {} end_unwind_protect
 Mark the end of an unwind_protect block.
 @seealso{unwind_protect}
+@end deftypefn
+endarguments
+@c libinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} endarguments
+Mark the end of a function arguments block.
+
+@strong{Warning:} Function arguments validation blocks are not yet implemented
+in Octave.  Use of the keyword @code{arguments} will cause the parser to emit a
+warning, and may throw an error depending on the contents of the code in the
+block.
+@seealso{arguments}
 @end deftypefn
 endclassdef
 @c libinterp/parse-tree/oct-parse.yy

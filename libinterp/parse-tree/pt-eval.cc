@@ -1282,7 +1282,7 @@ tree_evaluator::visit_argument_list (tree_argument_list&)
 void
 tree_evaluator::visit_arguments_block (tree_arguments_block&)
 {
-  warning ("function arguments validation blocks are not supported; INCORRECT RESULTS ARE POSSIBLE");
+  warning ("function arguments validation blocks are not yet implemented; INCORRECT RESULTS ARE POSSIBLE");
 }
 
 void

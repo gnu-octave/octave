@@ -6,7 +6,7 @@ mexFunction (int nlhs, mxArray *plhs[],
 {
   char *str;
 
-  mexPrintf ("Starting file myfeval.mex\n");
+  mexPrintf ("Starting file mex_fevaldemo.mex\n");
 
   mexPrintf ("I have %d inputs and %d outputs\n", nrhs, nlhs);
 

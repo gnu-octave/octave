@@ -8,7 +8,7 @@ mexFunction (int nlhs, mxArray *plhs[],
 
   nm = mexFunctionName ();
   mexPrintf ("You called function: %s\n", nm);
-  if (strcmp (nm, "myfunc") == 0)
+  if (strcmp (nm, "mex_funcdemo") == 0)
     mexPrintf ("This is the principal function\n", nm);
 
   return;

@@ -21,8 +21,8 @@
 @cindex grammar rules
 @cindex language definition
 
-This appendix will eventually contain a semi-formal description of
-Octave's language.
+This appendix will eventually contain a semi-formal description of Octave's
+language.
 
 @menu
 * Keywords::
@@ -33,12 +33,13 @@ Octave's language.
 @section Keywords
 @cindex keywords
 
-The identifiers below are keywords, and may not be used as variable
-or function names:
+The function @code{iskeyword} can be used to check whether an identifier is
+reserved by Octave.
 
-@subsubheading Categories:
+@DOCSTRING(iskeyword)
 
-@ref{XREFkwcategoryUtilityFunctions,,@w{Utility Functions}}@: |
+@subsubheading Keyword Categories
+
 @ref{XREFkwcategoryVariableDeclaration,,@w{Variable Declaration}}@: |
 @ref{XREFkwcategoryFunctionDefinition,,@w{Function Definition}}@: |
 @ref{XREFkwcategoryControlStructures,,@w{Control Statements}}@: |
@@ -46,8 +47,12 @@ or function names:
 @ref{XREFkwcategoryClassdefStructures,,@w{Classdef Structures}}@: |
 @ref{XREFkwcategoryExecutionEnvironment,,@w{Execution Environment}}@:
 
-@subsubheading Alphabetical keyword listing:
+@subsubheading Alphabetical Keyword Listing
 
+The identifiers below are keywords, and may not be used as variable or function
+names.
+
+@noindent
 @ref{XREF__FILE__,,__FILE__}@: |
 @ref{XREF__LINE__,,__LINE__}@: |
 @ref{XREFarguments,,arguments}@: |
@@ -93,22 +98,16 @@ or function names:
 @ref{XREFunwind_protect_cleanup,,unwind_protect_cleanup}@: |
 @ref{XREFwhile,,while}@:
 
-@anchor{XREFkwcategoryUtilityFunctions}
-@subheading Utility Functions:
-The function @code{iskeyword} can be used to quickly check whether an
-identifier is reserved by Octave.
-
-@DOCSTRING(iskeyword)
 
 @anchor{XREFkwcategoryVariableDeclaration}
-@subheading Variable Declaration:
+@subheading Variable Declaration
 
 @DOCSTRING(global)
 
 @DOCSTRING(persistent)
 
 @anchor{XREFkwcategoryFunctionDefinition}
-@subheading Function Definition:
+@subheading Function Definition
 
 @DOCSTRING(function)
 
@@ -123,7 +122,7 @@ identifier is reserved by Octave.
 @DOCSTRING(endarguments)
 
 @anchor{XREFkwcategoryControlStructures}
-@subheading Control Statements:
+@subheading Control Statements
 
 @DOCSTRING(if)
 
@@ -154,7 +153,7 @@ identifier is reserved by Octave.
 @DOCSTRING(end_unwind_protect)
 
 @anchor{XREFkwcategoryIteratingStructures}
-@subheading Iterating Structures:
+@subheading Iterating Structures
 
 @DOCSTRING(for)
 
@@ -177,7 +176,7 @@ identifier is reserved by Octave.
 @DOCSTRING(continue)
 
 @anchor{XREFkwcategoryClassdefStructures}
-@subheading Classdef Structures:
+@subheading Classdef Structures
 
 @DOCSTRING(classdef)
 
@@ -191,9 +190,11 @@ identifier is reserved by Octave.
 @end html
 
 @deftypefn {} {} properties
-Mark the beginning of a block of properties in a classdef definition.  Note
-that the @ref{XREFproperties,,function @qcode{"properties"}} is a function
-that lists the properties of a classdef class or object.
+Mark the beginning of a block of properties in a classdef definition.
+
+Note that the @ref{XREFproperties,,function @qcode{"properties"}} is not a
+keyword, but rather an ordinary function that lists the properties of a classdef
+class or object.
 @seealso{@ref{XREFendproperties,,endproperties}}
 @end deftypefn
 
@@ -207,9 +208,10 @@ that lists the properties of a classdef class or object.
 @end html
 
 @deftypefn {} {} methods
-Mark the beginning of a block of methods in a classdef definition.  Note that
-the @ref{XREFmethods,,function @qcode{"methods"}} is a function that lists
-the methods of a class or object.
+Mark the beginning of a block of methods in a classdef definition.
+
+Note that the @ref{XREFmethods,,function @qcode{"methods"}} is not a keyword,
+but rather an ordinary function that lists the methods of a class or object.
 @seealso{@ref{XREFendmethods,,endmethods}}
 @end deftypefn
 
@@ -224,7 +226,7 @@ the methods of a class or object.
 @DOCSTRING(endenumeration)
 
 @anchor{XREFkwcategoryExecutionEnvironment}
-@subheading Execution Environment:
+@subheading Execution Environment
 
 @DOCSTRING(__FILE__)
 
@@ -239,9 +241,9 @@ These variables are generally documented in the manual alongside the code that
 they affect.
 
 In addition, there are three non-specific parser customization functions.
-@code{add_input_event_hook} can be used to schedule a user function for
-periodic evaluation.  @code{remove_input_event_hook} will stop a user function
-from being evaluated periodically.
+@w{@code{add_input_event_hook}} can be used to schedule a user function for
+periodic evaluation.  @w{@code{remove_input_event_hook}} will stop a user
+function from being evaluated periodically.
 
 @DOCSTRING(add_input_event_hook)
 

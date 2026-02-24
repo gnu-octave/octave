@@ -333,7 +333,7 @@ PASSES 3 out of 4 tests (1 expected failure)
 @end group
 @end example
 
-@subsubheading Block type summary:
+@subsubheading Block type summary
 
 @table @code
 @item  %!test

@@ -45,7 +45,7 @@
     <message>
         <location filename="../qterminal/libqterminal/QTerminal.cc" line="+119"/>
         <source>Edit &quot;%1&quot;</source>
-        <translation>Bearbeiten &quot;%1&quot;</translation>
+        <translation>Bearbeite &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1612,7 +1612,7 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
         <location line="+1"/>
         <source>Create file in
 </source>
-        <comment>String ends with 
+        <comment>String ends with
 !</comment>
         <translation>Neue Datei in
 </translation>
@@ -1644,7 +1644,7 @@ konnte nicht erstellt werden.</translation>
         <location line="+1"/>
         <source>Create folder in
 </source>
-        <comment>String ends with 
+        <comment>String ends with
 !</comment>
         <translation>Neues Verzeichnis in
 </translation>
@@ -2666,18 +2666,18 @@ oder Web-Verbindungen für Nachrichten müssen im Octave Einstellungsdialog, Rei
     <name>octave::octave_qscintilla</name>
     <message>
         <location filename="../src/m-editor/octave-qscintilla.cc" line="+302"/>
-        <source>Help on</source>
-        <translation>Hilfe zu</translation>
+        <source>Help on %1</source>
+        <translation>Hilfe zu %1</translation>
     </message>
     <message>
         <location line="+2"/>
-        <source>Documentation on</source>
-        <translation>Dokumentation zu</translation>
+        <source>Documentation on %1</source>
+        <translation>Dokumentation zu %1</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Edit</source>
-        <translation>Bearbeiten</translation>
+        <source>Edit %1</source>
+        <translation>Bearbeite %1</translation>
     </message>
     <message>
         <location line="+15"/>

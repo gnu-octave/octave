@@ -299,12 +299,11 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
           m_word_at_cursor = wordAtPoint (local_pos);
           if (! m_word_at_cursor.isEmpty ())
             {
-              context_menu->addAction (tr ("Help on") + ' ' + m_word_at_cursor,
+              context_menu->addAction (tr ("Help on %1").arg(m_word_at_cursor),
                                        this, &octave_qscintilla::contextmenu_help);
-              context_menu->addAction (tr ("Documentation on")
-                                       + ' ' + m_word_at_cursor,
+              context_menu->addAction (tr ("Documentation on %1").arg(m_word_at_cursor),
                                        this, &octave_qscintilla::contextmenu_doc);
-              context_menu->addAction (tr ("Edit") + ' ' + m_word_at_cursor,
+              context_menu->addAction (tr ("Edit %1").arg(m_word_at_cursor),
                                        this, &octave_qscintilla::contextmenu_edit);
             }
         }

@@ -2104,8 +2104,8 @@ static std::size_t V__token_count__ = 0;
 
 DEFUN (iskeyword, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} iskeyword ()
-@deftypefnx {} {} iskeyword (@var{name})
+@deftypefn  {} {@var{tf} =} iskeyword (@var{name})
+@deftypefnx {} {@var{keyword_list} =} iskeyword ()
 Return true if @var{name} is an Octave keyword.
 
 If @var{name} is omitted, return a list of keywords.
@@ -2160,7 +2160,7 @@ If @var{name} is omitted, return a list of keywords.
 %!assert (iskeyword ("get"), false)
 %!assert (iskeyword ("set"), false)
 
-%!error iskeyword ("A", "B")
+%!error <Invalid call> iskeyword ("A", "B")
 %!error <NAME must be a string> iskeyword (1)
 
 */

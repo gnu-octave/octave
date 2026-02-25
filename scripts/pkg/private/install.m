@@ -235,10 +235,10 @@ function install (files, handle_deps, prefix, archprefix, verbose,
       desc = descriptions{i};
       pdir = packdirs{i};
       copy_files (desc, pdir, global_install);
-      create_pkgadddel (desc, pdir, "PKG_ADD", global_install);
-      create_pkgadddel (desc, pdir, "PKG_DEL", global_install);
+      create_pkgadddel (desc, pdir, "PKG_ADD", global_install, verbose);
+      create_pkgadddel (desc, pdir, "PKG_DEL", global_install, verbose);
       finish_installation (desc, pdir, global_install);
-      generate_lookfor_cache (desc);
+      generate_lookfor_cache (desc, verbose);
     endfor
   catch
     ## Something went wrong, delete tmpdirs.
@@ -440,9 +440,10 @@ function copy_built_files (desc, packdir, verbose)
     oct = dir (fullfile (src, "*.oct"));
     mex = dir (fullfile (src, "*.mex"));
     tst = dir (fullfile (src, "*tst"));
+    doc = dir (fullfile (src, "doc-cache"));
 
     filenames = cellfun (@(x) fullfile (src, x),
-                         {m.name, oct.name, mex.name, tst.name},
+                         {m.name, oct.name, mex.name, tst.name, doc.name},
                          "uniformoutput", false);
   endif
 
@@ -496,6 +497,13 @@ function dep = is_architecture_dependent (nm)
 
   persistent archdepsuffix = {".oct", ".mex", ".a", ".lib", ".so", ...
                               "tst", ".so.*", ".dll", "dylib"};
+
+  ## doc-cache file for built sources is special.  It has no extension, but
+  ## must be placed in architecture-dependent directory.
+  if (strfind (nm, "doc-cache"))
+    dep = true;
+    return;
+  endif
 
   dep = false;
   for i = 1 : length (archdepsuffix)
@@ -728,7 +736,11 @@ function write_index (desc, dir, index_file, global_install)
 endfunction
 
 
-function create_pkgadddel (desc, packdir, nm, global_install)
+function create_pkgadddel (desc, packdir, nm, global_install, verbose)
+
+  if (verbose)
+    printf ("creating file %s\n", nm);
+  endif
 
   instpkg = fullfile (desc.dir, nm);
   instfid = fopen (instpkg, "at"); # append to support PKG_ADD at inst/
@@ -836,14 +848,45 @@ function finish_installation (desc, packdir, global_install)
 endfunction
 
 
-function generate_lookfor_cache (desc)
+function generate_lookfor_cache (desc, verbose)
 
   dirs = strtrim (ostrsplit (genpath (desc.dir), pathsep ()));
   if (ispc)
     dirs = cellfun ('canonicalize_file_name', dirs, "uniformoutput", false);
   endif
-  for i = 1 : length (dirs)
-    doc_cache_create (fullfile (dirs{i}, "doc-cache"), dirs{i});
+  for i = 1 : numel (dirs)
+
+    docfile = fullfile (dirs{i}, "doc-cache");
+    if (exist (docfile, 'file'))
+      ## Package maintainer already built doc-cache file, validate.
+      if (verbose)
+        printf ("using package-provided doc-cache file for directory %s\n", dirs{i});
+      endif
+      try
+        cache = load (docfile).cache;
+      catch
+        if (verbose)
+          printf ("unable to read doc-cache file; creating a new one\n");
+        endif
+        doc_cache_create (docfile, dirs{i});
+        continue;
+      end_try_catch
+
+      if (! iscellstr (cache) || ndims (cache) != 2 || rows (cache) != 3)
+        if (verbose)
+          printf ("invalid doc-cache file; creating a new one\n");
+        endif
+        doc_cache_create (docfile, dirs{i});
+        continue;
+      endif
+    else
+      ## No doc-cache file, create one.
+      if (verbose)
+        printf ("creating file doc-cache for directory %s\n", dirs{i});
+      endif
+      doc_cache_create (docfile, dirs{i});
+    endif
+
   endfor
 
 endfunction

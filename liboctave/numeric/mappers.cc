@@ -336,11 +336,10 @@ rc_log10 (float x)
 
 Complex
 rc_sqrt (double x)
-{  
+{
   // Handle NaN explicitly - propagate NaN
   if (std::isnan (x))
     return Complex (x, x);  // NaN + NaN*i
-
 
   return x < 0.0 ? Complex (0.0, std::sqrt (-x)) : Complex (std::sqrt (x));
 }

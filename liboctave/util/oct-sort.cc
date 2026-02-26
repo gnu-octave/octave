@@ -527,14 +527,16 @@ roundupsize (std::size_t n)
       nbits += 3;
     }
 
-  std::size_t new_size = ((n >> nbits) + 1) << nbits;
+  std::size_t multiplier = static_cast<std::size_t> (1) << nbits;
+  std::size_t new_size = (n >> nbits) + 1;
 
-  if (new_size == 0
-      || new_size
-         > static_cast<std::size_t> (std::numeric_limits<octave_idx_type>::max ()))
+  if (new_size
+      > static_cast<std::size_t> (std::numeric_limits<octave_idx_type>::max ())
+        / multiplier)
     (*current_liboctave_error_handler)
       ("unable to allocate sufficient memory for sort");
 
+  new_size *= multiplier;
   return static_cast<octave_idx_type> (new_size);
 }
 

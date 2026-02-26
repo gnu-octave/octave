@@ -66,7 +66,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 int pipe_handler_error_count = 0;
 
 // TRUE means we can be interrupted.
-std::atomic<bool> can_interrupt{false};
+std::atomic<bool> can_interrupt {false};
 
 // TRUE means we should try to enter the debugger on SIGINT.
 bool Vdebug_on_interrupt = false;

@@ -33,19 +33,104 @@
 #include "mach-info.h"
 #include "oct-error.h"
 
-extern "C"
-{
-  int octave_get_float_format (void);
-
-  int octave_is_big_endian (void);
-}
-
 OCTAVE_BEGIN_NAMESPACE(octave)
 OCTAVE_BEGIN_NAMESPACE(mach_info)
 
+// FIXME: Maybe this function should be declared in a header file?  Or
+// we should be obtaining values from C++ std::numeric_limits<double>?
+
+extern "C"
+{
+  extern double F77_FUNC (d1mach, D1MACH) (const F77_INT*);
+}
+
+typedef union
+{
+  double d;
+  int32_t i[2];
+} equiv;
+
+typedef struct
+{
+  int fp_fmt;
+  equiv fp_par[4];
+} float_params;
+
+#define INIT_FLT_PAR(fp, fmt, sm1, sm2, lrg1, lrg2, rt1, rt2, dv1, dv2) \
+  do                                                                    \
+    {                                                                   \
+      fp.fp_fmt = (fmt);                                                \
+      fp.fp_par[0].i[0] = (sm1);  fp.fp_par[0].i[1] = (sm2);            \
+      fp.fp_par[1].i[0] = (lrg1); fp.fp_par[1].i[1] = (lrg2);           \
+      fp.fp_par[2].i[0] = (rt1);  fp.fp_par[2].i[1] = (rt2);            \
+      fp.fp_par[3].i[0] = (dv1);  fp.fp_par[3].i[1] = (dv2);            \
+    }                                                                   \
+  while (0)
+
+static int equiv_compare (const equiv *std, const equiv *v, int len)
+{
+  int i;
+  for (i = 0; i < len; i++)
+    if (v[i].i[0] != std[i].i[0] || v[i].i[1] != std[i].i[1])
+      return 0;
+  return 1;
+}
+
+// Determine whether floating point format appears to be IEEE little
+// endian (1), IEEE big endian (2) or unknown (0)
+// little endian, or 2 if it is IEEE big endian.
+
 static float_format get_float_format ()
 {
-  switch (octave_get_float_format ())
+  float_params fp[3];
+
+  INIT_FLT_PAR (fp[0], 1,
+                0,    1048576,
+                -1, 2146435071,
+                0, 1017118720,
+                0, 1018167296);
+
+  INIT_FLT_PAR (fp[1], 2,
+                1048576,  0,
+                2146435071, -1,
+                1017118720,  0,
+                1018167296,  0);
+
+  INIT_FLT_PAR (fp[2], 0,
+                0, 0,
+                0, 0,
+                0, 0,
+                0, 0);
+
+  equiv mach_fp_par[4];
+
+  F77_INT opt;
+
+  opt = 1;
+  mach_fp_par[0].d = F77_FUNC (d1mach, D1MACH) (&opt);
+
+  opt = 2;
+  mach_fp_par[1].d = F77_FUNC (d1mach, D1MACH) (&opt);
+
+  opt = 3;
+  mach_fp_par[2].d = F77_FUNC (d1mach, D1MACH) (&opt);
+
+  opt = 4;
+  mach_fp_par[3].d = F77_FUNC (d1mach, D1MACH) (&opt);
+
+  int float_params_id = 0;
+  int i = 0;
+  do
+    {
+      if (equiv_compare (fp[i].fp_par, mach_fp_par, 4))
+        {
+          float_params_id = fp[i].fp_fmt;
+          break;
+        }
+    }
+  while (fp[++i].fp_fmt != 0);
+
+  switch (float_params_id)
     {
     case 1:
       return flt_fmt_ieee_little_endian;
@@ -58,10 +143,19 @@ static float_format get_float_format ()
     }
 }
 
-static bool
-is_big_endian ()
+static int is_big_endian ()
 {
-  return octave_is_big_endian ();
+  // Are we little or big endian?  From Harbison & Steele.
+
+  union
+  {
+    long l;
+    char c[sizeof (long)];
+  } u;
+
+  u.l = 1;
+
+  return (u.c[sizeof (long) - 1] == 1);
 }
 
 float_format
@@ -142,116 +236,3 @@ float_format_as_string (float_format flt_fmt)
 
 OCTAVE_END_NAMESPACE(mach_info)
 OCTAVE_END_NAMESPACE(octave)
-
-extern "C"
-{
-  extern double F77_FUNC (d1mach, D1MACH) (const F77_INT*);
-}
-
-typedef union
-{
-  double d;
-  int32_t i[2];
-} equiv;
-
-typedef struct
-{
-  int fp_fmt;
-  equiv fp_par[4];
-} float_params;
-
-#define INIT_FLT_PAR(fp, fmt, sm1, sm2, lrg1, lrg2, rt1, rt2, dv1, dv2) \
-  do                                                                    \
-    {                                                                   \
-      fp.fp_fmt = (fmt);                                                \
-      fp.fp_par[0].i[0] = (sm1);  fp.fp_par[0].i[1] = (sm2);            \
-      fp.fp_par[1].i[0] = (lrg1); fp.fp_par[1].i[1] = (lrg2);           \
-      fp.fp_par[2].i[0] = (rt1);  fp.fp_par[2].i[1] = (rt2);            \
-      fp.fp_par[3].i[0] = (dv1);  fp.fp_par[3].i[1] = (dv2);            \
-    }                                                                   \
-  while (0)
-
-static int equiv_compare (const equiv *std, const equiv *v, int len)
-{
-  int i;
-  for (i = 0; i < len; i++)
-    if (v[i].i[0] != std[i].i[0] || v[i].i[1] != std[i].i[1])
-      return 0;
-  return 1;
-}
-
-// Return 0 if the floating point format is unknown, 1 if it is IEEE
-// little endian, or 2 if it is IEEE big endian.
-//
-// If the return values change, you must also change the values of the
-// float format enum in mach-info.h and the correspondence between the
-// integer and enum values in octave::mach_info::get_float_format.
-
-int octave_get_float_format (void)
-{
-  int retval = 0;
-
-  float_params fp[3];
-
-  INIT_FLT_PAR (fp[0], 1,
-                0,    1048576,
-                -1, 2146435071,
-                0, 1017118720,
-                0, 1018167296);
-
-  INIT_FLT_PAR (fp[1], 2,
-                1048576,  0,
-                2146435071, -1,
-                1017118720,  0,
-                1018167296,  0);
-
-  INIT_FLT_PAR (fp[2], 0,
-                0, 0,
-                0, 0,
-                0, 0,
-                0, 0);
-
-  equiv mach_fp_par[4];
-
-  F77_INT opt;
-
-  opt = 1;
-  mach_fp_par[0].d = F77_FUNC (d1mach, D1MACH) (&opt);
-
-  opt = 2;
-  mach_fp_par[1].d = F77_FUNC (d1mach, D1MACH) (&opt);
-
-  opt = 3;
-  mach_fp_par[2].d = F77_FUNC (d1mach, D1MACH) (&opt);
-
-  opt = 4;
-  mach_fp_par[3].d = F77_FUNC (d1mach, D1MACH) (&opt);
-
-  int i = 0;
-  do
-    {
-      if (equiv_compare (fp[i].fp_par, mach_fp_par, 4))
-        {
-          retval = fp[i].fp_fmt;
-          break;
-        }
-    }
-  while (fp[++i].fp_fmt != 0);
-
-  return retval;
-}
-
-int octave_is_big_endian (void)
-{
-  // Are we little or big endian?  From Harbison & Steele.
-
-  union
-  {
-    long l;
-    char c[sizeof (long)];
-  } u;
-
-  u.l = 1;
-
-  return (u.c[sizeof (long) - 1] == 1);
-}

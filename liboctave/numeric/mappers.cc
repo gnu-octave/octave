@@ -300,6 +300,10 @@ rc_log (double x)
 FloatComplex
 rc_log (float x)
 {
+  // Handle NaN explicitly - propagate NaN
+  if (std::isnan (x))
+    return FloatComplex (x, x);  // NaN + NaN*i
+
   return x < 0.0f ? FloatComplex (std::log (-x), static_cast<float> (M_PI))
                   : FloatComplex (std::log (x));
 }
@@ -347,6 +351,10 @@ rc_sqrt (double x)
 FloatComplex
 rc_sqrt (float x)
 {
+  // Handle NaN explicitly - propagate NaN
+  if (std::isnan (x))
+    return FloatComplex (x, x);  // NaN + NaN*i (single precision)
+
   return x < 0.0f ? FloatComplex (0.0f, std::sqrt (-x))
                   : FloatComplex (std::sqrt (x));
 }

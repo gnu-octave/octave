@@ -2106,6 +2106,45 @@ To compute the matrix square root, @pxref{Linear Algebra}.
   return ovl (args(0).sqrt ());
 }
 
+/*   <-- sqrt with double + NaN  -->
+%!test
+%! x = [-1, 0, 1, NaN];
+%! y = sqrt(x);
+%! assert (y(1), i);                    # sqrt(-1) = i
+%! assert (isnan(real(y(4))), true);    # real(NaN) is NaN
+%! assert (isnan(imag(y(4))), true);    # imag(NaN) is NaN
+%! assert (imag(y(1)) != 0);             # imag part of sqrt(-1) is 1
+*/
+
+/*  <-- log with double + NaN  -->
+%!test
+%! x = [-1, 0, 1, NaN];
+%! y = log(x);
+%! assert (abs(imag(y(1)) - pi) < 1e-10);  # log(-1) = πi
+%! assert (real(y(3)), 0);                  # log(1) = 0
+%! assert (isnan(real(y(4))), true);        # real(NaN) → NaN
+%! assert (isnan(imag(y(4))), true);        # imag(NaN) → NaN
+*/
+
+/*   <--  sqrt with single precision (float)  -->
+%!test
+%! x = single([-1, 0, 1, NaN]);
+%! y = sqrt(x);
+%! assert (y(1), i, 1e-6f);                 # sqrt(-1) ≈ i (single prec)
+%! assert (isnan(real(y(4))), true);        # real(NaN) → NaN
+%! assert (isnan(imag(y(4))), true);         # imag(NaN) → NaN
+*/
+
+/*   <--  log with single precision (float)  --> 
+%!test
+%! x = single([-1, 0, 1, NaN]);
+%! y = log(x);
+%! assert (abs(imag(y(1)) - single(pi)) < 1e-5);  # log(-1) ≈ πi
+%! assert (real(y(3)), single(0));                # log(1) = 0
+%! assert (isnan(real(y(4))), true);               # NaN check
+%! assert (isnan(imag(y(4))), true);
+*/
+
 /*
 %!assert (sqrt (4), 2)
 %!assert (sqrt (-1), i)

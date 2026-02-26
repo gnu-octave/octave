@@ -1351,7 +1351,7 @@ Consider the following short example:
 
 @example
 @group
-@EXAMPLEFILE(myhello.c)
+@EXAMPLEFILE(mex_hellodemo.c)
 @end group
 @end example
 
@@ -1379,19 +1379,19 @@ Note that the function name definition is not explicitly included in
 @code{mexFunction} and so there can only be a single @code{mexFunction} entry
 point per file.  Instead, the name of the function as seen in Octave is
 determined by the name of the mex-file itself minus the extension.  If the
-above function is in the file @file{myhello.c}, it can be compiled with
+above function is in the file @file{mex_hellodemo.c}, it can be compiled with
 
 @example
-mkoctfile --mex myhello.c
+mkoctfile --mex mex_hellodemo.c
 @end example
 
 @noindent
-which creates a file @file{myhello.mex}.  The function can then be run from
-Octave as
+which creates a file @file{mex_hellodemo.mex}.  The function can then be run
+from Octave as
 
 @example
 @group
-myhello (1,2,3)
+mex_hellodemo (1,2,3)
 @xresult{} Hello, World!
 @xresult{} I have 3 inputs and 0 outputs
 @end group
@@ -1400,7 +1400,7 @@ myhello (1,2,3)
 It should be noted that the mex-file contains no help string.  To document
 mex-files, there should exist an m-file in the same directory as the mex-file
 itself.  Taking the above as an example, there would need to be a file
-@file{myhello.m} which might contain the text
+@file{mex_hellodemo.m} which might contain the text
 
 @example
 %MYHELLO Simple test of the functionality of a mex-file.
@@ -1418,17 +1418,17 @@ the function name.  For example, if
 
 @example
 @group
-@EXAMPLEFILE(myfunc.c)
+@EXAMPLEFILE(mex_funcdemo.c)
 @end group
 @end example
 
 @noindent
-is in the file @file{myfunc.c}, and is compiled with
+is in the file @file{mex_funcdemo.c}, and is compiled with
 
 @example
 @group
-mkoctfile --mex myfunc.c
-ln -s myfunc.mex myfunc2.mex
+mkoctfile --mex mex_funcdemo.c
+ln -s mex_funcdemo.mex mexfunc.mex
 @end group
 @end example
 
@@ -1437,11 +1437,11 @@ then as can be seen by
 
 @example
 @group
-myfunc ()
-@xresult{} You called function: myfunc
+mex_funcdemo ()
+@xresult{} You called function: mex_funcdemo
     This is the principal function
-myfunc2 ()
-@xresult{} You called function: myfunc2
+mexfunc ()
+@xresult{} You called function: mexfunc
 @end group
 @end example
 
@@ -1500,10 +1500,10 @@ number or elements, while @code{mwIndex} is used to define indexing into
 arrays.
 
 An example that demonstrates how to work with arbitrary real or complex double
-precision arrays is given by the file @file{mypow2.c} shown below.
+precision arrays is given by the file @file{mex_pow2demo.c} shown below.
 
 @example
-@EXAMPLEFILE(mypow2.c)
+@EXAMPLEFILE(mex_pow2demo.c)
 @end example
 
 @noindent
@@ -1512,7 +1512,7 @@ An example of its use is
 @example
 @group
 b = randn (4,1) + 1i * randn (4,1);
-all (b.^2 == mypow2 (b))
+all (b.^2 == mex_pow2demo (b))
 @xresult{} 1
 @end group
 @end example
@@ -1529,11 +1529,11 @@ the dimensions of multi-dimensional arrays.  The functions @code{mxGetM}, and
 As mex-files do not make the distinction between single and double quoted
 strings that Octave does, there is perhaps less complexity in the use of
 strings and character matrices.  An example of their use that parallels the
-demo in @file{stringdemo.cc} is given in the file @file{mystring.c}, as shown
-below.
+demo in @file{stringdemo.cc} is given in the file @file{mex_stringdemo.c}, as
+shown below.
 
 @smallexample
-@EXAMPLEFILE(mystring.c)
+@EXAMPLEFILE(mex_stringdemo.c)
 @end smallexample
 
 @noindent
@@ -1541,7 +1541,7 @@ An example of its expected output is
 
 @example
 @group
-mystring (["First String"; "Second String"])
+mex_stringdemo (["First String"; "Second String"])
 @xresult{} Second String
    First String
 @end group
@@ -1559,10 +1559,10 @@ any case.
 
 One can perform exactly the same operations on Cell arrays in mex-files as in
 oct-files.  An example that duplicates the function of the @file{celldemo.cc}
-oct-file in a mex-file is given by @file{mycell.c} as shown below.
+oct-file in a mex-file is given by @file{mex_celldemo.c} as shown below.
 
 @example
-@EXAMPLEFILE(mycell.c)
+@EXAMPLEFILE(mex_celldemo.c)
 @end example
 
 @noindent
@@ -1570,7 +1570,7 @@ The output is identical to the oct-file version as well.
 
 @example
 @group
-[b1, b2, b3] = mycell (@{1, [1, 2], "test"@})
+[b1, b2, b3] = mex_celldemo (@{1, [1, 2], "test"@})
 @xresult{}
 b1 =  1
 b2 =
@@ -1641,10 +1641,10 @@ include an @code{index} over the elements of the arrays of elements per
 of the structure.
 
 An example that demonstrates the use of structures in a mex-file can be found
-in the file @file{mystruct.c} shown below.
+in the file @file{mex_structdemo.c} shown below.
 
 @smallexample
-@EXAMPLEFILE(mystruct.c)
+@EXAMPLEFILE(mex_structdemo.c)
 @end smallexample
 
 An example of the behavior of this function within Octave is then
@@ -1653,7 +1653,7 @@ An example of the behavior of this function within Octave is then
 @group
 a(1).f1 = "f11"; a(1).f2 = "f12";
 a(2).f1 = "f21"; a(2).f2 = "f22";
-b = mystruct (a);
+b = mex_structdemo (a);
 @xresult{}  field f1(0) = f11
     field f1(1) = f21
     field f2(0) = f12
@@ -1723,18 +1723,18 @@ returns the actual number of nonzero elements stored in the matrix in
 contain the nonzero values of the matrix, we also need a pointer to the rows of
 the nonzero elements, and this is given by @code{mxGetIr}.  A complete example
 of the use of sparse matrices in mex-files is given by the file
-@file{mysparse.c} shown below.
+@file{mex_sparsedemo.c} shown below.
 
 @example
-@EXAMPLEFILE(mysparse.c)
+@EXAMPLEFILE(mex_sparsedemo.c)
 @end example
 
-A sample usage of @code{mysparse} is
+A sample usage of @code{mex_sparsedemo} is
 
 @example
 @group
 sm = sparse ([1, 0; 0, pi]);
-mysparse (sm)
+mex_sparsedemo (sm)
 @xresult{}
 Matrix is 2-by-2 real sparse matrix with 2 elements
 last nonzero element (2, 2) = 3.14159
@@ -1749,16 +1749,16 @@ It is possible to call other Octave functions from within a mex-file using
 in the example below.
 
 @smallexample
-@EXAMPLEFILE(myfeval.c)
+@EXAMPLEFILE(mex_fevaldemo.c)
 @end smallexample
 
-If this code is in the file @file{myfeval.c}, and is compiled to
-@file{myfeval.mex}, then an example of its use is
+If this code is in the file @file{mex_fevaldemo.c}, and is compiled to
+@file{mex_fevaldemo.mex}, then an example of its use is
 
 @example
 @group
-a = myfeval ("sin", 1)
-@xresult{} Starting file myfeval.mex
+a = mex_fevaldemo ("sin", 1)
+@xresult{} Starting file mex_fevaldemo.mex
    I have 2 inputs and 1 outputs
    I'm going to call the interpreter function sin
    a =  0.84147

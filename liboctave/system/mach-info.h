@@ -62,9 +62,9 @@ OCTAVE_END_NAMESPACE(octave)
 extern "C" {
 #endif
 
-extern int octave_get_float_format (void);
+extern OCTAVE_API int octave_get_float_format (void);
 
-extern int octave_is_big_endian (void);
+extern OCTAVE_API int octave_is_big_endian (void);
 
 #if defined (__cplusplus)
 }

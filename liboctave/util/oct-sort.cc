@@ -563,7 +563,7 @@ template <typename T>
 void
 octave_sort<T>::MergeState::getmemi (octave_idx_type need)
 {
-  if (m_ia && need <= m_alloced)
+  if (m_a && m_ia && need <= m_alloced)
     return;
 
   need = roundupsize (need);

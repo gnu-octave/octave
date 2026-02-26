@@ -34,17 +34,17 @@
   %reldir%/helloworld.cc \
   %reldir%/make_int.cc \
   %reldir%/mex_demo.c \
-  %reldir%/mycell.c \
-  %reldir%/myfeval.c \
-  %reldir%/myfevalf.f \
-  %reldir%/myfunc.c \
-  %reldir%/myhello.c \
-  %reldir%/mypow2.c \
-  %reldir%/myprop.c \
-  %reldir%/myset.c \
-  %reldir%/mysparse.c \
-  %reldir%/mystring.c \
-  %reldir%/mystruct.c \
+  %reldir%/mex_celldemo.c \
+  %reldir%/mex_fevaldemo.c \
+  %reldir%/mex_fevalf.f \
+  %reldir%/mex_funcdemo.c \
+  %reldir%/mex_hellodemo.c \
+  %reldir%/mex_pow2demo.c \
+  %reldir%/mex_propdemo.c \
+  %reldir%/mex_setdemo.c \
+  %reldir%/mex_sparsedemo.c \
+  %reldir%/mex_stringdemo.c \
+  %reldir%/mex_structdemo.c \
   %reldir%/oct_demo.cc \
   %reldir%/oregonator.cc \
   %reldir%/oregonator.m \

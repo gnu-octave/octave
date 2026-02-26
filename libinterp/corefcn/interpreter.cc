@@ -90,7 +90,7 @@ bool quit_allowed = true;
 bool octave_interpreter_ready = false;
 
 // TRUE means we've processed all the init code and we are good to go.
-std::atomic<bool> octave_initialized{false};
+std::atomic<bool> octave_initialized {false};
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 

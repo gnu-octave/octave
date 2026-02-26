@@ -158,9 +158,8 @@ class RenameItemDelegate : public QStyledItemDelegate
 {
 public:
   RenameItemDelegate (QObject *parent = nullptr)
-    : QStyledItemDelegate{ parent }
-  {
-  }
+    : QStyledItemDelegate { parent }
+  { }
 
   void setEditorData (QWidget *editor,
                       const QModelIndex& index) const override

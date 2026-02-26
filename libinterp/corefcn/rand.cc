@@ -1325,7 +1325,7 @@ likely.
 // For IEEE 754 double: 2^53, for float: 2^24
 template <typename F>
 inline constexpr F flintmax_v
-  = static_cast<F> (std::uint64_t{1} << std::numeric_limits<F>::digits);
+  = static_cast<F> (std::uint64_t {1} << std::numeric_limits<F>::digits);
 
 // Template function to fill array with random integers and cast to target type
 // Uses rejection sampling to ensure unbiased results.

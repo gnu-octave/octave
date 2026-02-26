@@ -294,7 +294,6 @@ rc_log (double x)
   if (std::isnan (x))
     return Complex (x, x);  // NaN + NaN*i
 
-    
   return x < 0.0 ? Complex (std::log (-x), M_PI) : Complex (std::log (x));
 }
 

@@ -58,16 +58,4 @@ OCTAVE_API std::string float_format_as_string (float_format);
 OCTAVE_END_NAMESPACE(mach_info)
 OCTAVE_END_NAMESPACE(octave)
 
-#if defined (__cplusplus)
-extern "C" {
-#endif
-
-extern OCTAVE_API int octave_get_float_format (void);
-
-extern OCTAVE_API int octave_is_big_endian (void);
-
-#if defined (__cplusplus)
-}
-#endif
-
 #endif

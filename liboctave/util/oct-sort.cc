@@ -536,11 +536,10 @@ roundupsize (std::size_t n)
     {
      (*current_liboctave_error_handler)
        ("unable to allocate sufficient memory for sort");
-     return 0;
     }
 
   new_size *= multiplier;
-  return static_cast<octave_idx_type>(new_size);
+  return static_cast<octave_idx_type> (new_size);
 }
 
 /* Ensure enough temp memory for 'need' array slots is available.

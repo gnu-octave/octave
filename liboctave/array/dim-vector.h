@@ -37,7 +37,6 @@
 
 #include "Array-fwd.h"
 #include "lo-utils.h"
-#include "oct-atomic.h"
 #include "oct-refcount.h"
 
 //! Vector representing the dimensions (size) of an Array.

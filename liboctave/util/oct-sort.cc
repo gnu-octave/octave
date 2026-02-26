@@ -527,7 +527,7 @@ roundupsize (std::size_t n)
       nbits += 3;
     }
 
-  std::size_t multiplier = static_cast<std::size_t>(1) << nbits;
+  std::size_t multiplier = static_cast<std::size_t> (1) << nbits;
   std::size_t new_size = (n >> nbits) + 1;
 
   if (new_size > static_cast<std::size_t>

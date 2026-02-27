@@ -83,9 +83,12 @@ from Octave 12.
 
 ### Functions removed without the usual deprecation period
 
-The following changes have been made without the usual deprecation period of two release cycles because we believe that they are unlikely to have been used in code outside of core Octave.
+The following changes have been made without the usual deprecation period of two
+release cycles because we believe that they are unlikely to have been used in
+code outside of core Octave.
 
-The header oct-atomic.h has been removed.  Use the std::atomic object defined in the standard C++ header <atomic> instead.
+The header `oct-atomic.h` has been removed.  Use the `std::atomic` object
+defined in the standard C++ header `<atomic>` instead.
 
 The following C++ functions have been removed from Octave 12:
 
@@ -94,7 +97,8 @@ The following C++ functions have been removed from Octave 12:
         octave_get_float_format | octave::mach_info::native_float_format
         octave_is_big_endian    | octave::mach_info::words_big_endian
                                 | (or octave::mach_info::words_little_endian)
-
+        octave_atomic_increment | ++std::atomic<...>
+        octave_atomic_decrement | --std::atomic<...>
 
 ### Old release news
 

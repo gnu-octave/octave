@@ -2113,7 +2113,7 @@ To compute the matrix square root, @pxref{Linear Algebra}.
 %! assert (y(1), i);                    # sqrt(-1) = i
 %! assert (y(2), 0);                    # sqrt(0) = 0
 %! assert (y(3), 1);                    # sqrt(1) = 1
-%! assert (isnan(real(y(4))), true);    # real(NaN) is NaN
+%! assert (isnan (real (y(4))), true);  # real (NaN) is NaN
 %! assert (isnan(imag(y(4))), true);   # imag(NaN) is NaN
 
 ## log with double NaN

@@ -2114,9 +2114,8 @@ To compute the matrix square root, @pxref{Linear Algebra}.
 %! assert (isnan(real(y(4))), true);    # real(NaN) is NaN
 %! assert (isnan(imag(y(4))), true);    # imag(NaN) is NaN
 %! assert (imag(y(1)) != 0);             # imag part of sqrt(-1) is 1
-*/
 
-/*  <-- log with double + NaN  -->
+## log with double NaN
 %!test
 %! x = [-1, 0, 1, NaN];
 %! y = log(x);

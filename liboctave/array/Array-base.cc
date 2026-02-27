@@ -1396,8 +1396,8 @@ Array<T, Alloc>::assign (const Array<octave::idx_vector>& ia,
           bool lhsempty, rhsempty;
           lhsempty = rhsempty = false;
           dim_vector lhs_dv = dim_vector::alloc (ial);
-
-          j = 0;   // ←←← CRITICAL FIX: Reset j before second loop
+          // Correct RHS index in dimension mismatch check
+          j = 0;
 
           for (int i = 0; i < ial; i++)
             {
@@ -1405,9 +1405,8 @@ Array<T, Alloc>::assign (const Array<octave::idx_vector>& ia,
               lhs_dv(i) = l;
               lhsempty = lhsempty || (l == 0);
 
-              // Check if corresponding RHS dimension is also empty 
-              rhsempty = rhsempty || ((j < rhdvl) && (rhdv(j) == 0));
-              j++ ;  // increment outside condition
+              // Check if corresponding RHS dimension is also empty
+              rhsempty = rhsempty || ((j < rhdvl) && (rhdv(j++) == 0));
             }
           if (! lhsempty || ! rhsempty)
             {

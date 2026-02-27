@@ -34,10 +34,25 @@
 
 #include "md2.h"
 #include "md4.h"
+
+// Silence invalid warnings in gnulib
+// FIXME: This was fixed upstream in gnulib on 2026-02-12.
+// The following ifdef can be deleted after a gnulib update.
+#ifdef HAVE_PRAGMA_GCC_DIAGNOSTIC
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wcast-qual"
+#endif
+
 #include "md5.h"
 #include "sha1.h"
 #include "sha256.h"
 #include "sha512.h"
+
+// FIXME: This was fixed upstream in gnulib on 2026-02-12.
+// The following ifdef can be deleted after a gnulib update.
+#ifdef HAVE_PRAGMA_GCC_DIAGNOSTIC
+#  pragma GCC diagnostic pop
+#endif
 
 #include "hash-wrappers.h"
 

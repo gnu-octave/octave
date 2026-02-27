@@ -164,29 +164,32 @@ Complex
 log2 (const Complex& x, int& exp)
 {
   double ax = std::abs (x);
-  
-  // Handle zero case
-  if (ax == 0.0)
+  if (ax == 0.0 || std::isinf(ax) || std::isnan(ax))
     {
       exp = 0;
+      if (std::isinf(ax) || std::isnan(ax)) 
+        return x; // Handle Inf/NaN cases
       return Complex (0.0, 0.0);
     }
-  
-  // Decompose magnitude: ax = mantissa × 2^exp, mantissa ∈ [0.5, 1)
-  double mantissa = frexp (ax, &exp);
-  
-  // Scale complex number to match mantissa range
-  // Result: |returned_value| = mantissa ∈ [0.5, 1)
-  // Preserves original phase/argument
-  return x / ax * mantissa;
+
+  double mantissa = std::frexp (ax, &exp);
+  return (x / ax) * mantissa;
 }
 
 FloatComplex
 log2 (const FloatComplex& x, int& exp)
 {
   float ax = std::abs (x);
-  float lax = log2 (ax, exp);
-  return (ax != lax) ? (x / ax) * lax : x;
+  if (ax == 0.0f || std::isinf(ax) || std::isnan(ax))
+    {
+      exp = 0;
+      if (std::isinf(ax) || std::isnan(ax))
+        return x;
+      return FloatComplex (0.0f, 0.0f);
+    }
+
+  float mantissa = std::frexp (ax, &exp);
+  return (x / ax) * mantissa;
 }
 
 bool

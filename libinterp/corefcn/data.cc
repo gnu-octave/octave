@@ -843,6 +843,21 @@ $x = 0$, $f = e = 0$.
 }
 
 /*
+%!test
+%! [f, e] = log2 (complex (0, 0));
+%! assert (f, complex (0, 0));
+%! assert (e, 0);
+
+%!test
+%! [f, e] = log2 (complex (4, 0));
+%! assert (f, complex (0.5, 0));
+%! assert (e, 3);
+
+%!test
+%! [f, e] = log2 (complex (0, 2));
+%! assert (f, complex (0, 0.5));
+%! assert (e, 2);
+
 %!assert (log2 ([1/4, 1/2, 1, 2, 4]), [-2, -1, 0, 1, 2])
 %!assert (log2 (Inf), Inf)
 %!assert (isnan (log2 (NaN)))

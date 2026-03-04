@@ -99,7 +99,7 @@ fi
 cat > $output_dir/bc-overloads.tst << EOF
 ## !!! DO NOT EDIT !!!
 ## THIS IS AN AUTOMATICALLY GENERATED FILE
-## modify build-bc-overload-tests.sh to generate the tests you need.
+## modify mk-bc-overloads-tst.sh to generate the tests you need.
 
 %!shared ex
 %! ex.double = 1;

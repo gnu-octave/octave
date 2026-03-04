@@ -579,7 +579,7 @@ Consider what the examples
 @noindent
 will give.  The first example of @var{s} raised to the power of 2 causes
 no problems.  However @var{s} raised element-wise to itself involves a
-large number of terms @code{0 .^ 0} which is 1. There @code{@var{s} .^
+large number of terms @code{0 .^ 0} which is 1.  There @code{@var{s} .^
 @var{s}} is a full matrix.
 
 Likewise @code{@var{s} .^ -2} involves terms like @code{0 .^ -2} which
@@ -954,9 +954,9 @@ isolated.
        widx+[(2:h);h+(2:h);h+(1:h-1)]' ];
    endfor
 
-   E = size (elems,1); # No. of simplices
-   N = size (nodes,1); # No. of vertices
-   D = size (elems,2); # dimensions+1
+   E = size (elems,1);  # No. of simplices
+   N = size (nodes,1);  # No. of vertices
+   D = size (elems,2);  # dimensions+1
 @end group
 @end example
 

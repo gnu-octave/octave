@@ -49,12 +49,12 @@
 ##
 ## @item  @qcode{""}
 ## (default) Evaluate the event function and return the solution @var{retval}
-## as a cell array of size 4. Inputs @var{ord} and @var{@@evt_fcn} are ignored,
-## since they are set in the @qcode{"init"} step.
+## as a cell array of size 4.  Inputs @var{ord} and @var{@@evt_fcn} are
+## ignored, since they are set in the @qcode{"init"} step.
 ##
 ## @item  @qcode{"done"}
 ## Clean up internal variables of the function @code{ode_event_handler} and
-## return an empty cell array of size 4. All other inputs are ignored with
+## return an empty cell array of size 4.  All other inputs are ignored with
 ## this flag.
 ## @end table
 ##
@@ -112,9 +112,9 @@ function retval = ode_event_handler (evt_fcn, t, y, k_vals, ord, flag = "")
         ## Add all events this step to the output.
         for idx2 = idx                      # Loop through all values of idx
           ## Calculate the time stamp when the event function returned 0 and
-          ## calculate new values for the integration results. We do both by
+          ## calculate new values for the integration results.  We do both by
           ## root solving, calling the Event function with y values from
-          ## the RK interpolation polynomial. Set tolerance to zero (actually
+          ## the RK interpolation polynomial.  Set tolerance to zero (actually
           ## uses machine tolerance based criterion in this case) since we
           ## don't have a way for the user to specify an acceptable tolerance.
           ## For simple Event functions, this means we're basically root

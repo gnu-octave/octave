@@ -127,7 +127,7 @@ Academic Development Funds grant.
 
 @item
 The State of Texas, for providing funding through the Texas
-Advanced Technology Program under Grant No. 003658-078.
+Advanced Technology Program under Grant No.@: 003658-078.
 
 @item
 Noel Bell, Senior Engineer, Texaco Chemical Company, Austin Texas.

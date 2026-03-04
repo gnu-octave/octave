@@ -28,7 +28,7 @@
 ## @deftypefnx {} {@var{x} =} gmres (@var{A}, @var{b}, @var{restart}, @var{tol}, @var{maxit}, @var{M}, [], @var{x0}, @dots{})
 ## @deftypefnx {} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} gmres (@var{A}, @var{b}, @dots{})
 ## Solve @code{A x = b} using the Preconditioned GMRES iterative method with
-## restart, a.k.a. PGMRES(restart).
+## restart, a.k.a.@: PGMRES(restart).
 ##
 ## The input arguments are:
 ##

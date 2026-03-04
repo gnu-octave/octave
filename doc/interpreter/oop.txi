@@ -69,7 +69,7 @@ a0 + a1 * x + a2 * x^2 + @dots{} + an * x^n
 @noindent
 where
 @tex
-$a_0$, $a_1$, etc. are elements of $\Re$.
+$a_0$, $a_1$, etc.\ are elements of $\Re$.
 @end tex
 @ifnottex
 a0, a1, etc.@: are real scalars.
@@ -813,14 +813,14 @@ compatible to @sc{matlab}.  An overview of what is missing can be found at
 * Properties::
 * Methods::
 * Inheritance::
-* Value Classes vs. Handle Classes::
+* Value Classes vs.@: Handle Classes::
 @end menu
 
 @node Creating a classdef Class
 @subsection Creating a @code{classdef} Class
 
 A very basic @code{classdef} value class
-(@pxref{Value Classes vs. Handle Classes}) is defined by:
+(@pxref{Value Classes vs.@: Handle Classes}) is defined by:
 
 @example
 @group
@@ -1032,8 +1032,8 @@ endclassdef
 @end group
 @end example
 
-@node Value Classes vs. Handle Classes
-@subsection Value Classes vs. Handle Classes
+@node Value Classes vs.@: Handle Classes
+@subsection Value Classes vs.@: Handle Classes
 
 There are two intrinsically different types of @code{classdef} classes, whose
 major difference is the behavior regarding variable assignment.  The first type

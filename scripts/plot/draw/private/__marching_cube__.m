@@ -28,7 +28,7 @@
 ## @deftypefnx {} {[@var{t}, @var{p}, @var{c}] =} __marching_cube__ (@var{xx}, @var{yy}, @var{zz}, @var{v}, @var{iso}, @var{colors})
 ##
 ## Return the triangulation information @var{t} at points @var{p} for the
-## isosurface values resp. the volume data @var{v} and the iso level
+## isosurface values resp.@: the volume data @var{v} and the iso level
 ## @var{iso}.  It is considered that the volume data @var{v} is given at
 ## the points @var{xx}, @var{yy}, and @var{zz} which are of type
 ## three-dimensional numeric arrays.  The orientation of the triangles is

@@ -674,7 +674,7 @@ on dense, sparse, or any other special matrix types produce the same consistent
 results.  Thus, it is expected that the output in the following examples may
 change in future Octave versions.
 
-Examples of effects of assumed zeros vs. numerical zeros:
+Examples of effects of assumed zeros vs.@: numerical zeros:
 
 @example
 @group

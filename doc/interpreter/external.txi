@@ -1151,7 +1151,7 @@ oct-files often need additional input parameter checking.
 
 There are several functions within Octave that can be useful for the purposes
 of parameter checking.  These include the methods of the @code{octave_value}
-class like @code{is_real_matrix}, @code{is_numeric_type}, etc. (see
+class like @code{is_real_matrix}, @code{is_numeric_type}, etc.@: (see
 @file{ov.h}).  Often, with a knowledge of the Octave m-file language, you can
 guess at what the corresponding C++ routine will.  In addition there are some
 more specialized input validation functions of which a few are demonstrated

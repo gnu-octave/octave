@@ -1996,7 +1996,7 @@ view are unlit.";
         s.category = "Lighting";
 
       case "cdata"
-        s.doc = "Color data values for __objname__ vertices. Data is stored \
+        s.doc = "Color data values for __objname__ vertices.  Data is stored \
 either as a 2-D matrix the same size as \
 @ref{XREFsurfacezdata,,@qcode{\"zdata\"}} where each element's value \
 determines that vertex's color according to the current colormap, or as a \
@@ -2249,7 +2249,7 @@ view are unlit.";
         s.doc = "Data defining the patch object color relative to its \
 x/y/z-coordinate data.  Patch color can be defined using indices into the \
 current colormap or as RGB triplets, where the RGB colors are defined along \
-the third dimension. These colors can be separately defined for the entire \
+the third dimension.  These colors can be separately defined for the entire \
 patch object, for individual faces, or for individual vertices, and is \
 determined by the shape of @qcode{\"cdata\"} as follows:\n\
 \n\
@@ -3087,7 +3087,7 @@ Graphics handle of the object executing the callback function\n\
 
       case "max"
         s.doc = "The maximum control value, whose effect on the control is \
-dependent on the control type. For @qcode{\"checkbox\"}, \
+dependent on the control type.  For @qcode{\"checkbox\"}, \
 @qcode{\"togglebutton\"}, and @qcode{\"radiobutton\"} controls, the \
 @qcode{\"max\"} value is assigned to the @qcode{\"value\"} property when the \
 control object is selected.  For @qcode{\"slider\"} controls, \
@@ -3100,7 +3100,7 @@ respectively.";
 
       case "min"
         s.doc = "The minimum control value, whose effect on the control is \
-dependent on the control type. For @qcode{\"checkbox\"}, \
+dependent on the control type.  For @qcode{\"checkbox\"}, \
 @qcode{\"togglebutton\"}, and @qcode{\"radiobutton\"} controls, the \
 @qcode{\"min\"} value is assigned to the @qcode{\"value\"} property when the \
 control object is not selected.  For @qcode{\"slider\"} controls, \

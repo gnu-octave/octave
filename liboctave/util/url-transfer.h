@@ -40,16 +40,16 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 struct weboptions
 {
+  std::string CharacterEncoding;
   std::string UserAgent;
   long Timeout;
   std::string Username;
   std::string Password;
-  Array<std::string> HeaderFields;
   std::string ContentReader;
   std::string RequestMethod;
   std::string ArrayFormat;
+  Array<std::string> HeaderFields;
   std::string CertificateFilename;
-  std::string CharacterEncoding;
 };
 
 class OCTAVE_API base_url_transfer

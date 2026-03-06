@@ -33,7 +33,7 @@
 ## Write content to the web service specified by @var{url} and return the
 ## response in @var{response}.
 ##
-## All key-value pairs given (@var{name1}, @var{value1}, @dots{}) are added
+## All name-value pairs given (@var{name1}, @var{value1}, @dots{}) are added
 ## as pairs of query parameters to the body of request method (@code{get},
 ## @code{post}, @code{put}, etc.).
 ##
@@ -63,6 +63,32 @@ function response = webwrite (url, varargin)
     options = weboptions ();
   endif
 
+  has_param = false;
+  nargs = numel (varargin);
+  if (nargs == 0)
+    error ("webwrite: missing DATA or NAMES/VALUES arguments");
+
+  elseif (nargs == 1)
+
+    if (! iscellstr (varargin))
+      error ("webwrite: DATA must be a string");
+    elseif (ischar (varargin{1}) && isrow (varargin{1}))
+      param = regexp (varargin{1}, '([^=]*)=([^&]*)&?', 'tokens');
+      if (isempty (param) || isempty (param{1}))
+        error ("webwrite: DATA not a valid query string");
+      endif
+      has_param = true;
+      param = [param{:}];
+    endif
+
+  elseif (rem (nargs, 2) != 0)
+    error ("webwrite: NAMES/VALUES must occur in pairs");
+
+  elseif (! iscellstr (varargin))
+    error ("webwrite: NAMES and VALUES must be strings");
+
+  endif
+
   if (strcmp (options.MediaType, "auto"))
     options.MediaType = "application/x-www-form-urlencoded";
   endif
@@ -83,31 +109,10 @@ function response = webwrite (url, varargin)
     options.RequestMethod = "post";
   endif
 
-  nargs = numel (varargin);
-  if (nargs == 0)
-    error ("webwrite: DATA must be a string");
-  elseif (nargs == 1)
-    if (ischar (varargin{1}) && isrow (varargin{1}))
-      param = regexp (varargin{1}, '([^=]*)=([^&]*)&?', 'tokens');
-      if (isempty (param) || isempty (param{1}))
-        error ("webwrite: DATA not a valid query string");
-      else
-        param = [param{:}];
-      endif
-      response = __restful_service__ (url, param, options);
-    elseif (! iscellstr (varargin))
-      error ("webwrite: DATA must be a string");
-    else
-      response = __restful_service__ (url, varargin, options);
-    endif
-  elseif (rem (nargs, 2) == 0)
-    if (! iscellstr (varargin))
-      error ("webwrite: KEYS and VALUES must be strings");
-    else
-      response = __restful_service__ (url, varargin, options);
-    endif
+  if (has_param)
+    response = __restful_service__ (url, param, options);
   else
-    error ("webwrite: KEYS/VALUES must occur in pairs");
+    response = __restful_service__ (url, varargin, options);
   endif
 
 endfunction
@@ -118,7 +123,9 @@ endfunction
 %!error <Invalid call> webwrite ("abc")
 %!error <URL must be a string> webwrite (1, "NAME1", "VALUE1")
 %!error <URL must be a string> webwrite (["a";"b"], "NAME1", "VALUE1")
-%!error <DATA must be a string> webwrite ("URL", 1, weboptions ())
+%!error <missing DATA or NAMES/VALUES> webwrite ("URL", weboptions ())
 %!error <DATA must be a string> webwrite ("URL", 1)
-%!error <KEYS and VALUES must be strings> webwrite ("URL", "NAME1", 5)
-%!error <KEYS/VALUES must occur in pairs> webwrite ("URL", "KEY1", "VAL1", "A")
+%!error <DATA must be a string> webwrite ("URL", 1, weboptions ())
+%!error <DATA not a valid query string> webwrite ("URL", "foobar")
+%!error <NAMES/VALUES must occur in pairs> webwrite ("URL", "KEY1", "VAL1", "A")
+%!error <NAMES and VALUES must be strings> webwrite ("URL", "NAME1", 5)

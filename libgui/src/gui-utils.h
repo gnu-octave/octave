@@ -35,7 +35,7 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 /*!
-  Insert an item on top of a combobos list and remove it from the
+  Insert an item on top of a combobox list and remove it from the
   list if it is in the list.
 
   @param Pointer to the combo box
@@ -47,7 +47,7 @@ extern OCTGUI_API void
 combobox_insert_current_item  (QComboBox *cb, const QString& text);
 
 /*!
-  Update the most recemtly used list of a combo box.
+  Update the most recently used list of a combo box.
 
   @param Pointer to the combo box
   @param Length of the mru list
@@ -57,8 +57,8 @@ extern OCTGUI_API void
 combobox_update (QComboBox *cb, const int cb_length);
 
 /*!
-  Deterimine an alternative color to @p col1 with less contrast
-  to @p col2. The HSV representation of the new color is calculated by
+  Determine an alternative color to @p col1 with less contrast
+  to @p col2.  The HSV representation of the new color is calculated by
   \f{eqnarray*}{
   H &=& H_1\\
   S &=& f_s S_1\\
@@ -66,7 +66,7 @@ combobox_update (QComboBox *cb, const int cb_length);
   \f}
 
   @param col1 Base color to which the alternative has to be computed
-  @param col2 Color to which the the new color should have less contrast
+  @param col2 Color to which the new color should have less contrast
   @param fs Factor for changing the saturation \f$(0\ldots\infty)\f$
   @param fv Factor for interpolating the brightness \f$(0\ldots 1)\f$.
   For 0, \f$V = V_1\f$ and for 1, \f$V = V_2\f$.

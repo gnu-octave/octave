@@ -89,7 +89,7 @@ function tickval = xticks (varargin)
     if (nargout > 0)
       error ("xticks: too many output arguments requested");
     endif
-    ## NOTE: Matlab errors if tick points are not in ascending order. Octave
+    ## NOTE: Matlab errors if tick points are not in ascending order.  Octave
     ## permits out of order tick points, so error is not produced.
     set (hax, "xtick", arg);
 

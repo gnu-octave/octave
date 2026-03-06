@@ -410,7 +410,7 @@ function h = colorbar (varargin)
 
 endfunction
 
-## Axes to which colorbar was attached is being deleted/reset. Delete colorbar.
+## Axes to which colorbar was attached is being deleted/reset.  Delete colorbar.
 function cb_axes_deleted (~, ~, hax, hcb)
   if (isaxes (hcb))
     if (strcmp (get (hax, "beingdeleted"), "on"))

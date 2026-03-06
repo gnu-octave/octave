@@ -130,8 +130,8 @@ calc_scale_exp (const int& x)
   // the desired behavior (truncation).  There may be a gnulib replacement.
 
   // ISO/IEC 14882:2003 : Programming languages -- C++. 5.6.4: ISO,
-  // IEC. 2003 . "the binary % operator yields the remainder from the
-  // division of the first expression by the second. .... If both
+  // IEC. 2003.  "the binary % operator yields the remainder from the
+  // division of the first expression by the second.  .... If both
   // operands are nonnegative then the remainder is nonnegative; if not,
   // the sign of the remainder is implementation-defined".
 }
@@ -3280,7 +3280,7 @@ x = str2num (r)
 
   while (n < s_len)
     {
-      std::size_t m = s.find ('\n',  n);
+      std::size_t m = s.find ('\n', n);
 
       if (m == std::string::npos)
         {

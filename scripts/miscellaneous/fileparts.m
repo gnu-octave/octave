@@ -54,7 +54,7 @@ function [dir, name, ext] = fileparts (filename)
 
   if (ds == 0)
     if (ispc () && length (filename) >= 2 && strcmp (filename(2), ":"))
-      ## Relative path on Windows drive. At least, fix file name.
+      ## Relative path on Windows drive.  At least, fix file name.
       ds = 2;
       dir = filename(1:2);
     else

@@ -102,8 +102,8 @@ function solution = integrate_adaptive (stepper, order, fcn, tspan, x0,
   elseif ((refine != round (refine)) || (refine < 1))
     refine = 1;
     warning ("integrate_adaptive:invalid_refine",
-               ["Invalid value of Refine. Refine must be a positive " ...
-                "integer. Setting Refine = 1."] );
+               ["Invalid value of Refine.  Refine must be a positive " ...
+                "integer.  Setting Refine = 1."] );
   endif
 
   ## Initialize the OutputFcn

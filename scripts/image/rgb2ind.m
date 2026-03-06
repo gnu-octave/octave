@@ -148,7 +148,7 @@ endfunction
 %! assert (class (ind), "uint16");
 %! assert (class (map), "double");
 %!
-%! ## and this one should have fewer than than 256 unique colors
+%! ## and this one should have fewer than 256 unique colors
 %! rgb = nchoosek (0:10, 3) / 80;
 %! nr = rows (rgb);
 %! assert (nr < 256);

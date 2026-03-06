@@ -116,7 +116,7 @@ endfunction
 %!assert <*44162> (prepad ("Octave", 16, "x"), "xxxxxxxxxxOctave")
 %!assert (prepad ("Octave", 4), "tave")
 
-## FIXME: We need tests for multidimensional arrays.
+## FIXME: We need tests for multi-dimensional arrays.
 
 %!error <Invalid call> prepad ()
 %!error <Invalid call> prepad (1)

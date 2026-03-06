@@ -49,7 +49,7 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
   elseif (numel (varargin) > 1)
     ## FIXME: This can be fooled by any string "parent" such as
     ##        the prop/val pair "tag"/"parent".
-    ## varargin may contain char arrays. Silence respective warning.
+    ## varargin may contain char arrays.  Silence respective warning.
     warning ("off", "Octave:charmat-truncated", "local");
     parent = find (strcmpi (varargin, "parent"), 1, "last");
     if (! isempty (parent))

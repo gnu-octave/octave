@@ -204,7 +204,7 @@ function assert (cond, varargin)
           err.reason{end+1} = "Structure fieldname mismatch";
         else
           try
-            ## Test if both structs are empty, i.e. 0x0, Nx0, or Nx0 structs.
+            ## Test if both structs are empty, i.e., 0x0, Nx0, or Nx0 structs.
             ## In this case the values cannot be extracted for comparison as
             ## they are not assignable and not defined.
             assert (isempty (cond), isempty (expected));
@@ -673,7 +673,7 @@ endfunction
 %! fail ("assert (x, y)");
 %! y = x; y(2,2) = "cat";
 %! fail ("assert (x, y)");
-%! y = x; y(1,1) = [2];  y(1,2) = [0, 2, 3]; y(2,1) = 101; y(2,2) = "cat";
+%! y = x; y(1,1) = [2]; y(1,2) = [0, 2, 3]; y(2,1) = 101; y(2,2) = "cat";
 %! fail ("assert (x, y)");
 
 ## structures

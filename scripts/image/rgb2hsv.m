@@ -117,7 +117,7 @@ endfunction
 %!error <invalid data type 'cell'> rgb2hsv ({1})
 %!error <RGB must be a colormap or RGB image> rgb2hsv (ones (2,2))
 
-## Test ND input
+## Test N-D input
 %!test
 %! rgb = rand (16, 16, 3, 5);
 %! hsv = zeros (size (rgb));

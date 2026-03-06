@@ -481,7 +481,7 @@ endfunction
 %! assert (obj, 0);
 %! assert (info.info, 2);
 
-## Check positive semidefinite input
+## Check positive semi-definite input
 %!test <*64346>
 %! H = [1 1; 1 1];
 %! q = [-1; -1];

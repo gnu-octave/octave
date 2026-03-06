@@ -484,7 +484,7 @@ do_bsxfun2_op (const Array<X>& x, const Array<Y>& y, const bool nanflag,
 #define BSXFUN_POW_MIXED_MXLOOP(INT_TYPE)                                      \
   BSXFUN_OP2_DEF_MXLOOP (pow, INT_TYPE, INT_TYPE, NDArray, mx_inline_pow)      \
   BSXFUN_OP2_DEF_MXLOOP (pow, INT_TYPE, INT_TYPE, FloatNDArray, mx_inline_pow) \
-  BSXFUN_OP2_DEF_MXLOOP (pow, INT_TYPE, NDArray, INT_TYPE,  mx_inline_pow)     \
+  BSXFUN_OP2_DEF_MXLOOP (pow, INT_TYPE, NDArray, INT_TYPE, mx_inline_pow)      \
   BSXFUN_OP2_DEF_MXLOOP (pow, INT_TYPE, FloatNDArray, INT_TYPE, mx_inline_pow)
 
 #endif

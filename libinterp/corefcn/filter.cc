@@ -29,7 +29,7 @@
 // with help from Fritz Leisch and Andreas Weingessel on Oct 20, 1994.
 //
 // Rewritten to use templates to handle both real and complex cases by
-// jwe, Wed Nov  1 19:15:29 1995.
+// jwe, Wed Nov 1 19:15:29 1995.
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -171,7 +171,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
               const bool py_nonzero = (py_val != zero);
 
               // Split into cases based on zero/nonzero to avoid a long
-              // sequence of multiplying by zero values. See bug #67653.
+              // sequence of multiplying by zero values.  See bug #67653.
               // FIXME: Currently the loop is duplicated for performance.
               // Can this be made fast without duplication? It was reported
               // in bug #67653 that BLAS axpy is not as fast as these loops.

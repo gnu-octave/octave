@@ -3493,7 +3493,7 @@ xgemm (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
         {
           const char ctra = get_blas_trans_arg (tra, cja);
           F77_XFCN (cgemv, CGEMV, (F77_CONST_CHAR_ARG2 (&ctra, 1),
-                                   lda, tda, 1.0,  F77_CONST_CMPLX_ARG (a.data ()), lda,
+                                   lda, tda, 1.0, F77_CONST_CMPLX_ARG (a.data ()), lda,
                                    F77_CONST_CMPLX_ARG (b.data ()), 1, 0.0, F77_CMPLX_ARG (c), 1
                                    F77_CHAR_ARG_LEN (1)));
         }
@@ -3501,7 +3501,7 @@ xgemm (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
         {
           const char crevtrb = get_blas_trans_arg (! trb, cjb);
           F77_XFCN (cgemv, CGEMV, (F77_CONST_CHAR_ARG2 (&crevtrb, 1),
-                                   ldb, tdb, 1.0,  F77_CONST_CMPLX_ARG (b.data ()), ldb,
+                                   ldb, tdb, 1.0, F77_CONST_CMPLX_ARG (b.data ()), ldb,
                                    F77_CONST_CMPLX_ARG (a.data ()), 1, 0.0, F77_CMPLX_ARG (c), 1
                                    F77_CHAR_ARG_LEN (1)));
         }

@@ -186,7 +186,7 @@ function [userdata, systemdata] = memory ()
       available_ram = meminfo.MemFree * kiB;
       if (isfield (meminfo, "Cached"))
         ## Some platforms don't support "Cached" (e.g., Cygwin).
-        ## That makes the result even more unreliable. But it might be better
+        ## That makes the result even more unreliable.  But it might be better
         ## than nothing.
         available_ram += meminfo.Cached * kiB;
       endif

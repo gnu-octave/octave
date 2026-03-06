@@ -1201,10 +1201,10 @@ file_system_browser::notice_settings ()
   if (m_sync_octave_dir)
     do_sync_browser_directory ();
 
-  // Initialize column order, visibility and width of the file browser. From this post,
+  // Initialize column order, visibility and width of the file browser.  From this post,
   // https://www.qtcentre.org/threads/26675-QTableView-saving-restoring-columns-widths
-  // this might fail if done directly after other actions. This effect shows
-  // up in the GUI since Qt 6.6.x. As a solution, the following timer ensures
+  // this might fail if done directly after other actions.  This effect shows
+  // up in the GUI since Qt 6.6.x.  As a solution, the following timer ensures
   // that the header is restored when the event loop is idle.
 
   QTimer::singleShot (0, this, SLOT(restore_header_state ()));

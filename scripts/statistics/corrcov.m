@@ -108,7 +108,7 @@ endfunction
 %!assert (corrcov ([]), [])
 %!assert (corrcov (ones (0, 0)), [])
 
-## Verify matrices numerically close to positive semidefinite will pass.
+## Verify matrices numerically close to positive semi-definite will pass.
 %!assert (corrcov (cov (magic (4))), corrcoef (magic (4)), eps)
 
 %!error <Invalid call> corrcov ()

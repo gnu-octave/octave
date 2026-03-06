@@ -138,7 +138,7 @@ xpow_private (const T& a, double b)
       // matrix.
       //
       // The time to multiply fixed-size matrices is strongly affected by their
-      // sparsity. Denser matrices take much longer to multiply together.
+      // sparsity.  Denser matrices take much longer to multiply together.
       // See this URL for a worked-through example:
       // https://octave.discourse.group/t/3216/4
       //

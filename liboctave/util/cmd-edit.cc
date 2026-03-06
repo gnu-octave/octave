@@ -613,7 +613,7 @@ gnu_readline::do_generate_filename_completions (const std::string& text)
         {
           if (count == n)
             {
-              // Famous last words:  Most large directories will not
+              // Famous last words: Most large directories will not
               // have more than a few hundred files, so we should not
               // resize too many times even if the growth is linear...
               n += 100;

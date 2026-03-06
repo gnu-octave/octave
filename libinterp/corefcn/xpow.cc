@@ -88,7 +88,7 @@ xisint (float x)
   // and delete the lines with numeric_limits<int>,
   // then that works on MacOS but not on Linux.
   // A simple test is:    Complex (realmin, realmin) .^ realmax.
-  // On MacOS it gives zero. On Linux it gives Inf - Nani.
+  // On MacOS it gives zero.  On Linux it gives Inf - Nani.
   // If we can make both platforms work without the extra check with
   // numeric_limits<int>, then we should do so.
 

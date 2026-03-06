@@ -107,7 +107,7 @@ public:
             const octave_value& rhs);
 
   OCTINTERP_API octave_value
-  do_index_op (const octave_value_list& idx,  bool resize_ok = false);
+  do_index_op (const octave_value_list& idx, bool resize_ok = false);
 
   // FIXME: should we import the functions from the base class and
   // overload them here, or should we use a different name so we don't

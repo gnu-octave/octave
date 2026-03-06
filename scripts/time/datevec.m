@@ -232,8 +232,8 @@ function [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f)
 
   if (any (strchr (f, "hsfYD", 1)))
     warning ("Octave:datevec:date-format-spec", ...
-             ["datevec: Format specifiers for dates should be lower case,", ...
-              " format specifiers for time should be upper case. ", ...
+             ["datevec: Format specifiers for dates should be lowercase,", ...
+              " format specifiers for time should be uppercase. ", ...
               " Possible issue with 'm' (month) and 'M' (minutes)?"]);
   endif
 
@@ -310,7 +310,7 @@ function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, p, f, rY, ry, fy, fm
 
   ## Local time zone is irrelevant, and potentially dangerous, when using
   ## strptime to simply convert a string into a broken down struct tm.
-  ## Set and restore TZ so time is parsed exactly as-is. See bug #36954.
+  ## Set and restore TZ so time is parsed exactly as-is.  See bug #36954.
   TZ_orig = getenv ("TZ");
   unwind_protect
     setenv ("TZ", "UTC0");
@@ -769,6 +769,6 @@ endfunction
 %!error <multiple minute specifiers> datevec ("15:38:21.251", "MM:MM:SS")
 %!error <multiple second specifiers> datevec ("15:38:21.251", "HH:SS:SS")
 %!fail ("datevec ('2015-03-31 0:00','YYYY-mm-DD HH:MM')", ...
-%!      "warning", "Format specifiers for dates should be lower case");
+%!      "warning", "Format specifiers for dates should be lowercase");
 %!fail ("datevec ('2015-03-31 hh:00','yyyy-mm-dd hh:MM')", ...
-%!      "warning", "format specifiers for time should be upper case");
+%!      "warning", "format specifiers for time should be uppercase");

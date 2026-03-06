@@ -126,7 +126,7 @@ function s = mat2str (x, n = 15, cls = "")
       s = sprintf (fmt, x);
     endif
   else
-    ## Non-scalar X, print brackets
+    ## Nonscalar X, print brackets
     fmt = [fmt " "];
     if (x_iscomplex)
       t = x.';

@@ -792,7 +792,7 @@ file_editor_tab::update_lexer_settings (bool update_apis_only)
       if (m_is_octave_file)
         {
           // Keywords and Builtins do not change, this information can be
-          // stored in prepared form in a file. Information on function are
+          // stored in prepared form in a file.  Information on function are
           // changing frequently, then if functions should also be auto-
           // completed, the date of any existing file is checked.
 
@@ -1117,7 +1117,7 @@ file_editor_tab::run_file (const QWidget *ID, int opts)
     {
       save_file (m_file_name);  // save file dialog
 
-      // Running a file is disabled for non-octave files. But when saving
+      // Running a file is disabled for non-octave files.  But when saving
       // a new file, an octave file is assumed but might actually saved
       // as another file or with an invalid file name.
       if (! (m_is_octave_file && valid_file_name ()))
@@ -3305,7 +3305,7 @@ void
 file_editor_tab::handle_cursor_moved (int line, int col)
 {
   // Cursor has moved, first check wether an autocompletion list
-  // is active or if it was closed. Scintilla provides signals for
+  // is active or if it was closed.  Scintilla provides signals for
   // completed or cancelled lists, but not for list that where hidden
   // due to a new character not matching anymore with the list entries
   if (m_edit_area->SendScintilla (QsciScintillaBase::SCI_AUTOCACTIVE))

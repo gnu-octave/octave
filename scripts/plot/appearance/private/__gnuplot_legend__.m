@@ -1062,7 +1062,7 @@ function [hleg, hleg_obj, hplot, labels] = __gnuplot_legend__ (varargin)
                 ## Let gnuplot handle the positioning of the keybox.
                 ## This violates strict Matlab compatibility, but reliably
                 ## renders an aesthetic result.
-                set (ca(i), "position",  unmodified_axes_position,
+                set (ca(i), "position", unmodified_axes_position,
                             "positionconstraint", "outerposition");
               else
                 ## numel (ca) > 1 for axes overlays (like plotyy)
@@ -1474,7 +1474,7 @@ endfunction
 %!demo
 %! clf;
 %! x = 0:1;
-%! plot (x,x,  x,2*x, x,3*x);
+%! plot (x,x,  x,2*x,  x,3*x);
 %! title ("Labels with interpreted Greek text");
 %! h = legend ('\alpha', '\beta=2\alpha', '\gamma=3\alpha');
 %! set (h, "interpreter", "tex");

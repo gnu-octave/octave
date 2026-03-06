@@ -142,7 +142,7 @@ function C = nchoosek (v, k)
         C /= g1;
 
         ## In theory and (always for integers) i/(g1 * g2) is identical to 1 by
-        ## design. Or for floats and beyond flintmax, the gcd may not be
+        ## design.  Or for floats and beyond flintmax, the gcd may not be
         ## correctly derived by the gcd function and i/(g1 * g2) may not be 1.
         C_next = C * ((v - k + i)/g2);
         if (is_int || (i/(g1 * g2) == 1) || ! isinf (C_next))

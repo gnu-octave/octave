@@ -1273,7 +1273,7 @@ endfunction
 %! #-----------------------------------------------------------------
 %! # Moving window statistics.  The plot highlights mean and median.
 %! # Black lines how minimum, first quartile, third quartile, and maximum.
-%! # Demo illustrates the use of functions with multidimensional output.
+%! # Demo illustrates the use of functions with multi-dimensional output.
 
 %!demo
 %! clf;
@@ -1300,7 +1300,7 @@ endfunction
 %! legend (h(1:2), {"data1", "data2"})
 %! #-----------------------------------------------------------------
 %! # Moving min() and max() on the same window.
-%! # Demo illustrates the use of functions with flat multidimensional output.
+%! # Demo illustrates the use of functions with flat multi-dimensional output.
 
 
 %!test

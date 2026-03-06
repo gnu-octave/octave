@@ -528,7 +528,7 @@ void
 ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
         octave_idx_type nnz_u, octave_idx_type nnz_l, T *cols_norm,
         Array<octave_idx_type>& perm_vec, const T droptol = T(0),
-        const T thresh = T(0), const  std::string milu = "off",
+        const T thresh = T(0), const std::string milu = "off",
         const double udiag = 0)
 {
   char opt;

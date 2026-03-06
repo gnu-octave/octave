@@ -467,8 +467,8 @@ block_or_unblock_signal (int how, int sig)
 #if ! defined (__WIN32__) || defined (__CYGWIN__)
 
   // Blocking/unblocking signals at thread level is only supported
-  // on platform with fully compliant POSIX threads. This is not
-  // supported on Win32. Moreover, we have to make sure that SIGINT
+  // on platform with fully compliant POSIX threads.  This is not
+  // supported on Win32.  Moreover, we have to make sure that SIGINT
   // handler is not installed before calling AllocConsole: installing
   // a SIGINT handler internally calls SetConsoleCtrlHandler, which
   // must be called after AllocConsole to be effective.

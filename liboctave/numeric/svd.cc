@@ -50,7 +50,7 @@ public:
 
   // Unfortunately, dgejsv and sgejsv do not provide estimation of 'lwork'.
   // Thus, we have to estimate it according to corresponding LAPACK
-  // documentation and related source codes (e.g. cgejsv).
+  // documentation and related source codes (e.g., cgejsv).
   // In LAPACKE (C interface to LAPACK), the memory handling code in
   // LAPACKE_dgejsv() (lapacke_dgejsv.c, last visit 2019-02-17) uses
   // the minimum required working space.  In contrast, here the optimal
@@ -723,7 +723,7 @@ svd<T>::svd (const T& a, svd::Type type, svd::Driver driver)
 
     case svd::Type::sigma_only:
 
-      // Note:  for this case, both jobu and jobv should be 'N', but there
+      // Note: for this case, both jobu and jobv should be 'N', but there
       // seems to be a bug in dgesvd from Lapack V2.0.  To demonstrate the
       // bug, set both jobu and jobv to 'N' and find the singular values of
       // [eye(3), eye(3)].  The result is [-sqrt(2), -sqrt(2), -sqrt(2)].

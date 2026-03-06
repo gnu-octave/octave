@@ -488,7 +488,7 @@ do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
     {
       warning_with_id ("Octave:fopen:encoding-unsupported",
                        "fopen: encoding must be 'UTF-8' for this configuration "
-                       "of Octave. Opening file '%s' as 'UTF-8' even though "
+                       "of Octave.  Opening file '%s' as 'UTF-8' even though "
                        "encoding was specified as '%s'.",
                        name.c_str (), encoding.c_str ());
       encoding = "utf-8";
@@ -2041,10 +2041,10 @@ as the name of the function when reporting errors.
 %! assert (cell2mat (c), [-10, 1, -10, 4; Inf, -10, NaN, -10]);
 
 %!test <*42528>
-%! assert (textscan ("1i", ""){1},  0+1i);
+%! assert (textscan ("1i", ""){1}, 0+1i);
 %! C = textscan ("3, 2-4i, NaN\n -i, 1, 23.4+2.2i\n 1+1 1+1j", "",
 %!               "delimiter", ",");
-%! assert (cell2mat (C), [3+0i, 2-4i, NaN+0i; 0-i,  1+0i, 23.4+2.2i; 1 1 1+1i]);
+%! assert (cell2mat (C), [3+0i, 2-4i, NaN+0i; 0-i, 1+0i, 23.4+2.2i; 1 1 1+1i]);
 
 %!test
 %! ## TreatAsEmpty

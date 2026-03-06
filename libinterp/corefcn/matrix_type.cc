@@ -225,7 +225,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,
           octave_idx_type nl = 0;
           octave_idx_type nu = 0;
 
-          // Use STL function to convert to lower case
+          // Use STL function to convert to lowercase
           std::transform (str_typ.begin (), str_typ.end (),
                           str_typ.begin (), tolower);
 
@@ -384,7 +384,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,
           // FIXME: why do I have to explicitly call the constructor?
           MatrixType mattyp = MatrixType (MatrixType::Unknown, true);
 
-          // Use STL function to convert to lower case
+          // Use STL function to convert to lowercase
           std::transform (str_typ.begin (), str_typ.end (),
                           str_typ.begin (), tolower);
 

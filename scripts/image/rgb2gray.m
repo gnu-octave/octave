@@ -95,7 +95,7 @@ endfunction
 ## test tolerance input checking on floats
 %! assert (rgb2gray ([1.5 1 1]), 1.149468, -1.6e-3);
 
-## Test ND input
+## Test N-D input
 %!test
 %! rgb = rand (16, 16, 3, 5);
 %! I = zeros (16, 16, 1, 5);

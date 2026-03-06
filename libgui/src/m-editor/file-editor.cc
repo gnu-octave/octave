@@ -64,7 +64,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-// Functions of the the reimplemented tab widget
+// Functions of the reimplemented tab widget
 
 file_editor_tab_widget::file_editor_tab_widget (QWidget *p, file_editor *fe)
   : QTabWidget (p)
@@ -134,7 +134,7 @@ void
 file_editor::focusInEvent (QFocusEvent *e)
 {
   // The focus is transferred to the active tab and its edit
-  // area in this focus in event handler. This is to avoid
+  // area in this focus in event handler.  This is to avoid
   // using focus proxies with conflicts in the proxy change
   // presumably introduced by bug
   // https://bugreports.qt.io/browse/QTBUG-61092
@@ -517,7 +517,7 @@ file_editor::check_closing ()
   // Therefore, saving the session for restoring at next start is not done
   // before the application is definitely closing.
 
-  // Save the session. Even is closing is cancelled, this would be
+  // Save the session.  Even is closing is cancelled, this would be
   // overwritten by the next attempt to close the editor
   save_session ();
 
@@ -667,7 +667,7 @@ file_editor::request_mru_open_file (QAction *action)
 {
   if (action)
     {
-      show ();  // Make sure, the editor is shown. In case the previous
+      show ();  // Make sure, the editor is shown.  In case the previous
                 // session has to be restored, all previous files are
                 // opened before the selected file from the mru list is
                 // opened.
@@ -1029,7 +1029,7 @@ file_editor::find_create ()
   // Icon is the same as the editor
   m_find_dialog->setWindowIcon (windowIcon ());
 
-  // Position:  lower right of editor's position
+  // Position: lower right of editor's position
   int xp = x () + frameGeometry ().width ();
   int yp = y () + frameGeometry ().height ();
 
@@ -2599,8 +2599,8 @@ void
 file_editor::handle_autoc_cancelled ()
 {
   // List was cancelled but somehow still active and blocking the
-  // edit area from accepting shortcuts. Only after another keypress
-  // shortcuts and lists are working againnas expected. This is
+  // edit area from accepting shortcuts.  Only after another keypress
+  // shortcuts and lists are working againnas expected.  This is
   // probably caused by qt bug https://bugreports.qt.io/browse/QTBUG-83720
   // Hack: Accept the list, which is hidden but still active
   //       and undo the text insertion, if any
@@ -2881,8 +2881,8 @@ file_editor::mru_menu_update ()
 
   gui_settings settings;
 
-  settings.setValue (ed_mru_file_list.settings_key (),  m_mru_files);
-  settings.setValue (ed_mru_file_encodings.settings_key (),  m_mru_files_encodings);
+  settings.setValue (ed_mru_file_list.settings_key (), m_mru_files);
+  settings.setValue (ed_mru_file_encodings.settings_key (), m_mru_files_encodings);
 
   settings.sync ();
 }
@@ -2946,7 +2946,7 @@ file_editor::handle_dir_remove (const QString& old_name,
       // 1. The path of the file rel. to the dir is not equal to the
       //    its absolute one.
       //    If both are equal, then there is no relative path and removed
-      //    directory and file are on different drives (e.g. on windows)
+      //    directory and file are on different drives (e.g., on windows)
       // 2. The (real) relative path does not start with "../", i.e.,
       //    the file can be reached from the directory by descending only
       if ((rel_path_to_file != abs_path_to_file)

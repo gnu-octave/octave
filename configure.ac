@@ -869,7 +869,7 @@ AM_CONDITIONAL([AMCOND_BUILD_EXTERNAL_LIBXERBLA],
   [test -n "$BUILD_EXTERNAL_LIBXERBLA"])
 
 ### Set options for dynamic linking if enabled.
-dnl Options set only only if we are building shared libs and some API for
+dnl Options set only if we are building shared libs and some API for
 dnl dynamic linking has been detected.
 
 dnl FIXME: A lot of the following duplicates the functionality of

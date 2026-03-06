@@ -193,7 +193,7 @@ gepbalance<ComplexMatrix>::init (const ComplexMatrix& a,
   F77_INT ihi;
 
   OCTAVE_LOCAL_BUFFER (double, plscale, n);
-  OCTAVE_LOCAL_BUFFER (double, prscale,  n);
+  OCTAVE_LOCAL_BUFFER (double, prscale, n);
   OCTAVE_LOCAL_BUFFER (double, pwork, 6 * n);
 
   m_balanced_mat = a;

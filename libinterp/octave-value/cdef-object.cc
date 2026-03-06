@@ -146,7 +146,7 @@ cdef_object::map_value (bool warn, bool for_save) const
     warning_with_id ("Octave:classdef-to-struct",
                      "struct: converting a classdef object into a struct "
                      "overrides the access restrictions defined for "
-                     "properties. All properties are returned, including "
+                     "properties.  All properties are returned, including "
                      "private and protected ones.");
 
   cdef_class cls = get_class ();
@@ -337,7 +337,7 @@ cdef_object_array::subsref (const std::string& type,
       if (m_array.numel () == 1)
         {
           // If there is only one element in the array, implicitly index the
-          // first element. In this case, also allow indexing with more than
+          // first element.  In this case, also allow indexing with more than
           // one level.
 
           // dummy variables

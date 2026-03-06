@@ -465,7 +465,7 @@ Undocumented internal function.
     = args (nargin - 1).classdef_object_value () -> get_object ();
 
   // We could have used webopt.map_value () instead to return a map, but that
-  // shows a warning about about overriding access restrictions.
+  // shows a warning about overriding access restrictions.
   // Nevertheless, we are keeping checking that here if the keys are not
   // equal to "delete" and "display", getting away with the warning.
   string_vector keys = webopt.map_keys ();

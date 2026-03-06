@@ -540,7 +540,7 @@ octave_qscintilla::is_style_comment (int pos)
     case SCLEX_MATLAB:
       return (ST_LINE_COMMENT * (style == QsciLexerMatlab::Comment));
 #endif
-#if  defined (HAVE_LEXER_OCTAVE)
+#if defined (HAVE_LEXER_OCTAVE)
     case SCLEX_OCTAVE:
       return (ST_LINE_COMMENT * (style == QsciLexerOctave::Comment));
 #endif
@@ -953,7 +953,7 @@ octave_qscintilla::contextmenu_run (bool)
       return;
 
     std::string opt = "-r";
-    std::string  path = tmp_hist->fileName ().toStdString ();
+    std::string path = tmp_hist->fileName ().toStdString ();
 
     Fhistory (interp, ovl (opt, path));
   });
@@ -1006,7 +1006,7 @@ octave_qscintilla::contextmenu_run (bool)
         std::list<frame_info> stack = ee.stack_info ();
 
         // Remove line and column from first line of error message only
-        // if it is related to the tmp itself, i.e. only if the
+        // if it is related to the tmp itself, i.e., only if
         // the error stack size is 0, 1, or, if in debug mode, 2
         size_t max_stack_size = 1;
         if (dbg)
@@ -1089,7 +1089,7 @@ void octave_qscintilla::ctx_menu_run_finished
   Q_EMIT focus_console_after_command_signal ();
 
   // TODO: Use line nr. (int argument) of possible error for removing
-  //       lines from history that were never executed. For this,
+  //       lines from history that were never executed.  For this,
   //       possible lines from commands at a debug prompt must be
   //       taken into consideration.
 

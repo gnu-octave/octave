@@ -140,7 +140,7 @@ static Matrix
 viridis_colormap ()
 {
   // The values below have been produced by "viridis ()(:)".
-  // It would be nice to be able to feval the  viridis function but since there
+  // It would be nice to be able to feval the viridis function but since there
   // is a static property object that includes a colormap_property object, we
   // need to initialize this before main() is even called, so calling an
   // interpreted function is not possible.
@@ -4124,7 +4124,7 @@ figure::properties::get_boundingbox (bool internal, const Matrix&) const
   // FIXME: Check how to get that from C++.
   // As a workaround, assume that we are either on a display prior to Retina
   // scaling where "__device_pixel_ratio__" and "backingScaleFactor" are both
-  // 1, or we are on a Retina display where both are probably 2. The latter
+  // 1, or we are on a Retina display where both are probably 2.  The latter
   // might not always be the case.
   double dpr = 1.0;
 #else
@@ -11625,7 +11625,7 @@ uitable::properties::get_boundingbox (bool,
 void
 uitable::properties::set_columnformat (const octave_value& val)
 {
-  /* Matlab only allows certain values for ColumnFormat. Here we only check the
+  /* Matlab only allows certain values for ColumnFormat.  Here we only check the
    * structure of the argument.  Values will be checked in Table.cc */
 
   if (val.iscellstr ())

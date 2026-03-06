@@ -48,7 +48,7 @@ extern OCTINTERP_API bool valid_identifier (const std::string& s);
 
 //! Helper class for `make_valid_name` function calls.
 //!
-//! Extracting options separately for multiple (e.g. 1000+) function calls
+//! Extracting options separately for multiple (e.g., 1000+) function calls
 //! avoids expensive repetitive parsing of the very same options.
 
 class OCTINTERP_API make_valid_name_options

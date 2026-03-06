@@ -76,7 +76,7 @@ oct_unop_default (const octave_value& a, const std::string& opname)
       return octave_value ();
     }
 
-  // Matlab compatibility:  If (conjugate) transpose is not overloaded and
+  // Matlab compatibility: If (conjugate) transpose is not overloaded and
   // the number of dimensions is maximal two, just transpose the array of
   // that class.
 

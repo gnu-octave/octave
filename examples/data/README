@@ -8,7 +8,7 @@
   Chemical engineering plant models Eight stage column section, all
   rigorous from set CHEMWEST, from the Harwell-Boeing Collection.
 
-  west0479.mtx: original file obtained from from
+  west0479.mtx: original file obtained from
   https://math.nist.gov/MatrixMarket/data/Harwell-Boeing/chemwest/west0479.html
 
   west0479.mat: generated from west0479.mtx as follows:

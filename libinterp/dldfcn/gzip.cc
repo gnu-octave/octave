@@ -218,7 +218,7 @@ private:
 // zlib is also a library but gzip is not.  Very old versions of zlib do
 // not include functions to create useful gzip headers and trailers:
 //
-//      Note that you cannot specify special gzip header contents (e.g.
+//      Note that you cannot specify special gzip header contents (e.g.,
 //      a file name or modification date), nor will inflate tell you what
 //      was in the gzip header.  If you need to customize the header or
 //      see what's in it, you can use the raw deflate and inflate
@@ -300,7 +300,7 @@ private:
       //  is the original name of the file being compressed, with any
       //  directory components removed, and, if the file being
       //  compressed is on a file system with case insensitive names,
-      //  forced to lower case.
+      //  forced to lowercase.
       name = m_basename.p;
 
       // If we don't set it to Z_NULL, then it will set FCOMMENT (4th bit)

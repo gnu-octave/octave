@@ -103,7 +103,7 @@ endfunction
 %!assert (im2double ([3 25], "indexed"), [3 25])
 %!assert (im2double (single ([3 25]), "indexed"), [3 25])
 
-## Test for ND input
+## Test for N-D input
 %!function test_im2double_nd (cls, low, high)
 %!  in = rand (2, 4, 2, 3, 2);
 %!  in *= high - low;

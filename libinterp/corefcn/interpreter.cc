@@ -1039,7 +1039,7 @@ interpreter::shutdown ()
 
   OCTAVE_SAFE_CALL (clear_all, (true));
 
-  // FIXME:  May still need something like this to ensure that
+  // FIXME: May still need something like this to ensure that
   // destructors for class objects will run properly.  Should that be
   // done earlier?  Before or after atexit functions are executed?
   // What will happen if the destructor for an obect attempts to
@@ -1931,7 +1931,7 @@ interpreter::autoloaded_functions () const
   return m_evaluator.autoloaded_functions ();
 }
 
-// May be used to send an interrupt signal to the the interpreter from
+// May be used to send an interrupt signal to the interpreter from
 // another thread (for example, the GUI).
 
 void

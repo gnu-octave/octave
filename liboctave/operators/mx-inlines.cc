@@ -1109,8 +1109,8 @@ OP_RED_FCNN (mx_inline_prod, T, T)
 OP_RED_FCNN (mx_inline_dprod, T, PROMOTE_DOUBLE(T))
 OP_RED_FCNN (mx_inline_sumsq, T, T)
 OP_RED_FCNN (mx_inline_sumsq, std::complex<T>, T)
-OP_RED_FCNN (mx_inline_dsumsq, T,  PROMOTE_DOUBLE(T))
-OP_RED_FCNN (mx_inline_dsumsq, std::complex<T>,  PROMOTE_DOUBLE(T))
+OP_RED_FCNN (mx_inline_dsumsq, T, PROMOTE_DOUBLE(T))
+OP_RED_FCNN (mx_inline_dsumsq, std::complex<T>, PROMOTE_DOUBLE(T))
 OP_RED_FCNN (mx_inline_any, T, bool)
 OP_RED_FCNN (mx_inline_all, T, bool)
 
@@ -1145,8 +1145,8 @@ OP_RED_NAN_FCNN (mx_inline_prod, T, T)
 OP_RED_NAN_FCNN (mx_inline_dprod, T, PROMOTE_DOUBLE(T))
 OP_RED_NAN_FCNN (mx_inline_sumsq, T, T)
 OP_RED_NAN_FCNN (mx_inline_sumsq, std::complex<T>, T)
-OP_RED_NAN_FCNN (mx_inline_dsumsq, T,  PROMOTE_DOUBLE(T))
-OP_RED_NAN_FCNN (mx_inline_dsumsq, std::complex<T>,  PROMOTE_DOUBLE(T))
+OP_RED_NAN_FCNN (mx_inline_dsumsq, T, PROMOTE_DOUBLE(T))
+OP_RED_NAN_FCNN (mx_inline_dsumsq, std::complex<T>, PROMOTE_DOUBLE(T))
 
 #define OP_CUM_FCN(F, TSRC, TRES, OP)           \
   template <typename T>                         \

@@ -228,7 +228,7 @@ gh_manager::close_all_figures ()
 gh_manager::gh_manager (octave::interpreter& interp)
   : m_interpreter (interp), m_handle_map (), m_handle_free_list (),
     m_next_handle (-1.0 - (rand () + 1.0) / (RAND_MAX + 2.0)),
-    m_figure_list (), m_graphics_lock (),  m_event_queue (),
+    m_figure_list (), m_graphics_lock (), m_event_queue (),
     m_callback_objects (), m_event_processing (0)
 {
   m_handle_map[0] = graphics_object (new root_figure ());

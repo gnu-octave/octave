@@ -52,7 +52,7 @@ function [in_arg, sz, is_im, is_nd] ...
     ## User case is when a function returns an RGB image just slightly outside
     ## the range due to floating point rounding errors.
 
-    ## Allow for ND images, i.e., multiple images on the 4th dimension.
+    ## Allow for N-D images, i.e., multiple images on the 4th dimension.
     nd = ndims (in_arg);
     if (nd == 3)
       is_nd = false;

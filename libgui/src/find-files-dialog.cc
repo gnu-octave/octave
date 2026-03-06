@@ -71,7 +71,7 @@ find_files_dialog::find_files_dialog (QWidget *p)
   m_file_name_edit = new QComboBox;
   m_file_name_edit->setToolTip (tr ("Enter the filename search patterns.\n"
                                     "Several different patterns can be\n"
-                                    "separated by ';', e.g. '*.cc ; *.h'"));
+                                    "separated by ';', e.g., '*.cc ; *.h'"));
   m_file_name_edit->setEditable (true);
   m_file_name_edit->setMaxCount (m_mru_length);
 

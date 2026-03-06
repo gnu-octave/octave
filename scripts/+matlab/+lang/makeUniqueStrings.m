@@ -140,7 +140,7 @@ function [uniqstr, ismodified] = makeUniqueStrings (str, ex = {}, maxlength = In
           uniqstr{K(k)} = proposal;
           break;
         else
-          R--;  # i.e. increments N
+          R--;  # i.e., increments N
         endif
       endwhile
       ismodified(K(k)) |= true;

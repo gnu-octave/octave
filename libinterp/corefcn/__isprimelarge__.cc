@@ -94,7 +94,7 @@ millerrabin (uint64_t div, uint64_t d, uint64_t r, uint64_t n)
 }
 
 // This function uses the Miller-Rabin test to find out whether the input is
-// prime or composite. The input is required to be a scalar 64-bit integer.
+// prime or composite.  The input is required to be a scalar 64-bit integer.
 bool
 isprimescalar (uint64_t n)
 {
@@ -103,7 +103,7 @@ isprimescalar (uint64_t n)
   if (! (n & 1))
     return false;
 
-  // n is now odd. Rewrite n as d * 2^r + 1, where d is odd.
+  // n is now odd.  Rewrite n as d * 2^r + 1, where d is odd.
   uint64_t d = n-1;
   uint64_t r = 0;
   while (! (d & 1))
@@ -159,10 +159,10 @@ You should call isprime(N) instead of directly calling this function.
     print_usage ();
 
   // This function is intended for internal use by isprime.m,
-  // so the following error handling should not be necessary. But it is
+  // so the following error handling should not be necessary.  But it is
   // probably good practice for any curious users calling it directly.
   uint64NDArray vec = args(0).xuint64_array_value
-                      ("__isprimelarge__: unable to convert input. Call isprime() instead.");
+                      ("__isprimelarge__: unable to convert input.  Call isprime() instead.");
 
   boolNDArray retval (vec.dims(), false);
 
@@ -176,7 +176,7 @@ You should call isprime(N) instead of directly calling this function.
   //   "if (vec(i) <= 37) then raise an error else call isprimescalar (vec(i))"
   // slows this function down by over 20% for some inputs,
   // so it is better to leave all the input validation in isprime.m
-  // and not add it here. The function DOCSTRING now explicitly says:
+  // and not add it here.  The function DOCSTRING now explicitly says:
   // "You should call isprime(N) instead of directly calling this function."
 
   return ovl (retval);
@@ -260,7 +260,7 @@ of directly calling this function.
     print_usage ();
 
   octave_uint64 inp = args(0).xuint64_scalar_value
-                      ("__pollardrho__: unable to convert input. Call factor() instead.");
+                      ("__pollardrho__: unable to convert input.  Call factor() instead.");
 
   uint64_t n = inp;
   octave_uint64 retval = pollardrho (n);

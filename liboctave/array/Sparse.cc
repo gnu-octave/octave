@@ -2522,7 +2522,7 @@ Sparse<T, Alloc>::diag (octave_idx_type k) const
 
       if (nnr > 0 && nnc > 0)
         {
-          octave_idx_type ndiag = std::min (nnr,  nnc);
+          octave_idx_type ndiag = std::min (nnr, nnc);
 
           // Count the number of nonzero elements
           octave_idx_type nel = 0;

@@ -3430,7 +3430,7 @@ public:
 
   graphics_xform ()
     : m_xform (xform_eye ()), m_xform_inv (xform_eye ()),
-      m_sx ("linear"), m_sy ("linear"), m_sz ("linear"),  m_zlim (1, 2, 0.0)
+      m_sx ("linear"), m_sy ("linear"), m_sz ("linear"), m_zlim (1, 2, 0.0)
   {
     m_zlim(1) = 1.0;
   }
@@ -3834,9 +3834,9 @@ public:
       any_property interactions r , Matrix ()
       double_property labelfontsizemultiplier u , 1.1
       radio_property layer u , "{bottom}|top"
-      // FIXME: Should be a "layoutoptions" object. Make it read-only for now.
+      // FIXME: Should be a "layoutoptions" object.  Make it read-only for now.
       handle_property layout r , graphics_handle ()
-      // FIXME: Should be a "legend" object. Make it read-only for now.
+      // FIXME: Should be a "legend" object.  Make it read-only for now.
       handle_property legend r , graphics_handle ()
       // FIXME: should be kind of string array.
       any_property linestyleorder S , "-"
@@ -3865,11 +3865,11 @@ public:
       handle_property title SOf , make_graphics_handle ("text", m___myhandle__, false, false, false)
       double_property titlefontsizemultiplier u , 1.1
       radio_property titlefontweight u , "{bold}|normal"
-      // FIXME: Should be a "axestoolbar" object. Make it read-only for now.
+      // FIXME: Should be a "axestoolbar" object.  Make it read-only for now.
       handle_property toolbar r , graphics_handle ()
       radio_property units SU , "{normalized}|inches|centimeters|points|pixels|characters"
       array_property view u , default_axes_view ()
-      // FIXME: Should be a "ruler" object. Make it read-only for now.
+      // FIXME: Should be a "ruler" object.  Make it read-only for now.
       handle_property xaxis r , graphics_handle ()
       radio_property xaxislocation u , "{bottom}|top|origin"
       color_property xcolor mu , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
@@ -3891,7 +3891,7 @@ public:
       radio_property xticklabelmode u , "{auto}|manual"
       double_property xticklabelrotation , 0.0
       radio_property xtickmode u , "{auto}|manual"
-      // FIXME: Should be a "ruler" object. Make it read-only for now.
+      // FIXME: Should be a "ruler" object.  Make it read-only for now.
       handle_property yaxis r , graphics_handle ()
       radio_property yaxislocation u , "{left}|right|origin"
       color_property ycolor mu , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
@@ -3912,7 +3912,7 @@ public:
       radio_property yticklabelmode u , "{auto}|manual"
       double_property yticklabelrotation , 0.0
       radio_property ytickmode u , "{auto}|manual"
-      // FIXME: Should be a "ruler" object. Make it read-only for now.
+      // FIXME: Should be a "ruler" object.  Make it read-only for now.
       handle_property zaxis r , graphics_handle ()
       color_property zcolor mu , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
       radio_property zcolormode , "{auto}|manual"

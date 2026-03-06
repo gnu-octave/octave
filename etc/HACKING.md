@@ -477,7 +477,7 @@ Creating first release candidate for new MAJOR version
 ------------------------------------------------------
 
 This requires updating the VERSION for Octave; the shared library `SOVERSION`
-for each each of `liboctave`, `liboctinterp`, `liboctgui`, and `libmex`; and
+for each of `liboctave`, `liboctinterp`, `liboctgui`, and `libmex`; and
 the oct-file version `OCTAVE_API_VERSION`.
 
 1. Bump version numbers and release date in `configure.ac` for release

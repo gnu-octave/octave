@@ -558,7 +558,7 @@
                          (m2.ridx (jb) < m1.ridx (ja)))                 \
                   {                                                     \
                     r.ridx (jx) = m2.ridx (jb);                         \
-                    r.data (jx) = 0. OP  m2.data (jb);                  \
+                    r.data (jx) = 0. OP m2.data (jb);                   \
                     jx++;                                               \
                     jb++;                                               \
                     jb_lt_max = jb < jb_max;                            \

@@ -442,7 +442,7 @@ plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
               else if ((! ja_lt_max) || (b.ridx (jb) < a.ridx (ja)))
                 {
                   r.ridx (jx) = b.ridx (jb);
-                  r.data (jx) = op (0.,  b.data (jb));
+                  r.data (jx) = op (0., b.data (jb));
                   jx++;
                   jb++;
                   jb_lt_max = jb < jb_max;
@@ -513,7 +513,7 @@ plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
               else if ((! ja_lt_max) || (b.ridx (jb) < a.ridx (ja)))
                 {
                   r.ridx (jx) = b.ridx (jb);
-                  r.data (jx) = op (0.,  b.data (jb));
+                  r.data (jx) = op (0., b.data (jb));
                   jx++;
                   jb++;
                   jb_lt_max = jb < jb_max;

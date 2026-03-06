@@ -116,8 +116,8 @@ function tf = isprime (x)
 
   THRESHOLD = 18e9;
   ## FIXME: THRESHOLD is the input value at which Miller-Rabin
-  ## becomes more efficient than direct division. For smaller numbers,
-  ## use direct division. For larger numbers, use Miller-Rabin.
+  ## becomes more efficient than direct division.  For smaller numbers,
+  ## use direct division.  For larger numbers, use Miller-Rabin.
   ##
   ## Last updated in Jan 2026, using this test code:
   ##   n = THRESHOLD - (1:1e7); tic; isprime(n); toc
@@ -127,7 +127,7 @@ function tf = isprime (x)
   ##
   ## 1. Test and tune THRESHOLD periodically so that the two times are equal.
   ##    Miller-Rabin is only CPU-limited, while factorization by division is
-  ##    very memory-intensive. CPU speed and RAM speed scale differently over
+  ##    very memory-intensive.  CPU speed and RAM speed scale differently over
   ##    time, so test and tune THRESHOLD periodically.
   ##
   ## 2. If you make improvements elsewhere in the code that favor one over

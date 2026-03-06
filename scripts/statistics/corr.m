@@ -100,7 +100,7 @@ function r = corr (x, y = [])
     if ((! rowy && ndims (x) > 2) || (! rowx && ndims (y) > 2))
       ## For compatibility 3-D is permitted only if other input is row vector
       ## which results in NaNs.
-        error (["corr: X and Y must be two dimensional unless the other ", ...
+        error (["corr: X and Y must be two-dimensional unless the other ", ...
                 "input is a scalar or row vector"]);
     endif
 
@@ -216,5 +216,5 @@ endfunction
 %!error <X and Y must have the same number of rows> corr ([1,2,3], [1,2,3]')
 %!error <X and Y must have the same number of rows> corr ([1,2,3]', [1,2,3])
 %!error <X and Y must have the same number of rows> corr (ones (2,2), ones (1,2,2))
-%!error <X and Y must be two dimensional unless> corr (ones (2,2), ones (2,2,2))
+%!error <X and Y must be two-dimensional unless> corr (ones (2,2), ones (2,2,2))
 %!error corr (ones (2,2,2)) # Single input validation handled by corr

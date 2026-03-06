@@ -435,7 +435,7 @@ function [x, exitflag, output] = nmsmax (fcn, x, options)
     x(:) = vr;
     fr = dirn * fcn (x);
     nf += 1;
-    vk = vr;  fk = fr; how = "reflect";
+    vk = vr;  fk = fr;  how = "reflect";
     if (fr > f(n))
       if (fr > f(1))
         ve = gamma*vr + (1-gamma)*vbar;

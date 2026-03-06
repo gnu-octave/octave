@@ -340,7 +340,7 @@ public:
 
 private:
 
-  // The application instance;  There should be only one.
+  // The application instance; There should be only one.
   static application *s_instance;
 
   void init ();

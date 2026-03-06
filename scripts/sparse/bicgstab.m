@@ -210,7 +210,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
          bicgstab (A, b, tol = [], maxit = [], M1 = [], M2 = [], ...
                    x0 = [], varargin)
 
-  ## Check consistency and  type of A, M1, M2
+  ## Check consistency and type of A, M1, M2
   [Afcn, M1fcn, M2fcn] =  __alltohandles__ (A, b, M1, M2, "bicgstab");
 
   ## Check if input tol are empty (set them to default if necessary)
@@ -237,7 +237,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   resvec = zeros (d_maxit,1);
   x = x_min = x_pr = x0;
   iter = iter_min = 0;
-  ## default setting of flag is 1 (i.e. max number of iterations reached)
+  ## default setting of flag is 1 (i.e., max number of iterations reached)
   flag = 1;
 
   res = b - feval (Afcn, x, varargin{:});

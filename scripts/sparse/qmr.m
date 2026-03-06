@@ -250,14 +250,14 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, rtol, maxit, M1, M2, x0)
       if (nargout < 2)
         printf ("qmr stopped at iteration %i ", iter);
         printf ("without converging to the desired tolerance %e\n", rtol);
-        printf ("because the maximum number of iterations was reached. ");
+        printf ("because the maximum number of iterations was reached.\n");
         printf ("The iterate returned (number %i) has ", maxit);
         printf ("relative residual %e\n", res1);
       endif
     elseif (flag == 3)
       if (nargout < 2)
         printf ("qmr stopped at iteration %i ", iter);
-        printf (" without converging to the desired tolerance %e\n", rtol);
+        printf ("without converging to the desired tolerance %e\n", rtol);
         printf ("because the method stagnated.\n");
         printf ("The iterate returned (number %i) ", iter);
         printf ("has relative residual %e\n", res1);

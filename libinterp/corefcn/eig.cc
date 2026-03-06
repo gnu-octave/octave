@@ -570,17 +570,17 @@ The eigenvalues returned by @code{eig} are not ordered.
 %!test qz_chol_with_shapes ([1, 2; 3, 8], [8, 3; 4, 3]);
 %!test qz_chol_with_shapes ([1, 2; -1, 1], [3, 3; 1, 2]);
 
-%!test qz_chol_with_shapes (single ([1, 1+i; 1-i, 1]),  single ([2, 0; 0, 2]));
-%!test qz_chol_with_shapes (single ([1, 2; 3, 8]),  single ([8, 3; 4, 3]));
-%!test qz_chol_with_shapes (single ([1, 2; -1, 1]),  single ([3, 3; 1, 2]));
+%!test qz_chol_with_shapes (single ([1, 1+i; 1-i, 1]), single ([2, 0; 0, 2]));
+%!test qz_chol_with_shapes (single ([1, 2; 3, 8]), single ([8, 3; 4, 3]));
+%!test qz_chol_with_shapes (single ([1, 2; -1, 1]), single ([3, 3; 1, 2]));
 
 %!test shapes_GEP ([1, 1+i; 1-i, 1], [2, 0; 0, 2]);
 %!test shapes_GEP ([1, 2; 3, 8], [8, 3; 4, 3]);
 %!test shapes_GEP ([1, 2; -1, 1], [3, 3; 1, 2]);
 
-%!test shapes_GEP (single ([1, 1+i; 1-i, 1]),  single ([2, 0; 0, 2]));
-%!test shapes_GEP (single ([1, 2; 3, 8]),  single ([8, 3; 4, 3]));
-%!test shapes_GEP (single ([1, 2; -1, 1]),  single ([3, 3; 1, 2]));
+%!test shapes_GEP (single ([1, 1+i; 1-i, 1]), single ([2, 0; 0, 2]));
+%!test shapes_GEP (single ([1, 2; 3, 8]), single ([8, 3; 4, 3]));
+%!test shapes_GEP (single ([1, 2; -1, 1]), single ([3, 3; 1, 2]));
 
 ## Check if correct default method is used for symmetric input
 %!function chol_qz_accuracy (A, B, is_qz_accurate, is_chol_accurate)

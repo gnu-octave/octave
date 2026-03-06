@@ -117,16 +117,16 @@ public:
   //! NDArray x (dim_vector (7, 5, 10));
   //! @endcode
   //!
-  //! This will construct a 3 dimensional NDArray of lengths 7, 5, and 10,
+  //! This will construct a 3-dimensional NDArray of lengths 7, 5, and 10,
   //! on the first, second, and third dimension (rows, columns, and pages)
   //! respectively.
   //!
-  //! Note that that there is no constructor that accepts only one
+  //! Note that there is no constructor that accepts only one
   //! dimension length to avoid confusion.  The source for such confusion
   //! is that constructor could mean:
   //!   - a column vector, i.e., assume @f$[N, 1]@f$;
   //!   - a square matrix, i.e., as is common in Octave interpreter;
-  //!   - support for a 1 dimensional Array (does not exist);
+  //!   - support for a 1-dimensional Array (does not exist);
   //!
   //! Using r, c, and lengths... as arguments, allow us to check at compile
   //! time that there's at least 2 dimensions specified, while maintaining
@@ -149,7 +149,7 @@ public:
 
   octave_idx_type xelem (int i) const { return m_dims[i]; }
 
-  // Safe access to to elements
+  // Safe access to elements
 
   octave_idx_type& elem (int i)
   {

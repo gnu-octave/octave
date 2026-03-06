@@ -208,7 +208,7 @@ terminal_dock_widget::init_control_d_shortcut_behavior ()
 
   for (const auto& settings_key : shortcut_settings_keys)
     {
-      // Check whether Ctrl+D is used from main window, i.e. is a
+      // Check whether Ctrl+D is used from main window, i.e., is a
       // global shortcut.
 
       QString section = get_shortcut_section (settings_key);

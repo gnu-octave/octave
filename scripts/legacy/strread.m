@@ -589,7 +589,7 @@ function varargout = strread (str, format = "%f", varargin)
         else
           ## A simple format conv. specifier.  Either (1) uses rest of word, or
           ## (2) is squeezed between current iwrdp and next literal, or (3) uses
-          ## next word. (3) is already taken care of.  So just check (1) & (2)
+          ## next word.  (3) is already taken care of.  So just check (1) & (2)
           if (ii < numel (fmt_words) && idf(ii+1))
             ## Next fmt_word is a literal...
             if (! index (words{iwrd}(iwrdp+1:end), fmt_words{ii+1}))
@@ -675,7 +675,7 @@ function varargout = strread (str, format = "%f", varargin)
                      words(icol,jptr), "UniformOutput", false);
                 if (isempty ([words(icol+1, :){:}]))
                   ## Apparently split wasn't needed as turns out to cover
-                  ## entire column. So delete column again
+                  ## entire column.  So delete column again
                   words(icol+1, :) = [];
                 else
                   words(icol, jptr) = strtrunc (words(icol, jptr), wdth);

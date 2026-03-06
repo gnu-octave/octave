@@ -44,7 +44,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 workspace_model::workspace_model (QObject *p)
   : QAbstractTableModel (p)
 {
-  // The header names. Use tr () again when accessing them since
+  // The header names.  Use tr () again when accessing them since
   // the translator si not yet initialized when this ctor is called
   m_columnNames.append (tr ("Name"));
   m_columnNames.append (tr ("Class"));

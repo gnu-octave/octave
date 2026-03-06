@@ -29,9 +29,9 @@
 %%  Note: This script and all classes are also intended to run
 %%        in MATLAB to test compatibility.  Don't break that!
 %%
-%%  To Do:  This script tests to ensure that things done correctly work
-%%          correctly.  It should also check that things done incorrectly
-%%          error properly.
+%%  FIXME: This script tests to ensure that things done correctly work
+%%         correctly.  It should also check that things done incorrectly
+%%         error properly.
 %%
 %%  The classes used for the tests reside in the test/classdef with others
 %%  in the test directory.
@@ -380,7 +380,7 @@
 
 ## error message when concatenating incompatible classdefs, failed constructor
 ## FIXME: May change this error in the future to indicate that the type
-## conversion was tried explicitly during a concatenation. Right now, this
+## conversion was tried explicitly during a concatenation.  Right now, this
 ## error is thrown in the function "attempt_type_conversion" in data.cc, which
 ## may not necessarily be called by only "cat".
 %!error <foo_value_class constructor failed for class_pair_elem argument>
@@ -811,7 +811,7 @@
 %! assert (size (result), [1, 4]);  # unchanged
 %! result(1).data = 5;
 %! assert (obj1.data, []);  # stress test value semantics
-%! ## Make it into a 3D array
+%! ## Make it into a 3-D array
 %! arr = cat (3, arr, arr);
 %! result = permute (arr, [1, 2, 3]);
 %! assert (size (result), [2, 1, 4]);  # [1, 4, 2] -> [2, 1, 4]
@@ -827,7 +827,7 @@
 %! assert (size (result), [1, 4])  # unchanged
 %! result(1).data = 5;
 %! assert (obj1.data, 5);  # stress test handle semantics
-%! ## Make it into a 3D array
+%! ## Make it into a 3-D array
 %! arr = cat (3, arr, arr);
 %! result = permute (arr, [1, 2, 3]);
 %! assert (size (result), [2, 1, 4]);  # [1, 4, 2] -> [2, 1, 4]
@@ -1395,7 +1395,7 @@
 ## test resize method, scalar input with constructor that requires arguments
 ##
 ## Rationale: resizing an input array to be larger requires the classdef to
-## implement a default (no-argument) constructor. We want to ensure that the
+## implement a default (no-argument) constructor.  We want to ensure that the
 ## default constructor is not required when the output array is smaller or
 ## equal in size to the input array.
 ##
@@ -1598,7 +1598,7 @@
 %! assert (obj2.CaseSensitive, true);
 
 %!test
-%! ## Resize to 3D
+%! ## Resize to 3-D
 %! obj = inputParser ();
 %! arr = resize (obj, [2, 2, 2]);
 %! assert (size (arr), [2, 2, 2]);
@@ -1606,7 +1606,7 @@
 
 ## test resize method, scalar input and array 1x3 output, no default constructor
 ## FIXME: provide a proper error message when the default construction of a
-## classdef object fails. Right now, the error message is something like
+## classdef object fails.  Right now, the error message is something like
 ## <'value' undefined near line 7, column 20>, but that is the actual failure
 ## point in the .m file code and not the general gist of what went wrong.
 %!error
@@ -1615,7 +1615,7 @@
 
 ## test resize method, array 1x2 input and array 1x3 output, no default constructor
 %!error
-%! obj = [ class_pair_elem(1);  class_pair_elem(2) ];
+%! obj = [ class_pair_elem(1); class_pair_elem(2) ];
 %! result = resize (obj, 1, 3);
 
 ## arr(i) = [] deletion syntax tests (bug #55983).

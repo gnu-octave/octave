@@ -397,7 +397,7 @@ endfunction
 %! opts.droptol = 1e-1;
 %! opts.michol = "off";
 %! L = ichol (A2, opts);
-%! assert (norm (A2 - L*L', "fro") / norm (A2, "fro"),  0.0893, 1e-4);
+%! assert (norm (A2 - L*L', "fro") / norm (A2, "fro"), 0.0893, 1e-4);
 %! opts.michol = "on";
 %! L = ichol (A2, opts);
 %! assert (norm (A2 - L*L', "fro") / norm (A2, "fro"), 0.2377, 1e-4);

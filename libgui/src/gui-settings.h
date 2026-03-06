@@ -112,7 +112,7 @@ public:
 
   /*!
     Reading a color from the given QVariant @p def taking different
-    color modes into account. The default value for a second color mode
+    color modes into account.  The default value for a second color mode
     @p mode=1 is deterimined from the standard default value @p mode=0
     by inverting the lightness
       \f{eqnarray*}{
@@ -132,7 +132,7 @@ public:
 
   /*!
     Reading a color from the gui_settings taking possible color modes
-    into account. The default value for a second color mode @p mode=1 is
+    into account.  The default value for a second color mode @p mode=1 is
     deterimined from the standard default value @p mode=0 by inverting
     the lightness (see get_color_value ())
 
@@ -146,7 +146,7 @@ public:
 
   /*!
     Writing a color to the gui_settings taking possible color modes
-    into account. When @p mode is not zero (standard mode), the
+    into account.  When @p mode is not zero (standard mode), the
     extension related to the mode is appended to the settings key string
 
     @param pref gui preference where the color should be written

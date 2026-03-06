@@ -48,7 +48,7 @@ template <typename T> MDiagArray2<T> operator - (const MDiagArray2<T>&,
 template <typename T> MDiagArray2<T> product (const MDiagArray2<T>&,
                                               const MDiagArray2<T>&);
 
-//! Template for two dimensional diagonal array with math operators.
+//! Template for two-dimensional diagonal array with math operators.
 template <typename T>
 class OCTAVE_API MDiagArray2 : public DiagArray2<T>
 {

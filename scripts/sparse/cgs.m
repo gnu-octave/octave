@@ -217,7 +217,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
 
   resvec = zeros (maxit, 1); # Preallocation of resvec
 
-  flag = 1; # Default flag is 1, i.e. maximum number of iterations reached
+  flag = 1; # Default flag is 1, i.e., maximum number of iterations reached
   iter = iter_min = 0;
   x = x_min = x_pr = x0;
   ## x approximation at the actual iteration

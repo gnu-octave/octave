@@ -130,7 +130,7 @@ command_widget::command_widget (QWidget *p)
 
   // The self_listener object executes in a separate thread.  It
   // captures output and emits a Qt signal to provide access to the
-  // captured output. See TODO comment in self-listener.cc
+  // captured output.  See TODO comment in self-listener.cc
   m_listener = new self_listener (std::vector<int> {stdout_fileno, stderr_fileno},
                                   QString (tr ("Command Widget")));
 

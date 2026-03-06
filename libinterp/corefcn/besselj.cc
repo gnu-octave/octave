@@ -1064,7 +1064,7 @@ Tests are based on the properties and tables in A&S:
  1972.
 
 For regular Bessel functions, there are 3 tests.  These compare octave
-results against Tables 9.1, 9.2, and 9.4 in A&S. Tables 9.1 and 9.2
+results against Tables 9.1, 9.2, and 9.4 in A&S.  Tables 9.1 and 9.2
 are good to only a few decimal places, so any failures should be
 considered a broken implementation.  Table 9.4 is an extended table
 for larger orders and arguments.  There are some differences between

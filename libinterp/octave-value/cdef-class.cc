@@ -124,7 +124,7 @@ cdef_class::cdef_class_rep::find_method (const std::string& nm, bool local)
                 cls1 = cls;
               else if (nfnd == 2)
                 // FIXME: This error is emitted when a method with conflicting
-                //        definitions is attempted to be used. Ideally, this
+                //        definitions is attempted to be used.  Ideally, this
                 //        error would be emitted on construction of the object.
                 error ("method %s: conflicting definitions in classes '%s' and '%s'",
                        nm.c_str (), cls1.get_name ().c_str (),
@@ -407,7 +407,7 @@ cdef_class::cdef_class_rep::find_property (const std::string& nm)
             cls1 = cls;
           else if (nfnd == 2)
             // FIXME: This error is emitted when a property with conflicting
-            //        definitions is attempted to be used. Ideally, this
+            //        definitions is attempted to be used.  Ideally, this
             //        error would be emitted on construction of the object.
             error ("property %s: conflicting definitions in classes '%s' and '%s'",
                    nm.c_str (), cls1.get_name ().c_str (),

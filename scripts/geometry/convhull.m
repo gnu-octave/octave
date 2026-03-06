@@ -148,7 +148,7 @@ function [H, V] = convhull (varargin)
   endif
 
   if (isempty (z))
-    ## Order 2-D convex hull in a counter-clockwise manner.
+    ## Order 2-D convex hull in a counterclockwise manner.
     n = rows (Htmp);
     Htmp = Htmp.'(:);
     H = zeros (n + 1, 1);

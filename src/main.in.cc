@@ -402,7 +402,7 @@ main (int argc, char **argv)
       return 1;
 #endif
 
-      // Finally, add --gui to the command line options. We can not
+      // Finally, add --gui to the command line options.  We can not
       // just append it since options after a given file are ignored.
       for (int j = k; j > 1; j--)
         new_argv[j] = new_argv[j-1];

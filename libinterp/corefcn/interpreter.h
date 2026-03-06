@@ -325,7 +325,7 @@ public:
 
   // Any Octave code that needs to change the current directory should
   // call this function instead of calling the system chdir function
-  // directly so that the  load-path and GUI may be notified of the
+  // directly so that the load-path and GUI may be notified of the
   // change.
 
   int chdir (const std::string& dir);
@@ -573,7 +573,7 @@ private:
 
   //--------
 
-  // The interpreter instance;  Currently it is only possible to
+  // The interpreter instance; Currently it is only possible to
   // have one, so OCTAVE_THREAD_LOCAL will normally be defined to be
   // empty.  Eventually we would like to allow multiple interpreters
   // to be active at once, but they will still be limited to one per

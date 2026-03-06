@@ -422,7 +422,7 @@ IDA::set_up (const ColumnVector& y)
     {
 #  if defined (HAVE_SUNDIALS_SUNLINSOL_KLU)
 #    if defined (HAVE_SUNSPARSEMATRIX_REALLOCATE)
-      // Initially allocate memory for 0 entries. We will reallocate when we
+      // Initially allocate memory for 0 entries.  We will reallocate when we
       // get the Jacobian matrix from the user and know the actual number of
       // entries.
       m_sunJacMatrix = SUNSparseMatrix (m_num, m_num, 0, CSC_MAT

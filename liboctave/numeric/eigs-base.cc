@@ -305,7 +305,7 @@ vector_product (const Matrix& m, const double *x, double *y)
   F77_INT nc = octave::to_f77_int (m.cols ());
 
   F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
-                           nr, nc, 1.0,  m.data (), nr,
+                           nr, nc, 1.0, m.data (), nr,
                            x, 1, 0.0, y, 1
                            F77_CHAR_ARG_LEN (1)));
 
@@ -2035,7 +2035,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
   F77_INT k0 = k;  // original number of eigenvalues required
   F77_FUNC (dneupd, DNEUPD)
   (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, dr, di, z, n, sigmar,
-   sigmai, workev,  F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+   sigmai, workev, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
    F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2), k, tol, presid, p, v, n, iparam,
    ipntr, workd, workl, lwork, info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1)
    F77_CHAR_ARG_LEN(2));
@@ -2415,7 +2415,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   F77_INT k0 = k;  // original number of eigenvalues required
   F77_FUNC (dneupd, DNEUPD)
   (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, dr, di, z, n, sigmar,
-   sigmai, workev,  F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+   sigmai, workev, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
    F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2), k, tol, presid, p, v, n, iparam,
    ipntr, workd, workl, lwork, info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1)
    F77_CHAR_ARG_LEN(2));
@@ -2863,7 +2863,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
   F77_INT k0 = k;  // original number of eigenvalues required
   F77_FUNC (dneupd, DNEUPD)
   (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, dr, di, z, n, sigmar,
-   sigmai, workev,  F77_CONST_CHAR_ARG2 (&bmat, 1), n,
+   sigmai, workev, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
    F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2), k, tol, presid, p, v, n, iparam,
    ipntr, workd, workl, lwork, info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1)
    F77_CHAR_ARG_LEN(2));

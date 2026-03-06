@@ -1278,7 +1278,7 @@ the x-axis grid color will be defined by the \
         s.category = "Axes Box Appearance";
 
       case "xdir"
-        s.doc = "Direction of the x axis: @qcode{\"normal\"} is left to \
+        s.doc = "Direction of the x-axis: @qcode{\"normal\"} is left to \
 right in default 2-D and 3-D views.";
         s.category = "Axes Box Appearance";
 

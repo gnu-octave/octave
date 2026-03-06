@@ -1302,7 +1302,7 @@ public:
   bool no_progress () { return m_progress_marker == m_idx; }
 
   // Number of characters remaining until end of stream if it is already
-  // buffered. int_max otherwise.
+  // buffered.  Otherwise, return int_max.
 
   std::ptrdiff_t remaining ()
   {
@@ -1886,7 +1886,7 @@ private:
   std::string m_buf;
 
   // Three cases for delim_table and delim_list
-  // 1. delim_table empty, delim_list empty:  whitespace delimiters
+  // 1. delim_table empty, delim_list empty: whitespace delimiters
   // 2. delim_table = look-up table of delim chars, delim_list empty.
   // 3. delim_table non-empty, delim_list = Cell array of delim strings
 
@@ -2263,8 +2263,8 @@ textscan_format_list::process_conversion (const std::string& s,
 //
 // Matlab does not expand expressions like A-Z, but they are useful, and
 // so we parse them "carefully".  We treat '-' as a usual character
-// unless both start and end characters are from the same class (upper
-// case, lower case, numeric), or this is not the first '-' in the
+// unless both start and end characters are from the same class (uppercase,
+// lowercase, numeric), or this is not the first '-' in the
 // pattern.
 //
 // Keep both a running list of characters and a mask of which chars have
@@ -2854,7 +2854,7 @@ textscan::read_double (delimited_stream& is,
       width_left++;
     }
 
-  // look for exponent part in, e.g.,  6.023E+23
+  // look for exponent part in, e.g., 6.023E+23
   bool used_exp = false;
   if (valid && width_left > 1 && m_exp_chars.find (ch) != std::string::npos)
     {
@@ -4363,8 +4363,8 @@ octave_scan_1 (std::istream& is, const scanf_format_elt& fmt,
       if (value != T ())
         {
           // If conversion produces an integer that overflows, failbit is set
-          // but value is non-zero.  We want to treat this case as success,
-          // so clear  failbit from the stream state to keep going.
+          // but value is nonzero.  We want to treat this case as success,
+          // so clear failbit from the stream state to keep going.
           // FIXME: Maybe set error state on octave stream?  Matlab does
           // *not* indicate an error message on overflow.
           is.clear (status & ~std::ios::failbit);

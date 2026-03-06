@@ -373,12 +373,12 @@ Compute the inverse hyperbolic sine for each element of @var{x}.
 %!test
 %! v = [0, pi/2*i, 0, -pi/2*i];
 %! x = [0, i, 0, -i];
-%! assert (asinh (x), v,  sqrt (eps));
+%! assert (asinh (x), v, sqrt (eps));
 
 %!test
 %! v = single ([0, pi/2*i, 0, -pi/2*i]);
 %! x = single ([0, i, 0, -i]);
-%! assert (asinh (x), v,  sqrt (eps ("single")));
+%! assert (asinh (x), v, sqrt (eps ("single")));
 
 ## Test large magnitude arguments (bug #45507)
 ## Test fails with older versions of libm, solution is to upgrade.
@@ -2146,12 +2146,12 @@ Compute the tangent for each element of @var{x} in radians.
 %!test
 %! x = [0, pi/6, pi/4, pi/3, 2*pi/3, 3*pi/4, 5*pi/6, pi];
 %! v = [0, rt3/3, 1, rt3, -rt3, -1, -rt3/3, 0];
-%! assert (tan (x), v,  sqrt (eps));
+%! assert (tan (x), v, sqrt (eps));
 
 %!test
 %! x = single ([0, pi/6, pi/4, pi/3, 2*pi/3, 3*pi/4, 5*pi/6, pi]);
 %! v = single ([0, rt3/3, 1, rt3, -rt3, -1, -rt3/3, 0]);
-%! assert (tan (x), v,  sqrt (eps ("single")));
+%! assert (tan (x), v, sqrt (eps ("single")));
 
 %!error tan ()
 %!error tan (1, 2)

@@ -24,10 +24,10 @@ contributors in, which helps Octave development scale.
 If you want to take ownership of some activity below, or create a new activity,
 please edit the list as necessary, add your name, and post about it on Discourse.
 If you can, please split up a large activity into smaller pieces that can then
-be specifically written by new contributors, GSoC interns, etc. The aim is to
+be specifically written by new contributors, GSoC interns, etc.  The aim is to
 allow anyone to jump in to start contributing to a topic.
 
-This roadmap process starts from Octave 10. As has been the practice for many
+This roadmap process starts from Octave 10.  As has been the practice for many
 years, a major version of Octave is released each year, and no single feature
 will be "required" for any given version to be released, but it is good to have
 target versions for this list of features so that certain long-pending activities
@@ -68,7 +68,7 @@ get more priority.
   - Target: Octave 10
 
 - New command window widget.  (LEAD?)
-  - In Octave 9, this widget is available but experimental. It can be invoked
+  - In Octave 9, this widget is available but experimental.  It can be invoked
     with the runtime argument `--experimental-terminal-widget`. To make it
     production quality (i.e., not experimental), the following features and
     more need to be added:
@@ -87,7 +87,7 @@ get more priority.
     traditional approach (pre-2016) of directly manipulating adjacency matrices
     and edge lists.
   - Octave needs to implement / import many classical graph functions
-    (e.g. all-pairs shortest paths, transitive closure, betweenness centrality, etc).
+    (e.g., all-pairs shortest paths, transitive closure, betweenness centrality, etc).
     These are not difficult to write, but have mostly been written by end users
     for their own work, so the first effort is to converge on a usable function API.
   - Possible dependency on HDF5 if graph classes are written as classdefs,
@@ -95,7 +95,7 @@ get more priority.
     development can start and proceed.
   - Target: Octave 11.
 
-- Argument blocks implementation. (LEAD?)
+- Argument blocks implementation.  (LEAD?)
   - Some work has already been done, but needs to be completed.
   - Target: Octave 11.
 
@@ -106,13 +106,13 @@ get more priority.
 - Replace GLPK with more performant solver for LP / MILP. (ARUN)
   - Candidate: HiGHS.
   - More generally, provide a usable API for optimization routines so that
-    users can drop in their own favorite solver. The idea is that the user
+    users can drop in their own favorite solver.  The idea is that the user
     should be able to switch backend solvers with just a simple change
     like changing this:
     `linprog (... , "solver", "glpk")`
     to this:
     `linprog (... , "solver", "highs")`
-    without changing any other user-written code. Can this sort of thing
+    without changing any other user-written code.  Can this sort of thing
     be done properly so that new solvers are easy to add to Octave by their
     respective authors?
   - Target: Octave 11

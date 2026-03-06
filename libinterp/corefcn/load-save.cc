@@ -1629,7 +1629,7 @@ load_save_system::save (const octave_value_list& args, int nargout)
 
       // If we are all the way here without Octave crashing or running
       // out of memory etc, then we can say that writing to the
-      // temporary file was successful. So now we try to rename it to
+      // temporary file was successful.  So now we try to rename it to
       // the actual file that was specified, unless we were in append mode
       // in which case we take no action.
 

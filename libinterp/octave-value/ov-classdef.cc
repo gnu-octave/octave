@@ -492,7 +492,7 @@ octave_classdef::subsref (const std::string& type,
           if (nargout <= 0)
             {
               // If the last index type is not '()', the final value of nargout is
-              // unknown. Try to get its value
+              // unknown.  Try to get its value
               if (type.back () != '(')
                 {
                   // See if method numArgumentsFromSubscript is defined
@@ -516,7 +516,7 @@ octave_classdef::subsref (const std::string& type,
                     }
                   else
                     {
-                      // Method numArgumentsFromSubscript undefined. Attempt to set up
+                      // Method numArgumentsFromSubscript undefined.  Attempt to set up
                       // a proper value for nargout at least in the simple case where the
                       // cs-list-type expression - i.e., {} or ().x, is the leading one.
 
@@ -702,8 +702,8 @@ octave_classdef::xnumel (const octave_value_list& idx)
   // out the number of elements in the cs-list corresponding to the subsref
   // output or the subsasgn lvalue.
   // This method currently calls the classdef's numel method to do its task, but
-  // this is incompatible with Matlab. Matlab calls numArgumentsFromSubscript
-  // for that purpose. We cannot call numArgumentsFromSubscript here because that
+  // this is incompatible with Matlab.  Matlab calls numArgumentsFromSubscript
+  // for that purpose.  We cannot call numArgumentsFromSubscript here because that
   // method needs all the information about the indices of the subsref/subsasgn
   // operation (possibly multiple levels of indexing of different types)
 

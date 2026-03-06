@@ -269,12 +269,12 @@ function [x_min, flag, relres, iter_min, resvec, eigest] =...
                                           zeros(size (b))}, tol, maxit, x0);
 
   if (tol >= 1)
-    warning ("Input tol is bigger than 1. \n Try to use a smaller tolerance.");
+    warning ("Input tol is bigger than 1.\n Try to use a smaller tolerance.");
   elseif (tol <= eps / 2)
-    warning ("Input tol may not be achievable by pcg. \n Try to use a bigger tolerance");
+    warning ("Input tol may not be achievable by pcg.\n Try to use a bigger tolerance");
   endif
 
-  ## Check if the input data A,b,m1,m2 are consistent (i.e. if they are
+  ## Check if the input data A,b,m1,m2 are consistent (i.e., if they are
   ## matrix or function handle)
 
   [Afcn, M1fcn, M2fcn] = __alltohandles__ (A, b, M1, M2, "pcg");
@@ -286,7 +286,7 @@ function [x_min, flag, relres, iter_min, resvec, eigest] =...
   b_norm = norm (b);
   if (b_norm == 0)
      if (n_arg_out < 2)
-       printf ("The right hand side vector is all zero so pcg \n");
+       printf ("The right hand side vector is all zero so pcg\n");
        printf ("returned an all zero solution without iterating.\n");
      endif
      x_min = b;
@@ -433,27 +433,27 @@ function [x_min, flag, relres, iter_min, resvec, eigest] =...
       case {1}
         printf ("pcg stopped at iteration %d ", iter+1);
         printf ("without converging to the desired tolerance %d ", tol);
-        printf ("because the maximum number of iteration was reached, \n");
+        printf ("because the maximum number of iteration was reached,\n");
         printf ("The iterated returned (number %d) ",iter_min);
-        printf ("has relative residual %d \n", relres);
+        printf ("has relative residual %d\n", relres);
       case {2}
         printf ("pcg stopped at iteration %d ", iter+1)
         printf ("without converging to the desired tolerance %d ", tol);
         printf ("because the preconditioned matrix is singular.\n");
         printf ("The iterated returned (number %d) ", iter_min);
-        printf ("has relative residual %d \n", relres);
+        printf ("has relative residual %d\n", relres);
       case {3}
         printf ("pcg stopped at iteration %d ", iter+1);
         printf ("without converging to the desired tolerance %d ", tol);
-        printf ("because of stagnation. \n");
+        printf ("because of stagnation.\n");
         printf ("The iterated returned (number %d) ", iter_min);
         printf ("has relative residual %d.\n", relres);
       case {4}
         printf ("pcg stopped at iteration %d ", iter + 1);
         printf ("without converging to the desired tolerance %d ",tol);
-        printf ("because the (preconditioned) matrix is not positive definite. \n");
+        printf ("because the (preconditioned) matrix is not positive definite.\n");
         printf ("The iterate returned (number %d) ", iter_min);
-        printf ("has relative residual %d \n", relres);
+        printf ("has relative residual %d\n", relres);
     endswitch
   endif
 
@@ -673,7 +673,7 @@ endfunction
 %! b = sum (A, 2);
 %! M = toeplitz (sparse ([2, 1, 0, 0, 0]));
 %! [x, flag, relres] = pcg (A, b, [], 2, M);
-%! assert (norm (b - A * x) / norm (b), relres,  8 * eps);
+%! assert (norm (b - A * x) / norm (b), relres, 8 * eps);
 
 %!test <*59776>
 %! A = [ 1.00000000  -0.00054274  -0.00066848;

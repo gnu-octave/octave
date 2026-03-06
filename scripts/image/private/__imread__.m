@@ -109,7 +109,7 @@ function varargout = __imread__ (filename, varargin)
             options.region{reg_idx}(3) = options.region{reg_idx}(2);
             options.region{reg_idx}(2) = 1;
           else
-            error ("imread: range for %s must be a 2 or 3 element vector",
+            error ("imread: range for %s must be a 2- or 3-element vector",
                    varargin{idx});
           endif
           options.region{reg_idx} = floor (options.region{reg_idx}(1)): ...

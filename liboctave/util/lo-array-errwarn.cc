@@ -231,7 +231,7 @@ err_invalid_index (double n, octave_idx_type nd, octave_idx_type dim,
 
   if (! std::isnan (n))
     {
-      // if  n  not an integer, but would be printed as one, show diff
+      // if n not an integer, but would be printed as one, show diff
       double nearest = std::floor (n + 1.5);
       if (n + 1 != nearest && (buf.str ().find ('.') == std::string::npos))
         buf << std::showpos << (n + 1 - nearest);

@@ -1769,7 +1769,7 @@ tree_evaluator::make_fcn_handle (const std::string& name)
                   // the calling stack frame as the context instead of
                   // the current stack frame.
 
-                  // FIXME:  Do we need both checks here or is it
+                  // FIXME: Do we need both checks here or is it
                   // sufficient to check that the parent of curr_fcn
                   // is the same as the parent of fcn?  Is there any
                   // case where curr_fcn could be nullptr, or does
@@ -4135,7 +4135,7 @@ tree_evaluator::visit_statement (tree_statement& stmt)
 
               // It doesn't make sense to continue execution after an
               // error occurs so force the debugger to quit all debug
-              // levels and return the the top prompt.
+              // levels and return the top prompt.
 
               throw quit_debug_exception (true);
             }

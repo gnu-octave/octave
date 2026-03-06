@@ -125,7 +125,7 @@ encode_string (T& writer, const octave_value& obj,
   else if (array.isvector ())
     {
       // Handle the special case where the input is a vector with more than
-      // 2 dimensions (e.g. cat (8, ['a'], ['c'])).  In this case, we don't
+      // 2 dimensions (e.g., cat (8, ['a'], ['c'])).  In this case, we don't
       // split the inner vectors of the input; we merge them into one.
       if (level == 0)
         {
@@ -149,13 +149,13 @@ encode_string (T& writer, const octave_value& obj,
       octave_idx_type ndims = array.ndims ();
       dim_vector dims = array.dims ();
 
-      // In this case, we already have a vector. So, we transform it to 2-D
+      // In this case, we already have a vector.  So, we transform it to 2-D
       // vector in order to be detected by "isvector" in the recursive call
       if (dims.num_ones () == ndims - 1)
         {
           // Handle the special case when the input is a vector with more than
-          // 2 dimensions (e.g. cat (8, ['a'], ['c'])).  In this case, we don't
-          // add dimension brackets and treat it as if it is a vector
+          // 2 dimensions (e.g., cat (8, ['a'], ['c'])).  In this case, we
+          // don't add dimension brackets and treat it as if it is a vector
           if (level != 0)
             // Place an opening and a closing bracket (represents a dimension)
             // for every dimension that equals 1 until we reach the 2-D vector
@@ -182,7 +182,7 @@ encode_string (T& writer, const octave_value& obj,
           else
             {
               // The second dimension contains the number of the chars in
-              // the char vector. We want to treat them as a one object,
+              // the char vector.  We want to treat them as a one object,
               // so we replace it with 1
               dims(1) = 1;
 
@@ -334,12 +334,12 @@ encode_array (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN,
       octave_idx_type ndims = array.ndims ();
       const dim_vector& dims = array.dims ();
 
-      // In this case, we already have a vector. So,  we transform it to 2-D
+      // In this case, we already have a vector.  So, we transform it to 2-D
       // vector in order to be detected by "isvector" in the recursive call
       if (dims.num_ones () == ndims - 1)
         {
           // Handle the special case when the input is a vector with more than
-          // 2 dimensions (e.g. ones ([1 1 1 1 1 6])). In this case, we don't
+          // 2 dimensions (e.g., ones ([1 1 1 1 1 6])).  In this case, we don't
           // add dimension brackets and treat it as if it is a vector
           if (level != 0)
             // Place an opening and a closing bracket (represents a dimension)
@@ -401,7 +401,7 @@ encode_array (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN,
     }
 }
 
-//! Encodes any Octave object. This function only serves as an interface
+//! Encodes any Octave object.  This function only serves as an interface
 //! by choosing which function to call from the previous functions.
 //!
 //! @param writer RapidJSON's writer that is responsible for generating JSON.

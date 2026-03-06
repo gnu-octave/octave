@@ -402,7 +402,7 @@ ANY_INCLUDING_NL (.|{NL})
 %%
 
 %{
-// Make script and function files start with an invalid token. This makes
+// Make script and function files start with an invalid token.  This makes
 // the parser go down a special path.
 %}
 
@@ -3249,7 +3249,7 @@ base_lexer::handle_number<10> ()
 #elif defined (OCTAVE_HAVE_FAST_FLOAT)
   auto [ptr, ec] = fast_float::from_chars (chars_start, chars_end, value);
 #else
-#  error "Cannot convert string to floating-point number. This should be unreachable."
+#  error "Cannot convert string to floating-point number.  This should be unreachable."
 #endif
 
   if (ec != std::errc{})

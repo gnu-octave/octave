@@ -410,8 +410,8 @@
 
 ## Code for most of the individual matrices (except binomial, gcdmat,
 ## integerdata, leslie, normaldata, randcolu, randcorr, randjorth, sampling,
-## uniformdata) by Nicholas J. Higham <Nicholas.J.Higham@manchester.ac.uk>
-## Adapted for Octave and into single gallery function by Carnë Draug
+## uniformdata) by Nicholas J. Higham <Nicholas.J.Higham@manchester.ac.uk>.
+## Adapted for Octave and into single gallery function by Carnë Draug.
 
 function varargout = gallery (name, varargin)
 

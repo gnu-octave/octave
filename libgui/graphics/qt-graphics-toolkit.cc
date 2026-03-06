@@ -104,7 +104,7 @@ qt_graphics_toolkit::qt_graphics_toolkit (octave::interpreter& interp)
   // (where they are actually created and displayed).
   // We need to make sure the GUI Object and its proxy are properly
   // created before the initialize method returns, so we use a
-  // BlockingQueuedConnection. After the signal is emitted, the interpreter
+  // BlockingQueuedConnection.  After the signal is emitted, the interpreter
   // thread is locked until the slot has returned.
 
   connect (this, &qt_graphics_toolkit::create_object_signal,
@@ -314,7 +314,7 @@ qt_graphics_toolkit::get_text_extent (const graphics_object& go) const
                 }
 
               ext(2) = wd;
-              // FIXME: Find a better way to determine the height of e.g.
+              // FIXME: Find a better way to determine the height of, e.g.,
               // listbox uicontrol objects
               ext(3) = hg * sv.numel ();
             }

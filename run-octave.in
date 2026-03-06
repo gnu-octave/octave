@@ -71,11 +71,11 @@ while [ $# -gt 0 ]; do
     driver="gdb --args"
     shift
   elif [ "x$1" = "x-gud" ]; then
-    ## Frontends for gdb (e.g. Emacs's GUD mode) need --annotate=3
+    ## Frontends for gdb (e.g., Emacs's GUD mode) need --annotate=3
     driver="gdb --annotate=3 --args"
     shift
   elif [ "x$1" = "x-gud2" ]; then
-    ## The latest version of gud needs -i=mi. There isn't a good way to check
+    ## The latest version of gud needs -i=mi.  There isn't a good way to check
     ## this at configure time, so we just add a gud2 flag
     driver="gdb -i=mi --args"
     shift

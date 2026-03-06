@@ -126,7 +126,7 @@ function h = imshow (im, varargin)
       elseif (columns (arg) == 3)
         indexed = true;
         if (iscolormap (arg) && min (arg) >= 0 || max (arg) <= 1)
-          colormap (gca,  arg);
+          colormap (gca, arg);
         else
           error ("imshow: invalid colormap MAP");
         endif

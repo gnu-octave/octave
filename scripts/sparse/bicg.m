@@ -329,7 +329,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
       case 1
         printf ("bicg stopped at iteration %i ", iter);
         printf ("without converging to the desired tolerance %e\n", tol);
-        printf ("because the maximum number of iterations was reached. ");
+        printf ("because the maximum number of iterations was reached.  ");
         printf ("The iterate returned (number %i) has ", iter_min);
         printf ("relative residual %e\n", relres);
       case 2

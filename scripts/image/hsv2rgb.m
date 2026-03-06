@@ -140,7 +140,7 @@ endfunction
 %!error <invalid data type> hsv2rgb ({1})
 %!error <HSV must be a colormap or HSV image> hsv2rgb (ones (2,2))
 
-## Test ND input
+## Test N-D input
 %!test
 %! hsv = rand (16, 16, 3, 5);
 %! rgb = zeros (size (hsv));

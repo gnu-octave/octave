@@ -173,7 +173,7 @@ to C/C++ standard function @code{ldexp()}.
 
   // Note: Matlab R2021a errors on `pow2 (sparse (f), single (e))`,
   //       but sparsity in f determines output and can significantly
-  //       reduce computation, e.g. `N=1e5; pow2(speye(N),sparse(N,N))`.
+  //       reduce computation, e.g., `N=1e5; pow2(speye(N),sparse(N,N))`.
   if (args(0).issparse ())
     {
       SparseMatrix f = args(0).sparse_matrix_value ();

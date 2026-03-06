@@ -32,7 +32,7 @@
 
 function yi = __splinen__ (x, y, xi, extrapval, f)
 
-  ## ND function to check whether any object in cell array is *not* a vector.
+  ## N-D function to check whether any object in cell array is *not* a vector.
   isnotvec = @(x) cellfun ("numel", x) != cellfun ("length", x);
   if (! iscell (x) || length (x) < ndims (y) || any (isnotvec (x))
       || ! iscell (xi) || length (xi) < ndims (y) || any (isnotvec (xi)))

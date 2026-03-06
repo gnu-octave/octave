@@ -35,7 +35,7 @@
 ## The input arguments might be strings or cell strings.  Any input arguments
 ## that are cell strings must contain one single string or must be equal in
 ## size.  In that case, the function returns a cell string of filepaths of the
-## same dimensions as the input cell strings, e.g.:
+## same dimensions as the input cell strings, for example:
 ##
 ## @example
 ## @group

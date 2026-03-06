@@ -41,7 +41,7 @@ OCTAVE_END_NAMESPACE(octave)
 // OCTAVE_DYNAMIC_CAST is only safe if you can ensure that the cast will
 // succeed.  Using static_cast disables the RTTI checks used by
 // dynamic_cast that ensure an unsuccesful cast will either throw an
-// error for reference types or or return nullptr for pointer types.
+// error for reference types or return nullptr for pointer types.
 
 #if defined (OCTAVE_ENABLE_INTERNAL_CHECKS)
 #  define OCTAVE_DYNAMIC_CAST dynamic_cast

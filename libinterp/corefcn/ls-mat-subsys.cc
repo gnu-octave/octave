@@ -59,7 +59,7 @@ is_valid_mcos_object (const octave_value& metadata)
                   && static_cast<uint32_t> (enum_tag.uint32_scalar_value ())
                        == MCOS_MAGIC_NUMBER)
                 warning_with_id ("Octave:load:classdef-not-supported",
-                    "load: MATLAB enumeration class object cannot be loaded. "
+                    "load: MATLAB enumeration class object cannot be loaded.  "
                     "Returning as %s",
                     metadata.class_name ().c_str ());
             }
@@ -166,7 +166,7 @@ load_mcos_object (const octave_value& objmetadata, bool as_struct)
   if (static_cast<uint32_t>(dt[0]) != MCOS_MAGIC_NUMBER)
     {
       warning_with_id ("Octave:load:invalid-mcos-object",
-                       "load: invalid MCOS object metadata. Returning as %s",
+                       "load: invalid MCOS object metadata.  Returning as %s",
                        objmetadata.class_name ().c_str ());
       return objmetadata;
     }
@@ -191,7 +191,7 @@ load_mcos_object (const octave_value& objmetadata, bool as_struct)
   if (! as_struct)
     {
       // "function_handle_workspace" objects contain data of the workspace
-      // context of function handles. Return it as structure.
+      // context of function handles.  Return it as structure.
       // FIXME: Add compatible implementation of this class.
       if (classname == "function_handle_workspace")
         as_struct = true;
@@ -201,7 +201,7 @@ load_mcos_object (const octave_value& objmetadata, bool as_struct)
           if (! cls.ok ())
             {
               warning_with_id ("Octave:load:classdef-not-found",
-                               "load: classdef not found. Element loaded as %s",
+                               "load: classdef not found.  Element loaded as %s",
                                objmetadata.class_name ().c_str ());
 
               return objmetadata;
@@ -219,7 +219,7 @@ load_mcos_object (const octave_value& objmetadata, bool as_struct)
           // FIXME: Properly support deleted objects.
           warning_with_id ("Octave:load:deleted-object",
                            "load: object of class '%s' was deleted in MATLAB "
-                           "and cannot be loaded. Returning metadata",
+                           "and cannot be loaded.  Returning metadata",
                            classname.c_str ());
           return objmetadata;
         }
@@ -340,7 +340,7 @@ subsystem_handler::read_filewrapper (const Cell& fwrap_data, bool swap)
   if (swap)
     swap_bytes<4> (&version, 1);
   if (version > m_filewrapper_version || version < MIN_FILEWRAPPER_VERSION)
-    error ("load: filewrapper version %u is not supported. MCOS objects cannot be loaded.",
+    error ("load: filewrapper version %u is not supported.  MCOS objects cannot be loaded.",
            version);
 
   // get number of unique property names and class names
@@ -559,7 +559,7 @@ subsystem_handler::get_object_properties (const uint32_t obj_type_id,
           // Property value is enum/string reference
           {
             warning_with_id ("Octave:load:enum-string-ref",
-                   "load: property '%s' is an enum reference. "
+                   "load: property '%s' is an enum reference.  "
                    "This may not be supported and is read as a string.",
                    prop_name.c_str ());
             const std::string& prop_val = m_prop_class_names[prop_val_idx - 1];

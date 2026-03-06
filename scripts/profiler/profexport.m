@@ -196,7 +196,7 @@ endfunction
 
 ## In order to generate unique filenames for the pages, we keep a running
 ## counter that is passed through and updated by the recursive calls.
-## The function returns two counter values:  The one that is chosen
+## The function returns two counter values: The one that is chosen
 ## for its own page (so that parent nodes can link down to them)
 ## and the next value to be passed to the next call.
 

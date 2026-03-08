@@ -31,6 +31,7 @@
 #include <QToolBar>
 
 #include "octave-dock-widget.h"
+#include "find-files-dialog.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -98,7 +99,8 @@ public Q_SLOTS:
                                   bool insert = true,
                                   const QString& cond = "",
                                   int index = -1,
-                                  const QString& bookmarks = QString ()) = 0;
+                                  const QString& bookmarks = QString (),
+                                  const find_files_data& ff_data = {}) = 0;
 };
 
 OCTAVE_END_NAMESPACE(octave)

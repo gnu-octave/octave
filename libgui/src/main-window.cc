@@ -1980,8 +1980,15 @@ main_window::find_files (const QString& start_dir)
                m_file_browser, &file_system_browser::set_current_directory);
 
       connect (m_find_files_dlg, &find_files_dialog::file_selected,
+#if defined (HAVE_QSCINTILLA)
+               [this](const QString& file_name, const find_files_data& ff_data)
+                    { m_editor_window->request_open_file (
+                                file_name, QString (), -1, false, false, true,
+                                "", -1, QString (), ff_data);
+                    });
+#else
                this, qOverload<const QString&> (&main_window::open_file_signal));
-
+#endif
       m_find_files_dlg->setWindowModality (Qt::NonModal);
     }
 

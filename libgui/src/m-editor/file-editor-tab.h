@@ -38,6 +38,7 @@
 
 #include "marker.h"
 #include "octave-qscintilla.h"
+#include "find-files-dialog.h"
 #include "qt-interpreter-events.h"
 
 class octave_value_list;
@@ -90,7 +91,6 @@ Q_SIGNALS:
   void autoc_closed ();
 
   void update_breakpoints_signal (const octave_value_list& args);
-
   void remove_breakpoint_via_debugger_linenr (int debugger_linenr);
   void request_remove_breakpoint_via_editor_linenr (int editor_linenr);
   void remove_all_breakpoints_signal ();
@@ -183,6 +183,9 @@ public Q_SLOTS:
   void goto_line (const QWidget *ID, int line = -1);
   void move_match_brace (const QWidget *ID, bool select);
   void show_auto_completion (const QWidget *ID);
+
+  void select_all_occurrences (const find_files_data& ff_data = {false, QString (), true},
+                               bool goto_first_occurrence = false);
 
   void insert_debugger_pointer (const QWidget *ID, int line = -1);
   void delete_debugger_pointer (const QWidget *ID, int line = -1);

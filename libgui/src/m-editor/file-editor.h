@@ -327,7 +327,8 @@ private Q_SLOTS:
                           int line = -1, bool debug_pointer = false,
                           bool breakpoint_marker = false, bool insert = true,
                           const QString& cond = "", int index = -1,
-                          const QString& bookmarks = QString ());
+                          const QString& bookmarks = QString (),
+                          const find_files_data& ff_data = {});
   void request_preferences (bool);
   void request_styles_preferences (bool);
 

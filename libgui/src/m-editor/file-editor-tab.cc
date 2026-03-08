@@ -3410,6 +3410,95 @@ file_editor_tab::handle_char_added (int)
     }
 }
 
+void
+file_editor_tab::select_all_occurrences (const find_files_data& ff_data,
+                                         bool goto_first_occurrence)
+{
+  // clear any existing indicators of this type
+  m_edit_area->clear_selection_markers ();
+
+  // get the resulting cursor position
+  int line, col;
+  m_edit_area->getCursorPosition (&line, &col);
+
+  QString word = ff_data.search_text;
+  bool whole_word = false;
+  if (word.isEmpty())
+    {
+      // get the word at the cursor (if any)
+      word = m_edit_area->wordAtLineIndex (line, col);
+      word = word.trimmed ();
+      whole_word = true;    // always whole word (selected by double click)
+    }
+
+  if (word.isEmpty())
+    return;
+
+  int first_line, first_col;
+  if (goto_first_occurrence)
+    {
+       // set first line very high, and update with search occurrances
+      first_line = 1000000;
+      first_col = 0;
+    }
+  else
+    {
+      // remember first visible line and x-offset for restoring the view afterwards
+      first_line = m_edit_area->firstVisibleLine ();
+    }
+
+  int x_offset = m_edit_area->SendScintilla (QsciScintillaBase::SCI_GETXOFFSET);
+
+  // search for first occurrence of the detected word
+  bool find_result_available
+    = m_edit_area->findFirst (word,
+                              false,   // no regexp
+                              ff_data.case_sensitive,   // case sensitive
+                              whole_word,               // whole words only
+                              false,   // do not wrap
+                              true,    // forward
+                              0, 0,    // from the beginning
+                              false
+#if defined (HAVE_QSCI_VERSION_2_6_0)
+                              , true
+#endif
+                             );
+
+  // loop over all occurrences and set the related indicator
+  int oline, ocol;
+  int wlen = word.length ();
+
+  while (find_result_available)
+    {
+      // get cursor position after having found an occurrence
+      m_edit_area->getCursorPosition (&oline, &ocol);
+      if (goto_first_occurrence && (oline < first_line))
+        {
+          // update varibales for first occurrance
+          first_line = oline;
+          first_col = ocol;
+        }
+      // mark the selection
+      m_edit_area->show_selection_markers (oline, ocol-wlen, oline, ocol);
+
+      // find next occurrence
+      find_result_available = m_edit_area->findNext ();
+    }
+
+  // restore the visible area of the file, the cursor position,
+  // and the selection
+  m_edit_area->setFirstVisibleLine (first_line);
+  m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETXOFFSET, x_offset);
+  if (goto_first_occurrence)
+    {
+      line = first_line;
+      col = first_col;
+    }
+   m_edit_area->setCursorPosition (line, col);
+   m_edit_area->setSelection (line, col - wlen, line, col);
+   m_edit_area->set_word_selection (word);
+}
+
 // Slot handling a double click into the text area
 void
 file_editor_tab::handle_double_click (int, int, int modifier)
@@ -3417,71 +3506,10 @@ file_editor_tab::handle_double_click (int, int, int modifier)
   if (! modifier)
     {
       // double clicks without modifier
-      // clear any existing indicators of this type
-      m_edit_area->clear_selection_markers ();
-
       if (m_highlight_all_occurrences)
         {
-          // Clear any previous selection.
-          m_edit_area->set_word_selection ();
-
-          // highlighting of all occurrences of the clicked word is enabled
-
-          // get the resulting cursor position
-          // (required if click was beyond a line ending)
-          int line, col;
-          m_edit_area->getCursorPosition (&line, &col);
-
-          // get the word at the cursor (if any)
-          QString word = m_edit_area->wordAtLineIndex (line, col);
-          word = word.trimmed ();
-
-          if (! word.isEmpty ())
-            {
-              // word is not empty, so find all occurrences of the word
-
-              // remember first visible line and x-offset for restoring the view afterwards
-              int first_line = m_edit_area->firstVisibleLine ();
-              int x_offset = m_edit_area->SendScintilla (QsciScintillaBase::SCI_GETXOFFSET);
-
-              // search for first occurrence of the detected word
-              bool find_result_available
-                = m_edit_area->findFirst (word,
-                                          false,   // no regexp
-                                          true,    // case sensitive
-                                          true,    // whole words only
-                                          false,   // do not wrap
-                                          true,    // forward
-                                          0, 0,    // from the beginning
-                                          false
-#if defined (HAVE_QSCI_VERSION_2_6_0)
-                                          , true
-#endif
-                                         );
-
-              // loop over all occurrences and set the related indicator
-              int oline, ocol;
-              int wlen = word.length ();
-
-              while (find_result_available)
-                {
-                  // get cursor position after having found an occurrence
-                  m_edit_area->getCursorPosition (&oline, &ocol);
-                  // mark the selection
-                  m_edit_area->show_selection_markers (oline, ocol-wlen, oline, ocol);
-
-                  // find next occurrence
-                  find_result_available = m_edit_area->findNext ();
-                }
-
-              // restore the visible area of the file, the cursor position,
-              // and the selection
-              m_edit_area->setFirstVisibleLine (first_line);
-              m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETXOFFSET, x_offset);
-              m_edit_area->setCursorPosition (line, col);
-              m_edit_area->setSelection (line, col - wlen, line, col);
-              m_edit_area->set_word_selection (word);
-            }
+          m_edit_area->set_word_selection ();   // Clear any previous selection
+          select_all_occurrences ();            // Do search and selection
         }
     }
 }

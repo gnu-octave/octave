@@ -39,6 +39,13 @@ class QStatusBar;
 class QTableView;
 class QTimer;
 
+struct find_files_data
+{
+  bool find_in_files {false};
+  QString search_text {QString ()};
+  bool case_sensitive {true};
+};
+
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 class find_files_dialog : public QDialog
@@ -55,7 +62,7 @@ public:
 
 Q_SIGNALS:
 
-  void file_selected (const QString& fileName);
+  void file_selected (const QString& fileName, const find_files_data& ff_data);
   void dir_selected (const QString& fileName);
 
 public Q_SLOTS:
@@ -80,6 +87,7 @@ private:
 
   bool is_match (const QFileInfo& info);
 
+  find_files_data m_find_files_data;
   QComboBox *m_start_dir_edit;
   QComboBox *m_file_name_edit;
   QPushButton *m_stop_button;

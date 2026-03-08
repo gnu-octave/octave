@@ -6,6 +6,8 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 
 ### Graphical User Interface
 
+* When opening a file from the Fine File dialog, all occurrences of the search
+  text are highlighted in the editor.
 
 ### Graphics backend
 

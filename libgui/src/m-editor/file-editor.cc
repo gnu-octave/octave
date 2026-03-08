@@ -1703,7 +1703,8 @@ file_editor::request_open_file (const QString& openFileName,
                                 int line, bool debug_pointer,
                                 bool breakpoint_marker, bool insert,
                                 const QString& cond, int index,
-                                const QString& bookmarks)
+                                const QString& bookmarks,
+                                const find_files_data& ff_data)
 {
   gui_settings settings;
 
@@ -1728,33 +1729,37 @@ file_editor::request_open_file (const QString& openFileName,
   else
     {
       // Check whether this file is already open in the editor.
-      file_editor_tab *tab = find_tab_widget (openFileName);
+      file_editor_tab *fileEditorTab = find_tab_widget (openFileName);
 
-      if (tab)
+      if (fileEditorTab)
         {
-          m_tab_widget->setCurrentWidget (tab);
+          // File is already open
+
+          m_tab_widget->setCurrentWidget (fileEditorTab);
 
           if (line > 0)
             {
               if (insert)
-                Q_EMIT fetab_goto_line (tab, line);
+                Q_EMIT fetab_goto_line (fileEditorTab, line);
 
               if (debug_pointer)
-                Q_EMIT fetab_insert_debugger_pointer (tab, line);
+                Q_EMIT fetab_insert_debugger_pointer (fileEditorTab, line);
 
               if (breakpoint_marker)
-                Q_EMIT fetab_do_breakpoint_marker (insert, tab, line, cond);
+                Q_EMIT fetab_do_breakpoint_marker (insert, fileEditorTab, line, cond);
             }
 
           if (show_dbg_file && ! ((breakpoint_marker || debug_pointer)
                                   && is_editor_console_tabbed ()))
             {
-              Q_EMIT fetab_set_focus (tab);
+              Q_EMIT fetab_set_focus (fileEditorTab);
               activate ();
             }
         }
       else
         {
+          // File not yet open
+
           if (! show_dbg_file && (breakpoint_marker || debug_pointer))
             return;   // Do not open a file for showing dbg markers
 
@@ -1765,10 +1770,9 @@ file_editor::request_open_file (const QString& openFileName,
               && (openFileName == settings.string_value (ed_run_selection_tmp_file)))
             return;   // Never open tmp file when debugging while running selection
 
-          file_editor_tab *fileEditorTab = nullptr;
           // Reuse <unnamed> tab if it hasn't yet been modified.
           bool reusing = false;
-          tab = find_tab_widget ("");
+          file_editor_tab *tab = find_tab_widget ("");
           if (tab)
             {
               fileEditorTab = tab;
@@ -1905,8 +1909,15 @@ file_editor::request_open_file (const QString& openFileName,
               activate ();
               Q_EMIT file_loaded_signal ();
             }
-        }
-    }
+
+        }  // if/else file already open
+
+        if (ff_data.find_in_files)
+          {
+            fileEditorTab->select_all_occurrences (ff_data, true);
+          }
+
+    }  // if/else openFileName empty
 }
 
 void

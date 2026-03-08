@@ -24,7 +24,7 @@ liboctave_TEXINFOS = \
 info_TEXINFOS += \
   %reldir%/liboctave.texi
 
-INFO_DEPS += $(srcdir)/%reldir%/liboctave.info
+INFO_DEPS += %reldir%/liboctave.info
 DVIS += %reldir%/liboctave.dvi
 PDFS += %reldir%/liboctave.pdf
 PSS += %reldir%/liboctave.ps
@@ -53,14 +53,14 @@ HTMLS += %reldir%/liboctave.html
 	fi
 
 DOC_TARGETS += \
-  $(srcdir)/%reldir%/liboctave.info \
+  %reldir%/liboctave.info \
   %reldir%/liboctave.ps \
   %reldir%/liboctave.pdf \
   %reldir%/liboctave.html
 
 doc_EXTRA_DIST += \
   $(liboctave_TEXINFOS) \
-  $(srcdir)/%reldir%/liboctave.info \
+  %reldir%/liboctave.info \
   %reldir%/liboctave.dvi \
   %reldir%/liboctave.ps \
   %reldir%/liboctave.pdf \

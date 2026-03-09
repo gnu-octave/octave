@@ -72,7 +72,12 @@ open ($HTML, "<", $htmlfname) or die "Unable to open $htmlfname";
 
 # Skip through preamble of file to find start of list
 while (defined ($_ = <$HTML>)
-         and ! /^<table class="(?:index-fn|fn-entries)/ ) {;}
+         and ! /<table\b[^>]*\bclass="[^"]*\b
+                 (?:
+                   index-fn |
+                   fn-entries |
+                   fn-entries-printindex
+                 )\b/x ) {;}
 
 die "Function-Index.html: reached EOF without finding data start pattern"
   if eof ($HTML);

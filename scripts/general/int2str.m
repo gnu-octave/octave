@@ -92,7 +92,7 @@ function str = int2str (n)
   fmt = sprintf ("%%%d.0f", ndgt);
 
   nd = ndims (n);
-  nc = columns (n) * (nd - 1);    # ND-arrays are expanded in columns
+  nc = columns (n) * (nd - 1);    # N-D arrays are expanded in columns
   n  = permute (n, [2, 3:nd, 1]);
   fmt = [repmat(fmt, 1, nc), "\n"];
   strtmp = sprintf (fmt, n);

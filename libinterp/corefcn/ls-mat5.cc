@@ -1095,7 +1095,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             // handle is used for certain COM objects
             warning_with_id ("Octave:load:classdef-not-supported",
                              "load: MATLAB class object with type system '%s' "
-                             "not supported. Loading as %s",
+                             "not supported.  Loading as %s",
                               type_system.c_str (),
                               objmetadata.class_name ().c_str ());
             tc = objmetadata;
@@ -1103,7 +1103,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         else if (classname == "FileWrapper__")
           {
             // "FileWrapper__" objects contain serialized object data as a cell
-            // array. In MATLAB, this is an MCOS class with a constructor and
+            // array.  In MATLAB, this is an MCOS class with a constructor and
             // no properties.
             // Return the serialized data for these cases.
             tc = objmetadata;
@@ -1112,7 +1112,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
           {
             warning_with_id ("Octave:load:classdef-not-supported",
                              "load: MATLAB enumeration classes are not "
-                             "supported. Loading as %s",
+                             "supported.  Loading as %s",
                              objmetadata.class_name ().c_str ());
             tc = objmetadata;
           }
@@ -1460,7 +1460,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                 if (u8_str)
                   {
                     // FIXME: Is there a better way to construct a charMatrix
-                    // from a non zero terminated buffer?
+                    // from a nonzero terminated buffer?
                     tc = charMatrix (std::string (reinterpret_cast<char *> (u8_str), n8));
                     free (u8_str);
                     converted = true;
@@ -1480,7 +1480,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                 if (u8_str)
                   {
                     // FIXME: Is there a better way to construct a charMatrix
-                    // from a non zero terminated buffer?
+                    // from a nonzero terminated buffer?
                     tc = charMatrix (std::string (reinterpret_cast<char *> (u8_str), n8));
                     free (u8_str);
                     converted = true;

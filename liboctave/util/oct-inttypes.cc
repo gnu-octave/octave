@@ -514,7 +514,7 @@ operator - (const double& x, const octave_uint64& y)
   else
     {
       // Again a trick to get the corner cases right.  Things like
-      // 3^2^63 - intmax ('uint64') should produce the correct result, i.e.
+      // 3^2^63 - intmax ('uint64') should produce the correct result, i.e.,
       // int64 (2^63) + 1.
       const double p2_64 = std::pow (2.0, 64);
       if (y.bool_value ())

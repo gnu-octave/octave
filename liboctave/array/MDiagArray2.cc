@@ -48,7 +48,7 @@ MDiagArray2<T>::is_multiple_of_identity (T val) const
   return retval;
 }
 
-// Two dimensional diagonal array with math ops.
+// Two-dimensional diagonal array with math ops.
 
 // Element by element MDiagArray2 by scalar ops.
 

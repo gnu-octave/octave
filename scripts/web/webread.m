@@ -33,7 +33,7 @@
 ## Read content from the web service specified by @var{url} and return the
 ## content in @var{response}.
 ##
-## All key-value pairs given (@var{name1}, @var{value1}, @dots{}) are appended
+## All name-value pairs given (@var{name1}, @var{value1}, @dots{}) are appended
 ## as query parameters to @var{url}.  To place a query in the body of the
 ## message, use @code{webwrite}.  The web service defines the acceptable query
 ## parameters.
@@ -64,6 +64,16 @@ function response = webread (url, varargin)
     options = weboptions ();
   endif
 
+  has_nameval_pairs = false;
+  if (! isempty (varargin))
+    has_nameval_pairs = true;
+    if (rem (numel (varargin), 2) != 0)
+      error ("webread: NAMES/VALUES must occur in pairs");
+    elseif (! iscellstr (varargin))
+      error ("webread: NAMES and VALUES must be strings");
+    endif
+  endif
+
   if (strcmp (options.MediaType, "auto"))
     options.MediaType = "application/x-www-form-urlencoded";
   endif
@@ -84,17 +94,10 @@ function response = webread (url, varargin)
     options.RequestMethod = "get";
   endif
 
-  nargs = 1 + numel (varargin);
-  if (nargs == 1)
-    response = __restful_service__ (url, cell (), options);
-  elseif (rem (nargs, 2) == 1)
-    if (! iscellstr (varargin))
-      error ("webread: KEYS and VALUES must be strings");
-    else
-      response = __restful_service__ (url, varargin, options);
-    endif
+  if (has_nameval_pairs)
+    response = __restful_service__ (url, varargin, options);
   else
-    error ("webread: KEYS/VALUES must occur in pairs");
+    response = __restful_service__ (url, cell (), options);
   endif
 
 endfunction
@@ -104,5 +107,5 @@ endfunction
 %!error <Invalid call> webread ()
 %!error <URL must be a string> webread (1)
 %!error <URL must be a string> webread (["a";"b"])
-%!error <KEYS and VALUES must be strings> webread ("URL", "NAME1", 5)
-%!error <KEYS/VALUES must occur in pairs> webread ("URL", "KEY1")
+%!error <NAMES/VALUES must occur in pairs> webread ("URL", "KEY1")
+%!error <NAMES and VALUES must be strings> webread ("URL", "NAME1", 5)

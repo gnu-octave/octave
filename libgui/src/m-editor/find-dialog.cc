@@ -300,7 +300,7 @@ find_dialog::restore_settings (QPoint ed_bottom_right)
   m_backward_check_box->setChecked (FIND_DLG_BACK & opts);
   m_search_selection_check_box->setChecked (FIND_DLG_SEL & opts);
 
-  // Default position:  lower right of editor's position
+  // Default position: lower right of editor's position
   int xp = ed_bottom_right.x () - sizeHint ().width ();
   int yp = ed_bottom_right.y () - sizeHint ().height ();
   QRect default_geometry (xp, yp, sizeHint ().width (), sizeHint ().height ());

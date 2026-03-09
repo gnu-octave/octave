@@ -103,7 +103,7 @@ public:
     return *this;
   }
 
-  // constant iteration support. non-const iteration intentionally unsupported.
+  // constant iteration support.  non-const iteration intentionally unsupported.
 
   typedef std::map<std::string, octave_idx_type>::const_iterator const_iterator;
   typedef const_iterator iterator;
@@ -132,7 +132,7 @@ public:
   octave_idx_type getfield (const std::string& name) const;
   // get index of field.  add if not exist
   octave_idx_type getfield (const std::string& name);
-  // remove field and return the index. -1 if didn't exist.
+  // remove field and return the index.  return -1 if didn't exist.
   octave_idx_type rmfield (const std::string& name);
 
   // order the fields of this map.
@@ -344,7 +344,7 @@ public:
   void assign (const std::string& k, const Cell& val)
   { setfield (k, val); }
 
-  // remove a given field. do nothing if not exist.
+  // remove a given field.  do nothing if not exist.
   void rmfield (const std::string& key);
   void del (const std::string& k) { rmfield (k); }
 

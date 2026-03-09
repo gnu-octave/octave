@@ -414,7 +414,7 @@ zero_dims_inquire (const Array<octave::idx_vector>& ia, const dim_vector& rhdv)
   dim_vector rdv = dim_vector::alloc (ial);
   bool *scalar = new bool [ial];
   bool *colon = new bool [ial];
-  // Mark scalars and colons, count non-scalar indices.
+  // Mark scalars and colons, count nonscalar indices.
   int nonsc = 0;
   bool all_colons = true;
   for (int i = 0; i < ial; i++)

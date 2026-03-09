@@ -126,16 +126,16 @@
 ##
 ##   h:  Make the property hidden
 ##
-##   r:  Make the property read-only. A read-only property is not
+##   r:  Make the property read-only.  A read-only property is not
 ##       settable from the global set (caseless_str, octave_value)
 ##       method, but still has set_X accessor.
 ##
-##   u:  The property has an inline updater method. This effectively
+##   u:  The property has an inline updater method.  This effectively
 ##       add the line
 ##
 ##         update_NAME ();
 ##
-##       to the type-specific set function. This line is added before
+##       to the type-specific set function.  This line is added before
 ##       any other update call (like those added by the 'l' or 'm'
 ##       modifiers.
 ##

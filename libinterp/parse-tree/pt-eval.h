@@ -1000,7 +1000,7 @@ private:
   std::string m_PS4;
 
   // If > 0, stop executing at the (N-1)th stopping point, counting
-  //         from the the current execution point in the current frame.
+  //         from the current execution point in the current frame.
   //
   // If < 0, stop executing at the next possible stopping point.
   int m_dbstep_flag;

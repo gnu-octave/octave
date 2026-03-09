@@ -269,9 +269,9 @@ tree_statement_list::breakpoints_and_conds ()
   return retval;
 }
 
-// Add breakpoints to  file  at multiple lines (the second arguments
-// of  line), to stop only if  condition  is true.
-// Updates GUI via  event_manager::update_breakpoint.
+// Add breakpoints to file at multiple lines (the second arguments
+// of line), to stop only if condition is true.
+// Updates GUI via event_manager::update_breakpoint.
 // FIXME: COME BACK TO ME.
 
 bp_table::bp_lines

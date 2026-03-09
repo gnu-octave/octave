@@ -178,7 +178,7 @@ function [retval, status] = __makeinfo_restricted__ (buffer)
   ## FIXME: Replace this loop with a call to regexprep once transformation
   ## features are available.
   for j = strfind (buffer, "@var")  # each instance of @var
-    ## Upper-case the part between the relevant braces.
+    ## Uppercase the part between the relevant braces.
     k = find (buffer(j:end) == '}', 1) + j - 1;
     buffer((j+5):(k-1)) = upper (buffer((j+5):(k-1)));
   endfor
@@ -189,7 +189,7 @@ function [retval, status] = __makeinfo_restricted__ (buffer)
 
   ## There should not be any Texinfo commands remaining at this point.
   ## Search for this with the regex "@[a-z]" because other instances of @
-  ## occur next to upper case letters or non-letters by this point.
+  ## occur next to uppercase letters or non-letters by this point.
   if (any (regexp (buffer, "@[a-z]")))
     ## There is some Texinfo command in the deftypefn line
     ## outside the scope of this restricted function,

@@ -106,7 +106,7 @@ public:
   static octave_value make (const Complex& C)
   {
     octave_value ov (new octave_complex (C));
-    ov.maybe_mutate (); // Fold e.g. 1+0i to 1
+    ov.maybe_mutate (); // Fold, e.g., 1+0i to 1
     return ov;
   }
 

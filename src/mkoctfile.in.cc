@@ -41,7 +41,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-// Programming note:  The CROSS macro here refers to building a
+// Programming note: The CROSS macro here refers to building a
 // cross-compiler aware version of mkoctfile that can be used to cross
 // compile .oct file for Windows builds of Octave, not that mkoctfile
 // itself is being cross compiled.

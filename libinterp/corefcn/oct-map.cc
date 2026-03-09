@@ -648,7 +648,7 @@ permute_to_correct_order1 (const octave_scalar_map& ref,
   dest = src.orderfields (ref, perm);
 }
 
-// In non-scalar case, we also promote empty structs without fields.
+// In nonscalar case, we also promote empty structs without fields.
 void
 permute_to_correct_order1 (const octave_map& ref, const octave_map& src,
                            octave_map& dest, Array<octave_idx_type>& perm)

@@ -201,7 +201,7 @@ opengl_texture::create (opengl_functions& glfcns, const octave_value& data)
             {
               warning ("opengl_texture::create: the opengl library in use "
                        "doesn't support images with either dimension larger "
-                       "than %d. Not rendering.", max_size);
+                       "than %d.  Not rendering.", max_size);
               warned = true;
             }
 
@@ -423,7 +423,7 @@ private:
   { reinterpret_cast<opengl_tessellator *> (t)->vertex (v); }
 
   static void CALLBACK tess_combine (GLdouble c[3], void *v[4], GLfloat w[4],
-                                     void **out,  void *t)
+                                     void **out, void *t)
   { reinterpret_cast<opengl_tessellator *> (t)->combine (c, v, w, out); }
 
   static void CALLBACK tess_edge_flag (GLboolean flag, void *t)

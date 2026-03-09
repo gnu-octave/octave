@@ -161,7 +161,7 @@ octave_lstat_wrapper (const char *lname, mode_t *mode, ino_t *ino,
   struct stat buf;
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-  // Windows doesn't have an lstat. Use stat instead
+  // Windows doesn't have an lstat.  Use stat instead
   wchar_t *wlname = u8_to_wchar (lname);
   int status = _wstati64 (wlname, &buf);
   free ((void *) wlname);

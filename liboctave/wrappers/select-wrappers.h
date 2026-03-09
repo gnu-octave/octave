@@ -31,7 +31,7 @@ extern "C" {
 #endif
 
 // We'd need to include gnulib headers for the 'fd_set', 'struct timeval'
-// types. Use 'void *' or 'int' in the wrapper interfaces instead.
+// types.  Use 'void *' or 'int' in the wrapper interfaces instead.
 
 extern OCTAVE_API int
 octave_select (int nfds, /* fd_set *restrict */ void *restrict readfds,

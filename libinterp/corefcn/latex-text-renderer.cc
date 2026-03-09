@@ -331,7 +331,7 @@ latex_renderer::read_image (const std::string& png_file,
   catch (const execution_exception& ee)
     {
       warning_with_id ("Octave:LaTeX:internal-error",
-                       "latex_renderer:: failed to read png data. %s",
+                       "latex_renderer:: failed to read png data.  %s",
                        ee.message ().c_str ());
 
       interpreter& interp = __get_interpreter__ ();

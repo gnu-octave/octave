@@ -102,7 +102,7 @@ protected:
 
     if (go.isa ("axes") || go.isa ("hggroup"))
       {
-        Matrix  children = go.get ("children").matrix_value ();
+        Matrix children = go.get ("children").matrix_value ();
         for (octave_idx_type ii = 0; ii < children.numel (); ii++)
           {
             retval = has_alpha (graphics_handle (children(ii)));
@@ -306,7 +306,7 @@ has_2D_axes (const graphics_handle& h)
 
   if (go.isa ("figure") || go.isa ("uipanel"))
     {
-      Matrix  children = go.get ("children").matrix_value ();
+      Matrix children = go.get ("children").matrix_value ();
       for (octave_idx_type ii = 0; ii < children.numel (); ii++)
         {
           retval = has_2D_axes (graphics_handle (children(ii)));
@@ -442,7 +442,7 @@ gl2ps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
 
           if (n_begin != std::string::npos)
             {
-              // Strip any quote characters characters around filename
+              // Strip any quote characters around filename
               std::size_t n_end = include_graph.find_last_not_of (R"( "')");
               include_graph = include_graph.substr (n_begin,
                                                     n_end - n_begin + 1);
@@ -1065,7 +1065,7 @@ gl2ps_renderer::strlist_to_ps (double x, double y, double z,
             {
               warned = true;
               warning_with_id ("Octave:print:unhandled-svg-content",
-                               "print: unhandled LaTeX strings. "
+                               "print: unhandled LaTeX strings.  "
                                "Use -svgconvert option or -d*latex* output "
                                "device.");
             }
@@ -1125,7 +1125,7 @@ gl2ps_renderer::strlist_to_ps (double x, double y, double z,
                       warning_with_id ("Octave:print:unsupported-multibyte",
                                        "print: only ASCII characters are "
                                        "supported for EPS and derived "
-                                       "formats. Use the '-svgconvert' "
+                                       "formats.  Use the '-svgconvert' "
                                        "option for better font support.");
                       warned = true;
                     }
@@ -1139,7 +1139,7 @@ gl2ps_renderer::strlist_to_ps (double x, double y, double z,
                       warning_with_id ("Octave:print:unhandled-character",
                                        "print: only ASCII characters are "
                                        "supported for EPS and derived "
-                                       "formats. Use the '-svgconvert' "
+                                       "formats.  Use the '-svgconvert' "
                                        "option for better font support.");
                       warned = true;
                     }

@@ -604,7 +604,7 @@ rand_normal<double> ()
     {
       /* The following code is specialized for 32-bit mantissa.
        * Compared to the arbitrary mantissa code, there is a performance
-       * gain for 32-bits:  PPC: 2%, MIPS: 8%, x86: 40%
+       * gain for 32-bits: PPC: 2%,  MIPS: 8%,  x86: 40%
        * There is a bigger performance gain compared to using a full
        * 53-bit mantissa:  PPC: 60%, MIPS: 65%, x86: 240%
        * Of course, different compilers and operating systems may

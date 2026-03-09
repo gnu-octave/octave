@@ -405,7 +405,7 @@ gui_settings::get_default_font ()
 QString
 gui_settings::get_gui_translation_dir ()
 {
-  // get environment variable for the locale dir (e.g. from run-octave)
+  // get environment variable for the locale dir (e.g., from run-octave)
   std::string dldir = sys::env::getenv ("OCTAVE_LOCALE_DIR");
   if (dldir.empty ())
     dldir = config::oct_locale_dir ();  // env-var empty, load the default location
@@ -515,7 +515,7 @@ gui_settings::read_lexer_settings (QsciLexer *lexer, int mode, int def)
 {
 #if defined (HAVE_QSCINTILLA)
   // Test whether the settings for lexer is already contained in the
-  // given gui settings file. If yes, load them, if not copy them from the
+  // given gui settings file.  If yes, load them, if not copy them from the
   // default settings file.
   // This is useful when a new language support is implemented and the
   // existing settings file is used (which is of course the common case).
@@ -719,7 +719,7 @@ gui_settings::combo_encoding (QComboBox *combo, const QString& current)
   // get the value from the settings file if no current encoding is given
   QString enc {current};
 
-  // Check for valid codec for the default.  If this fails, "SYSTEM" (i.e.
+  // Check for valid codec for the default.  If this fails, "SYSTEM" (i.e.,
   // locale_charset) will be chosen.
   // FIXME: The default is "SYSTEM" on all platforms.  So can this fallback
   // logic be removed completely?

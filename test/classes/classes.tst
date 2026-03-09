@@ -31,11 +31,11 @@
 %%
 %%       Note(JBect, 2013/01/27) : in order to ease to process of testing
 %%       Matlab compatibility, the syntax assert(observed, expected) should
-%%       be avoided. I use assert(isequal(observed, expected) instead.
+%%       be avoided.  I use assert(isequal(observed, expected) instead.
 %%
-%% To Do:  This script tests to ensure that things done correctly work
-%%         corrrectly.  It should also check that things done incorrectly
-%%         error properly.
+%% FIXME: This script tests to ensure that things done correctly work
+%%        corrrectly.  It should also check that things done incorrectly
+%%        error properly.
 %%
 %% The classes used for the tests reside in the test directory.
 %%

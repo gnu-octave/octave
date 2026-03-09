@@ -287,7 +287,7 @@ void
 tab_bar::ctx_menu_activated (QAction *a)
 {
   // If the index of the activated action is in the range of
-  // the current tabs, set the related current tab. The basic actions
+  // the current tabs, set the related current tab.  The basic actions
   // are handled by the editor
   int i = m_ctx_actions.indexOf (a);
   if ((i > -1) && (i < count ()))

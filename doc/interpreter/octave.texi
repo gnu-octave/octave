@@ -867,7 +867,7 @@ classdef Classes
 * Properties::
 * Methods::
 * Inheritance::
-* Value Classes vs. Handle Classes::
+* Value Classes vs.@: Handle Classes::
 
 GUI Development
 

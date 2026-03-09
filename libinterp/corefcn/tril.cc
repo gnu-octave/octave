@@ -128,7 +128,7 @@ do_triu (const Array<T>& a, octave_idx_type k, bool pack)
 }
 
 // These two are by David Bateman.
-// FIXME: optimizations possible. "pack" support missing.
+// FIXME: optimizations possible.  "pack" support missing.
 
 template <typename T>
 static Sparse<T>

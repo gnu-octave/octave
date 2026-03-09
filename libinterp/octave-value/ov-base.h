@@ -322,7 +322,7 @@ public:
   virtual OCTINTERP_API octave_value full_value () const;
 
   // Will return a copy of it-self when the representation
-  // allready is a scalar (.i.e. double). The const variant
+  // allready is a scalar (.i.e., double).  The const variant
   // as_double () would allocate a new octave value.
   virtual OCTINTERP_API octave_value as_double_or_copy ();
 
@@ -566,7 +566,7 @@ public:
 
   virtual bool is_function_cache () const { return false; }
 
-  // Checks if the ov could be a function. If it is undefined,
+  // Checks if the ov could be a function.  If it is undefined,
   // the name associated with the ov could be a function to call.
   virtual bool is_maybe_function () const
   { return !is_defined () || is_function (); }

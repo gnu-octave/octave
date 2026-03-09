@@ -684,7 +684,7 @@
   T                                                                     \
   FCN (const T& m, S d, const bool nanflag, const bool realabs)         \
   {                                                                     \
-    return do_ms_binary_op<T::element_type, T::element_type, S> (m, d, nanflag, realabs,  mx_inline_x##FCN); \
+    return do_ms_binary_op<T::element_type, T::element_type, S> (m, d, nanflag, realabs, mx_inline_x##FCN); \
   }
 
 #define NDND_MINMAX2_FCN(FCN, T, S)                                     \

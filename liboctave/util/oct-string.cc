@@ -290,7 +290,7 @@ single_num (std::istringstream& is)
 #elif defined (OCTAVE_HAVE_FAST_FLOAT)
   auto [ptr, ec] = fast_float::from_chars (first, last, num);
 #else
-#  error "Cannot convert string to floating-point number. This should be unreachable."
+#  error "Cannot convert string to floating-point number.  This should be unreachable."
 #endif
 
   if (ec == std::errc {})
@@ -565,7 +565,7 @@ octave::string::u8_to_encoding (const std::string& who,
     {
       if (errno == ENOSYS)
         (*current_liboctave_error_handler)
-          ("%s: iconv() is not supported. Installing GNU libiconv and then "
+          ("%s: iconv() is not supported.  Installing GNU libiconv and then "
            "re-compiling Octave could fix this.", who.c_str ());
       else
         (*current_liboctave_error_handler)
@@ -595,7 +595,7 @@ octave::string::u8_from_encoding (const std::string& who,
     {
       if (errno == ENOSYS)
         (*current_liboctave_error_handler)
-          ("%s: iconv() is not supported. Installing GNU libiconv and then "
+          ("%s: iconv() is not supported.  Installing GNU libiconv and then "
            "re-compiling Octave could fix this.", who.c_str ());
       else
         (*current_liboctave_error_handler)
@@ -678,7 +678,7 @@ octave::string::u16_to_encoding (const std::string& who,
     {
       if (errno == ENOSYS)
         (*current_liboctave_error_handler)
-          ("%s: iconv() is not supported. Installing GNU libiconv and then "
+          ("%s: iconv() is not supported.  Installing GNU libiconv and then "
            "re-compiling Octave could fix this.", who.c_str ());
       else
         (*current_liboctave_error_handler)
@@ -853,7 +853,7 @@ octave::string::codecvt_u8::do_out
   std::size_t pop_end = 0;
   if ((*(from_end-1) & 0b10000000) == 0b10000000)
     {
-      // The last byte is part of a surrogate. Check if it is complete.
+      // The last byte is part of a surrogate.  Check if it is complete.
 
       // number of bytes of the surrogate in the buffer
       std::size_t num_bytes_in_buf = 1;

@@ -190,7 +190,7 @@ qdockwidget_css (const QString& close_icon, const QString& close_tooltip,
 }
 
 octave_dock_widget::octave_dock_widget (const QString& obj_name, QWidget *p)
-  : label_dock_widget (p), m_main_window (nullptr),  m_adopted (false),
+  : label_dock_widget (p), m_main_window (nullptr), m_adopted (false),
     m_custom_style (false), m_focus_follows_mouse (false),
     m_recent_float_geom (), m_recent_dock_geom (),
     m_waiting_for_mouse_button_release (false)
@@ -288,7 +288,7 @@ octave_dock_widget::make_window (bool widget_was_dragged)
   if (m_main_window)
     {
       // Before making it a separate (no more parent) floating widget,
-      // remove the dock widget from the main window. This ensures
+      // remove the dock widget from the main window.  This ensures
       // that tabbed widgets keep their focus when it is re-docked
       // later
       m_main_window->removeDockWidget (this);

@@ -222,7 +222,7 @@ Undocumented internal function.
     }
 }
 
-template <typename octave_matrix_t, typename T,  T (*ichol_mult) (T, T),
+template <typename octave_matrix_t, typename T, T (*ichol_mult) (T, T),
           bool (*ichol_checkpivot) (T)>
 void
 ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T *cols_norm,
@@ -244,7 +244,7 @@ ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T *cols_norm,
   octave_idx_type *ridx = sm.ridx ();
   T *data = sm.data ();
 
-  // Output matrix data structures.  Because the final zero pattern pattern of
+  // Output matrix data structures.  Because the final zero pattern of
   // the output matrix is not known due to fill-in elements, a heuristic
   // approach has been adopted for memory allocation.  The size of ridx_out_l
   // and data_out_l is incremented 10% of their actual size (nnz (A) in the

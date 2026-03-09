@@ -104,8 +104,8 @@ qr_type (int nargout, bool economy)
 // sparse X
 //
 // X = qr (A, B):         if M < N, X is the minimum 2-norm solution of
-//                        A\B. If M >= N, X is the least squares
-//                        approximation of A\B. X is calculated by
+//                        A\B.  If M >= N, X is the least squares
+//                        approximation of A\B.  X is calculated by
 //                        SPQR-function SuiteSparseQR_min2norm.
 //
 DEFUN (qr, args, nargout,

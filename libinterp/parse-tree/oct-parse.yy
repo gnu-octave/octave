@@ -1656,7 +1656,7 @@ args_validation_list
                     }
                   ;
 
-// FIXME: Change grammar to allow IDENTIFIER to be be either
+// FIXME: Change grammar to allow IDENTIFIER to be either
 // "NAME" or "NAME '.' NAME", possibly not entered in the symbol
 // table for the current scope.  Also stash comments before identifier.
 
@@ -4336,7 +4336,7 @@ base_parser::start_classdef_external_method (tree_identifier *id, tree_parameter
 {
   octave_user_function* retval = nullptr;
 
-  // External methods are only allowed within @-folders. In this case,
+  // External methods are only allowed within @-folders.  In this case,
   // m_curr_class_name will be non-empty.
 
   if (! m_curr_class_name.empty ())
@@ -4344,7 +4344,7 @@ base_parser::start_classdef_external_method (tree_identifier *id, tree_parameter
       std::string mname = id->name ();
 
       // Methods that cannot be declared outside the classdef file:
-      // - methods with '.' character (e.g. property accessors)
+      // - methods with '.' character (e.g., property accessors)
       // - class constructor
       // - 'delete'
 

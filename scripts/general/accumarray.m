@@ -253,7 +253,7 @@ function A = accumarray (subs, vals, sz = [], fcn = [], fillval = [], issparse =
         error ("accumarray: dimensions mismatch");
       endif
 
-      ## Convert multidimensional subscripts.
+      ## Convert multi-dimensional subscripts.
       if (isnumeric (subs))
         subs = num2cell (subs, 1);
       endif

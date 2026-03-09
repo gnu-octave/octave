@@ -346,7 +346,7 @@ save_binary_data (std::ostream& os, const octave_value& tc_in,
   if (tc_in.is_classdef_object ())
     {
       warning_with_id ("Octave:save:classdef:unsupported",
-                       "Saving classdef objects is not supported. "
+                       "Saving classdef objects is not supported.  "
                        "Attempting to save '%s' as struct.",
                        name.c_str ());
       tc = tc_in.classdef_object_value ()->map_value (false, false);

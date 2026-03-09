@@ -38,7 +38,7 @@
 // forward declare template with visibility attributes
 template <typename T> class OCTAVE_API MSparse;
 
-// Two dimensional sparse array with math ops.
+// Two-dimensional sparse array with math ops.
 template <typename T>
 class OCTAVE_API MSparse : public Sparse<T>
 {

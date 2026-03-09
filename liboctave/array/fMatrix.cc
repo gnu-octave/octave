@@ -2882,7 +2882,7 @@ xgemm (const FloatMatrix& a, const FloatMatrix& b,
             {
               const char ctra = get_blas_trans_arg (tra);
               F77_XFCN (sgemv, SGEMV, (F77_CONST_CHAR_ARG2 (&ctra, 1),
-                                       lda, tda, 1.0,  a.data (), lda,
+                                       lda, tda, 1.0, a.data (), lda,
                                        b.data (), 1, 0.0, c, 1
                                        F77_CHAR_ARG_LEN (1)));
             }
@@ -2891,7 +2891,7 @@ xgemm (const FloatMatrix& a, const FloatMatrix& b,
         {
           const char crevtrb = get_blas_trans_arg (! trb);
           F77_XFCN (sgemv, SGEMV, (F77_CONST_CHAR_ARG2 (&crevtrb, 1),
-                                   ldb, tdb, 1.0,  b.data (), ldb,
+                                   ldb, tdb, 1.0, b.data (), ldb,
                                    a.data (), 1, 0.0, c, 1
                                    F77_CHAR_ARG_LEN (1)));
         }

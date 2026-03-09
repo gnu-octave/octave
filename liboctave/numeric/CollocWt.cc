@@ -133,17 +133,17 @@ static void dif (octave_idx_type nt, double *root, double *dif1,
 //
 // Output parameters:
 //
-//   root   : one dimensional vector containing on exit the
+//   root   : one-dimensional vector containing on exit the
 //            n + n0 + n1 zeros of the node polynomial used in the
 //            interpolation routine
 //
-//   dif1   : one dimensional vector containing the first derivative
+//   dif1   : one-dimensional vector containing the first derivative
 //            of the node polynomial at the zeros
 //
-//   dif2   : one dimensional vector containing the second derivative
+//   dif2   : one-dimensional vector containing the second derivative
 //            of the node polynomial at the zeros
 //
-//   dif3   : one dimensional vector containing the third derivative
+//   dif3   : one-dimensional vector containing the third derivative
 //            of the node polynomial at the zeros
 
 static bool
@@ -230,7 +230,7 @@ jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
           z /= zc;
           x -= z;
 
-          // Famous last words:  100 iterations should be more than
+          // Famous last words: 100 iterations should be more than
           // enough in all cases.
 
           if (++k > 100 || math::isnan (z))
@@ -297,16 +297,16 @@ jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
 //
 // Output parameters:
 //
-//   dif1   : one dimensional vector containing the first derivative
+//   dif1   : one-dimensional vector containing the first derivative
 //            of the node polynomial at the zeros
 //
-//   dif2   : one dimensional vector containing the second derivative
+//   dif2   : one-dimensional vector containing the second derivative
 //            of the node polynomial at the zeros
 //
-//   dif3   : one dimensional vector containing the third derivative
+//   dif3   : one-dimensional vector containing the third derivative
 //            of the node polynomial at the zeros
 //
-//   vect   : one dimensional vector of computed weights
+//   vect   : one-dimensional vector of computed weights
 
 static void
 dfopr (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,

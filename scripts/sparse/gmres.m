@@ -28,7 +28,7 @@
 ## @deftypefnx {} {@var{x} =} gmres (@var{A}, @var{b}, @var{restart}, @var{tol}, @var{maxit}, @var{M}, [], @var{x0}, @dots{})
 ## @deftypefnx {} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} gmres (@var{A}, @var{b}, @dots{})
 ## Solve @code{A x = b} using the Preconditioned GMRES iterative method with
-## restart, a.k.a. PGMRES(restart).
+## restart, a.k.a.@: PGMRES(restart).
 ##
 ## The input arguments are:
 ##
@@ -262,9 +262,9 @@ function [x_min, flag, relres, it, resvec] = ...
   size_b = rows (b);
 
   if (tol >= 1)
-    warning ("Input tol is bigger than 1. \n Try to use a smaller tolerance.");
+    warning ("Input tol is bigger than 1.\nTry to use a smaller tolerance.");
   elseif (tol <= eps / 2)
-    warning ("Input tol may not be achievable by gmres. \n Try to use a bigger tolerance.");
+    warning ("Input tol may not be achievable by gmres.\nTry to use a bigger tolerance.");
   endif
 
   ## This big "if block" is to set maxit and restart in the proper way
@@ -282,7 +282,7 @@ function [x_min, flag, relres, it, resvec] = ...
     maxit = 1;
     max_iter_number = min (size_b, 10);
   elseif (restart > size_b) && (empty_maxit)
-    warning ("RESTART is %d but it should be bounded by SIZE(A,2).\n Setting restart to %d. \n", restart, size_b);
+    warning ("RESTART is %d but it should be bounded by SIZE(A,2).\nSetting restart to %d.\n", restart, size_b);
     restart = size_b;
     maxit = 1;
     max_iter_number = restart;
@@ -290,12 +290,12 @@ function [x_min, flag, relres, it, resvec] = ...
     restart = size_b;
     max_iter_number = maxit;
   elseif (empty_restart) && (maxit > size_b)
-    warning ("MAXIT is %d but it should be bounded by SIZE(A,2). \n Setting MAXIT to %d", maxit, size_b);
+    warning ("MAXIT is %d but it should be bounded by SIZE(A,2).\nSetting MAXIT to %d", maxit, size_b);
     restart = size_b;
     maxit = size_b;
     max_iter_number = size_b;
   elseif (restart > size_b) && (! empty_maxit)
-    warning ("RESTART is %d but it should be bounded by SIZE(A,2).\n Setting restart to %d. \n", restart, size_b);
+    warning ("RESTART is %d but it should be bounded by SIZE(A,2).\nSetting restart to %d.\n", restart, size_b);
     restart = size_b;
     max_iter_number = restart * maxit;
   elseif (restart == size_b) && (maxit <= size_b)
@@ -406,49 +406,49 @@ function [x_min, flag, relres, it, resvec] = ...
     switch (flag)
       case {0} # gmres converged
         printf ("gmres (%d) converged at outer iteration %d (inner iteration %d) ",restart, it (1), it (2));
-        printf ("to a solution with relative residual %d \n", relres);
+        printf ("to a solution with relative residual %d\n", relres);
       case {1} # max number of iteration reached
         printf ("gmres (%d) stopped at outer iteration %d (inner iteration %d) ", restart, outer_it, restart_it-1);
         printf ("without converging to the desired tolerance %d ", tol);
-        printf ("because the maximum number of iterations was reached \n");
+        printf ("because the maximum number of iterations was reached\n");
         printf ("The iterated returned (number %d(%d)) ", it(1), it(2));
-        printf ("has relative residual %d \n", relres);
+        printf ("has relative residual %d\n", relres);
       case {2} # preconditioner singular
         printf ("gmres (%d) stopped at outer iteration %d (inner iteration %d) ",restart, outer_it, restart_it-1);
         printf ("without converging to the desired tolerance %d ", tol);
-        printf ("because the preconditioner matrix is singular \n");
+        printf ("because the preconditioner matrix is singular\n");
         printf ("The iterated returned (number %d(%d)) ", it(1), it(2));
-        printf ("has relative residual %d \n", relres);
+        printf ("has relative residual %d\n", relres);
       case {3} # stagnation
         printf ("gmres (%d) stopped at outer iteration %d (inner iteration %d) ", restart, outer_it, restart_it - 1);
         printf ("without converging to the desired tolerance %d", tol);
-        printf ("because it stagnates. \n");
+        printf ("because it stagnates.\n");
         printf ("The iterated returned (number %d(%d)) ", it(1), it(2));
-        printf ("has relative residual %d \n", relres);
+        printf ("has relative residual %d\n", relres);
     endswitch
   elseif ((nargout < 2) && (restart == size_b)) # no restart
     switch (flag)
       case {0} # gmres converged
         printf ("gmres converged at iteration %d ", it(2));
-        printf ("to a solution with relative residual %d \n", relres);
+        printf ("to a solution with relative residual %d\n", relres);
       case {1} # max number of iteration reached
         printf ("gmres stopped at iteration %d ", restart_it - 1);
         printf ("without converging to the desired tolerance %d ", tol);
-        printf ("because the maximum number of iterations was reached \n");
+        printf ("because the maximum number of iterations was reached\n");
         printf ("The iterated returned (number %d) ", it(2));
-        printf ("has relative residual %d \n", relres);
+        printf ("has relative residual %d\n", relres);
       case {2} # preconditioner ill-conditioned
         printf ("gmres stopped at iteration %d ", restart_it - 1);
         printf ("without converging to the desired tolerance %d ", tol);
-        printf ("because the preconditioner matrix is singular \n")
+        printf ("because the preconditioner matrix is singular\n")
         printf ("The iterated returned (number %d) ", it (2));
-        printf ("has relative residual %d \n", relres);
+        printf ("has relative residual %d\n", relres);
       case {3} # stagnation
         printf ("gmres stopped at iteration %d ", restart_it - 1);
         printf ("without converging at the desired tolerance %d ", tol);
         printf ("because it stagnates\n");
         printf ("The iterated returned (number %d) ", it(2));
-        printf ("has relative residual %d \n", relres);
+        printf ("has relative residual %d\n", relres);
     endswitch
   endif
 

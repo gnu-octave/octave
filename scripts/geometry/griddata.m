@@ -205,7 +205,7 @@ function [rx, ry, rz] = griddata (x, y, z, varargin)
       ## Compatible with Matlab v4 interpolation method, based on
       ## D. Sandwell 1987 and Deng & Tang 2011.
 
-      ## The free space Green Function which solves the two dimensional
+      ## The free space Green Function which solves the two-dimensional
       ## Biharmonic PDE
       ##
       ## Delta(Delta(G(X))) = delta(X)

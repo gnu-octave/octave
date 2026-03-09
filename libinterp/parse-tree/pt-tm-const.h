@@ -63,7 +63,7 @@ union stack_element;
 // row, then create summary info for the full array.  Compute the
 // result type and dimension first before copying values.
 
-// FIXME: Handle overloading of horzcat and vertcat for for built-in
+// FIXME: Handle overloading of horzcat and vertcat for built-in
 // types.
 
 // Summary info about the current row or matrix.

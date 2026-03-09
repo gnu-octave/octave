@@ -839,7 +839,7 @@ u8_from_wstring (const std::wstring& wchar_string)
 
 // But they have no way of knowing which encoding we are using for
 // the passed string.  So they have no way of reliably converting to
-// a wchar_t array.  (I.e. there is no possible fix for these
+// a wchar_t array.  (I.e., there is no possible fix for these
 // functions with current C or C++.)
 
 // To solve the dilemma, the function "get_ASCII_filename" first
@@ -854,7 +854,7 @@ u8_from_wstring (const std::wstring& wchar_string)
 // file name (8.3 naming scheme) which only consists of ASCII characters
 // and are safe to pass.  However, short file names can be disabled for
 // performance reasons on the file system level with NTFS and they are not
-// stored on other file systems (e.g. ExFAT).  So there is no guarantee
+// stored on other file systems (e.g., ExFAT).  So there is no guarantee
 // that these exist.
 
 // If short file names are not stored, a hard link to the file is

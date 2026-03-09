@@ -274,7 +274,7 @@ function varargout = textread (filename, format = "%f", varargin)
     iwhsp = find (strcmpi ("whitespace", varargin));
     whsp = varargin{iwhsp + 1};
     idx = regexp (str, eol_char, "once");
-    ## 2. Get first data line til EOL. Avoid corner case of just one line
+    ## 2. Get first data line til EOL.  Avoid corner case of just one line
     if (! isempty (idx))
       str = str(1:idx-1);
     endif
@@ -288,7 +288,7 @@ function varargout = textread (filename, format = "%f", varargin)
       ## 5A. Count spaces, add one to get nr of data fields per line
       ncols = numel (strfind (str, " ")) + 1;
     else
-      ## 3B. Just count delimiters. FIXME: delimiters could occur in literals
+      ## 3B. Just count delimiters.  FIXME: delimiters could occur in literals
       delimiter = varargin{idelimiter+1};
       ncols = numel (regexp (str, sprintf ("[%s]", delimiter))) + 1;
     endif

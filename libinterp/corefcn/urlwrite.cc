@@ -461,57 +461,56 @@ Undocumented internal function.
 
   struct weboptions options;
 
-  cdef_object object
+  cdef_object webopt
     = args (nargin - 1).classdef_object_value () -> get_object ();
 
-  // We could've used object.map_value () instead to return a map but that
-  // shows a warning about about overriding access restrictions.
+  // We could have used webopt.map_value () instead to return a map, but that
+  // shows a warning about overriding access restrictions.
   // Nevertheless, we are keeping checking that here if the keys are not
   // equal to "delete" and "display", getting away with the warning.
-  string_vector keys = object.map_keys ();
+  string_vector keys = webopt.map_keys ();
 
   for (int i = 0; i < keys.numel (); i++)
     {
-      if (keys(i) == "Timeout")
+      const std::string key = keys(i);
+      if (key == "UserAgent")
         {
-          float timeout = object.get (keys(i)).float_value ();
+          options.UserAgent = webopt.get (key).string_value ();
+        }
+      else if (key == "Timeout")
+        {
+          float timeout = webopt.get (key).float_value ();
+          // Convert milliseconds to seconds.
           options.Timeout = static_cast<long> (timeout * 1000);
         }
-
-      if (keys(i) == "HeaderFields")
+      else if (key == "Username")
         {
-          options.HeaderFields = object.get (keys(i)).cellstr_value ();
+          options.Username = webopt.get (key).string_value ();
         }
-
-      // FIXME: 'delete' and 'display', auto-generated, probably by cdef_object
-      // class?  Remaining fields have already been adjusted elsewhere in the
-      // m-script.  Set 'value' as the Value of the Key wherever it's a string.
-      if (keys(i) != "Timeout" && keys(i) != "HeaderFields"
-          && keys(i) != "delete" && keys(i) != "display")
+      else if (key == "Password")
         {
-          std::string value = object.get (keys(i)).string_value ();
-
-          if (keys(i) == "UserAgent")
-            options.UserAgent = value;
-
-          if (keys(i) == "Username")
-            options.Username = value;
-
-          if (keys(i) == "Password")
-            options.Password = value;
-
-          if (keys(i) == "ContentReader")
-            // Unimplemented.  Only for MATLAB compatibility.
-            options.ContentReader = "";
-
-          if (keys(i) == "RequestMethod")
-            method = value;
-
-          if (keys(i) == "ArrayFormat")
-            options.ArrayFormat = value;
-
-          if (keys(i) == "CertificateFilename")
-            options.CertificateFilename = "";
+          options.Password = webopt.get (key).string_value ();
+        }
+      else if (key == "ContentReader")
+        {
+          // Unimplemented.  Only for MATLAB compatibility.
+          options.ContentReader = "";
+        }
+      else if (key == "RequestMethod")
+        {
+          method = webopt.get (key).string_value ();
+        }
+      else if (key == "ArrayFormat")
+        {
+          options.ArrayFormat = webopt.get (key).string_value ();
+        }
+      else if (key == "HeaderFields")
+        {
+          options.HeaderFields = webopt.get (key).cellstr_value ();
+        }
+      else if (key == "CertificateFilename")
+        {
+          options.CertificateFilename = webopt.get (key).string_value ();
         }
     }
 

@@ -293,7 +293,7 @@ namespace Utils
         int h = qMin (dv(0), static_cast<octave_idx_type> (height));
 
         // If size mismatch, take data from center of CDATA and
-        // place in in center of QImage.
+        // place in center of QImage.
         int x_img_off = (w < width ? (width - w) / 2 : 0);
         int y_img_off = (h < height ? (height - h) / 2 : 0);
         int x_cdat_off = (dv(1) > w ? (dv(1) - w) / 2 : 0);

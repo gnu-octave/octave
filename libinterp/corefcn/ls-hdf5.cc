@@ -402,7 +402,7 @@ hdf5_get_scalar_attr (octave_hdf5_id loc_id, octave_hdf5_id type_id,
 
 // The following subroutines creates an HDF5 representations of the way
 // we will store Octave complex types (pairs of floating-point numbers).
-// NUM_TYPE is the HDF5 numeric type to use for storage (e.g.
+// NUM_TYPE is the HDF5 numeric type to use for storage (e.g.,
 // H5T_NATIVE_DOUBLE to save as 'double').  Note that any necessary
 // conversions are handled automatically by HDF5.
 
@@ -1418,7 +1418,7 @@ add_hdf5_data (octave_hdf5_id loc_id, const octave_value& tc_in,
   if (tc_in.is_classdef_object ())
     {
       warning_with_id ("Octave:save:classdef:unsupported",
-                       "Saving classdef objects is not supported. "
+                       "Saving classdef objects is not supported.  "
                        "Attempting to save '%s' as struct.",
                        name.c_str ());
       tc = tc_in.classdef_object_value ()->map_value (false, false);
@@ -1460,11 +1460,11 @@ add_hdf5_data (octave_hdf5_id loc_id, const octave_value& tc_in,
   if (space_id < 0)
     goto error_cleanup;
 #if defined (HAVE_HDF5_18)
-  data_type_id = H5Dcreate (data_id, "type",  type_id, space_id,
+  data_type_id = H5Dcreate (data_id, "type", type_id, space_id,
                             octave_H5P_DEFAULT, octave_H5P_DEFAULT,
                             octave_H5P_DEFAULT);
 #else
-  data_type_id = H5Dcreate (data_id, "type",  type_id, space_id,
+  data_type_id = H5Dcreate (data_id, "type", type_id, space_id,
                             octave_H5P_DEFAULT);
 #endif
   if (data_type_id < 0

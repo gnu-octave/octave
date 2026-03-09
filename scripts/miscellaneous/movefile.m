@@ -93,7 +93,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
     cmd = [cmd " " cmd_force_flag];
   endif
 
-  ## If f1 has more than 1 element f2 must be a directory
+  ## If f1 has more than 1 element then f2 must be a directory
   isdir_f2 = isfolder (f2);
   if (numel (f1) > 1 && ! isdir_f2)
     if (nargout == 0)

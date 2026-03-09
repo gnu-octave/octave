@@ -485,7 +485,7 @@ octave_legacy_range::load_binary (std::istream& is, bool swap,
 
 // The following subroutines creates an HDF5 representation of the way
 // we will store Octave range types (triplets of floating-point numbers).
-// NUM_TYPE is the HDF5 numeric type to use for storage (e.g.
+// NUM_TYPE is the HDF5 numeric type to use for storage (e.g.,
 // H5T_NATIVE_DOUBLE to save as 'double').  Note that any necessary
 // conversions are handled automatically by HDF5.
 

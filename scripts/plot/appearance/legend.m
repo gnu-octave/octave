@@ -821,7 +821,7 @@ function opts = parse_opts (varargin)
         msg = "legend: ignoring extra objects.";
         if (! isempty (warn_propval))
           msg = [msg ' "' warn_propval '" interpreted as a property ' , ...
-                 "name. Use a cell array of strings to specify labels ", ...
+                 "name.  Use a cell array of strings to specify labels ", ...
                  "that match a legend property name."];
         endif
         if (warn_extra_obj)
@@ -870,7 +870,7 @@ function [labels, next_idx] = displayname_or_default (hplots, hl = [])
   empty_label_idx = cellfun ('isempty', labels);
 
   if (any (empty_label_idx) && ! isempty (hl))
-    ## Empty strings must not be blindly replaced by data%d. If there exist
+    ## Empty strings must not be blindly replaced by data%d.  If there exist
     ## an old text object that was affected an empty string, keep it as is.
     kids = get (hl, "children");
     htext = kids(strcmp (get (kids, "type"), "text"));
@@ -961,7 +961,7 @@ function update_layout_cb (hl, ~, update_item = false)
         y1 += dy/2;
       endif
 
-      set (hl, "position",  pos, "xlim", [x0 x1], "ylim", [y0 y1]);
+      set (hl, "position", pos, "xlim", [x0 x1], "ylim", [y0 y1]);
     endif
 
   unwind_protect_cleanup
@@ -1853,7 +1853,7 @@ endfunction
 %!demo
 %! clf;
 %! x = 0:1;
-%! plot (x,x,  x,2*x, x,3*x);
+%! plot (x,x,  x,2*x,  x,3*x);
 %! title ("Labels with interpreted Greek text");
 %! h = legend ('\alpha', '\beta=2\alpha', '\gamma=3\alpha');
 %! set (h, "interpreter", "tex");

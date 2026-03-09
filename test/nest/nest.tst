@@ -38,7 +38,7 @@
 %!assert (recursive_nest3 (), 5)
 
 ## FIXME: The following test works in Matlab R2020b, but in Octave it never
-##        worked.  The output of "script_nest" is unassigned. This got
+##        worked.  The output of "script_nest" is unassigned.  This got
 ##        revealed by fixing bug #58686.
 
 %!test <*58691> assert (script_nest (), 5)

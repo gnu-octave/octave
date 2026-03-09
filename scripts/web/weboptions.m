@@ -54,7 +54,7 @@ classdef weboptions < handle
   ## @item
   ## @samp{UserAgent} --- Specify the User Agent for the connection.
   ##
-  ## Default value is @samp{Octave/version}, where @samp{version} is the
+  ## Default value is @samp{Octave/VERSION}, where @samp{VERSION} is the
   ## current version of Octave as returned by @code{version}.
   ##
   ## @item
@@ -67,12 +67,12 @@ classdef weboptions < handle
   ## @item
   ## @samp{Username} --- User identifier for a basic HTTP connection.
   ##
-  ## Default is @qcode{''}.  It must be a string.
+  ## Default is @qcode{""}.  It must be a string or character vector.
   ##
   ## @item
   ## @samp{Password} --- User authentication password for HTTP connection.
   ##
-  ## Default is @qcode{''}.  It must be a string or character vector.
+  ## Default is @qcode{""}.  It must be a string or character vector.
   ##
   ## Programming Note: If you display a @code{weboption} object with the
   ## Password property set, the value is displayed as a string containing
@@ -90,28 +90,6 @@ classdef weboptions < handle
   ## @samp{KeyValue} --- Specify the value of the key @samp{KeyName}.
   ##
   ## @samp{KeyName} must already be assigned in order to specify this field.
-  ##
-  ## @item
-  ## @samp{@nospell{HeaderFields}} --- Specify header fields for the
-  ## connection.
-  ##
-  ## Names and values of header fields, specified as an m-by-2 cell array of
-  ## strings, to add to the HTTP request header.
-  ## @code{@nospell{HeaderFields}@{i,1@}} is the name of a field and
-  ## @code{@nospell{HeaderFields}@{i,2@}} is its value.
-  ##
-  ## @example
-  ## @group
-  ## weboptions ("HeaderFields",
-  ##             @{"Content-Length", "78" ;
-  ##              "Content-Type", "application/json"@})
-  ## @end group
-  ## @end example
-  ##
-  ## @noindent
-  ## creates a weboptions object that contains two header fields:
-  ## @code{Content-Length} with value @code{78} and @code{Content-Type} with
-  ## value @code{application/json}.
   ##
   ## @item
   ## @samp{ContentType} --- Specify the content type of the data.
@@ -145,6 +123,28 @@ classdef weboptions < handle
   ## compatibility.
   ##
   ## @item
+  ## @samp{@nospell{HeaderFields}} --- Specify header fields for the
+  ## connection.
+  ##
+  ## Names and values of header fields, specified as an m-by-2 cell array of
+  ## strings, to add to the HTTP request header.
+  ## @code{@nospell{HeaderFields}@{i,1@}} is the name of a field and
+  ## @code{@nospell{HeaderFields}@{i,2@}} is its value.
+  ##
+  ## @example
+  ## @group
+  ## weboptions ("HeaderFields",
+  ##             @{"Content-Length", "78" ;
+  ##              "Content-Type", "application/json"@})
+  ## @end group
+  ## @end example
+  ##
+  ## @noindent
+  ## creates a weboptions object that contains two header fields:
+  ## @code{Content-Length} with value @code{78} and @code{Content-Type} with
+  ## value @code{application/json}.
+  ##
+  ## @item
   ## @samp{CertificateFilename} --- Not yet implemented.  Only for @sc{matlab}
   ## compatibility.
   ## @end itemize
@@ -160,12 +160,12 @@ classdef weboptions < handle
     Password = "";
     KeyName = "";
     KeyValue = "";
-    HeaderFields = {};
     ContentType = "auto";
     ContentReader = "";
     MediaType = "auto";
     RequestMethod = "auto";
     ArrayFormat = "csv";
+    HeaderFields = {};
     CertificateFilename = "";
   endproperties
 
@@ -199,7 +199,9 @@ classdef weboptions < handle
     endfunction
 
     function f = set.UserAgent (f, value)
-      if (! ischar (value) && ! isrow (value))
+      if (isempty (value))
+        value = "";
+      elseif (! (ischar (value) && isrow (value)))
         error ("weboptions: UserAgent must be a string");
       endif
       f.UserAgent = value;
@@ -217,22 +219,28 @@ classdef weboptions < handle
     endfunction
 
     function f = set.Username (f, value)
-      if (! ischar (value) && ! isrow (value))
+      if (isempty (value))
+        value = "";
+      elseif (! (ischar (value) && isrow (value)))
         error ("weboptions: Username must be a string");
       endif
       f.Username = value;
     endfunction
 
     function f = set.Password (f, value)
-      if (! ischar (value) && ! isrow (value))
+      if (isempty (value))
+        value = "";
+      elseif (! (ischar (value) && isrow (value)))
         error ("weboptions: Password must be a string");
       endif
       f.Password = value;
     endfunction
 
     function f = set.KeyName (f, value)
-      if (! ischar (value) && ! isrow (value))
-        error ("weboptions: invalid KeyName value");
+      if (isempty (value))
+        value = "";
+      elseif (! (ischar (value) && isrow (value)))
+        error ("weboptions: KeyName must be a string");
       endif
       f.KeyName = value;
     endfunction
@@ -241,7 +249,59 @@ classdef weboptions < handle
       if (isempty (f.KeyName) && ! isempty (value))
         error ("weboptions: KeyName field empty.  Cannot set KeyValue.");
       endif
+      if (isempty (value))
+        value = "";
+      elseif (! (ischar (value) && isrow (value)))
+        if (! (isnumeric (value) || islogical (value)) || ! isscalar (value))
+          error ("weboptions: KeyValue must be a string or a logical/numeric scalar");
+        endif
+        ## FIXME: Matab keeps original class of value rather than a string.
+        value = num2str (value);
+      endif
       f.KeyValue = value;
+    endfunction
+
+    function f = set.ContentType (f, value)
+      if (! any (strcmpi (value, {"auto", "json", "text"})))
+        error ("weboptions: invalid ContentType value");
+      endif
+      f.ContentType = value;
+    endfunction
+
+    function f = set.ContentReader (f, value)
+      ## FIXME: Should emit a warning about unimplemented feature
+      if (isempty (value))
+        value = "";
+      elseif (! is_function_handle (value))
+        error ("weboptions: ContentReader must be a function handle");
+      endif
+      f.ContentReader = value;
+    endfunction
+
+    function f = set.MediaType (f, value)
+      ## FIXME: Should emit a warning about unimplemented feature
+      if (isempty (value))
+        value = "";
+      elseif (! (ischar (value) && isrow (value)))
+        error ("weboptions: MediaType must be a string");
+      endif
+      f.MediaType = value;
+    endfunction
+
+    function f = set.RequestMethod (f, value)
+      if (! any (strcmpi (value,
+                          {"auto", "get", "put", "post", "delete", "patch"})))
+        error ("weboptions: invalid RequestMethod value");
+      endif
+      f.RequestMethod = value;
+
+    endfunction
+
+    function f = set.ArrayFormat (f, value)
+      if (! any (strcmpi (value, {"csv", "json", "php", "repeating"})))
+        error ("weboptions: invalid ArrayFormat value");
+      endif
+      f.ArrayFormat = value;
     endfunction
 
     function f = set.HeaderFields (f, value)
@@ -258,50 +318,13 @@ classdef weboptions < handle
 
     endfunction
 
-    function f = set.ContentType (f, value)
-      if (! isempty (value))
-        if (! any (strcmpi (value, {"auto", "json", "text"})))
-          error ("weboptions: invalid ContentType value");
-        endif
-      endif
-      f.ContentType = value;
-    endfunction
-
-    function f = set.ContentReader (f, value)
-      if (! is_function_handle (value))
-        error ("weboptions: ContentReader must be a function handle");
-      endif
-        ## FIXME: Should emit a warning about unimplemented feature
-      f.ContentReader = value;
-    endfunction
-
-    function f = set.MediaType (f, value)
-      ## FIXME: Should emit a warning about unimplemented feature
-      f.MediaType = value;
-    endfunction
-
-    function f = set.RequestMethod (f, value)
-      if (! isempty (value))
-        if (! any (strcmpi (value,
-                            {"auto", "get", "put", "post", "delete", "patch"})))
-          error ("weboptions: invalid RequestMethod value");
-        endif
-      endif
-      f.RequestMethod = value;
-
-    endfunction
-
-    function f = set.ArrayFormat (f, value)
-      if (! isempty (value))
-        if (! any (strcmpi (value, {"csv", "json", "php", "repeating"})))
-          error ("weboptions: invalid ArrayFormat value");
-        endif
-      endif
-      f.ArrayFormat = value;
-    endfunction
-
     function f = set.CertificateFilename (f, value)
       ## FIXME: Should emit a warning about unimplemented feature
+      if (isempty (value))
+        value = "";
+      elseif (! (ischar (value) && isrow (value)))
+        error ("weboptions: CertificateFilename must be a string");
+      endif
       f.CertificateFilename = value;
     endfunction
 
@@ -311,7 +334,8 @@ classdef weboptions < handle
       Password = repmat ("*", 1, numel (num2str (f.Password)));
 
       if (! isempty (f.ContentReader))
-        ContentReader = disp (f.ContentReader);
+        ## Strip newline from output of disp()
+        ContentReader = (disp (f.ContentReader))(1:end-1);
       else
         ContentReader = "[]";
       endif

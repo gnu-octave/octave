@@ -2424,7 +2424,7 @@ the interval from @math{-\pi} to @math{\pi} is performed.
 %! assert (m, m_exp);
 %! assert (idx, i_exp);
 
-## Test "linear" option with ND array
+## Test "linear" option with N-D array
 %!shared x
 %! x = randi ([-10, 10], 3, 4, 5, 2);
 %!test
@@ -2745,7 +2745,7 @@ in the interval from @math{-\pi} to @math{\pi} is performed.
 %! assert (m, m_exp);
 %! assert (idx, i_exp);
 
-## Test "linear" option with ND array
+## Test "linear" option with N-D array
 %!shared x
 %! x = randi ([-10, 10], 3, 4, 5, 2);
 %!test

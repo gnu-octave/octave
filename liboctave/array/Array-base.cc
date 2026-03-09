@@ -39,7 +39,7 @@
 #include "oct-error.h"
 #include "oct-locbuf.h"
 
-// One dimensional array class.  Handles the reference counting for
+// One-dimensional array class.  Handles the reference counting for
 // all the derived classes.
 
 template <typename T, typename Alloc>

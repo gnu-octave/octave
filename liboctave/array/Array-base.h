@@ -296,7 +296,7 @@ public:
     m_rep->m_count++;
   }
 
-  //! nD uninitialized ctor.
+  //! N-D uninitialized ctor.
   OCTARRAY_OVERRIDABLE_FUNC_API
   explicit Array (const dim_vector& dv)
     : m_dimensions (dv),
@@ -306,7 +306,7 @@ public:
     m_dimensions.chop_trailing_singletons ();
   }
 
-  //! nD initialized ctor.
+  //! N-D initialized ctor.
   OCTARRAY_OVERRIDABLE_FUNC_API
   explicit Array (const dim_vector& dv, const T& val)
     : m_dimensions (dv),
@@ -972,14 +972,14 @@ public:
 
   //! Returns true if this->dims () == dv, and if so, replaces this->m_dimensions
   //! by a shallow copy of dv.  This is useful for maintaining several arrays
-  //! with supposedly equal dimensions (e.g. structs in the interpreter).
+  //! with supposedly equal dimensions (e.g., structs in the interpreter).
   OCTARRAY_API bool optimize_dimensions (const dim_vector& dv);
 
 private:
   OCTARRAY_API static void instantiation_guard ();
 };
 
-// We use a variadic template for template template parameter so that
+// We use a variadic template for template parameter so that
 // we don't have to specify all the template parameters and limit this
 // to Container<T>. http://stackoverflow.com/a/20499809/1609556
 template<typename T, typename Alloc>

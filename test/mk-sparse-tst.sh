@@ -92,7 +92,7 @@
 #    helper print_mapper_test
 #        sub-helper function of gen_mapper_tests to print individual tests
 #    helper gen_mapper_tests
-#        Tests all of the one argument mapper functions. There are a few
+#        Tests all of the one argument mapper functions.  There are a few
 #        specific tests that abs, real and imag return real values.
 #    helper gen_unaryop_tests
 #        functions and operators which transform a single matrix
@@ -1054,7 +1054,7 @@ EOF
 
 # =============================================================
 # Specific solver tests for matrices that will test all of the solver
-# code. Uses alpha and beta
+# code.  Uses alpha and beta
 gen_solver_tests() {
 
 if $preset; then

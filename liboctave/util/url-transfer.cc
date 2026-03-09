@@ -739,9 +739,6 @@ public:
   // Sets the various options specified by weboptions object.
   void set_weboptions (const struct weboptions& options)
   {
-    // Remove this after completing fixmes.
-    std::string temp = "";
-
     set_header_fields (options.HeaderFields);
 
     SETOPT (CURLOPT_TIMEOUT_MS, options.Timeout);
@@ -764,17 +761,18 @@ public:
           }
       }
 
-    // Unimplemented.  Only for MATLAB compatibility.
+    // FIXME: Implement missing options for MATLAB compatibility.
+    /*************************************************************
     if (! options.ContentReader.empty ())
-      temp = options.ContentReader;
+      { }
 
-    // Unimplemented.  Only for MATLAB compatibility.
     if (! options.ArrayFormat.empty ())
-      temp = options.ArrayFormat;
+      { }
 
-    // Unimplemented.  Only for MATLAB compatibility.
     if (! options.CertificateFilename.empty ())
-      temp = options.CertificateFilename;
+      { }
+
+    *************************************************************/
   }
 
 private:

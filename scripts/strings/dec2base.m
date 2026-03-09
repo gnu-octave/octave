@@ -271,7 +271,7 @@ endfunction
 %!assert (dec2base (-129, 2, 9), "101111111")
 %!assert (dec2base (-129, 2), "01111111")
 ## FIXME: should dec2base (-129, 2) return "01111111" or ""101111111"?
-## The second is an explicit 9-bit universe. The first is an implied 9-bit
+## The second is an explicit 9-bit universe.  The first is an implied 9-bit
 ## universe but the user needs to be careful not to mistake it for +127, which
 ## is true in modular arithmetic anyway (i.e., +127 == -129 in 8-bits).
 ## Currently we work around this by telling the user in `help dec2base` to

@@ -156,7 +156,8 @@ qstr2ptsvectord (QString str)
   return pts;
 }
 
-// Extract field arguments in a style-like string, e.g. "bla field(1,34,56) bla"
+// Extract field arguments in a style-like string, e.g.,
+// "bla field(1,34,56) bla"
 QString
 get_field (QString str, QString field)
 {
@@ -472,7 +473,7 @@ draw (QDomElement& parent_elt, pdfpainter& painter)
 #else
                   QStringRef tf {&str};
 #endif
-                  QTransform  tform =
+                  QTransform tform =
                     parseTransformationMatrix (tf) * painter.transform ();
                   painter.setTransform (tform);
                 }
@@ -901,10 +902,10 @@ main (int argc, char **argv)
   const char *doc = "See \"octave-svgconvert -h\"";
   const char *help = "Usage:\n\
 octave-svgconvert infile fmt dpi font reconstruct outfile\n\n\
-Convert svg file to pdf, or svg. All arguments are mandatory:\n\
+Convert svg file to pdf, or svg.  All arguments are mandatory:\n\
 * infile: input svg file or \"-\" to indicate that the input svg file should be \
 read from stdin\n\
-* fmt: format of the output file. May be one of pdf or svg\n\
+* fmt: format of the output file.  May be one of pdf or svg\n\
 * dpi: device dependent resolution in screen pixel per inch\n\
 * font: specify a file name for the default FreeSans font\n\
 * reconstruct: specify whether to reconstruct triangle to polygons\n\

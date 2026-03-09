@@ -55,11 +55,11 @@
 ## zticklabels, get, set}
 ## @end deftypefn
 
-## FIXME:  Octave's polar plot implementation does not currently create the
-##         properties tticklabel, tticklabelmode, and ttickmode.  Fully
-##         implemented versions of those proporties could simplify much of the
-##         code below, which could then mimick much the behavior of the
-##         equivalent Cartesian functions.
+## FIXME: Octave's polar plot implementation does not currently create the
+##        properties tticklabel, tticklabelmode, and ttickmode.  Fully
+##        implemented versions of those proporties could simplify much of the
+##        code below, which could then mimick much the behavior of the
+##        equivalent Cartesian functions.
 
 function labels = thetaticklabels (varargin)
 

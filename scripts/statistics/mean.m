@@ -654,11 +654,11 @@ function m = robust_mean_sum (x, dim, n, w = [])
     endif
 
     if (inputs_bad)
-      ## Inputs are not finite. The naive m is the correct answer.
+      ## Inputs are not finite.  The naive m is the correct answer.
       return;
     endif
 
-    ## Inputs are finite, but result is Inf. This is overflow.
+    ## Inputs are finite, but result is Inf.  This is overflow.
     ## Re-calculate using scaling.
 
     ## Calculate max magnitude along operating dimension.

@@ -402,7 +402,7 @@ endfunction
 %!assert <*50583> (cov ([]), NaN)
 %!assert <*50583> (cov (single ([])), single (NaN))
 %!assert <*50583> (cov ([], []), NaN (2, 2))
-%!assert <*50583> (cov (single ([]), single([])),  single (NaN (2, 2)))
+%!assert <*50583> (cov (single ([]), single([])), single (NaN (2, 2)))
 %!assert <*50583> (cov ([], single ([])), single (NaN (2, 2)))
 %!assert <*50583> (cov (single ([]), []), single (NaN (2, 2)))
 %!assert <*50583> (cov (ones (1, 0)), NaN)

@@ -254,7 +254,7 @@ octave_char_matrix_str::cellstr_value () const
   Array<std::string> retval;
 
   if (m_matrix.ndims () != 2)
-    error ("cellstr: cannot convert multidimensional arrays");
+    error ("cellstr: cannot convert multi-dimensional arrays");
 
   const charMatrix chm (m_matrix);
   octave_idx_type nr = chm.rows ();

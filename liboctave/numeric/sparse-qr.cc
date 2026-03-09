@@ -130,7 +130,7 @@ private:
 
   cholmod_common m_cc;
   cholmod_sparse *m_R;  // R factor
-                        // Column permutation for A. Fill-reducing ordering.
+                        // Column permutation for A.  Fill-reducing ordering.
   SuiteSparse_long *m_E;
   cholmod_sparse *m_H;  // Householder vectors
   cholmod_dense *m_Htau;  // beta scalars

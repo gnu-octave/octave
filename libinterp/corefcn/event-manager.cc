@@ -803,7 +803,7 @@ Internal function for updating the status of some features in the GUI.
 {
   // This is currently a stub and should only be activated some
   // interpreter action only implemented in m-files requires to update
-  // a status indicator in the gui. BUT: This internal function can
+  // a status indicator in the gui.  BUT: This internal function can
   // be activated by the user leading to gui indicators not reflecting
   // the real state of the related feature.
   return ovl ();

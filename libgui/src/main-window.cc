@@ -680,7 +680,7 @@ main_window::focus_changed (QWidget *, QWidget *new_widget)
       m_active_dock = dock;
 
       // En-/disable global shortcuts (preventing conflicts with
-      // readline. Do it here because it relies on m_active_dock
+      // readline.  Do it here because it relies on m_active_dock
       if (cmd_involved)
         configure_shortcuts ();
     }
@@ -1434,7 +1434,7 @@ main_window::request_open_file ()
   if (is_internal &&
       settings.bool_value (ed_open_dlg_follows_file))
     {
-      // Get directory of current editor file. If it is still empty (new
+      // Get directory of current editor file.  If it is still empty (new
       // editor tab), the last directory is selected by the file dialog.
       QFileInfo file_info (m_editor_window->get_current_filename ());
       directory = file_info.canonicalPath ();
@@ -1687,11 +1687,11 @@ main_window::set_window_layout ()
   if (isMaximized ())
     {
       // If the window state is restored to maximized layout, the
-      // horizontal layout is not preserved. This cann be avoided by
-      // setting the geometry to the max. available geometry. However, on
+      // horizontal layout is not preserved.  This can be avoided by
+      // setting the geometry to the max. available geometry.  However, on
       // X11, the available geometry (excluding task bar etc.) is equal to
       // the total geometry leading to a full screen mode without window
-      // decorations. This in turn can be avoided by explicitly adding
+      // decorations.  This in turn can be avoided by explicitly adding
       // a title bar in the window flags.
 
       // Get available geometry for current screen and set this
@@ -1980,8 +1980,15 @@ main_window::find_files (const QString& start_dir)
                m_file_browser, &file_system_browser::set_current_directory);
 
       connect (m_find_files_dlg, &find_files_dialog::file_selected,
+#if defined (HAVE_QSCINTILLA)
+               [this](const QString& file_name, const find_files_data& ff_data)
+                    { m_editor_window->request_open_file (
+                                file_name, QString (), -1, false, false, true,
+                                "", -1, QString (), ff_data);
+                    });
+#else
                this, qOverload<const QString&> (&main_window::open_file_signal));
-
+#endif
       m_find_files_dlg->setWindowModality (Qt::NonModal);
     }
 
@@ -2954,7 +2961,7 @@ main_window::reset_windows ()
   QTimer::singleShot (250, this, [this] () { do_reset_windows (true, true, true); });
 }
 
-// Create the default layout of the main window. Do not use
+// Create the default layout of the main window.  Do not use
 // restoreState () and restoreGeometry () with default values since
 // this might lead to problems when the Qt version changes
 void

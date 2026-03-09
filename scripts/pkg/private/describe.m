@@ -149,8 +149,8 @@ function pkg_idx_struct = parse_pkg_idx (packdir)
 
   while (! feof (fid) || line != -1)
     if (! any (! isspace (line)) || line(1) == "#" || any (line == "="))
-      ## Comments,  blank lines or comments about unimplemented
-      ## functions: do nothing
+      ## Comments, blank lines, or comments about unimplemented functions:
+      ## Do nothing
       ## FIXME: probably comments and pointers to external functions
       ## could be treated better when printing to screen?
     elseif (! isempty (strfind (line, ">>")))

@@ -114,7 +114,7 @@
 ## When operating along a single dimension, @var{W} must be a vector of the
 ## same length as the operating dimension or it must have the same size as
 ## @var{x}.  When operating over an array slice defined by @var{vecdim},
-## @var{W} must have the same size as the operating array slice, i.e.
+## @var{W} must have the same size as the operating array slice, i.e.,
 ## @code{size (@var{A} - @var{F})(@var{vecdim})}, or the same size as
 ## @code{@var{A} - @var{F}}.
 ##

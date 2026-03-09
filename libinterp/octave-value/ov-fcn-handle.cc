@@ -589,8 +589,8 @@ public:
     // function handle object is valid.
 
     // FIXME: This should probably dispatch to the respective class method.
-    // But that breaks if a function handle is used in a class method with
-    // e.g. bsxfun with arguments of a different class (see bug #59661).
+    // But that breaks if a function handle is used in a class method with,
+    // e.g., bsxfun with arguments of a different class (see bug #59661).
     // m_fcn = symtab.find_method (m_name, m_dispatch_class);
     m_fcn = symtab.find_function (m_name, octave_value_list ());
 
@@ -1610,11 +1610,11 @@ simple_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       return false;
     }
 #if defined (HAVE_HDF5_18)
-  data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid,
+  data_hid = H5Dcreate (group_hid, "nm", type_hid, space_hid,
                         octave_H5P_DEFAULT, octave_H5P_DEFAULT,
                         octave_H5P_DEFAULT);
 #else
-  data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid,
+  data_hid = H5Dcreate (group_hid, "nm", type_hid, space_hid,
                         octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0
@@ -2679,11 +2679,11 @@ base_anonymous_fcn_handle::save_hdf5 (octave_hdf5_id loc_id,
       return false;
     }
 #if defined (HAVE_HDF5_18)
-  data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid,
+  data_hid = H5Dcreate (group_hid, "nm", type_hid, space_hid,
                         octave_H5P_DEFAULT, octave_H5P_DEFAULT,
                         octave_H5P_DEFAULT);
 #else
-  data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid,
+  data_hid = H5Dcreate (group_hid, "nm", type_hid, space_hid,
                         octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0
@@ -2711,11 +2711,11 @@ base_anonymous_fcn_handle::save_hdf5 (octave_hdf5_id loc_id,
     }
 
 #if defined (HAVE_HDF5_18)
-  data_hid = H5Dcreate (group_hid, "fcn",  type_hid, space_hid,
+  data_hid = H5Dcreate (group_hid, "fcn", type_hid, space_hid,
                         octave_H5P_DEFAULT, octave_H5P_DEFAULT,
                         octave_H5P_DEFAULT);
 #else
-  data_hid = H5Dcreate (group_hid, "fcn",  type_hid, space_hid,
+  data_hid = H5Dcreate (group_hid, "fcn", type_hid, space_hid,
                         octave_H5P_DEFAULT);
 #endif
   if (data_hid < 0

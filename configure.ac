@@ -82,7 +82,7 @@ AC_CONFIG_SRCDIR([libinterp/octave.cc])
 AC_CONFIG_HEADERS([config.h:config.in.h])
 
 ### Initialize Automake
-AM_INIT_AUTOMAKE([1.14 -Wno-portability -Wno-override tar-ustar subdir-objects dist-lzip dist-xz])
+AM_INIT_AUTOMAKE([1.14 -Wno-portability -Wno-override subdir-objects info-in-builddir tar-ustar dist-lzip dist-xz])
 
 ## Add option to enable silent rules and make silent the default behavior.
 AM_SILENT_RULES([yes])
@@ -869,7 +869,7 @@ AM_CONDITIONAL([AMCOND_BUILD_EXTERNAL_LIBXERBLA],
   [test -n "$BUILD_EXTERNAL_LIBXERBLA"])
 
 ### Set options for dynamic linking if enabled.
-dnl Options set only only if we are building shared libs and some API for
+dnl Options set only if we are building shared libs and some API for
 dnl dynamic linking has been detected.
 
 dnl FIXME: A lot of the following duplicates the functionality of

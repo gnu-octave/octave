@@ -2203,8 +2203,8 @@ do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
   return retval;
 }
 
-// Nd case.  Works for Arrays and octave_map.
-// Uses Nd indexing.
+// N-D case.  Works for Arrays and octave_map.
+// Uses N-D indexing.
 
 template <typename ArrayND>
 Cell
@@ -2291,7 +2291,7 @@ do_mat2cell (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
 }
 
 // General case.  Works for any class supporting do_index_op.
-// Uses Nd indexing.
+// Uses N-D indexing.
 
 Cell
 do_mat2cell (octave_value& a, const Array<octave_idx_type> *d, int nd)

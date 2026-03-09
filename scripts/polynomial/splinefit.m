@@ -170,7 +170,7 @@ endfunction
 %! plot (x, y, "s", x, ppval (pp, x), "r", breaks, ppval (pp, breaks), "+r");
 %! xlabel ("Independent Variable");
 %! ylabel ("Dependent Variable");
-%! title ("Fit a piece-wise polynomial of order 4");
+%! title ("Fit a piecewise polynomial of order 4");
 %! legend ({"data", "fit", "breaks"});
 %! axis tight
 %! ylim auto
@@ -187,7 +187,7 @@ endfunction
 %! plot (x, y, "s", x, ppval (pp, x), "r", breaks, ppval (pp, breaks), "+r");
 %! xlabel ("Independent Variable");
 %! ylabel ("Dependent Variable");
-%! title ("Fit a periodic piece-wise polynomial of order 2");
+%! title ("Fit a periodic piecewise polynomial of order 2");
 %! legend ({"data", "fit", "breaks"});
 %! axis tight
 %! ylim auto
@@ -230,7 +230,7 @@ endfunction
 %! plot (x, y, "s", x, ppval (pp, x), "r", breaks, ppval (pp, breaks), "+r");
 %! xlabel ("Independent Variable");
 %! ylabel ("Dependent Variable");
-%! title ("Fit a 5th order piece-wise periodic polynomial with constraints");
+%! title ("Fit a 5th order piecewise periodic polynomial with constraints");
 %! legend ({"data", "fit", "breaks"});
 %! axis tight
 %! ylim auto

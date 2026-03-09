@@ -648,7 +648,7 @@ bitshift (10, [-2, -1, 0, 1, 2])
 %!assert (bitshift (uint16 (16), 2), uint16 ( 64))
 %!assert (bitshift (uint32 (16), 3), uint32 (128))
 %!assert (bitshift (uint64 (16), 4), uint64 (256))
-%!assert (bitshift (uint8 (255), 1), uint8 (254))
+%!assert (bitshift (uint8 (255), 1),  uint8 (254))
 
 %!error <K must be a scalar or array of integers> bitshift (16, 1.5)
 %!error bitshift (16, {1})

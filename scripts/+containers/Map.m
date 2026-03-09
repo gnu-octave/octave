@@ -713,7 +713,7 @@ endclassdef
 %! assert (numel (k), 6);
 %! assert (m.isKey({1, 4; 10, 5}), [true,false; false,true]);
 
-## Test that non-scalar objects force ValueType to "any"
+## Test that nonscalar objects force ValueType to "any"
 %!test
 %! key = [2, 3, 4];
 %! val = {eye(2), eye(3), eye(4)};

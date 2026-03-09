@@ -127,7 +127,7 @@ static double
 pprsc (double my)
 {
   static double my_last = -1.0;
-  static double m,  k2, k4, k1, k5;
+  static double m, k2, k4, k1, k5;
   static double dl, dr, r1, r2, r4, r5, ll, lr, l_my, c_pm,
          f1, f2, f4, f5, p1, p2, p3, p4, p5, p6;
   double        Dk, X, Y;

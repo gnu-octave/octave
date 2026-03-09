@@ -277,7 +277,7 @@ private:
   // A flag telling whether event processing must be constantly on.
   int m_event_processing;
 
-  // Cache of already parsed latex strings. Store a separate list of keys
+  // Cache of already parsed latex strings.  Store a separate list of keys
   // to allow for erasing oldest entries if cache size becomes too large.
   std::unordered_map<std::string, latex_data> m_latex_cache;
   std::list<std::string> m_latex_keys;

@@ -11,7 +11,7 @@ classdef overloaded_horzcat_vertcat_class
     ## The implementation of "fakecat" is the exact same as the real "cat"
     ## function in overloaded_cat_class.
     ##
-    ## The idea behind overloading only horzcat and vertcat is that 2D object
+    ## The idea behind overloading only horzcat and vertcat is that 2-D object
     ## concatenation can be overloaded using the bracket syntax like so:
     ##
     ## >> o1 = overloaded_horzcat_vertcat_class;
@@ -32,7 +32,7 @@ classdef overloaded_horzcat_vertcat_class
     ##
     ##       data: [1; 2]
     ##
-    ## ... but 3D object concatenation or directly using the "cat" function
+    ## ... but 3-D object concatenation or directly using the "cat" function
     ## will not be overloaded.
     ##
     ## >> arr = cat(3, o1, o2);

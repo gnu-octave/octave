@@ -71,7 +71,7 @@ find_files_dialog::find_files_dialog (QWidget *p)
   m_file_name_edit = new QComboBox;
   m_file_name_edit->setToolTip (tr ("Enter the filename search patterns.\n"
                                     "Several different patterns can be\n"
-                                    "separated by ';', e.g. '*.cc ; *.h'"));
+                                    "separated by ';', e.g., '*.cc ; *.h'"));
   m_file_name_edit->setEditable (true);
   m_file_name_edit->setMaxCount (m_mru_length);
 
@@ -353,6 +353,14 @@ find_files_dialog::start_find ()
   m_content_case_check->setEnabled (false);
   m_contains_text_edit->setEnabled (false);
 
+  // Fill the data structure with the curren settings, since check boxes and
+  // and search text might be changed afterwards and would not match the
+  // files in the list of matches anymore
+  m_find_files_data.find_in_files = m_contains_text_check->isChecked ();
+  m_find_files_data.case_sensitive = ! m_content_case_check->isChecked ();
+  m_find_files_data.search_text = m_contains_text_edit->currentText ();
+
+  // Start searching
   m_status_bar->showMessage (tr ("Searching..."));
   m_timer->start (0);
 }
@@ -430,7 +438,7 @@ find_files_dialog::item_double_clicked (const QModelIndex& idx)
       if (info.isDir ())
         Q_EMIT dir_selected (info.absoluteFilePath ());
       else
-        Q_EMIT file_selected (info.absoluteFilePath ());
+        Q_EMIT file_selected (info.absoluteFilePath (), m_find_files_data);
     }
 }
 

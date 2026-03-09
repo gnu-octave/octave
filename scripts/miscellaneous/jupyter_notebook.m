@@ -423,7 +423,7 @@ classdef jupyter_notebook < handle
           if (status == 0)
             ## Delete open figures before raising the error.
             delete (fig_ids_new);
-            error (["jupyter_notebook: cannot create a temporary directory. ", ...
+            error (["jupyter_notebook: cannot create a temporary directory.  ", ...
                     msg]);
           endif
 
@@ -436,7 +436,7 @@ classdef jupyter_notebook < handle
           [status, msg] = rmdir (obj.tmpdir);
           if (status == 0)
             error (["jupyter_notebook: cannot delete the temporary ", ...
-                    "directory. ", msg]);
+                    "directory.  ", msg]);
           endif
           if (clear_tmpdir_property)
             obj.tmpdir = "";
@@ -582,7 +582,7 @@ classdef jupyter_notebook < handle
       ##
       ## To support a new format:
       ## 1. Create a new function that embeds the new format
-      ##    (e.g. embed_svg_image).
+      ##    (e.g., embed_svg_image).
       ## 2. Add a new case to the switch-statement below.
 
       if (isempty (get (figHandle, "children")))

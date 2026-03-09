@@ -294,7 +294,7 @@ function [x, flag, relres, iter, resvec] = pcr (A, b, tol, maxit, m, x0, varargi
                1.0/relres);
     endif
   elseif (nargout < 2 && ! breakdown)
-    fprintf (stderr, "pcr: converged in %d iterations. \n", iter);
+    fprintf (stderr, "pcr: converged in %d iterations.\n", iter);
     fprintf (stderr, "pcr: the initial residual norm was reduced %g times\n",
              1.0 / relres);
   endif

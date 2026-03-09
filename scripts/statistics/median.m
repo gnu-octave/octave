@@ -790,7 +790,7 @@ endfunction
 %!assert (median ([1, 3, 3i, 2, 1i]), 2)
 %!assert (median ([1, 2, 4i; 3, 2i, 4]), [2, 1+1i, 2+2i])
 
-## Test multidimensional arrays
+## Test multi-dimensional arrays
 %!shared a, b, x, y
 %! old_state = rand ("state");
 %! restore_state = onCleanup (@() rand ("state", old_state));

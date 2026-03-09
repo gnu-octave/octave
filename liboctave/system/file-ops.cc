@@ -876,7 +876,7 @@ canonicalize_file_name (const std::string& name, std::string& msg)
 
   std::string retval;
 
-  // FIXME:  Consider replacing this with std::filesystem::canonical on all
+  // FIXME: Consider replacing this with std::filesystem::canonical on all
   // platforms once we allow using C++17.
 
 #if defined (OCTAVE_USE_WINDOWS_API)
@@ -888,7 +888,7 @@ canonicalize_file_name (const std::string& name, std::string& msg)
 
   // Might have been a symbolic link that points to a network share.
   // It looks like opening a network share itself (not a file or folder
-  // *on* a share) might return an invalid handle. As a workaround, try to
+  // *on* a share) might return an invalid handle.  As a workaround, try to
   // open a handle to the symbolic link itself (and do not resolve it).
   if (h_file == INVALID_HANDLE_VALUE)
     h_file = CreateFileW (wname.c_str (), GENERIC_READ,

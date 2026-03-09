@@ -298,7 +298,7 @@ regexp::compile_internal ()
       //
       //   If the buffer is too small, the message is truncated (but
       //   still with a trailing zero), and the negative error code
-      //   PCRE2_ERROR_NOMEMORY is returned. None of the messages are
+      //   PCRE2_ERROR_NOMEMORY is returned.  None of the messages are
       //   very long; a buffer size of 120 code units is ample.
       //
       // so we assume that 256 will be large enough to avoid truncated

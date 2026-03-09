@@ -29,7 +29,7 @@
 ## @deftypefnx {} {} ribbon (@var{x}, @var{y}, @var{width})
 ## @deftypefnx {} {} ribbon (@var{hax}, @dots{})
 ## @deftypefnx {} {@var{h} =} ribbon (@dots{})
-## Draw a ribbon plot for the columns of @var{y} vs. @var{x}.
+## Draw a ribbon plot for the columns of @var{y} vs.@: @var{x}.
 ##
 ## If @var{x} is omitted, a vector containing the row numbers is assumed
 ## (@code{1:rows (Y)}).  Alternatively, @var{x} can also be a vector with

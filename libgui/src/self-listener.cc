@@ -164,7 +164,7 @@ void self_listener::run ()
       for (auto& rs : m_redir_streams)
         octave_fd_set (rs.pipe_fd, &redir_fds);
 
-      // Pipes with data ready for being read. No timeout, wait
+      // Pipes with data ready for being read.  No timeout, wait
       // until a file descriptor is ready.
       pipes_with_data = octave_select (fdmax, &redir_fds, nullptr, nullptr, nullptr);
 

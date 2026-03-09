@@ -520,7 +520,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-## Non-zero baseline
+## Nonzero baseline
 %!test <*65671>
 %! hf = figure ("visible", "off");
 %! unwind_protect

@@ -38,7 +38,7 @@
 #include "Sparse-fwd.h"
 #include "mx-fwd.h"
 
-// Two dimensional sparse class.  Handles the reference counting for
+// Two-dimensional sparse class.  Handles the reference counting for
 // all the derived classes.
 
 template <typename T, typename Alloc>

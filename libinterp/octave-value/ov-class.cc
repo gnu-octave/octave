@@ -1470,11 +1470,11 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   if (space_hid < 0)
     goto error_cleanup;
 #if defined (HAVE_HDF5_18)
-  class_hid = H5Dcreate (group_hid, "classname",  type_hid, space_hid,
+  class_hid = H5Dcreate (group_hid, "classname", type_hid, space_hid,
                          octave_H5P_DEFAULT, octave_H5P_DEFAULT,
                          octave_H5P_DEFAULT);
 #else
-  class_hid = H5Dcreate (group_hid, "classname",  type_hid, space_hid,
+  class_hid = H5Dcreate (group_hid, "classname", type_hid, space_hid,
                          octave_H5P_DEFAULT);
 #endif
   if (class_hid < 0 || H5Dwrite (class_hid, type_hid, octave_H5S_ALL,

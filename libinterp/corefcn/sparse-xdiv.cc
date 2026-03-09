@@ -632,21 +632,21 @@ do_leftdiv_dm_sm (const DM& d, const SM& a)
 
 // -*- 9 -*-
 SparseMatrix
-xleftdiv (const DiagMatrix& d, const SparseMatrix& a,  MatrixType&)
+xleftdiv (const DiagMatrix& d, const SparseMatrix& a, MatrixType&)
 {
   return do_leftdiv_dm_sm<SparseMatrix> (d, a);
 }
 
 // -*- 10 -*-
 SparseComplexMatrix
-xleftdiv (const DiagMatrix& d, const SparseComplexMatrix& a,  MatrixType&)
+xleftdiv (const DiagMatrix& d, const SparseComplexMatrix& a, MatrixType&)
 {
   return do_leftdiv_dm_sm<SparseComplexMatrix> (d, a);
 }
 
 // -*- 11 -*-
 SparseComplexMatrix
-xleftdiv (const ComplexDiagMatrix& d, const SparseMatrix& a,  MatrixType&)
+xleftdiv (const ComplexDiagMatrix& d, const SparseMatrix& a, MatrixType&)
 {
   return do_leftdiv_dm_sm<SparseComplexMatrix> (d, a);
 }

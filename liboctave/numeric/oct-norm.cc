@@ -458,7 +458,7 @@ vector_norm (const Array<T>& v, R& res, ACC acc)
   res = acc;
 }
 
-// sparse version - only iterates over non-zero elements
+// sparse version - only iterates over nonzero elements
 template <typename T, typename R, typename ACC>
 inline void
 vector_norm (const MSparse<T>& v, R& res, ACC acc)
@@ -1067,7 +1067,7 @@ DEFINE_XNORM_FCNS(Complex, double)
 DEFINE_XNORM_FCNS(Float, float)
 DEFINE_XNORM_FCNS(FloatComplex, float)
 
-// Sparse Frobenius norm - use accumulator over non-zeros
+// Sparse Frobenius norm - use accumulator over nonzeros
 template <typename T, typename R>
 inline void array_norm_2 (const T *v, octave_idx_type n, R& res)
 {

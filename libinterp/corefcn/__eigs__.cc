@@ -308,7 +308,7 @@ Undocumented internal function.
       if (args(2+arg_offset).is_string ())
         {
           typ = args(2+arg_offset).string_value ();
-          // Use STL function to convert to upper case
+          // Use STL function to convert to uppercase
           transform (typ.begin (), typ.end (), typ.begin (), toupper);
 
           sigma = 0.0;

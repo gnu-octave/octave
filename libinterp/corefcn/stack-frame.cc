@@ -3888,7 +3888,7 @@ script_stack_frame::get_val_offsets (const symbol_record& sym,
     }
   else
     {
-      // If frame_offset is not zero, then then we must have a symbol
+      // If frame_offset is not zero, then we must have a symbol
       // that was not originally in the script.  The values should
       // have been determined by the script_stack_frame::lookup function.
     }
@@ -3952,7 +3952,7 @@ script_stack_frame::get_val_offsets_with_insert (const symbol_record& sym,
     }
   else
     {
-      // If frame_offset is not zero, then then we must have a symbol
+      // If frame_offset is not zero, then we must have a symbol
       // that was not originally in the script.  The values were
       // determined by the script_stack_frame::lookup function.
     }

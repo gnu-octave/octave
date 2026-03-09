@@ -638,7 +638,7 @@ tree_index_expression::evaluate_n (tree_evaluator& tw, int nargout)
                         // complete index list for one big subsref
                         // call from this point on.
 
-                        // FIXME: is is also possible to have a
+                        // FIXME: is it also possible to have a
                         // static method call buried somewhere in
                         // the depths of a complex indexing
                         // expression so that we would also need to

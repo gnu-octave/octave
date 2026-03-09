@@ -633,7 +633,7 @@ Note: The keywords are compatible with the ones from @code{qr}.
 %! assert (all (abs (eig (AACX(1:2,1:2), BBCX(1:2,1:2))) >= 1));
 %! assert (all (abs (eig (AACX(3:4,3:4), BBCX(3:4,3:4))) < 1));
 %! assert (norm (QQCX'*AACX*ZZCX' - AC, "fro"), 0, 1e-12);
-%! assert (norm (QQCX'*BBCX*ZZCX' - BC, "fro"), 0,  1e-12);
+%! assert (norm (QQCX'*BBCX*ZZCX' - BC, "fro"), 0, 1e-12);
 
 %!test
 %! [AACX, BBCX, QQCX, ZZCX] = ordqz (AAC, BBC, QQC, ZZC, selectc);

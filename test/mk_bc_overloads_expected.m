@@ -1,7 +1,7 @@
 %% this script is intended to be Matlab compatible
 %% first, run the script
 %
-%%   ./build_bc_overloads_tests.sh overloads_only
+%%   ./mk-bc-overloads-tst.sh overloads_only
 %
 %% to generate the overloaded functions.
 %

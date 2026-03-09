@@ -197,7 +197,7 @@ extern "C"
 static JavaVM *jvm = nullptr;
 
 //! Whether the current thread is attached to the jvm given by #jvm.
-//! This is @c false also if no jvm exists, i.e. if #jvm is @c nullptr.
+//! This is @c false also if no jvm exists, i.e., if #jvm is @c nullptr.
 //! @see #initialize_jvm()
 //! @see #terminate_jvm()
 
@@ -646,7 +646,7 @@ get_jvm_lib_path_from_registry ()
 
 //! Initialize the java virtual machine (jvm) and field #jvm if necessary.
 //!
-//! If the jvm exists and is initialized, #jvm points to it, i.e. is not 0
+//! If the jvm exists and is initialized, #jvm points to it, i.e., is not 0
 //! and there is nothing to do.
 //!
 //! If #jvm is 0 and if at least one jvm exists, attach the current thread to

@@ -112,7 +112,7 @@ documentation::documentation (QWidget *p)
   bool copy_ok = false;
 #if defined (HAVE_QHELPENGINE_COPYCOLLECTIONFILE_TRUNCATION_BUG)
   // FIXME: Qt6: copyCollectionFile truncates the collection file.
-  // This workaround normally copies the file. Since the relativ
+  // This workaround normally copies the file.  Since the relative
   // link to the qch file is not updated then, the namespace and
   // the original qch file are re-registered.
   QStringList namespaces = m_help_engine->registeredDocumentations ();
@@ -586,7 +586,7 @@ documentation::handle_search_result_clicked (const QUrl& url)
     m_doc_browser->moveCursor (QTextCursor::Start);
   else
     {
-      // Go to to first occurrence of search text.  Going to the end and then
+      // Go to first occurrence of search text.  Going to the end and then
       // search backwards until the last occurrence ensures the search text
       // is visible in the first line of the visible part of the text.
       m_doc_browser->moveCursor (QTextCursor::End);
@@ -714,7 +714,7 @@ documentation::load_ref (const QString& ref_name)
     = m_help_engine->documentsForIdentifier (ref_name);
   // Depending on how the qch-file was generated, searching for an Id
   // might not be successful and the full text search would be started
-  // next. In order to still find an exisiting index entry, try searching
+  // next.  In order to still find an exisiting index entry, try searching
   // for the keyword as well.
   if (found_links.count () == 0)
     found_links = m_help_engine->documentsForKeyword (ref_name);

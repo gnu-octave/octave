@@ -99,7 +99,7 @@ public:
 Q_SIGNALS:
 
   //! Custom signal that tells whether a user has clicked away that dock
-  //! widget, i.e. the active dock widget has changed.
+  //! widget, i.e., the active dock widget has changed.
 
   void active_changed (bool active);
 

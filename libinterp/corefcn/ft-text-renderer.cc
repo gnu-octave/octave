@@ -1013,7 +1013,7 @@ ft_text_renderer::process_character (FT_ULong code, FT_UInt previous,
                 warn_glyph_render (code);
               else
                 {
-                  FT_BBox  glyph_bbox;
+                  FT_BBox glyph_bbox;
                   FT_Glyph_Get_CBox (glyph, FT_GLYPH_BBOX_UNSCALED,
                                      &glyph_bbox);
                   m_deltax = (glyph_bbox.xMax - face->glyph->advance.x) >> 6;

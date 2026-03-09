@@ -99,7 +99,7 @@ function [multp, idxp] = mpoles (p, tol, reorder)
 
   ## Create vector of tolerances for use in algorithm.
   vtol = zeros (Np, 1, class (p));
-  p_nz = (p != 0);     # non-zero poles
+  p_nz = (p != 0);     # nonzero poles
   vtol(! p_nz) = tol;  # use absolute tolerance for zero poles
 
   ## Find pole multiplicity by comparing relative difference of poles.

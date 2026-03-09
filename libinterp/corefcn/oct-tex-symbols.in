@@ -31,7 +31,7 @@
 # Column 3 : MS symbol code (http://www.kostis.net/charsets/symbol.htm)
 #
 # Arranged by listings in The TeXbook, Appendix F:
-# Greek lower case letters, Greek upper case, Misc Symbols type Ord,
+# Greek lowercase letters, Greek uppercase, Misc Symbols type Ord,
 # "Large" operators, Binary operators, Relations, Negated relations, Arrows,
 # Openings, Closings, Alternate names, and Other (not in Appendix F Tables).
 

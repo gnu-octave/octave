@@ -188,7 +188,7 @@ octave_TEXINFOS = \
   %reldir%/macros.texi \
   $(BUILT_OCTAVE_TEXI_SRC)
 
-INFO_DEPS += $(srcdir)/%reldir%/octave.info
+INFO_DEPS += %reldir%/octave.info
 DVIS += %reldir%/octave.dvi
 PDFS += %reldir%/octave.pdf
 PSS += %reldir%/octave.ps
@@ -206,7 +206,7 @@ OCTAVE_HTML_STAMP = $(OCTAVE_HTML_DIR)/.octave-html-stamp
 OCTAVE_CSS = %reldir%/octave.css
 HTMLDIR_CSS = $(OCTAVE_HTML_DIR)/octave.css
 
-$(srcdir)/%reldir%/octave.info: $(DOC_IMAGES_TXT) $(octave_TEXINFOS)
+%reldir%/octave.info: $(DOC_IMAGES_TXT) $(octave_TEXINFOS)
 %reldir%/octave.dvi: $(DOC_IMAGES_EPS) $(octave_TEXINFOS)
 %reldir%/octave.pdf: $(DOC_IMAGES_PDF) $(octave_TEXINFOS)
 $(OCTAVE_HTML_STAMP): $(DOC_IMAGES_PNG) $(octave_TEXINFOS)
@@ -281,7 +281,7 @@ $(srcdir)/%reldir%/octave-doc-version.texi: $(srcdir)/%reldir%/version-octave.te
 	$(SED) 's#\(@set EDITION [0-9]\+\)\..*$$#\1#' $(srcdir)/%reldir%/version-octave.texi > $@-t ; \
 	mv $@-t $@
 
-$(srcdir)/%reldir%/octave.info: %reldir%/octave.texi $(srcdir)/%reldir%/octave-doc-version.texi
+%reldir%/octave.info: %reldir%/octave.texi $(srcdir)/%reldir%/octave-doc-version.texi
 	$(AM_V_MAKEINFO)restore=: && backupdir="$(am__leading_dot)am$$$$" && \
 	am__cwd=`pwd` && $(am__cd) $(srcdir) && \
 	rm -rf $$backupdir && mkdir $$backupdir && \
@@ -336,7 +336,7 @@ $(HTMLDIR_IMAGES) $(HTMLDIR_CSS) : %reldir%/octave.html/%: %reldir%/% $(OCTAVE_H
 	$(AM_V_GEN)cp $< $@
 
 DOC_TARGETS += \
-  $(srcdir)/%reldir%/octave.info \
+  %reldir%/octave.info \
   %reldir%/doc-cache \
   %reldir%/octave.ps \
   %reldir%/octave.pdf \
@@ -355,7 +355,7 @@ endif
 
 doc_EXTRA_DIST += \
   $(BUILT_OCTAVE_TEXI_SRC) \
-  $(srcdir)/%reldir%/octave.info \
+  %reldir%/octave.info \
   %reldir%/doc-cache \
   %reldir%/octave.dvi \
   %reldir%/octave.ps \

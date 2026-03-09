@@ -156,7 +156,7 @@ current process or @var{3} is used (whichever is smaller).
     {
       if (nargin == 2)  // planner setter
         {
-          // Use STL function to convert to lower case
+          // Use STL function to convert to lowercase
           std::transform (arg0.begin (), arg0.end (), arg0.begin (), tolower);
 
           std::string arg1 = args(1).xstring_value ("fftw: METHOD must be a string");
@@ -230,7 +230,7 @@ current process or @var{3} is used (whichever is smaller).
     {
       if (nargin == 2)  //dwisdom setter
         {
-          // Use STL function to convert to lower case
+          // Use STL function to convert to lowercase
           std::transform (arg0.begin (), arg0.end (), arg0.begin (),
                           tolower);
 
@@ -266,7 +266,7 @@ current process or @var{3} is used (whichever is smaller).
       //swisdom uses fftwf_ functions (float), dwisdom fftw_ (real)
       if (nargin == 2)  //swisdom setter
         {
-          // Use STL function to convert to lower case
+          // Use STL function to convert to lowercase
           std::transform (arg0.begin (), arg0.end (), arg0.begin (),
                           tolower);
 

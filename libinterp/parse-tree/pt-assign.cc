@@ -305,7 +305,7 @@ tree_multi_assignment::evaluate_n (tree_evaluator& tw, int)
                   //
                   //    [a, ~] = f ();
                   //
-                  // Then the list of of RHS values will contain one
+                  // Then the list of RHS values will contain one
                   // element but we are iterating over the list of all
                   // RHS values.  We shouldn't complain that a value we
                   // don't need is missing from the list.

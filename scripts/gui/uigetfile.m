@@ -110,7 +110,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
   if (! isempty (idx2))
     ## FIXME: Remove handling the "position" property completely in Octave 9
     warning (['uigetfile: The "position" argument is deprecated and will ', ...
-              "be ignored. Consider removing it from the function call."]);
+              "be ignored.  Consider removing it from the function call."]);
   endif
 
   optidx = min ([idx1, nargin+1]);

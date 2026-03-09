@@ -307,9 +307,9 @@ octave_get_display_info (const char *dpy_name, int *ht, int *wd, int *dp,
           if (info.avail)
             {
               // FIXME: There is no easy way to query the pixel depth using
-              //        Wayland. The closest might be to query the used buffer
+              //        Wayland.  The closest might be to query the used buffer
               //        format and to try and defer the pixel depth from that.
-              //        But that is not easily done. So, just assume a pixel
+              //        But that is not easily done.  So, just assume a pixel
               //        depth of 32 bits.
               *dp = 32;
 

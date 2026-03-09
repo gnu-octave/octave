@@ -83,7 +83,7 @@ Completion Date:
 
 Completion Date:
 
-This will produce lots of whitespace changes, but no behavior changes. '''Must occur after patches have been added''', since whitespace changes can prevent patches from applying.
+This will produce lots of whitespace changes, but no behavior changes.  '''Must occur after patches have been added''', since whitespace changes can prevent patches from applying.
 
 * [https://wiki.octave.org/Octave_style_guide m-file style check]
 * [https://wiki.octave.org/C%2B%2B_style_guide C++ style check]

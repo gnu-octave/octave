@@ -1050,7 +1050,7 @@ periodic, @code{mod} is a better choice.
 
 %!assert <*42627> (rem (0.94, 0.01), 0.0)
 
-## Test rem (x-1, x) for x close to flintmax. Should return x-1 and not zero.
+## Test rem (x-1, x) for x close to flintmax.  Should return x-1 and not zero.
 %!test <*67339>
 %! x = flintmax - (10:-1:1);
 %! assert (rem (x-1, x), x-1);
@@ -1259,7 +1259,7 @@ negative numbers or when the values are periodic.
 %!assert <*54602> (mod (int8 (-125), int8 (0)), int8 (-125))
 %!assert <*54602> (mod (int8 (0), int8 (-25)), int8 (0))
 
-## Test mod (x-1, x) for x close to flintmax. Should return x-1 and not zero.
+## Test mod (x-1, x) for x close to flintmax.  Should return x-1 and not zero.
 %!test <*67339>
 %! x = flintmax - (10:-1:1);
 %! assert (mod (x-1, x), x-1);
@@ -4500,7 +4500,7 @@ operating dimension.
 %!assert (sum (zeros (0, 1)), 0)
 %!assert (sum (zeros (0, 1), 1), 0)
 %!assert (sum (zeros (0, 1), 2), zeros (0, 1))
-%!assert (sum (zeros (2, 0)),  zeros (1, 0))
+%!assert (sum (zeros (2, 0)), zeros (1, 0))
 %!assert (sum (zeros (2, 0), 1), zeros (1, 0))
 %!assert (sum (zeros (2, 0), 2),  [0; 0])
 %!assert (sum (zeros (0, 2)), [0, 0])
@@ -4522,9 +4522,9 @@ operating dimension.
 %!assert (sum (zeros (0, 1, "single")), single (0))
 %!assert (sum (zeros (0, 1, "single"), 1), single (0))
 %!assert (sum (zeros (0, 1, "single"), 2), zeros (0, 1, "single"))
-%!assert (sum (zeros (2, 0, "single")),  zeros (1, 0, "single"))
+%!assert (sum (zeros (2, 0, "single")), zeros (1, 0, "single"))
 %!assert (sum (zeros (2, 0, "single"), 1), zeros (1, 0, "single"))
-%!assert (sum (zeros (2, 0, "single"), 2),  single ([0; 0]))
+%!assert (sum (zeros (2, 0, "single"), 2), single ([0; 0]))
 %!assert (sum (zeros (0, 2, "single")), single ([0, 0]))
 %!assert (sum (zeros (0, 2, "single"), 1), single ([0, 0]))
 %!assert (sum (zeros (0, 2, "single"), 2), zeros (0, 1, "single"))
@@ -5043,9 +5043,9 @@ operating dimension.
 %!assert (sumsq (zeros (0, 1)), 0)
 %!assert (sumsq (zeros (0, 1), 1), 0)
 %!assert (sumsq (zeros (0, 1), 2), zeros (0, 1))
-%!assert (sumsq (zeros (2, 0)),  zeros (1, 0))
+%!assert (sumsq (zeros (2, 0)), zeros (1, 0))
 %!assert (sumsq (zeros (2, 0), 1), zeros (1, 0))
-%!assert (sumsq (zeros (2, 0), 2),  [0; 0])
+%!assert (sumsq (zeros (2, 0), 2), [0; 0])
 %!assert (sumsq (zeros (0, 2)), [0, 0])
 %!assert (sumsq (zeros (0, 2), 1), [0, 0])
 %!assert (sumsq (zeros (0, 2), 2), zeros (0, 1))
@@ -5065,9 +5065,9 @@ operating dimension.
 %!assert (sumsq (zeros (0, 1, "single")), single (0))
 %!assert (sumsq (zeros (0, 1, "single"), 1), single (0))
 %!assert (sumsq (zeros (0, 1, "single"), 2), zeros (0, 1, "single"))
-%!assert (sumsq (zeros (2, 0, "single")),  zeros (1, 0, "single"))
+%!assert (sumsq (zeros (2, 0, "single")), zeros (1, 0, "single"))
 %!assert (sumsq (zeros (2, 0, "single"), 1), zeros (1, 0, "single"))
-%!assert (sumsq (zeros (2, 0, "single"), 2),  single ([0; 0]))
+%!assert (sumsq (zeros (2, 0, "single"), 2), single ([0; 0]))
 %!assert (sumsq (zeros (0, 2, "single")), single ([0, 0]))
 %!assert (sumsq (zeros (0, 2, "single"), 1), single ([0, 0]))
 %!assert (sumsq (zeros (0, 2, "single"), 2), zeros (0, 1, "single"))
@@ -6044,7 +6044,7 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
   if (issparse)
     {
       if (dims.ndims () > 2)
-        error ("%s: sparse ND arrays not supported.", fcn);
+        error ("%s: sparse N-D arrays not supported.", fcn);
 
       switch (dt)
         {
@@ -6197,7 +6197,7 @@ fill_matrix (const octave_value_list& args, double val, float fval,
   if (issparse)
     {
       if (dims.ndims () > 2)
-        error ("%s: sparse ND arrays not supported", fcn);
+        error ("%s: sparse N-D arrays not supported", fcn);
 
       if (iscomplex)
         retval = SparseComplexMatrix (dims(0), dims(1), Complex (val, 0));
@@ -6436,7 +6436,7 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
   if (issparse)
     {
       if (dims.ndims () > 2)
-        error ("%s: sparse ND arrays not supported", fcn);
+        error ("%s: sparse N-D arrays not supported", fcn);
 
       retval = SparseBoolMatrix (dims(0), dims(1), val);
     }
@@ -6527,7 +6527,7 @@ dimensions will result in an empty matrix.  This odd behavior is for
 %!error <conversion of 1.1 .*failed> ones (1.1)
 %!error <conversion of 1.1 .*failed> ones (1, 1.1)
 %!error <conversion of 1.1 .*failed> ones ([1, 1.1])
-%!error <sparse ND .* not supported> ones (3, 3, 3, "like", speye (1))
+%!error <sparse N-D .* not supported> ones (3, 3, 3, "like", speye (1))
 %!error <must be scalar> ones (1:3, 1)
 %!error <must be scalar> ones (1, 1:3)
 %!error <must be scalar> ones (1, 2, 1:3)
@@ -6623,7 +6623,7 @@ dimensions will result in an empty matrix.  This odd behavior is for
 %!error <conversion of 1.1 .*failed> zeros (1.1)
 %!error <conversion of 1.1 .*failed> zeros (1, 1.1)
 %!error <conversion of 1.1 .*failed> zeros ([1, 1.1])
-%!error <sparse ND .* not supported> zeros (3, 3, 3, "like", speye (1))
+%!error <sparse N-D .* not supported> zeros (3, 3, 3, "like", speye (1))
 %!error <must be scalar> zeros (1:3, 1)
 %!error <must be scalar> zeros (1, 1:3)
 %!error <must be scalar> zeros (1, 2, 1:3)
@@ -9150,7 +9150,7 @@ ordered lists.
       // NOTE: Can not change this to ovl() call because arg.sort changes sidx
       //       and objects are declared const in ovl prototype.
       retval(0) = arg.sort (sidx, dim, smode);
-      // Check for index dimension extent. Set to 1 for dimension >= ndims ()
+      // Check for index dimension extent.  Set to 1 for dimension >= ndims ()
       retval(1) = idx_vector (sidx, (dim < arg.ndims ()) ? dv(dim) : 1);
     }
   else

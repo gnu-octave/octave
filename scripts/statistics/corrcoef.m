@@ -172,7 +172,7 @@ function [r, p, lci, hci] = corrcoef (x, varargin)
       endif
       ## Adjust for Octave 9.1.0 compatability behavior change in two-input
       ## cov, which now handles cov(x,y) as cov(x(:),y(:)) and returns a 2x2
-      ## covariance of the two univariate distributions x and y. The previous
+      ## covariance of the two univariate distributions x and y.  The previous
       ## scalar covariance expected for r(i,j) is contained in the (1,2)
       ## and (2,1) elements of the new array.
 

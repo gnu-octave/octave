@@ -51,7 +51,7 @@ public:
   void initializeGL ();
 
   void draw (graphics_object go);
-  uint8NDArray  do_getPixels (graphics_object go);
+  uint8NDArray do_getPixels (graphics_object go);
   void do_print (const QString& file_cmd, const QString& term,
                  graphics_object go);
   void drawZoomBox (const QPoint& p1, const QPoint& p2);
@@ -95,7 +95,7 @@ public:
   ~GLCanvas ();
 
   void draw (const graphics_handle& handle);
-  uint8NDArray  do_getPixels (const graphics_handle& handle);
+  uint8NDArray do_getPixels (const graphics_handle& handle);
   void do_print (const QString& file_cmd, const QString& term,
                  const graphics_handle& handle);
   void drawZoomBox (const QPoint& p1, const QPoint& p2);

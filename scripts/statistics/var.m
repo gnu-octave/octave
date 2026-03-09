@@ -763,7 +763,7 @@ endfunction
 #%! [~, m] = var (ones (1,3,0,2));
 #%! assert (m, NaN(1,1,0,2));
 
-## Test mean output, nD array
+## Test mean output, N-D array
 %!test <*62395>
 %! x = repmat ([1:20;6:25], [5, 2, 6, 3]);
 %! [~, m] = var (x, 0, [3 2]);

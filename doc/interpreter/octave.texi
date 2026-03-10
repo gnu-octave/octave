@@ -229,7 +229,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Test and Demo Functions::
 * Obsolete Functions::
 * Trouble::                     If you have trouble installing Octave.
-* Installation::                How to configure, compile and install Octave.
+* Installing Octave::           How to configure, compile, and install Octave.
 * Grammar and Parser::
 * Copying::                     The GNU General Public License.
 * Concept Index::               An item for each concept.
@@ -272,9 +272,9 @@ Getting Started
 * Quitting Octave::
 * Getting Help::
 * Command Line Editing::
-* Errors::
+* How Octave Reports Errors::
 * Executable Octave Programs::
-* Comments::
+* Comments in Octave Programs::
 
 Invoking Octave from the Command Line
 
@@ -285,9 +285,9 @@ Command Line Editing
 
 * Cursor Motion::
 * Killing and Yanking::
-* Commands for Text::
+* Commands for Changing Text::
 * Commands for Completion::
-* Commands for History::
+* Commands for Manipulating the History::
 * Customizing readline::
 * Customizing the Prompt::
 * Diary and Echo Commands::
@@ -297,7 +297,7 @@ Executable Octave Programs
 * Passing Arguments to Executable Scripts::
 * Dual-Purpose Executable Scripts and Octave Functions::
 
-Comments
+Comments in Octave Programs
 
 * Single Line Comments::
 * Block Comments::
@@ -569,7 +569,7 @@ C-Style I/O Functions
 * String Input Conversions::
 * Binary I/O::
 * Temporary Files::
-* EOF and Errors::
+* EOF (End of File) and Errors::
 * File Positioning::
 
 Plotting
@@ -978,7 +978,7 @@ Reporting Bugs
 * Bug Reporting::      How to report a bug effectively.
 * Sending Patches::    How to send a patch for Octave.
 
-Installation
+Installing Octave
 
 * Build Dependencies::
 * Running Configure and Make::

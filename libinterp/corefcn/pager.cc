@@ -709,7 +709,7 @@ for the terminal window that is longer than one page is sent through a
 pager.
 
 This allows you to view one screenful at a time.  Some pagers
-(such as @code{less}---@pxref{Installation}) are also capable of moving
+(such as @code{less}---@pxref{Installing Octave}) are also capable of moving
 backward on the output.
 
 When called from inside a function with the @qcode{"local"} option, the
@@ -733,7 +733,7 @@ to display terminal output on your system.
 
 The default value is normally @qcode{"less"}, @qcode{"more"}, or
 @qcode{"pg"}, depending on what programs are installed on your system.
-@xref{Installation}.
+@xref{Installing Octave}.
 
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.

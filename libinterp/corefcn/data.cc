@@ -6830,9 +6830,9 @@ The only valid options are @qcode{"double"} (default) or @qcode{"single"}.
 @end deftypefn */)
 {
 #if defined (M_E)
-  double e_val = M_E;
+  constexpr double e_val = M_E;
 #else
-  double e_val = exp (1.0);
+  constexpr double e_val = exp (1.0);
 #endif
 
   return fill_matrix (args, e_val, "e");
@@ -6996,9 +6996,9 @@ The only valid options are @qcode{"double"} (default) or @qcode{"single"}.
 @end deftypefn */)
 {
 #if defined (M_PI)
-  double pi_val = M_PI;
+  constexpr double pi_val = M_PI;
 #else
-  double pi_val = 4.0 * atan (1.0);
+  constexpr double pi_val = 4.0 * atan (1.0);
 #endif
 
   return fill_matrix (args, pi_val, "pi");

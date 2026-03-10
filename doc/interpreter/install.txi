@@ -20,7 +20,7 @@
 @c distribution, as well as in the Octave manual.
 
 @ifclear INSTALLONLY
-@node Installation
+@node Installing Octave
 @appendix Installing Octave
 @end ifclear
 
@@ -38,7 +38,7 @@ Free Software Foundation.
 the documentation make changes to the .txi source file rather than this
 derived file.
 
-@node Installation
+@node Installing Octave
 @chapter Installing Octave
 @end ifset
 

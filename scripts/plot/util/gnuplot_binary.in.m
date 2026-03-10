@@ -32,7 +32,7 @@
 ##
 ## Additional arguments to pass to the external plotting program may also be
 ## given.  The default value is @qcode{"gnuplot"} with no additional arguments.
-## @xref{Installation}.
+## @xref{Installing Octave}.
 ## @seealso{graphics_toolkit}
 ## @end deftypefn
 

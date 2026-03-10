@@ -64,7 +64,7 @@ public:
 
   explicit SparseBoolMatrix (const boolNDArray& a) : Sparse<bool> (a) { }
 
-  explicit SparseBoolMatrix (const PermMatrix& a) : Sparse<bool> (a) { };
+  explicit SparseBoolMatrix (const PermMatrix& a) : Sparse<bool> (a) { }
 
   SparseBoolMatrix (const Array<bool>& a, const octave::idx_vector& r,
                     const octave::idx_vector& c, octave_idx_type nr = -1,

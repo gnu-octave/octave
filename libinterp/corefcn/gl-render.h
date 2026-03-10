@@ -102,8 +102,8 @@ protected:
   virtual void set_linewidth (float w);
   virtual void set_linestyle (const std::string& s, bool stipple = false,
                               double linewidth = 0.5);
-  virtual void set_linecap (const std::string&) { };
-  virtual void set_linejoin (const std::string&) { };
+  virtual void set_linecap (const std::string&) { }
+  virtual void set_linejoin (const std::string&) { }
   virtual void set_polygon_offset (bool on, float offset = 0.0f);
   virtual void set_selecting (bool on)
   {

@@ -136,7 +136,7 @@ public Q_SLOTS:
 
   void doc_on_expression ();
 
-  virtual void handle_visibility_changed (bool) { };
+  virtual void handle_visibility_changed (bool) { }
 
 protected:
 

@@ -2470,11 +2470,11 @@ protected:
     graphics_handle __myhandle__ fhrs , mh
   END_PROPERTIES
 
-  virtual void update_beingdeleted () { };
+  virtual void update_beingdeleted () { }
 
   virtual void update_handlevisibility ();
 
-  virtual void update_visible () { };
+  virtual void update_visible () { }
 
 protected:
   struct cmp_caseless_str
@@ -6433,7 +6433,7 @@ public:
 
     OCTINTERP_API void update_units (const caseless_str& old_units);
     OCTINTERP_API void update_fontunits (const caseless_str& old_units);
-    void update_table_extent () { };
+    void update_table_extent () { }
     void update_fontname () { update_table_extent (); }
     void update_fontsize () { update_table_extent (); }
     void update_fontangle () { update_table_extent (); }
@@ -6727,17 +6727,17 @@ public:
 
   base_graphics_event ()
     : m_busyaction (QUEUE)
-  { };
+  { }
 
   base_graphics_event (int busyaction)
     : m_busyaction (busyaction)
-  { };
+  { }
 
   OCTAVE_DEFAULT_COPY_MOVE (base_graphics_event)
 
   virtual ~base_graphics_event () = default;
 
-  int get_busyaction () { return m_busyaction; };
+  int get_busyaction () { return m_busyaction; }
 
   virtual void execute () = 0;
 

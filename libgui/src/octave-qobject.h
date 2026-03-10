@@ -64,7 +64,7 @@ public:
 
   virtual bool notify (QObject *receiver, QEvent *e) override;
 
-  ~octave_qapplication () { };
+  ~octave_qapplication () { }
 
 Q_SIGNALS:
 

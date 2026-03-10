@@ -5458,7 +5458,7 @@ interference with readline key strokes.</source>
     <message>
         <location line="+1"/>
         <source>Save File</source>
-        <translation type="unfinished">Išsaugoti  bylą</translation>
+        <translation type="unfinished">Išsaugoti bylą</translation>
     </message>
     <message>
         <location line="+1"/>

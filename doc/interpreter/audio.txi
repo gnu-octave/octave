@@ -83,7 +83,7 @@ The following methods are used to control player playback.
 @DOCSTRING(@audioplayer/isplaying)
 
 @node Player Properties
-@subsection Properties
+@subsection Player Properties
 
 The remaining couple of methods are used to get and set various
 properties of the audioplayer object.
@@ -140,7 +140,7 @@ various ways.
 @DOCSTRING(@audiorecorder/play)
 
 @node Recorder Properties
-@subsection Properties
+@subsection Recorder Properties
 
 The remaining two methods allow you to read or alter the properties of
 audiorecorder objects.

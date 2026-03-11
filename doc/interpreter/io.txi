@@ -307,7 +307,7 @@ make your programs easier to understand.
 * String Input Conversions::
 * Binary I/O::
 * Temporary Files::
-* EOF and Errors::
+* EOF (End of File) and Errors::
 * File Positioning::
 @end menu
 
@@ -1073,8 +1073,8 @@ files will be deleted, so this step need not be executed manually.
 
 @DOCSTRING(P_tmpdir)
 
-@node EOF and Errors
-@subsection End of File and Errors
+@node EOF (End of File) and Errors
+@subsection EOF (End of File) and Errors
 
 Once a file has been opened its status can be acquired.  As an example
 the @code{feof} functions determines if the end of the file has been

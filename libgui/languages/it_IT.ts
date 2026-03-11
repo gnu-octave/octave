@@ -1727,7 +1727,7 @@ in scrittura: %2.</translation>
     <message>
         <location line="+4"/>
         <source>&amp;Remove All Bookmarks</source>
-        <translation>&amp;Rimuovi  Tutti i Segnalibri</translation>
+        <translation>&amp;Rimuovi Tutti i Segnalibri</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3868,7 +3868,7 @@ The check will happen at most once each day and news will only be displayed if t
 &lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;body&gt;
-&lt;p&gt;All&apos;avvio, Octave può opzionalmente controllare la pagina  web di Octave per ottenere notizie ed informazione recenti dalla comunità..
+&lt;p&gt;All&apos;avvio, Octave può opzionalmente controllare la pagina web di Octave per ottenere notizie ed informazione recenti dalla comunità..
 Questo controllo avviene non più di una volta al giorno e le notizie vengono mostrate soltanto se c&apos;è qualcosa di nuovo rispetto all&apos;ultima volta in cui sono state lette.&lt;/p&gt;
 &lt;p&gt;È possibile leggere le notizie anche selezionando &quot;Notizie dalla comunità&quot; dal menu &quot;Aiuto&quot; o visitando
 &lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;

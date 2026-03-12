@@ -44,21 +44,6 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-/*
-## Restore all rand* "state" values
-%!function restore_rand_states (state)
-%!  rand ("state", state.rand);
-%!  randn ("state", state.randn);
-%!endfunction
-
-%!shared old_state, restore_state
-%! ## Save and restore the states of both random number generators that are
-%! ## tested by the unit tests in this file.
-%! old_state.rand = rand ("state");
-%! old_state.randn = randn ("state");
-%! restore_state = onCleanup (@() restore_rand_states (old_state));
-*/
-
 template <typename MT>
 static octave_value
 get_qr_r (const math::qr<MT>& fact)
@@ -710,6 +695,21 @@ of an orthogonal basis of @code{span (A)}.
 }
 
 /*
+## Restore all rand* "state" values
+%!function restore_rand_states (state)
+%!  rand ("state", state.rand);
+%!  randn ("state", state.randn);
+%!endfunction
+
+%!shared old_state, restore_state
+%! ## Save and restore the states of both random number generators that are
+%! ## tested by the unit tests in this file.
+%! old_state.rand = rand ("state");
+%! old_state.randn = randn ("state");
+%! restore_state = onCleanup (@() restore_rand_states (old_state));
+*/
+
+/*
 %!test
 %! a = [0, 2, 1; 2, 1, 2];
 %!
@@ -843,17 +843,6 @@ of an orthogonal basis of @code{span (A)}.
 %! assert (size (p), [3, 3]);
 %! [q, r, p] = qr (speye (3), 0);
 %! assert (size (p), [1, 3]);
-
-## Test input validation
-%!error <Invalid call> qr ()
-%!error <Invalid call> qr (1,2,3,4)
-%!error <too many output arguments> [a,b,c,d] = qr (1)
-%!error <option string must be .*, not "foo"> qr (magic (3), "foo")
-%!error <option string must be .*, not "foo"> qr (magic (3), ones (3, 1), "foo")
-%!error <too many output arguments when called with A and B>
-%! [q, r, p] = qr (ones (3, 2), ones (3, 1));
-%!error <too many output arguments when called with A and B>
-%! [q, r, p] = qr (ones (3, 2), ones (3, 1), 0);
 
 %!function retval = __testqr (q, r, a, p)
 %!  tol = 100* eps (class (q));
@@ -1308,6 +1297,18 @@ of an orthogonal basis of @code{span (A)}.
 %! a(1,6) = -0.5;
 %! r = qr (a);
 %! assert (r'*r, a'*a, 10e-10);
+
+## Test input validation
+%!error <Invalid call> qr ()
+%!error <Invalid call> qr (1,2,3,4)
+%!error <too many output arguments> [a,b,c,d] = qr (1)
+%!error <option string must be .*, not "foo"> qr (magic (3), "foo")
+%!error <option string must be .*, not "foo"> qr (magic (3), ones (3, 1), "foo")
+%!error <too many output arguments when called with A and B>
+%! [q, r, p] = qr (ones (3, 2), ones (3, 1));
+%!error <too many output arguments when called with A and B>
+%! [q, r, p] = qr (ones (3, 2), ones (3, 1), 0);
+
 */
 
 static

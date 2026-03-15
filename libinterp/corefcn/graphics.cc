@@ -5639,6 +5639,46 @@ axes::properties::remove_child (const graphics_handle& h, bool from_root)
 }
 
 void
+axes::properties::update_visible ()
+{
+  xset (m_xlabel.handle_value (), "visible",
+        is_visible () ? "on" : "off");
+  xset (m_ylabel.handle_value (), "visible",
+        is_visible () ? "on" : "off");
+  xset (m_zlabel.handle_value (), "visible",
+        (is_visible () && ! m_is2D) ? "on" : "off");
+}
+
+/*
+## Test visibility of labels
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ("parent", hf);
+%!   hx = xlabel (hax, "X");
+%!   hy = ylabel (hax, "Y");
+%!   hz = zlabel (hax, "Z");
+%!   assert (get (hx, "visible"), "on");
+%!   assert (get (hy, "visible"), "on");
+%!   assert (get (hz, "visible"), "off");
+%!   view (3)
+%!   assert (get (hx, "visible"), "on");
+%!   assert (get (hy, "visible"), "on");
+%!   assert (get (hz, "visible"), "on");
+%!   set (hax, "visible", "off")
+%!   assert (get (hx, "visible"), "off");
+%!   assert (get (hy, "visible"), "off");
+%!   assert (get (hz, "visible"), "off");
+%!   set (hx, "visible", "on")
+%!   assert (get (hx, "visible"), "on");
+%!   assert (get (hy, "visible"), "off");
+%!   assert (get (hz, "visible"), "off");
+%! unwind_protect_cleanup
+%!   delete (hf);
+%! end_unwind_protect
+*/
+
+void
 axes::properties::adopt (const graphics_handle& h)
 {
   gh_manager& gh_mgr = octave::__get_gh_manager__ ();
@@ -6213,8 +6253,13 @@ axes::properties::update_axes_layout ()
 
   Matrix viewmat = get_view ().matrix_value ();
   m_nearhoriz = std::abs (viewmat(1)) <= 5;
+
+  bool saved_is_2D = m_is2D;
   m_is2D = viewmat(1) == 90;
 
+  if (m_is2D != saved_is_2D)
+    update_visible ();
+  
   update_ticklength ();
 }
 

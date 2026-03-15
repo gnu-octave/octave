@@ -70,13 +70,18 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   view (3);
-%!   hz = zlabel ("zlabel_string");
-%!   assert (get (gca, "zlabel"), hz);
+%!   hax = axes ();
+%!   hz = zlabel (hax, "zlabel_string");
+%!   assert (get (hax, "zlabel"), hz);
 %!   assert (get (hz, "type"), "text");
-%!   assert (get (hz, "visible"), "off");
 %!   assert (get (hz, "string"), "zlabel_string");
 %!   assert (get (hz, "color"), get (0, "defaultaxeszcolor"));
+%!   ## The z-label is invisible in 2D
+%!   view (2)
+%!   assert (get (hz, "visible"), "off");
+%!   ## The z-label is visible in 3D
+%!   view (3)
+%!   assert (get (hz, "visible"), "on");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

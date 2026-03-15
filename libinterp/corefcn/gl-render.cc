@@ -1569,8 +1569,6 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
 {
 #if defined (HAVE_OPENGL)
 
-  gh_manager& gh_mgr = __get_gh_manager__ ();
-
   int xstate = props.get_xstate ();
 
   if (xstate != AXE_DEPTH_DIR
@@ -1747,11 +1745,7 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
                               math::signum (ypTick-ypTickN)*fy*xtickoffset,
                               zpTick, 0, halign, valign, wmax, hmax);
         }
-
-      gh_mgr.get_object (props.get_xlabel ()).set ("visible", "on");
     }
-  else
-    gh_mgr.get_object (props.get_xlabel ()).set ("visible", "off");
 
 #else
 
@@ -1769,8 +1763,6 @@ void
 opengl_renderer::draw_axes_y_grid (const axes::properties& props)
 {
 #if defined (HAVE_OPENGL)
-
-  gh_manager& gh_mgr = __get_gh_manager__ ();
 
   int ystate = props.get_ystate ();
 
@@ -1949,11 +1941,7 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
                               math::signum (xpTick-xpTickN)*fx*ytickoffset,
                               zpTick, 1, halign, valign, wmax, hmax);
         }
-
-      gh_mgr.get_object (props.get_ylabel ()).set ("visible", "on");
     }
-  else
-    gh_mgr.get_object (props.get_ylabel ()).set ("visible", "off");
 
 #else
 
@@ -1970,7 +1958,6 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
 void
 opengl_renderer::draw_axes_z_grid (const axes::properties& props)
 {
-  gh_manager& gh_mgr = __get_gh_manager__ ();
 
   int zstate = props.get_zstate ();
 
@@ -2150,11 +2137,7 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
                                   yPlaneN, 2, halign, valign, wmax, hmax);
             }
         }
-
-      gh_mgr.get_object (props.get_zlabel ()).set ("visible", "on");
     }
-  else
-    gh_mgr.get_object (props.get_zlabel ()).set ("visible", "off");
 }
 
 void

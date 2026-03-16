@@ -5968,8 +5968,8 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const Matrix& b,
           A->nrow = nr;
           A->ncol = nc;
 
-          A->p = cidx ();
-          A->i = ridx ();
+          A->p = const_cast<octave_idx_type *> (cidx ());
+          A->i = const_cast<octave_idx_type *> (ridx ());
           A->nzmax = nnz ();
           A->packed = true;
           A->sorted = true;
@@ -5983,7 +5983,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const Matrix& b,
           A->stype = 1;
           A->xtype = CHOLMOD_COMPLEX;
 
-          A->x = data ();
+          A->x = const_cast<Complex *> (data ());
 
           cholmod_dense Bstore;
           cholmod_dense *B = &Bstore;
@@ -6205,8 +6205,8 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
           A->nrow = nr;
           A->ncol = nc;
 
-          A->p = cidx ();
-          A->i = ridx ();
+          A->p = const_cast<octave_idx_type *> (cidx ());
+          A->i = const_cast<octave_idx_type *> (ridx ());
           A->nzmax = nnz ();
           A->packed = true;
           A->sorted = true;
@@ -6220,14 +6220,14 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
           A->stype = 1;
           A->xtype = CHOLMOD_COMPLEX;
 
-          A->x = data ();
+          A->x = const_cast<Complex *> (data ());
 
           cholmod_sparse Bstore;
           cholmod_sparse *B = &Bstore;
           B->nrow = b.rows ();
           B->ncol = b.cols ();
-          B->p = b.cidx ();
-          B->i = b.ridx ();
+          B->p = const_cast<octave_idx_type *> (b.cidx ());
+          B->i = const_cast<octave_idx_type *> (b.ridx ());
           B->nzmax = b.nnz ();
           B->packed = true;
           B->sorted = true;
@@ -6241,7 +6241,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
           B->stype = 0;
           B->xtype = CHOLMOD_REAL;
 
-          B->x = b.data ();
+          B->x = const_cast<double *> (b.data ());
 
           cholmod_factor *L = CHOLMOD_NAME(analyze) (A, cm);
           CHOLMOD_NAME(factorize) (A, L, cm);
@@ -6495,8 +6495,8 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
           A->nrow = nr;
           A->ncol = nc;
 
-          A->p = cidx ();
-          A->i = ridx ();
+          A->p = const_cast<octave_idx_type *> (cidx ());
+          A->i = const_cast<octave_idx_type *> (ridx ());
           A->nzmax = nnz ();
           A->packed = true;
           A->sorted = true;
@@ -6510,7 +6510,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
           A->stype = 1;
           A->xtype = CHOLMOD_COMPLEX;
 
-          A->x = data ();
+          A->x = const_cast<Complex *> (data ());
 
           cholmod_dense Bstore;
           cholmod_dense *B = &Bstore;
@@ -6711,8 +6711,8 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
           A->nrow = nr;
           A->ncol = nc;
 
-          A->p = cidx ();
-          A->i = ridx ();
+          A->p = const_cast<octave_idx_type *> (cidx ());
+          A->i = const_cast<octave_idx_type *> (ridx ());
           A->nzmax = nnz ();
           A->packed = true;
           A->sorted = true;
@@ -6726,14 +6726,14 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
           A->stype = 1;
           A->xtype = CHOLMOD_COMPLEX;
 
-          A->x = data ();
+          A->x = const_cast<Complex *> (data ());
 
           cholmod_sparse Bstore;
           cholmod_sparse *B = &Bstore;
           B->nrow = b.rows ();
           B->ncol = b.cols ();
-          B->p = b.cidx ();
-          B->i = b.ridx ();
+          B->p = const_cast<octave_idx_type *> (b.cidx ());
+          B->i = const_cast<octave_idx_type *> (b.ridx ());
           B->nzmax = b.nnz ();
           B->packed = true;
           B->sorted = true;
@@ -6747,7 +6747,7 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
           B->stype = 0;
           B->xtype = CHOLMOD_COMPLEX;
 
-          B->x = b.data ();
+          B->x = const_cast<Complex *> (b.data ());
 
           cholmod_factor *L = CHOLMOD_NAME(analyze) (A, cm);
           CHOLMOD_NAME(factorize) (A, L, cm);

@@ -239,10 +239,10 @@ ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T *cols_norm,
   else
     opt = OFF;
 
-  // Input matrix pointers
-  octave_idx_type *cidx = sm.cidx ();
-  octave_idx_type *ridx = sm.ridx ();
-  T *data = sm.data ();
+  // Input matrix pointers (const -- sm is read-only)
+  const octave_idx_type *cidx = sm.cidx ();
+  const octave_idx_type *ridx = sm.ridx ();
+  const T *data = sm.data ();
 
   // Output matrix data structures.  Because the final zero pattern of
   // the output matrix is not known due to fill-in elements, a heuristic

@@ -251,8 +251,10 @@ ors2crs (const SparseMatrix& a)
   A.z = nullptr;
 
 #  if defined (OCTAVE_SUITESPARSE_LONG_MATCH)
-  A.p = reinterpret_cast<SuiteSparse_long *> (a.cidx ());
-  A.i = reinterpret_cast<SuiteSparse_long *> (a.ridx ());
+  A.p = reinterpret_cast<SuiteSparse_long *>
+        (const_cast<octave_idx_type *> (a.cidx ()));
+  A.i = reinterpret_cast<SuiteSparse_long *>
+        (const_cast<octave_idx_type *> (a.ridx ()));
 #  else
   SuiteSparse_long *A_p;
   A_p = new SuiteSparse_long[ncols+1];
@@ -295,8 +297,10 @@ ocs2ccs (const SparseComplexMatrix& a)
   A.z = nullptr;
 
 #  if defined (OCTAVE_SUITESPARSE_LONG_MATCH)
-  A.p = reinterpret_cast<SuiteSparse_long *> (a.cidx ());
-  A.i = reinterpret_cast<SuiteSparse_long *> (a.ridx ());
+  A.p = reinterpret_cast<SuiteSparse_long *>
+        (const_cast<octave_idx_type *> (a.cidx ()));
+  A.i = reinterpret_cast<SuiteSparse_long *>
+        (const_cast<octave_idx_type *> (a.ridx ()));
 #  else
   SuiteSparse_long *A_p;
   A_p = new SuiteSparse_long[ncols+1];

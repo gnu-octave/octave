@@ -78,6 +78,7 @@ jobs:
             gperf:p
             openblas:p
             pcre2:p
+            readline:p
 
             arpack:p
             curl:p

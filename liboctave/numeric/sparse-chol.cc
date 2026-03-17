@@ -263,8 +263,8 @@ sparse_chol<chol_type>::sparse_chol_rep::init (const chol_type& a,
   ac->nrow = a_nr;
   ac->ncol = a_nc;
 
-  ac->p = a.cidx ();
-  ac->i = a.ridx ();
+  ac->p = const_cast<octave_idx_type *> (a.cidx ());
+  ac->i = const_cast<octave_idx_type *> (a.ridx ());
   ac->nzmax = a.nnz ();
   ac->packed = true;
   ac->sorted = true;
@@ -281,7 +281,7 @@ sparse_chol<chol_type>::sparse_chol_rep::init (const chol_type& a,
   if (a_nr < 1)
     ac->x = &dummy;
   else
-    ac->x = a.data ();
+    ac->x = const_cast<chol_elt *> (a.data ());
 
   // use natural ordering if no q output parameter
   if (natural)

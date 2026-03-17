@@ -575,9 +575,11 @@ public:
   T * xdata () { return m_rep->m_data; }
   T& xdata (octave_idx_type i) { return m_rep->data (i); }
 
+  // Explicit mutable-access name, consistent with Array::rwdata.
+  T * rwdata () { make_unique (); return m_rep->m_data; }
+
   T data (octave_idx_type i) const { return m_rep->data (i); }
-  // FIXME: shouldn't this be returning const T*?
-  T * data () const { return m_rep->m_data; }
+  const T * data () const { return m_rep->m_data; }
 
   octave_idx_type * ridx () { make_unique (); return m_rep->m_ridx; }
   octave_idx_type& ridx (octave_idx_type i)
@@ -588,9 +590,11 @@ public:
   octave_idx_type * xridx () { return m_rep->m_ridx; }
   octave_idx_type& xridx (octave_idx_type i) { return m_rep->ridx (i); }
 
+  // Explicit mutable-access name, consistent with Array::rwdata.
+  octave_idx_type * rwridx () { make_unique (); return m_rep->m_ridx; }
+
   octave_idx_type ridx (octave_idx_type i) const { return m_rep->cridx (i); }
-  // FIXME: shouldn't this be returning const octave_idx_type*?
-  octave_idx_type * ridx () const { return m_rep->m_ridx; }
+  const octave_idx_type * ridx () const { return m_rep->m_ridx; }
 
   octave_idx_type * cidx () { make_unique (); return m_rep->m_cidx; }
   octave_idx_type& cidx (octave_idx_type i)
@@ -601,9 +605,11 @@ public:
   octave_idx_type * xcidx () { return m_rep->m_cidx; }
   octave_idx_type& xcidx (octave_idx_type i) { return m_rep->cidx (i); }
 
+  // Explicit mutable-access name, consistent with Array::rwdata.
+  octave_idx_type * rwcidx () { make_unique (); return m_rep->m_cidx; }
+
   octave_idx_type cidx (octave_idx_type i) const { return m_rep->ccidx (i); }
-  // FIXME: shouldn't this be returning const octave_idx_type*?
-  octave_idx_type * cidx () const { return m_rep->m_cidx; }
+  const octave_idx_type * cidx () const { return m_rep->m_cidx; }
 
   octave_idx_type ndims () const { return m_dimensions.ndims (); }
 

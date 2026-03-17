@@ -6,7 +6,7 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 
 ### Graphical User Interface
 
-* When opening a file from the Fine File dialog, all occurrences of the search
+* When opening a file from the Find Files dialog, all occurrences of the search
   text are highlighted in the editor.
 
 ### Graphics backend
@@ -31,13 +31,13 @@ major release after 12):
 - Functions
 
         Function               | Replacement
-        -----------------------|------------------
+        -----------------------|--------------------------
 
 
 - Core
 
-        Function                  | Replacement
-        --------------------------|--------------------------
+        Function               | Replacement
+        -----------------------|--------------------------
 
 The following features were deprecated in Octave 10 and have been removed
 from Octave 12.
@@ -64,7 +64,6 @@ from Octave 12.
         __lo_ieee_isfinite, __lo_ieee_float_isfinite | std::isfinite  or  isfinite
         __lo_ieee_isinf,    __lo_ieee_float_isinf    | std::isinf     or  isinf
         __lo_ieee_signbit,  __lo_ieee_float_signbit  | std::signbit   or  signbit
-
 
 The following features were deprecated in Octave 11 and have been removed
 from Octave 12.
@@ -95,12 +94,27 @@ defined in the standard C++ header `<atomic>` instead.
 The following C++ functions have been removed from Octave 12:
 
         Function                | Replacement
-        ------------------------|-------------------------------------------
+        ------------------------|--------------------------------------------
         octave_get_float_format | octave::mach_info::native_float_format
         octave_is_big_endian    | octave::mach_info::words_big_endian
                                 | (or octave::mach_info::words_little_endian)
         octave_atomic_increment | ++std::atomic<...>
         octave_atomic_decrement | --std::atomic<...>
+
+### Function APIs changed without the usual deprecation period
+
+The `Sparse` class for sparse matrices behaves similarly to the `Array` class
+for full matrices.  The `Array` class provides a `data()` method which returns a
+read-only `const` pointer to the underlying data, and a `rwdata()` method which
+returns a pointer that can be used to modify the underlying data.  The `Sparse`
+class did not follow these conventions, but has been modified in Octave 12 to
+behave identically to the `Array` class.
+
+        Old Function                | New Functions
+        ----------------------------|--------------------------------------
+        Sparse::data (write-access) | Sparse::rwdata
+                                    | Sparse::rwridx (write-access to ridx)
+                                    | Sparse::rwcidx (write-access to cidx)
 
 ### Old release news
 

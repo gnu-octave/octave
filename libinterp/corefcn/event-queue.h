@@ -59,6 +59,11 @@ public:
       }
   }
 
+  // Overload functions from action-container
+  OCTAVE_API void run (std::size_t num);
+
+  void run () { run (size ()); }
+
   void discard_first ()
   {
     if (! empty ())

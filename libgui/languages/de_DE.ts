@@ -2666,18 +2666,18 @@ oder Web-Verbindungen für Nachrichten müssen im Octave Einstellungsdialog, Rei
     <name>octave::octave_qscintilla</name>
     <message>
         <location filename="../src/m-editor/octave-qscintilla.cc" line="+302"/>
-        <source>Help on</source>
-        <translation>Hilfe zu</translation>
+        <source>Help on &quot;%1&quot;</source>
+        <translation>Hilfe zu &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+2"/>
-        <source>Documentation on</source>
-        <translation>Dokumentation zu</translation>
+        <source>Documentation on &quot;%1&quot;</source>
+        <translation>Dokumentation zu &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Edit</source>
-        <translation>Bearbeiten</translation>
+        <source>Edit &quot;%1&quot;</source>
+        <translation>Bearbeite &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+15"/>

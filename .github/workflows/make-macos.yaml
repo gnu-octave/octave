@@ -75,10 +75,11 @@ jobs:
             freetype ghostscript gl2ps glpk gnuplot graphicsmagick hdf5 \
             libiconv libsndfile libtool openblas pcre2 portaudio pstoedit \
             qhull qrupdate qscintilla2 \
-            ${{ matrix.qt == '6' && 'qt5compat qtbase qttools' || 'qt@5' }} \
             rapidjson readline suite-sparse sundials texinfo \
             ccache gnu-sed openjdk pkg-config \
             automake autoconf bison gettext icoutils librsvg mactex-no-gui
+          brew install --overwrite \
+            ${{ matrix.qt == '6' && 'qt5compat qtbase qttools' || 'qt@5' }}
           eval "$(/usr/libexec/path_helper)"
           HOMEBREW_PREFIX=$(brew --prefix)
           echo "HOMEBREW_PREFIX=$(brew --prefix)" >> $GITHUB_ENV

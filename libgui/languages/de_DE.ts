@@ -45,7 +45,7 @@
     <message>
         <location filename="../qterminal/libqterminal/QTerminal.cc" line="+119"/>
         <source>Edit &quot;%1&quot;</source>
-        <translation>Editiere &quot;%1&quot;</translation>
+        <translation>Bearbeite &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1265,7 +1265,7 @@ Speichern der geänderten Datei könnte zu Datenverlust führen!</translation>
     <message>
         <location line="+10"/>
         <source>&amp;Edit anyway</source>
-        <translation>Trotzdem &amp;editieren</translation>
+        <translation>Trotzdem b&amp;earbeiten</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2251,7 +2251,7 @@ Klicken Sie auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Oc
         <source>%1 is a built-in, compiled, or inline
 function and can not be edited.</source>
         <translation>%1 ist eine interne, kompilierte oder inline
-definierte Funktion und kann nicht editiert werden.</translation>
+definierte Funktion und kann nicht bearbeitet werden.</translation>
     </message>
     <message>
         <location line="+41"/>
@@ -2666,18 +2666,18 @@ oder Web-Verbindungen für Nachrichten müssen im Octave Einstellungsdialog, Rei
     <name>octave::octave_qscintilla</name>
     <message>
         <location filename="../src/m-editor/octave-qscintilla.cc" line="+302"/>
-        <source>Help on</source>
-        <translation>Hilfe zu</translation>
+        <source>Help on &quot;%1&quot;</source>
+        <translation>Hilfe zu &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+2"/>
-        <source>Documentation on</source>
-        <translation>Dokumentation zu</translation>
+        <source>Documentation on &quot;%1&quot;</source>
+        <translation>Dokumentation zu &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Edit</source>
-        <translation>Bearbeiten</translation>
+        <source>Edit &quot;%1&quot;</source>
+        <translation>Bearbeite &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+15"/>

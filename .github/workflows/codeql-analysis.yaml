@@ -87,12 +87,9 @@ jobs:
         msystem: ['MINGW64']
         include:
           - msystem: 'MINGW64'
-            target-prefix: 'mingw-w64-x86_64'
-            target-triplet: 'x86_64-w64-mingw32'
 
     env:
       CHERE_INVOKING: 1
-      TARGET_TRIPLET:  ${{ matrix.target-triplet }}
       # perl uses cmd shell by default
       PERL5SHELL: bash -l -c
 
@@ -109,43 +106,47 @@ jobs:
           # The first block is for mandatory dependencies.
           # The second block is for optional dependencies needed when building from a release tarball.
           # The third block is for additional dependencies needed when building from a repository checkout.
+          pacboy: >-
+            autotools:p
+            cc:p
+            fc:p
+            gperf:p
+            openblas:p
+            pcre2:p
+            readline:p
+
+            arpack:p
+            curl:p
+            fftw:p
+            fltk:p
+            gl2ps:p
+            glpk:p
+            ghostscript:p
+            gnuplot:p
+            graphicsmagick:p
+            hdf5:p
+            libsndfile:p
+            portaudio:p
+            qhull:p
+            qrupdate:p
+            qscintilla:p
+            qt5-base:p
+            qt5-imageformats:p
+            qt5-svg:p
+            qt5-tools:p
+            rapidjson:p
+            suitesparse:p
+            sundials:p
+
+            ccache:p
+            icoutils:p
+            librsvg:p
+            texinfo:p
+
           install: >-
             base-devel
-            ${{ matrix.target-prefix }}-autotools
-            ${{ matrix.target-prefix }}-cc
-            ${{ matrix.target-prefix }}-gcc-fortran
-            ${{ matrix.target-prefix }}-gperf
-            ${{ matrix.target-prefix }}-lapack
-            ${{ matrix.target-prefix }}-openblas
-            ${{ matrix.target-prefix }}-pcre2
-
-            ${{ matrix.target-prefix }}-arpack
-            ${{ matrix.target-prefix }}-curl
-            ${{ matrix.target-prefix }}-fftw
-            ${{ matrix.target-prefix }}-fltk
-            ${{ matrix.target-prefix }}-gl2ps
-            ${{ matrix.target-prefix }}-glpk
-            ${{ matrix.target-prefix }}-ghostscript
-            ${{ matrix.target-prefix }}-gnuplot
-            ${{ matrix.target-prefix }}-graphicsmagick
-            ${{ matrix.target-prefix }}-hdf5
-            ${{ matrix.target-prefix }}-libsndfile
-            ${{ matrix.target-prefix }}-portaudio
-            ${{ matrix.target-prefix }}-qhull
-            ${{ matrix.target-prefix }}-qrupdate
-            ${{ matrix.target-prefix }}-qscintilla
-            ${{ matrix.target-prefix }}-qt5-base
-            ${{ matrix.target-prefix }}-qt5-imageformats
-            ${{ matrix.target-prefix }}-qt5-svg
-            ${{ matrix.target-prefix }}-qt5-tools
-            ${{ matrix.target-prefix }}-rapidjson
-            ${{ matrix.target-prefix }}-suitesparse
-            ${{ matrix.target-prefix }}-sundials
 
             git
-            ${{ matrix.target-prefix }}-ccache
-            ${{ matrix.target-prefix }}-icoutils
-            ${{ matrix.target-prefix }}-librsvg
             texinfo
 
           msystem: ${{ matrix.msystem }}
@@ -168,7 +169,7 @@ jobs:
           cd .build && ../configure \
             JAVA_HOME="" \
             --disable-docs \
-            ac_cv_search_tputs=-ltermcap
+            --with-qt=5
 
       - name: initialize CodeQL
         # Initialize the CodeQL tools for scanning.

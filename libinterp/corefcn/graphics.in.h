@@ -3988,6 +3988,8 @@ public:
     { update_label_color (m_zlabel, m_zcolor); }
 
     void update_view () { sync_positions (); }
+    
+    void update_visible ();
 
     void update_cameraposition () { update_transform (); }
     void update_cameratarget () { update_transform (); }

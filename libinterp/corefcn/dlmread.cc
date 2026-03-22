@@ -47,10 +47,10 @@
 #include "ovl.h"
 #include "utils.h"
 
-static constexpr octave_idx_type idx_max
+static constexpr octave_idx_type IDX_MAX
   = std::numeric_limits<octave_idx_type>::max () - 1;
 
-static constexpr double idx_max_dbl = double (idx_max);
+static constexpr double IDX_MAX_DBL = double (IDX_MAX);
 
 static bool
 read_cell_spec (std::istream& is, octave_idx_type& row, octave_idx_type& col)
@@ -130,8 +130,8 @@ parse_range_spec (const octave_value& range_spec,
                         stat = false;
                     }
 
-                  rup = idx_max;
-                  cup = idx_max;
+                  rup = IDX_MAX;
+                  cup = IDX_MAX;
                 }
               else
                 {
@@ -155,11 +155,25 @@ parse_range_spec (const octave_value& range_spec,
       if (range.any_element_is_nan ())
         error ("dlmread: NaN is not a valid row or column specifier");
 
-      // double --> unsigned int avoiding any overflow
-      rlo = static_cast<octave_idx_type> (std::min (range(0), idx_max_dbl));
-      clo = static_cast<octave_idx_type> (std::min (range(1), idx_max_dbl));
-      rup = static_cast<octave_idx_type> (std::min (range(2), idx_max_dbl));
-      cup = static_cast<octave_idx_type> (std::min (range(3), idx_max_dbl));
+      // Reject negative indices
+      for (octave_idx_type k = 0; k < 4; k++)
+        {
+          if (range(k) < 0)
+            error ("dlmread: RANGE indices must be non-negative");
+        }
+      // Safe type converter double to octave_idx_type
+      auto safe_idx_cast = [] (double val)
+        {
+          if (val >= IDX_MAX_DBL)
+            return IDX_MAX;
+          else
+            return static_cast<octave_idx_type> (val);
+        };
+
+      rlo = safe_idx_cast (range(0));
+      clo = safe_idx_cast (range(1));
+      rup = safe_idx_cast (range(2));
+      cup = safe_idx_cast (range(3));
     }
   else
     stat = false;
@@ -270,8 +284,8 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
   // Take a subset if a range was given.
   octave_idx_type r0 = 0;
   octave_idx_type c0 = 0;
-  octave_idx_type r1 = idx_max;
-  octave_idx_type c1 = idx_max;
+  octave_idx_type r1 = IDX_MAX;
+  octave_idx_type c1 = IDX_MAX;
   if (nargin > 2)
     {
       if (nargin == 3)

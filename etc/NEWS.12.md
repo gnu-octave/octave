@@ -36,8 +36,10 @@ major release after 12):
 
 - Core
 
-        Function               | Replacement
-        -----------------------|--------------------------
+        Function                            | Replacement
+        ------------------------------------|-------------------------------------------
+        string_vector::list_in_columns (os) | string_vector::list_in_columns (os, width)
+                                            |   width = command_editor::terminal_cols ()
 
 The following features were deprecated in Octave 10 and have been removed
 from Octave 12.

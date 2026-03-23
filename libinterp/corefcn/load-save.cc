@@ -53,6 +53,7 @@
 #include "strftime-wrapper.h"
 
 #include "Cell.h"
+#include "cmd-edit.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
@@ -513,8 +514,9 @@ load_save_system::load_vars (std::istream& stream,
           else
             {
               string_vector names (symbol_names);
+              const int width = command_editor::terminal_cols ();
 
-              names.list_in_columns (octave_stdout);
+              names.list_in_columns (octave_stdout, width);
 
               octave_stdout << "\n";
             }

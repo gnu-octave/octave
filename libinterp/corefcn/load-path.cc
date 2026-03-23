@@ -32,6 +32,7 @@
 #include <algorithm>
 #include <cctype>
 
+#include "cmd-edit.h"
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "oct-env.h"
@@ -938,7 +939,9 @@ load_path::display (std::ostream& os) const
         {
           os << "\n*** function files in " << di.m_dir_name << ":\n\n";
 
-          fcn_files.list_in_columns (os);
+          const int width = command_editor::terminal_cols ();
+
+          fcn_files.list_in_columns (os, width);
         }
 
       const dir_info::method_file_map_type& method_file_map
@@ -946,6 +949,8 @@ load_path::display (std::ostream& os) const
 
       if (! method_file_map.empty ())
         {
+          const int width = command_editor::terminal_cols ();
+
           for (const auto& cls_ci : method_file_map)
             {
               os << "\n*** methods in " << di.m_dir_name
@@ -955,7 +960,7 @@ load_path::display (std::ostream& os) const
 
               string_vector method_files = get_file_list (ci.m_method_file_map);
 
-              method_files.list_in_columns (os);
+              method_files.list_in_columns (os, width);
             }
         }
     }
@@ -2652,8 +2657,9 @@ No checks are made for duplicate elements.
                     "\nOctave's search path contains the following directories:\n\n";
 
       string_vector dirs = lp.dirs ();
+      const int width = command_editor::terminal_cols ();
 
-      dirs.list_in_columns (octave_stdout);
+      dirs.list_in_columns (octave_stdout, width);
 
       octave_stdout << "\n";
     }

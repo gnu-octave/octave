@@ -36,6 +36,7 @@
 #include "unistr-wrappers.h"
 
 #include "Cell.h"
+#include "cmd-edit.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
@@ -1238,10 +1239,12 @@ whos ans
 
   string_vector s = args(0).xstring_vector_value ("list_in_columns: ARG must be a cellstr or char array");
 
-  int width = -1;
+  int width;
 
   if (nargin > 1 && ! args(1).isempty ())
     width = args(1).strict_int_value ("list_in_columns: WIDTH must be an integer");
+  else
+    width = command_editor::terminal_cols ();
 
   std::string prefix;
 

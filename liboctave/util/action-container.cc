@@ -28,7 +28,6 @@
 #endif
 
 #include "action-container.h"
-#include "cmd-edit.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 

@@ -60,7 +60,7 @@ public:
   }
 
   // Overload functions from action-container
-  OCTAVE_API void run (std::size_t num);
+  OCTINTERP_API void run (std::size_t num);
 
   void run () { run (size ()); }
 

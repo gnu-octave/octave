@@ -37,10 +37,10 @@
 @c ------------------------------------------------------------------------
 
 @c Use smaller indent for example blocks (better feel, more code on page)
-@exampleindent 1
+@exampleindent 2
 
-@c Use smaller indent for paragraphs (better feel)
-@paragraphindent 1
+@c Best feel obtained by *not* setting paragraph indent (value is ~1.5)
+@c @paragraphindent 2
 
 @c Make the apostrophe in @code blocks cut-and-paste friendly so programmers
 @c can take examples from the Octave manual and run them directly in Octave.

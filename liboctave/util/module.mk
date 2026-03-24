@@ -3,8 +3,6 @@ UTIL_INC = \
   %reldir%/base-list.h \
   %reldir%/byte-swap.h \
   %reldir%/caseless-str.h \
-  %reldir%/cmd-edit.h \
-  %reldir%/cmd-hist.h \
   %reldir%/data-conv.h \
   %reldir%/file-info.h \
   %reldir%/glob-match.h \
@@ -30,8 +28,6 @@ UTIL_INC = \
   %reldir%/oct-mutex.h \
   %reldir%/oct-regexp.h \
   %reldir%/oct-refcount.h \
-  %reldir%/oct-rl-edit.h \
-  %reldir%/oct-rl-hist.h \
   %reldir%/oct-shlib.h \
   %reldir%/oct-sort.h \
   %reldir%/oct-string.h \
@@ -53,14 +49,10 @@ UTIL_F77_SRC = \
   %reldir%/r1mach.f
 
 UTIL_C_SRC = \
-  %reldir%/blaswrap.c \
-  %reldir%/oct-rl-edit.c \
-  %reldir%/oct-rl-hist.c
+  %reldir%/blaswrap.c
 
 UTIL_SRC = \
   %reldir%/action-container.cc \
-  %reldir%/cmd-edit.cc \
-  %reldir%/cmd-hist.cc \
   %reldir%/data-conv.cc \
   %reldir%/f77-dummy-main.cc \
   %reldir%/f77-fcn.cc \

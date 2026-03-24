@@ -112,8 +112,9 @@ validate_property_name (const std::string& who, const std::string& what,
       string_vector sv (matches);
 
       std::ostringstream os;
+      const int width = command_editor::terminal_cols ();
 
-      sv.list_in_columns (os);
+      sv.list_in_columns (os, width);
 
       std::string match_list = os.str ();
 

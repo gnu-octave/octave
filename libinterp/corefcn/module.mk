@@ -23,6 +23,8 @@ COREFCN_INC = \
   %reldir%/c-file-ptr-stream.h \
   %reldir%/call-stack.h \
   %reldir%/cdisplay.h \
+  %reldir%/cmd-edit.h \
+  %reldir%/cmd-hist.h \
   %reldir%/data.h \
   %reldir%/defaults.h \
   %reldir%/defun-dld.h \
@@ -72,6 +74,8 @@ COREFCN_INC = \
   %reldir%/oct-prcstrm.h \
   %reldir%/oct-procbuf.h \
   %reldir%/oct-process.h \
+  %reldir%/oct-rl-edit.h \
+  %reldir%/oct-rl-hist.h \
   %reldir%/oct-stdstrm.h \
   %reldir%/oct-stream.h \
   %reldir%/oct-strstrm.h \
@@ -108,6 +112,10 @@ NOINSTALL_COREFCN_INC = \
   %reldir%/oct-hdf5.h \
   %reldir%/oct-opengl.h
 
+COREFCN_C_SRC = \
+  %reldir%/oct-rl-edit.c \
+  %reldir%/oct-rl-hist.c
+
 ## oct-tex-parser.h is in the SRC list so that it will be distributed
 ## but not installed.
 
@@ -140,6 +148,8 @@ COREFCN_SRC = \
   %reldir%/cdisplay.c \
   %reldir%/cellfun.cc \
   %reldir%/chol.cc \
+  %reldir%/cmd-edit.cc \
+  %reldir%/cmd-hist.cc \
   %reldir%/coct-hdf5-types.c \
   %reldir%/colamd.cc \
   %reldir%/colloc.cc \
@@ -289,6 +299,7 @@ COREFCN_SRC = \
   %reldir%/xnorm.cc \
   %reldir%/xpow.cc \
   %reldir%/gzfstream.cc \
+	$(COREFCN_C_SRC) \
   $(NOINSTALL_COREFCN_INC)
 
 ## Special rules for sources which must be built before rest of compilation.

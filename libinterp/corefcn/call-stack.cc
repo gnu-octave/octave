@@ -32,6 +32,7 @@
 
 #include "builtin-defun-decls.h"
 #include "call-stack.h"
+#include "cmd-edit.h"
 #include "defun.h"
 #include "interpreter.h"
 #include "interpreter-private.h"
@@ -1284,8 +1285,8 @@ call_stack::do_global_who_two (const string_vector& patterns,
       else
         {
           string_vector names (symbol_names);
-
-          names.list_in_columns (octave_stdout);
+          const int width = command_editor::terminal_cols ();
+          names.list_in_columns (octave_stdout, width);
         }
 
       octave_stdout << "\n";

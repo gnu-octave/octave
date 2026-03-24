@@ -33,6 +33,7 @@
 #include "oct-sysdep.h"
 #include "str-vec.h"
 
+#include "cmd-edit.h"
 #include "defun.h"
 #include "error.h"
 #include "interpreter.h"
@@ -3149,7 +3150,8 @@ stack_frame::who (const string_vector& patterns,
         {
           octave_stdout << "\n";
           string_vector names (sym_inf_accum.names ());
-          names.list_in_columns (octave_stdout);
+          const int width = command_editor::terminal_cols ();
+          names.list_in_columns (octave_stdout, width);
         }
 
       octave_stdout << "\n";

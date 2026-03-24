@@ -38,7 +38,6 @@ function distributed in the GNU file utilities, copyright (C) 85, 88,
 #include <ostream>
 #include <string>
 
-#include "cmd-edit.h"
 #include "lo-utils.h"
 #include "str-vec.h"
 
@@ -227,9 +226,7 @@ string_vector::list_in_columns (std::ostream& os, int width,
 
   // Calculate the maximum number of columns that will fit.
 
-  octave_idx_type line_length
-    = ((width <= 0 ? octave::command_editor::terminal_cols () : width)
-       - prefix.length ());
+  octave_idx_type line_length = (width <= 0 ? 80 : width) - prefix.length ();
 
   octave_idx_type nc = line_length / max_name_length;
   if (nc == 0)

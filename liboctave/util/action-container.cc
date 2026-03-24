@@ -28,7 +28,6 @@
 #endif
 
 #include "action-container.h"
-#include "cmd-edit.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -38,19 +37,7 @@ void action_container::run (std::size_t num)
     num = size ();
 
   for (std::size_t i = 0; i < num; i++)
-    {
-      run_first ();
-
-      // If event_loop_interrupted is TRUE, a user callback event has
-      // requested that we break out of the readline event handler to
-      // process a command or other action.
-
-      if (command_editor::event_loop_interrupted ())
-        {
-          command_editor::interrupt_event_loop (false);
-          break;
-        }
-    }
+    run_first ();
 }
 
 OCTAVE_END_NAMESPACE(octave)

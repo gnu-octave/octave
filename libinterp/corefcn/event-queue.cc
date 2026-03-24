@@ -27,10 +27,33 @@
 #  include "config.h"
 #endif
 
+#include "cmd-edit.h"
+
 #include "error.h"
 #include "event-queue.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
+
+void event_queue::run (std::size_t num)
+{
+  if (num > size ())
+    num = size ();
+
+  for (std::size_t i = 0; i < num; i++)
+    {
+      run_first ();
+
+      // If event_loop_interrupted is TRUE, a user callback event has requested
+      // that we break out of the readline event handler to process a command
+      // or other action.
+
+      if (command_editor::event_loop_interrupted ())
+        {
+          command_editor::interrupt_event_loop (false);
+          break;
+        }
+    }
+}
 
 void
 event_queue_safe::warn_unhandled_exception () const

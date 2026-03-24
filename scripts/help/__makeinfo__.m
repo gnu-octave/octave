@@ -151,7 +151,7 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
     ## Take action depending on output type
     switch (lower (output_type))
       case "plain text"
-        cmd = sprintf ('%s --no-headers --no-warn --no-validate --plaintext --fill-column=80 --output=- "%s"',
+        cmd = sprintf ('%s --no-headers --no-warn --no-validate --plaintext --fill-column=80 -c exampleindent=2 --output=- "%s"',
                        makeinfo_program (), name);
       case "html"
         cmd = sprintf ('%s --no-headers --no-warn --no-validate --html --output=- "%s"',

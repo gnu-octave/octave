@@ -290,13 +290,19 @@ rc_atanh (float x)
 Complex
 rc_log (double x)
 {
+  if (std::isnan (x))
+    return Complex (x, 0.0);  // NaN + 0*i
+
   return x < 0.0 ? Complex (std::log (-x), M_PI) : Complex (std::log (x));
 }
 
 FloatComplex
 rc_log (float x)
 {
-  return x < 0.0f ? FloatComplex (std::log (-x), static_cast<float> (M_PI))
+  if (std::isnan (x))
+    return FloatComplex (x, 0.0f);  // NaN + 0*i
+
+  return x < 0.0f ? FloatComplex (std::log (-x), float (M_PI))
                   : FloatComplex (std::log (x));
 }
 
@@ -333,12 +339,18 @@ rc_log10 (float x)
 Complex
 rc_sqrt (double x)
 {
+  if (std::isnan (x))
+    return Complex (x, 0.0);  // NaN + 0*i
+
   return x < 0.0 ? Complex (0.0, std::sqrt (-x)) : Complex (std::sqrt (x));
 }
 
 FloatComplex
 rc_sqrt (float x)
 {
+  if (std::isnan (x))
+    return FloatComplex (x, 0.0f);  // NaN + 0*i
+
   return x < 0.0f ? FloatComplex (0.0f, std::sqrt (-x))
                   : FloatComplex (std::sqrt (x));
 }

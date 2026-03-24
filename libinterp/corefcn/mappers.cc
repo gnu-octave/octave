@@ -1757,6 +1757,26 @@ To compute the matrix logarithm, @pxref{Linear Algebra}.
 }
 
 /*
+## log with double NaN
+%!test
+%! x = [-1, 0, 1, NaN];
+%! y = log (x);
+%! assert (imag (y(1)), pi, 1e-10);  # log (-1) = πi
+%! assert (real (y(2)), -Inf);  # log(0) = -Inf
+%! assert (y(3), 0);  # log(1) = 0
+%! assert (isnan (real (y(4))), true);  # real (NaN) is NaN
+%! assert (isnan (imag (y(4))) == 0);  # image (Nan) is 0
+
+## log with single precision (float)
+%!test
+%! x = single ([-1, 0, 1, NaN]);
+%! y = log(x);
+%! assert (abs (imag (y(1)) - single (pi)) < 1e-5);  # log(-1) = πi
+%! assert (isinf (real (y(2))) && real (y(2)) < 0);  # log(0) = -Inf
+%! assert (y(3), single (0));  # log(1) = 0
+%! assert (isnan (real (y(4))), true);  # real (NaN) is NaN
+%! assert (isnan (imag (y(4))) == 0);  # imag (NaN) is 0 
+
 %!assert (log ([1, e, e^2]), [0, 1, 2], sqrt (eps))
 %!assert (log ([-0.5, -1.5, -2.5]), log ([0.5, 1.5, 2.5]) + pi*1i, sqrt (eps))
 
@@ -2107,6 +2127,26 @@ To compute the matrix square root, @pxref{Linear Algebra}.
 }
 
 /*
+## sqrt with double + NaN
+%!test
+%! x = [-1, 0, 1, NaN];
+%! y = sqrt (x);
+%! assert (y(1), 1i);  # sqrt (-1) = i
+%! assert (y(2), 0);  # sqrt (0) = 0
+%! assert (y(3), 1);  # sqrt (1) = 1
+%! assert (isnan (real (y(4))), true);  # real (NaN) is NaN
+%! assert (isnan (imag (y(4))) == 0);  # imag (NaN) is 0 (scalar behavior)
+
+## sqrt with single precision (float)
+%!test
+%! x = single ([-1, 0, 1, NaN]);
+%! y = sqrt (x);
+%! assert (y(1), 1i, 1e-6f);  # sqrt (-1) = i
+%! assert (y(2), single (0));  # sqrt (0) = 0
+%! assert (y(3), single (1));  # sqrt (1) = 1
+%! assert (isnan (real (y(4))), true);  # real (NaN) is NaN
+%! assert (isnan (imag (y(4))) == 0);  # imag (NaN) is 0
+
 %!assert (sqrt (4), 2)
 %!assert (sqrt (-1), i)
 %!assert (sqrt (1+i), exp (0.5 * log (1+i)), sqrt (eps))

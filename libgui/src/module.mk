@@ -484,7 +484,7 @@ octave_gui_MOC_H = $(octave_gui_MOC:.cc=.h)
   @OCTGUI_DLL_DEFS@ \
   @QT_CPPFLAGS@ \
   -I$(srcdir)/libgui/qterminal/libqterminal \
-  -Ilibgui/src -I$(srcdir)/libgui/src \
+  -I%reldir% -I$(srcdir)/%reldir% \
   -Ilibgui/graphics -I$(srcdir)/libgui/graphics \
   -I$(srcdir)/%reldir%/m-editor \
   -Iliboctave \

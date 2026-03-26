@@ -121,3 +121,5 @@ noinst_LTLIBRARIES += \
 
 libinterp_EXTRA_DIST += \
   %reldir%/octave.gperf
+
+libinterp_liboctinterp_la_LIBADD += %reldir%/libparse-tree.la

@@ -52,8 +52,7 @@ nodist_%canon_reldir%_liboctgui_la_SOURCES = \
 %canon_reldir%_liboctgui_la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   @OCTGUI_DLL_DEFS@ \
-  -Ilibgui \
-  -I$(srcdir)/libgui
+  -I%reldir% -I$(srcdir)/%reldir%
 
 %canon_reldir%_liboctgui_la_LIBADD = \
   %reldir%/qterminal/libqterminal.la \

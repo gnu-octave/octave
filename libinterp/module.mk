@@ -16,7 +16,7 @@ LIBINTERP_DEFUN_FILES =
   -I$(srcdir)/liboctave/system \
   -I$(srcdir)/liboctave/util \
   -I$(srcdir)/%reldir%/octave-value \
-  -Ilibinterp -I$(srcdir)/libinterp \
+  -I%reldir% -I$(srcdir)/%reldir% \
   -I$(srcdir)/%reldir%/operators \
   -I%reldir%/parse-tree -I$(srcdir)/%reldir%/parse-tree \
   -I$(srcdir)/%reldir%/template-inst \
@@ -68,7 +68,7 @@ LIBINTERP_BUILT_NODISTFILES = \
   %reldir%/corefcn/graphics-props.cc \
   %reldir%/corefcn/graphics.h \
   %reldir%/corefcn/mxtypes.h \
-  %reldir%/corefcn/oct-errno.cc \
+  %reldir%/corefcn/system/oct-errno.cc \
   %reldir%/liboctinterp-build-info.cc \
   %reldir%/operators/ops.cc
 
@@ -112,7 +112,12 @@ DIST_SRC += \
   $(LIBINTERP_TEMPLATE_SRC) \
   $(OCTAVE_VALUE_SRC) \
   $(PARSE_TREE_SRC) \
-  $(COREFCN_SRC)
+  $(COREFCN_SRC) \
+  $(COREFCN_NUMERIC_SRC) \
+  $(COREFCN_SYSTEM_SRC) \
+  $(COREFCN_UTIL_SRC)
+
+%canon_reldir%_liboctinterp_la_LIBADD =
 
 include %reldir%/parse-tree/module.mk
 include %reldir%/octave-value/module.mk
@@ -137,14 +142,11 @@ nodist_%canon_reldir%_liboctinterp_la_SOURCES = \
   %reldir%/corefcn/default-defs.h \
   %reldir%/corefcn/graphics.h \
   %reldir%/corefcn/mxtypes.h \
-  %reldir%/corefcn/oct-errno.cc \
+  %reldir%/corefcn/system/oct-errno.cc \
   %reldir%/liboctinterp-build-info.cc \
   %reldir%/operators/ops.cc
 
-%canon_reldir%_liboctinterp_la_LIBADD = \
-  %reldir%/octave-value/liboctave-value.la \
-  %reldir%/parse-tree/libparse-tree.la \
-  %reldir%/corefcn/libcorefcn.la \
+%canon_reldir%_liboctinterp_la_LIBADD += \
   $(LIBINTERP_DLDFCN_LIBADD) \
   liboctave/liboctave.la \
   $(LIBOCTINTERP_LINK_DEPS)

@@ -15,7 +15,7 @@ GEN_CONFIG_SHELL += \
 %canon_reldir%_liboctave_la_CPPFLAGS = \
   @OCTAVE_DLL_DEFS@ \
   @EXTERNAL_DLL_DEFS@ \
-  -Iliboctave -I$(srcdir)/liboctave \
+  -I%reldir% -I$(srcdir)/%reldir% \
   -I$(srcdir)/%reldir%/array \
   -I%reldir%/numeric -I$(srcdir)/%reldir%/numeric \
   -I%reldir%/operators -I$(srcdir)/%reldir%/operators \

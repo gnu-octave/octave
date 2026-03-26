@@ -18,7 +18,7 @@ SRC_DIR_CPPFLAGS = \
   -I$(srcdir)/libinterp/octave-value \
   -I$(srcdir)/libinterp/template-inst \
   -Ilibmex -I$(srcdir)/libmex \
-  -I$(srcdir)/src
+  -I$(srcdir)/%reldir%
 
 EXTRA_DIST += \
   %reldir%/main.in.cc \

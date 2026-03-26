@@ -174,3 +174,5 @@ noinst_LTLIBRARIES += %reldir%/liboctave-value.la
   $(JAVA_CPPFLAGS)
 
 %canon_reldir%_liboctave_value_la_LIBADD = $(JAVA_LIBS)
+
+libinterp_liboctinterp_la_LIBADD += %reldir%/liboctave-value.la

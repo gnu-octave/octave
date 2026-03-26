@@ -24,13 +24,13 @@ along with Octave; see the file COPYING.  If not, see
 
 -->
 <component type="desktop-application">
-  <id>org.octave.Octave.desktop</id>
+  <id>org.octave.Octave</id>
   <metadata_license>FSFAP</metadata_license>
   <project_license>GPL-3.0+</project_license>
   <name>GNU Octave</name>
-  <summary>Interactive programming environment for numerical computations</summary>
+  <summary>Interactive Scientific Programming</summary>
   <summary xml:lang="ca">Entorn de programació interactiva per a càlculs numèrics</summary>
-  <summary xml:lang="de">Interaktive Programmierumgebung für numerische Berechnungen</summary>
+  <summary xml:lang="de">Interaktives wissenschaftliches Programmieren</summary>
   <summary xml:lang="es">Entorno de programación interactiva para cálculos numéricos</summary>
   <summary xml:lang="fr">Environnement de programmation interactif pour le calcul numérique</summary>
   <summary xml:lang="hu">Interaktív programozási környezet számszerű számításokhoz</summary>
@@ -173,9 +173,14 @@ along with Octave; see the file COPYING.  If not, see
     -->
     <screenshot type="default">
       <caption>Graphical user interface</caption>
-      <image>https://www.gnu.org/software/octave/img/screenshot.png</image>
+      <image>https://octave.org/img/screenshot.png</image>
     </screenshot>
   </screenshots>
+
+  <branding>
+    <color type="primary" scheme_preference="light">#eef4f7</color>
+    <color type="primary" scheme_preference="dark">#1f2a33</color>
+  </branding>
 
   <launchable type="desktop-id">org.octave.Octave.desktop</launchable>
   <provides>

@@ -22,3 +22,5 @@ noinst_LTLIBRARIES += \
 
 %canon_reldir%_libutil_la_CPPFLAGS = \
   $(libinterp_liboctinterp_la_CPPFLAGS)
+
+libinterp_liboctinterp_la_LIBADD += %reldir%/libutil.la

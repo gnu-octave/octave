@@ -117,6 +117,8 @@ DIST_SRC += \
   $(COREFCN_SYSTEM_SRC) \
   $(COREFCN_UTIL_SRC)
 
+%canon_reldir%_liboctinterp_la_LIBADD =
+
 include %reldir%/parse-tree/module.mk
 include %reldir%/octave-value/module.mk
 include %reldir%/operators/module.mk
@@ -144,13 +146,7 @@ nodist_%canon_reldir%_liboctinterp_la_SOURCES = \
   %reldir%/liboctinterp-build-info.cc \
   %reldir%/operators/ops.cc
 
-%canon_reldir%_liboctinterp_la_LIBADD = \
-  %reldir%/corefcn/libcorefcn.la \
-  %reldir%/corefcn/numeric/libnumeric.la \
-  %reldir%/corefcn/system/libsystem.la \
-  %reldir%/corefcn/util/libutil.la \
-  %reldir%/octave-value/liboctave-value.la \
-  %reldir%/parse-tree/libparse-tree.la \
+%canon_reldir%_liboctinterp_la_LIBADD += \
   $(LIBINTERP_DLDFCN_LIBADD) \
   liboctave/liboctave.la \
   $(LIBOCTINTERP_LINK_DEPS)

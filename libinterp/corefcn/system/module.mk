@@ -34,3 +34,5 @@ noinst_LTLIBRARIES += \
 libinterp_EXTRA_DIST += \
   %reldir%/mk-errno-list.sh \
   %reldir%/oct-errno.in.cc
+
+libinterp_liboctinterp_la_LIBADD += %reldir%/libsystem.la

@@ -253,3 +253,5 @@ libinterp_EXTRA_DIST += \
 
 GEN_CONFIG_SHELL += \
   %reldir%/mk-mxtypes-h.sh
+
+libinterp_liboctinterp_la_LIBADD += %reldir%/libcorefcn.la

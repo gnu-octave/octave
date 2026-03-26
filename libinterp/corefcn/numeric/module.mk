@@ -97,3 +97,5 @@ noinst_LTLIBRARIES += \
   -I%reldir% -I$(srcdir)/%reldir% \
   $(FFTW_XCPPFLAGS) \
   $(SPARSE_XCPPFLAGS)
+
+libinterp_liboctinterp_la_LIBADD += %reldir%/libnumeric.la

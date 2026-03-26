@@ -41,7 +41,7 @@ nodist_%canon_reldir%_libqterminal_la_SOURCES = $(%canon_reldir%_libqterminal_la
 %canon_reldir%_libqterminal_la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   @QT_CPPFLAGS@ \
-  -I$(srcdir)/libgui/qterminal/libqterminal \
+  -I$(srcdir)/%reldir%/libqterminal \
   -I$(srcdir)/libgui/src \
   -Iliboctave \
   -I$(srcdir)/liboctave/array \

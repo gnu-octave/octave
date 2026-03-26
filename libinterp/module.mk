@@ -16,7 +16,7 @@ LIBINTERP_DEFUN_FILES =
   -I$(srcdir)/liboctave/system \
   -I$(srcdir)/liboctave/util \
   -I$(srcdir)/%reldir%/octave-value \
-  -Ilibinterp -I$(srcdir)/libinterp \
+  -I%reldir% -I$(srcdir)/%reldir% \
   -I$(srcdir)/%reldir%/operators \
   -I%reldir%/parse-tree -I$(srcdir)/%reldir%/parse-tree \
   -I$(srcdir)/%reldir%/template-inst \

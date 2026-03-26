@@ -128,7 +128,7 @@ nodist_%canon_reldir%_libgraphics_la_SOURCES = $(libgraphics_MOC)
   $(HDF5_CPPFLAGS) \
   @OCTGUI_DLL_DEFS@ \
   @QT_CPPFLAGS@ \
-  -Ilibgui/graphics -I$(srcdir)/libgui/graphics \
+  -I%reldir% -I$(srcdir)/%reldir% \
   -Ilibgui/src -I$(srcdir)/libgui/src \
   -Iliboctave \
   -I$(srcdir)/liboctave/array \

@@ -566,3 +566,10 @@ endfunction
 %!error <INIT must be a numeric> ode45 (@fpol, [0 25], {[3 15 1]})
 %!error <INIT must be a .* vector> ode45 (@fpol, [0 25], [3 15 1; 3 15 1])
 %!error <FCN must be a valid function handle> ode45 (1, [0 25], [3 15 1])
+%!test  # Intermediate time points in TRANGE
+%! fvdp = @(t,y) [y(2); (1 - y(1)^2) * y(2) - y(1)];
+%! tspan = [0, 5, 10, 15, 20];  # Multiple time points
+%! [t, y] = ode45 (fvdp, tspan, [2, 0]);
+%! assert (t, tspan', 1e-10);  # Check that all intermediate times are returned
+%! assert (size (y, 1), 5);    # Check that solution has 5 rows (one per time)
+%! assert (y(1,:), [2, 0], 1e-10);  # Check initial condition

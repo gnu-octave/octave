@@ -552,7 +552,7 @@ v = cellfun (@@det, C);         # 40% faster
     {
       OCTAVE_LOCAL_BUFFER (octave_value, results, nargout1);
 
-      int expected_nargout;
+      int expected_nargout = 0;
       for (octave_idx_type count = 0; count < nel; count++)
         {
           // Initialize inputovl with this loop count's input data

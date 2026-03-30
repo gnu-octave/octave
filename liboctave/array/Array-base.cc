@@ -435,7 +435,7 @@ private:
         octave_idx_type step = m_stride[lev];
         octave_idx_type len = m_dim[lev];
         for (octave_idx_type i = 0, j = 0; i < len; i++, j+= step)
-          dest = do_permute (src + i * step, dest, lev-1);
+          dest = do_permute (src + j, dest, lev-1);
       }
 
     return dest;

@@ -435,7 +435,7 @@ private:
         octave_idx_type step = m_stride[lev];
         octave_idx_type len = m_dim[lev];
         for (octave_idx_type i = 0, j = 0; i < len; i++, j+= step)
-          dest = do_permute (src + i * step, dest, lev-1);
+          dest = do_permute (src + j, dest, lev-1);
       }
 
     return dest;
@@ -1308,7 +1308,7 @@ Array<T, Alloc>::assign (const Array<octave::idx_vector>& ia,
     {
       bool initial_dims_all_zero = m_dimensions.all_zero ();
 
-      // Get RHS extents, discarding singletons.
+      // Get RHS extents, discarding trailing singletons.
       dim_vector rhdv = rhs.dims ();
 
       // Get LHS extents, allowing Fortran indexing in the second dim.
@@ -1394,18 +1394,20 @@ Array<T, Alloc>::assign (const Array<octave::idx_vector>& ia,
         {
           // dimension mismatch, unless LHS and RHS both empty
           bool lhsempty, rhsempty;
-          lhsempty = rhsempty = false;
+          lhsempty = false;
           dim_vector lhs_dv = dim_vector::alloc (ial);
           for (int i = 0; i < ial; i++)
             {
               octave_idx_type l = ia(i).length (rdv(i));
               lhs_dv(i) = l;
               lhsempty = lhsempty || (l == 0);
-              rhsempty = rhsempty || (rhdv(j++) == 0);
             }
+          rhsempty = rhdv.any_zero ();
           if (! lhsempty || ! rhsempty)
             {
               lhs_dv.chop_trailing_singletons ();
+              rhdv = rhs.dims ();
+              rhdv.chop_trailing_singletons ();
               octave::err_nonconformant ("=", lhs_dv, rhdv);
             }
         }

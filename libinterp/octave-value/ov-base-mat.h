@@ -146,11 +146,6 @@ public:
   OCTINTERP_API octave_value
   resize (const dim_vector& dv, bool fill = false) const;
 
-  OCTINTERP_OVERRIDABLE_FUNC_API octave_value all (int dim = 0) const
-  { return m_matrix.all (dim); }
-  OCTINTERP_OVERRIDABLE_FUNC_API octave_value any (int dim = 0) const
-  { return m_matrix.any (dim); }
-
   OCTINTERP_OVERRIDABLE_FUNC_API MatrixType matrix_type () const
   { return m_typ ? *m_typ : MatrixType (); }
   OCTINTERP_API MatrixType matrix_type (const MatrixType& _typ) const;

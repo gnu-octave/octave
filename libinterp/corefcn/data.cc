@@ -301,6 +301,66 @@ all elements of @var{x}, and is equivalent to @code{all (@var{x}(:))}.
 %!assert (all (sparse (ones (0,1)), 2), sparse (true (0, 1)))
 %!assert (all (sparse (ones (0,1)), 3), sparse (true (0, 1)))
 
+## Test on complex matrices
+%!assert (all (1 + 2i), true)
+%!assert (all (ones (1, 2) + 2i), true)
+%!assert (all (ones (2, 2) + 2i), [true, true])
+%!assert (all (zeros (1, 2) + 2i), true)
+%!assert (all (zeros (2, 2) + 2i), [true, true])
+%!assert (all (zeros (1, 2) + 0i), false)
+%!assert (all (zeros (2, 2) + 0i), [false, false])
+%!assert (all (cat (2, zeros (2, 1) + 1i, zeros (2, 1) + 0i)), [true, false])
+
+## Test on uint* types
+%!assert (all (uint8 (1)), true)
+%!assert (all (uint8 (ones (1, 2))), true)
+%!assert (all (uint8 (zeros (1, 2))), false)
+%!assert (all (uint8 (cat (2, ones (2, 1), zeros (2, 1)))), [true, false])
+%!assert (all (uint16 (1)), true)
+%!assert (all (uint16 (ones (1, 2))), true)
+%!assert (all (uint16 (zeros (1, 2))), false)
+%!assert (all (uint16 (cat (2, ones (2, 1), zeros (2, 1)))), [true, false])
+%!assert (all (uint32 (1)), true)
+%!assert (all (uint32 (ones (1, 2))), true)
+%!assert (all (uint32 (zeros (1, 2))), false)
+%!assert (all (uint32 (cat (2, ones (2, 1), zeros (2, 1)))), [true, false])
+%!assert (all (uint64 (1)), true)
+%!assert (all (uint64 (ones (1, 2))), true)
+%!assert (all (uint64 (zeros (1, 2))), false)
+%!assert (all (uint64 (cat (2, ones (2, 1), zeros (2, 1)))), [true, false])
+
+## Test on int* types
+%!assert (all (int8 (1)), true)
+%!assert (all (int8 (ones (1, 2))), true)
+%!assert (all (int8 (zeros (1, 2))), false)
+%!assert (all (int8 (cat (2, ones(2, 1), zeros(2, 1)))), [true, false])
+%!assert (all (int16 (1)), true)
+%!assert (all (int16 (ones (1, 2))), true)
+%!assert (all (int16 (zeros (1, 2))), false)
+%!assert (all (int16 (cat (2, ones (2, 1), zeros (2, 1)))), [true, false])
+%!assert (all (int32 (1)), true)
+%!assert (all (int32 (ones (1, 2))), true)
+%!assert (all (int32 (zeros (1, 2))), false)
+%!assert (all (int32 (cat (2, ones (2, 1), zeros (2, 1)))), [true, false])
+%!assert (all (int64 (1)), true)
+%!assert (all (int64 (ones (1, 2))), true)
+%!assert (all (int64 (zeros (1, 2))), false)
+%!assert (all (int64 (cat (2, ones (2, 1), zeros (2, 1)))), [true, false])
+
+## Test on char types
+%!assert (all (char (1)), true)
+%!assert (all (char (0)), false)
+%!assert (all (char (ones (2, 2))), [true, true])
+%!assert (all (char (zeros (2, 2))), [false, false])
+%!assert (all (char (cat (2, ones (2, 1), zeros (2, 1)))), [true, false])
+
+## Test rejection of invalid types
+%!error <wrong type argument 'cell'> all ({})
+%!error <wrong type argument 'cell'> all ({1, 2, 3})
+%!error <wrong type argument 'scalar struct'> all (struct ())
+%!error <wrong type argument 'struct'> all ([struct('a', 1), struct('a', 1)])
+%!error <wrong type argument 'function handle'> all (@disp)
+
 ## Test input validation
 %!error <Invalid call> all ()
 %!error <Invalid call> all (1,2,3)
@@ -465,6 +525,66 @@ all elements of @var{x}, and is equivalent to @code{any (@var{x}(:))}.
 %!assert (any (sparse (ones (0,1)), 1), sparse (false))
 %!assert (any (sparse (ones (0,1)), 2), sparse (false (0, 1)))
 %!assert (any (sparse (ones (0,1)), 3), sparse (false (0, 1)))
+
+## Test on complex matrices
+%!assert (any (1 + 2i), true)
+%!assert (any (ones (1, 2) + 2i), true)
+%!assert (any (ones (2, 2) + 2i), [true, true])
+%!assert (any (zeros (1, 2) + 2i), true)
+%!assert (any (zeros (2, 2) + 2i), [true, true])
+%!assert (any (zeros (1, 2) + 0i), false)
+%!assert (any (zeros (2, 2) + 0i), [false, false])
+%!assert (any (cat (2, zeros (2, 1) + 1i, zeros (2, 1) + 0i)), [true, false])
+
+## Test on uint* types
+%!assert (any (uint8 (1)), true)
+%!assert (any (uint8 (ones (1, 2))), true)
+%!assert (any (uint8 (zeros (1, 2))), false)
+%!assert (any (uint8 (cat (2, ones (2, 1), zeros (2, 1)))), [true, false])
+%!assert (any (uint16 (1)), true)
+%!assert (any (uint16 (ones (1, 2))), true)
+%!assert (any (uint16 (zeros (1, 2))), false)
+%!assert (any (uint16 (cat (2, ones (2, 1), zeros (2, 1)))), [true, false])
+%!assert (any (uint32 (1)), true)
+%!assert (any (uint32 (ones (1, 2))), true)
+%!assert (any (uint32 (zeros (1, 2))), false)
+%!assert (any (uint32 (cat (2, ones (2, 1), zeros (2, 1)))), [true, false])
+%!assert (any (uint64 (1)), true)
+%!assert (any (uint64 (ones (1, 2))), true)
+%!assert (any (uint64 (zeros (1, 2))), false)
+%!assert (any (uint64 (cat (2, ones (2, 1), zeros (2, 1)))), [true, false])
+
+## Test on int* types
+%!assert (any (int8 (1)), true)
+%!assert (any (int8 (ones (1, 2))), true)
+%!assert (any (int8 (zeros (1, 2))), false)
+%!assert (any (int8 (cat (2, ones(2, 1), zeros(2, 1)))), [true, false])
+%!assert (any (int16 (1)), true)
+%!assert (any (int16 (ones (1, 2))), true)
+%!assert (any (int16 (zeros (1, 2))), false)
+%!assert (any (int16 (cat (2, ones (2, 1), zeros (2, 1)))), [true, false])
+%!assert (any (int32 (1)), true)
+%!assert (any (int32 (ones (1, 2))), true)
+%!assert (any (int32 (zeros (1, 2))), false)
+%!assert (any (int32 (cat (2, ones (2, 1), zeros (2, 1)))), [true, false])
+%!assert (any (int64 (1)), true)
+%!assert (any (int64 (ones (1, 2))), true)
+%!assert (any (int64 (zeros (1, 2))), false)
+%!assert (any (int64 (cat (2, ones (2, 1), zeros (2, 1)))), [true, false])
+
+## Test on char types
+%!assert (any (char (1)), true)
+%!assert (any (char (0)), false)
+%!assert (any (char (ones (2, 2))), [true, true])
+%!assert (any (char (zeros (2, 2))), [false, false])
+%!assert (any (char (cat (2, ones (2, 1), zeros (2, 1)))), [true, false])
+
+## Test rejection of invalid types
+%!error <wrong type argument 'cell'> any ({})
+%!error <wrong type argument 'cell'> any ({1, 2, 3})
+%!error <wrong type argument 'scalar struct'> any (struct ())
+%!error <wrong type argument 'struct'> any ([struct('a', 1), struct('a', 1)])
+%!error <wrong type argument 'function handle'> any (@disp)
 
 ## Test input validation
 %!error <Invalid call> any ()

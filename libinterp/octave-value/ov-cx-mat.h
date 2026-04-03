@@ -95,6 +95,9 @@ public:
 
   builtin_type_t builtin_type () const { return btyp_complex; }
 
+  octave_value all (int dim = 0) const { return m_matrix.all (dim); }
+  octave_value any (int dim = 0) const { return m_matrix.any (dim); }
+
   bool is_complex_matrix () const { return true; }
 
   bool iscomplex () const { return true; }

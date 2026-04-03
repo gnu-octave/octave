@@ -1747,6 +1747,68 @@
 %! assert (size (arr), [0, 1]);
 %! assert (class (arr), 'handle_class');
 
+## "all" and "any" tests
+
+## error on calling "all" on a classdef with no overloaded "all" method
+%!error <wrong type argument 'object'>
+%! obj = value_class ();
+%! all (obj);
+
+## previous test, but with handle classes
+%!error <wrong type argument 'object'>
+%! obj = handle_class ();
+%! all (obj);
+
+## error on calling "all" on a classdef ARRAY with no overloaded "all" method
+%!error <wrong type argument 'object'>
+%! obj(1, 2) = value_class ();
+%! all (obj);
+
+## previous test, but with handle classes
+%!error <wrong type argument 'object'>
+%! obj(1, 2) = handle_class ();
+%! all (obj);
+
+## call "all" method when present inside a classdef
+%!test
+%! obj = overloaded_all_class ();
+%! assert (all (obj), -1);
+
+## previous test, but with handle classes
+%!test
+%! obj = overloaded_all_class_handle ();
+%! assert (all (obj), -1);
+
+## error on calling "any" on a classdef with no overloaded "any" method
+%!error <wrong type argument 'object'>
+%! obj = value_class ();
+%! any (obj);
+
+## previous test, but with handle classes
+%!error <wrong type argument 'object'>
+%! obj = handle_class ();
+%! any (obj);
+
+## error on calling "any" on a classdef ARRAY with no overloaded "any" method
+%!error <wrong type argument 'object'>
+%! obj(1, 2) = value_class ();
+%! any (obj);
+
+## previous test, but with handle classes
+%!error <wrong type argument 'object'>
+%! obj(1, 2) = handle_class ();
+%! any (obj);
+
+## call "any" method when present inside a classdef
+%!test
+%! obj = overloaded_any_class ();
+%! assert (any (obj), -1);
+
+## previous test, but with handle classes
+%!test
+%! obj = overloaded_any_class_handle ();
+%! assert (any (obj), -1);
+
 ## save classdef object with overloaded subsref in struct
 %!test <67894>
 %! file_format = {'-binary', '-float-binary', '-text', '-v6'};

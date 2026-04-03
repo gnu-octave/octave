@@ -83,6 +83,9 @@ public:
 
 public:
 
+  octave_value all (int dim = 0) const { return m_matrix.all (dim); }
+  octave_value any (int dim = 0) const { return m_matrix.any (dim); }
+
   int8NDArray
   int8_array_value () const { return int8NDArray (m_matrix); }
 

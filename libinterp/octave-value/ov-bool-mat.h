@@ -195,6 +195,9 @@ public:
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
+  octave_value all (int dim = 0) const { return m_matrix.all (dim); }
+  octave_value any (int dim = 0) const { return m_matrix.any (dim); }
+
   octave_value as_double () const;
   octave_value as_single () const;
 

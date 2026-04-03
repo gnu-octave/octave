@@ -35,6 +35,10 @@ classdef_TEST_FILES = \
   %reldir%/foo_value_class.m \
   %reldir%/foo_handle_class.m \
   %reldir%/handle_class.m \
+  %reldir%/overloaded_all_class.m \
+  %reldir%/overloaded_all_class_handle.m \
+  %reldir%/overloaded_any_class.m \
+  %reldir%/overloaded_any_class_handle.m \
   %reldir%/overloaded_cat_class.m \
   %reldir%/overloaded_cat_class_handle.m \
   %reldir%/overloaded_ctranspose_class.m \

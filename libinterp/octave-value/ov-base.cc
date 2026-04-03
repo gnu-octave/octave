@@ -418,17 +418,13 @@ octave_base_value::matrix_type (const MatrixType&) const
 octave_value
 octave_base_value::all (int) const
 {
-  warning ("all: non-numeric and non-logical input will throw an error in"
-           " Octave 12 and later");
-  return 0.0;
+  err_wrong_type_arg ("octave_base_value::all ()", type_name ());
 }
 
 octave_value
 octave_base_value::any (int) const
 {
-  warning ("any: non-numeric and non-logical input will throw an error in"
-           " Octave 12 and later");
-  return 0.0;
+  err_wrong_type_arg ("octave_base_value::any ()", type_name ());
 }
 
 octave_value

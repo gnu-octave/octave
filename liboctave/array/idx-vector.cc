@@ -235,7 +235,7 @@ convert_index (double x, octave_idx_type& ext)
       || x <= 0
       || x >= IDX_MAX_DBL
       || x != std::trunc (x))
-  err_invalid_index (x - 1.0);
+    err_invalid_index (x - 1.0);
 
   octave_idx_type i = static_cast<octave_idx_type> (x);
   return convert_index (i, ext);

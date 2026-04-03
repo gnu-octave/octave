@@ -185,12 +185,7 @@ public:
 
   bool page_screen_output () const { return m_page_screen_output; }
 
-  bool page_screen_output (bool flag)
-  {
-    bool val = m_page_screen_output;
-    m_page_screen_output = flag;
-    return val;
-  }
+  bool page_screen_output (bool flag);
 
   bool write_to_diary_file () const
   {

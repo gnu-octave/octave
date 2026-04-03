@@ -300,6 +300,10 @@ major release after 11):
     * `f_fc_Mapper`
     * `fc_fc_Mapper`
 
+Input to the functions `any` and `all` that is non-numeric and non-logical has
+been deprecated in Octave 11 and will throw an error in Octave 12 (or whatever
+version is the first major release after Octave 11).
+
 The following features were deprecated in Octave 9 and have been removed
 from Octave 11.
 

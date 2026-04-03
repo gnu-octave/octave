@@ -8,6 +8,9 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   properties.  A handle class' byte size is calculated by getting the size of
   the machine word on the users computer (most likely 4 or 8 bytes).
 
+* The constructors of `classdef` classes now support returning more than one
+  output argument.  The first output argument must be the constructed object.
+
 
 ### Graphical User Interface
 

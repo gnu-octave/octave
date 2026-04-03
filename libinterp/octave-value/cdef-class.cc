@@ -273,7 +273,7 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
               tree_parameter_list *ret_list = uf->return_list ();
               tree_statement_list *body = uf->body ();
 
-              if (! ret_list || ret_list->size () != 1)
+              if (! ret_list || ret_list->size () < 1)
                 error ("%s: invalid constructor output arguments",
                        meth.get_name ().c_str ());
 
@@ -642,7 +642,7 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
       std::cerr << "constructor" << std::endl;
 #endif
 
-      retval(0) = construct (idx.front ());
+      retval = construct_object (idx.front (), nargout);
       break;
 
     case '.':
@@ -739,40 +739,53 @@ cdef_class::cdef_class_rep::initialize_object (cdef_object& obj)
   obj.mark_for_construction (cdef_class (this));
 }
 
-void
+octave_value_list
 cdef_class::cdef_class_rep::run_constructor (cdef_object& obj,
-    const octave_value_list& args)
+    const octave_value_list& args,
+    const int nargout,
+    bool default_initialize)
 {
-  octave_value_list empty_args;
+  octave_value_list retval;
 
-  for (const auto& cls : m_implicit_ctor_list)
+  if (! default_initialize)
     {
-      cdef_class supcls = lookup_class (cls);
+      octave_value_list empty_args;
 
-      supcls.run_constructor (obj, empty_args);
-    }
+      for (const auto& cls : m_implicit_ctor_list)
+        {
+          cdef_class supcls = lookup_class (cls);
 
-  std::string cls_name = get_name ();
-  std::string ctor_name = get_base_name (cls_name);
+          supcls.run_constructor (obj, empty_args);
+        }
 
-  cdef_method ctor = find_method (ctor_name);
+      std::string cls_name = get_name ();
+      std::string ctor_name = get_base_name (cls_name);
 
-  if (ctor.ok ())
-    {
-      octave_value_list ctor_args (args);
-      octave_value_list ctor_retval;
+      cdef_method ctor = find_method (ctor_name);
 
-      ctor_args.prepend (to_ov (obj));
-      ctor_retval = ctor.execute (ctor_args, 1, true, "constructor");
+      if (ctor.ok ())
+        {
+          octave_value_list ctor_args (args);
 
-      if (ctor_retval.length () != 1)
-        error ("%s: invalid number of output arguments for classdef constructor",
-               ctor_name.c_str ());
+          ctor_args.prepend (to_ov (obj));
+          retval = ctor.execute (ctor_args, nargout, true, "constructor");
 
-      obj = to_cdef (ctor_retval(0));
+          if (retval.length () < 1)
+            error ("%s: invalid number of output arguments for classdef constructor",
+                   ctor_name.c_str ());
+
+          obj = to_cdef (retval(0));
+        }
     }
 
   obj.mark_as_constructed (wrap ());
+
+  if (retval.empty ())
+    retval.resize (1);
+
+  retval(0) = to_ov (obj);
+
+  return retval;
 }
 
 octave_value
@@ -873,16 +886,14 @@ octave_value
 cdef_class::cdef_class_rep::construct (const octave_value_list& args,
                                        const bool default_initialize)
 {
-  cdef_object obj = construct_object (args, default_initialize);
+  octave_value_list retval = construct_object (args, 1, default_initialize);
 
-  if (obj.ok ())
-    return to_ov (obj);
-
-  return octave_value ();
+  return retval(0);
 }
 
-cdef_object
+octave_value_list
 cdef_class::cdef_class_rep::construct_object (const octave_value_list& args,
+                                              const int nargout,
                                               const bool default_initialize)
 {
   if (is_abstract ())
@@ -890,6 +901,7 @@ cdef_class::cdef_class_rep::construct_object (const octave_value_list& args,
            get_name ().c_str ());
 
   cdef_object obj;
+  octave_value_list retval (std::max (nargout, 1));
 
   if (is_meta_class ())
     {
@@ -939,7 +951,7 @@ cdef_class::cdef_class_rep::construct_object (const octave_value_list& args,
       else
         error ("expecting meta class, property, method, or package in cdef_class::cdef_class_rep::construct_object - please report this bug");
 
-      return obj;
+      retval(0) = to_ov (obj);
     }
   else
     {
@@ -951,13 +963,10 @@ cdef_class::cdef_class_rep::construct_object (const octave_value_list& args,
 
       initialize_object (obj);
 
-      if (! default_initialize)
-        run_constructor (obj, args);
-
-      return obj;
+      retval = run_constructor (obj, args, nargout, default_initialize);
     }
 
-  return cdef_object ();
+  return retval;
 }
 
 static octave_value

@@ -2988,7 +2988,7 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
                 try
                   {
-                    result = to_ov (cls.construct_object (ovl (ov)));
+                    result = cls.construct (ovl (ov));
                   }
                 catch (execution_exception& ee)
                   {

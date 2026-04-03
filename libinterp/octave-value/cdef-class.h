@@ -134,14 +134,17 @@ private:
     construct (const octave_value_list& args,
                const bool default_initialize = false);
 
-    OCTINTERP_API cdef_object
+    OCTINTERP_API octave_value_list
     construct_object (const octave_value_list& args,
+                      const int nargout = 1,
                       const bool default_initialize = false);
 
     OCTINTERP_API void initialize_object (cdef_object& obj);
 
-    OCTINTERP_API void
-    run_constructor (cdef_object& obj, const octave_value_list& args);
+    OCTINTERP_API octave_value_list
+    run_constructor (cdef_object& obj, const octave_value_list& args,
+                     const int nargout = 1,
+                     bool default_initialize = false);
 
     void mark_as_handle_class () { m_handle_class = true; }
 
@@ -379,16 +382,24 @@ public:
     return get_method_function (get_name ());
   }
 
+  //! Wrapper for `construct_object` that returns only the constructed
+  //! object. Ignores all other constructor return parameters.
   octave_value construct (const octave_value_list& args,
                           const bool default_initialize = false)
   {
     return get_rep ()->construct (args, default_initialize);
   }
 
-  cdef_object construct_object (const octave_value_list& args,
-                                const bool default_initialize = false)
+  //! The proper method to call for object construction.
+  //!
+  //! @return The first index slot in the octave_value_list contains the
+  //! constructed classdef object. All the other slots contain (possible)
+  //! extra constructor return outputs.
+  octave_value_list
+  construct_object (const octave_value_list& args, const int nargout = 1,
+                    const bool default_initialize = false)
   {
-    return get_rep ()->construct_object (args, default_initialize);
+    return get_rep ()->construct_object (args, nargout, default_initialize);
   }
 
   void initialize_object (cdef_object& obj)
@@ -396,9 +407,20 @@ public:
     get_rep ()->initialize_object (obj);
   }
 
-  void run_constructor (cdef_object& obj, const octave_value_list& args)
+  //! The method to call to run a classdef's constructor.
+  //!
+  //! @param <obj> The classdef object being constructed is passed by
+  //! reference. If a derived classdef is calling a superclass constructor,
+  //! then the derived `cdef_object` is being passed in, and not a brand
+  //! new superclass `cdef_object`.
+  //!
+  //! @return The first slot in the `octave_value_list` is a copy of the
+  //! `cdef_object` being passed in.
+  octave_value_list
+  run_constructor (cdef_object& obj, const octave_value_list& args,
+                   int nargout = 1, bool default_initialize = false)
   {
-    get_rep ()->run_constructor (obj, args);
+    return get_rep ()->run_constructor (obj, args, nargout, default_initialize);
   }
 
   void mark_as_handle_class ()

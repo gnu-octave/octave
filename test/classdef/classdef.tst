@@ -236,6 +236,123 @@
 %! assert (x.foobar (), {"some_property"});
 %! assert (x.methods (), 42);
 
+## Multi-output constructor tests (bug #67845).
+
+## two-output constructor, no input args
+%!test <*67845>
+%! [obj, val] = class_bug67845A ();
+%! assert (isa (obj, "class_bug67845A"));
+%! assert (val, 0);
+
+## previous test, but with handle classes
+%!test <*67845>
+%! [obj, val] = class_bug67845A_handle ();
+%! assert (isa (obj, "class_bug67845A_handle"));
+%! assert (val, 0);
+%! obj2 = obj;
+%! assert (obj2.prop, 0);
+
+## two-output constructor with input args
+%!test <*67845>
+%! [obj, val] = class_bug67845A (5);
+%! assert (isa (obj, "class_bug67845A"));
+%! assert (val, 5);
+
+## previous test, but with handle classes
+%!test <*67845>
+%! [obj, val] = class_bug67845A_handle (5);
+%! assert (isa (obj, "class_bug67845A_handle"));
+%! assert (val, 5);
+%! obj2 = obj;
+%! obj.prop = 10;
+%! assert (obj2.prop, 10);
+
+## single-output call to two-output-declared constructor
+%!test <*67845>
+%! obj = class_bug67845A ();
+%! assert (isa (obj, "class_bug67845A"));
+%! assert (obj.prop, 0);
+
+## previous test, but with handle classes
+%!test <*67845>
+%! obj = class_bug67845A_handle ();
+%! assert (isa (obj, "class_bug67845A_handle"));
+%! assert (obj.prop, 0);
+
+## double-output with implicit superclass constructor
+%!test <*67845>
+%! [obj, val] = class_bug67845B ();
+%! assert (isa (obj, "class_bug67845B"));
+%! assert (isa (obj, "class_bug67845A"));
+%! assert (obj.prop, 0);
+
+## previous test, but with handle classes
+%!test <*67845>
+%! [obj, status] = class_bug67845B_handle ();
+%! assert (isa (obj, "class_bug67845B_handle"));
+%! assert (isa (obj, "class_bug67845B_handle"));
+%! assert (obj.prop, 0);
+
+## quad-output constructor with zero input args
+%!test <*67845>
+%! [obj, val1, val2, val3, val4] = class_bug67845C ();
+%! assert (isa (obj, 'class_bug67845C'));
+%! assert (val1, 1);
+%! assert (val2, 2);
+%! assert (val3, 3);
+%! assert (val4, 4);
+
+## previous test, but with handle classes
+%!test <*67845>
+%! [obj, val1, val2, val3, val4] = class_bug67845C_handle ();
+%! assert (isa (obj, 'class_bug67845C_handle'));
+%! assert (val1, 1);
+%! assert (val2, 2);
+%! assert (val3, 3);
+%! assert (val4, 4);
+
+## quad-output constructor with two input args
+%!test <*67845>
+%! [obj, val1, val2, val3, val4] = class_bug67845C ('5', {3});
+%! assert (isa (obj, 'class_bug67845C'));
+%! assert (val1, '5');
+%! assert (val2, {3});
+%! assert (val3, 3);
+%! assert (val4, 4);
+
+## previous test, but with handle classes
+%!test <*67845>
+%! [obj, val1, val2, val3, val4] = class_bug67845C_handle ('5', {3});
+%! assert (isa (obj, 'class_bug67845C_handle'));
+%! assert (val1, '5');
+%! assert (val2, {3});
+%! assert (val3, 3);
+%! assert (val4, 4);
+
+## quad-output constructor with four input args
+%!test <*67845>
+%! ## Have to declare func handle separately to check equality
+%! f = @(x) x + 1;
+%! [obj, val1, val2, val3, val4] = ...
+%!   class_bug67845C ('5', [10, 11; 12, 13], {15}, f);
+%! assert (isa (obj, 'class_bug67845C'));
+%! assert (val1, '5');
+%! assert (val2, [10, 11; 12, 13]);
+%! assert (val3, {15});
+%! assert (val4, f);
+
+## previous test, but with handle classes
+%!test <*67845>
+%! ## Have to declare func handle separately to check equality
+%! f = @(x) x + 1;
+%! [obj, val1, val2, val3, val4] = ...
+%!   class_bug67845C_handle ('5', [10, 11; 12, 13], {15}, f);
+%! assert (isa (obj, 'class_bug67845C_handle'));
+%! assert (val1, '5');
+%! assert (val2, [10, 11; 12, 13]);
+%! assert (val3, {15});
+%! assert (val4, f);
+
 ## test class with methods in @folder and in classdef definition
 %!assert <*62802> (numel (methods ("class_bug62802")), 4)
 

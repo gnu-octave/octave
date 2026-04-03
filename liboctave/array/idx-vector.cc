@@ -39,6 +39,11 @@
 #include "oct-error.h"
 #include "oct-locbuf.h"
 
+static constexpr octave_idx_type IDX_MAX
+   = std::numeric_limits<octave_idx_type>::max () - 1;
+
+static constexpr double IDX_MAX_DBL = double (IDX_MAX);
+
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_NORETURN static void err_invalid_range ()
@@ -226,11 +231,13 @@ convert_index (octave_idx_type i, octave_idx_type& ext)
 inline octave_idx_type
 convert_index (double x, octave_idx_type& ext)
 {
+  if (! std::isfinite (x)
+      || x <= 0
+      || x >= IDX_MAX_DBL
+      || x != std::trunc (x))
+  err_invalid_index (x - 1.0);
+
   octave_idx_type i = static_cast<octave_idx_type> (x);
-
-  if (static_cast<double> (i) != x)
-    err_invalid_index (x-1);
-
   return convert_index (i, ext);
 }
 

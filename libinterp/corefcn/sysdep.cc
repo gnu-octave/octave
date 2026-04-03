@@ -637,85 +637,101 @@ FILE *
 popen (const char *command, const char *mode)
 {
 #if defined (OCTAVE_USE_WINDOWS_API)
-  // On Windows (non-Cygwin), child processes need to be created with a new
-  // console to avoid desynchronization of the console that is used by the
-  // command window widget of the GUI.
+  if (application::is_gui_running ())
+    {
+      // On Windows (non-Cygwin), child processes need to be created with a new
+      // console to avoid desynchronization of the console that is used by the
+      // command window widget of the GUI.
 
-  bool is_write = (mode[0] == 'w');
-  // use binary mode on Windows if unspecified
-  bool is_binary = ((strlen (mode) == 1) || mode[1] == 'b');
+      bool is_write = (mode[0] == 'w');
+      // use binary mode on Windows if unspecified
+      bool is_binary = ((strlen (mode) == 1) || mode[1] == 'b');
 
-  HANDLE h_read;
-  HANDLE h_write;
-  SECURITY_ATTRIBUTES sa {};
-  sa.nLength = sizeof (sa);
-  sa.bInheritHandle = TRUE;  // child can inherit
+      HANDLE h_read;
+      HANDLE h_write;
+      SECURITY_ATTRIBUTES sa {};
+      sa.nLength = sizeof (sa);
+      sa.bInheritHandle = TRUE;  // child can inherit
 
-  if (! CreatePipe (&h_read, &h_write, &sa, 0))
-    return nullptr;
+      if (! CreatePipe (&h_read, &h_write, &sa, 0))
+        return nullptr;
 
-  HANDLE parent_end = is_write ? h_write : h_read;
-  HANDLE child_end = is_write ? h_read : h_write;
+      HANDLE parent_end = is_write ? h_write : h_read;
+      HANDLE child_end = is_write ? h_read : h_write;
 
-  // prevent child from inheriting the wrong end
-  SetHandleInformation (parent_end, HANDLE_FLAG_INHERIT, 0);
+      // prevent child from inheriting the wrong end
+      SetHandleInformation (parent_end, HANDLE_FLAG_INHERIT, 0);
 
-  // spawn child with one end of pipe as stdin or stdout/stderr
-  STARTUPINFOW si {};
-  si.cb = sizeof (si);
-  si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
-  si.wShowWindow = SW_HIDE;  // avoid flashing black window
-  if (is_write)
-    si.hStdInput = child_end;
+      // spawn child with one end of pipe as stdin or stdout/stderr
+      STARTUPINFOW si {};
+      si.cb = sizeof (si);
+      si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
+      si.wShowWindow = SW_HIDE;  // avoid flashing black window
+      if (is_write)
+        si.hStdInput = child_end;
+      else
+        {
+          si.hStdOutput = child_end;
+          si.hStdError = child_end;
+        }
+      PROCESS_INFORMATION pi {};
+
+      std::wstring wcommand {L"cmd.exe /C \""};
+      wcommand.append (sys::u8_to_wstring (command));
+      wcommand.push_back (L'"');
+      BOOL ok = CreateProcessW (nullptr, &wcommand[0], nullptr, nullptr, TRUE,
+                                CREATE_NEW_CONSOLE, nullptr, nullptr, &si, &pi);
+      if (! ok)
+        {
+          CloseHandle (h_read);
+          CloseHandle (h_write);
+          return nullptr;
+        }
+
+      CloseHandle (pi.hThread);
+
+      // close child's end of pipe
+      CloseHandle (child_end);
+
+      // convert pipe read or write handle to FILE *
+      int flags = (is_write ? _O_WRONLY : _O_RDONLY);
+      if (is_binary)
+        flags |= _O_BINARY;
+
+      int fd = _open_osfhandle (reinterpret_cast<intptr_t> (parent_end), flags);
+
+      if (fd == -1)
+        {
+          CloseHandle (parent_end);
+          CloseHandle (pi.hProcess);
+          return nullptr;
+        }
+
+      FILE *f = _fdopen (fd, mode);
+      if (! f)
+        {
+          _close (fd);  // handle to parent end of pipe is owned by OS file handle
+          CloseHandle (pi.hProcess);
+          return nullptr;
+        }
+
+      pipe_handle_map[f] = pi.hProcess;
+
+      return f;
+    }
   else
     {
-      si.hStdOutput = child_end;
-      si.hStdError = child_end;
+      std::wstring wcommand {L"\""};
+      wcommand.append (sys::u8_to_wstring (command));
+      wcommand.push_back (L'"');
+      std::wstring wmode = sys::u8_to_wstring (mode);
+
+      // Use binary mode on Windows if unspecified
+      if (wmode.length () < 2)
+        wmode += L'b';
+
+      return _wpopen (wcommand.c_str (), wmode.c_str ());
     }
-  PROCESS_INFORMATION pi {};
-
-  std::wstring wcommand {L"cmd.exe /C \""};
-  wcommand.append (sys::u8_to_wstring (command));
-  wcommand.append (L"\"");
-  BOOL ok = CreateProcessW (nullptr, &wcommand[0], nullptr, nullptr, TRUE,
-                            CREATE_NEW_CONSOLE, nullptr, nullptr, &si, &pi);
-  if (! ok)
-    {
-      CloseHandle (h_read);
-      CloseHandle (h_write);
-      return nullptr;
-    }
-
-  CloseHandle (pi.hThread);
-
-  // close child's end of pipe
-  CloseHandle (child_end);
-
-  // convert pipe read or write handle to FILE *
-  int flags = (is_write ? _O_WRONLY : _O_RDONLY);
-  if (is_binary)
-    flags |= _O_BINARY;
-
-  int fd = _open_osfhandle (reinterpret_cast<intptr_t> (parent_end), flags);
-
-  if (fd == -1)
-    {
-      CloseHandle (parent_end);
-      CloseHandle (pi.hProcess);
-      return nullptr;
-    }
-
-  FILE *f = _fdopen (fd, mode);
-  if (! f)
-    {
-      _close (fd);  // handle to parent end of pipe is owned by OS file handle
-      CloseHandle (pi.hProcess);
-      return nullptr;
-    }
-
-  pipe_handle_map[f] = pi.hProcess;
-
-  return f;
 
 #else
   return ::popen (command, mode);
@@ -726,29 +742,34 @@ int
 pclose (FILE *f)
 {
 #if defined (OCTAVE_USE_WINDOWS_API)
-  auto it = pipe_handle_map.find (f);
-  if (it != pipe_handle_map.end ())
+  if (application::is_gui_running ())
     {
-      HANDLE h_process = it->second;
-      pipe_handle_map.erase (it);
+      auto it = pipe_handle_map.find (f);
+      if (it != pipe_handle_map.end ())
+        {
+          HANDLE h_process = it->second;
+          pipe_handle_map.erase (it);
 
-      // close FILE pointer before waiting for child process
-      ::fclose (f);
+          // close FILE pointer before waiting for child process
+          ::fclose (f);
 
-      // wait for child to finish
-      WaitForSingleObject (h_process, INFINITE);
-      DWORD exitcode;
-      if (! GetExitCodeProcess (h_process, &exitcode))
-        exitcode = -1;
+          // wait for child to finish
+          WaitForSingleObject (h_process, INFINITE);
+          DWORD exitcode;
+          if (! GetExitCodeProcess (h_process, &exitcode))
+            exitcode = -1;
 
-      // close handle to child process
-      CloseHandle (h_process);
+          // close handle to child process
+          CloseHandle (h_process);
 
-      return static_cast<int> (exitcode);
+          return static_cast<int> (exitcode);
+        }
+
+      // This should not be happening.
+      return ::fclose (f);
     }
-
-  // This should not be happening.
-  return ::fclose (f);
+  else
+    return ::_pclose (f);
 
 #else
   return ::pclose (f);

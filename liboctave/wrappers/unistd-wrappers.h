@@ -52,6 +52,8 @@ extern OCTAVE_API int octave_close_wrapper (int fd);
 
 extern OCTAVE_API const char * octave_ctermid_wrapper (void);
 
+extern OCTAVE_API int octave_dup_wrapper (int old_fd);
+
 extern OCTAVE_API int octave_dup2_wrapper (int fd1, int fd2);
 
 extern OCTAVE_API int octave_execv_wrapper (const char *file, char *const *argv);

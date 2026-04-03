@@ -594,6 +594,20 @@ cdef_object_array::break_closure_cycles (const std::shared_ptr<stack_frame>& fra
 }
 
 void
+cdef_object_array::mark_as_constructed ()
+{
+  for (octave_idx_type i = 0; i < m_array.numel (); i++)
+    m_array(i).mark_as_constructed ();
+}
+
+void
+cdef_object_array::mark_as_constructed (const cdef_class& cls)
+{
+  for (octave_idx_type i = 0; i < m_array.numel (); i++)
+    m_array(i).mark_as_constructed (cls);
+}
+
+void
 cdef_object_scalar::break_closure_cycles (const std::shared_ptr<stack_frame>& frame)
 {
   for (octave_idx_type i = 0; i < m_map.nfields (); i++)

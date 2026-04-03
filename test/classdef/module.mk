@@ -15,6 +15,8 @@ classdef_TEST_FILES = \
   %reldir%/class_bug52614A.m \
   %reldir%/class_bug52614B.m \
   %reldir%/class_bug55766.m \
+  %reldir%/class_bug59775A.m \
+  %reldir%/class_bug59775B.m \
   %reldir%/class_bug60723A.m \
   %reldir%/class_bug60723B.m \
   %reldir%/class_bug60723C.m \
@@ -33,6 +35,10 @@ classdef_TEST_FILES = \
   %reldir%/foo_value_class.m \
   %reldir%/foo_handle_class.m \
   %reldir%/handle_class.m \
+  %reldir%/overloaded_all_class.m \
+  %reldir%/overloaded_all_class_handle.m \
+  %reldir%/overloaded_any_class.m \
+  %reldir%/overloaded_any_class_handle.m \
   %reldir%/overloaded_cat_class.m \
   %reldir%/overloaded_cat_class_handle.m \
   %reldir%/overloaded_ctranspose_class.m \

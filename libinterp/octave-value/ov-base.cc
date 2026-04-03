@@ -440,13 +440,13 @@ octave_base_value::matrix_type (const MatrixType&) const
 octave_value
 octave_base_value::all (int) const
 {
-  return 0.0;
+  err_wrong_type_arg ("octave_base_value::all ()", type_name ());
 }
 
 octave_value
 octave_base_value::any (int) const
 {
-  return 0.0;
+  err_wrong_type_arg ("octave_base_value::any ()", type_name ());
 }
 
 octave_value

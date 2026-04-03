@@ -483,6 +483,10 @@ public:
 
   OCTINTERP_API void fill_empty_values (Array<cdef_object>& arr);
 
+  OCTINTERP_API void mark_as_constructed ();
+
+  OCTINTERP_API void mark_as_constructed (const cdef_class& cls);
+
 private:
 
   Array<cdef_object> m_array;

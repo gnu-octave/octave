@@ -28,7 +28,11 @@
 
 #include "octave-config.h"
 
+#include <cstdio>
+#include <functional>
 #include <string>
+
+#include "unwind-prot.h"
 
 class string_vector;
 
@@ -36,6 +40,8 @@ class string_vector;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 OCTAVE_BEGIN_NAMESPACE(sys)
+
+extern OCTAVE_API int dup (int old_fd);
 
 extern OCTAVE_API int dup2 (int, int);
 extern OCTAVE_API int dup2 (int, int, std::string&);
@@ -64,6 +70,10 @@ extern OCTAVE_API uid_t geteuid ();
 
 extern OCTAVE_API int pipe (int *);
 extern OCTAVE_API int pipe (int *, std::string&);
+
+extern OCTAVE_API int read (int fd, void *buf, size_t count);
+
+extern OCTAVE_API int close (int fd);
 
 extern OCTAVE_API pid_t waitpid (pid_t, int *status, int);
 extern OCTAVE_API pid_t waitpid (pid_t, int *status, int, std::string&);
@@ -102,6 +112,73 @@ popen2 (const std::string&, const string_vector&, bool, int *,
 
 extern OCTAVE_API int fcntl (int, int, long);
 extern OCTAVE_API int fcntl (int, int, long, std::string&);
+
+template <typename F>
+auto capture_stderr (F fn, std::string& err_str)
+{
+  // create pipe
+  int fds[2];
+  if (pipe (fds) != 0)
+    return fn ();
+
+  octave::unwind_action close_read_pipe ([fds] () { close (fds[0]); });
+
+  int old_stderr;
+  std::invoke_result_t<F> result {};
+
+  {
+    // close the write end of pipe before reading from read end
+    octave::unwind_action close_write_pipe ([fds] () { close (fds[1]); });
+
+    // save old stderr
+    old_stderr = dup (fileno (stderr));
+    if (old_stderr < 0)
+      return fn ();
+
+    // redirect stderr to pipe
+    if (dup2 (fds[1], fileno (stderr)) < 0)
+      return fn ();
+
+    // restore stderr
+    octave::unwind_action restore_stderr (
+      [old_stderr] ()
+      { 
+        fflush (stderr);
+        dup2 (old_stderr, fileno (stderr));
+        close (old_stderr);
+      });
+
+    // call function
+    if constexpr (std::is_void_v<std::invoke_result_t<F>>)
+      fn ();
+    else
+      result = fn ();
+  }
+
+  // read from pipe
+  fflush (stderr);
+  char buffer[4096];
+  for (;;)
+    {
+      int n = read (fds[0], buffer, sizeof (buffer));
+      if (n <= 0)
+        break;
+      err_str.append (buffer, n);
+    }
+
+  if constexpr (std::is_void_v<std::invoke_result_t<F>>)
+    return;
+  else
+    return result;
+}
+
+template <typename F>
+auto capture_stderr (F fn)
+{
+  std::string err_str;
+
+  return capture_stderr (fn, err_str);
+}
 
 OCTAVE_END_NAMESPACE(sys)
 OCTAVE_END_NAMESPACE(octave)

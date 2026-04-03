@@ -118,6 +118,13 @@ behave identically to the `Array` class.
                                     | Sparse::rwridx (write-access to ridx)
                                     | Sparse::rwcidx (write-access to cidx)
 
+The virtual functions `octave_base_value::all` and `octave_base_value::any`
+have been changed to throw an error if the subclass type does not override `all`
+and `any`.  The `all` and `any` function only work on numeric or logical input.
+They will error if passed any other input.  In previous versions of Octave,
+`all` and `any` returned 0 if the input type was neither numeric nor logical,
+which is not MATLAB compatible.
+
 ### Old release news
 
 - [Octave 11.x](etc/NEWS.11.md)

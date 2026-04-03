@@ -244,6 +244,8 @@ public:
   octave_value contents (const std::string& k) const;
   octave_value& contents (const std::string& k);
 
+  std::size_t byte_size () const;
+
   void clear ()
   {
     m_keys.clear ();
@@ -357,6 +359,8 @@ public:
   // aka getfield/setfield, but the latter returns a reference.
   Cell contents (const std::string& k) const;
   Cell& contents (const std::string& k);
+
+  std::size_t byte_size () const;
 
   void clear ()
   {

@@ -583,20 +583,7 @@ octave_struct::do_index_op (const octave_value_list& idx, bool resize_ok)
 std::size_t
 octave_struct::byte_size () const
 {
-  // Neglect the size of the fieldnames.
-
-  std::size_t retval = 0;
-
-  for (auto p = m_map.cbegin (); p != m_map.cend (); p++)
-    {
-      std::string key = m_map.key (p);
-
-      octave_value val = octave_value (m_map.contents (p));
-
-      retval += val.byte_size ();
-    }
-
-  return retval;
+  return m_map.byte_size ();
 }
 
 void

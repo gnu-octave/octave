@@ -48,6 +48,7 @@ classdef_TEST_FILES = \
   %reldir%/overloaded_permute_class.m \
   %reldir%/overloaded_permute_class_handle.m \
   %reldir%/overloaded_subsref.m \
+  %reldir%/overloaded_sizeof_class.m \
   %reldir%/overloaded_transpose_class.m \
   %reldir%/overloaded_transpose_class_handle.m \
   %reldir%/plist_t1.m \
@@ -55,6 +56,7 @@ classdef_TEST_FILES = \
   %reldir%/plist_t3.m \
   %reldir%/struct_wrapper.m \
   %reldir%/value_class.m \
+  %reldir%/value_class_subclass.m \
   %reldir%/value_class_reshape.m
 
 TEST_FILES += $(classdef_TEST_FILES)

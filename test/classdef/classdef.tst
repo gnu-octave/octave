@@ -261,6 +261,100 @@
 %! cls_50011 = class_bug50011_2 ();
 %! cls_50011.m_c ();
 
+## sizeof tests (bug #55810)
+
+## sizeof a value classdef with no values inside properties
+%!test <*55810>
+%! obj = value_class ();
+%! assert (sizeof (obj), 0)
+
+## previous test, but with a classdef array
+%!test <*55810>
+%! obj(2, 2) = value_class ();
+%! assert (sizeof (obj), 0)
+
+## sizeof a value classdef with clearly defined value sizes inside properties
+%!test <*55810>
+%! obj = value_class ();
+%! obj.a = uint8 (1);
+%! obj.b = uint16 (1);
+%! obj.c = uint32 (1);
+%! obj.d = uint64 (1);
+%! true_size = sum ([sizeof(obj.a), sizeof(obj.b), ...
+%!   sizeof(obj.c), sizeof(obj.d)]);
+%! assert (sizeof (obj), true_size);
+
+## previous test, but with a classdef array
+%!test <*55810>
+%! obj(2, 2) = value_class ();
+%! for i = 1:numel (obj)
+%!   obj(i).a = uint8 (1);
+%!   obj(i).b = uint16 (1);
+%!   obj(i).c = uint32 (1);
+%!   obj(i).d = uint64 (1);
+%! endfor
+%! true_size = sum ([sizeof([obj.a]), sizeof([obj.b]), ...
+%!   sizeof([obj.c]), sizeof([obj.d])]);
+%! assert (sizeof (obj), true_size);
+
+## sizeof a value classdef that contains a classdef
+%!test <*55810>
+%! obj = value_class ();
+%! obj_inner = value_class ();
+%! obj_inner.a = uint8 (1);
+%! obj_inner.b = uint16 (1);
+%! obj_inner.c = uint32 (1);
+%! obj_inner.d = uint64 (1);
+%! obj.a = obj_inner;
+%! true_size = sum ([sizeof(obj.a), sizeof(obj.b), ...
+%!   sizeof(obj.c), sizeof(obj.d)]);
+%! assert (sizeof (obj), true_size);
+
+## previous test, but with a classdef array
+%!test <*55810>
+%! obj(2, 2) = value_class ();
+%! obj_inner = value_class ();
+%! obj_inner.a = uint8 (1);
+%! obj_inner.b = uint16 (1);
+%! obj_inner.c = uint32 (1);
+%! obj_inner.d = uint64 (1);
+%! for i = 1:numel (obj)
+%!   obj(i).a = obj_inner;
+%! endfor
+%! true_size = sum ([sizeof([obj.a]), sizeof([obj.b]), ...
+%!   sizeof([obj.c]), sizeof([obj.d])]);
+%! assert (sizeof (obj), true_size);
+
+## sizeof a value classdef that is a subclass of another
+%!test <*55810>
+%! obj = value_class_subclass ();
+%! obj.a = uint8 (1);
+%! obj.b = uint16 (1);
+%! obj.c = uint32 (1);
+%! obj.d = uint64 (1);
+%! true_size = sum ([sizeof(obj.a), sizeof(obj.b), ...
+%!   sizeof(obj.c), sizeof(obj.d)]);
+%! assert (sizeof (obj), true_size);
+%! obj.z = uint64 (1);
+%! true_size = true_size + sizeof (obj.z);
+%! assert (sizeof (obj), true_size);
+
+## overloaded sizeof method
+%!test <*55810>
+%! obj = overloaded_sizeof_class ();
+%! assert (sizeof (obj), -5);  # the retval of the overloaded method
+%! obj.a = uint8 (1);
+%! assert (sizeof (obj), -5);
+%! assert (builtin ('sizeof', obj), 1);
+
+## sizeof a handle class
+%!test <*55810>
+%! obj = handle_class ();
+%! [computer, maxsize] = computer ();
+%! if (maxsize == 2^(63))  # if machine is 64-bit:
+%!   assert (sizeof (obj), 8);  # size is the machine word
+%! endif
+
 ## reshape array of value class objects
 %!test <*65179>
 %! obj(1,1) = value_class ();

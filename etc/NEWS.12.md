@@ -3,6 +3,11 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 
 ### General improvements
 
+* The size of `classdef` objects is now reported by `who` (bug #55810).  A
+  value class' byte size is calculated by summing up the byte size of all its
+  properties.  A handle class' byte size is calculated by getting the size of
+  the machine word on the users computer (most likely 4 or 8 bytes).
+
 
 ### Graphical User Interface
 
@@ -18,6 +23,7 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   input to `sparse` is an N-dimensional array.  An error is also thrown if an
   N-dimensional indexing operation of a sparse matrix is attempted.  Both
   behaviors are Matlab-compatible.
+
 
 ### Alphabetical list of new functions added in Octave 12
 

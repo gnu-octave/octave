@@ -586,6 +586,17 @@ cdef_object_array::fill_empty_values (Array<cdef_object>& arr)
     }
 }
 
+std::size_t
+cdef_object_array::byte_size () const
+{
+  std::size_t retval = 0;
+
+  for (octave_idx_type i = 0; i < m_array.numel (); i++)
+    retval += m_array.xelem (i).byte_size ();
+
+  return retval;
+}
+
 void
 cdef_object_array::break_closure_cycles (const std::shared_ptr<stack_frame>& frame)
 {

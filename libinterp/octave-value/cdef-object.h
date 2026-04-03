@@ -199,6 +199,11 @@ public:
     err_invalid_object ("transpose");
   }
 
+  virtual std::size_t byte_size () const
+  {
+    err_invalid_object ("byte_size");
+  }
+
 protected:
 
   // Reference count
@@ -366,6 +371,8 @@ public:
   cdef_object transpose () const
   { return cdef_object (m_rep->transpose ()); }
 
+  std::size_t byte_size () const { return m_rep->byte_size (); }
+
 protected:
 
   cdef_object_rep * get_rep () { return m_rep; }
@@ -487,6 +494,8 @@ public:
 
   OCTINTERP_API void mark_as_constructed (const cdef_class& cls);
 
+  OCTINTERP_API std::size_t byte_size () const;
+
 private:
 
   Array<cdef_object> m_array;
@@ -583,6 +592,8 @@ public:
 
   bool is_constructed () const { return m_ctor_list.empty (); }
 
+  std::size_t byte_size () const { return m_map.byte_size (); }
+
 protected:
 
   // Object property values
@@ -624,6 +635,8 @@ public:
   bool is_valid () const { return true; }
 
   bool is_handle_object () const { return true; }
+
+  std::size_t byte_size () const { return sizeof (void *); }
 
 protected:
 

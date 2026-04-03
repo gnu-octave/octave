@@ -1844,3 +1844,15 @@
 %!     delete ([savefile, '*']);
 %!   end_unwind_protect
 %! endfor
+
+%!test <*59775>
+%! m = class_bug59775A ([1, 2, 3]);
+%! assert ([m.A], [1, 1, 1]);
+
+%!test <*59775>
+%! m = class_bug59775B ([1, 2, 3]);
+%! assert ([m.A], [1, 2, 3]);
+
+%!test <*59775>
+%! m = class_bug59775B ([1, 3, 5; 2, 4, 6]);
+%! assert ([m.A], [1, 2, 3, 4, 5, 6]);

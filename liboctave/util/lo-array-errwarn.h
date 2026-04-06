@@ -153,6 +153,11 @@ err_invalid_index (octave_idx_type n, octave_idx_type nd = 0,
                    const std::string& var = "");
 
 OCTAVE_NORETURN extern OCTAVE_API void
+err_invalid_index (uint64_t n, octave_idx_type nd = 0,
+                   octave_idx_type dim = 0,
+                   const std::string& var = "");
+
+OCTAVE_NORETURN extern OCTAVE_API void
 err_invalid_index (const std::string& idx, octave_idx_type nd = 0,
                    octave_idx_type dim = 0,
                    const std::string& var = "");

@@ -35,8 +35,7 @@
 #include "lo-array-errwarn.h"
 #include "oct-error.h"
 
-static constexpr octave_idx_type IDX_MAX
-  = std::numeric_limits<octave_idx_type>::max () - 1;
+static constexpr octave_idx_type IDX_MAX = dim_vector::dim_max ();
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -219,19 +218,6 @@ err_invalid_index (const std::string& idx, octave_idx_type nd,
 }
 
 void
-err_invalid_index (octave_idx_type n, octave_idx_type nd,
-                   octave_idx_type dim, const std::string& var)
-{
-  if (n == IDX_MAX + 1)
-    err_invalid_index
-      (std::to_string
-         (static_cast<std::make_unsigned_t<octave_idx_type>> (n) + 1),
-       nd, dim, var);
-  else
-    err_invalid_index (std::to_string (n + 1), nd, dim, var);
-}
-
-void
 err_invalid_index (double n, octave_idx_type nd, octave_idx_type dim,
                    const std::string& var)
 {
@@ -247,6 +233,26 @@ err_invalid_index (double n, octave_idx_type nd, octave_idx_type dim,
     }
 
   err_invalid_index (buf.str (), nd, dim, var);
+}
+
+void
+err_invalid_index (octave_idx_type n, octave_idx_type nd,
+                   octave_idx_type dim, const std::string& var)
+{
+  if (n == IDX_MAX + 1)
+    err_invalid_index
+      (std::to_string
+         (static_cast<std::make_unsigned_t<octave_idx_type>> (n) + 1),
+       nd, dim, var);
+  else
+    err_invalid_index (std::to_string (n + 1), nd, dim, var);
+}
+
+void
+err_invalid_index (uint64_t n, octave_idx_type nd,
+                   octave_idx_type dim, const std::string& var)
+{
+  err_invalid_index (std::to_string (n + 1), nd, dim, var);
 }
 
 // Complain for read access beyond the bounds of an array.

@@ -36,18 +36,28 @@
 %!assert (a(:,1), 1)
 %!assert (isempty (a(logical (0))))
 %!error a(-1)
+%!error a(0)
+%!error a(1.5)
 %!error a(2)
 %!error a(2,:)
 %!error a(:,2)
 %!error a(-1,:)
 %!error a(:,-1)
+%!error a(0,:)
+%!error a(:,0)
+%!error a(1.5,:)
+%!error a(:,1.5)
 %!error a([1,2,3])
 %!error a([1;2;3])
 %!error a([1,2;3,4])
-%!error a([0,1])
-%!error a([0;1])
 %!error a([-1,0])
 %!error a([-1;0])
+%!error a([0,1])
+%!error a([0;1])
+%!error a([1.5,1])
+%!error a([1.5;1])
+%!error a([1,1.5])
+%!error a([1,1.5])
 
 %!shared a, a_prime, mid_a
 %! a = [4,3,2,1];
@@ -524,6 +534,26 @@
 %!   assert (m > 0);
 %! end_try_catch
 %! assert (size (x), [10, 10]);
+
+##  Test indexing with extreme values
+%!shared a
+%! a = ones (1e6,0);
+%!error <a\(-[Ii][Nn][Ff]\): subscripts> a(-Inf)
+%!error <a\([Ii][Nn][Ff]\): subscripts>  a(Inf)
+%!error <a\(-[Nn][Aa][Nn]\): subscripts> a(-NaN)
+%!error <a\([Nn][Aa][Nn]\): subscripts>  a(NaN)
+%!error <a\(.+\): subscripts> a(flintmax + 2)
+%!testif ; __have_feature__ ('ENABLE_64')
+%! fail ('a(intmax ("int64"))', 'a\(9223372036854775807\): out of bound');
+%! fail ('a(double (intmax ("int64")))', 'a\(.+\): out of bound');
+%! a = zeros ((intmax ('int64') - 512), 0);
+%! fail ('a(intmax ("uint64"))', 'a\(18446744073709551615\): subscripts');
+%!testif ; ! __have_feature__ ('ENABLE_64')
+%! fail ('a(intmax ("int32"))', 'a\(2147483647\): out of bound');
+%! fail ('a(double (intmax ("int32")))', 'a\(.+\): subscripts');
+%! a = zeros ((intmax ('int32') - 1), 0);
+%! fail ('a(double (intmax ("uint32")))', 'a\(.+\): subscripts');
+%! fail ('a(intmax ("uint64"))', 'a\(18446744073709551615\): subscripts');
 
 ##  Test indexing of unnamed constants
 %!error <index \(0\): subscripts must be>     1(0)

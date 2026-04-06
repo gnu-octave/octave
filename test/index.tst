@@ -545,7 +545,7 @@
 %!error <a\(.+\): subscripts> a(flintmax + 2)
 %!testif ; __have_feature__ ('ENABLE_64')
 %! fail ('a(intmax ("int64"))', 'a\(9223372036854775807\): out of bound');
-%! fail ('a(double (intmax ("int64")))', 'a\(.+\): out of bound');
+%! fail ('a(double (intmax ("int64")))', 'a\(.+\): subscripts');
 %! a = zeros ((intmax ('int64') - 512), 0);
 %! fail ('a(intmax ("uint64"))', 'a\(18446744073709551615\): subscripts');
 %!testif ; ! __have_feature__ ('ENABLE_64')

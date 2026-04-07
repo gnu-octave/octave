@@ -2033,7 +2033,7 @@ qr<FloatComplexMatrix>::insert_row (const FloatComplexRowVector& u,
   OCTAVE_LOCAL_BUFFER (float, rw, k);
   F77_XFCN (cqrinr, CQRINR, (m, n, F77_CMPLX_ARG (m_q.rwdata ()), ldq,
                              F77_CMPLX_ARG (m_r.rwdata ()), ldr,
-                             j + 1, F77_CONST_CMPLX_ARG (utmp.data ()),
+                             j + 1, F77_CMPLX_ARG (utmp.data ()),
                              rw));
 
 }

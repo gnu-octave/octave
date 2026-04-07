@@ -540,7 +540,7 @@
 %! a = ones (1e6,0);
 %!error <a\(-[Ii][Nn][Ff]\): subscripts> a(-Inf)
 %!error <a\([Ii][Nn][Ff]\): subscripts>  a(Inf)
-%!error <a\(-[Nn][Aa][Nn]\): subscripts> a(-NaN)
+%!error <a\(-?[Nn][Aa][Nn]\): subscripts> a(-NaN)
 %!error <a\([Nn][Aa][Nn]\): subscripts>  a(NaN)
 %!error <a\(.+\): subscripts> a(flintmax + 2)
 %!testif ; __have_feature__ ('ENABLE_64')

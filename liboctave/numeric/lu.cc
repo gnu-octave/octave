@@ -28,6 +28,7 @@
 #endif
 
 #include <algorithm>
+#include <vector>
 
 #include "CColVector.h"
 #include "CMatrix.h"
@@ -312,10 +313,10 @@ lu<Matrix>::update (const ColumnVector& u, const ColumnVector& v)
   if (u_nel != m || v_nel != n)
     (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
-  ColumnVector utmp = u;
-  ColumnVector vtmp = v;
+  std::vector<double> utmp (u.data (), u.data () + u.numel ());
+  std::vector<double> vtmp (v.data (), v.data () + v.numel ());
   F77_XFCN (dlu1up, DLU1UP, (m, n, l.rwdata (), m, r.rwdata (),
-                             k, utmp.rwdata (), vtmp.rwdata ()));
+                             k, utmp.data (), vtmp.data ()));
 }
 
 template <>
@@ -343,11 +344,11 @@ lu<Matrix>::update (const Matrix& u, const Matrix& v)
 
   for (F77_INT i = 0; i < u_nc; i++)
     {
-      ColumnVector utmp = u.column (i);
-      ColumnVector vtmp = v.column (i);
+      std::vector<double> utmp (u.data () + i * u.rows (), u.data () + (i + 1) * u.rows ());
+      std::vector<double> vtmp (v.data () + i * v.rows (), v.data () + (i + 1) * v.rows ());
       F77_XFCN (dlu1up, DLU1UP, (m, n, l.rwdata (),
                                  m, r.rwdata (), k,
-                                 utmp.rwdata (), vtmp.rwdata ()));
+                                 utmp.data (), vtmp.data ()));
     }
 }
 
@@ -371,8 +372,8 @@ lu<Matrix>::update_piv (const ColumnVector& u, const ColumnVector& v)
   if (u_nel != m || v_nel != n)
     (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
-  ColumnVector utmp = u;
-  ColumnVector vtmp = v;
+  const std::vector<double> utmp (u.data (), u.data () + u.numel ());
+  const std::vector<double> vtmp (v.data (), v.data () + v.numel ());
   OCTAVE_LOCAL_BUFFER (double, w, m);
   for (F77_INT i = 0; i < m; i++) m_ipvt(i) += 1; // increment
   F77_XFCN (dlup1up, DLUP1UP, (m, n, l.rwdata (),
@@ -409,8 +410,8 @@ lu<Matrix>::update_piv (const Matrix& u, const Matrix& v)
   for (F77_INT i = 0; i < m; i++) m_ipvt(i) += 1; // increment
   for (F77_INT i = 0; i < u_nc; i++)
     {
-      ColumnVector utmp = u.column (i);
-      ColumnVector vtmp = v.column (i);
+      const std::vector<double> utmp (u.data () + i * u.rows (), u.data () + (i + 1) * u.rows ());
+      const std::vector<double> vtmp (v.data () + i * v.rows (), v.data () + (i + 1) * v.rows ());
       F77_XFCN (dlup1up, DLUP1UP, (m, n, l.rwdata (),
                                    m, r.rwdata (), k,
                                    m_ipvt.rwdata (),
@@ -466,11 +467,11 @@ lu<FloatMatrix>::update (const FloatColumnVector& u,
   if (u_nel != m || v_nel != n)
     (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
-  FloatColumnVector utmp = u;
-  FloatColumnVector vtmp = v;
+  std::vector<float> utmp (u.data (), u.data () + u.numel ());
+  std::vector<float> vtmp (v.data (), v.data () + v.numel ());
   F77_XFCN (slu1up, SLU1UP, (m, n, l.rwdata (),
                              m, r.rwdata (), k,
-                             utmp.rwdata (), vtmp.rwdata ()));
+                             utmp.data (), vtmp.data ()));
 }
 
 template <>
@@ -498,11 +499,11 @@ lu<FloatMatrix>::update (const FloatMatrix& u, const FloatMatrix& v)
 
   for (F77_INT i = 0; i < u_nc; i++)
     {
-      FloatColumnVector utmp = u.column (i);
-      FloatColumnVector vtmp = v.column (i);
+      std::vector<float> utmp (u.data () + i * u.rows (), u.data () + (i + 1) * u.rows ());
+      std::vector<float> vtmp (v.data () + i * v.rows (), v.data () + (i + 1) * v.rows ());
       F77_XFCN (slu1up, SLU1UP, (m, n, l.rwdata (),
                                  m, r.rwdata (), k,
-                                 utmp.rwdata (), vtmp.rwdata ()));
+                                 utmp.data (), vtmp.data ()));
     }
 }
 
@@ -527,8 +528,8 @@ lu<FloatMatrix>::update_piv (const FloatColumnVector& u,
   if (u_nel != m || v_nel != n)
     (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
-  FloatColumnVector utmp = u;
-  FloatColumnVector vtmp = v;
+  const std::vector<float> utmp (u.data (), u.data () + u.numel ());
+  const std::vector<float> vtmp (v.data (), v.data () + v.numel ());
   OCTAVE_LOCAL_BUFFER (float, w, m);
   for (F77_INT i = 0; i < m; i++) m_ipvt(i) += 1; // increment
   F77_XFCN (slup1up, SLUP1UP, (m, n, l.rwdata (),
@@ -565,8 +566,8 @@ lu<FloatMatrix>::update_piv (const FloatMatrix& u, const FloatMatrix& v)
   for (F77_INT i = 0; i < m; i++) m_ipvt(i) += 1; // increment
   for (F77_INT i = 0; i < u_nc; i++)
     {
-      FloatColumnVector utmp = u.column (i);
-      FloatColumnVector vtmp = v.column (i);
+      const std::vector<float> utmp (u.data () + i * u.rows (), u.data () + (i + 1) * u.rows ());
+      const std::vector<float> vtmp (v.data () + i * v.rows (), v.data () + (i + 1) * v.rows ());
       F77_XFCN (slup1up, SLUP1UP, (m, n, l.rwdata (),
                                    m, r.rwdata (), k,
                                    m_ipvt.rwdata (),
@@ -623,12 +624,12 @@ lu<ComplexMatrix>::update (const ComplexColumnVector& u,
   if (u_nel != m || v_nel != n)
     (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
-  ComplexColumnVector utmp = u;
-  ComplexColumnVector vtmp = v;
+  std::vector<Complex> utmp (u.data (), u.data () + u.numel ());
+  std::vector<Complex> vtmp (v.data (), v.data () + v.numel ());
   F77_XFCN (zlu1up, ZLU1UP, (m, n, F77_DBLE_CMPLX_ARG (l.rwdata ()), m,
                              F77_DBLE_CMPLX_ARG (r.rwdata ()), k,
-                             F77_DBLE_CMPLX_ARG (utmp.rwdata ()),
-                             F77_DBLE_CMPLX_ARG (vtmp.rwdata ())));
+                             F77_DBLE_CMPLX_ARG (utmp.data ()),
+                             F77_DBLE_CMPLX_ARG (vtmp.data ())));
 }
 
 template <>
@@ -656,14 +657,14 @@ lu<ComplexMatrix>::update (const ComplexMatrix& u, const ComplexMatrix& v)
 
   for (F77_INT i = 0; i < u_nc; i++)
     {
-      ComplexColumnVector utmp = u.column (i);
-      ComplexColumnVector vtmp = v.column (i);
+      std::vector<Complex> utmp (u.data () + i * u.rows (), u.data () + (i + 1) * u.rows ());
+      std::vector<Complex> vtmp (v.data () + i * v.rows (), v.data () + (i + 1) * v.rows ());
       F77_XFCN (zlu1up, ZLU1UP, (m, n,
                                  F77_DBLE_CMPLX_ARG (l.rwdata ()),
                                  m, F77_DBLE_CMPLX_ARG (r.rwdata ()),
                                  k,
-                                 F77_DBLE_CMPLX_ARG (utmp.rwdata ()),
-                                 F77_DBLE_CMPLX_ARG (vtmp.rwdata ())));
+                                 F77_DBLE_CMPLX_ARG (utmp.data ()),
+                                 F77_DBLE_CMPLX_ARG (vtmp.data ())));
     }
 }
 
@@ -688,8 +689,8 @@ lu<ComplexMatrix>::update_piv (const ComplexColumnVector& u,
   if (u_nel != m || v_nel != n)
     (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
-  ComplexColumnVector utmp = u;
-  ComplexColumnVector vtmp = v;
+  const std::vector<Complex> utmp (u.data (), u.data () + u.numel ());
+  const std::vector<Complex> vtmp (v.data (), v.data () + v.numel ());
   OCTAVE_LOCAL_BUFFER (Complex, w, m);
   for (F77_INT i = 0; i < m; i++) m_ipvt(i) += 1; // increment
   F77_XFCN (zlup1up, ZLUP1UP, (m, n, F77_DBLE_CMPLX_ARG (l.rwdata ()),
@@ -729,8 +730,8 @@ lu<ComplexMatrix>::update_piv (const ComplexMatrix& u,
   for (F77_INT i = 0; i < m; i++) m_ipvt(i) += 1; // increment
   for (F77_INT i = 0; i < u_nc; i++)
     {
-      ComplexColumnVector utmp = u.column (i);
-      ComplexColumnVector vtmp = v.column (i);
+      const std::vector<Complex> utmp (u.data () + i * u.rows (), u.data () + (i + 1) * u.rows ());
+      const std::vector<Complex> vtmp (v.data () + i * v.rows (), v.data () + (i + 1) * v.rows ());
       F77_XFCN (zlup1up, ZLUP1UP, (m, n,
                                    F77_DBLE_CMPLX_ARG (l.rwdata ()),
                                    m,
@@ -791,12 +792,12 @@ lu<FloatComplexMatrix>::update (const FloatComplexColumnVector& u,
   if (u_nel != m || v_nel != n)
     (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
-  FloatComplexColumnVector utmp = u;
-  FloatComplexColumnVector vtmp = v;
+  std::vector<FloatComplex> utmp (u.data (), u.data () + u.numel ());
+  std::vector<FloatComplex> vtmp (v.data (), v.data () + v.numel ());
   F77_XFCN (clu1up, CLU1UP, (m, n, F77_CMPLX_ARG (l.rwdata ()), m,
                              F77_CMPLX_ARG (r.rwdata ()), k,
-                             F77_CMPLX_ARG (utmp.rwdata ()),
-                             F77_CMPLX_ARG (vtmp.rwdata ())));
+                             F77_CMPLX_ARG (utmp.data ()),
+                             F77_CMPLX_ARG (vtmp.data ())));
 }
 
 template <>
@@ -825,12 +826,12 @@ lu<FloatComplexMatrix>::update (const FloatComplexMatrix& u,
 
   for (F77_INT i = 0; i < u_nc; i++)
     {
-      FloatComplexColumnVector utmp = u.column (i);
-      FloatComplexColumnVector vtmp = v.column (i);
+      std::vector<FloatComplex> utmp (u.data () + i * u.rows (), u.data () + (i + 1) * u.rows ());
+      std::vector<FloatComplex> vtmp (v.data () + i * v.rows (), v.data () + (i + 1) * v.rows ());
       F77_XFCN (clu1up, CLU1UP, (m, n, F77_CMPLX_ARG (l.rwdata ()),
                                  m, F77_CMPLX_ARG (r.rwdata ()), k,
-                                 F77_CMPLX_ARG (utmp.rwdata ()),
-                                 F77_CMPLX_ARG (vtmp.rwdata ())));
+                                 F77_CMPLX_ARG (utmp.data ()),
+                                 F77_CMPLX_ARG (vtmp.data ())));
     }
 }
 
@@ -855,8 +856,8 @@ lu<FloatComplexMatrix>::update_piv (const FloatComplexColumnVector& u,
   if (u_nel != m || v_nel != n)
     (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
-  FloatComplexColumnVector utmp = u;
-  FloatComplexColumnVector vtmp = v;
+  const std::vector<FloatComplex> utmp (u.data (), u.data () + u.numel ());
+  const std::vector<FloatComplex> vtmp (v.data (), v.data () + v.numel ());
   OCTAVE_LOCAL_BUFFER (FloatComplex, w, m);
   for (F77_INT i = 0; i < m; i++) m_ipvt(i) += 1; // increment
   F77_XFCN (clup1up, CLUP1UP, (m, n, F77_CMPLX_ARG (l.rwdata ()),
@@ -896,8 +897,8 @@ lu<FloatComplexMatrix>::update_piv (const FloatComplexMatrix& u,
   for (F77_INT i = 0; i < m; i++) m_ipvt(i) += 1; // increment
   for (F77_INT i = 0; i < u_nc; i++)
     {
-      FloatComplexColumnVector utmp = u.column (i);
-      FloatComplexColumnVector vtmp = v.column (i);
+      const std::vector<FloatComplex> utmp (u.data () + i * u.rows (), u.data () + (i + 1) * u.rows ());
+      const std::vector<FloatComplex> vtmp (v.data () + i * v.rows (), v.data () + (i + 1) * v.rows ());
       F77_XFCN (clup1up, CLUP1UP, (m, n, F77_CMPLX_ARG (l.rwdata ()),
                                    m, F77_CMPLX_ARG (r.rwdata ()), k,
                                    m_ipvt.rwdata (),

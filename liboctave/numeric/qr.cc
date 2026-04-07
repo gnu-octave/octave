@@ -28,6 +28,7 @@
 #endif
 
 #include <algorithm>
+#include <vector>
 
 #include "Array-oct.h"
 #include "CColVector.h"
@@ -497,12 +498,12 @@ qr<Matrix>::update (const ColumnVector& u, const ColumnVector& v)
   if (u_nel != m || v_nel != n)
     (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");
 
-  ColumnVector utmp = u;
-  ColumnVector vtmp = v;
+  std::vector<double> utmp (u.data (), u.data () + u.numel ());
+  std::vector<double> vtmp (v.data (), v.data () + v.numel ());
   OCTAVE_LOCAL_BUFFER (double, w, 2*k);
   F77_XFCN (dqr1up, DQR1UP, (m, n, k, m_q.rwdata (), m,
-                             m_r.rwdata (), k, utmp.rwdata (),
-                             vtmp.rwdata (), w));
+                             m_r.rwdata (), k, utmp.data (),
+                             vtmp.data (), w));
 }
 
 template <>
@@ -525,11 +526,11 @@ qr<Matrix>::update (const Matrix& u, const Matrix& v)
   OCTAVE_LOCAL_BUFFER (double, w, 2*k);
   for (F77_INT i = 0; i < u_cols; i++)
     {
-      ColumnVector utmp = u.column (i);
-      ColumnVector vtmp = v.column (i);
+      std::vector<double> utmp (u.data () + i * u.rows (), u.data () + (i + 1) * u.rows ());
+      std::vector<double> vtmp (v.data () + i * v.rows (), v.data () + (i + 1) * v.rows ());
       F77_XFCN (dqr1up, DQR1UP, (m, n, k, m_q.rwdata (), m,
-                                 m_r.rwdata (), k, utmp.rwdata (),
-                                 vtmp.rwdata (), w));
+                                 m_r.rwdata (), k, utmp.data (),
+                                 vtmp.data (), w));
     }
 }
 
@@ -562,7 +563,7 @@ qr<Matrix>::insert_col (const ColumnVector& u, octave_idx_type j_arg)
   F77_INT ldq = to_f77_int (m_q.rows ());
   F77_INT ldr = to_f77_int (m_r.rows ());
 
-  ColumnVector utmp = u;
+  const std::vector<double> utmp (u.data (), u.data () + u.numel ());
   OCTAVE_LOCAL_BUFFER (double, w, k);
   F77_XFCN (dqrinc, DQRINC, (m, n, k, m_q.rwdata (), ldq,
                              m_r.rwdata (), ldr, j + 1,
@@ -617,7 +618,7 @@ qr<Matrix>::insert_col (const Matrix& u, const Array<octave_idx_type>& j)
       for (F77_INT i = 0; i < nj; i++)
         {
           F77_INT ii = i;
-          ColumnVector utmp = u.column (jsi(i));
+          const std::vector<double> utmp (u.data () + jsi(i) * u.rows (), u.data () + (jsi(i) + 1) * u.rows ());
           F77_INT js_elt = to_f77_int (js(ii));
           F77_XFCN (dqrinc, DQRINC, (m, n + ii, std::min (kmax, k + ii),
                                      m_q.rwdata (), ldq,
@@ -730,11 +731,11 @@ qr<Matrix>::insert_row (const RowVector& u, octave_idx_type j_arg)
   F77_INT ldq = to_f77_int (m_q.rows ());
   F77_INT ldr = to_f77_int (m_r.rows ());
 
-  RowVector utmp = u;
+  std::vector<double> utmp (u.data (), u.data () + u.numel ());
   OCTAVE_LOCAL_BUFFER (double, w, k);
   F77_XFCN (dqrinr, DQRINR, (m, n, m_q.rwdata (), ldq,
                              m_r.rwdata (), ldr,
-                             j + 1, utmp.rwdata (), w));
+                             j + 1, utmp.data (), w));
 
 }
 
@@ -911,12 +912,12 @@ qr<FloatMatrix>::update (const FloatColumnVector& u, const FloatColumnVector& v)
   if (u_nel != m || v_nel != n)
     (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");
 
-  FloatColumnVector utmp = u;
-  FloatColumnVector vtmp = v;
+  std::vector<float> utmp (u.data (), u.data () + u.numel ());
+  std::vector<float> vtmp (v.data (), v.data () + v.numel ());
   OCTAVE_LOCAL_BUFFER (float, w, 2*k);
   F77_XFCN (sqr1up, SQR1UP, (m, n, k, m_q.rwdata (), m,
-                             m_r.rwdata (), k, utmp.rwdata (),
-                             vtmp.rwdata (), w));
+                             m_r.rwdata (), k, utmp.data (),
+                             vtmp.data (), w));
 }
 
 template <>
@@ -939,11 +940,11 @@ qr<FloatMatrix>::update (const FloatMatrix& u, const FloatMatrix& v)
   OCTAVE_LOCAL_BUFFER (float, w, 2*k);
   for (F77_INT i = 0; i < u_cols; i++)
     {
-      FloatColumnVector utmp = u.column (i);
-      FloatColumnVector vtmp = v.column (i);
+      std::vector<float> utmp (u.data () + i * u.rows (), u.data () + (i + 1) * u.rows ());
+      std::vector<float> vtmp (v.data () + i * v.rows (), v.data () + (i + 1) * v.rows ());
       F77_XFCN (sqr1up, SQR1UP, (m, n, k, m_q.rwdata (), m,
-                                 m_r.rwdata (), k, utmp.rwdata (),
-                                 vtmp.rwdata (), w));
+                                 m_r.rwdata (), k, utmp.data (),
+                                 vtmp.data (), w));
     }
 }
 
@@ -977,7 +978,7 @@ qr<FloatMatrix>::insert_col (const FloatColumnVector& u,
   F77_INT ldq = to_f77_int (m_q.rows ());
   F77_INT ldr = to_f77_int (m_r.rows ());
 
-  FloatColumnVector utmp = u;
+  const std::vector<float> utmp (u.data (), u.data () + u.numel ());
   OCTAVE_LOCAL_BUFFER (float, w, k);
   F77_XFCN (sqrinc, SQRINC, (m, n, k, m_q.rwdata (), ldq,
                              m_r.rwdata (), ldr, j + 1,
@@ -1033,7 +1034,7 @@ qr<FloatMatrix>::insert_col (const FloatMatrix& u,
       for (F77_INT i = 0; i < nj; i++)
         {
           F77_INT ii = i;
-          FloatColumnVector utmp = u.column (jsi(i));
+          const std::vector<float> utmp (u.data () + jsi(i) * u.rows (), u.data () + (jsi(i) + 1) * u.rows ());
           F77_INT js_elt = to_f77_int (js(ii));
           F77_XFCN (sqrinc, SQRINC, (m, n + ii, std::min (kmax, k + ii),
                                      m_q.rwdata (), ldq,
@@ -1147,11 +1148,11 @@ qr<FloatMatrix>::insert_row (const FloatRowVector& u,
   F77_INT ldq = to_f77_int (m_q.rows ());
   F77_INT ldr = to_f77_int (m_r.rows ());
 
-  FloatRowVector utmp = u;
+  std::vector<float> utmp (u.data (), u.data () + u.numel ());
   OCTAVE_LOCAL_BUFFER (float, w, k);
   F77_XFCN (sqrinr, SQRINR, (m, n, m_q.rwdata (), ldq,
                              m_r.rwdata (), ldr,
-                             j + 1, utmp.rwdata (), w));
+                             j + 1, utmp.data (), w));
 
 }
 
@@ -1340,14 +1341,14 @@ qr<ComplexMatrix>::update (const ComplexColumnVector& u,
   if (u_nel != m || v_nel != n)
     (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");
 
-  ComplexColumnVector utmp = u;
-  ComplexColumnVector vtmp = v;
+  std::vector<Complex> utmp (u.data (), u.data () + u.numel ());
+  std::vector<Complex> vtmp (v.data (), v.data () + v.numel ());
   OCTAVE_LOCAL_BUFFER (Complex, w, k);
   OCTAVE_LOCAL_BUFFER (double, rw, k);
   F77_XFCN (zqr1up, ZQR1UP, (m, n, k, F77_DBLE_CMPLX_ARG (m_q.rwdata ()),
                              m, F77_DBLE_CMPLX_ARG (m_r.rwdata ()), k,
-                             F77_DBLE_CMPLX_ARG (utmp.rwdata ()),
-                             F77_DBLE_CMPLX_ARG (vtmp.rwdata ()),
+                             F77_DBLE_CMPLX_ARG (utmp.data ()),
+                             F77_DBLE_CMPLX_ARG (vtmp.data ()),
                              F77_DBLE_CMPLX_ARG (w), rw));
 }
 
@@ -1372,13 +1373,13 @@ qr<ComplexMatrix>::update (const ComplexMatrix& u, const ComplexMatrix& v)
   OCTAVE_LOCAL_BUFFER (double, rw, k);
   for (F77_INT i = 0; i < u_cols; i++)
     {
-      ComplexColumnVector utmp = u.column (i);
-      ComplexColumnVector vtmp = v.column (i);
+      std::vector<Complex> utmp (u.data () + i * u.rows (), u.data () + (i + 1) * u.rows ());
+      std::vector<Complex> vtmp (v.data () + i * v.rows (), v.data () + (i + 1) * v.rows ());
       F77_XFCN (zqr1up, ZQR1UP, (m, n, k,
                                  F77_DBLE_CMPLX_ARG (m_q.rwdata ()),
                                  m, F77_DBLE_CMPLX_ARG (m_r.rwdata ()), k,
-                                 F77_DBLE_CMPLX_ARG (utmp.rwdata ()),
-                                 F77_DBLE_CMPLX_ARG (vtmp.rwdata ()),
+                                 F77_DBLE_CMPLX_ARG (utmp.data ()),
+                                 F77_DBLE_CMPLX_ARG (vtmp.data ()),
                                  F77_DBLE_CMPLX_ARG (w), rw));
     }
 }
@@ -1413,7 +1414,7 @@ qr<ComplexMatrix>::insert_col (const ComplexColumnVector& u,
   F77_INT ldq = to_f77_int (m_q.rows ());
   F77_INT ldr = to_f77_int (m_r.rows ());
 
-  ComplexColumnVector utmp = u;
+  const std::vector<Complex> utmp (u.data (), u.data () + u.numel ());
   OCTAVE_LOCAL_BUFFER (double, rw, k);
   F77_XFCN (zqrinc, ZQRINC, (m, n, k, F77_DBLE_CMPLX_ARG (m_q.rwdata ()),
                              ldq, F77_DBLE_CMPLX_ARG (m_r.rwdata ()),
@@ -1470,7 +1471,7 @@ qr<ComplexMatrix>::insert_col (const ComplexMatrix& u,
       for (F77_INT i = 0; i < nj; i++)
         {
           F77_INT ii = i;
-          ComplexColumnVector utmp = u.column (jsi(i));
+          const std::vector<Complex> utmp (u.data () + jsi(i) * u.rows (), u.data () + (jsi(i) + 1) * u.rows ());
           F77_INT js_elt = to_f77_int (js(ii));
           F77_XFCN (zqrinc, ZQRINC, (m, n + ii, std::min (kmax, k + ii),
                                      F77_DBLE_CMPLX_ARG (m_q.rwdata ()),
@@ -1589,12 +1590,12 @@ qr<ComplexMatrix>::insert_row (const ComplexRowVector& u,
   F77_INT ldq = to_f77_int (m_q.rows ());
   F77_INT ldr = to_f77_int (m_r.rows ());
 
-  ComplexRowVector utmp = u;
+  std::vector<Complex> utmp (u.data (), u.data () + u.numel ());
   OCTAVE_LOCAL_BUFFER (double, rw, k);
   F77_XFCN (zqrinr, ZQRINR, (m, n, F77_DBLE_CMPLX_ARG (m_q.rwdata ()),
                              ldq, F77_DBLE_CMPLX_ARG (m_r.rwdata ()),
                              ldr, j + 1,
-                             F77_DBLE_CMPLX_ARG (utmp.rwdata ()), rw));
+                             F77_DBLE_CMPLX_ARG (utmp.data ()), rw));
 
 }
 
@@ -1782,14 +1783,14 @@ qr<FloatComplexMatrix>::update (const FloatComplexColumnVector& u,
   if (u_nel != m || v_nel != n)
     (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");
 
-  FloatComplexColumnVector utmp = u;
-  FloatComplexColumnVector vtmp = v;
+  std::vector<FloatComplex> utmp (u.data (), u.data () + u.numel ());
+  std::vector<FloatComplex> vtmp (v.data (), v.data () + v.numel ());
   OCTAVE_LOCAL_BUFFER (FloatComplex, w, k);
   OCTAVE_LOCAL_BUFFER (float, rw, k);
   F77_XFCN (cqr1up, CQR1UP, (m, n, k, F77_CMPLX_ARG (m_q.rwdata ()),
                              m, F77_CMPLX_ARG (m_r.rwdata ()), k,
-                             F77_CMPLX_ARG (utmp.rwdata ()),
-                             F77_CMPLX_ARG (vtmp.rwdata ()),
+                             F77_CMPLX_ARG (utmp.data ()),
+                             F77_CMPLX_ARG (vtmp.data ()),
                              F77_CMPLX_ARG (w), rw));
 }
 
@@ -1815,12 +1816,12 @@ qr<FloatComplexMatrix>::update (const FloatComplexMatrix& u,
   OCTAVE_LOCAL_BUFFER (float, rw, k);
   for (F77_INT i = 0; i < u_cols; i++)
     {
-      FloatComplexColumnVector utmp = u.column (i);
-      FloatComplexColumnVector vtmp = v.column (i);
+      std::vector<FloatComplex> utmp (u.data () + i * u.rows (), u.data () + (i + 1) * u.rows ());
+      std::vector<FloatComplex> vtmp (v.data () + i * v.rows (), v.data () + (i + 1) * v.rows ());
       F77_XFCN (cqr1up, CQR1UP, (m, n, k, F77_CMPLX_ARG (m_q.rwdata ()),
                                  m, F77_CMPLX_ARG (m_r.rwdata ()), k,
-                                 F77_CMPLX_ARG (utmp.rwdata ()),
-                                 F77_CMPLX_ARG (vtmp.rwdata ()),
+                                 F77_CMPLX_ARG (utmp.data ()),
+                                 F77_CMPLX_ARG (vtmp.data ()),
                                  F77_CMPLX_ARG (w), rw));
     }
 }
@@ -1855,7 +1856,7 @@ qr<FloatComplexMatrix>::insert_col (const FloatComplexColumnVector& u,
   F77_INT ldq = to_f77_int (m_q.rows ());
   F77_INT ldr = to_f77_int (m_r.rows ());
 
-  FloatComplexColumnVector utmp = u;
+  const std::vector<FloatComplex> utmp (u.data (), u.data () + u.numel ());
   OCTAVE_LOCAL_BUFFER (float, rw, k);
   F77_XFCN (cqrinc, CQRINC, (m, n, k, F77_CMPLX_ARG (m_q.rwdata ()), ldq,
                              F77_CMPLX_ARG (m_r.rwdata ()), ldr, j + 1,
@@ -1911,12 +1912,13 @@ qr<FloatComplexMatrix>::insert_col (const FloatComplexMatrix& u,
       for (F77_INT i = 0; i < nj; i++)
         {
           F77_INT ii = i;
+          const std::vector<FloatComplex> utmp (u.data () + jsi(i) * u.rows (), u.data () + (jsi(i) + 1) * u.rows ());
           F77_INT js_elt = to_f77_int (js(ii));
           F77_XFCN (cqrinc, CQRINC, (m, n + ii, std::min (kmax, k + ii),
                                      F77_CMPLX_ARG (m_q.rwdata ()), ldq,
                                      F77_CMPLX_ARG (m_r.rwdata ()), ldr,
                                      js_elt + 1,
-                                     F77_CONST_CMPLX_ARG (u.column (jsi(i)).data ()),
+                                     F77_CONST_CMPLX_ARG (utmp.data ()),
                                      rw));
         }
     }
@@ -2027,11 +2029,11 @@ qr<FloatComplexMatrix>::insert_row (const FloatComplexRowVector& u,
   F77_INT ldq = to_f77_int (m_q.rows ());
   F77_INT ldr = to_f77_int (m_r.rows ());
 
-  FloatComplexRowVector utmp = u;
+  std::vector<FloatComplex> utmp (u.data (), u.data () + u.numel ());
   OCTAVE_LOCAL_BUFFER (float, rw, k);
   F77_XFCN (cqrinr, CQRINR, (m, n, F77_CMPLX_ARG (m_q.rwdata ()), ldq,
                              F77_CMPLX_ARG (m_r.rwdata ()), ldr,
-                             j + 1, F77_CMPLX_ARG (utmp.rwdata ()),
+                             j + 1, F77_CONST_CMPLX_ARG (utmp.data ()),
                              rw));
 
 }

@@ -95,6 +95,10 @@ extern int octave_lex (YYSTYPE *, void *);
 
 static void yyerror (octave::base_parser& parser, const char *s);
 
+// TRUE means that syntax errors will be shown with a caret symbol,
+// including when reading from a file.
+static bool Vdiagnostics_show_caret = true;
+
 #define lexer (parser.get_lexer ())
 #define scanner lexer.m_scanner
 
@@ -5116,18 +5120,25 @@ base_parser::bison_error (const std::string& str, const filepos& pos)
   int err_line = pos.line ();
   int err_col = pos.column ();
 
-  bool in_file = (m_lexer.m_reading_fcn_file || m_lexer.m_reading_script_file || m_lexer.m_reading_classdef_file);
+  bool in_file = (   m_lexer.m_reading_fcn_file
+                  || m_lexer.m_reading_script_file
+                  || m_lexer.m_reading_classdef_file);
 
   // Adjust the error column for display because it is 1-based in the
   // lexer for easier reporting.
   err_col--;
 
   if (in_file)
-    output_buf << str << " near line " << err_line << ", column " << err_col << " in file " << m_lexer.m_fcn_file_full_name << "\n";
+    output_buf << str << " near line " << err_line << ", column " << err_col
+               << " in file " << m_lexer.m_fcn_file_full_name << "\n";
   else
+    output_buf << str << "\n";
+
+  if (! in_file || Vdiagnostics_show_caret)
     {
-      // On command line, point directly to error
-      output_buf << str << "\n\n";
+      output_buf << "\n";
+
+      // Point directly to error in code using caret ('^').
       std::string curr_line = m_lexer.m_current_input_line;
 
       if (! curr_line.empty ())
@@ -6314,6 +6325,29 @@ prints debug information as it processes an expression.
   error ("__parser_debug_flag__: support for debugging the parser was disabled when Octave was built");
 
 #endif
+}
+
+DEFUN (diagnostics_show_caret, args, nargout,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} diagnostics_show_caret ()
+@deftypefnx {} {@var{old_val} =} diagnostics_show_caret (@var{new_val})
+@deftypefnx {} {@var{old_val} =} diagnostics_show_caret (@var{new_val}, "local")
+Query or set the internal variable that controls whether syntax errors are
+printed with a caret when reading from a file.
+
+By default, when a parse error occurs the source line is printed with a caret
+@samp{^} that points to the token that caused the error.  This is the case in
+the interactive interpreter and also when reading from a script or function
+file.  If this variable is set to false, when reading from a file, the source
+line and the caret will not be printed.
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@end deftypefn */)
+{
+  return set_internal_variable (Vdiagnostics_show_caret, args, nargout,
+                                "diagnostics_show_caret");
 }
 
 DEFMETHOD (__parse_file__, interp, args, ,

@@ -137,7 +137,7 @@ function [tf, s_idx] = ismember (a, s, varargin)
     a = double (a);
   endif
 
-  if (nargin > 2 && (nargin - by_rows - optlegacy != 2)) 
+  if (nargin > 2 && (nargin - by_rows - optlegacy != 2))
     error ('ismember: only "rows" and "legacy" are valid options');
   endif
   [a, s] = validsetargs ("ismember", a, s, varargin{:});
@@ -187,32 +187,30 @@ function [tf, s_idx] = ismember (a, s, varargin)
         s_idx = zeros (rows (a), 1);
       endif
 
+    elseif (rows (s) == 1)
+      tf = all (a == s, 2);
+      if (nargout > 1)
+        s_idx = double (tf);
+      endif
     else
-      if (rows (s) == 1)
-        tf = all (a == s, 2);
-        if (nargout > 1)
-          s_idx = double (tf);
-        endif
-      else
-        ## FIXME: lookup does not support "rows", so we just use unique.
+      ## FIXME: lookup does not support "rows", so we just use unique.
+      if (optlegacy)
+        [~, ii, jj] = unique ([a; s], "rows", "last");
         na = rows (a);
-        if (optlegacy)
-          [~, ii, jj] = unique ([a; s], "rows", "last");
-          jj = ii(jj(1:na));
-          tf = jj > na;
-          if (nargout > 1)
-            s_idx = max (0, jj - na);
-          endif
+        jj = ii(jj(1:na));
+        tf = jj > na;
+        if (nargout > 1)
+          s_idx = max (0, jj - na);
+        endif
 
-        else
-          [~, ii, jj] = unique ([s; a], "rows", "first");
-          nj = numel(jj) - (na-1);
-          jj = ii(jj(nj:end));
-          tf = jj < nj;
-          if (nargout > 1)
-            s_idx = jj;
-            s_idx (jj>nj) = 0;
-          endif
+      else
+        [~, ii, jj] = unique ([s; a], "rows", "first");
+        nj = rows (s) + 1;
+        jj = ii(jj(nj:end));
+        tf = jj < nj;
+        if (nargout > 1)
+          s_idx = jj;
+          s_idx(jj >= nj) = 0;
         endif
       endif
     endif
@@ -308,6 +306,13 @@ endfunction
 %! [result, s_idx] = ismember ([1:3; 5:7; 4:6; 0:2; 1:3; 2:4], [1:3], "rows");
 %! assert (result, logical ([1 0 0 0 1 0]'));
 %! assert (s_idx, [1 0 0 0 1 0]');
+
+%!test
+%! A = [1 3 5 6; 2 4 6 8];
+%! B = [2 4 6 8; 1 3 5 7; 2 4 6 8];
+%! [result, s_idx] = ismember (A, B, "rows");
+%! assert (result, [false; true]);
+%! assert (s_idx, [0; 1]);
 
 %!test <*51187>
 %! assert (ismember ('b ', {'a ', 'b '}), true);
@@ -405,7 +410,7 @@ endfunction
 %! assert (s_idx, [6; 0; 5]);
 
 %!xtest <61765>
-%! ## issorted() can't handle char matrix().  Returns [1;0;0].  
+%! ## issorted() can't handle char matrix().  Returns [1;0;0].
 %! abc = [' a'; ' b'; ' c'];
 %! [result, s_idx] = ismember (abc, {abc});
 %! assert (result, [false; false; false]);

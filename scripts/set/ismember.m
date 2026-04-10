@@ -358,8 +358,8 @@ endfunction
 %!test <*55659>
 %! A = [5 3 4 2];
 %! B = [2 4 4 4 6 8];
-%! [result, s_idx] = ismember (A, B)
-%! assert (result, [false, false, true, true])
+%! [result, s_idx] = ismember (A, B);
+%! assert (result, [false, false, true, true]);
 %! assert (s_idx, [0, 0, 2, 1]);
 %! [result, s_idx] = ismember (A, B, "legacy");
 %! assert (result, [false, false, true, true]);

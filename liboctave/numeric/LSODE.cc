@@ -129,11 +129,11 @@ LSODE::do_integrate (double tout)
 
       user_jac_ignore_ml_mu = true;
 
-      m_iwork = Array<octave_f77_int_type> (dim_vector (2, 1));
+      m_iwork.assign (2, 0);
 
-      m_iwork(0) = lower_jacobian_subdiagonals ();  // 'ML' in dlsode.f
+      m_iwork[0] = lower_jacobian_subdiagonals ();  // 'ML' in dlsode.f
 
-      m_iwork(1) = upper_jacobian_subdiagonals ();  // 'MU' in dlsode.f
+      m_iwork[1] = upper_jacobian_subdiagonals ();  // 'MU' in dlsode.f
 
       if (integration_method () == "stiff")
         {
@@ -180,15 +180,15 @@ LSODE::do_integrate (double tout)
           m_lrw = 22 + 16 * n;
         }
 
-      m_iwork.resize (dim_vector (m_liw, 1));
+      m_iwork.resize (m_liw);
 
       for (F77_INT i = 4; i < 9; i++)
-        m_iwork(i) = 0;
+        m_iwork[i] = 0;
 
-      m_rwork.resize (dim_vector (m_lrw, 1));
+      m_rwork.resize (m_lrw);
 
       for (F77_INT i = 4; i < 9; i++)
-        m_rwork(i) = 0;
+        m_rwork[i] = 0;
 
       octave_idx_type maxord = maximum_order ();
 
@@ -196,7 +196,7 @@ LSODE::do_integrate (double tout)
         {
           if (maxord > 0 && maxord <= max_maxord)
             {
-              m_iwork(4) = octave::to_f77_int (maxord);
+              m_iwork[4] = octave::to_f77_int (maxord);
               m_iopt = 1;
             }
           else
@@ -212,7 +212,7 @@ LSODE::do_integrate (double tout)
       if (m_stop_time_set)
         {
           m_itask = 4;
-          m_rwork(0) = m_stop_time;
+          m_rwork[0] = m_stop_time;
           m_iopt = 1;
         }
       else
@@ -250,9 +250,10 @@ LSODE::do_integrate (double tout)
       // LSODE_options
 
       m_rel_tol = relative_tolerance ();
-      m_abs_tol = absolute_tolerance ();
+      Array<double> atol_tmp = absolute_tolerance ();
+      m_abs_tol.assign (atol_tmp.data (), atol_tmp.data () + atol_tmp.numel ());
 
-      F77_INT abs_tol_len = octave::to_f77_int (m_abs_tol.numel ());
+      F77_INT abs_tol_len = octave::to_f77_int (m_abs_tol.size ());
 
       if (abs_tol_len == 1)
         m_itol = 1;
@@ -271,28 +272,28 @@ LSODE::do_integrate (double tout)
       double iss = initial_step_size ();
       if (iss >= 0.0)
         {
-          m_rwork(4) = iss;
+          m_rwork[4] = iss;
           m_iopt = 1;
         }
 
       double maxss = maximum_step_size ();
       if (maxss >= 0.0)
         {
-          m_rwork(5) = maxss;
+          m_rwork[5] = maxss;
           m_iopt = 1;
         }
 
       double minss = minimum_step_size ();
       if (minss >= 0.0)
         {
-          m_rwork(6) = minss;
+          m_rwork[6] = minss;
           m_iopt = 1;
         }
 
       F77_INT sl = octave::to_f77_int (step_limit ());
       if (sl > 0)
         {
-          m_iwork(5) = sl;
+          m_iwork[5] = sl;
           m_iopt = 1;
         }
 
@@ -301,10 +302,10 @@ LSODE::do_integrate (double tout)
 
   double *px = m_x.rwdata ();
 
-  double *pabs_tol = m_abs_tol.rwdata ();
+  double *pabs_tol = m_abs_tol.data ();
 
-  F77_INT *piwork = m_iwork.rwdata ();
-  double *prwork = m_rwork.rwdata ();
+  F77_INT *piwork = m_iwork.data ();
+  double *prwork = m_rwork.data ();
 
   F77_INT tmp_istate = octave::to_f77_int (m_istate);
 

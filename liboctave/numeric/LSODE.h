@@ -29,9 +29,10 @@
 #include "octave-config.h"
 
 #include <string>
+#include <vector>
 
-#include "Array-oct.h"
 #include "LSODE-opts.h"
+#include "mx-fwd.h"
 
 class OCTAVE_API LSODE : public ODE, public LSODE_options
 {
@@ -69,12 +70,12 @@ private:
   octave_f77_int_type m_liw;
   octave_f77_int_type m_lrw;
 
-  Array<octave_f77_int_type> m_iwork;
-  Array<double> m_rwork;
+  std::vector<octave_f77_int_type> m_iwork;
+  std::vector<double> m_rwork;
 
   double m_rel_tol;
 
-  Array<double> m_abs_tol;
+  std::vector<double> m_abs_tol;
 };
 
 #endif

@@ -343,8 +343,7 @@ chol<Matrix>::init (const Matrix& a, bool upper, bool calc_cond)
       F77_INT dpocon_info = 0;
 
       // Now calculate the condition number for non-singular matrix.
-      Array<double> z (dim_vector (3*n, 1));
-      double *pz = z.rwdata ();
+      OCTAVE_LOCAL_BUFFER (double, pz, 3*n);
       OCTAVE_LOCAL_BUFFER (F77_INT, iz, n);
       if (m_is_upper)
         F77_XFCN (dpocon, DPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n, h,
@@ -519,8 +518,7 @@ chol<FloatMatrix>::init (const FloatMatrix& a, bool upper, bool calc_cond)
       F77_INT spocon_info = 0;
 
       // Now calculate the condition number for non-singular matrix.
-      Array<float> z (dim_vector (3*n, 1));
-      float *pz = z.rwdata ();
+      OCTAVE_LOCAL_BUFFER (float, pz, 3*n);
       OCTAVE_LOCAL_BUFFER (F77_INT, iz, n);
       if (m_is_upper)
         F77_XFCN (spocon, SPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n, h,
@@ -699,10 +697,8 @@ chol<ComplexMatrix>::init (const ComplexMatrix& a, bool upper, bool calc_cond)
       F77_INT zpocon_info = 0;
 
       // Now calculate the condition number for non-singular matrix.
-      Array<Complex> z (dim_vector (2*n, 1));
-      Complex *pz = z.rwdata ();
-      Array<double> rz (dim_vector (n, 1));
-      double *prz = rz.rwdata ();
+      OCTAVE_LOCAL_BUFFER (Complex, pz, 2*n);
+      OCTAVE_LOCAL_BUFFER (double, prz, n);
       F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n,
                                  F77_DBLE_CMPLX_ARG (h), n, anorm, m_rcond,
                                  F77_DBLE_CMPLX_ARG (pz), prz, zpocon_info
@@ -891,10 +887,8 @@ chol<FloatComplexMatrix>::init (const FloatComplexMatrix& a, bool upper,
       F77_INT cpocon_info = 0;
 
       // Now calculate the condition number for non-singular matrix.
-      Array<FloatComplex> z (dim_vector (2*n, 1));
-      FloatComplex *pz = z.rwdata ();
-      Array<float> rz (dim_vector (n, 1));
-      float *prz = rz.rwdata ();
+      OCTAVE_LOCAL_BUFFER (FloatComplex, pz, 2*n);
+      OCTAVE_LOCAL_BUFFER (float, prz, n);
       F77_XFCN (cpocon, CPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n,
                                  F77_CMPLX_ARG (h), n, anorm, m_rcond,
                                  F77_CMPLX_ARG (pz), prz, cpocon_info

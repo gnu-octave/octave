@@ -27,12 +27,12 @@
 #  include "config.h"
 #endif
 
-#include "Array-oct.h"
 #include "fColVector.h"
 #include "fEIG.h"
 #include "fMatrix.h"
 #include "lapack-proto.h"
 #include "oct-error.h"
+#include "oct-locbuf.h"
 
 octave_idx_type
 FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
@@ -56,11 +56,8 @@ FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
   FloatMatrix atmp = a;
   float *tmp_data = atmp.rwdata ();
 
-  Array<float> wr (dim_vector (n, 1));
-  float *pwr = wr.rwdata ();
-
-  Array<float> wi (dim_vector (n, 1));
-  float *pwi = wi.rwdata ();
+  OCTAVE_LOCAL_BUFFER (float, pwr, n);
+  OCTAVE_LOCAL_BUFFER (float, pwi, n);
 
   F77_INT nvr = (calc_rev ? n : 0);
   FloatMatrix vr (nvr, nvr);
@@ -76,16 +73,12 @@ FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
   F77_INT ilo;
   F77_INT ihi;
 
-  Array<float> scale (dim_vector (n, 1));
-  float *pscale = scale.rwdata ();
+  OCTAVE_LOCAL_BUFFER (float, pscale, n);
 
   float abnrm;
 
-  Array<float> rconde (dim_vector (n, 1));
-  float *prconde = rconde.rwdata ();
-
-  Array<float> rcondv (dim_vector (n, 1));
-  float *prcondv = rcondv.rwdata ();
+  OCTAVE_LOCAL_BUFFER (float, prconde, n);
+  OCTAVE_LOCAL_BUFFER (float, prcondv, n);
 
   F77_INT dummy_iwork;
 
@@ -106,8 +99,7 @@ FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
     (*current_liboctave_error_handler) ("sgeevx workspace query failed");
 
   lwork = static_cast<F77_INT> (dummy_work);
-  Array<float> work (dim_vector (lwork, 1));
-  float *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (float, pwork, lwork);
 
   F77_XFCN (sgeevx, SGEEVX, (F77_CONST_CHAR_ARG2 (balance ? "B" : "N", 1),
                              F77_CONST_CHAR_ARG2 ("N", 1),
@@ -134,9 +126,9 @@ FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
 
   for (F77_INT j = 0; j < n; j++)
     {
-      if (wi.elem (j) == 0.0)
+      if (pwi[j] == 0.0)
         {
-          m_lambda.elem (j) = FloatComplex (wr.elem (j));
+          m_lambda.elem (j) = FloatComplex (pwr[j]);
           for (octave_idx_type i = 0; i < nvr; i++)
             m_v.elem (i, j) = vr.elem (i, j);
 
@@ -148,8 +140,8 @@ FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
           if (j+1 >= n)
             (*current_liboctave_error_handler) ("EIG: internal error");
 
-          m_lambda.elem (j) = FloatComplex (wr.elem (j), wi.elem (j));
-          m_lambda.elem (j+1) = FloatComplex (wr.elem (j+1), wi.elem (j+1));
+          m_lambda.elem (j) = FloatComplex (pwr[j], pwi[j]);
+          m_lambda.elem (j+1) = FloatComplex (pwr[j+1], pwi[j+1]);
 
           for (F77_INT i = 0; i < nvr; i++)
             {
@@ -202,8 +194,7 @@ FloatEIG::symmetric_init (const FloatMatrix& a, bool calc_rev, bool calc_lev)
     (*current_liboctave_error_handler) ("ssyev workspace query failed");
 
   lwork = static_cast<F77_INT> (dummy_work);
-  Array<float> work (dim_vector (lwork, 1));
-  float *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (float, pwork, lwork);
 
   F77_XFCN (ssyev, SSYEV, (F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
@@ -261,22 +252,17 @@ FloatEIG::init (const FloatComplexMatrix& a, bool calc_rev, bool calc_lev,
   FloatComplex dummy_work;
 
   F77_INT lrwork = 2*n;
-  Array<float> rwork (dim_vector (lrwork, 1));
-  float *prwork = rwork.rwdata ();
+  OCTAVE_LOCAL_BUFFER (float, prwork, lrwork);
 
   F77_INT ilo;
   F77_INT ihi;
 
-  Array<float> scale (dim_vector (n, 1));
-  float *pscale = scale.rwdata ();
+  OCTAVE_LOCAL_BUFFER (float, pscale, n);
 
   float abnrm;
 
-  Array<float> rconde (dim_vector (n, 1));
-  float *prconde = rconde.rwdata ();
-
-  Array<float> rcondv (dim_vector (n, 1));
-  float *prcondv = rcondv.rwdata ();
+  OCTAVE_LOCAL_BUFFER (float, prconde, n);
+  OCTAVE_LOCAL_BUFFER (float, prcondv, n);
 
   F77_XFCN (cgeevx, CGEEVX, (F77_CONST_CHAR_ARG2 (balance ? "B" : "N", 1),
                              F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
@@ -295,8 +281,7 @@ FloatEIG::init (const FloatComplexMatrix& a, bool calc_rev, bool calc_lev,
     (*current_liboctave_error_handler) ("cgeevx workspace query failed");
 
   lwork = static_cast<F77_INT> (dummy_work.real ());
-  Array<FloatComplex> work (dim_vector (lwork, 1));
-  FloatComplex *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (FloatComplex, pwork, lwork);
 
   F77_XFCN (cgeevx, CGEEVX, (F77_CONST_CHAR_ARG2 (balance ? "B" : "N", 1),
                              F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
@@ -346,8 +331,7 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a, bool calc_rev,
   FloatComplex dummy_work;
 
   F77_INT lrwork = 3*n;
-  Array<float> rwork (dim_vector (lrwork, 1));
-  float *prwork = rwork.rwdata ();
+  OCTAVE_LOCAL_BUFFER (float, prwork, lrwork);
 
   F77_XFCN (cheev, CHEEV, (F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
@@ -361,8 +345,7 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a, bool calc_rev,
     (*current_liboctave_error_handler) ("cheev workspace query failed");
 
   lwork = static_cast<F77_INT> (dummy_work.real ());
-  Array<FloatComplex> work (dim_vector (lwork, 1));
-  FloatComplex *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (FloatComplex, pwork, lwork);
 
   F77_XFCN (cheev, CHEEV, (F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
@@ -425,14 +408,9 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_rev,
   FloatMatrix btmp = b;
   float *btmp_data = btmp.rwdata ();
 
-  Array<float> ar (dim_vector (n, 1));
-  float *par = ar.rwdata ();
-
-  Array<float> ai (dim_vector (n, 1));
-  float *pai = ai.rwdata ();
-
-  Array<float> beta (dim_vector (n, 1));
-  float *pbeta = beta.rwdata ();
+  OCTAVE_LOCAL_BUFFER (float, par, n);
+  OCTAVE_LOCAL_BUFFER (float, pai, n);
+  OCTAVE_LOCAL_BUFFER (float, pbeta, n);
 
   F77_INT nvr = (calc_rev ? n : 0);
   FloatMatrix vr (nvr, nvr);
@@ -458,8 +436,7 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_rev,
     (*current_liboctave_error_handler) ("sggev workspace query failed");
 
   lwork = static_cast<F77_INT> (dummy_work);
-  Array<float> work (dim_vector (lwork, 1));
-  float *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (float, pwork, lwork);
 
   F77_XFCN (sggev, SGGEV, (F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
@@ -483,9 +460,9 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_rev,
 
   for (F77_INT j = 0; j < n; j++)
     {
-      if (ai.elem (j) == 0.0)
+      if (pai[j] == 0.0)
         {
-          m_lambda.elem (j) = FloatComplex (ar.elem (j) / beta.elem (j));
+          m_lambda.elem (j) = FloatComplex (par[j] / pbeta[j]);
           for (F77_INT i = 0; i < nvr; i++)
             m_v.elem (i, j) = vr.elem (i, j);
 
@@ -497,10 +474,10 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_rev,
           if (j+1 >= n)
             (*current_liboctave_error_handler) ("EIG: internal error");
 
-          m_lambda.elem (j) = FloatComplex (ar.elem (j) / beta.elem (j),
-                                            ai.elem (j) / beta.elem (j));
-          m_lambda.elem (j+1) = FloatComplex (ar.elem (j+1) / beta.elem (j+1),
-                                              ai.elem (j+1) / beta.elem (j+1));
+          m_lambda.elem (j) = FloatComplex (par[j] / pbeta[j],
+                                            pai[j] / pbeta[j]);
+          m_lambda.elem (j+1) = FloatComplex (par[j+1] / pbeta[j+1],
+                                              pai[j+1] / pbeta[j+1]);
 
           for (F77_INT i = 0; i < nvr; i++)
             {
@@ -565,8 +542,7 @@ FloatEIG::symmetric_init (const FloatMatrix& a, const FloatMatrix& b,
     (*current_liboctave_error_handler) ("ssygv workspace query failed");
 
   lwork = static_cast<F77_INT> (dummy_work);
-  Array<float> work (dim_vector (lwork, 1));
-  float *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (float, pwork, lwork);
 
   F77_XFCN (ssygv, SSYGV, (1, F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
@@ -649,8 +625,7 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
   FloatComplex dummy_work;
 
   F77_INT lrwork = 8*n;
-  Array<float> rwork (dim_vector (lrwork, 1));
-  float *prwork = rwork.rwdata ();
+  OCTAVE_LOCAL_BUFFER (float, prwork, lrwork);
 
   F77_XFCN (cggev, CGGEV, (F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
@@ -666,8 +641,7 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
     (*current_liboctave_error_handler) ("cggev workspace query failed");
 
   lwork = static_cast<F77_INT> (dummy_work.real ());
-  Array<FloatComplex> work (dim_vector (lwork, 1));
-  FloatComplex *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (FloatComplex, pwork, lwork);
 
   F77_XFCN (cggev, CGGEV, (F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
@@ -728,8 +702,7 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a,
   FloatComplex dummy_work;
 
   F77_INT lrwork = 3*n;
-  Array<float> rwork (dim_vector (lrwork, 1));
-  float *prwork = rwork.rwdata ();
+  OCTAVE_LOCAL_BUFFER (float, prwork, lrwork);
 
   F77_XFCN (chegv, CHEGV, (1, F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
@@ -741,11 +714,10 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a,
                            F77_CHAR_ARG_LEN (1)));
 
   if (info != 0)
-    (*current_liboctave_error_handler) ("zhegv workspace query failed");
+    (*current_liboctave_error_handler) ("chegv workspace query failed");
 
   lwork = static_cast<F77_INT> (dummy_work.real ());
-  Array<FloatComplex> work (dim_vector (lwork, 1));
-  FloatComplex *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (FloatComplex, pwork, lwork);
 
   F77_XFCN (chegv, CHEGV, (1, F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
@@ -756,10 +728,10 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a,
                            F77_CHAR_ARG_LEN (1)));
 
   if (info < 0)
-    (*current_liboctave_error_handler) ("unrecoverable error in zhegv");
+    (*current_liboctave_error_handler) ("unrecoverable error in chegv");
 
   if (info > 0)
-    (*current_liboctave_error_handler) ("zhegv failed to converge");
+    (*current_liboctave_error_handler) ("chegv failed to converge");
 
   m_lambda = FloatComplexColumnVector (wr);
   m_v = (calc_rev ? FloatComplexMatrix (atmp) : FloatComplexMatrix ());

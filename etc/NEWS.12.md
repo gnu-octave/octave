@@ -35,6 +35,7 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 
 ### Alphabetical list of new functions added in Octave 12
 
+* `diagnostics_show_caret`
 
 ### Deprecated functions, properties, and operators
 

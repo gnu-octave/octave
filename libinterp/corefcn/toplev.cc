@@ -340,6 +340,12 @@ Windows systems.
 %! assert (ischar (output));
 %! assert (! isempty (output));
 
+## Test asynchroneous execution of process
+%!test
+%! pid = system (sprintf ('"%s" "--version"', octave_exe_path), false, ...
+%!               "async");
+%! assert (pid > -1);
+
 %!error system ()
 %!error system (1, 2, 3)
 %!error <RETURN_OUTPUT must be boolean value> system (ls_command (), "foo")

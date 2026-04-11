@@ -57,15 +57,28 @@ octave_async_system_wrapper (const char *cmd)
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 
-  STARTUPINFOW si;
-  PROCESS_INFORMATION pi;
+  STARTUPINFOW si = {0};
+  PROCESS_INFORMATION pi = {0};
 
-  ZeroMemory (&si, sizeof (si));
-  ZeroMemory (&pi, sizeof (pi));
+  const wchar_t *prefix = L"cmd /C \"";
+  size_t prefix_len = wcslen (prefix);
 
   wchar_t *xcmd = u8_to_wchar (cmd);
+  size_t cmd_len = wcslen (xcmd);
 
-  if (! CreateProcessW (NULL, xcmd, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
+  wchar_t *wcmd = malloc ((prefix_len + cmd_len + 2) * sizeof (wchar_t));
+  if (! wcmd)
+    return retval;
+
+  wcscpy (wcmd, prefix);
+  wcscpy (wcmd + prefix_len, xcmd);
+  wcmd[prefix_len + cmd_len] = L'"';
+  wcmd[prefix_len + cmd_len + 1] = L'\0';
+
+  si.cb = sizeof (si);
+
+  if (! CreateProcessW (NULL, wcmd, NULL, NULL, FALSE, CREATE_NO_WINDOW,
+                        NULL, NULL, &si, &pi))
     retval = -1;
   else
     {

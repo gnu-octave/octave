@@ -32,10 +32,10 @@
 #include <limits>
 #include <ostream>
 
-#include "Array-oct.h"
 #include "CollocWt.h"
 #include "mappers.h"
 #include "oct-error.h"
+#include "oct-locbuf.h"
 
 // The following routines jcobi, dif, and dfopr are based on the code
 // found in J. Villadsen and M. L. Michelsen, Solution of Differential
@@ -424,17 +424,10 @@ CollocWt::init ()
   else if (nt == 0)
     return;
 
-  Array<double> dif1 (dim_vector (nt, 1));
-  double *pdif1 = dif1.rwdata ();
-
-  Array<double> dif2 (dim_vector (nt, 1));
-  double *pdif2 = dif2.rwdata ();
-
-  Array<double> dif3 (dim_vector (nt, 1));
-  double *pdif3 = dif3.rwdata ();
-
-  Array<double> vect (dim_vector (nt, 1));
-  double *pvect = vect.rwdata ();
+  OCTAVE_LOCAL_BUFFER (double, pdif1, nt);
+  OCTAVE_LOCAL_BUFFER (double, pdif2, nt);
+  OCTAVE_LOCAL_BUFFER (double, pdif3, nt);
+  OCTAVE_LOCAL_BUFFER (double, pvect, nt);
 
   m_r.resize (nt, 1);
   m_q.resize (nt, 1);
@@ -460,7 +453,7 @@ CollocWt::init ()
              pr, pvect);
 
       for (octave_idx_type j = 0; j < nt; j++)
-        m_A(i, j) = vect(j);
+        m_A(i, j) = pvect[j];
     }
 
   // Second derivative weights.
@@ -472,7 +465,7 @@ CollocWt::init ()
              pr, pvect);
 
       for (octave_idx_type j = 0; j < nt; j++)
-        m_B(i, j) = vect(j);
+        m_B(i, j) = pvect[j];
     }
 
   // Gaussian quadrature weights.

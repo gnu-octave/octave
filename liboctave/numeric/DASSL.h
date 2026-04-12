@@ -28,11 +28,12 @@
 
 #include "octave-config.h"
 
+#include <array>
 #include <string>
+#include <vector>
 
 #include "mx-fwd.h"
 
-#include "Array-oct.h"
 #include "DASSL-opts.h"
 
 class OCTAVE_API DASSL : public DAE, public DASSL_options
@@ -76,13 +77,13 @@ private:
   octave_f77_int_type m_liw;
   octave_f77_int_type m_lrw;
 
-  Array<octave_f77_int_type> m_info;
-  Array<octave_f77_int_type> m_iwork;
+  std::array<octave_f77_int_type, 15> m_info;
+  std::vector<octave_f77_int_type> m_iwork;
 
-  Array<double> m_rwork;
+  std::vector<double> m_rwork;
 
-  Array<double> m_abs_tol;
-  Array<double> m_rel_tol;
+  std::vector<double> m_abs_tol;
+  std::vector<double> m_rel_tol;
 };
 
 #endif

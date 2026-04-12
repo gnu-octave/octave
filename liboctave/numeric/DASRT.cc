@@ -147,10 +147,7 @@ DASRT::integrate (double tout)
 
       m_initialized = true;
 
-      m_info.resize (dim_vector (15, 1));
-
-      for (F77_INT i = 0; i < 15; i++)
-        m_info(i) = 0;
+      m_info.fill (0);
 
       F77_INT n = octave::to_f77_int (size ());
 
@@ -168,13 +165,19 @@ DASRT::integrate (double tout)
       else
         m_ng = 0;
 
+      m_liw = 21 + n;
+      m_lrw = 50 + 9*n + n*n + 3*m_ng;
+
+      m_iwork.resize (m_liw);
+      m_rwork.resize (m_lrw);
+
       F77_INT maxord = octave::to_f77_int (maximum_order ());
       if (maxord >= 0)
         {
           if (maxord > 0 && maxord < 6)
             {
-              m_info(8) = 1;
-              m_iwork(2) = maxord;
+              m_info[8] = 1;
+              m_iwork[2] = maxord;
             }
           else
             {
@@ -185,21 +188,15 @@ DASRT::integrate (double tout)
             }
         }
 
-      m_liw = 21 + n;
-      m_lrw = 50 + 9*n + n*n + 3*m_ng;
-
-      m_iwork.resize (dim_vector (m_liw, 1));
-      m_rwork.resize (dim_vector (m_lrw, 1));
-
-      m_info(0) = 0;
+      m_info[0] = 0;
 
       if (m_stop_time_set)
         {
-          m_info(3) = 1;
-          m_rwork(0) = m_stop_time;
+          m_info[3] = 1;
+          m_rwork[0] = m_stop_time;
         }
       else
-        m_info(3) = 0;
+        m_info[3] = 0;
 
       m_restart = false;
 
@@ -232,11 +229,11 @@ DASRT::integrate (double tout)
           return;
         }
 
-      m_info(4) = (user_jsub ? 1 : 0);
+      m_info[4] = (user_jsub ? 1 : 0);
 
       DAEFunc::m_reset = false;
 
-      m_jroot.resize (dim_vector (m_ng, 1), 1);
+      m_jroot.assign (m_ng, 1);
 
       DAERTFunc::m_reset = false;
 
@@ -245,43 +242,46 @@ DASRT::integrate (double tout)
       double mss = maximum_step_size ();
       if (mss >= 0.0)
         {
-          m_rwork(1) = mss;
-          m_info(6) = 1;
+          m_rwork[1] = mss;
+          m_info[6] = 1;
         }
       else
-        m_info(6) = 0;
+        m_info[6] = 0;
 
       double iss = initial_step_size ();
       if (iss >= 0.0)
         {
-          m_rwork(2) = iss;
-          m_info(7) = 1;
+          m_rwork[2] = iss;
+          m_info[7] = 1;
         }
       else
-        m_info(7) = 0;
+        m_info[7] = 0;
 
       F77_INT sl = octave::to_f77_int (step_limit ());
       if (sl >= 0)
         {
-          m_info(11) = 1;
-          m_iwork(20) = sl;
+          m_info[11] = 1;
+          m_iwork[20] = sl;
         }
       else
-        m_info(11) = 0;
+        m_info[11] = 0;
 
-      m_abs_tol = absolute_tolerance ();
-      m_rel_tol = relative_tolerance ();
+      Array<double> atol_tmp = absolute_tolerance ();
+      m_abs_tol.assign (atol_tmp.data (), atol_tmp.data () + atol_tmp.numel ());
 
-      F77_INT abs_tol_len = octave::to_f77_int (m_abs_tol.numel ());
-      F77_INT rel_tol_len = octave::to_f77_int (m_rel_tol.numel ());
+      Array<double> rtol_tmp = relative_tolerance ();
+      m_rel_tol.assign (rtol_tmp.data (), rtol_tmp.data () + rtol_tmp.numel ());
+
+      F77_INT abs_tol_len = octave::to_f77_int (m_abs_tol.size ());
+      F77_INT rel_tol_len = octave::to_f77_int (m_rel_tol.size ());
 
       if (abs_tol_len == 1 && rel_tol_len == 1)
         {
-          m_info.elem (1) = 0;
+          m_info[1] = 0;
         }
       else if (abs_tol_len == n && rel_tol_len == n)
         {
-          m_info.elem (1) = 1;
+          m_info[1] = 1;
         }
       else
         {
@@ -298,15 +298,15 @@ DASRT::integrate (double tout)
   double *px = m_x.rwdata ();
   double *pxdot = m_xdot.rwdata ();
 
-  F77_INT *pinfo = m_info.rwdata ();
+  F77_INT *pinfo = m_info.data ();
 
-  double *prel_tol = m_rel_tol.rwdata ();
-  double *pabs_tol = m_abs_tol.rwdata ();
+  double *prel_tol = m_rel_tol.data ();
+  double *pabs_tol = m_abs_tol.data ();
 
-  double *prwork = m_rwork.rwdata ();
-  F77_INT *piwork = m_iwork.rwdata ();
+  double *prwork = m_rwork.data ();
+  F77_INT *piwork = m_iwork.data ();
 
-  F77_INT *pjroot = m_jroot.rwdata ();
+  F77_INT *pjroot = m_jroot.data ();
 
   double *dummy = nullptr;
   F77_INT *idummy = nullptr;

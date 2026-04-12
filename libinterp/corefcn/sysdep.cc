@@ -665,8 +665,7 @@ popen (const char *command, const char *mode)
       // spawn child with one end of pipe as stdin or stdout/stderr
       STARTUPINFOW si {};
       si.cb = sizeof (si);
-      si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
-      si.wShowWindow = SW_HIDE;  // avoid flashing black window
+      si.dwFlags = STARTF_USESTDHANDLES;
       if (is_write)
         si.hStdInput = child_end;
       else
@@ -680,7 +679,7 @@ popen (const char *command, const char *mode)
       wcommand.append (sys::u8_to_wstring (command));
       wcommand.push_back (L'"');
       BOOL ok = CreateProcessW (nullptr, &wcommand[0], nullptr, nullptr, TRUE,
-                                CREATE_NEW_CONSOLE, nullptr, nullptr, &si, &pi);
+                                CREATE_NO_WINDOW, nullptr, nullptr, &si, &pi);
       if (! ok)
         {
           CloseHandle (h_read);

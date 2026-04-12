@@ -27,10 +27,12 @@
 #  include "config.h"
 #endif
 
-#include "Array-oct.h"
+#include <array>
+
 #include "Quad.h"
 #include "f77-fcn.h"
 #include "oct-error.h"
+#include "oct-locbuf.h"
 #include "quit.h"
 
 static integrand_fcn user_fcn;
@@ -99,12 +101,10 @@ DefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
   double result = 0.0;
 
   F77_INT leniw = 183*npts - 122;
-  Array<F77_INT> iwork (dim_vector (leniw, 1));
-  F77_INT *piwork = iwork.rwdata ();
+  OCTAVE_LOCAL_BUFFER (F77_INT, piwork, leniw);
 
   F77_INT lenw = 2*leniw - npts;
-  Array<double> work (dim_vector (lenw, 1));
-  double *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (double, pwork, lenw);
 
   user_fcn = m_f;
   F77_INT last;
@@ -143,13 +143,11 @@ IndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
 {
   double result = 0.0;
 
-  F77_INT leniw = 128;
-  Array<F77_INT> iwork (dim_vector (leniw, 1));
-  F77_INT *piwork = iwork.rwdata ();
+  const F77_INT leniw = 128;
+  std::array<F77_INT, leniw> iwork;
 
-  F77_INT lenw = 8*leniw;
-  Array<double> work (dim_vector (lenw, 1));
-  double *pwork = work.rwdata ();
+  constexpr F77_INT lenw = 8*leniw;
+  std::array<double, lenw> work;
 
   user_fcn = m_f;
   F77_INT last;
@@ -187,7 +185,7 @@ IndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
 
   F77_XFCN (dqagi, DQAGI, (user_function, m_bound, inf, abs_tol, rel_tol,
                            result, abserr, xneval, xier, leniw, lenw,
-                           last, piwork, pwork));
+                           last, iwork.data (), work.data ()));
 
   neval = xneval;
   ier = xier;
@@ -216,12 +214,10 @@ FloatDefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
   float result = 0.0;
 
   F77_INT leniw = 183*npts - 122;
-  Array<F77_INT> iwork (dim_vector (leniw, 1));
-  F77_INT *piwork = iwork.rwdata ();
+  OCTAVE_LOCAL_BUFFER (F77_INT, piwork, leniw);
 
   F77_INT lenw = 2*leniw - npts;
-  Array<float> work (dim_vector (lenw, 1));
-  float *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (float, pwork, lenw);
 
   float_user_fcn = m_ff;
   F77_INT last;
@@ -260,13 +256,11 @@ FloatIndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
 {
   float result = 0.0;
 
-  F77_INT leniw = 128;
-  Array<F77_INT> iwork (dim_vector (leniw, 1));
-  F77_INT *piwork = iwork.rwdata ();
+  const F77_INT leniw = 128;
+  std::array<F77_INT, leniw> iwork;
 
-  F77_INT lenw = 8*leniw;
-  Array<float> work (dim_vector (lenw, 1));
-  float *pwork = work.rwdata ();
+  constexpr F77_INT lenw = 8*leniw;
+  std::array<float, lenw> work;
 
   float_user_fcn = m_ff;
   F77_INT last;
@@ -304,7 +298,7 @@ FloatIndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
 
   F77_XFCN (qagi, QAGI, (float_user_function, m_bound, inf, abs_tol, rel_tol,
                          result, abserr, xneval, xier, leniw, lenw,
-                         last, piwork, pwork));
+                         last, iwork.data (), work.data ()));
 
   neval = xneval;
   ier = xier;

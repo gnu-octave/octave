@@ -27,8 +27,8 @@
 #  include "config.h"
 #endif
 
-#include "Array-oct.h"
 #include "CMatrix.h"
+#include "oct-locbuf.h"
 #include "dMatrix.h"
 #include "fCMatrix.h"
 #include "fMatrix.h"
@@ -61,18 +61,14 @@ hess<Matrix>::init (const Matrix& a)
   m_hess_mat = a;
   double *h = m_hess_mat.rwdata ();
 
-  Array<double> scale (dim_vector (n, 1));
-  double *pscale = scale.rwdata ();
+  OCTAVE_LOCAL_BUFFER (double, pscale, n);
 
   F77_XFCN (dgebal, DGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
                              n, h, n, ilo, ihi, pscale, info
                              F77_CHAR_ARG_LEN (1)));
 
-  Array<double> tau (dim_vector (n-1, 1));
-  double *ptau = tau.rwdata ();
-
-  Array<double> work (dim_vector (lwork, 1));
-  double *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (double, ptau, n-1);
+  OCTAVE_LOCAL_BUFFER (double, pwork, lwork);
 
   F77_XFCN (dgehrd, DGEHRD, (n, ilo, ihi, h, n, ptau, pwork,
                              lwork, info));
@@ -124,18 +120,14 @@ hess<FloatMatrix>::init (const FloatMatrix& a)
   m_hess_mat = a;
   float *h = m_hess_mat.rwdata ();
 
-  Array<float> scale (dim_vector (n, 1));
-  float *pscale = scale.rwdata ();
+  OCTAVE_LOCAL_BUFFER (float, pscale, n);
 
   F77_XFCN (sgebal, SGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
                              n, h, n, ilo, ihi, pscale, info
                              F77_CHAR_ARG_LEN (1)));
 
-  Array<float> tau (dim_vector (n-1, 1));
-  float *ptau = tau.rwdata ();
-
-  Array<float> work (dim_vector (lwork, 1));
-  float *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (float, ptau, n-1);
+  OCTAVE_LOCAL_BUFFER (float, pwork, lwork);
 
   F77_XFCN (sgehrd, SGEHRD, (n, ilo, ihi, h, n, ptau, pwork,
                              lwork, info));
@@ -187,18 +179,14 @@ hess<ComplexMatrix>::init (const ComplexMatrix& a)
   m_hess_mat = a;
   Complex *h = m_hess_mat.rwdata ();
 
-  Array<double> scale (dim_vector (n, 1));
-  double *pscale = scale.rwdata ();
+  OCTAVE_LOCAL_BUFFER (double, pscale, n);
 
   F77_XFCN (zgebal, ZGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
                              n, F77_DBLE_CMPLX_ARG (h), n, ilo, ihi, pscale, info
                              F77_CHAR_ARG_LEN (1)));
 
-  Array<Complex> tau (dim_vector (n-1, 1));
-  Complex *ptau = tau.rwdata ();
-
-  Array<Complex> work (dim_vector (lwork, 1));
-  Complex *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (Complex, ptau, n-1);
+  OCTAVE_LOCAL_BUFFER (Complex, pwork, lwork);
 
   F77_XFCN (zgehrd, ZGEHRD, (n, ilo, ihi, F77_DBLE_CMPLX_ARG (h), n,
                              F77_DBLE_CMPLX_ARG (ptau), F77_DBLE_CMPLX_ARG (pwork), lwork, info));
@@ -253,18 +241,14 @@ hess<FloatComplexMatrix>::init (const FloatComplexMatrix& a)
   m_hess_mat = a;
   FloatComplex *h = m_hess_mat.rwdata ();
 
-  Array<float> scale (dim_vector (n, 1));
-  float *pscale = scale.rwdata ();
+  OCTAVE_LOCAL_BUFFER (float, pscale, n);
 
   F77_XFCN (cgebal, CGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
                              n, F77_CMPLX_ARG (h), n, ilo, ihi, pscale, info
                              F77_CHAR_ARG_LEN (1)));
 
-  Array<FloatComplex> tau (dim_vector (n-1, 1));
-  FloatComplex *ptau = tau.rwdata ();
-
-  Array<FloatComplex> work (dim_vector (lwork, 1));
-  FloatComplex *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (FloatComplex, ptau, n-1);
+  OCTAVE_LOCAL_BUFFER (FloatComplex, pwork, lwork);
 
   F77_XFCN (cgehrd, CGEHRD, (n, ilo, ihi, F77_CMPLX_ARG (h), n,
                              F77_CMPLX_ARG (ptau), F77_CMPLX_ARG (pwork), lwork, info));

@@ -255,3 +255,7 @@ function to handle this.  By default, this is the internal function
 substitutes for @sc{matlab} functions.
 
 @DOCSTRING(missing_function_hook)
+
+@subheading Syntax Errors
+
+@DOCSTRING(diagnostics_show_caret)

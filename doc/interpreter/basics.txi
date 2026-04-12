@@ -907,6 +907,12 @@ the logical or operator (@code{||}) was misspelled.  It marked the error
 at the third @samp{|} because the code leading up to this was correct
 but the final @samp{|} was not understood.
 
+In the case where Octave is reading instructions from a function or script
+file, it can be configured to report parsing errors in minimal form (file name,
+line number, column number) or in an extended form that prints the problematic
+line of code and a caret (@samp{^}) at the point where parsing failed.
+@xref{XREFdiagnostics_show_caret,,diagnostics_show_caret}.
+
 Another class of error message occurs at evaluation time.  These
 errors are called @dfn{run-time errors}, or sometimes
 @dfn{evaluation errors}, because they occur when your program is being

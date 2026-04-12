@@ -167,6 +167,8 @@ public:
     return new octave_classdef (m_object.resize (dv, fill));
   }
 
+  std::size_t byte_size () const { return m_object.byte_size (); }
+
 public:
 
   int type_id () const { return s_t_id; }

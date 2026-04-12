@@ -20,6 +20,12 @@ classdef_TEST_FILES = \
   %reldir%/class_bug60723A.m \
   %reldir%/class_bug60723B.m \
   %reldir%/class_bug60723C.m \
+  %reldir%/class_bug67845A.m \
+  %reldir%/class_bug67845A_handle.m \
+  %reldir%/class_bug67845B.m \
+  %reldir%/class_bug67845B_handle.m \
+  %reldir%/class_bug67845C.m \
+  %reldir%/class_bug67845C_handle.m \
   %reldir%/class_bug66930A.m \
   %reldir%/class_bug66930B.m \
   %reldir%/class_pair.m \
@@ -48,6 +54,7 @@ classdef_TEST_FILES = \
   %reldir%/overloaded_permute_class.m \
   %reldir%/overloaded_permute_class_handle.m \
   %reldir%/overloaded_subsref.m \
+  %reldir%/overloaded_sizeof_class.m \
   %reldir%/overloaded_transpose_class.m \
   %reldir%/overloaded_transpose_class_handle.m \
   %reldir%/plist_t1.m \
@@ -55,6 +62,7 @@ classdef_TEST_FILES = \
   %reldir%/plist_t3.m \
   %reldir%/struct_wrapper.m \
   %reldir%/value_class.m \
+  %reldir%/value_class_subclass.m \
   %reldir%/value_class_reshape.m
 
 TEST_FILES += $(classdef_TEST_FILES)

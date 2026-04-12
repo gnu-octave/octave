@@ -3,6 +3,14 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 
 ### General improvements
 
+* The size of `classdef` objects is now reported by `who` (bug #55810).  A
+  value class' byte size is calculated by summing up the byte size of all its
+  properties.  A handle class' byte size is calculated by getting the size of
+  the machine word on the users computer (most likely 4 or 8 bytes).
+
+* The constructors of `classdef` classes now support returning more than one
+  output argument.  The first output argument must be the constructed object.
+
 
 ### Graphical User Interface
 
@@ -19,8 +27,15 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   N-dimensional indexing operation of a sparse matrix is attempted.  Both
   behaviors are Matlab-compatible.
 
+* The function `ismember` now supports the `"legacy"` option for determining
+  which index position to return when there are multiple matches.  The default
+  behavior is now to return the first instance.  The legacy option returns
+  the location of the last instance instead, and was the default behavior in
+  previous Octave versions and in Matlab release R2012b and earlier.
+
 ### Alphabetical list of new functions added in Octave 12
 
+* `diagnostics_show_caret`
 
 ### Deprecated functions, properties, and operators
 

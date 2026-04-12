@@ -88,15 +88,14 @@ system (const std::string& cmd_str)
   wcmd_str.append (L"\"");
   STARTUPINFOW si {};
   si.cb = sizeof (si);
-  si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
-  si.wShowWindow = SW_HIDE;  // avoid flashing black window
+  si.dwFlags = STARTF_USESTDHANDLES;
   si.hStdOutput = h_write;
   si.hStdError = h_write;
   si.hStdInput = GetStdHandle (STD_INPUT_HANDLE);
   PROCESS_INFORMATION pi {};
 
   BOOL ok = CreateProcessW (nullptr, &wcmd_str[0], nullptr, nullptr, TRUE,
-                            CREATE_NEW_CONSOLE, nullptr, nullptr, &si, &pi);
+                            CREATE_NO_WINDOW, nullptr, nullptr, &si, &pi);
 
   CloseHandle (h_write);
 

@@ -1436,12 +1436,10 @@ void QConsolePrivate::startCommand ()
 
   if (! cmd.isEmpty ())
     {
-      STARTUPINFOW si;
-      PROCESS_INFORMATION pi;
+      STARTUPINFOW si {};
+      PROCESS_INFORMATION pi {};
 
-      ZeroMemory (&si, sizeof (si));
       si.cb = sizeof (si);
-      ZeroMemory (&pi, sizeof (pi));
 
       LPCWSTR wcmd = reinterpret_cast<LPCWSTR> (cmd.utf16 ());
       if (CreateProcessW (nullptr,
@@ -1449,7 +1447,7 @@ void QConsolePrivate::startCommand ()
                           nullptr,
                           nullptr,
                           TRUE,
-                          0,
+                          CREATE_NEW_CONSOLE,
                           nullptr,
                           nullptr,
                           &si,

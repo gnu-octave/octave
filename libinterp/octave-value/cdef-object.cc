@@ -487,7 +487,7 @@ cdef_object_array::subsasgn (const std::string& type,
           // was out-of-bound and we need to create a new object.
 
           if (! obj.ok ())
-            obj = get_class ().construct_object (octave_value_list ());
+            obj = to_cdef (get_class ().construct (octave_value_list ()));
           else
             // Optimize the subsasgn call to come.  There are 2 copies
             // that we can safely ignore:
@@ -576,7 +576,7 @@ cdef_object_array::fill_empty_values (Array<cdef_object>& arr)
         {
           if (! obj.ok ())
             {
-              obj = cls.construct_object (octave_value_list ());
+              obj = to_cdef (cls.construct (octave_value_list ()));
 
               arr.xelem (i) = obj;
             }
@@ -584,6 +584,17 @@ cdef_object_array::fill_empty_values (Array<cdef_object>& arr)
             arr.xelem (i) = obj.copy ();
         }
     }
+}
+
+std::size_t
+cdef_object_array::byte_size () const
+{
+  std::size_t retval = 0;
+
+  for (octave_idx_type i = 0; i < m_array.numel (); i++)
+    retval += m_array.xelem (i).byte_size ();
+
+  return retval;
 }
 
 void

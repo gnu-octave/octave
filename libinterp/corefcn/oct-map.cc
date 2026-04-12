@@ -259,6 +259,17 @@ octave_scalar_map::contents (const std::string& k)
   return m_vals[idx];
 }
 
+std::size_t
+octave_scalar_map::byte_size () const
+{
+  std::size_t retval = 0;
+
+  for (octave_idx_type i = 0; i < nfields (); i++)
+    retval += m_vals[i].byte_size ();
+
+  return retval;
+}
+
 octave_map::octave_map (const octave_scalar_map& m)
   : m_keys (m.m_keys), m_vals (), m_dimensions (1, 1)
 {
@@ -355,6 +366,17 @@ octave_map::contents (const std::string& k)
   if (idx >= static_cast<octave_idx_type> (m_vals.size ()))
     m_vals.push_back (Cell (m_dimensions)); // auto-set correct dims.
   return m_vals[idx];
+}
+
+std::size_t
+octave_map::byte_size () const
+{
+  std::size_t retval = 0;
+
+  for (auto p = cbegin (); p != cend (); p++)
+    retval += octave_value (contents (key (p))).byte_size ();
+
+  return retval;
 }
 
 void

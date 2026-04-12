@@ -27,12 +27,12 @@
 #  include "config.h"
 #endif
 
-#include "Array-oct.h"
 #include "EIG.h"
 #include "dColVector.h"
 #include "dMatrix.h"
 #include "lapack-proto.h"
 #include "oct-error.h"
+#include "oct-locbuf.h"
 
 octave_idx_type
 EIG::init (const Matrix& a, bool calc_rev, bool calc_lev, bool balance)
@@ -55,11 +55,8 @@ EIG::init (const Matrix& a, bool calc_rev, bool calc_lev, bool balance)
   Matrix atmp = a;
   double *tmp_data = atmp.rwdata ();
 
-  Array<double> wr (dim_vector (n, 1));
-  double *pwr = wr.rwdata ();
-
-  Array<double> wi (dim_vector (n, 1));
-  double *pwi = wi.rwdata ();
+  OCTAVE_LOCAL_BUFFER (double, pwr, n);
+  OCTAVE_LOCAL_BUFFER (double, pwi, n);
 
   F77_INT tnvr = (calc_rev ? n : 0);
   Matrix vr (tnvr, tnvr);
@@ -75,16 +72,12 @@ EIG::init (const Matrix& a, bool calc_rev, bool calc_lev, bool balance)
   F77_INT ilo;
   F77_INT ihi;
 
-  Array<double> scale (dim_vector (n, 1));
-  double *pscale = scale.rwdata ();
+  OCTAVE_LOCAL_BUFFER (double, pscale, n);
 
   double abnrm;
 
-  Array<double> rconde (dim_vector (n, 1));
-  double *prconde = rconde.rwdata ();
-
-  Array<double> rcondv (dim_vector (n, 1));
-  double *prcondv = rcondv.rwdata ();
+  OCTAVE_LOCAL_BUFFER (double, prconde, n);
+  OCTAVE_LOCAL_BUFFER (double, prcondv, n);
 
   F77_INT dummy_iwork;
 
@@ -105,8 +98,7 @@ EIG::init (const Matrix& a, bool calc_rev, bool calc_lev, bool balance)
     (*current_liboctave_error_handler) ("dgeevx workspace query failed");
 
   lwork = static_cast<F77_INT> (dummy_work);
-  Array<double> work (dim_vector (lwork, 1));
-  double *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (double, pwork, lwork);
 
   F77_XFCN (dgeevx, DGEEVX, (F77_CONST_CHAR_ARG2 (balance ? "B" : "N", 1),
                              F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
@@ -135,9 +127,9 @@ EIG::init (const Matrix& a, bool calc_rev, bool calc_lev, bool balance)
 
   for (F77_INT j = 0; j < n; j++)
     {
-      if (wi.elem (j) == 0.0)
+      if (pwi[j] == 0.0)
         {
-          m_lambda.elem (j) = Complex (wr.elem (j));
+          m_lambda.elem (j) = Complex (pwr[j]);
           for (F77_INT i = 0; i < nvr; i++)
             m_v.elem (i, j) = vr.elem (i, j);
 
@@ -149,8 +141,8 @@ EIG::init (const Matrix& a, bool calc_rev, bool calc_lev, bool balance)
           if (j+1 >= n)
             (*current_liboctave_error_handler) ("EIG: internal error");
 
-          m_lambda.elem (j) = Complex (wr.elem (j), wi.elem (j));
-          m_lambda.elem (j+1) = Complex (wr.elem (j+1), wi.elem (j+1));
+          m_lambda.elem (j) = Complex (pwr[j], pwi[j]);
+          m_lambda.elem (j+1) = Complex (pwr[j+1], pwi[j+1]);
 
           for (F77_INT i = 0; i < nvr; i++)
             {
@@ -204,8 +196,7 @@ EIG::symmetric_init (const Matrix& a, bool calc_rev, bool calc_lev)
     (*current_liboctave_error_handler) ("dsyev workspace query failed");
 
   lwork = static_cast<F77_INT> (dummy_work);
-  Array<double> work (dim_vector (lwork, 1));
-  double *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (double, pwork, lwork);
 
   F77_XFCN (dsyev, DSYEV, (F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
@@ -262,22 +253,17 @@ EIG::init (const ComplexMatrix& a, bool calc_rev, bool calc_lev, bool balance)
   Complex dummy_work;
 
   F77_INT lrwork = 2*n;
-  Array<double> rwork (dim_vector (lrwork, 1));
-  double *prwork = rwork.rwdata ();
+  OCTAVE_LOCAL_BUFFER (double, prwork, lrwork);
 
   F77_INT ilo;
   F77_INT ihi;
 
-  Array<double> scale (dim_vector (n, 1));
-  double *pscale = scale.rwdata ();
+  OCTAVE_LOCAL_BUFFER (double, pscale, n);
 
   double abnrm;
 
-  Array<double> rconde (dim_vector (n, 1));
-  double *prconde = rconde.rwdata ();
-
-  Array<double> rcondv (dim_vector (n, 1));
-  double *prcondv = rcondv.rwdata ();
+  OCTAVE_LOCAL_BUFFER (double, prconde, n);
+  OCTAVE_LOCAL_BUFFER (double, prcondv, n);
 
   F77_XFCN (zgeevx, ZGEEVX, (F77_CONST_CHAR_ARG2 (balance ? "B" : "N", 1),
                              F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
@@ -298,8 +284,7 @@ EIG::init (const ComplexMatrix& a, bool calc_rev, bool calc_lev, bool balance)
     (*current_liboctave_error_handler) ("zgeevx workspace query failed");
 
   lwork = static_cast<F77_INT> (dummy_work.real ());
-  Array<Complex> work (dim_vector (lwork, 1));
-  Complex *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (Complex, pwork, lwork);
 
   F77_XFCN (zgeevx, ZGEEVX, (F77_CONST_CHAR_ARG2 (balance ? "B" : "N", 1),
                              F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
@@ -349,8 +334,7 @@ EIG::hermitian_init (const ComplexMatrix& a, bool calc_rev, bool calc_lev)
   Complex dummy_work;
 
   F77_INT lrwork = 3*n;
-  Array<double> rwork (dim_vector (lrwork, 1));
-  double *prwork = rwork.rwdata ();
+  OCTAVE_LOCAL_BUFFER (double, prwork, lrwork);
 
   F77_XFCN (zheev, ZHEEV, (F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
@@ -364,8 +348,7 @@ EIG::hermitian_init (const ComplexMatrix& a, bool calc_rev, bool calc_lev)
     (*current_liboctave_error_handler) ("zheev workspace query failed");
 
   lwork = static_cast<F77_INT> (dummy_work.real ());
-  Array<Complex> work (dim_vector (lwork, 1));
-  Complex *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (Complex, pwork, lwork);
 
   F77_XFCN (zheev, ZHEEV, (F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
@@ -429,14 +412,9 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_rev, bool calc_lev,
   Matrix btmp = b;
   double *btmp_data = btmp.rwdata ();
 
-  Array<double> ar (dim_vector (n, 1));
-  double *par = ar.rwdata ();
-
-  Array<double> ai (dim_vector (n, 1));
-  double *pai = ai.rwdata ();
-
-  Array<double> beta (dim_vector (n, 1));
-  double *pbeta = beta.rwdata ();
+  OCTAVE_LOCAL_BUFFER (double, par, n);
+  OCTAVE_LOCAL_BUFFER (double, pai, n);
+  OCTAVE_LOCAL_BUFFER (double, pbeta, n);
 
   F77_INT tnvr = (calc_rev ? n : 0);
   Matrix vr (tnvr, tnvr);
@@ -462,8 +440,7 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_rev, bool calc_lev,
     (*current_liboctave_error_handler) ("dggev workspace query failed");
 
   lwork = static_cast<F77_INT> (dummy_work);
-  Array<double> work (dim_vector (lwork, 1));
-  double *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (double, pwork, lwork);
 
   F77_XFCN (dggev, DGGEV, (F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
@@ -489,9 +466,9 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_rev, bool calc_lev,
 
   for (F77_INT j = 0; j < n; j++)
     {
-      if (ai.elem (j) == 0.0)
+      if (pai[j] == 0.0)
         {
-          m_lambda.elem (j) = Complex (ar.elem (j) / beta.elem (j));
+          m_lambda.elem (j) = Complex (par[j] / pbeta[j]);
           for (F77_INT i = 0; i < nvr; i++)
             m_v.elem (i, j) = vr.elem (i, j);
           for (F77_INT i = 0; i < nvl; i++)
@@ -502,10 +479,10 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_rev, bool calc_lev,
           if (j+1 >= n)
             (*current_liboctave_error_handler) ("EIG: internal error");
 
-          m_lambda.elem (j) = Complex (ar.elem (j) / beta.elem (j),
-                                       ai.elem (j) / beta.elem (j));
-          m_lambda.elem (j+1) = Complex (ar.elem (j+1) / beta.elem (j+1),
-                                         ai.elem (j+1) / beta.elem (j+1));
+          m_lambda.elem (j) = Complex (par[j] / pbeta[j],
+                                       pai[j] / pbeta[j]);
+          m_lambda.elem (j+1) = Complex (par[j+1] / pbeta[j+1],
+                                         pai[j+1] / pbeta[j+1]);
 
           for (F77_INT i = 0; i < nvr; i++)
             {
@@ -570,8 +547,7 @@ EIG::symmetric_init (const Matrix& a, const Matrix& b, bool calc_rev,
     (*current_liboctave_error_handler) ("dsygv workspace query failed");
 
   lwork = static_cast<F77_INT> (dummy_work);
-  Array<double> work (dim_vector (lwork, 1));
-  double *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (double, pwork, lwork);
 
   F77_XFCN (dsygv, DSYGV, (1, F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
@@ -654,8 +630,7 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_rev,
   Complex dummy_work;
 
   F77_INT lrwork = 8*n;
-  Array<double> rwork (dim_vector (lrwork, 1));
-  double *prwork = rwork.rwdata ();
+  OCTAVE_LOCAL_BUFFER (double, prwork, lrwork);
 
   F77_XFCN (zggev, ZGGEV, (F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
@@ -674,8 +649,7 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_rev,
     (*current_liboctave_error_handler) ("zggev workspace query failed");
 
   lwork = static_cast<F77_INT> (dummy_work.real ());
-  Array<Complex> work (dim_vector (lwork, 1));
-  Complex *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (Complex, pwork, lwork);
 
   F77_XFCN (zggev, ZGGEV, (F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
@@ -737,8 +711,7 @@ EIG::hermitian_init (const ComplexMatrix& a, const ComplexMatrix& b,
   Complex dummy_work;
 
   F77_INT lrwork = 3*n;
-  Array<double> rwork (dim_vector (lrwork, 1));
-  double *prwork = rwork.rwdata ();
+  OCTAVE_LOCAL_BUFFER (double, prwork, lrwork);
 
   F77_XFCN (zhegv, ZHEGV, (1, F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
@@ -753,8 +726,7 @@ EIG::hermitian_init (const ComplexMatrix& a, const ComplexMatrix& b,
     (*current_liboctave_error_handler) ("zhegv workspace query failed");
 
   lwork = static_cast<F77_INT> (dummy_work.real ());
-  Array<Complex> work (dim_vector (lwork, 1));
-  Complex *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (Complex, pwork, lwork);
 
   F77_XFCN (zhegv, ZHEGV, (1, F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),

@@ -33,6 +33,7 @@
 #include <cstdlib>
 
 #include <algorithm>
+#include <array>
 #include <iostream>
 #include <limits>
 #include <list>
@@ -8237,23 +8238,26 @@ axes::properties::calc_ticklabels (const array_property& ticks,
   Cell c (dim_vector (values.numel (), 1));  // column vector for ML compat.
   std::ostringstream os;
 
+
   // omit tick labels depending on location of other axis
-  ColumnVector omit_ticks (3, octave::numeric_limits<double>::NaN ());
+  const double NaN = octave::numeric_limits<double>::NaN ();
+  std::array<double, 3> omit_ticks = {NaN, NaN, NaN};
+
   if (get_is2D () && is_origin)
     {
       if (other_axislocation == 0)
         {
-          omit_ticks(0) = octave::math::max (octave::math::min (0., lims(1)),
+          omit_ticks[0] = octave::math::max (octave::math::min (0., lims(1)),
                                              lims(0));
         }
       else if (other_axislocation == 1)
-        omit_ticks(0) = lims(1);
+        omit_ticks[0] = lims(1);
       else if (other_axislocation == -1)
-        omit_ticks(0) = lims(0);
+        omit_ticks[0] = lims(0);
       if (is_box ())
         {
-          omit_ticks(1) = lims(0);
-          omit_ticks(2) = lims(1);
+          omit_ticks[1] = lims(0);
+          omit_ticks[2] = lims(1);
         }
     }
 
@@ -8276,8 +8280,8 @@ axes::properties::calc_ticklabels (const array_property& ticks,
       for (int i = 0; i < values.numel (); i++)
         {
           bool omit_tick = false;
-          for (int i_omit = 0; i_omit < omit_ticks.numel (); i_omit++)
-            if (values(i) == omit_ticks(i_omit))
+          for (std::size_t i_omit = 0; i_omit < omit_ticks.size (); i_omit++)
+            if (values(i) == omit_ticks[i_omit])
               omit_tick = true;
           if (omit_tick)
             {
@@ -8321,8 +8325,8 @@ axes::properties::calc_ticklabels (const array_property& ticks,
       for (int i = 0; i < values.numel (); i++)
         {
           bool omit_tick = false;
-          for (int i_omit = 0; i_omit < omit_ticks.numel (); i_omit++)
-            if (values(i) == omit_ticks(i_omit))
+          for (std::size_t i_omit = 0; i_omit < omit_ticks.size (); i_omit++)
+            if (values(i) == omit_ticks[i_omit])
               omit_tick = true;
           if (omit_tick)
             c(i) = "";
@@ -10134,10 +10138,10 @@ patch::properties::calc_face_normals (Matrix& fn)
             nc++;
         }
 
-      RowVector fnc (3, 0.0);
-      double& nx = fnc(0);
-      double& ny = fnc(1);
-      double& nz = fnc(2);
+      std::array<double, 3> fnc = {0.0, 0.0, 0.0};
+      double& nx = fnc[0];
+      double& ny = fnc[1];
+      double& nz = fnc[2];
 
       if (is_coplanar)
         {
@@ -10191,7 +10195,7 @@ patch::properties::calc_face_normals (Matrix& fn)
           fn(i, j) = 0.0;
       else
         for (octave_idx_type j = 0; j < 3; j++)
-          fn(i, j) = fnc(j) / n_len;
+          fn(i, j) = fnc[j] / n_len;
     }
 }
 

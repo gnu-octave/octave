@@ -27,7 +27,6 @@
 #  include "config.h"
 #endif
 
-#include "Array-oct.h"
 #include "CMatrix.h"
 #include "dMatrix.h"
 #include "fCMatrix.h"
@@ -154,22 +153,14 @@ schur<Matrix>::init (const Matrix& a, const std::string& ord,
   double *s = m_schur_mat.rwdata ();
   double *q = m_unitary_schur_mat.rwdata ();
 
-  Array<double> wr (dim_vector (n, 1));
-  double *pwr = wr.rwdata ();
-
-  Array<double> wi (dim_vector (n, 1));
-  double *pwi = wi.rwdata ();
-
-  Array<double> work (dim_vector (lwork, 1));
-  double *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (double, pwr, n);
+  OCTAVE_LOCAL_BUFFER (double, pwi, n);
+  OCTAVE_LOCAL_BUFFER (double, pwork, lwork);
 
   // BWORK is not referenced for the non-ordered Schur routine.
   F77_INT ntmp = (ord_char == 'N' || ord_char == 'n') ? 0 : n;
-  Array<F77_INT> bwork (dim_vector (ntmp, 1));
-  F77_INT *pbwork = bwork.rwdata ();
-
-  Array<F77_INT> iwork (dim_vector (liwork, 1));
-  F77_INT *piwork = iwork.rwdata ();
+  OCTAVE_LOCAL_BUFFER (F77_INT, pbwork, ntmp);
+  OCTAVE_LOCAL_BUFFER (F77_INT, piwork, liwork);
 
   F77_XFCN (dgeesx, DGEESX, (F77_CONST_CHAR_ARG2 (&jobvs, 1),
                              F77_CONST_CHAR_ARG2 (&sort, 1),
@@ -242,22 +233,14 @@ schur<FloatMatrix>::init (const FloatMatrix& a, const std::string& ord,
   float *s = m_schur_mat.rwdata ();
   float *q = m_unitary_schur_mat.rwdata ();
 
-  Array<float> wr (dim_vector (n, 1));
-  float *pwr = wr.rwdata ();
-
-  Array<float> wi (dim_vector (n, 1));
-  float *pwi = wi.rwdata ();
-
-  Array<float> work (dim_vector (lwork, 1));
-  float *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (float, pwr, n);
+  OCTAVE_LOCAL_BUFFER (float, pwi, n);
+  OCTAVE_LOCAL_BUFFER (float, pwork, lwork);
 
   // BWORK is not referenced for the non-ordered Schur routine.
   F77_INT ntmp = (ord_char == 'N' || ord_char == 'n') ? 0 : n;
-  Array<F77_INT> bwork (dim_vector (ntmp, 1));
-  F77_INT *pbwork = bwork.rwdata ();
-
-  Array<F77_INT> iwork (dim_vector (liwork, 1));
-  F77_INT *piwork = iwork.rwdata ();
+  OCTAVE_LOCAL_BUFFER (F77_INT, pbwork, ntmp);
+  OCTAVE_LOCAL_BUFFER (F77_INT, piwork, liwork);
 
   F77_XFCN (sgeesx, SGEESX, (F77_CONST_CHAR_ARG2 (&jobvs, 1),
                              F77_CONST_CHAR_ARG2 (&sort, 1),
@@ -328,19 +311,13 @@ schur<ComplexMatrix>::init (const ComplexMatrix& a, const std::string& ord,
   Complex *s = m_schur_mat.rwdata ();
   Complex *q = m_unitary_schur_mat.rwdata ();
 
-  Array<double> rwork (dim_vector (n, 1));
-  double *prwork = rwork.rwdata ();
-
-  Array<Complex> w (dim_vector (n, 1));
-  Complex *pw = w.rwdata ();
-
-  Array<Complex> work (dim_vector (lwork, 1));
-  Complex *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (double, prwork, n);
+  OCTAVE_LOCAL_BUFFER (Complex, pw, n);
+  OCTAVE_LOCAL_BUFFER (Complex, pwork, lwork);
 
   // BWORK is not referenced for non-ordered Schur.
   F77_INT ntmp = (ord_char == 'N' || ord_char == 'n') ? 0 : n;
-  Array<F77_INT> bwork (dim_vector (ntmp, 1));
-  F77_INT *pbwork = bwork.rwdata ();
+  OCTAVE_LOCAL_BUFFER (F77_INT, pbwork, ntmp);
 
   F77_XFCN (zgeesx, ZGEESX,
             (F77_CONST_CHAR_ARG2 (&jobvs, 1),
@@ -439,19 +416,13 @@ schur<FloatComplexMatrix>::init (const FloatComplexMatrix& a,
   FloatComplex *s = m_schur_mat.rwdata ();
   FloatComplex *q = m_unitary_schur_mat.rwdata ();
 
-  Array<float> rwork (dim_vector (n, 1));
-  float *prwork = rwork.rwdata ();
-
-  Array<FloatComplex> w (dim_vector (n, 1));
-  FloatComplex *pw = w.rwdata ();
-
-  Array<FloatComplex> work (dim_vector (lwork, 1));
-  FloatComplex *pwork = work.rwdata ();
+  OCTAVE_LOCAL_BUFFER (float, prwork, n);
+  OCTAVE_LOCAL_BUFFER (FloatComplex, pw, n);
+  OCTAVE_LOCAL_BUFFER (FloatComplex, pwork, lwork);
 
   // BWORK is not referenced for non-ordered Schur.
   F77_INT ntmp = (ord_char == 'N' || ord_char == 'n') ? 0 : n;
-  Array<F77_INT> bwork (dim_vector (ntmp, 1));
-  F77_INT *pbwork = bwork.rwdata ();
+  OCTAVE_LOCAL_BUFFER (F77_INT, pbwork, ntmp);
 
   F77_XFCN (cgeesx, CGEESX,
             (F77_CONST_CHAR_ARG2 (&jobvs, 1),

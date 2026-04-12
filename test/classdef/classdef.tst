@@ -236,6 +236,123 @@
 %! assert (x.foobar (), {"some_property"});
 %! assert (x.methods (), 42);
 
+## Multi-output constructor tests (bug #67845).
+
+## two-output constructor, no input args
+%!test <*67845>
+%! [obj, val] = class_bug67845A ();
+%! assert (isa (obj, "class_bug67845A"));
+%! assert (val, 0);
+
+## previous test, but with handle classes
+%!test <*67845>
+%! [obj, val] = class_bug67845A_handle ();
+%! assert (isa (obj, "class_bug67845A_handle"));
+%! assert (val, 0);
+%! obj2 = obj;
+%! assert (obj2.prop, 0);
+
+## two-output constructor with input args
+%!test <*67845>
+%! [obj, val] = class_bug67845A (5);
+%! assert (isa (obj, "class_bug67845A"));
+%! assert (val, 5);
+
+## previous test, but with handle classes
+%!test <*67845>
+%! [obj, val] = class_bug67845A_handle (5);
+%! assert (isa (obj, "class_bug67845A_handle"));
+%! assert (val, 5);
+%! obj2 = obj;
+%! obj.prop = 10;
+%! assert (obj2.prop, 10);
+
+## single-output call to two-output-declared constructor
+%!test <*67845>
+%! obj = class_bug67845A ();
+%! assert (isa (obj, "class_bug67845A"));
+%! assert (obj.prop, 0);
+
+## previous test, but with handle classes
+%!test <*67845>
+%! obj = class_bug67845A_handle ();
+%! assert (isa (obj, "class_bug67845A_handle"));
+%! assert (obj.prop, 0);
+
+## double-output with implicit superclass constructor
+%!test <*67845>
+%! [obj, val] = class_bug67845B ();
+%! assert (isa (obj, "class_bug67845B"));
+%! assert (isa (obj, "class_bug67845A"));
+%! assert (obj.prop, 0);
+
+## previous test, but with handle classes
+%!test <*67845>
+%! [obj, status] = class_bug67845B_handle ();
+%! assert (isa (obj, "class_bug67845B_handle"));
+%! assert (isa (obj, "class_bug67845B_handle"));
+%! assert (obj.prop, 0);
+
+## quad-output constructor with zero input args
+%!test <*67845>
+%! [obj, val1, val2, val3, val4] = class_bug67845C ();
+%! assert (isa (obj, 'class_bug67845C'));
+%! assert (val1, 1);
+%! assert (val2, 2);
+%! assert (val3, 3);
+%! assert (val4, 4);
+
+## previous test, but with handle classes
+%!test <*67845>
+%! [obj, val1, val2, val3, val4] = class_bug67845C_handle ();
+%! assert (isa (obj, 'class_bug67845C_handle'));
+%! assert (val1, 1);
+%! assert (val2, 2);
+%! assert (val3, 3);
+%! assert (val4, 4);
+
+## quad-output constructor with two input args
+%!test <*67845>
+%! [obj, val1, val2, val3, val4] = class_bug67845C ('5', {3});
+%! assert (isa (obj, 'class_bug67845C'));
+%! assert (val1, '5');
+%! assert (val2, {3});
+%! assert (val3, 3);
+%! assert (val4, 4);
+
+## previous test, but with handle classes
+%!test <*67845>
+%! [obj, val1, val2, val3, val4] = class_bug67845C_handle ('5', {3});
+%! assert (isa (obj, 'class_bug67845C_handle'));
+%! assert (val1, '5');
+%! assert (val2, {3});
+%! assert (val3, 3);
+%! assert (val4, 4);
+
+## quad-output constructor with four input args
+%!test <*67845>
+%! ## Have to declare func handle separately to check equality
+%! f = @(x) x + 1;
+%! [obj, val1, val2, val3, val4] = ...
+%!   class_bug67845C ('5', [10, 11; 12, 13], {15}, f);
+%! assert (isa (obj, 'class_bug67845C'));
+%! assert (val1, '5');
+%! assert (val2, [10, 11; 12, 13]);
+%! assert (val3, {15});
+%! assert (val4, f);
+
+## previous test, but with handle classes
+%!test <*67845>
+%! ## Have to declare func handle separately to check equality
+%! f = @(x) x + 1;
+%! [obj, val1, val2, val3, val4] = ...
+%!   class_bug67845C_handle ('5', [10, 11; 12, 13], {15}, f);
+%! assert (isa (obj, 'class_bug67845C_handle'));
+%! assert (val1, '5');
+%! assert (val2, [10, 11; 12, 13]);
+%! assert (val3, {15});
+%! assert (val4, f);
+
 ## test class with methods in @folder and in classdef definition
 %!assert <*62802> (numel (methods ("class_bug62802")), 4)
 
@@ -260,6 +377,100 @@
 %!error <property .* conflicting>
 %! cls_50011 = class_bug50011_2 ();
 %! cls_50011.m_c ();
+
+## sizeof tests (bug #55810)
+
+## sizeof a value classdef with no values inside properties
+%!test <*55810>
+%! obj = value_class ();
+%! assert (sizeof (obj), 0)
+
+## previous test, but with a classdef array
+%!test <*55810>
+%! obj(2, 2) = value_class ();
+%! assert (sizeof (obj), 0)
+
+## sizeof a value classdef with clearly defined value sizes inside properties
+%!test <*55810>
+%! obj = value_class ();
+%! obj.a = uint8 (1);
+%! obj.b = uint16 (1);
+%! obj.c = uint32 (1);
+%! obj.d = uint64 (1);
+%! true_size = sum ([sizeof(obj.a), sizeof(obj.b), ...
+%!   sizeof(obj.c), sizeof(obj.d)]);
+%! assert (sizeof (obj), true_size);
+
+## previous test, but with a classdef array
+%!test <*55810>
+%! obj(2, 2) = value_class ();
+%! for i = 1:numel (obj)
+%!   obj(i).a = uint8 (1);
+%!   obj(i).b = uint16 (1);
+%!   obj(i).c = uint32 (1);
+%!   obj(i).d = uint64 (1);
+%! endfor
+%! true_size = sum ([sizeof([obj.a]), sizeof([obj.b]), ...
+%!   sizeof([obj.c]), sizeof([obj.d])]);
+%! assert (sizeof (obj), true_size);
+
+## sizeof a value classdef that contains a classdef
+%!test <*55810>
+%! obj = value_class ();
+%! obj_inner = value_class ();
+%! obj_inner.a = uint8 (1);
+%! obj_inner.b = uint16 (1);
+%! obj_inner.c = uint32 (1);
+%! obj_inner.d = uint64 (1);
+%! obj.a = obj_inner;
+%! true_size = sum ([sizeof(obj.a), sizeof(obj.b), ...
+%!   sizeof(obj.c), sizeof(obj.d)]);
+%! assert (sizeof (obj), true_size);
+
+## previous test, but with a classdef array
+%!test <*55810>
+%! obj(2, 2) = value_class ();
+%! obj_inner = value_class ();
+%! obj_inner.a = uint8 (1);
+%! obj_inner.b = uint16 (1);
+%! obj_inner.c = uint32 (1);
+%! obj_inner.d = uint64 (1);
+%! for i = 1:numel (obj)
+%!   obj(i).a = obj_inner;
+%! endfor
+%! true_size = sum ([sizeof([obj.a]), sizeof([obj.b]), ...
+%!   sizeof([obj.c]), sizeof([obj.d])]);
+%! assert (sizeof (obj), true_size);
+
+## sizeof a value classdef that is a subclass of another
+%!test <*55810>
+%! obj = value_class_subclass ();
+%! obj.a = uint8 (1);
+%! obj.b = uint16 (1);
+%! obj.c = uint32 (1);
+%! obj.d = uint64 (1);
+%! true_size = sum ([sizeof(obj.a), sizeof(obj.b), ...
+%!   sizeof(obj.c), sizeof(obj.d)]);
+%! assert (sizeof (obj), true_size);
+%! obj.z = uint64 (1);
+%! true_size = true_size + sizeof (obj.z);
+%! assert (sizeof (obj), true_size);
+
+## overloaded sizeof method
+%!test <*55810>
+%! obj = overloaded_sizeof_class ();
+%! assert (sizeof (obj), -5);  # the retval of the overloaded method
+%! obj.a = uint8 (1);
+%! assert (sizeof (obj), -5);
+%! assert (builtin ('sizeof', obj), 1);
+
+## sizeof a handle class
+%!test <*55810>
+%! obj = handle_class ();
+%! [computer, maxsize] = computer ();
+%! if (maxsize == 2^(63))  # if machine is 64-bit:
+%!   assert (sizeof (obj), 8);  # size is the machine word
+%! endif
 
 ## reshape array of value class objects
 %!test <*65179>

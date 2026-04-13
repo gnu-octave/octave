@@ -1681,3 +1681,14 @@ endfunction
 %! A = rand (10);
 %! opts.v0 = ones (8, 1);
 %! fail ("eigs (A, 4, 'sm', opts)", "opts.v0 must be n-by-1");
+## Test that permB is a true permutation when cholB is true.
+%!testif HAVE_ARPACK
+%! n = 20;
+%! A = diag (1:n);
+%! B = diag (2:n+1);
+%! R = chol (B);
+%!
+%! opts.cholB = true;
+%! opts.permB = [1, 1, 3:n];
+%!
+%! fail ("eigs (A, R, 4, 'sm', opts)", "permB vector invalid");

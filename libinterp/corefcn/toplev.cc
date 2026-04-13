@@ -338,8 +338,8 @@ Windows systems.
 
 ## Test asynchroneous execution of process
 %!test
-%! pid = system (sprintf ('"%s" "--version"', octave_exe_path), false, ...
-%!               "async");
+%! pid = system (sprintf ('"%s" "--version" 1>%s 2>&1', octave_exe_path, ...
+%!                        nul_device), false, "async");
 %! assert (pid > -1);
 
 %!error <Invalid call> system ()

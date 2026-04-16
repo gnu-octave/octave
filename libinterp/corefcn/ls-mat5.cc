@@ -34,6 +34,7 @@
 #include <ostream>
 #include <sstream>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 #include "byte-swap.h"
@@ -251,52 +252,67 @@ read_mat5_binary_data (std::istream& is, float *data,
     }
 }
 
+template <typename storageT, typename T>
+static void
+read_mat5_integer_data_storage (std::istream& is, T *m,
+                                octave_idx_type count, bool swap)
+{
+  if (count <= 0)
+    return;
+
+  std::streamsize n_bytes
+    = sizeof (storageT) * static_cast<std::streamsize> (count);
+
+  if constexpr (std::is_same_v<storageT, T>)
+    {
+      is.read (reinterpret_cast<char *> (m), n_bytes);
+
+      if (swap)
+        swap_bytes<sizeof (storageT)> (m, count);
+    }
+  else
+    {
+      OCTAVE_LOCAL_BUFFER (storageT, ptr, count);
+
+      is.read (reinterpret_cast<char *> (ptr), n_bytes);
+
+      if (swap)
+        swap_bytes<sizeof (storageT)> (ptr, count);
+
+      for (octave_idx_type i = 0; i < count; i++)
+        m[i] = ptr[i];
+    }
+}
+
 template <typename T>
 void
 read_mat5_integer_data (std::istream& is, T *m, octave_idx_type count,
                         bool swap, mat5_data_type type)
 {
-
-#define READ_INTEGER_DATA(TYPE, swap, data, size, len, stream)          \
-  do                                                                    \
-    {                                                                   \
-      if (len > 0)                                                      \
-        {                                                               \
-          OCTAVE_LOCAL_BUFFER (TYPE, ptr, len);                         \
-          std::streamsize n_bytes = size * static_cast<std::streamsize> (len); \
-          stream.read (reinterpret_cast<char *> (ptr), n_bytes);        \
-          if (swap)                                                     \
-            swap_bytes< size > (ptr, len);                              \
-          for (octave_idx_type i = 0; i < len; i++)                     \
-            data[i] = ptr[i];                                           \
-        }                                                               \
-    }                                                                   \
-  while (0)
-
   switch (type)
     {
     case miINT8:
-      READ_INTEGER_DATA (int8_t, swap, m, 1, count, is);
+      read_mat5_integer_data_storage<int8_t> (is, m, count, swap);
       break;
 
     case miUINT8:
-      READ_INTEGER_DATA (uint8_t, swap, m, 1, count, is);
+      read_mat5_integer_data_storage<uint8_t> (is, m, count, swap);
       break;
 
     case miINT16:
-      READ_INTEGER_DATA (int16_t, swap, m, 2, count, is);
+      read_mat5_integer_data_storage<int16_t> (is, m, count, swap);
       break;
 
     case miUINT16:
-      READ_INTEGER_DATA (uint16_t, swap, m, 2, count, is);
+      read_mat5_integer_data_storage<uint16_t> (is, m, count, swap);
       break;
 
     case miINT32:
-      READ_INTEGER_DATA (int32_t, swap, m, 4, count, is);
+      read_mat5_integer_data_storage<int32_t> (is, m, count, swap);
       break;
 
     case miUINT32:
-      READ_INTEGER_DATA (uint32_t, swap, m, 4, count, is);
+      read_mat5_integer_data_storage<uint32_t> (is, m, count, swap);
       break;
 
     case miSINGLE:
@@ -307,20 +323,17 @@ read_mat5_integer_data (std::istream& is, T *m, octave_idx_type count,
       break;
 
     case miINT64:
-      READ_INTEGER_DATA (int64_t, swap, m, 8, count, is);
+      read_mat5_integer_data_storage<int64_t> (is, m, count, swap);
       break;
 
     case miUINT64:
-      READ_INTEGER_DATA (uint64_t, swap, m, 8, count, is);
+      read_mat5_integer_data_storage<uint64_t> (is, m, count, swap);
       break;
 
     case miMATRIX:
     default:
       break;
     }
-
-#undef READ_INTEGER_DATA
-
 }
 
 template void

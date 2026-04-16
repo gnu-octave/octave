@@ -32,14 +32,14 @@
 ## @deftypefnx {} {@var{d} =} eigs (@var{A}, @var{B}, @var{k})
 ## @deftypefnx {} {@var{d} =} eigs (@var{A}, @var{B}, @var{k}, @var{sigma})
 ## @deftypefnx {} {@var{d} =} eigs (@var{A}, @var{B}, @var{k}, @var{sigma}, @var{opts})
-## @deftypefnx {} {@var{d} =} eigs (@var{Af}, @var{n})
-## @deftypefnx {} {@var{d} =} eigs (@var{Af}, @var{n}, @var{k})
-## @deftypefnx {} {@var{d} =} eigs (@var{Af}, @var{n}, @var{k}, @var{sigma})
-## @deftypefnx {} {@var{d} =} eigs (@var{Af}, @var{n}, @var{k}, @var{sigma}, @var{opts})
-## @deftypefnx {} {@var{d} =} eigs (@var{Af}, @var{n}, @var{B})
-## @deftypefnx {} {@var{d} =} eigs (@var{Af}, @var{n}, @var{B}, @var{k})
-## @deftypefnx {} {@var{d} =} eigs (@var{Af}, @var{n}, @var{B}, @var{k}, @var{sigma})
-## @deftypefnx {} {@var{d} =} eigs (@var{Af}, @var{n}, @var{B}, @var{k}, @var{sigma}, @var{opts})
+## @deftypefnx {} {@var{d} =} eigs (@var{Afcn}, @var{n})
+## @deftypefnx {} {@var{d} =} eigs (@var{Afcn}, @var{n}, @var{k})
+## @deftypefnx {} {@var{d} =} eigs (@var{Afcn}, @var{n}, @var{k}, @var{sigma})
+## @deftypefnx {} {@var{d} =} eigs (@var{Afcn}, @var{n}, @var{k}, @var{sigma}, @var{opts})
+## @deftypefnx {} {@var{d} =} eigs (@var{Afcn}, @var{n}, @var{B})
+## @deftypefnx {} {@var{d} =} eigs (@var{Afcn}, @var{n}, @var{B}, @var{k})
+## @deftypefnx {} {@var{d} =} eigs (@var{Afcn}, @var{n}, @var{B}, @var{k}, @var{sigma})
+## @deftypefnx {} {@var{d} =} eigs (@var{Afcn}, @var{n}, @var{B}, @var{k}, @var{sigma}, @var{opts})
 ## @deftypefnx {} {[@var{V}, @var{D}] =} eigs (@dots{})
 ## @deftypefnx {} {[@var{V}, @var{D}, @var{flag}] =} eigs (@dots{})
 ## Calculate a limited number of eigenvalues and eigenvectors based on a
@@ -118,13 +118,13 @@
 ##
 ## @table @code
 ## @item issym
-## If @var{Af} is given then this flag (true/false) determines whether the
-## function @var{Af} defines a symmetric problem.  It is ignored if a matrix
+## If @var{Afcn} is given then this flag (true/false) determines whether the
+## function @var{Afcn} defines a symmetric problem.  It is ignored if a matrix
 ## @var{A} is given.  The default is false.
 ##
 ## @item isreal
-## If @var{Af} is given then this flag (true/false) determines whether the
-## function @var{Af} defines a real problem.  It is ignored if a matrix @var{A}
+## If @var{Afcn} is given then this flag (true/false) determines whether the
+## function @var{Afcn} defines a real problem.  It is ignored if a matrix @var{A}
 ## is given.  The default is true.
 ##
 ## @item tol
@@ -163,14 +163,14 @@
 ##
 ## @end table
 ##
-## It is also possible to represent @var{A} by a function denoted @var{Af}.
-## @var{Af} must be followed by a scalar argument @var{n} defining the length
-## of the vector argument accepted by @var{Af}.  @var{Af} can be a function
-## handle, an inline function, or a string.  When @var{Af} is a string it
+## It is also possible to represent @var{A} by a function denoted @var{Afcn}.
+## @var{Afcn} must be followed by a scalar argument @var{n} defining the length
+## of the vector argument accepted by @var{Afcn}.  @var{Afcn} can be a function
+## handle, an inline function, or a string.  When @var{Afcn} is a string it
 ## holds the name of the function to use.
 ##
-## @var{Af} is a function of the form @code{y = Af (x)} where the required
-## return value of @var{Af} is determined by the value of @var{sigma}.
+## @var{Afcn} is a function of the form @code{y = Afcn (x)} where the required
+## return value of @var{Afcn} is determined by the value of @var{sigma}.
 ## The four possible forms are
 ##
 ## @table @code
@@ -1681,3 +1681,14 @@ endfunction
 %! A = rand (10);
 %! opts.v0 = ones (8, 1);
 %! fail ("eigs (A, 4, 'sm', opts)", "opts.v0 must be n-by-1");
+## Test that permB is a true permutation when cholB is true.
+%!testif HAVE_ARPACK
+%! n = 20;
+%! A = diag (1:n);
+%! B = diag (2:n+1);
+%! R = chol (B);
+%!
+%! opts.cholB = true;
+%! opts.permB = [1, 1, 3:n];
+%!
+%! fail ("eigs (A, R, 4, 'sm', opts)", "permB vector invalid");

@@ -29,6 +29,7 @@
 
 #include <cmath>
 
+#include <array>
 #include <ostream>
 
 #include "Array-oct.h"
@@ -853,13 +854,15 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
       if (permB.numel () != n)
         (*current_liboctave_error_handler) ("eigs: permB vector invalid");
 
-      Array<bool> checked (dim_vector (n, 1), false);
+      OCTAVE_LOCAL_BUFFER_INIT (bool, checked, n, false);
       for (F77_INT i = 0; i < n; i++)
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n)
+          if (bidx < 0 || bidx >= n || checked[bidx])
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
+
+          checked[bidx] = true;
         }
     }
 
@@ -895,24 +898,23 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
         }
     }
 
-  Array<F77_INT> ip (dim_vector (11, 1));
-  F77_INT *iparam = ip.rwdata ();
+  std::array<F77_INT, 11> ip;
+  F77_INT *iparam = ip.data ();
 
-  ip(0) = 1; //ishift
-  ip(1) = 0;   // ip(1) not referenced
-  ip(2) = maxit; // mxiter, maximum number of iterations
-  ip(3) = 1; // NB blocksize in recurrence
-  ip(4) = 0; // nconv, number of Ritz values that satisfy convergence
-  ip(5) = 0; //ip(5) not referenced
-  ip(6) = mode; // mode
-  ip(7) = 0;
-  ip(8) = 0;
-  ip(9) = 0;
-  ip(10) = 0;
-  // ip(7) to ip(10) return values
+  ip[0] = 1;      // ishift
+  ip[1] = 0;      // ip[1] not referenced
+  ip[2] = maxit;  // mxiter, maximum number of iterations
+  ip[3] = 1;      // NB blocksize in recurrence
+  ip[4] = 0;      // nconv, number of Ritz values that satisfy convergence
+  ip[5] = 0;      // ip[5] not referenced
+  ip[6] = mode;   // mode
+  ip[7] = 0;      // ip[7]-ip[10] return values
+  ip[8] = 0;
+  ip[9] = 0;
+  ip[10] = 0;
 
-  Array<F77_INT> iptr (dim_vector (14, 1));
-  F77_INT *ipntr = iptr.rwdata ();
+  std::array<F77_INT, 14> iptr;
+  F77_INT *ipntr = iptr.data ();
 
   F77_INT ido = 0;
   int iter = 0;
@@ -944,7 +946,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
 
       info = tmp_info;
 
-      if (disp > 0 && ! octave::math::isnan (workl[iptr (5)-1]))
+      if (disp > 0 && ! octave::math::isnan (workl[iptr[5]-1]))
         {
           if (iter++)
             {
@@ -954,23 +956,23 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
               if (ido == 99) // convergence
                 {
                   for (F77_INT i = 0; i < k; i++)
-                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                    os << "    " << workl[iptr[5]+i-1] << "\n";
                 }
               else
                 {
                   // the wanted Ritz estimates are at the end
                   for (F77_INT i = p - k; i < p; i++)
-                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                    os << "    " << workl[iptr[5]+i-1] << "\n";
                 }
             }
 
           // This is a kludge, as ARPACK doesn't give its
-          // iteration pointer.  But as workl[iptr(5)-1] is
+          // iteration pointer.  But as workl[iptr[5]-1] is
           // an output value updated at each iteration, setting
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
           if (ido != 99)
-            workl[iptr(5)-1] = octave::numeric_limits<double>::NaN ();
+            workl[iptr[5]-1] = octave::numeric_limits<double>::NaN ();
         }
 
       if (ido == -1 || ido == 1 || ido == 2)
@@ -979,15 +981,15 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
             {
               Matrix mtmp (n, 1);
               for (F77_INT i = 0; i < n; i++)
-                mtmp(i, 0) = workd[i + iptr(0) - 1];
+                mtmp(i, 0) = workd[i + iptr[0] - 1];
 
               mtmp = ltsolve (b, permB, m * utsolve (bt, permB, mtmp));
 
               for (F77_INT i = 0; i < n; i++)
-                workd[i+iptr(1)-1] = mtmp(i, 0);
+                workd[i+iptr[1]-1] = mtmp(i, 0);
             }
-          else if (! vector_product (m, workd + iptr(0) - 1,
-                                     workd + iptr(1) - 1))
+          else if (! vector_product (m, workd + iptr[0] - 1,
+                                     workd + iptr[1] - 1))
             break;
         }
       else
@@ -1011,8 +1013,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
-  Array<F77_INT> s (dim_vector (p, 1));
-  F77_INT *sel = s.rwdata ();
+  OCTAVE_LOCAL_BUFFER (F77_INT, sel, p);
 
   eig_vec.resize (n, k);
   double *z = eig_vec.rwdata ();
@@ -1029,22 +1030,22 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
 
   if (info2 == 0)
     {
-      for (F77_INT i = ip(4); i < k; i++)
+      for (F77_INT i = ip[4]; i < k; i++)
         d[i] = octave::numeric_limits<double>::NaN ();
-      F77_INT k2 = ip(4) / 2;
+      F77_INT k2 = ip[4] / 2;
       if (typ != "SM" && typ != "BE" && ! (typ == "SA" && rvec))
         {
           for (F77_INT i = 0; i < k2; i++)
             {
               double dtmp = d[i];
-              d[i] = d[ip(4) - i - 1];
-              d[ip(4) - i - 1] = dtmp;
+              d[i] = d[ip[4] - i - 1];
+              d[ip[4] - i - 1] = dtmp;
             }
         }
 
       if (rvec)
         {
-          for (F77_INT i = ip(4); i < k; i++)
+          for (F77_INT i = ip[4]; i < k; i++)
             {
               F77_INT off1 = i * n;
               for (F77_INT j = 0; j < n; j++)
@@ -1057,7 +1058,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
               for (F77_INT i = 0; i < k2; i++)
                 {
                   F77_INT off1 = i * n;
-                  F77_INT off2 = (ip(4) - i - 1) * n;
+                  F77_INT off2 = (ip[4] - i - 1) * n;
 
                   if (off1 == off2)
                     continue;
@@ -1082,7 +1083,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
       ("eigs: error in dseupd: %s",
        arpack_errno2str (info2, "dseupd").c_str ());
 
-  return ip(4);
+  return ip[4];
 }
 
 template <typename M>
@@ -1155,13 +1156,15 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
       if (permB.numel () != n)
         (*current_liboctave_error_handler) ("eigs: permB vector invalid");
 
-      Array<bool> checked (dim_vector (n, 1), false);
+      OCTAVE_LOCAL_BUFFER_INIT (bool, checked, n, false);
       for (F77_INT i = 0; i < n; i++)
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n)
+          if (bidx < 0 || bidx >= n || checked[bidx])
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
+
+          checked[bidx] = true;
         }
     }
 
@@ -1169,24 +1172,23 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
   if (have_b)
     bmat = 'G';
 
-  Array<F77_INT> ip (dim_vector (11, 1));
-  F77_INT *iparam = ip.rwdata ();
+  std::array<F77_INT, 11> ip;
+  F77_INT *iparam = ip.data ();
 
-  ip(0) = 1; //ishift
-  ip(1) = 0;   // ip(1) not referenced
-  ip(2) = maxit; // mxiter, maximum number of iterations
-  ip(3) = 1; // NB blocksize in recurrence
-  ip(4) = 0; // nconv, number of Ritz values that satisfy convergence
-  ip(5) = 0; //ip(5) not referenced
-  ip(6) = mode; // mode
-  ip(7) = 0;
-  ip(8) = 0;
-  ip(9) = 0;
-  ip(10) = 0;
-  // ip(7) to ip(10) return values
+  ip[0] = 1;      // ishift
+  ip[1] = 0;      // ip[1] not referenced
+  ip[2] = maxit;  // mxiter, maximum number of iterations
+  ip[3] = 1;      // NB blocksize in recurrence
+  ip[4] = 0;      // nconv, number of Ritz values that satisfy convergence
+  ip[5] = 0;      // ip[5] not referenced
+  ip[6] = mode;   // mode
+  ip[7] = 0;      // ip[7] - ip[10] return values
+  ip[8] = 0;
+  ip[9] = 0;
+  ip[10] = 0;
 
-  Array<F77_INT> iptr (dim_vector (14, 1));
-  F77_INT *ipntr = iptr.rwdata ();
+  std::array<F77_INT, 14> iptr;
+  F77_INT *ipntr = iptr.data ();
 
   F77_INT ido = 0;
   int iter = 0;
@@ -1226,7 +1228,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
        F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
       info = tmp_info;
 
-      if (disp > 0 && ! octave::math::isnan (workl[iptr (5)-1]))
+      if (disp > 0 && ! octave::math::isnan (workl[iptr[5]-1]))
         {
           if (iter++)
             {
@@ -1236,23 +1238,23 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
               if (ido == 99) // convergence
                 {
                   for (F77_INT i = 0; i < k; i++)
-                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                    os << "    " << workl[iptr[5]+i-1] << "\n";
                 }
               else
                 {
                   // the wanted Ritz estimates are at the end
                   for (F77_INT i = p - k; i < p; i++)
-                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                    os << "    " << workl[iptr[5]+i-1] << "\n";
                 }
             }
 
           // This is a kludge, as ARPACK doesn't give its
-          // iteration pointer.  But as workl[iptr(5)-1] is
+          // iteration pointer.  But as workl[iptr[5]-1] is
           // an output value updated at each iteration, setting
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
           if (ido != 99)
-            workl[iptr(5)-1] = octave::numeric_limits<double>::NaN ();
+            workl[iptr[5]-1] = octave::numeric_limits<double>::NaN ();
         }
 
       if (ido == -1 || ido == 1 || ido == 2)
@@ -1263,7 +1265,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
                 {
                   OCTAVE_LOCAL_BUFFER (double, dtmp, n);
 
-                  vector_product (b, workd+iptr(0)-1, dtmp);
+                  vector_product (b, workd+iptr[0]-1, dtmp);
 
                   Matrix tmp (n, 1);
 
@@ -1272,15 +1274,15 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
 
                   lusolve (L, U, tmp);
 
-                  double *ip2 = workd+iptr(1)-1;
+                  double *ip2 = workd+iptr[1]-1;
                   for (F77_INT i = 0; i < n; i++)
                     ip2[Q[i]] = tmp(i, 0);
                 }
               else if (ido == 2)
-                vector_product (b, workd+iptr(0)-1, workd+iptr(1)-1);
+                vector_product (b, workd+iptr[0]-1, workd+iptr[1]-1);
               else
                 {
-                  double *ip2 = workd+iptr(2)-1;
+                  double *ip2 = workd+iptr[2]-1;
                   Matrix tmp (n, 1);
 
                   for (F77_INT i = 0; i < n; i++)
@@ -1288,7 +1290,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
 
                   lusolve (L, U, tmp);
 
-                  ip2 = workd+iptr(1)-1;
+                  ip2 = workd+iptr[1]-1;
                   for (F77_INT i = 0; i < n; i++)
                     ip2[Q[i]] = tmp(i, 0);
                 }
@@ -1296,7 +1298,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
           else
             {
               // ido cannot be 2 for non-generalized problems (see dsaupd2).
-              double *ip2 = workd+iptr(0)-1;
+              double *ip2 = workd+iptr[0]-1;
               Matrix tmp (n, 1);
 
               for (F77_INT i = 0; i < n; i++)
@@ -1304,7 +1306,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
 
               lusolve (L, U, tmp);
 
-              ip2 = workd+iptr(1)-1;
+              ip2 = workd+iptr[1]-1;
               for (F77_INT i = 0; i < n; i++)
                 ip2[Q[i]] = tmp(i, 0);
             }
@@ -1330,8 +1332,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
-  Array<F77_INT> s (dim_vector (p, 1));
-  F77_INT *sel = s.rwdata ();
+  OCTAVE_LOCAL_BUFFER (F77_INT, sel, p);
 
   eig_vec.resize (n, k);
   double *z = eig_vec.rwdata ();
@@ -1348,21 +1349,21 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
 
   if (info2 == 0)
     {
-      for (F77_INT i = ip(4); i < k; i++)
+      for (F77_INT i = ip[4]; i < k; i++)
         d[i] = octave::numeric_limits<double>::NaN ();
-      F77_INT k2 = ip(4) / 2;
+      F77_INT k2 = ip[4] / 2;
       for (F77_INT i = 0; i < k2; i++)
         {
           double dtmp = d[i];
-          d[i] = d[ip(4) - i - 1];
-          d[ip(4) - i - 1] = dtmp;
+          d[i] = d[ip[4] - i - 1];
+          d[ip[4] - i - 1] = dtmp;
         }
 
       if (rvec)
         {
           OCTAVE_LOCAL_BUFFER (double, dtmp, n);
 
-          for (F77_INT i = ip(4); i < k; i++)
+          for (F77_INT i = ip[4]; i < k; i++)
             {
               F77_INT off1 = i * n;
               for (F77_INT j = 0; j < n; j++)
@@ -1371,7 +1372,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
           for (F77_INT i = 0; i < k2; i++)
             {
               F77_INT off1 = i * n;
-              F77_INT off2 = (ip(4) - i - 1) * n;
+              F77_INT off2 = (ip[4] - i - 1) * n;
 
               if (off1 == off2)
                 continue;
@@ -1392,7 +1393,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
       ("eigs: error in dseupd: %s",
        arpack_errno2str (info2, "dseupd").c_str ());
 
-  return ip(4);
+  return ip[4];
 }
 
 template <typename M>
@@ -1459,13 +1460,15 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
       if (permB.numel () != n)
         (*current_liboctave_error_handler) ("eigs: permB vector invalid");
 
-      Array<bool> checked (dim_vector (n, 1), false);
+      OCTAVE_LOCAL_BUFFER_INIT (bool, checked, n, false);
       for (F77_INT i = 0; i < n; i++)
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n)
+          if (bidx < 0 || bidx >= n || checked[bidx])
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
+
+          checked[bidx] = true;
         }
     }
 
@@ -1529,24 +1532,23 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
         }
     }
 
-  Array<F77_INT> ip (dim_vector (11, 1));
-  F77_INT *iparam = ip.rwdata ();
+  std::array<F77_INT, 11> ip;
+  F77_INT *iparam = ip.data ();
 
-  ip(0) = 1; //ishift
-  ip(1) = 0;   // ip(1) not referenced
-  ip(2) = maxit; // mxiter, maximum number of iterations
-  ip(3) = 1; // NB blocksize in recurrence
-  ip(4) = 0; // nconv, number of Ritz values that satisfy convergence
-  ip(5) = 0; //ip(5) not referenced
-  ip(6) = mode; // mode
-  ip(7) = 0;
-  ip(8) = 0;
-  ip(9) = 0;
-  ip(10) = 0;
-  // ip(7) to ip(10) return values
+  ip[0] = 1;      // ishift
+  ip[1] = 0;      // ip[1] not referenced
+  ip[2] = maxit;  // mxiter, maximum number of iterations
+  ip[3] = 1;      // NB blocksize in recurrence
+  ip[4] = 0;      // nconv, number of Ritz values that satisfy convergence
+  ip[5] = 0;      // ip[5] not referenced
+  ip[6] = mode;   // mode
+  ip[7] = 0;      // ip[7] - ip[10] return values
+  ip[8] = 0;
+  ip[9] = 0;
+  ip[10] = 0;
 
-  Array<F77_INT> iptr (dim_vector (14, 1));
-  F77_INT *ipntr = iptr.rwdata ();
+  std::array<F77_INT, 14> iptr;
+  F77_INT *ipntr = iptr.data ();
 
   F77_INT ido = 0;
   int iter = 0;
@@ -1578,7 +1580,7 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
 
       info = tmp_info;
 
-      if (disp > 0 && ! octave::math::isnan (workl[iptr (5)-1]))
+      if (disp > 0 && ! octave::math::isnan (workl[iptr[5]-1]))
         {
           if (iter++)
             {
@@ -1588,23 +1590,23 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
               if (ido == 99) // convergence
                 {
                   for (F77_INT i = 0; i < k; i++)
-                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                    os << "    " << workl[iptr[5]+i-1] << "\n";
                 }
               else
                 {
                   // the wanted Ritz estimates are at the end
                   for (F77_INT i = p - k; i < p; i++)
-                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                    os << "    " << workl[iptr[5]+i-1] << "\n";
                 }
             }
 
           // This is a kludge, as ARPACK doesn't give its
-          // iteration pointer.  But as workl[iptr(5)-1] is
+          // iteration pointer.  But as workl[iptr[5]-1] is
           // an output value updated at each iteration, setting
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
           if (ido != 99)
-            workl[iptr(5)-1] = octave::numeric_limits<double>::NaN ();
+            workl[iptr[5]-1] = octave::numeric_limits<double>::NaN ();
         }
 
       if (ido == -1 || ido == 1 || ido == 2)
@@ -1615,7 +1617,7 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
                 {
                   Matrix mtmp (n, 1);
                   for (F77_INT i = 0; i < n; i++)
-                    mtmp(i, 0) = workd[i + iptr(0) - 1];
+                    mtmp(i, 0) = workd[i + iptr[0] - 1];
 
                   mtmp = utsolve (bt, permB, mtmp);
                   ColumnVector y = fcn (mtmp, err);
@@ -1626,7 +1628,7 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
                   mtmp = ltsolve (b, permB, y);
 
                   for (F77_INT i = 0; i < n; i++)
-                    workd[i+iptr(1)-1] = mtmp(i, 0);
+                    workd[i+iptr[1]-1] = mtmp(i, 0);
                 }
               else // shift-invert mode
                 {
@@ -1634,7 +1636,7 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
                     {
                       OCTAVE_LOCAL_BUFFER (double, dtmp, n);
 
-                      vector_product (b, workd+iptr(0)-1, dtmp);
+                      vector_product (b, workd+iptr[0]-1, dtmp);
 
                       ColumnVector x(n);
 
@@ -1646,15 +1648,15 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
                       if (err)
                         return false;
 
-                      double *ip2 = workd + iptr(1) - 1;
+                      double *ip2 = workd + iptr[1] - 1;
                       for (F77_INT i = 0; i < n; i++)
                         ip2[i] = y(i);
                     }
                   else if (ido == 2)
-                    vector_product (b, workd+iptr(0)-1, workd+iptr(1)-1);
+                    vector_product (b, workd+iptr[0]-1, workd+iptr[1]-1);
                   else
                     {
-                      double *ip2 = workd+iptr(2)-1;
+                      double *ip2 = workd+iptr[2]-1;
                       ColumnVector x(n);
 
                       for (F77_INT i = 0; i < n; i++)
@@ -1665,7 +1667,7 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
                       if (err)
                         return false;
 
-                      ip2 = workd + iptr(1) - 1;
+                      ip2 = workd + iptr[1] - 1;
                       for (F77_INT i = 0; i < n; i++)
                         *ip2++ = y(i);
                     }
@@ -1673,7 +1675,7 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
             }
           else
             {
-              double *ip2 = workd + iptr(0) - 1;
+              double *ip2 = workd + iptr[0] - 1;
               ColumnVector x(n);
 
               for (F77_INT i = 0; i < n; i++)
@@ -1684,7 +1686,7 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
               if (err)
                 return false;
 
-              ip2 = workd + iptr(1) - 1;
+              ip2 = workd + iptr[1] - 1;
               for (F77_INT i = 0; i < n; i++)
                 *ip2++ = y(i);
             }
@@ -1710,8 +1712,7 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
-  Array<F77_INT> s (dim_vector (p, 1));
-  F77_INT *sel = s.rwdata ();
+  OCTAVE_LOCAL_BUFFER (F77_INT, sel, p);
 
   eig_vec.resize (n, k);
   double *z = eig_vec.rwdata ();
@@ -1728,22 +1729,22 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
 
   if (info2 == 0)
     {
-      for (F77_INT i = ip(4); i < k; i++)
+      for (F77_INT i = ip[4]; i < k; i++)
         d[i] = octave::numeric_limits<double>::NaN ();
-      F77_INT k2 = ip(4) / 2;
+      F77_INT k2 = ip[4] / 2;
       if (mode == 3 || (mode == 1 && typ != "SM" && typ != "BE"))
         {
           for (F77_INT i = 0; i < k2; i++)
             {
               double dtmp = d[i];
-              d[i] = d[ip(4) - i - 1];
-              d[ip(4) - i - 1] = dtmp;
+              d[i] = d[ip[4] - i - 1];
+              d[ip[4] - i - 1] = dtmp;
             }
         }
 
       if (rvec)
         {
-          for (F77_INT i = ip(4); i < k; i++)
+          for (F77_INT i = ip[4]; i < k; i++)
             {
               F77_INT off1 = i * n;
               for (F77_INT j = 0; j < n; j++)
@@ -1756,7 +1757,7 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
               for (F77_INT i = 0; i < k2; i++)
                 {
                   F77_INT off1 = i * n;
-                  F77_INT off2 = (ip(4) - i - 1) * n;
+                  F77_INT off2 = (ip[4] - i - 1) * n;
 
                   if (off1 == off2)
                     continue;
@@ -1780,7 +1781,7 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
       ("eigs: error in dseupd: %s",
        arpack_errno2str (info2, "dseupd").c_str ());
 
-  return ip(4);
+  return ip[4];
 }
 
 template <typename M>
@@ -1851,13 +1852,15 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
       if (permB.numel () != n)
         (*current_liboctave_error_handler) ("eigs: permB vector invalid");
 
-      Array<bool> checked (dim_vector (n, 1), false);
+      OCTAVE_LOCAL_BUFFER_INIT (bool, checked, n, false);
       for (F77_INT i = 0; i < n; i++)
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n)
+          if (bidx < 0 || bidx >= n || checked[bidx])
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
+
+          checked[bidx] = true;
         }
     }
 
@@ -1893,24 +1896,23 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
         }
     }
 
-  Array<F77_INT> ip (dim_vector (11, 1));
-  F77_INT *iparam = ip.rwdata ();
+  std::array<F77_INT, 11> ip;
+  F77_INT *iparam = ip.data ();
 
-  ip(0) = 1; //ishift
-  ip(1) = 0;   // ip(1) not referenced
-  ip(2) = maxit; // mxiter, maximum number of iterations
-  ip(3) = 1; // NB blocksize in recurrence
-  ip(4) = 0; // nconv, number of Ritz values that satisfy convergence
-  ip(5) = 0; //ip(5) not referenced
-  ip(6) = mode; // mode
-  ip(7) = 0;
-  ip(8) = 0;
-  ip(9) = 0;
-  ip(10) = 0;
-  // ip(7) to ip(10) return values
+  ip[0] = 1;      // ishift
+  ip[1] = 0;      // ip[1] not referenced
+  ip[2] = maxit;  // mxiter, maximum number of iterations
+  ip[3] = 1;      // NB blocksize in recurrence
+  ip[4] = 0;      // nconv, number of Ritz values that satisfy convergence
+  ip[5] = 0;      // ip[5] not referenced
+  ip[6] = mode;   // mode
+  ip[7] = 0;      // ip[7] - ip[10] return values
+  ip[8] = 0;
+  ip[9] = 0;
+  ip[10] = 0;
 
-  Array<F77_INT> iptr (dim_vector (14, 1));
-  F77_INT *ipntr = iptr.rwdata ();
+  std::array<F77_INT, 14> iptr;
+  F77_INT *ipntr = iptr.data ();
 
   F77_INT ido = 0;
   int iter = 0;
@@ -1933,7 +1935,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
     {
       F77_INT tmp_info = octave::to_f77_int (info);
 
-      // On exit, ip(4) <= k + 1 is the number of converged eigenvalues.
+      // On exit, ip[4] <= k + 1 is the number of converged eigenvalues.
       // See dnaupd2.
       F77_FUNC (dnaupd, DNAUPD)
       (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
@@ -1945,7 +1947,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
 
       info = tmp_info;
 
-      if (disp > 0 && ! octave::math::isnan(workl[iptr(5)-1]))
+      if (disp > 0 && ! octave::math::isnan(workl[iptr[5]-1]))
         {
           if (iter++)
             {
@@ -1954,25 +1956,25 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
                  p << " matrix\n";
               if (ido == 99) // convergence
                 {
-                  os << "    " << workl[iptr(5)+k] << "\n";
+                  os << "    " << workl[iptr[5]+k] << "\n";
                   for (F77_INT i = 0; i < k; i++)
-                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                    os << "    " << workl[iptr[5]+i-1] << "\n";
                 }
               else
                 {
                   // the wanted Ritz estimates are at the end
                   for (F77_INT i = p - k - 1; i < p; i++)
-                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                    os << "    " << workl[iptr[5]+i-1] << "\n";
                 }
             }
 
           // This is a kludge, as ARPACK doesn't give its
-          // iteration pointer.  But as workl[iptr(5)-1] is
+          // iteration pointer.  But as workl[iptr[5]-1] is
           // an output value updated at each iteration, setting
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
           if (ido != 99)
-            workl[iptr(5)-1] = octave::numeric_limits<double>::NaN ();
+            workl[iptr[5]-1] = octave::numeric_limits<double>::NaN ();
         }
 
       if (ido == -1 || ido == 1 || ido == 2)
@@ -1981,15 +1983,15 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
             {
               Matrix mtmp (n, 1);
               for (F77_INT i = 0; i < n; i++)
-                mtmp(i, 0) = workd[i + iptr(0) - 1];
+                mtmp(i, 0) = workd[i + iptr[0] - 1];
 
               mtmp = ltsolve (b, permB, m * utsolve (bt, permB, mtmp));
 
               for (F77_INT i = 0; i < n; i++)
-                workd[i+iptr(1)-1] = mtmp(i, 0);
+                workd[i+iptr[1]-1] = mtmp(i, 0);
             }
-          else if (! vector_product (m, workd + iptr(0) - 1,
-                                     workd + iptr(1) - 1))
+          else if (! vector_product (m, workd + iptr[0] - 1,
+                                     workd + iptr[1] - 1))
             break;
         }
       else
@@ -2013,8 +2015,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
-  Array<F77_INT> s (dim_vector (p, 1));
-  F77_INT *sel = s.rwdata ();
+  OCTAVE_LOCAL_BUFFER (F77_INT, sel, p);
 
   // FIXME: initialize eig_vec2 to zero; apparently dneupd can skip
   // the assignment to elements of Z that represent imaginary parts.
@@ -2040,10 +2041,10 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
    ipntr, workd, workl, lwork, info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1)
    F77_CHAR_ARG_LEN(2));
   // on exit, if (and only if) rvec == true, k may have been increased by one
-  // and be equal to ip(4), see dngets.
+  // and be equal to ip[4], see dngets.
 
-  if (! rvec && ip(4) > k)
-    k = ip(4);
+  if (! rvec && ip[4] > k)
+    k = ip[4];
 
   eig_val.resize (k);
   Complex *d = eig_val.rwdata ();
@@ -2051,7 +2052,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
   if (info2 == 0)
     {
       bool have_cplx_eig = false;
-      for (F77_INT i = 0; i < ip(4); i++)
+      for (F77_INT i = 0; i < ip[4]; i++)
         {
           if (di[i] == 0)
             d[i] = Complex (dr[i], 0.);
@@ -2063,24 +2064,24 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
         }
       if (have_cplx_eig)
         {
-          for (F77_INT i = ip(4); i < k; i++)
+          for (F77_INT i = ip[4]; i < k; i++)
             d[i] = Complex (octave::numeric_limits<double>::NaN (),
                             octave::numeric_limits<double>::NaN ());
         }
       else
         {
-          for (F77_INT i = ip(4); i < k; i++)
+          for (F77_INT i = ip[4]; i < k; i++)
             d[i] = Complex (octave::numeric_limits<double>::NaN (), 0.);
         }
       if (! rvec)
         {
           // ARPACK seems to give the eigenvalues in reversed order
-          F77_INT k2 = ip(4) / 2;
+          F77_INT k2 = ip[4] / 2;
           for (F77_INT i = 0; i < k2; i++)
             {
               Complex dtmp = d[i];
-              d[i] = d[ip(4) - i - 1];
-              d[ip(4) - i - 1] = dtmp;
+              d[i] = d[ip[4] - i - 1];
+              d[ip[4] - i - 1] = dtmp;
             }
         }
       else
@@ -2088,7 +2089,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
           // When eigenvectors required, ARPACK seems to give the right order
           eig_vec.resize (n, k);
           F77_INT i = 0;
-          while (i < ip(4))
+          while (i < ip[4])
             {
               F77_INT off1 = i * n;
               F77_INT off2 = (i+1) * n;
@@ -2103,7 +2104,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
                   for (F77_INT j = 0; j < n; j++)
                     {
                       eig_vec(j, i) = Complex (z[j+off1], z[j+off2]);
-                      if (i < ip(4) - 1)
+                      if (i < ip[4] - 1)
                         eig_vec(j, i+1) = Complex (z[j+off1], -z[j+off2]);
                     }
                   i+=2;
@@ -2111,7 +2112,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
             }
           if (have_cplx_eig)
             {
-              for (F77_INT ii = ip(4); ii < k; ii++)
+              for (F77_INT ii = ip[4]; ii < k; ii++)
                 for (F77_INT jj = 0; jj < n; jj++)
                   eig_vec(jj, ii)
                     = Complex (octave::numeric_limits<double>::NaN (),
@@ -2119,7 +2120,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
             }
           else
             {
-              for (F77_INT ii = ip(4); ii < k; ii++)
+              for (F77_INT ii = ip[4]; ii < k; ii++)
                 for (F77_INT jj = 0; jj < n; jj++)
                   eig_vec(jj, ii)
                     = Complex (octave::numeric_limits<double>::NaN (), 0.);
@@ -2138,7 +2139,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
       ("eigs: error in dneupd: %s",
        arpack_errno2str (info2, "dneupd").c_str ());
 
-  return ip(4);
+  return ip[4];
 }
 
 template <typename M>
@@ -2213,13 +2214,15 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
       if (permB.numel () != n)
         (*current_liboctave_error_handler) ("eigs: permB vector invalid");
 
-      Array<bool> checked (dim_vector (n, 1), false);
+      OCTAVE_LOCAL_BUFFER_INIT (bool, checked, n, false);
       for (F77_INT i = 0; i < n; i++)
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n)
+          if (bidx < 0 || bidx >= n || checked[bidx])
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
+
+          checked[bidx] = true;
         }
     }
 
@@ -2227,24 +2230,23 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   if (have_b)
     bmat = 'G';
 
-  Array<F77_INT> ip (dim_vector (11, 1));
-  F77_INT *iparam = ip.rwdata ();
+  std::array<F77_INT, 11> ip;
+  F77_INT *iparam = ip.data ();
 
-  ip(0) = 1; //ishift
-  ip(1) = 0;   // ip(1) not referenced
-  ip(2) = maxit; // mxiter, maximum number of iterations
-  ip(3) = 1; // NB blocksize in recurrence
-  ip(4) = 0; // nconv, number of Ritz values that satisfy convergence
-  ip(5) = 0; //ip(5) not referenced
-  ip(6) = mode; // mode
-  ip(7) = 0;
-  ip(8) = 0;
-  ip(9) = 0;
-  ip(10) = 0;
-  // ip(7) to ip(10) return values
+  ip[0] = 1;      // ishift
+  ip[1] = 0;      // ip[1] not referenced
+  ip[2] = maxit;  // mxiter, maximum number of iterations
+  ip[3] = 1;      // NB blocksize in recurrence
+  ip[4] = 0;      // nconv, number of Ritz values that satisfy convergence
+  ip[5] = 0;      // ip[5] not referenced
+  ip[6] = mode;   // mode
+  ip[7] = 0;      // ip[7] - ip[10] return values
+  ip[8] = 0;
+  ip[9] = 0;
+  ip[10] = 0;
 
-  Array<F77_INT> iptr (dim_vector (14, 1));
-  F77_INT *ipntr = iptr.rwdata ();
+  std::array<F77_INT, 14> iptr;
+  F77_INT *ipntr = iptr.data ();
 
   F77_INT ido = 0;
   int iter = 0;
@@ -2276,7 +2278,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
     {
       F77_INT tmp_info = octave::to_f77_int (info);
 
-      // On exit, ip(4) <= k + 1 is the number of converged eigenvalues.
+      // On exit, ip[4] <= k + 1 is the number of converged eigenvalues.
       // See dnaupd2.
       F77_FUNC (dnaupd, DNAUPD)
       (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
@@ -2288,7 +2290,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
 
       info = tmp_info;
 
-      if (disp > 0 && ! octave::math::isnan (workl[iptr (5)-1]))
+      if (disp > 0 && ! octave::math::isnan (workl[iptr[5]-1]))
         {
           if (iter++)
             {
@@ -2297,25 +2299,25 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
                  p << " matrix\n";
               if (ido == 99) // convergence
                 {
-                  os << "    " << workl[iptr(5)+k] << "\n";
+                  os << "    " << workl[iptr[5]+k] << "\n";
                   for (F77_INT i = 0; i < k; i++)
-                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                    os << "    " << workl[iptr[5]+i-1] << "\n";
                 }
               else
                 {
                   // the wanted Ritz estimates are at the end
                   for (F77_INT i = p - k - 1; i < p; i++)
-                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                    os << "    " << workl[iptr[5]+i-1] << "\n";
                 }
             }
 
           // This is a kludge, as ARPACK doesn't give its
-          // iteration pointer.  But as workl[iptr(5)-1] is
+          // iteration pointer.  But as workl[iptr[5]-1] is
           // an output value updated at each iteration, setting
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
           if (ido != 99)
-            workl[iptr(5)-1] = octave::numeric_limits<double>::NaN ();
+            workl[iptr[5]-1] = octave::numeric_limits<double>::NaN ();
         }
 
       if (ido == -1 || ido == 1 || ido == 2)
@@ -2326,7 +2328,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
                 {
                   OCTAVE_LOCAL_BUFFER (double, dtmp, n);
 
-                  vector_product (b, workd+iptr(0)-1, dtmp);
+                  vector_product (b, workd+iptr[0]-1, dtmp);
 
                   Matrix tmp (n, 1);
 
@@ -2335,15 +2337,15 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
 
                   lusolve (L, U, tmp);
 
-                  double *ip2 = workd+iptr(1)-1;
+                  double *ip2 = workd+iptr[1]-1;
                   for (F77_INT i = 0; i < n; i++)
                     ip2[Q[i]] = tmp(i, 0);
                 }
               else if (ido == 2)
-                vector_product (b, workd+iptr(0)-1, workd+iptr(1)-1);
+                vector_product (b, workd+iptr[0]-1, workd+iptr[1]-1);
               else
                 {
-                  double *ip2 = workd+iptr(2)-1;
+                  double *ip2 = workd+iptr[2]-1;
                   Matrix tmp (n, 1);
 
                   for (F77_INT i = 0; i < n; i++)
@@ -2351,7 +2353,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
 
                   lusolve (L, U, tmp);
 
-                  ip2 = workd+iptr(1)-1;
+                  ip2 = workd+iptr[1]-1;
                   for (F77_INT i = 0; i < n; i++)
                     ip2[Q[i]] = tmp(i, 0);
                 }
@@ -2359,7 +2361,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
           else
             {
               // ido cannot be 2 for non-generalized problems (see dnaupd2).
-              double *ip2 = workd+iptr(0)-1;
+              double *ip2 = workd+iptr[0]-1;
               Matrix tmp (n, 1);
 
               for (F77_INT i = 0; i < n; i++)
@@ -2367,7 +2369,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
 
               lusolve (L, U, tmp);
 
-              ip2 = workd+iptr(1)-1;
+              ip2 = workd+iptr[1]-1;
               for (F77_INT i = 0; i < n; i++)
                 ip2[Q[i]] = tmp(i, 0);
             }
@@ -2393,8 +2395,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
-  Array<F77_INT> s (dim_vector (p, 1));
-  F77_INT *sel = s.rwdata ();
+  OCTAVE_LOCAL_BUFFER (F77_INT, sel, p);
 
   // FIXME: initialize eig_vec2 to zero; apparently dneupd can skip
   // the assignment to elements of Z that represent imaginary parts.
@@ -2420,10 +2421,10 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
    ipntr, workd, workl, lwork, info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1)
    F77_CHAR_ARG_LEN(2));
   // On exit, if (and only if) rvec == true, k may have been increased by one
-  // and be equal to ip(4), see dngets.
+  // and be equal to ip[4], see dngets.
 
-  if (! rvec && ip(4) > k)
-    k = ip(4);
+  if (! rvec && ip[4] > k)
+    k = ip[4];
 
   eig_val.resize (k);
   Complex *d = eig_val.rwdata ();
@@ -2431,7 +2432,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   if (info2 == 0)
     {
       bool have_cplx_eig = false;
-      for (F77_INT i = 0; i < ip(4); i++)
+      for (F77_INT i = 0; i < ip[4]; i++)
         {
           if (di[i] == 0.)
             d[i] = Complex (dr[i], 0.);
@@ -2443,25 +2444,25 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
         }
       if (have_cplx_eig)
         {
-          for (F77_INT i = ip(4); i < k; i++)
+          for (F77_INT i = ip[4]; i < k; i++)
             d[i] = Complex (octave::numeric_limits<double>::NaN (),
                             octave::numeric_limits<double>::NaN ());
         }
       else
         {
-          for (F77_INT i = ip(4); i < k; i++)
+          for (F77_INT i = ip[4]; i < k; i++)
             d[i] = Complex (octave::numeric_limits<double>::NaN (), 0.);
         }
 
       if (! rvec)
         {
           // ARPACK seems to give the eigenvalues in reversed order
-          F77_INT k2 = ip(4) / 2;
+          F77_INT k2 = ip[4] / 2;
           for (F77_INT i = 0; i < k2; i++)
             {
               Complex dtmp = d[i];
-              d[i] = d[ip(4) - i - 1];
-              d[ip(4) - i - 1] = dtmp;
+              d[i] = d[ip[4] - i - 1];
+              d[ip[4] - i - 1] = dtmp;
             }
         }
       else
@@ -2469,7 +2470,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
           // When eigenvectors required, ARPACK seems to give the right order
           eig_vec.resize (n, k);
           F77_INT i = 0;
-          while (i < ip(4))
+          while (i < ip[4])
             {
               F77_INT off1 = i * n;
               F77_INT off2 = (i+1) * n;
@@ -2484,7 +2485,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
                   for (F77_INT j = 0; j < n; j++)
                     {
                       eig_vec(j, i) = Complex (z[j+off1], z[j+off2]);
-                      if (i < ip(4) - 1)
+                      if (i < ip[4] - 1)
                         eig_vec(j, i+1) = Complex (z[j+off1], -z[j+off2]);
                     }
                   i+=2;
@@ -2492,7 +2493,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
             }
           if (have_cplx_eig)
             {
-              for (F77_INT ii = ip(4); ii < k; ii++)
+              for (F77_INT ii = ip[4]; ii < k; ii++)
                 for (F77_INT jj = 0; jj < n; jj++)
                   eig_vec(jj, ii)
                     = Complex (octave::numeric_limits<double>::NaN (),
@@ -2500,7 +2501,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
             }
           else
             {
-              for (F77_INT ii = ip(4); ii < k; ii++)
+              for (F77_INT ii = ip[4]; ii < k; ii++)
                 for (F77_INT jj = 0; jj < n; jj++)
                   eig_vec(jj, ii)
                     = Complex (octave::numeric_limits<double>::NaN (), 0.);
@@ -2517,7 +2518,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
       ("eigs: error in dneupd: %s",
        arpack_errno2str (info2, "dneupd").c_str ());
 
-  return ip(4);
+  return ip[4];
 }
 
 template <typename M>
@@ -2585,13 +2586,15 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
       if (permB.numel () != n)
         (*current_liboctave_error_handler) ("eigs: permB vector invalid");
 
-      Array<bool> checked (dim_vector (n, 1), false);
+      OCTAVE_LOCAL_BUFFER_INIT (bool, checked, n, false);
       for (F77_INT i = 0; i < n; i++)
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n)
+          if (bidx < 0 || bidx >= n || checked[bidx])
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
+
+          checked[bidx] = true;
         }
     }
 
@@ -2655,24 +2658,23 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
         }
     }
 
-  Array<F77_INT> ip (dim_vector (11, 1));
-  F77_INT *iparam = ip.rwdata ();
+  std::array<F77_INT, 11> ip;
+  F77_INT *iparam = ip.data ();
 
-  ip(0) = 1; //ishift
-  ip(1) = 0;   // ip(1) not referenced
-  ip(2) = maxit; // mxiter, maximum number of iterations
-  ip(3) = 1; // NB blocksize in recurrence
-  ip(4) = 0; // nconv, number of Ritz values that satisfy convergence
-  ip(5) = 0; //ip(5) not referenced
-  ip(6) = mode; // mode
-  ip(7) = 0;
-  ip(8) = 0;
-  ip(9) = 0;
-  ip(10) = 0;
-  // ip(7) to ip(10) return values
+  ip[0] = 1;      // ishift
+  ip[1] = 0;      // ip[1] not referenced
+  ip[2] = maxit;  // mxiter, maximum number of iterations
+  ip[3] = 1;      // NB blocksize in recurrence
+  ip[4] = 0;      // nconv, number of Ritz values that satisfy convergence
+  ip[5] = 0;      // ip[5] not referenced
+  ip[6] = mode;   // mode
+  ip[7] = 0;      // ip[7] - ip[10] return values
+  ip[8] = 0;
+  ip[9] = 0;
+  ip[10] = 0;
 
-  Array<F77_INT> iptr (dim_vector (14, 1));
-  F77_INT *ipntr = iptr.rwdata ();
+  std::array<F77_INT, 14> iptr;
+  F77_INT *ipntr = iptr.data ();
 
   F77_INT ido = 0;
   int iter = 0;
@@ -2696,7 +2698,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
     {
       F77_INT tmp_info = octave::to_f77_int (info);
 
-      // On exit, ip(4) <= k + 1 is the number of converged eigenvalues
+      // On exit, ip[4] <= k + 1 is the number of converged eigenvalues
       // see dnaupd2.
       F77_FUNC (dnaupd, DNAUPD)
       (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
@@ -2708,7 +2710,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
 
       info = tmp_info;
 
-      if (disp > 0 && ! octave::math::isnan(workl[iptr(5)-1]))
+      if (disp > 0 && ! octave::math::isnan(workl[iptr[5]-1]))
         {
           if (iter++)
             {
@@ -2717,25 +2719,25 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
                  p << " matrix\n";
               if (ido == 99) // convergence
                 {
-                  os << "    " << workl[iptr(5)+k] << "\n";
+                  os << "    " << workl[iptr[5]+k] << "\n";
                   for (F77_INT i = 0; i < k; i++)
-                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                    os << "    " << workl[iptr[5]+i-1] << "\n";
                 }
               else
                 {
                   // the wanted Ritz estimates are at the end
                   for (F77_INT i = p - k - 1; i < p; i++)
-                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                    os << "    " << workl[iptr[5]+i-1] << "\n";
                 }
             }
 
           // This is a kludge, as ARPACK doesn't give its
-          // iteration pointer.  But as workl[iptr(5)-1] is
+          // iteration pointer.  But as workl[iptr[5]-1] is
           // an output value updated at each iteration, setting
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
           if (ido != 99)
-            workl[iptr(5)-1] = octave::numeric_limits<double>::NaN ();
+            workl[iptr[5]-1] = octave::numeric_limits<double>::NaN ();
         }
 
       if (ido == -1 || ido == 1 || ido == 2)
@@ -2746,7 +2748,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
                 {
                   Matrix mtmp (n, 1);
                   for (F77_INT i = 0; i < n; i++)
-                    mtmp(i, 0) = workd[i + iptr(0) - 1];
+                    mtmp(i, 0) = workd[i + iptr[0] - 1];
 
                   mtmp = utsolve (bt, permB, mtmp);
                   ColumnVector y = fcn (mtmp, err);
@@ -2757,7 +2759,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
                   mtmp = ltsolve (b, permB, y);
 
                   for (F77_INT i = 0; i < n; i++)
-                    workd[i+iptr(1)-1] = mtmp(i, 0);
+                    workd[i+iptr[1]-1] = mtmp(i, 0);
                 }
               else // shift-invert mode
                 {
@@ -2765,7 +2767,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
                     {
                       OCTAVE_LOCAL_BUFFER (double, dtmp, n);
 
-                      vector_product (b, workd+iptr(0)-1, dtmp);
+                      vector_product (b, workd+iptr[0]-1, dtmp);
 
                       ColumnVector x(n);
 
@@ -2777,15 +2779,15 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
                       if (err)
                         return false;
 
-                      double *ip2 = workd + iptr(1) - 1;
+                      double *ip2 = workd + iptr[1] - 1;
                       for (F77_INT i = 0; i < n; i++)
                         ip2[i] = y(i);
                     }
                   else if (ido == 2)
-                    vector_product (b, workd+iptr(0)-1, workd+iptr(1)-1);
+                    vector_product (b, workd+iptr[0]-1, workd+iptr[1]-1);
                   else
                     {
-                      double *ip2 = workd+iptr(2)-1;
+                      double *ip2 = workd+iptr[2]-1;
                       ColumnVector x(n);
 
                       for (F77_INT i = 0; i < n; i++)
@@ -2796,7 +2798,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
                       if (err)
                         return false;
 
-                      ip2 = workd + iptr(1) - 1;
+                      ip2 = workd + iptr[1] - 1;
                       for (F77_INT i = 0; i < n; i++)
                         *ip2++ = y(i);
                     }
@@ -2804,7 +2806,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
             }
           else
             {
-              double *ip2 = workd + iptr(0) - 1;
+              double *ip2 = workd + iptr[0] - 1;
               ColumnVector x(n);
 
               for (F77_INT i = 0; i < n; i++)
@@ -2815,7 +2817,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
               if (err)
                 return false;
 
-              ip2 = workd + iptr(1) - 1;
+              ip2 = workd + iptr[1] - 1;
               for (F77_INT i = 0; i < n; i++)
                 *ip2++ = y(i);
             }
@@ -2841,8 +2843,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
-  Array<F77_INT> s (dim_vector (p, 1));
-  F77_INT *sel = s.rwdata ();
+  OCTAVE_LOCAL_BUFFER (F77_INT, sel, p);
 
   // FIXME: initialize eig_vec2 to zero; apparently dneupd can skip
   // the assignment to elements of Z that represent imaginary parts.
@@ -2868,10 +2869,10 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
    ipntr, workd, workl, lwork, info2 F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(1)
    F77_CHAR_ARG_LEN(2));
   // On exit, if (and only if) rvec == true, k may have been increased by one
-  // and be equal to ip(4), see dngets.
+  // and be equal to ip[4], see dngets.
 
-  if (! rvec && ip(4) > k)
-    k = ip(4);
+  if (! rvec && ip[4] > k)
+    k = ip[4];
 
   eig_val.resize (k);
   Complex *d = eig_val.rwdata ();
@@ -2879,7 +2880,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
   if (info2 == 0)
     {
       bool have_cplx_eig = false;
-      for (F77_INT i = 0; i < ip(4); i++)
+      for (F77_INT i = 0; i < ip[4]; i++)
         {
           if (di[i] == 0.)
             d[i] = Complex (dr[i], 0.);
@@ -2891,25 +2892,25 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
         }
       if (have_cplx_eig)
         {
-          for (F77_INT i = ip(4); i < k; i++)
+          for (F77_INT i = ip[4]; i < k; i++)
             d[i] = Complex (octave::numeric_limits<double>::NaN (),
                             octave::numeric_limits<double>::NaN ());
         }
       else
         {
-          for (F77_INT i = ip(4); i < k; i++)
+          for (F77_INT i = ip[4]; i < k; i++)
             d[i] = Complex (octave::numeric_limits<double>::NaN (), 0.);
         }
 
       if (! rvec)
         {
           // ARPACK seems to give the eigenvalues in reversed order
-          octave_idx_type k2 = ip(4) / 2;
+          octave_idx_type k2 = ip[4] / 2;
           for (F77_INT i = 0; i < k2; i++)
             {
               Complex dtmp = d[i];
-              d[i] = d[ip(4) - i - 1];
-              d[ip(4) - i - 1] = dtmp;
+              d[i] = d[ip[4] - i - 1];
+              d[ip[4] - i - 1] = dtmp;
             }
         }
       else
@@ -2917,7 +2918,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
           // ARPACK seems to give the eigenvalues in reversed order
           eig_vec.resize (n, k);
           F77_INT i = 0;
-          while (i < ip(4))
+          while (i < ip[4])
             {
               F77_INT off1 = i * n;
               F77_INT off2 = (i+1) * n;
@@ -2932,7 +2933,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
                   for (F77_INT j = 0; j < n; j++)
                     {
                       eig_vec(j, i) = Complex (z[j+off1], z[j+off2]);
-                      if (i < ip(4) - 1)
+                      if (i < ip[4] - 1)
                         eig_vec(j, i+1) = Complex (z[j+off1], -z[j+off2]);
                     }
                   i+=2;
@@ -2940,7 +2941,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
             }
           if (have_cplx_eig)
             {
-              for (F77_INT ii = ip(4); ii < k; ii++)
+              for (F77_INT ii = ip[4]; ii < k; ii++)
                 for (F77_INT jj = 0; jj < n; jj++)
                   eig_vec(jj, ii)
                     = Complex (octave::numeric_limits<double>::NaN (),
@@ -2948,7 +2949,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
             }
           else
             {
-              for (F77_INT ii = ip(4); ii < k; ii++)
+              for (F77_INT ii = ip[4]; ii < k; ii++)
                 for (F77_INT jj = 0; jj < n; jj++)
                   eig_vec(jj, ii)
                     = Complex (octave::numeric_limits<double>::NaN (), 0.);
@@ -2967,7 +2968,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
       ("eigs: error in dneupd: %s",
        arpack_errno2str (info2, "dneupd").c_str ());
 
-  return ip(4);
+  return ip[4];
 }
 
 template <typename M>
@@ -3042,13 +3043,15 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
       if (permB.numel () != n)
         (*current_liboctave_error_handler) ("eigs: permB vector invalid");
 
-      Array<bool> checked (dim_vector (n, 1), false);
+      OCTAVE_LOCAL_BUFFER_INIT (bool, checked, n, false);
       for (F77_INT i = 0; i < n; i++)
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n)
+          if (bidx < 0 || bidx >= n || checked[bidx])
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
+
+          checked[bidx] = true;
         }
     }
 
@@ -3084,24 +3087,23 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
         }
     }
 
-  Array<F77_INT> ip (dim_vector (11, 1));
-  F77_INT *iparam = ip.rwdata ();
+  std::array<F77_INT, 11> ip;
+  F77_INT *iparam = ip.data ();
 
-  ip(0) = 1; //ishift
-  ip(1) = 0;   // ip(1) not referenced
-  ip(2) = maxit; // mxiter, maximum number of iterations
-  ip(3) = 1; // NB blocksize in recurrence
-  ip(4) = 0; // nconv, number of Ritz values that satisfy convergence
-  ip(5) = 0; //ip(5) not referenced
-  ip(6) = mode; // mode
-  ip(7) = 0;
-  ip(8) = 0;
-  ip(9) = 0;
-  ip(10) = 0;
-  // ip(7) to ip(10) return values
+  ip[0] = 1;      // ishift
+  ip[1] = 0;      // ip[1] not referenced
+  ip[2] = maxit;  // mxiter, maximum number of iterations
+  ip[3] = 1;      // NB blocksize in recurrence
+  ip[4] = 0;      // nconv, number of Ritz values that satisfy convergence
+  ip[5] = 0;      // ip[5] not referenced
+  ip[6] = mode;   // mode
+  ip[7] = 0;      // ip[7] - ip[10] return values
+  ip[8] = 0;
+  ip[9] = 0;
+  ip[10] = 0;
 
-  Array<F77_INT> iptr (dim_vector (14, 1));
-  F77_INT *ipntr = iptr.rwdata ();
+  std::array<F77_INT, 14> iptr;
+  F77_INT *ipntr = iptr.data ();
 
   F77_INT ido = 0;
   int iter = 0;
@@ -3135,7 +3137,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
 
       info = tmp_info;
 
-      if (disp > 0 && ! octave::math::isnan (workl[iptr (5)-1]))
+      if (disp > 0 && ! octave::math::isnan (workl[iptr[5]-1]))
         {
           if (iter++)
             {
@@ -3145,23 +3147,23 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
               if (ido == 99) // convergence
                 {
                   for (F77_INT i = 0; i < k; i++)
-                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                    os << "    " << workl[iptr[5]+i-1] << "\n";
                 }
               else
                 {
                   // the wanted Ritz estimates are at the end
                   for (F77_INT i = p - k; i < p; i++)
-                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                    os << "    " << workl[iptr[5]+i-1] << "\n";
                 }
             }
 
           // This is a kludge, as ARPACK doesn't give its
-          // iteration pointer.  But as workl[iptr(5)-1] is
+          // iteration pointer.  But as workl[iptr[5]-1] is
           // an output value updated at each iteration, setting
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
           if (ido != 99)
-            workl[iptr(5)-1] = octave::numeric_limits<double>::NaN ();
+            workl[iptr[5]-1] = octave::numeric_limits<double>::NaN ();
         }
 
       if (ido == -1 || ido == 1 || ido == 2)
@@ -3170,14 +3172,14 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
             {
               ComplexMatrix mtmp (n, 1);
               for (F77_INT i = 0; i < n; i++)
-                mtmp(i, 0) = workd[i + iptr(0) - 1];
+                mtmp(i, 0) = workd[i + iptr[0] - 1];
               mtmp = ltsolve (b, permB, m * utsolve (bt, permB, mtmp));
               for (F77_INT i = 0; i < n; i++)
-                workd[i+iptr(1)-1] = mtmp(i, 0);
+                workd[i+iptr[1]-1] = mtmp(i, 0);
 
             }
-          else if (! vector_product (m, workd + iptr(0) - 1,
-                                     workd + iptr(1) - 1))
+          else if (! vector_product (m, workd + iptr[0] - 1,
+                                     workd + iptr[1] - 1))
             break;
         }
       else
@@ -3201,8 +3203,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
-  Array<F77_INT> s (dim_vector (p, 1));
-  F77_INT *sel = s.rwdata ();
+  OCTAVE_LOCAL_BUFFER (F77_INT, sel, p);
 
   eig_vec.resize (n, k);
   Complex *z = eig_vec.rwdata ();
@@ -3225,16 +3226,16 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
 
   if (info2 == 0)
     {
-      for (F77_INT i = ip(4); i < k; i++)
+      for (F77_INT i = ip[4]; i < k; i++)
         d[i] = Complex (octave::numeric_limits<double>::NaN (),
                         octave::numeric_limits<double>::NaN ());
 
-      F77_INT k2 = ip(4) / 2;
+      F77_INT k2 = ip[4] / 2;
       for (F77_INT i = 0; i < k2; i++)
         {
           Complex ctmp = d[i];
-          d[i] = d[ip(4) - i - 1];
-          d[ip(4) - i - 1] = ctmp;
+          d[i] = d[ip[4] - i - 1];
+          d[ip[4] - i - 1] = ctmp;
         }
       eig_val.resize (k);
 
@@ -3242,7 +3243,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
         {
           OCTAVE_LOCAL_BUFFER (Complex, ctmp, n);
 
-          for (F77_INT i = ip(4); i < k; i++)
+          for (F77_INT i = ip[4]; i < k; i++)
             {
               F77_INT off1 = i * n;
               for (F77_INT j = 0; j < n; j++)
@@ -3253,7 +3254,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
           for (F77_INT i = 0; i < k2; i++)
             {
               F77_INT off1 = i * n;
-              F77_INT off2 = (ip(4) - i - 1) * n;
+              F77_INT off2 = (ip[4] - i - 1) * n;
 
               if (off1 == off2)
                 continue;
@@ -3277,7 +3278,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
       ("eigs: error in zneupd: %s",
        arpack_errno2str (info2, "zneupd").c_str ());
 
-  return ip(4);
+  return ip[4];
 }
 
 template <typename M>
@@ -3356,13 +3357,15 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
       if (permB.numel () != n)
         (*current_liboctave_error_handler) ("eigs: permB vector invalid");
 
-      Array<bool> checked (dim_vector (n, 1), false);
+      OCTAVE_LOCAL_BUFFER_INIT (bool, checked, n, false);
       for (F77_INT i = 0; i < n; i++)
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n)
+          if (bidx < 0 || bidx >= n || checked[bidx])
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
+
+          checked[bidx] = true;
         }
     }
 
@@ -3370,24 +3373,23 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
   if (have_b)
     bmat = 'G';
 
-  Array<F77_INT> ip (dim_vector (11, 1));
-  F77_INT *iparam = ip.rwdata ();
+  std::array<F77_INT, 11> ip;
+  F77_INT *iparam = ip.data ();
 
-  ip(0) = 1; //ishift
-  ip(1) = 0;   // ip(1) not referenced
-  ip(2) = maxit; // mxiter, maximum number of iterations
-  ip(3) = 1; // NB blocksize in recurrence
-  ip(4) = 0; // nconv, number of Ritz values that satisfy convergence
-  ip(5) = 0; //ip(5) not referenced
-  ip(6) = mode; // mode
-  ip(7) = 0;
-  ip(8) = 0;
-  ip(9) = 0;
-  ip(10) = 0;
-  // ip(7) to ip(10) return values
+  ip[0] = 1;      // ishift
+  ip[1] = 0;      // ip[1] not referenced
+  ip[2] = maxit;  // mxiter, maximum number of iterations
+  ip[3] = 1;      // NB blocksize in recurrence
+  ip[4] = 0;      // nconv, number of Ritz values that satisfy convergence
+  ip[5] = 0;      // ip[5] not referenced
+  ip[6] = mode;   // mode
+  ip[7] = 0;      // ip[7] - ip[10] return values
+  ip[8] = 0;
+  ip[9] = 0;
+  ip[10] = 0;
 
-  Array<F77_INT> iptr (dim_vector (14, 1));
-  F77_INT *ipntr = iptr.rwdata ();
+  std::array<F77_INT, 14> iptr;
+  F77_INT *ipntr = iptr.data ();
 
   F77_INT ido = 0;
   int iter = 0;
@@ -3430,7 +3432,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
 
       info = tmp_info;
 
-      if (disp > 0 && ! octave::math::isnan(workl[iptr(5)-1]))
+      if (disp > 0 && ! octave::math::isnan(workl[iptr[5]-1]))
         {
           if (iter++)
             {
@@ -3440,23 +3442,23 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
               if (ido == 99) // convergence
                 {
                   for (F77_INT i = 0; i < k; i++)
-                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                    os << "    " << workl[iptr[5]+i-1] << "\n";
                 }
               else
                 {
                   // the wanted Ritz estimates are at the end
                   for (F77_INT i = p - k; i < p; i++)
-                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                    os << "    " << workl[iptr[5]+i-1] << "\n";
                 }
             }
 
           // This is a kludge, as ARPACK doesn't give its
-          // iteration pointer.  But as workl[iptr(5)-1] is
+          // iteration pointer.  But as workl[iptr[5]-1] is
           // an output value updated at each iteration, setting
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
           if (ido != 99)
-            workl[iptr(5)-1] = octave::numeric_limits<double>::NaN ();
+            workl[iptr[5]-1] = octave::numeric_limits<double>::NaN ();
         }
 
       if (ido == -1 || ido == 1 || ido == 2)
@@ -3467,7 +3469,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
                 {
                   OCTAVE_LOCAL_BUFFER (Complex, ctmp, n);
 
-                  vector_product (b, workd+iptr(0)-1, ctmp);
+                  vector_product (b, workd+iptr[0]-1, ctmp);
 
                   ComplexMatrix tmp (n, 1);
 
@@ -3476,15 +3478,15 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
 
                   lusolve (L, U, tmp);
 
-                  Complex *ip2 = workd+iptr(1)-1;
+                  Complex *ip2 = workd+iptr[1]-1;
                   for (F77_INT i = 0; i < n; i++)
                     ip2[Q[i]] = tmp(i, 0);
                 }
               else if (ido == 2)
-                vector_product (b, workd + iptr(0) - 1, workd + iptr(1) - 1);
+                vector_product (b, workd + iptr[0] - 1, workd + iptr[1] - 1);
               else
                 {
-                  Complex *ip2 = workd+iptr(2)-1;
+                  Complex *ip2 = workd+iptr[2]-1;
                   ComplexMatrix tmp (n, 1);
 
                   for (F77_INT i = 0; i < n; i++)
@@ -3492,7 +3494,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
 
                   lusolve (L, U, tmp);
 
-                  ip2 = workd+iptr(1)-1;
+                  ip2 = workd+iptr[1]-1;
                   for (F77_INT i = 0; i < n; i++)
                     ip2[Q[i]] = tmp(i, 0);
                 }
@@ -3500,7 +3502,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
           else
             {
               // ido cannot be 2 for non-generalized problems (see znaup2).
-              Complex *ip2 = workd+iptr(0)-1;
+              Complex *ip2 = workd+iptr[0]-1;
               ComplexMatrix tmp (n, 1);
 
               for (F77_INT i = 0; i < n; i++)
@@ -3508,7 +3510,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
 
               lusolve (L, U, tmp);
 
-              ip2 = workd+iptr(1)-1;
+              ip2 = workd+iptr[1]-1;
               for (F77_INT i = 0; i < n; i++)
                 ip2[Q[i]] = tmp(i, 0);
             }
@@ -3534,8 +3536,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
-  Array<F77_INT> s (dim_vector (p, 1));
-  F77_INT *sel = s.rwdata ();
+  OCTAVE_LOCAL_BUFFER (F77_INT, sel, p);
 
   eig_vec.resize (n, k);
   Complex *z = eig_vec.rwdata ();
@@ -3558,16 +3559,16 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
 
   if (info2 == 0)
     {
-      for (F77_INT i = ip(4); i < k; i++)
+      for (F77_INT i = ip[4]; i < k; i++)
         d[i] = Complex (octave::numeric_limits<double>::NaN (),
                         octave::numeric_limits<double>::NaN ());
 
-      F77_INT k2 = ip(4) / 2;
+      F77_INT k2 = ip[4] / 2;
       for (F77_INT i = 0; i < k2; i++)
         {
           Complex ctmp = d[i];
-          d[i] = d[ip(4) - i - 1];
-          d[ip(4) - i - 1] = ctmp;
+          d[i] = d[ip[4] - i - 1];
+          d[ip[4] - i - 1] = ctmp;
         }
       eig_val.resize (k);
 
@@ -3575,7 +3576,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
         {
           OCTAVE_LOCAL_BUFFER (Complex, ctmp, n);
 
-          for (F77_INT i = ip(4); i < k; i++)
+          for (F77_INT i = ip[4]; i < k; i++)
             {
               F77_INT off1 = i * n;
               for (F77_INT j = 0; j < n; j++)
@@ -3586,7 +3587,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
           for (F77_INT i = 0; i < k2; i++)
             {
               F77_INT off1 = i * n;
-              F77_INT off2 = (ip(4) - i - 1) * n;
+              F77_INT off2 = (ip[4] - i - 1) * n;
 
               if (off1 == off2)
                 continue;
@@ -3607,7 +3608,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
       ("eigs: error in zneupd: %s",
        arpack_errno2str (info2, "zneupd").c_str ());
 
-  return ip(4);
+  return ip[4];
 }
 
 template <typename M>
@@ -3678,13 +3679,15 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
       if (permB.numel () != n)
         (*current_liboctave_error_handler) ("eigs: permB vector invalid");
 
-      Array<bool> checked (dim_vector (n, 1), false);
+      OCTAVE_LOCAL_BUFFER_INIT (bool, checked, n, false);
       for (F77_INT i = 0; i < n; i++)
         {
           octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
 
-          if (checked(bidx) || bidx < 0 || bidx >= n)
+          if (bidx < 0 || bidx >= n || checked[bidx])
             (*current_liboctave_error_handler) ("eigs: permB vector invalid");
+
+          checked[bidx] = true;
         }
     }
 
@@ -3748,24 +3751,23 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
         }
     }
 
-  Array<F77_INT> ip (dim_vector (11, 1));
-  F77_INT *iparam = ip.rwdata ();
+  std::array<F77_INT, 11> ip;
+  F77_INT *iparam = ip.data ();
 
-  ip(0) = 1; //ishift
-  ip(1) = 0;   // ip(1) not referenced
-  ip(2) = maxit; // mxiter, maximum number of iterations
-  ip(3) = 1; // NB blocksize in recurrence
-  ip(4) = 0; // nconv, number of Ritz values that satisfy convergence
-  ip(5) = 0; //ip(5) not referenced
-  ip(6) = mode; // mode
-  ip(7) = 0;
-  ip(8) = 0;
-  ip(9) = 0;
-  ip(10) = 0;
-  // ip(7) to ip(10) return values
+  ip[0] = 1;      // ishift
+  ip[1] = 0;      // ip[1] not referenced
+  ip[2] = maxit;  // mxiter, maximum number of iterations
+  ip[3] = 1;      // NB blocksize in recurrence
+  ip[4] = 0;      // nconv, number of Ritz values that satisfy convergence
+  ip[5] = 0;      // ip[5] not referenced
+  ip[6] = mode;   // mode
+  ip[7] = 0;      // ip[7] - ip[10] return values
+  ip[8] = 0;
+  ip[9] = 0;
+  ip[10] = 0;
 
-  Array<F77_INT> iptr (dim_vector (14, 1));
-  F77_INT *ipntr = iptr.rwdata ();
+  std::array<F77_INT, 14> iptr;
+  F77_INT *ipntr = iptr.data ();
 
   F77_INT ido = 0;
   int iter = 0;
@@ -3799,7 +3801,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
 
       info = tmp_info;
 
-      if (disp > 0 && ! octave::math::isnan(workl[iptr(5)-1]))
+      if (disp > 0 && ! octave::math::isnan(workl[iptr[5]-1]))
         {
           if (iter++)
             {
@@ -3809,23 +3811,23 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
               if (ido == 99) // convergence
                 {
                   for (F77_INT i = 0; i < k; i++)
-                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                    os << "    " << workl[iptr[5]+i-1] << "\n";
                 }
               else
                 {
                   // the wanted Ritz estimates are at the end
                   for (F77_INT i = p - k; i < p; i++)
-                    os << "    " << workl[iptr(5)+i-1] << "\n";
+                    os << "    " << workl[iptr[5]+i-1] << "\n";
                 }
             }
 
           // This is a kludge, as ARPACK doesn't give its
-          // iteration pointer.  But as workl[iptr(5)-1] is
+          // iteration pointer.  But as workl[iptr[5]-1] is
           // an output value updated at each iteration, setting
           // a value in this array to NaN and testing for it
           // is a way of obtaining the iteration counter.
           if (ido != 99)
-            workl[iptr(5)-1] = octave::numeric_limits<double>::NaN ();
+            workl[iptr[5]-1] = octave::numeric_limits<double>::NaN ();
         }
 
       if (ido == -1 || ido == 1 || ido == 2)
@@ -3836,7 +3838,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
                 {
                   ComplexMatrix mtmp (n, 1);
                   for (F77_INT i = 0; i < n; i++)
-                    mtmp(i, 0) = workd[i + iptr(0) - 1];
+                    mtmp(i, 0) = workd[i + iptr[0] - 1];
 
                   mtmp = utsolve (bt, permB, mtmp);
                   ComplexColumnVector y = fcn (mtmp, err);
@@ -3847,7 +3849,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
                   mtmp = ltsolve (b, permB, y);
 
                   for (F77_INT i = 0; i < n; i++)
-                    workd[i+iptr(1)-1] = mtmp(i, 0);
+                    workd[i+iptr[1]-1] = mtmp(i, 0);
                 }
               else // shift-invert mode
                 {
@@ -3855,7 +3857,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
                     {
                       OCTAVE_LOCAL_BUFFER (Complex, ctmp, n);
 
-                      vector_product (b, workd+iptr(0)-1, ctmp);
+                      vector_product (b, workd+iptr[0]-1, ctmp);
 
                       ComplexColumnVector x(n);
 
@@ -3867,15 +3869,15 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
                       if (err)
                         return false;
 
-                      Complex *ip2 = workd+iptr(1)-1;
+                      Complex *ip2 = workd+iptr[1]-1;
                       for (F77_INT i = 0; i < n; i++)
                         ip2[i] = y(i);
                     }
                   else if (ido == 2)
-                    vector_product (b, workd+iptr(0)-1, workd+iptr(1)-1);
+                    vector_product (b, workd+iptr[0]-1, workd+iptr[1]-1);
                   else
                     {
-                      Complex *ip2 = workd+iptr(2)-1;
+                      Complex *ip2 = workd+iptr[2]-1;
                       ComplexColumnVector x(n);
 
                       for (F77_INT i = 0; i < n; i++)
@@ -3886,7 +3888,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
                       if (err)
                         return false;
 
-                      ip2 = workd + iptr(1) - 1;
+                      ip2 = workd + iptr[1] - 1;
                       for (F77_INT i = 0; i < n; i++)
                         *ip2++ = y(i);
                     }
@@ -3894,7 +3896,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
             }
           else
             {
-              Complex *ip2 = workd + iptr(0) - 1;
+              Complex *ip2 = workd + iptr[0] - 1;
               ComplexColumnVector x(n);
 
               for (F77_INT i = 0; i < n; i++)
@@ -3905,7 +3907,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
               if (err)
                 return false;
 
-              ip2 = workd + iptr(1) - 1;
+              ip2 = workd + iptr[1] - 1;
               for (F77_INT i = 0; i < n; i++)
                 *ip2++ = y(i);
             }
@@ -3931,8 +3933,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
-  Array<F77_INT> s (dim_vector (p, 1));
-  F77_INT *sel = s.rwdata ();
+  OCTAVE_LOCAL_BUFFER (F77_INT, sel, p);
 
   eig_vec.resize (n, k);
   Complex *z = eig_vec.rwdata ();
@@ -3955,16 +3956,16 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
 
   if (info2 == 0)
     {
-      for (F77_INT i = ip(4); i < k; i++)
+      for (F77_INT i = ip[4]; i < k; i++)
         d[i] = Complex (octave::numeric_limits<double>::NaN (),
                         octave::numeric_limits<double>::NaN ());
 
-      F77_INT k2 = ip(4) / 2;
+      F77_INT k2 = ip[4] / 2;
       for (F77_INT i = 0; i < k2; i++)
         {
           Complex ctmp = d[i];
-          d[i] = d[ip(4) - i - 1];
-          d[ip(4) - i - 1] = ctmp;
+          d[i] = d[ip[4] - i - 1];
+          d[ip[4] - i - 1] = ctmp;
         }
       eig_val.resize (k);
 
@@ -3972,7 +3973,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
         {
           OCTAVE_LOCAL_BUFFER (Complex, ctmp, n);
 
-          for (F77_INT i = ip(4); i < k; i++)
+          for (F77_INT i = ip[4]; i < k; i++)
             {
               F77_INT off1 = i * n;
               for (F77_INT j = 0; j < n; j++)
@@ -3983,7 +3984,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
           for (F77_INT i = 0; i < k2; i++)
             {
               F77_INT off1 = i * n;
-              F77_INT off2 = (ip(4) - i - 1) * n;
+              F77_INT off2 = (ip[4] - i - 1) * n;
 
               if (off1 == off2)
                 continue;
@@ -4006,7 +4007,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
       ("eigs: error in zneupd: %s",
        arpack_errno2str (info2, "zneupd").c_str ());
 
-  return ip(4);
+  return ip[4];
 }
 
 // Instantiations for the types we need.

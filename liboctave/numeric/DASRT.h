@@ -28,9 +28,10 @@
 
 #include "octave-config.h"
 
+#include <array>
 #include <string>
+#include <vector>
 
-#include "Array-oct.h"
 #include "DASRT-opts.h"
 #include "dMatrix.h"
 
@@ -112,14 +113,14 @@ private:
 
   octave_f77_int_type m_ng;
 
-  Array<octave_f77_int_type> m_info;
-  Array<octave_f77_int_type> m_iwork;
-  Array<octave_f77_int_type> m_jroot;
+  std::array<octave_f77_int_type, 15> m_info;
+  std::vector<octave_f77_int_type> m_iwork;
+  std::vector<octave_f77_int_type> m_jroot;
 
-  Array<double> m_rwork;
+  std::vector<double> m_rwork;
 
-  Array<double> m_abs_tol;
-  Array<double> m_rel_tol;
+  std::vector<double> m_abs_tol;
+  std::vector<double> m_rel_tol;
 
   void integrate (double t);
 };

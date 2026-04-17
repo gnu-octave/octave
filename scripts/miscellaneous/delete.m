@@ -89,6 +89,7 @@ endfunction
 %!   delete (file);
 %!   assert (! exist (file, "file"));
 %! unwind_protect_cleanup
+%!   warning ('off', 'Octave:delete:no-such-file', 'local');
 %!   delete ([file, '*']);
 %! end_unwind_protect
 

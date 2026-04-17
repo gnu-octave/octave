@@ -33,6 +33,10 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   the location of the last instance instead, and was the default behavior in
   previous Octave versions and in Matlab release R2012b and earlier.
 
+* The optional second output of `linsolve` now returns the rank of the input
+  matrix if it is rectangular.  Octave no longer emits a warning when it
+  finds a singular matrix if the second output has been requested.
+
 ### Alphabetical list of new functions added in Octave 12
 
 * `diagnostics_show_caret`

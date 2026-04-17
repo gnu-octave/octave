@@ -197,11 +197,16 @@ load_mcos_object (const octave_value& objmetadata, bool as_struct)
         as_struct = true;
       else
         {
+          if (sh->is_missing_class (classname))
+            return objmetadata;
+
           cls = octave::lookup_class (classname, false, true);
           if (! cls.ok ())
             {
+              sh->add_missing_class (classname);
               warning_with_id ("Octave:load:classdef-not-found",
-                               "load: classdef not found.  Element loaded as %s",
+                               "load: class '%s' not found.  Element loaded as %s",
+                               classname.c_str (),
                                objmetadata.class_name ().c_str ());
 
               return objmetadata;

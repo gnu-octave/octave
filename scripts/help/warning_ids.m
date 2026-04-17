@@ -273,6 +273,21 @@
 ## for two further versions of Octave before being removed.
 ## By default, the @code{Octave:legacy-function} warning is enabled.
 ##
+## @item Octave:load:classdef-not-found
+## If the @code{Octave:load:classdef-not-found} warning is enabled, a warning is
+## printed when the @code{load} function is used to load a classdef object from
+## a file, but the classdef definition is not found in @code{path}.  In this
+## case, the classdef object metadata is loaded.
+## By default, the @code{Octave:load:classdef-not-found} warning is enabled.
+##
+## @item Octave:load:classdef-not-supported
+## If the @code{Octave:load:classdef-not-supported} warning is enabled, a
+## warning is printed when the @code{load} function is used to load a classdef
+## object from a MAT-file which contains objects that are not supported by the
+## current version of Octave.  In this case, the classdef object metadata is
+## loaded.
+## By default, the @code{Octave:load:classdef-not-supported} warning is enabled.
+##
 ## @item Octave:logical-conversion
 ## If the @code{Octave:logical-conversion} warning is enabled, a warning is
 ## printed if an implicit conversion of an array from numerical to boolean

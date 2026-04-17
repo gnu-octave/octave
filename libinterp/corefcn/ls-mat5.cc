@@ -715,6 +715,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
           {
             octave_value tc2;
 
+            octave_quit();
+
             std::string nm
               = read_mat5_binary_element (is, filename, swap, global, tc2);
 
@@ -1204,6 +1206,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             // fields subelements
             for (octave_idx_type j = 0; j < n; j++)
               {
+                octave_quit();
                 for (octave_idx_type i = 0; i < n_fields; i++)
                   {
                     octave_value fieldtc;
@@ -2399,7 +2402,7 @@ save_mat5_binary_element (std::ostream& os,
     }
   // Guarantee that memory is freed regardless of path through code.
   octave::unwind_action free_memory ([u16_str] ()
-                                     { if (u16_str != nullptr) free (u16_str); }); 
+                                     { if (u16_str != nullptr) free (u16_str); });
 
   if (conv_u16)
     {

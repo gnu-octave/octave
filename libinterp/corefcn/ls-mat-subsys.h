@@ -34,6 +34,7 @@
 #include <iosfwd>
 #include <string>
 #include <tuple>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -66,6 +67,16 @@ class subsystem_handler
                            const bool saveobj_type, bool as_struct = false);
 
     bool check_dyn_props (const uint32_t obj_dep_id);
+
+    void add_missing_class (const std::string& classname)
+    {
+      m_missing_classes.insert (classname);
+    }
+
+    bool is_missing_class (const std::string& classname) const
+    {
+      return m_missing_classes.count (classname);
+    }
 
     // save methods
     uint32NDArray set_mcos_object_metadata (const octave_value& obj);
@@ -108,6 +119,8 @@ class subsystem_handler
     // load variables
     octave_value m_type_java;
     octave_value m_type_handle;
+    // Cache missing classes to minimize lookup time during load
+    std::unordered_set<std::string> m_missing_classes;
 
     // save variables
     uint32_t m_object_id_counter = 0;  // To manage dependency graphs; FIXME: unused?

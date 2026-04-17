@@ -93,6 +93,18 @@ function [status, msg, msgid] = movefile (f1, f2, force)
     cmd = [cmd " " cmd_force_flag];
   endif
 
+  ## Query f2 to see if it exists and is a directory
+  [info, err] = stat (f2);
+  if (! err)
+    isdir_f2 = S_ISDIR (info.mode);
+  elseif (numel (f1) > 1)
+    ## No object exists on filesystem at location f2, create directory.
+    mkdir (f2);
+    isdir_f2 = true;
+  else
+    isdir_f2 = false;
+  endif
+
   ## If f1 has more than 1 element then f2 must be a directory
   isdir_f2 = isfolder (f2);
   if (numel (f1) > 1 && ! isdir_f2)
@@ -214,5 +226,25 @@ endfunction
 %!error <Invalid call> movefile ()
 %!error <F1 must be a string> movefile (1, "foobar")
 %!error <F2 must be a string> movefile ("foobar", 1)
-%!error <F2 must be a directory> movefile ({"a", "b"}, "%_NOT_A_DIR_%")
+%!error <F2 must be a directory>
+%! fname = tempname ();
+%! tmp_var = pi;
+%! save (fname, "tmp_var");
+%! unwind_protect
+%!   movefile ({"a", "b"}, fname);
+%! unwind_protect_cleanup
+%!   delete ([fname '*']);
+%! end_unwind_protect
+%!test
+%! fname = tempname ();
+%! tmp_var = pi;
+%! save (fname, "tmp_var");
+%! unwind_protect
+%!   [status, msg, msgid] = movefile ({"a", "b"}, fname);
+%! unwind_protect_cleanup
+%!   delete ([fname '*']);
+%!   assert (status, false);
+%!   assert (msg,  "when copying multiple files, F2 must be a directory");
+%!   assert (msgid, "movefile");
+%! end_unwind_protect
 %!error <no files to move> movefile ("%_NOT_A_FILENAME1_%", "%_NOT_A_FILENAME2_%")

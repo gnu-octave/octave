@@ -422,13 +422,13 @@ function varargout = gallery (name, varargin)
   endif
 
   ## NOTE: there isn't a lot of input check in the individual functions
-  ## that actually build the functions.  This is by design. The original
+  ## that actually build the functions.  This is by design.  The original
   ## code by Higham did not perform it and was propagated to Matlab, so
-  ## for compatibility, we also don't make it. For example, arguments
+  ## for compatibility, we also don't make it.  For example, arguments
   ## that behave as switches, and in theory accepting a value of 0 or 1,
   ## will use a value of 0, for any value other than 1 (only check made
-  ## is if the value is equal to 1). It will often also accept string
-  ## values instead of numeric. Only input check added was where it
+  ## is if the value is equal to 1).  It will often also accept string
+  ## values instead of numeric.  Only input check added was where it
   ## would be causing an error anyway.
 
   ## we will always want to return at least 1 output

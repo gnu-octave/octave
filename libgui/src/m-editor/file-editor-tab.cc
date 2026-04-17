@@ -2839,7 +2839,7 @@ file_editor_tab::file_has_changed (const QString&, bool do_close)
           QMessageBox *msgBox
             = new QMessageBox (QMessageBox::Warning,
                                tr ("Octave Editor"),
-                               tr ("It seems that \'%1\' has been modified by another application. Do you want to reload it?%2").
+                               tr ("It seems that \'%1\' has been modified by another application.  Do you want to reload it?%2").
                                arg (m_file_name).arg (modified),
                                QMessageBox::Yes | QMessageBox::No, this);
 
@@ -2877,7 +2877,7 @@ file_editor_tab::file_has_changed (const QString&, bool do_close)
         = new QMessageBox (QMessageBox::Warning, tr ("Octave Editor"),
                            tr ("It seems that the file\n"
                                "%1\n"
-                               "has been deleted or renamed. Do you want to save it now?%2").
+                               "has been deleted or renamed.  Do you want to save it now?%2").
                            arg (m_file_name).arg (modified),
                            QMessageBox::Save | QMessageBox::Close, nullptr);
 

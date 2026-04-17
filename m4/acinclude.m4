@@ -252,7 +252,7 @@ AC_DEFUN([OCTAVE_CHECK_STD_PMR_POLYMORPHIC_ALLOCATOR], [
     [## On macOS, we need to run an executable to check if polymorphic
     ## allocators are working.
     ## When cross-compiling to that target, the following test might succeed
-    ## even if polymorphic allocators are not actually implemented. In that
+    ## even if polymorphic allocators are not actually implemented.  In that
     ## case, users would need to manually configure with
     ## `--disable-std-pmr-polymorphic-allocator`.
     ## When cross-compiling to any other target, the following test should be
@@ -1375,7 +1375,7 @@ c
 ])
 dnl
 dnl Check whether GLPK provides the latest API functions required
-dnl for the glpk function. The glp_iptcp structure was introduced
+dnl for the glpk function.  The glp_iptcp structure was introduced
 dnl in GLPK version 4.38.
 dnl
 AC_DEFUN([OCTAVE_CHECK_LIB_GLPK_OK], [
@@ -2550,7 +2550,7 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_COMPATIBLE_API], [
   AC_CHECK_FUNCS([IDASetJacFn IDASetLinearSolver SUNLinSol_Dense SUNSparseMatrix_Reallocate])
   dnl FIXME: The purpose of the following tests is to detect the deprecated
   dnl API from SUNDIALS version 3, which should only be used if the current
-  dnl API tests above failed. For now, always test for ida_direct.h.
+  dnl API tests above failed.  For now, always test for ida_direct.h.
   AC_CHECK_HEADERS([ida/ida_direct.h ida_direct.h])
   dnl Each of these is a deprecated analog to the functions listed above.
   AC_CHECK_FUNCS([IDADlsSetJacFn IDADlsSetLinearSolver SUNDenseLinearSolver])

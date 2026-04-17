@@ -76,7 +76,7 @@ c returns a single-precision floating point value.
         octave_cv_working_blas_single_precision=no)
       ])
     if test "$octave_cv_working_blas_single_precision" != yes; then
-      AC_MSG_ERROR([The function SDOT does not work correctly with the selected BLAS library. Use a different implementation of BLAS.])
+      AC_MSG_ERROR([The function SDOT does not work correctly with the selected BLAS library.  Use a different implementation of BLAS.])
     fi
 
     ## Check BLAS library integer size.

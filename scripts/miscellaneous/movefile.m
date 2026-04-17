@@ -205,6 +205,7 @@ endfunction
 %!     error ("moved file not equal to original file!");
 %!   endif
 %! unwind_protect_cleanup
+%!   warning ('off', 'Octave:delete:no-such-file', 'local');
 %!   delete ([f1, '*']);
 %!   delete (f2);
 %! end_unwind_protect

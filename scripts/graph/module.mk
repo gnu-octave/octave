@@ -5,15 +5,18 @@ FCN_FILE_DIRS += \
 %canon_reldir%_PRIVATE_FCN_FILES = \
   %reldir%/private/__matlab_ref__.m \
   %reldir%/private/__resolve_endpoint__.m \
+  %reldir%/private/__resolve_node_list__.m \
   %reldir%/private/__resolve_single_node__.m
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/.oct-config \
   %reldir%/digraph.m \
   %reldir%/graph.m \
+  %reldir%/indegree.m \
   %reldir%/neighbors.m \
   %reldir%/numedges.m \
   %reldir%/numnodes.m \
+  %reldir%/outdegree.m \
   %reldir%/predecessors.m \
   %reldir%/successors.m
 

@@ -217,7 +217,7 @@ classdef digraph
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges, ismultigraph, successors, predecessors, neighbors}
+  ## @seealso{graph, numnodes, numedges, ismultigraph, successors, predecessors, neighbors, indegree, outdegree}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1288,6 +1288,99 @@ classdef digraph
       else
         nb = double (idx);
       endif
+
+    endfunction
+
+    function d = indegree (G, nodeIDs)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{d} =} indegree (@var{G})
+      ## @deftypefnx {} {@var{d} =} indegree (@var{G}, @var{nodeIDs})
+      ## Return the in-degrees of nodes in the digraph @var{G}.
+      ## With one argument, return a @code{numnodes (G)}-by-1 column
+      ## vector of edge-end counts.  With two arguments, return the
+      ## in-degrees of the specified nodes, preserving the shape of
+      ## @var{nodeIDs}.  Self-loops contribute 1; for a multigraph,
+      ## each parallel edge is counted individually.
+      ## @seealso{digraph, outdegree, degree, predecessors}
+      ## @end deftypefn
+
+      if (nargin < 1 || nargin > 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to indegree: expected 1 or 2 arguments");
+      endif
+
+      N = numnodes (G);
+      if (G.is_multigraph_)
+        en = G.mg_endnodes_;
+        if (isempty (en))
+          all_d = zeros (N, 1);
+        else
+          all_d = accumarray (en(:, 2), 1, [N, 1]);
+        endif
+      else
+        if (N == 0)
+          all_d = zeros (0, 1);
+        else
+          ## spones coerces nonzero entries to 1 so weighted graphs
+          ## report edge counts, not weight sums.  sum (..., 1) is a
+          ## row vector; (:) forces a column.
+          all_d = full (sum (spones (G.adj_), 1))(:);
+        endif
+      endif
+
+      if (nargin == 1)
+        d = all_d;
+        return;
+      endif
+
+      [idx, out_shape] = __resolve_node_list__ (G, nodeIDs, "indegree");
+      d = reshape (all_d(idx), out_shape);
+
+    endfunction
+
+    function d = outdegree (G, nodeIDs)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{d} =} outdegree (@var{G})
+      ## @deftypefnx {} {@var{d} =} outdegree (@var{G}, @var{nodeIDs})
+      ## Return the out-degrees of nodes in the digraph @var{G}.
+      ## With one argument, return a @code{numnodes (G)}-by-1 column
+      ## vector of edge-start counts.  With two arguments, return the
+      ## out-degrees of the specified nodes, preserving the shape of
+      ## @var{nodeIDs}.  Self-loops contribute 1; for a multigraph,
+      ## each parallel edge is counted individually.
+      ## @seealso{digraph, indegree, degree, successors}
+      ## @end deftypefn
+
+      if (nargin < 1 || nargin > 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to outdegree: expected 1 or 2 arguments");
+      endif
+
+      N = numnodes (G);
+      if (G.is_multigraph_)
+        en = G.mg_endnodes_;
+        if (isempty (en))
+          all_d = zeros (N, 1);
+        else
+          all_d = accumarray (en(:, 1), 1, [N, 1]);
+        endif
+      else
+        if (N == 0)
+          all_d = zeros (0, 1);
+        else
+          all_d = full (sum (spones (G.adj_), 2))(:);
+        endif
+      endif
+
+      if (nargin == 1)
+        d = all_d;
+        return;
+      endif
+
+      [idx, out_shape] = __resolve_node_list__ (G, nodeIDs, "outdegree");
+      d = reshape (all_d(idx), out_shape);
 
     endfunction
 

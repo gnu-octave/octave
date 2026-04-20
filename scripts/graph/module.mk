@@ -1,5 +1,9 @@
 FCN_FILE_DIRS += \
-  %reldir%
+  %reldir% \
+  %reldir%/private
+
+%canon_reldir%_PRIVATE_FCN_FILES = \
+  %reldir%/private/__matlab_ref__.m
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/.oct-config
@@ -8,7 +12,13 @@ FCN_FILE_DIRS += \
 
 %canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-FCN_FILES += $(%canon_reldir%_FCN_FILES)
+%canon_reldir%_privatedir = $(fcnfiledir)/graph/private
+
+%canon_reldir%_private_DATA = $(%canon_reldir%_PRIVATE_FCN_FILES)
+
+FCN_FILES += \
+  $(%canon_reldir%_FCN_FILES) \
+  $(%canon_reldir%_PRIVATE_FCN_FILES)
 
 PKG_ADD_FILES += %reldir%/PKG_ADD
 

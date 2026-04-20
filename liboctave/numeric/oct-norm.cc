@@ -1003,6 +1003,11 @@ template <typename MatrixT, typename VectorT, typename R>
 R
 sparse_2norm (const MatrixT& m, R tol, int maxiter, VectorT)
 {
+  // All-zero matrix: ARPACK's dsaupd errors on a zero starting vector, so
+  // short-circuit before either backend is invoked.
+  if (m.nnz () == 0)
+    return R (0);
+
 #if defined (HAVE_ARPACK)
   // Use ARPACK (Lanczos) - more accurate than power iteration
   R res = sparse_2norm_arpack (m, tol, maxiter);

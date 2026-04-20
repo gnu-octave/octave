@@ -217,7 +217,7 @@ classdef digraph
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges, ismultigraph, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge}
+  ## @seealso{graph, numnodes, numedges, ismultigraph, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1437,6 +1437,28 @@ classdef digraph
         varargout{1} = out1;
         varargout{2} = out2;
       endif
+
+    endfunction
+
+    function n = edgecount (G, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{n} =} edgecount (@var{G}, @var{s}, @var{t})
+      ## Count edges between node pairs in the digraph @var{G}.  The
+      ## pair @code{(@var{s}(i), @var{t}(i))} is treated as an ordered
+      ## pair; the reverse orientation is not counted.  For a multigraph
+      ## digraph (see @code{ismultigraph}) the result counts parallel
+      ## edges.  Returns a scalar for scalar inputs and a column vector
+      ## otherwise.  See @code{help edgecount} for the full description.
+      ## @seealso{digraph, findedge, numedges, ismultigraph}
+      ## @end deftypefn
+
+      if (nargin != 3)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to edgecount: expected 3 arguments");
+      endif
+
+      n = __edgecount_impl__ (G, varargin{1}, varargin{2});
 
     endfunction
 

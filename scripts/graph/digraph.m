@@ -28,6 +28,7 @@ classdef digraph
   ## -*- texinfo -*-
   ## @deftypefn  {} {@var{G} =} digraph ()
   ## @deftypefnx {} {@var{G} =} digraph (@var{N})
+  ## @deftypefnx {} {@var{G} =} digraph (@var{s}, @var{t})
   ## Create a directed graph.
   ##
   ## With no arguments, return an empty directed graph with zero nodes
@@ -35,6 +36,13 @@ classdef digraph
   ##
   ## With a single non-negative integer scalar @var{N}, return a directed
   ## graph with @var{N} isolated nodes and no edges.
+  ##
+  ## With two numeric vectors @var{s} and @var{t} of equal length, return
+  ## a directed graph with one edge from @code{@var{s}(i)} to
+  ## @code{@var{t}(i)} for each index @var{i}.  Entries of @var{s} and
+  ## @var{t} must be positive integers referring to node indices; the
+  ## node count is automatically set to @code{max([@var{s}(:); @var{t}(:)])}.
+  ## Passing two empty vectors is equivalent to @code{digraph()}.
   ##
   ## @code{digraph} is a value class: every mutator returns a new object,
   ## leaving the input unchanged.
@@ -50,6 +58,11 @@ classdef digraph
   ## G = digraph (5);       # 5 isolated nodes
   ## numnodes (G)           # ==> 5
   ## numedges (G)           # ==> 0
+  ##
+  ## s = [1 2 3];
+  ## t = [2 3 1];
+  ## G = digraph (s, t);    # 3-cycle 1->2->3->1
+  ## numedges (G)           # ==> 3
   ## @end group
   ## @end example
   ##
@@ -83,6 +96,36 @@ classdef digraph
         else
           error ("Octave:invalid-input-arg", ...
                  "digraph: N must be a non-negative integer scalar");
+        endif
+      elseif (nargin == 2)
+        ## Edge-list constructor: digraph (s, t).
+        s = varargin{1};
+        t = varargin{2};
+        if (! (isnumeric (s) && isreal (s) ...
+               && isnumeric (t) && isreal (t)))
+          error ("Octave:invalid-input-arg", ...
+                 "digraph: S and T must be numeric vectors");
+        endif
+        if (! (isvector (s) || isempty (s)) ...
+            || ! (isvector (t) || isempty (t)))
+          error ("Octave:invalid-input-arg", ...
+                 "digraph: S and T must be vectors");
+        endif
+        if (numel (s) != numel (t))
+          error ("Octave:invalid-input-arg", ...
+                 "digraph: S and T must have the same length");
+        endif
+        s = double (s(:));
+        t = double (t(:));
+        if (! isempty (s))
+          if (any (! isfinite (s)) || any (! isfinite (t)) ...
+              || any (s < 1) || any (t < 1) ...
+              || any (s != fix (s)) || any (t != fix (t)))
+            error ("Octave:invalid-input-arg", ...
+                   "digraph: S and T must be positive integer vectors");
+          endif
+          N = max (max (s), max (t));
+          G.adj_ = sparse (s, t, 1, N, N);
         endif
       else
         error ("Octave:invalid-input-arg", ...
@@ -167,3 +210,81 @@ endclassdef
 %!error <non-negative integer> digraph (NaN)
 %!error <non-negative integer> digraph (-1)
 %!error <unsupported number of arguments> digraph (1, 2, 3, 4, 5, 6)
+
+## BIST — US-C02: digraph(s, t) edge-list constructor with numeric row vectors.
+%!test
+%! s = [1 2 3];
+%! t = [2 3 1];
+%! G = digraph (s, t);
+%! assert (class (G), "digraph");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+
+## BIST — US-C02: column vectors accepted.
+%!test
+%! s = [1; 2; 3];
+%! t = [2; 3; 1];
+%! G = digraph (s, t);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+
+## BIST — US-C02: mixed row/column orientation.
+%!test
+%! G = digraph ([1 2 3], [2; 3; 1]);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+
+## BIST — US-C02: node count auto-computed from max endpoint.
+%!test
+%! G = digraph ([1 2], [5 3]);
+%! assert (numnodes (G), 5);
+%! assert (numedges (G), 2);
+
+## BIST — US-C02: endpoints above max in t still counted.
+%!test
+%! G = digraph (1, 10);
+%! assert (numnodes (G), 10);
+%! assert (numedges (G), 1);
+
+## BIST — US-C02: empty edge list produces empty digraph.
+%!test
+%! G = digraph ([], []);
+%! assert (numnodes (G), 0);
+%! assert (numedges (G), 0);
+
+## BIST — US-C02: self-loop permitted.
+%!test
+%! G = digraph (3, 3);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 1);
+
+## BIST — US-C02: siever-like 1-based example (12 edges on 9 nodes).
+%!test
+%! s = [1 2 3 3 4 5 5 6 7 7 8 9];
+%! t = [2 3 2 4 5 6 9 7 8 9 7 4];
+%! G = digraph (s, t);
+%! assert (numnodes (G), 9);
+%! assert (numedges (G), 12);
+
+## BIST — US-C02: length mismatch error.
+%!error <same length> digraph ([1 2 3], [1 2])
+%!error <same length> digraph ([1 2], [1 2 3])
+
+## BIST — US-C02: non-numeric s/t errors.
+%!error <numeric> digraph ({"a"}, {"b"})
+%!error <numeric> digraph ("abc", "def")
+
+## BIST — US-C02: indices must be positive integers.
+%!error <positive integer> digraph (0, 1)
+%!error <positive integer> digraph (1, 0)
+%!error <positive integer> digraph (-1, 1)
+%!error <positive integer> digraph (1, -1)
+%!error <positive integer> digraph (1.5, 2)
+%!error <positive integer> digraph (1, 2.5)
+%!error <positive integer> digraph (Inf, 1)
+%!error <positive integer> digraph (1, Inf)
+%!error <positive integer> digraph (NaN, 1)
+%!error <positive integer> digraph (1, NaN)
+
+## BIST — US-C02: s and t must be vectors (not matrices).
+%!error <vector> digraph ([1 2; 3 4], [1 2; 3 4])

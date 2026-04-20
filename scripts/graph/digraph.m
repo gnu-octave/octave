@@ -217,7 +217,7 @@ classdef digraph
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges, ismultigraph, successors, predecessors, neighbors, indegree, outdegree}
+  ## @seealso{graph, numnodes, numedges, ismultigraph, successors, predecessors, neighbors, indegree, outdegree, findnode}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1381,6 +1381,30 @@ classdef digraph
 
       [idx, out_shape] = __resolve_node_list__ (G, nodeIDs, "outdegree");
       d = reshape (all_d(idx), out_shape);
+
+    endfunction
+
+    function idx = findnode (G, nodeID)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{idx} =} findnode (@var{G}, @var{nodeID})
+      ## Return the numeric node indices corresponding to @var{nodeID}
+      ## in the digraph @var{G}.  Numeric inputs are validated and
+      ## returned with shape preserved.  A char row vector is looked up
+      ## as a single node name and returns a scalar (0 if not found).
+      ## A cell array of strings is looked up element-wise and returns
+      ## a column vector of indices (0 for any missing name).  This
+      ## method matches MATLAB's findnode semantics: missing names
+      ## yield 0, not an error.
+      ## @seealso{digraph, findedge, numnodes, neighbors}
+      ## @end deftypefn
+
+      if (nargin != 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to findnode: expected 2 arguments");
+      endif
+
+      idx = __findnode_impl__ (G, nodeID);
 
     endfunction
 

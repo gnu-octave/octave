@@ -3,6 +3,7 @@ FCN_FILE_DIRS += \
   %reldir%/private
 
 %canon_reldir%_PRIVATE_FCN_FILES = \
+  %reldir%/private/__findnode_impl__.m \
   %reldir%/private/__matlab_ref__.m \
   %reldir%/private/__resolve_endpoint__.m \
   %reldir%/private/__resolve_node_list__.m \
@@ -12,6 +13,7 @@ FCN_FILE_DIRS += \
   %reldir%/.oct-config \
   %reldir%/degree.m \
   %reldir%/digraph.m \
+  %reldir%/findnode.m \
   %reldir%/graph.m \
   %reldir%/indegree.m \
   %reldir%/neighbors.m \

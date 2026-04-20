@@ -217,7 +217,7 @@ classdef digraph
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges, ismultigraph, successors, predecessors, neighbors, indegree, outdegree, findnode}
+  ## @seealso{graph, numnodes, numedges, ismultigraph, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1405,6 +1405,38 @@ classdef digraph
       endif
 
       idx = __findnode_impl__ (G, nodeID);
+
+    endfunction
+
+    function varargout = findedge (G, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{endpoints} =} findedge (@var{G})
+      ## @deftypefnx {} {[@var{sOut}, @var{tOut}] =} findedge (@var{G})
+      ## @deftypefnx {} {@var{idx} =} findedge (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {@var{endpoints} =} findedge (@var{G}, @var{edgeIdx})
+      ## Look up edges of the digraph @var{G}.  See @code{help findedge}
+      ## for the full description of the three supported call forms.
+      ## @seealso{digraph, findnode, numedges}
+      ## @end deftypefn
+
+      if (nargin < 1 || nargin > 3)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to findedge: expected 1, 2, or 3 arguments");
+      endif
+
+      ## Delegate to the shared private helper.  Request the matching
+      ## number of outputs so the helper can return single-output
+      ## (m-by-2 matrix / column idx) or two-output (separate columns)
+      ## forms consistently.
+      nout = max (nargout, 1);
+      if (nout <= 1)
+        varargout{1} = __findedge_impl__ (G, 1, varargin{:});
+      else
+        [out1, out2] = __findedge_impl__ (G, 2, varargin{:});
+        varargout{1} = out1;
+        varargout{2} = out2;
+      endif
 
     endfunction
 

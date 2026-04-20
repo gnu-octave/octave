@@ -201,7 +201,7 @@ classdef graph
   ## @end group
   ## @end example
   ##
-  ## @seealso{digraph, numnodes, numedges, neighbors, degree, findnode}
+  ## @seealso{digraph, numnodes, numedges, neighbors, degree, findnode, findedge}
   ## @end deftypefn
 
   properties (Access = private)
@@ -916,6 +916,36 @@ classdef graph
       endif
 
       idx = __findnode_impl__ (G, nodeID);
+
+    endfunction
+
+    function varargout = findedge (G, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{endpoints} =} findedge (@var{G})
+      ## @deftypefnx {} {[@var{sOut}, @var{tOut}] =} findedge (@var{G})
+      ## @deftypefnx {} {@var{idx} =} findedge (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {@var{endpoints} =} findedge (@var{G}, @var{edgeIdx})
+      ## Look up edges of the graph @var{G}.  For the @code{(s, t)} form
+      ## on an undirected @code{graph}, the pair matches in either
+      ## orientation.  See @code{help findedge} for the full description
+      ## of the three supported call forms.
+      ## @seealso{graph, findnode, numedges}
+      ## @end deftypefn
+
+      if (nargin < 1 || nargin > 3)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to findedge: expected 1, 2, or 3 arguments");
+      endif
+
+      nout = max (nargout, 1);
+      if (nout <= 1)
+        varargout{1} = __findedge_impl__ (G, 1, varargin{:});
+      else
+        [out1, out2] = __findedge_impl__ (G, 2, varargin{:});
+        varargout{1} = out1;
+        varargout{2} = out2;
+      endif
 
     endfunction
 

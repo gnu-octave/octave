@@ -28,6 +28,7 @@ classdef digraph
   ## -*- texinfo -*-
   ## @deftypefn  {} {@var{G} =} digraph ()
   ## @deftypefnx {} {@var{G} =} digraph (@var{N})
+  ## @deftypefnx {} {@var{G} =} digraph (@var{A})
   ## @deftypefnx {} {@var{G} =} digraph (@var{s}, @var{t})
   ## @deftypefnx {} {@var{G} =} digraph (@var{s}, @var{t}, @var{w})
   ## @deftypefnx {} {@var{G} =} digraph (@var{s}, @var{t}, @var{w}, @var{nodenames})
@@ -39,6 +40,16 @@ classdef digraph
   ##
   ## With a single non-negative integer scalar @var{N}, return a directed
   ## graph with @var{N} isolated nodes and no edges.
+  ##
+  ## With a single non-scalar numeric or logical square matrix @var{A},
+  ## treat @var{A} as an adjacency matrix: one edge from node @var{i} to
+  ## node @var{j} is created for every nonzero @code{@var{A}(i,j)}, and
+  ## the weight of that edge is the value of @code{@var{A}(i,j)}.  The
+  ## node count is @code{size (@var{A}, 1)}.  Sparse @var{A} is used
+  ## directly without densifying, so very large sparse adjacency matrices
+  ## are supported.  @var{A} must be real; complex or @code{NaN} entries
+  ## are rejected.  Self-loops are permitted when
+  ## @code{@var{A}(i,i) != 0}.
   ##
   ## With two numeric vectors @var{s} and @var{t} of equal length, return
   ## a directed graph with one edge from @code{@var{s}(i)} to
@@ -104,6 +115,10 @@ classdef digraph
   ## G = digraph ([1 2], [2 3], [1 1], 5);  # 5 nodes, 2 edges, 2 isolated
   ## numnodes (G)           # ==> 5
   ## numedges (G)           # ==> 2
+  ##
+  ## A = [0 1 0; 0 0 1; 1 0 0];
+  ## G = digraph (A);       # 3-cycle from adjacency matrix
+  ## G.Edges.EndNodes       # ==> [1 2; 2 3; 3 1]
   ## @end group
   ## @end example
   ##
@@ -154,13 +169,55 @@ classdef digraph
         return;
       elseif (nargin == 1)
         arg1 = varargin{1};
-        if (isnumeric (arg1) && isscalar (arg1) && isreal (arg1) ...
-            && isfinite (arg1) && arg1 >= 0 && arg1 == fix (arg1))
+        if (isnumeric (arg1) && isscalar (arg1))
+          ## Scalar numeric input: node count N.
+          if (! (isreal (arg1) && isfinite (arg1) && arg1 >= 0 ...
+                 && arg1 == fix (arg1)))
+            error ("Octave:invalid-input-arg", ...
+                   "digraph: N must be a non-negative integer scalar");
+          endif
           N = double (arg1);
           G.adj_ = sparse (N, N);
+        elseif ((isnumeric (arg1) || islogical (arg1)) ...
+                && ismatrix (arg1) && ndims (arg1) == 2)
+          ## Non-scalar 2-D input: adjacency matrix.  Each nonzero A(i,j)
+          ## becomes an edge i->j with weight A(i,j).  Sparse input is
+          ## preserved without densifying.
+          A = arg1;
+          if (! isreal (A))
+            error ("Octave:invalid-input-arg", ...
+                   "digraph: adjacency matrix A must be real");
+          endif
+          if (size (A, 1) != size (A, 2))
+            error ("Octave:invalid-input-arg", ...
+                   "digraph: adjacency matrix A must be square");
+          endif
+          if (any (isnan (A(:))))
+            error ("Octave:invalid-input-arg", ...
+                   "digraph: adjacency matrix A must not contain NaN");
+          endif
+          if (issparse (A))
+            ## Coerce value type to double without densifying; logical
+            ## sparse gets promoted here via the 1.0 * trick.
+            if (! isa (A, "double"))
+              A = sparse (double (A));
+            endif
+            G.adj_ = A;
+          else
+            ## Dense path: sparsify.  double() handles int* / logical.
+            G.adj_ = sparse (double (A));
+          endif
+          ## Non-empty adjacency always carries a Weight column (matrix
+          ## form implies weighted, MATLAB parity).  0x0 stays empty and
+          ## unweighted.
+          if (size (A, 1) > 0)
+            G.has_weights_ = true;
+          endif
         else
           error ("Octave:invalid-input-arg", ...
-                 "digraph: N must be a non-negative integer scalar");
+                 ["digraph: single-argument input must be a ", ...
+                  "non-negative integer scalar or a real square ", ...
+                  "adjacency matrix"]);
         endif
       elseif (nargin == 2 || nargin == 3)
         ## Edge-list constructor: digraph (s, t) or digraph (s, t, w).
@@ -481,14 +538,17 @@ endclassdef
 %! assert (numnodes (G1), 3);
 %! assert (numnodes (G2), 3);
 
-## BIST — input validation.
+## BIST — input validation (scalar-N branch).
 %!error <non-negative integer> digraph (-3)
 %!error <non-negative integer> digraph (3.5)
-%!error <non-negative integer> digraph ([1 2 3])
 %!error <non-negative integer> digraph (Inf)
 %!error <non-negative integer> digraph (NaN)
 %!error <non-negative integer> digraph (-1)
 %!error <unsupported number of arguments> digraph (1, 2, 3, 4, 5, 6)
+
+## BIST — row vector is now interpreted as a non-square adjacency
+## matrix (US-C06 change), not as an invalid N.
+%!error <square> digraph ([1 2 3])
 
 ## BIST — US-C02: digraph(s, t) edge-list constructor with numeric row vectors.
 %!test
@@ -883,3 +943,151 @@ endclassdef
 %!error <fourth argument> digraph ([1 2], [2 1], [1 1], [3 4])
 %!error <fourth argument> digraph ([1 2], [2 1], [1 1], true)
 %!error <fourth argument> digraph ([1 2], [2 1], [1 1], {1, 2})
+
+## BIST — US-C06: digraph(A) from dense adjacency matrix.  Each nonzero
+## A(i,j) becomes an edge i->j; there are 3 nodes and 3 edges.
+%!test
+%! A = [0 1 0; 0 0 1; 1 0 0];
+%! G = digraph (A);
+%! assert (class (G), "digraph");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Edges.EndNodes, [1 2; 2 3; 3 1]);
+
+## BIST — US-C06: weights default to the nonzero A(i,j) value.  Edges
+## listed in lex (src, dst) order; weights follow their edge.
+%!test
+%! A = [0 1.5 0; 0 0 2.5; 3.5 0 0];
+%! G = digraph (A);
+%! assert (G.Edges.EndNodes, [1 2; 2 3; 3 1]);
+%! assert (G.Edges.Weight,   [1.5; 2.5; 3.5]);
+
+## BIST — US-C06: all-ones adjacency still records Weight field (matrix
+## form implies weighted, MATLAB parity).
+%!test
+%! A = [0 1; 1 0];
+%! G = digraph (A);
+%! E = G.Edges;
+%! assert (isfield (E, "EndNodes"));
+%! assert (isfield (E, "Weight"));
+%! assert (E.Weight, [1; 1]);
+
+## BIST — US-C06: self-loops on the diagonal are preserved.
+%!test
+%! A = [1 1; 0 1];
+%! G = digraph (A);
+%! assert (numnodes (G), 2);
+%! assert (numedges (G), 3);
+%! assert (G.Edges.EndNodes, [1 1; 1 2; 2 2]);
+%! assert (G.Edges.Weight,   [1; 1; 1]);
+
+## BIST — US-C06: 5x5 adjacency with mostly-zero rows still gives 5 nodes
+## (isolated rows/columns become isolated nodes).
+%!test
+%! A = zeros (5);
+%! A(1,2) = 1;
+%! A(2,3) = 2;
+%! A(3,4) = 3;
+%! G = digraph (A);
+%! assert (numnodes (G), 5);
+%! assert (numedges (G), 3);
+%! assert (G.Edges.EndNodes, [1 2; 2 3; 3 4]);
+%! assert (G.Edges.Weight,   [1; 2; 3]);
+
+## BIST — US-C06: all-zeros adjacency yields an N-node edgeless digraph.
+%!test
+%! G = digraph (zeros (4));
+%! assert (numnodes (G), 4);
+%! assert (numedges (G), 0);
+
+## BIST — US-C06: 0-by-0 adjacency yields the empty digraph.
+%!test
+%! G = digraph (zeros (0, 0));
+%! assert (numnodes (G), 0);
+%! assert (numedges (G), 0);
+
+## BIST — US-C06: sparse adjacency works and is not densified.
+%!test
+%! A = sparse ([1 2 3], [2 3 1], [10 20 30], 3, 3);
+%! G = digraph (A);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Edges.EndNodes, [1 2; 2 3; 3 1]);
+%! assert (G.Edges.Weight,   [10; 20; 30]);
+
+## BIST — US-C06: sparse adjacency with isolated trailing nodes
+## (sparse (s, t, w, N, N) form).
+%!test
+%! A = sparse ([1 2], [2 3], [5 10], 5, 5);
+%! G = digraph (A);
+%! assert (numnodes (G), 5);
+%! assert (numedges (G), 2);
+%! assert (G.Edges.EndNodes, [1 2; 2 3]);
+%! assert (G.Edges.Weight,   [5; 10]);
+
+## BIST — US-C06: adjacency form Nodes.Name is an empty column cellstr.
+%!test
+%! G = digraph (eye (3));
+%! assert (isstruct (G.Nodes));
+%! assert (G.Nodes.Name, cell (0, 1));
+
+## BIST — US-C06: negative weights permitted.
+%!test
+%! A = [0 -1; -2 0];
+%! G = digraph (A);
+%! assert (G.Edges.Weight, [-1; -2]);
+
+## BIST — US-C06: Inf weight permitted (large-weight / shortest-path use).
+%!test
+%! A = [0 Inf; 1 0];
+%! G = digraph (A);
+%! assert (G.Edges.Weight, [Inf; 1]);
+
+## BIST — US-C06: Siever-style adjacency (9 nodes, 12 edges) via sparse.
+%!test
+%! s = [1 2 3 3 4 5 5 6 7 7 8 9];
+%! t = [2 3 2 4 5 6 9 7 8 9 7 4];
+%! A = sparse (s, t, 1, 9, 9);
+%! G = digraph (A);
+%! assert (numnodes (G), 9);
+%! assert (numedges (G), 12);
+
+## BIST — US-C06: integer-typed adjacency (int8) coerced to double.
+%!test
+%! A = int8 ([0 1; 1 0]);
+%! G = digraph (A);
+%! assert (numnodes (G), 2);
+%! assert (numedges (G), 2);
+%! assert (isa (G.Edges.Weight, "double"));
+
+## BIST — US-C06: logical adjacency accepted.
+%!test
+%! A = logical ([0 1; 1 0]);
+%! G = digraph (A);
+%! assert (numnodes (G), 2);
+%! assert (numedges (G), 2);
+
+## BIST — US-C06: non-square adjacency rejected.
+%!error <square> digraph ([0 1 0; 1 0 0])
+%!error <square> digraph (ones (2, 5))
+%!error <square> digraph (ones (4, 3))
+
+## BIST — US-C06: 3-D input rejected (must be a 2-D matrix).
+%!error <matrix> digraph (ones (2, 2, 2))
+
+## BIST — US-C06: complex adjacency rejected.
+%!error <real> digraph ([0 1i; 0 0])
+%!error <real> digraph (complex (eye (3), eye (3)))
+
+## BIST — US-C06: NaN in adjacency rejected.
+%!error <NaN> digraph ([0 1; NaN 0])
+%!error <NaN> digraph (sparse ([1 2], [2 1], [1 NaN], 2, 2))
+
+## BIST — US-C06: sparse zero-valued structural entries are dropped by
+## sparse's own compression, so the digraph has only true nonzero edges.
+%!test
+%! A = sparse ([1 2], [2 3], [5 0], 3, 3);
+%! G = digraph (A);
+%! assert (numedges (G), 1);
+%! assert (G.Edges.EndNodes, [1 2]);
+%! assert (G.Edges.Weight,   5);

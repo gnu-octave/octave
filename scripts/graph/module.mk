@@ -8,7 +8,8 @@ FCN_FILE_DIRS += \
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/.oct-config \
-  %reldir%/digraph.m
+  %reldir%/digraph.m \
+  %reldir%/graph.m
 
 %canon_reldir%dir = $(fcnfiledir)/graph
 

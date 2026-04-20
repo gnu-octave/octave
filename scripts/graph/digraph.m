@@ -37,6 +37,7 @@ classdef digraph
   ## @deftypefnx {} {@var{G} =} digraph (@var{EdgeTable})
   ## @deftypefnx {} {@var{G} =} digraph (@var{EdgeTable}, @var{NodeTable})
   ## @deftypefnx {} {@var{G} =} digraph (@dots{}, "omitselfloops")
+  ## @deftypefnx {} {@var{G} =} digraph (@dots{}, "multigraph")
   ## Create a directed graph.
   ##
   ## With no arguments, return an empty directed graph with zero nodes
@@ -103,8 +104,8 @@ classdef digraph
   ## attributes on the resulting digraph.  Edges are re-sorted into
   ## lexicographic @code{(source, destination)} order and every extra
   ## column is reordered to match.  Duplicate @code{(source,
-  ## destination)} pairs are rejected (a future @code{'multigraph'}
-  ## flag will permit parallel edges).
+  ## destination)} pairs are rejected unless the caller also passes
+  ## the trailing @qcode{'multigraph'} flag (see below).
   ##
   ## With a second struct @var{NodeTable}, the node set is taken from
   ## @var{NodeTable}.  A @code{Name} field (a cell array of unique
@@ -124,6 +125,17 @@ classdef digraph
   ## form are filtered by the same mask so their row count remains in
   ## sync with the surviving edges.  Node names and node-attribute
   ## columns are unaffected.
+  ##
+  ## A trailing string flag @qcode{'multigraph'} (case-insensitive)
+  ## permits parallel edges: duplicate @code{(source, destination)}
+  ## pairs are accepted and every instance contributes its own edge
+  ## row with its own weight.  @code{numedges (@var{G})} counts
+  ## parallel edges individually and
+  ## @code{ismultigraph (@var{G})} returns true when any pair of
+  ## nodes has more than one edge between them.  Without this flag,
+  ## duplicate edges are rejected with an error.  The
+  ## @qcode{'multigraph'} and @qcode{'omitselfloops'} flags may be
+  ## supplied together in either order.
   ##
   ## @code{digraph} is a value class: every mutator returns a new object,
   ## leaving the input unchanged.
@@ -175,10 +187,16 @@ classdef digraph
   ## G = digraph ([1 2 3 4], [1 2 4 5], [10 20 30 40], "omitselfloops");
   ## numedges (G)           # ==> 2 (self-loops 1->1 and 2->2 dropped)
   ## G.Edges.EndNodes       # ==> [3 4; 4 5]
+  ##
+  ## G = digraph ([1 1 2], [2 2 3], [10 20 30], "multigraph");
+  ## numedges (G)           # ==> 3 (parallel 1->2 edges preserved)
+  ## ismultigraph (G)       # ==> true
+  ## G.Edges.EndNodes       # ==> [1 2; 1 2; 2 3]
+  ## G.Edges.Weight         # ==> [10; 20; 30]
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges}
+  ## @seealso{graph, numnodes, numedges, ismultigraph}
   ## @end deftypefn
 
   properties (Access = private)
@@ -207,6 +225,26 @@ classdef digraph
     ## NodeTable form.  Each field is stored in node-index order.
     ## Name is @emph{not} stored here (it lives in @code{nodenames_}).
     node_attrs_ = struct ();
+
+    ## When true, this digraph was constructed with the
+    ## @qcode{'multigraph'} flag and uses edge-list storage to permit
+    ## parallel edges.  In that mode @code{adj_} is an empty N-by-N
+    ## sparse placeholder (its size still gives @code{numnodes}) and
+    ## the edges live in @code{mg_endnodes_} / @code{mg_weights_}.
+    ## When false, @code{adj_} is the edge-carrying sparse matrix
+    ## (simple-graph mode) and the @code{mg_*} arrays stay empty.
+    is_multigraph_ = false;
+
+    ## Lex-sorted @code{(source, destination)} pairs for multigraph
+    ## storage.  Duplicates are adjacent.  Used only when
+    ## @code{is_multigraph_} is true.  Stable sort preserves input
+    ## order within each duplicate group.
+    mg_endnodes_ = zeros (0, 2);
+
+    ## Per-edge weights for multigraph storage, a column vector in the
+    ## same row order as @code{mg_endnodes_}.  Used only when
+    ## @code{is_multigraph_} and @code{has_weights_} are both true.
+    mg_weights_ = zeros (0, 1);
   endproperties
 
   properties (Dependent, SetAccess = private)
@@ -232,26 +270,36 @@ classdef digraph
 
     function G = digraph (varargin)
 
-      ## Pre-process the trailing @qcode{'omitselfloops'} flag (US-C09).
-      ## A trailing char-row argument matching @qcode{"omitselfloops"}
-      ## (case-insensitive) is stripped from the argument list and
-      ## recorded so the constructor can drop any resulting self-loop
-      ## edges after the main build step.  Using local @var{args} /
-      ## @var{nargs} shadows the built-in @code{varargin} / @code{nargin}
-      ## so the existing dispatch branches keep their original shape.
+      ## Pre-process the trailing @qcode{'omitselfloops'} (US-C09) and
+      ## @qcode{'multigraph'} (US-C10) flags.  Each trailing char-row
+      ## argument matching either flag (case-insensitive) is popped
+      ## from the argument list and recorded so the constructor can
+      ## route through multigraph storage and/or drop self-loops after
+      ## the main build step.  The flags may appear in either order.
+      ## Using local @var{args} / @var{nargs} shadows the built-in
+      ## @code{varargin} / @code{nargin} so the existing dispatch
+      ## branches keep their original shape.
       args = varargin;
       nargs = numel (args);
       omit_loops = false;
-      if (nargs >= 1 && ischar (args{end}) && isrow (args{end}) ...
-          && strcmpi (args{end}, "omitselfloops"))
-        omit_loops = true;
+      is_multigraph = false;
+      while (nargs >= 1 && ischar (args{end}) && isrow (args{end}))
+        last = args{end};
+        if (strcmpi (last, "omitselfloops"))
+          omit_loops = true;
+        elseif (strcmpi (last, "multigraph"))
+          is_multigraph = true;
+        else
+          break;
+        endif
         args(end) = [];
         nargs = numel (args);
-      endif
+      endwhile
 
       if (nargs == 0)
         ## Default constructor: empty graph.  Property defaults apply.
-        return;
+        G.is_multigraph_ = is_multigraph;
+        ## Fall through to post-processing (which is a no-op on empty).
       elseif ((nargs == 1 && isstruct (args{1})) ...
               || (nargs == 2 && isstruct (args{1}) ...
                   && isstruct (args{2})))
@@ -434,44 +482,65 @@ classdef digraph
           endif
         endif
 
-        ## Build a sparse index matrix that simultaneously:
-        ##   * detects duplicate edges -- any (s, t) pair appearing
-        ##     twice in the input will accumulate into a single cell,
-        ##     so nnz(p) < m;
-        ##   * encodes the input -> lex-order permutation in its values
-        ##     (find (p.') returns them in lex order).
-        ## Using the index sequence 1:m (not weights) avoids a false
-        ## duplicate report when a user-supplied weight is zero.
-        if (m > 0)
-          p = sparse (s_idx, t_idx, 1:m, N, N);
-          if (nnz (p) != m)
-            error ("Octave:invalid-input-arg", ...
-                   ["digraph: EdgeTable contains duplicate edges; ", ...
-                    "parallel edges require the 'multigraph' flag"]);
-          endif
-          ef2 = fieldnames (e_attrs);
-          if (! isempty (ef2))
-            [~, ~, perm] = find (p.');
+        if (is_multigraph)
+          ## Multigraph storage: sort input rows lex-stably so duplicate
+          ## (s, t) pairs stay adjacent in input order, and carry Weight
+          ## plus every extra edge column along via the same permutation.
+          if (m > 0)
+            [EN, ord] = sortrows ([s_idx, t_idx]);
+            G.mg_endnodes_ = EN;
+            if (have_weights)
+              G.mg_weights_ = w_vec(ord);
+              G.has_weights_ = true;
+            endif
+            ef2 = fieldnames (e_attrs);
             for ii = 1:numel (ef2)
               fn_i = ef2{ii};
-              e_attrs.(fn_i) = e_attrs.(fn_i)(perm, :);
+              e_attrs.(fn_i) = e_attrs.(fn_i)(ord, :);
             endfor
           endif
-        endif
-
-        ## Build adj_ and commit state.  Weight is NOT permuted: it
-        ## will be stored via sparse (s, t, w), which places each
-        ## weight at its (s(i), t(i)) cell; get.Edges then retrieves
-        ## them in lex order automatically.
-        if (m > 0)
-          if (have_weights)
-            G.adj_ = sparse (s_idx, t_idx, w_vec, N, N);
-            G.has_weights_ = true;
-          else
-            G.adj_ = sparse (s_idx, t_idx, 1, N, N);
-          endif
-        else
           G.adj_ = sparse (N, N);
+          G.is_multigraph_ = true;
+        else
+          ## Build a sparse index matrix that simultaneously:
+          ##   * detects duplicate edges -- any (s, t) pair appearing
+          ##     twice in the input will accumulate into a single cell,
+          ##     so nnz(p) < m;
+          ##   * encodes the input -> lex-order permutation in its values
+          ##     (find (p.') returns them in lex order).
+          ## Using the index sequence 1:m (not weights) avoids a false
+          ## duplicate report when a user-supplied weight is zero.
+          if (m > 0)
+            p = sparse (s_idx, t_idx, 1:m, N, N);
+            if (nnz (p) != m)
+              error ("Octave:invalid-input-arg", ...
+                     ["digraph: EdgeTable contains duplicate edges; ", ...
+                      "parallel edges require the 'multigraph' flag"]);
+            endif
+            ef2 = fieldnames (e_attrs);
+            if (! isempty (ef2))
+              [~, ~, perm] = find (p.');
+              for ii = 1:numel (ef2)
+                fn_i = ef2{ii};
+                e_attrs.(fn_i) = e_attrs.(fn_i)(perm, :);
+              endfor
+            endif
+          endif
+
+          ## Build adj_ and commit state.  Weight is NOT permuted: it
+          ## will be stored via sparse (s, t, w), which places each
+          ## weight at its (s(i), t(i)) cell; get.Edges then retrieves
+          ## them in lex order automatically.
+          if (m > 0)
+            if (have_weights)
+              G.adj_ = sparse (s_idx, t_idx, w_vec, N, N);
+              G.has_weights_ = true;
+            else
+              G.adj_ = sparse (s_idx, t_idx, 1, N, N);
+            endif
+          else
+            G.adj_ = sparse (N, N);
+          endif
         endif
         G.nodenames_ = nodenames_out;
         G.edge_attrs_ = e_attrs;
@@ -488,6 +557,7 @@ classdef digraph
           endif
           N = double (arg1);
           G.adj_ = sparse (N, N);
+          G.is_multigraph_ = is_multigraph;
         elseif ((isnumeric (arg1) || islogical (arg1)) ...
                 && ismatrix (arg1) && ndims (arg1) == 2)
           ## Non-scalar 2-D input: adjacency matrix.  Each nonzero A(i,j)
@@ -512,16 +582,31 @@ classdef digraph
             if (! isa (A, "double"))
               A = sparse (double (A));
             endif
-            G.adj_ = A;
           else
             ## Dense path: sparsify.  double() handles int* / logical.
-            G.adj_ = sparse (double (A));
+            A = sparse (double (A));
           endif
+          N = size (A, 1);
           ## Non-empty adjacency always carries a Weight column (matrix
           ## form implies weighted, MATLAB parity).  0x0 stays empty and
           ## unweighted.
-          if (size (A, 1) > 0)
+          if (N > 0)
             G.has_weights_ = true;
+          endif
+          if (is_multigraph)
+            ## Multigraph mode: pull nonzeros out of A in lex order and
+            ## store them in mg_endnodes_/mg_weights_.  An adjacency
+            ## matrix cannot express parallel edges so ismultigraph
+            ## still returns false; the flag only affects storage mode.
+            if (nnz (A) > 0)
+              [dst, src, w] = find (A.');
+              G.mg_endnodes_ = [src, dst];
+              G.mg_weights_ = w;
+            endif
+            G.adj_ = sparse (N, N);
+            G.is_multigraph_ = true;
+          else
+            G.adj_ = A;
           endif
         else
           error ("Octave:invalid-input-arg", ...
@@ -571,12 +656,23 @@ classdef digraph
           if (! isa (A, "double"))
             A = sparse (double (A));
           endif
-          G.adj_ = A;
         else
-          G.adj_ = sparse (double (A));
+          A = sparse (double (A));
         endif
-        if (size (A, 1) > 0)
+        N_an = size (A, 1);
+        if (N_an > 0)
           G.has_weights_ = true;
+        endif
+        if (is_multigraph)
+          if (nnz (A) > 0)
+            [dst, src, w] = find (A.');
+            G.mg_endnodes_ = [src, dst];
+            G.mg_weights_ = w;
+          endif
+          G.adj_ = sparse (N_an, N_an);
+          G.is_multigraph_ = true;
+        else
+          G.adj_ = A;
         endif
         G.nodenames_ = nn;
       elseif (nargs == 2 || nargs == 3)
@@ -637,11 +733,40 @@ classdef digraph
             endif
           endif
           N = max (max (s), max (t));
-          if (have_weights)
-            G.adj_ = sparse (s, t, w, N, N);
-            G.has_weights_ = true;
+          if (is_multigraph)
+            ## Multigraph storage: stable lex sort so duplicates stay
+            ## adjacent; adj_ becomes an N-by-N size-only placeholder.
+            [EN, ord] = sortrows ([s, t]);
+            G.mg_endnodes_ = EN;
+            if (have_weights)
+              G.mg_weights_ = w(ord);
+              G.has_weights_ = true;
+            endif
+            G.adj_ = sparse (N, N);
+            G.is_multigraph_ = true;
           else
-            G.adj_ = sparse (s, t, 1, N, N);
+            ## Simple-graph storage: reject duplicate (s, t) pairs up
+            ## front so sparse accumulation cannot silently merge them.
+            m = numel (s);
+            p = sparse (s, t, 1:m, N, N);
+            if (nnz (p) != m)
+              error ("Octave:invalid-input-arg", ...
+                     ["digraph: duplicate edges in S and T; ", ...
+                      "parallel edges require the 'multigraph' flag"]);
+            endif
+            if (have_weights)
+              G.adj_ = sparse (s, t, w, N, N);
+              G.has_weights_ = true;
+            else
+              G.adj_ = sparse (s, t, 1, N, N);
+            endif
+          endif
+        elseif (is_multigraph)
+          ## Empty edges with 'multigraph' flag: set storage mode and
+          ## empty arrays.
+          G.is_multigraph_ = true;
+          if (have_weights)
+            G.has_weights_ = true;
           endif
         endif
       elseif (nargs == 4)
@@ -706,11 +831,37 @@ classdef digraph
           G.nodenames_ = nn;
           if (isempty (s_idx))
             G.adj_ = sparse (N, N);
-          elseif (have_weights)
-            G.adj_ = sparse (s_idx, t_idx, w, N, N);
-            G.has_weights_ = true;
+            if (is_multigraph)
+              G.is_multigraph_ = true;
+              if (have_weights)
+                G.has_weights_ = true;
+              endif
+            endif
+          elseif (is_multigraph)
+            ## Stable lex sort for multigraph storage.
+            [EN, ord] = sortrows ([s_idx, t_idx]);
+            G.mg_endnodes_ = EN;
+            if (have_weights)
+              G.mg_weights_ = w(ord);
+              G.has_weights_ = true;
+            endif
+            G.adj_ = sparse (N, N);
+            G.is_multigraph_ = true;
           else
-            G.adj_ = sparse (s_idx, t_idx, 1, N, N);
+            ## Reject duplicate (s, t) pairs.
+            m = numel (s_idx);
+            p = sparse (s_idx, t_idx, 1:m, N, N);
+            if (nnz (p) != m)
+              error ("Octave:invalid-input-arg", ...
+                     ["digraph: duplicate edges in S and T; ", ...
+                      "parallel edges require the 'multigraph' flag"]);
+            endif
+            if (have_weights)
+              G.adj_ = sparse (s_idx, t_idx, w, N, N);
+              G.has_weights_ = true;
+            else
+              G.adj_ = sparse (s_idx, t_idx, 1, N, N);
+            endif
           endif
         elseif (isnumeric (arg4) && isscalar (arg4))
           ## Integer-node-count constructor: digraph (s, t, w, N).
@@ -784,11 +935,35 @@ classdef digraph
 
           if (isempty (s))
             G.adj_ = sparse (N, N);
-          elseif (have_weights)
-            G.adj_ = sparse (s, t, w, N, N);
-            G.has_weights_ = true;
+            if (is_multigraph)
+              G.is_multigraph_ = true;
+              if (have_weights)
+                G.has_weights_ = true;
+              endif
+            endif
+          elseif (is_multigraph)
+            [EN, ord] = sortrows ([s, t]);
+            G.mg_endnodes_ = EN;
+            if (have_weights)
+              G.mg_weights_ = w(ord);
+              G.has_weights_ = true;
+            endif
+            G.adj_ = sparse (N, N);
+            G.is_multigraph_ = true;
           else
-            G.adj_ = sparse (s, t, 1, N, N);
+            m = numel (s);
+            p = sparse (s, t, 1:m, N, N);
+            if (nnz (p) != m)
+              error ("Octave:invalid-input-arg", ...
+                     ["digraph: duplicate edges in S and T; ", ...
+                      "parallel edges require the 'multigraph' flag"]);
+            endif
+            if (have_weights)
+              G.adj_ = sparse (s, t, w, N, N);
+              G.has_weights_ = true;
+            else
+              G.adj_ = sparse (s, t, 1, N, N);
+            endif
           endif
         else
           error ("Octave:invalid-input-arg", ...
@@ -806,26 +981,47 @@ classdef digraph
       ## Extra edge-attribute columns are filtered by the same mask so
       ## their row count stays in sync with the remaining edges.
       if (omit_loops)
-        N = size (G.adj_, 1);
-        if (N > 0 && nnz (G.adj_) > 0)
-          [r, c, v] = find (G.adj_);
-          keep = (r != c);
-          if (any (! keep))
-            ## find(adj_) walks column-major, so (r, c) arrives in
-            ## (dst, src) order.  edge_attrs_ are stored in lex
-            ## (src, dst) order -- match them by sorting (r, c) as
-            ## rows.  One sort on an nnz-by-2 integer matrix beats a
-            ## second find on the transpose.
-            efn = fieldnames (G.edge_attrs_);
-            if (! isempty (efn))
-              [~, lex_perm] = sortrows ([r, c]);
-              keep_lex = keep(lex_perm);
+        if (G.is_multigraph_)
+          ## Multigraph path: mg_endnodes_ is already lex-sorted, so
+          ## the self-loop mask can be applied directly to it, to
+          ## mg_weights_, and to every extra edge column without any
+          ## reordering.
+          if (! isempty (G.mg_endnodes_))
+            keep = (G.mg_endnodes_(:, 1) != G.mg_endnodes_(:, 2));
+            if (any (! keep))
+              G.mg_endnodes_ = G.mg_endnodes_(keep, :);
+              if (G.has_weights_)
+                G.mg_weights_ = G.mg_weights_(keep);
+              endif
+              efn = fieldnames (G.edge_attrs_);
               for ii = 1:numel (efn)
                 fn_i = efn{ii};
-                G.edge_attrs_.(fn_i) = G.edge_attrs_.(fn_i)(keep_lex, :);
+                G.edge_attrs_.(fn_i) = G.edge_attrs_.(fn_i)(keep, :);
               endfor
             endif
-            G.adj_ = sparse (r(keep), c(keep), v(keep), N, N);
+          endif
+        else
+          N = size (G.adj_, 1);
+          if (N > 0 && nnz (G.adj_) > 0)
+            [r, c, v] = find (G.adj_);
+            keep = (r != c);
+            if (any (! keep))
+              ## find(adj_) walks column-major, so (r, c) arrives in
+              ## (dst, src) order.  edge_attrs_ are stored in lex
+              ## (src, dst) order -- match them by sorting (r, c) as
+              ## rows.  One sort on an nnz-by-2 integer matrix beats a
+              ## second find on the transpose.
+              efn = fieldnames (G.edge_attrs_);
+              if (! isempty (efn))
+                [~, lex_perm] = sortrows ([r, c]);
+                keep_lex = keep(lex_perm);
+                for ii = 1:numel (efn)
+                  fn_i = efn{ii};
+                  G.edge_attrs_.(fn_i) = G.edge_attrs_.(fn_i)(keep_lex, :);
+                endfor
+              endif
+              G.adj_ = sparse (r(keep), c(keep), v(keep), N, N);
+            endif
           endif
         endif
       endif
@@ -834,14 +1030,25 @@ classdef digraph
 
     function e = get.Edges (G)
 
-      ## Extract edges in lexicographic (source, destination) order.
-      ## find(A.') iterates A column-by-column of the transpose, which
-      ## corresponds to iterating rows of A (i.e. sources) in outer
-      ## order and within-row columns (destinations) in inner order.
-      [dst, src, w] = find (G.adj_.');
-      e.EndNodes = [src, dst];
-      if (G.has_weights_)
-        e.Weight = w;
+      if (G.is_multigraph_)
+        ## Multigraph storage: edges already lex-sorted, with duplicates
+        ## adjacent.  The property defaults (zeros(0,2) / zeros(0,1))
+        ## give the correct edgeless shape, so no empty guard needed.
+        e.EndNodes = G.mg_endnodes_;
+        if (G.has_weights_)
+          e.Weight = G.mg_weights_;
+        endif
+      else
+        ## Simple-graph storage: extract edges in lexicographic
+        ## (source, destination) order.  find(A.') iterates A
+        ## column-by-column of the transpose, which corresponds to
+        ## iterating rows of A (i.e. sources) in outer order and
+        ## within-row columns (destinations) in inner order.
+        [dst, src, w] = find (G.adj_.');
+        e.EndNodes = [src, dst];
+        if (G.has_weights_)
+          e.Weight = w;
+        endif
       endif
       ## Merge any extra edge-attribute columns supplied via the
       ## EdgeTable constructor.  Stored in lex-order already.
@@ -887,11 +1094,38 @@ classdef digraph
 
       ## -*- texinfo -*-
       ## @deftypefn {} {@var{m} =} numedges (@var{G})
-      ## Return the number of edges in the digraph @var{G}.
-      ## @seealso{digraph, numnodes}
+      ## Return the number of edges in the digraph @var{G}.  For a
+      ## multigraph, parallel edges count individually.
+      ## @seealso{digraph, numnodes, ismultigraph}
       ## @end deftypefn
 
-      m = nnz (G.adj_);
+      if (G.is_multigraph_)
+        m = size (G.mg_endnodes_, 1);
+      else
+        m = nnz (G.adj_);
+      endif
+
+    endfunction
+
+    function tf = ismultigraph (G)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{tf} =} ismultigraph (@var{G})
+      ## Return true if the digraph @var{G} contains parallel edges
+      ## between the same ordered pair of nodes; return false
+      ## otherwise.  A digraph built without the @qcode{'multigraph'}
+      ## flag (or built with the flag but without any duplicate
+      ## @code{(source, destination)} pairs) yields false.
+      ## @seealso{digraph, numedges}
+      ## @end deftypefn
+
+      if (! G.is_multigraph_ || isempty (G.mg_endnodes_))
+        tf = false;
+      else
+        m = size (G.mg_endnodes_, 1);
+        u = unique (G.mg_endnodes_, "rows");
+        tf = (size (u, 1) != m);
+      endif
 
     endfunction
 
@@ -2072,3 +2306,242 @@ endclassdef
 ## BIST — US-C09: an unrecognised trailing string is not stripped, and
 ## still reaches the existing edge-list validation which rejects it.
 %!error digraph ([1 2], [1 3], "badflag")
+
+## BIST — US-C10: without 'multigraph', duplicate (s, t) pairs in the
+## edge-list form are rejected.
+%!error <duplicate> digraph ([1 1], [2 2])
+%!error <duplicate> digraph ([1 2 1], [2 3 2])
+%!error <duplicate> digraph ([1 1 2], [2 2 3], [10 20 30])
+
+## BIST — US-C10: without 'multigraph', duplicates under the (s, t, w, N)
+## form are also rejected.
+%!error <duplicate> digraph ([1 1], [2 2], [10 20], 5)
+
+## BIST — US-C10: without 'multigraph', duplicates under the
+## (s, t, w, nodenames) form are rejected.
+%!error <duplicate> digraph ([1 1], [2 2], [10 20], {"a", "b", "c"})
+
+## BIST — US-C10: digraph(s, t, 'multigraph') permits parallel edges.
+%!test
+%! G = digraph ([1 1 2], [2 2 3], "multigraph");
+%! assert (class (G), "digraph");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (ismultigraph (G));
+%! E = G.Edges;
+%! assert (E.EndNodes, [1 2; 1 2; 2 3]);
+
+## BIST — US-C10: digraph(s, t, w, 'multigraph') preserves per-edge
+## weights for parallel edges.
+%!test
+%! G = digraph ([1 1 2], [2 2 3], [10 20 30], "multigraph");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (ismultigraph (G));
+%! E = G.Edges;
+%! assert (E.EndNodes, [1 2; 1 2; 2 3]);
+%! assert (E.Weight, [10; 20; 30]);
+
+## BIST — US-C10: digraph(s, t, w, N, 'multigraph') respects the node
+## count (isolated trailing nodes preserved).
+%!test
+%! G = digraph ([1 1 2], [2 2 3], [10 20 30], 5, "multigraph");
+%! assert (numnodes (G), 5);
+%! assert (numedges (G), 3);
+%! assert (ismultigraph (G));
+%! assert (G.Edges.EndNodes, [1 2; 1 2; 2 3]);
+%! assert (G.Edges.Weight, [10; 20; 30]);
+
+## BIST — US-C10: digraph(s, t, w, nodenames, 'multigraph') handles
+## parallel edges between named nodes.
+%!test
+%! G = digraph ([1 1 2], [2 2 3], [10 20 30], ...
+%!              {"a", "b", "c"}, "multigraph");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (ismultigraph (G));
+%! assert (G.Nodes.Name, {"a"; "b"; "c"});
+%! assert (G.Edges.EndNodes, [1 2; 1 2; 2 3]);
+%! assert (G.Edges.Weight, [10; 20; 30]);
+
+## BIST — US-C10: parallel edges are sorted lex with duplicates adjacent
+## regardless of input order.
+%!test
+%! G = digraph ([2 1 1 2], [3 2 2 3], [3 1 2 4], "multigraph");
+%! E = G.Edges;
+%! assert (E.EndNodes, [1 2; 1 2; 2 3; 2 3]);
+%! assert (E.Weight, [1; 2; 3; 4]);
+
+## BIST — US-C10: three parallel edges between the same pair.
+%!test
+%! G = digraph ([1 1 1], [2 2 2], [1 2 3], "multigraph");
+%! assert (numedges (G), 3);
+%! assert (ismultigraph (G));
+%! assert (G.Edges.EndNodes, [1 2; 1 2; 1 2]);
+%! assert (G.Edges.Weight, [1; 2; 3]);
+
+## BIST — US-C10: multigraph flag without actual duplicates -> simple
+## graph shape but ismultigraph still returns false (MATLAB parity).
+%!test
+%! G = digraph ([1 2 3], [2 3 1], "multigraph");
+%! assert (numedges (G), 3);
+%! assert (! ismultigraph (G));
+%! assert (G.Edges.EndNodes, [1 2; 2 3; 3 1]);
+
+## BIST — US-C10: ismultigraph returns false on a regular (non-multigraph)
+## digraph.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! assert (! ismultigraph (G));
+
+## BIST — US-C10: ismultigraph returns false on the empty digraph.
+%!test
+%! G = digraph ();
+%! assert (! ismultigraph (G));
+
+## BIST — US-C10: ismultigraph returns false on digraph(N).
+%!test
+%! G = digraph (5);
+%! assert (! ismultigraph (G));
+
+## BIST — US-C10: digraph(A, 'multigraph') — adjacency input has no
+## parallel edges, so ismultigraph returns false.
+%!test
+%! A = [0 1 0; 0 0 1; 1 0 0];
+%! G = digraph (A, "multigraph");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (! ismultigraph (G));
+%! assert (G.Edges.EndNodes, [1 2; 2 3; 3 1]);
+
+## BIST — US-C10: digraph(A, nodenames, 'multigraph').
+%!test
+%! A = [0 1 0; 0 0 1; 1 0 0];
+%! G = digraph (A, {"a", "b", "c"}, "multigraph");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Nodes.Name, {"a"; "b"; "c"});
+%! assert (! ismultigraph (G));
+
+## BIST — US-C10: digraph(ET, 'multigraph') permits duplicate EndNodes.
+%!test
+%! ET.EndNodes = [1 2; 1 2; 2 3];
+%! ET.Weight = [10; 20; 30];
+%! G = digraph (ET, "multigraph");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (ismultigraph (G));
+%! assert (G.Edges.EndNodes, [1 2; 1 2; 2 3]);
+%! assert (G.Edges.Weight, [10; 20; 30]);
+
+## BIST — US-C10: digraph(ET, NT, 'multigraph') preserves node names.
+%!test
+%! ET.EndNodes = [1 2; 1 2; 2 3];
+%! ET.Weight = [10; 20; 30];
+%! NT.Name = {"alpha"; "beta"; "gamma"};
+%! G = digraph (ET, NT, "multigraph");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (ismultigraph (G));
+%! assert (G.Nodes.Name, {"alpha"; "beta"; "gamma"});
+%! assert (G.Edges.EndNodes, [1 2; 1 2; 2 3]);
+
+## BIST — US-C10: digraph(ET, 'multigraph') with extra edge column and
+## parallel edges — extra column stays in sync with the lex-sorted
+## multigraph edges.
+%!test
+%! ET.EndNodes = [2 3; 1 2; 1 2];
+%! ET.Weight = [30; 10; 20];
+%! ET.Label = {"c"; "a"; "b"};
+%! G = digraph (ET, "multigraph");
+%! assert (numedges (G), 3);
+%! assert (G.Edges.EndNodes, [1 2; 1 2; 2 3]);
+%! assert (G.Edges.Weight, [10; 20; 30]);
+%! assert (G.Edges.Label, {"a"; "b"; "c"});
+
+## BIST — US-C10: 'Multigraph' is case-insensitive.
+%!test
+%! G1 = digraph ([1 1], [2 2], "Multigraph");
+%! G2 = digraph ([1 1], [2 2], "MULTIGRAPH");
+%! G3 = digraph ([1 1], [2 2], "multigraph");
+%! assert (numedges (G1), 2);
+%! assert (numedges (G2), 2);
+%! assert (numedges (G3), 2);
+%! assert (ismultigraph (G1));
+%! assert (ismultigraph (G2));
+%! assert (ismultigraph (G3));
+
+## BIST — US-C10: digraph(N, 'multigraph') is an edgeless digraph with
+## ismultigraph == false.
+%!test
+%! G = digraph (5, "multigraph");
+%! assert (numnodes (G), 5);
+%! assert (numedges (G), 0);
+%! assert (! ismultigraph (G));
+
+## BIST — US-C10: digraph('multigraph') alone yields the empty digraph.
+%!test
+%! G = digraph ("multigraph");
+%! assert (numnodes (G), 0);
+%! assert (numedges (G), 0);
+%! assert (! ismultigraph (G));
+
+## BIST — US-C10: 'multigraph' + 'omitselfloops' compose (either order).
+## Input pairs (1,2)(1,2)(2,3)(2,3)(3,3) → drop (3,3), keep two parallel
+## (1,2) pairs and two parallel (2,3) pairs.
+%!test
+%! G = digraph ([1 1 2 2 3], [2 2 3 3 3], [1 2 3 4 5], ...
+%!              "multigraph", "omitselfloops");
+%! assert (numedges (G), 4);
+%! assert (ismultigraph (G));
+%! assert (G.Edges.EndNodes, [1 2; 1 2; 2 3; 2 3]);
+%! assert (G.Edges.Weight, [1; 2; 3; 4]);
+
+%!test
+%! G = digraph ([1 1 2 2 3], [2 2 3 3 3], [1 2 3 4 5], ...
+%!              "omitselfloops", "multigraph");
+%! assert (numedges (G), 4);
+%! assert (ismultigraph (G));
+%! assert (G.Edges.EndNodes, [1 2; 1 2; 2 3; 2 3]);
+%! assert (G.Edges.Weight, [1; 2; 3; 4]);
+
+## BIST — US-C10: 'multigraph' + 'omitselfloops' with parallel self-loops
+## (both self-loops dropped, parallel non-loop kept).
+%!test
+%! G = digraph ([1 1 2 2], [1 1 3 3], [10 20 30 40], ...
+%!              "multigraph", "omitselfloops");
+%! assert (numedges (G), 2);
+%! assert (ismultigraph (G));
+%! assert (G.Edges.EndNodes, [2 3; 2 3]);
+%! assert (G.Edges.Weight, [30; 40]);
+
+## BIST — US-C10: parallel edges with string endpoints and weights.
+%!test
+%! G = digraph ({"a", "a", "b"}, {"b", "b", "c"}, [1 2 3], ...
+%!              {"a", "b", "c"}, "multigraph");
+%! assert (numedges (G), 3);
+%! assert (ismultigraph (G));
+%! assert (G.Edges.EndNodes, [1 2; 1 2; 2 3]);
+%! assert (G.Edges.Weight, [1; 2; 3]);
+
+## BIST — US-C10: empty edges + 'multigraph' is a no-op.
+%!test
+%! G = digraph ([], [], "multigraph");
+%! assert (numnodes (G), 0);
+%! assert (numedges (G), 0);
+%! assert (! ismultigraph (G));
+
+## BIST — US-C10: parallel self-loops permitted with 'multigraph'.
+%!test
+%! G = digraph ([1 1 2], [1 1 2], [1 2 3], "multigraph");
+%! assert (numedges (G), 3);
+%! assert (ismultigraph (G));
+%! assert (G.Edges.EndNodes, [1 1; 1 1; 2 2]);
+%! assert (G.Edges.Weight, [1; 2; 3]);
+
+## BIST — US-C10: unweighted multigraph has no Weight field.
+%!test
+%! G = digraph ([1 1 2], [2 2 3], "multigraph");
+%! E = G.Edges;
+%! assert (isfield (E, "EndNodes"));
+%! assert (! isfield (E, "Weight"));

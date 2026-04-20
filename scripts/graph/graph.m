@@ -35,6 +35,8 @@ classdef graph
   ## @deftypefnx {} {@var{G} =} graph (@var{A})
   ## @deftypefnx {} {@var{G} =} graph (@var{A}, "upper")
   ## @deftypefnx {} {@var{G} =} graph (@var{A}, "lower")
+  ## @deftypefnx {} {@var{G} =} graph (@var{EdgeTable})
+  ## @deftypefnx {} {@var{G} =} graph (@var{EdgeTable}, @var{NodeTable})
   ## Create an undirected graph.
   ##
   ## With no arguments, return an empty undirected graph with zero nodes
@@ -102,6 +104,30 @@ classdef graph
   ## selecting which half of the matrix defines the edges.  The flag
   ## is matched case-insensitively.
   ##
+  ## With a single struct @var{EdgeTable}, build a graph from the
+  ## fields of the struct.  @var{EdgeTable} must have an
+  ## @code{EndNodes} field holding an m-by-2 matrix of node indices or
+  ## a cell array of strings.  An optional @code{Weight} field gives a
+  ## per-edge weight (a vector of length @var{m}).  Any other fields
+  ## are preserved as extra edge-attribute columns; each must have
+  ## @var{m} rows.  Edges are re-sorted into lexicographic
+  ## @code{(min, max)} order with the smaller endpoint in column 1,
+  ## and every extra edge column is reordered to match.  Duplicate
+  ## unordered endpoint pairs are rejected (a future @qcode{'multigraph'}
+  ## flag will permit parallel edges).  Self-loops @code{s == t} are
+  ## permitted and appear as a single row in @code{Edges.EndNodes}.
+  ##
+  ## With a second struct @var{NodeTable}, the node set is taken from
+  ## @var{NodeTable}.  A @code{Name} field (a cell array of unique
+  ## strings) supplies node names and determines the node count.
+  ## Any other fields become extra node-attribute columns.  When
+  ## @code{EndNodes} is numeric, its entries are 1-based indices into
+  ## @var{NodeTable}; when @code{EndNodes} is a cellstr, each entry is
+  ## looked up in @code{@var{NodeTable}.Name} (if provided) or in a
+  ## name list inferred from the first appearance of each string in
+  ## @code{EndNodes}.  If @var{NodeTable} has no @code{Name} field,
+  ## the node count is taken from the length of its other columns.
+  ##
   ## @code{graph} is a value class: every mutator returns a new object,
   ## leaving the input unchanged.
   ##
@@ -142,6 +168,14 @@ classdef graph
   ## B = [0 1 2; 0 0 3; 0 0 0];          # upper-triangular
   ## G = graph (B, "upper");             # use upper triangle only
   ## G.Edges.Weight                      # ==> [1; 2; 3]
+  ##
+  ## ET.EndNodes = [1 2; 2 3; 1 3];
+  ## ET.Weight   = [10; 20; 30];
+  ## ET.Label    = @{"a"; "b"; "c"@};
+  ## NT.Name     = @{"x"; "y"; "z"@};
+  ## G = graph (ET, NT);    # EdgeTable + NodeTable form
+  ## G.Edges.Weight         # ==> [10; 30; 20]   (lex-ordered)
+  ## G.Nodes.Name           # ==> @{"x"; "y"; "z"@}
   ## @end group
   ## @end example
   ##
@@ -163,6 +197,19 @@ classdef graph
     ## Whether the user supplied explicit edge weights.  When false,
     ## the Edges struct has no Weight field (MATLAB parity).
     has_weights_ = false;
+
+    ## Extra edge-attribute columns supplied by the user via the
+    ## @code{graph(ET)} or @code{graph(ET, NT)} EdgeTable form.
+    ## Each field is stored in lexicographic
+    ## @code{(min-endpoint, max-endpoint)} edge order so that
+    ## @code{get.Edges} can return it directly.  Weight is @emph{not}
+    ## stored here (it lives in @code{adj_}).
+    edge_attrs_ = struct ();
+
+    ## Extra node-attribute columns supplied by the user via the
+    ## NodeTable form.  Each field is stored in node-index order.
+    ## Name is @emph{not} stored here (it lives in @code{nodenames_}).
+    node_attrs_ = struct ();
   endproperties
 
   properties (Dependent, SetAccess = private)
@@ -193,6 +240,241 @@ classdef graph
 
       if (nargs == 0)
         ## Default constructor: empty graph.  Property defaults apply.
+      elseif ((nargs == 1 && isstruct (varargin{1})) ...
+              || (nargs == 2 && isstruct (varargin{1}) ...
+                  && isstruct (varargin{2})))
+        ## EdgeTable (and optional NodeTable) constructor.
+        ## graph (ET) or graph (ET, NT).  ET is a scalar struct
+        ## with an EndNodes field (numeric m-by-2 or cellstr m-by-2)
+        ## and an optional Weight field; any other fields become extra
+        ## edge-attribute columns.  NT is a scalar struct with an
+        ## optional Name field; any other fields become extra
+        ## node-attribute columns.  Edges are re-sorted into
+        ## lexicographic (min-endpoint, max-endpoint) order with the
+        ## smaller endpoint in column 1, and every extra edge column is
+        ## reordered to match.
+        ET = varargin{1};
+        have_nt = (nargs == 2);
+        if (have_nt)
+          NT = varargin{2};
+        endif
+
+        if (! isscalar (ET))
+          error ("Octave:invalid-input-arg", ...
+                 "graph: EdgeTable must be a scalar struct");
+        endif
+        if (have_nt && ! isscalar (NT))
+          error ("Octave:invalid-input-arg", ...
+                 "graph: NodeTable must be a scalar struct");
+        endif
+        if (! isfield (ET, "EndNodes"))
+          error ("Octave:invalid-input-arg", ...
+                 "graph: EdgeTable must have an EndNodes field");
+        endif
+
+        EN = ET.EndNodes;
+        if (! (isnumeric (EN) || iscellstr (EN)))
+          error ("Octave:invalid-input-arg", ...
+                 ["graph: EndNodes must be a numeric matrix or ", ...
+                  "a cell array of strings"]);
+        endif
+        if (ndims (EN) != 2 || size (EN, 2) != 2)
+          error ("Octave:invalid-input-arg", ...
+                 ["graph: EndNodes must be a 2-D matrix with ", ...
+                  "exactly two columns"]);
+        endif
+        m = size (EN, 1);
+        is_cell_end = iscellstr (EN);
+
+        s_idx = zeros (0, 1);
+        t_idx = zeros (0, 1);   # resolved after NT ingestion for cellstr
+        if (! is_cell_end && m > 0)
+          v = EN(:);
+          if (! isreal (v) ...
+              || any (! isfinite (v) | v < 1 | v != fix (v)))
+            error ("Octave:invalid-input-arg", ...
+                   ["graph: numeric EndNodes entries must be ", ...
+                    "positive integer node indices"]);
+          endif
+          s_idx = double (EN(:, 1));
+          t_idx = double (EN(:, 2));
+        endif
+
+        have_weights = isfield (ET, "Weight");
+        w_vec = [];
+        if (have_weights)
+          w_vec = ET.Weight;
+          if (! (isnumeric (w_vec) && isreal (w_vec)))
+            error ("Octave:invalid-input-arg", ...
+                   "graph: Weight must be a numeric real vector");
+          endif
+          if (! (isvector (w_vec) || isempty (w_vec)))
+            error ("Octave:invalid-input-arg", ...
+                   "graph: Weight must be a vector");
+          endif
+          w_vec = double (w_vec(:));
+          if (numel (w_vec) != m)
+            error ("Octave:invalid-input-arg", ...
+                   ["graph: Weight length must match the number ", ...
+                    "of rows in EndNodes"]);
+          endif
+          if (any (isnan (w_vec)))
+            error ("Octave:invalid-input-arg", ...
+                   "graph: Weight must not contain NaN");
+          endif
+        endif
+
+        ## Extra edge columns: every ET field except EndNodes and
+        ## Weight.  Row count must equal m.
+        e_attrs = struct ();
+        ef = fieldnames (ET);
+        for ii = 1:numel (ef)
+          fn_i = ef{ii};
+          if (strcmp (fn_i, "EndNodes") || strcmp (fn_i, "Weight"))
+            continue;
+          endif
+          v_i = ET.(fn_i);
+          if (size (v_i, 1) != m)
+            error ("Octave:invalid-input-arg", ...
+                   ["graph: EdgeTable column %s length must ", ...
+                    "match EndNodes"], fn_i);
+          endif
+          e_attrs.(fn_i) = v_i;
+        endfor
+
+        ## Ingest NodeTable.
+        nodenames_out = {};
+        n_attrs = struct ();
+        N = 0;
+        if (have_nt)
+          nf = fieldnames (NT);
+          N_from_nt = -1;
+          if (numel (nf) > 0)
+            N_from_nt = size (NT.(nf{1}), 1);
+            for ii = 2:numel (nf)
+              if (size (NT.(nf{ii}), 1) != N_from_nt)
+                error ("Octave:invalid-input-arg", ...
+                       ["graph: NodeTable columns must all ", ...
+                        "have the same length"]);
+              endif
+            endfor
+          endif
+          if (isfield (NT, "Name"))
+            nm = NT.Name;
+            if (! iscellstr (nm))
+              error ("Octave:invalid-input-arg", ...
+                     ["graph: NodeTable Name must be a cell ", ...
+                      "array of strings"]);
+            endif
+            nm = nm(:);
+            if (numel (nm) != numel (unique (nm)))
+              error ("Octave:invalid-input-arg", ...
+                     ["graph: NodeTable Name must contain ", ...
+                      "unique strings"]);
+            endif
+            nodenames_out = nm;
+            N = numel (nm);
+          elseif (N_from_nt >= 0)
+            N = N_from_nt;
+          endif
+          ## Extra node columns (everything except Name).
+          for ii = 1:numel (nf)
+            fn_i = nf{ii};
+            if (strcmp (fn_i, "Name"))
+              continue;
+            endif
+            v_i = NT.(fn_i);
+            if (size (v_i, 1) != N)
+              error ("Octave:invalid-input-arg", ...
+                     ["graph: NodeTable column %s length must ", ...
+                      "match the node count"], fn_i);
+            endif
+            n_attrs.(fn_i) = v_i;
+          endfor
+        endif
+
+        ## Resolve cellstr endpoints; set N if not already set.
+        if (is_cell_end && m > 0)
+          EN_s = EN(:, 1);
+          EN_t = EN(:, 2);
+          if (have_nt && ! isempty (nodenames_out))
+            s_idx = __resolve_endpoint__ (EN_s, nodenames_out, "S");
+            t_idx = __resolve_endpoint__ (EN_t, nodenames_out, "T");
+          else
+            ## Infer names in first-appearance order across
+            ## [EN_s; EN_t].
+            all_endpoints = [EN_s; EN_t];
+            inferred = unique (all_endpoints, "stable");
+            inferred = inferred(:);
+            nodenames_out = inferred;
+            N = numel (nodenames_out);
+            s_idx = __resolve_endpoint__ (EN_s, nodenames_out, "S");
+            t_idx = __resolve_endpoint__ (EN_t, nodenames_out, "T");
+          endif
+        elseif (! is_cell_end && m > 0)
+          if (have_nt)
+            if (any (s_idx > N) || any (t_idx > N))
+              error ("Octave:invalid-input-arg", ...
+                     ["graph: EndNodes indices must not exceed ", ...
+                      "the NodeTable node count"]);
+            endif
+          else
+            N = max (max (s_idx), max (t_idx));
+          endif
+        endif
+
+        ## Normalize to unordered pair (smaller, bigger) for duplicate
+        ## detection and lex-order permutation.  Since graph is
+        ## undirected, (s, t) and (t, s) represent the same edge; we
+        ## detect and reject parallel edges regardless of input order.
+        if (m > 0)
+          s_n = min (s_idx, t_idx);
+          t_n = max (s_idx, t_idx);
+
+          ## Build lower-triangular sparse index matrix: find() walks
+          ## column-major which yields lex (s_n, t_n) order with
+          ## s_n <= t_n.  Using the index sequence 1:m (not weights)
+          ## avoids a false duplicate report when a user-supplied
+          ## weight is zero.
+          p = sparse (t_n, s_n, 1:m, N, N);
+          if (nnz (p) != m)
+            error ("Octave:invalid-input-arg", ...
+                   ["graph: EdgeTable contains duplicate edges; ", ...
+                    "parallel edges require the 'multigraph' flag"]);
+          endif
+
+          ef2 = fieldnames (e_attrs);
+          if (! isempty (ef2))
+            [~, ~, perm] = find (p);
+            for ii = 1:numel (ef2)
+              fn_i = ef2{ii};
+              e_attrs.(fn_i) = e_attrs.(fn_i)(perm, :);
+            endfor
+          endif
+        endif
+
+        ## Build adj_ and commit state.  Weight is NOT permuted: it
+        ## is placed into adj_ at its (s_i, t_i) cell, and get.Edges
+        ## retrieves it in lex order via find (tril (adj_)).  The ET
+        ## branch already ran its own duplicate-detection sparse
+        ## (needed for the edge-attribute permutation), so pass
+        ## skip_dup_check=true to avoid a second O(m log m) sparse
+        ## build inside build_adj.
+        if (m > 0)
+          if (have_weights)
+            [G.adj_, G.has_weights_] = ...
+                build_adj (s_idx, t_idx, w_vec, N, true, true);
+          else
+            [G.adj_, G.has_weights_] = ...
+                build_adj (s_idx, t_idx, [], N, false, true);
+          endif
+        else
+          G.adj_ = sparse (N, N);
+        endif
+        G.nodenames_ = nodenames_out;
+        G.edge_attrs_ = e_attrs;
+        G.node_attrs_ = n_attrs;
+
       elseif (nargs == 1)
         arg1 = varargin{1};
         if (isnumeric (arg1) && isscalar (arg1))
@@ -455,6 +737,13 @@ classdef graph
         e.Weight = w;
       endif
 
+      ## Merge any extra edge-attribute columns supplied via the
+      ## EdgeTable constructor.  Stored in lex-order already.
+      efn = fieldnames (G.edge_attrs_);
+      for ii = 1:numel (efn)
+        e.(efn{ii}) = G.edge_attrs_.(efn{ii});
+      endfor
+
     endfunction
 
     function n = get.Nodes (G)
@@ -464,6 +753,13 @@ classdef graph
       else
         n.Name = G.nodenames_;
       endif
+
+      ## Merge any extra node-attribute columns supplied via the
+      ## NodeTable constructor.
+      nfn = fieldnames (G.node_attrs_);
+      for ii = 1:numel (nfn)
+        n.(nfn{ii}) = G.node_attrs_.(nfn{ii});
+      endfor
 
     endfunction
 
@@ -499,22 +795,30 @@ endclassdef
 ## Helper: build a symmetric sparse adjacency from (s, t[, w]).
 ## For off-diagonal edges, store the weight at both (s, t) and (t, s).
 ## For self-loops, store the weight once at (i, i).  Rejects duplicate
-## unordered endpoint pairs.
-function [A, hw] = build_adj (s, t, w, N, have_weights)
+## unordered endpoint pairs unless @var{skip_dup_check} is true (useful
+## when the caller already validated uniqueness, e.g., the EdgeTable
+## branch which needs the dup-check sparse for a different purpose).
+function [A, hw] = build_adj (s, t, w, N, have_weights, skip_dup_check)
+
+  if (nargin < 6)
+    skip_dup_check = false;
+  endif
 
   m = numel (s);
 
-  ## Normalize to (min, max) pairs for duplicate detection.  Since
-  ## s_n <= t_n, the resulting sparse matrix only uses the upper
-  ## triangle (and diagonal), so the nnz check reliably detects
-  ## duplicates of either (s, t) or (t, s).
-  s_n = min (s, t);
-  t_n = max (s, t);
-  p = sparse (s_n, t_n, 1:m, N, N);
-  if (nnz (p) != m)
-    error ("Octave:invalid-input-arg", ...
-           ["graph: duplicate edges in S and T; parallel edges ", ...
-            "require the 'multigraph' flag"]);
+  if (! skip_dup_check)
+    ## Normalize to (min, max) pairs for duplicate detection.  Since
+    ## s_n <= t_n, the resulting sparse matrix only uses the upper
+    ## triangle (and diagonal), so the nnz check reliably detects
+    ## duplicates of either (s, t) or (t, s).
+    s_n = min (s, t);
+    t_n = max (s, t);
+    p = sparse (s_n, t_n, 1:m, N, N);
+    if (nnz (p) != m)
+      error ("Octave:invalid-input-arg", ...
+             ["graph: duplicate edges in S and T; parallel edges ", ...
+              "require the 'multigraph' flag"]);
+    endif
   endif
 
   ## Build the symmetric adjacency matrix.  Self-loops contribute a
@@ -1254,3 +1558,274 @@ endfunction
 %! assert (G1.Edges.Weight,   G2.Edges.Weight);
 %! assert (G1.Edges.EndNodes, G3.Edges.EndNodes);
 %! assert (G1.Edges.Weight,   G3.Edges.Weight);
+
+## BIST — US-C13: graph(ET) with numeric EndNodes only (unweighted).
+%!test
+%! ET.EndNodes = [1 2; 2 3; 3 1];
+%! G = graph (ET);
+%! assert (class (G), "graph");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Edges.EndNodes, [1 2; 1 3; 2 3]);
+%! assert (! isfield (G.Edges, "Weight"));
+
+## BIST — US-C13: graph(ET) with Weight column round-trips.
+%!test
+%! ET.EndNodes = [1 2; 2 3; 1 3];
+%! ET.Weight = [10; 20; 30];
+%! G = graph (ET);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Edges.EndNodes, [1 2; 1 3; 2 3]);
+%! assert (G.Edges.Weight, [10; 30; 20]);
+
+## BIST — US-C13: row-vector Weight normalized to column.
+%!test
+%! ET.EndNodes = [1 2; 2 3];
+%! ET.Weight = [5 10];
+%! G = graph (ET);
+%! assert (G.Edges.Weight, [5; 10]);
+
+## BIST — US-C13: edges in the EdgeTable are re-sorted into lex order;
+## Weight follows its edge.
+%!test
+%! ET.EndNodes = [3 1; 2 3; 1 2];
+%! ET.Weight = [30; 20; 10];
+%! G = graph (ET);
+%! assert (G.Edges.EndNodes, [1 2; 1 3; 2 3]);
+%! assert (G.Edges.Weight, [10; 30; 20]);
+
+## BIST — US-C13: unordered input pairs normalized to (smaller, bigger).
+%!test
+%! ET.EndNodes = [2 1; 3 2];
+%! ET.Weight = [10; 20];
+%! G = graph (ET);
+%! assert (G.Edges.EndNodes, [1 2; 2 3]);
+%! assert (G.Edges.Weight, [10; 20]);
+
+## BIST — US-C13: extra numeric edge column preserved and reordered.
+%!test
+%! ET.EndNodes = [3 1; 1 2; 2 3];
+%! ET.Weight = [30; 10; 20];
+%! ET.Capacity = [300; 100; 200];
+%! G = graph (ET);
+%! assert (G.Edges.EndNodes, [1 2; 1 3; 2 3]);
+%! assert (G.Edges.Weight, [10; 30; 20]);
+%! assert (G.Edges.Capacity, [100; 300; 200]);
+
+## BIST — US-C13: extra cellstr edge column preserved and reordered.
+%!test
+%! ET.EndNodes = [3 1; 1 2; 2 3];
+%! ET.Label = {"c"; "a"; "b"};
+%! G = graph (ET);
+%! assert (G.Edges.EndNodes, [1 2; 1 3; 2 3]);
+%! assert (G.Edges.Label, {"a"; "c"; "b"});
+
+## BIST — US-C13: multiple extra edge columns preserved simultaneously.
+%!test
+%! ET.EndNodes = [1 2; 2 3; 1 3];
+%! ET.Weight = [1; 2; 3];
+%! ET.Name = {"e1"; "e2"; "e3"};
+%! ET.Cost = [5; 10; 15];
+%! G = graph (ET);
+%! E = G.Edges;
+%! assert (E.EndNodes, [1 2; 1 3; 2 3]);
+%! assert (E.Weight, [1; 3; 2]);
+%! assert (E.Name, {"e1"; "e3"; "e2"});
+%! assert (E.Cost, [5; 15; 10]);
+
+## BIST — US-C13: extra edge columns also work on unweighted tables.
+%!test
+%! ET.EndNodes = [1 2; 2 3];
+%! ET.Kind = {"in"; "out"};
+%! G = graph (ET);
+%! assert (! isfield (G.Edges, "Weight"));
+%! assert (G.Edges.Kind, {"in"; "out"});
+
+## BIST — US-C13: graph(ET, NT) — NT.Name sets the node names.
+%!test
+%! ET.EndNodes = [1 2; 2 3; 1 3];
+%! ET.Weight = [1; 2; 3];
+%! NT.Name = {"alpha"; "beta"; "gamma"};
+%! G = graph (ET, NT);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Nodes.Name, {"alpha"; "beta"; "gamma"});
+%! assert (G.Edges.EndNodes, [1 2; 1 3; 2 3]);
+%! assert (G.Edges.Weight, [1; 3; 2]);
+
+## BIST — US-C13: NT can provide isolated trailing nodes (N > max endpoint).
+%!test
+%! ET.EndNodes = [1 2; 2 3];
+%! NT.Name = {"a"; "b"; "c"; "d"; "e"};
+%! G = graph (ET, NT);
+%! assert (numnodes (G), 5);
+%! assert (numedges (G), 2);
+%! assert (G.Nodes.Name, {"a"; "b"; "c"; "d"; "e"});
+
+## BIST — US-C13: extra node columns preserved.
+%!test
+%! ET.EndNodes = [1 2; 2 3];
+%! NT.Name = {"a"; "b"; "c"};
+%! NT.Size = [10; 20; 30];
+%! G = graph (ET, NT);
+%! assert (G.Nodes.Name, {"a"; "b"; "c"});
+%! assert (G.Nodes.Size, [10; 20; 30]);
+
+## BIST — US-C13: multiple extra node columns preserved.
+%!test
+%! ET.EndNodes = [1 2; 2 3];
+%! NT.Name = {"a"; "b"; "c"};
+%! NT.Size = [10; 20; 30];
+%! NT.Kind = {"x"; "y"; "z"};
+%! G = graph (ET, NT);
+%! assert (G.Nodes.Size, [10; 20; 30]);
+%! assert (G.Nodes.Kind, {"x"; "y"; "z"});
+
+## BIST — US-C13: NT without Name field — node count inferred from column
+## length; Nodes.Name stays empty.
+%!test
+%! ET.EndNodes = [1 2; 2 3];
+%! NT.Size = [10; 20; 30];
+%! G = graph (ET, NT);
+%! assert (numnodes (G), 3);
+%! assert (G.Nodes.Name, cell (0, 1));
+%! assert (G.Nodes.Size, [10; 20; 30]);
+
+## BIST — US-C13: cellstr EndNodes without NT infers names from first
+## appearance in EndNodes.
+%!test
+%! ET.EndNodes = {"a", "b"; "b", "c"; "c", "a"};
+%! G = graph (ET);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Nodes.Name, {"a"; "b"; "c"});
+%! assert (G.Edges.EndNodes, [1 2; 1 3; 2 3]);
+
+## BIST — US-C13: cellstr EndNodes with NT looks up in NT.Name.
+%!test
+%! ET.EndNodes = {"x", "y"; "y", "z"};
+%! NT.Name = {"x"; "y"; "z"; "w"};
+%! G = graph (ET, NT);
+%! assert (numnodes (G), 4);
+%! assert (numedges (G), 2);
+%! assert (G.Nodes.Name, {"x"; "y"; "z"; "w"});
+%! assert (G.Edges.EndNodes, [1 2; 2 3]);
+
+## BIST — US-C13: cellstr EndNodes with weights and extra columns.
+%!test
+%! ET.EndNodes = {"a", "b"; "b", "c"};
+%! ET.Weight = [1.5; 2.5];
+%! ET.Note = {"hi"; "lo"};
+%! G = graph (ET);
+%! assert (G.Nodes.Name, {"a"; "b"; "c"});
+%! assert (G.Edges.Weight, [1.5; 2.5]);
+%! assert (G.Edges.Note, {"hi"; "lo"});
+
+## BIST — US-C13: round-trip an existing graph via its Edges+Nodes.
+%!test
+%! G1 = graph ([1 2 3], [2 3 1], [10 20 30], {"a", "b", "c"});
+%! G2 = graph (G1.Edges, G1.Nodes);
+%! assert (numnodes (G2), numnodes (G1));
+%! assert (numedges (G2), numedges (G1));
+%! assert (G2.Edges.EndNodes, G1.Edges.EndNodes);
+%! assert (G2.Edges.Weight, G1.Edges.Weight);
+%! assert (G2.Nodes.Name, G1.Nodes.Name);
+
+## BIST — US-C13: round-trip with isolated named nodes.
+%!test
+%! G1 = graph ([1 2], [2 3], [5 10], {"a", "b", "c", "d"});
+%! G2 = graph (G1.Edges, G1.Nodes);
+%! assert (numnodes (G2), 4);
+%! assert (numedges (G2), 2);
+%! assert (G2.Nodes.Name, {"a"; "b"; "c"; "d"});
+%! assert (G2.Edges.Weight, [5; 10]);
+
+## BIST — US-C13: empty edge table yields empty graph.
+%!test
+%! ET.EndNodes = zeros (0, 2);
+%! G = graph (ET);
+%! assert (numnodes (G), 0);
+%! assert (numedges (G), 0);
+
+## BIST — US-C13: empty edge table with NT yields N isolated nodes.
+%!test
+%! ET.EndNodes = zeros (0, 2);
+%! NT.Name = {"p"; "q"; "r"};
+%! G = graph (ET, NT);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 0);
+%! assert (G.Nodes.Name, {"p"; "q"; "r"});
+
+## BIST — US-C13: single-edge table.
+%!test
+%! ET.EndNodes = [1 2];
+%! ET.Weight = 7;
+%! G = graph (ET);
+%! assert (numnodes (G), 2);
+%! assert (numedges (G), 1);
+%! assert (G.Edges.Weight, 7);
+
+## BIST — US-C13: self-loop in ET is preserved (single row in EndNodes).
+%!test
+%! ET.EndNodes = [1 1; 2 2];
+%! G = graph (ET);
+%! assert (numnodes (G), 2);
+%! assert (numedges (G), 2);
+%! assert (G.Edges.EndNodes, [1 1; 2 2]);
+
+## BIST — US-C13: ET must be a struct with EndNodes field.
+%!error <EndNodes> graph (struct ("Weight", [1; 2]))
+
+## BIST — US-C13: EndNodes with wrong number of columns rejected.
+%!error <two columns> graph (struct ("EndNodes", [1 2 3; 4 5 6]))
+%!error <two columns> graph (struct ("EndNodes", [1; 2; 3]))
+
+## BIST — US-C13: 3-D EndNodes rejected.
+%!error <EndNodes> graph (struct ("EndNodes", ones (2, 2, 2)))
+
+## BIST — US-C13: EndNodes of disallowed type rejected.
+%!error <EndNodes> graph (struct ("EndNodes", true (2, 2)))
+
+## BIST — US-C13: Weight row count must match EndNodes.
+%!error <Weight> graph (struct ("EndNodes", [1 2; 2 3], "Weight", [1; 2; 3]))
+
+## BIST — US-C13: Non-EndNodes/Weight columns must have matching row count.
+%!error <Capacity> graph (struct ("EndNodes", [1 2; 2 3], "Capacity", [1; 2; 3]))
+
+## BIST — US-C13: NT.Name must be cellstr.
+%!error <Name> graph (struct ("EndNodes", [1 2]), struct ("Name", [1 2]))
+
+## BIST — US-C13: NT.Name with duplicates rejected.
+%!error <unique> ...
+%! graph (struct ("EndNodes", [1 2]), struct ("Name", {{"a"; "a"}}))
+
+## BIST — US-C13: Numeric EndNodes out of range (index > numnodes from NT).
+%!error <exceed> ...
+%! graph (struct ("EndNodes", [1 3]), struct ("Name", {{"a"; "b"}}))
+
+## BIST — US-C13: cellstr endpoint not found in NT.Name rejected.
+%!error <not found> ...
+%! graph (struct ("EndNodes", {{"a", "c"}}), struct ("Name", {{"a"; "b"}}))
+
+## BIST — US-C13: Inconsistent NT column lengths rejected.
+%!error <length> ...
+%! graph (struct ("EndNodes", [1 2]), ...
+%!        struct ("Name", {{"a"; "b"}}, "Size", 1))
+
+## BIST — US-C13: Non-scalar struct ET rejected.
+%!error <scalar struct> graph (struct ("EndNodes", {[1 2], [2 3]}))
+
+## BIST — US-C13: Duplicate edges in ET rejected.
+%!error <duplicate> ...
+%! graph (struct ("EndNodes", [1 2; 1 2]))
+
+## BIST — US-C13: Undirected duplicate — (1,2) and (2,1) are the same edge.
+%!error <duplicate> ...
+%! graph (struct ("EndNodes", [1 2; 2 1]))
+
+## BIST — US-C13: NT provided without Name but mismatched column lengths
+## rejected.
+%!error <length> ...
+%! graph (struct ("EndNodes", [1 2]), ...
+%!        struct ("Size", [1; 2], "Kind", {{"a"; "b"; "c"}}))

@@ -34,6 +34,8 @@ classdef digraph
   ## @deftypefnx {} {@var{G} =} digraph (@var{s}, @var{t}, @var{w})
   ## @deftypefnx {} {@var{G} =} digraph (@var{s}, @var{t}, @var{w}, @var{nodenames})
   ## @deftypefnx {} {@var{G} =} digraph (@var{s}, @var{t}, @var{w}, @var{N})
+  ## @deftypefnx {} {@var{G} =} digraph (@var{EdgeTable})
+  ## @deftypefnx {} {@var{G} =} digraph (@var{EdgeTable}, @var{NodeTable})
   ## Create a directed graph.
   ##
   ## With no arguments, return an empty directed graph with zero nodes
@@ -91,6 +93,28 @@ classdef digraph
   ## correspond to isolated nodes.  Pass @code{[]} for @var{w} to create
   ## an unweighted digraph with @var{N} nodes.
   ##
+  ## With a single struct @var{EdgeTable}, build a digraph from the
+  ## fields of the struct.  @var{EdgeTable} must have an
+  ## @code{EndNodes} field (an @code{m}-by-2 numeric matrix of node
+  ## indices or a cell array of strings), may have a @code{Weight}
+  ## field (a length-@code{m} numeric vector), and may have any number
+  ## of additional columns, which are preserved as extra edge
+  ## attributes on the resulting digraph.  Edges are re-sorted into
+  ## lexicographic @code{(source, destination)} order and every extra
+  ## column is reordered to match.  Duplicate @code{(source,
+  ## destination)} pairs are rejected (a future @code{'multigraph'}
+  ## flag will permit parallel edges).
+  ##
+  ## With a second struct @var{NodeTable}, the node set is taken from
+  ## @var{NodeTable}.  A @code{Name} field (a cell array of unique
+  ## strings) is stored on @code{@var{G}.Nodes.Name}; any other
+  ## columns are preserved as extra node attributes.  When
+  ## @code{EndNodes} is a cell array of strings, each entry is looked
+  ## up in @code{@var{NodeTable}.Name} (if provided) or in a name
+  ## list inferred from first appearance in @code{EndNodes}.
+  ## Until Octave has a built-in @code{table} class, this struct form
+  ## stands in for MATLAB's @code{table}.
+  ##
   ## @code{digraph} is a value class: every mutator returns a new object,
   ## leaving the input unchanged.
   ##
@@ -129,6 +153,14 @@ classdef digraph
   ##
   ## G = digraph (A, @{"alpha", "beta", "gamma"@});
   ## G.Nodes.Name           # ==> @{"alpha"; "beta"; "gamma"@}
+  ##
+  ## ET.EndNodes = [1 2; 2 3; 3 1];
+  ## ET.Weight   = [10; 20; 30];
+  ## ET.Label    = @{"a"; "b"; "c"@};
+  ## NT.Name     = @{"x"; "y"; "z"@};
+  ## G = digraph (ET, NT);  # EdgeTable + NodeTable form
+  ## G.Edges.Label          # ==> @{"a"; "b"; "c"@}
+  ## G.Nodes.Name           # ==> @{"x"; "y"; "z"@}
   ## @end group
   ## @end example
   ##
@@ -149,6 +181,18 @@ classdef digraph
     ## Edges struct has no Weight field (MATLAB parity).  When true, the
     ## nonzero values of adj_ are the edge weights.
     has_weights_ = false;
+
+    ## Extra edge-attribute columns supplied by the user via the
+    ## @code{digraph(ET)} or @code{digraph(ET, NT)} EdgeTable form.
+    ## Each field is stored in lexicographic @code{(source, destination)}
+    ## edge order so that @code{get.Edges} can return it directly.
+    ## Weight is @emph{not} stored here (it lives in @code{adj_}).
+    edge_attrs_ = struct ();
+
+    ## Extra node-attribute columns supplied by the user via the
+    ## NodeTable form.  Each field is stored in node-index order.
+    ## Name is @emph{not} stored here (it lives in @code{nodenames_}).
+    node_attrs_ = struct ();
   endproperties
 
   properties (Dependent, SetAccess = private)
@@ -177,6 +221,231 @@ classdef digraph
       if (nargin == 0)
         ## Default constructor: empty graph.  Property defaults apply.
         return;
+      elseif ((nargin == 1 && isstruct (varargin{1})) ...
+              || (nargin == 2 && isstruct (varargin{1}) ...
+                  && isstruct (varargin{2})))
+        ## EdgeTable (and optional NodeTable) constructor.
+        ## digraph (ET) or digraph (ET, NT).  ET is a scalar struct
+        ## with an EndNodes field (numeric m-by-2 or cellstr m-by-2)
+        ## and an optional Weight field; any other fields become extra
+        ## edge-attribute columns.  NT is a scalar struct with an
+        ## optional Name field; any other fields become extra
+        ## node-attribute columns.  Edges are re-sorted into
+        ## lexicographic (source, destination) order and every extra
+        ## column is reordered to match.
+        ET = varargin{1};
+        have_nt = (nargin == 2);
+        if (have_nt)
+          NT = varargin{2};
+        endif
+
+        if (! isscalar (ET))
+          error ("Octave:invalid-input-arg", ...
+                 "digraph: EdgeTable must be a scalar struct");
+        endif
+        if (have_nt && ! isscalar (NT))
+          error ("Octave:invalid-input-arg", ...
+                 "digraph: NodeTable must be a scalar struct");
+        endif
+        if (! isfield (ET, "EndNodes"))
+          error ("Octave:invalid-input-arg", ...
+                 "digraph: EdgeTable must have an EndNodes field");
+        endif
+
+        EN = ET.EndNodes;
+        if (! (isnumeric (EN) || iscellstr (EN)))
+          error ("Octave:invalid-input-arg", ...
+                 ["digraph: EndNodes must be a numeric matrix or ", ...
+                  "a cell array of strings"]);
+        endif
+        if (ndims (EN) != 2 || size (EN, 2) != 2)
+          error ("Octave:invalid-input-arg", ...
+                 ["digraph: EndNodes must be a 2-D matrix with ", ...
+                  "exactly two columns"]);
+        endif
+        m = size (EN, 1);
+        is_cell_end = iscellstr (EN);
+
+        s_idx = zeros (0, 1);
+        t_idx = zeros (0, 1);   # resolved after NT ingestion for cellstr
+        if (! is_cell_end && m > 0)
+          v = EN(:);
+          if (! isreal (v) ...
+              || any (! isfinite (v) | v < 1 | v != fix (v)))
+            error ("Octave:invalid-input-arg", ...
+                   ["digraph: numeric EndNodes entries must be ", ...
+                    "positive integer node indices"]);
+          endif
+          s_idx = double (EN(:, 1));
+          t_idx = double (EN(:, 2));
+        endif
+
+        have_weights = isfield (ET, "Weight");
+        w_vec = [];
+        if (have_weights)
+          w_vec = ET.Weight;
+          if (! (isnumeric (w_vec) && isreal (w_vec)))
+            error ("Octave:invalid-input-arg", ...
+                   "digraph: Weight must be a numeric real vector");
+          endif
+          if (! (isvector (w_vec) || isempty (w_vec)))
+            error ("Octave:invalid-input-arg", ...
+                   "digraph: Weight must be a vector");
+          endif
+          w_vec = double (w_vec(:));
+          if (numel (w_vec) != m)
+            error ("Octave:invalid-input-arg", ...
+                   ["digraph: Weight length must match the number ", ...
+                    "of rows in EndNodes"]);
+          endif
+          if (any (isnan (w_vec)))
+            error ("Octave:invalid-input-arg", ...
+                   "digraph: Weight must not contain NaN");
+          endif
+        endif
+
+        ## Extra edge columns: every ET field except EndNodes and
+        ## Weight.  Row count must equal m.
+        e_attrs = struct ();
+        ef = fieldnames (ET);
+        for ii = 1:numel (ef)
+          fn_i = ef{ii};
+          if (strcmp (fn_i, "EndNodes") || strcmp (fn_i, "Weight"))
+            continue;
+          endif
+          v_i = ET.(fn_i);
+          if (size (v_i, 1) != m)
+            error ("Octave:invalid-input-arg", ...
+                   ["digraph: EdgeTable column %s length must ", ...
+                    "match EndNodes"], fn_i);
+          endif
+          e_attrs.(fn_i) = v_i;
+        endfor
+
+        ## Ingest NodeTable.
+        nodenames_out = {};
+        n_attrs = struct ();
+        N = 0;
+        if (have_nt)
+          nf = fieldnames (NT);
+          N_from_nt = -1;
+          if (numel (nf) > 0)
+            N_from_nt = size (NT.(nf{1}), 1);
+            for ii = 2:numel (nf)
+              if (size (NT.(nf{ii}), 1) != N_from_nt)
+                error ("Octave:invalid-input-arg", ...
+                       ["digraph: NodeTable columns must all ", ...
+                        "have the same length"]);
+              endif
+            endfor
+          endif
+          if (isfield (NT, "Name"))
+            nm = NT.Name;
+            if (! iscellstr (nm))
+              error ("Octave:invalid-input-arg", ...
+                     ["digraph: NodeTable Name must be a cell ", ...
+                      "array of strings"]);
+            endif
+            nm = nm(:);
+            if (numel (nm) != numel (unique (nm)))
+              error ("Octave:invalid-input-arg", ...
+                     ["digraph: NodeTable Name must contain ", ...
+                      "unique strings"]);
+            endif
+            nodenames_out = nm;
+            N = numel (nm);
+          elseif (N_from_nt >= 0)
+            N = N_from_nt;
+          endif
+          ## Extra node columns (everything except Name).
+          for ii = 1:numel (nf)
+            fn_i = nf{ii};
+            if (strcmp (fn_i, "Name"))
+              continue;
+            endif
+            v_i = NT.(fn_i);
+            if (size (v_i, 1) != N)
+              error ("Octave:invalid-input-arg", ...
+                     ["digraph: NodeTable column %s length must ", ...
+                      "match the node count"], fn_i);
+            endif
+            n_attrs.(fn_i) = v_i;
+          endfor
+        endif
+
+        ## Resolve cellstr endpoints; set N if not already set.
+        if (is_cell_end && m > 0)
+          EN_s = EN(:, 1);
+          EN_t = EN(:, 2);
+          if (have_nt && ! isempty (nodenames_out))
+            s_idx = __resolve_endpoint__ (EN_s, nodenames_out, "S");
+            t_idx = __resolve_endpoint__ (EN_t, nodenames_out, "T");
+          else
+            ## Infer names in first-appearance order across
+            ## [EN_s; EN_t].
+            all_endpoints = [EN_s; EN_t];
+            inferred = unique (all_endpoints, "stable");
+            inferred = inferred(:);
+            nodenames_out = inferred;
+            N = numel (nodenames_out);
+            s_idx = __resolve_endpoint__ (EN_s, nodenames_out, "S");
+            t_idx = __resolve_endpoint__ (EN_t, nodenames_out, "T");
+          endif
+        elseif (! is_cell_end && m > 0)
+          if (have_nt)
+            if (any (s_idx > N) || any (t_idx > N))
+              error ("Octave:invalid-input-arg", ...
+                     ["digraph: EndNodes indices must not exceed ", ...
+                      "the NodeTable node count"]);
+            endif
+          else
+            N = max (max (s_idx), max (t_idx));
+          endif
+        endif
+
+        ## Build a sparse index matrix that simultaneously:
+        ##   * detects duplicate edges -- any (s, t) pair appearing
+        ##     twice in the input will accumulate into a single cell,
+        ##     so nnz(p) < m;
+        ##   * encodes the input -> lex-order permutation in its values
+        ##     (find (p.') returns them in lex order).
+        ## Using the index sequence 1:m (not weights) avoids a false
+        ## duplicate report when a user-supplied weight is zero.
+        if (m > 0)
+          p = sparse (s_idx, t_idx, 1:m, N, N);
+          if (nnz (p) != m)
+            error ("Octave:invalid-input-arg", ...
+                   ["digraph: EdgeTable contains duplicate edges; ", ...
+                    "parallel edges require the 'multigraph' flag"]);
+          endif
+          ef2 = fieldnames (e_attrs);
+          if (! isempty (ef2))
+            [~, ~, perm] = find (p.');
+            for ii = 1:numel (ef2)
+              fn_i = ef2{ii};
+              e_attrs.(fn_i) = e_attrs.(fn_i)(perm, :);
+            endfor
+          endif
+        endif
+
+        ## Build adj_ and commit state.  Weight is NOT permuted: it
+        ## will be stored via sparse (s, t, w), which places each
+        ## weight at its (s(i), t(i)) cell; get.Edges then retrieves
+        ## them in lex order automatically.
+        if (m > 0)
+          if (have_weights)
+            G.adj_ = sparse (s_idx, t_idx, w_vec, N, N);
+            G.has_weights_ = true;
+          else
+            G.adj_ = sparse (s_idx, t_idx, 1, N, N);
+          endif
+        else
+          G.adj_ = sparse (N, N);
+        endif
+        G.nodenames_ = nodenames_out;
+        G.edge_attrs_ = e_attrs;
+        G.node_attrs_ = n_attrs;
+
       elseif (nargin == 1)
         arg1 = varargin{1};
         if (isnumeric (arg1) && isscalar (arg1))
@@ -514,6 +783,12 @@ classdef digraph
       if (G.has_weights_)
         e.Weight = w;
       endif
+      ## Merge any extra edge-attribute columns supplied via the
+      ## EdgeTable constructor.  Stored in lex-order already.
+      efn = fieldnames (G.edge_attrs_);
+      for ii = 1:numel (efn)
+        e.(efn{ii}) = G.edge_attrs_.(efn{ii});
+      endfor
 
     endfunction
 
@@ -527,6 +802,12 @@ classdef digraph
       else
         n.Name = G.nodenames_;
       endif
+      ## Merge any extra node-attribute columns supplied via the
+      ## NodeTable constructor.
+      nfn = fieldnames (G.node_attrs_);
+      for ii = 1:numel (nfn)
+        n.(nfn{ii}) = G.node_attrs_.(nfn{ii});
+      endfor
 
     endfunction
 
@@ -1303,3 +1584,260 @@ endclassdef
 %! G = digraph (A, {"row", "col"});
 %! assert (iscolumn (G.Nodes.Name));
 %! assert (G.Nodes.Name, {"row"; "col"});
+
+## BIST — US-C08: digraph(ET) with numeric EndNodes only (unweighted).
+%!test
+%! ET.EndNodes = [1 2; 2 3; 3 1];
+%! G = digraph (ET);
+%! assert (class (G), "digraph");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Edges.EndNodes, [1 2; 2 3; 3 1]);
+%! assert (! isfield (G.Edges, "Weight"));
+
+## BIST — US-C08: digraph(ET) with Weight column round-trips.
+%!test
+%! ET.EndNodes = [1 2; 2 3; 3 1];
+%! ET.Weight = [10; 20; 30];
+%! G = digraph (ET);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Edges.EndNodes, [1 2; 2 3; 3 1]);
+%! assert (G.Edges.Weight, [10; 20; 30]);
+
+## BIST — US-C08: row-vector Weight normalized to column.
+%!test
+%! ET.EndNodes = [1 2; 2 3];
+%! ET.Weight = [5 10];
+%! G = digraph (ET);
+%! assert (G.Edges.Weight, [5; 10]);
+
+## BIST — US-C08: edges in the EdgeTable are re-sorted into lex order;
+## Weight follows its edge.
+%!test
+%! ET.EndNodes = [3 1; 1 2; 2 3];
+%! ET.Weight = [30; 10; 20];
+%! G = digraph (ET);
+%! assert (G.Edges.EndNodes, [1 2; 2 3; 3 1]);
+%! assert (G.Edges.Weight, [10; 20; 30]);
+
+## BIST — US-C08: extra numeric edge column preserved and reordered.
+%!test
+%! ET.EndNodes = [3 1; 1 2; 2 3];
+%! ET.Weight = [30; 10; 20];
+%! ET.Capacity = [300; 100; 200];
+%! G = digraph (ET);
+%! assert (G.Edges.EndNodes, [1 2; 2 3; 3 1]);
+%! assert (G.Edges.Weight, [10; 20; 30]);
+%! assert (G.Edges.Capacity, [100; 200; 300]);
+
+## BIST — US-C08: extra cellstr edge column preserved and reordered.
+%!test
+%! ET.EndNodes = [3 1; 1 2; 2 3];
+%! ET.Label = {"c"; "a"; "b"};
+%! G = digraph (ET);
+%! assert (G.Edges.EndNodes, [1 2; 2 3; 3 1]);
+%! assert (G.Edges.Label, {"a"; "b"; "c"});
+
+## BIST — US-C08: multiple extra edge columns preserved simultaneously.
+%!test
+%! ET.EndNodes = [1 2; 2 3; 3 1];
+%! ET.Weight = [1; 2; 3];
+%! ET.Name = {"e1"; "e2"; "e3"};
+%! ET.Cost = [5; 10; 15];
+%! G = digraph (ET);
+%! E = G.Edges;
+%! assert (E.Weight, [1; 2; 3]);
+%! assert (E.Name, {"e1"; "e2"; "e3"});
+%! assert (E.Cost, [5; 10; 15]);
+
+## BIST — US-C08: extra edge columns also work on unweighted tables.
+%!test
+%! ET.EndNodes = [1 2; 2 3];
+%! ET.Kind = {"in"; "out"};
+%! G = digraph (ET);
+%! assert (! isfield (G.Edges, "Weight"));
+%! assert (G.Edges.Kind, {"in"; "out"});
+
+## BIST — US-C08: digraph(ET, NT) — NT.Name sets the node names.
+%!test
+%! ET.EndNodes = [1 2; 2 3; 3 1];
+%! ET.Weight = [1; 2; 3];
+%! NT.Name = {"alpha"; "beta"; "gamma"};
+%! G = digraph (ET, NT);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Nodes.Name, {"alpha"; "beta"; "gamma"});
+%! assert (G.Edges.EndNodes, [1 2; 2 3; 3 1]);
+%! assert (G.Edges.Weight, [1; 2; 3]);
+
+## BIST — US-C08: NT can provide isolated trailing nodes (N > max endpoint).
+%!test
+%! ET.EndNodes = [1 2; 2 3];
+%! NT.Name = {"a"; "b"; "c"; "d"; "e"};
+%! G = digraph (ET, NT);
+%! assert (numnodes (G), 5);
+%! assert (numedges (G), 2);
+%! assert (G.Nodes.Name, {"a"; "b"; "c"; "d"; "e"});
+
+## BIST — US-C08: extra node columns preserved.
+%!test
+%! ET.EndNodes = [1 2; 2 3];
+%! NT.Name = {"a"; "b"; "c"};
+%! NT.Size = [10; 20; 30];
+%! G = digraph (ET, NT);
+%! assert (G.Nodes.Name, {"a"; "b"; "c"});
+%! assert (G.Nodes.Size, [10; 20; 30]);
+
+## BIST — US-C08: multiple extra node columns preserved.
+%!test
+%! ET.EndNodes = [1 2; 2 3];
+%! NT.Name = {"a"; "b"; "c"};
+%! NT.Size = [10; 20; 30];
+%! NT.Kind = {"x"; "y"; "z"};
+%! G = digraph (ET, NT);
+%! assert (G.Nodes.Size, [10; 20; 30]);
+%! assert (G.Nodes.Kind, {"x"; "y"; "z"});
+
+## BIST — US-C08: NT without Name field — node count inferred from column
+## length; Nodes.Name stays empty.
+%!test
+%! ET.EndNodes = [1 2; 2 3];
+%! NT.Size = [10; 20; 30];
+%! G = digraph (ET, NT);
+%! assert (numnodes (G), 3);
+%! assert (G.Nodes.Name, cell (0, 1));
+%! assert (G.Nodes.Size, [10; 20; 30]);
+
+## BIST — US-C08: cellstr EndNodes without NT infers names from first
+## appearance in EndNodes.
+%!test
+%! ET.EndNodes = {"a", "b"; "b", "c"; "c", "a"};
+%! G = digraph (ET);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Nodes.Name, {"a"; "b"; "c"});
+%! assert (G.Edges.EndNodes, [1 2; 2 3; 3 1]);
+
+## BIST — US-C08: cellstr EndNodes with NT looks up in NT.Name.
+%!test
+%! ET.EndNodes = {"x", "y"; "y", "z"};
+%! NT.Name = {"x"; "y"; "z"; "w"};
+%! G = digraph (ET, NT);
+%! assert (numnodes (G), 4);
+%! assert (numedges (G), 2);
+%! assert (G.Nodes.Name, {"x"; "y"; "z"; "w"});
+%! assert (G.Edges.EndNodes, [1 2; 2 3]);
+
+## BIST — US-C08: cellstr EndNodes with weights and extra columns.
+%!test
+%! ET.EndNodes = {"a", "b"; "b", "c"};
+%! ET.Weight = [1.5; 2.5];
+%! ET.Note = {"hi"; "lo"};
+%! G = digraph (ET);
+%! assert (G.Nodes.Name, {"a"; "b"; "c"});
+%! assert (G.Edges.Weight, [1.5; 2.5]);
+%! assert (G.Edges.Note, {"hi"; "lo"});
+
+## BIST — US-C08: round-trip an existing digraph via its Edges+Nodes.
+%!test
+%! G1 = digraph ([1 2 3], [2 3 1], [10 20 30], {"a", "b", "c"});
+%! G2 = digraph (G1.Edges, G1.Nodes);
+%! assert (numnodes (G2), numnodes (G1));
+%! assert (numedges (G2), numedges (G1));
+%! assert (G2.Edges.EndNodes, G1.Edges.EndNodes);
+%! assert (G2.Edges.Weight, G1.Edges.Weight);
+%! assert (G2.Nodes.Name, G1.Nodes.Name);
+
+## BIST — US-C08: round-trip with isolated named nodes.
+%!test
+%! G1 = digraph ([1 2], [2 3], [5 10], {"a", "b", "c", "d"});
+%! G2 = digraph (G1.Edges, G1.Nodes);
+%! assert (numnodes (G2), 4);
+%! assert (numedges (G2), 2);
+%! assert (G2.Nodes.Name, {"a"; "b"; "c"; "d"});
+%! assert (G2.Edges.Weight, [5; 10]);
+
+## BIST — US-C08: empty edge table yields empty digraph.
+%!test
+%! ET.EndNodes = zeros (0, 2);
+%! G = digraph (ET);
+%! assert (numnodes (G), 0);
+%! assert (numedges (G), 0);
+
+## BIST — US-C08: empty edge table with NT yields N isolated nodes.
+%!test
+%! ET.EndNodes = zeros (0, 2);
+%! NT.Name = {"p"; "q"; "r"};
+%! G = digraph (ET, NT);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 0);
+%! assert (G.Nodes.Name, {"p"; "q"; "r"});
+
+## BIST — US-C08: single-edge table.
+%!test
+%! ET.EndNodes = [1 2];
+%! ET.Weight = 7;
+%! G = digraph (ET);
+%! assert (numnodes (G), 2);
+%! assert (numedges (G), 1);
+%! assert (G.Edges.Weight, 7);
+
+## BIST — US-C08: self-loop in ET is preserved.
+%!test
+%! ET.EndNodes = [1 1; 2 2];
+%! G = digraph (ET);
+%! assert (numnodes (G), 2);
+%! assert (numedges (G), 2);
+
+## BIST — US-C08: ET must be a struct with EndNodes field.
+%!error <EndNodes> digraph (struct ("Weight", [1; 2]))
+
+## BIST — US-C08: EndNodes with wrong number of columns rejected.
+%!error <two columns> digraph (struct ("EndNodes", [1 2 3; 4 5 6]))
+%!error <two columns> digraph (struct ("EndNodes", [1; 2; 3]))
+
+## BIST — US-C08: 3-D EndNodes rejected.
+%!error <EndNodes> digraph (struct ("EndNodes", ones (2, 2, 2)))
+
+## BIST — US-C08: EndNodes of disallowed type rejected.
+%!error <EndNodes> digraph (struct ("EndNodes", true (2, 2)))
+
+## BIST — US-C08: Weight row count must match EndNodes.
+%!error <Weight> digraph (struct ("EndNodes", [1 2; 2 3], "Weight", [1; 2; 3]))
+
+## BIST — US-C08: Non-EndNodes/Weight columns must have matching row count.
+%!error <Capacity> digraph (struct ("EndNodes", [1 2; 2 3], "Capacity", [1; 2; 3]))
+
+## BIST — US-C08: NT.Name must be cellstr.
+%!error <Name> digraph (struct ("EndNodes", [1 2]), struct ("Name", [1 2]))
+
+## BIST — US-C08: NT.Name with duplicates rejected.
+%!error <unique> ...
+%! digraph (struct ("EndNodes", [1 2]), struct ("Name", {{"a"; "a"}}))
+
+## BIST — US-C08: Numeric EndNodes out of range (index > numnodes from NT).
+%!error <exceed> ...
+%! digraph (struct ("EndNodes", [1 3]), struct ("Name", {{"a"; "b"}}))
+
+## BIST — US-C08: cellstr endpoint not found in NT.Name rejected.
+%!error <not found> ...
+%! digraph (struct ("EndNodes", {{"a", "c"}}), struct ("Name", {{"a"; "b"}}))
+
+## BIST — US-C08: Inconsistent NT column lengths rejected.
+%!error <length> ...
+%! digraph (struct ("EndNodes", [1 2]), ...
+%!          struct ("Name", {{"a"; "b"}}, "Size", 1))
+
+## BIST — US-C08: Non-scalar struct ET rejected.
+%!error <scalar struct> digraph (struct ("EndNodes", {[1 2], [2 3]}))
+
+## BIST — US-C08: Duplicate edges in ET (without 'multigraph' flag) rejected.
+%!error <duplicate> ...
+%! digraph (struct ("EndNodes", [1 2; 1 2]))
+
+## BIST — US-C08: NT provided without Name but mismatched column lengths
+## rejected.
+%!error <length> ...
+%! digraph (struct ("EndNodes", [1 2]), ...
+%!          struct ("Size", [1; 2], "Kind", {{"a"; "b"; "c"}}))

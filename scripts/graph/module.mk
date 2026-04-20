@@ -20,10 +20,12 @@ FCN_FILE_DIRS += \
   %reldir%/findnode.m \
   %reldir%/graph.m \
   %reldir%/indegree.m \
+  %reldir%/inedges.m \
   %reldir%/neighbors.m \
   %reldir%/numedges.m \
   %reldir%/numnodes.m \
   %reldir%/outdegree.m \
+  %reldir%/outedges.m \
   %reldir%/predecessors.m \
   %reldir%/successors.m
 

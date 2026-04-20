@@ -217,7 +217,7 @@ classdef digraph
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges, ismultigraph, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount}
+  ## @seealso{graph, numnodes, numedges, ismultigraph, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1459,6 +1459,104 @@ classdef digraph
       endif
 
       n = __edgecount_impl__ (G, varargin{1}, varargin{2});
+
+    endfunction
+
+    function [eid, nid] = outedges (G, nodeID)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{eid} =} outedges (@var{G}, @var{nodeID})
+      ## @deftypefnx {} {[@var{eid}, @var{nid}] =} outedges (@var{G}, @var{nodeID})
+      ## Return the indices of the out-edges of @var{nodeID} in the
+      ## digraph @var{G}.  @var{eid} is a column vector of edge indices
+      ## (1-based) into @code{@var{G}.Edges}; with two outputs, @var{nid}
+      ## is the column of destination node identifiers (numeric when
+      ## @var{nodeID} was numeric, cellstr when it was a name).  See
+      ## @code{help outedges} for the full description.
+      ## @seealso{digraph, inedges, successors, findedge, outdegree}
+      ## @end deftypefn
+
+      if (nargin != 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to outedges: expected 2 arguments");
+      endif
+
+      [n, return_names] = __resolve_single_node__ (G, nodeID, "outedges");
+
+      ## Use the public Edges.EndNodes which is always lex-sorted
+      ## (src, dst) for both simple and multigraph storage.  This keeps
+      ## the edge-index convention consistent with findedge.
+      E = G.Edges.EndNodes;
+      if (isempty (E))
+        eid = zeros (0, 1);
+        nid_idx = zeros (0, 1);
+      else
+        mask = (E(:, 1) == n);
+        eid = find (mask);
+        eid = eid(:);
+        nid_idx = E(mask, 2);
+      endif
+
+      if (return_names)
+        nid = G.nodenames_(nid_idx);
+        nid = nid(:);
+        if (isempty (nid_idx))
+          ## Force the empty-cellstr shape to [0 1] for parity with the
+          ## numeric path (some Octave versions return cell(1,0) here).
+          nid = cell (0, 1);
+        endif
+      else
+        nid = double (nid_idx);
+      endif
+
+    endfunction
+
+    function [eid, nid] = inedges (G, nodeID)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{eid} =} inedges (@var{G}, @var{nodeID})
+      ## @deftypefnx {} {[@var{eid}, @var{nid}] =} inedges (@var{G}, @var{nodeID})
+      ## Return the indices of the in-edges of @var{nodeID} in the
+      ## digraph @var{G}.  @var{eid} is a column vector of edge indices
+      ## (1-based) into @code{@var{G}.Edges}; with two outputs, @var{nid}
+      ## is the column of source node identifiers (numeric when
+      ## @var{nodeID} was numeric, cellstr when it was a name).  See
+      ## @code{help inedges} for the full description.
+      ## @seealso{digraph, outedges, predecessors, findedge, indegree}
+      ## @end deftypefn
+
+      if (nargin != 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to inedges: expected 2 arguments");
+      endif
+
+      [n, return_names] = __resolve_single_node__ (G, nodeID, "inedges");
+
+      ## Use the public Edges.EndNodes which is always lex-sorted
+      ## (src, dst) for both simple and multigraph storage.  This keeps
+      ## the edge-index convention consistent with findedge.
+      E = G.Edges.EndNodes;
+      if (isempty (E))
+        eid = zeros (0, 1);
+        nid_idx = zeros (0, 1);
+      else
+        mask = (E(:, 2) == n);
+        eid = find (mask);
+        eid = eid(:);
+        nid_idx = E(mask, 1);
+      endif
+
+      if (return_names)
+        nid = G.nodenames_(nid_idx);
+        nid = nid(:);
+        if (isempty (nid_idx))
+          ## Force the empty-cellstr shape to [0 1] for parity with the
+          ## numeric path (some Octave versions return cell(1,0) here).
+          nid = cell (0, 1);
+        endif
+      else
+        nid = double (nid_idx);
+      endif
 
     endfunction
 

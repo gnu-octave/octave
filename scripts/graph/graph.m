@@ -32,6 +32,9 @@ classdef graph
   ## @deftypefnx {} {@var{G} =} graph (@var{s}, @var{t}, @var{w})
   ## @deftypefnx {} {@var{G} =} graph (@var{s}, @var{t}, @var{w}, @var{nodenames})
   ## @deftypefnx {} {@var{G} =} graph (@var{s}, @var{t}, @var{w}, @var{N})
+  ## @deftypefnx {} {@var{G} =} graph (@var{A})
+  ## @deftypefnx {} {@var{G} =} graph (@var{A}, "upper")
+  ## @deftypefnx {} {@var{G} =} graph (@var{A}, "lower")
   ## Create an undirected graph.
   ##
   ## With no arguments, return an empty undirected graph with zero nodes
@@ -77,6 +80,28 @@ classdef graph
   ## correspond to isolated nodes.  Pass @code{[]} for @var{w} to create
   ## an unweighted graph with @var{N} nodes.
   ##
+  ## With a single 2-D numeric or logical matrix @var{A},
+  ## @code{graph (@var{A})} treats @var{A} as a symmetric adjacency
+  ## matrix.  Each nonzero entry @code{A(i, j) = A(j, i)} creates an
+  ## undirected edge @code{@{i, j@}} with weight @code{A(i, j)}; a
+  ## nonzero diagonal entry @code{A(i, i)} becomes a self-loop on node
+  ## @var{i}.  @var{A} must be real and square; a non-symmetric
+  ## @var{A} is rejected.  Sparse input is preserved without
+  ## densifying, and integer or logical inputs are coerced to
+  ## @code{double}.  Node count is @code{size (@var{A}, 1)}.  The
+  ## resulting @var{G}@code{.Edges} always carries a @code{Weight}
+  ## column (matrix form implies weighted, MATLAB parity).
+  ##
+  ## With @code{graph (@var{A}, "upper")}, only the upper triangle of
+  ## @var{A} (including its diagonal) is used; the lower triangle is
+  ## ignored.  Equivalently,
+  ## @code{@var{A}_sym = triu (@var{A}) + triu (@var{A}, 1).'} is
+  ## taken as the symmetric adjacency.  @code{graph (@var{A}, "lower")}
+  ## likewise uses only the lower triangle.  These flags let you
+  ## build an undirected graph from an asymmetric matrix while
+  ## selecting which half of the matrix defines the edges.  The flag
+  ## is matched case-insensitively.
+  ##
   ## @code{graph} is a value class: every mutator returns a new object,
   ## leaving the input unchanged.
   ##
@@ -109,6 +134,14 @@ classdef graph
   ## G = graph ([1 2], [2 3], [1 1], 5);  # 5 nodes, 2 edges, 3 isolated
   ## numnodes (G)           # ==> 5
   ## numedges (G)           # ==> 2
+  ##
+  ## A = [0 1.5 2.5; 1.5 0 3.5; 2.5 3.5 0];
+  ## G = graph (A);                      # symmetric adjacency
+  ## G.Edges.Weight                      # ==> [1.5; 2.5; 3.5]
+  ##
+  ## B = [0 1 2; 0 0 3; 0 0 0];          # upper-triangular
+  ## G = graph (B, "upper");             # use upper triangle only
+  ## G.Edges.Weight                      # ==> [1; 2; 3]
   ## @end group
   ## @end example
   ##
@@ -163,6 +196,7 @@ classdef graph
       elseif (nargs == 1)
         arg1 = varargin{1};
         if (isnumeric (arg1) && isscalar (arg1))
+          ## Scalar numeric input: node count N.
           if (! (isreal (arg1) && isfinite (arg1) && arg1 >= 0 ...
                  && arg1 == fix (arg1)))
             error ("Octave:invalid-input-arg", ...
@@ -170,9 +204,37 @@ classdef graph
           endif
           N = double (arg1);
           G.adj_ = sparse (N, N);
+        elseif ((isnumeric (arg1) || islogical (arg1)) ...
+                && ismatrix (arg1) && ndims (arg1) == 2)
+          ## Non-scalar 2-D input: symmetric adjacency matrix.
+          [G.adj_, G.has_weights_] = ...
+              build_adj_from_matrix (arg1, "full");
         else
           error ("Octave:invalid-input-arg", ...
-                 "graph: N must be a non-negative integer scalar");
+                 ["graph: single-argument input must be a ", ...
+                  "non-negative integer scalar or a real square ", ...
+                  "adjacency matrix"]);
+        endif
+      elseif (nargs == 2 && ischar (varargin{2}) && isrow (varargin{2}) ...
+              && (isnumeric (varargin{1}) || islogical (varargin{1})) ...
+              && ismatrix (varargin{1}) && ndims (varargin{1}) == 2 ...
+              && ! isvector (varargin{1}))
+        ## Adjacency matrix with 'upper' or 'lower' triangle flag.
+        ## Dispatch requires arg1 to be a non-vector 2-D matrix so that
+        ## graph([1 2], "ab") (bad edge-list call) still falls through
+        ## to the edge-list branch below and reports the expected
+        ## "S and T must be numeric vectors" error.
+        arg1 = varargin{1};
+        flag = varargin{2};
+        if (! (strcmpi (flag, "upper") || strcmpi (flag, "lower")))
+          error ("Octave:invalid-input-arg", ...
+                 ["graph: second argument must be 'upper' or 'lower' ", ...
+                  "when building from an adjacency matrix"]);
+        endif
+        if (strcmpi (flag, "upper"))
+          [G.adj_, G.has_weights_] = build_adj_from_matrix (arg1, "upper");
+        else
+          [G.adj_, G.has_weights_] = build_adj_from_matrix (arg1, "lower");
         endif
       elseif (nargs == 2 || nargs == 3)
         ## Edge-list: graph (s, t) or graph (s, t, w).
@@ -475,6 +537,71 @@ function [A, hw] = build_adj (s, t, w, N, have_weights)
 endfunction
 
 
+## Helper: turn a 2-D numeric/logical matrix A into a symmetric sparse
+## adjacency suitable for the graph class.  MODE selects how the input is
+## interpreted:
+##   "full"   A must already be symmetric; use it as-is.
+##   "upper"  Use only triu (A); mirror it across the diagonal.
+##   "lower"  Use only tril (A); mirror it across the diagonal.
+## Returns (A_sparse, hw).  hw is true whenever the matrix is non-empty
+## (matrix form implies weighted, MATLAB parity); 0x0 stays unweighted.
+function [A_sparse, hw] = build_adj_from_matrix (A, mode)
+
+  if (! isreal (A))
+    error ("Octave:invalid-input-arg", ...
+           "graph: adjacency matrix A must be real");
+  endif
+  if (size (A, 1) != size (A, 2))
+    error ("Octave:invalid-input-arg", ...
+           "graph: adjacency matrix A must be square");
+  endif
+  if (any (isnan (A(:))))
+    error ("Octave:invalid-input-arg", ...
+           "graph: adjacency matrix A must not contain NaN");
+  endif
+
+  ## Coerce value type to double without densifying sparse inputs.
+  if (issparse (A))
+    if (! isa (A, "double"))
+      A = sparse (double (A));
+    endif
+  else
+    A = sparse (double (A));
+  endif
+
+  switch (mode)
+    case "full"
+      ## Plain graph(A) requires symmetry.  Full adjacency matrices
+      ## cannot express parallel edges so no extra work is needed.
+      if (! isequal (A, A.'))
+        error ("Octave:invalid-input-arg", ...
+               ["graph: adjacency matrix A must be symmetric; ", ...
+                "use 'upper' or 'lower' to build from a triangle"]);
+      endif
+      A_sparse = A;
+    case "upper"
+      ## Strict upper + diagonal, mirrored across the diagonal to keep
+      ## adj_ symmetric.  triu(A, 1).' puts the strictly-upper part
+      ## into the strictly-lower half.
+      U  = triu (A);
+      U1 = triu (A, 1);
+      A_sparse = U + U1.';
+    case "lower"
+      L  = tril (A);
+      L1 = tril (A, -1);
+      A_sparse = L + L1.';
+    otherwise
+      ## Defensive -- caller validates this, but guard just in case.
+      error ("Octave:invalid-input-arg", ...
+             "graph: internal error -- unknown triangle mode '%s'", mode);
+  endswitch
+
+  ## Matrix form implies weighted (MATLAB parity); 0x0 stays unweighted.
+  hw = (size (A_sparse, 1) > 0);
+
+endfunction
+
+
 ## BIST — US-C11 default constructor.
 %!test
 %! G = graph ();
@@ -520,7 +647,9 @@ endfunction
 %!error <non-negative integer> graph (Inf)
 %!error <non-negative integer> graph (NaN)
 %!error <non-negative integer> graph (-1)
-%!error <non-negative integer> graph ([1 2 3])
+## Note: graph([1 2 3]) is a 1x3 matrix, so it dispatches to the adjacency
+## path (US-C12) rather than the scalar-N path.  It fails the square check.
+%!error <square> graph ([1 2 3])
 %!error <unsupported number of arguments> graph (1, 2, 3, 4, 5, 6)
 
 ## BIST — US-C11 edge-list constructor with numeric row vectors.
@@ -822,3 +951,306 @@ endfunction
 %! assert (numedges (G), 3);
 %! assert (G.Edges.EndNodes, [1 2; 1 3; 2 3]);
 %! assert (G.Edges.Weight, [1.5; 3.5; 2.5]);
+
+## BIST — US-C12 graph(A): dense symmetric adjacency, triangle.
+%!test
+%! A = [0 1 1; 1 0 1; 1 1 0];
+%! G = graph (A);
+%! assert (class (G), "graph");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Edges.EndNodes, [1 2; 1 3; 2 3]);
+%! assert (G.Edges.Weight, [1; 1; 1]);
+
+## BIST — graph(A): symmetric adjacency with real weights, lex order.
+%!test
+%! A = [0 1.5 2.5; 1.5 0 3.5; 2.5 3.5 0];
+%! G = graph (A);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Edges.EndNodes, [1 2; 1 3; 2 3]);
+%! assert (G.Edges.Weight, [1.5; 2.5; 3.5]);
+
+## BIST — graph(A) rejects a non-symmetric A.
+%!error <symmetric> graph ([0 1 0; 0 0 1; 1 0 0])
+%!error <symmetric> graph ([0 1; 0 0])
+%!error <symmetric> graph ([0 1 2; 1 0 3; 2 4 0])
+
+## BIST — graph(A) rejects non-symmetric sparse A.
+%!error <symmetric> graph (sparse ([1 2], [2 3], [1 1], 3, 3))
+
+## BIST — graph(A, 'upper') uses only the upper triangle.
+%!test
+%! A = [0 1.5 2.5; 0 0 3.5; 0 0 0];  ## upper-triangular
+%! G = graph (A, "upper");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Edges.EndNodes, [1 2; 1 3; 2 3]);
+%! assert (G.Edges.Weight, [1.5; 2.5; 3.5]);
+
+## BIST — graph(A, 'lower') uses only the lower triangle.
+%!test
+%! A = [0 0 0; 1.5 0 0; 2.5 3.5 0];  ## lower-triangular
+%! G = graph (A, "lower");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Edges.EndNodes, [1 2; 1 3; 2 3]);
+%! assert (G.Edges.Weight, [1.5; 2.5; 3.5]);
+
+## BIST — 'upper' ignores whatever is in the lower triangle.
+%!test
+%! A = [0 1 2; 99 0 3; 88 77 0];
+%! G = graph (A, "upper");
+%! assert (numedges (G), 3);
+%! assert (G.Edges.EndNodes, [1 2; 1 3; 2 3]);
+%! assert (G.Edges.Weight, [1; 2; 3]);
+
+## BIST — 'lower' ignores whatever is in the upper triangle.
+%!test
+%! A = [0 99 88; 1 0 77; 2 3 0];
+%! G = graph (A, "lower");
+%! assert (numedges (G), 3);
+%! assert (G.Edges.EndNodes, [1 2; 1 3; 2 3]);
+%! assert (G.Edges.Weight, [1; 2; 3]);
+
+## BIST — self-loop via diagonal in symmetric matrix.
+%!test
+%! A = [2 1 0; 1 0 0; 0 0 0];
+%! G = graph (A);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 2);
+%! assert (G.Edges.EndNodes, [1 1; 1 2]);
+%! assert (G.Edges.Weight, [2; 1]);
+
+## BIST — 'upper' preserves diagonal self-loop.
+%!test
+%! A = [5 1 0; 0 0 0; 0 0 0];
+%! G = graph (A, "upper");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 2);
+%! assert (G.Edges.EndNodes, [1 1; 1 2]);
+%! assert (G.Edges.Weight, [5; 1]);
+
+## BIST — 'lower' preserves diagonal self-loop.
+%!test
+%! A = [5 0 0; 1 0 0; 0 0 0];
+%! G = graph (A, "lower");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 2);
+%! assert (G.Edges.EndNodes, [1 1; 1 2]);
+%! assert (G.Edges.Weight, [5; 1]);
+
+## BIST — diagonal-only (all self-loops) symmetric adjacency.
+%!test
+%! A = [2 0 0; 0 3 0; 0 0 5];
+%! G = graph (A);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Edges.EndNodes, [1 1; 2 2; 3 3]);
+%! assert (G.Edges.Weight, [2; 3; 5]);
+
+## BIST — sparse symmetric A stays sparse-friendly.
+%!test
+%! A = sparse (5, 5);
+%! A(1, 2) = 10; A(2, 1) = 10;
+%! A(2, 3) = 20; A(3, 2) = 20;
+%! G = graph (A);
+%! assert (numnodes (G), 5);
+%! assert (numedges (G), 2);
+%! assert (G.Edges.EndNodes, [1 2; 2 3]);
+%! assert (G.Edges.Weight, [10; 20]);
+
+## BIST — sparse A + A.' pattern with trailing isolated nodes.
+%!test
+%! A = sparse ([1 2], [2 3], [10 20], 10, 10);
+%! A = A + A.';
+%! G = graph (A);
+%! assert (numnodes (G), 10);
+%! assert (numedges (G), 2);
+%! assert (G.Edges.EndNodes, [1 2; 2 3]);
+%! assert (G.Edges.Weight, [10; 20]);
+
+## BIST — all-zeros NxN yields N isolated nodes, zero edges.
+%!test
+%! G = graph (zeros (4));
+%! assert (numnodes (G), 4);
+%! assert (numedges (G), 0);
+
+## BIST — 0x0 adjacency yields empty graph, unweighted.
+%!test
+%! G = graph (zeros (0, 0));
+%! assert (numnodes (G), 0);
+%! assert (numedges (G), 0);
+%! E = G.Edges;
+%! assert (! isfield (E, "Weight"));
+
+## BIST — logical adjacency coerced to double weights.
+%!test
+%! A = logical ([0 1 0; 1 0 1; 0 1 0]);
+%! G = graph (A);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 2);
+%! assert (G.Edges.EndNodes, [1 2; 2 3]);
+%! assert (class (G.Edges.Weight), "double");
+
+## BIST — int8 adjacency coerced to double weights.
+%!test
+%! A = int8 ([0 1 0; 1 0 1; 0 1 0]);
+%! G = graph (A);
+%! assert (G.Edges.EndNodes, [1 2; 2 3]);
+%! assert (class (G.Edges.Weight), "double");
+
+## BIST — errors: non-square A rejected.
+%!error <square> graph ([1 2 3; 4 5 6])
+%!error <square> graph ([1 2 3; 4 5 6], "upper")
+%!error <square> graph ([1 2; 3 4; 5 6])
+%!error <square> graph ([1 2; 3 4; 5 6], "lower")
+
+## BIST — error: complex adjacency.
+%!error <real> graph ([0 1i; -1i 0])
+%!error <real> graph ([0 1i; 0 0], "upper")
+
+## BIST — error: NaN in adjacency.
+%!error <NaN> graph ([0 NaN; NaN 0])
+%!error <NaN> graph ([0 NaN; 0 0], "upper")
+%!error <NaN> graph ([0 0; NaN 0], "lower")
+
+## BIST — error: 3-D input rejected.
+%!error <square adjacency matrix> graph (ones (2, 2, 2))
+
+## BIST — error: unknown triangle flag.
+%!error <'upper' or 'lower'> graph ([0 1; 1 0], "middle")
+%!error <'upper' or 'lower'> graph ([0 1; 1 0], "Upp")
+
+## BIST — graph(A, 'Upper') is case-insensitive.
+%!test
+%! A = [0 1 2; 0 0 3; 0 0 0];
+%! G = graph (A, "Upper");
+%! assert (numedges (G), 3);
+%! G2 = graph (A, "UPPER");
+%! assert (numedges (G2), 3);
+
+## BIST — graph(A, 'Lower') is case-insensitive.
+%!test
+%! A = [0 0 0; 1 0 0; 2 3 0];
+%! G = graph (A, "Lower");
+%! assert (numedges (G), 3);
+%! G2 = graph (A, "LOWER");
+%! assert (numedges (G2), 3);
+
+## BIST — 5x5 sparse mostly-zero symmetric matrix.
+%!test
+%! A = sparse (5, 5);
+%! A(1, 2) = 1; A(2, 1) = 1;
+%! G = graph (A);
+%! assert (numnodes (G), 5);
+%! assert (numedges (G), 1);
+%! assert (G.Edges.EndNodes, [1 2]);
+
+## BIST — negative weights accepted.
+%!test
+%! A = [0 -1.5 0; -1.5 0 -2.5; 0 -2.5 0];
+%! G = graph (A);
+%! assert (G.Edges.Weight, [-1.5; -2.5]);
+
+## BIST — Inf weights accepted (NaN rejected separately).
+%!test
+%! A = [0 Inf; Inf 0];
+%! G = graph (A);
+%! assert (numedges (G), 1);
+%! assert (G.Edges.Weight, Inf);
+
+## BIST — Nodes.Name is empty cellstr when constructed from adjacency alone.
+%!test
+%! G = graph ([0 1; 1 0]);
+%! assert (G.Nodes.Name, cell (0, 1));
+
+## BIST — matrix form implies weighted: Edges has Weight field.
+%!test
+%! G = graph ([0 1; 1 0]);
+%! E = G.Edges;
+%! assert (isfield (E, "EndNodes"));
+%! assert (isfield (E, "Weight"));
+
+## BIST — 'upper' with an all-zero upper triangle gives an edgeless graph.
+%!test
+%! A = [0 0 0; 1 0 0; 2 3 0];
+%! G = graph (A, "upper");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 0);
+
+## BIST — 'lower' with an all-zero lower triangle gives an edgeless graph.
+%!test
+%! A = [0 1 2; 0 0 3; 0 0 0];
+%! G = graph (A, "lower");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 0);
+
+## BIST — 0x0 adjacency with 'upper'/'lower'.
+%!test
+%! G = graph (zeros (0, 0), "upper");
+%! assert (numnodes (G), 0);
+%! assert (numedges (G), 0);
+%!test
+%! G = graph (zeros (0, 0), "lower");
+%! assert (numnodes (G), 0);
+%! assert (numedges (G), 0);
+
+## BIST — sparse adjacency with 'upper' pulls only strict-plus-diag upper.
+%!test
+%! A = sparse (3, 3);
+%! A(1, 2) = 10; A(1, 3) = 20; A(2, 3) = 30;
+%! A(3, 1) = 99; A(3, 2) = 99;  ## noise in lower, ignored by 'upper'
+%! G = graph (A, "upper");
+%! assert (numedges (G), 3);
+%! assert (G.Edges.EndNodes, [1 2; 1 3; 2 3]);
+%! assert (G.Edges.Weight, [10; 20; 30]);
+
+## BIST — sparse adjacency with 'lower'.
+%!test
+%! A = sparse (3, 3);
+%! A(2, 1) = 10; A(3, 1) = 20; A(3, 2) = 30;
+%! A(1, 2) = 99; A(1, 3) = 99;  ## noise in upper, ignored by 'lower'
+%! G = graph (A, "lower");
+%! assert (numedges (G), 3);
+%! assert (G.Edges.EndNodes, [1 2; 1 3; 2 3]);
+%! assert (G.Edges.Weight, [10; 20; 30]);
+
+## BIST — 1x1 matrix input: scalar dispatch is N.  [0] -> N=0 path.
+%!test
+%! G = graph (0);
+%! assert (numnodes (G), 0);
+
+## BIST — symmetric 1x1 with zero diag is a single isolated node (N=0 path
+## actually — [0] is scalar, so go through N).  Done via explicit 2x2.
+%!test
+%! G = graph ([0 0; 0 0]);
+%! assert (numnodes (G), 2);
+%! assert (numedges (G), 0);
+
+## BIST — self-loop-only symmetric adjacency via 'upper'/'lower' agree.
+%!test
+%! A = diag ([1 2 3]);
+%! Gu = graph (A, "upper");
+%! Gl = graph (A, "lower");
+%! G  = graph (A);
+%! assert (numedges (Gu), 3);
+%! assert (numedges (Gl), 3);
+%! assert (numedges (G),  3);
+%! assert (Gu.Edges.EndNodes, [1 1; 2 2; 3 3]);
+%! assert (Gl.Edges.EndNodes, [1 1; 2 2; 3 3]);
+%! assert (G.Edges.EndNodes,  [1 1; 2 2; 3 3]);
+%! assert (Gu.Edges.Weight, [1; 2; 3]);
+%! assert (Gl.Edges.Weight, [1; 2; 3]);
+%! assert (G.Edges.Weight,  [1; 2; 3]);
+
+## BIST — graph(A) from graph(A, 'upper') of a symmetric A agree.
+%!test
+%! A = [0 1.5 2.5; 1.5 0 3.5; 2.5 3.5 0];
+%! G1 = graph (A);
+%! G2 = graph (A, "upper");
+%! G3 = graph (A, "lower");
+%! assert (G1.Edges.EndNodes, G2.Edges.EndNodes);
+%! assert (G1.Edges.Weight,   G2.Edges.Weight);
+%! assert (G1.Edges.EndNodes, G3.Edges.EndNodes);
+%! assert (G1.Edges.Weight,   G3.Edges.Weight);

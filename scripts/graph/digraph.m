@@ -36,6 +36,7 @@ classdef digraph
   ## @deftypefnx {} {@var{G} =} digraph (@var{s}, @var{t}, @var{w}, @var{N})
   ## @deftypefnx {} {@var{G} =} digraph (@var{EdgeTable})
   ## @deftypefnx {} {@var{G} =} digraph (@var{EdgeTable}, @var{NodeTable})
+  ## @deftypefnx {} {@var{G} =} digraph (@dots{}, "omitselfloops")
   ## Create a directed graph.
   ##
   ## With no arguments, return an empty directed graph with zero nodes
@@ -115,6 +116,15 @@ classdef digraph
   ## Until Octave has a built-in @code{table} class, this struct form
   ## stands in for MATLAB's @code{table}.
   ##
+  ## Any of the forms above accepts a trailing string flag
+  ## @qcode{'omitselfloops'} (case-insensitive).  When present, every
+  ## self-loop edge (i.e.@: an edge whose source and destination node
+  ## coincide) is dropped after the rest of the graph is built.  Any
+  ## extra edge-attribute columns supplied via the @code{EdgeTable}
+  ## form are filtered by the same mask so their row count remains in
+  ## sync with the surviving edges.  Node names and node-attribute
+  ## columns are unaffected.
+  ##
   ## @code{digraph} is a value class: every mutator returns a new object,
   ## leaving the input unchanged.
   ##
@@ -161,6 +171,10 @@ classdef digraph
   ## G = digraph (ET, NT);  # EdgeTable + NodeTable form
   ## G.Edges.Label          # ==> @{"a"; "b"; "c"@}
   ## G.Nodes.Name           # ==> @{"x"; "y"; "z"@}
+  ##
+  ## G = digraph ([1 2 3 4], [1 2 4 5], [10 20 30 40], "omitselfloops");
+  ## numedges (G)           # ==> 2 (self-loops 1->1 and 2->2 dropped)
+  ## G.Edges.EndNodes       # ==> [3 4; 4 5]
   ## @end group
   ## @end example
   ##
@@ -218,12 +232,29 @@ classdef digraph
 
     function G = digraph (varargin)
 
-      if (nargin == 0)
+      ## Pre-process the trailing @qcode{'omitselfloops'} flag (US-C09).
+      ## A trailing char-row argument matching @qcode{"omitselfloops"}
+      ## (case-insensitive) is stripped from the argument list and
+      ## recorded so the constructor can drop any resulting self-loop
+      ## edges after the main build step.  Using local @var{args} /
+      ## @var{nargs} shadows the built-in @code{varargin} / @code{nargin}
+      ## so the existing dispatch branches keep their original shape.
+      args = varargin;
+      nargs = numel (args);
+      omit_loops = false;
+      if (nargs >= 1 && ischar (args{end}) && isrow (args{end}) ...
+          && strcmpi (args{end}, "omitselfloops"))
+        omit_loops = true;
+        args(end) = [];
+        nargs = numel (args);
+      endif
+
+      if (nargs == 0)
         ## Default constructor: empty graph.  Property defaults apply.
         return;
-      elseif ((nargin == 1 && isstruct (varargin{1})) ...
-              || (nargin == 2 && isstruct (varargin{1}) ...
-                  && isstruct (varargin{2})))
+      elseif ((nargs == 1 && isstruct (args{1})) ...
+              || (nargs == 2 && isstruct (args{1}) ...
+                  && isstruct (args{2})))
         ## EdgeTable (and optional NodeTable) constructor.
         ## digraph (ET) or digraph (ET, NT).  ET is a scalar struct
         ## with an EndNodes field (numeric m-by-2 or cellstr m-by-2)
@@ -233,10 +264,10 @@ classdef digraph
         ## node-attribute columns.  Edges are re-sorted into
         ## lexicographic (source, destination) order and every extra
         ## column is reordered to match.
-        ET = varargin{1};
-        have_nt = (nargin == 2);
+        ET = args{1};
+        have_nt = (nargs == 2);
         if (have_nt)
-          NT = varargin{2};
+          NT = args{2};
         endif
 
         if (! isscalar (ET))
@@ -446,8 +477,8 @@ classdef digraph
         G.edge_attrs_ = e_attrs;
         G.node_attrs_ = n_attrs;
 
-      elseif (nargin == 1)
-        arg1 = varargin{1};
+      elseif (nargs == 1)
+        arg1 = args{1};
         if (isnumeric (arg1) && isscalar (arg1))
           ## Scalar numeric input: node count N.
           if (! (isreal (arg1) && isfinite (arg1) && arg1 >= 0 ...
@@ -498,15 +529,15 @@ classdef digraph
                   "non-negative integer scalar or a real square ", ...
                   "adjacency matrix"]);
         endif
-      elseif (nargin == 2 && iscellstr (varargin{2}))
+      elseif (nargs == 2 && iscellstr (args{2}))
         ## Adjacency-matrix + nodenames constructor:
         ## digraph (A, NODENAMES).  A must be a real square numeric or
         ## logical 2-D matrix; NODENAMES must be a cellstr of unique
         ## strings whose length equals size (A, 1).  Semantics otherwise
         ## mirror the US-C06 adjacency path (sparse preserved, weights
         ## drawn from A(i,j)).
-        A = varargin{1};
-        nn = varargin{2};
+        A = args{1};
+        nn = args{2};
         nn = nn(:);  # store as column cellstr
         if (! ((isnumeric (A) || islogical (A)) ...
                && ismatrix (A) && ndims (A) == 2))
@@ -548,13 +579,13 @@ classdef digraph
           G.has_weights_ = true;
         endif
         G.nodenames_ = nn;
-      elseif (nargin == 2 || nargin == 3)
+      elseif (nargs == 2 || nargs == 3)
         ## Edge-list constructor: digraph (s, t) or digraph (s, t, w).
-        s = varargin{1};
-        t = varargin{2};
-        have_weights = (nargin == 3);
+        s = args{1};
+        t = args{2};
+        have_weights = (nargs == 3);
         if (have_weights)
-          w = varargin{3};
+          w = args{3};
         endif
         if (! (isnumeric (s) && isreal (s) ...
                && isnumeric (t) && isreal (t)))
@@ -613,16 +644,16 @@ classdef digraph
             G.adj_ = sparse (s, t, 1, N, N);
           endif
         endif
-      elseif (nargin == 4)
+      elseif (nargs == 4)
         ## Four-argument constructor.  Dispatch on the type of the
         ## fourth argument:
         ##   cellstr           -> digraph (s, t, w, nodenames)
         ##   numeric scalar    -> digraph (s, t, w, N)
         ## Any other shape is rejected.
-        s = varargin{1};
-        t = varargin{2};
-        w = varargin{3};
-        arg4 = varargin{4};
+        s = args{1};
+        t = args{2};
+        w = args{3};
+        arg4 = args{4};
 
         if (iscellstr (arg4))
           ## Named edge-list constructor: digraph (s, t, w, nodenames).
@@ -768,6 +799,35 @@ classdef digraph
       else
         error ("Octave:invalid-input-arg", ...
                "digraph: unsupported number of arguments");
+      endif
+
+      ## US-C09 post-processing: drop every self-loop edge (i, i) when
+      ## the caller passed the trailing @qcode{'omitselfloops'} flag.
+      ## Extra edge-attribute columns are filtered by the same mask so
+      ## their row count stays in sync with the remaining edges.
+      if (omit_loops)
+        N = size (G.adj_, 1);
+        if (N > 0 && nnz (G.adj_) > 0)
+          [r, c, v] = find (G.adj_);
+          keep = (r != c);
+          if (any (! keep))
+            ## find(adj_) walks column-major, so (r, c) arrives in
+            ## (dst, src) order.  edge_attrs_ are stored in lex
+            ## (src, dst) order -- match them by sorting (r, c) as
+            ## rows.  One sort on an nnz-by-2 integer matrix beats a
+            ## second find on the transpose.
+            efn = fieldnames (G.edge_attrs_);
+            if (! isempty (efn))
+              [~, lex_perm] = sortrows ([r, c]);
+              keep_lex = keep(lex_perm);
+              for ii = 1:numel (efn)
+                fn_i = efn{ii};
+                G.edge_attrs_.(fn_i) = G.edge_attrs_.(fn_i)(keep_lex, :);
+              endfor
+            endif
+            G.adj_ = sparse (r(keep), c(keep), v(keep), N, N);
+          endif
+        endif
       endif
 
     endfunction
@@ -1841,3 +1901,174 @@ endclassdef
 %!error <length> ...
 %! digraph (struct ("EndNodes", [1 2]), ...
 %!          struct ("Size", [1; 2], "Kind", {{"a"; "b"; "c"}}))
+
+## BIST — US-C09: digraph(s, t, 'omitselfloops') drops self-loops.
+%!test
+%! s = [1 2 3 4];
+%! t = [1 2 3 5];
+%! G = digraph (s, t, "omitselfloops");
+%! assert (numnodes (G), 5);
+%! assert (numedges (G), 1);
+%! assert (G.Edges.EndNodes, [4 5]);
+
+## BIST — US-C09: digraph(s, t, w, 'omitselfloops') drops self-loop weights.
+%!test
+%! s = [1 2 3 4];
+%! t = [1 2 4 5];
+%! w = [10 20 30 40];
+%! G = digraph (s, t, w, "omitselfloops");
+%! assert (numnodes (G), 5);
+%! assert (numedges (G), 2);
+%! assert (G.Edges.EndNodes, [3 4; 4 5]);
+%! assert (G.Edges.Weight, [30; 40]);
+
+## BIST — US-C09: digraph(s, t, w, nodenames, 'omitselfloops').
+%!test
+%! G = digraph ([1 2 3], [1 3 1], [10 20 30], ...
+%!              {"a", "b", "c"}, "omitselfloops");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 2);
+%! assert (G.Nodes.Name, {"a"; "b"; "c"});
+%! assert (G.Edges.EndNodes, [2 3; 3 1]);
+%! assert (G.Edges.Weight, [20; 30]);
+
+## BIST — US-C09: digraph(s, t, w, N, 'omitselfloops') with isolated nodes.
+%!test
+%! G = digraph ([1 2 3], [1 3 1], [10 20 30], 10, "omitselfloops");
+%! assert (numnodes (G), 10);
+%! assert (numedges (G), 2);
+%! assert (G.Edges.EndNodes, [2 3; 3 1]);
+%! assert (G.Edges.Weight, [20; 30]);
+
+## BIST — US-C09: digraph(A, 'omitselfloops') drops diagonal of adjacency.
+%!test
+%! A = [1 2 0; 0 5 3; 4 0 7];
+%! G = digraph (A, "omitselfloops");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Edges.EndNodes, [1 2; 2 3; 3 1]);
+%! assert (G.Edges.Weight, [2; 3; 4]);
+
+## BIST — US-C09: digraph(A, nodenames, 'omitselfloops').
+%!test
+%! A = [1 2 0; 0 5 3; 4 0 7];
+%! G = digraph (A, {"a", "b", "c"}, "omitselfloops");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Nodes.Name, {"a"; "b"; "c"});
+%! assert (G.Edges.EndNodes, [1 2; 2 3; 3 1]);
+%! assert (G.Edges.Weight, [2; 3; 4]);
+
+## BIST — US-C09: sparse adjacency + 'omitselfloops' stays sparse.
+%!test
+%! A = sparse ([1 1 2 2], [1 2 2 3], [10 20 30 40], 3, 3);
+%! G = digraph (A, "omitselfloops");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 2);
+%! assert (G.Edges.EndNodes, [1 2; 2 3]);
+%! assert (G.Edges.Weight, [20; 40]);
+
+## BIST — US-C09: digraph(N, 'omitselfloops') is a no-op (no edges).
+%!test
+%! G = digraph (5, "omitselfloops");
+%! assert (numnodes (G), 5);
+%! assert (numedges (G), 0);
+
+## BIST — US-C09: digraph('omitselfloops') alone yields empty digraph.
+%!test
+%! G = digraph ("omitselfloops");
+%! assert (numnodes (G), 0);
+%! assert (numedges (G), 0);
+
+## BIST — US-C09: digraph(ET, 'omitselfloops') drops self-loop edges.
+%!test
+%! ET.EndNodes = [1 1; 1 2; 2 2; 2 3];
+%! ET.Weight = [10; 20; 30; 40];
+%! G = digraph (ET, "omitselfloops");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 2);
+%! assert (G.Edges.EndNodes, [1 2; 2 3]);
+%! assert (G.Edges.Weight, [20; 40]);
+
+## BIST — US-C09: digraph(ET, 'omitselfloops') filters extra edge columns.
+%!test
+%! ET.EndNodes = [1 1; 1 2; 2 2; 2 3];
+%! ET.Weight = [10; 20; 30; 40];
+%! ET.Label = {"loop1"; "ab"; "loop2"; "bc"};
+%! G = digraph (ET, "omitselfloops");
+%! assert (numedges (G), 2);
+%! assert (G.Edges.Label, {"ab"; "bc"});
+
+## BIST — US-C09: digraph(ET, NT, 'omitselfloops').
+%!test
+%! ET.EndNodes = [1 1; 1 2; 2 3];
+%! NT.Name = {"x"; "y"; "z"};
+%! G = digraph (ET, NT, "omitselfloops");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 2);
+%! assert (G.Nodes.Name, {"x"; "y"; "z"});
+%! assert (G.Edges.EndNodes, [1 2; 2 3]);
+
+## BIST — US-C09: 'OmitSelfLoops' is case-insensitive.
+%!test
+%! G1 = digraph ([1 2], [1 3], "OmitSelfLoops");
+%! G2 = digraph ([1 2], [1 3], "OMITSELFLOOPS");
+%! assert (numedges (G1), 1);
+%! assert (numedges (G2), 1);
+%! assert (G1.Edges.EndNodes, [2 3]);
+%! assert (G2.Edges.EndNodes, [2 3]);
+
+## BIST — US-C09: no self-loops -> 'omitselfloops' is a no-op.
+%!test
+%! G1 = digraph ([1 2 3], [2 3 1]);
+%! G2 = digraph ([1 2 3], [2 3 1], "omitselfloops");
+%! assert (numnodes (G1), numnodes (G2));
+%! assert (numedges (G1), numedges (G2));
+%! assert (G1.Edges.EndNodes, G2.Edges.EndNodes);
+
+## BIST — US-C09: all edges are self-loops -> empty edge set.
+%!test
+%! G = digraph ([1 2 3], [1 2 3], "omitselfloops");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 0);
+
+## BIST — US-C09: empty edges + 'omitselfloops' is valid.
+%!test
+%! G = digraph ([], [], "omitselfloops");
+%! assert (numnodes (G), 0);
+%! assert (numedges (G), 0);
+
+## BIST — US-C09: empty edges with N + 'omitselfloops' preserves N.
+%!test
+%! G = digraph ([], [], [], 5, "omitselfloops");
+%! assert (numnodes (G), 5);
+%! assert (numedges (G), 0);
+
+## BIST — US-C09: scalar weight broadcast + 'omitselfloops'.
+%!test
+%! G = digraph ([1 2 3], [1 2 4], 2.5, "omitselfloops");
+%! assert (numedges (G), 1);
+%! assert (G.Edges.EndNodes, [3 4]);
+%! assert (G.Edges.Weight, 2.5);
+
+## BIST — US-C09: string endpoints + 'omitselfloops'.
+%!test
+%! G = digraph ({"a", "a", "b"}, {"a", "b", "c"}, [], ...
+%!              {"a", "b", "c"}, "omitselfloops");
+%! assert (numedges (G), 2);
+%! assert (G.Edges.EndNodes, [1 2; 2 3]);
+
+## BIST — US-C09: logical adjacency + 'omitselfloops'.
+%!test
+%! A = logical ([1 1 0; 0 1 1; 1 0 1]);
+%! G = digraph (A, "omitselfloops");
+%! assert (numedges (G), 3);
+%! assert (G.Edges.EndNodes, [1 2; 2 3; 3 1]);
+
+## BIST — US-C09: too many positional args after stripping the flag still
+## trips the unsupported-nargs error.
+%!error <unsupported> digraph (1, 2, 3, 4, 5, "omitselfloops")
+
+## BIST — US-C09: an unrecognised trailing string is not stripped, and
+## still reaches the existing edge-list validation which rejects it.
+%!error digraph ([1 2], [1 3], "badflag")

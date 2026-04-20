@@ -73,8 +73,11 @@
 ## @end table
 ##
 ## The optional second output @var{R} is the reciprocal condition number of
-## @var{A} for square matrices or @code{0} for rectangular matrices.
-## @seealso{mldivide, matrix_type, rcond}
+## @var{A} for square matrices.  For rectangular matrices @var{R} is the rank
+## of @var{A} or @code{NaN} if the size of @var{A} is large.  When a second
+## output is requested Octave will not emit a warning about an ill-conditioned
+## matrix.
+## @seealso{mldivide, matrix_type, rcond, rank}
 ## @end deftypefn
 
 function [x, R] = linsolve (A, b, opts)
@@ -107,6 +110,10 @@ function [x, R] = linsolve (A, b, opts)
     endif
   endif
 
+  if (nargout > 1)
+    warning ("off", "Octave:singular-matrix", "local");
+  endif
+
   ## This way is faster as the transpose is not calculated in Octave,
   ## but forwarded as a flag option to BLAS.
   if (trans_A)
@@ -119,7 +126,13 @@ function [x, R] = linsolve (A, b, opts)
     if (issquare (A))
       R = rcond (A);
     else
-      R = 0;
+      if (numel (A) > 1e6)
+        warning ('Octave:linsolve:rank-not-calculated',
+                 'linsolve: matrix A too large.  Rank of A not calculated');
+        R = NaN;
+      else
+        R = rank (A);
+      endif
     endif
   endif
 
@@ -143,9 +156,57 @@ endfunction
 %! opts.TRANSA = true;
 %! assert (linsolve (A, b, opts), A' \ b);
 
+## Test second output for square and rectangular inputs.
+%!test <*68238>
+%! A = hilb (4);
+%! b = [1:4]';
+%! [x, R] = linsolve (A, b);
+%! assert (x, [-64; 900; -2520; 1820], -3e-13);
+%! assert (R, rcond (A));
+
+%!test <*68238>
+%! A = hilb (5);
+%! A(5,:) = [];      # Make rectangular 4x5 matrix
+%! A(3,:) = A(1,:);  # Reduce rank to 3
+%! b = [1:4]';
+%! [x, R] = linsolve (A, b);
+%! assert (R, 3);
+
+%!test <*68238>
+%! A = eye (3);
+%! b = [2; 3; 4];
+%! [x, R] = linsolve (A, b);
+%! assert (x, [2; 3; 4]);
+%! assert (R, 1);
+
+%!test <*68238>
+%! A = [eye(3); eye(3)];
+%! b = [2; 3; 4];
+%! [x, R] = linsolve (A, [b; b]);
+%! assert (x, b, 10*eps);
+%! assert (R, 3);
+
+%!test <*68238>
+%! A = [eye(3), eye(3)];
+%! b = [2; 3; 4];
+%! [x, R] = linsolve (A, b);
+%! assert (A*x, b, 10*eps);
+%! assert (R, 3);
+
+%!test <*68238>
+%! A = [1 2 3 4; 2 3 5 7; 3 5 6 7];
+%! b = [2; 3; 4];
+%! [x, R] = linsolve (A, b);
+%! assert (A*x, b, 10*eps);
+%! assert (R, 3);
+
+## Test input validation
 %!error <Invalid call> linsolve ()
 %!error <Invalid call> linsolve (1)
-%!error linsolve (1,2,3)
 %!error <A and B must be numeric> linsolve ({1},2)
 %!error <A and B must be numeric> linsolve (1,{2})
 %!error <OPTS must be a structure> linsolve (1,2,3)
+%!warning <matrix singular to machine precision>
+%! A = ones (3, 3);
+%! b = ones (3, 1);
+%! x = linsolve (A, b);

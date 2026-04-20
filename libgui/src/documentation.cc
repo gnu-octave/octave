@@ -136,7 +136,7 @@ documentation::documentation (QWidget *p)
     // version of Octave is installed.
     QMessageBox::warning (this, tr ("Octave Documentation"),
                           tr ("Could not copy help collection to temporary\n"
-                              "file. Search capabilities may be affected.\n"
+                              "file.  Search capabilities may be affected.\n"
                               "%1").arg (m_help_engine->error ()));
 #endif
 
@@ -150,7 +150,7 @@ documentation::documentation (QWidget *p)
 #if defined (ENABLE_DOCS)
       QMessageBox::warning (this, tr ("Octave Documentation"),
                             tr ("Could not setup the data required for the\n"
-                                "documentation viewer. Maybe the Qt SQlite\n"
+                                "documentation viewer.  Maybe the Qt SQlite\n"
                                 "module is missing?\n"
                                 "Only help text in the Command Window will\n"
                                 "be available."));

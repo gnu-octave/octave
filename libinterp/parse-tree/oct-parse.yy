@@ -5157,8 +5157,9 @@ base_parser::bison_error (const std::string& str, const filepos& pos)
           if (err_col == 0)
             err_col = len;
 
-          for (int i = 0; i < err_col + 3; i++)
-            output_buf << " ";
+          output_buf << "    ";  // spacing to account for ">>> "
+          for (int i = 0; i < err_col - 1; i++)
+            output_buf << (curr_line[i] == '\t' ? "\t" : " ");
 
           output_buf << "^" << "\n";
         }

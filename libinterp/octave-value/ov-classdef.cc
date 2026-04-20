@@ -213,7 +213,7 @@ octave_classdef::loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m
                   return;
                 }
 
-              // FIXME: A loadobj method can return any type. If the return
+              // FIXME: A loadobj method can return any type.  If the return
               //        type is not a classdef object of the correct class,
               //        then the loaded object must be replaced by whatever the
               //        return type and contents are.

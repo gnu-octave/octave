@@ -474,7 +474,7 @@
                 <item>
                  <widget class="QCheckBox" name="cb_focus_follows_mouse">
                   <property name="toolTip">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If set, the focus of the widgets that are docked to the main window follows the mouse cursor. This is intended for having the same behavior within the main window when &amp;quot;focus follows mouse&amp;quot; is used for the desktop environment.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If set, the focus of the widgets that are docked to the main window follows the mouse cursor.  This is intended for having the same behavior within the main window when &amp;quot;focus follows mouse&amp;quot; is used for the desktop environment.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                   <property name="text">
                    <string>Focus follows mouse for widgets docked to the main window</string>
@@ -1189,7 +1189,7 @@
                   <item>
                    <widget class="QCheckBox" name="editor_cb_tabs_rotated">
                     <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Rotate tabs: Vertical when at top or bottom and horizontal when left or right. The close button is not shown in rotated tabs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Rotate tabs: Vertical when at top or bottom and horizontal when left or right.  The close button is not shown in rotated tabs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                     <property name="text">
                      <string>Rotated tabs</string>
@@ -1233,7 +1233,7 @@
                   <item>
                    <widget class="QSpinBox" name="editor_sb_tabs_max_width">
                     <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Max. width of a tab in characters (average char. width). Especially useful for rotated tabs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Max. width of a tab in characters (average char. width).  Especially useful for rotated tabs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                     <property name="maximum">
                      <number>64</number>
@@ -1350,7 +1350,7 @@
                      </sizepolicy>
                     </property>
                     <property name="toolTip">
-                     <string>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</string>
+                     <string>This works well for monospaced fonts.  The line is drawn at a position based on the width of a space character in the default font.  It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</string>
                     </property>
                     <property name="text">
                      <string>Break long lines at line length</string>
@@ -1490,7 +1490,7 @@
                    </sizepolicy>
                   </property>
                   <property name="toolTip">
-                   <string>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</string>
+                   <string>This works well for monospaced fonts.  The line is drawn at a position based on the width of a space character in the default font.  It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</string>
                   </property>
                   <property name="text">
                    <string>Wrap long lines at current window border</string>
@@ -2838,7 +2838,7 @@ interference with readline key strokes.</string>
                      <bool>true</bool>
                     </property>
                     <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select &lt;span style=&quot; font-style:italic;&quot;&gt;HttpProxy&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;Sock5Proxy&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;Environment Variables&lt;/span&gt;. With the last selection, the proxy is taken from the first non-empty environment variable ALL_PROXY, HTTP_PROXY or HTTPS_PROXY .&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select &lt;span style=&quot; font-style:italic;&quot;&gt;HttpProxy&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;Sock5Proxy&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;Environment Variables&lt;/span&gt;.  With the last selection, the proxy is taken from the first non-empty environment variable ALL_PROXY, HTTP_PROXY or HTTPS_PROXY .&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                    </widget>
                   </item>

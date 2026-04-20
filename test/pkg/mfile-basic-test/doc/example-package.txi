@@ -36,7 +36,7 @@ with this documentation; if not, see <http://www.gnu.org/licenses/>.
 @insertcopying
 @end titlepage
 
-@c No table of contents. The table would occupy most of the top node in
+@c No table of contents.  The table would occupy most of the top node in
 @c html and IMHO misleads the user to use the table instead of the menu
 @c structure of the nodes, which would let some information unused.
 @c

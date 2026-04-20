@@ -217,7 +217,7 @@ classdef digraph
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges, ismultigraph}
+  ## @seealso{graph, numnodes, numedges, ismultigraph, successors, predecessors}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1150,6 +1150,82 @@ classdef digraph
         m = size (G.mg_endnodes_, 1);
         u = unique (G.mg_endnodes_, "rows");
         tf = (size (u, 1) != m);
+      endif
+
+    endfunction
+
+    function s = successors (G, nodeID)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{s} =} successors (@var{G}, @var{nodeID})
+      ## Return the destinations of out-edges from @var{nodeID} in the
+      ## digraph @var{G}.  @var{nodeID} is a scalar node identifier --
+      ## either a numeric index in @code{1:numnodes (@var{G})} or a
+      ## node name (char row vector or 1-element cellstr).  The return
+      ## type matches the input type (numeric in / numeric out, string
+      ## in / cellstr out).  For a multigraph, each parallel edge
+      ## contributes one entry, so duplicate destinations are possible.
+      ## @seealso{digraph, predecessors, neighbors, outedges}
+      ## @end deftypefn
+
+      if (nargin != 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to successors: expected 2 arguments");
+      endif
+
+      [n, return_names] = __resolve_single_node__ (G, nodeID, "successors");
+
+      if (G.is_multigraph_)
+        mask = (G.mg_endnodes_(:, 1) == n);
+        idx = G.mg_endnodes_(mask, 2);
+      else
+        idx = find (G.adj_(n, :));
+        idx = idx(:);
+      endif
+
+      if (return_names)
+        s = G.nodenames_(idx);
+        s = s(:);
+      else
+        s = double (idx);
+      endif
+
+    endfunction
+
+    function p = predecessors (G, nodeID)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{p} =} predecessors (@var{G}, @var{nodeID})
+      ## Return the sources of in-edges into @var{nodeID} in the
+      ## digraph @var{G}.  @var{nodeID} is a scalar node identifier --
+      ## either a numeric index in @code{1:numnodes (@var{G})} or a
+      ## node name (char row vector or 1-element cellstr).  The return
+      ## type matches the input type (numeric in / numeric out, string
+      ## in / cellstr out).  For a multigraph, each parallel edge
+      ## contributes one entry, so duplicate sources are possible.
+      ## @seealso{digraph, successors, neighbors, inedges}
+      ## @end deftypefn
+
+      if (nargin != 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to predecessors: expected 2 arguments");
+      endif
+
+      [n, return_names] = __resolve_single_node__ (G, nodeID, "predecessors");
+
+      if (G.is_multigraph_)
+        mask = (G.mg_endnodes_(:, 2) == n);
+        idx = G.mg_endnodes_(mask, 1);
+      else
+        idx = find (G.adj_(:, n));
+        idx = idx(:);
+      endif
+
+      if (return_names)
+        p = G.nodenames_(idx);
+        p = p(:);
+      else
+        p = double (idx);
       endif
 
     endfunction

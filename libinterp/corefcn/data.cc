@@ -8510,8 +8510,8 @@ compute the norms of each column and return a row vector.
 %! result = norm (x, -Inf);
 %! assert (result, single (0.5));
 
-%!assert <68254> (norm (sparse (100, 100), 2), 0)
-%!assert <68254> (norm (complex (sparse (100, 100), sparse (100, 100)), 2), 0)
+%!assert <*68254> (norm (sparse (100, 100), 2), 0)
+%!assert <*68254> (norm (complex (sparse (100, 100), sparse (100, 100)), 2), 0)
 */
 
 /*

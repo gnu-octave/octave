@@ -31,6 +31,7 @@ classdef digraph
   ## @deftypefnx {} {@var{G} =} digraph (@var{s}, @var{t})
   ## @deftypefnx {} {@var{G} =} digraph (@var{s}, @var{t}, @var{w})
   ## @deftypefnx {} {@var{G} =} digraph (@var{s}, @var{t}, @var{w}, @var{nodenames})
+  ## @deftypefnx {} {@var{G} =} digraph (@var{s}, @var{t}, @var{w}, @var{N})
   ## Create a directed graph.
   ##
   ## With no arguments, return an empty directed graph with zero nodes
@@ -65,6 +66,13 @@ classdef digraph
   ## @code{@var{G}.Nodes.Name} returns the node names as a column
   ## cell array.
   ##
+  ## When the fourth argument is a non-negative integer scalar @var{N},
+  ## the resulting digraph has exactly @var{N} nodes.  Any node indices
+  ## in @var{s} or @var{t} must lie in the range @code{1:@var{N}}, and
+  ## node indices greater than @code{max([@var{s}(:); @var{t}(:)])}
+  ## correspond to isolated nodes.  Pass @code{[]} for @var{w} to create
+  ## an unweighted digraph with @var{N} nodes.
+  ##
   ## @code{digraph} is a value class: every mutator returns a new object,
   ## leaving the input unchanged.
   ##
@@ -92,6 +100,10 @@ classdef digraph
   ## names = @{"a", "b", "c"@};
   ## G = digraph (@{"a", "b"@}, @{"b", "c"@}, [10 20], names);
   ## G.Nodes.Name           # ==> @{"a"; "b"; "c"@}
+  ##
+  ## G = digraph ([1 2], [2 3], [1 1], 5);  # 5 nodes, 2 edges, 2 isolated
+  ## numnodes (G)           # ==> 5
+  ## numedges (G)           # ==> 2
   ## @end group
   ## @end example
   ##
@@ -216,70 +228,156 @@ classdef digraph
           endif
         endif
       elseif (nargin == 4)
-        ## Named edge-list constructor: digraph (s, t, w, nodenames).
-        ## Endpoints may be numeric indices or strings looked up in
-        ## nodenames.  Node count is numel (nodenames) -- isolated
-        ## named nodes are preserved.  Pass [] for W to omit weights.
+        ## Four-argument constructor.  Dispatch on the type of the
+        ## fourth argument:
+        ##   cellstr           -> digraph (s, t, w, nodenames)
+        ##   numeric scalar    -> digraph (s, t, w, N)
+        ## Any other shape is rejected.
         s = varargin{1};
         t = varargin{2};
         w = varargin{3};
-        nn = varargin{4};
+        arg4 = varargin{4};
 
-        ## NODENAMES must be a cellstr of unique strings.
-        if (! iscellstr (nn))
-          error ("Octave:invalid-input-arg", ...
-                 "digraph: NODENAMES must be a cell array of strings");
-        endif
-        nn = nn(:);  # store as column cellstr
-        if (numel (nn) != numel (unique (nn)))
-          error ("Octave:invalid-input-arg", ...
-                 "digraph: NODENAMES must contain unique strings");
-        endif
-        N = numel (nn);
+        if (iscellstr (arg4))
+          ## Named edge-list constructor: digraph (s, t, w, nodenames).
+          ## Endpoints may be numeric indices or strings looked up in
+          ## nodenames.  Node count is numel (nodenames) -- isolated
+          ## named nodes are preserved.  Pass [] for W to omit weights.
+          nn = arg4;
+          nn = nn(:);  # store as column cellstr
+          if (numel (nn) != numel (unique (nn)))
+            error ("Octave:invalid-input-arg", ...
+                   "digraph: NODENAMES must contain unique strings");
+          endif
+          N = numel (nn);
 
-        ## Resolve endpoints to numeric indices.
-        s_idx = __resolve_endpoint__ (s, nn, "S");
-        t_idx = __resolve_endpoint__ (t, nn, "T");
-        if (numel (s_idx) != numel (t_idx))
-          error ("Octave:invalid-input-arg", ...
-                 "digraph: S and T must have the same length");
-        endif
+          ## Resolve endpoints to numeric indices.
+          s_idx = __resolve_endpoint__ (s, nn, "S");
+          t_idx = __resolve_endpoint__ (t, nn, "T");
+          if (numel (s_idx) != numel (t_idx))
+            error ("Octave:invalid-input-arg", ...
+                   "digraph: S and T must have the same length");
+          endif
 
-        ## W may be [] (no weights), a scalar (broadcast), or a vector
-        ## of length numel(s).  An all-NaN/non-numeric W is rejected.
-        have_weights = ! (isnumeric (w) && isempty (w));
-        if (have_weights)
-          if (! (isnumeric (w) && isreal (w)))
-            error ("Octave:invalid-input-arg", ...
-                   "digraph: W must be a numeric real vector or scalar");
+          ## W may be [] (no weights), a scalar (broadcast), or a vector
+          ## of length numel(s).  An all-NaN/non-numeric W is rejected.
+          have_weights = ! (isnumeric (w) && isempty (w));
+          if (have_weights)
+            if (! (isnumeric (w) && isreal (w)))
+              error ("Octave:invalid-input-arg", ...
+                     "digraph: W must be a numeric real vector or scalar");
+            endif
+            if (! (isvector (w) || isscalar (w)))
+              error ("Octave:invalid-input-arg", ...
+                     "digraph: W must be a vector or scalar");
+            endif
+            if (! isscalar (w) && numel (w) != numel (s_idx))
+              error ("Octave:invalid-input-arg", ...
+                     ["digraph: weight vector W must have length ", ...
+                      "numel (S) or be a scalar"]);
+            endif
+            w = double (w(:));
+            if (any (isnan (w)))
+              error ("Octave:invalid-input-arg", ...
+                     "digraph: weight vector W must not contain NaN");
+            endif
+            if (isscalar (w))
+              w = repmat (w, numel (s_idx), 1);
+            endif
           endif
-          if (! (isvector (w) || isscalar (w)))
-            error ("Octave:invalid-input-arg", ...
-                   "digraph: W must be a vector or scalar");
-          endif
-          if (! isscalar (w) && numel (w) != numel (s_idx))
-            error ("Octave:invalid-input-arg", ...
-                   ["digraph: weight vector W must have length ", ...
-                    "numel (S) or be a scalar"]);
-          endif
-          w = double (w(:));
-          if (any (isnan (w)))
-            error ("Octave:invalid-input-arg", ...
-                   "digraph: weight vector W must not contain NaN");
-          endif
-          if (isscalar (w))
-            w = repmat (w, numel (s_idx), 1);
-          endif
-        endif
 
-        G.nodenames_ = nn;
-        if (isempty (s_idx))
-          G.adj_ = sparse (N, N);
-        elseif (have_weights)
-          G.adj_ = sparse (s_idx, t_idx, w, N, N);
-          G.has_weights_ = true;
+          G.nodenames_ = nn;
+          if (isempty (s_idx))
+            G.adj_ = sparse (N, N);
+          elseif (have_weights)
+            G.adj_ = sparse (s_idx, t_idx, w, N, N);
+            G.has_weights_ = true;
+          else
+            G.adj_ = sparse (s_idx, t_idx, 1, N, N);
+          endif
+        elseif (isnumeric (arg4) && isscalar (arg4))
+          ## Integer-node-count constructor: digraph (s, t, w, N).
+          ## Creates a digraph with exactly N nodes (isolated trailing
+          ## nodes preserved when max endpoint < N).  Endpoints must be
+          ## positive-integer indices bounded by N.  W may be [] (no
+          ## weights), scalar (broadcast), or a vector of length
+          ## numel (S).
+          if (! (isreal (arg4) && isfinite (arg4) && arg4 >= 0 ...
+                 && arg4 == fix (arg4)))
+            error ("Octave:invalid-input-arg", ...
+                   "digraph: N must be a non-negative integer scalar");
+          endif
+          N = double (arg4);
+
+          if (! (isnumeric (s) && isreal (s) ...
+                 && isnumeric (t) && isreal (t)))
+            error ("Octave:invalid-input-arg", ...
+                   "digraph: S and T must be numeric vectors");
+          endif
+          if (! (isvector (s) || isempty (s)) ...
+              || ! (isvector (t) || isempty (t)))
+            error ("Octave:invalid-input-arg", ...
+                   "digraph: S and T must be vectors");
+          endif
+          if (numel (s) != numel (t))
+            error ("Octave:invalid-input-arg", ...
+                   "digraph: S and T must have the same length");
+          endif
+          s = double (s(:));
+          t = double (t(:));
+
+          have_weights = ! (isnumeric (w) && isempty (w));
+          if (have_weights)
+            if (! (isnumeric (w) && isreal (w)))
+              error ("Octave:invalid-input-arg", ...
+                     "digraph: W must be a numeric real vector or scalar");
+            endif
+            if (! (isvector (w) || isscalar (w)))
+              error ("Octave:invalid-input-arg", ...
+                     "digraph: W must be a vector or scalar");
+            endif
+            if (! isscalar (w) && numel (w) != numel (s))
+              error ("Octave:invalid-input-arg", ...
+                     ["digraph: weight vector W must have length ", ...
+                      "numel (S) or be a scalar"]);
+            endif
+            w = double (w(:));
+            if (any (isnan (w)))
+              error ("Octave:invalid-input-arg", ...
+                     "digraph: weight vector W must not contain NaN");
+            endif
+            if (isscalar (w))
+              w = repmat (w, numel (s), 1);
+            endif
+          endif
+
+          if (! isempty (s))
+            if (any (! isfinite (s)) || any (! isfinite (t)) ...
+                || any (s < 1) || any (t < 1) ...
+                || any (s != fix (s)) || any (t != fix (t)))
+              error ("Octave:invalid-input-arg", ...
+                     "digraph: S and T must be positive integer vectors");
+            endif
+            if (any (s > N) || any (t > N))
+              error ("Octave:invalid-input-arg", ...
+                     ["digraph: S and T entries must not exceed ", ...
+                      "the node count N"]);
+            endif
+          endif
+
+          if (isempty (s))
+            G.adj_ = sparse (N, N);
+          elseif (have_weights)
+            G.adj_ = sparse (s, t, w, N, N);
+            G.has_weights_ = true;
+          else
+            G.adj_ = sparse (s, t, 1, N, N);
+          endif
         else
-          G.adj_ = sparse (s_idx, t_idx, 1, N, N);
+          error ("Octave:invalid-input-arg", ...
+                 ["digraph: fourth argument must be a cell array ", ...
+                  "of strings (node names) or a non-negative ", ...
+                  "integer scalar (node count)"]);
         endif
       else
         error ("Octave:invalid-input-arg", ...
@@ -667,3 +765,121 @@ endclassdef
 %! names = {"a", "b"};
 %! G = digraph ([1], [2], [5], names);
 %! fail ("G.Nodes = struct ();", "private access");
+
+## BIST — US-C05: digraph(s, t, w, N) with N > max(s, t) creates the
+## extra isolated nodes.
+%!test
+%! G = digraph ([1 2], [2 3], [1 1], 5);
+%! assert (class (G), "digraph");
+%! assert (numnodes (G), 5);
+%! assert (numedges (G), 2);
+%! assert (G.Edges.EndNodes, [1 2; 2 3]);
+%! assert (G.Edges.Weight, [1; 1]);
+
+## BIST — US-C05: N equal to max endpoint is valid (no isolated nodes).
+%!test
+%! G = digraph ([1 2], [2 3], [1 1], 3);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 2);
+
+## BIST — US-C05: scalar weight broadcast preserved with N.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], 5, 10);
+%! assert (numnodes (G), 10);
+%! assert (numedges (G), 3);
+%! assert (G.Edges.Weight, [5; 5; 5]);
+
+## BIST — US-C05: W = [] with N yields an unweighted digraph with N nodes.
+%!test
+%! G = digraph ([1 2], [2 3], [], 5);
+%! assert (numnodes (G), 5);
+%! assert (numedges (G), 2);
+%! E = G.Edges;
+%! assert (isfield (E, "EndNodes"));
+%! assert (! isfield (E, "Weight"));
+
+## BIST — US-C05: empty endpoints + N produces N isolated nodes.
+%!test
+%! G = digraph ([], [], [], 5);
+%! assert (numnodes (G), 5);
+%! assert (numedges (G), 0);
+
+## BIST — US-C05: N = 0 with empty endpoints is equivalent to digraph().
+%!test
+%! G = digraph ([], [], [], 0);
+%! assert (numnodes (G), 0);
+%! assert (numedges (G), 0);
+
+## BIST — US-C05: unnamed N-form still has empty Name cellstr.
+%!test
+%! G = digraph ([1 2], [2 3], [1 1], 7);
+%! assert (isstruct (G.Nodes));
+%! assert (G.Nodes.Name, cell (0, 1));
+
+## BIST — US-C05: column-vector endpoints accepted alongside N.
+%!test
+%! G = digraph ([1; 2], [2; 3], [1; 1], 4);
+%! assert (numnodes (G), 4);
+%! assert (numedges (G), 2);
+
+## BIST — US-C05: large N preserved without densifying.
+%!test
+%! G = digraph (1, 2, 1, 1000);
+%! assert (numnodes (G), 1000);
+%! assert (numedges (G), 1);
+
+## BIST — US-C05: edges still returned in lex (src, dst) order when
+## isolated trailing nodes exist.
+%!test
+%! G = digraph ([3 1 2], [1 2 3], [30 10 20], 5);
+%! E = G.Edges;
+%! assert (E.EndNodes, [1 2; 2 3; 3 1]);
+%! assert (E.Weight,   [10; 20; 30]);
+
+## BIST — US-C05: Siever-style fixture padded with isolated nodes.
+%!test
+%! s = [1 2 3 3 4 5 5 6 7 7 8 9];
+%! t = [2 3 2 4 5 6 9 7 8 9 7 4];
+%! G = digraph (s, t, 1, 20);
+%! assert (numnodes (G), 20);
+%! assert (numedges (G), 12);
+
+## BIST — US-C05: error when N is smaller than the largest endpoint index.
+%!error <exceed> digraph ([1 5], [2 3], [1 1], 3)
+%!error <exceed> digraph ([1 2], [2 5], [1 1], 3)
+%!error <exceed> digraph (1, 10, 1, 5)
+
+## BIST — US-C05: N must be a non-negative integer scalar.
+%!error <non-negative integer> digraph ([1 2], [2 3], [1 1], -1)
+%!error <non-negative integer> digraph ([1 2], [2 3], [1 1], 3.5)
+%!error <non-negative integer> digraph ([1 2], [2 3], [1 1], Inf)
+%!error <non-negative integer> digraph ([1 2], [2 3], [1 1], NaN)
+
+## BIST — US-C05: weight-vector length mismatch still errors under N form.
+%!error <length> digraph ([1 2 3], [2 3 1], [1 2], 5)
+%!error <length> digraph ([1 2 3], [2 3 1], [1 2 3 4], 5)
+
+## BIST — US-C05: non-numeric weights still error under N form.
+%!error <numeric> digraph ([1 2], [2 1], {"a", "b"}, 5)
+
+## BIST — US-C05: complex weights still error under N form.
+%!error <numeric> digraph ([1 2], [2 1], [1+1i, 2], 5)
+
+## BIST — US-C05: NaN in weight still errors under N form.
+%!error <NaN> digraph ([1 2], [2 1], [NaN 1], 5)
+
+## BIST — US-C05: positive-integer endpoint rule preserved under N form.
+%!error <positive integer> digraph (0, 1, 1, 5)
+%!error <positive integer> digraph (1.5, 2, 1, 5)
+%!error <positive integer> digraph (1, -1, 1, 5)
+
+## BIST — US-C05: non-vector s/t still error under N form.
+%!error <vector> digraph ([1 2; 3 4], [1 2; 3 4], [1 1 1 1], 5)
+
+## BIST — US-C05: s/t length mismatch still errors under N form.
+%!error <same length> digraph ([1 2 3], [1 2], [1 1 1], 5)
+
+## BIST — US-C05: fourth argument of a disallowed type errors.
+%!error <fourth argument> digraph ([1 2], [2 1], [1 1], [3 4])
+%!error <fourth argument> digraph ([1 2], [2 1], [1 1], true)
+%!error <fourth argument> digraph ([1 2], [2 1], [1 1], {1, 2})

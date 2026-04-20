@@ -3,7 +3,8 @@ FCN_FILE_DIRS += \
   %reldir%/private
 
 %canon_reldir%_PRIVATE_FCN_FILES = \
-  %reldir%/private/__matlab_ref__.m
+  %reldir%/private/__matlab_ref__.m \
+  %reldir%/private/__resolve_endpoint__.m
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/.oct-config \

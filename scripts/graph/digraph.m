@@ -30,6 +30,7 @@ classdef digraph
   ## @deftypefnx {} {@var{G} =} digraph (@var{N})
   ## @deftypefnx {} {@var{G} =} digraph (@var{s}, @var{t})
   ## @deftypefnx {} {@var{G} =} digraph (@var{s}, @var{t}, @var{w})
+  ## @deftypefnx {} {@var{G} =} digraph (@var{s}, @var{t}, @var{w}, @var{nodenames})
   ## Create a directed graph.
   ##
   ## With no arguments, return an empty directed graph with zero nodes
@@ -51,6 +52,18 @@ classdef digraph
   ## length @code{numel (@var{s})}.  The weights are returned in
   ## @code{@var{G}.Edges.Weight} in edge-index order (edges are listed in
   ## lexicographic @code{(source, destination)} order).
+  ##
+  ## With a fourth argument @var{nodenames} (a cell array of unique
+  ## strings), nodes are named.  The number of nodes is
+  ## @code{numel (@var{nodenames})} regardless of the maximum endpoint
+  ## index, so isolated named nodes are preserved.  When @var{s} and
+  ## @var{t} are numeric, their entries must be integer indices in the
+  ## range @code{1:numel (@var{nodenames})}.  When @var{s} and @var{t}
+  ## are strings (char row) or cell arrays of strings, each entry is
+  ## looked up in @var{nodenames} to resolve its integer index.  Pass
+  ## @code{[]} for @var{w} to create an unweighted named digraph.
+  ## @code{@var{G}.Nodes.Name} returns the node names as a column
+  ## cell array.
   ##
   ## @code{digraph} is a value class: every mutator returns a new object,
   ## leaving the input unchanged.
@@ -75,6 +88,10 @@ classdef digraph
   ## w = [1.5 2.5 3.5];
   ## G = digraph (s, t, w); # weighted 3-cycle
   ## G.Edges.Weight         # ==> [1.5; 2.5; 3.5]
+  ##
+  ## names = @{"a", "b", "c"@};
+  ## G = digraph (@{"a", "b"@}, @{"b", "c"@}, [10 20], names);
+  ## G.Nodes.Name           # ==> @{"a"; "b"; "c"@}
   ## @end group
   ## @end example
   ##
@@ -98,6 +115,14 @@ classdef digraph
   endproperties
 
   properties (Dependent, SetAccess = private)
+    ## Struct-of-arrays node list.  Fields:
+    ##   Name  m-by-1 column cellstr of node names.  When the digraph
+    ##         was constructed without names, this is an empty
+    ##         @code{cell (0, 1)}.
+    ## This stands in for MATLAB's @code{table} until Octave has a
+    ## built-in table class.
+    Nodes
+
     ## Struct-of-arrays edge list.  Fields:
     ##   EndNodes  m-by-2 matrix of [source, destination] pairs in
     ##             lexicographic order.
@@ -190,6 +215,72 @@ classdef digraph
             G.adj_ = sparse (s, t, 1, N, N);
           endif
         endif
+      elseif (nargin == 4)
+        ## Named edge-list constructor: digraph (s, t, w, nodenames).
+        ## Endpoints may be numeric indices or strings looked up in
+        ## nodenames.  Node count is numel (nodenames) -- isolated
+        ## named nodes are preserved.  Pass [] for W to omit weights.
+        s = varargin{1};
+        t = varargin{2};
+        w = varargin{3};
+        nn = varargin{4};
+
+        ## NODENAMES must be a cellstr of unique strings.
+        if (! iscellstr (nn))
+          error ("Octave:invalid-input-arg", ...
+                 "digraph: NODENAMES must be a cell array of strings");
+        endif
+        nn = nn(:);  # store as column cellstr
+        if (numel (nn) != numel (unique (nn)))
+          error ("Octave:invalid-input-arg", ...
+                 "digraph: NODENAMES must contain unique strings");
+        endif
+        N = numel (nn);
+
+        ## Resolve endpoints to numeric indices.
+        s_idx = __resolve_endpoint__ (s, nn, "S");
+        t_idx = __resolve_endpoint__ (t, nn, "T");
+        if (numel (s_idx) != numel (t_idx))
+          error ("Octave:invalid-input-arg", ...
+                 "digraph: S and T must have the same length");
+        endif
+
+        ## W may be [] (no weights), a scalar (broadcast), or a vector
+        ## of length numel(s).  An all-NaN/non-numeric W is rejected.
+        have_weights = ! (isnumeric (w) && isempty (w));
+        if (have_weights)
+          if (! (isnumeric (w) && isreal (w)))
+            error ("Octave:invalid-input-arg", ...
+                   "digraph: W must be a numeric real vector or scalar");
+          endif
+          if (! (isvector (w) || isscalar (w)))
+            error ("Octave:invalid-input-arg", ...
+                   "digraph: W must be a vector or scalar");
+          endif
+          if (! isscalar (w) && numel (w) != numel (s_idx))
+            error ("Octave:invalid-input-arg", ...
+                   ["digraph: weight vector W must have length ", ...
+                    "numel (S) or be a scalar"]);
+          endif
+          w = double (w(:));
+          if (any (isnan (w)))
+            error ("Octave:invalid-input-arg", ...
+                   "digraph: weight vector W must not contain NaN");
+          endif
+          if (isscalar (w))
+            w = repmat (w, numel (s_idx), 1);
+          endif
+        endif
+
+        G.nodenames_ = nn;
+        if (isempty (s_idx))
+          G.adj_ = sparse (N, N);
+        elseif (have_weights)
+          G.adj_ = sparse (s_idx, t_idx, w, N, N);
+          G.has_weights_ = true;
+        else
+          G.adj_ = sparse (s_idx, t_idx, 1, N, N);
+        endif
       else
         error ("Octave:invalid-input-arg", ...
                "digraph: unsupported number of arguments");
@@ -207,6 +298,19 @@ classdef digraph
       e.EndNodes = [src, dst];
       if (G.has_weights_)
         e.Weight = w;
+      endif
+
+    endfunction
+
+    function n = get.Nodes (G)
+
+      ## Return the node table (struct of arrays).  MATLAB parity: the
+      ## Name column is a column cellstr, empty when the digraph was
+      ## built without names.
+      if (isempty (G.nodenames_))
+        n.Name = cell (0, 1);
+      else
+        n.Name = G.nodenames_;
       endif
 
     endfunction
@@ -465,3 +569,101 @@ endclassdef
 ## BIST — US-C03: three-arg form with positive-integer endpoint rule preserved.
 %!error <positive integer> digraph (0, 1, 5)
 %!error <positive integer> digraph (1, -1, 5)
+
+## BIST — US-C04: digraph(s, t, w, nodenames) with numeric endpoints and
+## a cellstr of node names.  Nodes.Name holds the names; numnodes equals
+## numel(nodenames).
+%!test
+%! names = {"alpha", "beta", "gamma"};
+%! G = digraph ([1 2 3], [2 3 1], [1 2 3], names);
+%! assert (class (G), "digraph");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Nodes.Name, {"alpha"; "beta"; "gamma"});
+
+## BIST — US-C04: column-cellstr nodenames accepted, returned as column.
+%!test
+%! names = {"a"; "b"; "c"};
+%! G = digraph ([1 2], [2 3], [10 20], names);
+%! assert (G.Nodes.Name, {"a"; "b"; "c"});
+%! assert (numnodes (G), 3);
+
+## BIST — US-C04: node count comes from numel(nodenames), not from
+## max endpoint.  Isolated nodes are preserved.
+%!test
+%! names = {"a", "b", "c", "d", "e"};
+%! G = digraph ([1 2], [2 3], [1 1], names);
+%! assert (numnodes (G), 5);
+%! assert (numedges (G), 2);
+%! assert (G.Nodes.Name, {"a"; "b"; "c"; "d"; "e"});
+
+## BIST — US-C04: string endpoints are looked up in nodenames.
+%!test
+%! names = {"A", "B", "C"};
+%! G = digraph ({"A", "B", "C"}, {"B", "C", "A"}, [1 2 3], names);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Nodes.Name, {"A"; "B"; "C"});
+%! E = G.Edges;
+%! assert (E.EndNodes, [1 2; 2 3; 3 1]);
+%! assert (E.Weight,   [1; 2; 3]);
+
+## BIST — US-C04: mixed-case string endpoints round-trip weights.
+%!test
+%! names = {"red", "green", "blue"};
+%! G = digraph ({"red", "green"}, {"green", "blue"}, [0.5 1.5], names);
+%! assert (G.Edges.Weight, [0.5; 1.5]);
+%! assert (G.Edges.EndNodes, [1 2; 2 3]);
+
+## BIST — US-C04: scalar weight broadcast still works with nodenames.
+%!test
+%! names = {"x", "y", "z"};
+%! G = digraph ([1 2], [2 3], 7, names);
+%! assert (G.Edges.Weight, [7; 7]);
+%! assert (G.Nodes.Name, {"x"; "y"; "z"});
+
+## BIST — US-C04: empty endpoints + nodenames gives an edgeless named graph.
+%!test
+%! names = {"p", "q", "r"};
+%! G = digraph ([], [], [], names);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 0);
+%! assert (G.Nodes.Name, {"p"; "q"; "r"});
+
+## BIST — US-C04: single string endpoint (not cellstr) is accepted as one name.
+%!test
+%! names = {"A", "B"};
+%! G = digraph ("A", "B", 1, names);
+%! assert (numedges (G), 1);
+%! assert (G.Edges.EndNodes, [1 2]);
+
+## BIST — US-C04: duplicate node names rejected.
+%!error <unique> digraph ([1 2], [2 1], [1 1], {"a", "a"})
+%!error <unique> digraph ([1 2 3], [2 3 1], [1 1 1], {"a", "b", "a"})
+
+## BIST — US-C04: non-cellstr nodenames rejected.
+%!error <cell> digraph ([1 2], [2 1], [1 1], [1 2])
+%!error <cell> digraph ([1 2], [2 1], [1 1], "ab")
+%!error <cell> digraph ([1 2], [2 1], [1 1], {1, 2})
+
+## BIST — US-C04: numeric endpoint out of range rejected.
+%!error <node index> digraph ([1 4], [2 1], [1 1], {"a", "b", "c"})
+%!error <node index> digraph ([1 2], [2 4], [1 1], {"a", "b", "c"})
+
+## BIST — US-C04: string endpoint not matching any node name is rejected.
+%!error <not found> digraph ({"A", "X"}, {"B", "A"}, [1 1], {"A", "B"})
+%!error <not found> digraph ({"A", "B"}, {"B", "Z"}, [1 1], {"A", "B"})
+
+## BIST — US-C04: Nodes property without names still returns a Name column
+## (empty default cellstr).
+%!test
+%! G = digraph (3);
+%! assert (isstruct (G.Nodes));
+%! assert (isfield (G.Nodes, "Name"));
+%! assert (G.Nodes.Name, cell (0, 1));
+
+## BIST — US-C04: Nodes property read-only (SetAccess=private).
+%!test
+%! names = {"a", "b"};
+%! G = digraph ([1], [2], [5], names);
+%! fail ("G.Nodes = struct ();", "private access");

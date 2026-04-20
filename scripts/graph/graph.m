@@ -814,6 +814,102 @@ classdef graph
 
     endfunction
 
+    function disp (G)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {} disp (@var{G})
+      ## Print a concise, human-readable summary of the graph @var{G}:
+      ## a header line reporting the node and edge counts, followed
+      ## by the first few edges (at most 10) when any are present.
+      ## The header uses singular/plural forms for 1-node and 1-edge
+      ## graphs to match MATLAB's conventions.  Edges are printed in
+      ## lexicographic order with @code{EndNode1 <= EndNode2}; when
+      ## @var{G} has node names the names are printed instead of
+      ## numeric indices.  A trailing continuation line reports any
+      ## edges that were elided past the 10-row limit.
+      ## @seealso{graph, display, numedges, numnodes}
+      ## @end deftypefn
+
+      if (nargin != 1)
+        print_usage ();
+      endif
+
+      N = numnodes (G);
+      M = numedges (G);
+      if (N == 1)
+        n_word = "node";
+      else
+        n_word = "nodes";
+      endif
+      if (M == 1)
+        e_word = "edge";
+      else
+        e_word = "edges";
+      endif
+
+      if (M == 0)
+        printf ("  graph with %d %s and %d %s.\n", N, n_word, M, e_word);
+        return;
+      endif
+
+      printf ("  graph with %d %s and %d %s:\n\n", N, n_word, M, e_word);
+
+      ## Show at most the first 10 edges.  Truncation is reported on a
+      ## trailing continuation line so the output stays short on large
+      ## graphs while still giving a readable preview.
+      max_shown = 10;
+      n_show = min (M, max_shown);
+      e = G.Edges;
+
+      if (! isempty (G.nodenames_))
+        src_labels = G.nodenames_(e.EndNodes(1:n_show, 1));
+        dst_labels = G.nodenames_(e.EndNodes(1:n_show, 2));
+      else
+        src_labels = arrayfun (@(x) sprintf ("%d", x), ...
+                               e.EndNodes(1:n_show, 1), ...
+                               "UniformOutput", false);
+        dst_labels = arrayfun (@(x) sprintf ("%d", x), ...
+                               e.EndNodes(1:n_show, 2), ...
+                               "UniformOutput", false);
+      endif
+      src_labels = src_labels(:);
+      dst_labels = dst_labels(:);
+
+      col1_w = max ([cellfun("numel", src_labels); numel("EndNode1")]);
+      col2_w = max ([cellfun("numel", dst_labels); numel("EndNode2")]);
+
+      has_w = isfield (e, "Weight");
+
+      if (has_w)
+        printf ("    %-*s    %-*s    %s\n", ...
+                col1_w, "EndNode1", col2_w, "EndNode2", "Weight");
+      else
+        printf ("    %-*s    %-*s\n", col1_w, "EndNode1", col2_w, "EndNode2");
+      endif
+
+      for ii = 1:n_show
+        if (has_w)
+          printf ("    %-*s    %-*s    %g\n", ...
+                  col1_w, src_labels{ii}, col2_w, dst_labels{ii}, ...
+                  e.Weight(ii));
+        else
+          printf ("    %-*s    %-*s\n", ...
+                  col1_w, src_labels{ii}, col2_w, dst_labels{ii});
+        endif
+      endfor
+
+      if (M > n_show)
+        remaining = M - n_show;
+        if (remaining == 1)
+          r_word = "edge";
+        else
+          r_word = "edges";
+        endif
+        printf ("    ... (%d more %s)\n", remaining, r_word);
+      endif
+
+    endfunction
+
   endmethods
 
 endclassdef
@@ -2038,3 +2134,102 @@ endfunction
 %! E = G.Edges;
 %! assert (E.EndNodes, [1 2; 2 3; 3 3]);
 %! assert (numedges (G), 3);
+
+## BIST — US-C15: disp on the default (empty) graph reports 0 nodes
+## and 0 edges and does not error.
+%!test <*C15>
+%! G = graph ();
+%! s = evalc ("disp (G)");
+%! assert (! isempty (regexp (s, 'graph with 0 nodes and 0 edges', 'once')));
+%! ## Must NOT match the digraph header (leading "digraph").
+%! assert (isempty (regexp (s, '\<digraph\>', 'once')));
+
+## BIST — US-C15: disp on an N-node edgeless graph reports N nodes
+## and 0 edges.
+%!test <*C15>
+%! G = graph (5);
+%! s = evalc ("disp (G)");
+%! assert (! isempty (regexp (s, 'graph with 5 nodes and 0 edges', 'once')));
+
+## BIST — US-C15: disp on a small weighted graph reports the correct
+## counts in the header.
+%!test <*C15>
+%! G = graph ([1 2 3], [2 3 1], [10 20 30]);
+%! s = evalc ("disp (G)");
+%! assert (! isempty (regexp (s, 'graph with 3 nodes and 3 edges', 'once')));
+
+## BIST — US-C15: singular word forms for 1 node and 1 edge.
+%!test <*C15>
+%! G = graph (1);
+%! s = evalc ("disp (G)");
+%! assert (! isempty (regexp (s, 'graph with 1 node and 0 edges', 'once')));
+
+## BIST — US-C15: singular word form for exactly 1 edge.
+%!test <*C15>
+%! G = graph (1, 2);
+%! s = evalc ("disp (G)");
+%! assert (! isempty (regexp (s, 'graph with 2 nodes and 1 edge', 'once')));
+
+## BIST — US-C15: disp on a graph with many edges shows the first few
+## and reports the remaining count as a continuation line.
+%!test <*C15>
+%! ## Star K_{1,20}: 20 edges on 21 nodes.
+%! s_in = ones (1, 20);
+%! t_in = 2:21;
+%! G = graph (s_in, t_in);
+%! s = evalc ("disp (G)");
+%! assert (! isempty (regexp (s, 'graph with 21 nodes and 20 edges', 'once')));
+%! assert (! isempty (regexp (s, 'more', 'once')));
+%! assert (! isempty (regexp (s, '1\s+2', 'once')));
+
+## BIST — US-C15: disp on a named graph prints node names, not
+## numeric indices.
+%!test <*C15>
+%! G = graph ([1 2 3], [2 3 1], [], {"alpha", "beta", "gamma"});
+%! s = evalc ("disp (G)");
+%! assert (! isempty (regexp (s, 'graph with 3 nodes and 3 edges', 'once')));
+%! assert (! isempty (strfind (s, "alpha")));
+%! assert (! isempty (strfind (s, "beta")));
+%! assert (! isempty (strfind (s, "gamma")));
+
+## BIST — US-C15: disp shows a Weight column when weights are present.
+%!test <*C15>
+%! G = graph ([1 2], [2 3], [11 22]);
+%! s = evalc ("disp (G)");
+%! assert (! isempty (strfind (s, "Weight")));
+%! assert (! isempty (regexp (s, '\<11\>', 'once')));
+%! assert (! isempty (regexp (s, '\<22\>', 'once')));
+
+## BIST — US-C15: disp omits the Weight column when unweighted.
+%!test <*C15>
+%! G = graph ([1 2], [2 3]);
+%! s = evalc ("disp (G)");
+%! assert (isempty (strfind (s, "Weight")));
+
+## BIST — US-C15: disp on a graph lists self-loops once in the edge
+## table (mirrors the undirected G.Edges semantics).
+%!test <*C15>
+%! G = graph ([1 2 3], [2 3 3]);   # edge (2,3) and self-loop (3,3)
+%! s = evalc ("disp (G)");
+%! assert (! isempty (regexp (s, 'graph with 3 nodes and 3 edges', 'once')));
+
+## BIST — US-C15: display (G) includes a "G =" assignment prefix and
+## contains the header string.
+%!test <*C15>
+%! G = graph ([1 2], [2 3]);
+%! s = evalc ("display (G)");
+%! assert (! isempty (strfind (s, "G =")));
+%! assert (! isempty (regexp (s, 'graph with 3 nodes and 2 edges', 'once')));
+
+## BIST — US-C15: disp writes to stdout (captured non-empty via evalc).
+%!test <*C15>
+%! G = graph ();
+%! s = evalc ("disp (G)");
+%! assert (! isempty (s));
+
+## BIST — US-C15: disp on the truly empty graph ends with a period
+## (no edges section to follow).
+%!test <*C15>
+%! G = graph ();
+%! s = evalc ("disp (G)");
+%! assert (! isempty (regexp (s, '0 edges\.\s*$', 'once')));

@@ -6,7 +6,8 @@ FCN_FILE_DIRS += \
   %reldir%/private/__matlab_ref__.m
 
 %canon_reldir%_FCN_FILES = \
-  %reldir%/.oct-config
+  %reldir%/.oct-config \
+  %reldir%/digraph.m
 
 %canon_reldir%dir = $(fcnfiledir)/graph
 

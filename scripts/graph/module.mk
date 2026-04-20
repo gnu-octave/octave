@@ -11,6 +11,7 @@ FCN_FILE_DIRS += \
   %reldir%/.oct-config \
   %reldir%/digraph.m \
   %reldir%/graph.m \
+  %reldir%/neighbors.m \
   %reldir%/numedges.m \
   %reldir%/numnodes.m \
   %reldir%/predecessors.m \

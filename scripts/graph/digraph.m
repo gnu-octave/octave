@@ -217,7 +217,7 @@ classdef digraph
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges, ismultigraph, successors, predecessors}
+  ## @seealso{graph, numnodes, numedges, ismultigraph, successors, predecessors, neighbors}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1226,6 +1226,67 @@ classdef digraph
         p = p(:);
       else
         p = double (idx);
+      endif
+
+    endfunction
+
+    function nb = neighbors (G, nodeID)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{n} =} neighbors (@var{G}, @var{nodeID})
+      ## Return the nodes adjacent to @var{nodeID} in the digraph
+      ## @var{G}, ignoring edge direction.  This is the union of the
+      ## successors and predecessors of @var{nodeID}.  @var{nodeID} is a
+      ## scalar node identifier -- either a numeric index in
+      ## @code{1:numnodes (@var{G})} or a node name (char row vector or
+      ## 1-element cellstr).  The return type matches the input type
+      ## (numeric in / numeric out, string in / cellstr out).  A
+      ## self-loop at @var{nodeID} contributes @var{nodeID} to the
+      ## result once.  For a multigraph, each parallel edge between
+      ## @var{nodeID} and another node contributes one entry, so
+      ## duplicate neighbours are possible.
+      ## @seealso{digraph, successors, predecessors, indegree, outdegree}
+      ## @end deftypefn
+
+      if (nargin != 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to neighbors: expected 2 arguments");
+      endif
+
+      [n, return_names] = __resolve_single_node__ (G, nodeID, "neighbors");
+
+      if (G.is_multigraph_)
+        ## Edges are stored as an m-by-2 list in lex order.  Partition
+        ## the edges incident to N into (i) self-loops, stored as a row
+        ## [N, N]; (ii) out-only edges [N, x] with x != N; (iii) in-only
+        ## edges [x, N] with x != N.  Each parallel edge contributes one
+        ## neighbour; a self-loop contributes N exactly once.
+        en = G.mg_endnodes_;
+        m1 = (en(:, 1) == n);            # edges starting at N
+        m2 = (en(:, 2) == n);            # edges ending at N
+        self_mask = m1 & m2;
+        out_only = m1 & ! m2;            # [N, x], x != N
+        in_only  = m2 & ! m1;            # [x, N], x != N
+        idx = [en(out_only, 2); en(in_only, 1); ...
+               repmat(n, nnz (self_mask), 1)];
+        idx = sort (idx);
+      else
+        ## Simple digraph: union of out-neighbours and in-neighbours,
+        ## sorted ascending.  @code{unique} returns a sorted column
+        ## vector; a self-loop at N appears in both finds and collapses
+        ## to a single entry.
+        out_idx = find (G.adj_(n, :));
+        in_idx  = find (G.adj_(:, n));
+        idx = unique ([out_idx(:); in_idx(:)]);
+      endif
+
+      idx = idx(:);
+
+      if (return_names)
+        nb = G.nodenames_(idx);
+        nb = nb(:);
+      else
+        nb = double (idx);
       endif
 
     endfunction

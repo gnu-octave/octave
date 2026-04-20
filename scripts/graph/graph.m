@@ -201,7 +201,7 @@ classdef graph
   ## @end group
   ## @end example
   ##
-  ## @seealso{digraph, numnodes, numedges}
+  ## @seealso{digraph, numnodes, numedges, neighbors}
   ## @end deftypefn
 
   properties (Access = private)
@@ -811,6 +811,43 @@ classdef graph
       ## @end deftypefn
 
       m = nnz (tril (G.adj_));
+
+    endfunction
+
+    function nb = neighbors (G, nodeID)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{n} =} neighbors (@var{G}, @var{nodeID})
+      ## Return the nodes adjacent to @var{nodeID} in the undirected
+      ## graph @var{G}.  @var{nodeID} is a scalar node identifier --
+      ## either a numeric index in @code{1:numnodes (@var{G})} or a node
+      ## name (char row vector or 1-element cellstr).  The return type
+      ## matches the input type (numeric in / numeric out, string in /
+      ## cellstr out).  A self-loop at @var{nodeID} contributes
+      ## @var{nodeID} to the result once.
+      ## @seealso{graph, degree, successors, predecessors}
+      ## @end deftypefn
+
+      if (nargin != 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to neighbors: expected 2 arguments");
+      endif
+
+      [n, return_names] = __resolve_single_node__ (G, nodeID, "neighbors");
+
+      ## The graph adjacency is symmetric; a row/column scan yields the
+      ## same set of incident nodes.  @code{find} returns sorted
+      ## column-major indices, so the result is already in increasing
+      ## node order.  A self-loop at N contributes N once.
+      idx = find (G.adj_(n, :));
+      idx = idx(:);
+
+      if (return_names)
+        nb = G.nodenames_(idx);
+        nb = nb(:);
+      else
+        nb = double (idx);
+      endif
 
     endfunction
 

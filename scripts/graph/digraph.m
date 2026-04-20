@@ -29,6 +29,7 @@ classdef digraph
   ## @deftypefn  {} {@var{G} =} digraph ()
   ## @deftypefnx {} {@var{G} =} digraph (@var{N})
   ## @deftypefnx {} {@var{G} =} digraph (@var{A})
+  ## @deftypefnx {} {@var{G} =} digraph (@var{A}, @var{nodenames})
   ## @deftypefnx {} {@var{G} =} digraph (@var{s}, @var{t})
   ## @deftypefnx {} {@var{G} =} digraph (@var{s}, @var{t}, @var{w})
   ## @deftypefnx {} {@var{G} =} digraph (@var{s}, @var{t}, @var{w}, @var{nodenames})
@@ -50,6 +51,12 @@ classdef digraph
   ## are supported.  @var{A} must be real; complex or @code{NaN} entries
   ## are rejected.  Self-loops are permitted when
   ## @code{@var{A}(i,i) != 0}.
+  ##
+  ## With two arguments @var{A} and @var{nodenames} where @var{nodenames}
+  ## is a cell array of unique strings, the adjacency-matrix semantics
+  ## above apply and the nodes are given the supplied names.
+  ## @code{numel (@var{nodenames})} must equal @code{size (@var{A}, 1)}.
+  ## @code{@var{G}.Nodes.Name} returns the names as a column cell array.
   ##
   ## With two numeric vectors @var{s} and @var{t} of equal length, return
   ## a directed graph with one edge from @code{@var{s}(i)} to
@@ -119,6 +126,9 @@ classdef digraph
   ## A = [0 1 0; 0 0 1; 1 0 0];
   ## G = digraph (A);       # 3-cycle from adjacency matrix
   ## G.Edges.EndNodes       # ==> [1 2; 2 3; 3 1]
+  ##
+  ## G = digraph (A, @{"alpha", "beta", "gamma"@});
+  ## G.Nodes.Name           # ==> @{"alpha"; "beta"; "gamma"@}
   ## @end group
   ## @end example
   ##
@@ -219,6 +229,56 @@ classdef digraph
                   "non-negative integer scalar or a real square ", ...
                   "adjacency matrix"]);
         endif
+      elseif (nargin == 2 && iscellstr (varargin{2}))
+        ## Adjacency-matrix + nodenames constructor:
+        ## digraph (A, NODENAMES).  A must be a real square numeric or
+        ## logical 2-D matrix; NODENAMES must be a cellstr of unique
+        ## strings whose length equals size (A, 1).  Semantics otherwise
+        ## mirror the US-C06 adjacency path (sparse preserved, weights
+        ## drawn from A(i,j)).
+        A = varargin{1};
+        nn = varargin{2};
+        nn = nn(:);  # store as column cellstr
+        if (! ((isnumeric (A) || islogical (A)) ...
+               && ismatrix (A) && ndims (A) == 2))
+          error ("Octave:invalid-input-arg", ...
+                 ["digraph: adjacency matrix A must be a real ", ...
+                  "square numeric or logical matrix"]);
+        endif
+        if (! isreal (A))
+          error ("Octave:invalid-input-arg", ...
+                 "digraph: adjacency matrix A must be real");
+        endif
+        if (size (A, 1) != size (A, 2))
+          error ("Octave:invalid-input-arg", ...
+                 "digraph: adjacency matrix A must be square");
+        endif
+        if (any (isnan (A(:))))
+          error ("Octave:invalid-input-arg", ...
+                 "digraph: adjacency matrix A must not contain NaN");
+        endif
+        if (numel (nn) != numel (unique (nn)))
+          error ("Octave:invalid-input-arg", ...
+                 "digraph: NODENAMES must contain unique strings");
+        endif
+        if (numel (nn) != size (A, 1))
+          error ("Octave:invalid-input-arg", ...
+                 ["digraph: NODENAMES numel must equal ", ...
+                  "size (A, 1)"]);
+        endif
+
+        if (issparse (A))
+          if (! isa (A, "double"))
+            A = sparse (double (A));
+          endif
+          G.adj_ = A;
+        else
+          G.adj_ = sparse (double (A));
+        endif
+        if (size (A, 1) > 0)
+          G.has_weights_ = true;
+        endif
+        G.nodenames_ = nn;
       elseif (nargin == 2 || nargin == 3)
         ## Edge-list constructor: digraph (s, t) or digraph (s, t, w).
         s = varargin{1};
@@ -1091,3 +1151,155 @@ endclassdef
 %! assert (numedges (G), 1);
 %! assert (G.Edges.EndNodes, [1 2]);
 %! assert (G.Edges.Weight,   5);
+
+## BIST — US-C07: digraph(A, nodenames) from dense adjacency plus cellstr.
+## Each nonzero A(i,j) becomes an edge i->j; node names take the place of
+## integer indices.
+%!test
+%! A = [0 1 0; 0 0 1; 1 0 0];
+%! names = {"a", "b", "c"};
+%! G = digraph (A, names);
+%! assert (class (G), "digraph");
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Nodes.Name, {"a"; "b"; "c"});
+%! assert (G.Edges.EndNodes, [1 2; 2 3; 3 1]);
+%! assert (G.Edges.Weight, [1; 1; 1]);
+
+## BIST — US-C07: weights taken from A(i,j) values.
+%!test
+%! A = [0 1.5 0; 0 0 2.5; 3.5 0 0];
+%! names = {"x", "y", "z"};
+%! G = digraph (A, names);
+%! assert (G.Edges.Weight, [1.5; 2.5; 3.5]);
+%! assert (G.Edges.EndNodes, [1 2; 2 3; 3 1]);
+%! assert (G.Nodes.Name, {"x"; "y"; "z"});
+
+## BIST — US-C07: column cellstr nodenames accepted, returned as column.
+%!test
+%! A = eye (3);
+%! names = {"a"; "b"; "c"};
+%! G = digraph (A, names);
+%! assert (G.Nodes.Name, {"a"; "b"; "c"});
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+
+## BIST — US-C07: sparse adjacency + nodenames stays sparse, weights
+## round-trip.
+%!test
+%! A = sparse ([1 2 3], [2 3 1], [10 20 30], 3, 3);
+%! names = {"A", "B", "C"};
+%! G = digraph (A, names);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (G.Edges.Weight, [10; 20; 30]);
+%! assert (G.Edges.EndNodes, [1 2; 2 3; 3 1]);
+%! assert (G.Nodes.Name, {"A"; "B"; "C"});
+
+## BIST — US-C07: sparse adjacency with trailing isolated named nodes.
+%!test
+%! A = sparse ([1 2], [2 3], [5 10], 5, 5);
+%! names = {"a", "b", "c", "d", "e"};
+%! G = digraph (A, names);
+%! assert (numnodes (G), 5);
+%! assert (numedges (G), 2);
+%! assert (G.Nodes.Name, {"a"; "b"; "c"; "d"; "e"});
+%! assert (G.Edges.EndNodes, [1 2; 2 3]);
+%! assert (G.Edges.Weight, [5; 10]);
+
+## BIST — US-C07: logical adjacency + nodenames.
+%!test
+%! A = logical ([0 1; 1 0]);
+%! names = {"x", "y"};
+%! G = digraph (A, names);
+%! assert (numnodes (G), 2);
+%! assert (numedges (G), 2);
+%! assert (G.Nodes.Name, {"x"; "y"});
+%! assert (isa (G.Edges.Weight, "double"));
+
+## BIST — US-C07: int8 adjacency + nodenames coerced to double weights.
+%!test
+%! A = int8 ([0 1; 1 0]);
+%! names = {"a", "b"};
+%! G = digraph (A, names);
+%! assert (numedges (G), 2);
+%! assert (isa (G.Edges.Weight, "double"));
+%! assert (G.Nodes.Name, {"a"; "b"});
+
+## BIST — US-C07: isolated nodes (zero rows/cols) keep their names.
+%!test
+%! A = zeros (5);
+%! A(1,2) = 1;
+%! A(2,3) = 2;
+%! names = {"p", "q", "r", "s", "t"};
+%! G = digraph (A, names);
+%! assert (numnodes (G), 5);
+%! assert (numedges (G), 2);
+%! assert (G.Nodes.Name, {"p"; "q"; "r"; "s"; "t"});
+%! assert (G.Edges.EndNodes, [1 2; 2 3]);
+
+## BIST — US-C07: self-loops preserved alongside named nodes.
+%!test
+%! A = [1 1; 0 1];
+%! names = {"loop1", "loop2"};
+%! G = digraph (A, names);
+%! assert (numnodes (G), 2);
+%! assert (numedges (G), 3);
+%! assert (G.Nodes.Name, {"loop1"; "loop2"});
+%! assert (G.Edges.EndNodes, [1 1; 1 2; 2 2]);
+
+## BIST — US-C07: 0x0 adjacency plus empty cellstr yields the empty digraph.
+%!test
+%! G = digraph (zeros (0, 0), cell (0, 1));
+%! assert (numnodes (G), 0);
+%! assert (numedges (G), 0);
+%! assert (G.Nodes.Name, cell (0, 1));
+
+## BIST — US-C07: negative weights accepted with nodenames.
+%!test
+%! A = [0 -1; -2 0];
+%! names = {"neg1", "neg2"};
+%! G = digraph (A, names);
+%! assert (G.Edges.Weight, [-1; -2]);
+%! assert (G.Nodes.Name, {"neg1"; "neg2"});
+
+## BIST — US-C07: Siever-style sparse adjacency with 9 named nodes.
+%!test
+%! s = [1 2 3 3 4 5 5 6 7 7 8 9];
+%! t = [2 3 2 4 5 6 9 7 8 9 7 4];
+%! A = sparse (s, t, 1, 9, 9);
+%! names = {"n1", "n2", "n3", "n4", "n5", "n6", "n7", "n8", "n9"};
+%! G = digraph (A, names);
+%! assert (numnodes (G), 9);
+%! assert (numedges (G), 12);
+%! assert (G.Nodes.Name, {"n1"; "n2"; "n3"; "n4"; "n5"; "n6"; "n7"; "n8"; "n9"});
+
+## BIST — US-C07: length mismatch — too few nodenames for A.
+%!error <numel> digraph ([0 1; 1 0], {"a"})
+%!error <numel> digraph (eye (5), {"a", "b", "c"})
+
+## BIST — US-C07: length mismatch — too many nodenames for A.
+%!error <numel> digraph ([0 1; 1 0], {"a", "b", "c"})
+
+## BIST — US-C07: duplicate nodenames rejected.
+%!error <unique> digraph ([0 1; 1 0], {"a", "a"})
+%!error <unique> digraph (eye (3), {"a", "b", "a"})
+
+## BIST — US-C07: non-square A with nodenames rejected.
+%!error <square> digraph (ones (2, 3), {"a", "b"})
+%!error <square> digraph (ones (4, 2), {"a", "b"})
+
+## BIST — US-C07: complex A with nodenames rejected.
+%!error <real> digraph ([0 1i; 0 0], {"a", "b"})
+
+## BIST — US-C07: NaN in A with nodenames rejected.
+%!error <NaN> digraph ([0 NaN; 1 0], {"a", "b"})
+%!error <NaN> digraph (sparse ([1 2], [2 1], [1 NaN], 2, 2), {"a", "b"})
+
+## BIST — US-C07: adjacency form of digraph(A, names) with named nodes
+## stores names; Name is always a column cellstr.
+%!test
+%! A = [0 1; 0 0];
+%! G = digraph (A, {"row", "col"});
+%! assert (iscolumn (G.Nodes.Name));
+%! assert (G.Nodes.Name, {"row"; "col"});

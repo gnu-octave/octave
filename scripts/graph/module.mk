@@ -10,6 +10,7 @@ FCN_FILE_DIRS += \
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/.oct-config \
+  %reldir%/degree.m \
   %reldir%/digraph.m \
   %reldir%/graph.m \
   %reldir%/indegree.m \

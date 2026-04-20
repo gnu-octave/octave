@@ -201,7 +201,7 @@ classdef graph
   ## @end group
   ## @end example
   ##
-  ## @seealso{digraph, numnodes, numedges, neighbors}
+  ## @seealso{digraph, numnodes, numedges, neighbors, degree}
   ## @end deftypefn
 
   properties (Access = private)
@@ -848,6 +848,50 @@ classdef graph
       else
         nb = double (idx);
       endif
+
+    endfunction
+
+    function d = degree (G, nodeIDs)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{d} =} degree (@var{G})
+      ## @deftypefnx {} {@var{d} =} degree (@var{G}, @var{nodeIDs})
+      ## Return the degrees of nodes in the undirected graph @var{G}.
+      ## With one argument, return a @code{numnodes (G)}-by-1 column
+      ## vector of edge-end counts.  With two arguments, return the
+      ## degrees of the specified nodes, preserving the shape of
+      ## @var{nodeIDs}.  A non-self-loop edge contributes 1 to the
+      ## degree of each of its endpoints; a self-loop contributes 2 to
+      ## the degree of the looped node (MATLAB convention).
+      ## @seealso{graph, numnodes, numedges, neighbors}
+      ## @end deftypefn
+
+      if (nargin < 1 || nargin > 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to degree: expected 1 or 2 arguments");
+      endif
+
+      N = numnodes (G);
+      if (N == 0)
+        all_d = zeros (0, 1);
+      else
+        ## spones coerces nonzero entries to 1 so weighted graphs
+        ## report edge counts, not weight sums.  The adjacency is
+        ## symmetric with non-self-loop edges mirrored and self-loops
+        ## stored as a single diagonal entry, so sum (sp, 1) counts
+        ## self-loops only once; add diag (sp) a second time to
+        ## satisfy MATLAB's "self-loops contribute 2" convention.
+        sp = spones (G.adj_);
+        all_d = full (sum (sp, 1))(:) + full (diag (sp));
+      endif
+
+      if (nargin == 1)
+        d = all_d;
+        return;
+      endif
+
+      [idx, out_shape] = __resolve_node_list__ (G, nodeIDs, "degree");
+      d = reshape (all_d(idx), out_shape);
 
     endfunction
 

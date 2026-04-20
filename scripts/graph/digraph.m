@@ -140,6 +140,27 @@ classdef digraph
   ## @code{digraph} is a value class: every mutator returns a new object,
   ## leaving the input unchanged.
   ##
+  ## @strong{Properties}:
+  ##
+  ## @code{@var{G}.Nodes} is a struct standing in for MATLAB's @code{table}.
+  ## It always has a @code{Name} field, a column cell array of strings
+  ## giving each node's name.  For digraphs constructed without names the
+  ## field is an empty @code{cell (0, 1)}.  Any columns supplied through
+  ## the @var{NodeTable} form are preserved as extra fields (in the order
+  ## they were declared).
+  ##
+  ## @code{@var{G}.Edges} is a struct standing in for MATLAB's @code{table}.
+  ## It always has an @code{EndNodes} field, an @code{m}-by-2 numeric
+  ## matrix whose row @var{i} is the @code{[source, destination]} pair
+  ## of edge @var{i} in lexicographic order.  When the digraph was built
+  ## with explicit weights (either through @var{w} or through an
+  ## adjacency matrix), a @code{Weight} field is also present as an
+  ## @code{m}-by-1 column.  Any extra edge-attribute columns supplied
+  ## through the @var{EdgeTable} form are preserved (in declaration
+  ## order) after @code{Weight}.  Both properties are read-only
+  ## (@code{SetAccess = private}); use @code{addedge}, @code{rmedge},
+  ## and friends to modify the graph.
+  ##
   ## Examples:
   ##
   ## @example
@@ -1045,9 +1066,13 @@ classdef digraph
         ## iterating rows of A (i.e. sources) in outer order and
         ## within-row columns (destinations) in inner order.
         [dst, src, w] = find (G.adj_.');
-        e.EndNodes = [src, dst];
+        ## The (:) coercion normalises the shape to m-by-1 even when
+        ## @code{adj_} is 0-by-0 (where find returns 0-by-0 arrays),
+        ## so @code{EndNodes} is reliably m-by-2 and @code{Weight} is
+        ## m-by-1 across every constructor form -- MATLAB parity.
+        e.EndNodes = [src(:), dst(:)];
         if (G.has_weights_)
-          e.Weight = w;
+          e.Weight = w(:);
         endif
       endif
       ## Merge any extra edge-attribute columns supplied via the
@@ -2545,3 +2570,204 @@ endclassdef
 %! E = G.Edges;
 %! assert (isfield (E, "EndNodes"));
 %! assert (! isfield (E, "Weight"));
+
+## BIST — US-C14: G.Nodes returns a struct on every constructor form.
+%!test
+%! assert (isstruct (digraph ().Nodes));
+%! assert (isstruct (digraph (3).Nodes));
+%! assert (isstruct (digraph ([1 2], [2 3]).Nodes));
+%! assert (isstruct (digraph ([0 1; 0 0]).Nodes));
+%! assert (isstruct (digraph ([1 2], [2 3], [10 20], {"a","b","c"}).Nodes));
+
+## BIST — US-C14: G.Edges returns a struct on every constructor form.
+%!test
+%! assert (isstruct (digraph ().Edges));
+%! assert (isstruct (digraph (3).Edges));
+%! assert (isstruct (digraph ([1 2], [2 3]).Edges));
+%! assert (isstruct (digraph ([0 1; 0 0]).Edges));
+%! assert (isstruct (digraph ([1 2], [2 3], [10 20], {"a","b","c"}).Edges));
+
+## BIST — US-C14: G.Nodes.Name is always present, always a column
+## cellstr (empty cell(0,1) when unnamed, populated cellstr otherwise).
+%!test
+%! G = digraph ();
+%! assert (isfield (G.Nodes, "Name"));
+%! assert (iscellstr (G.Nodes.Name));
+%! assert (G.Nodes.Name, cell (0, 1));
+%! G = digraph (3);
+%! assert (iscellstr (G.Nodes.Name));
+%! assert (G.Nodes.Name, cell (0, 1));
+%! G = digraph ([1 2], [2 3], [10 20], {"a","b","c"});
+%! assert (iscellstr (G.Nodes.Name));
+%! assert (G.Nodes.Name, {"a"; "b"; "c"});
+
+## BIST — US-C14: G.Edges.EndNodes is always m-by-2 numeric, even on a
+## truly empty digraph (0 nodes).  This closes a shape-consistency gap
+## where find() on a 0-by-0 sparse matrix previously returned 0-by-0
+## arrays, leaking a 0-by-0 EndNodes.
+%!test
+%! G = digraph ();
+%! assert (isfield (G.Edges, "EndNodes"));
+%! assert (isnumeric (G.Edges.EndNodes));
+%! assert (size (G.Edges.EndNodes), [0 2]);
+%! G = digraph (0);
+%! assert (size (G.Edges.EndNodes), [0 2]);
+%! G = digraph (3);
+%! assert (size (G.Edges.EndNodes), [0 2]);
+%! G = digraph ([], []);
+%! assert (size (G.Edges.EndNodes), [0 2]);
+%! G = digraph ([], [], [], 0);
+%! assert (size (G.Edges.EndNodes), [0 2]);
+%! G = digraph (sparse (0, 0));
+%! assert (size (G.Edges.EndNodes), [0 2]);
+
+## BIST — US-C14: EndNodes is numeric indices even when endpoints came
+## in as strings (via the EdgeTable constructor, which supports cellstr
+## EndNodes with first-appearance name inference).
+%!test
+%! ET = struct ("EndNodes", {{"a","b"; "b","c"}});
+%! G = digraph (ET);
+%! assert (isnumeric (G.Edges.EndNodes));
+%! assert (G.Edges.EndNodes, [1 2; 2 3]);
+%! assert (G.Nodes.Name, {"a"; "b"; "c"});
+
+## BIST — US-C14: Weight appears only when the digraph was built with
+## explicit weights.
+%!test
+%! Gu = digraph ([1 2], [2 3]);
+%! assert (isfield (Gu.Edges, "EndNodes"));
+%! assert (! isfield (Gu.Edges, "Weight"));
+%! Gw = digraph ([1 2], [2 3], [10 20]);
+%! assert (isfield (Gw.Edges, "EndNodes"));
+%! assert (isfield (Gw.Edges, "Weight"));
+%! assert (iscolumn (Gw.Edges.Weight));
+%! assert (Gw.Edges.Weight, [10; 20]);
+
+## BIST — US-C14: on a weighted digraph with zero edges, Weight is still
+## present as an m-by-1 (0-by-1) column.
+%!test
+%! G = digraph (sparse (3, 3));
+%! assert (isfield (G.Edges, "Weight"));
+%! assert (size (G.Edges.Weight), [0 1]);
+%! assert (size (G.Edges.EndNodes), [0 2]);
+
+## BIST — US-C14: fieldnames(G.Edges) order is EndNodes -> Weight ->
+## extras (in the order the EdgeTable declared them).
+%!test
+%! ET = struct ("EndNodes", [1 2; 2 3], "Weight", [10; 20], ...
+%!              "Label", {{"a"; "b"}});
+%! G = digraph (ET);
+%! assert (fieldnames (G.Edges), {"EndNodes"; "Weight"; "Label"});
+
+## BIST — US-C14: fieldnames(G.Edges) on an unweighted digraph with
+## extras omits Weight.
+%!test
+%! ET = struct ("EndNodes", [1 2; 2 3], "Kind", {{"solid"; "dashed"}});
+%! G = digraph (ET);
+%! assert (fieldnames (G.Edges), {"EndNodes"; "Kind"});
+
+## BIST — US-C14: fieldnames(G.Nodes) order is Name -> extras.
+%!test
+%! NT = struct ("Name", {{"x"; "y"; "z"}}, "Size", [1; 2; 3], ...
+%!              "Tag", {{"A"; "B"; "C"}});
+%! ET = struct ("EndNodes", [1 2; 2 3]);
+%! G = digraph (ET, NT);
+%! assert (fieldnames (G.Nodes), {"Name"; "Size"; "Tag"});
+
+## BIST — US-C14: G.Nodes is read-only (SetAccess=private).
+%!test
+%! G = digraph ([1 2], [2 3], [10 20]);
+%! fail ("G.Nodes = struct ();", "private access");
+
+## BIST — US-C14: G.Edges is read-only (SetAccess=private).
+%!test
+%! G = digraph ([1 2], [2 3], [10 20]);
+%! fail ("G.Edges = struct ();", "private access");
+
+## BIST — US-C14: reading G.Edges twice yields the same struct
+## (deterministic, idempotent).
+%!test
+%! G = digraph ([1 3 2], [2 1 3], [10 20 30]);
+%! assert (isequal (G.Edges, G.Edges));
+
+## BIST — US-C14: reading G.Nodes twice yields the same struct.
+%!test
+%! G = digraph ([1 2], [2 3], [10 20], {"a","b","c"});
+%! assert (isequal (G.Nodes, G.Nodes));
+
+## BIST — US-C14: dynamic field access G.("Nodes") / G.("Edges") works
+## and equals the static form.
+%!test
+%! G = digraph ([1 2], [2 3], [10 20], {"a","b","c"});
+%! assert (isequal (G.("Nodes"), G.Nodes));
+%! assert (isequal (G.("Edges"), G.Edges));
+
+## BIST — US-C14: a fully-featured digraph (named + weighted + extra
+## edge and node columns) exposes every column via G.Nodes and G.Edges.
+%!test
+%! ET = struct ("EndNodes", {{"a","b"; "b","c"; "c","a"}}, ...
+%!              "Weight", [1; 2; 3], ...
+%!              "Label", {{"ab"; "bc"; "ca"}});
+%! NT = struct ("Name", {{"a"; "b"; "c"}}, "Size", [10; 20; 30]);
+%! G = digraph (ET, NT);
+%! N = G.Nodes;
+%! E = G.Edges;
+%! assert (N.Name, {"a"; "b"; "c"});
+%! assert (N.Size, [10; 20; 30]);
+%! assert (E.EndNodes, [1 2; 2 3; 3 1]);
+%! assert (E.Weight, [1; 2; 3]);
+%! assert (E.Label, {"ab"; "bc"; "ca"});
+
+## BIST — US-C14: isolated named nodes appear in G.Nodes even with zero
+## edges, and G.Edges.EndNodes is still 0-by-2.
+%!test
+%! NT = struct ("Name", {{"x"; "y"; "z"}});
+%! ET = struct ("EndNodes", zeros (0, 2));
+%! G = digraph (ET, NT);
+%! assert (G.Nodes.Name, {"x"; "y"; "z"});
+%! assert (size (G.Edges.EndNodes), [0 2]);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 0);
+
+## BIST — US-C14: property-driven round-trip Gx = digraph(G.Edges, G.Nodes)
+## preserves both Edges and Nodes identically.
+%!test
+%! ET = struct ("EndNodes", [1 2; 2 3; 3 1], ...
+%!              "Weight", [10; 20; 30], ...
+%!              "Tag", {{"e1"; "e2"; "e3"}});
+%! NT = struct ("Name", {{"p"; "q"; "r"}}, "Rank", [1; 2; 3]);
+%! G1 = digraph (ET, NT);
+%! G2 = digraph (G1.Edges, G1.Nodes);
+%! assert (isequal (G1.Edges, G2.Edges));
+%! assert (isequal (G1.Nodes, G2.Nodes));
+
+## BIST — US-C14: adjacency-constructed digraph always has a Weight
+## column (matrix form implies weighted, MATLAB parity).
+%!test
+%! G = digraph ([0 1 0; 0 0 1; 0 0 0]);
+%! assert (fieldnames (G.Edges), {"EndNodes"; "Weight"});
+
+## BIST — US-C14: G.Nodes on a multigraph has the expected Name field
+## (empty cell(0,1) when unnamed, cellstr otherwise).
+%!test
+%! G = digraph ([1 1 2], [2 2 3], "multigraph");
+%! assert (isfield (G.Nodes, "Name"));
+%! assert (G.Nodes.Name, cell (0, 1));
+%! Gn = digraph ([1 1 2], [2 2 3], [], {"a","b","c"}, "multigraph");
+%! assert (Gn.Nodes.Name, {"a"; "b"; "c"});
+
+## BIST — US-C14: G.Edges on a multigraph preserves parallel edges in
+## lex order, duplicates adjacent.
+%!test
+%! G = digraph ([1 1 2], [2 2 3], [10 20 30], "multigraph");
+%! E = G.Edges;
+%! assert (E.EndNodes, [1 2; 1 2; 2 3]);
+%! assert (E.Weight, [10; 20; 30]);
+%! assert (numedges (G), 3);
+
+## BIST — US-C14: G.Edges.EndNodes is m-by-2 even on the empty multigraph.
+%!test
+%! G = digraph ("multigraph");
+%! assert (size (G.Edges.EndNodes), [0 2]);
+%! G = digraph (3, "multigraph");
+%! assert (size (G.Edges.EndNodes), [0 2]);

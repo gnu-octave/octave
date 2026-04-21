@@ -103,6 +103,15 @@
 ## componentwise @math{L_@{infinity@}} change drops to or below
 ## this value.  Default @code{1e-4}.
 ## @end table
+##
+## @item "eigenvector"
+## Eigenvector centrality: the principal (Perron) eigenvector of
+## the weighted adjacency matrix, L1-normalised so the entries
+## sum to @code{1}.  Computed with shifted power iteration
+## (@math{M = A + I}) so that bipartite graphs converge.  Only
+## defined for an undirected @code{graph}; on a @code{digraph}
+## use @code{"pagerank"}, @code{"hubs"}, or @code{"authorities"}
+## instead.
 ## @end table
 ##
 ## The return value @var{c} is always a column vector of length
@@ -1213,11 +1222,153 @@ endfunction
 %!error <no name-value|not supported>
 %! centrality (graph ([1 2], [2 3]), "degree", "FollowProbability", 0.85);
 
-## -------------------- not-yet-implemented types -----------------
-## These should error until US-CT05+ add them.
+## -------------------- graph + 'eigenvector' --------------------
 
-%!error <unknown|invalid|unrecognized|not yet|not implemented>
-%! centrality (graph ([1 2], [2 3]), "eigenvector");
+## Triangle graph (K3): symmetric -> uniform [1/3; 1/3; 1/3].
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! c = centrality (G, "eigenvector");
+%! assert (c, [1/3; 1/3; 1/3], 1e-6);
+
+## K4 complete graph: uniform [1/4; ... ; 1/4].
+%!test
+%! G = graph ([1 1 1 2 2 3], [2 3 4 3 4 4]);
+%! c = centrality (G, "eigenvector");
+%! assert (c, [1/4; 1/4; 1/4; 1/4], 1e-6);
+
+## Path graph P3 (1-2-3): closed-form eigenvector.
+## Principal eigenvalue sqrt(2), eigenvector proportional to
+## [1; sqrt(2); 1], normalised to sum=1.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! c = centrality (G, "eigenvector");
+%! expected = [1; sqrt(2); 1];
+%! expected = expected / sum (expected);
+%! assert (c, expected, 1e-5);
+
+## Path graph P5: symmetric, interior nodes highest.
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 5]);
+%! c = centrality (G, "eigenvector");
+%! assert (sum (c), 1, 1e-6);
+%! assert (c(1), c(5), 1e-5);      # endpoints equal
+%! assert (c(2), c(4), 1e-5);      # mirrored interior equal
+%! assert (c(3) > c(2));           # centre > near-centre
+%! assert (c(2) > c(1));           # near-centre > endpoint
+
+## Star K_{1,5}: centre has higher centrality than leaves,
+## leaves have equal centrality.
+%!test
+%! G = graph (ones (1, 5), 2:6);
+%! c = centrality (G, "eigenvector");
+%! assert (sum (c), 1, 1e-6);
+%! assert (c(1), sqrt (5) / (sqrt (5) + 5), 1e-5);
+%! assert (c(2:6), (1 / (sqrt (5) + 5)) * ones (5, 1), 1e-5);
+%! assert (c(1) > c(2));
+
+## Empty graph -> zeros(0, 1).
+%!test
+%! assert (centrality (graph (), "eigenvector"), zeros (0, 1));
+
+## Single-node graph -> [1].
+%!test
+%! assert (centrality (graph (1), "eigenvector"), 1);
+
+## Edgeless N-node graph -> zeros(N, 1) (no eigenvector structure).
+%!test
+%! assert (centrality (graph (4), "eigenvector"), zeros (4, 1));
+
+## Sum-to-one invariant on a generic graph.
+%!test
+%! G = graph ([1 1 2 3 4], [2 3 3 4 5]);
+%! c = centrality (G, "eigenvector");
+%! assert (sum (c), 1, 1e-6);
+%! assert (all (c >= 0 - 1e-9));
+
+## Result is a column vector of class double.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! c = centrality (G, "eigenvector");
+%! assert (size (c), [3, 1]);
+%! assert (class (c), "double");
+
+## Named graph: results follow node order, not names.
+%!test
+%! G = graph ([1 2 3], [2 3 1], [], {"a", "b", "c"});
+%! assert (centrality (G, "eigenvector"), [1/3; 1/3; 1/3], 1e-6);
+
+## Self-loop on a graph does not break the iteration.
+%!test
+%! G = graph ([1 1 2 3], [1 2 3 1]);
+%! c = centrality (G, "eigenvector");
+%! assert (size (c), [3, 1]);
+%! assert (sum (c), 1, 1e-6);
+%! assert (all (c > 0));
+
+## Adjacency-matrix constructor round-trip.
+%!test
+%! A = [0 1 1; 1 0 1; 1 1 0];
+%! G = graph (A);
+%! assert (centrality (G, "eigenvector"), [1/3; 1/3; 1/3], 1e-6);
+
+## Isolated trailing nodes: isolated node entries are zero, rest form
+## a valid eigenvector on the connected component, normalised so that
+## the overall sum is 1.
+%!test
+%! G = graph ([1 2], [2 3], [], 5);
+%! c = centrality (G, "eigenvector");
+%! assert (size (c), [5, 1]);
+%! assert (sum (c), 1, 1e-6);
+%! assert (c(4), 0, 1e-9);
+%! assert (c(5), 0, 1e-9);
+%! assert (c(1), c(3), 1e-5);       # endpoints of the P3 equal
+
+## Disconnected two-component graph: by symmetry the power-iteration
+## outcome is uniform across both components.
+%!test
+%! G = graph ([1 3], [2 4]);
+%! c = centrality (G, "eigenvector");
+%! assert (sum (c), 1, 1e-6);
+%! assert (c, [1/4; 1/4; 1/4; 1/4], 1e-6);
+
+## Weighted graph: larger weight concentrates centrality.
+%!test
+%! G = graph ([1 2], [2 3], [1 10]);
+%! c = centrality (G, "eigenvector");
+%! assert (sum (c), 1, 1e-6);
+%! assert (c(2) > c(1));           # node 2 more central than node 1
+%! assert (c(3) > c(1));           # heavy edge pulls mass to 2 & 3
+
+## -------------------- case-insensitivity (eigenvector) ----------
+
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! c = centrality (G, "eigenvector");
+%! assert (centrality (G, "Eigenvector"), c, 1e-12);
+%! assert (centrality (G, "EIGENVECTOR"), c, 1e-12);
+%! assert (centrality (G, "eIgEnVeCtOr"), c, 1e-12);
+
+## -------------------- dot-notation dispatch (eigenvector) ------
+
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! c = centrality (G, "eigenvector");
+%! assert (G.centrality ("eigenvector"), c, 1e-12);
+
+## -------------------- eigenvector: option rejection -----------
+
+## Options are rejected for eigenvector (no name-value options supported).
+%!error <no name-value|not supported>
+%! centrality (graph ([1 2], [2 3]), "eigenvector", "FollowProbability", 0.5);
+
+## -------------------- digraph + 'eigenvector' ------------------
+
+## 'eigenvector' is only defined for an undirected graph in MATLAB.
+%!error <undirected|only defined|not defined>
+%! centrality (digraph ([1 2], [2 3]), "eigenvector");
+
+## -------------------- not-yet-implemented types -----------------
+## These should error until US-CT06+ add them.
 
 %!error <unknown|invalid|unrecognized|not yet|not implemented>
 %! centrality (digraph ([1 2], [2 3]), "hubs");

@@ -2705,6 +2705,14 @@ classdef graph
       ## @item "Tolerance"
       ## Non-negative finite real scalar, default @code{1e-4}.
       ## @end table
+      ## @item "eigenvector"
+      ## Eigenvector centrality: the principal (Perron) eigenvector
+      ## of the weighted adjacency matrix, L1-normalised so the
+      ## entries sum to @code{1}.  Computed by power iteration with
+      ## an identity shift to guarantee convergence on bipartite
+      ## graphs.  Only defined for an undirected graph; on a
+      ## @code{digraph} use @code{"pagerank"}, @code{"hubs"}, or
+      ## @code{"authorities"} instead.
       ## @end table
       ##
       ## The directed-only types @code{"indegree"},
@@ -2742,8 +2750,8 @@ classdef graph
                type);
       endif
 
-      ## Future stories (US-CT05 eigenvector, US-CT07 Cost/Importance
-      ## weights) will extend this switch.
+      ## Future stories (US-CT07 Cost/Importance weights) will extend
+      ## this switch.
       switch (lower (type))
         case "degree"
           c = G.degree ();
@@ -2758,8 +2766,7 @@ classdef graph
         case "pagerank"
           c = __centrality_pagerank__ (G, varargin{:});
         case "eigenvector"
-          error ("Octave:invalid-input-arg", ...
-                 "centrality: TYPE '%s' is not yet implemented", type);
+          c = __centrality_eigenvector__ (G);
         case {"incloseness", "outcloseness", "hubs", "authorities"}
           error ("Octave:invalid-input-arg", ...
                  ["centrality: TYPE '%s' is only defined for a ", ...

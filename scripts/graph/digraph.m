@@ -3987,8 +3987,8 @@ classdef digraph
                type);
       endif
 
-      ## Future stories (US-CT05 eigenvector, US-CT06 hits,
-      ## US-CT07 Cost/Importance weights) will extend this switch.
+      ## Future stories (US-CT06 hits, US-CT07 Cost/Importance
+      ## weights) will extend this switch.
       switch (lower (type))
         case "indegree"
           c = G.indegree ();
@@ -4007,7 +4007,12 @@ classdef digraph
           c = __centrality_betweenness__ (G);
         case "pagerank"
           c = __centrality_pagerank__ (G, varargin{:});
-        case {"eigenvector", "hubs", "authorities"}
+        case "eigenvector"
+          error ("Octave:invalid-input-arg", ...
+                 ["centrality: TYPE 'eigenvector' is only defined ", ...
+                  "for an undirected graph; use 'pagerank', 'hubs', ", ...
+                  "or 'authorities' for a digraph"]);
+        case {"hubs", "authorities"}
           error ("Octave:invalid-input-arg", ...
                  "centrality: TYPE '%s' is not yet implemented", type);
         otherwise

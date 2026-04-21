@@ -201,7 +201,7 @@ classdef graph
   ## @end group
   ## @end example
   ##
-  ## @seealso{digraph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian, bfsearch, dfsearch, conncomp, biconncomp, condensation}
+  ## @seealso{digraph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian, bfsearch, dfsearch, conncomp, biconncomp, condensation, toposort}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1928,6 +1928,23 @@ classdef graph
 
       error ("Octave:invalid-input-arg", ...
              "condensation: not defined for an undirected graph; condensation requires a digraph");
+
+    endfunction
+
+    function n = toposort (G, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{n} =} toposort (@var{G})
+      ## Topological sort is not defined on the undirected @code{graph}
+      ## class; this method always raises an error.  Use
+      ## @code{toposort} on a @code{digraph} object instead.  See
+      ## @code{help toposort} for the full description of the directed
+      ## case.
+      ## @seealso{graph, digraph, condensation}
+      ## @end deftypefn
+
+      error ("Octave:invalid-input-arg", ...
+             "toposort: not defined for an undirected graph; toposort requires a digraph");
 
     endfunction
 

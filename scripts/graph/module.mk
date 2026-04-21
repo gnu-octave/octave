@@ -24,7 +24,8 @@ FCN_FILE_DIRS += \
   %reldir%/private/__resolve_single_node__.m \
   %reldir%/private/__rmedge_impl__.m \
   %reldir%/private/__rmnode_impl__.m \
-  %reldir%/private/__subgraph_impl__.m
+  %reldir%/private/__subgraph_impl__.m \
+  %reldir%/private/__toposort_parse_opts__.m
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/.oct-config \
@@ -58,7 +59,8 @@ FCN_FILE_DIRS += \
   %reldir%/rmedge.m \
   %reldir%/rmnode.m \
   %reldir%/subgraph.m \
-  %reldir%/successors.m
+  %reldir%/successors.m \
+  %reldir%/toposort.m
 
 %canon_reldir%dir = $(fcnfiledir)/graph
 

@@ -217,7 +217,7 @@ classdef digraph
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, flipedge, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian, bfsearch, dfsearch, conncomp, biconncomp, condensation}
+  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, flipedge, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian, bfsearch, dfsearch, conncomp, biconncomp, condensation, toposort}
   ## @end deftypefn
 
   properties (Access = private)
@@ -2774,6 +2774,105 @@ classdef digraph
       NT.Component = comp;
 
       C = digraph (ET, NT);
+
+    endfunction
+
+    function n = toposort (G, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{n} =} toposort (@var{G})
+      ## @deftypefnx {} {@var{n} =} toposort (@var{G}, @qcode{"Order"}, @var{order})
+      ## Return a topological ordering of the directed acyclic graph
+      ## @var{G}.
+      ##
+      ## @var{G} must represent a DAG; if any cycle exists (including
+      ## any self-loop), an error is raised.  The result @var{n} is a
+      ## @code{1}-by-@code{numnodes (@var{G})} row vector of node
+      ## indices such that, for every edge @var{s}->@var{t},
+      ## @code{find (@var{n} == @var{s}) < find (@var{n} == @var{t})}.
+      ##
+      ## The optional Name-Value @qcode{"Order"} option selects the
+      ## tie-break rule (case-insensitive name and value).  Both
+      ## @qcode{"stable"} (the default) and @qcode{"lexicographic"}
+      ## return the lexicographically smallest valid topological
+      ## order, i.e.@: whenever multiple nodes have no remaining
+      ## incoming edges, the one with the smallest index is emitted
+      ## first.
+      ## @seealso{digraph, isdag, conncomp, condensation}
+      ## @end deftypefn
+
+      order = __toposort_parse_opts__ (varargin);
+
+      N = numnodes (G);
+      if (N == 0)
+        n = zeros (1, 0);
+        return;
+      endif
+
+      ## Build an N-by-N edge-count matrix directly from Edges.EndNodes
+      ## so that both simple digraphs and multigraphs are handled
+      ## uniformly: parallel edges contribute their count to the
+      ## destination's indegree and each must be "consumed" before the
+      ## destination becomes available.  Self-loops count twice here
+      ## (once as out-edge, once as in-edge at the same node), so any
+      ## node with a self-loop has indeg >= 1 and can never reach 0
+      ## through Kahn's algorithm -- exactly the cycle-detection signal
+      ## we want.
+      E = G.Edges.EndNodes;
+      m = size (E, 1);
+      if (m == 0)
+        indeg = zeros (N, 1);
+        A_cnt = sparse (N, N);
+      else
+        A_cnt = sparse (double (E(:, 1)), double (E(:, 2)), 1, N, N);
+        indeg = full (sum (A_cnt, 1)).';
+      endif
+
+      ## Kahn's algorithm with a sorted "ready" list.  find() returns
+      ## sorted ascending indices, so we keep zero_list sorted ascending
+      ## and always pop its first element (smallest index) -- that is
+      ## the lex-smallest topological order.
+      zero_list = find (indeg == 0);
+      zero_list = zero_list(:);        # column
+
+      n = zeros (1, N);
+      pos = 0;
+
+      while (! isempty (zero_list))
+        u = zero_list(1);
+        zero_list(1) = [];
+        pos = pos + 1;
+        n(pos) = u;
+
+        ## Decrement indegrees of u's successors.
+        succ = find (A_cnt(u, :));
+        for v = succ
+          mult = full (A_cnt(u, v));
+          indeg(v) = indeg(v) - mult;
+          if (indeg(v) == 0)
+            ## Insert v into zero_list keeping ascending order.
+            if (isempty (zero_list) || v > zero_list(end))
+              zero_list = [zero_list; v];
+            elseif (v < zero_list(1))
+              zero_list = [v; zero_list];
+            else
+              ip = find (zero_list > v, 1);
+              zero_list = [zero_list(1:ip-1); v; zero_list(ip:end)];
+            endif
+          endif
+        endfor
+      endwhile
+
+      if (pos < N)
+        error ("Octave:invalid-input-arg", ...
+               "toposort: G is not a DAG; topological sort requires an acyclic digraph");
+      endif
+
+      ## Silence the unused-variable lint for 'order' -- stable and
+      ## lexicographic currently share the same behaviour, but parsing
+      ## the option still fully validates it (rejects unknown names or
+      ## values).
+      assert (any (strcmp (order, {"stable", "lexicographic"})));
 
     endfunction
 

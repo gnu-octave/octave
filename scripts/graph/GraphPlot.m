@@ -1111,7 +1111,7 @@ classdef GraphPlot < handle
       ## keep their current labels.  An empty selection is a silent
       ## no-op.
       ##
-      ## @seealso{GraphPlot, plot, highlight, graph, digraph}
+      ## @seealso{GraphPlot, plot, labelnode, highlight, graph, digraph}
       ## @end deftypefn
 
       if (nargin < 3)
@@ -1268,6 +1268,99 @@ classdef GraphPlot < handle
       endif
       cur(edge_idx) = new_labels;
       h.EdgeLabel = cur;
+
+    endfunction
+
+    function labelnode (h, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {} labelnode (@var{h}, @var{nodes}, @var{labels})
+      ## Set labels on the nodes of a @code{GraphPlot} @var{h}.
+      ##
+      ## @var{nodes} is a numeric vector of 1-based node indices (any
+      ## shape), a character row vector holding a single node name, a
+      ## cell array of node names, or an empty array (silent no-op).
+      ##
+      ## @var{labels} is either a cell array of strings (one per
+      ## selected node), a numeric vector (converted element-wise via
+      ## @code{num2str}), a single character-row vector (broadcast to
+      ## every selected node), or a scalar numeric or single-cell
+      ## cellstr (also broadcast).  The @code{NodeLabelMode} property
+      ## of @var{h} is set to @qcode{"manual"}.
+      ##
+      ## Selected nodes receive the specified labels; remaining nodes
+      ## keep their current labels.  An empty selection is a silent
+      ## no-op.
+      ##
+      ## @seealso{GraphPlot, plot, labeledge, highlight, graph, digraph}
+      ## @end deftypefn
+
+      if (nargin < 3)
+        print_usage ();
+      endif
+
+      if (numel (varargin) > 2)
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: labelnode: too many arguments");
+      endif
+
+      if (isempty (h.graph_))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: labelnode requires a rendered graph");
+      endif
+
+      nodes_arg = varargin{1};
+      labels_arg = varargin{2};
+
+      ## Empty selection -> silent no-op; preserve current labels/mode.
+      if (isempty (nodes_arg))
+        return;
+      endif
+
+      ## Resolve node identifiers via the shared helper.  It validates
+      ## numeric-range, name-lookup, and returns a column vector of
+      ## 1-based indices.  Its error messages include the caller method
+      ## string, which we pass as "labelnode" so BIST regexes can
+      ## target it.
+      idx = __resolve_node_list__ (h.graph_, nodes_arg, "labelnode");
+      idx = idx(:);
+      if (isempty (idx))
+        return;
+      endif
+
+      n = numel (idx);
+
+      ## Broadcast scalar label specifications to length n.
+      if (ischar (labels_arg) && isrow (labels_arg) && n != 1)
+        labels_arg = repmat ({labels_arg}, n, 1);
+      elseif (isnumeric (labels_arg) && isscalar (labels_arg) && n != 1)
+        tmp_str = num2str (labels_arg);
+        labels_arg = repmat ({tmp_str}, n, 1);
+      elseif (iscell (labels_arg) && numel (labels_arg) == 1 && n != 1)
+        labels_arg = repmat (labels_arg(:), n, 1);
+      endif
+
+      ## Validate and normalize labels to a length-n column cellstr via
+      ## the existing private helper (handles cellstr / numeric-vector /
+      ## char-matrix inputs and enforces the length-n constraint).
+      new_labels = __graph_plot_validate_nodelabel__ (labels_arg, n);
+
+      ## Overlay the new labels at idx into the current full-length
+      ## NodeLabel column, then push back through the Dependent
+      ## NodeLabel setter so NodeLabelMode automatically flips to
+      ## 'manual' (and the full-vector validator runs).
+      N = h.NumNodes;
+      cur = h.NodeLabel;
+      if (isempty (cur))
+        cur = repmat ({""}, N, 1);
+      else
+        cur = cur(:);
+        if (numel (cur) < N)
+          cur = [cur; repmat({""}, N - numel (cur), 1)];
+        endif
+      endif
+      cur(idx) = new_labels;
+      h.NodeLabel = cur;
 
     endfunction
 
@@ -4638,3 +4731,368 @@ endclassdef
 %!test
 %! h = GraphPlot ();
 %! fail ("labeledge (h, 1, 'x')", "requires a rendered graph");
+
+## ---------------- labelnode ----------------
+
+## labelnode(h, nodes, labels): scalar numeric node + scalar string.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labelnode (h, 1, "alpha");
+%!   assert (iscellstr (h.NodeLabel));
+%!   assert (numel (h.NodeLabel), 3);
+%!   assert (iscolumn (h.NodeLabel));
+%!   assert (h.NodeLabel{1}, "alpha");
+%!   ## Remaining nodes keep their default auto labels ("2", "3").
+%!   assert (h.NodeLabel{2}, "2");
+%!   assert (h.NodeLabel{3}, "3");
+%!   assert (h.NodeLabelMode, "manual");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labelnode(h, nodes, labels): vector nodes + cellstr labels.
+%!test
+%! G = digraph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labelnode (h, [1 3 5], {"a", "b", "c"});
+%!   assert (h.NodeLabel, {"a"; "2"; "b"; "4"; "c"});
+%!   assert (h.NodeLabelMode, "manual");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labelnode(h, nodes, labels): column nodes accepted.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labelnode (h, [1; 2], {"x"; "y"});
+%!   assert (h.NodeLabel, {"x"; "y"; "3"});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labelnode(h, nodes, labels): 2-D matrix of node indices flattens column-major.
+%!test
+%! G = digraph ([1 2 3 4], [2 3 4 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labelnode (h, [1 3; 2 4], {"n1", "n2", "n3", "n4"});
+%!   ## __resolve_node_list__ flattens via (:) in column-major order,
+%!   ## so input [1 3; 2 4] resolves to [1;2;3;4].
+%!   assert (h.NodeLabel, {"n1"; "n2"; "n3"; "n4"});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labelnode(h, nodes, labels): numeric labels converted via num2str.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labelnode (h, [1 2 3], [10 20 30]);
+%!   assert (h.NodeLabel, {"10"; "20"; "30"});
+%!   assert (h.NodeLabelMode, "manual");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labelnode(h, nodes, labels): scalar label string broadcast to all nodes.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labelnode (h, [1 2 3], "same");
+%!   assert (h.NodeLabel, {"same"; "same"; "same"});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labelnode(h, nodes, labels): scalar numeric label broadcast.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labelnode (h, [1 2], 7);
+%!   assert (h.NodeLabel{1}, "7");
+%!   assert (h.NodeLabel{2}, "7");
+%!   ## Node 3 keeps its default auto label.
+%!   assert (h.NodeLabel{3}, "3");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labelnode(h, nodes, labels): scalar single-cell broadcast.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labelnode (h, [1 3], {"z"});
+%!   assert (h.NodeLabel, {"z"; "2"; "z"});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labelnode(h, nodes, labels): char row vector = single node name.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"A", "B", "C"});
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labelnode (h, "B", "hello");
+%!   assert (h.NodeLabel{1}, "A");
+%!   assert (h.NodeLabel{2}, "hello");
+%!   assert (h.NodeLabel{3}, "C");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labelnode(h, nodes, labels): cellstr of node names.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"A", "B", "C"});
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labelnode (h, {"A", "C"}, {"n1", "n3"});
+%!   assert (h.NodeLabel{1}, "n1");
+%!   assert (h.NodeLabel{2}, "B");
+%!   assert (h.NodeLabel{3}, "n3");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labelnode(h, nodes, labels): 1-element cellstr.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"A", "B", "C"});
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labelnode (h, {"B"}, "only");
+%!   assert (h.NodeLabel{2}, "only");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labelnode(h, nodes, labels): undirected graph works the same way.
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labelnode (h, [1 2 3], {"a", "b", "c"});
+%!   assert (h.NodeLabel, {"a"; "b"; "c"});
+%!   assert (h.NodeLabelMode, "manual");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labelnode(h, nodes, labels): composition preserves prior labels.
+%!test
+%! G = digraph ([1 2 3 4], [2 3 4 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labelnode (h, 1, "first");
+%!   labelnode (h, 3, "third");
+%!   ## Composition: node 1 and node 3 relabelled; 2 and 4 keep defaults.
+%!   assert (h.NodeLabel, {"first"; "2"; "third"; "4"});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labelnode(h, nodes, labels): empty nodes is silent no-op.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   pre = h.NodeLabel;
+%!   pre_mode = h.NodeLabelMode;
+%!   labelnode (h, [], {});
+%!   assert (h.NodeLabel, pre);
+%!   assert (h.NodeLabelMode, pre_mode);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labelnode(h, nodes, labels): empty cellstr is silent no-op.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   pre = h.NodeLabel;
+%!   pre_mode = h.NodeLabelMode;
+%!   labelnode (h, {}, {});
+%!   assert (h.NodeLabel, pre);
+%!   assert (h.NodeLabelMode, pre_mode);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Handle-class semantics: h mutated in place without reassignment.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   h2 = h;
+%!   labelnode (h, 1, "shared");
+%!   assert (h2.NodeLabel{1}, "shared");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labelnode(h, nodes, labels): manual relabel after an auto mode refresh.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   h.NodeLabel = {"x"; "y"; "z"};    # manual via setter
+%!   labelnode (h, 2, "Y");
+%!   assert (h.NodeLabel, {"x"; "Y"; "z"});
+%!   assert (h.NodeLabelMode, "manual");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: missing labels argument.
+%!error <Invalid call|labelnode> ...
+%!   G = digraph ([1 2], [2 3]);
+%!   hf = figure ("visible", "off");
+%!   unwind_protect
+%!     h = GraphPlot (G);
+%!     labelnode (h, 1);
+%!   unwind_protect_cleanup
+%!     close (hf);
+%!   end_unwind_protect
+
+## Error: missing arguments entirely.
+%!error <Invalid call|labelnode> ...
+%!   G = digraph ([1 2], [2 3]);
+%!   hf = figure ("visible", "off");
+%!   unwind_protect
+%!     h = GraphPlot (G);
+%!     labelnode (h);
+%!   unwind_protect_cleanup
+%!     close (hf);
+%!   end_unwind_protect
+
+## Error: node index out of range.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labelnode (h, 99, 'x')", "invalid node");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: node index non-integer.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labelnode (h, 1.5, 'x')", "invalid node");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: node index zero or negative.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labelnode (h, 0, 'x')", "invalid node");
+%!   fail ("labelnode (h, -1, 'x')", "invalid node");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: node index non-finite.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labelnode (h, Inf, 'x')", "invalid node");
+%!   fail ("labelnode (h, NaN, 'x')", "invalid node");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: string name not found.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"A", "B", "C"});
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labelnode (h, 'Z', 'x')", "not found");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: string name on unnamed graph.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labelnode (h, 'foo', 'x')", "no node names");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: labels length mismatch vs nodes.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labelnode (h, [1 2], {'a','b','c'})", "length");
+%!   fail ("labelnode (h, [1 2 3], {'a','b'})", "length");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: labels wrong type (struct).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labelnode (h, 1, struct ('x', 1))", "NodeLabel|cell");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: too many arguments.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labelnode (h, 1, 'x', 'extra')", "too many|Invalid");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: labelnode on empty GraphPlot.
+%!test
+%! h = GraphPlot ();
+%! fail ("labelnode (h, 1, 'x')", "requires a rendered graph");

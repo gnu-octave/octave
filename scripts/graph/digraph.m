@@ -3937,6 +3937,21 @@ classdef digraph
       ## from @math{s} to @math{t}.  Computed with Brandes' algorithm
       ## using unweighted (BFS) shortest paths; stored edge weights
       ## and parallel edges are ignored by the default call.
+      ## @item "pagerank"
+      ## PageRank centrality, computed by power iteration on the
+      ## row-stochastic transition matrix with a damping factor
+      ## (@qcode{"FollowProbability"}) and uniform-teleportation
+      ## treatment of dangling nodes (nodes with zero outdegree).
+      ## Stored edge weights are honoured as transition probabilities.
+      ## Recognised Name-Value options:
+      ## @table @code
+      ## @item "FollowProbability"
+      ## Real scalar in @code{[0, 1]}, default @code{0.85}.
+      ## @item "MaxIterations"
+      ## Positive integer scalar, default @code{100}.
+      ## @item "Tolerance"
+      ## Non-negative finite real scalar, default @code{1e-4}.
+      ## @end table
       ## @end table
       ##
       ## The undirected @code{"degree"} type is not defined for a
@@ -3960,15 +3975,20 @@ classdef digraph
                "centrality: TYPE must not be empty");
       endif
 
-      if (! isempty (varargin))
+      ## Only the types whose helpers take options can pass varargin
+      ## through; every other TYPE must reject trailing arguments here
+      ## so the user gets a clear "no options supported" error instead
+      ## of a confusing downstream failure.
+      opts_accepting_types = {"pagerank"};
+      if (! any (strcmp (lower (type), opts_accepting_types)) ...
+          && ! isempty (varargin))
         error ("Octave:invalid-input-arg", ...
                "centrality: no name-value options are supported for TYPE '%s'", ...
                type);
       endif
 
-      ## Future stories (US-CT04 pagerank, US-CT05 eigenvector,
-      ## US-CT06 hits, US-CT07 Cost/Importance weights) will extend
-      ## this switch.
+      ## Future stories (US-CT05 eigenvector, US-CT06 hits,
+      ## US-CT07 Cost/Importance weights) will extend this switch.
       switch (lower (type))
         case "indegree"
           c = G.indegree ();
@@ -3985,7 +4005,9 @@ classdef digraph
           c = __centrality_closeness__ (G, "in");
         case "betweenness"
           c = __centrality_betweenness__ (G);
-        case {"pagerank", "eigenvector", "hubs", "authorities"}
+        case "pagerank"
+          c = __centrality_pagerank__ (G, varargin{:});
+        case {"eigenvector", "hubs", "authorities"}
           error ("Octave:invalid-input-arg", ...
                  "centrality: TYPE '%s' is not yet implemented", type);
         otherwise

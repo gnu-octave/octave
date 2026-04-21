@@ -82,6 +82,27 @@
 ## Computed with Brandes' algorithm on unweighted shortest paths
 ## (BFS); stored edge weights and parallel edges are ignored by
 ## the default call.
+##
+## @item "pagerank"
+## PageRank centrality.  A random walker follows an outgoing edge
+## with probability @qcode{"FollowProbability"} (default
+## @code{0.85}) and teleports to a uniformly random node otherwise;
+## dangling nodes (those with zero outgoing weight) redistribute
+## their mass uniformly.  The stationary distribution of this
+## modified walk is the PageRank vector, approximated by power
+## iteration.  Stored edge weights are used as transition
+## probabilities.  Recognised Name-Value options:
+## @table @code
+## @item "FollowProbability"
+## Real scalar damping factor in @code{[0, 1]}, default
+## @code{0.85}.
+## @item "MaxIterations"
+## Positive integer scalar, default @code{100}.
+## @item "Tolerance"
+## Non-negative finite real scalar; iteration stops when the
+## componentwise @math{L_@{infinity@}} change drops to or below
+## this value.  Default @code{1e-4}.
+## @end table
 ## @end table
 ##
 ## The return value @var{c} is always a column vector of length
@@ -117,6 +138,7 @@
 ##                               ##           1
 ## centrality (D, "outcloseness")
 ## centrality (D, "incloseness")
+## centrality (D, "pagerank")
 ## @end group
 ## @end example
 ##
@@ -881,11 +903,318 @@ endfunction
 %! D = digraph ([1 2], [2 3]);
 %! assert (D.centrality ("betweenness"), [0; 1; 0], 1e-12);
 
-## -------------------- not-yet-implemented types -----------------
-## These should error until US-CT04+ add them.
+## -------------------- graph + 'pagerank' -----------------------
 
-%!error <unknown|invalid|unrecognized|not yet|not implemented>
-%! centrality (graph ([1 2], [2 3]), "pagerank");
+## Triangle graph: symmetric, pagerank is uniform [1/3;1/3;1/3].
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! c = centrality (G, "pagerank");
+%! assert (c, [1/3; 1/3; 1/3], 1e-6);
+
+## K4 complete graph: every node has identical pagerank 1/4.
+%!test
+%! G = graph ([1 1 1 2 2 3], [2 3 4 3 4 4]);
+%! c = centrality (G, "pagerank");
+%! assert (c, [1/4; 1/4; 1/4; 1/4], 1e-6);
+
+## Star K_{1,5}: centre has higher pagerank than any leaf.
+%!test
+%! G = graph (ones (1, 5), 2:6);
+%! c = centrality (G, "pagerank");
+%! assert (abs (sum (c) - 1) < 1e-6);
+%! assert (c(1) > c(2));
+%! assert (c(2:end), c(2) * ones (5, 1), 1e-6);  # leaves equal
+
+## Path graph P5: endpoints have lowest rank, interior higher.
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 5]);
+%! c = centrality (G, "pagerank");
+%! assert (abs (sum (c) - 1) < 1e-6);
+%! assert (c(1), c(5), 1e-6);    # endpoints equal by symmetry
+%! assert (c(2), c(4), 1e-6);    # mirrored nodes equal
+%! assert (c(2) > c(1));         # interior > endpoint
+%! assert (c(3) > c(1));
+
+## Empty graph -> zeros(0, 1).
+%!test
+%! assert (centrality (graph (),   "pagerank"), zeros (0, 1));
+%! assert (centrality (digraph (), "pagerank"), zeros (0, 1));
+
+## Single-node graph -> [1].
+%!test
+%! assert (centrality (graph (1),   "pagerank"), 1);
+%! assert (centrality (digraph (1), "pagerank"), 1);
+
+## Edgeless N-node graph -> uniform [1/N; ...; 1/N].
+%!test
+%! G = graph (4);
+%! c = centrality (G, "pagerank");
+%! assert (c, [1/4; 1/4; 1/4; 1/4], 1e-6);
+
+## Edgeless N-node digraph -> uniform.
+%!test
+%! G = digraph (3);
+%! c = centrality (G, "pagerank");
+%! assert (c, [1/3; 1/3; 1/3], 1e-6);
+
+## Sum-to-one is preserved on a generic graph.
+%!test
+%! G = graph ([1 1 2 3 4], [2 3 3 4 5]);
+%! c = centrality (G, "pagerank");
+%! assert (sum (c), 1, 1e-6);
+%! assert (all (c >= 0 - 1e-9));
+
+## Result is a column vector of class double.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! c = centrality (G, "pagerank");
+%! assert (size (c), [3, 1]);
+%! assert (class (c), "double");
+
+## Named graph: pagerank indexed by node order.
+%!test
+%! G = graph ([1 1 2], [2 3 3], [], {"a", "b", "c"});
+%! c = centrality (G, "pagerank");
+%! assert (size (c), [3, 1]);
+%! assert (sum (c), 1, 1e-6);
+
+## Self-loop on a graph does not break the algorithm.
+%!test
+%! G = graph ([1 1 2 3], [1 2 3 1]);
+%! c = centrality (G, "pagerank");
+%! assert (size (c), [3, 1]);
+%! assert (sum (c), 1, 1e-6);
+%! assert (all (c > 0));
+
+## Disconnected graph: pagerank distributes across components.
+%!test
+%! G = graph ([1 3], [2 4]);
+%! c = centrality (G, "pagerank");
+%! assert (sum (c), 1, 1e-6);
+%! ## Two components of 2 nodes each: by symmetry c = [1/4; 1/4; 1/4; 1/4]
+%! assert (c, [1/4; 1/4; 1/4; 1/4], 1e-6);
+
+## -------------------- digraph + 'pagerank' ---------------------
+
+## Directed 3-cycle: symmetric, pagerank uniform [1/3;1/3;1/3].
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! c = centrality (G, "pagerank");
+%! assert (c, [1/3; 1/3; 1/3], 1e-6);
+
+## Directed chain 1->2->3: node 3 is dangling, node 3 highest PR.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! c = centrality (G, "pagerank");
+%! assert (sum (c), 1, 1e-6);
+%! assert (c(3) > c(2));
+%! assert (c(2) > c(1));
+
+## Directed fork 1->{2,3,4}: leaves get equal PR, node 1 lowest.
+%!test
+%! G = digraph (ones (1, 3), 2:4);
+%! c = centrality (G, "pagerank");
+%! assert (sum (c), 1, 1e-6);
+%! assert (c(2), c(3), 1e-6);
+%! assert (c(3), c(4), 1e-6);
+%! assert (c(2) > c(1));
+
+## Directed reverse-fork {2,3,4}->1: node 1 receives, highest PR.
+%!test
+%! G = digraph ([2 3 4], [1 1 1]);
+%! c = centrality (G, "pagerank");
+%! assert (sum (c), 1, 1e-6);
+%! assert (c(1) > c(2));
+%! assert (c(2), c(3), 1e-6);
+%! assert (c(3), c(4), 1e-6);
+
+## Self-loop on digraph does not break iteration.
+%!test
+%! G = digraph ([1 1 2 3], [2 3 3 3]);
+%! c = centrality (G, "pagerank");
+%! assert (sum (c), 1, 1e-6);
+%! assert (all (c > 0));
+
+## Dangling node (indegree 0, outdegree 0): still gets uniform share.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], 5);
+%! c = centrality (G, "pagerank");
+%! assert (sum (c), 1, 1e-6);
+%! assert (c(4), c(5), 1e-6);          # isolated nodes equal
+%! assert (c(1), c(2), 1e-6);
+%! assert (c(2), c(3), 1e-6);          # cycle nodes equal
+%! assert (c(1) > c(4));               # cycle > isolated
+
+## Named digraph.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"x", "y", "z"});
+%! c = centrality (G, "pagerank");
+%! assert (c, [1/3; 1/3; 1/3], 1e-6);
+
+## Result is a column vector of class double.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! c = centrality (G, "pagerank");
+%! assert (size (c), [3, 1]);
+%! assert (class (c), "double");
+
+## -------------------- pagerank options -------------------------
+
+## FollowProbability = 0 -> uniform distribution (no link-following).
+%!test
+%! G = digraph ([1 2 3 1], [2 3 1 3]);
+%! c = centrality (G, "pagerank", "FollowProbability", 0);
+%! assert (c, [1/3; 1/3; 1/3], 1e-12);
+
+## FollowProbability = 0.85 is default; explicit and implicit agree.
+%!test
+%! G = digraph ([1 2 3 1], [2 3 1 3]);
+%! c1 = centrality (G, "pagerank");
+%! c2 = centrality (G, "pagerank", "FollowProbability", 0.85);
+%! assert (c1, c2, 1e-12);
+
+## MaxIterations: increasing iterations only improves (non-strict)
+## convergence; result with many iterations is stable.
+%!test
+%! G = digraph ([1 2 3 1], [2 3 1 3]);
+%! c1 = centrality (G, "pagerank", "MaxIterations", 1000);
+%! c2 = centrality (G, "pagerank", "MaxIterations", 2000);
+%! assert (c1, c2, 1e-6);
+
+## Tolerance: very tight tolerance produces effectively the same result.
+%!test
+%! G = digraph ([1 2 3 1], [2 3 1 3]);
+%! c1 = centrality (G, "pagerank", "Tolerance", 1e-4);
+%! c2 = centrality (G, "pagerank", "Tolerance", 1e-12, ...
+%!                   "MaxIterations", 1000);
+%! assert (c1, c2, 1e-3);
+
+## All three options together, in any order.
+%!test
+%! G = digraph ([1 2 3 1], [2 3 1 3]);
+%! c1 = centrality (G, "pagerank", "FollowProbability", 0.5, ...
+%!                   "MaxIterations", 200, "Tolerance", 1e-8);
+%! c2 = centrality (G, "pagerank", "Tolerance", 1e-8, ...
+%!                   "MaxIterations", 200, "FollowProbability", 0.5);
+%! assert (c1, c2, 1e-12);
+
+## Option names are case-insensitive.
+%!test
+%! G = digraph ([1 2 3 1], [2 3 1 3]);
+%! c1 = centrality (G, "pagerank", "followprobability", 0.5);
+%! c2 = centrality (G, "pagerank", "FollowProbability", 0.5);
+%! c3 = centrality (G, "pagerank", "FOLLOWPROBABILITY", 0.5);
+%! assert (c1, c2, 1e-12);
+%! assert (c2, c3, 1e-12);
+
+## 'maxiterations' / 'MAXITERATIONS' both work.
+%!test
+%! G = digraph ([1 2 3 1], [2 3 1 3]);
+%! c1 = centrality (G, "pagerank", "maxiterations", 200);
+%! c2 = centrality (G, "pagerank", "MAXITERATIONS", 200);
+%! assert (c1, c2, 1e-12);
+
+## 'tolerance' / 'TOLERANCE' both work.
+%!test
+%! G = digraph ([1 2 3 1], [2 3 1 3]);
+%! c1 = centrality (G, "pagerank", "tolerance", 1e-6);
+%! c2 = centrality (G, "pagerank", "TOLERANCE", 1e-6);
+%! assert (c1, c2, 1e-12);
+
+## -------------------- case-insensitivity (pagerank) -----------
+
+%!test
+%! G = graph ([1 2], [2 3]);
+%! c = centrality (G, "pagerank");
+%! assert (centrality (G, "PageRank"), c, 1e-12);
+%! assert (centrality (G, "PAGERANK"), c, 1e-12);
+%! assert (centrality (G, "pAgErAnK"), c, 1e-12);
+
+## -------------------- dot-notation dispatch (pagerank) --------
+
+%!test
+%! G = graph ([1 2], [2 3]);
+%! c = centrality (G, "pagerank");
+%! assert (G.centrality ("pagerank"), c, 1e-12);
+%! D = digraph ([1 2 3], [2 3 1]);
+%! cd = centrality (D, "pagerank");
+%! assert (D.centrality ("pagerank"), cd, 1e-12);
+
+## Dot-notation with options.
+%!test
+%! G = digraph ([1 2 3 1], [2 3 1 3]);
+%! c1 = centrality (G, "pagerank", "FollowProbability", 0.5);
+%! c2 = G.centrality ("pagerank", "FollowProbability", 0.5);
+%! assert (c1, c2, 1e-12);
+
+## -------------------- pagerank option validation --------------
+
+## FollowProbability negative -> error.
+%!error <FollowProbability>
+%! centrality (graph ([1 2], [2 3]), "pagerank", "FollowProbability", -0.1);
+
+## FollowProbability > 1 -> error.
+%!error <FollowProbability>
+%! centrality (graph ([1 2], [2 3]), "pagerank", "FollowProbability", 1.1);
+
+## FollowProbability non-scalar -> error.
+%!error <FollowProbability>
+%! centrality (graph ([1 2], [2 3]), "pagerank", "FollowProbability", [0.5 0.7]);
+
+## FollowProbability non-numeric -> error.
+%!error <FollowProbability>
+%! centrality (graph ([1 2], [2 3]), "pagerank", "FollowProbability", "big");
+
+## FollowProbability complex -> error.
+%!error <FollowProbability>
+%! centrality (graph ([1 2], [2 3]), "pagerank", "FollowProbability", 0.5 + 1i);
+
+## MaxIterations zero -> error.
+%!error <MaxIterations>
+%! centrality (graph ([1 2], [2 3]), "pagerank", "MaxIterations", 0);
+
+## MaxIterations negative -> error.
+%!error <MaxIterations>
+%! centrality (graph ([1 2], [2 3]), "pagerank", "MaxIterations", -5);
+
+## MaxIterations non-integer -> error.
+%!error <MaxIterations>
+%! centrality (graph ([1 2], [2 3]), "pagerank", "MaxIterations", 3.14);
+
+## MaxIterations non-scalar -> error.
+%!error <MaxIterations>
+%! centrality (graph ([1 2], [2 3]), "pagerank", "MaxIterations", [10 20]);
+
+## Tolerance negative -> error.
+%!error <Tolerance>
+%! centrality (graph ([1 2], [2 3]), "pagerank", "Tolerance", -1e-4);
+
+## Tolerance non-scalar -> error.
+%!error <Tolerance>
+%! centrality (graph ([1 2], [2 3]), "pagerank", "Tolerance", [1e-4 1e-5]);
+
+## Tolerance Inf -> error.
+%!error <Tolerance>
+%! centrality (graph ([1 2], [2 3]), "pagerank", "Tolerance", Inf);
+
+## Unknown option name -> error.
+%!error <unknown|invalid|unrecognized|option>
+%! centrality (graph ([1 2], [2 3]), "pagerank", "Nonsense", 42);
+
+## Odd number of name-value args -> error.
+%!error <pair|missing|Name-Value|value>
+%! centrality (graph ([1 2], [2 3]), "pagerank", "FollowProbability");
+
+## Non-string option name -> error.
+%!error <option|name|char|string>
+%! centrality (graph ([1 2], [2 3]), "pagerank", 42, 0.5);
+
+## Options are still rejected for non-pagerank types.
+%!error <no name-value|not supported>
+%! centrality (graph ([1 2], [2 3]), "degree", "FollowProbability", 0.85);
+
+## -------------------- not-yet-implemented types -----------------
+## These should error until US-CT05+ add them.
 
 %!error <unknown|invalid|unrecognized|not yet|not implemented>
 %! centrality (graph ([1 2], [2 3]), "eigenvector");

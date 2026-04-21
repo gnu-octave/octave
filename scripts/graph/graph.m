@@ -2204,6 +2204,97 @@ classdef graph
 
     endfunction
 
+    function [P, d, edgepath] = shortestpath (G, s, t)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{P} =} shortestpath (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {[@var{P}, @var{d}] =} shortestpath (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {[@var{P}, @var{d}, @var{edgepath}] =} shortestpath (@var{G}, @var{s}, @var{t})
+      ## Return a single shortest path between nodes @var{s} and
+      ## @var{t} of the undirected graph @var{G}.
+      ##
+      ## With one output argument, return only the node path @var{P}.
+      ## With two outputs, also return the total distance @var{d}
+      ## along @var{P}.  With three outputs, also return
+      ## @var{edgepath}, a row vector of indices into
+      ## @code{@var{G}.Edges} identifying the traversed edges.
+      ##
+      ## When @var{s} and @var{t} are both numeric @var{P} is a
+      ## numeric row vector; when either is a name @var{P} is a
+      ## @code{1}-by-@var{k} cell array of strings.  When
+      ## @code{@var{s} == @var{t}}, @var{P} is @code{[@var{s}]},
+      ## @var{d} is @code{0} and @var{edgepath} is @code{1}-by-@code{0}.
+      ##
+      ## When @var{t} is not reachable from @var{s}, @var{P} is a
+      ## @code{1}-by-@code{0} empty vector (numeric or cellstr
+      ## following the input type), @var{d} is @code{Inf}, and
+      ## @var{edgepath} is a @code{1}-by-@code{0} empty vector.
+      ##
+      ## Edges may be traversed in either direction since @var{G} is
+      ## undirected.  Self-loops do not influence the path.
+      ## @seealso{graph, distances, shortestpathtree, allpaths}
+      ## @end deftypefn
+
+      if (nargin != 3)
+        print_usage ();
+      endif
+
+      [s_idx, s_by_name] = __resolve_single_node__ (G, s, "shortestpath");
+      [t_idx, t_by_name] = __resolve_single_node__ (G, t, "shortestpath");
+
+      return_names = s_by_name || t_by_name;
+
+      N = numnodes (G);
+
+      ## graph has no multigraph support today.  The weighted
+      ## adjacency matrix is simply adj_ (already symmetric); if G is
+      ## unweighted, collapse to 0/1.
+      if (G.has_weights_)
+        W = G.adj_;
+      else
+        W = spones (G.adj_);
+      endif
+
+      ## Compute the shortest path via Dijkstra with predecessor
+      ## tracking.  Negative weights error out here; US-P08 will add
+      ## Bellman-Ford support via a 'Method' option (and for an
+      ## undirected graph any negative edge is a negative cycle
+      ## u-v-u, so 'mixed' will also reject it).
+      [path_idx, d] = __shortestpath_dijkstra__ (W, s_idx, t_idx);
+      path_idx = path_idx(:).';
+
+      if (return_names)
+        if (isempty (path_idx))
+          P = cell (1, 0);
+        else
+          P = G.nodenames_(path_idx);
+          P = P(:).';
+        endif
+      else
+        if (isempty (path_idx))
+          P = zeros (1, 0);
+        else
+          P = double (path_idx);
+        endif
+      endif
+
+      if (nargout < 3)
+        return;
+      endif
+
+      k = numel (path_idx);
+      if (k <= 1)
+        edgepath = zeros (1, 0);
+        return;
+      endif
+
+      src_pairs = path_idx(1:k-1);
+      dst_pairs = path_idx(2:k);
+      ep = __findedge_impl__ (G, 1, src_pairs(:), dst_pairs(:));
+      edgepath = ep(:).';
+
+    endfunction
+
     function disp (G)
 
       ## -*- texinfo -*-

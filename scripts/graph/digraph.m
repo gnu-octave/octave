@@ -3358,6 +3358,157 @@ classdef digraph
 
     endfunction
 
+    function [P, d, edgepath] = shortestpath (G, s, t)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{P} =} shortestpath (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {[@var{P}, @var{d}] =} shortestpath (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {[@var{P}, @var{d}, @var{edgepath}] =} shortestpath (@var{G}, @var{s}, @var{t})
+      ## Return a single shortest path between nodes @var{s} and
+      ## @var{t} of the digraph @var{G}.
+      ##
+      ## With one output argument, return only the node path @var{P}
+      ## (a row vector of node identifiers traversed from @var{s} to
+      ## @var{t}).  With two outputs, also return the total distance
+      ## @var{d} along @var{P}.  With three outputs, also return
+      ## @var{edgepath}, a row vector of indices into
+      ## @code{@var{G}.Edges} identifying the traversed edges.
+      ##
+      ## When @var{s} and @var{t} are both numeric @var{P} is a
+      ## numeric row vector; when either is a name @var{P} is a
+      ## @code{1}-by-@var{k} cell array of strings.  When
+      ## @code{@var{s} == @var{t}}, @var{P} is the 1-element vector
+      ## @code{[@var{s}]}, @var{d} is @code{0} and @var{edgepath} is
+      ## @code{1}-by-@code{0}.
+      ##
+      ## When @var{t} is not reachable from @var{s}, the outputs are
+      ## empty: @var{P} is a @code{1}-by-@code{0} empty vector
+      ## (numeric or cellstr following the input type), @var{d} is
+      ## @code{Inf}, and @var{edgepath} is a @code{1}-by-@code{0}
+      ## empty vector.
+      ##
+      ## For a digraph with parallel edges, the cheapest of the
+      ## parallel edges connecting each pair of endpoints is used.
+      ## Self-loops do not influence the path.
+      ## @seealso{digraph, distances, shortestpathtree, allpaths}
+      ## @end deftypefn
+
+      if (nargin != 3)
+        print_usage ();
+      endif
+
+      ## Resolve source and target node identifiers.  __resolve_single_node__
+      ## accepts numeric indices, char row names, or 1-element
+      ## cellstrs, validates against numnodes(G), and reports whether
+      ## the input was a name (so we can decide the output type).
+      [s_idx, s_by_name] = __resolve_single_node__ (G, s, "shortestpath");
+      [t_idx, t_by_name] = __resolve_single_node__ (G, t, "shortestpath");
+
+      ## Return cellstr paths when either endpoint was given by name
+      ## (MATLAB parity).  This only applies when the digraph has
+      ## node names; __resolve_single_node__ already rejects names
+      ## on unnamed digraphs.
+      return_names = s_by_name || t_by_name;
+
+      N = numnodes (G);
+
+      ## Build the weight matrix W used by the shortest-path search.
+      ## For a multigraph, parallel edges between the same (i, j)
+      ## collapse to the minimum weight; for a simple graph we carry
+      ## either the weighted adj_ or its binary skeleton depending on
+      ## has_weights_.
+      if (G.is_multigraph_)
+        src_e = G.mg_endnodes_(:, 1);
+        dst_e = G.mg_endnodes_(:, 2);
+        if (G.has_weights_)
+          w_e = G.mg_weights_(:);
+        else
+          w_e = ones (numel (src_e), 1);
+        endif
+        if (isempty (src_e))
+          W = sparse (N, N);
+        else
+          [pairs, ~, ic] = unique ([src_e(:), dst_e(:)], "rows");
+          min_w = accumarray (ic, w_e, [], @min);
+          W = sparse (pairs(:, 1), pairs(:, 2), min_w, N, N);
+        endif
+      else
+        if (G.has_weights_)
+          W = G.adj_;
+        else
+          W = spones (G.adj_);
+        endif
+      endif
+
+      ## Compute the shortest path via Dijkstra with predecessor
+      ## tracking.  Negative weights error out at this stage; US-P08
+      ## will introduce 'Method' dispatch with Bellman-Ford support.
+      [path_idx, d] = __shortestpath_dijkstra__ (W, s_idx, t_idx);
+      ## path_idx is a column vector; row form is the public shape.
+      path_idx = path_idx(:).';
+
+      ## Convert node indices to either numeric or cellstr form.
+      if (return_names)
+        if (isempty (path_idx))
+          P = cell (1, 0);
+        else
+          P = G.nodenames_(path_idx);
+          ## Ensure row shape regardless of the stored cellstr shape.
+          P = P(:).';
+        endif
+      else
+        if (isempty (path_idx))
+          P = zeros (1, 0);
+        else
+          P = double (path_idx);
+        endif
+      endif
+
+      if (nargout < 3)
+        return;
+      endif
+
+      ## Compute edge indices along the path.  numel(path_idx) <= 1
+      ## yields an empty edgepath row.
+      k = numel (path_idx);
+      if (k <= 1)
+        edgepath = zeros (1, 0);
+        return;
+      endif
+
+      src_pairs = path_idx(1:k-1);
+      dst_pairs = path_idx(2:k);
+      if (G.is_multigraph_)
+        ## For a multigraph, several parallel edges may connect the
+        ## same (src, dst) pair; the path's distance was computed
+        ## using the cheapest of them, so edgepath must return the
+        ## index of that cheapest edge (so the standard identity
+        ## @code{sum (G.Edges.Weight(ep)) == d} holds).
+        edgepath = zeros (1, k - 1);
+        E = G.mg_endnodes_;
+        if (G.has_weights_)
+          w_all = G.mg_weights_(:);
+        else
+          w_all = ones (size (E, 1), 1);
+        endif
+        for ii = 1:(k - 1)
+          mask = (E(:, 1) == src_pairs(ii)) & (E(:, 2) == dst_pairs(ii));
+          cand_idx = find (mask);
+          if (isempty (cand_idx))
+            error ("Octave:internal-error", ...
+                   "shortestpath: internal error -- missing edge (%d, %d)", ...
+                   src_pairs(ii), dst_pairs(ii));
+          endif
+          [~, j] = min (w_all(cand_idx));
+          edgepath(ii) = cand_idx(j);
+        endfor
+      else
+        ep = __findedge_impl__ (G, 1, src_pairs(:), dst_pairs(:));
+        edgepath = ep(:).';
+      endif
+
+    endfunction
+
     function disp (G)
 
       ## -*- texinfo -*-

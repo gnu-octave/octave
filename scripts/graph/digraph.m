@@ -217,7 +217,7 @@ classdef digraph
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian}
+  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, flipedge, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1685,6 +1685,137 @@ classdef digraph
           endif
         else
           H.mg_weights_ = zeros (0, 1);
+        endif
+      endif
+
+    endfunction
+
+    function H = flipedge (G, edgeIdx)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{H} =} flipedge (@var{G})
+      ## @deftypefnx {} {@var{H} =} flipedge (@var{G}, @var{edgeIdx})
+      ## Reverse the direction of edges in the digraph @var{G} and
+      ## return the resulting digraph @var{H}.  See @code{help flipedge}
+      ## for the full description.  With one argument, every edge is
+      ## reversed (adjacency matrix is transposed).  With two arguments,
+      ## only the edges at indices @var{edgeIdx} are reversed; duplicate
+      ## indices are silently deduplicated.  Self-loops are unaffected.
+      ## In simple-graph mode, it is an error for the flip to create a
+      ## duplicate directed edge with an existing one; in multigraph
+      ## mode parallel edges are allowed.  Edge weights and
+      ## edge-attribute columns follow their edges in the reversed
+      ## graph.  Node count, node names, and node-attribute columns are
+      ## preserved.
+      ## @seealso{digraph, rmedge, addedge, reordernodes, subgraph}
+      ## @end deftypefn
+
+      if (nargin < 1 || nargin > 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to flipedge: expected 1 or 2 arguments");
+      endif
+
+      N = size (G.adj_, 1);
+      M = numedges (G);
+
+      ## Determine the flip mask (length M, true => reverse that edge).
+      if (nargin == 1)
+        flip_mask = true (M, 1);
+      else
+        if (! isnumeric (edgeIdx) || ! isreal (edgeIdx))
+          error ("Octave:invalid-input-arg", ...
+                 "digraph: flipedge: edgeIdx must be a real numeric array");
+        endif
+        v = double (edgeIdx)(:);
+        if (! isempty (v))
+          if (any (! isfinite (v)) || any (v < 1) || any (v > M) ...
+              || any (v != fix (v)))
+            error ("Octave:invalid-input-arg", ...
+                   ["digraph: flipedge: invalid edge index (must be a ", ...
+                    "positive integer in the range 1:numedges (G), ", ...
+                    "or out of range)"]);
+          endif
+        endif
+        flip_mask = false (M, 1);
+        if (! isempty (v))
+          flip_mask(unique (v)) = true;
+        endif
+      endif
+
+      H = G;
+
+      if (G.is_multigraph_)
+        ## Multigraph: flip rows of mg_endnodes_ where flip_mask is set,
+        ## then re-sort stably.  edge_attrs_ and mg_weights_ follow the
+        ## permutation.
+        if (M == 0)
+          ## Nothing to flip.
+          return;
+        endif
+
+        new_en = G.mg_endnodes_;
+        if (any (flip_mask))
+          new_en(flip_mask, :) = new_en(flip_mask, [2, 1]);
+        endif
+        [srt_en, p_edge] = sortrows (new_en);
+        H.mg_endnodes_ = srt_en;
+        if (G.has_weights_)
+          H.mg_weights_ = G.mg_weights_(p_edge);
+        else
+          H.mg_weights_ = zeros (0, 1);
+        endif
+        ## Permute edge-attribute rows to match.
+        efn = fieldnames (G.edge_attrs_);
+        for ii = 1:numel (efn)
+          col = G.edge_attrs_.(efn{ii});
+          H.edge_attrs_.(efn{ii}) = col(p_edge, :);
+        endfor
+        ## Keep the placeholder adj_ size.
+        H.adj_ = sparse (N, N);
+
+      else
+        ## Simple-graph mode.
+        if (M == 0)
+          ## Edgeless: flipedge is a no-op.
+          return;
+        endif
+
+        ## Iterate edges in the canonical order get.Edges uses:
+        ## find(adj_.') yields (src, dst) sorted lex.
+        [dst_old, src_old, w] = find (G.adj_.');
+        src_old = src_old(:); dst_old = dst_old(:); w = w(:);
+
+        new_src = src_old;
+        new_dst = dst_old;
+        ## Swap endpoints for flipped edges.  Self-loops are invariant.
+        if (any (flip_mask))
+          tmp = new_src(flip_mask);
+          new_src(flip_mask) = new_dst(flip_mask);
+          new_dst(flip_mask) = tmp;
+        endif
+
+        ## Detect duplicate (src, dst) pairs in the result -- sparse()
+        ## would silently sum such entries, which is not what we want.
+        pairs = [new_src, new_dst];
+        if (rows (unique (pairs, "rows")) != rows (pairs))
+          error ("Octave:invalid-input-arg", ...
+                 ["digraph: flipedge: flipping the requested edges ", ...
+                  "would create duplicate directed edges; use a ", ...
+                  "multigraph to allow parallel edges"]);
+        endif
+
+        H.adj_ = sparse (new_src, new_dst, w, N, N);
+
+        ## Permute edge-attribute rows to match new lex order.  The
+        ## new lex order corresponds to the stable sort of
+        ## (new_src, new_dst).
+        efn = fieldnames (G.edge_attrs_);
+        if (! isempty (efn))
+          [~, p_edge] = sortrows (pairs);
+          for ii = 1:numel (efn)
+            col = G.edge_attrs_.(efn{ii});
+            H.edge_attrs_.(efn{ii}) = col(p_edge, :);
+          endfor
         endif
       endif
 

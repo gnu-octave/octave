@@ -27,6 +27,7 @@ FCN_FILE_DIRS += \
   %reldir%/edgecount.m \
   %reldir%/findedge.m \
   %reldir%/findnode.m \
+  %reldir%/flipedge.m \
   %reldir%/graph.m \
   %reldir%/incidence.m \
   %reldir%/indegree.m \

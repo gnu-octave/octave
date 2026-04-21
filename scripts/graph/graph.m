@@ -201,7 +201,7 @@ classdef graph
   ## @end group
   ## @end example
   ##
-  ## @seealso{digraph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian, bfsearch, dfsearch}
+  ## @seealso{digraph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian, bfsearch, dfsearch, conncomp}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1722,6 +1722,60 @@ classdef graph
       else
         opts = __bfsdfs_parse_opts__ ("dfsearch", varargin);
         v = __dfsearch_events_impl__ (A, src, events, opts);
+      endif
+
+    endfunction
+
+    function out = conncomp (G, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{bins} =} conncomp (@var{G})
+      ## @deftypefnx {} {@var{bins} =} conncomp (@var{G}, @qcode{"Type"}, @qcode{"weak"})
+      ## @deftypefnx {} {@var{C} =} conncomp (@dots{}, @qcode{"OutputForm"}, @var{form})
+      ## Compute the connected components of the graph @var{G}.
+      ##
+      ## With no options, return a row vector @var{bins} of length
+      ## @code{numnodes (@var{G})} whose @math{i}-th entry is the 1-based
+      ## component label of node @math{i}.  Components are labelled in
+      ## the order they are first discovered when scanning nodes from 1
+      ## upward.
+      ##
+      ## Recognised Name-Value options (case-insensitive names and values):
+      ##
+      ## @itemize
+      ## @item
+      ## @qcode{"Type"} must be @qcode{"weak"} on a graph (the
+      ## undirected notion of connectivity); @qcode{"strong"} is a
+      ## digraph-only option and is rejected.
+      ## @item
+      ## @qcode{"OutputForm"} is either @qcode{"vector"} (default) or
+      ## @qcode{"cell"}.  @qcode{"vector"} returns the @var{bins} row
+      ## vector described above; @qcode{"cell"} returns a cell array
+      ## @var{C} of length equal to the number of components, where
+      ## @code{@var{C}@{k@}} is a sorted column vector of the node
+      ## indices belonging to the @math{k}-th component.
+      ## @end itemize
+      ## @seealso{graph, bfsearch, dfsearch}
+      ## @end deftypefn
+
+      opts = __conncomp_parse_opts__ (false, varargin);
+
+      A = adjacency (G);
+      bins = __conncomp_weak__ (A);
+
+      if (strcmp (opts.outputform, "vector"))
+        out = bins;
+      else
+        N = numel (bins);
+        if (N == 0)
+          out = cell (1, 0);
+        else
+          K = max (bins);
+          out = cell (1, K);
+          for k = 1:K
+            out{k} = find (bins == k).'(:);
+          endfor
+        endif
       endif
 
     endfunction

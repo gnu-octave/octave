@@ -8,6 +8,9 @@ FCN_FILE_DIRS += \
   %reldir%/private/__bfsdfs_parse_opts__.m \
   %reldir%/private/__bfsearch_events_impl__.m \
   %reldir%/private/__bfsearch_impl__.m \
+  %reldir%/private/__conncomp_parse_opts__.m \
+  %reldir%/private/__conncomp_strong__.m \
+  %reldir%/private/__conncomp_weak__.m \
   %reldir%/private/__dfsearch_events_impl__.m \
   %reldir%/private/__dfsearch_impl__.m \
   %reldir%/private/__edgecount_impl__.m \
@@ -28,6 +31,7 @@ FCN_FILE_DIRS += \
   %reldir%/addnode.m \
   %reldir%/adjacency.m \
   %reldir%/bfsearch.m \
+  %reldir%/conncomp.m \
   %reldir%/degree.m \
   %reldir%/dfsearch.m \
   %reldir%/digraph.m \

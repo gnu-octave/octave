@@ -217,7 +217,7 @@ classdef digraph
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, flipedge, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian, bfsearch, dfsearch}
+  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, flipedge, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian, bfsearch, dfsearch, conncomp}
   ## @end deftypefn
 
   properties (Access = private)
@@ -2587,6 +2587,67 @@ classdef digraph
       else
         opts = __bfsdfs_parse_opts__ ("dfsearch", varargin);
         v = __dfsearch_events_impl__ (A, src, events, opts);
+      endif
+
+    endfunction
+
+    function out = conncomp (G, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{bins} =} conncomp (@var{G})
+      ## @deftypefnx {} {@var{bins} =} conncomp (@var{G}, @qcode{"Type"}, @var{type})
+      ## @deftypefnx {} {@var{bins} =} conncomp (@dots{}, @qcode{"OutputForm"}, @var{form})
+      ## Compute the connected components of the digraph @var{G}.
+      ##
+      ## With no options, return a row vector @var{bins} of length
+      ## @code{numnodes (@var{G})} whose @math{i}-th entry is the 1-based
+      ## component label of node @math{i}.  Components are labelled in
+      ## the order they are first discovered when scanning nodes from 1
+      ## upward.
+      ##
+      ## Recognised Name-Value options (case-insensitive names and values):
+      ##
+      ## @itemize
+      ## @item
+      ## @qcode{"Type"} is either @qcode{"weak"} (default) or
+      ## @qcode{"strong"}.  @qcode{"weak"} treats the digraph as
+      ## undirected for component discovery; @qcode{"strong"} returns
+      ## the strongly connected components via Tarjan's algorithm, so
+      ## two nodes share a label iff there is a directed path from each
+      ## to the other.
+      ## @item
+      ## @qcode{"OutputForm"} is either @qcode{"vector"} (default) or
+      ## @qcode{"cell"}.  @qcode{"vector"} returns the @var{bins} row
+      ## vector described above; @qcode{"cell"} returns a cell array
+      ## @var{C} of length equal to the number of components, where
+      ## @code{@var{C}@{k@}} is a sorted column vector of the node
+      ## indices belonging to the @math{k}-th component.
+      ## @end itemize
+      ## @seealso{digraph, bfsearch, dfsearch}
+      ## @end deftypefn
+
+      opts = __conncomp_parse_opts__ (true, varargin);
+
+      A = adjacency (G);
+      if (strcmp (opts.type, "weak"))
+        bins = __conncomp_weak__ (A);
+      else
+        bins = __conncomp_strong__ (A);
+      endif
+
+      if (strcmp (opts.outputform, "vector"))
+        out = bins;
+      else
+        N = numel (bins);
+        if (N == 0)
+          out = cell (1, 0);
+        else
+          K = max (bins);
+          out = cell (1, K);
+          for k = 1:K
+            out{k} = find (bins == k).'(:);
+          endfor
+        endif
       endif
 
     endfunction

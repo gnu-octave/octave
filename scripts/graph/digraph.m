@@ -2425,24 +2425,45 @@ classdef digraph
 
     endfunction
 
-    function v = bfsearch (G, s)
+    function v = bfsearch (G, s, events)
 
       ## -*- texinfo -*-
-      ## @deftypefn {} {@var{v} =} bfsearch (@var{G}, @var{s})
+      ## @deftypefn  {} {@var{v} =} bfsearch (@var{G}, @var{s})
+      ## @deftypefnx {} {@var{v} =} bfsearch (@var{G}, @var{s}, @var{event})
+      ## @deftypefnx {} {@var{T} =} bfsearch (@var{G}, @var{s}, @var{events})
       ## Perform a breadth-first search of the digraph @var{G} starting
-      ## at node @var{s} and return the column vector @var{v} of node
-      ## indices in the order they are discovered.  Out-edges are
-      ## followed (source -> destination).  When a node has multiple
-      ## unvisited out-neighbours they are visited in ascending order
-      ## of node index (MATLAB parity tie-break).  Nodes not reachable
-      ## from @var{s} are omitted; parallel edges in a multigraph are
-      ## collapsed (each neighbour is enqueued at most once).
+      ## at node @var{s} and return nodes (or edges, or a full event
+      ## log) in BFS order.  Out-edges are followed (source ->
+      ## destination).  When a node has multiple unvisited out-neighbours
+      ## they are visited in ascending order of node index (MATLAB
+      ## parity tie-break).  Nodes not reachable from @var{s} are
+      ## omitted; parallel edges in a multigraph are collapsed (each
+      ## neighbour is enqueued at most once).
+      ##
+      ## With two arguments, return a numeric column vector @var{v} of
+      ## node indices in the order they are discovered.
+      ##
+      ## With a third argument @var{event} that is a character string
+      ## naming a single event type, return the BFS nodes or edges
+      ## corresponding to that event.  Valid event names are
+      ## @qcode{"discovernode"}, @qcode{"finishnode"}, @qcode{"startnode"}
+      ## (return a numeric column vector of node indices),
+      ## @qcode{"edgetonew"}, @qcode{"edgetodiscovered"}, and
+      ## @qcode{"edgetofinished"} (return an @math{m}-by-2 numeric
+      ## matrix of @code{[src, dst]} index pairs).
+      ##
+      ## With a third argument that is the string @qcode{"allevents"} or
+      ## a cell array of event names, return a scalar struct @var{T}
+      ## with fields @code{Event} (cellstr column of event names),
+      ## @code{Node} (double column of node indices, @code{0} for
+      ## edge-only events), and @code{Edge} (@math{m}-by-2 double matrix
+      ## of edge endpoints, @code{[0 0]} for node-only events).
       ## @seealso{digraph, dfsearch, successors, predecessors}
       ## @end deftypefn
 
-      if (nargin != 2)
+      if (nargin < 2 || nargin > 3)
         error ("Octave:invalid-fun-call", ...
-               "Invalid call to bfsearch: expected 2 arguments");
+               "Invalid call to bfsearch: expected 2 or 3 arguments");
       endif
 
       [src, ~] = __resolve_single_node__ (G, s, "bfsearch");
@@ -2453,7 +2474,11 @@ classdef digraph
       ## where edges exist, which is all BFS needs.
       A = adjacency (G);
 
-      v = __bfsearch_impl__ (A, src);
+      if (nargin == 2)
+        v = __bfsearch_impl__ (A, src);
+      else
+        v = __bfsearch_events_impl__ (A, src, events);
+      endif
 
     endfunction
 

@@ -28,6 +28,8 @@
 ## @deftypefnx {} {} highlight (@var{h}, @var{nodes}, @var{name}, @var{value}, @dots{})
 ## @deftypefnx {} {} highlight (@var{h}, @var{s}, @var{t})
 ## @deftypefnx {} {} highlight (@var{h}, @var{s}, @var{t}, @var{name}, @var{value}, @dots{})
+## @deftypefnx {} {} highlight (@var{h}, "Edges", @var{idx})
+## @deftypefnx {} {} highlight (@var{h}, "Edges", @var{idx}, @var{name}, @var{value}, @dots{})
 ## Highlight the specified nodes or edges of a @code{GraphPlot}.
 ##
 ## @var{h} is a @code{GraphPlot} handle, typically the return value of
@@ -44,6 +46,11 @@
 ## is highlighted.  For undirected graphs, @code{(@var{s}, @var{t})} and
 ## @code{(@var{t}, @var{s})} refer to the same edge.  By default the
 ## selected edges' color is set to red.
+##
+## In the edge-index form, the literal keyword @qcode{"Edges"} followed
+## by a numeric vector @var{idx} selects edges by 1-based index into
+## @code{@var{h}.Edges} (the same row order as @code{G.Edges.EndNodes}).
+## By default the selected edges' color is set to red.
 ##
 ## Trailing @var{name}/@var{value} pairs override the default.
 ## Recognised options (case-insensitive):
@@ -77,6 +84,7 @@
 ## h = plot (G);
 ## highlight (h, [1 3], "NodeColor", "g", "MarkerSize", 10);
 ## highlight (h, [1 2], [2 3], "EdgeColor", "r", "LineWidth", 2);
+## highlight (h, "Edges", [1 3], "EdgeColor", "b");
 ## @end group
 ## @end example
 ##
@@ -126,6 +134,19 @@ endfunction
 %!   highlight (h, 2, "NodeColor", "g", "MarkerSize", 9);
 %!   assert (h.NodeColor(2, :), [0 1 0]);
 %!   assert (h.MarkerSize(2), 9);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Edge-index form via free function.
+%!test
+%! G = digraph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G);
+%!   highlight (h, "Edges", [2 4], "EdgeColor", "g");
+%!   assert (h.EdgeColor(2, :), [0 1 0]);
+%!   assert (h.EdgeColor(4, :), [0 1 0]);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

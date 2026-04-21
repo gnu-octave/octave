@@ -607,6 +607,8 @@ classdef GraphPlot < handle
       ## @deftypefnx {} {} highlight (@var{h}, @var{nodes}, @var{name}, @var{value}, @dots{})
       ## @deftypefnx {} {} highlight (@var{h}, @var{s}, @var{t})
       ## @deftypefnx {} {} highlight (@var{h}, @var{s}, @var{t}, @var{name}, @var{value}, @dots{})
+      ## @deftypefnx {} {} highlight (@var{h}, "Edges", @var{idx})
+      ## @deftypefnx {} {} highlight (@var{h}, "Edges", @var{idx}, @var{name}, @var{value}, @dots{})
       ## Highlight the specified nodes or edges of a @code{GraphPlot}.
       ##
       ## In the node form, @var{nodes} is a numeric vector of node indices,
@@ -620,6 +622,12 @@ classdef GraphPlot < handle
       ## pair is highlighted.  By default the selected edges' color is
       ## set to red.  For undirected graphs, @code{(@var{s}, @var{t})} and
       ## @code{(@var{t}, @var{s})} refer to the same edge.
+      ##
+      ## In the edge-index form, the literal keyword @qcode{"Edges"}
+      ## followed by a numeric vector @var{idx} selects those edges by
+      ## their 1-based indices into @code{@var{h}.Edges} (the same order
+      ## as @code{G.Edges.EndNodes}).  By default the selected edges'
+      ## color is set to red.
       ##
       ## Trailing @var{name}/@var{value} pairs override the default.
       ## Recognised options (case-insensitive):
@@ -655,6 +663,140 @@ classdef GraphPlot < handle
       if (isempty (h.graph_))
         error ("Octave:invalid-input-arg", ...
                "GraphPlot: highlight requires a rendered graph");
+      endif
+
+      ## ---------------- Dispatch: 'Edges' index form -----------------
+      ##
+      ## highlight (h, 'Edges', idx[, name, value, ...]) selects edges by
+      ## 1-based index into h.graph_.Edges.EndNodes (the same row order
+      ## as G.Edges and the internal edge list).  This is distinct from
+      ## the (s, t) form (which resolves node pairs to edges) and from
+      ## the node form.
+      if (ischar (varargin{1}) && isrow (varargin{1}) ...
+          && strcmpi (varargin{1}, "edges"))
+
+        if (numel (varargin) < 2)
+          error ("Octave:invalid-input-arg", ...
+                 "GraphPlot: highlight: 'Edges' form requires an idx vector");
+        endif
+
+        idx_arg = varargin{2};
+        rest = varargin(3:end);
+
+        ## Empty idx -> silent no-op; preserve scalar cosmetic props.
+        if (isempty (idx_arg))
+          return;
+        endif
+
+        if (! isnumeric (idx_arg) || ! isreal (idx_arg))
+          error ("Octave:invalid-input-arg", ...
+                 "GraphPlot: highlight: 'Edges' idx must be a numeric vector");
+        endif
+
+        if (! isvector (idx_arg))
+          error ("Octave:invalid-input-arg", ...
+                 "GraphPlot: highlight: 'Edges' idx must be a vector");
+        endif
+
+        if (any (! isfinite (idx_arg(:))))
+          error ("Octave:invalid-input-arg", ...
+                 "GraphPlot: highlight: 'Edges' idx entries must be finite");
+        endif
+
+        if (any (idx_arg(:) <= 0))
+          error ("Octave:invalid-input-arg", ...
+                 "GraphPlot: highlight: 'Edges' idx entries must be positive");
+        endif
+
+        if (any (idx_arg(:) != fix (idx_arg(:))))
+          error ("Octave:invalid-input-arg", ...
+                 "GraphPlot: highlight: 'Edges' idx entries must be integer-valued");
+        endif
+
+        M = h.NumEdges;
+        if (any (idx_arg(:) > M))
+          error ("Octave:invalid-input-arg", ...
+                 "GraphPlot: highlight: 'Edges' idx out of range (1..%d)", M);
+        endif
+
+        edge_idx = double (idx_arg(:));
+
+        ## Parse trailing name-value overrides (edge cosmetics only).
+        if (mod (numel (rest), 2) != 0)
+          error ("Octave:invalid-input-arg", ...
+                 "GraphPlot: highlight: name-value options must come in pairs");
+        endif
+
+        edge_color = [1 0 0];         # default red
+        line_width = [];              # [] = do not touch LineWidth
+        line_style = [];              # [] = do not touch LineStyle
+        valid_linestyles = {"-", "--", ":", "-.", "none"};
+
+        for ii = 1:2:numel (rest)
+          name = rest{ii};
+          if (! (ischar (name) && isrow (name)))
+            error ("Octave:invalid-input-arg", ...
+                   "GraphPlot: highlight: option names must be character vectors");
+          endif
+          val = rest{ii + 1};
+          switch (lower (name))
+            case "edgecolor"
+              edge_color = __graph_plot_validate_colorspec__ (val, "EdgeColor");
+            case "linewidth"
+              if (! (isnumeric (val) && isscalar (val) && isreal (val) ...
+                     && isfinite (val) && val > 0))
+                error ("Octave:invalid-input-arg", ...
+                       ["GraphPlot: highlight: LineWidth must be a ", ...
+                        "positive real scalar"]);
+              endif
+              line_width = double (val);
+            case "linestyle"
+              if (! (ischar (val) && isrow (val)))
+                error ("Octave:invalid-input-arg", ...
+                       "GraphPlot: highlight: LineStyle must be a character vector");
+              endif
+              if (! any (strcmp (val, valid_linestyles)))
+                error ("Octave:invalid-input-arg", ...
+                       ["GraphPlot: highlight: LineStyle value '%s' ", ...
+                        "is not supported"], val);
+              endif
+              line_style = val;
+            otherwise
+              error ("Octave:invalid-input-arg", ...
+                     "GraphPlot: highlight: unknown option '%s'", name);
+          endswitch
+        endfor
+
+        ## Expand EdgeColor to Mx3 and apply highlight color at edge_idx.
+        ec = h.EdgeColor;
+        if (size (ec, 1) == 1)
+          ec = repmat (ec, M, 1);
+        endif
+        ec(edge_idx, :) = repmat (edge_color, numel (edge_idx), 1);
+        h.EdgeColor = ec;
+
+        if (! isempty (line_width))
+          lw = h.LineWidth;
+          if (isscalar (lw))
+            lw = repmat (lw, M, 1);
+          else
+            lw = lw(:);
+          endif
+          lw(edge_idx) = line_width;
+          h.LineWidth = lw;
+        endif
+
+        if (! isempty (line_style))
+          if (iscell (h.LineStyle))
+            ls = h.LineStyle(:);
+          else
+            ls = repmat ({h.LineStyle}, M, 1);
+          endif
+          ls(edge_idx) = {line_style};
+          h.LineStyle = ls;
+        endif
+
+        return;
       endif
 
       ## ---------------- Dispatch: node form vs. edge form ---------
@@ -3533,6 +3675,376 @@ endclassdef
 %!   h = plot (G);
 %!   highlight (h, 1, 2, "EdgeColor", "g");
 %!   assert (h.EdgeColor(1, :), [0 1 0]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## ========== US-GP11: highlight (h, 'Edges', idx, ...) ==========
+
+## Scalar edge index highlighted red by default.
+%!test
+%! G = digraph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, "Edges", 1);
+%!   assert (h.EdgeColor(1, :), [1 0 0]);
+%!   assert (h.EdgeColor(2, :), h.EdgeColor(3, :));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Vector edge indices highlighted red by default.
+%!test
+%! G = digraph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, "Edges", [1 3 5]);
+%!   assert (h.EdgeColor(1, :), [1 0 0]);
+%!   assert (h.EdgeColor(3, :), [1 0 0]);
+%!   assert (h.EdgeColor(5, :), [1 0 0]);
+%!   ## Unselected edges retain default (not red)
+%!   assert (h.EdgeColor(2, :) == [1 0 0], [false false false]);
+%!   assert (h.EdgeColor(4, :) == [1 0 0], [false false false]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Column-vector edge indices accepted.
+%!test
+%! G = digraph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, "Edges", [2; 4]);
+%!   assert (h.EdgeColor(2, :), [1 0 0]);
+%!   assert (h.EdgeColor(4, :), [1 0 0]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Case-insensitive 'Edges' keyword: 'edges' and 'EDGES' work too.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, "edges", 2);
+%!   assert (h.EdgeColor(2, :), [1 0 0]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, "EDGES", 3);
+%!   assert (h.EdgeColor(3, :), [1 0 0]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## EdgeColor override (named color + triplet).
+%!test
+%! G = digraph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, "Edges", [1 3], "EdgeColor", "g");
+%!   assert (h.EdgeColor(1, :), [0 1 0]);
+%!   assert (h.EdgeColor(3, :), [0 1 0]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+%!test
+%! G = digraph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, "Edges", 2, "EdgeColor", [0.2 0.6 0.9]);
+%!   assert (h.EdgeColor(2, :), [0.2 0.6 0.9], 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## LineWidth override.
+%!test
+%! G = digraph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, "Edges", [1 4], "LineWidth", 3);
+%!   assert (h.LineWidth(1), 3);
+%!   assert (h.LineWidth(4), 3);
+%!   assert (h.LineWidth(2) != 3);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## LineStyle override.
+%!test
+%! G = digraph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, "Edges", [1 3], "LineStyle", "--");
+%!   assert (iscell (h.LineStyle));
+%!   assert (h.LineStyle{1}, "--");
+%!   assert (h.LineStyle{3}, "--");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Multi-property override in a single call.
+%!test
+%! G = digraph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, "Edges", [2 4], ...
+%!              "EdgeColor", [0 1 0], "LineWidth", 2.5, "LineStyle", ":");
+%!   assert (h.EdgeColor(2, :), [0 1 0]);
+%!   assert (h.EdgeColor(4, :), [0 1 0]);
+%!   assert (h.LineWidth(2), 2.5);
+%!   assert (h.LineWidth(4), 2.5);
+%!   assert (h.LineStyle{2}, ":");
+%!   assert (h.LineStyle{4}, ":");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Case-insensitive option names after 'Edges'.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, "Edges", 1, "edgecolor", "m", "linewidth", 2, ...
+%!              "LINESTYLE", "-.");
+%!   assert (h.EdgeColor(1, :), [1 0 1]);
+%!   assert (h.LineWidth(1), 2);
+%!   assert (h.LineStyle{1}, "-.");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Empty indices -> silent no-op; EdgeColor stays 1x3.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, "Edges", []);
+%!   assert (size (h.EdgeColor), [1 3]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Undirected graph: edge indexing is into the same stored edge list.
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, "Edges", [1 2]);
+%!   assert (h.EdgeColor(1, :), [1 0 0]);
+%!   assert (h.EdgeColor(2, :), [1 0 0]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Composition: node highlight followed by 'Edges' index highlight
+## preserves node changes and vice-versa.
+%!test
+%! G = digraph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, [1 3], "NodeColor", "g");
+%!   highlight (h, "Edges", [2 4], "EdgeColor", "m");
+%!   assert (h.NodeColor(1, :), [0 1 0]);
+%!   assert (h.NodeColor(3, :), [0 1 0]);
+%!   assert (h.EdgeColor(2, :), [1 0 1]);
+%!   assert (h.EdgeColor(4, :), [1 0 1]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Handle-class semantics: highlight mutates in place, no reassignment
+## needed.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   h2 = h;
+%!   highlight (h, "Edges", 1);
+%!   assert (h2.EdgeColor(1, :), [1 0 0]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Free-function dispatch via scripts/graph/highlight.m for the 'Edges'
+## form.
+%!test
+%! G = digraph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G);
+%!   highlight (h, "Edges", [1 5], "EdgeColor", "b");
+%!   assert (h.EdgeColor(1, :), [0 0 1]);
+%!   assert (h.EdgeColor(5, :), [0 0 1]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Regression: node form and (s, t) edge form still dispatch correctly
+## when 'Edges' keyword is not present.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, 1);
+%!   assert (h.NodeColor(1, :), [1 0 0]);
+%!   highlight (h, 2, 3, "EdgeColor", "g");
+%!   assert (h.EdgeColor(2, :), [0 1 0]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: missing idx after 'Edges'.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("highlight (h, 'Edges')", "idx");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: non-numeric idx.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("highlight (h, 'Edges', 'abc')", "numeric");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: non-vector idx (matrix).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("highlight (h, 'Edges', [1 2; 2 3])", "vector");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: edge index out of range (above NumEdges).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("highlight (h, 'Edges', 10)", "out of range");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: edge index zero / negative.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("highlight (h, 'Edges', 0)", "positive");
+%!   fail ("highlight (h, 'Edges', -1)", "positive");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: non-integer idx.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("highlight (h, 'Edges', 1.5)", "integer");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: Inf / NaN idx.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("highlight (h, 'Edges', Inf)", "finite");
+%!   fail ("highlight (h, 'Edges', NaN)", "finite");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: odd name-value pairs after idx.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("highlight (h, 'Edges', 1, 'EdgeColor')", "pairs");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: unknown option after 'Edges' form.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("highlight (h, 'Edges', 1, 'Bogus', 1)", "unknown option");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: invalid EdgeColor in 'Edges' form.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("highlight (h, 'Edges', 1, 'EdgeColor', [2 0 0])", "RGB triplet");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: non-positive LineWidth in 'Edges' form.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("highlight (h, 'Edges', 1, 'LineWidth', -1)", "positive");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: unsupported LineStyle in 'Edges' form.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("highlight (h, 'Edges', 1, 'LineStyle', '~~')", "supported");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

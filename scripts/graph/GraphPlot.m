@@ -242,6 +242,8 @@ classdef GraphPlot < handle
       layout = "auto";
       xdata_user = [];
       ydata_user = [];
+      zdata_user = [];
+      zdata_given = false;
       layout_opts = struct ();
       ## Cosmetic options recorded but applied after NumNodes is known.
       cosmetic_sets = {};
@@ -263,6 +265,9 @@ classdef GraphPlot < handle
             xdata_user = val(:);
           case "ydata"
             ydata_user = val(:);
+          case "zdata"
+            zdata_given = true;
+            zdata_user = val(:);
           case "weighteffect"
             if (! (ischar (val) && isrow (val)))
               error ("Octave:invalid-input-arg", ...
@@ -308,14 +313,34 @@ classdef GraphPlot < handle
       ## by size threshold.  The optional third return value Z is
       ## populated by 3-D layouts (currently "force3" only) and left
       ## empty for every 2-D layout.
-      if (! isempty (xdata_user) && ! isempty (ydata_user))
+      ##
+      ## User-supplied XData, YData, and optionally ZData bypass the
+      ## layout step entirely.  Supplying ZData without both XData and
+      ## YData is an error (ZData alone does not define a plot).
+      ## Supplying ZData as [] explicitly is treated as a 2-D bypass.
+      zdata_nonempty = zdata_given && ! isempty (zdata_user);
+      xy_given = ! isempty (xdata_user) && ! isempty (ydata_user);
+      if (zdata_nonempty && ! xy_given)
+        error ("Octave:invalid-input-arg", ...
+               ["GraphPlot: ZData requires XData and YData to also be", ...
+                " supplied"]);
+      endif
+      if (xy_given)
         if (numel (xdata_user) != N || numel (ydata_user) != N)
           error ("Octave:invalid-input-arg", ...
                  "GraphPlot: XData / YData length must equal numnodes (G)");
         endif
         X = double (xdata_user);
         Y = double (ydata_user);
-        Z = zeros (0, 1);
+        if (zdata_nonempty)
+          if (numel (zdata_user) != N)
+            error ("Octave:invalid-input-arg", ...
+                   "GraphPlot: ZData length must equal numnodes (G)");
+          endif
+          Z = double (zdata_user);
+        else
+          Z = zeros (0, 1);
+        endif
       else
         [X, Y, Z] = __graph_plot_auto_layout__ (G, layout, layout_opts);
       endif
@@ -5096,3 +5121,197 @@ endclassdef
 %!test
 %! h = GraphPlot ();
 %! fail ("labelnode (h, 1, 'x')", "requires a rendered graph");
+
+## -------- US-GP14 XData / YData / ZData bypass --------
+##
+## Supplying XData and YData skips the layout step and uses the given
+## coordinates for the 2-D plot.  Additionally supplying ZData switches
+## the plot to 3-D and uses the given Z coordinates.  All three vectors
+## must be length numnodes(G); errors otherwise.
+
+## XData + YData + ZData all provided -> 3-D bypass.  All three arrays
+## round-trip as column doubles of length N; ZData is non-empty so the
+## plot is rendered via the 3-D path.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "XData", [0 1 2], "YData", [0 1 0], ...
+%!                  "ZData", [5 6 7]);
+%!   assert (h.XData, [0; 1; 2]);
+%!   assert (h.YData, [0; 1; 0]);
+%!   assert (h.ZData, [5; 6; 7]);
+%!   assert (iscolumn (h.ZData));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## XData + YData + ZData with Layout = 'circle': user coordinates win
+## over the layout request.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "circle", ...
+%!                  "XData", [10 20 30], "YData", [1 1 1], ...
+%!                  "ZData", [0 -1 -2]);
+%!   assert (h.XData, [10; 20; 30]);
+%!   assert (h.YData, [1; 1; 1]);
+%!   assert (h.ZData, [0; -1; -2]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## XData + YData + ZData with Layout = 'force3': user coordinates win
+## over the 3-D layout request.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "force3", ...
+%!                  "XData", [0 1 2], "YData", [0 1 0], ...
+%!                  "ZData", [0 0 0]);
+%!   assert (h.XData, [0; 1; 2]);
+%!   assert (h.YData, [0; 1; 0]);
+%!   assert (h.ZData, [0; 0; 0]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## XData + YData only (no ZData): 2-D bypass, ZData remains empty.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "XData", [0 1 2], "YData", [0 1 0]);
+%!   assert (h.XData, [0; 1; 2]);
+%!   assert (h.YData, [0; 1; 0]);
+%!   assert (isempty (h.ZData));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Explicit ZData = [] is the same as not supplying ZData (2-D bypass).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "XData", [0 1 2], "YData", [0 1 0], ...
+%!                  "ZData", []);
+%!   assert (h.XData, [0; 1; 2]);
+%!   assert (h.YData, [0; 1; 0]);
+%!   assert (isempty (h.ZData));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## ZData supplied as a column vector is accepted and stored as a column.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "XData", [0; 1; 2], "YData", [0; 1; 0], ...
+%!                  "ZData", [9; 8; 7]);
+%!   assert (h.ZData, [9; 8; 7]);
+%!   assert (iscolumn (h.ZData));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Undirected graph: XData + YData + ZData bypass works the same way.
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "XData", [0 1 2 3], "YData", [0 0 0 0], ...
+%!                  "ZData", [1 2 3 4]);
+%!   assert (h.XData, [0; 1; 2; 3]);
+%!   assert (h.YData, zeros (4, 1));
+%!   assert (h.ZData, [1; 2; 3; 4]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## ZData length mismatch (too short) -> error.
+%!error <length> ...
+%!   GraphPlot (digraph ([1 2 3], [2 3 1]), ...
+%!              "XData", [0 1 2], "YData", [0 1 0], "ZData", [1 2])
+
+## ZData length mismatch (too long) -> error.
+%!error <length> ...
+%!   GraphPlot (digraph ([1 2 3], [2 3 1]), ...
+%!              "XData", [0 1 2], "YData", [0 1 0], "ZData", [1 2 3 4])
+
+## ZData supplied without XData/YData -> error.
+%!error <ZData> ...
+%!   GraphPlot (digraph ([1 2 3], [2 3 1]), "ZData", [1 2 3])
+
+## ZData supplied with only XData (no YData) -> error.
+%!error <ZData> ...
+%!   GraphPlot (digraph ([1 2 3], [2 3 1]), ...
+%!              "XData", [0 1 2], "ZData", [1 2 3])
+
+## ZData supplied with only YData (no XData) -> error.
+%!error <ZData> ...
+%!   GraphPlot (digraph ([1 2 3], [2 3 1]), ...
+%!              "YData", [0 1 2], "ZData", [1 2 3])
+
+## XData/YData length mismatch error still fires when ZData is given.
+%!error <length> ...
+%!   GraphPlot (digraph ([1 2 3], [2 3 1]), ...
+%!              "XData", [0 1], "YData", [0 1], "ZData", [1 2 3])
+
+## Row-vector ZData is stored as a column (consistency with X/Y).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "XData", [1 2 3], "YData", [4 5 6], ...
+%!                  "ZData", [7 8 9]);
+%!   assert (iscolumn (h.ZData));
+%!   assert (h.ZData, [7; 8; 9]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Empty graph (N == 0): empty X/Y/Z all accepted silently.
+%!test
+%! G = digraph ();
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "XData", [], "YData", [], "ZData", []);
+%!   assert (isempty (h.XData));
+%!   assert (isempty (h.YData));
+%!   assert (isempty (h.ZData));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Integer ZData accepted and cast to double on the way in.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "XData", int32 ([0 1 2]), ...
+%!                  "YData", int32 ([0 0 0]), ...
+%!                  "ZData", int32 ([10 20 30]));
+%!   assert (isa (h.ZData, "double"));
+%!   assert (h.ZData, [10; 20; 30]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## N > NumEdges with XData/YData/ZData: isolated nodes placed where the
+## user put them, edges still drawn between endpoints.
+%!test
+%! G = digraph ([1 2], [2 3], [], 4);   # 4 nodes, 2 edges
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "XData", [0 1 2 3], "YData", [0 1 0 1], ...
+%!                  "ZData", [5 5 5 5]);
+%!   assert (h.NumNodes, 4);
+%!   assert (h.NumEdges, 2);
+%!   assert (numel (h.ZData), 4);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

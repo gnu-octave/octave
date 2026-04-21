@@ -901,3 +901,43 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+
+## -------- US-GP14 XData / YData / ZData via plot() --------
+
+## Custom XData + YData + ZData pass through to the GraphPlot,
+## bypassing the layout step and producing a 3-D plot.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G, "XData", [0 1 2], "YData", [0 1 0], ...
+%!             "ZData", [5 6 7]);
+%!   assert (h.XData, [0; 1; 2]);
+%!   assert (h.YData, [0; 1; 0]);
+%!   assert (h.ZData, [5; 6; 7]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Explicit ZData = [] via plot() is a 2-D bypass (ZData stays empty).
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G, "XData", [0 1 2], "YData", [0 1 0], "ZData", []);
+%!   assert (h.XData, [0; 1; 2]);
+%!   assert (h.YData, [0; 1; 0]);
+%!   assert (isempty (h.ZData));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## ZData length mismatch propagates through plot().
+%!error <length> ...
+%!   plot (digraph ([1 2 3], [2 3 1]), ...
+%!         "XData", [0 1 2], "YData", [0 1 0], "ZData", [1 2])
+
+## ZData supplied without XData/YData propagates the error through
+## plot().
+%!error <ZData> ...
+%!   plot (digraph ([1 2 3], [2 3 1]), "ZData", [1 2 3])

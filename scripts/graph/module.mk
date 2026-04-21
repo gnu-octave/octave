@@ -7,6 +7,8 @@ FCN_FILE_DIRS += \
   %reldir%/private/__addnode_impl__.m \
   %reldir%/private/__bfsearch_events_impl__.m \
   %reldir%/private/__bfsearch_impl__.m \
+  %reldir%/private/__dfsearch_events_impl__.m \
+  %reldir%/private/__dfsearch_impl__.m \
   %reldir%/private/__edgecount_impl__.m \
   %reldir%/private/__findedge_impl__.m \
   %reldir%/private/__findnode_impl__.m \
@@ -26,6 +28,7 @@ FCN_FILE_DIRS += \
   %reldir%/adjacency.m \
   %reldir%/bfsearch.m \
   %reldir%/degree.m \
+  %reldir%/dfsearch.m \
   %reldir%/digraph.m \
   %reldir%/edgecount.m \
   %reldir%/findedge.m \

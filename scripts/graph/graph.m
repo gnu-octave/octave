@@ -201,7 +201,7 @@ classdef graph
   ## @end group
   ## @end example
   ##
-  ## @seealso{digraph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian, bfsearch}
+  ## @seealso{digraph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian, bfsearch, dfsearch}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1614,6 +1614,70 @@ classdef graph
         v = __bfsearch_impl__ (A, src);
       else
         v = __bfsearch_events_impl__ (A, src, events);
+      endif
+
+    endfunction
+
+    function v = dfsearch (G, s, events)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{v} =} dfsearch (@var{G}, @var{s})
+      ## @deftypefnx {} {@var{v} =} dfsearch (@var{G}, @var{s}, @var{event})
+      ## @deftypefnx {} {@var{T} =} dfsearch (@var{G}, @var{s}, @var{events})
+      ## Perform a depth-first search of the undirected graph
+      ## @var{G} starting at node @var{s} and return nodes (or edges,
+      ## or a full event log) in DFS order.  Incident edges are
+      ## followed in both directions.  When a node has multiple
+      ## unvisited neighbours they are visited in ascending order of
+      ## node index (MATLAB parity tie-break).  Nodes in other
+      ## connected components are omitted; parallel edges in a
+      ## multigraph are collapsed (each neighbour is visited at most
+      ## once).
+      ##
+      ## With two arguments, return a numeric column vector @var{v} of
+      ## node indices in the order they are discovered.
+      ##
+      ## With a third argument @var{event} that is a character string
+      ## naming a single event type, return the DFS nodes or edges
+      ## corresponding to that event.  Valid event names are
+      ## @qcode{"discovernode"}, @qcode{"finishnode"}, @qcode{"startnode"}
+      ## (return a numeric column vector of node indices),
+      ## @qcode{"edgetonew"}, @qcode{"edgetodiscovered"}, and
+      ## @qcode{"edgetofinished"} (return an @math{m}-by-2 numeric
+      ## matrix of @code{[src, dst]} index pairs).
+      ##
+      ## With a third argument that is the string @qcode{"allevents"} or
+      ## a cell array of event names, return a scalar struct @var{T}
+      ## with fields @code{Event} (cellstr column of event names),
+      ## @code{Node} (double column of node indices, @code{0} for
+      ## edge-only events), and @code{Edge} (@math{m}-by-2 double matrix
+      ## of edge endpoints, @code{[0 0]} for node-only events).
+      ##
+      ## In DFS, @qcode{"edgetodiscovered"} marks a @emph{back edge}
+      ## (target on the DFS stack); @qcode{"edgetofinished"} marks an
+      ## edge whose target has already finished.  For an undirected
+      ## graph every incident edge other than the one used to reach
+      ## the current node in the DFS tree is a back edge to an
+      ## ancestor, so @qcode{"edgetofinished"} is usually empty.
+      ## @seealso{graph, bfsearch, neighbors, degree}
+      ## @end deftypefn
+
+      if (nargin < 2 || nargin > 3)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to dfsearch: expected 2 or 3 arguments");
+      endif
+
+      [src, ~] = __resolve_single_node__ (G, s, "dfsearch");
+
+      ## Build a binary / count adjacency.  For an undirected graph
+      ## the stored adjacency is symmetric, so adjacency(G) gives a
+      ## matrix whose nonzeros mark incident edges in both directions.
+      A = adjacency (G);
+
+      if (nargin == 2)
+        v = __dfsearch_impl__ (A, src);
+      else
+        v = __dfsearch_events_impl__ (A, src, events);
       endif
 
     endfunction

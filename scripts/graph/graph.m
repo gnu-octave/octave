@@ -3003,6 +3003,28 @@ classdef graph
 
     endfunction
 
+    function h = plot (G, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{h} =} plot (@var{G})
+      ## @deftypefnx {} {@var{h} =} plot (@var{G}, @var{name}, @var{value}, @dots{})
+      ## Render the undirected graph @var{G} on the current axes and
+      ## return a @code{GraphPlot} handle.
+      ##
+      ## With no options, nodes are placed using the default
+      ## @qcode{"auto"} layout (subspace for graphs with fewer than 100
+      ## nodes, Fruchterman-Reingold force otherwise).  Edges are drawn
+      ## as line segments between the endpoints of each edge and nodes
+      ## are drawn as markers.  Trailing @var{name}/@var{value} pairs
+      ## forward to the @code{GraphPlot} constructor; see
+      ## @code{GraphPlot} for the full list of accepted options.
+      ## @seealso{GraphPlot, graph, digraph}
+      ## @end deftypefn
+
+      h = GraphPlot (G, varargin{:});
+
+    endfunction
+
   endmethods
 
 endclassdef

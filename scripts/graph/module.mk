@@ -31,6 +31,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/__edgecount_impl__.m \
   %reldir%/private/__findedge_impl__.m \
   %reldir%/private/__findnode_impl__.m \
+  %reldir%/private/__graph_plot_auto_layout__.m \
   %reldir%/private/__isomorphism_parse_opts__.m \
   %reldir%/private/__isomorphism_vf2__.m \
   %reldir%/private/__matlab_ref__.m \
@@ -55,6 +56,7 @@ FCN_FILE_DIRS += \
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/.oct-config \
+  %reldir%/GraphPlot.m \
   %reldir%/addedge.m \
   %reldir%/addnode.m \
   %reldir%/adjacency.m \
@@ -89,6 +91,7 @@ FCN_FILE_DIRS += \
   %reldir%/numnodes.m \
   %reldir%/outdegree.m \
   %reldir%/outedges.m \
+  %reldir%/plot.m \
   %reldir%/predecessors.m \
   %reldir%/reordernodes.m \
   %reldir%/rmedge.m \

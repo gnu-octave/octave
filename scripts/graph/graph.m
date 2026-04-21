@@ -4926,3 +4926,146 @@ endfunction
 %! A = graph ([1], [2]);
 %! B = graph ([1], [2], 1, {"x","y"});
 %! horzcat (A, B);
+
+
+## US-PS04 — Value-class copy semantics
+## ------------------------------------
+## `graph` is a value classdef (no `< handle` supertype), so every
+## assignment creates a full copy and every mutator method
+## (`addnode`, `addedge`, `rmnode`, `rmedge`, `reordernodes`,
+## `subgraph`, ...) returns a new graph rather than mutating its
+## argument in place.  MATLAB's built-in graph class has the same
+## semantics.  These BIST blocks lock the copy contract in:
+## assigning `G2 = G1` followed by `G2 = f(G2, ...)` must not
+## disturb `G1`, no matter which mutator is called, how deep the
+## copy chain is, or whether the graph carries weights or node
+## names.  A future refactor that redeclared
+## `classdef graph < handle` (reference semantics) would trip
+## every test in this section.
+
+## BIST — US-PS04: shared fixtures for the value-copy suite.
+%!shared Gu_ps04, Guw_ps04, Gun_ps04
+%! Gu_ps04  = graph ([1 2 3], [2 3 1]);
+%! Guw_ps04 = graph ([1 2 3], [2 3 1], [10 20 30]);
+%! Gun_ps04 = graph ([1 2 3], [2 3 1], [10 20 30], {"a","b","c"});
+
+## BIST — US-PS04: addnode on a copy does not mutate the source.
+%!test <*PS04>
+%! G1 = Gu_ps04;
+%! G2 = G1;
+%! G2 = addnode (G2, 5);
+%! assert (numnodes (G1), 3);
+%! assert (numedges (G1), 3);
+%! assert (numnodes (G2), 8);
+
+## BIST — US-PS04: addedge on a copy does not mutate the source
+## (here the copy receives an extra self-loop).
+%!test <*PS04>
+%! G1 = Gu_ps04;
+%! G2 = G1;
+%! G2 = addedge (G2, 1, 1);
+%! assert (numedges (G1), 3);
+%! assert (numedges (G2), 4);
+
+## BIST — US-PS04: rmnode on a copy does not mutate the source.
+%!test <*PS04>
+%! G1 = Gu_ps04;
+%! G2 = G1;
+%! G2 = rmnode (G2, 1);
+%! assert (numnodes (G1), 3);
+%! assert (numedges (G1), 3);
+%! assert (numnodes (G2), 2);
+
+## BIST — US-PS04: rmedge on a copy does not mutate the source.
+%!test <*PS04>
+%! G1 = Gu_ps04;
+%! G2 = G1;
+%! G2 = rmedge (G2, 1, 2);
+%! assert (numedges (G1), 3);
+%! assert (numedges (G2), 2);
+
+## BIST — US-PS04: Edges.Weight column of the source is preserved
+## when the copy gains an extra weighted edge (undirected edges
+## sort by unordered pair so the weight order is [10; 30; 20]).
+%!test <*PS04>
+%! G1 = Guw_ps04;
+%! G2 = G1;
+%! G2 = addedge (G2, 1, 1, 99);
+%! assert (G1.Edges.Weight, [10; 30; 20]);
+%! assert (numedges (G1), 3);
+
+## BIST — US-PS04: Nodes.Name of the source is preserved when the
+## copy gains an extra named node.
+%!test <*PS04>
+%! G1 = Gun_ps04;
+%! G2 = G1;
+%! G2 = addnode (G2, {"d"});
+%! assert (G1.Nodes.Name, {"a"; "b"; "c"});
+
+## BIST — US-PS04: Nodes.Name of the source is preserved when the
+## copy drops a named node.
+%!test <*PS04>
+%! G1 = Gun_ps04;
+%! G2 = G1;
+%! G2 = rmnode (G2, "a");
+%! assert (G1.Nodes.Name, {"a"; "b"; "c"});
+%! assert (numnodes (G1), 3);
+
+## BIST — US-PS04: reordernodes on a copy does not disturb the
+## source's edge ordering or weights.
+%!test <*PS04>
+%! G1 = Guw_ps04;
+%! G2 = G1;
+%! G2 = reordernodes (G2, [3 2 1]);
+%! assert (G1.Edges.EndNodes, [1 2; 1 3; 2 3]);
+%! assert (G1.Edges.Weight,   [10; 30; 20]);
+
+## BIST — US-PS04: three-level aliasing -- mutating the deepest
+## copy leaves every ancestor untouched.
+%!test <*PS04>
+%! G1 = Gu_ps04;
+%! G2 = G1;
+%! G3 = G2;
+%! G3 = addedge (G3, 1, 1);
+%! assert (numedges (G1), 3);
+%! assert (numedges (G2), 3);
+%! assert (numedges (G3), 4);
+
+## BIST — US-PS04: subgraph on a copy does not shrink the source.
+%!test <*PS04>
+%! G1 = Gu_ps04;
+%! G2 = G1;
+%! G2 = subgraph (G2, [1 2]);
+%! assert (numnodes (G1), 3);
+%! assert (numedges (G1), 3);
+
+## BIST — US-PS04: the return value of a mutator does not alias
+## the source -- `H = addedge (G1, ...)` leaves `G1` intact.
+%!test <*PS04>
+%! G1 = Gu_ps04;
+%! H  = addedge (G1, 1, 1);
+%! assert (numedges (G1), 3);
+%! assert (numedges (H),  4);
+
+## BIST — US-PS04: passing a graph into a local function and
+## mutating the local copy does not leak back to the caller
+## (pass-by-value semantics).
+%!test <*PS04>
+%! G1 = Gu_ps04;
+%! function H = local_hammer (G)
+%!   H = addedge (G, 1, 1);
+%!   H = addnode (H, 5);
+%! endfunction
+%! H = local_hammer (G1);
+%! assert (numnodes (G1), 3);
+%! assert (numedges (G1), 3);
+%! assert (numnodes (H), 8);
+
+## BIST — US-PS04: chained mutation on a copy is still local.
+%!test <*PS04>
+%! G1 = Guw_ps04;
+%! G2 = G1;
+%! G2 = addnode (addedge (G2, 1, 1, 99), 2);
+%! assert (numnodes (G1), 3);
+%! assert (numedges (G1), 3);
+%! assert (G1.Edges.Weight, [10; 30; 20]);

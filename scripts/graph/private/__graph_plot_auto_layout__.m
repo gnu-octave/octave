@@ -38,8 +38,14 @@
 ## Default.  Dispatches by node count: fewer than 100 nodes use the
 ## @qcode{"subspace"} branch, the rest use the @qcode{"force"} branch.
 ## @item subspace
-## Placeholder routed to a deterministic circle layout (to be replaced
-## by the proper spectral subspace algorithm in a subsequent story).
+## 2-D spectral (Hall-style) layout driven by the eigenvectors of the
+## graph Laplacian.  Accepts a @code{Dimension} option selecting the
+## dimension of the spectral embedding subspace (default
+## @code{min (100, numnodes (G))}, minimum @code{2}).  See
+## @code{__graph_plot_subspace__}.
+## @item subspace3
+## 3-D spectral layout (populates @var{Z}).  Accepts a @code{Dimension}
+## option with minimum @code{3}.  See @code{__graph_plot_subspace3__}.
 ## @item force
 ## Fruchterman-Reingold 2-D force-directed layout.  See
 ## @code{__graph_plot_force__} for details.  When the graph is
@@ -85,6 +91,11 @@
 ## @item AssignLayers
 ## Character vector forwarded to @code{__graph_plot_layered__}.
 ## Ignored by the other layouts.
+## @item Dimension
+## Positive integer forwarded to @code{__graph_plot_subspace__} or
+## @code{__graph_plot_subspace3__} when the @qcode{"subspace"} /
+## @qcode{"subspace3"} branches are active.  Ignored by the other
+## layouts.
 ## @end table
 ##
 ## Returns @var{X} and @var{Y} as column vectors of length
@@ -145,6 +156,13 @@ function [X, Y, Z] = __graph_plot_auto_layout__ (G, layout, opts)
     assign_layers = "auto";
   endif
 
+  ## Subspace/subspace3 option: Dimension (empty = helper chooses default).
+  if (isfield (opts, "Dimension"))
+    dimension = opts.Dimension;
+  else
+    dimension = [];
+  endif
+
   N = numnodes (G);
   layout = lower (layout);
 
@@ -155,15 +173,17 @@ function [X, Y, Z] = __graph_plot_auto_layout__ (G, layout, opts)
   switch (layout)
     case "auto"
       ## Auto dispatches by node count: fewer than 100 nodes use the
-      ## "subspace" branch (still a circle placeholder until US-GP06);
-      ## 100 and above use the production "force" branch.
+      ## spectral "subspace" branch; 100 and above use the production
+      ## "force" branch.
       if (N < 100)
-        [X, Y] = __gp_layout_circle__ (N);
+        [X, Y] = __gp_dispatch_subspace__ (G, dimension);
       else
         [X, Y] = __graph_plot_force__ (G, weight_effect);
       endif
     case "subspace"
-      [X, Y] = __gp_layout_circle__ (N);
+      [X, Y] = __gp_dispatch_subspace__ (G, dimension);
+    case "subspace3"
+      [X, Y, Z] = __gp_dispatch_subspace3__ (G, dimension);
     case "force"
       [X, Y] = __graph_plot_force__ (G, weight_effect);
     case "force3"
@@ -198,6 +218,32 @@ function [X, Y] = __gp_layout_circle__ (N)
   theta = (2 * pi) * ((0:(N - 1)).') / N;
   X = cos (theta);
   Y = sin (theta);
+
+endfunction
+
+
+## Local dispatcher: forward to the 2-D spectral layout helper, passing
+## DIMENSION only if it was supplied by the caller so the helper can
+## use its own documented default.
+function [X, Y] = __gp_dispatch_subspace__ (G, dimension)
+
+  if (isempty (dimension))
+    [X, Y] = __graph_plot_subspace__ (G);
+  else
+    [X, Y] = __graph_plot_subspace__ (G, dimension);
+  endif
+
+endfunction
+
+
+## Local dispatcher: forward to the 3-D spectral layout helper.
+function [X, Y, Z] = __gp_dispatch_subspace3__ (G, dimension)
+
+  if (isempty (dimension))
+    [X, Y, Z] = __graph_plot_subspace3__ (G);
+  else
+    [X, Y, Z] = __graph_plot_subspace3__ (G, dimension);
+  endif
 
 endfunction
 
@@ -413,14 +459,14 @@ endfunction
 %! assert (Xa, Xf);
 %! assert (Ya, Yf);
 
-## 'auto' on a small graph still uses the subspace placeholder (circle),
-## NOT force.
+## 'auto' on a small graph uses the real spectral subspace layout
+## (US-GP06), NOT force and NOT circle.
 %!test
-%! G = digraph ([1 2 3], [2 3 1]);
+%! G = digraph ([1 2 3 4], [2 3 4 1]);
 %! [Xa, Ya] = __graph_plot_auto_layout__ (G, "auto");
-%! [Xc, Yc] = __graph_plot_auto_layout__ (G, "circle");
-%! assert (Xa, Xc);
-%! assert (Ya, Yc);
+%! [Xs, Ys] = __graph_plot_auto_layout__ (G, "subspace");
+%! assert (Xa, Xs);
+%! assert (Ya, Ys);
 
 ## opts.WeightEffect forwards to the force branch.
 %!test
@@ -668,3 +714,184 @@ endfunction
 %! [X2, Y2] = __graph_plot_auto_layout__ (G, "circle");
 %! assert (X1, X2);
 %! assert (Y1, Y2);
+
+## -------- US-GP06 subspace layout: integration coverage --------
+
+## 'subspace' layout dispatches to the spectral helper and returns
+## finite column coordinates.
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 1]);
+%! [X, Y] = __graph_plot_auto_layout__ (G, "subspace");
+%! assert (numel (X), 4);
+%! assert (numel (Y), 4);
+%! assert (iscolumn (X));
+%! assert (iscolumn (Y));
+%! assert (all (isfinite (X)));
+%! assert (all (isfinite (Y)));
+
+## 'subspace' matches the direct helper call with no Dimension override.
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 1]);
+%! [Xa, Ya] = __graph_plot_auto_layout__ (G, "subspace");
+%! [Xh, Yh] = __graph_plot_subspace__ (G);
+%! assert (Xa, Xh);
+%! assert (Ya, Yh);
+
+## 'subspace' is now different from 'circle' on a small graph (it is
+## the real spectral layout, not the placeholder).
+%!test
+%! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
+%! [Xs, Ys] = __graph_plot_auto_layout__ (G, "subspace");
+%! [Xc, Yc] = __graph_plot_auto_layout__ (G, "circle");
+%! assert (any (abs (Xs - Xc) > 1e-6) || any (abs (Ys - Yc) > 1e-6));
+
+## 'subspace' name is case-insensitive.
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! [X1, Y1] = __graph_plot_auto_layout__ (G, "subspace");
+%! [X2, Y2] = __graph_plot_auto_layout__ (G, "SUBSPACE");
+%! [X3, Y3] = __graph_plot_auto_layout__ (G, "Subspace");
+%! assert (X1, X2);
+%! assert (X1, X3);
+%! assert (Y1, Y3);
+
+## opts.Dimension forwards to the subspace helper.
+%!test
+%! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
+%! opts.Dimension = 3;
+%! [Xa, Ya] = __graph_plot_auto_layout__ (G, "subspace", opts);
+%! [Xh, Yh] = __graph_plot_subspace__ (G, 3);
+%! assert (Xa, Xh);
+%! assert (Ya, Yh);
+
+## opts.Dimension = [] behaves like default.
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 1]);
+%! opts.Dimension = [];
+%! [Xa, Ya] = __graph_plot_auto_layout__ (G, "subspace", opts);
+%! [Xd, Yd] = __graph_plot_auto_layout__ (G, "subspace");
+%! assert (Xa, Xd);
+%! assert (Ya, Yd);
+
+## Bad Dimension values propagate as helper errors.
+%!error <at least 2> ...
+%!   opts.Dimension = 1;
+%!   __graph_plot_auto_layout__ (graph ([1 2 3], [2 3 1]), "subspace", opts)
+
+## 'subspace' layout: 3rd output Z is empty column.
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 1]);
+%! [X, Y, Z] = __graph_plot_auto_layout__ (G, "subspace");
+%! assert (size (Z), [0, 1]);
+
+## 'subspace' on empty graph returns 0-by-1 columns.
+%!test
+%! G = digraph ();
+%! [X, Y] = __graph_plot_auto_layout__ (G, "subspace");
+%! assert (size (X), [0, 1]);
+%! assert (size (Y), [0, 1]);
+
+## 'subspace' on a single-node graph returns origin.
+%!test
+%! G = digraph (1);
+%! [X, Y] = __graph_plot_auto_layout__ (G, "subspace");
+%! assert (X, 0);
+%! assert (Y, 0);
+
+## 'auto' on a small graph matches 'subspace' (US-GP06 replaces the
+## circle placeholder).
+%!test
+%! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
+%! [Xa, Ya] = __graph_plot_auto_layout__ (G, "auto");
+%! [Xs, Ys] = __graph_plot_auto_layout__ (G, "subspace");
+%! assert (Xa, Xs);
+%! assert (Ya, Ys);
+
+## Dimension option is ignored by non-subspace layouts.
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! opts.Dimension = 2;
+%! [X1, Y1] = __graph_plot_auto_layout__ (G, "circle", opts);
+%! [X2, Y2] = __graph_plot_auto_layout__ (G, "circle");
+%! assert (X1, X2);
+%! assert (Y1, Y2);
+
+## -------- US-GP06 subspace3 layout: integration coverage --------
+
+## 'subspace3' layout returns 3-D coordinates via the optional 3rd
+## output.
+%!test
+%! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
+%! [X, Y, Z] = __graph_plot_auto_layout__ (G, "subspace3");
+%! assert (numel (X), 5);
+%! assert (numel (Y), 5);
+%! assert (numel (Z), 5);
+%! assert (iscolumn (X));
+%! assert (iscolumn (Y));
+%! assert (iscolumn (Z));
+%! assert (all (isfinite (X)));
+%! assert (all (isfinite (Y)));
+%! assert (all (isfinite (Z)));
+
+## 'subspace3' Z is non-trivial on a graph with >= 3 non-trivial
+## Laplacian eigenvalues.
+%!test
+%! G = graph ([1 2 3 4 5 6], [2 3 4 5 6 1]);   # 6-cycle
+%! [~, ~, Z] = __graph_plot_auto_layout__ (G, "subspace3");
+%! assert (any (abs (Z) > 1e-6));
+
+## 'subspace3' matches the direct helper call.
+%!test
+%! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
+%! [Xa, Ya, Za] = __graph_plot_auto_layout__ (G, "subspace3");
+%! [Xh, Yh, Zh] = __graph_plot_subspace3__ (G);
+%! assert (Xa, Xh);
+%! assert (Ya, Yh);
+%! assert (Za, Zh);
+
+## 'subspace3' name is case-insensitive.
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 1]);
+%! [X1, Y1, Z1] = __graph_plot_auto_layout__ (G, "subspace3");
+%! [X2, Y2, Z2] = __graph_plot_auto_layout__ (G, "SUBSPACE3");
+%! [X3, Y3, Z3] = __graph_plot_auto_layout__ (G, "Subspace3");
+%! assert (X1, X2);
+%! assert (X1, X3);
+%! assert (Z1, Z3);
+
+## opts.Dimension forwards to subspace3 helper.
+%!test
+%! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
+%! opts.Dimension = 4;
+%! [Xa, Ya, Za] = __graph_plot_auto_layout__ (G, "subspace3", opts);
+%! [Xh, Yh, Zh] = __graph_plot_subspace3__ (G, 4);
+%! assert (Xa, Xh);
+%! assert (Ya, Yh);
+%! assert (Za, Zh);
+
+## Backward-compatible 2-output call on subspace3 still works.
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 1]);
+%! [X, Y] = __graph_plot_auto_layout__ (G, "subspace3");
+%! assert (numel (X), 4);
+%! assert (numel (Y), 4);
+%! assert (all (isfinite (X)));
+
+## subspace3 on an empty graph yields 0-by-1 columns.
+%!test
+%! G = digraph ();
+%! [X, Y, Z] = __graph_plot_auto_layout__ (G, "subspace3");
+%! assert (size (X), [0, 1]);
+%! assert (size (Y), [0, 1]);
+%! assert (size (Z), [0, 1]);
+
+## 2-D 'subspace' layout leaves Z empty when 3rd output requested.
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 1]);
+%! [X, Y, Z] = __graph_plot_auto_layout__ (G, "subspace");
+%! assert (size (Z), [0, 1]);
+
+## Bad Dimension on subspace3 propagates as helper error.
+%!error <at least 3> ...
+%!   opts.Dimension = 2;
+%!   __graph_plot_auto_layout__ (graph ([1 2 3], [2 3 1]), "subspace3", opts)

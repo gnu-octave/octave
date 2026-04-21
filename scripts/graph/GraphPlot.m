@@ -116,11 +116,12 @@ classdef GraphPlot < handle
       ## With no arguments, return an empty @code{GraphPlot} with no
       ## rendered nodes or edges (used internally by @code{plot} for the
       ## empty-graph case).  With a @code{graph} or @code{digraph} as the
-      ## first input, compute a layout (default @qcode{"auto"}: subspace
-      ## for graphs with fewer than 100 nodes, Fruchterman-Reingold
-      ## force otherwise) and render nodes and edges on the current axes.
-      ## Trailing @var{name}/@var{value} pairs override layout and
-      ## appearance properties; see @code{plot} for the full list.
+      ## first input, compute a layout (default @qcode{"auto"}: spectral
+      ## @qcode{"subspace"} for graphs with fewer than 100 nodes,
+      ## Fruchterman-Reingold @qcode{"force"} otherwise) and render nodes
+      ## and edges on the current axes.  Trailing @var{name}/@var{value}
+      ## pairs override layout and appearance properties; see
+      ## @code{plot} for the full list.
       ## @seealso{plot, graph, digraph}
       ## @end deftypefn
 
@@ -185,6 +186,8 @@ classdef GraphPlot < handle
                      "GraphPlot: AssignLayers must be a character vector");
             endif
             layout_opts.AssignLayers = lower (val);
+          case "dimension"
+            layout_opts.Dimension = val;
           otherwise
             error ("Octave:invalid-input-arg", ...
                    "GraphPlot: unknown option '%s'", name);
@@ -887,6 +890,172 @@ endclassdef
 %!   h2 = GraphPlot (G, "Layout", "layered");
 %!   assert (h1.XData, h2.XData);
 %!   assert (h1.YData, h2.YData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## -------- US-GP06 subspace / subspace3 layout via GraphPlot --------
+
+## 'Layout','subspace' picks the 2-D spectral layout.
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "subspace");
+%!   assert (isa (h, "GraphPlot"));
+%!   assert (numel (h.XData), 4);
+%!   assert (numel (h.YData), 4);
+%!   assert (iscolumn (h.XData));
+%!   assert (iscolumn (h.YData));
+%!   assert (all (isfinite (h.XData)));
+%!   assert (all (isfinite (h.YData)));
+%!   assert (isempty (h.ZData));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 'Layout','subspace' matches direct helper call (no Dimension).
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "subspace");
+%!   [Xh, Yh] = __graph_plot_subspace__ (G);
+%!   assert (h.XData, Xh);
+%!   assert (h.YData, Yh);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Subspace layout is deterministic across repeat calls (no RNG used).
+%!test
+%! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   rand ("state", 7);
+%!   h1 = GraphPlot (G, "Layout", "subspace");
+%!   rand ("state", 77);
+%!   h2 = GraphPlot (G, "Layout", "subspace");
+%!   assert (h1.XData, h2.XData);
+%!   assert (h1.YData, h2.YData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 'Dimension' option forwards to the subspace helper.
+%!test
+%! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "subspace", "Dimension", 3);
+%!   [Xh, Yh] = __graph_plot_subspace__ (G, 3);
+%!   assert (h.XData, Xh);
+%!   assert (h.YData, Yh);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 'Layout','subspace' name is case-insensitive.
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = GraphPlot (G, "Layout", "subspace");
+%!   h2 = GraphPlot (G, "Layout", "SUBSPACE");
+%!   h3 = GraphPlot (G, "Layout", "Subspace");
+%!   assert (h1.XData, h2.XData);
+%!   assert (h1.XData, h3.XData);
+%!   assert (h1.YData, h2.YData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 'Layout','subspace3' populates ZData.
+%!test
+%! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "subspace3");
+%!   assert (isa (h, "GraphPlot"));
+%!   assert (numel (h.ZData), 5);
+%!   assert (iscolumn (h.ZData));
+%!   assert (any (abs (h.ZData) > 1e-6));
+%!   assert (all (isfinite (h.ZData)));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 'Layout','subspace3' matches direct helper call.
+%!test
+%! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "subspace3");
+%!   [Xh, Yh, Zh] = __graph_plot_subspace3__ (G);
+%!   assert (h.XData, Xh);
+%!   assert (h.YData, Yh);
+%!   assert (h.ZData, Zh);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 'Layout','subspace3' name is case-insensitive.
+%!test
+%! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = GraphPlot (G, "Layout", "subspace3");
+%!   h2 = GraphPlot (G, "Layout", "SUBSPACE3");
+%!   h3 = GraphPlot (G, "Layout", "Subspace3");
+%!   assert (h1.XData, h2.XData);
+%!   assert (h1.ZData, h3.ZData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 'Dimension' option forwards to subspace3 helper.
+%!test
+%! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "subspace3", "Dimension", 4);
+%!   [Xh, Yh, Zh] = __graph_plot_subspace3__ (G, 4);
+%!   assert (h.XData, Xh);
+%!   assert (h.YData, Yh);
+%!   assert (h.ZData, Zh);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Bad Dimension value surfaces as helper error.
+%!error <at least 2> GraphPlot (graph ([1 2 3], [2 3 1]), ...
+%!                               "Layout", "subspace", "Dimension", 1)
+%!error <at least 3> GraphPlot (graph ([1 2 3], [2 3 1]), ...
+%!                               "Layout", "subspace3", "Dimension", 2)
+
+## Dimension option ignored under non-subspace layouts.
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = GraphPlot (G, "Layout", "circle", "Dimension", 2);
+%!   h2 = GraphPlot (G, "Layout", "circle");
+%!   assert (h1.XData, h2.XData);
+%!   assert (h1.YData, h2.YData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 'auto' layout on a small graph now equals 'subspace' (US-GP06 put
+## real spectral code in place of the circle placeholder).
+%!test
+%! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h_auto = GraphPlot (G, "Layout", "auto");
+%!   h_sub  = GraphPlot (G, "Layout", "subspace");
+%!   assert (h_auto.XData, h_sub.XData);
+%!   assert (h_auto.YData, h_sub.YData);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

@@ -30,24 +30,35 @@
 ## @code{GraphPlot} handle.
 ##
 ## @code{plot (@var{G})} places the nodes of @var{G} using the default
-## @qcode{"auto"} layout (subspace for graphs with fewer than 100 nodes,
-## Fruchterman-Reingold force otherwise), draws the edges as line
-## segments, draws the nodes as markers, and returns the resulting
-## @code{GraphPlot} handle.  Trailing @var{name}/@var{value} pairs
-## forward to the @code{GraphPlot} constructor; see @code{GraphPlot} for
-## the full list of accepted options.
+## @qcode{"auto"} layout (spectral @qcode{"subspace"} for graphs with
+## fewer than 100 nodes, Fruchterman-Reingold force otherwise), draws
+## the edges as line segments, draws the nodes as markers, and returns
+## the resulting @code{GraphPlot} handle.  Trailing
+## @var{name}/@var{value} pairs forward to the @code{GraphPlot}
+## constructor; see @code{GraphPlot} for the full list of accepted
+## options.
 ##
 ## Recognised layout names for @qcode{"Layout"} include
 ## @qcode{"auto"} (default), @qcode{"circle"} (uniform unit-circle
 ## placement, node 1 at @code{(1, 0)}, remaining nodes counter-clockwise),
-## @qcode{"subspace"}, @qcode{"force"} (Fruchterman-Reingold 2-D
-## force-directed layout), @qcode{"force3"} (Fruchterman-Reingold
-## 3-D force-directed layout — the only 3-D layout in this release;
-## it populates the @code{ZData} property of the returned
-## @code{GraphPlot} handle and renders via @code{plot3}), and
-## @qcode{"layered"} (Sugiyama-style hierarchical layout via longest-path
-## layer assignment plus iterated barycenter crossing reduction).
-## Layout names are case-insensitive.
+## @qcode{"subspace"} (2-D spectral Hall-style layout driven by
+## Laplacian eigendecomposition), @qcode{"subspace3"} (3-D spectral
+## layout — populates @code{ZData}), @qcode{"force"}
+## (Fruchterman-Reingold 2-D force-directed layout), @qcode{"force3"}
+## (Fruchterman-Reingold 3-D force-directed layout — populates
+## @code{ZData} and renders via @code{plot3}), and @qcode{"layered"}
+## (Sugiyama-style hierarchical layout via longest-path layer
+## assignment plus iterated barycenter crossing reduction).  Layout
+## names are case-insensitive.
+##
+## The @qcode{"subspace"} and @qcode{"subspace3"} layouts accept a
+## @qcode{"Dimension"} option specifying the dimension of the spectral
+## embedding subspace, a positive integer with minimum @code{2} for
+## @qcode{"subspace"} and @code{3} for @qcode{"subspace3"}.  The
+## default is @code{min (100, numnodes (G))}.  Larger values of
+## @code{Dimension} do not alter the 2-D / 3-D output in the current
+## implementation (only the first two / three components of the
+## embedding are used) but are accepted for MATLAB compatibility.
 ##
 ## The @qcode{"force"} and @qcode{"force3"} layouts accept an
 ## additional @qcode{"WeightEffect"} option that selects how edge
@@ -739,3 +750,154 @@ endfunction
 %! h = plot (G, "Layout", "layered");
 %! title ("digraph layered (Sugiyama) layout");
 %! axis equal;
+
+## %!demo — 2-D spectral subspace layout on a small graph.
+%!demo
+%! G = graph ([1 2 3 4 5 6], [2 3 4 5 6 1]);
+%! h = plot (G, "Layout", "subspace");
+%! title ("graph 6-cycle, spectral subspace layout");
+%! axis equal;
+
+## %!demo — 3-D spectral subspace3 layout.
+%!demo
+%! G = graph ([1 1 1 2 3 4 5 6], [2 3 4 3 4 5 6 7]);
+%! h = plot (G, "Layout", "subspace3");
+%! title ("graph spectral subspace3 (3-D) layout");
+%! axis equal;
+
+## -------- US-GP06 subspace / subspace3 layout via plot() --------
+
+## plot(G, 'Layout', 'subspace') returns a GraphPlot with spectral
+## coordinates and no Z.
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G, "Layout", "subspace");
+%!   assert (isa (h, "GraphPlot"));
+%!   assert (numel (h.XData), 4);
+%!   assert (numel (h.YData), 4);
+%!   assert (isempty (h.ZData));
+%!   assert (all (isfinite (h.XData)));
+%!   assert (all (isfinite (h.YData)));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## plot(G, 'Layout', 'subspace3') populates ZData with N finite values.
+%!test
+%! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G, "Layout", "subspace3");
+%!   assert (isa (h, "GraphPlot"));
+%!   assert (h.NumNodes, 5);
+%!   assert (numel (h.ZData), 5);
+%!   assert (iscolumn (h.ZData));
+%!   assert (all (isfinite (h.ZData)));
+%!   assert (any (abs (h.ZData) > 1e-6));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Subspace layout is deterministic and independent of caller RNG state.
+%!test
+%! G = graph ([1 2 3 4 5 6], [2 3 4 5 6 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   rand ("state", 99);
+%!   h1 = plot (G, "Layout", "subspace");
+%!   rand ("state", 12345);
+%!   h2 = plot (G, "Layout", "subspace");
+%!   assert (h1.XData, h2.XData);
+%!   assert (h1.YData, h2.YData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 'Dimension' option reaches the subspace helper.
+%!test
+%! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G, "Layout", "subspace", "Dimension", 3);
+%!   [Xh, Yh] = __graph_plot_subspace__ (G, 3);
+%!   assert (h.XData, Xh);
+%!   assert (h.YData, Yh);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 'Dimension' option reaches the subspace3 helper.
+%!test
+%! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G, "Layout", "subspace3", "Dimension", 4);
+%!   [Xh, Yh, Zh] = __graph_plot_subspace3__ (G, 4);
+%!   assert (h.XData, Xh);
+%!   assert (h.YData, Yh);
+%!   assert (h.ZData, Zh);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Layout names 'subspace' / 'subspace3' are case-insensitive via plot().
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = plot (G, "Layout", "subspace");
+%!   h2 = plot (G, "Layout", "SUBSPACE");
+%!   assert (h1.XData, h2.XData);
+%!   h3 = plot (G, "Layout", "subspace3");
+%!   h4 = plot (G, "Layout", "Subspace3");
+%!   assert (h3.XData, h4.XData);
+%!   assert (h3.ZData, h4.ZData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Subspace vs subspace3: same X, Y; subspace3 adds a non-trivial Z
+## axis.
+%!test
+%! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h2 = plot (G, "Layout", "subspace");
+%!   h3 = plot (G, "Layout", "subspace3");
+%!   assert (h2.XData, h3.XData, 1e-10);
+%!   assert (h2.YData, h3.YData, 1e-10);
+%!   assert (isempty (h2.ZData));
+%!   assert (numel (h3.ZData), 5);
+%!   assert (any (abs (h3.ZData) > 1e-6));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Auto layout on a small graph now uses real subspace (US-GP06
+## replaces the circle placeholder).
+%!test
+%! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h_auto = plot (G, "Layout", "auto");
+%!   h_sub  = plot (G, "Layout", "subspace");
+%!   assert (h_auto.XData, h_sub.XData);
+%!   assert (h_auto.YData, h_sub.YData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Subspace layout repeat-call stability on a 4-cycle graph.
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = plot (G, "Layout", "subspace");
+%!   h2 = plot (G, "Layout", "subspace");
+%!   assert (h1.XData, h2.XData);
+%!   assert (h1.YData, h2.YData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

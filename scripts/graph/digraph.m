@@ -4273,8 +4273,9 @@ classdef digraph
       ## @code{GraphPlot} handle.
       ##
       ## With no options, nodes are placed using the default
-      ## @qcode{"auto"} layout (subspace for graphs with fewer than 100
-      ## nodes, Fruchterman-Reingold force otherwise).  Edges are drawn
+      ## @qcode{"auto"} layout (spectral @qcode{"subspace"} for graphs
+      ## with fewer than 100 nodes, Fruchterman-Reingold force
+      ## otherwise).  Edges are drawn
       ## as line segments between the endpoints of each edge and nodes
       ## are drawn as markers.  Trailing @var{name}/@var{value} pairs
       ## forward to the @code{GraphPlot} constructor; see

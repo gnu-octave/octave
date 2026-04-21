@@ -201,7 +201,7 @@ classdef graph
   ## @end group
   ## @end example
   ##
-  ## @seealso{digraph, numnodes, numedges, ismultigraph, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian}
+  ## @seealso{digraph, numnodes, numedges, ismultigraph, addnode, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian}
   ## @end deftypefn
 
   properties (Access = private)
@@ -831,6 +831,30 @@ classdef graph
       ## @end deftypefn
 
       tf = false;
+
+    endfunction
+
+    function H = addnode (G, newnodes)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{H} =} addnode (@var{G}, @var{N})
+      ## @deftypefnx {} {@var{H} =} addnode (@var{G}, @var{NodeNames})
+      ## @deftypefnx {} {@var{H} =} addnode (@var{G}, @var{NodeTable})
+      ## Append nodes to the undirected graph @var{G} and return the
+      ## new graph @var{H}.  See @code{help addnode} for the full
+      ## description of the three call forms.  New nodes have no
+      ## incident edges, so the adjacency of existing nodes is
+      ## preserved as-is.
+      ## @seealso{graph, addedge, rmnode, rmedge, numnodes, findnode}
+      ## @end deftypefn
+
+      if (nargin != 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to addnode: expected 2 arguments");
+      endif
+      H = G;
+      [H.adj_, H.nodenames_, H.node_attrs_] = ...
+        __addnode_impl__ (G.adj_, G.nodenames_, G.node_attrs_, newnodes);
 
     endfunction
 

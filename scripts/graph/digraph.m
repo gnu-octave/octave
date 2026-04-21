@@ -4346,6 +4346,65 @@ classdef digraph
 
     endfunction
 
+    function newobj = horzcat (varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {} horzcat (@var{G1}, @var{G2}, @dots{})
+      ## Concatenation is not supported for @code{digraph} objects.
+      ##
+      ## MATLAB prohibits both @code{[G1, G2]} and explicit
+      ## @code{horzcat (G1, G2)} calls on @code{digraph} arrays.
+      ## Build combined graphs with @code{addnode} and
+      ## @code{addedge} instead.
+      ##
+      ## @seealso{digraph, addnode, addedge, vertcat, cat}
+      ## @end deftypefn
+
+      error ("Octave:not-implemented", ...
+             ["Concatenation of digraph objects is not allowed.  ", ...
+              "Use addnode or addedge to modify an existing digraph."]);
+
+    endfunction
+
+    function newobj = vertcat (varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {} vertcat (@var{G1}, @var{G2}, @dots{})
+      ## Concatenation is not supported for @code{digraph} objects.
+      ##
+      ## MATLAB prohibits both @code{[G1; G2]} and explicit
+      ## @code{vertcat (G1, G2)} calls on @code{digraph} arrays.
+      ## Build combined graphs with @code{addnode} and
+      ## @code{addedge} instead.
+      ##
+      ## @seealso{digraph, addnode, addedge, horzcat, cat}
+      ## @end deftypefn
+
+      error ("Octave:not-implemented", ...
+             ["Concatenation of digraph objects is not allowed.  ", ...
+              "Use addnode or addedge to modify an existing digraph."]);
+
+    endfunction
+
+    function newobj = cat (dim, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {} cat (@var{dim}, @var{G1}, @var{G2}, @dots{})
+      ## Concatenation is not supported for @code{digraph} objects.
+      ##
+      ## MATLAB prohibits @code{cat (@var{dim}, G1, G2)} on
+      ## @code{digraph} arrays along any dimension.  Build combined
+      ## graphs with @code{addnode} and @code{addedge} instead.
+      ##
+      ## @seealso{digraph, addnode, addedge, horzcat, vertcat}
+      ## @end deftypefn
+
+      error ("Octave:not-implemented", ...
+             ["Concatenation of digraph objects is not allowed.  ", ...
+              "Use addnode or addedge to modify an existing digraph."]);
+
+    endfunction
+
   endmethods
 
   methods (Static)
@@ -6475,3 +6534,104 @@ endfunction
 ## BIST — US-PS02: dynamic-field assignment G.("Edges") = ...
 ## errors the same way as the static form.
 %!error <private access> Gd_ps02.("Edges") = struct ();
+
+
+## US-PS03 — Concatenation error
+## -----------------------------
+## MATLAB does not allow concatenating digraph objects (either via
+## bracket notation [G1, G2] / [G1; G2] or via explicit
+## horzcat / vertcat / cat calls).  All forms emit a class-specific
+## error pointing the user at addnode / addedge as the correct way
+## to combine graphs.  A single-element bracket [G] is a no-op --
+## Octave elides the call to horzcat when only one operand is
+## present, matching MATLAB.
+##
+## Octave's classdef bracket dispatch wraps any error thrown by a
+## horzcat / vertcat method with "<classname>/<method> method
+## failed" before rethrowing (see libinterp/parse-tree/pt-eval.cc
+## visit_binary_expression).  The inner message still describes
+## the real cause ("Concatenation of digraph objects is not
+## allowed...") and is recoverable via lasterr / lasterror, but
+## the top-line message displayed to the user is the wrapper.
+## Explicit horzcat / vertcat / cat calls go through a different
+## dispatch path that preserves the inner message verbatim --
+## those are the paths where we assert the full
+## MATLAB-compatible text.
+
+## BIST — US-PS03: shared fixtures for the concatenation-error suite.
+%!shared Gd_ps03_1, Gd_ps03_2
+%! Gd_ps03_1 = digraph ([1 2], [2 3], [10 20]);
+%! Gd_ps03_2 = digraph ([1 2], [2 3], [30 40]);
+
+## BIST — US-PS03: [G1, G2] horizontal bracket-concat errors; the
+## wrapper mentions the digraph class and the horzcat method so
+## the user can locate the offending call site.
+%!error <digraph/horzcat> [Gd_ps03_1, Gd_ps03_2];
+
+## BIST — US-PS03: [G1; G2] vertical bracket-concat errors; the
+## wrapper mentions vertcat.
+%!error <digraph/vertcat> [Gd_ps03_1; Gd_ps03_2];
+
+## BIST — US-PS03: explicit horzcat(G1,G2) call produces the full
+## MATLAB-compatible message with the "not allowed" wording.
+%!error <not allowed> horzcat (Gd_ps03_1, Gd_ps03_2);
+
+## BIST — US-PS03: explicit horzcat() error tells the user how to
+## combine graphs: addnode or addedge.
+%!error <addnode or addedge> horzcat (Gd_ps03_1, Gd_ps03_2);
+
+## BIST — US-PS03: explicit vertcat(G1,G2) call produces the
+## MATLAB-compatible message.
+%!error <not allowed> vertcat (Gd_ps03_1, Gd_ps03_2);
+
+## BIST — US-PS03: explicit vertcat() error also mentions
+## addnode/addedge.
+%!error <addnode or addedge> vertcat (Gd_ps03_1, Gd_ps03_2);
+
+## BIST — US-PS03: cat(1, G1, G2) column-dim cat produces the
+## full MATLAB-compatible message.
+%!error <not allowed> cat (1, Gd_ps03_1, Gd_ps03_2);
+
+## BIST — US-PS03: cat(2, G1, G2) row-dim cat produces the
+## MATLAB-compatible message.
+%!error <not allowed> cat (2, Gd_ps03_1, Gd_ps03_2);
+
+## BIST — US-PS03: cat() error mentions the digraph class.
+%!error <digraph> cat (1, Gd_ps03_1, Gd_ps03_2);
+
+## BIST — US-PS03: 3+ operands also error (varargin path).
+%!error <digraph/horzcat> [Gd_ps03_1, Gd_ps03_2, Gd_ps03_1];
+
+## BIST — US-PS03: the error's inner message (via lasterror) is
+## the full MATLAB-compatible text even when the bracket wrapper
+## is displayed.
+%!test <*PS03>
+%! try
+%!   [Gd_ps03_1, Gd_ps03_2];
+%!   error ("test did not raise");
+%! catch
+%!   le = lasterror ();
+%!   assert (! isempty (strfind (le.message, "digraph/horzcat")));
+%! end_try_catch
+
+## BIST — US-PS03: [G] single-element bracket is a no-op; Octave
+## elides horzcat for a single operand (MATLAB parity).
+%!test <*PS03>
+%! G = [Gd_ps03_1];
+%! assert (class (G), "digraph");
+%! assert (numnodes (G), numnodes (Gd_ps03_1));
+%! assert (numedges (G), numedges (Gd_ps03_1));
+
+## BIST — US-PS03: horzcat errors apply irrespective of whether
+## the left-hand digraph is weighted (unconditional rule).
+%!error <not allowed>
+%! A = digraph ([1], [2]);
+%! B = digraph ([1], [2]);
+%! horzcat (A, B);
+
+## BIST — US-PS03: mixing a named and an unnamed digraph also
+## errors -- the rule is unconditional.
+%!error <not allowed>
+%! A = digraph ([1], [2]);
+%! B = digraph ([1], [2], 1, {"x","y"});
+%! horzcat (A, B);

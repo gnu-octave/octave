@@ -3075,6 +3075,65 @@ classdef graph
 
     endfunction
 
+    function newobj = horzcat (varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {} horzcat (@var{G1}, @var{G2}, @dots{})
+      ## Concatenation is not supported for @code{graph} objects.
+      ##
+      ## MATLAB prohibits both @code{[G1, G2]} and explicit
+      ## @code{horzcat (G1, G2)} calls on @code{graph} arrays.
+      ## Build combined graphs with @code{addnode} and
+      ## @code{addedge} instead.
+      ##
+      ## @seealso{graph, addnode, addedge, vertcat, cat}
+      ## @end deftypefn
+
+      error ("Octave:not-implemented", ...
+             ["Concatenation of graph objects is not allowed.  ", ...
+              "Use addnode or addedge to modify an existing graph."]);
+
+    endfunction
+
+    function newobj = vertcat (varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {} vertcat (@var{G1}, @var{G2}, @dots{})
+      ## Concatenation is not supported for @code{graph} objects.
+      ##
+      ## MATLAB prohibits both @code{[G1; G2]} and explicit
+      ## @code{vertcat (G1, G2)} calls on @code{graph} arrays.
+      ## Build combined graphs with @code{addnode} and
+      ## @code{addedge} instead.
+      ##
+      ## @seealso{graph, addnode, addedge, horzcat, cat}
+      ## @end deftypefn
+
+      error ("Octave:not-implemented", ...
+             ["Concatenation of graph objects is not allowed.  ", ...
+              "Use addnode or addedge to modify an existing graph."]);
+
+    endfunction
+
+    function newobj = cat (dim, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {} cat (@var{dim}, @var{G1}, @var{G2}, @dots{})
+      ## Concatenation is not supported for @code{graph} objects.
+      ##
+      ## MATLAB prohibits @code{cat (@var{dim}, G1, G2)} on
+      ## @code{graph} arrays along any dimension.  Build combined
+      ## graphs with @code{addnode} and @code{addedge} instead.
+      ##
+      ## @seealso{graph, addnode, addedge, horzcat, vertcat}
+      ## @end deftypefn
+
+      error ("Octave:not-implemented", ...
+             ["Concatenation of graph objects is not allowed.  ", ...
+              "Use addnode or addedge to modify an existing graph."]);
+
+    endfunction
+
   endmethods
 
   methods (Static)
@@ -4770,3 +4829,100 @@ endfunction
 ## BIST — US-PS02: dynamic-field assignment G.("Edges") = ...
 ## errors.
 %!error <private access> Gu_ps02.("Edges") = struct ();
+
+
+## US-PS03 — Concatenation error
+## -----------------------------
+## MATLAB does not allow concatenating graph objects (either via
+## bracket notation [G1, G2] / [G1; G2] or via explicit
+## horzcat / vertcat / cat calls).  All forms emit a class-specific
+## error pointing the user at addnode / addedge as the correct way
+## to combine graphs.  A single-element bracket [G] is a no-op --
+## Octave elides the call to horzcat when only one operand is
+## present, matching MATLAB.
+##
+## Octave's classdef bracket dispatch wraps any error thrown by a
+## horzcat / vertcat method with "<classname>/<method> method
+## failed" before rethrowing.  The inner message still describes
+## the real cause and is recoverable via lasterr / lasterror, but
+## the top-line message displayed to the user is the wrapper.
+## Explicit horzcat / vertcat / cat calls go through a different
+## dispatch path that preserves the inner message verbatim -- those
+## are the paths where we assert the full MATLAB-compatible text.
+
+## BIST — US-PS03: shared fixtures for the concatenation-error suite.
+%!shared Gu_ps03_1, Gu_ps03_2
+%! Gu_ps03_1 = graph ([1 2], [2 3], [10 20]);
+%! Gu_ps03_2 = graph ([1 2], [2 3], [30 40]);
+
+## BIST — US-PS03: [G1, G2] horizontal bracket-concat errors; the
+## wrapper mentions the graph class and the horzcat method.
+%!error <graph/horzcat> [Gu_ps03_1, Gu_ps03_2];
+
+## BIST — US-PS03: [G1; G2] vertical bracket-concat errors; the
+## wrapper mentions vertcat.
+%!error <graph/vertcat> [Gu_ps03_1; Gu_ps03_2];
+
+## BIST — US-PS03: explicit horzcat(G1,G2) call produces the full
+## MATLAB-compatible message.
+%!error <not allowed> horzcat (Gu_ps03_1, Gu_ps03_2);
+
+## BIST — US-PS03: explicit horzcat() error points to addnode /
+## addedge as the correct way to combine graphs.
+%!error <addnode or addedge> horzcat (Gu_ps03_1, Gu_ps03_2);
+
+## BIST — US-PS03: explicit vertcat(G1,G2) call produces the
+## MATLAB-compatible message.
+%!error <not allowed> vertcat (Gu_ps03_1, Gu_ps03_2);
+
+## BIST — US-PS03: explicit vertcat() error also mentions
+## addnode/addedge.
+%!error <addnode or addedge> vertcat (Gu_ps03_1, Gu_ps03_2);
+
+## BIST — US-PS03: cat(1, G1, G2) column-dim cat produces the
+## full MATLAB-compatible message.
+%!error <not allowed> cat (1, Gu_ps03_1, Gu_ps03_2);
+
+## BIST — US-PS03: cat(2, G1, G2) row-dim cat produces the
+## MATLAB-compatible message.
+%!error <not allowed> cat (2, Gu_ps03_1, Gu_ps03_2);
+
+## BIST — US-PS03: cat() error mentions the graph class.
+%!error <graph> cat (1, Gu_ps03_1, Gu_ps03_2);
+
+## BIST — US-PS03: 3+ operands also error (varargin path).
+%!error <graph/horzcat> [Gu_ps03_1, Gu_ps03_2, Gu_ps03_1];
+
+## BIST — US-PS03: the error's inner message (via lasterror) is
+## the full MATLAB-compatible text even when the bracket wrapper
+## is displayed.
+%!test <*PS03>
+%! try
+%!   [Gu_ps03_1, Gu_ps03_2];
+%!   error ("test did not raise");
+%! catch
+%!   le = lasterror ();
+%!   assert (! isempty (strfind (le.message, "graph/horzcat")));
+%! end_try_catch
+
+## BIST — US-PS03: [G] single-element bracket is a no-op; Octave
+## elides horzcat for a single operand (MATLAB parity).
+%!test <*PS03>
+%! G = [Gu_ps03_1];
+%! assert (class (G), "graph");
+%! assert (numnodes (G), numnodes (Gu_ps03_1));
+%! assert (numedges (G), numedges (Gu_ps03_1));
+
+## BIST — US-PS03: horzcat errors apply irrespective of whether
+## the left-hand graph is weighted (unconditional rule).
+%!error <not allowed>
+%! A = graph ([1], [2]);
+%! B = graph ([1], [2]);
+%! horzcat (A, B);
+
+## BIST — US-PS03: mixing a named and an unnamed graph also
+## errors -- the rule is unconditional.
+%!error <not allowed>
+%! A = graph ([1], [2]);
+%! B = graph ([1], [2], 1, {"x","y"});
+%! horzcat (A, B);

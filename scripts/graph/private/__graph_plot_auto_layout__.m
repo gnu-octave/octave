@@ -52,6 +52,11 @@
 ## @code{WeightEffect} options as the 2-D @qcode{"force"} layout.
 ## This is the only currently-supported 3-D layout: it is the layout
 ## that populates a non-empty @var{Z} output.
+## @item layered
+## Sugiyama-style hierarchical layout based on longest-path layer
+## assignment plus iterated barycenter crossing reduction.  See
+## @code{__graph_plot_layered__}.  Honours @code{Direction},
+## @code{Sources}, @code{Sinks}, and @code{AssignLayers} options.
 ## @item circle
 ## Production layout.  Place the @var{N} nodes of @var{G} uniformly on
 ## the unit circle at angles @code{theta(k) = 2*pi*(k-1)/N}.  Node 1
@@ -68,13 +73,26 @@
 ## Character vector forwarded to @code{__graph_plot_force__} or
 ## @code{__graph_plot_force3__} when the @qcode{"force"} /
 ## @qcode{"force3"} branches are active.  Ignored by the other layouts.
+## @item Direction
+## Character vector forwarded to @code{__graph_plot_layered__} when the
+## @qcode{"layered"} branch is active.  Ignored by the other layouts.
+## @item Sources
+## Numeric vector of node indices forwarded to
+## @code{__graph_plot_layered__}.  Ignored by the other layouts.
+## @item Sinks
+## Numeric vector of node indices forwarded to
+## @code{__graph_plot_layered__}.  Ignored by the other layouts.
+## @item AssignLayers
+## Character vector forwarded to @code{__graph_plot_layered__}.
+## Ignored by the other layouts.
 ## @end table
 ##
 ## Returns @var{X} and @var{Y} as column vectors of length
 ## @code{numnodes (G)}.  The optional third output @var{Z} is populated
 ## only by 3-D layouts (currently @qcode{"force3"}); 2-D layouts return
 ## @code{zeros (0, 1)} for @var{Z}.
-## @seealso{plot, GraphPlot, __graph_plot_force__, __graph_plot_force3__}
+## @seealso{plot, GraphPlot, __graph_plot_force__, __graph_plot_force3__,
+## __graph_plot_layered__}
 ## @end deftypefn
 
 function [X, Y, Z] = __graph_plot_auto_layout__ (G, layout, opts)
@@ -105,6 +123,28 @@ function [X, Y, Z] = __graph_plot_auto_layout__ (G, layout, opts)
     weight_effect = "none";
   endif
 
+  ## Layered-layout options with sensible defaults.
+  if (isfield (opts, "Direction"))
+    direction = opts.Direction;
+  else
+    direction = "down";
+  endif
+  if (isfield (opts, "Sources"))
+    sources = opts.Sources;
+  else
+    sources = [];
+  endif
+  if (isfield (opts, "Sinks"))
+    sinks = opts.Sinks;
+  else
+    sinks = [];
+  endif
+  if (isfield (opts, "AssignLayers"))
+    assign_layers = opts.AssignLayers;
+  else
+    assign_layers = "auto";
+  endif
+
   N = numnodes (G);
   layout = lower (layout);
 
@@ -128,6 +168,9 @@ function [X, Y, Z] = __graph_plot_auto_layout__ (G, layout, opts)
       [X, Y] = __graph_plot_force__ (G, weight_effect);
     case "force3"
       [X, Y, Z] = __graph_plot_force3__ (G, weight_effect);
+    case "layered"
+      [X, Y] = __graph_plot_layered__ (G, direction, sources, sinks, ...
+                                       assign_layers);
     case "circle"
       [X, Y] = __gp_layout_circle__ (N);
     otherwise
@@ -509,3 +552,119 @@ endfunction
 %! assert (numel (Y), 3);
 %! assert (all (isfinite (X)));
 %! assert (all (isfinite (Y)));
+
+## -------- US-GP05 layered layout: integration coverage --------
+
+## 'layered' layout produces finite column-shape coordinates.
+%!test
+%! G = digraph ([1 2 3], [2 3 4]);
+%! [X, Y] = __graph_plot_auto_layout__ (G, "layered");
+%! assert (numel (X), 4);
+%! assert (numel (Y), 4);
+%! assert (iscolumn (X));
+%! assert (iscolumn (Y));
+%! assert (all (isfinite (X)));
+%! assert (all (isfinite (Y)));
+
+## 'layered' default matches the helper with default arguments.
+%!test
+%! G = digraph ([1 2 3], [2 3 4]);
+%! [Xa, Ya] = __graph_plot_auto_layout__ (G, "layered");
+%! [Xh, Yh] = __graph_plot_layered__ (G);
+%! assert (Xa, Xh);
+%! assert (Ya, Yh);
+
+## 'layered' name is case-insensitive.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! [X1, Y1] = __graph_plot_auto_layout__ (G, "layered");
+%! [X2, Y2] = __graph_plot_auto_layout__ (G, "LAYERED");
+%! [X3, Y3] = __graph_plot_auto_layout__ (G, "Layered");
+%! assert (X1, X2);
+%! assert (X1, X3);
+%! assert (Y1, Y2);
+%! assert (Y1, Y3);
+
+## Direction option flows through to the layered helper.
+%!test
+%! G = digraph ([1 2 3], [2 3 4]);
+%! opts.Direction = "up";
+%! [Xa, Ya] = __graph_plot_auto_layout__ (G, "layered", opts);
+%! [Xh, Yh] = __graph_plot_layered__ (G, "up");
+%! assert (Xa, Xh);
+%! assert (Ya, Yh);
+
+## Direction "right" flows through.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! opts.Direction = "right";
+%! [Xa, Ya] = __graph_plot_auto_layout__ (G, "layered", opts);
+%! [Xh, Yh] = __graph_plot_layered__ (G, "right");
+%! assert (Xa, Xh);
+%! assert (Ya, Yh);
+
+## Sources option flows through.
+%!test
+%! G = digraph ([1 2 3], [2 3 4]);
+%! opts.Sources = 3;
+%! [Xa, Ya] = __graph_plot_auto_layout__ (G, "layered", opts);
+%! [Xh, Yh] = __graph_plot_layered__ (G, "down", 3);
+%! assert (Xa, Xh);
+%! assert (Ya, Yh);
+
+## Sinks option flows through.
+%!test
+%! G = digraph ([1 2 3], [2 3 4]);
+%! opts.Sinks = 1;
+%! [Xa, Ya] = __graph_plot_auto_layout__ (G, "layered", opts);
+%! [Xh, Yh] = __graph_plot_layered__ (G, "down", [], 1);
+%! assert (Xa, Xh);
+%! assert (Ya, Yh);
+
+## AssignLayers option flows through.
+%!test
+%! G = digraph ([1 2 1], [2 4, 3]);
+%! opts.AssignLayers = "alap";
+%! [Xa, Ya] = __graph_plot_auto_layout__ (G, "layered", opts);
+%! [Xh, Yh] = __graph_plot_layered__ (G, "down", [], [], "alap");
+%! assert (Xa, Xh);
+%! assert (Ya, Yh);
+
+## 3rd output Z is empty for the layered layout.
+%!test
+%! G = digraph ([1 2 3], [2 3 4]);
+%! [X, Y, Z] = __graph_plot_auto_layout__ (G, "layered");
+%! assert (size (Z), [0, 1]);
+
+## layered on an empty graph returns 0-by-1 columns.
+%!test
+%! G = digraph ();
+%! [X, Y] = __graph_plot_auto_layout__ (G, "layered");
+%! assert (size (X), [0, 1]);
+%! assert (size (Y), [0, 1]);
+
+## layered on a single-node graph returns origin.
+%!test
+%! G = digraph (1);
+%! [X, Y] = __graph_plot_auto_layout__ (G, "layered");
+%! assert (X, 0);
+%! assert (Y, 0);
+
+## layered on an undirected graph works.
+%!test
+%! G = graph ([1 2 3], [2 3 4]);
+%! [X, Y] = __graph_plot_auto_layout__ (G, "layered");
+%! assert (numel (X), 4);
+%! assert (Y(1), 0);
+
+## Layered options are ignored by non-layered layouts.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! opts.Direction = "up";
+%! opts.Sources = 1;
+%! opts.Sinks = 3;
+%! opts.AssignLayers = "alap";
+%! [X1, Y1] = __graph_plot_auto_layout__ (G, "circle", opts);
+%! [X2, Y2] = __graph_plot_auto_layout__ (G, "circle");
+%! assert (X1, X2);
+%! assert (Y1, Y2);

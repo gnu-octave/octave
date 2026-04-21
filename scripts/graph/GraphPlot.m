@@ -169,6 +169,22 @@ classdef GraphPlot < handle
                      "GraphPlot: WeightEffect must be a character vector");
             endif
             layout_opts.WeightEffect = lower (val);
+          case "direction"
+            if (! (ischar (val) && isrow (val)))
+              error ("Octave:invalid-input-arg", ...
+                     "GraphPlot: Direction must be a character vector");
+            endif
+            layout_opts.Direction = lower (val);
+          case "sources"
+            layout_opts.Sources = val;
+          case "sinks"
+            layout_opts.Sinks = val;
+          case "assignlayers"
+            if (! (ischar (val) && isrow (val)))
+              error ("Octave:invalid-input-arg", ...
+                     "GraphPlot: AssignLayers must be a character vector");
+            endif
+            layout_opts.AssignLayers = lower (val);
           otherwise
             error ("Octave:invalid-input-arg", ...
                    "GraphPlot: unknown option '%s'", name);
@@ -685,6 +701,192 @@ endclassdef
 %!   assert (isa (h, "GraphPlot"));
 %!   assert (numel (h.ZData), 3);
 %!   assert (all (isfinite (h.ZData)));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## -------- US-GP05 layered (Sugiyama) layout via GraphPlot --------
+
+## 'Layout','layered' produces finite column-shape coordinates.
+%!test
+%! G = digraph ([1 2 3], [2 3 4]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "layered");
+%!   assert (isa (h, "GraphPlot"));
+%!   assert (h.NumNodes, 4);
+%!   assert (numel (h.XData), 4);
+%!   assert (numel (h.YData), 4);
+%!   assert (iscolumn (h.XData));
+%!   assert (iscolumn (h.YData));
+%!   assert (all (isfinite (h.XData)));
+%!   assert (all (isfinite (h.YData)));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## layered matches the private helper exactly (deterministic).
+%!test
+%! G = digraph ([1 2 3], [2 3 4]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "layered");
+%!   [Xh, Yh] = __graph_plot_layered__ (G);
+%!   assert (h.XData, Xh);
+%!   assert (h.YData, Yh);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 'Direction' passes through to the layered helper.
+%!test
+%! G = digraph ([1 2 3], [2 3 4]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h_d = GraphPlot (G, "Layout", "layered", "Direction", "down");
+%!   h_u = GraphPlot (G, "Layout", "layered", "Direction", "up");
+%!   assert (h_u.YData, -h_d.YData);
+%!   assert (h_u.XData, h_d.XData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 'Direction','right': Y flat, X spans layer axis.
+%!test
+%! G = digraph ([1 2 3], [2 3 4]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "layered", "Direction", "right");
+%!   assert (h.YData, zeros (4, 1));
+%!   assert (h.XData(1), 0);
+%!   assert (h.XData(4), 3);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 'Direction' is case-insensitive.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = GraphPlot (G, "Layout", "layered", "Direction", "Down");
+%!   h2 = GraphPlot (G, "Layout", "layered", "Direction", "DOWN");
+%!   h3 = GraphPlot (G, "Layout", "layered", "Direction", "down");
+%!   assert (h1.XData, h2.XData);
+%!   assert (h1.XData, h3.XData);
+%!   assert (h1.YData, h2.YData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 'Sources' option forces a node into layer 1.
+%!test
+%! G = digraph ([1 2 3], [2 3 4]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "layered", "Sources", 3);
+%!   assert (h.YData(3), 0);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 'Sinks' option forces a node into the last layer.
+%!test
+%! G = digraph ([1 2 3], [2 3 4]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "layered", "Sinks", 1);
+%!   assert (h.YData(1), min (h.YData));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 'AssignLayers','alap' differs from 'asap' when a node can be delayed.
+%!test
+%! G = digraph ([1 2 1], [2 4, 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h_as = GraphPlot (G, "Layout", "layered", "AssignLayers", "asap");
+%!   h_al = GraphPlot (G, "Layout", "layered", "AssignLayers", "alap");
+%!   assert (h_as.YData(3), -1);
+%!   assert (h_al.YData(3), -2);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 'AssignLayers' is case-insensitive.
+%!test
+%! G = digraph ([1 2 1], [2 4, 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = GraphPlot (G, "Layout", "layered", "AssignLayers", "ALAP");
+%!   h2 = GraphPlot (G, "Layout", "layered", "AssignLayers", "alap");
+%!   assert (h1.YData, h2.YData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## layered works on an undirected graph too (uses BFS from first
+## source or node 1).
+%!test
+%! G = graph ([1 2 3], [2 3 4]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "layered");
+%!   assert (h.YData(1), 0);
+%!   assert (h.YData(4), -3);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Empty graph under layered returns 0-node GraphPlot.
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (digraph (), "Layout", "layered");
+%!   assert (h.NumNodes, 0);
+%!   assert (isempty (h.XData));
+%!   assert (isempty (h.YData));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Layered options validated up front.
+%!error <Direction must be a character vector> ...
+%!   GraphPlot (digraph (3), "Layout", "layered", "Direction", 1)
+%!error <AssignLayers must be a character vector> ...
+%!   GraphPlot (digraph (3), "Layout", "layered", "AssignLayers", 1)
+
+## Unknown direction/assignlayers values propagate as errors from the
+## helper.
+%!error <unknown DIRECTION> ...
+%!   GraphPlot (digraph (3), "Layout", "layered", "Direction", "nowhere")
+%!error <unknown ASSIGNLAYERS> ...
+%!   GraphPlot (digraph (3), "Layout", "layered", "AssignLayers", "bogus")
+
+## Layered options under non-layered layouts are silently ignored.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = GraphPlot (G, "Layout", "circle");
+%!   h2 = GraphPlot (G, "Layout", "circle", "Direction", "up", ...
+%!                   "Sources", 2, "Sinks", 3, "AssignLayers", "alap");
+%!   assert (h1.XData, h2.XData);
+%!   assert (h1.YData, h2.YData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Deterministic output across repeat calls.
+%!test
+%! G = digraph ([1 1 2 3], [2 3 4 4]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = GraphPlot (G, "Layout", "layered");
+%!   h2 = GraphPlot (G, "Layout", "layered");
+%!   assert (h1.XData, h2.XData);
+%!   assert (h1.YData, h2.YData);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

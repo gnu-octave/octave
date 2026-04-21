@@ -41,11 +41,13 @@
 ## @qcode{"auto"} (default), @qcode{"circle"} (uniform unit-circle
 ## placement, node 1 at @code{(1, 0)}, remaining nodes counter-clockwise),
 ## @qcode{"subspace"}, @qcode{"force"} (Fruchterman-Reingold 2-D
-## force-directed layout), and @qcode{"force3"} (Fruchterman-Reingold
+## force-directed layout), @qcode{"force3"} (Fruchterman-Reingold
 ## 3-D force-directed layout — the only 3-D layout in this release;
 ## it populates the @code{ZData} property of the returned
-## @code{GraphPlot} handle and renders via @code{plot3}).  Layout
-## names are case-insensitive.
+## @code{GraphPlot} handle and renders via @code{plot3}), and
+## @qcode{"layered"} (Sugiyama-style hierarchical layout via longest-path
+## layer assignment plus iterated barycenter crossing reduction).
+## Layout names are case-insensitive.
 ##
 ## The @qcode{"force"} and @qcode{"force3"} layouts accept an
 ## additional @qcode{"WeightEffect"} option that selects how edge
@@ -65,6 +67,23 @@
 ## The force layout is deterministic: the random initial positions it
 ## uses are seeded internally and the caller's global RNG state is
 ## preserved.
+##
+## The @qcode{"layered"} layout accepts four additional options that
+## govern how layers are assigned and unrolled in the plane:
+##
+## @table @code
+## @item Direction
+## @qcode{"down"} (default, sources at the top), @qcode{"up"},
+## @qcode{"left"}, or @qcode{"right"}.
+## @item Sources
+## Numeric vector of node indices forced into the first layer.
+## @item Sinks
+## Numeric vector of node indices forced into the last layer.
+## @item AssignLayers
+## @qcode{"auto"} (default, equivalent to @qcode{"asap"}),
+## @qcode{"asap"} (as-soon-as-possible), or @qcode{"alap"}
+## (as-late-as-possible).
+## @end table
 ##
 ## When @var{G} is neither a @code{graph} nor a @code{digraph}, this
 ## file's free-function body is not used because Octave dispatches
@@ -542,6 +561,151 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
+## -------- US-GP05 layered layout via plot() --------
+
+## plot(G, 'Layout', 'layered') returns a GraphPlot with finite
+## hierarchical coordinates.
+%!test
+%! G = digraph ([1 2 3], [2 3 4]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G, "Layout", "layered");
+%!   assert (isa (h, "GraphPlot"));
+%!   assert (h.NumNodes, 4);
+%!   assert (numel (h.XData), 4);
+%!   assert (numel (h.YData), 4);
+%!   assert (all (isfinite (h.XData)));
+%!   assert (all (isfinite (h.YData)));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Layered layout is deterministic via plot().
+%!test
+%! G = digraph ([1 1 2 3], [2 3 4 4]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = plot (G, "Layout", "layered");
+%!   h2 = plot (G, "Layout", "layered");
+%!   assert (h1.XData, h2.XData);
+%!   assert (h1.YData, h2.YData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Layered layout name is case-insensitive via plot().
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = plot (G, "Layout", "layered");
+%!   h2 = plot (G, "Layout", "LAYERED");
+%!   h3 = plot (G, "Layout", "Layered");
+%!   assert (h1.XData, h2.XData);
+%!   assert (h1.XData, h3.XData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Direction "down" is the default and matches explicit "down".
+%!test
+%! G = digraph ([1 2 3], [2 3 4]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = plot (G, "Layout", "layered");
+%!   h2 = plot (G, "Layout", "layered", "Direction", "down");
+%!   assert (h1.XData, h2.XData);
+%!   assert (h1.YData, h2.YData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Direction 'up' flips Y relative to 'down'.
+%!test
+%! G = digraph ([1 2 3], [2 3 4]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h_d = plot (G, "Layout", "layered", "Direction", "down");
+%!   h_u = plot (G, "Layout", "layered", "Direction", "up");
+%!   assert (h_u.YData, -h_d.YData);
+%!   assert (h_u.XData, h_d.XData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Direction 'right': rank axis is X.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G, "Layout", "layered", "Direction", "right");
+%!   assert (h.YData, zeros (3, 1));
+%!   assert (h.XData(1), 0);
+%!   assert (h.XData(3), 2);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Sources option places node in layer 1 via plot().
+%!test
+%! G = digraph ([1 2 3], [2 3 4]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G, "Layout", "layered", "Sources", 3);
+%!   assert (h.YData(3), 0);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Sinks option places node in last layer via plot().
+%!test
+%! G = digraph ([1 2 3], [2 3 4]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G, "Layout", "layered", "Sinks", 1);
+%!   assert (h.YData(1), min (h.YData));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## AssignLayers 'alap' via plot().
+%!test
+%! G = digraph ([1 2 1], [2 4, 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h_as = plot (G, "Layout", "layered", "AssignLayers", "asap");
+%!   h_al = plot (G, "Layout", "layered", "AssignLayers", "alap");
+%!   assert (h_as.YData(3), -1);
+%!   assert (h_al.YData(3), -2);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Layered layout yields distinct coordinates from circle on the same
+## graph.
+%!test
+%! G = digraph ([1 2 3], [2 3 4]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h_c = plot (G, "Layout", "circle");
+%!   h_l = plot (G, "Layout", "layered");
+%!   assert (any (abs (h_c.XData - h_l.XData) > 1e-6) ...
+%!           || any (abs (h_c.YData - h_l.YData) > 1e-6));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## ZData empty for layered (it is a 2-D layout).
+%!test
+%! G = digraph ([1 2 3], [2 3 4]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G, "Layout", "layered");
+%!   assert (isempty (h.ZData));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
 ## %!demo — small directed cycle under gnuplot (safe headless demo).
 %!demo
 %! G = digraph ([1 2 3 4], [2 3 4 1]);
@@ -567,4 +731,11 @@ endfunction
 %! G = graph ([1 1 1 1 2 3 4 5], [2 3 4 5 3 4 5 2]);
 %! h = plot (G, "Layout", "force3");
 %! title ("graph force3 (3-D) layout");
+%! axis equal;
+
+## %!demo — hierarchical layered layout on a small DAG.
+%!demo
+%! G = digraph ([1 1 2 3 3 4], [2 3 4 4 5 5]);
+%! h = plot (G, "Layout", "layered");
+%! title ("digraph layered (Sugiyama) layout");
 %! axis equal;

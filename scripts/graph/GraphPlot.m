@@ -144,6 +144,7 @@ classdef GraphPlot < handle
       layout = "auto";
       xdata_user = [];
       ydata_user = [];
+      layout_opts = struct ();
       for ii = 1:2:numel (opts)
         name = opts{ii};
         if (! (ischar (name) && isrow (name)))
@@ -162,6 +163,12 @@ classdef GraphPlot < handle
             xdata_user = val(:);
           case "ydata"
             ydata_user = val(:);
+          case "weighteffect"
+            if (! (ischar (val) && isrow (val)))
+              error ("Octave:invalid-input-arg", ...
+                     "GraphPlot: WeightEffect must be a character vector");
+            endif
+            layout_opts.WeightEffect = lower (val);
           otherwise
             error ("Octave:invalid-input-arg", ...
                    "GraphPlot: unknown option '%s'", name);
@@ -182,7 +189,7 @@ classdef GraphPlot < handle
         X = double (xdata_user);
         Y = double (ydata_user);
       else
-        [X, Y] = __graph_plot_auto_layout__ (G, layout);
+        [X, Y] = __graph_plot_auto_layout__ (G, layout, layout_opts);
       endif
 
       h.XData = X(:);
@@ -402,6 +409,114 @@ endclassdef
 %!   h = GraphPlot (G, "Layout", "circle");
 %!   assert (h.XData, [1; 0; -1; 0], 1e-10);
 %!   assert (h.YData, [0; 1; 0; -1], 1e-10);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## -------- US-GP03 force layout via GraphPlot --------
+
+## 'Layout','force' picks the Fruchterman-Reingold layout.
+%!test
+%! G = digraph ([1 2 3 4], [2 3 4 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "force");
+%!   assert (isa (h, "GraphPlot"));
+%!   assert (numel (h.XData), 4);
+%!   assert (numel (h.YData), 4);
+%!   assert (all (isfinite (h.XData)));
+%!   assert (all (isfinite (h.YData)));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Force layout is deterministic with seed reset in test.
+%!test
+%! G = digraph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   rand ("state", 11);
+%!   h1 = GraphPlot (G, "Layout", "force");
+%!   rand ("state", 22);
+%!   h2 = GraphPlot (G, "Layout", "force");
+%!   assert (h1.XData, h2.XData, 1e-12);
+%!   assert (h1.YData, h2.YData, 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 'WeightEffect','direct' passes through to the force layout.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [1 1 100]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hn = GraphPlot (G, "Layout", "force");
+%!   hd = GraphPlot (G, "Layout", "force", "WeightEffect", "direct");
+%!   assert (any (abs (hn.XData - hd.XData) > 1e-6) ...
+%!           || any (abs (hn.YData - hd.YData) > 1e-6));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 'WeightEffect','inverse' passes through.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [1 1 100]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hi = GraphPlot (G, "Layout", "force", "WeightEffect", "inverse");
+%!   assert (numel (hi.XData), 3);
+%!   assert (all (isfinite (hi.XData)));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 'WeightEffect' values are case-insensitive.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [2 3 5]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = GraphPlot (G, "Layout", "force", "WeightEffect", "Direct");
+%!   h2 = GraphPlot (G, "Layout", "force", "WeightEffect", "DIRECT");
+%!   h3 = GraphPlot (G, "Layout", "force", "WeightEffect", "direct");
+%!   assert (h1.XData, h2.XData, 1e-12);
+%!   assert (h1.XData, h3.XData, 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## WeightEffect applies only when layout=force: with circle layout it
+## is silently accepted but has no effect.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [1 2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = GraphPlot (G, "Layout", "circle");
+%!   h2 = GraphPlot (G, "Layout", "circle", "WeightEffect", "direct");
+%!   assert (h1.XData, h2.XData);
+%!   assert (h1.YData, h2.YData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## WeightEffect must be a string.
+%!error <WeightEffect must be a character vector> ...
+%!   GraphPlot (digraph (3), "WeightEffect", 1)
+
+## Unknown WeightEffect value is reported by the force helper.
+%!error <unknown WEIGHT_EFFECT> ...
+%!   GraphPlot (digraph ([1 2], [2 3]), "Layout", "force", ...
+%!              "WeightEffect", "nope")
+
+## Auto layout with N >= 100 invokes force and respects WeightEffect.
+%!test
+%! N = 105;
+%! G = digraph (1:(N-1), 2:N);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   ha = GraphPlot (G);   # auto = force because N >= 100
+%!   hf2 = GraphPlot (G, "Layout", "force");
+%!   assert (ha.XData, hf2.XData);
+%!   assert (ha.YData, hf2.YData);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

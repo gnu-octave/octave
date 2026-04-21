@@ -40,8 +40,26 @@
 ## Recognised layout names for @qcode{"Layout"} include
 ## @qcode{"auto"} (default), @qcode{"circle"} (uniform unit-circle
 ## placement, node 1 at @code{(1, 0)}, remaining nodes counter-clockwise),
-## @qcode{"subspace"}, and @qcode{"force"}.  Layout names are
-## case-insensitive.
+## @qcode{"subspace"}, and @qcode{"force"} (Fruchterman-Reingold 2-D
+## force-directed layout).  Layout names are case-insensitive.
+##
+## The @qcode{"force"} layout accepts an additional
+## @qcode{"WeightEffect"} option that selects how edge weights enter
+## the attractive spring force.  Allowed values (case-insensitive):
+##
+## @table @code
+## @item none
+## Default.  Weights are ignored.
+## @item direct
+## Attractive force is multiplied by the edge weight.
+## @item inverse
+## Attractive force is divided by the edge weight (weights behave as
+## distances).
+## @end table
+##
+## The force layout is deterministic: the random initial positions it
+## uses are seeded internally and the caller's global RNG state is
+## preserved.
 ##
 ## When @var{G} is neither a @code{graph} nor a @code{digraph}, this
 ## file's free-function body is not used because Octave dispatches
@@ -330,6 +348,100 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
+## -------- US-GP03 force layout via plot() --------
+
+## plot(G, 'Layout', 'force') returns a GraphPlot with finite
+## coordinates from the Fruchterman-Reingold layout.
+%!test
+%! G = digraph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G, "Layout", "force");
+%!   assert (isa (h, "GraphPlot"));
+%!   assert (numel (h.XData), 5);
+%!   assert (numel (h.YData), 5);
+%!   assert (all (isfinite (h.XData)));
+%!   assert (all (isfinite (h.YData)));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Force layout is deterministic across invocations and does not depend
+## on the caller's RNG state (the algorithm seeds internally and
+## restores).
+%!test
+%! G = digraph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   rand ("state", 3);
+%!   h1 = plot (G, "Layout", "force");
+%!   rand ("state", 99);
+%!   h2 = plot (G, "Layout", "force");
+%!   assert (h1.XData, h2.XData, 1e-12);
+%!   assert (h1.YData, h2.YData, 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Force layout case-insensitive via plot().
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = plot (G, "Layout", "force");
+%!   h2 = plot (G, "Layout", "FORCE");
+%!   h3 = plot (G, "Layout", "Force");
+%!   assert (h1.XData, h2.XData, 1e-12);
+%!   assert (h1.XData, h3.XData, 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## WeightEffect passes through plot().
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [1 1 100]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h_none = plot (G, "Layout", "force", "WeightEffect", "none");
+%!   h_dir  = plot (G, "Layout", "force", "WeightEffect", "direct");
+%!   h_inv  = plot (G, "Layout", "force", "WeightEffect", "inverse");
+%!   assert (any (abs (h_none.XData - h_dir.XData) > 1e-6) ...
+%!           || any (abs (h_none.YData - h_dir.YData) > 1e-6));
+%!   assert (any (abs (h_none.XData - h_inv.XData) > 1e-6) ...
+%!           || any (abs (h_none.YData - h_inv.YData) > 1e-6));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Simple graph: plot(G, 'Layout', 'force') produces stable
+## coordinates (exact equality between two identical calls).
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = plot (G, "Layout", "force");
+%!   h2 = plot (G, "Layout", "force");
+%!   assert (h1.XData, h2.XData);
+%!   assert (h1.YData, h2.YData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Auto layout on a 150-node graph picks force branch and yields the
+## same coordinates as an explicit 'Layout','force' call.
+%!test
+%! N = 150;
+%! G = digraph (1:(N-1), 2:N);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h_auto  = plot (G, "Layout", "auto");
+%!   h_force = plot (G, "Layout", "force");
+%!   assert (h_auto.XData, h_force.XData);
+%!   assert (h_auto.YData, h_force.YData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
 ## %!demo — small directed cycle under gnuplot (safe headless demo).
 %!demo
 %! G = digraph ([1 2 3 4], [2 3 4 1]);
@@ -341,4 +453,11 @@ endfunction
 %! G = graph ([1 2 3 4 5 6], [2 3 4 5 6 1]);
 %! h = plot (G, "Layout", "circle");
 %! title ("graph 6-cycle on unit circle");
+%! axis equal;
+
+## %!demo — 5-node ring under the force-directed layout.
+%!demo
+%! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
+%! h = plot (G, "Layout", "force");
+%! title ("graph 5-cycle, force layout");
 %! axis equal;

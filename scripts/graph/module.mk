@@ -32,6 +32,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/__findedge_impl__.m \
   %reldir%/private/__findnode_impl__.m \
   %reldir%/private/__graph_plot_auto_layout__.m \
+  %reldir%/private/__graph_plot_force__.m \
   %reldir%/private/__isomorphism_parse_opts__.m \
   %reldir%/private/__isomorphism_vf2__.m \
   %reldir%/private/__matlab_ref__.m \

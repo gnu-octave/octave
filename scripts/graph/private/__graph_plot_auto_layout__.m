@@ -24,7 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {[@var{X}, @var{Y}] =} __graph_plot_auto_layout__ (@var{G}, @var{layout})
+## @deftypefn  {} {[@var{X}, @var{Y}] =} __graph_plot_auto_layout__ (@var{G}, @var{layout})
+## @deftypefnx {} {[@var{X}, @var{Y}] =} __graph_plot_auto_layout__ (@var{G}, @var{layout}, @var{opts})
 ## Compute 2-D node coordinates for @code{plot}'ting a @code{graph} or
 ## @code{digraph}.
 ##
@@ -39,8 +40,11 @@
 ## Placeholder routed to a deterministic circle layout (to be replaced
 ## by the proper spectral subspace algorithm in a subsequent story).
 ## @item force
-## Placeholder routed to a deterministic circle layout (to be replaced
-## by Fruchterman-Reingold in a subsequent story).
+## Fruchterman-Reingold 2-D force-directed layout.  See
+## @code{__graph_plot_force__} for details.  When the graph is
+## weighted, the @code{WeightEffect} option selects how edge weights
+## enter the attractive force: @qcode{"none"} (default),
+## @qcode{"direct"}, or @qcode{"inverse"}.
 ## @item circle
 ## Production layout.  Place the @var{N} nodes of @var{G} uniformly on
 ## the unit circle at angles @code{theta(k) = 2*pi*(k-1)/N}.  Node 1
@@ -50,15 +54,23 @@
 ## define a unit circle position).
 ## @end table
 ##
+## @var{opts} (optional) is a struct holding layout-specific options.
+## Currently recognised fields:
+## @table @code
+## @item WeightEffect
+## Character vector forwarded to @code{__graph_plot_force__} when the
+## @qcode{"force"} branch is active.  Ignored by the other layouts.
+## @end table
+##
 ## Returns @var{X} and @var{Y} as column vectors of length
 ## @code{numnodes (G)}.  Both are populated with finite double values
 ## for every @var{N} @code{>= 0}.
-## @seealso{plot, GraphPlot}
+## @seealso{plot, GraphPlot, __graph_plot_force__}
 ## @end deftypefn
 
-function [X, Y] = __graph_plot_auto_layout__ (G, layout)
+function [X, Y] = __graph_plot_auto_layout__ (G, layout, opts)
 
-  if (nargin != 2)
+  if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
   if (! (isa (G, "graph") || isa (G, "digraph")))
@@ -69,24 +81,38 @@ function [X, Y] = __graph_plot_auto_layout__ (G, layout)
     error ("Octave:invalid-input-arg", ...
            "__graph_plot_auto_layout__: LAYOUT must be a character vector");
   endif
+  if (nargin < 3 || isempty (opts))
+    opts = struct ();
+  endif
+  if (! isstruct (opts))
+    error ("Octave:invalid-input-arg", ...
+           "__graph_plot_auto_layout__: OPTS must be a struct");
+  endif
+
+  ## Default WeightEffect when the caller did not supply one.
+  if (isfield (opts, "WeightEffect"))
+    weight_effect = opts.WeightEffect;
+  else
+    weight_effect = "none";
+  endif
 
   N = numnodes (G);
   layout = lower (layout);
 
   switch (layout)
     case "auto"
-      ## US-GP01 scaffolding: auto picks "subspace" for small graphs
-      ## and "force" for the rest.  Both placeholders share the circle
-      ## fallback below; later stories will supply the real algorithms.
+      ## Auto dispatches by node count: fewer than 100 nodes use the
+      ## "subspace" branch (still a circle placeholder until US-GP06);
+      ## 100 and above use the production "force" branch.
       if (N < 100)
         [X, Y] = __gp_layout_circle__ (N);
       else
-        [X, Y] = __gp_layout_circle__ (N);
+        [X, Y] = __graph_plot_force__ (G, weight_effect);
       endif
     case "subspace"
       [X, Y] = __gp_layout_circle__ (N);
     case "force"
-      [X, Y] = __gp_layout_circle__ (N);
+      [X, Y] = __graph_plot_force__ (G, weight_effect);
     case "circle"
       [X, Y] = __gp_layout_circle__ (N);
     otherwise
@@ -281,3 +307,108 @@ endfunction
 %!   assert (iscolumn (X) || isempty (X));
 %!   assert (iscolumn (Y) || isempty (Y));
 %! endfor
+
+## -------- US-GP03 force layout: integration coverage --------
+
+## 'force' layout now delegates to Fruchterman-Reingold.  Coordinates
+## must be finite and column-shaped.
+%!test
+%! G = digraph ([1 2 3 4], [2 3 4 1]);
+%! [X, Y] = __graph_plot_auto_layout__ (G, "force");
+%! assert (numel (X), 4);
+%! assert (numel (Y), 4);
+%! assert (iscolumn (X));
+%! assert (iscolumn (Y));
+%! assert (all (isfinite (X)));
+%! assert (all (isfinite (Y)));
+
+## Force layout is deterministic across repeat calls.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! [X1, Y1] = __graph_plot_auto_layout__ (G, "force");
+%! [X2, Y2] = __graph_plot_auto_layout__ (G, "force");
+%! assert (X1, X2);
+%! assert (Y1, Y2);
+
+## Force layout differs from circle placement on the same graph.
+%!test
+%! G = digraph ([1 2 3 4], [2 3 4 1]);
+%! [Xc, Yc] = __graph_plot_auto_layout__ (G, "circle");
+%! [Xf, Yf] = __graph_plot_auto_layout__ (G, "force");
+%! assert (any (abs (Xc - Xf) > 1e-6) || any (abs (Yc - Yf) > 1e-6));
+
+## 'auto' on a large graph (N >= 100) routes to force, not circle.
+## The two layouts should produce different coordinates.
+%!test
+%! N = 120;
+%! G = digraph (1:(N-1), 2:N);
+%! [Xa, Ya] = __graph_plot_auto_layout__ (G, "auto");
+%! [Xc, Yc] = __graph_plot_auto_layout__ (G, "circle");
+%! assert (any (abs (Xa - Xc) > 1e-6) || any (abs (Ya - Yc) > 1e-6));
+
+## 'auto' on a large graph matches 'force'.
+%!test
+%! N = 110;
+%! G = digraph (1:(N-1), 2:N);
+%! [Xa, Ya] = __graph_plot_auto_layout__ (G, "auto");
+%! [Xf, Yf] = __graph_plot_auto_layout__ (G, "force");
+%! assert (Xa, Xf);
+%! assert (Ya, Yf);
+
+## 'auto' on a small graph still uses the subspace placeholder (circle),
+## NOT force.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! [Xa, Ya] = __graph_plot_auto_layout__ (G, "auto");
+%! [Xc, Yc] = __graph_plot_auto_layout__ (G, "circle");
+%! assert (Xa, Xc);
+%! assert (Ya, Yc);
+
+## opts.WeightEffect forwards to the force branch.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [1 1 100]);
+%! [X_none, Y_none] = __graph_plot_auto_layout__ (G, "force");
+%! opts.WeightEffect = "direct";
+%! [X_dir, Y_dir] = __graph_plot_auto_layout__ (G, "force", opts);
+%! assert (any (abs (X_none - X_dir) > 1e-6) ...
+%!         || any (abs (Y_none - Y_dir) > 1e-6));
+
+## opts.WeightEffect='inverse' forwards correctly.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [1 1 100]);
+%! opts.WeightEffect = "inverse";
+%! [X, Y] = __graph_plot_auto_layout__ (G, "force", opts);
+%! assert (numel (X), 3);
+%! assert (all (isfinite (X)));
+
+## Empty opts struct is allowed and ignored.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! opts = struct ();
+%! [X1, Y1] = __graph_plot_auto_layout__ (G, "force", opts);
+%! [X2, Y2] = __graph_plot_auto_layout__ (G, "force");
+%! assert (X1, X2);
+%! assert (Y1, Y2);
+
+## [] passed for opts is treated as the default struct.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! [X1, Y1] = __graph_plot_auto_layout__ (G, "force", []);
+%! [X2, Y2] = __graph_plot_auto_layout__ (G, "force");
+%! assert (X1, X2);
+%! assert (Y1, Y2);
+
+## Non-struct opts is rejected.
+%!error <OPTS must be a struct> ...
+%!   __graph_plot_auto_layout__ (digraph (3), "force", "nope")
+
+## WeightEffect is ignored for non-force layouts (no error from unknown
+## WeightEffect under "circle" because the force branch is not
+## entered).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! opts.WeightEffect = "bogus_value_never_reached";
+%! [X1, Y1] = __graph_plot_auto_layout__ (G, "circle", opts);
+%! [X2, Y2] = __graph_plot_auto_layout__ (G, "circle");
+%! assert (X1, X2);
+%! assert (Y1, Y2);

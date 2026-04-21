@@ -3205,6 +3205,62 @@ classdef digraph
 
     endfunction
 
+    function D = distances (G)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{D} =} distances (@var{G})
+      ## Return the all-pairs shortest-path distance matrix of the
+      ## digraph @var{G}.  @var{D}(i, j) is the length of a shortest
+      ## directed path from node @math{i} to node @math{j}, or
+      ## @code{Inf} when @math{j} is not reachable from @math{i}.  The
+      ## diagonal is always @code{0}.  Every edge has weight @code{1}
+      ## when @var{G} is unweighted; otherwise the stored weights are
+      ## used.  Default method is Dijkstra's algorithm, which requires
+      ## non-negative edge weights; a negative weight raises an error.
+      ## See @code{help distances} for the full description.
+      ## @seealso{digraph, shortestpath, shortestpathtree, adjacency}
+      ## @end deftypefn
+
+      N = numnodes (G);
+      if (N == 0)
+        D = zeros (0, 0);
+        return;
+      endif
+
+      ## Build the weight matrix W(i, j) used by Dijkstra.  For a
+      ## multigraph, parallel edges between the same (i, j) should
+      ## collapse to the minimum weight (MATLAB parity: the shortest
+      ## path uses the cheapest parallel edge).  For simple storage,
+      ## adjacency() already does the right thing: either binary 0/1
+      ## (unweighted) or weighted.
+      if (G.is_multigraph_)
+        src = G.mg_endnodes_(:, 1);
+        dst = G.mg_endnodes_(:, 2);
+        if (G.has_weights_)
+          w = G.mg_weights_(:);
+        else
+          w = ones (numel (src), 1);
+        endif
+        if (isempty (src))
+          W = sparse (N, N);
+        else
+          ## Collapse parallel edges to min weight per (src, dst).
+          [pairs, ~, ic] = unique ([src(:), dst(:)], "rows");
+          min_w = accumarray (ic, w, [], @min);
+          W = sparse (pairs(:, 1), pairs(:, 2), min_w, N, N);
+        endif
+      else
+        if (G.has_weights_)
+          W = G.adj_;
+        else
+          W = spones (G.adj_);
+        endif
+      endif
+
+      D = __distances_dijkstra__ (W);
+
+    endfunction
+
     function disp (G)
 
       ## -*- texinfo -*-

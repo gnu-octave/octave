@@ -2069,6 +2069,42 @@ classdef graph
 
     endfunction
 
+    function D = distances (G)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{D} =} distances (@var{G})
+      ## Return the all-pairs shortest-path distance matrix of the
+      ## undirected graph @var{G}.  @var{D}(i, j) is the length of a
+      ## shortest path between nodes @math{i} and @math{j}, or
+      ## @code{Inf} when no such path exists.  @var{D} is symmetric
+      ## and the diagonal is always @code{0}.  Every edge has weight
+      ## @code{1} when @var{G} is unweighted; otherwise the stored
+      ## weights are used.  Default method is Dijkstra's algorithm,
+      ## which requires non-negative edge weights; a negative weight
+      ## raises an error.  See @code{help distances} for the full
+      ## description.
+      ## @seealso{graph, shortestpath, shortestpathtree, adjacency}
+      ## @end deftypefn
+
+      N = numnodes (G);
+      if (N == 0)
+        D = zeros (0, 0);
+        return;
+      endif
+
+      ## graph class does not support parallel edges, so the weighted
+      ## adjacency matrix is simply adj_ (already symmetric); if G is
+      ## unweighted, collapse to 0/1.
+      if (G.has_weights_)
+        W = G.adj_;
+      else
+        W = spones (G.adj_);
+      endif
+
+      D = __distances_dijkstra__ (W);
+
+    endfunction
+
     function disp (G)
 
       ## -*- texinfo -*-

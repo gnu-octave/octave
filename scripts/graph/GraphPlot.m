@@ -5315,3 +5315,201 @@ endclassdef
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+
+## -------- US-GP15 MATLAB-compatible default colors/markers --------
+
+## plot (digraph) populates the GraphPlot with MATLAB-compatible
+## defaults for colors, marker, marker size, line width, and line
+## style.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G);
+%!   assert (h.NodeColor, [0 0.4470 0.7410], 1e-12);
+%!   assert (h.EdgeColor, [0 0.4470 0.7410], 1e-12);
+%!   assert (h.Marker, "o");
+%!   assert (h.MarkerSize, 4);
+%!   assert (h.LineWidth, 0.5, 1e-12);
+%!   assert (h.LineStyle, "-");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## plot (graph) populates the GraphPlot with MATLAB-compatible
+## defaults (same as digraph).
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G);
+%!   assert (h.NodeColor, [0 0.4470 0.7410], 1e-12);
+%!   assert (h.EdgeColor, [0 0.4470 0.7410], 1e-12);
+%!   assert (h.Marker, "o");
+%!   assert (h.MarkerSize, 4);
+%!   assert (h.LineWidth, 0.5, 1e-12);
+%!   assert (h.LineStyle, "-");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Default NodeColor and EdgeColor are both MATLAB default blue
+## [0 0.4470 0.7410] -- the "auto" series color 1.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G);
+%!   assert (isequal (h.NodeColor, h.EdgeColor));
+%!   assert (size (h.NodeColor), [1 3]);
+%!   assert (all (h.NodeColor >= 0 & h.NodeColor <= 1));
+%!   ## MATLAB default blue, spelled out to 4 decimal places.
+%!   assert (h.NodeColor, [0 0.4470 0.7410], 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Weighted digraph: defaults are still MATLAB blue / 'o' / 4 / 0.5.
+## Weights do not change the color, marker, or line defaults.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [10 20 30]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G);
+%!   assert (h.NodeColor, [0 0.4470 0.7410], 1e-12);
+%!   assert (h.EdgeColor, [0 0.4470 0.7410], 1e-12);
+%!   assert (h.Marker, "o");
+%!   assert (h.MarkerSize, 4);
+%!   assert (h.LineWidth, 0.5, 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Weighted undirected graph: same defaults.
+%!test
+%! G = graph ([1 2 3], [2 3 1], [1.5 2.5 3.5]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G);
+%!   assert (h.NodeColor, [0 0.4470 0.7410], 1e-12);
+%!   assert (h.EdgeColor, [0 0.4470 0.7410], 1e-12);
+%!   assert (h.Marker, "o");
+%!   assert (h.MarkerSize, 4);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Named-node graph: node names do not change the color / marker
+## defaults.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"alpha", "beta", "gamma"});
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G);
+%!   assert (h.NodeColor, [0 0.4470 0.7410], 1e-12);
+%!   assert (h.EdgeColor, [0 0.4470 0.7410], 1e-12);
+%!   assert (h.Marker, "o");
+%!   assert (h.MarkerSize, 4);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Isolated-nodes-only digraph (no edges): NodeColor default still
+## populated.  EdgeColor default still populated (there are no edges
+## to render but the default property value is preserved).
+%!test
+%! G = digraph (5);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G);
+%!   assert (h.NodeColor, [0 0.4470 0.7410], 1e-12);
+%!   assert (h.EdgeColor, [0 0.4470 0.7410], 1e-12);
+%!   assert (h.Marker, "o");
+%!   assert (h.MarkerSize, 4);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Empty digraph (N == 0): defaults still readable (no rendering).
+%!test
+%! G = digraph ();
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G);
+%!   assert (h.NodeColor, [0 0.4470 0.7410], 1e-12);
+%!   assert (h.EdgeColor, [0 0.4470 0.7410], 1e-12);
+%!   assert (h.Marker, "o");
+%!   assert (h.MarkerSize, 4);
+%!   assert (h.LineWidth, 0.5, 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Default ArrowSize for digraph plot is 7 (MATLAB parity).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G);
+%!   assert (h.ArrowSize, 7);
+%!   assert (h.ArrowPosition, 0.5);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Default EdgeAlpha is 0.5 (MATLAB parity).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G);
+%!   assert (h.EdgeAlpha, 0.5, 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## GraphPlot() empty constructor exposes the same MATLAB-compatible
+## defaults: colors, marker, size, and line-width / line-style without
+## any graph argument.
+%!test
+%! h = GraphPlot ();
+%! assert (h.NodeColor, [0 0.4470 0.7410], 1e-12);
+%! assert (h.EdgeColor, [0 0.4470 0.7410], 1e-12);
+%! assert (h.Marker, "o");
+%! assert (h.MarkerSize, 4);
+%! assert (h.LineWidth, 0.5, 1e-12);
+%! assert (h.LineStyle, "-");
+%! assert (h.ArrowSize, 7);
+%! assert (h.ArrowPosition, 0.5);
+%! assert (h.EdgeAlpha, 0.5, 1e-12);
+
+## Defaults survive a subsequent property assignment / restore cycle.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G);
+%!   h.NodeColor = [1 0 0];
+%!   assert (h.NodeColor, [1 0 0]);
+%!   h.NodeColor = [0 0.4470 0.7410];
+%!   assert (h.NodeColor, [0 0.4470 0.7410], 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## NodeColor / EdgeColor / Marker / MarkerSize defaults match
+## independently of the selected layout.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   for layout = {"auto", "circle", "force", "subspace", "layered"}
+%!     h = plot (G, "Layout", layout{1});
+%!     assert (h.NodeColor, [0 0.4470 0.7410], 1e-12);
+%!     assert (h.EdgeColor, [0 0.4470 0.7410], 1e-12);
+%!     assert (h.Marker, "o");
+%!     assert (h.MarkerSize, 4);
+%!   endfor
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

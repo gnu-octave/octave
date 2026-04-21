@@ -941,3 +941,52 @@ endfunction
 ## plot().
 %!error <ZData> ...
 %!   plot (digraph ([1 2 3], [2 3 1]), "ZData", [1 2 3])
+
+## -------- US-GP15 MATLAB-compatible default colors/markers --------
+
+## plot (G) returns a GraphPlot with MATLAB-parity defaults (digraph).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G);
+%!   assert (h.NodeColor, [0 0.4470 0.7410], 1e-12);
+%!   assert (h.EdgeColor, [0 0.4470 0.7410], 1e-12);
+%!   assert (h.Marker, "o");
+%!   assert (h.MarkerSize, 4);
+%!   assert (h.LineWidth, 0.5, 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## plot (G) returns a GraphPlot with MATLAB-parity defaults (graph).
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G);
+%!   assert (h.NodeColor, [0 0.4470 0.7410], 1e-12);
+%!   assert (h.EdgeColor, [0 0.4470 0.7410], 1e-12);
+%!   assert (h.Marker, "o");
+%!   assert (h.MarkerSize, 4);
+%!   assert (h.LineWidth, 0.5, 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Name-value overrides through plot() do not perturb the unrelated
+## default values.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G, "NodeColor", [1 0 0]);
+%!   assert (h.NodeColor, [1 0 0]);
+%!   ## EdgeColor is still the default blue; overriding NodeColor
+%!   ## does not couple to EdgeColor.
+%!   assert (h.EdgeColor, [0 0.4470 0.7410], 1e-12);
+%!   assert (h.Marker, "o");
+%!   assert (h.MarkerSize, 4);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

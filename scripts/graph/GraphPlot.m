@@ -2589,8 +2589,26 @@ endclassdef
 ## Length-mismatched NodeLabel is rejected.
 %!error <NodeLabel> ...
 %!   GraphPlot (digraph ([1 2 3], [2 3 1]), "NodeLabel", {"a", "b"})
-%!error <NodeLabel> ...
-%!   h = GraphPlot (digraph ([1 2], [2 3])); h.NodeLabel = {"p"};
+
+## Length-mismatched NodeLabel assignment on an already-rendered
+## GraphPlot is rejected.  Wrapped in figure + unwind_protect so the
+## figure created by the successful GraphPlot construction is closed
+## even though the subsequent setter throws (test-ordering cleanup).
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (digraph ([1 2], [2 3]));
+%!   threw = false;
+%!   try
+%!     h.NodeLabel = {"p"};
+%!   catch err
+%!     threw = true;
+%!     assert (! isempty (regexp (err.message, "NodeLabel", "once")));
+%!   end_try_catch
+%!   assert (threw, "expected NodeLabel setter to throw");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 
 ## NodeFontSize default, set, validate.
 %!test
@@ -3021,12 +3039,44 @@ endclassdef
 ## Length-mismatched EdgeLabel is rejected.
 %!error <EdgeLabel> ...
 %!   GraphPlot (digraph ([1 2 3], [2 3 1]), "EdgeLabel", {"a", "b"})
-%!error <EdgeLabel> ...
-%!   h = GraphPlot (digraph ([1 2], [2 3])); h.EdgeLabel = {"p"};
 
-## Non-cellstr EdgeLabel entries rejected.
-%!error <EdgeLabel> ...
-%!   h = GraphPlot (digraph ([1 2], [2 3])); h.EdgeLabel = {1};
+## Length-mismatched EdgeLabel assignment on an already-rendered
+## GraphPlot is rejected.  Wrapped in figure + unwind_protect so the
+## figure created by the successful GraphPlot construction is closed
+## even though the subsequent setter throws (test-ordering cleanup).
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (digraph ([1 2], [2 3]));
+%!   threw = false;
+%!   try
+%!     h.EdgeLabel = {"p"};
+%!   catch err
+%!     threw = true;
+%!     assert (! isempty (regexp (err.message, "EdgeLabel", "once")));
+%!   end_try_catch
+%!   assert (threw, "expected EdgeLabel setter to throw");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Non-cellstr EdgeLabel entries rejected.  Same figure-leak wrapper
+## as the length-mismatch test above.
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (digraph ([1 2], [2 3]));
+%!   threw = false;
+%!   try
+%!     h.EdgeLabel = {1};
+%!   catch err
+%!     threw = true;
+%!     assert (! isempty (regexp (err.message, "EdgeLabel", "once")));
+%!   end_try_catch
+%!   assert (threw, "expected non-cellstr EdgeLabel setter to throw");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 
 ## EdgeFontSize default, set, validate.
 %!test

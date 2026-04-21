@@ -45,6 +45,7 @@ TEST_FILES += \
   for.tst \
   func.tst \
   global.tst \
+  graph-bench.m \
   if.tst \
   index.tst \
   inline-fcn.tst \

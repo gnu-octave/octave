@@ -201,7 +201,7 @@ classdef graph
   ## @end group
   ## @end example
   ##
-  ## @seealso{digraph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian}
+  ## @seealso{digraph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1065,6 +1065,67 @@ classdef graph
         else
           H.adj_ = sparse (N, N);
         endif
+      endif
+
+    endfunction
+
+    function H = reordernodes (G, order)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{H} =} reordernodes (@var{G}, @var{order})
+      ## Permute the nodes of the undirected graph @var{G} according
+      ## to @var{order} and return the reordered graph @var{H}.  See
+      ## @code{help reordernodes} for the full description.  Node
+      ## @code{i} of @var{H} is node @code{@var{order}(i)} of @var{G};
+      ## the adjacency matrix of @var{H} is
+      ## @code{adjacency (@var{G})(@var{order}, @var{order})}.  Node
+      ## names, node-attribute columns, and edge-attribute columns
+      ## are renumbered to match.
+      ## @seealso{graph, digraph, subgraph, rmnode, addnode}
+      ## @end deftypefn
+
+      if (nargin != 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to reordernodes: expected 2 arguments");
+      endif
+
+      perm = __resolve_node_list__ (G, order, "reordernodes");
+
+      N = size (G.adj_, 1);
+
+      if (numel (perm) != N || numel (unique (perm)) != N)
+        error ("Octave:invalid-input-arg", ...
+               ["graph: reordernodes: ORDER must be a permutation ", ...
+                "of 1:numnodes (G)"]);
+      endif
+
+      inv_perm = zeros (N, 1);
+      inv_perm(perm) = 1:N;
+
+      H = G;
+      [H.adj_, H.nodenames_, H.node_attrs_] = ...
+        __reordernodes_impl__ (G.adj_, G.nodenames_, G.node_attrs_, perm);
+
+      ## Reorder edge-attribute rows to match the new adjacency's
+      ## iteration order (get.Edges uses find(tril(adj_)) to yield
+      ## lex (min, max) storage).  Map each old (s, t) with s <= t
+      ## to (inv_perm(s), inv_perm(t)), canonicalize to (min, max),
+      ## and stable-sort to obtain the per-edge permutation.
+      if (nnz (tril (G.adj_)) == 0)
+        ## Nothing to do: edge_attrs_ already has zero rows.
+      else
+        [t_old, s_old] = find (tril (G.adj_));
+        s_old = s_old(:); t_old = t_old(:);
+        new_a = inv_perm(s_old);
+        new_b = inv_perm(t_old);
+        new_min = min (new_a, new_b);
+        new_max = max (new_a, new_b);
+        [~, p_edge] = sortrows ([new_min, new_max]);
+        efn = fieldnames (G.edge_attrs_);
+        for ii = 1:numel (efn)
+          col = G.edge_attrs_.(efn{ii});
+          H.edge_attrs_.(efn{ii}) = col(p_edge, :);
+        endfor
       endif
 
     endfunction

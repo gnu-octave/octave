@@ -217,7 +217,7 @@ classdef digraph
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian}
+  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1455,6 +1455,111 @@ classdef digraph
           else
             H.adj_ = sparse (N, N);
           endif
+        endif
+      endif
+
+    endfunction
+
+    function H = reordernodes (G, order)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{H} =} reordernodes (@var{G}, @var{order})
+      ## Permute the nodes of the digraph @var{G} according to
+      ## @var{order} and return the reordered digraph @var{H}.  See
+      ## @code{help reordernodes} for the full description.  Node
+      ## @code{i} of @var{H} is node @code{@var{order}(i)} of @var{G};
+      ## the adjacency matrix of @var{H} is
+      ## @code{adjacency (@var{G})(@var{order}, @var{order})}.  Node
+      ## names, node-attribute columns, and edge-attribute columns are
+      ## renumbered to match; the @qcode{'multigraph'} flag is
+      ## preserved.
+      ## @seealso{digraph, graph, subgraph, rmnode, addnode}
+      ## @end deftypefn
+
+      if (nargin != 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to reordernodes: expected 2 arguments");
+      endif
+
+      ## Resolve ORDER into a column of validated indices.  Accepts
+      ## numeric, char row, cellstr, [] or {}.  The helper produces
+      ## errors with regexes "invalid node index", "not found",
+      ## "no node names", or "numeric index array" depending on the
+      ## class of the invalid input.
+      perm = __resolve_node_list__ (G, order, "reordernodes");
+
+      N = size (G.adj_, 1);
+
+      ## Validate that PERM is a permutation of 1:N.  The helper
+      ## already validated that each entry is in 1:N; the remaining
+      ## checks are length and uniqueness.
+      if (numel (perm) != N || numel (unique (perm)) != N)
+        error ("Octave:invalid-input-arg", ...
+               ["digraph: reordernodes: ORDER must be a permutation ", ...
+                "of 1:numnodes (G)"]);
+      endif
+
+      ## Compute the inverse permutation: inv_perm(perm(i)) = i.
+      inv_perm = zeros (N, 1);
+      inv_perm(perm) = 1:N;
+
+      H = G;
+      [H.adj_, H.nodenames_, H.node_attrs_] = ...
+        __reordernodes_impl__ (G.adj_, G.nodenames_, G.node_attrs_, perm);
+
+      ## Reorder edge-level storage to match the new adjacency's
+      ## iteration order (get.Edges).
+      if (G.is_multigraph_)
+        ## Apply the inverse permutation to the stored (src, dst)
+        ## pairs, then re-sort lex-stably.  Duplicates stay adjacent
+        ## in input order (stable sort).
+        m = size (G.mg_endnodes_, 1);
+        if (m == 0)
+          H.mg_endnodes_ = zeros (0, 2);
+          H.mg_weights_ = zeros (0, 1);
+          ## Preserve the placeholder adj_ size.
+          H.adj_ = sparse (N, N);
+        else
+          new_en = [inv_perm(G.mg_endnodes_(:, 1)), ...
+                    inv_perm(G.mg_endnodes_(:, 2))];
+          [srt_en, p_edge] = sortrows (new_en);
+          H.mg_endnodes_ = srt_en;
+          if (G.has_weights_)
+            H.mg_weights_ = G.mg_weights_(p_edge);
+          else
+            H.mg_weights_ = zeros (0, 1);
+          endif
+          H.adj_ = sparse (N, N);
+        endif
+
+        ## Edge-attribute columns follow the same stable sort
+        ## permutation as mg_endnodes_.
+        if (m > 0)
+          efn = fieldnames (G.edge_attrs_);
+          for ii = 1:numel (efn)
+            col = G.edge_attrs_.(efn{ii});
+            H.edge_attrs_.(efn{ii}) = col(p_edge, :);
+          endfor
+        endif
+      else
+        ## Simple-graph mode: iterate existing edges in lex (src, dst)
+        ## order matching get.Edges (find(adj_.')), apply inv_perm to
+        ## both endpoints, and compute the stable sort permutation to
+        ## reorder the edge-attribute columns.
+        if (nnz (G.adj_) == 0)
+          ## Nothing to do: H.adj_ already set by the helper;
+          ## edge_attrs_ has zero rows and follows trivially.
+        else
+          [dst_old, src_old] = find (G.adj_.');
+          src_old = src_old(:); dst_old = dst_old(:);
+          new_src = inv_perm(src_old);
+          new_dst = inv_perm(dst_old);
+          [~, p_edge] = sortrows ([new_src, new_dst]);
+          efn = fieldnames (G.edge_attrs_);
+          for ii = 1:numel (efn)
+            col = G.edge_attrs_.(efn{ii});
+            H.edge_attrs_.(efn{ii}) = col(p_edge, :);
+          endfor
         endif
       endif
 

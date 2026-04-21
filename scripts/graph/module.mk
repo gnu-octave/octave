@@ -9,6 +9,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/__findedge_impl__.m \
   %reldir%/private/__findnode_impl__.m \
   %reldir%/private/__matlab_ref__.m \
+  %reldir%/private/__reordernodes_impl__.m \
   %reldir%/private/__resolve_endpoint__.m \
   %reldir%/private/__resolve_node_list__.m \
   %reldir%/private/__resolve_single_node__.m \
@@ -37,6 +38,7 @@ FCN_FILE_DIRS += \
   %reldir%/outdegree.m \
   %reldir%/outedges.m \
   %reldir%/predecessors.m \
+  %reldir%/reordernodes.m \
   %reldir%/rmedge.m \
   %reldir%/rmnode.m \
   %reldir%/successors.m

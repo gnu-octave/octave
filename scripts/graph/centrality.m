@@ -112,6 +112,20 @@
 ## defined for an undirected @code{graph}; on a @code{digraph}
 ## use @code{"pagerank"}, @code{"hubs"}, or @code{"authorities"}
 ## instead.
+##
+## @item "hubs"
+## HITS (Kleinberg) hub centrality: a node's hub score is high
+## when it points to many high-authority nodes.  Computed by
+## coupled power iteration on the weighted adjacency matrix,
+## L1-normalised so the entries sum to @code{1}.  Only defined
+## for a @code{digraph}.
+##
+## @item "authorities"
+## HITS (Kleinberg) authority centrality: a node's authority
+## score is high when it is pointed to by many high-hub nodes.
+## Computed together with @code{"hubs"} by coupled power
+## iteration, L1-normalised so the entries sum to @code{1}.
+## Only defined for a @code{digraph}.
 ## @end table
 ##
 ## The return value @var{c} is always a column vector of length
@@ -1367,11 +1381,201 @@ endfunction
 %!error <undirected|only defined|not defined>
 %! centrality (digraph ([1 2], [2 3]), "eigenvector");
 
-## -------------------- not-yet-implemented types -----------------
-## These should error until US-CT06+ add them.
+## -------------------- digraph + 'hubs' -------------------------
 
-%!error <unknown|invalid|unrecognized|not yet|not implemented>
-%! centrality (digraph ([1 2], [2 3]), "hubs");
+## Directed 3-cycle 1->2->3->1: symmetric, hubs uniform.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! c = centrality (G, "hubs");
+%! assert (c, [1/3; 1/3; 1/3], 1e-6);
 
-%!error <unknown|invalid|unrecognized|not yet|not implemented>
-%! centrality (digraph ([1 2], [2 3]), "authorities");
+## Fork 1->{2,3,4}: node 1 is the only hub (score 1), other nodes 0.
+%!test
+%! G = digraph (ones (1, 3), 2:4);
+%! c = centrality (G, "hubs");
+%! assert (c, [1; 0; 0; 0], 1e-6);
+
+## Reverse-fork {2,3,4}->1: nodes 2..4 are equal hubs, node 1 is 0.
+%!test
+%! G = digraph ([2 3 4], [1 1 1]);
+%! c = centrality (G, "hubs");
+%! assert (c, [0; 1/3; 1/3; 1/3], 1e-6);
+
+## Chain 1->2->3: hubs [1/2; 1/2; 0] (node 3 is a pure sink).
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! c = centrality (G, "hubs");
+%! assert (c, [1/2; 1/2; 0], 1e-6);
+
+## Empty digraph -> zeros(0, 1).
+%!test
+%! assert (centrality (digraph (), "hubs"), zeros (0, 1));
+
+## Single-node digraph -> [1].
+%!test
+%! assert (centrality (digraph (1), "hubs"), 1);
+
+## Edgeless N=4 digraph -> zeros(4, 1).
+%!test
+%! assert (centrality (digraph (4), "hubs"), zeros (4, 1));
+
+## Named digraph: result follows node order.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"x", "y", "z"});
+%! c = centrality (G, "hubs");
+%! assert (c, [1/3; 1/3; 1/3], 1e-6);
+
+## Self-loop on a digraph does not break the iteration.
+%!test
+%! G = digraph ([1 1 2 3], [1 2 3 2]);
+%! c = centrality (G, "hubs");
+%! assert (sum (c), 1, 1e-6);
+%! assert (all (c >= 0 - 1e-9));
+
+## Result is a column vector of class double.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! c = centrality (G, "hubs");
+%! assert (size (c), [3, 1]);
+%! assert (class (c), "double");
+
+## Sum-to-one invariant on a generic digraph.
+%!test
+%! G = digraph ([1 1 2 3 4], [2 3 3 4 5]);
+%! c = centrality (G, "hubs");
+%! assert (sum (c), 1, 1e-6);
+%! assert (all (c >= 0 - 1e-9));
+
+## Isolated trailing nodes: isolated-node entries are zero, rest
+## forms a valid hub score on the connected component.
+%!test
+%! G = digraph ([1 2], [2 3], [], 5);
+%! c = centrality (G, "hubs");
+%! assert (size (c), [5, 1]);
+%! assert (sum (c), 1, 1e-6);
+%! assert (c(4), 0, 1e-9);
+%! assert (c(5), 0, 1e-9);
+%! assert (c(3), 0, 1e-9);          # node 3 is a pure sink in the P3
+
+## -------------------- digraph + 'authorities' -------------------
+
+## Directed 3-cycle 1->2->3->1: symmetric, authorities uniform.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! c = centrality (G, "authorities");
+%! assert (c, [1/3; 1/3; 1/3], 1e-6);
+
+## Fork 1->{2,3,4}: nodes 2..4 are equal authorities, node 1 is 0.
+%!test
+%! G = digraph (ones (1, 3), 2:4);
+%! c = centrality (G, "authorities");
+%! assert (c, [0; 1/3; 1/3; 1/3], 1e-6);
+
+## Reverse-fork {2,3,4}->1: node 1 is the only authority (score 1).
+%!test
+%! G = digraph ([2 3 4], [1 1 1]);
+%! c = centrality (G, "authorities");
+%! assert (c, [1; 0; 0; 0], 1e-6);
+
+## Chain 1->2->3: authorities [0; 1/2; 1/2] (node 1 is a pure source).
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! c = centrality (G, "authorities");
+%! assert (c, [0; 1/2; 1/2], 1e-6);
+
+## Empty digraph -> zeros(0, 1).
+%!test
+%! assert (centrality (digraph (), "authorities"), zeros (0, 1));
+
+## Single-node digraph -> [1].
+%!test
+%! assert (centrality (digraph (1), "authorities"), 1);
+
+## Edgeless N=4 digraph -> zeros(4, 1).
+%!test
+%! assert (centrality (digraph (4), "authorities"), zeros (4, 1));
+
+## Named digraph: result follows node order.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"x", "y", "z"});
+%! c = centrality (G, "authorities");
+%! assert (c, [1/3; 1/3; 1/3], 1e-6);
+
+## Result is a column vector of class double.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! c = centrality (G, "authorities");
+%! assert (size (c), [3, 1]);
+%! assert (class (c), "double");
+
+## Sum-to-one invariant on a generic digraph.
+%!test
+%! G = digraph ([1 1 2 3 4], [2 3 3 4 5]);
+%! c = centrality (G, "authorities");
+%! assert (sum (c), 1, 1e-6);
+%! assert (all (c >= 0 - 1e-9));
+
+## Isolated leading node: authorities gives 0 to pure sources.
+%!test
+%! G = digraph ([1 2], [2 3], [], 5);
+%! c = centrality (G, "authorities");
+%! assert (size (c), [5, 1]);
+%! assert (sum (c), 1, 1e-6);
+%! assert (c(1), 0, 1e-9);          # pure source in the P3
+%! assert (c(4), 0, 1e-9);
+%! assert (c(5), 0, 1e-9);
+
+## Weighted digraph: heavier edges concentrate authority mass on
+## their destination.
+%!test
+%! G = digraph ([1 1], [2 3], [1 10]);
+%! c = centrality (G, "authorities");
+%! assert (sum (c), 1, 1e-6);
+%! assert (c(3) > c(2));           # heavy-weight destination
+
+## -------------------- case-insensitivity (hubs/authorities) ------
+
+## 'Hubs', 'HUBS', 'hUbS' all match 'hubs'.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! c = centrality (G, "hubs");
+%! assert (centrality (G, "Hubs"), c, 1e-12);
+%! assert (centrality (G, "HUBS"), c, 1e-12);
+%! assert (centrality (G, "hUbS"), c, 1e-12);
+
+## 'Authorities', 'AUTHORITIES', 'aUtHoRiTiEs' all match.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! c = centrality (G, "authorities");
+%! assert (centrality (G, "Authorities"), c, 1e-12);
+%! assert (centrality (G, "AUTHORITIES"), c, 1e-12);
+%! assert (centrality (G, "aUtHoRiTiEs"), c, 1e-12);
+
+## -------------------- dot-notation dispatch (hubs/authorities) ---
+
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! c = centrality (G, "hubs");
+%! assert (G.centrality ("hubs"), c, 1e-12);
+%! ca = centrality (G, "authorities");
+%! assert (G.centrality ("authorities"), ca, 1e-12);
+
+## -------------------- hubs/authorities: option rejection --------
+
+## Options are rejected for hubs (no name-value options supported).
+%!error <no name-value|not supported>
+%! centrality (digraph ([1 2], [2 3]), "hubs", "FollowProbability", 0.5);
+
+## Options are rejected for authorities (no name-value options).
+%!error <no name-value|not supported>
+%! centrality (digraph ([1 2], [2 3]), "authorities", "FollowProbability", 0.5);
+
+## -------------------- graph + 'hubs' / 'authorities' errors -----
+
+## 'hubs' is only defined for a directed graph.
+%!error <digraph|only defined|not defined>
+%! centrality (graph ([1 2], [2 3]), "hubs");
+
+## 'authorities' is only defined for a directed graph.
+%!error <digraph|only defined|not defined>
+%! centrality (graph ([1 2], [2 3]), "authorities");

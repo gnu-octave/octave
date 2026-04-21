@@ -3952,6 +3952,20 @@ classdef digraph
       ## @item "Tolerance"
       ## Non-negative finite real scalar, default @code{1e-4}.
       ## @end table
+      ## @item "hubs"
+      ## HITS (Kleinberg) hub centrality.  A hub is a node that
+      ## points to many high-authority nodes; a high hub score means
+      ## the node is a good source of outbound links to important
+      ## targets.  Computed by coupled power iteration on the
+      ## weighted adjacency matrix and L1-normalised so the entries
+      ## sum to @code{1}.  Only defined for a @code{digraph}; the
+      ## undirected @code{graph} class rejects this type.
+      ## @item "authorities"
+      ## HITS (Kleinberg) authority centrality.  An authority is a
+      ## node that is pointed to by many high-hub nodes.  Computed
+      ## together with @code{"hubs"} by coupled power iteration on
+      ## the weighted adjacency matrix and L1-normalised so the
+      ## entries sum to @code{1}.  Only defined for a @code{digraph}.
       ## @end table
       ##
       ## The undirected @code{"degree"} type is not defined for a
@@ -4012,9 +4026,10 @@ classdef digraph
                  ["centrality: TYPE 'eigenvector' is only defined ", ...
                   "for an undirected graph; use 'pagerank', 'hubs', ", ...
                   "or 'authorities' for a digraph"]);
-        case {"hubs", "authorities"}
-          error ("Octave:invalid-input-arg", ...
-                 "centrality: TYPE '%s' is not yet implemented", type);
+        case "hubs"
+          c = __centrality_hits__ (G, "hubs");
+        case "authorities"
+          c = __centrality_hits__ (G, "authorities");
         otherwise
           error ("Octave:invalid-input-arg", ...
                  "centrality: unknown TYPE '%s'", type);

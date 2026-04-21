@@ -26,7 +26,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{TR} =} shortestpathtree (@var{G}, @var{s})
 ## @deftypefnx {} {@var{TR} =} shortestpathtree (@var{G}, @var{s}, @var{t})
-## @deftypefnx {} {@var{TR} =} shortestpathtree (@dots{}, "OutputForm", @var{form})
+## @deftypefnx {} {@var{TR} =} shortestpathtree (@dots{}, @qcode{"OutputForm"}, @var{form})
+## @deftypefnx {} {@var{TR} =} shortestpathtree (@dots{}, @qcode{"Method"}, @var{method})
 ## Return a single-source shortest path tree rooted at node @var{s}.
 ##
 ## @var{G} must be a @code{graph} or @code{digraph} object.  @var{s} is a
@@ -79,6 +80,23 @@
 ## Self-loops in @var{G} do not influence the tree: no tree edge is ever
 ## a self-loop and the distance to the source itself is always
 ## @code{0}.
+##
+## The optional @qcode{"Method"} Name-Value pair selects the algorithm
+## used for the computation.  Supported values (case-insensitive) are:
+##
+## @table @asis
+## @item @qcode{"auto"} (default)
+## Pick automatically: Dijkstra when all edge weights are
+## non-negative, and Bellman-Ford when any weight is negative.
+## @item @qcode{"positive"}
+## Run Dijkstra's algorithm.  Every edge weight must be non-negative;
+## a negative weight raises an error.
+## @item @qcode{"mixed"}
+## Run Bellman-Ford.  Negative edge weights are allowed provided no
+## negative cycle is reachable from @var{s}; a negative cycle raises
+## an error.  For an undirected graph, any negative weight is a
+## negative cycle (@math{u-v-u}) and is always rejected.
+## @end table
 ##
 ## @example
 ## @group
@@ -520,17 +538,174 @@ endfunction
 %! G = digraph ([1 2], [2 3], [], {"a", "b", "c"});
 %! shortestpathtree (G, "a", "z");
 
-## -------------------- negative weights (deferred) ---------------
+## -------------------- US-P08 'Method' default auto-dispatch -----
 
-## Negative edge weights error on the default Dijkstra method.  US-P08
-## will add 'Method','mixed' support.
-%!error <negative edge weights>
+## On a digraph with a negative edge weight and no negative cycle,
+## the default 'auto' method promotes to Bellman-Ford ("mixed") and
+## succeeds.
+%!test
 %! G = digraph ([1 2], [2 3], [1, -1]);
-%! shortestpathtree (G, 1);
+%! TR = shortestpathtree (G, 1);
+%! ## Every reachable node has a predecessor; the tree has 2 edges.
+%! assert (numnodes (TR), 3);
+%! assert (numedges (TR), 2);
 
-%!error <negative edge weights>
+## On an undirected graph with any negative edge weight, the default
+## 'auto' method promotes to 'mixed' and errors.
+%!error <negative cycle>
 %! G = graph ([1 2], [2 3], [1, -1]);
 %! shortestpathtree (G, 1);
+
+## -------------------- US-P08 'Method','mixed' ------------------
+
+## 'mixed' with negative weights on a digraph (CLRS Figure 24.4).
+## Node mapping s=1, t=2, y=3, x=4, z=5.  Expected from 1:
+## v = [1, 4, 1, 3, 2] (pred vector with v(1)=s by convention).
+%!test
+%! s = [1 1 2 2 2 3 3 4 5 5];
+%! t = [2 3 3 4 5 4 5 2 1 4];
+%! w = [6 7 8 5 -4 -3 9 -2 2 7];
+%! G = digraph (s, t, w);
+%! v = shortestpathtree (G, 1, "OutputForm", "vector", "Method", "mixed");
+%! assert (v(1), 1);
+%! assert (v(2), 4);
+%! assert (v(3), 1);
+%! assert (v(4), 3);
+%! assert (v(5), 2);
+
+## 'mixed' OutputForm='tree' on a digraph with a negative weight.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+%! TR = shortestpathtree (G, 1, "Method", "mixed");
+%! ## Tree edges: 1->2 (weight 5) and 2->3 (weight -3).
+%! assert (numedges (TR), 2);
+%! ## Distances sum.
+%! assert (TR.Edges.Weight(1) + TR.Edges.Weight(2), 2);
+
+## 'mixed' OutputForm='cell' returns paths with negative-weight routing.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+%! C = shortestpathtree (G, 1, "OutputForm", "cell", "Method", "mixed");
+%! assert (size (C), [3, 1]);
+%! assert (C{1}, 1);
+%! assert (C{2}, [1, 2]);
+%! assert (C{3}, [1, 2, 3]);
+
+## 'mixed' on nonneg-weighted digraph matches default Dijkstra.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15]);
+%! TR1 = shortestpathtree (G, 1);
+%! TR2 = shortestpathtree (G, 1, "Method", "mixed");
+%! assert (TR1.Edges.EndNodes, TR2.Edges.EndNodes);
+%! assert (TR1.Edges.Weight, TR2.Edges.Weight);
+
+## 'mixed' errors on negative cycle (digraph).
+%!error <negative cycle>
+%! G = digraph ([1 2 3], [2 3 1], [1 1 -10]);
+%! shortestpathtree (G, 1, "Method", "mixed");
+
+## 'mixed' errors on negative self-loop.
+%!error <negative cycle>
+%! G = digraph ([1 1 2], [1 2 3], [-1 1 1]);
+%! shortestpathtree (G, 1, "Method", "mixed");
+
+## 'mixed' on undirected graph with negative weight errors.
+%!error <negative cycle>
+%! G = graph ([1 2], [2 3], [1, -1]);
+%! shortestpathtree (G, 1, "Method", "mixed");
+
+## 'mixed' on undirected graph with nonneg weights matches default.
+%!test
+%! G = graph ([1 2 3], [2 3 1], [5 10 15]);
+%! TR1 = shortestpathtree (G, 1);
+%! TR2 = shortestpathtree (G, 1, "Method", "mixed");
+%! assert (sort (TR1.Edges.Weight), sort (TR2.Edges.Weight));
+
+## 'mixed' with targets prunes the tree to just those target paths.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+%! TR = shortestpathtree (G, 1, 3, "Method", "mixed");
+%! ## Tree rooted at 1 pruned to path to 3 uses edges 1->2 and 2->3.
+%! assert (numedges (TR), 2);
+
+## -------------------- US-P08 'Method','positive' ----------------
+
+## 'positive' errors on a negative edge weight (digraph).
+%!error <negative edge weights>
+%! G = digraph ([1 2], [2 3], [1, -1]);
+%! shortestpathtree (G, 1, "Method", "positive");
+
+## 'positive' errors on a negative edge weight (graph).
+%!error <negative edge weights>
+%! G = graph ([1 2], [2 3], [1, -1]);
+%! shortestpathtree (G, 1, "Method", "positive");
+
+## 'positive' matches default on nonneg-weighted digraph.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15]);
+%! TR1 = shortestpathtree (G, 1);
+%! TR2 = shortestpathtree (G, 1, "Method", "positive");
+%! assert (TR1.Edges.EndNodes, TR2.Edges.EndNodes);
+%! assert (TR1.Edges.Weight, TR2.Edges.Weight);
+
+## -------------------- US-P08 'Method','auto' --------------------
+
+## 'auto' is the explicit default and matches.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15]);
+%! TR1 = shortestpathtree (G, 1);
+%! TR2 = shortestpathtree (G, 1, "Method", "auto");
+%! assert (TR1.Edges.EndNodes, TR2.Edges.EndNodes);
+
+## 'auto' on digraph with negative weights uses Bellman-Ford.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+%! TR = shortestpathtree (G, 1, "Method", "auto");
+%! assert (numedges (TR), 2);
+
+## -------------------- US-P08 'Method' case-insensitive ---------
+
+## Method key and value are case-insensitive.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+%! TR1 = shortestpathtree (G, 1, "Method", "mixed");
+%! TR2 = shortestpathtree (G, 1, "METHOD", "MIXED");
+%! TR3 = shortestpathtree (G, 1, "method", "Mixed");
+%! assert (TR1.Edges.EndNodes, TR2.Edges.EndNodes);
+%! assert (TR1.Edges.EndNodes, TR3.Edges.EndNodes);
+
+## -------------------- US-P08 'Method' error cases --------------
+
+## Unknown Method value errors.
+%!error <Method|method|unknown>
+%! G = digraph ([1 2], [2 3]);
+%! shortestpathtree (G, 1, "Method", "bogus");
+
+## Missing Method value (odd NV pair).
+%!error
+%! G = digraph ([1 2], [2 3]);
+%! shortestpathtree (G, 1, "Method");
+
+## Numeric Method value errors.
+%!error <Method.*string|string>
+%! G = digraph ([1 2], [2 3]);
+%! shortestpathtree (G, 1, "Method", 7);
+
+## -------------------- US-P08 dot-notation dispatch ------------
+
+## Dot-notation with 'Method','mixed' matches free-function call.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+%! TR1 = shortestpathtree (G, 1, "Method", "mixed");
+%! TR2 = G.shortestpathtree (1, "Method", "mixed");
+%! assert (TR1.Edges.EndNodes, TR2.Edges.EndNodes);
+
+## Dot-notation on a graph with 'Method','positive' matches.
+%!test
+%! G = graph ([1 2 3], [2 3 1], [5 10 15]);
+%! TR1 = shortestpathtree (G, 1, "Method", "positive");
+%! TR2 = G.shortestpathtree (1, "Method", "positive");
+%! assert (TR1.Edges.EndNodes, TR2.Edges.EndNodes);
 
 ## -------------------- multigraph (digraph) --------------------
 

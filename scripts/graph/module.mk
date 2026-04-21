@@ -31,7 +31,10 @@ FCN_FILE_DIRS += \
   %reldir%/private/__resolve_single_node__.m \
   %reldir%/private/__rmedge_impl__.m \
   %reldir%/private/__rmnode_impl__.m \
+  %reldir%/private/__shortestpath_bellman_ford__.m \
   %reldir%/private/__shortestpath_dijkstra__.m \
+  %reldir%/private/__shortestpath_parse_method__.m \
+  %reldir%/private/__shortestpathtree_bellman_ford__.m \
   %reldir%/private/__shortestpathtree_dijkstra__.m \
   %reldir%/private/__shortestpathtree_impl__.m \
   %reldir%/private/__simplify_parse_opts__.m \

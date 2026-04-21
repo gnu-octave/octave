@@ -27,6 +27,7 @@
 ## @deftypefn  {} {@var{P} =} shortestpath (@var{G}, @var{s}, @var{t})
 ## @deftypefnx {} {[@var{P}, @var{d}] =} shortestpath (@var{G}, @var{s}, @var{t})
 ## @deftypefnx {} {[@var{P}, @var{d}, @var{edgepath}] =} shortestpath (@var{G}, @var{s}, @var{t})
+## @deftypefnx {} {[@dots{}] =} shortestpath (@dots{}, @qcode{"Method"}, @var{method})
 ## Return a single shortest path between nodes @var{s} and @var{t} of
 ## the graph or digraph @var{G}.
 ##
@@ -67,6 +68,23 @@
 ## with parallel edges (multigraph), the cheapest of the parallel edges
 ## connecting each pair of endpoints is used; @var{edgepath} returns
 ## the index of that cheapest edge.
+##
+## The optional @qcode{"Method"} Name-Value pair selects the algorithm
+## used for the computation.  Supported values (case-insensitive) are:
+##
+## @table @asis
+## @item @qcode{"auto"} (default)
+## Pick automatically: Dijkstra when all edge weights are
+## non-negative, and Bellman-Ford when any weight is negative.
+## @item @qcode{"positive"}
+## Run Dijkstra's algorithm.  Every edge weight must be non-negative;
+## a negative weight raises an error.
+## @item @qcode{"mixed"}
+## Run Bellman-Ford.  Negative edge weights are allowed provided no
+## negative cycle is reachable from @var{s}; a negative cycle raises
+## an error.  For an undirected graph, any negative weight is a
+## negative cycle (@math{u-v-u}) and is always rejected.
+## @end table
 ##
 ## Self-loops do not influence the path: a self-loop on node
 ## @math{i} never appears in @var{P} and never contributes to @var{d}.
@@ -540,20 +558,207 @@ endfunction
 %! assert (d1, d2);
 %! assert (e1, e2);
 
-## -------------------- negative weights (deferred) ---------------
+## -------------------- US-P08 'Method' default auto-dispatch -----
 
-## For US-P04, negative edge weights raise an error on the default
-## method.  US-P08 will introduce Bellman-Ford support via a
-## 'Method','mixed' option, at which point this behaviour will be
-## updated.
-%!error <negative edge weights>
+## On a digraph with a negative edge weight and no negative cycle,
+## the default 'auto' method promotes to Bellman-Ford ("mixed") and
+## succeeds.  1->2->3 has cost 1 + (-1) = 0; no direct 1->3 edge.
+%!test
 %! G = digraph ([1 2], [2 3], [1, -1]);
-%! shortestpath (G, 1, 3);
+%! [P, d, ep] = shortestpath (G, 1, 3);
+%! assert (P, [1, 2, 3]);
+%! assert (d, 0);
+%! assert (numel (ep), 2);
 
-## Same on the undirected graph.
-%!error <negative edge weights>
+## On an undirected graph with any negative edge weight, the default
+## 'auto' method promotes to 'mixed' and errors: an undirected
+## negative edge is a negative cycle by itself (u-v-u = 2*w < 0).
+%!error <negative cycle>
 %! G = graph ([1 2], [2 3], [1, -1]);
 %! shortestpath (G, 1, 3);
+
+## -------------------- US-P08 'Method','mixed' ------------------
+
+## 'mixed' on a digraph with negative weights finds the cheapest path.
+## G = digraph([1 2 1], [2 3 3], [5 -3 10]); 1->2->3 has d = 2,
+## 1->3 direct has d = 10; Bellman-Ford picks d=2.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+%! [P, d, ep] = shortestpath (G, 1, 3, "Method", "mixed");
+%! assert (P, [1, 2, 3]);
+%! assert (d, 2);
+%! assert (numel (ep), 2);
+
+## 'mixed' on a negative-weight DAG of length 3.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [-2 -3 -10]);
+%! [P, d] = shortestpath (G, 1, 3, "Method", "mixed");
+%! assert (d, -10);
+%! assert (P, [1, 3]);
+
+## 'mixed' on a nonneg-weighted digraph matches default (Dijkstra).
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15]);
+%! [P1, d1] = shortestpath (G, 1, 3);
+%! [P2, d2] = shortestpath (G, 1, 3, "Method", "mixed");
+%! assert (P1, P2);
+%! assert (d1, d2);
+
+## 'mixed' errors on a negative cycle (directed 3-cycle total < 0).
+%!error <negative cycle>
+%! G = digraph ([1 2 3], [2 3 1], [1 1 -10]);
+%! shortestpath (G, 1, 3, "Method", "mixed");
+
+## 'mixed' on undirected graph with negative weight errors
+## (u-v-u = 2*w < 0 is a negative cycle).
+%!error <negative cycle>
+%! G = graph ([1 2], [2 3], [1, -1]);
+%! shortestpath (G, 1, 3, "Method", "mixed");
+
+## 'mixed' on undirected graph with nonneg weights matches default.
+%!test
+%! G = graph ([1 2 3], [2 3 1], [5 10 15]);
+%! [P1, d1] = shortestpath (G, 1, 3);
+%! [P2, d2] = shortestpath (G, 1, 3, "Method", "mixed");
+%! assert (P1, P2);
+%! assert (d1, d2);
+
+## 'mixed' on a named digraph preserves cellstr output.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [5 -3 10], {"a", "b", "c"});
+%! P = shortestpath (G, "a", "c", "Method", "mixed");
+%! assert (iscellstr (P));
+%! assert (P, {"a", "b", "c"});
+
+## 'mixed' returns empty path for unreachable target.
+%!test
+%! G = digraph ([1 2], [2 3], [1, -1]);
+%! [P, d, ep] = shortestpath (G, 3, 1, "Method", "mixed");
+%! assert (size (P), [1, 0]);
+%! assert (d, Inf);
+%! assert (size (ep), [1, 0]);
+
+## 'mixed' with s == t returns the trivial path.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+%! [P, d, ep] = shortestpath (G, 2, 2, "Method", "mixed");
+%! assert (P, 2);
+%! assert (d, 0);
+%! assert (size (ep), [1, 0]);
+
+## 'mixed' on a multigraph digraph: cheapest parallel edge (even if
+## negative) is selected.  Edges 1->2 with weights [2, -1, 5]; the
+## min parallel edge is -1, so d=-1 and ep points to that edge.
+%!test
+%! G = digraph ([1 1 1], [2 2 2], [2, -1, 5], "multigraph");
+%! [P, d, ep] = shortestpath (G, 1, 2, "Method", "mixed");
+%! assert (P, [1, 2]);
+%! assert (d, -1);
+%! assert (numel (ep), 1);
+%! assert (G.Edges.Weight(ep), -1);
+
+## 'mixed' Bellman-Ford classic example (CLRS Figure 24.4).  Node
+## mapping s=1, t=2, y=3, x=4, z=5.  Edges: 1->2(6), 1->3(7), 2->3(8),
+## 2->4(5), 2->5(-4), 3->4(-3), 3->5(9), 4->2(-2), 5->1(2), 5->4(7).
+## Shortest path 1->5 is [1 3 4 2 5] with d = 7 + (-3) + (-2) + (-4) = -2.
+%!test
+%! s = [1 1 2 2 2 3 3 4 5 5];
+%! t = [2 3 3 4 5 4 5 2 1 4];
+%! w = [6 7 8 5 -4 -3 9 -2 2 7];
+%! G = digraph (s, t, w);
+%! [P, d] = shortestpath (G, 1, 5, "Method", "mixed");
+%! assert (d, -2);
+%! assert (P, [1, 3, 4, 2, 5]);
+
+## -------------------- US-P08 'Method','positive' ----------------
+
+## 'positive' errors on a negative edge weight (digraph).
+%!error <negative edge weights>
+%! G = digraph ([1 2], [2 3], [1, -1]);
+%! shortestpath (G, 1, 3, "Method", "positive");
+
+## 'positive' errors on a negative edge weight (graph).
+%!error <negative edge weights>
+%! G = graph ([1 2], [2 3], [1, -1]);
+%! shortestpath (G, 1, 3, "Method", "positive");
+
+## 'positive' matches default on nonneg-weighted digraph.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15]);
+%! [P1, d1] = shortestpath (G, 1, 3);
+%! [P2, d2] = shortestpath (G, 1, 3, "Method", "positive");
+%! assert (P1, P2);
+%! assert (d1, d2);
+
+## -------------------- US-P08 'Method','auto' --------------------
+
+## 'auto' is the explicit default and matches.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15]);
+%! [P1, d1] = shortestpath (G, 1, 3);
+%! [P2, d2] = shortestpath (G, 1, 3, "Method", "auto");
+%! assert (P1, P2);
+%! assert (d1, d2);
+
+## 'auto' on digraph with negative weights uses Bellman-Ford.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+%! [P, d] = shortestpath (G, 1, 3, "Method", "auto");
+%! assert (d, 2);
+%! assert (P, [1, 2, 3]);
+
+## 'auto' errors on a negative cycle (via its Bellman-Ford promotion).
+%!error <negative cycle>
+%! G = digraph ([1 2 3], [2 3 1], [1 1 -10]);
+%! shortestpath (G, 1, 2, "Method", "auto");
+
+## -------------------- US-P08 'Method' case-insensitive ---------
+
+## Method key and value are both case-insensitive.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+%! [P1, d1] = shortestpath (G, 1, 3, "Method", "mixed");
+%! [P2, d2] = shortestpath (G, 1, 3, "METHOD", "MIXED");
+%! [P3, d3] = shortestpath (G, 1, 3, "method", "Mixed");
+%! assert (P1, P2);
+%! assert (P1, P3);
+%! assert (d1, d2);
+%! assert (d1, d3);
+
+## -------------------- US-P08 'Method' error cases --------------
+
+## Unknown Method value errors.
+%!error <Method|method|unknown>
+%! G = digraph ([1 2], [2 3]);
+%! shortestpath (G, 1, 3, "Method", "bogus");
+
+## Missing Method value (odd NV pair).
+%!error <Method|value|pair>
+%! G = digraph ([1 2], [2 3]);
+%! shortestpath (G, 1, 3, "Method");
+
+## Numeric Method value errors.
+%!error <Method.*string|string>
+%! G = digraph ([1 2], [2 3]);
+%! shortestpath (G, 1, 3, "Method", 7);
+
+## -------------------- US-P08 dot-notation dispatch ------------
+
+## Dot-notation with 'Method','mixed' matches free-function call.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+%! [P1, d1] = shortestpath (G, 1, 3, "Method", "mixed");
+%! [P2, d2] = G.shortestpath (1, 3, "Method", "mixed");
+%! assert (P1, P2);
+%! assert (d1, d2);
+
+## Dot-notation on a graph with 'Method','positive' matches.
+%!test
+%! G = graph ([1 2 3], [2 3 1], [5 10 15]);
+%! [P1, d1] = shortestpath (G, 1, 3, "Method", "positive");
+%! [P2, d2] = G.shortestpath (1, 3, "Method", "positive");
+%! assert (P1, P2);
+%! assert (d1, d2);
 
 ## -------------------- larger graph sanity ----------------------
 

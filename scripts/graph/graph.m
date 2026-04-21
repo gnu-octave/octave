@@ -2204,12 +2204,13 @@ classdef graph
 
     endfunction
 
-    function [P, d, edgepath] = shortestpath (G, s, t)
+    function [P, d, edgepath] = shortestpath (G, s, t, varargin)
 
       ## -*- texinfo -*-
       ## @deftypefn  {} {@var{P} =} shortestpath (@var{G}, @var{s}, @var{t})
       ## @deftypefnx {} {[@var{P}, @var{d}] =} shortestpath (@var{G}, @var{s}, @var{t})
       ## @deftypefnx {} {[@var{P}, @var{d}, @var{edgepath}] =} shortestpath (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {[@dots{}] =} shortestpath (@dots{}, @qcode{"Method"}, @var{method})
       ## Return a single shortest path between nodes @var{s} and
       ## @var{t} of the undirected graph @var{G}.
       ##
@@ -2230,14 +2231,25 @@ classdef graph
       ## following the input type), @var{d} is @code{Inf}, and
       ## @var{edgepath} is a @code{1}-by-@code{0} empty vector.
       ##
+      ## The optional @qcode{"Method"} Name-Value pair chooses the
+      ## algorithm: @qcode{"auto"} (default) picks Dijkstra when all
+      ## weights are non-negative, otherwise Bellman-Ford;
+      ## @qcode{"positive"} forces Dijkstra (error on negative weight);
+      ## @qcode{"mixed"} forces Bellman-Ford.  For an undirected graph
+      ## any negative edge is a negative cycle @math{u-v-u}, so
+      ## @qcode{"mixed"} (and the auto-promoted default on any negative
+      ## weight) errors.
+      ##
       ## Edges may be traversed in either direction since @var{G} is
       ## undirected.  Self-loops do not influence the path.
       ## @seealso{graph, distances, shortestpathtree, allpaths}
       ## @end deftypefn
 
-      if (nargin != 3)
+      if (nargin < 3)
         print_usage ();
       endif
+
+      method = __shortestpath_parse_method__ ("shortestpath", varargin);
 
       [s_idx, s_by_name] = __resolve_single_node__ (G, s, "shortestpath");
       [t_idx, t_by_name] = __resolve_single_node__ (G, t, "shortestpath");
@@ -2255,12 +2267,30 @@ classdef graph
         W = spones (G.adj_);
       endif
 
-      ## Compute the shortest path via Dijkstra with predecessor
-      ## tracking.  Negative weights error out here; US-P08 will add
-      ## Bellman-Ford support via a 'Method' option (and for an
-      ## undirected graph any negative edge is a negative cycle
-      ## u-v-u, so 'mixed' will also reject it).
-      [path_idx, d] = __shortestpath_dijkstra__ (W, s_idx, t_idx);
+      ## Resolve 'auto' to a concrete method based on weight signs.
+      ## For an undirected graph with a negative weight, 'auto'
+      ## promotes to 'mixed' so Bellman-Ford's negative-cycle check
+      ## fires (u-v-u round trip has total 2*w < 0).
+      if (strcmp (method, "auto"))
+        if (any (nonzeros (W) < 0))
+          method = "mixed";
+        else
+          method = "positive";
+        endif
+      endif
+
+      ## Dispatch to the chosen algorithm.  Both helpers return a
+      ## column vector of path indices.
+      switch (method)
+        case "positive"
+          [path_idx, d] = __shortestpath_dijkstra__ (W, s_idx, t_idx);
+        case "mixed"
+          [path_idx, d] = __shortestpath_bellman_ford__ (W, s_idx, t_idx);
+        otherwise
+          error ("Octave:invalid-input-arg", ...
+                 "shortestpath: internal error -- unknown method '%s'", ...
+                 method);
+      endswitch
       path_idx = path_idx(:).';
 
       if (return_names)
@@ -2300,7 +2330,8 @@ classdef graph
       ## -*- texinfo -*-
       ## @deftypefn  {} {@var{TR} =} shortestpathtree (@var{G}, @var{s})
       ## @deftypefnx {} {@var{TR} =} shortestpathtree (@var{G}, @var{s}, @var{t})
-      ## @deftypefnx {} {@var{TR} =} shortestpathtree (@dots{}, "OutputForm", @var{form})
+      ## @deftypefnx {} {@var{TR} =} shortestpathtree (@dots{}, @qcode{"OutputForm"}, @var{form})
+      ## @deftypefnx {} {@var{TR} =} shortestpathtree (@dots{}, @qcode{"Method"}, @var{method})
       ## Return a single-source shortest path tree rooted at node
       ## @var{s} of the undirected graph @var{G}.  The returned
       ## @var{TR} is always a @code{digraph} (even though @var{G} is a
@@ -2311,6 +2342,14 @@ classdef graph
       ## predecessor tree; @qcode{"vector"} returns a row vector of
       ## predecessor indices; @qcode{"cell"} returns a column cell
       ## array of node paths.
+      ##
+      ## The @qcode{"Method"} option chooses the algorithm:
+      ## @qcode{"auto"} (default) picks Dijkstra when all weights are
+      ## non-negative and Bellman-Ford when any weight is negative;
+      ## @qcode{"positive"} forces Dijkstra; @qcode{"mixed"} forces
+      ## Bellman-Ford (which always errors for an undirected graph
+      ## with any negative weight, because @math{u-v-u} forms a
+      ## negative cycle).
       ## @seealso{graph, shortestpath, distances, allpaths}
       ## @end deftypefn
 

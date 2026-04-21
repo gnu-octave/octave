@@ -3358,12 +3358,13 @@ classdef digraph
 
     endfunction
 
-    function [P, d, edgepath] = shortestpath (G, s, t)
+    function [P, d, edgepath] = shortestpath (G, s, t, varargin)
 
       ## -*- texinfo -*-
       ## @deftypefn  {} {@var{P} =} shortestpath (@var{G}, @var{s}, @var{t})
       ## @deftypefnx {} {[@var{P}, @var{d}] =} shortestpath (@var{G}, @var{s}, @var{t})
       ## @deftypefnx {} {[@var{P}, @var{d}, @var{edgepath}] =} shortestpath (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {[@dots{}] =} shortestpath (@dots{}, @qcode{"Method"}, @var{method})
       ## Return a single shortest path between nodes @var{s} and
       ## @var{t} of the digraph @var{G}.
       ##
@@ -3387,15 +3388,25 @@ classdef digraph
       ## @code{Inf}, and @var{edgepath} is a @code{1}-by-@code{0}
       ## empty vector.
       ##
+      ## The optional @qcode{"Method"} Name-Value pair chooses the
+      ## algorithm: @qcode{"auto"} (default) picks Dijkstra when all
+      ## weights are non-negative and Bellman-Ford when any weight is
+      ## negative; @qcode{"positive"} forces Dijkstra (error on
+      ## negative weight); @qcode{"mixed"} forces Bellman-Ford
+      ## (handles negative weights; errors on a negative cycle
+      ## reachable from @var{s}).
+      ##
       ## For a digraph with parallel edges, the cheapest of the
       ## parallel edges connecting each pair of endpoints is used.
       ## Self-loops do not influence the path.
       ## @seealso{digraph, distances, shortestpathtree, allpaths}
       ## @end deftypefn
 
-      if (nargin != 3)
+      if (nargin < 3)
         print_usage ();
       endif
+
+      method = __shortestpath_parse_method__ ("shortestpath", varargin);
 
       ## Resolve source and target node identifiers.  __resolve_single_node__
       ## accepts numeric indices, char row names, or 1-element
@@ -3440,10 +3451,28 @@ classdef digraph
         endif
       endif
 
-      ## Compute the shortest path via Dijkstra with predecessor
-      ## tracking.  Negative weights error out at this stage; US-P08
-      ## will introduce 'Method' dispatch with Bellman-Ford support.
-      [path_idx, d] = __shortestpath_dijkstra__ (W, s_idx, t_idx);
+      ## Resolve 'auto' to a concrete method based on weight signs.
+      if (strcmp (method, "auto"))
+        if (any (nonzeros (W) < 0))
+          method = "mixed";
+        else
+          method = "positive";
+        endif
+      endif
+
+      ## Dispatch to the chosen algorithm.  Both helpers return a
+      ## column vector of path indices.
+      switch (method)
+        case "positive"
+          [path_idx, d] = __shortestpath_dijkstra__ (W, s_idx, t_idx);
+        case "mixed"
+          [path_idx, d] = __shortestpath_bellman_ford__ (W, s_idx, t_idx);
+        otherwise
+          ## Parser guarantees a valid name; safety net.
+          error ("Octave:invalid-input-arg", ...
+                 "shortestpath: internal error -- unknown method '%s'", ...
+                 method);
+      endswitch
       ## path_idx is a column vector; row form is the public shape.
       path_idx = path_idx(:).';
 
@@ -3514,7 +3543,8 @@ classdef digraph
       ## -*- texinfo -*-
       ## @deftypefn  {} {@var{TR} =} shortestpathtree (@var{G}, @var{s})
       ## @deftypefnx {} {@var{TR} =} shortestpathtree (@var{G}, @var{s}, @var{t})
-      ## @deftypefnx {} {@var{TR} =} shortestpathtree (@dots{}, "OutputForm", @var{form})
+      ## @deftypefnx {} {@var{TR} =} shortestpathtree (@dots{}, @qcode{"OutputForm"}, @var{form})
+      ## @deftypefnx {} {@var{TR} =} shortestpathtree (@dots{}, @qcode{"Method"}, @var{method})
       ## Return a single-source shortest path tree rooted at node
       ## @var{s} of the digraph @var{G}.
       ##
@@ -3528,6 +3558,13 @@ classdef digraph
       ## predecessor tree; @qcode{"vector"} returns a row vector of
       ## predecessor indices; @qcode{"cell"} returns a column cell
       ## array of node paths.
+      ##
+      ## The @qcode{"Method"} option chooses the algorithm:
+      ## @qcode{"auto"} (default) picks Dijkstra when all weights are
+      ## non-negative and Bellman-Ford when any weight is negative;
+      ## @qcode{"positive"} forces Dijkstra (error on negative weight);
+      ## @qcode{"mixed"} forces Bellman-Ford (handles negative weights;
+      ## errors on a negative cycle).
       ## @seealso{digraph, shortestpath, distances, allpaths}
       ## @end deftypefn
 

@@ -75,8 +75,9 @@ function TR = __shortestpathtree_impl__ (G, W, s_idx, s_by_name, varargin)
     nargs = numel (args);
   endif
 
-  ## Name-Value pairs: currently only OutputForm.
+  ## Name-Value pairs: OutputForm and Method.
   output_form = "tree";
+  method = "auto";
   if (mod (nargs, 2) != 0)
     error ("Octave:invalid-input-arg", ...
            "shortestpathtree: Name,Value arguments must appear in pairs");
@@ -103,13 +104,34 @@ function TR = __shortestpathtree_impl__ (G, W, s_idx, s_by_name, varargin)
         error ("Octave:invalid-input-arg", ...
                "shortestpathtree: OutputForm must be 'tree', 'vector', or 'cell'");
       endif
+    elseif (strcmpi (name, "Method"))
+      method = __shortestpath_parse_method__ ("shortestpathtree", ...
+                                              {"Method", args{k+1}});
     else
       error ("Octave:invalid-input-arg", ...
              "shortestpathtree: unknown option '%s'", name);
     endif
   endfor
 
-  [pred, dist] = __shortestpathtree_dijkstra__ (W, s_idx);
+  ## Resolve 'auto' to a concrete method based on weight signs.
+  if (strcmp (method, "auto"))
+    if (any (nonzeros (W) < 0))
+      method = "mixed";
+    else
+      method = "positive";
+    endif
+  endif
+
+  switch (method)
+    case "positive"
+      [pred, dist] = __shortestpathtree_dijkstra__ (W, s_idx);
+    case "mixed"
+      [pred, dist] = __shortestpathtree_bellman_ford__ (W, s_idx);
+    otherwise
+      error ("Octave:invalid-input-arg", ...
+             "shortestpathtree: internal error -- unknown method '%s'", ...
+             method);
+  endswitch
 
   ## When targets are given, prune the predecessor tree to nodes on a
   ## shortest path from s to some reachable target.  keep_mask(i) is

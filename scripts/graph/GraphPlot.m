@@ -1081,6 +1081,196 @@ classdef GraphPlot < handle
 
     endfunction
 
+    function labeledge (h, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {} labeledge (@var{h}, @var{idx}, @var{labels})
+      ## @deftypefnx {} {} labeledge (@var{h}, @var{s}, @var{t}, @var{labels})
+      ## Set labels on the edges of a @code{GraphPlot} @var{h}.
+      ##
+      ## In the edge-index form, @var{idx} is a numeric vector of
+      ## 1-based edge indices into @code{@var{h}.Edges} (the same row
+      ## order as @code{G.Edges.EndNodes}).
+      ##
+      ## In the @code{(s, t)} form, @var{s} and @var{t} are
+      ## equal-length vectors of node indices, cell arrays of node
+      ## names, or single character-row vectors selecting the edges
+      ## whose endpoints match each
+      ## @code{(@var{s}(i), @var{t}(i))} pair.  For undirected graphs,
+      ## @code{(@var{s}, @var{t})} and @code{(@var{t}, @var{s})} refer
+      ## to the same edge.
+      ##
+      ## @var{labels} is either a cell array of strings (one per
+      ## selected edge), a numeric vector (converted element-wise via
+      ## @code{num2str}), a single character-row vector (broadcast to
+      ## every selected edge), or a scalar numeric or single-cell
+      ## cellstr (also broadcast).  The @code{EdgeLabelMode} property
+      ## of @var{h} is set to @qcode{"manual"}.
+      ##
+      ## Selected edges receive the specified labels; remaining edges
+      ## keep their current labels.  An empty selection is a silent
+      ## no-op.
+      ##
+      ## @seealso{GraphPlot, plot, highlight, graph, digraph}
+      ## @end deftypefn
+
+      if (nargin < 3)
+        print_usage ();
+      endif
+
+      if (isempty (h.graph_))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: labeledge requires a rendered graph");
+      endif
+
+      ## Dispatch: 2 varargin = idx form; 3 varargin = (s, t) form.
+      nv = numel (varargin);
+      if (nv == 2)
+        idx_arg = varargin{1};
+        labels_arg = varargin{2};
+
+        ## Empty idx -> silent no-op; preserve current labels/mode.
+        if (isempty (idx_arg))
+          return;
+        endif
+
+        if (! isnumeric (idx_arg) || ! isreal (idx_arg))
+          error ("Octave:invalid-input-arg", ...
+                 "GraphPlot: labeledge: idx must be a numeric vector");
+        endif
+
+        if (! isvector (idx_arg))
+          error ("Octave:invalid-input-arg", ...
+                 "GraphPlot: labeledge: idx must be a vector");
+        endif
+
+        if (any (! isfinite (idx_arg(:))))
+          error ("Octave:invalid-input-arg", ...
+                 "GraphPlot: labeledge: idx entries must be finite");
+        endif
+
+        if (any (idx_arg(:) <= 0))
+          error ("Octave:invalid-input-arg", ...
+                 "GraphPlot: labeledge: idx entries must be positive");
+        endif
+
+        if (any (idx_arg(:) != fix (idx_arg(:))))
+          error ("Octave:invalid-input-arg", ...
+                 "GraphPlot: labeledge: idx entries must be integer-valued");
+        endif
+
+        M = h.NumEdges;
+        if (any (idx_arg(:) > M))
+          error ("Octave:invalid-input-arg", ...
+                 "GraphPlot: labeledge: idx out of range (1..%d)", M);
+        endif
+
+        edge_idx = double (idx_arg(:));
+
+      elseif (nv == 3)
+        s_arg = varargin{1};
+        t_arg = varargin{2};
+        labels_arg = varargin{3};
+
+        ## Empty endpoints -> silent no-op.
+        if (isempty (s_arg) && isempty (t_arg))
+          return;
+        endif
+
+        ## Resolve (s, t) to edge indices via the shared helper.  It
+        ## validates types, length-match, numeric-range, and returns
+        ## 0 for name-not-found (which we escalate into a user error).
+        try
+          edge_idx = __findedge_impl__ (h.graph_, 1, s_arg, t_arg);
+        catch err
+          msg = err.message;
+          if (! isempty (strfind (msg, "same length")))
+            error ("Octave:invalid-input-arg", ...
+                   "GraphPlot: labeledge: S and T must have the same length");
+          endif
+          if (! isempty (strfind (msg, "invalid node")))
+            error ("Octave:invalid-input-arg", ...
+                   "GraphPlot: labeledge: invalid node index in S or T");
+          endif
+          rethrow (err);
+        end_try_catch
+
+        ## Distinguish "node name not found" from "no edge connects".
+        miss = find (edge_idx == 0, 1);
+        if (! isempty (miss))
+          names = h.graph_.Nodes.Name;
+          pick = miss;
+          sname = "";
+          tname = "";
+          if (ischar (s_arg) && isrow (s_arg) && pick == 1)
+            sname = s_arg;
+          elseif (iscell (s_arg) && pick >= 1 && pick <= numel (s_arg))
+            sname = s_arg{pick};
+          endif
+          if (ischar (t_arg) && isrow (t_arg) && pick == 1)
+            tname = t_arg;
+          elseif (iscell (t_arg) && pick >= 1 && pick <= numel (t_arg))
+            tname = t_arg{pick};
+          endif
+          if (! isempty (sname) && (isempty (names) ...
+              || ! any (strcmp (names, sname))))
+            error ("Octave:invalid-input-arg", ...
+                   "GraphPlot: labeledge: node name '%s' not found", ...
+                   sname);
+          endif
+          if (! isempty (tname) && (isempty (names) ...
+              || ! any (strcmp (names, tname))))
+            error ("Octave:invalid-input-arg", ...
+                   "GraphPlot: labeledge: node name '%s' not found", ...
+                   tname);
+          endif
+          error ("Octave:invalid-input-arg", ...
+                 ["GraphPlot: labeledge: no edge connects ", ...
+                  "S(%d) and T(%d)"], miss, miss);
+        endif
+        edge_idx = edge_idx(:);
+        if (isempty (edge_idx))
+          return;
+        endif
+
+      else
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: labeledge: too many arguments");
+      endif
+
+      n = numel (edge_idx);
+
+      ## Broadcast scalar label specifications to length n.
+      if (ischar (labels_arg) && isrow (labels_arg) && n != 1)
+        labels_arg = repmat ({labels_arg}, n, 1);
+      elseif (isnumeric (labels_arg) && isscalar (labels_arg) && n != 1)
+        tmp_str = num2str (labels_arg);
+        labels_arg = repmat ({tmp_str}, n, 1);
+      elseif (iscell (labels_arg) && numel (labels_arg) == 1 && n != 1)
+        labels_arg = repmat (labels_arg(:), n, 1);
+      endif
+
+      new_labels = __graph_plot_validate_edgelabel__ (labels_arg, n);
+
+      ## Expand the current EdgeLabel to an M-length column cell of
+      ## strings (empty strings where no label has been set), then
+      ## write the new labels at edge_idx and push back through the
+      ## Dependent EdgeLabel setter so EdgeLabelMode flips to 'manual'.
+      M = h.NumEdges;
+      cur = h.EdgeLabel;
+      if (isempty (cur))
+        cur = repmat ({""}, M, 1);
+      else
+        cur = cur(:);
+        if (numel (cur) < M)
+          cur = [cur; repmat({""}, M - numel (cur), 1)];
+        endif
+      endif
+      cur(edge_idx) = new_labels;
+      h.EdgeLabel = cur;
+
+    endfunction
+
     ## ------------ Validated setters for cosmetic properties ------------
 
     function h = set.NodeColor (h, val)
@@ -4048,3 +4238,403 @@ endclassdef
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+
+## ---------------- labeledge ----------------
+
+## labeledge(h, idx, labels): scalar idx + scalar string.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labeledge (h, 1, "alpha");
+%!   assert (iscellstr (h.EdgeLabel));
+%!   assert (numel (h.EdgeLabel), 3);
+%!   assert (iscolumn (h.EdgeLabel));
+%!   assert (h.EdgeLabel{1}, "alpha");
+%!   assert (h.EdgeLabel{2}, "");
+%!   assert (h.EdgeLabel{3}, "");
+%!   assert (h.EdgeLabelMode, "manual");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labeledge(h, idx, labels): vector idx + cellstr labels.
+%!test
+%! G = digraph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labeledge (h, [1 3 5], {"a", "b", "c"});
+%!   assert (h.EdgeLabel, {"a"; ""; "b"; ""; "c"});
+%!   assert (h.EdgeLabelMode, "manual");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labeledge(h, idx, labels): column idx accepted.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labeledge (h, [1; 2], {"x"; "y"});
+%!   assert (h.EdgeLabel, {"x"; "y"; ""});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labeledge(h, idx, labels): numeric labels converted via num2str.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labeledge (h, [1 2 3], [10 20 30]);
+%!   assert (h.EdgeLabel, {"10"; "20"; "30"});
+%!   assert (h.EdgeLabelMode, "manual");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labeledge(h, idx, labels): scalar label string broadcast to all idx.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labeledge (h, [1 2 3], "same");
+%!   assert (h.EdgeLabel, {"same"; "same"; "same"});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labeledge(h, idx, labels): scalar numeric label broadcast.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labeledge (h, [1 2], 7);
+%!   assert (h.EdgeLabel{1}, "7");
+%!   assert (h.EdgeLabel{2}, "7");
+%!   assert (h.EdgeLabel{3}, "");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labeledge(h, idx, labels): scalar single-cell broadcast.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labeledge (h, [1 3], {"z"});
+%!   assert (h.EdgeLabel, {"z"; ""; "z"});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labeledge(h, idx, labels): composition preserves prior labels.
+%!test
+%! G = digraph ([1 2 3 4], [2 3 4 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labeledge (h, 1, "first");
+%!   labeledge (h, 3, "third");
+%!   assert (h.EdgeLabel, {"first"; ""; "third"; ""});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labeledge(h, idx, labels): empty idx is silent no-op.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   pre = h.EdgeLabel;
+%!   pre_mode = h.EdgeLabelMode;
+%!   labeledge (h, [], {});
+%!   assert (h.EdgeLabel, pre);
+%!   assert (h.EdgeLabelMode, pre_mode);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labeledge(h, s, t, labels): vector endpoints + cellstr labels.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labeledge (h, [1 2], [2 3], {"a", "b"});
+%!   assert (h.EdgeLabel, {"a"; "b"; ""});
+%!   assert (h.EdgeLabelMode, "manual");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labeledge(h, s, t, labels): scalar s, t + scalar label.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labeledge (h, 2, 3, "edge23");
+%!   assert (h.EdgeLabel{1}, "");
+%!   assert (h.EdgeLabel{2}, "edge23");
+%!   assert (h.EdgeLabel{3}, "");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labeledge(h, s, t, labels): cellstr endpoints with named nodes.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"A", "B", "C"});
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labeledge (h, {"A", "B"}, {"B", "C"}, {"e1", "e2"});
+%!   assert (h.EdgeLabel, {"e1"; "e2"; ""});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labeledge(h, s, t, labels): scalar string endpoints.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"A", "B", "C"});
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labeledge (h, "A", "B", "hello");
+%!   assert (h.EdgeLabel{1}, "hello");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labeledge(h, s, t, labels): numeric labels for (s, t) form.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labeledge (h, [1 2 3], [2 3 1], [100 200 300]);
+%!   assert (h.EdgeLabel, {"100"; "200"; "300"});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labeledge(h, s, t, labels): undirected graph (s,t) and (t,s) same edge.
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   labeledge (h, 2, 1, "swap");   # same as edge 1 (1-2)
+%!   assert (h.EdgeLabel{1}, "swap");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## labeledge(h, s, t, labels): empty endpoints silent no-op.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   pre = h.EdgeLabel;
+%!   pre_mode = h.EdgeLabelMode;
+%!   labeledge (h, [], [], {});
+%!   assert (h.EdgeLabel, pre);
+%!   assert (h.EdgeLabelMode, pre_mode);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Handle-class semantics: h mutated in place without reassignment.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   h2 = h;
+%!   labeledge (h, 1, "shared");
+%!   assert (h2.EdgeLabel{1}, "shared");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: missing labels argument (idx form with only idx).
+%!error <Invalid call|labeledge> ...
+%!   G = digraph ([1 2], [2 3]);
+%!   hf = figure ("visible", "off");
+%!   unwind_protect
+%!     h = GraphPlot (G);
+%!     labeledge (h, 1);
+%!   unwind_protect_cleanup
+%!     close (hf);
+%!   end_unwind_protect
+
+## Error: missing arguments entirely.
+%!error <Invalid call|labeledge> ...
+%!   G = digraph ([1 2], [2 3]);
+%!   hf = figure ("visible", "off");
+%!   unwind_protect
+%!     h = GraphPlot (G);
+%!     labeledge (h);
+%!   unwind_protect_cleanup
+%!     close (hf);
+%!   end_unwind_protect
+
+## Error: idx non-numeric.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labeledge (h, {1}, 'x')", "numeric");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: idx out of range (idx form).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labeledge (h, 99, 'x')", "out of range");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: idx non-integer.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labeledge (h, 1.5, 'x')", "integer");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: idx zero/negative.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labeledge (h, 0, 'x')", "positive");
+%!   fail ("labeledge (h, -1, 'x')", "positive");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: idx non-finite.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labeledge (h, Inf, 'x')", "finite");
+%!   fail ("labeledge (h, NaN, 'x')", "finite");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: idx non-vector (matrix).
+%!test
+%! G = digraph ([1 2 3 4], [2 3 4 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labeledge (h, [1 2; 3 4], {'a','b','c','d'})", "vector");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: labels length mismatch vs idx.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labeledge (h, [1 2], {'a','b','c'})", "length");
+%!   fail ("labeledge (h, [1 2 3], {'a','b'})", "length");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: labels wrong type (struct).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labeledge (h, 1, struct ('x', 1))", "EdgeLabel|cell");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: (s,t) length mismatch.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labeledge (h, [1 2], [2], {'a','b'})", "same length");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: (s,t) invalid node index.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labeledge (h, 99, 1, 'x')", "invalid node");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: (s,t) string name not found.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"A", "B", "C"});
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labeledge (h, 'Z', 'A', 'x')", "not found");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: (s,t) no edge between valid nodes.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labeledge (h, 3, 1, 'x')", "no edge");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: too many arguments.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("labeledge (h, 1, 2, 'x', 'extra')", "too many|Invalid");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: labeledge on empty GraphPlot.
+%!test
+%! h = GraphPlot ();
+%! fail ("labeledge (h, 1, 'x')", "requires a rendered graph");

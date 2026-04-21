@@ -95,6 +95,7 @@ FCN_FILE_DIRS += \
   %reldir%/isisomorphic.m \
   %reldir%/ismultigraph.m \
   %reldir%/isomorphism.m \
+  %reldir%/labeledge.m \
   %reldir%/laplacian.m \
   %reldir%/maxflow.m \
   %reldir%/mincut.m \

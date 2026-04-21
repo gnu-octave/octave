@@ -210,6 +210,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Nonlinear Equations::
 * Diagonal and Permutation Matrices::
 * Sparse Matrices::
+* Graph and Network Analysis::
 * Numerical Integration::
 * Differential Equations::
 * Optimization::
@@ -752,6 +753,18 @@ Operators and Functions
 * Return Types of Operators and Functions::
 * Mathematical Considerations::
 
+Graph and Network Analysis
+
+* Graph Objects::
+* Graph Structure and Queries::
+* Modifying Graphs::
+* Matrix Representations of Graphs::
+* Graph Traversal and Shortest Paths::
+* Connectivity and Flow::
+* Centrality Measures::
+* Graph Isomorphism::
+* Graph Visualization::
+
 Numerical Integration
 
 * Functions of One Variable::
@@ -1024,6 +1037,7 @@ Grammar and Parser
 @include nonlin.texi
 @include diagperm.texi
 @include sparse.texi
+@include graph.texi
 @include quad.texi
 @include diffeq.texi
 @include optim.texi

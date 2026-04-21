@@ -24,6 +24,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/__resolve_single_node__.m \
   %reldir%/private/__rmedge_impl__.m \
   %reldir%/private/__rmnode_impl__.m \
+  %reldir%/private/__simplify_parse_opts__.m \
   %reldir%/private/__subgraph_impl__.m \
   %reldir%/private/__toposort_parse_opts__.m
 
@@ -59,6 +60,7 @@ FCN_FILE_DIRS += \
   %reldir%/reordernodes.m \
   %reldir%/rmedge.m \
   %reldir%/rmnode.m \
+  %reldir%/simplify.m \
   %reldir%/subgraph.m \
   %reldir%/successors.m \
   %reldir%/toposort.m \

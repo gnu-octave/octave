@@ -1999,6 +1999,76 @@ classdef graph
 
     endfunction
 
+    function H = simplify (G, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{H} =} simplify (@var{G})
+      ## @deftypefnx {} {@var{H} =} simplify (@var{G}, @var{method})
+      ## @deftypefnx {} {@var{H} =} simplify (@var{G}, @dots{}, @qcode{"omitselfloops"})
+      ## @deftypefnx {} {@var{H} =} simplify (@var{G}, @dots{}, @var{Name}, @var{Value})
+      ## Return a simplified copy of the graph @var{G}.  The undirected
+      ## @code{graph} class in this Octave build does not accept the
+      ## @qcode{'multigraph'} constructor flag and therefore cannot
+      ## store parallel edges, so @code{simplify} on a @code{graph} is
+      ## a no-op except for optional self-loop removal via the trailing
+      ## @qcode{"omitselfloops"} flag or the @qcode{"SelfLoops"}
+      ## Name-Value option with value @qcode{"discard"}.  The aggregation
+      ## options @var{method} and @qcode{"AggregationVariables"} are
+      ## accepted for parity with the @code{digraph} method but have no
+      ## effect here.  Node names (when present) are preserved.
+      ## @seealso{graph, digraph, numedges}
+      ## @end deftypefn
+
+      [~, omit_loops] = __simplify_parse_opts__ (varargin);
+
+      N = numnodes (G);
+      has_names = ! isempty (G.nodenames_);
+
+      if (N == 0)
+        H = graph ();
+        return;
+      endif
+
+      E = G.Edges.EndNodes;
+      if (isempty (E))
+        src = zeros (0, 1);
+        dst = zeros (0, 1);
+      else
+        src = E(:, 1);
+        dst = E(:, 2);
+      endif
+
+      if (G.has_weights_ && ! isempty (src))
+        w = G.Edges.Weight;
+      else
+        w = ones (numel (src), 1);
+      endif
+
+      if (omit_loops && ! isempty (src))
+        mask = (src != dst);
+        src = src(mask);
+        dst = dst(mask);
+        w = w(mask);
+      endif
+
+      ## graph cannot carry parallel edges, so no aggregation is
+      ## required: the remaining edges are already unique.
+      if (G.has_weights_)
+        if (has_names)
+          H = graph (src, dst, w, G.nodenames_);
+        else
+          H = graph (src, dst, w, N);
+        endif
+      else
+        if (has_names)
+          H = graph (src, dst, [], G.nodenames_);
+        else
+          H = graph (src, dst, [], N);
+        endif
+      endif
+
+    endfunction
+
     function disp (G)
 
       ## -*- texinfo -*-

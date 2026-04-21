@@ -3077,6 +3077,134 @@ classdef digraph
 
     endfunction
 
+    function H = simplify (G, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{H} =} simplify (@var{G})
+      ## @deftypefnx {} {@var{H} =} simplify (@var{G}, @var{method})
+      ## @deftypefnx {} {@var{H} =} simplify (@var{G}, @dots{}, @qcode{"omitselfloops"})
+      ## @deftypefnx {} {@var{H} =} simplify (@var{G}, @dots{}, @var{Name}, @var{Value})
+      ## Return a simplified copy of the digraph @var{G}: parallel edges
+      ## are collapsed into a single edge, and (optionally) self-loops
+      ## are dropped.  Parallel-edge weights are aggregated with
+      ## @var{method} (default @qcode{"sum"}; also accepts
+      ## @qcode{"mean"}, @qcode{"min"}, @qcode{"max"}).  Unweighted input
+      ## produces unweighted output.  The optional trailing
+      ## @qcode{"omitselfloops"} flag drops self-loops; the Name-Value
+      ## option @qcode{"SelfLoops"} accepts @qcode{"keep"} or
+      ## @qcode{"discard"}.  The Name-Value option
+      ## @qcode{"AggregationVariables"} is a synonym for @var{method}.
+      ## Node names (when present) are preserved.
+      ## @seealso{digraph, ismultigraph, numedges}
+      ## @end deftypefn
+
+      [method, omit_loops] = __simplify_parse_opts__ (varargin);
+
+      N = numnodes (G);
+      has_names = ! isempty (G.nodenames_);
+
+      if (N == 0)
+        ## Preserve the empty digraph exactly: no nodes, no edges.
+        H = digraph ();
+        return;
+      endif
+
+      ## Extract every edge as (src, dst, weight).  Multigraph side
+      ## arrays hold duplicates as separate rows; simple storage has
+      ## already deduplicated at construction time.  For unweighted
+      ## digraphs we synthesise per-edge weights of 1 so the aggregation
+      ## pipeline is uniform -- the result is still built with
+      ## @code{[]} weights further down when the input was unweighted.
+      if (G.is_multigraph_)
+        src = G.mg_endnodes_(:, 1);
+        dst = G.mg_endnodes_(:, 2);
+        if (G.has_weights_)
+          w = G.mg_weights_;
+        else
+          w = ones (numel (src), 1);
+        endif
+      else
+        E = G.Edges.EndNodes;
+        if (isempty (E))
+          src = zeros (0, 1);
+          dst = zeros (0, 1);
+        else
+          src = E(:, 1);
+          dst = E(:, 2);
+        endif
+        if (G.has_weights_ && ! isempty (src))
+          w = G.Edges.Weight;
+        else
+          w = ones (numel (src), 1);
+        endif
+      endif
+
+      ## Drop self-loops before aggregating so the aggregation bins do
+      ## not include them.  When @code{omit_loops} is false this branch
+      ## is a no-op.
+      if (omit_loops && ! isempty (src))
+        mask = (src != dst);
+        src = src(mask);
+        dst = dst(mask);
+        w = w(mask);
+      endif
+
+      if (isempty (src))
+        src_new = zeros (0, 1);
+        dst_new = zeros (0, 1);
+        wnew = zeros (0, 1);
+      else
+        ## Encode each ordered pair as a single integer key so
+        ## @code{unique} and @code{accumarray} can group parallel edges
+        ## in a single pass.  The encoding is reversible because
+        ## @code{N} bounds every destination index.  The pair_id values
+        ## are themselves sorted lexicographically by (src, dst), so
+        ## @code{unique} returns the canonical output order directly.
+        src = double (src(:));
+        dst = double (dst(:));
+        w = double (w(:));
+        pair_id = (src - 1) .* N + dst;
+        [upair, ~, pair_idx] = unique (pair_id);
+        upair = upair(:);
+        pair_idx = pair_idx(:);
+        switch (method)
+          case "sum"
+            wnew = accumarray (pair_idx, w);
+          case "mean"
+            wnew = accumarray (pair_idx, w, [], @mean);
+          case "min"
+            wnew = accumarray (pair_idx, w, [], @min);
+          case "max"
+            wnew = accumarray (pair_idx, w, [], @max);
+          otherwise
+            ## Parser guarantees one of the above; this is a safety net.
+            error ("Octave:invalid-input-arg", ...
+                   "simplify: internal error -- unknown method '%s'", method);
+        endswitch
+        wnew = wnew(:);
+        dst_new = mod (upair - 1, N) + 1;
+        src_new = (upair - dst_new) ./ N + 1;
+      endif
+
+      ## Rebuild the output digraph preserving the original node count
+      ## and names.  Unweighted input stays unweighted (pass @code{[]}
+      ## for weights); weighted input carries the aggregated weights.
+      if (G.has_weights_)
+        if (has_names)
+          H = digraph (src_new, dst_new, wnew, G.nodenames_);
+        else
+          H = digraph (src_new, dst_new, wnew, N);
+        endif
+      else
+        if (has_names)
+          H = digraph (src_new, dst_new, [], G.nodenames_);
+        else
+          H = digraph (src_new, dst_new, [], N);
+        endif
+      endif
+
+    endfunction
+
     function disp (G)
 
       ## -*- texinfo -*-

@@ -402,3 +402,252 @@ endfunction
 %! G = digraph ([1 2 3 4], [2 3 1 5]);
 %! bins = G.conncomp ();
 %! assert (bins, [1, 1, 1, 2, 2]);
+
+## -------------------- US-S02: graph-specific coverage --------------------
+
+## Empty graph: conncomp returns a 1x0 row vector of class double.
+%!test
+%! G = graph ();
+%! bins = conncomp (G);
+%! assert (size (bins), [1, 0]);
+%! assert (class (bins), "double");
+
+## Single isolated node in a graph: one component.
+%!test
+%! G = graph (1);
+%! bins = conncomp (G);
+%! assert (bins, 1);
+%! assert (size (bins), [1, 1]);
+
+## Three isolated nodes -> three components labelled in index order.
+%!test
+%! G = graph (3);
+%! bins = conncomp (G);
+%! assert (bins, [1, 2, 3]);
+
+## Single undirected edge 1-2 connects two nodes: one component.
+%!test
+%! G = graph ([1], [2]);
+%! bins = conncomp (G);
+%! assert (bins, [1, 1]);
+
+## Undirected path 1-2-3: one component.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! bins = conncomp (G);
+%! assert (bins, [1, 1, 1]);
+
+## Undirected triangle 1-2, 2-3, 3-1: one component.
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! bins = conncomp (G);
+%! assert (bins, [1, 1, 1]);
+
+## Undirected tree (star with centre 1 and leaves 2..5): one component.
+%!test
+%! G = graph ([1 1 1 1], [2 3 4 5]);
+%! bins = conncomp (G);
+%! assert (bins, [1, 1, 1, 1, 1]);
+
+## Undirected path 1-2-3-4-5: one component.
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 5]);
+%! bins = conncomp (G);
+%! assert (bins, [1, 1, 1, 1, 1]);
+
+## Two disconnected undirected edges 1-2 and 3-4: two components.
+%!test
+%! G = graph ([1 3], [2 4]);
+%! bins = conncomp (G);
+%! assert (bins, [1, 1, 2, 2]);
+
+## Disconnected edges plus an isolated node: three components.
+%!test
+%! G = graph ([1 3], [2 4], [], 5);
+%! bins = conncomp (G);
+%! assert (bins, [1, 1, 2, 2, 3]);
+
+## Multiple isolated nodes scattered between connected pairs.
+%!test
+%! G = graph ([1 4], [2 5], [], 6);
+%! bins = conncomp (G);
+%! ## Nodes 1-2 are one component, 3 isolated, 4-5 another, 6 isolated.
+%! assert (bins, [1, 1, 2, 3, 3, 4]);
+
+## Self-loop on a graph node does not affect connectivity labels.
+%!test
+%! G = graph ([1 1 2], [1 2 3]);
+%! bins = conncomp (G);
+%! assert (bins, [1, 1, 1]);
+
+## Self-loop alone (single node with a self-loop) is still one component.
+%!test
+%! G = graph ([1], [1]);
+%! bins = conncomp (G);
+%! assert (bins, 1);
+
+## Node names do not affect component labels for a graph.
+%!test
+%! G = graph ([1 2], [2 3], [], {"a", "b", "c"});
+%! bins = conncomp (G);
+%! assert (bins, [1, 1, 1]);
+%! assert (numel (bins), numnodes (G));
+
+## Isolated named node preserved as its own component.
+%!test
+%! G = graph ([1], [2], [], {"a", "b", "c"});
+%! bins = conncomp (G);
+%! assert (bins, [1, 1, 2]);
+
+## Edge weights do not affect component labels.
+%!test
+%! G = graph ([1 2], [2 3], [0.1 100]);
+%! bins = conncomp (G);
+%! assert (bins, [1, 1, 1]);
+
+## Negative edge weights do not affect component labels.
+%!test
+%! G = graph ([1 3], [2 4], [-5 -0.001]);
+%! bins = conncomp (G);
+%! assert (bins, [1, 1, 2, 2]);
+
+## conncomp(G) on a graph returns a row vector whose length equals numnodes.
+%!test
+%! G = graph ([1 2 4], [2 3 5], [], 7);
+%! bins = conncomp (G);
+%! assert (size (bins), [1, numnodes(G)]);
+%! assert (isrow (bins));
+
+## conncomp(G) on a graph always returns class double.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! bins = conncomp (G);
+%! assert (class (bins), "double");
+
+## Every node label is in the range [1, K] where K is the number of components.
+%!test
+%! G = graph ([1 3 5], [2 4 6], [], 7);
+%! bins = conncomp (G);
+%! assert (all (bins >= 1));
+%! assert (max (bins) == numel (unique (bins)));
+%! assert (max (bins), 4);
+
+## Explicit "vector" matches default on a graph.
+%!test
+%! G = graph ([1 2 4], [2 3 5], [], 6);
+%! b1 = conncomp (G);
+%! b2 = conncomp (G, "OutputForm", "vector");
+%! assert (b1, b2);
+
+## OutputForm=cell on an empty graph returns an empty cell row vector.
+%!test
+%! G = graph ();
+%! C = conncomp (G, "OutputForm", "cell");
+%! assert (iscell (C));
+%! assert (size (C), [1, 0]);
+
+## OutputForm=cell on a single-node graph returns {[1]}.
+%!test
+%! G = graph (1);
+%! C = conncomp (G, "OutputForm", "cell");
+%! assert (iscell (C));
+%! assert (numel (C), 1);
+%! assert (C{1}, 1);
+
+## OutputForm=cell on a connected triangle returns a single cell [1;2;3].
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! C = conncomp (G, "OutputForm", "cell");
+%! assert (numel (C), 1);
+%! assert (C{1}, [1; 2; 3]);
+%! ## Each component cell is a column vector.
+%! assert (size (C{1}, 2), 1);
+
+## OutputForm=cell on an N-isolates graph returns N singleton column vectors.
+%!test
+%! G = graph (4);
+%! C = conncomp (G, "OutputForm", "cell");
+%! assert (numel (C), 4);
+%! for k = 1:4
+%!   assert (C{k}, k);
+%!   assert (size (C{k}), [1, 1]);
+%! endfor
+
+## OutputForm=cell component contents are sorted column vectors of doubles.
+%!test
+%! G = graph ([1 2 5], [3 4 6], [], 7);
+%! C = conncomp (G, "OutputForm", "cell");
+%! for k = 1:numel (C)
+%!   assert (size (C{k}, 2), 1);          # column vector
+%!   assert (class (C{k}), "double");
+%!   assert (all (diff (C{k}) >= 0));     # sorted ascending
+%! endfor
+
+## OutputForm=cell: sum of component sizes equals numnodes.
+%!test
+%! G = graph ([1 3 5], [2 4 6], [], 8);
+%! C = conncomp (G, "OutputForm", "cell");
+%! total = 0;
+%! for k = 1:numel (C)
+%!   total = total + numel (C{k});
+%! endfor
+%! assert (total, numnodes (G));
+
+## Case-insensitive OutputForm name and value on a graph.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! C = conncomp (G, "outputform", "CELL");
+%! assert (numel (C), 1);
+%! assert (C{1}, [1; 2; 3]);
+
+## Case-insensitive "Type","weak" on a graph.
+%!test
+%! G = graph ([1 3], [2 4]);
+%! b1 = conncomp (G, "type", "WEAK");
+%! b2 = conncomp (G);
+%! assert (b1, b2);
+
+## Dot-notation dispatch G.conncomp() on a graph works.
+%!test
+%! G = graph ([1 3], [2 4], [], 5);
+%! bins = G.conncomp ();
+%! assert (bins, [1, 1, 2, 2, 3]);
+
+## Dot-notation dispatch with OutputForm="cell" on a graph works.
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! C = G.conncomp ("OutputForm", "cell");
+%! assert (numel (C), 1);
+%! assert (C{1}, [1; 2; 3]);
+
+## graph: Type="strong" is rejected even with OutputForm specified.
+%!error <Type.*strong.*digraph|must be.*weak>
+%! G = graph ([1 2], [2 3]);
+%! conncomp (G, "OutputForm", "cell", "Type", "strong");
+
+## graph: Type="strong" is rejected with mixed case.
+%!error <Type.*strong.*digraph|must be.*weak>
+%! G = graph ([1 2], [2 3]);
+%! conncomp (G, "Type", "STRONG");
+
+## MATLAB-parity example: graph with 5 nodes, edges (1,2),(2,3),(4,5).
+## weak components: {1,2,3} and {4,5}.
+%!test
+%! G = graph ([1 2 4], [2 3 5]);
+%! bins = conncomp (G);
+%! assert (bins, [1, 1, 1, 2, 2]);
+%! C = conncomp (G, "OutputForm", "cell");
+%! assert (numel (C), 2);
+%! assert (C{1}, [1; 2; 3]);
+%! assert (C{2}, [4; 5]);
+
+## Scaling: 10 disconnected undirected edges -> 10 components, 20 nodes.
+%!test
+%! s = 1:2:19;
+%! t = 2:2:20;
+%! G = graph (s, t);
+%! bins = conncomp (G);
+%! assert (numel (bins), 20);
+%! assert (max (bins), 10);
+%! ## Every consecutive pair shares a label.
+%! assert (all (bins(1:2:end) == bins(2:2:end)));

@@ -217,7 +217,7 @@ classdef digraph
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, flipedge, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian, bfsearch, dfsearch, conncomp, biconncomp}
+  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, flipedge, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian, bfsearch, dfsearch, conncomp, biconncomp, condensation}
   ## @end deftypefn
 
   properties (Access = private)
@@ -2666,6 +2666,114 @@ classdef digraph
 
       error ("Octave:invalid-input-arg", ...
              "biconncomp: not defined for a digraph; biconncomp requires an undirected graph");
+
+    endfunction
+
+    function C = condensation (G)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{C} =} condensation (@var{G})
+      ## Compute the graph condensation of the digraph @var{G}.
+      ##
+      ## The condensation @var{C} is a @code{digraph} in which every
+      ## node represents one strongly connected component (SCC) of
+      ## @var{G} and there is an edge from node @math{i} to node
+      ## @math{j} whenever at least one edge of @var{G} goes from a
+      ## node in SCC @math{i} to a node in SCC @math{j} (with
+      ## @math{i \neq j}).  Parallel cross-SCC edges are merged; if
+      ## @var{G} has edge weights, the result's edge weights are the
+      ## sums of the original weights across the merged edges.
+      ##
+      ## @var{C} always represents a DAG: self-loops and within-SCC
+      ## edges are dropped, and SCC numbering follows
+      ## @code{conncomp (@var{G}, @qcode{"Type"}, @qcode{"strong"})},
+      ## so the SCC containing the smallest unlabelled index always
+      ## receives the next unused label.
+      ##
+      ## @var{C}'s @code{Nodes} struct carries a @code{Component}
+      ## column that lists, for each new node, the original members of
+      ## the corresponding SCC.  If @var{G} has named nodes each
+      ## @code{Component@{k@}} is a column cellstr of name strings;
+      ## otherwise each is a column vector of original node indices.
+      ## @seealso{digraph, conncomp}
+      ## @end deftypefn
+
+      N = numnodes (G);
+
+      ## Build Component column.  Even for N == 0 we set an empty
+      ## 0x1 cell so C.Nodes.Component is always present.
+      has_names = ! isempty (G.nodenames_);
+
+      if (N == 0)
+        comp = cell (0, 1);
+        K = 0;
+        bins = zeros (1, 0);
+      else
+        A = adjacency (G);
+        bins = __conncomp_strong__ (A);
+        K = max (bins);
+        comp = cell (K, 1);
+        for k = 1:K
+          members = find (bins == k);
+          if (has_names)
+            comp{k} = G.nodenames_(members)(:);
+          else
+            comp{k} = double (members(:));
+          endif
+        endfor
+      endif
+
+      ## Build edge list of the new digraph.  Map each edge (s, t) of
+      ## G to (bins(s), bins(t)), drop within-SCC edges, and sum
+      ## parallel weights via sparse() duplicate-accumulation.
+      E = G.Edges.EndNodes;
+      m = size (E, 1);
+      have_w = G.has_weights_;
+
+      new_s = zeros (0, 1);
+      new_t = zeros (0, 1);
+      new_w = zeros (0, 1);
+      if (m > 0 && K > 0)
+        bs = double (bins(E(:, 1)));
+        bt = double (bins(E(:, 2)));
+        bs = bs(:);
+        bt = bt(:);
+        keep = bs != bt;
+        if (any (keep))
+          new_s = bs(keep);
+          new_s = new_s(:);
+          new_t = bt(keep);
+          new_t = new_t(:);
+          if (have_w)
+            w_all = G.Edges.Weight;
+            wk = w_all(keep);
+            new_w = wk(:);
+            ## sparse() accumulates values for duplicate (row, col)
+            ## pairs -- exactly the weight-sum behaviour we want.
+            Asum = sparse (new_s, new_t, new_w, K, K);
+            [r, c, v] = find (Asum);
+            new_s = r(:);
+            new_t = c(:);
+            new_w = v(:);
+          else
+            ## Unweighted: dedupe (row, col) pairs.
+            [EN_u, ~, ~] = unique ([new_s, new_t], "rows");
+            new_s = EN_u(:, 1);
+            new_t = EN_u(:, 2);
+            new_w = zeros (size (new_s, 1), 1);
+          endif
+        endif
+      endif
+
+      ## Build the result via the EdgeTable + NodeTable constructor.
+      if (have_w)
+        ET = struct ("EndNodes", [new_s, new_t], "Weight", new_w);
+      else
+        ET = struct ("EndNodes", [new_s, new_t]);
+      endif
+      NT.Component = comp;
+
+      C = digraph (ET, NT);
 
     endfunction
 

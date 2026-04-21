@@ -2876,6 +2876,52 @@ classdef digraph
 
     endfunction
 
+    function tf = isdag (G)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{tf} =} isdag (@var{G})
+      ## Return @code{true} if the digraph @var{G} is a directed
+      ## acyclic graph (DAG), and @code{false} otherwise.
+      ##
+      ## The result @var{tf} is a scalar logical.  @code{true} means
+      ## @var{G} contains no directed cycle (a self-loop @math{n ->
+      ## n} counts as a cycle).  The empty digraph and any edgeless
+      ## digraph are DAGs.
+      ## @seealso{digraph, toposort, conncomp, condensation}
+      ## @end deftypefn
+
+      N = numnodes (G);
+      if (N == 0)
+        tf = true;
+        return;
+      endif
+
+      ## Go through adjacency(G) rather than G.adj_ directly: for
+      ## multigraph digraphs the edges are stored in side arrays and
+      ## @code{adj_} is empty.  The one-input form of @code{adjacency}
+      ## produces a binary-ish sparse matrix (parallel edges accumulate
+      ## as counts, but only zero-vs-nonzero matters for cycle
+      ## detection).
+      A = adjacency (G);
+
+      ## A self-loop is a one-node cycle, so a nonzero diagonal
+      ## immediately rules out DAG-ness.
+      if (any (diag (A) != 0))
+        tf = false;
+        return;
+      endif
+
+      ## Any strongly connected component of size >= 2 contains a
+      ## directed cycle; the converse also holds for simple
+      ## digraphs on a single vertex only when there is a self-loop
+      ## (already handled above).  So: DAG iff every SCC is a
+      ## singleton and no self-loop exists.
+      bins = __conncomp_strong__ (A);
+      comp_sizes = accumarray (bins(:), 1);
+      tf = logical (all (comp_sizes <= 1));
+
+    endfunction
+
     function disp (G)
 
       ## -*- texinfo -*-

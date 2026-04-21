@@ -47,6 +47,7 @@ FCN_FILE_DIRS += \
   %reldir%/incidence.m \
   %reldir%/indegree.m \
   %reldir%/inedges.m \
+  %reldir%/isdag.m \
   %reldir%/ismultigraph.m \
   %reldir%/laplacian.m \
   %reldir%/neighbors.m \

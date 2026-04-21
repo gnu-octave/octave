@@ -1948,6 +1948,23 @@ classdef graph
 
     endfunction
 
+    function tf = isdag (G)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{tf} =} isdag (@var{G})
+      ## The acyclicity predicate @code{isdag} is not defined on the
+      ## undirected @code{graph} class; this method always raises an
+      ## error.  Use @code{isdag} on a @code{digraph} object instead.
+      ## See @code{help isdag} for the full description of the
+      ## directed case.
+      ## @seealso{graph, digraph, toposort}
+      ## @end deftypefn
+
+      error ("Octave:invalid-input-arg", ...
+             "isdag: not defined for an undirected graph; isdag requires a digraph");
+
+    endfunction
+
     function disp (G)
 
       ## -*- texinfo -*-

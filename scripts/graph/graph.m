@@ -201,7 +201,7 @@ classdef graph
   ## @end group
   ## @end example
   ##
-  ## @seealso{digraph, numnodes, numedges, ismultigraph, addnode, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian}
+  ## @seealso{digraph, numnodes, numedges, ismultigraph, addnode, addedge, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian}
   ## @end deftypefn
 
   properties (Access = private)
@@ -858,6 +858,103 @@ classdef graph
 
     endfunction
 
+    function H = addedge (G, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{H} =} addedge (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {@var{H} =} addedge (@var{G}, @var{s}, @var{t}, @var{w})
+      ## @deftypefnx {} {@var{H} =} addedge (@var{G}, @var{EdgeTable})
+      ## Append edges to the undirected graph @var{G} and return the
+      ## new graph @var{H}.  See @code{help addedge} for the full
+      ## description of the three call forms.  Endpoints that refer to
+      ## node names not already present in @var{G} cause new nodes to
+      ## be appended.  The undirected @code{graph} class does not
+      ## support parallel edges, so adding an edge already present in
+      ## @var{G} is an error.
+      ## @seealso{graph, addnode, rmnode, rmedge, numedges, findedge}
+      ## @end deftypefn
+
+      if (nargin < 2 || nargin > 4)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to addedge: expected 2, 3, or 4 arguments");
+      endif
+
+      Nold = size (G.adj_, 1);
+      have_existing_edges = (numedges (G) > 0);
+
+      [s_idx, t_idx, w_vec, N_new, names_out, nattrs_out, hw_out] = ...
+        __addedge_impl__ (G.nodenames_, G.node_attrs_, G.has_weights_, ...
+                          Nold, have_existing_edges, varargin{:});
+
+      m_new = numel (s_idx);
+
+      ## Extend edge-attribute columns with default rows for the new
+      ## edges.
+      eattrs_out = G.edge_attrs_;
+      efn = fieldnames (eattrs_out);
+      for ii = 1:numel (efn)
+        fn_i = efn{ii};
+        col = eattrs_out.(fn_i);
+        eattrs_out.(fn_i) = [col; graph_default_edge_rows(col, m_new)];
+      endfor
+
+      H = G;
+      H.nodenames_ = names_out;
+      H.node_attrs_ = nattrs_out;
+      H.has_weights_ = hw_out;
+      H.edge_attrs_ = eattrs_out;
+
+      ## Symmetric-adjacency update.  Extend adj_ to new size, then
+      ## scatter undirected edges (both (s,t) and (t,s) unless self-loop).
+      A = G.adj_;
+      if (N_new > Nold)
+        A(N_new, N_new) = 0;
+      endif
+
+      if (m_new > 0)
+        ## Canonicalise each new edge to (min, max) so duplicate
+        ## detection works regardless of orientation.
+        s_n = min (s_idx, t_idx);
+        t_n = max (s_idx, t_idx);
+
+        ## Check duplicates among new edges.
+        p_new_tri = sparse (s_n, t_n, 1:m_new, N_new, N_new);
+        if (nnz (p_new_tri) != m_new)
+          error ("Octave:invalid-input-arg", ...
+                 ["addedge: duplicate edges in the input to ", ...
+                  "addedge; the graph class does not support ", ...
+                  "parallel edges"]);
+        endif
+        ## Check against existing entries.  adj_ is symmetric, so
+        ## checking the upper triangle is sufficient.
+        if (Nold > 0)
+          Aprev_up = triu (A);
+          conflict = p_new_tri & (Aprev_up != 0);
+          if (nnz (conflict) > 0)
+            error ("Octave:invalid-input-arg", ...
+                   ["addedge: edge already exists in G; the graph ", ...
+                    "class does not support parallel edges"]);
+          endif
+        endif
+
+        ## Scatter symmetrically.
+        if (hw_out)
+          vals = w_vec;
+        else
+          vals = ones (m_new, 1);
+        endif
+        sl = (s_idx == t_idx);
+        nsl = ! sl;
+        ss = [s_idx(nsl); t_idx(nsl); s_idx(sl)];
+        tt = [t_idx(nsl); s_idx(nsl); s_idx(sl)];
+        vv = [vals(nsl);  vals(nsl);  vals(sl)];
+        A = A + sparse (ss, tt, vv, N_new, N_new);
+      endif
+
+      H.adj_ = A;
+
+    endfunction
+
     function nb = neighbors (G, nodeID)
 
       ## -*- texinfo -*-
@@ -1302,6 +1399,34 @@ classdef graph
   endmethods
 
 endclassdef
+
+## Local helper: construct K default rows matching the element type of
+## the existing edge-attribute column @var{col}.  Used by the addedge
+## method to extend edge-attribute columns for the new edges.
+function r = graph_default_edge_rows (col, K)
+
+  cols = size (col, 2);
+  if (K == 0)
+    r = col(1:0, :);
+    return;
+  endif
+  if (iscellstr (col))
+    r = repmat ({""}, K, cols);
+  elseif (iscell (col))
+    r = cell (K, cols);
+  elseif (islogical (col))
+    r = false (K, cols);
+  elseif (isnumeric (col))
+    r = zeros (K, cols, class (col));
+  elseif (ischar (col))
+    r = repmat (' ', K, cols);
+  else
+    error ("Octave:invalid-input-arg", ...
+           "addedge: cannot extend edge-attribute column of class %s", ...
+           class (col));
+  endif
+
+endfunction
 
 ## Helper: build a symmetric sparse adjacency from (s, t[, w]).
 ## For off-diagonal edges, store the weight at both (s, t) and (t, s).

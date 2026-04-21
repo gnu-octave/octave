@@ -217,7 +217,7 @@ classdef digraph
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian}
+  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, addedge, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1177,6 +1177,125 @@ classdef digraph
 
     endfunction
 
+    function H = addedge (G, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{H} =} addedge (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {@var{H} =} addedge (@var{G}, @var{s}, @var{t}, @var{w})
+      ## @deftypefnx {} {@var{H} =} addedge (@var{G}, @var{EdgeTable})
+      ## Append edges to the digraph @var{G} and return the new digraph
+      ## @var{H}.  See @code{help addedge} for the full description of
+      ## the three call forms.  Endpoints that refer to node names not
+      ## already present in @var{G} cause new nodes to be appended.
+      ## Parallel edges require the @qcode{'multigraph'} flag on the
+      ## original constructor.
+      ## @seealso{digraph, addnode, rmnode, rmedge, numedges, findedge}
+      ## @end deftypefn
+
+      if (nargin < 2 || nargin > 4)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to addedge: expected 2, 3, or 4 arguments");
+      endif
+
+      Nold = size (G.adj_, 1);
+      have_existing_edges = (numedges (G) > 0);
+
+      [s_idx, t_idx, w_vec, N_new, names_out, nattrs_out, hw_out] = ...
+        __addedge_impl__ (G.nodenames_, G.node_attrs_, G.has_weights_, ...
+                          Nold, have_existing_edges, varargin{:});
+
+      m_new = numel (s_idx);
+
+      ## Extend edge-attribute columns with default rows for the new
+      ## edges.  The helper does not track edge attributes (only node
+      ## attributes), so we handle that here.
+      eattrs_out = G.edge_attrs_;
+      efn = fieldnames (eattrs_out);
+      for ii = 1:numel (efn)
+        fn_i = efn{ii};
+        col = eattrs_out.(fn_i);
+        eattrs_out.(fn_i) = [col; digraph_default_edge_rows(col, m_new)];
+      endfor
+
+      H = G;
+      H.nodenames_ = names_out;
+      H.node_attrs_ = nattrs_out;
+      H.has_weights_ = hw_out;
+      H.edge_attrs_ = eattrs_out;
+
+      if (G.is_multigraph_)
+        ## Multigraph storage: append new (s, t) pairs to mg_endnodes_
+        ## and new weights (if any) to mg_weights_.  Re-sort lex-stably
+        ## so duplicate (s, t) pairs stay adjacent in input order.
+        ## Extend the adj_ placeholder to the new node count.
+        new_en = [s_idx(:), t_idx(:)];
+        all_en = [G.mg_endnodes_; new_en];
+        if (hw_out)
+          if (G.has_weights_)
+            old_w = G.mg_weights_;
+          else
+            ## Old unweighted multigraph being promoted: backfill ones.
+            old_w = ones (size (G.mg_endnodes_, 1), 1);
+          endif
+          all_w = [old_w; w_vec];
+          [srt_en, ord] = sortrows (all_en);
+          H.mg_endnodes_ = srt_en;
+          H.mg_weights_ = all_w(ord);
+        else
+          [srt_en, ~] = sortrows (all_en);
+          H.mg_endnodes_ = srt_en;
+          H.mg_weights_ = zeros (0, 1);
+        endif
+        H.adj_ = sparse (N_new, N_new);
+
+      else
+        ## Simple-graph storage.  Start from the existing adj_ and
+        ## resize to the new N if needed; then scatter the new edges.
+        A = G.adj_;
+        if (N_new > Nold)
+          A(N_new, N_new) = 0;
+        endif
+
+        if (m_new > 0)
+          ## Duplicate detection: no two new edges at the same (s, t),
+          ## and no new edge collides with an existing entry.  Use an
+          ## m_new-vs-(new) sparse build (1:m values so zero weight does
+          ## not trip the check).
+          p_new = sparse (s_idx, t_idx, 1:m_new, N_new, N_new);
+          if (nnz (p_new) != m_new)
+            error ("Octave:invalid-input-arg", ...
+                   ["addedge: duplicate edges in the input to ", ...
+                    "addedge; parallel edges require the ", ...
+                    "'multigraph' flag"]);
+          endif
+          ## Check against existing entries: intersection nonzero -> conflict.
+          if (Nold > 0)
+            Aprev = A;
+            if (N_new > Nold)
+              Aprev(N_new, N_new) = 0;   # pad to same size for mask op
+            endif
+            conflict = p_new & (Aprev != 0);
+            if (nnz (conflict) > 0)
+              error ("Octave:invalid-input-arg", ...
+                     ["addedge: edge already exists in G; parallel ", ...
+                      "edges require the 'multigraph' flag"]);
+            endif
+          endif
+
+          ## Scatter new edges.
+          if (hw_out)
+            vals_new = w_vec;
+          else
+            vals_new = ones (m_new, 1);
+          endif
+          A = A + sparse (s_idx, t_idx, vals_new, N_new, N_new);
+        endif
+
+        H.adj_ = A;
+      endif
+
+    endfunction
+
     function s = successors (G, nodeID)
 
       ## -*- texinfo -*-
@@ -1883,6 +2002,37 @@ classdef digraph
   endmethods
 
 endclassdef
+
+
+## Local helper: construct K default rows matching the element type of
+## the existing edge-attribute column @var{col}.  Mirrors the node-column
+## default in __addedge_impl__; kept local here because the digraph
+## class method extends edge-attribute columns before delegating edge
+## storage to the helper.
+function r = digraph_default_edge_rows (col, K)
+
+  cols = size (col, 2);
+  if (K == 0)
+    r = col(1:0, :);
+    return;
+  endif
+  if (iscellstr (col))
+    r = repmat ({""}, K, cols);
+  elseif (iscell (col))
+    r = cell (K, cols);
+  elseif (islogical (col))
+    r = false (K, cols);
+  elseif (isnumeric (col))
+    r = zeros (K, cols, class (col));
+  elseif (ischar (col))
+    r = repmat (' ', K, cols);
+  else
+    error ("Octave:invalid-input-arg", ...
+           "addedge: cannot extend edge-attribute column of class %s", ...
+           class (col));
+  endif
+
+endfunction
 
 
 ## BIST — default constructor.

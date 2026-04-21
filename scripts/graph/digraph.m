@@ -3908,12 +3908,33 @@ classdef digraph
       ## @deftypefn {} {@var{c} =} centrality (@var{G}, @var{type})
       ## Return the centrality of each node in the digraph @var{G}.
       ## @var{type} is a character row vector (case-insensitive)
-      ## selecting the centrality measure: @code{"indegree"} counts
-      ## incoming edges, @code{"outdegree"} counts outgoing edges.  The
-      ## undirected @code{"degree"} type is not defined for a digraph.
-      ## The result is a column vector of length
+      ## selecting the centrality measure.
+      ##
+      ## Supported types:
+      ## @table @code
+      ## @item "indegree"
+      ## The number of incoming edges per node.
+      ## @item "outdegree"
+      ## The number of outgoing edges per node.
+      ## @item "outcloseness"
+      ## Closeness centrality using outgoing shortest-path distances,
+      ## @math{(N-1) / sum_{j != i} d(i, j)} where @math{d(i, j)} is
+      ## the shortest path from node @math{i} to node @math{j}.
+      ## Unreachable pairs contribute @code{Inf}, so nodes that can
+      ## not reach the rest of the digraph receive a centrality of
+      ## zero.  Stored edge weights are used for the distance
+      ## computation when @var{G} is weighted.
+      ## @item "incloseness"
+      ## Closeness centrality using incoming shortest-path
+      ## distances, @math{(N-1) / sum_{j != i} d(j, i)}.
+      ## @item "closeness"
+      ## Alias for @code{"outcloseness"} on a digraph.
+      ## @end table
+      ##
+      ## The undirected @code{"degree"} type is not defined for a
+      ## digraph.  The result is a column vector of length
       ## @code{numnodes (@var{G})}.
-      ## @seealso{digraph, indegree, outdegree, centrality}
+      ## @seealso{digraph, indegree, outdegree, distances, centrality}
       ## @end deftypefn
 
       if (nargin < 2)
@@ -3937,9 +3958,9 @@ classdef digraph
                type);
       endif
 
-      ## Future stories (US-CT02 closeness, US-CT03 betweenness,
-      ## US-CT04 pagerank, US-CT05 eigenvector, US-CT06 hits,
-      ## US-CT07 Cost/Importance weights) will extend this switch.
+      ## Future stories (US-CT03 betweenness, US-CT04 pagerank,
+      ## US-CT05 eigenvector, US-CT06 hits, US-CT07
+      ## Cost/Importance weights) will extend this switch.
       switch (lower (type))
         case "indegree"
           c = G.indegree ();
@@ -3950,8 +3971,11 @@ classdef digraph
                  ["centrality: TYPE 'degree' is only defined for an ", ...
                   "undirected graph; use 'indegree' or 'outdegree' ", ...
                   "for a digraph"]);
-        case {"closeness", "incloseness", "outcloseness", ...
-              "betweenness", "pagerank", "eigenvector", ...
+        case {"closeness", "outcloseness"}
+          c = __centrality_closeness__ (G, "out");
+        case "incloseness"
+          c = __centrality_closeness__ (G, "in");
+        case {"betweenness", "pagerank", "eigenvector", ...
               "hubs", "authorities"}
           error ("Octave:invalid-input-arg", ...
                  "centrality: TYPE '%s' is not yet implemented", type);

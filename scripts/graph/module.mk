@@ -11,6 +11,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/__bfsearch_events_impl__.m \
   %reldir%/private/__bfsearch_impl__.m \
   %reldir%/private/__biconncomp__.m \
+  %reldir%/private/__centrality_closeness__.m \
   %reldir%/private/__conncomp_parse_opts__.m \
   %reldir%/private/__conncomp_strong__.m \
   %reldir%/private/__conncomp_weak__.m \

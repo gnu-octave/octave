@@ -2668,13 +2668,29 @@ classdef graph
       ## @deftypefn {} {@var{c} =} centrality (@var{G}, @var{type})
       ## Return the centrality of each node in the undirected graph
       ## @var{G}.  @var{type} is a character row vector
-      ## (case-insensitive) selecting the centrality measure:
-      ## @code{"degree"} returns the number of edges incident to each
-      ## node, counting a self-loop twice (MATLAB convention).  The
-      ## directed-only types @code{"indegree"} and @code{"outdegree"}
-      ## are not defined for an undirected graph.  The result is a
-      ## column vector of length @code{numnodes (@var{G})}.
-      ## @seealso{graph, degree, centrality}
+      ## (case-insensitive) selecting the centrality measure.
+      ##
+      ## Supported types:
+      ## @table @code
+      ## @item "degree"
+      ## The number of edges incident to each node, counting a
+      ## self-loop twice (MATLAB convention).
+      ## @item "closeness"
+      ## Closeness centrality, computed as
+      ## @math{(N-1) / sum_{j != i} d(i, j)} where @math{d} is the
+      ## all-pairs shortest-path matrix returned by
+      ## @code{distances}.  Unreachable pairs contribute @code{Inf}
+      ## to the sum so disconnected nodes receive a centrality of
+      ## zero.  Stored edge weights are used when @var{G} is
+      ## weighted (BFS is used otherwise).
+      ## @end table
+      ##
+      ## The directed-only types @code{"indegree"},
+      ## @code{"outdegree"}, @code{"incloseness"} and
+      ## @code{"outcloseness"} are not defined for an undirected
+      ## graph.  The result is a column vector of length
+      ## @code{numnodes (@var{G})}.
+      ## @seealso{graph, degree, distances, centrality}
       ## @end deftypefn
 
       if (nargin < 2)
@@ -2698,9 +2714,9 @@ classdef graph
                type);
       endif
 
-      ## Future stories (US-CT02 closeness, US-CT03 betweenness,
-      ## US-CT04 pagerank, US-CT05 eigenvector, US-CT07
-      ## Cost/Importance weights) will extend this switch.
+      ## Future stories (US-CT03 betweenness, US-CT04 pagerank,
+      ## US-CT05 eigenvector, US-CT07 Cost/Importance weights) will
+      ## extend this switch.
       switch (lower (type))
         case "degree"
           c = G.degree ();
@@ -2708,7 +2724,9 @@ classdef graph
           error ("Octave:invalid-input-arg", ...
                  ["centrality: TYPE '%s' is only defined for a ", ...
                   "digraph; use 'degree' for an undirected graph"], type);
-        case {"closeness", "betweenness", "pagerank", "eigenvector"}
+        case "closeness"
+          c = __centrality_closeness__ (G, "out");
+        case {"betweenness", "pagerank", "eigenvector"}
           error ("Octave:invalid-input-arg", ...
                  "centrality: TYPE '%s' is not yet implemented", type);
         case {"incloseness", "outcloseness", "hubs", "authorities"}

@@ -2830,6 +2830,60 @@ classdef graph
 
     endfunction
 
+    function P = isomorphism (G1, G2)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{P} =} isomorphism (@var{G1}, @var{G2})
+      ## Return an isomorphism between the undirected graphs @var{G1}
+      ## and @var{G2} as a permutation column vector @var{P} such that
+      ## @code{reordernodes (@var{G2}, @var{P})} has the same
+      ## structure as @var{G1}, or @code{[]} when no isomorphism
+      ## exists.
+      ##
+      ## Both arguments must be @code{graph} objects; calling this
+      ## method with a mix of @code{graph} and @code{digraph} inputs
+      ## raises an error.  Node names and edge weights are ignored;
+      ## only the undirected adjacency structure (including edge
+      ## multiplicities for a multigraph and self-loops) is used.
+      ## The underlying search uses the VF2 algorithm.
+      ## @seealso{graph, isisomorphic, reordernodes}
+      ## @end deftypefn
+
+      if (nargin != 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to isomorphism: expected 2 arguments");
+      endif
+
+      if (! isa (G2, "graph"))
+        error ("Octave:invalid-input-arg", ...
+               ["isomorphism: G1 and G2 must be of the same class; ", ...
+                "G1 is a graph but G2 is not"]);
+      endif
+
+      A1 = adjacency (G1);
+      A2 = adjacency (G2);
+      [perm, found] = __isomorphism_vf2__ (A1, A2, false);
+      if (! found)
+        P = [];
+        return;
+      endif
+
+      ## VF2's perm is the column vector with perm(i) = G1-node
+      ## matched to G2-node i, satisfying A2 == A1(perm, perm).
+      ## MATLAB's convention for isomorphism returns the INVERSE:
+      ## P(i) = G2-node matched to G1-node i, satisfying
+      ## A2(P, P) == A1, so that reordernodes(G2, P) has the same
+      ## structure as G1.
+      if (isempty (perm))
+        P = zeros (0, 1);
+      else
+        n = numel (perm);
+        P = zeros (n, 1);
+        P(perm) = (1:n).';
+      endif
+
+    endfunction
+
     function disp (G)
 
       ## -*- texinfo -*-

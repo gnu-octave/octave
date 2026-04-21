@@ -598,10 +598,162 @@ classdef GraphPlot < handle
       h.edge_label_mode_ = v;
     endfunction
 
+    ## ------------ Methods: highlight, ... ------------
+
+    function highlight (h, nodes, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {} highlight (@var{h}, @var{nodes})
+      ## @deftypefnx {} {} highlight (@var{h}, @var{nodes}, @var{name}, @var{value}, @dots{})
+      ## Highlight the specified nodes of a @code{GraphPlot}.
+      ##
+      ## @var{nodes} is a numeric vector of node indices, a single node
+      ## name (character row vector), a cell array of node names, or an
+      ## empty array (silent no-op).  By default the selected nodes' color
+      ## is set to red (@code{[1 0 0]}).
+      ##
+      ## Trailing @var{name}/@var{value} pairs override the default.
+      ## Recognised options (case-insensitive):
+      ##
+      ## @table @code
+      ## @item NodeColor
+      ## RGB triplet in @code{[0, 1]} or a MATLAB color name.
+      ## @item Marker
+      ## Marker character such as @qcode{"o"}, @qcode{"s"}, @qcode{"d"},
+      ## @qcode{"^"}, etc.
+      ## @item MarkerSize
+      ## Positive real scalar.
+      ## @end table
+      ##
+      ## @code{highlight} expands the corresponding scalar properties to
+      ## per-node form as needed (@code{NodeColor} becomes an @code{Nx3}
+      ## matrix, @code{Marker} becomes an @code{Nx1} cellstr,
+      ## @code{MarkerSize} becomes an @code{Nx1} vector).  Nodes not in
+      ## @var{nodes} retain their current cosmetic values.
+      ##
+      ## @seealso{GraphPlot, plot, graph, digraph}
+      ## @end deftypefn
+
+      if (nargin < 2)
+        print_usage ();
+      endif
+
+      if (isempty (h.graph_))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: highlight requires a rendered graph");
+      endif
+
+      ## Resolve node indices (numeric / char / cellstr).  The helper
+      ## returns a column vector of valid 1-based indices or [].
+      idx = __resolve_node_list__ (h.graph_, nodes, "highlight");
+      if (isempty (idx))
+        return;
+      endif
+      idx = idx(:);
+
+      ## Parse trailing name-value overrides.
+      if (mod (numel (varargin), 2) != 0)
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: highlight: name-value options must come in pairs");
+      endif
+
+      node_color = [1 0 0];         # default red
+      marker = [];                  # [] = don't touch Marker
+      marker_size = [];             # [] = don't touch MarkerSize
+      valid_markers = {"+", "o", "*", ".", "x", "s", "square", "d", ...
+                       "diamond", "^", "v", ">", "<", "p", "pentagram", ...
+                       "h", "hexagram", "none"};
+
+      for ii = 1:2:numel (varargin)
+        name = varargin{ii};
+        if (! (ischar (name) && isrow (name)))
+          error ("Octave:invalid-input-arg", ...
+                 "GraphPlot: highlight: option names must be character vectors");
+        endif
+        val = varargin{ii + 1};
+        switch (lower (name))
+          case "nodecolor"
+            node_color = __graph_plot_validate_colorspec__ (val, "NodeColor");
+          case "marker"
+            if (! (ischar (val) && isrow (val)))
+              error ("Octave:invalid-input-arg", ...
+                     "GraphPlot: highlight: Marker must be a character vector");
+            endif
+            if (! any (strcmp (val, valid_markers)))
+              error ("Octave:invalid-input-arg", ...
+                     "GraphPlot: highlight: Marker value '%s' is not supported", ...
+                     val);
+            endif
+            marker = val;
+          case "markersize"
+            if (! (isnumeric (val) && isscalar (val) && isreal (val) ...
+                   && isfinite (val) && val > 0))
+              error ("Octave:invalid-input-arg", ...
+                     "GraphPlot: highlight: MarkerSize must be a positive real scalar");
+            endif
+            marker_size = double (val);
+          otherwise
+            error ("Octave:invalid-input-arg", ...
+                   "GraphPlot: highlight: unknown option '%s'", name);
+        endswitch
+      endfor
+
+      N = h.NumNodes;
+
+      ## Expand NodeColor to Nx3 and apply highlight color at idx.
+      nc = h.NodeColor;
+      if (size (nc, 1) == 1)
+        nc = repmat (nc, N, 1);
+      endif
+      nc(idx, :) = repmat (node_color, numel (idx), 1);
+      h.NodeColor = nc;
+
+      ## Expand Marker (if override supplied) and apply.
+      if (! isempty (marker))
+        if (iscell (h.Marker))
+          mk = h.Marker(:);
+        else
+          mk = repmat ({h.Marker}, N, 1);
+        endif
+        mk(idx) = {marker};
+        h.Marker = mk;
+      endif
+
+      ## Expand MarkerSize (if override supplied) and apply.
+      if (! isempty (marker_size))
+        ms = h.MarkerSize;
+        if (isscalar (ms))
+          ms = repmat (ms, N, 1);
+        else
+          ms = ms(:);
+        endif
+        ms(idx) = marker_size;
+        h.MarkerSize = ms;
+      endif
+
+    endfunction
+
     ## ------------ Validated setters for cosmetic properties ------------
 
     function h = set.NodeColor (h, val)
-      h.NodeColor = __graph_plot_validate_colorspec__ (val, "NodeColor");
+      ## Accept a single RGB triplet / color name, or an Nx3 matrix with
+      ## one row per node (used by highlight() for per-node coloring).
+      if (isnumeric (val) && ismatrix (val) && ndims (val) == 2 ...
+          && size (val, 2) == 3 && size (val, 1) > 1)
+        N = h.NumNodes;
+        if (size (val, 1) != N)
+          error ("Octave:invalid-input-arg", ...
+                 "GraphPlot: NodeColor matrix must have %d rows", N);
+        endif
+        if (! (isreal (val) && all (isfinite (val(:))) ...
+               && all (val(:) >= 0) && all (val(:) <= 1)))
+          error ("Octave:invalid-input-arg", ...
+                 "GraphPlot: NodeColor entries must be in [0, 1]");
+        endif
+        h.NodeColor = double (val);
+      else
+        h.NodeColor = __graph_plot_validate_colorspec__ (val, "NodeColor");
+      endif
     endfunction
 
     function h = set.EdgeColor (h, val)
@@ -614,13 +766,33 @@ classdef GraphPlot < handle
     endfunction
 
     function h = set.Marker (h, val)
-      if (! (ischar (val) && isrow (val)))
-        error ("Octave:invalid-input-arg", ...
-               "GraphPlot: Marker must be a character vector");
-      endif
       valid = {"+", "o", "*", ".", "x", "s", "square", "d", "diamond", ...
                "^", "v", ">", "<", "p", "pentagram", "h", "hexagram", ...
                "none"};
+      ## Per-node cellstr of length NumNodes is also accepted.
+      if (iscell (val))
+        if (! iscellstr (val))
+          error ("Octave:invalid-input-arg", ...
+                 "GraphPlot: Marker cell must contain only character vectors");
+        endif
+        N = h.NumNodes;
+        if (numel (val) != N)
+          error ("Octave:invalid-input-arg", ...
+                 "GraphPlot: Marker cell must have %d elements", N);
+        endif
+        for kk = 1:numel (val)
+          if (! any (strcmp (val{kk}, valid)))
+            error ("Octave:invalid-input-arg", ...
+                   "GraphPlot: Marker value '%s' is not supported", val{kk});
+          endif
+        endfor
+        h.Marker = val(:);
+        return;
+      endif
+      if (! (ischar (val) && isrow (val)))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: Marker must be a character vector or cellstr");
+      endif
       if (! any (strcmp (val, valid)))
         error ("Octave:invalid-input-arg", ...
                "GraphPlot: Marker value '%s' is not supported", val);
@@ -629,12 +801,26 @@ classdef GraphPlot < handle
     endfunction
 
     function h = set.MarkerSize (h, val)
-      if (! (isnumeric (val) && isscalar (val) && isreal (val) ...
-             && isfinite (val) && val > 0))
+      ## Per-node vector of length NumNodes is also accepted.
+      if (! (isnumeric (val) && isreal (val) && ! isempty (val) ...
+             && all (isfinite (val(:))) && all (val(:) > 0)))
         error ("Octave:invalid-input-arg", ...
-               "GraphPlot: MarkerSize must be a positive real scalar");
+               "GraphPlot: MarkerSize must be a positive real scalar or vector");
       endif
-      h.MarkerSize = double (val);
+      if (isscalar (val))
+        h.MarkerSize = double (val);
+        return;
+      endif
+      if (! isvector (val))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: MarkerSize must be a positive real scalar or vector");
+      endif
+      N = h.NumNodes;
+      if (numel (val) != N)
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: MarkerSize must be scalar or have %d elements", N);
+      endif
+      h.MarkerSize = double (val(:));
     endfunction
 
     function h = set.NodeFontSize (h, val)
@@ -2240,6 +2426,408 @@ endclassdef
 %!   assert (iscell (h.EdgeLabel));
 %!   assert (isempty (h.EdgeLabel));
 %!   assert (h.EdgeLabelMode, "auto");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## -------- US-GP09 highlight(h, nodes[, props]) --------
+
+## Basic: highlight(h, 1) turns node 1 red; others unchanged (NodeColor
+## becomes an Nx3 matrix).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, 1);
+%!   assert (size (h.NodeColor), [3, 3]);
+%!   assert (h.NodeColor(1, :), [1 0 0]);
+%!   assert (h.NodeColor(2, :), [0 0.4470 0.7410], 1e-12);
+%!   assert (h.NodeColor(3, :), [0 0.4470 0.7410], 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Highlight multiple nodes at once via a vector.
+%!test
+%! G = digraph ([1 2 3 4], [2 3 4 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, [1 3]);
+%!   assert (size (h.NodeColor), [4, 3]);
+%!   assert (h.NodeColor(1, :), [1 0 0]);
+%!   assert (h.NodeColor(3, :), [1 0 0]);
+%!   assert (h.NodeColor(2, :), [0 0.4470 0.7410], 1e-12);
+%!   assert (h.NodeColor(4, :), [0 0.4470 0.7410], 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Column vector of indices also accepted.
+%!test
+%! G = digraph ([1 2 3 4], [2 3 4 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, [2; 4]);
+%!   assert (h.NodeColor(2, :), [1 0 0]);
+%!   assert (h.NodeColor(4, :), [1 0 0]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Node name as a bare char row vector.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"alpha", "beta", "gamma"});
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, "beta");
+%!   assert (h.NodeColor(2, :), [1 0 0]);
+%!   assert (h.NodeColor(1, :), [0 0.4470 0.7410], 1e-12);
+%!   assert (h.NodeColor(3, :), [0 0.4470 0.7410], 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Cellstr of node names.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"alpha", "beta", "gamma"});
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, {"alpha", "gamma"});
+%!   assert (h.NodeColor(1, :), [1 0 0]);
+%!   assert (h.NodeColor(3, :), [1 0 0]);
+%!   assert (h.NodeColor(2, :), [0 0.4470 0.7410], 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Override default color with a triplet.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, 2, "NodeColor", [0 0.5 0]);
+%!   assert (h.NodeColor(2, :), [0 0.5 0]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Override default color with a short name.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, 2, "NodeColor", "g");
+%!   assert (h.NodeColor(2, :), [0 1 0]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Override default color with a long name.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, 2, "NodeColor", "magenta");
+%!   assert (h.NodeColor(2, :), [1 0 1]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Custom Marker per-node: Marker becomes a column cellstr.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, 2, "Marker", "s");
+%!   assert (iscell (h.Marker));
+%!   assert (numel (h.Marker), 3);
+%!   assert (h.Marker{1}, "o");
+%!   assert (h.Marker{2}, "s");
+%!   assert (h.Marker{3}, "o");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Custom MarkerSize per-node: MarkerSize becomes a column vector.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, 2, "MarkerSize", 12);
+%!   assert (numel (h.MarkerSize), 3);
+%!   assert (h.MarkerSize(1), 4);
+%!   assert (h.MarkerSize(2), 12);
+%!   assert (h.MarkerSize(3), 4);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Multiple properties in one call: NodeColor, Marker, MarkerSize.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, [1 3], "NodeColor", "y", "Marker", "d", "MarkerSize", 20);
+%!   assert (h.NodeColor(1, :), [1 1 0]);
+%!   assert (h.NodeColor(3, :), [1 1 0]);
+%!   assert (h.Marker{1}, "d");
+%!   assert (h.Marker{3}, "d");
+%!   assert (h.Marker{2}, "o");
+%!   assert (h.MarkerSize(1), 20);
+%!   assert (h.MarkerSize(3), 20);
+%!   assert (h.MarkerSize(2), 4);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Case-insensitive option names.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, 1, "nodecolor", "c");
+%!   assert (h.NodeColor(1, :), [0 1 1]);
+%!   highlight (h, 2, "MARKER", "^");
+%!   assert (h.Marker{2}, "^");
+%!   highlight (h, 3, "MarkerSIZE", 9);
+%!   assert (h.MarkerSize(3), 9);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Handle-class semantics: aliased handle sees the update.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = GraphPlot (G);
+%!   h2 = h1;
+%!   highlight (h1, 2);
+%!   assert (h2.NodeColor(2, :), [1 0 0]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Two highlight calls compose cumulatively.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, 1);
+%!   highlight (h, 3, "NodeColor", "g");
+%!   assert (h.NodeColor(1, :), [1 0 0]);
+%!   assert (h.NodeColor(3, :), [0 1 0]);
+%!   assert (h.NodeColor(2, :), [0 0.4470 0.7410], 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## highlight works on an undirected graph too.
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, [1 2]);
+%!   assert (h.NodeColor(1, :), [1 0 0]);
+%!   assert (h.NodeColor(2, :), [1 0 0]);
+%!   assert (h.NodeColor(3, :), [0 0.4470 0.7410], 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Empty index list is a silent no-op (NodeColor stays 1x3).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, []);
+%!   assert (h.NodeColor, [0 0.4470 0.7410], 1e-12);
+%!   assert (size (h.NodeColor), [1 3]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: invalid node index (out of range).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("highlight (h, 99)", "invalid node index");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: node name not found.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"alpha", "beta", "gamma"});
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("highlight (h, 'zeta')", "not found");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: odd number of name-value args.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("highlight (h, 1, 'NodeColor')", "pairs");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: unknown option.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("highlight (h, 1, 'Bogus', 1)", "unknown option");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: invalid color spec (out of range).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("highlight (h, 1, 'NodeColor', [2 0 0])", "RGB triplet");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: invalid marker value.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("highlight (h, 1, 'Marker', 'bogus')", "not supported");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Error: non-positive MarkerSize.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   fail ("highlight (h, 1, 'MarkerSize', -1)", "positive");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Calling highlight via free-function entry point (scripts/graph/highlight.m)
+## works identically to the classdef method dispatch.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, 2, "NodeColor", "k");
+%!   assert (h.NodeColor(2, :), [0 0 0]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Default construction -> NodeColor remains 1x3 after highlight() with
+## empty nodes argument (does not expand).
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, []);
+%!   assert (size (h.NodeColor), [1 3]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## highlight returns no required output (void); call in statement form.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   highlight (h, 1);  # statement form - must not error
+%!   assert (h.NodeColor(1, :), [1 0 0]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Assigning h.NodeColor = Nx3 (without highlight) is also accepted now.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   M = [1 0 0; 0 1 0; 0 0 1];
+%!   h.NodeColor = M;
+%!   assert (h.NodeColor, M);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Assigning h.Marker = cellstr of N is also accepted now.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   h.Marker = {"s"; "d"; "o"};
+%!   assert (iscell (h.Marker));
+%!   assert (h.Marker, {"s"; "d"; "o"});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Assigning h.MarkerSize = vector of N is also accepted now.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   h.MarkerSize = [5; 10; 15];
+%!   assert (h.MarkerSize, [5; 10; 15]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Existing uniform scalar assignment still works (no regression).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   h.NodeColor = "r";
+%!   assert (h.NodeColor, [1 0 0]);
+%!   assert (size (h.NodeColor), [1 3]);
+%!   h.Marker = "s";
+%!   assert (h.Marker, "s");
+%!   h.MarkerSize = 7;
+%!   assert (h.MarkerSize, 7);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

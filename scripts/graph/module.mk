@@ -87,6 +87,7 @@ FCN_FILE_DIRS += \
   %reldir%/findnode.m \
   %reldir%/flipedge.m \
   %reldir%/graph.m \
+  %reldir%/highlight.m \
   %reldir%/incidence.m \
   %reldir%/indegree.m \
   %reldir%/inedges.m \

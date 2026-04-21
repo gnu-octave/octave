@@ -201,7 +201,7 @@ classdef graph
   ## @end group
   ## @end example
   ##
-  ## @seealso{digraph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian}
+  ## @seealso{digraph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1127,6 +1127,92 @@ classdef graph
           H.edge_attrs_.(efn{ii}) = col(p_edge, :);
         endfor
       endif
+
+    endfunction
+
+    function H = subgraph (G, nodes)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{H} =} subgraph (@var{G}, @var{nodes})
+      ## Return the subgraph of the undirected graph @var{G} induced by
+      ## the node subset @var{nodes}.  See @code{help subgraph} for the
+      ## full description.  Only edges with @emph{both} endpoints in
+      ## @var{nodes} are retained.  Nodes appear in @var{H} in the order
+      ## given by @var{nodes}; node names, node-attribute columns, and
+      ## edge-attribute columns are carried over.
+      ## @seealso{graph, rmnode, reordernodes, addnode, numnodes, findnode}
+      ## @end deftypefn
+
+      if (nargin != 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to subgraph: expected 2 arguments");
+      endif
+
+      N = size (G.adj_, 1);
+
+      ## Resolve NODES into a column of validated, unique indices.
+      ## Logical masks are handled separately; everything else goes
+      ## through __resolve_node_list__ (numeric, char row, cellstr,
+      ## [] or {}).
+      if (islogical (nodes))
+        if (numel (nodes) != N)
+          error ("Octave:invalid-input-arg", ...
+                 ["graph: subgraph: logical mask NODES must have ", ...
+                  "length numnodes (G)"]);
+        endif
+        keep_idx = find (nodes(:));
+      else
+        keep_idx = __resolve_node_list__ (G, nodes, "subgraph");
+      endif
+
+      if (numel (unique (keep_idx)) != numel (keep_idx))
+        error ("Octave:invalid-input-arg", ...
+               "graph: subgraph: NODES must be unique");
+      endif
+
+      Nnew = numel (keep_idx);
+
+      ## Build an N-by-1 map: original index -> new index (or 0 if the
+      ## node was dropped).
+      idx_map = zeros (N, 1);
+      idx_map(keep_idx) = 1:Nnew;
+
+      ## Iterate original edges via find(tril(adj_)) to get (t_end,
+      ## s_end) with s_end <= t_end -- matches graph.get.Edges's
+      ## lex (min, max) order.
+      if (nnz (tril (G.adj_)) == 0)
+        edge_survive = false (0, 1);
+        p_edge = zeros (0, 1);
+      else
+        [t_old, s_old] = find (tril (G.adj_));
+        s_old = s_old(:); t_old = t_old(:);
+        edge_survive = (idx_map(s_old) > 0) & (idx_map(t_old) > 0);
+        if (any (edge_survive))
+          new_a = idx_map(s_old(edge_survive));
+          new_b = idx_map(t_old(edge_survive));
+          ## Canonicalise to (min, max) since the reindex may flip
+          ## endpoint order.
+          new_min = min (new_a, new_b);
+          new_max = max (new_a, new_b);
+          [~, p_edge] = sortrows ([new_min, new_max]);
+        else
+          p_edge = zeros (0, 1);
+        endif
+      endif
+
+      ## Filter edge-attribute columns by survive mask + reorder.
+      eattrs_out = struct ();
+      efn = fieldnames (G.edge_attrs_);
+      for ii = 1:numel (efn)
+        col = G.edge_attrs_.(efn{ii});
+        survived = col(edge_survive, :);
+        eattrs_out.(efn{ii}) = survived(p_edge, :);
+      endfor
+
+      H = G;
+      [H.adj_, H.nodenames_, H.node_attrs_] = ...
+        __subgraph_impl__ (G.adj_, G.nodenames_, G.node_attrs_, keep_idx);
+      H.edge_attrs_ = eattrs_out;
 
     endfunction
 

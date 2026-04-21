@@ -217,7 +217,7 @@ classdef digraph
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian}
+  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1560,6 +1560,131 @@ classdef digraph
             col = G.edge_attrs_.(efn{ii});
             H.edge_attrs_.(efn{ii}) = col(p_edge, :);
           endfor
+        endif
+      endif
+
+    endfunction
+
+    function H = subgraph (G, nodes)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{H} =} subgraph (@var{G}, @var{nodes})
+      ## Return the subgraph of the digraph @var{G} induced by the node
+      ## subset @var{nodes}.  See @code{help subgraph} for the full
+      ## description.  Only edges with @emph{both} endpoints in
+      ## @var{nodes} are retained.  Nodes appear in @var{H} in the order
+      ## given by @var{nodes}; node names, node-attribute columns,
+      ## and edge-attribute columns are carried over.  For a multigraph,
+      ## parallel edges between two surviving endpoints are preserved.
+      ## @seealso{digraph, rmnode, reordernodes, addnode, numnodes, findnode}
+      ## @end deftypefn
+
+      if (nargin != 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to subgraph: expected 2 arguments");
+      endif
+
+      N = size (G.adj_, 1);
+
+      ## Resolve NODES into a column of validated, unique indices.
+      ## Logical masks are handled separately; everything else goes
+      ## through __resolve_node_list__ (numeric, char row, cellstr,
+      ## [] or {}).
+      if (islogical (nodes))
+        if (numel (nodes) != N)
+          error ("Octave:invalid-input-arg", ...
+                 ["digraph: subgraph: logical mask NODES must have ", ...
+                  "length numnodes (G)"]);
+        endif
+        keep_idx = find (nodes(:));
+      else
+        keep_idx = __resolve_node_list__ (G, nodes, "subgraph");
+      endif
+
+      if (numel (unique (keep_idx)) != numel (keep_idx))
+        error ("Octave:invalid-input-arg", ...
+               "digraph: subgraph: NODES must be unique");
+      endif
+
+      Nnew = numel (keep_idx);
+
+      ## Build an N-by-1 map: original index -> new index (or 0 if the
+      ## node was dropped).  Used to both test survival and remap
+      ## endpoints for surviving edges.
+      idx_map = zeros (N, 1);
+      idx_map(keep_idx) = 1:Nnew;
+
+      ## Compute per-edge survival and new-order permutation from the
+      ## class's edge iteration order (matching get.Edges).
+      if (G.is_multigraph_)
+        if (isempty (G.mg_endnodes_))
+          edge_survive = false (0, 1);
+          p_edge = zeros (0, 1);
+          new_en = zeros (0, 2);
+        else
+          s_old = G.mg_endnodes_(:, 1);
+          t_old = G.mg_endnodes_(:, 2);
+          edge_survive = (idx_map(s_old) > 0) & (idx_map(t_old) > 0);
+          if (any (edge_survive))
+            new_en_raw = [idx_map(s_old(edge_survive)), ...
+                          idx_map(t_old(edge_survive))];
+            [new_en, p_edge] = sortrows (new_en_raw);
+          else
+            new_en = zeros (0, 2);
+            p_edge = zeros (0, 1);
+          endif
+        endif
+      else
+        ## Simple-graph mode: iterate original edges via find(adj_.') to
+        ## get (src, dst) in original lex order -- same as get.Edges.
+        if (nnz (G.adj_) == 0)
+          edge_survive = false (0, 1);
+          p_edge = zeros (0, 1);
+        else
+          [dst_old, src_old] = find (G.adj_.');
+          src_old = src_old(:); dst_old = dst_old(:);
+          edge_survive = (idx_map(src_old) > 0) & (idx_map(dst_old) > 0);
+          if (any (edge_survive))
+            new_src = idx_map(src_old(edge_survive));
+            new_dst = idx_map(dst_old(edge_survive));
+            [~, p_edge] = sortrows ([new_src, new_dst]);
+          else
+            p_edge = zeros (0, 1);
+          endif
+        endif
+      endif
+
+      ## Filter edge-attribute columns by survive mask + reorder by
+      ## the permutation.  survived_rows holds the rows in old lex
+      ## order; applying p_edge gives new lex order.
+      eattrs_out = struct ();
+      efn = fieldnames (G.edge_attrs_);
+      for ii = 1:numel (efn)
+        col = G.edge_attrs_.(efn{ii});
+        survived = col(edge_survive, :);
+        eattrs_out.(efn{ii}) = survived(p_edge, :);
+      endfor
+
+      ## Filter node-level state (adjacency, names, node_attrs_).
+      H = G;
+      [H.adj_, H.nodenames_, H.node_attrs_] = ...
+        __subgraph_impl__ (G.adj_, G.nodenames_, G.node_attrs_, keep_idx);
+      H.edge_attrs_ = eattrs_out;
+
+      if (G.is_multigraph_)
+        ## Replace the adj_ placeholder with the new Nnew-by-Nnew
+        ## empty sparse (multigraph stores real edges in mg_*).
+        H.adj_ = sparse (Nnew, Nnew);
+        H.mg_endnodes_ = new_en;
+        if (G.has_weights_)
+          if (any (edge_survive))
+            surv_weights = G.mg_weights_(edge_survive);
+            H.mg_weights_ = surv_weights(p_edge);
+          else
+            H.mg_weights_ = zeros (0, 1);
+          endif
+        else
+          H.mg_weights_ = zeros (0, 1);
         endif
       endif
 

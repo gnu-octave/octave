@@ -3211,6 +3211,7 @@ classdef digraph
       ## @deftypefn  {} {@var{D} =} distances (@var{G})
       ## @deftypefnx {} {@var{d} =} distances (@var{G}, @var{src})
       ## @deftypefnx {} {@var{d} =} distances (@var{G}, @var{src}, @var{tgt})
+      ## @deftypefnx {} {@var{D} =} distances (@dots{}, @qcode{"Method"}, @var{method})
       ## Return shortest-path distances on the digraph @var{G}.
       ##
       ## With no extra arguments, return the all-pairs
@@ -3224,35 +3225,35 @@ classdef digraph
       ## @code{numel (@var{src})}-by-@code{numel (@var{tgt})} submatrix
       ## (scalar when both arguments are scalar).
       ##
+      ## The optional @qcode{"Method"} Name-Value pair chooses the
+      ## algorithm: @qcode{"auto"} (default) uses BFS on unweighted
+      ## digraphs, Dijkstra on digraphs with only non-negative weights,
+      ## and Bellman-Ford when any weight is negative; @qcode{"unweighted"}
+      ## ignores weights and uses BFS; @qcode{"positive"} uses Dijkstra
+      ## (error on negative weight); @qcode{"mixed"} uses Bellman-Ford
+      ## (handles negative weights; errors on a negative cycle); and
+      ## @qcode{"acyclic"} uses a topological-order relaxation that
+      ## requires @var{G} to be a DAG.
+      ##
       ## @var{src} and @var{tgt} may be numeric node indices or node
       ## names (character row vector or cell array of strings) when
       ## @var{G} has node names; see @code{help distances} for details.
       ## @seealso{digraph, shortestpath, shortestpathtree, adjacency}
       ## @end deftypefn
 
-      if (numel (varargin) > 2)
-        error ("Octave:invalid-fun-call", ...
-               "distances: too many input arguments");
-      endif
+      [positional, method] = __distances_parse_opts__ (varargin);
 
-      have_src = (numel (varargin) >= 1);
-      have_tgt = (numel (varargin) >= 2);
+      have_src = (numel (positional) >= 1);
+      have_tgt = (numel (positional) >= 2);
 
       N = numnodes (G);
 
-      if (! have_src)
-        if (N == 0)
-          D = zeros (0, 0);
-          return;
-        endif
-      endif
-
-      ## Build the weight matrix W(i, j) used by Dijkstra.  For a
-      ## multigraph, parallel edges between the same (i, j) should
-      ## collapse to the minimum weight (MATLAB parity: the shortest
-      ## path uses the cheapest parallel edge).  For simple storage,
-      ## adjacency() already does the right thing: either binary 0/1
-      ## (unweighted) or weighted.
+      ## Build the weight matrix W(i, j) used by the shortest-path
+      ## routines.  For a multigraph, parallel edges between the same
+      ## (i, j) collapse to the minimum weight (MATLAB parity: the
+      ## shortest path uses the cheapest parallel edge).  For simple
+      ## storage, we carry either the weighted adj_ or its binary
+      ## skeleton depending on has_weights_.
       if (G.is_multigraph_)
         src = G.mg_endnodes_(:, 1);
         dst = G.mg_endnodes_(:, 2);
@@ -3277,16 +3278,75 @@ classdef digraph
         endif
       endif
 
+      ## Resolve method = "auto" to a concrete choice based on the
+      ## weighted-ness and sign of W's stored entries.
+      if (strcmp (method, "auto"))
+        if (! G.has_weights_)
+          method = "unweighted";
+        elseif (any (nonzeros (W) < 0))
+          method = "mixed";
+        else
+          method = "positive";
+        endif
+      endif
+
+      ## Resolve positional src / tgt into numeric index vectors.
+      if (have_src)
+        src_idx = __resolve_node_list__ (G, positional{1}, "distances");
+      endif
+      if (have_tgt)
+        tgt_idx = __resolve_node_list__ (G, positional{2}, "distances");
+      endif
+
+      ## Dispatch on method.  Each helper accepts an optional sources
+      ## column vector; omitted/empty means all-pairs.
+      switch (method)
+        case "unweighted"
+          if (have_src)
+            D_src = __distances_unweighted__ (W, src_idx);
+          else
+            D_src = __distances_unweighted__ (W);
+          endif
+        case "positive"
+          if (have_src)
+            D_src = __distances_dijkstra__ (W, src_idx);
+          else
+            D_src = __distances_dijkstra__ (W);
+          endif
+        case "mixed"
+          if (have_src)
+            D_src = __distances_bellman_ford__ (W, src_idx);
+          else
+            D_src = __distances_bellman_ford__ (W);
+          endif
+        case "acyclic"
+          if (! isdag (G))
+            error ("Octave:invalid-input-arg", ...
+                   "distances: 'acyclic' Method requires G to be a DAG");
+          endif
+          topo = toposort (G);
+          if (have_src)
+            D_src = __distances_dag__ (W, topo, src_idx);
+          else
+            D_src = __distances_dag__ (W, topo);
+          endif
+        otherwise
+          ## Parser guarantees a valid name; this is a safety net.
+          error ("Octave:invalid-input-arg", ...
+                 "distances: internal error -- unknown method '%s'", method);
+      endswitch
+
       if (! have_src)
-        D = __distances_dijkstra__ (W);
+        ## All-pairs form: D_src is N-by-N.  Preserve 0-by-0 on empty.
+        if (N == 0)
+          D = zeros (0, 0);
+        else
+          D = D_src;
+        endif
         return;
       endif
 
-      src_idx = __resolve_node_list__ (G, varargin{1}, "distances");
-      D_src = __distances_dijkstra__ (W, src_idx);
-
       if (have_tgt)
-        tgt_idx = __resolve_node_list__ (G, varargin{2}, "distances");
         if (isempty (tgt_idx))
           D = zeros (numel (src_idx), 0);
         else

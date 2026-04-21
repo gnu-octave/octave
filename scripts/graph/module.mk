@@ -14,7 +14,11 @@ FCN_FILE_DIRS += \
   %reldir%/private/__conncomp_weak__.m \
   %reldir%/private/__dfsearch_events_impl__.m \
   %reldir%/private/__dfsearch_impl__.m \
+  %reldir%/private/__distances_bellman_ford__.m \
+  %reldir%/private/__distances_dag__.m \
   %reldir%/private/__distances_dijkstra__.m \
+  %reldir%/private/__distances_parse_opts__.m \
+  %reldir%/private/__distances_unweighted__.m \
   %reldir%/private/__edgecount_impl__.m \
   %reldir%/private/__findedge_impl__.m \
   %reldir%/private/__findnode_impl__.m \

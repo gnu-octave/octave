@@ -2075,6 +2075,7 @@ classdef graph
       ## @deftypefn  {} {@var{D} =} distances (@var{G})
       ## @deftypefnx {} {@var{d} =} distances (@var{G}, @var{src})
       ## @deftypefnx {} {@var{d} =} distances (@var{G}, @var{src}, @var{tgt})
+      ## @deftypefnx {} {@var{D} =} distances (@dots{}, @qcode{"Method"}, @var{method})
       ## Return shortest-path distances on the undirected graph
       ## @var{G}.
       ##
@@ -2089,28 +2090,30 @@ classdef graph
       ## @code{numel (@var{src})}-by-@code{numel (@var{tgt})} submatrix
       ## (scalar when both arguments are scalar).
       ##
+      ## The optional @qcode{"Method"} Name-Value pair chooses the
+      ## algorithm: @qcode{"auto"} (default) uses BFS on an unweighted
+      ## graph and Dijkstra on a weighted graph (an undirected graph
+      ## with a negative edge is a negative cycle and raises an error);
+      ## @qcode{"unweighted"} ignores weights and uses BFS;
+      ## @qcode{"positive"} uses Dijkstra (error on negative weight);
+      ## @qcode{"mixed"} is accepted for parity but errors when any
+      ## edge weight is negative (an undirected negative edge forms a
+      ## negative cycle), otherwise matches @qcode{"positive"}.
+      ## @qcode{"acyclic"} is rejected: undirected graphs with edges
+      ## do not satisfy the DAG property expected by this method.
+      ##
       ## @var{src} and @var{tgt} may be numeric node indices or node
       ## names (character row vector or cell array of strings) when
       ## @var{G} has node names; see @code{help distances} for details.
       ## @seealso{graph, shortestpath, shortestpathtree, adjacency}
       ## @end deftypefn
 
-      if (numel (varargin) > 2)
-        error ("Octave:invalid-fun-call", ...
-               "distances: too many input arguments");
-      endif
+      [positional, method] = __distances_parse_opts__ (varargin);
 
-      have_src = (numel (varargin) >= 1);
-      have_tgt = (numel (varargin) >= 2);
+      have_src = (numel (positional) >= 1);
+      have_tgt = (numel (positional) >= 2);
 
       N = numnodes (G);
-
-      if (! have_src)
-        if (N == 0)
-          D = zeros (0, 0);
-          return;
-        endif
-      endif
 
       ## graph class does not support parallel edges, so the weighted
       ## adjacency matrix is simply adj_ (already symmetric); if G is
@@ -2121,16 +2124,75 @@ classdef graph
         W = spones (G.adj_);
       endif
 
+      ## Resolve method = "auto" to a concrete choice for undirected
+      ## graphs: BFS when unweighted, Dijkstra when weighted (and
+      ## nonneg).  A negative edge on an undirected graph is a
+      ## negative cycle (u-v-u) and must error; "auto" therefore
+      ## promotes to "mixed" so the negative-cycle error fires later.
+      if (strcmp (method, "auto"))
+        if (! G.has_weights_)
+          method = "unweighted";
+        elseif (any (nonzeros (W) < 0))
+          method = "mixed";
+        else
+          method = "positive";
+        endif
+      endif
+
+      ## Resolve positional src / tgt into numeric index vectors.
+      if (have_src)
+        src_idx = __resolve_node_list__ (G, positional{1}, "distances");
+      endif
+      if (have_tgt)
+        tgt_idx = __resolve_node_list__ (G, positional{2}, "distances");
+      endif
+
+      switch (method)
+        case "unweighted"
+          if (have_src)
+            D_src = __distances_unweighted__ (W, src_idx);
+          else
+            D_src = __distances_unweighted__ (W);
+          endif
+        case "positive"
+          if (have_src)
+            D_src = __distances_dijkstra__ (W, src_idx);
+          else
+            D_src = __distances_dijkstra__ (W);
+          endif
+        case "mixed"
+          ## An undirected negative edge is a negative cycle by
+          ## itself (u-v-u has total weight 2 * w < 0); reject
+          ## explicitly.
+          if (any (nonzeros (W) < 0))
+            error ("Octave:invalid-input-arg", ...
+                   "distances: graph contains a negative cycle");
+          endif
+          ## Otherwise Bellman-Ford would give the same result as
+          ## Dijkstra; route through Dijkstra for speed.
+          if (have_src)
+            D_src = __distances_dijkstra__ (W, src_idx);
+          else
+            D_src = __distances_dijkstra__ (W);
+          endif
+        case "acyclic"
+          error ("Octave:invalid-input-arg", ...
+                 "distances: 'acyclic' Method is not supported for undirected graphs");
+        otherwise
+          error ("Octave:invalid-input-arg", ...
+                 "distances: internal error -- unknown method '%s'", method);
+      endswitch
+
       if (! have_src)
-        D = __distances_dijkstra__ (W);
+        if (N == 0)
+          D = zeros (0, 0);
+        else
+          D = D_src;
+        endif
         return;
       endif
 
-      src_idx = __resolve_node_list__ (G, varargin{1}, "distances");
-      D_src = __distances_dijkstra__ (W, src_idx);
-
       if (have_tgt)
-        tgt_idx = __resolve_node_list__ (G, varargin{2}, "distances");
         if (isempty (tgt_idx))
           D = zeros (numel (src_idx), 0);
         else

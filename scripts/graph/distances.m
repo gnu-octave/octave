@@ -27,6 +27,7 @@
 ## @deftypefn  {} {@var{D} =} distances (@var{G})
 ## @deftypefnx {} {@var{d} =} distances (@var{G}, @var{src})
 ## @deftypefnx {} {@var{d} =} distances (@var{G}, @var{src}, @var{tgt})
+## @deftypefnx {} {@var{D} =} distances (@dots{}, @qcode{"Method"}, @var{method})
 ## Return shortest-path distances on the graph or digraph @var{G}.
 ##
 ## @var{G} must be a @code{graph} or @code{digraph} object.
@@ -58,15 +59,37 @@
 ## @code{digraph} class, paths must follow edge direction so
 ## @var{D}(i, j) is in general not the same as @var{D}(j, i).
 ##
-## The default method is Dijkstra's algorithm, which requires all edge
-## weights to be non-negative.  A negative edge weight causes an error
-## (future stories will add a Name-Value option to pick alternative
-## methods such as Bellman-Ford).  Self-loops do not influence shortest
-## paths: @var{D}(i, i) is always @code{0}, regardless of any self-loop
-## weight on node @math{i}.  For a @code{digraph} with parallel edges
-## (multigraph), each parallel edge is considered independently; the
-## shortest path uses the edge with the smallest weight connecting each
-## pair of endpoints.
+## The optional @qcode{"Method"} Name-Value pair selects the algorithm
+## used for the computation.  Supported values (case-insensitive) are:
+##
+## @table @asis
+## @item @qcode{"auto"} (default)
+## Pick automatically: BFS when @var{G} is unweighted, Dijkstra when
+## all weights are non-negative, and Bellman-Ford when any weight is
+## negative.
+## @item @qcode{"unweighted"}
+## Treat every edge as having unit weight and run breadth-first
+## search.  Stored weights are ignored.
+## @item @qcode{"positive"}
+## Run Dijkstra's algorithm.  Every edge weight must be non-negative;
+## a negative weight raises an error.
+## @item @qcode{"mixed"}
+## Run Bellman-Ford.  Negative edge weights are allowed provided no
+## negative cycle is reachable from the requested sources; a negative
+## cycle raises an error.  For an undirected graph, any negative
+## weight is a negative cycle (u-v-u) and is always rejected.
+## @item @qcode{"acyclic"}
+## Run an @math{O (N + E)} topological-order relaxation; requires
+## @var{G} to be a directed acyclic graph.  This method is only
+## supported for the @code{digraph} class.
+## @end table
+##
+## Self-loops do not influence shortest paths: @var{D}(i, i) is
+## always @code{0}, regardless of any self-loop weight on node
+## @math{i}.  For a @code{digraph} with parallel edges (multigraph),
+## each parallel edge is considered independently; the shortest path
+## uses the edge with the smallest weight connecting each pair of
+## endpoints.
 ##
 ## @example
 ## @group
@@ -85,6 +108,14 @@
 ##          @result{}  0  1  2
 ##             1  0  1
 ##             2  1  0
+##
+## ## Weighted digraph with a negative edge: 'mixed' handles it,
+## ## 'positive' would error.
+## J = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+## distances (J, "Method", "mixed")
+##          @result{}  0   5   2
+##            Inf  0  -3
+##            Inf Inf  0
 ## @end group
 ## @end example
 ##
@@ -392,13 +423,19 @@ endfunction
 
 ## -------------------- negative weights error --------------------
 
-## Negative weight triggers an error under the default Dijkstra method.
-%!error <negative edge weights>
+## On a digraph with a negative edge weight, the default 'auto'
+## method promotes to 'mixed' (Bellman-Ford) and succeeds provided
+## no negative cycle is reachable.
+%!test
 %! G = digraph ([1 2], [2 3], [1, -1]);
-%! distances (G);
+%! D = distances (G);
+%! assert (D(1, 3), 0);    ## 1->2->3 = 1 + (-1) = 0
+%! assert (D(1, 2), 1);
 
-## Negative weight on an undirected graph also errors.
-%!error <negative edge weights>
+## On an undirected graph with any negative edge weight, the default
+## 'auto' method promotes to 'mixed' and errors: an undirected
+## negative edge is a negative cycle by itself (u-v-u = 2*w < 0).
+%!error <negative cycle>
 %! G = graph ([1 2], [2 3], [1, -1]);
 %! distances (G);
 
@@ -740,5 +777,275 @@ endfunction
 %! G = digraph (3);
 %! distances (G, true);
 
-## Too many arguments.
+## Too many positional arguments.
 %!error distances (digraph (3), 1, 2, 3)
+
+## -------------------- US-P03 Method = 'unweighted' ---------------
+
+## 'unweighted' ignores weights and returns BFS distances.  For
+## digraph ([1 1 2], [2 3 3], [5 100 1]), Dijkstra gives D(1, 3) = 6
+## (1->2->3 costs 5+1=6 vs direct 100).  BFS gives D(1, 3) = 1 (one
+## hop via the direct edge) because every edge has weight 1.
+%!test
+%! G = digraph ([1 1 2], [2 3 3], [5 100 1]);
+%! D = distances (G, "Method", "unweighted");
+%! assert (D(1, 2), 1);
+%! assert (D(1, 3), 1);
+%! assert (D(2, 3), 1);
+
+## 'unweighted' on an unweighted digraph matches default.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! D_default = distances (G);
+%! D_unw = distances (G, "Method", "unweighted");
+%! assert (D_default, D_unw);
+
+## 'unweighted' on an undirected graph gives symmetric BFS hop counts.
+%!test
+%! G = graph ([1 2 1], [2 3 3], [5 100 1]);
+%! D = distances (G, "Method", "unweighted");
+%! assert (D(1, 3), 1);
+%! assert (D(3, 1), 1);
+%! assert (D, D');
+
+## 'unweighted' permits negative weights without error (they are
+## ignored along with all weight values).
+%!test
+%! G = digraph ([1 2], [2 3], [-1, -1]);
+%! D = distances (G, "Method", "unweighted");
+%! assert (D(1, 3), 2);
+
+## 'unweighted' with src gives a 1xN row vector (BFS from src).
+%!test
+%! G = digraph ([1 1 2], [2 3 3], [5 100 1]);
+%! d = distances (G, 1, "Method", "unweighted");
+%! assert (size (d), [1, 3]);
+%! assert (d, [0, 1, 1]);
+
+## 'unweighted' with src and tgt returns a scalar.
+%!test
+%! G = digraph ([1 1 2], [2 3 3], [5 100 1]);
+%! d = distances (G, 1, 3, "Method", "unweighted");
+%! assert (d, 1);
+
+## -------------------- US-P03 Method = 'positive' -----------------
+
+## 'positive' matches the default on a nonneg-weighted digraph.
+%!test
+%! G = digraph ([1 1 2], [2 3 3], [5 100 1]);
+%! D_default = distances (G);
+%! D_pos = distances (G, "Method", "positive");
+%! assert (D_default, D_pos);
+
+## 'positive' matches default on a nonneg-weighted graph.
+%!test
+%! G = graph ([1 2 3], [2 3 1], [5 10 15]);
+%! D_default = distances (G);
+%! D_pos = distances (G, "Method", "positive");
+%! assert (D_default, D_pos);
+
+## 'positive' errors on a negative edge weight (digraph).
+%!error <negative edge weights>
+%! G = digraph ([1 2], [2 3], [1, -1]);
+%! distances (G, "Method", "positive");
+
+## 'positive' errors on a negative edge weight (graph).
+%!error <negative edge weights>
+%! G = graph ([1 2], [2 3], [1, -1]);
+%! distances (G, "Method", "positive");
+
+## 'positive' with src and tgt.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15]);
+%! assert (distances (G, 1, 3, "Method", "positive"), 15);
+
+## -------------------- US-P03 Method = 'mixed' --------------------
+
+## 'mixed' accepts negative weights on a digraph and finds the path.
+## 1->2->3 costs 5 + (-3) = 2, vs direct 10.  Expect 2.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+%! D = distances (G, "Method", "mixed");
+%! assert (D(1, 3), 2);
+
+## 'mixed' on a DAG with all negative weights.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [-2 -3 -10]);
+%! D = distances (G, "Method", "mixed");
+%! assert (D(1, 3), -10);
+%! assert (D(1, 2), -2);
+%! assert (D(2, 3), -3);
+
+## 'mixed' matches Dijkstra on a nonneg-weighted digraph.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15]);
+%! D_def = distances (G);
+%! D_mixed = distances (G, "Method", "mixed");
+%! assert (D_def, D_mixed);
+
+## 'mixed' errors on a negative cycle (directed 3-cycle with sum < 0).
+%!error <negative cycle>
+%! G = digraph ([1 2 3], [2 3 1], [1 1 -10]);
+%! distances (G, "Method", "mixed");
+
+## 'mixed' on an undirected graph with negative weight is a negative
+## cycle (u-v-u = 2*w < 0); treated as error.
+%!error <negative cycle>
+%! G = graph ([1 2], [2 3], [1, -1]);
+%! distances (G, "Method", "mixed");
+
+## 'mixed' on an undirected graph with nonneg weights works (same as
+## default).
+%!test
+%! G = graph ([1 2 3], [2 3 1], [5 10 15]);
+%! D_def = distances (G);
+%! D_mixed = distances (G, "Method", "mixed");
+%! assert (D_def, D_mixed);
+
+## 'mixed' with src on a digraph with negative weights.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+%! d = distances (G, 1, "Method", "mixed");
+%! assert (d, [0, 5, 2]);
+
+## 'mixed' with src and tgt.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+%! assert (distances (G, 1, 3, "Method", "mixed"), 2);
+
+## -------------------- US-P03 Method = 'acyclic' ------------------
+
+## 'acyclic' handles a DAG with negative weights.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+%! D = distances (G, "Method", "acyclic");
+%! assert (D(1, 3), 2);
+
+## 'acyclic' matches default on a simple DAG (positive weights).
+%!test
+%! G = digraph ([1 1 2 2 3], [2 3 3 4 4], [1 4 2 5 1]);
+%! D_def = distances (G);
+%! D_acy = distances (G, "Method", "acyclic");
+%! assert (D_def, D_acy);
+
+## 'acyclic' returns Inf for unreachable pairs.
+%!test
+%! G = digraph ([1 3], [2 4]);
+%! D = distances (G, "Method", "acyclic");
+%! assert (D(1, 3), Inf);
+%! assert (D(1, 2), 1);
+
+## 'acyclic' errors when the digraph has a cycle.
+%!error <acyclic|DAG|cycle>
+%! G = digraph ([1 2 3], [2 3 1]);
+%! distances (G, "Method", "acyclic");
+
+## 'acyclic' errors when the digraph has a self-loop (one-node cycle).
+%!error <acyclic|DAG|cycle>
+%! G = digraph ([1], [1]);
+%! distances (G, "Method", "acyclic");
+
+## 'acyclic' errors on undirected graph (not a DAG).
+%!error <acyclic|undirected|DAG>
+%! G = graph ([1 2], [2 3]);
+%! distances (G, "Method", "acyclic");
+
+## 'acyclic' on an edgeless digraph (trivially acyclic).
+%!test
+%! G = digraph (3);
+%! D = distances (G, "Method", "acyclic");
+%! expected = [0 Inf Inf; Inf 0 Inf; Inf Inf 0];
+%! assert (D, expected);
+
+## -------------------- US-P03 Method = 'auto' (default) -----------
+
+## 'auto' on an unweighted digraph uses BFS (matches default).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! D_auto = distances (G, "Method", "auto");
+%! D_def = distances (G);
+%! assert (D_auto, D_def);
+
+## 'auto' on a nonneg-weighted digraph uses Dijkstra.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15]);
+%! D_auto = distances (G, "Method", "auto");
+%! D_def = distances (G);
+%! assert (D_auto, D_def);
+
+## 'auto' on a digraph with negative weights uses Bellman-Ford.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+%! D_auto = distances (G, "Method", "auto");
+%! assert (D_auto(1, 3), 2);
+
+## 'auto' is the explicit default method.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15]);
+%! D_default = distances (G);
+%! D_auto = distances (G, "Method", "auto");
+%! assert (D_default, D_auto);
+
+## -------------------- US-P03 case-insensitive parsing ------------
+
+## Method name matches case-insensitively.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! D1 = distances (G, "Method", "unweighted");
+%! D2 = distances (G, "METHOD", "UNWEIGHTED");
+%! D3 = distances (G, "method", "Unweighted");
+%! assert (D1, D2);
+%! assert (D1, D3);
+
+## Value matches case-insensitively for all methods.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15]);
+%! assert (distances (G, "Method", "Positive"), distances (G));
+%! assert (distances (G, "Method", "POSITIVE"), distances (G));
+
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+%! assert (distances (G, "Method", "Mixed"),
+%!         distances (G, "Method", "mixed"));
+%! assert (distances (G, "Method", "ACYCLIC"),
+%!         distances (G, "Method", "acyclic"));
+
+## -------------------- US-P03 error cases -------------------------
+
+## Unknown method name.
+%!error <Method|method|unknown>
+%! G = digraph ([1 2], [2 3]);
+%! distances (G, "Method", "bogus");
+
+## Numeric method value.
+%!error <Method.*string|string value>
+%! G = digraph ([1 2], [2 3]);
+%! distances (G, "Method", 7);
+
+## Missing method value (odd NV pair).
+%!error <Method|pair|missing>
+%! G = digraph ([1 2], [2 3]);
+%! distances (G, "Method");
+
+## Unknown option name after 2 positional arguments.  A char row
+## at position 3 cannot be src/tgt (both already consumed), so it
+## must be an option name; only 'Method' is recognised.
+%!error <unknown option|Method>
+%! G = digraph ([1 2], [2 3]);
+%! distances (G, 1, 2, "Bogus", "auto");
+
+## -------------------- US-P03 dot notation dispatch ---------------
+
+## G.distances('Method', 'unweighted') matches free-function call.
+%!test
+%! G = digraph ([1 1 2], [2 3 3], [5 100 1]);
+%! D1 = distances (G, "Method", "unweighted");
+%! D2 = G.distances ("Method", "unweighted");
+%! assert (D1, D2);
+
+## G.distances(src, 'Method', method) works via dot notation.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+%! d1 = distances (G, 1, "Method", "mixed");
+%! d2 = G.distances (1, "Method", "mixed");
+%! assert (d1, d2);

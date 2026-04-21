@@ -201,7 +201,7 @@ classdef graph
   ## @end group
   ## @end example
   ##
-  ## @seealso{digraph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian}
+  ## @seealso{digraph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian, bfsearch}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1558,6 +1558,38 @@ classdef graph
       ## diagonal as a sparse matrix and subtract A_off.
       d = degree (G);
       L = sparse (1:N, 1:N, d, N, N) - A_off;
+
+    endfunction
+
+    function v = bfsearch (G, s)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{v} =} bfsearch (@var{G}, @var{s})
+      ## Perform a breadth-first search of the undirected graph
+      ## @var{G} starting at node @var{s} and return the column vector
+      ## @var{v} of node indices in the order they are discovered.
+      ## Incident edges are followed in both directions.  When a node
+      ## has multiple unvisited neighbours they are visited in
+      ## ascending order of node index (MATLAB parity tie-break).
+      ## Nodes in other connected components are omitted; parallel
+      ## edges in a multigraph are collapsed (each neighbour is
+      ## enqueued at most once).
+      ## @seealso{graph, dfsearch, neighbors, degree}
+      ## @end deftypefn
+
+      if (nargin != 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to bfsearch: expected 2 arguments");
+      endif
+
+      [src, ~] = __resolve_single_node__ (G, s, "bfsearch");
+
+      ## Build a binary / count adjacency.  For an undirected graph
+      ## the stored adjacency is symmetric, so adjacency(G) gives a
+      ## matrix whose nonzeros mark incident edges in both directions.
+      A = adjacency (G);
+
+      v = __bfsearch_impl__ (A, src);
 
     endfunction
 

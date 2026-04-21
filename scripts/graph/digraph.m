@@ -217,7 +217,7 @@ classdef digraph
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, flipedge, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian}
+  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, flipedge, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian, bfsearch}
   ## @end deftypefn
 
   properties (Access = private)
@@ -2422,6 +2422,38 @@ classdef digraph
 
       error ("Octave:invalid-input-arg", ...
              "laplacian: not defined for a digraph; laplacian requires an undirected graph");
+
+    endfunction
+
+    function v = bfsearch (G, s)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{v} =} bfsearch (@var{G}, @var{s})
+      ## Perform a breadth-first search of the digraph @var{G} starting
+      ## at node @var{s} and return the column vector @var{v} of node
+      ## indices in the order they are discovered.  Out-edges are
+      ## followed (source -> destination).  When a node has multiple
+      ## unvisited out-neighbours they are visited in ascending order
+      ## of node index (MATLAB parity tie-break).  Nodes not reachable
+      ## from @var{s} are omitted; parallel edges in a multigraph are
+      ## collapsed (each neighbour is enqueued at most once).
+      ## @seealso{digraph, dfsearch, successors, predecessors}
+      ## @end deftypefn
+
+      if (nargin != 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to bfsearch: expected 2 arguments");
+      endif
+
+      [src, ~] = __resolve_single_node__ (G, s, "bfsearch");
+
+      ## Build a binary / count adjacency.  adjacency(G) with no
+      ## second argument returns spones(adj_) for simple storage and
+      ## a count matrix for a multigraph -- both have nonzeros exactly
+      ## where edges exist, which is all BFS needs.
+      A = adjacency (G);
+
+      v = __bfsearch_impl__ (A, src);
 
     endfunction
 

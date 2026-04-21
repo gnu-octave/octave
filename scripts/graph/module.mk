@@ -5,6 +5,7 @@ FCN_FILE_DIRS += \
 %canon_reldir%_PRIVATE_FCN_FILES = \
   %reldir%/private/__addedge_impl__.m \
   %reldir%/private/__addnode_impl__.m \
+  %reldir%/private/__bfsearch_impl__.m \
   %reldir%/private/__edgecount_impl__.m \
   %reldir%/private/__findedge_impl__.m \
   %reldir%/private/__findnode_impl__.m \
@@ -22,6 +23,7 @@ FCN_FILE_DIRS += \
   %reldir%/addedge.m \
   %reldir%/addnode.m \
   %reldir%/adjacency.m \
+  %reldir%/bfsearch.m \
   %reldir%/degree.m \
   %reldir%/digraph.m \
   %reldir%/edgecount.m \

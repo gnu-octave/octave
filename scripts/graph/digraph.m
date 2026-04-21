@@ -4287,6 +4287,143 @@ classdef digraph
 
     endfunction
 
+    function s = saveobj (G)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{s} =} saveobj (@var{G})
+      ## Serialize the @code{digraph} object @var{G} to a scalar
+      ## struct suitable for @code{save}.
+      ##
+      ## The returned struct captures the internal state needed to
+      ## rebuild @var{G}:
+      ##
+      ## @table @asis
+      ## @item @code{adj_}
+      ## The sparse adjacency matrix.
+      ##
+      ## @item @code{nodenames_}
+      ## A column cell array of node names (empty @code{cell (0, 1)}
+      ## when the graph was built without names).
+      ##
+      ## @item @code{has_weights_}
+      ## Logical scalar; true when the graph was constructed with
+      ## explicit edge weights.
+      ##
+      ## @item @code{edge_attrs_}, @code{node_attrs_}
+      ## Extra edge and node attribute columns supplied through the
+      ## @code{EdgeTable} / @code{NodeTable} constructor form.
+      ##
+      ## @item @code{is_multigraph_}
+      ## Logical scalar; true for multigraph-mode storage.
+      ##
+      ## @item @code{mg_endnodes_}, @code{mg_weights_}
+      ## Lex-sorted endpoint pairs and weights for multigraph
+      ## storage.  Empty when @code{is_multigraph_} is false.
+      ## @end table
+      ##
+      ## The returned struct is a pure-data representation and does
+      ## @emph{not} include the Dependent @code{Edges} and
+      ## @code{Nodes} views.  The struct round-trips through
+      ## @code{save}/@code{load} and may be handed back to
+      ## @code{digraph.loadobj} to reconstruct the original digraph.
+      ##
+      ## This method is called automatically by @code{save} when
+      ## @var{G} is being serialized; users normally do not need to
+      ## invoke it directly.
+      ##
+      ## @seealso{digraph, save, load}
+      ## @end deftypefn
+
+      s = struct ();
+      s.adj_ = G.adj_;
+      s.nodenames_ = G.nodenames_;
+      s.has_weights_ = G.has_weights_;
+      s.edge_attrs_ = G.edge_attrs_;
+      s.node_attrs_ = G.node_attrs_;
+      s.is_multigraph_ = G.is_multigraph_;
+      s.mg_endnodes_ = G.mg_endnodes_;
+      s.mg_weights_ = G.mg_weights_;
+
+    endfunction
+
+  endmethods
+
+  methods (Static)
+
+    function G = loadobj (s)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{G} =} digraph.loadobj (@var{s})
+      ## Reconstruct a @code{digraph} from a saved representation.
+      ##
+      ## @var{s} is either a scalar struct containing the private
+      ## internal state produced by @code{saveobj} (or by Octave's
+      ## default classdef-to-struct conversion when a digraph is
+      ## saved with @code{save}), or an existing @code{digraph}
+      ## object (in which case it is returned unchanged).
+      ##
+      ## Typical usage after loading a digraph saved to a MAT-file:
+      ##
+      ## @example
+      ## @group
+      ## G = digraph ([1 2 3], [2 3 1], [10 20 30]);
+      ## save ("-v7", "mygraph.mat", "G");
+      ## ## In a fresh session:
+      ## S = load ("mygraph.mat");
+      ## G = digraph.loadobj (S.G);
+      ## @end group
+      ## @end example
+      ##
+      ## The explicit @code{digraph.loadobj} call is needed because
+      ## Octave's @code{load} currently returns MAT-file classdef
+      ## elements as plain structs.  MATLAB invokes @code{loadobj}
+      ## automatically on load.
+      ##
+      ## Unknown struct fields are silently ignored for forward
+      ## compatibility with future property additions.
+      ##
+      ## @seealso{digraph, save, load}
+      ## @end deftypefn
+
+      if (isa (s, "digraph"))
+        G = s;
+        return;
+      endif
+
+      if (! isstruct (s) || ! isscalar (s))
+        error ("Octave:invalid-input-arg", ...
+               "digraph.loadobj: S must be a scalar struct or digraph");
+      endif
+
+      G = digraph ();
+
+      if (isfield (s, "adj_"))
+        G.adj_ = s.adj_;
+      endif
+      if (isfield (s, "nodenames_"))
+        G.nodenames_ = s.nodenames_;
+      endif
+      if (isfield (s, "has_weights_"))
+        G.has_weights_ = logical (s.has_weights_);
+      endif
+      if (isfield (s, "edge_attrs_"))
+        G.edge_attrs_ = s.edge_attrs_;
+      endif
+      if (isfield (s, "node_attrs_"))
+        G.node_attrs_ = s.node_attrs_;
+      endif
+      if (isfield (s, "is_multigraph_"))
+        G.is_multigraph_ = logical (s.is_multigraph_);
+      endif
+      if (isfield (s, "mg_endnodes_"))
+        G.mg_endnodes_ = s.mg_endnodes_;
+      endif
+      if (isfield (s, "mg_weights_"))
+        G.mg_weights_ = s.mg_weights_;
+      endif
+
+    endfunction
+
   endmethods
 
 endclassdef
@@ -6034,3 +6171,180 @@ endfunction
 %! G = digraph ();
 %! s = evalc ("disp (G)");
 %! assert (! isempty (regexp (s, '0 edges\.\s*$', 'once')));
+
+## ---------------------------------------------------------------------
+## US-PS01 — save/load round-trip
+## ---------------------------------------------------------------------
+
+## BIST — US-PS01: saveobj returns a scalar struct with the private
+## internal fields needed to reconstruct the digraph.
+%!test <*PS01>
+%! G = digraph ([1 2 3], [2 3 1], [10 20 30]);
+%! s = saveobj (G);
+%! assert (isstruct (s));
+%! assert (isscalar (s));
+%! assert (isfield (s, "adj_"));
+%! assert (isfield (s, "nodenames_"));
+%! assert (isfield (s, "has_weights_"));
+%! assert (isfield (s, "edge_attrs_"));
+%! assert (isfield (s, "node_attrs_"));
+%! assert (isfield (s, "is_multigraph_"));
+%! assert (isfield (s, "mg_endnodes_"));
+%! assert (isfield (s, "mg_weights_"));
+
+## BIST — US-PS01: digraph.loadobj(struct) reconstructs a digraph
+## from the struct returned by saveobj.
+%!test <*PS01>
+%! G = digraph ([1 2 3], [2 3 1], [10 20 30]);
+%! s = saveobj (G);
+%! H = digraph.loadobj (s);
+%! assert (isa (H, "digraph"));
+%! assert (numnodes (H), numnodes (G));
+%! assert (numedges (H), numedges (G));
+%! assert (H.Edges.EndNodes, G.Edges.EndNodes);
+%! assert (H.Edges.Weight, G.Edges.Weight);
+
+## BIST — US-PS01: digraph.loadobj(digraph) is idempotent — if the
+## input is already a digraph (e.g., load preserved the class), it
+## is returned unchanged.
+%!test <*PS01>
+%! G = digraph ([1 2], [2 3]);
+%! H = digraph.loadobj (G);
+%! assert (isa (H, "digraph"));
+%! assert (numnodes (H), numnodes (G));
+%! assert (numedges (H), numedges (G));
+%! assert (H.Edges.EndNodes, G.Edges.EndNodes);
+
+## BIST — US-PS01: save -v7 / load round-trip for an unweighted
+## digraph; use digraph.loadobj to rebuild the object from the
+## struct Octave returns.
+%!test <*PS01>
+%! warning ("off", "Octave:classdef-to-struct", "local");
+%! warning ("off", "Octave:load:classdef-to-struct", "local");
+%! G0 = digraph ([1 2 3 4], [2 3 4 1]);
+%! mat_file = [tempname() ".mat"];
+%! unwind_protect
+%!   G = G0;
+%!   save ("-v7", mat_file, "G");
+%!   clear G;
+%!   loaded = load (mat_file);
+%!   H = digraph.loadobj (loaded.G);
+%!   assert (isa (H, "digraph"));
+%!   assert (numnodes (H), numnodes (G0));
+%!   assert (numedges (H), numedges (G0));
+%!   assert (H.Edges.EndNodes, G0.Edges.EndNodes);
+%!   assert (! isfield (H.Edges, "Weight"));
+%! unwind_protect_cleanup
+%!   if (exist (mat_file, "file"))
+%!     unlink (mat_file);
+%!   endif
+%! end_unwind_protect
+
+## BIST — US-PS01: save -v7 / load round-trip preserves edge weights.
+%!test <*PS01>
+%! warning ("off", "Octave:classdef-to-struct", "local");
+%! warning ("off", "Octave:load:classdef-to-struct", "local");
+%! G0 = digraph ([1 2 3], [2 3 1], [1.5 2.5 3.5]);
+%! mat_file = [tempname() ".mat"];
+%! unwind_protect
+%!   G = G0;
+%!   save ("-v7", mat_file, "G");
+%!   loaded = load (mat_file);
+%!   H = digraph.loadobj (loaded.G);
+%!   assert (H.Edges.Weight, G0.Edges.Weight);
+%!   assert (H.Edges.EndNodes, G0.Edges.EndNodes);
+%! unwind_protect_cleanup
+%!   if (exist (mat_file, "file"))
+%!     unlink (mat_file);
+%!   endif
+%! end_unwind_protect
+
+## BIST — US-PS01: save -v7 / load round-trip preserves node names.
+%!test <*PS01>
+%! warning ("off", "Octave:classdef-to-struct", "local");
+%! warning ("off", "Octave:load:classdef-to-struct", "local");
+%! G0 = digraph ([1 2 3], [2 3 1], [10 20 30], {"A","B","C"});
+%! mat_file = [tempname() ".mat"];
+%! unwind_protect
+%!   G = G0;
+%!   save ("-v7", mat_file, "G");
+%!   loaded = load (mat_file);
+%!   H = digraph.loadobj (loaded.G);
+%!   assert (H.Nodes.Name, {"A"; "B"; "C"});
+%!   assert (H.Edges.Weight, [10; 20; 30]);
+%!   assert (H.Edges.EndNodes, G0.Edges.EndNodes);
+%! unwind_protect_cleanup
+%!   if (exist (mat_file, "file"))
+%!     unlink (mat_file);
+%!   endif
+%! end_unwind_protect
+
+## BIST — US-PS01: save -v7 / load round-trip of the empty digraph.
+%!test <*PS01>
+%! warning ("off", "Octave:classdef-to-struct", "local");
+%! warning ("off", "Octave:load:classdef-to-struct", "local");
+%! G0 = digraph ();
+%! mat_file = [tempname() ".mat"];
+%! unwind_protect
+%!   G = G0;
+%!   save ("-v7", mat_file, "G");
+%!   loaded = load (mat_file);
+%!   H = digraph.loadobj (loaded.G);
+%!   assert (isa (H, "digraph"));
+%!   assert (numnodes (H), 0);
+%!   assert (numedges (H), 0);
+%! unwind_protect_cleanup
+%!   if (exist (mat_file, "file"))
+%!     unlink (mat_file);
+%!   endif
+%! end_unwind_protect
+
+## BIST — US-PS01: save -v7 / load round-trip of an isolated-only
+## digraph (node count preserved; no edges).
+%!test <*PS01>
+%! warning ("off", "Octave:classdef-to-struct", "local");
+%! warning ("off", "Octave:load:classdef-to-struct", "local");
+%! G0 = digraph (5);
+%! mat_file = [tempname() ".mat"];
+%! unwind_protect
+%!   G = G0;
+%!   save ("-v7", mat_file, "G");
+%!   loaded = load (mat_file);
+%!   H = digraph.loadobj (loaded.G);
+%!   assert (numnodes (H), 5);
+%!   assert (numedges (H), 0);
+%! unwind_protect_cleanup
+%!   if (exist (mat_file, "file"))
+%!     unlink (mat_file);
+%!   endif
+%! end_unwind_protect
+
+## BIST — US-PS01: save -v7 / load round-trip preserves multigraph
+## state (parallel edges kept, ismultigraph stays true).
+%!test <*PS01>
+%! warning ("off", "Octave:classdef-to-struct", "local");
+%! warning ("off", "Octave:load:classdef-to-struct", "local");
+%! G0 = digraph ([1 1 2], [2 2 3], [1 1 1], "multigraph");
+%! mat_file = [tempname() ".mat"];
+%! unwind_protect
+%!   G = G0;
+%!   save ("-v7", mat_file, "G");
+%!   loaded = load (mat_file);
+%!   H = digraph.loadobj (loaded.G);
+%!   assert (ismultigraph (H));
+%!   assert (numedges (H), 3);
+%!   assert (H.Edges.EndNodes, G0.Edges.EndNodes);
+%!   assert (H.Edges.Weight, G0.Edges.Weight);
+%! unwind_protect_cleanup
+%!   if (exist (mat_file, "file"))
+%!     unlink (mat_file);
+%!   endif
+%! end_unwind_protect
+
+## BIST — US-PS01: loadobj errors when given a non-struct, non-digraph.
+%!error <scalar struct or digraph>
+%! digraph.loadobj (42);
+
+## BIST — US-PS01: loadobj errors on a non-scalar struct.
+%!error <scalar struct or digraph>
+%! digraph.loadobj (struct ("adj_", {sparse(0,0), sparse(0,0)}));

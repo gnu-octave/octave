@@ -13,6 +13,7 @@ FCN_FILE_DIRS += \
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/.oct-config \
+  %reldir%/adjacency.m \
   %reldir%/degree.m \
   %reldir%/digraph.m \
   %reldir%/edgecount.m \

@@ -217,7 +217,7 @@ classdef digraph
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges, ismultigraph, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges}
+  ## @seealso{graph, numnodes, numedges, ismultigraph, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1557,6 +1557,135 @@ classdef digraph
       else
         nid = double (nid_idx);
       endif
+
+    endfunction
+
+    function A = adjacency (G, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{A} =} adjacency (@var{G})
+      ## @deftypefnx {} {@var{A} =} adjacency (@var{G}, @qcode{"weighted"})
+      ## @deftypefnx {} {@var{A} =} adjacency (@var{G}, @var{W})
+      ## Return the sparse adjacency matrix of the digraph @var{G}.
+      ## The one-input form returns a binary (0/1) matrix (or an edge-
+      ## count matrix for a multigraph); @qcode{"weighted"} uses the
+      ## stored edge weights; a numeric vector @var{W} of length
+      ## @code{numedges (@var{G})} provides custom per-edge weights.
+      ## See @code{help adjacency} for the full description.
+      ## @seealso{digraph, incidence, numedges, ismultigraph}
+      ## @end deftypefn
+
+      if (nargin < 1 || nargin > 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to adjacency: expected 1 or 2 arguments");
+      endif
+
+      N = size (G.adj_, 1);
+      if (G.is_multigraph_)
+        M = size (G.mg_endnodes_, 1);
+      else
+        M = nnz (G.adj_);
+      endif
+
+      if (nargin == 1)
+        ## Binary / count form: for multigraph, sparse(s, t, 1, N, N)
+        ## accumulates parallel edges into counts; for simple storage,
+        ## spones(adj_) collapses weights to 1/0.
+        if (G.is_multigraph_)
+          if (M == 0)
+            A = sparse (N, N);
+          else
+            src = G.mg_endnodes_(:, 1);
+            dst = G.mg_endnodes_(:, 2);
+            A = sparse (src, dst, 1, N, N);
+          endif
+        else
+          if (N == 0)
+            A = sparse (0, 0);
+          else
+            A = spones (G.adj_);
+          endif
+        endif
+        return;
+      endif
+
+      arg = varargin{1};
+
+      if (ischar (arg) && isrow (arg)) ...
+         || (iscellstr (arg) && isscalar (arg))
+        if (iscellstr (arg))
+          flag = arg{1};
+        else
+          flag = arg;
+        endif
+        if (! strcmpi (flag, "weighted"))
+          error ("Octave:invalid-input-arg", ...
+                 "adjacency: unknown option '%s'; expected 'weighted' or a numeric weight vector", ...
+                 flag);
+        endif
+        if (G.is_multigraph_)
+          if (M == 0)
+            A = sparse (N, N);
+          else
+            src = G.mg_endnodes_(:, 1);
+            dst = G.mg_endnodes_(:, 2);
+            if (G.has_weights_)
+              w = G.mg_weights_;
+            else
+              w = ones (M, 1);
+            endif
+            A = sparse (src, dst, w, N, N);
+          endif
+        else
+          if (N == 0)
+            A = sparse (0, 0);
+          elseif (G.has_weights_)
+            A = G.adj_;
+          else
+            A = spones (G.adj_);
+          endif
+        endif
+        return;
+      endif
+
+      ## Custom weight vector W.
+      if (iscell (arg))
+        error ("Octave:invalid-input-arg", ...
+               "adjacency: weight argument must be 'weighted' or a numeric real vector");
+      endif
+      if (! isnumeric (arg))
+        error ("Octave:invalid-input-arg", ...
+               "adjacency: weight argument must be 'weighted' or a numeric real vector");
+      endif
+      if (! isreal (arg))
+        error ("Octave:invalid-input-arg", ...
+               "adjacency: weight vector must be real (complex values not supported)");
+      endif
+      if (! isempty (arg) && ! isvector (arg))
+        error ("Octave:invalid-input-arg", ...
+               "adjacency: weight argument must be a vector");
+      endif
+      if (numel (arg) != M)
+        error ("Octave:invalid-input-arg", ...
+               "adjacency: weight vector must have length %d (numedges (G))", M);
+      endif
+
+      if (M == 0)
+        A = sparse (N, N);
+        return;
+      endif
+
+      w = double (arg(:));
+      if (G.is_multigraph_)
+        src = G.mg_endnodes_(:, 1);
+        dst = G.mg_endnodes_(:, 2);
+      else
+        ## Lex-sorted (src, dst) pairs matching G.Edges order.
+        E = G.Edges.EndNodes;
+        src = E(:, 1);
+        dst = E(:, 2);
+      endif
+      A = sparse (src, dst, w, N, N);
 
     endfunction
 

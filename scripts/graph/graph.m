@@ -201,7 +201,7 @@ classdef graph
   ## @end group
   ## @end example
   ##
-  ## @seealso{digraph, numnodes, numedges, neighbors, degree, findnode, findedge, edgecount}
+  ## @seealso{digraph, numnodes, numedges, neighbors, degree, findnode, findedge, edgecount, adjacency}
   ## @end deftypefn
 
   properties (Access = private)
@@ -967,6 +967,109 @@ classdef graph
       endif
 
       n = __edgecount_impl__ (G, varargin{1}, varargin{2});
+
+    endfunction
+
+    function A = adjacency (G, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{A} =} adjacency (@var{G})
+      ## @deftypefnx {} {@var{A} =} adjacency (@var{G}, @qcode{"weighted"})
+      ## @deftypefnx {} {@var{A} =} adjacency (@var{G}, @var{W})
+      ## Return the sparse symmetric adjacency matrix of the undirected
+      ## graph @var{G}.  The one-input form returns a binary (0/1)
+      ## matrix; @qcode{"weighted"} uses the stored edge weights; a
+      ## numeric vector @var{W} of length @code{numedges (@var{G})}
+      ## provides custom per-edge weights.  For a non-self-loop edge,
+      ## @var{W}(k) appears at both @var{A}(i, j) and @var{A}(j, i); for
+      ## a self-loop it appears once at @var{A}(i, i).  See
+      ## @code{help adjacency} for the full description.
+      ## @seealso{graph, incidence, laplacian, numedges}
+      ## @end deftypefn
+
+      if (nargin < 1 || nargin > 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to adjacency: expected 1 or 2 arguments");
+      endif
+
+      N = size (G.adj_, 1);
+      M = nnz (tril (G.adj_));
+
+      if (nargin == 1)
+        if (N == 0)
+          A = sparse (0, 0);
+        else
+          A = spones (G.adj_);
+        endif
+        return;
+      endif
+
+      arg = varargin{1};
+
+      if (ischar (arg) && isrow (arg)) ...
+         || (iscellstr (arg) && isscalar (arg))
+        if (iscellstr (arg))
+          flag = arg{1};
+        else
+          flag = arg;
+        endif
+        if (! strcmpi (flag, "weighted"))
+          error ("Octave:invalid-input-arg", ...
+                 "adjacency: unknown option '%s'; expected 'weighted' or a numeric weight vector", ...
+                 flag);
+        endif
+        if (N == 0)
+          A = sparse (0, 0);
+        elseif (G.has_weights_)
+          A = G.adj_;
+        else
+          A = spones (G.adj_);
+        endif
+        return;
+      endif
+
+      ## Custom weight vector W.
+      if (iscell (arg))
+        error ("Octave:invalid-input-arg", ...
+               "adjacency: weight argument must be 'weighted' or a numeric real vector");
+      endif
+      if (! isnumeric (arg))
+        error ("Octave:invalid-input-arg", ...
+               "adjacency: weight argument must be 'weighted' or a numeric real vector");
+      endif
+      if (! isreal (arg))
+        error ("Octave:invalid-input-arg", ...
+               "adjacency: weight vector must be real (complex values not supported)");
+      endif
+      if (! isempty (arg) && ! isvector (arg))
+        error ("Octave:invalid-input-arg", ...
+               "adjacency: weight argument must be a vector");
+      endif
+      if (numel (arg) != M)
+        error ("Octave:invalid-input-arg", ...
+               "adjacency: weight vector must have length %d (numedges (G))", M);
+      endif
+
+      if (M == 0)
+        A = sparse (N, N);
+        return;
+      endif
+
+      w = double (arg(:));
+      ## G.Edges.EndNodes returns edges in lex order with col1 <= col2.
+      E = G.Edges.EndNodes;
+      s = E(:, 1);
+      t = E(:, 2);
+      is_self = (s == t);
+      s_off = s(! is_self);
+      t_off = t(! is_self);
+      w_off = w(! is_self);
+      s_self = s(is_self);
+      w_self = w(is_self);
+      A = sparse ([s_off; t_off; s_self], ...
+                  [t_off; s_off; s_self], ...
+                  [w_off; w_off; w_self], ...
+                  N, N);
 
     endfunction
 

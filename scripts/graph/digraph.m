@@ -3703,7 +3703,7 @@ classdef digraph
       ## method that grows one BFS tree from @var{s} and another
       ## backward from @var{t} and augments along the shortest joining
       ## path.  Both algorithms return the same flow value.
-      ## @seealso{digraph, shortestpath, distances}
+      ## @seealso{digraph, mincut, shortestpath, distances}
       ## @end deftypefn
 
       if (nargin < 3)
@@ -3767,6 +3767,138 @@ classdef digraph
                  "maxflow: internal error -- unknown algorithm '%s'", ...
                  algorithm);
       endswitch
+
+    endfunction
+
+    function [mf, GF, cs, ct] = mincut (G, s, t)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{mf} =} mincut (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {[@var{mf}, @var{GF}] =} mincut (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {[@var{mf}, @var{GF}, @var{cs}, @var{ct}] =} mincut (@var{G}, @var{s}, @var{t})
+      ## Return the minimum @math{s}-@math{t} cut in the digraph
+      ## @var{G}.  By the max-flow min-cut theorem @var{mf} equals
+      ## @code{maxflow (@var{G}, @var{s}, @var{t})}.  When additional
+      ## outputs are requested, @var{GF} is a digraph of the
+      ## flow-carrying arcs (weights = flow values), and @var{cs} /
+      ## @var{ct} partition the nodes into the source and sink sides
+      ## of the minimum cut.
+      ## @seealso{digraph, maxflow, shortestpath, distances}
+      ## @end deftypefn
+
+      if (nargin < 3)
+        print_usage ();
+      endif
+
+      [s_idx, s_by_name] = __resolve_single_node__ (G, s, "mincut");
+      [t_idx, t_by_name] = __resolve_single_node__ (G, t, "mincut");
+      return_names = s_by_name || t_by_name;
+
+      N = numnodes (G);
+
+      ## Build an edge list (uu, vv, caps) of directed arcs.  Parallel
+      ## edges in a multigraph are kept distinct so the algorithm sums
+      ## their capacities implicitly.  Matches maxflow's edge-list
+      ## construction so the two methods agree on mf.
+      if (G.is_multigraph_)
+        uu = G.mg_endnodes_(:, 1);
+        vv = G.mg_endnodes_(:, 2);
+        if (G.has_weights_)
+          caps = G.mg_weights_(:);
+        else
+          caps = ones (numel (uu), 1);
+        endif
+      else
+        if (G.has_weights_)
+          [uu_v, vv_v, caps_v] = find (G.adj_);
+        else
+          [uu_v, vv_v] = find (G.adj_);
+          caps_v = ones (numel (uu_v), 1);
+        endif
+        uu = uu_v(:);
+        vv = vv_v(:);
+        caps = caps_v(:);
+      endif
+
+      ## Validate capacities.
+      if (! isempty (caps))
+        if (! isreal (caps) || any (isnan (caps)))
+          error ("Octave:invalid-input-arg", ...
+                 "mincut: edge weights must be finite real numbers (NaN not allowed)");
+        endif
+        if (any (caps < 0))
+          error ("Octave:invalid-input-arg", ...
+                 "mincut: edge weights must be non-negative capacities");
+        endif
+      endif
+
+      ## Run Edmonds-Karp with the multi-output form to recover per-arc
+      ## flows and the source side of the min cut.
+      [mf, flow, reach_s] = ...
+          __maxflow_edmonds_karp__ (uu, vv, caps, N, s_idx, t_idx);
+
+      if (nargout <= 1)
+        return;
+      endif
+
+      ## Build GF: digraph on the same node set containing only the
+      ## flow-carrying arcs (flow > 0), with flow values as weights.
+      ## For a multigraph, parallel arcs carrying flow are preserved
+      ## (each as its own arc in GF); for a simple digraph the
+      ## find(adj_) result never has parallel arcs to begin with.
+      keep = flow > 0;
+      if (any (keep))
+        gf_src = uu(keep);
+        gf_dst = vv(keep);
+        gf_w   = flow(keep);
+        mg_opt = {};
+        if (G.is_multigraph_)
+          mg_opt = {"multigraph"};
+        endif
+        if (! isempty (G.nodenames_))
+          GF = digraph (gf_src, gf_dst, gf_w, G.nodenames_, mg_opt{:});
+        else
+          GF = digraph (gf_src, gf_dst, gf_w, N, mg_opt{:});
+        endif
+      else
+        ## No flow-carrying arcs -- GF is an edgeless digraph with the
+        ## same node structure as G.
+        if (! isempty (G.nodenames_))
+          GF = digraph (zeros (0, 1), zeros (0, 1), zeros (0, 1), ...
+                        G.nodenames_);
+        else
+          GF = digraph (N);
+        endif
+      endif
+
+      if (nargout <= 2)
+        return;
+      endif
+
+      ## cs = nodes reachable from s in residual graph (source side).
+      ## ct = all other nodes (sink side).
+      cs_idx = find (reach_s);
+      ct_idx = find (! reach_s);
+
+      ## Match input type: if either endpoint was given by name,
+      ## return names (MATLAB parity).
+      if (return_names)
+        if (isempty (cs_idx))
+          cs = cell (0, 1);
+        else
+          cs = G.nodenames_(cs_idx);
+          cs = cs(:);
+        endif
+        if (isempty (ct_idx))
+          ct = cell (0, 1);
+        else
+          ct = G.nodenames_(ct_idx);
+          ct = ct(:);
+        endif
+      else
+        cs = double (cs_idx(:));
+        ct = double (ct_idx(:));
+      endif
 
     endfunction
 

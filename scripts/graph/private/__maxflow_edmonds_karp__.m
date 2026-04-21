@@ -24,7 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{mf} =} __maxflow_edmonds_karp__ (@var{uu}, @var{vv}, @var{caps}, @var{N}, @var{s}, @var{t})
+## @deftypefn  {} {@var{mf} =} __maxflow_edmonds_karp__ (@var{uu}, @var{vv}, @var{caps}, @var{N}, @var{s}, @var{t})
+## @deftypefnx {} {[@var{mf}, @var{flow}, @var{reach_s}] =} __maxflow_edmonds_karp__ (@var{uu}, @var{vv}, @var{caps}, @var{N}, @var{s}, @var{t})
 ## Private helper computing the maximum flow from node @var{s} to node
 ## @var{t} using the Edmonds-Karp (BFS-augmenting-path) implementation
 ## of the Ford-Fulkerson method.
@@ -39,20 +40,43 @@
 ## maximum @math{s}-@math{t} flow.  When @code{@var{s} == @var{t}} or
 ## when @var{t} is not reachable from @var{s}, @var{mf} is @code{0}.
 ##
+## When called with two or three output arguments the helper
+## additionally returns:
+## @table @asis
+## @item @var{flow}
+## A column vector of length @code{numel (@var{uu})} giving the flow
+## on each input arc.  Self-loops and arcs that were dropped because
+## their capacity was zero report @code{0}.
+## @item @var{reach_s}
+## A logical column vector of length @var{N} marking the nodes
+## reachable from @var{s} in the residual graph once the maximum
+## flow is established.  The true entries form one side of a
+## minimum @math{s}-@math{t} cut.
+## @end table
+##
 ## The algorithm runs in @math{O (V E^2)} worst-case time.  Each
 ## forward arc is augmented with an in-memory reverse arc (initial
 ## capacity @code{0}) so that flow can be cancelled; pair indices link
 ## the two arcs of each forward/reverse pair.
-## @seealso{maxflow}
+## @seealso{maxflow, mincut}
 ## @end deftypefn
 
-function mf = __maxflow_edmonds_karp__ (uu, vv, caps, N, s, t)
+function [mf, flow, reach_s] = __maxflow_edmonds_karp__ (uu, vv, caps, N, s, t)
 
   if (nargin != 6)
     print_usage ();
   endif
 
   mf = 0;
+
+  ## Default empty-flow / reach_s outputs -- overwritten below once the
+  ## algorithm has run.  reach_s is at least {s} in the trivial case.
+  M0 = numel (uu);
+  flow = zeros (M0, 1);
+  reach_s = false (max (N, 0), 1);
+  if (N >= 1 && s >= 1 && s <= N)
+    reach_s(s) = true;
+  endif
 
   if (s == t)
     return;
@@ -82,15 +106,23 @@ function mf = __maxflow_edmonds_karp__ (uu, vv, caps, N, s, t)
 
   ## Drop edges that can never carry flow (self-loops do not
   ## contribute to s-t flow; zero-capacity edges are redundant).
+  ## Remember the original index of every surviving edge so we can
+  ## scatter the final flows back into the caller's shape.
   keep = (uu != vv) & (caps > 0);
+  orig_idx = find (keep);
   uu = uu(keep);
   vv = vv(keep);
   caps = caps(keep);
   M = numel (uu);
 
   if (M == 0)
+    ## No arcs can carry flow; reach_s is just {s} (already set).
     return;
   endif
+
+  ## Remember the initial forward capacities so we can recover flow
+  ## values after the algorithm terminates.
+  caps0 = caps;
 
   ## Build the residual graph.  For each forward arc i, edge index i
   ## is the forward arc U -> V with capacity caps(i); edge index M+i
@@ -149,6 +181,9 @@ function mf = __maxflow_edmonds_karp__ (uu, vv, caps, N, s, t)
     endwhile
 
     if (! found)
+      ## The final BFS could not reach t.  The set of nodes it
+      ## visited is the source side of a minimum s-t cut.
+      reach_s = visited;
       break;
     endif
 
@@ -177,6 +212,13 @@ function mf = __maxflow_edmonds_karp__ (uu, vv, caps, N, s, t)
 
     mf += bottleneck;
   endwhile
+
+  ## Recover the flow on every kept forward arc: flow = initial
+  ## capacity - residual forward capacity.  Scatter back into the
+  ## caller's edge-list shape using orig_idx.
+  kept_flow = caps0 - CAP(1:M);
+  flow = zeros (M0, 1);
+  flow(orig_idx) = kept_flow;
 
 endfunction
 
@@ -266,3 +308,71 @@ endfunction
 
 ## No arguments: print_usage.
 %!error __maxflow_edmonds_karp__ ()
+
+## Multi-output: flow vector and reach_s for single edge.
+%!test
+%! [mf, flow, reach_s] = __maxflow_edmonds_karp__ (1, 2, 5, 2, 1, 2);
+%! assert (mf, 5);
+%! assert (flow, 5);
+%! assert (reach_s, [true; false]);
+
+## Multi-output: flow vector matches input edge order on chain.
+## After max flow, arc 1->2 is saturated (residual 0), so BFS in the
+## residual graph from 1 cannot reach 2.  The source side of the
+## min-cut is {1}.
+%!test
+%! [mf, flow, reach_s] = __maxflow_edmonds_karp__ ([1;2], [2;3], ...
+%!                                                  [5;10], 3, 1, 3);
+%! assert (mf, 5);
+%! assert (flow, [5; 5]);
+%! assert (reach_s, [true; false; false]);
+
+## Multi-output: diamond, flow conservation across arcs.
+%!test
+%! uu = [1;1;2;3];  vv = [2;3;4;4];  w = [5;8;7;3];
+%! [mf, flow, reach_s] = __maxflow_edmonds_karp__ (uu, vv, w, 4, 1, 4);
+%! assert (mf, 8);
+%! ## Out of source = in to sink = mf.
+%! assert (sum (flow(uu == 1)), 8);
+%! assert (sum (flow(vv == 4)), 8);
+%! ## Min-cut capacity equals mf: arcs from cs to ct sum to mf.
+%! cs = reach_s;
+%! ct = ! cs;
+%! cut_cap = sum (w(cs(uu) & ct(vv)));
+%! assert (cut_cap, mf);
+
+## Multi-output: unreachable target.
+%!test
+%! [mf, flow, reach_s] = __maxflow_edmonds_karp__ (1, 2, 5, 3, 1, 3);
+%! assert (mf, 0);
+%! assert (flow, 0);
+%! ## Residual graph lets us reach node 2 from 1 along the 1->2 arc
+%! ## (it still has capacity 5 because no flow was sent); 3 stays
+%! ## unreachable.
+%! assert (reach_s, [true; true; false]);
+
+## Multi-output: s == t single-node graph, reach_s = [true].
+%!test
+%! [mf, flow, reach_s] = __maxflow_edmonds_karp__ ([], [], [], 1, 1, 1);
+%! assert (mf, 0);
+%! assert (isempty (flow));
+%! assert (reach_s, true);
+
+## Multi-output: self-loops report zero flow in the output vector.
+%!test
+%! uu = [1;2;2];  vv = [2;2;3];  w = [5;100;3];
+%! [mf, flow, reach_s] = __maxflow_edmonds_karp__ (uu, vv, w, 3, 1, 3);
+%! assert (mf, 3);
+%! ## Self-loop arc 2->2 has zero flow.
+%! assert (flow(2), 0);
+%! ## Forward arcs carry flow = mf bottleneck = 3.
+%! assert (flow(1), 3);
+%! assert (flow(3), 3);
+%! assert (reach_s, [true; true; false]);
+
+## Multi-output: zero-capacity arcs have zero flow.
+%!test
+%! uu = [1;1;2];  vv = [2;3;3];  w = [5;0;4];
+%! [mf, flow, reach_s] = __maxflow_edmonds_karp__ (uu, vv, w, 3, 1, 3);
+%! assert (mf, 4);
+%! assert (flow, [4; 0; 4]);

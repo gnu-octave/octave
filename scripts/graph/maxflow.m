@@ -80,7 +80,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{graph, digraph, shortestpath, distances}
+## @seealso{mincut, graph, digraph, shortestpath, distances}
 ## @end deftypefn
 
 function mf = maxflow (G, varargin)

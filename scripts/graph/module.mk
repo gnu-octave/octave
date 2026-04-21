@@ -72,6 +72,7 @@ FCN_FILE_DIRS += \
   %reldir%/ismultigraph.m \
   %reldir%/laplacian.m \
   %reldir%/maxflow.m \
+  %reldir%/mincut.m \
   %reldir%/neighbors.m \
   %reldir%/numedges.m \
   %reldir%/numnodes.m \

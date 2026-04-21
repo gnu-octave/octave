@@ -2463,7 +2463,7 @@ classdef graph
       ## method that grows one BFS tree from @var{s} and another
       ## backward from @var{t} and augments along the shortest joining
       ## path.  Both algorithms return the same flow value.
-      ## @seealso{graph, shortestpath, distances}
+      ## @seealso{graph, mincut, shortestpath, distances}
       ## @end deftypefn
 
       if (nargin < 3)
@@ -2525,6 +2525,140 @@ classdef graph
                  "maxflow: internal error -- unknown algorithm '%s'", ...
                  algorithm);
       endswitch
+
+    endfunction
+
+    function [mf, GF, cs, ct] = mincut (G, s, t)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{mf} =} mincut (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {[@var{mf}, @var{GF}] =} mincut (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {[@var{mf}, @var{GF}, @var{cs}, @var{ct}] =} mincut (@var{G}, @var{s}, @var{t})
+      ## Return the minimum @math{s}-@math{t} cut in the undirected
+      ## graph @var{G}.  By the max-flow min-cut theorem @var{mf}
+      ## equals @code{maxflow (@var{G}, @var{s}, @var{t})}.  When
+      ## additional outputs are requested, @var{GF} is a
+      ## @code{digraph} of the flow-carrying arcs (each undirected
+      ## edge contributes a single directed arc in the direction of
+      ## net flow, with the flow value as weight), and @var{cs} /
+      ## @var{ct} partition the nodes into the source and sink sides
+      ## of the minimum cut.
+      ## @seealso{graph, maxflow, shortestpath, distances}
+      ## @end deftypefn
+
+      if (nargin < 3)
+        print_usage ();
+      endif
+
+      [s_idx, s_by_name] = __resolve_single_node__ (G, s, "mincut");
+      [t_idx, t_by_name] = __resolve_single_node__ (G, t, "mincut");
+      return_names = s_by_name || t_by_name;
+
+      N = numnodes (G);
+
+      ## Extract the undirected edge list from the lower triangle of
+      ## adj_.  For the residual graph each undirected edge becomes
+      ## two antiparallel directed arcs each carrying the full
+      ## capacity; we remember the undirected pairing so we can pick
+      ## the net flow direction when building GF.
+      [tt_end, ss_end, w_end] = find (tril (G.adj_));
+      Ku = numel (ss_end);
+      if (Ku == 0)
+        uu = zeros (0, 1);
+        vv = zeros (0, 1);
+        caps = zeros (0, 1);
+      else
+        if (G.has_weights_)
+          caps_one = w_end(:);
+        else
+          caps_one = ones (Ku, 1);
+        endif
+        ## Two antiparallel arcs per undirected edge.  The first Ku
+        ## entries are the "forward" arcs (u = lower index after
+        ## tril: stored as ss_end -> tt_end); the next Ku are the
+        ## matching reverse arcs.
+        uu = [ss_end(:); tt_end(:)];
+        vv = [tt_end(:); ss_end(:)];
+        caps = [caps_one; caps_one];
+      endif
+
+      ## Validate capacities.
+      if (! isempty (caps))
+        if (! isreal (caps) || any (isnan (caps)))
+          error ("Octave:invalid-input-arg", ...
+                 "mincut: edge weights must be finite real numbers (NaN not allowed)");
+        endif
+        if (any (caps < 0))
+          error ("Octave:invalid-input-arg", ...
+                 "mincut: edge weights must be non-negative capacities");
+        endif
+      endif
+
+      [mf, flow, reach_s] = ...
+          __maxflow_edmonds_karp__ (uu, vv, caps, N, s_idx, t_idx);
+
+      if (nargout <= 1)
+        return;
+      endif
+
+      ## Reduce the antiparallel arc pair to the net flow direction.
+      ## flow(1:Ku) is the forward-direction flow for each undirected
+      ## edge; flow(Ku+1:2*Ku) is the reverse.  The net flow is
+      ## forward - reverse: positive -> arc in the forward direction,
+      ## negative -> arc in the reverse direction.
+      if (Ku > 0)
+        net = flow(1:Ku) - flow(Ku+1:2*Ku);
+        keep_fwd = net > 0;
+        keep_rev = net < 0;
+        gf_src = [ss_end(keep_fwd); tt_end(keep_rev)];
+        gf_dst = [tt_end(keep_fwd); ss_end(keep_rev)];
+        gf_w   = [ net(keep_fwd); -net(keep_rev)];
+      else
+        gf_src = zeros (0, 1);
+        gf_dst = zeros (0, 1);
+        gf_w   = zeros (0, 1);
+      endif
+
+      ## Build GF as a digraph so flow direction is captured.
+      if (! isempty (gf_src))
+        if (! isempty (G.nodenames_))
+          GF = digraph (gf_src, gf_dst, gf_w, G.nodenames_);
+        else
+          GF = digraph (gf_src, gf_dst, gf_w, N);
+        endif
+      else
+        if (! isempty (G.nodenames_))
+          GF = digraph (zeros (0, 1), zeros (0, 1), zeros (0, 1), ...
+                        G.nodenames_);
+        else
+          GF = digraph (N);
+        endif
+      endif
+
+      if (nargout <= 2)
+        return;
+      endif
+
+      cs_idx = find (reach_s);
+      ct_idx = find (! reach_s);
+
+      if (return_names)
+        if (isempty (cs_idx))
+          cs = cell (0, 1);
+        else
+          cs = G.nodenames_(cs_idx);
+          cs = cs(:);
+        endif
+        if (isempty (ct_idx))
+          ct = cell (0, 1);
+        else
+          ct = G.nodenames_(ct_idx);
+          ct = ct(:);
+        endif
+      else
+        cs = double (cs_idx(:));
+        ct = double (ct_idx(:));
+      endif
 
     endfunction
 

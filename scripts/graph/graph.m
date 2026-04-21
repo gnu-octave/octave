@@ -4647,3 +4647,126 @@ endfunction
 ## BIST — US-PS01: loadobj errors on a non-scalar struct.
 %!error <scalar struct or graph>
 %! graph.loadobj (struct ("adj_", {sparse(0,0), sparse(0,0)}));
+
+
+## US-PS02 — subsref / subsasgn on G.Nodes / G.Edges
+## ------------------------------------------------
+## The `Nodes` and `Edges` properties are declared
+## `Dependent, SetAccess = private`, so reading them via
+## chained subsref (G.Edges.Weight, G.Edges.EndNodes(i,:),
+## G.Nodes.Name{i}, ...) works as a natural consequence of the
+## getters returning a plain struct, and any form of assignment
+## to them (direct, chained, indexed, brace, or dynamic-field)
+## errors with "private access and cannot be set" -- Octave's
+## MATLAB-parity equivalent of "you cannot set the read-only
+## property 'Edges' of graph".  These BIST blocks lock both
+## directions in so that a future refactor cannot silently break
+## the read-only contract.  Undirected graph does not support a
+## 'multigraph' constructor flag (scripts/graph/graph.m only
+## accepts cellstr or scalar integer as the 4th argument), so
+## the multigraph fixture from digraph.m has no counterpart here.
+
+## BIST — US-PS02: shared fixtures for the subsref/subsasgn suite.
+%!shared Gu_ps02, Gun_ps02
+%! Gu_ps02  = graph ([1 2 3], [2 3 1], [10 20 30]);
+%! Gun_ps02 = graph ([1 2 3], [2 3 1], [10 20 30], {"a","b","c"});
+
+## --- READ path: chained subsref returns the expected data ---
+
+## BIST — US-PS02: G.Edges.Weight returns the weight column
+## vector, in the lex (s<=t) order produced by find(tril(adj_)).
+## For the test fixture the constructor-supplied edges (1-2),
+## (2-3), (3-1) become (1-2), (1-3), (2-3) with weights [10;30;20].
+%!test <*PS02>
+%! assert (Gu_ps02.Edges.Weight, [10; 30; 20]);
+
+## BIST — US-PS02: G.Edges.EndNodes returns m-by-2 matrix sorted
+## by (s, t) with s <= t.
+%!test <*PS02>
+%! assert (Gu_ps02.Edges.EndNodes, [1 2; 1 3; 2 3]);
+
+## BIST — US-PS02: G.Nodes.Name returns a column cellstr for a
+## named graph.
+%!test <*PS02>
+%! assert (Gun_ps02.Nodes.Name, {"a"; "b"; "c"});
+
+## BIST — US-PS02: G.Nodes.Name on an unnamed graph returns empty
+## cell(0,1).
+%!test <*PS02>
+%! assert (Gu_ps02.Nodes.Name, cell (0, 1));
+
+## BIST — US-PS02: G.Edges.Weight(i) scalar indexed read.
+%!test <*PS02>
+%! assert (Gu_ps02.Edges.Weight(2), 30);
+
+## BIST — US-PS02: G.Edges.Weight(end) end-indexing works.
+%!test <*PS02>
+%! assert (Gu_ps02.Edges.Weight(end), 20);
+
+## BIST — US-PS02: G.Edges.EndNodes(i,:) row read.
+%!test <*PS02>
+%! assert (Gu_ps02.Edges.EndNodes(2,:), [1 3]);
+
+## BIST — US-PS02: G.Edges.EndNodes(:,1) column read.
+%!test <*PS02>
+%! assert (Gu_ps02.Edges.EndNodes(:,1), [1; 1; 2]);
+
+## BIST — US-PS02: G.Nodes.Name{i} brace-indexed read.
+%!test <*PS02>
+%! assert (Gun_ps02.Nodes.Name{2}, "b");
+
+## BIST — US-PS02: numel (G.Edges.Weight) equals numedges (G).
+%!test <*PS02>
+%! assert (numel (Gu_ps02.Edges.Weight), numedges (Gu_ps02));
+
+## BIST — US-PS02: dynamic-field access G.("Edges") / G.("Nodes")
+## equals the static form.
+%!test <*PS02>
+%! assert (isequal (Gu_ps02.("Edges"), Gu_ps02.Edges));
+%! assert (isequal (Gun_ps02.("Nodes"), Gun_ps02.Nodes));
+
+## --- WRITE path: Nodes / Edges are read-only ---
+
+## BIST — US-PS02: direct property assignment G.Edges = struct()
+## errors.
+%!error <private access> Gu_ps02.Edges = struct ();
+
+## BIST — US-PS02: direct property assignment G.Nodes = struct()
+## errors.
+%!error <private access> Gun_ps02.Nodes = struct ();
+
+## BIST — US-PS02: chained subsasgn G.Edges.Weight = [...] errors.
+%!error <private access> Gu_ps02.Edges.Weight = [99 88 77];
+
+## BIST — US-PS02: chained subsasgn G.Edges.EndNodes = [...] errors.
+%!error <private access> Gu_ps02.Edges.EndNodes = [1 2; 2 3; 3 1];
+
+## BIST — US-PS02: chained subsasgn G.Nodes.Name = {...} errors.
+%!error <private access> Gun_ps02.Nodes.Name = {"x"; "y"; "z"};
+
+## BIST — US-PS02: indexed chained subsasgn G.Edges.Weight(i) = v
+## errors.
+%!error <private access> Gu_ps02.Edges.Weight(1) = 42;
+
+## BIST — US-PS02: indexed chained subsasgn on the EndNodes matrix
+## errors.
+%!error <private access> Gu_ps02.Edges.EndNodes(1,1) = 99;
+
+## BIST — US-PS02: brace-chained subsasgn G.Nodes.Name{i} = 'x'
+## errors.
+%!error <private access> Gun_ps02.Nodes.Name{1} = "xx";
+
+## BIST — US-PS02: adding a new field via G.Edges.NewCol = [...]
+## errors.
+%!error <private access> Gu_ps02.Edges.Foo = [1; 2; 3];
+
+## BIST — US-PS02: adding a new field via G.Nodes.NewCol = [...]
+## errors.
+%!error <private access> Gun_ps02.Nodes.Bar = [1; 2; 3];
+
+## BIST — US-PS02: empty-rhs chained assignment still errors.
+%!error <private access> Gu_ps02.Edges.Weight = [];
+
+## BIST — US-PS02: dynamic-field assignment G.("Edges") = ...
+## errors.
+%!error <private access> Gu_ps02.("Edges") = struct ();

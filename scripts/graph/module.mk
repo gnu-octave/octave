@@ -61,7 +61,8 @@ FCN_FILE_DIRS += \
   %reldir%/rmnode.m \
   %reldir%/subgraph.m \
   %reldir%/successors.m \
-  %reldir%/toposort.m
+  %reldir%/toposort.m \
+  %reldir%/transclosure.m
 
 %canon_reldir%dir = $(fcnfiledir)/graph
 

@@ -2922,6 +2922,76 @@ classdef digraph
 
     endfunction
 
+    function H = transclosure (G)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{H} =} transclosure (@var{G})
+      ## Return the transitive closure of the digraph @var{G}.
+      ##
+      ## The result @var{H} is a @code{digraph} on the same node set
+      ## as @var{G}: an edge @math{i \to j} is present in @var{H}
+      ## whenever there is a directed path of length at least one from
+      ## @math{i} to @math{j} in @var{G} with @math{i \ne j}.
+      ## Self-loops and parallel edges are not present in @var{H}; the
+      ## result is a simple digraph.  Node names (if any) are
+      ## preserved.  Edge weights are not preserved.
+      ## @seealso{digraph, transreduction, condensation, conncomp}
+      ## @end deftypefn
+
+      N = numnodes (G);
+      has_names = ! isempty (G.nodenames_);
+
+      if (N == 0)
+        ## Preserve the empty-with-names case too (numnodes==0 but
+        ## a possible 0x1 name cell).
+        H = digraph ();
+        return;
+      endif
+
+      ## Use adjacency(G) (binary form) so multigraph parallel edges
+      ## and edge weights are collapsed to a boolean relation: the
+      ## only thing that matters for reachability is whether any
+      ## directed edge exists.
+      A = adjacency (G);
+      R = double (A != 0);
+
+      ## Warshall's algorithm for transitive closure.  After iteration
+      ## k, R(i, j) is nonzero iff there is a directed path from i to
+      ## j using intermediate vertices only from @math{\{1, ..., k\}}.
+      ## The outer product @code{col * row} adds the paths that go
+      ## through vertex k; @code{spones} collapses the running
+      ## accumulation back to a 0/1 pattern so the matrix stays a
+      ## boolean relation.
+      for k = 1:N
+        col = R(:, k);
+        row = R(k, :);
+        if (nnz (col) > 0 && nnz (row) > 0)
+          R = spones (R + col * row);
+        endif
+      endfor
+
+      ## Extract (source, destination) edge list.  Drop self-loops
+      ## unconditionally: MATLAB's transclosure never emits self-loops,
+      ## even when @var{G} has self-loops or cycles that reach back to
+      ## the origin.
+      [s, t] = find (R);
+      s = s(:);
+      t = t(:);
+      keep = (s != t);
+      s = s(keep);
+      t = t(keep);
+
+      ## Rebuild the digraph preserving the original node count and
+      ## names.  Pass @code{[]} for weights so the result is unweighted
+      ## (MATLAB parity: transclosure does not preserve edge weights).
+      if (has_names)
+        H = digraph (s, t, [], G.nodenames_);
+      else
+        H = digraph (s, t, [], N);
+      endif
+
+    endfunction
+
     function disp (G)
 
       ## -*- texinfo -*-

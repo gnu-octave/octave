@@ -1965,6 +1965,23 @@ classdef graph
 
     endfunction
 
+    function H = transclosure (G)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{H} =} transclosure (@var{G})
+      ## Transitive closure is not defined on the undirected
+      ## @code{graph} class; this method always raises an error.  Use
+      ## @code{transclosure} on a @code{digraph} object instead.  See
+      ## @code{help transclosure} for the full description of the
+      ## directed case.
+      ## @seealso{graph, digraph, condensation}
+      ## @end deftypefn
+
+      error ("Octave:invalid-input-arg", ...
+             "transclosure: not defined for an undirected graph; transclosure requires a digraph");
+
+    endfunction
+
     function disp (G)
 
       ## -*- texinfo -*-

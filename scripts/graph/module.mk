@@ -30,6 +30,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/__edgecount_impl__.m \
   %reldir%/private/__findedge_impl__.m \
   %reldir%/private/__findnode_impl__.m \
+  %reldir%/private/__isomorphism_vf2__.m \
   %reldir%/private/__matlab_ref__.m \
   %reldir%/private/__maxflow_edmonds_karp__.m \
   %reldir%/private/__maxflow_parse_algorithm__.m \
@@ -75,6 +76,7 @@ FCN_FILE_DIRS += \
   %reldir%/indegree.m \
   %reldir%/inedges.m \
   %reldir%/isdag.m \
+  %reldir%/isisomorphic.m \
   %reldir%/ismultigraph.m \
   %reldir%/laplacian.m \
   %reldir%/maxflow.m \

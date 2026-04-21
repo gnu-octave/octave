@@ -1982,6 +1982,23 @@ classdef graph
 
     endfunction
 
+    function H = transreduction (G)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{H} =} transreduction (@var{G})
+      ## Transitive reduction is not defined on the undirected
+      ## @code{graph} class; this method always raises an error.  Use
+      ## @code{transreduction} on a @code{digraph} object instead.
+      ## See @code{help transreduction} for the full description of
+      ## the directed case.
+      ## @seealso{graph, digraph, transclosure}
+      ## @end deftypefn
+
+      error ("Octave:invalid-input-arg", ...
+             "transreduction: not defined for an undirected graph; transreduction requires a digraph");
+
+    endfunction
+
     function disp (G)
 
       ## -*- texinfo -*-

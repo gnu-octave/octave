@@ -2992,6 +2992,91 @@ classdef digraph
 
     endfunction
 
+    function H = transreduction (G)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{H} =} transreduction (@var{G})
+      ## Return the transitive reduction of the directed acyclic graph
+      ## @var{G}.
+      ##
+      ## @var{G} must be a @code{digraph} object that is a DAG;
+      ## calling @code{transreduction} on a cyclic digraph raises an
+      ## error.  The result @var{H} is a @code{digraph} on the same
+      ## node set as @var{G} with the fewest edges that preserve the
+      ## reachability relation: an edge @math{i \to j} is present in
+      ## @var{H} iff it is present in @var{G} and there is no other
+      ## directed path from @math{i} to @math{j} in @var{G}.  For a
+      ## DAG the transitive reduction is unique.  Parallel edges and
+      ## self-loops collapse in the output so @var{H} is always a
+      ## simple digraph.  Node names (if any) are preserved; edge
+      ## weights are not.
+      ## @seealso{digraph, transclosure, isdag, condensation, conncomp}
+      ## @end deftypefn
+
+      N = numnodes (G);
+      has_names = ! isempty (G.nodenames_);
+
+      if (N == 0)
+        ## Preserve the empty digraph exactly: empty relation, no
+        ## names, no edges.  Matches transclosure's empty handling.
+        H = digraph ();
+        return;
+      endif
+
+      ## Require DAG input.  Reuse the @code{isdag} method so we pick
+      ## up its handling of self-loops and multigraph side arrays.
+      if (! isdag (G))
+        error ("Octave:invalid-input-arg", ...
+               "transreduction: G must be a directed acyclic graph (DAG)");
+      endif
+
+      ## Use adjacency(G) (binary form) so multigraph parallel edges
+      ## are collapsed to a boolean relation: the reduction is defined
+      ## on reachability, which ignores multiplicity.
+      A = adjacency (G);
+      Abin = double (A != 0);
+
+      ## Warshall's algorithm for transitive closure.  R[i, j] is
+      ## nonzero iff there is a directed path of length >= 1 from i
+      ## to j in G.  For a DAG, R has no nonzero diagonal entries.
+      R = Abin;
+      for k = 1:N
+        col = R(:, k);
+        row = R(k, :);
+        if (nnz (col) > 0 && nnz (row) > 0)
+          R = spones (R + col * row);
+        endif
+      endfor
+
+      ## An edge (i, j) of G is redundant iff there is another path
+      ## i -> k -> ... -> j of length >= 2.  The product Abin * R
+      ## computes exactly those length-at-least-two paths: the (i, j)
+      ## entry of Abin * R counts intermediate vertices k such that
+      ## A[i, k] = 1 and R[k, j] = 1.  (For a DAG, k = j contributes
+      ## nothing because R[j, j] = 0.)
+      P = spones (Abin * R);
+
+      ## Keep edge (i, j) iff Abin[i, j] = 1 and P[i, j] = 0.  Express
+      ## this without densifying by subtracting the intersection:
+      ## Tr = Abin - (Abin .* P) leaves 1 where Abin=1 and P=0.
+      Tr = Abin - (Abin .* P);
+
+      [s, t] = find (Tr);
+      s = s(:);
+      t = t(:);
+
+      ## Rebuild the digraph preserving the original node count and
+      ## names.  Pass @code{[]} for weights so the result is
+      ## unweighted (MATLAB parity: transreduction does not preserve
+      ## edge weights; reachability is a boolean relation).
+      if (has_names)
+        H = digraph (s, t, [], G.nodenames_);
+      else
+        H = digraph (s, t, [], N);
+      endif
+
+    endfunction
+
     function disp (G)
 
       ## -*- texinfo -*-

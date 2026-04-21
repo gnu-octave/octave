@@ -50,9 +50,9 @@ classdef GraphPlot < handle
   ## @item ZData
   ## Column vector of node z-coordinates (empty for 2-D layouts).
   ## @item NodeColor
-  ## RGB triplet used to render the nodes.
+  ## RGB triplet or color name used to render the nodes.
   ## @item EdgeColor
-  ## RGB triplet used to render the edges.
+  ## RGB triplet or color name used to render the edges.
   ## @item Marker
   ## Marker style used to render the nodes.  Default @qcode{"o"}.
   ## @item MarkerSize
@@ -61,6 +61,30 @@ classdef GraphPlot < handle
   ## Line style used to render the edges.  Default @qcode{"-"}.
   ## @item LineWidth
   ## Line width used to render the edges.  Default @code{0.5}.
+  ## @item NodeLabel
+  ## Column cell array of strings, one per node, used as text labels
+  ## drawn next to each node marker.  Defaults to the graph's
+  ## @code{Nodes.Name} column when present, or to the string indices
+  ## @qcode{"1"}, @qcode{"2"}, @dots{} otherwise.
+  ## @item NodeLabelMode
+  ## @qcode{"auto"} (default) means @code{NodeLabel} is regenerated from
+  ## the underlying graph; @qcode{"manual"} means the current
+  ## @code{NodeLabel} is preserved.  Assigning to @code{NodeLabel}
+  ## implicitly switches @code{NodeLabelMode} to @qcode{"manual"};
+  ## re-assigning @code{NodeLabelMode = "auto"} regenerates the
+  ## defaults.
+  ## @item NodeLabelColor
+  ## RGB triplet or color name used to render the node labels.
+  ## Default @code{[0 0 0]}.
+  ## @item NodeFontSize
+  ## Font size (points, positive scalar) for node labels.  Default
+  ## @code{8}.
+  ## @item NodeFontName
+  ## Font family name for node labels.  Default @qcode{"Helvetica"}.
+  ## @item NodeFontAngle
+  ## @qcode{"normal"} (default) or @qcode{"italic"}.
+  ## @item NodeFontWeight
+  ## @qcode{"normal"} (default) or @qcode{"bold"}.
   ## @item NumNodes
   ## Number of nodes in the underlying graph.  Read-only.
   ## @item NumEdges
@@ -79,6 +103,20 @@ classdef GraphPlot < handle
     MarkerSize = 4;
     LineStyle = "-";
     LineWidth = 0.5;
+    NodeLabelColor = [0 0 0];
+    NodeFontSize = 8;
+    NodeFontName = "Helvetica";
+    NodeFontAngle = "normal";
+    NodeFontWeight = "normal";
+  endproperties
+
+  properties (Dependent)
+    ## NodeLabel and NodeLabelMode are Dependent so the set methods can
+    ## cooperate: setting NodeLabel flips NodeLabelMode to 'manual' and
+    ## setting NodeLabelMode back to 'auto' regenerates NodeLabel from
+    ## the cached graph.
+    NodeLabel
+    NodeLabelMode
   endproperties
 
   properties (SetAccess = private)
@@ -95,6 +133,19 @@ classdef GraphPlot < handle
 
     ## Column vector of line handles, one per rendered edge.
     edge_handles_ = [];
+
+    ## Column vector of text handles, one per rendered node label.
+    node_label_handles_ = [];
+
+    ## Cached underlying graph/digraph object.  Used for 'auto'
+    ## NodeLabel regeneration after NodeLabelMode flips back to
+    ## 'auto'.
+    graph_ = [];
+
+    ## Backing fields for the Dependent NodeLabel / NodeLabelMode
+    ## properties.
+    node_label_ = cell (0, 1);
+    node_label_mode_ = "auto";
 
     ## Sources and targets of the rendered edges (numeric indices into
     ## XData / YData).  Stored so that later property updates can
@@ -146,6 +197,8 @@ classdef GraphPlot < handle
       xdata_user = [];
       ydata_user = [];
       layout_opts = struct ();
+      ## Cosmetic options recorded but applied after NumNodes is known.
+      cosmetic_sets = {};
       for ii = 1:2:numel (opts)
         name = opts{ii};
         if (! (ischar (name) && isrow (name)))
@@ -188,6 +241,10 @@ classdef GraphPlot < handle
             layout_opts.AssignLayers = lower (val);
           case "dimension"
             layout_opts.Dimension = val;
+          case {"nodecolor", "marker", "markersize", "nodelabel", ...
+                "nodelabelmode", "nodelabelcolor", "nodefontsize", ...
+                "nodefontname", "nodefontangle", "nodefontweight"}
+            cosmetic_sets(end+1, 1:2) = {lower(name), val};
           otherwise
             error ("Octave:invalid-input-arg", ...
                    "GraphPlot: unknown option '%s'", name);
@@ -233,6 +290,44 @@ classdef GraphPlot < handle
         h.edge_src_ = zeros (0, 1);
         h.edge_dst_ = zeros (0, 1);
       endif
+
+      ## Cache the underlying graph so NodeLabelMode='auto' can
+      ## regenerate labels later, and seed NodeLabel with the auto
+      ## default.  Mode remains 'auto' until overridden below.
+      h.graph_ = G;
+      h.node_label_ = __graph_plot_default_labels__ (G, N);
+      h.node_label_mode_ = "auto";
+
+      ## Apply user-supplied cosmetic overrides in the order they were
+      ## given so the final state reflects any intentional reordering
+      ## (e.g.  NodeLabel followed by NodeLabelMode='auto' leaves the
+      ## auto-regenerated labels in place).
+      for kk = 1:size (cosmetic_sets, 1)
+        key = cosmetic_sets{kk, 1};
+        val = cosmetic_sets{kk, 2};
+        switch (key)
+          case "nodecolor"
+            h.NodeColor = val;
+          case "marker"
+            h.Marker = val;
+          case "markersize"
+            h.MarkerSize = val;
+          case "nodelabel"
+            h.NodeLabel = val;
+          case "nodelabelmode"
+            h.NodeLabelMode = val;
+          case "nodelabelcolor"
+            h.NodeLabelColor = val;
+          case "nodefontsize"
+            h.NodeFontSize = val;
+          case "nodefontname"
+            h.NodeFontName = val;
+          case "nodefontangle"
+            h.NodeFontAngle = val;
+          case "nodefontweight"
+            h.NodeFontWeight = val;
+        endswitch
+      endfor
 
       ## Render on the current axes.  This creates a figure if none
       ## exists.  Rendering is wrapped in try/catch so that non-graphics
@@ -292,6 +387,35 @@ classdef GraphPlot < handle
           endif
         endif
 
+        ## Render node labels as text objects slightly offset from each
+        ## marker.  Labels are drawn even in 3-D (with zero Z offset).
+        ## Rendering is best-effort: a failure does not invalidate the
+        ## public property state.
+        labels = h.NodeLabel;
+        if (N > 0 && numel (labels) == N)
+          th = zeros (N, 1);
+          for kk = 1:N
+            if (is_3d)
+              th(kk) = text (h.axes_, h.XData(kk), h.YData(kk), ...
+                             h.ZData(kk), labels{kk}, ...
+                             "Color", h.NodeLabelColor, ...
+                             "FontSize", h.NodeFontSize, ...
+                             "FontName", h.NodeFontName, ...
+                             "FontAngle", h.NodeFontAngle, ...
+                             "FontWeight", h.NodeFontWeight);
+            else
+              th(kk) = text (h.axes_, h.XData(kk), h.YData(kk), ...
+                             labels{kk}, ...
+                             "Color", h.NodeLabelColor, ...
+                             "FontSize", h.NodeFontSize, ...
+                             "FontName", h.NodeFontName, ...
+                             "FontAngle", h.NodeFontAngle, ...
+                             "FontWeight", h.NodeFontWeight);
+            endif
+          endfor
+          h.node_label_handles_ = th;
+        endif
+
         if (! was_hold)
           hold (h.axes_, "off");
         endif
@@ -300,8 +424,124 @@ classdef GraphPlot < handle
         h.axes_ = [];
         h.node_handle_ = [];
         h.edge_handles_ = [];
+        h.node_label_handles_ = [];
       end_try_catch
 
+    endfunction
+
+    ## ------------ Dependent property accessors ------------
+
+    function L = get.NodeLabel (h)
+      L = h.node_label_;
+    endfunction
+
+    function h = set.NodeLabel (h, val)
+      h.node_label_ = __graph_plot_validate_nodelabel__ (val, h.NumNodes);
+      h.node_label_mode_ = "manual";
+    endfunction
+
+    function M = get.NodeLabelMode (h)
+      M = h.node_label_mode_;
+    endfunction
+
+    function h = set.NodeLabelMode (h, val)
+      if (! (ischar (val) && isrow (val)))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: NodeLabelMode must be 'auto' or 'manual'");
+      endif
+      v = lower (val);
+      if (! any (strcmp (v, {"auto", "manual"})))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: NodeLabelMode must be 'auto' or 'manual'");
+      endif
+      if (strcmp (v, "auto") && ! isempty (h.graph_))
+        ## Regenerate the auto labels from the cached graph.
+        h.node_label_ = __graph_plot_default_labels__ (h.graph_, ...
+                                                      h.NumNodes);
+      endif
+      h.node_label_mode_ = v;
+    endfunction
+
+    ## ------------ Validated setters for cosmetic properties ------------
+
+    function h = set.NodeColor (h, val)
+      h.NodeColor = __graph_plot_validate_colorspec__ (val, "NodeColor");
+    endfunction
+
+    function h = set.EdgeColor (h, val)
+      h.EdgeColor = __graph_plot_validate_colorspec__ (val, "EdgeColor");
+    endfunction
+
+    function h = set.NodeLabelColor (h, val)
+      h.NodeLabelColor = ...
+        __graph_plot_validate_colorspec__ (val, "NodeLabelColor");
+    endfunction
+
+    function h = set.Marker (h, val)
+      if (! (ischar (val) && isrow (val)))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: Marker must be a character vector");
+      endif
+      valid = {"+", "o", "*", ".", "x", "s", "square", "d", "diamond", ...
+               "^", "v", ">", "<", "p", "pentagram", "h", "hexagram", ...
+               "none"};
+      if (! any (strcmp (val, valid)))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: Marker value '%s' is not supported", val);
+      endif
+      h.Marker = val;
+    endfunction
+
+    function h = set.MarkerSize (h, val)
+      if (! (isnumeric (val) && isscalar (val) && isreal (val) ...
+             && isfinite (val) && val > 0))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: MarkerSize must be a positive real scalar");
+      endif
+      h.MarkerSize = double (val);
+    endfunction
+
+    function h = set.NodeFontSize (h, val)
+      if (! (isnumeric (val) && isscalar (val) && isreal (val) ...
+             && isfinite (val) && val > 0))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: NodeFontSize must be a positive real scalar");
+      endif
+      h.NodeFontSize = double (val);
+    endfunction
+
+    function h = set.NodeFontName (h, val)
+      if (! (ischar (val) && isrow (val)))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: NodeFontName must be a character vector");
+      endif
+      h.NodeFontName = val;
+    endfunction
+
+    function h = set.NodeFontAngle (h, val)
+      if (! (ischar (val) && isrow (val)))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: NodeFontAngle must be 'normal' or 'italic'");
+      endif
+      v = lower (val);
+      if (! any (strcmp (v, {"normal", "italic"})))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: NodeFontAngle must be 'normal' or 'italic'");
+      endif
+      h.NodeFontAngle = v;
+    endfunction
+
+    function h = set.NodeFontWeight (h, val)
+      if (! (ischar (val) && isrow (val)))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: NodeFontWeight must be 'normal' or 'bold'");
+      endif
+      v = lower (val);
+      if (! any (strcmp (v, {"normal", "bold"})))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: NodeFontWeight must be 'normal' or 'bold'");
+      endif
+      h.NodeFontWeight = v;
     endfunction
 
   endmethods
@@ -1059,3 +1299,344 @@ endclassdef
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+
+## -------- US-GP07 node cosmetic properties --------
+
+## Default cosmetic properties on an empty GraphPlot.
+%!test
+%! h = GraphPlot ();
+%! assert (h.NodeColor, [0 0.4470 0.7410], 1e-12);
+%! assert (h.Marker, "o");
+%! assert (h.MarkerSize, 4);
+%! assert (iscell (h.NodeLabel));
+%! assert (isempty (h.NodeLabel));
+%! assert (h.NodeFontSize, 8);
+%! assert (h.NodeFontName, "Helvetica");
+%! assert (h.NodeFontAngle, "normal");
+%! assert (h.NodeFontWeight, "normal");
+%! assert (h.NodeLabelMode, "auto");
+%! assert (h.NodeLabelColor, [0 0 0]);
+
+## NodeLabel defaults to "1","2",... on an unnamed graph.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   assert (iscell (h.NodeLabel));
+%!   assert (numel (h.NodeLabel), 3);
+%!   assert (h.NodeLabel, {"1"; "2"; "3"});
+%!   assert (h.NodeLabelMode, "auto");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## NodeLabel defaults to G.Nodes.Name on a named graph.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"alpha", "beta", "gamma"});
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   assert (iscell (h.NodeLabel));
+%!   assert (h.NodeLabel, {"alpha"; "beta"; "gamma"});
+%!   assert (h.NodeLabelMode, "auto");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## NodeLabel defaults are column cellstr even for unnamed graph.
+%!test
+%! G = graph (4);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   assert (h.NodeLabel, {"1"; "2"; "3"; "4"});
+%!   assert (iscolumn (h.NodeLabel));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## NodeColor can be set via name-value in the constructor.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "NodeColor", [1 0 0]);
+%!   assert (h.NodeColor, [1 0 0]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## NodeColor accepts a color-name string.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "NodeColor", "red");
+%!   assert (h.NodeColor, [1 0 0]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## NodeColor can be assigned directly (handle semantics).
+%!test
+%! h = GraphPlot ();
+%! h.NodeColor = [0.2 0.4 0.6];
+%! assert (h.NodeColor, [0.2 0.4 0.6], 1e-12);
+%! h.NodeColor = "g";
+%! assert (h.NodeColor, [0 1 0]);
+
+## Invalid NodeColor values are rejected.
+%!error <NodeColor> ...
+%! h = GraphPlot (); h.NodeColor = [2 0 0];
+%!error <NodeColor> ...
+%! h = GraphPlot (); h.NodeColor = [0 0];
+%!error <NodeColor> ...
+%! h = GraphPlot (); h.NodeColor = "notacolor";
+%!error <NodeColor> ...
+%! GraphPlot (digraph (2), "NodeColor", [2 2 2])
+
+## Marker can be set and read back.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Marker", "square");
+%!   assert (h.Marker, "square");
+%!   h.Marker = "^";
+%!   assert (h.Marker, "^");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Marker validation.
+%!error <Marker> h = GraphPlot (); h.Marker = 1;
+%!error <Marker> h = GraphPlot (); h.Marker = "bogus";
+
+## MarkerSize default, set, validate.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "MarkerSize", 12);
+%!   assert (h.MarkerSize, 12);
+%!   h.MarkerSize = 3.5;
+%!   assert (h.MarkerSize, 3.5);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## MarkerSize must be positive numeric scalar.
+%!error <MarkerSize> h = GraphPlot (); h.MarkerSize = -1;
+%!error <MarkerSize> h = GraphPlot (); h.MarkerSize = 0;
+%!error <MarkerSize> h = GraphPlot (); h.MarkerSize = [1 2];
+%!error <MarkerSize> h = GraphPlot (); h.MarkerSize = "big";
+
+## NodeLabel can be set to a cellstr (column or row); stored as column.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "NodeLabel", {"A", "B", "C"});
+%!   assert (h.NodeLabel, {"A"; "B"; "C"});
+%!   assert (h.NodeLabelMode, "manual");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Assigning NodeLabel after construction flips NodeLabelMode to 'manual'.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   assert (h.NodeLabelMode, "auto");
+%!   h.NodeLabel = {"x"; "y"; "z"};
+%!   assert (h.NodeLabel, {"x"; "y"; "z"});
+%!   assert (h.NodeLabelMode, "manual");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Numeric NodeLabel vector is converted to cellstr.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "NodeLabel", [10 20 30]);
+%!   assert (iscell (h.NodeLabel));
+%!   assert (h.NodeLabel, {"10"; "20"; "30"});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Length-mismatched NodeLabel is rejected.
+%!error <NodeLabel> ...
+%!   GraphPlot (digraph ([1 2 3], [2 3 1]), "NodeLabel", {"a", "b"})
+%!error <NodeLabel> ...
+%!   h = GraphPlot (digraph ([1 2], [2 3])); h.NodeLabel = {"p"};
+
+## NodeFontSize default, set, validate.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "NodeFontSize", 14);
+%!   assert (h.NodeFontSize, 14);
+%!   h.NodeFontSize = 10;
+%!   assert (h.NodeFontSize, 10);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!error <NodeFontSize> h = GraphPlot (); h.NodeFontSize = 0;
+%!error <NodeFontSize> h = GraphPlot (); h.NodeFontSize = -1;
+%!error <NodeFontSize> h = GraphPlot (); h.NodeFontSize = [1 2];
+%!error <NodeFontSize> h = GraphPlot (); h.NodeFontSize = "big";
+
+## NodeFontName default, set, validate.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "NodeFontName", "Arial");
+%!   assert (h.NodeFontName, "Arial");
+%!   h.NodeFontName = "Times";
+%!   assert (h.NodeFontName, "Times");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!error <NodeFontName> h = GraphPlot (); h.NodeFontName = 1;
+%!error <NodeFontName> h = GraphPlot (); h.NodeFontName = {"Arial"};
+
+## NodeFontAngle default 'normal', accepts 'italic', rejects other.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "NodeFontAngle", "italic");
+%!   assert (h.NodeFontAngle, "italic");
+%!   h.NodeFontAngle = "normal";
+%!   assert (h.NodeFontAngle, "normal");
+%!   h.NodeFontAngle = "ITALIC";
+%!   assert (h.NodeFontAngle, "italic");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!error <NodeFontAngle> h = GraphPlot (); h.NodeFontAngle = "bold";
+%!error <NodeFontAngle> h = GraphPlot (); h.NodeFontAngle = 1;
+
+## NodeFontWeight default 'normal', accepts 'bold', rejects other.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "NodeFontWeight", "bold");
+%!   assert (h.NodeFontWeight, "bold");
+%!   h.NodeFontWeight = "NORMAL";
+%!   assert (h.NodeFontWeight, "normal");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!error <NodeFontWeight> h = GraphPlot (); h.NodeFontWeight = "italic";
+%!error <NodeFontWeight> h = GraphPlot (); h.NodeFontWeight = 1;
+
+## NodeLabelMode default 'auto', accepts 'manual', rejects other.
+%!test
+%! h = GraphPlot ();
+%! assert (h.NodeLabelMode, "auto");
+%! h.NodeLabelMode = "manual";
+%! assert (h.NodeLabelMode, "manual");
+%! h.NodeLabelMode = "AUTO";
+%! assert (h.NodeLabelMode, "auto");
+
+%!error <NodeLabelMode> h = GraphPlot (); h.NodeLabelMode = "bogus";
+%!error <NodeLabelMode> h = GraphPlot (); h.NodeLabelMode = 1;
+
+## NodeLabelMode='auto' after a manual label reset regenerates defaults
+## from the underlying graph.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"a", "b", "c"});
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   h.NodeLabel = {"x"; "y"; "z"};    # now manual
+%!   assert (h.NodeLabelMode, "manual");
+%!   h.NodeLabelMode = "auto";
+%!   assert (h.NodeLabel, {"a"; "b"; "c"});
+%!   assert (h.NodeLabelMode, "auto");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## NodeLabelColor default, set via name-value, assign directly, validate.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "NodeLabelColor", [0.5 0.5 0.5]);
+%!   assert (h.NodeLabelColor, [0.5 0.5 0.5], 1e-12);
+%!   h.NodeLabelColor = "b";
+%!   assert (h.NodeLabelColor, [0 0 1]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!error <NodeLabelColor> h = GraphPlot (); h.NodeLabelColor = [2 0 0];
+%!error <NodeLabelColor> h = GraphPlot (); h.NodeLabelColor = "nocolor";
+
+## All cosmetic properties forwarded via constructor name-value in one call.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, ...
+%!                  "NodeColor", [1 0 0], ...
+%!                  "Marker", "s", ...
+%!                  "MarkerSize", 8, ...
+%!                  "NodeLabel", {"a", "b", "c"}, ...
+%!                  "NodeFontSize", 12, ...
+%!                  "NodeFontName", "Arial", ...
+%!                  "NodeFontAngle", "italic", ...
+%!                  "NodeFontWeight", "bold", ...
+%!                  "NodeLabelColor", [0.2 0.2 0.2]);
+%!   assert (h.NodeColor, [1 0 0]);
+%!   assert (h.Marker, "s");
+%!   assert (h.MarkerSize, 8);
+%!   assert (h.NodeLabel, {"a"; "b"; "c"});
+%!   assert (h.NodeFontSize, 12);
+%!   assert (h.NodeFontName, "Arial");
+%!   assert (h.NodeFontAngle, "italic");
+%!   assert (h.NodeFontWeight, "bold");
+%!   assert (h.NodeLabelColor, [0.2 0.2 0.2], 1e-12);
+%!   assert (h.NodeLabelMode, "manual");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Option names are case-insensitive on input (handled by lower()).
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "nodecolor", [0 1 0], "MARKER", "x", ...
+%!                  "NodeFontSize", 9);
+%!   assert (h.NodeColor, [0 1 0]);
+%!   assert (h.Marker, "x");
+%!   assert (h.NodeFontSize, 9);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Handle-class semantics: cosmetic property assignment is visible in
+## aliased handles.
+%!test
+%! h1 = GraphPlot ();
+%! h2 = h1;
+%! h2.NodeFontSize = 22;
+%! assert (h1.NodeFontSize, 22);
+%! h1.Marker = "d";
+%! assert (h2.Marker, "d");

@@ -32,12 +32,15 @@ FCN_FILE_DIRS += \
   %reldir%/private/__findedge_impl__.m \
   %reldir%/private/__findnode_impl__.m \
   %reldir%/private/__graph_plot_auto_layout__.m \
+  %reldir%/private/__graph_plot_default_labels__.m \
   %reldir%/private/__graph_plot_force__.m \
   %reldir%/private/__graph_plot_force3__.m \
   %reldir%/private/__graph_plot_layered__.m \
   %reldir%/private/__graph_plot_subspace__.m \
   %reldir%/private/__graph_plot_subspace3__.m \
   %reldir%/private/__graph_plot_subspace_embedding__.m \
+  %reldir%/private/__graph_plot_validate_colorspec__.m \
+  %reldir%/private/__graph_plot_validate_nodelabel__.m \
   %reldir%/private/__isomorphism_parse_opts__.m \
   %reldir%/private/__isomorphism_vf2__.m \
   %reldir%/private/__matlab_ref__.m \

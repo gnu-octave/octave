@@ -24,17 +24,34 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{D} =} distances (@var{G})
-## Return the all-pairs shortest-path distance matrix of the graph or
-## digraph @var{G}.
+## @deftypefn  {} {@var{D} =} distances (@var{G})
+## @deftypefnx {} {@var{d} =} distances (@var{G}, @var{src})
+## @deftypefnx {} {@var{d} =} distances (@var{G}, @var{src}, @var{tgt})
+## Return shortest-path distances on the graph or digraph @var{G}.
 ##
-## @var{G} must be a @code{graph} or @code{digraph} object.  The result
-## @var{D} is a @code{numnodes (@var{G})}-by-@code{numnodes (@var{G})}
-## dense double matrix.  @var{D}(i, j) is the length of a shortest path
-## from node @math{i} to node @math{j} under the stored edge weights
-## (every edge has weight @code{1} when @var{G} is unweighted), or
-## @code{Inf} when @math{j} is not reachable from @math{i}.  The
-## diagonal @var{D}(i, i) is always @code{0}.
+## @var{G} must be a @code{graph} or @code{digraph} object.
+##
+## With no additional arguments, @code{distances (@var{G})} returns the
+## all-pairs @code{numnodes (@var{G})}-by-@code{numnodes (@var{G})}
+## dense double matrix @var{D}.  @var{D}(i, j) is the length of a
+## shortest path from node @math{i} to node @math{j} under the stored
+## edge weights (every edge has weight @code{1} when @var{G} is
+## unweighted), or @code{Inf} when @math{j} is not reachable from
+## @math{i}.  The diagonal @var{D}(i, i) is always @code{0}.
+##
+## When a scalar @var{src} is given, @code{distances (@var{G}, @var{src})}
+## returns a row vector of length @code{numnodes (@var{G})} giving the
+## shortest-path distance from @var{src} to every node.  When @var{src}
+## is a vector (numeric indices or a cell array of node names), the
+## result is a @code{numel (@var{src})}-by-@code{numnodes (@var{G})}
+## matrix with one row per source.
+##
+## When both @var{src} and @var{tgt} are given,
+## @code{distances (@var{G}, @var{src}, @var{tgt})} returns a
+## @code{numel (@var{src})}-by-@code{numel (@var{tgt})} submatrix
+## (scalar when both arguments are scalar).  @var{src} and @var{tgt}
+## may mix numeric indices and node names (character row vectors or
+## cell arrays of strings) when @var{G} has node names.
 ##
 ## For the undirected @code{graph} class, edges may be traversed in
 ## either direction, so @var{D} is symmetric.  For the directed
@@ -58,6 +75,10 @@
 ##          @result{}  0   5  15
 ##             25   0  10
 ##             15  20   0
+## distances (G, 1)
+##          @result{}  0   5  15
+## distances (G, 1, 3)
+##          @result{}  15
 ##
 ## H = graph ([1 2], [2 3]);
 ## distances (H)
@@ -70,7 +91,7 @@
 ## @seealso{graph, digraph, shortestpath, shortestpathtree, adjacency}
 ## @end deftypefn
 
-function D = distances (G)
+function D = distances (G, varargin)
 
   ## NOTE: When called with a graph or digraph object, Octave's
   ## classdef method dispatch runs the class-internal @code{distances}
@@ -92,7 +113,7 @@ function D = distances (G)
   ## Defensive delegation: classdef method dispatch should intercept
   ## any call with a graph/digraph first arg, but route through dot
   ## notation just in case.
-  D = G.distances ();
+  D = G.distances (varargin{:});
 
 endfunction
 
@@ -477,3 +498,247 @@ endfunction
 %!     assert (D(i, j), abs (j - i));
 %!   endfor
 %! endfor
+
+## -------------------- US-P02 single-source form --------------------
+
+## distances(G, src) on an unweighted digraph returns a 1xN row vector
+## whose k-th entry is the shortest path from src to node k.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! d = distances (G, 1);
+%! assert (size (d), [1, 3]);
+%! assert (d, [0, 1, 2]);
+
+## distances(G, src) on a weighted digraph picks the weighted
+## shortest path.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15]);
+%! d = distances (G, 1);
+%! assert (size (d), [1, 3]);
+%! assert (d, [0, 5, 15]);
+
+## distances(G, src) on the undirected graph.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! d = distances (G, 2);
+%! assert (size (d), [1, 3]);
+%! assert (d, [1, 0, 1]);
+
+## distances(G, src) with an isolated node returns Inf in that slot.
+%!test
+%! G = digraph ([1], [2], [], 3);
+%! d = distances (G, 1);
+%! assert (d, [0, 1, Inf]);
+
+## distances(G, src) with a string src (named digraph).  On the
+## directed 3-cycle 1->2->3->1 starting at "b" (node 2), the forward
+## distances are 2 (2->3->1), 0, 1.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"a", "b", "c"});
+%! d = distances (G, "b");
+%! assert (size (d), [1, 3]);
+%! assert (d, [2, 0, 1]);
+
+## distances(G, src) with a 1-element cellstr src.  On the directed
+## 3-cycle starting at "c" (node 3), distances are 1, 2 (3->1->2), 0.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"a", "b", "c"});
+%! d = distances (G, {"c"});
+%! assert (d, [1, 2, 0]);
+
+## distances(G, src) with string src on a weighted named graph.
+%!test
+%! G = graph ([1 2 3], [2 3 1], [5 10 15], {"a", "b", "c"});
+%! d = distances (G, "a");
+%! assert (d, [0, 5, 15]);
+
+## Singleton source: element (src, src) is always 0.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15]);
+%! d = distances (G, 2);
+%! assert (d(2), 0);
+
+## Source on a single-node graph returns 0 (1x1).
+%!test
+%! G = digraph (1);
+%! d = distances (G, 1);
+%! assert (d, 0);
+%! assert (size (d), [1, 1]);
+
+## Direction matters for digraph: distances(G, src) only considers
+## forward paths.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! d = distances (G, 3);
+%! assert (d, [Inf, Inf, 0]);
+
+## -------------------- US-P02 single-pair form --------------------
+
+## distances(G, src, tgt) returns a scalar double.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15]);
+%! d = distances (G, 1, 2);
+%! assert (size (d), [1, 1]);
+%! assert (isa (d, "double"));
+%! assert (d, 5);
+
+## distances(G, src, tgt) diagonal case is 0.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15]);
+%! d = distances (G, 2, 2);
+%! assert (d, 0);
+
+## distances(G, src, tgt) picks the shorter of two paths (digraph).
+%!test
+%! G = digraph ([1 1 2], [2 3 3], [5 100 1]);
+%! d = distances (G, 1, 3);
+%! assert (d, 6);
+
+## distances(G, src, tgt) on the undirected graph.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! d = distances (G, 1, 3);
+%! assert (d, 2);
+
+## distances(G, src, tgt) returns Inf for unreachable pair.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! d = distances (G, 3, 1);
+%! assert (d, Inf);
+
+## distances(G, src, tgt) respects direction (digraph).
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! assert (distances (G, 1, 3), 2);
+%! assert (distances (G, 3, 1), Inf);
+
+## distances(G, src, tgt) with string src and tgt on a named digraph.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15], {"a", "b", "c"});
+%! assert (distances (G, "a", "c"), 15);
+%! assert (distances (G, "c", "a"), 15);
+%! assert (distances (G, "b", "a"), 25);
+
+## distances(G, src, tgt) with mixed numeric and string endpoints.
+%!test
+%! G = digraph ([1 2], [2 3], [], {"a", "b", "c"});
+%! assert (distances (G, "a", 3), 2);
+%! assert (distances (G, 1, "c"), 2);
+
+## distances(G, src, tgt) on a named undirected graph is symmetric.
+%!test
+%! G = graph ([1 2 3], [2 3 1], [5 10 15], {"a", "b", "c"});
+%! assert (distances (G, "a", "c"), 15);
+%! assert (distances (G, "c", "a"), 15);
+
+## distances(G, src, tgt) with 1-element cellstr arguments.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15], {"a", "b", "c"});
+%! assert (distances (G, {"a"}, {"c"}), 15);
+
+## distances(G, src, tgt) agrees with all-pairs D(src, tgt).
+%!test
+%! G = digraph ([1 1 2 2 3], [2 3 3 4 4], [1 4 2 5 1]);
+%! D = distances (G);
+%! for s = 1:4
+%!   for t = 1:4
+%!     assert (distances (G, s, t), D(s, t));
+%!   endfor
+%! endfor
+
+## Single-source siever-style distance matches all-pairs row.
+%!test
+%! s = [1 2 3 3 4 5 5 6 7 7 8 9];
+%! t = [2 3 2 4 5 6 9 7 8 9 7 4];
+%! G = digraph (s, t);
+%! D = distances (G);
+%! assert (distances (G, 1), D(1, :));
+%! assert (distances (G, 4), D(4, :));
+%! assert (distances (G, 1, 9), D(1, 9));
+
+## -------------------- US-P02 vector-argument extension -----------
+
+## distances(G, src) with vector src returns length(src) x N matrix
+## (MATLAB parity).
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15]);
+%! D = distances (G, [1; 2]);
+%! assert (size (D), [2, 3]);
+%! assert (D(1, :), [0, 5, 15]);
+%! assert (D(2, :), [25, 0, 10]);
+
+## distances(G, src, tgt) with vector src and tgt returns length(s) x length(t).
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15]);
+%! D = distances (G, [1 2], [2 3]);
+%! assert (size (D), [2, 2]);
+%! assert (D, [5 15; 0 10]);
+
+## -------------------- US-P02 dot notation dispatch ---------------
+
+## G.distances(src) matches distances(G, src).
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15]);
+%! d1 = distances (G, 2);
+%! d2 = G.distances (2);
+%! assert (d1, d2);
+
+## G.distances(src, tgt) matches distances(G, src, tgt).
+%!test
+%! G = graph ([1 2 3], [2 3 1], [5 10 15]);
+%! d1 = distances (G, 2, 3);
+%! d2 = G.distances (2, 3);
+%! assert (d1, d2);
+
+## -------------------- US-P02 multigraph single-source ------------
+
+## Parallel edges: single-source distances still use the min weight.
+%!test
+%! G = digraph ([1 1], [2 2], [7, 3], "multigraph");
+%! d = distances (G, 1);
+%! assert (d(2), 3);
+
+## -------------------- US-P02 error cases -------------------------
+
+## Out-of-range numeric src.
+%!error <invalid node index>
+%! G = digraph (3);
+%! distances (G, 5);
+
+## Zero numeric src.
+%!error <invalid node index>
+%! G = digraph (3);
+%! distances (G, 0);
+
+## Non-integer numeric src.
+%!error <invalid node index>
+%! G = digraph (3);
+%! distances (G, 1.5);
+
+## Out-of-range numeric tgt.
+%!error <invalid node index>
+%! G = digraph (3);
+%! distances (G, 1, 5);
+
+## String src on a digraph without names.
+%!error <no node names>
+%! G = digraph (3);
+%! distances (G, "a");
+
+## Missing node name.
+%!error <not found>
+%! G = digraph ([1 2], [2 3], [], {"a", "b", "c"});
+%! distances (G, "z");
+
+## Missing node name on tgt.
+%!error <not found>
+%! G = digraph ([1 2], [2 3], [], {"a", "b", "c"});
+%! distances (G, "a", "z");
+
+## Unsupported type (logical) for src.
+%!error <numeric index array>
+%! G = digraph (3);
+%! distances (G, true);
+
+## Too many arguments.
+%!error distances (digraph (3), 1, 2, 3)

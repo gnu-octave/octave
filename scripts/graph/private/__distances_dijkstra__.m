@@ -24,11 +24,13 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{D} =} __distances_dijkstra__ (@var{W})
+## @deftypefn  {} {@var{D} =} __distances_dijkstra__ (@var{W})
+## @deftypefnx {} {@var{D} =} __distances_dijkstra__ (@var{W}, @var{sources})
 ## Private helper: run Dijkstra's single-source shortest-path algorithm
-## from every node of a graph encoded by the square sparse weight
-## matrix @var{W} and return the resulting all-pairs distance matrix
-## @var{D}.
+## from the specified @var{sources} of a graph encoded by the square
+## sparse weight matrix @var{W} and return the resulting distance
+## matrix @var{D}.  Without @var{sources}, Dijkstra runs from every
+## node and the result is the all-pairs distance matrix.
 ##
 ## @var{W}(i, j) is the weight of the edge from node @math{i} to node
 ## @math{j}; a zero entry means no edge (consistent with Octave's
@@ -36,11 +38,16 @@
 ## undirected graph the caller supplies a symmetric @var{W}; for a
 ## directed graph @var{W} is typically asymmetric.
 ##
-## @var{D} is a dense @code{N}-by-@code{N} double matrix where
-## @var{D}(i, j) is the length of a shortest directed path from
-## @math{i} to @math{j} under the weights in @var{W}, or @code{Inf}
-## when @math{j} is not reachable from @math{i}.  @var{D}(i, i) is
-## always @code{0}; self-loops in @var{W} do not affect the result.
+## @var{sources} is an optional column vector of positive integer node
+## indices (each in @code{1:size (@var{W}, 1)}) that selects which
+## sources to run Dijkstra from.  When omitted or empty, Dijkstra runs
+## from all @code{N = size (@var{W}, 1)} nodes.  The output
+## @var{D} is a dense @code{numel (@var{sources})}-by-@code{N} double
+## matrix in which @var{D}(k, j) is the length of a shortest directed
+## path from @code{@var{sources}(k)} to node @math{j} under the
+## weights in @var{W}, or @code{Inf} when @math{j} is not reachable
+## from that source.  @var{D}(k, @var{sources}(k)) is always
+## @code{0}; self-loops in @var{W} do not affect the result.
 ##
 ## Raises @code{Octave:invalid-input-arg} when @var{W} contains a
 ## negative entry: Dijkstra's algorithm is not valid with negative
@@ -53,15 +60,26 @@
 ## @seealso{distances, graph, digraph}
 ## @end deftypefn
 
-function D = __distances_dijkstra__ (W)
+function D = __distances_dijkstra__ (W, sources)
 
   if (nargin < 1)
     print_usage ();
   endif
 
   N = size (W, 1);
+
+  if (nargin < 2 || isempty (sources))
+    all_sources = true;
+    src_list = (1:N).';
+  else
+    all_sources = false;
+    src_list = double (sources(:));
+  endif
+
+  K = numel (src_list);
+
   if (N == 0)
-    D = zeros (0, 0);
+    D = zeros (K, 0);
     return;
   endif
 
@@ -72,7 +90,12 @@ function D = __distances_dijkstra__ (W)
            "distances: negative edge weights are not supported by the default Dijkstra method");
   endif
 
-  D = inf (N, N);
+  D = inf (K, N);
+
+  if (K == 0)
+    return;
+  endif
+
   ## Precompute row-wise neighbor lists so every source doesn't
   ## re-scan the whole sparse matrix.  For each node u we collect
   ## its outgoing (non-zero) neighbors and their weights once.
@@ -84,7 +107,8 @@ function D = __distances_dijkstra__ (W)
     weights{u} = w(:);
   endfor
 
-  for src = 1:N
+  for k = 1:K
+    src = src_list(k);
     dist = inf (N, 1);
     dist(src) = 0;
     visited = false (N, 1);
@@ -104,10 +128,10 @@ function D = __distances_dijkstra__ (W)
       visited(u) = true;
       nb = neighbors{u};
       w = weights{u};
-      for k = 1:numel (nb)
-        v = nb(k);
+      for j = 1:numel (nb)
+        v = nb(j);
         if (! visited(v))
-          alt = dist(u) + w(k);
+          alt = dist(u) + w(j);
           if (alt < dist(v))
             dist(v) = alt;
           endif
@@ -115,7 +139,7 @@ function D = __distances_dijkstra__ (W)
       endfor
     endfor
 
-    D(src, :) = dist.';
+    D(k, :) = dist.';
   endfor
 
 endfunction
@@ -187,3 +211,34 @@ endfunction
 
 ## No-arg call errors via print_usage.
 %!error __distances_dijkstra__ ()
+
+## sources arg: single-source Dijkstra yields a 1xN row.
+%!test
+%! W = sparse ([1, 2, 3], [2, 3, 1], [5, 10, 15], 3, 3);
+%! D = __distances_dijkstra__ (W, 1);
+%! assert (size (D), [1, 3]);
+%! assert (D, [0, 5, 15]);
+
+## sources arg: multiple sources yields a KxN matrix.
+%!test
+%! W = sparse ([1, 2, 3], [2, 3, 1], [5, 10, 15], 3, 3);
+%! D = __distances_dijkstra__ (W, [1; 3]);
+%! assert (size (D), [2, 3]);
+%! assert (D(1, :), [0, 5, 15]);
+%! assert (D(2, :), [15, 20, 0]);
+
+## sources arg: empty sources yields 0xN empty.
+%!test
+%! W = sparse ([1, 2, 3], [2, 3, 1], [5, 10, 15], 3, 3);
+%! D = __distances_dijkstra__ (W, []);
+%! assert (size (D), [3, 3]);
+%! ## Actually empty -> default (all sources) kicks in; documented
+%! ## behaviour.  Confirm full all-pairs result.
+%! assert (D, [0 5 15; 25 0 10; 15 20 0]);
+
+## sources arg: source order preserved.
+%!test
+%! W = sparse ([1, 2, 3], [2, 3, 1], [5, 10, 15], 3, 3);
+%! D = __distances_dijkstra__ (W, [3; 1]);
+%! assert (D(1, :), [15, 20, 0]);
+%! assert (D(2, :), [0, 5, 15]);

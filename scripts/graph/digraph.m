@@ -3205,26 +3205,46 @@ classdef digraph
 
     endfunction
 
-    function D = distances (G)
+    function D = distances (G, varargin)
 
       ## -*- texinfo -*-
-      ## @deftypefn {} {@var{D} =} distances (@var{G})
-      ## Return the all-pairs shortest-path distance matrix of the
-      ## digraph @var{G}.  @var{D}(i, j) is the length of a shortest
-      ## directed path from node @math{i} to node @math{j}, or
-      ## @code{Inf} when @math{j} is not reachable from @math{i}.  The
-      ## diagonal is always @code{0}.  Every edge has weight @code{1}
-      ## when @var{G} is unweighted; otherwise the stored weights are
-      ## used.  Default method is Dijkstra's algorithm, which requires
-      ## non-negative edge weights; a negative weight raises an error.
-      ## See @code{help distances} for the full description.
+      ## @deftypefn  {} {@var{D} =} distances (@var{G})
+      ## @deftypefnx {} {@var{d} =} distances (@var{G}, @var{src})
+      ## @deftypefnx {} {@var{d} =} distances (@var{G}, @var{src}, @var{tgt})
+      ## Return shortest-path distances on the digraph @var{G}.
+      ##
+      ## With no extra arguments, return the all-pairs
+      ## @code{numnodes (@var{G})}-by-@code{numnodes (@var{G})} distance
+      ## matrix.  With @var{src}, return a
+      ## @code{numel (@var{src})}-by-@code{numnodes (@var{G})} matrix
+      ## whose @math{k}-th row is the shortest-path distance from
+      ## @code{@var{src}(k)} to every node (so a scalar @var{src}
+      ## produces a row vector of length @code{numnodes (@var{G})}).
+      ## With both @var{src} and @var{tgt}, return a
+      ## @code{numel (@var{src})}-by-@code{numel (@var{tgt})} submatrix
+      ## (scalar when both arguments are scalar).
+      ##
+      ## @var{src} and @var{tgt} may be numeric node indices or node
+      ## names (character row vector or cell array of strings) when
+      ## @var{G} has node names; see @code{help distances} for details.
       ## @seealso{digraph, shortestpath, shortestpathtree, adjacency}
       ## @end deftypefn
 
+      if (numel (varargin) > 2)
+        error ("Octave:invalid-fun-call", ...
+               "distances: too many input arguments");
+      endif
+
+      have_src = (numel (varargin) >= 1);
+      have_tgt = (numel (varargin) >= 2);
+
       N = numnodes (G);
-      if (N == 0)
-        D = zeros (0, 0);
-        return;
+
+      if (! have_src)
+        if (N == 0)
+          D = zeros (0, 0);
+          return;
+        endif
       endif
 
       ## Build the weight matrix W(i, j) used by Dijkstra.  For a
@@ -3257,7 +3277,24 @@ classdef digraph
         endif
       endif
 
-      D = __distances_dijkstra__ (W);
+      if (! have_src)
+        D = __distances_dijkstra__ (W);
+        return;
+      endif
+
+      src_idx = __resolve_node_list__ (G, varargin{1}, "distances");
+      D_src = __distances_dijkstra__ (W, src_idx);
+
+      if (have_tgt)
+        tgt_idx = __resolve_node_list__ (G, varargin{2}, "distances");
+        if (isempty (tgt_idx))
+          D = zeros (numel (src_idx), 0);
+        else
+          D = D_src(:, tgt_idx);
+        endif
+      else
+        D = D_src;
+      endif
 
     endfunction
 

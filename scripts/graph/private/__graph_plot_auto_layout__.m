@@ -26,7 +26,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{X}, @var{Y}] =} __graph_plot_auto_layout__ (@var{G}, @var{layout})
 ## @deftypefnx {} {[@var{X}, @var{Y}] =} __graph_plot_auto_layout__ (@var{G}, @var{layout}, @var{opts})
-## Compute 2-D node coordinates for @code{plot}'ting a @code{graph} or
+## @deftypefnx {} {[@var{X}, @var{Y}, @var{Z}] =} __graph_plot_auto_layout__ (@dots{})
+## Compute node coordinates for @code{plot}'ting a @code{graph} or
 ## @code{digraph}.
 ##
 ## @var{G} must be a @code{graph} or @code{digraph}.  @var{layout} is a
@@ -45,6 +46,12 @@
 ## weighted, the @code{WeightEffect} option selects how edge weights
 ## enter the attractive force: @qcode{"none"} (default),
 ## @qcode{"direct"}, or @qcode{"inverse"}.
+## @item force3
+## Fruchterman-Reingold 3-D force-directed layout.  See
+## @code{__graph_plot_force3__} for details.  Honours the same
+## @code{WeightEffect} options as the 2-D @qcode{"force"} layout.
+## This is the only currently-supported 3-D layout: it is the layout
+## that populates a non-empty @var{Z} output.
 ## @item circle
 ## Production layout.  Place the @var{N} nodes of @var{G} uniformly on
 ## the unit circle at angles @code{theta(k) = 2*pi*(k-1)/N}.  Node 1
@@ -58,17 +65,19 @@
 ## Currently recognised fields:
 ## @table @code
 ## @item WeightEffect
-## Character vector forwarded to @code{__graph_plot_force__} when the
-## @qcode{"force"} branch is active.  Ignored by the other layouts.
+## Character vector forwarded to @code{__graph_plot_force__} or
+## @code{__graph_plot_force3__} when the @qcode{"force"} /
+## @qcode{"force3"} branches are active.  Ignored by the other layouts.
 ## @end table
 ##
 ## Returns @var{X} and @var{Y} as column vectors of length
-## @code{numnodes (G)}.  Both are populated with finite double values
-## for every @var{N} @code{>= 0}.
-## @seealso{plot, GraphPlot, __graph_plot_force__}
+## @code{numnodes (G)}.  The optional third output @var{Z} is populated
+## only by 3-D layouts (currently @qcode{"force3"}); 2-D layouts return
+## @code{zeros (0, 1)} for @var{Z}.
+## @seealso{plot, GraphPlot, __graph_plot_force__, __graph_plot_force3__}
 ## @end deftypefn
 
-function [X, Y] = __graph_plot_auto_layout__ (G, layout, opts)
+function [X, Y, Z] = __graph_plot_auto_layout__ (G, layout, opts)
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
@@ -99,6 +108,10 @@ function [X, Y] = __graph_plot_auto_layout__ (G, layout, opts)
   N = numnodes (G);
   layout = lower (layout);
 
+  ## Default Z: empty column for every 2-D layout.  The force3 branch
+  ## overwrites it with the 3-D coordinate vector.
+  Z = zeros (0, 1);
+
   switch (layout)
     case "auto"
       ## Auto dispatches by node count: fewer than 100 nodes use the
@@ -113,6 +126,8 @@ function [X, Y] = __graph_plot_auto_layout__ (G, layout, opts)
       [X, Y] = __gp_layout_circle__ (N);
     case "force"
       [X, Y] = __graph_plot_force__ (G, weight_effect);
+    case "force3"
+      [X, Y, Z] = __graph_plot_force3__ (G, weight_effect);
     case "circle"
       [X, Y] = __gp_layout_circle__ (N);
     otherwise
@@ -412,3 +427,85 @@ endfunction
 %! [X2, Y2] = __graph_plot_auto_layout__ (G, "circle");
 %! assert (X1, X2);
 %! assert (Y1, Y2);
+
+## -------- US-GP04 force3 (3-D force) layout: coverage --------
+
+## 'force3' layout returns 3-D coordinates via the optional 3rd output.
+%!test
+%! G = digraph ([1 2 3 4], [2 3 4 1]);
+%! [X, Y, Z] = __graph_plot_auto_layout__ (G, "force3");
+%! assert (numel (X), 4);
+%! assert (numel (Y), 4);
+%! assert (numel (Z), 4);
+%! assert (iscolumn (X));
+%! assert (iscolumn (Y));
+%! assert (iscolumn (Z));
+%! assert (all (isfinite (X)));
+%! assert (all (isfinite (Y)));
+%! assert (all (isfinite (Z)));
+
+## force3 layout Z is non-trivial (not all zeros).
+%!test
+%! G = digraph ([1 2 3 4 5], [2 3 4 5 1]);
+%! [~, ~, Z] = __graph_plot_auto_layout__ (G, "force3");
+%! assert (any (abs (Z) > 1e-6));
+
+## force3 layout matches the direct __graph_plot_force3__ helper.
+%!test
+%! G = digraph ([1 2 3 4], [2 3 4 1]);
+%! [Xa, Ya, Za] = __graph_plot_auto_layout__ (G, "force3");
+%! [Xh, Yh, Zh] = __graph_plot_force3__ (G);
+%! assert (Xa, Xh);
+%! assert (Ya, Yh);
+%! assert (Za, Zh);
+
+## force3 layout name is case-insensitive.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! [X1, Y1, Z1] = __graph_plot_auto_layout__ (G, "force3");
+%! [X2, Y2, Z2] = __graph_plot_auto_layout__ (G, "FORCE3");
+%! [X3, Y3, Z3] = __graph_plot_auto_layout__ (G, "Force3");
+%! assert (X1, X2);
+%! assert (X1, X3);
+%! assert (Z1, Z2);
+
+## force3 forwards opts.WeightEffect to the helper.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [1 1 100]);
+%! [Xn, Yn, Zn] = __graph_plot_auto_layout__ (G, "force3");
+%! opts.WeightEffect = "direct";
+%! [Xd, Yd, Zd] = __graph_plot_auto_layout__ (G, "force3", opts);
+%! assert (any (abs (Xn - Xd) > 1e-6) ...
+%!         || any (abs (Yn - Yd) > 1e-6) ...
+%!         || any (abs (Zn - Zd) > 1e-6));
+
+## 2-D layouts return an empty Z column when the 3rd output is
+## requested.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! [X, Y, Z] = __graph_plot_auto_layout__ (G, "circle");
+%! assert (size (Z), [0, 1]);
+%! [X, Y, Z] = __graph_plot_auto_layout__ (G, "force");
+%! assert (size (Z), [0, 1]);
+%! [X, Y, Z] = __graph_plot_auto_layout__ (G, "subspace");
+%! assert (size (Z), [0, 1]);
+%! [X, Y, Z] = __graph_plot_auto_layout__ (G, "auto");
+%! assert (size (Z), [0, 1]);
+
+## force3 on an empty graph yields 0-by-1 columns for X, Y, and Z.
+%!test
+%! G = digraph ();
+%! [X, Y, Z] = __graph_plot_auto_layout__ (G, "force3");
+%! assert (size (X), [0, 1]);
+%! assert (size (Y), [0, 1]);
+%! assert (size (Z), [0, 1]);
+
+## Backward-compatible 2-output call on a 3-D layout still works
+## (3rd output is simply dropped).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! [X, Y] = __graph_plot_auto_layout__ (G, "force3");
+%! assert (numel (X), 3);
+%! assert (numel (Y), 3);
+%! assert (all (isfinite (X)));
+%! assert (all (isfinite (Y)));

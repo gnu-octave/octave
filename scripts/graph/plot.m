@@ -40,12 +40,17 @@
 ## Recognised layout names for @qcode{"Layout"} include
 ## @qcode{"auto"} (default), @qcode{"circle"} (uniform unit-circle
 ## placement, node 1 at @code{(1, 0)}, remaining nodes counter-clockwise),
-## @qcode{"subspace"}, and @qcode{"force"} (Fruchterman-Reingold 2-D
-## force-directed layout).  Layout names are case-insensitive.
+## @qcode{"subspace"}, @qcode{"force"} (Fruchterman-Reingold 2-D
+## force-directed layout), and @qcode{"force3"} (Fruchterman-Reingold
+## 3-D force-directed layout — the only 3-D layout in this release;
+## it populates the @code{ZData} property of the returned
+## @code{GraphPlot} handle and renders via @code{plot3}).  Layout
+## names are case-insensitive.
 ##
-## The @qcode{"force"} layout accepts an additional
-## @qcode{"WeightEffect"} option that selects how edge weights enter
-## the attractive spring force.  Allowed values (case-insensitive):
+## The @qcode{"force"} and @qcode{"force3"} layouts accept an
+## additional @qcode{"WeightEffect"} option that selects how edge
+## weights enter the attractive spring force.  Allowed values
+## (case-insensitive):
 ##
 ## @table @code
 ## @item none
@@ -442,6 +447,101 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
+## -------- US-GP04 force3 layout via plot() --------
+
+## plot(G, 'Layout', 'force3') returns a GraphPlot whose ZData is
+## populated with N finite values (not merely an empty column).
+%!test
+%! G = digraph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G, "Layout", "force3");
+%!   assert (isa (h, "GraphPlot"));
+%!   assert (h.NumNodes, 5);
+%!   assert (numel (h.ZData), 5);
+%!   assert (iscolumn (h.ZData));
+%!   assert (all (isfinite (h.ZData)));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 2-D layouts via plot() leave ZData empty; force3 populates it.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h2 = plot (G, "Layout", "force");
+%!   h3 = plot (G, "Layout", "force3");
+%!   assert (isempty (h2.ZData));
+%!   assert (numel (h3.ZData), 3);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Force3 layout is deterministic and independent of caller RNG state.
+%!test
+%! G = digraph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   rand ("state", 3);
+%!   h1 = plot (G, "Layout", "force3");
+%!   rand ("state", 99);
+%!   h2 = plot (G, "Layout", "force3");
+%!   assert (h1.XData, h2.XData, 1e-12);
+%!   assert (h1.YData, h2.YData, 1e-12);
+%!   assert (h1.ZData, h2.ZData, 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Force3 layout name is case-insensitive via plot().
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = plot (G, "Layout", "force3");
+%!   h2 = plot (G, "Layout", "FORCE3");
+%!   h3 = plot (G, "Layout", "Force3");
+%!   assert (h1.XData, h2.XData, 1e-12);
+%!   assert (h1.ZData, h2.ZData, 1e-12);
+%!   assert (h1.ZData, h3.ZData, 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## WeightEffect passes through plot() to the force3 helper.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [1 1 100]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h_none = plot (G, "Layout", "force3", "WeightEffect", "none");
+%!   h_dir  = plot (G, "Layout", "force3", "WeightEffect", "direct");
+%!   h_inv  = plot (G, "Layout", "force3", "WeightEffect", "inverse");
+%!   assert (any (abs (h_none.XData - h_dir.XData) > 1e-6) ...
+%!           || any (abs (h_none.YData - h_dir.YData) > 1e-6) ...
+%!           || any (abs (h_none.ZData - h_dir.ZData) > 1e-6));
+%!   assert (any (abs (h_none.XData - h_inv.XData) > 1e-6) ...
+%!           || any (abs (h_none.YData - h_inv.YData) > 1e-6) ...
+%!           || any (abs (h_none.ZData - h_inv.ZData) > 1e-6));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## plot(G, 'Layout', 'force3') produces stable coordinates across
+## repeat invocations (exact equality between two identical calls).
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = plot (G, "Layout", "force3");
+%!   h2 = plot (G, "Layout", "force3");
+%!   assert (h1.XData, h2.XData);
+%!   assert (h1.YData, h2.YData);
+%!   assert (h1.ZData, h2.ZData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
 ## %!demo — small directed cycle under gnuplot (safe headless demo).
 %!demo
 %! G = digraph ([1 2 3 4], [2 3 4 1]);
@@ -460,4 +560,11 @@ endfunction
 %! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
 %! h = plot (G, "Layout", "force");
 %! title ("graph 5-cycle, force layout");
+%! axis equal;
+
+## %!demo — 3-D force layout on a small multi-edge graph.
+%!demo
+%! G = graph ([1 1 1 1 2 3 4 5], [2 3 4 5 3 4 5 2]);
+%! h = plot (G, "Layout", "force3");
+%! title ("graph force3 (3-D) layout");
 %! axis equal;

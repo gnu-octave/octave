@@ -72,7 +72,7 @@ classdef GraphPlot < handle
   properties
     XData = zeros (0, 1);
     YData = zeros (0, 1);
-    ZData = zeros (0, 0);
+    ZData = zeros (0, 1);
     NodeColor = [0 0.4470 0.7410];
     EdgeColor = [0 0.4470 0.7410];
     Marker = "o";
@@ -180,7 +180,9 @@ classdef GraphPlot < handle
       h.NumEdges = numedges (G);
 
       ## Compute layout.  'auto' dispatches to subspace / force helpers
-      ## by size threshold.
+      ## by size threshold.  The optional third return value Z is
+      ## populated by 3-D layouts (currently "force3" only) and left
+      ## empty for every 2-D layout.
       if (! isempty (xdata_user) && ! isempty (ydata_user))
         if (numel (xdata_user) != N || numel (ydata_user) != N)
           error ("Octave:invalid-input-arg", ...
@@ -188,13 +190,19 @@ classdef GraphPlot < handle
         endif
         X = double (xdata_user);
         Y = double (ydata_user);
+        Z = zeros (0, 1);
       else
-        [X, Y] = __graph_plot_auto_layout__ (G, layout, layout_opts);
+        [X, Y, Z] = __graph_plot_auto_layout__ (G, layout, layout_opts);
       endif
 
       h.XData = X(:);
       h.YData = Y(:);
-      h.ZData = zeros (0, 0);
+      if (isempty (Z))
+        h.ZData = zeros (0, 1);
+      else
+        h.ZData = Z(:);
+      endif
+      is_3d = ! isempty (h.ZData);
 
       ## Figure out the edge list once so we can plot edges and cache
       ## the source/destination indices for future redraws.
@@ -211,6 +219,8 @@ classdef GraphPlot < handle
       ## exists.  Rendering is wrapped in try/catch so that non-graphics
       ## environments (e.g.  @code{--no-window-system}) still construct a
       ## valid @code{GraphPlot} object even if the actual draw fails.
+      ## 3-D layouts (ZData non-empty) draw edges via plot3 and nodes
+      ## via scatter3-style marker plot so the axes gain a Z axis.
       try
         h.axes_ = newplot ();
         was_hold = ishold (h.axes_);
@@ -223,24 +233,44 @@ classdef GraphPlot < handle
         for kk = 1:h.NumEdges
           s = h.edge_src_(kk);
           t = h.edge_dst_(kk);
-          edge_handles(kk) = plot (h.axes_, ...
-                                   [h.XData(s), h.XData(t)], ...
-                                   [h.YData(s), h.YData(t)], ...
-                                   "Color", h.EdgeColor, ...
-                                   "LineStyle", h.LineStyle, ...
-                                   "LineWidth", h.LineWidth);
+          if (is_3d)
+            edge_handles(kk) = plot3 (h.axes_, ...
+                                      [h.XData(s), h.XData(t)], ...
+                                      [h.YData(s), h.YData(t)], ...
+                                      [h.ZData(s), h.ZData(t)], ...
+                                      "Color", h.EdgeColor, ...
+                                      "LineStyle", h.LineStyle, ...
+                                      "LineWidth", h.LineWidth);
+          else
+            edge_handles(kk) = plot (h.axes_, ...
+                                     [h.XData(s), h.XData(t)], ...
+                                     [h.YData(s), h.YData(t)], ...
+                                     "Color", h.EdgeColor, ...
+                                     "LineStyle", h.LineStyle, ...
+                                     "LineWidth", h.LineWidth);
+          endif
         endfor
         h.edge_handles_ = edge_handles;
 
         ## Plot nodes as scatter markers.
         if (N > 0)
-          h.node_handle_ = plot (h.axes_, h.XData, h.YData, ...
-                                 "LineStyle", "none", ...
-                                 "Marker", h.Marker, ...
-                                 "MarkerSize", h.MarkerSize, ...
-                                 "Color", h.NodeColor, ...
-                                 "MarkerFaceColor", h.NodeColor, ...
-                                 "MarkerEdgeColor", h.NodeColor);
+          if (is_3d)
+            h.node_handle_ = plot3 (h.axes_, h.XData, h.YData, h.ZData, ...
+                                    "LineStyle", "none", ...
+                                    "Marker", h.Marker, ...
+                                    "MarkerSize", h.MarkerSize, ...
+                                    "Color", h.NodeColor, ...
+                                    "MarkerFaceColor", h.NodeColor, ...
+                                    "MarkerEdgeColor", h.NodeColor);
+          else
+            h.node_handle_ = plot (h.axes_, h.XData, h.YData, ...
+                                   "LineStyle", "none", ...
+                                   "Marker", h.Marker, ...
+                                   "MarkerSize", h.MarkerSize, ...
+                                   "Color", h.NodeColor, ...
+                                   "MarkerFaceColor", h.NodeColor, ...
+                                   "MarkerEdgeColor", h.NodeColor);
+          endif
         endif
 
         if (! was_hold)
@@ -517,6 +547,144 @@ endclassdef
 %!   hf2 = GraphPlot (G, "Layout", "force");
 %!   assert (ha.XData, hf2.XData);
 %!   assert (ha.YData, hf2.YData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## -------- US-GP04 force3 (3-D force) layout via GraphPlot --------
+
+## 'Layout','force3' populates ZData and returns a valid GraphPlot.
+%!test
+%! G = digraph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "force3");
+%!   assert (isa (h, "GraphPlot"));
+%!   assert (h.NumNodes, 5);
+%!   assert (numel (h.XData), 5);
+%!   assert (numel (h.YData), 5);
+%!   assert (numel (h.ZData), 5);
+%!   assert (iscolumn (h.XData));
+%!   assert (iscolumn (h.YData));
+%!   assert (iscolumn (h.ZData));
+%!   assert (all (isfinite (h.XData)));
+%!   assert (all (isfinite (h.YData)));
+%!   assert (all (isfinite (h.ZData)));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 2-D layouts leave ZData empty; force3 leaves it N-long.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h2 = GraphPlot (G, "Layout", "force");
+%!   h3 = GraphPlot (G, "Layout", "force3");
+%!   assert (isempty (h2.ZData));
+%!   assert (numel (h3.ZData), 3);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## force3 coordinates equal direct call to __graph_plot_force3__
+## helper.
+%!test
+%! G = digraph ([1 2 3 4], [2 3 4 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "force3");
+%!   [Xh, Yh, Zh] = __graph_plot_force3__ (G);
+%!   assert (h.XData, Xh);
+%!   assert (h.YData, Yh);
+%!   assert (h.ZData, Zh);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## force3 is deterministic and independent of caller RNG state.
+%!test
+%! G = digraph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   rand ("state", 11);
+%!   h1 = GraphPlot (G, "Layout", "force3");
+%!   rand ("state", 99);
+%!   h2 = GraphPlot (G, "Layout", "force3");
+%!   assert (h1.XData, h2.XData, 1e-12);
+%!   assert (h1.YData, h2.YData, 1e-12);
+%!   assert (h1.ZData, h2.ZData, 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## force3 layout name is case-insensitive.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = GraphPlot (G, "Layout", "force3");
+%!   h2 = GraphPlot (G, "Layout", "FORCE3");
+%!   h3 = GraphPlot (G, "Layout", "Force3");
+%!   assert (h1.XData, h2.XData, 1e-12);
+%!   assert (h1.ZData, h2.ZData, 1e-12);
+%!   assert (h1.XData, h3.XData, 1e-12);
+%!   assert (h1.ZData, h3.ZData, 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## WeightEffect passes through to force3 (same mechanism as force).
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [1 1 100]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hn = GraphPlot (G, "Layout", "force3");
+%!   hd = GraphPlot (G, "Layout", "force3", "WeightEffect", "direct");
+%!   assert (any (abs (hn.XData - hd.XData) > 1e-6) ...
+%!           || any (abs (hn.YData - hd.YData) > 1e-6) ...
+%!           || any (abs (hn.ZData - hd.ZData) > 1e-6));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## force3 Z spread is non-zero on a non-trivial graph.
+%!test
+%! G = graph ([1 1 1 1 2 3 4 5], [2 3 4 5 3 4 5 2]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "force3");
+%!   assert (max (h.ZData) - min (h.ZData) > 1e-3);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Empty and single-node digraphs under force3.
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h0 = GraphPlot (digraph (), "Layout", "force3");
+%!   assert (h0.NumNodes, 0);
+%!   assert (isempty (h0.XData));
+%!   assert (isempty (h0.ZData));
+%!   h1 = GraphPlot (digraph (1), "Layout", "force3");
+%!   assert (h1.NumNodes, 1);
+%!   assert (h1.XData, 0);
+%!   assert (h1.YData, 0);
+%!   assert (h1.ZData, 0);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Undirected graph under force3 also produces 3-D coordinates.
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "force3");
+%!   assert (isa (h, "GraphPlot"));
+%!   assert (numel (h.ZData), 3);
+%!   assert (all (isfinite (h.ZData)));
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

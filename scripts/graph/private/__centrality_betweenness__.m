@@ -24,7 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{c} =} __centrality_betweenness__ (@var{G})
+## @deftypefn  {} {@var{c} =} __centrality_betweenness__ (@var{G})
+## @deftypefnx {} {@var{c} =} __centrality_betweenness__ (@var{G}, @qcode{"Cost"}, @var{W})
 ## Private helper: compute unnormalised betweenness centrality on the
 ## @code{graph} or @code{digraph} @var{G} using Brandes' algorithm.
 ##
@@ -38,10 +39,9 @@
 ##
 ## where @math{sigma_{s, t}} is the number of shortest paths from
 ## @math{s} to @math{t} and @math{sigma_{s, t}(v)} is the number of
-## those paths that pass through @math{v}.  Edges are treated as
-## unweighted (weights are ignored for the default MATLAB call; the
-## @code{"Cost"} name-value option is a future story) and self-loops
-## contribute no shortest paths.
+## those paths that pass through @math{v}.  Without the
+## @qcode{"Cost"} option the edges are treated as unweighted (BFS
+## Brandes); self-loops contribute no shortest paths.
 ##
 ## On an undirected @code{graph} the sum above counts each unordered
 ## pair @math{@{s, t@}} once rather than twice, so the all-sources
@@ -49,10 +49,18 @@
 ## @code{digraph} the ordered-pair semantics are preserved and no
 ## division occurs.
 ##
-## The all-sources formulation runs a BFS per source, so the overall
-## complexity is @math{O (N (N + E))} in time and @math{O (N + E)} in
-## working memory per source.  For @math{N = 0} the result is
-## @code{zeros (0, 1)}; for @math{N = 1} it is @code{zeros (1, 1)}.
+## The unweighted all-sources formulation runs a BFS per source, so
+## the overall complexity is @math{O (N (N + E))} in time and
+## @math{O (N + E)} in working memory per source.  For @math{N = 0}
+## the result is @code{zeros (0, 1)}; for @math{N = 1} it is
+## @code{zeros (1, 1)}.
+##
+## The optional @qcode{"Cost"} Name-Value pair supplies a vector of
+## positive per-edge costs of length @code{numedges (@var{G})} that
+## overrides any stored edge weights.  When supplied, Dijkstra's
+## algorithm replaces BFS for single-source shortest paths so the
+## dependency accumulation runs over weighted shortest paths; the
+## per-source cost is @math{O (N^2)} rather than @math{O (N + E)}.
 ##
 ## Reference: U. Brandes, "A Faster Algorithm for Betweenness
 ## Centrality", Journal of Mathematical Sociology 25(2):163-177, 2001.
@@ -62,9 +70,9 @@
 ## @seealso{centrality, distances}
 ## @end deftypefn
 
-function c = __centrality_betweenness__ (G)
+function c = __centrality_betweenness__ (G, varargin)
 
-  if (nargin != 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -73,6 +81,8 @@ function c = __centrality_betweenness__ (G)
            "__centrality_betweenness__: G must be a graph or digraph");
   endif
 
+  [have_cost, cost] = __parse_cost_option__ (G, "betweenness", varargin);
+
   N = numnodes (G);
   c = zeros (N, 1);
   if (N <= 1)
@@ -80,6 +90,17 @@ function c = __centrality_betweenness__ (G)
   endif
 
   directed = isa (G, "digraph");
+
+  if (have_cost)
+    ## Dijkstra Brandes over cost-weighted adjacency.  adjacency (G,
+    ## cost) is symmetric for a graph and directed for a digraph.
+    W = adjacency (G, cost);
+    c = __brandes_weighted__ (W, N);
+    if (! directed)
+      c = c / 2;
+    endif
+    return;
+  endif
 
   ## Binary successor pattern.  For a graph this is the symmetric
   ## adjacency; for a digraph it is the out-neighbour pattern.  spones
@@ -169,6 +190,165 @@ function c = __centrality_betweenness__ (G)
     c = c / 2;
   endif
 
+endfunction
+
+## Parse the "Cost" Name-Value option.  See __centrality_closeness__
+## for the canonical copy; this is duplicated here so the helper
+## remains self-contained (private helpers are not on the search path
+## of one another and are meant to avoid cross-helper dependencies).
+function [have_cost, cost] = __parse_cost_option__ (G, name, args)
+  have_cost = false;
+  cost = [];
+  if (isempty (args))
+    return;
+  endif
+  if (mod (numel (args), 2) != 0)
+    error ("Octave:invalid-input-arg", ...
+           ["centrality: %s Name-Value arguments must come in pairs ", ...
+            "(missing value for option '%s')"], name, args{end});
+  endif
+  for k = 1:2:numel (args)
+    opt = args{k};
+    val = args{k+1};
+    if (! ischar (opt) || ! isrow (opt))
+      error ("Octave:invalid-input-arg", ...
+             ["centrality: %s option name must be a character ", ...
+              "row vector (string)"], name);
+    endif
+    switch (lower (opt))
+      case "cost"
+        M = numedges (G);
+        if (! isnumeric (val) || ! isreal (val))
+          error ("Octave:invalid-input-arg", ...
+                 "centrality: 'Cost' must be a numeric real vector");
+        endif
+        if (! isempty (val) && ! isvector (val))
+          error ("Octave:invalid-input-arg", ...
+                 "centrality: 'Cost' must be a vector");
+        endif
+        if (numel (val) != M)
+          error ("Octave:invalid-input-arg", ...
+                 ["centrality: 'Cost' must have length %d ", ...
+                  "(numedges (G))"], M);
+        endif
+        if (any (! isfinite (val)))
+          error ("Octave:invalid-input-arg", ...
+                 "centrality: 'Cost' entries must be finite");
+        endif
+        if (any (val <= 0))
+          error ("Octave:invalid-input-arg", ...
+                 "centrality: 'Cost' entries must be positive");
+        endif
+        cost = double (val(:));
+        have_cost = true;
+      otherwise
+        error ("Octave:invalid-input-arg", ...
+               "centrality: unknown %s option '%s'", name, opt);
+    endswitch
+  endfor
+endfunction
+
+## Weighted Brandes' algorithm over the cost-weighted adjacency
+## matrix @var{W}.  Returns an unscaled betweenness vector of length
+## @var{N}; the caller divides by 2 for an undirected graph.  The
+## Dijkstra inner loop uses a plain O(N) extract-min scan (no
+## priority-queue data structure in core Octave); that keeps the
+## per-source complexity at @math{O (N^2)} which is adequate for the
+## small graphs in the BIST suite and for the MATLAB-parity test
+## topologies a typical user will throw at us.  The stack of settled
+## vertices is built in non-decreasing distance order so the Phase 2
+## dependency accumulation walks it back-to-front exactly as in the
+## classical Brandes presentation.
+function c = __brandes_weighted__ (W, N)
+  c = zeros (N, 1);
+  if (N <= 1)
+    return;
+  endif
+  ## Precompute sparse out-neighbour lists with their edge weights.
+  ## find on the transpose gives (dst, src, w) in column-major order
+  ## which matches the iteration pattern below when we use find(W)
+  ## directly: (src, dst, w).
+  [sr, dc, ww] = find (W);
+  succ = cell (N, 1);
+  succ_w = cell (N, 1);
+  if (! isempty (sr))
+    for u = 1:N
+      mask = (sr == u);
+      nb = dc(mask).';
+      wn = ww(mask).';
+      ## Drop self-loops: zero-length hops on the shortest-path tree
+      ## contribute no paths between distinct vertices.
+      keep = (nb != u);
+      succ{u} = nb(keep);
+      succ_w{u} = wn(keep);
+    endfor
+  else
+    for u = 1:N
+      succ{u} = zeros (1, 0);
+      succ_w{u} = zeros (1, 0);
+    endfor
+  endif
+
+  for s = 1:N
+    dist = inf (N, 1);  dist(s) = 0;
+    sigma = zeros (N, 1);  sigma(s) = 1;
+    P = cell (N, 1);
+    settled = false (N, 1);
+    S = zeros (N, 1);
+    top = 0;
+
+    ## Dijkstra with O(N) extract-min.
+    while (true)
+      ## Find the unsettled vertex with the smallest finite distance.
+      cand_u = 0;
+      cand_d = Inf;
+      for v = 1:N
+        if (! settled(v) && dist(v) < cand_d)
+          cand_d = dist(v);
+          cand_u = v;
+        endif
+      endfor
+      if (cand_u == 0)
+        break;           # everything reachable has been settled
+      endif
+      v = cand_u;
+      settled(v) = true;
+      top = top + 1;
+      S(top) = v;
+      nb = succ{v};
+      wn = succ_w{v};
+      dv = dist(v);
+      for k = 1:numel (nb)
+        w = nb(k);
+        alt = dv + wn(k);
+        if (alt < dist(w))
+          dist(w) = alt;
+          sigma(w) = sigma(v);
+          P{w} = v;
+        elseif (alt == dist(w))
+          sigma(w) = sigma(w) + sigma(v);
+          P{w} = [P{w}, v];
+        endif
+      endfor
+    endwhile
+
+    ## Phase 2: reverse accumulation.
+    delta = zeros (N, 1);
+    for k = top:-1:1
+      w = S(k);
+      preds = P{w};
+      if (! isempty (preds))
+        factor = (1 + delta(w)) / sigma(w);
+        for j = 1:numel (preds)
+          v = preds(j);
+          delta(v) = delta(v) + sigma(v) * factor;
+        endfor
+      endif
+      if (w != s)
+        c(w) = c(w) + delta(w);
+      endif
+    endfor
+  endfor
 endfunction
 
 
@@ -270,3 +450,126 @@ endfunction
 
 ## Missing input is an error.
 %!error __centrality_betweenness__ ()
+
+## -------------------- Cost Name-Value option --------------------
+
+## Cost = ones reproduces unweighted betweenness on a simple graph.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! c0 = __centrality_betweenness__ (G);
+%! c1 = __centrality_betweenness__ (G, "Cost", [1; 1]);
+%! assert (c1, c0, 1e-12);
+
+## Cost = ones reproduces unweighted betweenness on a digraph.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! c0 = __centrality_betweenness__ (G);
+%! c1 = __centrality_betweenness__ (G, "Cost", [1; 1; 1]);
+%! assert (c1, c0, 1e-12);
+
+## Cost uniformly-scales do not affect the result (ratios are the same).
+%!test
+%! G = graph ([1 1 2 3], [2 3 3 4]);
+%! c0 = __centrality_betweenness__ (G);
+%! c5 = __centrality_betweenness__ (G, "Cost", 5 * ones (4, 1));
+%! assert (c5, c0, 1e-12);
+
+## Weighted triangle + external path: Cost makes the short edge
+## redirect the shortest path.  Edges (in lex order):
+##   1-2, 1-3, 2-3, 3-4
+## Without Cost: 1 and 3 are intermediaries on the 2-4 and 1-4
+## paths respectively; centre depends on which shortest path is
+## chosen by the BFS tie-breaking.  With Cost [10, 1, 1, 1], the
+## 1->2 edge is very expensive so path 1-to-2 goes via 3 (length 2
+## < 10).  Path 2-to-4 becomes 2->3->4 (length 2).  Path 1-to-4 is
+## 1->3->4 (length 2).  So node 3 is on 3 of the 3 pairs with an
+## intermediary: (1,2), (1,4), (2,4).  Undirected -> 3/2 ? No:
+## betweenness is c(3) = sum_{s!=3, t!=3, s<t} sigma_{st}(3)/sigma_{st}
+## With unique shortest paths here, c(3) = 3.
+%!test
+%! G = graph ([1 1 2 3], [2 3 3 4]);
+%! c = __centrality_betweenness__ (G, "Cost", [10; 1; 1; 1]);
+%! assert (c(3), 3, 1e-9);
+%! assert (c(1), 0, 1e-9);
+%! assert (c(2), 0, 1e-9);
+%! assert (c(4), 0, 1e-9);
+
+## Directed diamond 1->{2,3}->4 with equal Cost: two paths of length 2
+## evenly split (matches unweighted default).
+%!test
+%! G = digraph ([1 1 2 3], [2 3 4 4]);
+%! c = __centrality_betweenness__ (G, "Cost", [1; 1; 1; 1]);
+%! assert (c, [0; 0.5; 0.5; 0], 1e-9);
+
+## Directed diamond with unequal Cost: the cheaper middle node
+## becomes the unique shortest-path intermediary.
+## Edges (lex order): 1->2, 1->3, 2->4, 3->4.
+## Cost [1; 10; 1; 10]: path 1->4 goes 1->2->4 (length 2) strictly
+## less than 1->3->4 (length 20).  So node 2 is the only betweenness
+## holder: c = [0; 1; 0; 0].
+%!test
+%! G = digraph ([1 1 2 3], [2 3 4 4]);
+%! c = __centrality_betweenness__ (G, "Cost", [1; 10; 1; 10]);
+%! assert (c, [0; 1; 0; 0], 1e-9);
+
+## Self-loop edges contribute no shortest path even with Cost.
+%!test
+%! G = graph ([1 2 3], [1 2 3]);           # three self-loops
+%! c = __centrality_betweenness__ (G, "Cost", [1; 1; 1]);
+%! assert (c, zeros (3, 1), 1e-12);
+
+## Disconnected graph: betweenness still zero.
+%!test
+%! G = graph ([1 3], [2 4]);
+%! c = __centrality_betweenness__ (G, "Cost", [1; 1]);
+%! assert (c, zeros (4, 1), 1e-12);
+
+## Empty graph with empty Cost -> zeros(0, 1).
+%!test
+%! G = graph ();
+%! c = __centrality_betweenness__ (G, "Cost", zeros (0, 1));
+%! assert (c, zeros (0, 1));
+
+## Column double output with Cost.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! c = __centrality_betweenness__ (G, "Cost", [1; 1]);
+%! assert (size (c), [3, 1]);
+%! assert (class (c), "double");
+
+## Cost option name is case-insensitive.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! c1 = __centrality_betweenness__ (G, "Cost", [1; 1]);
+%! c2 = __centrality_betweenness__ (G, "COST", [1; 1]);
+%! c3 = __centrality_betweenness__ (G, "cost", [1; 1]);
+%! assert (c2, c1, 1e-12);
+%! assert (c3, c1, 1e-12);
+
+## Cost wrong length errors.
+%!error <Cost.*length>
+%! __centrality_betweenness__ (graph ([1 2], [2 3]), "Cost", [1; 1; 1]);
+
+## Cost with zero entry errors.
+%!error <Cost.*positive>
+%! __centrality_betweenness__ (graph ([1 2], [2 3]), "Cost", [1; 0]);
+
+## Cost with negative entry errors.
+%!error <Cost.*positive>
+%! __centrality_betweenness__ (graph ([1 2], [2 3]), "Cost", [1; -2]);
+
+## Cost with NaN errors.
+%!error <Cost.*finite>
+%! __centrality_betweenness__ (graph ([1 2], [2 3]), "Cost", [1; NaN]);
+
+## Cost non-numeric errors.
+%!error <Cost.*numeric>
+%! __centrality_betweenness__ (graph ([1 2], [2 3]), "Cost", "hi");
+
+## Unknown option errors.
+%!error <unknown betweenness option>
+%! __centrality_betweenness__ (graph ([1 2], [2 3]), "Importance", [1; 1]);
+
+## Odd number of Name-Value args errors.
+%!error <pair>
+%! __centrality_betweenness__ (graph ([1 2], [2 3]), "Cost");

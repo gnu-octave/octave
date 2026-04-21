@@ -136,9 +136,30 @@
 ## the number of distinct neighbours.  Degree-based variants ignore
 ## edge weights; closeness variants use the stored edge weights via
 ## @code{distances (@var{G})} (BFS on unweighted graphs, Dijkstra
-## otherwise).  The @code{"Cost"} and @code{"Importance"} name-value
-## options that MATLAB supports for weighted centralities are not yet
-## implemented.
+## otherwise).
+##
+## Two Name-Value options supply custom per-edge weight vectors of
+## length @code{numedges (@var{G})} that override any stored edge
+## weights for the centrality calculation:
+##
+## @table @code
+## @item "Cost"
+## Accepted by @code{"closeness"}, @code{"incloseness"},
+## @code{"outcloseness"} and @code{"betweenness"}.  Entries must be
+## finite and strictly positive.  The supplied costs replace the
+## default shortest-path weights; on a @code{"betweenness"} call
+## Dijkstra replaces BFS for the single-source shortest-path stage.
+## @item "Importance"
+## Accepted by @code{"pagerank"}, @code{"eigenvector"},
+## @code{"hubs"} and @code{"authorities"}.  Entries must be finite
+## and non-negative.  The supplied importances replace any stored
+## edge weights when building the transition or weighted adjacency
+## matrix used by the iteration.
+## @end table
+##
+## @code{"Cost"} is rejected on the iterative centralities and
+## @code{"Importance"} is rejected on the distance centralities, and
+## neither option is accepted on the degree-based variants.
 ##
 ## @example
 ## @group
@@ -1371,8 +1392,10 @@ endfunction
 
 ## -------------------- eigenvector: option rejection -----------
 
-## Options are rejected for eigenvector (no name-value options supported).
-%!error <no name-value|not supported>
+## Unknown options are rejected for eigenvector.  "Importance" is the
+## only option accepted on this TYPE (US-CT07); unrelated option
+## names error.
+%!error <unknown eigenvector option|not supported>
 %! centrality (graph ([1 2], [2 3]), "eigenvector", "FollowProbability", 0.5);
 
 ## -------------------- digraph + 'eigenvector' ------------------
@@ -1562,12 +1585,15 @@ endfunction
 
 ## -------------------- hubs/authorities: option rejection --------
 
-## Options are rejected for hubs (no name-value options supported).
-%!error <no name-value|not supported>
+## Unknown options are rejected for hubs.  "Importance" is the only
+## option accepted on this TYPE (US-CT07); unrelated option names
+## error from the helper.
+%!error <unknown hubs option|not supported>
 %! centrality (digraph ([1 2], [2 3]), "hubs", "FollowProbability", 0.5);
 
-## Options are rejected for authorities (no name-value options).
-%!error <no name-value|not supported>
+## Unknown options are rejected for authorities.  See the hubs case
+## above for details.
+%!error <unknown authorities option|not supported>
 %! centrality (digraph ([1 2], [2 3]), "authorities", "FollowProbability", 0.5);
 
 ## -------------------- graph + 'hubs' / 'authorities' errors -----
@@ -1579,3 +1605,176 @@ endfunction
 ## 'authorities' is only defined for a directed graph.
 %!error <digraph|only defined|not defined>
 %! centrality (graph ([1 2], [2 3]), "authorities");
+
+## -------------------- US-CT07 'Cost' option ---------------------
+
+## Cost accepted for closeness on a graph.
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! c = centrality (G, "closeness", "Cost", ones (3, 1));
+%! c0 = centrality (G, "closeness");
+%! assert (c, c0, 1e-12);
+
+## Cost accepted for closeness on a digraph; weighted override.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! c = centrality (G, "closeness", "Cost", [1; 2; 3]);
+%! ## See __centrality_closeness__ BIST for the hand-computed values.
+%! assert (c, [2/4; 2/7; 2/7], 1e-12);
+
+## Cost accepted for incloseness on a digraph.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! c = centrality (G, "incloseness", "Cost", [1; 2; 3]);
+%! assert (c, [2/8; 2/5; 2/5], 1e-12);
+
+## Cost accepted for outcloseness on a digraph.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! c = centrality (G, "outcloseness", "Cost", [1; 2; 3]);
+%! assert (c, [2/4; 2/7; 2/7], 1e-12);
+
+## Cost accepted for betweenness on a graph.
+%!test
+%! G = graph ([1 1 2 3], [2 3 3 4]);
+%! c = centrality (G, "betweenness", "Cost", [10; 1; 1; 1]);
+%! assert (c(3), 3, 1e-9);
+
+## Cost accepted for betweenness on a digraph.
+%!test
+%! G = digraph ([1 1 2 3], [2 3 4 4]);
+%! c = centrality (G, "betweenness", "Cost", [1; 10; 1; 10]);
+%! assert (c, [0; 1; 0; 0], 1e-9);
+
+## Cost length must match numedges(G).
+%!error <Cost.*length>
+%! centrality (graph ([1 2], [2 3]), "closeness", "Cost", [1; 1; 1]);
+
+## Cost entries must be positive.
+%!error <Cost.*positive>
+%! centrality (graph ([1 2], [2 3]), "closeness", "Cost", [1; 0]);
+
+## Cost not accepted for degree/indegree/outdegree (no options at all).
+%!error <no name-value|not supported>
+%! centrality (graph ([1 2], [2 3]), "degree", "Cost", [1; 1]);
+%!error <no name-value|not supported>
+%! centrality (digraph ([1 2], [2 3]), "indegree", "Cost", [1; 1]);
+%!error <no name-value|not supported>
+%! centrality (digraph ([1 2], [2 3]), "outdegree", "Cost", [1; 1]);
+
+## Cost not accepted for pagerank (that's Importance).
+%!error <unknown pagerank option>
+%! centrality (digraph ([1 2], [2 3]), "pagerank", "Cost", [1; 1]);
+
+## Cost not accepted for eigenvector (that's Importance).
+%!error <unknown eigenvector option>
+%! centrality (graph ([1 2], [2 3]), "eigenvector", "Cost", [1; 1]);
+
+## Cost not accepted for hubs / authorities (Importance applies).
+%!error <unknown hubs option>
+%! centrality (digraph ([1 2], [2 3]), "hubs", "Cost", [1; 1]);
+%!error <unknown authorities option>
+%! centrality (digraph ([1 2], [2 3]), "authorities", "Cost", [1; 1]);
+
+## Cost option name is case-insensitive via the wrapper.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! c1 = centrality (G, "closeness", "Cost", [1; 1]);
+%! c2 = centrality (G, "closeness", "COST", [1; 1]);
+%! c3 = centrality (G, "closeness", "cost", [1; 1]);
+%! assert (c2, c1, 1e-12);
+%! assert (c3, c1, 1e-12);
+
+## Cost dispatches correctly via dot-notation.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! c1 = centrality (G, "closeness", "Cost", [1; 1]);
+%! c2 = G.centrality ("closeness", "Cost", [1; 1]);
+%! assert (c2, c1, 1e-12);
+
+## -------------------- US-CT07 'Importance' option -----------------
+
+## Importance accepted for pagerank on a digraph.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! c0 = centrality (G, "pagerank");
+%! c1 = centrality (G, "pagerank", "Importance", ones (3, 1));
+%! assert (c1, c0, 1e-6);
+
+## Importance accepted for eigenvector on a graph.
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! c = centrality (G, "eigenvector", "Importance", ones (3, 1));
+%! assert (c, [1/3; 1/3; 1/3], 1e-6);
+
+## Importance accepted for hubs.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! h = centrality (G, "hubs", "Importance", ones (3, 1));
+%! assert (h, [1/3; 1/3; 1/3], 1e-6);
+
+## Importance accepted for authorities.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! a = centrality (G, "authorities", "Importance", ones (3, 1));
+%! assert (a, [1/3; 1/3; 1/3], 1e-6);
+
+## Importance overrides stored edge weights.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [100 100 100]);
+%! c = centrality (G, "pagerank", "Importance", ones (3, 1));
+%! Gu = digraph ([1 2 3], [2 3 1]);
+%! c0 = centrality (Gu, "pagerank");
+%! assert (c, c0, 1e-6);
+
+## Importance combines with FollowProbability on pagerank.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! c = centrality (G, "pagerank", "Importance", ones (3, 1), ...
+%!                 "FollowProbability", 0);
+%! assert (c, ones (3, 1) / 3, 1e-12);
+
+## Importance length must match numedges(G).
+%!error <Importance.*length>
+%! centrality (digraph ([1 2], [2 3]), "pagerank", "Importance", [1; 1; 1]);
+
+## Importance entries must be non-negative.
+%!error <Importance.*non-negative>
+%! centrality (digraph ([1 2], [2 3]), "pagerank", "Importance", [1; -1]);
+
+## Importance not accepted for closeness/betweenness family.
+%!error <unknown closeness option>
+%! centrality (graph ([1 2], [2 3]), "closeness", "Importance", [1; 1]);
+%!error <unknown betweenness option>
+%! centrality (graph ([1 2], [2 3]), "betweenness", "Importance", [1; 1]);
+## outcloseness/incloseness share the closeness helper, so the
+## option-name context in the error is "closeness" even for the
+## directed-only variants.
+%!error <unknown closeness option>
+%! centrality (digraph ([1 2], [2 3]), "outcloseness", "Importance", [1; 1]);
+%!error <unknown closeness option>
+%! centrality (digraph ([1 2], [2 3]), "incloseness", "Importance", [1; 1]);
+
+## Importance not accepted for degree/indegree/outdegree.
+%!error <no name-value|not supported>
+%! centrality (graph ([1 2], [2 3]), "degree", "Importance", [1; 1]);
+%!error <no name-value|not supported>
+%! centrality (digraph ([1 2], [2 3]), "indegree", "Importance", [1; 1]);
+%!error <no name-value|not supported>
+%! centrality (digraph ([1 2], [2 3]), "outdegree", "Importance", [1; 1]);
+
+## Importance option name is case-insensitive via the wrapper.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! c1 = centrality (G, "pagerank", "Importance", ones (3, 1));
+%! c2 = centrality (G, "pagerank", "importance", ones (3, 1));
+%! c3 = centrality (G, "pagerank", "IMPORTANCE", ones (3, 1));
+%! assert (c2, c1, 1e-6);
+%! assert (c3, c1, 1e-6);
+
+## Importance dispatches correctly via dot-notation.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! c1 = centrality (G, "pagerank", "Importance", ones (3, 1));
+%! c2 = G.centrality ("pagerank", "Importance", ones (3, 1));
+%! assert (c2, c1, 1e-6);

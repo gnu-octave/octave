@@ -2715,6 +2715,19 @@ classdef graph
       ## @code{"authorities"} instead.
       ## @end table
       ##
+      ## Two Name-Value options provide custom per-edge weight vectors
+      ## (length @code{numedges (@var{G})}) for the distance and
+      ## iterative centralities:
+      ##
+      ## @table @code
+      ## @item "Cost"
+      ## Positive per-edge costs used for shortest-path-based
+      ## @code{"closeness"} and @code{"betweenness"}.
+      ## @item "Importance"
+      ## Non-negative per-edge importances used for
+      ## @code{"pagerank"} and @code{"eigenvector"}.
+      ## @end table
+      ##
       ## The directed-only types @code{"indegree"},
       ## @code{"outdegree"}, @code{"incloseness"} and
       ## @code{"outcloseness"} are not defined for an undirected
@@ -2741,8 +2754,15 @@ classdef graph
       ## Only the types whose helpers take options can pass varargin
       ## through; every other TYPE must reject trailing arguments here
       ## so the user gets a clear "no options supported" error instead
-      ## of a confusing downstream failure.
-      opts_accepting_types = {"pagerank"};
+      ## of a confusing downstream failure.  US-CT07 adds 'Cost' to
+      ## closeness/betweenness family and 'Importance' to the
+      ## iterative family (pagerank/eigenvector/hubs/authorities); the
+      ## digraph-only types are whitelisted here too so the "only
+      ## defined for digraph" error still reaches users even when they
+      ## supplied Name-Value options.
+      opts_accepting_types = {"closeness", "outcloseness", "incloseness", ...
+                              "betweenness", "pagerank", "eigenvector", ...
+                              "hubs", "authorities"};
       if (! any (strcmp (lower (type), opts_accepting_types)) ...
           && ! isempty (varargin))
         error ("Octave:invalid-input-arg", ...
@@ -2750,8 +2770,6 @@ classdef graph
                type);
       endif
 
-      ## Future stories (US-CT07 Cost/Importance weights) will extend
-      ## this switch.
       switch (lower (type))
         case "degree"
           c = G.degree ();
@@ -2760,13 +2778,13 @@ classdef graph
                  ["centrality: TYPE '%s' is only defined for a ", ...
                   "digraph; use 'degree' for an undirected graph"], type);
         case "closeness"
-          c = __centrality_closeness__ (G, "out");
+          c = __centrality_closeness__ (G, "out", varargin{:});
         case "betweenness"
-          c = __centrality_betweenness__ (G);
+          c = __centrality_betweenness__ (G, varargin{:});
         case "pagerank"
           c = __centrality_pagerank__ (G, varargin{:});
         case "eigenvector"
-          c = __centrality_eigenvector__ (G);
+          c = __centrality_eigenvector__ (G, varargin{:});
         case {"incloseness", "outcloseness", "hubs", "authorities"}
           error ("Octave:invalid-input-arg", ...
                  ["centrality: TYPE '%s' is only defined for a ", ...

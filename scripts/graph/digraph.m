@@ -3968,6 +3968,20 @@ classdef digraph
       ## entries sum to @code{1}.  Only defined for a @code{digraph}.
       ## @end table
       ##
+      ## Two Name-Value options provide custom per-edge weight vectors
+      ## (length @code{numedges (@var{G})}) for the distance and
+      ## iterative centralities:
+      ##
+      ## @table @code
+      ## @item "Cost"
+      ## Positive per-edge costs used for shortest-path-based
+      ## @code{"closeness"}, @code{"incloseness"},
+      ## @code{"outcloseness"} and @code{"betweenness"}.
+      ## @item "Importance"
+      ## Non-negative per-edge importances used for
+      ## @code{"pagerank"}, @code{"hubs"} and @code{"authorities"}.
+      ## @end table
+      ##
       ## The undirected @code{"degree"} type is not defined for a
       ## digraph.  The result is a column vector of length
       ## @code{numnodes (@var{G})}.
@@ -3992,8 +4006,12 @@ classdef digraph
       ## Only the types whose helpers take options can pass varargin
       ## through; every other TYPE must reject trailing arguments here
       ## so the user gets a clear "no options supported" error instead
-      ## of a confusing downstream failure.
-      opts_accepting_types = {"pagerank"};
+      ## of a confusing downstream failure.  US-CT07 adds 'Cost' to
+      ## closeness/betweenness family and 'Importance' to the
+      ## iterative family (pagerank/eigenvector/hubs/authorities).
+      opts_accepting_types = {"closeness", "outcloseness", "incloseness", ...
+                              "betweenness", "pagerank", "eigenvector", ...
+                              "hubs", "authorities"};
       if (! any (strcmp (lower (type), opts_accepting_types)) ...
           && ! isempty (varargin))
         error ("Octave:invalid-input-arg", ...
@@ -4001,8 +4019,6 @@ classdef digraph
                type);
       endif
 
-      ## Future stories (US-CT06 hits, US-CT07 Cost/Importance
-      ## weights) will extend this switch.
       switch (lower (type))
         case "indegree"
           c = G.indegree ();
@@ -4014,11 +4030,11 @@ classdef digraph
                   "undirected graph; use 'indegree' or 'outdegree' ", ...
                   "for a digraph"]);
         case {"closeness", "outcloseness"}
-          c = __centrality_closeness__ (G, "out");
+          c = __centrality_closeness__ (G, "out", varargin{:});
         case "incloseness"
-          c = __centrality_closeness__ (G, "in");
+          c = __centrality_closeness__ (G, "in", varargin{:});
         case "betweenness"
-          c = __centrality_betweenness__ (G);
+          c = __centrality_betweenness__ (G, varargin{:});
         case "pagerank"
           c = __centrality_pagerank__ (G, varargin{:});
         case "eigenvector"
@@ -4027,9 +4043,9 @@ classdef digraph
                   "for an undirected graph; use 'pagerank', 'hubs', ", ...
                   "or 'authorities' for a digraph"]);
         case "hubs"
-          c = __centrality_hits__ (G, "hubs");
+          c = __centrality_hits__ (G, "hubs", varargin{:});
         case "authorities"
-          c = __centrality_hits__ (G, "authorities");
+          c = __centrality_hits__ (G, "authorities", varargin{:});
         otherwise
           error ("Octave:invalid-input-arg", ...
                  "centrality: unknown TYPE '%s'", type);

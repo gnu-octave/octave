@@ -24,7 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{c} =} __centrality_eigenvector__ (@var{G})
+## @deftypefn  {} {@var{c} =} __centrality_eigenvector__ (@var{G})
+## @deftypefnx {} {@var{c} =} __centrality_eigenvector__ (@var{G}, @qcode{"Importance"}, @var{W})
 ## Private helper: compute the MATLAB-style eigenvector centrality of
 ## the undirected @code{graph} @var{G}.
 ##
@@ -52,6 +53,11 @@
 ## returns @code{zeros (N, 1)} because no meaningful principal
 ## eigenvector exists.
 ##
+## The optional @qcode{"Importance"} Name-Value pair supplies a
+## vector of non-negative per-edge weights of length
+## @code{numedges (@var{G})} that overrides any stored edge weights in
+## the iteration.  The weights must be finite and non-negative.
+##
 ## This helper only supports an undirected @code{graph}.  MATLAB's
 ## @code{centrality} function does not define eigenvector centrality
 ## for a directed graph; the caller (the class @code{centrality}
@@ -64,11 +70,14 @@
 ## @seealso{centrality, adjacency}
 ## @end deftypefn
 
-function c = __centrality_eigenvector__ (G)
+function c = __centrality_eigenvector__ (G, varargin)
 
   if (nargin < 1)
     print_usage ();
   endif
+
+  [have_imp, importance] = ...
+      __parse_importance_option__ (G, "eigenvector", varargin);
 
   N = numnodes (G);
 
@@ -84,8 +93,13 @@ function c = __centrality_eigenvector__ (G)
 
   ## Weighted adjacency.  For a graph object this is symmetric, and
   ## parallel edges on a multigraph are summed into the same cell.  An
-  ## unweighted edge contributes 1.
-  A = adjacency (G, "weighted");
+  ## unweighted edge contributes 1.  With the "Importance" option the
+  ## user-supplied per-edge vector replaces any stored edge weights.
+  if (have_imp)
+    A = adjacency (G, importance);
+  else
+    A = adjacency (G, "weighted");
+  endif
 
   ## An all-zero adjacency has no meaningful principal eigenvector.
   if (nnz (A) == 0)
@@ -148,6 +162,63 @@ function c = __centrality_eigenvector__ (G)
     c = zeros (N, 1);
   endif
 
+endfunction
+
+## Parse the "Importance" Name-Value option.  Returns whether the
+## option was supplied and the validated column double vector.
+## Duplicated across centrality helpers so each file stays
+## self-contained (private helpers are not on each other's search
+## path).
+function [have_imp, importance] = __parse_importance_option__ (G, name, args)
+  have_imp = false;
+  importance = [];
+  if (isempty (args))
+    return;
+  endif
+  if (mod (numel (args), 2) != 0)
+    error ("Octave:invalid-input-arg", ...
+           ["centrality: %s Name-Value arguments must come in pairs ", ...
+            "(missing value for option '%s')"], name, args{end});
+  endif
+  for k = 1:2:numel (args)
+    opt = args{k};
+    val = args{k+1};
+    if (! ischar (opt) || ! isrow (opt))
+      error ("Octave:invalid-input-arg", ...
+             ["centrality: %s option name must be a character ", ...
+              "row vector (string)"], name);
+    endif
+    switch (lower (opt))
+      case "importance"
+        M = numedges (G);
+        if (! isnumeric (val) || ! isreal (val))
+          error ("Octave:invalid-input-arg", ...
+                 "centrality: 'Importance' must be a numeric real vector");
+        endif
+        if (! isempty (val) && ! isvector (val))
+          error ("Octave:invalid-input-arg", ...
+                 "centrality: 'Importance' must be a vector");
+        endif
+        if (numel (val) != M)
+          error ("Octave:invalid-input-arg", ...
+                 ["centrality: 'Importance' must have length %d ", ...
+                  "(numedges (G))"], M);
+        endif
+        if (any (! isfinite (val)))
+          error ("Octave:invalid-input-arg", ...
+                 "centrality: 'Importance' entries must be finite");
+        endif
+        if (any (val < 0))
+          error ("Octave:invalid-input-arg", ...
+                 "centrality: 'Importance' entries must be non-negative");
+        endif
+        importance = double (val(:));
+        have_imp = true;
+      otherwise
+        error ("Octave:invalid-input-arg", ...
+               "centrality: unknown %s option '%s'", name, opt);
+    endswitch
+  endfor
 endfunction
 
 
@@ -224,3 +295,82 @@ endfunction
 %! assert (c(3), c(4), 1e-5);           # the "3" side is equal
 %! assert (c(4), c(5), 1e-5);
 %! assert (c(1) > c(3));                # smaller side has larger c
+
+## -------------------- Importance Name-Value option --------------------
+
+## Importance = ones reproduces unweighted eigenvector centrality.
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! c0 = __centrality_eigenvector__ (G);
+%! c1 = __centrality_eigenvector__ (G, "Importance", ones (3, 1));
+%! assert (c1, c0, 1e-6);
+
+## Importance overrides stored edge weights.
+## Weighted triangle: stored weights [100 100 100] but Importance
+## all ones -> same as unweighted uniform 1/3.
+%!test
+%! G = graph ([1 2 3], [2 3 1], [100 100 100]);
+%! c = __centrality_eigenvector__ (G, "Importance", ones (3, 1));
+%! assert (c, [1/3; 1/3; 1/3], 1e-6);
+
+## Importance = 0 on every edge -> all-zero adjacency behaves like
+## edgeless graph -> zeros(N, 1).
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! c = __centrality_eigenvector__ (G, "Importance", zeros (3, 1));
+%! assert (c, zeros (3, 1), 1e-12);
+
+## Importance can zero specific edges, shifting mass.
+## K4 - remove edge 3-4 by setting Importance[6]=0 (that's the
+## 3-4 edge in lex order).  Edges of K4 in lex order:
+##   1-2, 1-3, 1-4, 2-3, 2-4, 3-4.
+## With [1; 1; 1; 1; 1; 0] we remove edge 3-4 -> diamond 1-3-2-4
+## with chord 1-2: eigenvector centrality not symmetric anymore;
+## only check sum-to-one and class.
+%!test
+%! G = graph ([1 1 1 2 2 3], [2 3 4 3 4 4]);
+%! c = __centrality_eigenvector__ (G, "Importance", [1; 1; 1; 1; 1; 0]);
+%! assert (sum (c), 1, 1e-6);
+%! assert (all (c >= 0 - 1e-9));
+
+## Row vector Importance works.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! c = __centrality_eigenvector__ (G, "Importance", [1 1]);
+%! c0 = __centrality_eigenvector__ (G);
+%! assert (c, c0, 1e-6);
+
+## Importance option name is case-insensitive.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! c1 = __centrality_eigenvector__ (G, "Importance", [1; 1]);
+%! c2 = __centrality_eigenvector__ (G, "importance", [1; 1]);
+%! c3 = __centrality_eigenvector__ (G, "IMPORTANCE", [1; 1]);
+%! c4 = __centrality_eigenvector__ (G, "ImPoRtAnCe", [1; 1]);
+%! assert (c2, c1, 1e-6);
+%! assert (c3, c1, 1e-6);
+%! assert (c4, c1, 1e-6);
+
+## Importance wrong length errors.
+%!error <Importance.*length>
+%! __centrality_eigenvector__ (graph ([1 2], [2 3]), "Importance", [1; 1; 1]);
+
+## Importance with negative entry errors.
+%!error <Importance.*non-negative>
+%! __centrality_eigenvector__ (graph ([1 2], [2 3]), "Importance", [1; -1]);
+
+## Importance with NaN errors.
+%!error <Importance.*finite>
+%! __centrality_eigenvector__ (graph ([1 2], [2 3]), "Importance", [1; NaN]);
+
+## Importance non-numeric errors.
+%!error <Importance.*numeric>
+%! __centrality_eigenvector__ (graph ([1 2], [2 3]), "Importance", "hi");
+
+## Unknown option errors.
+%!error <unknown eigenvector option>
+%! __centrality_eigenvector__ (graph ([1 2], [2 3]), "Cost", [1; 1]);
+
+## Odd number of Name-Value args errors.
+%!error <pair>
+%! __centrality_eigenvector__ (graph ([1 2], [2 3]), "Importance");

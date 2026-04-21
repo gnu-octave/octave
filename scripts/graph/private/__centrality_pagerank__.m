@@ -57,6 +57,10 @@
 ## Positive integer scalar, default @code{100}.
 ## @item "Tolerance"
 ## Non-negative finite real scalar, default @code{1e-4}.
+## @item "Importance"
+## Non-negative real vector of length @code{numedges (@var{G})} that
+## overrides any stored edge weights when building the transition
+## matrix.  Every entry must be finite and non-negative.
 ## @end table
 ##
 ## Edge weights stored on @var{G} are used (via
@@ -87,6 +91,8 @@ function c = __centrality_pagerank__ (G, varargin)
   follow_prob = 0.85;
   max_iter    = 100;
   tol         = 1e-4;
+  have_imp    = false;
+  importance  = [];
 
   if (mod (numel (varargin), 2) != 0)
     error ("Octave:invalid-input-arg", ...
@@ -133,6 +139,32 @@ function c = __centrality_pagerank__ (G, varargin)
         endif
         tol = double (val);
 
+      case "importance"
+        M = numedges (G);
+        if (! isnumeric (val) || ! isreal (val))
+          error ("Octave:invalid-input-arg", ...
+                 "centrality: 'Importance' must be a numeric real vector");
+        endif
+        if (! isempty (val) && ! isvector (val))
+          error ("Octave:invalid-input-arg", ...
+                 "centrality: 'Importance' must be a vector");
+        endif
+        if (numel (val) != M)
+          error ("Octave:invalid-input-arg", ...
+                 ["centrality: 'Importance' must have length %d ", ...
+                  "(numedges (G))"], M);
+        endif
+        if (any (! isfinite (val)))
+          error ("Octave:invalid-input-arg", ...
+                 "centrality: 'Importance' entries must be finite");
+        endif
+        if (any (val < 0))
+          error ("Octave:invalid-input-arg", ...
+                 "centrality: 'Importance' entries must be non-negative");
+        endif
+        importance = double (val(:));
+        have_imp = true;
+
       otherwise
         error ("Octave:invalid-input-arg", ...
                "centrality: unknown pagerank option '%s'", name);
@@ -153,8 +185,14 @@ function c = __centrality_pagerank__ (G, varargin)
 
   ## Weighted adjacency: for a graph this is symmetric, for a digraph
   ## directed.  Parallel edges on a multigraph are summed into the same
-  ## cell.  An unweighted edge contributes 1.
-  A = adjacency (G, "weighted");
+  ## cell.  An unweighted edge contributes 1.  When the "Importance"
+  ## option is supplied the user-supplied per-edge vector replaces any
+  ## stored edge weights.
+  if (have_imp)
+    A = adjacency (G, importance);
+  else
+    A = adjacency (G, "weighted");
+  endif
 
   ## Row sums are each node's total outgoing weight (out-degree for
   ## unweighted graphs, weighted out-strength otherwise).  Dangling
@@ -312,3 +350,88 @@ endfunction
 ## Non-string option name.
 %!error <option name>
 %! __centrality_pagerank__ (graph ([1 2], [2 3]), 42, 0.5);
+
+## -------------------- Importance Name-Value option --------------------
+
+## Importance = ones reproduces unweighted pagerank on a digraph.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! c0 = __centrality_pagerank__ (G);
+%! c1 = __centrality_pagerank__ (G, "Importance", ones (3, 1));
+%! assert (c1, c0, 1e-6);
+
+## Importance overrides stored edge weights.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [100 100 100]);
+%! c = __centrality_pagerank__ (G, "Importance", ones (3, 1));
+%! Gu = digraph ([1 2 3], [2 3 1]);
+%! c0 = __centrality_pagerank__ (Gu);
+%! assert (c, c0, 1e-6);
+
+## Importance of all zeros on every edge -> every node dangling ->
+## uniform distribution (teleportation only).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! c = __centrality_pagerank__ (G, "Importance", zeros (3, 1));
+%! assert (c, ones (3, 1) / 3, 1e-6);
+
+## Importance with skewed values shifts mass.  Directed 2-node cycle
+## 1->2->1.  Uniform: c = [0.5; 0.5].  With Importance [10; 0]
+## (edge 1->2 carries weight, edge 2->1 has zero importance) the mass
+## flows 1 -> 2 but no flow back to 1, so 2 accumulates more mass.
+%!test
+%! G = digraph ([1 2], [2 1]);
+%! c0 = __centrality_pagerank__ (G);
+%! c_bias = __centrality_pagerank__ (G, "Importance", [10; 0]);
+%! assert (sum (c_bias), 1, 1e-6);
+%! assert (c_bias(2) > c_bias(1));
+
+## Importance can combine with other options.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! c = __centrality_pagerank__ (G, "Importance", ones (3, 1), ...
+%!                              "FollowProbability", 0.5, ...
+%!                              "MaxIterations", 500, ...
+%!                              "Tolerance", 1e-10);
+%! assert (sum (c), 1, 1e-6);
+%! assert (c, [1/3; 1/3; 1/3], 1e-5);
+
+## Row vector Importance accepted.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! c = __centrality_pagerank__ (G, "Importance", [1 1 1]);
+%! c0 = __centrality_pagerank__ (G);
+%! assert (c, c0, 1e-6);
+
+## Importance option name is case-insensitive.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! c1 = __centrality_pagerank__ (G, "Importance", [1; 1; 1]);
+%! c2 = __centrality_pagerank__ (G, "importance", [1; 1; 1]);
+%! c3 = __centrality_pagerank__ (G, "IMPORTANCE", [1; 1; 1]);
+%! assert (c2, c1, 1e-6);
+%! assert (c3, c1, 1e-6);
+
+## Importance wrong length errors.
+%!error <Importance.*length>
+%! __centrality_pagerank__ (graph ([1 2], [2 3]), "Importance", [1; 1; 1]);
+
+## Importance with negative entry errors.
+%!error <Importance.*non-negative>
+%! __centrality_pagerank__ (graph ([1 2], [2 3]), "Importance", [1; -1]);
+
+## Importance with NaN errors.
+%!error <Importance.*finite>
+%! __centrality_pagerank__ (graph ([1 2], [2 3]), "Importance", [1; NaN]);
+
+## Importance with Inf errors.
+%!error <Importance.*finite>
+%! __centrality_pagerank__ (graph ([1 2], [2 3]), "Importance", [1; Inf]);
+
+## Importance non-numeric errors.
+%!error <Importance.*numeric>
+%! __centrality_pagerank__ (graph ([1 2], [2 3]), "Importance", "hi");
+
+## Importance complex errors.
+%!error <Importance.*numeric>
+%! __centrality_pagerank__ (graph ([1 2], [2 3]), "Importance", [1+1i; 2]);

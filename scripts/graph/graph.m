@@ -201,7 +201,7 @@ classdef graph
   ## @end group
   ## @end example
   ##
-  ## @seealso{digraph, numnodes, numedges, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence}
+  ## @seealso{digraph, numnodes, numedges, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1114,6 +1114,48 @@ classdef graph
       cols = [c_k; c_k];
       vals = ones (2 * numel (c_k), 1);
       I = sparse (rows, cols, vals, N, M);
+
+    endfunction
+
+    function L = laplacian (G)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{L} =} laplacian (@var{G})
+      ## Return the sparse graph Laplacian @math{L = D - A} of the
+      ## undirected graph @var{G}.  @code{L(i, i)} equals
+      ## @code{degree (@var{G}, i)} (with self-loops contributing 2);
+      ## @code{L(i, j) = -1} when there is an edge between @math{i} and
+      ## @math{j} (@math{i} not equal to @math{j}), and @code{0}
+      ## otherwise.  Edge weights are ignored (binary Laplacian).  See
+      ## @code{help laplacian} for the full description.
+      ## @seealso{graph, adjacency, incidence, degree, numnodes}
+      ## @end deftypefn
+
+      if (nargin != 1)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to laplacian: expected 1 argument");
+      endif
+
+      N = size (G.adj_, 1);
+      if (N == 0)
+        L = sparse (0, 0);
+        return;
+      endif
+
+      ## Binary symmetric adjacency: spones collapses any weights to 1
+      ## and preserves the symmetric (i, j)/(j, i) plus single (i, i)
+      ## storage of self-loops.
+      A_bin = spones (G.adj_);
+
+      ## Off-diagonal binary adjacency: zero out the diagonal so that
+      ## self-loops contribute nothing to the off-diagonal pattern of L.
+      ## Self-loops do still contribute to the diagonal via degree(G).
+      A_off = A_bin - diag (sparse (diag (A_bin)));
+
+      ## degree(G) is a column vector of length N.  Place it on the
+      ## diagonal as a sparse matrix and subtract A_off.
+      d = degree (G);
+      L = sparse (1:N, 1:N, d, N, N) - A_off;
 
     endfunction
 

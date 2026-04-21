@@ -217,7 +217,7 @@ classdef digraph
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges, ismultigraph, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence}
+  ## @seealso{graph, numnodes, numedges, ismultigraph, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1738,6 +1738,23 @@ classdef digraph
       cols = [c_k; c_k];
       vals = [-ones(numel(c_k), 1); ones(numel(c_k), 1)];
       I = sparse (rows, cols, vals, N, M);
+
+    endfunction
+
+    function L = laplacian (G)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{L} =} laplacian (@var{G})
+      ## The graph Laplacian is not defined on the directed
+      ## @code{digraph} class; this method always raises an error.  Use
+      ## @code{laplacian} on a @code{graph} object instead.  See
+      ## @code{help laplacian} for the full description of the
+      ## undirected case.
+      ## @seealso{graph, digraph, adjacency, incidence}
+      ## @end deftypefn
+
+      error ("Octave:invalid-input-arg", ...
+             "laplacian: not defined for a digraph; laplacian requires an undirected graph");
 
     endfunction
 

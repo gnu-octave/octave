@@ -58,9 +58,36 @@ classdef GraphPlot < handle
   ## @item MarkerSize
   ## Marker size used to render the nodes.  Default @code{4}.
   ## @item LineStyle
-  ## Line style used to render the edges.  Default @qcode{"-"}.
+  ## Line style used to render the edges.  Default @qcode{"-"}.  One of
+  ## @qcode{"-"}, @qcode{"--"}, @qcode{":"}, @qcode{"-."}, or
+  ## @qcode{"none"}.
   ## @item LineWidth
   ## Line width used to render the edges.  Default @code{0.5}.
+  ## @item ArrowSize
+  ## Arrow size used for @code{digraph} edge arrowheads, in points.
+  ## Default @code{7}.  Ignored for undirected graphs.
+  ## @item ArrowPosition
+  ## Normalised location along each edge at which the arrowhead is
+  ## drawn, strictly between 0 and 1.  Default @code{0.5}.
+  ## @item EdgeAlpha
+  ## Transparency of rendered edges, a scalar in @code{[0, 1]}.
+  ## Default @code{0.5}.
+  ## @item EdgeLabel
+  ## Column cell array of strings of length @code{numedges (G)}, or an
+  ## empty cell for no labels.  When @code{EdgeLabelMode} is
+  ## @qcode{"auto"}, the default for an unweighted graph is empty and
+  ## for a weighted graph is the column cellstr obtained by applying
+  ## @code{num2str} to each entry of @code{G.Edges.Weight}.
+  ## @item EdgeLabelMode
+  ## @qcode{"auto"} (default) or @qcode{"manual"}.  Assigning to
+  ## @code{EdgeLabel} flips @code{EdgeLabelMode} to @qcode{"manual"};
+  ## re-assigning @code{EdgeLabelMode = "auto"} regenerates the
+  ## defaults from the cached graph.
+  ## @item EdgeFontSize
+  ## Font size (points, positive scalar) for edge labels.  Default
+  ## @code{8}.
+  ## @item EdgeFontName
+  ## Font family name for edge labels.  Default @qcode{"Helvetica"}.
   ## @item NodeLabel
   ## Column cell array of strings, one per node, used as text labels
   ## drawn next to each node marker.  Defaults to the graph's
@@ -103,6 +130,11 @@ classdef GraphPlot < handle
     MarkerSize = 4;
     LineStyle = "-";
     LineWidth = 0.5;
+    ArrowSize = 7;
+    ArrowPosition = 0.5;
+    EdgeAlpha = 0.5;
+    EdgeFontSize = 8;
+    EdgeFontName = "Helvetica";
     NodeLabelColor = [0 0 0];
     NodeFontSize = 8;
     NodeFontName = "Helvetica";
@@ -117,6 +149,12 @@ classdef GraphPlot < handle
     ## the cached graph.
     NodeLabel
     NodeLabelMode
+    ## EdgeLabel and EdgeLabelMode mirror the node-label pattern: the
+    ## manual setter for EdgeLabel flips EdgeLabelMode to 'manual' and
+    ## EdgeLabelMode='auto' regenerates the default labels (weights
+    ## for a weighted graph, empty otherwise) from the cached graph.
+    EdgeLabel
+    EdgeLabelMode
   endproperties
 
   properties (SetAccess = private)
@@ -146,6 +184,14 @@ classdef GraphPlot < handle
     ## properties.
     node_label_ = cell (0, 1);
     node_label_mode_ = "auto";
+
+    ## Backing fields for the Dependent EdgeLabel / EdgeLabelMode
+    ## properties.
+    edge_label_ = cell (0, 1);
+    edge_label_mode_ = "auto";
+
+    ## Column vector of text handles, one per rendered edge label.
+    edge_label_handles_ = [];
 
     ## Sources and targets of the rendered edges (numeric indices into
     ## XData / YData).  Stored so that later property updates can
@@ -243,7 +289,10 @@ classdef GraphPlot < handle
             layout_opts.Dimension = val;
           case {"nodecolor", "marker", "markersize", "nodelabel", ...
                 "nodelabelmode", "nodelabelcolor", "nodefontsize", ...
-                "nodefontname", "nodefontangle", "nodefontweight"}
+                "nodefontname", "nodefontangle", "nodefontweight", ...
+                "edgecolor", "linewidth", "linestyle", "arrowsize", ...
+                "arrowposition", "edgealpha", "edgelabel", ...
+                "edgelabelmode", "edgefontsize", "edgefontname"}
             cosmetic_sets(end+1, 1:2) = {lower(name), val};
           otherwise
             error ("Octave:invalid-input-arg", ...
@@ -298,6 +347,11 @@ classdef GraphPlot < handle
       h.node_label_ = __graph_plot_default_labels__ (G, N);
       h.node_label_mode_ = "auto";
 
+      ## Seed EdgeLabel with its auto default (weight strings when
+      ## weighted, empty otherwise).
+      h.edge_label_ = __graph_plot_default_edge_labels__ (G, h.NumEdges);
+      h.edge_label_mode_ = "auto";
+
       ## Apply user-supplied cosmetic overrides in the order they were
       ## given so the final state reflects any intentional reordering
       ## (e.g.  NodeLabel followed by NodeLabelMode='auto' leaves the
@@ -326,6 +380,26 @@ classdef GraphPlot < handle
             h.NodeFontAngle = val;
           case "nodefontweight"
             h.NodeFontWeight = val;
+          case "edgecolor"
+            h.EdgeColor = val;
+          case "linewidth"
+            h.LineWidth = val;
+          case "linestyle"
+            h.LineStyle = val;
+          case "arrowsize"
+            h.ArrowSize = val;
+          case "arrowposition"
+            h.ArrowPosition = val;
+          case "edgealpha"
+            h.EdgeAlpha = val;
+          case "edgelabel"
+            h.EdgeLabel = val;
+          case "edgelabelmode"
+            h.EdgeLabelMode = val;
+          case "edgefontsize"
+            h.EdgeFontSize = val;
+          case "edgefontname"
+            h.EdgeFontName = val;
         endswitch
       endfor
 
@@ -416,6 +490,36 @@ classdef GraphPlot < handle
           h.node_label_handles_ = th;
         endif
 
+        ## Render edge labels at the along-edge ArrowPosition (the
+        ## same point used for the arrowhead of a digraph).  Rendering
+        ## is best-effort: a failure does not invalidate public
+        ## property state.
+        elabels = h.edge_label_;
+        M = h.NumEdges;
+        if (M > 0 && numel (elabels) == M)
+          eth = zeros (M, 1);
+          for kk = 1:M
+            s = h.edge_src_(kk);
+            t = h.edge_dst_(kk);
+            ap = h.ArrowPosition;
+            xm = h.XData(s) + ap * (h.XData(t) - h.XData(s));
+            ym = h.YData(s) + ap * (h.YData(t) - h.YData(s));
+            if (is_3d)
+              zm = h.ZData(s) + ap * (h.ZData(t) - h.ZData(s));
+              eth(kk) = text (h.axes_, xm, ym, zm, elabels{kk}, ...
+                              "Color", h.EdgeColor, ...
+                              "FontSize", h.EdgeFontSize, ...
+                              "FontName", h.EdgeFontName);
+            else
+              eth(kk) = text (h.axes_, xm, ym, elabels{kk}, ...
+                              "Color", h.EdgeColor, ...
+                              "FontSize", h.EdgeFontSize, ...
+                              "FontName", h.EdgeFontName);
+            endif
+          endfor
+          h.edge_label_handles_ = eth;
+        endif
+
         if (! was_hold)
           hold (h.axes_, "off");
         endif
@@ -425,6 +529,7 @@ classdef GraphPlot < handle
         h.node_handle_ = [];
         h.edge_handles_ = [];
         h.node_label_handles_ = [];
+        h.edge_label_handles_ = [];
       end_try_catch
 
     endfunction
@@ -460,6 +565,37 @@ classdef GraphPlot < handle
                                                       h.NumNodes);
       endif
       h.node_label_mode_ = v;
+    endfunction
+
+    function L = get.EdgeLabel (h)
+      L = h.edge_label_;
+    endfunction
+
+    function h = set.EdgeLabel (h, val)
+      h.edge_label_ = __graph_plot_validate_edgelabel__ (val, h.NumEdges);
+      h.edge_label_mode_ = "manual";
+    endfunction
+
+    function M = get.EdgeLabelMode (h)
+      M = h.edge_label_mode_;
+    endfunction
+
+    function h = set.EdgeLabelMode (h, val)
+      if (! (ischar (val) && isrow (val)))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: EdgeLabelMode must be 'auto' or 'manual'");
+      endif
+      v = lower (val);
+      if (! any (strcmp (v, {"auto", "manual"})))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: EdgeLabelMode must be 'auto' or 'manual'");
+      endif
+      if (strcmp (v, "auto") && ! isempty (h.graph_))
+        ## Regenerate the auto labels from the cached graph.
+        h.edge_label_ = __graph_plot_default_edge_labels__ (h.graph_, ...
+                                                            h.NumEdges);
+      endif
+      h.edge_label_mode_ = v;
     endfunction
 
     ## ------------ Validated setters for cosmetic properties ------------
@@ -542,6 +678,72 @@ classdef GraphPlot < handle
                "GraphPlot: NodeFontWeight must be 'normal' or 'bold'");
       endif
       h.NodeFontWeight = v;
+    endfunction
+
+    function h = set.LineWidth (h, val)
+      if (! (isnumeric (val) && isscalar (val) && isreal (val) ...
+             && isfinite (val) && val > 0))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: LineWidth must be a positive real scalar");
+      endif
+      h.LineWidth = double (val);
+    endfunction
+
+    function h = set.LineStyle (h, val)
+      if (! (ischar (val) && isrow (val)))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: LineStyle must be a character vector");
+      endif
+      valid = {"-", "--", ":", "-.", "none"};
+      if (! any (strcmp (val, valid)))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: LineStyle value '%s' is not supported", val);
+      endif
+      h.LineStyle = val;
+    endfunction
+
+    function h = set.ArrowSize (h, val)
+      if (! (isnumeric (val) && isscalar (val) && isreal (val) ...
+             && isfinite (val) && val > 0))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: ArrowSize must be a positive real scalar");
+      endif
+      h.ArrowSize = double (val);
+    endfunction
+
+    function h = set.ArrowPosition (h, val)
+      if (! (isnumeric (val) && isscalar (val) && isreal (val) ...
+             && isfinite (val) && val > 0 && val < 1))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: ArrowPosition must be a real scalar in (0, 1)");
+      endif
+      h.ArrowPosition = double (val);
+    endfunction
+
+    function h = set.EdgeAlpha (h, val)
+      if (! (isnumeric (val) && isscalar (val) && isreal (val) ...
+             && isfinite (val) && val >= 0 && val <= 1))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: EdgeAlpha must be a real scalar in [0, 1]");
+      endif
+      h.EdgeAlpha = double (val);
+    endfunction
+
+    function h = set.EdgeFontSize (h, val)
+      if (! (isnumeric (val) && isscalar (val) && isreal (val) ...
+             && isfinite (val) && val > 0))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: EdgeFontSize must be a positive real scalar");
+      endif
+      h.EdgeFontSize = double (val);
+    endfunction
+
+    function h = set.EdgeFontName (h, val)
+      if (! (ischar (val) && isrow (val)))
+        error ("Octave:invalid-input-arg", ...
+               "GraphPlot: EdgeFontName must be a character vector");
+      endif
+      h.EdgeFontName = val;
     endfunction
 
   endmethods
@@ -1640,3 +1842,404 @@ endclassdef
 %! assert (h1.NodeFontSize, 22);
 %! h1.Marker = "d";
 %! assert (h2.Marker, "d");
+
+## -------- US-GP08 edge cosmetic properties --------
+
+## Default edge cosmetic properties on an empty GraphPlot.
+%!test
+%! h = GraphPlot ();
+%! assert (h.EdgeColor, [0 0.4470 0.7410], 1e-12);
+%! assert (h.LineWidth, 0.5);
+%! assert (h.LineStyle, "-");
+%! assert (h.ArrowSize, 7);
+%! assert (h.ArrowPosition, 0.5);
+%! assert (h.EdgeAlpha, 0.5);
+%! assert (iscell (h.EdgeLabel));
+%! assert (isempty (h.EdgeLabel));
+%! assert (h.EdgeLabelMode, "auto");
+%! assert (h.EdgeFontSize, 8);
+%! assert (h.EdgeFontName, "Helvetica");
+
+## EdgeColor can be set via name-value in the constructor.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "EdgeColor", [1 0 0]);
+%!   assert (h.EdgeColor, [1 0 0]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## EdgeColor accepts a color-name string and direct assignment.
+%!test
+%! h = GraphPlot ();
+%! h.EdgeColor = "r";
+%! assert (h.EdgeColor, [1 0 0]);
+%! h.EdgeColor = [0.2 0.3 0.4];
+%! assert (h.EdgeColor, [0.2 0.3 0.4], 1e-12);
+%! h.EdgeColor = "green";
+%! assert (h.EdgeColor, [0 1 0]);
+
+## Invalid EdgeColor values rejected.
+%!error <EdgeColor> h = GraphPlot (); h.EdgeColor = [2 0 0];
+%!error <EdgeColor> h = GraphPlot (); h.EdgeColor = "bogus";
+%!error <EdgeColor> GraphPlot (digraph (2), "EdgeColor", [3 3 3])
+
+## LineWidth set, validate.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "LineWidth", 2);
+%!   assert (h.LineWidth, 2);
+%!   h.LineWidth = 1.5;
+%!   assert (h.LineWidth, 1.5);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## LineWidth validation.
+%!error <LineWidth> h = GraphPlot (); h.LineWidth = 0;
+%!error <LineWidth> h = GraphPlot (); h.LineWidth = -1;
+%!error <LineWidth> h = GraphPlot (); h.LineWidth = [1 2];
+%!error <LineWidth> h = GraphPlot (); h.LineWidth = "big";
+
+## LineStyle set, validate (all MATLAB-style values accepted).
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "LineStyle", "--");
+%!   assert (h.LineStyle, "--");
+%!   h.LineStyle = ":";
+%!   assert (h.LineStyle, ":");
+%!   h.LineStyle = "-.";
+%!   assert (h.LineStyle, "-.");
+%!   h.LineStyle = "none";
+%!   assert (h.LineStyle, "none");
+%!   h.LineStyle = "-";
+%!   assert (h.LineStyle, "-");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## LineStyle validation.
+%!error <LineStyle> h = GraphPlot (); h.LineStyle = "**";
+%!error <LineStyle> h = GraphPlot (); h.LineStyle = 1;
+%!error <LineStyle> h = GraphPlot (); h.LineStyle = {"--"};
+
+## ArrowSize default, set, validate.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "ArrowSize", 10);
+%!   assert (h.ArrowSize, 10);
+%!   h.ArrowSize = 4.5;
+%!   assert (h.ArrowSize, 4.5);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## ArrowSize must be positive numeric scalar.
+%!error <ArrowSize> h = GraphPlot (); h.ArrowSize = 0;
+%!error <ArrowSize> h = GraphPlot (); h.ArrowSize = -1;
+%!error <ArrowSize> h = GraphPlot (); h.ArrowSize = [1 2];
+%!error <ArrowSize> h = GraphPlot (); h.ArrowSize = "big";
+
+## ArrowPosition default, set, validate (must be in (0, 1)).
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "ArrowPosition", 0.25);
+%!   assert (h.ArrowPosition, 0.25);
+%!   h.ArrowPosition = 0.9;
+%!   assert (h.ArrowPosition, 0.9);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## ArrowPosition validation.
+%!error <ArrowPosition> h = GraphPlot (); h.ArrowPosition = 0;
+%!error <ArrowPosition> h = GraphPlot (); h.ArrowPosition = 1;
+%!error <ArrowPosition> h = GraphPlot (); h.ArrowPosition = -0.1;
+%!error <ArrowPosition> h = GraphPlot (); h.ArrowPosition = 1.5;
+%!error <ArrowPosition> h = GraphPlot (); h.ArrowPosition = [0.2 0.3];
+%!error <ArrowPosition> h = GraphPlot (); h.ArrowPosition = "half";
+
+## EdgeAlpha default, set, validate (must be in [0, 1]).
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "EdgeAlpha", 0.3);
+%!   assert (h.EdgeAlpha, 0.3);
+%!   h.EdgeAlpha = 1;
+%!   assert (h.EdgeAlpha, 1);
+%!   h.EdgeAlpha = 0;
+%!   assert (h.EdgeAlpha, 0);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## EdgeAlpha validation.
+%!error <EdgeAlpha> h = GraphPlot (); h.EdgeAlpha = -0.1;
+%!error <EdgeAlpha> h = GraphPlot (); h.EdgeAlpha = 1.1;
+%!error <EdgeAlpha> h = GraphPlot (); h.EdgeAlpha = [0.2 0.3];
+%!error <EdgeAlpha> h = GraphPlot (); h.EdgeAlpha = "opaque";
+
+## EdgeLabel default is empty cell on an unweighted graph.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   assert (iscell (h.EdgeLabel));
+%!   assert (isempty (h.EdgeLabel));
+%!   assert (h.EdgeLabelMode, "auto");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## EdgeLabel auto-default is weight strings on a weighted digraph.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [10 20 30]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   assert (iscell (h.EdgeLabel));
+%!   assert (numel (h.EdgeLabel), 3);
+%!   assert (iscolumn (h.EdgeLabel));
+%!   assert (h.EdgeLabelMode, "auto");
+%!   ## Entries come from num2str on each weight.
+%!   assert (h.EdgeLabel{1}, num2str (10));
+%!   assert (h.EdgeLabel{2}, num2str (20));
+%!   assert (h.EdgeLabel{3}, num2str (30));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Setting EdgeLabel with a cellstr row yields a column and flips mode.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "EdgeLabel", {"x", "y", "z"});
+%!   assert (h.EdgeLabel, {"x"; "y"; "z"});
+%!   assert (h.EdgeLabelMode, "manual");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Numeric EdgeLabel vector converts via num2str.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "EdgeLabel", [10 20 30]);
+%!   assert (iscell (h.EdgeLabel));
+%!   assert (h.EdgeLabel, {"10"; "20"; "30"});
+%!   assert (h.EdgeLabelMode, "manual");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Assigning EdgeLabel after construction flips mode to 'manual'.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   assert (h.EdgeLabelMode, "auto");
+%!   h.EdgeLabel = {"a"; "b"; "c"};
+%!   assert (h.EdgeLabel, {"a"; "b"; "c"});
+%!   assert (h.EdgeLabelMode, "manual");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Flipping EdgeLabelMode back to 'auto' regenerates weight labels.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [10 20 30]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   h.EdgeLabel = {"aa"; "bb"; "cc"};   # now manual
+%!   assert (h.EdgeLabelMode, "manual");
+%!   h.EdgeLabelMode = "auto";
+%!   assert (numel (h.EdgeLabel), 3);
+%!   assert (h.EdgeLabel{1}, num2str (10));
+%!   assert (h.EdgeLabelMode, "auto");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## 'auto' on an unweighted graph regenerates empty EdgeLabel.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   h.EdgeLabel = {"a"; "b"; "c"};   # now manual
+%!   assert (h.EdgeLabelMode, "manual");
+%!   h.EdgeLabelMode = "auto";
+%!   assert (iscell (h.EdgeLabel));
+%!   assert (isempty (h.EdgeLabel));
+%!   assert (h.EdgeLabelMode, "auto");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## EdgeLabelMode validation.
+%!test
+%! h = GraphPlot ();
+%! assert (h.EdgeLabelMode, "auto");
+%! h.EdgeLabelMode = "manual";
+%! assert (h.EdgeLabelMode, "manual");
+%! h.EdgeLabelMode = "AUTO";
+%! assert (h.EdgeLabelMode, "auto");
+
+%!error <EdgeLabelMode> h = GraphPlot (); h.EdgeLabelMode = "bogus";
+%!error <EdgeLabelMode> h = GraphPlot (); h.EdgeLabelMode = 1;
+
+## Length-mismatched EdgeLabel is rejected.
+%!error <EdgeLabel> ...
+%!   GraphPlot (digraph ([1 2 3], [2 3 1]), "EdgeLabel", {"a", "b"})
+%!error <EdgeLabel> ...
+%!   h = GraphPlot (digraph ([1 2], [2 3])); h.EdgeLabel = {"p"};
+
+## Non-cellstr EdgeLabel entries rejected.
+%!error <EdgeLabel> ...
+%!   h = GraphPlot (digraph ([1 2], [2 3])); h.EdgeLabel = {1};
+
+## EdgeFontSize default, set, validate.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "EdgeFontSize", 12);
+%!   assert (h.EdgeFontSize, 12);
+%!   h.EdgeFontSize = 10;
+%!   assert (h.EdgeFontSize, 10);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## EdgeFontSize validation.
+%!error <EdgeFontSize> h = GraphPlot (); h.EdgeFontSize = 0;
+%!error <EdgeFontSize> h = GraphPlot (); h.EdgeFontSize = -1;
+%!error <EdgeFontSize> h = GraphPlot (); h.EdgeFontSize = [1 2];
+%!error <EdgeFontSize> h = GraphPlot (); h.EdgeFontSize = "big";
+
+## EdgeFontName default, set, validate.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "EdgeFontName", "Arial");
+%!   assert (h.EdgeFontName, "Arial");
+%!   h.EdgeFontName = "Times";
+%!   assert (h.EdgeFontName, "Times");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## EdgeFontName validation.
+%!error <EdgeFontName> h = GraphPlot (); h.EdgeFontName = 1;
+%!error <EdgeFontName> h = GraphPlot (); h.EdgeFontName = {"Arial"};
+
+## All edge cosmetic options forwarded via constructor name-value in one call.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, ...
+%!                  "EdgeColor", [0.5 0.5 0.5], ...
+%!                  "LineWidth", 1.5, ...
+%!                  "LineStyle", "--", ...
+%!                  "ArrowSize", 9, ...
+%!                  "ArrowPosition", 0.75, ...
+%!                  "EdgeAlpha", 0.7, ...
+%!                  "EdgeLabel", {"one", "two", "three"}, ...
+%!                  "EdgeFontSize", 10, ...
+%!                  "EdgeFontName", "Courier");
+%!   assert (h.EdgeColor, [0.5 0.5 0.5], 1e-12);
+%!   assert (h.LineWidth, 1.5);
+%!   assert (h.LineStyle, "--");
+%!   assert (h.ArrowSize, 9);
+%!   assert (h.ArrowPosition, 0.75);
+%!   assert (h.EdgeAlpha, 0.7);
+%!   assert (h.EdgeLabel, {"one"; "two"; "three"});
+%!   assert (h.EdgeLabelMode, "manual");
+%!   assert (h.EdgeFontSize, 10);
+%!   assert (h.EdgeFontName, "Courier");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Edge option names are case-insensitive on input.
+%!test
+%! G = digraph ([1 2], [2 3]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "edgecolor", [0 1 0], "ARROWSIZE", 8, ...
+%!                  "EdgeAlpha", 0.4, "linewidth", 2);
+%!   assert (h.EdgeColor, [0 1 0]);
+%!   assert (h.ArrowSize, 8);
+%!   assert (h.EdgeAlpha, 0.4);
+%!   assert (h.LineWidth, 2);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Handle-class: edge cosmetic property assignment visible in aliased handles.
+%!test
+%! h1 = GraphPlot ();
+%! h2 = h1;
+%! h2.EdgeFontSize = 22;
+%! assert (h1.EdgeFontSize, 22);
+%! h1.ArrowSize = 13;
+%! assert (h2.ArrowSize, 13);
+%! h2.EdgeAlpha = 0.2;
+%! assert (h1.EdgeAlpha, 0.2);
+
+## Undirected graph still accepts ArrowSize and ArrowPosition (stored
+## but cosmetically unused).
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "ArrowSize", 12, "ArrowPosition", 0.2);
+%!   assert (h.ArrowSize, 12);
+%!   assert (h.ArrowPosition, 0.2);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Undirected graph auto EdgeLabel uses weights when present.
+%!test
+%! G = graph ([1 2 3], [2 3 1], [0.5 1.5 2.5]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   assert (iscell (h.EdgeLabel));
+%!   assert (numel (h.EdgeLabel), 3);
+%!   assert (h.EdgeLabelMode, "auto");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Edgeless digraph: EdgeLabel default is empty regardless of weighting.
+%!test
+%! G = digraph (4);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G);
+%!   assert (iscell (h.EdgeLabel));
+%!   assert (isempty (h.EdgeLabel));
+%!   assert (h.EdgeLabelMode, "auto");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

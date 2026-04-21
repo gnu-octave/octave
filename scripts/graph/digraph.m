@@ -217,7 +217,7 @@ classdef digraph
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian}
+  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1382,6 +1382,80 @@ classdef digraph
           H.mg_weights_ = zeros (0, 1);
         endif
         H.adj_ = sparse (Nnew, Nnew);
+      endif
+
+    endfunction
+
+    function H = rmedge (G, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{H} =} rmedge (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {@var{H} =} rmedge (@var{G}, @var{edgeIdx})
+      ## Remove edges from the digraph @var{G} and return the resulting
+      ## digraph @var{H}.  See @code{help rmedge} for the full
+      ## description of the two call forms.  For a multigraph digraph,
+      ## @code{rmedge (@var{G}, @var{s}, @var{t})} removes every
+      ## parallel edge from @var{s}(i) to @var{t}(i).  Node count,
+      ## node names, and node-attribute columns are preserved;
+      ## edge-attribute columns are filtered to match the surviving
+      ## edges.
+      ## @seealso{digraph, addedge, rmnode, addnode, numedges, findedge}
+      ## @end deftypefn
+
+      if (nargin < 2 || nargin > 3)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to rmedge: expected 2 or 3 arguments");
+      endif
+
+      edge_survive = __rmedge_impl__ (G, varargin{:});
+      N = size (G.adj_, 1);
+
+      ## Filter edge-attribute columns by edge_survive mask.
+      eattrs_out = G.edge_attrs_;
+      efn = fieldnames (eattrs_out);
+      for ii = 1:numel (efn)
+        col = eattrs_out.(efn{ii});
+        eattrs_out.(efn{ii}) = col(edge_survive, :);
+      endfor
+
+      H = G;
+      H.edge_attrs_ = eattrs_out;
+
+      if (G.is_multigraph_)
+        ## Filter the parallel-edge storage.
+        if (isempty (G.mg_endnodes_))
+          H.mg_endnodes_ = zeros (0, 2);
+        else
+          H.mg_endnodes_ = G.mg_endnodes_(edge_survive, :);
+        endif
+        if (G.has_weights_)
+          if (isempty (G.mg_weights_))
+            H.mg_weights_ = zeros (0, 1);
+          else
+            H.mg_weights_ = G.mg_weights_(edge_survive);
+          endif
+        else
+          H.mg_weights_ = zeros (0, 1);
+        endif
+        ## Keep the adj_ placeholder sized to the node count.
+        H.adj_ = sparse (N, N);
+      else
+        ## Simple-graph mode: rebuild adj_ from surviving edges.  The
+        ## edge iteration order here must match get.Edges (which uses
+        ## find (adj_.')), otherwise the survive mask would be applied
+        ## to a different ordering than the helper used.
+        if (nnz (G.adj_) == 0)
+          H.adj_ = sparse (N, N);
+        else
+          [dst, src, w] = find (G.adj_.');
+          src = src(:); dst = dst(:); w = w(:);
+          if (any (edge_survive))
+            H.adj_ = sparse (src(edge_survive), dst(edge_survive), ...
+                             w(edge_survive), N, N);
+          else
+            H.adj_ = sparse (N, N);
+          endif
+        endif
       endif
 
     endfunction

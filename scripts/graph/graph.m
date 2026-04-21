@@ -201,7 +201,7 @@ classdef graph
   ## @end group
   ## @end example
   ##
-  ## @seealso{digraph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian}
+  ## @seealso{digraph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1005,6 +1005,67 @@ classdef graph
       [H.adj_, H.nodenames_, H.node_attrs_] = ...
         __rmnode_impl__ (G.adj_, G.nodenames_, G.node_attrs_, rm_idx);
       H.edge_attrs_ = eattrs_out;
+
+    endfunction
+
+    function H = rmedge (G, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{H} =} rmedge (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {@var{H} =} rmedge (@var{G}, @var{edgeIdx})
+      ## Remove edges from the undirected graph @var{G} and return the
+      ## resulting graph @var{H}.  See @code{help rmedge} for the full
+      ## description of the two call forms.  For an undirected graph,
+      ## @code{rmedge (@var{G}, @var{s}, @var{t})} matches the edge in
+      ## either orientation.  Node count, node names, and node-attribute
+      ## columns are preserved; edge-attribute columns are filtered to
+      ## match the surviving edges.
+      ## @seealso{graph, addedge, rmnode, addnode, numedges, findedge}
+      ## @end deftypefn
+
+      if (nargin < 2 || nargin > 3)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to rmedge: expected 2 or 3 arguments");
+      endif
+
+      edge_survive = __rmedge_impl__ (G, varargin{:});
+      N = size (G.adj_, 1);
+
+      ## Filter edge-attribute columns by the survive mask.
+      eattrs_out = G.edge_attrs_;
+      efn = fieldnames (eattrs_out);
+      for ii = 1:numel (efn)
+        col = eattrs_out.(efn{ii});
+        eattrs_out.(efn{ii}) = col(edge_survive, :);
+      endfor
+
+      H = G;
+      H.edge_attrs_ = eattrs_out;
+
+      ## Rebuild the symmetric adjacency from the surviving edges.  The
+      ## iteration order must match get.Edges, which uses
+      ## find (tril (adj_)) to produce lex (min, max) storage.  For a
+      ## non-self-loop surviving edge we scatter both (s, t) and (t, s);
+      ## for a self-loop we scatter a single (s, s) entry.
+      if (nnz (tril (G.adj_)) == 0)
+        H.adj_ = sparse (N, N);
+      else
+        [t_end, s_end, w] = find (tril (G.adj_));
+        s_end = s_end(:); t_end = t_end(:); w = w(:);
+        if (any (edge_survive))
+          ss = s_end(edge_survive);
+          tt = t_end(edge_survive);
+          ww = w(edge_survive);
+          sl  = (ss == tt);
+          nsl = ! sl;
+          ss_all = [ss(nsl); tt(nsl); ss(sl)];
+          tt_all = [tt(nsl); ss(nsl); ss(sl)];
+          ww_all = [ww(nsl); ww(nsl); ww(sl)];
+          H.adj_ = sparse (ss_all, tt_all, ww_all, N, N);
+        else
+          H.adj_ = sparse (N, N);
+        endif
+      endif
 
     endfunction
 

@@ -3509,6 +3509,67 @@ classdef digraph
 
     endfunction
 
+    function TR = shortestpathtree (G, s, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{TR} =} shortestpathtree (@var{G}, @var{s})
+      ## @deftypefnx {} {@var{TR} =} shortestpathtree (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {@var{TR} =} shortestpathtree (@dots{}, "OutputForm", @var{form})
+      ## Return a single-source shortest path tree rooted at node
+      ## @var{s} of the digraph @var{G}.
+      ##
+      ## With the two-argument form, the tree covers every node
+      ## reachable from @var{s}.  With the three-argument form,
+      ## @var{t} is a list of target nodes and the tree is pruned to
+      ## only edges on some shortest path from @var{s} to a target.
+      ##
+      ## The @qcode{"OutputForm"} option selects the return type:
+      ## @qcode{"tree"} (default) returns a @code{digraph} of the
+      ## predecessor tree; @qcode{"vector"} returns a row vector of
+      ## predecessor indices; @qcode{"cell"} returns a column cell
+      ## array of node paths.
+      ## @seealso{digraph, shortestpath, distances, allpaths}
+      ## @end deftypefn
+
+      if (nargin < 2)
+        print_usage ();
+      endif
+
+      [s_idx, s_by_name] = __resolve_single_node__ (G, s, ...
+                                                   "shortestpathtree");
+
+      N = numnodes (G);
+
+      ## Build the weight matrix used by Dijkstra (same rules as
+      ## shortestpath): multigraph -> collapse parallel edges to min
+      ## weight; simple graph -> adj_ or its 0/1 skeleton.
+      if (G.is_multigraph_)
+        src_e = G.mg_endnodes_(:, 1);
+        dst_e = G.mg_endnodes_(:, 2);
+        if (G.has_weights_)
+          w_e = G.mg_weights_(:);
+        else
+          w_e = ones (numel (src_e), 1);
+        endif
+        if (isempty (src_e))
+          W = sparse (N, N);
+        else
+          [pairs, ~, ic] = unique ([src_e(:), dst_e(:)], "rows");
+          min_w = accumarray (ic, w_e, [], @min);
+          W = sparse (pairs(:, 1), pairs(:, 2), min_w, N, N);
+        endif
+      else
+        if (G.has_weights_)
+          W = G.adj_;
+        else
+          W = spones (G.adj_);
+        endif
+      endif
+
+      TR = __shortestpathtree_impl__ (G, W, s_idx, s_by_name, varargin{:});
+
+    endfunction
+
     function disp (G)
 
       ## -*- texinfo -*-

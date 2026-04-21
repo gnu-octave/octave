@@ -30,6 +30,8 @@ FCN_FILE_DIRS += \
   %reldir%/private/__rmedge_impl__.m \
   %reldir%/private/__rmnode_impl__.m \
   %reldir%/private/__shortestpath_dijkstra__.m \
+  %reldir%/private/__shortestpathtree_dijkstra__.m \
+  %reldir%/private/__shortestpathtree_impl__.m \
   %reldir%/private/__simplify_parse_opts__.m \
   %reldir%/private/__subgraph_impl__.m \
   %reldir%/private/__toposort_parse_opts__.m
@@ -68,6 +70,7 @@ FCN_FILE_DIRS += \
   %reldir%/rmedge.m \
   %reldir%/rmnode.m \
   %reldir%/shortestpath.m \
+  %reldir%/shortestpathtree.m \
   %reldir%/simplify.m \
   %reldir%/subgraph.m \
   %reldir%/successors.m \

@@ -217,7 +217,7 @@ classdef digraph
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges, ismultigraph, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency}
+  ## @seealso{graph, numnodes, numedges, ismultigraph, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1686,6 +1686,58 @@ classdef digraph
         dst = E(:, 2);
       endif
       A = sparse (src, dst, w, N, N);
+
+    endfunction
+
+    function I = incidence (G)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{I} =} incidence (@var{G})
+      ## Return the sparse incidence matrix of the digraph @var{G}.
+      ## Column @math{k} of @var{I} has @code{-1} at the source-row and
+      ## @code{+1} at the destination-row of edge @math{k}.  Self-loop
+      ## edges produce an all-zero column.  See @code{help incidence}
+      ## for the full description.
+      ## @seealso{digraph, adjacency, numedges, numnodes}
+      ## @end deftypefn
+
+      if (nargin != 1)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to incidence: expected 1 argument");
+      endif
+
+      N = size (G.adj_, 1);
+      if (G.is_multigraph_)
+        src = G.mg_endnodes_(:, 1);
+        dst = G.mg_endnodes_(:, 2);
+        M = numel (src);
+      else
+        M = nnz (G.adj_);
+        if (M == 0)
+          I = sparse (N, 0);
+          return;
+        endif
+        E = G.Edges.EndNodes;
+        src = E(:, 1);
+        dst = E(:, 2);
+      endif
+
+      if (M == 0)
+        I = sparse (N, 0);
+        return;
+      endif
+
+      ## Skip self-loop columns (must have exactly two entries per
+      ## column, so self-loops contribute no sparse entries).
+      k = (1:M)';
+      keep = (src != dst);
+      s_k = src(keep);
+      d_k = dst(keep);
+      c_k = k(keep);
+      rows = [s_k; d_k];
+      cols = [c_k; c_k];
+      vals = [-ones(numel(c_k), 1); ones(numel(c_k), 1)];
+      I = sparse (rows, cols, vals, N, M);
 
     endfunction
 

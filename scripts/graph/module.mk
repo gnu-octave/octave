@@ -20,6 +20,7 @@ FCN_FILE_DIRS += \
   %reldir%/findedge.m \
   %reldir%/findnode.m \
   %reldir%/graph.m \
+  %reldir%/incidence.m \
   %reldir%/indegree.m \
   %reldir%/inedges.m \
   %reldir%/neighbors.m \

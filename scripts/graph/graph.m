@@ -201,7 +201,7 @@ classdef graph
   ## @end group
   ## @end example
   ##
-  ## @seealso{digraph, numnodes, numedges, neighbors, degree, findnode, findedge, edgecount, adjacency}
+  ## @seealso{digraph, numnodes, numedges, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1070,6 +1070,50 @@ classdef graph
                   [t_off; s_off; s_self], ...
                   [w_off; w_off; w_self], ...
                   N, N);
+
+    endfunction
+
+    function I = incidence (G)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{I} =} incidence (@var{G})
+      ## Return the sparse incidence matrix of the undirected graph
+      ## @var{G}.  Column @math{k} of @var{I} has @code{1} at both
+      ## endpoint-rows of edge @math{k}.  Self-loop edges produce an
+      ## all-zero column.  See @code{help incidence} for the full
+      ## description.
+      ## @seealso{graph, adjacency, laplacian, numedges, numnodes}
+      ## @end deftypefn
+
+      if (nargin != 1)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to incidence: expected 1 argument");
+      endif
+
+      N = size (G.adj_, 1);
+      M = nnz (tril (G.adj_));
+      if (M == 0)
+        I = sparse (N, 0);
+        return;
+      endif
+
+      ## Lex-sorted (col1 <= col2) edge list from G.Edges.EndNodes.
+      E = G.Edges.EndNodes;
+      s = E(:, 1);
+      t = E(:, 2);
+
+      ## Skip self-loop columns (incidence convention: must have
+      ## exactly two entries per column, so self-loops contribute no
+      ## sparse entries).
+      k = (1:M)';
+      keep = (s != t);
+      s_k = s(keep);
+      t_k = t(keep);
+      c_k = k(keep);
+      rows = [s_k; t_k];
+      cols = [c_k; c_k];
+      vals = ones (2 * numel (c_k), 1);
+      I = sparse (rows, cols, vals, N, M);
 
     endfunction
 

@@ -201,7 +201,7 @@ classdef graph
   ## @end group
   ## @end example
   ##
-  ## @seealso{digraph, numnodes, numedges, ismultigraph, addnode, addedge, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian}
+  ## @seealso{digraph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian}
   ## @end deftypefn
 
   properties (Access = private)
@@ -952,6 +952,59 @@ classdef graph
       endif
 
       H.adj_ = A;
+
+    endfunction
+
+    function H = rmnode (G, nodes)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{H} =} rmnode (@var{G}, @var{nodes})
+      ## Remove one or more nodes (and their incident edges) from the
+      ## undirected graph @var{G} and return the resulting graph
+      ## @var{H}.  See @code{help rmnode} for the full description.
+      ## Surviving nodes are reindexed compactly into
+      ## @code{1:(numnodes (G) - k)}; node names, node-attribute
+      ## columns, and edge-attribute columns are filtered to match.
+      ## @seealso{graph, addnode, rmedge, addedge, numnodes, findnode}
+      ## @end deftypefn
+
+      if (nargin != 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to rmnode: expected 2 arguments");
+      endif
+
+      rm_idx = __resolve_node_list__ (G, nodes, "rmnode");
+
+      Nold = size (G.adj_, 1);
+
+      keep_mask = true (Nold, 1);
+      if (! isempty (rm_idx))
+        keep_mask(rm_idx) = false;
+      endif
+
+      ## Iterate existing edges in lex (min, max) order matching
+      ## get.Edges (see graph.get.Edges: find(tril(adj_)) yields
+      ## [t_end, s_end] with s_end <= t_end).
+      if (nnz (tril (G.adj_)) == 0)
+        edge_survive = false (0, 1);
+      else
+        [t_end, s_end] = find (tril (G.adj_));
+        s_end = s_end(:); t_end = t_end(:);
+        edge_survive = keep_mask(s_end) & keep_mask(t_end);
+      endif
+
+      ## Filter edge-attribute columns by edge_survive.
+      eattrs_out = G.edge_attrs_;
+      efn = fieldnames (eattrs_out);
+      for ii = 1:numel (efn)
+        col = eattrs_out.(efn{ii});
+        eattrs_out.(efn{ii}) = col(edge_survive, :);
+      endfor
+
+      H = G;
+      [H.adj_, H.nodenames_, H.node_attrs_] = ...
+        __rmnode_impl__ (G.adj_, G.nodenames_, G.node_attrs_, rm_idx);
+      H.edge_attrs_ = eattrs_out;
 
     endfunction
 

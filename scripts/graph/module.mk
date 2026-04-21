@@ -11,7 +11,8 @@ FCN_FILE_DIRS += \
   %reldir%/private/__matlab_ref__.m \
   %reldir%/private/__resolve_endpoint__.m \
   %reldir%/private/__resolve_node_list__.m \
-  %reldir%/private/__resolve_single_node__.m
+  %reldir%/private/__resolve_single_node__.m \
+  %reldir%/private/__rmnode_impl__.m
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/.oct-config \
@@ -35,6 +36,7 @@ FCN_FILE_DIRS += \
   %reldir%/outdegree.m \
   %reldir%/outedges.m \
   %reldir%/predecessors.m \
+  %reldir%/rmnode.m \
   %reldir%/successors.m
 
 %canon_reldir%dir = $(fcnfiledir)/graph

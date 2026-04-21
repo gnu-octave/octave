@@ -217,7 +217,7 @@ classdef digraph
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, addedge, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian}
+  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1292,6 +1292,96 @@ classdef digraph
         endif
 
         H.adj_ = A;
+      endif
+
+    endfunction
+
+    function H = rmnode (G, nodes)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{H} =} rmnode (@var{G}, @var{nodes})
+      ## Remove one or more nodes (and their incident edges) from the
+      ## digraph @var{G} and return the resulting digraph @var{H}.  See
+      ## @code{help rmnode} for the full description.  Surviving nodes
+      ## are reindexed compactly into @code{1:(numnodes (G) - k)}; node
+      ## names, node-attribute columns, and edge-attribute columns are
+      ## filtered to match.  The @qcode{'multigraph'} flag is preserved.
+      ## @seealso{digraph, addnode, rmedge, addedge, numnodes, findnode}
+      ## @end deftypefn
+
+      if (nargin != 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to rmnode: expected 2 arguments");
+      endif
+
+      ## Resolve NODES into a column of validated indices.  Accepts
+      ## numeric, char row, cellstr, [] or {}.
+      rm_idx = __resolve_node_list__ (G, nodes, "rmnode");
+
+      Nold = size (G.adj_, 1);
+
+      ## Compute survivor mask for existing edges (needed to filter
+      ## edge_attrs_ and multigraph edge storage).
+      keep_mask = true (Nold, 1);
+      if (! isempty (rm_idx))
+        keep_mask(rm_idx) = false;
+      endif
+
+      if (G.is_multigraph_)
+        ## Multigraph: filter mg_endnodes_ rows where both endpoints
+        ## survive; remap indices using cumulative keep position.
+        if (isempty (G.mg_endnodes_))
+          edge_survive = false (0, 1);
+        else
+          edge_survive = keep_mask(G.mg_endnodes_(:, 1)) ...
+                       & keep_mask(G.mg_endnodes_(:, 2));
+        endif
+      else
+        ## Simple-graph: iterate existing edges in lex (src, dst) order
+        ## matching get.Edges.
+        if (nnz (G.adj_) == 0)
+          edge_survive = false (0, 1);
+        else
+          [dst, src] = find (G.adj_.');
+          src = src(:); dst = dst(:);
+          edge_survive = keep_mask(src) & keep_mask(dst);
+        endif
+      endif
+
+      ## Filter the edge-attribute columns by edge_survive.
+      eattrs_out = G.edge_attrs_;
+      efn = fieldnames (eattrs_out);
+      for ii = 1:numel (efn)
+        col = eattrs_out.(efn{ii});
+        eattrs_out.(efn{ii}) = col(edge_survive, :);
+      endfor
+
+      ## Filter node-level state (adjacency, names, node_attrs_).
+      H = G;
+      [H.adj_, H.nodenames_, H.node_attrs_] = ...
+        __rmnode_impl__ (G.adj_, G.nodenames_, G.node_attrs_, rm_idx);
+      H.edge_attrs_ = eattrs_out;
+
+      if (G.is_multigraph_)
+        ## Remap surviving mg_endnodes_ to the compacted index space
+        ## and resize the adj_ placeholder to the new node count.
+        Nnew = size (H.adj_, 1);
+        idx_map = zeros (Nold, 1);
+        idx_map(keep_mask) = 1:Nnew;
+        if (any (edge_survive))
+          new_en = [idx_map(G.mg_endnodes_(edge_survive, 1)), ...
+                    idx_map(G.mg_endnodes_(edge_survive, 2))];
+          H.mg_endnodes_ = new_en;
+          if (G.has_weights_)
+            H.mg_weights_ = G.mg_weights_(edge_survive);
+          else
+            H.mg_weights_ = zeros (0, 1);
+          endif
+        else
+          H.mg_endnodes_ = zeros (0, 2);
+          H.mg_weights_ = zeros (0, 1);
+        endif
+        H.adj_ = sparse (Nnew, Nnew);
       endif
 
     endfunction

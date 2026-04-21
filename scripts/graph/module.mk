@@ -26,6 +26,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/__findedge_impl__.m \
   %reldir%/private/__findnode_impl__.m \
   %reldir%/private/__matlab_ref__.m \
+  %reldir%/private/__maxflow_edmonds_karp__.m \
   %reldir%/private/__reordernodes_impl__.m \
   %reldir%/private/__resolve_endpoint__.m \
   %reldir%/private/__resolve_node_list__.m \
@@ -68,6 +69,7 @@ FCN_FILE_DIRS += \
   %reldir%/isdag.m \
   %reldir%/ismultigraph.m \
   %reldir%/laplacian.m \
+  %reldir%/maxflow.m \
   %reldir%/neighbors.m \
   %reldir%/numedges.m \
   %reldir%/numnodes.m \

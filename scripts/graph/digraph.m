@@ -3678,6 +3678,80 @@ classdef digraph
 
     endfunction
 
+    function mf = maxflow (G, s, t)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{mf} =} maxflow (@var{G}, @var{s}, @var{t})
+      ## Return the maximum flow value @var{mf} from node @var{s} to
+      ## node @var{t} in the digraph @var{G}.
+      ##
+      ## @var{s} and @var{t} are scalar node identifiers (a positive
+      ## integer index, a char row vector naming a node, or a
+      ## 1-element cell array of strings).  Edge weights are
+      ## interpreted as capacities and must be non-negative; when
+      ## @var{G} is unweighted every edge has capacity @code{1}.
+      ## Parallel edges sum their capacities.  Self-loops do not
+      ## contribute to any @math{s-t} flow.  When @code{@var{s} ==
+      ## @var{t}} or when @var{t} is not reachable from @var{s} along
+      ## edges with positive capacity, @var{mf} is @code{0}.
+      ##
+      ## The algorithm is the Edmonds-Karp (BFS-augmenting-path)
+      ## implementation of Ford-Fulkerson.
+      ## @seealso{digraph, shortestpath, distances}
+      ## @end deftypefn
+
+      if (nargin < 3)
+        print_usage ();
+      endif
+
+      [s_idx, ~] = __resolve_single_node__ (G, s, "maxflow");
+      [t_idx, ~] = __resolve_single_node__ (G, t, "maxflow");
+
+      N = numnodes (G);
+
+      ## Build an edge list (uu, vv, caps) of directed arcs.  Parallel
+      ## edges in a multigraph are kept as distinct arcs so the
+      ## algorithm sums their capacities implicitly.  For a simple
+      ## digraph the adjacency matrix gives one weight per (u,v)
+      ## cell, so we extract the edge list directly from adj_.
+      if (G.is_multigraph_)
+        uu = G.mg_endnodes_(:, 1);
+        vv = G.mg_endnodes_(:, 2);
+        if (G.has_weights_)
+          caps = G.mg_weights_(:);
+        else
+          caps = ones (numel (uu), 1);
+        endif
+      else
+        if (G.has_weights_)
+          [uu_v, vv_v, caps_v] = find (G.adj_);
+        else
+          [uu_v, vv_v] = find (G.adj_);
+          caps_v = ones (numel (uu_v), 1);
+        endif
+        uu = uu_v(:);
+        vv = vv_v(:);
+        caps = caps_v(:);
+      endif
+
+      ## Validate capacities up front so the error messages are
+      ## predictable regardless of how the algorithm is dispatched
+      ## below.
+      if (! isempty (caps))
+        if (! isreal (caps) || any (isnan (caps)))
+          error ("Octave:invalid-input-arg", ...
+                 "maxflow: edge weights must be finite real numbers (NaN not allowed)");
+        endif
+        if (any (caps < 0))
+          error ("Octave:invalid-input-arg", ...
+                 "maxflow: edge weights must be non-negative capacities");
+        endif
+      endif
+
+      mf = __maxflow_edmonds_karp__ (uu, vv, caps, N, s_idx, t_idx);
+
+    endfunction
+
     function disp (G)
 
       ## -*- texinfo -*-

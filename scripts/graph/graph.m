@@ -2436,6 +2436,80 @@ classdef graph
 
     endfunction
 
+    function mf = maxflow (G, s, t)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{mf} =} maxflow (@var{G}, @var{s}, @var{t})
+      ## Return the maximum flow value @var{mf} from node @var{s} to
+      ## node @var{t} in the undirected graph @var{G}.
+      ##
+      ## @var{s} and @var{t} are scalar node identifiers (a positive
+      ## integer index, a char row vector naming a node, or a
+      ## 1-element cell array of strings).  Edge weights are
+      ## interpreted as capacities and must be non-negative; when
+      ## @var{G} is unweighted every edge has capacity @code{1}.
+      ## Each undirected edge acts as a pair of antiparallel arcs
+      ## with the stored capacity available in either direction.
+      ## Self-loops do not contribute to any @math{s-t} flow.  When
+      ## @code{@var{s} == @var{t}} or when @var{t} is not reachable
+      ## from @var{s} along edges with positive capacity, @var{mf}
+      ## is @code{0}.
+      ##
+      ## The algorithm is the Edmonds-Karp (BFS-augmenting-path)
+      ## implementation of Ford-Fulkerson.
+      ## @seealso{graph, shortestpath, distances}
+      ## @end deftypefn
+
+      if (nargin < 3)
+        print_usage ();
+      endif
+
+      [s_idx, ~] = __resolve_single_node__ (G, s, "maxflow");
+      [t_idx, ~] = __resolve_single_node__ (G, t, "maxflow");
+
+      N = numnodes (G);
+
+      ## Extract the undirected edge list from the lower triangle of
+      ## adj_ (each {u,v} pair with u > v appears exactly once).  For
+      ## the residual graph each undirected edge becomes two
+      ## antiparallel directed arcs, each carrying the full capacity;
+      ## Edmonds-Karp then augments correctly even when flow
+      ## traverses the edge in the "wrong" orientation.
+      [tt_end, ss_end, w_end] = find (tril (G.adj_));
+      if (isempty (ss_end))
+        uu = zeros (0, 1);
+        vv = zeros (0, 1);
+        caps = zeros (0, 1);
+      else
+        if (G.has_weights_)
+          caps_one = w_end(:);
+        else
+          caps_one = ones (numel (ss_end), 1);
+        endif
+        ## Two antiparallel directed arcs per undirected edge.
+        uu = [ss_end(:); tt_end(:)];
+        vv = [tt_end(:); ss_end(:)];
+        caps = [caps_one; caps_one];
+      endif
+
+      ## Validate capacities up front so the error message is
+      ## predictable regardless of how the algorithm is dispatched
+      ## below.
+      if (! isempty (caps))
+        if (! isreal (caps) || any (isnan (caps)))
+          error ("Octave:invalid-input-arg", ...
+                 "maxflow: edge weights must be finite real numbers (NaN not allowed)");
+        endif
+        if (any (caps < 0))
+          error ("Octave:invalid-input-arg", ...
+                 "maxflow: edge weights must be non-negative capacities");
+        endif
+      endif
+
+      mf = __maxflow_edmonds_karp__ (uu, vv, caps, N, s_idx, t_idx);
+
+    endfunction
+
     function disp (G)
 
       ## -*- texinfo -*-

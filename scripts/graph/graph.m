@@ -2369,6 +2369,34 @@ classdef graph
 
     endfunction
 
+    function [cycles, edgecycles] = allcycles (G, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{cycles} =} allcycles (@var{G})
+      ## @deftypefnx {} {[@var{cycles}, @var{edgecycles}] =} allcycles (@var{G})
+      ## @deftypefnx {} {[@dots{}] =} allcycles (@dots{}, @var{name}, @var{value})
+      ## Return all elementary cycles of the undirected graph @var{G}.
+      ##
+      ## A cycle is a closed walk in which no node and no edge is
+      ## repeated, except that the walk starts and ends at the same
+      ## node.  A self-loop is a 1-cycle.  For a multigraph, two
+      ## parallel edges between the same pair of distinct nodes form a
+      ## 2-cycle.  Each undirected cycle is reported once in canonical
+      ## orientation: the smallest node comes first; for cycles of
+      ## length @math{\geq 3} the smaller of the two neighbouring
+      ## nodes comes second; for 2-cycles the smaller-indexed parallel
+      ## edge is taken first.
+      ##
+      ## See @code{allcycles} for the full description, the returned
+      ## shapes, and the @qcode{"MaxNumCycles"},
+      ## @qcode{"MinCycleLength"}, @qcode{"MaxCycleLength"} options.
+      ## @seealso{graph, allpaths, conncomp}
+      ## @end deftypefn
+
+      [cycles, edgecycles] = __allcycles_impl__ (G, varargin{:});
+
+    endfunction
+
     function disp (G)
 
       ## -*- texinfo -*-

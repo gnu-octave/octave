@@ -5,6 +5,7 @@ FCN_FILE_DIRS += \
 %canon_reldir%_PRIVATE_FCN_FILES = \
   %reldir%/private/__addedge_impl__.m \
   %reldir%/private/__addnode_impl__.m \
+  %reldir%/private/__allcycles_impl__.m \
   %reldir%/private/__allpaths_impl__.m \
   %reldir%/private/__bfsdfs_parse_opts__.m \
   %reldir%/private/__bfsearch_events_impl__.m \
@@ -42,6 +43,7 @@ FCN_FILE_DIRS += \
   %reldir%/addedge.m \
   %reldir%/addnode.m \
   %reldir%/adjacency.m \
+  %reldir%/allcycles.m \
   %reldir%/allpaths.m \
   %reldir%/bfsearch.m \
   %reldir%/biconncomp.m \

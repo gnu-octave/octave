@@ -3611,6 +3611,31 @@ classdef digraph
 
     endfunction
 
+    function [cycles, edgecycles] = allcycles (G, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{cycles} =} allcycles (@var{G})
+      ## @deftypefnx {} {[@var{cycles}, @var{edgecycles}] =} allcycles (@var{G})
+      ## @deftypefnx {} {[@dots{}] =} allcycles (@dots{}, @var{name}, @var{value})
+      ## Return all elementary directed cycles of the digraph @var{G}.
+      ##
+      ## A cycle is a closed directed walk in which no node is repeated
+      ## (except that the walk starts and ends at the same node).  A
+      ## self-loop on a node is a 1-cycle; a pair of opposite directed
+      ## edges between two nodes is a 2-cycle.  For a multigraph each
+      ## parallel edge contributes a separate cycle.
+      ##
+      ## Each cycle is reported exactly once with its smallest node
+      ## first.  See @code{allcycles} for the full description, the
+      ## returned shapes, and the @qcode{"MaxNumCycles"},
+      ## @qcode{"MinCycleLength"}, @qcode{"MaxCycleLength"} options.
+      ## @seealso{digraph, allpaths, conncomp, isdag}
+      ## @end deftypefn
+
+      [cycles, edgecycles] = __allcycles_impl__ (G, varargin{:});
+
+    endfunction
+
     function disp (G)
 
       ## -*- texinfo -*-

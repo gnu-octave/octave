@@ -3929,6 +3929,14 @@ classdef digraph
       ## distances, @math{(N-1) / sum_{j != i} d(j, i)}.
       ## @item "closeness"
       ## Alias for @code{"outcloseness"} on a digraph.
+      ## @item "betweenness"
+      ## Betweenness centrality, the number of ordered-pair shortest
+      ## paths passing through each node:
+      ## @math{c(v) = sum_{s, t: s != v != t} sigma_{s, t}(v) / sigma_{s, t}}
+      ## where @math{sigma_{s, t}} is the number of shortest paths
+      ## from @math{s} to @math{t}.  Computed with Brandes' algorithm
+      ## using unweighted (BFS) shortest paths; stored edge weights
+      ## and parallel edges are ignored by the default call.
       ## @end table
       ##
       ## The undirected @code{"degree"} type is not defined for a
@@ -3958,9 +3966,9 @@ classdef digraph
                type);
       endif
 
-      ## Future stories (US-CT03 betweenness, US-CT04 pagerank,
-      ## US-CT05 eigenvector, US-CT06 hits, US-CT07
-      ## Cost/Importance weights) will extend this switch.
+      ## Future stories (US-CT04 pagerank, US-CT05 eigenvector,
+      ## US-CT06 hits, US-CT07 Cost/Importance weights) will extend
+      ## this switch.
       switch (lower (type))
         case "indegree"
           c = G.indegree ();
@@ -3975,8 +3983,9 @@ classdef digraph
           c = __centrality_closeness__ (G, "out");
         case "incloseness"
           c = __centrality_closeness__ (G, "in");
-        case {"betweenness", "pagerank", "eigenvector", ...
-              "hubs", "authorities"}
+        case "betweenness"
+          c = __centrality_betweenness__ (G);
+        case {"pagerank", "eigenvector", "hubs", "authorities"}
           error ("Octave:invalid-input-arg", ...
                  "centrality: TYPE '%s' is not yet implemented", type);
         otherwise

@@ -2683,6 +2683,14 @@ classdef graph
       ## to the sum so disconnected nodes receive a centrality of
       ## zero.  Stored edge weights are used when @var{G} is
       ## weighted (BFS is used otherwise).
+      ## @item "betweenness"
+      ## Betweenness centrality, the number of unordered pair
+      ## shortest paths passing through each node:
+      ## @math{c(v) = sum_{s < t, v != s, v != t} sigma_{s, t}(v) / sigma_{s, t}}
+      ## where @math{sigma_{s, t}} is the number of shortest paths
+      ## from @math{s} to @math{t}.  Computed with Brandes' algorithm
+      ## using unweighted (BFS) shortest paths; stored edge weights
+      ## and parallel edges are ignored by the default call.
       ## @end table
       ##
       ## The directed-only types @code{"indegree"},
@@ -2714,9 +2722,8 @@ classdef graph
                type);
       endif
 
-      ## Future stories (US-CT03 betweenness, US-CT04 pagerank,
-      ## US-CT05 eigenvector, US-CT07 Cost/Importance weights) will
-      ## extend this switch.
+      ## Future stories (US-CT04 pagerank, US-CT05 eigenvector,
+      ## US-CT07 Cost/Importance weights) will extend this switch.
       switch (lower (type))
         case "degree"
           c = G.degree ();
@@ -2726,7 +2733,9 @@ classdef graph
                   "digraph; use 'degree' for an undirected graph"], type);
         case "closeness"
           c = __centrality_closeness__ (G, "out");
-        case {"betweenness", "pagerank", "eigenvector"}
+        case "betweenness"
+          c = __centrality_betweenness__ (G);
+        case {"pagerank", "eigenvector"}
           error ("Octave:invalid-input-arg", ...
                  "centrality: TYPE '%s' is not yet implemented", type);
         case {"incloseness", "outcloseness", "hubs", "authorities"}

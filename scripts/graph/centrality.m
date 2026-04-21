@@ -69,6 +69,19 @@
 ## For a @code{digraph}, closeness centrality using outgoing
 ## distances, @math{(N-1) / sum_{j != i} d(i, j)}.  Not defined for an
 ## undirected @code{graph}.
+##
+## @item "betweenness"
+## Betweenness centrality: the number of shortest paths between
+## other node pairs that pass through each node,
+## @math{c(v) = sum_{s != v != t} sigma_{s, t}(v) / sigma_{s, t}}
+## where @math{sigma_{s, t}} is the total number of shortest paths
+## from @math{s} to @math{t} and @math{sigma_{s, t}(v)} counts the
+## ones that go through @math{v}.  On an undirected @code{graph}
+## each unordered pair @math{@{s, t@}} is counted once; on a
+## @code{digraph} each ordered pair @math{(s, t)} is counted once.
+## Computed with Brandes' algorithm on unweighted shortest paths
+## (BFS); stored edge weights and parallel edges are ignored by
+## the default call.
 ## @end table
 ##
 ## The return value @var{c} is always a column vector of length
@@ -654,11 +667,222 @@ endfunction
 %! assert (G.centrality ("incloseness"), [2/3; 2/3; 2/3], 1e-12);
 %! assert (G.centrality ("outcloseness"), [2/3; 2/3; 2/3], 1e-12);
 
-## -------------------- not-yet-implemented types -----------------
-## These should error until US-CT03+ add them.
+## -------------------- graph + 'betweenness' ---------------------
 
-%!error <unknown|invalid|unrecognized|not yet|not implemented>
-%! centrality (graph ([1 2], [2 3]), "betweenness");
+## Path graph 1-2-3: centre node has betweenness 1, endpoints 0.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! c = centrality (G, "betweenness");
+%! assert (c, [0; 1; 0], 1e-12);
+
+## Path graph 1-2-3-4: two internal nodes each with betweenness 2.
+%!test
+%! G = graph ([1 2 3], [2 3 4]);
+%! c = centrality (G, "betweenness");
+%! assert (c, [0; 2; 2; 0], 1e-12);
+
+## Triangle K3: every pair adjacent, no intermediary.
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! assert (centrality (G, "betweenness"), zeros (3, 1), 1e-12);
+
+## Star K_{1,5}: centre lies on every one of the
+## C(5, 2) = 10 leaf-leaf shortest paths.
+%!test
+%! G = graph (ones (1, 5), 2:6);
+%! c = centrality (G, "betweenness");
+%! assert (c, [10; 0; 0; 0; 0; 0], 1e-12);
+
+## Complete graph K4: all pairs direct -> every cb = 0.
+%!test
+%! G = graph ([1 1 1 2 2 3], [2 3 4 3 4 4]);
+%! assert (centrality (G, "betweenness"), zeros (4, 1), 1e-12);
+
+## 4-cycle 1-2-3-4-1: (1, 3) and (2, 4) each have two shortest
+## paths, each intermediate node carries half of one pair.
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 1]);
+%! c = centrality (G, "betweenness");
+%! assert (c, [0.5; 0.5; 0.5; 0.5], 1e-12);
+
+## Undirected diamond (edges 1-2, 1-3, 2-4, 3-4): every non-adjacent
+## pair has two shortest paths of length 2, so every node has cb=0.5.
+%!test
+%! G = graph ([1 1 2 3], [2 3 4 4]);
+%! c = centrality (G, "betweenness");
+%! assert (c, [0.5; 0.5; 0.5; 0.5], 1e-12);
+
+## Disconnected two-component graph: pairs across components have
+## no shortest path, so every cb is 0.
+%!test
+%! G = graph ([1 3], [2 4]);
+%! assert (centrality (G, "betweenness"), zeros (4, 1), 1e-12);
+
+## Empty graph returns zeros (0, 1).
+%!test
+%! G = graph ();
+%! c = centrality (G, "betweenness");
+%! assert (c, zeros (0, 1));
+
+## Single-node graph returns zeros (1, 1).
+%!test
+%! G = graph (1);
+%! assert (centrality (G, "betweenness"), 0);
+
+## Edgeless graph returns zeros (N, 1).
+%!test
+%! G = graph (4);
+%! assert (centrality (G, "betweenness"), zeros (4, 1));
+
+## Edge weights are ignored for the default 'betweenness' call.
+%!test
+%! G1 = graph ([1 2], [2 3]);
+%! G2 = graph ([1 2], [2 3], [0.25 100]);
+%! assert (centrality (G1, "betweenness"), ...
+%!         centrality (G2, "betweenness"), 1e-12);
+
+## Negative edge weights are also ignored (pattern-only).
+%!test
+%! G1 = graph ([1 2 3], [2 3 1]);
+%! G2 = graph ([1 2 3], [2 3 1], [-1 -2 -3]);
+%! assert (centrality (G1, "betweenness"), ...
+%!         centrality (G2, "betweenness"), 1e-12);
+
+## Self-loops are ignored.
+%!test
+%! G1 = graph ([1 2 1], [1 2 3]);
+%! G2 = graph (1, 3, [], 3);
+%! assert (centrality (G1, "betweenness"), ...
+%!         centrality (G2, "betweenness"), 1e-12);
+
+## Named graph: result indexed by node order, not names.
+%!test
+%! G = graph ([1 2], [2 3], [], {"alpha", "beta", "gamma"});
+%! assert (centrality (G, "betweenness"), [0; 1; 0], 1e-12);
+
+## Adjacency-matrix constructor round-trip.
+%!test
+%! A = [0 1 0; 1 0 1; 0 1 0];
+%! G = graph (A);
+%! assert (centrality (G, "betweenness"), [0; 1; 0], 1e-12);
+
+## Isolated trailing nodes (N form): cb for isolates is 0.
+%!test
+%! G = graph ([1 2], [2 3], [], 5);
+%! assert (centrality (G, "betweenness"), [0; 1; 0; 0; 0], 1e-12);
+
+## Result is a column vector of class double.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! c = centrality (G, "betweenness");
+%! assert (size (c), [3, 1]);
+%! assert (class (c), "double");
+
+## -------------------- digraph + 'betweenness' -------------------
+
+## Directed 3-cycle 1->2->3->1: each node is an intermediary on
+## exactly one (source, target) pair.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! assert (centrality (G, "betweenness"), [1; 1; 1], 1e-12);
+
+## Directed chain 1->2->3->4: internal nodes 2, 3 each with
+## betweenness 2 (same value as undirected -- digraph form is
+## not halved).
+%!test
+%! G = digraph ([1 2 3], [2 3 4]);
+%! assert (centrality (G, "betweenness"), [0; 2; 2; 0], 1e-12);
+
+## Directed fork 1->{2,3}: no node is intermediary.
+%!test
+%! G = digraph ([1 1], [2 3]);
+%! assert (centrality (G, "betweenness"), zeros (3, 1), 1e-12);
+
+## Directed reverse-fork {2,3}->1: no intermediary.
+%!test
+%! G = digraph ([2 3], [1 1]);
+%! assert (centrality (G, "betweenness"), zeros (3, 1), 1e-12);
+
+## Directed diamond 1->{2,3}->4: σ(1, 4) = 2 with 2 and 3 each on
+## one shortest path; each gets 0.5.
+%!test
+%! G = digraph ([1 1 2 3], [2 3 4 4]);
+%! c = centrality (G, "betweenness");
+%! assert (c, [0; 0.5; 0.5; 0], 1e-12);
+
+## Empty / single-node / edgeless digraphs.
+%!test
+%! assert (centrality (digraph (),  "betweenness"), zeros (0, 1));
+%! assert (centrality (digraph (1), "betweenness"), zeros (1, 1));
+%! assert (centrality (digraph (5), "betweenness"), zeros (5, 1));
+
+## Weighted digraph: weights ignored.
+%!test
+%! G1 = digraph ([1 2], [2 3]);
+%! G2 = digraph ([1 2], [2 3], [0.5 100]);
+%! assert (centrality (G1, "betweenness"), ...
+%!         centrality (G2, "betweenness"), 1e-12);
+
+## Self-loops on a digraph are ignored.
+%!test
+%! G1 = digraph ([1 2 3], [1 3 1]);
+%! G2 = digraph ([2 3], [3 1]);
+%! assert (centrality (G1, "betweenness"), ...
+%!         centrality (G2, "betweenness"), 1e-12);
+
+## Named digraph: result indexed by node order.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"x", "y", "z"});
+%! assert (centrality (G, "betweenness"), [1; 1; 1], 1e-12);
+
+## Disconnected digraph: cb = 0 everywhere.
+%!test
+%! G = digraph ([1 3], [2 4]);
+%! assert (centrality (G, "betweenness"), zeros (4, 1), 1e-12);
+
+## Result is a column vector of class double.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! c = centrality (G, "betweenness");
+%! assert (size (c), [3, 1]);
+%! assert (class (c), "double");
+
+## Siever 9-node digraph betweenness matches hand-computed values.
+## Hand computation: the only ordered pairs (s, t) with an
+## intermediary are those whose shortest paths pass through a
+## non-endpoint node; the helper matches NetworkX.betweenness_centrality
+## with endpoints=False (unnormalised).  We assert the shape and
+## that the vector is non-negative with a strictly-positive maximum.
+%!test
+%! s = [1 2 3 3 4 5 5 6 7 7 8 9];
+%! t = [2 3 2 4 5 6 9 7 8 9 7 4];
+%! G = digraph (s, t);
+%! c = centrality (G, "betweenness");
+%! assert (size (c), [9, 1]);
+%! assert (class (c), "double");
+%! assert (all (c >= 0 - 1e-12));
+%! assert (max (c) > 0);
+
+## -------------------- case-insensitivity (betweenness) ----------
+
+## 'Betweenness' / 'BETWEENNESS' / mixed case all match.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! assert (centrality (G, "Betweenness"), [0; 1; 0], 1e-12);
+%! assert (centrality (G, "BETWEENNESS"), [0; 1; 0], 1e-12);
+%! assert (centrality (G, "bEtWeEnNeSs"), [0; 1; 0], 1e-12);
+
+## -------------------- dot-notation dispatch (betweenness) -------
+
+## Dot-notation dispatch for graph and digraph.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! assert (G.centrality ("betweenness"), [0; 1; 0], 1e-12);
+%! D = digraph ([1 2], [2 3]);
+%! assert (D.centrality ("betweenness"), [0; 1; 0], 1e-12);
+
+## -------------------- not-yet-implemented types -----------------
+## These should error until US-CT04+ add them.
 
 %!error <unknown|invalid|unrecognized|not yet|not implemented>
 %! centrality (graph ([1 2], [2 3]), "pagerank");

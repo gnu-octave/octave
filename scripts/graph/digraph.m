@@ -3570,6 +3570,47 @@ classdef digraph
 
     endfunction
 
+    function [P, d, edgepaths] = allpaths (G, s, t, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{P} =} allpaths (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {[@var{P}, @var{d}] =} allpaths (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {[@var{P}, @var{d}, @var{edgepaths}] =} allpaths (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {[@dots{}] =} allpaths (@dots{}, @var{name}, @var{value})
+      ## Return all simple paths from node @var{s} to node @var{t} in
+      ## the digraph @var{G}.
+      ##
+      ## A simple path is a path that does not visit any node more
+      ## than once.  Self-loops are ignored.  The returns @var{P},
+      ## @var{d}, and @var{edgepaths} are all column cell / column
+      ## numeric arrays; each path is a row vector.
+      ##
+      ## Optional Name-Value pairs @qcode{"MaxPathLength"} and
+      ## @qcode{"MinPathLength"} restrict the total weight of
+      ## returned paths.  For unweighted digraphs each edge weight is
+      ## @code{1}, so these bounds act on the number of edges on the
+      ## path.
+      ##
+      ## For a multigraph, each parallel edge produces a distinct
+      ## path in the output (identical node sequence, distinct entry
+      ## in @var{edgepaths}).
+      ## @seealso{digraph, shortestpath, shortestpathtree, allcycles}
+      ## @end deftypefn
+
+      if (nargin < 3)
+        print_usage ();
+      endif
+
+      [s_idx, s_by_name] = __resolve_single_node__ (G, s, "allpaths");
+      [t_idx, t_by_name] = __resolve_single_node__ (G, t, "allpaths");
+
+      return_names = s_by_name || t_by_name;
+
+      [P, d, edgepaths] = __allpaths_impl__ (G, s_idx, t_idx, ...
+                                             return_names, varargin{:});
+
+    endfunction
+
     function disp (G)
 
       ## -*- texinfo -*-

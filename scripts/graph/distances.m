@@ -1049,3 +1049,110 @@ endfunction
 %! d1 = distances (G, 1, "Method", "mixed");
 %! d2 = G.distances (1, "Method", "mixed");
 %! assert (d1, d2);
+
+## -------------------- US-P09 Johnson's all-pairs ----------------
+## When 'Method' is "mixed" and no @var{src} argument is supplied,
+## the digraph @code{distances} method dispatches to Johnson's
+## algorithm (@code{__distances_johnson__}) internally.  Johnson's
+## yields the same result as running Bellman-Ford from every source
+## but is asymptotically faster for sparse graphs.
+
+## Johnson's path: small digraph with one negative edge.  Result must
+## match a direct Bellman-Ford call from every source.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+%! D_mixed = distances (G, "Method", "mixed");
+%! D_bf = __distances_bellman_ford__ (adjacency (G, "weighted"));
+%! assert (D_mixed, D_bf);
+
+## Johnson's path: negative-weight DAG.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [-2 -3 -10]);
+%! D_mixed = distances (G, "Method", "mixed");
+%! D_bf = __distances_bellman_ford__ (adjacency (G, "weighted"));
+%! assert (D_mixed, D_bf);
+
+## Johnson's path: CLRS Figure 24.4 reference.  Row 1 is the
+## textbook expected shortest-path distances [0, 2, 7, 4, -2].
+%!test
+%! s = [1 1 2 2 2 3 3 4 5 5];
+%! t = [2 3 3 4 5 4 5 2 1 4];
+%! w = [6 7 8 5 -4 -3 9 -2 2 7];
+%! G = digraph (s, t, w);
+%! D = distances (G, "Method", "mixed");
+%! assert (D(1, :), [0, 2, 7, 4, -2]);
+
+## Johnson's path matches Bellman-Ford on CLRS Figure 24.4.
+%!test
+%! s = [1 1 2 2 2 3 3 4 5 5];
+%! t = [2 3 3 4 5 4 5 2 1 4];
+%! w = [6 7 8 5 -4 -3 9 -2 2 7];
+%! G = digraph (s, t, w);
+%! D_j = distances (G, "Method", "mixed");
+%! D_bf = __distances_bellman_ford__ (adjacency (G, "weighted"));
+%! assert (D_j, D_bf);
+
+## Johnson's path agrees with Dijkstra on a nonneg-weighted digraph.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15]);
+%! D_mixed = distances (G, "Method", "mixed");
+%! D_pos = distances (G, "Method", "positive");
+%! assert (D_mixed, D_pos);
+
+## Johnson's path errors on a negative cycle (3-cycle summing to -8).
+%!error <negative cycle>
+%! G = digraph ([1 2 3], [2 3 1], [1 1 -10]);
+%! distances (G, "Method", "mixed");
+
+## Johnson's path errors on a negative self-loop.
+%!error <negative cycle>
+%! G = digraph ([1 1], [1 2], [-1, 3]);
+%! distances (G, "Method", "mixed");
+
+## Johnson's path on an empty digraph is the 0-by-0 double.
+%!test
+%! G = digraph ();
+%! D = distances (G, "Method", "mixed");
+%! assert (size (D), [0, 0]);
+%! assert (isa (D, "double"));
+
+## Johnson's path on a single-node digraph returns 0.
+%!test
+%! G = digraph (1);
+%! D = distances (G, "Method", "mixed");
+%! assert (D, 0);
+
+## Johnson's path preserves Inf on disjoint components.
+%!test
+%! G = digraph ([1 3], [2 4], [-1 -1]);
+%! D = distances (G, "Method", "mixed");
+%! assert (D(1, 2), -1);
+%! assert (D(3, 4), -1);
+%! assert (isinf (D(1, 3)));
+%! assert (isinf (D(3, 1)));
+%! assert (diag (D), zeros (4, 1));
+
+## Johnson's path produces zeros on the diagonal even with
+## self-loops of positive weight.
+%!test
+%! G = digraph ([1 1 2], [1 2 3], [7 1 -1]);
+%! D = distances (G, "Method", "mixed");
+%! assert (diag (D), zeros (3, 1));
+
+## When 'auto' is used on a digraph with negative weights (which
+## promotes to 'mixed'), the all-pairs result must equal the
+## Johnson's output explicitly selected via 'mixed'.
+%!test
+%! G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+%! D_auto = distances (G);
+%! D_mixed = distances (G, "Method", "mixed");
+%! assert (D_auto, D_mixed);
+
+## Johnson's path on a multigraph collapses parallel edges to min
+## weight first (so parallel 10 and -3 edges collapse to -3).
+%!test
+%! G = digraph ([1 1 2], [2 2 3], [10 -3 -1], "multigraph");
+%! D = distances (G, "Method", "mixed");
+%! assert (D(1, 2), -3);
+%! assert (D(1, 3), -4);     ## 1->2 (-3) + 2->3 (-1) = -4
+%! assert (D(2, 3), -1);

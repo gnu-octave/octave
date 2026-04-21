@@ -3314,10 +3314,15 @@ classdef digraph
             D_src = __distances_dijkstra__ (W);
           endif
         case "mixed"
+          ## For all-pairs, Johnson's algorithm is asymptotically
+          ## faster than running Bellman-Ford from every source
+          ## (@math{O (V^2 \log V + V E)} vs @math{O (V^2 E)}).
+          ## When only a subset of sources is requested we keep the
+          ## direct per-source Bellman-Ford path.
           if (have_src)
             D_src = __distances_bellman_ford__ (W, src_idx);
           else
-            D_src = __distances_bellman_ford__ (W);
+            D_src = __distances_johnson__ (W);
           endif
         case "acyclic"
           if (! isdag (G))

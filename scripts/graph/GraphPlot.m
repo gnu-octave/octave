@@ -1949,6 +1949,8 @@ endclassdef
 %!test
 %! G = digraph ([1 2 3 4], [2 3 4 1]);
 %! hf = figure ("visible", "off");
+%! old_path = path ();
+%! addpath (fullfile (fileparts (which ("GraphPlot")), "private"));
 %! unwind_protect
 %!   h = GraphPlot (G, "Layout", "force3");
 %!   [Xh, Yh, Zh] = __graph_plot_force3__ (G);
@@ -1957,6 +1959,7 @@ endclassdef
 %!   assert (h.ZData, Zh);
 %! unwind_protect_cleanup
 %!   close (hf);
+%!   path (old_path);
 %! end_unwind_protect
 
 ## force3 is deterministic and independent of caller RNG state.
@@ -2070,6 +2073,8 @@ endclassdef
 %!test
 %! G = digraph ([1 2 3], [2 3 4]);
 %! hf = figure ("visible", "off");
+%! old_path = path ();
+%! addpath (fullfile (fileparts (which ("GraphPlot")), "private"));
 %! unwind_protect
 %!   h = GraphPlot (G, "Layout", "layered");
 %!   [Xh, Yh] = __graph_plot_layered__ (G);
@@ -2077,6 +2082,7 @@ endclassdef
 %!   assert (h.YData, Yh);
 %! unwind_protect_cleanup
 %!   close (hf);
+%!   path (old_path);
 %! end_unwind_protect
 
 ## 'Direction' passes through to the layered helper.
@@ -2256,6 +2262,8 @@ endclassdef
 %!test
 %! G = graph ([1 2 3 4], [2 3 4 1]);
 %! hf = figure ("visible", "off");
+%! old_path = path ();
+%! addpath (fullfile (fileparts (which ("GraphPlot")), "private"));
 %! unwind_protect
 %!   h = GraphPlot (G, "Layout", "subspace");
 %!   [Xh, Yh] = __graph_plot_subspace__ (G);
@@ -2263,6 +2271,7 @@ endclassdef
 %!   assert (h.YData, Yh);
 %! unwind_protect_cleanup
 %!   close (hf);
+%!   path (old_path);
 %! end_unwind_protect
 
 ## Subspace layout is deterministic across repeat calls (no RNG used).
@@ -2284,6 +2293,8 @@ endclassdef
 %!test
 %! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
 %! hf = figure ("visible", "off");
+%! old_path = path ();
+%! addpath (fullfile (fileparts (which ("GraphPlot")), "private"));
 %! unwind_protect
 %!   h = GraphPlot (G, "Layout", "subspace", "Dimension", 3);
 %!   [Xh, Yh] = __graph_plot_subspace__ (G, 3);
@@ -2291,6 +2302,7 @@ endclassdef
 %!   assert (h.YData, Yh);
 %! unwind_protect_cleanup
 %!   close (hf);
+%!   path (old_path);
 %! end_unwind_protect
 
 ## 'Layout','subspace' name is case-insensitive.
@@ -2327,6 +2339,8 @@ endclassdef
 %!test
 %! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
 %! hf = figure ("visible", "off");
+%! old_path = path ();
+%! addpath (fullfile (fileparts (which ("GraphPlot")), "private"));
 %! unwind_protect
 %!   h = GraphPlot (G, "Layout", "subspace3");
 %!   [Xh, Yh, Zh] = __graph_plot_subspace3__ (G);
@@ -2335,6 +2349,7 @@ endclassdef
 %!   assert (h.ZData, Zh);
 %! unwind_protect_cleanup
 %!   close (hf);
+%!   path (old_path);
 %! end_unwind_protect
 
 ## 'Layout','subspace3' name is case-insensitive.
@@ -2355,6 +2370,8 @@ endclassdef
 %!test
 %! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
 %! hf = figure ("visible", "off");
+%! old_path = path ();
+%! addpath (fullfile (fileparts (which ("GraphPlot")), "private"));
 %! unwind_protect
 %!   h = GraphPlot (G, "Layout", "subspace3", "Dimension", 4);
 %!   [Xh, Yh, Zh] = __graph_plot_subspace3__ (G, 4);
@@ -2363,6 +2380,7 @@ endclassdef
 %!   assert (h.ZData, Zh);
 %! unwind_protect_cleanup
 %!   close (hf);
+%!   path (old_path);
 %! end_unwind_protect
 
 ## Bad Dimension value surfaces as helper error.

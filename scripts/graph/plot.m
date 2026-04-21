@@ -819,6 +819,8 @@ endfunction
 %!test
 %! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
 %! hf = figure ("visible", "off");
+%! old_path = path ();
+%! addpath (fullfile (fileparts (which ("GraphPlot")), "private"));
 %! unwind_protect
 %!   h = plot (G, "Layout", "subspace", "Dimension", 3);
 %!   [Xh, Yh] = __graph_plot_subspace__ (G, 3);
@@ -826,12 +828,15 @@ endfunction
 %!   assert (h.YData, Yh);
 %! unwind_protect_cleanup
 %!   close (hf);
+%!   path (old_path);
 %! end_unwind_protect
 
 ## 'Dimension' option reaches the subspace3 helper.
 %!test
 %! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
 %! hf = figure ("visible", "off");
+%! old_path = path ();
+%! addpath (fullfile (fileparts (which ("GraphPlot")), "private"));
 %! unwind_protect
 %!   h = plot (G, "Layout", "subspace3", "Dimension", 4);
 %!   [Xh, Yh, Zh] = __graph_plot_subspace3__ (G, 4);
@@ -840,6 +845,7 @@ endfunction
 %!   assert (h.ZData, Zh);
 %! unwind_protect_cleanup
 %!   close (hf);
+%!   path (old_path);
 %! end_unwind_protect
 
 ## Layout names 'subspace' / 'subspace3' are case-insensitive via plot().

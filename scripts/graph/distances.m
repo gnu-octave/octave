@@ -1060,17 +1060,29 @@ endfunction
 ## Johnson's path: small digraph with one negative edge.  Result must
 ## match a direct Bellman-Ford call from every source.
 %!test
-%! G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
-%! D_mixed = distances (G, "Method", "mixed");
-%! D_bf = __distances_bellman_ford__ (adjacency (G, "weighted"));
-%! assert (D_mixed, D_bf);
+%! old_path = path ();
+%! addpath (fullfile (fileparts (which ("digraph")), "private"));
+%! unwind_protect
+%!   G = digraph ([1 2 1], [2 3 3], [5 -3 10]);
+%!   D_mixed = distances (G, "Method", "mixed");
+%!   D_bf = __distances_bellman_ford__ (adjacency (G, "weighted"));
+%!   assert (D_mixed, D_bf);
+%! unwind_protect_cleanup
+%!   path (old_path);
+%! end_unwind_protect
 
 ## Johnson's path: negative-weight DAG.
 %!test
-%! G = digraph ([1 2 1], [2 3 3], [-2 -3 -10]);
-%! D_mixed = distances (G, "Method", "mixed");
-%! D_bf = __distances_bellman_ford__ (adjacency (G, "weighted"));
-%! assert (D_mixed, D_bf);
+%! old_path = path ();
+%! addpath (fullfile (fileparts (which ("digraph")), "private"));
+%! unwind_protect
+%!   G = digraph ([1 2 1], [2 3 3], [-2 -3 -10]);
+%!   D_mixed = distances (G, "Method", "mixed");
+%!   D_bf = __distances_bellman_ford__ (adjacency (G, "weighted"));
+%!   assert (D_mixed, D_bf);
+%! unwind_protect_cleanup
+%!   path (old_path);
+%! end_unwind_protect
 
 ## Johnson's path: CLRS Figure 24.4 reference.  Row 1 is the
 ## textbook expected shortest-path distances [0, 2, 7, 4, -2].
@@ -1084,13 +1096,19 @@ endfunction
 
 ## Johnson's path matches Bellman-Ford on CLRS Figure 24.4.
 %!test
-%! s = [1 1 2 2 2 3 3 4 5 5];
-%! t = [2 3 3 4 5 4 5 2 1 4];
-%! w = [6 7 8 5 -4 -3 9 -2 2 7];
-%! G = digraph (s, t, w);
-%! D_j = distances (G, "Method", "mixed");
-%! D_bf = __distances_bellman_ford__ (adjacency (G, "weighted"));
-%! assert (D_j, D_bf);
+%! old_path = path ();
+%! addpath (fullfile (fileparts (which ("digraph")), "private"));
+%! unwind_protect
+%!   s = [1 1 2 2 2 3 3 4 5 5];
+%!   t = [2 3 3 4 5 4 5 2 1 4];
+%!   w = [6 7 8 5 -4 -3 9 -2 2 7];
+%!   G = digraph (s, t, w);
+%!   D_j = distances (G, "Method", "mixed");
+%!   D_bf = __distances_bellman_ford__ (adjacency (G, "weighted"));
+%!   assert (D_j, D_bf);
+%! unwind_protect_cleanup
+%!   path (old_path);
+%! end_unwind_protect
 
 ## Johnson's path agrees with Dijkstra on a nonneg-weighted digraph.
 %!test

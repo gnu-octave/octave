@@ -16,6 +16,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/__centrality_eigenvector__.m \
   %reldir%/private/__centrality_hits__.m \
   %reldir%/private/__centrality_pagerank__.m \
+  %reldir%/private/__combine_labels__.m \
   %reldir%/private/__conncomp_parse_opts__.m \
   %reldir%/private/__conncomp_strong__.m \
   %reldir%/private/__conncomp_weak__.m \
@@ -30,6 +31,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/__edgecount_impl__.m \
   %reldir%/private/__findedge_impl__.m \
   %reldir%/private/__findnode_impl__.m \
+  %reldir%/private/__isomorphism_parse_opts__.m \
   %reldir%/private/__isomorphism_vf2__.m \
   %reldir%/private/__matlab_ref__.m \
   %reldir%/private/__maxflow_edmonds_karp__.m \

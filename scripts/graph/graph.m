@@ -2830,10 +2830,11 @@ classdef graph
 
     endfunction
 
-    function P = isomorphism (G1, G2)
+    function P = isomorphism (G1, G2, varargin)
 
       ## -*- texinfo -*-
-      ## @deftypefn {} {@var{P} =} isomorphism (@var{G1}, @var{G2})
+      ## @deftypefn  {} {@var{P} =} isomorphism (@var{G1}, @var{G2})
+      ## @deftypefnx {} {@var{P} =} isomorphism (@var{G1}, @var{G2}, @var{name}, @var{value}, @dots{})
       ## Return an isomorphism between the undirected graphs @var{G1}
       ## and @var{G2} as a permutation column vector @var{P} such that
       ## @code{reordernodes (@var{G2}, @var{P})} has the same
@@ -2842,16 +2843,34 @@ classdef graph
       ##
       ## Both arguments must be @code{graph} objects; calling this
       ## method with a mix of @code{graph} and @code{digraph} inputs
-      ## raises an error.  Node names and edge weights are ignored;
-      ## only the undirected adjacency structure (including edge
-      ## multiplicities for a multigraph and self-loops) is used.
-      ## The underlying search uses the VF2 algorithm.
+      ## raises an error.  By default, node names and edge weights
+      ## are ignored; only the undirected adjacency structure
+      ## (including edge multiplicities for a multigraph and
+      ## self-loops) is used.  The underlying search uses the VF2
+      ## algorithm.
+      ##
+      ## The following name-value pairs customise the search:
+      ## @table @asis
+      ## @item @qcode{"NodeVariables"}
+      ## A character string or cellstr of node-table variable names.
+      ## A candidate mapping is accepted only when every listed
+      ## @code{@var{G1}.Nodes.@var{var}(i)} equals
+      ## @code{@var{G2}.Nodes.@var{var}(P(i))}.  Each variable must be
+      ## present in both @code{Nodes} tables and have one row per
+      ## node.
+      ## @item @qcode{"EdgeVariables"}
+      ## A character string or cellstr of edge-table variable names.
+      ## A candidate mapping is accepted only when every listed
+      ## edge-table column agrees on corresponding edges under the
+      ## mapping.  Not supported for multigraph inputs (raises an
+      ## error).
+      ## @end table
       ## @seealso{graph, isisomorphic, reordernodes}
       ## @end deftypefn
 
-      if (nargin != 2)
+      if (nargin < 2)
         error ("Octave:invalid-fun-call", ...
-               "Invalid call to isomorphism: expected 2 arguments");
+               "Invalid call to isomorphism: expected at least 2 arguments");
       endif
 
       if (! isa (G2, "graph"))
@@ -2860,9 +2879,13 @@ classdef graph
                 "G1 is a graph but G2 is not"]);
       endif
 
+      [nc1, nc2, ec1, ec2] = ...
+        __isomorphism_parse_opts__ (G1, G2, false, varargin);
+
       A1 = adjacency (G1);
       A2 = adjacency (G2);
-      [perm, found] = __isomorphism_vf2__ (A1, A2, false);
+      [perm, found] = ...
+        __isomorphism_vf2__ (A1, A2, false, nc1, nc2, ec1, ec2);
       if (! found)
         P = [];
         return;

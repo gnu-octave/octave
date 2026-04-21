@@ -24,7 +24,9 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {[@var{perm}, @var{found}] =} __isomorphism_vf2__ (@var{A1}, @var{A2}, @var{directed})
+## @deftypefn  {} {[@var{perm}, @var{found}] =} __isomorphism_vf2__ (@var{A1}, @var{A2}, @var{directed})
+## @deftypefnx {} {[@var{perm}, @var{found}] =} __isomorphism_vf2__ (@var{A1}, @var{A2}, @var{directed}, @var{nc1}, @var{nc2})
+## @deftypefnx {} {[@var{perm}, @var{found}] =} __isomorphism_vf2__ (@var{A1}, @var{A2}, @var{directed}, @var{nc1}, @var{nc2}, @var{ec1}, @var{ec2})
 ## Private helper implementing the VF2 (Cordella, Foggia, Sansone,
 ## Vento, 2004) graph isomorphism search.
 ##
@@ -37,6 +39,20 @@
 ##
 ## @var{directed} is a logical flag selecting the directed or
 ## undirected VF2 variant.
+##
+## @var{nc1} and @var{nc2} (optional, pass @code{[]} to disable) are
+## N-by-1 integer vectors of per-node colors.  When supplied, the
+## search prunes any candidate pair @math{(n_1, n_2)} with
+## @code{@var{nc1}(n_1) != @var{nc2}(n_2)} and rejects early if
+## @code{sort (@var{nc1}) != sort (@var{nc2})}.
+##
+## @var{ec1} and @var{ec2} (optional, pass @code{[]} to disable) are
+## N-by-N numeric matrices of per-edge colors (0 where no edge, a
+## positive color elsewhere).  When supplied, the feasibility test
+## additionally requires that, for every already-mapped pair
+## @math{(x_1 \to x_2)}, @code{@var{ec1}(n_1, x_1) ==
+## @var{ec2}(n_2, x_2)} (and, for directed graphs, the transpose
+## entry too), plus matching self-loop colors at the candidate pair.
 ##
 ## The output @var{perm} is a column vector of length @math{N} such
 ## that @code{A2 == A1(perm, perm)}.  That is, @code{perm(i)} is the
@@ -60,6 +76,10 @@
 ## @item Quick rejects before the search: node count, total edge
 ## count, sorted row and column sums, and the multiset of diagonal
 ## entries must all match.
+## @item (Optional) Node-color equality and sorted-color-multiset
+## quick reject when @var{nc1}/@var{nc2} are supplied.
+## @item (Optional) Edge-color consistency with the mapped
+## neighbourhood when @var{ec1}/@var{ec2} are supplied.
 ## @end itemize
 ##
 ## This helper is used internally by @code{isisomorphic} and
@@ -70,11 +90,14 @@
 ## @seealso{isisomorphic, isomorphism}
 ## @end deftypefn
 
-function [perm, found] = __isomorphism_vf2__ (A1, A2, directed)
+function [perm, found] = __isomorphism_vf2__ (A1, A2, directed, ...
+                                              nc1 = [], nc2 = [], ...
+                                              ec1 = [], ec2 = [])
 
-  if (nargin != 3)
+  if (nargin != 3 && nargin != 5 && nargin != 7)
     error ("Octave:invalid-fun-call", ...
-           "__isomorphism_vf2__: expected 3 arguments (A1, A2, directed)");
+           ["__isomorphism_vf2__: expected 3, 5, or 7 arguments ", ...
+            "(A1, A2, directed [, nc1, nc2 [, ec1, ec2]])"]);
   endif
 
   perm = [];
@@ -132,12 +155,52 @@ function [perm, found] = __isomorphism_vf2__ (A1, A2, directed)
     endif
   endif
 
+  ## Optional node-color quick reject.
+  use_nc = ! isempty (nc1) && ! isempty (nc2);
+  if (use_nc)
+    nc1 = nc1(:);
+    nc2 = nc2(:);
+    if (numel (nc1) != N || numel (nc2) != N)
+      error ("Octave:invalid-input-arg", ...
+             "__isomorphism_vf2__: nc1, nc2 must be N-by-1 or empty");
+    endif
+    if (! isequal (sort (nc1), sort (nc2)))
+      return;
+    endif
+  endif
+
+  ## Optional edge-color quick reject.
+  use_ec = ! isempty (ec1) && ! isempty (ec2);
+  if (use_ec)
+    if (size (ec1, 1) != N || size (ec1, 2) != N ...
+        || size (ec2, 1) != N || size (ec2, 2) != N)
+      error ("Octave:invalid-input-arg", ...
+             "__isomorphism_vf2__: ec1, ec2 must be N-by-N or empty");
+    endif
+    ## Multiset of non-zero edge colors must match across the two
+    ## graphs, otherwise no edge-color-preserving mapping can exist.
+    c1_all = full (ec1(:));
+    c2_all = full (ec2(:));
+    c1_nz = sort (c1_all(c1_all != 0));
+    c2_nz = sort (c2_all(c2_all != 0));
+    if (! isequal (c1_nz, c2_nz))
+      return;
+    endif
+  endif
+
   ## Convert to dense arrays for fast elementwise work during the
   ## recursive search.  VF2 is memory-light (O(N^2) bytes for each
   ## matrix) so this is safe for the graph sizes where VF2 is the
   ## right algorithm in the first place.
   B1 = full (A1);
   B2 = full (A2);
+  if (use_ec)
+    EC1 = full (ec1);
+    EC2 = full (ec2);
+  else
+    EC1 = [];
+    EC2 = [];
+  endif
 
   ## Precompute row/column sums used as per-node degree fingerprints
   ## during candidate pruning.  For undirected graphs, column sum ==
@@ -157,8 +220,14 @@ function [perm, found] = __isomorphism_vf2__ (A1, A2, directed)
   f12 = zeros (N, 1);
   f21 = zeros (N, 1);
 
+  if (! use_nc)
+    nc1 = [];
+    nc2 = [];
+  endif
+
   [perm, found] = ...
-    vf2_search (B1, B2, directed, r1v, r2v, c1v, c2v, f12, f21, N, 0);
+    vf2_search (B1, B2, directed, r1v, r2v, c1v, c2v, ...
+                nc1, nc2, EC1, EC2, f12, f21, N, 0);
 
 endfunction
 
@@ -167,7 +236,8 @@ endfunction
 ## otherwise.  All state is passed explicitly so that recursion does
 ## not require closures.
 function [perm, found] = vf2_search (B1, B2, directed, r1v, r2v, ...
-                                     c1v, c2v, f12, f21, N, depth)
+                                     c1v, c2v, nc1, nc2, EC1, EC2, ...
+                                     f12, f21, N, depth)
 
   if (depth == N)
     ## Full mapping: return the permutation that reorders nodes of
@@ -223,13 +293,13 @@ function [perm, found] = vf2_search (B1, B2, directed, r1v, r2v, ...
   n2 = T2(1);
   for k = 1 : numel (T1)
     n1 = T1(k);
-    if (feasible (B1, B2, directed, r1v, r2v, c1v, c2v, f12, f21, ...
-                  n1, n2))
+    if (feasible (B1, B2, directed, r1v, r2v, c1v, c2v, ...
+                  nc1, nc2, EC1, EC2, f12, f21, n1, n2))
       f12(n1) = n2;
       f21(n2) = n1;
       [perm, found] = ...
         vf2_search (B1, B2, directed, r1v, r2v, c1v, c2v, ...
-                    f12, f21, N, depth + 1);
+                    nc1, nc2, EC1, EC2, f12, f21, N, depth + 1);
       if (found)
         return;
       endif
@@ -248,7 +318,15 @@ endfunction
 ## partial mapping.  Returns true iff adding (n1 -> n2) keeps the
 ## mapping a valid partial isomorphism.
 function tf = feasible (B1, B2, directed, r1v, r2v, c1v, c2v, ...
-                        f12, f21, n1, n2)
+                        nc1, nc2, EC1, EC2, f12, f21, n1, n2)
+
+  ## Node-color pruning (optional).
+  if (! isempty (nc1))
+    if (nc1(n1) != nc2(n2))
+      tf = false;
+      return;
+    endif
+  endif
 
   ## Degree fingerprint must match.  For directed: both in- and
   ## out-degree.  For undirected: single degree (r1v == c1v).
@@ -265,6 +343,14 @@ function tf = feasible (B1, B2, directed, r1v, r2v, c1v, c2v, ...
   if (B1(n1, n1) != B2(n2, n2))
     tf = false;
     return;
+  endif
+
+  ## Self-loop color parity (optional).
+  if (! isempty (EC1))
+    if (EC1(n1, n1) != EC2(n2, n2))
+      tf = false;
+      return;
+    endif
   endif
 
   ## Consistency with the already-mapped neighbourhood.  For each
@@ -288,10 +374,26 @@ function tf = feasible (B1, B2, directed, r1v, r2v, c1v, c2v, ...
       tf = false;
       return;
     endif
+    if (! isempty (EC1))
+      if (any (EC1(n1, mapped1)(:) != EC2(n2, mapped2)(:)))
+        tf = false;
+        return;
+      endif
+      if (any (EC1(mapped1, n1)(:) != EC2(mapped2, n2)(:)))
+        tf = false;
+        return;
+      endif
+    endif
   else
     if (any (B1(n1, mapped1)(:) != B2(n2, mapped2)(:)))
       tf = false;
       return;
+    endif
+    if (! isempty (EC1))
+      if (any (EC1(n1, mapped1)(:) != EC2(n2, mapped2)(:)))
+        tf = false;
+        return;
+      endif
     endif
   endif
 
@@ -419,6 +521,73 @@ endfunction
 ## Wrong argument count.
 %!error __isomorphism_vf2__ ()
 %!error __isomorphism_vf2__ (sparse (0, 0), sparse (0, 0))
+
+## Node colors: matching colors on a directed 3-cycle -> isomorphic.
+%!test
+%! A = sparse ([1 2 3], [2 3 1], 1, 3, 3);
+%! nc = [1; 2; 3];
+%! [p, f] = __isomorphism_vf2__ (A, A, true, nc, nc);
+%! assert (f, true);
+%! assert (p, (1:3).');
+
+## Node colors: different color multisets -> not isomorphic.
+%!test
+%! A = sparse ([1 2 3], [2 3 1], 1, 3, 3);
+%! nc1 = [1; 1; 2];
+%! nc2 = [1; 2; 2];
+%! [p, f] = __isomorphism_vf2__ (A, A, true, nc1, nc2);
+%! assert (f, false);
+
+## Node colors: permuted colors on a 3-cycle force a specific map.
+%!test
+%! A1 = sparse ([1 2 3], [2 3 1], 1, 3, 3);
+%! A2 = A1;
+%! nc1 = [1; 2; 3];
+%! nc2 = [3; 1; 2];   # cyclic shift of nc1
+%! [p, f] = __isomorphism_vf2__ (A1, A2, true, nc1, nc2);
+%! assert (f, true);
+%! assert (nc1(p), nc2);
+%! assert (isequal (A2, A1(p, p)));
+
+## Edge colors: matching colors on a directed 3-cycle -> isomorphic.
+%!test
+%! A = sparse ([1 2 3], [2 3 1], 1, 3, 3);
+%! EC = sparse ([1 2 3], [2 3 1], [10 20 30], 3, 3);
+%! [p, f] = __isomorphism_vf2__ (A, A, true, [], [], EC, EC);
+%! assert (f, true);
+
+## Edge colors: different color multisets -> not isomorphic.
+%!test
+%! A = sparse ([1 2 3], [2 3 1], 1, 3, 3);
+%! EC1 = sparse ([1 2 3], [2 3 1], [10 20 30], 3, 3);
+%! EC2 = sparse ([1 2 3], [2 3 1], [10 20 40], 3, 3);
+%! [p, f] = __isomorphism_vf2__ (A, A, true, [], [], EC1, EC2);
+%! assert (f, false);
+
+## Combined node and edge colors (undirected triangle).
+%!test
+%! s = [1 2 3]; t = [2 3 1];
+%! A = sparse ([s t], [t s], 1, 3, 3);
+%! EC = sparse ([s t], [t s], [10 20 30 10 20 30], 3, 3);
+%! nc = [1; 2; 3];
+%! [p, f] = __isomorphism_vf2__ (A, A, false, nc, nc, EC, EC);
+%! assert (f, true);
+%! assert (p, (1:3).');
+
+## nc size mismatch -> error.
+%!error <N-by-1> ...
+%! A = sparse ([1 2 3], [2 3 1], 1, 3, 3);
+%! __isomorphism_vf2__ (A, A, true, [1; 2], [1; 2; 3]);
+
+## ec size mismatch -> error.
+%!error <N-by-N> ...
+%! A = sparse ([1 2 3], [2 3 1], 1, 3, 3);
+%! __isomorphism_vf2__ (A, A, true, [], [], sparse (2, 2), sparse (3, 3));
+
+## 6-argument call rejected (must be 3, 5, or 7).
+%!error <arguments> ...
+%! A = sparse ([1 2 3], [2 3 1], 1, 3, 3);
+%! __isomorphism_vf2__ (A, A, true, [], [], sparse (3, 3));
 
 ## Non-square A1.
 %!error <square> ...

@@ -24,7 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{P} =} isomorphism (@var{G1}, @var{G2})
+## @deftypefn  {} {@var{P} =} isomorphism (@var{G1}, @var{G2})
+## @deftypefnx {} {@var{P} =} isomorphism (@var{G1}, @var{G2}, @var{name}, @var{value}, @dots{})
 ## Return an isomorphism between the graphs @var{G1} and @var{G2}, if
 ## one exists.
 ##
@@ -48,6 +49,19 @@
 ## degree-based quick reject when possible and otherwise by the VF2
 ## feasibility-pruned search.
 ##
+## Optional trailing name-value pairs restrict the search:
+## @table @asis
+## @item @qcode{"NodeVariables"}
+## A cellstr of node-table variable names.  A candidate mapping is
+## accepted only when the listed variables agree at every mapped
+## pair of nodes.
+## @item @qcode{"EdgeVariables"}
+## A cellstr of edge-table variable names.  A candidate mapping is
+## accepted only when the listed variables agree at every
+## corresponding pair of edges.  Multigraph inputs are not supported
+## with this option.
+## @end table
+##
 ## @example
 ## @group
 ## G1 = digraph ([1 2 3], [2 3 1]);            # directed 3-cycle
@@ -66,7 +80,7 @@
 ## @seealso{graph, digraph, isisomorphic, reordernodes}
 ## @end deftypefn
 
-function P = isomorphism (G1, G2)
+function P = isomorphism (G1, G2, varargin)
 
   ## NOTE: When called with a graph or digraph object, Octave's classdef
   ## method dispatch runs the class-internal @code{isomorphism} method
@@ -75,7 +89,7 @@ function P = isomorphism (G1, G2)
   ## works outside the context of an instance) and as a fallback that
   ## gives a helpful error for non-graph inputs.
 
-  if (nargin != 2)
+  if (nargin < 2)
     print_usage ();
   endif
 
@@ -92,7 +106,7 @@ function P = isomorphism (G1, G2)
   ## Defensive delegation: classdef method dispatch should intercept any
   ## call with a graph/digraph first arg, but route through dot notation
   ## in case a future subclassing edge case skips the free function.
-  P = G1.isomorphism (G2);
+  P = G1.isomorphism (G2, varargin{:});
 
 endfunction
 
@@ -360,3 +374,213 @@ endfunction
 ## Wrong number of arguments -> print_usage error.
 %!error isomorphism (digraph ())
 %!error isomorphism ()
+
+
+## ---------------- US-IS03: NodeVariables / EdgeVariables ---------
+
+## NodeVariables='Name': structural identity + matching names -> identity P.
+%!test
+%! G1 = digraph ([1 2 3], [2 3 1], [], {"a", "b", "c"});
+%! G2 = digraph ([1 2 3], [2 3 1], [], {"a", "b", "c"});
+%! P = isomorphism (G1, G2, "NodeVariables", "Name");
+%! assert (P, (1:3).');
+
+## NodeVariables='Name': same structure, different names -> [].
+%!test
+%! G1 = digraph ([1 2 3], [2 3 1], [], {"a", "b", "c"});
+%! G2 = digraph ([1 2 3], [2 3 1], [], {"x", "y", "z"});
+%! P = isomorphism (G1, G2, "NodeVariables", "Name");
+%! assert (isequal (P, []));
+
+## NodeVariables='Name': rotationally relabelled cycle -> P aligns names.
+%!test
+%! G1 = digraph ([1 2 3], [2 3 1], [], {"a", "b", "c"});
+%! G2 = reordernodes (G1, [3 1 2]);
+%! assert (G2.Nodes.Name, {"c"; "a"; "b"});
+%! P = isomorphism (G1, G2, "NodeVariables", "Name");
+%! assert (! isempty (P));
+%! assert (full (adjacency (G2)(P, P)), full (adjacency (G1)));
+%! assert (G2.Nodes.Name(P), G1.Nodes.Name);
+
+## NodeVariables = cell form, single-entry.
+%!test
+%! G1 = digraph ([1 2 3], [2 3 1], [], {"a", "b", "c"});
+%! G2 = digraph ([1 2 3], [2 3 1], [], {"a", "b", "c"});
+%! P = isomorphism (G1, G2, "NodeVariables", {"Name"});
+%! assert (P, (1:3).');
+
+## NodeVariables = empty cell -> equivalent to unrestricted call.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"a", "b", "c"});
+%! P = isomorphism (G, G, "NodeVariables", {});
+%! assert (size (P), [3, 1]);
+%! assert (full (adjacency (G)(P, P)), full (adjacency (G)));
+
+## NodeVariables on non-Name attribute (Group) with matching tuples.
+%!test
+%! ET.EndNodes = [1 2; 2 3; 3 1];
+%! NT1.Group = [1; 2; 1];
+%! G1 = digraph (ET, NT1);
+%! ## Cyclic shift: G1 Group [1;2;1]; shift-by-2 yields [2;1;1] = NT2.
+%! NT2.Group = [2; 1; 1];
+%! G2 = digraph (ET, NT2);
+%! P = isomorphism (G1, G2, "NodeVariables", "Group");
+%! assert (! isempty (P));
+%! assert (G2.Nodes.Group(P), G1.Nodes.Group);
+%! assert (full (adjacency (G2)(P, P)), full (adjacency (G1)));
+
+## Multiple NodeVariables (Name + Group) with consistent tuples.
+%!test
+%! ET.EndNodes = [1 2; 2 3; 3 1];
+%! NT1.Name = {"a"; "b"; "c"};
+%! NT1.Group = [1; 2; 1];
+%! G1 = digraph (ET, NT1);
+%! G2 = digraph (ET, NT1);
+%! P = isomorphism (G1, G2, "NodeVariables", {"Name", "Group"});
+%! assert (P, (1:3).');
+
+## Multiple NodeVariables with inconsistent (Name, Group) tuples -> [].
+%!test
+%! ET.EndNodes = [1 2; 2 3; 3 1];
+%! NT1.Name = {"a"; "b"; "c"};
+%! NT1.Group = [1; 2; 1];
+%! G1 = digraph (ET, NT1);
+%! NT2.Name = {"a"; "b"; "c"};
+%! NT2.Group = [2; 1; 2];   # Name=>a,b,c but Group swapped
+%! G2 = digraph (ET, NT2);
+%! P = isomorphism (G1, G2, "NodeVariables", {"Name", "Group"});
+%! assert (isequal (P, []));
+
+## NodeVariables='Name' for undirected graph.
+%!test
+%! G1 = graph ([1 2 3], [2 3 1], [], {"a", "b", "c"});
+%! G2 = reordernodes (G1, [2 3 1]);
+%! P = isomorphism (G1, G2, "NodeVariables", "Name");
+%! assert (! isempty (P));
+%! assert (G2.Nodes.Name(P), G1.Nodes.Name);
+%! assert (full (adjacency (G2)(P, P)), full (adjacency (G1)));
+
+## Structure mismatch + NodeVariables -> [].
+%!test
+%! G1 = digraph ([1 2 3], [2 3 1], [], {"a", "b", "c"});
+%! G2 = digraph ([1 2 3], [2 3 4], [], {"a", "b", "c", "d"});
+%! P = isomorphism (G1, G2, "NodeVariables", "Name");
+%! assert (isequal (P, []));
+
+## EdgeVariables='Weight': structural identity + matching weights -> identity.
+%!test
+%! G1 = digraph ([1 2 3], [2 3 1], [10 20 30]);
+%! G2 = digraph ([1 2 3], [2 3 1], [10 20 30]);
+%! P = isomorphism (G1, G2, "EdgeVariables", "Weight");
+%! assert (P, (1:3).');
+
+## EdgeVariables='Weight': same structure, different weights -> [].
+%!test
+%! G1 = digraph ([1 2 3], [2 3 1], [10 20 30]);
+%! G2 = digraph ([1 2 3], [2 3 1], [10 20 40]);
+%! P = isomorphism (G1, G2, "EdgeVariables", "Weight");
+%! assert (isequal (P, []));
+
+## EdgeVariables='Weight': cyclic shift must align weights.
+%!test
+%! G1 = digraph ([1 2 3], [2 3 1], [10 20 30]);
+%! G2 = reordernodes (G1, [3 1 2]);
+%! P = isomorphism (G1, G2, "EdgeVariables", "Weight");
+%! assert (! isempty (P));
+%! A1w = full (adjacency (G1, "weighted"));
+%! A2w = full (adjacency (G2, "weighted"));
+%! assert (A2w(P, P), A1w);
+
+## EdgeVariables as cellstr column (Label).
+%!test
+%! ET.EndNodes = [1 2; 2 3; 3 1];
+%! ET.Label = {"alpha"; "beta"; "gamma"};
+%! G1 = digraph (ET);
+%! G2 = digraph (ET);
+%! P = isomorphism (G1, G2, "EdgeVariables", "Label");
+%! assert (P, (1:3).');
+
+## EdgeVariables = empty cell -> no constraint.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [10 20 30]);
+%! P = isomorphism (G, G, "EdgeVariables", {});
+%! assert (size (P), [3, 1]);
+%! assert (full (adjacency (G)(P, P)), full (adjacency (G)));
+
+## Undirected graph EdgeVariables='Weight'.
+%!test
+%! G1 = graph ([1 2 3], [2 3 1], [10 20 30]);
+%! G2 = reordernodes (G1, [3 1 2]);
+%! P = isomorphism (G1, G2, "EdgeVariables", "Weight");
+%! assert (! isempty (P));
+%! assert (full (adjacency (G2, "weighted")(P, P)), ...
+%!         full (adjacency (G1, "weighted")));
+
+## Combined NodeVariables + EdgeVariables.
+%!test
+%! ET.EndNodes = [1 2; 2 3; 3 1];
+%! ET.Weight = [10; 20; 30];
+%! NT.Name = {"a"; "b"; "c"};
+%! G1 = digraph (ET, NT);
+%! G2 = digraph (ET, NT);
+%! P = isomorphism (G1, G2, "NodeVariables", "Name", ...
+%!                  "EdgeVariables", "Weight");
+%! assert (P, (1:3).');
+
+## EdgeVariables on a multigraph -> error.
+%!error <multigraph>
+%! s = [1 1 2];
+%! t = [2 2 3];
+%! G1 = digraph (s, t, [1 2 3], "multigraph");
+%! G2 = digraph (s, t, [1 2 3], "multigraph");
+%! isomorphism (G1, G2, "EdgeVariables", "Weight");
+
+## Unknown NodeVariables name -> error.
+%!error <NodeVariables>
+%! G = digraph ([1 2 3], [2 3 1]);
+%! isomorphism (G, G, "NodeVariables", "NotAColumn");
+
+## Unknown EdgeVariables name -> error.
+%!error <EdgeVariables>
+%! G = digraph ([1 2 3], [2 3 1], [10 20 30]);
+%! isomorphism (G, G, "EdgeVariables", "NotAColumn");
+
+## NodeVariables must be char / cellstr.
+%!error <NodeVariables>
+%! G = digraph ([1 2 3], [2 3 1]);
+%! isomorphism (G, G, "NodeVariables", 42);
+
+## EdgeVariables must be char / cellstr.
+%!error <EdgeVariables>
+%! G = digraph ([1 2 3], [2 3 1]);
+%! isomorphism (G, G, "EdgeVariables", 42);
+
+## Unknown name-value option -> error.
+%!error <unknown option>
+%! G = digraph ([1 2 3], [2 3 1]);
+%! isomorphism (G, G, "NotAnOption", "foo");
+
+## Odd number of name-value args (missing value) -> error.
+%!error <name-value>
+%! G = digraph ([1 2 3], [2 3 1]);
+%! isomorphism (G, G, "NodeVariables");
+
+## Dot-notation dispatch preserves options.
+%!test
+%! G1 = digraph ([1 2 3], [2 3 1], [], {"a", "b", "c"});
+%! G2 = digraph ([1 2 3], [2 3 1], [], {"a", "b", "c"});
+%! P = G1.isomorphism (G2, "NodeVariables", "Name");
+%! assert (P, (1:3).');
+
+## Graph dot-notation dispatch with EdgeVariables.
+%!test
+%! G1 = graph ([1 2 3], [2 3 1], [10 20 30]);
+%! G2 = graph ([1 2 3], [2 3 1], [10 20 30]);
+%! P = G1.isomorphism (G2, "EdgeVariables", "Weight");
+%! assert (P, (1:3).');
+
+## NodeVariables='Name' when G1 has no Name column (unnamed) -> error.
+%!error <Name>
+%! G1 = digraph ([1 2 3], [2 3 1]);
+%! G2 = digraph ([1 2 3], [2 3 1], [], {"a", "b", "c"});
+%! isomorphism (G1, G2, "NodeVariables", "Name");

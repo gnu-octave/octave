@@ -26,40 +26,57 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} highlight (@var{h}, @var{nodes})
 ## @deftypefnx {} {} highlight (@var{h}, @var{nodes}, @var{name}, @var{value}, @dots{})
-## Highlight the specified nodes of a @code{GraphPlot}.
+## @deftypefnx {} {} highlight (@var{h}, @var{s}, @var{t})
+## @deftypefnx {} {} highlight (@var{h}, @var{s}, @var{t}, @var{name}, @var{value}, @dots{})
+## Highlight the specified nodes or edges of a @code{GraphPlot}.
 ##
 ## @var{h} is a @code{GraphPlot} handle, typically the return value of
 ## @code{plot (@var{G})} for a @code{graph} or @code{digraph} @var{G}.
 ##
-## @var{nodes} is a numeric vector of node indices, a single node name
-## (character row vector), a cell array of node names, or an empty array
-## (silent no-op).  By default the selected nodes' color is set to red
-## (@code{[1 0 0]}).
+## In the node form, @var{nodes} is a numeric vector of node indices, a
+## single node name (character row vector), a cell array of node names,
+## or an empty array (silent no-op).  By default the selected nodes'
+## color is set to red (@code{[1 0 0]}).
+##
+## In the edge form, @var{s} and @var{t} are equal-length vectors of
+## node indices, cell arrays of node names, or single character-row
+## vectors.  The edge matching each @code{(@var{s}(i),@var{t}(i))} pair
+## is highlighted.  For undirected graphs, @code{(@var{s}, @var{t})} and
+## @code{(@var{t}, @var{s})} refer to the same edge.  By default the
+## selected edges' color is set to red.
 ##
 ## Trailing @var{name}/@var{value} pairs override the default.
 ## Recognised options (case-insensitive):
 ##
 ## @table @code
 ## @item NodeColor
-## RGB triplet in @code{[0, 1]} or a MATLAB color name.
+## RGB triplet in @code{[0, 1]} or a MATLAB color name.  Node form.
 ## @item Marker
 ## Marker character such as @qcode{"o"}, @qcode{"s"}, @qcode{"d"},
-## @qcode{"^"}, etc.
+## @qcode{"^"}, etc.  Node form.
 ## @item MarkerSize
-## Positive real scalar.
+## Positive real scalar.  Node form.
+## @item EdgeColor
+## RGB triplet in @code{[0, 1]} or a MATLAB color name.  Edge form.
+## @item LineWidth
+## Positive real scalar.  Edge form.
+## @item LineStyle
+## One of @qcode{"-"}, @qcode{"--"}, @qcode{":"}, @qcode{"-."},
+## @qcode{"none"}.  Edge form.
 ## @end table
 ##
 ## @code{highlight} expands the corresponding scalar properties to
-## per-node form as needed (@code{NodeColor} becomes an @code{Nx3}
-## matrix, @code{Marker} becomes an @code{Nx1} cellstr,
-## @code{MarkerSize} becomes an @code{Nx1} vector).  Nodes not in
-## @var{nodes} retain their current cosmetic values.
+## per-node or per-edge form as needed (@code{NodeColor} becomes
+## @code{Nx3}, @code{EdgeColor} becomes @code{Mx3}, @code{Marker} or
+## @code{LineStyle} becomes a cellstr, etc.).  Nodes or edges not in
+## the selection retain their current cosmetic values.
 ##
 ## @example
 ## @group
 ## G = digraph ([1 2 3], [2 3 1]);
 ## h = plot (G);
 ## highlight (h, [1 3], "NodeColor", "g", "MarkerSize", 10);
+## highlight (h, [1 2], [2 3], "EdgeColor", "r", "LineWidth", 2);
 ## @end group
 ## @end example
 ##

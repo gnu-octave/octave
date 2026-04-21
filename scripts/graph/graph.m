@@ -201,7 +201,7 @@ classdef graph
   ## @end group
   ## @end example
   ##
-  ## @seealso{digraph, numnodes, numedges, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian}
+  ## @seealso{digraph, numnodes, numedges, ismultigraph, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian}
   ## @end deftypefn
 
   properties (Access = private)
@@ -811,6 +811,26 @@ classdef graph
       ## @end deftypefn
 
       m = nnz (tril (G.adj_));
+
+    endfunction
+
+    function tf = ismultigraph (G)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{tf} =} ismultigraph (@var{G})
+      ## Return @code{false} for an undirected @code{graph} object.
+      ##
+      ## The undirected @code{graph} class in this Octave build does not
+      ## accept a @qcode{'multigraph'} constructor flag and therefore
+      ## cannot store parallel edges, so @code{ismultigraph} always
+      ## returns @code{false}.  The method is provided for parity with
+      ## @code{digraph.ismultigraph} so that generic code which works on
+      ## either class can call @code{ismultigraph (@var{G})} without a
+      ## type check.
+      ## @seealso{graph, numedges, numnodes}
+      ## @end deftypefn
+
+      tf = false;
 
     endfunction
 

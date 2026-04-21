@@ -93,7 +93,7 @@
 ## @seealso{graph, digraph, dfsearch, successors, predecessors, neighbors}
 ## @end deftypefn
 
-function v = bfsearch (G, s, events)
+function v = bfsearch (G, s, events, varargin)
 
   ## NOTE: When called with a graph or digraph object, Octave's classdef
   ## method dispatch runs the class-internal @code{bfsearch} method and
@@ -102,7 +102,7 @@ function v = bfsearch (G, s, events)
   ## outside the context of an instance) and as a fallback that gives a
   ## helpful error for non-graph inputs.
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 
@@ -117,7 +117,7 @@ function v = bfsearch (G, s, events)
   if (nargin == 2)
     v = G.bfsearch (s);
   else
-    v = G.bfsearch (s, events);
+    v = G.bfsearch (s, events, varargin{:});
   endif
 
 endfunction
@@ -646,7 +646,175 @@ endfunction
 %!error <events must be|character|cell array of strings> ...
 %!   bfsearch (digraph ([1 2], [2 3]), 1, struct ())
 
-## Error: 4+ arguments fails (classdef dispatch rejects too many inputs
-## before reaching the nargin check).
-%!error <too many inputs|Invalid call> ...
+## Error: 4 arguments with a trailing non-Name-Value token fails because a
+## Name-Value parser needs pairs; the unrecognized leading name triggers
+## an "unknown option" error.
+%!error <unknown option|Name-Value|unknown name> ...
 %!   bfsearch (digraph ([1 2], [2 3]), 1, "discovernode", "extra")
+
+## ------------------------------------------------------------------
+## US-T04: 'Restart' and 'EdgeColors' Name-Value options
+## ------------------------------------------------------------------
+
+## 'Restart', false is explicit default and matches the no-option result.
+%!test
+%! G = digraph ([1 4], [2 5]);
+%! T1 = bfsearch (G, 1, "allevents");
+%! T2 = bfsearch (G, 1, "allevents", "Restart", false);
+%! assert (T1, T2);
+
+## 'Restart', true continues across disconnected digraph components.
+## Digraph: 1->2 and 4->5; node 3 isolated.  N=5.
+## Starting from 1: reach {1,2}.  Restart from smallest undiscovered node in
+## ascending index order -> 3 (singleton), then 4 (reaches 5).
+%!test
+%! G = digraph ([1 4], [2 5]);
+%! T = bfsearch (G, 1, "allevents", "Restart", true);
+%! nodes_seen = unique (T.Node(T.Node > 0));
+%! assert (nodes_seen, [1; 2; 3; 4; 5]);
+
+## 'Restart', true with single-char 'discovernode' returns all nodes in
+## discovery order (first component, then restart components).
+%!test
+%! G = digraph ([1 4], [2 5]);
+%! v = bfsearch (G, 1, "discovernode", "Restart", true);
+%! assert (iscolumn (v));
+%! assert (sort (v), [1; 2; 3; 4; 5]);
+%! assert (v(1), 1);
+%! assert (v(2), 2);
+%! ## Third discovered should be node 3 (isolated), then 4, then 5.
+%! assert (v(3:5), [3; 4; 5]);
+
+## 'Restart', true fires one 'startnode' event per restart.
+%!test
+%! G = digraph ([1 4], [2 5]);
+%! T = bfsearch (G, 1, "allevents", "Restart", true);
+%! starts = T.Node(strcmp (T.Event, "startnode"));
+%! ## Three components reachable: starts at 1, 3, 4.
+%! assert (starts, [1; 3; 4]);
+
+## 'Restart', true emits edges only within each component (no cross).
+%!test
+%! G = digraph ([1 4], [2 5]);
+%! E = bfsearch (G, 1, "edgetonew", "Restart", true);
+%! assert (sort (E, 1), [1 2; 4 5]);
+
+## Restart on undirected graph: full node cover.
+%!test
+%! G = graph ([1 4], [2 5]);  # components {1,2}, {3}, {4,5}
+%! v = bfsearch (G, 1, "discovernode", "Restart", true);
+%! assert (sort (v), [1; 2; 3; 4; 5]);
+
+## 'EdgeColors', true adds EdgeColor field to struct output.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! T = bfsearch (G, 1, "allevents", "EdgeColors", true);
+%! assert (isstruct (T));
+%! assert (isfield (T, "EdgeColor"));
+%! assert (iscell (T.EdgeColor));
+%! assert (size (T.EdgeColor, 2), 1);
+%! assert (numel (T.EdgeColor), numel (T.Event));
+
+## 'EdgeColors': node events get empty-string tags.
+%!test
+%! G = digraph (1);
+%! T = bfsearch (G, 1, "allevents", "EdgeColors", true);
+%! assert (all (cellfun (@isempty, T.EdgeColor)));
+
+## 'EdgeColors': tree edges tagged 'tree' on a 3-cycle.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! T = bfsearch (G, 1, "allevents", "EdgeColors", true);
+%! tree_idx = strcmp (T.Event, "edgetonew");
+%! tree_tags = T.EdgeColor(tree_idx);
+%! assert (tree_tags, {"tree"; "tree"});
+
+## 'EdgeColors': BFS back edge / discovered edge tagged 'cross'.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! T = bfsearch (G, 1, "allevents", "EdgeColors", true);
+%! idx_fin = strcmp (T.Event, "edgetofinished");
+%! assert (T.EdgeColor(idx_fin), {"cross"});
+
+## 'EdgeColors' on triangle 1->{2,3}, 2->3: edgetodiscovered tagged 'cross'.
+%!test
+%! G = digraph ([1 1 2], [2 3 3]);
+%! T = bfsearch (G, 1, "allevents", "EdgeColors", true);
+%! idx_disc = strcmp (T.Event, "edgetodiscovered");
+%! assert (T.EdgeColor(idx_disc), {"cross"});
+
+## Both options combined.
+%!test
+%! G = digraph ([1 4], [2 5]);
+%! T = bfsearch (G, 1, "allevents", "Restart", true, "EdgeColors", true);
+%! assert (isfield (T, "EdgeColor"));
+%! nodes_seen = unique (T.Node(T.Node > 0));
+%! assert (nodes_seen, [1; 2; 3; 4; 5]);
+
+## Both options in reverse order (EdgeColors first).
+%!test
+%! G = digraph ([1 4], [2 5]);
+%! T = bfsearch (G, 1, "allevents", "EdgeColors", true, "Restart", true);
+%! assert (isfield (T, "EdgeColor"));
+
+## 'EdgeColors', true with cellstr events (struct output).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! T = bfsearch (G, 1, {"edgetonew", "edgetofinished"}, "EdgeColors", true);
+%! assert (isfield (T, "EdgeColor"));
+
+## 'EdgeColors', true with cellstr selecting only node events: EdgeColor is
+## still a cellstr column with empty entries for each node event.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! T = bfsearch (G, 1, {"discovernode"}, "EdgeColors", true);
+%! assert (isfield (T, "EdgeColor"));
+%! assert (all (cellfun (@isempty, T.EdgeColor)));
+
+## Dot-notation dispatch accepts Name-Value pairs on digraph.
+%!test
+%! G = digraph ([1 4], [2 5]);
+%! v = G.bfsearch (1, "discovernode", "Restart", true);
+%! assert (sort (v), [1; 2; 3; 4; 5]);
+
+## Dot-notation dispatch accepts Name-Value pairs on graph.
+%!test
+%! G = graph ([1 4], [2 5]);
+%! v = G.bfsearch (1, "discovernode", "Restart", true);
+%! assert (sort (v), [1; 2; 3; 4; 5]);
+
+## 'Restart' is case-insensitive on the name.
+%!test
+%! G = digraph ([1 4], [2 5]);
+%! v = bfsearch (G, 1, "discovernode", "restart", true);
+%! assert (sort (v), [1; 2; 3; 4; 5]);
+
+## 'EdgeColors' is case-insensitive on the name.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! T = bfsearch (G, 1, "allevents", "edgecolors", true);
+%! assert (isfield (T, "EdgeColor"));
+
+## Error: EdgeColors=true on single-char *node* event is rejected.
+%!error <EdgeColors requires|allevents|cell array> ...
+%!   bfsearch (digraph ([1 2], [2 3]), 1, "discovernode", "EdgeColors", true)
+
+## Error: unknown Name.
+%!error <unknown option|unknown name> ...
+%!   bfsearch (digraph ([1 2], [2 3]), 1, "allevents", "Bogus", true)
+
+## Error: odd Name-Value arg count (missing value).
+%!error <Name-Value|missing value|requires> ...
+%!   bfsearch (digraph ([1 2], [2 3]), 1, "allevents", "Restart")
+
+## Error: Restart value must be scalar logical.
+%!error <Restart.*logical|Restart.*scalar|logical scalar> ...
+%!   bfsearch (digraph ([1 2], [2 3]), 1, "allevents", "Restart", "yes")
+
+## Error: EdgeColors value must be scalar logical.
+%!error <EdgeColors.*logical|EdgeColors.*scalar|logical scalar> ...
+%!   bfsearch (digraph ([1 2], [2 3]), 1, "allevents", "EdgeColors", "yes")
+
+## Error: Name must be a char row vector.
+%!error <Name|option name> ...
+%!   bfsearch (digraph ([1 2], [2 3]), 1, "allevents", 7, true)

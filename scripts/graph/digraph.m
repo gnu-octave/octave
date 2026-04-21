@@ -2425,12 +2425,14 @@ classdef digraph
 
     endfunction
 
-    function v = bfsearch (G, s, events)
+    function v = bfsearch (G, s, events, varargin)
 
       ## -*- texinfo -*-
       ## @deftypefn  {} {@var{v} =} bfsearch (@var{G}, @var{s})
       ## @deftypefnx {} {@var{v} =} bfsearch (@var{G}, @var{s}, @var{event})
       ## @deftypefnx {} {@var{T} =} bfsearch (@var{G}, @var{s}, @var{events})
+      ## @deftypefnx {} {@var{T} =} bfsearch (@dots{}, @qcode{"Restart"}, @var{tf})
+      ## @deftypefnx {} {@var{T} =} bfsearch (@dots{}, @qcode{"EdgeColors"}, @var{tf})
       ## Perform a breadth-first search of the digraph @var{G} starting
       ## at node @var{s} and return nodes (or edges, or a full event
       ## log) in BFS order.  Out-edges are followed (source ->
@@ -2458,12 +2460,32 @@ classdef digraph
       ## @code{Node} (double column of node indices, @code{0} for
       ## edge-only events), and @code{Edge} (@math{m}-by-2 double matrix
       ## of edge endpoints, @code{[0 0]} for node-only events).
+      ##
+      ## Additional trailing Name-Value options (case-insensitive names):
+      ##
+      ## @itemize
+      ## @item
+      ## @qcode{"Restart"} (logical scalar, default @code{false}).  When
+      ## @code{true}, BFS continues from the smallest-indexed undiscovered
+      ## node after the initial component from @var{s} is exhausted, and
+      ## repeats until every node has been visited.  Each restart fires
+      ## an additional @qcode{"startnode"} event.
+      ## @item
+      ## @qcode{"EdgeColors"} (logical scalar, default @code{false}).
+      ## When @code{true} and the output is a struct, add a cellstr
+      ## column @code{EdgeColor} aligned with @code{Event}.  Edge events
+      ## are tagged @qcode{"tree"} (for @code{edgetonew}) or
+      ## @qcode{"cross"} (for @code{edgetodiscovered} and
+      ## @code{edgetofinished}); node events get @qcode{""}.  Requires
+      ## the @var{events} argument to be @qcode{"allevents"} or a cell
+      ## array of event names.
+      ## @end itemize
       ## @seealso{digraph, dfsearch, successors, predecessors}
       ## @end deftypefn
 
-      if (nargin < 2 || nargin > 3)
+      if (nargin < 2)
         error ("Octave:invalid-fun-call", ...
-               "Invalid call to bfsearch: expected 2 or 3 arguments");
+               "Invalid call to bfsearch: expected at least 2 arguments");
       endif
 
       [src, ~] = __resolve_single_node__ (G, s, "bfsearch");
@@ -2477,17 +2499,20 @@ classdef digraph
       if (nargin == 2)
         v = __bfsearch_impl__ (A, src);
       else
-        v = __bfsearch_events_impl__ (A, src, events);
+        opts = __bfsdfs_parse_opts__ ("bfsearch", varargin);
+        v = __bfsearch_events_impl__ (A, src, events, opts);
       endif
 
     endfunction
 
-    function v = dfsearch (G, s, events)
+    function v = dfsearch (G, s, events, varargin)
 
       ## -*- texinfo -*-
       ## @deftypefn  {} {@var{v} =} dfsearch (@var{G}, @var{s})
       ## @deftypefnx {} {@var{v} =} dfsearch (@var{G}, @var{s}, @var{event})
       ## @deftypefnx {} {@var{T} =} dfsearch (@var{G}, @var{s}, @var{events})
+      ## @deftypefnx {} {@var{T} =} dfsearch (@dots{}, @qcode{"Restart"}, @var{tf})
+      ## @deftypefnx {} {@var{T} =} dfsearch (@dots{}, @qcode{"EdgeColors"}, @var{tf})
       ## Perform a depth-first search of the digraph @var{G} starting
       ## at node @var{s} and return nodes (or edges, or a full event
       ## log) in DFS order.  Out-edges are followed (source ->
@@ -2520,12 +2545,33 @@ classdef digraph
       ## (target on the DFS stack), while @qcode{"edgetofinished"}
       ## marks a @emph{cross} or @emph{forward edge} (target already
       ## finished).
+      ##
+      ## Additional trailing Name-Value options (case-insensitive names):
+      ##
+      ## @itemize
+      ## @item
+      ## @qcode{"Restart"} (logical scalar, default @code{false}).  When
+      ## @code{true}, DFS continues from the smallest-indexed undiscovered
+      ## node after the initial component from @var{s} is exhausted, and
+      ## repeats until every node has been visited.  Each restart fires
+      ## an additional @qcode{"startnode"} event.
+      ## @item
+      ## @qcode{"EdgeColors"} (logical scalar, default @code{false}).
+      ## When @code{true} and the output is a struct, add a cellstr
+      ## column @code{EdgeColor} aligned with @code{Event}.  Edge events
+      ## are tagged @qcode{"tree"} (@code{edgetonew}), @qcode{"back"}
+      ## (@code{edgetodiscovered}), @qcode{"forward"}
+      ## (@code{edgetofinished} to a descendant), or @qcode{"cross"}
+      ## (@code{edgetofinished} otherwise); node events get @qcode{""}.
+      ## Requires the @var{events} argument to be @qcode{"allevents"} or
+      ## a cell array of event names.
+      ## @end itemize
       ## @seealso{digraph, bfsearch, successors, predecessors}
       ## @end deftypefn
 
-      if (nargin < 2 || nargin > 3)
+      if (nargin < 2)
         error ("Octave:invalid-fun-call", ...
-               "Invalid call to dfsearch: expected 2 or 3 arguments");
+               "Invalid call to dfsearch: expected at least 2 arguments");
       endif
 
       [src, ~] = __resolve_single_node__ (G, s, "dfsearch");
@@ -2539,7 +2585,8 @@ classdef digraph
       if (nargin == 2)
         v = __dfsearch_impl__ (A, src);
       else
-        v = __dfsearch_events_impl__ (A, src, events);
+        opts = __bfsdfs_parse_opts__ ("dfsearch", varargin);
+        v = __dfsearch_events_impl__ (A, src, events, opts);
       endif
 
     endfunction

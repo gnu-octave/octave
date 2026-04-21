@@ -24,7 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{out} =} __dfsearch_events_impl__ (@var{A}, @var{s}, @var{events})
+## @deftypefn  {} {@var{out} =} __dfsearch_events_impl__ (@var{A}, @var{s}, @var{events})
+## @deftypefnx {} {@var{out} =} __dfsearch_events_impl__ (@var{A}, @var{s}, @var{events}, @var{opts})
 ## Private helper implementing the @code{dfsearch (G, s, events)} event
 ## machinery on a binary or count-valued sparse adjacency @var{A}.
 ##
@@ -45,6 +46,24 @@
 ## a cell array of strings, each naming one of the six event types.
 ## @end itemize
 ##
+## Optional struct @var{opts} has fields:
+##
+## @itemize
+## @item
+## @code{restart} (default @code{false}): when @code{true}, DFS continues
+## from the smallest-indexed undiscovered node after the initial source
+## component is exhausted, emitting a new @qcode{"startnode"} event at
+## each restart.  Repeats until every node has been visited.
+## @item
+## @code{edgecolors} (default @code{false}): when @code{true} and the
+## output is struct-valued, an additional @code{EdgeColor} cellstr column
+## is included with tags @qcode{"tree"} (@code{edgetonew}), @qcode{"back"}
+## (@code{edgetodiscovered}), @qcode{"forward"} (@code{edgetofinished}
+## with target discovered after source), or @qcode{"cross"}
+## (@code{edgetofinished} with target discovered before source).
+## Node-event rows get @qcode{""}.
+## @end itemize
+##
 ## Return value:
 ##
 ## @itemize
@@ -60,7 +79,9 @@
 ## For @qcode{"allevents"} or a cellstr: a scalar struct with fields
 ## @code{Event} (@math{m}-by-1 cellstr), @code{Node} (@math{m}-by-1
 ## double column, 0 for edge-only events), and @code{Edge} (@math{m}-by-2
-## double matrix, @code{[0 0]} for node-only events).
+## double matrix, @code{[0 0]} for node-only events).  With
+## @code{opts.edgecolors = true} a fourth field @code{EdgeColor}
+## (@math{m}-by-1 cellstr) is added.
 ## @end itemize
 ##
 ## Events are emitted in DFS traversal order.  For the classical DFS
@@ -76,7 +97,9 @@
 ## edges witness cycles.
 ## @item
 ## @qcode{"edgetofinished"} is a @emph{cross} or @emph{forward edge} --
-## the target has already finished.
+## the target has already finished.  A finished target discovered after
+## the source is a forward edge (descendant); a finished target
+## discovered before the source is a cross edge.
 ## @end itemize
 ##
 ## Parallel edges in a multigraph collapse to a single event per distinct
@@ -88,10 +111,20 @@
 ## @seealso{dfsearch, graph, digraph, __dfsearch_impl__}
 ## @end deftypefn
 
-function out = __dfsearch_events_impl__ (A, s, events)
+function out = __dfsearch_events_impl__ (A, s, events, opts)
 
-  if (nargin != 3)
+  if (nargin < 3 || nargin > 4)
     print_usage ();
+  endif
+
+  if (nargin < 4)
+    opts = struct ();
+  endif
+  if (! isfield (opts, "restart"))
+    opts.restart = false;
+  endif
+  if (! isfield (opts, "edgecolors"))
+    opts.edgecolors = false;
   endif
 
   ## ---- Validate events argument -------------------------------------
@@ -133,6 +166,12 @@ function out = __dfsearch_events_impl__ (A, s, events)
            "dfsearch: EVENTS must be a character string or cell array of strings");
   endif
 
+  ## EdgeColors only makes sense with a struct-valued result.
+  if (opts.edgecolors && ! return_struct)
+    error ("Octave:invalid-input-arg", ...
+           "dfsearch: EdgeColors requires events to be 'allevents' or a cell array of event names");
+  endif
+
   ## ---- Run DFS and collect the full event log ----------------------
 
   N = size (A, 1);
@@ -141,93 +180,159 @@ function out = __dfsearch_events_impl__ (A, s, events)
   ## finished (all out-edges examined, popped from stack).
   state = zeros (N, 1);
 
+  ## Discovery time, for classifying edgetofinished as forward or cross.
+  disc_time = zeros (N, 1);
+  dtime = 0;
+
   ## Preallocate.  Upper bound on total events:
-  ##   1 startnode + N discovernode + N finishnode + nnz(A) edge events.
-  max_events = 1 + 2 * N + nnz (A);
+  ##   R startnode + N discovernode + N finishnode + nnz(A) edge events,
+  ## where R = up to N restarts.
+  if (opts.restart)
+    max_starts = N;
+  else
+    max_starts = 1;
+  endif
+  max_events = max_starts + 2 * N + nnz (A);
   if (max_events == 0)
     max_events = 1;
   endif
   ev_name = cell (max_events, 1);
   ev_node = zeros (max_events, 1);
   ev_edge = zeros (max_events, 2);
+  if (opts.edgecolors)
+    ev_color = cell (max_events, 1);
+  endif
   k = 0;
 
-  ## startnode
-  k = k + 1;
-  ev_name{k} = "startnode";
-  ev_node(k) = s;
-
-  ## initial discovernode for source
-  state(s) = 1;
-  k = k + 1;
-  ev_name{k} = "discovernode";
-  ev_node(k) = s;
-
-  ## Explicit DFS stack with per-frame children list + cursor (see
-  ## __dfsearch_impl__ for the same pattern).
+  ## Explicit DFS stack with per-frame children list + cursor.
   stack_nodes = zeros (N, 1);
   stack_children = cell (N, 1);
   stack_cursor = zeros (N, 1);
-  sp = 1;
 
-  stack_nodes(sp) = s;
-  cols = find (A(s, :));
-  stack_children{sp} = cols(:).';  # ascending order
-  stack_cursor(sp) = 1;
+  seed = s;
+  while (true)
+    ## startnode
+    k = k + 1;
+    ev_name{k} = "startnode";
+    ev_node(k) = seed;
+    if (opts.edgecolors)
+      ev_color{k} = "";
+    endif
 
-  while (sp >= 1)
-    u = stack_nodes(sp);
-    children = stack_children{sp};
-    idx = stack_cursor(sp);
+    ## initial discovernode for seed
+    state(seed) = 1;
+    dtime = dtime + 1;
+    disc_time(seed) = dtime;
+    k = k + 1;
+    ev_name{k} = "discovernode";
+    ev_node(k) = seed;
+    if (opts.edgecolors)
+      ev_color{k} = "";
+    endif
 
-    advanced = false;
-    while (idx <= numel (children))
-      v = children(idx);
-      idx = idx + 1;
-      if (state(v) == 0)
-        ## Tree edge.
+    sp = 1;
+    stack_nodes(sp) = seed;
+    cols = find (A(seed, :));
+    stack_children{sp} = cols(:).';  # ascending order
+    stack_cursor(sp) = 1;
+
+    while (sp >= 1)
+      u = stack_nodes(sp);
+      children = stack_children{sp};
+      idx = stack_cursor(sp);
+
+      advanced = false;
+      while (idx <= numel (children))
+        v = children(idx);
+        idx = idx + 1;
+        if (state(v) == 0)
+          ## Tree edge.
+          k = k + 1;
+          ev_name{k} = "edgetonew";
+          ev_edge(k, :) = [u, v];
+          if (opts.edgecolors)
+            ev_color{k} = "tree";
+          endif
+
+          stack_cursor(sp) = idx;   # save resume position on parent
+          state(v) = 1;
+          dtime = dtime + 1;
+          disc_time(v) = dtime;
+          k = k + 1;
+          ev_name{k} = "discovernode";
+          ev_node(k) = v;
+          if (opts.edgecolors)
+            ev_color{k} = "";
+          endif
+
+          sp = sp + 1;
+          stack_nodes(sp) = v;
+          cols = find (A(v, :));
+          stack_children{sp} = cols(:).';
+          stack_cursor(sp) = 1;
+          advanced = true;
+          break;
+        elseif (state(v) == 1)
+          k = k + 1;
+          ev_name{k} = "edgetodiscovered";
+          ev_edge(k, :) = [u, v];
+          if (opts.edgecolors)
+            ev_color{k} = "back";
+          endif
+        else  # state(v) == 2
+          k = k + 1;
+          ev_name{k} = "edgetofinished";
+          ev_edge(k, :) = [u, v];
+          if (opts.edgecolors)
+            ## Forward edge: v is a descendant of u in the DFS tree iff
+            ## v was discovered after u.  Otherwise it is a cross edge.
+            if (disc_time(v) > disc_time(u))
+              ev_color{k} = "forward";
+            else
+              ev_color{k} = "cross";
+            endif
+          endif
+        endif
+      endwhile
+
+      if (! advanced)
+        ## All children of u processed; pop.
+        state(u) = 2;
         k = k + 1;
-        ev_name{k} = "edgetonew";
-        ev_edge(k, :) = [u, v];
-
-        stack_cursor(sp) = idx;   # save resume position on parent
-        state(v) = 1;
-        k = k + 1;
-        ev_name{k} = "discovernode";
-        ev_node(k) = v;
-
-        sp = sp + 1;
-        stack_nodes(sp) = v;
-        cols = find (A(v, :));
-        stack_children{sp} = cols(:).';
-        stack_cursor(sp) = 1;
-        advanced = true;
-        break;
-      elseif (state(v) == 1)
-        k = k + 1;
-        ev_name{k} = "edgetodiscovered";
-        ev_edge(k, :) = [u, v];
-      else  # state(v) == 2
-        k = k + 1;
-        ev_name{k} = "edgetofinished";
-        ev_edge(k, :) = [u, v];
+        ev_name{k} = "finishnode";
+        ev_node(k) = u;
+        if (opts.edgecolors)
+          ev_color{k} = "";
+        endif
+        sp = sp - 1;
       endif
     endwhile
 
-    if (! advanced)
-      ## All children of u processed; pop.
-      state(u) = 2;
-      k = k + 1;
-      ev_name{k} = "finishnode";
-      ev_node(k) = u;
-      sp = sp - 1;
+    if (! opts.restart)
+      break;
     endif
+
+    ## Find the next undiscovered node in ascending index order.
+    next_seed = 0;
+    for ii = 1:N
+      if (state(ii) == 0)
+        next_seed = ii;
+        break;
+      endif
+    endfor
+    if (next_seed == 0)
+      break;
+    endif
+    seed = next_seed;
   endwhile
 
   ## Trim preallocated buffers.
   ev_name = ev_name(1:k);
   ev_node = ev_node(1:k);
   ev_edge = ev_edge(1:k, :);
+  if (opts.edgecolors)
+    ev_color = ev_color(1:k);
+  endif
 
   ## ---- Filter to the requested event list --------------------------
 
@@ -239,6 +344,9 @@ function out = __dfsearch_events_impl__ (A, s, events)
   filtered_name = ev_name(keep_mask);
   filtered_node = ev_node(keep_mask);
   filtered_edge = ev_edge(keep_mask, :);
+  if (opts.edgecolors)
+    filtered_color = ev_color(keep_mask);
+  endif
 
   ## ---- Format output ------------------------------------------------
 
@@ -257,10 +365,16 @@ function out = __dfsearch_events_impl__ (A, s, events)
       out.Event = cell (0, 1);
       out.Node = zeros (0, 1);
       out.Edge = zeros (0, 2);
+      if (opts.edgecolors)
+        out.EdgeColor = cell (0, 1);
+      endif
     else
       out.Event = filtered_name(:);
       out.Node = filtered_node(:);
       out.Edge = filtered_edge;
+      if (opts.edgecolors)
+        out.EdgeColor = filtered_color(:);
+      endif
     endif
   endif
 
@@ -348,3 +462,47 @@ endfunction
 %! assert (size (T.Event), [0, 1]);
 %! assert (size (T.Node), [0, 1]);
 %! assert (size (T.Edge), [0, 2]);
+
+## US-T04: Restart option on disconnected digraph.
+%!test
+%! A = sparse ([1 4], [2 5], 1, 5, 5);
+%! opts = struct ("restart", true);
+%! T = __dfsearch_events_impl__ (A, 1, "allevents", opts);
+%! starts = T.Node(strcmp (T.Event, "startnode"));
+%! assert (starts, [1; 3; 4]);
+
+## US-T04: EdgeColors adds EdgeColor field.
+%!test
+%! A = sparse ([1 2 3], [2 3 1], 1, 3, 3);
+%! opts = struct ("edgecolors", true);
+%! T = __dfsearch_events_impl__ (A, 1, "allevents", opts);
+%! assert (isfield (T, "EdgeColor"));
+
+## US-T04: DFS back edge tagged 'back'.
+%!test
+%! A = sparse ([1 2 3], [2 3 1], 1, 3, 3);
+%! opts = struct ("edgecolors", true);
+%! T = __dfsearch_events_impl__ (A, 1, "allevents", opts);
+%! back_idx = strcmp (T.Event, "edgetodiscovered");
+%! assert (T.EdgeColor(back_idx), {"back"});
+
+## US-T04: DFS forward edge (triangle 1->{2,3}, 2->3) tagged 'forward'.
+%!test
+%! A = sparse ([1 1 2], [2 3 3], 1, 3, 3);
+%! opts = struct ("edgecolors", true);
+%! T = __dfsearch_events_impl__ (A, 1, "allevents", opts);
+%! fin_idx = strcmp (T.Event, "edgetofinished");
+%! assert (T.EdgeColor(fin_idx), {"forward"});
+
+## US-T04: DFS cross edge (1->{2,3}, 3->2) tagged 'cross'.
+%!test
+%! A = sparse ([1 1 3], [2 3 2], 1, 3, 3);
+%! opts = struct ("edgecolors", true);
+%! T = __dfsearch_events_impl__ (A, 1, "allevents", opts);
+%! fin_idx = strcmp (T.Event, "edgetofinished");
+%! assert (T.EdgeColor(fin_idx), {"cross"});
+
+## US-T04: EdgeColors without struct output errors.
+%!error <EdgeColors requires> ...
+%! __dfsearch_events_impl__ (sparse ([1 2], [2 3], 1, 3, 3), 1, ...
+%!                           "discovernode", struct ("edgecolors", true))

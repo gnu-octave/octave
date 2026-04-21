@@ -5,6 +5,7 @@ FCN_FILE_DIRS += \
 %canon_reldir%_PRIVATE_FCN_FILES = \
   %reldir%/private/__addedge_impl__.m \
   %reldir%/private/__addnode_impl__.m \
+  %reldir%/private/__bfsdfs_parse_opts__.m \
   %reldir%/private/__bfsearch_events_impl__.m \
   %reldir%/private/__bfsearch_impl__.m \
   %reldir%/private/__dfsearch_events_impl__.m \

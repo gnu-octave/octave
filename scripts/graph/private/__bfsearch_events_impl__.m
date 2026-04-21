@@ -24,7 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{out} =} __bfsearch_events_impl__ (@var{A}, @var{s}, @var{events})
+## @deftypefn  {} {@var{out} =} __bfsearch_events_impl__ (@var{A}, @var{s}, @var{events})
+## @deftypefnx {} {@var{out} =} __bfsearch_events_impl__ (@var{A}, @var{s}, @var{events}, @var{opts})
 ## Private helper implementing the @code{bfsearch (G, s, events)} event
 ## machinery on a binary or count-valued sparse adjacency @var{A}.
 ##
@@ -45,6 +46,23 @@
 ## a cell array of strings, each naming one of the six event types.
 ## @end itemize
 ##
+## Optional struct @var{opts} has fields:
+##
+## @itemize
+## @item
+## @code{restart} (default @code{false}): when @code{true}, BFS continues
+## from the smallest-indexed undiscovered node after the initial source
+## component is exhausted, emitting a new @qcode{"startnode"} event at
+## each restart.  Repeats until every node has been visited.
+## @item
+## @code{edgecolors} (default @code{false}): when @code{true} and the
+## output is struct-valued, an additional @code{EdgeColor} cellstr column
+## is included with tags @qcode{"tree"} (@code{edgetonew}) or
+## @qcode{"cross"} (@code{edgetodiscovered}, @code{edgetofinished}).
+## Node-event rows get @qcode{""}.  In BFS, non-tree edges are all
+## classified as cross edges.
+## @end itemize
+##
 ## Return value:
 ##
 ## @itemize
@@ -60,14 +78,17 @@
 ## For @qcode{"allevents"} or a cellstr: a scalar struct with fields
 ## @code{Event} (@math{m}-by-1 cellstr), @code{Node} (@math{m}-by-1
 ## double column, 0 for edge-only events), and @code{Edge} (@math{m}-by-2
-## double matrix, @code{[0 0]} for node-only events).
+## double matrix, @code{[0 0]} for node-only events).  With
+## @code{opts.edgecolors = true} a fourth field @code{EdgeColor}
+## (@math{m}-by-1 cellstr) is added.
 ## @end itemize
 ##
 ## Events are emitted in BFS traversal order:
 ##
 ## @enumerate
 ## @item
-## @qcode{"startnode"} fires once for the source @var{s}.
+## @qcode{"startnode"} fires once for the source @var{s} (and once per
+## restart when @code{opts.restart} is true).
 ## @item
 ## @qcode{"discovernode"} fires for @var{s} immediately, and again each
 ## time a previously undiscovered neighbour is reached.
@@ -92,10 +113,20 @@
 ## @seealso{bfsearch, graph, digraph, __bfsearch_impl__}
 ## @end deftypefn
 
-function out = __bfsearch_events_impl__ (A, s, events)
+function out = __bfsearch_events_impl__ (A, s, events, opts)
 
-  if (nargin != 3)
+  if (nargin < 3 || nargin > 4)
     print_usage ();
+  endif
+
+  if (nargin < 4)
+    opts = struct ();
+  endif
+  if (! isfield (opts, "restart"))
+    opts.restart = false;
+  endif
+  if (! isfield (opts, "edgecolors"))
+    opts.edgecolors = false;
   endif
 
   ## ---- Validate events argument -------------------------------------
@@ -137,6 +168,12 @@ function out = __bfsearch_events_impl__ (A, s, events)
            "bfsearch: EVENTS must be a character string or cell array of strings");
   endif
 
+  ## EdgeColors only makes sense with a struct-valued result.
+  if (opts.edgecolors && ! return_struct)
+    error ("Octave:invalid-input-arg", ...
+           "bfsearch: EdgeColors requires events to be 'allevents' or a cell array of event names");
+  endif
+
   ## ---- Run BFS and collect the full event log ----------------------
 
   N = size (A, 1);
@@ -146,78 +183,136 @@ function out = __bfsearch_events_impl__ (A, s, events)
   state = zeros (N, 1);
 
   ## Preallocate.  Upper bound on total events:
-  ##   1 startnode + N discovernode + N finishnode + nnz(A) edge events.
-  max_events = 1 + 2 * N + nnz (A);
+  ##   R startnode + N discovernode + N finishnode + nnz(A) edge events,
+  ## where R = up to N restarts.
+  if (opts.restart)
+    max_starts = N;
+  else
+    max_starts = 1;
+  endif
+  max_events = max_starts + 2 * N + nnz (A);
   if (max_events == 0)
     max_events = 1;
   endif
   ev_name = cell (max_events, 1);
   ev_node = zeros (max_events, 1);
   ev_edge = zeros (max_events, 2);
+  if (opts.edgecolors)
+    ev_color = cell (max_events, 1);
+  endif
   k = 0;
 
-  ## startnode
-  k = k + 1;
-  ev_name{k} = "startnode";
-  ev_node(k) = s;
+  ## next_start(seed) runs BFS from the given seed node.  Local function
+  ## via an anonymous-shaped closure is awkward, so inline it with a
+  ## helper flag loop.  We iterate: first seed is s; if opts.restart,
+  ## walk up through undiscovered nodes in ascending index order.
 
-  ## initial discovernode for source
-  state(s) = 1;
-  k = k + 1;
-  ev_name{k} = "discovernode";
-  ev_node(k) = s;
-
-  ## FIFO queue.
-  queue_buf = zeros (N, 1);
-  queue_buf(1) = s;
-  head = 1;
-  tail = 2;
-
-  while (head < tail)
-    u = queue_buf(head);
-    head = head + 1;
-
-    cols = find (A(u, :));
-    if (! isempty (cols))
-      cols = cols(:).';  # row vector in ascending order
-      for j = 1:numel (cols)
-        v = cols(j);
-        if (state(v) == 0)
-          ## edge to undiscovered -> BFS tree edge
-          k = k + 1;
-          ev_name{k} = "edgetonew";
-          ev_edge(k, :) = [u, v];
-
-          state(v) = 1;
-          queue_buf(tail) = v;
-          tail = tail + 1;
-
-          k = k + 1;
-          ev_name{k} = "discovernode";
-          ev_node(k) = v;
-        elseif (state(v) == 1)
-          k = k + 1;
-          ev_name{k} = "edgetodiscovered";
-          ev_edge(k, :) = [u, v];
-        else   # state(v) == 2
-          k = k + 1;
-          ev_name{k} = "edgetofinished";
-          ev_edge(k, :) = [u, v];
-        endif
-      endfor
+  seed = s;
+  while (true)
+    ## startnode
+    k = k + 1;
+    ev_name{k} = "startnode";
+    ev_node(k) = seed;
+    if (opts.edgecolors)
+      ev_color{k} = "";
     endif
 
-    ## finishnode -- after all edges of u have been examined.
-    state(u) = 2;
+    ## initial discovernode for seed.
+    state(seed) = 1;
     k = k + 1;
-    ev_name{k} = "finishnode";
-    ev_node(k) = u;
+    ev_name{k} = "discovernode";
+    ev_node(k) = seed;
+    if (opts.edgecolors)
+      ev_color{k} = "";
+    endif
+
+    ## FIFO queue for this BFS run.
+    queue_buf = zeros (N, 1);
+    queue_buf(1) = seed;
+    head = 1;
+    tail = 2;
+
+    while (head < tail)
+      u = queue_buf(head);
+      head = head + 1;
+
+      cols = find (A(u, :));
+      if (! isempty (cols))
+        cols = cols(:).';  # row vector in ascending order
+        for j = 1:numel (cols)
+          v = cols(j);
+          if (state(v) == 0)
+            ## edge to undiscovered -> BFS tree edge
+            k = k + 1;
+            ev_name{k} = "edgetonew";
+            ev_edge(k, :) = [u, v];
+            if (opts.edgecolors)
+              ev_color{k} = "tree";
+            endif
+
+            state(v) = 1;
+            queue_buf(tail) = v;
+            tail = tail + 1;
+
+            k = k + 1;
+            ev_name{k} = "discovernode";
+            ev_node(k) = v;
+            if (opts.edgecolors)
+              ev_color{k} = "";
+            endif
+          elseif (state(v) == 1)
+            k = k + 1;
+            ev_name{k} = "edgetodiscovered";
+            ev_edge(k, :) = [u, v];
+            if (opts.edgecolors)
+              ev_color{k} = "cross";
+            endif
+          else   # state(v) == 2
+            k = k + 1;
+            ev_name{k} = "edgetofinished";
+            ev_edge(k, :) = [u, v];
+            if (opts.edgecolors)
+              ev_color{k} = "cross";
+            endif
+          endif
+        endfor
+      endif
+
+      ## finishnode -- after all edges of u have been examined.
+      state(u) = 2;
+      k = k + 1;
+      ev_name{k} = "finishnode";
+      ev_node(k) = u;
+      if (opts.edgecolors)
+        ev_color{k} = "";
+      endif
+    endwhile
+
+    if (! opts.restart)
+      break;
+    endif
+
+    ## Find the next undiscovered node in ascending index order.
+    next_seed = 0;
+    for ii = 1:N
+      if (state(ii) == 0)
+        next_seed = ii;
+        break;
+      endif
+    endfor
+    if (next_seed == 0)
+      break;
+    endif
+    seed = next_seed;
   endwhile
 
   ## Trim preallocated buffers.
   ev_name = ev_name(1:k);
   ev_node = ev_node(1:k);
   ev_edge = ev_edge(1:k, :);
+  if (opts.edgecolors)
+    ev_color = ev_color(1:k);
+  endif
 
   ## ---- Filter to the requested event list --------------------------
 
@@ -230,6 +325,9 @@ function out = __bfsearch_events_impl__ (A, s, events)
   filtered_name = ev_name(keep_mask);
   filtered_node = ev_node(keep_mask);
   filtered_edge = ev_edge(keep_mask, :);
+  if (opts.edgecolors)
+    filtered_color = ev_color(keep_mask);
+  endif
 
   ## ---- Format output ------------------------------------------------
 
@@ -251,10 +349,16 @@ function out = __bfsearch_events_impl__ (A, s, events)
       out.Event = cell (0, 1);
       out.Node = zeros (0, 1);
       out.Edge = zeros (0, 2);
+      if (opts.edgecolors)
+        out.EdgeColor = cell (0, 1);
+      endif
     else
       out.Event = filtered_name(:);
       out.Node = filtered_node(:);
       out.Edge = filtered_edge;
+      if (opts.edgecolors)
+        out.EdgeColor = filtered_color(:);
+      endif
     endif
   endif
 
@@ -336,3 +440,33 @@ endfunction
 %! assert (size (T.Event), [0, 1]);
 %! assert (size (T.Node), [0, 1]);
 %! assert (size (T.Edge), [0, 2]);
+
+## US-T04: Restart option on disconnected digraph.
+%!test
+%! A = sparse ([1 4], [2 5], 1, 5, 5);
+%! opts = struct ("restart", true);
+%! T = __bfsearch_events_impl__ (A, 1, "allevents", opts);
+%! starts = T.Node(strcmp (T.Event, "startnode"));
+%! assert (starts, [1; 3; 4]);
+
+## US-T04: EdgeColors adds EdgeColor field.
+%!test
+%! A = sparse ([1 2 3], [2 3 1], 1, 3, 3);
+%! opts = struct ("edgecolors", true);
+%! T = __bfsearch_events_impl__ (A, 1, "allevents", opts);
+%! assert (isfield (T, "EdgeColor"));
+%! tree_idx = strcmp (T.Event, "edgetonew");
+%! assert (T.EdgeColor(tree_idx), {"tree"; "tree"});
+
+## US-T04: BFS EdgeColors tags edgetofinished as 'cross'.
+%!test
+%! A = sparse ([1 2 3], [2 3 1], 1, 3, 3);
+%! opts = struct ("edgecolors", true);
+%! T = __bfsearch_events_impl__ (A, 1, "allevents", opts);
+%! fin_idx = strcmp (T.Event, "edgetofinished");
+%! assert (T.EdgeColor(fin_idx), {"cross"});
+
+## US-T04: EdgeColors without struct output errors.
+%!error <EdgeColors requires> ...
+%! __bfsearch_events_impl__ (sparse ([1 2], [2 3], 1, 3, 3), 1, ...
+%!                           "discovernode", struct ("edgecolors", true))

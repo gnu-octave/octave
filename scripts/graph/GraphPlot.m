@@ -352,3 +352,56 @@ endclassdef
 
 ## Layout must be a string.
 %!error <character vector> GraphPlot (digraph (2), "Layout", 1)
+
+## -------- US-GP02 circle layout via GraphPlot --------
+
+## 'Layout','circle' selects unit-circle placement.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "circle");
+%!   assert (isa (h, "GraphPlot"));
+%!   assert (sqrt (h.XData.^2 + h.YData.^2), ones (3, 1), 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Circle layout matches between graph and digraph for same N / shape.
+%!test
+%! Gd = digraph (6);
+%! Gg = graph (6);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hd = GraphPlot (Gd, "Layout", "circle");
+%!   hg = GraphPlot (Gg, "Layout", "circle");
+%!   assert (hd.XData, hg.XData);
+%!   assert (hd.YData, hg.YData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## XData / YData overrides win over the circle layout.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "circle", ...
+%!                  "XData", [10 20 30], "YData", [0 0 0]);
+%!   assert (h.XData, [10; 20; 30]);
+%!   assert (h.YData, [0; 0; 0]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Circle layout node-1 starts at (1, 0) and advances counter-clockwise.
+%!test
+%! G = digraph (4);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = GraphPlot (G, "Layout", "circle");
+%!   assert (h.XData, [1; 0; -1; 0], 1e-10);
+%!   assert (h.YData, [0; 1; 0; -1], 1e-10);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

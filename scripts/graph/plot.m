@@ -37,6 +37,12 @@
 ## forward to the @code{GraphPlot} constructor; see @code{GraphPlot} for
 ## the full list of accepted options.
 ##
+## Recognised layout names for @qcode{"Layout"} include
+## @qcode{"auto"} (default), @qcode{"circle"} (uniform unit-circle
+## placement, node 1 at @code{(1, 0)}, remaining nodes counter-clockwise),
+## @qcode{"subspace"}, and @qcode{"force"}.  Layout names are
+## case-insensitive.
+##
 ## When @var{G} is neither a @code{graph} nor a @code{digraph}, this
 ## file's free-function body is not used because Octave dispatches
 ## @code{plot} to its standard @file{scripts/plot/draw/plot} for
@@ -195,8 +201,144 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
+## -------- US-GP02 circle layout via plot() --------
+
+## plot(G, 'Layout', 'circle') places nodes on the unit circle.
+%!test
+%! G = digraph ([1 2 3 4], [2 3 4 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G, "Layout", "circle");
+%!   assert (isa (h, "GraphPlot"));
+%!   assert (numel (h.XData), 4);
+%!   assert (numel (h.YData), 4);
+%!   assert (iscolumn (h.XData));
+%!   assert (iscolumn (h.YData));
+%!   assert (sqrt (h.XData.^2 + h.YData.^2), ones (4, 1), 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Undirected graph + circle layout: unit-circle + uniform chord length.
+%!test
+%! G = graph ([1 2 3 4 5], [2 3 4 5 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G, "Layout", "circle");
+%!   assert (isa (h, "GraphPlot"));
+%!   assert (numel (h.XData), 5);
+%!   assert (sqrt (h.XData.^2 + h.YData.^2), ones (5, 1), 1e-12);
+%!   dx = diff ([h.XData; h.XData(1)]);
+%!   dy = diff ([h.YData; h.YData(1)]);
+%!   chord = sqrt (dx.^2 + dy.^2);
+%!   expected = 2 * sin (pi / 5);
+%!   assert (chord, expected * ones (5, 1), 1e-10);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Circle layout name is case-insensitive via plot().
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = plot (G, "Layout", "circle");
+%!   h2 = plot (G, "Layout", "CIRCLE");
+%!   h3 = plot (G, "Layout", "Circle");
+%!   assert (h1.XData, h2.XData, 1e-12);
+%!   assert (h1.YData, h2.YData, 1e-12);
+%!   assert (h1.XData, h3.XData, 1e-12);
+%!   assert (h1.YData, h3.YData, 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## N == 1 under circle layout: single node at origin.
+%!test
+%! G = digraph (1);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G, "Layout", "circle");
+%!   assert (h.XData, 0);
+%!   assert (h.YData, 0);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## N == 0 (empty digraph) under circle layout.
+%!test
+%! G = digraph ();
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G, "Layout", "circle");
+%!   assert (isempty (h.XData));
+%!   assert (isempty (h.YData));
+%!   assert (h.NumNodes, 0);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## N == 100 under circle layout: still all on the unit circle.
+%!test
+%! G = digraph (100);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G, "Layout", "circle");
+%!   assert (numel (h.XData), 100);
+%!   assert (numel (h.YData), 100);
+%!   assert (sqrt (h.XData.^2 + h.YData.^2), ones (100, 1), 1e-10);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Circle layout with named nodes + edge weights: XY driven by numnodes
+## only.
+%!test
+%! G = digraph ({"a","b","c"}, {"b","c","a"}, [1 2 3], {"a","b","c"});
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G, "Layout", "circle");
+%!   assert (numel (h.XData), 3);
+%!   assert (sqrt (h.XData.^2 + h.YData.^2), ones (3, 1), 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Isolated trailing nodes are laid out too (N-form constructor).
+%!test
+%! G = digraph ([1 2], [2 3], [1 1], 10);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot (G, "Layout", "circle");
+%!   assert (h.NumNodes, 10);
+%!   assert (numel (h.XData), 10);
+%!   assert (sqrt (h.XData.^2 + h.YData.^2), ones (10, 1), 1e-12);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Circle layout is deterministic via plot() too.
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h1 = plot (G, "Layout", "circle");
+%!   h2 = plot (G, "Layout", "circle");
+%!   assert (h1.XData, h2.XData);
+%!   assert (h1.YData, h2.YData);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
 ## %!demo — small directed cycle under gnuplot (safe headless demo).
 %!demo
 %! G = digraph ([1 2 3 4], [2 3 4 1]);
 %! h = plot (G);
 %! title ("digraph 4-cycle");
+
+## %!demo — 6-node cycle laid out on the unit circle.
+%!demo
+%! G = graph ([1 2 3 4 5 6], [2 3 4 5 6 1]);
+%! h = plot (G, "Layout", "circle");
+%! title ("graph 6-cycle on unit circle");
+%! axis equal;

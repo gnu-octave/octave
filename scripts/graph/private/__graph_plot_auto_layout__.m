@@ -42,7 +42,12 @@
 ## Placeholder routed to a deterministic circle layout (to be replaced
 ## by Fruchterman-Reingold in a subsequent story).
 ## @item circle
-## Unit-circle placement: @code{theta(k) = 2*pi*(k-1)/N}.
+## Production layout.  Place the @var{N} nodes of @var{G} uniformly on
+## the unit circle at angles @code{theta(k) = 2*pi*(k-1)/N}.  Node 1
+## lands at @code{(1, 0)} and the remaining nodes fan out
+## counter-clockwise.  @code{N == 0} returns @code{0-by-1} empty
+## columns; @code{N == 1} returns the origin (a single node cannot
+## define a unit circle position).
 ## @end table
 ##
 ## Returns @var{X} and @var{Y} as column vectors of length
@@ -185,3 +190,94 @@ endfunction
 %!error <character vector> __graph_plot_auto_layout__ (digraph (3), 1)
 %!error <unknown layout> __graph_plot_auto_layout__ (digraph (3), "nope")
 %!error <Invalid call> __graph_plot_auto_layout__ (digraph (3))
+
+## -------- US-GP02 circle layout: additional coverage --------
+
+## N == 0 under 'circle' returns 0-by-1 columns.
+%!test
+%! G = digraph ();
+%! [X, Y] = __graph_plot_auto_layout__ (G, "circle");
+%! assert (size (X), [0, 1]);
+%! assert (size (Y), [0, 1]);
+
+## N == 1 under 'circle' returns the origin.
+%!test
+%! G = digraph (1);
+%! [X, Y] = __graph_plot_auto_layout__ (G, "circle");
+%! assert (X, 0);
+%! assert (Y, 0);
+
+## N == 2 under 'circle' places nodes diametrically opposite on the
+## unit circle.
+%!test
+%! G = digraph (2);
+%! [X, Y] = __graph_plot_auto_layout__ (G, "circle");
+%! assert (sqrt (X.^2 + Y.^2), ones (2, 1), 1e-12);
+%! assert (X(2), -X(1), 1e-12);
+%! assert (Y(2), -Y(1), 1e-12);
+
+## Consecutive chord lengths are equal for every N (uniform spacing).
+%!test
+%! for N = [3 4 5 6 8 12 25 100]
+%!   G = digraph (N);
+%!   [X, Y] = __graph_plot_auto_layout__ (G, "circle");
+%!   assert (sqrt (X.^2 + Y.^2), ones (N, 1), 1e-10);
+%!   dx = diff ([X; X(1)]);
+%!   dy = diff ([Y; Y(1)]);
+%!   chord = sqrt (dx.^2 + dy.^2);
+%!   expected = 2 * sin (pi / N);
+%!   assert (chord, expected * ones (N, 1), 1e-10);
+%! endfor
+
+## Circle layout starts at angle 0 (node 1 at (1, 0)) and advances
+## counter-clockwise.
+%!test
+%! G = digraph (4);
+%! [X, Y] = __graph_plot_auto_layout__ (G, "circle");
+%! assert (X, [1; 0; -1; 0], 1e-10);
+%! assert (Y, [0; 1; 0; -1], 1e-10);
+
+## Circle layout is deterministic -- same G -> same X/Y across calls.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! [X1, Y1] = __graph_plot_auto_layout__ (G, "circle");
+%! [X2, Y2] = __graph_plot_auto_layout__ (G, "circle");
+%! assert (X1, X2);
+%! assert (Y1, Y2);
+
+## Circle layout works on an undirected graph with the same rules.
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 1]);
+%! [X, Y] = __graph_plot_auto_layout__ (G, "circle");
+%! assert (sqrt (X.^2 + Y.^2), ones (4, 1), 1e-12);
+%! assert (X, [1; 0; -1; 0], 1e-10);
+
+## Circle layout for a named graph: coordinates driven by numnodes
+## only, independent of node names and of edge weights.
+%!test
+%! G1 = digraph ([1 2 3], [2 3 1]);
+%! G2 = digraph ([1 2 3], [2 3 1], [10 20 30]);
+%! G3 = digraph ({"a","b","c"}, {"b","c","a"}, [], {"a","b","c"});
+%! [X1, Y1] = __graph_plot_auto_layout__ (G1, "circle");
+%! [X2, Y2] = __graph_plot_auto_layout__ (G2, "circle");
+%! [X3, Y3] = __graph_plot_auto_layout__ (G3, "circle");
+%! assert (X1, X2); assert (Y1, Y2);
+%! assert (X1, X3); assert (Y1, Y3);
+
+## Circle layout honours the full node count including isolated
+## trailing nodes introduced via the N-form constructor.
+%!test
+%! G = digraph ([1 2], [2 3], [1 1], 10);
+%! [X, Y] = __graph_plot_auto_layout__ (G, "circle");
+%! assert (numel (X), 10);
+%! assert (numel (Y), 10);
+%! assert (sqrt (X.^2 + Y.^2), ones (10, 1), 1e-12);
+
+## Circle layout returns column vectors regardless of N.
+%!test
+%! for N = [0 1 2 3 7 50]
+%!   G = digraph (N);
+%!   [X, Y] = __graph_plot_auto_layout__ (G, "circle");
+%!   assert (iscolumn (X) || isempty (X));
+%!   assert (iscolumn (Y) || isempty (Y));
+%! endfor

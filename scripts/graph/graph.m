@@ -201,7 +201,7 @@ classdef graph
   ## @end group
   ## @end example
   ##
-  ## @seealso{digraph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian, bfsearch, dfsearch, conncomp}
+  ## @seealso{digraph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, neighbors, degree, findnode, findedge, edgecount, adjacency, incidence, laplacian, bfsearch, dfsearch, conncomp, biconncomp}
   ## @end deftypefn
 
   properties (Access = private)
@@ -1775,6 +1775,140 @@ classdef graph
           for k = 1:K
             out{k} = find (bins == k).'(:);
           endfor
+        endif
+      endif
+
+    endfunction
+
+    function [out, iC] = biconncomp (G, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn  {} {@var{bins} =} biconncomp (@var{G})
+      ## @deftypefnx {} {[@var{bins}, @var{iC}] =} biconncomp (@var{G})
+      ## @deftypefnx {} {@var{C} =} biconncomp (@var{G}, @qcode{"OutputForm"}, @qcode{"cell"})
+      ## Compute the biconnected components of the undirected graph
+      ## @var{G}.  With no options, return a row vector of per-edge
+      ## labels; with two outputs, also return the articulation points
+      ## as a row vector of node indices.  @qcode{"OutputForm"} may be
+      ## @qcode{"vector"} (default) or @qcode{"cell"}; the cell form
+      ## returns one column vector of node indices per BCC, with
+      ## isolated nodes appearing as singleton cells.  See
+      ## @code{help biconncomp} for the full description.
+      ## @seealso{graph, conncomp, bfsearch, dfsearch}
+      ## @end deftypefn
+
+      outputform = "vector";
+      nv = numel (varargin);
+      if (mod (nv, 2) != 0)
+        error ("Octave:invalid-fun-call", ...
+               "biconncomp: Name-Value options expected pairs");
+      endif
+      for k = 1:2:nv
+        name = varargin{k};
+        val = varargin{k+1};
+        if (! (ischar (name) && isrow (name)))
+          error ("Octave:invalid-input-arg", ...
+                 "biconncomp: option name must be a string");
+        endif
+        if (strcmpi (name, "OutputForm"))
+          if (! (ischar (val) && isrow (val)))
+            error ("Octave:invalid-input-arg", ...
+                   "biconncomp: OutputForm value must be a string");
+          endif
+          if (strcmpi (val, "vector"))
+            outputform = "vector";
+          elseif (strcmpi (val, "cell"))
+            outputform = "cell";
+          else
+            error ("Octave:invalid-input-arg", ...
+                   "biconncomp: OutputForm must be \"vector\" or \"cell\"");
+          endif
+        else
+          error ("Octave:invalid-input-arg", ...
+                 "biconncomp: unknown option name \"%s\"", name);
+        endif
+      endfor
+
+      ## Pull the lex-sorted edge list from the public Edges struct so
+      ## we honour any constructor path (edge-list, adjacency-matrix,
+      ## EdgeTable).  Coerce to double for arithmetic safety.
+      edges = G.Edges;
+      if (isfield (edges, "EndNodes"))
+        E = double (edges.EndNodes);
+      else
+        E = zeros (0, 2);
+      endif
+      N = numnodes (G);
+
+      [bins, is_art] = __biconncomp__ (E, N);
+
+      if (strcmp (outputform, "vector"))
+        out = bins;
+      else
+        ## Cell form: one column of node indices per BCC, with isolated
+        ## nodes appearing as singleton cells.  Sort entries by
+        ## (min_node, first_edge_index) so BCCs sharing a minimum node
+        ## (e.g. a self-loop plus an incident simple edge) are ordered
+        ## by edge-index, and isolated nodes slot in by their own index.
+        M = size (E, 1);
+        K = 0;
+        if (M > 0)
+          K = max (bins);
+        endif
+
+        n_entries = K;
+        covered = false (1, N);
+
+        if (K > 0)
+          cell_nodes = cell (1, K);
+          sort_keys = zeros (K, 2);
+          for k = 1:K
+            eidx = find (bins == k);
+            nlist = unique ([E(eidx, 1); E(eidx, 2)]);
+            covered(nlist) = true;
+            cell_nodes{k} = nlist(:);       # column
+            sort_keys(k, :) = [nlist(1), eidx(1)];
+          endfor
+        else
+          cell_nodes = cell (1, 0);
+          sort_keys = zeros (0, 2);
+        endif
+
+        iso = find (! covered);
+        niso = numel (iso);
+        if (niso > 0)
+          iso_cells = cell (1, niso);
+          iso_keys = zeros (niso, 2);
+          ## Put isolated entries AFTER any real BCC that shares the
+          ## same minimum node (the sort is lex on [min_node,
+          ## first_edge] and we give isolated a sentinel that is larger
+          ## than any real first_edge, which is at most M).
+          sentinel = M + 1;
+          for k = 1:niso
+            iso_cells{k} = iso(k);
+            iso_keys(k, :) = [iso(k), sentinel + k];
+          endfor
+          all_cells = [cell_nodes, iso_cells];
+          all_keys = [sort_keys; iso_keys];
+        else
+          all_cells = cell_nodes;
+          all_keys = sort_keys;
+        endif
+
+        if (isempty (all_cells))
+          out = cell (1, 0);
+        else
+          [~, order] = sortrows (all_keys);
+          out = all_cells(order);
+          out = out(:).';                    # row cell
+        endif
+      endif
+
+      if (nargout >= 2)
+        iC = find (is_art);
+        iC = iC(:).';
+        if (isempty (iC))
+          iC = zeros (1, 0);
         endif
       endif
 

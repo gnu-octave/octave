@@ -217,7 +217,7 @@ classdef digraph
   ## @end group
   ## @end example
   ##
-  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, flipedge, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian, bfsearch, dfsearch, conncomp}
+  ## @seealso{graph, numnodes, numedges, ismultigraph, addnode, addedge, rmnode, rmedge, reordernodes, subgraph, flipedge, successors, predecessors, neighbors, indegree, outdegree, findnode, findedge, edgecount, inedges, outedges, adjacency, incidence, laplacian, bfsearch, dfsearch, conncomp, biconncomp}
   ## @end deftypefn
 
   properties (Access = private)
@@ -2649,6 +2649,23 @@ classdef digraph
           endfor
         endif
       endif
+
+    endfunction
+
+    function [out, iC] = biconncomp (G, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{bins} =} biconncomp (@var{G})
+      ## Biconnected components are not defined on the directed
+      ## @code{digraph} class; this method always raises an error.  Use
+      ## @code{biconncomp} on a @code{graph} object instead.  See
+      ## @code{help biconncomp} for the full description of the
+      ## undirected case.
+      ## @seealso{graph, digraph, conncomp}
+      ## @end deftypefn
+
+      error ("Octave:invalid-input-arg", ...
+             "biconncomp: not defined for a digraph; biconncomp requires an undirected graph");
 
     endfunction
 

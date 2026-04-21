@@ -2662,6 +2662,66 @@ classdef graph
 
     endfunction
 
+    function c = centrality (G, type, varargin)
+
+      ## -*- texinfo -*-
+      ## @deftypefn {} {@var{c} =} centrality (@var{G}, @var{type})
+      ## Return the centrality of each node in the undirected graph
+      ## @var{G}.  @var{type} is a character row vector
+      ## (case-insensitive) selecting the centrality measure:
+      ## @code{"degree"} returns the number of edges incident to each
+      ## node, counting a self-loop twice (MATLAB convention).  The
+      ## directed-only types @code{"indegree"} and @code{"outdegree"}
+      ## are not defined for an undirected graph.  The result is a
+      ## column vector of length @code{numnodes (@var{G})}.
+      ## @seealso{graph, degree, centrality}
+      ## @end deftypefn
+
+      if (nargin < 2)
+        error ("Octave:invalid-fun-call", ...
+               "Invalid call to centrality: expected 2 arguments");
+      endif
+
+      if (! ischar (type) || (! isempty (type) && ! isrow (type)))
+        error ("Octave:invalid-input-arg", ...
+               "centrality: TYPE must be a character row vector");
+      endif
+
+      if (isempty (type))
+        error ("Octave:invalid-input-arg", ...
+               "centrality: TYPE must not be empty");
+      endif
+
+      if (! isempty (varargin))
+        error ("Octave:invalid-input-arg", ...
+               "centrality: no name-value options are supported for TYPE '%s'", ...
+               type);
+      endif
+
+      ## Future stories (US-CT02 closeness, US-CT03 betweenness,
+      ## US-CT04 pagerank, US-CT05 eigenvector, US-CT07
+      ## Cost/Importance weights) will extend this switch.
+      switch (lower (type))
+        case "degree"
+          c = G.degree ();
+        case {"indegree", "outdegree"}
+          error ("Octave:invalid-input-arg", ...
+                 ["centrality: TYPE '%s' is only defined for a ", ...
+                  "digraph; use 'degree' for an undirected graph"], type);
+        case {"closeness", "betweenness", "pagerank", "eigenvector"}
+          error ("Octave:invalid-input-arg", ...
+                 "centrality: TYPE '%s' is not yet implemented", type);
+        case {"incloseness", "outcloseness", "hubs", "authorities"}
+          error ("Octave:invalid-input-arg", ...
+                 ["centrality: TYPE '%s' is only defined for a ", ...
+                  "digraph"], type);
+        otherwise
+          error ("Octave:invalid-input-arg", ...
+                 "centrality: unknown TYPE '%s'", type);
+      endswitch
+
+    endfunction
+
     function disp (G)
 
       ## -*- texinfo -*-

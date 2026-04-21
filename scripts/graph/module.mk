@@ -54,6 +54,7 @@ FCN_FILE_DIRS += \
   %reldir%/allpaths.m \
   %reldir%/bfsearch.m \
   %reldir%/biconncomp.m \
+  %reldir%/centrality.m \
   %reldir%/condensation.m \
   %reldir%/conncomp.m \
   %reldir%/degree.m \

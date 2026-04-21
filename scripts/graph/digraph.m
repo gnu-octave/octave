@@ -3678,10 +3678,11 @@ classdef digraph
 
     endfunction
 
-    function mf = maxflow (G, s, t)
+    function mf = maxflow (G, s, t, varargin)
 
       ## -*- texinfo -*-
-      ## @deftypefn {} {@var{mf} =} maxflow (@var{G}, @var{s}, @var{t})
+      ## @deftypefn  {} {@var{mf} =} maxflow (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {@var{mf} =} maxflow (@var{G}, @var{s}, @var{t}, @var{algorithm})
       ## Return the maximum flow value @var{mf} from node @var{s} to
       ## node @var{t} in the digraph @var{G}.
       ##
@@ -3695,14 +3696,21 @@ classdef digraph
       ## @var{t}} or when @var{t} is not reachable from @var{s} along
       ## edges with positive capacity, @var{mf} is @code{0}.
       ##
-      ## The algorithm is the Edmonds-Karp (BFS-augmenting-path)
-      ## implementation of Ford-Fulkerson.
+      ## The optional @var{algorithm} argument selects the solver
+      ## (case-insensitive): @qcode{"augmentpath"} (default) uses the
+      ## Edmonds-Karp implementation of Ford-Fulkerson;
+      ## @qcode{"searchtrees"} uses a dual-search-tree augmenting-path
+      ## method that grows one BFS tree from @var{s} and another
+      ## backward from @var{t} and augments along the shortest joining
+      ## path.  Both algorithms return the same flow value.
       ## @seealso{digraph, shortestpath, distances}
       ## @end deftypefn
 
       if (nargin < 3)
         print_usage ();
       endif
+
+      algorithm = __maxflow_parse_algorithm__ (varargin);
 
       [s_idx, ~] = __resolve_single_node__ (G, s, "maxflow");
       [t_idx, ~] = __resolve_single_node__ (G, t, "maxflow");
@@ -3748,7 +3756,17 @@ classdef digraph
         endif
       endif
 
-      mf = __maxflow_edmonds_karp__ (uu, vv, caps, N, s_idx, t_idx);
+      switch (algorithm)
+        case "augmentpath"
+          mf = __maxflow_edmonds_karp__ (uu, vv, caps, N, s_idx, t_idx);
+        case "searchtrees"
+          mf = __maxflow_searchtrees__ (uu, vv, caps, N, s_idx, t_idx);
+        otherwise
+          ## Parser guarantees a valid name; safety net.
+          error ("Octave:invalid-input-arg", ...
+                 "maxflow: internal error -- unknown algorithm '%s'", ...
+                 algorithm);
+      endswitch
 
     endfunction
 

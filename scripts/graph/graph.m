@@ -2436,10 +2436,11 @@ classdef graph
 
     endfunction
 
-    function mf = maxflow (G, s, t)
+    function mf = maxflow (G, s, t, varargin)
 
       ## -*- texinfo -*-
-      ## @deftypefn {} {@var{mf} =} maxflow (@var{G}, @var{s}, @var{t})
+      ## @deftypefn  {} {@var{mf} =} maxflow (@var{G}, @var{s}, @var{t})
+      ## @deftypefnx {} {@var{mf} =} maxflow (@var{G}, @var{s}, @var{t}, @var{algorithm})
       ## Return the maximum flow value @var{mf} from node @var{s} to
       ## node @var{t} in the undirected graph @var{G}.
       ##
@@ -2455,14 +2456,21 @@ classdef graph
       ## from @var{s} along edges with positive capacity, @var{mf}
       ## is @code{0}.
       ##
-      ## The algorithm is the Edmonds-Karp (BFS-augmenting-path)
-      ## implementation of Ford-Fulkerson.
+      ## The optional @var{algorithm} argument selects the solver
+      ## (case-insensitive): @qcode{"augmentpath"} (default) uses the
+      ## Edmonds-Karp implementation of Ford-Fulkerson;
+      ## @qcode{"searchtrees"} uses a dual-search-tree augmenting-path
+      ## method that grows one BFS tree from @var{s} and another
+      ## backward from @var{t} and augments along the shortest joining
+      ## path.  Both algorithms return the same flow value.
       ## @seealso{graph, shortestpath, distances}
       ## @end deftypefn
 
       if (nargin < 3)
         print_usage ();
       endif
+
+      algorithm = __maxflow_parse_algorithm__ (varargin);
 
       [s_idx, ~] = __resolve_single_node__ (G, s, "maxflow");
       [t_idx, ~] = __resolve_single_node__ (G, t, "maxflow");
@@ -2473,8 +2481,8 @@ classdef graph
       ## adj_ (each {u,v} pair with u > v appears exactly once).  For
       ## the residual graph each undirected edge becomes two
       ## antiparallel directed arcs, each carrying the full capacity;
-      ## Edmonds-Karp then augments correctly even when flow
-      ## traverses the edge in the "wrong" orientation.
+      ## the augmenting-path algorithms then augment correctly even
+      ## when flow traverses the edge in the "wrong" orientation.
       [tt_end, ss_end, w_end] = find (tril (G.adj_));
       if (isempty (ss_end))
         uu = zeros (0, 1);
@@ -2506,7 +2514,17 @@ classdef graph
         endif
       endif
 
-      mf = __maxflow_edmonds_karp__ (uu, vv, caps, N, s_idx, t_idx);
+      switch (algorithm)
+        case "augmentpath"
+          mf = __maxflow_edmonds_karp__ (uu, vv, caps, N, s_idx, t_idx);
+        case "searchtrees"
+          mf = __maxflow_searchtrees__ (uu, vv, caps, N, s_idx, t_idx);
+        otherwise
+          ## Parser guarantees a valid name; safety net.
+          error ("Octave:invalid-input-arg", ...
+                 "maxflow: internal error -- unknown algorithm '%s'", ...
+                 algorithm);
+      endswitch
 
     endfunction
 

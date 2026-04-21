@@ -25,6 +25,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{mf} =} maxflow (@var{G}, @var{s}, @var{t})
+## @deftypefnx {} {@var{mf} =} maxflow (@var{G}, @var{s}, @var{t}, @var{algorithm})
 ## Return the maximum flow value @var{mf} that can be sent from node
 ## @var{s} to node @var{t} in the graph or digraph @var{G}.
 ##
@@ -47,9 +48,20 @@
 ## == @var{t}} or when @var{t} is not reachable from @var{s} along
 ## edges with positive capacity, @var{mf} is @code{0}.
 ##
-## The default algorithm is the Edmonds-Karp implementation of
-## Ford-Fulkerson, which augments along a shortest (fewest-edge)
-## residual path at each iteration.
+## The optional @var{algorithm} argument selects the solver
+## (case-insensitive):
+## @table @asis
+## @item @qcode{"augmentpath"} (default)
+## The Edmonds-Karp implementation of Ford-Fulkerson, which augments
+## along a shortest (fewest-edge) residual path at each iteration.
+## @item @qcode{"searchtrees"}
+## A dual-search-tree augmenting-path method inspired by the
+## Boykov-Kolmogorov algorithm, growing one BFS tree from @var{s} and
+## a second BFS tree backward from @var{t}, then augmenting along the
+## shortest joining path at every iteration.
+## @end table
+## Both algorithms return the same maximum flow value; only the
+## execution path through the residual graph differs.
 ##
 ## @example
 ## @group
@@ -446,3 +458,217 @@ endfunction
 %! w = [16 13 100 10 4 12 9 14 7 20 4];
 %! G = digraph (s, t, w);
 %! assert (maxflow (G, 1, 6), 24);
+
+## -------------------- Method / algorithm option --------------------
+
+## Default algorithm matches explicit 'augmentpath' on a diamond.
+%!test
+%! G = digraph ([1 1 2 3], [2 3 4 4], [5 8 7 3]);
+%! mf_default = maxflow (G, 1, 4);
+%! mf_augment = maxflow (G, 1, 4, "augmentpath");
+%! assert (mf_default, mf_augment);
+
+## 'augmentpath' positional arg returns 23 on CLRS Fig 26.1.
+%!test
+%! s = [1 1 2 3 2 4 3 5 4 5];
+%! t = [2 3 3 2 4 3 5 4 6 6];
+%! w = [16 13 10 4 12 9 14 7 20 4];
+%! G = digraph (s, t, w);
+%! assert (maxflow (G, 1, 6, "augmentpath"), 23);
+
+## 'searchtrees' positional arg returns 23 on CLRS Fig 26.1.
+%!test
+%! s = [1 1 2 3 2 4 3 5 4 5];
+%! t = [2 3 3 2 4 3 5 4 6 6];
+%! w = [16 13 10 4 12 9 14 7 20 4];
+%! G = digraph (s, t, w);
+%! assert (maxflow (G, 1, 6, "searchtrees"), 23);
+
+## 'searchtrees' on diamond digraph.
+%!test
+%! G = digraph ([1 1 2 3], [2 3 4 4], [5 8 7 3]);
+%! assert (maxflow (G, 1, 4, "searchtrees"), 8);
+
+## 'searchtrees' on diamond undirected graph.
+%!test
+%! G = graph ([1 1 2 3], [2 3 4 4], [5 8 7 3]);
+%! assert (maxflow (G, 1, 4, "searchtrees"), 8);
+
+## 'searchtrees' on undirected triangle uniform caps.
+%!test
+%! G = graph ([1 2 3], [2 3 1], [5 5 5]);
+%! assert (maxflow (G, 1, 2, "searchtrees"), 10);
+
+## 'searchtrees' on undirected chain bottleneck.
+%!test
+%! G = graph ([1 2], [2 3], [5 10]);
+%! assert (maxflow (G, 1, 3, "searchtrees"), 5);
+
+## 'searchtrees' on multigraph sums parallel edges.
+%!test
+%! G = digraph ([1 1], [2 2], [3 7], "multigraph");
+%! assert (maxflow (G, 1, 2, "searchtrees"), 10);
+
+## 'searchtrees' on multigraph chain bottleneck.
+%!test
+%! G = digraph ([1 1 2 2], [2 2 3 3], [2 3 4 5], "multigraph");
+%! assert (maxflow (G, 1, 3, "searchtrees"), 5);
+
+## 'searchtrees' ignores self-loops.
+%!test
+%! G = digraph ([1 1 2], [1 2 2], [100 5 50]);
+%! assert (maxflow (G, 1, 2, "searchtrees"), 5);
+
+## 'searchtrees' on unweighted digraph uses unit capacities.
+%!test
+%! G = digraph ([1 1 2 3], [2 3 4 4]);
+%! assert (maxflow (G, 1, 4, "searchtrees"), 2);
+
+## 'searchtrees' on trivial s == t returns 0.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [5 10 15]);
+%! assert (maxflow (G, 2, 2, "searchtrees"), 0);
+
+## 'searchtrees' on unreachable target returns 0.
+%!test
+%! G = digraph ([1 3], [2 4]);
+%! assert (maxflow (G, 1, 3, "searchtrees"), 0);
+
+## 'searchtrees' on disconnected graph returns 0.
+%!test
+%! G = graph ([1 3], [2 4]);
+%! assert (maxflow (G, 1, 3, "searchtrees"), 0);
+
+## 'searchtrees' on edgeless graph returns 0.
+%!test
+%! G = digraph (5);
+%! assert (maxflow (G, 1, 5, "searchtrees"), 0);
+
+## 'searchtrees' on single edge returns weight.
+%!test
+%! G = digraph (1, 2, 42);
+%! assert (maxflow (G, 1, 2, "searchtrees"), 42);
+
+## 'searchtrees' reverse direction on directed edge returns 0.
+%!test
+%! G = digraph (1, 2, 5);
+%! assert (maxflow (G, 2, 1, "searchtrees"), 0);
+
+## Case-insensitive algorithm name (digraph).
+%!test
+%! G = digraph ([1 1 2 3], [2 3 4 4], [5 8 7 3]);
+%! assert (maxflow (G, 1, 4, "AUGMENTPATH"), 8);
+%! assert (maxflow (G, 1, 4, "SearchTrees"), 8);
+%! assert (maxflow (G, 1, 4, "searchTREES"), 8);
+
+## Case-insensitive algorithm name (graph).
+%!test
+%! G = graph ([1 1 2 3], [2 3 4 4], [5 8 7 3]);
+%! assert (maxflow (G, 1, 4, "AUGMENTPATH"), 8);
+%! assert (maxflow (G, 1, 4, "SEARCHTREES"), 8);
+
+## 'augmentpath' and 'searchtrees' return the same mf on a varied digraph.
+%!test
+%! s = [1 1 2 2 3 3 4 4 5 5 6 6 7];
+%! t = [2 3 4 5 5 6 6 7 6 8 7 8 8];
+%! w = [10 5 8 4 3 6 2 9 1 7 5 3 6];
+%! G = digraph (s, t, w);
+%! mf_ap = maxflow (G, 1, 8, "augmentpath");
+%! mf_st = maxflow (G, 1, 8, "searchtrees");
+%! assert (mf_ap, mf_st);
+
+## 'augmentpath' and 'searchtrees' agree on a varied undirected graph.
+%!test
+%! s = [1 1 1 2 2 3 3 4 5 6];
+%! t = [2 3 4 5 6 6 7 7 7 7];
+%! w = [5 10 3 2 8 4 6 7 9 1];
+%! G = graph (s, t, w);
+%! mf_ap = maxflow (G, 1, 7, "augmentpath");
+%! mf_st = maxflow (G, 1, 7, "searchtrees");
+%! assert (mf_ap, mf_st);
+
+## 'augmentpath' and 'searchtrees' agree on unweighted CLRS-like graph.
+%!test
+%! s = [1 1 2 3 2 4 3 5 4 5];
+%! t = [2 3 3 2 4 3 5 4 6 6];
+%! G = digraph (s, t);
+%! mf_ap = maxflow (G, 1, 6, "augmentpath");
+%! mf_st = maxflow (G, 1, 6, "searchtrees");
+%! assert (mf_ap, mf_st);
+
+## 'augmentpath' and 'searchtrees' agree on multigraph.
+%!test
+%! G = digraph ([1 1 1 2 2 3 3 4], [2 2 3 3 4 4 5 5], ...
+%!              [4 2 5 3 1 4 2 6], "multigraph");
+%! mf_ap = maxflow (G, 1, 5, "augmentpath");
+%! mf_st = maxflow (G, 1, 5, "searchtrees");
+%! assert (mf_ap, mf_st);
+
+## Negative weights still error with algorithm option (digraph).
+%!error <negative|non-negative>
+%! G = digraph ([1 2], [2 3], [5, -1]);
+%! maxflow (G, 1, 3, "searchtrees");
+
+## Negative weights still error with algorithm option (graph).
+%!error <negative|non-negative>
+%! G = graph ([1 2], [2 3], [5, -1]);
+%! maxflow (G, 1, 3, "searchtrees");
+
+## NaN weights still error with algorithm option.
+%!error <NaN|finite>
+%! G = digraph ([1 2], [2 3], [5, NaN]);
+%! maxflow (G, 1, 3, "searchtrees");
+
+## Unknown algorithm name errors (digraph).
+%!error <algorithm|unknown|invalid>
+%! G = digraph (1, 2, 5);
+%! maxflow (G, 1, 2, "bogus");
+
+## Unknown algorithm name errors (graph).
+%!error <algorithm|unknown|invalid>
+%! G = graph (1, 2, 5);
+%! maxflow (G, 1, 2, "bogus");
+
+## Non-string algorithm arg errors.
+%!error <algorithm|string|invalid>
+%! G = digraph (1, 2, 5);
+%! maxflow (G, 1, 2, 42);
+
+## Empty-string algorithm arg errors.
+%!error <algorithm|string|invalid|non-empty>
+%! G = digraph (1, 2, 5);
+%! maxflow (G, 1, 2, "");
+
+## Cellstr algorithm arg errors (MATLAB requires a plain char row).
+%!error <algorithm|string|invalid>
+%! G = digraph (1, 2, 5);
+%! maxflow (G, 1, 2, {"augmentpath"});
+
+## 'pushrelabel' (MATLAB has it, we don't) errors.
+%!error <algorithm|unknown|invalid>
+%! G = digraph (1, 2, 5);
+%! maxflow (G, 1, 2, "pushrelabel");
+
+## Dot-notation dispatch with algorithm on digraph.
+%!test
+%! G = digraph ([1 1 2 3], [2 3 4 4], [5 8 7 3]);
+%! assert (G.maxflow (1, 4, "searchtrees"), 8);
+%! assert (G.maxflow (1, 4, "augmentpath"), 8);
+
+## Dot-notation dispatch with algorithm on graph.
+%!test
+%! G = graph ([1 1 2 3], [2 3 4 4], [5 8 7 3]);
+%! assert (G.maxflow (1, 4, "searchtrees"), 8);
+%! assert (G.maxflow (1, 4, "augmentpath"), 8);
+
+## Named-node identifiers work with algorithm.
+%!test
+%! G = digraph ([1 1 2 3], [2 3 4 4], [5 8 7 3], {"a","b","c","d"});
+%! assert (maxflow (G, "a", "d", "searchtrees"), 8);
+%! assert (maxflow (G, "a", "d", "augmentpath"), 8);
+
+## Named-node identifiers work with algorithm on graph.
+%!test
+%! G = graph ([1 2 3], [2 3 1], [5 5 5], {"a", "b", "c"});
+%! assert (maxflow (G, "a", 2, "searchtrees"), 10);
+%! assert (maxflow (G, "a", 2, "augmentpath"), 10);

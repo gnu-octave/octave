@@ -396,6 +396,8 @@ load_save_system::load_vars (std::istream& stream,
 
   for (;;)
     {
+      octave_quit ();
+
       bool global = false;
       octave_value tc;
 
@@ -995,6 +997,8 @@ load_save_system::save_vars (std::ostream& os,
       do_save (os, syminfo, fmt, save_as_floats);
 
       saved++;
+
+      octave_quit ();
     }
 
   return saved;
@@ -1092,6 +1096,8 @@ load_save_system::save_fields (std::ostream& os,
                    0, fmt, save_as_floats);
 
           saved++;
+          
+          octave_quit ();
         }
     }
 

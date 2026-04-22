@@ -715,8 +715,6 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
           {
             octave_value tc2;
 
-            octave_quit();
-
             std::string nm
               = read_mat5_binary_element (is, filename, swap, global, tc2);
 
@@ -724,6 +722,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               error ("load: reading cell data for '%s'", nm.c_str ());
 
             cell_array(i) = tc2;
+
+            octave_quit();
           }
 
         tc = cell_array;
@@ -1206,13 +1206,14 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             // fields subelements
             for (octave_idx_type j = 0; j < n; j++)
               {
-                octave_quit();
                 for (octave_idx_type i = 0; i < n_fields; i++)
                   {
                     octave_value fieldtc;
                     read_mat5_binary_element (is, filename, swap, global,
                                               fieldtc);
                     elt[i](j) = fieldtc;
+
+                    octave_quit();
                   }
               }
 
@@ -1953,6 +1954,8 @@ write_mat5_cell_array (std::ostream& os, const Cell& cell,
       if (! save_mat5_binary_element (os, ov, "", mark_global,
                                       false, save_as_floats))
         return false;
+
+      octave_quit ();
     }
 
   return true;
@@ -2920,6 +2923,8 @@ save_mat5_binary_element (std::ostream& os,
                 if (! retval2)
                   error ("save: error while writing '%s' to MAT file",
                          name.c_str ());
+
+                octave_quit ();
               }
           }
       }

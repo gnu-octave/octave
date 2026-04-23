@@ -32,26 +32,27 @@
 .fi
 ..
 .\" --------------------------------------------------------------------
-.TH OCTAVE-CONFIG 1 "3 January 2014" "GNU Octave"
+.TH octave-config 1 "April 2026" "GNU Octave"
 .SH NAME
-octave-config - GNU Octave component and library information retrieval
+octave\-config \- GNU Octave component and library information retrieval
 .SH SYNOPSIS
-\fBoctave-config\fP [\fIOPTION\fP]...
+\fBoctave-config\fP [\fIoption\fP]\|.\|.\|.\&
 .SH DESCRIPTION
-.B octave-config
+.B octave\-config
 is a tool to obtain directory information for \fB.oct\fP and \fB.m\fP files for
-.BR octave (1).
+.MR octave 1 .
 .SH OPTIONS
-.TP 8
-.B \-\-m-site-dir
+.TP
+.B \-\-m\-site\-dir
 Display the main directory for local, or site-specific, \fB.m\fP script files.
 .TP
-.B \-\-oct-site-dir
+.B \-\-oct\-site\-dir
 Display the main directory for local, or site-specific, \fB.oct\fP dynamic-link libraries.
 .TP
 .B \-p \fIVAR\fP\fR,\fB \-\-print \fIVAR\fP
 Print the default value of the Octave configuration variable \fIVAR\fP.
 Recognized variables are:
+
 .RS
 .Vb
     API_VERSION                 LOCALARCHLIBDIR
@@ -61,32 +62,33 @@ Recognized variables are:
     DATADIR                     LOCALVERARCHLIBDIR
     DATAROOTDIR                 LOCALVERFCNFILEDIR
     DEFAULT_PAGER               LOCALVEROCTFILEDIR
-    EXEC_PREFIX                 MAN1DIR
-    EXEEXT                      MAN1EXT
-    FCNFILEDIR                  MANDIR
-    IMAGEDIR                    OCTAVE_EXEC_HOME
-    INCLUDEDIR                  OCTAVE_HOME
-    INFODIR                     OCTDATADIR
-    INFOFILE                    OCTDOCDIR
-    LIBDIR                      OCTFILEDIR
-    LIBEXECDIR                  OCTFONTSDIR
-    LOCALAPIARCHLIBDIR          OCTINCLUDEDIR
-    LOCALAPIFCNFILEDIR          OCTLIBDIR
-    LOCALAPIOCTFILEDIR          STARTUPFILEDIR
-    LOCALAPIPKGDIR              VERSION
+    EXEEXT                      MAN1DIR
+    FCNFILEDIR                  MAN1EXT
+    IMAGEDIR                    MANDIR
+    INCLUDEDIR                  OCTAVE_EXEC_HOME
+    INFODIR                     OCTAVE_HOME
+    INFOFILE                    OCTDATADIR
+    LIBDIR                      OCTDOCDIR
+    LIBEXECDIR                  OCTFILEDIR
+    LOCALAPIARCHLIBDIR          OCTFONTSDIR
+    LOCALAPIFCNFILEDIR          OCTINCLUDEDIR
+    LOCALAPIOCTFILEDIR          OCTLIBDIR
+    LOCALAPIPKGDIR              STARTUPFILEDIR
+                                VERSION
 .Ve
 .RE
 .TP
 .B \-v\fR,\fB \-\-version
 Display the version number of
-.BR octave (1).
+.MR octave 1 .
 .TP
-\fB\-h\fP, \fB\-?\fP, \fB\-\-help\fP
+\fB\-h\fP, \fB\-\-help\fP
 Print help message.
 .SH AUTHOR
-John W. Eaton <jwe@octave.org>
-
-This manual page was contributed by Dirk Eddelbuettel <edd@debian.org>
-for the Debian GNU/Linux distribution but may be used by others.
+John W. Eaton and many others.  The list of contributors to the Octave project
+may be shown from within \%\fBoctave\fP by executing
+"\fB\%doc \%Acknowledgements\fP".  The list is also available online at
+.UR https://\:\%docs.octave.org/\:\%latest/\:\%Acknowledgements\:\%.html
+.UE .
 .SH "SEE ALSO"
-octave (1).
+.MR octave 1 .

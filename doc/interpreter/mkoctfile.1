@@ -32,28 +32,29 @@
 .fi
 ..
 .\" --------------------------------------------------------------------
-.TH MKOCTFILE 1 "3 January 2014" "GNU Octave"
+.TH mkoctfile 1 "April 2026" "GNU Octave"
 .SH NAME
-mkoctfile \- Compile dynamic-load modules for GNU Octave
+mkoctfile \- Compile dynamic\-load modules for GNU Octave
 .SH SYNOPSIS
-\fBmkoctfile\fP [\fIOPTION\fP]... file...
+\fBmkoctfile\fP [\fIoption\fP]\|.\|.\|.\& FILE\|.\|.\|.\&
 .SH DESCRIPTION
-\fBmkoctfile\fP is used to compile C, C++, or Fortran source code in
-to a dynamically loadable \fI.oct\fP file for
-.BR octave (1).
+\fBmkoctfile\fP is used to compile C, C++, or Fortran source code in to a
+dynamically loadable \fB.oct\fP file for
+.MR octave 1 .
 .SH OPTIONS
-.TP 8
-\fB\-h\fP, \fB\-?\fP, \fB\-\-help\fP
+.TP
+\fB\-h\fP, \fB\-\-help\fP
 Print help message.
 .TP
 .B \-I\fIdir\fP
-Add include directory \fIdir\fP to compile commands.
+Add include directory \fIdir\fP to compile command.
 .TP
-.B \-idirafter\fIdir\fP
-Add include directory to second include search path after '\fB\-I\fP'.
+.B \-idirafter \fIdir\fP
+Add include directory to second include search path for compilation
+after '\fB\-I\fP'.
 .TP
 .B \-D\fIdef\fP
-Add definition \fIdef\fP to compiler command.
+Add definition \fIdef\fP to compile command.
 .TP
 .B \-l\fIlib\fP
 Add library \fIlib\fP to link command.
@@ -61,46 +62,38 @@ Add library \fIlib\fP to link command.
 .B \-L\fIdir\fP
 Add library directory \fIdir\fP to link command.
 .TP
-.B \-R\fIdir\fP
-Pass \fB\-R\fP\fIdir\fP to link command.
-.TP
-.B \-g
-Enable debugging option for all compilers.
+.B \-M\fR,\fB \-\-depend
+Generate dependency files (\fB.d\fP) for C and C++ source files.
 .TP
 .B \-pthread
 Add \fB\-pthread\fP to link command.
 .TP
+.B \-R\fIdir\fP
+Pass \fB\-R\fP\fIdir\fP to link command.
+.TP
+.B \-Wl,\fIoption\fP
+Pass option to the linker such as \fB\-Wl,\-rpath=...\fP
+.TP
 .B \-W...
-Pass flags to the compiler such as \fB\-Wa,\fP\fIOPTION\fP.
+Pass flags to the compiler such as \fB\-Wa,\fP\fIoption\fP.
 .TP
-.B \-Wl,...
-Pass flags to the linker such as \fB\-Wl,\-rpath=...\fP
-.TP
-.B \-M\fR,\fB \-\-depend
-Generate dependency files (.d) for C and C++ source files.
-.TP
-.B \-c
-Compile but do not link.
-.TP
-.B \-\-link\-stand\-alone
-Link a stand-alone executable file.
-.TP
-.B \-s\fR,\fB \-\-strip
-Strip the output file.
-.TP
-.B \-\-mex
-Create a MEX file.  Set the default output extension to \fB.mex\fP.
+.B \-c\fR,\fB \-\-compile
+Compile, but do not link.
 .TP
 .B \-o \fIfile\fP\fR,\fB \-\-output \fIfile\fP
-Output filename.  Default extension is \fB.oct\fP (or \fB.mex\fP if \-\-mex is
-specified) unless linking a stand-alone executable.
+Output filename.  Default extension is "\fB.oct\fP" (or "\fB.mex\fP" if
+\fB\-\-mex\fP is specified) unless linking a stand-alone executable.
+.TP
+.B \-g
+Enable debugging option for all compilers.
 .TP
 .B \-p \fIVAR\fP\fR,\fB \-\-print \fIVAR\fP
 Print configuration variable \fIVAR\fP.  There are three categories of
 variables:
 .IP
 Octave configuration variables that users may override with environment
-variables.  These are used in commands that mkoctfile executes.
+variables.  These are used in commands that \%\fBmkoctfile\fP executes.
+
 .RS
 .Vb
     ALL_CFLAGS                  INCLUDEDIR
@@ -125,7 +118,9 @@ variables.  These are used in commands that mkoctfile executes.
 .Ve
 .RE
 .IP
-Octave configuration variables as above, but currently unused by mkoctfile.
+Octave configuration variables as above, but currently unused by
+\%\fBmkoctfile\fP.
+
 .RS
 .Vb
     AR
@@ -144,14 +139,15 @@ Octave configuration variables as above, but currently unused by mkoctfile.
 .RE
 .IP
 Octave configuration variables that are provided for informational purposes
-only.  Except for OCTAVE_HOME and OCTAVE_EXEC_HOME, users may not override
-these variables.
+only.  Except for \%\fIOCTAVE_HOME\fP and \%\fIOCTAVE_EXEC_HOME\fP, users may
+not override these variables.
 .IP
-If OCTAVE_HOME or OCTAVE_EXEC_HOME are set in the environment, then other
-variables are adjusted accordingly with OCTAVE_HOME or OCTAVE_EXEC_HOME
-substituted for the original value of the directory specified by the
-\-\-prefix or \-\-exec\-prefix options that were used when Octave was
-configured.
+If \%\fIOCTAVE_HOME\fP or \%\fIOCTAVE_EXEC_HOME\fP are set in the environment,
+then other variables are adjusted accordingly with \%\fIOCTAVE_HOME\fP or
+\%\fIOCTAVE_EXEC_HOME\fP substituted for the original value of the directory
+specified by the \%\-\-\fIprefix\fP or \%\-\-\fIexec\-prefix\fP options that
+were used when Octave was configured.
+
 .RS
 .Vb
     API_VERSION                 LOCALARCHLIBDIR
@@ -161,27 +157,41 @@ configured.
     DATADIR                     LOCALVERARCHLIBDIR
     DATAROOTDIR                 LOCALVERFCNFILEDIR
     DEFAULT_PAGER               LOCALVEROCTFILEDIR
-    EXEC_PREFIX                 MAN1DIR
-    EXEEXT                      MAN1EXT
-    FCNFILEDIR                  MANDIR
-    IMAGEDIR                    OCTAVE_EXEC_HOME
-    INCLUDEDIR                  OCTAVE_HOME
-    INFODIR                     OCTDATADIR
-    INFOFILE                    OCTDOCDIR
-    LIBDIR                      OCTFILEDIR
-    LIBEXECDIR                  OCTFONTSDIR
-    LOCALAPIARCHLIBDIR          OCTINCLUDEDIR
-    LOCALAPIFCNFILEDIR          OCTLIBDIR
-    LOCALAPIOCTFILEDIR          STARTUPFILEDIR
-    LOCALAPIPKGDIR              VERSION
+    EXEEXT                      MAN1DIR
+    FCNFILEDIR                  MAN1EXT
+    IMAGEDIR                    MANDIR
+    INCLUDEDIR                  OCTAVE_EXEC_HOME
+    INFODIR                     OCTAVE_HOME
+    INFOFILE                    OCTDATADIR
+    LIBDIR                      OCTDOCDIR
+    LIBEXECDIR                  OCTFILEDIR
+    LOCALAPIARCHLIBDIR          OCTFONTSDIR
+    LOCALAPIFCNFILEDIR          OCTINCLUDEDIR
+    LOCALAPIOCTFILEDIR          OCTLIBDIR
+    LOCALAPIPKGDIR              STARTUPFILEDIR
+                                VERSION
 .Ve
 .RE
+.TP
+.B \-\-link\-stand\-alone
+Link a stand-alone executable file.
+.TP
+.B \-\-mex
+Create a MEX file.  Set the default output extension to "\fB.mex\fP".  Link to
+\%liboctmex instead of \%liboctinterp and \%liboctave.
+.TP
+.B \-s\fR,\fB \-\-strip
+Strip output file.
+.TP
+.B \-n\fR,\fB \-\-dry-run\fR,\fB \-\-just-print\fR
+Print commands, but do not execute them.
 .TP
 .B \-v\fR,\fB \-\-verbose
 Echo commands as they are executed.
 .TP
-.B file
-Compile or link file.  Recognized file types are:
+.B FILE
+Compile or link FILE.  Recognized file types are:
+
 .RS
 .Vb
    .c    C source
@@ -201,10 +211,10 @@ Compile or link file.  Recognized file types are:
 .Ve
 .RE
 .SH AUTHOR
-John W. Eaton <jwe@octave.org>
-
-This manual page was contributed by Dirk Eddelbuettel
-<edd@debian.org> for the Debian GNU/Linux distribution but
-may be used by others.
+John W. Eaton and many others.  The list of contributors to the Octave project
+may be shown from within \%\fBoctave\fP by executing
+"\fB\%doc \%Acknowledgements\fP".  The list is also available online at
+.UR https://\:\%docs.octave.org/\:\%latest/\:\%Acknowledgements\:\%.html
+.UE .
 .SH "SEE ALSO"
-octave (1).
+.MR octave 1 .

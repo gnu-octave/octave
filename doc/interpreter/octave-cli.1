@@ -32,62 +32,99 @@
 .fi
 ..
 .\" --------------------------------------------------------------------
-.TH OCTAVE-CLI 1 "03 January 2014" "GNU Octave"
+.TH octave-cli 1 "April 2026" "GNU Octave"
 .SH NAME
-octave-cli \- A high-level interactive language for numerical computations.
+octave\-cli \- A high-level interactive programming language for numerical
+computations
 .SH SYNOPSIS
-\fBoctave-cli\fP [\fIoptions\fP]... [\fIfile\fP]
+\fBoctave\-cli\fP [\fIoption\fP]\|.\|.\|.\& [\fIFILE\fP]
 .SH DESCRIPTION
-Octave is a high-level language, primarily intended for numerical
-computations.  It provides a convenient command line interface for
-solving linear and nonlinear problems numerically.  \fBoctave-cli\fP
-has been compiled without any GUI support (Qt) which makes it smaller
-than the default \fBoctave\fP executable, but also limits it to
-providing just the command line interface (CLI).
+Octave is a high-level interactive scientific programming language.  It has a
+powerful mathematics-oriented syntax for solving problems numerically, as well
+as built-in 2\-D/3\-D plotting and visualization tools.  Programs may also be
+run in batch mode to process data without interaction.  \%\fBoctave-cli\fP has
+been compiled without any GUI support (Qt) which makes it smaller than the
+default \%\fBoctave\fP executable; the integrated development environment is
+restricted to the command\-line interface (CLI).  
 .SH OPTIONS
-The complete set of command-line options for \fBoctave-cli\fP is available
-by running the following command from the shell.
+A list of the most useful command-line options for \%\fBoctave\-cli\fP is
+available by running the following command from the shell.
 .Vb
 
-    octave-cli \-\-help
+.B    octave\-cli \-\-help
 .Ve
 .SH DOCUMENTATION
 The primary documentation for Octave is written using Texinfo, the GNU
-documentation system, which allows the same source files to be used to
-produce online and printed versions of the manual.
+documentation system, which allows the same source files to produce both online
+and printed versions of the manual.
 .PP
-You can read the online copy of the Octave documentation by issuing
-the following command from within Octave.
+You can read the built-in copy of the Octave documentation by issuing the
+following command from within \%\fBoctave\-cli\fP.
 .Vb
 
-    octave:1> doc
+    octave:1> \fBdoc\fP
 
 .Ve
-The Info files may also be read with a stand-alone program such as
-\fBinfo\fP or \fBxinfo\fP.  HTML, Postscript, or PDF versions of the
-documentation are installed on many systems as well.
+The Info files may also be read with a stand-alone program such as \%\fBinfo\fP
+or \%\fBxinfo\fP.  HTML, Postscript, or PDF versions of the documentation are
+installed on many systems as well.  The latest version of the documentation is
+available at
+.UR https://\:\%docs.octave.org/\:\%latest
+.UE .
 .SH BUGS
-The Octave project maintains a bug tracker at https://bugs.octave.org.
+The Octave project maintains a bug tracker at
+.UR https://\:\%bugs.octave.org
+.UE .
+.PP
 Before submitting a new item please read the instructions at
-https://www.octave.org/bugs.html on how to submit a useful report.
+.UR https://\:\%www.octave.org/\:\%bugs\:\%.html
+.UE
+on how to submit a useful report.
 .SH FILES
-Upon startup Octave looks for four initialization files.  Each file
-may contain any number of valid Octave commands.
+Upon startup Octave looks for four initialization files.  Each file may contain
+any number of valid Octave commands.
 .TP
-\fIoctave-home\fP/share/octave/site/m/startup/octaverc
+\%\fIoctave-home\fP/\:\%share/\:\%octave/\:\%site/m/\:\%startup/\:\%octaverc
 Site-wide initialization file which changes options for all users.
-\fIoctave-home\fP is the directory where Octave was installed such as
-\fB/usr/local\fP.
+\%\fIoctave-home\fP is the directory where Octave was installed such as
+\%\fI/usr/local\fP.
 .TP
-\fIoctave-home\fP/share/octave/\fIversion\fP/m/startup/octaverc
-Site-wide initialization file for Octave version \fIversion\fP.
+\%\fIoctave-home\fP/\:\%share/\:\%octave/\:\%\fIversion\fP/m/\:\%startup/\:\%octaverc
+Site-wide initialization file for Octave version \%\fIversion\fP.
 .TP
 ~/.octaverc
 User's personal initialization file.
 .TP
 \&\.octaverc
 Project-specific initialization file located in the current directory.
+.SH "INTERNET RESOURCES"
+Home page:
+.UR https://\:\%octave.org
+.UE
+.br
+Documentation:
+.UR https://\:\%docs.octave.org/\:\%latest
+.UE
+.br
+Support resources:
+.UR https://\:\%octave.org/\:\%support
+.UE
+.br
+Packages:
+.UR https://\:\%packages.octave.org
+.UE
+.br
+Online forum:
+.UR https://\:\%octave.discourse.group
+.UE
+.br
 .SH AUTHOR
-John W. Eaton <jwe@octave.org>
+John W. Eaton and many others.  The list of contributors to the Octave project
+may be shown from within \%\fBoctave\-cli\fP by executing
+"\fB\%doc \%Acknowledgements\fP".  The list is also available online at
+.UR https://\:\%docs.octave.org/\:\%latest/\:\%Acknowledgements\:\%.html
+.UE .
 .SH SEE ALSO
-octave (1)
+.MR octave 1 ,
+.MR mkoctfile 1 ,
+.MR octave\-config 1 .

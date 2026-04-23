@@ -148,6 +148,14 @@ They will error if passed any other input.  In previous versions of Octave,
 `all` and `any` returned 0 if the input type was neither numeric nor logical,
 which is not MATLAB compatible.
 
+### Command-line options removed without the usual deprecation period
+
+The command-line option `-?` as a synonym for `-h` or `--help` has been removed
+from
+
+* mkoctfile
+* octave-config
+
 ### Old release news
 
 - [Octave 11.x](etc/NEWS.11.md)

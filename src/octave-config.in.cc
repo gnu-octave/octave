@@ -164,7 +164,7 @@ main (int argc, char **argv)
     {
       std::string arg (argv[i]);
 
-      if (arg == "-h" || arg == "-?" || arg == "--help")
+      if (arg == "-h" || arg == "--help")
         {
           std::cout << usage_msg << std::endl;
           std::cout << help_msg;

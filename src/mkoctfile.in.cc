@@ -390,7 +390,7 @@ static std::string help_msg =
   "\n"
   "Options:\n"
   "\n"
-  "  -h, -?, --help          Print this message.\n"
+  "  -h, --help              Print this message.\n"
   "\n"
   "  -IDIR                   Add -IDIR to compile commands.\n"
   "\n"
@@ -799,7 +799,7 @@ main (int argc, char **sys_argv)
         {
           // Ignored for now.
         }
-      else if (arg == "-h" || arg == "-?" || arg == "-help" || arg == "--help")
+      else if (arg == "-h" || arg == "-help" || arg == "--help")
         {
           std::cout << usage_msg << std::endl;
           std::cout << help_msg << std::endl;

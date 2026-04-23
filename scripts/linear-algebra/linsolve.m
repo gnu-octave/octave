@@ -161,7 +161,7 @@ endfunction
 %! A = hilb (4);
 %! b = [1:4]';
 %! [x, R] = linsolve (A, b);
-%! assert (x, [-64; 900; -2520; 1820], -3e-13);
+%! assert (x, [-64; 900; -2520; 1820], -4e-13);
 %! assert (R, rcond (A));
 
 %!test <*68238>

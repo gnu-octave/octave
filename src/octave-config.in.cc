@@ -57,7 +57,7 @@ static std::string help_msg =
   "\n"
   "Options:\n"
   "\n"
-  "  -h, -?, --help        Print this message.\n"
+  "  -h, --help            Print this message.\n"
   "\n"
   "  --m-site-dir          Print the name of the directory where Octave\n"
   "                        expects to find locally installed .m files.\n"
@@ -75,19 +75,19 @@ static std::string help_msg =
   "                          DATADIR                LOCALVERARCHLIBDIR\n" 
   "                          DATAROOTDIR            LOCALVERFCNFILEDIR\n" 
   "                          DEFAULT_PAGER          LOCALVEROCTFILEDIR\n" 
-  "                          EXEC_PREFIX            MAN1DIR\n"            
-  "                          EXEEXT                 MAN1EXT\n"            
-  "                          FCNFILEDIR             MANDIR\n"             
-  "                          IMAGEDIR               OCTAVE_EXEC_HOME\n"   
-  "                          INCLUDEDIR             OCTAVE_HOME\n"        
-  "                          INFODIR                OCTDATADIR\n"         
-  "                          INFOFILE               OCTDOCDIR\n"          
-  "                          LIBDIR                 OCTFILEDIR\n"         
-  "                          LIBEXECDIR             OCTFONTSDIR\n"        
-  "                          LOCALAPIARCHLIBDIR     OCTINCLUDEDIR\n"      
-  "                          LOCALAPIFCNFILEDIR     OCTLIBDIR\n"          
-  "                          LOCALAPIOCTFILEDIR     STARTUPFILEDIR\n"     
-  "                          LOCALAPIPKGDIR         VERSION\n"            
+  "                          EXEEXT                 MAN1DIR\n"            
+  "                          FCNFILEDIR             MAN1EXT\n"            
+  "                          IMAGEDIR               MANDIR\n"             
+  "                          INCLUDEDIR             OCTAVE_EXEC_HOME\n"   
+  "                          INFODIR                OCTAVE_HOME\n"        
+  "                          INFOFILE               OCTDATADIR\n"         
+  "                          LIBDIR                 OCTDOCDIR\n"          
+  "                          LIBEXECDIR             OCTFILEDIR\n"         
+  "                          LOCALAPIARCHLIBDIR     OCTFONTSDIR\n"        
+  "                          LOCALAPIFCNFILEDIR     OCTINCLUDEDIR\n"      
+  "                          LOCALAPIOCTFILEDIR     OCTLIBDIR\n"          
+  "                          LOCALAPIPKGDIR         STARTUPFILEDIR\n"     
+  "                                                 VERSION\n"            
   "\n"
   "  -v, --version         Print the Octave version number.\n"
   "\n";
@@ -164,7 +164,7 @@ main (int argc, char **argv)
     {
       std::string arg (argv[i]);
 
-      if (arg == "-h" || arg == "-?" || arg == "--help")
+      if (arg == "-h" || arg == "--help")
         {
           std::cout << usage_msg << std::endl;
           std::cout << help_msg;

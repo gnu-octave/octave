@@ -152,19 +152,19 @@
 ##    DATADIR                     LOCALVERARCHLIBDIR
 ##    DATAROOTDIR                 LOCALVERFCNFILEDIR
 ##    DEFAULT_PAGER               LOCALVEROCTFILEDIR
-##    EXEC_PREFIX                 MAN1DIR
-##    EXEEXT                      MAN1EXT
-##    FCNFILEDIR                  MANDIR
-##    IMAGEDIR                    OCTAVE_EXEC_HOME
-##    INCLUDEDIR                  OCTAVE_HOME
-##    INFODIR                     OCTDATADIR
-##    INFOFILE                    OCTDOCDIR
-##    LIBDIR                      OCTFILEDIR
-##    LIBEXECDIR                  OCTFONTSDIR
-##    LOCALAPIARCHLIBDIR          OCTINCLUDEDIR
-##    LOCALAPIFCNFILEDIR          OCTLIBDIR
-##    LOCALAPIOCTFILEDIR          STARTUPFILEDIR
-##    LOCALAPIPKGDIR              VERSION
+##    EXEEXT                      MAN1DIR
+##    FCNFILEDIR                  MAN1EXT
+##    IMAGEDIR                    MANDIR
+##    INCLUDEDIR                  OCTAVE_EXEC_HOME
+##    INFODIR                     OCTAVE_HOME
+##    INFOFILE                    OCTDATADIR
+##    LIBDIR                      OCTDOCDIR
+##    LIBEXECDIR                  OCTFILEDIR
+##    LOCALAPIARCHLIBDIR          OCTFONTSDIR
+##    LOCALAPIFCNFILEDIR          OCTINCLUDEDIR
+##    LOCALAPIOCTFILEDIR          OCTLIBDIR
+##    LOCALAPIPKGDIR              STARTUPFILEDIR
+##                                VERSION
 ## @end group
 ## @end example
 ##

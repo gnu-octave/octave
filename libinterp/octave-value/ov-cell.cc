@@ -721,11 +721,13 @@ octave_cell::save_ascii (std::ostream& os)
         {
           octave_value o_val = tmp.elem (i);
 
-          // Recurse to save sub-value.
+          // Recurse to save each cell element.
           bool b = save_text_data (os, o_val, CELL_ELT_TAG, false, 0);
 
           if (! b)
             return ! os.fail ();
+
+          octave_quit ();
         }
     }
   else
@@ -743,11 +745,13 @@ octave_cell::save_ascii (std::ostream& os)
             {
               octave_value o_val = tmp.elem (i, j);
 
-              // Recurse to save sub-value.
+              // Recurse to save each element.
               bool b = save_text_data (os, o_val, CELL_ELT_TAG, false, 0);
 
               if (! b)
                 return ! os.fail ();
+
+              octave_quit ();
             }
 
           os << "\n";
@@ -828,15 +832,16 @@ octave_cell::load_ascii (std::istream& is)
                   octave_value t2;
                   bool dummy;
 
-                  // recurse to read cell elements
-                  std::string nm = read_text_data (is, "",
-                                                   dummy, t2, i);
+                  // Recurse to read each cell element.
+                  std::string nm = read_text_data (is, "", dummy, t2, i);
 
                   if (nm != CELL_ELT_TAG)
                     error ("load: cell array element had unexpected name");
 
                   if (is)
                     tmp.elem (i, j) = t2;
+
+                  octave_quit ();
                 }
             }
 

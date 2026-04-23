@@ -722,6 +722,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               error ("load: reading cell data for '%s'", nm.c_str ());
 
             cell_array(i) = tc2;
+
+            octave_quit();
           }
 
         tc = cell_array;
@@ -1210,6 +1212,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     read_mat5_binary_element (is, filename, swap, global,
                                               fieldtc);
                     elt[i](j) = fieldtc;
+
+                    octave_quit();
                   }
               }
 
@@ -1950,6 +1954,8 @@ write_mat5_cell_array (std::ostream& os, const Cell& cell,
       if (! save_mat5_binary_element (os, ov, "", mark_global,
                                       false, save_as_floats))
         return false;
+
+      octave_quit ();
     }
 
   return true;
@@ -2399,7 +2405,7 @@ save_mat5_binary_element (std::ostream& os,
     }
   // Guarantee that memory is freed regardless of path through code.
   octave::unwind_action free_memory ([u16_str] ()
-                                     { if (u16_str != nullptr) free (u16_str); }); 
+                                     { if (u16_str != nullptr) free (u16_str); });
 
   if (conv_u16)
     {
@@ -2917,6 +2923,8 @@ save_mat5_binary_element (std::ostream& os,
                 if (! retval2)
                   error ("save: error while writing '%s' to MAT file",
                          name.c_str ());
+
+                octave_quit ();
               }
           }
       }

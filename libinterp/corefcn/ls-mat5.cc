@@ -376,11 +376,6 @@ read_mat5_integer_data (std::istream& is, octave_uint64 *m,
                         octave_idx_type count, bool swap,
                         mat5_data_type type);
 
-template void
-read_mat5_integer_data (std::istream& is, int *m,
-                        octave_idx_type count, bool swap,
-                        mat5_data_type type);
-
 #define OCTAVE_MAT5_INTEGER_READ(TYP)                                   \
   {                                                                     \
     TYP re (dims);                                                      \

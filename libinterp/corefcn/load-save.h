@@ -71,6 +71,7 @@ public:
     // MAT_BINARY options
     MAT_BINARY_V5 = 1,
     MAT_BINARY_V7,
+    MAT_NOCOMPRESS,
     // zero means no option.
     NO_OPTION = 0
   };

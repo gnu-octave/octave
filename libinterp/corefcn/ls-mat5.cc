@@ -648,7 +648,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
   global = (flags & 0x0400) != 0; // global variable?
 
-  logicalvar = (flags & 0x0200) != 0; // boolean ?
+  logicalvar = (flags & 0x0200) != 0; // boolean?
 
   arrayclass = static_cast<arrayclasstype> (flags & 0xff);
 
@@ -2390,13 +2390,13 @@ save_mat5_binary_element (std::ostream& os,
   int32_t flags = 0;
   int32_t nnz_32 = 0;
   std::string cname = tc.class_name ();
-  std::size_t max_namelen = 63;
+  const std::size_t max_namelen = 63;
 
   const dim_vector& dv = tc.dims ();
   int nd = tc.ndims ();
   int dim_len = 4*nd;
 
-  static octave_idx_type max_dim_val = std::numeric_limits<int32_t>::max ();
+  constexpr octave_idx_type max_dim_val = std::numeric_limits<int32_t>::max ();
 
   // Strings need to be converted here (or dim-vector will be off).
   charNDArray chm;
@@ -2469,7 +2469,7 @@ save_mat5_binary_element (std::ostream& os,
 
 #if defined (HAVE_ZLIB)
 
-  if (mat7_format && ! compressing)
+  if (mat7_format && compressing)
     {
       bool ret = false;
 
@@ -2478,7 +2478,7 @@ save_mat5_binary_element (std::ostream& os,
       // The code seeks backwards in the stream to fix the header.
       // Can't do this with zlib, so use a stringstream.
       ret = save_mat5_binary_element (buf, tc, name, mark_global, true,
-                                      save_as_floats, true);
+                                      save_as_floats, false);
 
       if (ret)
         {

@@ -59,9 +59,11 @@ extern OCTINTERP_API int
 read_mat5_binary_file_header (std::istream& is, bool& swap,
                               bool quiet = false,
                               const std::string& filename = "");
+
 extern OCTINTERP_API std::string
 read_mat5_binary_element (std::istream& is, const std::string& filename,
                           bool swap, bool& global, octave_value& tc);
+
 extern OCTINTERP_API bool
 save_mat5_binary_element (std::ostream& os,
                           const octave_value& tc, const std::string& name,

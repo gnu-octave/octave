@@ -156,6 +156,11 @@ from
 * mkoctfile
 * octave-config
 
+### Build system
+
+- Octave now requires a C++ compiler that is compliant with C++20 (preferably
+  with GNU extensions).
+
 ### Old release news
 
 - [Octave 11.x](etc/NEWS.11.md)

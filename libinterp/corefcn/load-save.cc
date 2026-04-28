@@ -544,6 +544,7 @@ load_save_system::parse_save_options (const string_vector& argv,
 
   bool do_double = false;
   bool do_tabs = false;
+  bool no_compression = false;
 
   for (int i = 0; i < argc; i++)
     {
@@ -583,13 +584,19 @@ load_save_system::parse_save_options (const string_vector& argv,
         {
           error ("save: Matlab file format -v7.3 is not yet implemented");
         }
-#if defined (HAVE_ZLIB)
       else if (argv[i] == "-v7" || argv[i] == "-V7" || argv[i] == "-7"
                || argv[i] == "-mat7-binary")
         {
+#if defined (HAVE_ZLIB)
           fmt.set_type (MAT7_BINARY);
-        }
+#else
+          err_disabled_feature ("save", "Matlab v7 format (zlib)");
 #endif
+        }
+      else if (argv[i] == "-nocompression")
+        {
+          no_compression = true;
+        }
       else if (argv[i] == "-mat" || argv[i] == "-m"
                || argv[i] == "-v6" || argv[i] == "-V6" || argv[i] == "-6"
                || argv[i] == "-mat-binary")
@@ -647,6 +654,21 @@ load_save_system::parse_save_options (const string_vector& argv,
         fmt.set_option (MAT_ASCII_TABS);
       else
         warning (R"(save: "-tabs" option only has an effect with "-ascii")");
+    }
+
+  if (no_compression)
+    {
+      // FIXME: Add v7.3 format when it is supported.
+      if (fmt.type () == MAT7_BINARY)
+        {
+          // FIXME: Currently supporting this option two ways:
+          // 1) option of format, 2) "use_zlib" variable passed between fcns.
+          // Ideally, settle on one strategy.
+          fmt.set_option (MAT_NOCOMPRESS);
+          use_zlib = false;
+        }
+      else
+        warning (R"(save: "-nocompression" option only has an effect with "-v7" or "-v7.3")");
     }
 
   if (append && use_zlib
@@ -857,8 +879,8 @@ load_save_system::dump_octave_core ()
         }
       else
 #endif
-        // don't insert any commands here!  The open brace below must
-        // go with the else above!
+        // Don't insert any statements here!
+        // The brace below must go with the else above!
         {
 #if defined (HAVE_ZLIB)
           if (use_zlib)
@@ -1043,7 +1065,8 @@ load_save_system::do_save (std::ostream& os, const octave_value& tc,
       break;
 
     case MAT7_BINARY:
-      save_mat5_binary_element (os, tc, name, global, true, save_as_floats);
+      save_mat5_binary_element (os, tc, name, global, true, save_as_floats,
+                                ! (fmt.options () & MAT_NOCOMPRESS));
       break;
 
     default:
@@ -1096,7 +1119,7 @@ load_save_system::save_fields (std::ostream& os,
                    0, fmt, save_as_floats);
 
           saved++;
-          
+
           octave_quit ();
         }
     }
@@ -1297,7 +1320,11 @@ load_save_system::load (const octave_value_list& args, int nargout)
       else if (argv[i] == "-v7" || argv[i] == "-V7" || argv[i] == "-7"
                || argv[i] == "-mat7-binary")
         {
+#if defined (HAVE_ZLIB)
           format = MAT7_BINARY;
+#else
+          err_disabled_feature ("load", "Matlab v7 format (zlib)");
+#endif
         }
       else if (argv[i] == "-mat" || argv[i] == "-m"
                || argv[i] == "-v6" || argv[i] == "-V6" || argv[i] == "-6"
@@ -1388,8 +1415,8 @@ load_save_system::load (const octave_value_list& args, int nargout)
         }
       else
 #endif
-        // don't insert any statements here; the "else" above has to
-        // go with the "if" below!!!!!
+        // Don't insert any statements here!
+        // The "else" above has to go with the "if" below!
         if (format.type () != UNKNOWN)
           {
             i++;
@@ -1485,7 +1512,6 @@ load_save_system::save (const octave_value_list& args, int nargout)
   bool append = false;
   bool use_zlib = false;
 
-
   // get default options
   parse_save_options (save_default_options (), format, append,
                       save_as_floats, use_zlib);
@@ -1513,29 +1539,24 @@ load_save_system::save (const octave_value_list& args, int nargout)
 #if defined (HAVE_HDF5)
       if (format.type () == HDF5)
         error ("save: cannot write HDF5 format to stdout");
-      else
 #endif
-        // don't insert any commands here!  the brace below must go
-        // with the "else" above!
-        {
-          if (append)
-            warning ("save: ignoring -append option for output to stdout");
 
-          if (nargout == 0)
-            save_vars (argv, i, argc, octave_stdout, format,
-                       save_as_floats, true);
-          else
-            {
-              std::ostringstream output_buf;
-              save_vars (argv, i, argc, output_buf, format,
-                         save_as_floats, true);
-              retval = octave_value (output_buf.str());
-            }
+      if (append)
+        warning ("save: ignoring -append option for output to stdout");
+
+      if (nargout == 0)
+        save_vars (argv, i, argc, octave_stdout, format,
+                   save_as_floats, true);
+      else
+        {
+          std::ostringstream output_buf;
+          save_vars (argv, i, argc, output_buf, format,
+                     save_as_floats, true);
+          retval = octave_value (output_buf.str ());
         }
     }
 
   // Guard against things like 'save a*', which are probably mistakes...
-
   else if (i == argc - 1 && glob_pattern_p (argv[i]))
     print_usage ();
   else
@@ -1600,8 +1621,8 @@ load_save_system::save (const octave_value_list& args, int nargout)
         }
       else
 #endif
-        // don't insert any statements here!  The brace below must go
-        // with the "else" above!
+        // Don't insert any statements here!
+        // The brace below must go with the "else" above!
         {
 #if defined (HAVE_ZLIB)
           if (use_zlib)
@@ -1636,7 +1657,7 @@ load_save_system::save (const octave_value_list& args, int nargout)
         }
 
       // If we are all the way here without Octave crashing or running
-      // out of memory etc, then we can say that writing to the
+      // out of memory, etc., then we can say that writing to the
       // temporary file was successful.  So now we try to rename it to
       // the actual file that was specified, unless we were in append mode
       // in which case we take no action.

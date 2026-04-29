@@ -80,7 +80,7 @@ are not built or binaries include debugging symbols).
 To compile Octave, you will need a recent version of:
 
 - [GNU Make](https://www.gnu.org/software/make/)
-- [GNU G++](https://gcc.gnu.org/) or a different C++17 compiler
+- [GNU G++](https://gcc.gnu.org/) or a different C++20 compiler
 - [GNU Fortran](https://gcc.gnu.org/fortran/), a different Fortran 77 compiler,
   or [f2c](http://www.netlib.org/f2c/)
 

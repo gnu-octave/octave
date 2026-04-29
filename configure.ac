@@ -318,9 +318,9 @@ ac_cv_prog_cxx_cxx11=""
 AC_PROG_CXX
 AC_PROG_CXXCPP
 
-## Ensure that the C++ compiler fully supports C++17.
+## Ensure that the C++ compiler fully supports C++20.
 ## Preferably with GNU extensions if flags are required.
-AX_CXX_COMPILE_STDCXX(17, [], mandatory)
+AX_CXX_COMPILE_STDCXX(20, [], mandatory)
 
 ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=yes
 AC_ARG_ENABLE(std-pmr-polymorphic-allocator,
@@ -1978,13 +1978,8 @@ OCTAVE_CHECK_LIB(fontconfig, fontconfig,
 ### GUI/Qt related tests.
 
 if test -z ${QT_VERSIONS+x}; then
-  ## If QT_VERSIONS is unset, choose default depending on compiler support.
-  if test $HAVE_CXX17 = 0; then
-    dnl Qt6 requires support for C++17.
-    QT_VERSIONS="5"
-  else
-    QT_VERSIONS="6 5"
-  fi
+  ## Unspecified, search for Qt6 first
+  QT_VERSIONS="6 5"
 fi
 
 check_qscintilla=yes

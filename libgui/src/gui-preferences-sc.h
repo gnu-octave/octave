@@ -41,14 +41,14 @@
 // Therefore, these prefs for key sequences require a separate constant
 // definition and value method for the settings class.
 
-
 #if defined (HAVE_QKEYCOMBINATION_CLASS)
 #  include <QKeyCombination>
 #  define OCTAVE_QT_KEYCOMBINATION(mod, key) \
      QKeyCombination (mod, key).toCombined ()
 #else
+#  include <cstdint>
 #  define OCTAVE_QT_KEYCOMBINATION(mod, key) \
-     mod | key
+     static_cast<uint32_t> (mod) | static_cast<uint32_t> (key)
 #endif
 
 #if defined (Q_OS_MAC)

@@ -274,7 +274,7 @@ parameters for @code{dassl}.
 
   octave_value_list retval (4);
 
-  unwind_protect_var<int> restore_var (call_depth);
+  unwind_protect_var restore_var (call_depth);
   call_depth++;
 
   if (call_depth > 1)

@@ -1420,8 +1420,7 @@ maybe_missing_function_hook (const std::string& name)
   if (val.is_defined ())
     {
       // Ensure auto-restoration.
-      octave::unwind_protect_var<std::string>
-      restore_var (Vmissing_function_hook);
+      octave::unwind_protect_var restore_var (Vmissing_function_hook);
 
       // Clear the variable prior to calling the function.
       const std::string fcn_name = Vmissing_function_hook;

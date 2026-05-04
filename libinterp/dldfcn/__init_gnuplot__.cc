@@ -138,7 +138,7 @@ The qt toolkit is recommended instead.\n");
     // Prevent recursion
     if (! drawnow_executing)
       {
-        octave::unwind_protect_var<bool> restore_var (drawnow_executing, true);
+        octave::unwind_protect_var restore_var (drawnow_executing, true);
 
         octave_value_list args;
         args(0) = go.get_handle ().as_octave_value ();

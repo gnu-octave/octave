@@ -626,7 +626,7 @@ octave_class::subsasgn_common (const octave_value& obj,
           if (m_obsolete_copies == 0 && meth.is_user_function ()
               && meth.user_function_value ()->subsasgn_optimization_ok ())
             {
-              octave::unwind_protect_var<int> restore_var (m_obsolete_copies);
+              octave::unwind_protect_var restore_var (m_obsolete_copies);
               m_obsolete_copies = 2;
 
               tmp = interp.feval (meth.function_value (), args);

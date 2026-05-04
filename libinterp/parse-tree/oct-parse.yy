@@ -2282,7 +2282,7 @@ public:
 
   void visit_octave_user_script (octave_user_script& script)
   {
-    unwind_protect_var<symbol_scope> restore_var (m_scope, script.scope ());
+    unwind_protect_var restore_var (m_scope, script.scope ());
 
     tree_statement_list *stmt_list = script.body ();
 
@@ -2292,7 +2292,7 @@ public:
 
   void visit_octave_user_function (octave_user_function& fcn)
   {
-    unwind_protect_var<symbol_scope> restore_var (m_scope, fcn.scope ());
+    unwind_protect_var restore_var (m_scope, fcn.scope ());
 
     tree_statement_list *stmt_list = fcn.body ();
 

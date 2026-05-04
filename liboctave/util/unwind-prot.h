@@ -264,32 +264,26 @@ private:
 //
 //   {
 //     int x = 42;
-//     unwind_protect_var<int> upv (x);  // X will be reset at end of scope
-//     x = 13;                           // Set temporary value.
+//     unwind_protect_var upv (x);  // X will be reset at end of scope
+//     x = 13;                      // Set temporary value.
 //   }
 //
 // Temporary value may be set at construction:
 //
 //   {
 //     int x = ...;
-//     unwind_protect_var<int> upv (x, 13);  // X will be reset.
-//                                           // temporary value is 13.
+//     unwind_protect_var upv (x, 13);  // X will be reset.
+//                                      // temporary value is 13.
 //   }
 //
 // NOTE: Don't forget to provide a name for the unwind_protect_var
 // variable.  If you write
 //
-//   unwind_protect_var<type> /* NO NAME! */ (...);
+//   unwind_protect_var /* NO NAME! */ (...);
 //
 // then the destructor for the temporary anonymous object will be
 // called immediately after the object is constructed instead of at
 // the end of the current scope.
-//
-// FIXME: Once we are able to use C++17, class template argument
-// deduction will allow us to omit the explicit template type from the
-// constructor expression:
-//
-//   unwind_protect_var upv (...);
 
 template <typename T>
 class unwind_protect_var

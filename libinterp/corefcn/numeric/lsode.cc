@@ -291,7 +291,7 @@ fvdp = @@(@var{y},@var{t}) [@var{y}(2); (1 - @var{y}(1)^2) * @var{y}(2) - @var{y
   warned_fcn_imaginary = false;
   warned_jac_imaginary = false;
 
-  unwind_protect_var<int> restore_var (call_depth);
+  unwind_protect_var restore_var (call_depth);
   call_depth++;
 
   if (call_depth > 1)

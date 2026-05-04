@@ -1045,9 +1045,8 @@ ft_text_renderer::text_to_strlist (const std::string& txt,
 
   m_strlist = std::list<text_renderer::string> ();
 
-  unwind_protect_var<bool> restore_var1 (m_do_strlist);
-  unwind_protect_var<std::list<text_renderer::string>>
-      restore_var2 (m_strlist);
+  unwind_protect_var restore_var1 (m_do_strlist);
+  unwind_protect_var restore_var2 (m_strlist);
 
   m_do_strlist = true;
 

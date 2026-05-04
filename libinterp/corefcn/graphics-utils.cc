@@ -151,7 +151,7 @@ void
 delete_graphics_objects (const NDArray vals, bool from_root)
 {
   // Prevent redraw of partially deleted objects.
-  octave::unwind_protect_var<bool> restore_var (delete_executing, true);
+  octave::unwind_protect_var restore_var (delete_executing, true);
 
   for (octave_idx_type i = 0; i < vals.numel (); i++)
     delete_graphics_object (vals.elem (i), from_root);

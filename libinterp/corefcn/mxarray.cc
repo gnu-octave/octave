@@ -227,7 +227,7 @@ mx_to_ov_args (int nargin, mxArray *argin[])
   // mexCallMATLAB returns.
 
   octave::unwind_protect_var<std::pmr::memory_resource *>
-  upv (current_mx_memory_resource, &the_mx_preserving_memory_resource);
+    upv (current_mx_memory_resource, &the_mx_preserving_memory_resource);
 
 #endif
 
@@ -287,7 +287,7 @@ mexPutVariable_impl (const char *space, const char *name, const mxArray *ptr)
       // mexCallMATLAB returns.
 
       octave::unwind_protect_var<std::pmr::memory_resource *>
-      upv (current_mx_memory_resource, &the_mx_preserving_memory_resource);
+        upv (current_mx_memory_resource, &the_mx_preserving_memory_resource);
 #endif
 
       interp.global_assign (name, mxArray::as_octave_value (ptr));
@@ -324,8 +324,7 @@ mexPutVariable_impl (const char *space, const char *name, const mxArray *ptr)
           // to continue to exist after mexCallMATLAB returns.
 
           octave::unwind_protect_var<std::pmr::memory_resource *>
-          upv (current_mx_memory_resource,
-               &the_mx_preserving_memory_resource);
+           upv (current_mx_memory_resource, &the_mx_preserving_memory_resource);
 #endif
 
           interp.assign (name, mxArray::as_octave_value (ptr));
@@ -349,7 +348,7 @@ mexSet_impl (double handle, const char *property, mxArray *val)
   // mexCallMATLAB returns.
 
   octave::unwind_protect_var<std::pmr::memory_resource *>
-  upv (current_mx_memory_resource, &the_mx_preserving_memory_resource);
+    upv (current_mx_memory_resource, &the_mx_preserving_memory_resource);
 
 #endif
 
@@ -3474,7 +3473,7 @@ call_mex (octave_mex_function& mex_fcn, const octave_value_list& args,
     argout[i] = nullptr;
 
   // Save old mex pointer.
-  octave::unwind_protect_var<mex *> restore_var (mex_context);
+  octave::unwind_protect_var restore_var (mex_context);
 
   mex context (mex_fcn);
 

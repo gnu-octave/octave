@@ -353,8 +353,8 @@ output_system::flush_stdout ()
 {
   if (! m_flushing_output_to_pager)
     {
-      unwind_protect_var<bool> restore_var1 (m_really_flush_to_pager);
-      unwind_protect_var<bool> restore_var2 (m_flushing_output_to_pager);
+      unwind_protect_var restore_var1 (m_really_flush_to_pager);
+      unwind_protect_var restore_var2 (m_flushing_output_to_pager);
 
       m_really_flush_to_pager = true;
       m_flushing_output_to_pager = true;

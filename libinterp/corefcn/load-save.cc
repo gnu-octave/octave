@@ -1697,10 +1697,7 @@ load_save_system::get_mcos_object_cache_entry (uint32_t object_id)
 bool
 load_save_system::is_mcos_object_cache_entry (uint32_t object_id)
 {
-  // FIXME: Consider replacing this with std::unordered_map<>::contains when we
-  //        allow C++20.
-  return m_mcos_object_load_cache.find (object_id)
-           !=  m_mcos_object_load_cache.end ();
+  return m_mcos_object_load_cache.contains (object_id);
 }
 
 uint32_t

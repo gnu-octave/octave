@@ -186,7 +186,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
 
   warned_imaginary = false;
 
-  unwind_protect_var<int> restore_var (call_depth);
+  unwind_protect_var restore_var (call_depth);
   call_depth++;
 
   if (call_depth > 1)

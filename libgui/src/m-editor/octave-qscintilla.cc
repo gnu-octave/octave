@@ -1174,8 +1174,7 @@ octave_qscintilla::show_replace_action_tooltip ()
   get_current_position (&pos, &m_selection_line, &m_selection_col);
 
   // Offer to replace other instances.
-
-  QKeySequence keyseq = Qt::SHIFT | Qt::Key_Return;
+  QKeySequence keyseq (OCTAVE_QT_KEYCOMBINATION (Qt::SHIFT, Qt::Key_Return));
 
   QString msg = (tr ("Press '%1' to replace all occurrences of '%2' with '%3'.")
                  . arg (keyseq.toString ())

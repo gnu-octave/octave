@@ -596,7 +596,7 @@ octave_struct::print (std::ostream& os, bool)
 void
 octave_struct::print_raw (std::ostream& os, bool) const
 {
-  octave::unwind_protect_var<int> restore_var (Vstruct_levels_to_print);
+  octave::unwind_protect_var restore_var (Vstruct_levels_to_print);
 
   if (Vstruct_levels_to_print >= 0)
     {
@@ -1369,7 +1369,7 @@ octave_scalar_struct::print (std::ostream& os, bool)
 void
 octave_scalar_struct::print_raw (std::ostream& os, bool) const
 {
-  octave::unwind_protect_var<int> restore_var (Vstruct_levels_to_print);
+  octave::unwind_protect_var restore_var (Vstruct_levels_to_print);
 
   if (Vstruct_levels_to_print >= 0)
     {

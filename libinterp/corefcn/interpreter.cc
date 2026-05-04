@@ -1291,7 +1291,7 @@ interpreter::execute_eval_option_code ()
 
   std::string code_to_eval = options.code_to_eval ();
 
-  unwind_protect_var<bool> upv (m_interactive, false);
+  unwind_protect_var upv (m_interactive, false);
 
   int parse_status = 0;
 
@@ -2159,8 +2159,8 @@ interpreter::quit (int exit_status, bool force, bool confirm)
 
           if (symbol_exist ("finish.m", "file"))
             {
-              unwind_protect_var<bool> upv1 (m_executing_finish_script, true);
-              unwind_protect_var<bool> upv2 (m_cancel_quit);
+              unwind_protect_var upv1 (m_executing_finish_script, true);
+              unwind_protect_var upv2 (m_cancel_quit);
 
               evalin ("base", "finish", 0);
 

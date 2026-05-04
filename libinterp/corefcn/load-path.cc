@@ -31,6 +31,7 @@
 
 #include <algorithm>
 #include <cctype>
+#include <ranges>
 
 #include "cmd-edit.h"
 #include "dir-ops.h"
@@ -359,16 +360,12 @@ load_path::set (const std::string& p, bool warn, bool is_init)
   if (m_add_hook)
     {
       // FIXME: Why not use const here?  Does add_hook change dir_info_list?
-      // FIXME: We should be able to assume that the current directory is
-      //        always the first element in the list.  When we assume C++20 or
-      //        later, consider replacing the range-based loop with:
-      //            for (auto& di : m_dir_info_list | std::views::drop (1))
-      //        Then, the string comparison inside the loop could be dropped.
-      for (auto& di : m_dir_info_list)
+      //        We should be able to assume that the current directory is
+      //        always the first element in the list.  So skip it.
+      for (auto& di : m_dir_info_list | std::views::drop (1))
         {
           // execute PKG_ADD script (but not in the current directory)
-          if (di.m_dir_name.compare ("."))
-            m_add_hook (di.m_dir_name);
+          m_add_hook (di.m_dir_name);
         }
     }
 }

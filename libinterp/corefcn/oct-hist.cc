@@ -500,7 +500,7 @@ history_system::do_edit_history (const octave_value_list& args)
 
   int(*unlink_fptr)(const std::string&) = sys::unlink;
   unwind_action unlink_action (unlink_fptr, name);
-  unwind_protect_var<bool> upv (m_input_from_tmp_file, true);
+  unwind_protect_var upv (m_input_from_tmp_file, true);
 
   // FIXME: instead of sourcing a file, we should just iterate through
   // the list of commands, parsing and executing them one at a time as
@@ -519,7 +519,7 @@ history_system::do_run_history (const octave_value_list& args)
 
   int(*unlink_fptr)(const std::string&) = sys::unlink;
   unwind_action unlink_action (unlink_fptr, name);
-  unwind_protect_var<bool> upv (m_input_from_tmp_file, true);
+  unwind_protect_var upv (m_input_from_tmp_file, true);
 
   // FIXME: instead of sourcing a file, we should just iterate through
   // the list of commands, parsing and executing them one at a time as

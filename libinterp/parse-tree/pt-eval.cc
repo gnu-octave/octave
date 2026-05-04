@@ -576,7 +576,7 @@ tree_evaluator::parse_and_execute (const std::string& input,
 {
   incomplete_parse = false;
 
-  unwind_protect_var<bool> upv (m_in_top_level_repl, true);
+  unwind_protect_var upv (m_in_top_level_repl, true);
 
   if (at_top_level ())
     {
@@ -781,7 +781,7 @@ tree_evaluator::repl ()
     {
       try
         {
-          unwind_protect_var<bool> upv (m_in_top_level_repl, true);
+          unwind_protect_var upv (m_in_top_level_repl, true);
 
           repl_parser->reset ();
 
@@ -875,12 +875,12 @@ tree_evaluator::server_loop ()
 {
   // Process events from the event queue.
 
-  unwind_protect_var<bool> upv1 (m_server_mode, true);
+  unwind_protect_var upv1 (m_server_mode, true);
 
   m_exit_status = 0;
 
   std::shared_ptr<push_parser> parser (new push_parser (m_interpreter));
-  unwind_protect_var<std::shared_ptr<push_parser>> upv2 (m_parser, parser);
+  unwind_protect_var upv2 (m_parser, parser);
 
   // FIXME: We are currently resetting the parser after every call to
   // recover_from_exception.  This action should probably be handled
@@ -3274,7 +3274,7 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   // FIXME: need to handle PARFOR loops here using cmd.in_parallel ()
   // and cmd.maxproc_expr ();
 
-  unwind_protect_var<bool> upv (m_in_loop_command, true);
+  unwind_protect_var upv (m_in_loop_command, true);
 
   tree_expression *expr = cmd.control_expr ();
 
@@ -3401,7 +3401,7 @@ tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
   if (m_debug_mode)
     do_breakpoint (cmd.is_active_breakpoint (*this));
 
-  unwind_protect_var<bool> upv (m_in_loop_command, true);
+  unwind_protect_var upv (m_in_loop_command, true);
 
   tree_expression *expr = cmd.control_expr ();
 
@@ -3659,7 +3659,7 @@ tree_evaluator::execute_user_script (octave_user_script& user_script,
   if (m_call_stack.size () >= static_cast<std::size_t> (m_max_recursion_depth))
     error ("max_recursion_depth exceeded");
 
-  unwind_protect_var<stmt_list_type> upv (m_statement_context, SC_SCRIPT);
+  unwind_protect_var upv (m_statement_context, SC_SCRIPT);
 
   profiler::enter<octave_user_script> block (m_profiler, user_script);
 
@@ -3799,7 +3799,7 @@ tree_evaluator::execute_user_function (octave_user_function& user_function,
 
   // Evaluate the commands that make up the function.
 
-  unwind_protect_var<stmt_list_type> upv (m_statement_context, SC_FUNCTION);
+  unwind_protect_var upv (m_statement_context, SC_FUNCTION);
 
   tree_statement_list *cmd_list = user_function.body ();
 
@@ -4500,7 +4500,7 @@ tree_evaluator::visit_while_command (tree_while_command& cmd)
       line++;
     }
 
-  unwind_protect_var<bool> upv (m_in_loop_command, true);
+  unwind_protect_var upv (m_in_loop_command, true);
 
   tree_expression *expr = cmd.condition ();
 
@@ -4543,7 +4543,7 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
       line++;
     }
 
-  unwind_protect_var<bool> upv (m_in_loop_command, true);
+  unwind_protect_var upv (m_in_loop_command, true);
 
   tree_expression *expr = cmd.condition ();
 
@@ -4917,8 +4917,8 @@ tree_evaluator::make_value_list (tree_argument_list *args,
 
       int len = args->size ();
 
-      unwind_protect_var<int> upv2 (m_index_position);
-      unwind_protect_var<int> upv3 (m_num_indices);
+      unwind_protect_var upv2 (m_index_position);
+      unwind_protect_var upv3 (m_num_indices);
 
       m_num_indices = len;
 

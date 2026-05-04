@@ -1184,6 +1184,9 @@ file_editor::handle_editor_state_changed (bool copy_available,
 
       m_run_selection_action->setEnabled (copy_available);
       m_run_action->setEnabled (is_octave_file);
+      m_run_tests_action->setEnabled (is_octave_file);
+      m_run_demos_action->setEnabled (is_octave_file);
+
       m_is_octave_file = is_octave_file;
 
       Q_EMIT editor_tabs_changed_signal (true, m_is_octave_file);
@@ -2487,7 +2490,6 @@ file_editor::construct ()
     = add_action (_run_menu,
                   tr ("Run &Selection"),
                   SLOT (request_context_run (bool)));
-  m_run_selection_action->setEnabled (false);
 
   m_run_tests_action
     = add_action (_run_menu,

@@ -28,13 +28,12 @@
 
 #include "octave-config.h"
 
-#include <cstddef>
-
 #include <algorithm>
 #include <memory>
+#include <type_traits>
 
 #define OCTAVE_LOCAL_BUFFER(T, buf, size)                                     \
-  auto octave_local_buffer_ ## buf = std::make_unique_for_overwrite<T []> (size); \
+  std::unique_ptr<T []> octave_local_buffer_ ## buf (new std::remove_extent_t<T> [size]);                                                                     \
   T *buf = octave_local_buffer_ ## buf.get ()
 
 #define OCTAVE_LOCAL_BUFFER_INIT(T, buf, size, value)                         \
@@ -49,7 +48,7 @@
   T *buf
 
 #define OCTAVE_SCOPED_BUFFER(T, buf, size)                                    \
-  octave_local_buffer_ ## buf = std::make_unique_for_overwrite<T []> (size);  \
+  octave_local_buffer_ ## buf.reset (new std::remove_extent_t<T> [size]);     \
   buf = octave_local_buffer_ ## buf.get ()
 
 #endif

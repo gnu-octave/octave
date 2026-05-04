@@ -152,7 +152,7 @@ dynamic_loader::load_oct (const std::string& fcn_name,
 {
   octave_function *retval = nullptr;
 
-  unwind_protect_var<bool> restore_var (m_doing_load, true);
+  unwind_protect_var restore_var (m_doing_load, true);
 
   dynamic_library oct_file = m_loaded_shlibs.find_file (file_name);
 
@@ -220,7 +220,7 @@ dynamic_loader::load_mex (const std::string& fcn_name,
                           const std::string& file_name,
                           bool /*relative*/)
 {
-  unwind_protect_var<bool> restore_var (m_doing_load, true);
+  unwind_protect_var restore_var (m_doing_load, true);
 
   dynamic_library mex_file = m_loaded_shlibs.find_file (file_name);
 

@@ -28,7 +28,10 @@
 
 #include "octave-config.h"
 
+#include <cstdint>
+
 #include <iosfwd>
+#include <string>
 
 #include "mach-info.h"
 

@@ -37,6 +37,17 @@
 #include "gui-settings.h"
 #include "qt-interpreter-events.h"
 
+// Combine Modifier and Key without creating compiler warning
+#if defined (HAVE_QKEYCOMBINATION_CLASS)
+#  include <QKeyCombination>
+#  define OCTAVE_QT_KEYCOMBINATION(mod, key) \
+     QKeyCombination (mod, key).toCombined ()
+#else
+#  include <cstdint>
+#  define OCTAVE_QT_KEYCOMBINATION(mod, key) \
+     static_cast<uint32_t> (mod) | static_cast<uint32_t> (key)
+#endif
+
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 class octave_qscintilla : public QsciScintilla

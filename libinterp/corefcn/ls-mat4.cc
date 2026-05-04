@@ -27,48 +27,37 @@
 #  include "config.h"
 #endif
 
+#include <cstdint>
+#include <cstring>
+
 #include <istream>
+#include <limits>
 #include <ostream>
 #include <string>
+#include <utility>
 
+#include "CMatrix.h"
+#include "CSparse.h"
 #include "byte-swap.h"
 #include "dMatrix.h"
 #include "dSparse.h"
 #include "data-conv.h"
-#include "file-ops.h"
-#include "glob-match.h"
 #include "mach-info.h"
-#include "mappers.h"
-#include "oct-env.h"
 #include "oct-locbuf.h"
-#include "oct-time.h"
-#include "quit.h"
 
-#include "ls-mat4.h"
-#include "Cell.h"
-#include "defun.h"
 #include "error.h"
-#include "errwarn.h"
 #include "load-save.h"
-#include "oct-map.h"
-#include "ov-cell.h"
-#include "ovl.h"
-#include "pager.h"
-#include "sysdep.h"
-#include "utils.h"
-#include "variables.h"
-#include "version.h"
+#include "ls-mat4.h"
 
 
-// Read LEN elements of data from IS in the format specified by
-// PRECISION, placing the result in DATA.  If SWAP is TRUE, swap
-// the bytes of each element before copying to DATA.  FLT_FMT
-// specifies the format of the data if we are reading floating point
-// numbers.
+// Read LEN elements of data from IS in the format specified by PRECISION,
+// placing the result in DATA.  If SWAP is TRUE, swap the bytes of each element
+// before copying to DATA.  FLT_FMT specifies the format of the data if we are
+// reading floating point numbers.
 
 static void
-read_mat_binary_data (std::istream& is, double *data, int precision,
-                      int len, bool swap,
+read_mat_binary_data (std::istream& is, double *data,
+                      int precision, octave_idx_type len, bool swap,
                       octave::mach_info::float_format flt_fmt)
 {
   switch (precision)
@@ -104,16 +93,13 @@ read_mat_binary_data (std::istream& is, double *data, int precision,
 
 int
 read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt,
-                      int32_t& nr, int32_t& nc,
-                      int32_t& imag, int32_t& len,
+                      int32_t& nr, int32_t& nc, int32_t& imag, int32_t& len,
                       int quiet)
 {
   swap = false;
 
-  // We expect to fail here, at the beginning of a record, so not
-  // being able to read another mopt value should not result in an
-  // error.
-
+  // We expect to fail here, at the beginning of a record, so not being able to
+  // read another mopt value should not result in an error.
   is.read (reinterpret_cast<char *> (&mopt), 4);
   if (! is)
     return 1;
@@ -130,20 +116,18 @@ read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt,
   if (! is.read (reinterpret_cast<char *> (&len), 4))
     return -1;
 
-// If mopt is nonzero and the byte order is swapped, mopt will be
-// bigger than we expect, so we swap bytes.
-//
-// If mopt is zero, it means the file was written on a little endian machine,
-// and we only need to swap if we are running on a big endian machine.
-//
-// Gag me.
-
+  // If mopt is nonzero and the byte order is swapped, mopt will be bigger than
+  // we expect, so we swap bytes.
+  //
+  // If mopt is zero, it means the file was written on a little endian machine,
+  // and we only need to swap if we are running on a big endian machine.
+  //
+  // Gag me.
   if (octave::mach_info::words_big_endian () && mopt == 0)
     swap = true;
 
-  // mopt is signed, therefore byte swap may result in negative value.
-
-  if (mopt > 9999 || mopt < 0)
+  // mopt is signed, therefore byte swap may result in a negative value.
+  if (mopt < 0 || mopt > 9999)
     swap = true;
 
   if (swap)
@@ -155,10 +139,10 @@ read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt,
       swap_bytes<4> (&len);
     }
 
-  if (mopt > 9999 || mopt < 0 || imag > 1 || imag < 0)
+  if (mopt < 0 || mopt > 9999 || imag < 0 || imag > 1)
     {
       if (! quiet)
-        error ("load: can't read binary file");
+        error ("load: unrecognized MATv4 header");
 
       return -1;
     }
@@ -184,12 +168,17 @@ mopt_digit_to_float_format (int mach)
       flt_fmt = octave::mach_info::flt_fmt_ieee_big_endian;
       break;
 
-    case 2:
-    case 3:
-    case 4:
+    case 2: // VAX D-Float
+      error ("load: unsupported format MATv4 VAX D-Float");
+
+    case 3: // VAX G-Float
+      error ("load: unsupported format MATv4 VAX G-Float");
+
+    case 4: // Cray
+      error ("load: unsupported format MATv4 Cray");
+
     default:
-      flt_fmt = octave::mach_info::flt_fmt_unknown;
-      break;
+      error ("load: unrecognized MATv4 MACHINE format");
     }
 
   return flt_fmt;
@@ -198,7 +187,7 @@ mopt_digit_to_float_format (int mach)
 int
 float_format_to_mopt_digit (octave::mach_info::float_format flt_fmt)
 {
-  int retval = -1;
+  int retval;
 
   switch (flt_fmt)
     {
@@ -211,17 +200,18 @@ float_format_to_mopt_digit (octave::mach_info::float_format flt_fmt)
       break;
 
     default:
+      error ("float_format_to_mopt_digit: unrecognized flt_format, please report");
       break;
     }
 
   return retval;
 }
 
-// Extract one value (scalar, matrix, string, etc.) from stream IS and
-// place it in TC, returning the name of the variable.
+// Extract one value (scalar, matrix, string, etc.) from stream IS and place it
+// in TC, returning the name of the variable.
 //
-// The data is expected to be in Matlab version 4 .mat format, though
-// not all the features of that format are supported.
+// The data is expected to be in Matlab version 4 .mat format, though not all
+// the features of that format are supported.
 //
 // FILENAME is used for error messages.
 //
@@ -233,65 +223,57 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
 {
   std::string retval;
 
+  int32_t mopt, nr, nc, imag, namelen;
   bool swap = false;
-  int32_t mopt, nr, nc, imag, len;
 
-  int err = read_mat_file_header (is, swap, mopt, nr, nc, imag, len);
+  int err = read_mat_file_header (is, swap, mopt, nr, nc, imag, namelen);
   if (err)
     {
       if (err < 0)
-        error ("load: trouble reading binary file '%s'", filename.c_str ());
+        error ("load: unable to read header of MATv4 file '%s'", filename.c_str ());
 
       return retval;
     }
 
-  int type = 0;
-  int prec = 0;
+  int type  = 0;
+  int prec  = 0;
   int order = 0;
-  int mach = 0;
+  int mach  = 0;
 
-  type = mopt % 10;  // Full, sparse, etc.
+  type = mopt % 10;  // Sparse, string, full array.
   mopt /= 10;        // Eliminate first digit.
-  prec = mopt % 10;  // double, float, int, etc.
+  prec = mopt % 10;  // Storage precision: double, float, int, etc.
   mopt /= 10;        // Eliminate second digit.
   order = mopt % 10; // Row or column major ordering.
   mopt /= 10;        // Eliminate third digit.
-  mach = mopt % 10;  // IEEE, VAX, etc.
+  mach = mopt % 10;  // Little-endian, Big-endian, VAX, etc.
 
   octave::mach_info::float_format flt_fmt;
   flt_fmt = mopt_digit_to_float_format (mach);
 
-  if (flt_fmt == octave::mach_info::flt_fmt_unknown)
-    error ("load: unrecognized binary format!");
-
   if (imag && type == 1)
-    error ("load: encountered complex matrix with string flag set!");
+    error ("load: found MATv4 complex matrix with string flag set");
 
-  int dlen = 0;
+  octave_idx_type datalen = 0;
 
-  // LEN includes the terminating character, and the file is also
-  // supposed to include it, but apparently not all files do.  Either
-  // way, I think this should work.
-
+  // LEN includes the terminating character, and the file is also supposed to
+  // include it, but apparently not all files do.  Either way, this should
+  // work.
   {
-    OCTAVE_LOCAL_BUFFER (char, name, len+1);
-    name[len] = '\0';
-    if (! is.read (name, len))
-      error ("load: trouble reading binary file '%s'", filename.c_str ());
+    OCTAVE_LOCAL_BUFFER (char, name, namelen+1);
+    name[namelen] = '\0';
+    if (! is.read (name, namelen))
+      error ("load: could not read NAME field from MATv4 file '%s'", filename.c_str ());
     retval = name;
 
-    dlen = nr * nc;
-    if (dlen < 0)
-      error ("load: trouble reading binary file '%s'", filename.c_str ());
+    datalen = nr * nc;
+    if (datalen < 0)
+      error ("load: size of data exceeds octave_idx_type in MATv4 file '%s'", filename.c_str ());
 
     if (order)
-      {
-        octave_idx_type tmp = nr;
-        nr = nc;
-        nc = tmp;
-      }
+      std::swap (nr, nc);
 
-    if (type == 2)
+    if (type == 2)  // Sparse
       {
         if (nc == 4)
           {
@@ -319,7 +301,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
             read_mat_binary_data (is, ctmp, prec, 1, swap, flt_fmt);
 
             SparseComplexMatrix smc = SparseComplexMatrix (data, r, c,
-                                      nr_new, nc_new);
+                                                           nr_new, nc_new);
 
             tc = (order ? smc.transpose () : smc);
           }
@@ -348,30 +330,35 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
             tc = (order ? sm.transpose () : sm);
           }
       }
-    else
+    else  // Full Matrix (Real, Complex, or String)
       {
         Matrix re (nr, nc);
 
-        read_mat_binary_data (is, re.rwdata (), prec, dlen, swap, flt_fmt);
+        read_mat_binary_data (is, re.rwdata (), prec, datalen, swap, flt_fmt);
 
         if (! is)
-          error ("load: reading matrix data for '%s'", name);
+          {
+            if (! imag)
+              error ("load: reading matrix data for variable '%s'", name);
+            else
+              error ("load: reading real matrix data for variable '%s'", name);
+          }
 
         if (imag)
           {
             Matrix im (nr, nc);
 
-            read_mat_binary_data (is, im.rwdata (), prec, dlen, swap,
+            read_mat_binary_data (is, im.rwdata (), prec, datalen, swap,
                                   flt_fmt);
 
             if (! is)
-              error ("load: reading imaginary matrix data for '%s'", name);
+              error ("load: reading imaginary matrix data for variable '%s'", name);
 
             ComplexMatrix ctmp (nr, nc);
 
             for (octave_idx_type j = 0; j < nc; j++)
               for (octave_idx_type i = 0; i < nr; i++)
-                ctmp (i, j) = Complex (re(i, j), im(i, j));
+                ctmp.xelem (i, j) = Complex (re(i, j), im(i, j));
 
             tc = (order ? ctmp.transpose () : ctmp);
           }
@@ -386,29 +373,83 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
   }
 }
 
-// Save the data from TC along with the corresponding NAME on stream OS
-// in the MatLab version 4 binary format.
+static void
+warn_dim_too_large (const std::string& name)
+{
+  warning_with_id ("Octave:save:dimension-too-large",
+                   "save: skipping %s: dimension too large for MATv4 format",
+                   name.c_str ());
+}
 
+static void
+warn_wrong_type_arg (const std::string& name, const octave_value& tc)
+{
+  std::string type = tc.type_name ();
+
+  warning_with_id ("Octave:save:invalid-type",
+                   "save: skipping %s: invalid type argument '%s'",
+                   name.c_str (), type.c_str ());
+}
+
+// Save the data from TC along with the corresponding NAME on stream OS in the
+// MatLab version 4 binary format.  Return true on success.
 bool
 save_mat_binary_data (std::ostream& os, const octave_value& tc,
                       const std::string& name)
 {
+  octave_idx_type len;
+  int32_t nr, nc;
+  constexpr octave_idx_type max_dim_val = std::numeric_limits<int32_t>::max ();
+  const int MAX_NAMELEN = 63;  // A Matlab limit, but good idea to enforce
+
+  // Validate rows, cols, and len
+  if (tc.rows () > max_dim_val)
+    {
+      warn_dim_too_large (name);
+      return true;
+    }
+  else
+    nr = tc.rows ();
+
+  if (tc.columns () > max_dim_val)
+    {
+      warn_dim_too_large (name);
+      return true;
+    }
+  else
+    nc = tc.columns ();
+
+  // FIXME: Maybe validate len?
+  /*
+  if (tc.issparse ())
+    len = tc.nnz ();
+  else
+    len = static_cast<octave_idx_type> (nr) * nc;
+  */
+
+  if (! (tc.is_double_type () || tc.is_string ()))
+    {
+      warn_wrong_type_arg (name, tc);
+      return true;
+    }
+
   int32_t mopt = 0;
 
-  mopt += tc.issparse () ? 2 : tc.is_string () ? 1 : 0;
-
+  // Set (M)achine format (litte-endian or big-endian)
   octave::mach_info::float_format flt_fmt
     = octave::mach_info::native_float_format ();
 
   mopt += 1000 * float_format_to_mopt_digit (flt_fmt);
 
+  // Octave saves all data in column-major order (O = 0)
+  // Octave saves all data as 8-byte floating point (P = 0)
+
+  // Set (T)ype of variable
+  mopt += tc.issparse () ? 2 : tc.is_string () ? 1 : 0;
+
   os.write (reinterpret_cast<char *> (&mopt), 4);
 
-  octave_idx_type len;
-  int32_t nr = tc.rows ();
-
-  int32_t nc = tc.columns ();
-
+  // Write Number of Rows, Number of Columns, and Imaginary Flag
   if (tc.issparse ())
     {
       len = tc.nnz ();
@@ -432,14 +473,20 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
       len = static_cast<octave_idx_type> (nr) * nc;
     }
 
-  // LEN includes the terminating character, and the file is also
-  // supposed to include it.
+  // Write length of variable name (possibly truncated) 
+  int32_t namelen = name.length ();
+  if (namelen > MAX_NAMELEN)
+    namelen = MAX_NAMELEN;
+  // NAME_LEN must include the terminating character '\0'.
+  namelen += 1;
 
-  int32_t name_len = name.length () + 1;
+  os.write (reinterpret_cast<char *> (&namelen), 4);
+  OCTAVE_LOCAL_BUFFER (char, namebuf, namelen);
+  strncpy (namebuf, name.c_str (), namelen - 1);
+  namebuf[namelen - 1] = '\0'; 
+  os.write (namebuf, namelen);
 
-  os.write (reinterpret_cast<char *> (&name_len), 4);
-  os << name << '\0';
-
+  // Write data
   if (tc.is_string ())
     {
       charMatrix chm = tc.char_matrix_value ();
@@ -461,23 +508,6 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
                                 static_cast<std::streamsize> (ncol) *
                                 sizeof (double);
       os.write (reinterpret_cast<char *> (buf), n_bytes);
-    }
-  else if (tc.is_range ())
-    {
-      octave::range<double> r = tc.range_value ();
-      double base = r.base ();
-      double inc = r.increment ();
-      octave_idx_type nel = r.numel ();
-      for (octave_idx_type i = 0; i < nel; i++)
-        {
-          double x = base + i * inc;
-          os.write (reinterpret_cast<char *> (&x), 8);
-        }
-    }
-  else if (tc.is_real_scalar ())
-    {
-      double tmp = tc.double_value ();
-      os.write (reinterpret_cast<char *> (&tmp), 8);
     }
   else if (tc.issparse ())
     {
@@ -537,7 +567,12 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
           os.write (reinterpret_cast<const char *> (&ds), 8);
         }
     }
-  else if (tc.is_real_matrix ())
+  else if (tc.is_real_scalar ())
+    {
+      double tmp = tc.double_value ();
+      os.write (reinterpret_cast<char *> (&tmp), 8);
+    }
+  else if (tc.is_real_matrix () || tc.is_range ())
     {
       Matrix m = tc.matrix_value ();
       std::streamsize n_bytes = 8 * static_cast<std::streamsize> (len);
@@ -558,8 +593,9 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
       os.write (reinterpret_cast<const char *> (m.data ()), n_bytes);
     }
   else
-    // FIXME: Should this just error out rather than warn?
-    warn_wrong_type_arg ("save", tc);
+    {
+      error ("save: operation failed while writing variable %s", name.c_str ());
+    }
 
   return ! os.fail ();
 }

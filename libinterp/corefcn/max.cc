@@ -146,10 +146,10 @@ custom_ind2sub (const dim_vector szx, octave_idx_type idx, int ndims)
 
   for (octave_idx_type i = ndims - 1; i >= 0; i--)
     {
-      int dsz = szc(i);
+      octave_idx_type dsz = szc(i);
       if (idx > dsz)
         {
-          int tmp = idx / dsz; // dzc is never 0 at this point
+          octave_idx_type tmp = idx / dsz;  // dzc is never 0 at this point
           if (idx % dsz > 0)
             {
               sub(i+1) = tmp + 1;

@@ -28,6 +28,8 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - Remove accidental double spaces in language translation files.
 - Use form of "bearbeiten" instead of "editieren" in German translation.
 - Do not hide window of processes started with "system" on Windows.
+- Include missing .svg icon in GUI resources (bug #68389).
+- Use mouse cursor shape from Qt if possible or SVG (bug #68389).
 
 ### Build system / Tests
 

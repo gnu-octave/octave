@@ -1,18 +1,6 @@
 octave_gui_ICONS = \
   %reldir%/icons/license.md \
-  %reldir%/icons/cursors/bottom_left_corner.png \
-  %reldir%/icons/cursors/bottom_right_corner.png \
-  %reldir%/icons/cursors/bottom_side.png \
-  %reldir%/icons/cursors/circle.png \
   %reldir%/icons/cursors/circle.svg \
-  %reldir%/icons/cursors/cross.png \
-  %reldir%/icons/cursors/fleur.png \
-  %reldir%/icons/cursors/hand2.png \
-  %reldir%/icons/cursors/left_side.png \
-  %reldir%/icons/cursors/right_side.png \
-  %reldir%/icons/cursors/top_left_corner.png \
-  %reldir%/icons/cursors/top_right_corner.png \
-  %reldir%/icons/cursors/top_side.png \
   %reldir%/icons/octave/index.theme \
   %reldir%/icons/octave/128x128/applications-system.png \
   %reldir%/icons/octave/128x128/bp-next.png \

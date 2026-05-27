@@ -4,6 +4,7 @@ octave_gui_ICONS = \
   %reldir%/icons/cursors/bottom_right_corner.png \
   %reldir%/icons/cursors/bottom_side.png \
   %reldir%/icons/cursors/circle.png \
+  %reldir%/icons/cursors/circle.svg \
   %reldir%/icons/cursors/cross.png \
   %reldir%/icons/cursors/fleur.png \
   %reldir%/icons/cursors/hand2.png \

@@ -1,4 +1,4 @@
-Summary of bugs fixed for version 11.2.0 (YYYY-MM-DD):
+Summary of bugs fixed for version 11.2.0 (2026-05-28):
 -----------------------------------------------------
 
 For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX

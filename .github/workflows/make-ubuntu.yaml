@@ -43,6 +43,9 @@ jobs:
           - os: ubuntu-24.04-arm
             compiler: clang
             ccache-max: 400M
+        exclude:
+          - os: ubuntu-22.04
+            compiler: clang
 
     name: ${{ matrix.os }} ${{ matrix.compiler }}
 

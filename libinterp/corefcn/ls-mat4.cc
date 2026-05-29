@@ -266,7 +266,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
       error ("load: could not read NAME field from MATv4 file '%s'", filename.c_str ());
     retval = name;
 
-    datalen = nr * nc;
+    datalen = static_cast<octave_idx_type> (nr) * nc;
     if (datalen < 0)
       error ("load: size of data exceeds octave_idx_type in MATv4 file '%s'", filename.c_str ());
 

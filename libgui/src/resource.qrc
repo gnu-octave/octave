@@ -1,17 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>icons/cursors/bottom_left_corner.png</file>
-        <file>icons/cursors/bottom_right_corner.png</file>
-        <file>icons/cursors/bottom_side.png</file>
-        <file>icons/cursors/circle.png</file>
-        <file>icons/cursors/cross.png</file>
-        <file>icons/cursors/fleur.png</file>
-        <file>icons/cursors/hand2.png</file>
-        <file>icons/cursors/left_side.png</file>
-        <file>icons/cursors/right_side.png</file>
-        <file>icons/cursors/top_left_corner.png</file>
-        <file>icons/cursors/top_right_corner.png</file>
-        <file>icons/cursors/top_side.png</file>
+        <file>icons/cursors/circle.svg</file>
         <file>icons/octave/scalable/applications-system.svg</file>
         <file>icons/octave/scalable/bookmark-new.svg</file>
         <file>icons/octave/scalable/bp-toggle.svg</file>

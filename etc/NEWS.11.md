@@ -1,3 +1,17 @@
+Summary of bugs fixed for version 11.3.0 (YYYY-MM-DD):
+-----------------------------------------------------
+
+For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
+
+### Improvements and fixes
+
+### GUI
+
+### Build system / Tests
+
+### Documentation
+
+
 Summary of bugs fixed for version 11.2.0 (2026-05-28):
 -----------------------------------------------------
 

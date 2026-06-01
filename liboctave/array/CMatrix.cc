@@ -1228,6 +1228,9 @@ ComplexMatrix::determinant (MatrixType& mattype,
 
   if (typ == MatrixType::Lower || typ == MatrixType::Upper)
     {
+      if (calc_cond)
+        rcon = rcond (mattype);
+
       for (F77_INT i = 0; i < nc; i++)
         retval *= elem (i, i);
     }

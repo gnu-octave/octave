@@ -232,6 +232,35 @@ For that, use any of the condition number functions: @code{cond},
 %!assert (det ([1, 2; 3, 4]), -2, 10*eps)
 %!assert (det (single ([1, 2; 3, 4])), single (-2), 10* eps ("single"))
 %!assert (det (eye (2000)), 1)
+
+%!test
+%! A = [1 0 0; 2 3 0; 4 5 6];
+%! [d, r] = det (A);
+%! assert (d, 18, 10*eps);
+%! assert (r, rcond (A), 10*eps);
+%! A = A.';
+%! [d, r] = det (A);
+%! assert (d, 18, 10*eps);
+%! assert (r, rcond (A), 10*eps);
+
+%!test
+%! A = single ([1 0 0; 2 3 0; 4 5 6]);
+%! [d, r] = det (A);
+%! assert (d, single (18), 10*eps ("single"));
+%! assert (r, rcond (A), 10*eps ("single"));
+%! assert (class (r), "single");
+
+%!test
+%! A = [1 0 0; 2i 3 0; 4 5i 6];
+%! [d, r] = det (A);
+%! assert (d, 18, 10*eps);
+%! assert (r, rcond (A), 10*eps);
+%! A = single (A);
+%! [d, r] = det (A);
+%! assert (d, single (18), 10*eps ("single"));
+%! assert (r, rcond (A), 10*eps ("single"));
+%! assert (class (r), "single");
+
 %!error det ()
 %!error det (1, 2)
 %!error <must be a square matrix> det ([1, 2; 3, 4; 5, 6])

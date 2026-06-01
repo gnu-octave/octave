@@ -1,4 +1,4 @@
-Summary of bugs fixed for version 11.3.0 (YYYY-MM-DD):
+Summary of bugs fixed for version 11.3.0 (2026-06-01):
 -----------------------------------------------------
 
 This version brings only minor changes compared to Octave 11.2.0.  Most

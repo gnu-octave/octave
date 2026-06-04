@@ -161,7 +161,7 @@ endif
 
 %canon_reldir%_liboctinterp_current = 15
 %canon_reldir%_liboctinterp_revision = 1
-%canon_reldir%_liboctinterp_age = 1
+%canon_reldir%_liboctinterp_age = 0
 
 %canon_reldir%_liboctinterp_version_info = $(%canon_reldir%_liboctinterp_current):$(%canon_reldir%_liboctinterp_revision):$(%canon_reldir%_liboctinterp_age)
 

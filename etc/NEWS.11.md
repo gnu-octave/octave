@@ -1,4 +1,4 @@
-Summary of bugs fixed for version 11.3.0 (YYYY-MM-DD):
+Summary of bugs fixed for version 11.4.0 (YYYY-MM-DD):
 -----------------------------------------------------
 
 For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
@@ -12,8 +12,25 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 ### Documentation
 
 
+Summary of bugs fixed for version 11.3.0 (2026-06-01):
+-----------------------------------------------------
+
+This version brings only minor changes compared to Octave 11.2.0.  Most
+importantly, it fixes the SOVERSION of the `liboctinterp` library.
+
+For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
+
+### Improvements and fixes
+
+- Fix returning reciprocal condition number as second output from `det` for
+  triangular dense matrices.
+
+
 Summary of bugs fixed for version 11.2.0 (2026-05-28):
 -----------------------------------------------------
+
+> **_Note:_** The SOVERSION of the `liboctinterp` library is incorrect in this
+> version.  Update to Octave 11.3.0 instead.
 
 For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 

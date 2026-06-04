@@ -1,4 +1,18 @@
-Summary of bugs fixed for version 11.3.0 (YYYY-MM-DD):
+Summary of bugs fixed for version 11.4.0 (YYYY-MM-DD):
+-----------------------------------------------------
+
+For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
+
+### Improvements and fixes
+
+### GUI
+
+### Build system / Tests
+
+### Documentation
+
+
+Summary of bugs fixed for version 11.3.0 (2026-06-01):
 -----------------------------------------------------
 
 This version brings only minor changes compared to Octave 11.2.0.  Most

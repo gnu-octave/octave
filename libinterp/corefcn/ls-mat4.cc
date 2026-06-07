@@ -42,6 +42,7 @@
 #include "dMatrix.h"
 #include "dSparse.h"
 #include "data-conv.h"
+#include "lo-utils.h"
 #include "mach-info.h"
 #include "oct-locbuf.h"
 
@@ -266,9 +267,13 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
       error ("load: could not read NAME field from MATv4 file '%s'", filename.c_str ());
     retval = name;
 
-    datalen = static_cast<octave_idx_type> (nr) * nc;
-    if (datalen < 0)
-      error ("load: size of data exceeds octave_idx_type in MATv4 file '%s'", filename.c_str ());
+    bool mult_overflow =
+      octave::math::int_multiply_overflow (static_cast<octave_idx_type> (nr),
+                                           static_cast<octave_idx_type> (nc),
+                                           &datalen);
+    if (mult_overflow)
+      error ("load: size of data exceeds octave_idx_type in MATv4 file '%s'",
+             filename.c_str ());
 
     if (order)
       std::swap (nr, nc);

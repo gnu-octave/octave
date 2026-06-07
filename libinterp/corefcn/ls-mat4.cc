@@ -424,13 +424,25 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
   else
     nc = tc.columns ();
 
-  // FIXME: Maybe validate len?
-  /*
   if (tc.issparse ())
-    len = tc.nnz ();
+    {
+      len = tc.nnz ();
+      if (len > max_dim_val)
+        {
+          warning_with_id ("Octave:save:numel-too-large",
+                           "save: skipping %s: number of elements too large for MATv4 format",
+                           name.c_str ());
+          return true;
+        }
+    }
   else
-    len = static_cast<octave_idx_type> (nr) * nc;
-  */
+    {
+      len = static_cast<octave_idx_type> (nr) * nc;
+      if (len > max_dim_val)
+        warning_with_id ("Octave:save:numel-too-large",
+                         "save: %s: number of elements too large to load file in 32-bit versions of Octave or in MATLAB. Continuing anyway",
+                         name.c_str ());
+    }
 
   if (! (tc.is_double_type () || tc.is_string ()))
     {
@@ -457,7 +469,6 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
   // Write Number of Rows, Number of Columns, and Imaginary Flag
   if (tc.issparse ())
     {
-      len = tc.nnz ();
       uint32_t nnz = len + 1;
       os.write (reinterpret_cast<char *> (&nnz), 4);
 
@@ -474,8 +485,6 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 
       int32_t imag = (tc.iscomplex () ? 1 : 0);
       os.write (reinterpret_cast<char *> (&imag), 4);
-
-      len = static_cast<octave_idx_type> (nr) * nc;
     }
 
   // Write length of variable name (possibly truncated) 

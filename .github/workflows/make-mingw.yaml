@@ -302,19 +302,19 @@ jobs:
       - name: analyze test suite results
         # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
         run: |
-          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || echo "::warning::At least one test failed"
-          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || echo "::warning::At least one regression in test suite"
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || (echo "::error::At least one test failed" && exit 1)
+          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || (echo "::error::At least one regression in test suite" && exit 1)
           echo Finished analyzing test suite results.
 
       - name: compress build artifact
-        if: matrix.msystem == 'MINGW64'
+        if: always() && (steps.run-test-suite.outcome != 'skipped') && matrix.msystem == 'MINGW64'
         continue-on-error: true
         run: |
           cd /c/octave/pkg
           tar -cvzf octave.tar.gz *
 
       - name: upload build artifact
-        if: matrix.msystem == 'MINGW64'
+        if: always() && (steps.run-test-suite.outcome != 'skipped') && matrix.msystem == 'MINGW64'
         continue-on-error: true
         uses: actions/upload-artifact@v6
         with:

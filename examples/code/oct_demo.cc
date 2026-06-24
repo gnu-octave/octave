@@ -20,7 +20,7 @@
 //   ans = 3
 
 // Additional samples of real dynamically loaded functions are available in
-// the files of the libinterp/dldfcn directory of the Octave distribution.
+// the files of the liboctinterp/dldfcn directory of the Octave distribution.
 // See also the chapter External Code Interface in the documentation.
 
 #include <iostream>

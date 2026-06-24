@@ -25,16 +25,22 @@
 ##
 ########################################################################
 
-# Generate a header file that provides the public symbols from Octave's
-# autoconf-generated config.h file.  See the notes at the top of the
-# generated octave-config.h file for more details.
+################################################################################
+## Usage: mk-octave-config-h.sh CONFIG-FILE
+## Purpose: Generate a header file that provides the public symbols from
+## Octave's autoconf-generated config.h file.  See the notes at the top of the
+## generated octave-config.h file for more details.
+################################################################################
 
-SED=${SED:-sed}
+set -e
 
 if [ $# -ne 1 ]; then
   echo "usage: mk-octave-config-h.sh CONFIG-FILE" 1>&2
   exit 1
 fi
+
+SED=${SED:-sed}
+GREP=${GREP:-grep}
 
 config_h_file=$1
 
@@ -89,9 +95,9 @@ cat << EOF
 //
 // with NAME formed from the header file name with '-' replaced by '_'.
 //
-// It is safe to include octave-config.h unconditionally since it will
-// expand to an empty file if it is included after Octave's
-// autoconf-generated config.h file.
+// It is safe to include octave-config.h unconditionally since it will expand
+// to an empty file if it is included after Octave's autoconf-generated
+// config.h file.
 //
 // Users of Octave's libraries should not need to include octave-config.h
 // since all of Octave's header files already include it.
@@ -102,25 +108,26 @@ cat << EOF
 #if ! defined (OCTAVE_AUTOCONFIG_H_INCLUDED)
 EOF
 
-$SED -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_64.*$\)/#  \1/p' $config_h_file
-$SED -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_BOUNDS_CHECK.*$\)/#  \1/p' $config_h_file
-$SED -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_INTERNAL_CHECKS.*$\)/#  \1/p' $config_h_file
-$SED -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_LIB_VISIBILITY_FLAGS.*$\)/#  \1/p' $config_h_file
-$SED -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_OPENMP.*$\)/#  \1/p' $config_h_file
-$SED -n 's/#\(\(undef\|define\) OCTAVE_F77_INT_TYPE.*$\)/#  \1/p' $config_h_file
-$SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_LONG_LONG_INT.*$\)/#  \1/p' $config_h_file
-$SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_OVERLOAD_CHAR_INT8_TYPES.*$\)/#  \1/p' $config_h_file
-$SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR.*$\)/#  \1/p' $config_h_file
-$SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT.*$\)/#  \1/p' $config_h_file
-$SED -n 's/#\(\(undef\|define\) OCTAVE_IDX_TYPE.*$\)/#  \1/p' $config_h_file
-$SED -n 's/#\(\(undef\|define\) OCTAVE_SIZEOF_F77_INT_TYPE.*$\)/#  \1/p' $config_h_file
-$SED -n 's/#\(\(undef\|define\) OCTAVE_SIZEOF_IDX_TYPE.*$\)/#  \1/p' $config_h_file
-$SED -n 's/#\(\(undef\|define\) OCTAVE_SIZEOF_INT.*$\)/#  \1/p' $config_h_file
-$SED -n 's/#\(\(undef\|define\) gid_t.*$\)/#  \1/p' $config_h_file
-$SED -n 's/#\(\(undef\|define\) uid_t.*$\)/#  \1/p' $config_h_file
-$SED -n 's/#\(\(undef\|define\) nlink_t.*$\)/#  \1/p' $config_h_file
+$SED -n \
+  -e 's/#\(\(undef\|define\) OCTAVE_ENABLE_64.*$\)/#  \1/p' \
+  -e 's/#\(\(undef\|define\) OCTAVE_ENABLE_BOUNDS_CHECK.*$\)/#  \1/p' \
+  -e 's/#\(\(undef\|define\) OCTAVE_ENABLE_INTERNAL_CHECKS.*$\)/#  \1/p' \
+  -e 's/#\(\(undef\|define\) OCTAVE_ENABLE_LIB_VISIBILITY_FLAGS.*$\)/#  \1/p' \
+  -e 's/#\(\(undef\|define\) OCTAVE_ENABLE_OPENMP.*$\)/#  \1/p' \
+  -e 's/#\(\(undef\|define\) OCTAVE_F77_INT_TYPE.*$\)/#  \1/p' \
+  -e 's/#\(\(undef\|define\) OCTAVE_HAVE_LONG_LONG_INT.*$\)/#  \1/p' \
+  -e 's/#\(\(undef\|define\) OCTAVE_HAVE_OVERLOAD_CHAR_INT8_TYPES.*$\)/#  \1/p' \
+  -e 's/#\(\(undef\|define\) OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR.*$\)/#  \1/p' \
+  -e 's/#\(\(undef\|define\) OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT.*$\)/#  \1/p' \
+  -e 's/#\(\(undef\|define\) OCTAVE_IDX_TYPE.*$\)/#  \1/p' \
+  -e 's/#\(\(undef\|define\) OCTAVE_SIZEOF_F77_INT_TYPE.*$\)/#  \1/p' \
+  -e 's/#\(\(undef\|define\) OCTAVE_SIZEOF_IDX_TYPE.*$\)/#  \1/p' \
+  -e 's/#\(\(undef\|define\) OCTAVE_SIZEOF_INT.*$\)/#  \1/p' \
+  -e 's/#\(\(undef\|define\) gid_t.*$\)/#  \1/p' \
+  -e 's/#\(\(undef\|define\) uid_t.*$\)/#  \1/p' \
+  -e 's/#\(\(undef\|define\) nlink_t.*$\)/#  \1/p' $config_h_file
 
-if grep "#undef HAVE_DEV_T" $config_h_file > /dev/null; then
+if $GREP "#undef HAVE_DEV_T" $config_h_file > /dev/null; then
   cat << EOF
 typedef short dev_t;
 EOF
@@ -130,7 +137,7 @@ else
 EOF
 fi
 
-if grep "#undef HAVE_INO_T" $config_h_file > /dev/null; then
+if $GREP "#undef HAVE_INO_T" $config_h_file > /dev/null; then
     cat << EOF
 typedef unsigned long ino_t;
 EOF
@@ -143,7 +150,7 @@ fi
 echo ""
 
 have_roundl=no
-if grep "#define HAVE_ROUNDL" $config_h_file > /dev/null; then
+if $GREP "#define HAVE_ROUNDL" $config_h_file > /dev/null; then
   have_roundl=yes
 fi
 
@@ -184,10 +191,9 @@ $SED -n 's/#\(\(undef\|define\) F77_FUNC.*$\)/#  \1/p' $config_h_file
 
 cat << EOF
 
-/* Enable inline functions or typedefs that provide access to
-   symbols that have been moved to the octave namespace so that
-   users of Octave may continue to access symbols using the
-   deprecated names.  */
+/* Enable inline functions or typedefs that provide access to symbols that
+   have been moved to the octave namespace so that users of Octave may
+   continue to access symbols using the deprecated names.  */
 #  define OCTAVE_PROVIDE_DEPRECATED_SYMBOLS 1
 
 #  include "oct-conf-post-public.h"

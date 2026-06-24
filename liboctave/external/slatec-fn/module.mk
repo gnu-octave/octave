@@ -1,8 +1,8 @@
 EXTERNAL_SOURCES += \
   %reldir%/albeta.f \
+  %reldir%/algams.f \
   %reldir%/alngam.f \
   %reldir%/alnrel.f \
-  %reldir%/algams.f \
   %reldir%/csevl.f \
   %reldir%/d9gmit.f \
   %reldir%/d9lgic.f \
@@ -27,9 +27,7 @@ EXTERNAL_SOURCES += \
   %reldir%/pchim.f \
   %reldir%/pchst.f \
   %reldir%/psifn.f \
-  %reldir%/r9lgmc.f \
-  %reldir%/r9lgit.f \
   %reldir%/r9gmit.f \
-  %reldir%/r9lgic.f
-
-DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
+  %reldir%/r9lgic.f \
+  %reldir%/r9lgit.f \
+  %reldir%/r9lgmc.f

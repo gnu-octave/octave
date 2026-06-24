@@ -2,6 +2,10 @@ FCN_FILE_DIRS += \
   %reldir% \
   %reldir%/private
 
+%canon_reldir%_FCN_FILES = \
+  %reldir%/.oct-config \
+  %reldir%/pkg.m
+
 %canon_reldir%_PRIVATE_FCN_FILES = \
   %reldir%/private/build.m \
   %reldir%/private/configure_make.m \
@@ -29,22 +33,14 @@ FCN_FILE_DIRS += \
   %reldir%/private/uninstall.m \
   %reldir%/private/unload_packages.m
 
-%canon_reldir%_FCN_FILES = \
-  %reldir%/.oct-config \
-  %reldir%/pkg.m
-
 %canon_reldir%dir = $(fcnfiledir)/pkg
 
 %canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-%canon_reldir%_privatedir = $(fcnfiledir)/pkg/private
+%canon_reldir%_privatedir = $(%canon_reldir%dir)/private
 
 %canon_reldir%_private_DATA = $(%canon_reldir%_PRIVATE_FCN_FILES)
 
 FCN_FILES += \
   $(%canon_reldir%_FCN_FILES) \
   $(%canon_reldir%_PRIVATE_FCN_FILES)
-
-PKG_ADD_FILES += %reldir%/PKG_ADD
-
-DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

@@ -383,7 +383,7 @@ SHOW_NAMESPACES        = YES
 
 INPUT                  = @abs_top_srcdir@/src/ \
                          @abs_top_srcdir@/liboctave/ \
-                         @abs_top_srcdir@/libinterp \
+                         @abs_top_srcdir@/liboctinterp \
                          @abs_top_srcdir@/doc/doxyhtml/pages \
                          @abs_top_builddir@/doc/doxyhtml/pages
 
@@ -665,11 +665,17 @@ SEARCH_INCLUDES        = YES
 # This tag requires that the tag SEARCH_INCLUDES is set to YES.
 
 INCLUDE_PATH           = @abs_top_srcdir@/libgnu \
-                         @abs_top_srcdir@/libinterp/corefcn \
-                         @abs_top_srcdir@/libinterp/octave-value \
-                         @abs_top_srcdir@/libinterp/operators \
-                         @abs_top_srcdir@/libinterp/parse-tree \
-                         @abs_top_srcdir@/libinterp/template-inst \
+                         @abs_top_srcdir@/liboctinterp/corefcn/numeric \
+                         @abs_top_srcdir@/liboctinterp/corefcn/system \
+                         @abs_top_srcdir@/liboctinterp/corefcn/util \
+                         @abs_top_srcdir@/liboctinterp/graphics \
+                         @abs_top_srcdir@/liboctinterp/interp \
+                         @abs_top_srcdir@/liboctinterp/load-save \
+                         @abs_top_srcdir@/liboctinterp/octave-value \
+                         @abs_top_srcdir@/liboctinterp/operators \
+                         @abs_top_srcdir@/liboctinterp/parse-tree \
+                         @abs_top_srcdir@/liboctinterp/stream \
+                         @abs_top_srcdir@/liboctinterp/template-inst \
                          @abs_top_srcdir@/liboctave/array \
                          @abs_top_srcdir@/liboctave/numeric \
                          @abs_top_srcdir@/liboctave/operators \

@@ -44,7 +44,7 @@ Notice again the `F` prefix of `foo`.
 > `interp_name`.
 
 To make a builtin function or builtin method available to the interpreter, it
-is not sufficient to just define them somewhere inside `libinterp`.  Octave
+is not sufficient to just define them somewhere inside `liboctinterp`.  Octave
 provides two convenience macros, to define them properly:
 
 ```{.cc}

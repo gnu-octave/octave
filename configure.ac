@@ -26,6 +26,11 @@ dnl
 ########################################################################
 
 ### Initialize Autoconf
+
+dnl The description of the Octave version number in file etc/HACKING.md
+dnl explains how to update MAJOR.MINOR.PATCH numbers for release and
+dnl development versions.
+
 AC_PREREQ([2.65])
 AC_INIT([GNU Octave], [12.0.0],
         [https://bugs.octave.org], [octave], [https://www.octave.org])
@@ -34,26 +39,19 @@ AC_CONFIG_AUX_DIR([build-aux])
 
 ### Declare version numbers
 
-dnl Note that the version number is duplicated here and in AC_INIT because
-dnl AC_INIT requires it to be static, not computed from shell variables.
-
-## The description of the Octave version number in the etc/HACKING.md
-## explains how to update these numbers for release and development
-## versions.
-
-OCTAVE_MAJOR_VERSION=12
-OCTAVE_MINOR_VERSION=0
-OCTAVE_PATCH_VERSION=0
-
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION argument.
 OCTAVE_VERSION="$PACKAGE_VERSION"
+
+OCTAVE_MAJOR_VERSION=[`echo $OCTAVE_VERSION | sed 's/^\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\)/\1/'`]
+OCTAVE_MINOR_VERSION=[`echo $OCTAVE_VERSION | sed 's/^\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\)/\2/'`]
+OCTAVE_PATCH_VERSION=[`echo $OCTAVE_VERSION | sed 's/^\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\)/\3/'`]
 
 OCTAVE_COPYRIGHT="Copyright (C) 1993-2026 The Octave Project Developers."
 
 OCTAVE_RELEASE_DATE="2026-02-03"
 
 ## The "API version" is used as a way of checking that interfaces in the
-## liboctave and libinterp libraries haven't changed in a backwardly
+## liboctave and liboctinterp libraries haven't changed in a backwardly
 ## incompatible way when loading .oct files.  A better way to do this is with
 ## library versioning, but not all systems support it.
 ##
@@ -62,7 +60,7 @@ OCTAVE_RELEASE_DATE="2026-02-03"
 ## OCTAVE_MAJOR_VERSION, OCTAVE_MINOR_VERSION, and OCTAVE_PATCH_VERSION
 ## macros instead.
 dnl
-dnl FIXME: Since we also set libtool versions for liboctave and libinterp,
+dnl FIXME: Since we also set libtool versions for liboctave and liboctinterp,
 dnl perhaps we should be computing the "api version" from those versions numbers
 dnl in some way instead of setting it independently here.
 OCTAVE_API_VERSION="api-v61"
@@ -75,10 +73,7 @@ AC_SUBST(OCTAVE_COPYRIGHT)
 AC_SUBST(OCTAVE_RELEASE_DATE)
 AC_SUBST(OCTAVE_API_VERSION)
 
-dnl FIXME: We should auto-insert the Mercurial changeset ID into the
-dnl        AC_REVISION field whenever configure.ac is modified.
-dnl AC_REVISION($Revision: 1.603 $)
-AC_CONFIG_SRCDIR([libinterp/octave.cc])
+AC_CONFIG_SRCDIR([liboctinterp/octave.cc])
 AC_CONFIG_HEADERS([config.h:config.in.h])
 
 ### Initialize Automake
@@ -117,8 +112,8 @@ case $host_os in
       '${libexecdir}/octave/${version}/exec/${canonical_host_type}') ;;
 esac
 
-## Where to put executables to be run by Octave, rather than the user, that
-## are specific to this site.
+## Where to put executables to be run by Octave, rather than the user,
+## that are specific to this site.
 OCTAVE_SET_DEFAULT([localarchlibdir],
   '${libexecdir}/octave/site/exec/${canonical_host_type}')
 
@@ -213,8 +208,8 @@ PKG_PROG_PKG_CONFIG
 ## And where we will install our own .pc files.
 PKG_INSTALLDIR
 AC_SUBST([liboctave_pkgconfigdir], [$pkgconfigdir])
-AC_SUBST([libinterp_pkgconfigdir], [$pkgconfigdir])
-AC_SUBST([libmex_pkgconfigdir], [$pkgconfigdir])
+AC_SUBST([liboctinterp_pkgconfigdir], [$pkgconfigdir])
+AC_SUBST([liboctmex_pkgconfigdir], [$pkgconfigdir])
 
 ## Programs used in Makefiles.
 AC_PROG_AWK
@@ -906,7 +901,7 @@ if test $SHARED_LIBS = yes; then
   LIBOCTAVE="-loctave"
   LIBOCTMEX="-loctmex"
 else
-  LIBOCTINTERP="${top_builddir}/libinterp/liboctinterp.a"
+  LIBOCTINTERP="${top_builddir}/liboctinterp/liboctinterp.a"
   LIBOCTAVE="${top_builddir}/liboctave/liboctave.a"
   LIBOCTMEX="${top_builddir}/liboctave/liboctmex.a"
 fi
@@ -922,26 +917,26 @@ if test "$cross_compiling" = yes && test -n "$ac_tool_prefix"; then
   MKOCTFILE_CC=`echo "$CC" | $SED "s,$CROSS_TOOL_PREFIX,,"`
   MKOCTFILE_CXX=`echo "$CXX" | $SED "s,$CROSS_TOOL_PREFIX,,"`
   MKOCTFILE_F77=`echo "$F77" | $SED "s,$CROSS_TOOL_PREFIX,,"`
-  MKOCTFILE_RANLIB=`echo "$RANLIB" | $SED "s,$CROSS_TOOL_PREFIX,,"`
+  MKOCTFILE_RANDLIB=`echo "$RANDLIB" | $SED "s,$CROSS_TOOL_PREFIX,,"`
 else
   MKOCTFILE_AR="$AR"
   MKOCTFILE_CC="$CC"
   MKOCTFILE_CXX="$CXX"
   MKOCTFILE_F77="$F77"
-  MKOCTFILE_RANLIB="$RANLIB"
+  MKOCTFILE_RANDLIB="$RANDLIB"
 fi
 AC_MSG_NOTICE([defining CROSS_TOOL_PREFIX to be $CROSS_TOOL_PREFIX])
 AC_MSG_NOTICE([defining MKOCTFILE_AR to be $MKOCTFILE_AR])
 AC_MSG_NOTICE([defining MKOCTFILE_CC to be $MKOCTFILE_CC])
 AC_MSG_NOTICE([defining MKOCTFILE_CXX to be $MKOCTFILE_CXX])
 AC_MSG_NOTICE([defining MKOCTFILE_F77 to be $MKOCTFILE_F77])
-AC_MSG_NOTICE([defining MKOCTFILE_RANLIB to be $MKOCTFILE_RANLIB])
+AC_MSG_NOTICE([defining MKOCTFILE_RANDLIB to be $MKOCTFILE_RANDLIB])
 AC_SUBST(CROSS_TOOL_PREFIX)
 AC_SUBST(MKOCTFILE_AR)
 AC_SUBST(MKOCTFILE_CC)
 AC_SUBST(MKOCTFILE_CXX)
 AC_SUBST(MKOCTFILE_F77)
-AC_SUBST(MKOCTFILE_RANLIB)
+AC_SUBST(MKOCTFILE_RANDLIB)
 
 ### Enable internal checks
 
@@ -3142,7 +3137,7 @@ case $host_os in
     ## Don't use $libdir here because that's defined to be
     ## ${exec_prefix}/lib and at this point, ${exec_prefix} is "NONE"!
     tmp_libiconv_dll="$LIBICONV_PREFIX/lib/libiconv.dll.a"
-    MKOCTFILE_LIBICONV=`echo $LIBICONV | sed "s|$tmp_libiconv_dll|-liconv|"`
+    MKOCTFILE_LIBICONV=`echo $LIBICONV | $SED "s|$tmp_libiconv_dll|-liconv|"`
   ;;
   *)
     MKOCTFILE_LIBICONV="$LIBICONV"
@@ -3186,9 +3181,9 @@ OCT_GUI_LINK_OPTS="$LDFLAGS"
 if test $link_all_deps = yes; then
   AC_DEFINE(OCTAVE_LINK_ALL_DEPS, 1, [Link with all dependencies.])
 
-  OCT_LINK_DEPS="libinterp/liboctinterp.la liboctave/liboctave.la"
+  OCT_LINK_DEPS="liboctinterp/liboctinterp.la liboctave/liboctave.la"
   OCT_LTLINK_DEPS="$OCT_LINK_DEPS"
-  OCT_GUI_LINK_DEPS="libgui/liboctgui.la $OCT_LINK_DEPS"
+  OCT_GUI_LINK_DEPS="liboctgui/liboctgui.la $OCT_LINK_DEPS"
 
   MKOCTFILE_OCTAVE_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS $MKOCTFILE_LIBOCTAVE_LINK_DEPS"
   MKOCTFILE_OCT_LINK_DEPS="-L${octlibdir} $LIBOCTINTERP $LIBOCTAVE"
@@ -3201,9 +3196,9 @@ if test $link_all_deps = yes; then
 else
   case $host_os in
     mingw* | msdosmsvc)
-      OCT_LINK_DEPS="libinterp/liboctinterp.la liboctave/liboctave.la"
+      OCT_LINK_DEPS="liboctinterp/liboctinterp.la liboctave/liboctave.la"
       OCT_LTLINK_DEPS="$OCT_LINK_DEPS"
-      OCT_GUI_LINK_DEPS="libgui/liboctgui.la $OCT_LINK_DEPS"
+      OCT_GUI_LINK_DEPS="liboctgui/liboctgui.la $OCT_LINK_DEPS"
 
       MKOCTFILE_OCT_LINK_DEPS="-L${octlibdir} $LIBOCTINTERP $LIBOCTAVE"
     ;;
@@ -3361,37 +3356,31 @@ AC_SUBST(ac_config_headers)
 
 AC_CONFIG_FILES([
   Makefile
-  build-aux/check-subst-vars.sh:build-aux/check-subst-vars.in.sh
-  build-aux/find-defun-files.sh:build-aux/find-defun-files.in.sh
-  build-aux/find-files-with-tests.sh:build-aux/find-files-with-tests.in.sh
   doc/doxyhtml/Doxyfile
   libgnu/Makefile
   test/Makefile
   liboctave/octave.pc:liboctave/octave.in.pc
-  libinterp/octinterp.pc:libinterp/octinterp.in.pc
-  libmex/octmex.pc:libmex/octmex.in.pc])
+  liboctinterp/octinterp.pc:liboctinterp/octinterp.in.pc
+  liboctmex/octmex.pc:liboctmex/octmex.in.pc])
 
 dnl We use a .in.h file for oct-conf-post-private.h and
-dnl oct-conf-post-public.h simply to copy it to the build tree
-dnl so that we don't have to add the -I${top_srcdir} to any CPPFLAGS variables.
+dnl oct-conf-post-public.h simply to copy them to the build tree
+dnl so that we don't have to add -I${top_srcdir} to any CPPFLAGS variables.
 
-AC_CONFIG_FILES([
-  oct-conf-post-private.h-tmp:oct-conf-post-private.in.h
-  oct-conf-post-public.h-tmp:oct-conf-post-public.in.h])
+dnl OCTAVE_MOVE_IF_CHANGE_CONFIG_FILES macro generates a temporary version of
+dnl output file with configure, but only writes it if there is a change from
+dnl the existing version.  This prevents uselessly updating the timestamp on
+dnl a file and triggering unnecessary rebuilds.
 
-AC_CONFIG_COMMANDS([oct-conf-post-private.h],
-  [$SHELL $srcdir/build-aux/move-if-change oct-conf-post-private.h-tmp oct-conf-post-private.h])
-
-AC_CONFIG_COMMANDS([oct-conf-post-public.h],
-  [$SHELL $srcdir/build-aux/move-if-change oct-conf-post-public.h-tmp oct-conf-post-public.h])
-
-OCTAVE_CONFIG_MOVE_IF_CHANGE_FILES([
-  liboctave/external/mk-f77-def.sh
-  liboctave/mk-version-h.sh
-  libinterp/corefcn/mk-mxtypes-h.sh
+OCTAVE_MOVE_IF_CHANGE_CONFIG_FILES([
   build-aux/subst-config-vals.sh
   build-aux/subst-cross-config-vals.sh
-  build-aux/subst-script-vals.sh])
+  build-aux/subst-script-vals.sh
+  liboctave/external/mk-f77-def.sh
+  liboctave/version.h
+  liboctinterp/interp/mxtypes.h
+  oct-conf-post-private.h
+  oct-conf-post-public.h])
 
 AC_OUTPUT
 

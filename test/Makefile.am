@@ -1,22 +1,32 @@
-BUILT_SOURCES =
-DIRSTAMP_FILES =
+# Makefile for test directory
+
+## This directory uses it's own Makefile.am, and the top-level Makefile employs
+## a recursive build strategy ("make xxx" at top-level leads to changing into
+## subdirectory test/ and executing "make xxx").
+## This is required because the Octave project ran into internal limits on the
+## number of string objects (e.g., filenames) that could be used in one shell
+## command line.  An independent Makefile has its own namespace and this
+## strategy reduces the number of strings that are present in the top-level
+## Makefile namespace.
+
 EXTRA_DIST =
 CLEANFILES =
 DISTCLEANFILES =
 MAINTAINERCLEANFILES =
+# Octave-created automake primitive for test files
 TEST_FILES =
 noinst_TEST_FILES =
 
-octave_dirstamp = $(am__leading_dot)octave-dirstamp
+# Stamp directories which have built sources to enable VPATH builds
+octave_dirstamp := $(am__leading_dot)octave-dirstamp
 
-DIRSTAMP_FILES += $(octave_dirstamp)
+DIRSTAMP_FILES = $(octave_dirstamp)
 
 $(DIRSTAMP_FILES):
 	$(AM_V_GEN)$(MKDIR_P) $(@D) && \
 	: > $@
 
 TEST_FILES += \
-  fntests.m \
   anonymous-function.tst \
   args.tst \
   bug-31371.tst \
@@ -71,6 +81,9 @@ TEST_FILES += \
   unwind.tst \
   while.tst
 
+noinst_TEST_FILES += \
+  test_suite.m
+
 include bug-35448/module.mk
 include bug-35881/module.mk
 include bug-36025/module.mk
@@ -121,10 +134,10 @@ include bug-67096/module.mk
 include bug-67403/module.mk
 include bug-67964/module.mk
 include class-concat/module.mk
-include classdef/module.mk
-include classdef-debug/module.mk
+include classdef-breakpoints/module.mk
 include classdef-load-save/module.mk
 include classdef-multiple-inheritance/module.mk
+include classdef/module.mk
 include classes/module.mk
 include colon-op/module.mk
 include ctor-vs-method/module.mk
@@ -141,35 +154,63 @@ include pkg/module.mk
 include private-functions/module.mk
 include publish/module.mk
 
-# run-octave (optional-prepare-commands)
+BUILT_TEST_FILES = \
+  conv.tst \
+  sparse.tst \
+  $(BUILT_BC_OVERLOADS_FILES)
 
-define run-octave-tests
-  ( $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) --no-init-file --quiet  \
-      --no-history -p $(abs_top_builddir)/test/mex \
-      $(abs_top_srcdir)/test/fntests.m $(abs_top_srcdir)/test "$(1)" ) && \
-  if $(AM_V_P); then \
-    echo ""; \
-    if [ -f fntests.log ]; then \
-      echo "Contents of test/fntests.log:"; \
-      echo ""; \
-      $(AWK) -f $(srcdir)/show-failures.awk fntests.log; \
-    else \
-      echo "fntests.log is missing!"; \
-    fi; \
-  fi
-endef
+## Special rules:
 
-check-local: $(GENERATED_TEST_FILES) $(MEX_TEST_FUNCTIONS) | $(OCTAVE_INTERPRETER_TARGETS) $(octave_dirstamp)
-	$(AM_V_at)$(call run-octave-tests)
+conv.tst: mk-conv-tst.sh | $(octave_dirstamp)
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(SHELL) $(srcdir)/mk-conv-tst.sh > $@-t && \
+	mv $@-t $@
+
+sparse.tst: mk-sparse-tst.sh | $(octave_dirstamp)
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(SHELL) $(srcdir)/mk-sparse-tst.sh > $@-t && \
+	mv $@-t $@
+
+BUILT_BC_OVERLOADS_DIRS := \
+  $(shell $(SHELL) $(srcdir)/mk-bc-overloads-tst.sh $(abs_top_builddir)/test --list-dirs)
+
+BUILT_BC_OVERLOADS_FILES := \
+  $(shell $(SHELL) $(srcdir)/mk-bc-overloads-tst.sh $(abs_top_builddir)/test --list-files)
+
+# Special syntax '&:' informs Make that all targets will be built by running
+# the associated rule once.
+$(BUILT_BC_OVERLOADS_FILES) &: mk-bc-overloads-tst.sh bc-overloads-expected | $(octave_dirstamp)
+	$(AM_V_GEN)rm -f $@ && \
+	$(SHELL) $(srcdir)/mk-bc-overloads-tst.sh $(abs_top_builddir)/test $(srcdir)/bc-overloads-expected
+
+check-local: $(BUILT_TEST_FILES) $(MEX_TEST_FUNCTIONS) | $(octave_dirstamp)
+	$(AM_V_at) ( $(SHELL) $(abs_top_builddir)/run-octave $(RUN_OCTAVE_OPTIONS) \
+	  --no-init-file --quiet --no-history --path $(abs_top_builddir)/test/mex \
+	  $(abs_top_srcdir)/test/test_suite.m $(abs_top_srcdir)/test "$(1)" ) && \
+	if $(AM_V_P); then \
+	  echo ""; \
+	  if [ -f test_suite.log ]; then \
+	    echo "Contents of test/test_suite.log:"; \
+	    echo ""; \
+	    $(AWK) -f $(srcdir)/show-failures.awk test_suite.log; \
+	  else \
+	    echo "test_suite.log is missing!"; \
+	  fi; \
+	fi
+
+## FIXME: Code coverage target does not work at this time (2026-05-18).
+## FIXME: To get something useful out of 'make coverage', you should use g++
+## and configure with compiler flags set include to '-g --coverage'.  Per g++
+## documentation, option '--coverage' should also be added to link flags.
+## Option '-fprofile-abs-path' may be necessary for projects with different
+## working directories.  Coverage data will match the source files more closely
+## if optimization is not used.
+## Adding the --coverage option to either WARN_CXXFLAGS or XTRA_CXXFLAGS
+## resulted in link errors, so work is still needed to get an
+## '--enable-coverage-flags' option working.
 
 COVERAGE_DIR = coverage
 COVERAGE_INFO = $(COVERAGE_DIR)/$(PACKAGE).info
-
-## FIXME: To get something useful out of 'make coverage', you should use gcc
-## and configure with compiler flags set to '-g --coverage'.  Adding the
-## --coverage option to either WARN_CXXFLAGS or XTRA_CXXFLAGS resulted in
-## link errors, so some work still needed to get a '--enable-coverage-flags'
-## option working.
 
 coverage: all
 	lcov --directory . --zerocounters
@@ -186,48 +227,29 @@ coverage: all
 	@echo ""
 .PHONY: coverage
 
-conv.tst: mk-conv-tst.sh | $(octave_dirstamp)
-	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(SHELL) $(srcdir)/mk-conv-tst.sh > $@-t && \
-	mv $@-t $@
+## Utility rule to aid development
 
-sparse.tst: mk-sparse-tst.sh | $(octave_dirstamp)
-	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(SHELL) $(srcdir)/mk-sparse-tst.sh > $@-t && \
-	mv $@-t $@
+ALL_TEST_FILES := $(addprefix $(srcdir)/, $(TEST_FILES))
 
-GENERATED_BC_OVERLOADS_DIRS := \
-  $(shell $(SHELL) $(srcdir)/mk-bc-overloads-tst.sh $(abs_top_builddir)/test --list-dirs)
+## Tag bug IDs in tests as fixed
+update-bug-status:
+	$(SHELL) $(srcdir)/%reldir%/update-bug-status.sh $(ALL_TEST_FILES)
+.PHONY: update-bug-status
 
-GENERATED_BC_OVERLOADS_FILES := \
-  $(shell $(SHELL) $(srcdir)/mk-bc-overloads-tst.sh $(abs_top_builddir)/test --list-files)
-
-$(GENERATED_BC_OVERLOADS_FILES): mk-bc-overloads-tst-stamp
-
-.bc-overload-tests-stamp: mk-bc-overloads-tst.sh bc-overloads-expected | $(octave_dirstamp)
-	$(AM_V_GEN)rm -f $@ && \
-	$(SHELL) $(srcdir)/mk-bc-overloads-tst.sh $(abs_top_builddir)/test $(srcdir)/bc-overloads-expected && \
-	touch $@
-
-GENERATED_TEST_FILES = \
-  conv.tst \
-  sparse.tst \
-  .bc-overload-tests-stamp
+## Installation rules
 
 fixedtestsdir := $(octtestsdir)/fixed
 
-TEST_INST_FILES = \
-  conv.tst \
-  sparse.tst \
-  $(GENERATED_BC_OVERLOADS_FILES) \
-  $(filter-out fntests.m, $(TEST_FILES))
+inst_TEST_FILES := \
+  $(BUILT_TEST_FILES) \
+  $(TEST_FILES)
 
 install-data-local: install-test-files
 
 uninstall-local: uninstall-test-files
 
-install-test-files:
-	for f in $(TEST_INST_FILES); do \
+install-test-files: $(inst_TEST_FILES)
+	for f in $(inst_TEST_FILES); do \
 	  if test -f "$$f"; then d=; else d="$(srcdir)/"; fi; \
 	  $(MKDIR_P) $(DESTDIR)$(fixedtestsdir)/`echo $$f | $(SED) 's,/*[^/]*$$,,'`; \
 	  $(INSTALL_DATA) $$d$$f $(DESTDIR)$(fixedtestsdir)/$$f; \
@@ -235,14 +257,14 @@ install-test-files:
 .PHONY: install-test-files
 
 uninstall-test-files:
-	for f in $(TEST_INST_FILES); do \
+	for f in $(inst_TEST_FILES); do \
 	  rm -f $(DESTDIR)$(fixedtestsdir)/$$f; \
 	done
 .PHONY: uninstall-test-files
 
-BUILT_SOURCES += \
-  $(GENERATED_TEST_FILES) \
-  $(DIRSTAMP_FILES)
+dist_TEST_FILES := \
+  $(addprefix $(srcdir)/, $(TEST_FILES)) \
+  $(addprefix $(srcdir)/, $(noinst_TEST_FILES))
 
 EXTRA_DIST += \
   bc-overloads-expected \
@@ -251,28 +273,15 @@ EXTRA_DIST += \
   mk-sparse-tst.sh \
   mk_bc_overloads_expected.m \
   show-failures.awk \
-  $(addprefix $(srcdir)/, $(TEST_FILES)) \
-  $(addprefix $(srcdir)/, $(noinst_TEST_FILES)) \
-  $(MEX_TEST_SRC)
+	$(dist_TEST_FILES)
 
 CLEANFILES += \
-  $(GENERATED_BC_OVERLOADS_FILES) \
-  $(GENERATED_TEST_FILES)
+  test_suite.log \
+  $(BUILT_TEST_FILES)
 
 DISTCLEANFILES += \
-  fntests.log \
   $(DIRSTAMP_FILES)
 
-clean-local: test-clean
-
-test-clean:
-	rm -f $(CLEANFILES)
-	rm -rf $(GENERATED_BC_OVERLOADS_DIRS)
+clean-local:
+	rm -rf $(BUILT_BC_OVERLOADS_DIRS)
 	rm -rf $(COVERAGE_DIR)
-	rm -rf $(MEX_TEST_FUNCTIONS)
-
-test-distclean: test-clean
-	rm -f $(DISTCLEANFILES)
-
-test-maintainer-clean: test-distclean
-	rm -f $(MAINTAINERCLEANFILES)

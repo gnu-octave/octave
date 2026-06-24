@@ -133,7 +133,7 @@ LIBOCTAVE_TEMPLATE_SRC += \
 
 noinst_LTLIBRARIES += %reldir%/libarray.la
 
-%canon_reldir%_libarray_la_SOURCES = $(ARRAY_SRC)
+%canon_reldir%_libarray_la_SOURCES := $(ARRAY_SRC)
 
 %canon_reldir%_libarray_la_CPPFLAGS = \
   $(liboctave_liboctave_la_CPPFLAGS) \

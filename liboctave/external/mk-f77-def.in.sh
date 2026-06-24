@@ -25,6 +25,21 @@
 ##
 ########################################################################
 
+################################################################################
+## Usage: mk-f77-def.sh SRCDIR file1.f [file2.f]...
+## Purpose: Find function symbols to export from Fortran files.
+################################################################################
+
+set -e
+
+if [ $# -lt 2 ]; then
+  echo "usage: mk-f77-def.sh SRCDIR file1.f [file2.f]..." 1>&2
+  exit 1
+fi
+
+srcdir="$1"
+shift
+
 : ${SED=@SED@}
 : ${AWK=@AWK@}
 
@@ -32,27 +47,22 @@ F77_TOLOWER="@F77_TOLOWER@"
 F77_APPEND_UNDERSCORE="@F77_APPEND_UNDERSCORE@"
 F77_APPEND_EXTRA_UNDERSCORE="@F77_APPEND_EXTRA_UNDERSCORE@"
 
-if test x$F77_TOLOWER = xyes; then
+if test $F77_TOLOWER = yes; then
   case_cmd=tolower
 else
   case_cmd=toupper
 fi
 
-if test x$F77_APPEND_UNDERSCORE = xyes; then
+if test $F77_APPEND_UNDERSCORE = yes; then
   uscore=_
 else
   uscore=
 fi
 
-if test x$F77_APPEND_EXTRA_UNDERSCORE = xyes; then
+if test $F77_APPEND_EXTRA_UNDERSCORE = yes; then
   awkcmd="$AWK '{ if (\$0 ~ /_/) extra = \"_\"; else extra = \"\"; printf (\"%s%s%s\n\", $case_cmd (\$0), \"$uscore\", extra); }'"
 else
   awkcmd="$AWK '{ printf (\"%s%s\n\", tolower (\$0), \"$uscore\"); }'"
-fi
-
-if [ $# -gt 1 ]; then
-  srcdir="$1"
-  shift
 fi
 
 echo EXPORTS

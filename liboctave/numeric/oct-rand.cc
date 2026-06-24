@@ -40,7 +40,7 @@
 #include "randgamma.h"
 #include "randmtzig.h"
 #include "randpoisson.h"
-#include "ranlib-proto.h"
+#include "randlib-proto.h"
 #include "singleton-cleanup.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -51,7 +51,7 @@ rand::rand ()
   : m_current_distribution (uniform_dist), m_use_old_generators (false),
     m_rand_states ()
 {
-  initialize_ranlib_generators ();
+  initialize_randlib_generators ();
 
   initialize_mersenne_twister ();
 }
@@ -139,7 +139,7 @@ void
 rand::do_reset ()
 {
   m_use_old_generators = true;
-  initialize_ranlib_generators ();
+  initialize_randlib_generators ();
 }
 
 uint32NDArray
@@ -569,7 +569,7 @@ rand::do_float_nd_array (const dim_vector& dims, float a)
 // work ok to give fairly different seeds each time Octave starts.
 
 void
-rand::initialize_ranlib_generators ()
+rand::initialize_randlib_generators ()
 {
   sys::localtime tm;
   int stored_distribution = m_current_distribution;

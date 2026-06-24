@@ -30,7 +30,7 @@
 // its GUI.  It may also execute Octave without the GUI or the command
 // line version of Octave that is not linked with GUI libraries.  So
 // that it remains small, it should NOT depend on or be linked with
-// liboctave or libinterp.
+// liboctave or liboctinterp.
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -471,7 +471,7 @@ main (int argc, char **argv)
       // can send an interrupt signal to all child processes when
       // interrupting the interpreter.  See also bug #49609 and the
       // function pthread_thread_manager::interrupt in the file
-      // libgui/src/thread-manager.cc.
+      // liboctgui/src/thread-manager.cc.
 
       gui_pid = octave_fork_wrapper ();
 

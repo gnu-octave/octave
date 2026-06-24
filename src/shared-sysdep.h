@@ -23,7 +23,7 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-// These functions are also defined in liboctave or libinterp.  They
+// These functions are also defined in liboctave or liboctinterp.  They
 // are repeated here to avoid having to link the main Octave program
 // with the Octave libraries.
 

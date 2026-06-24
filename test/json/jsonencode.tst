@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Unit tests for jsonencode()
 %%
-%% Code in libinterp/corefcn/jsonencode.cc
+%% Code in liboctinterp/corefcn/util/jsonencode.cc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Note: This script is intended to also run under Matlab to verify
 %%       compatibility.  Preserve Matlab-formatting when making changes.

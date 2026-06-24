@@ -24,20 +24,20 @@
 ########################################################################
 
 %!test <*50716>
-%! obj = myclass ();
+%! obj = class_bug50716 ();
 %! str = "Octave";
 %! val = obj.methodA (str(1:end));
 %! assert (val, str);
 
 %!test <*50716>
-%! obj = myclass ();
+%! obj = class_bug50716 ();
 %! foo = {obj};
 %! str = "Octave";
 %! val = foo{1}.methodA (str(1:end));
 %! assert (val, str);
 
 %!test <*50716>
-%! obj = myclass ();
+%! obj = class_bug50716 ();
 %! foo = {obj};
 %! str = "Octave";
 %! val = foo{end}.methodA (str(1:end));

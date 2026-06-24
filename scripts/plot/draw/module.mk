@@ -2,25 +2,6 @@ FCN_FILE_DIRS += \
   %reldir% \
   %reldir%/private
 
-%canon_reldir%_PRIVATE_FCN_FILES = \
-  %reldir%/private/__add_datasource__.m \
-  %reldir%/private/__bar__.m \
-  %reldir%/private/__calc_isovalue_from_data__.m \
-  %reldir%/private/__contour__.m \
-  %reldir%/private/__errplot__.m \
-  %reldir%/private/__ezplot__.m \
-  %reldir%/private/__gnuplot_scatter__.m \
-  %reldir%/private/__interp_cube__.m \
-  %reldir%/private/__line__.m \
-  %reldir%/private/__marching_cube__.m \
-  %reldir%/private/__patch__.m \
-  %reldir%/private/__pie__.m \
-  %reldir%/private/__plt__.m \
-  %reldir%/private/__quiver__.m \
-  %reldir%/private/__scatter__.m \
-  %reldir%/private/__stem__.m \
-  %reldir%/private/__unite_shared_vertices__.m
-
 %canon_reldir%_FCN_FILES = \
   %reldir%/.oct-config \
   %reldir%/area.m \
@@ -116,18 +97,33 @@ FCN_FILE_DIRS += \
   %reldir%/yline.m \
   %reldir%/waterfall.m
 
+%canon_reldir%_PRIVATE_FCN_FILES = \
+  %reldir%/private/__add_datasource__.m \
+  %reldir%/private/__bar__.m \
+  %reldir%/private/__calc_isovalue_from_data__.m \
+  %reldir%/private/__contour__.m \
+  %reldir%/private/__errplot__.m \
+  %reldir%/private/__ezplot__.m \
+  %reldir%/private/__gnuplot_scatter__.m \
+  %reldir%/private/__interp_cube__.m \
+  %reldir%/private/__line__.m \
+  %reldir%/private/__marching_cube__.m \
+  %reldir%/private/__patch__.m \
+  %reldir%/private/__pie__.m \
+  %reldir%/private/__plt__.m \
+  %reldir%/private/__quiver__.m \
+  %reldir%/private/__scatter__.m \
+  %reldir%/private/__stem__.m \
+  %reldir%/private/__unite_shared_vertices__.m
+
 %canon_reldir%dir = $(fcnfiledir)/plot/draw
 
 %canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-%canon_reldir%_privatedir = $(fcnfiledir)/plot/draw/private
+%canon_reldir%_privatedir = $(%canon_reldir%dir)/private
 
 %canon_reldir%_private_DATA = $(%canon_reldir%_PRIVATE_FCN_FILES)
 
 FCN_FILES += \
   $(%canon_reldir%_FCN_FILES) \
   $(%canon_reldir%_PRIVATE_FCN_FILES)
-
-PKG_ADD_FILES += %reldir%/PKG_ADD
-
-DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

@@ -48,11 +48,12 @@ FCN_FILE_DIRS += \
 
 %canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-%canon_reldir%_@audioplayerdir = $(fcnfiledir)/audio/@audioplayer
+%canon_reldir%_privatedir = private
+%canon_reldir%_@audioplayerdir = $(%canon_reldir%dir)/@audioplayer
 
 %canon_reldir%_@audioplayer_DATA = $(%canon_reldir%_@audioplayer_FCN_FILES)
 
-%canon_reldir%_@audiorecorderdir = $(fcnfiledir)/audio/@audiorecorder
+%canon_reldir%_@audiorecorderdir = $(%canon_reldir%dir)/@audiorecorder
 
 %canon_reldir%_@audiorecorder_DATA = $(%canon_reldir%_@audiorecorder_FCN_FILES)
 
@@ -60,7 +61,3 @@ FCN_FILES += \
   $(%canon_reldir%_FCN_FILES) \
   $(%canon_reldir%_@audioplayer_FCN_FILES) \
   $(%canon_reldir%_@audiorecorder_FCN_FILES)
-
-PKG_ADD_FILES += %reldir%/PKG_ADD
-
-DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

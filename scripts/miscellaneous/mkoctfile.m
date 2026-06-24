@@ -128,7 +128,7 @@
 ##    FFTW_LIBS
 ##    FLIBS
 ##    LIBS
-##    RANLIB
+##    RANDLIB
 ##    READLINE_LIBS
 ## @end group
 ## @end example

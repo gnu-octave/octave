@@ -1,0 +1,991 @@
+########################################################################
+##
+## Copyright (C) 1993-2026 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
+##
+## This file is part of Octave.
+##
+## Octave is free software: you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <https://www.gnu.org/licenses/>.
+##
+########################################################################
+
+!
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} !
+Logical 'not' operator.
+@seealso{~, not}
+@end deftypefn
+~
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} ~
+Logical 'not' operator @emph{or} discard function outputs.
+
+The symbol may be used to discard outputs of a function that are unwanted
+without using a temporary variable.
+
+@example
+[~, @var{idx_of_max}] = max (@var{x})
+@end example
+@seealso{!, not}
+@end deftypefn
+!=
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} !=
+Logical 'not equals' operator.
+@seealso{~=, ne}
+@end deftypefn
+~=
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} ~=
+Logical 'not equals' operator.
+@seealso{!=, ne}
+@end deftypefn
+"
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} "
+String delimiter.
+
+Escape sequences within double-quoted strings are expanded.  I.e., "\n" is a
+1-character string representing a newline.  See the single quote delimiter (')
+to create strings without escape sequence processing.
+@seealso{'}
+@end deftypefn
+#
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} #
+Begin comment character.
+@seealso{%, #@\{}
+@end deftypefn
+%
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} %
+Begin comment character.
+@seealso{#, %@\{}
+@end deftypefn
+#{
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} #@{
+Begin block comment.
+
+The sequence @code{#@{} must appear alone on a line with no other characters,
+other than whitespace, before or after it.  It is possible to nest block
+comments.
+@seealso{%@\{, #@\}, #}
+@end deftypefn
+%{
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} %@{
+Begin block comment.
+
+The sequence @code{%@{} must appear alone on a line with no other characters,
+other than whitespace, before or after it.  It is possible to nest block
+comments.
+@seealso{#@\{, %@\}, %}
+@end deftypefn
+#}
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} #@}
+Terminate block comment.
+
+The sequence @code{#@}} must appear alone on a line with no other characters,
+other than whitespace, before or after it.  It is possible to nest block
+comments.
+@seealso{%@\}, #@\{, #}
+@end deftypefn
+%}
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} %@}
+Terminate block comment.
+
+The sequence @code{%@}} must appear alone on a line with no other characters,
+other than whitespace, before or after it.  It is possible to nest block
+comments.
+@seealso{#@\}, %@\{, %}
+@end deftypefn
+...
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} ...
+Continuation marker.
+
+Join current line with following line before parsing.  This can be used to
+improve the human-readability of Octave code, without affecting interpretation.
+@end deftypefn
+&
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} &
+Element-by-element logical 'and' operator.
+@seealso{and, &&}
+@end deftypefn
+&&
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} &&
+Logical 'and' operator (with short-circuit evaluation).
+@seealso{&}
+@end deftypefn
+'
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} '
+Matrix transpose operator @emph{or} string delimiter.
+
+For complex matrices, computes the complex conjugate (Hermitian) transpose.
+
+The single quote character may also be used to delimit strings.  Escape
+sequences within single-quoted strings are not expanded.  I.e., '\n' is a
+2-character string '\' and 'n' rather than "\n" which is a single character
+representing a newline.
+@seealso{ctranspose, .', "}
+@end deftypefn
+(
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} (
+Array index @emph{or} function argument delimiter.
+@end deftypefn
+)
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {})
+Array index @emph{or} function argument delimiter.
+@end deftypefn
+*
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} *
+Multiplication operator.
+@seealso{mtimes, .*}
+@end deftypefn
+**
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} **
+Power operator.
+
+This may return complex results for real inputs.  Use @code{realsqrt},
+@code{cbrt}, @code{nthroot}, or @code{realpow} to obtain real results when
+possible.
+@seealso{power, ^, .**, .^, realpow, realsqrt, cbrt, nthroot}
+@end deftypefn
+^
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} ^
+Power operator.
+
+This may return complex results for real inputs.  Use @code{realsqrt},
+@code{cbrt}, @code{nthroot}, or @code{realpow} to obtain real results when
+possible.
+@seealso{power, **, .^, .**, realpow, realsqrt, cbrt, nthroot}
+@end deftypefn
++
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} +
+Addition operator.
+@seealso{plus}
+@end deftypefn
+++
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} ++
+Increment operator.
+
+Add @code{1} to existing value of variable.  As in C, may be applied as a
+prefix (@code{++x}) or postfix (@code{x++}) operator.
+@seealso{--}
+@end deftypefn
+,
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} ,
+Array index @emph{or} function argument @emph{or} command separator.
+@end deftypefn
+-
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} -
+Subtraction @emph{or} unary negation operator.
+@seealso{minus}
+@end deftypefn
+--
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} --
+Decrement operator.
+
+Subtract @code{1} from existing value of variable.  As in C, may be applied as
+a prefix (@code{--x}) or postfix (@code{x--}) operator.
+@seealso{++}
+@end deftypefn
+.'
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} .'
+Matrix transpose operator.
+
+For complex matrices, computes the transpose, @emph{not} the complex conjugate
+(Hermitian) transpose.
+@seealso{transpose, '}
+@end deftypefn
+.*
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} .*
+Element-by-element multiplication operator.
+@seealso{times, *}
+@end deftypefn
+.**
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} .**
+Element-by-element power operator.
+
+If several complex results are possible, returns the one with smallest
+non-negative argument (angle).  Use @code{realpow}, @code{realsqrt},
+@code{cbrt}, or @code{nthroot} if a real result is preferred.
+@seealso{power, .^, **, ^, realpow, realsqrt, cbrt, nthroot}
+@end deftypefn
+.^
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} .^
+Element-by-element power operator.
+
+If several complex results are possible, returns the one with smallest
+non-negative argument (angle).  Use @code{realpow}, @code{realsqrt},
+@code{cbrt}, or @code{nthroot} if a real result is preferred.
+@seealso{power, .**, ^, **, realpow, realsqrt, cbrt, nthroot}
+@end deftypefn
+./
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} ./
+Element-by-element right division operator.
+@seealso{rdivide, /, mrdivide, .\\}
+@end deftypefn
+/
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} /
+Right division operator.
+@seealso{mrdivide, ./, rdivide, \\}
+@end deftypefn
+.\
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} .\
+Element-by-element left division operator.
+@seealso{ldivide, \\, mldivide, ./}
+@end deftypefn
+\
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} \
+Left division operator.
+
+Within double-quoted strings, @samp{\} is the line continuation marker used
+to join the current line with the following line.
+@seealso{mldivide, .\\, ldivide, /}
+@end deftypefn
+:
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} :
+Array index @emph{or} range constructor separator.
+
+When indexing, select all elements in the specified dimension.
+
+@example
+x(2, :)   # selects 2nd row, all columns
+@end example
+
+When constructing ranges, @samp{:} is the separator between @var{base},
+@var{increment}, and @var{limit}.
+
+@example
+1:2:8
+@xresult{}  1  3  5  7
+@end example
+@end deftypefn
+;
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} ;
+Array row @emph{or} command separator.
+@seealso{,}
+@end deftypefn
+<
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} <
+'Less than' operator.
+@seealso{lt}
+@end deftypefn
+<=
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} <=
+'Less than' or 'equals' operator.
+@seealso{le}
+@end deftypefn
+=
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} =
+Assignment operator.
+@end deftypefn
+==
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} ==
+Equality test operator.
+@seealso{eq}
+@end deftypefn
+>
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} >
+'Greater than' operator.
+@seealso{gt}
+@end deftypefn
+>=
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} >=
+'Greater than' or 'equals' operator.
+@seealso{ge}
+@end deftypefn
+[
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} [
+Return list delimiter.
+@seealso{]}
+@end deftypefn
+]
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} ]
+Return list delimiter.
+@seealso{[}
+@end deftypefn
+|
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} |
+Element-by-element logical 'or' operator.
+@seealso{or, ||}
+@end deftypefn
+||
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} ||
+Logical 'or' (with short-circuit evaluation) operator.
+@seealso{|}
+@end deftypefn
+@
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} @@
+Return handle to a function.
+
+Example:
+
+@example
+@group
+f = @@plus;
+f (2, 2)
+@xresult{}  4
+@end group
+@end example
+
+(Note: @@ also finds use in creating classes.  See the manual chapter titled
+Object Oriented Programming for a detailed description.)
+@seealso{function, functions, func2str, str2func}
+@end deftypefn
+__FILE__
+@c liboctinterp/parse-tree/lex.ll
+-*- texinfo -*-
+@deftypefn {} {} __FILE__
+When the lexer recognizes the @qcode{"__FILE__"} keyword it returns a character
+array containing the full name and path of the file that is being executed.
+@qcode{"__FILE__"} will return @qcode{"stdin"} if called from the command line.
+@seealso{__LINE__}
+@end deftypefn
+__LINE__
+@c liboctinterp/parse-tree/lex.ll
+-*- texinfo -*-
+@deftypefn {} {} __LINE__
+When the lexer recognizes the @qcode{"__LINE__"} keyword it returns a numeric
+value containing the current input line number of the function or file being
+executed.  @qcode{"__LINE__"} will return @code{1} if called from the command
+line.
+@seealso{__FILE__}
+@end deftypefn
+arguments
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} arguments
+Begin a function arguments block.
+
+@strong{Warning:} Function arguments validation blocks are not yet implemented
+in Octave.  Use of the keyword @code{arguments} will cause the parser to emit a
+warning, and may throw an error depending on the contents of the code in the
+block.
+@end deftypefn
+break
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} break
+Exit the innermost enclosing @code{do}, @code{while}, or @code{for} loop.
+@seealso{continue, do, while, for, parfor}
+@end deftypefn
+case
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn  {} {} case @var{value}
+@deftypefnx {} {} case @{@var{value1}, @dots{}@}
+A case statement in a switch block.
+
+The code associated with a @code{case} statement is executed if one of the
+tests below succeeds given a @code{switch} argument @var{statement} and a
+@var{value} of type:
+
+@itemize
+
+@item number : @code{@var{statement} == @var{value}}
+
+@item character array or string : @code{strcmp (@var{statement}, @var{value})}
+
+@item object : @code{eq (@var{statement}, @var{value})}@*
+(programmer must write overloaded @code{eq} function which performs @samp{==}) 
+
+@item cell array : One of the @var{values} in the cell array must match
+@var{statement} using the criteria above.
+
+@end itemize
+
+Programming Notes: Octave cases are exclusive and do not fall-through as do
+@w{C-language} cases.  A @code{switch} statement must have at least one
+@code{case}.
+
+See @code{switch} for an example.
+@seealso{switch}
+@end deftypefn
+catch
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn  {} {} catch
+@deftypefnx {} {} catch @var{exception_var}
+Begin the cleanup part of a try-catch block.
+
+If @var{exception_var} is specified then a variable of that name will defined
+in the scope of the @code{catch} block.  The variable is a scalar struct with
+fields @code{identifier}, @code{message}, and @code{stack} which describes
+the error that was caught.
+@seealso{try}
+@end deftypefn
+classdef
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} classdef
+Begin a classdef block.
+@c NOTE: Use Octave @xseealso macro in order to point at the keyword
+@c       documentation for "properties" and "methods" rather than the function
+@c       documentation.
+@xseealso{@ref{XREFkwpropertyproperties,,properties}, @ref{XREFkwpropertymethods,,methods}, @ref{XREFevents,,events}, @ref{XREFenumeration,,enumeration}}
+@end deftypefn
+continue
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} continue
+Jump to the end of the innermost enclosing @code{do}, @code{while}, or
+@code{for} loop.
+@seealso{break, do, while, for, parfor}
+@end deftypefn
+do
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} do
+Begin a do-until loop.
+
+This differs from a @code{while} loop in that the body of the loop is executed
+at least once.
+
+@example
+@group
+i = 0;
+do
+  i++
+until (i == 10)
+@end group
+@end example
+@seealso{for, until, while}
+@end deftypefn
+else
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} else
+Alternate action for an if block.
+
+See @code{if} for an example.
+@seealso{if}
+@end deftypefn
+elseif
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} elseif (@var{cond})
+Alternate conditional test for an if block.
+
+The conditional @var{cond} is true if it is not empty and if @emph{all} values
+are nonzero.
+
+See @code{if} for an example.
+@seealso{if}
+@end deftypefn
+end_try_catch
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} end_try_catch
+Terminate a try-catch block.
+@seealso{try, catch}
+@end deftypefn
+end_unwind_protect
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} end_unwind_protect
+Terminate an unwind_protect block.
+@seealso{unwind_protect}
+@end deftypefn
+endarguments
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} endarguments
+Terminate a function arguments block.
+
+@strong{Warning:} Function arguments validation blocks are not yet implemented
+in Octave.  Use of the keyword @code{arguments} will cause the parser to emit a
+warning, and may throw an error depending on the contents of the code in the
+block.
+@seealso{arguments}
+@end deftypefn
+endclassdef
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} endclassdef
+Terminate a classdef definition.
+@seealso{classdef}
+@end deftypefn
+endenumeration
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} endenumeration
+Terminate an enumeration block in a classdef definition.
+@seealso{enumeration}
+@end deftypefn
+endevents
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} endevents
+Terminate an events block in a classdef definition.
+@seealso{events}
+@end deftypefn
+endfor
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} endfor
+Terminate a for loop.
+
+See @code{for} for an example.
+@seealso{for}
+@end deftypefn
+endfunction
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} endfunction
+Terminate a function definition.
+@seealso{function}
+@end deftypefn
+endif
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} endif
+Terminate an if block.
+
+See @code{if} for an example.
+@seealso{if}
+@end deftypefn
+endmethods
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} endmethods
+Terminate a methods block in a classdef definition.
+@c NOTE: Use Octave @xseealso macro in order to point at property 'methods',
+@c       rather than function.
+@xseealso{@ref{XREFkwpropertymethods,,methods}}
+@end deftypefn
+endparfor
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} endparfor
+Terminate a parfor loop.
+
+See @code{parfor} for an example.
+@seealso{parfor}
+@end deftypefn
+endproperties
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} endproperties
+Terminate a properties block in a classdef definition.
+@c NOTE: Use Octave @xseealso macro in order to point at property 'properties',
+@c       rather than function.
+@xseealso{@ref{XREFkwpropertyproperties,,properties}}
+@end deftypefn
+endspmd
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} endparfor
+Terminate an spmd block.
+
+See @code{spmd} for an example.
+@seealso{spmd, parfor}
+@end deftypefn
+endswitch
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} endswitch
+Terminate a switch block.
+
+See @code{switch} for an example.
+@seealso{switch}
+@end deftypefn
+endwhile
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} endwhile
+Terminate a while loop.
+
+See @code{while} for an example.
+@seealso{do, while}
+@end deftypefn
+enumeration
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} enumeration
+Begin an enumeration block in a classdef definition.
+@end deftypefn
+events
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} events
+Begin an events block in a classdef definition.
+@end deftypefn
+for
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} for @var{i} = @var{range}
+Begin a for loop.
+
+@example
+@group
+for i = 1:10
+  i
+endfor
+@end group
+@end example
+@seealso{parfor, do, while}
+@end deftypefn
+function
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn  {} {} function [@var{output1}, @dots{}] = function_name (@var{input1}, @dots{})
+@deftypefnx {} {} function {} function_name (@var{input1}, @dots{})
+@deftypefnx {} {} function @var{output} = function_name
+Begin a function body with name @code{function_name}, with @var{outputs} as
+results, and with @var{inputs} as parameters.
+
+The function can later be invoked in Octave using the syntax
+
+@example
+[@var{output1}, @var{output2}, @dots{}] = function_name (@var{input1}, @var{input2}, @dots{})
+@end example
+
+@seealso{return}
+@end deftypefn
+global
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} global @var{var}
+Declare variables to have global scope.
+
+@example
+@group
+global @var{x};
+if (isempty (@var{x}))
+  x = 1;
+endif
+@end group
+@end example
+@seealso{persistent}
+@end deftypefn
+if
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn  {} {} if (@var{cond}) @dots{} endif
+@deftypefnx {} {} if (@var{cond}) @dots{} else @dots{} endif
+@deftypefnx {} {} if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} endif
+@deftypefnx {} {} if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} else @dots{} endif
+Begin an if block.
+
+The conditional @var{cond} is true if it is not empty and if @emph{all} values
+are nonzero.
+
+@example
+@group
+x = 1;
+if (x == 1)
+  disp ("one");
+elseif (x == 2)
+  disp ("two");
+else
+  disp ("not one or two");
+endif
+@end group
+@end example
+@seealso{switch}
+@end deftypefn
+@c ## FIXME: Can't have duplicate DOCSTRING entries.  The function methods()
+@c ##        already has a docstring which overrides this keyword definition.
+@c ##        If this is fixed, place \x1d char before keyword "methods".
+@c ## methods
+@c ## @c liboctinterp/parse-tree/oct-parse.yy
+@c ## -*- texinfo -*-
+@c ## @deftypefn {} {} methods
+@c ## Begin a methods block in a classdef definition.
+@c ## @end deftypefn
+otherwise
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} otherwise
+The default statement in a @code{switch} block which is executed when no other
+@code{case} statements match the input.
+@seealso{switch, case}
+@end deftypefn
+parfor
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn  {} {} parfor @var{i} = @var{range}
+@deftypefnx {} {} parfor (@var{i} = @var{range}, @var{maxproc})
+Begin a for loop that may execute in parallel.
+
+A @code{parfor} loop has the same syntax as a @code{for} loop.  If your Octave
+session has a parallel processing pool enabled, the iterations of the
+@code{parfor} loop will be executed in parallel across the pool's workers.
+Otherwise, @code{parfor} will behave exactly as @code{for}.
+
+When operating in parallel mode, a @code{parfor} loop's iterations are not
+guaranteed to occur sequentially, and there are additional restrictions about
+the data access operations you can do inside the loop body.
+
+@strong{Warning:} parallel processing pools are currently unimplemented in
+Octave; @code{parfor} currently behaves exactly as a normal @code{for} loop.
+
+@example
+@group
+parfor i = 1:10
+  i
+endparfor
+@end group
+@end example
+@seealso{for, do, while}
+@end deftypefn
+persistent
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} persistent @var{var}
+Declare variables as persistent.
+
+A variable that has been declared persistent within a function will retain its
+contents in memory between subsequent calls to the same function.  The
+difference between persistent variables and global variables is that persistent
+variables are local in scope to a particular function and are not visible
+elsewhere.
+@seealso{global}
+@end deftypefn
+@c ## FIXME: Can't have duplicate DOCSTRING entries.  The function properties()
+@c ##        already has a docstring which overrides this keyword definition.
+@c ##        If this is fixed, place \x1d char before keyword "properties".
+@c ## properties
+@c ## @c liboctinterp/parse-tree/oct-parse.yy
+@c ## -*- texinfo -*-
+@c ## @deftypefn {} {} properties
+@c ## Begin a properties block in a classdef definition.
+@c ## @end deftypefn
+return
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} return
+Return execution control immediately from a function or script to the calling
+code.
+
+@code{return} is used to stop executing code and exit an m-file immediately
+rather than continuing until the end of the function or script is reached.
+
+If the function or script was invoked directly, rather than from calling code
+in an m-file, then Octave returns to the command line.
+@seealso{function}
+@end deftypefn
+spmd
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn  {} {} spmd
+@deftypefnx {} {} spmd (@var{n})
+@deftypefnx {} {} spmd (@var{m}, @var{n})
+Begin a block of statements which may execute in parallel across multiple
+workers.
+
+If Octave has a parallel processing pool enabled, the block of code will be
+executed in parallel across all of the pool's workers.  Otherwise, @code{spmd}
+has no effect and the statements are processed as normal code by the main
+Octave interpreter.
+
+If called with one additional argument @var{n} then use exactly @var{n} workers
+from the pool.  If called with two arguments @var{m}, @var{n} then use a
+minimum of @var{m} workers and a maximum of @var{n} workers from the parallel
+pool.
+
+@strong{Warning:} parallel processing pools are currently unimplemented in
+Octave; @code{spmd} currently does nothing, but is included to avoid breaking
+existing @sc{matlab} code.
+
+@seealso{parfor}
+@end deftypefn
+switch
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} switch @var{statement}
+Begin a switch block.
+
+@example
+@group
+yesno = "yes";
+
+switch (yesno)
+  case @{"Yes" "yes" "YES" "y" "Y"@}
+    value = 1;
+  case @{"No" "no" "NO" "n" "N"@}
+    value = 0;
+  otherwise
+    error ("invalid value");
+endswitch
+@end group
+@end example
+@seealso{if, case, otherwise}
+@end deftypefn
+try
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} try
+Begin a try-catch block.
+
+If an error occurs within a @code{try} block, then the code in the @code{catch}
+block will be run.  Execution will proceed after the @code{catch} block (though
+it is often recommended to use the @code{lasterr} function to re-throw the
+error after cleanup is completed).
+@seealso{catch, unwind_protect}
+@end deftypefn
+until
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} until (@var{cond})
+End a do-until loop.
+
+The conditional @var{cond} is true if it is not empty and if @emph{all} values
+are nonzero.
+
+See @code{do} for an example.
+@seealso{do}
+@end deftypefn
+unwind_protect
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} unwind_protect
+Begin an unwind_protect block.
+
+If an error occurs within the first part of an @code{unwind_protect} block the
+commands within the @code{unwind_protect_cleanup} block are executed before the
+error is thrown.  If an error is not thrown, then the
+@code{unwind_protect_cleanup} block is still executed.  In other words, the
+@code{unwind_protect_cleanup} code is guaranteed to execute regardless of
+success or failure in the @code{unwind_protect} block.
+@seealso{unwind_protect_cleanup, try}
+@end deftypefn
+unwind_protect_cleanup
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} unwind_protect_cleanup
+Begin the cleanup section of an @code{unwind_protect} block.
+@seealso{unwind_protect}
+@end deftypefn
+varargin
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} varargin
+Pass an arbitrary number of arguments into a function.
+@seealso{varargout, nargin, isargout, nargout, nthargout}
+@end deftypefn
+varargout
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} varargout
+Pass an arbitrary number of arguments out of a function.
+@seealso{varargin, nargin, isargout, nargout, nthargout}
+@end deftypefn
+while
+@c liboctinterp/parse-tree/oct-parse.yy
+-*- texinfo -*-
+@deftypefn {} {} while (@var{cond})
+Begin a while loop.
+
+The conditional @var{cond} is true if it is not empty and if @emph{all} values
+are nonzero.
+
+@example
+@group
+i = 0;
+while (i < 10)
+  i++
+endwhile
+@end group
+@end example
+@seealso{do, endwhile, for, until}
+@end deftypefn

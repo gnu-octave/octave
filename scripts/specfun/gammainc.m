@@ -390,7 +390,7 @@ endfunction
 ## NRF77 (6.2.7)
 ## Gamma (a,x)/Gamma (a)
 ## Lentz's algorithm
-## __gammainc__ in libinterp/corefcn/__gammainc__.cc
+## __gammainc__ in liboctinterp/corefcn/numeric/__gammainc__.cc
 function y = gammainc_l (x, a, tail)
 
   y = __gammainc__ (x, a);

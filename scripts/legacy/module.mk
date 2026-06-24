@@ -19,10 +19,10 @@ FCN_FILE_DIRS += %reldir%
 
 ## include %reldir%/@inline/module.mk
 ## The include above fails because Automake cannot process the '@' character.
-## As a work around, the contents of %reldir%/@inline/module.mk are placed directly
-## in this module.mk file.
+## As a work around, the contents of %reldir%/@inline/module.mk are placed
+## directly in this module.mk file.
 scripts_EXTRA_DIST += %reldir%/@inline/module.mk
-######################## include %reldir%/@inline/module.mk ########################
+###################### include %reldir%/@inline/module.mk ######################
 FCN_FILE_DIRS += %reldir%/@inline
 
 %canon_reldir%_@inline_FCN_FILES = \
@@ -48,17 +48,10 @@ FCN_FILE_DIRS += %reldir%/@inline
 
 FCN_FILES += $(%canon_reldir%_@inline_FCN_FILES)
 
-PKG_ADD_FILES += %reldir%/@inline/PKG_ADD
-
-DIRSTAMP_FILES += %reldir%/@inline/$(octave_dirstamp)
-####################### end include %reldir%/@inline/module.mk #####################
+#################### end include %reldir%/@inline/module.mk ####################
 
 %canon_reldir%dir = $(fcnfiledir)/legacy
 
 %canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
 FCN_FILES += $(%canon_reldir%_FCN_FILES)
-
-PKG_ADD_FILES += %reldir%/PKG_ADD
-
-DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

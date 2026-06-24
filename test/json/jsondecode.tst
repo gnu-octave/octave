@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Unit tests for jsondecode()
 %%
-%% Code in libinterp/corefcn/jsondecode.cc
+%% Code in liboctinterp/corefcn/util/jsondecode.cc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Note: This script is intended to also run under Matlab to verify
 %%       compatibility.  Preserve Matlab-formatting when making changes.

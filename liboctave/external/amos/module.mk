@@ -1,33 +1,33 @@
 EXTERNAL_SOURCES += \
   %reldir%/cacai.f \
   %reldir%/cacon.f \
+  %reldir%/cairy.f \
+  %reldir%/casyi.f \
   %reldir%/cbesh.f \
   %reldir%/cbesi.f \
   %reldir%/cbesj.f \
   %reldir%/cbesk.f \
   %reldir%/cbesy.f \
   %reldir%/cbinu.f \
+  %reldir%/cbiry.f \
+  %reldir%/cbknu.f \
   %reldir%/cbuni.f \
   %reldir%/cbunk.f \
+  %reldir%/ckscl.f \
+  %reldir%/cmlri.f \
+  %reldir%/crati.f \
+  %reldir%/cs1s2.f \
+  %reldir%/cseri.f \
+  %reldir%/cshch.f \
+  %reldir%/cuchk.f \
+  %reldir%/cunhj.f \
+  %reldir%/cuni1.f \
+  %reldir%/cuni2.f \
+  %reldir%/cunik.f \
   %reldir%/cunk1.f \
   %reldir%/cunk2.f \
-  %reldir%/crati.f \
-  %reldir%/cshch.f \
-  %reldir%/cuni1.f \
   %reldir%/cuoik.f \
-  %reldir%/cairy.f \
-  %reldir%/cbiry.f \
-  %reldir%/ckscl.f \
-  %reldir%/cs1s2.f \
-  %reldir%/cuchk.f \
-  %reldir%/cuni2.f \
   %reldir%/cwrsk.f \
-  %reldir%/casyi.f \
-  %reldir%/cbknu.f \
-  %reldir%/cmlri.f \
-  %reldir%/cseri.f \
-  %reldir%/cunhj.f \
-  %reldir%/cunik.f \
   %reldir%/dgamln.f \
   %reldir%/gamln.f \
   %reldir%/xzabs.f \
@@ -66,5 +66,4 @@ EXTERNAL_SOURCES += \
   %reldir%/zuoik.f \
   %reldir%/zwrsk.f
 
-liboctave_EXTRA_DIST += \
-  %reldir%/README
+liboctave_EXTRA_DIST += %reldir%/README

@@ -32,7 +32,7 @@
 function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (fcndirs, fixedtestdirs, topsrcdir = [], topbuilddir = [])
 
   testsdir = __octave_config_info__ ("octtestsdir");
-  libinterptestdir = fullfile (testsdir, "libinterp");
+  libinterptestdir = fullfile (testsdir, "liboctinterp");
   liboctavetestdir = fullfile (testsdir, "liboctave");
   fixedtestdir = fullfile (testsdir, "fixed");
   fcnfiledir = __octave_config_info__ ("fcnfiledir");
@@ -56,7 +56,7 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
   orig_wquiet = warning ("query", "quiet");
   orig_wstate = warning ();
   orig_mfile_encoding = mfile_encoding ("utf-8");
-  logfile = make_absolute_filename ("fntests.log");
+  logfile = make_absolute_filename ("test_suite.log");
   unwind_protect
     page_screen_output (false);
     warning ("on", "quiet");

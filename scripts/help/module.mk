@@ -2,10 +2,6 @@ FCN_FILE_DIRS += \
   %reldir% \
   %reldir%/private
 
-%canon_reldir%_PRIVATE_FCN_FILES = \
-  %reldir%/private/__additional_help_message__.m \
-  %reldir%/private/__strip_html_tags__.m
-
 %canon_reldir%_FCN_FILES = \
   %reldir%/.oct-config \
   %reldir%/__gripe_missing_component__.m \
@@ -26,18 +22,18 @@ FCN_FILE_DIRS += \
   %reldir%/warning_ids.m \
   %reldir%/which.m
 
+%canon_reldir%_PRIVATE_FCN_FILES = \
+  %reldir%/private/__additional_help_message__.m \
+  %reldir%/private/__strip_html_tags__.m
+
 %canon_reldir%dir = $(fcnfiledir)/help
 
 %canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-%canon_reldir%_privatedir = $(fcnfiledir)/help/private
+%canon_reldir%_privatedir = $(%canon_reldir%dir)/private
 
 %canon_reldir%_private_DATA = $(%canon_reldir%_PRIVATE_FCN_FILES)
 
 FCN_FILES += \
   $(%canon_reldir%_FCN_FILES) \
   $(%canon_reldir%_PRIVATE_FCN_FILES)
-
-PKG_ADD_FILES += %reldir%/PKG_ADD
-
-DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

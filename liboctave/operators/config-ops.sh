@@ -63,6 +63,7 @@ case "$obj_type" in
         fn=vx-op-inc.mk
         VX_INC=$($AWK -f $mk_ops -v prefix=vx -v list_h_files=1 $liboctave_dir/vx-ops)
         echo "VX_OP_INC = $VX_INC" > $liboctave_dir/$fn-t
+        echo "" >> $liboctave_dir/$fn-t
         echo "$clean_varname += \$(srcdir)/%reldir%/$fn" >> $liboctave_dir/$fn-t
         $SHELL $move_if_change $liboctave_dir/$fn-t $liboctave_dir/$fn
       ;;
@@ -77,6 +78,7 @@ case "$obj_type" in
         fn=vx-op-src.mk
         VX_SRC=$($AWK -f $mk_ops -v prefix=vx -v list_cc_files=1 $liboctave_dir/vx-ops)
         echo "VX_OP_SRC = $VX_SRC" > $liboctave_dir/$fn-t
+        echo "" >> $liboctave_dir/$fn-t
         echo "$clean_varname += \$(srcdir)/%reldir%/$fn" >> $liboctave_dir/$fn-t
         $SHELL $move_if_change $liboctave_dir/$fn-t $liboctave_dir/$fn
       ;;
@@ -91,6 +93,7 @@ case "$obj_type" in
         fn=mx-op-inc.mk
         MX_INC=$($AWK -f $mk_ops -v prefix=mx -v list_h_files=1 $liboctave_dir/mx-ops)
         echo "MX_OP_INC = $MX_INC" > $liboctave_dir/$fn-t
+        echo "" >> $liboctave_dir/$fn-t
         echo "$clean_varname += \$(srcdir)/%reldir%/$fn" >> $liboctave_dir/$fn-t
         $SHELL $move_if_change $liboctave_dir/$fn-t $liboctave_dir/$fn
       ;;
@@ -105,6 +108,7 @@ case "$obj_type" in
         fn=mx-op-src.mk
         MX_SRC=$($AWK -f $mk_ops -v prefix=mx -v list_cc_files=1 $liboctave_dir/mx-ops)
         echo "MX_OP_SRC = $MX_SRC" > $liboctave_dir/$fn-t
+        echo "" >> $liboctave_dir/$fn-t
         echo "$clean_varname += \$(srcdir)/%reldir%/$fn" >> $liboctave_dir/$fn-t
         $SHELL $move_if_change $liboctave_dir/$fn-t $liboctave_dir/$fn
       ;;
@@ -119,6 +123,7 @@ case "$obj_type" in
         fn=smx-op-inc.mk
         SMX_INC=$($AWK -f $mk_ops -v prefix=smx -v list_h_files=1 $liboctave_dir/smx-ops)
         echo "SMX_OP_INC = $SMX_INC" > $liboctave_dir/$fn-t
+        echo "" >> $liboctave_dir/$fn-t
         echo "$clean_varname += \$(srcdir)/%reldir%/$fn" >> $liboctave_dir/$fn-t
         $SHELL $move_if_change $liboctave_dir/$fn-t $liboctave_dir/$fn
       ;;
@@ -133,6 +138,7 @@ case "$obj_type" in
         fn=smx-op-src.mk
         SMX_SRC=$($AWK -f $mk_ops -v prefix=smx -v list_cc_files=1 $liboctave_dir/smx-ops)
         echo "SMX_OP_SRC = $SMX_SRC" > $liboctave_dir/$fn-t
+        echo "" >> $liboctave_dir/$fn-t
         echo "$clean_varname += \$(srcdir)/%reldir%/$fn" >> $liboctave_dir/$fn-t
         $SHELL $move_if_change $liboctave_dir/$fn-t $liboctave_dir/$fn
       ;;

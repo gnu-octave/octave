@@ -275,6 +275,16 @@ base_qobject::base_qobject (qt_application& app_context, bool gui_app)
   connect (qt_link (), &qt_interpreter_events::show_documentation_signal,
            this, &base_qobject::show_documentation_window);
 
+  // Connect the (un)register documentation signals here, independently of
+  // the documentation widget.  In a non-GUI session that widget is not
+  // created until the documentation browser is first opened, which can be
+  // after packages (and their Qt help files) have already been loaded.
+  connect (qt_link (), &qt_interpreter_events::register_documentation_signal,
+           this, &base_qobject::register_doc);
+
+  connect (qt_link (), &qt_interpreter_events::unregister_documentation_signal,
+           this, &base_qobject::unregister_doc);
+
   connect (qt_link (), &qt_interpreter_events::show_file_browser_signal,
            this, &base_qobject::show_file_browser_window);
 
@@ -587,15 +597,13 @@ base_qobject::documentation_widget (main_window *mw)
       m_documentation_widget
         = QPointer<documentation_dock_widget> (new documentation_dock_widget (mw));
 
-      connect (qt_link (),
-               &qt_interpreter_events::register_documentation_signal,
-               m_documentation_widget,
-               &documentation_dock_widget::registerDoc);
-
-      connect (qt_link (),
-               &qt_interpreter_events::unregister_documentation_signal,
-               m_documentation_widget,
-               &documentation_dock_widget::unregisterDoc);
+      // The register_documentation_signal/unregister_documentation_signal
+      // are connected to register_doc/unregister_doc in the constructor so
+      // that registrations are not lost if they are emitted before this
+      // widget exists.  Replay any that arrived in the meantime.
+      for (const QString& file : m_pending_doc_registrations)
+        m_documentation_widget->registerDoc (file);
+      m_pending_doc_registrations.clear ();
 
       set_gui_style ();
     }
@@ -983,6 +991,28 @@ base_qobject::show_documentation_window (const QString& file)
       widget->show ();
       widget->raise ();
     }
+}
+
+void
+base_qobject::register_doc (const QString& file)
+{
+  // Forward to the documentation widget if it exists; otherwise buffer the
+  // registration and replay it when the widget is created (see
+  // documentation_widget).  This matters for non-GUI sessions, where the
+  // widget is not created until the documentation browser is first opened.
+  if (m_documentation_widget)
+    m_documentation_widget->registerDoc (file);
+  else
+    m_pending_doc_registrations << file;
+}
+
+void
+base_qobject::unregister_doc (const QString& file)
+{
+  if (m_documentation_widget)
+    m_documentation_widget->unregisterDoc (file);
+  else
+    m_pending_doc_registrations.removeAll (file);
 }
 
 void

@@ -214,6 +214,10 @@ public Q_SLOTS:
 
   void show_documentation_window (const QString& file);
 
+  void register_doc (const QString& file);
+
+  void unregister_doc (const QString& file);
+
   void show_file_browser_window ();
 
   void show_command_history_window ();
@@ -285,6 +289,11 @@ protected:
   QPointer<terminal_dock_widget> m_terminal_widget;
 
   QPointer<documentation_dock_widget> m_documentation_widget;
+
+  // Documentation files registered (e.g. via "pkg load") before the
+  // documentation widget was created.  They are replayed once the widget
+  // exists; see register_doc and documentation_widget.
+  QStringList m_pending_doc_registrations;
 
   QPointer<files_dock_widget> m_file_browser_widget;
 

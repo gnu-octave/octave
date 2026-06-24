@@ -1,4 +1,4 @@
-Summary of bugs fixed for version 11.2.0 (YYYY-MM-DD):
+Summary of bugs fixed for version 11.4.0 (YYYY-MM-DD):
 -----------------------------------------------------
 
 For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
@@ -10,6 +10,77 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 ### Build system / Tests
 
 ### Documentation
+
+
+Summary of bugs fixed for version 11.3.0 (2026-06-01):
+-----------------------------------------------------
+
+This version brings only minor changes compared to Octave 11.2.0.  Most
+importantly, it fixes the SOVERSION of the `liboctinterp` library.
+
+For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
+
+### Improvements and fixes
+
+- Fix returning reciprocal condition number as second output from `det` for
+  triangular dense matrices.
+
+
+Summary of bugs fixed for version 11.2.0 (2026-05-28):
+-----------------------------------------------------
+
+> **_Note:_** The SOVERSION of the `liboctinterp` library is incorrect in this
+> version.  Update to Octave 11.3.0 instead.
+
+For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
+
+### Improvements and fixes
+
+- Speed up `pkg install` and provide more output with `-verbose`.
+- `cmach-info.h`: Add visibility attribute to function declarations.
+- Re-implement `weboptions` and affected functions `webread`, `webwrite`
+  (bug #68079).
+- Remove semicolon after function definitions.
+- Fix possible out-of-bound indexing in N-D Array assignment.
+- Allow classdef constructor to return a classdef array of itself (bug #59775).
+- Fix pager in CLI on Windows and disable it in the GUI (bug #68112).
+- Deprecate `all` and `any` for non-numeric/non-logical types (bug #68172).
+- Silence compiler warning about possible use of uninitialized variable.
+- Fix input validation of `permB` input to `eigs()`.
+- Check floating point subscripts before converting to `octave_idx_type`
+  (bug #68167).  Reject non-finite, non-integer, and out-of-range
+  floating-point index values before casting them to `octave_idx_type`.
+- Fix `norm (S, 2)` for all-zero sparse matrices (bug #68254).
+- `colorbar.m`: Change `%!demo #3` to use new syntax with `"location"` first.
+- `max`: Avoid potential integer overflow.
+
+### GUI
+
+- Remove accidental double spaces in language translation files.
+- Use form of "bearbeiten" instead of "editieren" in German translation.
+- Do not hide window of processes started with "system" on Windows.
+- Include missing .svg icon in GUI resources (bug #68389).
+- Use mouse cursor shape from Qt if possible or SVG (bug #68389).
+
+### Build system / Tests
+
+- Create Info documentation in build directory, not source directory.
+- Fix Qt help generator for Texinfo 7.3 Function-Index output.
+- Fix `run-octave` to locate documentation in either `srcdir` or `builddir`.
+- `system`: Silence output of self-test.
+- Disable delete warning locally in BISTs as part of cset e17e4e419245.
+
+### Documentation
+
+- Update documentation for `arguments` keyword and add to manual.
+- Format plaintext documentation output to 80 characters.
+- Redo documentation for Appendix F "Grammar and Parser".
+- Use Texinfo commands for better spacing after period used in abbrevation.
+- `genpropdoc.m`: Fix incorrect documentation for `"zdir"` property.
+- Rename some `@node`, `@subsection` entries for clarity and consistency.
+- Set Texinfo `@exampleindent` for better visual appearance.
+- `linsolve.m`: Update documentation (bug #68283).
+- Update all man pages with new information and modern `groff` syntax.
 
 
 Summary of important user-visible changes for version 11 (2026-02-18):

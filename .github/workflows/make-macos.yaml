@@ -45,7 +45,7 @@ jobs:
 
     steps:
       - name: checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: install dependencies
         # This step sometimes takes long and still recovers. But sometimes it

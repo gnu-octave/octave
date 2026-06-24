@@ -64,7 +64,7 @@ nodist_octinclude_HEADERS += \
 ## according to the rules in the etc/HACKING.md file:
 
 %canon_reldir%_liboctave_current = 13
-%canon_reldir%_liboctave_revision = 0
+%canon_reldir%_liboctave_revision = 2
 %canon_reldir%_liboctave_age = 0
 
 %canon_reldir%_liboctave_version_info := $(%canon_reldir%_liboctave_current):$(%canon_reldir%_liboctave_revision):$(%canon_reldir%_liboctave_age)

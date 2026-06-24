@@ -101,15 +101,15 @@ Canvas::setCursor (MouseMode mode, std::string fallback,
             if (fallback == "arrow")
               cursor = Qt::ArrowCursor;
             else if (fallback == "botl")
-              cursor = make_cursor ("bottom_left_corner", 5, 16);
+              cursor = Qt::SizeBDiagCursor;
             else if (fallback == "botr")
-              cursor = make_cursor ("bottom_right_corner", 16, 16);
+              cursor = Qt::SizeFDiagCursor;
             else if (fallback == "bottom")
-              cursor = make_cursor ("bottom_side", 11, 16);
+              cursor = Qt::SizeVerCursor;
             else if (fallback == "circle")
               cursor = make_cursor ("circle", 10, 10);
             else if (fallback == "cross" || fallback == "crosshair")
-              cursor = make_cursor ("cross", 10, 10);
+              cursor = Qt::CrossCursor;
             else if (fallback == "custom")
               {
                 if (hotspot(0) > cdata.width () || hotspot(0) < 1.0
@@ -121,21 +121,21 @@ Canvas::setCursor (MouseMode mode, std::string fallback,
                                   static_cast<int> (hotspot(0) - 1));
               }
             else if (fallback == "fleur")
-              cursor = make_cursor ("fleur", 10, 4);
+              cursor = make_cursor ("figure-pan");
             else if (fallback == "hand")
-              cursor = make_cursor ("hand2", 7, 3);
+              cursor = Qt::PointingHandCursor;
             else if (fallback == "ibeam")
               cursor = Qt::IBeamCursor;
             else if (fallback == "left")
-              cursor = make_cursor ("left_side", 4, 10);
+              cursor = Qt::SizeHorCursor;
             else if (fallback == "right")
-              cursor = make_cursor ("right_side", 17, 10);
+              cursor = Qt::SizeHorCursor;
             else if (fallback == "top")
-              cursor = make_cursor ("top_side", 11, 4);
+              cursor = Qt::SizeVerCursor;
             else if (fallback == "topl")
-              cursor = make_cursor ("top_left_corner", 4, 4);
+              cursor = Qt::SizeFDiagCursor;
             else if (fallback == "topr")
-              cursor = make_cursor ("top_right_corner", 16, 4);
+              cursor = Qt::SizeBDiagCursor;
             else if (fallback == "watch")
               cursor = Qt::BusyCursor;
           }

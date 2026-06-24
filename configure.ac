@@ -1232,10 +1232,26 @@ AC_CACHE_CHECK([whether C++ STL supports std::from_chars for double precision fl
       const char *chars_end = chars_start + str.size ();
       auto [ptr, ec] = std::from_chars (chars_start, chars_end, num);
     }
-    ]], [[
-    test_from_chars_double ();
     ]])],
-    octave_cv_std_from_chars_double=yes,
+    AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+      #include <charconv>
+      #include <string>
+      #include <system_error>
+      ]], [[
+      /* Test with subnormal number */
+      double num = 0.0;
+      std::string str = "1e-308";
+      const char *chars_start = str.data ();
+      const char *chars_end = chars_start + str.size ();
+      auto result = std::from_chars (chars_start, chars_end, num);
+      if ((result.ptr != chars_end)
+          || (result.ec == std::errc::result_out_of_range)
+          || (num == 0.0))
+        return 1;
+      ]])],
+      octave_cv_std_from_chars_double=yes,
+      octave_cv_std_from_chars_double=no,
+      octave_cv_std_from_chars_double=yes),
     octave_cv_std_from_chars_double=no)
   AC_LANG_POP(C++)
   ])

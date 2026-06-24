@@ -112,11 +112,11 @@ function tf = compare_versions (v1, v2, operator)
   endif
 
   v1n = str2double (ostrsplit (v1nochar, ".")');
-  if (isnan (v1n))
+  if (all (isnan (v1n)))
     v1n = [];
   endif
   v2n = str2double (ostrsplit (v2nochar, ".")');
-  if (isnan (v2n))
+  if (all (isnan (v2n)))
     v2n = [];
   endif
 
@@ -156,7 +156,7 @@ function tf = compare_versions (v1, v2, operator)
 
   ## Compare the versions (making sure that they're the same shape)
   vcmp = v1n(:) - v2n(:);
-  vcmp = [vcmp; (v1c - v2c)(:)];
+  vcmp = [vcmp; (double (v1c) - double (v2c))(:)];
   if (lt_op)
     ## so that we only need to check for the output being greater than 1
     vcmp = -vcmp;
@@ -206,6 +206,7 @@ endfunction
 %!assert (compare_versions ("1.1.0a", "1.1.0b", "!="), true)
 %!assert (compare_versions ("1.1.0test", "1.1.0b", "=="), false)
 %!assert (compare_versions ("1.1.0test", "1.1.0test", "=="), true)
+%!assert (compare_versions ("1.15.0.dev", "1.9", ">="), true)
 
 ## make sure that it won't just give true output
 %!assert (compare_versions ("1", "0", "=="), false)

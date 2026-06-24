@@ -1127,7 +1127,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<SparseMatrix, SparseMatrix>
   OCTAVE_LOCAL_BUFFER (double, Xx, (b_nr > nc ? b_nr : nc));
   OCTAVE_LOCAL_BUFFER (double, buf, S->m2);
 
-  for (octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
+  for (octave_idx_type i = 0; i < b_nc; i++)
     {
       octave_quit ();
 
@@ -1214,7 +1214,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<SparseMatrix, SparseMatrix>
   OCTAVE_LOCAL_BUFFER (double, Xx, (b_nr > nc ? b_nr : nc));
   OCTAVE_LOCAL_BUFFER (double, buf, nbuf);
 
-  for (octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
+  for (octave_idx_type i = 0; i < b_nc; i++)
     {
       octave_quit ();
 
@@ -1866,7 +1866,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<SparseComplexMatrix,
   OCTAVE_LOCAL_BUFFER (double, Xz, (b_nr > nc ? b_nr : nc));
   OCTAVE_LOCAL_BUFFER (double, buf, S->m2);
 
-  for (octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
+  for (octave_idx_type i = 0; i < b_nc; i++)
     {
       octave_quit ();
 
@@ -1974,7 +1974,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<SparseComplexMatrix,
   OCTAVE_LOCAL_BUFFER (double, Xz, (b_nr > nc ? b_nr : nc));
   OCTAVE_LOCAL_BUFFER (double, buf, nbuf);
 
-  for (octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
+  for (octave_idx_type i = 0; i < b_nc; i++)
     {
       octave_quit ();
 
@@ -2209,7 +2209,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<SparseMatrix,
   OCTAVE_LOCAL_BUFFER (Complex, Xx, (b_nr > nc ? b_nr : nc));
   OCTAVE_LOCAL_BUFFER (cs_complex_t, buf, S->m2);
 
-  for (octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
+  for (octave_idx_type i = 0; i < b_nc; i++)
     {
       octave_quit ();
 
@@ -2307,7 +2307,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<SparseMatrix,
   for (octave_idx_type i = 0; i < nr; i++)
     B[i] = N->B[i];
 
-  for (octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
+  for (octave_idx_type i = 0; i < b_nc; i++)
     {
       octave_quit ();
 
@@ -2525,7 +2525,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<SparseComplexMatrix,
   OCTAVE_LOCAL_BUFFER (Complex, Xx, (b_nr > nc ? b_nr : nc));
   OCTAVE_LOCAL_BUFFER (cs_complex_t, buf, S->m2);
 
-  for (octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
+  for (octave_idx_type i = 0; i < b_nc; i++)
     {
       octave_quit ();
 
@@ -2623,7 +2623,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<SparseComplexMatrix,
   for (octave_idx_type i = 0; i < nr; i++)
     B[i] = N->B[i];
 
-  for (octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
+  for (octave_idx_type i = 0; i < b_nc; i++)
     {
       octave_quit ();
 

@@ -149,6 +149,10 @@ fi
 
 echo ""
 
+$SED -n 's/#\(\(undef\|define\) _FILE_OFFSET_BITS.*$\)/#  \1/p' $config_h_file
+
+echo ""
+
 have_roundl=no
 if $GREP "#define HAVE_ROUNDL" $config_h_file > /dev/null; then
   have_roundl=yes

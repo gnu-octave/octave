@@ -9,7 +9,7 @@ jobs:
   macos:
     runs-on: ${{ matrix.os }}
 
-    name: ${{ matrix.os }} Qt${{ matrix.qt }}
+    name: ${{ matrix.os }}
 
     strategy:
       # Allow other runners in the matrix to continue if some fail
@@ -17,13 +17,12 @@ jobs:
 
       matrix:
         # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
-        os: [macos-14, macos-15]
+        os: [macos-14, macos-15, macos-15-intel]
         # Most (or all) homebrew packages are compiled with clang and link
         # against libc++.  So we also use clang to avoid issues with symbols
         # that don't match.
         # compiler: [real-gcc, clang]
         compiler: [clang]
-        qt: [6]
         include:
           # - compiler: real-gcc
           #   cc: "/usr/local/bin/gcc-10"
@@ -31,10 +30,6 @@ jobs:
           #   cppflags: "-I/usr/local/opt/hdf5/include -I/usr/local/opt/gl2ps/include -I/usr/local/opt/glpk/include -I/usr/local/opt/pcre/include -I/usr/local/opt/qscintilla2/include -I/usr/local/opt/suite-sparse/include -I/usr/local/opt/sundials/include"
           #   ldflags: "-L/usr/local/opt/hdf5/lib -L/usr/local/opt/gl2ps/lib -L/usr/local/opt/glpk/lib -L/usr/local/opt/pcre/lib -L/usr/local/opt/qscintilla2/lib -L/usr/local/opt/suite-sparse/lib -L/usr/local/opt/sundials/lib"
           - compiler: clang
-            cc: "clang"
-            cxx: "clang++"
-          - os: macos-15-intel
-            qt: "5"
             cc: "clang"
             cxx: "clang++"
 
@@ -69,22 +64,20 @@ jobs:
         # The third block is for additional dependencies needed when building from a repository checkout.
         run: |
           brew update
-          brew install --overwrite python@3.12 python@3.13
+          brew install --overwrite python@3.14 python@3.13
           brew reinstall gcc
           brew install arpack epstool fast_float fftw fig2dev fltk fontconfig \
             freetype ghostscript gl2ps glpk gnuplot graphicsmagick hdf5 \
             libiconv libsndfile libtool openblas pcre2 portaudio pstoedit \
-            qhull qrupdate qscintilla2 \
+            qhull qrupdate qscintilla2 qt5compat qtbase qttools \
             rapidjson readline suite-sparse sundials texinfo \
             ccache gnu-sed openjdk pkg-config \
             automake autoconf bison gettext icoutils librsvg mactex-no-gui
-          brew install --overwrite \
-            ${{ matrix.qt == '6' && 'qt5compat qtbase qttools' || 'qt@5' }}
           eval "$(/usr/libexec/path_helper)"
           HOMEBREW_PREFIX=$(brew --prefix)
           echo "HOMEBREW_PREFIX=$(brew --prefix)" >> $GITHUB_ENV
           echo "/Library/TeX/texbin" >> $GITHUB_PATH
-          echo "${HOMEBREW_PREFIX}/opt/qt@${{ matrix.qt }}/bin" >> $GITHUB_PATH
+          echo "${HOMEBREW_PREFIX}/opt/qt@6/bin" >> $GITHUB_PATH
           echo "${HOMEBREW_PREFIX}/opt/texinfo/bin" >> $GITHUB_PATH
           echo "${HOMEBREW_PREFIX}/opt/bison/bin" >> $GITHUB_PATH
           echo "${HOMEBREW_PREFIX}/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
@@ -95,7 +88,7 @@ jobs:
         # used in action/cache/restore and action/cache/save steps
         id: ccache-prepare
         run: |
-          echo "key=ccache:${{ matrix.os }}:${{ matrix.compiler }}:qt${{ matrix.qt }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "key=ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: restore ccache
         # setup the github cache used to maintain the ccache from one job to the next
@@ -105,8 +98,8 @@ jobs:
           path: /Users/runner/Library/Caches/ccache
           key: ${{ steps.ccache-prepare.outputs.key }}
           restore-keys: |
-            ccache:${{ matrix.os }}:${{ matrix.compiler }}:qt${{ matrix.qt }}:${{ github.ref }}
-            ccache:${{ matrix.os }}:${{ matrix.compiler }}:qt${{ matrix.qt }}:refs/heads/default
+            ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}
+            ccache:${{ matrix.os }}:${{ matrix.compiler }}:refs/heads/default
 
       - name: configure ccache
         # The cache doesn't seem to compress well on macOS. Is it already compressed?
@@ -149,11 +142,10 @@ jobs:
           mkdir .build
           echo "::group::Run configure script"
           cd .build && ../configure \
-            CPPFLAGS="-I${HOMEBREW_PREFIX}/opt/gettext/include -I${HOMEBREW_PREFIX}/opt/icu4c/include -I${HOMEBREW_PREFIX}/opt/libiconv/include -I${HOMEBREW_PREFIX}/opt/qt@${{ matrix.qt }}/include -I${HOMEBREW_PREFIX}/opt/readline/include -I${HOMEBREW_PREFIX}/opt/sqlite/include $MY_CPPFLAGS -I${HOMEBREW_PREFIX}/include" \
+            CPPFLAGS="-I${HOMEBREW_PREFIX}/opt/gettext/include -I${HOMEBREW_PREFIX}/opt/icu4c/include -I${HOMEBREW_PREFIX}/opt/libiconv/include -I${HOMEBREW_PREFIX}/opt/qt@6/include -I${HOMEBREW_PREFIX}/opt/readline/include -I${HOMEBREW_PREFIX}/opt/sqlite/include $MY_CPPFLAGS -I${HOMEBREW_PREFIX}/include" \
             CXXFLAGS="-O2 -g" \
             LDFLAGS="-L${HOMEBREW_PREFIX}/opt/bison/lib -L${HOMEBREW_PREFIX}/opt/gettext/lib -L${HOMEBREW_PREFIX}/opt/icu4c/lib -L${HOMEBREW_PREFIX}/opt/libiconv/lib -L${HOMEBREW_PREFIX}/opt/readline/lib -L${HOMEBREW_PREFIX}/opt/sqlite/lib $MY_LDFLAGS -L${HOMEBREW_PREFIX}/lib" \
-            PKG_CONFIG_PATH="${HOMEBREW_PREFIX}/opt/openblas/lib/pkgconfig:${HOMEBREW_PREFIX}/opt/icu4c/lib/pkgconfig:${HOMEBREW_PREFIX}/opt/qt@${{ matrix.qt }}/lib/pkgconfig" \
-            --with-qt=${{ matrix.qt }} \
+            PKG_CONFIG_PATH="${HOMEBREW_PREFIX}/opt/openblas/lib/pkgconfig:${HOMEBREW_PREFIX}/opt/icu4c/lib/pkgconfig:${HOMEBREW_PREFIX}/opt/qt@6/lib/pkgconfig" \
             QCOLLECTIONGENERATOR="qhelpgenerator" \
             --with-x=no \
             --with-blas="-L${HOMEBREW_PREFIX}/opt/openblas/lib -lopenblas" \

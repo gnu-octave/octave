@@ -2074,7 +2074,7 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
     fi
   else
     if test -n "$QT_MODULES_MISSING" || test -n "$QT_TOOLS_MISSING"; then
-      qt_missing=`echo $QT_MODULES_MISSING$QT_TOOLS_MISSING | sed 's/  *$//'`
+      qt_missing=`echo $QT_MODULES_MISSING$QT_TOOLS_MISSING | $SED 's/  *$//'`
       BUILD_QT_SUMMARY_MSG="no (missing:$qt_missing)"
     else
       BUILD_QT_SUMMARY_MSG="no"
@@ -2237,7 +2237,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
             #        have been removed in Qt6:
             #        https://www.qt.io/blog/porting-from-qt-5-to-qt-6-using-qt5compat-library
             #        It is still needed for the terminal implementation in
-            #        libgui/qterminal/libqterminal/unix
+            #        liboctgui/qterminal/libqterminal/unix
             QT_MODULES="$QT_MODULES Qt6Core5Compat"
           ;;
         esac
@@ -2757,9 +2757,9 @@ dnl
 dnl Like AC_CONFIG_FILES, but don't touch the output file if it already
 dnl exists and hasn't changed.
 dnl
-AC_DEFUN([OCTAVE_CONFIG_MOVE_IF_CHANGE_FILES], [
+AC_DEFUN([OCTAVE_MOVE_IF_CHANGE_CONFIG_FILES], [
   m4_foreach_w([elt], [$1], [
-    AC_CONFIG_FILES(elt[-tmp:]patsubst(elt, [.sh$], [.in.sh]))
+    AC_CONFIG_FILES(elt[-tmp:]patsubst(elt, [.\w+$], [.in\&]))
     AC_CONFIG_COMMANDS(elt,
     [$SHELL $srcdir/build-aux/move-if-change ]elt[-tmp ]elt)])])
 dnl
@@ -3463,7 +3463,7 @@ input:;
 EOF
       ## Older versions of bison only warn and exit with success.
       $BISON $WARN_BISONFLAGS --defines --output conftest.cc conftest.yy
-      if grep PREFIX_symbol_kind_t conftest.cc > /dev/null; then
+      if $GREP PREFIX_symbol_kind_t conftest.cc > /dev/null; then
         octave_cv_bison_api_prefix_applies_to_yysymbol_kind_t=yes
       else
         octave_cv_bison_api_prefix_applies_to_yysymbol_kind_t=no

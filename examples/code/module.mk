@@ -1,9 +1,3 @@
-%canon_reldir%_EXTRA_DIST =
-
-%canon_reldir%_CLEANFILES =
-%canon_reldir%_DISTCLEANFILES =
-%canon_reldir%_MAINTAINERCLEANFILES =
-
 %canon_reldir%_SRC = \
   %reldir%/@FIRfilter/FIRfilter.m \
   %reldir%/@FIRfilter/FIRfilter_aggregation.m \
@@ -56,20 +50,8 @@
   %reldir%/structdemo.cc \
   %reldir%/unwinddemo.cc
 
-%canon_reldir%_EXTRA_DIST += \
-  $(%canon_reldir%_SRC)
+%canon_reldir%_EXTRA_DIST = \
+  $(%canon_reldir%_SRC) \
+  %reldir%/COPYING
 
 EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
-
-CLEANFILES += $(%canon_reldir%_CLEANFILES)
-DISTCLEANFILES += $(%canon_reldir%_DISTCLEANFILES)
-MAINTAINERCLEANFILES += $(%canon_reldir%_MAINTAINERCLEANFILES)
-
-examples-clean:
-	rm -f $(%canon_reldir%_CLEANFILES)
-
-examples-distclean: examples-clean
-	rm -f $(%canon_reldir%_DISTCLEANFILES)
-
-examples-maintainer-clean: examples-distclean
-	rm -f $(%canon_reldir%_MAINTAINERCLEANFILES)

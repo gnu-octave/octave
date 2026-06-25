@@ -122,9 +122,8 @@ esac
 
 # create initial file
 cat <<EOF
-## !!! DO NOT EDIT !!!
-## THIS IS AN AUTOMATICALLY GENERATED FILE
-## modify mk-sparse-tst.sh to generate the tests you need.
+## DO NOT EDIT!  Generated automatically by mk-sparse-tst.sh.
+## Modify file mk-sparse-tst.sh to generate the tests you need.
 EOF
 
 

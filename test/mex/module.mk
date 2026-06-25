@@ -9,57 +9,60 @@ MEX_TEST_SRC = \
   %reldir%/bug_51725.c \
   %reldir%/mexnumtst.c
 
-MEX_TEST_FUNCTIONS = $(MEX_TEST_SRC:%.c=%.mex)
+MEX_TEST_FUNCTIONS := $(MEX_TEST_SRC:%.c=%.mex)
 
-## Since these definitions for MKOCTFILE and MKMEXFILE are only used
-## here, defining them in this file is probably OK.  If they are ever
-## used elsewhere, maybe then they could be moved to build-aux/module.mk
-## or the main Makefile.am file.  The MKOCTFILE variables are included
-## for completeness, in case we someday want to test building .oct
-## files as well.
+## Since these definitions for MKOCT and MKMEX are only used here, defining
+## them in this file is probably OK.  If they are ever used elsewhere, then
+## maybe they could be moved to build-aux/module.mk or to test/Makefile.am
+## file.  The MKOCT variables are included for completeness, in case we someday
+## want to test building .oct files as well.
 
-AM_V_mkmexfile = $(am__v_mkmexfile_@AM_V@)
-am__v_mkmexfile_ = $(am__v_mkmexfile_@AM_DEFAULT_V@)
-am__v_mkmexfile_0 = @echo "  MKMEXFILE     " $@;
-am__v_mkmexfile_1 =
+AM_V_mkmex = $(am__v_mkmex_@AM_V@)
+am__v_mkmex_ = $(am__v_mkmex_@AM_DEFAULT_V@)
+am__v_mkmex_0 = @echo "  MKMEX   " $@;
+am__v_mkmex_1 =
 
-AM_VOPT_mkmexfile = $(am__vopt_mkmexfile_@AM_V@)
-am__vopt_mkmexfile_ = $(am__vopt_mkmexfile_@AM_DEFAULT_V@)
-am__vopt_mkmexfile_0 =
-am__vopt_mkmexfile_1 = -v
+AM_VOPT_mkmex = $(am__vopt_mkmex_@AM_V@)
+am__vopt_mkmex_ = $(am__vopt_mkmex_@AM_DEFAULT_V@)
+am__vopt_mkmex_0 =
+am__vopt_mkmex_1 = -v
 
-## And probably many others...
-MKOCTFILECPPFLAGS = \
+## This list is probably incomplete.  It has never been tested.
+MKOCT_CPPFLAGS = \
   -I$(top_builddir) \
-  -I$(top_srcdir)/libinterp/corefcn \
-  -I$(top_builddir)/libinterp/corefcn
-MKOCTFILELDFLAGS = \
-  -L$(top_builddir)/libinterp/.libs \
+  -I$(top_srcdir)/liboctinterp/corefcn
+
+## NOTE: Must not be "_LDFLAGS" which is reserved by Automake.
+MKOCT_LDFLAG = \
+  -L$(top_builddir)/liboctinterp/.libs \
   -L$(top_builddir)/liboctave/.libs
 
-MKOCTFILE = \
+MKOCT = \
   OCT_LINK_DEPS="$(OCT_LINK_DEPS)" \
   DL_LDFLAGS="$(DL_LDFLAGS)" \
-  $(top_builddir)/src/mkoctfile $(MKOCTFILECPPFLAGS) $(MKOCTFILELDFLAGS)
+  $(top_builddir)/src/mkoctfile $(MKOCT_CPPFLAGS) $(MKOCT_LDFLAG)
 
-MKMEXFILECPPFLAGS = \
+MKMEX_CPPFLAGS = \
   -I$(top_builddir) \
-  -I$(top_srcdir)/libmex \
-  -I$(top_srcdir)/libinterp/corefcn \
-  -I$(top_builddir)/libinterp/corefcn
-MKMEXFILELDFLAGS = \
-  -L$(top_builddir)/libmex/.libs
+  -I$(top_srcdir)/liboctmex \
+  -I$(top_builddir)/liboctinterp/interp
 
-MKMEXFILE = \
+## NOTE: Must not be "_LDFLAGS" which is reserved by Automake.
+MKMEX_LDFLAG = \
+  -L$(top_builddir)/liboctmex/.libs
+
+MKMEX = \
   OCT_LINK_DEPS="" \
   DL_LDFLAGS="$(DL_LDFLAGS)" \
-  $(top_builddir)/src/mkoctfile --mex $(MKMEXFILECPPFLAGS) $(MKMEXFILELDFLAGS)
+  $(top_builddir)/src/mkoctfile --mex $(MKMEX_CPPFLAGS) $(MKMEX_LDFLAG)
 
 $(MEX_TEST_FUNCTIONS) : %.mex : %.c | %reldir%/$(octave_dirstamp)
-	$(AM_V_mkmexfile)$(MKMEXFILE) $(AM_VOPT_mkmexfile) $< -o $@ || rm -f $@
+	$(AM_V_mkmex)$(MKMEX) $(AM_VOPT_mkmex) $< -o $@ || rm -f $@
 
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
 ## Until we decide how to handle installing the executable MEX files,
 ## don't install them or the associated test files.
 noinst_TEST_FILES += $(mex_TEST_FILES)
+
+CLEANFILES += $(MEX_TEST_FUNCTIONS)

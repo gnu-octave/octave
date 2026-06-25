@@ -93,7 +93,12 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX], [dnl
       if eval test x\$$cachevar = xyes; then
         CXX="$CXX $switch"
         if test -n "$CXXCPP" ; then
-          CXXCPP="$CXXCPP $switch"
+          dnl Don't add switch a second time if it is already present in
+          dnl CXXCPP variable as will happen when a configure cache is used.
+          case "$CXXCPP" in
+            *"$switch"* ) ;;
+            * ) CXXCPP="$CXXCPP $switch" ;;
+          esac
         fi
         ac_success=yes
         break
@@ -129,7 +134,12 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX], [dnl
         if eval test x\$$cachevar = xyes; then
           CXX="$CXX $switch"
           if test -n "$CXXCPP" ; then
-            CXXCPP="$CXXCPP $switch"
+            dnl Don't add switch a second time if it is already present in
+            dnl CXXCPP variable as will happen when a configure cache is used.
+            case "$CXXCPP" in
+              *"$switch"* ) ;;
+              * ) CXXCPP="$CXXCPP $switch" ;;
+            esac
           fi
           ac_success=yes
           break

@@ -30,12 +30,11 @@ SYSTEM_SRC = \
   %reldir%/oct-time.cc \
   %reldir%/oct-uname.cc
 
-noinst_HEADERS += \
-  %reldir%/cmach-info.h
+noinst_HEADERS += %reldir%/cmach-info.h
 
 noinst_LTLIBRARIES += %reldir%/libsystem.la
 
-%canon_reldir%_libsystem_la_SOURCES = $(SYSTEM_SRC)
+%canon_reldir%_libsystem_la_SOURCES := $(SYSTEM_SRC)
 
 %canon_reldir%_libsystem_la_CPPFLAGS = $(liboctave_liboctave_la_CPPFLAGS)
 

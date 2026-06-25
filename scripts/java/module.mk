@@ -29,11 +29,11 @@ JAVA_SRC = \
   $(org_octave_dir)/OctaveReference.java
 endif
 
-JAVA_CLASSES = $(JAVA_SRC:.java=.class)
+JAVA_CLASSES := $(JAVA_SRC:.java=.class)
 
-%canon_reldir%_JAVA_SRC = $(addprefix %reldir%/, $(JAVA_SRC))
+%canon_reldir%_JAVA_SRC := $(addprefix %reldir%/, $(JAVA_SRC))
 
-%canon_reldir%_JAVA_CLASSES = $(addprefix %reldir%/, $(JAVA_CLASSES))
+%canon_reldir%_JAVA_CLASSES := $(addprefix %reldir%/, $(JAVA_CLASSES))
 
 OCT_V_JAR = $(oct__v_JAR_$(V))
 oct__v_JAR_ = $(oct__v_JAR_$(AM_DEFAULT_VERBOSITY))
@@ -53,29 +53,27 @@ $(%canon_reldir%_JAVA_CLASSES) : %.class : %.java | %reldir%/$(octave_dirstamp)
 	             $(org_octave_dir)/$(<F) )
 
 if AMCOND_HAVE_JAVA
-JAR_DATE = $(shell $(PERL) -MPOSIX -e 'print strftime ("%Y-%m-%dT%H:%M:%S+00:00", gmtime ($(SOURCE_MTIME)))')
+JAR_DATE := $(shell $(PERL) -MPOSIX -e 'print strftime ("%Y-%m-%dT%H:%M:%S+00:00", gmtime ($(SOURCE_MTIME)))')
 
 %reldir%/octave.jar: $(%canon_reldir%_JAVA_CLASSES)
 	$(OCT_V_JAR)rm -f $@-t $@ && \
 	( cd scripts/java; \
-		if test "x$(JAR_SUPPORTS_DATE)" = "xyes"; then \
-			"$(JAR)" -c --date="$(JAR_DATE)" -f octave.jar-t $(JAVA_CLASSES) ; \
-		else \
-			"$(JAR)" -c -f octave.jar-t $(JAVA_CLASSES) ; \
-		fi \
+	  if [ "$(JAR_SUPPORTS_DATE)" = "yes" ]; then \
+	    "$(JAR)" -c --date="$(JAR_DATE)" -f octave.jar-t $(JAVA_CLASSES) ; \
+	  else \
+	    "$(JAR)" -c -f octave.jar-t $(JAVA_CLASSES) ; \
+	  fi \
 	) && \
 	mv $@-t $@
 endif
 
 %canon_reldir%dir = $(fcnfiledir)/java
 
-%canon_reldir%_DATA = \
+%canon_reldir%_DATA := \
   $(%canon_reldir%_FCN_FILES) \
   $(%canon_reldir%_JAR_FILES)
 
 FCN_FILES += $(%canon_reldir%_FCN_FILES)
-
-PKG_ADD_FILES += %reldir%/PKG_ADD
 
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 

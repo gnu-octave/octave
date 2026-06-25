@@ -76,7 +76,7 @@
 @c
 @c The macro is named @xseealso now because Texinfo introduced its own @seealso
 @c command.  But, instead of modifying all source files, the build system uses
-@c the munge-texi script to convert @seealso to @xseealso.
+@c the txi2texi.pl script to convert @seealso to @xseealso.
 
 @macro xseealso {args}
 @iftex

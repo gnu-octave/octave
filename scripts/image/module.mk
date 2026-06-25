@@ -2,16 +2,6 @@ FCN_FILE_DIRS += \
   %reldir% \
   %reldir%/private
 
-%canon_reldir%_PRIVATE_FCN_FILES = \
-  %reldir%/private/__imfinfo__.m \
-  %reldir%/private/__imread__.m \
-  %reldir%/private/__imwrite__.m \
-  %reldir%/private/colorspace_conversion_input_check.m \
-  %reldir%/private/colorspace_conversion_revert.m \
-  %reldir%/private/imageIO.m \
-  %reldir%/private/imwrite_filename.m \
-  %reldir%/private/ind2x.m
-
 %canon_reldir%_FCN_FILES = \
   %reldir%/.oct-config \
   %reldir%/autumn.m \
@@ -65,6 +55,16 @@ FCN_FILE_DIRS += \
   %reldir%/white.m \
   %reldir%/winter.m
 
+%canon_reldir%_PRIVATE_FCN_FILES = \
+  %reldir%/private/__imfinfo__.m \
+  %reldir%/private/__imread__.m \
+  %reldir%/private/__imwrite__.m \
+  %reldir%/private/colorspace_conversion_input_check.m \
+  %reldir%/private/colorspace_conversion_revert.m \
+  %reldir%/private/imageIO.m \
+  %reldir%/private/imwrite_filename.m \
+  %reldir%/private/ind2x.m
+
 SCRIPTS_IMAGES += \
   %reldir%/default.img
 
@@ -72,14 +72,10 @@ SCRIPTS_IMAGES += \
 
 %canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-%canon_reldir%_privatedir = $(fcnfiledir)/image/private
+%canon_reldir%_privatedir = $(%canon_reldir%dir)/private
 
 %canon_reldir%_private_DATA = $(%canon_reldir%_PRIVATE_FCN_FILES)
 
 FCN_FILES += \
   $(%canon_reldir%_FCN_FILES) \
   $(%canon_reldir%_PRIVATE_FCN_FILES)
-
-PKG_ADD_FILES += %reldir%/PKG_ADD
-
-DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

@@ -238,7 +238,7 @@ jobs:
         continue-on-error: true
         # Displaying the log shouldn't take long.  Cancel the step if it does.
         timeout-minutes: 5
-        run: cat ./.build/test/fntests.log
+        run: cat ./.build/test/test_suite.log
 
       - name: test history file creation
         # see bug #62365
@@ -282,7 +282,7 @@ jobs:
             octave --eval "pkg test ${package}"
             echo "::endgroup::"
             echo "::group::Test log for ${package}"
-            cat ${GITHUB_WORKSPACE}/fntests.log
+            cat ${GITHUB_WORKSPACE}/test_suite.log
             echo "::endgroup::"
            done
 

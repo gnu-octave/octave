@@ -25,48 +25,51 @@
 ##
 ########################################################################
 
-# Generate a timestamp that best represents the last modification time
-# of this source tree.  The time value is printed on stdout in units of
-# time_t.  If a reasonable representation of the source tree last
-# modification time can't be determined, then the current system time is
-# printed instead.  A valid time_t value is always printed on stdout.
+################################################################################
+## USAGE: get-source-mtime.sh SRCDIR
+## PURPOSE: Generate a timestamp that best represents the last modification
+## time of this source tree.  The time value is printed on stdout in units of
+## time_t.  If a reasonable representation of the source tree last modification
+## time can not be determined, then the current system time is printed instead.
+## A valid time_t value is always printed on stdout.
+################################################################################
 
 set -e
 
-PERL=${PERL:-perl}
-SED=${SED:-sed}
-
 if [ $# -ne 1 ]; then
-  echo "usage: get-source-mtime.sh SRCDIR" 1>&2
+  echo 1>&2 "usage: get-source-mtime.sh SRCDIR"
   exit 1
 fi
+
+PERL=${PERL:-perl}
+SED=${SED:-sed}
 
 srcdir="$1"
 
 ## A user's ~/.hgrc may redefine or add default options to any hg subcommand,
 ## potentially altering its behavior and possibly its standard output.  Always
 ## run hg subcommands with configuration variables set to ensure that the
-## user's preferences do not influence the expected behavior.
+## user's preferences do not influence the expected beavior.
 hg_safe ()
 {
   cmd=$1; shift
   hg --config alias.${cmd}=${cmd} --config defaults.${cmd}= ${cmd} "$@"
 }
 
-if [ x"$SOURCE_DATE_EPOCH" != x ]; then
-  # Allow the source modification time to be overridden by SOURCE_DATE_EPOCH
-  t=$SOURCE_DATE_EPOCH
+if [ -n "$SOURCE_DATE_EPOCH" ]; then
+  ## Allow the source modification time to be overridden by SOURCE_DATE_EPOCH
+  tm=$SOURCE_DATE_EPOCH
 elif [ -d $srcdir/.hg ]; then
-  t=$( cd $srcdir && hg_safe log --rev . --template '{date|hgdate}' )
-  t=$( echo $t | $SED -n 's/^\([0-9]\+\) .*/\1/p' )
+  tm=$( cd $srcdir && hg_safe log --rev . --template '{date|hgdate}' )
+  tm=$( echo $tm | $SED -n 's/^\([0-9]\+\) .*/\1/p' )
 elif [ -f $srcdir/HG-ID ]; then
-  t=$( $PERL -e '@s = stat($ARGV[0]); print($s[9]) if @s;' $srcdir/HG-ID )
+  tm=$( $PERL -e '@s = stat($ARGV[0]); print($s[9]) if @s;' $srcdir/HG-ID )
 elif [ -f $srcdir/configure ]; then
-  t=$( $PERL -e '@s = stat($ARGV[0]); print($s[9]) if @s;' $srcdir/configure )
+  tm=$( $PERL -e '@s = stat($ARGV[0]); print($s[9]) if @s;' $srcdir/configure )
 fi
 
-if [ x"$t" = x ]; then
-  t=$( date +%s )
+if [ -z "$tm" ]; then
+  tm=$( date +%s )
 fi
 
-echo $t
+echo $tm

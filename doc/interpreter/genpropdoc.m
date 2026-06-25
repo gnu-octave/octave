@@ -49,6 +49,7 @@ function genpropdoc (objname, fname = "", props = {})
   base = getstructure ("base");
 
   ## Object properties
+  objname = strtrim (objname);
   if (any (strcmp (objname, objnames)))
     obj = getstructure (objname, base, props);
   else

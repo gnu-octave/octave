@@ -25,18 +25,23 @@
 ##
 ########################################################################
 
-## Expecting arguments in this order:
-##
-##  SRCDIR SRCDIR-FILES ... -- LOCAL-FILES ...
+################################################################################
+## Usage: mk-pkg-add.sh SRCDIR SRCDIR-M-FILES ... -- BUILT-M-FILES ...
+## Purpose: Extract PKG_ADD commands from individual m-files in DIR and create
+##          PKG_ADD file.
+###############################################################################
 
 set -e
+
+if [ $# -lt 2 ]; then
+  echo "usage: mk-pkg-add.sh SRCDIR SRCDIR-M-FILES ... -- BUILT-M-FILES ..." 1>&2
+  exit 1
+fi
 
 SED=${SED:-sed}
 
 prefix="$1/"
-if [ "$1" ]; then
-  shift
-fi
+shift
 
 for arg
 do

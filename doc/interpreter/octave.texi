@@ -95,10 +95,7 @@
 @defindex op
 @defindex pr
 
-@c MUST include "version-octave.texi" in order for Automake to create file.
-@include version-octave.texi
-@c MUST include "octave-doc-version.texi" LAST as it overwrites file above.
-@include octave-doc-version.texi
+@include octave-version.texi
 
 @settitle GNU Octave (version @value{VERSION})
 

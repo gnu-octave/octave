@@ -41,9 +41,9 @@ builddir='%builddir%'
 
 d1="$top_srcdir/scripts"
 d2="$builddir/scripts"
-d3="$builddir/libinterp"
+d3="$builddir/liboctinterp"
 d4="$top_srcdir/examples/data"
-d5="$builddir/libgui/graphics"
+d5="$builddir/liboctgui/graphics"
 
 d1_list=`$FIND "$d1" -type d -a ! \( \( -name private -o -name '@*' -o -name '+*' -o -name '.deps' -o -name '.libs' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
 d2_list=`$FIND "$d2" -type d -a ! \( \( -name private -o -name '@*' -o -name '+*' -o -name '.deps' -o -name '.libs' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
@@ -60,7 +60,7 @@ octave_executable="$builddir/src/octave"
 LOADPATH="$d1_path:$d2_path:$d3_path:$d4_path:$d5"
 IMAGEPATH=".:$top_srcdir/scripts/image"
 DOCFILE="$builddir/doc/interpreter/doc-cache"
-BUILT_IN_DOCSTRINGS_FILE="$builddir/libinterp/DOCSTRINGS"
+BUILT_IN_DOCSTRINGS_FILE="$builddir/liboctinterp/DOCSTRINGS"
 TEXIMACROSFILE="$top_srcdir/doc/interpreter/macros.texi"
 INFOFILE="$builddir/doc/interpreter/octave.info"
 OCTAVE_QTHELP_COLLECTION="$builddir/doc/interpreter/octave_interpreter.qhc"
@@ -101,12 +101,12 @@ while [ $# -gt 0 ]; do
 done
 
 ## Documentation files may exist in the current (build) directory
-## or in the source directory when building from a release.
+## or in the source directory when building from a release tarball.
 if ! [ -e $DOCFILE ]; then
   DOCFILE="$top_srcdir/doc/interpreter/doc-cache"
 fi
 if ! [ -e $BUILT_IN_DOCSTRINGS_FILE ]; then
-  BUILT_IN_DOCSTRINGS_FILE="$top_srcdir/libinterp/DOCSTRINGS"
+  BUILT_IN_DOCSTRINGS_FILE="$top_srcdir/liboctinterp/DOCSTRINGS"
 fi
 if ! [ -e $INFOFILE ]; then
   INFOFILE="$top_srcdir/doc/interpreter/octave.info"
@@ -124,7 +124,7 @@ OCTAVE_ARCHLIBDIR="$builddir/src"; export OCTAVE_ARCHLIBDIR
 OCTAVE_BINDIR="$builddir/src"; export OCTAVE_BINDIR
 OCTAVE_FONTS_DIR="$top_srcdir/etc/fonts"; export OCTAVE_FONTS_DIR
 OCTAVE_JAVA_DIR="$builddir/scripts/java"; export OCTAVE_JAVA_DIR
-OCTAVE_LOCALE_DIR="$builddir/libgui/languages"; export OCTAVE_LOCALE_DIR
+OCTAVE_LOCALE_DIR="$builddir/liboctgui/languages"; export OCTAVE_LOCALE_DIR
 ## QTHELP location has been set above
 export OCTAVE_QTHELP_COLLECTION
 OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/site-rcfile"; export OCTAVE_SITE_INITFILE

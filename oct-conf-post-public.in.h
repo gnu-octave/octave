@@ -193,7 +193,7 @@ octave_unused_parameter (const T&)
 #  define OCTMEX_OVERRIDABLE_FUNC_API
 #endif
 
-// API macros for libgui
+// API macros for liboctgui
 #if defined (OCTGUI_DLL)
 #  define OCTGUI_API OCTAVE_EXPORT
 #  define OCTGUI_EXCEPTION_API OCTAVE_EXPORT

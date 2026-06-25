@@ -165,10 +165,10 @@ An overview of the directory layout of Octave's source files:
      Texinfo and Doxygen documentation for Octave.
 
 - `etc`
-     miscellaneous files, such as this `HACKING` howto.
+     miscellaneous files, such as this `HACKING` HOWTO.
 
 - `examples`
-     some example files (`mkoctfile` and mex samples, old class
+     some example files (`mkoctfile` and `mex` samples, old class
      programming interface).
 
 - `gnulib`
@@ -196,12 +196,11 @@ An overview of the directory layout of Octave's source files:
     - `lapack-xtra` wrappers for lapack functions used in Octave
     - `odepack`     ordinary differential equation solver
     - `quadpack`    subroutines for numerical integration
-    - `ranlib`      random number generators
+    - `randlib`     random number generators
     - `slatec-err`  slatec error handling library
     - `slatec-fn`   various special function subroutines
   - `numeric`
-       C++ numerical algorithms and interfaces to the Fortran
-       algorithms.
+       C++ numerical algorithms and interfaces to the Fortran algorithms.
   - `operators`
        code for operators that act on base classes (such as `Array`).
   - `system`
@@ -211,7 +210,7 @@ An overview of the directory layout of Octave's source files:
   - `wrappers`
        C++ wrappers for gnulib functions written in C.
 
-- `libinterp`
+- `liboctinterp`
      the interpreter itself plus lots of infrastructure around it.
      Octave's extensive `octave_value` class hierarchy for
      polymorphically handling all Octave types is defined here.
@@ -221,11 +220,25 @@ An overview of the directory layout of Octave's source files:
        classes that hold various Octave data types like struct
        numerical arrays, structure arrays, and cell arrays.
   - `parse-tree`
-       Classes that define the parse tree for the interpreter.
+       classes that define the parse tree for the interpreter.
+  - `interp`
+       the guts of the interpreter.
+  - `graphics`
+       code for managing graphics handles, property manager for graphics
+       objects, rendering graphics objects with OpenGL, and printing.
+  - `load-save`
+       code for loading and saving objects in many formats and versions.
+  - `stream`
+       Octave-specific classes for file, string, and process streams.
   - `corefcn`
-       statically linked `DEFUN` functions (callable from the
-       scripting language) as well as internal C++ functions used by
-       the interpreter.
+       statically linked `DEFUN` functions (callable from the scripting
+       language) as well as internal C++ functions used by the interpreter.
+    - `numeric`  math functions   bessel functions
+       C++ numerical algorithms and interfaces to `liboctave` algorithms.
+    - `system`
+       OS-related functions.
+    - `util`
+       utility and miscellaneous functions.
   - `dldfcn`
        dynamically linked `DEFUN_DLD` functions (callable from the
        scripting language).  If you see `help foo` telling you that
@@ -237,7 +250,7 @@ An overview of the directory layout of Octave's source files:
   - `template-inst`
        some C++ template instantiations.
 
-- `libgui`
+- `lioctbgui`
      the graphical user interface of GNU Octave.
   - `graphics`
        Qt graphics toolkit (OpenGL plotting).
@@ -249,7 +262,7 @@ An overview of the directory layout of Octave's source files:
   - `qterminal`
        Qt terminal widget.
   - `src`
-       source files for the GUI
+       source files for the GUI.
     - `icons`
          icon files that will be compiled into the executable via a
          resource file.
@@ -303,7 +316,7 @@ An overview of the directory layout of Octave's source files:
      tests for the interpreter.
   - `*.tst`
        fixed tests for the interpreter.
-  - `fntests.m`
+  - `test_suite.m`
        script to run function tests embedded in C++ and .m files.
 
 Release Numbering
@@ -345,9 +358,9 @@ With this numbering scheme:
 Shared Library Versioning
 -------------------------
 
-Version numbers for the liboctave, liboctinterp, liboctgui, and libmex shared
-libraries are set in the `module.mk` files in the top-level directory for each
-library using the variables
+Version numbers for the `liboctave`, `liboctinterp`, `liboctgui`, and
+`liboctmex` shared libraries are set in the `module.mk` files in the top-level
+directory for each library using the variables
 
     %canon_reldir%_%canon_reldir%_current
     %canon_reldir%_%canon_reldir%_revision
@@ -433,9 +446,6 @@ is updated to the default branch.
 4. Bump version numbers and release date in `configure.ac` for pre-release:
 
   * Set version in `AC_INIT` to MAJOR.0.1
-  * `OCTAVE_MAJOR_VERSION` should already be correct.
-  * Set `OCTAVE_MINOR_VERSION` to 0.
-  * Set `OCTAVE_PATCH_VERSION` to 1.
   * Set `OCTAVE_RELEASE_DATE` to the current date.
   * Set the year in `OCTAVE_COPYRIGHT` to the current year.
     The copyright dates in the source files should have already been updated
@@ -460,9 +470,6 @@ is updated to the default branch.
 7. Bump versions in `configure.ac` to begin active development of MAJOR+1:
 
   * Set version in `AC_INIT` to MAJOR+1.0.0
-  * Set `OCTAVE_MAJOR_VERSION` to MAJOR+1
-  * Set `OCTAVE_MINOR_VERSION` to 0
-  * Set `OCTAVE_PATCH_VERSION` to 0
 
         hg commit  # Use commit message similar to the one in dc1347cab668
 
@@ -477,24 +484,21 @@ Creating first release candidate for new MAJOR version
 ------------------------------------------------------
 
 This requires updating the VERSION for Octave; the shared library `SOVERSION`
-for each of `liboctave`, `liboctinterp`, `liboctgui`, and `libmex`; and
+for each of `liboctave`, `liboctinterp`, `liboctgui`, and `liboctmex`; and
 the oct-file version `OCTAVE_API_VERSION`.
 
 1. Bump version numbers and release date in `configure.ac` for release
    candidate:
 
   * Set version in `AC_INIT` to MAJOR.0.90
-  * `OCTAVE_MAJOR_VERSION` should already be correct (MAJOR).
-  * `OCTAVE_MINOR_VERSION` should already be correct (0).
-  * Set `OCTAVE_PATCH_VERSION` to 90.
   * Set `OCTAVE_RELEASE_DATE` to the current date.
   * Set the final year in `OCTAVE_COPYRIGHT` to the current year.
 
 2. Update `SOVERSION` numbers for shared libraries.
 
     The version numbers for the `liboctave`, `liboctinterp`, `liboctgui`, and
-    `libmex` shared libraries are set in the `module.mk` file in the top-level
-    directory for each library using the variables
+    `liboctmex` shared libraries are set in the `module.mk` file in the
+    top-level directory for each library using the variables
 
         %canon_reldir%_%canon_reldir%_current
         %canon_reldir%_%canon_reldir%_revision

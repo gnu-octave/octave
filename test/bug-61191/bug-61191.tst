@@ -28,7 +28,7 @@
 %!   addpath ("subdir");
 %!   omc_1 = rand (3, 1);
 %!   Tc_1 = rand (3, 1);
-%!   bug_61191
+%!   bug61191
 %!   assert (omckk, omc_1);
 %!   assert (Tckk, Tc_1);
 %! unwind_protect_cleanup

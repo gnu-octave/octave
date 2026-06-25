@@ -2,12 +2,6 @@ FCN_FILE_DIRS += \
   %reldir% \
   %reldir%/private
 
-%canon_reldir%_PRIVATE_FCN_FILES = \
-  %reldir%/private/__axis_label__.m \
-  %reldir%/private/__axis_limits__.m \
-  %reldir%/private/__gnuplot_legend__.m \
-  %reldir%/private/__tickangle__.m
-
 %canon_reldir%_FCN_FILES = \
   %reldir%/.oct-config \
   %reldir%/__clabel__.m \
@@ -63,18 +57,20 @@ FCN_FILE_DIRS += \
   %reldir%/ztickangle.m \
   %reldir%/zticklabels.m
 
+%canon_reldir%_PRIVATE_FCN_FILES = \
+  %reldir%/private/__axis_label__.m \
+  %reldir%/private/__axis_limits__.m \
+  %reldir%/private/__gnuplot_legend__.m \
+  %reldir%/private/__tickangle__.m
+
 %canon_reldir%dir = $(fcnfiledir)/plot/appearance
 
 %canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-%canon_reldir%_privatedir = $(fcnfiledir)/plot/appearance/private
+%canon_reldir%_privatedir = $(%canon_reldir%dir)/private
 
 %canon_reldir%_private_DATA = $(%canon_reldir%_PRIVATE_FCN_FILES)
 
 FCN_FILES += \
   $(%canon_reldir%_FCN_FILES) \
   $(%canon_reldir%_PRIVATE_FCN_FILES)
-
-PKG_ADD_FILES += %reldir%/PKG_ADD
-
-DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

@@ -70,24 +70,22 @@ if [ $# -eq 2 ]; then
     ;;
   esac
 else
-  echo "usage: mk-bc-overload-tst.sh output_dir option" 1>&2
+  echo "usage: mk-bc-overloads-tst.sh output_dir option" 1>&2
   exit 1
 fi
 
 for class in $CLASSES; do
   DIR="@$class"
-  test -d $DIR || mkdir $DIR || { echo "error: could not create $DIR"; exit; }
+  test -d $DIR || mkdir $DIR || { echo "error: could not create $DIR"; exit 1; }
   cat > $DIR/tbcover.m << EOF
-% !!! DO NOT EDIT !!!
-% generated automatically by mk-bc-overload-tst.sh
+% DO NOT EDIT!  Generated automatically by mk-bc-overloads-tst.sh.
 function s = tbcover (x, y)
   s = '$class';
 EOF
 done
 
 cat > $output_dir/tbcover.m << EOF
-% !!! DO NOT EDIT !!!
-% generated automatically by mk-bc-overload-tst.sh
+% DO NOT EDIT!  Generated automatically by mk-bc-overloads-tst.sh.
 function s = tbcover (x, y)
   s = 'none';
 EOF
@@ -97,9 +95,8 @@ if test "$1" = "overloads_only" ; then
 fi
 
 cat > $output_dir/bc-overloads.tst << EOF
-## !!! DO NOT EDIT !!!
-## THIS IS AN AUTOMATICALLY GENERATED FILE
-## modify mk-bc-overloads-tst.sh to generate the tests you need.
+## DO NOT EDIT!  Generated automatically by mk-bc-overloads-tst.sh.
+## Modify file mk-bc-overloads-tst.sh to generate the tests you need.
 
 %!shared ex
 %! ex.double = 1;

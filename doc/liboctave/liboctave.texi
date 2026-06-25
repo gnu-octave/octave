@@ -47,7 +47,7 @@
 @c The version.texi file doesn't include a chapter, so it must not be
 @c included if you want to run the Emacs function
 @c texinfo-multiple-files-update.
-@include version-liboctave.texi
+@include liboctave-version.texi
 
 @settitle Octave C++ Classes
 

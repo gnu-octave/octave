@@ -7,10 +7,10 @@ EXTERNAL_SOURCES += \
   %reldir%/dqk15i.f \
   %reldir%/dqk21.f \
   %reldir%/dqpsrt.f \
-  %reldir%/qagie.f \
   %reldir%/qagi.f \
-  %reldir%/qagpe.f \
+  %reldir%/qagie.f \
   %reldir%/qagp.f \
+  %reldir%/qagpe.f \
   %reldir%/qelg.f \
   %reldir%/qk15i.f \
   %reldir%/qk21.f \

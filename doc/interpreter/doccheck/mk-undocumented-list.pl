@@ -26,13 +26,13 @@
 ########################################################################
 
 ################################################################################
-# File: mk-undocumented-list.pl
-# Purpose: Create a list of functions present in Octave, but without a
-#          corresponding DOCSTRING entry in one of the *.txi files
-# Usage: make doc/interpreter/undocumented_list
-# Documentation: see README in doccheck directory
+## Usage: make doc/interpreter/undocumented_list
+## Purpose: Create a list of functions present in Octave, but without a
+##          corresponding DOCSTRING entry in one of the *.txi files.
+## Documentation: see README in doccheck directory
 ################################################################################
-# Get a list from Octave of all visible functions
+
+## Get a list from Octave of all visible functions
 @octave_output = <<`_END_OCT_SCRIPT_`;
 ../../run-octave --norc --quiet --no-history --eval '\
   funclist = vertcat (__list_functions__ , __builtins__); \
@@ -44,28 +44,27 @@ _END_OCT_SCRIPT_
 unless (@octave_output) { die "Unable to invoke 'run-octave'.  Exiting\n" }
 
 ################################################################################
-# Winnow list of functions that require a DOCSTRING
+## Winnow list of functions that require a DOCSTRING
 
-# First, divide output in to list of functions and list of locations
+## First, divide output in to list of functions and list of locations
 $idx = 0;
 while (($_ = $octave_output[$idx++]) !~ /^#!-separator-!#$/)
 {
-  push(@all_functions, $1) if (/] = (\w+)$/);
+  push (@all_functions, $1) if (/] = (\w+)$/);
 }
 while ($_ = $octave_output[$idx++])
 {
-  push(@where, $1) if (/] = (.+)$/);
+  push (@where, $1) if (/] = (.+)$/);
 }
 
-# Sanity check that Octave script worked
+## Sanity check that Octave script worked
 if ($#all_functions != $#where)
 {
   die "Unequal number of functions and locations.  Parsing failed\n";
 }
 
-# Second, remove functions based on directory location
-# deprecated directory, legacy directory, doc/interpreter directory,
-# test/ directory
+## Second, remove functions based on directory name
+## Directories removed: deprecated, legacy, doc/interpreter, test
 FUNC: foreach $idx (0 .. $#where)
 {
   next FUNC if ($where[$idx] =~ /deprecated/i);
@@ -76,41 +75,41 @@ FUNC: foreach $idx (0 .. $#where)
   push (@functions, $all_functions[$idx]);
 }
 
-# Third, remove functions based on naming patterns
-# Remove internal functions from the list of features requiring a DOCSTRING
+## Third, remove functions based on naming patterns
+## Remove internal functions from the list of features requiring a DOCSTRING
 @functions = grep (! /^__/, @functions);
 
-# Fourth, remove exceptions based on name that do not require documentation
-# Load list of function exceptions not requiring a DOCSTRING
-# Exception data is stored at the bottom of this script
+## Fourth, remove exceptions based on name that do not require documentation
+## Load list of function exceptions not requiring a DOCSTRING
+## Exception data is stored at the bottom of this script
 foreach $_ (<DATA>)
 { chomp, $exceptions{$_}=1; }
 
-# Remove exception data from the list
+## Remove exception data from the list
 @functions = grep (! $exceptions{$_}, @functions);
 
 ################################################################################
-# Get a list of all documented functions
-foreach $txi_file (glob("*.txi"))
+## Get a list of all documented functions
+foreach $txi_file (glob ("*.txi"))
 {
-  open(TXI_FILE, $txi_file) or die "Unable to open $txi_file for reading\n";
-  while (<TXI_FILE>)
+  open ($TXI_FILE, "<", $txi_file) or die "Unable to open $txi_file for reading\n";
+  while (<$TXI_FILE>)
   {
     $docstrings{$1} = 1 if (/\@DOCSTRING\((\w+)\)/);
   }
 }
 
 ################################################################################
-# Find features which have not been documented in the txi files
+## Find features which have not been documented in the txi files
 @undocumented = grep (! $docstrings{$_}, @functions);
 
-# Exit successfully if no undocumented functions
-exit(0) if (! @undocumented);
+## Exit successfully if no undocumented functions
+exit (0) if (! @undocumented);
 
 $, = "\n";  # Set output record separator
-print sort(@undocumented);
+print sort (@undocumented);
 print "\n";
-exit(1);
+exit (1);
 
 ################################################################################
 # Exception list of functions not requiring a DOCSTRING

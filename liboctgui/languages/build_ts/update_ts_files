@@ -1,0 +1,138 @@
+#!/bin/bash
+
+# This scripts has to be called from the folder liboctgui/languages
+# where the *.ts files for each provided translation are located
+echo "---------------------------------------------"
+echo
+echo " Updating language file from current sources "
+echo
+echo "   Do NOT interrupt this script by Ctrl-C,"
+echo "   use 'q' instead."
+echo
+echo "---------------------------------------------"
+
+# lupdate does not recognize the macro for the octave namespace.
+# As a workaround, the relevant sources are copied into a temporary
+# directory where the macros for beginning and ending a namespace
+# are expanded into the original C++ syntax.
+echo
+echo -n "Preparing temporary sources ... "
+
+OCTAVE_TEMP="__octave_temp_gui_sources__"
+mkdir $OCTAVE_TEMP
+cp -a ../graphics $OCTAVE_TEMP/
+cp -a ../qterminal $OCTAVE_TEMP/
+cp -a ../src $OCTAVE_TEMP/
+
+find $OCTAVE_TEMP -type f -exec \
+      sed -i -e 's/OCTAVE_BEGIN_NAMESPACE\s*(\([^)]\+\))/namespace \1 \{/g'\
+             -e 's/OCTAVE_END_NAMESPACE\s*(\([^)]\+\))/\}/g' {} \;
+
+echo "done"
+
+
+# Now set the base search path for lupdate to the temporary sources
+SEARCH_PATH_COMMON="$OCTAVE_TEMP/graphics $OCTAVE_TEMP/qterminal $OCTAVE_TEMP/src"
+
+# Path to Qt and QScintilla files with strings that should also be
+# translated by octave in case that Qt or QScintilla does not provide
+# translations for the current language
+SEARCH_PATH_QT="build_ts/octave-qt"
+SEARCH_PATH_QSCI="build_ts/octave-qsci"
+
+# The directory with translations provided by Qt and QScintilla
+# First test qt above qt5 which provides QT_INSTALL_TRANSLATIONS
+# by "qtpaths --query"
+QT_LANG_DIR=`qtpaths6 --query 2>/dev/null | grep QT_INSTALL_TRANSLATIONS | sed -e 's/QT_INSTALL_TRANSLATIONS://'`
+if [[ -z $QT_LANG_DIR ]]; then
+  # No "qtpaths6", try "qtpaths" instead (might be qt5 though)
+  QT_LANG_DIR=`qtpaths --query 2>/dev/null | grep QT_INSTALL_TRANSLATIONS | sed -e 's/QT_INSTALL_TRANSLATIONS://'`
+  if [[ -z $QT_LANG_DIR ]]; then
+    # No qt6 or no qt6 translations found: "qtpaths" does not provide
+    # "--query" for qt5, therefore test qt5 with "qtdiag"
+    QT_LANG_DIR=`qtdiag 2>/dev/null | grep TranslationsPath | sed -e 's/  TranslationsPath: //'`
+  fi
+fi
+
+echo "Qt translations: $QT_LANG_DIR"
+
+LUPDATE="/usr/bin/lupdate-qt6"
+if [[ ! -f $LUPDATE ]]; then
+  LUPDATE="/usr/lib/qt6/bin/lupdate"
+  if [[ ! -f $LUPDATE ]]; then
+    LUPDATE="/usr/bin/lupdate"
+    if [[ ! -f $LUPDATE ]]; then
+      echo "No lupdate tool found, no update of ts-files possible."
+      exit 1
+    fi
+  fi
+fi
+
+echo "lupdate tool: $LUPDATE"
+
+# Update all ts files
+for file in $(ls -b1 *.ts)
+do
+
+  xx=${file/_*/}
+  xx_yy=${file/.*/}
+
+  # Set the search path to the minimal one used for each ts file
+  SEARCH_PATH=$SEARCH_PATH_COMMON
+  T_QT="YES"
+  T_QSCI="YES"
+
+  # Look for translations provided by Qt and QScintilla and extend the search
+  # path if no existing translations are found.  In this case we have to scan
+  # the locally collected source files.
+  if [ $xx_yy != "en_US" ]; then  # No translation required for en_US
+    if [ -z $QT_LANG_DIR ]; then
+      # No translations for Qt found at all
+      SEARCH_PATH="$SEARCH_PATH $SEARCH_PATH_QT $SEARCH_PATH_QSCI"
+      T_QT="NO"
+      T_QSCI="NO"
+    else
+      # Look for Qt translations for the current language
+      if [ "`ls $QT_LANG_DIR | grep -i qt_$xx.qm | wc -l`" -eq 0 ] &&
+         [ "`ls $QT_LANG_DIR | grep -i qt_$xx_yy.qm | wc -l`" -eq 0 ]; then
+         SEARCH_PATH="$SEARCH_PATH $SEARCH_PATH_QT"
+         T_QT="NO"
+      fi
+      # Look for QScintilla translations
+      if [ "`ls $QT_LANG_DIR | grep -i qscintilla_$xx.qm | wc -l`" -eq 0 ] &&
+         [ "`ls $QT_LANG_DIR | grep -i qscintilla_$xx_yy.qm | wc -l`" -eq 0 ]; then
+         SEARCH_PATH="$SEARCH_PATH $SEARCH_PATH_QSCI"
+         T_QSCI="NO"
+      fi
+    fi
+  fi
+  echo
+  echo
+  echo "$xx_yy: Existing translations for Qt: $T_QT, QSci: $T_QSCI"
+
+  # Do the update after user's confirmation
+  SEARCH_PATH_CLEAN=${SEARCH_PATH//"$OCTAVE_TEMP/"/}
+  echo         "       => scan for strings in following paths:"
+  echo         "          $SEARCH_PATH_CLEAN"
+  read -N 1 -p "       => Update (y/[n]/q)? " ANS;
+
+  if [ "$ANS" = "q" ]; then
+    break
+  fi
+
+  if [ "$ANS" = "y" ]; then
+    echo
+    $LUPDATE -no-obsolete -locations relative $SEARCH_PATH -ts $file
+    sed -i -e "s/$OCTAVE_TEMP/../g" $file   # fix path to sources
+  fi
+
+done
+
+
+# Remove temporary copy of source files
+echo
+echo
+echo -n "Removing temporary sources ... "
+rm -rf $OCTAVE_TEMP
+echo "done"
+echo

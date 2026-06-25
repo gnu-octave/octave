@@ -25,75 +25,81 @@
 ##
 ########################################################################
 
-# Generate option handling code from a simpler input files for
-# Octave's functions like lsode, dassl, etc.
-
-# FIXME:
-#
-# * Improve default documentation and/or individual documentation
-#   in data files.
-#
-# * Fix print/show code to display/return something more informative
-#   for special values (for example, -1 ==> infinite in some cases).
-#   Probably need more information in the data files for this.
-
-# Input file format:
-#
-# CLASS = string
-# FCN_NAME = string
-# INCLUDE = file
-# DOC_STRING doc END_DOC_STRING
-# OPTION
-#   NAME = string
-#   DOC_ITEM doc END_DOC_ITEM
-#   TYPE = string
-#   SET_ARG_TYPE = string   (optional, defaults to TYPE)
-#   INIT_VALUE = string | INIT_BODY code END_INIT_BODY
-#   SET_EXPR = string | SET_BODY code END_SET_BODY | SET_CODE code END_SET_CODE
-# END_OPTION
-#
-# END_* must appear at beginning of line (whitespace ignored).
+################################################################################
+## Usage: mk-opts.pl --opt-class-header|--opt-handler-fcns FILE
+## Purpose: Generate option handling code from simpler input files for
+## Octave's functions like lsode, dassl, etc.
+################################################################################
 
 ################################################################################
-# Load packages to
-# 1) process command line options
+## FIXME:
+##
+## * Improve default documentation and/or individual documentation
+##   in data files.
+##
+## * Fix print/show code to display/return something more informative
+##   for special values (for example, -1 ==> infinite in some cases).
+##   Probably need more information in the data files for this.
+
+## Input file format:
+##
+## CLASS = string
+## FCN_NAME = string
+## INCLUDE = file
+## DOC_STRING doc END_DOC_STRING
+## OPTION
+##   NAME = string
+##   DOC_ITEM doc END_DOC_ITEM
+##   TYPE = string
+##   SET_ARG_TYPE = string   (optional, defaults to TYPE)
+##   INIT_VALUE = string | INIT_BODY code END_INIT_BODY
+##   SET_EXPR = string | SET_BODY code END_SET_BODY | SET_CODE code END_SET_CODE
+## END_OPTION
+##
+## END_* must appear at beginning of line (whitespace ignored).
+################################################################################
+
+################################################################################
+## Load package to
+## 1) process command line options
 ################################################################################
 use Getopt::Long;
 
 ################################################################################
-# Extract command line arguments
+## Extract command line arguments
 &parse_options;
 
 $DEFN_FILE = shift @ARGV;
-open (DEFN_FILE) or die "unable to open input definition file $DEFN_FILE";
+open ($DEFN_FH, "<", $DEFN_FILE) or
+  die "unable to open input definition file $DEFN_FILE";
 
 ################################################################################
-# Initialize variables
+## Initialize variables
 $BLANK_LINE = qr/^\s*$/;
 $COMMENT = qr/^\s*#/;
 
 ################################################################################
-# Process file
+## Process file
 $OPT_NUM = 0;
 
 &parse_input;
 
 &process_data;
 
-# Produce desired style of output
+## Produce desired style of output
 &emit_opt_class_header if $opt_class_header;
 &emit_opt_handler_fcns if $opt_handler_fcns;
 &emit_options_debug if $opt_debug;
 
-# End of main code
+## End of main code
 
 ################################################################################
-# Subroutines
+## Subroutines
 ################################################################################
 
 sub parse_input
 {
-  LINE: while (<DEFN_FILE>)
+  LINE: while (<$DEFN_FH>)
     {
       next LINE if /$BLANK_LINE/;
       next LINE if /$COMMENT/;
@@ -122,7 +128,7 @@ sub parse_input
       elsif (/^\s*DOC_STRING\s*$/)
         {
           die "duplicate DOC_STRING" if defined $DOC_STRING;
-          while (defined ($_ = <DEFN_FILE>) and not /^\s*END_DOC_STRING\s*$/)
+          while (defined ($_ = <$DEFN_FH>) and not /^\s*END_DOC_STRING\s*$/)
           {
             $DOC_STRING .= $_;
           }
@@ -138,7 +144,7 @@ sub parse_input
 
 sub parse_option_block
 {
-  while (<DEFN_FILE>)
+  while (<$DEFN_FH>)
     {
       next if /$BLANK_LINE/;
 
@@ -158,7 +164,7 @@ sub parse_option_block
       elsif (/^\s*DOC_ITEM\s*$/)
         {
           die "duplicate DOC_ITEM" if defined $DOC_ITEM[$OPT_NUM];
-          while (defined ($_ = <DEFN_FILE>) and not /^\s*END_DOC_ITEM\s*$/)
+          while (defined ($_ = <$DEFN_FH>) and not /^\s*END_DOC_ITEM\s*$/)
           {
             $DOC_ITEM[$OPT_NUM] .= $_;
           }
@@ -186,7 +192,7 @@ sub parse_option_block
       elsif (/^\s*INIT_BODY\s*$/)
         {
           die "duplicate INIT_BODY" if defined $INIT_BODY[$OPT_NUM];
-          while (defined ($_ = <DEFN_FILE>) and not /^\s*END_INIT_BODY\s*$/)
+          while (defined ($_ = <$DEFN_FH>) and not /^\s*END_INIT_BODY\s*$/)
           {
             $INIT_BODY[$OPT_NUM] .= $_;
           }
@@ -194,7 +200,7 @@ sub parse_option_block
       elsif (/^\s*SET_BODY\s*$/)
         {
           die "duplicate SET_BODY" if defined $INIT_BODY[$OPT_NUM];
-          while (defined ($_ = <DEFN_FILE>) and not /^\s*END_SET_BODY\s*$/)
+          while (defined ($_ = <$DEFN_FH>) and not /^\s*END_SET_BODY\s*$/)
           {
             $SET_BODY[$OPT_NUM] .= $_;
           }
@@ -202,7 +208,7 @@ sub parse_option_block
       elsif (/^\s*SET_CODE\s*$/)
         {
           die "duplicate SET_CODE" if defined $SET_CODE[$OPT_NUM];
-          while (defined ($_ = <DEFN_FILE>) and not /^\s*END_SET_CODE\s*$/)
+          while (defined ($_ = <$DEFN_FH>) and not /^\s*END_SET_CODE\s*$/)
           {
             $SET_CODE[$OPT_NUM] .= $_;
           }
@@ -237,7 +243,8 @@ sub process_data
 
   if (not defined $DOC_STRING)
     {
-      $DOC_STRING = "Query or set options for the function \@code{$FCN_NAME}.
+      $DOC_STRING = <<_EOM_;
+Query or set options for the function \@code{$FCN_NAME}.
 
 When called with no arguments, the names of all available options and
 their current values are displayed.
@@ -245,7 +252,8 @@ their current values are displayed.
 Given one argument, return the value of the option \@var{opt}.
 
 When called with two arguments, \@code{$OPT_FCN_NAME} sets the option
-\@var{opt} to value \@var{val}.";
+\@var{opt} to value \@var{val}.
+_EOM_
     }
 }
 
@@ -376,7 +384,7 @@ sub emit_opt_class_header
 
   print <<"_END_EMIT_OPT_CLASS_HEADER_";
 // DO NOT EDIT!
-// Generated automatically from $DEFN_FILE.
+// Generated automatically from $DEFN_FILE by mk-opts.pl.
 
 #if ! defined (octave_${CLASS_NAME}_h)
 #define octave_${CLASS_NAME}_h 1
@@ -512,7 +520,7 @@ sub emit_opt_handler_fcns
 
   print <<"_END_EMIT_OPT_HANDLER_FCNS_";
 // DO NOT EDIT!
-// Generated automatically from $DEFN_FILE.
+// Generated automatically from $DEFN_FILE by mk-opts.pl.
 
 // This file should not include config.h.  It is only included in other
 // C++ source files that should have included config.h before including
@@ -926,7 +934,6 @@ Options include
 
 \@table \@asis
 _END_EMIT_OPTIONS_FUNCTION_HDR_
-# FIXME: Add extra newline above
 
   for (my $i = 0; $i < $OPT_NUM; $i++)
     {
@@ -1035,7 +1042,7 @@ sub max
 }
 
 ################################################################################
-# Subroutine processes any command line arguments
+## Subroutine processes any command line arguments
 ################################################################################
 sub parse_options
 {
@@ -1051,8 +1058,8 @@ sub parse_options
                         "debug" => \$opt_debug,
                         "help"  => \$opt_help);
 
-  # give user info if options incorrect or -h(elp) given
-  &usage_info if (!$result or (@ARGV != 1) or $opt_help);
+  ## give user info if options incorrect or -h(elp) given
+  &usage_info if (! $result or (@ARGV != 1) or $opt_help);
   if ($opt_class_header and $opt_handler_fcns)
   {
     die "Only one of [-opt-class-header | -opt-handler-fcns ] may be specified";
@@ -1061,7 +1068,7 @@ sub parse_options
 }
 
 ################################################################################
-# Subroutine displays usage information
+## Subroutine displays usage information
 ################################################################################
 sub usage_info
 {
@@ -1076,5 +1083,5 @@ from definition file.
 See the head of mk-opts.pl for a description of the format that is parsed.
 _END_OF_USAGE_
 
-  exit(1);    # exit with error code
+  exit (1);    # exit with error code
 }

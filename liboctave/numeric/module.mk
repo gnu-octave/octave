@@ -1,11 +1,9 @@
-LIBOCTAVE_OPT_INC = \
+BUILT_NUMERIC_INC = \
   %reldir%/DASPK-opts.h \
   %reldir%/DASRT-opts.h \
   %reldir%/DASSL-opts.h \
   %reldir%/LSODE-opts.h \
   %reldir%/Quad-opts.h
-
-LIBOCTAVE_OPT_IN = $(LIBOCTAVE_OPT_INC:.h=.in)
 
 NUMERIC_INC = \
   %reldir%/CollocWt.h \
@@ -62,7 +60,7 @@ NUMERIC_INC = \
   %reldir%/randgamma.h \
   %reldir%/randmtzig.h \
   %reldir%/randpoisson.h \
-  %reldir%/ranlib-proto.h \
+  %reldir%/randlib-proto.h \
   %reldir%/schur.h \
   %reldir%/slatec-proto.h \
   %reldir%/sparse-chol.h \
@@ -107,20 +105,12 @@ NUMERIC_SRC = \
   %reldir%/sparse-qr.cc \
   %reldir%/svd.cc
 
-LIBOCTAVE_TEMPLATE_SRC += \
-  %reldir%/bsxfun-defs.cc
+LIBOCTAVE_TEMPLATE_SRC += %reldir%/bsxfun-defs.cc
 
-## Special rules for sources which must be built before rest of compilation.
-$(LIBOCTAVE_OPT_INC) : %.h : %.in
-	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(PERL) $(srcdir)/build-aux/mk-opts.pl --opt-class-header $< > $@-t && \
-	mv $@-t $@
-
-$(LIBOCTAVE_OPT_INC) : $(srcdir)/build-aux/mk-opts.pl
-
+## Start library specification 
 noinst_LTLIBRARIES += %reldir%/libnumeric.la
 
-%canon_reldir%_libnumeric_la_SOURCES = $(NUMERIC_SRC)
+%canon_reldir%_libnumeric_la_SOURCES := $(NUMERIC_SRC)
 
 %canon_reldir%_libnumeric_la_CPPFLAGS = \
   $(liboctave_liboctave_la_CPPFLAGS) \
@@ -130,7 +120,28 @@ noinst_LTLIBRARIES += %reldir%/libnumeric.la
 
 liboctave_liboctave_la_LIBADD += %reldir%/libnumeric.la
 
-liboctave_EXTRA_DIST += $(LIBOCTAVE_OPT_IN)
+## Special rules
 
-liboctave_CLEANFILES += \
-  $(LIBOCTAVE_OPT_INC)
+NUMERIC_OPTS_IN := $(BUILT_NUMERIC_INC:.h=.in)
+
+$(BUILT_NUMERIC_INC) : %.h : %.in
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(PERL) $(srcdir)/build-aux/mk-opts.pl --opt-class-header $< > $@-t && \
+	mv $@-t $@
+
+## Dependencies listed separately from rule above
+$(BUILT_NUMERIC_INC) : $(srcdir)/build-aux/mk-opts.pl | %reldir%/$(octave_dirstamp)
+
+BUILT_NUMERIC_TARGETS := $(patsubst %-opts.h,%.h,$(BUILT_NUMERIC_INC))
+
+## Add dependency (e.g., DASPK.h on DASPK-opts.h) which is accurate and
+## forces creation of BUILT_NUMERIC_INC files.
+$(BUILT_NUMERIC_TARGETS) : %.h : %-opts.h
+
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
+
+nodist_octinclude_HEADERS += $(BUILT_NUMERIC_INC)
+
+liboctave_EXTRA_DIST += $(NUMERIC_OPTS_IN)
+
+liboctave_DISTCLEANFILES += $(BUILT_NUMERIC_INC)

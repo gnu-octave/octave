@@ -202,8 +202,8 @@ private:
   // Current distribution of random numbers.
   int m_current_distribution;
 
-  // If TRUE, use old RANLIB generators.  Otherwise, use Mersenne
-  // Twister generator.
+  // If TRUE, use old RANDLIB generators.
+  // Otherwise, use Mersenne Twister generator.
   bool m_use_old_generators;
 
   // Saved MT states.
@@ -275,7 +275,7 @@ private:
 
   // Some helper functions.
 
-  OCTAVE_API void initialize_ranlib_generators ();
+  OCTAVE_API void initialize_randlib_generators ();
 
   OCTAVE_API void initialize_mersenne_twister ();
 

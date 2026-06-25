@@ -26,14 +26,14 @@
 ########################################################################
 
 ################################################################################
-# File   : add-to-aspell-dict.pl
-# Purpose: Merges a file of new words into an existing dictionary file.
-#          The resulting file is uniquified and sorted before being written out.
-# Usage  : add-to-aspell-dict.pl <filename-of-new-words>
-# Documentation: see README in doccheck directory
+## Usage  : add-to-aspell-dict.pl <filename-of-new-words>
+## Purpose: Merges a file of new words into an existing dictionary file.
+##          The resulting file is uniquified and sorted before being written
+##          out.
+## Documentation: see README in doccheck directory
 ################################################################################
-# Initialize variables
-# Private Octave dictionary for aspell
+## Initialize variables
+## Private Octave dictionary for aspell
 $octdict_fname = './doccheck/aspell-octave.en.pws';
 
 ################################################################################
@@ -43,31 +43,31 @@ unless (@ARGV == 1)
   die "USAGE: add-to-aspell-dict.pl <filename-of-new-words>\n";
 }
 
-$new_words_fname = shift(@ARGV);
+$new_words_fname = shift (@ARGV);
 if (! -r $new_words_fname)
 {
   die "Unable to read input file: $new_words_fname\n";
 }
 
 ################################################################################
-# Add new words to a dictionary database
-open (FH, "<$new_words_fname")
+## Add new words to a dictionary database
+open ($FH, "<", $new_words_fname)
   or die "Unable to open file: $new_words_fname\n";
-while (<FH>) { $dict_db{$_} = 1; }
-close (FH);
+while (<$FH>) { $dict_db{$_} = 1; }
+close ($FH);
 
-# Add words from existing dictionary to dictionary database
-open (FH, "<$octdict_fname")
+## Add words from existing dictionary to dictionary database
+open ($FH, "<", $octdict_fname)
   or die "Unable to open Octave dictionary: $octdict_fname\n";
-$header = <FH>;
-while (<FH>) { $dict_db{$_} = 1; }
-close (FH);
+$header = <$FH>;
+while (<$FH>) { $dict_db{$_} = 1; }
+close ($FH);
 
-# Remove old dictionary file and write out new one
+## Remove old dictionary file and write out new one
 unlink ($octdict_fname)
   or die "Unable to delete Octave dictionary: $octdict_fname\n";
-open (FH, ">$octdict_fname")
+open ($FH, ">", $octdict_fname)
   or die "Unable to open file for writing: $octdict_fname\n";
-print FH $header;
-print FH sort { uc($a) cmp uc ($b) } keys(%dict_db);
-close (FH);
+print $FH $header;
+print $FH sort { uc ($a) cmp uc ($b) } keys (%dict_db);
+close ($FH);

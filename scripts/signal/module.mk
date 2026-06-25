@@ -2,12 +2,6 @@ FCN_FILE_DIRS += \
   %reldir% \
   %reldir%/private
 
-%canon_reldir%_PRIVATE_FCN_FILES = \
-  %reldir%/private/rectangle_lw.m  \
-  %reldir%/private/rectangle_sw.m  \
-  %reldir%/private/triangle_lw.m  \
-  %reldir%/private/triangle_sw.m
-
 %canon_reldir%_FCN_FILES = \
   %reldir%/.oct-config \
   %reldir%/__parse_movargs__.m \
@@ -46,18 +40,20 @@ FCN_FILE_DIRS += \
   %reldir%/unwrap.m \
   %reldir%/yulewalker.m
 
+%canon_reldir%_PRIVATE_FCN_FILES = \
+  %reldir%/private/rectangle_lw.m  \
+  %reldir%/private/rectangle_sw.m  \
+  %reldir%/private/triangle_lw.m  \
+  %reldir%/private/triangle_sw.m
+
 %canon_reldir%dir = $(fcnfiledir)/signal
 
 %canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-%canon_reldir%_privatedir = $(fcnfiledir)/signal/private
+%canon_reldir%_privatedir = $(%canon_reldir%dir)/private
 
 %canon_reldir%_private_DATA = $(%canon_reldir%_PRIVATE_FCN_FILES)
 
 FCN_FILES += \
   $(%canon_reldir%_FCN_FILES) \
   $(%canon_reldir%_PRIVATE_FCN_FILES)
-
-PKG_ADD_FILES += %reldir%/PKG_ADD
-
-DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

@@ -44,14 +44,11 @@ include %reldir%/web/module.mk
 
 ## include %reldir%/@ftp/module.mk
 ## The include above fails because Automake cannot process the '@' character.
-## As a work around, the contents of %reldir%/@ftp/module.mk are placed directly
-## in this module.mk file.
+## As a work-around, the contents of %reldir%/@ftp/module.mk are placed
+## directly in this module.mk file.
 scripts_EXTRA_DIST += %reldir%/@ftp/module.mk
-######################## include %reldir%/@ftp/module.mk ########################
+####################### include %reldir%/@ftp/module.mk ########################
 FCN_FILE_DIRS += %reldir%/@ftp
-
-%canon_reldir%_FCN_FILES = \
-  %reldir%/.oct-config
 
 %canon_reldir%_@ftp_FCN_FILES = \
   %reldir%/@ftp/ascii.m \
@@ -74,58 +71,46 @@ FCN_FILE_DIRS += %reldir%/@ftp
 
 %canon_reldir%_@ftp_DATA = $(%canon_reldir%_@ftp_FCN_FILES)
 
-FCN_FILES += \
-  $(%canon_reldir%_FCN_FILES) \
-  $(%canon_reldir%_@ftp_FCN_FILES)
+FCN_FILES += $(%canon_reldir%_@ftp_FCN_FILES)
 
-PKG_ADD_FILES += %reldir%/@ftp/PKG_ADD
+##################### end include %reldir%/@ftp/module.mk ######################
 
-DIRSTAMP_FILES += %reldir%/@ftp/$(octave_dirstamp)
-####################### end include %reldir%/@ftp/module.mk #####################
+%canon_reldir%_FCN_FILES = \
+  %reldir%/.oct-config
 
 image_DATA += $(SCRIPTS_IMAGES)
-
-GEN_FCN_FILES_IN = $(GEN_FCN_FILES:.m=.in.m)
 
 ALL_LOCAL_TARGETS += \
   $(JAR_FILES)
 
 OCTAVE_INTERPRETER_TARGETS += \
-  $(GEN_FCN_FILES) \
   $(PKG_ADD_FILES)
 
-FCN_FILES_WITH_TESTS = $(shell $(SHELL) build-aux/find-files-with-tests.sh "$(srcdir)" $(FCN_FILES) $(GEN_FCN_FILES_IN))
+FCN_FILES_WITH_TESTS = $(shell $(SHELL) $(srcdir)/build-aux/find-files-with-tests.sh "$(srcdir)" $(FCN_FILES))
 
 define PKG_ADD_FILE_TEMPLATE
-$(1)/PKG_ADD: $$($(2)_FCN_FILES) $$($(2)_GEN_FCN_FILES) $(1)/$(octave_dirstamp) %reldir%/mk-pkg-add.sh
+$(1)/PKG_ADD: $$($(2)_FCN_FILES) %reldir%/mk-pkg-add.sh | $(1)/$(octave_dirstamp)
 	$$(AM_V_GEN)rm -f $$@-t $$@ && \
-	$$(SHELL) $$(srcdir)/%reldir%/mk-pkg-add.sh $(srcdir) $$($(2)_FCN_FILES) -- $$($(2)_GEN_FCN_FILES) > $$@-t && \
+	$$(SHELL) $$(srcdir)/%reldir%/mk-pkg-add.sh $(srcdir) $$($(2)_FCN_FILES) > $$@-t && \
 	mv $$@-t $$@
 endef
 
-$(foreach d, $(FCN_FILE_DIRS), $(eval $(call PKG_ADD_FILE_TEMPLATE, $(d),$(subst /,_,$(subst -,_,$(d))))))
-
-define GEN_FCN_FILES_TEMPLATE
-$(1): $(1:.m=.in.m) build-aux/subst-config-vals.sh $(dir $(1))$(octave_dirstamp)
-	$$(AM_V_GEN)$$(call simple-filter-rule,build-aux/subst-config-vals.sh)
-endef
-
-$(foreach f, $(GEN_FCN_FILES), $(eval $(call GEN_FCN_FILES_TEMPLATE, $(f))))
+$(foreach d, $(FCN_FILE_DIRS), $(eval $(call PKG_ADD_FILE_TEMPLATE,$(d),$(subst /,_,$(subst -,_,$(d))))))
 
 DOCSTRING_FILES += %reldir%/DOCSTRINGS
 
-%reldir%/DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES_IN) | %reldir%/$(octave_dirstamp)
-	$(AM_V_GEN)rm -f %reldir%/DOCSTRINGS-t && \
-	$(PERL) $(srcdir)/%reldir%/mk-doc.pl "$(srcdir)" $(FCN_FILES) $(GEN_FCN_FILES_IN) > %reldir%/DOCSTRINGS-t && \
-	$(call move_if_change_rule,%reldir%/DOCSTRINGS-t,$@)
+%reldir%/DOCSTRINGS: $(FCN_FILES) %reldir%/mk-doc.pl | %reldir%/$(octave_dirstamp)
+	$(AM_V_at)rm -f $@-t && \
+	$(PERL) $(srcdir)/%reldir%/mk-doc.pl "$(srcdir)" $(FCN_FILES) > $@-t && \
+	$(simple-gen-if-change-rule)
 
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
 check-m-sources:
 	@echo "checking whether files in source tree are listed in module.mk files..."; \
-	for f in $$(find $(srcdir)/scripts -name '*.m'); do \
+	for f in $$($(FIND) $(srcdir)/scripts -name '*.m'); do \
 	  found=false; \
-	  for m in $(FCN_FILES) $(GEN_FCN_FILES); do \
+	  for m in $(FCN_FILES); do \
 	    if [ "$$f" = $(srcdir)/%reldir%/"$$m" ]; then \
 	      found=true; \
 	      break; \
@@ -138,7 +123,7 @@ check-m-sources:
 	    echo "$$missing: not listed in SOURCES"; \
 	  fi; \
 	done; \
-	if test -z "$$missing"; then \
+	if [ -z "$$missing" ]; then \
 	  echo "yes"; \
 	fi
 .PHONY: check-m-sources
@@ -146,7 +131,7 @@ check-m-sources:
 check-missing-semicolon:
 	@echo "checking for missing semicolons in .m files..."
 	@( echo "warning on Octave:missing-semicolon;"; \
-	  for m in $(addprefix $(srcdir)/, $(FCN_FILES)) $(GEN_FCN_FILES); do \
+	  for m in $(addprefix $(srcdir)/, $(FCN_FILES)); do \
 	    ! $(GREP) -q -E '^classdef' $$m || continue; \
 	    ! $(GREP) -q -E '^  *\<function\>' $$m || continue; \
 	    ! (echo $$m | $(GREP) -q __splinefit__.m) || continue; \
@@ -156,12 +141,12 @@ check-missing-semicolon:
 
 ## Include m-files in list of sources when building tag files.
 ## Automake will not include these because there is no xxx_SOURCES target
-TAGS_DEPENDENCIES = $(addprefix $(srcdir)/, $(FCN_FILES)) $(GEN_FCN_FILES)
-TAGS_FILES = $(addprefix $(srcdir)/, $(FCN_FILES)) $(GEN_FCN_FILES)
+TAGS_DEPENDENCIES = $(addprefix $(srcdir)/, $(FCN_FILES))
+TAGS_FILES = $(addprefix $(srcdir)/, $(FCN_FILES))
 
-install-data-local: install-startup-files install-pkg-add
+install-data-local: install-pkg-add
 
-uninstall-local: uninstall-startup-files uninstall-pkg-add
+uninstall-local: uninstall-pkg-add
 
 install-pkg-add:
 	for f in $(PKG_ADD_FILES); do \
@@ -180,25 +165,16 @@ uninstall-pkg-add:
 	done
 .PHONY: uninstall-pkg-add
 
-if AMCOND_HAVE_JAVA
-scripts-dist-hook:
-else
-scripts-dist-hook:
-	@echo "Packaging distribution requires Java." ; exit 1;
-endif
-
 %canon_reldir%_EXTRA_DIST += \
-  $(SCRIPTS_IMAGES) \
-  $(FCN_FILES) \
-  $(GEN_FCN_FILES_IN) \
   %reldir%/DOCSTRINGS \
   %reldir%/mk-doc.pl \
-  %reldir%/mk-pkg-add.sh
+  %reldir%/mk-pkg-add.sh \
+  $(FCN_FILES) \
+  $(SCRIPTS_IMAGES)
 
 EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
 
 %canon_reldir%_CLEANFILES += \
-  $(GEN_FCN_FILES) \
   $(PKG_ADD_FILES)
 
 %canon_reldir%_DISTCLEANFILES += \

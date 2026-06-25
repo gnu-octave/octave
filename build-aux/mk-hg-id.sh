@@ -25,17 +25,18 @@
 ##
 ########################################################################
 
-## Display the Mercurial ID of the current revision.  If the source tree
-## does not appear to be a Mercurial repo but does contain a file named
-## HG-ID, display the contents of that file.  If that file does not
-## exist, or the Mercurial fails to provide the ID, display
-## "unknown-hg-id".  If invoked with the --disable option, display
-## "hg-id-disabled".
+################################################################################
+## Usage: mk-hg-id.sh SRCDIR
+## Purpose: Display the Mercurial ID of the current revision.
+## If the source tree does not appear to be a Mercurial repo but does contain a
+## file named HG-ID, display the contents of that file.  If that file does not
+## exist, or the Mercurial fails to provide the ID, display "unknown-hg-id".
+################################################################################
 
 set -e
 
-if [ $# -ne 1 ] && [ $# -ne 2 ]; then
-  echo "usage: mk-hg-id.sh SRCDIR [--disable]" 1>&2
+if [ $# -ne 1 ]; then
+  echo "usage: mk-hg-id.sh SRCDIR" 1>&2
   exit 1
 fi
 
@@ -54,15 +55,13 @@ hg_safe ()
   hg --config alias.${cmd}=${cmd} --config defaults.${cmd}= ${cmd} "$@"
 }
 
-if [ $# -eq 2 ] && [ x"$2" = x--disable ]; then
-  echo "hg-id-disabled"
-elif [ -d "$srcdir/.hg" ]; then
+if [ -d "$srcdir/.hg" ]; then
   ( cd "$srcdir" && hg_safe identify --id || echo "unknown-hg-id" )
 elif [ -d "$srcdir/.git" ]; then
   ( cd "$srcdir" && echo "git:"$(git rev-parse --short HEAD) || echo "unknown-hg-id" )
-elif [ ! -f "$srcdir/$hg_id" ]; then
+elif [ -f "$srcdir/$hg_id" ]; then
+  cat "$srcdir/$hg_id"
+else
   echo "WARNING: $srcdir/$hg_id is missing!" 1>&2
   echo "unknown-hg-id"
-else
-  cat "$srcdir/$hg_id"
 fi

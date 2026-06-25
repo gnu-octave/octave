@@ -26,9 +26,8 @@
 ########################################################################
 
 cat <<EOF
-## !!! DO NOT EDIT !!!
-## THIS IS AN AUTOMATICALLY GENERATED FILE
-## modify mk-conv-tst.sh to generate the tests you need.
+## DO NOT EDIT!  Generated automatically by mk-conv-tst.sh.
+## Modify file mk-conv-tst.sh to generate the tests you need.
 
 
 %!shared r,dq,sq,b,bm,dm,cdm,fdm,fcdm,pm,sm,sbm,scm,s,m,cs,cm,fs,fm,fcs,fcm,i8s,i16s,i32s,i64s,i8m,i16m,i32m,i64m,ui8s,ui16s,ui32s,ui64s,ui8m,ui16m,ui32m,ui64m

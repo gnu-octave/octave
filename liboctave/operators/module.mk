@@ -1,51 +1,41 @@
-include %reldir%/vx-op-inc.mk
+## Automatically generated Makefile fragments created by config-ops.sh
+
 include %reldir%/mx-op-inc.mk
 include %reldir%/smx-op-inc.mk
+include %reldir%/vx-op-inc.mk
 
-include %reldir%/vx-op-src.mk
 include %reldir%/mx-op-src.mk
 include %reldir%/smx-op-src.mk
+include %reldir%/vx-op-src.mk
 
-OP_MK_FILES := \
-  $(srcdir)/%reldir%/vx-op-inc.mk \
-  $(srcdir)/%reldir%/mx-op-inc.mk \
-  $(srcdir)/%reldir%/smx-op-inc.mk \
-  $(srcdir)/%reldir%/vx-op-src.mk \
-  $(srcdir)/%reldir%/mx-op-src.mk \
-  $(srcdir)/%reldir%/smx-op-src.mk
-
-$(OP_MK_FILES) : %.mk : $(srcdir)/%reldir%/config-ops.sh $(srcdir)/%reldir%/mk-ops.awk
-	$(AM_V_GEN)$(SHELL) $(srcdir)/%reldir%/config-ops.sh $(top_srcdir) `echo $(*F) | $(SED) 's/-op-.*//'` `echo $(*F) | $(SED) 's/.*-op-//'`
-
-
-BUILT_LIBOCTAVE_OPERATORS_SOURCES = \
-  $(MX_OP_SRC) \
-  $(VX_OP_SRC) \
-  $(SMX_OP_SRC)
-
-BUILT_LIBOCTAVE_OPERATORS_INC = \
+BUILT_OPERATORS_INC := \
   %reldir%/mx-ops.h \
   %reldir%/smx-ops.h \
   %reldir%/vx-ops.h \
   $(MX_OP_INC) \
-  $(VX_OP_INC) \
-  $(SMX_OP_INC)
+  $(SMX_OP_INC) \
+  $(VX_OP_INC)
 
-BUILT_LIBOCTAVE_OPERATORS_FILES = \
-  $(BUILT_LIBOCTAVE_OPERATORS_SOURCES) \
-  $(BUILT_LIBOCTAVE_OPERATORS_INC)
+BUILT_OPERATORS_SOURCES := \
+  $(MX_OP_SRC) \
+  $(SMX_OP_SRC) \
+  $(VX_OP_SRC)
 
-BUILT_FULL_MATRIX_OPERATORS_FILES = \
+BUILT_SOURCES += \
+  $(BUILT_OPERATORS_INC) \
+  $(BUILT_OPERATORS_SOURCES)
+
+BUILT_FULL_MATRIX_OPERATORS_FILES := \
   %reldir%/mx-ops.h \
   $(MX_OP_INC) \
   $(MX_OP_SRC)
 
-BUILT_SPARSE_MATRIX_OPERATORS_FILES = \
+BUILT_SPARSE_MATRIX_OPERATORS_FILES := \
   %reldir%/smx-ops.h \
   $(SMX_OP_INC) \
   $(SMX_OP_SRC)
 
-BUILT_VECTOR_OPERATORS_FILES = \
+BUILT_VECTOR_OPERATORS_FILES := \
   %reldir%/vx-ops.h \
   $(VX_OP_INC) \
   $(VX_OP_SRC)
@@ -61,15 +51,39 @@ LIBOCTAVE_OPERATORS_INC = \
   %reldir%/Sparse-op-defs.h \
   %reldir%/Sparse-perm-op-defs.h
 
-## There are no distributed source files in this directory
-LIBOCTAVE_OPERATORS_SRC =
+## There are no source files for this utility library
+OPERATORS_SRC =
 
-LIBOCTAVE_TEMPLATE_SRC += \
-  %reldir%/mx-inlines.cc
+LIBOCTAVE_TEMPLATE_SRC += %reldir%/mx-inlines.cc
 
+## Start library specification
+noinst_LTLIBRARIES += %reldir%/liboperators.la
+
+%canon_reldir%_liboperators_la_SOURCES := $(OPERATORS_SRC)
+
+nodist_%canon_reldir%_liboperators_la_SOURCES := $(BUILT_OPERATORS_SOURCES)
+
+%canon_reldir%_liboperators_la_CPPFLAGS = $(liboctave_liboctave_la_CPPFLAGS)
+
+liboctave_liboctave_la_LIBADD += %reldir%/liboperators.la
+
+nodist_octinclude_HEADERS += $(BUILT_OPERATORS_INC)
+  
 ## Special rules for sources which must be built before rest of compilation.
 
-OP_SRCDIR = $(srcdir)/%reldir%
+## Build .mk files from scripts which are included as Automake fragments.
+OP_MK_FILES := \
+  $(srcdir)/%reldir%/mx-op-inc.mk \
+  $(srcdir)/%reldir%/smx-op-inc.mk \
+  $(srcdir)/%reldir%/vx-op-inc.mk \
+  $(srcdir)/%reldir%/mx-op-src.mk \
+  $(srcdir)/%reldir%/smx-op-src.mk \
+  $(srcdir)/%reldir%/vx-op-src.mk
+
+$(OP_MK_FILES) : %.mk : $(srcdir)/%reldir%/config-ops.sh $(srcdir)/%reldir%/mk-ops.awk
+	$(AM_V_GEN)$(SHELL) $(srcdir)/%reldir%/config-ops.sh $(top_srcdir) `echo $(*F) | $(SED) 's/-op-.*//'` `echo $(*F) | $(SED) 's/.*-op-//'`
+
+OP_SRCDIR := $(srcdir)/%reldir%
 
 define run-mk-ops
   rm -f $@-t $@ && \
@@ -77,24 +91,16 @@ define run-mk-ops
   mv $@-t $@
 endef
 
-$(BUILT_FULL_MATRIX_OPERATORS_FILES): %reldir%/mx-ops %reldir%/mk-ops.awk
+$(BUILT_FULL_MATRIX_OPERATORS_FILES): %reldir%/mx-ops %reldir%/mk-ops.awk | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(run-mk-ops)
 
-$(BUILT_SPARSE_MATRIX_OPERATORS_FILES): %reldir%/smx-ops %reldir%/mk-ops.awk
+$(BUILT_SPARSE_MATRIX_OPERATORS_FILES): %reldir%/smx-ops %reldir%/mk-ops.awk | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(run-mk-ops)
 
-$(BUILT_VECTOR_OPERATORS_FILES): %reldir%/vx-ops %reldir%/mk-ops.awk
+$(BUILT_VECTOR_OPERATORS_FILES): %reldir%/vx-ops %reldir%/mk-ops.awk | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(run-mk-ops)
 
-noinst_LTLIBRARIES += %reldir%/liboperators.la
-
-%canon_reldir%_liboperators_la_SOURCES = $(LIBOCTAVE_OPERATORS_SRC)
-
-nodist_%canon_reldir%_liboperators_la_SOURCES = $(BUILT_LIBOCTAVE_OPERATORS_SOURCES)
-
-%canon_reldir%_liboperators_la_CPPFLAGS = $(liboctave_liboctave_la_CPPFLAGS)
-
-liboctave_liboctave_la_LIBADD += %reldir%/liboperators.la
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
 liboctave_EXTRA_DIST += \
   %reldir%/config-ops.sh \
@@ -103,5 +109,6 @@ liboctave_EXTRA_DIST += \
   %reldir%/smx-ops \
   %reldir%/vx-ops
 
-liboctave_CLEANFILES += \
-  $(BUILT_LIBOCTAVE_OPERATORS_FILES)
+liboctave_DISTCLEANFILES += \
+  $(BUILT_OPERATORS_INC) \
+  $(BUILT_OPERATORS_SOURCES)

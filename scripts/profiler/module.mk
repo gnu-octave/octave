@@ -24,9 +24,5 @@ FCN_FILE_DIRS += %reldir%
 FCN_FILES += \
   $(%canon_reldir%_FCN_FILES)
 
-PKG_ADD_FILES += %reldir%/PKG_ADD
-
-DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
-
 scripts_EXTRA_DIST += \
   $(%canon_reldir%_html_DATA)

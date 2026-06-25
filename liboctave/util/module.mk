@@ -84,15 +84,11 @@ UTIL_SRC = \
   $(UTIL_C_SRC) \
   $(NOINSTALL_UTIL_INC)
 
-liboctave_EXTRA_DIST += \
-  %reldir%/d1mach-tst.for
-
-LIBOCTAVE_TEMPLATE_SRC += \
-  %reldir%/oct-sort.cc
+LIBOCTAVE_TEMPLATE_SRC += %reldir%/oct-sort.cc
 
 noinst_LTLIBRARIES += %reldir%/libutil.la
 
-%canon_reldir%_libutil_la_SOURCES = $(UTIL_SRC)
+%canon_reldir%_libutil_la_SOURCES := $(UTIL_SRC)
 
 %canon_reldir%_libutil_la_CPPFLAGS = \
   $(liboctave_liboctave_la_CPPFLAGS) \
@@ -100,6 +96,10 @@ noinst_LTLIBRARIES += %reldir%/libutil.la
   $(PCRE_CPPFLAGS) \
   $(SPARSE_XCPPFLAGS)
 
-%canon_reldir%_libutil_la_FFLAGS = $(F77_INTEGER_8_FLAG)
+%canon_reldir%_libutil_la_FFLAGS := $(F77_INTEGER_8_FLAG)
 
 liboctave_liboctave_la_LIBADD += %reldir%/libutil.la
+
+liboctave_EXTRA_DIST += \
+  %reldir%/d1mach-tst.for
+

@@ -2,9 +2,6 @@ FCN_FILE_DIRS += \
   %reldir% \
   %reldir%/private
 
-%canon_reldir%_PRIVATE_FCN_FILES = \
-  %reldir%/private/__fdjac__.m
-
 %canon_reldir%_FCN_FILES = \
   %reldir%/.oct-config \
   %reldir%/__all_opts__.m \
@@ -22,11 +19,14 @@ FCN_FILE_DIRS += \
   %reldir%/qp.m \
   %reldir%/sqp.m
 
+%canon_reldir%_PRIVATE_FCN_FILES = \
+  %reldir%/private/__fdjac__.m
+
 %canon_reldir%dir = $(fcnfiledir)/optimization
 
 %canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-%canon_reldir%_privatedir = $(fcnfiledir)/optimization/private
+%canon_reldir%_privatedir = $(%canon_reldir%dir)/private
 
 %canon_reldir%_private_DATA = $(%canon_reldir%_PRIVATE_FCN_FILES)
 

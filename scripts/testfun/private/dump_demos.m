@@ -52,7 +52,7 @@
 ## @example
 ## dump_demos plot dump.m png
 ## @end example
-## @seealso{fntests, test, demo}
+## @seealso{test_suite, test, demo}
 ## @end deftypefn
 
 function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image"}, mfile="dump_plot_demos.m", fmt="png")

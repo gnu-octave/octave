@@ -1,5 +1,4 @@
 #! /usr/bin/perl
-use utf8;
 
 ########################################################################
 ##
@@ -26,33 +25,35 @@ use utf8;
 ##
 ########################################################################
 
+################################################################################
+## Usage: mk-doc.pl SRCDIR file1.m [file2.m]...
+## Purpose: Extract Texinfo documentation from M-code source files and write to
+## output file in DOCSTRING format (separated by \x1d character)
+###############################################################################
+
 use strict;
 use warnings;
+use utf8;
 use File::Spec;
 use Cwd;
 
-## Expecting arguments in this order:
-##
-##  SRCDIR SRCDIR-FILES ...
-
-unless (@ARGV >= 2) { die "Usage: $0 srcdir m_filename1 ..." ; }
+unless (@ARGV >= 2) { die "Usage: $0 SRCDIR file1.m [file2.m]..." ; }
 
 my $srcdir = shift (@ARGV);
 
-print <<__END_OF_MSG__;
-### DO NOT EDIT!
-###
-### This file is generated automatically from Octave source files.
-### Edit source files directly and run make to update this file.
+print <<__END_OF_HDR__;
+## DO NOT EDIT!  Generated automatically by mk-doc.pl.
+##
+## Edit Octave source files directly and run make to update this file.
 
-__END_OF_MSG__
+__END_OF_HDR__
 
 MFILE: foreach my $m_fname (@ARGV)
 {
   my $full_fname = File::Spec->catfile ($srcdir, $m_fname);
   my @paths = File::Spec->splitdir ($full_fname);
   if (@paths < 3
-      || $paths[-2] eq "private"   # skip private directories
+      || $paths[-2] eq "private"          # skip private directories
       || $paths[-1] !~ s/(\.in|)\.m$//i)  # skip non m-files, and remove extension
     { next MFILE; }
 
@@ -69,8 +70,8 @@ MFILE: foreach my $m_fname (@ARGV)
         {
           if ($paths[-$i] =~ m/^\+/)
             {
-              ## +package functions have package.name their function name
-              $fcn = substr ($paths[-$i], 1) . "." . $fcn;
+              ## +package functions have package.name as their function name
+              $fcn = substr ($paths[-$i], 1) . '.' . $fcn;
             }
         }
     }
@@ -88,6 +89,7 @@ MFILE: foreach my $m_fname (@ARGV)
   foreach $_ (@help_txt)
     {
       my $in_example = (m/\s*\@example\b/ .. m/\s*\@end\s+example\b/);
+      ## Move all Texinfo cmds to column 1.
       s/^\s+\@/\@/ unless $in_example;
       s/^\s+(\@(?:end)\s+(group|example))/$1/;
       print $_;
@@ -95,7 +97,7 @@ MFILE: foreach my $m_fname (@ARGV)
 }
 
 ################################################################################
-# Subroutines
+## Subroutines
 ################################################################################
 sub gethelp
 {
@@ -104,10 +106,10 @@ sub gethelp
   my $have_cdef_file = 0;
   my $found_code = 0;
 
-  open (my $fh, "<", $fname) or return;
+  open (my $FH, "<", $fname) or return;
 
   my @help_txt;
-  while (my $line = <$fh>)
+  while (my $line = <$FH>)
     {
       next if $line =~ m/^[\s#%]*$/;  # skip empty lines
 
@@ -123,7 +125,7 @@ sub gethelp
           last;
         }
 
-      my $reading_block = sub {defined ($line = <$fh>) && $line !~ m/^\s*$/};
+      my $reading_block = sub {defined ($line = <$FH>) && $line !~ m/^\s*$/};
 
       ## Skip this block
       if ($line =~ /(Copyright|Author)/)
@@ -148,7 +150,7 @@ sub gethelp
 
           ## if ($have_cdef_file)
           ##   {
-          ##     while (my $line = <$fh>)
+          ##     while (my $line = <$FH>)
           ##       {
           ##         last if $line =~ /^\s*function/;
           ##       }
@@ -160,6 +162,6 @@ sub gethelp
         }
     }
 
-  close ($fh);
+  close ($FH);
   return @help_txt;
 }

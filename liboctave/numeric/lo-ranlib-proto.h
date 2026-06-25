@@ -26,8 +26,8 @@
 #if ! defined (octave_lo_ranlib_proto_h)
 #define octave_lo_ranlib_proto_h 1
 
-#warning 'header file "lo-ranlib-proto.h" is deprecated, use "ranlib-proto.h" instead'
+#warning 'header file "lo-ranlib-proto.h" is deprecated, use "randlib-proto.h" instead'
 
-#include "ranlib-proto.h"
+#include "randlib-proto.h"
 
 #endif

@@ -56,9 +56,9 @@ Completion Date:
 
 * Call for updates ([https://octave.discourse.group/ Octave Discourse]) that might change GUI strings.
 * String freeze date:
-* Update language translation files (<code>*.ts</code>).  See instructions in <code>libgui/languages/build_ts/README.md</code>.
+* Update language translation files (<code>*.ts</code>).  See instructions in <code>liboctgui/languages/build_ts/README.md</code>.
 * Create bug report on Savannah as a centralized location for uploading files and tracking status of translations.
-* Call for translations of GUI strings on [https://octave.discourse.group/c/maintainers/7 Octave Discourse Maintainers], CC-ing the translators (see [https://hg.savannah.gnu.org/hgweb/octave/file/tip/libgui/languages/translators list of translators]).
+* Call for translations of GUI strings on [https://octave.discourse.group/c/maintainers/7 Octave Discourse Maintainers], CC-ing the translators (see [https://hg.savannah.gnu.org/hgweb/octave/file/tip/liboctgui/languages/translators list of translators]).
 * Collect translation files on Savannah bug report and push to Mercurial.
 
 === ⚖️ GPL License activities ===

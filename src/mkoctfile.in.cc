@@ -288,7 +288,7 @@ make_vars_map (bool link_stand_alone, bool verbose, bool debug)
 
   vars["AR"] = get_variable ("AR", %OCTAVE_CONF_MKOCTFILE_AR%);
 
-  vars["RANLIB"] = get_variable ("RANLIB", %OCTAVE_CONF_MKOCTFILE_RANLIB%);
+  vars["RANDLIB"] = get_variable ("RANDLIB", %OCTAVE_CONF_MKOCTFILE_RANDLIB%);
 
   vars["DEPEND_FLAGS"] = get_variable ("DEPEND_FLAGS",
                                        %OCTAVE_CONF_DEPEND_FLAGS%);
@@ -463,7 +463,7 @@ static std::string help_msg =
   "                            FFTW_LIBS\n"
   "                            FLIBS\n"
   "                            LIBS\n"
-  "                            RANLIB\n"
+  "                            RANDLIB\n"
   "                            READLINE_LIBS\n"
   "\n"
   "                          Octave configuration variables that are provided\n"

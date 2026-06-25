@@ -2,14 +2,6 @@ FCN_FILE_DIRS += \
   %reldir% \
   %reldir%/private
 
-%canon_reldir%_PRIVATE_FCN_FILES = \
-  %reldir%/private/__memoize__.m \
-  %reldir%/private/__publish_html_output__.m \
-  %reldir%/private/__publish_latex_output__.m \
-  %reldir%/private/__w2mpth__.m \
-  %reldir%/private/display_info_file.m \
-  %reldir%/private/tar_is_bsd.m
-
 %canon_reldir%_FCN_FILES = \
   %reldir%/.oct-config \
   %reldir%/bug_report.m \
@@ -107,18 +99,22 @@ FCN_FILE_DIRS += \
   %reldir%/what.m \
   %reldir%/zip.m
 
+%canon_reldir%_PRIVATE_FCN_FILES = \
+  %reldir%/private/__memoize__.m \
+  %reldir%/private/__publish_html_output__.m \
+  %reldir%/private/__publish_latex_output__.m \
+  %reldir%/private/__w2mpth__.m \
+  %reldir%/private/display_info_file.m \
+  %reldir%/private/tar_is_bsd.m
+
 %canon_reldir%dir = $(fcnfiledir)/miscellaneous
 
 %canon_reldir%_DATA = $(%canon_reldir%_FCN_FILES)
 
-%canon_reldir%_privatedir = $(fcnfiledir)/miscellaneous/private
+%canon_reldir%_privatedir = $(%canon_reldir%dir)/private
 
 %canon_reldir%_private_DATA = $(%canon_reldir%_PRIVATE_FCN_FILES)
 
 FCN_FILES += \
   $(%canon_reldir%_FCN_FILES) \
   $(%canon_reldir%_PRIVATE_FCN_FILES)
-
-PKG_ADD_FILES += %reldir%/PKG_ADD
-
-DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)

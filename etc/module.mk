@@ -19,6 +19,7 @@
   %reldir%/NEWS.12.md \
   %reldir%/gdbinit
 
+## Ancient ChangeLogs going back all the way to 1992
 %canon_reldir%_EXTRA_DIST += \
   %reldir%/OLD-ChangeLogs/ChangeLog \
   %reldir%/OLD-ChangeLogs/ChangeLog.1 \
@@ -40,29 +41,26 @@ fallback_FONT_FILES = \
   %reldir%/fonts/FreeSansOblique.otf
 
 if AMCOND_INSTALL_INTERNAL_FONT_FILES
-octfonts_DATA += \
-  $(fallback_FONT_FILES)
+octfonts_DATA += $(fallback_FONT_FILES)
 endif
 
-%canon_reldir%_EXTRA_DIST += \
-  $(fallback_FONT_FILES)
+%canon_reldir%_EXTRA_DIST += $(fallback_FONT_FILES)
 
 metainfodir = $(datadir)/metainfo
 
-METAINFO_XML_FILE := \
-  %reldir%/icons/org.octave.Octave.metainfo.xml
+METAINFO_XML_FILE = %reldir%/icons/org.octave.Octave.metainfo.xml
 
 metainfo_DATA = $(METAINFO_XML_FILE)
 
 desktopdir = $(datadir)/applications
 
-desktop_DATA = \
-  %reldir%/icons/org.octave.Octave.desktop
+desktop_DATA = %reldir%/icons/org.octave.Octave.desktop
 
 icon_IMAGE_FILES = \
   %reldir%/icons/octave-logo.svg \
   %reldir%/icons/octave-sombrero.png
 
+## Keep list in descending order
 icon_PNG_SIZES = \
   1024 \
   512 \
@@ -75,31 +73,31 @@ icon_PNG_SIZES = \
   22 \
   16
 
-BUILT_PNG_ICONS = $(patsubst %,%reldir%/icons/octave-logo-%.png,$(icon_PNG_SIZES))
+BUILT_PNG_ICONS := $(patsubst %,%reldir%/icons/octave-logo-%.png,$(icon_PNG_SIZES))
 
-WINDOWS_PNG_ICONS = $(filter %-16.png %-32.png %-48.png %-256.png,$(BUILT_PNG_ICONS))
+WINDOWS_PNG_ICONS := $(filter %-16.png %-32.png %-48.png %-256.png,$(BUILT_PNG_ICONS))
 
 BUILT_ICONS = \
-  $(BUILT_PNG_ICONS) \
-  %reldir%/icons/octave-logo.ico
+  %reldir%/icons/octave-logo.ico \
+  $(BUILT_PNG_ICONS)
 
 %canon_reldir%_EXTRA_DIST += \
-  $(BUILT_ICONS) \
-  $(icon_IMAGE_FILES) \
   %reldir%/icons/octave-branding-samples.svg \
+  %reldir%/icons/org.octave.Octave.desktop.in \
   %reldir%/icons/org.octave.Octave.metainfo.xml \
-  %reldir%/icons/org.octave.Octave.desktop.in
+  $(BUILT_ICONS) \
+  $(icon_IMAGE_FILES)
 
 image_DATA += \
-  $(icon_IMAGE_FILES) \
-  %reldir%/icons/octave-logo.ico
+  %reldir%/icons/octave-logo.ico \
+  $(icon_IMAGE_FILES)
 
-DIRSTAMP_FILES += \
-  %reldir%/icons/$(octave_dirstamp)
+DIRSTAMP_FILES += %reldir%/icons/$(octave_dirstamp)
 
 all-local: all-icons
 
 all-icons: %reldir%/icons/org.octave.Octave.desktop $(BUILT_ICONS)
+.PHONY: all-icons
 
 %reldir%/icons/org.octave.Octave.desktop: %reldir%/icons/org.octave.Octave.desktop.in | %reldir%/icons/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
@@ -117,21 +115,23 @@ $(BUILT_PNG_ICONS): %reldir%/icons/octave-logo.svg | %reldir%/icons/$(octave_dir
 	$(ICOTOOL) --create --raw  $(WINDOWS_PNG_ICONS) > $@-t && \
 	mv $@-t $@
 
-## Check that the release date and version number are in
-## $(METAINFO_XML_FILE), but only for actual releases, which means
-## we skip the test if the minor version number is 0 or the patch
-## version number is not 0.
+## Check that the release date and version number are in $(METAINFO_XML_FILE),
+## but only for actual releases, which means the minor version number is not 0
+## and the patch version number is 0.
 
 metainfo-dist-hook:
-	@test x"$(DIST_IGNORE_METAINFO_VERSION)" != x || \
-	 test $(OCTAVE_MINOR_VERSION) -eq 0 || \
-	 test $(OCTAVE_PATCH_VERSION) -ne 0 || \
-	 grep "<release *date=\"$(OCTAVE_RELEASE_DATE)\" *version=\"$(OCTAVE_VERSION)\"/>" $(srcdir)/$(METAINFO_XML_FILE) > /dev/null || \
-	{ echo; \
-	  echo "Packaging distribution requires the version number in the $(METAINFO_XML_FILE)."; \
-	  echo "Please update first or pass DIST_IGNORE_METAINFO_VERSION=1."; \
-	  echo "Cannot package distribution!"; \
-	  echo; exit 1; }
+	@if [ -z "$(DIST_IGNORE_METAINFO_VERSION)" ]; then \
+    if [ $(OCTAVE_MINOR_VERSION) -ne 0 ] && [ $(OCTAVE_PATCH_VERSION) -eq 0 ]; then \
+	    if ! $(GREP) "<release *date=\"$(OCTAVE_RELEASE_DATE)\" *version=\"$(OCTAVE_VERSION)\"/>" $(srcdir)/$(METAINFO_XML_FILE) > /dev/null ; then \
+	      echo 1>&2 ""; \
+	      echo 1>&2 "Packaging distribution requires the version number in file $(METAINFO_XML_FILE)."; \
+	      echo 1>&2 "Please update first or pass DIST_IGNORE_METAINFO_VERSION=1"; \
+	      echo 1>&2 "Cannot package distribution!"; \
+	      echo 1>&2 ""; \
+	      exit 1; \
+	    fi; \
+	  fi; \
+	fi
 .PHONY: metainfo-dist-hook
 
 install-data-local: install-icons
@@ -147,6 +147,7 @@ install-icons:
 	done
 	$(MKDIR_P) $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps
 	$(INSTALL_DATA) $(srcdir)/%reldir%/icons/octave-logo.svg $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps/octave.svg
+.PHONY: install-icons
 
 uninstall-icons:
 	for f in $(BUILT_PNG_ICONS); do \
@@ -154,10 +155,11 @@ uninstall-icons:
 	  rm -f $(DESTDIR)$(datadir)/icons/hicolor/$${size}x$${size}/apps/octave.png; \
 	done
 	rm -f $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps/octave.svg
+.PHONY: uninstall-icons
 
 EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
 
-%canon_reldir%_CLEANFILES += \
+%canon_reldir%_DISTCLEANFILES += \
   %reldir%/icons/org.octave.Octave.desktop
 
 %canon_reldir%_MAINTAINERCLEANFILES += \

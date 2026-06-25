@@ -3408,7 +3408,13 @@ AC_CONFIG_FILES([$srcdir/doc/interpreter/octave-version.texi-tmp:$srcdir/doc/int
 ver_fname=$srcdir/doc/interpreter/octave-version.texi
 AC_CONFIG_COMMANDS([$ver_fname],
   [echo -n '@set UPDATED-MONTH ' >> ${ver_fname}-tmp
-   LC_TIME="C" date -d "$OCTAVE_RELEASE_DATE" +'%B %Y' >> ${ver_fname}-tmp
+   if date -d "2026-01-01" +"%s" >/dev/null 2>&1; then
+     # date from GNU coreutils
+     LANG=C LC_ALL=C LC_TIME=C TZ=UTC0 date -d "$OCTAVE_RELEASE_DATE" +'%B %Y' >> ${ver_fname}-tmp
+   else
+     # assume BSD date
+     LANG=C LC_ALL=C LC_TIME=C TZ=UTC0 date -j -f "%Y-%m-%d" "$OCTAVE_RELEASE_DATE" +'%B %Y' >> ${ver_fname}-tmp
+   fi
    $SHELL $srcdir/build-aux/move-if-change ${ver_fname}-tmp $ver_fname],
   [ver_fname=$ver_fname
    OCTAVE_RELEASE_DATE=$OCTAVE_RELEASE_DATE])

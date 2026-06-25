@@ -127,9 +127,14 @@ GZIP_ENV = '--best --no-name'
 XZ_OPT = -7 -T0
 export XZ_OPT
 
-# Make reproducible builds by seting modification time of all files
-# to that of the last HG changeset.
-SOURCE_MTIME := $(shell TZ=UTC0 date -d "$(OCTAVE_RELEASE_DATE)" +"%s")
+# Make reproducible builds by setting modification time of all files
+# to 00:00:00 UTC0 on $(OCTAVE_RELEASE_DATE).
+SOURCE_MTIME := $(shell \
+  if date -d "2026-01-01" +"%s" >/dev/null 2>&1; then \
+    TZ=UTC0 date -d "$(OCTAVE_RELEASE_DATE)" +"%s"; \
+  else \
+    TZ=UTC0 date -j -f "%Y-%m-%d" "$(OCTAVE_RELEASE_DATE)" +"%s"; \
+  fi)
 TAR_OPTIONS := $(REPRODUCIBLE_TAR_FLAGS) --mtime=@$(SOURCE_MTIME)
 
 # The arguments passed to configure.

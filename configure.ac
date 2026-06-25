@@ -42,9 +42,9 @@ AC_CONFIG_AUX_DIR([build-aux])
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION argument.
 OCTAVE_VERSION="$PACKAGE_VERSION"
 
-OCTAVE_MAJOR_VERSION=[`echo $OCTAVE_VERSION | sed 's/^\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\)/\1/'`]
-OCTAVE_MINOR_VERSION=[`echo $OCTAVE_VERSION | sed 's/^\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\)/\2/'`]
-OCTAVE_PATCH_VERSION=[`echo $OCTAVE_VERSION | sed 's/^\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\)/\3/'`]
+OCTAVE_MAJOR_VERSION=[`echo $OCTAVE_VERSION | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\.\([0-9][0-9]*\)/\1/'`]
+OCTAVE_MINOR_VERSION=[`echo $OCTAVE_VERSION | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\.\([0-9][0-9]*\)/\2/'`]
+OCTAVE_PATCH_VERSION=[`echo $OCTAVE_VERSION | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\.\([0-9][0-9]*\)/\3/'`]
 
 OCTAVE_COPYRIGHT="Copyright (C) 1993-2026 The Octave Project Developers."
 

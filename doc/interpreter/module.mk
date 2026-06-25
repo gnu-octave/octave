@@ -157,6 +157,7 @@ $(GRAPHICS_PROP_TEXI_SRC): | $(OCTAVE_INTERPRETER_TARGETS) %reldir%/$(octave_dir
 
 BUILT_OCTAVE_TEXI_SRC = \
   %reldir%/contributors.texi \
+  %reldir%/octave-version.texi \
   $(GRAPHICS_PROP_TEXI_SRC) \
   $(MANUAL_TEXI_SRC)
 
@@ -195,17 +196,10 @@ $(OCTAVE_HTML_STAMP): $(DOC_IMAGES_PNG) $(octave_TEXINFOS)
 ## PDF and PS builds are forced to run serially through the following rule.
 %reldir%/octave.pdf: %reldir%/octave.ps
 
-## File "version-octave.texi" is created automatically by Automake
-# Create a version file where EDITION variable only holds MAJOR number
-$(srcdir)/%reldir%/octave-doc-version.texi: $(srcdir)/%reldir%/version-octave.texi
-	$(AM_V_GEN)rm -f $@-t $@ ; \
-	$(SED) 's#\(@set EDITION [0-9]\+\)\..*$$#\1#' $(srcdir)/%reldir%/version-octave.texi > $@-t ; \
-	mv $@-t $@
-
 ## FIXME: 2026-06-06.  Is this just a big move-if-change-rule?
 ## Could we really employ automatic rules but use AM_MAKEINFOFLAGS+= to
 ## add "-I doc/interpreter -I $(abs_top_srcdir)/doc/interpreter"?
-%reldir%/octave.info: %reldir%/octave.texi $(srcdir)/%reldir%/octave-doc-version.texi
+%reldir%/octave.info: %reldir%/octave.texi
 	$(AM_V_MAKEINFO)restore=: && backupdir="$(am__leading_dot)am$$$$" && \
 	am__cwd=`pwd` && $(am__cd) $(srcdir) && \
 	rm -rf $$backupdir && mkdir $$backupdir && \
@@ -227,13 +221,13 @@ $(srcdir)/%reldir%/octave-doc-version.texi: $(srcdir)/%reldir%/version-octave.te
 	fi; \
 	rm -rf $$backupdir; exit $$rc
 
-%reldir%/octave.dvi: %reldir%/octave.texi $(srcdir)/%reldir%/octave-doc-version.texi | %reldir%/$(octave_dirstamp)
+%reldir%/octave.dvi: %reldir%/octave.texi | %reldir%/$(octave_dirstamp)
 	$(AM_V_TEXI2DVI)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(srcdir)/doc/interpreter' \
 	$(TEXI2DVI) $(AM_V_texinfo) --build-dir=$(@:.dvi=.t2d) -o $@ $(AM_V_texidevnull) \
 	`test -f '%reldir%/octave.texi' || echo '$(abs_top_srcdir)/'`%reldir%/octave.texi
 
-%reldir%/octave.pdf: %reldir%/octave.texi $(srcdir)/%reldir%/octave-doc-version.texi | %reldir%/$(octave_dirstamp)
+%reldir%/octave.pdf: %reldir%/octave.texi | %reldir%/$(octave_dirstamp)
 	$(AM_V_TEXI2PDF)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc/interpreter -I $(abs_top_srcdir)/doc/interpreter' \
 	$(TEXI2PDF) $(AM_V_texinfo) --build-dir=$(@:.pdf=.t2p) -o $@ $(AM_V_texidevnull) \
@@ -241,7 +235,7 @@ $(srcdir)/%reldir%/octave-doc-version.texi: $(srcdir)/%reldir%/version-octave.te
 
 %reldir%/octave.html: $(OCTAVE_HTML_STAMP)
 
-$(OCTAVE_HTML_STAMP): %reldir%/octave.texi $(srcdir)/%reldir%/octave-doc-version.texi | %reldir%/$(octave_dirstamp)
+$(OCTAVE_HTML_STAMP): %reldir%/octave.texi | %reldir%/$(octave_dirstamp)
 	$(AM_V_MAKEINFO)rm -rf $(OCTAVE_HTML_DIR)
 	$(AM_V_at)if $(MAKEINFOHTML) $(AM_MAKEINFOHTMLFLAGS) $(MAKEINFOFLAGS) \
 	 -I doc/interpreter -I $(abs_top_srcdir)/doc/interpreter \
@@ -322,7 +316,8 @@ doc_EXTRA_DIST += \
   %reldir%/mk-contributors.awk \
   %reldir%/mk-doc-cache.pl \
   %reldir%/mk-qthelp.pl \
-  %reldir%/octave-doc-version.texi \
+  %reldir%/octave-version.in.texi \
+  %reldir%/octave-version.texi \
   %reldir%/txi2texi.pl \
   $(DOC_IMAGES) \
   $(DOC_IMAGES_SRC) \
@@ -330,7 +325,6 @@ doc_EXTRA_DIST += \
   $(MANUAL_TXI_SRC)
 
 doc_MAINTAINERCLEANFILES += \
-  %reldir%/octave-doc-version.texi \
   $(BUILT_DOC_IMAGES) \
   $(BUILT_OCTAVE_TEXI_SRC) \
   $(OCTAVE_QTHELP_FILES)

@@ -3392,11 +3392,26 @@ OCTAVE_MOVE_IF_CHANGE_CONFIG_FILES([
   build-aux/subst-config-vals.sh
   build-aux/subst-cross-config-vals.sh
   build-aux/subst-script-vals.sh
+  $srcdir/doc/liboctave/liboctave-version.texi
   liboctave/external/mk-f77-def.sh
   liboctave/version.h
   liboctinterp/interp/mxtypes.h
   oct-conf-post-private.h
   oct-conf-post-public.h])
+
+dnl Create Texinfo file with version information which requires more than
+dnl just substitution of configuration values.
+
+AC_CONFIG_FILES([$srcdir/doc/interpreter/octave-version.texi-tmp:$srcdir/doc/interpreter/octave-version.in.texi])
+
+## Temporary variable used to shorten the commands below.
+ver_fname=$srcdir/doc/interpreter/octave-version.texi
+AC_CONFIG_COMMANDS([$ver_fname],
+  [echo -n '@set UPDATED-MONTH ' >> ${ver_fname}-tmp
+   LC_TIME="C" date -d "$OCTAVE_RELEASE_DATE" +'%B %Y' >> ${ver_fname}-tmp
+   $SHELL $srcdir/build-aux/move-if-change ${ver_fname}-tmp $ver_fname],
+  [ver_fname=$ver_fname
+   OCTAVE_RELEASE_DATE=$OCTAVE_RELEASE_DATE])
 
 AC_OUTPUT
 

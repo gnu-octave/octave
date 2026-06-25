@@ -129,8 +129,7 @@ export XZ_OPT
 
 # Make reproducible builds by seting modification time of all files
 # to that of the last HG changeset.
-SOURCE_MTIME := \
-  $(shell $(SHELL) $(top_srcdir)/build-aux/get-source-mtime.sh "$(srcdir)")
+SOURCE_MTIME := $(shell TZ=UTC0 date -d "$(OCTAVE_RELEASE_DATE)" +"%s")
 TAR_OPTIONS := $(REPRODUCIBLE_TAR_FLAGS) --mtime=@$(SOURCE_MTIME)
 
 # The arguments passed to configure.

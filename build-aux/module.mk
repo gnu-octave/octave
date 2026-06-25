@@ -4,7 +4,6 @@ EXTRA_DIST += \
   %reldir%/changelog.tmpl \
   %reldir%/find-defun-files.sh \
   %reldir%/find-files-with-tests.sh \
-  %reldir%/get-source-mtime.sh \
   %reldir%/inplace-edit.pl \
   %reldir%/mk-hg-id.sh \
   %reldir%/mk-octave-config-h.sh \

@@ -14,6 +14,7 @@ COREFCN_UTIL_SRC = \
   %reldir%/__magick_read__.cc \
   %reldir%/bsxfun.cc \
   %reldir%/cellfun.cc \
+  %reldir%/compile.cc \
   %reldir%/defaults.cc \
   %reldir%/environment.cc \
   %reldir%/find.cc \

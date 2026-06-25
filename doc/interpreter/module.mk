@@ -262,9 +262,10 @@ OCTAVE_QTHELP_FILES = \
   %reldir%/octave_interpreter.qch
 
 ## The Qt help collection generator command produces two output files from one
-## invocation.  Use special Makefile syntax '&:' to indicate that all targets
-## are built when rule is run.
-$(OCTAVE_QTHELP_FILES) &: $(OCTAVE_HTML_STAMP) $(HTMLDIR_CSS) %reldir%/mk-qthelp.pl
+## invocation.  Build the collection file as the primary target and make the
+## compressed help file depend on it so this rule works with older GNU Make
+## versions that do not support grouped targets.
+%reldir%/octave_interpreter.qhc: $(OCTAVE_HTML_STAMP) $(HTMLDIR_CSS) %reldir%/mk-qthelp.pl
 	$(AM_V_GEN)rm -f $(OCTAVE_QTHELP_FILES) && \
 	rm -rf %reldir%/octave.qdoc.html && \
 	cp -r %reldir%/octave.html %reldir%/octave.qdoc.html && \
@@ -273,6 +274,9 @@ $(OCTAVE_QTHELP_FILES) &: $(OCTAVE_HTML_STAMP) $(HTMLDIR_CSS) %reldir%/mk-qthelp
 	$(QCOLLECTIONGENERATOR) $(QCOLLECTIONGENERATORFLAGS) %reldir%/octave_interpreter.qhcp -o %reldir%/octave_interpreter.qhc >/dev/null && \
 	rm -f %reldir%/octave_interpreter.qhcp %reldir%/octave_interpreter.qhp && \
 	rm -rf %reldir%/octave.qdoc.html
+
+%reldir%/octave_interpreter.qch: %reldir%/octave_interpreter.qhc
+	$(AM_V_at)test -f $@
 
 endif
 

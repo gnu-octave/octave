@@ -1380,6 +1380,7 @@ case $host_os in
 esac
 
 ## Windows-specific use of functions
+WIN32_API_LIBS=
 case $host_os in
   msdosmsvc | mingw*)
     AC_CHECK_FUNCS([setvbuf], [],
@@ -1387,7 +1388,7 @@ case $host_os in
 
     ## We need this for GetDeviceCaps.  Should we actually check for
     ## the function and library?
-    LIBS="-lgdi32 $LIBS"
+    WIN32_API_LIBS="-lgdi32 $WIN32_API_LIBS"
   ;;
 esac
 
@@ -1398,6 +1399,10 @@ case $host_os in
       [CPPFLAGS="-DPSAPI_VERSION=2 $CPPFLAGS"],
       [AC_MSG_ERROR([Missing PSAPI required to build for Windows target.])],
       [#include <windows.h>])
+
+    ## We need this, e.g., for RegOpenKeyExW.  Should we actually check for
+    ## the function and library?
+    WIN32_API_LIBS="-ladvapi32 $WIN32_API_LIBS"
   ;;
 esac
 
@@ -1405,7 +1410,7 @@ esac
 case $host_os in
   msdosmsvc | mingw*)
     AC_CHECK_HEADERS([shlwapi.h],
-      [LIBS="-lshlwapi $LIBS"],
+      [WIN32_API_LIBS="-lshlwapi $WIN32_API_LIBS"],
       [AC_MSG_ERROR([Missing SHLWAPI required to build for Windows target.])],
       [#include <windows.h>])
   ;;
@@ -2659,14 +2664,12 @@ do
   case $host_os in
     msdosmsvc)
       build_java=yes
-      JAVA_LIBS=-ladvapi32
       AC_DEFINE(HAVE_JAVA, 1,
         [Define to 1 if Java is available and is at least version 1.5])
       break
     ;;
     mingw* | cygwin*)
       build_java=yes
-      JAVA_LIBS=-ladvapi32
       if test $have_msvc = no; then
         if test -n "$JAVA_CPPFLAGS"; then
           JAVA_CPPFLAGS="-I\"${JAVA_CPPFLAGS}\" -I\"${JAVA_CPPFLAGS}/win32\""
@@ -3180,7 +3183,7 @@ LIBOCTAVE_LINK_OPTS="$CURL_LDFLAGS $PCRE_LDFLAGS $FFTW_XLDFLAGS $ARPACK_LDFLAGS 
 AC_SUBST(LIBOCTAVE_LINK_DEPS)
 AC_SUBST(LIBOCTAVE_LINK_OPTS)
 
-LIBOCTINTERP_LINK_DEPS="$LTLIBREADLINE $HDF5_LIBS $MAGICK_LIBS $Z_LIBS $FFTW_XLIBS $SPARSE_XLIBS $FONTCONFIG_LIBS $FT2_LIBS $FREETYPE_LIBS $WAYLAND_CLIENT_LIBS $X11_LIBS $CARBON_LIBS $GL2PS_LIBS $OPENGL_LIBS $JAVA_LIBS $LAPACK_LIBS"
+LIBOCTINTERP_LINK_DEPS="$WIN32_API_LIBS $LTLIBREADLINE $HDF5_LIBS $MAGICK_LIBS $Z_LIBS $FFTW_XLIBS $SPARSE_XLIBS $FONTCONFIG_LIBS $FT2_LIBS $FREETYPE_LIBS $WAYLAND_CLIENT_LIBS $X11_LIBS $CARBON_LIBS $GL2PS_LIBS $OPENGL_LIBS $JAVA_LIBS $LAPACK_LIBS"
 
 LIBOCTINTERP_LINK_OPTS="$HDF5_LDFLAGS $MAGICK_LDFLAGS $Z_LDFLAGS $FFTW_XLDFLAGS $SPARSE_XLDFLAGS $FT2_LDFLAGS $WAYLAND_CLIENT_LDFLAGS"
 
@@ -3549,6 +3552,7 @@ Octave is now configured for $canonical_host_type
   Wayland client CPPFLAGS:       $WAYLAND_CLIENT_CPPFLAGS
   Wayland client LDFLAGS:        $WAYLAND_CLIENT_LDFLAGS
   Wayland client libraries:      $WAYLAND_CLIENT_LIBS
+  WIN32 API libraries:           $WIN32_API_LIBS
   X11 include flags:             $X11_INCFLAGS
   X11 libraries:                 $X11_LIBS
   Z CPPFLAGS:                    $Z_CPPFLAGS

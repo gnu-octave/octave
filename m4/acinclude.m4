@@ -3569,6 +3569,42 @@ using Octave
   AC_SUBST(GHOSTSCRIPT)
 ])
 dnl
+dnl Find GNU Make program.
+dnl
+# Check for GNU Make (required) and determine its capabilities
+# (support for grouped targets at version 4.3 or higher).
+# Apple refuses to accept GPLv3 and ships a 20-year old version of make.
+AC_DEFUN([OCTAVE_PROG_GNUMAKE], [
+  AC_CHECK_PROGS(GNUMAKE, [gmake make])
+  if test -z "$GNUMAKE"; then
+    AC_MSG_ERROR([GNU Make is required to build Octave])
+  fi
+
+  AC_CACHE_CHECK([for GNU make version],
+    [oct_cv_prog_gnumake_version],
+    [oct_cv_prog_gnumake_version=[`"$GNUMAKE" -v | $SED -n -e 's/^GNU Make \([.0-9]*\).*$/\1/p'`]
+  ])
+  if test -z "$oct_cv_prog_gnumake_version"; then
+    AC_MSG_ERROR([GNU Make is required to build Octave])
+  fi
+
+  AC_CACHE_CHECK([for GNU make support of grouped targets],
+    [oct_cv_prog_gnumake_grouped_targets],
+    [gnumake_major=[`echo $oct_cv_prog_gnumake_version | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\1/'`]
+    gnumake_minor=[`echo $oct_cv_prog_gnumake_version | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\2/'`]
+
+    if test $gnumake_major -ge 5 \
+       || (test $gnumake_major -eq 4 && test $gnumake_minor -ge 3); then
+      oct_cv_prog_gnumake_grouped_targets=yes
+    else
+      oct_cv_prog_gnumake_grouped_targets=no
+    fi
+  ])
+
+  AM_CONDITIONAL([AMCOND_MODERN_GNUMAKE],
+                 [test $oct_cv_prog_gnumake_grouped_targets = yes])
+])
+dnl
 dnl Check for gnuplot.
 dnl
 AC_DEFUN([OCTAVE_PROG_GNUPLOT], [

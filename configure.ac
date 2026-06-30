@@ -42,9 +42,9 @@ AC_CONFIG_AUX_DIR([build-aux])
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION argument.
 OCTAVE_VERSION="$PACKAGE_VERSION"
 
-OCTAVE_MAJOR_VERSION=[`echo $OCTAVE_VERSION | sed 's/^\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\)/\1/'`]
-OCTAVE_MINOR_VERSION=[`echo $OCTAVE_VERSION | sed 's/^\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\)/\2/'`]
-OCTAVE_PATCH_VERSION=[`echo $OCTAVE_VERSION | sed 's/^\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\)/\3/'`]
+OCTAVE_MAJOR_VERSION=[`echo $OCTAVE_VERSION | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\.\([0-9][0-9]*\)/\1/'`]
+OCTAVE_MINOR_VERSION=[`echo $OCTAVE_VERSION | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\.\([0-9][0-9]*\)/\2/'`]
+OCTAVE_PATCH_VERSION=[`echo $OCTAVE_VERSION | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\.\([0-9][0-9]*\)/\3/'`]
 
 OCTAVE_COPYRIGHT="Copyright (C) 1993-2026 The Octave Project Developers."
 
@@ -1380,6 +1380,7 @@ case $host_os in
 esac
 
 ## Windows-specific use of functions
+WIN32_API_LIBS=
 case $host_os in
   msdosmsvc | mingw*)
     AC_CHECK_FUNCS([setvbuf], [],
@@ -1387,7 +1388,7 @@ case $host_os in
 
     ## We need this for GetDeviceCaps.  Should we actually check for
     ## the function and library?
-    LIBS="-lgdi32 $LIBS"
+    WIN32_API_LIBS="-lgdi32 $WIN32_API_LIBS"
   ;;
 esac
 
@@ -1398,6 +1399,10 @@ case $host_os in
       [CPPFLAGS="-DPSAPI_VERSION=2 $CPPFLAGS"],
       [AC_MSG_ERROR([Missing PSAPI required to build for Windows target.])],
       [#include <windows.h>])
+
+    ## We need this, e.g., for RegOpenKeyExW.  Should we actually check for
+    ## the function and library?
+    WIN32_API_LIBS="-ladvapi32 $WIN32_API_LIBS"
   ;;
 esac
 
@@ -1405,7 +1410,7 @@ esac
 case $host_os in
   msdosmsvc | mingw*)
     AC_CHECK_HEADERS([shlwapi.h],
-      [LIBS="-lshlwapi $LIBS"],
+      [WIN32_API_LIBS="-lshlwapi $WIN32_API_LIBS"],
       [AC_MSG_ERROR([Missing SHLWAPI required to build for Windows target.])],
       [#include <windows.h>])
   ;;
@@ -2674,14 +2679,12 @@ do
   case $host_os in
     msdosmsvc)
       build_java=yes
-      JAVA_LIBS=-ladvapi32
       AC_DEFINE(HAVE_JAVA, 1,
         [Define to 1 if Java is available and is at least version 1.5])
       break
     ;;
     mingw* | cygwin*)
       build_java=yes
-      JAVA_LIBS=-ladvapi32
       if test $have_msvc = no; then
         if test -n "$JAVA_CPPFLAGS"; then
           JAVA_CPPFLAGS="-I\"${JAVA_CPPFLAGS}\" -I\"${JAVA_CPPFLAGS}/win32\""
@@ -3184,7 +3187,7 @@ AC_SUBST(GNULIB_LINK_DEPS)
 
 ### Set variables for link dependencies and options.
 
-BASE_LIBOCTAVE_LINK_DEPS="$CURL_LIBS $LIBGLOB $PCRE_LIBS $FFTW_XLIBS $ARPACK_LIBS $QRUPDATE_LIBS $SPARSE_XLIBS $LAPACK_LIBS $BLAS_LIBS $DL_LIBS $FLIBS $PTHREAD_LIBS $LIBS"
+BASE_LIBOCTAVE_LINK_DEPS="$WIN32_API_LIBS $CURL_LIBS $LIBGLOB $PCRE_LIBS $FFTW_XLIBS $ARPACK_LIBS $QRUPDATE_LIBS $SPARSE_XLIBS $LAPACK_LIBS $BLAS_LIBS $DL_LIBS $FLIBS $PTHREAD_LIBS $LIBS"
 
 LIBOCTAVE_LINK_DEPS="$BASE_LIBOCTAVE_LINK_DEPS $GNULIB_LINK_DEPS"
 
@@ -3195,7 +3198,7 @@ LIBOCTAVE_LINK_OPTS="$CURL_LDFLAGS $PCRE_LDFLAGS $FFTW_XLDFLAGS $ARPACK_LDFLAGS 
 AC_SUBST(LIBOCTAVE_LINK_DEPS)
 AC_SUBST(LIBOCTAVE_LINK_OPTS)
 
-LIBOCTINTERP_LINK_DEPS="$LTLIBREADLINE $HDF5_LIBS $MAGICK_LIBS $Z_LIBS $FFTW_XLIBS $SPARSE_XLIBS $FONTCONFIG_LIBS $FT2_LIBS $FREETYPE_LIBS $WAYLAND_CLIENT_LIBS $X11_LIBS $CARBON_LIBS $GL2PS_LIBS $OPENGL_LIBS $JAVA_LIBS $LAPACK_LIBS"
+LIBOCTINTERP_LINK_DEPS="$WIN32_API_LIBS $LTLIBREADLINE $HDF5_LIBS $MAGICK_LIBS $Z_LIBS $FFTW_XLIBS $SPARSE_XLIBS $FONTCONFIG_LIBS $FT2_LIBS $FREETYPE_LIBS $WAYLAND_CLIENT_LIBS $X11_LIBS $CARBON_LIBS $GL2PS_LIBS $OPENGL_LIBS $JAVA_LIBS $LAPACK_LIBS"
 
 LIBOCTINTERP_LINK_OPTS="$HDF5_LDFLAGS $MAGICK_LDFLAGS $Z_LDFLAGS $FFTW_XLDFLAGS $SPARSE_XLDFLAGS $FT2_LDFLAGS $WAYLAND_CLIENT_LDFLAGS"
 
@@ -3422,7 +3425,7 @@ AC_CONFIG_FILES([$srcdir/doc/interpreter/octave-version.texi-tmp:$srcdir/doc/int
 ## Temporary variable used to shorten the commands below.
 ver_fname=$srcdir/doc/interpreter/octave-version.texi
 AC_CONFIG_COMMANDS([$ver_fname],
-  [echo -n '@set UPDATED-MONTH ' >> ${ver_fname}-tmp
+  [printf '%s' '@set UPDATED-MONTH ' >> ${ver_fname}-tmp
    if date -d "2026-01-01" +"%s" >/dev/null 2>&1; then
      # date from GNU coreutils
      LANG=C LC_ALL=C LC_TIME=C TZ=UTC0 date -d "$OCTAVE_RELEASE_DATE" +'%B %Y' >> ${ver_fname}-tmp
@@ -3564,6 +3567,7 @@ Octave is now configured for $canonical_host_type
   Wayland client CPPFLAGS:       $WAYLAND_CLIENT_CPPFLAGS
   Wayland client LDFLAGS:        $WAYLAND_CLIENT_LDFLAGS
   Wayland client libraries:      $WAYLAND_CLIENT_LIBS
+  WIN32 API libraries:           $WIN32_API_LIBS
   X11 include flags:             $X11_INCFLAGS
   X11 libraries:                 $X11_LIBS
   Z CPPFLAGS:                    $Z_CPPFLAGS

@@ -73,17 +73,15 @@ function load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst,
   endif
 
   ## Register Qt help files
-  if (isguirunning)
-    for (ii = 1:numel (qt_help_files))
-      try
-        if exist("__event_manager_register_documentation__")
-          __event_manager_register_documentation__ (qt_help_files{ii});
-        endif
-      catch
-        # do nothing
-      end_try_catch
-    endfor
-  endif
+  for (ii = 1:numel (qt_help_files))
+    try
+      if exist("__event_manager_register_documentation__")
+        __event_manager_register_documentation__ (qt_help_files{ii});
+      endif
+    catch
+      # do nothing
+    end_try_catch
+  endfor
 
 endfunction
 

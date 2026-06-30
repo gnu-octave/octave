@@ -1415,7 +1415,9 @@ dnl
 AC_DEFUN([OCTAVE_CHECK_ICONVLIST], [
   AC_CACHE_CHECK([whether the function iconvlist is available],
     [octave_cv_iconvlist],
-    [ac_octave_save_LIBS="$LIBS"
+    [ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_LIBS="$LIBS"
+    CPPFLAGS="$INCICONV $CPPFLAGS"
     LIBS="$LIBICONV $LIBS"
     AC_LANG_PUSH(C++)
     AC_LINK_IFELSE([AC_LANG_PROGRAM([[
@@ -1437,6 +1439,7 @@ AC_DEFUN([OCTAVE_CHECK_ICONVLIST], [
       octave_cv_iconvlist=no)
     AC_LANG_POP(C++)
     LIBS="$ac_octave_save_LIBS"
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
   ])
   if test $octave_cv_iconvlist = yes; then
     AC_DEFINE(HAVE_ICONVLIST, 1, [Define to 1 if iconvlist is available.])
@@ -1448,7 +1451,9 @@ dnl
 AC_DEFUN([OCTAVE_CHECK_ICONV_CANONICALIZE], [
   AC_CACHE_CHECK([whether the function iconv_canonicalize is available],
     [octave_cv_iconv_canonicalize],
-    [ac_octave_save_LIBS="$LIBS"
+    [ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_LIBS="$LIBS"
+    CPPFLAGS="$INCICONV $CPPFLAGS"
     LIBS="$LIBICONV $LIBS"
     AC_LANG_PUSH(C++)
     AC_LINK_IFELSE([AC_LANG_PROGRAM([[
@@ -1465,6 +1470,7 @@ AC_DEFUN([OCTAVE_CHECK_ICONV_CANONICALIZE], [
       octave_cv_iconv_canonicalize=no)
     AC_LANG_POP(C++)
     LIBS="$ac_octave_save_LIBS"
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
   ])
   if test $octave_cv_iconv_canonicalize = yes; then
     AC_DEFINE(HAVE_ICONV_CANONICALIZE, 1,

@@ -91,8 +91,8 @@ function configure_make (desc, packdir, verbose)
       if (isempty (getenv ("AR")))
         flags = [flags ' AR="' mkoctfile("-p", "AR") '"'];
       endif
-      if (isempty (getenv ("RANDLIB")))
-        flags = [flags ' RANDLIB="' mkoctfile("-p", "RANDLIB") '"'];
+      if (isempty (getenv ("RANLIB")))
+        flags = [flags ' RANLIB="' mkoctfile("-p", "RANLIB") '"'];
       endif
       cmd = ["cd '" src "'; " scenv " ./configure " flags];
       [status, output] = shell (cmd, verbose);

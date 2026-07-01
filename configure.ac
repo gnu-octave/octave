@@ -1478,7 +1478,7 @@ fi
 
 have_pcre2=no
 have_pcre=no
-save_CPPLAGS="$CPPFLAGS"
+save_CPPFLAGS="$CPPFLAGS"
 CPPFLAGS="-DPCRE2_CODE_UNIT_WIDTH=8 $CPPFLAGS"
 OCTAVE_CHECK_LIB(pcre2, PCRE2,
   [], [pcre2.h pcre2/pcre2.h], [pcre2_compile_8], [], [],

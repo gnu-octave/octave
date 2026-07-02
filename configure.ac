@@ -1130,6 +1130,25 @@ dnl external library dependencies.
 gl_SET_CRYPTO_CHECK_DEFAULT([auto-gpl-compat])
 gl_INIT
 
+## If AM_ICONV selected a separate libiconv include directory, use it for
+## subsequent configure checks and for the generated Makefiles.
+if test -n "$INCICONV"; then
+  octave_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$INCICONV"
+  for element in $octave_save_CPPFLAGS; do
+    octave_have_CPPFLAG=no
+    for inc_element in $INCICONV; do
+      if test "x$element" = "x$inc_element"; then
+        octave_have_CPPFLAG=yes
+        break
+      fi
+    done
+    if test $octave_have_CPPFLAG = no; then
+      CPPFLAGS="$CPPFLAGS $element"
+    fi
+  done
+fi
+
 ### Checks for header files.
 
 AC_HEADER_SYS_WAIT

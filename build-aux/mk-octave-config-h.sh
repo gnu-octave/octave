@@ -111,6 +111,7 @@ EOF
 $SED -n \
   -e 's/#\(\(undef\|define\) OCTAVE_ENABLE_64.*$\)/#  \1/p' \
   -e 's/#\(\(undef\|define\) OCTAVE_ENABLE_BOUNDS_CHECK.*$\)/#  \1/p' \
+  -e 's/#\(\(undef\|define\) OCTAVE_ENABLE_BYTECODE_EVALUATOR.*$\)/#  \1/p' \
   -e 's/#\(\(undef\|define\) OCTAVE_ENABLE_INTERNAL_CHECKS.*$\)/#  \1/p' \
   -e 's/#\(\(undef\|define\) OCTAVE_ENABLE_LIB_VISIBILITY_FLAGS.*$\)/#  \1/p' \
   -e 's/#\(\(undef\|define\) OCTAVE_ENABLE_OPENMP.*$\)/#  \1/p' \

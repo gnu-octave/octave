@@ -92,14 +92,6 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX], [dnl
          CXX="$ac_save_CXX"])
       if eval test x\$$cachevar = xyes; then
         CXX="$CXX $switch"
-        if test -n "$CXXCPP" ; then
-          dnl Don't add switch a second time if it is already present in
-          dnl CXXCPP variable as will happen when a configure cache is used.
-          case "$CXXCPP" in
-            *"$switch"* ) ;;
-            * ) CXXCPP="$CXXCPP $switch" ;;
-          esac
-        fi
         ac_success=yes
         break
       fi
@@ -133,14 +125,6 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX], [dnl
            CXX="$ac_save_CXX"])
         if eval test x\$$cachevar = xyes; then
           CXX="$CXX $switch"
-          if test -n "$CXXCPP" ; then
-            dnl Don't add switch a second time if it is already present in
-            dnl CXXCPP variable as will happen when a configure cache is used.
-            case "$CXXCPP" in
-              *"$switch"* ) ;;
-              * ) CXXCPP="$CXXCPP $switch" ;;
-            esac
-          fi
           ac_success=yes
           break
         fi
@@ -150,10 +134,93 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX], [dnl
       fi
     done
   fi])
+
+dnl Repeat tests for C++ preprocessor if applicable
+
+  if test -n "$CXXCPP" ; then
+    ac_success_cxxcpp=no
+    m4_if([$2], [], [dnl
+      AC_CACHE_CHECK(whether $CXXCPP supports C++$1 features by default,
+        ax_cv_cxx_cpp_preproc_cxx$1,
+        [AC_PREPROC_IFELSE([AC_LANG_SOURCE([_AX_CXX_COMPILE_STDCXX_testbody_$1])],
+          [ax_cv_cxx_cpp_preproc_cxx$1=yes],
+          [ax_cv_cxx_cpp_preproc_cxx$1=no])])
+      if test x$ax_cv_cxx_cpp_preproc_cxx$1 = xyes; then
+        ac_success_cxxcpp=yes
+      fi])
+
+    m4_if([$2], [noext], [], [dnl
+    if test x$ac_success_cxxcpp = xno; then
+      for alternative in ${ax_cxx_compile_alternatives}; do
+        switch="-std=gnu++${alternative}"
+        cachevar=AS_TR_SH([ax_cv_cxx_cpp_preproc_cxx$1_$switch])
+        AC_CACHE_CHECK(whether $CXXCPP supports C++$1 features with $switch,
+                       $cachevar,
+          [ac_save_CXXCPP="$CXXCPP"
+           CXXCPP="$CXXCPP $switch"
+           AC_PREPROC_IFELSE([AC_LANG_SOURCE([_AX_CXX_COMPILE_STDCXX_testbody_$1])],
+            [eval $cachevar=yes],
+            [eval $cachevar=no])
+           CXXCPP="$ac_save_CXXCPP"])
+        if eval test x\$$cachevar = xyes; then
+          CXXCPP="$CXXCPP $switch"
+          ac_success_cxxcpp=yes
+          if test x$ac_cv_env_CXXCPP_set = x; then
+            # append to CXXCPP only once if it was not set in environment
+            ax_cv_cxx_cpp_preproc_cxx$1=yes
+          fi
+          break
+        fi
+      done
+    fi])
+
+    m4_if([$2], [ext], [], [dnl
+    if test x$ac_success_cxxcpp = xno; then
+      for alternative in ${ax_cxx_compile_alternatives}; do
+        for switch in -std=c++${alternative} +std=c++${alternative} "-h std=c++${alternative}" MSVC; do
+          if test x"$switch" = xMSVC; then
+            dnl AS_TR_SH maps both `:` and `=` to `_` so -std:c++17 would collide
+            dnl with -std=c++17.  We suffix the cache variable name with _MSVC to
+            dnl avoid this.
+            switch=-std:c++${alternative}
+            cachevar=AS_TR_SH([ax_cv_cxx_cpp_preproc_cxx$1_${switch}_MSVC])
+          else
+            cachevar=AS_TR_SH([ax_cv_cxx_cpp_preproc_cxx$1_$switch])
+          fi
+          AC_CACHE_CHECK(whether $CXXCPP supports C++$1 features with $switch,
+                         $cachevar,
+            [ac_save_CXXCPP="$CXXCPP"
+             CXXCPP="$CXXCPP $switch"
+             AC_PREPROC_IFELSE([AC_LANG_SOURCE([_AX_CXX_COMPILE_STDCXX_testbody_$1])],
+              [eval $cachevar=yes],
+              [eval $cachevar=no])
+             CXXCPP="$ac_save_CXXCPP"])
+          if eval test x\$$cachevar = xyes; then
+            CXXCPP="$CXXCPP $switch"
+            ac_success_cxxcpp=yes
+            if test x$ac_cv_env_CXXCPP_set = x; then
+              # append to CXXCPP only once if it was not set in environment
+              ax_cv_cxx_cpp_preproc_cxx$1=yes
+            fi
+            break
+          fi
+        done
+        if test x$ac_success_cxxcpp = xyes; then
+          break
+        fi
+      done
+    fi])
+  fi
+
   AC_LANG_POP([C++])
   if test x$ax_cxx_compile_cxx$1_required = xtrue; then
     if test x$ac_success = xno; then
       AC_MSG_ERROR([*** A compiler with support for C++$1 language features is required.])
+    fi
+    if test -n "$CXXCPP" ; then
+      if test x$ac_success_cxxcpp = xno; then
+        AC_MSG_ERROR([*** A preprocessor with support for C++$1 language features is required.])
+      fi
     fi
   fi
   if test x$ac_success = xno; then

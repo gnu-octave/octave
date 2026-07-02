@@ -256,16 +256,19 @@ $(HTMLDIR_IMAGES) $(HTMLDIR_CSS) : %reldir%/octave.html/% : %reldir%/% $(OCTAVE_
 
 if AMCOND_BUILD_QT_DOCS
 
-## Qt Help files are built from HTML source by Qt utility. 
+## Qt Help files are built from HTML source by Qt utility.
 OCTAVE_QTHELP_FILES = \
   %reldir%/octave_interpreter.qhc \
   %reldir%/octave_interpreter.qch
 
 ## The Qt help collection generator command produces two output files from one
-## invocation.  Build the collection file as the primary target and make the
-## compressed help file depend on it so this rule works with older GNU Make
-## versions that do not support grouped targets.
-%reldir%/octave_interpreter.qhc: $(OCTAVE_HTML_STAMP) $(HTMLDIR_CSS) %reldir%/mk-qthelp.pl
+## invocation which must be handled specially by make.
+
+if AMCOND_MODERN_GNUMAKE
+
+# Special syntax "&:" informs Make that all targets will be built by running
+# the associated rule once.
+$(OCTAVE_QTHELP_FILES) &: $(OCTAVE_HTML_STAMP) $(HTMLDIR_CSS) %reldir%/mk-qthelp.pl
 	$(AM_V_GEN)rm -f $(OCTAVE_QTHELP_FILES) && \
 	rm -rf %reldir%/octave.qdoc.html && \
 	cp -r %reldir%/octave.html %reldir%/octave.qdoc.html && \
@@ -275,10 +278,31 @@ OCTAVE_QTHELP_FILES = \
 	rm -f %reldir%/octave_interpreter.qhcp %reldir%/octave_interpreter.qhp && \
 	rm -rf %reldir%/octave.qdoc.html
 
-%reldir%/octave_interpreter.qch: %reldir%/octave_interpreter.qhc
-	$(AM_V_at)test -f $@
+else
 
-endif
+# Emulate grouped targets for old versions of make.
+%reldir%/octave_interpreter.qhc: $(OCTAVE_HTML_STAMP) $(HTMLDIR_CSS) %reldir%/mk-qthelp.pl
+	$(AM_V_GEN)rm -f $(OCTAVE_QTHELP_FILES) && \
+	rm -rf %reldir%/octave.qdoc.html && \
+	cp -r %reldir%/octave.html %reldir%/octave.qdoc.html && \
+	$(PERL) $(srcdir)/build-aux/inplace-edit.pl 's|<a[^>]+class=.copiable[^>]+> &para;</a>||g' %reldir%/octave.qdoc.html/* && \
+	$(PERL) $(srcdir)/%reldir%/mk-qthelp.pl octave.qdoc.html %reldir%/octave_interpreter && \
+	$(QCOLLECTIONGENERATOR) $(QCOLLECTIONGENERATORFLAGS) %reldir%/octave_interpreter.qhcp -o %reldir%/octave_interpreter.qhc >/dev/null && \
+	rm -f %reldir%/octave_interpreter.qhcp %reldir%/octave_interpreter.qhp && \
+	rm -rf %reldir%/octave.qdoc.html && \
+	touch $(OCTAVE_QTHELP_FILES)
+
+%reldir%/octave_interpreter.qch: %reldir%/octave_interpreter.qhc
+	$(AM_V_at)if [ ! -f $@ ]; then \
+	  rm -f $< && \
+	  $(MAKE) $<; \
+	fi
+
+.NOTPARALLEL: $(OCTAVE_QTHELP_FILES)
+
+endif  # if AMCOND_MODERN_GNUMAKE
+
+endif  # if AMCOND_BUILD_QT_DOCS
 
 ## Add to top-level of list of targets for "make all"
 DOC_TARGETS += \

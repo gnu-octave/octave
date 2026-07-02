@@ -37,14 +37,18 @@ AC_INIT([GNU Octave], [12.0.0],
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_AUX_DIR([build-aux])
 
+dnl Determine sed utility program early for use in remainder of configure.
+AC_PROG_EGREP
+OCTAVE_PROG_SED
+
 ### Declare version numbers
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION argument.
 OCTAVE_VERSION="$PACKAGE_VERSION"
 
-OCTAVE_MAJOR_VERSION=[`echo $OCTAVE_VERSION | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\.\([0-9][0-9]*\)/\1/'`]
-OCTAVE_MINOR_VERSION=[`echo $OCTAVE_VERSION | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\.\([0-9][0-9]*\)/\2/'`]
-OCTAVE_PATCH_VERSION=[`echo $OCTAVE_VERSION | sed -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\.\([0-9][0-9]*\)/\3/'`]
+OCTAVE_MAJOR_VERSION=[`echo $OCTAVE_VERSION | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\.\([0-9][0-9]*\)/\1/'`]
+OCTAVE_MINOR_VERSION=[`echo $OCTAVE_VERSION | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\.\([0-9][0-9]*\)/\2/'`]
+OCTAVE_PATCH_VERSION=[`echo $OCTAVE_VERSION | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\.\([0-9][0-9]*\)/\3/'`]
 
 OCTAVE_COPYRIGHT="Copyright (C) 1993-2026 The Octave Project Developers."
 
@@ -211,13 +215,14 @@ AC_SUBST([liboctave_pkgconfigdir], [$pkgconfigdir])
 AC_SUBST([liboctinterp_pkgconfigdir], [$pkgconfigdir])
 AC_SUBST([liboctmex_pkgconfigdir], [$pkgconfigdir])
 
-## Programs used in Makefiles.
+## Programs used in configure and Makefiles.
 AC_PROG_AWK
 AC_PROG_GREP
-AC_PROG_EGREP
 OCTAVE_PROG_FIND
-OCTAVE_PROG_SED
 OCTAVE_PROG_PERL
+
+## Verify GNU Make present and its capabilities.
+OCTAVE_PROG_GNUMAKE
 
 ## Programs used to build parts of Octave.
 OCTAVE_PROG_GPERF
@@ -917,26 +922,26 @@ if test "$cross_compiling" = yes && test -n "$ac_tool_prefix"; then
   MKOCTFILE_CC=`echo "$CC" | $SED "s,$CROSS_TOOL_PREFIX,,"`
   MKOCTFILE_CXX=`echo "$CXX" | $SED "s,$CROSS_TOOL_PREFIX,,"`
   MKOCTFILE_F77=`echo "$F77" | $SED "s,$CROSS_TOOL_PREFIX,,"`
-  MKOCTFILE_RANDLIB=`echo "$RANDLIB" | $SED "s,$CROSS_TOOL_PREFIX,,"`
+  MKOCTFILE_RANLIB=`echo "$RANLIB" | $SED "s,$CROSS_TOOL_PREFIX,,"`
 else
   MKOCTFILE_AR="$AR"
   MKOCTFILE_CC="$CC"
   MKOCTFILE_CXX="$CXX"
   MKOCTFILE_F77="$F77"
-  MKOCTFILE_RANDLIB="$RANDLIB"
+  MKOCTFILE_RANLIB="$RANLIB"
 fi
 AC_MSG_NOTICE([defining CROSS_TOOL_PREFIX to be $CROSS_TOOL_PREFIX])
 AC_MSG_NOTICE([defining MKOCTFILE_AR to be $MKOCTFILE_AR])
 AC_MSG_NOTICE([defining MKOCTFILE_CC to be $MKOCTFILE_CC])
 AC_MSG_NOTICE([defining MKOCTFILE_CXX to be $MKOCTFILE_CXX])
 AC_MSG_NOTICE([defining MKOCTFILE_F77 to be $MKOCTFILE_F77])
-AC_MSG_NOTICE([defining MKOCTFILE_RANDLIB to be $MKOCTFILE_RANDLIB])
+AC_MSG_NOTICE([defining MKOCTFILE_RANLIB to be $MKOCTFILE_RANLIB])
 AC_SUBST(CROSS_TOOL_PREFIX)
 AC_SUBST(MKOCTFILE_AR)
 AC_SUBST(MKOCTFILE_CC)
 AC_SUBST(MKOCTFILE_CXX)
 AC_SUBST(MKOCTFILE_F77)
-AC_SUBST(MKOCTFILE_RANDLIB)
+AC_SUBST(MKOCTFILE_RANLIB)
 
 ### Enable internal checks
 
@@ -1124,6 +1129,25 @@ dnl external library dependencies.
 
 gl_SET_CRYPTO_CHECK_DEFAULT([auto-gpl-compat])
 gl_INIT
+
+## If AM_ICONV selected a separate libiconv include directory, use it for
+## subsequent configure checks and for the generated Makefiles.
+if test -n "$INCICONV"; then
+  octave_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$INCICONV"
+  for element in $octave_save_CPPFLAGS; do
+    octave_have_CPPFLAG=no
+    for inc_element in $INCICONV; do
+      if test "x$element" = "x$inc_element"; then
+        octave_have_CPPFLAG=yes
+        break
+      fi
+    done
+    if test $octave_have_CPPFLAG = no; then
+      CPPFLAGS="$CPPFLAGS $element"
+    fi
+  done
+fi
 
 ### Checks for header files.
 
@@ -1488,7 +1512,7 @@ AM_CONDITIONAL([AMCOND_ENABLE_BYTECODE_EVALUATOR], [test $ENABLE_BYTECODE_EVALUA
 
 have_pcre2=no
 have_pcre=no
-save_CPPLAGS="$CPPFLAGS"
+save_CPPFLAGS="$CPPFLAGS"
 CPPFLAGS="-DPCRE2_CODE_UNIT_WIDTH=8 $CPPFLAGS"
 OCTAVE_CHECK_LIB(pcre2, PCRE2,
   [], [pcre2.h pcre2/pcre2.h], [pcre2_compile_8], [], [],

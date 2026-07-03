@@ -38,7 +38,6 @@ AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_AUX_DIR([build-aux])
 
 dnl Determine sed utility program early for use in remainder of configure.
-AC_PROG_EGREP
 OCTAVE_PROG_SED
 
 ### Declare version numbers
@@ -218,6 +217,7 @@ AC_SUBST([liboctmex_pkgconfigdir], [$pkgconfigdir])
 ## Programs used in configure and Makefiles.
 AC_PROG_AWK
 AC_PROG_GREP
+AC_PROG_EGREP
 OCTAVE_PROG_FIND
 OCTAVE_PROG_PERL
 

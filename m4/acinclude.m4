@@ -3777,20 +3777,19 @@ from VCS sources.
 dnl
 dnl Find sed program.
 dnl
-# Check for a fully-functional sed program, that truncates
-# as few characters as possible and that supports "\(X\|Y\)"
-# style regular expression alternation.  Prefer GNU sed if found.
+# Check for a fully-functional sed program, that truncates as few characters as
+# possible and that supports "\(X\|Y\)" style regular expression alternation.
+# Prefer GNU sed if found.
 AC_DEFUN([OCTAVE_PROG_SED], [
   AC_MSG_CHECKING([for a usable sed])
   if test -z "$SED"; then
     AC_CACHE_VAL([octave_cv_prog_sed],
       [# Loop through the user's path and search for sed and gsed.
-      # Next, test potential sed programs in list for truncation.
       _AS_PATH_WALK([$PATH],
         [for ac_prog in sed gsed; do
           for ac_exec_ext in '' $ac_executable_extensions; do
-            if AS_EXECUTABLE_P(["$as_dir/$ac_prog$ac_exec_ext"]); then
-              _sed_list="$_sed_list $as_dir/$ac_prog$ac_exec_ext"
+            if AS_EXECUTABLE_P(["${as_dir}$ac_prog$ac_exec_ext"]); then
+              _sed_list="$_sed_list ${as_dir}$ac_prog$ac_exec_ext"
             fi
           done
         done
@@ -3800,16 +3799,24 @@ AC_DEFUN([OCTAVE_PROG_SED], [
       _count=0
       # Add /usr/xpg4/bin/sed as it is typically found on Solaris
       # along with /bin/sed that truncates output.
-      for _sed in $_sed_list /usr/xpg4/bin/sed; do
+      _sed_list="$_sed_list /usr/xpg4/bin/sed"
+      # Test potential sed programs in list for truncation (GNU sed preferred).
+      for _sed in $_sed_list; do
         test ! -f ${_sed} && break
+        # Check for GNU sed (support for --version), and select if found.
+        sedver=`"${_sed}" --version 2>&1 < /dev/null`
+        if test -n "$sedver"; then
+          # Additional test that this is really GNU sed
+          case $sedver in
+            *GNU*)
+              octave_cv_prog_sed=${_sed}
+              break
+            ;;
+          esac
+        fi
         cat /dev/null > "$tmp/sed.in"
         _count=0
         echo $ECHO_N "0123456789$ECHO_C" >"$tmp/sed.in"
-        # Check for GNU sed and select it if it is found.
-        if "${_sed}" --version 2>&1 < /dev/null | $EGREP '(GNU)' > /dev/null; then
-          octave_cv_prog_sed=${_sed}
-          break;
-        fi
         # Reject if RE alternation is not handled.
         if test "`echo 'this and that' | ${_sed} -n 's/\(this\|that\).*$/\1/p'`" != "this"; then
           continue;
@@ -3821,7 +3828,7 @@ AC_DEFUN([OCTAVE_PROG_SED], [
           echo >>"$tmp/sed.nl"
           ${_sed} -e 's/a$//' < "$tmp/sed.nl" >"$tmp/sed.out" || break
           cmp -s "$tmp/sed.out" "$tmp/sed.nl" || break
-          # 10000 chars as input seems more than enough
+          # 10,000 chars as input seems more than enough
           test $_count -gt 10 && break
           _count=`expr $_count + 1`
           if test $_count -gt $_max; then

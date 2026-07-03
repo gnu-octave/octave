@@ -177,31 +177,11 @@ BUILT_BC_OVERLOADS_DIRS := \
 BUILT_BC_OVERLOADS_FILES := \
   $(shell $(SHELL) $(srcdir)/mk-bc-overloads-tst.sh $(abs_top_builddir)/test --list-files)
 
-if AMCOND_MODERN_GNUMAKE
-
 # Special syntax "&:" informs Make that all targets will be built by running
 # the associated rule once.
 $(BUILT_BC_OVERLOADS_FILES) &: mk-bc-overloads-tst.sh bc-overloads-expected | $(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@ && \
 	$(SHELL) $(srcdir)/mk-bc-overloads-tst.sh $(abs_top_builddir)/test $(srcdir)/bc-overloads-expected
-
-else
-
-# Emulate grouped targets for old versions of make.
-bc-overloads.tst: mk-bc-overloads-tst.sh bc-overloads-expected | $(octave_dirstamp)
-	$(AM_V_GEN)rm -f $@ && \
-	$(SHELL) $(srcdir)/mk-bc-overloads-tst.sh $(abs_top_builddir)/test $(srcdir)/bc-overloads-expected && \
-	touch $(BUILT_BC_OVERLOADS_FILES)
-
-$(filter-out bc-overloads.tst,$(BUILT_BC_OVERLOADS_FILES)): bc-overloads.tst
-	$(AM_V_at)if [ ! -f $@ ]; then \
-	  rm -f $< && \
-	  $(MAKE) $<; \
-	fi
-
-.NOTPARALLEL: $(BUILT_BC_OVERLOADS_FILES)
-
-endif  # if AMCOND_MODERN_GNUMAKE
 
 check-local: $(BUILT_TEST_FILES) $(MEX_TEST_FUNCTIONS) | $(octave_dirstamp)
 	$(AM_V_at) ( $(SHELL) $(abs_top_builddir)/run-octave $(RUN_OCTAVE_OPTIONS) \

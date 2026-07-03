@@ -3572,8 +3572,7 @@ dnl
 dnl Find GNU Make program.
 dnl
 # Check for GNU Make (required) and determine its capabilities
-# (support for grouped targets at version 4.3 or higher).
-# Apple refuses to accept GPLv3 and ships a 20-year old version of make.
+# (correct support for grouped targets at version 4.4 or higher).
 AC_DEFUN([OCTAVE_PROG_GNUMAKE], [
   AC_CHECK_PROGS(GNUMAKE, [gmake make])
   if test -z "$GNUMAKE"; then
@@ -3594,15 +3593,16 @@ AC_DEFUN([OCTAVE_PROG_GNUMAKE], [
     gnumake_minor=[`echo $oct_cv_prog_gnumake_version | $SED -e 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\..*$/\2/'`]
 
     if test $gnumake_major -ge 5 \
-       || (test $gnumake_major -eq 4 && test $gnumake_minor -ge 3); then
+       || (test $gnumake_major -eq 4 && test $gnumake_minor -ge 4); then
       oct_cv_prog_gnumake_grouped_targets=yes
     else
       oct_cv_prog_gnumake_grouped_targets=no
     fi
   ])
 
-  AM_CONDITIONAL([AMCOND_MODERN_GNUMAKE],
-                 [test $oct_cv_prog_gnumake_grouped_targets = yes])
+  if test $oct_cv_prog_gnumake_grouped_targets != yes; then 
+    AC_MSG_ERROR([GNU Make version 4.4 or higher is required to build Octave])
+  fi;
 ])
 dnl
 dnl Check for gnuplot.

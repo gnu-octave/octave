@@ -263,11 +263,8 @@ OCTAVE_QTHELP_FILES = \
 
 ## The Qt help collection generator command produces two output files from one
 ## invocation which must be handled specially by make.
-
-if AMCOND_MODERN_GNUMAKE
-
-# Special syntax "&:" informs Make that all targets will be built by running
-# the associated rule once.
+# The special syntax "&:" informs Make that all targets will be built by
+# running the associated rule once.
 $(OCTAVE_QTHELP_FILES) &: $(OCTAVE_HTML_STAMP) $(HTMLDIR_CSS) %reldir%/mk-qthelp.pl
 	$(AM_V_GEN)rm -f $(OCTAVE_QTHELP_FILES) && \
 	rm -rf %reldir%/octave.qdoc.html && \
@@ -277,30 +274,6 @@ $(OCTAVE_QTHELP_FILES) &: $(OCTAVE_HTML_STAMP) $(HTMLDIR_CSS) %reldir%/mk-qthelp
 	$(QCOLLECTIONGENERATOR) $(QCOLLECTIONGENERATORFLAGS) %reldir%/octave_interpreter.qhcp -o %reldir%/octave_interpreter.qhc >/dev/null && \
 	rm -f %reldir%/octave_interpreter.qhcp %reldir%/octave_interpreter.qhp && \
 	rm -rf %reldir%/octave.qdoc.html
-
-else
-
-# Emulate grouped targets for old versions of make.
-%reldir%/octave_interpreter.qhc: $(OCTAVE_HTML_STAMP) $(HTMLDIR_CSS) %reldir%/mk-qthelp.pl
-	$(AM_V_GEN)rm -f $(OCTAVE_QTHELP_FILES) && \
-	rm -rf %reldir%/octave.qdoc.html && \
-	cp -r %reldir%/octave.html %reldir%/octave.qdoc.html && \
-	$(PERL) $(srcdir)/build-aux/inplace-edit.pl 's|<a[^>]+class=.copiable[^>]+> &para;</a>||g' %reldir%/octave.qdoc.html/* && \
-	$(PERL) $(srcdir)/%reldir%/mk-qthelp.pl octave.qdoc.html %reldir%/octave_interpreter && \
-	$(QCOLLECTIONGENERATOR) $(QCOLLECTIONGENERATORFLAGS) %reldir%/octave_interpreter.qhcp -o %reldir%/octave_interpreter.qhc >/dev/null && \
-	rm -f %reldir%/octave_interpreter.qhcp %reldir%/octave_interpreter.qhp && \
-	rm -rf %reldir%/octave.qdoc.html && \
-	touch $(OCTAVE_QTHELP_FILES)
-
-%reldir%/octave_interpreter.qch: %reldir%/octave_interpreter.qhc
-	$(AM_V_at)if [ ! -f $@ ]; then \
-	  rm -f $< && \
-	  $(MAKE) $<; \
-	fi
-
-.NOTPARALLEL: $(OCTAVE_QTHELP_FILES)
-
-endif  # if AMCOND_MODERN_GNUMAKE
 
 endif  # if AMCOND_BUILD_QT_DOCS
 

@@ -71,7 +71,7 @@ jobs:
             libiconv libsndfile libtool openblas pcre2 portaudio pstoedit \
             qhull qrupdate qscintilla2 qt5compat qtbase qttools \
             rapidjson readline suite-sparse sundials texinfo \
-            ccache gnu-sed openjdk pkg-config \
+            ccache gnu-sed make openjdk pkg-config \
             automake autoconf bison gettext icoutils librsvg mactex-no-gui
           eval "$(/usr/libexec/path_helper)"
           HOMEBREW_PREFIX=$(brew --prefix)
@@ -163,7 +163,7 @@ jobs:
         run: cat ./.build/config.log
 
       - name: build
-        run: make -C ./.build all -j3 V=1
+        run: gmake -C ./.build all -j3 V=1
 
       - name: ccache status
         run: ccache -s

@@ -161,7 +161,7 @@ from
 - Octave now requires a C++ compiler that is compliant with C++20 (preferably
   with GNU extensions).
 
-- Octave now requires GNU Make 4.4 or higher.
+- Octave now requires GNU Make 4.3 or higher.
 
 ### Old release news
 

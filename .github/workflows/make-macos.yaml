@@ -66,7 +66,7 @@ jobs:
           brew update
           brew install --overwrite python@3.14 python@3.13
           brew reinstall gcc
-          brew install arpack epstool fast_float fftw fig2dev fltk fontconfig \
+          brew install arpack epstool fast_float fftw fig2dev fontconfig \
             freetype ghostscript gl2ps glpk gnuplot graphicsmagick hdf5 \
             libiconv libsndfile libtool openblas pcre2 portaudio pstoedit \
             qhull qrupdate qscintilla2 qt5compat qtbase qttools \

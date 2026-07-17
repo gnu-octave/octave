@@ -146,8 +146,7 @@ protected:
   // Handle to the graphics object.  This may be redundant now.
   // Also, the whole ObjectProxy thing may not need to store a
   // pointer now?  Maybe we can just have a lookup table from figure
-  // handle to Object?  What does the FLTK toolkit do?  Why does
-  // this seem to be so complicated?
+  // handle to Object?
   graphics_handle m_handle;
 
   QObject *m_qobject;

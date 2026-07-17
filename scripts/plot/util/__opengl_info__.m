@@ -136,17 +136,6 @@ endfunction
 ## available in case someone wants to hand-test the function by executing the
 ## code.
 
-%!#testif HAVE_OPENGL, HAVE_FLTK; have_window_system () && any (strcmp ("fltk", available_graphics_toolkits ()))
-%! old_toolkit = graphics_toolkit ();
-%! unwind_protect
-%!   graphics_toolkit ("fltk");
-%!   a = __opengl_info__ ();
-%! unwind_protect_cleanup
-%!   graphics_toolkit (old_toolkit);
-%! end_unwind_protect
-%! assert (! isempty (a));
-%! assert (isfield (a, "version"));
-
 %!#testif HAVE_OPENGL, HAVE_QT; have_window_system () && any (strcmp ("qt", available_graphics_toolkits ()))
 %! old_toolkit = graphics_toolkit ();
 %! unwind_protect

@@ -43,8 +43,7 @@
 ## Up to eight light objects are supported per axes.  (Implementation
 ## dependent)
 ##
-## Lighting is only supported for OpenGL graphic toolkits (i.e., @qcode{"fltk"}
-## and @qcode{"qt"}).
+## Lighting is only supported for the OpenGL graphics toolkit (@qcode{"qt"}).
 ##
 ## A light object has the following properties which alter the appearance of
 ## the plot.

@@ -2255,7 +2255,7 @@ endfunction
 %! end_unwind_protect
 
 ## Test bugs in previous implementation
-%!testif ; any (strcmp (graphics_toolkit (), {"fltk", "qt"})) <*39697>
+%!testif ; strcmp (graphics_toolkit (), "qt") <*39697>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   axes ("units", "normalized");
@@ -2288,7 +2288,7 @@ endfunction
 
 ## Verify alpha parameter inherited by legend patch objects.
 ## Only facealpha currently implemented.
-%!testif ; any (strcmp (graphics_toolkit (), {"fltk", "qt"})) <*66314>
+%!testif ; strcmp (graphics_toolkit (), "qt") <*66314>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ("parent", hf);
@@ -2299,4 +2299,3 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
-

@@ -2004,126 +2004,11 @@ DEFAULT_TERMINAL_FONT_SIZE=10
 AC_SUBST(DEFAULT_TERMINAL_FONT)
 AC_SUBST(DEFAULT_TERMINAL_FONT_SIZE)
 
-### Check for FLTK library.
-
-check_fltk=yes
-build_fltk_graphics=no
-
-AC_ARG_WITH([fltk],
-  [AS_HELP_STRING([--without-fltk],
-    [don't use FLTK libraries, disable OpenGL graphics with FLTK widgets])],
-  [if test x"$withval" = xno; then
-     check_fltk=no
-   fi])
-
-FLTK_CPPFLAGS=
-FLTK_LDFLAGS=
-FLTK_LIBS=
-
-if test $check_fltk = yes; then
-  AC_ARG_WITH([fltk-prefix],
-    [AS_HELP_STRING([--with-fltk-prefix=PFX],
-      [prefix where FLTK is installed])],
-    [fltk_prefix="$withval"],
-    [fltk_prefix=])
-
-  AC_ARG_WITH([fltk-exec-prefix],
-    [AS_HELP_STRING([--with-fltk-exec-prefix=PFX],
-      [exec prefix where FLTK is installed])],
-    [fltk_exec_prefix="$withval"],
-    [fltk_exec_prefix=])
-
-  if test "x$fltk_exec_prefix" != x; then
-    fltk_args="$fltk_args --exec-prefix=$fltk_exec_prefix"
-    if test "x${FLTK_CONFIG+set}" != xset ; then
-      FLTK_CONFIG="$fltk_exec_prefix/bin/fltk-config"
-    fi
-  fi
-
-  if test "x$fltk_prefix" != x; then
-    fltk_args="$fltk_args --prefix=$fltk_prefix"
-    if test x${FLTK_CONFIG+set} != xset ; then
-      FLTK_CONFIG="$fltk_prefix/bin/fltk-config"
-    fi
-  fi
-
-  AC_PATH_PROG([FLTK_CONFIG], [fltk-config], [no])
-
-  warn_fltk_config=
-  warn_fltk_opengl=
-
-  if test "$FLTK_CONFIG" = no; then
-    warn_fltk_config="FLTK config script not found.  FLTK toolkit will be disabled."
-    OCTAVE_CONFIGURE_WARNING([warn_fltk_config])
-  else
-    ## Only include -I options in FLTK_CPPFLAGS
-    fltk_cflags=`$FLTK_CONFIG $fltkconf_args --use-gl --cflags`
-    for fltk_option in $fltk_cflags; do
-      case $fltk_option in
-        -I*)
-          FLTK_CPPFLAGS="$FLTK_CPPFLAGS $fltk_option"
-        ;;
-      esac
-    done
-    FLTK_CPPFLAGS=`echo "$FLTK_CPPFLAGS" | $SED -e 's/^ \+//'`
-
-    ## Split -L and -l options into FLTK_LDFLAGS and FLTK_LIBS
-    fltk_ldflags=`$FLTK_CONFIG $fltkconf_args --use-gl --ldflags`
-    for fltk_option in $fltk_ldflags; do
-      case $fltk_option in
-        -l*)
-          FLTK_LIBS="$FLTK_LIBS $fltk_option"
-        ;;
-        *)
-          FLTK_LDFLAGS="$FLTK_LDFLAGS $fltk_option"
-        ;;
-      esac
-    done
-    FLTK_LIBS=`echo "$FLTK_LIBS" | $SED -e 's/^ \+//'`
-    FLTK_LDFLAGS=`echo "$FLTK_LDFLAGS" | $SED -e 's/^ \+//'`
-
-    case $host_os in
-      mingw*)
-        FLTK_LDFLAGS=`echo $FLTK_LDFLAGS | $SED -e 's/-mwindows//g'`
-      ;;
-    esac
-    AC_LANG_PUSH(C++)
-    AC_CACHE_CHECK([for OpenGL support in FLTK],
-      [oct_cv_lib_fltk_opengl_support],
-      [save_CPPFLAGS="$CPPFLAGS"
-      CPPFLAGS="$CFLAGS $FLTK_CPPFLAGS"
-      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <FL/gl.h>
-        ]], [[
-        int nothing = 0;
-        ]])],
-        oct_cv_lib_fltk_opengl_support=yes,
-        oct_cv_lib_fltk_opengl_support=no)
-      CPPFLAGS="$save_CPPFLAGS"
-      ])
-    if test $oct_cv_lib_fltk_opengl_support = no; then
-      warn_fltk_opengl="FLTK does not have OpenGL support.  OpenGL graphics with FLTK widgets will be disabled."
-    else
-      build_fltk_graphics=yes
-      AC_DEFINE(HAVE_FLTK, 1, [Define to 1 if FLTK is available.])
-    fi
-    AC_LANG_POP(C++)
-
-    if test -n "$warn_fltk_opengl"; then
-      OCTAVE_CONFIGURE_WARNING([warn_fltk_opengl])
-    fi
-  fi
-fi
-
-AC_SUBST(FLTK_CPPFLAGS)
-AC_SUBST(FLTK_LDFLAGS)
-AC_SUBST(FLTK_LIBS)
-
 ### Final determination of whether OpenGL graphics features should
 ### be built.  Note that there is no longer a way to build the Qt GUI
 ### without also building a Qt widget that uses OpenGL graphics so we
 ### check $build_qt_gui instead of $build_qt_graphics here.
-if test $build_qt_gui = no && test $build_fltk_graphics = no; then
+if test $build_qt_gui = no; then
   opengl_graphics=no
 else
   opengl_graphics=yes
@@ -3495,9 +3380,6 @@ Octave is now configured for $canonical_host_type
   FFTW3F CPPFLAGS:               $FFTW3F_CPPFLAGS
   FFTW3F LDFLAGS:                $FFTW3F_LDFLAGS
   FFTW3F libraries:              $FFTW3F_LIBS
-  FLTK CPPFLAGS:                 $FLTK_CPPFLAGS
-  FLTK LDFLAGS:                  $FLTK_LDFLAGS
-  FLTK libraries:                $FLTK_LIBS
   fontconfig CPPFLAGS:           $FONTCONFIG_CPPFLAGS
   fontconfig libraries:          $FONTCONFIG_LIBS
   FreeType2 CPPFLAGS:            $FT2_CPPFLAGS

@@ -52,8 +52,6 @@ function tkit = graphics_toolkit (name, hlist = [])
       toolkits = available_graphics_toolkits ();
       if (any (strcmp ("qt", toolkits)))
         tkit = "qt";
-      elseif (any (strcmp ("fltk", toolkits)))
-        tkit = "fltk";
       elseif (! isempty (toolkits))
         tkit = toolkits{1};
       endif

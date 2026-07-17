@@ -133,7 +133,6 @@ jobs:
             libblas-dev:${{ matrix.arch }} \
             libcurl4-gnutls-dev:${{ matrix.arch }} \
             libfftw3-dev:${{ matrix.arch }} \
-            libfltk1.3-dev:${{ matrix.arch }} \
             libfontconfig1-dev:${{ matrix.arch }} \
             libfreetype6-dev:${{ matrix.arch }} \
             libgl1-mesa-dev:${{ matrix.arch }} \

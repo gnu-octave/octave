@@ -2733,7 +2733,7 @@ function sym = __setup_sym_table__ ()
   sym.rightarrow = {'{/Symbol \256}', '→'};
   sym.downarrow = {'{/Symbol \257}', '↓'};
   sym.circ = {'{/Symbol \260}', '∘'};
-  ## degree symbol, not circ as in FLTK
+  ## degree symbol, not circ
   sym.deg = {'{/Symbol \260}', '°'};
   sym.ast = {'{/Symbol *}', '∗'};
   sym.pm = {'{/Symbol \261}', '±'};
@@ -2754,7 +2754,7 @@ function sym = __setup_sym_table__ ()
   sym.wp = {'{/Symbol \303}', '℘'};
   sym.otimes = {'{/Symbol \304}', '⊗'};
   sym.oplus = {'{/Symbol \305}', '⊕'};
-  ## empty set, not circled slash division operator as in FLTK.
+  ## empty set, not circled slash division operator.
   sym.oslash = {'{/Symbol \306}', '⊘'};
   sym.emptyset = {'{/Symbol \306}', '∅'};
   sym.cap = {'{/Symbol \307}', '∩'};

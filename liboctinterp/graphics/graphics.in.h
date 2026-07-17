@@ -5923,7 +5923,6 @@ public:
       string_property text , ""
 
       // Octave-specific properties
-      string_property __fltk_label__ h , ""
       any_property __object__ h , Matrix ()
     END_PROPERTIES
 

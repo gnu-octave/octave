@@ -116,9 +116,6 @@ function hnew = copyobj (horig, hparent = 0)
 endfunction
 
 
-## Absurd number of drawnow() function calls in demos is due to problem
-## with FLTK backend which is not respecting the set ("position") call.
-
 %!demo
 %! hobj = clf;
 %! set (hobj, "name", "Original", "numbertitle", "off");
@@ -131,17 +128,12 @@ endfunction
 %! set (hg, "marker", "^", "markerfacecolor", rand (1,3));
 %! plot (x, y2, "ok-");
 %! legend ("errorbar", "line");
-%! drawnow ();
 %! pos = get (hobj, "position");
 %! scrn = get (0, "screensize");
 %! set (hobj, "position", [scrn(3)/2-pos(3)-10, scrn(4)/2-pos(4)/2, pos(3:4)]);
-%! drawnow ();
 %! hnew = copyobj (hobj, groot);
-%! drawnow ();
 %! set (hnew, "name", "Copyobj");
-%! drawnow ();
 %! set (hnew, "position", [scrn(3)/2, scrn(4)/2-pos(4)/2, pos(3:4)]);
-%! drawnow ();
 
 %!demo
 %! hobj = clf;
@@ -161,17 +153,12 @@ endfunction
 %!  imagesc (rand (30, 30));
 %!  text (15, 15, "Rotated text", ...
 %!        "HorizontAlalignment", "Center", "Rotation", 30);
-%! drawnow ();
 %! pos = get (hobj, "position");
 %! scrn = get (0, "screensize");
 %! set (hobj, "position", [scrn(3)/2-pos(3)-10, scrn(4)/2-pos(4)/2, pos(3:4)]);
-%! drawnow ();
 %! hnew = copyobj (hobj, groot);
-%! drawnow ();
 %! set (hnew, "name", "Copyobj");
-%! drawnow ();
 %! set (hnew, "position", [scrn(3)/2, scrn(4)/2-pos(4)/2, pos(3:4)]);
-%! drawnow ();
 
 %!demo
 %! hobj = clf;
@@ -191,17 +178,12 @@ endfunction
 %! text (4.5, 80, "Right Axis", ...
 %!       "color", rcolor, "horizontalalignment", "center", "parent", ax(2));
 %! title ({"plotyy() example"; "left axis uses @plot, right axis uses @semilogy"});
-%! drawnow ();
 %! pos = get (hobj, "position");
 %! scrn = get (0, "screensize");
 %! set (hobj, "position", [scrn(3)/2-pos(3)-10, scrn(4)/2-pos(4)/2, pos(3:4)]);
-%! drawnow ();
 %! hnew = copyobj (hobj, groot);
-%! drawnow ();
 %! set (hnew, "name", "Copyobj");
-%! drawnow ();
 %! set (hnew, "position", [scrn(3)/2, scrn(4)/2-pos(4)/2, pos(3:4)]);
-%! drawnow ();
 
 %!testif HAVE_MAGICK; (have_window_system () && any (strcmp ("qt", available_graphics_toolkits ())));
 %! toolkit = graphics_toolkit ();

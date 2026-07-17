@@ -101,7 +101,6 @@ jobs:
             arpack:p
             curl:p
             fftw:p
-            fltk:p
             gl2ps:p
             glpk:p
             ghostscript:p

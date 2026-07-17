@@ -115,12 +115,11 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
     endif
   endif
 
-  if (__event_manager_have_dialogs__ ())
-    [retfile, retpath, retindex] = __event_manager_file_dialog__ (outargs{:});
-  else
-    funcname = __get_funcname__ (mfilename ());
-    [retfile, retpath, retindex] = feval (funcname, outargs{:});
+  if (! __event_manager_have_dialogs__ ())
+    error ("uiputfile is not available in this version of Octave");
   endif
+
+  [retfile, retpath, retindex] = __event_manager_file_dialog__ (outargs{:});
 
   ## Append extension to the name if it isn't already added.
   if (ischar (retfile))

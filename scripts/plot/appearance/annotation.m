@@ -1311,10 +1311,8 @@ function update_rect (h, ~, prop, hre, typ)
 endfunction
 
 
-## FIXME: the additional regular axes is necessary for fltk to draw the
-##        annotation axes.
 %!demo
-%! clf; axes ("visible", "off");
+%! clf;
 %! annotation ("textbox", [.25 .9 .5 .09], "string", ...
 %!             {"Right Click on annotation objects", ...
 %!              "to customize their appearance"}, ...

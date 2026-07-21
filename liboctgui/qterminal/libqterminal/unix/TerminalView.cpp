@@ -2343,7 +2343,7 @@ QVariant TerminalView::inputMethodQuery( Qt::InputMethodQuery query ) const
   const QPoint cursorPos = _screenWindow ? _screenWindow->cursorPosition() : QPoint(0,0);
   switch ( query )
     {
-#if defined (HAVE_QT_IMCURSORRECTANGLE_ENUM_VALUE)
+#if defined (HAVE_QT_ENUM_IMCURSORRECTANGLE)
     case Qt::ImCursorRectangle:
 #else
     case Qt::ImMicroFocus:

@@ -172,7 +172,7 @@ function str = dec2base (d, base, len, decimals = 0)
     if (! isempty (digits2))
       j = columns (digits2);
       digits2 (k, j) += 1;  # this is a generalization of two's complement
-      while (digits2(j) >= base && j > 1)
+      while (digits2(k, j) >= base && j > 1)
         digits2(k, j) -= base;
         digits2(k, j-1) += 1;
         j -= 1;
@@ -266,12 +266,15 @@ endfunction
 %!assert (dec2base ( -e,  3,  8, 16), "22222220.0211211010011210")
 %!assert (dec2base ( -e, 16,  8, 10), "FFFFFFFD.481EAE9D76")
 
+## Test negative vector inputs: should match with corresponding negative scalar inputs.
+%!assert <*68548> (dec2base ([-1, -2], 10, 3, 2), [dec2base(-1, 10, 3, 2); dec2base(-2, 10, 3, 2)])
+
 ## Test negative inputs close to powers of bases
 %!assert (dec2base (-128, 2), "10000000")
 %!assert (dec2base (-129, 2, 9), "101111111")
 %!assert (dec2base (-129, 2), "01111111")
 ## FIXME: should dec2base (-129, 2) return "01111111" or ""101111111"?
-## The second is an explicit 9-bit universe. The first is an implied 9-bit
+## The second is an explicit 9-bit universe.  The first is an implied 9-bit
 ## universe but the user needs to be careful not to mistake it for +127, which
 ## is true in modular arithmetic anyway (i.e., +127 == -129 in 8-bits).
 ## Currently we work around this by telling the user in `help dec2base` to

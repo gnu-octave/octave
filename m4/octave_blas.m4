@@ -42,13 +42,13 @@ AC_DEFUN([OCTAVE_BLAS], [
     fi
     AC_MSG_RESULT([$ax_cv_blas_integer_size assumed for cross compilation])
   elif test $ax_blas_ok = yes; then
-    ac_octave_save_LIBS="$LIBS"
+    oct_ac_save_LIBS="$LIBS"
     LIBS="$BLAS_LIBS $LIBS"
     AC_LANG_PUSH(Fortran 77)
     # Check if BLAS functions with single precision return value work
     # correctly
     AC_CACHE_CHECK([whether BLAS functions with single precision return value work correctly],
-      [octave_cv_working_blas_single_precision],
+      [oct_cv_lib_blas_single_precision_ok],
       [AC_RUN_IFELSE([AC_LANG_PROGRAM(,[[
       implicit none
       real d
@@ -72,10 +72,10 @@ c returns a single-precision floating point value.
       endif
 
         ]])],
-        octave_cv_working_blas_single_precision=yes,
-        octave_cv_working_blas_single_precision=no)
+        oct_cv_lib_blas_single_precision_ok=yes,
+        oct_cv_lib_blas_single_precision_ok=no)
       ])
-    if test "$octave_cv_working_blas_single_precision" != yes; then
+    if test "$oct_cv_lib_blas_single_precision_ok" != yes; then
       AC_MSG_ERROR([The function SDOT does not work correctly with the selected BLAS library.  Use a different implementation of BLAS.])
     fi
 
@@ -137,7 +137,7 @@ c 8-byte integers.
       ])
 
   AC_LANG_POP(Fortran 77)
-  LIBS="$ac_octave_save_LIBS"
+  LIBS="$oct_ac_save_LIBS"
 fi
 
 ])

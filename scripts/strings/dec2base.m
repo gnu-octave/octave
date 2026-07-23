@@ -172,7 +172,7 @@ function str = dec2base (d, base, len, decimals = 0)
     if (! isempty (digits2))
       j = columns (digits2);
       digits2 (k, j) += 1;  # this is a generalization of two's complement
-      while (digits2(j) >= base && j > 1)
+      while (digits2(k, j) >= base && j > 1)
         digits2(k, j) -= base;
         digits2(k, j-1) += 1;
         j -= 1;
@@ -265,6 +265,9 @@ endfunction
 %!assert (dec2base ( -e,  2,  8, 16), "11111101.0100100000011111")
 %!assert (dec2base ( -e,  3,  8, 16), "22222220.0211211010011210")
 %!assert (dec2base ( -e, 16,  8, 10), "FFFFFFFD.481EAE9D76")
+
+## Test negative vector inputs: should match with corresponding negative scalar inputs.
+%!assert <*68548> (dec2base ([-1, -2], 10, 3, 2), [dec2base(-1, 10, 3, 2); dec2base(-2, 10, 3, 2)])
 
 ## Test negative inputs close to powers of bases
 %!assert (dec2base (-128, 2), "10000000")

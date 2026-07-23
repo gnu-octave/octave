@@ -14,7 +14,7 @@ nodist_%canon_reldir%_libqterminal_la_SOURCES = $(%canon_reldir%_libqterminal_la
 
 %canon_reldir%_libqterminal_la_CPPFLAGS =
 
-if WIN32_TERMINAL
+if AMCOND_WIN32_TERMINAL
 
 %canon_reldir%_libqterminal_la_SOURCES = \
   %reldir%/libqterminal/win32/QTerminalColors.cpp \

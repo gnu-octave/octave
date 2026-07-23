@@ -47,7 +47,7 @@ std_list_to_qt_list (const std::list<T>& lst)
 inline int
 qt_fontmetrics_horizontal_advance (const QFontMetrics& fm, QChar ch)
 {
-#if defined (HAVE_QFONTMETRICS_HORIZONTAL_ADVANCE)
+#if defined (HAVE_QFONTMETRICS_HORIZONTALADVANCE)
   return fm.horizontalAdvance (ch);
 #else
   return fm.width (ch);
@@ -58,7 +58,7 @@ inline int
 qt_fontmetrics_horizontal_advance (const QFontMetrics& fm,
                                    const QString& text, int len = -1)
 {
-#if defined (HAVE_QFONTMETRICS_HORIZONTAL_ADVANCE)
+#if defined (HAVE_QFONTMETRICS_HORIZONTALADVANCE)
   return fm.horizontalAdvance (text, len);
 #else
   return fm.width (text, len);

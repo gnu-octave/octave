@@ -877,7 +877,8 @@ canonicalize_file_name (const std::string& name, std::string& msg)
   std::string retval;
 
   // FIXME: Consider replacing this with std::filesystem::canonical on all
-  // platforms once we allow using C++17.
+  // platforms.  Function std::filesystem::canonical was introduced in C++17,
+  // and all platforms support it as of 2019.
 
 #if defined (OCTAVE_USE_WINDOWS_API)
   // open file handle

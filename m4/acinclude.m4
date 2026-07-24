@@ -1935,6 +1935,9 @@ AC_DEFUN([OCTAVE_CHECK_LIB_SNDFILE_OK], [
 ])
 dnl
 dnl Check whether std::pmr::polymorphic_allocator is available.
+dnl FIXME: polymorphic_allocator was added in C++17.
+dnl        However, actual implementation support lagged and was introduced
+dnl        in clang and MacOS only in 2023.  Remove this test in 2028.
 dnl
 AC_DEFUN([OCTAVE_CHECK_LIB_STL_POLYMORPHIC_ALLOCATOR], [
   AC_CACHE_CHECK([whether std::pmr::polymorphic_allocator is available],
@@ -2983,101 +2986,6 @@ AC_DEFUN([OCTAVE_CONFIGURE_WARNING_SUMMARY], [
       AC_MSG_WARN([$]elt)
       warn_msg_printed=true
     fi])
-])
-dnl
-dnl Check if the C++ library has the bit_and, bit_or, and bit_xor
-dnl templates defined.
-dnl
-AC_DEFUN([OCTAVE_CXX_BITWISE_OP_TEMPLATES], [
-  AC_CACHE_CHECK([whether bit_and, bit_or, bit_xor are defined in the C++ library],
-    [oct_cv_lib_stl_bitwise_op_templates],
-    [AC_LANG_PUSH(C++)
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <functional>
-        ]], [[
-        int x = 0;
-        int y = 1;
-        int z1 = std::bit_and<int>() (x, y);
-        int z2 = std::bit_or<int>() (x, y);
-        int z3 = std::bit_xor<int>() (x, y);
-      ]])],
-      oct_cv_lib_stl_bitwise_op_templates=yes,
-      oct_cv_lib_stl_bitwise_op_templates=no)
-    AC_LANG_POP(C++)
-  ])
-  if test $oct_cv_lib_stl_bitwise_op_templates = yes; then
-    AC_DEFINE(HAVE_CXX_BITWISE_OP_TEMPLATES, 1,
-      [Define to 1 if C++ library has templated bitwise operators.])
-  fi
-])
-dnl
-dnl Check if the C++ library has functions to access real and imaginary
-dnl parts of complex numbers independently via references.
-dnl
-AC_DEFUN([OCTAVE_CXX_COMPLEX_REFERENCE_ACCESSORS], [
-  AC_CACHE_CHECK([whether complex class can reference components independently],
-    [oct_cv_lib_stl_complex_reference_accessors],
-    [AC_LANG_PUSH(C++)
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <complex>
-        ]], [[
-        std::complex<double> x;
-        x.real () = 1.0;
-        x.imag () = 1.0;
-      ]])],
-      oct_cv_lib_stl_complex_reference_accessors=yes,
-      oct_cv_lib_stl_complex_reference_accessors=no)
-    AC_LANG_POP(C++)
-  ])
-  if test $oct_cv_lib_stl_complex_reference_accessors = yes; then
-    AC_DEFINE(HAVE_CXX_COMPLEX_REFERENCE_ACCESSORS, 1,
-      [Define to 1 if C++ complex class has T& real () and T& imag () methods.])
-  fi
-])
-dnl
-dnl Check if the C++ library has functions to set real and imaginary
-dnl parts of complex numbers independently.
-dnl
-AC_DEFUN([OCTAVE_CXX_COMPLEX_SETTERS], [
-  AC_CACHE_CHECK([whether complex class can set components independently],
-    [oct_cv_lib_stl_complex_setters],
-    [AC_LANG_PUSH(C++)
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <complex>
-        ]], [[
-        std::complex<double> x;
-        x.real (1.0);
-        x.imag (2.0);
-      ]])],
-      oct_cv_lib_stl_complex_setters=yes, oct_cv_lib_stl_complex_setters=no)
-    AC_LANG_POP(C++)
-  ])
-  if test $oct_cv_lib_stl_complex_setters = yes; then
-    AC_DEFINE(HAVE_CXX_COMPLEX_SETTERS, 1,
-      [Define to 1 if C++ complex class has void real (T) and void imag (T) methods.])
-  fi
-])
-dnl
-dnl Check if the compiler supports dynamic auto arrays.
-dnl
-AC_DEFUN([OCTAVE_CXX_DYNAMIC_AUTO_ARRAYS], [
-  AC_CACHE_CHECK([whether C++ supports dynamic auto arrays],
-    [oct_cv_prog_cxx_dynamic_auto_arrays],
-    [AC_LANG_PUSH(C++)
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([], [[
-        void test(char *);
-        int length();
-        char x[length()];
-        test(x);
-      ]])],
-      oct_cv_prog_cxx_dynamic_auto_arrays=yes,
-      oct_cv_prog_cxx_dynamic_auto_arrays=no)
-    AC_LANG_POP(C++)
-  ])
-  if test $oct_cv_prog_cxx_dynamic_auto_arrays = yes; then
-    AC_DEFINE(HAVE_DYNAMIC_AUTO_ARRAYS, 1,
-      [Define to 1 if C++ supports dynamic auto arrays.])
-  fi
 ])
 dnl
 dnl Check if C++ compiler handles FLAG command line option.  If two

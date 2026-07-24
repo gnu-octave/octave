@@ -419,13 +419,18 @@ if test "$GCC" = yes; then
 fi
 AC_SUBST(GCC_VERSION)
 
-## It seems that there are some broken inline assembly functions in GNU libc.
-## Since it is uncertain how to test whether Octave is linked against GNU libc,
-## just disable them for all platforms.
+## The following AC_DEFINE has been removed for Octave release 12 (in 2027).
+## The code has been commented out, but left in configure.ac in case a problem
+## is later identified.  All of this code may be removed for Octave release 13.
 
-AC_MSG_NOTICE([defining __NO_MATH_INLINES avoids buggy GNU libc exp function])
-AC_DEFINE(__NO_MATH_INLINES, 1,
-  [Define to 1 if your version of GNU libc has buggy inline assembly code for math functions like exp.])
+## In GNU libc circa year 2000 there were some broken inline assembly functions
+## which would result in "exp (-Inf) = NaN" instead of 0.  This was apparently
+## fixed by 2002.  See posting on R message board at
+## https://www.stat.math.ethz.ch/pipermail/r-help/2002-July/023294.html.
+
+##AC_MSG_NOTICE([defining __NO_MATH_INLINES avoids buggy GNU libc exp function])
+##AC_DEFINE(__NO_MATH_INLINES, 1,
+##  [Define to 1 if your version of GNU libc has buggy inline assembly code for math functions like exp.])
 
 ### Determine the compiler flag necessary to create dependencies.
 
@@ -1077,25 +1082,9 @@ fi
 AM_CONDITIONAL([AMCOND_CROSS_TOOLS], [test $cross_tools = yes])
 
 ### Check compiler characteristics.
-dnl FIXME: How many of these are necessary now that C++20 is required?
-
-## Check if C++ compiler can auto allocate variable sized arrays.
-OCTAVE_CXX_DYNAMIC_AUTO_ARRAYS
 
 ## Check that C compiler and libraries support IEEE754 data format.
 OCTAVE_IEEE754_DATA_FORMAT
-
-## Are bit_and, bit_or, and bit_xor defined as templated operators?
-OCTAVE_CXX_BITWISE_OP_TEMPLATES
-
-## Can complex class set components independently?
-OCTAVE_CXX_COMPLEX_SETTERS
-
-## Are there functions to access real/imag parts of numbers via references?
-OCTAVE_CXX_COMPLEX_REFERENCE_ACCESSORS
-
-## Does the C compiler handle alloca and const correctly?
-AC_FUNC_ALLOCA
 
 ## Does the C compiler support Automake subdir-objects option?
 AM_PROG_CC_C_O
@@ -1301,21 +1290,24 @@ fi
 
 dnl The list of functions is short because we use gnulib to guarantee
 dnl valid implementations for many common problematic functions.
+dnl See file bootstrap.conf for a list of functions imported from gnulib.
 
 dnl These checks define/undefine HAVE_FUNCNAME in config.h.
-dnl Code tests HAVE_FUNCNAME and either uses function or provides workaround.
-dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
-AC_CHECK_FUNCS([ctermid dup2])
+dnl C++ code uses test "if defined (HAVE_FUNCNAME)" and either uses FUNCNAME
+dnl if true or provides a workaround.
+dnl Use multiple AC_CHECKs below to avoid line continuations '\' in list.
+AC_CHECK_FUNCS([ctermid])
 AC_CHECK_FUNCS([endgrent endpwent execvp fork])
 AC_CHECK_FUNCS([getegid geteuid getgid getgrent getgrgid getgrnam])
 AC_CHECK_FUNCS([getpgrp getpid getppid getpwent getpwuid getuid])
 AC_CHECK_FUNCS([isascii kill])
 AC_CHECK_FUNCS([lgamma_r lgammaf_r])
-AC_CHECK_FUNCS([realpath resolvepath])
-AC_CHECK_FUNCS([select setgrent setpwent setsid siglongjmp strsignal])
-AC_CHECK_FUNCS([tcgetattr tcsetattr toascii])
-AC_CHECK_FUNCS([umask waitpid])
+AC_CHECK_FUNCS([select setgrent setpwent setsid siglongjmp])
+AC_CHECK_FUNCS([tcgetattr tcsetattr])
+AC_CHECK_FUNCS([umask])
 AC_CHECK_FUNCS([_getch _kbhit])
+
+AC_CHECK_FUNCS([getpwnam], [], [AC_CHECK_LIB([sun], [getpwnam])])
 
 ## Check for math defines such as M_LN2 in math.h
 AC_CACHE_CHECK([for MATH DEFINES in math.h],
@@ -1407,8 +1399,8 @@ case $host_os in
     AC_CHECK_FUNCS([setvbuf], [],
                    [AC_MSG_ERROR([Missing function required to build Octave])])
 
-    ## We need this for GetDeviceCaps.  Should we actually check for
-    ## the function and library?
+    ## We need this for GetDeviceCaps.
+    ## Should we actually check for the function and library?
     WIN32_API_LIBS="-lgdi32 $WIN32_API_LIBS"
   ;;
 esac
@@ -1421,8 +1413,8 @@ case $host_os in
       [AC_MSG_ERROR([Missing PSAPI required to build for Windows target.])],
       [#include <windows.h>])
 
-    ## We need this, e.g., for RegOpenKeyExW.  Should we actually check for
-    ## the function and library?
+    ## We need this, e.g., for RegOpenKeyExW.
+    ## Should we actually check for the function and library?
     WIN32_API_LIBS="-ladvapi32 $WIN32_API_LIBS"
   ;;
 esac
@@ -1436,19 +1428,6 @@ case $host_os in
       [#include <windows.h>])
   ;;
 esac
-
-## Cygwin kluge for getrusage.
-AC_CHECK_FUNCS([getrusage])
-case $host_os in
-  cygwin*)
-    AC_DEFINE(RUSAGE_TIMES_ONLY, 1,
-      [Define to 1 if the struct rusage only has time information.])
-  ;;
-esac
-
-AC_CHECK_FUNCS([getpwnam], [], [AC_CHECK_LIB([sun], [getpwnam])])
-
-AC_FUNC_CLOSEDIR_VOID
 
 ## Check return type of matherr
 AC_CACHE_CHECK([for struct exception in math.h],

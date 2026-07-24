@@ -485,22 +485,10 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
 static inline void
 set_component (Complex& c, double num, bool imag)
 {
-#if defined (HAVE_CXX_COMPLEX_SETTERS)
   if (imag)
     c.imag (num);
   else
     c.real (num);
-#elif defined (HAVE_CXX_COMPLEX_REFERENCE_ACCESSORS)
-  if (imag)
-    c.imag () = num;
-  else
-    c.real () = num;
-#else
-  if (imag)
-    c = Complex (c.real (), num);
-  else
-    c = Complex (num, c.imag ());
-#endif
 }
 
 Complex

@@ -4016,7 +4016,10 @@ textscan::match_literal (delimited_stream& is,
   return true;
 }
 
-// The std::wbuffer_convert template is deprecated in C++17.
+// The std::wbuffer_convert template was deprecated in C++17 and removed in
+// C++26.
+// FIXME: Implement alternative for stream encoding conversion that does not
+//        rely on deprecated features by 2028.
 // A deprecation warning is emitted when using STL headers from LLVM libc++ or
 // GCC libstdc++ (for GCC 15 or newer).  If we used it directly as the type of
 // "m_converter", it would be included in many compilation units which would
@@ -4024,8 +4027,6 @@ textscan::match_literal (delimited_stream& is,
 // else that includes the header with those implementations of the STL.
 // Mask the type by deriving a class and silence these deprecation warning here
 // to have a more digestable build output.
-// FIXME: Implement alternative for stream encoding conversion that does not
-//        rely on deprecated features.
 
 #ifdef HAVE_PRAGMA_GCC_DIAGNOSTIC
 #  pragma GCC diagnostic push

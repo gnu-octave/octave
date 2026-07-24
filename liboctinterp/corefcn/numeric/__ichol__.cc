@@ -42,13 +42,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 // Secondary functions for complex and real case used in ichol algorithms.
 Complex ichol_mult_complex (Complex a, Complex b)
 {
-#if defined (HAVE_CXX_COMPLEX_SETTERS)
   b.imag (-b.imag ());
-#elif defined (HAVE_CXX_COMPLEX_REFERENCE_ACCESSORS)
-  b.imag () = -b.imag ();
-#else
-  b = b.conj ();
-#endif
+
   return a * b;
 }
 

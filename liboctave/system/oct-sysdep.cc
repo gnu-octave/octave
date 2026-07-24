@@ -499,10 +499,11 @@ dir_exists (const std::string& dirname, std::string& msg)
 bool
 same_file (const std::string& file1, const std::string& file2)
 {
-#if defined (OCTAVE_USE_WINDOWS_API)
+  // FIXME: Consider replacing this with std::filesystem::equivalent on all
+  // platforms.  Function std::filesystem::equivalent was introduced in C++17,
+  // and all platforms support it as of 2019.
 
-  // FIXME: When Octave switches to C++17, consider replacing this function
-  //        by https://en.cppreference.com/w/cpp/filesystem/equivalent.
+#if defined (OCTAVE_USE_WINDOWS_API)
 
   bool retval = false;
 

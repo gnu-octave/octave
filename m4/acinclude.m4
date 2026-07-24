@@ -2809,8 +2809,9 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNCONTEXT_CREATE], [
     LDFLAGS="$oct_save_LDFLAGS"
     LIBS="$oct_save_LIBS"
   fi
-  if test $ac_cv_func_SUNContext_Create = yes \
-    || test "x$oct_cv_lib_sundials_core" = xyes; then
+  dnl Must use test x"..." = xyes syntax as these variables may be unset
+  if test x"$ac_cv_func_SUNContext_Create" = xyes \
+    || test x"$oct_cv_lib_sundials_core" = xyes; then
     ## SUNDIALS prior to version 6 does not need SUNContext_Create
     AC_DEFINE(HAVE_SUNDIALS_SUNCONTEXT, 1,
       [Define to 1 if SUNDIALS API uses a SUNContext object.])

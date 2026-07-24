@@ -77,6 +77,10 @@ END {
             basename, ldflags[i]);
     printf ("%%canon_reldir%%_%s_la_LIBADD = $(OCT_LINK_DEPS) %s\n",
             basename, libraries[i]);
+    ## Let Automake compute _DEPENDENCIES.  Add EXTRA_xxx_DEPENCIES which
+    ## forces liboctave.la and liboctinterp.la to be linked before dldfcn.
+    printf ("EXTRA_%%canon_reldir%%_%s_la_DEPENDENCIES := $(OCT_LINK_DEPS)\n",
+            basename);
   }
 
   print "";

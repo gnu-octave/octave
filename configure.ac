@@ -3186,7 +3186,6 @@ OCTAVE_LINK_DEPS=
 OCTAVE_LINK_OPTS=
 
 OCT_LINK_DEPS=
-OCT_LTLINK_DEPS=
 OCT_GUI_LINK_DEPS=
 
 OCT_LINK_OPTS="$LDFLAGS"
@@ -3196,7 +3195,6 @@ if test $link_all_deps = yes; then
   AC_DEFINE(OCTAVE_LINK_ALL_DEPS, 1, [Link with all dependencies.])
 
   OCT_LINK_DEPS="liboctinterp/liboctinterp.la liboctave/liboctave.la"
-  OCT_LTLINK_DEPS="$OCT_LINK_DEPS"
   OCT_GUI_LINK_DEPS="liboctgui/liboctgui.la $OCT_LINK_DEPS"
 
   MKOCTFILE_OCTAVE_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS $MKOCTFILE_LIBOCTAVE_LINK_DEPS"
@@ -3209,9 +3207,8 @@ if test $link_all_deps = yes; then
   OCTAVE_LINK_OPTS="$LIBOCTINTERP_LINK_OPTS"
 else
   case $host_os in
-    mingw* | msdosmsvc)
+    msdosmsvc | mingw*)
       OCT_LINK_DEPS="liboctinterp/liboctinterp.la liboctave/liboctave.la"
-      OCT_LTLINK_DEPS="$OCT_LINK_DEPS"
       OCT_GUI_LINK_DEPS="liboctgui/liboctgui.la $OCT_LINK_DEPS"
 
       MKOCTFILE_OCT_LINK_DEPS="-L${octlibdir} $LIBOCTINTERP $LIBOCTAVE"
@@ -3233,7 +3230,6 @@ AC_SUBST(OCTAVE_LINK_DEPS)
 AC_SUBST(OCTAVE_LINK_OPTS)
 
 AC_SUBST(OCT_LINK_DEPS)
-AC_SUBST(OCT_LTLINK_DEPS)
 AC_SUBST(OCT_LINK_OPTS)
 
 AC_SUBST(OCT_GUI_LINK_DEPS)

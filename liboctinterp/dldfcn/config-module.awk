@@ -73,12 +73,10 @@ END {
         printf ("%%canon_reldir%%_%s_la_CPPFLAGS = $(liboctinterp_liboctinterp_la_CPPFLAGS) %s\n",
                 basename, cppflags[i]);
       }
-    printf ("%%canon_reldir%%_%s_la_LDFLAGS := $(AM_LDFLAGS) $(WARN_LDFLAGS) $(NO_UNDEFINED_LDFLAG) -avoid-version -module %s $(OCT_LINK_OPTS) $(OCT_LINK_DEPS)\n",
+    printf ("%%canon_reldir%%_%s_la_LDFLAGS := $(AM_LDFLAGS) $(WARN_LDFLAGS) $(NO_UNDEFINED_LDFLAG) -avoid-version -module %s $(OCT_LINK_OPTS)\n",
             basename, ldflags[i]);
-    printf ("%%canon_reldir%%_%s_la_LIBADD = $(DLD_LIBOCTINTERP_LIBADD) %s\n",
+    printf ("%%canon_reldir%%_%s_la_LIBADD = $(OCT_LINK_DEPS) %s\n",
             basename, libraries[i]);
-    printf ("%%canon_reldir%%_%s_la_DEPENDENCIES := $(OCT_LTLINK_DEPS)\n",
-            basename);
   }
 
   print "";

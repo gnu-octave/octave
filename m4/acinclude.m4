@@ -1097,7 +1097,7 @@ dnl
 AC_DEFUN([OCTAVE_CHECK_LIB_ARPACK_OK_2], [
   AC_CACHE_CHECK([whether the arpack library is free of bugs],
     [oct_cv_lib_arpack_ok_2],
-    [save_FFLAGS="$FFLAGS"
+    [oct_save_FFLAGS="$FFLAGS"
     FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
     AC_LANG_PUSH(Fortran 77)
     AC_RUN_IFELSE([[
@@ -1215,7 +1215,7 @@ c
     oct_cv_lib_arpack_ok_2=no,
     oct_cv_lib_arpack_ok_2=yes)
     ## Restore FFLAGS.
-    FFLAGS="$save_FFLAGS"
+    FFLAGS="$oct_save_FFLAGS"
     AC_LANG_POP(Fortran 77)
   ])
   if test $oct_cv_lib_arpack_ok_2 = yes; then

@@ -42,7 +42,7 @@ AC_DEFUN([OCTAVE_BLAS], [
     fi
     AC_MSG_RESULT([$ax_cv_blas_integer_size assumed for cross compilation])
   elif test $ax_blas_ok = yes; then
-    oct_ac_save_LIBS="$LIBS"
+    oct_save_LIBS="$LIBS"
     LIBS="$BLAS_LIBS $LIBS"
     AC_LANG_PUSH(Fortran 77)
     # Check if BLAS functions with single precision return value work
@@ -137,7 +137,7 @@ c 8-byte integers.
       ])
 
   AC_LANG_POP(Fortran 77)
-  LIBS="$oct_ac_save_LIBS"
+  LIBS="$oct_save_LIBS"
 fi
 
 ])

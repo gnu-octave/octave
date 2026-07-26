@@ -1388,7 +1388,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_HDF5_DLL], [
         return x
       ]])],
       [oct_cv_lib_hdf5_dll=no],
-      [save_CFLAGS="$CFLAGS"
+      [oct_save_CFLAGS="$CFLAGS"
       CFLAGS="$CFLAGS -DWIN32 -D_HDF5USEDLL_"
       oct_save_LIBS="$LIBS"
       LIBS="$HDF5_LIBS $LIBS"
@@ -1400,7 +1400,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_HDF5_DLL], [
         ]])],
         oct_cv_lib_hdf5_dll=yes,
         oct_cv_lib_hdf5_dll=no)
-      CFLAGS="$save_CFLAGS"
+      CFLAGS="$oct_save_CFLAGS"
       LIBS="$oct_save_LIBS"
     ])
   ])
@@ -1631,7 +1631,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
   if test -n "$OPENGL_LIBS"; then
     AC_DEFINE(HAVE_OPENGL, 1, [Define to 1 if OpenGL is available.])
 
-    save_LIBS="$LIBS"
+    oct_save_LIBS="$LIBS"
     LIBS="$LIBS $OPENGL_LIBS"
     AC_CACHE_CHECK([for glBlendFuncSeparate],
       [oct_cv_func_glblendfuncseparate],[
@@ -1697,7 +1697,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
         AC_DEFINE(GL_GLEXT_PROTOTYPES, 1, [Define to 1 to enable OpenGL extensions in headers.])
       fi
     fi
-    LIBS="$save_LIBS"
+    LIBS="$oct_save_LIBS"
   fi
 ])
 dnl
@@ -2215,9 +2215,9 @@ AC_DEFUN([OCTAVE_CHECK_QSCINTILLA], [
     ## Check for QScintilla library which is used in the Qt GUI editor.
     AC_CACHE_CHECK([for the QScintilla library for Qt $qt_version],
       [oct_cv_lib_qscintilla],
-      [save_CPPFLAGS="$CPPFLAGS"
-      save_CXXFLAGS="$CXXFLAGS"
-      save_LDFLAGS="$LDFLAGS"
+      [oct_save_CPPFLAGS="$CPPFLAGS"
+      oct_save_CXXFLAGS="$CXXFLAGS"
+      oct_save_LDFLAGS="$LDFLAGS"
       oct_save_LIBS="$LIBS"
       CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
       CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
@@ -2238,9 +2238,9 @@ AC_DEFUN([OCTAVE_CHECK_QSCINTILLA], [
           break
         fi
       done
-      CPPFLAGS="$save_CPPFLAGS"
-      CXXFLAGS="$save_CXXFLAGS"
-      LDFLAGS="$save_LDFLAGS"
+      CPPFLAGS="$oct_save_CPPFLAGS"
+      CXXFLAGS="$oct_save_CXXFLAGS"
+      LDFLAGS="$oct_save_LDFLAGS"
       LIBS="$oct_save_LIBS"
       AC_LANG_POP([C++])
     ])
@@ -2255,15 +2255,15 @@ AC_DEFUN([OCTAVE_CHECK_QSCINTILLA], [
       AC_DEFINE(HAVE_QSCINTILLA, 1,
         [Define to 1 if the QScintilla library and header files are available.])
 
-      save_CPPFLAGS="$CPPFLAGS"
-      save_CXXFLAGS="$CXXFLAGS"
+      oct_save_CPPFLAGS="$CPPFLAGS"
+      oct_save_CXXFLAGS="$CXXFLAGS"
       CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
       CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
       AC_LANG_PUSH(C++)
       AC_CHECK_HEADERS([Qsci/qscilexeroctave.h Qsci/qscilexermatlab.h])
       AC_LANG_POP(C++)
-      CPPFLAGS="$save_CPPFLAGS"
-      CXXFLAGS="$save_CXXFLAGS"
+      CPPFLAGS="$oct_save_CPPFLAGS"
+      CXXFLAGS="$oct_save_CXXFLAGS"
 
       use_qscintilla=yes
     fi
@@ -2661,7 +2661,7 @@ dnl Check whether integer types that are used for indexing in SuiteSparse match.
 dnl
 AC_DEFUN([OCTAVE_CHECK_SUITESPARSE_SIZEOF_IDX_TYPES], [
   if test -n "$SPQR_LIBS" && test -n "$CHOLMOD_LIBS"; then
-    save_CPPFLAGS="$CPPFLAGS"
+    oct_save_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="$CHOLMOD_CPPFLAGS $CPPFLAGS"
 
     AC_CACHE_CHECK([whether SuiteSparse_long and octave_idx_type have same size],
@@ -2717,7 +2717,7 @@ AC_DEFUN([OCTAVE_CHECK_SUITESPARSE_SIZEOF_IDX_TYPES], [
       fi
     fi
 
-    CPPFLAGS="$save_CPPFLAGS"
+    CPPFLAGS="$oct_save_CPPFLAGS"
   fi
 ])
 dnl

@@ -177,6 +177,10 @@ cholinsert, choldelete, cholshift}
         error (R"(chol: optional argument must be one of "vector", "lower", or "upper")");
     }
 
+  // LLt selects the factor to return, whereas upper selects the input
+  // triangle that defines the Hermitian matrix.
+  bool upper = ! LLt;
+
   octave_value_list retval;
   octave_value arg = args(0);
 
@@ -193,7 +197,7 @@ cholinsert, choldelete, cholshift}
         {
           SparseMatrix m = arg.sparse_matrix_value ();
 
-          math::sparse_chol<SparseMatrix> fact (m, info, natural, force);
+          math::sparse_chol<SparseMatrix> fact (m, info, natural, force, upper);
 
           if (nargout == 3)
             {
@@ -218,7 +222,8 @@ cholinsert, choldelete, cholshift}
         {
           SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
-          math::sparse_chol<SparseComplexMatrix> fact (m, info, natural, force);
+          math::sparse_chol<SparseComplexMatrix> fact (m, info, natural,
+                                                       force, upper);
 
           if (nargout == 3)
             {
@@ -252,7 +257,7 @@ cholinsert, choldelete, cholshift}
 
           octave_idx_type info;
 
-          math::chol<FloatMatrix> fact (m, info, LLt != true);
+          math::chol<FloatMatrix> fact (m, info, upper);
 
           if (nargout == 2 || info == 0)
             retval = ovl (get_chol (fact), info);
@@ -265,7 +270,7 @@ cholinsert, choldelete, cholshift}
 
           octave_idx_type info;
 
-          math::chol<FloatComplexMatrix> fact (m, info, LLt != true);
+          math::chol<FloatComplexMatrix> fact (m, info, upper);
 
           if (nargout == 2 || info == 0)
             retval = ovl (get_chol (fact), info);
@@ -285,7 +290,7 @@ cholinsert, choldelete, cholshift}
 
           octave_idx_type info;
 
-          math::chol<Matrix> fact (m, info, LLt != true);
+          math::chol<Matrix> fact (m, info, upper);
 
           if (nargout == 2 || info == 0)
             retval = ovl (get_chol (fact), info);
@@ -298,7 +303,7 @@ cholinsert, choldelete, cholshift}
 
           octave_idx_type info;
 
-          math::chol<ComplexMatrix> fact (m, info, LLt != true);
+          math::chol<ComplexMatrix> fact (m, info, upper);
 
           if (nargout == 2 || info == 0)
             retval = ovl (get_chol (fact), info);
@@ -344,6 +349,39 @@ cholinsert, choldelete, cholshift}
 %! assert (pd, pv);
 %! assert (qv, [1 2]);
 
+## Verify that sparse chol uses the triangle selected by "lower" or "upper".
+## The Hermitian matrix defined by the lower triangle is positive definite,
+## whereas the one defined by the upper triangle is not.
+%!testif HAVE_CHOLMOD <*68569>
+%! A = sparse ([4, 3; 1, 1]);
+%! [Ls, ps] = chol (A, "lower");
+%! [Ld, pd] = chol (full (A), "lower");
+%! [~, qs] = chol (A, "upper");
+%! [~, qd] = chol (full (A), "upper");
+%! assert (ps, 0);
+%! assert (pd, 0);
+%! assert (full (Ls), Ld, 4 * eps);
+%! assert (qs > 0);
+%! assert (qd > 0);
+
+## Also check that the complex lower triangle is interpreted as Hermitian.
+%!testif HAVE_CHOLMOD <*68569>
+%! A = sparse ([4, 4; 1+2i, 3]);
+%! [Ls, ps] = chol (A, "lower");
+%! [Ld, pd] = chol (full (A), "lower");
+%! assert (ps, 0);
+%! assert (pd, 0);
+%! assert (full (Ls), Ld, 4 * eps);
+
+## Check the selected triangle when CHOLMOD computes a permutation.
+%!testif HAVE_CHOLMOD <*68569>
+%! B = sparse ([4, 1, 0, 1; 1, 4, 1, 0;
+%!              0, 1, 4, 1; 1, 0, 1, 4]);
+%! A = tril (B);
+%! [L, p, q] = chol (A, "lower", "vector");
+%! assert (p, 0);
+%! assert (full (L * L'), full (B(q, q)), 20 * eps);
+
 %!testif HAVE_CHOLMOD <*42587>
 %! A = sparse ([1 0 8;0 1 8;8 8 1]);
 %! [Q, p] = chol (A);
@@ -383,11 +421,18 @@ the Cholesky@tie{}factorization.
         {
           octave_idx_type info;
 
+          // The inverse is unpermuted by sparse_chol::inverse, so allow
+          // CHOLMOD to choose a fill-reducing ordering.
+          bool natural = false;
+          bool force = false;
+          bool upper = true;
+
           if (arg.isreal ())
             {
               SparseMatrix m = arg.sparse_matrix_value ();
 
-              math::sparse_chol<SparseMatrix> chol (m, info);
+              math::sparse_chol<SparseMatrix> chol (m, info, natural,
+                                                    force, upper);
 
               if (info == 0)
                 retval = chol.inverse ();
@@ -398,7 +443,8 @@ the Cholesky@tie{}factorization.
             {
               SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
-              math::sparse_chol<SparseComplexMatrix> chol (m, info);
+              math::sparse_chol<SparseComplexMatrix> chol (m, info, natural,
+                                                           force, upper);
 
               if (info == 0)
                 retval = chol.inverse ();
@@ -480,6 +526,34 @@ the Cholesky@tie{}factorization.
 %!testif HAVE_CHOLMOD
 %! Ainv3 = cholinv (sparse (A));
 %! assert (norm (Ainv-Ainv3), 0, 1e-10);
+
+## Check that real sparse cholinv reads only the upper triangle and that it
+## correctly unpermutes a non-involutory AMD permutation.  The arrow matrix
+## below is ordered [5 4 3 1 2] by AMD, so a transposed unpermutation of the
+## inverse does not go unnoticed.
+%!testif HAVE_CHOLMOD
+%! v = [1, 2, 1, 3];
+%! idx = [1, 3:5];
+%! H = diag (8 * ones (1, 5));
+%! H(2,idx) = v;
+%! H(idx,2) = v';
+%! U = sparse (triu (H));
+%! U(3,1) = 99;  # garbage in the ignored lower triangle
+%! assert (full (cholinv (U)), inv (H), 10 * eps);
+%! assert (full (cholinv (U)), cholinv (full (U)), 10 * eps);
+
+## Ditto for complex input, which must interpret the upper triangle as
+## defining a Hermitian matrix.
+%!testif HAVE_CHOLMOD
+%! v = [1+1i, 2-1i, 1-2i, 3+1i];
+%! idx = [1, 3:5];
+%! H = diag (8 * ones (1, 5));
+%! H(2,idx) = v;
+%! H(idx,2) = v';
+%! U = sparse (triu (H));
+%! U(3,1) = 99+9i;  # garbage in the ignored lower triangle
+%! assert (full (cholinv (U)), inv (H), 10 * eps);
+%! assert (full (cholinv (U)), cholinv (full (U)), 10 * eps);
 */
 
 DEFUN (chol2inv, args, ,

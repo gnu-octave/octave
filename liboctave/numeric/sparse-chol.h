@@ -49,6 +49,10 @@ public:
 
   sparse_chol ();
 
+  // The overloads without UPPER retain the always-upper behavior of Octave 11
+  // and earlier.  UPPER selects the triangle of A that defines the Hermitian
+  // matrix to factorize.
+
   sparse_chol (const chol_type& a, bool natural, bool force);
 
   sparse_chol (const chol_type& a, octave_idx_type& info,
@@ -57,6 +61,11 @@ public:
   sparse_chol (const chol_type& a, octave_idx_type& info, bool natural);
 
   sparse_chol (const chol_type& a, octave_idx_type& info);
+
+  sparse_chol (const chol_type& a, bool natural, bool force, bool upper);
+
+  sparse_chol (const chol_type& a, octave_idx_type& info,
+               bool natural, bool force, bool upper);
 
   sparse_chol (const sparse_chol<chol_type>& a) = default;
 

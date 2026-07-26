@@ -56,23 +56,23 @@ public:
 #endif
   { }
 
-  sparse_chol_rep (const chol_type& a, bool natural, bool force)
+  sparse_chol_rep (const chol_type& a, bool natural, bool force, bool upper)
     : m_is_pd (false), m_minor_p (0), m_perm (), m_rcond (0)
 #if defined (HAVE_CHOLMOD)
     , m_L (nullptr), m_common ()
 #endif
   {
-    init (a, natural, force);
+    init (a, natural, force, upper);
   }
 
   sparse_chol_rep (const chol_type& a, octave_idx_type& info,
-                   bool natural, bool force)
+                   bool natural, bool force, bool upper)
     : m_is_pd (false), m_minor_p (0), m_perm (), m_rcond (0)
 #if defined (HAVE_CHOLMOD)
     , m_L (nullptr), m_common ()
 #endif
   {
-    info = init (a, natural, force);
+    info = init (a, natural, force, upper);
   }
 
   OCTAVE_DISABLE_COPY_MOVE (sparse_chol_rep)
@@ -136,7 +136,8 @@ private:
   void drop_zeros (const cholmod_sparse *S);
 #endif
 
-  octave_idx_type init (const chol_type& a, bool natural, bool force);
+  octave_idx_type init (const chol_type& a, bool natural, bool force, bool upper);
+
 };
 
 #if defined (HAVE_CHOLMOD)
@@ -208,7 +209,7 @@ get_xtype<Complex> ()
 template <typename chol_type>
 octave_idx_type
 sparse_chol<chol_type>::sparse_chol_rep::init (const chol_type& a,
-    bool natural, bool force)
+    bool natural, bool force, bool upper)
 {
   octave_idx_type info = 0;
 
@@ -275,7 +276,7 @@ sparse_chol<chol_type>::sparse_chol_rep::init (const chol_type& a,
   ac->itype = CHOLMOD_INT;
 #endif
   ac->dtype = CHOLMOD_DOUBLE;
-  ac->stype = 1;
+  ac->stype = upper ? 1 : -1;
   ac->xtype = get_xtype<chol_elt> ();
 
   if (a_nr < 1)
@@ -342,6 +343,7 @@ sparse_chol<chol_type>::sparse_chol_rep::init (const chol_type& a,
   octave_unused_parameter (a);
   octave_unused_parameter (natural);
   octave_unused_parameter (force);
+  octave_unused_parameter (upper);
 
   (*current_liboctave_error_handler)
     ("support for CHOLMOD was unavailable or disabled when liboctave was built");
@@ -386,31 +388,43 @@ sparse_chol<chol_type>::sparse_chol ()
 template <typename chol_type>
 sparse_chol<chol_type>::sparse_chol (const chol_type& a, bool natural,
                                      bool force)
-  : m_rep (new typename
-           sparse_chol<chol_type>::sparse_chol_rep (a, natural, force))
+  : sparse_chol (a, natural, force, true)
 { }
 
 template <typename chol_type>
 sparse_chol<chol_type>::sparse_chol (const chol_type& a,
                                      octave_idx_type& info,
                                      bool natural, bool force)
-  : m_rep (new typename
-           sparse_chol<chol_type>::sparse_chol_rep (a, info, natural, force))
+  : sparse_chol (a, info, natural, force, true)
 { }
 
 template <typename chol_type>
 sparse_chol<chol_type>::sparse_chol (const chol_type& a,
                                      octave_idx_type& info,
                                      bool natural)
-  : m_rep (new typename
-           sparse_chol<chol_type>::sparse_chol_rep (a, info, natural, false))
+  : sparse_chol (a, info, natural, false, true)
 { }
 
 template <typename chol_type>
 sparse_chol<chol_type>::sparse_chol (const chol_type& a,
                                      octave_idx_type& info)
+  : sparse_chol (a, info, false, false, true)
+{ }
+
+template <typename chol_type>
+sparse_chol<chol_type>::sparse_chol (const chol_type& a, bool natural,
+                                     bool force, bool upper)
   : m_rep (new typename
-           sparse_chol<chol_type>::sparse_chol_rep (a, info, false, false))
+           sparse_chol<chol_type>::sparse_chol_rep (a, natural, force, upper))
+{ }
+
+template <typename chol_type>
+sparse_chol<chol_type>::sparse_chol (const chol_type& a,
+                                     octave_idx_type& info,
+                                     bool natural, bool force, bool upper)
+  : m_rep (new typename
+           sparse_chol<chol_type>::sparse_chol_rep (a, info, natural, force,
+               upper))
 { }
 
 template <typename chol_type>
@@ -545,17 +559,15 @@ chol2inv (const chol_type& r)
   return retval;
 }
 
-// SparseComplexMatrix specialization (the value for the NATURAL
-// parameter in the sparse_chol<T>::sparse_chol_rep constructor is
-// different from the default).
+// SparseComplexMatrix specialization: unlike the generic version, this uses
+// natural ordering.  Retained for binary compatibility; no in-tree caller.
 
 template <>
 OCTAVE_API
 sparse_chol<SparseComplexMatrix>::sparse_chol (const SparseComplexMatrix& a,
     octave_idx_type& info)
   : m_rep (new sparse_chol<SparseComplexMatrix>::sparse_chol_rep (a, info,
-           true,
-           false))
+           true, false, true))
 { }
 
 // Instantiations we need.

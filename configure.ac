@@ -687,7 +687,7 @@ AC_ARG_ENABLE([no-undefined],
 AC_SUBST(NO_UNDEFINED_LDFLAG)
 
 case $host_os in
-  cygwin* )
+  mingw* | cygwin*)
     DEFAULT_LINK_ALL_DEPS="yes"
   ;;
   *)
@@ -696,7 +696,7 @@ case $host_os in
 esac
 AC_ARG_ENABLE([link-all-dependencies],
   [AS_HELP_STRING([--enable-link-all-dependencies],
-    [link Octave and its shared libraries with all dependencies, not just those immediately referenced (should not be needed on most systems).  This is done by default for cygwin* hosts.])],
+    [link Octave and its shared libraries with all dependencies, not just those immediately referenced (should not be needed on most systems).  This is done by default for mingw* and cygwin* hosts.])],
   [case $enableval in
      yes) link_all_deps=yes ;;
      no)  link_all_deps=no ;;

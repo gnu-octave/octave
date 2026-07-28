@@ -33,7 +33,8 @@ if AMCOND_BUILD_EXTERNAL_LIBXERBLA
     $(NO_UNDEFINED_LDFLAG) \
     -avoid-version \
     -bindir $(bindir)
-else
+
+else    # no external libxerbla
   noinst_LTLIBRARIES += %reldir%/libxerbla.la
 
   liboctave_liboctave_la_LIBADD += %reldir%/libxerbla.la

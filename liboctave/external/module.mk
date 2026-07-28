@@ -29,7 +29,7 @@ liboctave_liboctave_la_LIBADD += %reldir%/libexternal.la
 ## Special rules:
 ## Mostly for sources which must be built before rest of compilation.
 
-%canon_reldir%_libexternal_la_DEPENDENCIES = %reldir%/external.def
+EXTRA_%canon_reldir%_libexternal_la_DEPENDENCIES = %reldir%/external.def
 
 %reldir%/external.def: $(EXTERNAL_SOURCES) %reldir%/mk-f77-def.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \

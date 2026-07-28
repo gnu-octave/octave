@@ -225,11 +225,11 @@ ALL_LOCAL_TARGETS += $(OCTAVE_CROSS_TOOLS)
 src-mostlyclean-local:
 	-rm -f $(OCTAVE_CROSS_TOOLS)
 
-else
+else    # no CROSS TOOLS
 
 src-mostlyclean-local:
 
-endif
+endif   # end AMCOND_CROSS_TOOLS
 
 ## Special rules:
 

@@ -37,7 +37,7 @@ RANDLIB_SRC = \
 
 ## Special rules for files which must be built before compilation
 
-%canon_reldir%_librandlib_la_DEPENDENCIES = %reldir%/randlib.def
+EXTRA_%canon_reldir%_librandlib_la_DEPENDENCIES = %reldir%/randlib.def
 
 ## randlib directory may not exist in VPATH build; create it if necessary.
 %reldir%/randlib.def: $(RANDLIB_SRC) %reldir%/../mk-f77-def.sh | %reldir%/$(octave_dirstamp)

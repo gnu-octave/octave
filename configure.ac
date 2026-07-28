@@ -688,7 +688,7 @@ AC_SUBST(NO_UNDEFINED_LDFLAG)
 
 case $host_os in
   mingw* | cygwin*)
-    DEFAULT_LINK_ALL_DEPS="yes"
+    DEFAULT_LINK_ALL_DEPS="no"
   ;;
   *)
     DEFAULT_LINK_ALL_DEPS="no"
@@ -3207,12 +3207,12 @@ if test $link_all_deps = yes; then
   OCTAVE_LINK_OPTS="$LIBOCTINTERP_LINK_OPTS"
 else
   case $host_os in
-    msdosmsvc | mingw*)
-      OCT_LINK_DEPS="liboctinterp/liboctinterp.la liboctave/liboctave.la"
-      OCT_GUI_LINK_DEPS="liboctgui/liboctgui.la $OCT_LINK_DEPS"
-
-      MKOCTFILE_OCT_LINK_DEPS="-L${octlibdir} $LIBOCTINTERP $LIBOCTAVE"
-    ;;
+#    msdosmsvc | mingw*)
+#      OCT_LINK_DEPS="liboctinterp/liboctinterp.la liboctave/liboctave.la"
+#      OCT_GUI_LINK_DEPS="liboctgui/liboctgui.la $OCT_LINK_DEPS"
+#
+#      MKOCTFILE_OCT_LINK_DEPS="-L${octlibdir} $LIBOCTINTERP $LIBOCTAVE"
+#    ;;
     darwin*)
       dnl Contains variables that are defined and undefined at this point,
       dnl so use appropriate quoting to defer expansion of

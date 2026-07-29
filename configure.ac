@@ -3207,12 +3207,12 @@ if test $link_all_deps = yes; then
   OCTAVE_LINK_OPTS="$LIBOCTINTERP_LINK_OPTS"
 else
   case $host_os in
-#    msdosmsvc | mingw*)
-#      OCT_LINK_DEPS="liboctinterp/liboctinterp.la liboctave/liboctave.la"
-#      OCT_GUI_LINK_DEPS="liboctgui/liboctgui.la $OCT_LINK_DEPS"
-#
-#      MKOCTFILE_OCT_LINK_DEPS="-L${octlibdir} $LIBOCTINTERP $LIBOCTAVE"
-#    ;;
+    msdosmsvc | mingw* | cygwin*)
+      OCT_LINK_DEPS="liboctinterp/liboctinterp.la liboctave/liboctave.la"
+      OCT_GUI_LINK_DEPS="liboctgui/liboctgui.la $OCT_LINK_DEPS"
+
+      MKOCTFILE_OCT_LINK_DEPS="-L${octlibdir} $LIBOCTINTERP $LIBOCTAVE"
+    ;;
     darwin*)
       dnl Contains variables that are defined and undefined at this point,
       dnl so use appropriate quoting to defer expansion of

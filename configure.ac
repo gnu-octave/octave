@@ -3255,7 +3255,7 @@ if test $build_qt_gui = yes; then
   LIBOCTGUI_LINK_OPTS="$QT_LDFLAGS"
 
   case $host_os in
-    cygwin*)
+    mingw* | cygwin*)
       LIBOCTGUI_LINK_DEPS="$LIBOCTGUI_LINK_DEPS $OPENGL_LIBS"
     ;;
   esac

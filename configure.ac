@@ -686,14 +686,6 @@ AC_ARG_ENABLE([no-undefined],
   [NO_UNDEFINED_LDFLAG="$DEFAULT_NO_UNDEFINED_LDFLAG"])
 AC_SUBST(NO_UNDEFINED_LDFLAG)
 
-case $host_os in
-  mingw* | cygwin*)
-    DEFAULT_LINK_ALL_DEPS="no"
-  ;;
-  *)
-    DEFAULT_LINK_ALL_DEPS="no"
-  ;;
-esac
 AC_ARG_ENABLE([link-all-dependencies],
   [AS_HELP_STRING([--enable-link-all-dependencies],
     [link Octave and its shared libraries with all dependencies, not just those immediately referenced (should not be needed on most systems).  This is done by default for mingw* and cygwin* hosts.])],
@@ -703,7 +695,7 @@ AC_ARG_ENABLE([link-all-dependencies],
      *) AC_MSG_ERROR([bad value $enableval for --enable-link-all-dependencies])
      ;;
    esac],
-  [link_all_deps="$DEFAULT_LINK_ALL_DEPS"])
+  [link_all_deps=no])
 
 AC_ARG_VAR([OCTAVE_CLI_LTLDFLAGS],
   [additional flags when linking octave-cli with libtool])
@@ -3182,7 +3174,8 @@ LIBOCTINTERP_LINK_DEPS="$WIN32_API_LIBS $JAVA_LIBS $LTLIBREADLINE $HDF5_LIBS $MA
 
 case $host_os in
   mingw*)
-    LIBOCTINTERP_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS $BLAS_LIBS"   
+    ## On mingw, OpenBLAS contains LAPACK_LIBS as well as BLAS_LIBS
+    LIBOCTINTERP_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS $BLAS_LIBS"
   ;;
 esac
 
@@ -3191,17 +3184,14 @@ LIBOCTINTERP_LINK_OPTS="$HDF5_LDFLAGS $MAGICK_LDFLAGS $Z_LDFLAGS $FFTW_XLDFLAGS 
 OCTAVE_LINK_DEPS=
 OCTAVE_LINK_OPTS=
 
+## These vars are used when building .oct files in liboctinterp/dldfcn dir.
 OCT_LINK_DEPS=
-OCT_GUI_LINK_DEPS=
-
 OCT_LINK_OPTS="$LDFLAGS"
-OCT_GUI_LINK_OPTS="$LDFLAGS"
 
 if test $link_all_deps = yes; then
   AC_DEFINE(OCTAVE_LINK_ALL_DEPS, 1, [Link with all dependencies.])
 
   OCT_LINK_DEPS="liboctinterp/liboctinterp.la liboctave/liboctave.la"
-  OCT_GUI_LINK_DEPS="liboctgui/liboctgui.la $OCT_LINK_DEPS"
 
   MKOCTFILE_OCTAVE_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS $MKOCTFILE_LIBOCTAVE_LINK_DEPS"
   MKOCTFILE_OCT_LINK_DEPS="-L${octlibdir} $LIBOCTINTERP $LIBOCTAVE"
@@ -3213,10 +3203,8 @@ if test $link_all_deps = yes; then
   OCTAVE_LINK_OPTS="$LIBOCTINTERP_LINK_OPTS"
 else
   case $host_os in
-    msdosmsvc | mingw* | cygwin*)
+    cygwin* | mingw* | msdosmsvc)
       OCT_LINK_DEPS="liboctinterp/liboctinterp.la liboctave/liboctave.la"
-      OCT_GUI_LINK_DEPS="liboctgui/liboctgui.la $OCT_LINK_DEPS"
-
       MKOCTFILE_OCT_LINK_DEPS="-L${octlibdir} $LIBOCTINTERP $LIBOCTAVE"
     ;;
     darwin*)
@@ -3238,41 +3226,25 @@ AC_SUBST(OCTAVE_LINK_OPTS)
 AC_SUBST(OCT_LINK_DEPS)
 AC_SUBST(OCT_LINK_OPTS)
 
-AC_SUBST(OCT_GUI_LINK_DEPS)
-AC_SUBST(OCT_GUI_LINK_OPTS)
-
 AC_SUBST(MKOCTFILE_OCTAVE_LINK_DEPS)
 AC_SUBST(MKOCTFILE_OCT_LINK_DEPS)
 
 LIBOCTGUI_LINK_DEPS=
 LIBOCTGUI_LINK_OPTS=
 
-OCTAVE_GUI_LINK_DEPS=
-OCTAVE_GUI_LINK_OPTS=
-
 if test $build_qt_gui = yes; then
   LIBOCTGUI_LINK_DEPS="$QT_LIBS"
   LIBOCTGUI_LINK_OPTS="$QT_LDFLAGS"
 
   case $host_os in
-    mingw* | cygwin*)
+    cygwin* | mingw*)
       LIBOCTGUI_LINK_DEPS="$LIBOCTGUI_LINK_DEPS $OPENGL_LIBS"
     ;;
   esac
-#  if test $link_all_deps = yes || test -n "$QT_LDFLAGS"; then
-#    LIBOCTGUI_LINK_DEPS="$LIBOCTGUI_LINK_DEPS $LIBOCTINTERP_LINK_DEPS"
-#    LIBOCTGUI_LINK_OPTS="$LIBOCTGUI_LINK_OPTS $LIBOCTINTERP_LINK_OPTS"
-#
-#    OCTAVE_GUI_LINK_DEPS="$OCTAVE_GUI_LINK_DEPS $LIBOCTGUI_LINK_DEPS"
-#    OCTAVE_GUI_LINK_OPTS="$OCTAVE_GUI_LINK_OPTS $LIBOCTGUI_LINK_OPTS"
-#  fi
 fi
 
 AC_SUBST(LIBOCTGUI_LINK_DEPS)
 AC_SUBST(LIBOCTGUI_LINK_OPTS)
-
-AC_SUBST(OCTAVE_GUI_LINK_DEPS)
-AC_SUBST(OCTAVE_GUI_LINK_OPTS)
 
 ##############################################################################
 ### Configuration tests done.

@@ -132,13 +132,11 @@ endif
   $(WARN_LDFLAGS) \
   $(NO_UNDEFINED_LDFLAG) \
   $(OCTAVE_UNICODE_EXE_LDFLAGS) \
-  $(OCTAVE_GUI_LTLDFLAGS) \
-  $(OCTAVE_GUI_LINK_OPTS)
+  $(OCTAVE_GUI_LTLDFLAGS)
 
 %canon_reldir%_octave_gui_LDADD := \
   $(OCTAVE_GUI_LIBS) \
-  $(OCTAVE_CORE_LIBS) \
-  $(OCTAVE_GUI_LINK_DEPS)
+  $(OCTAVE_CORE_LIBS)
 
 ## Specify build of "octave-svgconvert"
 

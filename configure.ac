@@ -3215,8 +3215,8 @@ else
       dnl Contains variables that are defined and undefined at this point,
       dnl so use appropriate quoting to defer expansion of
       dnl ${abs_top_builddir}, ${bindir}, and ${version}.
-      OCT_LINK_DEPS='-bundle_loader ${abs_top_builddir}/src/octave'"${EXEEXT}"
-      MKOCTFILE_OCT_LINK_DEPS='-bundle_loader ${bindir}/octave-${version}'"${EXEEXT}"
+      #OCT_LINK_DEPS='-bundle_loader ${abs_top_builddir}/src/octave'"${EXEEXT}"
+      #MKOCTFILE_OCT_LINK_DEPS='-bundle_loader ${bindir}/octave-${version}'"${EXEEXT}"
     ;;
   esac
 fi

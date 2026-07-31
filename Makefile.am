@@ -116,7 +116,11 @@ OCTAVE_LINK_OPTS := @OCTAVE_LINK_OPTS@
 OCTAVE_GUI_LINK_DEPS := @OCTAVE_GUI_LINK_DEPS@
 OCTAVE_GUI_LINK_OPTS := @OCTAVE_GUI_LINK_OPTS@
 
-# DEPS for linking .oct files
+# Link inputs for the .oct files built in liboctinterp/dldfcn.
+DLDFCN_LINK_DEPS := @DLDFCN_LINK_DEPS@
+DLDFCN_DEPENDENCIES := @DLDFCN_DEPENDENCIES@
+
+# Options used by mkoctfile for linking .oct files.
 OCT_LINK_DEPS := @OCT_LINK_DEPS@
 OCT_LINK_OPTS := @OCT_LINK_OPTS@
 
@@ -586,4 +590,3 @@ $(TEST_CLEAN_TARGETS):
 ## them on 'clean', so we override this target to do nothing by default.
 
 clean-aminfo:
-

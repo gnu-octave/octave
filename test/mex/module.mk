@@ -38,7 +38,7 @@ MKOCT_LDFLAG = \
   -L$(top_builddir)/liboctave/.libs
 
 MKOCT = \
-  OCT_LINK_DEPS="$(OCT_LINK_DEPS)" \
+  OCT_LINK_DEPS="$(DLDFCN_LINK_DEPS)" \
   DL_LDFLAGS="$(DL_LDFLAGS)" \
   $(top_builddir)/src/mkoctfile $(MKOCT_CPPFLAGS) $(MKOCT_LDFLAG)
 

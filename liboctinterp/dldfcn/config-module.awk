@@ -75,11 +75,11 @@ END {
       }
     printf ("%%canon_reldir%%_%s_la_LDFLAGS := $(AM_LDFLAGS) $(WARN_LDFLAGS) $(NO_UNDEFINED_LDFLAG) -avoid-version -module %s $(OCT_LINK_OPTS)\n",
             basename, ldflags[i]);
-    printf ("%%canon_reldir%%_%s_la_LIBADD = %s $(OCT_LINK_DEPS)\n",
+    printf ("%%canon_reldir%%_%s_la_LIBADD = %s $(DLDFCN_LINK_DEPS)\n",
             basename, libraries[i]);
-    ## Let Automake compute _DEPENDENCIES.  Add EXTRA_xxx_DEPENCIES which
-    ## forces liboctave.la and liboctinterp.la to be linked before dldfcn.
-    printf ("EXTRA_%%canon_reldir%%_%s_la_DEPENDENCIES := $(OCT_LINK_DEPS)\n",
+    ## Let Automake compute _DEPENDENCIES.  Add EXTRA_xxx_DEPENDENCIES to
+    ## force required targets to be linked before the dldfcn module.
+    printf ("EXTRA_%%canon_reldir%%_%s_la_DEPENDENCIES := $(DLDFCN_DEPENDENCIES)\n",
             basename);
   }
 

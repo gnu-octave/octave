@@ -91,7 +91,7 @@ if [ "x@OCTAVE_RELOCATE_ALL@" = "xyes" ]; then
     ldflags=`echo '@LDFLAGS@' | $SED "s|$(@CYGPATH@ -m @prefix@)|\$\{prefix}|g" | $SED "s|$(echo $(@CYGPATH@ -w @prefix@) | $SED 's|\\\\|\\\\\\\\|g')|\$\{prefix}|g" | $SED "s|$(@CYGPATH@ -u @prefix@)|\$\{prefix}|g" | $SED "s|(@prefix@)|\$\{prefix\}|g" | $SED 's|\"|\\\\\\\"|g'`
     oct_link_opts=`echo '@OCT_LINK_OPTS@' | $SED "s|$(@CYGPATH@ -m @prefix@)|\$\{prefix}|g" | $SED "s|$(echo $(@CYGPATH@ -w @prefix@) | $SED 's|\\\\|\\\\\\\\|g')|\$\{prefix}|g" | $SED "s|$(@CYGPATH@ -u @prefix@)|\$\{prefix}|g" | $SED "s|(@prefix@)|\$\{prefix\}|g" | $SED 's|\"|\\\\\\\"|g'`
     mkoctfile_octave_link_deps=`echo '@MKOCTFILE_OCTAVE_LINK_DEPS@' | $SED "s|$(@CYGPATH@ -m @prefix@)|\$\{prefix}|g" | $SED "s|$(echo $(@CYGPATH@ -w @prefix@) | $SED 's|\\\\|\\\\\\\\|g')|\$\{prefix}|g" | $SED "s|$(@CYGPATH@ -u @prefix@)|\$\{prefix}|g" | $SED "s|(@prefix@)|\$\{prefix\}|g" | $SED 's|\"|\\\\\\\"|g'`
-    mkoctfile_oct_link_deps=`echo '@MKOCTFILE_OCT_LINK_DEPS@' | $SED "s|$(@CYGPATH@ -m @prefix@)|\$\{prefix}|g" | $SED "s|$(echo $(@CYGPATH@ -w @prefix@) | $SED 's|\\\\|\\\\\\\\|g')|\$\{prefix}|g" | $SED "s|$(@CYGPATH@ -u @prefix@)|\$\{prefix}|g" | $SED "s|(@prefix@)|\$\{prefix\}|g" | $SED 's|\"|\\\\\\\"|g'`
+    oct_link_deps=`echo '@OCT_LINK_DEPS@' | $SED "s|$(@CYGPATH@ -m @prefix@)|\$\{prefix}|g" | $SED "s|$(echo $(@CYGPATH@ -w @prefix@) | $SED 's|\\\\|\\\\\\\\|g')|\$\{prefix}|g" | $SED "s|$(@CYGPATH@ -u @prefix@)|\$\{prefix}|g" | $SED "s|(@prefix@)|\$\{prefix\}|g" | $SED 's|\"|\\\\\\\"|g'`
   else
     cppflags=`echo '@CPPFLAGS@' | $SED "s|@prefix@|\$\{prefix\}|g" | $SED 's|\"|\\\\\\\"|g'`
     fftw3f_ldflags=`echo '@FFTW3F_LDFLAGS@' | $SED "s|@prefix@|\$\{prefix\}|g" | $SED 's|\"|\\\\\\\"|g'`
@@ -100,7 +100,7 @@ if [ "x@OCTAVE_RELOCATE_ALL@" = "xyes" ]; then
     ldflags=`echo '@LDFLAGS@' | $SED "s|@prefix@|\$\{prefix\}|g" | $SED 's|\"|\\\\\\\"|g'`
     oct_link_opts=`echo '@OCT_LINK_OPTS@' | $SED "s|@prefix@|\$\{prefix\}|g" | $SED 's|\"|\\\\\\\"|g'`
     mkoctfile_octave_link_deps=`echo '@MKOCTFILE_OCTAVE_LINK_DEPS@' | $SED "s|@prefix@|\$\{prefix\}|g" | $SED 's|\"|\\\\\\\"|g'`
-    mkoctfile_oct_link_deps=`echo '@MKOCTFILE_OCT_LINK_DEPS@' | $SED "s|@prefix@|\$\{prefix\}|g" | $SED 's|\"|\\\\\\\"|g'`
+    oct_link_deps=`echo '@OCT_LINK_DEPS@' | $SED "s|@prefix@|\$\{prefix\}|g" | $SED 's|\"|\\\\\\\"|g'`
   fi
 else
   cppflags=`echo '@CPPFLAGS@' | $SED 's|\"|\\\\\\\"|g'`
@@ -110,7 +110,7 @@ else
   ldflags=`echo '@LDFLAGS@' | $SED 's|\"|\\\\\\\"|g'`
   oct_link_opts=`echo '@OCT_LINK_OPTS@' | $SED 's|\"|\\\\\\\"|g'`
   mkoctfile_octave_link_deps=`echo '@MKOCTFILE_OCTAVE_LINK_DEPS@' | $SED 's|\"|\\\\\\\"|g'`
-  mkoctfile_oct_link_deps=`echo '@MKOCTFILE_OCT_LINK_DEPS@' | $SED 's|\"|\\\\\\\"|g'`
+  oct_link_deps=`echo '@OCT_LINK_DEPS@' | $SED 's|\"|\\\\\\\"|g'`
 fi
 
 
@@ -209,7 +209,6 @@ MKOCTFILE_F77="@MKOCTFILE_F77@"
 MKOCTFILE_RANLIB="@MKOCTFILE_RANLIB@"
 OCTAVE_LINK_DEPS="@OCTAVE_LINK_DEPS@"
 OCTAVE_LINK_OPTS="@OCTAVE_LINK_OPTS@"
-OCT_LINK_DEPS="@OCT_LINK_DEPS@"
 OPENGL_LIBS="@OPENGL_LIBS@"
 PCRE_CPPFLAGS="@PCRE_CPPFLAGS@"
 PCRE_LDFLAGS="@PCRE_LDFLAGS@"
@@ -362,13 +361,12 @@ $SED \
   -e "s|%OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%|\"${MKOCTFILE_DL_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_MKOCTFILE_F77%|\"${MKOCTFILE_F77}\"|" \
   -e "s|%OCTAVE_CONF_MKOCTFILE_OCTAVE_LINK_DEPS%|\"${mkoctfile_octave_link_deps}\"|" \
-  -e "s|%OCTAVE_CONF_MKOCTFILE_OCT_LINK_DEPS%|\"${mkoctfile_oct_link_deps}\"|" \
   -e "s|%OCTAVE_CONF_MKOCTFILE_RANLIB%|\"${MKOCTFILE_RANLIB}\"|" \
   -e "s|%OCTAVE_CONF_OCTAVE_LINK_DEPS%|\"${OCTAVE_LINK_DEPS}\"|" \
   -e "s|%OCTAVE_CONF_OCTAVE_LINK_OPTS%|\"${OCTAVE_LINK_OPTS}\"|" \
   -e "s|%OCTAVE_CONF_OCTINCLUDEDIR%|\"${octincludedir}\"|" \
   -e "s|%OCTAVE_CONF_OCTLIBDIR%|\"${octlibdir}\"|" \
-  -e "s|%OCTAVE_CONF_OCT_LINK_DEPS%|\"${OCT_LINK_DEPS}\"|" \
+  -e "s|%OCTAVE_CONF_OCT_LINK_DEPS%|\"${oct_link_deps}\"|" \
   -e "s|%OCTAVE_CONF_OCT_LINK_OPTS%|\"${oct_link_opts}\"|" \
   -e "s|%OCTAVE_CONF_OPENGL_LIBS%|\"${OPENGL_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_PCRE_CPPFLAGS%|\"${PCRE_CPPFLAGS}\"|" \

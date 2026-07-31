@@ -3189,16 +3189,21 @@ OCTAVE_LINK_DEPS=
 OCTAVE_LINK_OPTS=
 
 ## These vars are used when building .oct files in liboctinterp/dldfcn dir.
+DLDFCN_LINK_DEPS=
+DLDFCN_DEPENDENCIES=
+
+## These vars are used by mkoctfile when linking .oct files.
 OCT_LINK_DEPS=
 OCT_LINK_OPTS="$LDFLAGS"
 
 if test $link_all_deps = yes; then
   AC_DEFINE(OCTAVE_LINK_ALL_DEPS, 1, [Link with all dependencies.])
 
-  OCT_LINK_DEPS="liboctinterp/liboctinterp.la liboctave/liboctave.la"
+  DLDFCN_LINK_DEPS="liboctinterp/liboctinterp.la liboctave/liboctave.la"
+  DLDFCN_DEPENDENCIES="$DLDFCN_LINK_DEPS"
 
   MKOCTFILE_OCTAVE_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS $MKOCTFILE_LIBOCTAVE_LINK_DEPS"
-  MKOCTFILE_OCT_LINK_DEPS="-L${octlibdir} $LIBOCTINTERP $LIBOCTAVE"
+  OCT_LINK_DEPS="-L${octlibdir} $LIBOCTINTERP $LIBOCTAVE"
 
   LIBOCTINTERP_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS $LIBOCTAVE_LINK_DEPS"
   LIBOCTINTERP_LINK_OPTS="$LIBOCTINTERP_LINK_OPTS $LIBOCTAVE_LINK_OPTS"
@@ -3208,15 +3213,17 @@ if test $link_all_deps = yes; then
 else
   case $host_os in
     cygwin* | mingw* | msdosmsvc)
-      OCT_LINK_DEPS="liboctinterp/liboctinterp.la liboctave/liboctave.la"
-      MKOCTFILE_OCT_LINK_DEPS="-L${octlibdir} $LIBOCTINTERP $LIBOCTAVE"
+      DLDFCN_LINK_DEPS="liboctinterp/liboctinterp.la liboctave/liboctave.la"
+      DLDFCN_DEPENDENCIES="$DLDFCN_LINK_DEPS"
+      OCT_LINK_DEPS="-L${octlibdir} $LIBOCTINTERP $LIBOCTAVE"
     ;;
     darwin*)
       dnl Contains variables that are defined and undefined at this point,
       dnl so use appropriate quoting to defer expansion of
       dnl ${abs_top_builddir}, ${bindir}, and ${version}.
-      #OCT_LINK_DEPS='-bundle_loader ${abs_top_builddir}/src/octave'"${EXEEXT}"
-      #MKOCTFILE_OCT_LINK_DEPS='-bundle_loader ${bindir}/octave-${version}'"${EXEEXT}"
+      DLDFCN_LINK_DEPS='-bundle_loader ${abs_top_builddir}/src/octave'"${EXEEXT}"
+      DLDFCN_DEPENDENCIES='src/octave'"${EXEEXT}"
+      OCT_LINK_DEPS='-bundle_loader ${bindir}/octave-${version}'"${EXEEXT}"
     ;;
   esac
 fi
@@ -3227,11 +3234,13 @@ AC_SUBST(LIBOCTINTERP_LINK_OPTS)
 AC_SUBST(OCTAVE_LINK_DEPS)
 AC_SUBST(OCTAVE_LINK_OPTS)
 
+AC_SUBST(DLDFCN_LINK_DEPS)
+AC_SUBST(DLDFCN_DEPENDENCIES)
+
 AC_SUBST(OCT_LINK_DEPS)
 AC_SUBST(OCT_LINK_OPTS)
 
 AC_SUBST(MKOCTFILE_OCTAVE_LINK_DEPS)
-AC_SUBST(MKOCTFILE_OCT_LINK_DEPS)
 
 LIBOCTGUI_LINK_DEPS=
 LIBOCTGUI_LINK_OPTS=
@@ -3340,7 +3349,7 @@ AC_CONFIG_COMMANDS_PRE([
   ## of variables expanded above.
 
   eval MKOCTFILE_DL_LDFLAGS="\"$MKOCTFILE_DL_LDFLAGS\""
-  eval MKOCTFILE_OCT_LINK_DEPS="\"$MKOCTFILE_OCT_LINK_DEPS\""
+  eval OCT_LINK_DEPS="\"$OCT_LINK_DEPS\""
 ])
 
 ### Do substitutions in Makefiles and other files that hold configuration info.

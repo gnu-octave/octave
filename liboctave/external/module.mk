@@ -29,12 +29,15 @@ liboctave_liboctave_la_LIBADD += %reldir%/libexternal.la
 ## Special rules:
 ## Mostly for sources which must be built before rest of compilation.
 
+if AMCOND_WINDOWS_FORTRAN_EXPORTS
 EXTRA_%canon_reldir%_libexternal_la_DEPENDENCIES = %reldir%/external.def
 
 %reldir%/external.def: $(EXTERNAL_SOURCES) %reldir%/mk-f77-def.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(SHELL) %reldir%/mk-f77-def.sh $(srcdir) $(EXTERNAL_SOURCES) > $@-t && \
 	mv $@-t $@
+
+endif
 
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 

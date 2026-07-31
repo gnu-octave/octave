@@ -37,6 +37,7 @@ RANDLIB_SRC = \
 
 ## Special rules for files which must be built before compilation
 
+if AMCOND_WINDOWS_FORTRAN_EXPORTS
 EXTRA_%canon_reldir%_librandlib_la_DEPENDENCIES = %reldir%/randlib.def
 
 ## randlib directory may not exist in VPATH build; create it if necessary.
@@ -44,6 +45,8 @@ EXTRA_%canon_reldir%_librandlib_la_DEPENDENCIES = %reldir%/randlib.def
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(SHELL) %reldir%/../mk-f77-def.sh $(srcdir) $(RANDLIB_SRC) > $@-t && \
 	mv $@-t $@
+
+endif
 
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
@@ -67,4 +70,3 @@ liboctave_EXTRA_DIST += \
   %reldir%/tstmid.for
 
 liboctave_DISTCLEANFILES += %reldir%/randlib.def
-

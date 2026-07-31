@@ -90,9 +90,9 @@ nodist_%canon_reldir%_octave_SOURCES = %reldir%/main.cc
 %canon_reldir%_octave_LDADD := \
   liboctave/wrappers/libwrappers.la \
   libgnu/libgnu.la \
-  $(X11_LIBS) \
-  $(WAYLAND_CLIENT_LIBS) \
   $(CARBON_LIBS) \
+  $(WAYLAND_CLIENT_LIBS) \
+  $(X11_LIBS) \
   $(GNULIB_LINK_DEPS)
 
 ## Specify build of "octave-cli"
@@ -166,8 +166,7 @@ nodist_%canon_reldir%_mkoctfile_SOURCES = %reldir%/mkoctfile.cc
 
 %canon_reldir%_mkoctfile_LDADD := \
   liboctave/wrappers/libwrappers.la \
-  libgnu/libgnu.la \
-  $(LIBS)
+  libgnu/libgnu.la
 
 ## Specify build of "octave-config"
 
@@ -183,8 +182,7 @@ nodist_%canon_reldir%_octave_config_SOURCES = %reldir%/octave-config.cc
   $(OCTAVE_UNICODE_EXE_LDFLAGS)
 
 %canon_reldir%_octave_config_LDADD = \
-  libgnu/libgnu.la \
-  $(LIBS)
+  libgnu/libgnu.la
 
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 

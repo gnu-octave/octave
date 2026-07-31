@@ -654,12 +654,16 @@ AC_SUBST(STATIC_LIBS)
 
 XTRA_EXTERNAL_SH_LDFLAGS=
 case $host_os in
-  msdosmsvc | mingw* | cygwin*)
+  cygwin* | mingw* | msdosmsvc)
     FLIBS="$FLIBS -lkernel32"
     XTRA_EXTERNAL_SH_LDFLAGS="-Wl,liboctave/external/external.def"
   ;;
 esac
 AC_SUBST(XTRA_EXTERNAL_SH_LDFLAGS)
+
+## Windows environments require a list of exported symbols for Fortran comiler.
+AM_CONDITIONAL([AMCOND_WINDOWS_FORTRAN_EXPORTS],
+               [test -n "$XTRA_EXTERNAL_SH_LDFLAGS"])
 
 if test $STATIC_LIBS = no && test $SHARED_LIBS = no; then
   AC_MSG_ERROR([You can't disable building both static AND shared libraries!])
@@ -668,7 +672,7 @@ fi
 ### More configure argument checking related to linking
 
 case $host_os in
-  msdosmsvc | mingw* | cygwin* | AIX | BeOS | OS/2 )
+  cygwin* | mingw* | msdosmsvc | AIX | BeOS | OS/2 )
     DEFAULT_NO_UNDEFINED_LDFLAG="-no-undefined"
   ;;
   *)
@@ -677,7 +681,7 @@ case $host_os in
 esac
 AC_ARG_ENABLE([no-undefined],
   [AS_HELP_STRING([--enable-no-undefined],
-    [pass -no-undefined to libtool when linking Octave and its shared libraries.  This is done by default for msdosmsvc, mingw*, cygwin*, AIX, BeOS, or OS/2 hosts.])],
+    [pass -no-undefined to libtool when linking Octave and its shared libraries.  This is done by default for cygwin*, mingw*, msdosmsvc, AIX, BeOS, or OS/2 hosts.])],
   [case $enableval in
      yes) NO_UNDEFINED_LDFLAG="-no-undefined" ;;
      no)  NO_UNDEFINED_LDFLAG=  ;;
@@ -854,7 +858,7 @@ fi
 
 BUILD_EXTERNAL_LIBXERBLA=
 case $host_os in
-  msdosmsvc | mingw*)
+  mingw* | msdosmsvc)
     BUILD_EXTERNAL_LIBXERBLA=yes
   ;;
 esac
@@ -1084,7 +1088,7 @@ AM_PROG_CC_C_O
 ## Set the target Windows version early so that gnulib can use all functions
 ## that are available in that version.
 case $host_os in
-  msdosmsvc | mingw*)
+  mingw* | msdosmsvc)
     AC_MSG_CHECKING([for required _WIN32_WINNT])
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
         #include <windows.h>
@@ -1343,7 +1347,7 @@ fi
 
 ## Use Unicode aware functions on Windows
 case $host_os in
-  msdosmsvc | mingw*)
+  mingw* | msdosmsvc)
     AC_DEFINE(_UNICODE, 1, [Use Unicode CRT functions on Windows by default.])
     AC_DEFINE(UNICODE, 1, [Use Windows Unicode API by default.])
   ;;
@@ -1359,7 +1363,7 @@ esac
 AC_SUBST(OCTAVE_UNICODE_EXE_LDFLAGS)
 
 case $host_os in
-  msdosmsvc | mingw*)
+  mingw* | msdosmsvc)
     AC_CACHE_CHECK([whether locale can be set to UTF-8],
       [oct_cv_windows_utf8_locale],
       [AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
@@ -1387,7 +1391,7 @@ esac
 ## Windows-specific use of functions
 WIN32_API_LIBS=
 case $host_os in
-  msdosmsvc | mingw*)
+  mingw* | msdosmsvc)
     AC_CHECK_FUNCS([setvbuf], [],
                    [AC_MSG_ERROR([Missing function required to build Octave])])
 
@@ -1399,7 +1403,7 @@ esac
 
 ## Windows-specific module used for winqueryreg function
 case $host_os in
-  msdosmsvc | mingw*)
+  mingw* | msdosmsvc)
     AC_CHECK_HEADERS([psapi.h],
       [CPPFLAGS="-DPSAPI_VERSION=2 $CPPFLAGS"],
       [AC_MSG_ERROR([Missing PSAPI required to build for Windows target.])],
@@ -1413,7 +1417,7 @@ esac
 
 ## Windows-specific module used for canonical UNC paths
 case $host_os in
-  msdosmsvc | mingw*)
+  mingw* | msdosmsvc)
     AC_CHECK_HEADERS([shlwapi.h],
       [WIN32_API_LIBS="-lshlwapi $WIN32_API_LIBS"],
       [AC_MSG_ERROR([Missing SHLWAPI required to build for Windows target.])],
@@ -1864,7 +1868,7 @@ fi
 
 oct_cv_warn_no_window_manager=
 case $host_os in
-  msdosmsvc | mingw* | cygwin* | darwin*)
+  cygwin* | mingw* | msdosmsvc | darwin*)
     # do not warn about missing X11 or Wayland client on Windows or macOS
   ;;
   *)
@@ -2658,7 +2662,7 @@ do
         [Define to 1 if Java is available and is at least version 1.5])
       break
     ;;
-    mingw* | cygwin*)
+    cygwin* | mingw*)
       build_java=yes
       if test $have_msvc = no; then
         if test -n "$JAVA_CPPFLAGS"; then
@@ -2881,12 +2885,12 @@ CYGPATH=
 if test $OCTAVE_RELOCATE_ALL = yes; then
   case $host_os in
     mingw*)
-      # If this is on MSYS2, paths (including the installation prefix) can be
-      # represented in UNIX or Windows compatible form.  The prefix should be
-      # relocated no matter in which form it appears.
+      ## If this is on MSYS2, paths (including the installation prefix) can be
+      ## represented in UNIX or Windows compatible form.  The prefix should be
+      ## relocated no matter in which form it appears.
 
-      # Check for the tool "cygpath" that can be used to convert between the
-      # different forms.
+      ## Check for the tool "cygpath" that can be used to convert between the
+      ## different forms.
       AC_CHECK_TOOL(CYGPATH, [cygpath])
       if test -n "$CYGPATH"; then
         OCTAVE_RELOCATE_WITH_CYGPATH="yes"
@@ -2928,7 +2932,7 @@ AC_ARG_ENABLE(lib-visibility-flags,
    esac])
 
 case $host_os in
-  msdosmsvc | mingw* | cygwin*)
+  cygwin* | mingw* | msdosmsvc)
     # Assume that symbol export is working on that platform
   ;;
   *)
@@ -2944,7 +2948,7 @@ if test $ENABLE_LIB_VISIBILITY_FLAGS = yes; then
     [Define to 1 if building libraries with visibility flags])
 else
   case $host_os in
-    msdosmsvc | mingw* | cygwin*)
+    cygwin* | mingw* | msdosmsvc)
       LDFLAGS="$LDFLAGS -Wl,--export-all-symbols"
     ;;
   esac

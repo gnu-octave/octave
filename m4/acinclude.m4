@@ -1415,7 +1415,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_HDF5_HAS_UTF8_API], [
   AC_CACHE_CHECK([whether HDF5 library has UTF-8 file API],
     [oct_cv_lib_hdf5_has_utf8_api],
     [case $host_os in
-      msdosmsvc | mingw*)
+      mingw* | msdosmsvc)
         AC_LINK_IFELSE([AC_LANG_PROGRAM([[
           #include <stddef.h>
           const wchar_t *H5_get_utf16_str(const char *s);
@@ -2351,7 +2351,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       6)
         QT_MODULES="Qt6Core Qt6Gui Qt6Help Qt6Network Qt6OpenGL Qt6OpenGLWidgets Qt6PrintSupport Qt6Widgets Qt6Xml"
         case $host_os in
-          mingw* | msdosmsvc*)
+          mingw* | msdosmsvc)
           ;;
           *)
             # FIXME: Remove Qt6Core5Compat when we no longer rely on classes that
@@ -2521,7 +2521,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
 
   if test $build_qt_gui = yes; then
     case $host_os in
-      mingw* | msdosmsvc*)
+      mingw* | msdosmsvc)
         AC_CHECK_FUNCS([setvbuf], [win32_terminal=yes],
           [build_qt_gui=no
            warn_qt_setvbuf="setvbuf not found; disabling Qt GUI"])

@@ -15,9 +15,8 @@ LIBOCTINTERP_DEFUN_FILES =
 
 %canon_reldir%_liboctinterp_la_LIBADD =
 
-## NOTE: This next line must occur before including 'dldfcn/module.mk' so that
-## 'make install' will install liboctinterp before the DLDFCN libraries which
-## require re-linking when --enable-link-all-dependencies is used.
+## NOTE: This definition should occur before including Makefile fragments
+## so that liboctinterp is processed first.
 octlib_LTLIBRARIES += %reldir%/liboctinterp.la
 
 include %reldir%/parse-tree/module.mk

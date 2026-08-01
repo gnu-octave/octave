@@ -690,17 +690,6 @@ AC_ARG_ENABLE([no-undefined],
   [NO_UNDEFINED_LDFLAG="$DEFAULT_NO_UNDEFINED_LDFLAG"])
 AC_SUBST(NO_UNDEFINED_LDFLAG)
 
-AC_ARG_ENABLE([link-all-dependencies],
-  [AS_HELP_STRING([--enable-link-all-dependencies],
-    [link Octave and its shared libraries with all dependencies, not just those immediately referenced (should not be needed on most systems).  This is done by default for mingw* and cygwin* hosts.])],
-  [case $enableval in
-     yes) link_all_deps=yes ;;
-     no)  link_all_deps=no ;;
-     *) AC_MSG_ERROR([bad value $enableval for --enable-link-all-dependencies])
-     ;;
-   esac],
-  [link_all_deps=no])
-
 AC_ARG_VAR([OCTAVE_CLI_LTLDFLAGS],
   [additional flags when linking octave-cli with libtool])
 
@@ -3196,37 +3185,21 @@ DLDFCN_DEPENDENCIES=
 OCT_LINK_DEPS=
 OCT_LINK_OPTS="$LDFLAGS"
 
-if test $link_all_deps = yes; then
-  AC_DEFINE(OCTAVE_LINK_ALL_DEPS, 1, [Link with all dependencies.])
-
-  DLDFCN_LINK_DEPS="liboctinterp/liboctinterp.la liboctave/liboctave.la"
-  DLDFCN_DEPENDENCIES="$DLDFCN_LINK_DEPS"
-
-  MKOCTFILE_OCTAVE_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS $MKOCTFILE_LIBOCTAVE_LINK_DEPS"
-  OCT_LINK_DEPS="-L${octlibdir} $LIBOCTINTERP $LIBOCTAVE"
-
-  LIBOCTINTERP_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS $LIBOCTAVE_LINK_DEPS"
-  LIBOCTINTERP_LINK_OPTS="$LIBOCTINTERP_LINK_OPTS $LIBOCTAVE_LINK_OPTS"
-
-  OCTAVE_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS"
-  OCTAVE_LINK_OPTS="$LIBOCTINTERP_LINK_OPTS"
-else
-  case $host_os in
-    cygwin* | mingw* | msdosmsvc)
-      DLDFCN_LINK_DEPS="liboctinterp/liboctinterp.la liboctave/liboctave.la"
-      DLDFCN_DEPENDENCIES="$DLDFCN_LINK_DEPS"
-      OCT_LINK_DEPS="-L${octlibdir} $LIBOCTINTERP $LIBOCTAVE"
-    ;;
-    darwin*)
-      dnl Contains variables that are defined and undefined at this point,
-      dnl so use appropriate quoting to defer expansion of
-      dnl ${abs_top_builddir}, ${bindir}, and ${version}.
-      DLDFCN_LINK_DEPS='-bundle_loader ${abs_top_builddir}/src/octave'"${EXEEXT}"
-      DLDFCN_DEPENDENCIES='src/octave'"${EXEEXT}"
-      OCT_LINK_DEPS='-bundle_loader ${bindir}/octave-${version}'"${EXEEXT}"
-    ;;
-  esac
-fi
+case $host_os in
+  cygwin* | mingw* | msdosmsvc)
+    DLDFCN_LINK_DEPS="liboctinterp/liboctinterp.la liboctave/liboctave.la"
+    DLDFCN_DEPENDENCIES="$DLDFCN_LINK_DEPS"
+    OCT_LINK_DEPS="-L${octlibdir} $LIBOCTINTERP $LIBOCTAVE"
+  ;;
+  darwin*)
+    dnl Contains variables that are defined and undefined at this point,
+    dnl so use appropriate quoting to defer expansion of
+    dnl ${abs_top_builddir}, ${bindir}, and ${version}.
+    DLDFCN_LINK_DEPS='-bundle_loader ${abs_top_builddir}/src/octave'"${EXEEXT}"
+    DLDFCN_DEPENDENCIES='src/octave'"${EXEEXT}"
+    OCT_LINK_DEPS='-bundle_loader ${bindir}/octave-${version}'"${EXEEXT}"
+  ;;
+esac
 
 AC_SUBST(LIBOCTINTERP_LINK_DEPS)
 AC_SUBST(LIBOCTINTERP_LINK_OPTS)

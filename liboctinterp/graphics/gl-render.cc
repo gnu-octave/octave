@@ -299,7 +299,7 @@ opengl_texture::create (opengl_functions& glfcns, const octave_value& data)
         {
           const uint8NDArray xdata = data.uint8_array_value ();
 
-          OCTAVE_LOCAL_BUFFER (GLubyte, a, (4*tw*th));
+          OCTAVE_LOCAL_BUFFER_INIT (GLubyte, a, (4*tw*th), 0);
 
           for (int i = 0; i < h; i++)
             {

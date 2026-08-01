@@ -48,19 +48,19 @@ struct octave_passwd_wrapper
   char *pw_shell;
 };
 
-extern OCTAVE_API struct passwd * octave_getpwent_wrapper (void);
+OCTAVE_API struct passwd * octave_getpwent_wrapper (void);
 
-extern OCTAVE_API struct passwd * octave_getpwuid_wrapper (uid_t uid);
+OCTAVE_API struct passwd * octave_getpwuid_wrapper (uid_t uid);
 
-extern OCTAVE_API struct passwd * octave_getpwnam_wrapper (const char *nam);
+OCTAVE_API struct passwd * octave_getpwnam_wrapper (const char *nam);
 
-extern OCTAVE_API void octave_setpwent_wrapper (void);
+OCTAVE_API void octave_setpwent_wrapper (void);
 
-extern OCTAVE_API void octave_endpwent_wrapper (void);
+OCTAVE_API void octave_endpwent_wrapper (void);
 
-extern OCTAVE_API void octave_endpwent_wrapper (void);
+OCTAVE_API void octave_endpwent_wrapper (void);
 
-extern OCTAVE_API void
+OCTAVE_API void
 octave_from_passwd (const struct passwd *pw,
                     struct octave_passwd_wrapper *oct_pw);
 

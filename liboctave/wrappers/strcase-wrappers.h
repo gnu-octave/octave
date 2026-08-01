@@ -36,11 +36,9 @@ extern "C" {
 #include <stddef.h>
 #endif
 
-OCTAVE_API int
-octave_strcasecmp (const char *s1, const char *s2);
+OCTAVE_API int octave_strcasecmp (const char *s1, const char *s2);
 
-OCTAVE_API int
-octave_strncasecmp (const char *s1, const char *s2, size_t n);
+OCTAVE_API int octave_strncasecmp (const char *s1, const char *s2, size_t n);
 
 #if defined (__cplusplus)
 }

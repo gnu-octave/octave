@@ -30,7 +30,7 @@
 extern "C" {
 #endif
 
-extern OCTAVE_API int
+OCTAVE_API int
 octave_setenv_wrapper (const char *envname, const char *envval, int overwrite);
 
 #if defined (__cplusplus)

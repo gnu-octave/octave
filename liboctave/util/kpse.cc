@@ -46,6 +46,7 @@
 #include "oct-sysdep.h"
 #include "oct-time.h"
 #include "pathsearch.h"
+#include "perror-wrapper.h"
 #include "unistd-wrappers.h"
 
 #if defined (OCTAVE_USE_WINDOWS_API)
@@ -208,7 +209,7 @@ kpse_readable_file (const std::string& name)
       if (errno == EACCES)
         {
           // Maybe warn them if permissions are bad.
-          perror (name.c_str ());
+          octave_perror_wrapper (name.c_str ());
         }
 
       ret = "";

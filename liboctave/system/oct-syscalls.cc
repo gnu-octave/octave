@@ -88,8 +88,7 @@ execvp (const std::string& file, const string_vector& argv)
 }
 
 int
-execvp (const std::string& file, const string_vector& args,
-        std::string& msg)
+execvp (const std::string& file, const string_vector& args, std::string& msg)
 {
   msg = "";
 
@@ -234,8 +233,7 @@ waitpid (pid_t pid, int *status, int options)
 }
 
 pid_t
-waitpid (pid_t pid, int *status, int options,
-         std::string& msg)
+waitpid (pid_t pid, int *status, int options, std::string& msg)
 {
   pid_t retval = -1;
   msg = "";

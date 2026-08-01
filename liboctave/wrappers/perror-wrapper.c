@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2016-2026 The Octave Project Developers
+// Copyright (C) 2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -23,27 +23,20 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#if ! defined (octave_filepos_wrappers_h)
-#define octave_filepos_wrappers_h 1
+// perror may be provided by gnulib.  We don't include gnulib headers
+// directly in Octave's C++ source files to avoid problems that may be
+// caused by the way that gnulib overrides standard library functions.
 
-#include <sys/types.h>
-
-#if defined (__cplusplus)
-#  include <cstdio>
-#else
-#  include <stdio.h>
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
 
-#if defined (__cplusplus)
-extern "C" {
-#endif
+#include <stdio.h>
 
-OCTAVE_API int octave_fseeko_wrapper (FILE *fp, off_t offset, int whence);
+#include "perror-wrapper.h"
 
-OCTAVE_API off_t octave_ftello_wrapper (FILE *fp);
-
-#if defined (__cplusplus)
+void
+octave_perror_wrapper (const char *s)
+{
+  perror (s);
 }
-#endif
-
-#endif

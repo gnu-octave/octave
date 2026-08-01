@@ -36,77 +36,78 @@
 extern "C" {
 #endif
 
-extern OCTAVE_API int octave_access_f_ok (void);
+OCTAVE_API int octave_access_f_ok (void);
 
-extern OCTAVE_API int octave_access_r_ok (void);
+OCTAVE_API int octave_access_r_ok (void);
 
-extern OCTAVE_API int octave_access_w_ok (void);
+OCTAVE_API int octave_access_w_ok (void);
 
-extern OCTAVE_API int octave_access_x_ok (void);
+OCTAVE_API int octave_access_x_ok (void);
 
-extern OCTAVE_API int octave_access_wrapper (const char *nm, int mode);
+OCTAVE_API int octave_access_wrapper (const char *nm, int mode);
 
-extern OCTAVE_API int octave_chdir_wrapper (const char *nm);
+OCTAVE_API int octave_chdir_wrapper (const char *nm);
 
-extern OCTAVE_API int octave_close_wrapper (int fd);
+OCTAVE_API int octave_close_wrapper (int fd);
 
-extern OCTAVE_API const char * octave_ctermid_wrapper (void);
+// FIXME: 2026-07-31 : wrapper is unused.  consider deprecating and deleting.
+OCTAVE_API const char * octave_ctermid_wrapper (void);
 
-extern OCTAVE_API int octave_dup_wrapper (int old_fd);
+OCTAVE_API int octave_dup_wrapper (int old_fd);
 
-extern OCTAVE_API int octave_dup2_wrapper (int fd1, int fd2);
+OCTAVE_API int octave_dup2_wrapper (int fd1, int fd2);
 
-extern OCTAVE_API int octave_execv_wrapper (const char *file, char *const *argv);
+OCTAVE_API int octave_execv_wrapper (const char *file, char *const *argv);
 
-extern OCTAVE_API int octave_execvp_wrapper (const char *file, char *const *argv);
+OCTAVE_API int octave_execvp_wrapper (const char *file, char *const *argv);
 
-extern OCTAVE_API pid_t octave_fork_wrapper (void);
+OCTAVE_API pid_t octave_fork_wrapper (void);
 
-extern OCTAVE_API int octave_ftruncate_wrapper (int fd, off_t sz);
+OCTAVE_API int octave_ftruncate_wrapper (int fd, off_t sz);
 
-extern OCTAVE_API char * octave_getcwd_wrapper (char *nm, size_t len);
+OCTAVE_API char * octave_getcwd_wrapper (char *nm, size_t len);
 
-extern OCTAVE_API gid_t octave_getegid_wrapper (void);
+OCTAVE_API gid_t octave_getegid_wrapper (void);
 
-extern OCTAVE_API uid_t octave_geteuid_wrapper (void);
+OCTAVE_API uid_t octave_geteuid_wrapper (void);
 
-extern OCTAVE_API gid_t octave_getgid_wrapper (void);
+OCTAVE_API gid_t octave_getgid_wrapper (void);
 
-extern OCTAVE_API int octave_gethostname_wrapper (char *nm, size_t len);
+OCTAVE_API int octave_gethostname_wrapper (char *nm, size_t len);
 
-extern OCTAVE_API pid_t octave_getpgrp_wrapper (void);
+OCTAVE_API pid_t octave_getpgrp_wrapper (void);
 
-extern OCTAVE_API pid_t octave_getpid_wrapper (void);
+OCTAVE_API pid_t octave_getpid_wrapper (void);
 
-extern OCTAVE_API pid_t octave_getppid_wrapper (void);
+OCTAVE_API pid_t octave_getppid_wrapper (void);
 
-extern OCTAVE_API uid_t octave_getuid_wrapper (void);
+OCTAVE_API uid_t octave_getuid_wrapper (void);
 
-extern OCTAVE_API int octave_isatty_wrapper (int fd);
+OCTAVE_API int octave_isatty_wrapper (int fd);
 
-extern OCTAVE_API int octave_link_wrapper (const char *nm1, const char *nm2);
+OCTAVE_API int octave_link_wrapper (const char *nm1, const char *nm2);
 
-extern OCTAVE_API int octave_pipe_wrapper (int *fd);
+OCTAVE_API int octave_pipe_wrapper (int *fd);
 
-extern OCTAVE_API int octave_rmdir_wrapper (const char *nm);
+OCTAVE_API int octave_rmdir_wrapper (const char *nm);
 
-extern OCTAVE_API pid_t octave_setsid_wrapper (void);
+OCTAVE_API pid_t octave_setsid_wrapper (void);
 
-extern OCTAVE_API int octave_stdin_fileno (void);
+OCTAVE_API int octave_stdin_fileno (void);
 
-extern OCTAVE_API int octave_stdout_fileno (void);
+OCTAVE_API int octave_stdout_fileno (void);
 
-extern OCTAVE_API int octave_stderr_fileno (void);
+OCTAVE_API int octave_stderr_fileno (void);
 
-extern OCTAVE_API int octave_symlink_wrapper (const char *nm1, const char *nm2);
+OCTAVE_API int octave_symlink_wrapper (const char *nm1, const char *nm2);
 
-extern OCTAVE_API int octave_unlink_wrapper (const char *nm);
+OCTAVE_API int octave_unlink_wrapper (const char *nm);
 
-extern OCTAVE_API pid_t octave_vfork_wrapper (void);
+OCTAVE_API pid_t octave_vfork_wrapper (void);
 
-extern OCTAVE_API bool octave_have_fork (void);
+OCTAVE_API bool octave_have_fork (void);
 
-extern OCTAVE_API bool octave_have_vfork (void);
+OCTAVE_API bool octave_have_vfork (void);
 
 #if defined (__cplusplus)
 }

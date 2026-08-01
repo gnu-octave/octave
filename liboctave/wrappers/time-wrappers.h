@@ -36,16 +36,16 @@
 extern "C" {
 #endif
 
-extern OCTAVE_API long long
-octave_gettime_ns_wrapper (void);
+// FIXME: 2026-07-31 : wrapper is unused.  consider deprecating and deleting.
+OCTAVE_API long long octave_gettime_ns_wrapper (void);
 
-extern OCTAVE_API int octave_gettimeofday_wrapper (time_t *sec, long *usec);
+OCTAVE_API int octave_gettimeofday_wrapper (time_t *sec, long *usec);
 
-extern OCTAVE_API int
+OCTAVE_API int
 octave_cpu_time (time_t *usr_sec, time_t *sys_sec,
                  long *usr_usec, long *sys_usec);
 
-extern OCTAVE_API int
+OCTAVE_API int
 octave_getrusage_wrapper (time_t *usr_sec, time_t *sys_sec,
                           long *usr_usec, long *sys_usec,
                           long *maxrss, long *ixrss, long *idrss,
@@ -54,8 +54,7 @@ octave_getrusage_wrapper (time_t *usr_sec, time_t *sys_sec,
                           long *msgsnd, long *msgrcv, long *nsignals,
                           long *nvcsw, long *nivcsw);
 
-extern OCTAVE_API time_t
-octave_mktime_wrapper (struct tm *tp);
+OCTAVE_API time_t octave_mktime_wrapper (struct tm *tp);
 
 #if defined (__cplusplus)
 }

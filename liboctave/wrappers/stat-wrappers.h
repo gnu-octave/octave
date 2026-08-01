@@ -39,13 +39,13 @@
 extern "C" {
 #endif
 
-extern OCTAVE_API int octave_mkdir_wrapper (const char *name, mode_t mode);
+OCTAVE_API int octave_mkdir_wrapper (const char *name, mode_t mode);
 
-extern OCTAVE_API int octave_mkfifo_wrapper (const char *name, mode_t mode);
+OCTAVE_API int octave_mkfifo_wrapper (const char *name, mode_t mode);
 
-extern OCTAVE_API int octave_umask_wrapper (mode_t mode);
+OCTAVE_API int octave_umask_wrapper (mode_t mode);
 
-extern OCTAVE_API int
+OCTAVE_API int
 octave_stat_wrapper (const char *fname, mode_t *mode, ino_t *ino,
                      dev_t *dev, nlink_t *nlink, uid_t *uid,
                      gid_t *gid, off_t *size, time_t *atime,
@@ -53,7 +53,7 @@ octave_stat_wrapper (const char *fname, mode_t *mode, ino_t *ino,
                      time_t *ctime, long int *ctime_nsec, dev_t *rdev,
                      long *blksize, long *blocks);
 
-extern OCTAVE_API int
+OCTAVE_API int
 octave_lstat_wrapper (const char *lname, mode_t *mode, ino_t *ino,
                       dev_t *dev, nlink_t *nlink, uid_t *uid,
                       gid_t *gid, off_t *size, time_t *atime,
@@ -61,7 +61,7 @@ octave_lstat_wrapper (const char *lname, mode_t *mode, ino_t *ino,
                       time_t *ctime, long int *ctime_nsec, dev_t *rdev,
                       long *blksize, long *blocks);
 
-extern OCTAVE_API int
+OCTAVE_API int
 octave_fstat_wrapper (int fid, mode_t *mode, ino_t *ino,
                       dev_t *dev, nlink_t *nlink, uid_t *uid,
                       gid_t *gid, off_t *size, time_t *atime,
@@ -69,17 +69,17 @@ octave_fstat_wrapper (int fid, mode_t *mode, ino_t *ino,
                       time_t *ctime, long int *ctime_nsec, dev_t *rdev,
                       long *blksize, long *blocks);
 
-extern OCTAVE_API bool octave_is_blk_wrapper (mode_t mode);
-extern OCTAVE_API bool octave_is_chr_wrapper (mode_t mode);
-extern OCTAVE_API bool octave_is_dir_wrapper (mode_t mode);
-extern OCTAVE_API bool octave_is_fifo_wrapper (mode_t mode);
-extern OCTAVE_API bool octave_is_lnk_wrapper (mode_t mode);
-extern OCTAVE_API bool octave_is_reg_wrapper (mode_t mode);
-extern OCTAVE_API bool octave_is_sock_wrapper (mode_t mode);
+OCTAVE_API bool octave_is_blk_wrapper (mode_t mode);
+OCTAVE_API bool octave_is_chr_wrapper (mode_t mode);
+OCTAVE_API bool octave_is_dir_wrapper (mode_t mode);
+OCTAVE_API bool octave_is_fifo_wrapper (mode_t mode);
+OCTAVE_API bool octave_is_lnk_wrapper (mode_t mode);
+OCTAVE_API bool octave_is_reg_wrapper (mode_t mode);
+OCTAVE_API bool octave_is_sock_wrapper (mode_t mode);
 
-extern OCTAVE_API bool octave_have_struct_stat_st_rdev (void);
-extern OCTAVE_API bool octave_have_struct_stat_st_blksize (void);
-extern OCTAVE_API bool octave_have_struct_stat_st_blocks (void);
+OCTAVE_API bool octave_have_struct_stat_st_rdev (void);
+OCTAVE_API bool octave_have_struct_stat_st_blksize (void);
+OCTAVE_API bool octave_have_struct_stat_st_blocks (void);
 
 #if defined (__cplusplus)
 }

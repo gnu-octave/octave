@@ -150,9 +150,8 @@ getcwd ()
   retval = tmp_str;
 
 #else
-  // Using octave_getcwd_wrapper ensures that we have a getcwd that
-  // will allocate a buffer as large as necessary if buf and size are
-  // both 0.
+  // Using octave_getcwd_wrapper ensures that we have a getcwd that will
+  // allocate a buffer as large as necessary if buf and size are both 0.
 
   char *tmp = octave_getcwd_wrapper (nullptr, 0);
 

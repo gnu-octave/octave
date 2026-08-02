@@ -3068,7 +3068,7 @@ AC_DEFUN_ONCE([OCTAVE_DEFINE_MKOCTFILE_DYNAMIC_LINK_OPTIONS], [
       SH_LDFLAGS="-shared -Wl,-expect_unresolved -Wl,'*'"
     ;;
     *-*-darwin*)
-      DL_LDFLAGS="-bundle -undefined dynamic_lookup -bind_at_load"
+      DL_LDFLAGS="-bundle -undefined dynamic_lookup"
       MKOCTFILE_DL_LDFLAGS="-bundle -undefined dynamic_lookup -bind_at_load"
       SH_LDFLAGS="-dynamiclib -single_module"
       case $canonical_host_type in

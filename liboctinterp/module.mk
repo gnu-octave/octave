@@ -152,11 +152,6 @@ endif
 
 ## Special rules:
 
-## Rule to create Automake module.mk fragment for dldfcn/ directory which is
-## @include'd in this file.
-$(srcdir)/%reldir%/dldfcn/module.mk: $(srcdir)/%reldir%/dldfcn/config-module.sh $(srcdir)/%reldir%/dldfcn/config-module.awk $(srcdir)/%reldir%/dldfcn/module-files
-	$(AM_V_GEN)$(SHELL) $(srcdir)/%reldir%/dldfcn/config-module.sh $(srcdir)
-
 ## Cancel the suffix rule for Yacc and use a pattern rule instead.
 .yy.cc:
 

@@ -700,6 +700,9 @@ AC_ARG_VAR([OCTAVE_GUI_LTLDFLAGS],
 
 ## Need to adjust FFLAGS to include correct integer size.
 save_FFLAGS="$FFLAGS"
+dnl $F77_INTEGER_8_FLAG will be empty unless specified in user environment.
+dnl It will be set later, if necessary, after checking default size of Fortran
+dnl integer with macro OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER.
 FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
 
 OCTAVE_BLAS
@@ -782,6 +785,9 @@ case $ax_cv_blas_integer_size in
   ;;
 esac
 
+## Check that default Fortran integer size and BLAS integer size agree.
+## If not, attempt to find compiler option to adjust default Fortran integer
+## size.
 OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER
 if test $oct_cv_sizeof_fortran_integer -ne $ax_cv_blas_integer_size; then
   if test $ax_cv_blas_integer_size -eq 8; then

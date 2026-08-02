@@ -45,47 +45,13 @@ AC_DEFUN([OCTAVE_BLAS], [
     oct_save_LIBS="$LIBS"
     LIBS="$BLAS_LIBS $LIBS"
     AC_LANG_PUSH(Fortran 77)
-    # Check if BLAS functions with single precision return value work
-    # correctly
-    AC_CACHE_CHECK([whether BLAS functions with single precision return value work correctly],
-      [oct_cv_lib_blas_single_precision_ok],
-      [AC_RUN_IFELSE([AC_LANG_PROGRAM(,[[
-      implicit none
-      real d
-      real x(2), y(2)
-      real sdot
-
-      data x /1.0, 2.0/
-      data y /3.0, 4.0/
-
-      d = sdot (2, x, 1, y, 1)
-*     print *, 'result: ', d
-
-c Some implementations of BLAS (e.g., the one from Apple Accelerate)
-c erroneously return a *double*-precision floating point value for functions
-c that should be returning a single-precision floating point value.
-c Check if the result for SDOT is correct if we (correctly) assume that it
-c returns a single-precision floating point value.
-
-      if (d .ne. 11.0) then
-        stop 1
-      endif
-
-        ]])],
-        oct_cv_lib_blas_single_precision_ok=yes,
-        oct_cv_lib_blas_single_precision_ok=no)
-      ])
-    if test "$oct_cv_lib_blas_single_precision_ok" != yes; then
-      AC_MSG_ERROR([The function SDOT does not work correctly with the selected BLAS library.  Use a different implementation of BLAS.])
-    fi
-
     ## Check BLAS library integer size.
     ## If it does not appear to be 8 bytes, we assume it is 4 bytes.
     ## FIXME: this may fail with options like -ftrapping-math.
     AC_CACHE_CHECK([BLAS library integer size],
       [ax_cv_blas_integer_size],
       [AC_RUN_IFELSE([AC_LANG_PROGRAM(,[[
-      integer*8 two, n
+      integer*8 two, n, zero
       integer*4 n2(2)
       double precision d, a(1), b(1), ddot
       equivalence (n, n2)
@@ -99,6 +65,7 @@ c should be 1.
 
       two = 2
       n = (two ** 32) + 1
+      zero = 0
 
 c Check that our expectation about the type conversions are correct.
 
@@ -120,7 +87,7 @@ c time to compute, but at least for now it is the unusual case so we are
 c much more likely to exit quickly after detecting that the BLAS library
 c was compiled with 4-byte integers.
 
-      d = ddot (n, a, 0, b, 0)
+      d = ddot (n, a, zero, b, zero)
 
 *     print *, a(1), b(1), d
 
@@ -135,6 +102,45 @@ c 8-byte integers.
         ax_cv_blas_integer_size=8,
         ax_cv_blas_integer_size=4)
       ])
+
+    ## Check if BLAS functions with single precision return value work
+    ## correctly.  Use integer arguments that match the BLAS ABI detected
+    ## above instead of relying on the compiler's default integer size.
+    AC_CACHE_CHECK([whether BLAS functions with single precision return value work correctly],
+      [oct_cv_lib_blas_single_precision_ok],
+      [AC_RUN_IFELSE([AC_LANG_PROGRAM(,[[
+      implicit none
+      real d
+      real x(2), y(2)
+      real sdot
+      integer*$ax_cv_blas_integer_size n, incx, incy
+
+      data x /1.0, 2.0/
+      data y /3.0, 4.0/
+
+      n = 2
+      incx = 1
+      incy = 1
+      d = sdot (n, x, incx, y, incy)
+*     print *, 'result: ', d
+
+c Some implementations of BLAS (e.g., the one from Apple Accelerate)
+c erroneously return a *double*-precision floating point value for functions
+c that should be returning a single-precision floating point value.
+c Check if the result for SDOT is correct if we (correctly) assume that it
+c returns a single-precision floating point value.
+
+      if (d .ne. 11.0) then
+        stop 1
+      endif
+
+        ]])],
+        oct_cv_lib_blas_single_precision_ok=yes,
+        oct_cv_lib_blas_single_precision_ok=no)
+      ])
+    if test "$oct_cv_lib_blas_single_precision_ok" != yes; then
+      AC_MSG_ERROR([The function SDOT does not work correctly with the selected BLAS library.  Use a different implementation of BLAS.])
+    fi
 
   AC_LANG_POP(Fortran 77)
   LIBS="$oct_save_LIBS"

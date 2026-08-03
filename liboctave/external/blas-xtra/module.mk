@@ -29,6 +29,7 @@ if AMCOND_BUILD_EXTERNAL_LIBXERBLA
   octlib_LTLIBRARIES += %reldir%/libxerbla.la
 
   %canon_reldir%_libxerbla_la_LDFLAGS := \
+    $(AM_LDFLAGS) \
     $(WARN_LDFLAGS) \
     $(NO_UNDEFINED_LDFLAG) \
     -avoid-version \

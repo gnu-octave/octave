@@ -158,16 +158,6 @@ delete_graphics_objects (const NDArray vals, bool from_root)
 }
 
 void
-close_figure (const graphics_handle& h)
-{
-  octave_value closerequestfcn = xget (h, "closerequestfcn");
-
-  gh_manager& gh_mgr = octave::__get_gh_manager__ ();
-
-  gh_mgr.execute_callback (h, closerequestfcn);
-}
-
-void
 force_close_figure (const graphics_handle& h)
 {
   // Remove the deletefcn and closerequestfcn callbacks

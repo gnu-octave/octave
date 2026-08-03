@@ -66,8 +66,6 @@ extern void delete_graphics_object (double val, bool from_root = false);
 extern void
 delete_graphics_objects (const NDArray vals, bool from_root = false);
 
-extern void close_figure (const graphics_handle& h);
-
 extern void force_close_figure (const graphics_handle& h);
 
 OCTAVE_END_NAMESPACE(octave)

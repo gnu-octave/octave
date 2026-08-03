@@ -35,6 +35,7 @@
 #include "input.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
+#include "unwind-prot.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -180,47 +181,194 @@ gh_manager::renumber_figure (const graphics_handle& old_gh,
 }
 
 void
+gh_manager::close_figures (close_mode mode)
+{
+  const bool force = (mode == close_mode::force_all);
+
+  Matrix hlist;
+  octave_value current_figure;
+
+  // Create temporary scope for autolock
+  {
+    octave::autolock guard (graphics_lock ());
+
+    graphics_object root = get_object (0);
+
+    // Use the root's child list to match the order used by close.m.
+    hlist = (force ? root.get_properties ().get_all_children ()
+                   : root.get_properties ().get_children ());
+
+    current_figure = root.get ("currentfigure");
+  }
+
+  // Restore the current figure even if an unexpected exception escapes.
+  unwind_action_safe restore_current_figure ([this, &current_figure] ()
+  {
+    octave::autolock guard (graphics_lock ());
+
+    graphics_object root = get_object (0);
+    graphics_handle cf = lookup (current_figure);
+    graphics_object go = get_object (cf);
+
+    if (go.valid_object () && go.isa ("figure"))
+      root.set ("currentfigure", current_figure);
+    else if (figure_handle_list (true).numel () == 0)
+      root.set ("currentfigure", Matrix ());
+  });
+
+  // An error from one figure must not prevent the remaining figures from
+  // being processed, especially during the force pass.  Exit and interrupt
+  // exceptions must propagate so that callbacks retain their normal semantics.
+  auto safe_call = [this] (auto&& fcn)
+  {
+    try
+      {
+        fcn ();
+      }
+    catch (const execution_exception& ee)
+      {
+        m_interpreter.handle_exception (ee);
+      }
+  };
+
+  for (octave_idx_type i = 0; i < hlist.numel (); i++)
+    {
+      double value = hlist(i);
+
+      safe_call ([this, value] ()
+      {
+        graphics_handle h;
+        octave_value closerequestfcn;
+
+        // Create temporary scope for autolock
+        {
+          octave::autolock guard (graphics_lock ());
+
+          h = lookup (value);
+
+          graphics_object go = get_object (h);
+
+          if (! go.valid_object () || ! go.isa ("figure"))
+            return;
+
+          // The default CloseRequest callback closes currentfigure rather
+          // than the handle passed to it, so make H current first.
+          get_object (0).set ("currentfigure", h.as_octave_value ());
+          closerequestfcn = go.get ("closerequestfcn");
+        }
+
+        // Don't hold the graphics lock while executing arbitrary callback
+        // code.  Function execute_callback() manages its own locking as needed.
+        execute_callback (h, closerequestfcn);
+      });
+    }
+
+  if (force)
+    {
+      // A child DeleteFcn may create another figure while its parent is being
+      // deleted.  Rescan after each force pass, but bound the number of passes
+      // because callbacks can continually create new figures.
+      constexpr int MAX_FORCE_CLOSE_PASSES = 10;
+
+      for (int pass = 0; pass < MAX_FORCE_CLOSE_PASSES; pass++)
+        {
+          // Create temporary scope for autolock
+          {
+            octave::autolock guard (graphics_lock ());
+
+            graphics_object root = get_object (0);
+            hlist = root.get_properties ().get_all_children ();
+
+            octave_idx_type nfigures = 0;
+
+            for (octave_idx_type i = 0; i < hlist.numel (); i++)
+              {
+                graphics_handle h = lookup (hlist(i));
+                graphics_object go = get_object (h);
+
+                if (go.valid_object () && go.isa ("figure"))
+                  hlist(nfigures++) = hlist(i);
+              }
+
+            hlist.resize (nfigures, 1);
+          }
+
+          if (hlist.isempty ())
+            break;
+
+          for (octave_idx_type i = 0; i < hlist.numel (); i++)
+            {
+              double value = hlist(i);
+
+              safe_call ([this, value] ()
+              {
+                graphics_handle h;
+
+                // Create temporary scope for autolock
+                {
+                  octave::autolock guard (graphics_lock ());
+
+                  h = lookup (value);
+                  graphics_object go = get_object (h);
+
+                  if (! go.valid_object () || ! go.isa ("figure"))
+                    return;
+                }
+
+                // Deleting a figure can execute its children's DeleteFcn.
+                // Don't hold the graphics lock while running that code.
+                force_close_figure (h);
+              });
+            }
+        }
+    }
+}
+
+void
+gh_manager::close_all_visible_figures ()
+{
+  close_figures (close_mode::graceful_visible);
+}
+
+void
 gh_manager::close_all_figures ()
 {
   // FIXME: should we process or discard pending events?
+  // Discard events that were already queued before figure teardown.
 
-  m_event_queue.clear ();
+  // Create temporary scope for autolock
+  {
+    octave::autolock guard (graphics_lock ());
 
-  // Don't use m_figure_list_iterator because we'll be removing elements
-  // from the list elsewhere.
+    m_event_queue.clear ();
+  }
 
-  Matrix hlist = figure_handle_list (true);
+  // Also discard events queued during teardown and ensure that callback
+  // bookkeeping is cleared even if an unexpected exception escapes.
+  unwind_action_safe clear_graphics_state ([this] ()
+  {
+    octave::autolock guard (graphics_lock ());
 
-  for (octave_idx_type i = 0; i < hlist.numel (); i++)
-    {
-      graphics_handle h = lookup (hlist(i));
+    m_event_queue.clear ();
+    m_callback_objects.clear ();
+  });
 
-      if (h.ok ())
-        close_figure (h);
-    }
-
-  // They should all be closed now.  If not, force them to close.
-
-  hlist = figure_handle_list (true);
-
-  for (octave_idx_type i = 0; i < hlist.numel (); i++)
-    {
-      graphics_handle h = lookup (hlist(i));
-
-      if (h.ok ())
-        force_close_figure (h);
-    }
+  close_figures (close_mode::force_all);
 
   // None left now, right?
 
-  hlist = figure_handle_list (true);
+  Matrix hlist;
+  // Create temporary scope for autolock
+  {
+    octave::autolock guard (graphics_lock ());
 
-  if (hlist.numel () != 0)
-    warning ("gh_manager::close_all_figures: some graphics elements failed to close");
+    hlist = figure_handle_list (true);
+  }
 
-  // Clear all callback objects from our list.
-
-  m_callback_objects.clear ();
+  if (! hlist.isempty ())
+    warning_with_id
+      ("Octave:close-figures-failed",
+       "gh_manager::close_all_figures: some graphics elements failed to close");
 }
 
 // We use a random value for the handle to avoid issues with plots and

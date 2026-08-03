@@ -3069,7 +3069,7 @@ AC_DEFUN_ONCE([OCTAVE_DEFINE_MKOCTFILE_DYNAMIC_LINK_OPTIONS], [
     ;;
     *-*-darwin*)
       DL_LDFLAGS="-bundle -undefined dynamic_lookup"
-      MKOCTFILE_DL_LDFLAGS="-bundle -undefined dynamic_lookup -bind_at_load"
+      MKOCTFILE_DL_LDFLAGS="${DL_LDFLAGS}"
       SH_LDFLAGS="-dynamiclib -single_module"
       case $canonical_host_type in
         powerpc-*)

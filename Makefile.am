@@ -44,6 +44,12 @@ export SHELL
 export PERL
 export TAR_OPTIONS
 
+## Preserve the configure-time macOS deployment target.  Exporting an
+## empty value leaves target selection to the compiler default, preventing
+## libtool from assuming the obsolete default of macOS 10.0.
+MACOSX_DEPLOYMENT_TARGET = @MACOSX_DEPLOYMENT_TARGET@
+export MACOSX_DEPLOYMENT_TARGET
+
 version := ${OCTAVE_VERSION}
 api_version := ${OCTAVE_API_VERSION}
 

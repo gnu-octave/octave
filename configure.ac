@@ -87,6 +87,9 @@ AM_SILENT_RULES([yes])
 
 OCTAVE_CANONICAL_HOST
 
+AC_ARG_VAR([MACOSX_DEPLOYMENT_TARGET],
+  [minimum macOS version supported by generated binaries])
+
 AC_DEFINE(OCTAVE_SOURCE, 1, [Define to 1 if this is Octave.])
 
 AC_USE_SYSTEM_EXTENSIONS

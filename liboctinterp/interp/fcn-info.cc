@@ -51,13 +51,14 @@ static int Vignore_function_time_stamp = 1;
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 octave_value
-fcn_info::fcn_info_rep::load_private_function (const std::string& dir_name)
+fcn_info::fcn_info_rep::load_private_function (const std::string& dir_name,
+                                               const std::string& pack_name)
 {
   octave_value retval;
 
   load_path& lp = __get_load_path__ ();
 
-  std::string file_name = lp.find_private_fcn (dir_name, name);
+  std::string file_name = lp.find_private_fcn (dir_name, name, pack_name);
 
   if (file_name.empty ())
     return retval;
@@ -706,14 +707,18 @@ fcn_info::fcn_info_rep::find_scoped_function (const symbol_scope& search_scope)
 
       // Private function.
 
-      return find_private_function (search_scope.dir_name ());
+      octave_user_code *uc = search_scope.user_code ();
+      std::string pkg_name = uc ? uc->package_name () : std::string ();
+
+      return find_private_function (search_scope.dir_name (), pkg_name);
     }
 
   return octave_value ();
 }
 
 octave_value
-fcn_info::fcn_info_rep::find_private_function (const std::string& dir_name)
+fcn_info::fcn_info_rep::find_private_function (const std::string& dir_name,
+                                               const std::string& pack_name)
 {
   if (! dir_name.empty ())
     {
@@ -721,7 +726,7 @@ fcn_info::fcn_info_rep::find_private_function (const std::string& dir_name)
 
       if (q == private_functions.end ())
         {
-          octave_value val = load_private_function (dir_name);
+          octave_value val = load_private_function (dir_name, pack_name);
 
           if (val.is_defined ())
             return val;
@@ -737,7 +742,7 @@ fcn_info::fcn_info_rep::find_private_function (const std::string& dir_name)
             return fval;
           else
             {
-              octave_value val = load_private_function (dir_name);
+              octave_value val = load_private_function (dir_name, pack_name);
 
               if (val.is_defined ())
                 return val;
@@ -920,11 +925,14 @@ fcn_info::fcn_info_rep::x_builtin_find (const symbol_scope& search_scope)
 
       if (! dir_name.empty ())
         {
+          octave_user_code *uc = search_scope.user_code ();
+          std::string pack_name = uc ? uc->package_name () : std::string ();
+
           auto q = private_functions.find (dir_name);
 
           if (q == private_functions.end ())
             {
-              octave_value val = load_private_function (dir_name);
+              octave_value val = load_private_function (dir_name, pack_name);
 
               if (val.is_defined ())
                 return val;
@@ -940,7 +948,7 @@ fcn_info::fcn_info_rep::x_builtin_find (const symbol_scope& search_scope)
                 return fval;
               else
                 {
-                  octave_value val = load_private_function (dir_name);
+                  octave_value val = load_private_function (dir_name, pack_name);
 
                   if (val.is_defined ())
                     return val;

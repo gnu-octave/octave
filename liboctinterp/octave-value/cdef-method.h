@@ -28,16 +28,29 @@
 
 #include "octave-config.h"
 
-#include <map>
-#include <set>
 #include <string>
 
 #include "oct-refcount.h"
 
+#include "cdef-fwd.h"
 #include "cdef-object.h"
+#include "cdef-utils.h"
 #include "ov.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
+
+struct cdef_method_opt_properties {
+  octave_value abstract = false;
+  octave_value access = "public";
+  octave_value description = "";
+  octave_value detailed_description = "";
+  octave_value hidden = false;
+  octave_value sealed = false;
+  octave_value static_bool = false;
+};
+
+class tree_evaluator;
+class tree_classdef_methods_block;
 
 class OCTINTERP_API cdef_method : public cdef_meta_object
 {
@@ -48,24 +61,40 @@ private:
   class cdef_method_rep : public cdef_meta_object_rep
   {
   public:
-
-    cdef_method_rep ()
-      : cdef_meta_object_rep (), m_function (), m_dispatch_type ()
-    { }
+    cdef_method_rep (
+      const cdef_object& defining_class,
+      octave_value fcn,
+      octave_value name,
+      cdef_method_opt_properties opt_args = cdef_method_opt_properties ());
 
     cdef_method_rep& operator = (const cdef_method_rep& m) = delete;
 
     ~cdef_method_rep () = default;
 
-    cdef_object_rep * copy () const { return new cdef_method_rep(*this); }
+    cdef_object_rep * copy () const
+    {
+      return new cdef_method_rep (*this);
+    }
 
     bool is_method () const { return true; }
 
-    std::string get_name () const { return get("Name").string_value (); }
+    std::string get_name () const { return get ("Name").string_value (); }
+
+    OCTINTERP_API void put (const std::string& pname, const octave_value& val);
 
     void set_name (const std::string& nm) { put ("Name", nm); }
 
-    bool is_static () const { return get("Static").bool_value (); }
+    bool is_static () const { return get ("Static").bool_value (); }
+
+    bool is_get_method () const
+    {
+      return get_name ().substr (0, 4) == "get.";
+    }
+
+    bool is_set_method () const
+    {
+      return get_name ().substr (0, 4) == "set.";
+    }
 
     octave_value get_function () const { return m_function; }
 
@@ -93,6 +122,11 @@ private:
 
     OCTINTERP_API bool is_constructor () const;
 
+    bool get_hidden () const
+    {
+      return get ("Hidden").bool_value ();
+    }
+
     OCTINTERP_API bool is_defined_in_class (const std::string& cname) const;
 
     octave_value_list
@@ -104,11 +138,13 @@ private:
       return (type == '(' || type == '.');
     }
 
+    OCTINTERP_API cdef_class get_defining_class () const;
+
   private:
 
     cdef_method_rep (const cdef_method_rep& m)
-      : cdef_meta_object_rep (m), m_function (m.m_function),
-        m_dispatch_type (m.m_dispatch_type)
+      : cdef_meta_object_rep (m),
+        m_dispatch_type (m.m_dispatch_type), m_function (m.m_function)
     { }
 
     OCTINTERP_API void check_method ();
@@ -119,23 +155,33 @@ private:
       return cdef_method (this);
     }
 
-    octave_value m_function;
-
     // When non-empty, the method is externally defined and this member
     // is used to cache the dispatch type to look for the method.
-
     std::string m_dispatch_type;
+    octave_value m_function;
   };
 
 public:
 
   cdef_method () : cdef_meta_object () { }
 
-  cdef_method (const std::string& nm)
-    : cdef_meta_object (new cdef_method_rep ())
-  {
-    get_rep ()->set_name (nm);
-  }
+  //! The canonical classdef method construction path.
+  //!
+  //! @param[in] defining_class The classdef that contains the method in
+  //! question.
+  //! @param[in] fcn The underlying function object that holds the function
+  //! body.
+  //! @param[name] The name of the method.  Must be non-empty and correspond to
+  //! a valid property name.  If the name is prefixed with `get.` or `set.`,
+  //! then the method becomes a property get or a property set method,
+  //! respectively. 
+  cdef_method (
+    const cdef_object& defining_class,
+    octave_value fcn,
+    std::string name,
+    cdef_method_opt_properties attrs = cdef_method_opt_properties ())
+    : cdef_meta_object (new cdef_method_rep (defining_class, fcn, name, attrs))
+  { }
 
   cdef_method (const cdef_method& meth) : cdef_meta_object (meth) { }
 
@@ -174,6 +220,8 @@ public:
     return get_rep ()->execute (obj, args, nargout, do_check_access, who);
   }
 
+  OCTINTERP_API cdef_class get_defining_class () const;
+
   bool check_access () const { return get_rep ()->check_access (); }
 
   std::string get_name () const { return get_rep ()->get_name (); }
@@ -183,6 +231,11 @@ public:
   void set_function (const octave_value& fcn)
   {
     get_rep ()->set_function (fcn);
+  }
+
+  bool get_hidden () const
+  {
+    return get_rep ()->get_hidden ();
   }
 
   octave_value get_function () const
@@ -205,6 +258,8 @@ public:
     return get_rep ()->is_defined_in_class (cname);
   }
 
+  bool is_get_method () const { return get_rep ()->is_get_method (); }
+
   bool is_external () const { return get_rep ()->is_external (); }
 
   void mark_as_external (const std::string& dtype)
@@ -212,16 +267,38 @@ public:
     get_rep ()->mark_as_external (dtype);
   }
 
+  //! Builds the method objects from a parsed methods block.
+  static OCTINTERP_API std::vector<cdef_method>
+  make_method (cdef_class& cls, tree_evaluator& tw,
+               tree_classdef_methods_block* mth_blk);
+
 private:
+
+  cdef_method (cdef_method_rep *r) : cdef_meta_object (r) { }
+
+  void put (const std::string& pname, const octave_value& val)
+  {
+    get_rep ()->put (pname, val);
+  }
 
   cdef_method_rep * get_rep ()
   {
-    return dynamic_cast<cdef_method_rep *> (cdef_object::get_rep ());
+    cdef_object_rep *r = cdef_object::get_rep ();
+
+    if (! r->is_method ())
+      error ("internal error: invalid meta.method object");
+
+    return static_cast<cdef_method_rep *> (r);
   }
 
   const cdef_method_rep * get_rep () const
   {
-    return dynamic_cast<const cdef_method_rep *> (cdef_object::get_rep ());
+    const cdef_object_rep *r = cdef_object::get_rep ();
+
+    if (! r->is_method ())
+      error ("internal error: invalid meta.method object");
+
+    return static_cast<const cdef_method_rep *> (r);
   }
 };
 

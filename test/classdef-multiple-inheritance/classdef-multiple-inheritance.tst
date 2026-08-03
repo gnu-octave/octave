@@ -42,3 +42,85 @@
 %! obj2 = child_from_base_1_and_2 ();
 %! assert (class (obj1), 'child_from_base_1');
 %! assert (class (obj2), "child_from_base_1_and_2");
+
+# Diamond inheritance tests (bug #68227)
+
+# class_bug68227_1A
+# class_bug68227_1B < class_bug68227_1A
+# class_bug68227_1C < class_bug68227_1A
+# class_bug68227_1D < class_bug68227_1B < class_bug68227_1C
+#
+#          class_bug68227_*A
+#                 ^
+#                 |
+#          -----------------
+#          |               |
+#          |               |
+#   class_bug68227_*B  class_bug68227_*C
+#          ^               ^
+#          |               |
+#          -----------------
+#                 |
+#          class_bug68227_*D
+%!test
+%! obj = class_bug68227_1D ();
+%! assert (obj.testfunc (), 'success');
+
+%!xtest
+%! obj = class_bug68227_2D ();
+%! assert (obj.testprop, 'success');
+
+# class_bug68227_1A
+# class_bug68227_1B < class_bug68227_1A
+# class_bug68227_1C < class_bug68227_1A
+# class_bug68227_1D < class_bug68227_1B < class_bug68227_1C
+#
+#          class_bug68227_*A
+#                 ^
+#                 |
+#          -----------------
+#          |               |
+#          |               |
+#   class_bug68227_*B  class_bug68227_*C
+#          ^               ^
+#          |               |
+#          -----------------
+#                 |
+#          class_bug68227_*D
+%!error <method testfunc conflicting>
+%! obj = class_bug68227_3D ();
+
+
+# testclass_1A
+# testclass_1B
+# testclass_1C < testclass_1A & testclass_1B
+#
+#   testclass_1A  testclass_1B
+#          ^               ^
+#          |               |
+#          -----------------
+#                 |
+#              testclass_1C
+%!error <method testfunc conflicting>
+%! obj = testclass_1C ();
+
+# testclass_2A
+# testclass_2B
+# testclass_2C < testclass_2A & testclass_2B
+#
+#   testclass_2A  testclass_2B
+#          ^               ^
+#          |               |
+#          -----------------
+#                 |
+#              testclass_2C
+#
+# The class should be refused, as testclass_1C is above; Octave does not yet
+# check its properties
+%!xtest
+%! fail ("testclass_2C ()", "property testprop conflicting");
+
+# Cyclic inheritance hierarchies (error in all cases)
+
+
+

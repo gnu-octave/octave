@@ -1,0 +1,2 @@
+classdef (DefinitelyNotAnAttribute) class_bug60593A
+endclassdef

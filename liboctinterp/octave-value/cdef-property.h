@@ -28,18 +28,145 @@
 
 #include "octave-config.h"
 
-#include <map>
-#include <set>
 #include <string>
 
 #include "oct-refcount.h"
 
+#include "cdef-method.h"
 #include "cdef-object.h"
 #include "error.h"
 #include "ov.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
+struct cdef_property_opt_properties {
+
+  //! Type: `logical`
+  //!
+  //! @todo Not implemented yet.
+  octave_value abort_set = false;
+
+  //! Type: `logical`
+  //!
+  //! Property attribute.  Properties marked as abstract
+  //!
+  //! @todo Semi-implemented.  Marking at least one property as abstract will
+  //! mark the class as abstract, but you can still assign default values to an
+  //! abstract property as of right now.
+  octave_value abstract = false;
+
+  //! Type: `char`
+  //!
+  //! Property attribute.  If `Access` is `public`, then the property can be
+  //! accessed and modified outside of classdef methods.  If `Access` is
+  //! `private`, then the property can only be accessed or modified from within
+  //! the classdef's methods.  If `Access` is `protected`, then the property is
+  //! both `private` and can be accessed or modified from subclass methods.
+  //!
+  //! @note Access is stored separately in the metaclass as `GetAccess` and
+  //! `SetAccess`.  If `Access` is passed in, then the value of `GetAccess` and
+  //! `SetAccess` will copy `Access`'s value. `Access` cannot be set if either
+  //! `GetAccess` or `SetAccess` is set.
+  octave_value access = "public";
+
+  //! Type: `logical`
+  //!
+  //! Property attribute.  If `Constant` is `true`, then the property cannot be
+  //! modified after object construction.
+  octave_value constant = false;
+
+  //! Type: Any type
+  //!
+  //! Default values are assigned by writing an assignment expression in the
+  //! `properties` block.  An undefined value means that no default was
+  //! supplied; an empty matrix is a valid, explicitly supplied default.
+  octave_value default_value = octave_value ();
+
+  //! Type: `logical` 
+  //!
+  //! @todo Not implemented yet.
+  octave_value dependent = false; // Not implemented
+  
+  //! Type: `char`
+  //!
+  //! The initial line of the property docstring.
+  //! The rest of the classdef docstring.  If `help
+  //! <classdef_name>.<property_name>` is called, this is everything after the
+  //! first line.
+  //!
+  //! @note This value can be directly set as a classdef attribute.  If it is,
+  //! the value in the property attribute always overrides the written
+  //! docstring.
+  octave_value description = "";
+
+  //! Type: `char`
+  //!
+  //! The rest of the property docstring (see `description`).  If `help
+  //! <classdef_name>.<property_name>` is called, this is everything after the
+  //! first line.
+  //!
+  //! @note This value can be directly set as a property attribute.  If it is,
+  //! the value in the property attribute always overrides the written
+  //! docstring.
+  octave_value detailed_description = "";
+
+  //! Type: `char`
+  //!
+  //! Property attribute.  If `GetAccess` is `public`, then the property can be
+  //! accessed outside of classdef methods.  If `GetAccess` is `private`, then
+  //! the property can only be accessed from within the classdef's methods.  If
+  //! `GetAccess` is `protected`, then the property is both `private` and can
+  //! be accessed from subclass methods.
+  //!
+  //! @note The default visibility of `GetAccess` is `public`.  However, the
+  //! empty string is passed in to distinguish between the default visibility
+  //! and the intentional setting of `GetAccess` to `public`.
+  //!
+  //! @note See `Access` for related functionality. `GetAccess` and `Access`
+  //! cannot be set jointly on the property.
+  octave_value get_access = "";
+
+  //! Type: `function_handle`
+  //! 
+  //! Sets a getter method on the property.
+  //!
+  //! @todo: Not fully implemented yet.
+  octave_value get_method = Matrix ();
+
+  //! Type: `function_handle`
+  //! 
+  //! Sets a getter method on the property.
+  //!
+  //! @todo: Not fully implemented yet.
+  octave_value get_observable = false;
+  octave_value has_default = false;
+  octave_value hidden = false;
+  octave_value non_copyable = false;
+  octave_value partial_match_priority = 1;
+  octave_value set_access = "";
+  octave_value set_method = Matrix ();
+  octave_value set_observable = false;
+  octave_value transient = false;
+  octave_value validation = to_ov (cdef_object ());
+  octave_value weak_handle = false;
+};
+
+class tree_evaluator;
+class tree_classdef_properties_block;
+
+//! This class holds the metadata associated with a classdef property.
+//! 
+//! This class fulfills two purposes
+//!     1) An instance of `octave.metadata.property`
+//!     2) A set of methods that define how the metadata properties influence
+//!        the evaluation, assignment and presentation of the underlying
+//!        property value.
+//!
+//! This class does not hold the underlying value associated with the property
+//! (except for the value in the properties' default state).  The value of the
+//! property is stored in the object's property map.  Operations to access,
+//! assign or view the property in the Octave interpreter will go through this
+//! class in order to conform to the object-oriented semantics of Octave.
 class OCTINTERP_API cdef_property : public cdef_meta_object
 {
   friend class cdef_class;
@@ -49,8 +176,10 @@ private:
   class cdef_property_rep : public cdef_meta_object_rep
   {
   public:
-
-    cdef_property_rep () : cdef_meta_object_rep () { }
+    cdef_property_rep (const cdef_object& defining_class,
+                       octave_value name,
+                       cdef_property_opt_properties opt_args
+                         = cdef_property_opt_properties ());
 
     cdef_property_rep& operator = (const cdef_property_rep& p) = delete;
 
@@ -61,13 +190,18 @@ private:
       return new cdef_property_rep (*this);
     }
 
+    OCTINTERP_API void
+    put (const std::string& pname, const octave_value& val);
+
     bool is_property () const { return true; }
 
-    std::string get_name () const { return get("Name").string_value (); }
+    OCTINTERP_API cdef_class get_defining_class () const;
+
+    std::string get_name () const { return get ("Name").string_value (); }
 
     void set_name (const std::string& nm) { put ("Name", nm); }
 
-    bool is_constant () const { return get("Constant").bool_value (); }
+    bool is_constant () const { return get ("Constant").bool_value (); }
 
     octave_value get_value (bool do_check_access = true,
                             const std::string& who = "") const;
@@ -106,11 +240,12 @@ public:
 
   cdef_property () : cdef_meta_object () { }
 
-  cdef_property (const std::string& nm)
-    : cdef_meta_object (new cdef_property_rep ())
-  {
-    get_rep ()->set_name (nm);
-  }
+  cdef_property (const cdef_object& defining_class,
+                 octave_value name,
+                 cdef_property_opt_properties opt_args
+                   = cdef_property_opt_properties ())
+    : cdef_meta_object (new cdef_property_rep (defining_class, name, opt_args))
+  { }
 
   cdef_property (const cdef_property& prop) : cdef_meta_object (prop) { }
 
@@ -131,6 +266,8 @@ public:
   }
 
   ~cdef_property () = default;
+
+  OCTINTERP_API cdef_class get_defining_class () const;
 
   octave_value get_value (const cdef_object& obj, bool do_check_access = true,
                           const std::string& who = "") const
@@ -165,16 +302,37 @@ public:
 
   bool is_constant () const { return get_rep ()->is_constant (); }
 
+  //! Installs the properties from a parsed properties block onto a class.
+  static OCTINTERP_API void
+  make_property (cdef_class& cls, tree_evaluator& tw,
+                 tree_classdef_properties_block* prop_blk);
+
 private:
+
+  cdef_property (cdef_property_rep *r) : cdef_meta_object (r) { }
+
+  void put (const std::string& pname, const octave_value& val)
+  {
+    get_rep ()->put (pname, val);
+  }
 
   cdef_property_rep * get_rep ()
   {
-    return dynamic_cast<cdef_property_rep *> (cdef_object::get_rep ());
+    cdef_object_rep *r = cdef_object::get_rep ();
+
+    panic_if (! r->is_property ());
+
+    return static_cast<cdef_property_rep *> (r);
   }
 
   const cdef_property_rep * get_rep () const
   {
-    return dynamic_cast<const cdef_property_rep *> (cdef_object::get_rep ());
+    const cdef_object_rep *r = cdef_object::get_rep ();
+
+    if (! r->is_property ())
+      error ("internal error: invalid meta.property object");
+
+    return static_cast<const cdef_property_rep *> (r);
   }
 };
 

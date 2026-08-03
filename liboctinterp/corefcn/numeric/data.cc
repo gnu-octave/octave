@@ -2899,8 +2899,7 @@ do_single_type_concat_cdef (const octave_value_list& args, int dim)
       arr = Array<cdef_object>::cat (dim, n_args, array_list);
     }
 
-  cdef_object obj_result = cdef_object (new cdef_object_array (arr));
-  obj_result.set_class (arr(0).get_class ());
+  cdef_object obj_result (arr);
 
   return to_ov (obj_result);
 }

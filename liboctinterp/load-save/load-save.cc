@@ -785,9 +785,7 @@ load_save_system::save_vars (const string_vector& argv, int argv_idx,
           subsys_stream.write (header, 8);
 
           // create FileWrapper__ object to register as MAT_FILE_WORKSPACE_CLASS
-          octave::cdef_manager& cdm = octave::__get_cdef_manager__ ();
-          octave::cdef_class filewrapper_class
-            = cdm.make_class ("FileWrapper__", std::list<octave::cdef_class> ());
+          octave::cdef_class filewrapper_class = cdef_class ("FileWrapper__");
           octave_value filewrapper_obj
             = filewrapper_class.construct (octave_value_list (), true);
 

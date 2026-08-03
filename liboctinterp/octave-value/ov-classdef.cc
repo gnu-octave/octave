@@ -820,7 +820,7 @@ octave_classdef::print_raw (std::ostream& os, bool) const
       increment_indent_level ();
 
       std::map<octave::property_key, octave::cdef_property> property_map
-        = cls.get_property_map ();
+        = cls.get_property_map (octave::cdef_class::member_mode::all_visible);
 
       std::size_t max_len = 0;
       for (const auto& pname_prop : property_map)
@@ -1207,7 +1207,7 @@ is public and if the @code{Hidden} attribute is false.
     error ("invalid class: %s", class_name.c_str ());
 
   std::map<octave::property_key, cdef_property> property_map =
-    cls.get_property_map ();
+    cls.get_property_map (cdef_class::member_mode::all_visible);
 
   std::list<std::string> property_names;
 
@@ -1292,7 +1292,7 @@ Implement @code{methods} for Octave class objects and classnames.
         {
           // Find methods for classdef objects.
           std::map<std::string, cdef_method> method_map
-            = cls.get_method_map (false, true);
+            = cls.get_method_map (cdef_class::member_mode::all, true);
 
           std::list<std::string> method_names;
 
@@ -1308,6 +1308,10 @@ Implement @code{methods} for Octave class objects and classnames.
               octave_value hid = method.get ("Hidden");
 
               if (hid.bool_value ())
+                continue;
+
+              // Hide methods inherited from "handle" for MATLAB compatibility
+              if (method.get_defining_class ().get_name () == "handle")
                 continue;
 
               method_names.push_back (nm_mthd.first);

@@ -3765,12 +3765,19 @@ base_parser::start_function (tree_identifier *id, tree_parameter_list *param_lis
 
       if (m_lexer.m_parsing_class_method)
         {
+          std::string dispatch_class = m_curr_class_name;
+
           if (m_lexer.m_parsing_classdef)
             {
               if (m_curr_class_name == id_name)
                 fcn->mark_as_classdef_constructor ();
               else
                 fcn->mark_as_classdef_method ();
+
+              // The dispatch class of a classdef method is the
+              // fully-qualified class name, including any package prefix
+              if (! m_curr_package_name.empty ())
+                dispatch_class = m_curr_package_name + '.' + m_curr_class_name;
             }
           else
             {
@@ -3780,7 +3787,7 @@ base_parser::start_function (tree_identifier *id, tree_parameter_list *param_lis
                 fcn->mark_as_legacy_method ();
             }
 
-          fcn->stash_dispatch_class (m_curr_class_name);
+          fcn->stash_dispatch_class (dispatch_class);
         }
 
       std::string nm = fcn->fcn_file_name ();
@@ -4337,32 +4344,22 @@ base_parser::start_classdef_external_method (tree_identifier *id, tree_parameter
 {
   octave_user_function* retval = nullptr;
 
-  // External methods are only allowed within @-folders.  In this case,
-  // m_curr_class_name will be non-empty.
+  std::string mname = id->name ();
 
-  if (! m_curr_class_name.empty ())
+  // Methods that cannot be declared outside the classdef file:
+  // - methods with '.' character (e.g., property accessors)
+  // - class constructor
+  // - 'delete'
+
+  if (mname.find_first_of (".") == std::string::npos && mname != "delete" && mname != m_curr_class_name)
     {
-      std::string mname = id->name ();
+      // Create a dummy function that is used until the real method is loaded.
+      retval = new octave_user_function (symbol_scope::anonymous (), id, pl);
 
-      // Methods that cannot be declared outside the classdef file:
-      // - methods with '.' character (e.g., property accessors)
-      // - class constructor
-      // - 'delete'
-
-      if (mname.find_first_of (".") == std::string::npos && mname != "delete" && mname != m_curr_class_name)
-        {
-          // Create a dummy function that is used until the real method
-          // is loaded.
-
-          retval = new octave_user_function (symbol_scope::anonymous (), id, pl);
-
-          retval->stash_function_name (mname);
-        }
-      else
-        bison_error ("invalid external method declaration, an external method cannot be the class constructor, 'delete' or have a dot (.) character in its name");
+      retval->stash_function_name (mname);
     }
   else
-    bison_error ("external methods are only allowed in @-folders");
+    bison_error ("invalid external method declaration, an external method cannot be the class constructor, 'delete' or have a dot (.) character in its name");
 
   return retval;
 }
@@ -4460,6 +4457,8 @@ base_parser::finish_classdef_file (tree_classdef *cls, tree_statement_list *loca
           std::string file = fcn->fcn_file_name ();
 
           fcn->attach_trailing_comments (eof_tok->leading_comments ());
+
+          fcn->mark_as_subfunction ();
 
           symtab.install_local_function (nm, ov_fcn, file);
         }

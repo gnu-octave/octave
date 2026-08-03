@@ -102,7 +102,7 @@ classdef Map < handle
 
   endproperties
 
-  properties (private)
+  properties (Access = private)
     map = struct ();
 
     numeric_keys = false;

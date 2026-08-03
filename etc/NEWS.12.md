@@ -11,6 +11,10 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 * The constructors of `classdef` classes now support returning more than one
   output argument.  The first output argument must be the constructed object.
 
+* Methods of a `classdef` class may now be defined in separate files inside
+  the class @-folder, and `classdef` classes may be defined inside packages
+  and nested packages (bug #62000).
+
 * The function `max_recursion_depth` is now an alias for `max_stack_depth`.
   The limit on recursion has increased from 256 to the `max_stack_depth` of
   1024.  The documentation has been re-written to be clearer.
@@ -52,6 +56,23 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 * The Matlab limit `namelengthmax` on the length of identifiers now returns
   2048.  This is only for compatibility as Octave can store identifiers with
   up to 2^31 - 1 characters.
+
+* Access to the members of `classdef` classes is now enforced as in Matlab.
+  The `Access`, `GetAccess`, and `SetAccess` attributes accept `"public"`,
+  `"protected"`, `"private"`, or a list of classes such as
+  `{?ClassA, ?ClassB}`.  Private methods of a superclass are no longer
+  inherited, and `fieldnames` no longer lists private properties.
+
+* The member lists of `classdef` meta classes are now arrays of meta objects
+  instead of cell arrays: for `mc = ?myclass`, `class (mc.MethodList)` returns
+  `"meta.method"`, and `mc.SuperclassList` and `mc.InferiorClasses` hold
+  `meta.class` objects.  Code that reads these lists with `cellfun` or with
+  `{}` indexing must change; `{mc.MethodList.Name}` gives the method names.
+
+* A `classdef` subclass can no longer declare a property that a superclass
+  already declares, which Matlab also refuses.  Matlab allows it when the
+  superclass property is private (both its `GetAccess` and `SetAccess`);
+  Octave does not support that case yet and says so in its error message.
 
 ### Alphabetical list of new functions added in Octave 12
 

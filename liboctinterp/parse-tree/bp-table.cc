@@ -842,7 +842,7 @@ private:
       {
         // Not the most efficient, but reuses code:
         const std::map<std::string, cdef_method>& map
-          = m_cls.get_method_map (false, true);
+          = m_cls.get_method_map (cdef_class::member_mode::all, true);
         for (const auto& meth : map)
           {
             octave_user_code *fcn
@@ -853,7 +853,7 @@ private:
 
         // Check get and set methods of properties
         const std::map<property_key, cdef_property>& prop_map
-          = m_cls.get_property_map (cdef_class::property_all);
+          = m_cls.get_property_map (cdef_class::member_mode::all);
         for (const auto& prop : prop_map)
           {
             octave_value get_meth = prop.second.get ("GetMethod");

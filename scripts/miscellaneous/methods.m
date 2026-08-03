@@ -125,12 +125,12 @@ endfunction
 %! ip = inputParser ();
 %! assert (methods (ip),
 %!         {"addOptional"; "addParamValue"; "addParameter"; "addRequired";
-%!          "addSwitch"; "delete"; "disp"; "parse"; });
+%!          "addSwitch"; "disp"; "parse"; });
 
 ## test classdef classname
 %!assert (methods ("inputParser"),
 %!        {"addOptional"; "addParamValue"; "addParameter"; "addRequired";
-%!         "addSwitch"; "delete"; "disp"; "parse"; });
+%!         "addSwitch"; "disp"; "parse"; });
 
 ## test old-style @classname
 %!test

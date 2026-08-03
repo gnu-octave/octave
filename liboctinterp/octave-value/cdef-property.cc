@@ -33,7 +33,6 @@
 #include "errwarn.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
-#include "load-path.h"
 #include "ov-builtin.h"
 #include "ov-classdef.h"
 #include "ov-fcn-handle.h"
@@ -47,6 +46,262 @@
 #include "pt-walk.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
+
+cdef_property::cdef_property_rep::cdef_property_rep (
+  const cdef_object& defining_class,
+  octave_value name,
+  cdef_property_opt_properties opt_args)
+  : cdef_meta_object_rep ()
+{
+  set_class (cdef_manager::m_meta_property);
+
+  if (! defining_class.ok ())
+    error ("invalid property: DefiningClass not valid");
+
+  put ("DefiningClass", to_ov (defining_class));
+
+  if (name.string_value () == defining_class.get ("Name").string_value ())
+    error ("invalid property: cannot have the same name as the classdef itself");
+  put ("Name", name);
+  put ("Description", opt_args.description);
+  put ("DetailedDescription", opt_args.detailed_description);
+  put ("Validation", opt_args.validation);
+
+  // Resolve Access -> GetAccess/SetAccess inheritance.
+  // Empty string means "not explicitly set", so inherit from Access.
+  // Also force to lower case.  A list of classes is kept as it is.
+  auto lower = [] (const octave_value& val)
+  {
+    if (! val.is_string ())
+      return val;
+
+    std::string s = val.string_value ();
+    std::transform (s.begin (), s.end (), s.begin (),
+      [](unsigned char c){ return std::tolower (c); });
+    return octave_value (s);
+  };
+
+  auto is_unset = [] (const octave_value& val)
+  {
+    return val.is_string () && val.string_value ().empty ();
+  };
+
+  octave_value access = lower (opt_args.access);
+  octave_value get_access = lower (opt_args.get_access);
+  octave_value set_access = lower (opt_args.set_access);
+
+  if (! is_unset (get_access) || ! is_unset (set_access))
+    {
+      // If either GetAccess or SetAccess is set, then
+      // Access cannot also be set.
+      if (! access.is_string () || access.string_value () != "public")
+        error ("invalid property: cannot set \'Access\' and \'%s\' on the same property",
+               is_unset (get_access) ? "SetAccess" : "GetAccess");
+
+      put ("GetAccess", is_unset (get_access) ? octave_value ("public")
+                                              : get_access);
+      put ("SetAccess", is_unset (set_access) ? octave_value ("public")
+                                              : set_access);
+    }
+  else
+    {
+      put ("GetAccess", access);
+      put ("SetAccess", access);
+    }
+
+  // Attributes
+  put ("AbortSet", opt_args.abort_set);
+  put ("Abstract", opt_args.abstract);
+  put ("Constant", opt_args.constant);
+  put ("Dependent", opt_args.dependent);
+  put ("GetObservable", opt_args.get_observable);
+  put ("GetMethod", opt_args.get_method);
+
+  if (opt_args.default_value.is_defined ())
+    {
+      put ("HasDefault", true);
+      put ("DefaultValue", opt_args.default_value);
+    }
+  else
+    {
+      put ("HasDefault", false);
+      put ("DefaultValue", Matrix ());
+    }
+
+  put ("Hidden", opt_args.hidden);
+  put ("NonCopyable", opt_args.non_copyable);
+  put ("PartialMatchPriority", opt_args.partial_match_priority);
+  put ("SetMethod", opt_args.set_method);
+  put ("SetObservable", opt_args.set_observable);
+  put ("Transient", opt_args.transient);
+  put ("WeakHandle", opt_args.weak_handle);
+}
+
+void
+cdef_property::cdef_property_rep::put (const std::string& pname,
+                                       const octave_value& val)
+{
+  try
+    {
+      if (pname == "AbortSet")
+        {
+          auto coerced = val.bool_value ();
+          m_map.assign (pname, coerced);
+        }
+      else if (pname == "Abstract")
+        {
+          auto coerced = val.bool_value ();
+          m_map.assign (pname, coerced);
+        }
+      else if (pname == "Access")
+        {
+          if (val.is_string ())
+            {
+              auto coerced = val.string_value ();
+              if (coerced == "public" || coerced == "private"
+                  || coerced == "protected")
+                m_map.assign (pname, coerced);
+              else
+                error ("Access must be 'public', 'private', 'protected', or a list of classes");
+            }
+          else if (is_access_list (val))
+            m_map.assign (pname, val);
+          else
+            error ("Access must be 'public', 'private', 'protected', or a list of classes");
+        }
+      else if (pname == "Constant")
+        {
+          auto coerced = val.bool_value ();
+          m_map.assign (pname, coerced);
+        }
+      else if (pname == "DefaultValue")
+        {
+          // Can be any value or empty
+          m_map.assign (pname, val);
+        }
+      else if (pname == "DefiningClass")
+        {
+          // Must be a classdef object wrapping a meta.class
+          m_map.assign (pname, val);
+        }
+      else if (pname == "Dependent")
+        {
+          auto coerced = val.bool_value ();
+          m_map.assign (pname, coerced);
+        }
+      else if (pname == "Description")
+        {
+          auto coerced = val.string_value ();
+          m_map.assign (pname, coerced);
+        }
+      else if (pname == "DetailedDescription")
+        {
+          auto coerced = val.string_value ();
+          m_map.assign (pname, coerced);
+        }
+      else if (pname == "GetAccess")
+        {
+          if (val.is_string ())
+            {
+              auto coerced = val.string_value ();
+              if (coerced == "public" || coerced == "private"
+                  || coerced == "protected")
+                m_map.assign (pname, coerced);
+              else
+                error ("GetAccess must be 'public', 'private', 'protected', or a list of classes");
+            }
+          else if (is_access_list (val))
+            m_map.assign (pname, val);
+          else
+            error ("GetAccess must be 'public', 'private', 'protected', or a list of classes");
+        }
+      else if (pname == "GetMethod")
+        {
+          // Can be a function handle, function, or empty
+          m_map.assign (pname, val);
+        }
+      else if (pname == "GetObservable")
+        {
+          auto coerced = val.bool_value ();
+          m_map.assign (pname, coerced);
+        }
+      else if (pname == "HasDefault")
+        {
+          auto coerced = val.bool_value ();
+          m_map.assign (pname, coerced);
+        }
+      else if (pname == "Hidden")
+        {
+          auto coerced = val.bool_value ();
+          m_map.assign (pname, coerced);
+        }
+      else if (pname == "Name")
+        {
+          auto coerced = val.string_value ();
+          m_map.assign (pname, coerced);
+        }
+      else if (pname == "NonCopyable")
+        {
+          auto coerced = val.bool_value ();
+          m_map.assign (pname, coerced);
+        }
+      else if (pname == "PartialMatchPriority")
+        {
+          auto coerced = val.int_value ();
+          m_map.assign (pname, coerced);
+        }
+      else if (pname == "SetAccess")
+        {
+          if (val.is_string ())
+            {
+              auto coerced = val.string_value ();
+              if (coerced == "public" || coerced == "private"
+                  || coerced == "protected")
+                m_map.assign (pname, coerced);
+              else
+                error ("SetAccess must be 'public', 'private', 'protected', or a list of classes");
+            }
+          else if (is_access_list (val))
+            m_map.assign (pname, val);
+          else
+            error ("SetAccess must be 'public', 'private', 'protected', or a list of classes");
+        }
+      else if (pname == "SetMethod")
+        {
+          // Can be a function handle, function, or empty
+          m_map.assign (pname, val);
+        }
+      else if (pname == "SetObservable")
+        {
+          auto coerced = val.bool_value ();
+          m_map.assign (pname, coerced);
+        }
+      else if (pname == "Transient")
+        {
+          auto coerced = val.bool_value ();
+          m_map.assign (pname, coerced);
+        }
+      else if (pname == "Validation")
+        {
+          // Array of validation objects or empty
+          m_map.assign (pname, val);
+        }
+      else if (pname == "WeakHandle")
+        {
+          auto coerced = val.bool_value ();
+          m_map.assign (pname, coerced);
+        }
+      else
+        {
+          error ("unknown property '%s' of meta.property", pname.c_str ());
+        }
+    }
+  catch (const execution_exception& ee)
+    {
+      error ("put: setting '%s' on meta.property failed with error: %s",
+             pname.c_str (), ee.message ().c_str ());
+    }
+}
 
 static bool
 is_method_executing (const octave_value& ov, const cdef_object& obj)
@@ -121,8 +376,16 @@ cdef_property::cdef_property_rep::get_value (const cdef_object& obj,
 
   // FIXME: should check whether we're already in get accessor method
 
-  if (get_fcn.isempty () || is_method_executing (get_fcn, obj))
-    retval = obj.get (get ("Name").string_value ());
+  if ((! get_fcn.is_function () && ! get_fcn.is_function_handle ())
+      || is_method_executing (get_fcn, obj))
+    {
+      retval = obj.get (get ("Name").string_value ());
+
+      if (! retval.is_defined ())
+        {
+          retval = get ("DefaultValue");
+        }
+    }
   else
     {
       octave_value_list args;
@@ -137,6 +400,12 @@ cdef_property::cdef_property_rep::get_value (const cdef_object& obj,
     }
 
   return retval;
+}
+
+cdef_class
+cdef_property::cdef_property_rep::get_defining_class () const
+{
+  return to_cdef (m_map.contents ("DefiningClass"));
 }
 
 octave_value
@@ -196,7 +465,8 @@ cdef_property::cdef_property_rep::set_value (cdef_object& obj,
 
   octave_value set_fcn = get ("SetMethod");
 
-  if (set_fcn.isempty () || is_method_executing (set_fcn, obj))
+  if ((! set_fcn.is_function () && ! set_fcn.is_function_handle ())
+      || is_method_executing (set_fcn, obj))
     obj.put (get ("Name").string_value (), val);
   else
     {
@@ -247,6 +517,128 @@ cdef_property::cdef_property_rep::check_set_access () const
   return check_access (cls, get ("SetAccess"), "", get_name (), true);
 
   return false;
+}
+
+cdef_class
+cdef_property::get_defining_class () const
+{
+  return get_rep ()->get_defining_class ();
+}
+
+void
+cdef_property::make_property (cdef_class& cls, tree_evaluator& tw,
+                              tree_classdef_properties_block* pb_p)
+{
+  std::map<std::string, octave_value> amap = {
+    {"AbortSet", false},
+    {"Abstract", false},
+    {"Access", "public"},
+    {"Constant", false},
+    {"Dependent", false},
+    {"Description", ""},
+    {"DetailedDescription", ""},
+    {"GetAccess", ""},
+    {"GetObservable", false},
+    {"Hidden", false},
+    {"NonCopyable", false},
+    {"PartialMatchPriority", 1},
+    {"SetAccess", ""},
+    {"SetObservable", false},
+    {"Transient", false},
+    {"WeakHandle", false}
+  };
+
+  if (pb_p->attribute_list ())
+    {
+      for (auto& attr_p : *pb_p->attribute_list ())
+        {
+          std::string aname = attr_p->ident ()->name ();
+          octave_value avalue = compute_attribute_value (tw, attr_p);
+
+          auto it = amap.find (aname);
+
+          if (it == amap.end ())
+            error ("invalid attribute: attribute %s cannot be assigned in a properties block", aname.c_str ());
+
+          amap[aname] = avalue;
+        }
+    }
+
+  if (pb_p->element_list ())
+    {
+      for (auto& prop_p : *pb_p->element_list ())
+        {
+          std::string pname = prop_p->ident ()->name ();
+
+          // Docstring of a property is separated into the
+          // Description and DetailedDescription properties
+
+          const std::string doc_string = prop_p->doc_string ();
+          std::string description = "";
+          std::string detailed_description = "";
+
+          size_t pos = doc_string.find('\n');
+          if (pos != std::string::npos)
+            {
+              description = doc_string.substr (0, pos);
+              detailed_description = doc_string.substr (pos + 1);
+            }
+          else
+              description = doc_string;
+
+          // Setting attributes "Description" and "DetailedDescription"
+          // should override the doc string written in the properties block.
+          // Strip the whitespace in front of the description string.
+          // Weirdly, the whitespace isn't stripped from the
+          // detailed_description string
+
+          const std::string whitespaces = " \t\n\r\f\v";
+          size_t start = description.find_first_not_of (whitespaces);
+          if (start != std::string::npos)
+            description.erase (0, start);
+
+          if (amap["Description"].string_value () != "")
+            description = amap["Description"].string_value ();
+          if (amap["DetailedDescription"].string_value () != "")
+            detailed_description = amap["DetailedDescription"].string_value ();
+
+          tree_expression *expr = prop_p->expression ();
+          octave_value pdefault;
+
+          if (expr)
+            {
+              octave_value pvalue = expr->evaluate (tw);
+              pdefault = pvalue;
+            }
+
+          cdef_property_opt_properties opts {
+            .abort_set = amap["AbortSet"],
+            .abstract = amap["Abstract"],
+            .access = amap["Access"],
+            .constant = amap["Constant"],
+            .default_value = pdefault,
+            .dependent = amap["Dependent"],
+            // Description and DetailedDescription might be
+            // different for each property in a property
+            // block, so it should not be set by the map
+            .description = description,
+            .detailed_description = detailed_description,
+            .get_access = amap["GetAccess"],
+            .get_observable = amap["GetObservable"],
+            .hidden = amap["Hidden"],
+            .non_copyable = amap["NonCopyable"],
+            .partial_match_priority = amap["PartialMatchPriority"],
+            .set_access = amap["SetAccess"],
+            .set_observable = amap["SetObservable"],
+            .transient = amap["Transient"],
+            .weak_handle = amap["WeakHandle"]
+          };
+
+          cdef_property prop = cdef_property (cls, pname, opts);
+
+          cls.install_property (prop);
+        }
+     }
 }
 
 OCTAVE_END_NAMESPACE(octave)

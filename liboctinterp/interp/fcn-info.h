@@ -74,7 +74,8 @@ private:
 
     octave_value install_local_function (const std::string& file_name);
 
-    octave_value load_private_function (const std::string& dir_name);
+    octave_value load_private_function (const std::string& dir_name,
+                                        const std::string& pack_name = "");
 
     octave_value load_class_constructor ();
 
@@ -87,7 +88,8 @@ private:
 
     octave_value find_scoped_function (const symbol_scope& search_scope);
 
-    octave_value find_private_function (const std::string& dir_name);
+    octave_value find_private_function (const std::string& dir_name,
+                                        const std::string& pack_name = "");
 
     octave_value find_method (const std::string& dispatch_type);
 
@@ -262,9 +264,10 @@ public:
     return m_rep->find_scoped_function (search_scope);
   }
 
-  octave_value find_private_function (const std::string& dir_name) const
+  octave_value find_private_function (const std::string& dir_name,
+                                      const std::string& pack_name = "") const
   {
-    return m_rep->find_private_function (dir_name);
+    return m_rep->find_private_function (dir_name, pack_name);
   }
 
   octave_value find_method (const std::string& dispatch_type) const

@@ -53,6 +53,10 @@ public:
   octave_classdef (const octave::cdef_object& obj)
     : octave_base_value (), m_object (obj) { }
 
+  octave_classdef (const Array<octave::cdef_object>& arr)
+    : octave_base_value (), m_object (arr)
+  { }
+
   OCTAVE_DISABLE_COPY_MOVE (octave_classdef)
 
   ~octave_classdef () = default;

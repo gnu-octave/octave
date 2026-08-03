@@ -123,7 +123,37 @@ cdef_object_rep::get_class () const
 std::string
 cdef_object_rep::class_name () const
 {
-  return get_class ().get_name ();
+  cdef_class cls = get_class ();
+
+  if (cls.ok ())
+    return cls.get_name ();
+
+  return "unknown";
+}
+
+cdef_object
+cdef_object_rep::checkelem (octave_idx_type) const
+{
+  err_invalid_object ("checkelem");
+}
+
+cdef_object
+cdef_object_rep::checkelem (octave_idx_type, octave_idx_type) const
+{
+  err_invalid_object ("checkelem");
+}
+
+cdef_object
+cdef_object_rep::checkelem (octave_idx_type, octave_idx_type,
+                            octave_idx_type) const
+{
+  err_invalid_object ("checkelem");
+}
+
+cdef_object
+cdef_object_rep::checkelem (const Array<octave_idx_type>&) const
+{
+  err_invalid_object ("checkelem");
 }
 
 string_vector
@@ -155,7 +185,7 @@ cdef_object::map_value (bool warn, bool for_save) const
     {
       std::map<property_key, cdef_property> props;
 
-      props = cls.get_property_map (cdef_class::property_all);
+      props = cls.get_property_map (cdef_class::member_mode::all);
 
       // FIXME: Why not const here?
       for (auto& prop_val : props)
@@ -189,6 +219,27 @@ cdef_object::map_value (bool warn, bool for_save) const
   return retval;
 }
 
+cdef_object::cdef_object (const Array<cdef_object>& arr)
+  : m_rep (new cdef_object_array (arr))
+{
+  maybe_mutate ();
+}
+
+cdef_object::cdef_object (const Array<cdef_object>& arr, const cdef_class& cls)
+  : m_rep (new cdef_object_array (arr, cls))
+{
+  maybe_mutate ();
+}
+
+void
+cdef_object::maybe_mutate ()
+{
+  cdef_object tmp = m_rep->try_narrowing_conversion ();
+
+  if (tmp.ok () && tmp.m_rep != m_rep)
+    *this = tmp;
+}
+
 cdef_class
 cdef_object::get_class () const
 {
@@ -198,6 +249,9 @@ cdef_object::get_class () const
 cdef_class
 cdef_object_base::get_class () const
 {
+  if (! m_klass.ok ())
+    return cdef_class ();
+
   return cdef_class (m_klass);
 }
 
@@ -222,6 +276,15 @@ cdef_object_base::make_array () const
   return r;
 }
 
+cdef_object
+cdef_object_base::checkelem (octave_idx_type n) const
+{
+  if (n != 0)
+    error ("index out of range for scalar classdef object");
+
+  return wrap ();
+}
+
 cdef_object_rep *
 cdef_object_array::clone () const
 {
@@ -230,9 +293,19 @@ cdef_object_array::clone () const
   for (octave_idx_type i = 0; i < m_array.numel (); i++)
     new_array(i) = m_array(i).clone ();
 
-  cdef_object_array *retval = new cdef_object_array (new_array);
-  retval->set_class (get_class ());
-  return retval;
+  return new cdef_object_array (new_array, get_class ());
+}
+
+cdef_object
+cdef_object_array::try_narrowing_conversion ()
+{
+  // A 1x1 object array is equivalent to the scalar object it contains.
+  // Return the element itself, not a copy, so that handle identity is
+  // preserved.
+  if (m_array.numel () == 1 && m_array(0).ok ())
+    return m_array(0);
+
+  return cdef_object ();
 }
 
 cdef_object_rep *
@@ -240,9 +313,7 @@ cdef_object_array::permute (const Array<int>& vec, bool inv) const
 {
   Array<cdef_object> cpy_array = m_array.permute (vec, inv);
 
-  cdef_object_array *retval = new cdef_object_array (cpy_array);
-  retval->set_class (get_class ());
-  return retval;
+  return new cdef_object_array (cpy_array, get_class ());
 }
 
 cdef_object_rep *
@@ -257,6 +328,55 @@ cdef_object_array::resize (const dim_vector& dv, bool fill) const
     retval->fill_empty_values ();
 
   return guard.release ();
+}
+
+static cdef_class
+derive_array_class (const Array<cdef_object>& a)
+{
+  cdef_class cls;
+
+  for (octave_idx_type i = 0; i < a.numel (); i++)
+    {
+      if (! a(i).ok ())
+        continue;
+
+      cdef_class elt_cls = a(i).get_class ();
+
+      if (! cls.ok ())
+        cls = elt_cls;
+      else if (elt_cls.ok () && elt_cls != cls)
+        error ("cannot create classdef array with elements of different "
+               "classes ('%s' and '%s')",
+               cls.get_name ().c_str (), elt_cls.get_name ().c_str ());
+    }
+
+  return cls;
+}
+
+cdef_object_array::cdef_object_array (const Array<cdef_object>& a)
+  : cdef_object_base (), m_array (a)
+{
+  cdef_class cls = derive_array_class (m_array);
+
+  if (! cls.ok () && m_array.numel () > 0)
+    error ("cannot create a non-empty classdef array with no class");
+
+  if (cls.ok ())
+    set_class (cls);
+}
+
+cdef_object_array::cdef_object_array (const Array<cdef_object>& a,
+                                      const cdef_class& cls)
+  : cdef_object_base (), m_array (a)
+{
+  cdef_class elt_cls = derive_array_class (m_array);
+
+  if (elt_cls.ok () && cls.ok () && elt_cls != cls)
+    error ("cannot create classdef array of class '%s' holding elements of "
+           "class '%s'",
+           cls.get_name ().c_str (), elt_cls.get_name ().c_str ());
+
+  set_class (cls);
 }
 
 cdef_object_rep *
@@ -287,8 +407,7 @@ cdef_object_array::subsref (const std::string& type,
 
         if (ival.empty ())
           {
-            m_count++;
-            retval(0) = to_ov (cdef_object (this));
+            retval(0) = to_ov (wrap ());
             break;
           }
 
@@ -324,9 +443,7 @@ cdef_object_array::subsref (const std::string& type,
           retval(0) = to_ov (ires(0));
         else
           {
-            cdef_object array_obj (new cdef_object_array (ires));
-
-            array_obj.set_class (get_class ());
+            cdef_object array_obj (ires, get_class ());
 
             retval(0) = to_ov (array_obj);
           }
@@ -442,8 +559,7 @@ cdef_object_array::subsasgn (const std::string& type,
                 fill_empty_values ();
             }
 
-          m_count++;
-          retval = to_ov (cdef_object (this));
+          retval = to_ov (wrap ());
         }
       else
         {
@@ -526,9 +642,7 @@ cdef_object_array::subsasgn (const std::string& type,
                 fill_empty_values ();
             }
 
-          m_count++;
-
-          retval = to_ov (cdef_object (this));
+          retval = to_ov (wrap ());
         }
       break;
 
@@ -556,9 +670,7 @@ cdef_object_array::subsasgn (const std::string& type,
 octave_value
 cdef_object_array::reshape (const dim_vector& new_dims) const
 {
-  cdef_object_array retval = cdef_object_array (*this);
-  retval.m_array = Array<cdef_object> (m_array, new_dims);
-  return to_ov (cdef_object (new cdef_object_array (retval)));
+  return to_ov (cdef_object (Array<cdef_object> (m_array, new_dims), get_class ()));
 }
 
 void
@@ -654,9 +766,7 @@ cdef_object_scalar::subsref (const std::string& type,
               retval(0) = prop.get_value (true, "subsref");
             else
               {
-                m_count++;
-                retval(0) = prop.get_value (cdef_object (this),
-                                            true, "subsref");
+                retval(0) = prop.get_value (wrap (), true, "subsref");
               }
 
             skip = 1;
@@ -692,8 +802,7 @@ cdef_object_scalar::subsref (const std::string& type,
               retval = meth.execute (args, nargout_mtd, true, "subsref");
             else
               {
-                m_count++;
-                retval = meth.execute (cdef_object (this), args, nargout_mtd,
+                retval = meth.execute (wrap (), args, nargout_mtd,
                                        true, "subsref");
               }
           }
@@ -705,8 +814,7 @@ cdef_object_scalar::subsref (const std::string& type,
       {
         const octave_value_list& ival = idx.front ();
 
-        m_count++;
-        cdef_object this_obj (this);
+        cdef_object this_obj = wrap ();
 
         if (ival.empty ())
           {
@@ -717,9 +825,7 @@ cdef_object_scalar::subsref (const std::string& type,
           {
             Array<cdef_object> arr (dim_vector (1, 1), this_obj);
 
-            cdef_object new_obj = cdef_object (new cdef_object_array (arr));
-
-            new_obj.set_class (get_class ());
+            cdef_object new_obj = adopt (new cdef_object_array (arr));
 
             retval = new_obj.subsref (type, idx, nargout, skip, cls, auto_add);
           }
@@ -758,9 +864,7 @@ cdef_object_scalar::subsasgn (const std::string& type,
           error ("subsasgn: cannot assign constant property: %s",
                  name.c_str ());
 
-        m_count++;
-
-        cdef_object obj (this);
+        cdef_object obj = wrap ();
 
         if (type.length () == 1)
           {
@@ -789,15 +893,11 @@ cdef_object_scalar::subsasgn (const std::string& type,
 
     case '(':
       {
-        m_count++;
-
-        cdef_object this_obj (this);
+        cdef_object this_obj = wrap ();
 
         Array<cdef_object> arr (dim_vector (1, 1), this_obj);
 
-        cdef_object new_obj = cdef_object (new cdef_object_array (arr));
-
-        new_obj.set_class (get_class ());
+        cdef_object new_obj = adopt (new cdef_object_array (arr));
 
         octave_value tmp = new_obj.subsasgn (type, idx, rhs);
 
@@ -823,7 +923,7 @@ cdef_object_scalar::reshape (const dim_vector& new_dims) const
              new_dims_str.c_str ());
     }
 
-  return to_ov (cdef_object (clone()));
+  return to_ov (adopt (clone ()));
 }
 
 cdef_object_rep *
@@ -834,15 +934,11 @@ cdef_object_scalar::resize (const dim_vector& dv, bool fill) const
 
   Array<cdef_object> arr (dv);
 
-  // Need to guard against this statement being called when an empty array
-  // is generated
   if (dv.numel () > 0)
-    arr(0) = cdef_object (const_cast<cdef_object_scalar *> (this)->clone ());
+    arr(0) = adopt (clone ());
 
-  cdef_object_array *retval = new cdef_object_array (arr);
+  cdef_object_array *retval = new cdef_object_array (arr, get_class ());
   std::unique_ptr<cdef_object_array> guard (retval);
-
-  retval->set_class (get_class ());
 
   if (fill)
     retval->fill_empty_values ();
@@ -853,11 +949,12 @@ cdef_object_scalar::resize (const dim_vector& dv, bool fill) const
 void
 cdef_object_scalar::mark_for_construction (const cdef_class& cls)
 {
-  std::string cls_name = cls.get_name ();
+  cdef_object supcls = cls.get_superclass_list ();
 
-  Cell supcls = cls.get ("SuperClasses").cell_value ();
+  std::list<cdef_class> supcls_list;
 
-  std::list<cdef_class> supcls_list = lookup_classes (supcls);
+  for (octave_idx_type i = 0; i < supcls.numel (); i++)
+    supcls_list.push_back (cdef_class (supcls (i)));
 
   m_ctor_list[cls] = supcls_list;
 }

@@ -136,6 +136,12 @@ include bug-67964/module.mk
 include class-concat/module.mk
 include classdef-breakpoints/module.mk
 include classdef-load-save/module.mk
+include classdef-methods/module.mk
+include classdef-methods-folder/module.mk
+include classdef-methods-nested-package-file/module.mk
+include classdef-methods-nested-package-folder/module.mk
+include classdef-methods-package-file/module.mk
+include classdef-methods-package-folder/module.mk
 include classdef-multiple-inheritance/module.mk
 include classdef/module.mk
 include classes/module.mk

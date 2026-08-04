@@ -44,6 +44,12 @@ export SHELL
 export PERL
 export TAR_OPTIONS
 
+## Preserve the configure-time macOS deployment target.  Exporting an
+## empty value leaves target selection to the compiler default, preventing
+## libtool from assuming the obsolete default of macOS 10.0.
+MACOSX_DEPLOYMENT_TARGET = @MACOSX_DEPLOYMENT_TARGET@
+export MACOSX_DEPLOYMENT_TARGET
+
 version := ${OCTAVE_VERSION}
 api_version := ${OCTAVE_API_VERSION}
 
@@ -116,7 +122,11 @@ OCTAVE_LINK_OPTS := @OCTAVE_LINK_OPTS@
 OCTAVE_GUI_LINK_DEPS := @OCTAVE_GUI_LINK_DEPS@
 OCTAVE_GUI_LINK_OPTS := @OCTAVE_GUI_LINK_OPTS@
 
-# DEPS for linking .oct files
+# Link inputs for the .oct files built in liboctinterp/dldfcn.
+DLDFCN_LINK_DEPS := @DLDFCN_LINK_DEPS@
+DLDFCN_DEPENDENCIES := @DLDFCN_DEPENDENCIES@
+
+# Options used by mkoctfile for linking .oct files.
 OCT_LINK_DEPS := @OCT_LINK_DEPS@
 OCT_LINK_OPTS := @OCT_LINK_OPTS@
 
@@ -594,4 +604,3 @@ $(TEST_CLEAN_TARGETS):
 ## them on 'clean', so we override this target to do nothing by default.
 
 clean-aminfo:
-

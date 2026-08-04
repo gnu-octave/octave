@@ -49,6 +49,18 @@
 // is called in the constructor of the base qobject directly after
 // loading the translators.
 
+// NOTE: Define macro to combine Modifier and Key without compiler warning.
+//       Variants of macro for Qt6 and Qt5.
+#if defined (HAVE_QKEYCOMBINATION_CLASS)
+#  include <QKeyCombination>
+#  define OCTAVE_QT_KEYCOMBINATION(mod, key) \
+     QKeyCombination (mod, key).toCombined ()
+#else
+#  include <cstdint>
+#  define OCTAVE_QT_KEYCOMBINATION(mod, key) \
+     static_cast<uint32_t> (mod) | static_cast<uint32_t> (key)
+#endif
+
 // Dock widgets
 sc_pref sc_dock_widget_dock;
 sc_pref sc_dock_widget_close;
@@ -417,3 +429,6 @@ get_shortcut_section (const QString& key)
 
   return section;
 }
+
+// Undefine macro needed only for this file.
+#undef OCTAVE_QT_KEYCOMBINATION

@@ -29,11 +29,13 @@ if AMCOND_BUILD_EXTERNAL_LIBXERBLA
   octlib_LTLIBRARIES += %reldir%/libxerbla.la
 
   %canon_reldir%_libxerbla_la_LDFLAGS := \
+    $(AM_LDFLAGS) \
     $(WARN_LDFLAGS) \
     $(NO_UNDEFINED_LDFLAG) \
     -avoid-version \
     -bindir $(bindir)
-else
+
+else    # no external libxerbla
   noinst_LTLIBRARIES += %reldir%/libxerbla.la
 
   liboctave_liboctave_la_LIBADD += %reldir%/libxerbla.la

@@ -15,6 +15,10 @@ LIBOCTINTERP_DEFUN_FILES =
 
 %canon_reldir%_liboctinterp_la_LIBADD =
 
+## NOTE: This definition should occur before including Makefile fragments
+## so that liboctinterp is processed first.
+octlib_LTLIBRARIES += %reldir%/liboctinterp.la
+
 include %reldir%/parse-tree/module.mk
 include %reldir%/octave-value/module.mk
 include %reldir%/operators/module.mk
@@ -43,7 +47,6 @@ nodist_%canon_reldir%_liboctinterp_la_SOURCES = \
   %reldir%/operators/ops.cc
 
 ## Start library specification
-octlib_LTLIBRARIES += %reldir%/liboctinterp.la
 
 ## Search local directories before those specified by the user.
 %canon_reldir%_liboctinterp_la_CPPFLAGS := \
@@ -121,17 +124,12 @@ DIST_SRC += \
 
 %canon_reldir%_pkgconfig_DATA = %reldir%/octinterp.pc
 
-DLD_LIBOCTINTERP_LIBADD = $(OCT_LTLINK_DEPS)
-## FIXME: 2026-05-12: Variable appears to be unused.
-LIBOCTINTERP_DLDFCN_LIBADD =
-
 if AMCOND_BUILD_EXTERNAL_LIBXERBLA
   %canon_reldir%_liboctinterp_la_LIBADD += \
     liboctave/external/blas-xtra/libxerbla.la
 endif
 
 %canon_reldir%_liboctinterp_la_LIBADD += \
-  $(LIBOCTINTERP_DLDFCN_LIBADD) \
   liboctave/liboctave.la \
   $(LIBOCTINTERP_LINK_DEPS)
 
@@ -153,11 +151,6 @@ endif
   $(LIBOCTINTERP_LINK_OPTS)
 
 ## Special rules:
-
-## Rule to create Automake module.mk fragment for dldfcn/ directory which is
-## @include'd in this file.
-$(srcdir)/%reldir%/dldfcn/module.mk: $(srcdir)/%reldir%/dldfcn/config-module.sh $(srcdir)/%reldir%/dldfcn/config-module.awk $(srcdir)/%reldir%/dldfcn/module-files
-	$(AM_V_GEN)$(SHELL) $(srcdir)/%reldir%/dldfcn/config-module.sh $(srcdir)
 
 ## Cancel the suffix rule for Yacc and use a pattern rule instead.
 .yy.cc:

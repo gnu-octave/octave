@@ -34,15 +34,16 @@
 extern "C" {
 #endif
 
-extern OCTAVE_API void * octave_opendir_wrapper (const char *dname);
+OCTAVE_API void * octave_opendir_wrapper (const char *dname);
 
-extern OCTAVE_API char * octave_readdir_wrapper (void *dir);
+OCTAVE_API char * octave_readdir_wrapper (void *dir);
 
-extern OCTAVE_API void octave_rewinddir_wrapper (void *dir);
+// FIXME: 2026-07-31 : wrapper is unused.  consider deprecating and deleting.
+OCTAVE_API void octave_rewinddir_wrapper (void *dir);
 
-extern OCTAVE_API int octave_closedir_wrapper (void *dir);
+OCTAVE_API int octave_closedir_wrapper (void *dir);
 
-extern OCTAVE_API unsigned int octave_name_max_wrapper (void);
+OCTAVE_API unsigned int octave_name_max_wrapper (void);
 
 #if defined (__cplusplus)
 }

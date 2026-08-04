@@ -37,10 +37,11 @@
 extern "C" {
 #endif
 
-extern OCTAVE_API ptrdiff_t
-octave_base64_encode_alloc_wrapper (const char *in, ptrdiff_t inlen, char **out);
+OCTAVE_API ptrdiff_t
+octave_base64_encode_alloc_wrapper (const char *in, ptrdiff_t inlen,
+                                    char **out);
 
-extern OCTAVE_API bool
+OCTAVE_API bool
 octave_base64_decode_alloc_wrapper (const char *in, ptrdiff_t inlen,
                                     char **out, ptrdiff_t *outlen);
 

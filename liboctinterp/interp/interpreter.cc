@@ -31,6 +31,7 @@
 
 #include <iostream>
 #include <set>
+#include <source_location>
 #include <string>
 #include <thread>
 
@@ -918,39 +919,45 @@ interpreter::execute ()
 // Call a function with exceptions handled to avoid problems with
 // errors while shutting down.
 
-#define OCTAVE_IGNORE_EXCEPTION(E)                                      \
-  catch (E)                                                             \
-    {                                                                   \
-      recover_from_exception ();                                        \
-                                                                        \
-      std::cerr << "error: ignoring " #E " while preparing to exit"     \
-                << std::endl;                                           \
+#define OCTAVE_IGNORE_EXCEPTION(E, F, ARGS)                               \
+  catch (E)                                                               \
+    {                                                                     \
+      recover_from_exception ();                                          \
+                                                                          \
+      const auto location = std::source_location::current ();             \
+                                                                          \
+      std::cerr << "error: ignoring " #E " while preparing to exit" "\n"  \
+                << "error: OCTAVE_SAFE_CALL at "                          \
+                << location.file_name () << ':' << location.line ()       \
+                << " in " << location.function_name () << "\n"            \
+                << "error: source expression: " #F #ARGS                  \
+                << std::endl;                                             \
     }
 
-#define OCTAVE_SAFE_CALL(F, ARGS)                                       \
-  do                                                                    \
-    {                                                                   \
-      try                                                               \
-        {                                                               \
-          error_system& es = get_error_system ();                       \
-          unwind_action restore_debug_on_error                          \
-            (&error_system::set_debug_on_error, &es,                    \
-             es.debug_on_error ());                                     \
-                                                                        \
-          unwind_action restore_debug_on_warning                        \
-            (&error_system::set_debug_on_warning, &es,                  \
-             es.debug_on_warning ());                                   \
-                                                                        \
-          es.debug_on_error (false);                                    \
-          es.debug_on_warning (false);                                  \
-                                                                        \
-          F ARGS;                                                       \
-        }                                                               \
-      OCTAVE_IGNORE_EXCEPTION (const exit_exception&)                   \
-      OCTAVE_IGNORE_EXCEPTION (const interrupt_exception&)              \
-      OCTAVE_IGNORE_EXCEPTION (const execution_exception&)              \
-      OCTAVE_IGNORE_EXCEPTION (const std::bad_alloc&)                   \
-    }                                                                   \
+#define OCTAVE_SAFE_CALL(F, ARGS)                                         \
+  do                                                                      \
+    {                                                                     \
+      try                                                                 \
+        {                                                                 \
+          error_system& es = get_error_system ();                         \
+          unwind_action restore_debug_on_error                            \
+            (&error_system::set_debug_on_error, &es,                      \
+             es.debug_on_error ());                                       \
+                                                                          \
+          unwind_action restore_debug_on_warning                          \
+            (&error_system::set_debug_on_warning, &es,                    \
+             es.debug_on_warning ());                                     \
+                                                                          \
+          es.debug_on_error (false);                                      \
+          es.debug_on_warning (false);                                    \
+                                                                          \
+          F ARGS;                                                         \
+        }                                                                 \
+      OCTAVE_IGNORE_EXCEPTION (const exit_exception&, F, ARGS)            \
+      OCTAVE_IGNORE_EXCEPTION (const interrupt_exception&, F, ARGS)       \
+      OCTAVE_IGNORE_EXCEPTION (const execution_exception&, F, ARGS)       \
+      OCTAVE_IGNORE_EXCEPTION (const std::bad_alloc&, F, ARGS)            \
+    }                                                                     \
   while (0)
 
 void

@@ -163,6 +163,9 @@ from
 
 - Octave now requires GNU Make 4.3 or higher.
 
+- The configure option `--enable-link-all-dependencies` is no longer required
+  and has been removed.
+
 ### Old release news
 
 - [Octave 11.x](etc/NEWS.11.md)

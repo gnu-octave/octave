@@ -30,7 +30,7 @@
 extern "C" {
 #endif
 
-extern OCTAVE_API char * octave_strdup_wrapper (const char *str);
+OCTAVE_API char * octave_strdup_wrapper (const char *str);
 
 #if defined (__cplusplus)
 }

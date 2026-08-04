@@ -30,8 +30,7 @@
 extern "C" {
 #endif
 
-extern OCTAVE_API void 
-octave__Exit_wrapper (int status);
+OCTAVE_API void octave__Exit_wrapper (int status);
 
 #if defined (__cplusplus)
 }

@@ -30,7 +30,7 @@
 extern "C" {
 #endif
 
-extern OCTAVE_API int octave_mkostemps_wrapper (char *tmpl, int suffixlen);
+OCTAVE_API int octave_mkostemps_wrapper (char *tmpl, int suffixlen);
 
 #if defined (__cplusplus)
 }

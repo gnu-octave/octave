@@ -61,8 +61,9 @@ class scanf_format_list;
 class printf_format_elt;
 class printf_format_list;
 
-// This is a class that inherits from with std::wbuffer_convert which is
-// deprecated in C++17.
+// This class inherits from std::wbuffer_convert which was deprecated in C++17
+// and removed in C++26.
+// FIXME: Find an alternative solution by 2028
 class OCTINTERP_API wbuffer_u8_converter;
 
 // Provide an interface for Octave streams.

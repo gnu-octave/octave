@@ -90,9 +90,9 @@ nodist_%canon_reldir%_octave_SOURCES = %reldir%/main.cc
 %canon_reldir%_octave_LDADD := \
   liboctave/wrappers/libwrappers.la \
   libgnu/libgnu.la \
-  $(X11_LIBS) \
-  $(WAYLAND_CLIENT_LIBS) \
   $(CARBON_LIBS) \
+  $(WAYLAND_CLIENT_LIBS) \
+  $(X11_LIBS) \
   $(GNULIB_LINK_DEPS)
 
 ## Specify build of "octave-cli"
@@ -133,12 +133,11 @@ endif
   $(NO_UNDEFINED_LDFLAG) \
   $(OCTAVE_UNICODE_EXE_LDFLAGS) \
   $(OCTAVE_GUI_LTLDFLAGS) \
-  $(OCTAVE_GUI_LINK_OPTS)
+  $(LIBOCTGUI_LINK_OPTS)
 
 %canon_reldir%_octave_gui_LDADD := \
   $(OCTAVE_GUI_LIBS) \
-  $(OCTAVE_CORE_LIBS) \
-  $(OCTAVE_GUI_LINK_DEPS)
+  $(OCTAVE_CORE_LIBS)
 
 ## Specify build of "octave-svgconvert"
 
@@ -168,8 +167,7 @@ nodist_%canon_reldir%_mkoctfile_SOURCES = %reldir%/mkoctfile.cc
 
 %canon_reldir%_mkoctfile_LDADD := \
   liboctave/wrappers/libwrappers.la \
-  libgnu/libgnu.la \
-  $(LIBS)
+  libgnu/libgnu.la
 
 ## Specify build of "octave-config"
 
@@ -185,8 +183,7 @@ nodist_%canon_reldir%_octave_config_SOURCES = %reldir%/octave-config.cc
   $(OCTAVE_UNICODE_EXE_LDFLAGS)
 
 %canon_reldir%_octave_config_LDADD = \
-  libgnu/libgnu.la \
-  $(LIBS)
+  libgnu/libgnu.la
 
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
@@ -225,11 +222,11 @@ ALL_LOCAL_TARGETS += $(OCTAVE_CROSS_TOOLS)
 src-mostlyclean-local:
 	-rm -f $(OCTAVE_CROSS_TOOLS)
 
-else
+else    # no CROSS TOOLS
 
 src-mostlyclean-local:
 
-endif
+endif   # end AMCOND_CROSS_TOOLS
 
 ## Special rules:
 

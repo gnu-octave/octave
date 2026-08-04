@@ -21,6 +21,7 @@ NOINSTALL_WRAPPERS_INC = \
   %reldir%/nanosleep-wrapper.h \
   %reldir%/nproc-wrapper.h \
   %reldir%/octave-popen2.h \
+  %reldir%/perror-wrapper.h \
   %reldir%/pwd-wrappers.h \
   %reldir%/select-wrappers.h \
   %reldir%/set-program-name-wrapper.h \
@@ -68,6 +69,7 @@ WRAPPERS_SRC = \
   %reldir%/nanosleep-wrapper.c \
   %reldir%/nproc-wrapper.c \
   %reldir%/octave-popen2.c \
+  %reldir%/perror-wrapper.c \
   %reldir%/pwd-wrappers.c \
   %reldir%/select-wrappers.c \
   %reldir%/set-program-name-wrapper.c \
@@ -102,5 +104,3 @@ noinst_LTLIBRARIES += %reldir%/libwrappers.la
   -Ilibgnu -I$(srcdir)/libgnu
 
 liboctave_liboctave_la_LIBADD += %reldir%/libwrappers.la
-
-liboctave_liboctave_la_LDFLAGS += $(GNULIB_LINK_DEPS)

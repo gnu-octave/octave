@@ -1097,7 +1097,7 @@ dnl
 AC_DEFUN([OCTAVE_CHECK_LIB_ARPACK_OK_2], [
   AC_CACHE_CHECK([whether the arpack library is free of bugs],
     [oct_cv_lib_arpack_ok_2],
-    [save_FFLAGS="$FFLAGS"
+    [oct_save_FFLAGS="$FFLAGS"
     FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
     AC_LANG_PUSH(Fortran 77)
     AC_RUN_IFELSE([[
@@ -1215,7 +1215,7 @@ c
     oct_cv_lib_arpack_ok_2=no,
     oct_cv_lib_arpack_ok_2=yes)
     ## Restore FFLAGS.
-    FFLAGS="$save_FFLAGS"
+    FFLAGS="$oct_save_FFLAGS"
     AC_LANG_POP(Fortran 77)
   ])
   if test $oct_cv_lib_arpack_ok_2 = yes; then
@@ -1388,7 +1388,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_HDF5_DLL], [
         return x
       ]])],
       [oct_cv_lib_hdf5_dll=no],
-      [save_CFLAGS="$CFLAGS"
+      [oct_save_CFLAGS="$CFLAGS"
       CFLAGS="$CFLAGS -DWIN32 -D_HDF5USEDLL_"
       oct_save_LIBS="$LIBS"
       LIBS="$HDF5_LIBS $LIBS"
@@ -1400,7 +1400,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_HDF5_DLL], [
         ]])],
         oct_cv_lib_hdf5_dll=yes,
         oct_cv_lib_hdf5_dll=no)
-      CFLAGS="$save_CFLAGS"
+      CFLAGS="$oct_save_CFLAGS"
       LIBS="$oct_save_LIBS"
     ])
   ])
@@ -1415,7 +1415,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_HDF5_HAS_UTF8_API], [
   AC_CACHE_CHECK([whether HDF5 library has UTF-8 file API],
     [oct_cv_lib_hdf5_has_utf8_api],
     [case $host_os in
-      msdosmsvc | mingw*)
+      mingw* | msdosmsvc)
         AC_LINK_IFELSE([AC_LANG_PROGRAM([[
           #include <stddef.h>
           const wchar_t *H5_get_utf16_str(const char *s);
@@ -1631,7 +1631,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
   if test -n "$OPENGL_LIBS"; then
     AC_DEFINE(HAVE_OPENGL, 1, [Define to 1 if OpenGL is available.])
 
-    save_LIBS="$LIBS"
+    oct_save_LIBS="$LIBS"
     LIBS="$LIBS $OPENGL_LIBS"
     AC_CACHE_CHECK([for glBlendFuncSeparate],
       [oct_cv_func_glblendfuncseparate],[
@@ -1697,7 +1697,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
         AC_DEFINE(GL_GLEXT_PROTOTYPES, 1, [Define to 1 to enable OpenGL extensions in headers.])
       fi
     fi
-    LIBS="$save_LIBS"
+    LIBS="$oct_save_LIBS"
   fi
 ])
 dnl
@@ -1935,6 +1935,9 @@ AC_DEFUN([OCTAVE_CHECK_LIB_SNDFILE_OK], [
 ])
 dnl
 dnl Check whether std::pmr::polymorphic_allocator is available.
+dnl FIXME: polymorphic_allocator was added in C++17.
+dnl        However, actual implementation support lagged and was introduced
+dnl        in clang and MacOS only in 2023.  Remove this test in 2028.
 dnl
 AC_DEFUN([OCTAVE_CHECK_LIB_STL_POLYMORPHIC_ALLOCATOR], [
   AC_CACHE_CHECK([whether std::pmr::polymorphic_allocator is available],
@@ -2212,9 +2215,9 @@ AC_DEFUN([OCTAVE_CHECK_QSCINTILLA], [
     ## Check for QScintilla library which is used in the Qt GUI editor.
     AC_CACHE_CHECK([for the QScintilla library for Qt $qt_version],
       [oct_cv_lib_qscintilla],
-      [save_CPPFLAGS="$CPPFLAGS"
-      save_CXXFLAGS="$CXXFLAGS"
-      save_LDFLAGS="$LDFLAGS"
+      [oct_save_CPPFLAGS="$CPPFLAGS"
+      oct_save_CXXFLAGS="$CXXFLAGS"
+      oct_save_LDFLAGS="$LDFLAGS"
       oct_save_LIBS="$LIBS"
       CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
       CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
@@ -2235,9 +2238,9 @@ AC_DEFUN([OCTAVE_CHECK_QSCINTILLA], [
           break
         fi
       done
-      CPPFLAGS="$save_CPPFLAGS"
-      CXXFLAGS="$save_CXXFLAGS"
-      LDFLAGS="$save_LDFLAGS"
+      CPPFLAGS="$oct_save_CPPFLAGS"
+      CXXFLAGS="$oct_save_CXXFLAGS"
+      LDFLAGS="$oct_save_LDFLAGS"
       LIBS="$oct_save_LIBS"
       AC_LANG_POP([C++])
     ])
@@ -2252,15 +2255,15 @@ AC_DEFUN([OCTAVE_CHECK_QSCINTILLA], [
       AC_DEFINE(HAVE_QSCINTILLA, 1,
         [Define to 1 if the QScintilla library and header files are available.])
 
-      save_CPPFLAGS="$CPPFLAGS"
-      save_CXXFLAGS="$CXXFLAGS"
+      oct_save_CPPFLAGS="$CPPFLAGS"
+      oct_save_CXXFLAGS="$CXXFLAGS"
       CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
       CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
       AC_LANG_PUSH(C++)
       AC_CHECK_HEADERS([Qsci/qscilexeroctave.h Qsci/qscilexermatlab.h])
       AC_LANG_POP(C++)
-      CPPFLAGS="$save_CPPFLAGS"
-      CXXFLAGS="$save_CXXFLAGS"
+      CPPFLAGS="$oct_save_CPPFLAGS"
+      CXXFLAGS="$oct_save_CXXFLAGS"
 
       use_qscintilla=yes
     fi
@@ -2348,7 +2351,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       6)
         QT_MODULES="Qt6Core Qt6Gui Qt6Help Qt6Network Qt6OpenGL Qt6OpenGLWidgets Qt6PrintSupport Qt6Widgets Qt6Xml"
         case $host_os in
-          mingw* | msdosmsvc*)
+          mingw* | msdosmsvc)
           ;;
           *)
             # FIXME: Remove Qt6Core5Compat when we no longer rely on classes that
@@ -2518,7 +2521,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
 
   if test $build_qt_gui = yes; then
     case $host_os in
-      mingw* | msdosmsvc*)
+      mingw* | msdosmsvc)
         AC_CHECK_FUNCS([setvbuf], [win32_terminal=yes],
           [build_qt_gui=no
            warn_qt_setvbuf="setvbuf not found; disabling Qt GUI"])
@@ -2658,7 +2661,7 @@ dnl Check whether integer types that are used for indexing in SuiteSparse match.
 dnl
 AC_DEFUN([OCTAVE_CHECK_SUITESPARSE_SIZEOF_IDX_TYPES], [
   if test -n "$SPQR_LIBS" && test -n "$CHOLMOD_LIBS"; then
-    save_CPPFLAGS="$CPPFLAGS"
+    oct_save_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="$CHOLMOD_CPPFLAGS $CPPFLAGS"
 
     AC_CACHE_CHECK([whether SuiteSparse_long and octave_idx_type have same size],
@@ -2714,7 +2717,7 @@ AC_DEFUN([OCTAVE_CHECK_SUITESPARSE_SIZEOF_IDX_TYPES], [
       fi
     fi
 
-    CPPFLAGS="$save_CPPFLAGS"
+    CPPFLAGS="$oct_save_CPPFLAGS"
   fi
 ])
 dnl
@@ -2806,8 +2809,9 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNCONTEXT_CREATE], [
     LDFLAGS="$oct_save_LDFLAGS"
     LIBS="$oct_save_LIBS"
   fi
-  if test $ac_cv_func_SUNContext_Create = yes \
-    || test "x$oct_cv_lib_sundials_core" = xyes; then
+  dnl Must use test x"..." = xyes syntax as these variables may be unset
+  if test x"$ac_cv_func_SUNContext_Create" = xyes \
+    || test x"$oct_cv_lib_sundials_core" = xyes; then
     ## SUNDIALS prior to version 6 does not need SUNContext_Create
     AC_DEFINE(HAVE_SUNDIALS_SUNCONTEXT, 1,
       [Define to 1 if SUNDIALS API uses a SUNContext object.])
@@ -2985,101 +2989,6 @@ AC_DEFUN([OCTAVE_CONFIGURE_WARNING_SUMMARY], [
     fi])
 ])
 dnl
-dnl Check if the C++ library has the bit_and, bit_or, and bit_xor
-dnl templates defined.
-dnl
-AC_DEFUN([OCTAVE_CXX_BITWISE_OP_TEMPLATES], [
-  AC_CACHE_CHECK([whether bit_and, bit_or, bit_xor are defined in the C++ library],
-    [oct_cv_lib_stl_bitwise_op_templates],
-    [AC_LANG_PUSH(C++)
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <functional>
-        ]], [[
-        int x = 0;
-        int y = 1;
-        int z1 = std::bit_and<int>() (x, y);
-        int z2 = std::bit_or<int>() (x, y);
-        int z3 = std::bit_xor<int>() (x, y);
-      ]])],
-      oct_cv_lib_stl_bitwise_op_templates=yes,
-      oct_cv_lib_stl_bitwise_op_templates=no)
-    AC_LANG_POP(C++)
-  ])
-  if test $oct_cv_lib_stl_bitwise_op_templates = yes; then
-    AC_DEFINE(HAVE_CXX_BITWISE_OP_TEMPLATES, 1,
-      [Define to 1 if C++ library has templated bitwise operators.])
-  fi
-])
-dnl
-dnl Check if the C++ library has functions to access real and imaginary
-dnl parts of complex numbers independently via references.
-dnl
-AC_DEFUN([OCTAVE_CXX_COMPLEX_REFERENCE_ACCESSORS], [
-  AC_CACHE_CHECK([whether complex class can reference components independently],
-    [oct_cv_lib_stl_complex_reference_accessors],
-    [AC_LANG_PUSH(C++)
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <complex>
-        ]], [[
-        std::complex<double> x;
-        x.real () = 1.0;
-        x.imag () = 1.0;
-      ]])],
-      oct_cv_lib_stl_complex_reference_accessors=yes,
-      oct_cv_lib_stl_complex_reference_accessors=no)
-    AC_LANG_POP(C++)
-  ])
-  if test $oct_cv_lib_stl_complex_reference_accessors = yes; then
-    AC_DEFINE(HAVE_CXX_COMPLEX_REFERENCE_ACCESSORS, 1,
-      [Define to 1 if C++ complex class has T& real () and T& imag () methods.])
-  fi
-])
-dnl
-dnl Check if the C++ library has functions to set real and imaginary
-dnl parts of complex numbers independently.
-dnl
-AC_DEFUN([OCTAVE_CXX_COMPLEX_SETTERS], [
-  AC_CACHE_CHECK([whether complex class can set components independently],
-    [oct_cv_lib_stl_complex_setters],
-    [AC_LANG_PUSH(C++)
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <complex>
-        ]], [[
-        std::complex<double> x;
-        x.real (1.0);
-        x.imag (2.0);
-      ]])],
-      oct_cv_lib_stl_complex_setters=yes, oct_cv_lib_stl_complex_setters=no)
-    AC_LANG_POP(C++)
-  ])
-  if test $oct_cv_lib_stl_complex_setters = yes; then
-    AC_DEFINE(HAVE_CXX_COMPLEX_SETTERS, 1,
-      [Define to 1 if C++ complex class has void real (T) and void imag (T) methods.])
-  fi
-])
-dnl
-dnl Check if the compiler supports dynamic auto arrays.
-dnl
-AC_DEFUN([OCTAVE_CXX_DYNAMIC_AUTO_ARRAYS], [
-  AC_CACHE_CHECK([whether C++ supports dynamic auto arrays],
-    [oct_cv_prog_cxx_dynamic_auto_arrays],
-    [AC_LANG_PUSH(C++)
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([], [[
-        void test(char *);
-        int length();
-        char x[length()];
-        test(x);
-      ]])],
-      oct_cv_prog_cxx_dynamic_auto_arrays=yes,
-      oct_cv_prog_cxx_dynamic_auto_arrays=no)
-    AC_LANG_POP(C++)
-  ])
-  if test $oct_cv_prog_cxx_dynamic_auto_arrays = yes; then
-    AC_DEFINE(HAVE_DYNAMIC_AUTO_ARRAYS, 1,
-      [Define to 1 if C++ supports dynamic auto arrays.])
-  fi
-])
-dnl
 dnl Check if C++ compiler handles FLAG command line option.  If two
 dnl arguments are specified, execute the second arg as shell commands.
 dnl Otherwise, add FLAG to CXXFLAGS if the compiler accepts the flag.
@@ -3159,8 +3068,8 @@ AC_DEFUN_ONCE([OCTAVE_DEFINE_MKOCTFILE_DYNAMIC_LINK_OPTIONS], [
       SH_LDFLAGS="-shared -Wl,-expect_unresolved -Wl,'*'"
     ;;
     *-*-darwin*)
-      DL_LDFLAGS="-bundle -undefined dynamic_lookup -bind_at_load"
-      MKOCTFILE_DL_LDFLAGS="-bundle -undefined dynamic_lookup -bind_at_load"
+      DL_LDFLAGS="-bundle -undefined dynamic_lookup"
+      MKOCTFILE_DL_LDFLAGS="${DL_LDFLAGS}"
       SH_LDFLAGS="-dynamiclib -single_module"
       case $canonical_host_type in
         powerpc-*)

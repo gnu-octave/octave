@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2016-2026 The Octave Project Developers
+// Copyright (C) 2026 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -23,24 +23,14 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#if ! defined (octave_filepos_wrappers_h)
-#define octave_filepos_wrappers_h 1
-
-#include <sys/types.h>
-
-#if defined (__cplusplus)
-#  include <cstdio>
-#else
-#  include <stdio.h>
-#endif
+#if ! defined (octave_perror_wrapper_h)
+#define octave_perror_wrapper_h 1
 
 #if defined (__cplusplus)
 extern "C" {
 #endif
 
-OCTAVE_API int octave_fseeko_wrapper (FILE *fp, off_t offset, int whence);
-
-OCTAVE_API off_t octave_ftello_wrapper (FILE *fp);
+OCTAVE_API void octave_perror_wrapper (const char *s);
 
 #if defined (__cplusplus)
 }

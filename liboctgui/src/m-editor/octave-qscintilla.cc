@@ -1167,6 +1167,18 @@ octave_qscintilla::focusInEvent (QFocusEvent *focusEvent)
   QsciScintilla::focusInEvent (focusEvent);
 }
 
+// NOTE: Define macro to combine Modifier and Key without compiler warning.
+//       Variants of macro for Qt6 and Qt5.
+#if defined (HAVE_QKEYCOMBINATION_CLASS)
+#  include <QKeyCombination>
+#  define OCTAVE_QT_KEYCOMBINATION(mod, key) \
+     QKeyCombination (mod, key).toCombined ()
+#else
+#  include <cstdint>
+#  define OCTAVE_QT_KEYCOMBINATION(mod, key) \
+     static_cast<uint32_t> (mod) | static_cast<uint32_t> (key)
+#endif
+
 void
 octave_qscintilla::show_replace_action_tooltip ()
 {
@@ -1195,6 +1207,9 @@ octave_qscintilla::show_replace_action_tooltip ()
 
   QToolTip::showText (global_pos, msg);
 }
+
+// Undefine macro needed only for this function.
+#undef OCTAVE_QT_KEYCOMBINATION
 
 void
 octave_qscintilla::replace_all (const QString& o_str, const QString& n_str,

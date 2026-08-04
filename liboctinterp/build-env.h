@@ -78,7 +78,6 @@ extern OCTINTERP_API const char *EXEEXT;
 extern OCTINTERP_API const char *GCC_VERSION;
 extern OCTINTERP_API const char *GXX_VERSION;
 extern OCTINTERP_API const char *F77;
-extern OCTINTERP_API const char *F77_FLOAT_STORE_FLAG;
 extern OCTINTERP_API const char *F77_INTEGER_8_FLAG;
 extern OCTINTERP_API const char *FFLAGS;
 extern OCTINTERP_API const char *FFTW3_CPPFLAGS;

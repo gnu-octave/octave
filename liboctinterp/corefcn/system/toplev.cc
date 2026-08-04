@@ -504,7 +504,6 @@ specified option.
         { "GXX_VERSION", build_env::GXX_VERSION },
         { "EXEEXT", build_env::EXEEXT },
         { "F77", build_env::F77 },
-        { "F77_FLOAT_STORE_FLAG", build_env::F77_FLOAT_STORE_FLAG },
         { "F77_INTEGER_8_FLAG", build_env::F77_INTEGER_8_FLAG },
         { "FFLAGS", build_env::FFLAGS },
         { "FFTW3_CPPFLAGS", build_env::FFTW3_CPPFLAGS },

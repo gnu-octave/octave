@@ -844,12 +844,6 @@ AC_DEFINE_UNQUOTED(OCTAVE_SIZEOF_F77_INT_TYPE,
   [$oct_cv_sizeof_fortran_integer],
   [Define to the size of the octave_f77_int_type (8 or 4).])
 
-OCTAVE_F77_FLAG([-ffloat-store], [
-  AC_MSG_RESULT([setting F77_FLOAT_STORE_FLAG to -ffloat-store])
-  F77_FLOAT_STORE_FLAG=-ffloat-store
-  AC_SUBST(F77_FLOAT_STORE_FLAG)
-])
-
 if test $ac_cv_f77_compiler_gnu = yes; then
   OCTAVE_F77_FLAG([-std=legacy])
 fi

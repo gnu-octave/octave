@@ -114,6 +114,12 @@
 %! endif
 %! assert (x, 13);
 
+## A separator is not allowed between an "if" or "elseif" keyword
+## and its condition.
+%!test <*68529>
+%! fail ("a = 1; if\n a == 1; a = 2; end", "syntax error");
+%! fail ("a = 1; clear b; if a == 1, elseif, b = 1, end", "syntax error");
+
 ## test "is_true" of different data types
 %!error diag (NaN) || 0
 %!test

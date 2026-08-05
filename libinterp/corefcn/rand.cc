@@ -188,7 +188,8 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
             dims.resize (2);
 
-            dims(0) = dims(1) = n;
+            // Negative dimensions treated as zero for Matlab compatibility
+            dims(0) = dims(1) = (n >= 0 ? n : 0);
 
             goto gen_matrix;
           }
@@ -563,6 +564,8 @@ the @qcode{"reset"} keyword.
 /*
 ## Note: Matlab compatibility requires using 0 for negative dimensions.
 %!assert (size (rand (1, -1, 2)), [1, 0, 2])
+%!assert (size (rand (-3)), [0, 0])
+%!assert (size (rand (-1)), [0, 0])
 
 ## Test input validation
 %!error <conversion of 1.1 to.* failed> rand (1, 1.1)
@@ -653,6 +656,8 @@ Reference: @nospell{G. Marsaglia and W.W. Tsang},
 %!   assert (skewness (x), 0, 0.02);
 %!   assert (kurtosis (x), 0, 0.04);
 %! endif
+
+%!assert (size (randn (-3)), [0, 0])
 */
 
 DEFUN (rande, args, ,
@@ -738,6 +743,8 @@ Reference: @nospell{G. Marsaglia and W.W. Tsang},
 %!   assert (skewness (x), 2, 0.06);
 %!   assert (kurtosis (x), 6, 0.7);
 %! endif
+
+%!assert (size (rande (-3)), [0, 0])
 */
 
 DEFUN (randg, args, ,
@@ -1029,6 +1036,8 @@ r = r / sum (r)
 %!   assert (skewness (x), 2/sqrt (a), 0.05);
 %!   assert (kurtosis (x), 6/a,        0.2);
 %! endif
+
+%!assert (size (randg (1, -3)), [0, 0])
 */
 
 DEFUN (randp, args, ,
@@ -1194,6 +1203,8 @@ Technical University @nospell{Graz}, Austria, 1994.
 %!     assert (kurtosis (x), 1/a(1), 3*a(3));
 %!   endfor
 %! endif
+
+%!assert (size (randp (1, -3)), [0, 0])
 */
 
 DEFUN (randperm, args, ,

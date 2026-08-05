@@ -1,3 +1,8 @@
+## Note: RANDLIB is self-contained body of code and it is built as a libtool
+## convenience library that is then added to liboctave.  This is different
+## from the other code in the external/ directory which is compiled and added
+## to the libexternal convenience library.
+
 RANDLIB_SRC = \
   %reldir%/advnst.f \
   %reldir%/genbet.f \

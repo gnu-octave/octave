@@ -655,22 +655,22 @@ else
 fi
 AC_SUBST(STATIC_LIBS)
 
+if test $STATIC_LIBS = no && test $SHARED_LIBS = no; then
+  AC_MSG_ERROR([You can't disable building both static AND shared libraries!])
+fi
+
+## Windows environments require a list of exported symbols for Fortran compiler.
 XTRA_EXTERNAL_SH_LDFLAGS=
 case $host_os in
   cygwin* | mingw* | msdosmsvc)
     FLIBS="$FLIBS -lkernel32"
-    XTRA_EXTERNAL_SH_LDFLAGS="-Wl,liboctave/external/external.def"
+    XTRA_EXTERNAL_SH_LDFLAGS="-Wl,liboctave/external/external.def -Wl,liboctave/external/randlib/randlib.def"
   ;;
 esac
 AC_SUBST(XTRA_EXTERNAL_SH_LDFLAGS)
 
-## Windows environments require a list of exported symbols for Fortran comiler.
 AM_CONDITIONAL([AMCOND_WINDOWS_FORTRAN_EXPORTS],
                [test -n "$XTRA_EXTERNAL_SH_LDFLAGS"])
-
-if test $STATIC_LIBS = no && test $SHARED_LIBS = no; then
-  AC_MSG_ERROR([You can't disable building both static AND shared libraries!])
-fi
 
 ### More configure argument checking related to linking
 

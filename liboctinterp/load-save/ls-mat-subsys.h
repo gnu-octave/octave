@@ -123,7 +123,6 @@ class subsystem_handler
     std::unordered_set<std::string> m_missing_classes;
 
     // save variables
-    uint32_t m_object_id_counter = 0;  // To manage dependency graphs; FIXME: unused?
     uint32_t m_class_id_counter = 0;
     uint32_t m_saveobj_object_counter = 0;
     uint32_t m_normal_object_counter = 0;

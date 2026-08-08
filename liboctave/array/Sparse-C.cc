@@ -49,8 +49,11 @@ OCTAVE_API
 bool
 sparse_ascending_compare<Complex> (const Complex& a, const Complex& b)
 {
-  return (octave::math::isnan (b) || (xabs (a) < xabs (b))
-          || ((xabs (a) == xabs (b)) && (arg (a) < arg (b))));
+  // NaN-vs-NaN must compare false for stability and a strict weak ordering.
+  return (octave::math::isnan (b)
+          ? ! octave::math::isnan (a)
+          : (xabs (a) < xabs (b))
+            || ((xabs (a) == xabs (b)) && (arg (a) < arg (b))));
 }
 
 template <>
@@ -58,8 +61,11 @@ OCTAVE_API
 bool
 sparse_descending_compare<Complex> (const Complex& a, const Complex& b)
 {
-  return (octave::math::isnan (a) || (xabs (a) > xabs (b))
-          || ((xabs (a) == xabs (b)) && (arg (a) > arg (b))));
+  // NaN-vs-NaN must compare false for stability and a strict weak ordering.
+  return (octave::math::isnan (a)
+          ? ! octave::math::isnan (b)
+          : (xabs (a) > xabs (b))
+            || ((xabs (a) == xabs (b)) && (arg (a) > arg (b))));
 }
 
 INSTANTIATE_SPARSE (Complex);

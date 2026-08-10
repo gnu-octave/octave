@@ -28,6 +28,7 @@
 #endif
 
 // Instantiate Sparse matrix of complex values.
+#include <cmath>
 
 #include "Array-oct.h"
 #include "Sparse.cc"
@@ -37,11 +38,19 @@
 #include "oct-cmplx.h"
 
 
-static double
+static inline double
 xabs (const Complex& x)
 {
   return ((octave::math::isinf (x.real ()) || octave::math::isinf (x.imag ()))
           ? octave::numeric_limits<double>::Inf () : abs (x));
+}
+
+// Return the phase in the principal range (-pi, pi].
+static inline double
+xarg (const Complex& x)
+{
+  const double result = arg (x);
+  return (result == -M_PI ? M_PI : result);
 }
 
 template <>
@@ -53,7 +62,7 @@ sparse_ascending_compare<Complex> (const Complex& a, const Complex& b)
   return (octave::math::isnan (b)
           ? ! octave::math::isnan (a)
           : (xabs (a) < xabs (b))
-            || ((xabs (a) == xabs (b)) && (arg (a) < arg (b))));
+            || ((xabs (a) == xabs (b)) && (xarg (a) < xarg (b))));
 }
 
 template <>
@@ -65,7 +74,7 @@ sparse_descending_compare<Complex> (const Complex& a, const Complex& b)
   return (octave::math::isnan (a)
           ? ! octave::math::isnan (b)
           : (xabs (a) > xabs (b))
-            || ((xabs (a) == xabs (b)) && (arg (a) > arg (b))));
+            || ((xabs (a) == xabs (b)) && (xarg (a) > xarg (b))));
 }
 
 INSTANTIATE_SPARSE (Complex);

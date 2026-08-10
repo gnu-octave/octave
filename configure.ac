@@ -87,8 +87,12 @@ AM_SILENT_RULES([yes])
 
 OCTAVE_CANONICAL_HOST
 
-AC_ARG_VAR([MACOSX_DEPLOYMENT_TARGET],
-  [minimum macOS version supported by generated binaries])
+## On macOS the build system needs to capture the environment variable
+## MACOSX_DEPLOYMENT_TARGET which contains the minimum OS version that
+## downstream tools such as libtool should use.  If variable is empty,
+## the tools will calculate for themselves an acceptable target.
+## Do not use AC_ARG_VAR as it interferes with automatic re-compilation.
+AC_SUBST([MACOSX_DEPLOYMENT_TARGET])
 
 AC_DEFINE(OCTAVE_SOURCE, 1, [Define to 1 if this is Octave.])
 

@@ -1,3 +1,9 @@
+## NOTE: RANDLIB is self-contained body of code that is required to be built
+## with standard 32-bit Fortran integers.
+## The library is compiled as a libtool convenience library, without
+## $F77_INTEGER_8_FLAG, and is included directly in liboctave rather than
+## in libexternal to avoid any possibility of integer size mismatches.
+
 RANDLIB_SRC = \
   %reldir%/advnst.f \
   %reldir%/genbet.f \
@@ -35,27 +41,15 @@ RANDLIB_SRC = \
   %reldir%/snorm.f \
   %reldir%/wrap.f
 
-## Special rules for files which must be built before compilation
-
-if AMCOND_WINDOWS_FORTRAN_EXPORTS
-EXTRA_%canon_reldir%_librandlib_la_DEPENDENCIES = %reldir%/randlib.def
-
-## randlib directory may not exist in VPATH build; create it if necessary.
-%reldir%/randlib.def: $(RANDLIB_SRC) %reldir%/../mk-f77-def.sh | %reldir%/$(octave_dirstamp)
-	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(SHELL) %reldir%/../mk-f77-def.sh $(srcdir) $(RANDLIB_SRC) > $@-t && \
-	mv $@-t $@
-
-endif
-
-DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
-
 ## Start library specification
 noinst_LTLIBRARIES += %reldir%/librandlib.la
 
 %canon_reldir%_librandlib_la_SOURCES := $(RANDLIB_SRC)
 
-%canon_reldir%_librandlib_la_FFLAGS = $(liboctave_libexternal_la_FFLAGS)
+## Note: Must be '=' because libexternal_la_FFLAGS has not been defined yet.
+%canon_reldir%_librandlib_la_FFLAGS = \
+	$(filter-out $(F77_INTEGER_8_FLAG), \
+	             $(liboctave_external_libexternal_la_FFLAGS))
 
 liboctave_liboctave_la_LIBADD += %reldir%/librandlib.la
 
@@ -69,4 +63,3 @@ liboctave_EXTRA_DIST += \
   %reldir%/tstgmn.for \
   %reldir%/tstmid.for
 
-liboctave_DISTCLEANFILES += %reldir%/randlib.def

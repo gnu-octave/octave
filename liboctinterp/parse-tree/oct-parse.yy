@@ -1063,18 +1063,18 @@ if_clause_list  : if_clause
                   { $$ = parser.append_if_clause ($1, $2); }
                 ;
 
-if_clause       : IF opt_sep expression stmt_begin statement_list
-                  { $$ = parser.make_if_clause ($1, $2, $3, $5); }
+if_clause       : IF expression stmt_begin statement_list
+                  { $$ = parser.make_if_clause ($1, $2, $4); }
                 ;
 
-elseif_clause   : ELSEIF opt_sep expression stmt_begin statement_list
-                  { $$ = parser.make_if_clause ($1, $2, $3, $5); }
+elseif_clause   : ELSEIF expression stmt_begin statement_list
+                  { $$ = parser.make_if_clause ($1, $2, $4); }
                 ;
 
 else_clause     : // empty
                   { $$ = nullptr; }
                 | ELSE statement_list
-                  { $$ = parser.make_if_clause ($1, nullptr, nullptr, $2); }
+                  { $$ = parser.make_if_clause ($1, nullptr, $2); }
                 ;
 
 // ================
@@ -3363,7 +3363,8 @@ base_parser::finish_if_command (tree_if_command_list *list, tree_if_clause *else
 // Build an if, elseif, or else clause.
 
 tree_if_clause *
-base_parser::make_if_clause (token *if_tok, separator_list *if_sep_list, tree_expression *expr, tree_statement_list *list)
+base_parser::make_if_clause (token *if_tok, tree_expression *expr,
+                             tree_statement_list *list)
 {
   if (expr)
     {
@@ -3371,10 +3372,6 @@ base_parser::make_if_clause (token *if_tok, separator_list *if_sep_list, tree_ex
 
       maybe_convert_to_braindead_shortcircuit (expr);
     }
-
-  // FIXME: Need to capture separator list here.
-  // For now, delete the unused list.
-  delete if_sep_list;
 
   return new tree_if_clause (*if_tok, expr, list);
 }

@@ -322,9 +322,10 @@ public:
   OCTINTERP_API tree_if_command *
   finish_if_command (tree_if_command_list *list, tree_if_clause *else_clause, token *end_tok);
 
-  // Build an elseif clause.
+  // Build an if, elseif, or else clause.
   OCTINTERP_API tree_if_clause *
-  make_if_clause (token *if_tok, separator_list *if_sep_list, tree_expression *expr, tree_statement_list *list);
+  make_if_clause (token *if_tok, tree_expression *expr,
+                  tree_statement_list *list);
 
   OCTINTERP_API tree_if_command_list *
   append_if_clause (tree_if_command_list *list, tree_if_clause *clause);

@@ -3551,8 +3551,6 @@ base_lexer::handle_superclass_identifier ()
 
   token *tok = new token (SUPERCLASSREF, meth, cls, m_tok_beg, m_tok_end, get_comment_list ());
 
-  m_filepos.increment_column (flex_yyleng ());
-
   return handle_token (tok);
 }
 
@@ -3566,8 +3564,6 @@ base_lexer::make_meta_identifier_token (const std::string& cls)
 
   token *tok = new token (METAQUERY, cls, m_tok_beg, m_tok_end, get_comment_list ());
 
-  m_filepos.increment_column (flex_yyleng ());
-
   return tok;
 }
 
@@ -3580,8 +3576,6 @@ base_lexer::make_fq_identifier_token (const std::string& ident)
   m_looking_for_object_index = true;
 
   token *tok = new token (FQ_IDENT, ident, m_tok_beg, m_tok_end, get_comment_list ());
-
-  m_filepos.increment_column (flex_yyleng ());
 
   return tok;
 }

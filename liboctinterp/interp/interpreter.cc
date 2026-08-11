@@ -970,7 +970,10 @@ interpreter::shutdown ()
 
   m_initialized = false;
 
-  OCTAVE_SAFE_CALL (feval, ("close", ovl ("all"), 0));
+  // Avoid unconditionally resolving close.m while shutting down.  An
+  // embedding application or user may have modified the load path.
+
+  OCTAVE_SAFE_CALL (m_gh_manager->close_all_visible_figures, ());
 
   // Any atexit functions added after this function call won't be
   // executed.  Each atexit function is executed with
@@ -1009,16 +1012,17 @@ interpreter::shutdown ()
 
   OCTAVE_SAFE_CALL (m_input_system.clear_input_event_hooks, ());
 
-  // We may still have some figures.  Close them.
-
-  OCTAVE_SAFE_CALL (feval, ("close", ovl ("all"), 0));
-
   // What is supposed to happen if a figure has a closerequestfcn or
   // deletefcn callback registered that creates other figures or
   // variables?  What if those variables are classdef objects with
   // destructors that can create figures?  The possibilities are
   // endless.  At some point, we have to give up and force execution
   // to end.
+
+  // Force-close any remaining figures, including hidden figures, and
+  // discard pending graphics events and callback bookkeeping.
+
+  OCTAVE_SAFE_CALL (m_gh_manager->close_all_figures, ());
 
   // Note that we again don't force symbols to be cleared, so we
   // continue to respect mlock here.  Later, we'll force all variables

@@ -198,6 +198,12 @@ public:
     return retval;
   }
 
+  // Request normal closing of all handle-visible figures.
+  // "Closefcn" callbacks may prevent figures from being deleted.
+  OCTINTERP_API void close_all_visible_figures ();
+
+  // Close all figures, including hidden figures.
+  // Force-delete any figures that remain after executing "Closefcn" callbacks.
   OCTINTERP_API void close_all_figures ();
 
   OCTINTERP_API void restore_gcbo ();
@@ -239,6 +245,10 @@ public:
   }
 
 private:
+
+  enum class close_mode { graceful_visible, force_all };
+
+  void close_figures (close_mode mode);
 
   typedef std::map<graphics_handle, graphics_object>::iterator iterator;
   typedef std::map<graphics_handle, graphics_object>::const_iterator

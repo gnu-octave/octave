@@ -13353,6 +13353,112 @@ Undocumented internal function.
   return ovl (gh_mgr.figure_handle_list (show_hidden));
 }
 
+DEFMETHOD (__go_close_all_visible_figures__, interp, args, ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_close_all_visible_figures__ ()
+Internal function used only by BIST to verify @code{close_all_visible_figures}
+function used in Octave shutdown sequence.
+@end deftypefn */)
+{
+  if (args.length () != 0)
+    print_usage ();
+
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
+  gh_mgr.close_all_visible_figures ();
+
+  return ovl ();
+}
+
+/*
+
+The tests below exercise only the "graceful_visible" mode (only handle-visible
+figures, execute "closefcn" callbacks).  The "force_all" mode (close all
+figures including hidden ones, execute "closefcn" callbacks, force-delete any
+remaining figures) cannot be safely tested in-process because it intentionally
+deletes every figure owned by the interpreter, including figures belonging to
+the caller.
+
+%!function __close_visible_test_callback__ (h, ~)
+%!  global __close_visible_test_log__;
+%!  __close_visible_test_log__(end+1, :) = [h, get(0, "currentfigure")];
+%!  if (strcmp (get (h, "tag"), "delete"))
+%!    delete (h);
+%!  endif
+%!endfunction
+
+%!test
+%! old_figures = findall (0, "type", "figure");
+%! old_current_figure = get (0, "currentfigure");
+%! old_show_hidden_handles = get (0, "showhiddenhandles");
+%! old_handle_visibility = cell (size (old_figures));
+%! for i = 1:numel (old_figures)
+%!   old_handle_visibility{i} = get (old_figures(i), "handlevisibility");
+%! endfor
+%!
+%! test_figures = [];
+%! global __close_visible_test_log__ = zeros (0, 2);
+%!
+%! unwind_protect
+%!   ## Keep figures that existed before this test out of the global
+%!   ## handle-visible figure list operated on by the function under test.
+%!   set (0, "showhiddenhandles", "off");
+%!   for i = 1:numel (old_figures)
+%!     set (old_figures(i), "handlevisibility", "off");
+%!   endfor
+%!
+%!   hf_delete = figure ("visible", "off", "tag", "delete",
+%!                       "closerequestfcn",
+%!                       @__close_visible_test_callback__);
+%!   hf_hidden = figure ("visible", "off", "handlevisibility", "off",
+%!                       "tag", "delete", "closerequestfcn",
+%!                       @__close_visible_test_callback__);
+%!   hf_error = figure ("visible", "off", "closerequestfcn",
+%!                     "error (\"close-test-error\")");
+%!   hf_keep = figure ("visible", "off", "tag", "keep",
+%!                     "closerequestfcn",
+%!                     @__close_visible_test_callback__);
+%!   test_figures = [hf_delete, hf_hidden, hf_error, hf_keep];
+%!   set (0, "currentfigure", hf_keep);
+%!
+%!   close_output = evalc ("__go_close_all_visible_figures__ ();");
+%!
+%!   assert (! isfigure (hf_delete));
+%!   assert (isfigure (hf_hidden));
+%!   assert (isfigure (hf_error));
+%!   assert (isfigure (hf_keep));
+%!   assert (all (isfigure (old_figures)));
+%!   assert (get (0, "currentfigure"), hf_keep);
+%!   assert (rows (__close_visible_test_log__), 2);
+%!   assert (__close_visible_test_log__(:, 1),
+%!           __close_visible_test_log__(:, 2));
+%!   assert (! isempty (strfind (close_output, "close-test-error")));
+%! unwind_protect_cleanup
+%!   live_test_figures = test_figures(isfigure (test_figures));
+%!   if (! isempty (live_test_figures))
+%!     set (live_test_figures, "closerequestfcn", []);
+%!     set (live_test_figures, "deletefcn", []);
+%!     delete (live_test_figures);
+%!   endif
+%!
+%!   for i = 1:numel (old_figures)
+%!     if (isfigure (old_figures(i)))
+%!       set (old_figures(i), "handlevisibility", old_handle_visibility{i});
+%!     endif
+%!   endfor
+%!   set (0, "showhiddenhandles", old_show_hidden_handles);
+%!
+%!   if (isempty (old_current_figure))
+%!     set (0, "currentfigure", []);
+%!   elseif (isfigure (old_current_figure))
+%!     set (0, "currentfigure", old_current_figure);
+%!   endif
+%!
+%!   clear global __close_visible_test_log__;
+%! end_unwind_protect
+
+*/
+
 DEFMETHOD (__go_execute_callback__, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} __go_execute_callback__ (@var{h}, @var{name})

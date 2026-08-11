@@ -6825,8 +6825,6 @@ OCTINTERP_API graphics_handle gcf ();
 // This function is NOT equivalent to the scripting language function gca.
 OCTINTERP_API graphics_handle gca ();
 
-OCTINTERP_API void close_all_figures ();
-
 OCTAVE_END_NAMESPACE(octave)
 
 #endif

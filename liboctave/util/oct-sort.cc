@@ -21,86 +21,6 @@
 // along with Octave; see the file COPYING.  If not, see
 // <https://www.gnu.org/licenses/>.
 //
-// Code stolen in large part from Python's, listobject.c, which itself had
-// no license header.  However, thanks to Tim Peters for the parts of the
-// code I ripped-off.
-//
-// As required in the Python license the short description of the changes
-// made are
-//
-// * convert the sorting code in listobject.cc into a generic class,
-//   replacing PyObject* with the type of the class T.
-//
-// * replaced usages of malloc, free, memcpy and memmove by standard C++
-//   new [], delete [] and std::copy and std::copy_backward.  Note that replacing
-//   memmove by std::copy is possible if the destination starts before the source.
-//   If not, std::copy_backward needs to be used.
-//
-// * templatize comparison operator in most methods, provide possible dispatch
-//
-// * duplicate methods to avoid by-the-way indexed sorting
-//
-// * add methods for verifying sortedness of array
-//
-// * row sorting via breadth-first tree subsorting
-//
-// * binary lookup and sequential binary lookup optimized for dense downsampling.
-//
-// * NOTE: the memory management routines rely on the fact that delete [] silently
-//   ignores null pointers.  Don't gripe about the missing checks - they're there.
-//
-//
-// The Python license is
-//
-//   PSF LICENSE AGREEMENT FOR PYTHON 2.3
-//   --------------------------------------
-//
-//   1. This LICENSE AGREEMENT is between the Python Software Foundation
-//   ("PSF"), and the Individual or Organization ("Licensee") accessing and
-//   otherwise using Python 2.3 software in source or binary form and its
-//   associated documentation.
-//
-//   2. Subject to the terms and conditions of this License Agreement, PSF
-//   hereby grants Licensee a nonexclusive, royalty-free, world-wide
-//   license to reproduce, analyze, test, perform and/or display publicly,
-//   prepare derivative works, distribute, and otherwise use Python 2.3
-//   alone or in any derivative version, provided, however, that PSF's
-//   License Agreement and PSF's notice of copyright, i.e., "Copyright (c)
-//   2001, 2002, 2003 Python Software Foundation; All Rights Reserved" are
-//   retained in Python 2.3 alone or in any derivative version prepared by
-//   Licensee.
-//
-//   3. In the event Licensee prepares a derivative work that is based on
-//   or incorporates Python 2.3 or any part thereof, and wants to make
-//   the derivative work available to others as provided herein, then
-//   Licensee hereby agrees to include in any such work a brief summary of
-//   the changes made to Python 2.3.
-//
-//   4. PSF is making Python 2.3 available to Licensee on an "AS IS"
-//   basis.  PSF MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
-//   IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, PSF MAKES NO AND
-//   DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
-//   FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON 2.3 WILL NOT
-//   INFRINGE ANY THIRD PARTY RIGHTS.
-//
-//   5. PSF SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON
-//   2.3 FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS
-//   A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON 2.3,
-//   OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
-//
-//   6. This License Agreement will automatically terminate upon a material
-//   breach of its terms and conditions.
-//
-//   7. Nothing in this License Agreement shall be deemed to create any
-//   relationship of agency, partnership, or joint venture between PSF and
-//   Licensee.  This License Agreement does not grant permission to use PSF
-//   trademarks or trade name in a trademark sense to endorse or promote
-//   products or services of Licensee, or any third party.
-//
-//   8. By copying, installing or otherwise using Python 2.3, Licensee
-//   agrees to be bound by the terms and conditions of this License
-//   Agreement.
-//
 ////////////////////////////////////////////////////////////////////////
 
 // This file should not include config.h.  It is only included in other
@@ -108,30 +28,430 @@
 // this file.
 
 #include <algorithm>
-#include <cstring>
+#include <concepts>
+#include <cstddef>
+#include <functional>
+#include <limits>
+#include <memory>
 #include <stack>
+#include <type_traits>
+#include <utility>
 
-#include "mappers.h"
 #include "oct-error.h"
-#include "oct-locbuf.h"
 #include "oct-sort.h"
-#include "quit.h"
+
+namespace octave_sort_detail
+{
+  inline constexpr std::size_t num_8bit_values = 256;
+  inline constexpr std::size_t num_16bit_values = 65536;
+
+  // For short arrays, clearing even the 8-bit histogram costs more than STL.
+  inline constexpr octave_idx_type counting_sort_8bit_threshold = 32;
+
+  // Zeroing 65,536 counters costs enough that the O(N) 16-bit path only
+  // starts winning for larger arrays.
+  inline constexpr octave_idx_type counting_sort_16bit_threshold = 131072;
+
+  enum class standard_order
+  {
+    none,
+    ascending,
+    descending
+  };
+
+  template <typename T>
+  using compare_fcn_ptr = bool (*) (typename ref_param<T>::type,
+                                    typename ref_param<T>::type);
+
+  template <typename T>
+  bool
+  is_ascending_compare (const typename octave_sort<T>::compare_fcn_type& comp)
+  {
+    const auto target = comp.template target<compare_fcn_ptr<T>> ();
+
+    return target && *target == octave_sort<T>::ascending_compare;
+  }
+
+  template <typename T>
+  bool
+  is_descending_compare (const typename octave_sort<T>::compare_fcn_type& comp)
+  {
+    const auto target = comp.template target<compare_fcn_ptr<T>> ();
+
+    return target && *target == octave_sort<T>::descending_compare;
+  }
+
+  template <typename T, typename Comp>
+  constexpr standard_order
+  order_for ()
+  {
+    using comp_type = std::remove_cvref_t<Comp>;
+
+    if constexpr (std::same_as<comp_type, std::less<T>>)
+      return standard_order::ascending;
+    else if constexpr (std::same_as<comp_type, std::greater<T>>)
+      return standard_order::descending;
+    else
+      return standard_order::none;
+  }
+
+  template <typename T>
+  concept octave_int_like
+    = requires (const T& value)
+      {
+        typename T::val_type;
+        { value.value () } -> std::convertible_to<typename T::val_type>;
+      }
+      && std::integral<typename T::val_type>;
+
+  template <typename T, bool = octave_int_like<T>>
+  struct integer_traits
+  {
+    using value_type = T;
+
+    static value_type value (const T& x) { return x; }
+  };
+
+  template <typename T>
+  struct integer_traits<T, true>
+  {
+    using value_type = typename T::val_type;
+
+    static value_type value (const T& x) { return x.value (); }
+  };
+
+  template <typename T>
+  using integer_value_type = typename integer_traits<T>::value_type;
+
+  template <typename T>
+  concept counting_sortable_integer
+    // bucket_index uses make_unsigned_t, which is intentionally undefined
+    // for bool.
+    = (std::integral<T> || octave_int_like<T>)
+      && ! std::same_as<std::remove_cv_t<integer_value_type<T>>, bool>;
+
+  template <typename T>
+  concept byte_counting_sortable
+    = counting_sortable_integer<T> && sizeof (integer_value_type<T>) == 1;
+
+  template <typename T>
+  concept word_counting_sortable
+    = counting_sortable_integer<T> && sizeof (integer_value_type<T>) == 2;
+
+  template <typename V>
+  std::size_t
+  bucket_index (V value)
+  {
+    using U = std::make_unsigned_t<V>;
+
+    return static_cast<std::size_t> (static_cast<U> (value));
+  }
+
+  template <typename V, std::size_t nvalues, typename F>
+  void
+  for_each_value (bool ascending, F f)
+  {
+    if constexpr (std::is_signed_v<V>)
+      {
+        const int min_value = static_cast<int> (std::numeric_limits<V>::min ());
+        const int max_value = static_cast<int> (std::numeric_limits<V>::max ());
+
+        if (ascending)
+          {
+            for (int value = min_value; value <= max_value; value++)
+              f (static_cast<V> (value));
+          }
+        else
+          {
+            for (int value = max_value; ; value--)
+              {
+                f (static_cast<V> (value));
+
+                if (value == min_value)
+                  break;
+              }
+          }
+      }
+    else
+      {
+        if (ascending)
+          {
+            for (std::size_t value = 0; value < nvalues; value++)
+              f (static_cast<V> (value));
+          }
+        else
+          {
+            for (std::size_t value = nvalues; value-- > 0; )
+              f (static_cast<V> (value));
+          }
+      }
+  }
+
+  template <typename T>
+  void
+  count_values (const T *data, octave_idx_type nel, octave_idx_type *counts)
+  {
+    using traits = integer_traits<T>;
+
+    for (octave_idx_type i = 0; i < nel; i++)
+      counts[bucket_index (traits::value (data[i]))]++;
+  }
+
+  template <typename T, std::size_t nvalues>
+  void
+  emit_counted_values (T *data, const octave_idx_type *counts, bool ascending)
+  {
+    using value_type = integer_value_type<T>;
+
+    octave_idx_type pos = 0;
+
+    for_each_value<value_type, nvalues>
+      (ascending, [&] (value_type value)
+       {
+         const octave_idx_type count = counts[bucket_index (value)];
+
+         if (count > 0)
+           {
+             std::fill_n (data + pos, count, T (value));
+             pos += count;
+           }
+       });
+  }
+
+  template <typename T, std::size_t nvalues>
+  void
+  counts_to_offsets (octave_idx_type *counts, bool ascending)
+  {
+    using value_type = integer_value_type<T>;
+
+    octave_idx_type pos = 0;
+
+    for_each_value<value_type, nvalues>
+      (ascending, [&] (value_type value)
+       {
+         const std::size_t bucket = bucket_index (value);
+
+         const octave_idx_type count = counts[bucket];
+
+         counts[bucket] = pos;
+         pos += count;
+       });
+  }
+
+  template <typename T, std::size_t nvalues>
+  void
+  emit_offset_values (T *data, const octave_idx_type *end_offsets,
+                      bool ascending)
+  {
+    using value_type = integer_value_type<T>;
+
+    octave_idx_type pos = 0;
+
+    for_each_value<value_type, nvalues>
+      (ascending, [&] (value_type value)
+       {
+         const octave_idx_type end = end_offsets[bucket_index (value)];
+
+         std::fill (data + pos, data + end, T (value));
+         pos = end;
+       });
+  }
+
+  template <typename T, std::size_t nvalues>
+  void
+  counting_sort (T *data, octave_idx_type nel, bool ascending)
+  {
+    auto counts_owner
+      = std::make_unique_for_overwrite<octave_idx_type []> (nvalues);
+    octave_idx_type *counts = counts_owner.get ();
+
+    std::fill_n (counts, nvalues, 0);
+    count_values (data, nel, counts);
+    emit_counted_values<T, nvalues> (data, counts, ascending);
+  }
+
+  template <typename T, std::size_t nvalues>
+  void
+  counting_sort (T *data, octave_idx_type *idx, octave_idx_type nel,
+                 bool ascending)
+  {
+    using traits = integer_traits<T>;
+
+    auto counts_owner
+      = std::make_unique_for_overwrite<octave_idx_type []> (nvalues);
+    auto sorted_idx_owner
+      = std::make_unique_for_overwrite<octave_idx_type []> (nel);
+
+    octave_idx_type *counts = counts_owner.get ();
+    octave_idx_type *sorted_idx = sorted_idx_owner.get ();
+
+    std::fill_n (counts, nvalues, 0);
+    count_values (data, nel, counts);
+    counts_to_offsets<T, nvalues> (counts, ascending);
+
+    // Stable distribution advances every bucket's start offset to its end
+    // offset.  Those end offsets also describe the sorted output values.
+    for (octave_idx_type i = 0; i < nel; i++)
+      sorted_idx[counts[bucket_index (traits::value (data[i]))]++] = idx[i];
+
+    std::copy_n (sorted_idx, nel, idx);
+    emit_offset_values<T, nvalues> (data, counts, ascending);
+  }
+
+  template <typename T, typename Comp, typename Sort>
+  bool
+  dispatch_counting_sort (octave_idx_type nel, const Comp&, Sort sort)
+  {
+    constexpr standard_order order = order_for<T, Comp> ();
+
+    if constexpr (order != standard_order::none && byte_counting_sortable<T>)
+      {
+        if (nel >= counting_sort_8bit_threshold)
+          {
+            sort.template operator()<num_8bit_values>
+              (order == standard_order::ascending);
+            return true;
+          }
+      }
+    else if constexpr (order != standard_order::none
+                       && word_counting_sortable<T>)
+      {
+        if (nel >= counting_sort_16bit_threshold)
+          {
+            sort.template operator()<num_16bit_values>
+              (order == standard_order::ascending);
+            return true;
+          }
+      }
+
+    return false;
+  }
+
+  template <typename T, typename Comp>
+  bool
+  maybe_counting_sort (T *data, octave_idx_type nel, const Comp& comp)
+  {
+    return dispatch_counting_sort<T>
+      (nel, comp,
+       [data, nel]<std::size_t nvalues> (bool ascending)
+       {
+         counting_sort<T, nvalues> (data, nel, ascending);
+       });
+  }
+
+  template <typename T, typename Comp>
+  bool
+  maybe_counting_sort (T *data, octave_idx_type *idx, octave_idx_type nel,
+                       const Comp& comp)
+  {
+    return dispatch_counting_sort<T>
+      (nel, comp,
+       [data, idx, nel]<std::size_t nvalues> (bool ascending)
+       {
+         counting_sort<T, nvalues> (data, idx, nel, ascending);
+       });
+  }
+
+  template <typename T, typename Comp>
+  bool
+  handle_ordered_input (T *data, octave_idx_type nel, Comp& comp)
+  {
+    if (std::is_sorted (data, data + nel, std::ref (comp)))
+      return true;
+
+    auto reverse_comp = [&comp] (const T& a, const T& b)
+    {
+      return comp (b, a);
+    };
+
+    if (! std::is_sorted (data, data + nel, reverse_comp))
+      return false;
+
+    std::reverse (data, data + nel);
+    return true;
+  }
+
+  template <typename T, typename Comp>
+  bool
+  handle_ordered_input (T *data, octave_idx_type *idx, octave_idx_type nel,
+                        Comp& comp)
+  {
+    if (std::is_sorted (data, data + nel, std::ref (comp)))
+      return true;
+
+    auto reverse_comp = [&comp] (const T& a, const T& b)
+    {
+      return comp (b, a);
+    };
+
+    if (! std::is_sorted (data, data + nel, reverse_comp))
+      return false;
+
+    std::reverse (data, data + nel);
+    std::reverse (idx, idx + nel);
+
+    // Reversing the whole range also reverses each equivalent-value run.
+    // Reverse those runs again to preserve indexed-sort stability.
+    for (octave_idx_type first = 0; first < nel; )
+      {
+        octave_idx_type last = first + 1;
+
+        while (last < nel
+               && ! comp (data[first], data[last])
+               && ! comp (data[last], data[first]))
+          last++;
+
+        std::reverse (data + first, data + last);
+        std::reverse (idx + first, idx + last);
+        first = last;
+      }
+
+    return true;
+  }
+
+  // Find an upper bound in a sorted tail by probing exponentially farther
+  // from FIRST, then searching only the final window.  Dense lookups retain
+  // linear behavior while sparse monotone lookups avoid scanning long gaps.
+  template <typename T, typename Comp>
+  const T *
+  galloping_upper_bound (const T *first, const T *last, const T& value,
+                         Comp& comp)
+  {
+    const octave_idx_type nel = last - first;
+
+    if (nel == 0)
+      return last;
+
+    octave_idx_type lo = 0;
+    octave_idx_type hi = 1;
+
+    while (true)
+      {
+        const octave_idx_type probe = hi - 1;
+
+        if (comp (value, first[probe]))
+          return std::upper_bound (first + lo, first + probe, value,
+                                   std::ref (comp));
+
+        if (hi == nel)
+          return last;
+
+        lo = hi;
+        hi = hi > nel / 2 ? nel : 2 * hi;
+      }
+  }
+
+}
 
 template <typename T>
-octave_sort<T>::octave_sort () :
-  m_compare (ascending_compare), m_ms (nullptr)
+octave_sort<T>::octave_sort ()
+  : m_compare (ascending_compare)
 { }
 
 template <typename T>
 octave_sort<T>::octave_sort (const compare_fcn_type& comp)
-  : m_compare (comp), m_ms (nullptr)
+  : m_compare (comp)
 { }
-
-template <typename T>
-octave_sort<T>::~octave_sort ()
-{
-  delete m_ms;
-}
 
 template <typename T>
 void
@@ -148,1310 +468,18 @@ octave_sort<T>::set_compare (sortmode mode)
 template <typename T>
 template <typename Comp>
 void
-octave_sort<T>::binarysort (T *data, octave_idx_type nel,
-                            octave_idx_type start, Comp comp)
-{
-  if (start == 0)
-    ++start;
-
-  for (; start < nel; ++start)
-    {
-      /* set l to where *start belongs */
-      octave_idx_type l = 0;
-      octave_idx_type r = start;
-      T pivot = data[start];
-      /* Invariants:
-       * pivot >= all in [lo, l).
-       * pivot  < all in [r, start).
-       * The second is vacuously true at the start.
-       */
-      do
-        {
-          octave_idx_type p = l + ((r - l) >> 1);
-          if (comp (pivot, data[p]))
-            r = p;
-          else
-            l = p+1;
-        }
-      while (l < r);
-      /* The invariants still hold, so pivot >= all in [lo, l) and
-         pivot < all in [l, start), so pivot belongs at l.  Note
-         that if there are elements equal to pivot, l points to the
-         first slot after them -- that's why this sort is stable.
-         Slide over to make room.
-         Caution: using memmove is much slower under MSVC 5;
-         we're not usually moving many slots. */
-      // NOTE: using swap and going upwards appears to be faster.
-      for (octave_idx_type p = l; p < start; p++)
-        std::swap (pivot, data[p]);
-      data[start] = pivot;
-    }
-
-  return;
-}
-
-template <typename T>
-template <typename Comp>
-void
-octave_sort<T>::binarysort (T *data, octave_idx_type *idx, octave_idx_type nel,
-                            octave_idx_type start, Comp comp)
-{
-  if (start == 0)
-    ++start;
-
-  for (; start < nel; ++start)
-    {
-      /* set l to where *start belongs */
-      octave_idx_type l = 0;
-      octave_idx_type r = start;
-      T pivot = data[start];
-      /* Invariants:
-       * pivot >= all in [lo, l).
-       * pivot  < all in [r, start).
-       * The second is vacuously true at the start.
-       */
-      do
-        {
-          octave_idx_type p = l + ((r - l) >> 1);
-          if (comp (pivot, data[p]))
-            r = p;
-          else
-            l = p+1;
-        }
-      while (l < r);
-      /* The invariants still hold, so pivot >= all in [lo, l) and
-         pivot < all in [l, start), so pivot belongs at l.  Note
-         that if there are elements equal to pivot, l points to the
-         first slot after them -- that's why this sort is stable.
-         Slide over to make room.
-         Caution: using memmove is much slower under MSVC 5;
-         we're not usually moving many slots. */
-      // NOTE: using swap and going upwards appears to be faster.
-      for (octave_idx_type p = l; p < start; p++)
-        std::swap (pivot, data[p]);
-      data[start] = pivot;
-      octave_idx_type ipivot = idx[start];
-      for (octave_idx_type p = l; p < start; p++)
-        std::swap (ipivot, idx[p]);
-      idx[start] = ipivot;
-    }
-
-  return;
-}
-
-/*
-Return the length of the run beginning at lo, in the slice [lo, hi).  lo < hi
-is required on entry.  "A run" is the longest ascending sequence, with
-
-    lo[0] <= lo[1] <= lo[2] <= ...
-
-or the longest descending sequence, with
-
-    lo[0] > lo[1] > lo[2] > ...
-
-DESCENDING is set to false in the former case, or to true in the latter.
-For its intended use in a stable mergesort, the strictness of the defn of
-"descending" is needed so that the caller can safely reverse a descending
-sequence without violating stability (strict > ensures there are no equal
-elements to get out of order).
-
-Returns -1 in case of error.
-*/
-template <typename T>
-template <typename Comp>
-octave_idx_type
-octave_sort<T>::count_run (T *lo, octave_idx_type nel, bool& descending,
-                           Comp comp)
-{
-  octave_idx_type n;
-  T *hi = lo + nel;
-
-  descending = false;
-  ++lo;
-  if (lo == hi)
-    return 1;
-
-  n = 2;
-
-  if (comp (*lo, *(lo-1)))
-    {
-      descending = true;
-      for (lo = lo+1; lo < hi; ++lo, ++n)
-        {
-          if (comp (*lo, *(lo-1)))
-            ;
-          else
-            break;
-        }
-    }
-  else
-    {
-      for (lo = lo+1; lo < hi; ++lo, ++n)
-        {
-          if (comp (*lo, *(lo-1)))
-            break;
-        }
-    }
-
-  return n;
-}
-
-/*
-Locate the proper position of key in a sorted vector; if the vector contains
-an element equal to key, return the position immediately to the left of
-the leftmost equal element.  [gallop_right() does the same except returns
-the position to the right of the rightmost equal element (if any).]
-
-"a" is a sorted vector with n elements, starting at a[0].  n must be > 0.
-
-"hint" is an index at which to begin the search, 0 <= hint < n.  The closer
-hint is to the final result, the faster this runs.
-
-The return value is the int k in 0..n such that
-
-    a[k-1] < key <= a[k]
-
-pretending that *(a-1) is minus infinity and a[n] is plus infinity.  IOW,
-key belongs at index k; or, IOW, the first k elements of a should precede
-key, and the last n-k should follow key.
-
-Returns -1 on error.  See listsort.txt for info on the method.
-*/
-template <typename T>
-template <typename Comp>
-octave_idx_type
-octave_sort<T>::gallop_left (T key, T *a, octave_idx_type n,
-                             octave_idx_type hint,
-                             Comp comp)
-{
-  octave_idx_type ofs;
-  octave_idx_type lastofs;
-  octave_idx_type k;
-
-  a += hint;
-  lastofs = 0;
-  ofs = 1;
-  if (comp (*a, key))
-    {
-      /* a[hint] < key -- gallop right, until
-       * a[hint + lastofs] < key <= a[hint + ofs]
-       */
-      const octave_idx_type maxofs = n - hint;  /* &a[n-1] is highest */
-      while (ofs < maxofs)
-        {
-          if (comp (a[ofs], key))
-            {
-              lastofs = ofs;
-              ofs = (ofs << 1) + 1;
-              if (ofs <= 0)     /* int overflow */
-                ofs = maxofs;
-            }
-          else  /* key <= a[hint + ofs] */
-            break;
-        }
-      if (ofs > maxofs)
-        ofs = maxofs;
-      /* Translate back to offsets relative to &a[0]. */
-      lastofs += hint;
-      ofs += hint;
-    }
-  else
-    {
-      /* key <= a[hint] -- gallop left, until
-       * a[hint - ofs] < key <= a[hint - lastofs]
-       */
-      const octave_idx_type maxofs = hint + 1;  /* &a[0] is lowest */
-      while (ofs < maxofs)
-        {
-          if (comp (*(a-ofs), key))
-            break;
-          /* key <= a[hint - ofs] */
-          lastofs = ofs;
-          ofs = (ofs << 1) + 1;
-          if (ofs <= 0) /* int overflow */
-            ofs = maxofs;
-        }
-      if (ofs > maxofs)
-        ofs = maxofs;
-      /* Translate back to positive offsets relative to &a[0]. */
-      k = lastofs;
-      lastofs = hint - ofs;
-      ofs = hint - k;
-    }
-  a -= hint;
-
-  /* Now a[lastofs] < key <= a[ofs], so key belongs somewhere to the
-   * right of lastofs but no farther right than ofs.  Do a binary
-   * search, with invariant a[lastofs-1] < key <= a[ofs].
-   */
-  ++lastofs;
-  while (lastofs < ofs)
-    {
-      octave_idx_type m = lastofs + ((ofs - lastofs) >> 1);
-
-      if (comp (a[m], key))
-        lastofs = m+1;  /* a[m] < key */
-      else
-        ofs = m;        /* key <= a[m] */
-    }
-
-  return ofs;
-}
-
-/*
-Exactly like gallop_left(), except that if key already exists in a[0:n],
-finds the position immediately to the right of the rightmost equal value.
-
-The return value is the int k in 0..n such that
-
-    a[k-1] <= key < a[k]
-
-or -1 if error.
-
-The code duplication is massive, but this is enough different given that
-we're sticking to "<" comparisons that it's much harder to follow if
-written as one routine with yet another "left or right?" flag.
-*/
-template <typename T>
-template <typename Comp>
-octave_idx_type
-octave_sort<T>::gallop_right (T key, T *a, octave_idx_type n,
-                              octave_idx_type hint,
-                              Comp comp)
-{
-  octave_idx_type ofs;
-  octave_idx_type lastofs;
-  octave_idx_type k;
-
-  a += hint;
-  lastofs = 0;
-  ofs = 1;
-  if (comp (key, *a))
-    {
-      /* key < a[hint] -- gallop left, until
-       * a[hint - ofs] <= key < a[hint - lastofs]
-       */
-      const octave_idx_type maxofs = hint + 1;  /* &a[0] is lowest */
-      while (ofs < maxofs)
-        {
-          if (comp (key, *(a-ofs)))
-            {
-              lastofs = ofs;
-              ofs = (ofs << 1) + 1;
-              if (ofs <= 0)     /* int overflow */
-                ofs = maxofs;
-            }
-          else  /* a[hint - ofs] <= key */
-            break;
-        }
-      if (ofs > maxofs)
-        ofs = maxofs;
-      /* Translate back to positive offsets relative to &a[0]. */
-      k = lastofs;
-      lastofs = hint - ofs;
-      ofs = hint - k;
-    }
-  else
-    {
-      /* a[hint] <= key -- gallop right, until
-       * a[hint + lastofs] <= key < a[hint + ofs]
-       */
-      const octave_idx_type maxofs = n - hint;  /* &a[n-1] is highest */
-      while (ofs < maxofs)
-        {
-          if (comp (key, a[ofs]))
-            break;
-          /* a[hint + ofs] <= key */
-          lastofs = ofs;
-          ofs = (ofs << 1) + 1;
-          if (ofs <= 0) /* int overflow */
-            ofs = maxofs;
-        }
-      if (ofs > maxofs)
-        ofs = maxofs;
-      /* Translate back to offsets relative to &a[0]. */
-      lastofs += hint;
-      ofs += hint;
-    }
-  a -= hint;
-
-  /* Now a[lastofs] <= key < a[ofs], so key belongs somewhere to the
-   * right of lastofs but no farther right than ofs.  Do a binary
-   * search, with invariant a[lastofs-1] <= key < a[ofs].
-   */
-  ++lastofs;
-  while (lastofs < ofs)
-    {
-      octave_idx_type m = lastofs + ((ofs - lastofs) >> 1);
-
-      if (comp (key, a[m]))
-        ofs = m;        /* key < a[m] */
-      else
-        lastofs = m+1;  /* a[m] <= key */
-    }
-
-  return ofs;
-}
-
-static inline octave_idx_type
-roundupsize (std::size_t n)
-{
-  unsigned int nbits = 3;
-  std::size_t n2 = n >> 8;
-
-  /* Round up:
-   * If n <       256, to a multiple of        8.
-   * If n <      2048, to a multiple of       64.
-   * If n <     16384, to a multiple of      512.
-   * If n <    131072, to a multiple of     4096.
-   * If n <   1048576, to a multiple of    32768.
-   * If n <   8388608, to a multiple of   262144.
-   * If n <  67108864, to a multiple of  2097152.
-   * If n < 536870912, to a multiple of 16777216.
-   * ...
-   * If n < 2**(5+3*i), to a multiple of 2**(3*i).
-   *
-   * This over-allocates proportional to the list size, making room
-   * for additional growth.  The over-allocation is mild, but is
-   * enough to give linear-time amortized behavior over a long
-   * sequence of appends() in the presence of a poorly-performing
-   * system realloc() (which is a reality, e.g., across all flavors
-   * of Windows, with Win9x behavior being particularly bad -- and
-   * we've still got address space fragmentation problems on Win9x
-   * even with this scheme, although it requires much longer lists to
-   * provoke them than it used to).
-   */
-  while (n2)
-    {
-      n2 >>= 3;
-      nbits += 3;
-    }
-
-  std::size_t multiplier = static_cast<std::size_t> (1) << nbits;
-  std::size_t new_size = (n >> nbits) + 1;
-
-  if (new_size
-      > static_cast<std::size_t> (std::numeric_limits<octave_idx_type>::max ())
-        / multiplier)
-    (*current_liboctave_error_handler)
-      ("unable to allocate sufficient memory for sort");
-
-  new_size *= multiplier;
-  return static_cast<octave_idx_type> (new_size);
-}
-
-/* Ensure enough temp memory for 'need' array slots is available.
- * Returns 0 on success and -1 if the memory can't be gotten.
- */
-template <typename T>
-void
-octave_sort<T>::MergeState::getmem (octave_idx_type need)
-{
-  if (need <= m_alloced)
-    return;
-
-  need = roundupsize (need);
-  /* Don't realloc!  That can cost cycles to copy the old data, but
-   * we don't care what's in the block.
-   */
-  delete [] m_a;
-  delete [] m_ia; // Must do this or fool possible next getmemi.
-  m_a = new T [need];
-  m_alloced = need;
-
-}
-
-template <typename T>
-void
-octave_sort<T>::MergeState::getmemi (octave_idx_type need)
-{
-  if (m_a && m_ia && need <= m_alloced)
-    return;
-
-  need = roundupsize (need);
-  /* Don't realloc!  That can cost cycles to copy the old data, but
-   * we don't care what's in the block.
-   */
-  delete [] m_a;
-  delete [] m_ia;
-
-  m_a = new T [need];
-  m_ia = new octave_idx_type [need];
-  m_alloced = need;
-}
-
-/* Merge the na elements starting at pa with the nb elements starting at pb
- * in a stable way, in-place.  na and nb must be > 0, and pa + na == pb.
- * Must also have that *pb < *pa, that pa[na-1] belongs at the end of the
- * merge, and should have na <= nb.  See listsort.txt for more info.
- * Return 0 if successful, -1 if error.
- */
-template <typename T>
-template <typename Comp>
-int
-octave_sort<T>::merge_lo (T *pa, octave_idx_type na,
-                          T *pb, octave_idx_type nb,
-                          Comp comp)
-{
-  octave_idx_type k;
-  T *dest;
-  int result = -1;      /* guilty until proved innocent */
-  octave_idx_type min_gallop = m_ms->m_min_gallop;
-
-  m_ms->getmem (na);
-
-  std::copy (pa, pa + na, m_ms->m_a);
-  dest = pa;
-  pa = m_ms->m_a;
-
-  *dest++ = *pb++;
-  --nb;
-  if (nb == 0)
-    goto Succeed;
-  if (na == 1)
-    goto CopyB;
-
-  for (;;)
-    {
-      octave_idx_type acount = 0;       /* # of times A won in a row */
-      octave_idx_type bcount = 0;       /* # of times B won in a row */
-
-      /* Do the straightforward thing until (if ever) one run
-       * appears to win consistently.
-       */
-      for (;;)
-        {
-
-          // FIXME: these loops are candidates for further optimizations.
-          // Rather than testing everything in each cycle, it may be more
-          // efficient to do it in hunks.
-          if (comp (*pb, *pa))
-            {
-              *dest++ = *pb++;
-              ++bcount;
-              acount = 0;
-              --nb;
-              if (nb == 0)
-                goto Succeed;
-              if (bcount >= min_gallop)
-                break;
-            }
-          else
-            {
-              *dest++ = *pa++;
-              ++acount;
-              bcount = 0;
-              --na;
-              if (na == 1)
-                goto CopyB;
-              if (acount >= min_gallop)
-                break;
-            }
-        }
-
-      /* One run is winning so consistently that galloping may
-       * be a huge win.  So try that, and continue galloping until
-       * (if ever) neither run appears to be winning consistently
-       * anymore.
-       */
-      ++min_gallop;
-      do
-        {
-          min_gallop -= (min_gallop > 1);
-          m_ms->m_min_gallop = min_gallop;
-          k = gallop_right (*pb, pa, na, 0, comp);
-          acount = k;
-          if (k)
-            {
-              if (k < 0)
-                goto Fail;
-              dest = std::copy (pa, pa + k, dest);
-              pa += k;
-              na -= k;
-              if (na == 1)
-                goto CopyB;
-              /* na==0 is impossible now if the comparison
-               * function is consistent, but we can't assume
-               * that it is.
-               */
-              if (na == 0)
-                goto Succeed;
-            }
-          *dest++ = *pb++;
-          --nb;
-          if (nb == 0)
-            goto Succeed;
-
-          k = gallop_left (*pa, pb, nb, 0, comp);
-          bcount = k;
-          if (k)
-            {
-              if (k < 0)
-                goto Fail;
-              dest = std::copy (pb, pb + k, dest);
-              pb += k;
-              nb -= k;
-              if (nb == 0)
-                goto Succeed;
-            }
-          *dest++ = *pa++;
-          --na;
-          if (na == 1)
-            goto CopyB;
-        }
-      while (acount >= MIN_GALLOP || bcount >= MIN_GALLOP);
-
-      ++min_gallop;     /* penalize it for leaving galloping mode */
-      m_ms->m_min_gallop = min_gallop;
-    }
-
-Succeed:
-  result = 0;
-
-Fail:
-  if (na)
-    std::copy (pa, pa + na, dest);
-  return result;
-
-CopyB:
-  /* The last element of pa belongs at the end of the merge. */
-  std::copy (pb, pb + nb, dest);
-  dest[nb] = *pa;
-
-  return 0;
-}
-
-template <typename T>
-template <typename Comp>
-int
-octave_sort<T>::merge_lo (T *pa, octave_idx_type *ipa, octave_idx_type na,
-                          T *pb, octave_idx_type *ipb, octave_idx_type nb,
-                          Comp comp)
-{
-  octave_idx_type k;
-  T *dest;
-  octave_idx_type *idest;
-  int result = -1;      /* guilty until proved innocent */
-  octave_idx_type min_gallop = m_ms->m_min_gallop;
-
-  m_ms->getmemi (na);
-
-  std::copy (pa, pa + na, m_ms->m_a);
-  std::copy (ipa, ipa + na, m_ms->m_ia);
-  dest = pa; idest = ipa;
-  pa = m_ms->m_a; ipa = m_ms->m_ia;
-
-  *dest++ = *pb++; *idest++ = *ipb++;
-  --nb;
-  if (nb == 0)
-    goto Succeed;
-  if (na == 1)
-    goto CopyB;
-
-  for (;;)
-    {
-      octave_idx_type acount = 0;       /* # of times A won in a row */
-      octave_idx_type bcount = 0;       /* # of times B won in a row */
-
-      /* Do the straightforward thing until (if ever) one run
-       * appears to win consistently.
-       */
-      for (;;)
-        {
-
-          if (comp (*pb, *pa))
-            {
-              *dest++ = *pb++; *idest++ = *ipb++;
-              ++bcount;
-              acount = 0;
-              --nb;
-              if (nb == 0)
-                goto Succeed;
-              if (bcount >= min_gallop)
-                break;
-            }
-          else
-            {
-              *dest++ = *pa++; *idest++ = *ipa++;
-              ++acount;
-              bcount = 0;
-              --na;
-              if (na == 1)
-                goto CopyB;
-              if (acount >= min_gallop)
-                break;
-            }
-        }
-
-      /* One run is winning so consistently that galloping may
-       * be a huge win.  So try that, and continue galloping until
-       * (if ever) neither run appears to be winning consistently
-       * anymore.
-       */
-      ++min_gallop;
-      do
-        {
-          min_gallop -= (min_gallop > 1);
-          m_ms->m_min_gallop = min_gallop;
-          k = gallop_right (*pb, pa, na, 0, comp);
-          acount = k;
-          if (k)
-            {
-              if (k < 0)
-                goto Fail;
-              dest = std::copy (pa, pa + k, dest);
-              idest = std::copy (ipa, ipa + k, idest);
-              pa += k; ipa += k;
-              na -= k;
-              if (na == 1)
-                goto CopyB;
-              /* na==0 is impossible now if the comparison
-               * function is consistent, but we can't assume
-               * that it is.
-               */
-              if (na == 0)
-                goto Succeed;
-            }
-          *dest++ = *pb++; *idest++ = *ipb++;
-          --nb;
-          if (nb == 0)
-            goto Succeed;
-
-          k = gallop_left (*pa, pb, nb, 0, comp);
-          bcount = k;
-          if (k)
-            {
-              if (k < 0)
-                goto Fail;
-              dest = std::copy (pb, pb + k, dest);
-              idest = std::copy (ipb, ipb + k, idest);
-              pb += k; ipb += k;
-              nb -= k;
-              if (nb == 0)
-                goto Succeed;
-            }
-          *dest++ = *pa++; *idest++ = *ipa++;
-          --na;
-          if (na == 1)
-            goto CopyB;
-        }
-      while (acount >= MIN_GALLOP || bcount >= MIN_GALLOP);
-
-      ++min_gallop;     /* penalize it for leaving galloping mode */
-      m_ms->m_min_gallop = min_gallop;
-    }
-
-Succeed:
-  result = 0;
-
-Fail:
-  if (na)
-    {
-      std::copy (pa, pa + na, dest);
-      std::copy (ipa, ipa + na, idest);
-    }
-  return result;
-
-CopyB:
-  /* The last element of pa belongs at the end of the merge. */
-  std::copy (pb, pb + nb, dest);
-  std::copy (ipb, ipb + nb, idest);
-  dest[nb] = *pa;
-  idest[nb] = *ipa;
-
-  return 0;
-}
-
-/* Merge the na elements starting at pa with the nb elements starting at pb
- * in a stable way, in-place.  na and nb must be > 0, and pa + na == pb.
- * Must also have that *pb < *pa, that pa[na-1] belongs at the end of the
- * merge, and should have na >= nb.  See listsort.txt for more info.
- * Return 0 if successful, -1 if error.
- */
-template <typename T>
-template <typename Comp>
-int
-octave_sort<T>::merge_hi (T *pa, octave_idx_type na,
-                          T *pb, octave_idx_type nb,
-                          Comp comp)
-{
-  octave_idx_type k;
-  T *dest;
-  int result = -1;      /* guilty until proved innocent */
-  T *basea, *baseb;
-  octave_idx_type min_gallop = m_ms->m_min_gallop;
-
-  m_ms->getmem (nb);
-
-  dest = pb + nb - 1;
-  std::copy (pb, pb + nb, m_ms->m_a);
-  basea = pa;
-  baseb = m_ms->m_a;
-  pb = m_ms->m_a + nb - 1;
-  pa += na - 1;
-
-  *dest-- = *pa--;
-  --na;
-  if (na == 0)
-    goto Succeed;
-  if (nb == 1)
-    goto CopyA;
-
-  for (;;)
-    {
-      octave_idx_type acount = 0;       /* # of times A won in a row */
-      octave_idx_type bcount = 0;       /* # of times B won in a row */
-
-      /* Do the straightforward thing until (if ever) one run
-       * appears to win consistently.
-       */
-      for (;;)
-        {
-          if (comp (*pb, *pa))
-            {
-              *dest-- = *pa--;
-              ++acount;
-              bcount = 0;
-              --na;
-              if (na == 0)
-                goto Succeed;
-              if (acount >= min_gallop)
-                break;
-            }
-          else
-            {
-              *dest-- = *pb--;
-              ++bcount;
-              acount = 0;
-              --nb;
-              if (nb == 1)
-                goto CopyA;
-              if (bcount >= min_gallop)
-                break;
-            }
-        }
-
-      /* One run is winning so consistently that galloping may
-       * be a huge win.  So try that, and continue galloping until
-       * (if ever) neither run appears to be winning consistently
-       * anymore.
-       */
-      ++min_gallop;
-      do
-        {
-          min_gallop -= (min_gallop > 1);
-          m_ms->m_min_gallop = min_gallop;
-          k = gallop_right (*pb, basea, na, na-1, comp);
-          if (k < 0)
-            goto Fail;
-          k = na - k;
-          acount = k;
-          if (k)
-            {
-              dest = std::copy_backward (pa+1 - k, pa+1, dest+1) - 1;
-              pa -= k;
-              na -= k;
-              if (na == 0)
-                goto Succeed;
-            }
-          *dest-- = *pb--;
-          --nb;
-          if (nb == 1)
-            goto CopyA;
-
-          k = gallop_left (*pa, baseb, nb, nb-1, comp);
-          if (k < 0)
-            goto Fail;
-          k = nb - k;
-          bcount = k;
-          if (k)
-            {
-              dest -= k;
-              pb -= k;
-              std::copy (pb+1, pb+1 + k, dest+1);
-              nb -= k;
-              if (nb == 1)
-                goto CopyA;
-              /* nb==0 is impossible now if the comparison
-               * function is consistent, but we can't assume
-               * that it is.
-               */
-              if (nb == 0)
-                goto Succeed;
-            }
-          *dest-- = *pa--;
-          --na;
-          if (na == 0)
-            goto Succeed;
-        }
-      while (acount >= MIN_GALLOP || bcount >= MIN_GALLOP);
-      ++min_gallop;     /* penalize it for leaving galloping mode */
-      m_ms->m_min_gallop = min_gallop;
-    }
-
-Succeed:
-  result = 0;
-
-Fail:
-  if (nb)
-    std::copy (baseb, baseb + nb, dest-(nb-1));
-  return result;
-
-CopyA:
-  /* The first element of pb belongs at the front of the merge. */
-  dest = std::copy_backward (pa+1 - na, pa+1, dest+1) - 1;
-  pa -= na;
-  *dest = *pb;
-
-  return 0;
-}
-
-template <typename T>
-template <typename Comp>
-int
-octave_sort<T>::merge_hi (T *pa, octave_idx_type *ipa, octave_idx_type na,
-                          T *pb, octave_idx_type *ipb, octave_idx_type nb,
-                          Comp comp)
-{
-  octave_idx_type k;
-  T *dest;
-  octave_idx_type *idest;
-  int result = -1;      /* guilty until proved innocent */
-  T *basea, *baseb;
-  octave_idx_type *ibaseb;
-  octave_idx_type min_gallop = m_ms->m_min_gallop;
-
-  m_ms->getmemi (nb);
-
-  dest = pb + nb - 1;
-  idest = ipb + nb - 1;
-  std::copy (pb, pb + nb, m_ms->m_a);
-  std::copy (ipb, ipb + nb, m_ms->m_ia);
-  basea = pa;
-  baseb = m_ms->m_a; ibaseb = m_ms->m_ia;
-  pb = m_ms->m_a + nb - 1; ipb = m_ms->m_ia + nb - 1;
-  pa += na - 1; ipa += na - 1;
-
-  *dest-- = *pa--; *idest-- = *ipa--;
-  --na;
-  if (na == 0)
-    goto Succeed;
-  if (nb == 1)
-    goto CopyA;
-
-  for (;;)
-    {
-      octave_idx_type acount = 0;       /* # of times A won in a row */
-      octave_idx_type bcount = 0;       /* # of times B won in a row */
-
-      /* Do the straightforward thing until (if ever) one run
-       * appears to win consistently.
-       */
-      for (;;)
-        {
-          if (comp (*pb, *pa))
-            {
-              *dest-- = *pa--; *idest-- = *ipa--;
-              ++acount;
-              bcount = 0;
-              --na;
-              if (na == 0)
-                goto Succeed;
-              if (acount >= min_gallop)
-                break;
-            }
-          else
-            {
-              *dest-- = *pb--; *idest-- = *ipb--;
-              ++bcount;
-              acount = 0;
-              --nb;
-              if (nb == 1)
-                goto CopyA;
-              if (bcount >= min_gallop)
-                break;
-            }
-        }
-
-      /* One run is winning so consistently that galloping may
-       * be a huge win.  So try that, and continue galloping until
-       * (if ever) neither run appears to be winning consistently
-       * anymore.
-       */
-      ++min_gallop;
-      do
-        {
-          min_gallop -= (min_gallop > 1);
-          m_ms->m_min_gallop = min_gallop;
-          k = gallop_right (*pb, basea, na, na-1, comp);
-          if (k < 0)
-            goto Fail;
-          k = na - k;
-          acount = k;
-          if (k)
-            {
-              dest = std::copy_backward (pa+1 - k, pa+1, dest+1) - 1;
-              idest = std::copy_backward (ipa+1 - k, ipa+1, idest+1) - 1;
-              pa -= k; ipa -= k;
-              na -= k;
-              if (na == 0)
-                goto Succeed;
-            }
-          *dest-- = *pb--; *idest-- = *ipb--;
-          --nb;
-          if (nb == 1)
-            goto CopyA;
-
-          k = gallop_left (*pa, baseb, nb, nb-1, comp);
-          if (k < 0)
-            goto Fail;
-          k = nb - k;
-          bcount = k;
-          if (k)
-            {
-              dest -= k; idest -= k;
-              pb -= k; ipb -= k;
-              std::copy (pb+1, pb+1 + k, dest+1);
-              std::copy (ipb+1, ipb+1 + k, idest+1);
-              nb -= k;
-              if (nb == 1)
-                goto CopyA;
-              /* nb==0 is impossible now if the comparison
-               * function is consistent, but we can't assume
-               * that it is.
-               */
-              if (nb == 0)
-                goto Succeed;
-            }
-          *dest-- = *pa--; *idest-- = *ipa--;
-          --na;
-          if (na == 0)
-            goto Succeed;
-        }
-      while (acount >= MIN_GALLOP || bcount >= MIN_GALLOP);
-      ++min_gallop;     /* penalize it for leaving galloping mode */
-      m_ms->m_min_gallop = min_gallop;
-    }
-
-Succeed:
-  result = 0;
-
-Fail:
-  if (nb)
-    {
-      std::copy (baseb, baseb + nb, dest-(nb-1));
-      std::copy (ibaseb, ibaseb + nb, idest-(nb-1));
-    }
-  return result;
-
-CopyA:
-  /* The first element of pb belongs at the front of the merge. */
-  dest = std::copy_backward (pa+1 - na, pa+1, dest+1) - 1;
-  idest = std::copy_backward (ipa+1 - na, ipa+1, idest+1) - 1;
-  pa -= na; ipa -= na;
-  *dest = *pb; *idest = *ipb;
-
-  return 0;
-}
-
-/* Merge the two runs at stack indices i and i+1.
- * Returns 0 on success, -1 on error.
- */
-template <typename T>
-template <typename Comp>
-int
-octave_sort<T>::merge_at (octave_idx_type i, T *data,
-                          Comp comp)
-{
-  T *pa, *pb;
-  octave_idx_type na, nb;
-  octave_idx_type k;
-
-  pa = data + m_ms->m_pending[i].m_base;
-  na = m_ms->m_pending[i].m_len;
-  pb = data + m_ms->m_pending[i+1].m_base;
-  nb = m_ms->m_pending[i+1].m_len;
-
-  /* Record the length of the combined runs; if i is the 3rd-last
-   * run now, also slide over the last run (which isn't involved
-   * in this merge).  The current run i+1 goes away in any case.
-   */
-  m_ms->m_pending[i].m_len = na + nb;
-  if (i == m_ms->m_n - 3)
-    m_ms->m_pending[i+1] = m_ms->m_pending[i+2];
-  m_ms->m_n--;
-
-  /* Where does b start in a?  Elements in a before that can be
-   * ignored (already in place).
-   */
-  k = gallop_right (*pb, pa, na, 0, comp);
-  if (k < 0)
-    return -1;
-  pa += k;
-  na -= k;
-  if (na == 0)
-    return 0;
-
-  /* Where does a end in b?  Elements in b after that can be
-   * ignored (already in place).
-   */
-  nb = gallop_left (pa[na-1], pb, nb, nb-1, comp);
-  if (nb <= 0)
-    return nb;
-
-  /* Merge what remains of the runs, using a temp array with
-   * min (na, nb) elements.
-   */
-  if (na <= nb)
-    return merge_lo (pa, na, pb, nb, comp);
-  else
-    return merge_hi (pa, na, pb, nb, comp);
-}
-
-template <typename T>
-template <typename Comp>
-int
-octave_sort<T>::merge_at (octave_idx_type i, T *data, octave_idx_type *idx,
-                          Comp comp)
-{
-  T *pa, *pb;
-  octave_idx_type *ipa, *ipb;
-  octave_idx_type na, nb;
-  octave_idx_type k;
-
-  pa = data + m_ms->m_pending[i].m_base;
-  ipa = idx + m_ms->m_pending[i].m_base;
-  na = m_ms->m_pending[i].m_len;
-  pb = data + m_ms->m_pending[i+1].m_base;
-  ipb = idx + m_ms->m_pending[i+1].m_base;
-  nb = m_ms->m_pending[i+1].m_len;
-
-  /* Record the length of the combined runs; if i is the 3rd-last
-   * run now, also slide over the last run (which isn't involved
-   * in this merge).  The current run i+1 goes away in any case.
-   */
-  m_ms->m_pending[i].m_len = na + nb;
-  if (i == m_ms->m_n - 3)
-    m_ms->m_pending[i+1] = m_ms->m_pending[i+2];
-  m_ms->m_n--;
-
-  /* Where does b start in a?  Elements in a before that can be
-   * ignored (already in place).
-   */
-  k = gallop_right (*pb, pa, na, 0, comp);
-  if (k < 0)
-    return -1;
-  pa += k; ipa += k;
-  na -= k;
-  if (na == 0)
-    return 0;
-
-  /* Where does a end in b?  Elements in b after that can be
-   * ignored (already in place).
-   */
-  nb = gallop_left (pa[na-1], pb, nb, nb-1, comp);
-  if (nb <= 0)
-    return nb;
-
-  /* Merge what remains of the runs, using a temp array with
-   * min (na, nb) elements.
-   */
-  if (na <= nb)
-    return merge_lo (pa, ipa, na, pb, ipb, nb, comp);
-  else
-    return merge_hi (pa, ipa, na, pb, ipb, nb, comp);
-}
-
-/* Examine the stack of runs waiting to be merged, merging adjacent runs
- * until the stack invariants are re-established:
- *
- * 1. len[-3] > len[-2] + len[-1]
- * 2. len[-2] > len[-1]
- *
- * See listsort.txt for more info.
- *
- * Returns 0 on success, -1 on error.
- */
-template <typename T>
-template <typename Comp>
-int
-octave_sort<T>::merge_collapse (T *data, Comp comp)
-{
-  struct s_slice *p = m_ms->m_pending;
-
-  while (m_ms->m_n > 1)
-    {
-      octave_idx_type n = m_ms->m_n - 2;
-      if (n > 0 && p[n-1].m_len <= p[n].m_len + p[n+1].m_len)
-        {
-          if (p[n-1].m_len < p[n+1].m_len)
-            --n;
-          if (merge_at (n, data, comp) < 0)
-            return -1;
-        }
-      else if (p[n].m_len <= p[n+1].m_len)
-        {
-          if (merge_at (n, data, comp) < 0)
-            return -1;
-        }
-      else
-        break;
-    }
-
-  return 0;
-}
-
-template <typename T>
-template <typename Comp>
-int
-octave_sort<T>::merge_collapse (T *data, octave_idx_type *idx, Comp comp)
-{
-  struct s_slice *p = m_ms->m_pending;
-
-  while (m_ms->m_n > 1)
-    {
-      octave_idx_type n = m_ms->m_n - 2;
-      if (n > 0 && p[n-1].m_len <= p[n].m_len + p[n+1].m_len)
-        {
-          if (p[n-1].m_len < p[n+1].m_len)
-            --n;
-          if (merge_at (n, data, idx, comp) < 0)
-            return -1;
-        }
-      else if (p[n].m_len <= p[n+1].m_len)
-        {
-          if (merge_at (n, data, idx, comp) < 0)
-            return -1;
-        }
-      else
-        break;
-    }
-
-  return 0;
-}
-
-/* Regardless of invariants, merge all runs on the stack until only one
- * remains.  This is used at the end of the mergesort.
- *
- * Returns 0 on success, -1 on error.
- */
-template <typename T>
-template <typename Comp>
-int
-octave_sort<T>::merge_force_collapse (T *data, Comp comp)
-{
-  struct s_slice *p = m_ms->m_pending;
-
-  while (m_ms->m_n > 1)
-    {
-      octave_idx_type n = m_ms->m_n - 2;
-      if (n > 0 && p[n-1].m_len < p[n+1].m_len)
-        --n;
-      if (merge_at (n, data, comp) < 0)
-        return -1;
-    }
-
-  return 0;
-}
-
-template <typename T>
-template <typename Comp>
-int
-octave_sort<T>::merge_force_collapse (T *data, octave_idx_type *idx, Comp comp)
-{
-  struct s_slice *p = m_ms->m_pending;
-
-  while (m_ms->m_n > 1)
-    {
-      octave_idx_type n = m_ms->m_n - 2;
-      if (n > 0 && p[n-1].m_len < p[n+1].m_len)
-        --n;
-      if (merge_at (n, data, idx, comp) < 0)
-        return -1;
-    }
-
-  return 0;
-}
-
-/* Compute a good value for the minimum run length; natural runs shorter
- * than this are boosted artificially via binary insertion.
- *
- * If n < 64, return n (it's too small to bother with fancy stuff).
- * Else if n is an exact power of 2, return 32.
- * Else return an int k, 32 <= k <= 64, such that n/k is close to, but
- * strictly less than, an exact power of 2.
- *
- * See listsort.txt for more info.
- */
-template <typename T>
-octave_idx_type
-octave_sort<T>::merge_compute_minrun (octave_idx_type n)
-{
-  octave_idx_type r = 0;        /* becomes 1 if any 1 bits are shifted off */
-
-  while (n >= 64)
-    {
-      r |= n & 1;
-      n >>= 1;
-    }
-
-  return n + r;
-}
-
-template <typename T>
-template <typename Comp>
-void
 octave_sort<T>::sort (T *data, octave_idx_type nel, Comp comp)
 {
-  /* Re-initialize the Mergestate as this might be the second time called */
-  if (! m_ms) m_ms = new MergeState;
+  if (nel <= 1)
+    return;
 
-  m_ms->reset ();
-  m_ms->getmem (MERGESTATE_TEMP_SIZE);
+  if (octave_sort_detail::handle_ordered_input (data, nel, comp))
+    return;
 
-  if (nel > 1)
-    {
-      octave_idx_type nremaining = nel;
-      octave_idx_type lo = 0;
+  if (octave_sort_detail::maybe_counting_sort (data, nel, comp))
+    return;
 
-      /* March over the array once, left to right, finding natural runs,
-       * and extending short natural runs to minrun elements.
-       */
-      octave_idx_type minrun = merge_compute_minrun (nremaining);
-      do
-        {
-          bool descending;
-          octave_idx_type n;
-
-          /* Identify next run. */
-          n = count_run (data + lo, nremaining, descending, comp);
-          if (n < 0)
-            return;
-          if (descending)
-            std::reverse (data + lo, data + lo + n);
-          /* If short, extend to min (minrun, nremaining). */
-          if (n < minrun)
-            {
-              const octave_idx_type force = (nremaining <= minrun ? nremaining
-                                                                  : minrun);
-              binarysort (data + lo, force, n, comp);
-              n = force;
-            }
-          /* Push run onto m_pending-runs stack, and maybe merge. */
-          liboctave_panic_unless (m_ms->m_n < MAX_MERGE_PENDING);
-          m_ms->m_pending[m_ms->m_n].m_base = lo;
-          m_ms->m_pending[m_ms->m_n].m_len = n;
-          m_ms->m_n++;
-          if (merge_collapse (data, comp) < 0)
-            return;
-          /* Advance to find next run. */
-          lo += n;
-          nremaining -= n;
-        }
-      while (nremaining);
-
-      merge_force_collapse (data, comp);
-    }
+  std::sort (data, data + nel, comp);
 }
 
 template <typename T>
@@ -1460,75 +488,56 @@ void
 octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel,
                       Comp comp)
 {
-  /* Re-initialize the Mergestate as this might be the second time called */
-  if (! m_ms) m_ms = new MergeState;
+  if (nel <= 1)
+    return;
 
-  m_ms->reset ();
-  m_ms->getmemi (MERGESTATE_TEMP_SIZE);
+  if (octave_sort_detail::handle_ordered_input (data, idx, nel, comp))
+    return;
 
-  if (nel > 1)
+  if (octave_sort_detail::maybe_counting_sort (data, idx, nel, comp))
+    return;
+
+  struct sort_pair
+  {
+    T m_value;
+    octave_idx_type m_index;
+  };
+
+  // Keeping values and indices together costs more scratch space than sorting
+  // indices alone, but avoids cache-hostile indirect comparisons through data.
+  auto pairs_owner = std::make_unique_for_overwrite<sort_pair []> (nel);
+  sort_pair *pairs = pairs_owner.get ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
     {
-      octave_idx_type nremaining = nel;
-      octave_idx_type lo = 0;
+      pairs[i].m_value = data[i];
+      pairs[i].m_index = idx[i];
+    }
 
-      /* March over the array once, left to right, finding natural runs,
-       * and extending short natural runs to minrun elements.
-       */
-      octave_idx_type minrun = merge_compute_minrun (nremaining);
-      do
-        {
-          bool descending;
-          octave_idx_type n;
+  std::stable_sort (pairs, pairs + nel,
+                    [&comp] (const sort_pair& a, const sort_pair& b)
+                    {
+                      return comp (a.m_value, b.m_value);
+                    });
 
-          /* Identify next run. */
-          n = count_run (data + lo, nremaining, descending, comp);
-          if (n < 0)
-            return;
-          if (descending)
-            {
-              std::reverse (data + lo, data + lo + n);
-              std::reverse (idx + lo, idx + lo + n);
-            }
-          /* If short, extend to min (minrun, nremaining). */
-          if (n < minrun)
-            {
-              const octave_idx_type force = (nremaining <= minrun ? nremaining
-                                                                  : minrun);
-              binarysort (data + lo, idx + lo, force, n, comp);
-              n = force;
-            }
-          /* Push run onto m_pending-runs stack, and maybe merge. */
-          liboctave_panic_unless (m_ms->m_n < MAX_MERGE_PENDING);
-          m_ms->m_pending[m_ms->m_n].m_base = lo;
-          m_ms->m_pending[m_ms->m_n].m_len = n;
-          m_ms->m_n++;
-          if (merge_collapse (data, idx, comp) < 0)
-            return;
-          /* Advance to find next run. */
-          lo += n;
-          nremaining -= n;
-        }
-      while (nremaining);
-
-      merge_force_collapse (data, idx, comp);
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      data[i] = pairs[i].m_value;
+      idx[i] = pairs[i].m_index;
     }
 }
-
-template <typename T>
-using compare_fcn_ptr = bool (*) (typename ref_param<T>::type,
-                                  typename ref_param<T>::type);
 
 template <typename T>
 void
 octave_sort<T>::sort (T *data, octave_idx_type nel)
 {
 #if defined (INLINE_ASCENDING_SORT)
-  if (*m_compare.template target<compare_fcn_ptr<T>> () == ascending_compare)
+  if (octave_sort_detail::is_ascending_compare<T> (m_compare))
     sort (data, nel, std::less<T> ());
   else
 #endif
 #if defined (INLINE_DESCENDING_SORT)
-    if (*m_compare.template target<compare_fcn_ptr<T>> () == descending_compare)
+    if (octave_sort_detail::is_descending_compare<T> (m_compare))
       sort (data, nel, std::greater<T> ());
     else
 #endif
@@ -1541,12 +550,12 @@ void
 octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel)
 {
 #if defined (INLINE_ASCENDING_SORT)
-  if (*m_compare.template target<compare_fcn_ptr<T>> () == ascending_compare)
+  if (octave_sort_detail::is_ascending_compare<T> (m_compare))
     sort (data, idx, nel, std::less<T> ());
   else
 #endif
 #if defined (INLINE_DESCENDING_SORT)
-    if (*m_compare.template target<compare_fcn_ptr<T>> () == descending_compare)
+    if (octave_sort_detail::is_descending_compare<T> (m_compare))
       sort (data, idx, nel, std::greater<T> ());
     else
 #endif
@@ -1559,20 +568,21 @@ template <typename Comp>
 bool
 octave_sort<T>::issorted (const T *data, octave_idx_type nel, Comp comp)
 {
-  const T *end = data + nel;
-  if (data != end)
+  bool sorted = true;
+
+  if (nel > 1)
     {
-      const T *next = data;
-      while (++next != end)
+      for (octave_idx_type i = 1; i < nel; i++)
         {
-          if (comp (*next, *data))
-            break;
-          data = next;
+          if (comp (data[i], data[i-1]))
+            {
+              sorted = false;
+              break;
+            }
         }
-      data = next;
     }
 
-  return data == end;
+  return sorted;
 }
 
 template <typename T>
@@ -1581,12 +591,12 @@ octave_sort<T>::issorted (const T *data, octave_idx_type nel)
 {
   bool retval = false;
 #if defined (INLINE_ASCENDING_SORT)
-  if (*m_compare.template target<compare_fcn_ptr<T>> () == ascending_compare)
+  if (octave_sort_detail::is_ascending_compare<T> (m_compare))
     retval = issorted (data, nel, std::less<T> ());
   else
 #endif
 #if defined (INLINE_DESCENDING_SORT)
-    if (*m_compare.template target<compare_fcn_ptr<T>> () == descending_compare)
+    if (octave_sort_detail::is_descending_compare<T> (m_compare))
       retval = issorted (data, nel, std::greater<T> ());
     else
 #endif
@@ -1612,12 +622,14 @@ octave_sort<T>::sort_rows (const T *data, octave_idx_type *idx,
                            octave_idx_type rows, octave_idx_type cols,
                            Comp comp)
 {
-  OCTAVE_LOCAL_BUFFER (T, buf, rows);
   for (octave_idx_type i = 0; i < rows; i++)
     idx[i] = i;
 
   if (cols == 0 || rows <= 1)
     return;
+
+  auto buf_owner = std::make_unique_for_overwrite<T []> (rows);
+  T *buf = buf_owner.get ();
 
   // This is a breadth-first traversal.
   typedef sortrows_run_t run_t;
@@ -1669,12 +681,12 @@ octave_sort<T>::sort_rows (const T *data, octave_idx_type *idx,
                            octave_idx_type rows, octave_idx_type cols)
 {
 #if defined (INLINE_ASCENDING_SORT)
-  if (*m_compare.template target<compare_fcn_ptr<T>> () == ascending_compare)
+  if (octave_sort_detail::is_ascending_compare<T> (m_compare))
     sort_rows (data, idx, rows, cols, std::less<T> ());
   else
 #endif
 #if defined (INLINE_DESCENDING_SORT)
-    if (*m_compare.template target<compare_fcn_ptr<T>> () == descending_compare)
+    if (octave_sort_detail::is_descending_compare<T> (m_compare))
       sort_rows (data, idx, rows, cols, std::greater<T> ());
     else
 #endif
@@ -1747,12 +759,12 @@ octave_sort<T>::is_sorted_rows (const T *data, octave_idx_type rows,
 {
   bool retval = false;
 #if defined (INLINE_ASCENDING_SORT)
-  if (*m_compare.template target<compare_fcn_ptr<T>> () == ascending_compare)
+  if (octave_sort_detail::is_ascending_compare<T> (m_compare))
     retval = is_sorted_rows (data, rows, cols, std::less<T> ());
   else
 #endif
 #if defined (INLINE_DESCENDING_SORT)
-    if (*m_compare.template target<compare_fcn_ptr<T>> () == descending_compare)
+    if (octave_sort_detail::is_descending_compare<T> (m_compare))
       retval = is_sorted_rows (data, rows, cols, std::greater<T> ());
     else
 #endif
@@ -1762,27 +774,15 @@ octave_sort<T>::is_sorted_rows (const T *data, octave_idx_type rows,
   return retval;
 }
 
-// The simple binary lookup.
-
 template <typename T>
 template <typename Comp>
 octave_idx_type
 octave_sort<T>::lookup (const T *data, octave_idx_type nel,
                         const T& value, Comp comp)
 {
-  octave_idx_type lo = 0;
-  octave_idx_type hi = nel;
+  const T *ptr = std::upper_bound (data, data + nel, value, comp);
 
-  while (lo < hi)
-    {
-      octave_idx_type mid = lo + ((hi-lo) >> 1);
-      if (comp (value, data[mid]))
-        hi = mid;
-      else
-        lo = mid + 1;
-    }
-
-  return lo;
+  return ptr - data;
 }
 
 template <typename T>
@@ -1792,12 +792,12 @@ octave_sort<T>::lookup (const T *data, octave_idx_type nel,
 {
   octave_idx_type retval = 0;
 #if defined (INLINE_ASCENDING_SORT)
-  if (*m_compare.template target<compare_fcn_ptr<T>> () == ascending_compare)
+  if (octave_sort_detail::is_ascending_compare<T> (m_compare))
     retval = lookup (data, nel, value, std::less<T> ());
   else
 #endif
 #if defined (INLINE_DESCENDING_SORT)
-    if (*m_compare.template target<compare_fcn_ptr<T>> () == descending_compare)
+    if (octave_sort_detail::is_descending_compare<T> (m_compare))
       retval = lookup (data, nel, value, std::greater<T> ());
     else
 #endif
@@ -1828,12 +828,12 @@ octave_sort<T>::lookup (const T *data, octave_idx_type nel,
                         octave_idx_type *idx)
 {
 #if defined (INLINE_ASCENDING_SORT)
-  if (*m_compare.template target<compare_fcn_ptr<T>> () == ascending_compare)
+  if (octave_sort_detail::is_ascending_compare<T> (m_compare))
     lookup (data, nel, values, nvalues, idx, std::less<T> ());
   else
 #endif
 #if defined (INLINE_DESCENDING_SORT)
-    if (*m_compare.template target<compare_fcn_ptr<T>> () == descending_compare)
+    if (octave_sort_detail::is_descending_compare<T> (m_compare))
       lookup (data, nel, values, nvalues, idx, std::greater<T> ());
     else
 #endif
@@ -1863,8 +863,15 @@ octave_sort<T>::lookup_sorted (const T *data, octave_idx_type nel,
                   if (--j < 0)
                     break;
                 }
-              else if (++i == nel)
-                break;
+              else
+                {
+                  const T *ptr = octave_sort_detail::galloping_upper_bound
+                    (data + i + 1, data + nel, values[j], comp);
+                  i = ptr - data;
+                  idx[j] = i;
+                  if (--j < 0 || i == nel)
+                    break;
+                }
             }
         }
 
@@ -1886,8 +893,15 @@ octave_sort<T>::lookup_sorted (const T *data, octave_idx_type nel,
                   if (++j == nvalues)
                     break;
                 }
-              else if (++i == nel)
-                break;
+              else
+                {
+                  const T *ptr = octave_sort_detail::galloping_upper_bound
+                    (data + i + 1, data + nel, values[j], comp);
+                  i = ptr - data;
+                  idx[j] = i;
+                  if (++j == nvalues || i == nel)
+                    break;
+                }
             }
         }
 
@@ -1903,12 +917,12 @@ octave_sort<T>::lookup_sorted (const T *data, octave_idx_type nel,
                                octave_idx_type *idx, bool rev)
 {
 #if defined (INLINE_ASCENDING_SORT)
-  if (*m_compare.template target<compare_fcn_ptr<T>> () == ascending_compare)
+  if (octave_sort_detail::is_ascending_compare<T> (m_compare))
     lookup_sorted (data, nel, values, nvalues, idx, rev, std::less<T> ());
   else
 #endif
 #if defined (INLINE_DESCENDING_SORT)
-    if (*m_compare.template target<compare_fcn_ptr<T>> () == descending_compare)
+    if (octave_sort_detail::is_descending_compare<T> (m_compare))
       lookup_sorted (data, nel, values, nvalues, idx, rev, std::greater<T> ());
     else
 #endif
@@ -1923,6 +937,9 @@ octave_sort<T>::nth_element (T *data, octave_idx_type nel,
                              octave_idx_type lo, octave_idx_type up,
                              Comp comp)
 {
+  if (octave_sort_detail::maybe_counting_sort (data, nel, comp))
+    return;
+
   // Simply wrap the STL algorithms.
   // FIXME: this will fail if we attempt to inline <,> for Complex.
   if (up == lo+1)
@@ -1952,12 +969,12 @@ octave_sort<T>::nth_element (T *data, octave_idx_type nel,
     up = lo + 1;
 
 #if defined (INLINE_ASCENDING_SORT)
-  if (*m_compare.template target<compare_fcn_ptr<T>> () == ascending_compare)
+  if (octave_sort_detail::is_ascending_compare<T> (m_compare))
     nth_element (data, nel, lo, up, std::less<T> ());
   else
 #endif
 #if defined (INLINE_DESCENDING_SORT)
-    if (*m_compare.template target<compare_fcn_ptr<T>> () == descending_compare)
+    if (octave_sort_detail::is_descending_compare<T> (m_compare))
       nth_element (data, nel, lo, up, std::greater<T> ());
     else
 #endif

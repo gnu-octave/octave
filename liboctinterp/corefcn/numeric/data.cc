@@ -9418,6 +9418,15 @@ ordered lists.
 %!assert (sort (sparse ([0, NaN, 1, 0, -1, 2, Inf]), 2, "descend"),
 %!        sparse ([NaN, Inf, 2, 1, 0, 0, -1]))
 
+%!test <68604>
+%! x = sparse ([NaN(1, 40), 1]);
+%! [v, i] = sort (x);
+%! assert (v, sparse ([1, NaN(1, 40)]));
+%! assert (i, [41, 1:40]);
+%! [v, i] = sort (x, "descend");
+%! assert (v, sparse ([NaN(1, 40), 1]));
+%! assert (i, [1:40, 41]);
+
 %!shared a
 %! a = randn (10, 10);
 %! a(a < 0) = 0;
@@ -9447,6 +9456,17 @@ ordered lists.
 %!        sparse ([NaN, Inf, 2, -1, 1i, 0, 0]))
 %!assert (sort (sparse ([0, NaN, 1i, 0, -1, 2, Inf]), 2, "descend"),
 %!        sparse ([NaN, Inf, 2, -1, 1i, 0, 0]))
+
+%!test <68604>
+%! x = sparse (complex ([NaN(1, 40), 1], [1:40, 0]));
+%! [v, i] = sort (x);
+%! assert (v, sparse (complex ([1, NaN(1, 40)], [0, 1:40])));
+%! assert (imag (full (v)), [0, 1:40]);
+%! assert (i, [41, 1:40]);
+%! [v, i] = sort (x, "descend");
+%! assert (v, sparse (complex ([NaN(1, 40), 1], [1:40, 0])));
+%! assert (imag (full (v)), [1:40, 0]);
+%! assert (i, [1:40, 41]);
 
 %!shared a
 %! a = randn (10, 10);

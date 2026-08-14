@@ -39,7 +39,8 @@ OCTAVE_API
 bool
 sparse_ascending_compare<double> (double a, double b)
 {
-  return (octave::math::isnan (b) || (a < b));
+  // NaN-vs-NaN must compare false for stability and a strict weak ordering.
+  return (octave::math::isnan (b) ? ! octave::math::isnan (a) : a < b);
 }
 
 template <>
@@ -47,7 +48,8 @@ OCTAVE_API
 bool
 sparse_descending_compare<double> (double a, double b)
 {
-  return (octave::math::isnan (a) || (a > b));
+  // NaN-vs-NaN must compare false for stability and a strict weak ordering.
+  return (octave::math::isnan (a) ? ! octave::math::isnan (b) : a > b);
 }
 
 INSTANTIATE_SPARSE (double);

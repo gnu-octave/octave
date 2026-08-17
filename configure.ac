@@ -2399,6 +2399,58 @@ if test -n "$UMFPACK_LIBS"; then
   LIBS="$save_LIBS"
 fi
 
+### Some SUNDIALS installations are configured with MPI enabled.  In that
+### case, even nominally serial public headers may include <mpi.h>.  MPI
+### implementations commonly install that header outside the compiler's
+### default include path.
+
+AC_ARG_VAR([SUNDIALS_MPI_CPPFLAGS],
+  [C preprocessor flags required by MPI-enabled SUNDIALS headers])
+
+sundials_save_CPPFLAGS="$CPPFLAGS"
+
+if test -z "$SUNDIALS_MPI_CPPFLAGS"; then
+  AC_LANG_PUSH([C++])
+
+  AC_MSG_CHECKING([whether SUNDIALS serial headers require MPI include flags])
+  AC_COMPILE_IFELSE(
+    [AC_LANG_PROGRAM(
+      [[#include <nvector/nvector_serial.h>]],
+      [[]])],
+    [octave_sundials_needs_mpi=no],
+    [octave_sundials_needs_mpi=yes])
+  AC_MSG_RESULT([$octave_sundials_needs_mpi])
+
+  if test $octave_sundials_needs_mpi = yes && test -n "$PKG_CONFIG"; then
+    for octave_mpi_pc in mpi ompi mpich; do
+      if $PKG_CONFIG --exists "$octave_mpi_pc"; then
+        octave_mpi_cppflags=`$PKG_CONFIG --cflags-only-I "$octave_mpi_pc"`
+
+        CPPFLAGS="$octave_mpi_cppflags $sundials_save_CPPFLAGS"
+        AC_MSG_CHECKING([whether $octave_mpi_pc flags work with SUNDIALS])
+        AC_COMPILE_IFELSE(
+          [AC_LANG_PROGRAM(
+            [[#include <nvector/nvector_serial.h>]],
+            [[]])],
+          [octave_sundials_mpi_flags_work=yes],
+          [octave_sundials_mpi_flags_work=no])
+        AC_MSG_RESULT([$octave_sundials_mpi_flags_work])
+
+        if test $octave_sundials_mpi_flags_work = yes; then
+          SUNDIALS_MPI_CPPFLAGS="$octave_mpi_cppflags"
+          break
+        fi
+      fi
+    done
+  fi
+
+  CPPFLAGS="$sundials_save_CPPFLAGS"
+  AC_LANG_POP([C++])
+fi
+
+AC_SUBST([SUNDIALS_MPI_CPPFLAGS])
+CPPFLAGS="$SUNDIALS_MPI_CPPFLAGS $CPPFLAGS"
+
 ### Check for SUNDIALS NVECTOR serial library and header.
 
 OCTAVE_CHECK_LIB(sundials_nvecserial, [SUNDIALS NVECTOR],
@@ -2480,7 +2532,7 @@ if test $octave_have_sundials_libs == yes; then
     AC_DEFINE(HAVE_SUNDIALS, 1, [Define to 1 if SUNDIALS is available.])
 
     ## Options needed to build with SUNDIALS and its dependencies.
-    SUNDIALS_XCPPFLAGS="$SUNDIALS_IDA_CPPFLAGS $SUNDIALS_SUNLINSOLKLU_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $SUNDIALS_CORE_CPPFLAGS $KLU_CPPFLAGS"
+    SUNDIALS_XCPPFLAGS="$SUNDIALS_MPI_CPPFLAGS $SUNDIALS_IDA_CPPFLAGS $SUNDIALS_SUNLINSOLKLU_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $SUNDIALS_CORE_CPPFLAGS $KLU_CPPFLAGS"
     SUNDIALS_XLDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_SUNLINSOLKLU_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $SUNDIALS_CORE_LDFLAGS $KLU_LDFLAGS"
     SUNDIALS_XLIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_SUNLINSOLKLU_LIBS $SUNDIALS_NVECSERIAL_LIBS $SUNDIALS_CORE_LIBS $KLU_LIBS"
   else
@@ -2513,6 +2565,8 @@ fi
 AC_SUBST(SUNDIALS_XCPPFLAGS)
 AC_SUBST(SUNDIALS_XLDFLAGS)
 AC_SUBST(SUNDIALS_XLIBS)
+
+CPPFLAGS="$sundials_save_CPPFLAGS"
 
 ### Check for ARPACK library.
 

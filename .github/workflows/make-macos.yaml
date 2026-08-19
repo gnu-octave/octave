@@ -245,14 +245,16 @@ jobs:
 
       - name: analyze test suite results
         # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"s
+        # "::warning::" or "::error::" will emit messages to the "Annotations"
+        # section of the workflow run.
         run:  |
           fail=0
           if [ -z "$(grep -e 'FAIL\s*0' ./test-suite.log)" ]; then
-            echo "warning: At least one test failed"
+            echo "::error::At least one test failed"
             fail=1
           fi
           if [ -n "$(grep -e 'REGRESSION' ./test-suite.log)" ]; then
-            echo "warning: At least one regression in test suite"
+            echo "::error::At least one regression in test suite"
             fail=1
           fi
           if [ $fail -eq 1 ]; then

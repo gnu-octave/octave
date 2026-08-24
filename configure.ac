@@ -667,7 +667,6 @@ fi
 XTRA_EXTERNAL_SH_LDFLAGS=
 case $host_os in
   cygwin* | mingw* | msdosmsvc)
-    FLIBS="$FLIBS -lkernel32"
     XTRA_EXTERNAL_SH_LDFLAGS="-Wl,liboctave/external/external.def"
   ;;
 esac

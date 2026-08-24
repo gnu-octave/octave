@@ -67,7 +67,7 @@ EXTRA_%canon_reldir%___fltk_uigetfile___la_DEPENDENCIES := $(DLDFCN_DEPENDENCIES
 EXTRA_%canon_reldir%___glpk___la_DEPENDENCIES := $(DLDFCN_DEPENDENCIES)
 
 %canon_reldir%___init_fltk___la_SOURCES = %reldir%/__init_fltk__.cc
-%canon_reldir%___init_fltk___la_CPPFLAGS = $(liboctinterp_liboctinterp_la_CPPFLAGS) $(FLTK_CPPFLAGS) $(FONTCONFIG_CPPFLAGS) $(FT2_CPPFLAGS)
+%canon_reldir%___init_fltk___la_CPPFLAGS = $(liboctinterp_liboctinterp_la_CPPFLAGS) $(FLTK_CPPFLAGS) $(FONTCONFIG_CPPFLAGS) $(FT2_CPPFLAGS) $(X11_INCFLAGS)
 %canon_reldir%___init_fltk___la_LDFLAGS := $(AM_LDFLAGS) $(WARN_LDFLAGS) $(NO_UNDEFINED_LDFLAG) -avoid-version -module $(FLTK_LDFLAGS) $(FT2_LDFLAGS) $(OCT_LINK_OPTS)
 %canon_reldir%___init_fltk___la_LIBADD = $(FLTK_LIBS) $(FT2_LIBS) $(X11_LIBS) $(OPENGL_LIBS) $(DLDFCN_LINK_DEPS)
 EXTRA_%canon_reldir%___init_fltk___la_DEPENDENCIES := $(DLDFCN_DEPENDENCIES)

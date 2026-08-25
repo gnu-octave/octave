@@ -639,6 +639,16 @@ ifdef([LT_INIT], [], [
 LT_PREREQ([2.2.2])
 LT_INIT([disable-static dlopen win32-dll])
 
+dnl Avoid using the deprecated -dylib_file linker option for transitive
+dnl dependencies of uninstalled libraries.  Octave lists the libraries it
+dnl directly uses, so it does not need libtool to link all transitive
+dnl dependencies into each shared library.
+case $host_os in
+  darwin*)
+    link_all_deplibs_CXX=no
+  ;;
+esac
+
 if test $enable_shared = yes; then
   SHARED_LIBS=yes
 else

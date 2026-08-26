@@ -1275,43 +1275,55 @@ Implement @code{methods} for Octave class objects and classnames.
   string_vector sv;
   bool found = false;
 
-  cdef_class cls = lookup_class (class_name, false, true);
-
-  if (cls.ok ())
+  if (interpreter::is_built_in_class (class_name))
     {
-      // Find methods for classdef objects.
-      std::map<std::string, cdef_method> method_map
-        = cls.get_method_map (false, true);
+      symbol_table& symtab = interp.get_symbol_table ();
 
-      std::list<std::string> method_names;
-
-      for (const auto& nm_mthd : method_map)
-        {
-          const cdef_method& method = nm_mthd.second;
-
-          octave_value acc = method.get ("Access");
-
-          if (! acc.is_string () || acc.string_value () != "public")
-            continue;
-
-          octave_value hid = method.get ("Hidden");
-
-          if (hid.bool_value ())
-            continue;
-
-          method_names.push_back (nm_mthd.first);
-        }
+      std::set<std::string> method_names = symtab.built_in_methods (class_name);
 
       sv = string_vector (method_names);
-      found = true;
+      found = ! sv.empty ();
     }
   else
     {
-      // Find methods for legacy @CLASS objects.
-      load_path& lp = interp.get_load_path ();
+      cdef_class cls = lookup_class (class_name, false, true);
 
-      sv = string_vector (lp.methods (class_name));
-      found = ! sv.empty ();
+      if (cls.ok ())
+        {
+          // Find methods for classdef objects.
+          std::map<std::string, cdef_method> method_map
+            = cls.get_method_map (false, true);
+
+          std::list<std::string> method_names;
+
+          for (const auto& nm_mthd : method_map)
+            {
+              const cdef_method& method = nm_mthd.second;
+
+              octave_value acc = method.get ("Access");
+
+              if (! acc.is_string () || acc.string_value () != "public")
+                continue;
+
+              octave_value hid = method.get ("Hidden");
+
+              if (hid.bool_value ())
+                continue;
+
+              method_names.push_back (nm_mthd.first);
+            }
+
+          sv = string_vector (method_names);
+          found = true;
+        }
+      else
+        {
+          // Find methods for legacy @CLASS objects.
+          load_path& lp = interp.get_load_path ();
+
+          sv = string_vector (lp.methods (class_name));
+          found = ! sv.empty ();
+        }
     }
 
   return ovl (Cell (sv), found);

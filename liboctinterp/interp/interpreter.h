@@ -323,6 +323,13 @@ public:
     return *m_gh_manager;
   }
 
+  static bool is_built_in_class (const std::string& class_name)
+  {
+    static std::set<std::string> built_in_class_names {"double", "single", "cell", "struct", "logical", "char", "function handle", "int8", "uint8", "int16", "uint16", "int32", "uint32", "int64", "uint64"};
+
+    return built_in_class_names.find (class_name) != built_in_class_names.end ();
+  }
+
   // Any Octave code that needs to change the current directory should
   // call this function instead of calling the system chdir function
   // directly so that the load-path and GUI may be notified of the

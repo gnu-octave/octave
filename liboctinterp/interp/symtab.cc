@@ -599,6 +599,26 @@ symbol_table::install_built_in_dispatch (const std::string& name,
     error ("install_built_in_dispatch: '%s' is undefined", name.c_str ());
 }
 
+void
+symbol_table::install_built_in_dispatch (const std::string& name, const std::list<std::string>& klass_list)
+{
+  auto p = m_fcn_table.find (name);
+
+  if (p != m_fcn_table.end ())
+    {
+      fcn_info& finfo = p->second;
+
+      for (const auto& klass : klass_list)
+        {
+          finfo.install_built_in_dispatch (klass);
+
+          m_built_in_methods_table[klass].insert (name);
+        }
+    }
+  else
+    error ("install_built_in_dispatch: '%s' is undefined", name.c_str ());
+}
+
 std::list<std::string>
 symbol_table::user_function_names ()
 {

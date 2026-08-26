@@ -164,6 +164,8 @@ public:
   void install_built_in_dispatch (const std::string& name,
                                   const std::string& klass);
 
+  void install_built_in_dispatch (const std::string& name, const std::list<std::string>& klass_list);
+
   std::list<std::string> user_function_names ();
 
   std::list<std::string> built_in_function_names ();

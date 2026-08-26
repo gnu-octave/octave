@@ -275,9 +275,10 @@ EOM
 
       @classes =  @{$dispatch_map{$fcn}};
 
-      foreach $class (@classes)
+      if (@classes)
       {
-        $dispatch_code .= qq(\n    symtab.install_built_in_dispatch ("$fcn", "$class"););
+        $dispatch_class_list = "{" . join (", ", map (qq ("$_"), @classes)) . "}";
+        $dispatch_code .= qq (\n    symtab.install_built_in_dispatch ("$fcn", std::list<std::string> ($dispatch_class_list)););
       }
 
     if ($dispatch_code)

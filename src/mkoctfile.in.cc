@@ -1196,10 +1196,9 @@ main (int argc, char **sys_argv)
             }
 
           std::string cmd
-            = (vars["CXX"] + " -c "
-               + incflags + ' ' + vars["CPPFLAGS"] + ' '
-               + vars["CXXPICFLAG"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
-               + pass_on_options + ' ' + defs + ' '
+            = (vars["F77"] + " -c " + incflags + ' '
+               + vars["FPICFLAG"] + ' ' + vars["ALL_FFLAGS"] + ' '
+               + defs + ' ' + pass_on_options + ' '
                + quote_path (f) + " -o " + quote_path (o));
 
           int status = run_command (cmd, verbose, printonly);

@@ -1061,8 +1061,8 @@ main (int argc, char **sys_argv)
 
           std::string cmd
             = (vars["CC"] + ' ' + vars["DEPEND_FLAGS"] + ' '
-               + vars["CPPFLAGS"] + ' ' + vars["ALL_CFLAGS"] + ' '
-               + incflags  + ' ' + defs + ' ' + quote_path (f));
+               + incflags  + ' ' + vars["CPPFLAGS"] + ' '
+               + vars["ALL_CFLAGS"] + ' ' + defs + ' ' + quote_path (f));
 
 #if defined (OCTAVE_USE_WINDOWS_API)
           FILE *fd;
@@ -1120,8 +1120,8 @@ main (int argc, char **sys_argv)
 
           std::string cmd
             = (vars["CXX"] + ' ' + vars["DEPEND_FLAGS"] + ' '
-               + vars["CPPFLAGS"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
-               + incflags  + ' ' + defs + ' ' + quote_path (f));
+               + incflags  + ' ' + vars["CPPFLAGS"] + ' '
+               + vars["ALL_CXXFLAGS"] + ' ' + defs + ' ' + quote_path (f));
 
 #if defined (OCTAVE_USE_WINDOWS_API)
           FILE *fd;
@@ -1196,10 +1196,11 @@ main (int argc, char **sys_argv)
             }
 
           std::string cmd
-            = (vars["F77"] + " -c " + vars["FPICFLAG"] + ' '
-               + vars["ALL_FFLAGS"] + ' ' + incflags + ' ' + defs + ' '
-               + pass_on_options + ' ' + quote_path (f)
-               + " -o " + quote_path (o));
+            = (vars["CXX"] + " -c "
+               + incflags + ' ' + vars["CPPFLAGS"] + ' '
+               + vars["CXXPICFLAG"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
+               + pass_on_options + ' ' + defs + ' '
+               + quote_path (f) + " -o " + quote_path (o));
 
           int status = run_command (cmd, verbose, printonly);
 
@@ -1236,9 +1237,10 @@ main (int argc, char **sys_argv)
             }
 
           std::string cmd
-            = (vars["CC"] + " -c " + vars["CPPFLAGS"] + ' '
+            = (vars["CC"] + " -c "
+               + incflags + ' ' + vars["CPPFLAGS"] + ' '
                + vars["CPICFLAG"] + ' ' + vars["ALL_CFLAGS"] + ' '
-               + pass_on_options + ' ' + incflags + ' ' + defs + ' '
+               + pass_on_options + ' ' + defs + ' '
                + quote_path (f) + " -o " + quote_path (o));
 
           int status = run_command (cmd, verbose, printonly);
@@ -1276,9 +1278,10 @@ main (int argc, char **sys_argv)
             }
 
           std::string cmd
-            = (vars["CXX"] + " -c " + vars["CPPFLAGS"] + ' '
+            = (vars["CXX"] + " -c "
+               + incflags + ' ' + vars["CPPFLAGS"] + ' '
                + vars["CXXPICFLAG"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
-               + pass_on_options + ' ' + incflags + ' ' + defs + ' '
+               + pass_on_options + ' ' + defs + ' '
                + quote_path (f) + " -o " + quote_path (o));
 
           int status = run_command (cmd, verbose, printonly);

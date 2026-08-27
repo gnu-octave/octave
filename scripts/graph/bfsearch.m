@@ -1,0 +1,820 @@
+########################################################################
+##
+## Copyright (C) 2026 The Octave Project Developers
+##
+## See the file COPYRIGHT.md in the top-level directory of this
+## distribution or <https://octave.org/copyright/>.
+##
+## This file is part of Octave.
+##
+## Octave is free software: you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <https://www.gnu.org/licenses/>.
+##
+########################################################################
+
+## -*- texinfo -*-
+## @deftypefn  {} {@var{v} =} bfsearch (@var{G}, @var{s})
+## @deftypefnx {} {@var{v} =} bfsearch (@var{G}, @var{s}, @var{event})
+## @deftypefnx {} {@var{T} =} bfsearch (@var{G}, @var{s}, @var{events})
+## Perform a breadth-first search of the graph @var{G} starting at node
+## @var{s} and return the column vector @var{v} of node indices in the
+## order they are discovered.
+##
+## @var{G} must be a @code{graph} or @code{digraph} object.  @var{s} is
+## a @emph{scalar} node identifier:
+##
+## @itemize
+## @item
+## A positive integer scalar in the range @code{1:numnodes (@var{G})} is
+## treated as a 1-based node index.
+## @item
+## A character row vector (or a 1-element cell array of strings) is
+## treated as a node name, which must appear in @code{@var{G}.Nodes.Name}.
+## @end itemize
+##
+## The returned vector @var{v} is always a numeric column vector of node
+## @emph{indices} (not names), even when @var{s} was given as a node
+## name.  Its length is the number of nodes reachable from @var{s} in
+## @var{G}.  For an undirected @code{graph}, reachability follows
+## incident edges in both directions; for a directed @code{digraph},
+## reachability follows out-edges.
+##
+## When multiple unvisited neighbours of a node are available, they are
+## visited in ascending order of node index.  This tie-breaking rule
+## matches MATLAB's documented BFS traversal order and ensures the
+## return value is deterministic.
+##
+## Self-loops are traversed trivially (the looped node is already
+## visited at the moment the self-loop would be considered).  Parallel
+## edges in a multigraph are collapsed for the purpose of neighbour
+## enumeration -- BFS visits each neighbour at most once regardless of
+## how many parallel edges connect it to the current node.
+##
+## @var{v} starts with @var{s} and contains only the nodes reachable
+## from @var{s}.  Nodes in other connected components (or, for a
+## digraph, nodes not reachable by following out-edges) are omitted.
+## See @code{help bfsearch} and the @qcode{'Restart'} option of future
+## revisions to include isolated components.
+##
+## @example
+## @group
+## G = graph ([1 2 3 3 4 5 5 6 7 7 8 9], ...
+##            [2 3 2 4 5 6 9 7 8 9 7 4]);
+## bfsearch (G, 1)
+##    @result{} 1
+##       2
+##       3
+##       4
+##       5
+##       9
+##       6
+##       7
+##       8
+## @end group
+## @end example
+##
+## With an optional third argument @var{events} (a character string or
+## a cell array of event names), return the BFS @emph{event log} rather
+## than just the discovery order.  See
+## @code{help @@digraph/bfsearch} or @code{help @@graph/bfsearch} for
+## the full list of event names and the output shape.
+##
+## @seealso{graph, digraph, dfsearch, successors, predecessors, neighbors}
+## @end deftypefn
+
+function v = bfsearch (G, s, events, varargin)
+
+  ## NOTE: When called with a graph or digraph object, Octave's classdef
+  ## method dispatch runs the class-internal @code{bfsearch} method and
+  ## this free-function body is not reached.  This file exists both as a
+  ## canonical documentation target (so @code{help bfsearch} works
+  ## outside the context of an instance) and as a fallback that gives a
+  ## helpful error for non-graph inputs.
+
+  if (nargin < 2)
+    print_usage ();
+  endif
+
+  if (! isa (G, "graph") && ! isa (G, "digraph"))
+    error ("Octave:invalid-input-arg", ...
+           "bfsearch: G must be a graph or digraph object");
+  endif
+
+  ## Defensive delegation: if class dispatch ever skips past the free
+  ## function (e.g. future subclassing edge cases) route back to the
+  ## class method via dot notation, which is always class-dispatched.
+  if (nargin == 2)
+    v = G.bfsearch (s);
+  else
+    v = G.bfsearch (s, events, varargin{:});
+  endif
+
+endfunction
+
+
+## ------------------------------------------------------------------
+## BIST blocks
+## ------------------------------------------------------------------
+
+## -------------------- digraph tests --------------------
+
+## Default single-node digraph: BFS from the sole node visits only that node.
+%!test
+%! G = digraph (1);
+%! v = bfsearch (G, 1);
+%! assert (v, 1);
+
+## Empty edge set, source node in range: BFS returns just the source.
+%!test
+%! G = digraph (5);
+%! v = bfsearch (G, 3);
+%! assert (v, 3);
+
+## Simple directed 3-cycle 1->2->3->1: BFS from 1 discovers [1; 2; 3].
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! v = bfsearch (G, 1);
+%! assert (v, [1; 2; 3]);
+
+## BFS from a different source on the same 3-cycle.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! v = bfsearch (G, 2);
+%! assert (v, [2; 3; 1]);
+
+## Tie-break: multiple unvisited out-neighbours visited in ascending index order.
+%!test
+%! G = digraph ([1 1 1], [4 2 3]);
+%! v = bfsearch (G, 1);
+%! assert (v, [1; 2; 3; 4]);
+
+## BFS layers on a tree-like digraph.
+##   1 -> {2, 3}; 2 -> {4, 5}; 3 -> {6, 7}
+##   Expected BFS order: 1, 2, 3, 4, 5, 6, 7
+%!test
+%! G = digraph ([1 1 2 2 3 3], [2 3 4 5 6 7]);
+%! v = bfsearch (G, 1);
+%! assert (v, [1; 2; 3; 4; 5; 6; 7]);
+
+## BFS tie-break + level ordering on a 7-node binary tree.
+%!test
+%! G = digraph ([1 1 2 2 3 3], [3 2 5 4 7 6]);  # unsorted input
+%! v = bfsearch (G, 1);
+%! assert (v, [1; 2; 3; 4; 5; 6; 7]);
+
+## BFS returns a column vector.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! v = bfsearch (G, 1);
+%! assert (size (v), [3, 1]);
+%! assert (iscolumn (v));
+
+## BFS result is class double.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! v = bfsearch (G, 1);
+%! assert (class (v), "double");
+
+## Node name input still returns numeric indices (MATLAB parity).
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"a", "b", "c"});
+%! v = bfsearch (G, "b");
+%! assert (class (v), "double");
+%! assert (v, [2; 3; 1]);
+
+## 1-element cellstr name input.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"a", "b", "c"});
+%! v = bfsearch (G, {"c"});
+%! assert (v, [3; 1; 2]);
+
+## Digraph where some nodes are unreachable from the source.
+## Components: 1->2->3 (from 1) and 4->5 (disjoint).  BFS from 1 omits 4,5.
+%!test
+%! G = digraph ([1 2 4], [2 3 5]);
+%! v = bfsearch (G, 1);
+%! assert (v, [1; 2; 3]);
+
+## Digraph with back edge: BFS from 1 on 1->2, 2->3, 3->1 still yields [1;2;3].
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! v = bfsearch (G, 1);
+%! assert (v, [1; 2; 3]);
+
+## Digraph: self-loop at source.  The looped node is already visited when
+## the self-loop is encountered; result is unchanged.
+%!test
+%! G = digraph ([1 1 2], [1 2 3]);
+%! v = bfsearch (G, 1);
+%! assert (v, [1; 2; 3]);
+
+## Weighted digraph: BFS ignores weights.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [7 5 9]);
+%! v = bfsearch (G, 1);
+%! assert (v, [1; 2; 3]);
+
+## Siever-style 9-node digraph: deterministic BFS from node 1.
+##   Edges: 1->2, 2->3, 3->2, 3->4, 4->5, 5->6, 5->9, 6->7, 7->8,
+##          7->9, 8->7, 9->4
+##   Expected BFS order from 1:  1, 2, 3, 4, 5, 6, 9, 7, 8
+%!test
+%! s = [1 2 3 3 4 5 5 6 7 7 8 9];
+%! t = [2 3 2 4 5 6 9 7 8 9 7 4];
+%! G = digraph (s, t);
+%! v = bfsearch (G, 1);
+%! assert (v, [1; 2; 3; 4; 5; 6; 9; 7; 8]);
+
+## Multigraph digraph: parallel edges collapse to a single BFS neighbour.
+%!test
+%! G = digraph ([1 1 1 2], [2 2 3 3], "multigraph");
+%! v = bfsearch (G, 1);
+%! assert (v, [1; 2; 3]);
+
+## Digraph value semantics: bfsearch does not mutate G.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! bfsearch (G, 1);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (class (G), "digraph");
+
+## Dot-notation dispatch works on digraph.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! v = G.bfsearch (1);
+%! assert (v, [1; 2; 3]);
+
+## -------------------- graph (undirected) tests --------------------
+
+## Default single-node graph: BFS from the sole node.
+%!test
+%! G = graph (1);
+%! v = bfsearch (G, 1);
+%! assert (v, 1);
+
+## Edgeless undirected graph: BFS returns only the source.
+%!test
+%! G = graph (5);
+%! v = bfsearch (G, 3);
+%! assert (v, 3);
+
+## Simple undirected path 1--2--3: BFS from 1 gives [1; 2; 3].
+%!test
+%! G = graph ([1 2], [2 3]);
+%! v = bfsearch (G, 1);
+%! assert (v, [1; 2; 3]);
+
+## BFS from middle node of a path: neighbours visited in ascending order.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! v = bfsearch (G, 2);
+%! assert (v, [2; 1; 3]);
+
+## Star graph: centre visits leaves in ascending order.
+%!test
+%! G = graph ([1 1 1 1], [2 3 4 5]);
+%! v = bfsearch (G, 1);
+%! assert (v, [1; 2; 3; 4; 5]);
+
+## BFS from a leaf of a star graph.
+%!test
+%! G = graph ([1 1 1 1], [2 3 4 5]);
+%! v = bfsearch (G, 3);
+%! assert (v, [3; 1; 2; 4; 5]);
+
+## Disconnected undirected graph: BFS only visits the connected component.
+##   Components: {1,2,3} and {4,5}.  BFS from 1 omits 4,5.
+%!test
+%! G = graph ([1 2 4], [2 3 5]);
+%! v = bfsearch (G, 1);
+%! assert (v, [1; 2; 3]);
+
+## Undirected cycle 1-2-3-4-1: BFS from 1 visits 2 and 4 first (ascending),
+## then 3.
+%!test
+%! G = graph ([1 2 3 4], [2 3 4 1]);
+%! v = bfsearch (G, 1);
+%! assert (v, [1; 2; 4; 3]);
+
+## Siever-style 9-node undirected graph: BFS from node 1.
+##   Simple (deduplicated) undirected edge set:
+##     {1-2, 2-3, 3-4, 4-5, 5-6, 5-9, 6-7, 7-8, 7-9, 4-9}
+##   Neighbours of 1: {2};      BFS visits 2.
+##   Neighbours of 2: {1, 3};   visits 3.
+##   Neighbours of 3: {2, 4};   visits 4.
+##   Neighbours of 4: {3, 5, 9}; visits 5, 9 (ascending).
+##   Neighbours of 5: {4, 6, 9}; visits 6.
+##   Neighbours of 9: {4, 5, 7}; visits 7.
+##   Neighbours of 6: {5, 7};   none new.
+##   Neighbours of 7: {6, 8, 9}; visits 8.
+##   Expected: 1, 2, 3, 4, 5, 9, 6, 7, 8
+%!test
+%! s = [1 2 3 4 5 5 6 7 7 4];
+%! t = [2 3 4 5 6 9 7 8 9 9];
+%! G = graph (s, t);
+%! v = bfsearch (G, 1);
+%! assert (v, [1; 2; 3; 4; 5; 9; 6; 7; 8]);
+
+## Undirected self-loop doesn't cause re-visit.
+%!test
+%! G = graph ([1 1 2], [1 2 3]);
+%! v = bfsearch (G, 1);
+%! assert (v, [1; 2; 3]);
+
+## Weighted undirected graph: BFS ignores weights.
+%!test
+%! G = graph ([1 2 3], [2 3 1], [7 5 9]);
+%! v = bfsearch (G, 1);
+%! assert (v, [1; 2; 3]);
+
+## Named undirected graph + string source.
+%!test
+%! G = graph ([1 2 3], [2 3 1], [], {"a", "b", "c"});
+%! v = bfsearch (G, "b");
+%! assert (v, [2; 1; 3]);
+
+## Graph value semantics: bfsearch does not mutate G.
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! bfsearch (G, 1);
+%! assert (numnodes (G), 3);
+%! assert (numedges (G), 3);
+%! assert (class (G), "graph");
+
+## Dot-notation dispatch works on graph.
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! v = G.bfsearch (1);
+%! assert (v, [1; 2; 4 - 1]);  # [1; 2; 3]
+
+## BFS result is column vector for graph too.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! v = bfsearch (G, 1);
+%! assert (size (v), [3, 1]);
+
+## -------------------- error cases --------------------
+
+## Error: non-graph first argument routes through the free-function guard.
+%!error <G must be a graph or digraph> bfsearch (3, 1)
+%!error <G must be a graph or digraph> bfsearch ("hello", 1)
+%!error <G must be a graph or digraph> bfsearch (sparse (2, 2), 1)
+
+## Error: nargin mismatch.
+%!error <Invalid call> bfsearch ()
+%!error <Invalid call> bfsearch (digraph (3))
+
+## Error: numeric source out of range (too large).
+%!error <invalid node index> bfsearch (digraph (3), 4)
+
+## Error: numeric source out of range (zero).
+%!error <invalid node index> bfsearch (digraph (3), 0)
+
+## Error: numeric source non-integer.
+%!error <invalid node index> bfsearch (digraph (3), 1.5)
+
+## Error: non-existent node name.
+%!error <not found> ...
+%!   bfsearch (digraph ([1 2], [2 3], [], {"a","b","c"}), "z")
+
+## Error: node name given but graph has no names.
+%!error <no node names|not found> bfsearch (digraph (3), "foo")
+
+## Error: non-scalar numeric source.
+%!error <scalar> bfsearch (digraph (3), [1 2])
+
+## Error: non-scalar numeric source on graph.
+%!error <scalar> bfsearch (graph (3), [1 2])
+
+## Error: multi-element cellstr source.
+%!error <scalar> ...
+%!   bfsearch (digraph ([1 2], [2 3], [], {"a","b","c"}), {"a","b"})
+
+## Error: graph with no names + name source.
+%!error <no node names|not found> bfsearch (graph (3), "foo")
+
+## ------------------------------------------------------------------
+## US-T02: Events option -- bfsearch (G, s, events)
+## ------------------------------------------------------------------
+
+## Single char 'discovernode' equals the default 2-arg bfsearch result.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! v2 = bfsearch (G, 1);
+%! v3 = bfsearch (G, 1, "discovernode");
+%! assert (v2, v3);
+%! assert (v3, [1; 2; 3]);
+
+## Single char 'finishnode': BFS finish order on a 3-cycle is [1; 2; 3].
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! v = bfsearch (G, 1, "finishnode");
+%! assert (v, [1; 2; 3]);
+
+## Single char 'startnode': just the starting node (no restart in US-T02).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! v = bfsearch (G, 1, "startnode");
+%! assert (v, 1);
+
+## Single char 'edgetonew' returns the BFS tree edges.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! E = bfsearch (G, 1, "edgetonew");
+%! assert (E, [1 2; 2 3]);
+
+## Single char 'edgetodiscovered': triangle 1->{2,3}, 2->3.
+## When processing node 2, edge (2,3) targets node 3 which is already
+## discovered (in queue) -> edgetodiscovered.
+%!test
+%! G = digraph ([1 1 2], [2 3 3]);
+%! E = bfsearch (G, 1, "edgetodiscovered");
+%! assert (E, [2 3]);
+
+## Single char 'edgetofinished': 3-cycle 1->2->3->1.
+## Edge (3,1) targets node 1 which is already finished -> edgetofinished.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! E = bfsearch (G, 1, "edgetofinished");
+%! assert (E, [3 1]);
+
+## No edgetodiscovered events on a simple 3-cycle -> 0x2 empty matrix.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! E = bfsearch (G, 1, "edgetodiscovered");
+%! assert (size (E), [0, 2]);
+%! assert (class (E), "double");
+
+## No edgetofinished events on a 3-node tree -> 0x2 empty matrix.
+%!test
+%! G = digraph ([1 1], [2 3]);
+%! E = bfsearch (G, 1, "edgetofinished");
+%! assert (size (E), [0, 2]);
+
+## 'allevents' returns a struct with fields Event, Node, Edge.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! T = bfsearch (G, 1, "allevents");
+%! assert (isstruct (T));
+%! assert (sort (fieldnames (T)), sort ({"Event"; "Node"; "Edge"}));
+
+## 'allevents' on 3-cycle 1->2->3->1 produces the complete event log.
+## Trace:
+##   startnode 1;     discovernode 1;
+##   edgetonew (1,2); discovernode 2; finishnode 1;
+##   edgetonew (2,3); discovernode 3; finishnode 2;
+##   edgetofinished (3,1); finishnode 3.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! T = bfsearch (G, 1, "allevents");
+%! expected_Event = {"startnode"; "discovernode"; "edgetonew"; ...
+%!                   "discovernode"; "finishnode"; "edgetonew"; ...
+%!                   "discovernode"; "finishnode"; "edgetofinished"; ...
+%!                   "finishnode"};
+%! assert (T.Event, expected_Event);
+%! assert (T.Node, [1; 1; 0; 2; 1; 0; 3; 2; 0; 3]);
+%! assert (T.Edge, [0 0; 0 0; 1 2; 0 0; 0 0; 2 3; 0 0; 0 0; 3 1; 0 0]);
+
+## 'allevents' on singleton: startnode, discovernode, finishnode.
+%!test
+%! G = digraph (1);
+%! T = bfsearch (G, 1, "allevents");
+%! assert (T.Event, {"startnode"; "discovernode"; "finishnode"});
+%! assert (T.Node, [1; 1; 1]);
+%! assert (T.Edge, [0 0; 0 0; 0 0]);
+
+## Cellstr events selects a subset and returns struct preserving event order.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! T = bfsearch (G, 1, {"discovernode", "edgetonew"});
+%! assert (isstruct (T));
+%! assert (T.Event, {"discovernode"; "edgetonew"; "discovernode"; ...
+%!                   "edgetonew"; "discovernode"});
+%! assert (T.Node, [1; 0; 2; 0; 3]);
+%! assert (T.Edge, [0 0; 1 2; 0 0; 2 3; 0 0]);
+
+## Single-element cellstr still returns a struct (not a vector).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! T = bfsearch (G, 1, {"discovernode"});
+%! assert (isstruct (T));
+%! assert (T.Event, {"discovernode"; "discovernode"; "discovernode"});
+%! assert (T.Node, [1; 2; 3]);
+%! assert (T.Edge, [0 0; 0 0; 0 0]);
+
+## Cellstr with an event that never fires -> empty struct fields (right shape).
+%!test
+%! G = digraph ([1 1], [2 3]);  # tree; no back edges
+%! T = bfsearch (G, 1, {"edgetofinished"});
+%! assert (isstruct (T));
+%! assert (size (T.Event), [0, 1]);
+%! assert (size (T.Node), [0, 1]);
+%! assert (size (T.Edge), [0, 2]);
+
+## Tie-break: edgetonew order follows ascending node index.
+%!test
+%! G = digraph ([1 1 1], [4 2 3]);
+%! E = bfsearch (G, 1, "edgetonew");
+%! assert (E, [1 2; 1 3; 1 4]);
+
+## Tie-break: discovernode with multi fan-out gives ascending order.
+%!test
+%! G = digraph ([1 1 1], [4 2 3]);
+%! v = bfsearch (G, 1, "discovernode");
+%! assert (v, [1; 2; 3; 4]);
+
+## Reachability: events only include reachable nodes.
+%!test
+%! G = digraph ([1 2 4], [2 3 5]);
+%! T = bfsearch (G, 1, "allevents");
+%! nodes_seen = unique (T.Node(T.Node > 0));
+%! assert (nodes_seen, [1; 2; 3]);
+
+## Node-name source still yields numeric indices in the event log.
+%!test
+%! G = digraph ([1 2 3], [2 3 1], [], {"a", "b", "c"});
+%! v = bfsearch (G, "a", "discovernode");
+%! assert (v, [1; 2; 3]);
+
+## Dot-notation dispatch with 3 args on digraph.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! v = G.bfsearch (1, "finishnode");
+%! assert (v, [1; 2; 3]);
+
+## 3-arg on undirected graph: 'finishnode' order on a path 1-2-3.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! v = bfsearch (G, 1, "finishnode");
+%! assert (v, [1; 2; 3]);
+
+## 3-arg on undirected graph: back edge to parent fires edgetofinished.
+## Path 1-2-3 from 1:
+##   At node 2, edge (2,1) -> 1 finished -> edgetofinished (2,1).
+##   At node 3, edge (3,2) -> 2 finished -> edgetofinished (3,2).
+%!test
+%! G = graph ([1 2], [2 3]);
+%! E = bfsearch (G, 1, "edgetofinished");
+%! assert (E, [2 1; 3 2]);
+
+## 3-arg on undirected graph: 'allevents' returns struct.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! T = bfsearch (G, 1, "allevents");
+%! assert (isstruct (T));
+%! assert (sort (fieldnames (T)), sort ({"Event"; "Node"; "Edge"}));
+%! ## Source node present in Event log.
+%! assert (any (T.Node == 1));
+
+## 3-arg: 'edgetonew' on undirected tree gives tree edges.
+%!test
+%! G = graph ([1 2], [2 3]);
+%! E = bfsearch (G, 1, "edgetonew");
+%! assert (E, [1 2; 2 3]);
+
+## 3-arg: dot-notation dispatch on graph.
+%!test
+%! G = graph ([1 2 3], [2 3 1]);
+%! v = G.bfsearch (1, "discovernode");
+%! assert (v, [1; 2; 3]);
+
+## 3-arg: return type for node events is a numeric column.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! v = bfsearch (G, 1, "discovernode");
+%! assert (iscolumn (v));
+%! assert (class (v), "double");
+
+## 3-arg: return type for edge events is an Nx2 double matrix.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! E = bfsearch (G, 1, "edgetonew");
+%! assert (size (E, 2), 2);
+%! assert (class (E), "double");
+
+## 3-arg: allevents preserves consistency with single-event queries.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! T = bfsearch (G, 1, "allevents");
+%! v_disc = T.Node(strcmp (T.Event, "discovernode"));
+%! assert (v_disc, bfsearch (G, 1, "discovernode"));
+%! v_fin = T.Node(strcmp (T.Event, "finishnode"));
+%! assert (v_fin, bfsearch (G, 1, "finishnode"));
+%! E_new = T.Edge(strcmp (T.Event, "edgetonew"), :);
+%! assert (E_new, bfsearch (G, 1, "edgetonew"));
+
+## 3-arg on digraph: self-loop at source becomes edgetodiscovered.
+## When processing node 1, edge (1,1) targets node 1 which is in the
+## 'discovered' state (being processed, not yet finished).
+%!test
+%! G = digraph ([1 1 2], [1 2 3]);
+%! T = bfsearch (G, 1, "allevents");
+%! has_self_etd = false;
+%! for i = 1:numel (T.Event)
+%!   if (strcmp (T.Event{i}, "edgetodiscovered") ...
+%!       && isequal (T.Edge(i, :), [1 1]))
+%!     has_self_etd = true;
+%!   endif
+%! endfor
+%! assert (has_self_etd);
+
+## Error: unknown event name as char.
+%!error <unknown event|invalid event> ...
+%!   bfsearch (digraph ([1 2], [2 3]), 1, "bogus")
+
+## Error: unknown event name inside cellstr.
+%!error <unknown event|invalid event> ...
+%!   bfsearch (digraph ([1 2], [2 3]), 1, {"discovernode", "bogus"})
+
+## Error: non-char non-cellstr events argument (numeric).
+%!error <events must be|character|cell array of strings> ...
+%!   bfsearch (digraph ([1 2], [2 3]), 1, 42)
+
+## Error: non-char non-cellstr events argument (struct).
+%!error <events must be|character|cell array of strings> ...
+%!   bfsearch (digraph ([1 2], [2 3]), 1, struct ())
+
+## Error: 4 arguments with a trailing non-Name-Value token fails because a
+## Name-Value parser needs pairs; the unrecognized leading name triggers
+## an "unknown option" error.
+%!error <unknown option|Name-Value|unknown name> ...
+%!   bfsearch (digraph ([1 2], [2 3]), 1, "discovernode", "extra")
+
+## ------------------------------------------------------------------
+## US-T04: 'Restart' and 'EdgeColors' Name-Value options
+## ------------------------------------------------------------------
+
+## 'Restart', false is explicit default and matches the no-option result.
+%!test
+%! G = digraph ([1 4], [2 5]);
+%! T1 = bfsearch (G, 1, "allevents");
+%! T2 = bfsearch (G, 1, "allevents", "Restart", false);
+%! assert (T1, T2);
+
+## 'Restart', true continues across disconnected digraph components.
+## Digraph: 1->2 and 4->5; node 3 isolated.  N=5.
+## Starting from 1: reach {1,2}.  Restart from smallest undiscovered node in
+## ascending index order -> 3 (singleton), then 4 (reaches 5).
+%!test
+%! G = digraph ([1 4], [2 5]);
+%! T = bfsearch (G, 1, "allevents", "Restart", true);
+%! nodes_seen = unique (T.Node(T.Node > 0));
+%! assert (nodes_seen, [1; 2; 3; 4; 5]);
+
+## 'Restart', true with single-char 'discovernode' returns all nodes in
+## discovery order (first component, then restart components).
+%!test
+%! G = digraph ([1 4], [2 5]);
+%! v = bfsearch (G, 1, "discovernode", "Restart", true);
+%! assert (iscolumn (v));
+%! assert (sort (v), [1; 2; 3; 4; 5]);
+%! assert (v(1), 1);
+%! assert (v(2), 2);
+%! ## Third discovered should be node 3 (isolated), then 4, then 5.
+%! assert (v(3:5), [3; 4; 5]);
+
+## 'Restart', true fires one 'startnode' event per restart.
+%!test
+%! G = digraph ([1 4], [2 5]);
+%! T = bfsearch (G, 1, "allevents", "Restart", true);
+%! starts = T.Node(strcmp (T.Event, "startnode"));
+%! ## Three components reachable: starts at 1, 3, 4.
+%! assert (starts, [1; 3; 4]);
+
+## 'Restart', true emits edges only within each component (no cross).
+%!test
+%! G = digraph ([1 4], [2 5]);
+%! E = bfsearch (G, 1, "edgetonew", "Restart", true);
+%! assert (sort (E, 1), [1 2; 4 5]);
+
+## Restart on undirected graph: full node cover.
+%!test
+%! G = graph ([1 4], [2 5]);  # components {1,2}, {3}, {4,5}
+%! v = bfsearch (G, 1, "discovernode", "Restart", true);
+%! assert (sort (v), [1; 2; 3; 4; 5]);
+
+## 'EdgeColors', true adds EdgeColor field to struct output.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! T = bfsearch (G, 1, "allevents", "EdgeColors", true);
+%! assert (isstruct (T));
+%! assert (isfield (T, "EdgeColor"));
+%! assert (iscell (T.EdgeColor));
+%! assert (size (T.EdgeColor, 2), 1);
+%! assert (numel (T.EdgeColor), numel (T.Event));
+
+## 'EdgeColors': node events get empty-string tags.
+%!test
+%! G = digraph (1);
+%! T = bfsearch (G, 1, "allevents", "EdgeColors", true);
+%! assert (all (cellfun (@isempty, T.EdgeColor)));
+
+## 'EdgeColors': tree edges tagged 'tree' on a 3-cycle.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! T = bfsearch (G, 1, "allevents", "EdgeColors", true);
+%! tree_idx = strcmp (T.Event, "edgetonew");
+%! tree_tags = T.EdgeColor(tree_idx);
+%! assert (tree_tags, {"tree"; "tree"});
+
+## 'EdgeColors': BFS back edge / discovered edge tagged 'cross'.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! T = bfsearch (G, 1, "allevents", "EdgeColors", true);
+%! idx_fin = strcmp (T.Event, "edgetofinished");
+%! assert (T.EdgeColor(idx_fin), {"cross"});
+
+## 'EdgeColors' on triangle 1->{2,3}, 2->3: edgetodiscovered tagged 'cross'.
+%!test
+%! G = digraph ([1 1 2], [2 3 3]);
+%! T = bfsearch (G, 1, "allevents", "EdgeColors", true);
+%! idx_disc = strcmp (T.Event, "edgetodiscovered");
+%! assert (T.EdgeColor(idx_disc), {"cross"});
+
+## Both options combined.
+%!test
+%! G = digraph ([1 4], [2 5]);
+%! T = bfsearch (G, 1, "allevents", "Restart", true, "EdgeColors", true);
+%! assert (isfield (T, "EdgeColor"));
+%! nodes_seen = unique (T.Node(T.Node > 0));
+%! assert (nodes_seen, [1; 2; 3; 4; 5]);
+
+## Both options in reverse order (EdgeColors first).
+%!test
+%! G = digraph ([1 4], [2 5]);
+%! T = bfsearch (G, 1, "allevents", "EdgeColors", true, "Restart", true);
+%! assert (isfield (T, "EdgeColor"));
+
+## 'EdgeColors', true with cellstr events (struct output).
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! T = bfsearch (G, 1, {"edgetonew", "edgetofinished"}, "EdgeColors", true);
+%! assert (isfield (T, "EdgeColor"));
+
+## 'EdgeColors', true with cellstr selecting only node events: EdgeColor is
+## still a cellstr column with empty entries for each node event.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! T = bfsearch (G, 1, {"discovernode"}, "EdgeColors", true);
+%! assert (isfield (T, "EdgeColor"));
+%! assert (all (cellfun (@isempty, T.EdgeColor)));
+
+## Dot-notation dispatch accepts Name-Value pairs on digraph.
+%!test
+%! G = digraph ([1 4], [2 5]);
+%! v = G.bfsearch (1, "discovernode", "Restart", true);
+%! assert (sort (v), [1; 2; 3; 4; 5]);
+
+## Dot-notation dispatch accepts Name-Value pairs on graph.
+%!test
+%! G = graph ([1 4], [2 5]);
+%! v = G.bfsearch (1, "discovernode", "Restart", true);
+%! assert (sort (v), [1; 2; 3; 4; 5]);
+
+## 'Restart' is case-insensitive on the name.
+%!test
+%! G = digraph ([1 4], [2 5]);
+%! v = bfsearch (G, 1, "discovernode", "restart", true);
+%! assert (sort (v), [1; 2; 3; 4; 5]);
+
+## 'EdgeColors' is case-insensitive on the name.
+%!test
+%! G = digraph ([1 2 3], [2 3 1]);
+%! T = bfsearch (G, 1, "allevents", "edgecolors", true);
+%! assert (isfield (T, "EdgeColor"));
+
+## Error: EdgeColors=true on single-char *node* event is rejected.
+%!error <EdgeColors requires|allevents|cell array> ...
+%!   bfsearch (digraph ([1 2], [2 3]), 1, "discovernode", "EdgeColors", true)
+
+## Error: unknown Name.
+%!error <unknown option|unknown name> ...
+%!   bfsearch (digraph ([1 2], [2 3]), 1, "allevents", "Bogus", true)
+
+## Error: odd Name-Value arg count (missing value).
+%!error <Name-Value|missing value|requires> ...
+%!   bfsearch (digraph ([1 2], [2 3]), 1, "allevents", "Restart")
+
+## Error: Restart value must be scalar logical.
+%!error <Restart.*logical|Restart.*scalar|logical scalar> ...
+%!   bfsearch (digraph ([1 2], [2 3]), 1, "allevents", "Restart", "yes")
+
+## Error: EdgeColors value must be scalar logical.
+%!error <EdgeColors.*logical|EdgeColors.*scalar|logical scalar> ...
+%!   bfsearch (digraph ([1 2], [2 3]), 1, "allevents", "EdgeColors", "yes")
+
+## Error: Name must be a char row vector.
+%!error <Name|option name> ...
+%!   bfsearch (digraph ([1 2], [2 3]), 1, "allevents", 7, true)

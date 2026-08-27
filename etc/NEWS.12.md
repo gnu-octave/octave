@@ -12,6 +12,53 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   output argument.  The first output argument must be the constructed object.
 
 
+### Graph and network analysis
+
+* New classes `graph` (undirected) and `digraph` (directed) for representing
+  and analyzing networks, along with the companion `GraphPlot` handle class
+  returned by `plot` for visualization.  The API follows MATLAB's `graph` and
+  `digraph` objects introduced in R2015b, so scripts written against the
+  MATLAB documentation should work unchanged.
+
+* Object construction supports the edge-list form (`graph (s, t)`), the
+  weighted edge-list form (`graph (s, t, w)`), the adjacency-matrix form
+  (`graph (A)`), as well as cellstr node names and `EdgeTable` / `NodeTable`
+  struct inputs.  Both sparse and dense adjacency inputs are accepted and
+  sparse input is preserved throughout.
+
+* Structure queries and modification are provided by `addedge`, `addnode`,
+  `rmedge`, `rmnode`, `flipedge`, `reordernodes`, `subgraph`, `simplify`,
+  `findedge`, `findnode`, `numedges`, `numnodes`, `edgecount`, `degree`,
+  `indegree`, `outdegree`, `inedges`, `outedges`, `neighbors`,
+  `predecessors`, `successors`, and `ismultigraph`.  Matrix representations
+  are available through `adjacency`, `incidence`, and `laplacian`.
+
+* Traversal and algorithms include `bfsearch`, `dfsearch`, `shortestpath`,
+  `shortestpathtree`, `distances` (supporting the `"auto"`, `"unweighted"`,
+  `"positive"`, `"mixed"`, and `"acyclic"` methods), `allpaths`, `allcycles`,
+  `maxflow`, `mincut`, `toposort`, `isdag`, `conncomp`, `biconncomp`,
+  `condensation`, `transclosure`, and `transreduction`.
+
+* Centrality measures are computed by `centrality` with the `"degree"`,
+  `"indegree"`, `"outdegree"`, `"closeness"`, `"incloseness"`,
+  `"outcloseness"`, `"betweenness"`, `"pagerank"`, `"eigenvector"`,
+  `"hubs"`, and `"authorities"` options, including optional `"Cost"` and
+  `"Importance"` edge-weight parameters.
+
+* Graph isomorphism is checked by `isisomorphic` and computed by
+  `isomorphism`, implemented with the VF2 algorithm and supporting the
+  optional `"NodeVariables"` and `"EdgeVariables"` attribute-matching
+  options.
+
+* Visualization is performed by `plot (G)`, which returns a `GraphPlot`
+  handle object supporting the `"auto"`, `"circle"`, `"force"`, `"force3"`,
+  `"layered"`, `"subspace"`, and `"subspace3"` layouts together with node
+  and edge cosmetic properties (`NodeColor`, `NodeLabel`, `MarkerSize`,
+  `EdgeColor`, `EdgeAlpha`, `LineStyle`, `LineWidth`, `ArrowSize`, and
+  others).  The `highlight`, `labelnode`, and `labeledge` functions modify
+  an existing `GraphPlot` in place.
+
+
 ### Graphical User Interface
 
 * When opening a file from the Find Files dialog, all occurrences of the search
@@ -43,7 +90,57 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 
 ### Alphabetical list of new functions added in Octave 12
 
+* `addedge`
+* `addnode`
+* `adjacency`
+* `allcycles`
+* `allpaths`
+* `bfsearch`
+* `biconncomp`
+* `centrality`
+* `condensation`
+* `conncomp`
+* `degree`
+* `dfsearch`
 * `diagnostics_show_caret`
+* `digraph`
+* `distances`
+* `edgecount`
+* `findedge`
+* `findnode`
+* `flipedge`
+* `graph`
+* `GraphPlot`
+* `highlight`
+* `incidence`
+* `indegree`
+* `inedges`
+* `isdag`
+* `isisomorphic`
+* `ismultigraph`
+* `isomorphism`
+* `labeledge`
+* `labelnode`
+* `laplacian`
+* `maxflow`
+* `mincut`
+* `neighbors`
+* `numedges`
+* `numnodes`
+* `outdegree`
+* `outedges`
+* `predecessors`
+* `reordernodes`
+* `rmedge`
+* `rmnode`
+* `shortestpath`
+* `shortestpathtree`
+* `simplify`
+* `subgraph`
+* `successors`
+* `toposort`
+* `transclosure`
+* `transreduction`
 
 ### Deprecated functions, properties, and operators
 

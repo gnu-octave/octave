@@ -2304,42 +2304,41 @@ AC_ARG_VAR([SUNDIALS_MPI_CPPFLAGS],
 sundials_save_CPPFLAGS="$CPPFLAGS"
 
 if test -z "$SUNDIALS_MPI_CPPFLAGS"; then
-  AC_LANG_PUSH([C++])
+  AC_CACHE_CHECK([for any MPI include flags required for SUNDIALS serial headers],
+    [oct_cv_lib_sundials_mpi_cppflags],
+    [oct_cv_lib_sundials_mpi_cppflags=""
+    AC_LANG_PUSH([C++])
+    # Check whether SUNDIALS serial headers requires any MPI include flags
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <nvector/nvector_serial.h>
+        ]], [[]])],
+      [octave_sundials_needs_mpi=no],
+      [octave_sundials_needs_mpi=yes])
 
-  AC_MSG_CHECKING([whether SUNDIALS serial headers require MPI include flags])
-  AC_COMPILE_IFELSE(
-    [AC_LANG_PROGRAM(
-      [[#include <nvector/nvector_serial.h>]],
-      [[]])],
-    [octave_sundials_needs_mpi=no],
-    [octave_sundials_needs_mpi=yes])
-  AC_MSG_RESULT([$octave_sundials_needs_mpi])
+    if test $octave_sundials_needs_mpi = yes && test -n "$PKG_CONFIG"; then
+      for octave_mpi_pc in mpi ompi mpich; do
+        if $PKG_CONFIG --exists "$octave_mpi_pc"; then
+          octave_mpi_cppflags=`$PKG_CONFIG --cflags-only-I "$octave_mpi_pc"`
 
-  if test $octave_sundials_needs_mpi = yes && test -n "$PKG_CONFIG"; then
-    for octave_mpi_pc in mpi ompi mpich; do
-      if $PKG_CONFIG --exists "$octave_mpi_pc"; then
-        octave_mpi_cppflags=`$PKG_CONFIG --cflags-only-I "$octave_mpi_pc"`
+          CPPFLAGS="$octave_mpi_cppflags $sundials_save_CPPFLAGS"
+          AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+              #include <nvector/nvector_serial.h>
+              ]], [[]])],
+            [octave_sundials_mpi_flags_work=yes],
+            [octave_sundials_mpi_flags_work=no])
 
-        CPPFLAGS="$octave_mpi_cppflags $sundials_save_CPPFLAGS"
-        AC_MSG_CHECKING([whether $octave_mpi_pc flags work with SUNDIALS])
-        AC_COMPILE_IFELSE(
-          [AC_LANG_PROGRAM(
-            [[#include <nvector/nvector_serial.h>]],
-            [[]])],
-          [octave_sundials_mpi_flags_work=yes],
-          [octave_sundials_mpi_flags_work=no])
-        AC_MSG_RESULT([$octave_sundials_mpi_flags_work])
-
-        if test $octave_sundials_mpi_flags_work = yes; then
-          SUNDIALS_MPI_CPPFLAGS="$octave_mpi_cppflags"
-          break
+          if test $octave_sundials_mpi_flags_work = yes; then
+            oct_cv_lib_sundials_mpi_cppflags="$octave_mpi_cppflags"
+            break
+          fi
         fi
-      fi
-    done
-  fi
+      done
+    fi
+    CPPFLAGS="$sundials_save_CPPFLAGS"
+    AC_LANG_POP([C++])
+  ])
 
-  CPPFLAGS="$sundials_save_CPPFLAGS"
-  AC_LANG_POP([C++])
+  SUNDIALS_MPI_CPPFLAGS="$oct_cv_lib_sundials_mpi_cppflags"
 fi
 
 AC_SUBST([SUNDIALS_MPI_CPPFLAGS])

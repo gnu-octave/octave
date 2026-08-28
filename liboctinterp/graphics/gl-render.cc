@@ -690,10 +690,15 @@ error_unexpected (const char *name)
 opengl_renderer::opengl_renderer (opengl_functions& glfcns)
   : m_glfcns (glfcns), m_xmin (), m_xmax (), m_ymin (), m_ymax (),
     m_zmin (), m_zmax (), m_devpixratio (1.0), m_xform (), m_toolkit (),
+#if defined (HAVE_OPENGL)
     m_xZ1 (), m_xZ2 (), m_marker_id (), m_filled_marker_id (),
+#endif
     m_camera_pos (), m_camera_dir (), m_view_vector (),
-    m_interpreter ("none"), m_txt_renderer (), m_current_light (0),
-    m_max_lights (0), m_selecting (false), m_printing (false)
+    m_interpreter ("none"), m_txt_renderer (),
+#if defined (HAVE_OPENGL)
+    m_current_light (0), m_max_lights (0),
+#endif
+    m_selecting (false), m_printing (false)
 {
   // This constructor will fail if we don't have OpenGL or if the data
   // types we assumed in our public interface aren't compatible with the

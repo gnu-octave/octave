@@ -149,7 +149,7 @@ longer running time.
       else
         {
           NDArray vals = args(0).xarray_value ("spparms: input must be a string or a vector");
-          if (vals.numel () > OCTAVE_SPARSE_CONTROLS_SIZE)
+          if (vals.numel () > sparse_params::NUM_PARAMS)
             error ("spparms: too many elements in vector VALS");
 
           sparse_params::set_vals (vals);

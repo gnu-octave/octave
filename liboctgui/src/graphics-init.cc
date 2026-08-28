@@ -32,8 +32,11 @@
 #include <QThread>
 
 #include "graphics-init.h"
-#include "qt-graphics-toolkit.h"
-#include "QtHandlesUtils.h"
+
+#if defined (HAVE_QT_GRAPHICS)
+#  include "qt-graphics-toolkit.h"
+#  include "QtHandlesUtils.h"
+#endif
 
 #include "graphics.h"
 #include "gtk-manager.h"
@@ -43,6 +46,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 void graphics_init (interpreter& interp)
 {
+#if defined (HAVE_QT_GRAPHICS)
+
   gh_manager& gh_mgr = interp.get_gh_manager ();
 
   autolock guard (gh_mgr.graphics_lock ());
@@ -64,6 +69,12 @@ void graphics_init (interpreter& interp)
   gtk_mgr.register_toolkit ("qt");
 
   gtk_mgr.load_toolkit (tk);
+
+#else
+
+  octave_unused_parameter (interp);
+
+#endif
 }
 
 OCTAVE_END_NAMESPACE(octave)

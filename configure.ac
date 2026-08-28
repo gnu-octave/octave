@@ -2004,15 +2004,29 @@ DEFAULT_TERMINAL_FONT_SIZE=10
 AC_SUBST(DEFAULT_TERMINAL_FONT)
 AC_SUBST(DEFAULT_TERMINAL_FONT_SIZE)
 
-### Final determination of whether OpenGL graphics features should
-### be built.  Note that there is no longer a way to build the Qt GUI
-### without also building a Qt widget that uses OpenGL graphics so we
-### check $build_qt_gui instead of $build_qt_graphics here.
-if test $build_qt_gui = no; then
-  opengl_graphics=no
-else
-  opengl_graphics=yes
+### Final determination of whether OpenGL graphics features should be built.
+### The Qt widgets that display figures and other graphics objects are drawn
+### with OpenGL, so building the Qt graphics toolkit requires both Qt and the
+### OpenGL libraries.  The rest of the Qt GUI (terminal, editor, documentation
+### browser, variable editor, ...) does not need OpenGL: if it is missing, we
+### still build the GUI but the "qt" graphics toolkit is not available and
+### plotting requires gnuplot.
+
+build_qt_graphics=no
+if test $build_qt_gui = yes && test -n "$OPENGL_LIBS"; then
+  build_qt_graphics=yes
+  AC_DEFINE(HAVE_QT_GRAPHICS, 1,
+    [Define to 1 if the Qt graphics toolkit is built.])
 fi
+
+AM_CONDITIONAL([AMCOND_BUILD_QT_GRAPHICS], [test $build_qt_graphics = yes])
+
+if test $build_qt_gui = yes && test $build_qt_graphics = no; then
+  warn_qt_graphics="OpenGL libs (GL and GLU) not found.  The Qt graphics toolkit will not be built and creating plots will require gnuplot."
+  OCTAVE_CONFIGURE_WARNING([warn_qt_graphics])
+fi
+
+opengl_graphics=$build_qt_graphics
 
 ## Check for gl2ps which is required for printing with OpenGL graphics.
 
@@ -3461,6 +3475,7 @@ Octave is now configured for $canonical_host_type
   gnuplot:                       $GNUPLOT_BINARY
 
   Build Octave Qt GUI:                  $BUILD_QT_SUMMARY_MSG
+  Build Qt graphics toolkit:            $build_qt_graphics
   Build Java interface:                 $build_java
   Build static libraries:               $STATIC_LIBS
   Build shared libraries:               $SHARED_LIBS
@@ -3481,13 +3496,6 @@ Octave is now configured for $canonical_host_type
 warn_msg_printed=false
 
 OCTAVE_CONFIGURE_WARNING_SUMMARY
-
-if test $opengl_graphics = no; then
-  AC_MSG_WARN([])
-  AC_MSG_WARN([The libraries needed for OpenGL graphics were not found.])
-  AC_MSG_WARN([Creating plots is still possible if gnuplot is installed.])
-  warn_msg_printed=true
-fi
 
 if $warn_msg_printed; then
   AC_MSG_NOTICE([])

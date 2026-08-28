@@ -1,3 +1,7 @@
+## The Qt graphics toolkit is drawn with OpenGL, so it is built only if the
+## OpenGL libraries are available.  The rest of the Qt GUI is built without it.
+if AMCOND_BUILD_QT_GRAPHICS
+
 OCTAVE_GUI_GRAPHICS_MOC = \
   %reldir%/moc-ButtonControl.cc \
   %reldir%/moc-ButtonGroup.cc \
@@ -154,3 +158,5 @@ liboctgui_DISTCLEANFILES += \
   $(libgraphics_MOC) \
   $(libgraphics_MOC_H) \
   $(libgraphics_UI_H)
+
+endif

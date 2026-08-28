@@ -282,7 +282,7 @@ should avoid this combination.
 %! assert (S0, S1, 20*eps);
 
 ## a few tests for gsvd.m
-%!shared A0, B0
+%!shared A0, B0, old_state, restore_state
 %! old_state = randn ("state");
 %! restore_state = onCleanup (@() randn ("state", old_state));
 %! randn ("state", 40);  # initialize generator to make behavior reproducible
@@ -371,8 +371,6 @@ should avoid this combination.
 
 ## A: 5x3 complex full rank, B: 3x3 complex full rank
 %!test <48807>
-%! old_state = randn ("state");
-%! restore_state = onCleanup (@() randn ("state", old_state));
 %! randn ("state", 12345);  # initialize generator to make behavior reproducible
 %! A = A0 + j* randn (5, 3);
 %! B = diag ([1 2 4]) + j* diag ([4 -2 -1]);

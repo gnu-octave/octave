@@ -9203,8 +9203,8 @@ The @code{sort} function may also be used to sort strings and cell arrays
 of strings, in which case ASCII dictionary order (uppercase 'A' precedes
 lowercase 'a') of the strings is used.
 
-The algorithm used in @code{sort} is optimized for the sorting of partially
-ordered lists.
+The sorting algorithm depends on the input type and whether sort indices are
+requested.
 @seealso{sortrows, issorted}
 @end deftypefn */)
 {
@@ -9399,6 +9399,184 @@ ordered lists.
 %! [v, i] = sort ([true, false, true, false]);
 %! assert (v, [false, false, true, true]);
 %! assert (i, [2, 4, 1, 3]);
+
+## Test that the reverse-ordered fast path preserves indexed-sort stability.
+%!test
+%! [v, i] = sort ([3, 3, 2, 2, 1, 1]);
+%! assert (v, [1, 1, 2, 2, 3, 3]);
+%! assert (i, [5, 6, 3, 4, 1, 2]);
+%! [v, i] = sort ([1, 1, 2, 2, 3, 3], "descend");
+%! assert (v, [3, 3, 2, 2, 1, 1]);
+%! assert (i, [5, 6, 3, 4, 1, 2]);
+
+## Integer types - test that indexed sort is stable
+## (equal values preserve original order)
+
+## int8
+%!test
+%! [v, i] = sort (int8 ([3, 1, 2, 1, 3, 2]));
+%! assert (v, int8 ([1, 1, 2, 2, 3, 3]));
+%! assert (i, [2, 4, 3, 6, 1, 5]);
+
+%!test
+%! [v, i] = sort (int8 ([3, 1, 2, 1, 3, 2]), "descend");
+%! assert (v, int8 ([3, 3, 2, 2, 1, 1]));
+%! assert (i, [1, 5, 3, 6, 2, 4]);
+
+## uint8
+%!test
+%! [v, i] = sort (uint8 ([3, 1, 2, 1, 3, 2]));
+%! assert (v, uint8 ([1, 1, 2, 2, 3, 3]));
+%! assert (i, [2, 4, 3, 6, 1, 5]);
+
+%!test
+%! [v, i] = sort (uint8 ([3, 1, 2, 1, 3, 2]), "descend");
+%! assert (v, uint8 ([3, 3, 2, 2, 1, 1]));
+%! assert (i, [1, 5, 3, 6, 2, 4]);
+
+## int16
+%!test
+%! [v, i] = sort (int16 ([3, 1, 2, 1, 3, 2]));
+%! assert (v, int16 ([1, 1, 2, 2, 3, 3]));
+%! assert (i, [2, 4, 3, 6, 1, 5]);
+
+%!test
+%! [v, i] = sort (int16 ([3, 1, 2, 1, 3, 2]), "descend");
+%! assert (v, int16 ([3, 3, 2, 2, 1, 1]));
+%! assert (i, [1, 5, 3, 6, 2, 4]);
+
+## uint16
+%!test
+%! [v, i] = sort (uint16 ([3, 1, 2, 1, 3, 2]));
+%! assert (v, uint16 ([1, 1, 2, 2, 3, 3]));
+%! assert (i, [2, 4, 3, 6, 1, 5]);
+
+%!test
+%! [v, i] = sort (uint16 ([3, 1, 2, 1, 3, 2]), "descend");
+%! assert (v, uint16 ([3, 3, 2, 2, 1, 1]));
+%! assert (i, [1, 5, 3, 6, 2, 4]);
+
+## int32
+%!test
+%! [v, i] = sort (int32 ([3, 1, 2, 1, 3, 2]));
+%! assert (v, int32 ([1, 1, 2, 2, 3, 3]));
+%! assert (i, [2, 4, 3, 6, 1, 5]);
+
+%!test
+%! [v, i] = sort (int32 ([3, 1, 2, 1, 3, 2]), "descend");
+%! assert (v, int32 ([3, 3, 2, 2, 1, 1]));
+%! assert (i, [1, 5, 3, 6, 2, 4]);
+
+## uint32
+%!test
+%! [v, i] = sort (uint32 ([3, 1, 2, 1, 3, 2]));
+%! assert (v, uint32 ([1, 1, 2, 2, 3, 3]));
+%! assert (i, [2, 4, 3, 6, 1, 5]);
+
+%!test
+%! [v, i] = sort (uint32 ([3, 1, 2, 1, 3, 2]), "descend");
+%! assert (v, uint32 ([3, 3, 2, 2, 1, 1]));
+%! assert (i, [1, 5, 3, 6, 2, 4]);
+
+## int64
+%!test
+%! [v, i] = sort (int64 ([3, 1, 2, 1, 3, 2]));
+%! assert (v, int64 ([1, 1, 2, 2, 3, 3]));
+%! assert (i, [2, 4, 3, 6, 1, 5]);
+
+%!test
+%! [v, i] = sort (int64 ([3, 1, 2, 1, 3, 2]), "descend");
+%! assert (v, int64 ([3, 3, 2, 2, 1, 1]));
+%! assert (i, [1, 5, 3, 6, 2, 4]);
+
+## uint64
+%!test
+%! [v, i] = sort (uint64 ([3, 1, 2, 1, 3, 2]));
+%! assert (v, uint64 ([1, 1, 2, 2, 3, 3]));
+%! assert (i, [2, 4, 3, 6, 1, 5]);
+
+%!test
+%! [v, i] = sort (uint64 ([3, 1, 2, 1, 3, 2]), "descend");
+%! assert (v, uint64 ([3, 3, 2, 2, 1, 1]));
+%! assert (i, [1, 5, 3, 6, 2, 4]);
+
+## Test boundary values for 8-bit types
+%!test
+%! [v, i] = sort (int8 ([-128, 127, -128, 0, 127]));
+%! assert (v, int8 ([-128, -128, 0, 127, 127]));
+%! assert (i, [1, 3, 4, 2, 5]);
+
+%!test
+%! [v, i] = sort (uint8 ([0, 255, 0, 128, 255]));
+%! assert (v, uint8 ([0, 0, 128, 255, 255]));
+%! assert (i, [1, 3, 4, 2, 5]);
+
+## Test stable indexed counting sort path for 8-bit arrays
+%!test
+%! x = repmat (int8 ([-128, 0, 127, 0]), 1, 8);
+%! expected = int8 ([repmat(-128, 1, 8), zeros(1, 16), ...
+%!                   repmat(127, 1, 8)]);
+%! assert (sort (x), expected);
+%! [v, i] = sort (x);
+%! assert (v, expected);
+%! assert (i(v == int8 (0)), find (x == int8 (0)));
+%! expected = fliplr (expected);
+%! assert (sort (x, "descend"), expected);
+%! [v, i] = sort (x, "descend");
+%! assert (v, expected);
+%! assert (i(v == int8 (0)), find (x == int8 (0)));
+
+%!test
+%! x = repmat (uint8 ([0, 255, 128, 0]), 1, 8);
+%! expected = uint8 ([zeros(1, 16), repmat(128, 1, 8), ...
+%!                    repmat(255, 1, 8)]);
+%! assert (sort (x), expected);
+%! [v, i] = sort (x);
+%! assert (v, expected);
+%! assert (i(v == uint8 (0)), find (x == uint8 (0)));
+%! expected = fliplr (expected);
+%! assert (sort (x, "descend"), expected);
+%! [v, i] = sort (x, "descend");
+%! assert (v, expected);
+%! assert (i(v == uint8 (0)), find (x == uint8 (0)));
+
+## Test boundary values for 16-bit types
+%!test
+%! [v, i] = sort (int16 ([-32768, 32767, -32768, 0, 32767]));
+%! assert (v, int16 ([-32768, -32768, 0, 32767, 32767]));
+%! assert (i, [1, 3, 4, 2, 5]);
+
+%!test
+%! [v, i] = sort (uint16 ([0, 65535, 0, 32768, 65535]));
+%! assert (v, uint16 ([0, 0, 32768, 65535, 65535]));
+%! assert (i, [1, 3, 4, 2, 5]);
+
+## Test stable indexed counting sort path for large 16-bit arrays
+%!test
+%! x = repmat (int16 ([-32768, 0, 32767, 0]), 1, 32768);
+%! [v, i] = sort (x);
+%! assert (all (v(1:32768) == int16 (-32768)));
+%! assert (all (v(32769:98304) == int16 (0)));
+%! assert (all (v(98305:end) == int16 (32767)));
+%! assert (i(v == int16 (0)), find (x == int16 (0)));
+%! [v, i] = sort (x, "descend");
+%! assert (all (v(1:32768) == int16 (32767)));
+%! assert (all (v(32769:98304) == int16 (0)));
+%! assert (all (v(98305:end) == int16 (-32768)));
+%! assert (i(v == int16 (0)), find (x == int16 (0)));
+
+%!test
+%! x = repmat (uint16 ([0, 65535, 32768, 0]), 1, 32768);
+%! [v, i] = sort (x);
+%! assert (all (v(1:65536) == uint16 (0)));
+%! assert (all (v(65537:98304) == uint16 (32768)));
+%! assert (all (v(98305:end) == uint16 (65535)));
+%! assert (i(v == uint16 (0)), find (x == uint16 (0)));
+%! [v, i] = sort (x, "descend");
+%! assert (all (v(1:32768) == uint16 (65535)));
+%! assert (all (v(32769:65536) == uint16 (32768)));
+%! assert (all (v(65537:end) == uint16 (0)));
+%! assert (i(v == uint16 (0)), find (x == uint16 (0)));
 
 ## Sparse Double
 %!assert (sort (sparse ([0, NaN, 1, 0, -1, 2, Inf])),

@@ -25,9 +25,7 @@
 
 DLDFCN_SRC = \
   %reldir%/__delaunayn__.cc \
-  %reldir%/__fltk_uigetfile__.cc \
   %reldir%/__glpk__.cc \
-  %reldir%/__init_fltk__.cc \
   %reldir%/__init_gnuplot__.cc \
   %reldir%/__ode15__.cc \
   %reldir%/__voronoi__.cc \
@@ -54,23 +52,11 @@ octlib_LTLIBRARIES += $(DLDFCN_LIBS)
 ## force required targets to be linked before the dldfcn module.
 EXTRA_%canon_reldir%___delaunayn___la_DEPENDENCIES := $(DLDFCN_DEPENDENCIES)
 
-%canon_reldir%___fltk_uigetfile___la_SOURCES = %reldir%/__fltk_uigetfile__.cc
-%canon_reldir%___fltk_uigetfile___la_CPPFLAGS = $(liboctinterp_liboctinterp_la_CPPFLAGS) $(FLTK_CPPFLAGS) $(FT2_CPPFLAGS)
-%canon_reldir%___fltk_uigetfile___la_LDFLAGS := $(AM_LDFLAGS) $(WARN_LDFLAGS) $(NO_UNDEFINED_LDFLAG) -avoid-version -module $(FLTK_LDFLAGS) $(FT2_LDFLAGS) $(OCT_LINK_OPTS)
-%canon_reldir%___fltk_uigetfile___la_LIBADD = $(FLTK_LIBS) $(FT2_LIBS) $(DLDFCN_LINK_DEPS)
-EXTRA_%canon_reldir%___fltk_uigetfile___la_DEPENDENCIES := $(DLDFCN_DEPENDENCIES)
-
 %canon_reldir%___glpk___la_SOURCES = %reldir%/__glpk__.cc
 %canon_reldir%___glpk___la_CPPFLAGS = $(liboctinterp_liboctinterp_la_CPPFLAGS) $(GLPK_CPPFLAGS)
 %canon_reldir%___glpk___la_LDFLAGS := $(AM_LDFLAGS) $(WARN_LDFLAGS) $(NO_UNDEFINED_LDFLAG) -avoid-version -module $(GLPK_LDFLAGS) $(OCT_LINK_OPTS)
 %canon_reldir%___glpk___la_LIBADD = $(GLPK_LIBS) $(DLDFCN_LINK_DEPS)
 EXTRA_%canon_reldir%___glpk___la_DEPENDENCIES := $(DLDFCN_DEPENDENCIES)
-
-%canon_reldir%___init_fltk___la_SOURCES = %reldir%/__init_fltk__.cc
-%canon_reldir%___init_fltk___la_CPPFLAGS = $(liboctinterp_liboctinterp_la_CPPFLAGS) $(FLTK_CPPFLAGS) $(FONTCONFIG_CPPFLAGS) $(FT2_CPPFLAGS) $(X11_INCFLAGS)
-%canon_reldir%___init_fltk___la_LDFLAGS := $(AM_LDFLAGS) $(WARN_LDFLAGS) $(NO_UNDEFINED_LDFLAG) -avoid-version -module $(FLTK_LDFLAGS) $(FT2_LDFLAGS) $(OCT_LINK_OPTS)
-%canon_reldir%___init_fltk___la_LIBADD = $(FLTK_LIBS) $(FT2_LIBS) $(X11_LIBS) $(OPENGL_LIBS) $(DLDFCN_LINK_DEPS)
-EXTRA_%canon_reldir%___init_fltk___la_DEPENDENCIES := $(DLDFCN_DEPENDENCIES)
 
 %canon_reldir%___init_gnuplot___la_SOURCES = %reldir%/__init_gnuplot__.cc
 %canon_reldir%___init_gnuplot___la_CPPFLAGS = $(liboctinterp_liboctinterp_la_CPPFLAGS) $(FONTCONFIG_CPPFLAGS) $(FT2_CPPFLAGS)

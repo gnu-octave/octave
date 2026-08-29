@@ -102,11 +102,10 @@ function h = tetramesh (varargin)
                        prop{:});
     endfor
   else
-    ## FLTK does not support FaceAlpha.
     for i = 1:size_T
       th = [1 2 3; 2 3 4; 3 4 1; 4 1 2];
       hvec(i) = patch ("Faces", th, "Vertices", X(T(i, :), :),
-                       "FaceColor", cmap(C(i), :), "FaceAlpha", 1.0,
+                       "FaceColor", cmap(C(i), :), "FaceAlpha", 0.9,
                        prop{:});
     endfor
   endif

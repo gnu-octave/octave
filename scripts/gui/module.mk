@@ -42,14 +42,8 @@ FCN_FILE_DIRS += \
 
 %canon_reldir%_PRIVATE_FCN_FILES = \
   %reldir%/private/__file_filter__.m \
-  %reldir%/private/__fltk_file_filter__.m \
-  %reldir%/private/__get_funcname__.m \
-  %reldir%/private/__is_function__.m \
   %reldir%/private/__ok_cancel_dlg__.m \
-  %reldir%/private/__uigetdir_fltk__.m \
-  %reldir%/private/__uigetfile_fltk__.m \
-  %reldir%/private/__uiobject_split_args__.m \
-  %reldir%/private/__uiputfile_fltk__.m
+  %reldir%/private/__uiobject_split_args__.m
 
 %canon_reldir%dir = $(fcnfiledir)/gui
 

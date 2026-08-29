@@ -104,9 +104,8 @@ For creating new dialog types, there is a dialog function.
 @node UI Elements
 @section UI Elements
 
-The @nospell{ui*} series of functions work best with the @code{qt} graphics
-toolkit, although some functionality is available with the @code{fltk} toolkit.
-There is no support for the @code{gnuplot} toolkit.
+The @nospell{ui*} series of functions are available with the @code{qt}
+graphics toolkit.  There is no support for the @code{gnuplot} toolkit.
 
 @DOCSTRING(uifigure)
 
@@ -133,7 +132,7 @@ There is no support for the @code{gnuplot} toolkit.
 
 These functions do not implement a GUI element but are useful when developing
 programs that do.  The functions @code{uiwait}, @code{uiresume}, and
-@code{waitfor} are only available with the @code{qt} or @code{fltk} toolkits.
+@code{waitfor} are only available with the @code{qt} toolkit.
 
 @DOCSTRING(guidata)
 

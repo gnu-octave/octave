@@ -79,7 +79,6 @@ jobs:
             libcurl-devel
             libcxsparse-devel
             libfftw3-devel
-            libfltk-devel
             libfontconfig-devel
             libfreetype-devel
             libGL-devel

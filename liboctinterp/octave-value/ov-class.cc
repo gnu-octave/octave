@@ -1982,33 +1982,6 @@ Return true if @var{x} is a class object.
   return ovl (args(0).isobject ());
 }
 
-static bool
-is_built_in_class (const std::string& cn)
-{
-  static std::set<std::string> built_in_class_names;
-
-  if (built_in_class_names.empty ())
-    {
-      built_in_class_names.insert ("double");
-      built_in_class_names.insert ("single");
-      built_in_class_names.insert ("cell");
-      built_in_class_names.insert ("struct");
-      built_in_class_names.insert ("logical");
-      built_in_class_names.insert ("char");
-      built_in_class_names.insert ("function handle");
-      built_in_class_names.insert ("int8");
-      built_in_class_names.insert ("uint8");
-      built_in_class_names.insert ("int16");
-      built_in_class_names.insert ("uint16");
-      built_in_class_names.insert ("int32");
-      built_in_class_names.insert ("uint32");
-      built_in_class_names.insert ("int64");
-      built_in_class_names.insert ("uint64");
-    }
-
-  return built_in_class_names.find (cn) != built_in_class_names.end ();
-}
-
 DEFMETHOD (superiorto, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} superiorto (@var{class_name}, @dots{})
@@ -2033,7 +2006,7 @@ may @emph{only} be called from a class constructor.
 
       // User defined classes always have higher precedence
       // than built-in classes
-      if (is_built_in_class (inf_class))
+      if (interpreter::is_built_in_class (inf_class))
         break;
 
       symbol_table& symtab = interp.get_symbol_table ();
@@ -2069,7 +2042,7 @@ may @emph{only} be called from a class constructor.
     {
       std::string sup_class = args(i).xstring_value ("inferiorto: CLASS_NAME must be a string");
 
-      if (is_built_in_class (sup_class))
+      if (interp.is_built_in_class (sup_class))
         error ("inferiorto: cannot give user-defined class lower "
                "precedence than built-in class");
 

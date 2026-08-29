@@ -64,7 +64,6 @@ jobs:
             bison
             curl-dev
             fftw-dev
-            fltk-dev
             fontconfig-dev
             freetype-dev
             ghostscript-dev

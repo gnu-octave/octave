@@ -73,9 +73,7 @@ gtk_manager::get_toolkit () const
 void
 gtk_manager::register_toolkit (const std::string& name)
 {
-  if (m_dtk.empty () || name == "qt"
-      || (name == "fltk"
-          && m_available_toolkits.find ("qt") == m_available_toolkits.end ()))
+  if (m_dtk.empty () || name == "qt")
     m_dtk = name;
 
   m_available_toolkits.insert (name);
@@ -100,10 +98,7 @@ gtk_manager::unregister_toolkit (const std::string& name)
             {
               std::string tk_name = *pa++;
 
-              if (tk_name == "qt"
-                  || (tk_name == "fltk"
-                      && (m_available_toolkits.find ("qt")
-                          == m_available_toolkits.cend ())))
+              if (tk_name == "qt")
                 m_dtk = tk_name;
             }
         }

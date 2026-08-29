@@ -164,11 +164,15 @@ public:
   void install_built_in_dispatch (const std::string& name,
                                   const std::string& klass);
 
+  void install_built_in_dispatch (const std::string& name, const std::list<std::string>& klass_list);
+
   std::list<std::string> user_function_names ();
 
   std::list<std::string> built_in_function_names ();
 
   std::list<std::string> cmdline_function_names ();
+
+  std::set<std::string> built_in_methods (const std::string& class_name);
 
   octave_value dump () const;
 
@@ -209,6 +213,14 @@ private:
       class_precedence_table_const_iterator;
   typedef std::map<std::string, std::set<std::string>>::iterator
       class_precedence_table_iterator;
+
+  // Map from built-in class names to set of methods.
+  std::map<std::string, std::set<std::string>> m_built_in_methods_table;
+
+  typedef std::map<std::string, std::set<std::string>>::const_iterator
+      built_in_methods_table_const_iterator;
+  typedef std::map<std::string, std::set<std::string>>::iterator
+      built_in_methods_table_iterator;
 
   // Map from class names to parent class names.
   std::map<std::string, std::list<std::string>> m_parent_map;

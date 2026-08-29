@@ -232,10 +232,6 @@ Library for computing discrete Fourier transforms
 performance for functions that compute discrete Fourier transforms
 (@code{fft}, @code{ifft}, @code{fft2}, etc.)
 
-@item FLTK
-Portable GUI toolkit (@url{http://www.fltk.org}).  FLTK can be
-used to provide windows for Octave's OpenGL-based graphics functions.
-
 @item fontconfig
 Library for configuring and customizing font access
 (@url{https://www.freedesktop.org/wiki/Software/fontconfig}).  Fontconfig
@@ -252,7 +248,7 @@ GPLK is required for the function @code{glpk}.
 @item @nospell{gl2ps}
 OpenGL to PostScript printing library (@url{https://www.geuz.org/gl2ps/}).
 @nospell{gl2ps} is required for printing when using OpenGL-based
-graphics toolkits (currently either FLTK or Qt).
+graphics with the Qt toolkit.
 
 @item gnuplot
 Interactive graphics program (@url{http://www.gnuplot.info}).  gnuplot
@@ -534,10 +530,9 @@ features not generally available in all versions of make.  Modifying
 Octave's makefiles to work with other make programs is probably not
 worth your time; instead, we simply recommend installing GNU Make.
 
-There are currently three options for plotting in Octave: the external
-program gnuplot, the internal graphics engine using OpenGL coupled with
-either FLTK or Qt widgets.  Gnuplot is a command-driven interactive
-function plotting program.
+There are currently two options for plotting in Octave: the external program
+gnuplot and the internal graphics engine using OpenGL coupled with Qt widgets.
+Gnuplot is a command-driven interactive function plotting program.
 
 To compile Octave, you will need a recent version of @code{g++} or other
 ANSI C++ compiler.  In addition, you will need a Fortran 77 compiler or
@@ -868,7 +863,6 @@ please submit a bug report.
 
 @item fontconfig
 
-@item fltk
 @end itemize
 
 @end itemize

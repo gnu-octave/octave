@@ -334,6 +334,18 @@ get_dispatch_type (const octave_value_list& args)
   return get_dispatch_type (args, builtin_type);
 }
 
+DEFUN (__get_dispatch_type__, args, ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {@var{str} =} __get_dispatch_type__ (@var{arg1}, @dots{})
+Return dispatch type for given set of function arguments.
+@end deftypefn */)
+{
+  if (args.length () == 0)
+    print_usage ();
+
+  return octave_value (get_dispatch_type (args));
+}
+
 // Find function definition according to the following precedence list:
 //
 //   nested functions (and subfunctions)

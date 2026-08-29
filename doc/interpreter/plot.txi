@@ -37,19 +37,18 @@ plotting capabilities using OpenGL@.  Which plotting system is used is
 controlled by the @code{graphics_toolkit} function.  @xref{Graphics Toolkits}.
 
 The function call @code{graphics_toolkit ("qt")} selects the Qt/OpenGL system,
-@code{graphics_toolkit ("fltk")} selects the FLTK/OpenGL system, and
-@code{graphics_toolkit ("gnuplot")} selects the gnuplot system.  The three
+and @code{graphics_toolkit ("gnuplot")} selects the gnuplot system.  The two
 systems may be used selectively through the use of the @code{graphics_toolkit}
 property of the graphics handle for each figure.  This is explained in
 @ref{Graphics Data Structures}.
 
-@strong{Caution:} The OpenGL-based toolkits use single precision variables
+@strong{Caution:} The OpenGL-based toolkit uses single precision variables
 internally which limits the maximum value that can be displayed to
 approximately @math{10^{38}}.  If your data contains larger values you must use
 the gnuplot toolkit which supports values up to @math{10^{308}}.  Similarly,
 single precision variables can accurately represent only 6-9 base10 digits.  If
 your data contains very fine differences (approximately 1e-8) these cannot be
-resolved with the OpenGL-based graphics toolkits and the gnuplot toolkit
+resolved with the OpenGL-based graphics toolkit and the gnuplot toolkit
 is required.
 
 @strong{Note:} The gnuplot graphics toolkit uses the third party program
@@ -2808,7 +2807,7 @@ plot (1:10)
 On some platforms, it is possible to choose between hardware (GPU-accelerated)
 and software (CPU-based) OpenGL rendering through the use of the Mesa 3D
 software implementation.  The choice between hardware or software rendering
-only affects the OpenGL graphics toolkits (@qcode{"qt"}, @qcode{"fltk"}).
+only affects the OpenGL graphics toolkit (@qcode{"qt"}).
 Using software rendering can avoid rendering and printing issues due to the
 imperfect OpenGL driver implementations of diverse graphic cards from different
 vendors (notably integrated Intel graphics).  The downside is that software
@@ -2842,7 +2841,7 @@ Change the file extension to @file{.bak} for hardware rendering or to
 @subsubsection Precision issues
 @cindex opengl single precision date time
 
-The OpenGL graphics toolkits (@qcode{"qt"} and @qcode{"fltk"}) use single
+The OpenGL graphics toolkit (@qcode{"qt"}) uses single
 precision for rendering.  This limitation in particular applies to plots of
 time series against serial dates as used by the @code{datenum}, @code{datestr},
 @code{datestruct}, and @code{datetick} functions.

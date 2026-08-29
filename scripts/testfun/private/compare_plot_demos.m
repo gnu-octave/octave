@@ -121,7 +121,7 @@ function compare_plot_demos (varargin)
   else
     ## We need to run matlab manually before the html page can be created
     printf ('\nNow run %s in Matlab.\nAfter this run html_compare_plot_demos,\n', arg.fcn_file);
-    printf ('for example html_compare_plot_demos ({"fltk", "gnuplot", "matlab"}), to create the html page.\n');
+    printf ('for example html_compare_plot_demos ({"qt", "gnuplot", "matlab"}), to create the html page.\n');
   endif
 
 endfunction

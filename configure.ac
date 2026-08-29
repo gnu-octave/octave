@@ -2019,130 +2019,29 @@ DEFAULT_TERMINAL_FONT_SIZE=10
 AC_SUBST(DEFAULT_TERMINAL_FONT)
 AC_SUBST(DEFAULT_TERMINAL_FONT_SIZE)
 
-### Check for FLTK library.
+### Final determination of whether OpenGL graphics features should be built.
+### The Qt widgets that display figures and other graphics objects are drawn
+### with OpenGL, so building the Qt graphics toolkit requires both Qt and the
+### OpenGL libraries.  The rest of the Qt GUI (terminal, editor, documentation
+### browser, variable editor, ...) does not need OpenGL: if it is missing, we
+### still build the GUI but the "qt" graphics toolkit is not available and
+### plotting requires gnuplot.
 
-check_fltk=yes
-build_fltk_graphics=no
-
-AC_ARG_WITH([fltk],
-  [AS_HELP_STRING([--without-fltk],
-    [don't use FLTK libraries, disable OpenGL graphics with FLTK widgets])],
-  [if test x"$withval" = xno; then
-     check_fltk=no
-   fi])
-
-FLTK_CPPFLAGS=
-FLTK_LDFLAGS=
-FLTK_LIBS=
-
-if test $check_fltk = yes; then
-  AC_ARG_WITH([fltk-prefix],
-    [AS_HELP_STRING([--with-fltk-prefix=PFX],
-      [prefix where FLTK is installed])],
-    [fltk_prefix="$withval"],
-    [fltk_prefix=])
-
-  AC_ARG_WITH([fltk-exec-prefix],
-    [AS_HELP_STRING([--with-fltk-exec-prefix=PFX],
-      [exec prefix where FLTK is installed])],
-    [fltk_exec_prefix="$withval"],
-    [fltk_exec_prefix=])
-
-  if test "x$fltk_exec_prefix" != x; then
-    fltk_args="$fltk_args --exec-prefix=$fltk_exec_prefix"
-    if test "x${FLTK_CONFIG+set}" != xset ; then
-      FLTK_CONFIG="$fltk_exec_prefix/bin/fltk-config"
-    fi
-  fi
-
-  if test "x$fltk_prefix" != x; then
-    fltk_args="$fltk_args --prefix=$fltk_prefix"
-    if test x${FLTK_CONFIG+set} != xset ; then
-      FLTK_CONFIG="$fltk_prefix/bin/fltk-config"
-    fi
-  fi
-
-  AC_PATH_PROG([FLTK_CONFIG], [fltk-config], [no])
-
-  warn_fltk_config=
-  warn_fltk_opengl=
-
-  if test "$FLTK_CONFIG" = no; then
-    warn_fltk_config="FLTK config script not found.  FLTK toolkit will be disabled."
-    OCTAVE_CONFIGURE_WARNING([warn_fltk_config])
-  else
-    ## Only include -I options in FLTK_CPPFLAGS
-    fltk_cflags=`$FLTK_CONFIG $fltkconf_args --use-gl --cflags`
-    for fltk_option in $fltk_cflags; do
-      case $fltk_option in
-        -I*)
-          FLTK_CPPFLAGS="$FLTK_CPPFLAGS $fltk_option"
-        ;;
-      esac
-    done
-    FLTK_CPPFLAGS=`echo "$FLTK_CPPFLAGS" | $SED -e 's/^ \+//'`
-
-    ## Split -L and -l options into FLTK_LDFLAGS and FLTK_LIBS
-    fltk_ldflags=`$FLTK_CONFIG $fltkconf_args --use-gl --ldflags`
-    for fltk_option in $fltk_ldflags; do
-      case $fltk_option in
-        -l*)
-          FLTK_LIBS="$FLTK_LIBS $fltk_option"
-        ;;
-        *)
-          FLTK_LDFLAGS="$FLTK_LDFLAGS $fltk_option"
-        ;;
-      esac
-    done
-    FLTK_LIBS=`echo "$FLTK_LIBS" | $SED -e 's/^ \+//'`
-    FLTK_LDFLAGS=`echo "$FLTK_LDFLAGS" | $SED -e 's/^ \+//'`
-
-    case $host_os in
-      mingw*)
-        FLTK_LDFLAGS=`echo $FLTK_LDFLAGS | $SED -e 's/-mwindows//g'`
-      ;;
-    esac
-    AC_LANG_PUSH(C++)
-    AC_CACHE_CHECK([for OpenGL support in FLTK],
-      [oct_cv_lib_fltk_opengl_support],
-      [save_CPPFLAGS="$CPPFLAGS"
-      CPPFLAGS="$CFLAGS $FLTK_CPPFLAGS"
-      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <FL/gl.h>
-        ]], [[
-        int nothing = 0;
-        ]])],
-        oct_cv_lib_fltk_opengl_support=yes,
-        oct_cv_lib_fltk_opengl_support=no)
-      CPPFLAGS="$save_CPPFLAGS"
-      ])
-    if test $oct_cv_lib_fltk_opengl_support = no; then
-      warn_fltk_opengl="FLTK does not have OpenGL support.  OpenGL graphics with FLTK widgets will be disabled."
-    else
-      build_fltk_graphics=yes
-      AC_DEFINE(HAVE_FLTK, 1, [Define to 1 if FLTK is available.])
-    fi
-    AC_LANG_POP(C++)
-
-    if test -n "$warn_fltk_opengl"; then
-      OCTAVE_CONFIGURE_WARNING([warn_fltk_opengl])
-    fi
-  fi
+build_qt_graphics=no
+if test $build_qt_gui = yes && test -n "$OPENGL_LIBS"; then
+  build_qt_graphics=yes
+  AC_DEFINE(HAVE_QT_GRAPHICS, 1,
+    [Define to 1 if the Qt graphics toolkit is built.])
 fi
 
-AC_SUBST(FLTK_CPPFLAGS)
-AC_SUBST(FLTK_LDFLAGS)
-AC_SUBST(FLTK_LIBS)
+AM_CONDITIONAL([AMCOND_BUILD_QT_GRAPHICS], [test $build_qt_graphics = yes])
 
-### Final determination of whether OpenGL graphics features should
-### be built.  Note that there is no longer a way to build the Qt GUI
-### without also building a Qt widget that uses OpenGL graphics so we
-### check $build_qt_gui instead of $build_qt_graphics here.
-if test $build_qt_gui = no && test $build_fltk_graphics = no; then
-  opengl_graphics=no
-else
-  opengl_graphics=yes
+if test $build_qt_gui = yes && test $build_qt_graphics = no; then
+  warn_qt_graphics="OpenGL libs (GL and GLU) not found.  The Qt graphics toolkit will not be built and creating plots will require gnuplot."
+  OCTAVE_CONFIGURE_WARNING([warn_qt_graphics])
 fi
+
+opengl_graphics=$build_qt_graphics
 
 ## Check for gl2ps which is required for printing with OpenGL graphics.
 
@@ -2434,42 +2333,41 @@ AC_ARG_VAR([SUNDIALS_MPI_CPPFLAGS],
 sundials_save_CPPFLAGS="$CPPFLAGS"
 
 if test -z "$SUNDIALS_MPI_CPPFLAGS"; then
-  AC_LANG_PUSH([C++])
+  AC_CACHE_CHECK([for any MPI include flags required for SUNDIALS serial headers],
+    [oct_cv_lib_sundials_mpi_cppflags],
+    [oct_cv_lib_sundials_mpi_cppflags=""
+    AC_LANG_PUSH([C++])
+    # Check whether SUNDIALS serial headers requires any MPI include flags
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <nvector/nvector_serial.h>
+        ]], [[]])],
+      [octave_sundials_needs_mpi=no],
+      [octave_sundials_needs_mpi=yes])
 
-  AC_MSG_CHECKING([whether SUNDIALS serial headers require MPI include flags])
-  AC_COMPILE_IFELSE(
-    [AC_LANG_PROGRAM(
-      [[#include <nvector/nvector_serial.h>]],
-      [[]])],
-    [octave_sundials_needs_mpi=no],
-    [octave_sundials_needs_mpi=yes])
-  AC_MSG_RESULT([$octave_sundials_needs_mpi])
+    if test $octave_sundials_needs_mpi = yes && test -n "$PKG_CONFIG"; then
+      for octave_mpi_pc in mpi ompi mpich; do
+        if $PKG_CONFIG --exists "$octave_mpi_pc"; then
+          octave_mpi_cppflags=`$PKG_CONFIG --cflags-only-I "$octave_mpi_pc"`
 
-  if test $octave_sundials_needs_mpi = yes && test -n "$PKG_CONFIG"; then
-    for octave_mpi_pc in mpi ompi mpich; do
-      if $PKG_CONFIG --exists "$octave_mpi_pc"; then
-        octave_mpi_cppflags=`$PKG_CONFIG --cflags-only-I "$octave_mpi_pc"`
+          CPPFLAGS="$octave_mpi_cppflags $sundials_save_CPPFLAGS"
+          AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+              #include <nvector/nvector_serial.h>
+              ]], [[]])],
+            [octave_sundials_mpi_flags_work=yes],
+            [octave_sundials_mpi_flags_work=no])
 
-        CPPFLAGS="$octave_mpi_cppflags $sundials_save_CPPFLAGS"
-        AC_MSG_CHECKING([whether $octave_mpi_pc flags work with SUNDIALS])
-        AC_COMPILE_IFELSE(
-          [AC_LANG_PROGRAM(
-            [[#include <nvector/nvector_serial.h>]],
-            [[]])],
-          [octave_sundials_mpi_flags_work=yes],
-          [octave_sundials_mpi_flags_work=no])
-        AC_MSG_RESULT([$octave_sundials_mpi_flags_work])
-
-        if test $octave_sundials_mpi_flags_work = yes; then
-          SUNDIALS_MPI_CPPFLAGS="$octave_mpi_cppflags"
-          break
+          if test $octave_sundials_mpi_flags_work = yes; then
+            oct_cv_lib_sundials_mpi_cppflags="$octave_mpi_cppflags"
+            break
+          fi
         fi
-      fi
-    done
-  fi
+      done
+    fi
+    CPPFLAGS="$sundials_save_CPPFLAGS"
+    AC_LANG_POP([C++])
+  ])
 
-  CPPFLAGS="$sundials_save_CPPFLAGS"
-  AC_LANG_POP([C++])
+  SUNDIALS_MPI_CPPFLAGS="$oct_cv_lib_sundials_mpi_cppflags"
 fi
 
 AC_SUBST([SUNDIALS_MPI_CPPFLAGS])
@@ -3248,11 +3146,7 @@ LIBOCTAVE_LINK_OPTS="$CURL_LDFLAGS $PCRE_LDFLAGS $FFTW_XLDFLAGS $ARPACK_LDFLAGS 
 AC_SUBST(LIBOCTAVE_LINK_DEPS)
 AC_SUBST(LIBOCTAVE_LINK_OPTS)
 
-LIBOCTINTERP_LINK_DEPS="$WIN32_API_LIBS $JAVA_LIBS $LTLIBREADLINE $HDF5_LIBS $MAGICK_LIBS $Z_LIBS $FFTW_XLIBS $SPARSE_XLIBS $FONTCONFIG_LIBS $FT2_LIBS $FREETYPE_LIBS $CARBON_LIBS $WAYLAND_CLIENT_LIBS $X11_LIBS $GL2PS_LIBS $OPENGL_LIBS $LAPACK_LIBS"
-
-## BLAS/LAPACK may be in the same library (OpenBLAS, MKL, Accelerate)
-AS_IF([test -z "$LAPACK_LIBS"],
-  [LIBOCTINTERP_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS $BLAS_LIBS"])
+LIBOCTINTERP_LINK_DEPS="$WIN32_API_LIBS $JAVA_LIBS $LTLIBREADLINE $HDF5_LIBS $MAGICK_LIBS $Z_LIBS $FFTW_XLIBS $SPARSE_XLIBS $FONTCONFIG_LIBS $FT2_LIBS $FREETYPE_LIBS $CARBON_LIBS $WAYLAND_CLIENT_LIBS $X11_LIBS $GL2PS_LIBS $OPENGL_LIBS $LAPACK_LIBS $BLAS_LIBS $LIBS $FLIBS"
 
 LIBOCTINTERP_LINK_OPTS="$HDF5_LDFLAGS $MAGICK_LDFLAGS $Z_LDFLAGS $FFTW_XLDFLAGS $SPARSE_XLDFLAGS $FT2_LDFLAGS $WAYLAND_CLIENT_LDFLAGS"
 
@@ -3514,9 +3408,6 @@ Octave is now configured for $canonical_host_type
   FFTW3F CPPFLAGS:               $FFTW3F_CPPFLAGS
   FFTW3F LDFLAGS:                $FFTW3F_LDFLAGS
   FFTW3F libraries:              $FFTW3F_LIBS
-  FLTK CPPFLAGS:                 $FLTK_CPPFLAGS
-  FLTK LDFLAGS:                  $FLTK_LDFLAGS
-  FLTK libraries:                $FLTK_LIBS
   fontconfig CPPFLAGS:           $FONTCONFIG_CPPFLAGS
   fontconfig libraries:          $FONTCONFIG_LIBS
   FreeType2 CPPFLAGS:            $FT2_CPPFLAGS
@@ -3600,6 +3491,7 @@ Octave is now configured for $canonical_host_type
 
   Build Bytecode Evaluator:             $ENABLE_BYTECODE_EVALUATOR
   Build Octave Qt GUI:                  $BUILD_QT_SUMMARY_MSG
+  Build Qt graphics toolkit:            $build_qt_graphics
   Build Java interface:                 $build_java
   Build static libraries:               $STATIC_LIBS
   Build shared libraries:               $SHARED_LIBS
@@ -3620,13 +3512,6 @@ Octave is now configured for $canonical_host_type
 warn_msg_printed=false
 
 OCTAVE_CONFIGURE_WARNING_SUMMARY
-
-if test $opengl_graphics = no; then
-  AC_MSG_WARN([])
-  AC_MSG_WARN([The libraries needed for OpenGL graphics were not found.])
-  AC_MSG_WARN([Creating plots is still possible if gnuplot is installed.])
-  warn_msg_printed=true
-fi
 
 if $warn_msg_printed; then
   AC_MSG_NOTICE([])

@@ -174,7 +174,7 @@ function hs = __scatter__ (varargin)
     hs = __gnuplot_scatter__ (hax, fcn, x, y, z, c, s, marker, filled, newargs);
 
   else
-    ## Use OpenGL rendering for "qt" and "fltk" graphics toolkits
+    ## Use OpenGL rendering for the "qt" graphics toolkit
     if (isempty (x))
       c = x;
     endif

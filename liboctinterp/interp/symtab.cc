@@ -592,6 +592,28 @@ symbol_table::install_built_in_dispatch (const std::string& name,
       fcn_info& finfo = p->second;
 
       finfo.install_built_in_dispatch (klass);
+
+      m_built_in_methods_table[klass].insert (name);
+    }
+  else
+    error ("install_built_in_dispatch: '%s' is undefined", name.c_str ());
+}
+
+void
+symbol_table::install_built_in_dispatch (const std::string& name, const std::list<std::string>& klass_list)
+{
+  auto p = m_fcn_table.find (name);
+
+  if (p != m_fcn_table.end ())
+    {
+      fcn_info& finfo = p->second;
+
+      for (const auto& klass : klass_list)
+        {
+          finfo.install_built_in_dispatch (klass);
+
+          m_built_in_methods_table[klass].insert (name);
+        }
     }
   else
     error ("install_built_in_dispatch: '%s' is undefined", name.c_str ());
@@ -650,6 +672,17 @@ symbol_table::cmdline_function_names ()
     retval.sort ();
 
   return retval;
+}
+
+std::set<std::string>
+symbol_table::built_in_methods (const std::string& class_name)
+{
+  built_in_methods_table_const_iterator it = m_built_in_methods_table.find (class_name);
+
+  if (it != m_built_in_methods_table.end ())
+    return it->second;
+
+  return std::set<std::string> ();
 }
 
 template <template <typename, typename...> class C, typename V,

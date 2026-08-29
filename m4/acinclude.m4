@@ -1691,6 +1691,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
           ]])],
           oct_cv_func_glblendfuncseparate_as_glext=yes,
           oct_cv_func_glblendfuncseparate_as_glext=no)
+        AC_LANG_POP(C++)
         ])
       if test $oct_cv_func_glblendfuncseparate_as_glext = yes; then
         AC_DEFINE(HAVE_GLBLENDFUNCSEPARATE, 1, [Define to 1 if glBlendFuncSeparate can be used directly.])

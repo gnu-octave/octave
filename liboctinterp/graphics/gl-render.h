@@ -232,11 +232,15 @@ private:
   // The graphics m_toolkit associated with the figure being rendered.
   graphics_toolkit m_toolkit;
 
+#if defined (HAVE_OPENGL)
+
   // Z projection limits in windows coordinate
   double m_xZ1, m_xZ2;
 
   // call lists identifiers for markers
   unsigned int m_marker_id, m_filled_marker_id;
+
+#endif
 
   // camera information for primitive sorting and lighting
   ColumnVector m_camera_pos, m_camera_dir, m_view_vector;
@@ -246,9 +250,13 @@ private:
 
   text_renderer m_txt_renderer;
 
+#if defined (HAVE_OPENGL)
+
   // light object present and visible
   unsigned int m_current_light;
   unsigned int m_max_lights;
+
+#endif
 
   // Indicate we are drawing for selection purpose
   bool m_selecting;

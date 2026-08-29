@@ -28,14 +28,14 @@
 
 #include "octave-config.h"
 
+#include <array>
 #include <iosfwd>
 #include <string>
+#include <string_view>
 
 #include "Array-fwd.h"
 #include "str-vec.h"
 #include "dColVector.h"
-
-#define OCTAVE_SPARSE_CONTROLS_SIZE 13
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -44,10 +44,7 @@ class OCTAVE_API sparse_params
 protected:
 
   sparse_params ()
-    : m_params (OCTAVE_SPARSE_CONTROLS_SIZE),
-      m_keys (OCTAVE_SPARSE_CONTROLS_SIZE)
   {
-    init_keys ();
     do_defaults ();
   }
 
@@ -79,11 +76,18 @@ public:
 
   static void print_info (std::ostream& os, const std::string& prefix);
 
+  // Number of sparse parameters.
+  static constexpr octave_idx_type NUM_PARAMS = 13;
+
 private:
 
-  ColumnVector m_params;
+  static constexpr std::array<std::string_view, NUM_PARAMS> s_keys = {{
+    "spumoni", "ths_rel", "ths_abs", "exact_d", "supernd",
+    "rreduce", "wh_frac", "autommd", "autoamd", "piv_tol",
+    "bandden", "umfpack", "sym_tol"
+  }};
 
-  string_vector m_keys;
+  std::array<double, NUM_PARAMS> m_params;
 
   static sparse_params *s_instance;
 
@@ -97,9 +101,9 @@ private:
 
   void do_tight ();
 
-  string_vector do_get_keys () const { return m_keys; }
+  string_vector do_get_keys () const;
 
-  ColumnVector do_get_vals () const { return m_params; }
+  ColumnVector do_get_vals () const;
 
   bool do_set_vals (const Array<double>& vals);
 
@@ -110,8 +114,6 @@ private:
   double do_get_bandden ();
 
   void do_print_info (std::ostream& os, const std::string& prefix) const;
-
-  void init_keys ();
 };
 
 OCTAVE_END_NAMESPACE(octave)

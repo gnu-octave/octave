@@ -11,7 +11,6 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 * The constructors of `classdef` classes now support returning more than one
   output argument.  The first output argument must be the constructed object.
 
-
 ### Graphical User Interface
 
 * When opening a file from the Find Files dialog, all occurrences of the search
@@ -19,6 +18,8 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 
 ### Graphics backend
 
+* The FLTK graphics toolkit has been removed.  The Qt graphics toolkit is the
+  supported OpenGL-based graphics backend.
 
 ### Matlab compatibility
 

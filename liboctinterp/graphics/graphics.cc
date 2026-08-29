@@ -1284,7 +1284,8 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
     CONVERT_CDATA_1 (boolNDArray, bool_, false);
   else
     {
-      // Don't throw an error; leads to an incomplete FLTK object (bug #46933).
+      // Don't throw an error; leads to an incomplete graphics object
+      // (bug #46933).
       warning ("unsupported type for cdata (= %s).  "
                "Valid types are int8, int16, int32, int64, uint8, uint16, "
                "uint32, uint64, double, single, and bool.",

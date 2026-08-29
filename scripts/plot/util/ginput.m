@@ -85,10 +85,6 @@ function varargout = ginput (n = -1)
          "pointer", "crosshair", "__mouse_mode__", "none");
 
     do
-      if (strcmp (toolkit, "fltk"))
-        __fltk_check__ ();
-      endif
-
       ## Release CPU.
       pause (0.01);
 

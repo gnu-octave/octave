@@ -110,8 +110,7 @@ public:
 };
 
 // Create a handle to an unnamed internal function.  There will be no
-// way to save and reload it.  See, for example, the F__fltk_check__
-// function in __init_fltk__.cc.
+// way to save and reload it.
 
 class internal_fcn_handle : public base_fcn_handle
 {

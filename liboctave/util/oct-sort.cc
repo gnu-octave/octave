@@ -27,9 +27,10 @@
 // C++ source files that should have included config.h before including
 // this file.
 
+#include <cstddef>
+
 #include <algorithm>
 #include <concepts>
-#include <cstddef>
 #include <functional>
 #include <limits>
 #include <memory>
@@ -42,15 +43,15 @@
 
 namespace octave_sort_detail
 {
-  inline constexpr std::size_t num_8bit_values = 256;
-  inline constexpr std::size_t num_16bit_values = 65536;
+  inline constexpr std::size_t NUM_8BIT_VALUES = 256;
+  inline constexpr std::size_t NUM_16BIT_VALUES = 65536;
 
   // For short arrays, clearing even the 8-bit histogram costs more than STL.
-  inline constexpr octave_idx_type counting_sort_8bit_threshold = 32;
+  inline constexpr octave_idx_type COUNTING_SORT_8BIT_THRESHOLD = 32;
 
   // Zeroing 65,536 counters costs enough that the O(N) 16-bit path only
   // starts winning for larger arrays.
-  inline constexpr octave_idx_type counting_sort_16bit_threshold = 131072;
+  inline constexpr octave_idx_type COUNTING_SORT_16BIT_THRESHOLD = 131072;
 
   enum class standard_order
   {
@@ -306,9 +307,9 @@ namespace octave_sort_detail
 
     if constexpr (order != standard_order::none && byte_counting_sortable<T>)
       {
-        if (nel >= counting_sort_8bit_threshold)
+        if (nel >= COUNTING_SORT_8BIT_THRESHOLD)
           {
-            sort.template operator()<num_8bit_values>
+            sort.template operator()<NUM_8BIT_VALUES>
               (order == standard_order::ascending);
             return true;
           }
@@ -316,9 +317,9 @@ namespace octave_sort_detail
     else if constexpr (order != standard_order::none
                        && word_counting_sortable<T>)
       {
-        if (nel >= counting_sort_16bit_threshold)
+        if (nel >= COUNTING_SORT_16BIT_THRESHOLD)
           {
-            sort.template operator()<num_16bit_values>
+            sort.template operator()<NUM_16BIT_VALUES>
               (order == standard_order::ascending);
             return true;
           }

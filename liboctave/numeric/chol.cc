@@ -85,6 +85,39 @@ blas_potri (const F77_INT& n, FloatComplexMatrix& r, F77_INT& info, bool is_uppe
                              F77_CHAR_ARG_LEN (1));
 }
 
+// LAPACK only defines that it returns the requested triangle (upper or lower).
+// Historically, no implementation of LAPACK has modified the other triangle
+// of the input matrix.  In 2026, however, Apple's vecLib has started using
+// the other triangle as a scratchpad memory.  For this platform it is now
+// required to clear the "unused" triangle after the call to LAPACK.
+// The function is inline and will be optimized out on platforms which do not
+// require it.
+
+template <typename T>
+inline void
+clear_unused_triangle (T& a, bool is_upper)
+{
+#if defined (__APPLE__)
+  octave_idx_type n = a.rows ();
+
+  if (is_upper)
+    {
+      for (octave_idx_type j = 0; j < n; j++)
+        for (octave_idx_type i = j+1; i < n; i++)
+          a.xelem (i, j) = 0;
+    }
+  else
+    {
+      for (octave_idx_type j = 0; j < n; j++)
+        for (octave_idx_type i = 0; i < j; i++)
+          a.xelem (i, j) = 0;
+    }
+#else
+  octave_unused_parameter (a);
+  octave_unused_parameter (is_upper);
+#endif
+}
+
 template <typename T>
 static T
 chol2inv_internal (const T& r, bool is_upper = true)
@@ -358,6 +391,8 @@ chol<Matrix>::init (const Matrix& a, bool upper, bool calc_cond)
         info = -1;
     }
 
+  clear_unused_triangle (m_chol_mat, m_is_upper);
+
   return info;
 }
 
@@ -533,6 +568,8 @@ chol<FloatMatrix>::init (const FloatMatrix& a, bool upper, bool calc_cond)
         info = -1;
     }
 
+  clear_unused_triangle (m_chol_mat, m_is_upper);
+
   return info;
 }
 
@@ -699,7 +736,8 @@ chol<ComplexMatrix>::init (const ComplexMatrix& a, bool upper, bool calc_cond)
       // Now calculate the condition number for non-singular matrix.
       OCTAVE_LOCAL_BUFFER (Complex, pz, 2*n);
       OCTAVE_LOCAL_BUFFER (double, prz, n);
-      F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n,
+      const char *uplo = m_is_upper ? "U" : "L";
+      F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 (uplo, 1), n,
                                  F77_DBLE_CMPLX_ARG (h), n, anorm, m_rcond,
                                  F77_DBLE_CMPLX_ARG (pz), prz, zpocon_info
                                  F77_CHAR_ARG_LEN (1)));
@@ -707,6 +745,8 @@ chol<ComplexMatrix>::init (const ComplexMatrix& a, bool upper, bool calc_cond)
       if (zpocon_info != 0)
         info = -1;
     }
+
+  clear_unused_triangle (m_chol_mat, m_is_upper);
 
   return info;
 }
@@ -889,7 +929,8 @@ chol<FloatComplexMatrix>::init (const FloatComplexMatrix& a, bool upper,
       // Now calculate the condition number for non-singular matrix.
       OCTAVE_LOCAL_BUFFER (FloatComplex, pz, 2*n);
       OCTAVE_LOCAL_BUFFER (float, prz, n);
-      F77_XFCN (cpocon, CPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n,
+      const char *uplo = m_is_upper ? "U" : "L";
+      F77_XFCN (cpocon, CPOCON, (F77_CONST_CHAR_ARG2 (uplo, 1), n,
                                  F77_CMPLX_ARG (h), n, anorm, m_rcond,
                                  F77_CMPLX_ARG (pz), prz, cpocon_info
                                  F77_CHAR_ARG_LEN (1)));
@@ -897,6 +938,8 @@ chol<FloatComplexMatrix>::init (const FloatComplexMatrix& a, bool upper,
       if (cpocon_info != 0)
         info = -1;
     }
+
+  clear_unused_triangle (m_chol_mat, m_is_upper);
 
   return info;
 }

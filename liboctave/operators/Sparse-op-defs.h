@@ -3360,8 +3360,6 @@
   octave_idx_type nr = rows ();                                          \
   octave_idx_type nc = cols ();                                          \
                                                                          \
-  EL_TYPE inf = std::numeric_limits<EL_TYPE>::infinity ();               \
-                                                                         \
   RET_TYPE retval;                                                       \
                                                                          \
   if (nr > 0 && nc > 0)                                                  \
@@ -3374,30 +3372,14 @@
             tmp[i] = 0.0;                                                \
           for (octave_idx_type i = 0; i < nr; i++)                       \
             {                                                            \
-              EL_TYPE acc = 0.0;                                         \
-              EL_TYPE err = 0.0;                                         \
-              bool posinf = false;                                       \
-              bool neginf = false;                                       \
+              xsum_accumulator<EL_TYPE> accum;                           \
               for (octave_idx_type j = 0; j < nc; j++)                   \
                 {                                                        \
                   EL_TYPE d = elem (i, j);                               \
-                  if (d == EL_TYPE ());                                  \
-                  else if (nanflag && octave::math::isnan (d));          \
-                  else if (! octave::math::isinf (d))                    \
-                    twosum_accum (acc, err, d);                          \
-                  else if (d > 0.0)                                      \
-                    posinf = true;                                       \
-                  else                                                   \
-                    neginf = true;                                       \
+                  if (d != EL_TYPE () && accum.add (d, nanflag))         \
+                    break;                                               \
                 }                                                        \
-              if (posinf && neginf)                                      \
-                tmp[i] = NAN;                                            \
-              else if (posinf)                                           \
-                tmp[i] = acc + err + inf;                                \
-              else if (neginf)                                           \
-                tmp[i] = acc + err - inf;                                \
-              else                                                       \
-                tmp[i] = acc + err;                                      \
+              tmp[i] = accum.value ();                                   \
             }                                                            \
           octave_idx_type nel = 0;                                       \
           for (octave_idx_type i = 0; i < nr; i++)                       \
@@ -3420,30 +3402,14 @@
                                                                          \
           for (octave_idx_type j = 0; j < nc; j++)                       \
             {                                                            \
-              EL_TYPE acc = 0.0;                                         \
-              EL_TYPE err = 0.0;                                         \
-              bool posinf = false;                                       \
-              bool neginf = false;                                       \
+              xsum_accumulator<EL_TYPE> accum;                           \
               for (octave_idx_type i = 0; i < nr; i++)                   \
                 {                                                        \
                   EL_TYPE d = elem (i, j);                               \
-                  if (d == EL_TYPE ());                                  \
-                  else if (nanflag && octave::math::isnan (d));          \
-                  else if (! octave::math::isinf (d))                    \
-                    twosum_accum (acc, err, d);                          \
-                  else if (d > 0.0)                                      \
-                    posinf = true;                                       \
-                  else                                                   \
-                    neginf = true;                                       \
+                  if (d != EL_TYPE () && accum.add (d, nanflag))         \
+                    break;                                               \
                 }                                                        \
-              if (posinf && neginf)                                      \
-                tmp[j] = NAN;                                            \
-              else if (posinf)                                           \
-                tmp[j] = acc + err + inf;                                \
-              else if (neginf)                                           \
-                tmp[j] = acc + err - inf;                                \
-              else                                                       \
-                tmp[j] = acc + err;                                      \
+              tmp[j] = accum.value ();                                   \
             }                                                            \
           octave_idx_type nel = 0;                                       \
           for (octave_idx_type i = 0; i < nc; i++)                       \

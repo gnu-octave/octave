@@ -4759,12 +4759,202 @@ operating dimension.
 %!assert (sum ([1, Inf], "extra"), Inf)
 %!assert (sum ([1, -Inf], "extra"), -Inf)
 %!assert (sum ([Inf, -Inf], "extra"), NaN)
-%!assert (sum ([realmax, 1e300], "extra"), Inf)
-%!assert (sum ([realmax/2, realmax/2, 1e300], "extra"), Inf)
-%!assert (sum ([realmax/2, (2 * (realmax/3))], "extra"), Inf)
+%!assert <*67919> (sum ([realmax, 1e300], "extra"), Inf)
+%!assert <*67919> (sum ([realmax/2, realmax/2, 1e300], "extra"), Inf)
+%!assert <*67919> (sum ([realmax/2, (2 * (realmax/3))], "extra"), Inf)
+%!assert <*67919> (sum ([Inf, -realmax, -realmax], "extra"), NaN)
+%!assert <*67919> (sum ([-realmax, -realmax, Inf], "extra"), NaN)
+%!assert <*67919> (sum ([-Inf, realmax, realmax], "extra"), NaN)
+%!assert <*67919> (sum ([realmax, realmax, -Inf], "extra"), NaN)
 %!assert (sum (sparse ([1, Inf]), "extra"), sparse (Inf))
 %!assert (sum (sparse ([1, -Inf]), "extra"), sparse (-Inf))
 %!assert (sum (sparse ([Inf, -Inf]), "extra"), sparse (NaN))
+%!assert <*67919> (sum (sparse ([Inf, -realmax, -realmax]), "extra"), sparse (NaN))
+%!assert <*67919> (sum (sparse ([-realmax, -realmax, Inf]), "extra"), sparse (NaN))
+%!assert <*67919> (sum (sparse ([-Inf, realmax, realmax]), "extra"), sparse (NaN))
+%!assert <*67919> (sum (sparse ([realmax, realmax, -Inf]), "extra"), sparse (NaN))
+
+## Test complex inputs with 'extra' option
+%!test <*67919>
+%! s = sum (complex ([Inf, 1], [2, 3]), 2, "extra");
+%! assert (real (s), Inf);
+%! assert (imag (s), 5);
+%! s = sum (complex ([-Inf, 1], [2, 3]), 2, "extra");
+%! assert (real (s), -Inf);
+%! assert (imag (s), 5);
+%! s = sum (complex ([Inf, -Inf], [2, 3]), 2, "extra");
+%! assert (real (s), NaN);
+%! assert (imag (s), 5);
+%! s = sum (complex ([1, 1], [Inf, 2]), 2, "extra");
+%! assert (real (s), 2);
+%! assert (imag (s), Inf);
+%! s = sum (complex ([1, 1], [-Inf, 2]), 2, "extra");
+%! assert (real (s), 2);
+%! assert (imag (s), -Inf);
+%! s = sum (complex ([1, 1], [Inf, -Inf]), 2, "extra");
+%! assert (real (s), 2);
+%! assert (imag (s), NaN);
+%!test <*67919>
+%! r = realmax;
+%! s = sum (complex ([r, r], [1, 1]), 2, "extra");
+%! assert (real (s), Inf);
+%! assert (imag (s), 2);
+%! s = sum (complex ([-r, -r], [1, 1]), 2, "extra");
+%! assert (real (s), -Inf);
+%! assert (imag (s), 2);
+%! s = sum (complex ([1, 1], [r, r]), 2, "extra");
+%! assert (real (s), 2);
+%! assert (imag (s), Inf);
+%! s = sum (complex ([r, r], [r, r]), 2, "extra");
+%! assert (real (s), Inf);
+%! assert (imag (s), Inf);
+%!test <*67919>
+%! r = realmax;
+%! s = sum (complex ([Inf, -r, -r], [1, 1, 1]), 2, "extra");
+%! assert (real (s), NaN);
+%! assert (imag (s), 3);
+%! s = sum (complex ([-r, -r, Inf], [1, 1, 1]), 2, "extra");
+%! assert (real (s), NaN);
+%! assert (imag (s), 3);
+%! s = sum (complex ([-Inf, r, r], [1, 1, 1]), 2, "extra");
+%! assert (real (s), NaN);
+%! assert (imag (s), 3);
+%! s = sum (complex ([r, r, -Inf], [1, 1, 1]), 2, "extra");
+%! assert (real (s), NaN);
+%! assert (imag (s), 3);
+%! s = sum (complex ([1, 1, 1], [Inf, -r, -r]), 2, "extra");
+%! assert (real (s), 3);
+%! assert (imag (s), NaN);
+%!test <*67919>
+%! x = complex ([Inf, 1; 1, 1], [2, Inf; 3, 2]);
+%! s = sum (x, 1, "extra");
+%! assert (real (s), [Inf, 2]);
+%! assert (imag (s), [5, Inf]);
+%! s = sum (x, 2, "extra");
+%! assert (real (s), [Inf; 2]);
+%! assert (imag (s), [Inf; 5]);
+%! xr = ones (2, 2, 2);
+%! xi = reshape (1:8, 2, 2, 2);
+%! xr(1, 1, 1) = Inf;
+%! x = complex (xr, xi);
+%! s = sum (x, 3, "extra");
+%! assert (real (s), [Inf, 2; 2, 2]);
+%! assert (imag (s), [6, 10; 8, 12]);
+%! s = sum (x, [1, 3], "extra");
+%! assert (real (s), [Inf, 4]);
+%! assert (imag (s), [14, 22]);
+%! s = sum (x, "all", "extra");
+%! assert (real (s), Inf);
+%! assert (imag (s), 36);
+%!test <*67919>
+%! x = complex ([NaN, 1], [2, 3]);
+%! s = sum (x, 2, "includenan", "extra");
+%! assert (real (s), NaN);
+%! assert (imag (s), 5);
+%! s = sum (x, 2, "omitnan", "extra");
+%! assert (real (s), 1);
+%! assert (imag (s), 3);
+%! x = complex ([1, 1], [NaN, 2]);
+%! s = sum (x, 2, "includenan", "extra");
+%! assert (real (s), 2);
+%! assert (imag (s), NaN);
+%! s = sum (x, 2, "omitnan", "extra");
+%! assert (real (s), 1);
+%! assert (imag (s), 2);
+%!test <*67919>
+%! ## Extra and ordinary sum must classify nonfinite complex components alike
+%! ## when no finite accumulator overflow occurs.
+%! pairs = [Inf, 1; -Inf, 1; Inf, -Inf; NaN, 1; 2, 3];
+%! npairs = rows (pairs);
+%! xr = kron (pairs, ones (npairs, 1));
+%! xi = repmat (pairs, npairs, 1);
+%! x = complex (xr, xi);
+%! expected = sum (x, 2);
+%! actual = sum (x, 2, "extra");
+%! assert (isnan (real (actual)), isnan (real (expected)));
+%! idx = ! isnan (real (expected));
+%! assert (real (actual(idx)), real (expected(idx)));
+%! assert (isnan (imag (actual)), isnan (imag (expected)));
+%! idx = ! isnan (imag (expected));
+%! assert (imag (actual(idx)), imag (expected(idx)));
+%! actual = sum (sparse (x), 2, "extra");
+%! assert (issparse (actual));
+%! actual = full (actual);
+%! assert (isnan (real (actual)), isnan (real (expected)));
+%! idx = ! isnan (real (expected));
+%! assert (real (actual(idx)), real (expected(idx)));
+%! assert (isnan (imag (actual)), isnan (imag (expected)));
+%! idx = ! isnan (imag (expected));
+%! assert (imag (actual(idx)), imag (expected(idx)));
+%!test <*67919>
+%! f = flintmax ("double");
+%! x = complex ([f, 1, -1], [f, 1, -1]);
+%! s = sum (x, 2, "extra");
+%! assert (real (s) - f, 0);
+%! assert (imag (s) - f, 0);
+%! s = sum (x, 2);
+%! assert (real (s) - f, -1);
+%! assert (imag (s) - f, -1);
+%!test <*67919>
+%! x = complex (single ([Inf, 1]), single ([2, 3]));
+%! s = sum (x, 2, "extra");
+%! assert (isa (s, "double"));
+%! assert (real (s), Inf);
+%! assert (imag (s), 5);
+
+## Test complex inputs with 'extra' option for sparse matrices
+%!test <*67919>
+%! r = realmax;
+%! xvals = cell (1, 6);
+%! xvals{1} = complex ([Inf, 1], [2, 3]);
+%! xvals{2} = complex ([Inf, -Inf], [2, 3]);
+%! xvals{3} = complex ([1, 1], [Inf, -Inf]);
+%! xvals{4} = complex ([r, r], [1, 1]);
+%! xvals{5} = complex ([1, 1], [r, r]);
+%! xvals{6} = complex ([r, r], [r, r]);
+%! expected_real = [Inf, NaN, 2, Inf, 2, Inf];
+%! expected_imag = [5, 5, NaN, 2, Inf, Inf];
+%! for k = 1:numel (xvals)
+%!   x = sparse (xvals{k});
+%!   s = sum (x, 2, "extra");
+%!   assert (issparse (s), "sparse complex row case %d is not sparse", k);
+%!   assert (isequaln (full (real (s)), expected_real(k)),
+%!           "sparse complex row case %d has wrong real component", k);
+%!   assert (isequaln (full (imag (s)), expected_imag(k)),
+%!           "sparse complex row case %d has wrong imaginary component", k);
+%!   x = sparse (transpose (xvals{k}));
+%!   s = sum (x, 1, "extra");
+%!   assert (issparse (s), "sparse complex column case %d is not sparse", k);
+%!   assert (isequaln (full (real (s)), expected_real(k)),
+%!           "sparse complex column case %d has wrong real component", k);
+%!   assert (isequaln (full (imag (s)), expected_imag(k)),
+%!           "sparse complex column case %d has wrong imaginary component", k);
+%! endfor
+%! x = sparse (complex ([NaN, 1], [2, 3]));
+%! s = sum (x, 2, "includenan", "extra");
+%! assert (issparse (s));
+%! assert (full (real (s)), NaN);
+%! assert (full (imag (s)), 5);
+%! s = sum (x, 2, "omitnan", "extra");
+%! assert (issparse (s));
+%! assert (full (real (s)), 1);
+%! assert (full (imag (s)), 3);
+%!test <*67919>
+%! r = realmax;
+%! x = sparse (complex ([Inf, -r, -r], [1, 1, 1]));
+%! s = sum (x, 2, "extra");
+%! assert (issparse (s));
+%! assert (full (real (s)), NaN);
+%! assert (full (imag (s)), 3);
+%! s = sum (transpose (x), 1, "extra");
+%! assert (issparse (s));
+%! assert (full (real (s)), NaN);
+%! assert (full (imag (s)), 3);
+%! x = sparse (complex ([r, r, -Inf], [1, 1, 1]));
+%! s = sum (x, 2, "extra");
+%! assert (issparse (s));
+%! assert (full (real (s)), NaN);
+%! assert (full (imag (s)), 3);
 %!test
 %! x = [flintmax("double"), 1, -1];
 %! assert (sum (x, "extra") - flintmax ("double"), 0);

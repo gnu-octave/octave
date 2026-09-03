@@ -144,7 +144,7 @@ binmap (const Array<T>& xa, const R& y, F fcn)
 {
   octave_idx_type len = xa.numel ();
 
-  const R *x = xa.data ();
+  const T *x = xa.data ();
 
   Array<U> result (xa.dims ());
   U *p = result.rwdata ();
@@ -194,7 +194,7 @@ binmap (const Array<T>& xa, const Array<R>& ya, F fcn, const char *name)
   octave_idx_type len = xa.numel ();
 
   const T *x = xa.data ();
-  const T *y = ya.data ();
+  const R *y = ya.data ();
 
   Array<U> result (xa.dims ());
   U *p = result.rwdata ();
@@ -297,7 +297,7 @@ binmap (const Sparse<T>& xs, const Sparse<R>& ys, F fcn, const char *name)
       // Sparsity-preserving function.  Do it efficiently.
       octave_idx_type nr = xs.rows ();
       octave_idx_type nc = xs.cols ();
-      Sparse<T> retval (nr, nc, xs.nnz () + ys.nnz ());
+      Sparse<U> retval (nr, nc, xs.nnz () + ys.nnz ());
 
       octave_idx_type nz = 0;
       for (octave_idx_type j = 0; j < nc; j++)

@@ -1154,9 +1154,9 @@ AC_CHECK_HEADERS([termio.h], have_termio_h=yes, have_termio_h=no)
 AC_CHECK_HEADERS([sgtty.h], have_sgtty_h=yes, have_sgtty_h=no)
 AC_CHECK_HEADERS([conio.h], have_conio_h=yes, have_conio_h=no)
 
-if test $have_termios_h != yes \
-    && test $have_termio_h != yes \
-    && test $have_sgtty_h != yes; then
+if    test $have_termios_h != yes \
+   && test $have_termio_h != yes \
+   && test $have_sgtty_h != yes; then
   AC_MSG_WARN([couldn't find one of termios.h, termio.h, or sgtty.h!])
 fi
 
@@ -1937,23 +1937,35 @@ AC_ARG_WITH([freetype],
    fi])
 
 if test $check_freetype = yes; then
-  PKG_CHECK_MODULES([FT2], [freetype2], [
-    min_ft2_version=9.03
-    AC_MSG_CHECKING([for FreeType2 version >= $min_ft2_version])
-    $PKG_CONFIG freetype2 --atleast-version=$min_ft2_version
-    ac_status=$?
-    if test "$ac_status" = 0; then
-      AC_MSG_RESULT(yes)
-      AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if Freetype is available.])
-      save_LIBS="$LIBS"
-      LIBS="$FT2_LIBS $LIBS"
-      AC_CHECK_FUNCS([FT_Reference_Face])
-      LIBS="$save_LIBS"
-    else
-      AC_MSG_RESULT(no)
-      warn_freetype="FreeType library >= 9.03 not found.  OpenGL graphics will not be fully functional."
-    fi],
-    [warn_freetype="FreeType library not found.  OpenGL graphics will not be fully functional."])
+  if test -z "$oct_cv_lib_freetype2"; then
+    AC_CACHE_VAL([oct_cv_lib_freetype2],
+      [PKG_CHECK_MODULES([FT2], [freetype2],
+        [min_ft2_version=9.03
+        AC_MSG_CHECKING([for FreeType2 version >= $min_ft2_version])
+        $PKG_CONFIG freetype2 --atleast-version=$min_ft2_version
+        ac_status=$?
+        if test "$ac_status" = 0; then
+          AC_MSG_RESULT(yes)
+          oct_cv_lib_freetype2=yes
+          save_LIBS="$LIBS"
+          LIBS="$FT2_LIBS $LIBS"
+          AC_CHECK_FUNCS([FT_Reference_Face])
+          LIBS="$save_LIBS"
+        else
+          AC_MSG_RESULT(no)
+          oct_cv_lib_freetype2=no
+        fi],
+        [oct_cv_lib_freetype2=no])
+    ])
+  else
+    AC_CACHE_CHECK([for freetype2], [oct_cv_lib_freetype2], [])
+  fi
+
+  if test $oct_cv_lib_freetype2 = yes; then
+    AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if Freetype is available.])
+  else
+    warn_freetype="FreeType library >= 9.03 not found.  OpenGL graphics will not be fully functional."
+  fi
 fi
 
 if test -n "$warn_freetype"; then
@@ -2433,9 +2445,9 @@ dnl How can we do a better job here?  Do we need to disable sundials if
 dnl any tests fail, or can we fix __ode15__.cc so that it still partially
 dnl works when some things are missing (for example, KLU)?
 if test $octave_have_sundials_libs == yes; then
-  if test $oct_cv_lib_sundials_sunlinsol_dense = yes \
-      && test $oct_cv_lib_sundials_realtype_is_double = yes \
-      && test $octave_have_sundials_compatible_api = yes; then
+  if    test $oct_cv_lib_sundials_sunlinsol_dense = yes \
+     && test $oct_cv_lib_sundials_realtype_is_double = yes \
+     && test $octave_have_sundials_compatible_api = yes; then
     AC_DEFINE(HAVE_SUNDIALS, 1, [Define to 1 if SUNDIALS is available.])
 
     ## Options needed to build with SUNDIALS and its dependencies.
@@ -2460,9 +2472,9 @@ if test $octave_have_sundials_libs == yes; then
     SUNDIALS_XLIBS=
     dnl Emit a fallback warning message in case SUNDIALS has been disabled for
     dnl some reason that hasn't already generated one of these known warnings.
-    if test -z "$warn_sundials_nvecserial" \
-        && test -z "$warn_sundials_ida" \
-        && test -z "$warn_sundials_disabled"; then
+    if    test -z "$warn_sundials_nvecserial" \
+       && test -z "$warn_sundials_ida" \
+       && test -z "$warn_sundials_disabled"; then
       warn_sundials_disabled="SUNDIALS libraries are missing some feature.  The solvers ode15i and ode15s will be disabled."
       OCTAVE_CONFIGURE_WARNING([warn_sundials_disabled])
     fi
@@ -2541,7 +2553,7 @@ do
 
   ## Warn if JAVA_HOME is unset.  It is *strongly* advised to specify JAVA_HOME.
   if test -z "$JAVA_HOME"; then
-    warn_java_home="JAVA_HOME environment variable not initialized.  Auto-detection will proceed but is unreliable."
+    warn_java_home="JAVA_HOME environment variable not initialized.  Auto-detection will proceed but may be unreliable."
     OCTAVE_CONFIGURE_WARNING([warn_java_home])
   fi
 

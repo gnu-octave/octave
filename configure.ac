@@ -1963,6 +1963,9 @@ if test $check_freetype = yes; then
 
   if test $oct_cv_lib_freetype2 = yes; then
     AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if Freetype is available.])
+    if test $ac_cv_func_FT_Reference_Face = yes; then
+      AC_DEFINE(HAVE_FT_REFERENCE_FACE, 1, [Define to 1 if you have the `FT_Reference_Face' function.])
+    fi
   else
     warn_freetype="FreeType library >= 9.03 not found.  OpenGL graphics will not be fully functional."
   fi

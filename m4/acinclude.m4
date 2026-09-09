@@ -326,9 +326,9 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_GLUTESSCALLBACK_THREEDOTS], [
     [AC_LANG_PUSH(C++)
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
         #if defined (HAVE_GL_GLU_H)
-        # include <GL/glu.h>
+        #  include <GL/glu.h>
         #elif defined HAVE_OPENGL_GLU_H || defined HAVE_FRAMEWORK_OPENGL
-        # include <OpenGL/glu.h>
+        #  include <OpenGL/glu.h>
         #endif
         ]], [[
         GLvoid (*func)(...);
@@ -1580,19 +1580,19 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
       break
       ], [], [
 #if defined (HAVE_WINDOWS_H)
-# include <windows.h>
+#  include <windows.h>
 #endif
     ])
 
     if test $have_opengl_incs = yes; then
       AC_CHECK_HEADERS([GL/glext.h OpenGL/glext.h], [], [], [
 #if defined (HAVE_WINDOWS_H)
-# include <windows.h>
+#  include <windows.h>
 #endif
 #if defined (HAVE_GL_GL_H)
-# include <GL/gl.h>
+#  include <GL/gl.h>
 #elif defined (HAVE_OPENGL_GL_H)
-# include <OpenGL/gl.h>
+#  include <OpenGL/gl.h>
 #endif
       ])
       case $canonical_host_type in
@@ -1602,12 +1602,12 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
           AC_MSG_CHECKING([for glEnable in -lopengl32])
           AC_LINK_IFELSE([AC_LANG_PROGRAM([[
             #if HAVE_WINDOWS_H
-            # include <windows.h>
+            #  include <windows.h>
             #endif
             #if defined (HAVE_GL_GL_H)
-            # include <GL/gl.h>
+            #  include <GL/gl.h>
             #elif defined (HAVE_OPENGL_GL_H)
-            # include <OpenGL/gl.h>
+            #  include <OpenGL/gl.h>
             #endif
             ]], [[
             glEnable(GL_SMOOTH);
@@ -1638,12 +1638,12 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
       AC_LANG_PUSH(C++)
       AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #if defined (HAVE_WINDOWS_H)
-# include <windows.h>
+#  include <windows.h>
 #endif
 #if defined (HAVE_GL_GL_H)
-# include <GL/gl.h>
+#  include <GL/gl.h>
 #elif defined (HAVE_OPENGL_GL_H)
-# include <OpenGL/gl.h>
+#  include <OpenGL/gl.h>
 #endif
 #if defined (HAVE_GL_GLEXT_H)
 #  include <GL/glext.h>
@@ -1670,12 +1670,12 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
         AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #define GL_GLEXT_PROTOTYPES 1
 #if defined (HAVE_WINDOWS_H)
-# include <windows.h>
+#  include <windows.h>
 #endif
 #if defined (HAVE_GL_GL_H)
-# include <GL/gl.h>
+#  include <GL/gl.h>
 #elif defined (HAVE_OPENGL_GL_H)
-# include <OpenGL/gl.h>
+#  include <OpenGL/gl.h>
 #endif
 #if defined (HAVE_GL_GLEXT_H)
 #  include <GL/glext.h>
@@ -1779,17 +1779,17 @@ AC_DEFUN([OCTAVE_CHECK_LIB_QHULL_OK], [
     [AC_RUN_IFELSE([AC_LANG_PROGRAM([[
         #include <stdio.h>
         #if defined (HAVE_LIBQHULL_R_LIBQHULL_R_H)
-        # include <libqhull_r/libqhull_r.h>
-        # include <libqhull_r/qset_r.h>
-        # include <libqhull_r/geom_r.h>
-        # include <libqhull_r/poly_r.h>
-        # include <libqhull_r/io_r.h>
+        #  include <libqhull_r/libqhull_r.h>
+        #  include <libqhull_r/qset_r.h>
+        #  include <libqhull_r/geom_r.h>
+        #  include <libqhull_r/poly_r.h>
+        #  include <libqhull_r/io_r.h>
         #elif defined (HAVE_LIBQHULL_R_H)
-        # include <libqhull_r.h>
-        # include <qset_r.h>
-        # include <geom_r.h>
-        # include <poly_r.h>
-        # include <io_r.h>
+        #  include <libqhull_r.h>
+        #  include <qset_r.h>
+        #  include <geom_r.h>
+        #  include <poly_r.h>
+        #  include <io_r.h>
         #endif
         #if defined (NEED_QHULL_R_VERSION)
           char *qh_version = "version";
@@ -1817,6 +1817,9 @@ AC_DEFUN([OCTAVE_CHECK_LIB_QHULL_OK], [
 ])
 dnl
 dnl OCTAVE_CHECK_LIB_QT
+dnl FIXME: This is the last Octave macro that still doesn't cache values.
+dnl Many of the tests are relatively time consuming as well.  This should be
+dnl re-written to speed-up re-configuration runs. 
 dnl
 AC_DEFUN([OCTAVE_CHECK_LIB_QT], [
   octave_qt_versions="$1"
@@ -2039,11 +2042,11 @@ AC_DEFUN([OCTAVE_CHECK_LIB_UMFPACK_SEPARATE_SPLIT], [
         #include <stdlib.h>
         #include <math.h>
         #if defined (HAVE_SUITESPARSE_UMFPACK_H)
-        # include <suitesparse/umfpack.h>
+        #  include <suitesparse/umfpack.h>
         #elif defined (HAVE_UMFPACK_UMFPACK_H)
-        # include <umfpack/umfpack.h>
+        #  include <umfpack/umfpack.h>
         #elif defined (HAVE_UMFPACK_H)
-        # include <umfpack.h>
+        #  include <umfpack.h>
         #endif
         #if defined (OCTAVE_ENABLE_64)
         typedef uint64_t idx_type;
@@ -2168,17 +2171,17 @@ AC_DEFUN([OCTAVE_CHECK_QHULL_VERSION], [
     [AC_LINK_IFELSE([AC_LANG_PROGRAM([[
         #include <stdio.h>
         #if defined (HAVE_LIBQHULL_R_LIBQHULL_R_H)
-        # include <libqhull_r/libqhull_r.h>
-        # include <libqhull_r/qset_r.h>
-        # include <libqhull_r/geom_r.h>
-        # include <libqhull_r/poly_r.h>
-        # include <libqhull_r/io_r.h>
+        #  include <libqhull_r/libqhull_r.h>
+        #  include <libqhull_r/qset_r.h>
+        #  include <libqhull_r/geom_r.h>
+        #  include <libqhull_r/poly_r.h>
+        #  include <libqhull_r/io_r.h>
         #elif defined (HAVE_LIBQHULL_R_H)
-        # include <libqhull_r.h>
-        # include <qset_r.h>
-        # include <geom_r.h>
-        # include <poly_r.h>
-        # include <io_r.h>
+        #  include <libqhull_r.h>
+        #  include <qset_r.h>
+        #  include <geom_r.h>
+        #  include <poly_r.h>
+        #  include <io_r.h>
         #endif
         ]], [[
         const char *tmp = qh_version;
@@ -2371,8 +2374,8 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
   fi
 
   if test $build_qt_gui = yes \
-      && test -n "$QT_CPPFLAGS" \
-      && test -n "$QT_LIBS"; then
+     && test -n "$QT_CPPFLAGS" \
+     && test -n "$QT_LIBS"; then
     ## Don't use pkg-config but assume the provided flags are correct
     ## and match the --with-qt value.
     AC_MSG_WARN("Using provided values for QT_CPPFLAGS, QT_LIBS, and QT_LDFLAGS for Qt$qt_version")
@@ -2740,11 +2743,11 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_COMPATIBLE_API], [
   AC_CHECK_FUNCS([IDADlsSetJacFn IDADlsSetLinearSolver SUNDenseLinearSolver])
   LIBS=$oct_save_LIBS
   AC_MSG_CHECKING([whether SUNDIALS API provides the necessary functions])
-  if test $ac_cv_func_IDASetJacFn = yes \
+  if    test $ac_cv_func_IDASetJacFn = yes \
      && test $ac_cv_func_IDASetLinearSolver = yes \
      && test $ac_cv_func_SUNLinSol_Dense = yes; then
     octave_have_sundials_compatible_api=yes
-  elif test $ac_cv_func_IDADlsSetJacFn = yes \
+  elif  test $ac_cv_func_IDADlsSetJacFn = yes \
      && test $ac_cv_func_IDADlsSetLinearSolver = yes \
      && test $ac_cv_func_SUNDenseLinearSolver = yes; then
     octave_have_sundials_compatible_api=yes
@@ -2933,7 +2936,7 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
         oct_cv_lib_sundials_sunlinsol_klu=no)
       ])])
   fi
-  if test $ac_cv_header_sunlinsol_sunlinsol_klu_h = yes \
+  if    test $ac_cv_header_sunlinsol_sunlinsol_klu_h = yes \
      && test $oct_cv_lib_sundials_sunlinsol_klu = yes; then
     AC_DEFINE(HAVE_SUNDIALS_SUNLINSOL_KLU, 1,
       [Define to 1 if SUNDIALS IDA is configured with SUNLINSOL_KLU enabled.])
@@ -3500,14 +3503,33 @@ dnl
 dnl Check for bison.
 dnl
 AC_DEFUN([OCTAVE_PROG_BISON], [
-  dnl FIXME: What is our actual required minimum version for Bison?
-  gl_PROG_BISON([BISON], [3.0])
-  WARN_BISONFLAGS=
+  dnl Check existence of cache variable directly and create if necessary.
+  dnl Cumbersome code because AC_CACHE_CHECK macro would otherwise print the
+  dnl result "bison" to the log as a separate line.
+  if test -z "$oct_cv_prog_bison"; then
+    AC_CACHE_VAL([oct_cv_prog_bison],
+    [dnl FIXME: What is our actual required minimum version for Bison?
+    gl_PROG_BISON([BISON], [3.0])
+    case "`$BISON --version`" in
+      *bison*) oct_cv_prog_bison="$BISON" ;;
+            *) oct_cv_prog_bison=no ;;
+    esac
+    ])
+  else
+    dnl The cache variable already exists.  This code merely prints appropriate
+    dnl line in log about finding a usable bison and the cached value.
+    AC_CACHE_CHECK([for usable bison], [oct_cv_prog_bison], [])
+  fi
 
-  case "`$BISON --version`" in
-    *bison*) octave_have_bison=yes ;;
-          *) octave_have_bison=no ;;
-  esac
+  if test $oct_cv_prog_bison = no; then
+    octave_have_bison=no
+  else
+    octave_have_bison=yes
+    BISON=$oct_cv_prog_bison
+    AC_SUBST(BISON)
+  fi
+
+  WARN_BISONFLAGS=
 
   if test $octave_have_bison = yes; then
     WARN_BISONFLAGS="-Wno-yacc"

@@ -139,7 +139,6 @@ public:
       m_autoload_map (), m_bp_table (*this), m_call_stack (*this),
       m_profiler (), m_debug_frame (0), m_debug_mode (false),
       m_quiet_breakpoint_flag (false), m_debugger_stack (), m_exit_status (0),
-      m_max_recursion_depth (256),
       m_whos_line_format ("  %la:5; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\n"),
       m_silent_functions (false), m_string_fill_char (' '), m_PS4 ("+ "),
       m_dbstep_flag (0), m_break_on_next_stmt (false), m_echo (ECHO_OFF),
@@ -599,18 +598,6 @@ public:
 
   void remove_autoload (const std::string& fcn, const std::string& nm);
 
-  int max_recursion_depth () const { return m_max_recursion_depth; }
-
-  int max_recursion_depth (int n)
-  {
-    int val = m_max_recursion_depth;
-    m_max_recursion_depth = n;
-    return val;
-  }
-
-  octave_value
-  max_recursion_depth (const octave_value_list& args, int nargout);
-
   bool silent_functions () const { return m_silent_functions; }
 
   bool silent_functions (bool b)
@@ -943,10 +930,6 @@ private:
   std::set<std::string> m_debug_watch_expressions;
 
   int m_exit_status;
-
-  // Maximum nesting level for functions, scripts, or sourced files
-  // called recursively.
-  int m_max_recursion_depth;
 
   // Defines layout for the whos/who -long command
   std::string m_whos_line_format;

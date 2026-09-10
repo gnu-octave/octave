@@ -716,21 +716,17 @@ endfunction
 @end example
 
 @noindent
-This function is recursive because it calls itself directly.  It
-eventually terminates because each time it calls itself, it uses an
-argument that is one less than was used for the previous call.  Once the
-argument is no longer greater than zero, it does not call itself, and
-the recursion ends.
+This function is recursive because it calls itself directly.  It eventually
+terminates because each time it calls itself, it uses an argument that is one
+less than was used for the previous call.  Once the argument is no longer
+greater than zero, it does not call itself, and the recursion ends.
 
-The function @code{max_recursion_depth} may be used to specify a limit
-to the recursion depth and prevents Octave from recursing infinitely.
-Similarly, the function @code{max_stack_depth} may be used to specify
-limit to the depth of function calls, whether recursive or not.  These
-limits help prevent stack overflow on the computer Octave is running on,
-so that instead of exiting with a signal, the interpreter will throw an
-error and return to the command prompt.
-
-@DOCSTRING(max_recursion_depth)
+The function @code{max_stack_depth} may be used to specify a limit to the
+recursion depth and prevents Octave from recursing infinitely.  This also
+limits the call depth of all function calls, whether recursive or not.  This
+helps prevent stack overflow on the computer Octave is running on, so that
+instead of exiting with a signal, the interpreter will throw an error and return
+to the command prompt.
 
 @DOCSTRING(max_stack_depth)
 

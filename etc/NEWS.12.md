@@ -11,6 +11,10 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 * The constructors of `classdef` classes now support returning more than one
   output argument.  The first output argument must be the constructed object.
 
+* The function `max_recursion_depth` is now an alias for `max_stack_depth`.
+  The limit on recursion has increased from 256 to the `max_stack_depth` of
+  1024.  The documentation has been re-written to be clearer.
+
 ### Graphical User Interface
 
 * When opening a file from the Find Files dialog, all occurrences of the search

@@ -34,6 +34,7 @@
 #include "call-stack.h"
 #include "cmd-edit.h"
 #include "defun.h"
+#include "error.h"
 #include "interpreter.h"
 #include "interpreter-private.h"
 #include "oct-map.h"
@@ -938,7 +939,7 @@ call_stack::max_stack_depth (const octave_value_list& args,
                              int nargout)
 {
   return set_internal_variable (m_max_stack_depth, args, nargout,
-                                "max_stack_depth", 0);
+                                "max_stack_depth", 1);
 }
 
 void
@@ -1233,23 +1234,35 @@ DEFMETHOD (max_stack_depth, interp, args, nargout,
 @deftypefn  {} {@var{val} =} max_stack_depth ()
 @deftypefnx {} {@var{old_val} =} max_stack_depth (@var{new_val})
 @deftypefnx {} {@var{old_val} =} max_stack_depth (@var{new_val}, "local")
-Query or set the internal limit on the number of times a function may
-be called recursively.
+@deftypefnx {} {@dots{} =} max_recursion_depth (@dots{})
+Query or set the internal limit on the number of function calls to other
+functions before a return is encountered.
 
-If the limit is exceeded, an error message is printed and control returns to
-the top level.
+The default value is @code{1024}.  If the limit is exceeded, an error message
+is printed and control returns to the top level.
 
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 
-@seealso{max_recursion_depth}
+Programming Notes: When a function call is made the interpreter saves
+information about the current execution location by pushing that information
+onto a stack.  The depth of the stack indicates how many function calls are
+outstanding.  At the @w{command-line}, the depth is 0.  When a function
+@code{f1} is invoked the depth increases to 1.  If @code{f1} calls @code{f2}
+the interpreter will verify that @code{max_stack_depth > 2} before executing
+any code in @code{f2}.
+
+@code{max_recursion_depth} is an alias for @code{max_stack_depth} and can be
+used interchangeably.
 @end deftypefn */)
 {
   tree_evaluator& tw = interp.get_evaluator ();
 
   return tw.max_stack_depth (args, nargout);
 }
+
+DEFALIAS (max_recursion_depth, max_stack_depth)
 
 /*
 %!test
@@ -1260,7 +1273,8 @@ The original variable value is restored when exiting the function.
 %! max_stack_depth (orig_val);
 %! assert (max_stack_depth (), orig_val);
 
-%!error max_stack_depth (1, 2)
+%!error <Invalid call> max_stack_depth (1, 2, 3)
+%!error <Invalid call> max_recursion_depth (1, 2, 3)
 */
 
 DEFMETHOD (who, interp, args, nargout,

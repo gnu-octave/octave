@@ -2067,62 +2067,15 @@ tree_evaluator::source_file (const std::string& file_name,
                              const std::string& context,
                              bool verbose, bool require_file)
 {
-  // Map from absolute name of script file to recursion level.  We
-  // use a map instead of simply placing a limit on recursion in the
-  // source_file function so that two mutually recursive scripts
-  // written as
-  //
-  //   foo1.m:
-  //   ------
-  //   foo2
-  //
-  //   foo2.m:
-  //   ------
-  //   foo1
-  //
-  // and called with
-  //
-  //   foo1
-  //
-  // (for example) will behave the same if they are written as
-  //
-  //   foo1.m:
-  //   ------
-  //   source ("foo2.m")
-  //
-  //   foo2.m:
-  //   ------
-  //   source ("foo1.m")
-  //
-  // and called with
-  //
-  //   source ("foo1.m")
-  //
-  // (for example).
+  std::string file_full_name = sys::file_ops::tilde_expand (file_name);
 
-  static std::map<std::string, int> source_call_depth;
-
-  std::string file_full_name
-    = sys::file_ops::tilde_expand (file_name);
-
-  std::size_t pos
-    = file_full_name.find_last_of (sys::file_ops::dir_sep_str ());
+  std::size_t pos = file_full_name.find_last_of (sys::file_ops::dir_sep_str ());
 
   std::string dir_name = file_full_name.substr (0, pos);
 
   file_full_name = sys::env::make_absolute (file_full_name);
 
   unwind_protect frame;
-
-  if (source_call_depth.find (file_full_name) == source_call_depth.end ())
-    source_call_depth[file_full_name] = -1;
-
-  frame.protect_var (source_call_depth[file_full_name]);
-
-  source_call_depth[file_full_name]++;
-
-  if (source_call_depth[file_full_name] >= max_recursion_depth ())
-    error ("max_recursion_depth exceeded");
 
   if (! context.empty ())
     {
@@ -3625,12 +3578,6 @@ tree_evaluator::execute_user_script (octave_user_script& user_script,
   if (! cmd_list)
     return retval;
 
-  // FIXME: Maybe this check belongs in the places where we push a new
-  // stack frame?  Or in the call_stack push method itself?
-
-  if (m_call_stack.size () >= static_cast<std::size_t> (m_max_recursion_depth))
-    error ("max_recursion_depth exceeded");
-
   unwind_protect_var upv (m_statement_context, SC_SCRIPT);
 
   profiler::enter<octave_user_script> block (m_profiler, user_script);
@@ -3758,12 +3705,6 @@ tree_evaluator::execute_user_function (octave_user_function& user_function,
 
       define_parameter_list_from_arg_vector (ret_list, ret_args);
     }
-
-  // FIXME: Maybe this check belongs in the places where we push a
-  // new stack frame?  Or in the call_stack push method itself?
-
-  if (m_call_stack.size () >= static_cast<std::size_t> (m_max_recursion_depth))
-    error ("max_recursion_depth exceeded");
 
   unwind_action act2 ([&user_function] () {
                         user_function.restore_warning_states ();
@@ -4689,14 +4630,6 @@ tree_evaluator::is_logically_true (tree_expression *expr,
   return expr_value;
 }
 
-octave_value
-tree_evaluator::max_recursion_depth (const octave_value_list& args,
-                                     int nargout)
-{
-  return set_internal_variable (m_max_recursion_depth, args, nargout,
-                                "max_recursion_depth", 0);
-}
-
 symbol_info_list
 tree_evaluator::glob_symbol_info (const std::string& pattern) const
 {
@@ -5402,41 +5335,6 @@ tree_evaluator::check_autoload_file (const std::string& nm) const
 
   return full_name;
 }
-
-DEFMETHOD (max_recursion_depth, interp, args, nargout,
-           doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} max_recursion_depth ()
-@deftypefnx {} {@var{old_val} =} max_recursion_depth (@var{new_val})
-@deftypefnx {} {@var{old_val} =} max_recursion_depth (@var{new_val}, "local")
-Query or set the internal limit on the number of times a function may
-be called recursively.
-
-If the limit is exceeded, an error message is printed and control returns to
-the top level.
-
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
-
-@seealso{max_stack_depth}
-@end deftypefn */)
-{
-  tree_evaluator& tw = interp.get_evaluator ();
-
-  return tw.max_recursion_depth (args, nargout);
-}
-
-/*
-%!test
-%! orig_val = max_recursion_depth ();
-%! old_val = max_recursion_depth (2*orig_val);
-%! assert (orig_val, old_val);
-%! assert (max_recursion_depth (), 2*orig_val);
-%! max_recursion_depth (orig_val);
-%! assert (max_recursion_depth (), orig_val);
-
-%!error max_recursion_depth (1, 2)
-*/
 
 DEFMETHOD (whos_line_format, interp, args, nargout,
            doc: /* -*- texinfo -*-

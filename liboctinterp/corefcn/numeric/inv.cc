@@ -224,6 +224,8 @@ interchangeably.
   return retval;
 }
 
+DEFALIAS (inverse, inv);
+
 /*
 ## Basic test for double/single matrices
 %!assert (inv ([1, 2; 3, 4]), [-2, 1; 1.5, -0.5], 5*eps)
@@ -395,7 +397,5 @@ interchangeably.
 %!error <inverse of the null matrix not defined> inv (diag ([0, 0]))
 %!error <inverse of the null matrix not defined> inv (diag (complex ([0, 0])))
 */
-
-DEFALIAS (inverse, inv);
 
 OCTAVE_END_NAMESPACE(octave)

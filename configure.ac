@@ -1951,9 +1951,6 @@ if test $check_freetype = yes; then
       LIBS="$save_LIBS"
     else
       AC_MSG_RESULT(no)
-    if test $ac_cv_func_FT_Reference_Face = yes; then
-      AC_DEFINE(HAVE_FT_REFERENCE_FACE, 1, [Define to 1 if you have the `FT_Reference_Face' function.])
-    fi
       warn_freetype="FreeType library >= 9.03 not found.  OpenGL graphics will not be fully functional."
     fi],
     [warn_freetype="FreeType library not found.  OpenGL graphics will not be fully functional."])

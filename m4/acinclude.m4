@@ -1317,14 +1317,14 @@ AC_DEFUN([OCTAVE_CHECK_LIBCXX_LLVM_APPLE], [
   AC_CACHE_CHECK([whether using STL from LLVM or Apple],
     [oct_cv_lib_stl_llvm_apple],
     [AC_LANG_PUSH(C++)
-    AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+    AC_PREPROC_IFELSE([AC_LANG_PROGRAM([[
         // Include any header from the STL (chose small one)
         #include <stack>
         ]], [[
         #if defined (_LIBCPP_VERSION)
-          return (0);
+          // This is an LLVM or Apple STL library
         #else
-          return (1);
+          #error "This is *NOT* an LLVM or Apple STL library"
         #endif
       ]])],
       oct_cv_lib_stl_llvm_apple=yes,
@@ -2288,7 +2288,7 @@ AC_DEFUN([OCTAVE_CHECK_QSCINTILLA_VERSION], [
         #include <Qsci/qsciglobal.h>
         ]], [[
         #if QSCINTILLA_VERSION < 0x020600
-        #error Old FindFirst function found.
+          #error "Old FindFirst function found"
         #endif
         ]])],
       oct_cv_lib_qscintilla_version_2_6_0=yes,

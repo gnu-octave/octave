@@ -2483,9 +2483,12 @@ base_lexer::input_buffer::copy_chunk (char *buf, std::size_t max_size,
   if (by_lines)
     {
       std::size_t newline_pos = m_buffer.find ('\n', m_offset);
-      len = (newline_pos != std::string::npos
-             ? newline_pos - m_offset + 1
-             : (max_size > m_chars_left ? m_chars_left : max_size));
+      std::size_t line_len = m_chars_left;
+
+      if (newline_pos != std::string::npos)
+        line_len = newline_pos - m_offset + 1;
+
+      len = std::min (line_len, max_size);
     }
   else
     len = max_size > m_chars_left ? m_chars_left : max_size;

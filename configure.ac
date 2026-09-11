@@ -2863,7 +2863,7 @@ if test $OCTAVE_RELOCATE_ALL = yes; then
 
       ## Check for the tool "cygpath" that can be used to convert between the
       ## different forms.
-      AC_CHECK_TOOL(CYGPATH, [cygpath])
+      AC_CHECK_PROGS(CYGPATH, [cygpath])
       if test -n "$CYGPATH"; then
         OCTAVE_RELOCATE_WITH_CYGPATH="yes"
       fi

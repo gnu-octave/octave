@@ -11,6 +11,10 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 * The constructors of `classdef` classes now support returning more than one
   output argument.  The first output argument must be the constructed object.
 
+* The function `max_recursion_depth` is now an alias for `max_stack_depth`.
+  The limit on recursion has increased from 256 to the `max_stack_depth` of
+  1024.  The documentation has been re-written to be clearer.
+
 ### Graphical User Interface
 
 * When opening a file from the Find Files dialog, all occurrences of the search
@@ -41,6 +45,13 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 * The functions `copyfile` and `movefile` will now create as many intermediate
   folders as required when the second argument `f2` is a folder which does not
   exist.  For example: `copyfile ('folderA', 'folderB/folderC/folderD')`.
+
+* Calling the `error` function with empty input of numeric type such as `[]`
+  does not emit an error or perform any action (it is a NOP). 
+
+* The Matlab limit `namelengthmax` on the length of identifiers now returns
+  2048.  This is only for compatibility as Octave can store identifiers with
+  up to 2^31 - 1 characters.
 
 ### Alphabetical list of new functions added in Octave 12
 

@@ -1705,6 +1705,8 @@ can be used in Octave.
   return ovl (args(0).lgamma ());
 }
 
+DEFALIAS (gammaln, lgamma);
+
 /*
 %!test
 %! a = -1i* sqrt (-1/(6.4187*6.4187));
@@ -2328,7 +2330,5 @@ DEFALIAS (toupper, upper);
 %!error <Invalid call to upper> toupper ()
 %!error upper (1, 2)
 */
-
-DEFALIAS (gammaln, lgamma);
 
 OCTAVE_END_NAMESPACE(octave)

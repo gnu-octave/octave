@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE TS>
 <TS version="2.1" language="sv_SE" sourcelanguage="en_US">
     <context>
@@ -44,18 +44,18 @@
         <name>QTerminal</name>
         <message>
             <location filename="../qterminal/libqterminal/QTerminal.cc" line="+119"/>
-            <source>Edit &quot;%1&quot;</source>
-            <translation>Redigera &quot;%1&quot;</translation>
+            <source>Edit "%1"</source>
+            <translation>Redigera "%1"</translation>
         </message>
         <message>
             <location line="+4"/>
-            <source>Help on &quot;%1&quot;</source>
-            <translation>Hjälp på &quot;%1&quot;</translation>
+            <source>Help on "%1"</source>
+            <translation>Hjälp om "%1"</translation>
         </message>
         <message>
             <location line="+13"/>
-            <source>Documentation on &quot;%1&quot;</source>
-            <translation>Dokumentation på &quot;%1&quot;</translation>
+            <source>Documentation on "%1"</source>
+            <translation>Dokumentation om "%1"</translation>
         </message>
         <message>
             <location line="+165"/>
@@ -95,7 +95,7 @@
         <message>
             <location line="+7"/>
             <source>Clear Window</source>
-            <translation>Rensa fönster</translation>
+            <translation>Rensa fönstret</translation>
         </message>
         <message>
             <location line="-233"/>
@@ -108,7 +108,7 @@
         <message>
             <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1924"/>
             <source>copied selection to clipboard</source>
-            <translation>kopierade markeringen till urklipp</translation>
+            <translation>markeringen kopierades till urklipp</translation>
         </message>
     </context>
     <context>
@@ -145,7 +145,7 @@
         <message>
             <location filename="../graphics/annotation-dialog.ui" line="+17"/>
             <source>Annotation</source>
-            <translation>Annotation</translation>
+            <translation>Annotering</translation>
         </message>
         <message>
             <location line="+6"/>
@@ -256,17 +256,17 @@
         <message>
             <location line="+11"/>
             <source>normalized</source>
-            <translation>normaliserad</translation>
+            <translation>normaliserade</translation>
         </message>
         <message>
             <location line="+8"/>
             <source>Fit to box</source>
-            <translation>Anpassa till boxen</translation>
+            <translation>Anpassa till rutan</translation>
         </message>
         <message>
             <location line="+13"/>
             <source>Box</source>
-            <translation>Box</translation>
+            <translation>Ruta</translation>
         </message>
         <message>
             <location line="+6"/>
@@ -276,12 +276,12 @@
         <message>
             <location line="+444"/>
             <source>Edge</source>
-            <translation>Edge</translation>
+            <translation>Kant</translation>
         </message>
         <message>
             <location line="+133"/>
             <source>Line style</source>
-            <translation>Radstil</translation>
+            <translation>Linjestil</translation>
         </message>
         <message>
             <location line="+11"/>
@@ -291,7 +291,7 @@
         <message>
             <location line="+8"/>
             <source>Line width</source>
-            <translation>Radbredd</translation>
+            <translation>Linjebredd</translation>
         </message>
     </context>
     <context>
@@ -312,7 +312,7 @@
         <message>
             <location line="+1"/>
             <source>Stop</source>
-            <translation>Stopp</translation>
+            <translation>Stoppa</translation>
         </message>
         <message>
             <location line="+1"/>
@@ -322,7 +322,7 @@
         <message>
             <location line="+57"/>
             <source>Command Widget</source>
-            <translation>Kommando-gränssnittskomponent</translation>
+            <translation>Kommandopanel</translation>
         </message>
     </context>
     <context>
@@ -330,7 +330,7 @@
         <message>
             <location filename="../src/community-news.cc" line="+71"/>
             <source>Octave Community News</source>
-            <translation>Octave gemenskap-nyheter</translation>
+            <translation>Nyheter från Octave-gemenskapen</translation>
         </message>
     </context>
     <context>
@@ -348,7 +348,7 @@
         <message>
             <location line="+2"/>
             <source>Prompt</source>
-            <translation>Uppmaning</translation>
+            <translation>Kommandoprompt</translation>
         </message>
     </context>
     <context>
@@ -377,9 +377,9 @@ module is missing?
 Only help text in the Command Window will
 be available.</source>
             <translation>Kunde inte konfigurera de data som krävs för
-dokumentationsvisaren. Kanske saknas
-Qt SQlite-modulen?
-Endast hjälptext i kommandofönstret kommer
+dokumentationsvisaren. Qt SQLite-modulen
+kanske saknas.
+Endast hjälptexten i kommandofönstret kommer
 att vara tillgänglig.</translation>
         </message>
         <message>
@@ -411,7 +411,7 @@ att vara tillgänglig.</translation>
         <message>
             <location line="+92"/>
             <source>Go home</source>
-            <translation>Gå hem</translation>
+            <translation>Gå till startsidan</translation>
         </message>
         <message>
             <location line="+4"/>
@@ -436,7 +436,7 @@ att vara tillgänglig.</translation>
         <message>
             <location line="+37"/>
             <source>Find</source>
-            <translation>Hitta</translation>
+            <translation>Sök</translation>
         </message>
         <message>
             <location line="+6"/>
@@ -451,7 +451,7 @@ att vara tillgänglig.</translation>
         <message>
             <location line="+3"/>
             <source>Zoom Original</source>
-            <translation>Ursprunglig zoom</translation>
+            <translation>Ursprunglig storlek</translation>
         </message>
         <message>
             <location line="+7"/>
@@ -476,7 +476,7 @@ Inga dokumentationsbokmärken har lästs in!</translation>
         <message>
             <location line="+2"/>
             <source>Octave: Loading Documentation Bookmarks</source>
-            <translation>Octave: Läsa in dokumentationsbokmärken</translation>
+            <translation>Octave: Läser in dokumentationsbokmärken</translation>
         </message>
         <message>
             <location line="+10"/>
@@ -501,7 +501,7 @@ Inga dokumentationsbokmärken har lästs in!</translation>
         <message>
             <location line="+1"/>
             <source>&amp;Rename</source>
-            <translation>&amp;Rename</translation>
+            <translation>&amp;Byt namn</translation>
         </message>
         <message>
             <location line="+1"/>
@@ -516,7 +516,7 @@ Inga dokumentationsbokmärken har lästs in!</translation>
         <message>
             <location line="+6"/>
             <source>Hide &amp;Filter</source>
-            <translation>&amp;Dölj Filter</translation>
+            <translation>Dölj &amp;filter</translation>
         </message>
         <message>
             <location line="+3"/>
@@ -526,7 +526,7 @@ Inga dokumentationsbokmärken har lästs in!</translation>
         <message>
             <location line="+66"/>
             <source>Octave: Saving Documentation Bookmarks</source>
-            <translation>Octave: Spara dokumentationsbokmärken</translation>
+            <translation>Octave: Sparar dokumentationsbokmärken</translation>
         </message>
         <message>
             <location line="+1"/>
@@ -551,7 +551,7 @@ Dokumentationsbokmärken sparas inte!
             <source>No start element found in %1.
 Invalid bookmark file?</source>
             <translation>Inget startelement hittades i %1.
-Ogiltig bokmärkesfil?</translation>
+Är bokmärkesfilen ogiltig?</translation>
         </message>
         <message>
             <location line="+9"/>
@@ -560,7 +560,7 @@ Ogiltig bokmärkesfil?</translation>
 is not a valid XBEL file version 1.0.</source>
             <translation>Filen
 %1
-är inte en giltig XBEL-fil version 1.0.</translation>
+är inte en giltig XBEL-fil av version 1.0.</translation>
         </message>
         <message>
             <location line="+27"/>
@@ -591,22 +591,22 @@ is not a valid XBEL file version 1.0.</source>
         <message>
             <location line="+4"/>
             <source>Close &amp;All</source>
-            <translation>&amp;Stäng Alla</translation>
+            <translation>Stäng &amp;alla</translation>
         </message>
         <message>
             <location line="+4"/>
             <source>Close &amp;Other</source>
-            <translation>Stäng &amp;annan</translation>
+            <translation>Stäng &amp;övriga</translation>
         </message>
         <message>
             <location line="+3"/>
             <source>Switch to &amp;Left Widget</source>
-            <translation>Växla till &amp;vänster gränssnittskomponent</translation>
+            <translation>Växla till panelen till &amp;vänster</translation>
         </message>
         <message>
             <location line="+4"/>
             <source>Switch to &amp;Right Widget</source>
-            <translation>Växla till &amp;höger gränssnittskomponent</translation>
+            <translation>Växla till panelen till &amp;höger</translation>
         </message>
     </context>
     <context>
@@ -614,12 +614,12 @@ is not a valid XBEL file version 1.0.</source>
         <message>
             <location filename="../src/files-dock-widget.cc" line="+1220"/>
             <source>Open Editor Files</source>
-            <translation>Öppna redigeringsfiler</translation>
+            <translation>Öppna filer i redigeraren</translation>
         </message>
         <message>
             <location line="+17"/>
             <source>Click to focus file in editor</source>
-            <translation>Klicka för att fokusera filen i redigeraren</translation>
+            <translation>Klicka för att aktivera filen i redigeraren</translation>
         </message>
         <message>
             <location line="+92"/>
@@ -654,7 +654,7 @@ is not a valid XBEL file version 1.0.</source>
             <location line="-49"/>
             <source>Could not start custom file editor
 %1</source>
-            <translation>Kunde inte starta den anpassade filredigeraren 
+            <translation>Kunde inte starta den anpassade filredigeraren
 %1</translation>
         </message>
         <message>
@@ -693,12 +693,12 @@ Vill du öppna inställningarna?</translation>
 is already open in the editor.</source>
             <translation>Filen sparades inte! En fil med det valda namnet
 %1
-är already öppna i redigerare.</translation>
+är redan öppen i redigeraren.</translation>
         </message>
         <message>
             <location line="+29"/>
             <source>The associated file editor tab has disappeared.</source>
-            <translation>Den associerade filredigerarfliken har försvunnit.</translation>
+            <translation>Den tillhörande filfliken har försvunnit.</translation>
         </message>
         <message>
             <location line="+566"/>
@@ -707,7 +707,7 @@ is already open in the editor.</source>
 for reading: %2.</source>
             <translation>Kunde inte öppna filen
 %1
-för reading: %2.</translation>
+för läsning: %2.</translation>
         </message>
         <message>
             <location line="+18"/>
@@ -735,7 +735,7 @@ finns inte. Vill du skapa den?</translation>
 for writing: %2.</source>
             <translation>Kunde inte öppna filen
 %1
-för att skriva: %2.</translation>
+för skrivning: %2.</translation>
         </message>
         <message>
             <location line="+271"/>
@@ -745,17 +745,17 @@ för att skriva: %2.</translation>
         <message>
             <location line="+3"/>
             <source>&amp;Recent Editor Files</source>
-            <translation>&amp;Senaste redigeringsfiler</translation>
+            <translation>&amp;Senaste filerna i redigeraren</translation>
         </message>
         <message>
             <location line="+9"/>
             <source>&amp;Edit Function</source>
-            <translation>&amp;Redigera Funktion</translation>
+            <translation>&amp;Redigera funktion</translation>
         </message>
         <message>
             <location line="+7"/>
             <source>&amp;Save File</source>
-            <translation>&amp;Spara Fil</translation>
+            <translation>&amp;Spara fil</translation>
         </message>
         <message>
             <location line="+4"/>
@@ -775,7 +775,7 @@ för att skriva: %2.</translation>
         <message>
             <location line="+4"/>
             <source>Close Other Files</source>
-            <translation>Stäng andra filer</translation>
+            <translation>Stäng övriga filer</translation>
         </message>
         <message>
             <location line="+7"/>
@@ -805,12 +805,12 @@ för att skriva: %2.</translation>
         <message>
             <location line="+3"/>
             <source>Find &amp;Next</source>
-            <translation>Hitta &amp;nästa</translation>
+            <translation>Sök &amp;nästa</translation>
         </message>
         <message>
             <location line="+4"/>
             <source>Find &amp;Previous</source>
-            <translation>Hitta &amp;föregående</translation>
+            <translation>Sök &amp;föregående</translation>
         </message>
         <message>
             <location line="+5"/>
@@ -835,7 +835,7 @@ för att skriva: %2.</translation>
         <message>
             <location line="+6"/>
             <source>Delete to Start of Word</source>
-            <translation>Ta bort till början av ord</translation>
+            <translation>Ta bort till början av ordet</translation>
         </message>
         <message>
             <location line="+4"/>
@@ -855,7 +855,7 @@ för att skriva: %2.</translation>
         <message>
             <location line="+6"/>
             <source>Duplicate Selection/Line</source>
-            <translation>Duplicera markering/rad</translation>
+            <translation>Duplicera markering eller rad</translation>
         </message>
         <message>
             <location line="+4"/>
@@ -875,12 +875,12 @@ för att skriva: %2.</translation>
         <message>
             <location line="+3"/>
             <source>&amp;Uppercase Selection</source>
-            <translation>&amp;Versaler-markering</translation>
+            <translation>Gör markeringen till &amp;versaler</translation>
         </message>
         <message>
             <location line="+4"/>
             <source>&amp;Lowercase Selection</source>
-            <translation>&amp;Gemener-markering</translation>
+            <translation>Gör markeringen till &amp;gemener</translation>
         </message>
         <message>
             <location line="+6"/>
@@ -895,42 +895,42 @@ för att skriva: %2.</translation>
         <message>
             <location line="+4"/>
             <source>Comment (Choosing String)</source>
-            <translation>Kommentara (välja sträng)</translation>
+            <translation>Kommentera (välj sträng)</translation>
         </message>
         <message>
             <location line="+6"/>
             <source>&amp;Indent Selection Rigidly</source>
-            <translation>&amp;Gör fast indrag markering</translation>
+            <translation>&amp;Öka indraget för markeringen</translation>
         </message>
         <message>
             <location line="+4"/>
             <source>&amp;Unindent Selection Rigidly</source>
-            <translation>&amp;Ta bort fast indrag markering</translation>
+            <translation>&amp;Minska indraget för markeringen</translation>
         </message>
         <message>
             <location line="+4"/>
             <source>Indent Code</source>
-            <translation>Gör kodindrag</translation>
+            <translation>Gör indrag i kod</translation>
         </message>
         <message>
             <location line="+7"/>
             <source>Convert Line Endings to &amp;Windows (CRLF)</source>
-            <translation>Konvertera radavslutningar till &amp;Windows (CRLF)</translation>
+            <translation>Konvertera radslut till &amp;Windows (CRLF)</translation>
         </message>
         <message>
             <location line="+4"/>
             <source>Convert Line Endings to &amp;Unix (LF)</source>
-            <translation>Konvertera radavslutningar till &amp;Unix (LF)</translation>
+            <translation>Konvertera radslut till &amp;Unix (LF)</translation>
         </message>
         <message>
             <location line="+5"/>
             <source>Convert Line Endings to Legacy &amp;Mac (CR)</source>
-            <translation>Konvertera radavslutningar till äldre &amp;Mac (CR)</translation>
+            <translation>Konvertera radslut till äldre &amp;Mac (CR)</translation>
         </message>
         <message>
             <location line="+3"/>
             <source>Navi&amp;gation</source>
-            <translation>Navi&amp;gation</translation>
+            <translation>Navi&amp;gering</translation>
         </message>
         <message>
             <location line="+3"/>
@@ -940,12 +940,12 @@ för att skriva: %2.</translation>
         <message>
             <location line="+6"/>
             <source>Move to Matching Brace</source>
-            <translation>Flytta till matchande klammerparentes</translation>
+            <translation>Flytta till matchande parentes</translation>
         </message>
         <message>
             <location line="+4"/>
             <source>Select to Matching Brace</source>
-            <translation>Markera till matchande klammerparentes</translation>
+            <translation>Markera till matchande parentes</translation>
         </message>
         <message>
             <location line="+6"/>
@@ -1000,17 +1000,17 @@ för att skriva: %2.</translation>
         <message>
             <location line="+5"/>
             <source>Show Line &amp;Endings</source>
-            <translation>Visa rad&amp;avslutningar</translation>
+            <translation>Visa &amp;radslut</translation>
         </message>
         <message>
             <location line="+5"/>
             <source>Show &amp;Indentation Guides</source>
-            <translation>Visa &amp;indragningsstödlinjer</translation>
+            <translation>Visa &amp;indragslinjer</translation>
         </message>
         <message>
             <location line="+5"/>
             <source>Show Long Line &amp;Marker</source>
-            <translation>Visa lång rad&amp;markör</translation>
+            <translation>Visa &amp;markör för långa rader</translation>
         </message>
         <message>
             <location line="+7"/>
@@ -1095,7 +1095,7 @@ för att skriva: %2.</translation>
         <message>
             <location line="+5"/>
             <source>Save File and Run All &amp;Demos</source>
-            <translation>Spara fil och kör alla &amp;demoversioner</translation>
+            <translation>Spara fil och kör alla &amp;demonstrationer</translation>
         </message>
         <message>
             <location line="+5"/>
@@ -1105,7 +1105,7 @@ för att skriva: %2.</translation>
         <message>
             <location line="+4"/>
             <source>&amp;Help on Keyword</source>
-            <translation>&amp;Hjälp med nyckelord</translation>
+            <translation>&amp;Hjälp om nyckelord</translation>
         </message>
         <message>
             <location line="+5"/>
@@ -1148,7 +1148,7 @@ för att skriva: %2.</translation>
         <message>
             <location line="+7"/>
             <source>eol:</source>
-            <translation>radavslut:</translation>
+            <translation>radslut:</translation>
         </message>
         <message>
             <location line="+259"/>
@@ -1173,14 +1173,14 @@ för att skriva: %2.</translation>
             <location line="+59"/>
             <location line="+36"/>
             <source>Octave Editor</source>
-            <translation>Octave Redigeraeller</translation>
+            <translation>Octave-redigeraren</translation>
         </message>
         <message>
             <location line="-2281"/>
             <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
-            <translation>Kan inte lägga till brytpunkt till ändrad eller namnlös fil.
-Spara och lägga till brytpunkt, eller avbryt?</translation>
+            <translation>Det går inte att lägga till en brytpunkt i en ändrad eller namnlös fil.
+Spara filen och lägg till brytpunkten, eller avbryt?</translation>
         </message>
         <message>
             <location line="+924"/>
@@ -1213,7 +1213,7 @@ Spara och lägga till brytpunkt, eller avbryt?</translation>
         <message>
             <location line="-6"/>
             <source>Do you want to cancel closing, save, or discard the changes?</source>
-            <translation>Vill du avbryta stängningen, spara eller ignorera ändringarna?</translation>
+            <translation>Vill du avbryta stängningen, spara eller kassera ändringarna?</translation>
         </message>
         <message>
             <location line="+10"/>
@@ -1222,14 +1222,14 @@ Spara och lägga till brytpunkt, eller avbryt?</translation>
 is about to be closed but has been modified.  %2</source>
             <translation>Filen
   %1
-håller på att stängas men har ändrats.  %2</translation>
+ska stängas men har ändrats.  %2</translation>
         </message>
         <message>
             <location line="+152"/>
             <source>Unable to read file '%1'
 with selected encoding '%2': %3</source>
             <translation>Kunde inte läsa filen '%1'
-med markerad kodning '%2': %3</translation>
+med den valda kodningen '%2': %3</translation>
         </message>
         <message>
             <location line="+10"/>
@@ -1237,10 +1237,10 @@ med markerad kodning '%2': %3</translation>
 %1
 with the selected encoding %2.
 Modifying and saving the file might cause data loss!</source>
-            <translation>Det uppstod problem med att läsa filen
+            <translation>Det uppstod problem vid läsning av filen
 %1
-med markerad kodning %2.
-Att ändra och spara filen kan orsaka dataförlust!</translation>
+med den valda kodningen %2.
+Om filen ändras och sparas kan data gå förlorade!</translation>
         </message>
         <message>
             <location line="+10"/>
@@ -1262,7 +1262,7 @@ Att ändra och spara filen kan orsaka dataförlust!</translation>
         <message>
             <location line="+11"/>
             <source>Select new default encoding</source>
-            <translation>Välj ny standardkodning</translation>
+            <translation>Välj en ny standardkodning</translation>
         </message>
         <message>
             <location line="+3"/>
@@ -1271,7 +1271,7 @@ for reloading the current file.
 This does not change the default encoding.
 </source>
             <translation>Välj en ny kodning
-för att ladda om den aktuella filen.
+för att läsa in den aktuella filen igen.
 Detta ändrar inte standardkodningen.
 </translation>
         </message>
@@ -1313,12 +1313,12 @@ Avsluta felsökningen och spara?</translation>
         </message>
         <message>
             <location line="+105"/>
-            <source>&quot;%1&quot;
+            <source>"%1"
 is not a valid identifier.
 If you keep this filename, you will not be able to
 call your script using its name as an Octave command.
 Do you want to choose another name?</source>
-            <translation>&quot;%1&quot;
+            <translation>"%1"
 är inte en giltig identifierare.
 Om du behåller detta filnamn kommer du inte att kunna
 anropa ditt skript med dess namn som ett Octave-kommando.
@@ -1330,10 +1330,10 @@ Vill du välja ett annat namn?</translation>
 with the selected encoding %1.
 Using it would result in data loss!
 Please select another one!</source>
-            <translation>Innehållet i den aktuella redigeraren kan inte kodas
-med den markerade kodningen %1.
-Att använda den skulle resultera i dataförlust!
- Välj en annan!</translation>
+            <translation>Det aktuella innehållet i redigeraren kan inte kodas
+med den valda kodningen %1.
+Om den används går data förlorade!
+Välj en annan kodning!</translation>
         </message>
         <message>
             <location line="-98"/>
@@ -1350,7 +1350,7 @@ Vill du skriva över den?</translation>
             <source>
 Warning: The contents in the editor is modified!</source>
             <translation>
-Varning: innehållet i redigeraren är ändrat!</translation>
+Varning: innehållet i redigeraren har ändrats!</translation>
         </message>
         <message>
             <location line="-29"/>
@@ -1417,12 +1417,12 @@ har tagits bort eller bytt namn. Vill du spara den nu?%2</translation>
         <message>
             <location line="+4"/>
             <source>Set Octave directory</source>
-            <translation>Ange in Octave-katalog</translation>
+            <translation>Ange Octave-katalog</translation>
         </message>
         <message>
             <location line="+2"/>
             <source>Set Octave directory to current browser directory</source>
-            <translation>Ställ in Octave-katalogen till aktuell hanterarkatalog</translation>
+            <translation>Ange den aktuella katalogen i filhanteraren som Octave-katalog</translation>
         </message>
         <message>
             <location line="+4"/>
@@ -1437,13 +1437,13 @@ har tagits bort eller bytt namn. Vill du spara den nu?%2</translation>
         <message>
             <location line="+13"/>
             <source>Set Browser Directory...</source>
-            <translation>Ange hanterarkatalog...</translation>
+            <translation>Ange filhanterarens katalog...</translation>
         </message>
         <message>
             <location line="+4"/>
             <location line="+433"/>
             <source>Find Files...</source>
-            <translation>Hitta filer...</translation>
+            <translation>Sök efter filer...</translation>
         </message>
         <message>
             <location line="-429"/>
@@ -1460,7 +1460,7 @@ har tagits bort eller bytt namn. Vill du spara den nu?%2</translation>
         <message>
             <location line="-385"/>
             <source>Double-click to open file/folder, right click for alternatives</source>
-            <translation>Dubbelklicka för att öppna fil/mapp, högerklicka för alternativ</translation>
+            <translation>Dubbelklicka för att öppna en fil eller mapp. Högerklicka för fler alternativ.</translation>
         </message>
         <message>
             <location line="+13"/>
@@ -1475,7 +1475,7 @@ har tagits bort eller bytt namn. Vill du spara den nu?%2</translation>
         <message>
             <location line="+5"/>
             <source>Open in System File Explorer</source>
-            <translation>Öppna i systemfilsutforskaren</translation>
+            <translation>Öppna i systemets filhanterare</translation>
         </message>
         <message>
             <location line="+5"/>
@@ -1485,7 +1485,7 @@ har tagits bort eller bytt namn. Vill du spara den nu?%2</translation>
         <message>
             <location line="+3"/>
             <source>Copy Selection to Clipboard</source>
-            <translation>Kopiera markering till urklipp</translation>
+            <translation>Kopiera markeringen till urklipp</translation>
         </message>
         <message>
             <location line="+4"/>
@@ -1505,7 +1505,7 @@ har tagits bort eller bytt namn. Vill du spara den nu?%2</translation>
         <message>
             <location line="+3"/>
             <source>Add to Path</source>
-            <translation>Lägg till i sökväg</translation>
+            <translation>Lägg till i sökvägen</translation>
         </message>
         <message>
             <location line="+2"/>
@@ -1522,7 +1522,7 @@ har tagits bort eller bytt namn. Vill du spara den nu?%2</translation>
         <message>
             <location line="-4"/>
             <source>Remove from Path</source>
-            <translation>Ta bort från sökväg</translation>
+            <translation>Ta bort från sökvägen</translation>
         </message>
         <message>
             <location line="+15"/>
@@ -1534,7 +1534,7 @@ har tagits bort eller bytt namn. Vill du spara den nu?%2</translation>
             <location line="+11"/>
             <location line="+17"/>
             <source>Delete file/directory</source>
-            <translation>Ta bort fil/katalog</translation>
+            <translation>Ta bort fil eller katalog</translation>
         </message>
         <message>
             <location line="-27"/>
@@ -1553,17 +1553,17 @@ har tagits bort eller bytt namn. Vill du spara den nu?%2</translation>
         <message>
             <location line="+17"/>
             <source>Can not delete a directory that is not empty</source>
-            <translation>Kan inte ta bort en katalog som inte är tom</translation>
+            <translation>Det går inte att ta bort en katalog som inte är tom</translation>
         </message>
         <message>
             <location line="+12"/>
             <source>Deletion error</source>
-            <translation>Borttagningsfel</translation>
+            <translation>Fel vid borttagning</translation>
         </message>
         <message>
             <location line="+1"/>
-            <source>Could not delete file &quot;%1&quot;.</source>
-            <translation>Kunde inte ta bort filen &quot;%1&quot;.</translation>
+            <source>Could not delete file "%1".</source>
+            <translation>Kunde inte ta bort filen "%1".</translation>
         </message>
         <message>
             <location line="+216"/>
@@ -1587,19 +1587,19 @@ har tagits bort eller bytt namn. Vill du spara den nu?%2</translation>
         <message>
             <location line="+2"/>
             <source>New File.txt</source>
-            <translation>Ny Fil.txt</translation>
+            <translation>Ny fil.txt</translation>
         </message>
         <message>
             <location line="+8"/>
             <source>Create File error</source>
-            <translation>Fel vid skapande av fil</translation>
+            <translation>Fel när filen skulle skapas</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Could not create file
-&quot;%1&quot;.</source>
+"%1".</source>
             <translation>Kunde inte skapa filen
-&quot;%1&quot;.</translation>
+"%1".</translation>
         </message>
         <message>
             <location line="+13"/>
@@ -1625,8 +1625,8 @@ har tagits bort eller bytt namn. Vill du spara den nu?%2</translation>
         <name>octave::files_dock_widget</name>
         <message>
             <location line="-1148"/>
-            <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
-            <translation>Kunde inte byta namn på filen &quot;%1&quot; till &quot;%2&quot;.</translation>
+            <source>Could not rename file "%1" to "%2".</source>
+            <translation>Kunde inte byta namn på filen "%1" till "%2".</translation>
         </message>
         <message>
             <location line="+107"/>
@@ -1646,7 +1646,7 @@ har tagits bort eller bytt namn. Vill du spara den nu?%2</translation>
         <message>
             <location line="+1"/>
             <source>Editor Files</source>
-            <translation>Redigerarfiler</translation>
+            <translation>Filer i redigeraren</translation>
         </message>
     </context>
     <context>
@@ -1676,12 +1676,12 @@ har tagits bort eller bytt namn. Vill du spara den nu?%2</translation>
             <source>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;We hope you find Octave to be a useful tool.&lt;/p&gt;
 &lt;p&gt;If you encounter problems, there are a number of ways to get help, including commercial support options, a discussion board, a wiki, and other community-based support channels.
-You can find more information about each of these by visiting &lt;a href=&quot;https://octave.org/support.html&quot;&gt;https://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
+You can find more information about each of these by visiting &lt;a href="https://octave.org/support.html"&gt;https://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
             <translation>&lt;html&gt;&lt;body&gt;
-&lt;p&gt;Vi hoppas att du tycker att Octave är ett användbart verktyg.&lt;/p&gt;
-&lt;p&gt;Om du stöter på problem finns det flera sätt att få hjälp, inklusive kommersiella supportalternativ, diskussionsforum, wiki och andra communityn-baserade supportkanaler.
-Du kan hitta mer information om var och en av dessa genom att besöka &lt;a href=&quot;https://octave.org/support.html&quot;&gt;https://octave.org/support.html&lt;/a&gt; (öppnas i extern webbläsare).&lt;/p&gt;
+&lt;p&gt;Vi hoppas att Octave blir ett användbart verktyg för dig.&lt;/p&gt;
+&lt;p&gt;Om du stöter på problem finns det flera sätt att få hjälp, bland annat kommersiell support, ett diskussionsforum, en wiki och andra gemenskapsbaserade supportkanaler.
+Mer information om dessa finns på &lt;a href="https://octave.org/support.html"&gt;https://octave.org/support.html&lt;/a&gt; (öppnas i en extern webbläsare).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
         </message>
         <message>
@@ -1690,18 +1690,18 @@ Du kan hitta mer information om var och en av dessa genom att besöka &lt;a href
 &lt;/head&gt;&lt;body&gt;
 &lt;p&gt;For more information about Octave:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;Visit &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (opens in external browser)&lt;/li&gt;
-&lt;li&gt;Get the documentation online in &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;HTML&lt;/a&gt; or &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;PDF&lt;/a&gt; format (links open in external browser)&lt;/li&gt;
+&lt;li&gt;Visit &lt;a href="https://octave.org"&gt;https://octave.org&lt;/a&gt; (opens in external browser)&lt;/li&gt;
+&lt;li&gt;Get the documentation online in &lt;a href="https://www.gnu.org/software/octave/doc/interpreter/index.html"&gt;HTML&lt;/a&gt; or &lt;a href="https://www.gnu.org/software/octave/octave.pdf"&gt;PDF&lt;/a&gt; format (links open in external browser)&lt;/li&gt;
 &lt;li&gt;Open the documentation browser of the Octave GUI with the help menu&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
             <translation>&lt;html&gt;&lt;head&gt;
 &lt;/head&gt;&lt;body&gt;
-&lt;p&gt;För more information om Octave:&lt;/p&gt;
+&lt;p&gt;Mer information om Octave:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;Besök &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (öppnas i extern webbläsare)&lt;/li&gt;
-&lt;li&gt;Hämta dokumentationen på nätet i &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;HTML&lt;/a&gt; eller &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;PDF&lt;/a&gt; format (länkar öppnas i extern webbläsare)&lt;/li&gt;
-&lt;li&gt;Öppna dokumentationsläsaren för Octave GUI med hjälpmenyn&lt;/li&gt;
+&lt;li&gt;Besök &lt;a href="https://octave.org"&gt;https://octave.org&lt;/a&gt; (öppnas i en extern webbläsare)&lt;/li&gt;
+&lt;li&gt;Läs dokumentationen på webben i &lt;a href="https://www.gnu.org/software/octave/doc/interpreter/index.html"&gt;HTML-format&lt;/a&gt; eller &lt;a href="https://www.gnu.org/software/octave/octave.pdf"&gt;PDF-format&lt;/a&gt; (länkarna öppnas i en extern webbläsare)&lt;/li&gt;
+&lt;li&gt;Öppna Octaves dokumentationsvisare via hjälpmenyn&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
         </message>
@@ -1711,12 +1711,12 @@ Du kan hitta mer information om var och en av dessa genom att besöka &lt;a href
         <message>
             <location filename="../src/m-editor/find-dialog.cc" line="+93"/>
             <source>Editor: Find and Replace</source>
-            <translation>Redigerare: Hitta och ersätt</translation>
+            <translation>Redigerare: Sök och ersätt</translation>
         </message>
         <message>
             <location line="+2"/>
             <source>&amp;Find:</source>
-            <translation>&amp;Hitta:</translation>
+            <translation>&amp;Sök:</translation>
         </message>
         <message>
             <location line="+2"/>
@@ -1746,17 +1746,17 @@ Du kan hitta mer information om var och en av dessa genom att besöka &lt;a href
         <message>
             <location line="+1"/>
             <source>&amp;Wrap while searching</source>
-            <translation>&amp;Sökning utan radbrytningar</translation>
+            <translation>&amp;Börja om från början vid sökning</translation>
         </message>
         <message>
             <location line="+2"/>
             <source>Find &amp;Next</source>
-            <translation>Hitta &amp;nästa</translation>
+            <translation>Sök &amp;nästa</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Find Pre&amp;vious</source>
-            <translation>Hitta föreg&amp;ående</translation>
+            <translation>Sök föreg&amp;ående</translation>
         </message>
         <message>
             <location line="+1"/>
@@ -1776,7 +1776,7 @@ Du kan hitta mer information om var och en av dessa genom att besöka &lt;a href
         <message>
             <location line="+13"/>
             <source>&amp;Whole words</source>
-            <translation>&amp;Hela ord</translation>
+            <translation>Endast &amp;hela ord</translation>
         </message>
         <message>
             <location line="+1"/>
@@ -1791,7 +1791,7 @@ Du kan hitta mer information om var och en av dessa genom att besöka &lt;a href
         <message>
             <location line="+1"/>
             <source>Search se&amp;lection</source>
-            <translation>Sök m&amp;arkering</translation>
+            <translation>Sök i m&amp;arkeringen</translation>
         </message>
         <message>
             <location line="+185"/>
@@ -1806,12 +1806,12 @@ Du kan hitta mer information om var och en av dessa genom att besöka &lt;a href
         <message>
             <location line="+290"/>
             <source>Replace Result</source>
-            <translation>Ersätt resultat</translation>
+            <translation>Ersättningsresultat</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>%1 items replaced</source>
-            <translation>%1 objekt ersatta</translation>
+            <translation>%1 ersättningar gjordes</translation>
         </message>
         <message>
             <location line="+15"/>
@@ -1829,12 +1829,12 @@ Du kan hitta mer information om var och en av dessa genom att besöka &lt;a href
         <message>
             <location filename="../src/find-files-dialog.cc" line="+61"/>
             <source>Find Files</source>
-            <translation>Hitta filer</translation>
+            <translation>Sök efter filer</translation>
         </message>
         <message>
             <location line="+9"/>
             <source>Named:</source>
-            <translation>Namngiven:</translation>
+            <translation>Namn:</translation>
         </message>
         <message>
             <location line="+16"/>
@@ -1854,7 +1854,7 @@ Du kan hitta mer information om var och en av dessa genom att besöka &lt;a href
         <message>
             <location line="+1"/>
             <source>Browse for start directory</source>
-            <translation>Bläddra efter startkatalogen</translation>
+            <translation>Välj startkatalog</translation>
         </message>
         <message>
             <location line="+4"/>
@@ -1864,7 +1864,7 @@ Du kan hitta mer information om var och en av dessa genom att besöka &lt;a href
         <message>
             <location line="+1"/>
             <source>Set start directory to current directory</source>
-            <translation>Ställ in startkatalogen till aktuell katalog</translation>
+            <translation>Ange den aktuella katalogen som startkatalog</translation>
         </message>
         <message>
             <location line="+4"/>
@@ -1896,7 +1896,7 @@ Du kan hitta mer information om var och en av dessa genom att besöka &lt;a href
             <location line="-17"/>
             <location line="+18"/>
             <source>Perform case insensitive match</source>
-            <translation>Utför matchning utan skiftlägeskänslighet</translation>
+            <translation>Matcha utan hänsyn till skiftläge</translation>
         </message>
         <message>
             <location line="-15"/>
@@ -1916,7 +1916,7 @@ Du kan hitta mer information om var och en av dessa genom att besöka &lt;a href
         <message>
             <location line="+95"/>
             <source>Results: Double click opens the file or sets the directory</source>
-            <translation>Resultat: Dubbelklick öppnar filen eller ställer in katalogen</translation>
+            <translation>Resultat: Dubbelklicka för att öppna filen eller ange katalogen</translation>
         </message>
         <message>
             <location line="+2"/>
@@ -1926,7 +1926,7 @@ Du kan hitta mer information om var och en av dessa genom att besöka &lt;a href
         <message>
             <location line="-59"/>
             <source>Idle.</source>
-            <translation>Sysslolös.</translation>
+            <translation>Väntar.</translation>
         </message>
         <message>
             <location line="-94"/>
@@ -1940,17 +1940,17 @@ separeras med ';', t.ex. '*.cc ; *.h'</translation>
         <message>
             <location line="+96"/>
             <source>Find</source>
-            <translation>Hitta</translation>
+            <translation>Sök</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Start search for matching files</source>
-            <translation>Börja söka efter matchande filer</translation>
+            <translation>Starta sökningen efter matchande filer</translation>
         </message>
         <message>
             <location line="+4"/>
             <source>Stop</source>
-            <translation>Stopp</translation>
+            <translation>Stoppa</translation>
         </message>
         <message>
             <location line="+1"/>
@@ -1970,12 +1970,12 @@ separeras med ';', t.ex. '*.cc ; *.h'</translation>
         <message>
             <location line="+143"/>
             <source>Searching...</source>
-            <translation>Sökande...</translation>
+            <translation>Söker...</translation>
         </message>
         <message>
             <location line="+28"/>
             <source>%1 match (es)</source>
-            <translation>%1 träffar</translation>
+            <translation>%1 träff(ar)</translation>
         </message>
         <message>
             <location line="+17"/>
@@ -1988,7 +1988,7 @@ separeras med ';', t.ex. '*.cc ; *.h'</translation>
         <message>
             <location filename="../src/find-files-model.cc" line="+96"/>
             <source>Filename</source>
-            <translation>Filnam</translation>
+            <translation>Filnamn</translation>
         </message>
         <message>
             <location line="+1"/>
@@ -2011,7 +2011,7 @@ separeras med ';', t.ex. '*.cc ; *.h'</translation>
         <message>
             <location filename="../src/find-widget.cc" line="+48"/>
             <source>Find:</source>
-            <translation>Hitta:</translation>
+            <translation>Sök:</translation>
         </message>
         <message>
             <location line="+10"/>
@@ -2054,7 +2054,7 @@ Octave GUI måste stängas nu.</translation>
         <message>
             <location line="+5"/>
             <source>Octave Critical Error</source>
-            <translation>Octave-kritiskt fel</translation>
+            <translation>Kritiskt fel i Octave</translation>
         </message>
     </context>
     <context>
@@ -2137,7 +2137,7 @@ Click 'Next' to create a configuration file and launch Octave.&lt;/p&gt;
             <translation>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;Du verkar använda Octaves grafiska gränssnitt för första gången på den här datorn.
 Klicka på 'Nästa' för att skapa en konfigurationsfil och starta Octave.&lt;/p&gt;
-&lt;p&gt;Konfigurationsfilen är lagrad i i&lt;br&gt;%1.&lt;/p&gt;
+&lt;p&gt;Konfigurationsfilen lagras i&lt;br&gt;%1.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
         </message>
     </context>
@@ -2146,12 +2146,12 @@ Klicka på 'Nästa' för att skapa en konfigurationsfil och starta Octave.&lt;/p
         <message>
             <location filename="../src/octave-dock-widget.cc" line="+82"/>
             <source>Undock Widget</source>
-            <translation>Förandra inte gränssnittskomponenten</translation>
+            <translation>Lossa panel</translation>
         </message>
         <message>
             <location line="+8"/>
             <source>Close Widget</source>
-            <translation>Stäng gränssnittskomponenten</translation>
+            <translation>Stäng panel</translation>
         </message>
     </context>
     <context>
@@ -2159,7 +2159,7 @@ Klicka på 'Nästa' för att skapa en konfigurationsfil och starta Octave.&lt;/p
         <message>
             <location filename="../src/main-window.cc" line="+169"/>
             <source>Profiler</source>
-            <translation>Profiler</translation>
+            <translation>Profilerare</translation>
         </message>
         <message>
             <location line="+381"/>
@@ -2207,15 +2207,15 @@ Klicka på 'Nästa' för att skapa en konfigurationsfil och starta Octave.&lt;/p
             <location line="+1"/>
             <source>New function name:
 </source>
-            <translation>Ny funktion name:
+            <translation>Namn på den nya funktionen:
 </translation>
         </message>
         <message>
             <location line="+63"/>
             <source>%1 is a built-in, compiled, or inline
 function and can not be edited.</source>
-            <translation>%1 är en inbyggd, kompilerad eller inline-
-funktion och kan inte redigeras.</translation>
+            <translation>%1 är en inbyggd, kompilerad eller inline-funktion
+och kan inte redigeras.</translation>
         </message>
         <message>
             <location line="+41"/>
@@ -2225,7 +2225,7 @@ funktion och kan inte redigeras.</translation>
         <message>
             <location line="+22"/>
             <source>Octave Editor</source>
-            <translation>Octave-redigerare</translation>
+            <translation>Octave-redigeraren</translation>
         </message>
         <message>
             <location line="+735"/>
@@ -2275,7 +2275,7 @@ funktion och kan inte redigeras.</translation>
         <message>
             <location line="+4"/>
             <source>New Figure</source>
-            <translation>Ny Figure</translation>
+            <translation>Ny figur</translation>
         </message>
         <message>
             <location line="+7"/>
@@ -2310,22 +2310,22 @@ funktion och kan inte redigeras.</translation>
         <message>
             <location line="+7"/>
             <source>Find Files...</source>
-            <translation>Hitta filer...</translation>
+            <translation>Sök efter filer...</translation>
         </message>
         <message>
             <location line="+5"/>
             <source>Clear Command Window</source>
-            <translation>Rensa kommandofönster</translation>
+            <translation>Rensa kommandofönstret</translation>
         </message>
         <message>
             <location line="+3"/>
             <source>Clear Command History</source>
-            <translation>Rensa kommandohistorik</translation>
+            <translation>Rensa kommandohistoriken</translation>
         </message>
         <message>
             <location line="+3"/>
             <source>Clear Workspace</source>
-            <translation>Rensa arbetsyta</translation>
+            <translation>Rensa arbetsytan</translation>
         </message>
         <message>
             <location line="+5"/>
@@ -2345,17 +2345,17 @@ funktion och kan inte redigeras.</translation>
         <message>
             <location line="+3"/>
             <source>Step</source>
-            <translation>Steg</translation>
+            <translation>Stega</translation>
         </message>
         <message>
             <location line="+4"/>
             <source>Step In</source>
-            <translation>Step I</translation>
+            <translation>Stega in</translation>
         </message>
         <message>
             <location line="+4"/>
             <source>Step Out</source>
-            <translation>Gå ut</translation>
+            <translation>Stega ut</translation>
         </message>
         <message>
             <location line="+4"/>
@@ -2400,37 +2400,37 @@ funktion och kan inte redigeras.</translation>
         <message>
             <location line="+3"/>
             <source>Show Command Window</source>
-            <translation>Visa kommandofönster</translation>
+            <translation>Visa kommandofönstret</translation>
         </message>
         <message>
             <location line="+3"/>
             <source>Show Command History</source>
-            <translation>Visa Kommandohistorik</translation>
+            <translation>Visa kommandohistoriken</translation>
         </message>
         <message>
             <location line="+3"/>
             <source>Show File Browser</source>
-            <translation>Visa filhanterare</translation>
+            <translation>Visa filhanteraren</translation>
         </message>
         <message>
             <location line="+3"/>
             <source>Show Workspace</source>
-            <translation>Visa arbetsyta</translation>
+            <translation>Visa arbetsytan</translation>
         </message>
         <message>
             <location line="+3"/>
             <source>Show Editor</source>
-            <translation>Visa redigerare</translation>
+            <translation>Visa redigeraren</translation>
         </message>
         <message>
             <location line="+3"/>
             <source>Show Documentation</source>
-            <translation>Visa dokumentation</translation>
+            <translation>Visa dokumentationen</translation>
         </message>
         <message>
             <location line="+3"/>
             <source>Show Variable Editor</source>
-            <translation>Visa variabelredigerare</translation>
+            <translation>Visa variabelredigeraren</translation>
         </message>
         <message>
             <location line="+5"/>
@@ -2471,7 +2471,7 @@ funktion och kan inte redigeras.</translation>
         <message>
             <location line="+5"/>
             <source>Previous Widget</source>
-            <translation>Föregående gränssnittskomponent</translation>
+            <translation>Föregående panel</translation>
         </message>
         <message>
             <location line="+5"/>
@@ -2506,12 +2506,12 @@ funktion och kan inte redigeras.</translation>
         <message>
             <location line="+14"/>
             <source>On Disk</source>
-            <translation>På disk</translation>
+            <translation>Lokalt</translation>
         </message>
         <message>
             <location line="+3"/>
             <source>Online</source>
-            <translation>Online</translation>
+            <translation>På webben</translation>
         </message>
         <message>
             <location line="+6"/>
@@ -2526,7 +2526,7 @@ funktion och kan inte redigeras.</translation>
         <message>
             <location line="+6"/>
             <source>Community News</source>
-            <translation>Community-nyheter</translation>
+            <translation>Nyheter från gemenskapen</translation>
         </message>
         <message>
             <location line="+9"/>
@@ -2560,7 +2560,7 @@ Octave's community news source seems to be unavailable.
 &lt;/p&gt;
 &lt;p&gt;
 For the latest news, please check
-&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
+&lt;a href="https://octave.org/community-news.html"&gt;https://octave.org/community-news.html&lt;/a&gt;
 when you have a connection to the web (link opens in an external browser).
 &lt;/p&gt;
 &lt;p&gt;
@@ -2568,15 +2568,15 @@ when you have a connection to the web (link opens in an external browser).
             <translation>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;
-Octaves gemenskapsnyhetskälla verkar vara otillgänglig.
+Nyhetskällan för Octave-gemenskapen verkar inte vara tillgänglig.
 &lt;/p&gt;
 &lt;p&gt;
-För de senaste nyheterna, se
-&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
-när du har en anslutning till webben (länken öppnas i en extern webbläsare).
+De senaste nyheterna finns på
+&lt;a href="https://octave.org/community-news.html"&gt;https://octave.org/community-news.html&lt;/a&gt;
+när du är ansluten till webben (länken öppnas i en extern webbläsare).
 &lt;/p&gt;
 &lt;p&gt;
-&lt;small&gt;&lt;em&gt;&amp;mdash; Octave-utvecklare, </translation>
+&lt;small&gt;&lt;em&gt;&amp;mdash; Octave-utvecklarna, </translation>
         </message>
         <message>
             <location line="+18"/>
@@ -2587,7 +2587,7 @@ Connecting to the web to display the latest Octave Community news has been disab
 &lt;/p&gt;
 &lt;p&gt;
 For the latest news, please check
-&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
+&lt;a href="https://octave.org/community-news.html"&gt;https://octave.org/community-news.html&lt;/a&gt;
 when you have a connection to the web (link opens in an external browser)
 or enable web connections for news in Octave's network settings tab.
 &lt;/p&gt;
@@ -2596,16 +2596,15 @@ or enable web connections for news in Octave's network settings tab.
             <translation>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;
-Anslutning till webben för att visa de senaste nyheterna från Octave-gemenskapen har inaktiverats.
+Webbanslutningen för att visa de senaste nyheterna från Octave-gemenskapen har inaktiverats.
 &lt;/p&gt;
 &lt;p&gt;
-För de senaste nyheterna, se
-&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
-när du har en anslutning till webben (länken öppnas i en extern webbläsare)
-eller aktivera webbanslutningar för nyheter i Octaves flik för nätverksinställningar.
+De senaste nyheterna finns på
+&lt;a href="https://octave.org/community-news.html"&gt;https://octave.org/community-news.html&lt;/a&gt;
+när du är ansluten till webben (länken öppnas i en extern webbläsare). Du kan också aktivera webbanslutningar för nyheter i Octaves nätverksinställningar.
 &lt;/p&gt;
 &lt;p&gt;
-&lt;small&gt;&lt;em&gt;&amp;mdash; Octave-utvecklare, </translation>
+&lt;small&gt;&lt;em&gt;&amp;mdash; Octave-utvecklarna, </translation>
         </message>
     </context>
     <context>
@@ -2613,17 +2612,17 @@ eller aktivera webbanslutningar för nyheter i Octaves flik för nätverksinstä
         <message>
             <location filename="../src/octave-dock-widget.cc" line="+144"/>
             <source>Hide Widget</source>
-            <translation>Dölj gränssnittskomponent</translation>
+            <translation>Dölj panel</translation>
         </message>
         <message>
             <location line="+83"/>
             <source>Dock Widget</source>
-            <translation>Förankra gränssnittskomponent</translation>
+            <translation>Docka panel</translation>
         </message>
         <message>
             <location line="+58"/>
             <source>Undock Widget</source>
-            <translation>Förankra inte gränssnittskomponent</translation>
+            <translation>Lossa panel</translation>
         </message>
     </context>
     <context>
@@ -2631,12 +2630,12 @@ eller aktivera webbanslutningar för nyheter i Octaves flik för nätverksinstä
         <message>
             <location filename="../src/m-editor/octave-qscintilla.cc" line="+302"/>
             <source>Help on</source>
-            <translation>Hjälp på</translation>
+            <translation>Hjälp om</translation>
         </message>
         <message>
             <location line="+2"/>
             <source>Documentation on</source>
-            <translation>Dokumentation på</translation>
+            <translation>Dokumentation om</translation>
         </message>
         <message>
             <location line="+3"/>
@@ -2646,23 +2645,23 @@ eller aktivera webbanslutningar för nyheter i Octaves flik för nätverksinstä
         <message>
             <location line="+15"/>
             <source>dbstop if ...</source>
-            <translation>dbstop om ...</translation>
+            <translation>dbstop if ...</translation>
         </message>
         <message>
             <location line="+545"/>
             <source>Octave Editor</source>
-            <translation>Octave-redigerare</translation>
+            <translation>Octave-redigeraren</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Creating temporary files failed.
 Make sure you have write access to temp. directory
 %1
-&quot;Run Selection&quot; requires temporary files.</source>
+"Run Selection" requires temporary files.</source>
             <translation>Det gick inte att skapa temporära filer.
 Kontrollera att du har skrivåtkomst till temporärkatalogen
 %1
-&quot;Kör markering&quot; kräver temporära filer.</translation>
+"Kör markering" kräver temporära filer.</translation>
         </message>
         <message>
             <location line="+313"/>
@@ -2705,7 +2704,7 @@ finns inte. Vill du skapa den?</translation>
         <message>
             <location line="+2"/>
             <source>Octave Editor</source>
-            <translation>Octave-redigerare</translation>
+            <translation>Octave-redigeraren</translation>
         </message>
         <message>
             <location line="+19"/>
@@ -2715,12 +2714,12 @@ finns inte. Vill du skapa den?</translation>
         <message>
             <location line="+1"/>
             <source>The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.</source>
-            <translation>Filen %1 skuggas av en fil med samma namn i laddningssökvägen. För att köra eller felsöka funktionen du redigerar, byt till katalogen %2.</translation>
+            <translation>Filen %1 skuggas av en fil med samma namn i laddningssökvägen. Byt till katalogen %2 för att köra eller felsöka funktionen som du redigerar.</translation>
         </message>
         <message>
             <location line="+2"/>
             <source>Change Directory or Add Directory to Load Path</source>
-            <translation>Ändra katalog eller lägg till katalog för att ladda sökvägen</translation>
+            <translation>Byt katalog eller lägg till katalogen i laddningssökvägen</translation>
         </message>
         <message>
             <location line="+2"/>
@@ -2730,7 +2729,7 @@ finns inte. Vill du skapa den?</translation>
         <message>
             <location line="+1"/>
             <source>&amp;Add Directory to Load Path</source>
-            <translation>&amp;Lägg till katalog för att ladda sökvägen</translation>
+            <translation>&amp;Lägg till katalogen i laddningssökvägen</translation>
         </message>
     </context>
     <context>
@@ -2906,7 +2905,7 @@ finns inte. Vill du skapa den?</translation>
         <message>
             <location line="+1"/>
             <source>persistent</source>
-            <translation>beständig</translation>
+            <translation>persistent</translation>
         </message>
         <message>
             <location filename="../src/gui-preferences-global.h" line="+192"/>
@@ -2923,23 +2922,23 @@ finns inte. Vill du skapa den?</translation>
             <source>Switch to a second set of colors.
 Useful for defining light/dark modes.
 Discards non-applied current changes!</source>
-            <translation>Växla till en andra uppsättning färger.
-Användbart för att definiera ljusa/mörka lägen.
-Ignorerar aktuella ändringar som inte tillämpats!</translation>
+            <translation>Växla till en andra färguppsättning.
+Användbart för att definiera ljust och mörkt läge.
+Ändringar som inte har tillämpats kasseras!</translation>
         </message>
         <message>
             <location line="+10"/>
             <source>Reload the default colors,
 depends on currently selected mode.</source>
-            <translation>Reload standard colors,
-depends på currently markerad läge.</translation>
+            <translation>Läs in standardfärgerna igen.
+De beror på det valda läget.</translation>
         </message>
         <message>
             <location line="+9"/>
             <source>Reload the default style values,
 depends on currently selected mode.</source>
-            <translation>Ladda om standardfärgerna,
-beroende på markerat läge.</translation>
+            <translation>Läs in standardvärdena för stilar igen.
+De beror på det valda läget.</translation>
         </message>
         <message>
             <location line="-13"/>
@@ -2966,22 +2965,22 @@ beroende på markerat läge.</translation>
         <message>
             <location line="-834"/>
             <source>IBeam Cursor</source>
-            <translation>IBeam-markör</translation>
+            <translation>I-balksmarkör</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Block Cursor</source>
-            <translation>Block-markör</translation>
+            <translation>Blockmarkör</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Underline Cursor</source>
-            <translation>Understruken markör</translation>
+            <translation>Understrykningsmarkör</translation>
         </message>
         <message>
             <location line="+176"/>
             <source>Color of highlighted current line (magenta (255,0,255) for automatic color)</source>
-            <translation>Färg på markerad aktuell rad (magenta (255,0,255) för automatisk färg)</translation>
+            <translation>Färg för markerad aktuell rad (magenta (255,0,255) ger automatisk färg)</translation>
         </message>
         <message>
             <location line="+70"/>
@@ -3003,7 +3002,7 @@ beroende på markerat läge.</translation>
             <location line="+22"/>
             <location line="+1124"/>
             <source>Failed to open %1 as Octave shortcut file</source>
-            <translation>Misslyckades med att öppna %1 som Octave-genvägsfil</translation>
+            <translation>Det gick inte att öppna %1 som en Octave-kortkommandofil</translation>
         </message>
         <message>
             <location line="-453"/>
@@ -3018,30 +3017,30 @@ beroende på markerat läge.</translation>
         <message>
             <location line="+384"/>
             <source>Import shortcuts from file...</source>
-            <translation>Importera genvägar från fil...</translation>
+            <translation>Importera kortkommandon från fil...</translation>
         </message>
         <message>
             <location line="+1"/>
             <location line="+6"/>
             <source>Octave Shortcut Files (*.osc);;All Files (*)</source>
-            <translation>Oktave-genvägsfiler (*.osc);;Alla filer (*)</translation>
+            <translation>Octave-kortkommandofiler (*.osc);;Alla filer (*)</translation>
         </message>
         <message>
             <location line="-1"/>
             <source>Export shortcuts to file...</source>
-            <translation>Exportera genvägar till fil...</translation>
+            <translation>Exportera kortkommandon till fil...</translation>
         </message>
         <message>
             <location line="+32"/>
             <source>Overwriting Shortcuts</source>
-            <translation>Överskrivning av genvägar</translation>
+            <translation>Skriv över kortkommandon</translation>
         </message>
         <message>
             <location line="+2"/>
             <source>You are about to overwrite all shortcuts.
 Would you like to save the current shortcut set or cancel the action?</source>
-            <translation>Du håller på att skriva över alla genvägar.
-Vill du spara den aktuella genvägsuppsättningen eller avbryta åtgärden?</translation>
+            <translation>Du håller på att skriva över alla kortkommandon.
+Vill du spara den aktuella kortkommandouppsättningen eller avbryta åtgärden?</translation>
         </message>
         <message>
             <location line="+5"/>
@@ -3051,7 +3050,7 @@ Vill du spara den aktuella genvägsuppsättningen eller avbryta åtgärden?</tra
         <message>
             <location line="+34"/>
             <source>Octave GUI preferences</source>
-            <translation>Octave GUI-inställningar</translation>
+            <translation>Inställningar för Octaves grafiska gränssnitt</translation>
         </message>
     </context>
     <context>
@@ -3059,7 +3058,7 @@ Vill du spara den aktuella genvägsuppsättningen eller avbryta åtgärden?</tra
         <message>
             <location filename="../src/welcome-wizard.cc" line="+45"/>
             <source>Community News</source>
-            <translation>Gemenskapsnyheter</translation>
+            <translation>Nyheter från gemenskapen</translation>
         </message>
         <message>
             <location line="+5"/>
@@ -3081,14 +3080,14 @@ Vill du spara den aktuella genvägsuppsättningen eller avbryta åtgärden?</tra
             <source>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;When Octave starts, it will optionally check the Octave web site for current news and information about the Octave community.
 The check will happen at most once each day and news will only be displayed if there is something new since the last time you viewed the news.&lt;/p&gt;
-&lt;p&gt;You may also view the news by selecting the &quot;Community News&quot; item in the &quot;Help&quot; menu, or by visiting
-&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;You may also view the news by selecting the "Community News" item in the "Help" menu, or by visiting
+&lt;a href="https://octave.org/community-news.html"&gt;https://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
             <translation>&lt;html&gt;&lt;body&gt;
-&lt;p&gt;När Octave startar kan den valfritt kontrollera Octaves webbplats för aktuella nyheter och information om Octave-gemenskapen.
-Kontrollen sker högst en gång per dag och nyheter visas bara om det finns något nytt sedan du senast såg nyheterna.&lt;/p&gt;
-&lt;p&gt;Du kan också se nyheterna genom att välja alternativet &quot;Gemenskapsnyheter&quot; i &quot;Hjälp&quot;-menyn eller genom att besöka
-&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;När Octave startar kan programmet kontrollera Octaves webbplats efter aktuella nyheter och information om Octave-gemenskapen.
+Kontrollen görs högst en gång per dag, och nyheterna visas bara om något har tillkommit sedan du senast läste dem.&lt;/p&gt;
+&lt;p&gt;Du kan också visa nyheterna genom att välja ”Nyheter från gemenskapen” på menyn ”Hjälp” eller genom att besöka
+&lt;a href="https://octave.org/community-news.html"&gt;https://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
         </message>
         <message>
@@ -3108,36 +3107,36 @@ Kontrollen sker högst en gång per dag och nyheter visas bara om det finns någ
         <message>
             <location filename="../src/shortcuts-tree-widget.cc" line="+172"/>
             <source>Enter New Shortcut</source>
-            <translation>Ange ny genväg</translation>
+            <translation>Ange nytt kortkommando</translation>
         </message>
         <message>
             <location line="+7"/>
             <source>Enter custom shortcut
 Action: %1</source>
-            <translation>Ange anpassad genväg
+            <translation>Ange ett anpassat kortkommando
 Åtgärd: %1</translation>
         </message>
         <message>
             <location line="+9"/>
             <source>Enter shortcut by typing it</source>
-            <translation>Ange genvägen genom att skriva den</translation>
+            <translation>Ange kortkommandot genom att trycka på tangenterna</translation>
         </message>
         <message>
             <location line="+3"/>
             <source>Add Shift modifier
 (allows one to enter number keys)</source>
-            <translation>Lägg till Shift-tangent
-(låter en använda siffertangenterna)</translation>
+            <translation>Lägg till Skift som modifieringstangent
+(gör det möjligt att använda siffertangenter)</translation>
         </message>
         <message>
             <location line="+17"/>
             <source>Actual Shortcut</source>
-            <translation>Faktisk genväg</translation>
+            <translation>Tilldelat kortkommando</translation>
         </message>
         <message>
             <location line="+8"/>
             <source>Default Shortcut</source>
-            <translation>Standardgenväg</translation>
+            <translation>Standardkortkommando</translation>
         </message>
         <message>
             <location line="+8"/>
@@ -3152,20 +3151,20 @@ Action: %1</source>
         <message>
             <location line="+125"/>
             <source>Double Shortcut</source>
-            <translation>Dubbel genväg</translation>
+            <translation>Kortkommandot används redan</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>The chosen shortcut
-  &quot;%1&quot;
+  "%1"
 is already used for the action
-  &quot;%2&quot;.
+  "%2".
 Do you want to use the shortcut and remove it from the previous action?</source>
-            <translation>Den valda genvägen
- &quot;%1&quot;
+            <translation>Det valda kortkommandot
+  "%1"
 används redan för åtgärden
- &quot;%2&quot;.
-Vill du använda genvägen och ta bort den från föregående åtgärd?</translation>
+  "%2".
+Vill du använda kortkommandot och ta bort det från den tidigare åtgärden?</translation>
         </message>
     </context>
     <context>
@@ -3173,13 +3172,13 @@ Vill du använda genvägen och ta bort den från föregående åtgärd?</transla
         <message>
             <location line="+27"/>
             <source>Global</source>
-            <translation>Global</translation>
+            <translation>Globalt</translation>
         </message>
         <message>
             <location line="+4"/>
             <location line="+49"/>
             <source>File Menu</source>
-            <translation>Arkivmeny</translation>
+            <translation>Filmeny</translation>
         </message>
         <message>
             <location line="-46"/>
@@ -3217,22 +3216,22 @@ Vill du använda genvägen och ta bort den från föregående åtgärd?</transla
         <message>
             <location line="+3"/>
             <source>Handling of Dock Widgets</source>
-            <translation>Hantering av förankringsgränssnittsmoduler</translation>
+            <translation>Hantering av paneler</translation>
         </message>
         <message>
             <location line="+3"/>
             <source>Tab Handling in Dock Widgets</source>
-            <translation>Flikhantering i förankringsgränssnittsmoduler</translation>
+            <translation>Flikhantering i paneler</translation>
         </message>
         <message>
             <location line="+3"/>
             <source>Find &amp; Replace in Dock Widgets</source>
-            <translation>Hitta &amp; ersätt i förankringsgränssnittsmoduler</translation>
+            <translation>Sök och ersätt i paneler</translation>
         </message>
         <message>
             <location line="+3"/>
             <source>Zooming in Editor and Documentation</source>
-            <translation>Zooma in i redigeraren och dokumentationen</translation>
+            <translation>Zoom i redigeraren och dokumentationen</translation>
         </message>
         <message>
             <location line="+15"/>
@@ -3242,12 +3241,12 @@ Vill du använda genvägen och ta bort den från föregående åtgärd?</transla
         <message>
             <location line="+10"/>
             <source>View Menu</source>
-            <translation>Visa meny</translation>
+            <translation>Visningsmeny</translation>
         </message>
         <message>
             <location line="+6"/>
             <source>Run Menu</source>
-            <translation>Kör-meny</translation>
+            <translation>Körmeny</translation>
         </message>
         <message>
             <location line="+13"/>
@@ -3257,12 +3256,12 @@ Vill du använda genvägen och ta bort den från föregående åtgärd?</transla
         <message>
             <location line="+4"/>
             <source>Browser</source>
-            <translation>Hanterare</translation>
+            <translation>Filhanterare</translation>
         </message>
         <message>
             <location line="+115"/>
             <source>item %1 not found in shortcut settings dialog</source>
-            <translation>objekt %1 hittades inte i dialogrutan för genvägsinställningar</translation>
+            <translation>objektet %1 hittades inte i dialogrutan för kortkommandoinställningar</translation>
         </message>
     </context>
     <context>
@@ -3291,7 +3290,7 @@ Vill du använda genvägen och ta bort den från föregående åtgärd?</transla
         <message>
             <location filename="../src/variable-editor.cc" line="+177"/>
             <source>Dock Widget</source>
-            <translation>Förankringsgränssnittsmoduler</translation>
+            <translation>Docka panel</translation>
         </message>
         <message>
             <location line="+3"/>
@@ -3301,7 +3300,7 @@ Vill du använda genvägen och ta bort den från föregående åtgärd?</transla
         <message>
             <location line="+15"/>
             <source>Undock Widget</source>
-            <translation>Förankra inte gränssnittskomponent</translation>
+            <translation>Lossa panel</translation>
         </message>
         <message>
             <location line="+22"/>
@@ -3339,7 +3338,7 @@ Vill du använda genvägen och ta bort den från föregående åtgärd?</transla
         <message>
             <location line="+3"/>
             <source>Save variable to a file</source>
-            <translation>Spara variabel till en fil</translation>
+            <translation>Spara variabeln i en fil</translation>
         </message>
         <message>
             <location line="+3"/>
@@ -3351,7 +3350,7 @@ Vill du använda genvägen och ta bort den från föregående åtgärd?</transla
         <message>
             <location line="-5"/>
             <source>Save variable to a file in different format</source>
-            <translation>Spara variabel till en fil i ett annat format</translation>
+            <translation>Spara variabeln i en fil med ett annat format</translation>
         </message>
         <message>
             <location line="+20"/>
@@ -3381,7 +3380,7 @@ Vill du använda genvägen och ta bort den från föregående åtgärd?</transla
         <message>
             <location line="+2"/>
             <source>Paste clipboard into variable data</source>
-            <translation>Klistra in urklipp i variabeldata</translation>
+            <translation>Klistra in innehållet i urklipp i variabeldata</translation>
         </message>
         <message>
             <location line="+8"/>
@@ -3515,7 +3514,7 @@ Vill du använda genvägen och ta bort den från föregående åtgärd?</transla
         <message>
             <location line="+83"/>
             <source>Right click to copy, rename, or display</source>
-            <translation>Högerklicka för att kopiera, byta namn eller visa</translation>
+            <translation>Högerklicka för att kopiera, byta namn på eller visa</translation>
         </message>
         <message>
             <location line="+30"/>
@@ -3574,7 +3573,7 @@ Vill du använda genvägen och ta bort den från föregående åtgärd?</transla
         <message>
             <location line="+1"/>
             <source>Colors for variable attributes:</source>
-            <translation>Färger för variabla attribut:</translation>
+            <translation>Färger för variabelattribut:</translation>
         </message>
         <message>
             <location line="+139"/>
@@ -3599,7 +3598,7 @@ Vill du använda genvägen och ta bort den från föregående åtgärd?</transla
         <message>
             <location line="+8"/>
             <source>Only top-level symbols may be renamed</source>
-            <translation>Endast symboler på toppnivå kan byta namn</translation>
+            <translation>Endast symboler på den översta nivån kan byta namn</translation>
         </message>
         <message>
             <location line="+22"/>
@@ -3627,7 +3626,7 @@ Vill du använda genvägen och ta bort den från föregående åtgärd?</transla
         <message>
             <location line="+11"/>
             <source>Can not dup redirected stream with fd = %1.</source>
-            <translation>Kan inte dup-omdirigerad ström med fd = %1.</translation>
+            <translation>Kan inte duplicera den omdirigerade strömmen med fd = %1.</translation>
         </message>
         <message>
             <location line="+10"/>
@@ -3638,13 +3637,13 @@ Vill du använda genvägen och ta bort den från föregående åtgärd?</transla
             <location line="+7"/>
             <source>Cannot dup2 redirected stream with fd = %1
 to pipe with fd = %2: %3</source>
-            <translation>Kan inte duplicera omdirigerad ström med fd = %1
-till rör med fd = %2: %3</translation>
+            <translation>Kan inte duplicera den omdirigerade strömmen med fd = %1
+till röret med fd = %2: %3</translation>
         </message>
         <message>
             <location line="+57"/>
             <source>Error while listening to redirected streams</source>
-            <translation>Fel vid lyssnande på omdirigerade strömmar</translation>
+            <translation>Fel vid avlyssning av omdirigerade strömmar</translation>
         </message>
         <message>
             <location line="+17"/>
@@ -3684,12 +3683,12 @@ Fel: </translation>
             <location line="+841"/>
             <location line="+1916"/>
             <source>General</source>
-            <translation>Allmän</translation>
+            <translation>Allmänt</translation>
         </message>
         <message>
             <location line="-2404"/>
             <source>Octave logo only</source>
-            <translation>Endast Oktave-logotypen</translation>
+            <translation>Endast Octave-logotypen</translation>
         </message>
         <message>
             <location line="+10"/>
@@ -3699,7 +3698,7 @@ Fel: </translation>
         <message>
             <location line="-334"/>
             <source>Dock widget title bar</source>
-            <translation>Titelfält för förankringsgränssnittsmoduler</translation>
+            <translation>Titelrad för paneler</translation>
         </message>
         <message>
             <location line="+72"/>
@@ -3731,7 +3730,7 @@ Fel: </translation>
             <location line="+488"/>
             <location line="+140"/>
             <source>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</source>
-            <translation>Detta fungerar bra för teckensnitt med fast radavstånd. Raden ritas vid en position baserad på bredden på ett mellanslagstecken i standardteckensnittet. Det kanske inte fungerar särskilt bra om stilar använder proportionella teckensnitt eller om olika teckenstorlekar eller fetstil, kursiv och normal text används.</translation>
+            <translation>Detta fungerar bra med teckensnitt med fast teckenbredd. Linjen ritas på en position som baseras på bredden hos ett blanksteg i standardteckensnittet. Det fungerar kanske inte lika bra om stilarna använder proportionella teckensnitt, varierande teckenstorlekar eller fet, kursiv och normal text.</translation>
         </message>
         <message>
             <location line="-535"/>
@@ -3741,7 +3740,7 @@ Fel: </translation>
         <message>
             <location line="+1116"/>
             <source>Windows (CRLF)</source>
-            <translation>Fönster (CRLF)</translation>
+            <translation>Windows (CRLF)</translation>
         </message>
         <message>
             <location line="+5"/>
@@ -3761,12 +3760,12 @@ Fel: </translation>
         <message>
             <location line="-516"/>
             <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If set, the focus of the widgets that are docked to the main window follows the mouse cursor. This is intended for having the same behavior within the main window when &amp;quot;focus follows mouse&amp;quot; is used for the desktop environment.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-            <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Om detta är angivet följer fokus för widgetarna som är dockade till huvudfönstret muspekaren. Detta är avsett att ha samma beteende i huvudfönstret när "fokus följer mus" används för skrivbordsmiljön.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+            <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;När detta är aktiverat följer fokus i panelerna som är dockade i huvudfönstret muspekaren. Det ger samma beteende i huvudfönstret som när skrivbordsmiljön använder ”fokus följer muspekaren”.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
         </message>
         <message>
             <location line="+3"/>
             <source>Focus follows mouse for widgets docked to the main window</source>
-            <translation>Fokus följer musen för gränssnittskomponenter förankrade till huvudfönstret</translation>
+            <translation>Fokus följer muspekaren i paneler som är dockade i huvudfönstret</translation>
         </message>
         <message>
             <location line="+494"/>
@@ -3781,7 +3780,7 @@ Fel: </translation>
         <message>
             <location line="+25"/>
             <source>Position</source>
-            <translation>Position</translation>
+            <translation>Placering</translation>
         </message>
         <message>
             <location line="+9"/>
@@ -3811,12 +3810,12 @@ Fel: </translation>
         <message>
             <location line="+7"/>
             <source>Tab indents line</source>
-            <translation>Tabb-indragslinjen</translation>
+            <translation>Tabbtangenten ökar radens indrag</translation>
         </message>
         <message>
             <location line="+20"/>
             <source>Auto indentation</source>
-            <translation>Automatisk indentering</translation>
+            <translation>Automatiskt indrag</translation>
         </message>
         <message>
             <location line="+23"/>
@@ -3831,7 +3830,7 @@ Fel: </translation>
         <message>
             <location line="+7"/>
             <source>Backspace unindents line</source>
-            <translation>Backsteg tar bort indragningslinjen</translation>
+            <translation>Backsteg minskar radens indrag</translation>
         </message>
         <message>
             <location line="+23"/>
@@ -3841,7 +3840,7 @@ Fel: </translation>
         <message>
             <location line="+70"/>
             <source>Auto completion</source>
-            <translation>Automatisk ifyllning</translation>
+            <translation>Automatisk komplettering</translation>
         </message>
         <message>
             <location line="+27"/>
@@ -3851,7 +3850,7 @@ Fel: </translation>
         <message>
             <location line="+13"/>
             <source>Case sensitive</source>
-            <translation>Skiftlägeskänsligt</translation>
+            <translation>Skiftlägeskänslig</translation>
         </message>
         <message>
             <location line="+23"/>
@@ -3876,12 +3875,12 @@ Fel: </translation>
         <message>
             <location line="+64"/>
             <source>Show completion list automatically</source>
-            <translation>Visa listan över ifyllda uppgifter automatiskt</translation>
+            <translation>Visa kompletteringslistan automatiskt</translation>
         </message>
         <message>
             <location line="+159"/>
             <source>Reload externally changed files without prompt</source>
-            <translation>Ladda om externt ändrade filer utan uppmaning</translation>
+            <translation>Läs in externt ändrade filer igen utan att fråga</translation>
         </message>
         <message>
             <location line="-924"/>
@@ -3943,7 +3942,7 @@ Fel: </translation>
         <message>
             <location line="-684"/>
             <source>Text inactive</source>
-            <translation>Text inaktiv</translation>
+            <translation>Inaktiv text</translation>
         </message>
         <message>
             <location line="-32"/>
@@ -3954,7 +3953,7 @@ Fel: </translation>
         <message>
             <location line="+39"/>
             <source>Background inactive</source>
-            <translation>Bakgrund inaktiv</translation>
+            <translation>Inaktiv bakgrund</translation>
         </message>
         <message>
             <location line="+225"/>
@@ -3970,17 +3969,17 @@ Fel: </translation>
         <message>
             <location line="-1305"/>
             <source>Show whitespace</source>
-            <translation>Visa blanksteg</translation>
+            <translation>Visa blankstegstecken</translation>
         </message>
         <message>
             <location line="-45"/>
             <source>Do not show whitespace used for indentation</source>
-            <translation>Visa inte blanksteg som används för indentering</translation>
+            <translation>Visa inte blankstegstecken som används för indrag</translation>
         </message>
         <message>
             <location line="+1125"/>
             <source>Create nonexistent files without prompting</source>
-            <translation>Skapa icke-existerande filer utan uppmaning</translation>
+            <translation>Skapa filer som inte finns utan att fråga</translation>
         </message>
         <message>
             <location line="-897"/>
@@ -4016,17 +4015,17 @@ Fel: </translation>
         <message>
             <location line="+359"/>
             <source>These preferences are applied after any .octaverc startup files.</source>
-            <translation>Dessa inställningar tillämpas efter alla .octaverc-uppstartsfiler.</translation>
+            <translation>Dessa inställningar tillämpas efter eventuella .octaverc-startfiler.</translation>
         </message>
         <message>
             <location line="+540"/>
             <source>Show EOL characters</source>
-            <translation>Visa EOL-tecken</translation>
+            <translation>Visa radslutstecken</translation>
         </message>
         <message>
             <location line="+1002"/>
             <source>Default EOL mode</source>
-            <translation>Standard EOL-läge</translation>
+            <translation>Standardläge för radslut</translation>
         </message>
         <message>
             <location line="-219"/>
@@ -4061,7 +4060,7 @@ Fel: </translation>
         <message>
             <location line="-41"/>
             <source>Dock widgets window icons</source>
-            <translation>Ikoner för förankringsgränssnittskompnenters fönster</translation>
+            <translation>Fönsterikoner för paneler</translation>
         </message>
         <message>
             <location line="+7"/>
@@ -4086,7 +4085,7 @@ Fel: </translation>
         <message>
             <location line="+27"/>
             <source>Initial working directory of Octave interpreter</source>
-            <translation>Initial arbetskatalog för Octave-tolken</translation>
+            <translation>Ursprunglig arbetskatalog för Octave-tolken</translation>
         </message>
         <message>
             <location line="+18"/>
@@ -4101,7 +4100,7 @@ Fel: </translation>
         <message>
             <location line="+208"/>
             <source>Set focus to Command Window when running a command from within another widget</source>
-            <translation>Ställ fokus till kommandofönstret när du kör ett kommando från en annan widget</translation>
+            <translation>Flytta fokus till kommandofönstret när ett kommando körs från en annan panel</translation>
         </message>
         <message>
             <location line="+7"/>
@@ -4111,12 +4110,12 @@ Fel: </translation>
         <message>
             <location line="+16"/>
             <source>Command Window Colors</source>
-            <translation>Färger på kommandofönstret</translation>
+            <translation>Färger i kommandofönstret</translation>
         </message>
         <message>
             <location line="+190"/>
             <source>Number size as difference to editor font</source>
-            <translation>Nummerstorlek som skillnad från redigerarens teckensnitt</translation>
+            <translation>Radnumrens teckenstorlek i förhållande till redigerarens teckensnitt</translation>
         </message>
         <message>
             <location line="+79"/>
@@ -4136,7 +4135,7 @@ Fel: </translation>
         <message>
             <location line="+29"/>
             <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Rotate tabs: Vertical when at top or bottom and horizontal when left or right. The close button is not shown in rotated tabs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-            <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Rotera flikar: Vertikalt när de är uppe eller nere och horisontellt när de är åt vänster eller höger. Stängningsknappen visas inte i roterade flikar.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+            <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Rotera flikar: lodrätt när de är överst eller nederst och vågrätt när de är till vänster eller höger. Stängningsknappen visas inte på roterade flikar.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
         </message>
         <message>
             <location line="+74"/>
@@ -4146,7 +4145,7 @@ Fel: </translation>
         <message>
             <location line="+11"/>
             <source>Strings considered for uncommenting text</source>
-            <translation>Strängar som beaktas för avkommentering av text</translation>
+            <translation>Strängar som identifieras vid avkommentering av text</translation>
         </message>
         <message>
             <location line="+23"/>
@@ -4161,7 +4160,7 @@ Fel: </translation>
         <message>
             <location line="+25"/>
             <source>Break long lines at line length</source>
-            <translation>Bryt långa rader vid radlängd</translation>
+            <translation>Bryt långa rader vid den angivna radlängden</translation>
         </message>
         <message>
             <location line="+13"/>
@@ -4176,7 +4175,7 @@ Fel: </translation>
         <message>
             <location line="+9"/>
             <source>Long line marker</source>
-            <translation>Lång radmarkör</translation>
+            <translation>Markör för långa rader</translation>
         </message>
         <message>
             <location line="+10"/>
@@ -4190,8 +4189,8 @@ Fel: </translation>
         </message>
         <message>
             <location line="+191"/>
-            <source>Auto insert after &quot;if&quot; etc.</source>
-            <translation>Automatisk infogning efter &quot;if&quot; etc.</translation>
+            <source>Auto insert after "if" etc.</source>
+            <translation>Infoga automatiskt efter ”if” osv.</translation>
         </message>
         <message>
             <location line="+20"/>
@@ -4200,13 +4199,13 @@ Fel: </translation>
         </message>
         <message>
             <location line="+5"/>
-            <source>&quot;endif&quot; etc.</source>
-            <translation>&quot;endif&quot; etc.</translation>
+            <source>"endif" etc.</source>
+            <translation>"endif" etc.</translation>
         </message>
         <message>
             <location line="+5"/>
-            <source>&quot;end&quot;</source>
-            <translation>&quot;end&quot;</translation>
+            <source>"end"</source>
+            <translation>"end"</translation>
         </message>
         <message>
             <location line="+238"/>
@@ -4216,7 +4215,7 @@ Fel: </translation>
         <message>
             <location line="+8"/>
             <source>Always show debug breakpoints and pointers (opens related file if closed)</source>
-            <translation>Visa alltid felsökningsbrytpunkter och pekare (öppnar relaterad fil om den stängs)</translation>
+            <translation>Visa alltid brytpunkter och felsökningspekare (öppnar den relaterade filen om den är stängd)</translation>
         </message>
         <message>
             <location line="+15"/>
@@ -4226,32 +4225,32 @@ Fel: </translation>
         <message>
             <location line="+52"/>
             <source>Restore editor tabs from previous session on startup or when editor is shown again after closing</source>
-            <translation>Återställ redigeringsflikar från föregående session vid start eller när redigeraren visas igen efter stängning</translation>
+            <translation>Återställ redigerarflikar från föregående session vid start eller när redigeraren visas igen efter att ha stängts</translation>
         </message>
         <message>
             <location line="+40"/>
             <source>Close all files when the editor widget is closed/hidden</source>
-            <translation>Stäng alla filer när redigeringsgränssnittskomponenten är stängd/dold</translation>
+            <translation>Stäng alla filer när redigerarpanelen stängs eller döljs</translation>
         </message>
         <message>
             <location line="-23"/>
             <source>Force newline at end when saving file</source>
-            <translation>Tvinga fram ny rad i slutet när filen sparas</translation>
+            <translation>Lägg alltid till en ny rad i slutet när filen sparas</translation>
         </message>
         <message>
             <location line="-10"/>
             <source>Remove trailing spaces when saving file</source>
-            <translation>Ta bort efterföljande mellanslag när du sparar filen</translation>
+            <translation>Ta bort avslutande blanksteg när filen sparas</translation>
         </message>
         <message>
             <location line="+108"/>
             <source>Directory of open file dialog follows current editor file instead of current Octave directory </source>
-            <translation>Katalogen för dialogrutan för öppen fil följer aktuell redigeringsfil istället för aktuell Octave-katalog </translation>
+            <translation>Katalogen i dialogrutan Öppna fil följer den aktuella filen i redigeraren i stället för den aktuella Octave-katalogen </translation>
         </message>
         <message>
             <location line="+36"/>
             <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color, and background color (for the latter, the color magenta (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-            <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Välj teckensnitt, teckenstorlek (som en skillnad från standardstorleken), teckensnittsstil (&lt;f&gt;b&lt;/b&gt;et, &lt;b&gt;i&lt;/k&gt;ursiv, &lt;b&gt;u&lt;/b&gt;nderstruken), textfärg och bakgrundsfärg (för den senare är färgen magenta (255,0,255) en platshållare för standardbakgrundsfärgen).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+            <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Välj teckensnitt, teckenstorlek (som skillnad från standardstorleken), teckenstil (&lt;b&gt;f&lt;/b&gt;et, &lt;b&gt;k&lt;/b&gt;ursiv, &lt;b&gt;u&lt;/b&gt;nderstruken), textfärg och bakgrundsfärg. För bakgrundsfärgen används magenta (255,0,255) som platshållare för standardbakgrundsfärgen.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
         </message>
         <message>
             <location line="+62"/>
@@ -4265,8 +4264,8 @@ Fel: </translation>
         </message>
         <message>
             <location line="+68"/>
-            <source>Extensions of files to be opened in the default text editor (separated by &quot;;&quot;):</source>
-            <translation>Filtillägg som ska öppnas i standardtextredigeraren (separerade med &quot;;&quot;):</translation>
+            <source>Extensions of files to be opened in the default text editor (separated by ";"):</source>
+            <translation>Filtillägg som ska öppnas i standardtextredigeraren (separerade med ";"):</translation>
         </message>
         <message>
             <location line="+39"/>
@@ -4276,7 +4275,7 @@ Fel: </translation>
         <message>
             <location line="+35"/>
             <source>Colors for variable attributes</source>
-            <translation>Färger för variabla attribut</translation>
+            <translation>Färger för variabelattribut</translation>
         </message>
         <message>
             <location line="+133"/>
@@ -4286,17 +4285,17 @@ Fel: </translation>
         <message>
             <location line="+154"/>
             <source>Import shortcut set</source>
-            <translation>Importera genvägsuppsättning</translation>
+            <translation>Importera kortkommandouppsättning</translation>
         </message>
         <message>
             <location line="+10"/>
             <source>Export current shortcut set</source>
-            <translation>Exportera aktuell genvägsuppsättning</translation>
+            <translation>Exportera aktuell kortkommandouppsättning</translation>
         </message>
         <message>
             <location line="+10"/>
             <source>Reset shortcuts to their defaults</source>
-            <translation>Återställ genvägar till standardinställningarna</translation>
+            <translation>Återställ kortkommandona till standardvärdena</translation>
         </message>
         <message>
             <location line="+3"/>
@@ -4306,14 +4305,13 @@ Fel: </translation>
         </message>
         <message>
             <location line="+232"/>
-            <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Ok&lt;/span&gt; - close dialog and apply settings&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Apply - &lt;/span&gt;apply settings but leave dialog open&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Cancel - &lt;/span&gt;close dialog and discard changes not yet applied&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Reset -&lt;/span&gt; reload settings discarding changes not yet applied&lt;/body&gt;&lt;/html&gt;</source>
-            <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Ok&lt;/span&gt; - stäng dialogrutan och tillämpa inställningarna&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Tillämpa - &lt;/span&gt;tillämpa inställningar men lämna dialogrutan öppen&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Avbryt - &lt;/span&gt;stäng dialogrutan och ignorera ändringar som ännu inte tillämpats&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Återställ -&lt;/span&gt; ladda om inställningarna tar bort ändringar som ännu inte
-tillämpats&lt;/body&gt;&lt;/html&gt;</translation>
+            <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-weight:600;"&gt;Ok&lt;/span&gt; - close dialog and apply settings&lt;br&gt;&lt;span style=" font-weight:600;"&gt;Apply - &lt;/span&gt;apply settings but leave dialog open&lt;br&gt;&lt;span style=" font-weight:600;"&gt;Cancel - &lt;/span&gt;close dialog and discard changes not yet applied&lt;br&gt;&lt;span style=" font-weight:600;"&gt;Reset -&lt;/span&gt; reload settings discarding changes not yet applied&lt;/body&gt;&lt;/html&gt;</source>
+            <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-weight:600;"&gt;OK&lt;/span&gt; – stäng dialogrutan och tillämpa inställningarna&lt;br&gt;&lt;span style=" font-weight:600;"&gt;Tillämpa&lt;/span&gt; – tillämpa inställningarna men lämna dialogrutan öppen&lt;br&gt;&lt;span style=" font-weight:600;"&gt;Avbryt&lt;/span&gt; – stäng dialogrutan och kassera ändringar som ännu inte har tillämpats&lt;br&gt;&lt;span style=" font-weight:600;"&gt;Återställ&lt;/span&gt; – läs in inställningarna igen och kassera ändringar som ännu inte har tillämpats&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
         </message>
         <message>
             <location line="-227"/>
             <source>Actual</source>
-            <translation>Faktisk</translation>
+            <translation>Tilldelat</translation>
         </message>
         <message>
             <location line="+17"/>
@@ -4332,8 +4330,8 @@ tillämpats&lt;/body&gt;&lt;/html&gt;</translation>
         </message>
         <message>
             <location line="+23"/>
-            <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select &lt;span style=&quot; font-style:italic;&quot;&gt;HttpProxy&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;Sock5Proxy&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;Environment Variables&lt;/span&gt;. With the last selection, the proxy is taken from the first non-empty environment variable ALL_PROXY, HTTP_PROXY or HTTPS_PROXY .&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-            <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select &lt;span style=&quot; font-style:italic;&quot;&gt;HttpProxy&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;Sock5Proxy&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;Miljövariabler&lt;/span&gt;. Med det sista valet tas proxyn från den första icke-tomma miljövariabeln ALL_PROXY, HTTP_PROXY eller HTTPS_PROXY .&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+            <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select &lt;span style=" font-style:italic;"&gt;HttpProxy&lt;/span&gt;, &lt;span style=" font-style:italic;"&gt;Sock5Proxy&lt;/span&gt; or &lt;span style=" font-style:italic;"&gt;Environment Variables&lt;/span&gt;. With the last selection, the proxy is taken from the first non-empty environment variable ALL_PROXY, HTTP_PROXY or HTTPS_PROXY .&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+            <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Välj &lt;span style=" font-style:italic;"&gt;HttpProxy&lt;/span&gt;, &lt;span style=" font-style:italic;"&gt;Sock5Proxy&lt;/span&gt; eller &lt;span style=" font-style:italic;"&gt;Miljövariabler&lt;/span&gt;. Med det sista alternativet hämtas proxyinställningen från den första icke-tomma miljövariabeln ALL_PROXY, HTTP_PROXY eller HTTPS_PROXY.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
         </message>
         <message>
             <location line="+78"/>
@@ -4367,19 +4365,19 @@ tillämpats&lt;/body&gt;&lt;/html&gt;</translation>
         </message>
         <message>
             <location line="+63"/>
-            <source>Inaktivera globala genvägar för att förhindra
-störningar vid tangenttryckningar på läslinjen.
+            <source>Disable global shortcuts in order to prevent
+interference with readline key strokes.
 Exceptions: Ctrl-C for interrupting the interpreter
 and the shortcuts for switching to other widgets.</source>
-            <translation>Inaktivera global genvägar i för att till prevent
-interference med readline key strokes.
-Undantag: Ctrl-C för att avbryta tolken
-och genvägarna för att växla till andra gränssnittskomponenter.</translation>
+            <translation>Inaktivera globala kortkommandon för att förhindra
+konflikter med tangenttryckningar i Readline.
+Undantag: Ctrl+C för att avbryta tolken
+och kortkommandona för att växla till andra paneler.</translation>
         </message>
         <message>
             <location line="+6"/>
             <source>Disable global shortcuts when Command Window has focus</source>
-            <translation>Inaktivera globala genvägar när kommandofönstret är i fokus</translation>
+            <translation>Inaktivera globala kortkommandon när kommandofönstret har fokus</translation>
         </message>
         <message>
             <location line="-392"/>
@@ -4389,24 +4387,24 @@ och genvägarna för att växla till andra gränssnittskomponenter.</translation
         <message>
             <location line="+46"/>
             <source>Initial file browser directory (only if not synchronized with initial working directory of Octave)</source>
-            <translation>Ursprunglig filbläddrarkatalog (endast om den inte är synkroniserad med den ursprungliga arbetskatalogen för Octave)</translation>
+            <translation>Filhanterarens startkatalog (endast om den inte synkroniseras med Octaves ursprungliga arbetskatalog)</translation>
         </message>
         <message>
             <location line="+302"/>
             <source>Shortcuts</source>
-            <translation>Genvägar</translation>
+            <translation>Kortkommandon</translation>
         </message>
         <message>
             <location line="+54"/>
             <source>Disable menu accelerators in order to prevent
 interference with readline key strokes.</source>
-            <translation>Inaktivera menyacceleratorer för att förhindra
-störningar vid tangenttryckningar på läslinjen.</translation>
+            <translation>Inaktivera menykortkommandon för att förhindra
+konflikter med tangenttryckningar i Readline.</translation>
         </message>
         <message>
             <location line="+4"/>
             <source>Disable menu accelerators of main window menus when Command Window has focus</source>
-            <translation>Inaktivera menyacceleratorerna i huvudfönstrets menyer när kommandofönstret är i fokus</translation>
+            <translation>Inaktivera menykortkommandon i huvudfönstret när kommandofönstret har fokus</translation>
         </message>
         <message>
             <location line="+50"/>
@@ -4421,7 +4419,7 @@ störningar vid tangenttryckningar på läslinjen.</translation>
         <message>
             <location line="+29"/>
             <source>Edit a shortcut by double-clicking in Actual column</source>
-            <translation>Redigera en genväg genom att dubbelklicka i den faktiska kolumnen</translation>
+            <translation>Redigera ett kortkommando genom att dubbelklicka i kolumnen Tilldelat</translation>
         </message>
         <message>
             <location line="+61"/>
@@ -4459,12 +4457,12 @@ störningar vid tangenttryckningar på läslinjen.</translation>
         <message>
             <location filename="../src/gui-preferences-sc.cc" line="+227"/>
             <source>Undock/Dock Widget</source>
-            <translation>Förankra inte/förankra gränssnittskomponent</translation>
+            <translation>Lossa/docka panel</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Close Widget</source>
-            <translation>Stäng gränssnittskomponenten</translation>
+            <translation>Stäng panel</translation>
         </message>
         <message>
             <location line="+5"/>
@@ -4529,22 +4527,22 @@ störningar vid tangenttryckningar på läslinjen.</translation>
         <message>
             <location line="+1"/>
             <source>Find in Files</source>
-            <translation>Hitta i filer</translation>
+            <translation>Sök i filer</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Clear Command Window</source>
-            <translation>Rensa kommandofönster</translation>
+            <translation>Rensa kommandofönstret</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Clear Command History</source>
-            <translation>Rensa kommandohistorik</translation>
+            <translation>Rensa kommandohistoriken</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Clear Workspace</source>
-            <translation>Rensa arbetsyta</translation>
+            <translation>Rensa arbetsytan</translation>
         </message>
         <message>
             <location line="+1"/>
@@ -4560,17 +4558,17 @@ störningar vid tangenttryckningar på läslinjen.</translation>
         <message>
             <location line="-116"/>
             <source>Step</source>
-            <translation>Steg</translation>
+            <translation>Stega</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Step In</source>
-            <translation>Steg in</translation>
+            <translation>Stega in</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Step Out</source>
-            <translation>Steg ut</translation>
+            <translation>Stega ut</translation>
         </message>
         <message>
             <location line="+1"/>
@@ -4595,7 +4593,7 @@ störningar vid tangenttryckningar på läslinjen.</translation>
         <message>
             <location line="+1"/>
             <source>Show Profile Data</source>
-            <translation>Visa profildata</translation>
+            <translation>Visa profileringsdata</translation>
         </message>
         <message>
             <location line="+4"/>
@@ -4605,32 +4603,32 @@ störningar vid tangenttryckningar på läslinjen.</translation>
         <message>
             <location line="+1"/>
             <source>Show Command History</source>
-            <translation>Visa kommandohistorik</translation>
+            <translation>Visa kommandohistoriken</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Show File Browser</source>
-            <translation>Visa filhanterare</translation>
+            <translation>Visa filhanteraren</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Show Workspace</source>
-            <translation>Visa arbetsyta</translation>
+            <translation>Visa arbetsytan</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Show Editor</source>
-            <translation>Visa redigerare</translation>
+            <translation>Visa redigeraren</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Show Documentation</source>
-            <translation>Visa dokumentation</translation>
+            <translation>Visa dokumentationen</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Show Variable Editor</source>
-            <translation>Visa variabelredigerare</translation>
+            <translation>Visa variabelredigeraren</translation>
         </message>
         <message>
             <location line="+1"/>
@@ -4670,7 +4668,7 @@ störningar vid tangenttryckningar på läslinjen.</translation>
         <message>
             <location line="+1"/>
             <source>Previous Widget</source>
-            <translation>Föregående gränssnittskomponent</translation>
+            <translation>Föregående panel</translation>
         </message>
         <message>
             <location line="+1"/>
@@ -4680,12 +4678,12 @@ störningar vid tangenttryckningar på läslinjen.</translation>
         <message>
             <location line="+3"/>
             <source>Show On-disk Documentation</source>
-            <translation>Visa dokumentation på disk</translation>
+            <translation>Visa lokal dokumentation</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Show Online Documentation</source>
-            <translation>Visa online-dokumentation</translation>
+            <translation>Visa dokumentation på webben</translation>
         </message>
         <message>
             <location line="+1"/>
@@ -4705,7 +4703,7 @@ störningar vid tangenttryckningar på läslinjen.</translation>
         <message>
             <location line="+1"/>
             <source>Octave Developer Resources</source>
-            <translation>Octave-utvecklarresurser</translation>
+            <translation>Resurser för Octave-utvecklare</translation>
         </message>
         <message>
             <location line="+1"/>
@@ -4720,7 +4718,7 @@ störningar vid tangenttryckningar på läslinjen.</translation>
         <message>
             <location line="+1"/>
             <source>Community News</source>
-            <translation>Gemenskapsnyheter</translation>
+            <translation>Nyheter från gemenskapen</translation>
         </message>
         <message>
             <location line="+6"/>
@@ -4735,17 +4733,17 @@ störningar vid tangenttryckningar på läslinjen.</translation>
         <message>
             <location line="+1"/>
             <source>Close Other Tabs</source>
-            <translation>Stäng andra flikar</translation>
+            <translation>Stäng övriga flikar</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Switch to Left Tab</source>
-            <translation>Växla till vänster flik</translation>
+            <translation>Växla till fliken till vänster</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Switch to Right Tab</source>
-            <translation>Växla till höger flik</translation>
+            <translation>Växla till fliken till höger</translation>
         </message>
         <message>
             <location line="+1"/>
@@ -4771,7 +4769,7 @@ störningar vid tangenttryckningar på läslinjen.</translation>
             <location line="+2"/>
             <location line="+2"/>
             <source>Zoom Normal</source>
-            <translation>Zooma normalt</translation>
+            <translation>Normal zoom</translation>
         </message>
         <message>
             <location line="+6"/>
@@ -4806,17 +4804,17 @@ störningar vid tangenttryckningar på läslinjen.</translation>
         <message>
             <location line="+1"/>
             <source>Find and Replace</source>
-            <translation>Hitta och ersätt</translation>
+            <translation>Sök och ersätt</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Find Next</source>
-            <translation>Hitta nästa</translation>
+            <translation>Sök nästa</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Find Previous</source>
-            <translation>Hitta föregående</translation>
+            <translation>Sök föregående</translation>
         </message>
         <message>
             <location line="+1"/>
@@ -4856,7 +4854,7 @@ störningar vid tangenttryckningar på läslinjen.</translation>
         <message>
             <location line="+1"/>
             <source>Duplicate Selection/Line</source>
-            <translation>Duplicera markering/rad</translation>
+            <translation>Duplicera markering eller rad</translation>
         </message>
         <message>
             <location line="+1"/>
@@ -4871,7 +4869,7 @@ störningar vid tangenttryckningar på läslinjen.</translation>
         <message>
             <location line="+2"/>
             <source>Comment Selection</source>
-            <translation>Kommentara markering</translation>
+            <translation>Kommentera markering</translation>
         </message>
         <message>
             <location line="+1"/>
@@ -4881,49 +4879,49 @@ störningar vid tangenttryckningar på läslinjen.</translation>
         <message>
             <location line="+1"/>
             <source>Comment Selection (Choosing String)</source>
-            <translation>Kommentara markering (välja sträng)</translation>
+            <translation>Kommentera markering (välj sträng)</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Uppercase Selection</source>
-            <translation>Versaler-markering</translation>
+            <translation>Gör markeringen till versaler</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Lowercase Selection</source>
-            <translation>Gemener-markering</translation>
+            <translation>Gör markeringen till gemener</translation>
         </message>
         <message>
             <location line="+3"/>
             <location line="+3"/>
             <source>Indent Selection Rigidly</source>
-            <translation>Gör fast indrag markering</translation>
+            <translation>Öka indraget för markeringen</translation>
         </message>
         <message>
             <location line="-2"/>
             <location line="+3"/>
             <source>Unindent Selection Rigidly</source>
-            <translation>Ta bort fast indrag markering</translation>
+            <translation>Minska indraget för markeringen</translation>
         </message>
         <message>
             <location line="+2"/>
             <source>Indent Code</source>
-            <translation>Indragskod</translation>
+            <translation>Gör indrag i kod</translation>
         </message>
         <message>
             <location line="+2"/>
             <source>Convert Line Endings to Windows</source>
-            <translation>Konvertera radavslutningar till fönster</translation>
+            <translation>Konvertera radslut till Windows</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Convert Line Endings to Unix</source>
-            <translation>Convert Line Endings to Unix</translation>
+            <translation>Konvertera radslut till Unix</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Convert Line Endings to Mac</source>
-            <translation>Konvertera radavslutningar till Mac</translation>
+            <translation>Konvertera radslut till Mac</translation>
         </message>
         <message>
             <location line="+2"/>
@@ -4933,12 +4931,12 @@ störningar vid tangenttryckningar på läslinjen.</translation>
         <message>
             <location line="+1"/>
             <source>Move to Matching Brace</source>
-            <translation>Flytta till matchande klammerparentes</translation>
+            <translation>Flytta till matchande parentes</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Select to Matching Brace</source>
-            <translation>Markera till matchande klammerparentes</translation>
+            <translation>Markera till matchande parentes</translation>
         </message>
         <message>
             <location line="+1"/>
@@ -4978,17 +4976,17 @@ störningar vid tangenttryckningar på läslinjen.</translation>
         <message>
             <location line="+1"/>
             <source>Show Line Endings</source>
-            <translation>Visa radavslut</translation>
+            <translation>Visa radslut</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Show Indentation Guides</source>
-            <translation>Visa indragningsstödlinjer</translation>
+            <translation>Visa indragslinjer</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Show Long Line Marker</source>
-            <translation>Visa lång radmarkör</translation>
+            <translation>Visa markör för långa rader</translation>
         </message>
         <message>
             <location line="+1"/>
@@ -5048,22 +5046,22 @@ störningar vid tangenttryckningar på läslinjen.</translation>
         <message>
             <location line="+1"/>
             <source>Run Demos</source>
-            <translation>Kör demovisningar</translation>
+            <translation>Kör demonstrationer</translation>
         </message>
         <message>
             <location line="+3"/>
             <source>Help on Keyword</source>
-            <translation>Hjälp med nyckelord</translation>
+            <translation>Hjälp om nyckelord</translation>
         </message>
         <message>
             <location line="+1"/>
             <source>Document on Keyword</source>
-            <translation>Dokument om nyckelord</translation>
+            <translation>Visa dokumentation om nyckelord</translation>
         </message>
         <message>
             <location line="+4"/>
             <source>Go to Homepage</source>
-            <translation>Gå till hemsidan</translation>
+            <translation>Gå till startsidan</translation>
         </message>
         <message>
             <location line="+1"/>
@@ -5078,7 +5076,7 @@ störningar vid tangenttryckningar på läslinjen.</translation>
         <message>
             <location line="+1"/>
             <source>Bookmark this Page</source>
-            <translation>Bokmärk denna sida</translation>
+            <translation>Bokmärk den här sidan</translation>
         </message>
     </context>
 </TS>

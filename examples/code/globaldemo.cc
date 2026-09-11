@@ -10,16 +10,14 @@ DEFMETHOD_DLD (globaldemo, interp, args, , "Global Demo")
 
   std::string s = args(0).string_value ();
 
-  octave::symbol_table& symtab = interp.get_symbol_table ();
-
-  octave_value tmp = symtab.global_varval (s);
+  octave_value tmp = interp.global_varval (s);
 
   if (tmp.is_defined ())
     retval = tmp;
   else
     retval = "Global variable not found";
 
-  symtab.global_assign ("a", 42.0);
+  interp.global_assign ("a", 42.0);
 
   return retval;
 }

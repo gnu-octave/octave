@@ -49,6 +49,10 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 * Calling the `error` function with empty input of numeric type such as `[]`
   does not emit an error or perform any action (it is a NOP). 
 
+* The Matlab limit `namelengthmax` on the length of identifiers now returns
+  2048.  This is only for compatibility as Octave can store identifiers with
+  up to 2^31 - 1 characters.
+
 ### Alphabetical list of new functions added in Octave 12
 
 * `diagnostics_show_caret`

@@ -46,6 +46,9 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   folders as required when the second argument `f2` is a folder which does not
   exist.  For example: `copyfile ('folderA', 'folderB/folderC/folderD')`.
 
+* Calling the `error` function with empty input of numeric type such as `[]`
+  does not emit an error or perform any action (it is a NOP). 
+
 ### Alphabetical list of new functions added in Octave 12
 
 * `diagnostics_show_caret`

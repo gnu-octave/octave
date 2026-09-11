@@ -201,7 +201,7 @@ maybe_extract_message_id (const std::string& caller,
 
   bool have_fmt = nargin > 1;
 
-  if (nargin > 0)
+  if (nargin > 0 && ! args(0).isempty ())
     {
       std::string arg1 = args(0).xstring_value ("%s: MESSAGE must be a string",
                                                 caller.c_str ());
@@ -1425,6 +1425,17 @@ disable escape sequence expansion use a second backslash before the sequence
 %! serr.stack = struct ('file', 'myfile', 'name', 'myfcn', 'line', 0, ...
 %!                      'column', 0);
 %! error (serr);
+
+%!test <*68530>
+%! error ([]); b = 1;
+%! assert (b, 1);
+%! clear b
+%! try
+%!   error ([]);
+%! catch
+%!   b = 1;
+%! end_try_catch
+%! assert (exist ('b'), 0);
 
 ## Test input validation
 ############################################################

@@ -320,8 +320,15 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
         delta *= decfac;
         decfac ^= 1.4142;
         if (delta <= 10*macheps*xn)
-          ## Trust region became uselessly small.
-          info = -3;
+          ## Trust region became excessively small.
+          ## Before failing, check if we're actually close to converged.
+          if (sn <= tolx*xn)
+            info = 2;
+          elseif (actred >= 0 && actred < tolf)
+            info = 3;
+          else
+            info = -3;
+          endif
           break;
         endif
       else

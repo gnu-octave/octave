@@ -4269,60 +4269,119 @@ twosum_accum (T& s, T& e, const T& x)
   e += e1;
 }
 
+template <typename T>
+class xsum_accumulator
+{
+public:
+
+  xsum_accumulator ()
+    : m_sum (0), m_error (0), m_posinf (false), m_neginf (false),
+      m_nan (false)
+  { }
+
+  bool add (const T& val, bool nanflag)
+  {
+    if (octave::math::isnan (val))
+      {
+        if (! nanflag)
+          m_nan = true;
+      }
+    else if (! octave::math::isinf (val))
+      twosum_accum (m_sum, m_error, val);
+    else if (val > T (0))
+      m_posinf = true;
+    else
+      m_neginf = true;
+
+    // An includenan input NaN makes this scalar result final, so callers
+    // may stop early.
+    return m_nan;
+  }
+
+  T value () const
+  {
+    bool posinf = m_posinf;
+    bool neginf = m_neginf;
+
+    // Treat a finite-input accumulator overflow like an infinity for sign
+    // conflict handling.  Thus, an overflow and an explicit infinity of the
+    // opposite sign produce NaN, independent of their positions in the input.
+    if (octave::math::isinf (m_sum))
+      {
+        if (m_sum > T (0))
+          posinf = true;
+        else
+          neginf = true;
+      }
+
+    if (m_nan || (posinf && neginf))
+      return std::numeric_limits<T>::quiet_NaN ();
+    else if (posinf)
+      return std::numeric_limits<T>::infinity ();
+    else if (neginf)
+      return -std::numeric_limits<T>::infinity ();
+
+    return m_sum + m_error;
+  }
+
+private:
+
+  T m_sum;
+  T m_error;
+  bool m_posinf;
+  bool m_neginf;
+  bool m_nan;
+};
+
+// Track the real and imaginary components independently so that a nonfinite
+// component does not discard the sum of the other component.
+template <typename T>
+class xsum_accumulator<std::complex<T>>
+{
+public:
+
+  xsum_accumulator () = default;
+
+  bool add (const std::complex<T>& val, bool nanflag)
+  {
+    // With omitnan, omit the complete value if either component is NaN.
+    if (nanflag && octave::math::isnan (val))
+      return false;
+
+    // Evaluate both calls independently.  Using && directly would
+    // short-circuit and could discard the imaginary component.
+    bool real_is_final = m_real.add (val.real (), false);
+    bool imag_is_final = m_imag.add (val.imag (), false);
+
+    // One final component does not permit an early exit because the other
+    // component must continue accumulating.
+    return real_is_final && imag_is_final;
+  }
+
+  std::complex<T> value () const
+  {
+    return std::complex<T> (m_real.value (), m_imag.value ());
+  }
+
+private:
+
+  xsum_accumulator<T> m_real;
+  xsum_accumulator<T> m_imag;
+};
+
 // Overload with three arguments for vectors (Contiguous / Vector)
 // Used for column sums or simple vector reductions.
 template <typename T>
 inline T
 mx_inline_xsum (const T *v, octave_idx_type n, bool nanflag)
 {
-  T s = 0, e = 0;
-  const T zero = 0;
-  bool posinf = false;
-  bool neginf = false;
-  bool seen_nan = false;
+  xsum_accumulator<T> accum;
 
   for (octave_idx_type i = 0; i < n; ++i)
-    {
-      const T val = v[i];
+    if (accum.add (v[i], nanflag))
+      break;
 
-      if (octave::math::isnan (val))
-        {
-          if (nanflag)           // omitnan
-            continue;
-          else                   // normal sum: NaN dominates everything
-            {
-              seen_nan = true;
-              break;
-            }
-        }
-
-      if (! octave::math::isinf (val))
-        twosum_accum (s, e, val);
-      else if (val > zero)
-        posinf = true;
-      else
-        neginf = true;
-    }
-
-  if (octave::math::isinf (s))
-    {
-      if (s > zero)
-        posinf = true;
-      else
-        neginf = true;
-    }
-
-  if (seen_nan)
-    return std::numeric_limits<T>::quiet_NaN ();
-
-  if (posinf && neginf)
-    return std::numeric_limits<T>::quiet_NaN ();
-  else if (posinf)
-    return std::numeric_limits<T>::infinity ();
-  else if (neginf)
-    return -std::numeric_limits<T>::infinity ();
-
-  return s + e;
+  return accum.value ();
 }
 
 // Overload with five arguments for matrices (strided)
@@ -4331,54 +4390,15 @@ inline void
 mx_inline_xsum (const T *v, T *r,
                 octave_idx_type l, octave_idx_type n, bool nanflag)
 {
-  const T zero = 0;
-
   for (octave_idx_type i = 0; i < l; ++i)
     {
-      T s = 0, e = 0;
-      bool posinf = false;
-      bool neginf = false;
-      bool seen_nan = false;
+      xsum_accumulator<T> accum;
 
       for (octave_idx_type j = 0; j < n; ++j)
-        {
-          const T val = v[i + j*l];
+        if (accum.add (v[i + j*l], nanflag))
+          break;
 
-          if (octave::math::isnan (val))
-            {
-              if (nanflag)          // omitnan
-                continue;
-              else
-                {
-                  seen_nan = true;
-                  break;
-                }
-            }
-
-          if (! octave::math::isinf (val))
-            twosum_accum (s, e, val);
-          else if (val > zero)
-            posinf = true;
-          else
-            neginf = true;
-        }
-
-      if (octave::math::isinf (s))
-        {
-          if (s > zero)
-            posinf = true;
-          else
-            neginf = true;
-        }
-
-      if (seen_nan || (posinf && neginf))
-        r[i] = std::numeric_limits<T>::quiet_NaN ();
-      else if (posinf)
-        r[i] = std::numeric_limits<T>::infinity ();
-      else if (neginf)
-        r[i] = -std::numeric_limits<T>::infinity ();
-      else
-        r[i] = s + e;
+      r[i] = accum.value ();
     }
 }
 

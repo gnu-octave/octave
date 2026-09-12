@@ -8609,9 +8609,6 @@ vm::call (tree_evaluator& tw, int nargout, const octave_value_list& xargs,
   if (call_script && (xargs.length () != 0 || nargout != 0))
     error ("invalid call to script %s", fn->name ().c_str ());
 
-  if (tw.m_call_stack.size () >= static_cast<std::size_t> (tw.m_max_recursion_depth))
-    error ("max_recursion_depth exceeded");
-
   octave_value_list args (xargs);
 
   bytecode &bc = fn->get_bytecode ();

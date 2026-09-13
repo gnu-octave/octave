@@ -58,14 +58,6 @@ get_chol_r (const CHOLT& fact)
                        MatrixType (MatrixType::Upper));
 }
 
-template <typename CHOLT>
-static octave_value
-get_chol_l (const CHOLT& fact)
-{
-  return octave_value (fact.chol_matrix ().transpose (),
-                       MatrixType (MatrixType::Lower));
-}
-
 DEFUN (chol, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{R} =} chol (@var{A})
@@ -329,6 +321,30 @@ cholinsert, choldelete, cholshift}
 
 %!assert (chol ([2, 1; 1, 1], "lower"), chol ([2, 1; 1, 1], "LoweR"))
 %!assert (chol ([2, 1; 1, 1], "upper"), chol ([2, 1; 1, 1], "Upper"))
+
+## LAPACK only defines the requested triangle of its output.  Some backends
+## use the other triangle as workspace.  The sizes below exercise the Apple
+## vecLib paths for double and single precision.
+%!test <*68670>
+%! matrices = cell (4, 1);
+%! matrices{1} = eye (33) + ones (33);
+%! matrices{2} = single (eye (65) + ones (65));
+%! v = complex (ones (33, 1));
+%! v(1) = complex (0, 1);
+%! matrices{3} = complex (eye (33)) + v * v';
+%! v = complex (ones (65, 1, "single"));
+%! v(1) = complex (single (0), single (1));
+%! matrices{4} = complex (eye (65, "single")) + v * v';
+%! for k = 1:numel (matrices)
+%!   A = matrices{k};
+%!   R = chol (A);
+%!   L = chol (A, "lower");
+%!   tol = 10 * eps (class (A));
+%!   assert (istriu (R));
+%!   assert (istril (L));
+%!   assert (R' * R, A, tol);
+%!   assert (L * L', A, tol);
+%! endfor
 
 ## Check the "vector" option which only affects the 3rd argument and
 ## is only valid for sparse input.

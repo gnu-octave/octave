@@ -16,7 +16,7 @@ jobs:
       matrix:
         # For available GitHub-hosted runners, see:
         # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
-        os: [ubuntu-22.04, ubuntu-24.04, ubuntu-24.04-arm]
+        os: [ubuntu-22.04, ubuntu-24.04, ubuntu-24.04-arm, ubuntu-26.04]
         compiler: [gcc, clang]
         include:
           - compiler: gcc

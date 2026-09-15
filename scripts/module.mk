@@ -12,6 +12,7 @@ include %reldir%/deprecated/module.mk
 include %reldir%/elfun/module.mk
 include %reldir%/general/module.mk
 include %reldir%/geometry/module.mk
+include %reldir%/graph/module.mk
 include %reldir%/gui/module.mk
 include %reldir%/help/module.mk
 include %reldir%/image/module.mk

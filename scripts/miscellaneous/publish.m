@@ -215,6 +215,9 @@ function output_file = publish (file, varargin)
   if (exist ([file_name, file_ext]) != 2)
     error (["publish: " file " is not in the load path"]);
   endif
+  if (! isvarname (file_name))
+    error ("publish: FILE name must be composed of letters, digits, and underscores only");
+  endif
 
   ## Check file extension and that file is an Octave script
   file_info = __which__ (file_name);
@@ -1131,7 +1134,7 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> publish ()
-%!error publish (1)
+%!error <NAME must be a string> publish (1)
 %!error <FILE does not exist> publish ("%%_non_existent_file_%%.m")
 %!error <only script files can be published> publish ("publish.m")
 %!error publish ("test_script.m", "format", "html", "showCode")

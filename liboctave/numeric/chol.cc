@@ -54,24 +54,24 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 static inline void
 blas_potri (const F77_INT& n, Matrix& r, F77_INT& info, bool is_upper)
 {
-  const char *str = is_upper ? "U" : "L";
-  F77_FUNC (dpotri, DPOTRI) (F77_CONST_CHAR_ARG2 (str, 1), n, r.rwdata (), n,
+  const char uplo = is_upper ? 'U' : 'L';
+  F77_FUNC (dpotri, DPOTRI) (F77_CONST_CHAR_ARG2 (&uplo, 1), n, r.rwdata (), n,
                              info F77_CHAR_ARG_LEN (1));
 }
 
 static inline void
 blas_potri (const F77_INT& n, FloatMatrix& r, F77_INT& info, bool is_upper)
 {
-  const char *str = is_upper ? "U" : "L";
-  F77_FUNC (spotri, SPOTRI) (F77_CONST_CHAR_ARG2 (str, 1), n, r.rwdata (), n,
+  const char uplo = is_upper ? 'U' : 'L';
+  F77_FUNC (spotri, SPOTRI) (F77_CONST_CHAR_ARG2 (&uplo, 1), n, r.rwdata (), n,
                              info F77_CHAR_ARG_LEN (1));
 }
 
 static inline void
 blas_potri (const F77_INT& n, ComplexMatrix& r, F77_INT& info, bool is_upper)
 {
-  const char *str = is_upper ? "U" : "L";
-  F77_FUNC (zpotri, ZPOTRI) (F77_CONST_CHAR_ARG2 (str, 1), n,
+  const char uplo = is_upper ? 'U' : 'L';
+  F77_FUNC (zpotri, ZPOTRI) (F77_CONST_CHAR_ARG2 (&uplo, 1), n,
                              F77_DBLE_CMPLX_ARG (r.rwdata ()), n, info
                              F77_CHAR_ARG_LEN (1));
 }
@@ -79,8 +79,8 @@ blas_potri (const F77_INT& n, ComplexMatrix& r, F77_INT& info, bool is_upper)
 static inline void
 blas_potri (const F77_INT& n, FloatComplexMatrix& r, F77_INT& info, bool is_upper)
 {
-  const char *str = is_upper ? "U" : "L";
-  F77_FUNC (cpotri, CPOTRI) (F77_CONST_CHAR_ARG2 (str, 1), n,
+  const char uplo = is_upper ? 'U' : 'L';
+  F77_FUNC (cpotri, CPOTRI) (F77_CONST_CHAR_ARG2 (&uplo, 1), n,
                              F77_CMPLX_ARG (r.rwdata ()), n, info
                              F77_CHAR_ARG_LEN (1));
 }
@@ -736,8 +736,8 @@ chol<ComplexMatrix>::init (const ComplexMatrix& a, bool upper, bool calc_cond)
       // Now calculate the condition number for non-singular matrix.
       OCTAVE_LOCAL_BUFFER (Complex, pz, 2*n);
       OCTAVE_LOCAL_BUFFER (double, prz, n);
-      const char *uplo = m_is_upper ? "U" : "L";
-      F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 (uplo, 1), n,
+      const char uplo = m_is_upper ? 'U' : 'L';
+      F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 (&uplo, 1), n,
                                  F77_DBLE_CMPLX_ARG (h), n, anorm, m_rcond,
                                  F77_DBLE_CMPLX_ARG (pz), prz, zpocon_info
                                  F77_CHAR_ARG_LEN (1)));
@@ -929,8 +929,8 @@ chol<FloatComplexMatrix>::init (const FloatComplexMatrix& a, bool upper,
       // Now calculate the condition number for non-singular matrix.
       OCTAVE_LOCAL_BUFFER (FloatComplex, pz, 2*n);
       OCTAVE_LOCAL_BUFFER (float, prz, n);
-      const char *uplo = m_is_upper ? "U" : "L";
-      F77_XFCN (cpocon, CPOCON, (F77_CONST_CHAR_ARG2 (uplo, 1), n,
+      const char uplo = m_is_upper ? 'U' : 'L';
+      F77_XFCN (cpocon, CPOCON, (F77_CONST_CHAR_ARG2 (&uplo, 1), n,
                                  F77_CMPLX_ARG (h), n, anorm, m_rcond,
                                  F77_CMPLX_ARG (pz), prz, cpocon_info
                                  F77_CHAR_ARG_LEN (1)));

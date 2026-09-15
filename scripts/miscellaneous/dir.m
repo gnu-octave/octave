@@ -216,8 +216,12 @@ endfunction
 %!   ## test that specifying a filename works the same as using a directory.
 %!   found = find (! [list.isdir], 1);
 %!   if (! isempty (found))
+%!     list1 = list(found);
 %!     list2 = dir (fullfile (list(found).folder, list(found).name));
-%!     assert (list(found), list2);
+%!     ## Access time may have changed.  Remove from comparison.  Bug #68087
+%!     list1.statinfo = rmfield (list1.statinfo, 'atime');
+%!     list2.statinfo = rmfield (list2.statinfo, 'atime');
+%!     assert (list1, list2);
 %!   endif
 %! unwind_protect_cleanup
 %!   chdir (orig_dir);

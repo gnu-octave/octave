@@ -16,7 +16,7 @@ jobs:
       matrix:
         # For available GitHub-hosted runners, see:
         # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
-        os: [ubuntu-24.04, ubuntu-24.04-arm]
+        os: [ubuntu-22.04, ubuntu-24.04, ubuntu-24.04-arm, ubuntu-26.04]
         compiler: [gcc, clang]
         include:
           - compiler: gcc
@@ -32,6 +32,9 @@ jobs:
           # Clang seems to generally require less cache size (smaller object files?).
           - ccache-max: 1.2G
           - os: ubuntu-24.04
+            compiler: gcc
+            ccache-max: 1.2G
+          - os: ubuntu-22.04
             compiler: gcc
             ccache-max: 1.2G
           - os: ubuntu-24.04-arm
@@ -184,8 +187,8 @@ jobs:
         timeout-minutes: 60
         run: |
           ./.build/run-octave --no-init-file --no-history --eval "version -blas, version -lapack"
-          XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a \
-            make -C ./.build check | tee ./test-suite.log
+          XDG_RUNTIME_DIR=$RUNNER_TEMP \
+            xvfb-run -a make -C ./.build check | tee ./test-suite.log
 
       - name: display test suite log
         if: always() && (steps.run-test-suite.outcome != 'skipped')

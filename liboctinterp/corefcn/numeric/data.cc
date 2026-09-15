@@ -9795,6 +9795,15 @@ requested.
 %! assert (v, sparse ([NaN(1, 40), 1]));
 %! assert (i, [1:40, 41]);
 
+%!test <*68605>
+%! z = [complex(0, 2), complex(-2, -0.0)];
+%! [v, i] = sort (sparse (z));
+%! assert (full (v), z);
+%! assert (i, [1, 2]);
+%! [v, i] = sort (sparse (z), "descend");
+%! assert (full (v), fliplr (z));
+%! assert (i, [2, 1]);
+
 %!shared a
 %! a = randn (10, 10);
 %! a(a < 0) = 0;

@@ -30,8 +30,8 @@
 ## @deftypefnx {} {@var{B} =} rescale (@dots{}, "inputmax", @var{inmax})
 ## Scale matrix elements to a specified range of values.
 ##
-## When called with a single matrix argument @var{A}, rescale elements to
-## occupy the interval [0, 1].
+## When called with a single matrix argument @var{A}, scale elements to occupy
+## the interval [0, 1].
 ##
 ## The optional inputs @code{[@var{l}, @var{u}]} will scale @var{A} to the
 ## interval with lower bound @var{l} and upper bound @var{u}.
@@ -49,8 +49,10 @@
 ## $$B = l + {A - inmin \over inmax - inmin} \cdot (u - l)$$
 ## @end tex
 ## @ifnottex
-## @var{B} = @var{l} + ((@var{A} - @var{inmin}) ./ (@var{inmax} - @var{inmin}))
-## .* (@var{u} - @var{l})
+## @example
+##
+## @var{B} = @var{l} + ((@var{A} - @var{inmin}) ./ (@var{inmax} - @var{inmin})) .* (@var{u} - @var{l})
+## @end example
 ## @end ifnottex
 ##
 ## The class of the output matrix @var{B} is single if the input @var{A} is
@@ -123,14 +125,16 @@ function B = rescale (A, varargin)
     error ("rescale: invalid option(s)");
   endif
 
+  ## Clip input range before scaling.
+  if (truncate_range)
+    A = max (A, inmin);
+    A = min (A, inmax);
+  endif
+
   ## Rescale A to interval [l,u] in range interval [inmin, inmax].
   range = inmax - inmin;
   range(range == 0) = 1;  # Avoid division by 0 resulting in NaN
   B = l + (A - inmin) ./ range .* (u - l);
-  if (truncate_range)
-    B(A < inmin) = l;
-    B(A > inmax) = u;
-  endif
 
 endfunction
 
@@ -159,6 +163,16 @@ endfunction
 %!assert (class (rescale (double ([0, 5]))), "double")
 %!assert (class (rescale (int8 ([0, 5]))), "double")
 %!assert (class (rescale (logical ([0, 1]))), "double")
+
+## Test clipping before scaling
+%!test
+%! A = [1, -10; 100, 5];
+%! inmin = [0, -5];
+%! inmax = [10, 10];
+%! l = [0, -1];
+%! u = 1;
+%! R = rescale (A, l, u, "inputmin", inmin, "inputmax", inmax);
+%! assert (R, [0.1, -1; 1, 1/3], 1e-10);
 
 ## Test input validation
 %!error <Invalid call> rescale ()

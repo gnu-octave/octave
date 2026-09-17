@@ -58,8 +58,8 @@ jobs:
 
       - name: install toolchain for ${{ matrix.arch }}
         run: |
-          sudo apt -qq update
-          sudo apt install -y \
+          sudo apt-get -qq update
+          sudo apt-get install -y \
             g++-${{ matrix.target-triple }} \
             gfortran-${{ matrix.target-triple }} \
             autoconf automake bison ccache \
@@ -124,11 +124,11 @@ jobs:
           EOF
               ;;
           esac
-          sudo apt update
+          sudo apt-get update
 
       - name: install dependencies for ${{ matrix.arch }}
         run: |
-          sudo apt install -y \
+          sudo apt-get install -y \
             libarpack2-dev:${{ matrix.arch }} \
             libblas-dev:${{ matrix.arch }} \
             libcurl4-gnutls-dev:${{ matrix.arch }} \

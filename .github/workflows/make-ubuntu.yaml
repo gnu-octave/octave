@@ -67,9 +67,9 @@ jobs:
         env:
           COMPILER_PKGS: ${{ matrix.compiler-pkgs }}
         run: |
-          sudo apt -qq update
-          sudo apt install -y $COMPILER_PKGS autoconf automake bison ccache \
-            dvipng epstool fig2dev flex gfortran gnuplot-x11 gperf gzip \
+          sudo apt-get -qq update
+          sudo apt-get install -y $COMPILER_PKGS autoconf automake bison \
+            ccache dvipng epstool fig2dev flex gfortran gnuplot-x11 gperf gzip \
             icoutils libarpack2-dev libblas-dev libcurl4-gnutls-dev \
             libfftw3-dev libfontconfig1-dev libfreetype6-dev \
             libgl1-mesa-dev libgl2ps-dev libglpk-dev libgraphicsmagick++1-dev \

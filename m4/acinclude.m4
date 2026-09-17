@@ -2986,6 +2986,7 @@ dnl
 dnl Print final summary.
 dnl
 AC_DEFUN([OCTAVE_CONFIGURE_WARNING_SUMMARY], [
+  dnl This 'dnl' command flushes output before warning summary.
   m4_set_foreach([summary_warning_list], [elt], [
     if test -n "[$]elt"; then
       AC_MSG_WARN([$]elt)

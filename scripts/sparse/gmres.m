@@ -152,26 +152,26 @@
 ## @end group
 ## @end example
 ##
-## @sc{Example 1:} simplest usage of @code{gmres}
+## @sc{example 1:} simplest usage of @code{gmres}
 ##
 ## @example
 ## x = gmres (A, b, [], [], n)
 ## @end example
 ##
-## @sc{Example 2:} @code{gmres} with a function which computes
+## @sc{example 2:} @code{gmres} with a function which computes
 ## @code{@var{A} * @var{x}}
 ##
 ## @example
 ## x = gmres (Afcn, b, [], [], n)
 ## @end example
 ##
-## @sc{Example 3:} usage of @code{gmres} with the restart
+## @sc{example 3:} usage of @code{gmres} with the restart
 ##
 ## @example
 ## x = gmres (A, b, restart);
 ## @end example
 ##
-## @sc{Example 4:} @code{gmres} with a preconditioner matrix @var{M}
+## @sc{example 4:} @code{gmres} with a preconditioner matrix @var{M}
 ## with and without restart
 ##
 ## @example
@@ -181,26 +181,26 @@
 ## @end group
 ## @end example
 ##
-## @sc{Example 5:} @code{gmres} with a function as preconditioner
+## @sc{example 5:} @code{gmres} with a function as preconditioner
 ##
 ## @example
 ## x = gmres (Afcn, b, [], 1e-6, n, Mfcn)
 ## @end example
 ##
-## @sc{Example 6:} @code{gmres} with preconditioner matrices @var{M1}
+## @sc{example 6:} @code{gmres} with preconditioner matrices @var{M1}
 ## and @var{M2}
 ##
 ## @example
 ## x = gmres (A, b, [], 1e-6, n, M1, M2)
 ## @end example
 ##
-## @sc{Example 7:} @code{gmres} with functions as preconditioners
+## @sc{example 7:} @code{gmres} with functions as preconditioners
 ##
 ## @example
 ## x = gmres (Afcn, b, 1e-6, n, M1fcn, M2fcn)
 ## @end example
 ##
-## @sc{Example 8:} @code{gmres} with as input a function requiring an argument
+## @sc{example 8:} @code{gmres} with as input a function requiring an argument
 ##
 ## @example
 ## @group
@@ -215,7 +215,7 @@
 ## @end group
 ## @end example
 ##
-## @sc{Example 9:} explicit example to show that @code{gmres} uses a
+## @sc{example 9:} explicit example to show that @code{gmres} uses a
 ## left preconditioner
 ##
 ## @example

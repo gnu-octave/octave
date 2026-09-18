@@ -217,7 +217,7 @@ returns
 @end example
 
 If the input matrix @var{A} is sparse, the sparse QR@tie{}factorization
-is computed by using @sc{SPQR} or @sc{cxsparse} (e.g., if @sc{SPQR} is not
+is computed by using @sc{spqr} or @sc{cxsparse} (e.g., if @sc{spqr} is not
 available).  Because the matrix @var{Q} is, in general, a full matrix, it is
 recommended to request only one return value @var{R}.  In that case, the
 computation avoids the construction of @var{Q} and returns a sparse @var{R}

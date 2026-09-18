@@ -116,13 +116,13 @@
 ## @end group
 ## @end example
 ##
-## @sc{Example 1:} Simplest use of @code{pcr}
+## @sc{example 1:} Simplest use of @code{pcr}
 ##
 ## @example
 ## x = pcr (A, b)
 ## @end example
 ##
-## @sc{Example 2:} @code{pcr} with a function which computes
+## @sc{example 2:} @code{pcr} with a function which computes
 ## @code{@var{A} * @var{x}}.
 ##
 ## @example
@@ -135,7 +135,7 @@
 ## @end group
 ## @end example
 ##
-## @sc{Example 3:}  Preconditioned iteration, with full diagnostics.  The
+## @sc{example 3:}  Preconditioned iteration, with full diagnostics.  The
 ## preconditioner (quite strange, because even the original matrix
 ## @var{A} is trivial) is defined as a function
 ##
@@ -153,7 +153,7 @@
 ## @end group
 ## @end example
 ##
-## @sc{Example 4:} Finally, a preconditioner which depends on a
+## @sc{example 4:} Finally, a preconditioner which depends on a
 ## parameter @var{k}.
 ##
 ## @example

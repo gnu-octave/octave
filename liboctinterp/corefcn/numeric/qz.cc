@@ -52,9 +52,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (qz, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {[@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{V}, @var{W}] =} qz (@var{A}, @var{B})
-@deftypefnx {} {[@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{V}, @var{W}] =} qz (@var{A}, @var{B}, @var{opt})
-Compute the QZ@tie{}decomposition of a generalized eigenvalue problem.
+@deftypefn  {} {[@var{AA}, @var{BB}, @var{Q}, @var{Z}] =} qz (@var{A}, @var{B})
+@deftypefnx {} {[@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{V}, @var{W}] =} qz (@var{A}, @var{B})
+@deftypefnx {} {[@dots{}] =} qz (@var{A}, @var{B}, @var{opt})
+Compute the QZ@tie{}decomposition for a generalized eigenvalue problem.
 
 The generalized eigenvalue problem is defined as
 @tex
@@ -65,60 +66,72 @@ $$A x = \lambda B x$$
 @math{A x = @var{lambda} B x}
 
 @end ifnottex
-
 There are two calling forms of the function:
 
-@enumerate
-@item @code{[@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{V}, @var{W}] = qz (@var{A}, @var{B})}
+@code{[@var{AA}, @var{BB}, @var{Q}, @var{Z}] = qz (@var{A}, @var{B})}
 
-Compute the complex QZ@tie{}decomposition, generalized eigenvectors, and
-generalized eigenvalues.
+Compute the complex QZ@tie{}decomposition.
 @tex
-$$ AA = Q \cdot A \cdot Z, BB = Q \cdot B \cdot Z $$
-$$ A \cdot V \cdot {\rm diag}(BB) = B \cdot V \cdot {\rm diag}(AA) $$
-$$ {\rm diag}(BB) \cdot W^T \cdot A = {\rm diag}(AA) \cdot W^T \cdot B $$
+$$ AA = Q \cdot A \cdot Z $$
+$$ BB = Q \cdot B \cdot Z $$
 @end tex
 @ifnottex
 
 @example
 @group
-
-@var{AA} = @var{Q} * @var{A} * @var{Z}, @var{BB} = @var{Q} * @var{B} * @var{Z}
-@var{A} * @var{V} * diag (diag (@var{BB})) = @var{B} * @var{V} * diag (diag (@var{AA}))
-diag (diag (@var{BB})) * @var{W}' * @var{A} = diag (diag (@var{AA})) * @var{W}' * @var{B}
-
+@var{AA} = @var{Q} * @var{A} * @var{Z}
+@var{BB} = @var{Q} * @var{B} * @var{Z}
 @end group
 @end example
 
 @end ifnottex
-with @var{AA} and @var{BB} upper triangular, and @var{Q} and @var{Z}
-unitary.  The matrices @var{V} and @var{W} respectively contain the right
-and left generalized eigenvectors.
+The matrices @var{AA}, @var{BB} are quasitrangular if @var{A}, @var{B} are real,
+or triangular if @var{A}, @var{B} are complex.  The matrices @var{Q}, @var{Z}
+are unitary.
 
-@item @code{[@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{V}, @var{W}] = qz (@var{A}, @var{B}, @var{opt})}
+@code{[@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{V}, @var{W}] = qz (@var{A}, @var{B})}
 
-The @var{opt} argument must be equal to either @qcode{"real"} or
-@qcode{"complex"}.  If it is equal to @qcode{"complex"}, then this
-calling form is equivalent to the first one with only two input
-arguments.
+Compute the complex QZ@tie{}decomposition, generalized eigenvectors, and
+generalized eigenvalues.
+@tex
+$$ AA = Q \cdot A \cdot Z $$
+$$ BB = Q \cdot B \cdot Z $$
+$$ A \cdot V \cdot {\rm diag}(BB) = B \cdot V \cdot {\rm diag}(AA) $$
+$$ {\rm diag}(BB) \cdot W^\dagger \cdot A = {\rm diag}(AA) \cdot W^\dagger \cdot B $$
+@end tex
+@ifnottex
 
-If @var{opt} is equal to @qcode{"real"}, then the real QZ decomposition
-is computed.  In particular, @var{AA} is only guaranteed to be
-quasi-upper triangular with 1-by-1 and 2-by-2 blocks on the diagonal,
-and @var{Q} and @var{Z} are orthogonal.  The identities mentioned above
-for right and left generalized eigenvectors are only verified if
-@var{AA} is upper triangular (i.e., when all the generalized eigenvalues
-are real, in which case the real and complex QZ coincide).
+@example
+@group
+@var{AA} = @var{Q} * @var{A} * @var{Z}
+@var{BB} = @var{Q} * @var{B} * @var{Z}
+@var{A} * @var{V} * diag (@var{BB}) = @var{B} * @var{V} * diag (@var{AA})
+diag (@var{BB}) * @var{W}' * @var{A} = diag (@var{AA}) * @var{W}' * @var{B}
+@end group
+@end example
 
-@end enumerate
+@end ifnottex
+The matrices @var{V} and @var{W} respectively contain the right and left
+generalized eigenvectors.
 
-Note: @code{qz} performs permutation balancing, but not scaling
-(@pxref{XREFbalance,,@code{balance}}), which may lead to less accurate
-results than @code{eig}.  The order of output arguments was selected for
-compatibility with @sc{matlab}.
+The optional argument @var{opt} must be the string @qcode{"real"} or
+@qcode{"complex"} (default).  If @var{opt} is @qcode{"real"}, then the real
+QZ@tie{}decomposition is computed.  In particular, @var{AA} is only guaranteed
+to be quasi-upper triangular with 1-by-1 and 2-by-2 blocks on the diagonal, and
+@var{Q} and @var{Z} are orthogonal rather than unitary.  The identities above
+for right and left generalized eigenvectors are only valid for a @qcode{"real"}
+decomposition when @var{AA} is upper triangular (i.e., when all the generalized
+eigenvalues are real, in which case the real and complex QZ@tie{}decompositions
+coincide).
 
-For eigenvalues, use the @code{ordeig} function to compute them based on
-the resulting @var{AA} and @var{BB} matrices.
+Programming Notes: @code{qz} performs permutation balancing, but not scaling
+(@pxref{XREFbalance,,@code{balance}}), which may lead to less accurate results
+than @code{eig}.  The order of output arguments was selected for compatibility
+with @sc{matlab}.
+
+The generalized eigenvalues can be calculated from a complex
+QZ@tie{}decomposition with @code{diag (@var{AA}) ./ diag (@var{BB})}.  For a
+real QZ@tie{}decomposition use code @code{ordeig (@var{AA}, @var{BB})}.
 
 @seealso{eig, gsvd, balance, chol, hess, lu, qr, qzhess, schur, ordeig}
 @end deftypefn */)

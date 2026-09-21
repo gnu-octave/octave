@@ -26,9 +26,9 @@ jobs:
 
       - name: install dependencies
         run: |
-          sudo apt -qq update
-          sudo apt install -y autoconf automake bison dvipng epstool fig2dev \
-            flex g++ gcc gfortran gnuplot-x11 gperf gzip icoutils \
+          sudo apt-get -qq update
+          sudo apt-get install -y autoconf automake bison dvipng epstool
+            fig2dev flex g++ gcc gfortran gnuplot-x11 gperf gzip icoutils \
             libarpack2-dev libblas-dev libcurl4-gnutls-dev libfftw3-dev \
             libfontconfig1-dev libfreetype6-dev \
             libgl1-mesa-dev libgl2ps-dev libglpk-dev libgraphicsmagick++1-dev \

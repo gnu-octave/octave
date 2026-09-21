@@ -153,45 +153,45 @@
 ## @end group
 ## @end smallexample
 ##
-## @sc{Example 1:} simplest usage of @code{bicg}
+## @sc{example 1:} simplest usage of @code{bicg}
 ##
 ## @example
 ## x = bicg (A, b)
 ## @end example
 ##
-## @sc{Example 2:} @code{bicg} with a function that computes
+## @sc{example 2:} @code{bicg} with a function that computes
 ## @code{@var{A}*@var{x}} and @code{@var{A'}*@var{x}}
 ##
 ## @example
 ## x = bicg (Afcn, b, [], n)
 ## @end example
 ##
-## @sc{Example 3:} @code{bicg} with a preconditioner matrix @var{M}
+## @sc{example 3:} @code{bicg} with a preconditioner matrix @var{M}
 ##
 ## @example
 ## x = bicg (A, b, 1e-6, n, M)
 ## @end example
 ##
-## @sc{Example 4:} @code{bicg} with a function as preconditioner
+## @sc{example 4:} @code{bicg} with a function as preconditioner
 ##
 ## @example
 ## x = bicg (Afcn, b, 1e-6, n, Mfcn)
 ## @end example
 ##
-## @sc{Example 5:} @code{bicg} with preconditioner matrices @var{M1}
+## @sc{example 5:} @code{bicg} with preconditioner matrices @var{M1}
 ## and @var{M2}
 ##
 ## @example
 ## x = bicg (A, b, 1e-6, n, M1, M2)
 ## @end example
 ##
-## @sc{Example 6:} @code{bicg} with functions as preconditioners
+## @sc{example 6:} @code{bicg} with functions as preconditioners
 ##
 ## @example
 ## x = bicg (Afcn, b, 1e-6, n, M1fcn, M2fcn)
 ## @end example
 ##
-## @sc{Example 7:} @code{bicg} with as input a function requiring an argument
+## @sc{example 7:} @code{bicg} with as input a function requiring an argument
 ##
 ## @example
 ## @group

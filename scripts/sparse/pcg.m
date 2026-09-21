@@ -171,45 +171,45 @@
 ## @end group
 ## @end smallexample
 ##
-## @sc{Example 1:} Simplest use of @code{pcg}
+## @sc{example 1:} Simplest use of @code{pcg}
 ##
 ## @example
 ## x = pcg (A, b)
 ## @end example
 ##
-## @sc{Example 2:} @code{pcg} with a function which computes
+## @sc{example 2:} @code{pcg} with a function which computes
 ## @code{@var{A} * @var{x}}
 ##
 ## @example
 ## x = pcg (Afcn, b)
 ## @end example
 ##
-## @sc{Example 3:} @code{pcg} with a preconditioner matrix @var{M}
+## @sc{example 3:} @code{pcg} with a preconditioner matrix @var{M}
 ##
 ## @example
 ## x = pcg (A, b, 1e-06, 100, M)
 ## @end example
 ##
-## @sc{Example 4:} @code{pcg} with a function as preconditioner
+## @sc{example 4:} @code{pcg} with a function as preconditioner
 ##
 ## @example
 ## x = pcg (Afcn, b, 1e-6, 100, Mfcn)
 ## @end example
 ##
-## @sc{Example 5:} @code{pcg} with preconditioner matrices @var{M1}
+## @sc{example 5:} @code{pcg} with preconditioner matrices @var{M1}
 ## and @var{M2}
 ##
 ## @example
 ## x = pcg (A, b, 1e-6, 100, M1, M2)
 ## @end example
 ##
-## @sc{Example 6:} @code{pcg} with functions as preconditioners
+## @sc{example 6:} @code{pcg} with functions as preconditioners
 ##
 ## @example
 ## x = pcg (Afcn, b, 1e-6, 100, M1fcn, M2fcn)
 ## @end example
 ##
-## @sc{Example 7:} @code{pcg} with as input a function requiring an argument
+## @sc{example 7:} @code{pcg} with as input a function requiring an argument
 ##
 ## @example
 ## @group
@@ -224,7 +224,7 @@
 ## @end group
 ## @end example
 ##
-## @sc{Example 8:} explicit example to show that @code{pcg} uses a
+## @sc{example 8:} explicit example to show that @code{pcg} uses a
 ## split preconditioner
 ##
 ## @example

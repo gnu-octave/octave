@@ -46,6 +46,7 @@
 #include <QScreen>
 #include <QStyle>
 #include <QStyleFactory>
+#include <QTabBar>
 #include <QTextBrowser>
 #include <QTextStream>
 #include <QThread>
@@ -3031,6 +3032,17 @@ main_window::do_reset_windows (bool show, bool save, bool force_all)
   addDockWidget (Qt::RightDockWidgetArea, m_editor_window);
   tabifyDockWidget (m_command_window, m_editor_window);
 #endif
+
+  // QMainWindow copies the floating-window icons into dock tabs when tabifying
+  // widgets.  Clear only its internal dock tab bars, leaving nested tab bars
+  // such as the editor's file tabs unchanged.  See bug #68462.
+  QList<QTabBar *> tab_bars
+    = findChildren<QTabBar *> (QString (), Qt::FindDirectChildrenOnly);
+  for (QTabBar *tab_bar : tab_bars)
+    {
+      for (int i = 0; i < tab_bar->count (); i++)
+        tab_bar->setTabIcon (i, QIcon ());
+    }
 
   // Resize command window, the important one in the default layout
   resize_dock (m_command_window, 2*win_x/3, -1);

@@ -30,7 +30,7 @@
 ## @deftypefnx {} {[@var{a}, @dots{}] =} textread (@var{filename}, @var{format}, @var{prop1}, @var{value1}, @dots{})
 ## @deftypefnx {} {[@var{a}, @dots{}] =} textread (@var{filename}, @var{format}, @var{n}, @var{prop1}, @var{value1}, @dots{})
 ##
-## This function is obsolete.  Use @code{textscan} instead.
+## This function is obsolete.  Use @code{dlmread}, @code{fileread}, or @code{textscan} instead.
 ##
 ## Read data from a text file.
 ##
@@ -115,7 +115,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{textscan, load, dlmread, fscanf, strread}
+## @seealso{textscan, load, dlmread, fileread, fscanf, strread}
 ## @end deftypefn
 
 function varargout = textread (filename, format = "%f", varargin)

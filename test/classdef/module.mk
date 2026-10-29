@@ -1,8 +1,26 @@
 classdef_TEST_FILES = \
+  %reldir%/@atfolder_class/atfolder_class.m \
+  %reldir%/@atfolder_class/external_method.m \
+  %reldir%/@atfolder_class/external_method_2.m \
+  %reldir%/@atfolder_class/external_static_method.m \
+  %reldir%/@atfolder_class/unattached_method.m \
+  %reldir%/@atfolder_handle_class/atfolder_handle_class.m \
+  %reldir%/@atfolder_subclass/atfolder_subclass.m \
+  %reldir%/@atfolder_subclass/external_method.m \
+  %reldir%/@class_bug54941/class_bug54941.m \
+  %reldir%/@class_bug54941/report_pi.m \
+  %reldir%/@class_bug54941/static_func1.m \
+  %reldir%/@class_bug56816_old_style_class/class_bug56816_old_style_class.m \
+  %reldir%/@class_bug56816_old_style_class/meth1.m \
+  %reldir%/@class_bug56816_old_style_class/meth2.m \
   %reldir%/@class_bug62802/amethod.m \
   %reldir%/@class_bug62802/class_bug62802.m \
   %reldir%/@class_bug67362/class_bug67362.m \
   %reldir%/@class_bug67362/shared_name.m \
+  %reldir%/@invalid_atfolder_class/get.a.m \
+  %reldir%/@invalid_atfolder_class/invalid_atfolder_class.m \
+  %reldir%/@invalid_atfolder_class_2/duplicate_method.m \
+  %reldir%/@invalid_atfolder_class_2/invalid_atfolder_class_2.m \
   %reldir%/@osc/osc.m \
   %reldir%/bug_60763.m \
   %reldir%/cdef_array_break_cycles.m \
@@ -14,22 +32,50 @@ classdef_TEST_FILES = \
   %reldir%/class_bug50011_2.m \
   %reldir%/class_bug50011_2A.m \
   %reldir%/class_bug50011_2B.m \
+  %reldir%/class_bug51659.m \
+  %reldir%/class_bug51659A.m \
+  %reldir%/class_bug51659A_handle.m \
+  %reldir%/class_bug51659B.m \
+  %reldir%/class_bug51659B_handle.m \
+  %reldir%/class_bug51659C.m \
+  %reldir%/class_bug51659C_handle.m \
+  %reldir%/class_bug51659D.m \
+  %reldir%/class_bug51659D_handle.m \
   %reldir%/class_bug52614A.m \
   %reldir%/class_bug52614B.m \
+  %reldir%/class_bug53811.m \
   %reldir%/class_bug55766.m \
+  %reldir%/class_bug55767.m \
+  %reldir%/class_bug56816.m \
+  %reldir%/class_bug59735A.m \
+  %reldir%/class_bug59735B.m \
+  %reldir%/class_bug59735C.m \
+  %reldir%/class_bug59735D.m \
   %reldir%/class_bug59775A.m \
   %reldir%/class_bug59775B.m \
+  %reldir%/class_bug60143_handle.m \
+  %reldir%/class_bug60143_value.m \
+  %reldir%/class_bug60489.m \
+  %reldir%/class_bug60593A.m \
+  %reldir%/class_bug60593B.m \
+  %reldir%/class_bug60593C.m \
   %reldir%/class_bug60723A.m \
   %reldir%/class_bug60723B.m \
   %reldir%/class_bug60723C.m \
+  %reldir%/class_bug61673A.m \
+  %reldir%/class_bug61673B.m \
+  %reldir%/class_bug61673C.m \
+  %reldir%/class_bug61843.m \
+  %reldir%/class_bug66930A.m \
+  %reldir%/class_bug66930B.m \
+  %reldir%/class_bug67197A.m \
+  %reldir%/class_bug67197B.m \
   %reldir%/class_bug67845A.m \
   %reldir%/class_bug67845A_handle.m \
   %reldir%/class_bug67845B.m \
   %reldir%/class_bug67845B_handle.m \
   %reldir%/class_bug67845C.m \
   %reldir%/class_bug67845C_handle.m \
-  %reldir%/class_bug66930A.m \
-  %reldir%/class_bug66930B.m \
   %reldir%/class_pair.m \
   %reldir%/class_pair_elem.m \
   %reldir%/class_pair_elem_dominant.m \
@@ -39,12 +85,15 @@ classdef_TEST_FILES = \
   %reldir%/class_private_property_sub.m \
   %reldir%/class_private_property_super.m \
   %reldir%/classdef.tst \
+  %reldir%/foo_handle_class.m \
   %reldir%/foo_method_changes_property_size.m \
   %reldir%/foo_static_method_constant_property.m \
   %reldir%/foo_subsref_subsasgn.m \
   %reldir%/foo_value_class.m \
-  %reldir%/foo_handle_class.m \
+  %reldir%/get_set_class.m \
   %reldir%/handle_class.m \
+  %reldir%/handle_subclass.m \
+  %reldir%/invalid_override_property_class.m \
   %reldir%/overloaded_all_class.m \
   %reldir%/overloaded_all_class_handle.m \
   %reldir%/overloaded_any_class.m \
@@ -57,8 +106,8 @@ classdef_TEST_FILES = \
   %reldir%/overloaded_horzcat_vertcat_class_handle.m \
   %reldir%/overloaded_permute_class.m \
   %reldir%/overloaded_permute_class_handle.m \
-  %reldir%/overloaded_subsref.m \
   %reldir%/overloaded_sizeof_class.m \
+  %reldir%/overloaded_subsref.m \
   %reldir%/overloaded_transpose_class.m \
   %reldir%/overloaded_transpose_class_handle.m \
   %reldir%/plist_t1.m \
@@ -66,7 +115,7 @@ classdef_TEST_FILES = \
   %reldir%/plist_t3.m \
   %reldir%/struct_wrapper.m \
   %reldir%/value_class.m \
-  %reldir%/value_class_subclass.m \
-  %reldir%/value_class_reshape.m
+  %reldir%/value_class_reshape.m \
+  %reldir%/value_class_subclass.m
 
 TEST_FILES += $(classdef_TEST_FILES)

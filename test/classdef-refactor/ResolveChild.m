@@ -1,0 +1,2 @@
+classdef ResolveChild < Resolve
+endclassdef

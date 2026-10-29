@@ -111,6 +111,10 @@ public:
 
   virtual bool is_subfunction () const { return false; }
 
+  //! Whether this is a local function in a classdef file.  Such a function
+  //! has no parent function scope, unlike a subfunction of a primary function.
+  virtual bool is_local_function () const { return false; }
+
   virtual bool is_compiled () const { return false; }
 
   bool is_class_constructor (const std::string& cname = "") const

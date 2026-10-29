@@ -80,32 +80,29 @@ make_fcn_handle (const octave_value& fcn, const std::string& meth_name,
   return retval;
 }
 
-//! Invariant postcondition: After the constructor runs, the classdef is
-//! well-formed and can attempt to be instantiated.  All superclass methods
-//! are flattened into the current class's method map.  The superclass
-//! properties are not flattened, but they are accessible from this class.
+//! Initialize class attributes and inherit superclass methods.
 //!
-//! If a superclass method or property is abstract, then the current
-//! class becomes an abstract class.  In order for the current class
-//! to become a concrete class, all the abstract methods and properties
-//! must be overriden in the current class.  Otherwise, the current class
-//! remains abstract.  If, after the constructor runs, the class is marked
-//! abstract, then the addition of each property and method will check if
-//! the class overrides all the abstract methods and properties in the
-//! superclass.
+//! Local declarations are installed after this constructor returns.  A local
+//! method may resolve an inherited ambiguity, so check_method_conflicts() must
+//! run after all declarations have been installed.  Properties remain in
+//! their defining classes and are collected when needed.
+//!
+//! make_meta_class() performs the final conflict check and marks the class
+//! abstract if any effective method or property remains abstract.
 cdef_class::cdef_class_rep::cdef_class_rep
  (std::string name,
   cdef_class_opt_properties opt_args)
   : cdef_meta_object_rep (), m_member_count (0), m_handle_class (false),
     m_meta (false)
 {
-  set_class (cdef_manager::m_meta_class);
+  set_class (__get_cdef_manager__ ().meta_class ());
 
   // "put" handles type validation
   put ("Abstract", opt_args.abstract);
   put ("AllowedSubclasses", opt_args.allowed_subclasses);
   put ("Aliases", opt_args.aliases);
   put ("ConstructOnLoad", opt_args.construct_on_load);
+  put ("ContainingPackage", Matrix ());
   put ("Description", opt_args.description);
   put ("DetailedDescription", opt_args.detailed_description);
   put ("Enumeration", opt_args.enumeration);
@@ -122,9 +119,8 @@ cdef_class::cdef_class_rep::cdef_class_rep
   // example, `foo < bar` and `bar < foo` cannot be possible.
   //
   // Each individual classdef flattens all the superclass method tables
-  // into a single table helf by the classdef's internal representation
-  // itself.  Any conflicts between methods across superclasses are
-  // handled here.
+  // into a single table held by the classdef's internal representation
+  // itself.  Conflicts are recorded until local methods are installed.
   //
   // Another property that is checked is whether the current class is a
   // handle class.  If at least one superclass is a handle class, then
@@ -169,9 +165,12 @@ cdef_class::cdef_class_rep::cdef_class_rep
           if (superclass.get_sealed ())
             error ("inheriting from sealed class: classdef %s is Sealed, and cannot be inherited from", superclass.get_name ().c_str ());
 
+          superclass.get_rep ()->check_method_conflicts ();
+
           // Look into the superclass method maps.  If we detect conflicting
           // methods, then check if their DefiningClass is the same.  If yes,
-          // that's okay (diamond inheritance), otherwise error out.
+          // that's okay (diamond inheritance), otherwise defer the error until
+          // local overrides are installed.
           auto superclass_m_map = superclass.get_method_map ();
 
           for (const auto& pair : superclass_m_map)
@@ -190,9 +189,7 @@ cdef_class::cdef_class_rep::cdef_class_rep
                   std::string nm_2 = it->second.get_defining_class ().get_name ();
 
                   if (nm_1 != nm_2)
-                    {
-                      error ("method %s conflicting: Conflicting definitions in classes '%s' and '%s'", pair.first.c_str (), nm_1.c_str(), nm_2.c_str ());
-                    }
+                    m_method_conflicts.try_emplace (pair.first, nm_2, nm_1);
                 }
 
               m_method_map.insert (pair);
@@ -282,9 +279,37 @@ cdef_class::cdef_class_rep::put (const std::string& pname,
         }
       else if (pname == "InferiorClasses")
         {
-          val.classdef_object_value ();
+          if (val.iscell ())
+            {
+              Cell classes = val.cell_value ();
+              Array<cdef_object> objects (dim_vector (classes.numel (), 1));
 
-          m_map.assign (pname, val);
+              for (octave_idx_type i = 0; i < classes.numel (); i++)
+                {
+                  if (! classes(i).is_classdef_object ()
+                      || classes(i).class_name () != "meta.class"
+                      || classes(i).numel () != 1)
+                    error ("InferiorClasses must contain scalar meta.class objects");
+
+                  objects(i) = to_cdef (classes(i));
+                }
+
+              m_map.assign
+                (pname, to_ov (cdef_object
+                              (objects, __get_cdef_manager__ ().meta_class ())));
+            }
+          else
+            {
+              cdef_object objects = to_cdef (val);
+
+              // The class of an empty list is not yet available during
+              // bootstrap, before meta.class itself has been created.
+              if (objects.get_class ().ok ()
+                  && objects.class_name () != "meta.class")
+                error ("InferiorClasses must be a meta.class array");
+
+              m_map.assign (pname, val);
+            }
         }
       else if (pname == "Name")
         {
@@ -377,9 +402,7 @@ cdef_class::cdef_class_rep::find_method (const std::string& nm, bool local) cons
       // context, so the methods stay private.
       //
       // Only a class that has superclasses can have such a method to recover.
-      // Checking that first also keeps the class context lookup off this hot
-      // path: it resolves the dispatch class by name, which fails for a class
-      // defined in a package @class folder.
+      // Checking that first avoids unnecessary context lookups.
 
       octave_value sclist = get ("SuperclassList");
 
@@ -536,8 +559,8 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
             return;
 
           std::string class_file = file_name ();
-          error ("duplicate method: Method %s has conflicting definitions in classes '%s' and '%s'",
-                 it->second.get_name ().c_str (), get_name ().c_str (), other_class_name.c_str ());
+          error ("duplicate method '%s' in class '%s' in file '%s'",
+                 mname.c_str (), get_name ().c_str (), class_file.c_str ());
         }
     }
 
@@ -547,11 +570,12 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
   // bug #67361): If the classdef is defined within a class folder and the
   // method is externally defined, and the method signature is not in the
   // classdef file, then the method and a property can have the same name.
-  auto prop_it = m_property_map.find (mname);
+  cdef_property prop = find_property (mname);
 
-  if (prop_it != m_property_map.end () && ! meth.is_external ())
+  if (prop.ok () && ! meth.is_external ())
     {
-      error ("invalid method: A method and a property cannot share the same name");
+      error ("property and method are both named '%s' in class '%s' in file '%s'",
+             mname.c_str (), get_name ().c_str (), file_name ().c_str ());
     }
 
   if (! meth.get_function ().function_value (true))
@@ -585,6 +609,7 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
     }
 
   m_method_map[mname] = meth;
+  m_method_conflicts.erase (mname);
 
   m_member_count++;
 
@@ -626,6 +651,17 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
     }
 }
 
+void
+cdef_class::cdef_class_rep::check_method_conflicts () const
+{
+  if (! m_method_conflicts.empty ())
+    {
+      const auto& [name, classes] = *m_method_conflicts.begin ();
+      error ("method %s: conflicting definitions in classes '%s' and '%s'",
+             name.c_str (), classes.first.c_str (), classes.second.c_str ());
+    }
+}
+
 cdef_object
 cdef_class::cdef_class_rep::get_methods (bool include_ctor) const
 {
@@ -637,7 +673,7 @@ cdef_class::cdef_class_rep::get_methods (bool include_ctor) const
   for (const auto& meth : method_map)
     arr(idx++) = meth.second;
 
-  return cdef_object (arr, cdef_manager::m_meta_method);
+  return cdef_object (arr, __get_cdef_manager__ ().meta_method ());
 }
 
 std::map<std::string, cdef_method>
@@ -661,8 +697,8 @@ cdef_class::cdef_class_rep::get_method_map (member_mode mode,
     });
 
   if (! include_ctor)
-    std::erase_if (retval, [this_name](const auto& pair) {
-      return pair.first == this_name;
+    std::erase_if (retval, [](const auto& pair) {
+      return pair.second.is_constructor ();
     });
 
   return retval;
@@ -749,10 +785,11 @@ cdef_class::cdef_class_rep::install_property (const cdef_property& prop)
   // into the current class's property map, so we have to use a specialized
   // method to investigate for property conflicts.
   auto prop_match = find_property (prop_name);
+  const bool declared_here = m_property_map.contains (prop_name);
 
-  if (prop_match.ok ())
+  if (prop_match.ok ()
+      && (declared_here || ! prop_match.get ("Abstract").bool_value ()))
     {
-      // TODO: handle abstract properties
       std::string class_file = file_name ();
 
       // Matlab lets a subclass declare a property of the same name as a
@@ -761,7 +798,7 @@ cdef_class::cdef_class_rep::install_property (const cdef_property& prop)
       octave_value get_acc = prop_match.get ("GetAccess");
       octave_value set_acc = prop_match.get ("SetAccess");
 
-      if (m_property_map.find (prop_name) == m_property_map.end ()
+      if (! declared_here
           && get_acc.is_string () && get_acc.string_value () == "private"
           && set_acc.is_string () && set_acc.string_value () == "private")
         {
@@ -800,15 +837,33 @@ cdef_class::cdef_class_rep::get_properties () const
   for (const auto& nm_prop : property_map)
     arr(idx++) = nm_prop.second;
 
-  return cdef_object (arr, cdef_manager::m_meta_property);
+  return cdef_object (arr, __get_cdef_manager__ ().meta_property ());
 }
 
 std::map<property_key, cdef_property>
 cdef_class::cdef_class_rep::get_property_map (member_mode mode) const
 {
   std::map<property_key, cdef_property> props;
-
+  std::set<std::string> names;
+  std::set<const cdef_class_rep *> visited;
   unsigned int next_rank = 0;
+
+  find_properties (props, names, visited, next_rank, mode);
+
+  return props;
+}
+
+void
+cdef_class::cdef_class_rep::find_properties
+  (std::map<property_key, cdef_property>& props,
+   std::set<std::string>& names,
+   std::set<const cdef_class_rep *>& visited,
+   unsigned int& next_rank, member_mode mode) const
+{
+  if (! visited.insert (this).second)
+    return;
+
+  const unsigned int offset = next_rank;
 
   for (const auto& it : m_property_map)
     {
@@ -824,15 +879,16 @@ cdef_class::cdef_class_rep::get_property_map (member_mode mode) const
             continue;
         }
 
-      const unsigned int rank = m_property_rank_map.at (nm);
+      const unsigned int rank = offset + m_property_rank_map.at (nm);
 
-      props[std::make_pair (rank, nm)] = it.second;
+      if (names.insert (nm).second)
+        props[std::make_pair (rank, nm)] = it.second;
 
       next_rank = std::max (next_rank, rank + 1);
     }
 
   if (mode == member_mode::declared)
-    return props;
+    return;
 
   auto super_classes = get_superclass_list ();
 
@@ -840,26 +896,8 @@ cdef_class::cdef_class_rep::get_property_map (member_mode mode) const
     {
       cdef_class cls = lookup_class (super_classes(i));
 
-      auto inherited = cls.get_rep ()->get_property_map (mode);
-
-      unsigned int subtree_rank = next_rank;
-
-      for (const auto& it : inherited)
-        {
-          const unsigned int rank = next_rank + it.first.first;
-
-          subtree_rank = std::max (subtree_rank, rank + 1);
-
-          if (std::none_of (props.begin (), props.end (),
-                            [&it] (const auto& p)
-                            { return p.first.second == it.first.second; }))
-            props[std::make_pair (rank, it.first.second)] = it.second;
-        }
-
-      next_rank = subtree_rank;
+      cls.get_rep ()->find_properties (props, names, visited, next_rank, mode);
     }
-
-  return props;
 }
 
 void
@@ -1135,7 +1173,9 @@ cdef_class::cdef_class_rep::get_method (int line) const
       const octave_value& fcn = i->second.get_function ();
       octave_user_code *user_code = fcn.user_code_value (true);
 
-      if (! user_code)
+      // Line numbers refer to this classdef file.  Inherited methods and
+      // methods defined in separate files have unrelated source positions.
+      if (! user_code || user_code->fcn_file_name () != file_name ())
         continue;
 
       octave_user_function *pfcn
@@ -1219,6 +1259,8 @@ cdef_class::cdef_class_rep::construct_object (const octave_value_list& args,
                                               const int nargout,
                                               const bool default_initialize)
 {
+  check_method_conflicts ();
+
   if (is_abstract ())
     error ("cannot instantiate object for abstract class '%s'",
            get_name ().c_str ());
@@ -1226,71 +1268,45 @@ cdef_class::cdef_class_rep::construct_object (const octave_value_list& args,
   cdef_object obj;
   octave_value_list retval (std::max (nargout, 1));
 
-  if (is_meta_class ())
-    {
-      // This code path is only used to create empty meta objects
-      // as filler for the empty values within a meta object array.
-
-      cdef_class this_cls = wrap ();
-
-      static cdef_class empty_class;
-
-      if (this_cls == cdef_manager::m_meta_class )
-        {
-          if (! empty_class.ok ())
-            empty_class = cdef_class ("");
-          obj = empty_class;
-        }
-      else if (this_cls == cdef_manager::m_meta_property)
-        {
-          static cdef_property empty_property;
-
-          if (! empty_class.ok ())
-            empty_class = cdef_class ("");
-          if (! empty_property.ok ())
-            empty_property = cdef_property (empty_class, "");
-          obj = empty_property;
-        }
-      else if (this_cls == cdef_manager::m_meta_method)
-        {
-          static cdef_method empty_method;
-
-          if (! empty_class.ok ())
-            empty_class = cdef_class ("");
-          if (! empty_method.ok ())
-            empty_method = cdef_method (empty_class, octave_value (), "");
-          obj = empty_method;
-        }
-      else if (this_cls == cdef_manager::m_meta_package)
-        {
-          static cdef_package empty_package;
-
-          if (! empty_package.ok ())
-            {
-              empty_package = cdef_package ("");
-              empty_package.set_class (cdef_manager::m_meta_package);
-            }
-          obj = empty_package;
-        }
-      else
-        error ("expecting meta class, property, method, or package in cdef_class::cdef_class_rep::construct_object - please report this bug");
-
-      retval(0) = to_ov (obj);
-    }
+  if (is_handle_class ())
+    obj = adopt (new handle_cdef_object ());
   else
-    {
-      if (is_handle_class ())
-        obj = adopt (new handle_cdef_object ());
-      else
-        obj = adopt (new value_cdef_object ());
-      obj.set_class (wrap ());
+    obj = adopt (new value_cdef_object ());
+  obj.set_class (wrap ());
 
-      initialize_object (obj);
+  initialize_object (obj);
 
-      retval = run_constructor (obj, args, nargout, default_initialize);
-    }
+  retval = run_constructor (obj, args, nargout, default_initialize);
 
   return retval;
+}
+
+//! Construct an object to fill a gap when an object array grows.
+//!
+//! Ordinary classes use their zero-argument constructor.  Built-in metaclasses
+//! instead receive internal placeholder metadata belonging to the active
+//! interpreter.  This does not permit public construction of abstract classes.
+cdef_object
+cdef_class::cdef_class_rep::construct_array_element ()
+{
+  if (! is_meta_class ())
+    return to_cdef (construct (octave_value_list ()));
+
+  const cdef_class this_cls = wrap ();
+  cdef_manager& cdm = __get_cdef_manager__ ();
+
+  // Filler metadata must belong to the active interpreter, just like the
+  // array's class.  Do not keep these objects in process-wide static caches.
+  if (this_cls == cdm.meta_class ())
+    return cdef_class ("");
+  else if (this_cls == cdm.meta_property ())
+    return cdef_property (cdef_class (""), "");
+  else if (this_cls == cdm.meta_method ())
+    return cdef_method (cdef_class (""), octave_value (), "");
+  else if (this_cls == cdm.meta_package ())
+    return cdef_package ("");
+  else
+    error ("expecting meta class, property, method, or package in cdef_class::cdef_class_rep::construct_array_element - please report this bug");
 }
 
 cdef_class
@@ -1341,8 +1357,9 @@ cdef_class::make_meta_class (interpreter& interp,
 
   Array<cdef_object> superclass_list
     (growable_superclass_list, dim_vector (growable_superclass_list.size (), 1));
-  auto superclasses = to_ov (cdef_object (superclass_list,
-                                          cdef_manager::m_meta_class));
+  auto superclasses
+    = to_ov (cdef_object (superclass_list,
+                          __get_cdef_manager__ ().meta_class ()));
 
   // Docstring of a class is separated into the
   // Description and DetailedDescription properties
@@ -1374,8 +1391,8 @@ cdef_class::make_meta_class (interpreter& interp,
     {"Abstract", opt_args.abstract},
     {"AllowedSubclasses", opt_args.allowed_subclasses},
     {"ConstructOnLoad", opt_args.construct_on_load},
-    {"Description", opt_args.description},
-    {"DetailedDescription", opt_args.detailed_description},
+    {"Description", description},
+    {"DetailedDescription", detailed_description},
     {"HandleCompatible", opt_args.handle_compatible},
     {"Hidden", opt_args.hidden},
     {"InferiorClasses", opt_args.inferior_classes},
@@ -1387,14 +1404,12 @@ cdef_class::make_meta_class (interpreter& interp,
       for (const auto& attr : (*t->attribute_list ()))
         {
           std::string aname = attr->ident ()->name ();
-          octave_value avalue = compute_attribute_value (tw, attr);
-
           auto it = amap.find (aname);
 
           if (it == amap.end ())
             error ("invalid attribute: attribute %s cannot be assigned in a classdef block", aname.c_str ());
 
-          amap[aname] = avalue;
+          it->second = compute_attribute_value (tw, attr);
         }
     }
 
@@ -1402,8 +1417,8 @@ cdef_class::make_meta_class (interpreter& interp,
     .abstract = amap["Abstract"],
     .allowed_subclasses = amap["AllowedSubclasses"],
     .construct_on_load = amap["ConstructOnLoad"],
-    .description = description,
-    .detailed_description = detailed_description,
+    .description = amap["Description"],
+    .detailed_description = amap["DetailedDescription"],
     .handle_compatible = amap["HandleCompatible"],
     .hidden = amap["Hidden"],
     .inferior_classes = amap["InferiorClasses"],
@@ -1416,7 +1431,15 @@ cdef_class::make_meta_class (interpreter& interp,
   cdef_manager& cdm = __get_cdef_manager__ ();
   cdm.register_class (retval);
 
+  bool complete = false;
+  unwind_action unregister_incomplete ([&] ()
+  {
+    if (! complete)
+      cdm.unregister_class (retval);
+  });
+
   retval.file_name (t->file_name ());
+  retval.doc_string (doc_string);
 
   // Package owning this class
   if (! t->package_name ().empty ())
@@ -1464,6 +1487,10 @@ cdef_class::make_meta_class (interpreter& interp,
       for (auto& mb_p : mb_list)
         {
           auto blk_mths = cdef_method::make_method (retval, tw, mb_p);
+          if (! is_at_folder)
+            for (const auto& meth : blk_mths)
+              if (meth.is_external () && ! meth.get ("Abstract").bool_value ())
+                error ("external methods are only allowed in @-folders");
           mths.insert (mths.end (), blk_mths.begin (), blk_mths.end ());
         }
 
@@ -1515,6 +1542,22 @@ cdef_class::make_meta_class (interpreter& interp,
           retval.install_method (mth);
 
     }
+
+  retval.get_rep ()->check_method_conflicts ();
+
+  // Abstractness depends on the effective members after local overrides.
+  // An explicitly abstract superclass may have a concrete subclass, but
+  // inherited abstract members must all have implementations.
+  for (const auto& [name, method] : retval.get_method_map ())
+    if (method.get ("Abstract").bool_value ())
+      retval.put ("Abstract", true);
+
+  for (const auto& [key, property] :
+       retval.get_property_map (member_mode::all))
+    if (property.get ("Abstract").bool_value ())
+      retval.put ("Abstract", true);
+
+  complete = true;
 
   return retval;
 }

@@ -676,6 +676,7 @@ octave_user_function::dump () const
        { "system_fcn_file", m_system_fcn_file },
        { "num_named_args", m_num_named_args },
        { "subfunction", m_subfunction },
+       { "local_function", m_local_function },
        { "inline_function", m_inline_function },
        { "anonymous_function", m_anonymous_function },
        { "nested_function", m_nested_function },

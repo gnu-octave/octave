@@ -4458,7 +4458,7 @@ base_parser::finish_classdef_file (tree_classdef *cls, tree_statement_list *loca
 
           fcn->attach_trailing_comments (eof_tok->leading_comments ());
 
-          fcn->mark_as_subfunction ();
+          fcn->mark_as_local_function ();
 
           symtab.install_local_function (nm, ov_fcn, file);
         }

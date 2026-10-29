@@ -375,7 +375,7 @@
 %! assert (class (result), "foo_value_class");
 
 ## duplicate definitions of methods in parent classes (bug #50011)
-%!error <method .* conflicting>
+%!error <method .*: conflicting definitions>
 %! cls_50011 = class_bug50011_1 ();
 %! cls_50011.m_c ();
 
@@ -2233,7 +2233,7 @@
 %! class_bug60593C ();
 
 # Bug #60489
-%!error <Method toto has conflicting definitions in classes 'class_bug60489' and 'class_bug60489'>
+%!error <duplicate method 'toto' in class 'class_bug60489'>
 %! class_bug60489 ();
 
 # Classdef folder tests (classdefs defined in @folders)

@@ -53,14 +53,16 @@ cdef_property::cdef_property_rep::cdef_property_rep (
   cdef_property_opt_properties opt_args)
   : cdef_meta_object_rep ()
 {
-  set_class (cdef_manager::m_meta_property);
+  set_class (__get_cdef_manager__ ().meta_property ());
 
   if (! defining_class.ok ())
     error ("invalid property: DefiningClass not valid");
 
   put ("DefiningClass", to_ov (defining_class));
 
-  if (name.string_value () == defining_class.get ("Name").string_value ())
+  // Empty names are reserved for metadata-array filler objects.
+  if (! name.isempty ()
+      && name.string_value () == defining_class.get ("Name").string_value ())
     error ("invalid property: cannot have the same name as the classdef itself");
   put ("Name", name);
   put ("Description", opt_args.description);
@@ -69,26 +71,21 @@ cdef_property::cdef_property_rep::cdef_property_rep (
 
   // Resolve Access -> GetAccess/SetAccess inheritance.
   // Empty string means "not explicitly set", so inherit from Access.
-  // Also force to lower case.  A list of classes is kept as it is.
-  auto lower = [] (const octave_value& val)
-  {
-    if (! val.is_string ())
-      return val;
-
-    std::string s = val.string_value ();
-    std::transform (s.begin (), s.end (), s.begin (),
-      [](unsigned char c){ return std::tolower (c); });
-    return octave_value (s);
-  };
-
   auto is_unset = [] (const octave_value& val)
   {
     return val.is_string () && val.string_value ().empty ();
   };
 
-  octave_value access = lower (opt_args.access);
-  octave_value get_access = lower (opt_args.get_access);
-  octave_value set_access = lower (opt_args.set_access);
+  octave_value access = opt_args.access;
+  octave_value get_access = opt_args.get_access;
+  octave_value set_access = opt_args.set_access;
+
+  const cdef_class cls (defining_class);
+  validate_access (access, "Access", "property", name.string_value (), cls);
+  if (! is_unset (get_access))
+    validate_access (get_access, "GetAccess", "property", name.string_value (), cls);
+  if (! is_unset (set_access))
+    validate_access (set_access, "SetAccess", "property", name.string_value (), cls);
 
   if (! is_unset (get_access) || ! is_unset (set_access))
     {
@@ -125,7 +122,7 @@ cdef_property::cdef_property_rep::cdef_property_rep (
   else
     {
       put ("HasDefault", false);
-      put ("DefaultValue", Matrix ());
+      put ("DefaultValue", octave_value ());
     }
 
   put ("Hidden", opt_args.hidden);
@@ -256,18 +253,25 @@ cdef_property::cdef_property_rep::put (const std::string& pname,
             {
               auto coerced = val.string_value ();
               if (coerced == "public" || coerced == "private"
-                  || coerced == "protected")
+                  || coerced == "protected" || coerced == "immutable")
                 m_map.assign (pname, coerced);
               else
-                error ("SetAccess must be 'public', 'private', 'protected', or a list of classes");
+                error ("SetAccess must be 'public', 'private', 'protected', 'immutable', or a list of classes");
             }
           else if (is_access_list (val))
             m_map.assign (pname, val);
           else
-            error ("SetAccess must be 'public', 'private', 'protected', or a list of classes");
+            error ("SetAccess must be 'public', 'private', 'protected', 'immutable', or a list of classes");
         }
       else if (pname == "SetMethod")
         {
+          octave_value access = get ("SetAccess");
+
+          if ((val.is_function () || val.is_function_handle ())
+              && access.is_string () && access.string_value () == "immutable")
+            error ("immutable property '%s' cannot have a set method",
+                   get_name ().c_str ());
+
           // Can be a function handle, function, or empty
           m_map.assign (pname, val);
         }
@@ -451,8 +455,19 @@ cdef_property::cdef_property_rep::set_value (cdef_object& obj,
     bool do_check_access,
     const std::string& who)
 {
-  if (do_check_access && ! check_set_access ())
-    err_property_access (who, true);
+  if (do_check_access)
+    {
+      if (! check_set_access ())
+        err_property_access (who, true);
+
+      octave_value access = get ("SetAccess");
+
+      // Constructor access does not permit modifying another, already
+      // constructed instance of the same class.
+      if (access.is_string () && access.string_value () == "immutable"
+          && obj.is_constructed_for (get_defining_class ()))
+        err_property_access (who, true);
+    }
 
   if (! obj.is_constructed ())
     {
@@ -553,14 +568,12 @@ cdef_property::make_property (cdef_class& cls, tree_evaluator& tw,
       for (auto& attr_p : *pb_p->attribute_list ())
         {
           std::string aname = attr_p->ident ()->name ();
-          octave_value avalue = compute_attribute_value (tw, attr_p);
-
           auto it = amap.find (aname);
 
           if (it == amap.end ())
             error ("invalid attribute: attribute %s cannot be assigned in a properties block", aname.c_str ());
 
-          amap[aname] = avalue;
+          it->second = compute_attribute_value (tw, attr_p);
         }
     }
 

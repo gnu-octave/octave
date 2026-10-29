@@ -442,11 +442,11 @@ interpreter::interpreter (application *app_context)
     m_load_path (*this),
     m_load_save_system (*this),
     m_type_info (),
+    m_cdef_manager (*this),
     m_symbol_table (*this),
     m_stream_list (*this),
     m_child_list (),
     m_url_handle_manager (),
-    m_cdef_manager (*this),
     m_gtk_manager (*this),
     m_event_manager (*this),
     m_gh_manager (nullptr),
@@ -502,6 +502,9 @@ interpreter::interpreter (application *app_context)
   initialize_xerbla_error_handler ();
 
   initialize_error_handlers ();
+
+  // Metadata constructors use this interpreter's classdef manager.
+  m_cdef_manager.initialize ();
 
   if (m_app_context)
     {

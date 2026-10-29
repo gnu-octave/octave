@@ -54,7 +54,10 @@ cdef_method::cdef_method_rep::cdef_method_rep (
   : cdef_meta_object_rep (), m_dispatch_type (),
     m_function (octave_value (fcn))
 {
-  set_class (cdef_manager::m_meta_method);
+  set_class (__get_cdef_manager__ ().meta_method ());
+
+  validate_access (opt_args.access, "Access", "method", name.string_value (),
+                   cdef_class (defining_class));
 
   put ("Abstract", opt_args.abstract);
   put ("Access", opt_args.access);
@@ -198,7 +201,7 @@ cdef_method::cdef_method_rep::put (const std::string& pname,
     }
   catch (const execution_exception& ee)
     {
-      error ("put: setting '%s' failed with error:  %s", pname.c_str (), ee.message ().c_str ());
+      error ("put: setting '%s' failed with error: %s", pname.c_str (), ee.message ().c_str ());
     }
 }
 
@@ -400,14 +403,12 @@ cdef_method::make_method (cdef_class& cls,
       for (auto& attr_p : *mth_blk->attribute_list ())
         {
           std::string aname = attr_p->ident ()->name ();
-          octave_value avalue = compute_attribute_value (tw, attr_p);
-
           auto it = amap.find (aname);
 
           if (it == amap.end ())
             error ("invalid attribute: attribute %s cannot be assigned in a methods block", aname.c_str ());
 
-          amap[aname] = avalue;
+          it->second = compute_attribute_value (tw, attr_p);
         }
     }
 

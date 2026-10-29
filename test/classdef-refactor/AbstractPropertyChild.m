@@ -1,0 +1,2 @@
+classdef AbstractPropertyChild < AbstractBase
+endclassdef

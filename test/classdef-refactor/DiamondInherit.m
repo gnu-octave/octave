@@ -1,0 +1,2 @@
+classdef DiamondInherit < Left
+endclassdef

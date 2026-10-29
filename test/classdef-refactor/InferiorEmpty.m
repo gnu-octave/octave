@@ -1,0 +1,2 @@
+classdef (InferiorClasses = {}) InferiorEmpty
+endclassdef

@@ -905,6 +905,15 @@ class cannot access them.
 @item protected
 The properties can only be accessed from class methods and from subclasses
 of that class.
+
+@item immutable
+This mode is only valid for @code{SetAccess}.  The property can have a default
+value and can be assigned while its defining class constructor is creating
+the object.  Other methods, including subclass constructors, cannot assign
+it.  The defining constructor cannot modify the property of an already
+constructed object.  An immutable property cannot have a @code{set.} method.
+If the property contains a handle object, the referenced object can still
+be modified; the property holding the handle cannot be replaced.
 @end table
 
 When creating an object of @code{some_class}, @var{prop1} has the default

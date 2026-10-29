@@ -618,6 +618,10 @@ private:
 
   type_info m_type_info;
 
+  // Metadata references in the symbol table must be released while their
+  // manager is still alive, including for an uninitialized interpreter.
+  cdef_manager m_cdef_manager;
+
   symbol_table m_symbol_table;
 
   stream_list m_stream_list;
@@ -625,8 +629,6 @@ private:
   child_list m_child_list;
 
   url_handle_manager m_url_handle_manager;
-
-  cdef_manager m_cdef_manager;
 
   gtk_manager m_gtk_manager;
 

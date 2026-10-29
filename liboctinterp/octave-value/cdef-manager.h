@@ -91,50 +91,16 @@ public:
 
   const cdef_package& meta () const { return m_meta; }
 
-  OCTINTERP_API cdef_class
-  make_class (const std::string& name,
-              const std::list<cdef_class>& super_list = std::list<cdef_class> ());
-
-  OCTINTERP_API cdef_class
-  make_class (const std::string& name, const cdef_class& super);
-
-  OCTINTERP_API cdef_class
-  make_meta_class (const std::string& name, const cdef_class& super);
-
-  OCTINTERP_API cdef_property
-  make_property (const cdef_class& cls, const std::string& name,
-                 const octave_value& get_method = Matrix (),
-                 const std::string& get_access = "public",
-                 const octave_value& set_method = Matrix (),
-                 const std::string& set_access = "public");
-
-  OCTINTERP_API cdef_property
-  make_attribute (const cdef_class& cls, const std::string& name);
-
-  OCTINTERP_API cdef_method
-  make_method (const cdef_class& cls, const std::string& name,
-               const octave_value& fcn,
-               const std::string& m_access = "public",
-               bool is_static = false);
-
-  OCTINTERP_API cdef_method
-  make_method (const cdef_class& cls, const std::string& name,
-               octave_builtin::fcn ff,
-               const std::string& m_access = "public",
-               bool is_static = false);
-
-  OCTINTERP_API cdef_method
-  make_method (const cdef_class& cls, const std::string& name,
-               octave_builtin::meth mm,
-               const std::string& m_access = "public",
-               bool is_static = false);
-
-  OCTINTERP_API cdef_package
-  make_package (const std::string& nm, const std::string& parent = "");
-
   OCTINTERP_API octave_value
   find_method (const std::string& class_name,
                const std::string& name) const;
+
+  static inline cdef_class m_meta_metadata;
+  static inline cdef_class m_meta_class;
+  static inline cdef_class m_meta_property;
+  static inline cdef_class m_meta_method;
+  static inline cdef_class m_meta_package;
+  static inline cdef_package m_meta;
 
 private:
 
@@ -143,15 +109,11 @@ private:
   // All registered/loaded classes
   std::map<std::string, cdef_class> m_all_classes;
 
+  std::vector<std::string> m_load_stack;
+
   // All registered/loaded packages
   std::map<std::string, cdef_package> m_all_packages;
 
-  cdef_class m_meta_class;
-  cdef_class m_meta_property;
-  cdef_class m_meta_method;
-  cdef_class m_meta_package;
-
-  cdef_package m_meta;
 };
 
 OCTAVE_END_NAMESPACE(octave)

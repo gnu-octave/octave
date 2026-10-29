@@ -79,6 +79,21 @@ public:
     err_invalid_object ("copy");
   }
 
+  virtual cdef_object try_narrowing_conversion ();
+
+  virtual cdef_object
+  checkelem (octave_idx_type) const;
+
+  virtual cdef_object
+  checkelem (octave_idx_type i, octave_idx_type j) const;
+
+  virtual cdef_object
+  checkelem (octave_idx_type i, octave_idx_type j,
+             octave_idx_type k) const;
+
+  virtual cdef_object
+  checkelem (const Array<octave_idx_type>& ra_idx) const;
+
   virtual cdef_object_rep * make_array () const
   {
     err_invalid_object ("make_array");
@@ -86,11 +101,19 @@ public:
 
   virtual bool is_array () const { return false; }
 
-  virtual bool is_value_object () const { return false; }
+  virtual bool is_class () const { return false; }
 
   virtual bool is_handle_object () const { return false; }
 
   virtual bool is_meta_object () const { return false; }
+
+  virtual bool is_method () const { return false; }
+
+  virtual bool is_property () const { return false; }
+
+  virtual bool is_package () const { return false; }
+
+  virtual bool is_value_object () const { return false; }
 
   virtual Array<cdef_object> array_value () const
   {
@@ -171,6 +194,11 @@ public:
     err_invalid_object ("mark_as_constructed");
   }
 
+  virtual octave_idx_type numel () const
+  {
+    err_invalid_object ("numel");
+  }
+
   virtual bool is_constructed () const
   {
     err_invalid_object ("is_constructed");
@@ -181,6 +209,8 @@ public:
   virtual void destroy () { delete this; }
 
   OCTINTERP_API void release (const cdef_object& obj);
+
+  cdef_object wrap () const;
 
   virtual dim_vector dims () const { return dim_vector (); }
 
@@ -206,8 +236,9 @@ public:
 
 protected:
 
-  // Reference count
-  refcount<octave_idx_type> m_count;
+  static cdef_object adopt (cdef_object_rep *r);
+
+  mutable refcount<octave_idx_type> m_count;
 
   // Restricted copying.
 
@@ -225,13 +256,18 @@ class OCTINTERP_API cdef_object
 {
 public:
 
+  friend class cdef_object_rep;
+
   // FIXME: use a null object?
   cdef_object () : m_rep (new cdef_object_rep ()) { }
 
   cdef_object (const cdef_object& obj) : m_rep (obj.m_rep)
   { m_rep->m_count++; }
 
-  cdef_object (cdef_object_rep *r) : m_rep (r) { }
+  OCTINTERP_API cdef_object (const Array<cdef_object>& arr);
+
+  OCTINTERP_API cdef_object (const Array<cdef_object>& arr,
+                             const cdef_class& cls);
 
   virtual ~cdef_object () { m_rep->release (*this); }
 
@@ -278,8 +314,51 @@ public:
 
   bool is_meta_object () const { return m_rep->is_meta_object (); }
 
+  bool is_class () const { return m_rep->is_class (); }
+  bool is_method () const { return m_rep->is_method (); }
+  bool is_property () const { return m_rep->is_property (); }
+
   Array<cdef_object> array_value () const
   { return m_rep->array_value (); }
+
+  octave_idx_type numel () const
+  {
+    return m_rep->numel ();
+  }
+
+  cdef_object operator () (octave_idx_type n) const
+  { return m_rep->checkelem (n); }
+
+  cdef_object operator () (octave_idx_type i, octave_idx_type j) const
+  { return m_rep->checkelem (i, j); }
+
+  cdef_object operator () (octave_idx_type i, octave_idx_type j,
+                           octave_idx_type k) const
+  { return m_rep->checkelem (i, j, k); }
+
+  cdef_object operator () (const Array<octave_idx_type>& ra_idx) const
+  { return m_rep->checkelem (ra_idx); }
+
+  cdef_object checkelem (octave_idx_type i) const
+  {
+    return m_rep->checkelem (i);
+  }
+
+  cdef_object checkelem (octave_idx_type i, octave_idx_type j) const
+  {
+    return m_rep->checkelem (i, j);
+  }
+
+  cdef_object checkelem (octave_idx_type i, octave_idx_type j,
+                         octave_idx_type k) const
+  {
+    return m_rep->checkelem (i, j, k);
+  }
+
+  cdef_object checkelem (const Array<octave_idx_type>& ra_idx) const
+  {
+    return m_rep->checkelem (ra_idx);
+  }
 
   void put (const std::string& pname, const octave_value& val)
   {
@@ -375,6 +454,9 @@ public:
 
 protected:
 
+  cdef_object (cdef_object_rep *r) : m_rep (r)
+  { panic_if (! r); }
+
   cdef_object_rep * get_rep () { return m_rep; }
 
   void make_unique (int ignore_copies)
@@ -385,8 +467,29 @@ protected:
 
 private:
 
+  OCTINTERP_API void maybe_mutate ();
+
   cdef_object_rep *m_rep;
 };
+
+inline cdef_object
+cdef_object_rep::try_narrowing_conversion ()
+{
+  return cdef_object ();
+}
+
+inline cdef_object
+cdef_object_rep::wrap () const
+{
+  m_count++;
+  return cdef_object (const_cast<cdef_object_rep *> (this));
+}
+
+inline cdef_object
+cdef_object_rep::adopt (cdef_object_rep *r)
+{
+  return cdef_object (r);
+}
 
 class OCTINTERP_API cdef_object_base : public cdef_object_rep
 {
@@ -411,6 +514,19 @@ public:
 
   OCTINTERP_API cdef_object_rep * make_array () const;
 
+  Array<cdef_object> array_value () const
+  {
+    Array<cdef_object> retval (dim_vector (1, 1));
+    retval(0) = wrap ();
+    return retval;
+  }
+
+  // Keep the base-class overloads visible; declaring the single-index form
+  // below would otherwise hide them for this class and every derived one.
+  using cdef_object_rep::checkelem;
+
+  OCTINTERP_API cdef_object checkelem (octave_idx_type n) const;
+
 protected:
 
   // Restricted copying!
@@ -430,15 +546,21 @@ public:
 
   cdef_object_array () : cdef_object_base () { }
 
-  cdef_object_array (const Array<cdef_object>& a)
-    : cdef_object_base (), m_array (a)
-  { }
+  OCTINTERP_API cdef_object_array (const Array<cdef_object>& a);
+
+  //! Build an array of a caller-supplied class.  Use this when the elements
+  //! cannot supply the class themselves, i.e., when the array is empty or
+  //! still contains holes to be filled in later.
+  OCTINTERP_API cdef_object_array (const Array<cdef_object>& a,
+                                   const cdef_class& cls);
 
   cdef_object_array& operator = (const cdef_object_array&) = delete;
 
   ~cdef_object_array () = default;
 
   OCTINTERP_API cdef_object_rep * clone () const;
+
+  OCTINTERP_API cdef_object try_narrowing_conversion ();
 
   dim_vector dims () const { return m_array.dims (); }
 
@@ -450,6 +572,19 @@ public:
   bool is_array () const { return true; }
 
   Array<cdef_object> array_value () const { return m_array; }
+
+  cdef_object checkelem (octave_idx_type n) const
+  { return m_array.checkelem (n); }
+
+  cdef_object checkelem (octave_idx_type i, octave_idx_type j) const
+  { return m_array.checkelem (i, j); }
+
+  cdef_object checkelem (octave_idx_type i, octave_idx_type j,
+                         octave_idx_type k) const
+  { return m_array.checkelem (i, j, k); }
+
+  cdef_object checkelem (const Array<octave_idx_type>& ra_idx) const
+  { return m_array.checkelem (ra_idx); }
 
   OCTINTERP_API octave_value_list
   subsref (const std::string& type, const std::list<octave_value_list>& idx,
@@ -470,6 +605,9 @@ public:
     return tmp.put (pname, pval);
   }
 
+  octave_idx_type numel () const { return m_array.numel (); }
+
+  //! Checks access/visibility
   octave_value
   get_property (octave_idx_type idx, const std::string& pname) const
   {
@@ -570,6 +708,8 @@ public:
   {
     return clone ();
   }
+
+  octave_idx_type numel () const { return 1; }
 
   OCTINTERP_API cdef_object_rep *
   resize (const dim_vector& dv, bool fill = false) const;
@@ -698,9 +838,16 @@ public:
 
   virtual bool is_package () const { return false; }
 
-  void doc_string (const std::string& txt) { m_doc_string = txt; }
-
-  std::string doc_string () const { return m_doc_string; }
+  std::string doc_string () const
+  {
+    std::string desc = get ("Description").string_value ();
+    std::string detail = get ("DetailedDescription").string_value ();
+    if (desc.empty ())
+      return detail;
+    if (detail.empty ())
+      return desc;
+    return desc + "\n" + detail;
+  }
 
   virtual octave_value_list
   meta_subsref (const std::string& /* type */,
@@ -719,8 +866,6 @@ public:
 
 protected:
 
-  std::string m_doc_string;
-
   // Restricted copying!
   cdef_meta_object_rep (const cdef_meta_object_rep& obj)
     : handle_cdef_object (obj)
@@ -736,8 +881,6 @@ public:
   // Object consistency is checked in sub-classes.
   cdef_meta_object (const cdef_meta_object& obj) : cdef_object (obj) { }
 
-  cdef_meta_object (cdef_meta_object_rep *r) : cdef_object (r) { }
-
   cdef_meta_object (const cdef_object& obj) : cdef_object (obj) { }
 
   cdef_meta_object& operator = (const cdef_object&) = delete;
@@ -751,8 +894,6 @@ public:
   bool is_method () const { return get_rep ()->is_method (); }
 
   bool is_package () const { return get_rep ()->is_package (); }
-
-  void doc_string (const std::string& txt) { get_rep ()->doc_string (txt); }
 
   std::string doc_string () const { return get_rep ()->doc_string (); }
 
@@ -770,16 +911,30 @@ public:
     return get_rep ()->meta_accepts_postfix_index (type);
   }
 
+protected:
+
+  cdef_meta_object (cdef_meta_object_rep *r) : cdef_object (r) { }
+
 private:
 
   cdef_meta_object_rep * get_rep ()
   {
-    return dynamic_cast<cdef_meta_object_rep *> (cdef_object::get_rep ());
+    cdef_object_rep *r = cdef_object::get_rep ();
+
+    if (! r->is_meta_object ())
+      error ("internal error: invalid meta object");
+
+    return static_cast<cdef_meta_object_rep *> (r);
   }
 
   const cdef_meta_object_rep * get_rep () const
   {
-    return dynamic_cast<const cdef_meta_object_rep *> (cdef_object::get_rep ());
+    const cdef_object_rep *r = cdef_object::get_rep ();
+
+    if (! r->is_meta_object ())
+      error ("internal error: invalid meta object");
+
+    return static_cast<const cdef_meta_object_rep *> (r);
   }
 };
 

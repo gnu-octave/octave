@@ -36,23 +36,31 @@
 
 #include "cdef-fwd.h"
 #include "cdef-object.h"
+#include "cdef-utils.h"
 #include "ov.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
+
+struct cdef_package_opt_properties {
+  octave_value description = "";
+  octave_value detailed_description = "";
+  octave_value class_list = to_ov (cdef_object ());
+};
 
 class interpreter;
 
 class OCTINTERP_API cdef_package : public cdef_meta_object
 {
   friend class cdef_class;
+  friend class cdef_manager;
 
 private:
 
   class cdef_package_rep : public cdef_meta_object_rep
   {
   public:
-
-    cdef_package_rep () : cdef_meta_object_rep (), m_member_count (0) { }
+    OCTINTERP_API cdef_package_rep (std::string name,
+                                    cdef_package_opt_properties);
 
     cdef_package_rep& operator = (const cdef_package_rep&) = delete;
 
@@ -66,6 +74,9 @@ private:
     std::string get_name () const { return get("Name").string_value (); }
 
     void set_name (const std::string& nm) { put ("Name", nm); }
+
+    OCTINTERP_API void
+    put (const std::string& pname, const octave_value& val);
 
     OCTINTERP_API void
     install_class (const cdef_class& cls, const std::string& nm);
@@ -93,7 +104,8 @@ private:
 
           m_member_count = 0;
           m_class_map.clear ();
-          m_package_map.clear ();
+          m_inner_package_map.clear ();
+          m_outer_package_map.clear ();
         }
       else
         delete this;
@@ -117,7 +129,8 @@ private:
     std::string m_full_name;
     std::map<std::string, cdef_class> m_class_map;
     std::map<std::string, octave_value> m_function_map;
-    std::map<std::string, cdef_package> m_package_map;
+    std::map<std::string, cdef_package> m_inner_package_map;
+    std::map<std::string, cdef_package> m_outer_package_map;
 
     // The number of registered members in this package (classes, packages).
     // This only accounts for the members that back-reference to this package.
@@ -135,7 +148,9 @@ private:
     cdef_package_rep (const cdef_package_rep& p)
       : cdef_meta_object_rep (p), m_full_name (p.m_full_name),
         m_class_map (p.m_class_map), m_function_map (p.m_function_map),
-        m_package_map (p.m_package_map), m_member_count (p.m_member_count)
+        m_inner_package_map (p.m_inner_package_map),
+        m_outer_package_map (p.m_outer_package_map),
+        m_member_count (p.m_member_count)
     { }
 
     cdef_package wrap ()
@@ -149,11 +164,11 @@ public:
 
   cdef_package () : cdef_meta_object () { }
 
-  cdef_package (const std::string& nm)
-    : cdef_meta_object (new cdef_package_rep ())
-  {
-    get_rep ()->set_name (nm);
-  }
+  cdef_package (
+    const std::string& name,
+    cdef_package_opt_properties opt_args = cdef_package_opt_properties ())
+  : cdef_meta_object (new cdef_package_rep (name, opt_args))
+  { }
 
   cdef_package (const cdef_package& pack) : cdef_meta_object (pack) { }
 
@@ -214,14 +229,31 @@ public:
 
 private:
 
+  cdef_package (cdef_package_rep *r) : cdef_meta_object (r) { }
+
+  void put (const std::string& pname, const octave_value& val)
+  {
+    get_rep ()->put (pname, val);
+  }
+
   cdef_package_rep * get_rep ()
   {
-    return dynamic_cast<cdef_package_rep *> (cdef_object::get_rep ());
+    cdef_object_rep *r = cdef_object::get_rep ();
+
+    if (! r->is_package ())
+      error ("internal error: invalid meta.package object");
+
+    return static_cast<cdef_package_rep *> (r);
   }
 
   const cdef_package_rep * get_rep () const
   {
-    return dynamic_cast<const cdef_package_rep *> (cdef_object::get_rep ());
+    const cdef_object_rep *r = cdef_object::get_rep ();
+
+    if (! r->is_package ())
+      error ("internal error: invalid meta.package object");
+
+    return static_cast<const cdef_package_rep *> (r);
   }
 
   friend void install_classdef (octave::interpreter& interp);

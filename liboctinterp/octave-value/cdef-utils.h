@@ -31,12 +31,18 @@
 #include <list>
 #include <string>
 
+#include "Array-fwd.h"
+#include "dim-vector.h"
+
 #include "cdef-fwd.h"
 
 class octave_value;
 class Cell;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
+
+class tree_evaluator;
+class tree_classdef_attribute;
 
 extern OCTINTERP_API std::string
 get_base_name (const std::string& nm);
@@ -58,11 +64,11 @@ lookup_class (const cdef_class& cls);
 extern OCTINTERP_API cdef_class
 lookup_class (const octave_value& ov);
 
-extern OCTINTERP_API std::list<cdef_class>
-lookup_classes (const Cell& cls_list);
-
 extern OCTINTERP_API octave_value
 to_ov (const cdef_object& obj);
+
+extern OCTINTERP_API octave_value
+to_ov (const Array<cdef_object>& obj);
 
 extern OCTINTERP_API octave_value
 to_ov (const octave_value& ov);
@@ -81,6 +87,9 @@ to_ov (const std::list<cdef_class>& class_list);
 
 extern OCTINTERP_API bool
 is_dummy_method (const octave_value& fcn);
+
+extern OCTINTERP_API bool
+is_access_list (const octave_value& val);
 
 extern OCTINTERP_API bool
 is_superclass (const cdef_class& clsa, const cdef_class& clsb,
@@ -106,6 +115,25 @@ check_access (const cdef_class& cls, const octave_value& acc,
               const std::string& meth_name = "",
               const std::string& prop_name = "",
               bool is_prop_set = false);
+
+extern OCTINTERP_API octave_value
+compute_attribute_value (tree_evaluator& tw,
+                         tree_classdef_attribute *t);
+
+extern OCTINTERP_API Array<cdef_object>
+to_cdef_array (const octave_value& val);
+
+extern OCTINTERP_API cdef_object
+empty_meta_class (const dim_vector& dv = dim_vector (0, 0));
+
+extern OCTINTERP_API cdef_object
+empty_meta_property (const dim_vector& dv = dim_vector (0, 0));
+
+extern OCTINTERP_API cdef_object
+empty_meta_method (const dim_vector& dv = dim_vector (0, 0));
+
+extern OCTINTERP_API cdef_object
+empty_meta_package (const dim_vector& dv = dim_vector (0, 0));
 
 OCTAVE_END_NAMESPACE(octave)
 

@@ -1,0 +1,2 @@
+classdef class_bug68227_3C < class_bug68227_3A
+endclassdef

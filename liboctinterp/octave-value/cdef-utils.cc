@@ -36,7 +36,9 @@
 #include "interpreter-private.h"
 #include "ov-classdef.h"
 #include "ov-usr-fcn.h"
+#include "pt-classdef.h"
 #include "pt-eval.h"
+
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -97,7 +99,7 @@ lookup_class (const cdef_class& cls)
 cdef_class
 lookup_class (const octave_value& ov)
 {
-  if (ov.is_string())
+  if (ov.is_string ())
     return lookup_class (ov.string_value ());
   else
     {
@@ -107,21 +109,6 @@ lookup_class (const octave_value& ov)
     }
 
   return cdef_class ();
-}
-
-std::list<cdef_class>
-lookup_classes (const Cell& cls_list)
-{
-  std::list<cdef_class> retval;
-
-  for (int i = 0; i < cls_list.numel (); i++)
-    {
-      cdef_class c = lookup_class (cls_list(i));
-
-      retval.push_back (c);
-    }
-
-  return retval;
 }
 
 octave_value
@@ -134,6 +121,19 @@ to_ov (const cdef_object& obj)
 }
 
 octave_value
+to_ov (const Array<cdef_object>& obj)
+{
+  if (obj.numel () == 0)
+    return octave_value (Matrix ());
+
+  for (octave_idx_type i = 0; i < obj.numel (); i++)
+    if (! obj(i).ok ())
+      return octave_value (Matrix ());
+
+  return to_ov (cdef_object (obj));
+}
+
+octave_value
 to_ov (const octave_value& ov)
 {
   return ov;
@@ -143,7 +143,7 @@ cdef_object
 to_cdef (const octave_value& val)
 {
   if (val.type_name () != "object")
-    error ("cannot convert '%s' into 'object'", val.type_name().c_str ());
+    error ("cannot convert '%s' into 'object'", val.type_name ().c_str ());
 
   return dynamic_cast<octave_classdef *> (val.internal_rep ())->get_object ();
 }
@@ -152,7 +152,7 @@ cdef_object&
 to_cdef_ref (const octave_value& val)
 {
   if (val.type_name () != "object")
-    error ("cannot convert '%s' into 'object'", val.type_name().c_str ());
+    error ("cannot convert '%s' into 'object'", val.type_name ().c_str ());
 
   return dynamic_cast<octave_classdef *> (val.internal_rep ())->get_object_ref ();
 }
@@ -196,6 +196,29 @@ is_dummy_method (const octave_value& fcn)
   return retval;
 }
 
+// Return true if VAL is a list of classes that an Access, GetAccess or
+// SetAccess attribute may name: a meta.class object, or a cell array of them.
+
+bool
+is_access_list (const octave_value& val)
+{
+  if (val.is_classdef_object ())
+    return to_cdef (val).is_class ();
+
+  if (! val.iscell ())
+    return false;
+
+  Cell c = val.cell_value ();
+
+  for (octave_idx_type i = 0; i < c.numel (); i++)
+    {
+      if (! c(i).is_classdef_object () || ! to_cdef (c(i)).is_class ())
+        return false;
+    }
+
+  return true;
+}
+
 bool
 is_superclass (const cdef_class& clsa, const cdef_class& clsb,
                bool allow_equal, int max_depth)
@@ -206,13 +229,11 @@ is_superclass (const cdef_class& clsa, const cdef_class& clsb,
     retval = true;
   else if (max_depth != 0)
     {
-      Cell c = clsb.get ("SuperClasses").cell_value ();
+      auto supers = clsb.get_superclass_list ();
 
-      for (int i = 0; ! retval && i < c.numel (); i++)
+      for (int i = 0; ! retval && i < supers.numel (); i++)
         {
-          octave_classdef *metacls = c(i).classdef_object_value ();
-          std::string clsname = metacls->get_property (0, "Name").string_value ();
-          cdef_class cls = lookup_class (clsname);
+          cdef_class cls (supers(i));
 
           retval = is_superclass (clsa, cls, true,
                                   max_depth < 0 ? max_depth : max_depth-1);
@@ -401,6 +422,67 @@ check_access (const cdef_class& cls, const octave_value& acc,
            cls.get_name ().c_str ());
 
   return false;
+}
+
+octave_value
+compute_attribute_value (tree_evaluator& tw,
+                         tree_classdef_attribute *t)
+{
+  tree_expression *expr = t->expression ();
+
+  if (expr)
+    {
+      if (expr->is_identifier ())
+        {
+          std::string s = expr->name ();
+
+          if (s == "true")
+            return octave_value (true);
+          else if (s == "false")
+            return octave_value (false);
+
+          return octave_value (s);
+        }
+
+      return expr->evaluate (tw);
+    }
+  else
+    return octave_value (true);
+}
+
+Array<cdef_object>
+to_cdef_array (const octave_value& val)
+{
+  octave_classdef *obj = val.classdef_object_value (true);
+
+  if (! obj)
+    return Array<cdef_object> ();
+
+  return obj->get_object ().array_value ();
+}
+
+cdef_object
+empty_meta_class (const dim_vector& dv)
+{
+  return cdef_object (Array<cdef_object> (dv), cdef_manager::m_meta_class);
+}
+
+cdef_object
+empty_meta_property (const dim_vector& dv)
+{
+  return cdef_object (Array<cdef_object> (dv), cdef_manager::m_meta_property);
+}
+
+cdef_object
+empty_meta_method (const dim_vector& dv)
+{
+  return cdef_object (Array<cdef_object> (dv), cdef_manager::m_meta_method);
+}
+
+cdef_object
+empty_meta_package (const dim_vector& dv)
+{
+  return cdef_object (Array<cdef_object> (dv), cdef_manager::m_meta_package);
 }
 
 OCTAVE_END_NAMESPACE(octave)

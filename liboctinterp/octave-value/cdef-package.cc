@@ -51,10 +51,74 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
+cdef_package::cdef_package_rep::cdef_package_rep (
+  std::string name,
+  cdef_package_opt_properties opt_args)
+  : cdef_meta_object_rep (), m_member_count (0)
+{
+  set_class (cdef_manager::m_meta_package);
+
+  put ("Description", opt_args.description);
+  put ("DetailedDescription", opt_args.detailed_description);
+  put ("Name", name);
+}
+
+void
+cdef_package::cdef_package_rep::put (const std::string& pname,
+                                     const octave_value& val)
+{
+  try
+    {
+      if (pname == "Description")
+        {
+          auto coerced = val.string_value ();
+          m_map.assign ("Description", coerced);
+        }
+      else if (pname == "DetailedDescription")
+        {
+          auto coerced = val.string_value ();
+          m_map.assign ("DetailedDescription", coerced);
+        }
+      else if (pname == "ClassList")
+        {
+          error ("do not set ClassList directly -- use 'install_list'");
+        }
+      else if (pname == "FunctionList")
+        {
+          error ("do not set FunctionList directly -- use 'install_function'");
+        }
+      else if (pname == "InnerNamespaces")
+        {
+          error ("do not set InnerNamespaces directly -- use 'install_package'");
+        }
+      else if (pname == "Name")
+        {
+          auto coerced = val.string_value ();
+          m_map.assign ("Name", coerced);
+        }
+      else if (pname == "OuterNamespaces" || pname == "ContainingPackage")
+        {
+          m_map.assign ("ContainingPackage", val);
+        }
+      else
+        {
+          error ("unknown property '%s' of meta.package", pname.c_str ());
+        }
+    }
+  catch (const execution_exception& ee)
+    {
+      error ("put: setting '%s' on meta.package failed with error: %s",
+             pname.c_str (), ee.message ().c_str ());
+    }
+}
+
 void
 cdef_package::cdef_package_rep::install_class (const cdef_class& cls,
     const std::string& nm)
 {
+  if (! cls.ok ())
+    error ("cannot install invalid classdef");
+
   m_class_map[nm] = cls;
 
   m_member_count++;
@@ -64,6 +128,9 @@ void
 cdef_package::cdef_package_rep::install_function (const octave_value& fcn,
     const std::string& nm)
 {
+  if (! fcn.is_defined ())
+    error ("cannot install invalid function");
+
   m_function_map[nm] = fcn;
 }
 
@@ -71,7 +138,10 @@ void
 cdef_package::cdef_package_rep::install_package (const cdef_package& pack,
     const std::string& nm)
 {
-  m_package_map[nm] = pack;
+  if (! pack.ok ())
+    error ("cannot install invalid package");
+
+  m_inner_package_map[nm] = pack;
 
   m_member_count++;
 }
@@ -104,7 +174,7 @@ cdef_package::cdef_package_rep::get_functions () const
 Cell
 cdef_package::cdef_package_rep::get_packages () const
 {
-  return map2Cell (m_package_map);
+  return map2Cell (m_inner_package_map);
 }
 
 octave_value

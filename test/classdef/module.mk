@@ -6,6 +6,8 @@ classdef_TEST_FILES = \
   %reldir%/@osc/osc.m \
   %reldir%/bug_60763.m \
   %reldir%/cdef_array_break_cycles.m \
+  %reldir%/class_access_list.m \
+  %reldir%/class_access_list_friend.m \
   %reldir%/class_bug50011_1.m \
   %reldir%/class_bug50011_1A.m \
   %reldir%/class_bug50011_1B.m \
@@ -34,6 +36,8 @@ classdef_TEST_FILES = \
   %reldir%/class_pair_elem_dominant_handle.m \
   %reldir%/class_pair_elem_handle.m \
   %reldir%/class_pair_handle.m \
+  %reldir%/class_private_property_sub.m \
+  %reldir%/class_private_property_super.m \
   %reldir%/classdef.tst \
   %reldir%/foo_method_changes_property_size.m \
   %reldir%/foo_static_method_constant_property.m \

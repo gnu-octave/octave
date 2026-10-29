@@ -46,6 +46,174 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
+cdef_method::cdef_method_rep::cdef_method_rep (
+  const cdef_object& defining_class,
+  octave_value fcn,
+  octave_value name,
+  cdef_method_opt_properties opt_args)
+  : cdef_meta_object_rep (), m_dispatch_type (),
+    m_function (octave_value (fcn))
+{
+  set_class (cdef_manager::m_meta_method);
+
+  put ("Abstract", opt_args.abstract);
+  put ("Access", opt_args.access);
+  put ("DefiningClass", to_ov (defining_class));
+  put ("Description", opt_args.description);
+  put ("DetailedDescription", opt_args.detailed_description);
+  put ("Hidden", opt_args.hidden);
+  put ("Name", name);
+  put ("Sealed", opt_args.sealed);
+
+  put ("Static", opt_args.static_bool);
+
+  // The following attribute combinations on methods are disallowed:
+  //
+  // (1) "Abstract" and "Static"
+  // (2) "Abstract" and "Private"
+  // (3) "Abstract" and "Sealed"
+  //
+  // Abstract methods must also not have a body.
+  if (opt_args.abstract.bool_value () && opt_args.static_bool.bool_value ())
+    error ("classdef method cannot be Abstract and Static at the same time");
+
+  if (opt_args.abstract.bool_value () && opt_args.access.is_string ()
+      && opt_args.access.string_value () == "private")
+    error ("classdef method cannot be Abstract and Private at the same time");
+
+  if (opt_args.abstract.bool_value () && opt_args.sealed.bool_value ())
+    error ("classdef method cannot be Abstract and Sealed at the same time");
+
+  // Dummy method means there is no body declared next to the method.
+  // The method can be defined externally.
+  bool dummy_method = is_dummy_method (fcn);
+
+  if (opt_args.abstract.bool_value () && ! dummy_method)
+    error ("classdef method cannot be Abstract and have a body");
+
+  if (dummy_method)
+    mark_as_external (defining_class.get ("Name").string_value ());
+  else
+    {
+      std::string dc_name = defining_class.get ("Name").string_value ();
+
+      octave_function* ov_fcn = fcn.function_value ();
+      ov_fcn->stash_dispatch_class (dc_name);
+
+      octave_user_function *uf = ov_fcn->user_function_value (true);
+
+      if (uf)
+        {
+          std::string::size_type pos = dc_name.find_last_of ('.');
+
+          if (pos != std::string::npos)
+            dc_name = dc_name.substr (pos + 1);
+
+          if (dc_name == uf->name ())
+            uf->mark_as_classdef_constructor ();
+          else
+            uf->mark_as_classdef_method ();
+        }
+    }
+
+}
+
+void
+cdef_method::cdef_method_rep::put (const std::string& pname,
+                                   const octave_value& val)
+{
+  try
+    {
+      if (pname == "Abstract")
+        {
+          auto abstract = val.bool_value ();
+
+          m_map.assign (pname, abstract);
+        }
+      else if (pname == "Access")
+        {
+          if (val.is_string ())
+            {
+              auto name = val.string_value ();
+
+              if (name == "public" || name == "private" || name == "protected")
+                m_map.assign (pname, name);
+              else
+                error ("Access must be either 'public', 'private', 'protected' or a list of classes");
+            }
+          else if (is_access_list (val))
+            m_map.assign (pname, val);
+          else
+            error ("Access must be either 'public', 'private', 'protected' or a list of classes");
+        }
+      else if (pname == "DefiningClass")
+        {
+          auto cdef_obj = val.classdef_object_value ()->get_object ();
+
+          if (cdef_obj.is_class ())
+            m_map.assign (pname, val);
+          else
+            error ("DefiningClass must be a classdef");
+        }
+      else if (pname == "Description")
+        {
+          auto description = val.string_value ();
+
+          m_map.assign (pname, description);
+        }
+      else if (pname == "DetailedDescription")
+        {
+          auto detailed_description = val.string_value ();
+
+          m_map.assign (pname, detailed_description);
+        }
+      else if (pname == "Hidden")
+        {
+          auto hidden = val.bool_value ();
+
+          m_map.assign (pname, hidden);
+        }
+      else if (pname == "Name")
+        {
+          auto name = val.string_value ();
+
+          m_map.assign (pname, name);
+        }
+      else if (pname == "Sealed")
+        {
+          auto sealed = val.bool_value ();
+
+          m_map.assign (pname, sealed);
+        }
+      else if (pname == "Static")
+        {
+          auto static_bool = val.bool_value ();
+
+          m_map.assign (pname, static_bool);
+        }
+      else
+        {
+          error ("unknown property of meta.method");
+        }
+    }
+  catch (const execution_exception& ee)
+    {
+      error ("put: setting '%s' failed with error:  %s", pname.c_str (), ee.message ().c_str ());
+    }
+}
+
+cdef_class
+cdef_method::cdef_method_rep::get_defining_class () const
+{
+  return to_cdef (m_map.contents ("DefiningClass"));
+}
+
+cdef_class
+cdef_method::get_defining_class () const
+{
+  return get_rep ()->get_defining_class ();
+}
+
 OCTAVE_NORETURN static
 void
 err_method_access (const std::string& from, const cdef_method& meth)
@@ -144,39 +312,16 @@ cdef_method::cdef_method_rep::execute (const cdef_object& obj,
                                        int nargout, bool do_check_access,
                                        const std::string& who)
 {
-  octave_value_list retval;
+  octave_value_list prepended_args = args;
+  prepended_args.prepend (to_ov (obj));
 
-  if (do_check_access && ! check_access ())
-    err_method_access (who, wrap ());
-
-  if (get ("Abstract").bool_value ())
-    error ("%s: cannot execute abstract method",
-           get ("Name").string_value ().c_str ());
-
-  check_method ();
-
-  if (m_function.is_defined ())
-    {
-      octave_value_list new_args;
-
-      new_args.resize (args.length () + 1);
-
-      new_args(0) = to_ov (obj);
-      for (int i = 0; i < args.length (); i++)
-        new_args(i+1) = args(i);
-
-      interpreter& interp = __get_interpreter__ ();
-
-      retval = interp.feval (m_function, new_args, nargout);
-    }
-
-  return retval;
+  return execute (prepended_args, nargout, do_check_access, who);
 }
 
 bool
 cdef_method::cdef_method_rep::is_constructor () const
 {
-  if (m_function.is_function())
+  if (m_function.is_function ())
     return m_function.function_value ()->is_classdef_constructor ();
 
   return false;
@@ -231,6 +376,68 @@ cdef_method::cdef_method_rep::meta_subsref
     retval = retval(0).next_subsref (nargout, type, idx, 1);
 
   return retval;
+}
+
+std::vector<cdef_method>
+cdef_method::make_method (cdef_class& cls,
+                          tree_evaluator& tw,
+                          tree_classdef_methods_block* mth_blk)
+{
+  std::vector<cdef_method> retval;
+
+  std::map<std::string, octave_value> amap = {
+    {"Abstract", false},
+    {"Access", "public"},
+    {"Description", ""},
+    {"DetailedDescription", ""},
+    {"Hidden", false},
+    {"Sealed", false},
+    {"Static", false}
+  };
+
+  if (mth_blk->attribute_list ())
+    {
+      for (auto& attr_p : *mth_blk->attribute_list ())
+        {
+          std::string aname = attr_p->ident ()->name ();
+          octave_value avalue = compute_attribute_value (tw, attr_p);
+
+          auto it = amap.find (aname);
+
+          if (it == amap.end ())
+            error ("invalid attribute: attribute %s cannot be assigned in a methods block", aname.c_str ());
+
+          amap[aname] = avalue;
+        }
+    }
+
+  if (mth_blk->element_list ())
+    {
+      for (auto& mth : *mth_blk->element_list ())
+        {
+          auto *fcn = mth.user_function_value ();
+          std::string mname = fcn->name ();
+
+          cdef_method_opt_properties attrs {
+            .abstract = amap["Abstract"],
+            .access = amap["Access"],
+            .description = amap["Description"],
+            .detailed_description = amap["DetailedDescription"],
+            .hidden = amap["Hidden"],
+            .sealed = amap["Sealed"],
+            .static_bool = amap["Static"]
+          };
+
+          cdef_method meth = cdef_method (cls,
+                                          mth,
+                                          mname,
+                                          attrs);
+
+          retval.push_back (meth);
+        }
+    }
+
+    return retval;
 }
 
 OCTAVE_END_NAMESPACE(octave)

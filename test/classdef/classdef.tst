@@ -2289,10 +2289,20 @@
 # Attributes should be validated and errors should be thrown on nonsensical values
 # Attribute expressions should also not produce side-effects
 
-# Bug #65214 -- check if attribute will error on non-sensical (`hidden`) value
-# Also, the function `hidden` should not be called -- hard to test for that
-%!error
+# Bug #65214: an access attribute is read as written, so the non-sensical
+# value `hidden` is refused without calling the function `hidden`
+%!error <invalid Access value 'hidden' for method 'class_bug61673A' in class 'class_bug61673A'>
 %! obj = class_bug61673A ();
+
+# class_bug65214_fcn raises an error if anything calls it
+%!error <invalid Access value 'class_bug65214_fcn' for method 'test_method' in class 'class_bug65214A'>
+%! obj = class_bug65214A ();
+
+%!error <invalid SetAccess value given by an expression for property 'p' in class 'class_bug65214B'>
+%! obj = class_bug65214B ();
+
+%!error <invalid Access value given by an expression for method 'test_method' in class 'class_bug65214C'>
+%! obj = class_bug65214C ();
 
 # An access list naming an existing class is a valid value
 %!test

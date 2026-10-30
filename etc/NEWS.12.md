@@ -92,6 +92,12 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   and `SetAccess`).
   Octave does not support that case yet and says so in its error message.
 
+* The values of the `Access`, `GetAccess`, and `SetAccess` attributes of
+  `classdef` members are now read as written, as in Matlab, and a name in
+  them is no longer called as a function (bug #65214).  They accept the
+  access levels, a quoted access level, `?ClassName`, and a cell array of
+  `?ClassName` queries.  Other attributes still accept expressions.
+
 ### Alphabetical list of new functions added in Octave 12
 
 * `diagnostics_show_caret`

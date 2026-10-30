@@ -240,6 +240,13 @@ private:
 
     OCTINTERP_API cdef_property find_property (const std::string& nm) const;
 
+    //! Report properties of the same name that two superclasses define
+    //! differently.
+    //!
+    //! Call after installing local declarations, since a local property may
+    //! implement abstract inherited ones.
+    OCTINTERP_API void check_property_conflicts () const;
+
     OCTINTERP_API void install_property (const cdef_property& prop);
 
     OCTINTERP_API cdef_object get_properties () const;

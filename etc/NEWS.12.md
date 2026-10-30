@@ -92,6 +92,15 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   and `SetAccess`).
   Octave does not support that case yet and says so in its error message.
 
+* A `classdef` class whose superclasses define different properties of the
+  same name is now rejected when the class is defined, not when the property
+  is first used.  A property that two superclasses inherit from a common
+  superclass is no longer a conflict (bug #68227), and a concrete property
+  that is not private implements an abstract one of the same name from
+  another superclass.  Matlab also allows the conflict when all but one of
+  the properties are private.  Octave does not support this case yet and
+  says so in its error message.
+
 * The values of the `Access`, `GetAccess`, and `SetAccess` attributes of
   `classdef` members are now read as written, as in Matlab, and a name in
   them is no longer called as a function (bug #65214).  They accept the

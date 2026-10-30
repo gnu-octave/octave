@@ -1432,11 +1432,12 @@ cdef_class::make_meta_class (interpreter& interp,
   cdm.register_class (retval);
 
   bool complete = false;
-  unwind_action unregister_incomplete ([&] ()
-  {
-    if (! complete)
-      cdm.unregister_class (retval);
-  });
+  unwind_action unregister_incomplete
+    ([&complete, &cdm, &retval] ()
+     {
+       if (! complete)
+         cdm.unregister_class (retval);
+     });
 
   retval.file_name (t->file_name ());
   retval.doc_string (doc_string);

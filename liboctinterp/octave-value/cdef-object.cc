@@ -904,7 +904,7 @@ cdef_object_scalar::subsasgn (const std::string& type,
                                 && std::ranges::all_of
                                   (std::views::iota (octave_idx_type (0),
                                                      before.numel ()),
-                                   [&] (octave_idx_type i)
+                                   [&before, &after] (octave_idx_type i)
                                    { return before(i).is (after(i)); }));
               }
 

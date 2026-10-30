@@ -167,10 +167,11 @@ cdef_class::cdef_class_rep::cdef_class_rep
 
           superclass.get_rep ()->check_method_conflicts ();
 
-          // Look into the superclass method maps.  If we detect conflicting
-          // methods, then check if their DefiningClass is the same.  If yes,
-          // that's okay (diamond inheritance), otherwise defer the error until
-          // local overrides are installed.
+          // Look into the superclass method maps.  A method reached through
+          // two superclasses is one method when both have the same
+          // DefiningClass (diamond inheritance), and an override beats the
+          // method it overrides, as in Matlab.  Any other conflict is deferred
+          // until local overrides are installed.
           auto superclass_m_map = superclass.get_method_map ();
 
           for (const auto& pair : superclass_m_map)
@@ -183,16 +184,21 @@ cdef_class::cdef_class_rep::cdef_class_rep
 
               auto it = m_method_map.find (pair.first);
 
-              if (it != m_method_map.end ())
+              if (it == m_method_map.end ())
                 {
-                  std::string nm_1 = pair.second.get_defining_class ().get_name ();
-                  std::string nm_2 = it->second.get_defining_class ().get_name ();
-
-                  if (nm_1 != nm_2)
-                    m_method_conflicts.try_emplace (pair.first, nm_2, nm_1);
+                  m_method_map.insert (pair);
+                  continue;
                 }
 
-              m_method_map.insert (pair);
+              cdef_class cls_new = pair.second.get_defining_class ();
+              cdef_class cls_old = it->second.get_defining_class ();
+
+              if (is_strict_superclass (cls_old, cls_new))
+                it->second = pair.second;
+              else if (cls_new != cls_old
+                       && ! is_strict_superclass (cls_new, cls_old))
+                m_method_conflicts.try_emplace (pair.first, cls_old.get_name (),
+                                                cls_new.get_name ());
             }
         }
     }
@@ -564,15 +570,16 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
         }
     }
 
-  // Check that it does not conflict with the property names
+  // Check that it does not conflict with the names of the properties declared
+  // in this class.  A method may share its name with an inherited property,
+  // as in Matlab: dot syntax reaches the property and function-call syntax
+  // the method.
   //
   // There is one case where the method and the property names can match (see
   // bug #67361): If the classdef is defined within a class folder and the
   // method is externally defined, and the method signature is not in the
   // classdef file, then the method and a property can have the same name.
-  cdef_property prop = find_property (mname);
-
-  if (prop.ok () && ! meth.is_external ())
+  if (m_property_map.contains (mname) && ! meth.is_external ())
     {
       error ("property and method are both named '%s' in class '%s' in file '%s'",
              mname.c_str (), get_name ().c_str (), file_name ().c_str ());
@@ -846,13 +853,13 @@ cdef_class::cdef_class_rep::install_property (const cdef_property& prop)
   if (prop_name == get_name ())
     error ("invalid property: A property cannot have the same name as the classdef it is in");
 
-  // Check if a method with the same name already exists before installing a
-  // new one.  We can check the current class's method map only because we know
-  // the inherited public and protected superclass methods are all flattened
-  // into the method map of the current classdef.
+  // Check that no method declared in this class has the same name.  The
+  // method map also holds the inherited public and protected methods, which a
+  // property may share its name with, as in Matlab.
   auto meth_it = m_method_map.find (prop_name);
 
-  if (meth_it != m_method_map.end ())
+  if (meth_it != m_method_map.end ()
+      && meth_it->second.get_defining_class ().get_name () == get_name ())
     {
       std::string class_file = file_name ();
       error ("property and method are both named '%s' in class '%s' in file '%s'",

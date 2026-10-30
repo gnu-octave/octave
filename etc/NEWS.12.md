@@ -107,6 +107,14 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   access levels, a quoted access level, `?ClassName`, and a cell array of
   `?ClassName` queries.  Other attributes still accept expressions.
 
+* A `classdef` method that overrides an inherited one now takes precedence over
+  it, even when another superclass brings the inherited method too, as in
+  Matlab, instead of being a conflict.  A property may now share its name
+  with an inherited method, and a method with an inherited property: dot syntax
+  reaches the property and function-call syntax the method.  A property private
+  to a superclass does not hide a subclass method of the same name.  A property
+  and a method of the same name in one class remain an error.
+
 ### Alphabetical list of new functions added in Octave 12
 
 * `diagnostics_show_caret`

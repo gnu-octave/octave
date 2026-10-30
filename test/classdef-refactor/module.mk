@@ -38,6 +38,7 @@ classdef_refactor_TEST_FILES = \
   %reldir%/DiamondConflict.m \
   %reldir%/DiamondInherit.m \
   %reldir%/DiamondOverride.m \
+  %reldir%/DiamondOverrideLast.m \
   %reldir%/DiamondResolve.m \
   %reldir%/DuplicateMethods.m \
   %reldir%/FailedBuild.m \
@@ -57,6 +58,7 @@ classdef_refactor_TEST_FILES = \
   %reldir%/InferiorEmpty.m \
   %reldir%/InferiorInvalid.m \
   %reldir%/InheritedMethodCollision.m \
+  %reldir%/InheritedPrivateCollision.m \
   %reldir%/InheritedPropertyCollision.m \
   %reldir%/Left.m \
   %reldir%/LocalCompletion.m \
@@ -64,6 +66,7 @@ classdef_refactor_TEST_FILES = \
   %reldir%/MetaSubclass.m \
   %reldir%/OutsideExternal.m \
   %reldir%/PackageBoth.m \
+  %reldir%/PrivatePropertyBase.m \
   %reldir%/PropertyDefaults.m \
   %reldir%/PropertyDiamond.m \
   %reldir%/PropertyLeft.m \

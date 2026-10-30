@@ -762,6 +762,18 @@ cdef_object_scalar::subsref (const std::string& type,
 
         cdef_property prop = cls.find_property (name);
 
+        // Dot syntax reaches a property before a method of the same name,
+        // unless the property is private to a class that this context cannot
+        // see into, as in Matlab.
+        if (prop.ok () && cls.find_method (name).ok ())
+          {
+            octave_value acc = prop.get ("GetAccess");
+
+            if (acc.is_string () && acc.string_value () == "private"
+                && ! prop.check_get_access ())
+              prop = cdef_property ();
+          }
+
         if (prop.ok ())
           {
             if (prop.is_constant ())

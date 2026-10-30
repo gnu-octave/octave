@@ -87,8 +87,13 @@
 #          -----------------
 #                 |
 #          class_bug68227_*D
-%!error <method testfunc: conflicting definitions>
-%! obj = class_bug68227_3D ();
+# class_bug68227_3B overrides the testfunc that class_bug68227_3C inherits
+# from class_bug68227_3A, so its testfunc is the one class_bug68227_3D gets.
+%!test
+%! mc = ?class_bug68227_3D;
+%! meth = mc.MethodList(strcmp ({mc.MethodList.Name}, 'testfunc'));
+%! cls = meth.DefiningClass;
+%! assert (cls.Name, 'class_bug68227_3B');
 
 
 # testclass_1A

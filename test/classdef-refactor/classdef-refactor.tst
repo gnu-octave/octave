@@ -193,8 +193,9 @@
 %!   endfor
 %! endfor
 
-## A diamond with distinct method definitions requires a local override.
-%!error <method foo: conflicting definitions> DiamondConflict ()
+## An override beats the method it overrides, whichever superclass brings it.
+%!assert (DiamondConflict ().foo (), 4)
+%!assert (DiamondOverrideLast ().foo (), 4)
 %!test
 %! assert (DiamondResolve ().foo (), 5);
 
@@ -344,10 +345,31 @@
 
 ## Collision diagnostics identify the member, class, and source file.
 %!error <property and method are both named 'foo' in class 'MemberCollision' in file> MemberCollision ()
-%!error <property and method are both named 'scalar' in class 'InheritedPropertyCollision' in file> InheritedPropertyCollision ()
-%!error <property and method are both named 'foo' in class 'InheritedMethodCollision' in file> InheritedMethodCollision ()
 %!error <duplicate method 'query' in class 'DuplicateMethods' in file> DuplicateMethods ()
 %!error <method foo: conflicting definitions in classes 'Left' and 'Right'> Unresolved ()
+
+## A property may share its name with an inherited method, and a method with
+## an inherited property.  Dot syntax reaches the property, function-call
+## syntax the method.
+%!test
+%! obj = InheritedMethodCollision ();
+%! assert (obj.foo, 42);
+%! assert (obj.foo (), 42);
+%! assert (obj.foo (1), 42);
+%! assert (foo (obj), 1);
+
+%!test
+%! obj = InheritedPropertyCollision ();
+%! assert (obj.scalar, 42);
+%! assert (scalar (obj), 1);
+
+## A private inherited property is invisible to the subclass, so dot syntax
+## reaches the subclass method, while the base class still sees its property.
+%!test
+%! obj = InheritedPrivateCollision ();
+%! assert (obj.scalar, 1);
+%! assert (scalar (obj), 1);
+%! assert (base_scalar (obj), 42);
 
 ## Access values use the same case-sensitive rules for properties and methods.
 %!error <invalid Access value 'Protected' for property 'value' in class 'AccessPropertyString': must be> AccessPropertyString ()

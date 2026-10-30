@@ -1028,6 +1028,8 @@ cdef_object_scalar::mark_as_constructed (const cdef_class& cls)
   m_ctor_list.erase (cls);
 }
 
+std::uint64_t handle_cdef_object::s_creation_count = 0;
+
 handle_cdef_object::~handle_cdef_object ()
 {
 #if OCTAVE_CDEF_OBJECT_DEBUG

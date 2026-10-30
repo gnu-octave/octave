@@ -28,11 +28,14 @@
 #endif
 
 #include <algorithm>
+#include <vector>
 
+#include "boolNDArray.h"
 #include "cdef-manager.h"
 #include "cdef-utils.h"
 #include "interpreter.h"
 #include "interpreter-private.h"
+#include "lo-array-errwarn.h"
 #include "ov-classdef.h"
 #include "unwind-prot.h"
 
@@ -234,6 +237,117 @@ handle_delete (const octave_value_list& /* args */, int /* nargout */)
   return retval;
 }
 
+// The elements of an operand of a handle comparison, with its dimensions.
+// An operand that is not a classdef object gives elements that are not
+// handle objects.
+
+static Array<cdef_object>
+handle_operand (const octave_value& val)
+{
+  if (val.type_name () != "object")
+    return Array<cdef_object> (val.dims ());
+
+  cdef_object obj = to_cdef (val);
+
+  if (obj.is_array ())
+    return obj.array_value ();
+
+  return Array<cdef_object> (dim_vector (1, 1), obj);
+}
+
+// Compare handle objects element-by-element, as the same object or ordered
+// by creation.  A scalar operand is compared with each element of the other
+// operand; otherwise the dimensions must agree.  An element that is not a
+// handle object takes the value IF_UNRELATED.
+
+static octave_value_list
+handle_compare (const octave_value_list& args, const char *name,
+                const char *op, bool if_same, bool if_before, bool if_after,
+                bool if_unrelated)
+{
+  if (args.length () != 2)
+    error ("%s: invalid number of arguments", name);
+
+  Array<cdef_object> a = handle_operand (args(0));
+  Array<cdef_object> b = handle_operand (args(1));
+
+  const bool a_scalar = (a.numel () == 1);
+  const bool b_scalar = (b.numel () == 1);
+
+  dim_vector dv;
+
+  if (a_scalar)
+    dv = b.dims ();
+  else if (b_scalar || a.dims () == b.dims ())
+    dv = a.dims ();
+  else
+    err_nonconformant (op, a.dims (), b.dims ());
+
+  boolNDArray retval (dv);
+
+  for (octave_idx_type i = 0; i < dv.numel (); i++)
+    {
+      const cdef_object& x = a(a_scalar ? 0 : i);
+      const cdef_object& y = b(b_scalar ? 0 : i);
+
+      const auto *hx = dynamic_cast<const handle_cdef_object *> (x.get_rep ());
+      const auto *hy = dynamic_cast<const handle_cdef_object *> (y.get_rep ());
+
+      if (! hx || ! hy)
+        retval(i) = if_unrelated;
+      else if (hx == hy)
+        retval(i) = if_same;
+      else if (hx->creation_index () < hy->creation_index ())
+        retval(i) = if_before;
+      else
+        retval(i) = if_after;
+    }
+
+  return ovl (retval);
+}
+
+static octave_value_list
+handle_eq (const octave_value_list& args, int /* nargout */)
+{
+  return handle_compare (args, "eq", "operator ==",
+                         true, false, false, false);
+}
+
+static octave_value_list
+handle_ne (const octave_value_list& args, int /* nargout */)
+{
+  return handle_compare (args, "ne", "operator !=",
+                         false, true, true, true);
+}
+
+static octave_value_list
+handle_lt (const octave_value_list& args, int /* nargout */)
+{
+  return handle_compare (args, "lt", "operator <",
+                         false, true, false, false);
+}
+
+static octave_value_list
+handle_le (const octave_value_list& args, int /* nargout */)
+{
+  return handle_compare (args, "le", "operator <=",
+                         true, true, false, false);
+}
+
+static octave_value_list
+handle_gt (const octave_value_list& args, int /* nargout */)
+{
+  return handle_compare (args, "gt", "operator >",
+                         false, false, true, false);
+}
+
+static octave_value_list
+handle_ge (const octave_value_list& args, int /* nargout */)
+{
+  return handle_compare (args, "ge", "operator >=",
+                         true, false, true, false);
+}
+
 static octave_value_list
 package_get_classes (const octave_value_list& args, int /* nargout */)
 {
@@ -363,6 +477,19 @@ cdef_manager::initialize ()
   );
   handle.install_method (delete_method);
 
+  // Handle objects compare as the same object, and order by creation.
+  std::vector<cdef_method> handle_cmp_methods {
+    cdef_method (handle, make_fcn_handle (handle_eq, "eq"), "eq"),
+    cdef_method (handle, make_fcn_handle (handle_ne, "ne"), "ne"),
+    cdef_method (handle, make_fcn_handle (handle_lt, "lt"), "lt"),
+    cdef_method (handle, make_fcn_handle (handle_le, "le"), "le"),
+    cdef_method (handle, make_fcn_handle (handle_gt, "gt"), "gt"),
+    cdef_method (handle, make_fcn_handle (handle_ge, "ge"), "ge")
+  };
+
+  for (const auto& meth : handle_cmp_methods)
+    handle.install_method (meth);
+
   cdef_class_opt_properties metadata_properties {
     .abstract = true,
     .handle_compatible = true,
@@ -418,8 +545,11 @@ cdef_manager::initialize ()
   m_meta_method.set_class (m_meta_class);
   register_class (m_meta_method);
 
-  // The delete method predates meta.method during bootstrap.
+  // The methods of handle predate meta.method during bootstrap.
   delete_method.set_class (m_meta_method);
+
+  for (auto& meth : handle_cmp_methods)
+    meth.set_class (m_meta_method);
 
   // These operators compare metaclasses and their inheritance relationships.
   // They are not general handle-object comparisons.

@@ -28,6 +28,7 @@
 
 #include "octave-config.h"
 
+#include <cstdint>
 #include <map>
 #include <string>
 
@@ -754,7 +755,9 @@ class OCTINTERP_API handle_cdef_object : public cdef_object_scalar
 {
 public:
 
-  handle_cdef_object () : cdef_object_scalar () { }
+  handle_cdef_object ()
+    : cdef_object_scalar (), m_creation_index (s_creation_count++)
+  { }
 
   handle_cdef_object& operator = (const handle_cdef_object&) = delete;
 
@@ -778,12 +781,22 @@ public:
 
   std::size_t byte_size () const { return sizeof (void *); }
 
+  //! The order in which handle objects were created, by which the relational
+  //! operators of the handle class order them.
+  std::uint64_t creation_index () const { return m_creation_index; }
+
 protected:
 
   // Restricted copying!
   handle_cdef_object (const handle_cdef_object& obj)
-    : cdef_object_scalar (obj)
+    : cdef_object_scalar (obj), m_creation_index (s_creation_count++)
   { }
+
+private:
+
+  std::uint64_t m_creation_index;
+
+  static std::uint64_t s_creation_count;
 };
 
 class OCTINTERP_API value_cdef_object : public cdef_object_scalar

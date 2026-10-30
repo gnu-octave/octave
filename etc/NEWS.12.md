@@ -77,14 +77,21 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   The historical names `SuperClasses` and `SuperClassList` remain available
   as hidden aliases of `SuperclassList`.
 
-* Classes with unimplemented abstract methods or properties are abstract
-  and cannot be instantiated.  Unknown class, property, and method
-  attributes are now an error, as in Matlab.  The `Description` and
-  `DetailedDescription` attributes affect metadata without replacing class
-  help text.
+* Classes with unimplemented abstract methods or properties are abstract and
+  cannot be instantiated.  Unknown class, property, and method attributes are
+  now an error, as in Matlab.  The `Description` and `DetailedDescription`
+  attributes affect metadata without replacing class help text.
 
-* `methods` no longer lists the methods that a class inherits from `handle`,
-  as in Matlab.
+* `methods` no longer prints the methods that a class inherits from `handle`,
+  as in Matlab, but does note that some such methods exist; the list output
+  argument from `methods` still includes them.
+
+* `handle` objects can now be compared with `==`, `~=`, `<`, `<=`, `>`, and
+* `>=`, as in Matlab.  Two handles are equal when they are the same object, and
+  handles are ordered by the order in which they were created.  A class that
+  declares no constructor now lists its implicit constructor in `MethodList`
+  and `methods`, and `MethodList` includes declared constructors.  `methods`
+  omits a private or hidden constructor.
 
 * A `classdef` subclass can no longer declare a property that a superclass
   already declares, except to implement an abstract property.  Matlab also

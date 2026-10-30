@@ -53,7 +53,9 @@
 ## @item Classdef objects are explicitly tested if and only if they have an
 ## overloaded @code{eq} method and unless @code{all (eq (@var{observed},
 ## @var{expected}), "all")} is true, an error is produced.  The handling of
-## missing values is strictly defined by the overloaded @code{eq} method.
+## missing values is strictly defined by the overloaded @code{eq} method.  The
+## @code{eq} method that every handle class inherits, which compares whether
+## two handles are the same object, is not an overloaded @code{eq} method.
 ## @end itemize
 ##
 ## @code{assert_equal (@var{observed}, @var{expected}, @var{tol})} further
@@ -136,7 +138,8 @@ function __assert_impl__ (observed, expected, tol, argin)
         err.observed{end+1} = ["O(" sprintf("%dx", size(observed))(1:end-1) ")"];
         err.expected{end+1} = ["E(" sprintf("%dx", size(expected))(1:end-1) ")"];
         err.reason{end+1} = "Dimensions don't match";
-      elseif (! ismember ("eq", methods (expected)))
+      elseif (! ismember ("eq", methods (expected))
+              || inherits_handle_eq (expected))
         err.index{end+1} = ".";
         err.observed{end+1} = "O";
         err.expected{end+1} = "E";
@@ -783,6 +786,10 @@ endfunction
 %!error <Expected classdef object, but observed double> assert_equal (5, containers.Map ())
 %!error <Expected classdef object does not have an 'eq' method> ...
 %!       assert_equal (containers.Map (), containers.Map ())
+## the eq that handle classes inherit compares identity and does not count
+%!error <Expected classdef object does not have an 'eq' method>
+%! m = containers.Map ();
+%! assert_equal (m, m);
 %!test
 %! try
 %!   assert_equal (containers.Map ([1, 2], {1, 2}), containers.Map ());
@@ -796,6 +803,22 @@ endfunction
 ## test input validation
 %!error <Invalid call> assert_equal ()
 %!error <assert_equal: function called with too many inputs> assert_equal (1,2,3,4)
+
+
+## True if the only eq method of OBJ is the identity comparison that every
+## handle class inherits from handle.
+function tf = inherits_handle_eq (obj)
+
+  tf = false;
+  if (isa (obj, "handle"))
+    mc = metaclass (obj);
+    ml = mc.MethodList;
+    meth = ml(strcmp ({ml.Name}, "eq"));
+    cls = meth.DefiningClass;
+    tf = strcmp (cls.Name, "handle");
+  endif
+
+endfunction
 
 
 ## Convert all error indices into tuple format

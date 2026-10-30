@@ -375,7 +375,7 @@ cdef_class::cdef_class_rep::get (const std::string& pname) const
         }
       else if (pname == "Methods" || pname == "MethodList")
         {
-          return to_ov (get_methods ());
+          return to_ov (get_methods (true));
         }
       else if (pname == "Properties" || pname == "PropertyList")
         {
@@ -689,6 +689,9 @@ cdef_class::cdef_class_rep::get_method_map (member_mode mode,
 {
   std::map<std::string, cdef_method> retval = m_method_map;
   std::string this_name = get_name ();
+
+  if (include_ctor && m_implicit_ctor.ok ())
+    retval.emplace (m_implicit_ctor.get_name (), m_implicit_ctor);
 
   if (mode == member_mode::declared)
     std::erase_if (retval, [this_name](const auto& pair) {
@@ -1647,6 +1650,13 @@ cdef_class::make_meta_class (interpreter& interp,
 
   retval.get_rep ()->check_method_conflicts ();
   retval.get_rep ()->check_property_conflicts ();
+
+  // A class that declares no constructor has an implicit one, public and
+  // taking no arguments, which MethodList and methods() list as Matlab does.
+  if (! retval.find_method (class_name, true).ok ())
+    retval.get_rep ()->set_implicit_constructor (cdef_method (retval,
+                                                              octave_value (),
+                                                              class_name));
 
   // Abstractness depends on the effective members after local overrides.
   // An explicitly abstract superclass may have a concrete subclass, but

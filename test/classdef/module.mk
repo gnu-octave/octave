@@ -80,6 +80,9 @@ classdef_TEST_FILES = \
   %reldir%/class_bug67845B_handle.m \
   %reldir%/class_bug67845C.m \
   %reldir%/class_bug67845C_handle.m \
+  %reldir%/class_methods_abstract.m \
+  %reldir%/class_methods_ctor_hidden.m \
+  %reldir%/class_methods_ctor_private.m \
   %reldir%/class_pair.m \
   %reldir%/class_pair_elem.m \
   %reldir%/class_pair_elem_dominant.m \
@@ -96,6 +99,7 @@ classdef_TEST_FILES = \
   %reldir%/foo_value_class.m \
   %reldir%/get_set_class.m \
   %reldir%/handle_class.m \
+  %reldir%/handle_custom_eq.m \
   %reldir%/handle_subclass.m \
   %reldir%/invalid_override_property_class.m \
   %reldir%/overloaded_all_class.m \

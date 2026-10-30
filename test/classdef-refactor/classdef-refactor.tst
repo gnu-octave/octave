@@ -23,10 +23,12 @@
 %!test
 %! obj = PackageBoth ();
 %! assert (obj.x, 2);
-%! for name = {'cdef_refactor.one.Same', 'cdef_refactor.two.Same', 'PackageBoth'}
+%! for name = {'cdef_refactor.one.Same', 'cdef_refactor.two.Same'}
 %!   mc = meta.class.fromName (name{1});
-%!   assert (! any (strcmp ({mc.MethodList.Name}, 'Same')));
+%!   assert (nnz (strcmp ({mc.MethodList.Name}, 'Same')), 1);
 %! endfor
+%! mc = ?PackageBoth;
+%! assert (! any (strcmp ({mc.MethodList.Name}, 'Same')));
 
 ## Package ownership is exposed both for packaged and unqualified classes.
 %!test
@@ -120,8 +122,8 @@
 %! obj = HandleNames ();
 %! assert ([obj.eq obj.ne obj.lt obj.le obj.gt obj.ge], 1:6);
 %! assert (HandleMixed () == HandleMixed ());
-%! assert (! any (ismember (methods ('handle'), ...
-%!                         {'eq', 'ne', 'lt', 'le', 'gt', 'ge'})));
+%! assert (all (ismember ({'eq', 'ne', 'lt', 'le', 'gt', 'ge'}, ...
+%!                       methods ('handle'))));
 %! assert (?HandleMixed == ?HandleMixed);
 %! assert (?HandleMixed != ?HandlePlain);
 %! assert (?HandleMixed < ?HandlePlain);
@@ -329,10 +331,12 @@
 %! assert (mc.Abstract);
 %! fail ('AbstractPropertyChild ()', 'cannot instantiate object for abstract class');
 
-## Methods inherited from handle are not listed, as in Matlab.
+## Methods inherited from handle are returned but not printed, as in Matlab.
 %!test
-%! assert (! any (strcmp (methods ('HandlePlain'), 'delete')));
-%! assert (! any (strcmp (methods (HandlePlain ()), 'delete')));
+%! assert (any (strcmp (methods ('HandlePlain'), 'delete')));
+%! assert (any (strcmp (methods (HandlePlain ()), 'delete')));
+%! str = evalc ("methods ('HandlePlain')");
+%! assert (isempty (strfind (str, 'delete')));
 
 ## Description metadata must not rewrite class help text.
 %!test

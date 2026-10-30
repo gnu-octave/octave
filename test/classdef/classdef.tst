@@ -2251,7 +2251,7 @@
 # Technically, the other checks
 %!error <method 'external_method_2' has private access and cannot be run in this context>
 %! obj = atfolder_class ();
-%! assert (methods (atfolder_class), {'external_method'; 'external_static_method'; 'unattached_method'});
+%! assert (methods (atfolder_class), {'atfolder_class'; 'external_method'; 'external_static_method'; 'unattached_method'});
 %! obj.external_method_2 ();
 
 # Test if externally-defined method is treated as a classdef method, even if
@@ -2352,7 +2352,8 @@
 # Previous test, but with handle classes
 %!test <*51659>
 %! [obj, all_methods] = class_bug51659A_handle ();
-%! assert (all_methods, {'class_bug51659A_handle'});
+%! assert (all_methods, {'class_bug51659A_handle'; 'delete'; 'eq'; 'ge'; 'gt';
+%!                       'le'; 'lt'; 'ne'});
 
 # Calling 'properties (obj)' in a constructor
 %!test <*51659>
@@ -2367,12 +2368,13 @@
 # Calling 'methods (obj)' in a property assignment
 %!test <51659>
 %! obj = class_bug51659C ();
-%! assert (obj.all_methods, {'stub_method'});
+%! assert (obj.all_methods, {'class_bug51659C'; 'stub_method'});
 
 # Previous test, but with handle classes
 %!test <51659>
 %! obj = class_bug51659C_handle ();
-%! assert (obj.all_methods, {'stub_method'});
+%! assert (obj.all_methods, {'class_bug51659C_handle'; 'delete'; 'eq'; 'ge';
+%!                           'gt'; 'le'; 'lt'; 'ne'; 'stub_method'});
 
 # Calling 'properties (obj)' in a property assignment
 %!test <51659>
@@ -2451,3 +2453,90 @@
 
 %!test <53811>
 %! assert (cellfun (@numel, {class_bug53811, class_bug53811}), [6, 6]);
+
+## Handle objects compare as the same object and are ordered by creation
+%!test
+%! h1 = handle_class ();
+%! h2 = handle_class ();
+%! h3 = h1;
+%! assert (h1 == h3, true);
+%! assert (h1 == h2, false);
+%! assert (h1 != h3, false);
+%! assert (h1 != h2, true);
+%! assert (class (h1 == h2), 'logical');
+
+%!test
+%! h1 = handle_class ();
+%! h2 = handle_class ();
+%! h3 = h1;
+%! assert ([h1 < h2, h2 < h1, h1 < h3], [true, false, false]);
+%! assert ([h1 <= h2, h2 <= h1, h1 <= h3], [true, false, true]);
+%! assert ([h1 > h2, h2 > h1, h1 > h3], [false, true, false]);
+%! assert ([h1 >= h2, h2 >= h1, h1 >= h3], [false, true, true]);
+%! assert ([eq(h1, h3), ne(h1, h2), lt(h1, h2), ge(h2, h1)], true (1, 4));
+
+## A scalar compares with every element; arrays must have the same size
+%!test
+%! h1 = handle_class ();
+%! h2 = handle_class ();
+%! assert ([h1, h2] == h1, [true, false]);
+%! assert (h2 >= [h1, h2], [true, true]);
+%! assert ([h1, h2] < [h2, h1], [true, false]);
+
+%!error <operator ==: nonconformant arguments \(op1 is 2x1, op2 is 1x2\)>
+%! h1 = handle_class ();
+%! h2 = handle_class ();
+%! [h1; h2] == [h1, h2];
+
+## A handle equals nothing that is not the same handle object
+%!test
+%! h = handle_class ();
+%! assert (h == 1, false);
+%! assert (h != 1, true);
+%! assert (h < 1, false);
+%! assert (size (h == []), [0, 0]);
+%! assert (h == handle_subclass (), false);
+%! s = handle_subclass ();
+%! t = s;
+%! assert (s == t, true);
+
+## A class's own eq replaces only the eq of handle
+%!test
+%! assert (handle_custom_eq () == handle_custom_eq (), 7);
+%! assert (handle_custom_eq () != handle_custom_eq (), true);
+
+%!test
+%! mc = ?handle;
+%! names = {mc.MethodList.Name};
+%! assert (all (ismember ({'eq', 'ne', 'lt', 'le', 'gt', 'ge'}, names)));
+
+## A class that declares no constructor lists an implicit one
+%!test
+%! mc = ?handle_class;
+%! ctor = mc.MethodList(strcmp ({mc.MethodList.Name}, 'handle_class'));
+%! assert (numel (ctor), 1);
+%! assert (ctor.Access, 'public');
+%! assert (ctor.Static, false);
+%! assert (ctor.Hidden, false);
+%! cls = ctor.DefiningClass;
+%! assert (cls.Name, 'handle_class');
+
+%!test
+%! mc = ?class_methods_ctor_private;
+%! ctor = mc.MethodList(strcmp ({mc.MethodList.Name},
+%!                              'class_methods_ctor_private'));
+%! assert (ctor.Access, 'private');
+
+## methods lists the constructor unless it is private or hidden
+%!assert (methods ('class_methods_abstract'), {'class_methods_abstract'; 'foo'})
+%!assert (methods ('class_methods_ctor_private'), {'foo'})
+%!assert (methods ('class_methods_ctor_hidden'), {'foo'})
+
+## methods returns the methods inherited from handle but prints them apart
+%!assert (methods ('handle_subclass'),
+%!        {'delete'; 'eq'; 'ge'; 'gt'; 'handle_subclass'; 'le'; 'lt'; 'ne'})
+
+%!test
+%! str = evalc ("methods ('handle_subclass')");
+%! assert (strfind (str, 'Methods of handle_subclass inherited from handle.'));
+%! assert (isempty (strfind (str, 'delete')));

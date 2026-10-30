@@ -63,7 +63,7 @@ fcn_info::fcn_info_rep::load_private_function (const std::string& dir_name,
   if (file_name.empty ())
     return retval;
 
-  octave_value ov_fcn = load_fcn_from_file (file_name, dir_name);
+  octave_value ov_fcn = load_fcn_from_file (file_name, dir_name, "", pack_name);
 
   if (ov_fcn.is_undefined ())
     return retval;
@@ -82,7 +82,11 @@ fcn_info::fcn_info_rep::load_private_function (const std::string& dir_name,
       std::string tmp = dir_name.substr (pos+1);
 
       if (tmp[0] == '@')
-        class_name = tmp.substr (1);
+        {
+          class_name = tmp.substr (1);
+          if (! pack_name.empty ())
+            class_name = pack_name + '.' + class_name;
+        }
     }
 
   tmpfcn->mark_as_private_function (class_name);
@@ -493,7 +497,8 @@ out_of_date_check (octave_value& function,
     {
       // FIXME: we need to handle subfunctions properly here.
 
-      if (! (fcn->is_subfunction () || fcn->is_anonymous_function ()))
+      if (! (fcn->is_subfunction () || fcn->is_local_function ()
+             || fcn->is_anonymous_function ()))
         {
           std::string ff = fcn->fcn_file_name ();
 

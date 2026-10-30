@@ -1779,7 +1779,7 @@ tree_evaluator::make_fcn_handle (const std::string& name)
                 }
             }
           else if (fcn->is_subfunction ()
-                   /* || fcn->is_localfunction () */
+                   || fcn->is_local_function ()
                    || fcn->is_private_function ())
             {
               // Create handle to SCOPED function (sub/local function
@@ -3021,7 +3021,7 @@ tree_evaluator::get_user_code (const std::string& fname)
 
           p2 = name.find ('>', p1);
 
-          std::string method = name.substr (p1+1, p2-1);
+          std::string method = name.substr (p1+1, p2-p1-1);
 
           // first check for classdef method
           cdef_manager& cdm = m_interpreter.get_cdef_manager ();
@@ -3062,8 +3062,9 @@ tree_evaluator::get_user_code (const std::string& fname)
               else
                 {
                   cdef_method meth = cls.find_method (method);
-                  if (meth.ok () && meth.get_name () == method)
-                    fcn = meth.get_function ();
+                  if (meth.ok () && meth.get_name () == method
+                      && ! meth.get ("Abstract").bool_value ())
+                    fcn = meth.get_function (true);
                   else
                     return nullptr;
                 }
@@ -3495,6 +3496,7 @@ tree_evaluator::evaluate_anon_fcn_handle (tree_anon_fcn_handle& afh)
         }
 
       af->stash_dir_name (curr_fcn->dir_name ());
+      af->stash_package_name (curr_fcn->package_name ());
 
       new_scope.cache_fcn_file_name (curr_fcn->fcn_file_name ());
       new_scope.cache_dir_name (curr_fcn->dir_name ());
@@ -3502,7 +3504,9 @@ tree_evaluator::evaluate_anon_fcn_handle (tree_anon_fcn_handle& afh)
       // The following is needed so that class method dispatch works
       // properly for anonymous functions that wrap class methods.
 
-      if (curr_fcn->is_class_method () || curr_fcn->is_class_constructor ())
+      if (curr_fcn->is_class_method () || curr_fcn->is_class_constructor ()
+          || curr_fcn->is_anonymous_function_of_class ()
+          || curr_fcn->is_private_function ())
         af->stash_dispatch_class (curr_fcn->dispatch_class ());
 
       af->stash_fcn_file_name (curr_fcn->fcn_file_name ());

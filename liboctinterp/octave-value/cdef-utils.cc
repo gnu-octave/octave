@@ -27,6 +27,9 @@
 #  include "config.h"
 #endif
 
+#include <algorithm>
+#include <cctype>
+
 #include "cdef-class.h"
 #include "cdef-manager.h"
 #include "cdef-method.h"
@@ -283,7 +286,7 @@ get_class_context (std::string& name, bool& in_constructor)
   std::string dispatch_class = tw.get_dispatch_class ();
 
   if (! dispatch_class.empty ())
-    return lookup_class (dispatch_class);
+    return lookup_class (dispatch_class, false, false);
 
   octave_function *fcn = tw.current_function ();
 
@@ -293,7 +296,10 @@ get_class_context (std::string& name, bool& in_constructor)
               || (fcn->is_private_function ()
                   && ! fcn->dispatch_class ().empty ())))
     {
-      cls = lookup_class (fcn->dispatch_class ());
+      // An executing classdef class is already registered.  An old-style
+      // class may also supply a dispatch name, but is not a classdef access
+      // context.  Do not try to load it or fail when it is absent.
+      cls = lookup_class (fcn->dispatch_class (), false, false);
 
       name = fcn->name ();
       in_constructor = fcn->is_classdef_constructor ();
@@ -323,15 +329,19 @@ check_access (const cdef_class& cls, const octave_value& acc,
       if (acc_s == "public")
         return true;
 
-      cdef_class ctx = get_class_context ();
+      std::string caller;
+      bool in_constructor;
+      cdef_class ctx = get_class_context (caller, in_constructor);
 
-      // The access is private or protected, this requires a
-      // valid class context.
+      // Non-public access requires a valid class context.  Immutable
+      // properties may only be assigned by their defining constructor.
 
       if (ctx.ok ())
         {
           if (acc_s == "private")
             return (ctx == cls);
+          else if (acc_s == "immutable")
+            return is_prop_set && in_constructor && ctx == cls;
           else if (acc_s == "protected")
             {
               if (is_superclass (cls, ctx))
@@ -424,6 +434,35 @@ check_access (const cdef_class& cls, const octave_value& acc,
   return false;
 }
 
+void
+validate_access (const octave_value& value, const std::string& attribute,
+                 const std::string& kind, const std::string& member,
+                 const cdef_class& cls)
+{
+  const bool immutable = (kind == "property" && attribute == "SetAccess");
+  std::string invalid;
+
+  if (value.is_string ())
+    {
+      const std::string text = value.string_value ();
+      if (text == "public" || text == "protected" || text == "private"
+          || (immutable && text == "immutable"))
+        return;
+
+      invalid = "'" + text + "'";
+    }
+  else if (is_access_list (value))
+    return;
+  else
+    invalid = "of type '" + value.type_name () + "'";
+
+  error ("invalid %s value %s for %s '%s' in class '%s': must be %s",
+         attribute.c_str (), invalid.c_str (), kind.c_str (), member.c_str (),
+         cls.get_name ().c_str (), immutable
+         ? "'public', 'protected', 'private', 'immutable', or a list of classes"
+         : "'public', 'protected', 'private', or a list of classes");
+}
+
 octave_value
 compute_attribute_value (tree_evaluator& tw,
                          tree_classdef_attribute *t)
@@ -441,7 +480,19 @@ compute_attribute_value (tree_evaluator& tw,
           else if (s == "false")
             return octave_value (false);
 
-          return octave_value (s);
+          std::string attr = t->ident ()->name ();
+
+          if (attr == "Access" || attr == "GetAccess" || attr == "SetAccess")
+            {
+              // Diagnose incorrect capitalization as an attribute value,
+              // rather than as an undefined variable.
+              std::string lower = s;
+              std::transform (lower.begin (), lower.end (), lower.begin (),
+                              [] (unsigned char c) { return std::tolower (c); });
+              if (lower == "public" || lower == "protected"
+                  || lower == "private" || lower == "immutable")
+                return octave_value (s);
+            }
         }
 
       return expr->evaluate (tw);
@@ -464,25 +515,29 @@ to_cdef_array (const octave_value& val)
 cdef_object
 empty_meta_class (const dim_vector& dv)
 {
-  return cdef_object (Array<cdef_object> (dv), cdef_manager::m_meta_class);
+  return cdef_object (Array<cdef_object> (dv),
+                      __get_cdef_manager__ ().meta_class ());
 }
 
 cdef_object
 empty_meta_property (const dim_vector& dv)
 {
-  return cdef_object (Array<cdef_object> (dv), cdef_manager::m_meta_property);
+  return cdef_object (Array<cdef_object> (dv),
+                      __get_cdef_manager__ ().meta_property ());
 }
 
 cdef_object
 empty_meta_method (const dim_vector& dv)
 {
-  return cdef_object (Array<cdef_object> (dv), cdef_manager::m_meta_method);
+  return cdef_object (Array<cdef_object> (dv),
+                      __get_cdef_manager__ ().meta_method ());
 }
 
 cdef_object
 empty_meta_package (const dim_vector& dv)
 {
-  return cdef_object (Array<cdef_object> (dv), cdef_manager::m_meta_package);
+  return cdef_object (Array<cdef_object> (dv),
+                      __get_cdef_manager__ ().meta_package ());
 }
 
 OCTAVE_END_NAMESPACE(octave)

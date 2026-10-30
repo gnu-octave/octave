@@ -61,17 +61,35 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   The `Access`, `GetAccess`, and `SetAccess` attributes accept `"public"`,
   `"protected"`, `"private"`, or a list of classes such as
   `{?ClassA, ?ClassB}`.  Private methods of a superclass are no longer
-  inherited, and `fieldnames` no longer lists private properties.
+  inherited, and `fieldnames` no longer lists private properties.  Access
+  values are case-sensitive for both properties and methods.
+
+* `classdef` properties now support `SetAccess = immutable`.  Their values
+  can be initialized by a default expression or assigned in the defining
+  class constructor while the object is being created.  Later assignments
+  and property setter methods are rejected.
 
 * The member lists of `classdef` meta classes are now arrays of meta objects
   instead of cell arrays: for `mc = ?myclass`, `class (mc.MethodList)` returns
   `"meta.method"`, and `mc.SuperclassList` and `mc.InferiorClasses` hold
   `meta.class` objects.  Code that reads these lists with `cellfun` or with
   `{}` indexing must change; `{mc.MethodList.Name}` gives the method names.
+  The historical names `SuperClasses` and `SuperClassList` remain available
+  as hidden aliases of `SuperclassList`.
+
+* Classes with unimplemented abstract methods or properties are abstract
+  and cannot be instantiated.  Unknown class, property, and method
+  attributes are now an error, as in Matlab.  The `Description` and
+  `DetailedDescription` attributes affect metadata without replacing class
+  help text.
+
+* `methods` no longer lists the methods that a class inherits from `handle`,
+  as in Matlab.
 
 * A `classdef` subclass can no longer declare a property that a superclass
-  already declares, which Matlab also refuses.  Matlab allows it when the
-  superclass property is private (both its `GetAccess` and `SetAccess`);
+  already declares, except to implement an abstract property.  Matlab also
+  allows it when the superclass property is private (both its `GetAccess`
+  and `SetAccess`).
   Octave does not support that case yet and says so in its error message.
 
 ### Alphabetical list of new functions added in Octave 12
@@ -158,6 +176,14 @@ The following C++ functions have been removed from Octave 12:
                                 | (or octave::mach_info::words_little_endian)
         octave_atomic_increment | ++std::atomic<...>
         octave_atomic_decrement | --std::atomic<...>
+
+The exported `octave::cdef_manager` factory functions `make_class`,
+`make_meta_class`, `make_property`, `make_attribute`, `make_method`, and
+`make_package` have also been removed.  Use the `cdef_class`, `cdef_property`,
+`cdef_method`, and `cdef_package` constructors with their corresponding
+`*_opt_properties` structures.  For built-in metadata classes, call
+`mark_as_meta_class` after construction; attribute properties use the
+`cdef_property` constructor with the appropriate access and getter options.
 
 ### Function APIs changed without the usual deprecation period
 

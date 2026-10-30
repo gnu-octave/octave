@@ -143,6 +143,7 @@ include classdef-methods-nested-package-folder/module.mk
 include classdef-methods-package-file/module.mk
 include classdef-methods-package-folder/module.mk
 include classdef-multiple-inheritance/module.mk
+include classdef-refactor/module.mk
 include classdef/module.mk
 include classes/module.mk
 include colon-op/module.mk

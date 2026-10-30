@@ -188,6 +188,15 @@ private:
   int remove_breakpoint_1 (octave_user_code *fcn, const std::string&,
                            const bp_lines& lines);
 
+  //! Remove identifiers for a function whose breakpoints have been cleared.
+  //!
+  //! Remove @p fcn_ident, if supplied, and every name resolving to @p fcn.
+  //! Name lookup may reload edited functions and reenter breakpoint cleanup,
+  //! so resolve a snapshot of the names before erasing matches from m_bp_set.
+  //! This helper removes table entries; it does not clear source breakpoints.
+  void remove_breakpoint_names (octave_user_code *fcn,
+                                const std::string& fcn_ident = "");
+
   bp_lines remove_all_breakpoints_in_file_1 (octave_user_code *fcn,
                                              const std::string& fname);
 

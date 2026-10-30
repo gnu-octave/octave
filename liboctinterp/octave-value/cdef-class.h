@@ -67,7 +67,6 @@ struct cdef_class_opt_properties
   //! an installed method or a property in a classdef is marked as abstract,
   //! then the whole classdef is abstract as well.
   //!
-  //! @todo Abstract properties are not functional yet.
   octave_value abstract = false;
 
   //! Underlying type: `meta.Class`
@@ -93,22 +92,17 @@ struct cdef_class_opt_properties
 
   //! Underlying type: `char`
   //!
-  //! The initial line of the classdef docstring.  If `help <classdef_name>` is
-  //! called, this is the first line of text displayed.
+  //! The initial line of the classdef docstring, unless explicitly supplied.
   //!
-  //! @note This value can be directly set as a classdef attribute.  If it is,
-  //! the value in the classdef attribute always overrides the written
-  //! docstring.
+  //! @note This metadata can be set as a classdef attribute independently of
+  //! the source docstring used by help.
   octave_value description = "";
 
   //! Underlying type: `char`
   //!
-  //! The rest of the classdef docstring (see `description`).  If `help
-  //! <classdef_name>` is called, this is everything after the first line.
+  //! The rest of the classdef docstring (see `description`).
   //!
-  //! @note This value can be directly set as a classdef attribute.  If it is,
-  //! the value in the classdef attribute always overrides the written
-  //! docstring.
+  //! @note An explicit attribute changes the metadata, preserving help text.
   octave_value detailed_description = "";
 
   //! @todo Not implemented yet.
@@ -231,6 +225,12 @@ private:
     OCTINTERP_API void
     install_method (const cdef_method& meth);
 
+    //! Report inherited method ambiguities that no local method has resolved.
+    //!
+    //! Call after installing local declarations, and before using this class
+    //! as a superclass or constructing an instance.
+    OCTINTERP_API void check_method_conflicts () const;
+
     OCTINTERP_API cdef_object
     get_methods (bool include_ctor = false) const;
 
@@ -280,6 +280,8 @@ private:
     construct_object (const octave_value_list& args, const int nargout = 1,
                       const bool default_initialize = false);
 
+    OCTINTERP_API cdef_object construct_array_element ();
+
     OCTINTERP_API void initialize_object (cdef_object& obj);
 
     OCTINTERP_API octave_value_list
@@ -316,8 +318,25 @@ private:
 
     std::string file_name () const { return m_file_name; }
 
+    //! Store the source help text independently of description attributes.
+    void doc_string (const std::string& text) { m_doc_string = text; }
+
+    //! Return the original source help text.
+    std::string doc_string () const { return m_doc_string; }
+
   private:
     OCTINTERP_API void find_names (std::set<std::string>& names, bool all);
+
+    //! Collect properties in declaration order, visiting each class once.
+    //!
+    //! Share @p names and @p visited across the traversal so local declarations
+    //! take precedence and diamonds do not repeat inherited properties.
+    //! @p next_rank places each superclass's properties after those already
+    //! collected; @p mode controls visibility and whether to visit superclasses.
+    void find_properties (std::map<property_key, cdef_property>& props,
+                          std::set<std::string>& names,
+                          std::set<const cdef_class_rep *>& visited,
+                          unsigned int& next_rank, member_mode mode) const;
 
     cdef_class wrap ()
     {
@@ -331,9 +350,16 @@ private:
 
     std::string m_file_name;
 
+    //! Source help text, separate from Description and DetailedDescription.
+    std::string m_doc_string;
+
     // The methods defined by this class.
 
     std::map<std::string, cdef_method> m_method_map;
+
+    //! Inherited ambiguities that a local method can resolve.
+    std::map<std::string, std::pair<std::string, std::string>>
+      m_method_conflicts;
 
     // The properties defined by this class.
 
@@ -381,8 +407,9 @@ public:
   //! cannot be added after construction -- this is because proper installment
   //! of immediate methods and properties relies on the presence of superclass
   //! methods and properties to have already been installed.
-  cdef_class (octave_value name,
-              cdef_class_opt_properties opt_args = cdef_class_opt_properties ())
+  explicit cdef_class
+    (octave_value name,
+     cdef_class_opt_properties opt_args = cdef_class_opt_properties ())
     : cdef_meta_object (new cdef_class_rep (name.string_value (), opt_args))
   { }
 
@@ -486,7 +513,9 @@ public:
 
   //! Analyze the tree_classdef tree and transform it to a cdef_class
   //!
-  //! <b>All attribute validation should occur here.</b>
+  //! Evaluate attributes and install local members before checking inherited
+  //! method conflicts and determining abstractness.  Remove the incomplete
+  //! class registration if loading fails.
   //!
   //! Classdef attribute values can be given in the form of expressions.  
   //! These expressions must be evaluated before assigning them as attribute
@@ -552,6 +581,13 @@ public:
     get_rep ()->initialize_object (obj);
   }
 
+  //! Construct a filler for array growth, using the zero-argument constructor
+  //! for ordinary classes or an internal placeholder for built-in metaclasses.
+  cdef_object construct_array_element ()
+  {
+    return get_rep ()->construct_array_element ();
+  }
+
   //! The method to call to run a classdef's constructor.
   //!
   //! @param <obj> The classdef object being constructed is passed by
@@ -586,6 +622,12 @@ public:
   void file_name (const std::string& nm) { get_rep ()->file_name (nm); }
 
   std::string file_name () const { return get_rep ()->file_name (); }
+
+  //! Store the source help text independently of description attributes.
+  void doc_string (const std::string& text) { get_rep ()->doc_string (text); }
+
+  //! Return the original source help text.
+  std::string doc_string () const { return get_rep ()->doc_string (); }
 
 private:
 

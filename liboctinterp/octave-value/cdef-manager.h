@@ -69,9 +69,13 @@ public:
     m_all_classes[cls.get_name ()] = cls;
   }
 
+  //! Remove only the registration for this class object, preserving any newer
+  //! class registered under the same name.
   void unregister_class (const cdef_class& cls)
   {
-    m_all_classes.erase(cls.get_name ());
+    auto it = m_all_classes.find (cls.get_name ());
+    if (it != m_all_classes.end () && it->second.is (cls))
+      m_all_classes.erase (it);
   }
 
   void register_package (const cdef_package& pkg)
@@ -95,14 +99,15 @@ public:
   find_method (const std::string& class_name,
                const std::string& name) const;
 
-  static inline cdef_class m_meta_metadata;
-  static inline cdef_class m_meta_class;
-  static inline cdef_class m_meta_property;
-  static inline cdef_class m_meta_method;
-  static inline cdef_class m_meta_package;
-  static inline cdef_package m_meta;
-
 private:
+
+  friend class interpreter;
+
+  //! Bootstrap this interpreter's built-in classdef types and metadata.
+  //!
+  //! @pre The owning interpreter has installed its context and error handlers.
+  //! The interpreter calls this once, before loading user-defined classes.
+  void initialize ();
 
   interpreter& m_interpreter;
 
@@ -113,6 +118,13 @@ private:
 
   // All registered/loaded packages
   std::map<std::string, cdef_package> m_all_packages;
+
+  cdef_class m_meta_metadata;
+  cdef_class m_meta_class;
+  cdef_class m_meta_property;
+  cdef_class m_meta_method;
+  cdef_class m_meta_package;
+  cdef_package m_meta;
 
 };
 

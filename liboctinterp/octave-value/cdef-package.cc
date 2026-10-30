@@ -56,7 +56,7 @@ cdef_package::cdef_package_rep::cdef_package_rep (
   cdef_package_opt_properties opt_args)
   : cdef_meta_object_rep (), m_member_count (0)
 {
-  set_class (cdef_manager::m_meta_package);
+  set_class (__get_cdef_manager__ ().meta_package ());
 
   put ("Description", opt_args.description);
   put ("DetailedDescription", opt_args.detailed_description);

@@ -669,6 +669,9 @@ bp_table::process_id_list (const char *who,
 static octave_user_code *
 find_fcn_by_line (octave_user_code *main_fcn, int lineno, int *found_end_line = nullptr)
 {
+  if (! main_fcn || ! main_fcn->body ())
+    return nullptr;
+
   octave_user_code *retval = nullptr;
   octave_user_code *next_fcn = nullptr;  // 1st function starting after lineno
 
@@ -847,7 +850,7 @@ private:
           {
             octave_user_code *fcn
               = m_cls.get_method (meth.first).user_code_value (true);
-            if (fcn != nullptr)
+            if (fcn && fcn->fcn_file_name () == m_cls.file_name ())
               m_methods_cache.push_back (fcn);
           }
 
@@ -861,7 +864,7 @@ private:
               {
                 octave_user_code *fcn
                   = get_meth.user_function_value ()->user_code_value (true);
-                if (fcn != nullptr)
+                if (fcn && fcn->fcn_file_name () == m_cls.file_name ())
                   m_methods_cache.push_back (fcn);
               }
 
@@ -870,7 +873,7 @@ private:
               {
                 octave_user_code *fcn
                   = set_meth.user_function_value ()->user_code_value (true);
-                if (fcn != nullptr)
+                if (fcn && fcn->fcn_file_name () == m_cls.file_name ())
                   m_methods_cache.push_back (fcn);
               }
           }
@@ -980,6 +983,24 @@ bp_table::add_breakpoints_in_file (const std::string& file,
   return add_breakpoints_in_function (fcn_ident, lines, condition);
 }
 
+void
+bp_table::remove_breakpoint_names (octave_user_code *fcn,
+                                    const std::string& fcn_ident)
+{
+  // Resolving a name can reload an edited file and recursively clear its
+  // breakpoints.  Neither the iteration nor the names passed to lookup may
+  // refer to the live set while that happens.
+  const auto names = m_bp_set;
+  std::vector<std::string> removed;
+
+  for (const auto& name : names)
+    if (name == fcn_ident || m_evaluator.get_user_code (name) == fcn)
+      removed.push_back (name);
+
+  for (const auto& name : removed)
+    m_bp_set.erase (name);
+}
+
 int
 bp_table::remove_breakpoint_1 (octave_user_code *fcn,
                                const std::string& fcn_ident,
@@ -1013,9 +1034,8 @@ bp_table::remove_breakpoint_1 (octave_user_code *fcn,
 
           results = cmds->list_breakpoints ();
 
-          auto it = m_bp_set.find (fcn_ident);
-          if (results.empty () && it != m_bp_set.end ())
-            m_bp_set.erase (it);
+          if (results.empty ())
+            remove_breakpoint_names (fcn, fcn_ident);
         }
 
       retval = results.length ();
@@ -1055,6 +1075,9 @@ bp_table::remove_breakpoints_from_function (const std::string& fcn_ident,
       for (const auto line : lines)
         {
           octave_user_code *fcn = user_code (line);
+          if (! fcn)
+            error ("remove_breakpoints_from_function: unable to find function '%s'",
+                   fcn_ident.c_str ());
           std::string file = fcn->fcn_file_name ();
 
           tree_statement_list *cmds = fcn->body ();
@@ -1068,6 +1091,9 @@ bp_table::remove_breakpoints_from_function (const std::string& fcn_ident,
                   event_manager& evmgr = interp.get_event_manager ();
 
                   cmds->delete_breakpoint (line);
+
+                  if (cmds->list_breakpoints ().empty ())
+                    remove_breakpoint_names (fcn);
 
                   if (! file.empty ())
                     evmgr.update_breakpoint (false, file, line);
@@ -1139,7 +1165,13 @@ bp_table::remove_all_breakpoints_from_function (const std::string& fcn_ident,
 
               event_manager& evmgr = interp.get_event_manager ();
 
-              retval = cmds->remove_all_breakpoints (evmgr, file);
+              bp_lines removed = cmds->remove_all_breakpoints (evmgr, file);
+              retval.insert (removed.begin (), removed.end ());
+
+              // Class-wide commands are recorded under individual method
+              // names.  Remove every identifier for the cleared function,
+              // including aliases through a subclass.
+              remove_breakpoint_names (dbg_fcn);
             }
         }
 
@@ -1200,15 +1232,11 @@ bp_table::remove_all_breakpoints_from_file (const std::string& file,
 void
 bp_table::remove_all_breakpoints ()
 {
-  // Odd loop structure required because delete will invalidate
-  // m_bp_set iterators.
-  for (auto it = m_bp_set.cbegin (), it_next = it;
-       it != m_bp_set.cend ();
-       it = it_next)
-    {
-      ++it_next;
-      remove_all_breakpoints_from_function (*it);
-    }
+  // Clearing one class can remove several method identifiers.
+  const auto names = m_bp_set;
+  for (const auto& name : names)
+    if (m_bp_set.contains (name))
+      remove_all_breakpoints_from_function (name);
 
   m_evaluator.reset_debug_state ();
 }

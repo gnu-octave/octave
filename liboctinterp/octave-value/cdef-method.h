@@ -98,6 +98,16 @@ private:
 
     octave_value get_function () const { return m_function; }
 
+    //! Return the function, resolving an external placeholder if @p load is
+    //! true.  Report an error if its external definition cannot be found.
+    octave_value get_function (bool load)
+    {
+      if (load)
+        check_method ();
+
+      return m_function;
+    }
+
     void set_function (const octave_value& fcn) { m_function = fcn; }
 
     OCTINTERP_API std::string get_doc_string ();
@@ -241,6 +251,16 @@ public:
   octave_value get_function () const
   {
     return get_rep ()->get_function ();
+  }
+
+  //! Return the function, optionally loading its external definition first.
+  //!
+  //! Use @p load = true before inspecting a method body, since an external
+  //! method may still be a placeholder until its first call.  Loading fails
+  //! with an error if no external definition is found.
+  octave_value get_function (bool load)
+  {
+    return get_rep ()->get_function (load);
   }
 
   std::string get_doc_string ()

@@ -1,0 +1,2 @@
+classdef FailedBuildChild < FailedBuild
+endclassdef

@@ -339,6 +339,12 @@ public:
 
   bool is_subfunction () const { return m_subfunction; }
 
+  //! Mark a class-file local function without giving it subfunction identity.
+  void mark_as_local_function () { m_local_function = true; }
+
+  //! Whether this is a class-file local function with no parent function scope.
+  bool is_local_function () const { return m_local_function; }
+
   void mark_as_inline_function () { m_inline_function = true; }
 
   bool is_inline_function () const { return m_inline_function; }
@@ -452,16 +458,16 @@ private:
   // this function.
   octave::tree_parameter_list *m_ret_list;
 
-  // We don't keep track of an end token separately because functions
-  // may still be defined without an explicit END.  If there is an
-  // explicit END, the final statement will contain it.
+  // We don't keep track of an end token separately because functions may still
+  // be defined without an explicit END.  If there is an explicit END, the
+  // final statement will contain it.
 
   octave::token m_fcn_tok;
   octave::token m_eq_tok;
 
-  // True if this function came from a file that is considered to be a
-  // system function.  This affects whether we check the time stamp
-  // on the file to see if it has changed.
+  // TRUE if this function came from a file that is considered to be a system
+  // function.  This affects whether we check the time stamp on the file to see
+  // if it has changed.
   bool m_system_fcn_file {false};
 
   // The number of arguments that have names.
@@ -469,6 +475,10 @@ private:
 
   // TRUE means this is a m_subfunction of a primary function.
   bool m_subfunction {false};
+
+  // TRUE for a local function in a classdef file, with no parent function
+  // scope.
+  bool m_local_function {false};
 
   // TRUE means this is an inline function.
   bool m_inline_function {false};

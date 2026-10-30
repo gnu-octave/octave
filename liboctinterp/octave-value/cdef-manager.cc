@@ -266,6 +266,24 @@ package_get_functions (const octave_value_list& args, int /* nargout */)
   return retval;
 }
 
+//! Return immediate subpackages for meta.package.PackageList and its Packages
+//! alias.  Return an empty matrix if the argument is not a meta.package object.
+static octave_value_list
+package_get_packages (const octave_value_list& args, int /* nargout */)
+{
+  octave_value_list retval (1, Matrix ());
+
+  if (args.length () == 1 && args(0).type_name () == "object"
+      && args(0).class_name () == "meta.package")
+    {
+      cdef_package pack (to_cdef (args(0)));
+
+      retval(0) = pack.get_packages ();
+    }
+
+  return retval;
+}
+
 static octave_value_list
 package_getAllPackages (const octave_value_list& /* args */, int /* nargout */)
 {
@@ -309,9 +327,12 @@ package_fromName (const octave_value_list& args, int /* nargout */)
   return retval;
 }
 
-//! Bootstrap of the classdef system.
 cdef_manager::cdef_manager (interpreter& interp)
   : m_interpreter (interp), m_all_classes (), m_all_packages ()
+{ }
+
+void
+cdef_manager::initialize ()
 {
   type_info& ti = m_interpreter.get_type_info ();
 
@@ -334,47 +355,6 @@ cdef_manager::cdef_manager (interpreter& interp)
   handle.mark_as_handle_class ();
   register_class (handle);
 
-  cdef_method eq (
-    handle,
-    make_fcn_handle (class_eq, "eq"),
-    "eq"
-  );
-  handle.install_method (eq);
-
-  cdef_method ne (
-    handle,
-    make_fcn_handle (class_ne, "ne"),
-    "ne"
-  );
-  handle.install_method (ne);
-
-  cdef_method lt (
-    handle,
-    make_fcn_handle (class_lt, "lt"),
-    "lt"
-  );
-  handle.install_method (lt);
-
-  cdef_method le (
-    handle,
-    make_fcn_handle (class_le, "le"),
-    "le"
-  );
-  handle.install_method (le);
-
-  cdef_method gt (
-    handle,
-    make_fcn_handle (class_gt, "gt"),
-    "gt"
-  );
-  handle.install_method (gt);
-
-  cdef_method ge (
-    handle,
-    make_fcn_handle (class_ge, "ge"),
-    "ge"
-  );
-  handle.install_method (ge);
 
   cdef_method delete_method (
     handle,
@@ -398,6 +378,7 @@ cdef_manager::cdef_manager (interpreter& interp)
 
   cdef_class_opt_properties metadata_class_properties {
     .abstract = true,
+    .sealed = true,
     .superclass_list = to_ov (m_meta_metadata)
   };
 
@@ -416,6 +397,7 @@ cdef_manager::cdef_manager (interpreter& interp)
     cdef_class_opt_properties {
       .abstract = true,
       .handle_compatible = true,
+      .sealed = true,
       .superclass_list = to_ov (m_meta_metadata)
     }
   );
@@ -428,6 +410,7 @@ cdef_manager::cdef_manager (interpreter& interp)
     cdef_class_opt_properties {
       .abstract = true,
       .handle_compatible = true,
+      .sealed = true,
       .superclass_list = to_ov (m_meta_metadata)
     }
   );
@@ -435,16 +418,52 @@ cdef_manager::cdef_manager (interpreter& interp)
   m_meta_method.set_class (m_meta_class);
   register_class (m_meta_method);
 
-  // Once `meta.method` is created, then all the methods of the classes
-  // constructed before `meta.method` must have their classes reset (i.e.,
-  // methods of `handle`).
-  eq.set_class (m_meta_method);
-  ne.set_class (m_meta_method);
-  lt.set_class (m_meta_method);
-  le.set_class (m_meta_method);
-  gt.set_class (m_meta_method);
-  ge.set_class (m_meta_method);
+  // The delete method predates meta.method during bootstrap.
   delete_method.set_class (m_meta_method);
+
+  // These operators compare metaclasses and their inheritance relationships.
+  // They are not general handle-object comparisons.
+  cdef_method eq (
+    m_meta_class,
+    make_fcn_handle (class_eq, "eq"),
+    "eq"
+  );
+  m_meta_class.install_method (eq);
+
+  cdef_method ne (
+    m_meta_class,
+    make_fcn_handle (class_ne, "ne"),
+    "ne"
+  );
+  m_meta_class.install_method (ne);
+
+  cdef_method lt (
+    m_meta_class,
+    make_fcn_handle (class_lt, "lt"),
+    "lt"
+  );
+  m_meta_class.install_method (lt);
+
+  cdef_method le (
+    m_meta_class,
+    make_fcn_handle (class_le, "le"),
+    "le"
+  );
+  m_meta_class.install_method (le);
+
+  cdef_method gt (
+    m_meta_class,
+    make_fcn_handle (class_gt, "gt"),
+    "gt"
+  );
+  m_meta_class.install_method (gt);
+
+  cdef_method ge (
+    m_meta_class,
+    make_fcn_handle (class_ge, "ge"),
+    "ge"
+  );
+  m_meta_class.install_method (ge);
 
   m_meta_package = cdef_class (
     "meta.package",
@@ -458,6 +477,8 @@ cdef_manager::cdef_manager (interpreter& interp)
   m_meta_package.mark_as_meta_class ();
   m_meta_package.set_class (m_meta_class);
   register_class (m_meta_package);
+
+  metadata_properties.sealed = true;
 
   cdef_class meta_event
     = cdef_class ("meta.event", metadata_properties);
@@ -489,6 +510,17 @@ cdef_manager::cdef_manager (interpreter& interp)
       "ConstructOnLoad",
       cdef_property_opt_properties {
         .default_value = false,
+        .get_access = "public",
+        .set_access = "private"
+      }
+    )
+  );
+
+  m_meta_class.install_property (
+    cdef_property (
+      m_meta_class,
+      "ContainingPackage",
+      cdef_property_opt_properties {
         .get_access = "public",
         .set_access = "private"
       }
@@ -700,20 +732,21 @@ cdef_manager::cdef_manager (interpreter& interp)
     )
   );
 
-  // Backwards compatibility for "Superclasses" on "meta.class"
-  m_meta_class.install_property (
-    cdef_property (
-      m_meta_class,
-      "Superclasses",
-      cdef_property_opt_properties {
-        .default_value = false,
-        .get_access = "public",
-        .get_method = superclass_getter,
-        .hidden = true,
-        .set_access = "private"
-      }
-    )
-  );
+  // Preserve the historical spellings as hidden aliases.
+  for (const auto& name : {"SuperClasses", "SuperClassList", "Superclasses"})
+    m_meta_class.install_property (
+      cdef_property (
+        m_meta_class,
+        name,
+        cdef_property_opt_properties {
+          .default_value = false,
+          .get_access = "public",
+          .get_method = superclass_getter,
+          .hidden = true,
+          .set_access = "private"
+        }
+      )
+    );
 
   // No private no-op constructor is installed for the meta classes.  Direct
   // construction is already refused by the Abstract check in
@@ -1253,6 +1286,38 @@ cdef_manager::cdef_manager (interpreter& interp)
         .get_method = make_fcn_handle (
           package_get_functions,
           "meta.package>get.FunctionList"
+        ),
+        .hidden = true,
+        .set_access = "private"
+      }
+    )
+  );
+
+  m_meta_package.install_property (
+    cdef_property (
+      m_meta_package,
+      "PackageList",
+      cdef_property_opt_properties {
+        .get_access = "public",
+        .get_method = make_fcn_handle (
+          package_get_packages,
+          "meta.package>get.PackageList"
+        ),
+        .set_access = "private"
+      }
+    )
+  );
+
+  // Backwards compatibility for "Packages" on "meta.package".
+  m_meta_package.install_property (
+    cdef_property (
+      m_meta_package,
+      "Packages",
+      cdef_property_opt_properties {
+        .get_access = "public",
+        .get_method = make_fcn_handle (
+          package_get_packages,
+          "meta.package>get.Packages"
         ),
         .hidden = true,
         .set_access = "private"

@@ -87,7 +87,7 @@
 #          -----------------
 #                 |
 #          class_bug68227_*D
-%!error <method testfunc conflicting>
+%!error <method testfunc: conflicting definitions>
 %! obj = class_bug68227_3D ();
 
 
@@ -101,7 +101,7 @@
 #          -----------------
 #                 |
 #              testclass_1C
-%!error <method testfunc conflicting>
+%!error <method testfunc: conflicting definitions>
 %! obj = testclass_1C ();
 
 # testclass_2A
@@ -119,8 +119,4 @@
 # check its properties
 %!xtest
 %! fail ("testclass_2C ()", "property testprop conflicting");
-
-# Cyclic inheritance hierarchies (error in all cases)
-
-
 

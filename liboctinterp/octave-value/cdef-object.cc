@@ -27,7 +27,9 @@
 #  include "config.h"
 #endif
 
+#include <algorithm>
 #include <memory>
+#include <ranges>
 
 #include "cdef-class.h"
 #include "cdef-object.h"
@@ -603,7 +605,7 @@ cdef_object_array::subsasgn (const std::string& type,
           // was out-of-bound and we need to create a new object.
 
           if (! obj.ok ())
-            obj = to_cdef (get_class ().construct (octave_value_list ()));
+            obj = get_class ().construct_array_element ();
           else
             // Optimize the subsasgn call to come.  There are 2 copies
             // that we can safely ignore:
@@ -688,7 +690,7 @@ cdef_object_array::fill_empty_values (Array<cdef_object>& arr)
         {
           if (! obj.ok ())
             {
-              obj = to_cdef (cls.construct (octave_value_list ()));
+              obj = cls.construct_array_element ();
 
               arr.xelem (i) = obj;
             }
@@ -876,14 +878,37 @@ cdef_object_scalar::subsasgn (const std::string& type,
           {
             octave_value val = prop.get_value (obj, true, "subsasgn");
 
+            cdef_object previous;
+            if (val.is_classdef_object ())
+              previous = to_cdef (val);
+
             std::list<octave_value_list> args (std::next (idx.begin ()),
                                                idx.end ());
 
             val = val.assign (octave_value::op_asn_eq,
                               type.substr (1), args, rhs);
 
-            if (val.class_name () != "object"
-                || ! to_cdef (val).is_handle_object ())
+            // Changing a referenced handle's properties does not assign
+            // this property.  Replacing a handle or an array element does.
+            bool same_handles = false;
+            if (type.find ('.', 1) != std::string::npos
+                && previous.ok () && previous.get_class ().is_handle_class ()
+                && val.is_classdef_object ())
+              {
+                cdef_object current = to_cdef (val);
+                const auto before = previous.array_value ();
+                const auto after = current.array_value ();
+
+                same_handles = (previous.get_class () == current.get_class ()
+                                && before.dims () == after.dims ()
+                                && std::ranges::all_of
+                                  (std::views::iota (octave_idx_type (0),
+                                                     before.numel ()),
+                                   [&] (octave_idx_type i)
+                                   { return before(i).is (after(i)); }));
+              }
+
+            if (! same_handles)
               prop.set_value (obj, val, true, "subsasgn");
 
             retval = to_ov (obj);

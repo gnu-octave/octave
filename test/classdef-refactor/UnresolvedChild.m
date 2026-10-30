@@ -1,0 +1,2 @@
+classdef UnresolvedChild < Unresolved
+endclassdef

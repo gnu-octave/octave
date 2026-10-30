@@ -1,0 +1,2 @@
+classdef HandlePlain < handle
+endclassdef

@@ -1,0 +1,2 @@
+classdef AbstractMethodChild < AbstractMethodBase
+endclassdef

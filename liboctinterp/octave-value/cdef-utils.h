@@ -67,6 +67,17 @@ lookup_class (const octave_value& ov);
 extern OCTINTERP_API octave_value
 to_ov (const cdef_object& obj);
 
+//! Validate a method or property access attribute without changing its value.
+//!
+//! Accept lowercase access keywords or a class access list.  The keyword
+//! "immutable" is valid only for a property's SetAccess attribute.  On failure,
+//! report the attribute, member kind and name, defining class, and allowed
+//! values.
+extern OCTINTERP_API void
+validate_access (const octave_value& value, const std::string& attribute,
+                 const std::string& kind, const std::string& member,
+                 const cdef_class& cls);
+
 extern OCTINTERP_API octave_value
 to_ov (const Array<cdef_object>& obj);
 

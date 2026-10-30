@@ -552,6 +552,60 @@
 %! sparse ([1, 2, 3]) ./ ones (4)
 %!error <quotient: nonconformant arguments \(op1 is 3x1, op2 is 4x3\)>
 %! sparse ([1; 2; 3]) ./ ones (4, 3)
+
+## Test that broadcasting a sparse product or a sparse quotient by a full
+## divisor keeps the result sparse, filling only where an operand is not finite
+%!assert (sparse ([1, 0; 0, 2]) .* [Inf, 1], sparse ([1, 0; 0, 2] .* [Inf, 1]))
+%!assert ([NaN; 1] .* sparse ([0, 1; 2, 0]), sparse ([NaN; 1] .* [0, 1; 2, 0]))
+%!assert (sparse ([1, 0; 0, 2]) ./ [0, 2], sparse ([1, 0; 0, 2] ./ [0, 2]))
+%!assert (sparse ([1, 0; 0, 2]) ./ [Inf; NaN],
+%!        sparse ([1, 0; 0, 2] ./ [Inf; NaN]))
+%!assert (sparse ([1, 0; 0, 2]) .* sparse ([NaN; 1]),
+%!        sparse ([1, 0; 0, 2] .* [NaN; 1]))
+%!assert (sparse ([0, 1]) .* sparse ([Inf; 2]), sparse ([0, 1] .* [Inf; 2]))
+%!assert (sparse ([1, 0]) .* sparse ([1i; Inf]), sparse ([1, 0] .* [1i; Inf]))
+%!assert (sparse ([0, 1i; 2, 0]) .* [-Inf, 1],
+%!        sparse ([0, 1i; 2, 0] .* [-Inf, 1]))
+%!test
+%! n = 2^20;
+%! b = speye (n) .* (1:n);
+%! assert (issparse (b));
+%! assert (nnz (b), n);
+%! assert (full (diag (b)), (1:n)');
+%!test
+%! n = 2^20;
+%! b = (1:n) .* speye (n);
+%! assert (issparse (b));
+%! assert (nnz (b), n);
+%!test
+%! n = 2^20;
+%! b = speye (n) .* sparse (1:n);
+%! assert (issparse (b));
+%! assert (nnz (b), n);
+%!test
+%! n = 2^20;
+%! b = speye (n) ./ (1:n);
+%! assert (issparse (b));
+%! assert (full (diag (b)), 1 ./ (1:n)');
+%!test
+%! n = 2^20;
+%! x = ones (1, n);
+%! x(5) = Inf;
+%! b = speye (n) .* x;
+%! assert (nnz (b), 2*n - 1);
+%! assert (nnz (isnan (b(:,5))), n - 1);
+%!test
+%! n = 2^20;
+%! x = ones (1, n);
+%! x(5) = 0;
+%! b = speye (n) ./ x;
+%! assert (nnz (b), 2*n - 1);
+%! assert (full (b(5,5)), Inf);
+%!test
+%! b = sparse ([1, 0, 2]) .* sparse ([1; 2^40], 1, [3; 4], 2^40, 1);
+%! assert (size (b), [2^40, 3]);
+%! assert (nnz (b), 4);
+%! assert (full (b(2^40,3)), 8);
 %!error <operator /: nonconformant arguments \(op1 is 1x2, op2 is 1x3\)>
 %! sparse ([1, 2]) / [1, 1, 1]
 %!error <operator /: nonconformant arguments \(op1 is 1x3, op2 is 4x4\)>

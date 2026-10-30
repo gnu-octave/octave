@@ -276,8 +276,9 @@ single_num (std::istringstream& is)
     }
 
   // Special check for "NA" value (not handled by from_chars)
-  if (first + 2 <= last && first[0] == 'N' && first[1] == 'A' &&
-      (first + 2 == last || std::isspace (static_cast<unsigned char> (first[2]))))
+  if (first + 2 <= last && first[0] == 'N' && first[1] == 'A'
+      && (first + 2 == last
+          || std::isspace (static_cast<unsigned char> (first[2]))))
     {
       num = octave_NA;
       is.seekg (start_pos + static_cast<std::streamoff> (first - str.data () + 2));

@@ -216,9 +216,9 @@ public class Matrix
 
   public boolean isVector ()
   {
-    return (dims.length == 1 ||
-            (dims.length == 2 && (dims[0] == 1 || dims[1] == 1 ||
-                                  (dims[0] == 0 && dims[1] == 0))));
+    return (dims.length == 1
+            || (dims.length == 2 && (dims[0] == 1 || dims[1] == 1
+                                     || (dims[0] == 0 && dims[1] == 0))));
   }
 
   public int getLength ()

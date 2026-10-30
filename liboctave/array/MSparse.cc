@@ -575,9 +575,9 @@ template <typename T>
 MSparse<T>
 operator + (const MSparse<T>& a, const MSparse<T>& b)
 {
-  if ((a.cols () != 1 && a.cols () == b.cols () &&
-       (a.rows () == 1 || b.rows () == 1)) ||
-      (a.cols () == 1 && b.rows () == 1 && a.rows () > 1 && b.cols () > 1))
+  if ((a.cols () != 1 && a.cols () == b.cols ()
+       && (a.rows () == 1 || b.rows () == 1))
+      || (a.cols () == 1 && b.rows () == 1 && a.rows () > 1 && b.cols () > 1))
     return plus_or_minus (a.transpose (), b.transpose (), std::plus<T> (),
                           "operator +", false).transpose ();
   else
@@ -588,9 +588,9 @@ template <typename T>
 MSparse<T>
 operator - (const MSparse<T>& a, const MSparse<T>& b)
 {
-  if ((a.cols () != 1 && a.cols () == b.cols () &&
-       (a.rows () == 1 || b.rows () == 1)) ||
-      (a.cols () == 1 && b.rows () == 1 && a.rows () > 1 && b.cols () > 1))
+  if ((a.cols () != 1 && a.cols () == b.cols ()
+       && (a.rows () == 1 || b.rows () == 1))
+      || (a.cols () == 1 && b.rows () == 1 && a.rows () > 1 && b.cols () > 1))
     return plus_or_minus (a.transpose (), b.transpose (), std::minus<T> (),
                           "operator -", true).transpose ();
   else
@@ -717,8 +717,8 @@ product (const MSparse<T>& a, const MSparse<T>& b)
       else
         octave::err_nonconformant ("product", a_nr, a_nc, b_nr, b_nc);
     }
-  else if (a_nr == b_nr && a_nc == b_nc &&
-           (a.any_element_is_inf_or_nan () || b.any_element_is_inf_or_nan ()))
+  else if (a_nr == b_nr && a_nc == b_nc
+           && (a.any_element_is_inf_or_nan () || b.any_element_is_inf_or_nan ()))
     {
       r = MSparse<T> (a_nr, a_nc, a_nr * a_nc);
 
@@ -777,8 +777,8 @@ product (const MSparse<T>& a, const MSparse<T>& b)
         }
       r.maybe_compress ();
     }
-  else if (a_nr == b_nr && (a_nc == 1 || b_nc == 1) &&
-           (a.any_element_is_inf_or_nan () || b.any_element_is_inf_or_nan ()))
+  else if (a_nr == b_nr && (a_nc == 1 || b_nc == 1)
+           && (a.any_element_is_inf_or_nan () || b.any_element_is_inf_or_nan ()))
     {
       octave_idx_type r_nc = (a_nc < b_nc ? b_nc : a_nc);
       r = MSparse<T> (a_nr, r_nc, a_nr * r_nc);
@@ -868,8 +868,8 @@ product (const MSparse<T>& a, const MSparse<T>& b)
     }
   else if (a_nc == b_nc && (a_nr == 1 || b_nr == 1))
     r = product (a.transpose (), b.transpose ()).transpose ();
-  else if (a_nr == 1 && b_nc == 1 &&
-           (a.any_element_is_inf_or_nan () || b.any_element_is_inf_or_nan ()))
+  else if (a_nr == 1 && b_nc == 1
+           && (a.any_element_is_inf_or_nan () || b.any_element_is_inf_or_nan ()))
     {
       r = MSparse<T> (b_nr, a_nc, b_nr * a_nc);
 

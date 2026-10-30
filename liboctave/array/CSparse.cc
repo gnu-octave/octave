@@ -392,11 +392,11 @@ SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim,
                     }
                   else if (octave::math::isnan (tmp))
                     continue;
-                  else if (ix == -1 || octave::math::isnan (elem (ir, ix)) ||
-                           tmp.real () > elem (ir, ix).real ())
+                  else if (ix == -1 || octave::math::isnan (elem (ir, ix))
+                           || tmp.real () > elem (ir, ix).real ())
                     idx_arg.elem (ir) = j;
-                  else if (tmp.real () == elem (ir, ix).real () &&
-                           tmp.imag () > elem (ir, ix).imag ())
+                  else if (tmp.real () == elem (ir, ix).real ()
+                           && tmp.imag () > elem (ir, ix).imag ())
                     idx_arg.elem (ir) = j;
                 }
             }
@@ -418,11 +418,11 @@ SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim,
                     }
                   else if (octave::math::isnan (tmp))
                     continue;
-                  else if (ix == -1 || octave::math::isnan (elem (ir, ix)) ||
-                           std::abs (tmp) > std::abs (elem (ir, ix)))
+                  else if (ix == -1 || octave::math::isnan (elem (ir, ix))
+                           || std::abs (tmp) > std::abs (elem (ir, ix)))
                     idx_arg.elem (ir) = j;
-                  else if (std::abs (tmp) == std::abs (elem (ir, ix)) &&
-                           std::arg (tmp) > std::arg (elem (ir, ix)))
+                  else if (std::abs (tmp) == std::abs (elem (ir, ix))
+                           && std::arg (tmp) > std::arg (elem (ir, ix)))
                     idx_arg.elem (ir) = j;
                 }
             }
@@ -674,11 +674,11 @@ SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim,
                     }
                   else if (octave::math::isnan (tmp))
                     continue;
-                  else if (ix == -1 || octave::math::isnan (elem (ir, ix)) ||
-                           tmp.real () < elem (ir, ix).real ())
+                  else if (ix == -1 || octave::math::isnan (elem (ir, ix))
+                           || tmp.real () < elem (ir, ix).real ())
                     idx_arg.elem (ir) = j;
-                  else if (tmp.real () == elem (ir, ix).real () &&
-                           tmp.imag () < elem (ir, ix).imag ())
+                  else if (tmp.real () == elem (ir, ix).real ()
+                           && tmp.imag () < elem (ir, ix).imag ())
                     idx_arg.elem (ir) = j;
                 }
             }
@@ -700,11 +700,11 @@ SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim,
                     }
                   else if (octave::math::isnan (tmp))
                     continue;
-                  else if (ix == -1 || octave::math::isnan (elem (ir, ix)) ||
-                           std::abs (tmp) < std::abs (elem (ir, ix)))
+                  else if (ix == -1 || octave::math::isnan (elem (ir, ix))
+                           || std::abs (tmp) < std::abs (elem (ir, ix)))
                     idx_arg.elem (ir) = j;
-                  else if (std::abs (tmp) == std::abs (elem (ir, ix)) &&
-                           std::arg (tmp) < std::arg (elem (ir, ix)))
+                  else if (std::abs (tmp) == std::abs (elem (ir, ix))
+                           && std::arg (tmp) < std::arg (elem (ir, ix)))
                     idx_arg.elem (ir) = j;
                 }
             }

@@ -591,11 +591,12 @@ min (const std::complex<double>& x, const std::complex<double>& y,
     out = NAN;
   else if (realabs)
     out = isnan (y) ? x : (std::real (x) < std::real (y) ? x :
-          (std::real (x) == std::real (y) &&
-           std::imag (x) <= std::imag (y) ? x : y));
+          (   std::real (x) == std::real (y)
+           && std::imag (x) <= std::imag (y) ? x : y));
   else
     out = isnan (y) ? x : (std::abs (x) < std::abs (y) ? x :
-          (std::abs (x) == std::abs (y) && std::arg (x) <= std::arg (y) ? x : y));
+          (   std::abs (x) == std::abs (y)
+           && std::arg (x) <= std::arg (y) ? x : y));
   return out;
 }
 
@@ -608,8 +609,8 @@ max (const std::complex<double>& x, const std::complex<double>& y,
     out = NAN;
   else if (realabs)
     out = isnan (y) ? x : (std::real (x) > std::real (y) ? x :
-          (std::real (x) == std::real (y) &&
-           std::imag (x) >= std::imag (y) ? x : y));
+          (   std::real (x) == std::real (y)
+           && std::imag (x) >= std::imag (y) ? x : y));
   else
     out = isnan (y) ? x : (std::abs (x) > std::abs (y) ? x :
           (std::abs (x) == std::abs (y) && std::arg (x) >= std::arg (y) ? x : y));
@@ -665,8 +666,8 @@ min (const std::complex<float>& x, const std::complex<float>& y,
     out = NAN;
   else if (realabs)
     out = isnan (y) ? x : (std::real (x) < std::real (y) ? x :
-          (std::real (x) == std::real (y) &&
-           std::imag (x) <= std::imag (y) ? x : y));
+          (   std::real (x) == std::real (y)
+           && std::imag (x) <= std::imag (y) ? x : y));
   else
     out = isnan (y) ? x : (std::abs (x) < std::abs (y) ? x :
           (std::abs (x) == std::abs (y) && std::arg (x) <= std::arg (y) ? x : y));
@@ -682,8 +683,8 @@ max (const std::complex<float>& x, const std::complex<float>& y,
     out = NAN;
   else if (realabs)
     out = isnan (y) ? x : (std::real (x) > std::real (y) ? x :
-          (std::real (x) == std::real (y) &&
-           std::imag (x) >= std::imag (y) ? x : y));
+          (   std::real (x) == std::real (y)
+           && std::imag (x) >= std::imag (y) ? x : y));
   else
     out = isnan (y) ? x : (std::abs (x) > std::abs (y) ? x :
           (std::abs (x) == std::abs (y) && std::arg (x) >= std::arg (y) ? x : y));
@@ -730,8 +731,8 @@ min (const octave_int<T>& x, const octave_int<T>& y,
     out = x.value () <= y.value () ? x : y;
   else
     out = mappers_abs (x) < mappers_abs (y) ? x :
-          (mappers_abs (x) == mappers_abs (y) &&
-           x.value () <= y.value () ? x : y);
+          (   mappers_abs (x) == mappers_abs (y)
+           && x.value () <= y.value () ? x : y);
   return out;
 }
 
@@ -745,8 +746,8 @@ max (const octave_int<T>& x, const octave_int<T>& y,
     out = x.value () >= y.value () ? x : y;
   else
     out = mappers_abs (x) > mappers_abs (y) ? x :
-          (mappers_abs (x) == mappers_abs (y) &&
-           x.value () >= y.value () ? x : y);
+          (   mappers_abs (x) == mappers_abs (y)
+           && x.value () >= y.value () ? x : y);
   return out;
 }
 

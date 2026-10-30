@@ -1044,8 +1044,8 @@ file_system_browser::get_selected_items_info (bool dir)
     {
       QFileInfo info = m_file_system_model->fileInfo (idx);
 
-      if (info.exists () &&
-          ((dir & info.isDir ()) || (! dir && info.isFile ())))
+      if (info.exists ()
+          && ((dir & info.isDir ()) || (! dir && info.isFile ())))
         infos.append (info);
     }
 

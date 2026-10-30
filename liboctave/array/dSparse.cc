@@ -369,8 +369,8 @@ SparseMatrix::max (Array<octave_idx_type>& idx_arg, int dim,
                     }
                   else if (octave::math::isnan (tmp))
                     continue;
-                  else if (ix == -1 || octave::math::isnan (elem (ir, ix)) ||
-                           tmp > elem (ir, ix))
+                  else if (ix == -1 || octave::math::isnan (elem (ir, ix))
+                           || tmp > elem (ir, ix))
                     idx_arg.elem (ir) = j;
                 }
             }
@@ -392,11 +392,11 @@ SparseMatrix::max (Array<octave_idx_type>& idx_arg, int dim,
                     }
                   else if (octave::math::isnan (tmp))
                     continue;
-                  else if (ix == -1 || octave::math::isnan (elem (ir, ix)) ||
-                           std::abs (tmp) > std::abs (elem (ir, ix)))
+                  else if (ix == -1 || octave::math::isnan (elem (ir, ix))
+                           || std::abs (tmp) > std::abs (elem (ir, ix)))
                     idx_arg.elem (ir) = j;
-                  else if (std::abs (tmp) == std::abs (elem (ir, ix)) &&
-                           tmp > elem (ir, ix))
+                  else if (std::abs (tmp) == std::abs (elem (ir, ix))
+                           && tmp > elem (ir, ix))
                     idx_arg.elem (ir) = j;
                 }
             }
@@ -625,8 +625,8 @@ SparseMatrix::min (Array<octave_idx_type>& idx_arg, int dim,
                     }
                   else if (octave::math::isnan (tmp))
                     continue;
-                  else if (ix == -1 || octave::math::isnan (elem (ir, ix)) ||
-                           tmp < elem (ir, ix))
+                  else if (ix == -1 || octave::math::isnan (elem (ir, ix))
+                           || tmp < elem (ir, ix))
                     idx_arg.elem (ir) = j;
                 }
             }
@@ -648,11 +648,11 @@ SparseMatrix::min (Array<octave_idx_type>& idx_arg, int dim,
                     }
                   else if (octave::math::isnan (tmp))
                     continue;
-                  else if (ix == -1 || octave::math::isnan (elem (ir, ix)) ||
-                           std::abs (tmp) < std::abs (elem (ir, ix)))
+                  else if (ix == -1 || octave::math::isnan (elem (ir, ix))
+                           || std::abs (tmp) < std::abs (elem (ir, ix)))
                     idx_arg.elem (ir) = j;
-                  else if (std::abs (tmp) == std::abs (elem (ir, ix)) &&
-                           tmp < elem (ir, ix))
+                  else if (std::abs (tmp) == std::abs (elem (ir, ix))
+                           && tmp < elem (ir, ix))
                     idx_arg.elem (ir) = j;
                 }
             }

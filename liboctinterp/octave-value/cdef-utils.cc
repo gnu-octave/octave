@@ -489,8 +489,10 @@ compute_attribute_value (tree_evaluator& tw,
 {
   tree_expression *expr = t->expression ();
 
+  // A bare attribute is true and a negated one, written ~Name or !Name, is
+  // false.  validate_access rejects either as an access value.
   if (! expr)
-    return octave_value (true);
+    return octave_value (! t->negate ());
 
   std::string attr = t->ident ()->name ();
 

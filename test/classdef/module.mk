@@ -83,6 +83,10 @@ classdef_TEST_FILES = \
   %reldir%/class_methods_abstract.m \
   %reldir%/class_methods_ctor_hidden.m \
   %reldir%/class_methods_ctor_private.m \
+  %reldir%/class_negated_access.m \
+  %reldir%/class_negated_attribute.m \
+  %reldir%/class_negated_property.m \
+  %reldir%/class_negated_static.m \
   %reldir%/class_pair.m \
   %reldir%/class_pair_elem.m \
   %reldir%/class_pair_elem_dominant.m \

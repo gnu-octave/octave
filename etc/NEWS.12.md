@@ -87,7 +87,7 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   argument from `methods` still includes them.
 
 * `handle` objects can now be compared with `==`, `~=`, `<`, `<=`, `>`, and
-* `>=`, as in Matlab.  Two handles are equal when they are the same object, and
+  `>=`, as in Matlab.  Two handles are equal when they are the same object, and
   handles are ordered by the order in which they were created.  A class that
   declares no constructor now lists its implicit constructor in `MethodList`
   and `methods`, and `MethodList` includes declared constructors.  `methods`
@@ -121,6 +121,10 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   reaches the property and function-call syntax the method.  A property private
   to a superclass does not hide a subclass method of the same name.  A property
   and a method of the same name in one class remain an error.
+
+* A negated `classdef` attribute, written `~Name` or `!Name`, is now false,
+  as in Matlab.  It was read as true, so that `methods (~Static)` declared
+  static methods.  A negated access attribute is an error.
 
 ### Alphabetical list of new functions added in Octave 12
 

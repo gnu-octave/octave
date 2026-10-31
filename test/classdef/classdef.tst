@@ -2540,3 +2540,51 @@
 %! str = evalc ("methods ('handle_subclass')");
 %! assert (strfind (str, 'Methods of handle_subclass inherited from handle.'));
 %! assert (isempty (strfind (str, 'delete')));
+
+## A negated attribute, written ~Name or !Name, is false
+%!test
+%! mc = ?class_negated_attribute;
+%! assert (mc.Hidden, false);
+
+%!test
+%! mc = ?class_negated_attribute;
+%! assert (mc.PropertyList.Hidden, false);
+
+%!test
+%! mc = ?class_negated_attribute;
+%! m = mc.MethodList(strcmp ({mc.MethodList.Name}, 'f'));
+%! assert (m.Hidden, false);
+
+%!test
+%! obj = class_negated_attribute ();
+%! assert (properties (obj), {'p'});
+
+%!test
+%! mc = ?class_negated_static;
+%! m = mc.MethodList(strcmp ({mc.MethodList.Name}, 'f'));
+%! assert (m.Static, false);
+
+%!test
+%! mc = ?class_negated_static;
+%! m = mc.MethodList(strcmp ({mc.MethodList.Name}, 'g'));
+%! assert (m.Static, false);
+
+%!test
+%! mc = ?class_negated_property;
+%! assert (mc.Sealed, false);
+
+%!test
+%! mc = ?class_negated_property;
+%! assert (mc.PropertyList.Constant, false);
+
+%!test
+%! mc = ?class_negated_property;
+%! assert (mc.PropertyList.Dependent, false);
+
+%!test
+%! obj = class_negated_property ();
+%! obj.p = 3;
+%! assert (obj.p, 3);
+
+%!error <invalid Access value of type 'bool' for method 'f' in class 'class_negated_access'>
+%! obj = class_negated_access ();

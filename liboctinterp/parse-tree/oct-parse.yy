@@ -4282,7 +4282,7 @@ base_parser::make_classdef_attribute (tree_identifier *id, token *eq_tok, tree_e
 tree_classdef_attribute *
 base_parser::make_not_classdef_attribute (token *not_tok, tree_identifier *id)
 {
-  return new tree_classdef_attribute (*not_tok, id, false);
+  return new tree_classdef_attribute (*not_tok, id, true);
 }
 
 tree_classdef_attribute_list *

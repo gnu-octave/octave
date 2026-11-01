@@ -762,6 +762,18 @@ cdef_object_scalar::subsref (const std::string& type,
 
         cdef_property prop = cls.find_property (name);
 
+        // Dot syntax reaches a property before a method of the same name,
+        // unless the property is private to a class that this context cannot
+        // see into, as in Matlab.
+        if (prop.ok () && cls.find_method (name).ok ())
+          {
+            octave_value acc = prop.get ("GetAccess");
+
+            if (acc.is_string () && acc.string_value () == "private"
+                && ! prop.check_get_access ())
+              prop = cdef_property ();
+          }
+
         if (prop.ok ())
           {
             if (prop.is_constant ())
@@ -904,7 +916,7 @@ cdef_object_scalar::subsasgn (const std::string& type,
                                 && std::ranges::all_of
                                   (std::views::iota (octave_idx_type (0),
                                                      before.numel ()),
-                                   [&] (octave_idx_type i)
+                                   [&before, &after] (octave_idx_type i)
                                    { return before(i).is (after(i)); }));
               }
 
@@ -1015,6 +1027,8 @@ cdef_object_scalar::mark_as_constructed (const cdef_class& cls)
 {
   m_ctor_list.erase (cls);
 }
+
+std::uint64_t handle_cdef_object::s_creation_count = 0;
 
 handle_cdef_object::~handle_cdef_object ()
 {

@@ -76,8 +76,8 @@ function retval = get_validated_pkg_list (force_refresh = false, verbose = false
       for i = 1:numel (cache_files)
         fname = cache_files(i).name;
         ## Extract timestamp: packages_yyyymmddHHMM.json
-        if (length (fname) == 26 && strcmp (fname(1:9), "packages_") &&
-            strcmp (fname(22:26), ".json"))
+        if (length (fname) == 26 && strcmp (fname(1:9), "packages_")
+            && strcmp (fname(22:26), ".json"))
           timestamp_str = fname(10:21);
 
           try

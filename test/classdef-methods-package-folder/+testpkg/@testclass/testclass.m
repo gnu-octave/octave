@@ -1,7 +1,7 @@
 classdef testclass
 
   properties (Constant)
-    # functions
+    ## functions
     n = 'nested_function';
     m = 'method_function';
     m2 = 'method_external_function';
@@ -11,7 +11,7 @@ classdef testclass
     s2o = 'obj.static_external_function';
     l = 'local_function';
     p = 'private_function';
-    # function handles
+    ## function handles
     hn = '@nested_function';
     hm = '@method_function';
     hmo = '@obj.method_function';

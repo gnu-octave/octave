@@ -79,7 +79,7 @@ function load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst,
         __event_manager_register_documentation__ (qt_help_files{ii});
       endif
     catch
-      # do nothing
+      ## do nothing
     end_try_catch
   endfor
 

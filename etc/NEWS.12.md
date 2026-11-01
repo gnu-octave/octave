@@ -77,20 +77,54 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   The historical names `SuperClasses` and `SuperClassList` remain available
   as hidden aliases of `SuperclassList`.
 
-* Classes with unimplemented abstract methods or properties are abstract
-  and cannot be instantiated.  Unknown class, property, and method
-  attributes are now an error, as in Matlab.  The `Description` and
-  `DetailedDescription` attributes affect metadata without replacing class
-  help text.
+* Classes with unimplemented abstract methods or properties are abstract and
+  cannot be instantiated.  Unknown class, property, and method attributes are
+  now an error, as in Matlab.  The `Description` and `DetailedDescription`
+  attributes affect metadata without replacing class help text.
 
-* `methods` no longer lists the methods that a class inherits from `handle`,
-  as in Matlab.
+* `methods` no longer prints the methods that a class inherits from `handle`,
+  as in Matlab, but does note that some such methods exist; the list output
+  argument from `methods` still includes them.
+
+* `handle` objects can now be compared with `==`, `~=`, `<`, `<=`, `>`, and
+  `>=`, as in Matlab.  Two handles are equal when they are the same object, and
+  handles are ordered by the order in which they were created.  A class that
+  declares no constructor now lists its implicit constructor in `MethodList`
+  and `methods`, and `MethodList` includes declared constructors.  `methods`
+  omits a private or hidden constructor.
 
 * A `classdef` subclass can no longer declare a property that a superclass
   already declares, except to implement an abstract property.  Matlab also
   allows it when the superclass property is private (both its `GetAccess`
   and `SetAccess`).
   Octave does not support that case yet and says so in its error message.
+
+* A `classdef` class whose superclasses define different properties of the
+  same name is now rejected when the class is defined, not when the property
+  is first used.  A property that two superclasses inherit from a common
+  superclass is no longer a conflict (bug #68227), and a concrete property
+  that is not private implements an abstract one of the same name from
+  another superclass.  Matlab also allows the conflict when all but one of
+  the properties are private.  Octave does not support this case yet and
+  says so in its error message.
+
+* The values of the `Access`, `GetAccess`, and `SetAccess` attributes of
+  `classdef` members are now read as written, as in Matlab, and a name in
+  them is no longer called as a function (bug #65214).  They accept the
+  access levels, a quoted access level, `?ClassName`, and a cell array of
+  `?ClassName` queries.  Other attributes still accept expressions.
+
+* A `classdef` method that overrides an inherited one now takes precedence over
+  it, even when another superclass brings the inherited method too, as in
+  Matlab, instead of being a conflict.  A property may now share its name
+  with an inherited method, and a method with an inherited property: dot syntax
+  reaches the property and function-call syntax the method.  A property private
+  to a superclass does not hide a subclass method of the same name.  A property
+  and a method of the same name in one class remain an error.
+
+* A negated `classdef` attribute, written `~Name` or `!Name`, is now false,
+  as in Matlab.  It was read as true, so that `methods (~Static)` declared
+  static methods.  A negated access attribute is an error.
 
 ### Alphabetical list of new functions added in Octave 12
 

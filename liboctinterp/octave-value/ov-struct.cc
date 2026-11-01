@@ -1945,8 +1945,8 @@ orderfields, isstruct, structfun}
 %!      'struct: additional arguments must occur as "field", VALUE pairs')
 
 %!test <*67255>  # Test empty string as field name
-% s.('') = 3;
-% assert (struct ('', 3), s)
+%! s.('') = 3;
+%! assert (struct ('', 3), s)
 */
 
 DEFUN (isstruct, args, ,
@@ -2218,7 +2218,7 @@ S(1)
 %!error cell2struct ({1, 2, 3, 4}, {'a', 'b'; 'c', 'd'})
 
 %!test <*67255>  # Test empty string as field name
-% assert (cell2struct ({3}, {''}), struct ('', {3}))
+%! assert (cell2struct ({3}, {''}), struct ('', {3}));
 */
 
 DEFUN (rmfield, args, ,

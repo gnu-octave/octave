@@ -27,9 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <algorithm>
-#include <cctype>
-
 #include "cdef-class.h"
 #include "cdef-manager.h"
 #include "cdef-method.h"
@@ -39,6 +36,7 @@
 #include "interpreter-private.h"
 #include "ov-classdef.h"
 #include "ov-usr-fcn.h"
+#include "pt-cell.h"
 #include "pt-classdef.h"
 #include "pt-eval.h"
 
@@ -453,6 +451,8 @@ validate_access (const octave_value& value, const std::string& attribute,
     }
   else if (is_access_list (value))
     return;
+  else if (value.is_undefined ())
+    invalid = "given by an expression";
   else
     invalid = "of type '" + value.type_name () + "'";
 
@@ -463,42 +463,66 @@ validate_access (const octave_value& value, const std::string& attribute,
          : "'public', 'protected', 'private', or a list of classes");
 }
 
+// True if EXPR is a quoted string, a metaclass query, or a cell array of
+// metaclass queries, which can be evaluated without calling any function.
+
+static bool
+is_access_literal (tree_expression *expr)
+{
+  if (expr->is_constant () || dynamic_cast<tree_metaclass_query *> (expr))
+    return true;
+
+  if (! expr->iscell ())
+    return false;
+
+  for (const tree_argument_list *row : *dynamic_cast<tree_cell *> (expr))
+    for (const tree_expression *elt : *row)
+      if (! dynamic_cast<const tree_metaclass_query *> (elt))
+        return false;
+
+  return true;
+}
+
 octave_value
 compute_attribute_value (tree_evaluator& tw,
                          tree_classdef_attribute *t)
 {
   tree_expression *expr = t->expression ();
 
-  if (expr)
+  // A bare attribute is true and a negated one, written ~Name or !Name, is
+  // false.  validate_access rejects either as an access value.
+  if (! expr)
+    return octave_value (! t->negate ());
+
+  std::string attr = t->ident ()->name ();
+
+  if (attr == "Access" || attr == "GetAccess" || attr == "SetAccess")
     {
+      // An access value is read as written, as in Matlab, so that a name in
+      // it is never called as a function (bug #65214).  validate_access
+      // refuses a word that is not an access level, including one with the
+      // wrong capitalization, and the undefined value returned for any other
+      // expression.
       if (expr->is_identifier ())
-        {
-          std::string s = expr->name ();
+        return octave_value (expr->name ());
 
-          if (s == "true")
-            return octave_value (true);
-          else if (s == "false")
-            return octave_value (false);
-
-          std::string attr = t->ident ()->name ();
-
-          if (attr == "Access" || attr == "GetAccess" || attr == "SetAccess")
-            {
-              // Diagnose incorrect capitalization as an attribute value,
-              // rather than as an undefined variable.
-              std::string lower = s;
-              std::transform (lower.begin (), lower.end (), lower.begin (),
-                              [] (unsigned char c) { return std::tolower (c); });
-              if (lower == "public" || lower == "protected"
-                  || lower == "private" || lower == "immutable")
-                return octave_value (s);
-            }
-        }
+      if (! is_access_literal (expr))
+        return octave_value ();
 
       return expr->evaluate (tw);
     }
-  else
-    return octave_value (true);
+
+  if (expr->is_identifier ())
+    {
+      std::string s = expr->name ();
+
+      if (s == "true")
+        return octave_value (true);
+      else if (s == "false")
+        return octave_value (false);
+    }
+
+  return expr->evaluate (tw);
 }
 
 Array<cdef_object>

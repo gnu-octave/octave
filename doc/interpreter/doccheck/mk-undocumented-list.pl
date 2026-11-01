@@ -112,10 +112,10 @@ print "\n";
 exit (1);
 
 ################################################################################
-# Exception list of functions not requiring a DOCSTRING
+## Exception list of functions not requiring a DOCSTRING
 ################################################################################
-# desktop : Remove when terminal widget is no longer experimental
-# bytecode : Remove when VM is no longer experimental
+## desktop : Remove when terminal widget is no longer experimental
+## bytecode : Remove when VM is no longer experimental
 ################################################################################
 __DATA__
 angle

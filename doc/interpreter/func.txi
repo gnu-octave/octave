@@ -1301,8 +1301,7 @@ effect, like this:
 
 @example
 @group
-# Prevent Octave from thinking that this
-# is a function file:
+# Stop Octave from thinking this is a function file:
 
 1;
 
@@ -1471,8 +1470,8 @@ given below:
 @end group
 @end example
 
-Additionally two trademark symbols are supported, just embrace the letters
-@samp{TM} or @samp{R}.
+Additionally two trademark symbols are supported, just enclose the letters
+@samp{TM} or @samp{R} with parentheses.
 
 @example
 @group

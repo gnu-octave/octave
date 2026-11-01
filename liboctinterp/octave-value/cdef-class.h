@@ -225,6 +225,16 @@ private:
     OCTINTERP_API void
     install_method (const cdef_method& meth);
 
+    //! Record the implicit constructor of a class that declares none.
+    //!
+    //! It is listed with the methods of the class but never installed among
+    //! them, since it has no function to run.
+    void set_implicit_constructor (const cdef_method& ctor)
+    {
+      m_implicit_ctor = ctor;
+      m_member_count++;
+    }
+
     //! Report inherited method ambiguities that no local method has resolved.
     //!
     //! Call after installing local declarations, and before using this class
@@ -239,6 +249,13 @@ private:
                     bool include_ctor = false) const;
 
     OCTINTERP_API cdef_property find_property (const std::string& nm) const;
+
+    //! Report properties of the same name that two superclasses define
+    //! differently.
+    //!
+    //! Call after installing local declarations, since a local property may
+    //! implement abstract inherited ones.
+    OCTINTERP_API void check_property_conflicts () const;
 
     OCTINTERP_API void install_property (const cdef_property& prop);
 
@@ -302,6 +319,7 @@ private:
           cdef_class lock (this);
 
           m_member_count = 0;
+          m_implicit_ctor = cdef_method ();
           m_method_map.clear ();
           m_property_map.clear ();
           m_property_rank_map.clear ();
@@ -356,6 +374,9 @@ private:
     // The methods defined by this class.
 
     std::map<std::string, cdef_method> m_method_map;
+
+    //! The implicit constructor, for a class that declares none.
+    cdef_method m_implicit_ctor;
 
     //! Inherited ambiguities that a local method can resolve.
     std::map<std::string, std::pair<std::string, std::string>>

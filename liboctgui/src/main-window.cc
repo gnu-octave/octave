@@ -1432,8 +1432,7 @@ main_window::request_open_file ()
   fileDialog.setFileMode (QFileDialog::ExistingFiles);
 
   QString directory = m_current_directory_combo_box->itemText (0);
-  if (is_internal &&
-      settings.bool_value (ed_open_dlg_follows_file))
+  if (is_internal && settings.bool_value (ed_open_dlg_follows_file))
     {
       // Get directory of current editor file.  If it is still empty (new
       // editor tab), the last directory is selected by the file dialog.

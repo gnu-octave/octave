@@ -140,8 +140,8 @@ function h = fill (varargin)
       endif
 
       ## Test for color specification as text ('r') or RGB triple.
-      if (ischar (cdata) ||
-          (all (size (cdata) == [1, 3]) && all (cdata >= 0 & cdata <= 1)))
+      if (ischar (cdata)
+          || (all (size (cdata) == [1, 3]) && all (cdata >= 0 & cdata <= 1)))
         one_color = true;
       else
         one_color = false;

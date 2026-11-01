@@ -143,9 +143,10 @@ static inline void parseNumbersArray(const QChar *&str, QVarLengthArray<qreal, 8
     const size_t patternLen = qstrlen(pattern);
     while (str->isSpace())
         ++str;
-    while (isDigit(str->unicode()) ||
-           *str == QLatin1Char('-') || *str == QLatin1Char('+') ||
-           *str == QLatin1Char('.')) {
+    while (isDigit(str->unicode())
+           || *str == QLatin1Char('-')
+           || *str == QLatin1Char('+')
+           || *str == QLatin1Char('.')) {
 
         if (patternLen && pattern[points.size() % patternLen] == 'f') {
             // flag expected, may only be 0 or 1
@@ -628,8 +629,8 @@ static bool parsePathDataFast(const QStringRef &dataStr, QPainterPath &path)
                     break;
                 }
                 QPointF c1;
-                if (lastMode == 'c' || lastMode == 'C' ||
-                    lastMode == 's' || lastMode == 'S')
+                if (   lastMode == 'c' || lastMode == 'C'
+                    || lastMode == 's' || lastMode == 'S')
                     c1 = QPointF(2*x-ctrlPt.x(), 2*y-ctrlPt.y());
                 else
                     c1 = QPointF(x, y);
@@ -649,8 +650,8 @@ static bool parsePathDataFast(const QStringRef &dataStr, QPainterPath &path)
                     break;
                 }
                 QPointF c1;
-                if (lastMode == 'c' || lastMode == 'C' ||
-                    lastMode == 's' || lastMode == 'S')
+                if (   lastMode == 'c' || lastMode == 'C'
+                    || lastMode == 's' || lastMode == 'S')
                     c1 = QPointF(2*x-ctrlPt.x(), 2*y-ctrlPt.y());
                 else
                     c1 = QPointF(x, y);
@@ -703,8 +704,8 @@ static bool parsePathDataFast(const QStringRef &dataStr, QPainterPath &path)
                 num += 2;
                 count -= 2;
                 QPointF c;
-                if (lastMode == 'q' || lastMode == 'Q' ||
-                    lastMode == 't' || lastMode == 'T')
+                if (   lastMode == 'q' || lastMode == 'Q'
+                    || lastMode == 't' || lastMode == 'T')
                     c = QPointF(2*x-ctrlPt.x(), 2*y-ctrlPt.y());
                 else
                     c = QPointF(x, y);
@@ -723,8 +724,8 @@ static bool parsePathDataFast(const QStringRef &dataStr, QPainterPath &path)
                 num += 2;
                 count -= 2;
                 QPointF c;
-                if (lastMode == 'q' || lastMode == 'Q' ||
-                    lastMode == 't' || lastMode == 'T')
+                if (   lastMode == 'q' || lastMode == 'Q'
+                    || lastMode == 't' || lastMode == 'T')
                     c = QPointF(2*x-ctrlPt.x(), 2*y-ctrlPt.y());
                 else
                     c = QPointF(x, y);

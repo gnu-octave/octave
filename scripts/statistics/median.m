@@ -338,7 +338,7 @@ function m = median (x, varargin)
   ## Dense inputs use nth_element for O(n) selection instead of O(n log n) sort.
 
   if (xsparse)
-    # use sort for sparse matrices to retain sparsity of output
+    ## use sort for sparse matrices to retain sparsity of output
     x = sort (x, dim);
 
     if (omitnan)

@@ -23,17 +23,17 @@
 ##
 ########################################################################
 
-# List of supported symbols for the TeX interpreter
-# Reference: http://www.mathworks.com/help/matlab/ref/text_props.html
-#
-# Column 1 : symbol name
-# Column 2 : Unicode code
-# Column 3 : MS symbol code (http://www.kostis.net/charsets/symbol.htm)
-#
-# Arranged by listings in The TeXbook, Appendix F:
-# Greek lowercase letters, Greek uppercase, Misc Symbols type Ord,
-# "Large" operators, Binary operators, Relations, Negated relations, Arrows,
-# Openings, Closings, Alternate names, and Other (not in Appendix F Tables).
+## List of supported symbols for the TeX interpreter
+## Reference: http://www.mathworks.com/help/matlab/ref/text_props.html
+##
+## Column 1 : symbol name
+## Column 2 : Unicode code
+## Column 3 : MS symbol code (http://www.kostis.net/charsets/symbol.htm)
+##
+## Arranged by listings in The TeXbook, Appendix F:
+## Greek lowercase letters, Greek uppercase, Misc Symbols type Ord,
+## "Large" operators, Binary operators, Relations, Negated relations, Arrows,
+## Openings, Closings, Alternate names, and Other (not in Appendix F Tables).
 
 alpha           0x03B1  0xF061
 beta            0x03B2  0xF062

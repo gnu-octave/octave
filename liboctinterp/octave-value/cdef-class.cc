@@ -167,10 +167,11 @@ cdef_class::cdef_class_rep::cdef_class_rep
 
           superclass.get_rep ()->check_method_conflicts ();
 
-          // Look into the superclass method maps.  If we detect conflicting
-          // methods, then check if their DefiningClass is the same.  If yes,
-          // that's okay (diamond inheritance), otherwise defer the error until
-          // local overrides are installed.
+          // Look into the superclass method maps.  A method reached through
+          // two superclasses is one method when both have the same
+          // DefiningClass (diamond inheritance), and an override beats the
+          // method it overrides, as in Matlab.  Any other conflict is deferred
+          // until local overrides are installed.
           auto superclass_m_map = superclass.get_method_map ();
 
           for (const auto& pair : superclass_m_map)
@@ -183,16 +184,21 @@ cdef_class::cdef_class_rep::cdef_class_rep
 
               auto it = m_method_map.find (pair.first);
 
-              if (it != m_method_map.end ())
+              if (it == m_method_map.end ())
                 {
-                  std::string nm_1 = pair.second.get_defining_class ().get_name ();
-                  std::string nm_2 = it->second.get_defining_class ().get_name ();
-
-                  if (nm_1 != nm_2)
-                    m_method_conflicts.try_emplace (pair.first, nm_2, nm_1);
+                  m_method_map.insert (pair);
+                  continue;
                 }
 
-              m_method_map.insert (pair);
+              cdef_class cls_new = pair.second.get_defining_class ();
+              cdef_class cls_old = it->second.get_defining_class ();
+
+              if (is_strict_superclass (cls_old, cls_new))
+                it->second = pair.second;
+              else if (cls_new != cls_old
+                       && ! is_strict_superclass (cls_new, cls_old))
+                m_method_conflicts.try_emplace (pair.first, cls_old.get_name (),
+                                                cls_new.get_name ());
             }
         }
     }
@@ -369,7 +375,7 @@ cdef_class::cdef_class_rep::get (const std::string& pname) const
         }
       else if (pname == "Methods" || pname == "MethodList")
         {
-          return to_ov (get_methods ());
+          return to_ov (get_methods (true));
         }
       else if (pname == "Properties" || pname == "PropertyList")
         {
@@ -564,15 +570,16 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
         }
     }
 
-  // Check that it does not conflict with the property names
+  // Check that it does not conflict with the names of the properties declared
+  // in this class.  A method may share its name with an inherited property,
+  // as in Matlab: dot syntax reaches the property and function-call syntax
+  // the method.
   //
   // There is one case where the method and the property names can match (see
   // bug #67361): If the classdef is defined within a class folder and the
   // method is externally defined, and the method signature is not in the
   // classdef file, then the method and a property can have the same name.
-  cdef_property prop = find_property (mname);
-
-  if (prop.ok () && ! meth.is_external ())
+  if (m_property_map.contains (mname) && ! meth.is_external ())
     {
       error ("property and method are both named '%s' in class '%s' in file '%s'",
              mname.c_str (), get_name ().c_str (), file_name ().c_str ());
@@ -683,6 +690,9 @@ cdef_class::cdef_class_rep::get_method_map (member_mode mode,
   std::map<std::string, cdef_method> retval = m_method_map;
   std::string this_name = get_name ();
 
+  if (include_ctor && m_implicit_ctor.ok ())
+    retval.emplace (m_implicit_ctor.get_name (), m_implicit_ctor);
+
   if (mode == member_mode::declared)
     std::erase_if (retval, [this_name](const auto& pair) {
       return pair.second.get_defining_class ().get_name () != this_name;
@@ -725,37 +735,116 @@ cdef_class::cdef_class_rep::find_property (const std::string& nm) const
         return prop;
     }
 
-  // Look into superclasses
+  // Look into superclasses.  Two superclasses may reach one declaration
+  // through a common superclass, and a concrete property implements an
+  // abstract one of the same name.  Any other definition of the same name in
+  // two superclasses was rejected when the class was defined, see
+  // check_property_conflicts.
 
   auto super_classes = get_superclass_list ();
-  cdef_class cls1;
-  int nfnd = 0;
+  cdef_property retval;
+
+  for (int i = 0; i < super_classes.numel (); i++)
+    {
+      cdef_property prop = cdef_class (super_classes(i)).find_property (nm);
+
+      if (prop.ok ()
+          && (! retval.ok ()
+              || (retval.get ("Abstract").bool_value ()
+                  && ! prop.get ("Abstract").bool_value ())))
+        retval = prop;
+    }
+
+  return retval;
+}
+
+void
+cdef_class::cdef_class_rep::check_property_conflicts () const
+{
+  auto super_classes = get_superclass_list ();
+
+  // A single superclass was checked when it was defined.
+  if (super_classes.numel () < 2)
+    return;
+
+  // The declarations of each name that this class does not declare itself.
+  // The same declaration reached through two superclasses is one property.
+  std::map<std::string, std::vector<cdef_property>> inherited;
 
   for (int i = 0; i < super_classes.numel (); i++)
     {
       cdef_class cls (super_classes(i));
 
-      cdef_property prop = cls.find_property (nm);
-
-      if (prop.ok ())
+      for (const auto& [key, prop] : cls.get_property_map (member_mode::all))
         {
-          nfnd++;
-          if (nfnd == 1)
-            cls1 = cls;
-          else if (nfnd == 2)
-            // FIXME: This error is emitted when a property with conflicting
-            //        definitions is attempted to be used.  Ideally, this
-            //        error would be emitted on construction of the object.
-            error ("property %s: conflicting definitions in classes '%s' and '%s'",
-                   nm.c_str (), cls1.get_name ().c_str (),
-                   cls.get_name ().c_str ());
+          if (m_property_map.contains (key.second))
+            continue;
+
+          std::vector<cdef_property>& decls = inherited[key.second];
+          cdef_class def_cls = prop.get_defining_class ();
+
+          auto same_cls = [&def_cls] (const cdef_property& p)
+          {
+            return p.get_defining_class () == def_cls;
+          };
+
+          if (std::ranges::none_of (decls, same_cls))
+            decls.push_back (prop);
         }
-     }
+    }
 
-  if (nfnd == 1)
-    return cls1.find_property (nm);
+  // A concrete property whose GetAccess and SetAccess are both private.
+  auto is_private = [] (const cdef_property& p)
+  {
+    octave_value get_acc = p.get ("GetAccess");
+    octave_value set_acc = p.get ("SetAccess");
 
-  return cdef_property ();
+    return (! p.get ("Abstract").bool_value ()
+            && get_acc.is_string () && get_acc.string_value () == "private"
+            && set_acc.is_string () && set_acc.string_value () == "private");
+  };
+
+  for (const auto& [name, decls] : inherited)
+    {
+      if (decls.size () < 2)
+        continue;
+
+      std::vector<std::string> visible;
+      std::size_t first_private = decls.size ();
+
+      for (std::size_t i = 0; i < decls.size (); i++)
+        {
+          if (is_private (decls[i]))
+            first_private = std::min (first_private, i);
+          else if (! decls[i].get ("Abstract").bool_value ())
+            visible.push_back (decls[i].get_defining_class ().get_name ());
+        }
+
+      if (visible.size () >= 2)
+        error ("property %s: conflicting definitions in classes '%s' and '%s'",
+               name.c_str (), visible[0].c_str (), visible[1].c_str ());
+
+      // One concrete property that is not private implements all abstract
+      // ones of the same name.
+      if (first_private == decls.size ())
+        continue;
+
+      // What remains are private properties besides at most one other concrete
+      // property and any abstract ones.  Matlab allows the case where all but
+      // one of the properties are private, and keeps a separate private
+      // property for each class, so a private property does not implement an
+      // abstract one either.  An object here keeps one value for each property
+      // name, so it could not.  Name the first private property and the first
+      // other one, in the order of the superclasses.
+      std::size_t other = (first_private == 0 ? 1 : 0);
+      std::size_t i_1 = std::min (first_private, other);
+      std::size_t i_2 = std::max (first_private, other);
+
+      error ("property '%s' in class '%s' in file '%s': Octave cannot inherit properties of the same name from superclasses '%s' and '%s' when one is private",
+             name.c_str (), get_name ().c_str (), file_name ().c_str (),
+             decls[i_1].get_defining_class ().get_name ().c_str (),
+             decls[i_2].get_defining_class ().get_name ().c_str ());
+    }
 }
 
 void
@@ -767,13 +856,13 @@ cdef_class::cdef_class_rep::install_property (const cdef_property& prop)
   if (prop_name == get_name ())
     error ("invalid property: A property cannot have the same name as the classdef it is in");
 
-  // Check if a method with the same name already exists before installing a
-  // new one.  We can check the current class's method map only because we know
-  // the inherited public and protected superclass methods are all flattened
-  // into the method map of the current classdef.
+  // Check that no method declared in this class has the same name.  The
+  // method map also holds the inherited public and protected methods, which a
+  // property may share its name with, as in Matlab.
   auto meth_it = m_method_map.find (prop_name);
 
-  if (meth_it != m_method_map.end ())
+  if (meth_it != m_method_map.end ()
+      && meth_it->second.get_defining_class ().get_name () == get_name ())
     {
       std::string class_file = file_name ();
       error ("property and method are both named '%s' in class '%s' in file '%s'",
@@ -883,6 +972,18 @@ cdef_class::cdef_class_rep::find_properties
 
       if (names.insert (nm).second)
         props[std::make_pair (rank, nm)] = it.second;
+      else if (! it.second.get ("Abstract").bool_value ())
+        {
+          // A concrete property implements an abstract one of the same name
+          // found earlier through another superclass.
+          auto prev = std::ranges::find_if (props, [&nm] (const auto& kp) {
+            return kp.first.second == nm;
+          });
+
+          if (prev != props.end ()
+              && prev->second.get ("Abstract").bool_value ())
+            prev->second = it.second;
+        }
 
       next_rank = std::max (next_rank, rank + 1);
     }
@@ -1086,9 +1187,12 @@ cdef_class::cdef_class_rep::initialize_object (cdef_object& obj)
   for (int i = 0; i < super_classes.numel (); i++)
     cdef_class (super_classes(i)).initialize_object (obj);
 
+  // An abstract property has no value of its own.  A concrete property of the
+  // same name, here or in another superclass, supplies it.
   for (const auto& pname_prop : m_property_map)
     {
-      if (! pname_prop.second.get ("Dependent").bool_value ())
+      if (! pname_prop.second.get ("Dependent").bool_value ()
+          && ! pname_prop.second.get ("Abstract").bool_value ())
         {
           octave_value pvalue = pname_prop.second.get ("DefaultValue");
 
@@ -1432,11 +1536,12 @@ cdef_class::make_meta_class (interpreter& interp,
   cdm.register_class (retval);
 
   bool complete = false;
-  unwind_action unregister_incomplete ([&] ()
-  {
-    if (! complete)
-      cdm.unregister_class (retval);
-  });
+  unwind_action unregister_incomplete
+    ([&complete, &cdm, &retval] ()
+     {
+       if (! complete)
+         cdm.unregister_class (retval);
+     });
 
   retval.file_name (t->file_name ());
   retval.doc_string (doc_string);
@@ -1544,6 +1649,14 @@ cdef_class::make_meta_class (interpreter& interp,
     }
 
   retval.get_rep ()->check_method_conflicts ();
+  retval.get_rep ()->check_property_conflicts ();
+
+  // A class that declares no constructor has an implicit one, public and
+  // taking no arguments, which MethodList and methods() list as Matlab does.
+  if (! retval.find_method (class_name, true).ok ())
+    retval.get_rep ()->set_implicit_constructor (cdef_method (retval,
+                                                              octave_value (),
+                                                              class_name));
 
   // Abstractness depends on the effective members after local overrides.
   // An explicitly abstract superclass may have a concrete subclass, but

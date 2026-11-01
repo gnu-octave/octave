@@ -1,5 +1,5 @@
-% Nested functions frame stored in handles would prevent parent frame
-% from being released causing memory leak.
+%% Nested functions frame stored in handles would prevent parent frame
+%% from being released causing memory leak.
 
 %!test <*64620>
 %! % Counts amount of alive cdef_counts_self handle objects

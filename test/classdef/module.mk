@@ -66,6 +66,10 @@ classdef_TEST_FILES = \
   %reldir%/class_bug61673B.m \
   %reldir%/class_bug61673C.m \
   %reldir%/class_bug61843.m \
+  %reldir%/class_bug65214_fcn.m \
+  %reldir%/class_bug65214A.m \
+  %reldir%/class_bug65214B.m \
+  %reldir%/class_bug65214C.m \
   %reldir%/class_bug66930A.m \
   %reldir%/class_bug66930B.m \
   %reldir%/class_bug67197A.m \
@@ -76,6 +80,13 @@ classdef_TEST_FILES = \
   %reldir%/class_bug67845B_handle.m \
   %reldir%/class_bug67845C.m \
   %reldir%/class_bug67845C_handle.m \
+  %reldir%/class_methods_abstract.m \
+  %reldir%/class_methods_ctor_hidden.m \
+  %reldir%/class_methods_ctor_private.m \
+  %reldir%/class_negated_access.m \
+  %reldir%/class_negated_attribute.m \
+  %reldir%/class_negated_property.m \
+  %reldir%/class_negated_static.m \
   %reldir%/class_pair.m \
   %reldir%/class_pair_elem.m \
   %reldir%/class_pair_elem_dominant.m \
@@ -92,6 +103,7 @@ classdef_TEST_FILES = \
   %reldir%/foo_value_class.m \
   %reldir%/get_set_class.m \
   %reldir%/handle_class.m \
+  %reldir%/handle_custom_eq.m \
   %reldir%/handle_subclass.m \
   %reldir%/invalid_override_property_class.m \
   %reldir%/overloaded_all_class.m \

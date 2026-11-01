@@ -23,10 +23,12 @@
 %!test
 %! obj = PackageBoth ();
 %! assert (obj.x, 2);
-%! for name = {'cdef_refactor.one.Same', 'cdef_refactor.two.Same', 'PackageBoth'}
+%! for name = {'cdef_refactor.one.Same', 'cdef_refactor.two.Same'}
 %!   mc = meta.class.fromName (name{1});
-%!   assert (! any (strcmp ({mc.MethodList.Name}, 'Same')));
+%!   assert (nnz (strcmp ({mc.MethodList.Name}, 'Same')), 1);
 %! endfor
+%! mc = ?PackageBoth;
+%! assert (! any (strcmp ({mc.MethodList.Name}, 'Same')));
 
 ## Package ownership is exposed both for packaged and unqualified classes.
 %!test
@@ -120,8 +122,8 @@
 %! obj = HandleNames ();
 %! assert ([obj.eq obj.ne obj.lt obj.le obj.gt obj.ge], 1:6);
 %! assert (HandleMixed () == HandleMixed ());
-%! assert (! any (ismember (methods ('handle'), ...
-%!                         {'eq', 'ne', 'lt', 'le', 'gt', 'ge'})));
+%! assert (all (ismember ({'eq', 'ne', 'lt', 'le', 'gt', 'ge'}, ...
+%!                       methods ('handle'))));
 %! assert (?HandleMixed == ?HandleMixed);
 %! assert (?HandleMixed != ?HandlePlain);
 %! assert (?HandleMixed < ?HandlePlain);
@@ -193,8 +195,9 @@
 %!   endfor
 %! endfor
 
-## A diamond with distinct method definitions requires a local override.
-%!error <method foo: conflicting definitions> DiamondConflict ()
+## An override beats the method it overrides, whichever superclass brings it.
+%!assert (DiamondConflict ().foo (), 4)
+%!assert (DiamondOverrideLast ().foo (), 4)
 %!test
 %! assert (DiamondResolve ().foo (), 5);
 
@@ -328,10 +331,12 @@
 %! assert (mc.Abstract);
 %! fail ('AbstractPropertyChild ()', 'cannot instantiate object for abstract class');
 
-## Methods inherited from handle are not listed, as in Matlab.
+## Methods inherited from handle are returned but not printed, as in Matlab.
 %!test
-%! assert (! any (strcmp (methods ('HandlePlain'), 'delete')));
-%! assert (! any (strcmp (methods (HandlePlain ()), 'delete')));
+%! assert (any (strcmp (methods ('HandlePlain'), 'delete')));
+%! assert (any (strcmp (methods (HandlePlain ()), 'delete')));
+%! str = evalc ("methods ('HandlePlain')");
+%! assert (isempty (strfind (str, 'delete')));
 
 ## Description metadata must not rewrite class help text.
 %!test
@@ -344,10 +349,31 @@
 
 ## Collision diagnostics identify the member, class, and source file.
 %!error <property and method are both named 'foo' in class 'MemberCollision' in file> MemberCollision ()
-%!error <property and method are both named 'scalar' in class 'InheritedPropertyCollision' in file> InheritedPropertyCollision ()
-%!error <property and method are both named 'foo' in class 'InheritedMethodCollision' in file> InheritedMethodCollision ()
 %!error <duplicate method 'query' in class 'DuplicateMethods' in file> DuplicateMethods ()
 %!error <method foo: conflicting definitions in classes 'Left' and 'Right'> Unresolved ()
+
+## A property may share its name with an inherited method, and a method with
+## an inherited property.  Dot syntax reaches the property, function-call
+## syntax the method.
+%!test
+%! obj = InheritedMethodCollision ();
+%! assert (obj.foo, 42);
+%! assert (obj.foo (), 42);
+%! assert (obj.foo (1), 42);
+%! assert (foo (obj), 1);
+
+%!test
+%! obj = InheritedPropertyCollision ();
+%! assert (obj.scalar, 42);
+%! assert (scalar (obj), 1);
+
+## A private inherited property is invisible to the subclass, so dot syntax
+## reaches the subclass method, while the base class still sees its property.
+%!test
+%! obj = InheritedPrivateCollision ();
+%! assert (obj.scalar, 1);
+%! assert (scalar (obj), 1);
+%! assert (base_scalar (obj), 42);
 
 ## Access values use the same case-sensitive rules for properties and methods.
 %!error <invalid Access value 'Protected' for property 'value' in class 'AccessPropertyString': must be> AccessPropertyString ()

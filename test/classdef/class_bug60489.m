@@ -8,7 +8,7 @@ classdef class_bug60489
       obj.a = a
     endfunction
 
-    # double declaration is not flagged as error or warning
+    ## double declaration is not flagged as error or warning
     function obj = toto (a)
       obj.a = 50 ;
     endfunction

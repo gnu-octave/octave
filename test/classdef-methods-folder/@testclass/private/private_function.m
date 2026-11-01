@@ -15,8 +15,8 @@ function ret = private_function (varargin)
       case testclass.hs2v
         ret = @(varargin) testclass.static_external_function (varargin{:});
 
-      # for testing errors:
-      # private_function cant reach local_function (not directly)
+      ## for testing errors:
+      ## private_function cant reach local_function (not directly)
       case testclass.l
         ret = local_function (varargin{2:end});
       case testclass.hl

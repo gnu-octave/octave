@@ -26,39 +26,39 @@
 ########################################################################
 
 ################################################################################
-# Purpose: This file reads raw documentation source from Octave files and
-#          makes necessary changes to export conforming Texinfo .texi
-#          files.
+## Purpose: This file reads raw documentation source from Octave files and
+##          makes necessary changes to export conforming Texinfo .texi
+##          files.
 ################################################################################
 
-# Validate program call
+## Validate program call
 die "usage: txi2texi TOP-SRCDIR DOCSTRING-FILE1 ... < file" if (@ARGV < 2);
 
 $top_srcdir = shift (@ARGV);
 
-# Constant regexp patterns
-# Records in DOCSTRING file are separated by $doc_delim
+## Constant regexp patterns
+## Records in DOCSTRING file are separated by $doc_delim
 $doc_delim = qr/^\x{1d}/;
-# Texinfo source within record begins with $tex_delim
+## Texinfo source within record begins with $tex_delim
 $tex_delim = qr/\Q-*- texinfo -*-\E/;
 $comment_line = qr/^\s*(?:$|#)/;
-# Pre-declare hash size for efficiency
+## Pre-declare hash size for efficiency
 keys(%help_text) = 1800;
 
 ################################################################################
-# Load DOCSTRINGS into memory while expanding @seealso references
+## Load DOCSTRINGS into memory while expanding @seealso references
 foreach $DOCSTRING_file (@ARGV)
 {
-  # DOCSTRINGS files may exist in the current (build) directory
-  # OR in the source directory when building from a release tarball.
+  ## DOCSTRINGS files may exist in the current (build) directory
+  ## OR in the source directory when building from a release tarball.
   open ($DOCFH, "<", $DOCSTRING_file)
     or open ($DOCFH, "<", "$top_srcdir/$DOCSTRING_file")
       or die "Unable to open $DOCSTRING_file\n";
 
-  # Skip comments
+  ## Skip comments
   while (defined ($_ = <$DOCFH>) and /$comment_line/o) {;}
 
-  # Validate DOCSTRING file format
+  ## Validate DOCSTRING file format
   die "File $DOCSTRING_file: invalid file format\n" if (! /$doc_delim/o);
 
   do
@@ -80,15 +80,15 @@ foreach $DOCSTRING_file (@ARGV)
 }
 
 ################################################################################
-# Process .txi to .texi by expanding @DOCSTRING, @EXAMPLEFILE macros
+## Process .txi to .texi by expanding @DOCSTRING, @EXAMPLEFILE macros
 
-# Add warning header
+## Add warning header
 print '@c DO NOT EDIT!  Generated automatically by txi2texi.pl.',"\n\n";
 
 TXI_LINE: while (<STDIN>)
 {
-  # Texinfo introduced incompatible @seealso macro.  Replace all occurrences
-  # with Octave-defined @xseealso macro that has desired behavior.
+  ## Texinfo introduced incompatible @seealso macro.  Replace all occurrences
+  ## with Octave-defined @xseealso macro that has desired behavior.
   s'@seealso'@xseealso'g;
 
   if (m'^\s*@DOCSTRING\((\S+)\)')
@@ -103,10 +103,10 @@ TXI_LINE: while (<STDIN>)
 
     $fcn =~ s/^@/@@/;   # Texinfo uses @@ to produce '@'
     $fcn =~ s/\./_/g;   # Texinfo doesn't like '.' in node names
-    # Replace texinfo start tag by an anchor.  QtHelp requires a string
-    # directly following the anchor.  Adding "&nbsp;" in html mode adds an
-    # additional vertical space which is compensated by span-tag with
-    # negative top margin.
+    ## Replace texinfo start tag by an anchor.  QtHelp requires a string
+    ## directly following the anchor.  Adding "&nbsp;" in html mode adds an
+    ## additional vertical space which is compensated by span-tag with
+    ## negative top margin.
     $docstring =~ s/^$tex_delim$/\@anchor{XREF$fcn}\n\@html\n<span style=\"display:block; margin-top:-4.5ex;\">&nbsp;<\/span>\n\@end html\n\n/m;
     print $docstring,"\n";
 
@@ -128,13 +128,13 @@ TXI_LINE: while (<STDIN>)
     next TXI_LINE;
   }
 
-  # pass ordinary lines straight through to output
+  ## pass ordinary lines straight through to output
   print $_;
 }
 
 
 ################################################################################
-# Subroutines
+## Subroutines
 ################################################################################
 sub extract_docstring
 {
@@ -142,10 +142,10 @@ sub extract_docstring
 
   while (defined ($_ = <$DOCFH>) and ! /$doc_delim/o)
   {
-    # expand any @seealso references
+    ## expand any @seealso references
     if (m'^@seealso\{')
     {
-      # join multiple lines until full macro body found
+      ## join multiple lines until full macro body found
       while (! /}/m) { $_ .= <$DOCFH>; }
 
       ($arg_list, $rest_of_line) = m'^@seealso\{(.*)\}(.*)?'s;
@@ -155,14 +155,14 @@ sub extract_docstring
       $repl = "";
       foreach $fcn (split (/,/, $fcn_list))
       {
-        $fcn =~ s/^@/@@/;     # Texinfo uses @@ to produce '@'
+        $fcn =~ s/^@/@@/;      # Texinfo uses @@ to produce '@'
         $node = $fcn;
         $node =~ s/\./_/g;     # Texinfo doesn't like '.' in node names
         $repl .= "\@ref{XREF$node,,$fcn}, ";
       }
       substr($repl,-2) = "";   # Remove last ', '
-      # write out @xseealso because we have our own macro that conflicts
-      # with the one introduced in Texinfo 6.
+      ## write out @xseealso because we have our own macro that conflicts
+      ## with the one introduced in Texinfo 6.
       $_ = "\@xseealso{$repl}$rest_of_line";
     }
 

@@ -21,6 +21,20 @@ classdef_multiple_inheritance_TEST_FILES = \
   %reldir%/testclass_1C.m \
   %reldir%/testclass_2A.m \
   %reldir%/testclass_2B.m \
-  %reldir%/testclass_2C.m
+  %reldir%/testclass_2C.m \
+  %reldir%/testclass_2D.m \
+  %reldir%/testclass_3A.m \
+  %reldir%/testclass_3B.m \
+  %reldir%/testclass_3C.m \
+  %reldir%/testclass_3D.m \
+  %reldir%/testclass_3E.m \
+  %reldir%/testclass_3F.m \
+  %reldir%/testclass_4A.m \
+  %reldir%/testclass_4B.m \
+  %reldir%/testclass_4C.m \
+  %reldir%/testclass_4D.m \
+  %reldir%/testclass_4E.m \
+  %reldir%/testclass_4F.m \
+  %reldir%/testclass_4G.m
 
 TEST_FILES += $(classdef_multiple_inheritance_TEST_FILES)

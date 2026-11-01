@@ -917,15 +917,15 @@ endclassdef
 %!test <*67426>
 %! M = containers.Map ('first', struct ('dat', {111, 222}));
 %! [a, b] = M('first').dat;
-%! assert ([a, b], [111, 222])
+%! assert ([a, b], [111, 222]);
 %!test <*67426>
 %! M = containers.Map ('first', {{111, 222}});
-%! [a, b] = M('first') {:};
-%! assert ([a, b], [111, 222])
+%! [a, b] = M('first'){:};
+%! assert ([a, b], [111, 222]);
 %!test <*67426>
 %! M = containers.Map ({'first', 'second'}, {111, 222});
-%! [a,b] = M.values () {:};
-%! assert ([a, b], [111, 222])
+%! [a,b] = M.values (){:};
+%! assert ([a, b], [111, 222]);
 
 ## Test input validation
 %!error containers.Map (1,2,3)

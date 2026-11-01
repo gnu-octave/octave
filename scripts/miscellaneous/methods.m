@@ -61,11 +61,11 @@ function mtds = methods (obj, fullopt)
 
   if (isobject (obj))
     ## Call internal C++ function for Octave objects.
-    mtds_list = __methods__ (obj);
+    [mtds_list, ~, from_handle] = __methods__ (obj);
   elseif (ischar (obj))
     ## CLASSNAME could be an Octave class or Java class.
     ## Try Octave class first.
-    [mtds_list, valid] = __methods__ (obj);
+    [mtds_list, valid, from_handle] = __methods__ (obj);
     if (! valid)
       ## Try Java class second.
       try
@@ -75,6 +75,7 @@ function mtds = methods (obj, fullopt)
       end_try_catch
       mtds_list = ostrsplit (mtds_str, ';');
       mtds_list = mtds_list(:);  # return a column vector for compatibility
+      from_handle = false (size (mtds_list));
       havesigs = true;
     endif
   elseif (isjava (obj))
@@ -89,6 +90,7 @@ function mtds = methods (obj, fullopt)
     endif
     mtds_list = strsplit (mtds_str, ';');
     mtds_list = mtds_list(:);  # return a column vector for compatibility
+    from_handle = false (size (mtds_list));
     havesigs = true;
   else
     error ("methods: invalid input argument");
@@ -104,15 +106,20 @@ function mtds = methods (obj, fullopt)
     mtds_list = regexprep (mtds_list, '^(?:[\.\w]+\.)?(\w+) ?\(.*$', '$1');
 
     mtds_list = unique (mtds_list);
+    from_handle = false (size (mtds_list));
   else
     ## Delete the "org.example." package prefix if present.
     mtds_list = regexprep (mtds_list, '^(?:[\.\w]+\.)(\w+ ?\(.*)$', '$1');
   endif
 
   if (nargout == 0)
+    ## The methods inherited from handle are printed apart, as in Matlab.
     classname = ifelse (ischar (obj), obj, class (obj));
     printf ("Methods for class %s:\n", classname);
-    disp (list_in_columns (mtds_list));
+    disp (list_in_columns (mtds_list(! from_handle)));
+    if (any (from_handle))
+      printf ("Methods of %s inherited from handle.\n", classname);
+    endif
   else
     mtds = mtds_list;
   endif
@@ -121,16 +128,25 @@ endfunction
 
 
 ## test classdef object
+## inputParser derives from handle and lists its implicit constructor
 %!test
 %! ip = inputParser ();
 %! assert (methods (ip),
 %!         {"addOptional"; "addParamValue"; "addParameter"; "addRequired";
-%!          "addSwitch"; "disp"; "parse"; });
+%!          "addSwitch"; "delete"; "disp"; "eq"; "ge"; "gt"; "inputParser";
+%!          "le"; "lt"; "ne"; "parse"});
 
 ## test classdef classname
 %!assert (methods ("inputParser"),
 %!        {"addOptional"; "addParamValue"; "addParameter"; "addRequired";
-%!         "addSwitch"; "disp"; "parse"; });
+%!         "addSwitch"; "delete"; "disp"; "eq"; "ge"; "gt"; "inputParser";
+%!         "le"; "lt"; "ne"; "parse"});
+
+## the methods inherited from handle are printed apart
+%!test
+%! str = evalc ('methods ("inputParser")');
+%! assert (strfind (str, "Methods of inputParser inherited from handle."));
+%! assert (isempty (strfind (str, "delete")));
 
 ## test old-style @classname
 %!test

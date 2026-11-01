@@ -311,8 +311,8 @@ void
 file_editor_tab::closeEvent (QCloseEvent *e)
 {
   int save_dialog = check_file_modified (true);
-  if ((save_dialog == QMessageBox::Cancel) ||
-      (save_dialog == QMessageBox::Save))
+  if (   save_dialog == QMessageBox::Cancel
+      || save_dialog == QMessageBox::Save)
     {
       // Ignore close event if file is saved or user cancels
       // closing this window.  In case of saving, tab is closed after

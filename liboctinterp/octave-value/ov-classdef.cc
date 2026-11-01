@@ -30,6 +30,8 @@
 #include <algorithm>
 #include <iomanip>
 
+#include "boolNDArray.h"
+
 #include "cdef-class.h"
 #include "cdef-method.h"
 #include "cdef-package.h"
@@ -40,6 +42,7 @@
 #include "interpreter-private.h"
 #include "load-path.h"
 #include "ls-oct-text.h"
+#include "oct-lvalue.h"
 #include "ov-classdef.h"
 #include "ov-fcn-handle.h"
 #include "ov-typeinfo.h"
@@ -48,7 +51,6 @@
 #include "pr-output.h"
 #include "pt-eval.h"
 #include "pt-misc.h"
-#include "oct-lvalue.h"
 
 std::vector<std::tuple<octave_map, uint32_t, bool>>
 octave_classdef::saveobj (std::vector<bool>& is_new)
@@ -1254,9 +1256,12 @@ is public and if the @code{Hidden} attribute is false.
 
 DEFMETHOD (__methods__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {[@var{mtds}, @var{found}] =} __methods__ (@var{obj})
-@deftypefnx {} {[@var{mtds}, @var{found}] =} __methods__ ("classname")
+@deftypefn  {} {[@var{mtds}, @var{found}, @var{from_handle}] =} __methods__ (@var{obj})
+@deftypefnx {} {[@var{mtds}, @var{found}, @var{from_handle}] =} __methods__ ("classname")
 Implement @code{methods} for Octave class objects and classnames.
+
+@var{from_handle} is true for each method in @var{mtds} that is inherited from
+the @code{handle} class.
 @seealso{methods}
 @end deftypefn */)
 {
@@ -1274,6 +1279,7 @@ Implement @code{methods} for Octave class objects and classnames.
 
   string_vector sv;
   bool found = false;
+  boolNDArray from_handle;
 
   if (interpreter::is_built_in_class (class_name))
     {
@@ -1295,6 +1301,7 @@ Implement @code{methods} for Octave class objects and classnames.
             = cls.get_method_map (cdef_class::member_mode::all, true);
 
           std::list<std::string> method_names;
+          std::list<bool> handle_methods;
 
           for (const auto& nm_mthd : method_map)
             {
@@ -1310,14 +1317,17 @@ Implement @code{methods} for Octave class objects and classnames.
               if (hid.bool_value ())
                 continue;
 
-              // Hide methods inherited from "handle" for MATLAB compatibility
-              if (method.get_defining_class ().get_name () == "handle")
-                continue;
-
               method_names.push_back (nm_mthd.first);
+
+              // methods prints the methods inherited from "handle" apart from
+              // the others, as Matlab does, but returns them all.
+              handle_methods.push_back (method.get_defining_class ().get_name ()
+                                        == "handle");
             }
 
           sv = string_vector (method_names);
+          from_handle = boolNDArray (dim_vector (sv.numel (), 1));
+          std::ranges::copy (handle_methods, from_handle.rwdata ());
           found = true;
         }
       else
@@ -1330,7 +1340,12 @@ Implement @code{methods} for Octave class objects and classnames.
         }
     }
 
-  return ovl (Cell (sv), found);
+  Cell mtds (sv);
+
+  if (from_handle.dims () != mtds.dims ())
+    from_handle = boolNDArray (mtds.dims (), false);
+
+  return ovl (mtds, found, from_handle);
 }
 
 /*

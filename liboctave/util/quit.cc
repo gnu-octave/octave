@@ -112,8 +112,8 @@ octave_handle_signal ()
 
   int curr_interrupt_state = octave_interrupt_state.load ();
 
-  while (curr_interrupt_state > 0 &&
-         ! octave_interrupt_state.compare_exchange_weak (curr_interrupt_state, -1))
+  while (curr_interrupt_state > 0
+         && ! octave_interrupt_state.compare_exchange_weak (curr_interrupt_state, -1))
     ;
 
   if (curr_interrupt_state > 0)

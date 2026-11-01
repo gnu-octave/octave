@@ -940,7 +940,7 @@ encountered.
 
 /*
 ## Check if text is correctly converted to output encoding
-# FIXME: should be conditional on OCTAVE_HAVE_STRICT_ENCODING_FACET
+## FIXME: should be conditional on OCTAVE_HAVE_STRICT_ENCODING_FACET
 %!testif ; ! __have_feature__ ("LLVM_LIBCXX")  <*61839>
 %! str = "aäöu";  # string with non-ASCII characters
 %! fname = tempname ();

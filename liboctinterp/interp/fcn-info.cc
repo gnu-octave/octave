@@ -128,10 +128,10 @@ fcn_info::fcn_info_rep::load_class_constructor ()
     {
       // Classdef constructors can be defined anywhere in the path, not
       // necessarily in @-folders.  Look for a normal function and load it.
-      // If the loaded function is a classdef constructor, store it as such
-      // and restore function_on_path to its previous value.
-
-      octave_value old_function_on_path = function_on_path;
+      // If the loaded function is a classdef constructor, store it as such.
+      // It stays in function_on_path too, so that a lookup of the function
+      // on the path finds the loaded class instead of reading its file
+      // again and defining a second class of the same name.
 
       octave_value maybe_cdef_ctor = find_user_function ();
 
@@ -145,8 +145,6 @@ fcn_info::fcn_info_rep::load_class_constructor ()
 
               class_constructors[name] = retval;
               class_methods[name] = retval;
-
-              function_on_path = old_function_on_path;
             }
         }
     }

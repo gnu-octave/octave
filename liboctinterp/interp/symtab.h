@@ -148,6 +148,9 @@ public:
 
   void clear_user_function (const std::string& name);
 
+  // Clear every stored definition of NAME, class constructors included.
+  void clear_function_definitions (const std::string& name);
+
   // This clears oct and mex files, including autoloads.
   void clear_dld_function (const std::string& name);
 

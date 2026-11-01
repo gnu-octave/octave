@@ -552,10 +552,16 @@ public:
   //!
   //! will fail because each attempt to compute the metaclass of
   //! recursion_class will cause recursion_class to be parsed again.
+  //!
+  //! Default values of properties are evaluated last, once every member is
+  //! installed.  A lookup of the class from a default value finds the class
+  //! under construction.
+  //!
+  //! @return The constructor function of the class.
 
-  static OCTINTERP_API cdef_class make_meta_class (interpreter& interp,
-                                                   tree_classdef *t,
-                                                   bool is_at_folder = false);
+  static OCTINTERP_API octave_value make_meta_class (interpreter& interp,
+                                                     tree_classdef *t,
+                                                     bool is_at_folder = false);
 
   octave_value get_method (const std::string& nm) const
   {

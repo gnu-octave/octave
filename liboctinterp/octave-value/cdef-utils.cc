@@ -498,11 +498,10 @@ compute_attribute_value (tree_evaluator& tw,
 
   if (attr == "Access" || attr == "GetAccess" || attr == "SetAccess")
     {
-      // An access value is read as written, as in Matlab, so that a name in
-      // it is never called as a function (bug #65214).  validate_access
-      // refuses a word that is not an access level, including one with the
-      // wrong capitalization, and the undefined value returned for any other
-      // expression.
+      // An access value is read as written, as in Matlab, so that a name is
+      // never called as a function.  validate_access refuses a word that is
+      // not an access level, including one with the wrong capitalization, and
+      // the undefined value returned for any other expression.
       if (expr->is_identifier ())
         return octave_value (expr->name ());
 

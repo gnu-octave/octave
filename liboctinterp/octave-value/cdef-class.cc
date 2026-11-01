@@ -1194,7 +1194,7 @@ cdef_class::cdef_class_rep::initialize_object (cdef_object& obj)
       if (! pname_prop.second.get ("Dependent").bool_value ()
           && ! pname_prop.second.get ("Abstract").bool_value ())
         {
-          octave_value pvalue = pname_prop.second.get ("DefaultValue");
+          octave_value pvalue = pname_prop.second.get_default_value ();
 
           if (pvalue.is_defined ())
             obj.put (pname_prop.first, pvalue);
@@ -1413,7 +1413,7 @@ cdef_class::cdef_class_rep::construct_array_element ()
     error ("expecting meta class, property, method, or package in cdef_class::cdef_class_rep::construct_array_element - please report this bug");
 }
 
-cdef_class
+octave_value
 cdef_class::make_meta_class (interpreter& interp,
                              tree_classdef *t, bool is_at_folder)
 {
@@ -1423,6 +1423,18 @@ cdef_class::make_meta_class (interpreter& interp,
   std::string full_class_name = class_name;
   if (! t->package_name ().empty ())
     full_class_name = t->package_name () + '.' + full_class_name;
+
+  cdef_manager& cdm = __get_cdef_manager__ ();
+
+  // A default value that names the class looks the class up while it is
+  // being defined.  Return the constructor of the class under construction
+  // instead of defining the class a second time.  It must be the same
+  // constructor function: deleting another one would unregister the class.
+
+  octave_value ctor = cdm.constructor_being_defined (full_class_name);
+
+  if (ctor.is_defined ())
+    return ctor;
 
   // Push a dummy scope frame on the call stack that corresponds to the scope
   // that was used when parsing classdef object.  Without this, we may pick up
@@ -1532,15 +1544,32 @@ cdef_class::make_meta_class (interpreter& interp,
 
   cdef_class retval = cdef_class (full_class_name, opt_args);
 
-  cdef_manager& cdm = __get_cdef_manager__ ();
   cdm.register_class (retval);
+
+  ctor = retval.get_constructor_function ();
+
+  cdm.begin_definition (full_class_name, ctor);
+  unwind_action end_definition
+    ([&cdm, &full_class_name] () { cdm.end_definition (full_class_name); });
 
   bool complete = false;
   unwind_action unregister_incomplete
-    ([&complete, &cdm, &retval] ()
+    ([&complete, &cdm, &retval, &interp, &full_class_name] ()
      {
        if (! complete)
-         cdm.unregister_class (retval);
+         {
+           cdm.unregister_class (retval);
+
+           // Default values not evaluated refer to the parse tree, which is
+           // about to be deleted.
+           for (auto& [key, prop] : retval.get_property_map ())
+             prop.get_rep ()->set_default_expression (nullptr);
+
+           // A lookup during the definition may have stored the incomplete
+           // class.
+           interp.get_symbol_table ().clear_function_definitions
+             (full_class_name);
+         }
      });
 
   retval.file_name (t->file_name ());
@@ -1559,12 +1588,8 @@ cdef_class::make_meta_class (interpreter& interp,
 
   if (b)
     {
-      // Property blocks
-
-      // FIXME: default property expression should be able to call static
-      //        methods of the class being constructed.  A restricted
-      //        CLASSNAME symbol should be added to the scope before
-      //        evaluating default value expressions.
+      // Property blocks.  Their default values are evaluated below, once the
+      // methods of the class are installed.
 
       std::list<tree_classdef_properties_block *> pb_list
         = b->property_list ();
@@ -1670,9 +1695,48 @@ cdef_class::make_meta_class (interpreter& interp,
     if (property.get ("Abstract").bool_value ())
       retval.put ("Abstract", true);
 
+  // Evaluate the default values now that every property and method of the
+  // class exists, constant properties first, each block in the order of its
+  // declaration.  A default value that refers to a constant property not
+  // evaluated yet evaluates that property first.
+
+  if (b)
+    {
+      std::map<std::string, cdef_property> props;
+
+      for (const auto& [key, prop] : retval.get_property_map ())
+        props[key.second] = prop;
+
+      for (bool constant : {true, false})
+        for (auto& pb_p : b->property_list ())
+          {
+            if (! pb_p->element_list ())
+              continue;
+
+            for (auto& prop_p : *pb_p->element_list ())
+              {
+                auto it = props.find (prop_p->ident ()->name ());
+
+                if (it == props.end () || it->second.is_constant () != constant)
+                  continue;
+
+                try
+                  {
+                    it->second.evaluate_default ();
+                  }
+                catch (const execution_exception& ee)
+                  {
+                    error ("invalid default value for property '%s' "
+                           "in class '%s': %s", it->first.c_str (),
+                           full_class_name.c_str (), ee.message ().c_str ());
+                  }
+              }
+          }
+    }
+
   complete = true;
 
-  return retval;
+  return ctor;
 }
 
 octave_value

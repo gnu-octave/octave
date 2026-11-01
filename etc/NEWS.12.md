@@ -110,9 +110,9 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 
 * The values of the `Access`, `GetAccess`, and `SetAccess` attributes of
   `classdef` members are now read as written, as in Matlab, and a name in
-  them is no longer called as a function (bug #65214).  They accept the
-  access levels, a quoted access level, `?ClassName`, and a cell array of
-  `?ClassName` queries.  Other attributes still accept expressions.
+  them is no longer called as a function.  They accept the access levels, a
+  quoted access level, `?ClassName`, and a cell array of `?ClassName`
+  queries.  Other attributes still accept expressions.
 
 * A `classdef` method that overrides an inherited one now takes precedence over
   it, even when another superclass brings the inherited method too, as in
@@ -125,6 +125,12 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 * A negated `classdef` attribute, written `~Name` or `!Name`, is now false,
   as in Matlab.  It was read as true, so that `methods (~Static)` declared
   static methods.  A negated access attribute is an error.
+
+* Default values of `classdef` properties are now evaluated once the class is
+  defined so that they may refer to the class itself, as in Matlab.  Default
+  values may refer to a class's constant properties, in any order, and to its
+  static methods, with access to its private members (bugs #52582 and #65214).
+  A constant property whose default value depends on itself is an error.
 
 ### Alphabetical list of new functions added in Octave 12
 

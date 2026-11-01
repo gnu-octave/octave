@@ -1,5 +1,5 @@
-classdef class_bug65214A
-  methods (Access = class_bug65214_fcn)
+classdef class_access_fcn_name
+  methods (Access = class_access_fcn)
     function test_method (obj)
     endfunction
   endmethods

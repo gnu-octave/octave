@@ -216,7 +216,7 @@ property_get_defaultvalue (const octave_value_list& args, int /* nargout */)
     {
       cdef_property prop (to_cdef (args(0)));
 
-      retval(0) = prop.get ("DefaultValue");
+      retval(0) = prop.get_default_value ();
 
       if (! retval(0).is_defined ())
         error_with_id ("Octave:class:NoDefaultDefined",

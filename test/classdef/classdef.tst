@@ -2136,6 +2136,65 @@
 %! m = class_bug59775B ([1, 3, 5; 2, 4, 6]);
 %! assert ([m.A], [1, 2, 3, 4, 5, 6]);
 
+## A handle to a classdef constructor does not define the class again
+%!test <*60791>
+%! obj1 = class_bug60791 (1);
+%! fh = @class_bug60791;
+%! obj2 = class_bug60791 (2);
+%! assert (obj2.p, 2);
+
+%!test <*60791>
+%! obj1 = class_bug60791 (1);
+%! fh = @class_bug60791;
+%! obj2 = fh (3);
+%! assert (obj2.p, 3);
+
+## Assignment from outside the class still calls the overloaded subsasgn
+%!test <*60791>
+%! obj = class_bug60791 (1);
+%! obj.p = 5;
+%! assert (obj.p, 1);
+
+## Default values of properties are evaluated once the class is defined, so
+## they may refer to the class, its constant properties, and its methods
+%!assert <*65214> (class_default_const_ref.B, 2)
+
+%!assert <*65214> (class_default_forward_ref.A, 2)
+
+%!error <invalid default value for property 'A' in class 'class_default_cycle': property 'A' in class 'class_default_cycle' cannot be used in its own definition>
+%! class_default_cycle.A;
+
+%!test <*65214>
+%! obj = class_default_nonconst_ref ();
+%! assert (obj.B, 2);
+
+%!test <*52582>
+%! obj = class_default_static_method ();
+%! assert (obj.B, 2);
+
+%!assert <*52582> (class_default_static_method.C, 3)
+
+%!test <*52582>
+%! obj = class_default_private ();
+%! assert (obj.v, 7);
+
+%!error <invalid default value for property 'M' in class 'class_default_other_private': meta.class: property 'K' has private access and cannot be obtained in this context>
+%! class_default_other_private.M;
+
+%!test <*52582>
+%! obj = class_default_handle ();
+%! assert (obj.c2, 2);
+
+%!error <invalid default value for property 'B' in class 'class_default_bare_name': 'A' undefined near line 4, column 9>
+%! class_default_bare_name.B;
+
+## A class whose definition failed raises the same error again
+%!error <invalid default value for property 'B' in class 'class_default_fail': 'class_default_fail_undefined' undefined near line 4, column 32>
+%! class_default_fail.B;
+
+%!error <invalid default value for property 'B' in class 'class_default_fail': 'class_default_fail_undefined' undefined near line 4, column 32>
+%! class_default_fail.B;
+
 ## Metaclass tests
 
 ## Not a complete test. Right now, Events is not implemented
@@ -2286,24 +2345,23 @@
 %!error <invalid property: cannot have the same name as the classdef itself>
 %! obj = class_bug55767 ();
 
-## Bug #65214
-## Attributes should be validated and errors should be thrown on nonsensical values
-## Attribute expressions should also not produce side-effects
+## Attributes should be validated and errors should be thrown on nonsensical
+## values.  Attribute expressions should also not produce side-effects.
 
-## Bug #65214: an access attribute is read as written, so the non-sensical
-## value `hidden` is refused without calling the function `hidden`
+## An access attribute is read as written, so the non-sensical value `hidden`
+## is refused without calling the function `hidden`.
 %!error <invalid Access value 'hidden' for method 'class_bug61673A' in class 'class_bug61673A'>
 %! obj = class_bug61673A ();
 
-## class_bug65214_fcn raises an error if anything calls it
-%!error <invalid Access value 'class_bug65214_fcn' for method 'test_method' in class 'class_bug65214A'>
-%! obj = class_bug65214A ();
+## class_access_fcn raises an error if anything calls it
+%!error <invalid Access value 'class_access_fcn' for method 'test_method' in class 'class_access_fcn_name'>
+%! obj = class_access_fcn_name ();
 
-%!error <invalid SetAccess value given by an expression for property 'p' in class 'class_bug65214B'>
-%! obj = class_bug65214B ();
+%!error <invalid SetAccess value given by an expression for property 'p' in class 'class_access_fcn_call'>
+%! obj = class_access_fcn_call ();
 
-%!error <invalid Access value given by an expression for method 'test_method' in class 'class_bug65214C'>
-%! obj = class_bug65214C ();
+%!error <invalid Access value given by an expression for method 'test_method' in class 'class_access_fcn_list'>
+%! obj = class_access_fcn_list ();
 
 ## An access list naming an existing class is a valid value
 %!test
@@ -2367,12 +2425,12 @@
 %! assert (all_properties, {'stub_property'});
 
 ## Calling 'methods (obj)' in a property assignment
-%!test <51659>
+%!test <*51659>
 %! obj = class_bug51659C ();
 %! assert (obj.all_methods, {'class_bug51659C'; 'stub_method'});
 
 ## Previous test, but with handle classes
-%!test <51659>
+%!test <*51659>
 %! obj = class_bug51659C_handle ();
 %! assert (obj.all_methods, {'class_bug51659C_handle'; 'delete'; 'eq'; 'ge';
 %!                           'gt'; 'le'; 'lt'; 'ne'; 'stub_method'});

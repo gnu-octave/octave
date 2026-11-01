@@ -24,6 +24,10 @@ classdef_TEST_FILES = \
   %reldir%/@osc/osc.m \
   %reldir%/bug_60763.m \
   %reldir%/cdef_array_break_cycles.m \
+  %reldir%/class_access_fcn.m \
+  %reldir%/class_access_fcn_call.m \
+  %reldir%/class_access_fcn_list.m \
+  %reldir%/class_access_fcn_name.m \
   %reldir%/class_access_list.m \
   %reldir%/class_access_list_friend.m \
   %reldir%/class_bug50011_1.m \
@@ -62,14 +66,11 @@ classdef_TEST_FILES = \
   %reldir%/class_bug60723A.m \
   %reldir%/class_bug60723B.m \
   %reldir%/class_bug60723C.m \
+  %reldir%/class_bug60791.m \
   %reldir%/class_bug61673A.m \
   %reldir%/class_bug61673B.m \
   %reldir%/class_bug61673C.m \
   %reldir%/class_bug61843.m \
-  %reldir%/class_bug65214_fcn.m \
-  %reldir%/class_bug65214A.m \
-  %reldir%/class_bug65214B.m \
-  %reldir%/class_bug65214C.m \
   %reldir%/class_bug66930A.m \
   %reldir%/class_bug66930B.m \
   %reldir%/class_bug67197A.m \
@@ -80,6 +81,16 @@ classdef_TEST_FILES = \
   %reldir%/class_bug67845B_handle.m \
   %reldir%/class_bug67845C.m \
   %reldir%/class_bug67845C_handle.m \
+  %reldir%/class_default_bare_name.m \
+  %reldir%/class_default_const_ref.m \
+  %reldir%/class_default_cycle.m \
+  %reldir%/class_default_fail.m \
+  %reldir%/class_default_forward_ref.m \
+  %reldir%/class_default_handle.m \
+  %reldir%/class_default_nonconst_ref.m \
+  %reldir%/class_default_other_private.m \
+  %reldir%/class_default_private.m \
+  %reldir%/class_default_static_method.m \
   %reldir%/class_methods_abstract.m \
   %reldir%/class_methods_ctor_hidden.m \
   %reldir%/class_methods_ctor_private.m \

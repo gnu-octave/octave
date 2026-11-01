@@ -9,8 +9,8 @@ function ret = private_function (varargin)
       case testpkg.testsubpkg.testclass.hsv
         ret = @(varargin) testpkg.testsubpkg.testclass.static_function (varargin{:});
 
-      # for testing errors:
-      # private_function cant reach local_function (not directly)
+      ## for testing errors:
+      ## private_function cant reach local_function (not directly)
       case testpkg.testsubpkg.testclass.l
         ret = local_function (varargin{2:end});
       case testpkg.testsubpkg.testclass.hl

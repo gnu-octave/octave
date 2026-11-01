@@ -135,9 +135,9 @@ function plotimages (d, nm, typ)
     datetick ("x");
     xlabel ("2000 years off");
     title ("workaround");
-    # set wider aspect ratio
+    ## set wider aspect ratio
     image_size = [8.25, 3.5]; # in inches, 5:2 format
-    border = 0;              # For postscript use 50/72
+    border = 0;               # For postscript use 50/72
     set (gcf, "papersize", image_size + 2*border);
     set (gcf, "paperposition", [border, border, image_size]);
     print (outfile, d_typ);

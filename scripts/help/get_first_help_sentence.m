@@ -89,7 +89,7 @@ function [text, status] = get_first_help_sentence (name, max_len = 80)
 
 endfunction
 
-# This function extracts a snippet of an UTF-8 encoded string
+## This function extracts a snippet of an UTF-8 encoded string
 function out_text = extract_first_codepoints (in_text, count)
   out_text = in_text(1 : find (unicode_idx (in_text) == count, 1, 'last'));
 endfunction

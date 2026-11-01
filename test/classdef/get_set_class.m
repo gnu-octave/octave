@@ -22,7 +22,7 @@ classdef get_set_class
       obj.a = obj.a + val*2;
     endfunction
 
-    # Compute using another get method
+    ## Compute using another get method
     function retval = get.b (obj)
       retval = obj.a + obj.b;
     endfunction

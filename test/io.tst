@@ -1111,8 +1111,8 @@
 %!   unlink (nm);
 %! endif
 
-# write to and read from file with encoding
-# FIXME: should be conditional on OCTAVE_HAVE_STRICT_ENCODING_FACET
+## write to and read from file with encoding
+## FIXME: should be conditional on OCTAVE_HAVE_STRICT_ENCODING_FACET
 %!testif ; ! __have_feature__ ("LLVM_LIBCXX")
 %! temp_file = [tempname(), ".txt"];
 %! fid = fopen (temp_file, "wt", "n", "iso-8859-1");
@@ -1409,8 +1409,8 @@
 %!    endfor
 %!  endfor
 
-# stream with transcoding
-# FIXME: should be conditional on OCTAVE_HAVE_STRICT_ENCODING_FACET
+## stream with transcoding
+## FIXME: should be conditional on OCTAVE_HAVE_STRICT_ENCODING_FACET
 %!testif ; ! __have_feature__ ("LLVM_LIBCXX") <*63930>
 %! w_modes = {"wb", "wt"};
 %! # 64 non-ASCII characters that can be represented in 'windows-1252'

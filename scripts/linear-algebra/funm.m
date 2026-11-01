@@ -187,7 +187,7 @@ function [F, exitflag, output] = funm (A, fun, varargin)
   endif
 
   ## Default values:
-  tolblk    = 0.1;   # Tolerance for blocking
+  tolblk   = 0.1;   # Tolerance for blocking
   taytol   = eps;   # Convergence tolerance for Taylor expansion
   prnt     = 0;     # Disable display of algorithm progress
   maxterms = 250;   # max # of Taylor series terms

@@ -885,8 +885,8 @@
 %! assert (numel ({arr.data}), 2);
 %! assert (cat (3, arr.data), cat (3, 1, 2));
 
-# selection of dominant class when concatenating classdefs
-# FIXME: This relies on the "InferiorClasses" attribute being supported.
+## selection of dominant class when concatenating classdefs
+## FIXME: This relies on the "InferiorClasses" attribute being supported.
 %!test <44665>
 %! p1 = class_pair_elem (1);
 %! p2 = class_pair_elem_dominant (2);
@@ -1560,7 +1560,7 @@
 %! result = arr.';
 %! assert (size (result), [3, 1]);  # regular transpose
 
-# same as previous test, but for handle classes
+## same as previous test, but for handle classes
 %!test
 %! obj1 = overloaded_permute_class_handle ();
 %! obj2 = overloaded_permute_class_handle ();
@@ -2136,12 +2136,12 @@
 %! m = class_bug59775B ([1, 3, 5; 2, 4, 6]);
 %! assert ([m.A], [1, 2, 3, 4, 5, 6]);
 
-# Metaclass tests
+## Metaclass tests
 
-# Not a complete test. Right now, Events is not implemented
-# yet, so it can't be checked for its class. However, it's not 
-# marked as an xtest yet because the rest of the test is still 
-# useful for troubleshooting regressions.
+## Not a complete test. Right now, Events is not implemented
+## yet, so it can't be checked for its class. However, it's not 
+## marked as an xtest yet because the rest of the test is still 
+## useful for troubleshooting regressions.
 %!test <*62000>
 %! mc = ?handle;
 %! assert (class (mc.Abstract), 'logical')
@@ -2158,7 +2158,7 @@
 %! assert (class (mc.Sealed), 'logical')
 %! assert (class (mc.SuperclassList), 'meta.class')
 
-# Verify that `handle`'s metaclass is correct
+## Verify that `handle`'s metaclass is correct
 %!xtest
 %! mc = ?handle;
 %! assert (mc.Abstract, true)
@@ -2177,7 +2177,7 @@
 %! assert (mc.RestrictsSubclassing, false);
 %! assert (isempty (mc.SuperclassList));
 
-# Verify that "handle" has the correct methods
+## Verify that "handle" has the correct methods
 %!test
 %! mc = ?handle;
 %! meths = mc.MethodList;
@@ -2187,12 +2187,12 @@
 #%!test <*62000>
 #%! mc ?
 
-# get/set tests
+## get/set tests
 
-# three things are tested here:
-# 1) get and set methods are called
-# 2) get method is not recursively called
-# 3) get method can call another (different) get method
+## three things are tested here:
+## 1) get and set methods are called
+## 2) get method is not recursively called
+## 3) get method can call another (different) get method
 %!test
 %! obj = get_set_class ();
 %! assert (obj.a, 2) # a has a get method
@@ -2200,101 +2200,101 @@
 %! assert (obj.a, 203);
 %! assert (obj.b, 205); # b has a get method
 
-# value class copies shouldn't call set method
+## value class copies shouldn't call set method
 %!test
 %! obj = get_set_class ();
 %! obj2 = obj;
 %! obj.b = 0;
 %! assert (obj.a, 2);
 
-# constructor should call set method
+## constructor should call set method
 %!test
 %! obj = get_set_class ();
 %! assert (obj.c, 5);
 
-# Bug #67197
+## Bug #67197
 %!error <cannot instantiate object for abstract class 'class_bug67197A'>
 %! class_bug67197A ();
 
-# Bug #67197
+## Bug #67197
 %!error <cannot instantiate object for abstract class 'class_bug67197B'>
 %! class_bug67197B ();
 
-# Bug #60593
+## Bug #60593
 %!error <invalid attribute: attribute DefinitelyNotAnAttribute cannot be assigned in a classdef block>
 %! class_bug60593A ();
 
-# Bug #60593
+## Bug #60593
 %!error <invalid attribute: attribute DefinitelyNotAnAttribute cannot be assigned in a properties block>
 %! class_bug60593B ();
 
-# Bug #60593
+## Bug #60593
 %!error <invalid attribute: attribute DefinitelyNotAnAttribute cannot be assigned in a methods block>
 %! class_bug60593C ();
 
-# Bug #60489
+## Bug #60489
 %!error <duplicate method 'toto' in class 'class_bug60489'>
 %! class_bug60489 ();
 
-# Classdef folder tests (classdefs defined in @folders)
+## Classdef folder tests (classdefs defined in @folders)
 
-# Test if externally-defined classdef method is found and callable
+## Test if externally-defined classdef method is found and callable
 %!test
 %! obj = atfolder_class ();
 %! assert (obj.external_method (), 'success');
 
-# Test if externally-defined static method is callable
+## Test if externally-defined static method is callable
 %!test
 %! assert (atfolder_class.external_static_method (), 'success');
 
-# Test if attributes Hidden and Access apply to external classdef method
-# Technically, the other checks
+## Test if attributes Hidden and Access apply to external classdef method
+## Technically, the other checks
 %!error <method 'external_method_2' has private access and cannot be run in this context>
 %! obj = atfolder_class ();
 %! assert (methods (atfolder_class), {'atfolder_class'; 'external_method'; 'external_static_method'; 'unattached_method'});
 %! obj.external_method_2 ();
 
-# Test if externally-defined method is treated as a classdef method, even if
-# the method signature is not in the classdef body.
+## Test if externally-defined method is treated as a classdef method, even if
+## the method signature is not in the classdef body.
 %!test
 %! obj = atfolder_class ();
 %! assert (obj.unattached_method (), 'success');
 
-# Test if externally-defined classdef method can override superclass method
+## Test if externally-defined classdef method can override superclass method
 %!test
 %! obj = atfolder_subclass ();
 %! assert (obj.external_method (), 'success from overriding method');
 
-# Test if externally-defined static method can override superclass method
+## Test if externally-defined static method can override superclass method
 
-# External `get.a` and `set.a` methods are not possible
-# TODO: make a better error message
+## External `get.a` and `set.a` methods are not possible
+## TODO: make a better error message
 %!error
 %! obj = invalid_atfolder_class ();
 
-# Defining an external class method and an internal class method with the same name should not be possible
+## Defining an external class method and an internal class method with the same name should not be possible
 %!error <invalid method: external method duplicate_method cannot be named the same as a classdef method>
 %! obj = invalid_atfolder_class_2 ();
-# Bug #67361
-# Error on duplicate methods
+## Bug #67361
+## Error on duplicate methods
 %!error
 %! obj = class_bug67361A ();
 
-# Bug #55767
-# Error if property has the same name as classdef
+## Bug #55767
+## Error if property has the same name as classdef
 %!error <invalid property: cannot have the same name as the classdef itself>
 %! obj = class_bug55767 ();
 
-# Bug #65214
-# Attributes should be validated and errors should be thrown on nonsensical values
-# Attribute expressions should also not produce side-effects
+## Bug #65214
+## Attributes should be validated and errors should be thrown on nonsensical values
+## Attribute expressions should also not produce side-effects
 
-# Bug #65214: an access attribute is read as written, so the non-sensical
-# value `hidden` is refused without calling the function `hidden`
+## Bug #65214: an access attribute is read as written, so the non-sensical
+## value `hidden` is refused without calling the function `hidden`
 %!error <invalid Access value 'hidden' for method 'class_bug61673A' in class 'class_bug61673A'>
 %! obj = class_bug61673A ();
 
-# class_bug65214_fcn raises an error if anything calls it
+## class_bug65214_fcn raises an error if anything calls it
 %!error <invalid Access value 'class_bug65214_fcn' for method 'test_method' in class 'class_bug65214A'>
 %! obj = class_bug65214A ();
 
@@ -2304,7 +2304,7 @@
 %!error <invalid Access value given by an expression for method 'test_method' in class 'class_bug65214C'>
 %! obj = class_bug65214C ();
 
-# An access list naming an existing class is a valid value
+## An access list naming an existing class is a valid value
 %!test
 %! obj = class_bug61673B ();
 %! assert (class (obj), 'class_bug61673B');
@@ -2312,22 +2312,22 @@
 %!error
 %! obj = class_bug61673C ();
 
-# Test semantics of HandleCompatible
+## Test semantics of HandleCompatible
 %!test
 %! mc = ?handle_subclass;
 %! assert (mc.HandleCompatible, true);
 
-# Test if classdef correctly errors when non-abstract property is overrided
+## Test if classdef correctly errors when non-abstract property is overrided
 %!error
 %! obj = invalid_override_property_class;
 
-# A property private to a superclass cannot be declared again, since an
-# object keeps one value for each property name
+## A property private to a superclass cannot be declared again, since an
+## object keeps one value for each property name
 %!error <Octave cannot declare a property private to superclass 'class_private_property_super' again>
 %! obj = class_private_property_sub ();
 
-# Access lists: the classes they name may call the methods and set the
-# property, others may not
+## Access lists: the classes they name may call the methods and set the
+## property, others may not
 %!test
 %! obj = class_access_list ();
 %! assert (class_access_list_friend.call_secret (obj), 42);
@@ -2344,54 +2344,54 @@
 %! obj.value = 3;
 
 
-# Calling 'methods (obj)' in a constructor
+## Calling 'methods (obj)' in a constructor
 %!test <*51659>
 %! [obj, all_methods] = class_bug51659A ();
 %! assert (all_methods, {'class_bug51659A'});
 
-# Previous test, but with handle classes
+## Previous test, but with handle classes
 %!test <*51659>
 %! [obj, all_methods] = class_bug51659A_handle ();
 %! assert (all_methods, {'class_bug51659A_handle'; 'delete'; 'eq'; 'ge'; 'gt';
 %!                       'le'; 'lt'; 'ne'});
 
-# Calling 'properties (obj)' in a constructor
+## Calling 'properties (obj)' in a constructor
 %!test <*51659>
 %! [obj, all_properties] = class_bug51659B ();
 %! assert (all_properties, {'stub_property'});
 
-# Previous test, but with handle classes
+## Previous test, but with handle classes
 %!test <*51659>
 %! [obj, all_properties] = class_bug51659B_handle ();
 %! assert (all_properties, {'stub_property'});
 
-# Calling 'methods (obj)' in a property assignment
+## Calling 'methods (obj)' in a property assignment
 %!test <51659>
 %! obj = class_bug51659C ();
 %! assert (obj.all_methods, {'class_bug51659C'; 'stub_method'});
 
-# Previous test, but with handle classes
+## Previous test, but with handle classes
 %!test <51659>
 %! obj = class_bug51659C_handle ();
 %! assert (obj.all_methods, {'class_bug51659C_handle'; 'delete'; 'eq'; 'ge';
 %!                           'gt'; 'le'; 'lt'; 'ne'; 'stub_method'});
 
-# Calling 'properties (obj)' in a property assignment
+## Calling 'properties (obj)' in a property assignment
 %!test <51659>
 %! [obj, all_properties] = class_bug51659D ();
 %! assert (obj.all_properties, {'all_properties'});
 
-# Previous test, but with handle classes
+## Previous test, but with handle classes
 %!test <51659>
 %! [obj, all_properties] = class_bug51659D ();
 %! assert (obj.all_properties, {'all_properties'});
 
-# General issues with atfolder classes
-# 1) `methods` picks up every single .m file in an @folder
-# 2) if a method signature doesn't have a method body, that is only discovered
-# when the method is called -- should be found when the classdef is parsed
-# 3) a function in an @folder without a corresponding function signature in the
-# classdef is still a method of that classdef
+## General issues with atfolder classes
+## 1) `methods` picks up every single .m file in an @folder
+## 2) if a method signature doesn't have a method body, that is only discovered
+## when the method is called -- should be found when the classdef is parsed
+## 3) a function in an @folder without a corresponding function signature in the
+## classdef is still a method of that classdef
 
 %!xtest
 %! mp = meta.package.fromName ('meta');
@@ -2423,19 +2423,19 @@
 %! assert (obj(1).a.b(1).c, 2);
 %! assert (obj(1).a.b(2).c, 3);
 
-# Bug #59735
-# Detect inheritance cycles and error out if present
-# class_bug59735A < class_bug59735A
+## Bug #59735
+## Detect inheritance cycles and error out if present
+## class_bug59735A < class_bug59735A
 %!error <inheritance cycle detected>
 %! obj = class_bug59735A ();
 
-# class_bug59735A < class_bug59735A
-# class_bug59735B < class_bug59735A
+## class_bug59735A < class_bug59735A
+## class_bug59735B < class_bug59735A
 %!error <inheritance cycle detected>
 %! obj = class_bug59735B ();
 
-# class_bug59735C < class_bug59735D
-# class_bug59735D < class_bug59735C
+## class_bug59735C < class_bug59735D
+## class_bug59735D < class_bug59735C
 %!error <inheritance cycle detected>
 %! obj = class_bug59735C ();
 
@@ -2447,7 +2447,7 @@
 %!test <*54941>
 %! obj = class_bug54941 ();
 
-# cellfun with classdef objects
+## cellfun with classdef objects
 %!test <53811>
 %! assert (cellfun ('numel', {class_bug53811, class_bug53811}), [6, 6]);
 

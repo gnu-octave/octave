@@ -37,7 +37,7 @@
 $octdict_fname = './doccheck/aspell-octave.en.pws';
 
 ################################################################################
-# Parse command line arguments
+## Parse command line arguments
 unless (@ARGV == 1)
 {
   die "USAGE: add-to-aspell-dict.pl <filename-of-new-words>\n";

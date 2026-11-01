@@ -25,7 +25,7 @@
 ##
 ########################################################################
 
-# This script is based on the old mk_doc_cache.m file.
+## This script is based on the old mk_doc_cache.m file.
 
 use strict;
 use warnings;

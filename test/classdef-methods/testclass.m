@@ -1,14 +1,14 @@
 classdef testclass
 
   properties (Constant)
-    # functions
+    ## functions
     n = 'nested_function';
     m = 'method_function';
     s = 'static_function';
     so = 'obj.static_function';
     l = 'local_function';
     p = 'private_function';
-    # function handles
+    ## function handles
     hn = '@nested_function';
     hm = '@method_function';
     hmo = '@obj.method_function';

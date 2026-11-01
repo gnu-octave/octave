@@ -539,7 +539,7 @@ permutation information.
 %! assert (u, single ([5, 6; 0, 4/5]), sqrt (eps ("single")));
 %! assert (p(:,:), single ([0, 0, 1; 1, 0, 0; 0 1 0]), sqrt (eps ("single")));
 
-# complex matrix input
+## complex matrix input
 %!test
 %! C = [1, 0, 1, 0;
 %!      1i, 1/3, -1i, 1/3;

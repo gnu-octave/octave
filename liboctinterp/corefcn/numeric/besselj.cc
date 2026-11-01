@@ -1060,8 +1060,7 @@ Input validation tests
 
 Tests contributed by Robert T. Short.
 Tests are based on the properties and tables in A&S:
- Abramowitz and Stegun, "Handbook of Mathematical Functions",
- 1972.
+ Abramowitz and Stegun, "Handbook of Mathematical Functions", 1972.
 
 For regular Bessel functions, there are 3 tests.  These compare octave
 results against Tables 9.1, 9.2, and 9.4 in A&S.  Tables 9.1 and 9.2
@@ -1086,8 +1085,8 @@ octave results to Tables 10.1, 10.2, and 10.4 in A&S.  Very similar
 comments may be made here as in the previous lines.  At this time,
 modified spherical Bessel function tests are not included.
 
-% Table 9.1 - J and Y for integer orders 0, 1, 2.
-% Compare against excerpts of Table 9.1, Abramowitz and Stegun.
+%% Table 9.1 - J and Y for integer orders 0, 1, 2.
+%% Compare against excerpts of Table 9.1, Abramowitz and Stegun.
 %!test
 %! n = 0:2;
 %! z = (0:2.5:17.5)';

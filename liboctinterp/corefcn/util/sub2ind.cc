@@ -154,19 +154,19 @@ ind = sub2ind ([3, 3], s1, s2)
 %! in = [ 1 101  11 111 ; 2 102  12 112 ];
 %! assert (sub2ind ([10 10 10], s1, s2, s3), in);
 
-# Test low index
+## Test low index
 %!assert (sub2ind ([10 10 10], 1, 1, 1), 1)
 %!error <index \(0,_,_\)> sub2ind ([10 10 10], 0, 1, 1)
 %!error <index \(_,0,_\)> sub2ind ([10 10 10], 1, 0, 1)
 %!error <index \(_,_,0\)> sub2ind ([10 10 10], 1, 1, 0)
 
-# Test high index
+## Test high index
 %!assert (sub2ind ([10 10 10], 10, 10, 10), 1000)
 %!error <index \(11,_,_\): out of bound 10> sub2ind ([10 10 10], 11, 10, 10)
 %!error <index \(_,11,_\): out of bound 10> sub2ind ([10 10 10], 10, 11, 10)
 %!error <index \(_,_,11\): out of bound 10> sub2ind ([10 10 10], 10, 10, 11)
 
-# Test high index in the trailing dimensions
+## Test high index in the trailing dimensions
 %!assert (sub2ind ([10, 1], 2, 1, 1), 2)
 %!error <index \(_,2,_\): out of bound 1> sub2ind ([10, 1], 1, 2, 1)
 %!error <index \(_,_,2\): out of bound 1> sub2ind ([10, 1], 1, 1, 2)
@@ -174,13 +174,13 @@ ind = sub2ind ([3, 3], s1, s2)
 %!error <index \(_,_,2\): out of bound 1> sub2ind ([10 10], 2, 1, 2)
 %!error <index \(_,_,2\): out of bound 1> sub2ind ([10 10], 1, 2, 2)
 
-# Test handling of empty arguments
+## Test handling of empty arguments
 %!assert (sub2ind ([10 10], zeros (0,0), zeros (0,0)), zeros (0,0))
 %!assert (sub2ind ([10 10], zeros (2,0), zeros (2,0)), zeros (2,0))
 %!assert (sub2ind ([10 10], zeros (0,2), zeros (0,2)), zeros (0,2))
 %!error <all subscripts .* same size> sub2ind ([10 10 10], zeros (0,2), zeros (2,0))
 
-# Test handling of arguments of different size
+## Test handling of arguments of different size
 %!error <all subscripts .* same size> sub2ind ([10 10], ones (1,2), ones (1,3))
 %!error <all subscripts .* same size> sub2ind ([10 10], ones (1,2), ones (2,1))
 

@@ -2155,6 +2155,46 @@
 %! obj.p = 5;
 %! assert (obj.p, 1);
 
+## Default values of properties are evaluated once the class is defined, so
+## they may refer to the class, its constant properties, and its methods
+%!assert <*65214> (class_default_const_ref.B, 2)
+
+%!assert <*65214> (class_default_forward_ref.A, 2)
+
+%!error <invalid default value for property 'A' in class 'class_default_cycle': property 'A' in class 'class_default_cycle' cannot be used in its own definition>
+%! class_default_cycle.A;
+
+%!test <*65214>
+%! obj = class_default_nonconst_ref ();
+%! assert (obj.B, 2);
+
+%!test <*52582>
+%! obj = class_default_static_method ();
+%! assert (obj.B, 2);
+
+%!assert <*52582> (class_default_static_method.C, 3)
+
+%!test <*52582>
+%! obj = class_default_private ();
+%! assert (obj.v, 7);
+
+%!error <invalid default value for property 'M' in class 'class_default_other_private': meta.class: property 'K' has private access and cannot be obtained in this context>
+%! class_default_other_private.M;
+
+%!test <*52582>
+%! obj = class_default_handle ();
+%! assert (obj.c2, 2);
+
+%!error <invalid default value for property 'B' in class 'class_default_bare_name': 'A' undefined near line 4, column 9>
+%! class_default_bare_name.B;
+
+## A class whose definition failed raises the same error again
+%!error <invalid default value for property 'B' in class 'class_default_fail': 'class_default_fail_undefined' undefined near line 4, column 32>
+%! class_default_fail.B;
+
+%!error <invalid default value for property 'B' in class 'class_default_fail': 'class_default_fail_undefined' undefined near line 4, column 32>
+%! class_default_fail.B;
+
 ## Metaclass tests
 
 ## Not a complete test. Right now, Events is not implemented
@@ -2385,12 +2425,12 @@
 %! assert (all_properties, {'stub_property'});
 
 ## Calling 'methods (obj)' in a property assignment
-%!test <51659>
+%!test <*51659>
 %! obj = class_bug51659C ();
 %! assert (obj.all_methods, {'class_bug51659C'; 'stub_method'});
 
 ## Previous test, but with handle classes
-%!test <51659>
+%!test <*51659>
 %! obj = class_bug51659C_handle ();
 %! assert (obj.all_methods, {'class_bug51659C_handle'; 'delete'; 'eq'; 'ge';
 %!                           'gt'; 'le'; 'lt'; 'ne'; 'stub_method'});

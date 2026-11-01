@@ -44,6 +44,7 @@
 #include "pt-misc.h"
 #include "pt-stmt.h"
 #include "pt-walk.h"
+#include "unwind-prot.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -387,7 +388,7 @@ cdef_property::cdef_property_rep::get_value (const cdef_object& obj,
 
       if (! retval.is_defined ())
         {
-          retval = get ("DefaultValue");
+          retval = get_default_value ();
         }
     }
   else
@@ -418,6 +419,51 @@ cdef_property::cdef_property_rep::get_value (bool do_check_access,
 {
   if (do_check_access && ! check_get_access ())
     err_property_access (who, false);
+
+  return get_default_value ();
+}
+
+void
+cdef_property::cdef_property_rep::evaluate_default ()
+{
+  if (! m_default_expr)
+    return;
+
+  if (m_evaluating_default)
+    error ("property '%s' in class '%s' cannot be used in its own definition",
+           get_name ().c_str (), get_defining_class ().get_name ().c_str ());
+
+  m_evaluating_default = true;
+
+  unwind_action reset_evaluating ([this] () { m_evaluating_default = false; });
+
+  // A default value is code of its class, so it may use the private and
+  // protected members of the class.
+
+  tree_evaluator& tw = __get_evaluator__ ();
+
+  std::string dispatch_class = tw.get_dispatch_class ();
+
+  tw.set_dispatch_class (get_defining_class ().get_name ());
+
+  unwind_action restore_dispatch_class
+    ([&tw, &dispatch_class] () { tw.set_dispatch_class (dispatch_class); });
+
+  octave_value val = m_default_expr->evaluate (tw);
+
+  m_default_expr = nullptr;
+
+  put ("DefaultValue", val);
+}
+
+octave_value
+cdef_property::cdef_property_rep::get_default_value () const
+{
+  // While the class is being defined, a default value that refers to another
+  // property of the class evaluates that property's default value first.
+
+  if (m_default_expr)
+    const_cast<cdef_property_rep *> (this)->evaluate_default ();
 
   return get ("DefaultValue");
 }
@@ -615,21 +661,11 @@ cdef_property::make_property (cdef_class& cls, tree_evaluator& tw,
           if (amap["DetailedDescription"].string_value () != "")
             detailed_description = amap["DetailedDescription"].string_value ();
 
-          tree_expression *expr = prop_p->expression ();
-          octave_value pdefault;
-
-          if (expr)
-            {
-              octave_value pvalue = expr->evaluate (tw);
-              pdefault = pvalue;
-            }
-
           cdef_property_opt_properties opts {
             .abort_set = amap["AbortSet"],
             .abstract = amap["Abstract"],
             .access = amap["Access"],
             .constant = amap["Constant"],
-            .default_value = pdefault,
             .dependent = amap["Dependent"],
             // Description and DetailedDescription might be
             // different for each property in a property
@@ -648,6 +684,17 @@ cdef_property::make_property (cdef_class& cls, tree_evaluator& tw,
           };
 
           cdef_property prop = cdef_property (cls, pname, opts);
+
+          // The default value is evaluated once the class is defined, when
+          // the static methods and the other properties of the class exist.
+
+          tree_expression *expr = prop_p->expression ();
+
+          if (expr)
+            {
+              prop.put ("HasDefault", true);
+              prop.get_rep ()->set_default_expression (expr);
+            }
 
           cls.install_property (prop);
         }

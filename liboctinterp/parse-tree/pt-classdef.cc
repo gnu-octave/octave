@@ -282,12 +282,7 @@ tree_classdef_body::~tree_classdef_body ()
 octave_value
 tree_classdef::make_meta_class (interpreter& interp, bool is_at_folder)
 {
-  cdef_class cls = cdef_class::make_meta_class (interp, this, is_at_folder);
-
-  if (cls.ok ())
-    return cls.get_constructor_function ();
-
-  return octave_value ();
+  return cdef_class::make_meta_class (interp, this, is_at_folder);
 }
 
 OCTAVE_END_NAMESPACE(octave)

@@ -126,6 +126,12 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   as in Matlab.  It was read as true, so that `methods (~Static)` declared
   static methods.  A negated access attribute is an error.
 
+* Default values of `classdef` properties are now evaluated once the class is
+  defined so that they may refer to the class itself, as in Matlab.  Default
+  values may refer to a class's constant properties, in any order, and to its
+  static methods, with access to its private members (bugs #52582 and #65214).
+  A constant property whose default value depends on itself is an error.
+
 ### Alphabetical list of new functions added in Octave 12
 
 * `diagnostics_show_caret`

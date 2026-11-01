@@ -152,6 +152,7 @@ struct cdef_property_opt_properties {
 };
 
 class tree_evaluator;
+class tree_expression;
 class tree_classdef_properties_block;
 
 //! This class holds the metadata associated with a classdef property.
@@ -203,6 +204,15 @@ private:
 
     bool is_constant () const { return get ("Constant").bool_value (); }
 
+    void set_default_expression (tree_expression *expr)
+    {
+      m_default_expr = expr;
+    }
+
+    OCTINTERP_API void evaluate_default ();
+
+    OCTINTERP_API octave_value get_default_value () const;
+
     octave_value get_value (bool do_check_access = true,
                             const std::string& who = "") const;
 
@@ -234,6 +244,12 @@ private:
     OCTAVE_NORETURN OCTINTERP_API
     void err_property_access (const std::string& from,
                               bool is_set = false) const;
+
+    // The expression for the default value, kept from the parse tree while
+    // the class is being defined and cleared once it is evaluated.
+    tree_expression *m_default_expr = nullptr;
+
+    bool m_evaluating_default = false;
   };
 
 public:
@@ -301,6 +317,13 @@ public:
   std::string get_name () const { return get_rep ()->get_name (); }
 
   bool is_constant () const { return get_rep ()->is_constant (); }
+
+  void evaluate_default () { get_rep ()->evaluate_default (); }
+
+  octave_value get_default_value () const
+  {
+    return get_rep ()->get_default_value ();
+  }
 
   //! Installs the properties from a parsed properties block onto a class.
   static OCTINTERP_API void

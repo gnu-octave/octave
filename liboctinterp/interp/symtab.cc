@@ -494,6 +494,15 @@ symbol_table::clear_user_function (const std::string& name)
   //   error ("clear: no such function '%s'", name.c_str ());
 }
 
+void
+symbol_table::clear_function_definitions (const std::string& name)
+{
+  auto p = m_fcn_table.find (name);
+
+  if (p != m_fcn_table.end ())
+    p->second.clear (true);
+}
+
 // This clears oct and mex files, including autoloads.
 void
 symbol_table::clear_dld_function (const std::string& name)

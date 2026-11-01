@@ -28,6 +28,9 @@
 
 #include "octave-config.h"
 
+#include <map>
+#include <string>
+
 #include "cdef-class.h"
 #include "cdef-fwd.h"
 #include "cdef-method.h"
@@ -78,6 +81,28 @@ public:
       m_all_classes.erase (it);
   }
 
+  //! Record the constructor function of a class whose definition starts, so
+  //! that a lookup of the class from its own definition finds the class under
+  //! construction instead of defining it again.
+  void begin_definition (const std::string& name, const octave_value& ctor)
+  {
+    m_classes_being_defined[name] = ctor;
+  }
+
+  void end_definition (const std::string& name)
+  {
+    m_classes_being_defined.erase (name);
+  }
+
+  //! Return the constructor function of the class NAME if its definition is
+  //! in progress, and an undefined value otherwise.
+  octave_value constructor_being_defined (const std::string& name) const
+  {
+    auto it = m_classes_being_defined.find (name);
+
+    return it == m_classes_being_defined.end () ? octave_value () : it->second;
+  }
+
   void register_package (const cdef_package& pkg)
   {
     m_all_packages[pkg.get_name ()] = pkg;
@@ -115,6 +140,9 @@ private:
   std::map<std::string, cdef_class> m_all_classes;
 
   std::vector<std::string> m_load_stack;
+
+  // Constructor functions of the classes whose definition is in progress
+  std::map<std::string, octave_value> m_classes_being_defined;
 
   // All registered/loaded packages
   std::map<std::string, cdef_package> m_all_packages;

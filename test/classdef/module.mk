@@ -81,6 +81,16 @@ classdef_TEST_FILES = \
   %reldir%/class_bug67845B_handle.m \
   %reldir%/class_bug67845C.m \
   %reldir%/class_bug67845C_handle.m \
+  %reldir%/class_default_bare_name.m \
+  %reldir%/class_default_const_ref.m \
+  %reldir%/class_default_cycle.m \
+  %reldir%/class_default_fail.m \
+  %reldir%/class_default_forward_ref.m \
+  %reldir%/class_default_handle.m \
+  %reldir%/class_default_nonconst_ref.m \
+  %reldir%/class_default_other_private.m \
+  %reldir%/class_default_private.m \
+  %reldir%/class_default_static_method.m \
   %reldir%/class_methods_abstract.m \
   %reldir%/class_methods_ctor_hidden.m \
   %reldir%/class_methods_ctor_private.m \

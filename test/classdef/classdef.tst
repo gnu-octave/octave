@@ -2136,6 +2136,25 @@
 %! m = class_bug59775B ([1, 3, 5; 2, 4, 6]);
 %! assert ([m.A], [1, 2, 3, 4, 5, 6]);
 
+## A handle to a classdef constructor does not define the class again
+%!test <*60791>
+%! obj1 = class_bug60791 (1);
+%! fh = @class_bug60791;
+%! obj2 = class_bug60791 (2);
+%! assert (obj2.p, 2);
+
+%!test <*60791>
+%! obj1 = class_bug60791 (1);
+%! fh = @class_bug60791;
+%! obj2 = fh (3);
+%! assert (obj2.p, 3);
+
+## Assignment from outside the class still calls the overloaded subsasgn
+%!test <*60791>
+%! obj = class_bug60791 (1);
+%! obj.p = 5;
+%! assert (obj.p, 1);
+
 ## Metaclass tests
 
 ## Not a complete test. Right now, Events is not implemented

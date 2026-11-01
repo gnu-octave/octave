@@ -965,8 +965,50 @@ cdef_object_scalar::subsasgn (const std::string& type,
                 break;
               }
 
-            val = val.assign (octave_value::op_asn_eq,
-                              type.substr (1), args, rhs);
+            // A property without get and set methods holds the value that is
+            // assigned to.  Take the value out of the object while it is
+            // changed, so that changing part of it does not copy all of it.
+            // Do so only for one level of indexing with neither the value nor
+            // the right-hand side an object, so that no code can run and see
+            // the property empty, and only when storing the result cannot
+            // fail.
+            octave_value get_fcn = prop.get ("GetMethod");
+            octave_value set_fcn = prop.get ("SetMethod");
+            octave_value set_access = prop.get ("SetAccess");
+            cdef_class defining_class = prop.get_defining_class ();
+
+            bool take_value
+              = (! is_constant && type.length () == 2
+                 && ! val.isobject () && ! val.isjava ()
+                 && ! rhs.isobject () && ! rhs.isjava ()
+                 && ! prop.get ("Dependent").bool_value ()
+                 && ! get_fcn.is_function () && ! get_fcn.is_function_handle ()
+                 && ! set_fcn.is_function () && ! set_fcn.is_function_handle ()
+                 && prop.check_set_access ()
+                 && ! (set_access.is_string ()
+                       && set_access.string_value () == "immutable"
+                       && obj.is_constructed_for (defining_class))
+                 && (obj.is_constructed ()
+                     || obj.is_partially_constructed_for (defining_class)));
+
+            if (take_value)
+              {
+                put (name, octave_value ());
+
+                try
+                  {
+                    val.assign (octave_value::op_asn_eq,
+                                type.substr (1), args, rhs);
+                  }
+                catch (...)
+                  {
+                    put (name, val);
+                    throw;
+                  }
+              }
+            else
+              val = val.assign (octave_value::op_asn_eq,
+                                type.substr (1), args, rhs);
 
             // Changing a referenced handle's properties does not assign
             // this property.  Replacing a handle or an array element does.

@@ -2244,6 +2244,42 @@
 %! obj = class_bug67512 ();
 %! obj.C{1} = 5;
 
+## Assigning to part of a property changes only that object
+%!test <*65060>
+%! obj1 = class_bug65060 ();
+%! obj2 = obj1;
+%! obj1.p(2) = 5;
+%! assert (obj2.p, [1, 2, 3]);
+
+%!test <*65060>
+%! obj1 = class_bug65060 ();
+%! obj1.p(2) = 5;
+%! obj2 = class_bug65060 ();
+%! assert (obj2.p, [1, 2, 3]);
+
+%!test <*65060>
+%! obj = class_bug65060 ();
+%! obj.p(5) = 9;
+%! assert (obj.p, [1, 2, 3, 0, 9]);
+
+%!test <*65060>
+%! obj1 = class_bug65060_handle ();
+%! obj2 = obj1;
+%! obj1.p(2) = 5;
+%! assert (obj2.p, [1, 5, 3]);
+
+%!test <*65060>
+%! obj = class_bug65060_ctor ();
+%! assert ([obj.p; obj.q], [1, 2, 3; 2, 4, 6]);
+
+## A failed assignment to part of a property leaves the property unchanged
+%!test <*65060>
+%! obj = class_bug65060 ();
+%! try
+%!   obj.p(0) = 1;
+%! end_try_catch
+%! assert (obj.p, [1, 2, 3]);
+
 ## Metaclass tests
 
 ## Not a complete test. Right now, Events is not implemented

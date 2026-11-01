@@ -2195,6 +2195,55 @@
 %!error <invalid default value for property 'B' in class 'class_default_fail': 'class_default_fail_undefined' undefined near line 4, column 32>
 %! class_default_fail.B;
 
+## A handle object held by a constant property may be changed, but the
+## constant property itself is never assigned
+%!test <*67512>
+%! obj = class_bug67512 ();
+%! obj.Data.Data1 = 3;
+%! assert (obj.Data.Data1, 3);
+
+%!test <*67512>
+%! obj1 = class_bug67512 ();
+%! obj2 = class_bug67512 ();
+%! obj1.Data.Data2 = 4;
+%! assert (obj2.Data.Data2, 4);
+
+%!test <*67512>
+%! obj = class_bug67512 ();
+%! obj.Arr(2).Data1 = 5;
+%! assert (class_bug67512.Arr(2).Data1, 5);
+
+%!test <*67512>
+%! objs = [class_bug67512(), class_bug67512()];
+%! objs(2).Data.Data1 = 6;
+%! assert (objs(1).Data.Data1, 6);
+
+%!test <*67512>
+%! obj = class_bug67512 ();
+%! obj.H.h.Data1 = 7;
+%! assert (class_bug67512.H.h.Data1, 7);
+
+%!test <*67512>
+%! obj = class_bug67512 ();
+%! obj.C{1}.Data1 = 8;
+%! assert (class_bug67512.C{1}.Data1, 8);
+
+%!error <subsasgn: cannot assign constant property: Data>
+%! obj = class_bug67512 ();
+%! obj.Data = 1;
+
+%!error <subsasgn: cannot assign constant property: Arr>
+%! obj = class_bug67512 ();
+%! obj.Arr(2) = class_bug67512_data ();
+
+%!error <subsasgn: cannot assign constant property: S>
+%! obj = class_bug67512 ();
+%! obj.S.f = 2;
+
+%!error <subsasgn: cannot assign constant property: C>
+%! obj = class_bug67512 ();
+%! obj.C{1} = 5;
+
 ## Metaclass tests
 
 ## Not a complete test. Right now, Events is not implemented

@@ -132,6 +132,10 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   static methods, with access to its private members (bugs #52582 and #65214).
   A constant property whose default value depends on itself is an error.
 
+* A handle object held by a constant `classdef` property can now be changed,
+  as in Matlab, for example with `obj.Data.Value = 3` (bug #67512).  The
+  constant property itself still cannot be assigned.
+
 ### Alphabetical list of new functions added in Octave 12
 
 * `diagnostics_show_caret`

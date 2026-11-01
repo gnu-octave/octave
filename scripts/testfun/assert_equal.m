@@ -783,9 +783,10 @@ endfunction
 %! end_try_catch
 
 ## classdef
-%!error <Expected classdef object, but observed double> assert_equal (5, containers.Map ())
-%!error <Expected classdef object does not have an 'eq' method> ...
-%!       assert_equal (containers.Map (), containers.Map ())
+%!error <Expected classdef object, but observed double>
+%! assert_equal (5, containers.Map ())
+%!error <Expected classdef object does not have an 'eq' method>
+%! assert_equal (containers.Map (), containers.Map ())
 ## the eq that handle classes inherit compares identity and does not count
 %!error <Expected classdef object does not have an 'eq' method>
 %! m = containers.Map ();

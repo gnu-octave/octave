@@ -389,12 +389,12 @@
 ## sizeof a value classdef with no values inside properties
 %!test <*55810>
 %! obj = value_class ();
-%! assert (sizeof (obj), 0)
+%! assert (sizeof (obj), 0);
 
 ## previous test, but with a classdef array
 %!test <*55810>
 %! obj(2, 2) = value_class ();
-%! assert (sizeof (obj), 0)
+%! assert (sizeof (obj), 0);
 
 ## sizeof a value classdef with clearly defined value sizes inside properties
 %!test <*55810>
@@ -1041,7 +1041,7 @@
 %! obj4 = overloaded_permute_class_handle;
 %! arr = [obj1, obj2, obj3, obj4];
 %! result = permute (arr, [2, 1]);
-%! assert (size (result), [1, 4])  # unchanged
+%! assert (size (result), [1, 4]);  # unchanged
 %! result(1).data = 5;
 %! assert (obj1.data, 5);  # stress test handle semantics
 %! ## Make it into a 3-D array
@@ -1290,7 +1290,7 @@
 %! arr = [obj1, obj2; obj3, obj4];
 %! result = transpose (transpose (arr));
 %! assert (size (result), size (arr));
-%! assert ([result.rate], [arr.rate])
+%! assert ([result.rate], [arr.rate]);
 
 ## previous test, but with handle classes
 %!test
@@ -1301,7 +1301,7 @@
 %! arr = [obj1, obj2; obj3, obj4];
 %! result = transpose (transpose (arr));
 %! assert (size (result), size (arr));
-%! assert ([result.rate], [arr.rate])
+%! assert ([result.rate], [arr.rate]);
 
 ## test if transpose/ctranspose throws an error for classdef arrays of dim >2
 ##
@@ -2144,25 +2144,26 @@
 ## useful for troubleshooting regressions.
 %!test <*62000>
 %! mc = ?handle;
-%! assert (class (mc.Abstract), 'logical')
-%! assert (class (mc.ConstructOnLoad), 'logical')
-%! assert (class (mc.Description), 'char')
-%! assert (class (mc.DetailedDescription), 'char')
-%! #assert (class (mc.EventList), 'meta.events') # Not implemented yet
-%! assert (class (mc.HandleCompatible), 'logical')
-%! assert (class (mc.Hidden), 'logical')
-%! assert (class (mc.InferiorClasses), 'meta.class')
-%! assert (class (mc.MethodList), 'meta.method')
-%! assert (class (mc.Name), 'char')
-%! assert (class (mc.PropertyList), 'meta.property')
-%! assert (class (mc.Sealed), 'logical')
-%! assert (class (mc.SuperclassList), 'meta.class')
+%! assert (class (mc.Abstract), 'logical');
+%! assert (class (mc.ConstructOnLoad), 'logical');
+%! assert (class (mc.Description), 'char');
+%! assert (class (mc.DetailedDescription), 'char');
+%! ## Not implemented yet
+%! #assert (class (mc.EventList), 'meta.events');
+%! assert (class (mc.HandleCompatible), 'logical');
+%! assert (class (mc.Hidden), 'logical');
+%! assert (class (mc.InferiorClasses), 'meta.class');
+%! assert (class (mc.MethodList), 'meta.method');
+%! assert (class (mc.Name), 'char');
+%! assert (class (mc.PropertyList), 'meta.property');
+%! assert (class (mc.Sealed), 'logical');
+%! assert (class (mc.SuperclassList), 'meta.class');
 
 ## Verify that `handle`'s metaclass is correct
 %!xtest
 %! mc = ?handle;
-%! assert (mc.Abstract, true)
-%! assert (mc.ConstructOnLoad, true)
+%! assert (mc.Abstract, true);
+%! assert (mc.ConstructOnLoad, true);
 %! assert (mc.Description, '');
 %! assert (mc.DetailedDescription, '');
 %! assert (mc.Enumeration, false);
@@ -2195,10 +2196,10 @@
 ## 3) get method can call another (different) get method
 %!test
 %! obj = get_set_class ();
-%! assert (obj.a, 2) # a has a get method
-%! obj.a = 100; # a has a set method
+%! assert (obj.a, 2);  # a has a get method
+%! obj.a = 100;  # a has a set method
 %! assert (obj.a, 203);
-%! assert (obj.b, 205); # b has a get method
+%! assert (obj.b, 205);  # b has a get method
 
 ## value class copies shouldn't call set method
 %!test

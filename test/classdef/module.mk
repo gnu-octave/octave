@@ -24,6 +24,10 @@ classdef_TEST_FILES = \
   %reldir%/@osc/osc.m \
   %reldir%/bug_60763.m \
   %reldir%/cdef_array_break_cycles.m \
+  %reldir%/class_access_fcn.m \
+  %reldir%/class_access_fcn_call.m \
+  %reldir%/class_access_fcn_list.m \
+  %reldir%/class_access_fcn_name.m \
   %reldir%/class_access_list.m \
   %reldir%/class_access_list_friend.m \
   %reldir%/class_bug50011_1.m \
@@ -66,10 +70,6 @@ classdef_TEST_FILES = \
   %reldir%/class_bug61673B.m \
   %reldir%/class_bug61673C.m \
   %reldir%/class_bug61843.m \
-  %reldir%/class_bug65214_fcn.m \
-  %reldir%/class_bug65214A.m \
-  %reldir%/class_bug65214B.m \
-  %reldir%/class_bug65214C.m \
   %reldir%/class_bug66930A.m \
   %reldir%/class_bug66930B.m \
   %reldir%/class_bug67197A.m \

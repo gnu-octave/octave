@@ -2286,24 +2286,23 @@
 %!error <invalid property: cannot have the same name as the classdef itself>
 %! obj = class_bug55767 ();
 
-## Bug #65214
-## Attributes should be validated and errors should be thrown on nonsensical values
-## Attribute expressions should also not produce side-effects
+## Attributes should be validated and errors should be thrown on nonsensical
+## values.  Attribute expressions should also not produce side-effects.
 
-## Bug #65214: an access attribute is read as written, so the non-sensical
-## value `hidden` is refused without calling the function `hidden`
+## An access attribute is read as written, so the non-sensical value `hidden`
+## is refused without calling the function `hidden`.
 %!error <invalid Access value 'hidden' for method 'class_bug61673A' in class 'class_bug61673A'>
 %! obj = class_bug61673A ();
 
-## class_bug65214_fcn raises an error if anything calls it
-%!error <invalid Access value 'class_bug65214_fcn' for method 'test_method' in class 'class_bug65214A'>
-%! obj = class_bug65214A ();
+## class_access_fcn raises an error if anything calls it
+%!error <invalid Access value 'class_access_fcn' for method 'test_method' in class 'class_access_fcn_name'>
+%! obj = class_access_fcn_name ();
 
-%!error <invalid SetAccess value given by an expression for property 'p' in class 'class_bug65214B'>
-%! obj = class_bug65214B ();
+%!error <invalid SetAccess value given by an expression for property 'p' in class 'class_access_fcn_call'>
+%! obj = class_access_fcn_call ();
 
-%!error <invalid Access value given by an expression for method 'test_method' in class 'class_bug65214C'>
-%! obj = class_bug65214C ();
+%!error <invalid Access value given by an expression for method 'test_method' in class 'class_access_fcn_list'>
+%! obj = class_access_fcn_list ();
 
 ## An access list naming an existing class is a valid value
 %!test

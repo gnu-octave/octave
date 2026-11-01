@@ -110,9 +110,9 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 
 * The values of the `Access`, `GetAccess`, and `SetAccess` attributes of
   `classdef` members are now read as written, as in Matlab, and a name in
-  them is no longer called as a function (bug #65214).  They accept the
-  access levels, a quoted access level, `?ClassName`, and a cell array of
-  `?ClassName` queries.  Other attributes still accept expressions.
+  them is no longer called as a function.  They accept the access levels, a
+  quoted access level, `?ClassName`, and a cell array of `?ClassName`
+  queries.  Other attributes still accept expressions.
 
 * A `classdef` method that overrides an inherited one now takes precedence over
   it, even when another superclass brings the inherited method too, as in

@@ -811,85 +811,9 @@ product (const MSparse<T>& a, const MSparse<T>& b)
   octave_idx_type b_nc = b.cols ();
 
   if (a_nr == 1 && a_nc == 1)
-    {
-      if (a.elem (0, 0) == 0.)
-        r = MSparse<T> (b_nr, b_nc);
-      else if (octave::math::isnan (a.elem (0, 0)))
-        {
-          r = MSparse<T> (b_nr, b_nc, b_nr * b_nc);
-          for (octave_idx_type i = 0 ; i < r.numel () ; i++)
-            r.elem(i) = octave::numeric_limits<T>::NaN ();
-        }
-      else if (octave::math::isinf (a.elem (0, 0)))
-        {
-          r = MSparse<T> (b_nr, b_nc, b_nr * b_nc);
-
-          for (octave_idx_type j = 0 ; j < b_nc ; j++)
-            {
-              octave_quit ();
-              for (octave_idx_type i = 0 ; i < b_nr ; i++)
-                {
-                  if (b.elem (i, j) == 0.0)
-                    r.elem (i, j) = octave::numeric_limits<T>::NaN ();
-                  else
-                    r.elem (i, j) = a.elem (0, 0) * b.elem (i, j);
-                }
-            }
-          r.maybe_compress (true);
-        }
-      else
-        {
-          r = MSparse<T> (b);
-          octave_idx_type b_nnz = b.nnz ();
-
-          for (octave_idx_type i = 0 ; i < b_nnz ; i++)
-            {
-              octave_quit ();
-              r.data (i) = a.data (0) * r.data (i);
-            }
-          r.maybe_compress ();
-        }
-    }
+    r = a.xelem (0, 0) * b;
   else if (b_nr == 1 && b_nc == 1)
-    {
-      if (b.elem (0, 0) == 0.)
-        r = MSparse<T> (a_nr, a_nc);
-      else if (octave::math::isnan (b.elem (0, 0)))
-        {
-          r = MSparse<T> (a_nr, a_nc, a_nr * a_nc);
-          for (octave_idx_type i = 0 ; i < r.numel () ; i++)
-            r.elem(i) = octave::numeric_limits<T>::NaN ();
-        }
-      else if (octave::math::isinf (b.elem (0, 0)))
-        {
-          r = MSparse<T> (a_nr, a_nc, a_nr * a_nc);
-
-          for (octave_idx_type j = 0 ; j < a_nc ; j++)
-            {
-              octave_quit ();
-              for (octave_idx_type i = 0 ; i < a_nr ; i++)
-                {
-                  if (a.elem (i, j) == 0.0)
-                    r.elem (i, j) = octave::numeric_limits<T>::NaN ();
-                  else
-                    r.elem (i, j) = a.elem (i, j) * b.elem (0, 0);
-                }
-            }
-          r.maybe_compress (true);
-        }
-      else
-        {
-          r = MSparse<T> (a);
-          octave_idx_type a_nnz = a.nnz ();
-
-          for (octave_idx_type i = 0 ; i < a_nnz ; i++)
-            {
-              octave_quit ();
-              r.data (i) = r.data (i) * b.data (0);
-            }
-          r.maybe_compress ();
-        }
-    }
+    r = a * b.xelem (0, 0);
   else if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
     {
       if (a_nc == 1 || b_nc == 1 || a_nc == b_nc)

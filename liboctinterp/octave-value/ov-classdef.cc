@@ -792,6 +792,28 @@ octave_classdef::print (std::ostream& os, bool)
   print_raw (os);
 }
 
+// Return the dimensions that the size function gives for OBJ, which are those
+// of its own size method if the class defines one.  Matlab shows these when it
+// displays an object.
+
+static dim_vector
+size_dims (const octave::cdef_object& obj)
+{
+  octave_value ov = octave::to_ov (obj);
+
+  Matrix sz = ov.size ();
+
+  if (sz.numel () < 2)
+    return obj.dims ();
+
+  dim_vector dv = dim_vector::alloc (sz.numel ());
+
+  for (octave_idx_type i = 0; i < dv.ndims (); i++)
+    dv(i) = sz(i);
+
+  return dv;
+}
+
 void
 octave_classdef::print_raw (std::ostream& os, bool) const
 {
@@ -801,30 +823,11 @@ octave_classdef::print_raw (std::ostream& os, bool) const
     {
       bool is_array = m_object.is_array ();
 
-      increment_indent_level ();
-
-      indent (os);
-
-      dim_vector dv = dims ();
-      if (dv.ndims () > 4)
-        os << dv.ndims () << "-D";
-      else
-        os << dims().str();
-
-      os << " " << class_name () << " object";
-      if (is_array)
-        os << " array";
-      os << " with properties:";
-      newline (os);
-      if (! Vcompact_format)
-        newline (os);
-
-      increment_indent_level ();
-
       std::map<octave::property_key, octave::cdef_property> property_map
         = cls.get_property_map (octave::cdef_class::member_mode::all_visible);
 
       std::size_t max_len = 0;
+      std::size_t num_props = 0;
       for (const auto& pname_prop : property_map)
         {
           // FIXME: this loop duplicates a significant portion of the
@@ -844,11 +847,44 @@ octave_classdef::print_raw (std::ostream& os, bool) const
           if (hid.bool_value ())
             continue;
 
+          num_props++;
+
           std::size_t sz = nm.size ();
 
           if (sz > max_len)
             max_len = sz;
         }
+
+      // As in Matlab, the header gives the size that the size function
+      // returns, and only when that is not 1x1.
+
+      increment_indent_level ();
+
+      indent (os);
+
+      dim_vector dv = size_dims (m_object);
+
+      if (dv.numel () == 1 && dv.ndims () == 2)
+        os << class_name ();
+      else
+        {
+          if (dv.ndims () > 4)
+            os << dv.ndims () << "-D";
+          else
+            os << dv.str ();
+
+          os << " " << class_name () << " array";
+        }
+
+      if (num_props == 0)
+        os << " with no properties.";
+      else
+        os << " with properties:";
+      newline (os);
+      if (! Vcompact_format)
+        newline (os);
+
+      increment_indent_level ();
 
       for (auto& pname_prop : property_map)
         {
@@ -885,6 +921,14 @@ octave_classdef::print_raw (std::ostream& os, bool) const
       decrement_indent_level ();
       decrement_indent_level ();
     }
+}
+
+void
+octave_classdef::short_disp (std::ostream& os) const
+{
+  // As in Matlab, give the size that the size function returns.
+
+  os << "[" << size_dims (m_object).str () << " " << class_name () << "]";
 }
 
 bool

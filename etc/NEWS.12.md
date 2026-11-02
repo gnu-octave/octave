@@ -69,6 +69,14 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   inherited, and `fieldnames` no longer lists private properties.  Access
   values are case-sensitive for both properties and methods.
 
+* The display of a `classdef` object now gives the size that `size`
+  returns, which may be that of the class's own `size` method, as in Matlab.
+  An object of size 1x1 is shown as `myclass with properties:`, any other
+  as `2x3 myclass array with properties:`, and a class without public
+  properties as `myclass with no properties.`.  The short form used for a
+  property value, `[2x3 myclass]`, and in the Workspace window gives the
+  same size.
+
 * `classdef` properties now support `SetAccess = immutable`.  Their values
   can be initialized by a default expression or assigned in the defining
   class constructor while the object is being created.  Later assignments

@@ -98,6 +98,10 @@ classdef_TEST_FILES = \
   %reldir%/class_default_other_private.m \
   %reldir%/class_default_private.m \
   %reldir%/class_default_static_method.m \
+  %reldir%/class_display_holder.m \
+  %reldir%/class_display_noprops.m \
+  %reldir%/class_display_plain.m \
+  %reldir%/class_display_size.m \
   %reldir%/class_methods_abstract.m \
   %reldir%/class_methods_ctor_hidden.m \
   %reldir%/class_methods_ctor_private.m \

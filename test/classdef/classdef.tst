@@ -2810,3 +2810,53 @@
 
 %!error <invalid Access value of type 'bool' for method 'f' in class 'class_negated_access'>
 %! obj = class_negated_access ();
+
+## The display of an object gives the size that the size function returns,
+## and the size only when it is not 1x1, as in Matlab.
+%!test
+%! obj = class_display_plain ();
+%! txt = evalc ("obj");
+%! assert (! isempty (strfind (txt, "  class_display_plain with properties:")));
+%! assert (! isempty (strfind (txt, "P: 1")));
+
+%!test
+%! obj = class_display_noprops ();
+%! txt = evalc ("obj");
+%! hdr = "  class_display_noprops with no properties.";
+%! assert (! isempty (strfind (txt, hdr)));
+
+%!test
+%! obj = [class_display_plain(), class_display_plain()];
+%! txt = evalc ("obj");
+%! hdr = "  1x2 class_display_plain array with properties:";
+%! assert (! isempty (strfind (txt, hdr)));
+
+%!test
+%! obj = [class_display_noprops(), class_display_noprops()];
+%! txt = evalc ("obj");
+%! hdr = "  1x2 class_display_noprops array with no properties.";
+%! assert (! isempty (strfind (txt, hdr)));
+
+%!test
+%! obj = class_display_noprops ();
+%! obj(1) = [];
+%! txt = evalc ("obj");
+%! hdr = "  1x0 class_display_noprops array with no properties.";
+%! assert (! isempty (strfind (txt, hdr)));
+
+## A scalar object whose size method gives another size is shown with that
+## size, and with its property values.
+%!test
+%! obj = class_display_size ();
+%! txt = evalc ("obj");
+%! hdr = "  2x3 class_display_size array with properties:";
+%! assert (! isempty (strfind (txt, hdr)));
+%! assert (! isempty (strfind (txt, "P: 1")));
+
+## The short form of an object, as a property value, gives the same size.
+%!test
+%! obj = class_display_holder ();
+%! txt = evalc ("obj");
+%! assert (! isempty (strfind (txt, "A: [1x1 class_display_noprops]")));
+%! assert (! isempty (strfind (txt, "B: [1x2 class_display_noprops]")));
+%! assert (! isempty (strfind (txt, "S: [2x3 class_display_size]")));

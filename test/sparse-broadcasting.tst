@@ -606,6 +606,72 @@
 %! assert (size (b), [2^40, 3]);
 %! assert (nnz (b), 4);
 %! assert (full (b(2^40,3)), 8);
+
+## Test that a scalar operand, sparse or full, matches the result of full
+## arithmetic where it encounters a zero or non-finite value.
+%!assert (sparse (0) .* sparse ([1, Inf; 0, 2]), sparse (0 .* [1, Inf; 0, 2]))
+%!assert (sparse ([1, NaN; 0, 2]) .* sparse (0), sparse ([1, NaN; 0, 2] .* 0))
+%!assert (sparse (0) .* sparse ([1i, Inf; 0, 2]),
+%!        sparse (0 .* [1i, Inf; 0, 2]))
+%!assert (sparse (complex (NaN, 1)) .* sparse ([2, 0]),
+%!        sparse (complex (NaN, 1) .* [2, 0]))
+%!assert (sparse ([2, 0]) .* sparse (complex (Inf, 1)),
+%!        sparse ([2, 0] .* complex (Inf, 1)))
+%!assert (Inf .* sparse ([1+2i, 0]), sparse (Inf .* [1+2i, 0]))
+%!assert (complex (NaN, 1) .* sparse ([2; 0]),
+%!        sparse (complex (NaN, 1) .* [2; 0]))
+%!assert (sparse ([2, 0]) .* complex (NaN, 1),
+%!        sparse ([2, 0] .* complex (NaN, 1)))
+%!assert (sparse ([1+2i, 0]) ./ 0, sparse ([1+2i, 0] ./ 0))
+%!assert (sparse ([1+2i, 0]) ./ sparse (0), sparse ([1+2i, 0] ./ 0))
+
+## Test that a sparse sum with a scalar, and a sparse matrix product with a
+## scalar operand, give the result of full arithmetic for complex values.
+%!assert (sparse ([1+2i, 0]) + complex (NaN, 1), [1+2i, 0] + complex (NaN, 1))
+%!assert (complex (NaN, 1) - sparse ([1+2i, 0]), complex (NaN, 1) - [1+2i, 0])
+%!assert (sparse (NaN) * sparse ([1+2i, 3]), sparse (NaN * [1+2i, 3]))
+%!assert (sparse (Inf) * sparse ([1+2i, 0]), sparse (Inf * [1+2i, 0]))
+%!assert (sparse ([2, 0]) * sparse (complex (NaN, 1)),
+%!        sparse ([2, 0] * complex (NaN, 1)))
+%!assert (sparse (complex (NaN, 1)) * sparse ([2, 0]),
+%!        sparse (complex (NaN, 1) * [2, 0]))
+%!assert (sparse ([complex(NaN, 1), 0]) * sparse (2),
+%!        sparse ([complex(NaN, 1), 0] * 2))
+%!assert (sparse (0) * sparse ([1, Inf]), sparse (0 * [1, Inf]))
+
+## Test that sparse results that are dense, or nearly so, keep their values.
+%!assert (sparse ([1, 0; 0, 2]) .* NaN, sparse ([1, 0; 0, 2] .* NaN))
+%!assert (Inf .* sparse ([1, 0; 0, 2]), sparse (Inf .* [1, 0; 0, 2]))
+%!assert (sparse ([1, 0; 0, 2]) ./ 0, sparse ([1, 0; 0, 2] ./ 0))
+%!assert (sparse ([1, 0; 0, 2]) ./ sparse ([0, 1; 0, 4]),
+%!        sparse ([1, 0; 0, 2] ./ [0, 1; 0, 4]))
+%!assert ([0, 1; 0, 2] == sparse ([0, 1; 3, 0]),
+%!        sparse ([0, 1; 0, 2] == [0, 1; 3, 0]))
+%!assert (sparse ([0, 1; 3, 0]) < [1, 1; 0, 2],
+%!        sparse ([0, 1; 3, 0] < [1, 1; 0, 2]))
+%!assert ([1, 1; 0, 2] & sparse ([0, 1; 3, 4]),
+%!        sparse ([1, 1; 0, 2] & [0, 1; 3, 4]))
+
+## Test that broadcasting two sparse operands, a row with a column or a
+## matrix with a column, gives the result of full arithmetic.
+%!assert (sparse ([1, 0, 2]) + sparse ([0; 3]), sparse ([1, 0, 2] + [0; 3]))
+%!assert (sparse ([0; 3]) - sparse ([1, 0, 2]), sparse ([0; 3] - [1, 0, 2]))
+%!assert (sparse ([1, 0, 2]) - sparse ([0; 3i]), sparse ([1, 0, 2] - [0; 3i]))
+%!assert (sparse ([1, 0, 2]) ./ sparse ([0; 4]), sparse ([1, 0, 2] ./ [0; 4]))
+%!assert (sparse ([1, 0, 2]) ./ sparse ([0; 4i]),
+%!        sparse ([1, 0, 2] ./ [0; 4i]))
+%!assert (sparse ([1, 0, 2]) == sparse ([0; 2]), sparse ([1, 0, 2] == [0; 2]))
+%!assert (sparse ([1, 0, -2]) < sparse ([0; 2]), sparse ([1, 0, -2] < [0; 2]))
+%!assert (sparse ([1, 0, 2]) >= sparse ([0; 2i]),
+%!        sparse ([1, 0, 2] >= [0; 2i]))
+%!assert (sparse ([1, 0, 2]) & sparse ([0; 2]), sparse ([1, 0, 2] & [0; 2]))
+%!assert (sparse ([1, 0, 2]) | sparse ([0; 2]), sparse ([1, 0, 2] | [0; 2]))
+%!assert (sparse ([1, 0; 0, 2]) & sparse ([1; 0]),
+%!        sparse ([1, 0; 0, 2] & [1; 0]))
+%!assert (sparse ([1, 0; 0, 2]) ./ sparse ([0; 4]),
+%!        sparse ([1, 0; 0, 2] ./ [0; 4]))
+%!assert (sparse ([1, 0; 0, 2]) ./ sparse ([0; 4i]),
+%!        sparse ([1, 0; 0, 2] ./ [0; 4i]))
 %!error <operator /: nonconformant arguments \(op1 is 1x2, op2 is 1x3\)>
 %! sparse ([1, 2]) / [1, 1, 1]
 %!error <operator /: nonconformant arguments \(op1 is 1x3, op2 is 4x4\)>

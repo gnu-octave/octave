@@ -164,8 +164,6 @@ Completion Date:
 
 === 🛠️ Update Octave web site, Octave wiki, and Savannah bug tracker ===
 
-* Update web site files: <code>NEWS-VERSION.html</code>, <code>index.in</code>, <code>news.in</code>, and <code>download.in</code>.
-:Steps documented in this [https://hg.octave.org/web-octave/rev/fe59d0118a2b changeset].
 * Upload documentation (manual HTML + PDF at <code>octave.org/doc</code>, version in <code>octave.org/.htaccess</code>, Doxygen at <code>octave.org/doxygen</code>)
 * Update Savannah bug tracker <code>Release</code> field to have new release number.
 * Update Savannah bug tracker: '''OPEN''' bugs marked as '''WON’T FIX''' should be marked as '''CONFIRMED''' (or more appropriate) for the final release.

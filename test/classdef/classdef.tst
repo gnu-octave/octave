@@ -2195,6 +2195,91 @@
 %!error <invalid default value for property 'B' in class 'class_default_fail': 'class_default_fail_undefined' undefined near line 4, column 32>
 %! class_default_fail.B;
 
+## A handle object held by a constant property may be changed, but the
+## constant property itself is never assigned
+%!test <*67512>
+%! obj = class_bug67512 ();
+%! obj.Data.Data1 = 3;
+%! assert (obj.Data.Data1, 3);
+
+%!test <*67512>
+%! obj1 = class_bug67512 ();
+%! obj2 = class_bug67512 ();
+%! obj1.Data.Data2 = 4;
+%! assert (obj2.Data.Data2, 4);
+
+%!test <*67512>
+%! obj = class_bug67512 ();
+%! obj.Arr(2).Data1 = 5;
+%! assert (class_bug67512.Arr(2).Data1, 5);
+
+%!test <*67512>
+%! objs = [class_bug67512(), class_bug67512()];
+%! objs(2).Data.Data1 = 6;
+%! assert (objs(1).Data.Data1, 6);
+
+%!test <*67512>
+%! obj = class_bug67512 ();
+%! obj.H.h.Data1 = 7;
+%! assert (class_bug67512.H.h.Data1, 7);
+
+%!test <*67512>
+%! obj = class_bug67512 ();
+%! obj.C{1}.Data1 = 8;
+%! assert (class_bug67512.C{1}.Data1, 8);
+
+%!error <subsasgn: cannot assign constant property: Data>
+%! obj = class_bug67512 ();
+%! obj.Data = 1;
+
+%!error <subsasgn: cannot assign constant property: Arr>
+%! obj = class_bug67512 ();
+%! obj.Arr(2) = class_bug67512_data ();
+
+%!error <subsasgn: cannot assign constant property: S>
+%! obj = class_bug67512 ();
+%! obj.S.f = 2;
+
+%!error <subsasgn: cannot assign constant property: C>
+%! obj = class_bug67512 ();
+%! obj.C{1} = 5;
+
+## Assigning to part of a property changes only that object
+%!test <*65060>
+%! obj1 = class_bug65060 ();
+%! obj2 = obj1;
+%! obj1.p(2) = 5;
+%! assert (obj2.p, [1, 2, 3]);
+
+%!test <*65060>
+%! obj1 = class_bug65060 ();
+%! obj1.p(2) = 5;
+%! obj2 = class_bug65060 ();
+%! assert (obj2.p, [1, 2, 3]);
+
+%!test <*65060>
+%! obj = class_bug65060 ();
+%! obj.p(5) = 9;
+%! assert (obj.p, [1, 2, 3, 0, 9]);
+
+%!test <*65060>
+%! obj1 = class_bug65060_handle ();
+%! obj2 = obj1;
+%! obj1.p(2) = 5;
+%! assert (obj2.p, [1, 5, 3]);
+
+%!test <*65060>
+%! obj = class_bug65060_ctor ();
+%! assert ([obj.p; obj.q], [1, 2, 3; 2, 4, 6]);
+
+## A failed assignment to part of a property leaves the property unchanged
+%!test <*65060>
+%! obj = class_bug65060 ();
+%! try
+%!   obj.p(0) = 1;
+%! end_try_catch
+%! assert (obj.p, [1, 2, 3]);
+
 ## Metaclass tests
 
 ## Not a complete test. Right now, Events is not implemented

@@ -15,6 +15,11 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   the class @-folder, and `classdef` classes may be defined inside packages
   and nested packages (bug #62000).
 
+* Assigning to part of a `classdef` property, such as `obj.p(:,:,k) = x`, no
+  longer copies the whole value of the property when the property has no get
+  or set method, so it no longer slows down as the property grows
+  (bug #65060).
+
 * The function `max_recursion_depth` is now an alias for `max_stack_depth`.
   The limit on recursion has increased from 256 to the `max_stack_depth` of
   1024.  The documentation has been re-written to be clearer.
@@ -110,9 +115,9 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 
 * The values of the `Access`, `GetAccess`, and `SetAccess` attributes of
   `classdef` members are now read as written, as in Matlab, and a name in
-  them is no longer called as a function.  They accept the access levels, a
-  quoted access level, `?ClassName`, and a cell array of `?ClassName`
-  queries.  Other attributes still accept expressions.
+  them is no longer called as a function.  Valid inputs are access levels, a
+  quoted access level, `?ClassName`, and a cell array of `?ClassName` queries.
+  Other attributes still accept expressions.
 
 * A `classdef` method that overrides an inherited one now takes precedence over
   it, even when another superclass brings the inherited method too, as in
@@ -123,14 +128,19 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   and a method of the same name in one class remain an error.
 
 * A negated `classdef` attribute, written `~Name` or `!Name`, is now false,
-  as in Matlab.  It was read as true, so that `methods (~Static)` declared
-  static methods.  A negated access attribute is an error.
+  as in Matlab.  Previously, it was read as true and code such as
+  `methods (~Static)` would declare static methods.  A negated access attribute
+  is an error.
 
 * Default values of `classdef` properties are now evaluated once the class is
   defined so that they may refer to the class itself, as in Matlab.  Default
   values may refer to a class's constant properties, in any order, and to its
   static methods, with access to its private members (bugs #52582 and #65214).
   A constant property whose default value depends on itself is an error.
+
+* A handle object held by a constant `classdef` property can now be changed,
+  as in Matlab, for example with `obj.Data.Value = 3` (bug #67512).  The
+  constant property itself still cannot be assigned.
 
 ### Alphabetical list of new functions added in Octave 12
 

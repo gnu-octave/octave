@@ -854,6 +854,52 @@ cdef_object_scalar::subsref (const std::string& type,
   return retval;
 }
 
+// Return true if an assignment to VAL with the index chain TYPE and IDX
+// reaches a handle object, directly or through structures, cell arrays, and
+// arrays, and assigns to one of its properties.  Such an assignment changes
+// the handle object and leaves VAL itself unchanged.
+
+static bool
+assigns_to_handle (octave_value val, const std::string& type,
+                   const std::list<octave_value_list>& idx)
+{
+  auto it = idx.begin ();
+
+  for (std::size_t i = 0; i < type.length (); i++, it++)
+    {
+      if (val.is_classdef_object ())
+        {
+          if (! to_cdef (val).get_class ().is_handle_class ())
+            return false;
+
+          if (type[i] == '.')
+            return true;
+        }
+      else if (val.isobject () || val.isjava ())
+        return false;
+
+      if (i == type.length () - 1)
+        return false;
+
+      try
+        {
+          val = val.subsref (type.substr (i, 1),
+                             std::list<octave_value_list> (1, *it));
+        }
+      catch (const execution_exception&)
+        {
+          __get_interpreter__ ().recover_from_exception ();
+
+          return false;
+        }
+
+      if (val.is_cs_list ())
+        return false;
+    }
+
+  return false;
+}
+
 octave_value
 cdef_object_scalar::subsasgn (const std::string& type,
                               const std::list<octave_value_list>& idx,
@@ -874,7 +920,11 @@ cdef_object_scalar::subsasgn (const std::string& type,
         if (! prop.ok ())
           error ("subsasgn: unknown property: %s", name.c_str ());
 
-        if (prop.is_constant ())
+        // A constant property is never assigned, but a handle object that
+        // it holds may be changed, as in Matlab.
+        bool is_constant = prop.is_constant ();
+
+        if (is_constant && type.length () == 1)
           error ("subsasgn: cannot assign constant property: %s",
                  name.c_str ());
 
@@ -888,7 +938,9 @@ cdef_object_scalar::subsasgn (const std::string& type,
           }
         else
           {
-            octave_value val = prop.get_value (obj, true, "subsasgn");
+            octave_value val
+              = (is_constant ? prop.get_value (true, "subsasgn")
+                             : prop.get_value (obj, true, "subsasgn"));
 
             cdef_object previous;
             if (val.is_classdef_object ())
@@ -897,8 +949,66 @@ cdef_object_scalar::subsasgn (const std::string& type,
             std::list<octave_value_list> args (std::next (idx.begin ()),
                                                idx.end ());
 
-            val = val.assign (octave_value::op_asn_eq,
-                              type.substr (1), args, rhs);
+            // The assignment may change a handle object that a constant
+            // property holds, but never the constant property itself.
+            if (is_constant)
+              {
+                if (! assigns_to_handle (val, type.substr (1), args))
+                  error ("subsasgn: cannot assign constant property: %s",
+                         name.c_str ());
+
+                val.assign (octave_value::op_asn_eq, type.substr (1), args,
+                            rhs);
+
+                retval = to_ov (obj);
+
+                break;
+              }
+
+            // A property without get and set methods holds the value that is
+            // assigned to.  Take the value out of the object while it is
+            // changed, so that changing part of it does not copy all of it.
+            // Do so only for one level of indexing with neither the value nor
+            // the right-hand side an object, so that no code can run and see
+            // the property empty, and only when storing the result cannot
+            // fail.
+            octave_value get_fcn = prop.get ("GetMethod");
+            octave_value set_fcn = prop.get ("SetMethod");
+            octave_value set_access = prop.get ("SetAccess");
+            cdef_class defining_class = prop.get_defining_class ();
+
+            bool take_value
+              = (! is_constant && type.length () == 2
+                 && ! val.isobject () && ! val.isjava ()
+                 && ! rhs.isobject () && ! rhs.isjava ()
+                 && ! prop.get ("Dependent").bool_value ()
+                 && ! get_fcn.is_function () && ! get_fcn.is_function_handle ()
+                 && ! set_fcn.is_function () && ! set_fcn.is_function_handle ()
+                 && prop.check_set_access ()
+                 && ! (set_access.is_string ()
+                       && set_access.string_value () == "immutable"
+                       && obj.is_constructed_for (defining_class))
+                 && (obj.is_constructed ()
+                     || obj.is_partially_constructed_for (defining_class)));
+
+            if (take_value)
+              {
+                put (name, octave_value ());
+
+                try
+                  {
+                    val.assign (octave_value::op_asn_eq,
+                                type.substr (1), args, rhs);
+                  }
+                catch (...)
+                  {
+                    put (name, val);
+                    throw;
+                  }
+              }
+            else
+              val = val.assign (octave_value::op_asn_eq,
+                                type.substr (1), args, rhs);
 
             // Changing a referenced handle's properties does not assign
             // this property.  Replacing a handle or an array element does.

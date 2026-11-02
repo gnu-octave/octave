@@ -152,18 +152,12 @@ plus_or_minus (const MSparse<T>& a, const T& s, OP op)
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
 
-  MArray<T> r;
+  MArray<T> r (dim_vector (nr, nc), op (0.0, s));
 
-  if (octave::math::isnan (s))
-    r = MArray<T> (dim_vector (nr, nc), octave::numeric_limits<T>::NaN ());
-  else
-    {
-      r = MArray<T> (dim_vector (nr, nc), op (0.0, s));
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
+      r.xelem (a.ridx (i), j) = op (a.data (i), s);
 
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
-          r.elem (a.ridx (i), j) = op (a.data (i), s);
-    }
   return r;
 }
 
@@ -245,18 +239,12 @@ plus_or_minus (const T& s, const MSparse<T>& a, OP op)
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
 
-  MArray<T> r;
+  MArray<T> r (dim_vector (nr, nc), op (s, 0.0));
 
-  if (octave::math::isnan (s))
-    r = MArray<T> (dim_vector (nr, nc), octave::numeric_limits<T>::NaN ());
-  else
-    {
-      r = MArray<T> (dim_vector (nr, nc), op (s, 0.0));
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
+      r.xelem (a.ridx (i), j) = op (s, a.data (i));
 
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
-          r.elem (a.ridx (i), j) = op (s, a.data (i));
-    }
   return r;
 }
 

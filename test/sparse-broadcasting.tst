@@ -624,6 +624,20 @@
 %!        sparse ([2, 0] .* complex (NaN, 1)))
 %!assert (sparse ([1+2i, 0]) ./ 0, sparse ([1+2i, 0] ./ 0))
 %!assert (sparse ([1+2i, 0]) ./ sparse (0), sparse ([1+2i, 0] ./ 0))
+
+## Test that a sparse sum with a scalar, and a sparse matrix product with a
+## scalar operand, give the result of full arithmetic for complex values.
+%!assert (sparse ([1+2i, 0]) + complex (NaN, 1), [1+2i, 0] + complex (NaN, 1))
+%!assert (complex (NaN, 1) - sparse ([1+2i, 0]), complex (NaN, 1) - [1+2i, 0])
+%!assert (sparse (NaN) * sparse ([1+2i, 3]), sparse (NaN * [1+2i, 3]))
+%!assert (sparse (Inf) * sparse ([1+2i, 0]), sparse (Inf * [1+2i, 0]))
+%!assert (sparse ([2, 0]) * sparse (complex (NaN, 1)),
+%!        sparse ([2, 0] * complex (NaN, 1)))
+%!assert (sparse (complex (NaN, 1)) * sparse ([2, 0]),
+%!        sparse (complex (NaN, 1) * [2, 0]))
+%!assert (sparse ([complex(NaN, 1), 0]) * sparse (2),
+%!        sparse ([complex(NaN, 1), 0] * 2))
+%!assert (sparse (0) * sparse ([1, Inf]), sparse (0 * [1, Inf]))
 %!error <operator /: nonconformant arguments \(op1 is 1x2, op2 is 1x3\)>
 %! sparse ([1, 2]) / [1, 1, 1]
 %!error <operator /: nonconformant arguments \(op1 is 1x3, op2 is 4x4\)>

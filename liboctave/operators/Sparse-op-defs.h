@@ -3269,96 +3269,10 @@
   octave_idx_type a_nr = a.rows ();                                     \
   octave_idx_type a_nc = a.cols ();                                     \
                                                                         \
-  if (nr == 1 && nc == 1)                                               \
-    {                                                                   \
-      RET_EL_TYPE s = m.elem (0,0);                                     \
-      if (octave::math::isnan (s))                                      \
-        {                                                               \
-          RET_TYPE r (a_nr, a_nc, a_nr * a_nc);                         \
-          for (octave_idx_type i = 0 ; i < r.numel () ; i++)            \
-            r.elem(i) = octave::numeric_limits<EL_TYPE>::NaN ();        \
-          return r;                                                     \
-        }                                                               \
-      if (octave::math::isinf (s))                                      \
-        {                                                               \
-          RET_TYPE r (a_nr, a_nc, a_nr * a_nc);                         \
-          for (octave_idx_type j = 0 ; j < a_nc ; j++)                  \
-            {                                                           \
-              octave_quit ();                                           \
-              for (octave_idx_type i = 0 ; i < a_nr ; i++)              \
-                {                                                       \
-                  if (a.elem (i, j) == 0.0)                             \
-                    r.elem (i, j) = octave::numeric_limits<EL_TYPE>::NaN ();   \
-                  else                                                  \
-                    r.elem (i, j) = s * a.elem (i, j);                  \
-                }                                                       \
-            }                                                           \
-          r.maybe_compress (true);                                      \
-          return r;                                                     \
-        }                                                               \
-      octave_idx_type nz = a.nnz ();                                    \
-      RET_TYPE r (a_nr, a_nc, nz);                                      \
-                                                                        \
-      for (octave_idx_type i = 0; i < nz; i++)                          \
-        {                                                               \
-          octave_quit ();                                               \
-          r.data (i) = s * a.data (i);                                  \
-          r.ridx (i) = a.ridx (i);                                      \
-        }                                                               \
-      for (octave_idx_type i = 0; i < a_nc + 1; i++)                    \
-        {                                                               \
-          octave_quit ();                                               \
-          r.cidx (i) = a.cidx (i);                                      \
-        }                                                               \
-                                                                        \
-      r.maybe_compress (true);                                          \
-      return r;                                                         \
-    }                                                                   \
-  else if (a_nr == 1 && a_nc == 1)                                      \
-    {                                                                   \
-      RET_EL_TYPE s = a.elem (0,0);                                     \
-      if (octave::math::isnan (s))                                      \
-        {                                                               \
-          RET_TYPE r (nr, nc, nr * nc);                                 \
-          for (octave_idx_type i = 0 ; i < r.numel () ; i++)            \
-            r.elem(i) = octave::numeric_limits<EL_TYPE>::NaN ();        \
-          return r;                                                     \
-        }                                                               \
-      if (octave::math::isinf (s))                                      \
-        {                                                               \
-          RET_TYPE r (nr, nc, nr * nc);                                 \
-          for (octave_idx_type j = 0 ; j < nc ; j++)                    \
-            {                                                           \
-              octave_quit ();                                           \
-              for (octave_idx_type i = 0 ; i < nr ; i++)                \
-                {                                                       \
-                  if (m.elem (i, j) == 0.0)                             \
-                    r.elem (i, j) = octave::numeric_limits<EL_TYPE>::NaN ();   \
-                  else                                                  \
-                    r.elem (i, j) = s * m.elem (i, j);                  \
-                }                                                       \
-            }                                                           \
-          r.maybe_compress (true);                                      \
-          return r;                                                     \
-        }                                                               \
-      octave_idx_type nz = m.nnz ();                                    \
-      RET_TYPE r (nr, nc, nz);                                          \
-                                                                        \
-      for (octave_idx_type i = 0; i < nz; i++)                          \
-        {                                                               \
-          octave_quit ();                                               \
-          r.data (i) = m.data (i) * s;                                  \
-          r.ridx (i) = m.ridx (i);                                      \
-        }                                                               \
-      for (octave_idx_type i = 0; i < nc + 1; i++)                      \
-        {                                                               \
-          octave_quit ();                                               \
-          r.cidx (i) = m.cidx (i);                                      \
-        }                                                               \
-                                                                        \
-      r.maybe_compress (true);                                          \
-      return r;                                                         \
-    }                                                                   \
+  if ((nr == 1 && nc == 1) || (a_nr == 1 && a_nc == 1))                 \
+    return RET_TYPE (octave::sparse_bcast_op<RET_EL_TYPE>               \
+                     (m, a, [] (const auto& x, const auto& y)           \
+                      { return x * y; }, "operator *"));                \
   else if (nc != a_nr)                                                  \
     octave::err_nonconformant ("operator *", nr, nc, a_nr, a_nc);       \
   else                                                                  \

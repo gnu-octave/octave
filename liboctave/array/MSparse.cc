@@ -32,7 +32,7 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 template <typename RT, typename A, typename B, typename F>
-MSparse<RT>
+Sparse<RT>
 sparse_bcast_op (const A& a, const B& b, F fcn, const char *name);
 
 OCTAVE_END_NAMESPACE(octave)
@@ -523,32 +523,7 @@ plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
   else if (a_nr == 1 && b_nc == 1)
     // (a_nc == 1 && b_nr == 1) is handled
     // by double transpose in the caller functions
-    {
-      // a: 1 x a_nc (row vector)
-      // b: b_nr x 1 (column vector)
-      //
-      // Result: outer broadcast
-      //   r(i,j) = op(a(0,j), b(i,0))
-
-      r = MSparse<T> (b_nr, a_nc, (a.nnz () * b_nr + b.nnz () * a_nc));
-
-      for (octave_idx_type j = 0; j < a_nc; j++)
-        {
-          const T a_val = a.elem (0, j);
-
-          for (octave_idx_type i = 0; i < b_nr; i++)
-            {
-              octave_quit ();
-
-              const T b_val = b.elem (i, 0);
-              const T val = op (a_val, b_val);
-
-              if (val != T ())
-                r.elem (i, j) = val;
-            }
-        }
-      r.maybe_compress ();
-    }
+    r = octave::sparse_bcast_op<T> (a, b, op, op_name);
   else
     octave::err_nonconformant (op_name, a_nr, a_nc, b_nr, b_nc);
 
@@ -584,15 +559,15 @@ operator - (const MSparse<T>& a, const MSparse<T>& b)
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Element-wise operation FCN on A and B with broadcasting.  A and B are
-// each sparse (an MSparse) or full (an Array).  FCN must give zero where
-// both operands are zero, unless one of them is full: a product, or a
-// sparse numerator over a full divisor.  The result is formed only where
-// an operand has an entry, so no operand is expanded to a full matrix.
-// An entry against a zero of the other operand is kept wherever that
-// gives a nonzero, such as the NaN of 0*Inf, 0*NaN, 0/0 or 0/NaN.
+// each sparse (a Sparse) or full (an Array).  The result is formed only
+// where an operand has an entry, so no operand is expanded to a full
+// matrix.  An entry against a zero of the other operand is kept wherever
+// that gives a nonzero, such as the NaN of 0*Inf, 0*NaN, 0/0 or 0/NaN.
+// Where FCN gives a nonzero for two zeros, as 0/0 or 0 == 0 do, and both
+// operands are sparse, every element of the result is formed.
 
 template <typename RT, typename A, typename B, typename F>
-MSparse<RT>
+Sparse<RT>
 sparse_bcast_op (const A& a, const B& b, F fcn, const char *name)
 {
   typedef typename A::element_type TA;
@@ -667,6 +642,11 @@ sparse_bcast_op (const A& a, const B& b, F fcn, const char *name)
 
   auto nonzero = [] (const RT& v) { return v != RT (); };
 
+  // Two sparse operands with FCN nonzero for two zeros fill every column.
+  bool zero_fill = (std::is_base_of_v<Sparse<TA>, A>
+                    && std::is_base_of_v<Sparse<TB>, B>
+                    && nonzero (fcn (TA (), TB ())));
+
   auto stored = [&] (const auto& x, octave_idx_type jx,
                      std::vector<octave_idx_type>& out)
   {
@@ -722,7 +702,7 @@ sparse_bcast_op (const A& a, const B& b, F fcn, const char *name)
           }
       };
 
-      if ((a_row && nonzero (fcn (ca, TB ())))
+      if (zero_fill || (a_row && nonzero (fcn (ca, TB ())))
           || (b_row && nonzero (fcn (TA (), cb))))
         {
           // A repeated row that is nonzero against zero fills the column.
@@ -766,7 +746,7 @@ sparse_bcast_op (const A& a, const B& b, F fcn, const char *name)
       r_cidx[j+1] = r_ridx.size ();
     }
 
-  MSparse<RT> r (dim_vector (nr, nc), r_ridx.size ());
+  Sparse<RT> r (dim_vector (nr, nc), r_ridx.size ());
 
   std::copy (r_cidx.begin (), r_cidx.end (), r.cidx ());
   std::copy (r_ridx.begin (), r_ridx.end (), r.ridx ());
@@ -977,6 +957,8 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
       octave_idx_type r_nc = (a_nc < b_nc ? b_nc : a_nc);
       r = MSparse<T> (a_nr, r_nc, (Zero / Zero));
 
+      // R stores every element, so write each one by its position.
+
       for (octave_idx_type i = 0 ; i < r_nc ; i++)
         {
           octave_idx_type ja;
@@ -1005,19 +987,19 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
               octave_quit ();
               if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
                 {
-                  r.elem (a.ridx (ja), i) = a.data (ja) / Zero;
+                  r.xdata (i * a_nr + a.ridx (ja)) = a.data (ja) / Zero;
                   ja++;
                   ja_lt_max = ja < ja_max;
                 }
               else if ((! ja_lt_max) || (b.ridx (jb) < a.ridx (ja)))
                 {
-                  r.elem (b.ridx (jb), i) = Zero / b.data (jb);
+                  r.xdata (i * a_nr + b.ridx (jb)) = Zero / b.data (jb);
                   jb++;
                   jb_lt_max = jb < jb_max;
                 }
               else
                 {
-                  r.elem (a.ridx (ja), i) = a.data (ja) / b.data (jb);
+                  r.xdata (i * a_nr + a.ridx (ja)) = a.data (ja) / b.data (jb);
                   ja++;
                   ja_lt_max = ja < ja_max;
                   jb++;
@@ -1030,26 +1012,7 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
   else if (a_nc == b_nc && (a_nr == 1 || b_nr == 1))
     r = quotient (a.transpose (), b.transpose ()).transpose ();
   else if (a_nr == 1 && b_nc == 1)
-    {
-      r = MSparse<T> (b_nr, a_nc, (a_nc * b_nr));
-
-      for (octave_idx_type j = 0; j < a_nc; j++)
-        {
-          const T a_val = a.elem (0, j);
-
-          for (octave_idx_type i = 0; i < b_nr; i++)
-            {
-              octave_quit ();
-
-              const T b_val = b.elem (i, 0);
-              const T val = a_val / b_val;
-
-              if (val != Zero || val != val)
-                r.elem (i, j) = val;
-            }
-        }
-      r.maybe_compress (true);
-    }
+    r = octave::sparse_bcast_op<T> (a, b, std::divides<T> (), "quotient");
   else if (a_nc == 1 && b_nr == 1)
     r = quotient (a.transpose (), b.transpose ()).transpose ();
   else

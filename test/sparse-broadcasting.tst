@@ -651,6 +651,27 @@
 %!        sparse ([0, 1; 3, 0] < [1, 1; 0, 2]))
 %!assert ([1, 1; 0, 2] & sparse ([0, 1; 3, 4]),
 %!        sparse ([1, 1; 0, 2] & [0, 1; 3, 4]))
+
+## Test that broadcasting two sparse operands, a row with a column or a
+## matrix with a column, gives the result of full arithmetic.
+%!assert (sparse ([1, 0, 2]) + sparse ([0; 3]), sparse ([1, 0, 2] + [0; 3]))
+%!assert (sparse ([0; 3]) - sparse ([1, 0, 2]), sparse ([0; 3] - [1, 0, 2]))
+%!assert (sparse ([1, 0, 2]) - sparse ([0; 3i]), sparse ([1, 0, 2] - [0; 3i]))
+%!assert (sparse ([1, 0, 2]) ./ sparse ([0; 4]), sparse ([1, 0, 2] ./ [0; 4]))
+%!assert (sparse ([1, 0, 2]) ./ sparse ([0; 4i]),
+%!        sparse ([1, 0, 2] ./ [0; 4i]))
+%!assert (sparse ([1, 0, 2]) == sparse ([0; 2]), sparse ([1, 0, 2] == [0; 2]))
+%!assert (sparse ([1, 0, -2]) < sparse ([0; 2]), sparse ([1, 0, -2] < [0; 2]))
+%!assert (sparse ([1, 0, 2]) >= sparse ([0; 2i]),
+%!        sparse ([1, 0, 2] >= [0; 2i]))
+%!assert (sparse ([1, 0, 2]) & sparse ([0; 2]), sparse ([1, 0, 2] & [0; 2]))
+%!assert (sparse ([1, 0, 2]) | sparse ([0; 2]), sparse ([1, 0, 2] | [0; 2]))
+%!assert (sparse ([1, 0; 0, 2]) & sparse ([1; 0]),
+%!        sparse ([1, 0; 0, 2] & [1; 0]))
+%!assert (sparse ([1, 0; 0, 2]) ./ sparse ([0; 4]),
+%!        sparse ([1, 0; 0, 2] ./ [0; 4]))
+%!assert (sparse ([1, 0; 0, 2]) ./ sparse ([0; 4i]),
+%!        sparse ([1, 0; 0, 2] ./ [0; 4i]))
 %!error <operator /: nonconformant arguments \(op1 is 1x2, op2 is 1x3\)>
 %! sparse ([1, 2]) / [1, 1, 1]
 %!error <operator /: nonconformant arguments \(op1 is 1x3, op2 is 4x4\)>

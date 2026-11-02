@@ -773,6 +773,7 @@
                                                                         \
         /* FIXME: Kludge... Always double/Complex, so Complex () */     \
         r = R (m1_nr, m1_nc, (Zero OP Zero));                           \
+        /* R holds every element: write each by its position. */        \
                                                                         \
         for (octave_idx_type i = 0 ; i < m1_nc ; i++)                   \
           {                                                             \
@@ -791,7 +792,8 @@
                     (ja_lt_max && (m1.ridx (ja) < m2.ridx (jb))))       \
                   {                                                     \
                     /* keep those kludges coming */                     \
-                    r.elem (m1.ridx (ja),i) = m1.data (ja) OP Zero;     \
+                    r.xdata (i * m1_nr + m1.ridx (ja))                  \
+                      = m1.data (ja) OP Zero;                           \
                     ja++;                                               \
                     ja_lt_max= ja < ja_max;                             \
                   }                                                     \
@@ -799,14 +801,15 @@
                          (jb_lt_max && (m2.ridx (jb) < m1.ridx (ja))))  \
                   {                                                     \
                     /* keep those kludges coming */                     \
-                    r.elem (m2.ridx (jb),i) = Zero OP m2.data (jb);     \
+                    r.xdata (i * m1_nr + m2.ridx (jb))                  \
+                      = Zero OP m2.data (jb);                           \
                     jb++;                                               \
                     jb_lt_max= jb < jb_max;                             \
                   }                                                     \
                 else                                                    \
                   {                                                     \
-                    r.elem (m1.ridx (ja),i) = m1.data (ja) OP           \
-                                              m2.data (jb);             \
+                    r.xdata (i * m1_nr + m1.ridx (ja))                  \
+                      = m1.data (ja) OP m2.data (jb);                   \
                     ja++;                                               \
                     ja_lt_max= ja < ja_max;                             \
                     jb++;                                               \

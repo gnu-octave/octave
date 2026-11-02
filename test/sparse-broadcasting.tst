@@ -638,6 +638,19 @@
 %!assert (sparse ([complex(NaN, 1), 0]) * sparse (2),
 %!        sparse ([complex(NaN, 1), 0] * 2))
 %!assert (sparse (0) * sparse ([1, Inf]), sparse (0 * [1, Inf]))
+
+## Test that sparse results that are dense, or nearly so, keep their values.
+%!assert (sparse ([1, 0; 0, 2]) .* NaN, sparse ([1, 0; 0, 2] .* NaN))
+%!assert (Inf .* sparse ([1, 0; 0, 2]), sparse (Inf .* [1, 0; 0, 2]))
+%!assert (sparse ([1, 0; 0, 2]) ./ 0, sparse ([1, 0; 0, 2] ./ 0))
+%!assert (sparse ([1, 0; 0, 2]) ./ sparse ([0, 1; 0, 4]),
+%!        sparse ([1, 0; 0, 2] ./ [0, 1; 0, 4]))
+%!assert ([0, 1; 0, 2] == sparse ([0, 1; 3, 0]),
+%!        sparse ([0, 1; 0, 2] == [0, 1; 3, 0]))
+%!assert (sparse ([0, 1; 3, 0]) < [1, 1; 0, 2],
+%!        sparse ([0, 1; 3, 0] < [1, 1; 0, 2]))
+%!assert ([1, 1; 0, 2] & sparse ([0, 1; 3, 4]),
+%!        sparse ([1, 1; 0, 2] & [0, 1; 3, 4]))
 %!error <operator /: nonconformant arguments \(op1 is 1x2, op2 is 1x3\)>
 %! sparse ([1, 2]) / [1, 1, 1]
 %!error <operator /: nonconformant arguments \(op1 is 1x3, op2 is 4x4\)>

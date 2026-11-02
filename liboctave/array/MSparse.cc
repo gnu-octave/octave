@@ -24,9 +24,18 @@
 ////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <functional>
 #include <iterator>
 #include <type_traits>
 #include <vector>
+
+OCTAVE_BEGIN_NAMESPACE(octave)
+
+template <typename RT, typename A, typename B, typename F>
+MSparse<RT>
+sparse_bcast_op (const A& a, const B& b, F fcn, const char *name);
+
+OCTAVE_END_NAMESPACE(octave)
 
 // sparse array with math ops.
 // Element by element MSparse by MSparse ops.
@@ -177,7 +186,7 @@ operator - (const MSparse<T>& a, const T& s)
 
 template <typename T, typename OP>
 MSparse<T>
-times_or_divide (const MSparse<T>& a, const T& s, OP op)
+times_or_divide (const MSparse<T>& a, const T& s, OP op, const char *op_name)
 {
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
@@ -189,17 +198,8 @@ times_or_divide (const MSparse<T>& a, const T& s, OP op)
   bool non_zero = op (0.0, s) != 0.0;
 
   if (non_zero)
-    {
-      r = MSparse<T> (nr, nc, nr * nc);
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          r.elem (i, j) = op (0.0, s);
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = a.cidx(j); i < a.cidx (j+1); i++)
-          r.elem (a.ridx (i), j) = op (a.data (i), s);
-      r.maybe_compress (true);
-    }
+    r = octave::sparse_bcast_op<T> (a, Array<T> (dim_vector (1, 1), s),
+                                    op, op_name);
   else
     {
       r = MSparse<T> (nr, nc, nz);
@@ -220,14 +220,14 @@ template <typename T>
 MSparse<T>
 operator * (const MSparse<T>& a, const T& s)
 {
-  return times_or_divide (a, s, std::multiplies<T> ());
+  return times_or_divide (a, s, std::multiplies<T> (), "operator *");
 }
 
 template <typename T>
 MSparse<T>
 operator / (const MSparse<T>& a, const T& s)
 {
-  return times_or_divide (a, s, std::divides<T> ());
+  return times_or_divide (a, s, std::divides<T> (), "operator /");
 }
 
 // Element by element scalar by MSparse ops.
@@ -264,7 +264,7 @@ operator - (const T& s, const MSparse<T>& a)
 
 template <typename T, typename OP>
 MSparse<T>
-times_or_divide (const T& s, const MSparse<T>& a, OP op)
+times_or_divide (const T& s, const MSparse<T>& a, OP op, const char *op_name)
 {
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
@@ -276,17 +276,8 @@ times_or_divide (const T& s, const MSparse<T>& a, OP op)
   bool non_zero = op (s, 0.0) != 0.0;
 
   if (non_zero)
-    {
-      r = MSparse<T> (nr, nc, nr * nc);
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          r.elem (i, j) = op (s, 0.0);
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = a.cidx(j); i < a.cidx (j+1); i++)
-          r.elem (a.ridx (i), j) = op (s, a.data (i));
-      r.maybe_compress (true);
-    }
+    r = octave::sparse_bcast_op<T> (Array<T> (dim_vector (1, 1), s), a, op,
+                                    op_name);
   else
     {
       r = MSparse<T> (nr, nc, nz);
@@ -307,14 +298,14 @@ template <typename T>
 MSparse<T>
 operator * (const T& s, const MSparse<T>& a)
 {
-  return times_or_divide (s, a, std::multiplies<T> ());
+  return times_or_divide (s, a, std::multiplies<T> (), "operator *");
 }
 
 template <typename T>
 MSparse<T>
 operator / (const T& s, const MSparse<T>& a)
 {
-  return times_or_divide (s, a, std::divides<T> ());
+  return times_or_divide (s, a, std::divides<T> (), "operator /");
 }
 
 // Element by element MSparse by MSparse ops.
@@ -942,6 +933,8 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
     {
       r = MSparse<T> (a_nr, a_nc, (Zero / Zero));
 
+      // R stores every element, so write each one by its position.
+
       for (octave_idx_type i = 0 ; i < a_nc ; i++)
         {
           octave_idx_type ja = a.cidx (i);
@@ -957,19 +950,19 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
               octave_quit ();
               if ((! jb_lt_max) || (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
                 {
-                  r.elem (a.ridx (ja), i) = a.data (ja) / Zero;
+                  r.xdata (i * a_nr + a.ridx (ja)) = a.data (ja) / Zero;
                   ja++;
                   ja_lt_max = ja < ja_max;
                 }
               else if ((! ja_lt_max) || (b.ridx (jb) < a.ridx (ja)))
                 {
-                  r.elem (b.ridx (jb), i) = Zero / b.data (jb);
+                  r.xdata (i * a_nr + b.ridx (jb)) = Zero / b.data (jb);
                   jb++;
                   jb_lt_max = jb < jb_max;
                 }
               else
                 {
-                  r.elem (a.ridx (ja), i) = a.data (ja) / b.data (jb);
+                  r.xdata (i * a_nr + a.ridx (ja)) = a.data (ja) / b.data (jb);
                   ja++;
                   ja_lt_max = ja < ja_max;
                   jb++;

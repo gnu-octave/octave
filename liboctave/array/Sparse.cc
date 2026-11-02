@@ -107,9 +107,15 @@ T
 Sparse<T, Alloc>::SparseRep::celem (octave_idx_type r, octave_idx_type c) const
 {
   if (m_nzmax > 0)
-    for (octave_idx_type i = m_cidx[c]; i < m_cidx[c + 1]; i++)
-      if (m_ridx[i] == r)
-        return m_data[i];
+    {
+      // The row indices of each column are sorted.
+      auto beg = m_ridx + m_cidx[c];
+      auto end = m_ridx + m_cidx[c + 1];
+      auto p = std::lower_bound (beg, end, r);
+
+      if (p != end && *p == r)
+        return m_data[p - m_ridx];
+    }
   return T ();
 }
 

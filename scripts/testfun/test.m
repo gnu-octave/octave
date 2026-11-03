@@ -617,7 +617,7 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
         __feat = strrep (__feat, "HAVE_", "");
         __have_feat = __have_feature__ (__feat);
         if (__have_feat)
-          if (isempty (__runtime_feat_test) || eval (__runtime_feat_test, 0))
+          if (isempty (__runtime_feat_test) || eval (__runtime_feat_test, '0'))
             if (isempty (__bug_id))
               __istest = true;
             else

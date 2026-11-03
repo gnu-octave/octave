@@ -347,9 +347,25 @@ as the other array.
       octave_function *fcn_val = fcn.function_value ();
       if (fcn_val)
         {
-          octave_value tmp = maybe_optimized_builtin (fcn_val->name (), A, B);
-          if (tmp.is_defined ())
-            retval(0) = tmp;
+          bsxfun_builtin_op op = bsxfun_builtin_lookup (fcn_val->name ());
+
+          // The table of handlers works on full arrays, so a sparse operand
+          // goes to the function itself, which broadcasts and returns sparse
+          // where the operator does.
+          if ((A.issparse () || B.issparse ())
+              && op != bsxfun_builtin_unknown
+              && A.ndims () == 2 && B.ndims () == 2
+              && (A.rows () == B.rows () || A.rows () == 1 || B.rows () == 1)
+              && (A.columns () == B.columns ()
+                  || A.columns () == 1 || B.columns () == 1))
+            retval = interp.feval (fcn, ovl (A, B), 1);
+          else
+            {
+              octave_value tmp = maybe_optimized_builtin (fcn_val->name (),
+                                                          A, B);
+              if (tmp.is_defined ())
+                retval(0) = tmp;
+            }
         }
     }
 
@@ -815,6 +831,36 @@ as the other array.
 %! assert (a, 2 * ones (2, 2, 2));
 
 %!assert (ones (2,2,2) .* ones (1,2), ones (2,2,2))
+
+## Sparse operands return what the operator returns
+%!shared A, x, y
+%! A = sparse ([1, 0, 3; 0, 2, 0; -1, 0, 0]);
+%! x = [1, 0, 2];
+%! y = [2; 0; -1];
+%!assert <*63281> (bsxfun (@times, A, x), A .* x)
+%!assert <*63281> (bsxfun (@times, y, A), y .* A)
+%!assert <*63281> (bsxfun ("times", A, x), A .* x)
+%!assert <*63281> (bsxfun (@times, A, A), A .* A)
+%!assert <*63281> (bsxfun (@times, A, sparse (y)), A .* sparse (y))
+%!assert <*63281> (bsxfun (@rdivide, A, x), A ./ x)
+%!assert <*63281> (bsxfun (@plus, A, x), A + x)
+%!assert <*63281> (bsxfun (@minus, sparse (x), y), sparse (x) - y)
+%!assert <*63281> (bsxfun (@eq, A, y), A == y)
+%!assert <*63281> (bsxfun (@ge, sparse (x), A), sparse (x) >= A)
+%!assert <*63281> (bsxfun (@and, A, x), A & x)
+%!assert <*63281> (bsxfun (@or, A, sparse (y)), A | sparse (y))
+%!assert <*63281> (bsxfun (@max, A, x), max (A, x))
+%!assert <*63281> (bsxfun (@min, y, A), min (y, A))
+%!assert <*63281> (bsxfun (@times, A, x), sparse (full (A) .* x))
+%!assert <*63281> (bsxfun (@max, A, sparse (x)), max (A, sparse (x)))
+%!assert <*63281> (bsxfun (@min, sparse (y), A), min (sparse (y), A))
+%!assert <*63281> (bsxfun (@power, A, x), A .^ x)
+%!assert <*63281> (bsxfun (@power, A, sparse (y)), A .^ sparse (y))
+%!assert <*63281> (full (bsxfun (@max, A, sparse (x))), max (full (A), x))
+%!assert <*63281> (full (bsxfun (@power, A, x)), full (A) .^ x)
+%!assert <*63281> (bsxfun (@plus, A, ones (3, 3, 2)), full (A) + ones (3, 3, 2))
+%!error <bsxfun: nonconformant dimensions: 3x3 and 1x2>
+%! bsxfun (@times, A, [1, 2])
 
 */
 

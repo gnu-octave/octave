@@ -1137,6 +1137,43 @@ the interval from @math{-\pi} to @math{\pi} is performed.
 %!        sparse ([-2, 2, 4.999]))
 %!assert (min (sparse ([4, -2i 4.999]), sparse ([-2, 2, 3+4i])),
 %!        sparse ([-2, -2i, 4.999]))
+## Broadcast two sparse operands, as for full matrices
+%!shared A, Ac
+%! A = [0, 2, -1; NaN, 0, 3];
+%! Ac = [0, 2i, -1+1i; NaN, 0, 3];
+%!assert (max (sparse (A), sparse ([0, -3, NaN])),
+%!        sparse (max (A, [0, -3, NaN])))
+%!assert (min (sparse (A), sparse ([1; 0])), sparse (min (A, [1; 0])))
+%!assert (max (sparse ([1; 0]), sparse (A)), sparse (max ([1; 0], A)))
+%!assert (min (sparse (A), sparse (-1)), sparse (min (A, -1)))
+%!assert (max (sparse (0), sparse (A)), sparse (max (0, A)))
+%!assert (max (sparse ([0, 2, -1]), sparse ([3; 0])),
+%!        sparse (max ([0, 2, -1], [3; 0])))
+%!assert (max (sparse (A), sparse ([0, -3, NaN]), "includenan"),
+%!        sparse (max (A, [0, -3, NaN], "includenan")))
+%!assert (min (sparse (Ac), sparse ([1i, 0, 2])),
+%!        sparse (min (Ac, [1i, 0, 2])))
+%!assert (max (sparse (Ac), sparse ([1; -2]), "ComparisonMethod", "real"),
+%!        sparse (max (Ac, [1; -2], "ComparisonMethod", "real")))
+%!error <max: nonconformant arguments \(op1 is 2x3, op2 is 1x2\)>
+%! max (sparse (A), sparse ([1, 2]))
+## A sparse operand with a scalar, as for full matrices
+%!assert (max (sparse (A), NaN, "includenan"),
+%!        sparse (max (A, NaN, "includenan")))
+%!assert (min (NaN, sparse (A), "includenan"),
+%!        sparse (min (NaN, A, "includenan")))
+%!assert (max (sparse (A), -3, "ComparisonMethod", "abs"),
+%!        sparse (max (A, -3, "ComparisonMethod", "abs")))
+%!assert (min (-1, sparse (A), "ComparisonMethod", "abs"),
+%!        sparse (min (-1, A, "ComparisonMethod", "abs")))
+%!assert (max (sparse (Ac), 0), sparse (max (Ac, 0)))
+%!assert (min (sparse (Ac), 0, "includenan"),
+%!        sparse (min (Ac, 0, "includenan")))
+%!assert (min (sparse (Ac), -1, "ComparisonMethod", "real"),
+%!        sparse (min (Ac, -1, "ComparisonMethod", "real")))
+%!assert (max (-1+1i, sparse (A), "ComparisonMethod", "real"),
+%!        sparse (max (-1+1i, A, "ComparisonMethod", "real")))
+%!assert (max (sparse ([0, 2]), 1), sparse ([1, 2]))
 
 ## Test dimension argument
 %!test

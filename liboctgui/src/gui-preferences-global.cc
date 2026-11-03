@@ -62,7 +62,7 @@ global_icon_fallbacks ("icon_fallbacks", QVariant (QStringList ()));
 gui_pref
 global_status_bar ("show_status_bar", QVariant (true));
 
-#if defined (Q_OS_MAC)
+#if defined (Q_OS_MACOS)
 // prevent native file dialogs on MAC by setting the default "false" and
 // setting the flag for ignoring the pref to "true" (3rd argument)
 gui_pref

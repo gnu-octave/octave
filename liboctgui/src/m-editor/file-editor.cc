@@ -1474,7 +1474,7 @@ file_editor::notice_settings ()
                "max-" + width_str + ": %2px; }")
       .arg (height).arg (width);
 
-#if defined (Q_OS_MAC)
+#if defined (Q_OS_MACOS)
   // FIXME: This is a workaround for missing tab close buttons on MacOS
   // in several Qt versions (https://bugreports.qt.io/browse/QTBUG-61092)
   if (! rotated)

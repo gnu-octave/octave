@@ -65,7 +65,7 @@
 #include "workspace-view.h"
 
 // Bug #55940 (Disable App Nap on Mac)
-#if defined (Q_OS_MAC)
+#if defined (Q_OS_MACOS)
 #  include <objc/runtime.h>
 #  include <objc/message.h>
 #endif
@@ -77,7 +77,7 @@
 #include "ovl.h"
 
 // Bug #55940 (Disable App Nap on Mac)
-#if defined (Q_OS_MAC)
+#if defined (Q_OS_MACOS)
 static void
 disable_app_nap ()
 {
@@ -224,7 +224,7 @@ base_qobject::base_qobject (qt_application& app_context, bool gui_app)
   qRegisterMetaType<octave_value_list> ("octave_value_list");
 
   // Bug #55940 (Disable App Nap on Mac)
-#if defined (Q_OS_MAC)
+#if defined (Q_OS_MACOS)
   // Mac App Nap feature causes pause() and sleep() to misbehave.
   // Disable it for the entire program run.
   disable_app_nap ();
@@ -506,7 +506,7 @@ base_qobject::exec ()
 {
   int status = m_qapplication->exec ();
 
-#if defined (Q_OS_MAC)
+#if defined (Q_OS_MACOS)
   // fprintf to stderr is needed by macOS, for poorly-understood reasons.
   fprintf (stderr, "\n");
 #endif

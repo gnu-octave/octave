@@ -338,7 +338,7 @@ gui_settings::get_default_font_family ()
 
   QString default_family;
 
-#if defined (Q_OS_MAC)
+#if defined (Q_OS_MACOS)
   // Use hard coded default on macOS, since selection of fixed width
   // default font is unreliable (see bug #59128).
   // Test for macOS default fixed width font

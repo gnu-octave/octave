@@ -41,7 +41,7 @@
 // Therefore, these prefs for key sequences require a separate constant
 // definition and value method for the settings class.
 
-#if defined (Q_OS_MAC)
+#if defined (Q_OS_MACOS)
 // Use CMD key as an equivalent of Ctrl key on other platforms
 const Qt::KeyboardModifier CTRL = Qt::MetaModifier;
 // Some of octave default shortcuts on windows/linux are already defined
@@ -160,7 +160,7 @@ const QString sc_edit_view ("editor_view");
 const QString sc_edit_view_zoom (sc_edit_view + ":zoom");
 extern sc_pref sc_edit_view_zoom_in;
 extern sc_pref sc_edit_view_zoom_out;
-#if defined (Q_OS_MAC)
+#if defined (Q_OS_MACOS)
 extern sc_pref sc_edit_view_zoom_normal;
 #else
 extern sc_pref sc_edit_view_zoom_normal;
@@ -200,7 +200,7 @@ extern sc_pref sc_edit_edit_comment_var_selection;
 extern sc_pref sc_edit_edit_upper_case;
 extern sc_pref sc_edit_edit_lower_case;
 
-#if defined (Q_OS_MAC)
+#if defined (Q_OS_MACOS)
 extern sc_pref sc_edit_edit_indent_selection;
 extern sc_pref sc_edit_edit_unindent_selection;
 #else

@@ -581,12 +581,12 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
 ###   macro names that may be checked with __have_feature__.
 ###
 ###   RUNTIME_CONDITION is an expression to evaluate to check
-###   whether some condition is met when the test is executed.  For
-###   example, have_window_system.
+###   whether some condition is met when the test is executed.
+###   For example, "have_window_system ()".
 ###
-###   BUG-ID is a bug number from the bug tracker.  A prefix of '*'
-###   indicates a bug that has been fixed.  Tests that fail for fixed
-###   bugs are reported as regressions.
+###   BUG-ID is a bug number from the bug tracker.
+###   A prefix of '*' indicates a bug that has been fixed.
+###   Tests that fail for fixed bugs are reported as regressions.
 
       elseif (strcmp (__type, "testif"))
         __e = regexp (__code, '.$', 'lineanchors', 'once');
@@ -617,7 +617,8 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
         __feat = strrep (__feat, "HAVE_", "");
         __have_feat = __have_feature__ (__feat);
         if (__have_feat)
-          if (isempty (__runtime_feat_test) || eval (__runtime_feat_test))
+          if (isempty (__runtime_feat_test)
+              || eval (__runtime_feat_test, 'false'))
             if (isempty (__bug_id))
               __istest = true;
             else

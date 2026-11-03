@@ -88,9 +88,11 @@ disable_app_nap ()
   id reason_string;
   id osx_latencycritical_activity;
 
-  // Option codes found at https://stackoverflow.com/questions/22784886/what-can-make-nanosleep-drift-with-exactly-10-sec-on-mac-os-x-10-9/32729281#32729281
-  unsigned long long NSActivityUserInitiatedAllowingIdleSystemSleep = 0x00FFFFFFULL;
-  unsigned long long NSActivityLatencyCritical = 0xFF00000000ULL;
+  // Values from Foundation/NSProcessInfo.h.  Clear the idle system sleep
+  // disabled bit so that suppressing App Nap does not prevent system sleep.
+  constexpr unsigned long long NSActivityUserInitiatedAllowingIdleSystemSleep
+    = 0x00FFFFFFULL & ~(1ULL << 20);
+  constexpr unsigned long long NSActivityLatencyCritical = 0xFF00000000ULL;
 
   // Avoid errors on older versions of OS X
   process_info_class = reinterpret_cast<Class> (objc_getClass ("NSProcessInfo"));
@@ -121,9 +123,7 @@ disable_app_nap ()
                     (reason_string, sel_getUid ("initWithUTF8String:"),
                      "App Nap causes pause() malfunction");
 
-  // Start an Activity that suppresses App Nap.  This Activity will run for
-  // the entire duration of the Octave process.  This is intentional,
-  // not a leak.
+  // Start an activity that suppresses App Nap.
   osx_latencycritical_activity =
     reinterpret_cast<id (*) (id, SEL, unsigned long long, id)> (objc_msgSend)
       (process_info,
@@ -131,6 +131,15 @@ disable_app_nap ()
        NSActivityUserInitiatedAllowingIdleSystemSleep
        | NSActivityLatencyCritical,
        reason_string);
+
+  // A plain id in C++ does not retain the Objective-C object.  Keep the
+  // activity alive for the entire process lifetime by intentionally leaving
+  // this retain unbalanced; deallocating the token would end the activity.
+  reinterpret_cast<id (*) (id, SEL)> (objc_msgSend)
+    (osx_latencycritical_activity, sel_getUid ("retain"));
+
+  reinterpret_cast<void (*) (id, SEL)> (objc_msgSend)
+    (reason_string, sel_getUid ("release"));
 }
 #endif
 

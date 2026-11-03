@@ -325,12 +325,14 @@ sparse_scalar_pow (const ST& a, F fcn)
 }
 
 // Raise each element of the sparse matrix A to the power of the corresponding
-// element of the sparse matrix B, of the same size.  FCN computes one element
+// element of the sparse matrix B.  A and B have the same size, or a single row
+// or column of one is broadcast against the other.  FCN computes one element
 // exactly as the full operator does.  Every element where A and B both hold an
 // implicit zero gives FCN (0, 0), which is 1 or NaN, never zero, so the result
 // starts filled with it and element (i, j) is at i + j*nr of its data.  The
 // nonzeros of A and B are then walked together, since an element held by only
-// one of them gives FCN (a, 0) or FCN (0, b).
+// one of them gives FCN (a, 0) or FCN (0, b).  The element of a broadcast row
+// in a column, if it is nonzero, reaches every row of that column.
 
 template <typename RT, typename TA, typename TB, typename F>
 static RT
@@ -342,38 +344,92 @@ sparse_sparse_pow (const TA& a, const TB& b, F fcn)
   const A_T za = A_T ();
   const B_T zb = B_T ();
 
-  octave_idx_type nr = a.rows ();
-  octave_idx_type nc = a.cols ();
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
+  octave_idx_type b_nr = b.rows ();
+  octave_idx_type b_nc = b.cols ();
+
+  if (! ((a_nr == b_nr || a_nr == 1 || b_nr == 1)
+         && (a_nc == b_nc || a_nc == 1 || b_nc == 1)))
+    octave::err_nonconformant ("operator .^", a_nr, a_nc, b_nr, b_nc);
+
+  octave_idx_type nr = (a_nr == 1 ? b_nr : a_nr);
+  octave_idx_type nc = (a_nc == 1 ? b_nc : a_nc);
+
+  bool a_row = (a_nr == 1 && nr > 1);
+  bool b_row = (b_nr == 1 && nr > 1);
+
+  if (nr == 0 || nc == 0)
+    return RT (nr, nc);
 
   RT result (nr, nc, fcn (za, zb));
   auto *rd = result.rwdata ();
 
   for (octave_idx_type j = 0; j < nc; j++)
     {
-      octave_idx_type ia = a.cidx (j);
-      octave_idx_type ea = a.cidx (j+1);
-      octave_idx_type ib = b.cidx (j);
-      octave_idx_type eb = b.cidx (j+1);
+      octave_idx_type ia = a.cidx (a_nc == 1 ? 0 : j);
+      octave_idx_type ea = a.cidx ((a_nc == 1 ? 0 : j) + 1);
+      octave_idx_type ib = b.cidx (b_nc == 1 ? 0 : j);
+      octave_idx_type eb = b.cidx ((b_nc == 1 ? 0 : j) + 1);
 
-      while (ia < ea || ib < eb)
+      octave_quit ();
+
+      if (a_row && ia < ea)
         {
-          octave_quit ();
+          const A_T x = a.data (ia);
+          const auto x0 = fcn (x, zb);
 
-          if (ib == eb || (ia < ea && a.ridx (ia) < b.ridx (ib)))
+          for (octave_idx_type i = 0; i < nr; i++)
             {
-              rd[a.ridx (ia) + j*nr] = fcn (a.data (ia), zb);
-              ia++;
+              if (ib < eb && b.ridx (ib) == i)
+                rd[i + j*nr] = fcn (x, b.data (ib++));
+              else
+                rd[i + j*nr] = x0;
             }
-          else if (ia == ea || b.ridx (ib) < a.ridx (ia))
+        }
+      else if (b_row && ib < eb)
+        {
+          const B_T y = b.data (ib);
+          const auto y0 = fcn (za, y);
+
+          for (octave_idx_type i = 0; i < nr; i++)
             {
-              rd[b.ridx (ib) + j*nr] = fcn (za, b.data (ib));
-              ib++;
+              if (ia < ea && a.ridx (ia) == i)
+                rd[i + j*nr] = fcn (a.data (ia++), y);
+              else
+                rd[i + j*nr] = y0;
             }
-          else
+        }
+      else if (a_row)
+        {
+          for (; ib < eb; ib++)
+            rd[b.ridx (ib) + j*nr] = fcn (za, b.data (ib));
+        }
+      else if (b_row)
+        {
+          for (; ia < ea; ia++)
+            rd[a.ridx (ia) + j*nr] = fcn (a.data (ia), zb);
+        }
+      else
+        {
+          while (ia < ea || ib < eb)
             {
-              rd[a.ridx (ia) + j*nr] = fcn (a.data (ia), b.data (ib));
-              ia++;
-              ib++;
+              if (ib == eb || (ia < ea && a.ridx (ia) < b.ridx (ib)))
+                {
+                  rd[a.ridx (ia) + j*nr] = fcn (a.data (ia), zb);
+                  ia++;
+                }
+              else if (ia == ea || b.ridx (ib) < a.ridx (ia))
+                {
+                  rd[b.ridx (ib) + j*nr] = fcn (za, b.data (ib));
+                  ib++;
+                }
+              else
+                {
+                  rd[a.ridx (ia) + j*nr] = fcn (a.data (ia), b.data (ib));
+                  ia++;
+                  ib++;
+                }
             }
         }
     }
@@ -500,7 +556,27 @@ elem_xpow (const SparseMatrix& a, const SparseMatrix& b)
     return elem_xpow (a, b(0));
 
   if (nr != b_nr || nc != b_nc)
-    octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
+    {
+      // Each element as in bsxfun_pow, which elem_xpow (const NDArray&,
+      // const NDArray&) uses for operands of different sizes.  The result
+      // is complex if any base is negative and any exponent not an integer.
+
+      bool b_int = true;
+      for (octave_idx_type i = 0; i < b.nnz (); i++)
+        if (! octave::math::is_integer (b.data (i)))
+          {
+            b_int = false;
+            break;
+          }
+
+      if (! b_int && a.any_element_is_negative ())
+        return sparse_sparse_pow<SparseComplexMatrix>
+                 (a, b, [] (double x, double y)
+                        { return std::pow (Complex (x), y); });
+      else
+        return sparse_sparse_pow<SparseMatrix>
+                 (a, b, [] (double x, double y) { return std::pow (x, y); });
+    }
 
   int convert_to_complex = 0;
   for (octave_idx_type j = 0; j < nc; j++)
@@ -544,22 +620,14 @@ elem_xpow (const SparseMatrix& a, const Complex& b)
 octave_value
 elem_xpow (const SparseMatrix& a, const SparseComplexMatrix& b)
 {
-  octave_idx_type nr = a.rows ();
-  octave_idx_type nc = a.cols ();
-
-  octave_idx_type b_nr = b.rows ();
-  octave_idx_type b_nc = b.cols ();
-
   if (a.numel () == 1 && b.numel () > 1)
     return scalar_xpow (a(0), b);
 
   if (b.numel () == 1 && a.numel () > 1)
     return elem_xpow (a, b(0));
 
-  if (nr != b_nr || nc != b_nc)
-    octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-
-  // Each element as in elem_xpow (const NDArray&, const ComplexNDArray&).
+  // Each element as in elem_xpow (const NDArray&, const ComplexNDArray&),
+  // which uses the same power function for operands of different sizes.
 
   return sparse_sparse_pow<SparseComplexMatrix>
            (a, b, [] (double x, const Complex& y) { return std::pow (x, y); });
@@ -634,20 +702,19 @@ elem_xpow (const SparseComplexMatrix& a, double b)
 octave_value
 elem_xpow (const SparseComplexMatrix& a, const SparseMatrix& b)
 {
-  octave_idx_type nr = a.rows ();
-  octave_idx_type nc = a.cols ();
-
-  octave_idx_type b_nr = b.rows ();
-  octave_idx_type b_nc = b.cols ();
-
   if (a.numel () == 1 && b.numel () > 1)
     return scalar_xpow (a(0), b);
 
   if (b.numel () == 1 && a.numel () > 1)
     return elem_xpow (a, b(0));
 
-  if (nr != b_nr || nc != b_nc)
-    octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
+  // For operands of different sizes, each element as in bsxfun_pow, which
+  // elem_xpow (const ComplexNDArray&, const NDArray&) uses for them.
+
+  if (a.rows () != b.rows () || a.cols () != b.cols ())
+    return sparse_sparse_pow<SparseComplexMatrix>
+             (a, b, [] (const Complex& x, double y)
+                    { return std::pow (x, y); });
 
   // Each element as in elem_xpow (const ComplexNDArray&, const NDArray&).
 
@@ -675,23 +742,15 @@ elem_xpow (const SparseComplexMatrix& a, const Complex& b)
 octave_value
 elem_xpow (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
 {
-  octave_idx_type nr = a.rows ();
-  octave_idx_type nc = a.cols ();
-
-  octave_idx_type b_nr = b.rows ();
-  octave_idx_type b_nc = b.cols ();
-
   if (a.numel () == 1 && b.numel () > 1)
     return scalar_xpow (a(0), b);
 
   if (b.numel () == 1 && a.numel () > 1)
     return elem_xpow (a, b(0));
 
-  if (nr != b_nr || nc != b_nc)
-    octave::err_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
-
   // Each element as in elem_xpow (const ComplexNDArray&,
-  // const ComplexNDArray&).
+  // const ComplexNDArray&), which uses the same power function for operands
+  // of different sizes.
 
   return sparse_sparse_pow<SparseComplexMatrix>
            (a, b, [] (const Complex& x, const Complex& y)
@@ -748,6 +807,25 @@ elem_xpow (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
 %!assert <*57909> (full (sparse (ac) .^ NaN), ac .^ NaN)
 %!assert <*57909> (full (sparse (ac) .^ 1i), ac .^ 1i)
 %!assert <*57909> (full (0.5 .^ sparse (ec)), 0.5 .^ ec)
+
+## Broadcasting a row or column, as for full operands
+%!shared A, Ac
+%! A = [0, 2; -2, 0.5; 0, 0];
+%! Ac = [0, 1i; -1+1i, 2; 0, 0];
+%!assert (full (sparse (A) .^ [2, -1]), A .^ [2, -1])
+%!assert (full (sparse (A) .^ [2, -0.5]), A .^ [2, -0.5])
+%!assert (full (sparse (A) .^ [2; 0.5; NaN]), A .^ [2; 0.5; NaN])
+%!assert (full (sparse (A) .^ sparse ([0, 3])), A .^ [0, 3])
+%!assert (full (sparse ([0, -2]) .^ A), [0, -2] .^ A)
+%!assert (full (sparse ([0; 2; -1]) .^ sparse (A)), [0; 2; -1] .^ A)
+%!assert (full (sparse ([0, 2, -1]) .^ sparse ([2; 0; 0.5])),
+%!        [0, 2, -1] .^ [2; 0; 0.5])
+%!assert (full (sparse (Ac) .^ [2, 0.5]), Ac .^ [2, 0.5])
+%!assert (full (sparse (A) .^ [1i, 2]), A .^ [1i, 2])
+%!assert (full (sparse (Ac) .^ [1i; 2; -1]), Ac .^ [1i; 2; -1])
+%!assert (full (sparse (zeros (1, 0)) .^ ones (3, 1)), zeros (3, 0))
+%!error <operator .\^: nonconformant arguments \(op1 is 3x2, op2 is 1x3\)>
+%! sparse (A) .^ [1, 2, 3]
 
 ## The result keeps the pattern of A only where 0 .^ B is zero
 %!assert (sparse ([0, 2]) .^ 2, sparse ([0, 4]))

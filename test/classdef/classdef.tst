@@ -2280,6 +2280,84 @@
 %! end_try_catch
 %! assert (obj.p, [1, 2, 3]);
 
+## A comma-separated list assigns one value to the property of each element
+## of an object array.
+%!test <*68108>
+%! m(1,3) = value_class ();
+%! c = num2cell (1:3);
+%! [m.a] = c{:};
+%! assert ([m.a], [1, 2, 3]);
+
+%!test <*68108>
+%! m = [handle_class(), handle_class()];
+%! c = {1, 2};
+%! [m.a] = c{:};
+%! assert ([m.a], [1, 2]);
+
+%!test <*68108>
+%! m = [value_class(), value_class(); value_class(), value_class()];
+%! c = {1, 2, 3, 4};
+%! [m.a] = c{:};
+%! assert ([m(2,1).a, m(1,2).a], [2, 3]);
+
+%!test <*68108>
+%! m = [value_class(), value_class(), value_class()];
+%! [m.a] = deal (5);
+%! assert ([m.a], [5, 5, 5]);
+
+%!test <*68108>
+%! m = [value_class(), value_class(), value_class()];
+%! [m(2:3).a] = deal (7, 8);
+%! assert ({m.a}, {[], 7, 8});
+
+%!test <*68108>
+%! m = [value_class(), value_class(), value_class()];
+%! [m([1, 3]).a] = deal (7, 8);
+%! assert ({m.a}, {7, [], 8});
+
+## An index past the end of the array creates the new elements.
+%!test <*68108>
+%! m = [value_class(), value_class()];
+%! [m(2:3).a] = deal (7, 8);
+%! assert ({m.a}, {[], 7, 8});
+
+## The set method of the property runs for each element.
+%!test <*68108>
+%! m = [class_bug68108_set(), class_bug68108_set()];
+%! c = {1, 2};
+%! [m.A] = c{:};
+%! assert ([m.A], [10, 20]);
+
+## Elements of a value class shared with another array are not changed.
+%!test <*68108>
+%! m = [value_class(), value_class()];
+%! b = m;
+%! c = {1, 2};
+%! [m.a] = c{:};
+%! assert ({b.a}, {[], []});
+
+%!test <*68108>
+%! obj = class_bug68108_ctor (3);
+%! assert ([obj.A], [1, 2, 3]);
+
+%!test <*68108>
+%! m = [value_class(), value_class()];
+%! [m.a, x] = deal (1, 2, 3);
+%! assert ([m.a, x], [1, 2, 3]);
+
+## An empty list leaves an empty object array unchanged.
+%!test <*68108>
+%! m = value_class ();
+%! m(1) = [];
+%! c = {};
+%! [m.a] = c{:};
+%! assert (size (m), [1, 0]);
+
+%!error <some elements undefined in return list>
+%! m = [value_class(), value_class(), value_class()];
+%! c = {1, 2};
+%! [m.a] = c{:};
+
 ## Metaclass tests
 
 ## Not a complete test. Right now, Events is not implemented

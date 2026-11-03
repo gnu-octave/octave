@@ -142,6 +142,10 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   as in Matlab, for example with `obj.Data.Value = 3` (bug #67512).  The
   constant property itself still cannot be assigned.
 
+* A comma-separated list can now be assigned to a property of every element
+  of a `classdef` object array, or of the indexed ones, as in Matlab, for
+  example with `[m.A] = c{:}` or `[m(2:3).A] = deal (7, 8)` (bug #68108).
+
 ### Alphabetical list of new functions added in Octave 12
 
 * `diagnostics_show_caret`

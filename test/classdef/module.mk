@@ -86,6 +86,8 @@ classdef_TEST_FILES = \
   %reldir%/class_bug67845B_handle.m \
   %reldir%/class_bug67845C.m \
   %reldir%/class_bug67845C_handle.m \
+  %reldir%/class_bug68108_ctor.m \
+  %reldir%/class_bug68108_set.m \
   %reldir%/class_default_bare_name.m \
   %reldir%/class_default_const_ref.m \
   %reldir%/class_default_cycle.m \

@@ -285,7 +285,7 @@ endfunction
 
 
 ## Linux and Windows
-%!testif ; isunix () || (ispc () && ! isunix ())
+%!testif ; (isunix () && ! ismac ()) || (ispc () && ! isunix ())
 %! [user, syst] = memory ();
 %! assert (user.mem_used_octave > 0);
 %! assert (user.ram_used_octave <= user.mem_used_octave);

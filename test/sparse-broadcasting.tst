@@ -602,10 +602,11 @@
 %! assert (nnz (b), 2*n - 1);
 %! assert (full (b(5,5)), Inf);
 %!test
-%! b = sparse ([1, 0, 2]) .* sparse ([1; 2^40], 1, [3; 4], 2^40, 1);
-%! assert (size (b), [2^40, 3]);
+%! szmax = sizemax ();  # largest index possible with octave_idx_type
+%! b = sparse ([1, 0, 2]) .* sparse ([1; szmax], 1, [3; 4], szmax, 1);
+%! assert (size (b), [double(szmax), 3]);
 %! assert (nnz (b), 4);
-%! assert (full (b(2^40,3)), 8);
+%! assert (full (b(szmax,3)), 8);
 
 ## Test that a scalar operand, sparse or full, matches the result of full
 ## arithmetic where it encounters a zero or non-finite value.

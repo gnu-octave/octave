@@ -322,7 +322,7 @@ void init_all_shortcuts (void)
   // Zooming
   sc_edit_view_zoom_in = sc_pref (QCoreApplication::translate ("shortcuts", "Zoom In"), sc_edit_view_zoom + "_in", QKeySequence::ZoomIn);
   sc_edit_view_zoom_out = sc_pref (QCoreApplication::translate ("shortcuts", "Zoom Out"), sc_edit_view_zoom + "_out", QKeySequence::ZoomOut);
-  #if defined (Q_OS_MAC)
+  #if defined (Q_OS_MACOS)
   sc_edit_view_zoom_normal = sc_pref (QCoreApplication::translate ("shortcuts", "Zoom Normal"), sc_edit_view_zoom + "_normal", OCTAVE_QT_KEYCOMBINATION (CTRL, Qt::Key_Underscore));
   #else
   sc_edit_view_zoom_normal = sc_pref (QCoreApplication::translate ("shortcuts", "Zoom Normal"), sc_edit_view_zoom + "_normal", OCTAVE_QT_KEYCOMBINATION (CTRL, Qt::Key_Period));
@@ -359,7 +359,7 @@ void init_all_shortcuts (void)
   sc_edit_edit_upper_case = sc_pref (QCoreApplication::translate ("shortcuts", "Uppercase Selection"), sc_edit_edit + ":upper_case", OCTAVE_QT_KEYCOMBINATION (CTRL, Qt::Key_U));
   sc_edit_edit_lower_case = sc_pref (QCoreApplication::translate ("shortcuts", "Lowercase Selection"), sc_edit_edit + ":lower_case", OCTAVE_QT_KEYCOMBINATION (CTRL_ALT, Qt::Key_U));
 
-  #if defined (Q_OS_MAC)
+  #if defined (Q_OS_MACOS)
   sc_edit_edit_indent_selection = sc_pref (QCoreApplication::translate ("shortcuts", "Indent Selection Rigidly"), sc_edit_edit + ":indent_selection", OCTAVE_QT_KEYCOMBINATION (PRE, Qt::Key_Tab));
   sc_edit_edit_unindent_selection = sc_pref (QCoreApplication::translate ("shortcuts", "Unindent Selection Rigidly"), sc_edit_edit + ":unindent_selection", OCTAVE_QT_KEYCOMBINATION (PRE | Qt::ShiftModifier, Qt::Key_Tab));
   #else

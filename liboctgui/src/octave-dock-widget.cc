@@ -754,7 +754,7 @@ octave_dock_widget::set_style (bool active)
       dock_tooltip = "Undock Widget";
     }
 
-#if defined (Q_OS_MAC)
+#if defined (Q_OS_MACOS)
   QString alignment = "center";
 #else
   QString alignment = "center left";

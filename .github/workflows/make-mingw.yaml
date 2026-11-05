@@ -22,11 +22,11 @@ jobs:
 
       matrix:
         # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
-        msystem: [MINGW64, CLANG64, CLANGARM64]
+        msystem: [UCRT64, CLANG64, CLANGARM64]
         include:
-          - msystem: MINGW64
+          - msystem: UCRT64
             os: windows-latest
-            mingw-prefix: mingw64
+            mingw-prefix: ucrt64
             cc: gcc
             cxx: g++
             f77: gfortran

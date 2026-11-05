@@ -188,7 +188,7 @@ octave_qscintilla::octave_qscintilla (QWidget *p)
     }
 #endif
 
-#if defined (Q_OS_MAC)
+#if defined (Q_OS_MACOS)
   // Octave interprets Cmd key as Meta whereas Qscintilla interprets it
   // as Ctrl.  We thus invert Meta/Ctrl in Qscintilla's shortcuts list.
   QList< QsciCommand * > cmd_list_mac = cmd_set->commands ();

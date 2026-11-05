@@ -483,19 +483,19 @@ recording using those parameters.
 }
 
 /*
-%!testif HAVE_PORTAUDIO
+%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
 %! devinfo = audiodevinfo;
 %! assert (rows (devinfo.input), 1);
 %! assert (rows (devinfo.output), 1);
 
-%!testif HAVE_PORTAUDIO
+%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
 %! devinfo = audiodevinfo;
 %! nout = audiodevinfo (0);
 %! nin = audiodevinfo (1);
 %! assert (columns (devinfo.output), nout);
 %! assert (columns (devinfo.input), nin);
 
-%!testif HAVE_PORTAUDIO
+%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
 %! devinfo = audiodevinfo;
 %! nout = audiodevinfo (0);
 %! nin = audiodevinfo (1);
@@ -506,7 +506,7 @@ recording using those parameters.
 %!   assert (devinfo.input (i).Name, audiodevinfo (1, devinfo.input (i).ID));
 %! endfor
 
-%!testif HAVE_PORTAUDIO
+%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
 %! devinfo = audiodevinfo;
 %! nout = audiodevinfo (0);
 %! nin = audiodevinfo (1);

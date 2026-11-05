@@ -284,14 +284,16 @@ function [status, meminfo] = lmemory ()
 endfunction
 
 
-%!testif ; (isunix () && ! ismac ()) || ispc ()
+## Linux and Windows
+%!testif ; (isunix () && ! ismac ()) || (ispc () && ! isunix ())
 %! [user, syst] = memory ();
 %! assert (user.mem_used_octave > 0);
 %! assert (user.ram_used_octave <= user.mem_used_octave);
 %! assert (user.mem_used_octave < syst.SystemMemory.Total);
 %! assert (user.MemAvailableAllArrays <= syst.SystemMemory.Available);
 
-%!testif ; (! isunix () || ismac ()) && ! ispc ()
+## Mac and Cygwin
+%!testif ; ismac () || (ispc () && isunix ())
 %! fail ("[user] = memory ()",
 %!       "function not yet implemented for this architecture");
 %! fail ("memory ()", "warning",

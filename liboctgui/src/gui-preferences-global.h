@@ -43,7 +43,7 @@ extern gui_pref global_show_splash_screen;
 // Get the default monospaced font
 #if defined (Q_OS_WIN)
 const QString global_font_family = "Courier";
-#elif defined (Q_OS_MAC)
+#elif defined (Q_OS_MACOS)
 const QString global_font_family = "Monaco";
 #else
 const QString global_font_family = "Monospace";
@@ -146,7 +146,7 @@ enum
   ED_RUN_DEMOS
 };
 
-#if defined (Q_OS_MAC)
+#if defined (Q_OS_MACOS)
 // prevent native file dialogs on MAC by setting the default "false" and
 // setting the flag for ignoring the pref to "true" (3rd argument)
 extern gui_pref global_use_native_dialogs;

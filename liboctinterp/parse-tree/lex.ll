@@ -2897,14 +2897,13 @@ base_lexer::make_keyword_token (const std::string& s)
     case events_kw:
     case methods_kw:
     case properties_kw:
-      // 'properties', 'methods' and 'events' are keywords for
-      // classdef blocks.
+      // 'properties', 'methods' and 'events' are keywords for classdef blocks.
       if (! m_classdef_element_names_are_keywords)
         {
           m_at_beginning_of_statement = previous_at_bos;
           return nullptr;
         }
-      // fall through ...
+      OCTAVE_FALLTHROUGH;
 
     case classdef_kw:
       // 'classdef' is always a keyword.

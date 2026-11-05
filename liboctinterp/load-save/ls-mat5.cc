@@ -1164,7 +1164,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
           classname = name;
         }
       }
-    // Fall-through
+      OCTAVE_FALLTHROUGH;
 
     case MAT_FILE_STRUCT_CLASS:
       {

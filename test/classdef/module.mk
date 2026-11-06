@@ -30,6 +30,10 @@ classdef_TEST_FILES = \
   %reldir%/class_access_fcn_name.m \
   %reldir%/class_access_list.m \
   %reldir%/class_access_list_friend.m \
+  %reldir%/class_bug47755.m \
+  %reldir%/class_bug47755_base.m \
+  %reldir%/class_bug47755_sub.m \
+  %reldir%/class_bug47755_subsref.m \
   %reldir%/class_bug50011_1.m \
   %reldir%/class_bug50011_1A.m \
   %reldir%/class_bug50011_1B.m \

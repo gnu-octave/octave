@@ -2676,6 +2676,118 @@
 %! assert (obj(1).a.b(1).c, 2);
 %! assert (obj(1).a.b(2).c, 3);
 
+## A method reached with dot syntax on an object array is called once with
+## the whole array (bug #47755)
+%!function a = bug47755_array ()
+%!  a = [class_bug47755(1), class_bug47755(2), class_bug47755(3)];
+%!endfunction
+
+%!test <*47755>
+%! a = bug47755_array ();
+%! x = a.count;
+%! assert (x, 3);
+
+%!test <*47755>
+%! a = bug47755_array ();
+%! x = a.count ();
+%! assert (x, 3);
+
+%!test <*47755>
+%! a = bug47755_array ();
+%! x = a.add (7);
+%! assert (x, [3, 7]);
+
+%!test <*47755>
+%! a = bug47755_array ();
+%! [p, q] = a.two;
+%! assert ([p, q], [3, 6]);
+
+%!test <*47755>
+%! a = bug47755_array ();
+%! [p, q] = a.two ();
+%! assert ([p, q], [3, 6]);
+
+%!test <*47755>
+%! a = bug47755_array ();
+%! assert (evalc ("a.show"), "3");
+
+%!test <*47755>
+%! a = bug47755_array ();
+%! assert (evalc ("a.show ()"), "3");
+
+%!test <*47755>
+%! a = bug47755_array ();
+%! x = a.info.x;
+%! assert (x, 3);
+
+%!test <*47755>
+%! a = bug47755_array ();
+%! x = a.info ().x;
+%! assert (x, 3);
+
+%!test <*47755>
+%! a = bug47755_array ();
+%! x = a(2:3).count;
+%! assert (x, 2);
+
+%!test <*47755>
+%! a = bug47755_array ();
+%! x = a(2:3).count ();
+%! assert (x, 2);
+
+%!test <*47755>
+%! a = bug47755_array ();
+%! x = a(2).count;
+%! assert (x, 1);
+
+%!test <*47755>
+%! a = bug47755_array ();
+%! e = a([]);
+%! x = e.count;
+%! assert (x, 0);
+
+%!test <*47755>
+%! a = bug47755_array ();
+%! e = a([]);
+%! x = e.count ();
+%! assert (x, 0);
+
+%!test <*47755>
+%! a = bug47755_array ();
+%! x = a.plus100 (5);
+%! assert (x, 105);
+
+%!test <*47755>
+%! a = bug47755_array ();
+%! x = a.call_hidden ();
+%! assert (x, 3);
+
+%!test <*47755>
+%! a = bug47755_array ();
+%! assert ([a.v], [1, 2, 3]);
+
+%!test <*47755>
+%! b = [class_bug47755_sub(), class_bug47755_sub(), class_bug47755_sub()];
+%! assert ([b.shared], [7, 7, 7]);
+%! assert (shared (b), -3);
+
+%!test <*47755>
+%! c = [class_bug47755_subsref(), class_bug47755_subsref()];
+%! assert (evalc ("x = c.count;"), "2.");
+%! assert (x, 2);
+
+%!error <method 'hidden' has private access>
+%! a = bug47755_array ();
+%! a.hidden;
+
+%!error <called with too many inputs>
+%! a = bug47755_array ();
+%! x = a.count (2);
+
+%!error <unknown method or property: nosuch>
+%! a = bug47755_array ();
+%! x = a.nosuch;
+
 ## Bug #59735
 ## Detect inheritance cycles and error out if present
 ## class_bug59735A < class_bug59735A

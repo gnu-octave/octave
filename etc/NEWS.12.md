@@ -68,12 +68,12 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   inherited, and `fieldnames` no longer lists private properties.  Access
   values are case-sensitive for both properties and methods.
 
-* The display of a `classdef` object now gives the size that `size`
-  returns, which may be that of the class's own `size` method, as in Matlab.
-  An object of size 1x1 is shown as `myclass with properties:`, any other as
-  `2x3 myclass array with properties:`, and a class without public properties
-  as `myclass with no properties.`.  The short form used for a property value,
-  `[2x3 myclass]`, and in the Workspace window gives the same size.
+* The display of a `classdef` object now gives the size that `size` returns,
+  which may be that of the class's own `size` method, as in Matlab.  An object
+  of size 1x1 is shown as `myclass with properties:`, any other size as
+  `2x3 myclass array with properties:`.  A class without public properties is
+  shown as `myclass with no properties.`.  The short form, `[2x3 myclass]`,
+  used for a property value and in the Workspace window give the same size.
 
 * `classdef` properties now support `SetAccess = immutable`.  Their values can
   be initialized by a default expression or assigned in the defining class
@@ -110,14 +110,14 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   and `SetAccess`).
   Octave does not support that case yet and says so in its error message.
 
-* A `classdef` class whose superclasses define different properties of the
-  same name is now rejected when the class is defined, not when the property
-  is first used.  A property that two superclasses inherit from a common
-  superclass is no longer a conflict (bug #68227), and a concrete property
-  that is not private implements an abstract one of the same name from
-  another superclass.  Matlab also allows the conflict when all but one of
-  the properties are private.  Octave does not support this case yet and
-  says so in its error message.
+* A `classdef` class whose superclasses define different properties of the same
+  name is now rejected when the class is defined, not when the property is
+  first used.  A property that two superclasses inherit from a common
+  superclass is no longer a conflict (bug #68227), and a concrete property that
+  is not private implements an abstract one of the same name from another
+  superclass.  Matlab also allows the conflict when all but one of the
+  properties are private.  Octave does not support this case yet and says so in
+  its error message.
 
 * The values of the `Access`, `GetAccess`, and `SetAccess` attributes of
   `classdef` members are now read as written, as in Matlab, and a name in them
@@ -151,6 +151,11 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 * A comma-separated list can now be assigned to a property of every element of
   a `classdef` object array, or of the indexed ones, as in Matlab.  For
   example, `[m.A] = c{:}` or `[m(2:3).A] = deal (7, 8)` (bug #68108).
+
+* A method called with dot syntax on a `classdef` object array, as in `a.m` or
+  `a.m (x)`, is now called once with the whole array, as in Matlab, the same as
+  `m (a)` (bug #47755).  Previously, `a.m` called the method once for each
+  element and `a.m (x)` was an error.
 
 ### Alphabetical list of new functions added in Octave 12
 

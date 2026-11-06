@@ -1,0 +1,2 @@
+classdef class_display_noprops
+endclassdef

@@ -90,6 +90,8 @@ public:
   OCTINTERP_API void
   print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
+  OCTINTERP_API void short_disp (std::ostream& os) const;
+
   OCTINTERP_API bool is_instance_of (const std::string& cls_name) const;
 
   void break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame)

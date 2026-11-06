@@ -501,6 +501,54 @@ cdef_object_array::subsref (const std::string& type,
   return retval;
 }
 
+// Assign the values of the comma-separated list RHS one by one to the
+// objects in ELTS, as in "[m.A] = c{:}".  Each object is assigned through
+// its own subsasgn with TYPE and IDX, so that access checks and set
+// methods apply to every element.  ELTS holds copies of the elements of
+// the array; an invalid object marks an index past its end, for which a
+// new element of class CLS is constructed.
+
+static void
+assign_cs_list (Array<cdef_object>& elts, const std::string& type,
+                const std::list<octave_value_list>& idx,
+                const octave_value& rhs, cdef_class cls)
+{
+  octave_value_list vals = rhs.list_value ();
+
+  octave_idx_type n = elts.numel ();
+
+  if (vals.length () != n)
+    error ("subsasgn: %" OCTAVE_IDX_TYPE_FORMAT " values for %"
+           OCTAVE_IDX_TYPE_FORMAT " elements of an array of %s objects",
+           vals.length (), n, cls.get_name ().c_str ());
+
+  for (octave_idx_type i = 0; i < n; i++)
+    {
+      cdef_object obj = elts(i);
+
+      int ignore_copies = 0;
+
+      if (! obj.ok ())
+        obj = cls.construct_array_element ();
+      else
+        {
+          // The copies in the array and in ELTS can be ignored, as in the
+          // assignment to a single indexed element below.
+          ignore_copies = 2;
+        }
+
+      octave_value tmp = obj.subsasgn (type, idx, vals(i), ignore_copies);
+
+      cdef_object robj = to_cdef (tmp);
+
+      if (! robj.ok () || robj.is_array () || robj.get_class () != cls)
+        error ("subsasgn: invalid assignment into array of %s objects",
+               cls.get_name ().c_str ());
+
+      elts(i) = robj;
+    }
+}
+
 octave_value
 cdef_object_array::subsasgn (const std::string& type,
                              const std::list<octave_value_list>& idx,
@@ -585,11 +633,36 @@ cdef_object_array::subsasgn (const std::string& type,
                 }
 
               is_scalar = is_scalar && iv(i).is_scalar ();
+            }
 
-              if (! is_scalar)
-                error ("subsasgn: invalid indexing for object array assignment"
-                       ", the index must reference a single object in the "
-                       "array.");
+          std::list<octave_value_list> next_idx (std::next (idx.begin ()),
+                                                 idx.end ());
+
+          if (! is_scalar)
+            {
+              // Only a comma-separated list may be assigned to a property
+              // of several elements, one value to each, as in
+              // "[m(2:3).A] = deal (7, 8)".
+              if (type.length () != 2 || type[1] != '.'
+                  || ! rhs.is_cs_list ())
+                error ("subsasgn: invalid indexing for object array assignment,"
+                       " the index must reference a single object in the array.");
+
+              Array<cdef_object> elts = m_array.index (iv, true);
+
+              assign_cs_list (elts, type.substr (1), next_idx, rhs,
+                              get_class ());
+
+              octave_idx_type n = m_array.numel ();
+
+              m_array.assign (iv, elts);
+
+              if (m_array.numel () > n)
+                fill_empty_values ();
+
+              retval = to_ov (wrap ());
+
+              break;
             }
 
           Array<cdef_object> a = m_array.index (iv, true);
@@ -612,9 +685,6 @@ cdef_object_array::subsasgn (const std::string& type,
             // - 1 in "array"
             // - 1 in "a"
             ignore_copies = 2;
-
-          std::list<octave_value_list> next_idx (std::next (idx.begin ()),
-                                                 idx.end ());
 
           octave_value tmp = obj.subsasgn (type.substr (1), next_idx,
                                            rhs, ignore_copies);
@@ -655,6 +725,26 @@ cdef_object_array::subsasgn (const std::string& type,
           // first element.
 
           retval = m_array(0).subsasgn (type, idx, rhs);
+
+          break;
+        }
+      else if (type.length () == 1 && rhs.is_cs_list ())
+        {
+          // A comma-separated list assigns one value to the property of
+          // each element, as in "[m.A] = c{:}".
+
+          const Array<cdef_object>& arr = m_array;
+
+          Array<cdef_object> elts (arr.dims ());
+
+          for (octave_idx_type i = 0; i < arr.numel (); i++)
+            elts.xelem (i) = arr(i);
+
+          assign_cs_list (elts, type, idx, rhs, get_class ());
+
+          m_array = elts;
+
+          retval = to_ov (wrap ());
 
           break;
         }

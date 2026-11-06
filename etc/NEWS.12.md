@@ -4,8 +4,8 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 ### General improvements
 
 * The size of `classdef` objects is now reported by `who` (bug #55810).  A
-  value class' byte size is calculated by summing up the byte size of all its
-  properties.  A handle class' byte size is calculated by getting the size of
+  value class's byte size is calculated by summing up the byte size of all its
+  properties.  A handle class's byte size is calculated by getting the size of
   the machine word on the users computer (most likely 4 or 8 bytes).
 
 * The constructors of `classdef` classes now support returning more than one
@@ -17,8 +17,7 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 
 * Assigning to part of a `classdef` property, such as `obj.p(:,:,k) = x`, no
   longer copies the whole value of the property when the property has no get
-  or set method, so it no longer slows down as the property grows
-  (bug #65060).
+  or set method, so it no longer slows down as the property grows (bug #65060).
 
 * The function `max_recursion_depth` is now an alias for `max_stack_depth`.
   The limit on recursion has increased from 256 to the `max_stack_depth` of
@@ -48,15 +47,15 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   previous Octave versions and in Matlab release R2012b and earlier.
 
 * The optional second output of `linsolve` now returns the rank of the input
-  matrix if it is rectangular.  Octave no longer emits a warning when it
-  finds a singular matrix if the second output has been requested.
+  matrix if it is rectangular.  Octave no longer emits a warning when it finds
+  a singular matrix if the second output has been requested.
 
 * The functions `copyfile` and `movefile` will now create as many intermediate
   folders as required when the second argument `f2` is a folder which does not
   exist.  For example: `copyfile ('folderA', 'folderB/folderC/folderD')`.
 
 * Calling the `error` function with empty input of numeric type such as `[]`
-  does not emit an error or perform any action (it is a NOP). 
+  does not emit an error nor perform any action (it is a NOP).
 
 * The Matlab limit `namelengthmax` on the length of identifiers now returns
   2048.  This is only for compatibility as Octave can store identifiers with
@@ -69,10 +68,17 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   inherited, and `fieldnames` no longer lists private properties.  Access
   values are case-sensitive for both properties and methods.
 
-* `classdef` properties now support `SetAccess = immutable`.  Their values
-  can be initialized by a default expression or assigned in the defining
-  class constructor while the object is being created.  Later assignments
-  and property setter methods are rejected.
+* The display of a `classdef` object now gives the size that `size`
+  returns, which may be that of the class's own `size` method, as in Matlab.
+  An object of size 1x1 is shown as `myclass with properties:`, any other as
+  `2x3 myclass array with properties:`, and a class without public properties
+  as `myclass with no properties.`.  The short form used for a property value,
+  `[2x3 myclass]`, and in the Workspace window gives the same size.
+
+* `classdef` properties now support `SetAccess = immutable`.  Their values can
+  be initialized by a default expression or assigned in the defining class
+  constructor while the object is being created.  Later assignments and
+  property setter methods are rejected.
 
 * The member lists of `classdef` meta classes are now arrays of meta objects
   instead of cell arrays: for `mc = ?myclass`, `class (mc.MethodList)` returns
@@ -114,15 +120,15 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   says so in its error message.
 
 * The values of the `Access`, `GetAccess`, and `SetAccess` attributes of
-  `classdef` members are now read as written, as in Matlab, and a name in
-  them is no longer called as a function.  Valid inputs are access levels, a
+  `classdef` members are now read as written, as in Matlab, and a name in them
+  is no longer evaluated as a function.  Valid inputs are access levels, a
   quoted access level, `?ClassName`, and a cell array of `?ClassName` queries.
   Other attributes still accept expressions.
 
 * A `classdef` method that overrides an inherited one now takes precedence over
   it, even when another superclass brings the inherited method too, as in
-  Matlab, instead of being a conflict.  A property may now share its name
-  with an inherited method, and a method with an inherited property: dot syntax
+  Matlab, instead of being a conflict.  A property may now share its name with
+  an inherited method, and a method with an inherited property: dot syntax
   reaches the property and function-call syntax the method.  A property private
   to a superclass does not hide a subclass method of the same name.  A property
   and a method of the same name in one class remain an error.
@@ -141,6 +147,10 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
 * A handle object held by a constant `classdef` property can now be changed,
   as in Matlab, for example with `obj.Data.Value = 3` (bug #67512).  The
   constant property itself still cannot be assigned.
+
+* A comma-separated list can now be assigned to a property of every element of
+  a `classdef` object array, or of the indexed ones, as in Matlab.  For
+  example, `[m.A] = c{:}` or `[m(2:3).A] = deal (7, 8)` (bug #68108).
 
 ### Alphabetical list of new functions added in Octave 12
 

@@ -36,6 +36,10 @@ classdef_TEST_FILES = \
   %reldir%/class_bug50011_2.m \
   %reldir%/class_bug50011_2A.m \
   %reldir%/class_bug50011_2B.m \
+  %reldir%/class_bug51377A.m \
+  %reldir%/class_bug51377B.m \
+  %reldir%/class_bug51377C.m \
+  %reldir%/class_bug51377D.m \
   %reldir%/class_bug51659.m \
   %reldir%/class_bug51659A.m \
   %reldir%/class_bug51659A_handle.m \

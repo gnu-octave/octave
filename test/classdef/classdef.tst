@@ -2443,6 +2443,37 @@
 %!error <cannot instantiate object for abstract class 'class_bug67197B'>
 %! class_bug67197B ();
 
+## A method can be both Abstract and Static (bug #51377)
+%!test <*51377>
+%! assert (class_bug51377B.increment (1), 2);
+
+%!test <*51377>
+%! mc = ?class_bug51377A;
+%! m = mc.MethodList(strcmp ({mc.MethodList.Name}, 'increment'));
+%! assert (m.Abstract, true);
+%! assert (m.Static, true);
+%! assert (mc.Abstract, true);
+
+%!test <*51377>
+%! mc = ?class_bug51377B;
+%! m = mc.MethodList(strcmp ({mc.MethodList.Name}, 'increment'));
+%! assert (m.Abstract, false);
+%! assert (m.Static, true);
+%! assert (mc.Abstract, false);
+
+%!test <*51377>
+%! obj = class_bug51377D ();
+%! assert (obj.increment (1), 3);
+
+%!error <cannot instantiate object for abstract class 'class_bug51377A'>
+%! class_bug51377A ();
+
+%!error <cannot instantiate object for abstract class 'class_bug51377C'>
+%! class_bug51377C ();
+
+%!error <increment: cannot execute abstract method>
+%! class_bug51377A.increment (1);
+
 ## Bug #60593
 %!error <invalid attribute: attribute DefinitelyNotAnAttribute cannot be assigned in a classdef block>
 %! class_bug60593A ();

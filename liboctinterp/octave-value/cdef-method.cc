@@ -72,14 +72,10 @@ cdef_method::cdef_method_rep::cdef_method_rep (
 
   // The following attribute combinations on methods are disallowed:
   //
-  // (1) "Abstract" and "Static"
-  // (2) "Abstract" and "Private"
-  // (3) "Abstract" and "Sealed"
+  // (1) "Abstract" and "Private"
+  // (2) "Abstract" and "Sealed"
   //
   // Abstract methods must also not have a body.
-  if (opt_args.abstract.bool_value () && opt_args.static_bool.bool_value ())
-    error ("classdef method cannot be Abstract and Static at the same time");
-
   if (opt_args.abstract.bool_value () && opt_args.access.is_string ()
       && opt_args.access.string_value () == "private")
     error ("classdef method cannot be Abstract and Private at the same time");

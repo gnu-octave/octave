@@ -1,0 +1,297 @@
+@c Copyright (C) 2026 The Octave Project Developers
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <https://www.gnu.org/licenses/>.
+
+@node Graph and Network Analysis
+@chapter Graph and Network Analysis
+@cindex graph
+@cindex digraph
+@cindex network
+@cindex adjacency matrix
+
+Octave provides classes for representing and analyzing graphs, also
+called networks.  An undirected graph is represented by a @code{graph}
+object, a directed graph by a @code{digraph} object, and the plotted
+representation returned by @code{plot} is a @code{GraphPlot} handle
+object.  The API follows MATLAB's @code{graph} and @code{digraph}
+classes introduced in R2015b so that scripts written against the MATLAB
+documentation run unchanged.
+
+Graphs are stored internally as sparse adjacency matrices (@pxref{Sparse
+Matrices}) so Octave can handle networks with millions of nodes and
+edges efficiently, and operations that accept sparse matrices, such as
+eigenvalue decompositions or linear solves, apply directly to the
+adjacency.
+
+The following short example constructs a simple undirected graph on
+five nodes with six edges, queries a few basic properties, computes
+the unweighted shortest-path distances from node 1, and draws the
+graph:
+
+@example
+@group
+s = [1 1 2 3 3 4];
+t = [2 3 4 4 5 5];
+G = graph (s, t);
+numnodes (G)              # => 5
+numedges (G)              # => 6
+d = distances (G, 1)      # => [0 1 1 2 2]
+p = plot (G);             # returns a GraphPlot handle
+@end group
+@end example
+
+The same graph can equivalently be constructed from an adjacency matrix
+or from an edge table.  Every construction form preserves sparse input.
+Weighted edges, named nodes, and both 2-D and 3-D layouts are supported.
+
+@menu
+* Graph Objects::
+* Graph Structure and Queries::
+* Modifying Graphs::
+* Matrix Representations of Graphs::
+* Graph Traversal and Shortest Paths::
+* Connectivity and Flow::
+* Centrality Measures::
+* Graph Isomorphism::
+* Graph Visualization::
+@end menu
+
+@node Graph Objects
+@section Graph Objects
+
+The @code{graph} and @code{digraph} classes are value classes, so every
+structural mutation returns a new object and leaves the original
+unchanged.  They share a common set of methods; the @code{digraph}
+class additionally distinguishes incoming from outgoing edges and
+supports directed-only operations such as @code{isdag} and
+@code{toposort}.
+
+A @code{graph} or @code{digraph} may be constructed from pairs of
+integer or string endpoints, from a numeric or sparse adjacency
+matrix, or from an @code{EdgeTable} / @code{NodeTable} pair of struct
+arguments.  An optional cellstr of node names makes every query and
+result refer to the names rather than the numeric indices.  Edge
+weights, when supplied, are carried through every operation that
+preserves the edge set.
+
+@DOCSTRING(graph)
+
+@DOCSTRING(digraph)
+
+@DOCSTRING(GraphPlot)
+
+@node Graph Structure and Queries
+@section Graph Structure and Queries
+
+The following functions return basic structural properties of a graph
+without modifying it.  They accept both @code{graph} and @code{digraph}
+objects unless otherwise noted.  Queries that distinguish edge
+direction (@code{indegree}, @code{outdegree}, @code{predecessors},
+@code{successors}, @code{inedges}, @code{outedges}) are only meaningful
+on @code{digraph} objects; on an undirected @code{graph} object the
+@code{indegree} and @code{outdegree} values coincide with
+@code{degree}, and @code{predecessors} / @code{successors} both equal
+@code{neighbors}.
+
+@DOCSTRING(numnodes)
+
+@DOCSTRING(numedges)
+
+@DOCSTRING(edgecount)
+
+@DOCSTRING(findnode)
+
+@DOCSTRING(findedge)
+
+@DOCSTRING(degree)
+
+@DOCSTRING(indegree)
+
+@DOCSTRING(outdegree)
+
+@DOCSTRING(neighbors)
+
+@DOCSTRING(predecessors)
+
+@DOCSTRING(successors)
+
+@DOCSTRING(inedges)
+
+@DOCSTRING(outedges)
+
+@DOCSTRING(ismultigraph)
+
+@node Modifying Graphs
+@section Modifying Graphs
+
+Because @code{graph} and @code{digraph} are value classes, the
+functions in this section do not modify their input in place; they
+return a new object reflecting the change.  Nodes and edges can be
+added or removed individually, in bulk, or by name; the edge set can
+be restricted or re-indexed; self-loops and parallel edges can be
+collapsed; and a subset of nodes can be extracted as a standalone
+graph.
+
+@DOCSTRING(addnode)
+
+@DOCSTRING(addedge)
+
+@DOCSTRING(rmnode)
+
+@DOCSTRING(rmedge)
+
+@DOCSTRING(flipedge)
+
+@DOCSTRING(reordernodes)
+
+@DOCSTRING(subgraph)
+
+@DOCSTRING(simplify)
+
+@node Matrix Representations of Graphs
+@section Matrix Representations of Graphs
+
+A graph can be converted to a numeric matrix representation suitable
+for standard linear-algebra operations.  The adjacency matrix gives
+the direct connectivity, the incidence matrix maps edges to their
+endpoints, and the Laplacian is used for spectral clustering and
+embedding.  All three functions return sparse matrices by default and
+honor edge weights when present.
+
+@DOCSTRING(adjacency)
+
+@DOCSTRING(incidence)
+
+@DOCSTRING(laplacian)
+
+@node Graph Traversal and Shortest Paths
+@section Graph Traversal and Shortest Paths
+
+Traversal functions visit nodes in breadth-first or depth-first order
+starting from a source, optionally returning a discovery-event log
+rich enough to reproduce tree edges, back edges, and cross edges.
+Shortest-path functions return either a single source/target pair, a
+single-source shortest-path tree, or the full pairwise distance matrix,
+and automatically select an algorithm (Dijkstra, Bellman-Ford, Johnson,
+DAG topological, or unweighted BFS) appropriate for the edge-weight
+sign and graph structure.  Enumeration helpers return all simple paths
+or all simple cycles in a graph.
+
+@DOCSTRING(bfsearch)
+
+@DOCSTRING(dfsearch)
+
+@DOCSTRING(shortestpath)
+
+@DOCSTRING(shortestpathtree)
+
+@DOCSTRING(distances)
+
+@DOCSTRING(allpaths)
+
+@DOCSTRING(allcycles)
+
+@DOCSTRING(isdag)
+
+@DOCSTRING(toposort)
+
+@node Connectivity and Flow
+@section Connectivity and Flow
+
+Connectivity functions partition the node set into connected (for
+@code{graph}) or weakly/strongly connected (for @code{digraph})
+components.  The condensation of a digraph collapses each strongly
+connected component to a single node, producing an acyclic summary
+graph.  Transitive closure and reduction produce the smallest and
+largest graphs with the same reachability as the input digraph.  The
+maximum-flow and minimum-cut functions compute integral flows on a
+capacitated network using Edmonds-Karp or Boykov-Kolmogorov search
+trees.
+
+@DOCSTRING(conncomp)
+
+@DOCSTRING(biconncomp)
+
+@DOCSTRING(condensation)
+
+@DOCSTRING(transclosure)
+
+@DOCSTRING(transreduction)
+
+@DOCSTRING(maxflow)
+
+@DOCSTRING(mincut)
+
+@node Centrality Measures
+@section Centrality Measures
+
+The @code{centrality} function computes node importance scores using
+a user-selectable measure.  Supported measures include
+@qcode{"degree"}, @qcode{"indegree"}, @qcode{"outdegree"},
+@qcode{"closeness"}, @qcode{"incloseness"}, @qcode{"outcloseness"},
+@qcode{"betweenness"}, @qcode{"pagerank"}, @qcode{"eigenvector"},
+@qcode{"hubs"}, and @qcode{"authorities"}.  Edge weights are accepted
+through the optional @qcode{"Cost"} (shortest-path length) and
+@qcode{"Importance"} (spring-weight) parameters so the same measure
+can be evaluated under several different weighting conventions.
+
+@DOCSTRING(centrality)
+
+@node Graph Isomorphism
+@section Graph Isomorphism
+
+Isomorphism testing and enumeration are implemented with the VF2
+backtracking algorithm.  Attribute matching on nodes and edges is
+supported through the @qcode{"NodeVariables"} and
+@qcode{"EdgeVariables"} options, letting graphs with user-defined
+labels be compared up to any desired equivalence.
+
+@DOCSTRING(isisomorphic)
+
+@DOCSTRING(isomorphism)
+
+@node Graph Visualization
+@section Graph Visualization
+
+Visualization of a graph or digraph is driven by the @code{plot}
+method, which returns a @code{GraphPlot} handle.  The handle exposes
+the placed coordinates (@code{XData}, @code{YData}, and @code{ZData}
+for 3-D layouts) and cosmetic properties such as @code{NodeColor},
+@code{NodeLabel}, @code{MarkerSize}, @code{EdgeColor}, @code{EdgeAlpha},
+@code{LineStyle}, @code{LineWidth}, and @code{ArrowSize}.  Supported
+layouts include @qcode{"auto"} (the default, which falls back to
+spectral on small graphs and force-directed on larger ones),
+@qcode{"circle"}, @qcode{"force"}, @qcode{"force3"}, @qcode{"layered"},
+@qcode{"subspace"}, and @qcode{"subspace3"}.  The @code{highlight},
+@code{labelnode}, and @code{labeledge} functions modify an existing
+@code{GraphPlot} in place to emphasize a subset of nodes or edges,
+without re-running the layout.
+
+@example
+@group
+G = graph ([1 1 2 3 3 4], [2 3 4 4 5 5]);
+p = plot (G, "Layout", "force");
+highlight (p, [1 2 3]);         # emphasize a subset
+labelnode (p, 1:numnodes (G), @{"A", "B", "C", "D", "E"@});
+@end group
+@end example
+
+@DOCSTRING(highlight)
+
+@DOCSTRING(labelnode)
+
+@DOCSTRING(labeledge)

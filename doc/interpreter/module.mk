@@ -64,6 +64,7 @@ MANUAL_TEXI_SRC = \
   %reldir%/fn-idx.texi \
   %reldir%/func.texi \
   %reldir%/geometry.texi \
+  %reldir%/graph.texi \
   %reldir%/gui.texi \
   %reldir%/gpl.texi \
   %reldir%/grammar.texi \

@@ -1,0 +1,2 @@
+classdef class_empty_sub_hprop < class_empty_hprop
+endclassdef

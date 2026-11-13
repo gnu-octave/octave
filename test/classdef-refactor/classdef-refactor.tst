@@ -163,7 +163,8 @@
 %! mc = ?AttributeExpression;
 %! assert (mc.Hidden, isunix ());
 %! assert (mc.PropertyList.Hidden, isunix ());
-%! assert (mc.MethodList.Hidden, isunix ());
+%! m = mc.MethodList(strcmp ({mc.MethodList.Name}, "query"));
+%! assert (m.Hidden, isunix ());
 %! assert (AttributeExpression ().query (), 42);
 
 ## Anonymous functions retain the package of the code that created them.

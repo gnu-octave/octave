@@ -3003,3 +3003,165 @@
 %! assert (! isempty (strfind (txt, "A: [1x1 class_display_noprops]")));
 %! assert (! isempty (strfind (txt, "B: [1x2 class_display_noprops]")));
 %! assert (! isempty (strfind (txt, "S: [2x3 class_display_size]")));
+
+## Every class has a hidden static method empty, which creates an empty array
+## of the class without calling its constructor.
+%!test
+%! x = class_empty_plain.empty ();
+%! assert (class (x), "class_empty_plain");
+%! assert (size (x), [0, 0]);
+
+%!assert (size (class_empty_plain.empty), [0, 0])
+%!assert (size (class_empty_plain.empty (0)), [0, 0])
+%!assert (size (class_empty_plain.empty (0, 3)), [0, 3])
+%!assert (size (class_empty_plain.empty (0, 3, 2)), [0, 3, 2])
+%!assert (size (class_empty_plain.empty (2, 3, 0)), [2, 3, 0])
+%!assert (size (class_empty_plain.empty ([0, 3])), [0, 3])
+%!assert (size (class_empty_plain.empty ([0, 3, 2])), [0, 3, 2])
+%!assert (size (class_empty_plain.empty (0, 3, 0, 1)), [0, 3, 0])
+%!assert (size (class_empty_plain.empty (-1, 3)), [0, 3])
+%!assert (size (class_empty_plain.empty (-0.5, 3)), [0, 3])
+%!assert (size (class_empty_plain.empty (0, -1)), [0, 0])
+%!assert (size (class_empty_plain.empty (int8 (0), 3)), [0, 3])
+%!assert (size (class_empty_plain.empty (single (0), 3)), [0, 3])
+%!assert (size (class_empty_plain.empty (true, 0)), [1, 0])
+%!assert (size (class_empty_plain.empty ([])), [0, 0])
+%!assert (size (class_empty_plain.empty (zeros (1, 0))), [0, 0])
+%!assert (size (class_empty_plain.empty (0, [])), [0, 0])
+
+%!error <empty: at least one dimension must be zero>
+%! class_empty_plain.empty (3);
+%!error <empty: at least one dimension must be zero>
+%! class_empty_plain.empty ([2, 3]);
+%!error <empty: size inputs must be integers>
+%! class_empty_plain.empty (0.5, 3);
+%!error <empty: size inputs must be integers>
+%! class_empty_plain.empty (0, 2.5);
+%!error <empty: NaN and Inf are not allowed>
+%! class_empty_plain.empty (0, Inf);
+%!error <empty: NaN and Inf are not allowed>
+%! class_empty_plain.empty (0, NaN);
+%!error <empty: value must be numeric or logical>
+%! class_empty_plain.empty ("a");
+%!error <empty: value must be numeric or logical>
+%! class_empty_plain.empty ({0});
+%!error <empty: size inputs must be scalars>
+%! class_empty_plain.empty (0, [1, 2]);
+%!error <empty: size inputs must be scalars>
+%! class_empty_plain.empty ([0, 1], 2);
+%!error <empty: size vector must be a row vector>
+%! class_empty_plain.empty ([0; 3]);
+%!error <empty: size inputs must be real>
+%! class_empty_plain.empty (0, 1i);
+
+## No constructor is called, and handle classes and subclasses work.
+%!test
+%! x = class_empty_ctor.empty (0, 2);
+%! assert (class (x), "class_empty_ctor");
+%! assert (size (x), [0, 2]);
+
+%!test
+%! x = class_empty_handle.empty ();
+%! assert (class (x), "class_empty_handle");
+%! assert (size (x), [0, 0]);
+
+%!test
+%! x = class_empty_sub.empty (0, 2);
+%! assert (class (x), "class_empty_sub");
+%! assert (size (x), [0, 2]);
+
+%!test
+%! x = class_empty_multi.empty (0, 2);
+%! assert (class (x), "class_empty_multi");
+%! assert (size (x), [0, 2]);
+
+## An abstract class refuses to create the array.  handle, also abstract,
+## has the method too.
+%!error <cannot instantiate object for abstract class 'class_empty_abstract'>
+%! class_empty_abstract.empty ();
+
+%!test
+%! mc = ?handle;
+%! m = mc.MethodList(strcmp ({mc.MethodList.Name}, "empty"));
+%! assert (numel (m), 1);
+%! assert (m.DefiningClass.Name, "handle");
+
+## The method can be called through an object and a function handle.
+%!test
+%! obj = class_empty_plain ();
+%! x = obj.empty (0, 4);
+%! assert (class (x), "class_empty_plain");
+%! assert (size (x), [0, 4]);
+
+%!test
+%! f = @class_empty_plain.empty;
+%! x = f (0, 2);
+%! assert (class (x), "class_empty_plain");
+%! assert (size (x), [0, 2]);
+
+## The method is hidden from methods and ismethod, but listed in MethodList,
+## each class defining its own.
+%!assert (any (strcmp (methods ("class_empty_plain"), "empty")), false)
+%!assert (ismethod ("class_empty_plain", "empty"), false)
+
+%!test
+%! mc = ?class_empty_sub;
+%! m = mc.MethodList(strcmp ({mc.MethodList.Name}, "empty"));
+%! assert (numel (m), 1);
+%! assert (m.Static, true);
+%! assert (m.Hidden, true);
+%! assert (m.Access, "public");
+%! assert (m.DefiningClass.Name, "class_empty_sub");
+
+## A method empty written for the class, or inherited, takes precedence.
+%!assert (class_empty_own.empty (0, 3), 42)
+%!assert (class_empty_own_sub.empty (), 42)
+
+## A property named empty coexists with the method: the class name reaches
+## the method, unless the property is constant, and an object the property.
+%!test
+%! x = class_empty_vprop.empty (0, 3);
+%! assert (class (x), "class_empty_vprop");
+%! assert (size (x), [0, 3]);
+%! obj = class_empty_vprop ();
+%! assert (obj.empty, []);
+
+%!test
+%! x = class_empty_hprop.empty (0, 3);
+%! assert (class (x), "class_empty_hprop");
+%! assert (size (x), [0, 3]);
+%! obj = class_empty_hprop ();
+%! assert (obj.empty, []);
+
+%!test
+%! x = class_empty_sub_hprop.empty ();
+%! assert (class (x), "class_empty_sub_hprop");
+%! assert (size (x), [0, 0]);
+
+%!test
+%! mc = ?class_empty_hprop;
+%! m = mc.MethodList(strcmp ({mc.MethodList.Name}, "empty"));
+%! assert (m.DefiningClass.Name, "class_empty_hprop");
+
+%!assert (class_empty_cprop.empty, 7)
+
+%!test
+%! obj = class_empty_cprop ();
+%! assert (obj.empty, 7);
+
+%!test
+%! mc = ?class_empty_cprop;
+%! m = mc.MethodList(strcmp ({mc.MethodList.Name}, "empty"));
+%! assert (m.DefiningClass.Name, "class_empty_cprop");
+
+## The empty array grows and concatenates as an array of the class.
+%!test
+%! x = class_empty_plain.empty (0, 3);
+%! x(2) = class_empty_plain ();
+%! assert (class (x), "class_empty_plain");
+%! assert (size (x), [1, 2]);
+
+%!test
+%! x = [class_empty_plain.empty(), class_empty_plain()];
+%! assert (class (x), "class_empty_plain");
+%! assert (size (x), [1, 1]);

@@ -110,6 +110,19 @@ classdef_TEST_FILES = \
   %reldir%/class_display_noprops.m \
   %reldir%/class_display_plain.m \
   %reldir%/class_display_size.m \
+  %reldir%/class_empty_abstract.m \
+  %reldir%/class_empty_cprop.m \
+  %reldir%/class_empty_ctor.m \
+  %reldir%/class_empty_handle.m \
+  %reldir%/class_empty_hprop.m \
+  %reldir%/class_empty_multi.m \
+  %reldir%/class_empty_own.m \
+  %reldir%/class_empty_own_sub.m \
+  %reldir%/class_empty_plain.m \
+  %reldir%/class_empty_plain2.m \
+  %reldir%/class_empty_sub.m \
+  %reldir%/class_empty_sub_hprop.m \
+  %reldir%/class_empty_vprop.m \
   %reldir%/class_methods_abstract.m \
   %reldir%/class_methods_ctor_hidden.m \
   %reldir%/class_methods_ctor_private.m \

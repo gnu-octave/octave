@@ -551,6 +551,11 @@ cdef_manager::initialize ()
   for (auto& meth : handle_cmp_methods)
     meth.set_class (m_meta_method);
 
+  // handle has the implicit method empty too, although, handle being
+  // abstract, it refuses to create an array.  It is a meta.method object, so
+  // it is made once meta.method exists.
+  cdef_class::install_implicit_empty (handle);
+
   // These operators compare metaclasses and their inheritance relationships.
   // They are not general handle-object comparisons.
   cdef_method eq (

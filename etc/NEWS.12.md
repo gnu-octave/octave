@@ -157,6 +157,12 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   `m (a)` (bug #47755).  Previously, `a.m` called the method once for each
   element and `a.m (x)` was an error.
 
+* Every `classdef` class now has a hidden static method `empty`, as in Matlab,
+  which creates an empty array of the class without calling its constructor:
+  `myclass.empty` is 0x0 and `myclass.empty (0, 3)` is 0x3.  At least one
+  dimension must be zero.  A method `empty` defined by the class, or by a
+  superclass, takes precedence.
+
 ### Alphabetical list of new functions added in Octave 12
 
 * `diagnostics_show_caret`

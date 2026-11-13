@@ -356,6 +356,7 @@
 ## an inherited property.  Dot syntax reaches the property, function-call
 ## syntax the method.
 %!test
+%! warning ('off', 'Octave:empty-index', 'local');
 %! obj = InheritedMethodCollision ();
 %! assert (obj.foo, 42);
 %! assert (obj.foo (), 42);
@@ -417,6 +418,7 @@
 %!   assert (isempty (dbstatus ()));
 %! unwind_protect_cleanup
 %!   cd (olddir);
+%!   confirm_recursive_rmdir (false, 'local');
 %!   rmdir (folder, 's');
 %! end_unwind_protect
 
@@ -462,6 +464,7 @@
 %!   dbclear cdef_reload_c;
 %!   clear cdef_reload_a cdef_reload_b cdef_reload_c;
 %!   cd (olddir);
+%!   confirm_recursive_rmdir (false, 'local');
 %!   rmdir (folder, 's');
 %!   ignore_function_time_stamp (old_stamp);
 %! end_unwind_protect

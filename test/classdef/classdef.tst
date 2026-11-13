@@ -2804,7 +2804,7 @@
 %!error <inheritance cycle detected>
 %! obj = class_bug59735C ();
 
-%!test <56816>
+%!test <*56816>
 %! obj = class_bug56816_old_style_class ();
 %! assert (meth1 (obj), 0);
 %! assert (meth2 (obj), 0);

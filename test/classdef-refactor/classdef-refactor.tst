@@ -211,6 +211,10 @@
 
 ## Breakpoints by class-file line must not select inherited method lines.
 %!test
+%! if (isguirunning ())
+%!   orig_show_dbg = __event_manager_gui_preference__ ('editor/show_dbg_file',
+%!                                                     'false');
+%! endif
 %! unwind_protect
 %!   dbstop DebugBase 1;
 %!   dbstop DebugChild 1;
@@ -225,6 +229,9 @@
 %! unwind_protect_cleanup
 %!   dbclear DebugBase;
 %!   dbclear DebugChild;
+%!   if (isguirunning ())
+%!     __event_manager_gui_preference__ ('editor/show_dbg_file', orig_show_dbg);
+%!   endif
 %! end_unwind_protect
 
 ## Immutable properties support defaults and assignment while constructing.
@@ -385,6 +392,10 @@
 
 ## Resolve a method placeholder before looking up its executable source lines.
 %!test
+%! if (isguirunning ())
+%!   orig_show_dbg = __event_manager_gui_preference__ ('editor/show_dbg_file',
+%!                                                     'false');
+%! endif
 %! unwind_protect
 %!   dbstop @UncalledExternal/external 2;
 %!   status = dbstatus ();
@@ -395,6 +406,9 @@
 %!   fail ('dbstop @UncalledExternal/missing 2', 'no definition found for method');
 %! unwind_protect_cleanup
 %!   dbclear @UncalledExternal/external;
+%!   if (isguirunning ())
+%!     __event_manager_gui_preference__ ('editor/show_dbg_file', orig_show_dbg);
+%!   endif
 %! end_unwind_protect
 %! assert (UncalledExternal ().external (), 42);
 
@@ -406,6 +420,10 @@
 %! olddir = pwd ();
 %! folder = tempname ();
 %! mkdir (folder);
+%! if (isguirunning ())
+%!   orig_show_dbg = __event_manager_gui_preference__ ('editor/show_dbg_file',
+%!                                                     'false');
+%! endif
 %! unwind_protect
 %!   copyfile (source, folder);
 %!   cd (folder);
@@ -420,6 +438,9 @@
 %!   cd (olddir);
 %!   confirm_recursive_rmdir (false, 'local');
 %!   rmdir (folder, 's');
+%!   if (isguirunning ())
+%!     __event_manager_gui_preference__ ('editor/show_dbg_file', orig_show_dbg);
+%!   endif
 %! end_unwind_protect
 
 ## Resolving another edited function can recursively erase breakpoint names.
@@ -429,6 +450,10 @@
 %! folder = tempname ();
 %! mkdir (folder);
 %! old_stamp = ignore_function_time_stamp ('none');
+%! if (isguirunning ())
+%!   orig_show_dbg = __event_manager_gui_preference__ ('editor/show_dbg_file',
+%!                                                     'false');
+%! endif
 %! unwind_protect
 %!   cd (folder);
 %!   for name = {'cdef_reload_a', 'cdef_reload_b', 'cdef_reload_c'}
@@ -467,6 +492,9 @@
 %!   confirm_recursive_rmdir (false, 'local');
 %!   rmdir (folder, 's');
 %!   ignore_function_time_stamp (old_stamp);
+%!   if (isguirunning ())
+%!     __event_manager_gui_preference__ ('editor/show_dbg_file', orig_show_dbg);
+%!   endif
 %! end_unwind_protect
 %! assert (isempty (dbstatus ()));
 %!endfunction

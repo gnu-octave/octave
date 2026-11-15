@@ -763,6 +763,34 @@ subsystem_handler::process_object_properties (const std::vector<std::tuple<octav
   std::vector<uint32_t> local_saveobj_prop_fields;
   std::vector<uint32_t> local_dynamic_prop_refs;
 
+  // Number all new objects before processing their properties.  A nested
+  // object found in a property is numbered when it is found, and its
+  // property data follows that of all objects of this batch, so it must be
+  // numbered after all of them.
+  for (size_t obj_idx = 0; obj_idx < saveobj_data.size (); obj_idx++)
+    {
+      if (! is_new[obj_idx])
+        continue;
+
+      bool saveobj_ret_type = std::get<bool> (saveobj_data[obj_idx]);
+
+      uint32_t saveobj_object_id = 0;
+      uint32_t normal_object_id = 0;
+
+      if (saveobj_ret_type)
+        saveobj_object_id = ++m_saveobj_object_counter;
+      else
+        normal_object_id = ++m_normal_object_counter;
+
+      // TODO: Add dependency IDs
+      local_object_id_refs.push_back (class_id);
+      local_object_id_refs.push_back (0);
+      local_object_id_refs.push_back (0);
+      local_object_id_refs.push_back (saveobj_object_id);
+      local_object_id_refs.push_back (normal_object_id);
+      local_object_id_refs.push_back (0);
+    }
+
   for (size_t obj_idx = 0; obj_idx < saveobj_data.size (); obj_idx++)
     {
       const auto& obj_tuple = saveobj_data[obj_idx];
@@ -771,24 +799,9 @@ subsystem_handler::process_object_properties (const std::vector<std::tuple<octav
 
       if (is_new[obj_idx])
         {
-          uint32_t saveobj_object_id = 0;
-          uint32_t normal_object_id = 0;
           std::vector<uint32_t>& target_prop_fields
             = (saveobj_ret_type ? local_saveobj_prop_fields
                                 : local_object_prop_fields);
-
-          if (saveobj_ret_type)
-            saveobj_object_id = ++m_saveobj_object_counter;
-          else
-            normal_object_id = ++m_normal_object_counter;
-
-          // TODO: Add dependency IDs
-          local_object_id_refs.push_back (class_id);
-          local_object_id_refs.push_back (0);
-          local_object_id_refs.push_back (0);
-          local_object_id_refs.push_back (saveobj_object_id);
-          local_object_id_refs.push_back (normal_object_id);
-          local_object_id_refs.push_back (0);
 
           string_vector prop_names = prop_map.fieldnames ();
           octave_idx_type num_props = prop_names.numel ();

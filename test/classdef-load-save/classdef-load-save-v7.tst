@@ -525,3 +525,44 @@
 %! unwind_protect_cleanup
 %!   delete (savefile);
 %! end_unwind_protect
+
+## Object array whose first element holds a nested object
+%!testif HAVE_ZLIB
+%! obj = [regular_class(), regular_class(), regular_class()];
+%! obj(1).a = regular_class ();
+%! obj(1).a.a = regular_class ();
+%! obj(1).a.a.a = 1;
+%! obj(2).b = 2;
+%! obj(3).b = 3;
+%! savefile = tempname ();
+%! save ('-v7', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (obj(1).a.a.a, 1);
+%!   assert (obj(2).a, []);
+%!   assert (obj(2).b, 2);
+%!   assert (obj(3).b, 3);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## Object array whose first element holds an object array
+%!testif HAVE_ZLIB
+%! inner = [regular_class(), regular_class()];
+%! inner(2).b = 12;
+%! obj = [regular_class(), regular_class()];
+%! obj(1).a = inner;
+%! obj(2).b = 2;
+%! savefile = tempname ();
+%! save ('-v7', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (size (obj(1).a), [1, 2]);
+%!   assert (obj(1).a(2).b, 12);
+%!   assert (obj(2).a, []);
+%!   assert (obj(2).b, 2);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect

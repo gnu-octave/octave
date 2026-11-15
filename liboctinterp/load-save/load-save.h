@@ -210,6 +210,10 @@ public:
   OCTINTERP_API uint32_t
   get_mcos_object_cache_id (const void *obj, bool& new_entry);
 
+  // First object ID for save -append, after the IDs of the file
+  uint64_t mcos_object_id_offset () const
+  { return m_mcos_object_id_offset; }
+
   OCTINTERP_API void create_subsystem_handler ();
 
   OCTINTERP_API subsystem_handler * get_subsystem_handler ();
@@ -253,7 +257,7 @@ private:
   std::unordered_map<const void *, uint32_t> m_mcos_object_save_cache;
 
   // Object IDs already used in the file that save -append adds to
-  uint32_t m_mcos_object_id_offset = 0;
+  uint64_t m_mcos_object_id_offset = 0;
 
   // Subsystem data block of the MAT-file that save -append adds to, as
   // stored in the file and as read

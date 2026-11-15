@@ -41,6 +41,8 @@
 #include "oct-locbuf.h"
 #include "oct-time.h"
 
+#include "cdef-class.h"
+#include "cdef-utils.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
@@ -319,7 +321,33 @@ read_binary_data (std::istream& is, bool swap,
             return retval;
           }
 
-        tc = type_info.lookup_type (typ);
+        if (typ == "object")
+          {
+            // A classdef object starts with the name of its class, which is
+            // needed to create it.
+            if (! is.read (reinterpret_cast<char *> (&len), 4))
+              error ("load: trouble reading binary file '%s'", filename.c_str ());
+            if (swap)
+              swap_bytes<4> (&len);
+
+            OCTAVE_LOCAL_BUFFER (char, cn, len+1);
+            if (! is.read (cn, len))
+              error ("load: trouble reading binary file '%s'", filename.c_str ());
+            cn[len] = '\0';
+            std::string class_nm = cn;
+
+            octave::cdef_class cls = octave::lookup_class (class_nm, false,
+                                                           true);
+
+            if (! cls.ok () || (cls.get_name () != class_nm))
+              error ("load: no definition for classdef '%s' available",
+                     class_nm.c_str ());
+
+            bool skip_constructor = ! cls.get ("ConstructOnLoad").bool_value ();
+            tc = cls.construct (octave_value_list (), skip_constructor);
+          }
+        else
+          tc = type_info.lookup_type (typ);
       }
       break;
     default:
@@ -333,26 +361,53 @@ read_binary_data (std::istream& is, bool swap,
   return retval;
 }
 
+// Return true if VAL is or holds a classdef object.
+
+static bool
+holds_classdef_object (const octave_value& val)
+{
+  if (val.is_classdef_object ())
+    return true;
+
+  if (val.iscell ())
+    {
+      Cell c = val.cell_value ();
+      for (octave_idx_type i = 0; i < c.numel (); i++)
+        if (holds_classdef_object (c(i)))
+          return true;
+    }
+  else if (val.isstruct ())
+    {
+      octave_map m = val.map_value ();
+      string_vector keys = m.fieldnames ();
+      for (octave_idx_type j = 0; j < keys.numel (); j++)
+        {
+          Cell c = m.contents (keys(j));
+          for (octave_idx_type i = 0; i < c.numel (); i++)
+            if (holds_classdef_object (c(i)))
+              return true;
+        }
+    }
+
+  return false;
+}
+
 // Save the data from TC along with the corresponding NAME, help
 // string DOC, and global flag MARK_AS_GLOBAL on stream OS in the
 // binary format described above for read_binary_data.
 
 bool
-save_binary_data (std::ostream& os, const octave_value& tc_in,
+save_binary_data (std::ostream& os, const octave_value& tc,
                   const std::string& name, const std::string& doc,
                   bool mark_global, bool save_as_floats)
 {
-  octave_value tc;
-  if (tc_in.is_classdef_object ())
-    {
-      warning_with_id ("Octave:save:classdef:unsupported",
-                       "Saving classdef objects is not supported.  "
-                       "Attempting to save '%s' as struct.",
-                       name.c_str ());
-      tc = tc_in.classdef_object_value ()->map_value (false, false);
-    }
-  else
-    tc = tc_in;
+  // The IDs of objects appended to a binary file start at its size, so
+  // there are none left for a file of 4 GiB or more.  Refuse before writing
+  // anything.
+  octave::load_save_system& lss = octave::__get_load_save_system__ ();
+  if (lss.mcos_object_id_offset () >= std::numeric_limits<uint32_t>::max ()
+      && holds_classdef_object (tc))
+    error ("save: unable to append classdef objects to a file of 4 GiB or more");
 
   constexpr octave_idx_type max_dim_val = std::numeric_limits<int32_t>::max () - 1;
 

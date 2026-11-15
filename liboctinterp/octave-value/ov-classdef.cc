@@ -31,6 +31,7 @@
 #include <iomanip>
 
 #include "boolNDArray.h"
+#include "byte-swap.h"
 
 #include "cdef-class.h"
 #include "cdef-method.h"
@@ -41,6 +42,7 @@
 #include "errwarn.h"
 #include "interpreter-private.h"
 #include "load-path.h"
+#include "ls-oct-binary.h"
 #include "ls-oct-text.h"
 #include "oct-lvalue.h"
 #include "ov-classdef.h"
@@ -58,7 +60,7 @@ octave_classdef::saveobj (std::vector<bool>& is_new)
   octave::cdef_class cls = m_object.get_class ();
   octave::cdef_method meth = cls.find_method ("saveobj");
 
-  // Vector with tuples consisting of a map with property values, the object id,
+  // Vector with tuples consisting of a map with property values, the object ID,
   // and an indicator whether the object has a custom return type
   std::vector<std::tuple<octave_map, uint32_t, bool>> m (numel ());
 
@@ -515,6 +517,135 @@ octave_classdef::load_ascii (std::istream& is)
 
       if (! is)
         error ("load: failed to load classdef object");
+    }
+
+  loadobj (m, dv);
+
+  return true;
+}
+
+// Binary format of a classdef object, after the type name "object": the
+// class name, the dimensions, and for each element its object ID, a byte of
+// flags (1: first occurrence of the object in the file, 2: custom saveobj
+// return type), and for a first occurrence the number of saved properties
+// followed by the properties as named elements.
+
+bool
+octave_classdef::save_binary (std::ostream& os, bool save_as_floats)
+{
+  std::string cname = class_name ();
+  int32_t len = cname.length ();
+  os.write (reinterpret_cast<char *> (&len), 4);
+  os.write (cname.data (), len);
+
+  const dim_vector dv = m_object.dims ();
+  int32_t ndims = dv.ndims ();
+  os.write (reinterpret_cast<char *> (&ndims), 4);
+  for (int i = 0; i < ndims; i++)
+    {
+      int32_t dim = dv(i);
+      os.write (reinterpret_cast<char *> (&dim), 4);
+    }
+
+  std::vector<bool> is_new (numel ());
+  std::vector<std::tuple<octave_map, uint32_t, bool>> m = saveobj (is_new);
+
+  for (octave_idx_type n = 0; static_cast<size_t> (n) < m.size (); n++)
+    {
+      uint32_t id = std::get<uint32_t> (m[n]);
+      os.write (reinterpret_cast<char *> (&id), 4);
+
+      char flags = (is_new[n] ? 1 : 0) | (std::get<bool> (m[n]) ? 2 : 0);
+      os.write (&flags, 1);
+
+      // A later occurrence of an object refers to its first one.
+      if (! is_new[n])
+        continue;
+
+      const octave_map& props = std::get<octave_map> (m[n]);
+      int32_t nf = props.nfields ();
+      os.write (reinterpret_cast<char *> (&nf), 4);
+
+      string_vector keys = props.fieldnames ();
+
+      for (octave_idx_type i = 0; i < nf; i++)
+        {
+          std::string key = keys(i);
+
+          if (! save_binary_data (os, props.contents (key)(0), key, "", false,
+                                  save_as_floats))
+            return ! os.fail ();
+        }
+    }
+
+  return true;
+}
+
+bool
+octave_classdef::load_binary (std::istream& is, bool swap,
+                              octave::mach_info::float_format fmt)
+{
+  // The class name has been read by read_binary_data to create this object.
+
+  int32_t ndims;
+  if (! is.read (reinterpret_cast<char *> (&ndims), 4))
+    return false;
+  if (swap)
+    swap_bytes<4> (&ndims);
+  if (ndims < 2)
+    return false;
+
+  dim_vector dv;
+  dv.resize (ndims);
+  for (int i = 0; i < ndims; i++)
+    {
+      int32_t dim;
+      if (! is.read (reinterpret_cast<char *> (&dim), 4))
+        return false;
+      if (swap)
+        swap_bytes<4> (&dim);
+      dv(i) = dim;
+    }
+
+  std::vector<std::tuple<octave_map, uint32_t, bool>> m (dv.numel ());
+
+  for (octave_idx_type n = 0; n < dv.numel (); n++)
+    {
+      uint32_t id;
+      char flags;
+      if (! is.read (reinterpret_cast<char *> (&id), 4)
+          || ! is.read (&flags, 1))
+        return false;
+      if (swap)
+        swap_bytes<4> (&id);
+
+      std::get<uint32_t> (m[n]) = id;
+      std::get<bool> (m[n]) = (flags & 2);
+
+      if (! (flags & 1))
+        continue;
+
+      int32_t nf;
+      if (! is.read (reinterpret_cast<char *> (&nf), 4))
+        return false;
+      if (swap)
+        swap_bytes<4> (&nf);
+      if (nf < 0)
+        return false;
+
+      for (int32_t j = 0; j < nf; j++)
+        {
+          octave_value val;
+          bool global;
+          std::string doc;
+
+          std::string nm = read_binary_data (is, swap, fmt, "", global, val,
+                                             doc);
+          if (! is)
+            return false;
+
+          std::get<octave_map> (m[n]).setfield (nm, val);
+        }
     }
 
   loadobj (m, dv);

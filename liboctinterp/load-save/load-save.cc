@@ -30,6 +30,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <limits>
 
 #include <fstream>
 #include <iomanip>
@@ -1728,9 +1729,10 @@ load_save_system::save (const octave_value_list& args, int nargout)
 
 // Read what save -append needs from the existing file FNAME in format FMT.
 // For a MAT-file with a subsystem data block, keep the block for save_vars
-// and return the part of the file before it, which the new file starts
-// with.  For a text file, set the offset of the ids of new classdef
-// objects so that they do not reuse an ID of the file.
+// and return the part of the file before it, which the new file starts with.
+
+// For a text or binary file, set the offset of the IDs of new classdef objects
+// so that they do not reuse an ID of the file.
 
 std::string
 load_save_system::read_append_data (const std::string& fname,
@@ -1753,10 +1755,17 @@ load_save_system::read_append_data (const std::string& fname,
         {
           if (line.rfind ("# id: ", 0) == 0)
             {
-              uint32_t id = std::strtoul (line.c_str () + 6, nullptr, 10);
+              uint64_t id = std::strtoull (line.c_str () + 6, nullptr, 10);
               m_mcos_object_id_offset = std::max (m_mcos_object_id_offset, id);
             }
         }
+    }
+  else if (fmt.type () == BINARY)
+    {
+      // An object takes more than one byte of a binary file, so no ID in the
+      // file reaches its size.  New objects take their IDs from there.
+      file.seekg (0, std::ios::end);
+      m_mcos_object_id_offset = file.tellg ();
     }
   else if (fmt.type () == MAT5_BINARY || fmt.type () == MAT7_BINARY)
     {
@@ -1851,7 +1860,11 @@ load_save_system::get_mcos_object_cache_id (const void *obj, bool& new_entry)
       // The object hasn't been present in the cache yet.
       // Assign and return a new ID (starting at 1, or after the IDs of the
       // file that save -append adds to).
-      id = m_mcos_object_save_cache.size () + m_mcos_object_id_offset;
+      uint64_t next_id = (m_mcos_object_save_cache.size ()
+                          + m_mcos_object_id_offset);
+      if (next_id > std::numeric_limits<uint32_t>::max ())
+        error ("save: unable to append classdef objects to a file of 4 GiB or more");
+      id = next_id;
       m_mcos_object_save_cache[obj] = id;
       new_entry = true;
     }

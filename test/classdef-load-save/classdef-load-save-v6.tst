@@ -562,6 +562,68 @@
 %!   delete (savefile);
 %! end_unwind_protect
 
+## Protected and private properties are restored on load
+%!test
+%! obj = set_values (private_property_class (), 1, 2, 3);
+%! savefile = tempname ();
+%! save ('-v6', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (get_values (obj), {1, 2, 3});
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## Protected and private properties are restored on load of an object array
+%!test
+%! obj1 = set_values (private_property_class (), 1, 2, 3);
+%! obj2 = set_values (private_property_class (), 4, 5, 6);
+%! obj = [obj1, obj2];
+%! savefile = tempname ();
+%! save ('-v6', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (get_values (obj(1)), {1, 2, 3});
+%!   assert (get_values (obj(2)), {4, 5, 6});
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## loadobj receives an object when the saved properties, private ones
+## included, match the class
+%!test
+%! obj = set_values (private_property_loadobj_class (), 1, 2, 3);
+%! savefile = tempname ();
+%! save ('-v6', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (class (obj), "private_property_loadobj_class");
+%!   assert (get_values (obj), {1, 2, 3});
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## containers.Map objects, whose data is in private properties
+%!test
+%! m = containers.Map ({"a", "b"}, {1, "two"});
+%! n = containers.Map ([1, 2], {[3, 4], {5}});
+%! savefile = tempname ();
+%! save ('-v6', savefile, 'm', 'n');
+%! unwind_protect
+%!   clear m n;
+%!   load (savefile);
+%!   assert (m.keys (), {"a", "b"});
+%!   assert (m("b"), "two");
+%!   assert (n.KeyType, "double");
+%!   assert (n(1), [3, 4]);
+%!   assert (n(2), {5});
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
 ## save -append refuses a MAT-file of the other byte order
 %!error <save: unable to append to MAT-file .* with the other byte order>
 %! savefile = tempname ();

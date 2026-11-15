@@ -142,6 +142,13 @@ octave_classdef::loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m
   octave::cdef_class cls = m_object.get_class ();
   octave::cdef_method meth = cls.find_method ("loadobj");
 
+  // Names of all properties, whatever their access, as save writes them.
+  std::map<octave::property_key, octave::cdef_property> props
+    = cls.get_property_map (octave::cdef_class::member_mode::all);
+  string_vector prop_names;
+  for (auto& pname_prop : props)
+    prop_names.append (pname_prop.second.get_name ());
+
   octave::load_save_system& lss = octave::__get_load_save_system__ ();
 
   // Elements of an object array.  The array is built from them directly so
@@ -185,7 +192,7 @@ octave_classdef::loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m
 
                   bool props_changed = false;
                   string_vector fnames = prop_map.fieldnames ();
-                  string_vector sv = map_keys ();
+                  const string_vector& sv = prop_names;
                   for (octave_idx_type i = 0; i < prop_map.nfields (); i++)
                     {
                       octave_idx_type j;
@@ -299,7 +306,7 @@ octave_classdef::loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m
                 new_object = scalar_obj.copy ();
 
               string_vector fnames = prop_map.fieldnames ();
-              string_vector sv = map_keys ();
+              const string_vector& sv = prop_names;
               for (octave_idx_type i = 0; i < prop_map.nfields (); i++)
                 for (octave_idx_type j = 0; j < sv.numel (); j++)
                   if (sv[j] == fnames(i))

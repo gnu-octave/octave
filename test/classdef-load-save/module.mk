@@ -8,6 +8,8 @@ classdef_load_save_TEST_FILES = \
   %reldir%/loadobj_changed_class.m \
   %reldir%/loadobj_class.m \
   %reldir%/loadobj_saveobj_class.m \
+  %reldir%/overloaded_subsasgn_class.m \
+  %reldir%/overloaded_subsref_class.m \
   %reldir%/regular_class.m \
   %reldir%/regular_class_construct_on_load.m \
   %reldir%/regular_class_with_constructor.m \

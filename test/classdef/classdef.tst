@@ -2027,7 +2027,7 @@
 %! assert (any (obj), -1);
 
 ## save classdef object with overloaded subsref in struct
-%!test <67894>
+%!test <*67894>
 %! file_format = {'-binary', '-float-binary', '-text', '-v6'};
 %! for i_format = 1:numel (file_format)
 %!   S.obj = overloaded_subsref ();
@@ -2043,7 +2043,7 @@
 %!   end_unwind_protect
 %! endfor
 
-%!testif HAVE_HDF5 <67894>
+%!testif HAVE_HDF5 <*67894>
 %! file_format = {'-hdf5', '-float-hdf5'};
 %! for i_format = 1:numel (file_format)
 %!   S.obj = overloaded_subsref ();
@@ -2059,7 +2059,7 @@
 %!   end_unwind_protect
 %! endfor
 
-%!testif HAVE_ZLIB <67894>
+%!testif HAVE_ZLIB <*67894>
 %! file_format = {'-v7'};
 %! for i_format = 1:numel (file_format)
 %!   S.obj = overloaded_subsref ();
@@ -2076,7 +2076,7 @@
 %! endfor
 
 ## save classdef object with overloaded subsref in cell
-%!test <67894>
+%!test <*67894>
 %! file_format = {'-binary', '-float-binary', '-text', '-v6'};
 %! for i_format = 1:numel (file_format)
 %!   C{1} = overloaded_subsref ();
@@ -2092,7 +2092,7 @@
 %!   end_unwind_protect
 %! endfor
 
-%!testif HAVE_HDF5 <67894>
+%!testif HAVE_HDF5 <*67894>
 %! file_format = {'-hdf5', '-float-hdf5'};
 %! for i_format = 1:numel (file_format)
 %!   C{1} = overloaded_subsref ();
@@ -2108,7 +2108,7 @@
 %!   end_unwind_protect
 %! endfor
 
-%!testif HAVE_ZLIB <67894>
+%!testif HAVE_ZLIB <*67894>
 %! file_format = {'-v7'};
 %! for i_format = 1:numel (file_format)
 %!   C{1} = overloaded_subsref ();

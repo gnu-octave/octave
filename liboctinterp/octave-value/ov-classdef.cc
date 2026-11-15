@@ -74,7 +74,12 @@ octave_classdef::saveobj (std::vector<bool>& is_new)
       std::list<octave_value_list> idx_tmp;
       ovl_idx(0) = n+1;
       idx_tmp.push_back (ovl_idx);
-      octave_value elem = (subsref ("(", idx_tmp, 1))(0);
+
+      // Index with the built-in mechanism.  Like Matlab, never call an
+      // overloaded subsref method when saving an object.
+      std::size_t skip = 0;
+      octave_value elem
+        = (m_object.subsref ("(", idx_tmp, 1, skip, octave::cdef_class ()))(0);
 
       // Check if the element is already in the cache of objects that are
       // stored in this file.
@@ -138,6 +143,11 @@ octave_classdef::loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m
   octave::cdef_method meth = cls.find_method ("loadobj");
 
   octave::load_save_system& lss = octave::__get_load_save_system__ ();
+
+  // Elements of an object array.  The array is built from them directly so
+  // that, like in Matlab, an overloaded subsasgn method is never called when
+  // loading an object.
+  Array<octave::cdef_object> elems (dim_vector (1, m.size ()));
 
   // The loadobj method needs to be called separately for each element of
   // N-D arrays.
@@ -308,17 +318,11 @@ octave_classdef::loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m
       if (m.size () == 1)
         m_object = ovc.classdef_object_value ()->m_object;
       else
-        {
-          octave_value_list ovl_idx;
-          std::list<octave_value_list> idx_tmp;
-          ovl_idx(0) = n+1;
-          idx_tmp.push_back (ovl_idx);
-          octave_value tmp = subsasgn ("(", idx_tmp, ovc);
-
-          // FIXME: Is this assignment only needed for value classes?
-          m_object = tmp.classdef_object_value ()->m_object;
-        }
+        elems(n) = ovc.classdef_object_value ()->m_object;
     }
+
+  if (m.size () > 1)
+    m_object = octave::cdef_object (elems, cls);
 
   // Reshape to the correct dimensions.
   if (dv != dims ())

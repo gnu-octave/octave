@@ -372,3 +372,76 @@
 %! unwind_protect_cleanup
 %!   delete (savefile);
 %! end_unwind_protect
+
+## Overloaded subsref is not called on save (bug #67894)
+%!testif HAVE_ZLIB <*67894>
+%! obj = overloaded_subsref_class (1);
+%! savefile = tempname ();
+%! save ('-v7', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (raw_a (obj), 1);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## Overloaded subsref is not called on save of an object array (bug #67894)
+%!testif HAVE_ZLIB <*67894>
+%! obj = [overloaded_subsref_class(1), overloaded_subsref_class(2), ...
+%!        overloaded_subsref_class(3)];
+%! savefile = tempname ();
+%! save ('-v7', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (size (obj), [1, 3]);
+%!   assert (raw_a (obj), [1, 2, 3]);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## Overloaded subsref is not called on save of a nested object (bug #67894)
+%!testif HAVE_ZLIB <*67894>
+%! obj = overloaded_subsref_class (overloaded_subsref_class (2));
+%! savefile = tempname ();
+%! save ('-v7', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (raw_a (raw_a (obj)), 2);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## Overloaded subsref is not called on save of objects in a cell and a
+## struct held by a property (bug #67894)
+%!testif HAVE_ZLIB <*67894>
+%! obj = overloaded_subsref_class ({overloaded_subsref_class(2), ...
+%!                                  struct("s", overloaded_subsref_class (3))});
+%! savefile = tempname ();
+%! save ('-v7', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   c = raw_a (obj);
+%!   assert (raw_a (c{1}), 2);
+%!   assert (raw_a (c{2}.s), 3);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## Overloaded subsasgn is not called on load of an object array (bug #67894)
+%!testif HAVE_ZLIB <*67894>
+%! obj = [overloaded_subsasgn_class(1), overloaded_subsasgn_class(2), ...
+%!        overloaded_subsasgn_class(3)];
+%! savefile = tempname ();
+%! save ('-v7', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (size (obj), [1, 3]);
+%!   assert ([obj.a], [1, 2, 3]);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect

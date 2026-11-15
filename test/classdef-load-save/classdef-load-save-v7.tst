@@ -628,3 +628,51 @@
 %! unwind_protect_cleanup
 %!   delete (savefile);
 %! end_unwind_protect
+
+## Set methods are called on load, first for properties at their default
+## value, then for the others, each in the order of declaration
+%!testif HAVE_ZLIB
+%! obj = set_method_class ();
+%! obj.b = 1;
+%! savefile = tempname ();
+%! save ('-v7', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (obj.trace, "cab");
+%!   assert ([obj.a, obj.b, obj.c, obj.d], [100, 201, 100, 100]);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## Set methods of a handle class are called on load
+%!testif HAVE_ZLIB
+%! obj = set_method_handle_class ();
+%! obj.b = 1;
+%! savefile = tempname ();
+%! save ('-v7', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (obj.trace, "cab");
+%!   assert ([obj.a, obj.b, obj.c, obj.d], [100, 201, 100, 100]);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## The other properties are restored after a set method raises an error
+%!testif HAVE_ZLIB
+%! obj = set_method_error_class ();
+%! obj.b = 1;
+%! obj.c = 2;
+%! savefile = tempname ();
+%! save ('-v7', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   warning ("off", "Octave:load:set-method-error", "local");
+%!   load (savefile);
+%!   assert (obj.b, 0);
+%!   assert (obj.c, 2);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect

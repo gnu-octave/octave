@@ -18,6 +18,9 @@ classdef_load_save_TEST_FILES = \
   %reldir%/regular_handle_class.m \
   %reldir%/saveobj_obj_class.m \
   %reldir%/saveobj_struct_class.m \
+  %reldir%/set_method_class.m \
+  %reldir%/set_method_error_class.m \
+  %reldir%/set_method_handle_class.m \
   %reldir%/transient_property_class.m
 
 TEST_FILES += $(classdef_load_save_TEST_FILES)

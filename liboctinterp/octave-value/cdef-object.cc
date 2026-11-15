@@ -192,9 +192,13 @@ cdef_object::map_value (bool warn, bool for_save) const
       // FIXME: Why not const here?
       for (auto& prop_val : props)
         {
-          // Do not include properties that have the "Transient" attribute
-          // when creating the map for saving the object to a file.
-          if (for_save && prop_val.second.get ("Transient").bool_value ())
+          // Do not include properties that have the "Transient", "Constant",
+          // or "Dependent" attribute when creating the map for saving the
+          // object to a file, as Matlab does.
+          if (for_save
+              && (prop_val.second.get ("Transient").bool_value ()
+                  || prop_val.second.get ("Constant").bool_value ()
+                  || prop_val.second.get ("Dependent").bool_value ()))
             continue;
 
           if (is_array ())

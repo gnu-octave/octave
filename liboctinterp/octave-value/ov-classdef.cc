@@ -134,6 +134,79 @@ octave_classdef::saveobj (std::vector<bool>& is_new)
   return m;
 }
 
+// Restore the saved property values PROP_MAP to OBJ through the set methods
+// of its class, as Matlab does: first the values that equal the default value
+// of their property, which Matlab does not save but assigns from the saved
+// defaults, then the others, each group in the order of PROP_MAP.  Values of
+// unknown and constant properties are ignored.  If a set method raises an
+// error, the property keeps its value, as in Matlab, but with a warning.
+
+static void
+restore_properties (octave::cdef_object& obj, const octave_map& prop_map,
+                    const std::map<std::string, octave::cdef_property>& props)
+{
+  octave::interpreter& interp = octave::__get_interpreter__ ();
+
+  string_vector fnames = prop_map.fieldnames ();
+  octave_idx_type nf = fnames.numel ();
+
+  std::vector<bool> is_default (nf, false);
+
+  for (octave_idx_type i = 0; i < nf; i++)
+    {
+      auto it = props.find (fnames(i));
+      if (it == props.end ())
+        continue;
+
+      octave_value def = it->second.get_default_value ();
+      if (def.is_undefined ())
+        def = Matrix ();
+
+      try
+        {
+          octave_value_list tmp
+            = octave::feval ("isequal",
+                             ovl (prop_map.contents (fnames(i)).xelem (0), def),
+                             1);
+          is_default[i] = tmp(0).is_true ();
+        }
+      catch (const octave::execution_exception&)
+        {
+          interp.recover_from_exception ();
+        }
+    }
+
+  for (int pass = 0; pass < 2; pass++)
+    for (octave_idx_type i = 0; i < nf; i++)
+      {
+        if (is_default[i] != (pass == 0))
+          continue;
+
+        auto it = props.find (fnames(i));
+        if (it == props.end () || it->second.get ("Constant").bool_value ())
+          continue;
+
+        octave::cdef_property prop = it->second;
+
+        try
+          {
+            prop.set_value (obj, prop_map.contents (fnames(i)).xelem (0),
+                            false, "load");
+          }
+        catch (const octave::execution_exception& ee)
+          {
+            std::string msg = ee.message ();
+
+            interp.recover_from_exception ();
+
+            warning_with_id ("Octave:load:set-method-error",
+                             "load: unable to restore property '%s' of class "
+                             "'%s': %s", fnames(i).c_str (),
+                             obj.class_name ().c_str (), msg.c_str ());
+          }
+      }
+}
+
 void
 octave_classdef::loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m,
                           dim_vector& dv)
@@ -142,12 +215,11 @@ octave_classdef::loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m
   octave::cdef_class cls = m_object.get_class ();
   octave::cdef_method meth = cls.find_method ("loadobj");
 
-  // Names of all properties, whatever their access, as save writes them.
-  std::map<octave::property_key, octave::cdef_property> props
-    = cls.get_property_map (octave::cdef_class::member_mode::all);
-  string_vector prop_names;
-  for (auto& pname_prop : props)
-    prop_names.append (pname_prop.second.get_name ());
+  // All properties by name, whatever their access, as save writes them.
+  std::map<std::string, octave::cdef_property> props;
+  for (auto& pname_prop
+       : cls.get_property_map (octave::cdef_class::member_mode::all))
+    props[pname_prop.second.get_name ()] = pname_prop.second;
 
   octave::load_save_system& lss = octave::__get_load_save_system__ ();
 
@@ -192,19 +264,9 @@ octave_classdef::loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m
 
                   bool props_changed = false;
                   string_vector fnames = prop_map.fieldnames ();
-                  const string_vector& sv = prop_names;
-                  for (octave_idx_type i = 0; i < prop_map.nfields (); i++)
+                  for (octave_idx_type i = 0; i < fnames.numel (); i++)
                     {
-                      octave_idx_type j;
-                      for (j = 0; j < sv.numel (); j++)
-                        {
-                          if (sv[j] == fnames(i))
-                            {
-                              new_object.set_property (0, sv[j], prop_map.contents (fnames(i)).xelem (0));
-                              break;
-                            }
-                        }
-                      if (j == sv.numel ())
+                      if (props.find (fnames(i)) == props.end ())
                         {
                           // properties have been renamed or deleted
                           props_changed = true;
@@ -218,7 +280,12 @@ octave_classdef::loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m
                     ov = (meth.execute (octave_value_list (prop_map), 1))(0);
                   else
                     {
-                      if (! in_obj_cache)
+                      restore_properties (new_object, prop_map, props);
+
+                      // A set method of a value class returns a new object.
+                      if (in_obj_cache)
+                        ovc.classdef_object_value ()->m_object = new_object;
+                      else
                         ovc = octave::to_ov (new_object);
 
                       // pass object to loadobj
@@ -305,17 +372,12 @@ octave_classdef::loadobj (std::vector<std::tuple<octave_map, uint32_t, bool>>& m
               else
                 new_object = scalar_obj.copy ();
 
-              string_vector fnames = prop_map.fieldnames ();
-              const string_vector& sv = prop_names;
-              for (octave_idx_type i = 0; i < prop_map.nfields (); i++)
-                for (octave_idx_type j = 0; j < sv.numel (); j++)
-                  if (sv[j] == fnames(i))
-                    {
-                      new_object.set_property (0, sv[j], prop_map.contents (fnames(i)).xelem (0));
-                      break;
-                    }
+              restore_properties (new_object, prop_map, props);
 
-              if (! in_obj_cache)
+              // A set method of a value class returns a new object.
+              if (in_obj_cache)
+                ovc.classdef_object_value ()->m_object = new_object;
+              else
                 ovc = octave::to_ov (new_object);
             }
 

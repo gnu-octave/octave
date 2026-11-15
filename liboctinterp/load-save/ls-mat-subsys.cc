@@ -27,6 +27,8 @@
 #  include "config.h"
 #endif
 
+#include <algorithm>
+
 #include "byte-swap.h"
 
 #include "cdef-class.h"
@@ -399,6 +401,14 @@ subsystem_handler::read_filewrapper (const Cell& fwrap_data, bool swap)
 
   // Default values are stored in fwrap_data(end).
   m_fwrap_default_vals = fwrap_data(fwrap_data.numel () - 1).cell_value ();
+
+  // Version 4 stores two more cells for each class before them.
+  if (version >= 4)
+    {
+      octave_idx_type n = fwrap_data.numel ();
+      m_fwrap_class_structs = fwrap_data(n - 3).cell_value ();
+      m_fwrap_class_ints = fwrap_data(n - 2).int32_array_value ();
+    }
 
   // read m_class_name_refs
   // contains list of indices to classname and namespace qualifier (if any) for
@@ -827,6 +837,42 @@ subsystem_handler::process_object_properties (const std::vector<std::tuple<octav
                               local_dynamic_prop_refs.end ());
 }
 
+uint32_t
+subsystem_handler::continue_subsystem (const octave_value& subsys)
+{
+  if (! read_mat_subsystem (subsys, false))
+    error ("save: unable to read subsystem data of the MAT-file to append to");
+
+  // The tables as read start with the entries of class 0 and object 0,
+  // which create_filewrapper_metadata writes itself.
+  auto drop_front = [] (std::vector<uint32_t>& v, std::size_t n)
+    {
+      v.erase (v.begin (), v.begin () + std::min (n, v.size ()));
+    };
+
+  drop_front (m_class_name_refs, 4);
+  if (! m_saveobj_prop_fields.empty ())
+    drop_front (m_saveobj_prop_fields, 2);
+  drop_front (m_object_id_refs, 6);
+  if (! m_object_prop_fields.empty ())
+    drop_front (m_object_prop_fields, 2);
+  drop_front (m_dynamic_prop_refs, 2);
+
+  // Objects saved next continue the numbering of classes and objects.
+  m_class_id_counter = m_class_name_refs.size () / 4;
+
+  uint32_t num_objects = m_object_id_refs.size () / 6;
+  for (uint32_t i = 0; i < num_objects; i++)
+    {
+      m_saveobj_object_counter = std::max (m_saveobj_object_counter,
+                                           m_object_id_refs[6*i + 3]);
+      m_normal_object_counter = std::max (m_normal_object_counter,
+                                          m_object_id_refs[6*i + 4]);
+    }
+
+  return num_objects;
+}
+
 uint32NDArray
 subsystem_handler::set_mcos_object_metadata (const octave_value& obj)
 {
@@ -999,6 +1045,11 @@ subsystem_handler::serialize_to_cell_array ()
   if (! m_class_id_counter)
     return;
 
+  // Octave writes only the subsystem data of classdef objects.
+  if (m_type_java.is_defined () || m_type_handle.is_defined ())
+    error ("save: unable to add classdef objects to a MAT-file that holds "
+           "Java or handle data");
+
   // create cell array with size = m_fwrap_prop_vals.size () + 2 + 3
   // (for the additional cells)
   octave_idx_type cell_size = m_fwrap_prop_vals.size () + 5;
@@ -1014,23 +1065,30 @@ subsystem_handler::serialize_to_cell_array ()
   // unknown cells
   // These contain some class-level metadata
   // typically a cell array of empty 1x0 structs for each class ID
+  // The values of the classes of a MAT-file that save -append adds to are
+  // kept.
   octave_idx_type base_idx = m_fwrap_prop_vals.size () + 2;
   uint32_t num_class_ids = m_class_id_counter + 1;
+  octave_value empty_struct = octave_value (octave_map (dim_vector (1, 0)));
 
   Cell u3_structs (dim_vector (num_class_ids, 1));
-  for (uint32_t i = 0; i < num_class_ids; i++)
-    u3_structs(i) = octave_value (octave_map (dim_vector (1, 0)));
+  for (octave_idx_type i = 0; i < num_class_ids; i++)
+    u3_structs(i) = (i < m_fwrap_class_structs.numel ()
+                     ? m_fwrap_class_structs(i) : empty_struct);
   result(base_idx) = octave_value (u3_structs);
 
   int32NDArray u2_zeros (dim_vector (num_class_ids, 1));
-  for (uint32_t i = 0; i < num_class_ids; i++)
-    u2_zeros(i) = 0;
+  for (octave_idx_type i = 0; i < num_class_ids; i++)
+    u2_zeros(i) = (i < m_fwrap_class_ints.numel ()
+                   ? m_fwrap_class_ints(i) : octave_int32 (0));
   result(base_idx + 1) = octave_value (u2_zeros);
 
   // contains default values - not separately tagged in Octave
-  m_fwrap_default_vals.resize (dim_vector (num_class_ids, 1));
-  for (uint32_t i = 0; i < num_class_ids; i++)
-    m_fwrap_default_vals(i) = octave_value (octave_map (dim_vector (1, 0)));
+  Cell default_vals (dim_vector (num_class_ids, 1));
+  for (octave_idx_type i = 0; i < num_class_ids; i++)
+    default_vals(i) = (i < m_fwrap_default_vals.numel ()
+                       ? m_fwrap_default_vals(i) : empty_struct);
+  m_fwrap_default_vals = default_vals;
   result(base_idx + 2) = octave_value (m_fwrap_default_vals);
 
   // storing only because save -> save_mat5_element_length which needs the

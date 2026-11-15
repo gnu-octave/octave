@@ -1595,41 +1595,17 @@ read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet,
   if (subsys_offset != UINT64_C (0x2020202020202020)
       && subsys_offset != UINT64_C (0))
     {
-      // Read the subsystem data block
-      is.seekg (subsys_offset, std::ios::beg);
-
-      octave_value tc;
-      bool global;
-      read_mat5_binary_element (is, filename, swap, global, tc);
-
-      if (! is)
+      octave_value subsys_ov;
+      if (! read_mat5_subsystem (is, subsys_offset, swap, filename, subsys_ov))
         return -1;
 
-      if (tc.is_uint8_type ())
-        {
-          const uint8NDArray itmp = tc.uint8_array_value ();
-          octave_idx_type ilen = itmp.numel ();
+      octave::subsystem_handler *sh =
+        octave::__get_load_save_system__ ().get_subsystem_handler ();
 
-          // Why should I have to initialize outbuf as just overwrite
-          std::string outbuf (ilen - 7, ' ');
+      if (! sh->read_mat_subsystem (subsys_ov, swap))
+        error ("load: unable to read subsystem data from MAT-file '%s'", filename.c_str ());
 
-          // FIXME: find a way to avoid casting away const here
-          char *ctmp = const_cast<char *> (outbuf.c_str ());
-          for (octave_idx_type j = 8; j < ilen; j++)
-            ctmp[j-8] = itmp(j).char_value ();
-
-          std::istringstream fh_ws (outbuf);
-          octave_value subsys_ov;
-          read_mat5_binary_element (fh_ws, filename, swap, global, subsys_ov);
-
-          octave::subsystem_handler *sh = octave::__get_load_save_system__ ().get_subsystem_handler ();
-          if (! sh->read_mat_subsystem (subsys_ov, swap))
-            error ("load: unable to read subsystem data from MAT-file '%s'", filename.c_str ());
-
-          if (! is)
-            return -1;
-        }
-      else
+      if (! is)
         return -1;
 
       // Reposition to just after the header
@@ -1637,6 +1613,36 @@ read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet,
     }
 
   return 0;
+}
+
+bool
+read_mat5_subsystem (std::istream& is, uint64_t offset, bool swap,
+                     const std::string& filename, octave_value& subsys)
+{
+  // The subsystem data block is a uint8 array that holds a MAT-file stream
+  // of its own, with an 8-byte header.
+  is.seekg (offset, std::ios::beg);
+
+  octave_value tc;
+  bool global;
+  read_mat5_binary_element (is, filename, swap, global, tc);
+
+  if (! is || ! tc.is_uint8_type ())
+    return false;
+
+  const uint8NDArray itmp = tc.uint8_array_value ();
+  octave_idx_type ilen = itmp.numel ();
+
+  if (ilen <= 8)
+    return false;
+
+  std::string outbuf (reinterpret_cast<const char *> (itmp.data ()) + 8,
+                      ilen - 8);
+
+  std::istringstream fh_ws (outbuf);
+  read_mat5_binary_element (fh_ws, filename, swap, global, subsys);
+
+  return true;
 }
 
 static int

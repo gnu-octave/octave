@@ -60,6 +60,12 @@ read_mat5_binary_file_header (std::istream& is, bool& swap,
                               bool quiet = false,
                               const std::string& filename = "");
 
+// Read the subsystem data block at OFFSET in a MAT-file into SUBSYS.
+// Return false if there is no such block.
+extern OCTINTERP_API bool
+read_mat5_subsystem (std::istream& is, uint64_t offset, bool swap,
+                     const std::string& filename, octave_value& subsys);
+
 extern OCTINTERP_API std::string
 read_mat5_binary_element (std::istream& is, const std::string& filename,
                           bool swap, bool& global, octave_value& tc);

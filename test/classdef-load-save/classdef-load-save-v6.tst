@@ -440,3 +440,114 @@
 %! unwind_protect_cleanup
 %!   delete (savefile);
 %! end_unwind_protect
+
+## save -append adds an object to a file without objects
+%!test
+%! x = 1;
+%! obj = regular_class ();
+%! obj.a = 2;
+%! savefile = tempname ();
+%! save ('-v6', savefile, 'x');
+%! unwind_protect
+%!   save ('-v6', '-append', savefile, 'obj');
+%!   clear x obj;
+%!   load (savefile);
+%!   assert (x, 1);
+%!   assert (obj.a, 2);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## save -append adds a variable to a file with an object
+%!test
+%! obj = regular_class ();
+%! obj.a = 1;
+%! x = 2;
+%! savefile = tempname ();
+%! save ('-v6', savefile, 'obj');
+%! unwind_protect
+%!   save ('-v6', '-append', savefile, 'x');
+%!   clear obj x;
+%!   load (savefile);
+%!   assert (obj.a, 1);
+%!   assert (x, 2);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## save -append adds an object to a file with an object of the same class
+%!test
+%! obj1 = regular_class ();
+%! obj1.a = 1;
+%! obj2 = regular_class ();
+%! obj2.a = 2;
+%! savefile = tempname ();
+%! save ('-v6', savefile, 'obj1');
+%! unwind_protect
+%!   save ('-v6', '-append', savefile, 'obj2');
+%!   clear obj1 obj2;
+%!   load (savefile);
+%!   assert (obj1.a, 1);
+%!   assert (obj2.a, 2);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## save -append three times, with a nested object, a handle object saved
+## twice in one call, and an object array
+%!test
+%! obj = regular_class ();
+%! obj.a = regular_class ();
+%! obj.a.a = 1;
+%! h = regular_handle_class ();
+%! h.a = 5;
+%! g = h;
+%! arr = [regular_class(), regular_class()];
+%! arr(2).a = 20;
+%! savefile = tempname ();
+%! save ('-v6', savefile, 'obj');
+%! unwind_protect
+%!   save ('-v6', '-append', savefile, 'h', 'g');
+%!   save ('-v6', '-append', savefile, 'arr');
+%!   clear obj h g arr;
+%!   load (savefile);
+%!   assert (obj.a.a, 1);
+%!   assert (h.a, 5);
+%!   g.a = 6;
+%!   assert (h.a, 6);
+%!   assert (size (arr), [1, 2]);
+%!   assert (arr(2).a, 20);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## save -append refuses a MAT-file of the other byte order
+%!error <save: unable to append to MAT-file .* with the other byte order>
+%! savefile = tempname ();
+%! fid = fopen (savefile, "w");
+%! fwrite (fid, repmat (" ", 1, 124), "char");
+%! fwrite (fid, uint16 (0x0100), "uint16");
+%! fwrite (fid, swapbytes (uint16 (0x4D49)), "uint16");
+%! fclose (fid);
+%! x = 1;
+%! unwind_protect
+%!   save ('-v6', '-append', savefile, 'x');
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## save -append refuses a MAT-file whose subsystem data cannot be read
+%!error <save: unable to read subsystem data from MAT-file>
+%! savefile = tempname ();
+%! fid = fopen (savefile, "w");
+%! fwrite (fid, repmat (" ", 1, 116), "char");
+%! fwrite (fid, 1000, "uint64");
+%! fwrite (fid, uint16 (0x0100), "uint16");
+%! fwrite (fid, uint16 (0x4D49), "uint16");
+%! fclose (fid);
+%! x = 1;
+%! unwind_protect
+%!   save ('-v6', '-append', savefile, 'x');
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect

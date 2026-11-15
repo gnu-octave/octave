@@ -445,3 +445,83 @@
 %! unwind_protect_cleanup
 %!   delete (savefile);
 %! end_unwind_protect
+
+## save -append adds an object to a file without objects
+%!testif HAVE_ZLIB
+%! x = 1;
+%! obj = regular_class ();
+%! obj.a = 2;
+%! savefile = tempname ();
+%! save ('-v7', savefile, 'x');
+%! unwind_protect
+%!   save ('-v7', '-append', savefile, 'obj');
+%!   clear x obj;
+%!   load (savefile);
+%!   assert (x, 1);
+%!   assert (obj.a, 2);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## save -append adds a variable to a file with an object
+%!testif HAVE_ZLIB
+%! obj = regular_class ();
+%! obj.a = 1;
+%! x = 2;
+%! savefile = tempname ();
+%! save ('-v7', savefile, 'obj');
+%! unwind_protect
+%!   save ('-v7', '-append', savefile, 'x');
+%!   clear obj x;
+%!   load (savefile);
+%!   assert (obj.a, 1);
+%!   assert (x, 2);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## save -append adds an object to a file with an object of the same class
+%!testif HAVE_ZLIB
+%! obj1 = regular_class ();
+%! obj1.a = 1;
+%! obj2 = regular_class ();
+%! obj2.a = 2;
+%! savefile = tempname ();
+%! save ('-v7', savefile, 'obj1');
+%! unwind_protect
+%!   save ('-v7', '-append', savefile, 'obj2');
+%!   clear obj1 obj2;
+%!   load (savefile);
+%!   assert (obj1.a, 1);
+%!   assert (obj2.a, 2);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## save -append three times, with a nested object, a handle object saved
+## twice in one call, and an object array
+%!testif HAVE_ZLIB
+%! obj = regular_class ();
+%! obj.a = regular_class ();
+%! obj.a.a = 1;
+%! h = regular_handle_class ();
+%! h.a = 5;
+%! g = h;
+%! arr = [regular_class(), regular_class()];
+%! arr(2).a = 20;
+%! savefile = tempname ();
+%! save ('-v7', savefile, 'obj');
+%! unwind_protect
+%!   save ('-v7', '-append', savefile, 'h', 'g');
+%!   save ('-v7', '-append', savefile, 'arr');
+%!   clear obj h g arr;
+%!   load (savefile);
+%!   assert (obj.a.a, 1);
+%!   assert (h.a, 5);
+%!   g.a = 6;
+%!   assert (h.a, 6);
+%!   assert (size (arr), [1, 2]);
+%!   assert (arr(2).a, 20);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect

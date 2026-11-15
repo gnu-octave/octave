@@ -38,10 +38,12 @@
 #include <utility>
 #include <vector>
 
+#include "int32NDArray.h"
+#include "str-vec.h"
+
 #include "Cell.h"
 #include "oct-map.h"
 #include "ov.h"
-#include "str-vec.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -79,6 +81,8 @@ class subsystem_handler
     }
 
     // save methods
+    uint32_t continue_subsystem (const octave_value& subsys);
+
     uint32NDArray set_mcos_object_metadata (const octave_value& obj);
 
     uint8NDArray create_filewrapper_metadata ();
@@ -143,6 +147,11 @@ class subsystem_handler
 
     std::vector<octave_value> m_fwrap_prop_vals;
     Cell m_fwrap_default_vals;
+
+    // Two more cells with one element for each class, which Octave does not
+    // use; kept so that save -append can write them back.
+    Cell m_fwrap_class_structs;
+    int32NDArray m_fwrap_class_ints;
 
 };
 

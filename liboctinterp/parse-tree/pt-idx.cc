@@ -679,7 +679,15 @@ tree_index_expression::evaluate_n (tree_evaluator& tw, int nargout)
             {
               octave_value tmp = get_struct_index (tw, p_arg_nm, p_dyn_field);
               tw.append_index_list ('.', tmp);
-              idx_list.push_back (tmp);
+
+              // If a variable is indexed by name, keep its name with the
+              // index so that a method called with dot syntax can give it
+              // to inputname, as Matlab does.
+              octave_value_list tmp_list (tmp);
+              if (i == 0 && m_expr->is_identifier () && tw.is_variable (m_expr))
+                tmp_list.stash_name_tags (string_vector (m_expr->name ()));
+
+              idx_list.push_back (tmp_list);
             }
             break;
 

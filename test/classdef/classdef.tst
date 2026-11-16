@@ -3004,6 +3004,34 @@
 %! assert (! isempty (strfind (txt, "B: [1x2 class_display_noprops]")));
 %! assert (! isempty (strfind (txt, "S: [2x3 class_display_size]")));
 
+## inputname in a method called with dot syntax names the object only when it
+## is a variable, and the other arguments as in a function call (bug #56883)
+%!test <*56883>
+%! obj = class_bug56883 ();
+%! y = 3;  z = 4;
+%! assert (obj.method_names (y), {"obj", "y"});
+%! assert (obj.method_names (y, z), {"obj", "y", "z"});
+%! assert (obj.method_names (), {"obj"});
+%! assert (obj.method_names (y + 1), {"obj", ""});
+
+%!test <*56883>
+%! obj = class_bug56883 ();
+%! y = 3;
+%! s.obj = obj;
+%! c = {obj};
+%! arr = [obj, obj];
+%! assert (s.obj.method_names (y), {"", "y"});
+%! assert (c{1}.method_names (y), {"", "y"});
+%! assert (arr(2).method_names (y), {"", "y"});
+%! assert (class_bug56883 ().method_names (y), {"", "y"});
+
+%!test <*56883>
+%! obj = class_bug56883 ();
+%! y = 3;  z = 4;
+%! assert (method_names (obj, y), {"obj", "y"});
+%! assert (class_bug56883.static_names (y, z), {"y", "z"});
+%! assert (obj.static_names (y, z), {"y", "z"});
+
 ## Every class has a hidden static method empty, which creates an empty array
 ## of the class without calling its constructor.
 %!test

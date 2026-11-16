@@ -447,7 +447,11 @@ call_dot_method (cdef_method& meth, const cdef_object& obj,
   if (meth.is_static ())
     return meth.execute (args, nargout_mtd, true, "subsref");
 
-  return meth.execute (obj, args, nargout_mtd, true, "subsref");
+  // The name of the object, if it was given as a variable, for inputname.
+  string_vector obj_nm = idx.front ().name_tags ();
+
+  return meth.execute (obj, args, nargout_mtd, true, "subsref",
+                       obj_nm.numel () > 0 ? obj_nm(0) : "");
 }
 
 octave_value_list

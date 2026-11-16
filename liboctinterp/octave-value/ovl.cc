@@ -91,6 +91,22 @@ octave_value_list::prepend (const octave_value& val)
 
   elem (0) = val;
 
+  // Keep the names in step with the values, with no name for VAL.
+  n = m_names.numel ();
+
+  if (n > 0)
+    {
+      m_names.resize (n + 1);
+
+      while (n > 0)
+        {
+          m_names.elem (n) = m_names.elem (n - 1);
+          n--;
+        }
+
+      m_names.elem (0) = "";
+    }
+
   return *this;
 }
 

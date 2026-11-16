@@ -3694,7 +3694,7 @@ tree_evaluator::execute_user_function (octave_user_function& user_function,
         }
     }
 
-  bind_auto_fcn_vars (xargs.name_tags (), ignored_outputs, nargin,
+  bind_auto_fcn_vars (args.name_tags (), ignored_outputs, nargin,
                       nargout, user_function.takes_varargs (),
                       user_function.all_va_args (args));
 

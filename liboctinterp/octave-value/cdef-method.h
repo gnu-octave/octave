@@ -128,7 +128,8 @@ private:
     OCTINTERP_API octave_value_list
     execute (const cdef_object& obj,
              const octave_value_list& args, int nargout,
-             bool do_check_access = true, const std::string& who = "");
+             bool do_check_access = true, const std::string& who = "",
+             const std::string& obj_name = "");
 
     OCTINTERP_API bool is_constructor () const;
 
@@ -225,9 +226,11 @@ public:
   octave_value_list execute (const cdef_object& obj,
                              const octave_value_list& args, int nargout,
                              bool do_check_access = true,
-                             const std::string& who = "")
+                             const std::string& who = "",
+                             const std::string& obj_name = "")
   {
-    return get_rep ()->execute (obj, args, nargout, do_check_access, who);
+    return get_rep ()->execute (obj, args, nargout, do_check_access, who,
+                                obj_name);
   }
 
   OCTINTERP_API cdef_class get_defining_class () const;

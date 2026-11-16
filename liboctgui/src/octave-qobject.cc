@@ -1065,7 +1065,7 @@ base_qobject::show_workspace_window ()
 
 void
 base_qobject::show_variable_editor_window (const QString& name,
-    const octave_value& value)
+    const variable_editor_data& data)
 {
   variable_editor *widget
     = (m_variable_editor_widget
@@ -1078,7 +1078,7 @@ base_qobject::show_variable_editor_window (const QString& name,
     }
 
   // FIXME: Should this be done with a signal/slot connection?
-  widget->edit_variable (name, value);
+  widget->edit_variable (name, data);
 }
 
 void

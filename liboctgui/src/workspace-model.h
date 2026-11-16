@@ -26,6 +26,8 @@
 #if ! defined (octave_workspace_model_h)
 #define octave_workspace_model_h 1
 
+#include "octave-config.h"
+
 #include <QAbstractTableModel>
 #include <QChar>
 #include <QColor>
@@ -33,8 +35,6 @@
 #include <QSemaphore>
 #include <QStringList>
 #include <QVector>
-
-#include "syminfo.h"
 
 // Defined for purposes of sending QList<int> as part of signal.
 typedef QList<int> QIntList;
@@ -69,8 +69,6 @@ public:
     return m_storage_class_colors.at (s_class);
   }
 
-  symbol_info_list get_symbol_info () const { return m_syminfo_list; }
-
   QStringList get_symbol_names () const { return m_symbols; }
   QStringList get_symbol_values () const { return m_values; }
 
@@ -81,8 +79,11 @@ Q_SIGNALS:
 
 public Q_SLOTS:
 
-  void set_workspace (bool top_level, bool debug,
-                      const symbol_info_list& syminfo);
+  void set_workspace (bool top_level, bool debug, const QString& scopes,
+                      const QStringList& symbols,
+                      const QStringList& class_names,
+                      const QStringList& dimensions, const QStringList& values,
+                      const QIntList& complex_flags);
 
   void clear_workspace ();
 
@@ -96,7 +97,6 @@ private:
   void update_table ();
 
   bool m_top_level;
-  symbol_info_list m_syminfo_list;
   QString m_scopes;
   QStringList m_symbols;
   QStringList m_class_names;

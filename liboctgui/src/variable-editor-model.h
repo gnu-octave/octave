@@ -30,6 +30,8 @@
 
 #include <QAbstractTableModel>
 #include <QMap>
+#include <QPair>
+#include <QSet>
 #include <QString>
 
 #include "qt-interpreter-events.h"
@@ -41,11 +43,23 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 class interpreter;
 
+// Build what the variable editor shows for the value VAL of the expression
+// NAME.  Call this only in the interpreter thread.
+
+variable_editor_data
+make_variable_editor_data (interpreter& interp, const std::string& name,
+                           const octave_value& val);
+
+// Open the expression EXPR in the variable editor.  Call this only in the
+// interpreter thread.
+
+void edit_in_variable_editor (interpreter& interp, const std::string& expr);
+
 class base_ve_model
 {
 public:
 
-  base_ve_model (const QString& expr, const octave_value& val);
+  base_ve_model (const QString& expr, const variable_editor_data& data);
 
   virtual ~base_ve_model () = default;
 
@@ -110,11 +124,20 @@ public:
 
   void reset (const octave_value& val);
 
+  // True if the element at ROW and COL is shown by its description.
+
+  bool is_described (int row, int col) const
+  {
+    return m_described.contains (qMakePair (row, col));
+  }
+
 protected:
 
   std::string m_name;
 
   octave_value m_value;
+
+  QSet<QPair<int, int>> m_described;
 
   octave_idx_type m_data_rows;
   octave_idx_type m_data_cols;
@@ -136,11 +159,12 @@ class variable_editor_model : public QAbstractTableModel
 
 private:
 
-  static base_ve_model * create (const QString& expr, const octave_value& val);
+  static base_ve_model * create (const QString& expr,
+                                 const variable_editor_data& data);
 
 public:
 
-  variable_editor_model (const QString& expr, const octave_value& val,
+  variable_editor_model (const QString& expr, const variable_editor_data& data,
                          QObject *parent = nullptr);
 
   ~variable_editor_model ()
@@ -278,7 +302,7 @@ public:
 
 Q_SIGNALS:
 
-  void update_data_signal (const octave_value& val);
+  void update_data_signal (const variable_editor_data& data);
 
   void data_error_signal (const QString& name) const;
 
@@ -288,14 +312,12 @@ Q_SIGNALS:
 
   void description_changed (const QString& description);
 
-  void edit_variable_signal (const QString& name, const octave_value& val);
-
   void interpreter_event (const fcn_callback& fcn);
   void interpreter_event (const meth_callback& meth);
 
 public Q_SLOTS:
 
-  void update_data (const octave_value& val);
+  void update_data (const variable_editor_data& data);
 
   void update_data_cache ();
 
@@ -315,8 +337,6 @@ private:
 
   void eval_expr_event (const QString& expr);
 
-  octave_value retrieve_variable (interpreter&, const std::string& name);
-
   bool is_valid () const
   {
     return m_rep->is_valid ();
@@ -330,7 +350,7 @@ private:
     return m_rep->make_description_text ();
   }
 
-  void reset (const octave_value& val);
+  void reset (const variable_editor_data& data);
 
   void invalidate ();
 

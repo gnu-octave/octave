@@ -434,7 +434,18 @@ variable_editor_stack::levelUp ()
   if (name.endsWith (')') || name.endsWith ('}'))
     {
       name.remove (QRegularExpression {"[({][^({]*[)}]$)"});
-      Q_EMIT edit_variable_signal (name, octave_value ());
+
+      // Open the enclosing variable.  It is retrieved by name in the
+      // interpreter thread, so that the GUI never holds an object (bug #67821).
+
+      std::string expr = name.toStdString ();
+
+      Q_EMIT interpreter_event
+        ([expr] (interpreter& interp)
+        {
+          // INTERPRETER THREAD
+          edit_in_variable_editor (interp, expr);
+        });
     }
 }
 
@@ -1228,7 +1239,8 @@ variable_editor::~variable_editor ()
 }
 
 void
-variable_editor::edit_variable (const QString& name, const octave_value& val)
+variable_editor::edit_variable (const QString& name,
+                                const variable_editor_data& var_data)
 {
   if (m_stylesheet.isEmpty ())
     notice_settings ();
@@ -1298,8 +1310,6 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
   connect (stack, qOverload<const meth_callback&> (&variable_editor_stack::interpreter_event),
            this, qOverload<const meth_callback&> (&variable_editor::interpreter_event));
 
-  connect (stack, &variable_editor_stack::edit_variable_signal,
-           this, &variable_editor::edit_variable);
   connect (this, &variable_editor::level_up_signal,
            stack, &variable_editor_stack::levelUp);
   connect (this, &variable_editor::save_signal,
@@ -1350,10 +1360,8 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
            edit_view, &variable_editor_view::handle_vertical_scroll_action);
 
   variable_editor_model *model =
-    new variable_editor_model (name, val, stack);
+    new variable_editor_model (name, var_data, stack);
 
-  connect (model, &variable_editor_model::edit_variable_signal,
-           this, &variable_editor::edit_variable);
   connect (model, &variable_editor_model::dataChanged,
            this, &variable_editor::callUpdate);
   connect (this, &variable_editor::refresh_signal,
@@ -1390,7 +1398,7 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
       existing_ql->setMargin (2);
     }
 
-  model->update_data (val);
+  model->update_data (var_data);
 
   if (m_tool_bar)
     {

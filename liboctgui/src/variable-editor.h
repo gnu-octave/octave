@@ -139,8 +139,6 @@ public:
 
 Q_SIGNALS:
 
-  void edit_variable_signal (const QString& name, const octave_value& val);
-
   void do_save_signal (const QString& format, const QString& save_opts);
 
   void interpreter_event (const fcn_callback& fcn);
@@ -331,7 +329,8 @@ public Q_SLOTS:
 
   void notice_settings ();
 
-  void edit_variable (const QString& name, const octave_value& val);
+  void edit_variable (const QString& name,
+                      const variable_editor_data& var_data);
 
   void variable_destroyed (QObject *obj);
 

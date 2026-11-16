@@ -44,6 +44,7 @@
 #include "octave-qobject.h"
 #include "qt-interpreter-events.h"
 #include "qt-utils.h"
+#include "variable-editor-model.h"
 #if defined (HAVE_QSCINTILLA)
 #  include "console-lexer.h"
 #endif
@@ -55,15 +56,18 @@
 #include "builtin-defun-decls.h"
 #include "error.h"
 #include "interpreter-private.h"
+#include "interpreter.h"
 #include "load-path.h"
 #include "oct-map.h"
 #include "octave.h"
 #include "ov.h"
+#include "pager.h"
 #include "syminfo.h"
+#include "unwind-prot.h"
 #include "utils.h"
 
 Q_DECLARE_METATYPE (octave_value)
-Q_DECLARE_METATYPE (octave::symbol_info_list)
+Q_DECLARE_METATYPE (octave::variable_editor_data)
 Q_DECLARE_METATYPE (octave::fcn_callback)
 Q_DECLARE_METATYPE (octave::meth_callback)
 
@@ -121,7 +125,7 @@ qt_interpreter_events::qt_interpreter_events (base_qobject& oct_qobj)
   qRegisterMetaType<QFloatList> ("QFloatList");
 
   qRegisterMetaType<octave_value> ("octave_value");
-  qRegisterMetaType<symbol_info_list> ("symbol_info_list");
+  qRegisterMetaType<variable_editor_data> ("variable_editor_data");
 
   qRegisterMetaType<fcn_callback> ("fcn_callback");
   qRegisterMetaType<meth_callback> ("meth_callback");
@@ -325,7 +329,14 @@ void
 qt_interpreter_events::edit_variable (const std::string& expr,
                                       const octave_value& val)
 {
-  Q_EMIT edit_variable_signal (QString::fromStdString (expr), val);
+  // INTERPRETER THREAD
+
+  // Send what the variable editor shows, never an object (bug #67821).
+
+  interpreter& interp = __get_interpreter__ ();
+
+  Q_EMIT edit_variable_signal (QString::fromStdString (expr),
+                               make_variable_editor_data (interp, expr, val));
 }
 
 bool
@@ -638,7 +649,86 @@ qt_interpreter_events::set_workspace (bool top_level, bool debug,
   if (! top_level && ! debug)
     return;
 
-  Q_EMIT set_workspace_signal (top_level, debug, syminfo);
+  // Build the text that the workspace view shows here, in the interpreter
+  // thread, and pass only that text to the GUI.  The size and display of
+  // an object may run its own methods, and a value held by the GUI could
+  // be the last reference to a handle object, so that its delete method
+  // would run in the GUI thread (bug #67821).
+
+  QString scopes;
+  QStringList symbols;
+  QStringList class_names;
+  QStringList dimensions;
+  QStringList values;
+  QIntList complex_flags;
+
+  // A method run for the size or display of an object may print.  Send that
+  // output to a buffer that is then discarded, so that it does not appear in
+  // the command window at every prompt.
+
+  octave_stdout.flush ();
+  std::cerr.flush ();
+
+  std::stringbuf discarded_output;
+
+  std::streambuf *old_out_buf = octave_stdout.rdbuf (&discarded_output);
+  std::streambuf *old_err_buf = std::cerr.rdbuf (&discarded_output);
+
+  unwind_action restore_output ([old_out_buf, old_err_buf] ()
+                                {
+                                  octave_stdout.rdbuf (old_out_buf);
+                                  std::cerr.rdbuf (old_err_buf);
+                                });
+
+  for (const auto& sym : syminfo)
+    {
+      octave_value val = sym.value ();
+
+      char storage = ' ';
+      if (sym.is_formal ())
+        storage = 'a';
+      else if (sym.is_global ())
+        storage = 'g';
+      else if (sym.is_persistent ())
+        storage = 'p';
+
+      std::string dims_str;
+      std::string value_str;
+
+      try
+        {
+          // FIXME: fix size for objects, see kluge in ov.cc
+          Matrix sz = val.size ();
+          dim_vector dv = dim_vector::alloc (sz.numel ());
+          for (octave_idx_type i = 0; i < dv.ndims (); i++)
+            dv(i) = sz(i);
+
+          dims_str = dv.str ();
+
+          std::ostringstream buf;
+          val.short_disp (buf);
+          value_str = buf.str ();
+        }
+      catch (const execution_exception&)
+        {
+          // An error in a method of the object leaves its size and value
+          // empty instead of interrupting the prompt.
+
+          interpreter& interp = __get_interpreter__ ();
+
+          interp.recover_from_exception ();
+        }
+
+      scopes.append (storage);
+      symbols.append (QString::fromStdString (sym.name ()));
+      class_names.append (QString::fromStdString (val.class_name ()));
+      dimensions.append (QString::fromStdString (dims_str));
+      values.append (QString::fromStdString (value_str));
+      complex_flags.append (val.iscomplex ());
+    }
+
+  Q_EMIT set_workspace_signal (top_level, debug, scopes, symbols, class_names,
+                               dimensions, values, complex_flags);
 
   if (update_variable_editor)
     Q_EMIT refresh_variable_editor_signal ();

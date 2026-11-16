@@ -8,12 +8,19 @@ classdef_load_save_TEST_FILES = \
   %reldir%/loadobj_changed_class.m \
   %reldir%/loadobj_class.m \
   %reldir%/loadobj_saveobj_class.m \
+  %reldir%/overloaded_subsasgn_class.m \
+  %reldir%/overloaded_subsref_class.m \
+  %reldir%/private_property_class.m \
+  %reldir%/private_property_loadobj_class.m \
   %reldir%/regular_class.m \
   %reldir%/regular_class_construct_on_load.m \
   %reldir%/regular_class_with_constructor.m \
   %reldir%/regular_handle_class.m \
   %reldir%/saveobj_obj_class.m \
   %reldir%/saveobj_struct_class.m \
+  %reldir%/set_method_class.m \
+  %reldir%/set_method_error_class.m \
+  %reldir%/set_method_handle_class.m \
   %reldir%/transient_property_class.m
 
 TEST_FILES += $(classdef_load_save_TEST_FILES)

@@ -367,3 +367,333 @@
 %! unwind_protect_cleanup
 %!   delete (savefile);
 %! end_unwind_protect
+
+## Overloaded subsref is not called on save (bug #67894)
+%!test <*67894>
+%! obj = overloaded_subsref_class (1);
+%! savefile = tempname ();
+%! save ('-text', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (raw_a (obj), 1);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## Overloaded subsref is not called on save of an object array (bug #67894)
+%!test <*67894>
+%! obj = [overloaded_subsref_class(1), overloaded_subsref_class(2), ...
+%!        overloaded_subsref_class(3)];
+%! savefile = tempname ();
+%! save ('-text', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (size (obj), [1, 3]);
+%!   assert (raw_a (obj), [1, 2, 3]);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## Overloaded subsref is not called on save of a nested object (bug #67894)
+%!test <*67894>
+%! obj = overloaded_subsref_class (overloaded_subsref_class (2));
+%! savefile = tempname ();
+%! save ('-text', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (raw_a (raw_a (obj)), 2);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## Overloaded subsref is not called on save of objects in a cell and a
+## struct held by a property (bug #67894)
+%!test <*67894>
+%! obj = overloaded_subsref_class ({overloaded_subsref_class(2), ...
+%!                                  struct("s", overloaded_subsref_class (3))});
+%! savefile = tempname ();
+%! save ('-text', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   c = raw_a (obj);
+%!   assert (raw_a (c{1}), 2);
+%!   assert (raw_a (c{2}.s), 3);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## Overloaded subsasgn is not called on load of an object array (bug #67894)
+%!test <*67894>
+%! obj = [overloaded_subsasgn_class(1), overloaded_subsasgn_class(2), ...
+%!        overloaded_subsasgn_class(3)];
+%! savefile = tempname ();
+%! save ('-text', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (size (obj), [1, 3]);
+%!   assert ([obj.a], [1, 2, 3]);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## save -append adds an object to a file without objects
+%!test
+%! x = 1;
+%! obj = regular_class ();
+%! obj.a = 2;
+%! savefile = tempname ();
+%! save ('-text', savefile, 'x');
+%! unwind_protect
+%!   save ('-text', '-append', savefile, 'obj');
+%!   clear x obj;
+%!   load (savefile);
+%!   assert (x, 1);
+%!   assert (obj.a, 2);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## save -append adds a variable to a file with an object
+%!test
+%! obj = regular_class ();
+%! obj.a = 1;
+%! x = 2;
+%! savefile = tempname ();
+%! save ('-text', savefile, 'obj');
+%! unwind_protect
+%!   save ('-text', '-append', savefile, 'x');
+%!   clear obj x;
+%!   load (savefile);
+%!   assert (obj.a, 1);
+%!   assert (x, 2);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## save -append adds an object to a file with an object of the same class
+%!test
+%! obj1 = regular_class ();
+%! obj1.a = 1;
+%! obj2 = regular_class ();
+%! obj2.a = 2;
+%! savefile = tempname ();
+%! save ('-text', savefile, 'obj1');
+%! unwind_protect
+%!   save ('-text', '-append', savefile, 'obj2');
+%!   clear obj1 obj2;
+%!   load (savefile);
+%!   assert (obj1.a, 1);
+%!   assert (obj2.a, 2);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## save -append three times, with a nested object, a handle object saved
+## twice in one call, and an object array
+%!test
+%! obj = regular_class ();
+%! obj.a = regular_class ();
+%! obj.a.a = 1;
+%! h = regular_handle_class ();
+%! h.a = 5;
+%! g = h;
+%! arr = [regular_class(), regular_class()];
+%! arr(2).a = 20;
+%! savefile = tempname ();
+%! save ('-text', savefile, 'obj');
+%! unwind_protect
+%!   save ('-text', '-append', savefile, 'h', 'g');
+%!   save ('-text', '-append', savefile, 'arr');
+%!   clear obj h g arr;
+%!   load (savefile);
+%!   assert (obj.a.a, 1);
+%!   assert (h.a, 5);
+%!   g.a = 6;
+%!   assert (h.a, 6);
+%!   assert (size (arr), [1, 2]);
+%!   assert (arr(2).a, 20);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## Object array whose first element holds a nested object
+%!test
+%! obj = [regular_class(), regular_class(), regular_class()];
+%! obj(1).a = regular_class ();
+%! obj(1).a.a = regular_class ();
+%! obj(1).a.a.a = 1;
+%! obj(2).b = 2;
+%! obj(3).b = 3;
+%! savefile = tempname ();
+%! save ('-text', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (obj(1).a.a.a, 1);
+%!   assert (obj(2).a, []);
+%!   assert (obj(2).b, 2);
+%!   assert (obj(3).b, 3);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## Object array whose first element holds an object array
+%!test
+%! inner = [regular_class(), regular_class()];
+%! inner(2).b = 12;
+%! obj = [regular_class(), regular_class()];
+%! obj(1).a = inner;
+%! obj(2).b = 2;
+%! savefile = tempname ();
+%! save ('-text', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (size (obj(1).a), [1, 2]);
+%!   assert (obj(1).a(2).b, 12);
+%!   assert (obj(2).a, []);
+%!   assert (obj(2).b, 2);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## Protected and private properties are restored on load
+%!test
+%! obj = set_values (private_property_class (), 1, 2, 3);
+%! savefile = tempname ();
+%! save ('-text', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (get_values (obj), {1, 2, 3});
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## Protected and private properties are restored on load of an object array
+%!test
+%! obj1 = set_values (private_property_class (), 1, 2, 3);
+%! obj2 = set_values (private_property_class (), 4, 5, 6);
+%! obj = [obj1, obj2];
+%! savefile = tempname ();
+%! save ('-text', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (get_values (obj(1)), {1, 2, 3});
+%!   assert (get_values (obj(2)), {4, 5, 6});
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## loadobj receives an object when the saved properties, private ones
+## included, match the class
+%!test
+%! obj = set_values (private_property_loadobj_class (), 1, 2, 3);
+%! savefile = tempname ();
+%! save ('-text', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (class (obj), "private_property_loadobj_class");
+%!   assert (get_values (obj), {1, 2, 3});
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## containers.Map objects, whose data is in private properties
+%!test
+%! m = containers.Map ({"a", "b"}, {1, "two"});
+%! n = containers.Map ([1, 2], {[3, 4], {5}});
+%! savefile = tempname ();
+%! save ('-text', savefile, 'm', 'n');
+%! unwind_protect
+%!   clear m n;
+%!   load (savefile);
+%!   assert (m.keys (), {"a", "b"});
+%!   assert (m("b"), "two");
+%!   assert (n.KeyType, "double");
+%!   assert (n(1), [3, 4]);
+%!   assert (n(2), {5});
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## Set methods are called on load, first for properties at their default
+## value, then for the others, each in the order of declaration
+%!test
+%! obj = set_method_class ();
+%! obj.b = 1;
+%! savefile = tempname ();
+%! save ('-text', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (obj.trace, "cab");
+%!   assert ([obj.a, obj.b, obj.c, obj.d], [100, 201, 100, 100]);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## Set methods of a handle class are called on load
+%!test
+%! obj = set_method_handle_class ();
+%! obj.b = 1;
+%! savefile = tempname ();
+%! save ('-text', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%!   assert (obj.trace, "cab");
+%!   assert ([obj.a, obj.b, obj.c, obj.d], [100, 201, 100, 100]);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## A set method that raises an error on load leaves its property as it is,
+## with a warning
+%!warning <unable to restore property 'b' of class 'set_method_error_class'>
+%! obj = set_method_error_class ();
+%! obj.b = 1;
+%! savefile = tempname ();
+%! save ('-text', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   load (savefile);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## The other properties are restored after a set method raises an error
+%!test
+%! obj = set_method_error_class ();
+%! obj.b = 1;
+%! obj.c = 2;
+%! savefile = tempname ();
+%! save ('-text', savefile, 'obj');
+%! unwind_protect
+%!   clear obj;
+%!   warning ("off", "Octave:load:set-method-error", "local");
+%!   load (savefile);
+%!   assert (obj.b, 0);
+%!   assert (obj.c, 2);
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect
+
+## Constant and Dependent properties are not saved
+%!test
+%! obj = set_method_class ();
+%! savefile = tempname ();
+%! save ('-text', savefile, 'obj');
+%! unwind_protect
+%!   names = regexp (fileread (savefile), '# name: (\w+)', 'tokens');
+%!   assert ([names{:}], {"obj", "c", "b", "a"});
+%! unwind_protect_cleanup
+%!   delete (savefile);
+%! end_unwind_protect

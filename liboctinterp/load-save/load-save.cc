@@ -27,6 +27,8 @@
 #  include "config.h"
 #endif
 
+#include <algorithm>
+#include <cstdlib>
 #include <cstring>
 
 #include <fstream>
@@ -697,6 +699,18 @@ load_save_system::parse_save_options (const std::string& arg,
   return parse_save_options (argv, fmt, append, save_as_floats, use_zlib);
 }
 
+// Write OFFSET of the subsystem data block into the header of a MAT-file.
+
+static void
+write_mat5_subsystem_offset (std::ostream& os, std::streampos offset)
+{
+  std::streampos current_pos = os.tellp ();
+  os.seekp (116);
+  uint64_t offset_val = static_cast<uint64_t> (offset);
+  os.write (reinterpret_cast<const char*> (&offset_val), 8);
+  os.seekp (current_pos);
+}
+
 void
 load_save_system::save_vars (const string_vector& argv, int argv_idx,
                              int argc, std::ostream& os,
@@ -715,6 +729,11 @@ load_save_system::save_vars (const string_vector& argv, int argv_idx,
       clear_mcos_object_cache ();
       clear_subsystem_handler ();
     });
+
+  // Add to the subsystem of the MAT-file that save -append adds to.
+  if (m_append_subsystem.is_defined ())
+    m_mcos_object_id_offset
+      = get_subsystem_handler ()->continue_subsystem (m_append_subsystem);
 
   if (argv_idx == argc)
     {
@@ -769,7 +788,11 @@ load_save_system::save_vars (const string_vector& argv, int argv_idx,
   if (fmt.type() == MAT5_BINARY || fmt.type() == MAT7_BINARY)  // any other formats?
     {
       subsystem_handler *sh = get_subsystem_handler ();
-      sh->serialize_to_cell_array ();
+
+      // Objects saved now need a new subsystem.  Otherwise, the subsystem of
+      // a MAT-file that save -append adds to is written back as it was.
+      if (! m_mcos_object_save_cache.empty ())
+        sh->serialize_to_cell_array ();
       // serialized data needs to be saved first to calculate nbytes during save
 
       if (sh->has_serialized_data ())
@@ -810,12 +833,15 @@ load_save_system::save_vars (const string_vector& argv, int argv_idx,
           std::streampos subsys_offset = os.tellp ();
           do_save (os, subsys_value, "", help, false, fmt, save_as_floats);
 
-          // update subsystem offset in MAT-file header
-          std::streampos current_pos = os.tellp ();
-          os.seekp (116);
-          uint64_t offset_val = static_cast<uint64_t> (subsys_offset);
-          os.write (reinterpret_cast<const char*> (&offset_val), 8);
-          os.seekp (current_pos);
+          write_mat5_subsystem_offset (os, subsys_offset);
+        }
+      else if (! m_append_subsystem_data.empty ())
+        {
+          std::streampos subsys_offset = os.tellp ();
+          os.write (m_append_subsystem_data.data (),
+                    m_append_subsystem_data.size ());
+
+          write_mat5_subsystem_offset (os, subsys_offset);
         }
     }
 }
@@ -1565,10 +1591,26 @@ load_save_system::save (const octave_value_list& args, int nargout)
       // we won't overwrite already-saved data in a file.
       // See bug #63803 for context.
       // In append mode, this kind of guard is counterproductive so we write
-      // directly to the specified file.
+      // directly to the specified file, unless the file is a MAT-file with
+      // a subsystem data block.  That block must stay at the end, so such a
+      // file is written anew, starting with its part before the block.
 
       std::string desiredname = sys::file_ops::tilde_expand (argv[i]);
-      std::string fname = desiredname + (append ? "" : ".saving_in_progress");
+
+      octave::unwind_action clear_append_data (
+        [this] ()
+        {
+          m_mcos_object_id_offset = 0;
+          m_append_subsystem = octave_value ();
+          m_append_subsystem_data.clear ();
+        });
+
+      std::string append_prefix;
+      if (append)
+        append_prefix = read_append_data (desiredname, format);
+
+      bool new_file = ! append || ! append_prefix.empty ();
+      std::string fname = desiredname + (new_file ? ".saving_in_progress" : "");
 
       i++;
 
@@ -1584,8 +1626,18 @@ load_save_system::save (const octave_value_list& args, int nargout)
           warning ("save: MATLAB compatible formats '-v4' and '-v6' are uncompressed");
         }
 
-      std::ios::openmode mode
-        = (append ? (std::ios::app | std::ios::ate) : std::ios::out);
+      std::ios::openmode mode;
+      if (new_file)
+        mode = std::ios::out;
+      else if ((format.type () == MAT5_BINARY || format.type () == MAT7_BINARY)
+               && sys::file_exists (fname, false))
+        {
+          // Not std::ios::app, which would write the subsystem offset in the
+          // header at the end of the file.
+          mode = std::ios::in | std::ios::out | std::ios::ate;
+        }
+      else
+        mode = std::ios::app | std::ios::ate;
 
       // Always open in binary mode to save line endings as is.
       mode |= std::ios::binary;
@@ -1645,6 +1697,8 @@ load_save_system::save (const octave_value_list& args, int nargout)
               if (! file)
                 err_file_open ("save", fname);
 
+              file.write (append_prefix.data (), append_prefix.size ());
+
               bool write_header_info = ! file.tellp ();
 
               save_vars (argv, i, argc, file, format, save_as_floats,
@@ -1657,10 +1711,10 @@ load_save_system::save (const octave_value_list& args, int nargout)
       // If we are all the way here without Octave crashing or running
       // out of memory, etc., then we can say that writing to the
       // temporary file was successful.  So now we try to rename it to
-      // the actual file that was specified, unless we were in append mode
-      // in which case we take no action.
+      // the actual file that was specified, unless we wrote to that file
+      // directly in append mode.
 
-      if (! append)
+      if (new_file)
         {
           std::string msg;
           if (octave::sys::rename (fname, desiredname, msg) < 0)
@@ -1672,11 +1726,100 @@ load_save_system::save (const octave_value_list& args, int nargout)
   return retval;
 }
 
+// Read what save -append needs from the existing file FNAME in format FMT.
+// For a MAT-file with a subsystem data block, keep the block for save_vars
+// and return the part of the file before it, which the new file starts
+// with.  For a text file, set the offset of the ids of new classdef
+// objects so that they do not reuse an ID of the file.
+
+std::string
+load_save_system::read_append_data (const std::string& fname,
+                                    const load_save_format& fmt)
+{
+  std::string prefix;
+
+  if (! sys::file_exists (fname, false))
+    return prefix;
+
+  std::ifstream file = sys::ifstream (fname.c_str (),
+                                      std::ios::in | std::ios::binary);
+  if (! file)
+    return prefix;
+
+  if (fmt.type () == TEXT)
+    {
+      std::string line;
+      while (std::getline (file, line))
+        {
+          if (line.rfind ("# id: ", 0) == 0)
+            {
+              uint32_t id = std::strtoul (line.c_str () + 6, nullptr, 10);
+              m_mcos_object_id_offset = std::max (m_mcos_object_id_offset, id);
+            }
+        }
+    }
+  else if (fmt.type () == MAT5_BINARY || fmt.type () == MAT7_BINARY)
+    {
+      char header[128];
+      if (! file.read (header, 128))
+        return prefix;
+
+      int16_t magic;
+      std::memcpy (&magic, header + 126, 2);
+      if (magic == 0x494d)
+        error ("save: unable to append to MAT-file '%s' with the other "
+               "byte order", fname.c_str ());
+      else if (magic != 0x4d49)
+        return prefix;
+
+      uint64_t subsys_offset;
+      std::memcpy (&subsys_offset, header + 116, 8);
+      if (subsys_offset == UINT64_C (0x2020202020202020)
+          || subsys_offset == UINT64_C (0))
+        return prefix;
+
+      file.seekg (0, std::ios::end);
+      uint64_t file_size = file.tellg ();
+
+      octave_value subsys;
+      int32_t tag[2] = {0, 0};
+      if (subsys_offset + 8 <= file_size)
+        {
+          file.seekg (subsys_offset, std::ios::beg);
+          file.read (reinterpret_cast<char *> (tag), 8);
+        }
+      uint64_t block_size = 8 + static_cast<uint32_t> (tag[1]);
+
+      if (subsys_offset + block_size > file_size
+          || ! read_mat5_subsystem (file, subsys_offset, false, fname, subsys))
+        error ("save: unable to read subsystem data from MAT-file '%s'",
+               fname.c_str ());
+
+      std::string block (block_size, '\0');
+      prefix.resize (subsys_offset);
+
+      file.clear ();
+      file.seekg (subsys_offset, std::ios::beg);
+      file.read (&block[0], block_size);
+      file.seekg (0, std::ios::beg);
+      file.read (&prefix[0], subsys_offset);
+
+      if (! file)
+        error ("save: unable to read MAT-file '%s'", fname.c_str ());
+
+      m_append_subsystem = subsys;
+      m_append_subsystem_data = block;
+    }
+
+  return prefix;
+}
+
 void
 load_save_system::clear_mcos_object_cache ()
 {
   m_mcos_object_load_cache.clear ();
   m_mcos_object_save_cache.clear ();
+  m_mcos_object_id_offset = 0;
 }
 
 void
@@ -1706,8 +1849,9 @@ load_save_system::get_mcos_object_cache_id (const void *obj, bool& new_entry)
   if (id == 0)
     {
       // The object hasn't been present in the cache yet.
-      // Assign and return a new id (starting at 1).
-      id = m_mcos_object_save_cache.size ();
+      // Assign and return a new ID (starting at 1, or after the IDs of the
+      // file that save -append adds to).
+      id = m_mcos_object_save_cache.size () + m_mcos_object_id_offset;
       m_mcos_object_save_cache[obj] = id;
       new_entry = true;
     }

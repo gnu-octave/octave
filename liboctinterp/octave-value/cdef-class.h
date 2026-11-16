@@ -563,6 +563,12 @@ public:
                                                      tree_classdef *t,
                                                      bool is_at_folder = false);
 
+  //! Install the implicit static method @c empty of class @p cls, which
+  //! creates an empty array of the class, unless @p cls or one of its
+  //! superclasses defines its own method of that name.
+
+  static OCTINTERP_API void install_implicit_empty (cdef_class& cls);
+
   octave_value get_method (const std::string& nm) const
   {
     return get_rep ()->get_method (nm);

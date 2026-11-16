@@ -405,26 +405,7 @@ elem_xdiv (double a, const SparseComplexMatrix& b)
   octave_idx_type nr = b.rows ();
   octave_idx_type nc = b.cols ();
 
-  ComplexMatrix result;
-  if (octave::math::isnan (a))
-    {
-      result = ComplexMatrix (nr, nc,
-                              Complex (octave::numeric_limits<double>::NaN (),
-                                       octave::numeric_limits<double>::NaN ()));
-      return result;
-    }
-  if (a == 0.)
-    result = ComplexMatrix (nr, nc,
-                            Complex (octave::numeric_limits<double>::NaN (),
-                                     octave::numeric_limits<double>::NaN ()));
-  else if (a > 0.)
-    result = ComplexMatrix (nr, nc,
-                            Complex (octave::numeric_limits<double>::Inf (),
-                                     octave::numeric_limits<double>::Inf ()));
-  else
-    result = ComplexMatrix (nr, nc,
-                            Complex (-octave::numeric_limits<double>::Inf (),
-                                     -octave::numeric_limits<double>::Inf ()));
+  ComplexMatrix result (nr, nc, a / Complex (0.0));
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
@@ -435,6 +416,22 @@ elem_xdiv (double a, const SparseComplexMatrix& b)
 
   return result;
 }
+
+/*
+## A real scalar over a complex sparse matrix, as for full matrices
+%!shared b
+%! b = [0, 3+0.5i; 0, 0];
+%!assert (real (3 ./ sparse (b)), real (3 ./ b))
+%!assert (imag (3 ./ sparse (b)), imag (3 ./ b))
+%!assert (real (-3 ./ sparse (b)), real (-3 ./ b))
+%!assert (imag (-3 ./ sparse (b)), imag (-3 ./ b))
+%!assert (real (0 ./ sparse (b)), real (0 ./ b))
+%!assert (imag (0 ./ sparse (b)), imag (0 ./ b))
+%!assert (real (Inf ./ sparse (b)), real (Inf ./ b))
+%!assert (imag (Inf ./ sparse (b)), imag (Inf ./ b))
+%!assert (real (NaN ./ sparse (b)), real (NaN ./ b))
+%!assert (imag (NaN ./ sparse (b)), imag (NaN ./ b))
+*/
 
 ComplexMatrix
 elem_xdiv (const Complex& a, const SparseMatrix& b)

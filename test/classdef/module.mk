@@ -30,12 +30,20 @@ classdef_TEST_FILES = \
   %reldir%/class_access_fcn_name.m \
   %reldir%/class_access_list.m \
   %reldir%/class_access_list_friend.m \
+  %reldir%/class_bug47755.m \
+  %reldir%/class_bug47755_base.m \
+  %reldir%/class_bug47755_sub.m \
+  %reldir%/class_bug47755_subsref.m \
   %reldir%/class_bug50011_1.m \
   %reldir%/class_bug50011_1A.m \
   %reldir%/class_bug50011_1B.m \
   %reldir%/class_bug50011_2.m \
   %reldir%/class_bug50011_2A.m \
   %reldir%/class_bug50011_2B.m \
+  %reldir%/class_bug51377A.m \
+  %reldir%/class_bug51377B.m \
+  %reldir%/class_bug51377C.m \
+  %reldir%/class_bug51377D.m \
   %reldir%/class_bug51659.m \
   %reldir%/class_bug51659A.m \
   %reldir%/class_bug51659A_handle.m \
@@ -102,6 +110,19 @@ classdef_TEST_FILES = \
   %reldir%/class_display_noprops.m \
   %reldir%/class_display_plain.m \
   %reldir%/class_display_size.m \
+  %reldir%/class_empty_abstract.m \
+  %reldir%/class_empty_cprop.m \
+  %reldir%/class_empty_ctor.m \
+  %reldir%/class_empty_handle.m \
+  %reldir%/class_empty_hprop.m \
+  %reldir%/class_empty_multi.m \
+  %reldir%/class_empty_own.m \
+  %reldir%/class_empty_own_sub.m \
+  %reldir%/class_empty_plain.m \
+  %reldir%/class_empty_plain2.m \
+  %reldir%/class_empty_sub.m \
+  %reldir%/class_empty_sub_hprop.m \
+  %reldir%/class_empty_vprop.m \
   %reldir%/class_methods_abstract.m \
   %reldir%/class_methods_ctor_hidden.m \
   %reldir%/class_methods_ctor_private.m \

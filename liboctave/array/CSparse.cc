@@ -7956,10 +7956,6 @@ operator * (const SparseComplexMatrix& a, const PermMatrix& p)
 
 // FIXME: it would be nice to share code among the min/max functions below.
 
-#define EMPTY_RETURN_CHECK(T)                   \
-  if (nr == 0 || nc == 0)                       \
-    return T (nr, nc);
-
 SparseComplexMatrix
 min (const Complex& c, const SparseComplexMatrix& m)
 {
@@ -7979,25 +7975,16 @@ SparseComplexMatrix
 min (const Complex& c, const SparseComplexMatrix& m,
      const bool nanflag, const bool realabs)
 {
-  SparseComplexMatrix result;
+  // The scalar is broadcast as a 1x1 operand, so that the implicit zeros of M
+  // get min of the scalar and 0, as for full matrices.
 
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  EMPTY_RETURN_CHECK (SparseComplexMatrix);
-
-  if (abs (c) == 0.)
-    return SparseComplexMatrix (nr, nc);
-  else
-    {
-      result = SparseComplexMatrix (m);
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
-          result.data (i) = octave::math::min (c, m.data (i), nanflag, realabs);
-    }
-
-  return result;
+  return SparseComplexMatrix (octave::sparse_bcast_op<Complex>
+                 (Array<Complex> (dim_vector (1, 1), c), m,
+                  [nanflag, realabs] (const Complex& x, const Complex& y)
+                  {
+                    return octave::math::min (x, y, nanflag, realabs);
+                  },
+                  "min"));
 }
 
 SparseComplexMatrix
@@ -8005,21 +7992,30 @@ min (const SparseComplexMatrix& m, const Complex& c)
 {
   const bool nanflag = true;
   const bool realabs = false;
-  return min (c, m, nanflag, realabs);
+  return min (m, c, nanflag, realabs);
 }
 
 SparseComplexMatrix
 min (const SparseComplexMatrix& m, const Complex& c, const bool nanflag)
 {
   const bool realabs = false;
-  return min (c, m, nanflag, realabs);
+  return min (m, c, nanflag, realabs);
 }
 
 SparseComplexMatrix
 min (const SparseComplexMatrix& m, const Complex& c,
      const bool nanflag, const bool realabs)
 {
-  return min (c, m, nanflag, realabs);
+  // The scalar is broadcast as a 1x1 operand, so that the implicit zeros of M
+  // get min of the scalar and 0, as for full matrices.
+
+  return SparseComplexMatrix (octave::sparse_bcast_op<Complex>
+                 (m, Array<Complex> (dim_vector (1, 1), c),
+                  [nanflag, realabs] (const Complex& x, const Complex& y)
+                  {
+                    return octave::math::min (x, y, nanflag, realabs);
+                  },
+                  "min"));
 }
 
 SparseComplexMatrix
@@ -8118,36 +8114,14 @@ min (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
     }
   else
     {
-      if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
-        {
-          if (a_nc == 1 || b_nc == 1 || a_nc == b_nc)
-            r.resize (a_nr, std::max (a_nc, b_nc));
-          else
-            octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
-        }
-      else if (a_nc == 0 && (b_nc == 0 || b_nc == 1))
-        {
-          if (a_nr == 1 || b_nr == 1 || a_nr == b_nr)
-            r.resize (std::max (a_nr, b_nr), a_nc);
-          else
-            octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
-        }
-      else if (b_nr == 0 && (a_nr == 0 || a_nr == 1))
-        {
-          if (b_nc == 1 || a_nc == 1 || b_nc == a_nc)
-            r.resize (b_nr, std::max (a_nc, b_nc));
-          else
-            octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
-        }
-      else if (b_nc == 0 && (a_nc == 0 || a_nc == 1))
-        {
-          if (b_nr == 1 || a_nr == 1 || b_nr == a_nr)
-            r.resize (std::max (a_nr, b_nr), b_nc);
-          else
-            octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
-        }
-      else
-        octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
+      // Broadcast a row, a column or a 1x1 operand, as for full matrices.
+      r = SparseComplexMatrix (octave::sparse_bcast_op<Complex>
+                 (a, b,
+                  [nanflag, realabs] (const Complex& x, const Complex& y)
+                  {
+                    return octave::math::min (x, y, nanflag, realabs);
+                  },
+                  "min"));
     }
 
   return r;
@@ -8172,26 +8146,16 @@ SparseComplexMatrix
 max (const Complex& c, const SparseComplexMatrix& m, const bool nanflag,
      const bool realabs)
 {
-  SparseComplexMatrix result;
+  // The scalar is broadcast as a 1x1 operand, so that the implicit zeros of M
+  // get max of the scalar and 0, as for full matrices.
 
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  EMPTY_RETURN_CHECK (SparseComplexMatrix);
-
-  // Count the number of nonzero elements
-  if (octave::math::max (c, 0., nanflag, realabs) != 0.)
-    {
-      result = SparseComplexMatrix (nr, nc, c);
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
-          result.xdata (m.ridx (i) + j * nr) = octave::math::max
-                                               (c, m.data (i), nanflag, realabs);
-    }
-  else
-    result = SparseComplexMatrix (m);
-
-  return result;
+  return SparseComplexMatrix (octave::sparse_bcast_op<Complex>
+                 (Array<Complex> (dim_vector (1, 1), c), m,
+                  [nanflag, realabs] (const Complex& x, const Complex& y)
+                  {
+                    return octave::math::max (x, y, nanflag, realabs);
+                  },
+                  "max"));
 }
 
 SparseComplexMatrix
@@ -8199,21 +8163,30 @@ max (const SparseComplexMatrix& m, const Complex& c)
 {
   const bool nanflag = true;
   const bool realabs = false;
-  return max (c, m, nanflag, realabs);
+  return max (m, c, nanflag, realabs);
 }
 
 SparseComplexMatrix
 max (const SparseComplexMatrix& m, const Complex& c, const bool nanflag)
 {
   const bool realabs = false;
-  return max (c, m, nanflag, realabs);
+  return max (m, c, nanflag, realabs);
 }
 
 SparseComplexMatrix
 max (const SparseComplexMatrix& m, const Complex& c, const bool nanflag,
      const bool realabs)
 {
-  return max (c, m, nanflag, realabs);
+  // The scalar is broadcast as a 1x1 operand, so that the implicit zeros of M
+  // get max of the scalar and 0, as for full matrices.
+
+  return SparseComplexMatrix (octave::sparse_bcast_op<Complex>
+                 (m, Array<Complex> (dim_vector (1, 1), c),
+                  [nanflag, realabs] (const Complex& x, const Complex& y)
+                  {
+                    return octave::math::max (x, y, nanflag, realabs);
+                  },
+                  "max"));
 }
 
 SparseComplexMatrix
@@ -8312,36 +8285,14 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
     }
   else
     {
-      if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
-        {
-          if (a_nc == 1 || b_nc == 1 || a_nc == b_nc)
-            r.resize (a_nr, std::max (a_nc, b_nc));
-          else
-            octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
-        }
-      else if (a_nc == 0 && (b_nc == 0 || b_nc == 1))
-        {
-          if (a_nr == 1 || b_nr == 1 || a_nr == b_nr)
-            r.resize (std::max (a_nr, b_nr), a_nc);
-          else
-            octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
-        }
-      else if (b_nr == 0 && (a_nr == 0 || a_nr == 1))
-        {
-          if (b_nc == 1 || a_nc == 1 || b_nc == a_nc)
-            r.resize (b_nr, std::max (a_nc, b_nc));
-          else
-            octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
-        }
-      else if (b_nc == 0 && (a_nc == 0 || a_nc == 1))
-        {
-          if (b_nr == 1 || a_nr == 1 || b_nr == a_nr)
-            r.resize (std::max (a_nr, b_nr), b_nc);
-          else
-            octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
-        }
-      else
-        octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
+      // Broadcast a row, a column or a 1x1 operand, as for full matrices.
+      r = SparseComplexMatrix (octave::sparse_bcast_op<Complex>
+                 (a, b,
+                  [nanflag, realabs] (const Complex& x, const Complex& y)
+                  {
+                    return octave::math::max (x, y, nanflag, realabs);
+                  },
+                  "max"));
     }
 
   return r;

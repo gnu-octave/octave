@@ -30,6 +30,7 @@
 #include <algorithm>
 #include <vector>
 
+#include "mappers.h"
 #include "unwind-prot.h"
 
 #include "cdef-class.h"
@@ -61,6 +62,16 @@
 #endif
 
 OCTAVE_BEGIN_NAMESPACE(octave)
+
+// True for the implicit method empty, which is the only method installed by
+// cdef_class::install_implicit_empty as a built-in function.
+
+static bool
+is_implicit_empty (const cdef_method& meth)
+{
+  return (meth.get_name () == "empty"
+          && meth.get_function ().is_builtin_function ());
+}
 
 static octave_value
 make_fcn_handle (const octave_value& fcn, const std::string& meth_name,
@@ -187,6 +198,18 @@ cdef_class::cdef_class_rep::cdef_class_rep
               if (it == m_method_map.end ())
                 {
                   m_method_map.insert (pair);
+                  continue;
+                }
+
+              // The implicit method empty of a superclass never conflicts: one
+              // written for a superclass takes precedence, and otherwise the
+              // class gets its own.
+              if (is_implicit_empty (pair.second)
+                  || is_implicit_empty (it->second))
+                {
+                  if (is_implicit_empty (it->second))
+                    it->second = pair.second;
+
                   continue;
                 }
 
@@ -579,7 +602,11 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
   // bug #67361): If the classdef is defined within a class folder and the
   // method is externally defined, and the method signature is not in the
   // classdef file, then the method and a property can have the same name.
-  if (m_property_map.contains (mname) && ! meth.is_external ())
+  //
+  // The implicit method empty also coexists with a property of that name,
+  // as in Matlab.
+  if (m_property_map.contains (mname) && ! meth.is_external ()
+      && ! is_implicit_empty (meth))
     {
       error ("property and method are both named '%s' in class '%s' in file '%s'",
              mname.c_str (), get_name ().c_str (), file_name ().c_str ());
@@ -1126,6 +1153,16 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
 
         cdef_method meth = find_method (nm);
 
+        // A constant property named empty takes precedence over the
+        // implicit method of that name, as in Matlab.
+        if (meth.ok () && is_implicit_empty (meth))
+          {
+            cdef_property prop = find_property (nm);
+
+            if (prop.ok () && prop.is_constant ())
+              meth = cdef_method ();
+          }
+
         if (meth.ok ())
           {
             if (! meth.is_static ())
@@ -1413,6 +1450,122 @@ cdef_class::cdef_class_rep::construct_array_element ()
     error ("expecting meta class, property, method, or package in cdef_class::cdef_class_rep::construct_array_element - please report this bug");
 }
 
+// The size of the array created by the implicit method empty, given as for
+// zeros: no argument, a scalar N for N-by-N, a row vector, or one scalar
+// for each dimension, where an empty argument counts as 0.  Negative sizes
+// count as 0, and at least one dimension must be 0.
+
+static dim_vector
+empty_dims (const octave_value_list& args)
+{
+  int nargin = args.length ();
+
+  if (nargin == 0 || (nargin == 1 && args(0).isempty ()))
+    return dim_vector (0, 0);
+
+  std::vector<double> sz;
+
+  for (int i = 0; i < nargin; i++)
+    {
+      const octave_value& arg = args(i);
+
+      if (arg.isempty ())
+        sz.push_back (0);
+      else if (! (arg.isnumeric () || arg.islogical ()))
+        error ("empty: value must be numeric or logical");
+      else if (arg.iscomplex ())
+        error ("empty: size inputs must be real");
+      else if (nargin == 1)
+        {
+          if (arg.ndims () > 2 || (arg.rows () != 1 && arg.columns () != 1))
+            error ("empty: size must be a vector");
+
+          NDArray val = arg.array_value ();
+
+          for (octave_idx_type k = 0; k < val.numel (); k++)
+            sz.push_back (val(k));
+
+          if (sz.size () == 1)
+            sz.push_back (sz[0]);
+        }
+      else if (arg.numel () != 1)
+        error ("empty: size inputs must be scalars");
+      else
+        sz.push_back (arg.double_value ());
+    }
+
+  dim_vector dims;
+  dims.resize (static_cast<int> (sz.size ()));
+
+  bool any_zero = false;
+
+  for (std::size_t k = 0; k < sz.size (); k++)
+    {
+      double d = sz[k];
+
+      if (math::isnan (d) || math::isinf (d))
+        error ("empty: NaN and Inf are not allowed");
+
+      if (d < 0)
+        d = 0;
+      else if (d != math::fix (d))
+        error ("empty: size inputs must be integers");
+
+      dims(k) = static_cast<octave_idx_type> (d);
+
+      if (d == 0)
+        any_zero = true;
+    }
+
+  if (! any_zero)
+    error ("empty: at least one dimension must be zero");
+
+  dims.chop_trailing_singletons ();
+
+  return dims;
+}
+
+// The implicit static method empty.  One function serves every class: each
+// class has its own octave_builtin object, whose dispatch class is the name
+// of the class, and a built-in function runs in a stack frame of its own.
+
+static octave_value_list
+class_empty (interpreter& interp, const octave_value_list& args, int)
+{
+  octave_function *fcn = interp.get_evaluator ().current_function ();
+
+  cdef_class cls = lookup_class (fcn->dispatch_class ());
+
+  if (cls.is_abstract ())
+    error ("cannot instantiate object for abstract class '%s'",
+           cls.get_name ().c_str ());
+
+  dim_vector dims = empty_dims (args);
+
+  return ovl (to_ov (cdef_object (Array<cdef_object> (dims), cls)));
+}
+
+void
+cdef_class::install_implicit_empty (cdef_class& cls)
+{
+  // A method written by the user, in the class or in a superclass, takes
+  // precedence.  An implicit one inherited from a superclass would create
+  // an array of the superclass, so each class gets its own.
+  cdef_method meth = cls.find_method ("empty");
+
+  if (meth.ok () && ! is_implicit_empty (meth))
+    return;
+
+  octave_builtin *fcn = new octave_builtin (class_empty, "empty");
+  fcn->stash_dispatch_class (cls.get_name ());
+
+  cls.install_method (cdef_method (cls, octave_value (fcn), "empty",
+                                   cdef_method_opt_properties {
+                                     .hidden = true,
+                                     .static_bool = true
+                                   }));
+}
+
 octave_value
 cdef_class::make_meta_class (interpreter& interp,
                              tree_classdef *t, bool is_at_folder)
@@ -1694,6 +1847,9 @@ cdef_class::make_meta_class (interpreter& interp,
        retval.get_property_map (member_mode::all))
     if (property.get ("Abstract").bool_value ())
       retval.put ("Abstract", true);
+
+  // Every class has a hidden static method empty, as in Matlab.
+  install_implicit_empty (retval);
 
   // Evaluate the default values now that every property and method of the
   // class exists, constant properties first, each block in the order of its

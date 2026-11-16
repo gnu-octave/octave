@@ -7841,10 +7841,6 @@ operator * (const SparseMatrix& a, const PermMatrix& p)
 
 // FIXME: it would be nice to share code among the min/max functions below.
 
-#define EMPTY_RETURN_CHECK(T)                   \
-  if (nr == 0 || nc == 0)                       \
-    return T (nr, nc);
-
 SparseMatrix
 min (double d, const SparseMatrix& m)
 {
@@ -7863,58 +7859,16 @@ min (double d, const SparseMatrix& m, const bool nanflag)
 SparseMatrix
 min (double d, const SparseMatrix& m, const bool nanflag, const bool realabs)
 {
-  SparseMatrix result;
+  // The scalar is broadcast as a 1x1 operand, so that the implicit zeros of M
+  // get min of the scalar and 0, as for full matrices.
 
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  EMPTY_RETURN_CHECK (SparseMatrix);
-
-  // Count the number of nonzero elements
-  if (d < 0.)
-    {
-      result = SparseMatrix (nr, nc, d);
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
-          {
-            double tmp = octave::math::min (d, m.data (i), nanflag, realabs);
-            if (tmp != 0.)
-              {
-                octave_idx_type idx = m.ridx (i) + j * nr;
-                result.xdata (idx) = tmp;
-                result.xridx (idx) = m.ridx (i);
-              }
-          }
-    }
-  else
-    {
-      octave_idx_type nel = 0;
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
-          if (octave::math::min (d, m.data (i), nanflag, realabs) != 0.)
-            nel++;
-
-      result = SparseMatrix (nr, nc, nel);
-
-      octave_idx_type ii = 0;
-      result.xcidx (0) = 0;
-      for (octave_idx_type j = 0; j < nc; j++)
-        {
-          for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
-            {
-              double tmp = octave::math::min (d, m.data (i), nanflag, realabs);
-
-              if (tmp != 0.)
-                {
-                  result.xdata (ii) = tmp;
-                  result.xridx (ii++) = m.ridx (i);
-                }
-            }
-          result.xcidx (j+1) = ii;
-        }
-    }
-
-  return result;
+  return SparseMatrix (octave::sparse_bcast_op<double>
+                 (Array<double> (dim_vector (1, 1), d), m,
+                  [nanflag, realabs] (double x, double y)
+                  {
+                    return octave::math::min (x, y, nanflag, realabs);
+                  },
+                  "min"));
 }
 
 SparseMatrix
@@ -7922,20 +7876,29 @@ min (const SparseMatrix& m, double d)
 {
   const bool nanflag = true;
   const bool realabs = true;
-  return min (d, m, nanflag, realabs);
+  return min (m, d, nanflag, realabs);
 }
 
 SparseMatrix
 min (const SparseMatrix& m, double d, const bool nanflag)
 {
   const bool realabs = true;
-  return min (d, m, nanflag, realabs);
+  return min (m, d, nanflag, realabs);
 }
 
 SparseMatrix
 min (const SparseMatrix& m, double d, const bool nanflag, const bool realabs)
 {
-  return min (d, m, nanflag, realabs);
+  // The scalar is broadcast as a 1x1 operand, so that the implicit zeros of M
+  // get min of the scalar and 0, as for full matrices.
+
+  return SparseMatrix (octave::sparse_bcast_op<double>
+                 (m, Array<double> (dim_vector (1, 1), d),
+                  [nanflag, realabs] (double x, double y)
+                  {
+                    return octave::math::min (x, y, nanflag, realabs);
+                  },
+                  "min"));
 }
 
 SparseMatrix
@@ -8033,36 +7996,14 @@ min (const SparseMatrix& a, const SparseMatrix& b, const bool nanflag,
     }
   else
     {
-      if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
-        {
-          if (a_nc == 1 || b_nc == 1 || a_nc == b_nc)
-            r.resize (a_nr, std::max (a_nc, b_nc));
-          else
-            octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
-        }
-      else if (a_nc == 0 && (b_nc == 0 || b_nc == 1))
-        {
-          if (a_nr == 1 || b_nr == 1 || a_nr == b_nr)
-            r.resize (std::max (a_nr, b_nr), a_nc);
-          else
-            octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
-        }
-      else if (b_nr == 0 && (a_nr == 0 || a_nr == 1))
-        {
-          if (b_nc == 1 || a_nc == 1 || b_nc == a_nc)
-            r.resize (b_nr, std::max (a_nc, b_nc));
-          else
-            octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
-        }
-      else if (b_nc == 0 && (a_nc == 0 || a_nc == 1))
-        {
-          if (b_nr == 1 || a_nr == 1 || b_nr == a_nr)
-            r.resize (std::max (a_nr, b_nr), b_nc);
-          else
-            octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
-        }
-      else
-        octave::err_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
+      // Broadcast a row, a column or a 1x1 operand, as for full matrices.
+      r = SparseMatrix (octave::sparse_bcast_op<double>
+                 (a, b,
+                  [nanflag, realabs] (double x, double y)
+                  {
+                    return octave::math::min (x, y, nanflag, realabs);
+                  },
+                  "min"));
     }
 
   return r;
@@ -8086,58 +8027,16 @@ max (double d, const SparseMatrix& m, const bool nanflag)
 SparseMatrix
 max (double d, const SparseMatrix& m, const bool nanflag, const bool realabs)
 {
-  SparseMatrix result;
+  // The scalar is broadcast as a 1x1 operand, so that the implicit zeros of M
+  // get max of the scalar and 0, as for full matrices.
 
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  EMPTY_RETURN_CHECK (SparseMatrix);
-
-  // Count the number of nonzero elements
-  if (d > 0.)
-    {
-      result = SparseMatrix (nr, nc, d);
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
-          {
-            double tmp = octave::math::max (d, m.data (i), nanflag, realabs);
-
-            if (tmp != 0.)
-              {
-                octave_idx_type idx = m.ridx (i) + j * nr;
-                result.xdata (idx) = tmp;
-                result.xridx (idx) = m.ridx (i);
-              }
-          }
-    }
-  else
-    {
-      octave_idx_type nel = 0;
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
-          if (octave::math::max (d, m.data (i), nanflag, realabs) != 0.)
-            nel++;
-
-      result = SparseMatrix (nr, nc, nel);
-
-      octave_idx_type ii = 0;
-      result.xcidx (0) = 0;
-      for (octave_idx_type j = 0; j < nc; j++)
-        {
-          for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
-            {
-              double tmp = octave::math::max (d, m.data (i), nanflag, realabs);
-              if (tmp != 0.)
-                {
-                  result.xdata (ii) = tmp;
-                  result.xridx (ii++) = m.ridx (i);
-                }
-            }
-          result.xcidx (j+1) = ii;
-        }
-    }
-
-  return result;
+  return SparseMatrix (octave::sparse_bcast_op<double>
+                 (Array<double> (dim_vector (1, 1), d), m,
+                  [nanflag, realabs] (double x, double y)
+                  {
+                    return octave::math::max (x, y, nanflag, realabs);
+                  },
+                  "max"));
 }
 
 SparseMatrix
@@ -8145,20 +8044,29 @@ max (const SparseMatrix& m, double d)
 {
   const bool nanflag = true;
   const bool realabs = true;
-  return max (d, m, nanflag, realabs);
+  return max (m, d, nanflag, realabs);
 }
 
 SparseMatrix
 max (const SparseMatrix& m, double d, const bool nanflag)
 {
   const bool realabs = true;
-  return max (d, m, nanflag, realabs);
+  return max (m, d, nanflag, realabs);
 }
 
 SparseMatrix
 max (const SparseMatrix& m, double d, const bool nanflag, const bool realabs)
 {
-  return max (d, m, nanflag, realabs);
+  // The scalar is broadcast as a 1x1 operand, so that the implicit zeros of M
+  // get max of the scalar and 0, as for full matrices.
+
+  return SparseMatrix (octave::sparse_bcast_op<double>
+                 (m, Array<double> (dim_vector (1, 1), d),
+                  [nanflag, realabs] (double x, double y)
+                  {
+                    return octave::math::max (x, y, nanflag, realabs);
+                  },
+                  "max"));
 }
 
 SparseMatrix
@@ -8256,36 +8164,14 @@ max (const SparseMatrix& a, const SparseMatrix& b, const bool nanflag,
     }
   else
     {
-      if (a_nr == 0 && (b_nr == 0 || b_nr == 1))
-        {
-          if (a_nc == 1 || b_nc == 1 || a_nc == b_nc)
-            r.resize (a_nr, std::max (a_nc, b_nc));
-          else
-            octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
-        }
-      else if (a_nc == 0 && (b_nc == 0 || b_nc == 1))
-        {
-          if (a_nr == 1 || b_nr == 1 || a_nr == b_nr)
-            r.resize (std::max (a_nr, b_nr), a_nc);
-          else
-            octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
-        }
-      else if (b_nr == 0 && (a_nr == 0 || a_nr == 1))
-        {
-          if (b_nc == 1 || a_nc == 1 || b_nc == a_nc)
-            r.resize (b_nr, std::max (a_nc, b_nc));
-          else
-            octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
-        }
-      else if (b_nc == 0 && (a_nc == 0 || a_nc == 1))
-        {
-          if (b_nr == 1 || a_nr == 1 || b_nr == a_nr)
-            r.resize (std::max (a_nr, b_nr), b_nc);
-          else
-            octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
-        }
-      else
-        octave::err_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
+      // Broadcast a row, a column or a 1x1 operand, as for full matrices.
+      r = SparseMatrix (octave::sparse_bcast_op<double>
+                 (a, b,
+                  [nanflag, realabs] (double x, double y)
+                  {
+                    return octave::math::max (x, y, nanflag, realabs);
+                  },
+                  "max"));
     }
 
   return r;

@@ -192,9 +192,13 @@ cdef_object::map_value (bool warn, bool for_save) const
       // FIXME: Why not const here?
       for (auto& prop_val : props)
         {
-          // Do not include properties that have the "Transient" attribute
-          // when creating the map for saving the object to a file.
-          if (for_save && prop_val.second.get ("Transient").bool_value ())
+          // Do not include properties that have the "Transient", "Constant",
+          // or "Dependent" attribute when creating the map for saving the
+          // object to a file, as Matlab does.
+          if (for_save
+              && (prop_val.second.get ("Transient").bool_value ()
+                  || prop_val.second.get ("Constant").bool_value ()
+                  || prop_val.second.get ("Dependent").bool_value ()))
             continue;
 
           if (is_array ())
@@ -391,11 +395,66 @@ cdef_object_array::transpose () const
   return permute (perm_vec);
 }
 
+// Dot syntax reaches a property before a method of the same name, unless the
+// property is private to a class that this context cannot see into, as in
+// Matlab.
+
+static cdef_property
+find_dot_property (cdef_class& cls, const std::string& name)
+{
+  cdef_property prop = cls.find_property (name);
+
+  if (prop.ok () && cls.find_method (name).ok ())
+    {
+      octave_value acc = prop.get ("GetAccess");
+
+      if (acc.is_string () && acc.string_value () == "private"
+          && ! prop.check_get_access ())
+        prop = cdef_property ();
+    }
+
+  return prop;
+}
+
+// Call a method reached with dot syntax, taking its arguments from a '(' that
+// follows it.  OBJ is a scalar object or an object array, passed whole.
+
+static octave_value_list
+call_dot_method (cdef_method& meth, const cdef_object& obj,
+                 const std::string& type,
+                 const std::list<octave_value_list>& idx, int nargout,
+                 std::size_t& skip)
+{
+  // If the method call is followed by another index operation, the number of
+  // outputs of the call will be 1.
+  int nargout_mtd = (type.length () > 2
+                     || (type.length () == 2 && type[1] != '(')
+                     ? 1 : nargout);
+
+  octave_value_list args;
+
+  skip = 1;
+
+  if (type.length () > 1 && type[1] == '(')
+    {
+      auto it = idx.begin ();
+
+      args = *++it;
+
+      skip++;
+    }
+
+  if (meth.is_static ())
+    return meth.execute (args, nargout_mtd, true, "subsref");
+
+  return meth.execute (obj, args, nargout_mtd, true, "subsref");
+}
+
 octave_value_list
 cdef_object_array::subsref (const std::string& type,
                             const std::list<octave_value_list>& idx,
-                            int /* nargout */, std::size_t& skip,
-                            const cdef_class& /* context */, bool auto_add)
+                            int nargout, std::size_t& skip,
+                            const cdef_class& context, bool auto_add)
 {
   octave_value_list retval;
 
@@ -466,7 +525,29 @@ cdef_object_array::subsref (const std::string& type,
 
           break;
         }
-      else if (type.size () == 1 && idx.size () == 1)
+
+      {
+        // A method is called once with the whole array, as in Matlab.
+
+        std::string name = (idx.front ())(0).string_value ();
+
+        cdef_class cls = (context.ok () ? context : get_class ());
+
+        if (! find_dot_property (cls, name).ok ())
+          {
+            cdef_method meth = cls.find_method (name);
+
+            if (meth.ok ())
+              {
+                retval = call_dot_method (meth, wrap (), type, idx, nargout,
+                                          skip);
+
+                break;
+              }
+          }
+      }
+
+      if (type.size () == 1 && idx.size () == 1)
         {
           Cell c (dims ());
 
@@ -850,19 +931,7 @@ cdef_object_scalar::subsref (const std::string& type,
       {
         std::string name = (idx.front ())(0).string_value ();
 
-        cdef_property prop = cls.find_property (name);
-
-        // Dot syntax reaches a property before a method of the same name,
-        // unless the property is private to a class that this context cannot
-        // see into, as in Matlab.
-        if (prop.ok () && cls.find_method (name).ok ())
-          {
-            octave_value acc = prop.get ("GetAccess");
-
-            if (acc.is_string () && acc.string_value () == "private"
-                && ! prop.check_get_access ())
-              prop = cdef_property ();
-          }
+        cdef_property prop = find_dot_property (cls, name);
 
         if (prop.ok ())
           {
@@ -883,32 +952,7 @@ cdef_object_scalar::subsref (const std::string& type,
             if (! meth.ok ())
               error ("subsref: unknown method or property: %s", name.c_str ());
 
-            // If the method call is followed by another index operation,
-            // the number of outputs of the call will be 1.
-            int nargout_mtd = (type.length () > 2
-                               || (type.length () == 2 && type[1] != '(')
-                               ? 1 : nargout);
-
-            octave_value_list args;
-
-            skip = 1;
-
-            if (type.length () > 1 && type[1] == '(')
-              {
-                auto it = idx.begin ();
-
-                args = *++it;
-
-                skip++;
-              }
-
-            if (meth.is_static ())
-              retval = meth.execute (args, nargout_mtd, true, "subsref");
-            else
-              {
-                retval = meth.execute (wrap (), args, nargout_mtd,
-                                       true, "subsref");
-              }
+            retval = call_dot_method (meth, wrap (), type, idx, nargout, skip);
           }
 
         break;

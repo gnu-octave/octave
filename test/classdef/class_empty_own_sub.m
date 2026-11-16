@@ -1,0 +1,2 @@
+classdef class_empty_own_sub < class_empty_own
+endclassdef

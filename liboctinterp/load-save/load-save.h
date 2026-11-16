@@ -252,6 +252,17 @@ private:
   // Cache for constructed MCOS objects and their object IDs during saving
   std::unordered_map<const void *, uint32_t> m_mcos_object_save_cache;
 
+  // Object IDs already used in the file that save -append adds to
+  uint32_t m_mcos_object_id_offset = 0;
+
+  // Subsystem data block of the MAT-file that save -append adds to, as
+  // stored in the file and as read
+  std::string m_append_subsystem_data;
+  octave_value m_append_subsystem;
+
+  OCTINTERP_API std::string
+  read_append_data (const std::string& fname, const load_save_format& fmt);
+
   OCTINTERP_API void
   write_header (std::ostream& os, const load_save_format& fmt);
 

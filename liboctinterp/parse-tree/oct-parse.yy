@@ -5562,6 +5562,27 @@ get_help_from_file (const std::string& nm, bool& symbol_found, std::string& full
         {
           octave_function *fcn = ov_fcn.function_value ();
 
+          // A name of the form FILE>LOCALFUNCTION asks for the doc string of
+          // that local function, not of the main function of the file.
+
+          std::size_t sep = nm.find ('>');
+
+          if (fcn && sep != std::string::npos && sep + 1 < nm.length ())
+            {
+              octave_user_function *ufcn = fcn->user_function_value (true);
+
+              fcn = nullptr;
+
+              if (ufcn)
+                {
+                  octave_value ov_sub
+                    = ufcn->find_subfunction (nm.substr (sep+1));
+
+                  if (ov_sub.is_defined ())
+                    fcn = ov_sub.function_value ();
+                }
+            }
+
           if (fcn)
             retval = fcn->doc_string ();
         }

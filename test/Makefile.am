@@ -152,6 +152,7 @@ include ctor-vs-method/module.mk
 include fcn-handle/module.mk
 include file-encoding/module.mk
 include help/module.mk
+include help-name-forms/module.mk
 include json/module.mk
 include jupyter-notebook/module.mk
 include load-path/module.mk

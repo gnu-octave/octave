@@ -201,9 +201,64 @@ help_system::texi_macros_file (const octave_value_list& args, int nargout)
                                 "texi_macros_file", false);
 }
 
+// A class member may be written in more than one way.  Matlab resolves
+// CLASS.MEMBER, CLASS/MEMBER and CLASS>MEMBER for any class, and
+// @CLASS/MEMBER for a class that is really stored in an @ directory.
+// Rewrite the first three to the spelling this interpreter already resolves:
+// a dotted name for a classdef class, and @CLASS/MEMBER for an old-style
+// class, whose methods are separate files found through the load path.
+//
+// A name that does not begin a class is returned unchanged, so that
+// FCN>LOCALFUNCTION still reaches the local function of an ordinary file, and
+// a leading @ is left alone so that @CLASS/MEMBER continues to resolve only
+// for a class that really is in an @ directory.
+
 std::string
-help_system::raw_help (const std::string& nm, bool& symbol_found) const
+help_system::normalize_member_name (const std::string& name) const
 {
+  if (name.empty () || name[0] == '@')
+    return name;
+
+  std::size_t pos = name.find_first_of ("/>");
+
+  if (pos == std::string::npos)
+    {
+      // A dotted name is already resolved for a classdef class, including
+      // one in a namespace.  Only an old-style class needs rewriting, and it
+      // can never live in a namespace, so its name has a single '.'.
+
+      pos = name.rfind ('.');
+
+      if (pos == std::string::npos || name.find ('.') != pos)
+        return name;
+    }
+
+  if (pos == 0 || pos + 1 >= name.length ())
+    return name;
+
+  std::string prefix = name.substr (0, pos);
+  std::string member = name.substr (pos + 1);
+
+  load_path& lp = m_interpreter.get_load_path ();
+
+  std::string dir_name;
+
+  if (! lp.find_method (prefix, member, dir_name).empty ())
+    return '@' + prefix + '/' + member;
+
+  cdef_manager& cdm = m_interpreter.get_cdef_manager ();
+
+  if (cdm.find_class (prefix, false, true).ok ())
+    return prefix + '.' + member;
+
+  return name;
+}
+
+std::string
+help_system::raw_help (const std::string& name, bool& symbol_found) const
+{
+  std::string nm = normalize_member_name (name);
+
   std::string h;
   std::string w;
   std::string f;

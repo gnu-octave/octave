@@ -35,6 +35,7 @@
 #include "cdef-object.h"
 #include "cdef-property.h"
 #include "cdef-utils.h"
+#include "data.h"
 #include "interpreter.h"
 #include "interpreter-private.h"
 #include "ov-classdef.h"
@@ -665,16 +666,31 @@ cdef_object_array::subsasgn (const std::string& type,
               is_scalar = is_scalar && iv(i).is_scalar ();
             }
 
-          if (rhs.isempty ())
+          if (rhs.isnull ())
             m_array.delete_elements (iv);
           else
             {
-              cdef_object rhs_obj = to_cdef (rhs);
+              octave_value t_rhs = rhs;
 
-              if (rhs_obj.get_class () != get_class ())
-                error ("can't assign %s object into array of %s objects",
-                       rhs_obj.class_name ().c_str (),
-                       class_name ().c_str ());
+              // Convert a value of another class with its method named after
+              // the class of this array, or else with the constructor of this
+              // class, as Matlab does.
+
+              if (! rhs.is_classdef_object ()
+                  || to_cdef (rhs).get_class () != get_class ())
+                {
+                  std::string cname = class_name ();
+
+                  t_rhs = attempt_type_conversion (rhs, cname);
+
+                  if (! t_rhs.is_classdef_object ()
+                      || to_cdef (t_rhs).get_class () != get_class ())
+                    error ("operator =: value of class '%s' is not "
+                           "convertible to '%s'",
+                           rhs.class_name ().c_str (), cname.c_str ());
+                }
+
+              cdef_object rhs_obj = to_cdef (t_rhs);
 
               Array<cdef_object> rhs_mat;
 

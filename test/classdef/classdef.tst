@@ -2954,6 +2954,166 @@
 %!error <invalid Access value of type 'bool' for method 'f' in class 'class_negated_access'>
 %! obj = class_negated_access ();
 
+## An object assigned into an array of another class is converted by its
+## method named after the class of the array.
+%!test <*61676>
+%! a = 1:5;
+%! a(4) = class_bug61676 (2);
+%! assert (a, [1, 2, 3, 2.5, 5]);
+
+%!test <*61676>
+%! a = 1:5;
+%! a(2:3) = class_bug61676 (2);
+%! assert (a, [1, 2.5, 2.5, 4, 5]);
+
+%!test <*61676>
+%! a = 1:5;
+%! a(2:3) = [class_bug61676(1), class_bug61676(2)];
+%! assert (a, [1, 1.5, 2.5, 4, 5]);
+
+%!test <*61676>
+%! a = int8 (1:5);
+%! a(4) = class_bug61676 ();
+%! assert (a, int8 ([1, 2, 3, -7, 5]));
+
+%!test <*61676>
+%! a = "abcde";
+%! a(4) = class_bug61676 ();
+%! assert (a, "abc#e");
+
+%!test <*61676>
+%! a = false (1, 5);
+%! a(4) = class_bug61676 ();
+%! assert (a, logical ([0, 0, 0, 1, 0]));
+
+%!test <*61676>
+%! a = sparse (1:5);
+%! a(4) = class_bug61676 (2);
+%! assert (a, sparse ([1, 2, 3, 2.5, 5]));
+
+%!test <*61676>
+%! a = [];
+%! a(3) = class_bug61676 (4);
+%! assert (a, [0, 0, 4.5]);
+
+%!test <*61676>
+%! s.x = 1:5;
+%! s.x(4) = class_bug61676 (2);
+%! assert (s.x, [1, 2, 3, 2.5, 5]);
+
+%!error <value of class 'class_bug61676' is not convertible to 'single'>
+%! a = single (1:5);
+%! a(4) = class_bug61676 ();
+
+%!error <value of class 'value_class' is not convertible to 'double'>
+%! a = 1:5;
+%! a(4) = value_class ();
+
+%!error <value of class 'class_bug61676' is not convertible to 'uint8'>
+%! a = uint8 (1:5);
+%! a(4) = class_bug61676 ();
+
+%!error <conversion from class_bug61676 to int16 failed>
+%! a = int16 (1:5);
+%! a(4) = class_bug61676 ();
+
+## A value assigned into an array of objects of another class is converted by
+## its method named after that class, or else by the constructor of the class.
+%!test <*61676>
+%! a = class_bug61676 (1);
+%! a(2) = 5;
+%! assert (class (a), "class_bug61676");
+%! assert ([a.v], [1, 5]);
+
+%!test <*61676>
+%! a = class_bug61676 (1);
+%! a(2:3) = [5, 6];
+%! assert ({a.v}, {1, [5, 6], [5, 6]});
+
+%!test <*61676>
+%! a = class_bug61676 (1);
+%! a(3) = 5;
+%! assert ([a.v], [1, 0, 5]);
+
+%!test <*61676>
+%! a = class_bug61676 (1);
+%! a(2) = int8 (5);
+%! assert (a(2).v, int8 (5));
+
+%!test <*61676>
+%! a = class_bug61676 (1);
+%! a(2) = class_bug61676_src ();
+%! assert ([a.v], [1, 99]);
+
+%!test <*61676>
+%! a = class_bug61676 (1);
+%! a(2) = value_class ();
+%! assert (class (a(2).v), "value_class");
+
+%!test <*61676>
+%! a = class_bug61676_handle (1);
+%! a(2) = 5;
+%! assert (class (a), "class_bug61676_handle");
+%! assert ([a.v], [1, 5]);
+
+## The conversion is called once with the whole value, and its result is
+## assigned by the usual rules: one object fills every indexed element, and an
+## object array of matching size is assigned element by element.
+%!test <*61676>
+%! a = class_bug61676 (1);
+%! a(2:3) = [class_bug61676_src(1), class_bug61676_src(2)];
+%! assert ({a.v}, {1, [1, 2], [1, 2]});
+
+%!test <*61676>
+%! a = class_bug61676_array (0);
+%! a(2:3) = [5, 6];
+%! assert ([a.v], [0, 5, 6]);
+
+%!test <*61676>
+%! a = class_bug61676_handle (1);
+%! a(2:3) = 5;
+%! a(2).v = 9;
+%! assert (a(3).v, 9);
+
+## Only a literal [] or '' deletes elements; any other empty value is
+## converted like any other value.
+%!test <*61676>
+%! a = [class_bug61676(1), class_bug61676(2)];
+%! a(2) = [];
+%! assert (size (a), [1, 1]);
+
+%!test <*61676>
+%! a = [class_bug61676(1), class_bug61676(2)];
+%! a(2) = '';
+%! assert (size (a), [1, 1]);
+
+%!test <*61676>
+%! a = [class_bug61676(1), class_bug61676(2)];
+%! x = [];
+%! a(2) = x;
+%! assert (size (a), [1, 2]);
+%! assert (a(2).v, []);
+
+%!test <*61676>
+%! a = [class_bug61676(1), class_bug61676(2)];
+%! a(2) = zeros (1, 0);
+%! assert (size (a), [1, 2]);
+%! assert (a(2).v, zeros (1, 0));
+
+%!test <*61676>
+%! a = [class_bug61676(1), class_bug61676(2)];
+%! a(2) = {};
+%! assert (size (a), [1, 2]);
+%! assert (a(2).v, {});
+
+%!error <value of class 'double' is not convertible to 'value_class'>
+%! a = value_class ();
+%! a(2) = 5;
+
+%!error <value of class 'class_bug61676_src' is not convertible to>
+%! a = class_bug61676_handle (1);
+%! a(2) = class_bug61676_src ();
+
 ## The display of an object gives the size that the size function returns,
 ## and the size only when it is not 1x1, as in Matlab.
 %!test

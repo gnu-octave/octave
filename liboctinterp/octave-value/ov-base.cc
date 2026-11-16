@@ -34,6 +34,7 @@
 #include "lo-ieee.h"
 #include "mappers.h"
 
+#include "data.h"
 #include "defun.h"
 #include "errwarn.h"
 #include "interpreter-private.h"
@@ -1230,6 +1231,24 @@ octave_base_value::numeric_assign (const std::string& type,
 
   if (idx.front ().empty ())
     error ("missing index in indexed assignment");
+
+  if (rhs.isobject ())
+    {
+      // Convert an object to the class of this array before anything else,
+      // with the object's method named after that class, as Matlab does.
+      // Converting this array first would call the wrong method: a logical
+      // or char array is converted to double below.
+
+      std::string cname = class_name ();
+
+      octave_value tmp_rhs = octave::attempt_type_conversion (rhs, cname);
+
+      if (! tmp_rhs.is_defined () || tmp_rhs.isobject ())
+        error ("operator =: value of class '%s' is not convertible to '%s'",
+               rhs.class_name ().c_str (), cname.c_str ());
+
+      return numeric_assign (type, idx, tmp_rhs);
+    }
 
   int t_lhs = type_id ();
   int t_rhs = rhs.type_id ();

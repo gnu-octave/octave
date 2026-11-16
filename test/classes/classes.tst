@@ -78,6 +78,10 @@
 %! assert (isequal (gick (snk2), -3));
 %!test x = [1 2 3 4];
 %! assert (isequal (x(snk), 1));
+%!test <*61676>
+%! x = 1:5;
+%! x(4) = Snork (7);
+%! assert (x, [1, 2, 3, 7, 5]);
 
 %% x = methods ('Snork');                % Need to test the methods function.
 %% save temp snk;

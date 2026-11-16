@@ -163,6 +163,11 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   dimension must be zero.  A method `empty` defined by the class, or by a
   superclass, takes precedence.
 
+* Assigning a value into an array of another class, such as `A(4) = obj`, now
+  converts it as Matlab does, with the method named after the class of the
+  array or, for `classdef` arrays, its constructor.  Only a literal `[]` or
+  `''` deletes elements of a `classdef` array (bug #61676).
+
 ### Alphabetical list of new functions added in Octave 12
 
 * `diagnostics_show_caret`

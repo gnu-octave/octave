@@ -3049,8 +3049,8 @@
 %! class_empty_plain.empty (0, [1, 2]);
 %!error <empty: size inputs must be scalars>
 %! class_empty_plain.empty ([0, 1], 2);
-%!error <empty: size vector must be a row vector>
-%! class_empty_plain.empty ([0; 3]);
+%!error <empty: size must be a vector>
+%! class_empty_plain.empty (magic (3));
 %!error <empty: size inputs must be real>
 %! class_empty_plain.empty (0, 1i);
 

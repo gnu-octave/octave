@@ -30,6 +30,7 @@
 #include <algorithm>
 #include <vector>
 
+#include "mappers.h"
 #include "unwind-prot.h"
 
 #include "cdef-class.h"
@@ -41,7 +42,6 @@
 #include "errwarn.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
-#include "lo-mappers.h"
 #include "load-path.h"
 #include "ov-builtin.h"
 #include "ov-classdef.h"
@@ -1460,7 +1460,7 @@ empty_dims (const octave_value_list& args)
 {
   int nargin = args.length ();
 
-  if (nargin == 0)
+  if (nargin == 0 || (nargin == 1 && args(0).isempty ()))
     return dim_vector (0, 0);
 
   std::vector<double> sz;
@@ -1469,23 +1469,16 @@ empty_dims (const octave_value_list& args)
     {
       const octave_value& arg = args(i);
 
-      if (! (arg.isnumeric () || arg.islogical ()))
-        error ("empty: value must be numeric or logical");
-
-      if (arg.iscomplex ())
-        error ("empty: size inputs must be real");
-
       if (arg.isempty ())
-        {
-          if (nargin == 1)
-            return dim_vector (0, 0);
-
-          sz.push_back (0);
-        }
+        sz.push_back (0);
+      else if (! (arg.isnumeric () || arg.islogical ()))
+        error ("empty: value must be numeric or logical");
+      else if (arg.iscomplex ())
+        error ("empty: size inputs must be real");
       else if (nargin == 1)
         {
-          if (arg.ndims () > 2 || arg.rows () != 1)
-            error ("empty: size vector must be a row vector");
+          if (arg.ndims () > 2 || (arg.rows () != 1 && arg.columns () != 1))
+            error ("empty: size must be a vector");
 
           NDArray val = arg.array_value ();
 
@@ -1495,13 +1488,10 @@ empty_dims (const octave_value_list& args)
           if (sz.size () == 1)
             sz.push_back (sz[0]);
         }
+      else if (arg.numel () != 1)
+        error ("empty: size inputs must be scalars");
       else
-        {
-          if (arg.numel () != 1)
-            error ("empty: size inputs must be scalars");
-
-          sz.push_back (arg.double_value ());
-        }
+        sz.push_back (arg.double_value ());
     }
 
   dim_vector dims;

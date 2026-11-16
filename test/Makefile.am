@@ -129,6 +129,7 @@ include bug-61105/module.mk
 include bug-61191/module.mk
 include bug-63841/module.mk
 include bug-64620/module.mk
+include bug-64739/module.mk
 include bug-65037/module.mk
 include bug-67096/module.mk
 include bug-67403/module.mk

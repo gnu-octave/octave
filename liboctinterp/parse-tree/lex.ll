@@ -2672,7 +2672,7 @@ base_lexer::text_yyinput ()
 }
 
 void
-base_lexer::xunput (char c, char *buf)
+base_lexer::xunput (int c, char *buf)
 {
   if (c != EOF)
     {
@@ -2689,7 +2689,7 @@ base_lexer::xunput (char c, char *buf)
 }
 
 void
-base_lexer::xunput (char c)
+base_lexer::xunput (int c)
 {
   char *yytxt = flex_yytext ();
 

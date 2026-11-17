@@ -595,9 +595,9 @@ public:
 
   int text_yyinput ();
 
-  void xunput (char c, char *buf);
+  void xunput (int c, char *buf);
 
-  void xunput (char c);
+  void xunput (int c);
 
   void update_token_positions (int tok_len);
 

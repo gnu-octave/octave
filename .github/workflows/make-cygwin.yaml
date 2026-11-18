@@ -19,7 +19,8 @@ jobs:
       fail-fast: false
 
       matrix:
-        # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+        # For available GitHub-hosted runners, see:
+        # https://github.com/actions/runner-images#available-images
         os: [windows-latest]
 
     env:

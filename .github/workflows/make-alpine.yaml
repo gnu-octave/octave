@@ -39,26 +39,27 @@ jobs:
           # wget
           # libpng
           # sudo
-          # ARPACK as distributed for Alpine latest-stable seems to be broken:
-          # arpack-dev
           packages: >
             build-base
             autoconf
             automake
             m4
+            libtool
+            gfortran
+            coreutils
+            bzip2
+            gzip
+            tar
+            zip
             git
             ccache
-            coreutils
-            gfortran
-            flex
             gperf
-            icoutils
-            mesa-dri-gallium
-            libtool
-            libltdl
-            rsvg-convert
-            texlive-dvi
+            flex
             bison
+            icoutils
+            rsvg-convert
+            mesa-dri-gallium
+            arpack-dev
             curl-dev
             fftw-dev
             fontconfig-dev
@@ -70,6 +71,7 @@ jobs:
             graphicsmagick-dev
             hdf5-dev
             lcms2-dev
+            libltdl
             libsm-dev
             libsndfile-dev
             openblas-dev
@@ -81,21 +83,17 @@ jobs:
             qscintilla-dev
             qt6-qt5compat-dev
             qt6-qttools-dev
-            qscintilla-dev
             rapidjson-dev
             readline-dev
             suitesparse-dev
             texinfo
+            texlive-dvi
             texmf-dist-lang
             texmf-dist-latexrecommended
             texmf-dist-plaingeneric
             xvfb-run
             xz-dev
             zlib-dev
-            bzip2
-            gzip
-            tar
-            zip
             cmake
             wget
             libpng
@@ -109,7 +107,7 @@ jobs:
           echo "key=ccache:alpine:x86:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: restore ccache
-        # setup the github cache used to maintain the ccache from one job to the next
+        # setup github cache used to maintain the ccache from one job to the next
         uses: actions/cache/restore@v6
         with:
           # location of the ccache of the chroot in the root file system

@@ -55,6 +55,7 @@ TEST_FILES += \
   for.tst \
   func.tst \
   global.tst \
+  graph-bench.m \
   if.tst \
   index.tst \
   inline-fcn.tst \
@@ -151,6 +152,7 @@ include colon-op/module.mk
 include ctor-vs-method/module.mk
 include fcn-handle/module.mk
 include file-encoding/module.mk
+include graph/module.mk
 include help/module.mk
 include help-name-forms/module.mk
 include json/module.mk

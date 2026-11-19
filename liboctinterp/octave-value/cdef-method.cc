@@ -309,10 +309,24 @@ octave_value_list
 cdef_method::cdef_method_rep::execute (const cdef_object& obj,
                                        const octave_value_list& args,
                                        int nargout, bool do_check_access,
-                                       const std::string& who)
+                                       const std::string& who,
+                                       const std::string& obj_name)
 {
   octave_value_list prepended_args = args;
   prepended_args.prepend (to_ov (obj));
+
+  // Give inputname the name of the object, if it has one.
+  if (! obj_name.empty ())
+    {
+      string_vector nm = prepended_args.name_tags ();
+
+      if (nm.numel () == 0)
+        nm = string_vector (prepended_args.length ());
+
+      nm(0) = obj_name;
+
+      prepended_args.stash_name_tags (nm);
+    }
 
   return execute (prepended_args, nargout, do_check_access, who);
 }

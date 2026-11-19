@@ -1610,6 +1610,8 @@ arguments_block : arguments_beg opt_sep args_attr_list args_validation_list opt_
                     delete $2;
                     delete $5;
 
+                    lexer.m_parsing_declaration_block = false;
+
                     if (! ($$ = parser.make_arguments_block ($1, $3, $4, $6)))
                       {
                         // make_arguments_block deleted $3, and $4.
@@ -1625,6 +1627,7 @@ arguments_beg   : ARGUMENTS
                     $$ = $1;
 
                     lexer.m_arguments_is_keyword = false;
+                    lexer.m_parsing_declaration_block = true;
                   }
                 ;
 
@@ -1892,6 +1895,7 @@ properties_block
 properties_beg  : PROPERTIES
                   {
                     lexer.m_classdef_element_names_are_keywords = false;
+                    lexer.m_parsing_declaration_block = true;
                     $$ = $1;
                   }
                 ;
@@ -1899,6 +1903,7 @@ properties_beg  : PROPERTIES
 property_list   : // empty
                   {
                     lexer.m_classdef_element_names_are_keywords = true;
+                    lexer.m_parsing_declaration_block = false;
                     $$ = nullptr;
                   }
                 | property_list1 opt_sep
@@ -1908,6 +1913,7 @@ property_list   : // empty
                     delete $2;
 
                     lexer.m_classdef_element_names_are_keywords = true;
+                    lexer.m_parsing_declaration_block = false;
                     $$ = $1;
                   }
                 ;
@@ -5555,6 +5561,27 @@ get_help_from_file (const std::string& nm, bool& symbol_found, std::string& full
       if (ov_fcn.is_defined ())
         {
           octave_function *fcn = ov_fcn.function_value ();
+
+          // A name of the form FILE>LOCALFUNCTION asks for the doc string of
+          // that local function, not of the main function of the file.
+
+          std::size_t sep = nm.find ('>');
+
+          if (fcn && sep != std::string::npos && sep + 1 < nm.length ())
+            {
+              octave_user_function *ufcn = fcn->user_function_value (true);
+
+              fcn = nullptr;
+
+              if (ufcn)
+                {
+                  octave_value ov_sub
+                    = ufcn->find_subfunction (nm.substr (sep+1));
+
+                  if (ov_sub.is_defined ())
+                    fcn = ov_sub.function_value ();
+                }
+            }
 
           if (fcn)
             retval = fcn->doc_string ();

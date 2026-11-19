@@ -36,6 +36,9 @@ class octave_value_list;
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 extern OCTINTERP_API octave_value
+attempt_type_conversion (const octave_value& ov, const std::string& dtype);
+
+extern OCTINTERP_API octave_value
 do_class_concat (const octave_value_list& ovl, const std::string& cattype,
                  int dim);
 

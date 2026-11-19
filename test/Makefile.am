@@ -129,6 +129,7 @@ include bug-61105/module.mk
 include bug-61191/module.mk
 include bug-63841/module.mk
 include bug-64620/module.mk
+include bug-64739/module.mk
 include bug-65037/module.mk
 include bug-67096/module.mk
 include bug-67403/module.mk
@@ -153,6 +154,7 @@ include ctor-vs-method/module.mk
 include fcn-handle/module.mk
 include file-encoding/module.mk
 include help/module.mk
+include help-name-forms/module.mk
 include json/module.mk
 include jupyter-notebook/module.mk
 include load-path/module.mk

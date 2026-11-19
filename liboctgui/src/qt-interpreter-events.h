@@ -31,24 +31,45 @@
 #include <list>
 #include <string>
 
+#include "event-manager.h"
+#include "ov.h"
+
 #include <QList>
 #include <QMutex>
 #include <QObject>
+#include <QPair>
+#include <QSet>
 #include <QString>
+#include <QStringList>
 #include <QWaitCondition>
-
 #include "dialog.h"
-
-#include "event-manager.h"
 
 // Defined for purposes of sending QList<int> as part of signal.
 typedef QList<int> QIntList;
 
-class octave_value;
-
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 class base_qobject;
+
+// What the variable editor shows for a variable, or for an expression that
+// refers to part of one.  It is built in the interpreter thread.  VALUE
+// holds only plain data, that is numeric, logical, and char arrays and cell
+// arrays and structs of them, so that the GUI never holds an object, which
+// could run code in the GUI thread or keep a handle object alive after its
+// variable has been cleared (bug #67821).  Any other element of a cell array
+// or struct is replaced by a char array that describes it, such as
+// "[1x1 myclass]", and the row and column at which the variable editor
+// shows such an element are listed in DESCRIBED.  A value that the variable
+// editor does not show as a table is left undefined, and TEXT and
+// DESCRIPTION hold its printed form and its description.
+
+struct variable_editor_data
+{
+  octave_value value;
+  QString text;
+  QString description;
+  QSet<QPair<int, int>> described;
+};
 
 // The functions in this class are not normally called directly, but
 // are invoked from the Octave interpreter thead by methods in the
@@ -248,7 +269,12 @@ Q_SIGNALS:
   void get_input_from_terminal_signal (const QString& prompt);
 
   void set_workspace_signal (bool top_level, bool debug,
-                             const symbol_info_list& syminfo);
+                             const QString& scopes,
+                             const QStringList& symbols,
+                             const QStringList& class_names,
+                             const QStringList& dimensions,
+                             const QStringList& values,
+                             const QIntList& complex_flags);
 
   void clear_workspace_signal ();
 
@@ -300,7 +326,8 @@ Q_SIGNALS:
 
   void update_gui_lexer_signal (bool update_apis_only);
 
-  void edit_variable_signal (const QString& name, const octave_value& val);
+  void edit_variable_signal (const QString& name,
+                             const variable_editor_data& data);
 
   void refresh_variable_editor_signal ();
 

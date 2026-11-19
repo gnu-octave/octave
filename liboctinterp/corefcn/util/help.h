@@ -190,6 +190,8 @@ private:
 
   bool get_which_info_from_fcn (const std::string& name, const octave_value& ov_fcn, std::string& file, std::string& type) const;
 
+  std::string normalize_member_name (const std::string& name) const;
+
   string_vector local_functions () const;
 
   bool raw_help_for_class (const cdef_class& cls, const std::string& nm,

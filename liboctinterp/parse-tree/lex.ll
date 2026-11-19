@@ -2292,6 +2292,7 @@ lexical_feedback::reset ()
   m_arguments_is_keyword = false;
   m_classdef_element_names_are_keywords = false;
   m_parsing_anon_fcn_body = false;
+  m_parsing_declaration_block = false;
   m_parsing_class_method = false;
   m_parsing_classdef = false;
   m_parsing_classdef_decl = false;
@@ -2672,7 +2673,7 @@ base_lexer::text_yyinput ()
 }
 
 void
-base_lexer::xunput (char c, char *buf)
+base_lexer::xunput (int c, char *buf)
 {
   if (c != EOF)
     {
@@ -2689,7 +2690,7 @@ base_lexer::xunput (char c, char *buf)
 }
 
 void
-base_lexer::xunput (char c)
+base_lexer::xunput (int c)
 {
   char *yytxt = flex_yytext ();
 
@@ -3631,10 +3632,12 @@ base_lexer::handle_identifier ()
   //   pi +1
   //
   // are parsed as an addition expression instead of as a command-style
-  // function call with the argument "+1".
+  // function call with the argument "+1".  A statement in a properties or
+  // arguments block declares a name, so that "b double" is the name "b"
+  // followed by the class "double", and is never a command.
 
   if (m_at_beginning_of_statement
-      && ! (m_parsing_anon_fcn_body
+      && ! (m_parsing_anon_fcn_body || m_parsing_declaration_block
             || ident == "e" || ident == "pi"
             || ident == "I" || ident == "i"
             || ident == "J" || ident == "j"

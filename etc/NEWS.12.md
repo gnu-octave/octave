@@ -19,6 +19,12 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   longer copies the whole value of the property when the property has no get
   or set method, so it no longer slows down as the property grows (bug #65060).
 
+* A declaration such as `b double` in a `classdef` properties block or in a
+  function arguments block is now parsed as a name followed by a class, as in
+  Matlab, instead of as a command, which was a syntax error (bug #64739).
+  The declared class, size and validation functions are not yet enforced,
+  and default values in an arguments block are not yet applied.
+
 * The function `max_recursion_depth` is now an alias for `max_stack_depth`.
   The limit on recursion has increased from 256 to the `max_stack_depth` of
   1024.  The documentation has been re-written to be clearer.
@@ -162,6 +168,11 @@ Summary of important user-visible changes for version 12 (yyyy-mm-dd):
   `myclass.empty` is 0x0 and `myclass.empty (0, 3)` is 0x3.  At least one
   dimension must be zero.  A method `empty` defined by the class, or by a
   superclass, takes precedence.
+
+* Assigning a value into an array of another class, such as `A(4) = obj`, now
+  converts it as Matlab does, with the method named after the class of the
+  array or, for `classdef` arrays, its constructor.  Only a literal `[]` or
+  `''` deletes elements of a `classdef` array (bug #61676).
 
 ### Alphabetical list of new functions added in Octave 12
 

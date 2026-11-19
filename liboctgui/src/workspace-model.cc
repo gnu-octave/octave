@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <sstream>
-
 #include <QTreeWidget>
 #include <QToolTip>
 
@@ -36,7 +34,6 @@
 #include "gui-settings.h"
 #include "workspace-model.h"
 
-#include "syminfo.h"
 #include "utils.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -180,12 +177,22 @@ workspace_model::data (const QModelIndex& idx, int role) const
 
 void
 workspace_model::set_workspace (bool top_level, bool /* debug */,
-                                const symbol_info_list& syminfo)
+                                const QString& scopes,
+                                const QStringList& symbols,
+                                const QStringList& class_names,
+                                const QStringList& dimensions,
+                                const QStringList& values,
+                                const QIntList& complex_flags)
 {
   clear_data ();
 
   m_top_level = top_level;
-  m_syminfo_list = syminfo;
+  m_scopes = scopes;
+  m_symbols = symbols;
+  m_class_names = class_names;
+  m_dimensions = dimensions;
+  m_values = values;
+  m_complex_flags = complex_flags;
 
   update_table ();
 }
@@ -235,7 +242,6 @@ void
 workspace_model::clear_data ()
 {
   m_top_level = false;
-  m_syminfo_list = symbol_info_list ();
   m_scopes = QString ();
   m_symbols = QStringList ();
   m_class_names = QStringList ();
@@ -247,39 +253,9 @@ workspace_model::clear_data ()
 void
 workspace_model::update_table ()
 {
+  // The interpreter thread has already built the text of the table.
+
   beginResetModel ();
-
-  for (const auto& syminfo : m_syminfo_list)
-    {
-      std::string nm = syminfo.name ();
-
-      octave_value val = syminfo.value ();
-
-      // FIXME: fix size for objects, see kluge in ov.cc
-      Matrix sz = val.size ();
-      dim_vector dv = dim_vector::alloc (sz.numel ());
-      for (octave_idx_type i = 0; i < dv.ndims (); i++)
-        dv(i) = sz(i);
-
-      char storage = ' ';
-      if (syminfo.is_formal ())
-        storage = 'a';
-      else if (syminfo.is_global ())
-        storage = 'g';
-      else if (syminfo.is_persistent ())
-        storage = 'p';
-
-      std::ostringstream buf;
-      val.short_disp (buf);
-      std::string short_disp_str = buf.str ();
-
-      m_scopes.append (storage);
-      m_symbols.append (QString::fromStdString (nm));
-      m_class_names.append (QString::fromStdString (val.class_name ()));
-      m_dimensions.append (QString::fromStdString (dv.str ()));
-      m_values.append (QString::fromStdString (short_disp_str));
-      m_complex_flags.append (val.iscomplex ());
-    }
 
   endResetModel ();
 

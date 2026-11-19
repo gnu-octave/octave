@@ -1,5 +1,6 @@
 classdef_load_save_TEST_FILES = \
   %reldir%/changed-class/loadobj_changed_class.m \
+  %reldir%/classdef-load-save-binary.tst \
   %reldir%/classdef-load-save-text.tst \
   %reldir%/classdef-load-save-v6.tst \
   %reldir%/classdef-load-save-v7.tst \

@@ -275,6 +275,7 @@ public:
       m_arguments_is_keyword (false),
       m_classdef_element_names_are_keywords (false),
       m_parsing_anon_fcn_body (false),
+      m_parsing_declaration_block (false),
       m_parsing_class_method (false),
       m_parsing_classdef (false),
       m_parsing_classdef_decl (false),
@@ -392,6 +393,10 @@ public:
 
   // true means we are parsing the body of an anonymous function.
   bool m_parsing_anon_fcn_body;
+
+  // true means we are parsing a properties or arguments block, where
+  // every statement declares a name and none is a command.
+  bool m_parsing_declaration_block;
 
   // true means we are parsing a class method in function or classdef file.
   bool m_parsing_class_method;
@@ -595,9 +600,9 @@ public:
 
   int text_yyinput ();
 
-  void xunput (char c, char *buf);
+  void xunput (int c, char *buf);
 
-  void xunput (char c);
+  void xunput (int c);
 
   void update_token_positions (int tok_len);
 

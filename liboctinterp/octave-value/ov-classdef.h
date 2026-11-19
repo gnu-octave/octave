@@ -161,6 +161,12 @@ public:
 
   OCTINTERP_API bool load_ascii (std::istream& is);
 
+  OCTINTERP_API bool save_binary (std::ostream& os, bool save_as_floats);
+
+  OCTINTERP_API bool
+  load_binary (std::istream& is, bool swap,
+               octave::mach_info::float_format fmt);
+
   octave_value
   permute (const Array<int>& vec, bool inv = false) const
   {

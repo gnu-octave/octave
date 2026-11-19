@@ -2905,8 +2905,8 @@ do_single_type_concat_cdef (const octave_value_list& args, int dim)
   return to_ov (obj_result);
 }
 
-static octave_value
-attempt_type_conversion (const octave_value& ov, std::string dtype)
+octave_value
+attempt_type_conversion (const octave_value& ov, const std::string& dtype)
 {
   octave_value retval;
 
@@ -2936,13 +2936,13 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
         }
       catch (execution_exception& ee)
         {
-          error (ee, "conversion from %s to %s failed", dtype.c_str (),
-                 cname.c_str ());
+          error (ee, "conversion from %s to %s failed", cname.c_str (),
+                 dtype.c_str ());
         }
 
       if (result.empty ())
-        error ("conversion from %s to %s failed", dtype.c_str (),
-               cname.c_str ());
+        error ("conversion from %s to %s failed", cname.c_str (),
+               dtype.c_str ());
 
       retval = result(0);
     }

@@ -225,7 +225,7 @@ public Q_SLOTS:
   void show_workspace_window ();
 
   void show_variable_editor_window (const QString& name,
-                                    const octave_value& value);
+                                    const variable_editor_data& data);
 
   void handle_variable_editor_update ();
 

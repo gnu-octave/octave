@@ -7,7 +7,7 @@ concurrency: ci-alpine-${{ github.ref }}
 jobs:
 
   alpine:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     name: Alpine (x86, musl)
 
@@ -34,10 +34,6 @@ jobs:
           # For available CPU architectures, see:
           # https://github.com/marketplace/actions/setup-alpine-linux-environment
           arch: x86
-          # QScintilla-Qt6 is currently not distributed by Alpine Linux.
-          # When it is, consider switching to Qt6 packages:
-          # qt6-qt5compat-dev
-          # qt6-qttools-dev
           # The following packages are only needed to buid and install gl2ps:
           # cmake
           # wget
@@ -48,20 +44,22 @@ jobs:
             autoconf
             automake
             m4
+            libtool
+            gfortran
+            coreutils
+            bzip2
+            gzip
+            tar
+            zip
             git
             ccache
-            coreutils
-            gfortran
-            flex
             gperf
-            icoutils
-            mesa-dri-gallium
-            libtool
-            libltdl
-            rsvg-convert
-            texlive-dvi
-            arpack-dev
+            flex
             bison
+            icoutils
+            rsvg-convert
+            mesa-dri-gallium
+            arpack-dev
             curl-dev
             fftw-dev
             fontconfig-dev
@@ -73,6 +71,7 @@ jobs:
             graphicsmagick-dev
             hdf5-dev
             lcms2-dev
+            libltdl
             libsm-dev
             libsndfile-dev
             openblas-dev
@@ -82,19 +81,16 @@ jobs:
             qhull-dev
             qrupdate-dev
             qscintilla-dev
-            qt5-qttools-dev
-            qscintilla-dev
+            qt6-qt5compat-dev
+            qt6-qttools-dev
             rapidjson-dev
             readline-dev
             suitesparse-dev
             texinfo
+            texlive-dvi
             xvfb-run
             xz-dev
             zlib-dev
-            bzip2
-            gzip
-            tar
-            zip
             cmake
             wget
             libpng
@@ -108,7 +104,7 @@ jobs:
           echo "key=ccache:alpine:x86:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: restore ccache
-        # setup the github cache used to maintain the ccache from one job to the next
+        # setup github cache used to maintain the ccache from one job to the next
         uses: actions/cache/restore@v6
         with:
           # location of the ccache of the chroot in the root file system

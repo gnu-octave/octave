@@ -27,6 +27,8 @@
 #  include "config.h"
 #endif
 
+#include <iostream>
+#include <map>
 #include <sstream>
 
 #include <QDebug>
@@ -45,8 +47,10 @@
 #include "interpreter.h"
 #include "oct-map.h"
 #include "ov.h"
+#include "pager.h"
 #include "parse.h"
 #include "pr-flt-fmt.h"
+#include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -92,9 +96,383 @@ do_requires_sub_editor_sub (const octave_value& elt)
              || (elt.is_string () && (elt.rows () == 1 || elt.isempty ()))));
 }
 
-base_ve_model::base_ve_model (const QString& expr, const octave_value& val)
+// The way the variable editor shows a value.
+
+enum class ve_kind
+{
+  numeric, string, cell, scalar_struct, vector_struct, struct_array, text
+};
+
+static ve_kind
+value_kind (const octave_value& val)
+{
+  if ((val.isnumeric () || val.islogical ()) && val.ndims () == 2)
+    return ve_kind::numeric;
+  else if (val.is_string () && (val.rows () == 1 || val.is_zero_by_zero ()))
+    return ve_kind::string;
+  else if (val.iscell ())
+    return ve_kind::cell;
+  else if (val.isstruct ())
+    {
+      if (val.numel () == 1)
+        return ve_kind::scalar_struct;
+      else if (val.ndims () == 2)
+        {
+          if (val.rows () == 1 || val.columns () == 1)
+            return ve_kind::vector_struct;
+          else
+            return ve_kind::struct_array;
+        }
+    }
+
+  return ve_kind::text;
+}
+
+// Plain data cannot hold an object.
+
+static bool
+is_plain_data (const octave_value& val)
+{
+  return (val.is_undefined () || val.isnumeric () || val.islogical ()
+          || val.is_string ());
+}
+
+// An element that is neither plain data nor a cell array or struct is shown
+// by its description.
+
+static bool
+is_described_element (const octave_value& elt)
+{
+  return ! (is_plain_data (elt) || elt.iscell () || elt.isstruct ());
+}
+
+// Describe VAL by its size and class, as "[3x4 table]".  The size is the
+// one the size function returns, which for an object may be its own size
+// method, as in Matlab.
+
+static std::string
+describe_value (interpreter& interp, const octave_value& val)
+{
+  // INTERPRETER THREAD
+
+  dim_vector dv;
+
+  try
+    {
+      octave_value tmp = val;
+
+      Matrix sz = tmp.size ();
+
+      dv = dim_vector::alloc (sz.numel ());
+
+      for (octave_idx_type i = 0; i < dv.ndims (); i++)
+        dv(i) = sz(i);
+    }
+  catch (const execution_exception&)
+    {
+      // An error in the size method of an object leaves its own dimensions.
+      interp.recover_from_exception ();
+
+      dv = val.dims ();
+    }
+
+  return "[" + dv.str () + " " + val.class_name () + "]";
+}
+
+// Return VAL with every element of a cell array or struct, at any depth,
+// that is not plain data replaced by its description.  A cell array or
+// struct with nothing to replace is returned as it is, and a value shared
+// by several elements is converted once, its result shared in the same way,
+// so that the result is no larger than VAL.  DONE holds the results so far.
+
+static octave_value
+strip_objects (interpreter& interp, const octave_value& val,
+               std::map<const octave_base_value *, octave_value>& done)
+{
+  if (is_plain_data (val))
+    return val;
+
+  auto p = done.find (val.internal_rep ());
+  if (p != done.end ())
+    return p->second;
+
+  octave_value retval = val;
+
+  if (val.iscell ())
+    {
+      Cell c = val.cell_value ();
+      bool changed = false;
+
+      for (octave_idx_type i = 0; i < c.numel (); i++)
+        {
+          const octave_value elt = c.xelem (i);
+
+          if (is_plain_data (elt))
+            continue;
+
+          octave_value tmp = strip_objects (interp, elt, done);
+
+          if (tmp.internal_rep () != elt.internal_rep ())
+            {
+              c(i) = tmp;
+              changed = true;
+            }
+        }
+
+      if (changed)
+        retval = c;
+    }
+  else if (val.isstruct () && val.numel () == 1)
+    {
+      octave_scalar_map m = val.scalar_map_value ();
+      bool changed = false;
+
+      string_vector keys = m.fieldnames ();
+
+      for (octave_idx_type k = 0; k < keys.numel (); k++)
+        {
+          const octave_value elt = m.contents (keys(k));
+
+          if (is_plain_data (elt))
+            continue;
+
+          octave_value tmp = strip_objects (interp, elt, done);
+
+          if (tmp.internal_rep () != elt.internal_rep ())
+            {
+              m.setfield (keys(k), tmp);
+              changed = true;
+            }
+        }
+
+      if (changed)
+        retval = m;
+    }
+  else if (val.isstruct ())
+    {
+      octave_map m = val.map_value ();
+      bool changed = false;
+
+      string_vector keys = m.fieldnames ();
+
+      for (octave_idx_type k = 0; k < keys.numel (); k++)
+        {
+          Cell c = m.contents (keys(k));
+          bool field_changed = false;
+
+          for (octave_idx_type i = 0; i < c.numel (); i++)
+            {
+              const octave_value elt = c.xelem (i);
+
+              if (is_plain_data (elt))
+                continue;
+
+              octave_value tmp = strip_objects (interp, elt, done);
+
+              if (tmp.internal_rep () != elt.internal_rep ())
+                {
+                  c(i) = tmp;
+                  field_changed = true;
+                }
+            }
+
+          if (field_changed)
+            {
+              m.setfield (keys(k), c);
+              changed = true;
+            }
+        }
+
+      if (changed)
+        retval = m;
+    }
+  else
+    retval = describe_value (interp, val);
+
+  done[val.internal_rep ()] = retval;
+
+  return retval;
+}
+
+// Return the printed form of VAL, as NAME.
+
+static std::string
+printed_value (interpreter& interp, const std::string& name,
+               const octave_value& val)
+{
+  // INTERPRETER THREAD
+
+  std::ostringstream buf;
+
+  try
+    {
+      val.print_with_name (buf, name);
+    }
+  catch (const execution_exception& ee)
+    {
+      interp.recover_from_exception ();
+
+      buf << "error: " << ee.message ();
+    }
+
+  return buf.str ();
+}
+
+// If the variable exists, return the value of the expression X, which may
+// refer to part of it.  If it doesn't exist, return an undefined value, so
+// that the variable can be opened before it is created.
+
+// This function should only be called within other functions that
+// execute in the interpreter thread.  It should also be called in a
+// try-catch block that catches execution exceptions.
+
+static octave_value
+retrieve_variable (interpreter& interp, const std::string& x)
+{
+  // INTERPRETER THREAD
+
+  // The variable is the name the expression starts with, before any field
+  // or index, as in "c{1,1}(1,1).x".
+
+  std::string name = x.substr (0, x.find_first_of (".({"));
+
+  if (symbol_exist (name, "var") > 0)
+    {
+      int parse_status = 0;
+
+      octave_value result = interp.eval_string (x, true, parse_status);
+
+      if (result.is_cs_list ())
+        error ("evaluation produced c-s list");
+
+      return result;
+    }
+
+  return octave_value ();
+}
+
+variable_editor_data
+make_variable_editor_data (interpreter& interp, const std::string& name,
+                           const octave_value& val)
+{
+  // INTERPRETER THREAD
+
+  variable_editor_data data;
+
+  if (val.is_undefined ())
+    return data;
+
+  // Describing or printing an object may run its own methods, which may
+  // print themselves.  Send that output to a buffer that is then discarded,
+  // so that it does not appear in the command window each time the variable
+  // editor is updated.
+
+  octave_stdout.flush ();
+  std::cerr.flush ();
+
+  std::stringbuf discarded_output;
+
+  std::streambuf *old_out_buf = octave_stdout.rdbuf (&discarded_output);
+  std::streambuf *old_err_buf = std::cerr.rdbuf (&discarded_output);
+
+  unwind_action restore_output ([old_out_buf, old_err_buf] ()
+                                {
+                                  octave_stdout.rdbuf (old_out_buf);
+                                  std::cerr.rdbuf (old_err_buf);
+                                });
+
+  ve_kind kind = value_kind (val);
+
+  if (kind == ve_kind::text)
+    {
+      data.description = QString::fromStdString (describe_value (interp, val));
+      data.text = QString::fromStdString (printed_value (interp, name, val));
+
+      return data;
+    }
+
+  std::map<const octave_base_value *, octave_value> done;
+
+  data.value = strip_objects (interp, val, done);
+
+  // Record where the variable editor shows an element by its description.
+
+  switch (kind)
+    {
+    case ve_kind::cell:
+      {
+        const Cell c = val.cell_value ();
+
+        octave_idx_type nr = c.rows ();
+
+        for (octave_idx_type i = 0; i < c.numel (); i++)
+          if (is_described_element (c(i)))
+            data.described.insert (qMakePair (int (i % nr), int (i / nr)));
+      }
+      break;
+
+    case ve_kind::scalar_struct:
+      {
+        const octave_scalar_map m = val.scalar_map_value ();
+
+        string_vector keys = m.fieldnames ();
+
+        for (octave_idx_type k = 0; k < keys.numel (); k++)
+          if (is_described_element (m.contents (keys(k))))
+            data.described.insert (qMakePair (int (k), 0));
+      }
+      break;
+
+    case ve_kind::vector_struct:
+      {
+        const octave_map m = val.map_value ();
+
+        string_vector keys = m.fieldnames ();
+
+        for (octave_idx_type col = 0; col < keys.numel (); col++)
+          {
+            const Cell c = m.contents (keys(col));
+
+            for (octave_idx_type row = 0; row < c.numel (); row++)
+              if (is_described_element (c(row)))
+                data.described.insert (qMakePair (int (row), int (col)));
+          }
+      }
+      break;
+
+    default:
+      break;
+    }
+
+  return data;
+}
+
+void
+edit_in_variable_editor (interpreter& interp, const std::string& expr)
+{
+  // INTERPRETER THREAD
+
+  octave_value val;
+
+  try
+    {
+      val = retrieve_variable (interp, expr);
+    }
+  catch (const execution_exception&)
+    {
+      interp.recover_from_exception ();
+    }
+
+  event_manager& evmgr = interp.get_event_manager ();
+
+  evmgr.edit_variable (expr, val);
+}
+
+base_ve_model::base_ve_model (const QString& expr,
+                              const variable_editor_data& data)
   : m_name (expr.toStdString ()),
-    m_value (val),
+    m_value (data.value),
+    m_described (data.described),
     m_data_rows (m_value.rows ()),
     m_data_cols (m_value.columns ()),
     m_display_rows (m_data_rows),
@@ -321,8 +699,8 @@ class numeric_model : public base_ve_model
 {
 public:
 
-  numeric_model (const QString& expr, const octave_value& val)
-    : base_ve_model (expr, val)
+  numeric_model (const QString& expr, const variable_editor_data& data)
+    : base_ve_model (expr, data)
   {
     // FIXME: should fill the window and expand on scrolling or
     // resizing.
@@ -381,8 +759,8 @@ class string_model : public base_ve_model
 {
 public:
 
-  string_model (const QString& expr, const octave_value& val)
-    : base_ve_model (expr, val)
+  string_model (const QString& expr, const variable_editor_data& data)
+    : base_ve_model (expr, data)
   {
     m_data_rows = 1;
     m_data_cols = 1;
@@ -414,8 +792,8 @@ class cell_model : public base_ve_model
 {
 public:
 
-  cell_model (const QString& expr, const octave_value& val)
-    : base_ve_model (expr, val)
+  cell_model (const QString& expr, const variable_editor_data& data)
+    : base_ve_model (expr, data)
   {
     // FIXME: should fill the window and expand on scrolling or
     // resizing.
@@ -450,6 +828,9 @@ public:
 
     Cell cval = m_value.cell_value ();
 
+    if (is_described (row, col))
+      return QString::fromStdString (cval(row, col).string_value ());
+
     return edit_display_sub (cval(row, col), role);
   }
 
@@ -461,6 +842,9 @@ public:
     if (! index_ok (idx, row, col))
       return false;
 
+    if (is_described (row, col))
+      return true;
+
     Cell cval = m_value.cell_value ();
 
     return do_requires_sub_editor_sub (cval(row, col));
@@ -468,6 +852,9 @@ public:
 
   char quote_char (const QModelIndex& idx) const
   {
+    if (is_described (idx.row (), idx.column ()))
+      return 0;
+
     octave_value ov = value_at (idx);
 
     if (ov.is_string ())
@@ -506,15 +893,15 @@ class scalar_struct_model : public base_ve_model
 {
 public:
 
-  scalar_struct_model (const QString& expr, const octave_value& val)
-    : base_ve_model (expr, val)
+  scalar_struct_model (const QString& expr, const variable_editor_data& data)
+    : base_ve_model (expr, data)
   {
     // No extra cells.  We currently don't allow new fields or
     // additional values to be inserted.  If we allow additional values,
     // then the object becomes a vector structure and the display flips
     // (see the vector struct model below).  Do we want that?
 
-    m_data_rows = val.nfields ();
+    m_data_rows = m_value.nfields ();
     m_data_cols = 1;
 
     m_display_rows = m_data_rows;
@@ -535,6 +922,9 @@ public:
 
     octave_scalar_map m = m_value.scalar_map_value ();
 
+    if (is_described (row, col))
+      return QString::fromStdString (m.contents (row).string_value ());
+
     return edit_display_sub (m.contents (row), role);
   }
 
@@ -546,6 +936,9 @@ public:
     if (! index_ok (idx, row, col))
       return false;
 
+    if (is_described (row, col))
+      return true;
+
     octave_scalar_map m = m_value.scalar_map_value ();
 
     return do_requires_sub_editor_sub (m.contents (row));
@@ -553,6 +946,9 @@ public:
 
   char quote_char (const QModelIndex& idx) const
   {
+    if (is_described (idx.row (), idx.column ()))
+      return 0;
+
     octave_value ov = value_at (idx);
 
     if (ov.is_string ())
@@ -630,14 +1026,20 @@ class display_only_model : public base_ve_model
 {
 public:
 
-  display_only_model (const QString& expr, const octave_value& val)
-    : base_ve_model (expr, val)
+  // The model holds no value, only the text and the description built for
+  // it in the interpreter thread.
+
+  display_only_model (const QString& expr, const variable_editor_data& data)
+    : base_ve_model (expr, data), m_text (data.text),
+      m_description (data.description)
   {
     m_data_rows = 1;
     m_data_cols = 1;
 
     m_display_rows = m_data_rows;
     m_display_cols = m_data_cols;
+
+    m_valid = ! (m_text.isEmpty () && m_description.isEmpty ());
   }
 
   ~display_only_model () = default;
@@ -648,23 +1050,26 @@ public:
 
   QVariant edit_display (const QModelIndex&, int) const
   {
-    if (m_value.is_undefined ())
+    if (! m_valid)
       return QVariant ();
 
-    std::ostringstream buf;
-
-    octave_value tval = m_value;
-
-    tval.print_with_name (buf, m_name);
-
-    return QString::fromStdString (buf.str ());
+    return m_text;
   }
 
   QString make_description_text () const
   {
-    return (QString ("unable to edit %1")
-            .arg (base_ve_model::make_description_text ()));
+    if (! m_valid)
+      return base_ve_model::make_description_text ();
+
+    return (QString ("unable to edit %1 %2")
+            .arg (QString::fromStdString (m_name)).arg (m_description));
   }
+
+private:
+
+  QString m_text;
+
+  QString m_description;
 };
 
 // Vector struct.  Columns are fields, rows are values.
@@ -673,15 +1078,15 @@ class vector_struct_model : public base_ve_model
 {
 public:
 
-  vector_struct_model (const QString& expr, const octave_value& val)
-    : base_ve_model (expr, val)
+  vector_struct_model (const QString& expr, const variable_editor_data& data)
+    : base_ve_model (expr, data)
   {
     // FIXME: should fill the window vertically and expand on scrolling
     // or resizing.  No extra cells horizontally.  New fields must be
     // added specially.
 
-    m_data_rows = val.numel ();
-    m_data_cols = val.nfields ();
+    m_data_rows = m_value.numel ();
+    m_data_cols = m_value.nfields ();
 
     maybe_resize_rows (m_data_rows + 16);
     m_display_cols = m_data_cols;
@@ -709,6 +1114,9 @@ public:
 
     Cell cval = m.contents (col);
 
+    if (is_described (row, col))
+      return QString::fromStdString (cval(row).string_value ());
+
     return edit_display_sub (cval(row), role);
   }
 
@@ -720,6 +1128,9 @@ public:
     if (! index_ok (idx, row, col))
       return false;
 
+    if (is_described (row, col))
+      return true;
+
     octave_map m = m_value.map_value ();
 
     Cell cval = m.contents (col);
@@ -729,6 +1140,9 @@ public:
 
   char quote_char (const QModelIndex& idx) const
   {
+    if (is_described (idx.row (), idx.column ()))
+      return 0;
+
     octave_value ov = value_at (idx);
 
     if (ov.is_string ())
@@ -806,8 +1220,8 @@ class struct_model : public base_ve_model
 {
 public:
 
-  struct_model (const QString& expr, const octave_value& val)
-    : base_ve_model (expr, val)
+  struct_model (const QString& expr, const variable_editor_data& data)
+    : base_ve_model (expr, data)
   {
     // FIXME: should fill the window and expand on scrolling or
     // resizing.
@@ -895,36 +1309,44 @@ public:
 };
 
 base_ve_model *
-variable_editor_model::create (const QString& expr, const octave_value& val)
+variable_editor_model::create (const QString& expr,
+                               const variable_editor_data& data)
 {
-  // Choose specific model based on type of val.
+  // Choose specific model based on type of value.  A value that is shown
+  // as text is undefined.
 
-  if ((val.isnumeric () || val.islogical ()) && val.ndims () == 2)
-    return new numeric_model (expr, val);
-  else if (val.is_string () && (val.rows () == 1 || val.is_zero_by_zero ()))
-    return new string_model (expr, val);
-  else if (val.iscell ())
-    return new cell_model (expr, val);
-  else if (val.isstruct ())
+  if (data.value.is_undefined ())
+    return new display_only_model (expr, data);
+
+  switch (value_kind (data.value))
     {
-      if (val.numel () == 1)
-        return new scalar_struct_model (expr, val);
-      else if (val.ndims () == 2)
-        {
-          if (val.rows () == 1 || val.columns () == 1)
-            return new vector_struct_model (expr, val);
-          else
-            return new struct_model (expr, val);
-        }
-    }
+    case ve_kind::numeric:
+      return new numeric_model (expr, data);
 
-  return new display_only_model (expr, val);
+    case ve_kind::string:
+      return new string_model (expr, data);
+
+    case ve_kind::cell:
+      return new cell_model (expr, data);
+
+    case ve_kind::scalar_struct:
+      return new scalar_struct_model (expr, data);
+
+    case ve_kind::vector_struct:
+      return new vector_struct_model (expr, data);
+
+    case ve_kind::struct_array:
+      return new struct_model (expr, data);
+
+    default:
+      return new display_only_model (expr, data);
+    }
 }
 
 variable_editor_model::variable_editor_model (const QString& expr,
-                                              const octave_value& val,
+                                              const variable_editor_data& data,
                                               QObject *parent)
-  : QAbstractTableModel (parent), m_rep (create (expr, val))
+  : QAbstractTableModel (parent), m_rep (create (expr, data))
 {
   update_description ();
 
@@ -1026,7 +1448,8 @@ variable_editor_model::setData (const QModelIndex& idx,
 
           octave_value val = retrieve_variable (interp, nm);
 
-          Q_EMIT update_data_signal (val);
+          Q_EMIT update_data_signal (make_variable_editor_data (interp, nm,
+                                                                val));
         }
       catch (const execution_exception&)
         {
@@ -1147,7 +1570,7 @@ variable_editor_model::init_from_oct (interpreter& interp)
     {
       octave_value val = retrieve_variable (interp, nm);
 
-      Q_EMIT update_data_signal (val);
+      Q_EMIT update_data_signal (make_variable_editor_data (interp, nm, val));
     }
   catch (const execution_exception&)
     {
@@ -1182,42 +1605,6 @@ variable_editor_model::eval_expr_event (const QString& expr_arg)
     });
 }
 
-// If the variable exists, load it into the data model.  If it doesn't
-// exist, flag the data model as referring to a nonexistent variable.
-// This allows the variable to be opened before it is created.
-
-// This function should only be called within other functions that
-// execute in the interpreter thread.  It should also be called in a
-// try-catch block that catches execution exceptions.
-
-octave_value
-variable_editor_model::retrieve_variable (interpreter& interp,
-                                          const std::string& x)
-{
-  // INTERPRETER THREAD
-
-  std::string name = x;
-
-  name = name.substr (0, name.find ("."));
-
-  if (name.back () == ')' || name.back () == '}')
-    name = name.substr (0, name.find (name.back () == ')' ? "(" : "{"));
-
-  if (symbol_exist (name, "var") > 0)
-    {
-      int parse_status = 0;
-
-      octave_value result = interp.eval_string (x, true, parse_status);
-
-      if (result.is_cs_list ())
-        error ("evaluation produced c-s list");
-
-      return result;
-    }
-
-  return octave_value ();
-}
-
 void
 variable_editor_model::evaluation_error (const std::string& expr) const
 {
@@ -1245,9 +1632,9 @@ variable_editor_model::update_data_cache ()
 }
 
 void
-variable_editor_model::update_data (const octave_value& val)
+variable_editor_model::update_data (const variable_editor_data& data)
 {
-  if (val.is_undefined ())
+  if (data.value.is_undefined () && data.text.isEmpty ())
     {
       QString msg = (QString ("variable '%1' is invalid or undefined")
                      .arg (QString::fromStdString (name ())));
@@ -1262,7 +1649,7 @@ variable_editor_model::update_data (const octave_value& val)
   int old_rows = display_rows ();
   int old_cols = display_columns ();
 
-  reset (val);
+  reset (data);
 
   int new_rows = display_rows ();
   int new_cols = display_columns ();
@@ -1347,11 +1734,11 @@ variable_editor_model::data_error (const QString& msg)
 }
 
 void
-variable_editor_model::reset (const octave_value& val)
+variable_editor_model::reset (const variable_editor_data& data)
 {
   base_ve_model *old_rep = m_rep;
 
-  m_rep = create (QString::fromStdString (name ()), val);
+  m_rep = create (QString::fromStdString (name ()), data);
 
   delete old_rep;
 
@@ -1365,7 +1752,7 @@ variable_editor_model::invalidate ()
 {
   beginResetModel ();
 
-  reset (octave_value ());
+  reset (variable_editor_data ());
 
   endResetModel ();
 }
@@ -1382,9 +1769,20 @@ variable_editor_model::double_click (const QModelIndex& idx)
 {
   if (requires_sub_editor (idx))
     {
-      QString name = QString::fromStdString (m_rep->name ());
-      Q_EMIT edit_variable_signal (name + subscript_expression (idx),
-                                   value_at (idx));
+      // Open the element in its own editor.  It is retrieved by name in the
+      // interpreter thread, so that the GUI never holds an object
+      // (bug #67821).
+
+      std::string expr = (m_rep->name ()
+                          + subscript_expression (idx).toStdString ());
+
+      Q_EMIT interpreter_event
+        ([expr] (interpreter& interp)
+        {
+          // INTERPRETER THREAD
+
+          edit_in_variable_editor (interp, expr);
+        });
     }
 }
 

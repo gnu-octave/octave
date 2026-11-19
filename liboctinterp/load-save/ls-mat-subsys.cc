@@ -1081,7 +1081,7 @@ subsystem_handler::serialize_to_cell_array ()
   // The values of the classes of a MAT-file that save -append adds to are
   // kept.
   octave_idx_type base_idx = m_fwrap_prop_vals.size () + 2;
-  uint32_t num_class_ids = m_class_id_counter + 1;
+  octave_idx_type num_class_ids = m_class_id_counter + 1;
   octave_value empty_struct = octave_value (octave_map (dim_vector (1, 0)));
 
   Cell u3_structs (dim_vector (num_class_ids, 1));

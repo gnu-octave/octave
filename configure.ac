@@ -444,12 +444,10 @@ AC_SUBST(GCC_VERSION)
 ## Assume GCC.
 INCLUDE_DEPS=yes
 DEPEND_FLAGS="-M"
-DEPEND_EXTRA_SED_PATTERN=
 if test "$GCC" != yes; then
   case $canonical_host_type in
     sparc-sun-solaris2* | i386-pc-solaris2*)
       DEPEND_FLAGS="-xM1"
-      DEPEND_EXTRA_SED_PATTERN="-e '/\/opt\/SUNWspro/d'"
     ;;
     *-*-msdosmsvc)
     ;;
@@ -465,7 +463,6 @@ if test "$GCC" != yes; then
 fi
 AC_SUBST(INCLUDE_DEPS)
 AC_SUBST(DEPEND_FLAGS)
-AC_SUBST(DEPEND_EXTRA_SED_PATTERN)
 
 ### Check for math library.
 dnl If found, this will add -lm to LIBS.

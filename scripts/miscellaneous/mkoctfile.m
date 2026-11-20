@@ -119,7 +119,6 @@
 ## @example
 ## @group
 ##    AR
-##    DEPEND_EXTRA_SED_PATTERN
 ##    DEPEND_FLAGS
 ##    FFTW3F_LDFLAGS
 ##    FFTW3F_LIBS

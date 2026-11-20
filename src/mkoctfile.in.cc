@@ -293,10 +293,6 @@ make_vars_map (bool link_stand_alone, bool verbose, bool debug)
   vars["DEPEND_FLAGS"] = get_variable ("DEPEND_FLAGS",
                                        %OCTAVE_CONF_DEPEND_FLAGS%);
 
-  vars["DEPEND_EXTRA_SED_PATTERN"]
-    = get_variable ("DEPEND_EXTRA_SED_PATTERN",
-                    %OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%);
-
   vars["DL_LDFLAGS"] = get_variable ("DL_LDFLAGS",
                                      %OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%);
 
@@ -454,7 +450,6 @@ static std::string help_msg =
   "                          currently unused by mkoctfile.\n"
   "\n"
   "                            AR\n"
-  "                            DEPEND_EXTRA_SED_PATTERN\n"
   "                            DEPEND_FLAGS\n"
   "                            FFTW3F_LDFLAGS\n"
   "                            FFTW3F_LIBS\n"

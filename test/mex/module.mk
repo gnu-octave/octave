@@ -38,6 +38,7 @@ MKOCT_LDFLAG = \
   -L$(top_builddir)/liboctave/.libs
 
 MKOCT = \
+  OCTLIBDIR="" \
   OCT_LINK_DEPS="$(DLDFCN_LINK_DEPS)" \
   DL_LDFLAGS="$(DL_LDFLAGS)" \
   $(top_builddir)/src/mkoctfile $(MKOCT_CPPFLAGS) $(MKOCT_LDFLAG)
@@ -52,6 +53,7 @@ MKMEX_LDFLAG = \
   -L$(top_builddir)/liboctmex/.libs
 
 MKMEX = \
+  OCTLIBDIR="" \
   OCT_LINK_DEPS="" \
   DL_LDFLAGS="$(DL_LDFLAGS)" \
   $(top_builddir)/src/mkoctfile --mex $(MKMEX_CPPFLAGS) $(MKMEX_LDFLAG)

@@ -35,7 +35,7 @@
 ## @code{mkoctfile} can be called from the shell prompt or from the Octave
 ## prompt.  Calling it from the Octave prompt simply delegates the call to
 ## the shell prompt.  Any output is stored in the @var{output} variable and
-## the exit status in the @var{status} variable.  If called with no outputs
+## the exit status is in the @var{status} variable.  If called with no outputs
 ## and the compilation fails then Octave will emit an error.  If the programmer
 ## requests @var{output} or @var{status}, however, Octave will merely issue
 ## a warning and it is the programmer's responsibility to verify the command
@@ -45,72 +45,77 @@
 ## except for the filename of the code you wish to compile:
 ##
 ## @table @samp
-## @item -I DIR
-## Add the include directory DIR to compile commands.
+## @item -I@var{dir}
+## Add directory @var{dir} to compiler search path.
 ##
-## @item -D DEF
-## Add the definition DEF to the compiler call.
+## @item -D@var{def}[=@var{val}]
+## Define @var{def} in compile command.
 ##
-## @item -l LIB
-## Add the library LIB to the link command.
+## @item -U@var{def}
+## Cancel any previous definition of @var{def}.
 ##
-## @item -L DIR
-## Add the library directory DIR to the link command.
+## @item -L@var{dir}
+## Add directory @var{dir} to linker search path.
+##
+## @item -l@var{lib}
+## Add library @var{lib} to link command.
+##
+## @item -pthread
+## Use POSIX threads.
+##
+## @item -R@var{dir}
+## Add @code{-R@var{dir}} to link command.
+##
+## @item @nospell{-Wl,@var{option}}
+## Pass @var{option} to the linker like @nospell{@qcode{"-Wl,-rpath=@dots{}"}}.
+## The quotes are needed since commas are interpreted as command separators.
+##
+## @item -W@var{warn}
+## Pass @var{warn} option to the compiler.
+##
+## @item  -c
+## @itemx --compile
+## Compile, but do not link.
 ##
 ## @item  -M
 ## @itemx --depend
-## Generate dependency files (.d) for C and C++ source files.
-##
-## @item -R DIR
-## Add the run-time path to the link command.
-##
-## @item @nospell{-Wl,@dots{}}
-## Pass options to the linker like @nospell{"-Wl,-rpath=@dots{}"}.
-## The quotes are needed since commas are interpreted as command
-## separators.
-##
-## @item -W@dots{}
-## Pass options to the assembler like @nospell{"-Wa,OPTION"}.
-##
-## @item -c
-## Compile but do not link.
+## Generate dependency files (@file{.d}) for C and C++ source files.
 ##
 ## @item -g
 ## Enable debugging options for compilers.
 ##
-## @item  -o FILE
-## @itemx --output FILE
-## Output filename.  Default extension is @file{.oct} (or @file{.mex} if
-## @samp{--mex} is specified) unless linking a stand-alone executable.
+## @item  -o @var{file}
+## @itemx --output @var{file}
+## Output filename.@*
+## Default extension is @file{.oct} (or @file{.mex} if @samp{--mex} is
+## specified) unless linking a stand-alone executable.
 ##
-## @item  -p VAR
-## @itemx --print VAR
-## Print configuration variable VAR@.  There are three categories of
-## variables:
+## @item  -p @var{var}
+## @itemx --print @var{var}
+## Print configuration variable @var{var}.@*
+## There are three categories of variables:
 ##
 ## Octave configuration variables that users may override with environment
 ## variables.  These are used in commands that @code{mkoctfile} executes.
 ##
 ## @example
-##    ALL_CFLAGS                  INCLUDEDIR
-##    ALL_CXXFLAGS                LAPACK_LIBS
-##    ALL_FFLAGS                  LDFLAGS
-##    ALL_LDFLAGS                 LD_STATIC_FLAG
-##    BLAS_LIBS                   LIBDIR
-##    CC                          LIBOCTAVE
-##    CFLAGS                      LIBOCTINTERP
-##    CPICFLAG                    LIBOCTMEX
-##    CPPFLAGS                    OCTAVE_LINK_OPTS
-##    CXX                         OCTINCLUDEDIR
-##    CXXFLAGS                    OCTAVE_LIBS
-##    CXXLD                       OCTAVE_LINK_DEPS
-##    CXXPICFLAG                  OCTLIBDIR
-##    DL_LDFLAGS                  OCT_LINK_DEPS
-##    F77                         OCT_LINK_OPTS
-##    F77_INTEGER8_FLAG           RDYNAMIC_FLAG
-##    FFLAGS                      SPECIAL_MATH_LIB
-##    FPICFLAG                    XTRA_CFLAGS
-##    INCFLAGS                    XTRA_CXXFLAGS
+##    ALL_CFLAGS                  FPICFLAG
+##    ALL_CXXFLAGS                INCFLAGS
+##    ALL_FFLAGS                  INCLUDEDIR
+##    ALL_LDFLAGS                 LDFLAGS
+##    CC                          LD_STATIC_FLAG
+##    CFLAGS                      LIBDIR
+##    CPICFLAG                    OCTAVE_LINK_OPTS
+##    CPPFLAGS                    OCTINCLUDEDIR
+##    CXX                         OCTAVE_LIBS
+##    CXXFLAGS                    OCTAVE_LINK_DEPS
+##    CXXLD                       OCTLIBDIR
+##    CXXPICFLAG                  OCT_LINK_DEPS
+##    DEPEND_FLAGS                OCT_LINK_OPTS
+##    DL_LDFLAGS                  RDYNAMIC_FLAG
+##    F77                         SPECIAL_MATH_LIB
+##    F77_INTEGER8_FLAG           XTRA_CFLAGS
+##    FFLAGS                      XTRA_CXXFLAGS
 ## @end example
 ##
 ## Octave configuration variables as above, but currently unused by
@@ -118,23 +123,18 @@
 ##
 ## @example
 ## @group
-##    AR
-##    DEPEND_FLAGS
-##    FFTW3F_LDFLAGS
-##    FFTW3F_LIBS
-##    FFTW3_LDFLAGS
-##    FFTW3_LIBS
-##    FFTW_LIBS
-##    FLIBS
-##    LIBS
-##    RANLIB
-##    READLINE_LIBS
+##    AR                          FFTW_LIBS
+##    BLAS_LIBS                   FLIBS
+##    FFTW3F_LDFLAGS              LAPACK_LIBS
+##    FFTW3F_LIBS                 LIBS
+##    FFTW3_LDFLAGS               RANLIB
+##    FFTW3_LIBS                  READLINE_LIBS
 ## @end group
 ## @end example
 ##
 ## Octave configuration variables that are provided for informational
-## purposes only.  Except for @samp{OCTAVE_HOME} and @samp{OCTAVE_EXEC_HOME},
-## users may not override these variables.
+## purposes only.  Except for @w{@samp{OCTAVE_HOME}}@ and
+## @w{@samp{OCTAVE_EXEC_HOME}}, users may not override these variables.
 ##
 ## If @w{@env{OCTAVE_HOME}}@ or @w{@env{OCTAVE_EXEC_HOME}}@ are set in the
 ## environment, then other variables are adjusted accordingly with
@@ -144,26 +144,26 @@
 ##
 ## @example
 ## @group
-##    API_VERSION                 LOCALARCHLIBDIR
-##    ARCHLIBDIR                  LOCALFCNFILEDIR
-##    BINDIR                      LOCALOCTFILEDIR
-##    CANONICAL_HOST_TYPE         LOCALSTARTUPFILEDIR
-##    DATADIR                     LOCALVERARCHLIBDIR
-##    DATAROOTDIR                 LOCALVERFCNFILEDIR
-##    DEFAULT_PAGER               LOCALVEROCTFILEDIR
-##    EXEEXT                      MAN1DIR
-##    FCNFILEDIR                  MAN1EXT
-##    IMAGEDIR                    MANDIR
-##    INCLUDEDIR                  OCTAVE_EXEC_HOME
-##    INFODIR                     OCTAVE_HOME
-##    INFOFILE                    OCTDATADIR
-##    LIBDIR                      OCTDOCDIR
-##    LIBEXECDIR                  OCTFILEDIR
-##    LOCALAPIARCHLIBDIR          OCTFONTSDIR
-##    LOCALAPIFCNFILEDIR          OCTINCLUDEDIR
-##    LOCALAPIOCTFILEDIR          OCTLIBDIR
-##    LOCALAPIPKGDIR              STARTUPFILEDIR
-##                                VERSION
+##    API_VERSION                 LOCALAPIOCTFILEDIR
+##    ARCHLIBDIR                  LOCALAPIPKGDIR
+##    BINDIR                      LOCALARCHLIBDIR
+##    CANONICAL_HOST_TYPE         LOCALFCNFILEDIR
+##    DATADIR                     LOCALOCTFILEDIR
+##    DATAROOTDIR                 LOCALSTARTUPFILEDIR
+##    DEFAULT_PAGER               LOCALVERARCHLIBDIR
+##    EXEC_PREFIX                 LOCALVERFCNFILEDIR
+##    EXEEXT                      LOCALVEROCTFILEDIR
+##    FCNFILEDIR                  MAN1DIR
+##    IMAGEDIR                    MAN1EXT
+##    INFODIR                     MANDIR
+##    INFOFILE                    OCTAVE_EXEC_HOME
+##    LIBEXECDIR                  OCTAVE_HOME
+##    LIBOCTAVE                   OCTAVE_VERSION
+##    LIBOCTINTERP                OCTDATADIR
+##    LIBOCTMEX                   OCTDOCDIR
+##    LOCALAPIARCHLIBDIR          OCTFILEDIR
+##    LOCALAPIFCNFILEDIR          OCTFONTSDIR
+##                                STARTUPFILEDIR
 ## @end group
 ## @end example
 ##
@@ -171,36 +171,51 @@
 ## Link a stand-alone executable file.
 ##
 ## @item --mex
-## Assume creation of a MEX file.  Set the default output extension to
-## @file{.mex}.  Link to liboctmex instead of liboctinterp and liboctave.
+## Create a MEX file.@*
+## Set the default output extension to @file{.mex}.
+## Link to @file{liboctmex} instead of @file{liboctinterp} and
+## @file{liboctave}.
 ##
 ## @item  -s
 ## @itemx --strip
-## Strip the output file.
+## Strip output file.
+##
+## @item  -n
+## @itemx --just-print
+## @itemx --dry-run
+## Print commands, but do not execute them.
 ##
 ## @item  -v
 ## @itemx --verbose
 ## Echo commands as they are executed.
 ##
+## @item  -V
+## @itemx --version
+## Print version information.
+##
+## @item --quiet
+## Ignored.  Intended to suppress output from compiler steps.
+##
 ## @item file
-## The file to compile or link.  Recognized file types are:
+## Compile or link @file{file}.@*
+## Recognized file types are:
 ##
 ## @example
 ## @group
-##    .c    C source
-##    .cc   C++ source
-##    .cp   C++ source
-##    .cpp  C++ source
-##    .CPP  C++ source
-##    .cxx  C++ source
-##    .c++  C++ source
-##    .C    C++ source
-##    .f    Fortran source (fixed form)
-##    .F    Fortran source (fixed form)
-##    .f90  Fortran source (free form)
-##    .F90  Fortran source (free form)
-##    .o    object file
-##    .a    library file
+##   .c    C source
+##   .cc   C++ source
+##   .cp   C++ source
+##   .cpp  C++ source
+##   .CPP  C++ source
+##   .cxx  C++ source
+##   .c++  C++ source
+##   .C    C++ source
+##   .f    Fortran source (fixed form)
+##   .F    Fortran source (fixed form)
+##   .f90  Fortran source (free form)
+##   .F90  Fortran source (free form)
+##   .o    object file
+##   .a    library file
 ## @end group
 ## @end example
 ##

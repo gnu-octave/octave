@@ -1081,12 +1081,17 @@ octave_classdef::print_raw (std::ostream& os, bool) const
         }
 
       if (num_props == 0)
+      {
         os << " with no properties.";
-      else
-        os << " with properties:";
-      newline (os);
-      if (! Vcompact_format)
         newline (os);
+      }
+      else
+      {
+        os << " with properties:";
+        newline (os);
+        if (! Vcompact_format)
+          newline (os);
+      }
 
       increment_indent_level ();
 

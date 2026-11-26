@@ -1477,7 +1477,10 @@ is public and if the @code{Hidden} attribute is false.
   if (nargout > 0)
     return octave_value (Cell (string_vector (property_names)));
 
-  octave_stdout << "properties for class " << class_name << ":\n\n";
+  if (property_names.empty ())
+    octave_stdout << "No properties for class " << class_name << ".\n";
+  else
+    octave_stdout << "properties for class " << class_name << ":\n\n";
 
   for (const auto& nm : property_names)
     octave_stdout << "  " << nm << "\n";

@@ -41,9 +41,15 @@ endfunction
 
 
 ## FIXME: Uncomment when audioplayer constructor supports null data
-%!#testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
-%!# recorder = audiorecorder (44100, 16, 2);
-%!# player = getplayer (recorder);
-%!# assert (isa (player, "audioplayer"));
-%!# assert (player.SampleRate, 44100);
-%!# assert (player.BitsPerSample, 16);
+%!#shared AUDIO_GOOD
+%! AUDIO_GOOD = false;
+%! if (__have_feature__ ('PORTAUDIO') && audiodevinfo (1) > 0)
+%!   AUDIO_GOOD = true;
+%! endif
+
+%!#testif ; AUDIO_GOOD
+%! recorder = audiorecorder (44100, 16, 2);
+%! player = getplayer (recorder);
+%! assert (isa (player, "audioplayer"));
+%! assert (player.SampleRate, 44100);
+%! assert (player.BitsPerSample, 16);

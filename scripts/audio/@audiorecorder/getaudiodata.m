@@ -70,7 +70,13 @@ endfunction
 
 
 ## Tests of audiorecorder must not actually record anything.
-%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%!shared AUDIO_GOOD
+%! AUDIO_GOOD = false;
+%! if (__have_feature__ ('PORTAUDIO') && audiodevinfo (1) > 0)
+%!   AUDIO_GOOD = true;
+%! endif
+
+%!testif ; AUDIO_GOOD
 %! recorder = audiorecorder (44100, 16, 2);
 %! data = getaudiodata (recorder);
 %! assert (isa (data, "double"));
@@ -87,13 +93,13 @@ endfunction
 %! assert (size (data)(1), recorder.TotalSamples);
 %! assert (size (data)(2), 2);
 
-%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%!testif ; AUDIO_GOOD
 %! recorder = audiorecorder (44100, 8, 1);
 %! data = getaudiodata (recorder);
 %! assert (size (data)(1), recorder.TotalSamples);
 %! assert (size (data)(2), 1);
 
 ## Test input validation
-%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%!testif ; AUDIO_GOOD
 %! recorder = audiorecorder (44100, 16, 2);
 %! fail ("getaudiodata (recorder, 'foobar')", "invalid DATATYPE");

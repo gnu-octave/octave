@@ -483,19 +483,25 @@ recording using those parameters.
 }
 
 /*
-%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%!shared AUDIO_GOOD
+%! AUDIO_GOOD = false;
+%! if (__have_feature__ ('PORTAUDIO') && audiodevinfo (0) > 0)
+%!   AUDIO_GOOD = true;
+%! endif
+
+%!testif ; AUDIO_GOOD
 %! devinfo = audiodevinfo;
 %! assert (rows (devinfo.input), 1);
 %! assert (rows (devinfo.output), 1);
 
-%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%!testif ; AUDIO_GOOD
 %! devinfo = audiodevinfo;
 %! nout = audiodevinfo (0);
 %! nin = audiodevinfo (1);
 %! assert (columns (devinfo.output), nout);
 %! assert (columns (devinfo.input), nin);
 
-%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%!testif ; AUDIO_GOOD
 %! devinfo = audiodevinfo;
 %! nout = audiodevinfo (0);
 %! nin = audiodevinfo (1);
@@ -506,7 +512,7 @@ recording using those parameters.
 %!   assert (devinfo.input (i).Name, audiodevinfo (1, devinfo.input (i).ID));
 %! endfor
 
-%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%!testif ; AUDIO_GOOD
 %! devinfo = audiodevinfo;
 %! nout = audiodevinfo (0);
 %! nin = audiodevinfo (1);

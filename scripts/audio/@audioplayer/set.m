@@ -82,7 +82,13 @@ function setproperty (player, property, value)
 endfunction
 
 
-%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%!shared AUDIO_GOOD
+%! AUDIO_GOOD = false;
+%! if (__have_feature__ ('PORTAUDIO') && audiodevinfo (0) > 0)
+%!   AUDIO_GOOD = true;
+%! endif
+
+%!testif ; AUDIO_GOOD
 %! player = audioplayer ([-1, 1], 44100, 8);
 %! set (player, "SampleRate", 8800);
 %! set (player, "Tag", "mytag");
@@ -92,7 +98,7 @@ endfunction
 %! assert (player.Tag, "mytag");
 %! assert (player.UserData, [1, 2; 3, 4]);
 
-%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%!testif ; AUDIO_GOOD
 %! player = audioplayer ([-1, 1], 44100, 8);
 %! set (player, {"SampleRate", "Tag", "UserData"},
 %!              {8800, "mytag", [1, 2; 3, 4]});
@@ -100,7 +106,7 @@ endfunction
 %! assert (player.Tag, "mytag");
 %! assert (player.UserData, [1, 2; 3, 4]);
 
-%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%!testif ; AUDIO_GOOD
 %! player = audioplayer ([-1, 1], 44100, 8);
 %! props = set (player);
 %! props.SampleRate = 8800;
@@ -112,7 +118,7 @@ endfunction
 %! assert (player.UserData, [1, 2; 3, 4]);
 
 ## Test input validation
-%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%!testif ; AUDIO_GOOD
 %! player = audioplayer ([-1, 1], 44100, 8);
 %! fail ('set (player, "foobar", 1)', "not a valid property name");
 %! fail ('set (player, "Running", 1)', "is read-only");

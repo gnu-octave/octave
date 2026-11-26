@@ -85,7 +85,13 @@ endfunction
 
 
 ## Tests of audiorecorder must not actually record anything.
-%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%!shared AUDIO_GOOD
+%! AUDIO_GOOD = false;
+%! if (__have_feature__ ('PORTAUDIO') && audiodevinfo (1) > 0)
+%!   AUDIO_GOOD = true;
+%! endif
+
+%!testif ; AUDIO_GOOD
 %! recorder = audiorecorder ();
 %! set (recorder, "SampleRate", 8800);
 %! set (recorder, "Tag", "mytag");
@@ -95,7 +101,7 @@ endfunction
 %! assert (recorder.Tag, "mytag");
 %! assert (recorder.UserData, [1, 2; 3, 4]);
 
-%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%!testif ; AUDIO_GOOD
 %! recorder = audiorecorder ();
 %! set (recorder, {"SampleRate", "Tag", "UserData"},
 %!                {8800, "mytag", [1, 2; 3, 4]});
@@ -103,7 +109,7 @@ endfunction
 %! assert (recorder.Tag, "mytag");
 %! assert (recorder.UserData, [1, 2; 3, 4]);
 
-%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%!testif ; AUDIO_GOOD
 %! recorder = audiorecorder ();
 %! props = set (recorder);
 %! props.SampleRate = 8800;
@@ -115,7 +121,7 @@ endfunction
 %! assert (recorder.UserData, [1, 2; 3, 4]);
 
 ## Test input validation
-%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%!testif ; AUDIO_GOOD
 %! recorder = audiorecorder ();
 %! fail ('set (recorder, "foobar", 1)', "not a valid property name");
 %! fail ('set (recorder, "Running", 1)', "is read-only");

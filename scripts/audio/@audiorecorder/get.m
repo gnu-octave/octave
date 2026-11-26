@@ -78,7 +78,13 @@ function value = getproperty (properties, pname)
 endfunction
 
 
-%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%!shared AUDIO_GOOD
+%! AUDIO_GOOD = false;
+%! if (__have_feature__ ('PORTAUDIO') && audiodevinfo (1) > 0)
+%!   AUDIO_GOOD = true;
+%! endif
+
+%!testif ; AUDIO_GOOD
 %! recorder = audiorecorder (44100, 16, 2);
 %! props = get (recorder);
 %! assert (fieldnames (props), {"BitsPerSample"; "CurrentSample"; "DeviceID";
@@ -90,7 +96,7 @@ endfunction
 %! assert (values, {44100, 16, 2});
 
 ## Test input validation
-%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%!testif ; AUDIO_GOOD
 %! recorder = audiorecorder (44100, 16, 2);
 %! fail ("get (recorder, 1)", "NAME must be a string");
 %! fail ('get (recorder, "foobar")', '"foobar" is not a valid property');

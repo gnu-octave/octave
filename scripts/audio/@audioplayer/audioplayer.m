@@ -122,7 +122,13 @@ endfunction
 
 ## Tests of audioplayer must not actually play anything.
 
-%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%!shared AUDIO_GOOD
+%! AUDIO_GOOD = false;
+%! if (__have_feature__ ('PORTAUDIO') && audiodevinfo (0) > 0)
+%!   AUDIO_GOOD = true;
+%! endif
+
+%!testif ; AUDIO_GOOD
 %! mono = 0.25 * randn (1, 44100);
 %! stereo = 0.25 * randn (2, 44100);
 %! fs = 44100;
@@ -135,7 +141,7 @@ endfunction
 %! assert (player1.TotalSamples, 44100);
 %! assert (player2.TotalSamples, 44100);
 
-%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%!testif ; AUDIO_GOOD
 %! audio = randn (8000, 1);
 %! fs = 44100;
 %! player = audioplayer (audio, fs, 16);
@@ -144,7 +150,7 @@ endfunction
 %! assert (player.BitsPerSample, 16);
 
 ## Verify input validation
-%!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
+%!testif ; AUDIO_GOOD
 %! ## Verify nbits option only accepts 8, 16, 24
 %! fail ("audioplayer (1, 8e3, 9)", "NBITS must be 8, 16, or 24");
 %! fail ("audioplayer (1, 8e3, 32)", "NBITS must be 8, 16, or 24");

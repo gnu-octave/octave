@@ -37,6 +37,12 @@ function tf = isplaying (player)
 endfunction
 
 
-%!testif HAVE_PORTAUDIO; audiodevinfo (1) > 0
+%!shared AUDIO_GOOD
+%! AUDIO_GOOD = false;
+%! if (__have_feature__ ('PORTAUDIO') && audiodevinfo (0) > 0)
+%!   AUDIO_GOOD = true;
+%! endif
+
+%!testif ; AUDIO_GOOD 
 %! player = audioplayer ([-1, 1], 44100, 8);
 %! assert (isplaying (player), false);

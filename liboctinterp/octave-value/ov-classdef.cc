@@ -28,7 +28,9 @@
 #endif
 
 #include <algorithm>
+#include <functional>
 #include <iomanip>
+#include <ranges>
 
 #include "boolNDArray.h"
 #include "byte-swap.h"
@@ -1030,13 +1032,13 @@ octave_classdef::print_raw (std::ostream& os, bool) const
       std::map<octave::property_key, octave::cdef_property> property_map
         = cls.get_property_map (octave::cdef_class::member_mode::all_visible);
 
+      // STL vector of references of properties to print
+      std::vector<std::reference_wrapper<const octave::cdef_property>> props_to_print;
+
       std::size_t max_len = 0;
       std::size_t num_props = 0;
       for (const auto& pname_prop : property_map)
         {
-          // FIXME: this loop duplicates a significant portion of the
-          // loop below and the loop in Fproperties.
-
           const octave::cdef_property& prop = pname_prop.second;
 
           const std::string nm = prop.get_name ();
@@ -1052,6 +1054,7 @@ octave_classdef::print_raw (std::ostream& os, bool) const
             continue;
 
           num_props++;
+          props_to_print.push_back (prop);
 
           std::size_t sz = nm.size ();
 
@@ -1095,21 +1098,9 @@ octave_classdef::print_raw (std::ostream& os, bool) const
 
       increment_indent_level ();
 
-      for (auto& pname_prop : property_map)
+      for (const octave::cdef_property& prop : props_to_print)
         {
-          const octave::cdef_property& prop = pname_prop.second;
-
           const std::string nm = prop.get_name ();
-
-          octave_value acc = prop.get ("GetAccess");
-
-          if (! acc.is_string () || acc.string_value () != "public")
-            continue;
-
-          octave_value hid = prop.get ("Hidden");
-
-          if (hid.bool_value ())
-            continue;
 
           indent (os);
 
@@ -1468,8 +1459,6 @@ is public and if the @code{Hidden} attribute is false.
 
   for (const auto& pname_prop : property_map)
     {
-      // FIXME: this loop duplicates a significant portion of the loops
-      // in octave_classdef::print_raw.
       const cdef_property& prop = pname_prop.second;
 
       octave_value acc = prop.get ("GetAccess");
@@ -1482,7 +1471,7 @@ is public and if the @code{Hidden} attribute is false.
       if (hid.bool_value ())
         continue;
 
-      property_names.push_back (pname_prop.second.get_name ());
+      property_names.push_back (prop.get_name ());
     }
 
   if (nargout > 0)

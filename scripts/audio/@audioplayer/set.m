@@ -35,7 +35,7 @@
 ## corresponding to property names, set the value of those properties to the
 ## corresponding field values.  Given only an audioplayer object, return a
 ## structure of configurable properties (i.e., writeable properties).
-## @seealso{@audioplayer/get, @audioplayer/audioplayer}
+## @seealso{@audioplayer/get, audioplayer}
 ## @end deftypefn
 
 function properties = set (player, varargin)

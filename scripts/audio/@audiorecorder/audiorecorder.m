@@ -57,7 +57,7 @@
 ## @audiorecorder/getplayer, @audiorecorder/isrecording,
 ## @audiorecorder/pause, @audiorecorder/play, @audiorecorder/record,
 ## @audiorecorder/recordblocking, @audioplayer/resume, @audiorecorder/set,
-## @audiorecorder/stop, audiodevinfo, @audioplayer/audioplayer, record}
+## @audiorecorder/stop, audiodevinfo, audioplayer, record, audiowrite}
 ## @end deftypefn
 
 function recorder = audiorecorder (varargin)

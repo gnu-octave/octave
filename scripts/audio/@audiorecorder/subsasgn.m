@@ -28,7 +28,7 @@
 ## Perform subscripted assignment on the audio recorder object @var{recorder}.
 ##
 ## Assign the value of @var{rhs} to the recorder property named by @var{idx}.
-## @seealso{@audiorecorder/audiorecorder}
+## @seealso{audiorecorder}
 ## @end deftypefn
 
 function recorder = subsasgn (recorder, idx, rhs)

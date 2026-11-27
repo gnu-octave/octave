@@ -72,7 +72,7 @@
 ## @seealso{@audioplayer/get, @audioplayer/isplaying, @audioplayer/pause,
 ## @audioplayer/play, @audioplayer/playblocking, @audioplayer/resume,
 ## @audioplayer/set, @audioplayer/stop, audiodevinfo,
-## @audiorecorder/audiorecorder, sound, soundsc}
+## audiorecorder, sound, soundsc, audioread}
 ## @end deftypefn
 
 function player = audioplayer (varargin)

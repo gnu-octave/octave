@@ -35,8 +35,7 @@
 ##
 ## If the optional argument @var{end} is provided, stop playing at
 ## @var{end} seconds into the recording.
-## @seealso{@audiorecorder/getplayer, @audioplayer/audioplayer,
-## @audiorecorder/audiorecorder}
+## @seealso{@audiorecorder/getplayer, audioplayer, audiorecorder}
 ## @end deftypefn
 
 function player = play (recorder, start)

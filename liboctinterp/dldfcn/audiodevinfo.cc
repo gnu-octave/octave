@@ -119,6 +119,7 @@ recording using the specified parameters.
 
 If also given a device ID, return true if the device supports playback or
 recording using those parameters.
+@seealso{audioplayer, audiorecorder}
 @end deftypefn */)
 {
 #if defined (HAVE_PORTAUDIO)

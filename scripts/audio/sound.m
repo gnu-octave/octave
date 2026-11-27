@@ -40,7 +40,7 @@
 ## audio device and defaults to 8 bits.
 ##
 ## For more control over audio playback, use the @code{audioplayer} class.
-## @seealso{soundsc, @audioplayer/audioplayer, record}
+## @seealso{soundsc, audioplayer, audioread}
 ## @end deftypefn
 
 function sound (y, fs, nbits)

@@ -28,7 +28,7 @@
 ## Return a struct containing all named properties of the recorder object
 ## @var{recorder}.
 ## @seealso{@audiorecorder/get, @audiorecorder/set,
-## @audiorecorder/audiorecorder}
+## audiorecorder}
 ## @end deftypefn
 
 function props = __get_properties__ (recorder)

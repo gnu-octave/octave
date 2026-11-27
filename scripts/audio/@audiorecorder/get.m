@@ -34,7 +34,7 @@
 ## object, return a scalar structure with values for all properties of
 ## @var{recorder}.  The field names of the structure correspond to the property
 ## names.
-## @seealso{@audiorecorder/set, @audiorecorder/audiorecorder}
+## @seealso{@audiorecorder/set, audiorecorder}
 ## @end deftypefn
 
 function value = get (recorder, name)

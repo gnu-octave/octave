@@ -28,7 +28,7 @@
 ## Stop recording with audiorecorder object @var{recorder} and clean up any
 ## audio streams.
 ## @seealso{@audiorecorder/pause, @audiorecorder/resume,
-## @audiorecorder/audiorecorder}
+## audiorecorder}
 ## @end deftypefn
 
 function stop (recorder)

@@ -35,7 +35,7 @@
 ## corresponding to property names, set the value of those properties to the
 ## corresponding field values.  Given only a recorder object, return a
 ## structure of configurable properties (i.e., writeable properties).
-## @seealso{@audiorecorder/get, @audiorecorder/audiorecorder}
+## @seealso{@audiorecorder/get, audiorecorder}
 ## @end deftypefn
 
 function properties = set (recorder, varargin)

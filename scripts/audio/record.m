@@ -33,7 +33,7 @@
 ## for recording.
 ##
 ## For more control over audio recording, use the @code{audiorecorder} class.
-## @seealso{@audiorecorder/audiorecorder, sound, soundsc}
+## @seealso{audiorecorder, sound, soundsc}
 ## @end deftypefn
 
 function data = record (sec, fs = 8000)

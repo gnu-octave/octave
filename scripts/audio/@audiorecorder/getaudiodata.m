@@ -33,7 +33,7 @@
 ## Given the optional argument @var{datatype}, convert the recorded data
 ## to the specified type, which may be one of @qcode{"double"},
 ## @qcode{"single"}, @qcode{"int16"}, @qcode{"int8"} or @qcode{"uint8"}.
-## @seealso{@audiorecorder/audiorecorder}
+## @seealso{audiorecorder}
 ## @end deftypefn
 
 function data = getaudiodata (recorder, datatype)

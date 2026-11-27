@@ -27,7 +27,7 @@
 ## @deftypefn {} {} stop (@var{player})
 ## Stop playback of the audioplayer @var{player} and reset relevant variables
 ## to their initial values.
-## @seealso{@audioplayer/pause, @audioplayer/resume, @audioplayer/audioplayer}
+## @seealso{@audioplayer/pause, @audioplayer/resume, audioplayer}
 ## @end deftypefn
 
 function stop (player)

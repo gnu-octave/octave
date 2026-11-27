@@ -46,7 +46,7 @@
 ## are scaled to the range [-1, 1] instead.
 ##
 ## For more control over audio playback, use the @code{audioplayer} class.
-## @seealso{sound, @audioplayer/audioplayer, record}
+## @seealso{sound, audioplayer, record, audioread}
 ## @end deftypefn
 
 function soundsc (y, fs, nbits, yrange = [])

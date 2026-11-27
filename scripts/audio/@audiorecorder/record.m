@@ -31,7 +31,7 @@
 ## methods.
 ##
 ## Given the optional argument @var{length}, record for @var{length} seconds.
-## @seealso{@audiorecorder/recordblocking, @audiorecorder/audiorecorder}
+## @seealso{@audiorecorder/recordblocking, audiorecorder}
 ## @end deftypefn
 
 function record (recorder, length)

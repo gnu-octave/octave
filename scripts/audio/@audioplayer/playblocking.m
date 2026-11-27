@@ -36,7 +36,7 @@
 ## If the optional argument @var{end} is provided, stop playing at
 ## @var{end} samples into the recording.
 ## @seealso{@audioplayer/play, @audioplayer/pause, @audioplayer/stop,
-## @audioplayer/audioplayer}
+## audioplayer}
 ## @end deftypefn
 
 function playblocking (player, start)

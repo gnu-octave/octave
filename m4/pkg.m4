@@ -1,5 +1,5 @@
 # pkg.m4 - Macros to locate and use pkg-config.   -*- Autoconf -*-
-# serial 14 (pkgconf)
+# serial 17 (pkgconf)
 
 dnl Copyright © 2004 Scott James Remnant <scott@netsplit.com>.
 dnl Copyright © 2012-2015 Dan Nicholson <dbn.lists@gmail.com>
@@ -57,6 +57,9 @@ AC_DEFUN([PKG_PROG_PKG_CONFIG],
 [m4_pattern_forbid([^_?PKG_[A-Z_]+$])
 m4_pattern_allow([^PKG_CONFIG(_(PATH|LIBDIR|SYSROOT_DIR|ALLOW_SYSTEM_(CFLAGS|LIBS)))?$])
 m4_pattern_allow([^PKG_CONFIG_(DISABLE_UNINSTALLED|TOP_BUILD_DIR|DEBUG_SPEW)$])
+m4_pattern_allow([^PKG_CONFIG_SYSTEM_(INCLUDE|LIBRARY)_PATH$])
+m4_pattern_allow([^PKG_CONFIG_(LOG|PURE_DEPGRAPH|IGNORE_CONFLICTS|PRELOADED_FILES|FDO_SYSROOT_RULES|MSVC_SYNTAX)$])
+m4_pattern_allow([^PKG_CONFIG_((DONT_)?RELOCATE_PATHS|DONT_DEFINE_PREFIX|MAXIMUM_TRAVERSE_DEPTH|EARLY_TRACE)$])
 AC_ARG_VAR([PKG_CONFIG], [path to pkg-config utility])
 AC_ARG_VAR([PKG_CONFIG_PATH], [directories to add to pkg-config's search path])
 AC_ARG_VAR([PKG_CONFIG_LIBDIR], [path overriding pkg-config's built-in search path])
@@ -67,7 +70,7 @@ fi
 if test -n "$PKG_CONFIG"; then
 	_pkg_min_version=m4_default([$1], [0.9.0])
 	AC_MSG_CHECKING([pkg-config is at least version $_pkg_min_version])
-	if $PKG_CONFIG --atleast-pkgconfig-version $_pkg_min_version; then
+	if AC_RUN_LOG([$PKG_CONFIG --atleast-pkgconfig-version $_pkg_min_version]); then
 		AC_MSG_RESULT([yes])
 	else
 		AC_MSG_RESULT([no])
@@ -83,10 +86,10 @@ dnl
 dnl Check to see whether a particular set of modules exists. Similar to
 dnl PKG_CHECK_MODULES(), but does not set variables or print errors.
 dnl
-dnl Please remember that m4 expands AC_REQUIRE([PKG_PROG_PKG_CONFIG])
-dnl only at the first occurrence in configure.ac, so if the first place
-dnl it's called might be skipped (such as if it is within an "if", you
-dnl have to call PKG_CHECK_EXISTS manually
+dnl This macro requires PKG_PROG_PKG_CONFIG. Outside of an AC_DEFUN
+dnl macro, use AS_IF instead of a plain "if" around it, or call
+dnl PKG_PROG_PKG_CONFIG first. See "Prerequisite Macros" in the
+dnl Autoconf manual.
 AC_DEFUN([PKG_CHECK_EXISTS],
 [AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
 if test -n "$PKG_CONFIG" && \
@@ -118,7 +121,7 @@ dnl ---------------------------
 dnl Internal check to see if pkg-config supports short errors.
 AC_DEFUN([_PKG_SHORT_ERRORS_SUPPORTED],
 [AC_REQUIRE([PKG_PROG_PKG_CONFIG])
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+if AC_RUN_LOG([$PKG_CONFIG --atleast-pkgconfig-version 0.20]); then
         _pkg_short_errors_supported=yes
 else
         _pkg_short_errors_supported=no
@@ -131,9 +134,10 @@ dnl   [ACTION-IF-NOT-FOUND])
 dnl --------------------------------------------------------------
 dnl Since: 0.4.0
 dnl
-dnl Note that if there is a possibility the first call to
-dnl PKG_CHECK_MODULES might not happen, you should be sure to include an
-dnl explicit call to PKG_PROG_PKG_CONFIG in your configure.ac
+dnl This macro requires PKG_PROG_PKG_CONFIG. Outside of an AC_DEFUN
+dnl macro, use AS_IF instead of a plain "if" around it, or call
+dnl PKG_PROG_PKG_CONFIG first. See "Prerequisite Macros" in the
+dnl Autoconf manual.
 AC_DEFUN([PKG_CHECK_MODULES],
 [AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
 AC_ARG_VAR([$1][_CFLAGS], [C compiler flags for $1, overriding pkg-config])dnl
@@ -163,7 +167,7 @@ if test $pkg_failed = yes; then
         m4_default([$4], [AC_MSG_ERROR(
 [Package requirements ($2) were not met:
 
-$$1_PKG_ERRORS
+$$1[]_PKG_ERRORS
 
 Consider adjusting the PKG_CONFIG_PATH environment variable if you
 installed software in a non-standard prefix.
@@ -173,13 +177,13 @@ _PKG_TEXT])[]dnl
 elif test $pkg_failed = untried; then
         AC_MSG_RESULT([no])
         m4_default([$4], [AC_MSG_FAILURE(
-[The pkg-config script could not be found or is too old.  Make sure it
+[A pkg-config implementation could not be found or is too old.  Make sure it
 is in your PATH or set the PKG_CONFIG environment variable to the full
 path to pkg-config.
 
 _PKG_TEXT
 
-To get pkg-config, see <http://pkg-config.freedesktop.org/>.])[]dnl
+To get a pkg-config implementation, see <https://github.com/pkgconf/pkgconf>.])[]dnl
         ])
 else
         $1[]_CFLAGS=$pkg_cv_[]$1[]_CFLAGS
@@ -199,60 +203,80 @@ dnl Checks for existence of MODULES and gathers its build flags with
 dnl static libraries enabled. Sets VARIABLE-PREFIX_CFLAGS from --cflags
 dnl and VARIABLE-PREFIX_LIBS from --libs.
 dnl
-dnl Note that if there is a possibility the first call to
-dnl PKG_CHECK_MODULES_STATIC might not happen, you should be sure to
-dnl include an explicit call to PKG_PROG_PKG_CONFIG in your
-dnl configure.ac.
+dnl This macro requires PKG_PROG_PKG_CONFIG. Outside of an AC_DEFUN
+dnl macro, use AS_IF instead of a plain "if" around it, or call
+dnl PKG_PROG_PKG_CONFIG first. See "Prerequisite Macros" in the
+dnl Autoconf manual.
 AC_DEFUN([PKG_CHECK_MODULES_STATIC],
 [AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
 _save_PKG_CONFIG=$PKG_CONFIG
-PKG_CONFIG="$PKG_CONFIG --static"
+AS_IF([test -n "$PKG_CONFIG"], [PKG_CONFIG="$PKG_CONFIG --static"])
 PKG_CHECK_MODULES($@)
 PKG_CONFIG=$_save_PKG_CONFIG[]dnl
 ])dnl PKG_CHECK_MODULES_STATIC
 
 
+dnl _PKG_HELP_WORD(WORD)
+dnl --------------------
+dnl Internal macro. Expands to the shell word WORD for a help text. If
+dnl WORD is in single quotes, or in double quotes with no backslash, the
+dnl outer quotes are removed. m4 does not expand the result as a macro.
+m4_define([_PKG_HELP_WORD],
+[m4_bpatsubst([[$1]], [^\['\([^']*\)'\]$\|^\["\([^"\\]*\)"\]$], [[\1\2]])])
+
+
 dnl PKG_INSTALLDIR([DIRECTORY])
-dnl -------------------------
+dnl ---------------------------
 dnl Since: 0.27
 dnl
 dnl Substitutes the variable pkgconfigdir as the location where a module
 dnl should install pkg-config .pc files. By default the directory is
 dnl $libdir/pkgconfig, but the default can be changed by passing
 dnl DIRECTORY. The user can override through the --with-pkgconfigdir
-dnl parameter.
+dnl parameter. If --with-pkgconfigdir has no value, the default
+dnl directory is used.
+dnl
+dnl DIRECTORY is a shell word. To expand a variable such as ${prefix}
+dnl when make runs and not when configure runs, put DIRECTORY in single
+dnl quotes, as in ['${prefix}/libdata/pkgconfig']. Without the quotes,
+dnl configure expands ${prefix}, and it can be "NONE" at that time.
 AC_DEFUN([PKG_INSTALLDIR],
-[m4_pushdef([pkg_default], [m4_default([$1], ['${libdir}/pkgconfig'])])
-m4_pushdef([pkg_description],
-    [pkg-config installation directory @<:@]pkg_default[@:>@])
+[m4_pushdef([_PKG_DEFAULT_DIR],
+    [m4_expand([m4_default([$1], ['${libdir}/pkgconfig'])])])
 AC_ARG_WITH([pkgconfigdir],
-    [AS_HELP_STRING([--with-pkgconfigdir], pkg_description)],,
-    [with_pkgconfigdir=]pkg_default)
+    [AS_HELP_STRING([--with-pkgconfigdir=DIR],
+        [pkg-config installation directory @<:@]_PKG_HELP_WORD(_PKG_DEFAULT_DIR)[@:>@])],
+    [AS_IF([test "x$with_pkgconfigdir" = xyes],
+        [with_pkgconfigdir=]_PKG_DEFAULT_DIR)],
+    [with_pkgconfigdir=]_PKG_DEFAULT_DIR)
 AC_SUBST([pkgconfigdir], [$with_pkgconfigdir])
-m4_popdef([pkg_default])
-m4_popdef([pkg_description])
+m4_popdef([_PKG_DEFAULT_DIR])
 ])dnl PKG_INSTALLDIR
 
 
 dnl PKG_NOARCH_INSTALLDIR([DIRECTORY])
-dnl --------------------------------
+dnl ----------------------------------
 dnl Since: 0.27
 dnl
 dnl Substitutes the variable noarch_pkgconfigdir as the location where a
 dnl module should install arch-independent pkg-config .pc files. By
 dnl default the directory is $datadir/pkgconfig, but the default can be
 dnl changed by passing DIRECTORY. The user can override through the
-dnl --with-noarch-pkgconfigdir parameter.
+dnl --with-noarch-pkgconfigdir parameter. If --with-noarch-pkgconfigdir
+dnl has no value, the default directory is used.
+dnl
+dnl DIRECTORY is a shell word. Use single quotes as for PKG_INSTALLDIR.
 AC_DEFUN([PKG_NOARCH_INSTALLDIR],
-[m4_pushdef([pkg_default], [m4_default([$1], ['${datadir}/pkgconfig'])])
-m4_pushdef([pkg_description],
-    [pkg-config arch-independent installation directory @<:@]pkg_default[@:>@])
+[m4_pushdef([_PKG_DEFAULT_DIR],
+    [m4_expand([m4_default([$1], ['${datadir}/pkgconfig'])])])
 AC_ARG_WITH([noarch-pkgconfigdir],
-    [AS_HELP_STRING([--with-noarch-pkgconfigdir], pkg_description)],,
-    [with_noarch_pkgconfigdir=]pkg_default)
+    [AS_HELP_STRING([--with-noarch-pkgconfigdir=DIR],
+        [pkg-config arch-independent installation directory @<:@]_PKG_HELP_WORD(_PKG_DEFAULT_DIR)[@:>@])],
+    [AS_IF([test "x$with_noarch_pkgconfigdir" = xyes],
+        [with_noarch_pkgconfigdir=]_PKG_DEFAULT_DIR)],
+    [with_noarch_pkgconfigdir=]_PKG_DEFAULT_DIR)
 AC_SUBST([noarch_pkgconfigdir], [$with_noarch_pkgconfigdir])
-m4_popdef([pkg_default])
-m4_popdef([pkg_description])
+m4_popdef([_PKG_DEFAULT_DIR])
 ])dnl PKG_NOARCH_INSTALLDIR
 
 
@@ -262,6 +286,11 @@ dnl -------------------------------------------
 dnl Since: 0.28
 dnl
 dnl Retrieves the value of the pkg-config variable for the given module.
+dnl
+dnl This macro requires PKG_PROG_PKG_CONFIG. Outside of an AC_DEFUN
+dnl macro, use AS_IF instead of a plain "if" around it, or call
+dnl PKG_PROG_PKG_CONFIG first. See "Prerequisite Macros" in the
+dnl Autoconf manual.
 AC_DEFUN([PKG_CHECK_VAR],
 [AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
 AC_ARG_VAR([$1], [value of $3 for $2, overriding pkg-config])dnl
@@ -272,6 +301,14 @@ AS_VAR_COPY([$1], [pkg_cv_][$1])
 AS_VAR_IF([$1], [""], [$5], [$4])dnl
 ])dnl PKG_CHECK_VAR
 
+dnl _PKG_WITH_NAME(VARIABLE-PREFIX)
+dnl -------------------------------
+dnl Internal macro. Expands to the option name for VARIABLE-PREFIX: the
+dnl lowercase VARIABLE-PREFIX, with each "_" changed to "-". As with
+dnl m4_tolower, m4 does not expand the result as a macro.
+m4_define([_PKG_WITH_NAME],
+[m4_translit(m4_dquote(m4_tolower([$1])), [_], [-])])
+
 dnl PKG_WITH_MODULES(VARIABLE-PREFIX, MODULES,
 dnl   [ACTION-IF-FOUND],[ACTION-IF-NOT-FOUND],
 dnl   [DESCRIPTION], [DEFAULT])
@@ -279,35 +316,50 @@ dnl ------------------------------------------
 dnl
 dnl Prepare a "--with-" configure option using the lowercase
 dnl [VARIABLE-PREFIX] name, merging the behaviour of AC_ARG_WITH and
-dnl PKG_CHECK_MODULES in a single macro.
+dnl PKG_CHECK_MODULES in a single macro. In the option name, each "_"
+dnl changes to "-".
+dnl
+dnl The usual option values and DEFAULT are "yes", "no" and "auto". If
+dnl DEFAULT is not given, it is "auto". With "yes", if the modules are
+dnl not found, configure stops with an error if ACTION-IF-NOT-FOUND is not
+dnl given, and the macro sets with_<name> to "no" if ACTION-IF-NOT-FOUND
+dnl is given. With "auto", the macro sets with_<name> to "yes" if the
+dnl modules are found, and to "no" if not. With "no", the macro does not
+dnl do a check. With other values, the macro does not do a check and does
+dnl not change with_<name>. Thus configure.ac can use the value, for
+dnl example a path.
 AC_DEFUN([PKG_WITH_MODULES],
 [
-m4_pushdef([with_arg], m4_tolower([$1]))
+m4_pushdef([_PKG_WITH_ARG], m4_dquote(_PKG_WITH_NAME([$1])))
 
-m4_pushdef([description],
-           [m4_default([$5], [build with ]with_arg[ support])])
+m4_pushdef([_PKG_WITH_DESCRIPTION],
+           [m4_default_quoted([$5], [build with ]_PKG_WITH_ARG[ support])])
 
-m4_pushdef([def_arg], [m4_default([$6], [auto])])
-m4_pushdef([def_action_if_found], [AS_TR_SH([with_]with_arg)=yes])
-m4_pushdef([def_action_if_not_found], [AS_TR_SH([with_]with_arg)=no])
+m4_pushdef([_PKG_WITH_DEFAULT], [m4_default([$6], [auto])])
+m4_pushdef([_PKG_WITH_IF_FOUND], [AS_TR_SH([with_]_PKG_WITH_ARG)=yes])
+m4_pushdef([_PKG_WITH_IF_NOT_FOUND], [AS_TR_SH([with_]_PKG_WITH_ARG)=no])
 
-m4_case(def_arg,
-            [yes],[m4_pushdef([with_without], [--without-]with_arg)],
-            [m4_pushdef([with_without],[--with-]with_arg)])
+m4_case(_PKG_WITH_DEFAULT,
+            [yes],[m4_pushdef([_PKG_WITH_OPTION], [--without-]_PKG_WITH_ARG)],
+            [m4_pushdef([_PKG_WITH_OPTION],[--with-]_PKG_WITH_ARG)])
 
-AC_ARG_WITH(with_arg,
-     AS_HELP_STRING(with_without, description[ @<:@default=]def_arg[@:>@]),,
-    [AS_TR_SH([with_]with_arg)=def_arg])
+AC_ARG_WITH(_PKG_WITH_ARG,
+     m4_dquote(AS_HELP_STRING(_PKG_WITH_OPTION, _PKG_WITH_DESCRIPTION[ @<:@default=]_PKG_WITH_DEFAULT[@:>@])),,
+    [AS_TR_SH([with_]_PKG_WITH_ARG)=_PKG_WITH_DEFAULT])
 
-AS_CASE([$AS_TR_SH([with_]with_arg)],
-            [yes],[PKG_CHECK_MODULES([$1],[$2],$3,$4)],
+AS_CASE([$AS_TR_SH([with_]_PKG_WITH_ARG)],
+            [yes],[PKG_CHECK_MODULES([$1],[$2],[$3],
+                                        m4_ifval([$4], [[m4_n([_PKG_WITH_IF_NOT_FOUND]) $4]]))],
             [auto],[PKG_CHECK_MODULES([$1],[$2],
-                                        [m4_n([def_action_if_found]) $3],
-                                        [m4_n([def_action_if_not_found]) $4])])
+                                        [m4_n([_PKG_WITH_IF_FOUND]) $3],
+                                        [m4_n([_PKG_WITH_IF_NOT_FOUND]) $4])])
 
-m4_popdef([with_arg])
-m4_popdef([description])
-m4_popdef([def_arg])
+m4_popdef([_PKG_WITH_ARG])
+m4_popdef([_PKG_WITH_DESCRIPTION])
+m4_popdef([_PKG_WITH_DEFAULT])
+m4_popdef([_PKG_WITH_IF_FOUND])
+m4_popdef([_PKG_WITH_IF_NOT_FOUND])
+m4_popdef([_PKG_WITH_OPTION])
 
 ])dnl PKG_WITH_MODULES
 
@@ -316,13 +368,13 @@ dnl   [DESCRIPTION], [DEFAULT])
 dnl -----------------------------------------------
 dnl
 dnl Convenience macro to trigger AM_CONDITIONAL after PKG_WITH_MODULES
-dnl check._[VARIABLE-PREFIX] is exported as make variable.
+dnl check. HAVE_[VARIABLE-PREFIX] is exported as a make variable.
 AC_DEFUN([PKG_HAVE_WITH_MODULES],
 [
 PKG_WITH_MODULES([$1],[$2],,,[$3],[$4])
 
 AM_CONDITIONAL([HAVE_][$1],
-               [test "$AS_TR_SH([with_]m4_tolower([$1]))" = "yes"])
+               [test "$AS_TR_SH([with_]_PKG_WITH_NAME([$1]))" = "yes"])
 ])dnl PKG_HAVE_WITH_MODULES
 
 dnl PKG_HAVE_DEFINE_WITH_MODULES(VARIABLE-PREFIX, MODULES,
@@ -336,6 +388,6 @@ AC_DEFUN([PKG_HAVE_DEFINE_WITH_MODULES],
 [
 PKG_HAVE_WITH_MODULES([$1],[$2],[$3],[$4])
 
-AS_IF([test "$AS_TR_SH([with_]m4_tolower([$1]))" = "yes"],
-        [AC_DEFINE([HAVE_][$1], 1, [Enable ]m4_tolower([$1])[ support])])
+AS_IF([test "$AS_TR_SH([with_]_PKG_WITH_NAME([$1]))" = "yes"],
+        [AC_DEFINE([HAVE_][$1], 1, [Enable ]_PKG_WITH_NAME([$1])[ support])])
 ])dnl PKG_HAVE_DEFINE_WITH_MODULES

@@ -34,6 +34,13 @@
 #   is not found. If ACTION-IF-FOUND is not specified, the default action
 #   will define HAVE_LAPACK.
 #
+# BUGS
+#
+#   Private shell variables such as save_LIBS and lapack lack an ax_ prefix.
+#   They share configure's shell namespace with callers and other macros, so
+#   they may collide with variables of the same name. These variables should
+#   use macro-specific ax_ names. [Rating: minor]
+#
 # LICENSE
 #
 #   Copyright (c) 2009 Steven G. Johnson <stevenj@alum.mit.edu>
@@ -65,7 +72,7 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 10
+#serial 11
 
 AU_ALIAS([ACX_LAPACK], [AX_LAPACK])
 AC_DEFUN([AX_LAPACK], [

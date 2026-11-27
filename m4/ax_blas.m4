@@ -33,6 +33,13 @@
 #   not found. If ACTION-IF-FOUND is not specified, the default action will
 #   define HAVE_BLAS.
 #
+# BUGS
+#
+#   Private shell variables such as save_LIBS lack an ax_ prefix. They share
+#   configure's shell namespace with callers and other macros, so they may
+#   collide with variables of the same name. These variables should use
+#   macro-specific ax_ names. [Rating: minor]
+#
 # LICENSE
 #
 #   Copyright (c) 2008 Steven G. Johnson <stevenj@alum.mit.edu>
@@ -64,7 +71,7 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 21
+#serial 22
 
 AU_ALIAS([ACX_BLAS], [AX_BLAS])
 AC_DEFUN([AX_BLAS], [

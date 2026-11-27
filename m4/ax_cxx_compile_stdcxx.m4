@@ -18,12 +18,25 @@
 #   -std=c++11).  If neither is specified, you get whatever works, with
 #   preference for no added switch, and then for an extended mode.
 #
+#   If the user gives a -std=, -std: or /std: option in CXX or CXXFLAGS (for
+#   example, ./configure CXX='g++ -std=gnu++17'), then the macro does not
+#   add a switch, and it ignores the second argument.  It only checks
+#   whether the compiler supports the C++ standard in the selected mode.
+#   AC_PROG_CC in Autoconf versions after 2.73 does the same for C.
+#
 #   The third argument, if specified 'mandatory' or if left unspecified,
 #   indicates that baseline support for the specified C++ standard is
 #   required and that the macro should error out if no mode with that
 #   support is found.  If specified 'optional', then configuration proceeds
 #   regardless, after defining HAVE_CXX${VERSION} if and only if a
 #   supporting mode is found.
+#
+# BUGS
+#
+#   Private shell variables such as ac_save_CXX, ac_success, and alternative
+#   lack an ax_ prefix. They share configure's shell namespace with callers
+#   and other macros, so they may collide with variables of the same name.
+#   These variables should use macro-specific ax_ names. [Rating: minor]
 #
 # LICENSE
 #
@@ -44,7 +57,7 @@
 #   and this notice are preserved.  This file is offered as-is, without any
 #   warranty.
 
-#serial 25
+#serial 30
 
 dnl  This macro is based on the code from the AX_CXX_COMPILE_STDCXX_11 macro
 dnl  (serial version number 13).
@@ -67,7 +80,22 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX], [dnl
   AC_LANG_PUSH([C++])dnl
   ac_success=no
 
-  m4_if([$2], [], [dnl
+  dnl If the user gave a -std option in CXX or CXXFLAGS, then the user
+  dnl selected the language version.  Do not add a switch that overrides
+  dnl it.  Only check it.  AC_PROG_CC in Autoconf versions after 2.73
+  dnl does the same for C.
+  dnl Use ac_env_CXX_value, the value of CXX when configure started.  The
+  dnl current CXX can have a -std option from an earlier call of this
+  dnl macro, or from AC_PROG_CXX in Autoconf 2.70 to 2.72.
+  dnl ac_env_CXX_value is an undocumented Autoconf internal.  It only
+  dnl holds CXX from the environment or the command line, so a -std
+  dnl option in a CXX set by config.site is not recognized.
+  ax_cxx_compile_user_std=no
+  AS_CASE([" $ac_env_CXX_value $CXXFLAGS"], [[*[[:space:]][-/]std[:=]*]],
+    [ax_cxx_compile_user_std=yes])
+
+  m4_if([$2], [], [],
+    [if test x$ax_cxx_compile_user_std = xyes; then])
     AC_CACHE_CHECK(whether $CXX supports C++$1 features by default,
 		   ax_cv_cxx_compile_cxx$1,
       [AC_COMPILE_IFELSE([AC_LANG_SOURCE([_AX_CXX_COMPILE_STDCXX_testbody_$1])],
@@ -75,10 +103,11 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX], [dnl
         [ax_cv_cxx_compile_cxx$1=no])])
     if test x$ax_cv_cxx_compile_cxx$1 = xyes; then
       ac_success=yes
-    fi])
+    fi
+  m4_if([$2], [], [], [fi])
 
   m4_if([$2], [noext], [], [dnl
-  if test x$ac_success = xno; then
+  if test x$ac_success = xno && test x$ax_cxx_compile_user_std = xno; then
     for alternative in ${ax_cxx_compile_alternatives}; do
       switch="-std=gnu++${alternative}"
       cachevar=AS_TR_SH([ax_cv_cxx_compile_cxx$1_$switch])
@@ -92,6 +121,9 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX], [dnl
          CXX="$ac_save_CXX"])
       if eval test x\$$cachevar = xyes; then
         CXX="$CXX $switch"
+        if test -n "$CXXCPP" ; then
+          CXXCPP="$CXXCPP $switch"
+        fi
         ac_success=yes
         break
       fi
@@ -99,7 +131,7 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX], [dnl
   fi])
 
   m4_if([$2], [ext], [], [dnl
-  if test x$ac_success = xno; then
+  if test x$ac_success = xno && test x$ax_cxx_compile_user_std = xno; then
     dnl HP's aCC needs +std=c++11 according to:
     dnl http://h21007.www2.hp.com/portal/download/files/unprot/aCxx/PDF_Release_Notes/769149-001.pdf
     dnl Cray's crayCC needs "-h std=c++11"
@@ -125,6 +157,9 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX], [dnl
            CXX="$ac_save_CXX"])
         if eval test x\$$cachevar = xyes; then
           CXX="$CXX $switch"
+          if test -n "$CXXCPP" ; then
+            CXXCPP="$CXXCPP $switch"
+          fi
           ac_success=yes
           break
         fi
@@ -134,93 +169,10 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX], [dnl
       fi
     done
   fi])
-
-dnl Repeat tests for C++ preprocessor if applicable
-
-  if test -n "$CXXCPP" ; then
-    ac_success_cxxcpp=no
-    m4_if([$2], [], [dnl
-      AC_CACHE_CHECK(whether $CXXCPP supports C++$1 features by default,
-        ax_cv_cxx_cpp_preproc_cxx$1,
-        [AC_PREPROC_IFELSE([AC_LANG_SOURCE([_AX_CXX_COMPILE_STDCXX_testbody_$1])],
-          [ax_cv_cxx_cpp_preproc_cxx$1=yes],
-          [ax_cv_cxx_cpp_preproc_cxx$1=no])])
-      if test x$ax_cv_cxx_cpp_preproc_cxx$1 = xyes; then
-        ac_success_cxxcpp=yes
-      fi])
-
-    m4_if([$2], [noext], [], [dnl
-    if test x$ac_success_cxxcpp = xno; then
-      for alternative in ${ax_cxx_compile_alternatives}; do
-        switch="-std=gnu++${alternative}"
-        cachevar=AS_TR_SH([ax_cv_cxx_cpp_preproc_cxx$1_$switch])
-        AC_CACHE_CHECK(whether $CXXCPP supports C++$1 features with $switch,
-                       $cachevar,
-          [ac_save_CXXCPP="$CXXCPP"
-           CXXCPP="$CXXCPP $switch"
-           AC_PREPROC_IFELSE([AC_LANG_SOURCE([_AX_CXX_COMPILE_STDCXX_testbody_$1])],
-            [eval $cachevar=yes],
-            [eval $cachevar=no])
-           CXXCPP="$ac_save_CXXCPP"])
-        if eval test x\$$cachevar = xyes; then
-          CXXCPP="$CXXCPP $switch"
-          ac_success_cxxcpp=yes
-          if test x$ac_cv_env_CXXCPP_set = x; then
-            # append to CXXCPP only once if it was not set in environment
-            ax_cv_cxx_cpp_preproc_cxx$1=yes
-          fi
-          break
-        fi
-      done
-    fi])
-
-    m4_if([$2], [ext], [], [dnl
-    if test x$ac_success_cxxcpp = xno; then
-      for alternative in ${ax_cxx_compile_alternatives}; do
-        for switch in -std=c++${alternative} +std=c++${alternative} "-h std=c++${alternative}" MSVC; do
-          if test x"$switch" = xMSVC; then
-            dnl AS_TR_SH maps both `:` and `=` to `_` so -std:c++17 would collide
-            dnl with -std=c++17.  We suffix the cache variable name with _MSVC to
-            dnl avoid this.
-            switch=-std:c++${alternative}
-            cachevar=AS_TR_SH([ax_cv_cxx_cpp_preproc_cxx$1_${switch}_MSVC])
-          else
-            cachevar=AS_TR_SH([ax_cv_cxx_cpp_preproc_cxx$1_$switch])
-          fi
-          AC_CACHE_CHECK(whether $CXXCPP supports C++$1 features with $switch,
-                         $cachevar,
-            [ac_save_CXXCPP="$CXXCPP"
-             CXXCPP="$CXXCPP $switch"
-             AC_PREPROC_IFELSE([AC_LANG_SOURCE([_AX_CXX_COMPILE_STDCXX_testbody_$1])],
-              [eval $cachevar=yes],
-              [eval $cachevar=no])
-             CXXCPP="$ac_save_CXXCPP"])
-          if eval test x\$$cachevar = xyes; then
-            CXXCPP="$CXXCPP $switch"
-            ac_success_cxxcpp=yes
-            if test x$ac_cv_env_CXXCPP_set = x; then
-              # append to CXXCPP only once if it was not set in environment
-              ax_cv_cxx_cpp_preproc_cxx$1=yes
-            fi
-            break
-          fi
-        done
-        if test x$ac_success_cxxcpp = xyes; then
-          break
-        fi
-      done
-    fi])
-  fi
-
   AC_LANG_POP([C++])
   if test x$ax_cxx_compile_cxx$1_required = xtrue; then
     if test x$ac_success = xno; then
       AC_MSG_ERROR([*** A compiler with support for C++$1 language features is required.])
-    fi
-    if test -n "$CXXCPP" ; then
-      if test x$ac_success_cxxcpp = xno; then
-        AC_MSG_ERROR([*** A preprocessor with support for C++$1 language features is required.])
-      fi
     fi
   fi
   if test x$ac_success = xno; then
@@ -387,7 +339,7 @@ namespace cxx11
     }
 
     int
-    test(const int c, volatile int v)
+    test(const int c, volatile int &v)
     {
       static_assert(is_same<int, decltype(0)>::value == true, "");
       static_assert(is_same<int, decltype(c)>::value == false, "");
@@ -733,7 +685,7 @@ namespace cxx17
   {
 
     constexpr int foo = [](){return 42;}();
-
+    static_assert(foo == 42);  // mutes complaint from -Wunused.
   }
 
   namespace test::nested_namespace::definitions

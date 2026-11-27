@@ -1,8 +1,8 @@
 # A library of shell functions for autopull.sh, autogen.sh, and bootstrap.
 
-scriptlibversion=2025-11-12.14; # UTC
+scriptlibversion=2026-08-09.13; # UTC
 
-# Copyright (C) 2003-2025 Free Software Foundation, Inc.
+# Copyright (C) 2003-2026 Free Software Foundation, Inc.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -560,8 +560,12 @@ prepare_GNULIB_SRCDIR ()
             mkdir -p "$gnulib_path"
             # Use a -c option to silence an annoying message
             # "hint: Using 'master' as the name for the initial branch."
-            # (cf. <https://stackoverflow.com/questions/65524512/>).
-            git -C "$gnulib_path" -c init.defaultBranch=master init
+            # (cf. <https://stackoverflow.com/questions/65524512/>)
+            # and another -c option to override a configuration
+            # init.defaultObjectFormat=sha256 that some users have installed.
+            git -C "$gnulib_path" -c init.defaultBranch=master \
+                                  -c init.defaultObjectFormat=sha1 \
+                                  init
             git -C "$gnulib_path" remote add origin "$gnulib_url"
             if git -C "$gnulib_path" fetch $shallow origin "$GNULIB_REVISION"
             then
@@ -824,7 +828,8 @@ autopull()
     elif check_exists git-merge-changelog; then
       echo "$0: initializing git-merge-changelog driver"
       git config merge.merge-changelog.name 'GNU-style ChangeLog merge driver'
-      git config merge.merge-changelog.driver 'git-merge-changelog %O %A %B "%Y"'
+      git config merge.merge-changelog.driver \
+          'git-merge-changelog %O %A %B "%Y"'
     else
       echo "$0: consider installing git-merge-changelog from gnulib"
     fi
